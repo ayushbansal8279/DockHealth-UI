@@ -1,0 +1,186 @@
+<html>
+  <head>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyDoc</title>
+	<link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/my-example.css">
+
+  <!-- pulling from CDN because these don't integrate into webpack/browserify well. -->
+  <!--<script src="http://www-cs-students.stanford.edu/~tjw/jsbn/jsbn.js"></script>
+  <script src="http://www-cs-students.stanford.edu/~tjw/jsbn/jsbn2.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.0/sjcl.min.js"></script>-->
+  <!-- if I wasn't using rest of AWS SDK, I'd do this: -->
+  <script src="https://gitcdn.xyz/repo/aws/amazon-cognito-identity-js/master/dist/aws-cognito-sdk.min.js"></script> 
+  <!--<script src="https://sdk.amazonaws.com/js/aws-sdk-2.22.0.js"></script>-->
+  <script>
+  //window.AWSCognito = window.AWS
+  window.AWS = window.AWSCognito
+  </script>
+  <script src="https://gitcdn.xyz/repo/aws/amazon-cognito-identity-js/master/dist/amazon-cognito-identity.min.js"></script>
+
+    <script src="assets/js/app.js"></script>
+    <script src="bower_components/foundation-sites/dist/js/foundation.js"></script>
+	
+  </head>
+  <body>
+
+		<div hidden>
+			<svg>
+			<symbol id="icon-add" viewBox="0 0 88 88">
+			<title>Add</title>
+			<path d="M44,0A44,44,0,1,0,88,44,44,44,0,0,0,44,0ZM56,46H46V56a2,2,0,0,1-4,0V46H32a2,2,0,0,1,0-4H42V32a2,2,0,0,1,4,0V42H56a2,2,0,0,1,0,4Z"/>
+			</symbol>
+			
+			<symbol id="icon-add-large" viewBox="0 0 44 44">
+			<title>Add large</title>
+			<path d="M22,0A22,22,0,1,0,44,22,22,22,0,0,0,22,0Z" style="fill:#fff"/><path d="M22,0A22,22,0,1,0,44,22,22,22,0,0,0,22,0Zm6,23H23v5a1,1,0,0,1-2,0V23H16a1,1,0,0,1,0-2h5V16a1,1,0,0,1,2,0v5h5a1,1,0,0,1,0,2Z"/>
+			</symbol>
+			
+			<symbol id="icon-angle-down" viewBox="0 0 962.36 561.21">
+			<title>Angle down</title>
+			<path d="M962.36,80q0,12.54-9.64,22.18L503.36,551.57q-9.64,9.64-22.18,9.64T459,551.57L9.64,102.21Q0,92.57,0,80T9.64,57.86L57.86,9.64Q67.5,0,80,0t22.18,9.64l379,379,379-379Q869.79,0,882.32,0T904.5,9.64l48.21,48.21Q962.36,67.5,962.36,80Z"/>
+			</symbol>
+			
+			<symbol id="icon-arrow-right" viewBox="0 0 92 92">
+			<title>Arrow right</title>
+			<path d="M46,0A46,46,0,1,0,92,46,46.05,46.05,0,0,0,46,0ZM71.41,47.42l-16,16a2,2,0,0,1-2.83-2.83L65.17,48H22a2,2,0,0,1,0-4H65.17L52.59,31.41a2,2,0,1,1,2.83-2.83l16,16a2,2,0,0,1,.43.65,2,2,0,0,1-.43,2.18Z"/>
+			</symbol>
+			
+			<symbol id="icon-attention" viewBox="0 0 88 88">
+			<title>Attention</title>
+			<path d="M44,0A44,44,0,1,0,88,44,44,44,0,0,0,44,0ZM40.8,23.4a.73.73,0,0,1,.8-.8h4.6a.73.73,0,0,1,.8.8v27a.73.73,0,0,1-.8.8H41.6a.73.73,0,0,1-.8-.8Zm6.4,41.2a.73.73,0,0,1-.8.8H41.6a.73.73,0,0,1-.8-.8V59.4a.73.73,0,0,1,.8-.8h4.8a.73.73,0,0,1,.8.8Z"/>
+			</symbol>
+			
+			<symbol id="icon-bell" viewBox="0 0 50 50">
+			<title>Bell</title>
+			<path d="M 25 0 C 22.794 0 21 1.794 21 4 C 21 6.206 22.794 8 25 8 C 27.206 8 29 6.206 29 4 C 29 1.794 27.206 0 25 0 z M 19.375 6.09375 C 14.804 8.04975 12 12.456 12 18 C 12 29 8.2005 31.76325 5.9375 33.40625 C 4.9355 34.13325 4 34.807 4 36 C 4 40.206 10.28 42 25 42 C 39.72 42 46 40.206 46 36 C 46 34.807 45.0645 34.13325 44.0625 33.40625 C 41.7995 31.76325 38 29 38 18 C 38 12.441 35.199 8.04675 30.625 6.09375 C 29.77 8.36575 27.567 10 25 10 C 22.434 10 20.231 8.36375 19.375 6.09375 z M 19 43.875 C 18.999 43.914 19 43.961 19 44 C 19 47.309 21.691 50 25 50 C 28.309 50 31 47.309 31 44 C 31 43.961 31.001 43.914 31 43.875 C 29.118 43.953 27.116 44 25 44 C 22.884 44 20.883 43.953 19 43.875 z"/>
+			</symbol>
+			
+			<symbol id="icon-calendar" viewBox="0 0 92 96">
+			<title>Calendar</title>
+			<path d="M20,0a4,4,0,0,0-4,4V8H4a3.87,3.87,0,0,0-4,4V26H92V12a3.87,3.87,0,0,0-4-4H76V4a4,4,0,0,0-4-4H68a4,4,0,0,0-4,4V8H28V4a4,4,0,0,0-4-4Zm0,4h4V16H20ZM68,4h4V16H68ZM0,30V92a4,4,0,0,0,4,4H88a4,4,0,0,0,4-4V30ZM61.4,41.6l3.36,2.16L44.84,74.68,29.18,60.51l2.68-3L44,68.55Z"/>
+			</symbol>
+			
+			<symbol id="icon-caret-down" viewBox="0 0 987.43 555.43">
+			<title>Caret down</title>
+			<path d="M987.43,61.71q0,25.07-18.32,43.39l-432,432q-18.32,18.32-43.39,18.32t-43.39-18.32l-432-432Q0,86.79,0,61.71T18.32,18.32Q36.64,0,61.71,0h864q25.07,0,43.39,18.32T987.43,61.71Z"/>
+			</symbol>
+			
+			<symbol id="icon-comment" viewBox="0 0 50 50">
+			<title>Comment</title>
+			<path d="M9,46c-0.45,0-0.844-0.3-0.964-0.733c-0.12-0.433,0.064-0.893,0.449-1.124c2.139-1.283,2.994-3.248,2.654-6.143H7 c-2.757,0-5-2.243-5-5V9c0-2.757,2.243-5,5-5h36c2.757,0,5,2.243,5,5v24c0,2.757-2.243,5-5,5H20.684C17.708,45.205,11.56,46,9,46z"/>
+			</symbol>
+			
+			<symbol id="icon-cross" viewBox="0 0 50 50">
+			<title>Cross</title>
+			<path d="M31,47H19c-0.552,0-1-0.447-1-1V32H4c-0.552,0-1-0.447-1-1V19c0-0.552,0.448-1,1-1h14V4c0-0.552,0.448-1,1-1h12 c0.553,0,1,0.448,1,1v14h14c0.553,0,1,0.448,1,1v12c0,0.553-0.447,1-1,1H32v14C32,46.553,31.553,47,31,47z"/>
+			</symbol>
+			
+			<symbol id="icon-envelope" viewBox="0 0 50 50">
+			<title>Envelope</title>
+			 <path d="M 0 7 L 0 9.875 L 25 29.71875 L 50 10.125 L 50 7 L 0 7 z M 0 12.40625 L 0 43 L 50 43 L 50 12.65625 L 25.625 31.78125 C 25.444 31.92325 25.218 32 25 32 C 24.78 32 24.557 31.92625 24.375 31.78125 L 0 12.40625 z"/>
+			</symbol>
+			
+			<symbol id="icon-forward" viewBox="0 0 50 50">
+			<title>Forward</title>
+			<path d="M5,44.998c-0.014,0-0.028,0-0.043-0.001c-0.54-0.023-0.964-0.469-0.958-1.01c0.003-0.246,0.579-24.307,24-24.973V12 c0-0.386,0.222-0.737,0.57-0.903c0.347-0.166,0.762-0.117,1.061,0.127l16,13C45.864,24.414,46,24.699,46,25 s-0.136,0.586-0.369,0.776l-16,13c-0.299,0.244-0.714,0.291-1.061,0.127C28.222,38.737,28,38.386,28,38v-6.991 C7.161,31.386,6.036,43.543,5.998,44.068C5.959,44.593,5.522,44.998,5,44.998z"/>
+			</symbol>
+			
+			<symbol id="icon-minus" viewBox="0 0 88 88">
+			<title>Minus</title>
+			<path d="M44,0A44,44,0,1,0,88,44,44,44,0,0,0,44,0ZM66,46H22V42H66Z"/>
+			</symbol>
+			
+			<symbol id="icon-ok" viewBox="0 0 88 88">
+			<title>Minus</title>
+			<path d="M44,0A44,44,0,1,0,88,44,44,44,0,0,0,44,0ZM41,63.06,22.86,46.68l2.68-3L40.19,56.94l21.93-34,3.36,2.17Z"/>
+			</symbol>
+			
+			<symbol id="icon-search" viewBox="0 0 1665 1665">
+			<title>Search</title>
+			<path d="M1152.75,704.9q0-185-131.5-316.5T704.75,256.9q-185,0-316.5,131.5T256.75,704.9q0,185,131.5,316.5t316.5,131.5q185,0,316.5-131.5T1152.75,704.9Zm512,832q0,52-38,90t-90,38q-54,0-90-38l-343-342q-179,124-399,124-143,0-273.5-55.5t-225-150q-94.5-94.5-150-225T.75,704.9q0-143,55.5-273.5t150-225q94.5-94.5,225-150T704.75.9q143,0,273.5,55.5t225,150q94.5,94.5,150,225t55.5,273.5q0,220-124,399l343,343Q1664.75,1483.9,1664.75,1536.9Z"/>
+			</symbol>
+			
+			<symbol id="icon-vertical-ellipsis" viewBox="0 0 50 50">
+			<title>Vertical ellipsis</title>
+			<path d="M 25 3 C 21.7 3 19 5.7 19 9 C 19 12.3 21.7 15 25 15 C 28.3 15 31 12.3 31 9 C 31 5.7 28.3 3 25 3 z M 25 19 C 21.7 19 19 21.7 19 25 C 19 28.3 21.7 31 25 31 C 28.3 31 31 28.3 31 25 C 31 21.7 28.3 19 25 19 z M 25 35 C 21.7 35 19 37.7 19 41 C 19 44.3 21.7 47 25 47 C 28.3 47 31 44.3 31 41 C 31 37.7 28.3 35 25 35 z"/>
+			</symbol>
+			
+			<symbol id="icon-horizontal-ellipsis" viewBox="0 0 50 50">
+			<title>Horizontal ellipsis</title>
+			<path d="M 8 20 A 6 6 0 0 0 2 26 A 6 6 0 0 0 8 32 A 6 6 0 0 0 14 26 A 6 6 0 0 0 8 20 z M 25 20 A 6 6 0 0 0 19 26 A 6 6 0 0 0 25 32 A 6 6 0 0 0 31 26 A 6 6 0 0 0 25 20 z M 42 20 A 6 6 0 0 0 36 26 A 6 6 0 0 0 42 32 A 6 6 0 0 0 48 26 A 6 6 0 0 0 42 20 z"/>
+			</symbol>
+			</svg>
+		</div>
+    <div id="app" />
+    <!--<script src="bundle.js" type="text/javascript"></script>-->
+
+<script>
+function renderFoundationComponentsJquery(){
+	console.log('in JS function: renderFoundationComponentsJquery');
+	$(document).foundation();
+	//var elem = new Foundation.DropdownMenu($('#mainmenu'), null);
+	//console.log(elem);
+
+	// show/hide add task form
+	$('.my-task-add-button > .add').click(function() {
+		$(this).toggleClass('close');
+		$('.add-task.column').slideToggle(300, function() { 
+		//	var $el = $('.add-task.column');  //record the elem so you don't crawl the DOM everytime  
+		//	var bottom = $el.position().top + $el.outerHeight(true);
+	//		$('.task-list-filter').animate({paddingTop: bottom}, 1);
+			$('.add-task input').toggleClass('fadein');
+		});
+	//		$('.task-list-filter').toggleClass('slidedown');
+	});
+}
+
+function enableTaskListComponents(){
+	console.log('in JS function: enableTaskListComponents');
+
+	$('.due-date, .reminder').fdatepicker();
+
+	// toggle task priority
+	$('.priority').on('click', function() {
+		$(this).toggleClass('high');
+	});
+
+	// toggle task edit 
+	$('.task-item-inner-wrapper').on('click',function() {
+		$(this).parent().find('.edit-task').toggleClass('expanded');
+	});
+	$(".calendar .task-details-block, .task-title-left.float-left, .priority, .mark-complete-wrapper,.memberphoto").click(function (event) {
+				event.stopPropagation();
+				})
+
+
+
+	// slide in/out extra add task details
+	$('input').on('keyup', function() {
+		$('.slidein').css({'left':'0','right':'0'});
+	});
+
+	$('input').on('keypress', function() {
+		if (event.which == '64') {
+			$('.user-list').css('display','block');
+		}
+		if (event.which == '35') {
+			$('.user-list').css('display','block');
+		}
+		$('.user-list,input').on('click', function() {
+			$('.user-list').css('display','none');
+		});
+	});
+  
+}
+
+function closeAddTask(){
+	//$('.add').click();
+}
+
+</script>    
+  </body>
+</html>

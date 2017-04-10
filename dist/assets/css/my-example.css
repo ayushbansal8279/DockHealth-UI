@@ -1,0 +1,54 @@
+.my-menu {
+    min-width:400px;
+}
+.my-task-add-button {
+    position:relative;
+}
+.my-task-add-container {
+    position:relative;z-index:1;
+}
+.my-task-add-section {
+    position:absolute;
+}
+.my-task-add-section-column {
+    display:none;
+}
+.my-task-edit-section {
+    margin: 1.5rem 0px 0px 2rem;
+}
+
+@import 'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.min.css';
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css';
+
+.form {
+  padding-top: 20px!important;
+  padding-bottom: 20px!important;
+}
+
+.form .columns {
+  flex-direction: row-reverse;
+}
+
+
+.Notification {
+  /*position:absolute;*/
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+  max-height: 50px;
+  transition: bottom 0.10s linear;
+}
+
+.Notification.hidden {
+  bottom: -70px
+}
+/*
+.Navbar {
+  min-height: 64px!important;
+}
+
+.Navbar .nav-toggle .nav-item {
+  margin-top: 10px;
+  font-size: 20px;
+}
+*/
