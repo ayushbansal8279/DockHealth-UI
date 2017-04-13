@@ -1,3 +1,5 @@
+import React from 'react'
+import { Route, IndexRoute } from 'react-router';
 import App from './views/App'
 import Home from './views/Home'
 import AddPatientView from './views/AddPatientView'
@@ -8,19 +10,33 @@ import ResendCode from './views/ResendCode'
 import Login from './views/Login'
 import PageNotFound from './views/PageNotFound'
 
-const routes = {
-  path: '/',
-  component: App,
-  indexRoute: Home.route,
-  childRoutes: [
-    AddPatientView,
-    AllPatientsView,
-    Register,
-    ConfirmRegistration,
-    Login,
-    ResendCode,
-    PageNotFound
-  ].map(r => r.route)
-}
+// const routes = {
+//   path: '/',
+//   component: App,
+//   indexRoute: Home.route,
+//   childRoutes: [
+//     AddPatientView,
+//     AllPatientsView,
+//     Register,
+//     ConfirmRegistration,
+//     Login,
+//     ResendCode,
+//     PageNotFound
+//   ].map(r => r.route)
+// }
 
-export default routes
+// export default routes
+
+export default (  
+  <Route path="/" component={App}>
+    <IndexRoute component={Home} />
+    <Route path="/patientList" component={AllPatientsView} />
+    <Route path="/addPatient" component={AddPatientView} />
+    <Route path="/register" component={Register} />
+    <Route path="/confirmRegistration" component={ConfirmRegistration} />
+    <Route path="/login" component={Login} />
+    <Route path="/resendCode" component={ResendCode} />
+    <Route path="/pageNotFound" component={PageNotFound} />
+  </Route>
+);
+

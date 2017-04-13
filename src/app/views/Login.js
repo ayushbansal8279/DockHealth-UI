@@ -20,11 +20,11 @@ export default class Login extends React.Component {
   render () {
     return (
       <div className='section form is-large'>
-        <h2 className='title'>Login</h2>
+        {/*<h2 className='title'>Login</h2>*/}
         <div className='columns'>
           <div className='column is-medium'>
             <div className='notification'>
-              <p>Login to your account here.</p><p>If you don't have an account, <Link to='/register'>Register</Link>. If you forgot your password, go to <Link to='/reset'>Reset Password</Link>. If you have created an account, but need to have the verify, go to <Link to='/confirmRegistration'>Confirm Registration</Link>.</p>
+              {/*<p>Login to your account here.</p><p>If you don't have an account, <Link to='/register'>Register</Link>. If you forgot your password, go to <Link to='/reset'>Reset Password</Link>. If you have created an account, but need to have the verify, go to <Link to='/confirmRegistration'>Confirm Registration</Link>.</p>*/}
             </div>
           </div>
           <div className='column'>
@@ -36,7 +36,5 @@ export default class Login extends React.Component {
   }
 }
 
-Login.route = {
-  path: 'login',
-  component: Login
-}
+
+

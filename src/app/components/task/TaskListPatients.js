@@ -1,14 +1,14 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
+import {bindActionCreators} from 'redux';
 import { Link } from 'react-router'
-import * as PatientApi from '../../api/patient-api'
-import store from '../../store'
+import * as PatientActions from '../../actions/patient-actions'
 
-//const TaskListPatients = () => (
 class TaskListPatients extends React.Component {
 
 	componentDidMount () {
-    	PatientApi.getAllPatients()
+        this.props.actions.getAllPatients()
   	}
 
     render() {
@@ -34,10 +34,22 @@ class TaskListPatients extends React.Component {
 }
 //)
 
+//property validation
+TaskListPatients.propTypes = {  
+    patients: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
+}
+
 const mapStateToProps = function(store) {
   return {
     patients: store.patientState.allPatients
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps)(TaskListPatients);
+const mapDispatchToProps = function (dispatch) {  
+  return {
+    actions: bindActionCreators(PatientActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListPatients);

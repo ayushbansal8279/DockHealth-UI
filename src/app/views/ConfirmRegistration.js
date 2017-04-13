@@ -48,8 +48,3 @@ export default class ConfirmRegistration extends React.Component {
     )
   }
 }
-
-ConfirmRegistration.route = {
-  path: 'confirmRegistration',
-  component: ConfirmRegistration
-}

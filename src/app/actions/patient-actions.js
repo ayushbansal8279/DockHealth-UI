@@ -1,0 +1,26 @@
+import * as ActionTypes from '../actions/action-types';
+import * as PatientApi from '../api/patient-api'
+
+export function getAllPatients() {  
+  return function(dispatch) {
+    return PatientApi.getAllPatients().then(patients => {
+      dispatch(getAllPatientsSuccess(patients));
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+export function getAllPatientsSuccess(patients) {  
+  return {type: ActionTypes.GET_PATIENTS_SUCCESS, patients};
+}
+
+export function addPatient(newPatient) {  
+  return function(dispatch) {
+    return PatientApi.addPatient(newPatient).then(patient => {
+      dispatch({type: ActionTypes.ADD_PATIENT_SUCCESS, patient});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}

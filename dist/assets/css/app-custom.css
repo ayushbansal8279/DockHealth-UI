@@ -52,3 +52,9 @@
   font-size: 20px;
 }
 */
+
+.log-in-form {
+  border: 1px solid #cacaca;
+  padding-left: 1rem;
+  border-radius: 3px; 
+}

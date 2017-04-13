@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-
-import store from '../../store'
+// import store from '../../store'
 
 class Notification extends React.Component {
   onClose () {
-    store.dispatch({type: 'notification/hide'})
+    // store.dispatch({type: 'notification/hide'})
   }
   render () {
     let {type, message, hidden, stay} = this.props

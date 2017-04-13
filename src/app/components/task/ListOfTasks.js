@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types';
 import Moment from 'react-moment'
-//import Todo from './Todo'
 import * as userApi from '../../api/user-api'
 
 class TaskList extends React.Component {

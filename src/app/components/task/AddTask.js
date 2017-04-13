@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import * as TaskApi from '../../api/task-api'
-import store from '../../store'
 
 class AddTask extends React.Component {
 	constructor(props) {

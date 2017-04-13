@@ -1,19 +1,18 @@
 import axios from 'axios';
-import store from '../store';
 import * as ActionTypes from '../actions/action-types';
 
 export function getAllPatients() {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getAllPatientsByOrganizationId/1?active=true')
     .then(response => {
-      store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});
-      return response;
+      // store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});
+      return response.data;
     });
 }
 
 export function removePatient(patientId) {
   return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'patient/' + patientId)
     .then(response => {
-      store.dispatch({type: ActionTypes.DELETE_PATIENT_SUCCESS, patientId: patientId});
+      // store.dispatch({type: ActionTypes.DELETE_PATIENT_SUCCESS, patientId: patientId});
       return response;
     });
 }
@@ -21,7 +20,7 @@ export function removePatient(patientId) {
 export function addPatient(patient) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'patient?organizationId=1', patient)
     .then(response => {
-      store.dispatch({type: ActionTypes.ADD_PATIENT, patient: response.data});
+      // store.dispatch({type: ActionTypes.ADD_PATIENT, patient: response.data});
       return response;
     });
 }

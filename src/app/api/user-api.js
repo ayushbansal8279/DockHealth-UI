@@ -1,7 +1,9 @@
 /**
  * Wrapper around AWS Cognito auth
  */
-import store from '../store'
+import configureStore from '../configureStore'
+
+const store = configureStore();
 
 const {
   CognitoUser,

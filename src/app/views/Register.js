@@ -56,8 +56,3 @@ export default class Register extends React.Component {
     )
   }
 }
-
-Register.route = {
-  path: 'register',
-  component: Register
-}

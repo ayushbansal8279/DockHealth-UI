@@ -1,34 +1,36 @@
-import * as types from '../actions/action-types';
+import * as ActionTypes from '../actions/action-types';
+import * as TaskApi from '../api/task-api'
 
-let nextTaskId = 0
-
-// export const addTask = (text) => {
-//   return {
-//     type: types.ADD_TASK,
-//     id: nextTaskId++,
-//     text
-//   }
-// }
-
-export const addTaskSuccess = (task) => {
-  return {
-    type: types.ADD_TASK,
-    id: nextTaskId++,
-    task
-  }
-}
-
-export function getTasksSuccess(tasks) {
-  return {
-    type: types.GET_TASKS_SUCCESS,
-    tasks
+export function getTasksForCreator(userId) {  
+  return function(dispatch) {
+    return TaskApi.getTasksForCreator(userId).then(tasks => {
+      dispatch(getTasksForCreatorSuccess(tasks));
+    }).catch(error => {
+      throw(error);
+    });
   };
 }
 
-export function deleteTaskSuccess(taskId) {
-  return {
-    type: types.DELETE_TASK_SUCCESS,
-    taskId
+function getTasksForCreatorSuccess(tasks) {  
+  return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
+}
+
+export function addTask(newTask) {  
+  return function(dispatch) {
+    return TaskApi.getTasksForCreator(newTask).then(task => {
+      dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
+    }).catch(error => {
+      throw(error);
+    });
   };
 }
 
+export function deleteTask(task) {  
+  return function(dispatch) {
+    // return TaskApi.getTasksForCreator(newTask).then(task => {
+      dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, task});
+    // }).catch(error => {
+      // throw(error);
+    // });
+  };
+}

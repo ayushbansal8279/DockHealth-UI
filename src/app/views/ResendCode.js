@@ -46,8 +46,3 @@ export default class ResendCode extends React.Component {
     )
   }
 }
-
-ResendCode.route = {
-  path: 'resendCode',
-  component: ResendCode
-}

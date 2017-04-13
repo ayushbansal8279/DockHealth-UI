@@ -20,14 +20,20 @@ const validate = values => {
 const FormLogin = (props) => {
   const { handleSubmit, invalid, pristine, submitting } = props
   return (
-    <form onSubmit={handleSubmit}>
-      <Field name='username' type='text' component={BasicField} label='username' />
-      <Field name='password' type='password' component={BasicField} label='password' />
-      <div className='control'>
-        {/*<button className={'button is-primary is-large' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>login</button>*/}
-        <button className={'button is-primary is-large'} type='submit'>Login</button>
+    <div className="row log-in-form">
+      <div className="medium-10 medium-centered large-10 large-centered columns">
+        <form onSubmit={handleSubmit}>
+          <div className="row column">
+            <h4 className="text-center">Log in with you email account</h4>
+            <Field name='username' type='text' component={BasicField} label='Email' placeholder="somebody@example.com"/>
+            <Field name='password' type='password' component={BasicField} label='Password' />
+            <input id="show-password" type="checkbox"/><label for="show-password">Show password</label>
+            <p><button className={'button is-primary is-large'} type='submit'>Log In</button></p>
+            <p className="text-center"><a href="#">Forgot your password?</a></p>   
+          </div>
+        </form>
       </div>
-    </form>
+    </div>    
   )
 }
 

@@ -2,8 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import { SubmissionError, Field, reduxForm } from 'redux-form'
-import * as PatientApi from '../../api/patient-api'
-import store from '../../store'
+import * as PatientActions from '../../actions/patient-actions'
 import BasicField from '../common/BasicField'
 
 const validate = values => {
@@ -31,7 +30,7 @@ class FormPatient extends React.Component {
   	}
 
   	onSubmit (form) {
-		PatientApi.addPatient({
+		PatientActions.addPatient({
             "firstName": form.firstName,
             "lastName": form.lastName,
             "gender": form.gender,

@@ -1,10 +1,14 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
 import { Router, browserHistory, hashHistory } from 'react-router'
-import store from './store'
+import configureStore from './configureStore'
 import routes from './routes'
+import * as PatientActions from './actions/patient-actions'
+
+const store = configureStore();
+
+//store.dispatch(PatientActions.getAllPatients())
 
 const Routing = () => (
   <Provider store={store}>

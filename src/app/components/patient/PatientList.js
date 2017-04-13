@@ -23,8 +23,7 @@ class PatientList extends React.Component {
 																				</div>
 																				<div className="task-title-wrapper clearfix">
 																						<div className="task-title-left float-left">
-																								{patient.firstName}
-																								{patient.lastName}
+																								{patient.firstName}&nbsp;{patient.lastName}
 																						</div>
 																						<div className="task-title-right float-right">
 																							<Link to="/addPatient"><button className="button secondary button-small float-right">Edit</button></Link>

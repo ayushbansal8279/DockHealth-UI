@@ -1,4 +1,4 @@
-import store from '../store'
+import store from '../configureStore'
 
 export function notification (message, type, stay) {
   return new Promise(resolve => {
