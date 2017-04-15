@@ -9,6 +9,7 @@ import ConfirmRegistration from './views/ConfirmRegistration'
 import ResendCode from './views/ResendCode'
 import Login from './views/Login'
 import PageNotFound from './views/PageNotFound'
+import TaskListView from './views/TaskListView'
 
 // const routes = {
 //   path: '/',
@@ -27,9 +28,10 @@ import PageNotFound from './views/PageNotFound'
 
 // export default routes
 
-export default (  
+export default (
   <Route path="/" component={App}>
     <IndexRoute component={Home} />
+    <Route path="/taskList" component={TaskListView} />
     <Route path="/patientList" component={AllPatientsView} />
     <Route path="/addPatient" component={AddPatientView} />
     <Route path="/register" component={Register} />
@@ -39,4 +41,3 @@ export default (
     <Route path="/pageNotFound" component={PageNotFound} />
   </Route>
 );
-

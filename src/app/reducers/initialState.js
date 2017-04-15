@@ -1,4 +1,5 @@
-export default {  
+export default {
   tasks: [],
-  allPatients: []
+  allPatients: [],
+  tasklist: []
 }
