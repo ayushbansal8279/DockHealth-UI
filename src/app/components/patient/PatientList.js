@@ -9,10 +9,10 @@ class PatientList extends React.Component {
 		return (
 			<div className="content-block">
 				<h4>All Patients
-						<Link to="/addPatient">
-							<button className="button secondary button-small float-right">Add Patient</button>
-						</Link>
-					</h4> 
+					<Link to="/addPatient">
+						<button className="button secondary button-small float-right">Add Patient</button>
+					</Link>
+				</h4> 
 				<ul className="no-bullet expand">
 					{this.props.patients
 						.map(patient => {

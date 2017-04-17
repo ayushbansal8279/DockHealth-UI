@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router'
 
-class PatientList extends React.Component {
+class PatientDropdownList extends React.Component {
 	constructor(props) {
 			super(props)
 	}
@@ -22,4 +22,4 @@ class PatientList extends React.Component {
 	}
 }
 
-export default PatientList
+export default PatientDropdownList

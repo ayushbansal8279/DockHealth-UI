@@ -51,7 +51,6 @@ class AddTask extends React.Component {
 								</label>
 								<svg className="icon medium-2 priority"><use xlinkHref="#icon-cross"></use></svg>
 							</div>
-							<PatientDropdownList />
 						</div>
 					</div>
 					<div className="row">
