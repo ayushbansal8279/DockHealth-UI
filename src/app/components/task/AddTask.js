@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import PatientDropdownList from '../patient/PatientDropdownList'
+import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import * as TaskApi from '../../api/task-api'
 
 class AddTask extends React.Component {
@@ -52,6 +52,7 @@ class AddTask extends React.Component {
 								<svg className="icon medium-2 priority"><use xlinkHref="#icon-cross"></use></svg>
 							</div>
 						</div>
+						<PatientDropdownListContainer/>
 					</div>
 					<div className="row">
 						<div className="medium-12 columns">
