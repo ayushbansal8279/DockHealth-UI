@@ -8,3 +8,11 @@ export function getTaskListForUser(userId) {
       return response.data;
     });
 }
+
+
+export function addTaskList(tasklist) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list', tasklist)
+    .then(response => {
+      return response.data;
+    });
+}

@@ -1,5 +1,5 @@
-import React from 'react'
-
+import React from 'react';
+import {Link} from 'react-router';
 
 export default class TaskListRender extends React.Component {
   constructor(props) {
@@ -15,11 +15,15 @@ export default class TaskListRender extends React.Component {
   render(){
     return(
       <div>
-        <a href="#" className="button success">Add List</a>
+
+      <Link to="/addTaskList">
+        <button className="button secondary button-small float-right">Create Task List</button>
+      </Link>
+
         <table>
           <thead>
             <tr>
-              <th width="200">Task List</th>
+              <th width="200"><h3>Task List</h3></th>
             </tr>
           </thead>
           <tbody>
@@ -31,3 +35,5 @@ export default class TaskListRender extends React.Component {
   }
 
 }
+
+//<a href="#" className="button success">Add List</a>

@@ -2,8 +2,10 @@ import React from 'react'
 //import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
-import * as TaskListActions from '../../actions/tasklist-actions'
+import * as TaskListActions from '../../actions/tasklist-actions';
 import TaskListRender from './TaskListRender';
+
+
 
 class TaskListContainer extends React.Component {
 
@@ -12,7 +14,11 @@ class TaskListContainer extends React.Component {
     }
 
     render(){
-        return (<TaskListRender taskList={this.props.taskList}/>)
+        return (
+          <div>
+            <TaskListRender taskList={this.props.taskList}/>
+          </div>
+        );
     }
 }
 
@@ -27,3 +33,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskListContainer);
+//<TaskListRender taskList={this.props.taskList}/>

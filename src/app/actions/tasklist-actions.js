@@ -12,3 +12,19 @@ export function getTaskListForUser(userId) {
     });
   };
 }
+
+//Create a new Task list
+export function addTaskList(formProps) {
+  var creator = {userId : '1'}
+  var taskObject = {creator, listName: formProps.tasklistname};
+
+  return function(dispatch) {
+    return TaskApi.addTaskList(taskObject).then(tasklist => {
+      dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
+    }).catch(error => {
+      //console.log(error.message);
+      throw(error);
+      //return dispatch({type: ActionTypes.ADD_TASKLIST_FAILURE, errorMessage});
+    });
+  };
+}

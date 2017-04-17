@@ -12,6 +12,11 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_TASKLIST_SUCCESS:
       //whatever our current state is, add on "tasklist"
       return {...state, tasklist:action.tasklist} ;
+
+      // case types.ADD_TASKLIST_FAILURE:
+      //   //whatever our current state is, add on "tasklist"
+      //   return {...state, addtasklisterror:action.errorMessage} ;
+
   }
   return state;
 }
