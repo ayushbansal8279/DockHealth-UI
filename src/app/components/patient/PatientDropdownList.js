@@ -18,6 +18,7 @@ class PatientDropdownList extends React.Component {
 					}
 				</ul>
 			</div>
+
 		);
 	}
 }
