@@ -11,6 +11,7 @@ import Login from './views/Login'
 import PageNotFound from './views/PageNotFound'
 import TaskListView from './views/TaskListView'
 import TaskListAdd from './components/tasklist/TaskListAdd';
+import TaskListUpdateView from './views/TaskListUpdateView';
 
 // const routes = {
 //   path: '/',
@@ -34,6 +35,7 @@ export default (
     <IndexRoute component={Home} />
     <Route path="/taskList" component={TaskListView} />
     <Route path="/addTaskList" component={TaskListAdd} />
+    <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
     <Route path="/patientList" component={AllPatientsView} />
     <Route path="/addPatient" component={AddPatientView} />
     <Route path="/register" component={Register} />
