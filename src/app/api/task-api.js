@@ -16,6 +16,10 @@ export function getTasksForCreator(userId) {
     });
 }
 
+// export function getTasksByDueDate(userId) {
+//   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'')
+// }
+
 /**
  * Search tasks
  */
@@ -37,7 +41,7 @@ export function addTask(task) {
 }
 
 export function updateTask(task) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task'+'?userId='+userId, task)
     .then(response => {
       //store.dispatch({type: ActionTypes.ADD_TASK, id: nextTaskId++, task: response.data});
       // store.dispatch({type: ActionTypes.ADD_TASK, task: response.data});
@@ -46,11 +50,19 @@ export function updateTask(task) {
 }
 
 export function deleteTask(taskId) {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/' + taskId)
+  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/' + taskId + '?deleterId=' + userId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
       return response;
     });
+}
+
+export function markComplete(taskId, userId){
+  console.log(taskId);
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=COMPLETE')
+  .then(response => {
+    return response;
+  });
 }
 
 export function addComment(task) {

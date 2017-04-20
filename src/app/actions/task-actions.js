@@ -34,3 +34,13 @@ export function deleteTask(task) {
     // });
   };
 }
+
+export function markComplete(taskId, userId) {  
+  return function(dispatch){
+     return TaskApi.markComplete(taskId, userId).then(res => {
+      dispatch({type: ActionTypes.MARK_COMPLETE_SUCCESS, res});
+     }).catch(error => {
+       throw(error);
+     });
+  };
+}

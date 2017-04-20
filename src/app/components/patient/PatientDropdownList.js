@@ -12,7 +12,7 @@ class PatientDropdownList extends React.Component {
 					{this.props.patients
 						.map(patient => {
 							return(
-								<li>{patient.firstName}&nbsp;{patient.lastName}&nbsp;{patient.mrn}</li>
+								<li key={patient.patientId}>{patient.firstName}&nbsp;{patient.lastName}&nbsp;{patient.mrn}</li>
 							);
 						})
 					}
