@@ -11,7 +11,11 @@ export default class TaskListRender extends React.Component {
         return(
           <tr key={list.taskListId}>
             <td>
-              {list.listName}
+              <span className="label">{list.listName}</span>
+
+              <Link to={"/viewTaskListMembers/" + list.taskListId}>
+                <button className="button small alert float-right">View Members</button>
+              </Link>
               <Link to={"/updateTaskList/" + list.taskListId}>
                 <button className="button small success float-right">Update</button>
               </Link>

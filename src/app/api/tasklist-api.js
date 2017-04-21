@@ -30,3 +30,10 @@ export function updateTaskList(userId,taskList) { //userId - make sure authorize
       return response.data;
     });
 }
+
+export function getMembersByTaskListId(taskListId, memberStatus) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/listAllUsersByTaskListId/' + taskListId + "?status=" + memberStatus)
+    .then(response => {
+      return response.data;
+    });
+}
