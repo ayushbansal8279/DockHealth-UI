@@ -39,7 +39,7 @@ export function deleteTask(task) {
 export function markComplete(taskId, userId) {  
   return function(dispatch){
      return TaskApi.markComplete(taskId, userId).then(res => { // check for response value to be success      
-      dispatch({type: ActionTypes.MARK_COMPLETE_SUCCESS, taskId, status:"COMPLETED"});
+      dispatch({type: ActionTypes.MARK_TASK_STATUS_SUCCESS, taskId, status:"COMPLETED"});
      }).catch(error => {
        throw(error);
      });

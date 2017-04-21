@@ -13,7 +13,7 @@ const TaskReducer = function(state = initialState, action) {
       return Object.assign({}, state, { tasks: action.tasks });
 
     // handling
-    case types.MARK_COMPLETE_SUCCESS:
+    case types.MARK_TASK_STATUS_SUCCESS:
     	return {
           ...state,
           tasks: state.tasks.map(task =>
