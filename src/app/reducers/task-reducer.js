@@ -11,10 +11,27 @@ const TaskReducer = function(state = initialState, action) {
 
     case types.GET_TASKS_SUCCESS:
       return Object.assign({}, state, { tasks: action.tasks });
+
+    // handling
+    case types.MARK_COMPLETE_SUCCESS:
+    	return {
+          ...state,
+          tasks: state.tasks.map(task =>
+            task.taskId === action.taskId ?
+              // transform the one with a matching id
+              { ...task, status: action.status } : 
+              // otherwise return original task
+              task
+          ) 
+      };
+
   }
 
   return state;
 
+
+
 }
+
 
 export default TaskReducer

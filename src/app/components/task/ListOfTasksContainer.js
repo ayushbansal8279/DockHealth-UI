@@ -12,9 +12,12 @@ class ListOfTasksContainer extends React.Component {
   }
 
   render () {
-    return (<ListOfTasks tasks={this.props.tasks} deleteTask={this.props.actions.deleteTask}/>);
+    return (<ListOfTasks tasks={this.props.tasks} deleteTask={this.props.actions.deleteTask}
+              markComplete={this.props.actions.markComplete} status={this.props.status}
+            />);
   }
 
+ 
 }
 
 //property validation

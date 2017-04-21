@@ -59,7 +59,7 @@ export function deleteTask(taskId) {
 
 export function markComplete(taskId, userId){
   console.log(taskId);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=COMPLETE')
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=COMPLETE')
   .then(response => {
     return response;
   });

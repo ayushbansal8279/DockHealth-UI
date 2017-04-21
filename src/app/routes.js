@@ -10,7 +10,6 @@ import ResendCode from './views/ResendCode'
 import Login from './views/Login'
 import PageNotFound from './views/PageNotFound'
 import TaskListView from './views/TaskListView'
-import Test from './views/Test'
 
 // const routes = {
 //   path: '/',
@@ -40,6 +39,5 @@ export default (
     <Route path="/login" component={Login} />
     <Route path="/resendCode" component={ResendCode} />
     <Route path="/pageNotFound" component={PageNotFound} />
-    <Route path="/test" component={Test} />
   </Route>
 );
