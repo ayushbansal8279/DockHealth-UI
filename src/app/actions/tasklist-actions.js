@@ -61,5 +61,23 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
       throw(error);
     });
   };
+}
 
+export function invitePersonToTaskList(formProps,taskListId) {
+  var personInfo = {email : formProps.email,
+                  firstName:formProps.firstName,
+                  lastName:formProps.lastName,
+                  invitingUserId:1,
+                  organizationId:1
+                }
+
+  return function(dispatch) {
+    return TaskListApi.invitePersonToTaskList(taskListId,personInfo).then(res => {
+      dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, res});
+    }).catch(error => {
+      //console.log(error.message);
+      throw(error);
+      //return dispatch({type: ActionTypes.ADD_TASKLIST_FAILURE, errorMessage});
+    });
+  };
 }

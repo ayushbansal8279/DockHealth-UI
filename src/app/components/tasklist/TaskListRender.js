@@ -13,12 +13,16 @@ export default class TaskListRender extends React.Component {
             <td>
               <span className="label">{list.listName}</span>
 
-              <Link to={"/viewTaskListMembers/" + list.taskListId}>
-                <button className="button small alert float-right">View Members</button>
-              </Link>
-              <Link to={"/updateTaskList/" + list.taskListId}>
-                <button className="button small success float-right">Update</button>
-              </Link>
+              <ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
+                <li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
+                <ul className="menu">
+                  <li><Link to={"/viewTaskListMembers/" + list.taskListId}>View Members</Link></li>
+                  <li><Link to={"/updateTaskList/" + list.taskListId}>Update Name</Link></li>
+                  <li><Link to={"/invitePersonToTaskList/" + list.taskListId}>Invite External Person</Link></li>
+                </ul>
+                </li>
+              </ul>
+
             </td>
           </tr>);
     })
@@ -27,7 +31,6 @@ export default class TaskListRender extends React.Component {
   render(){
     return(
       <div>
-
         <Link to="/addTaskList">
           <button className="button secondary button-small float-right">Create Task List</button>
         </Link>
@@ -47,3 +50,12 @@ export default class TaskListRender extends React.Component {
   }
 
 }
+
+
+/*
+              <Link to={"/viewTaskListMembers/" + list.taskListId}>
+                <button className="button small alert float-right">View Members</button>
+              </Link>
+              <Link to={"/updateTaskList/" + list.taskListId}>
+                <button className="button small success float-right">Update</button>
+              </Link>*/

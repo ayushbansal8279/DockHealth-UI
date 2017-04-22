@@ -37,3 +37,10 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
       return response.data;
     });
 }
+
+export function invitePersonToTaskList(tasklistId,personInfo) {
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/invitePersonToTaskList/' + tasklistId,personInfo)
+    .then(response => {
+      return response.data;
+    });
+}

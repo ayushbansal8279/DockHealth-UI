@@ -13,6 +13,8 @@ import TaskListView from './views/TaskListView'
 import TaskListAdd from './components/tasklist/TaskListAdd';
 import TaskListUpdateView from './views/TaskListUpdateView';
 import TaskListMembersView from './views/TaskListMembersView';
+import TaskListInvitePersonView from './views/TaskListInvitePersonView';
+
 
 // const routes = {
 //   path: '/',
@@ -38,6 +40,7 @@ export default (
     <Route path="/addTaskList" component={TaskListAdd} />
     <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
     <Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />
+    <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
     <Route path="/patientList" component={AllPatientsView} />
     <Route path="/addPatient" component={AddPatientView} />
     <Route path="/register" component={Register} />
