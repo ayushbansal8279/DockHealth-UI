@@ -65,6 +65,14 @@ export function markComplete(taskId, userId){
   });
 }
 
+export function markIncomplete(taskId, userId){
+  console.log(taskId);
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=INCOMPLETE')
+  .then(response => {
+    return response;
+  });
+}
+
 export function addComment(task) {
   /*
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
