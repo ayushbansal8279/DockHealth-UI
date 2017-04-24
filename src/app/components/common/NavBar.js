@@ -36,7 +36,7 @@ class NavBar extends React.Component {
   isLoggedIn(message, isLoggedIn, cognitoUser) {
       if (!isLoggedIn || !this.props.user) {
         console.log('not logged in')
-        hashHistory.push('login')
+        // hashHistory.push('login')
       } else {
         console.log('logged in: '+cognitoUser.username)
         // this.state.user = cognitoUser
@@ -58,15 +58,14 @@ class NavBar extends React.Component {
 	<div className="large-12 columns">
 		<ul className="menu float-left">
 			<li><a className="active" href="#">Tasks</a></li>
-			<li><a href="#">Lists</a></li>
+			<NavLink to='/taskList'>List</NavLink>
 			<li><a href="#">People</a></li>
       <NavLink to='/patientList'>Patients</NavLink>
 			<li><a href="#">Learn</a></li>
 		</ul>
 		{user ? <LinksAuth className={menuClasses} onLogout={userApi.logout} user={user} /> : <LinksDefault className={menuClasses}/>}
-		
 	</div>
-</div> 
+</div>
 </nav>
     );
     }

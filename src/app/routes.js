@@ -13,6 +13,12 @@ import ResendCode from './views/auth/ResendCode'
 import ForgotPassword from './views/auth/ForgotPassword'
 import ResetPassword from './views/auth/ResetPassword'
 import PageNotFound from './views/PageNotFound'
+import TaskListView from './views/TaskListView'
+import TaskListAdd from './components/tasklist/TaskListAdd';
+import TaskListUpdateView from './views/TaskListUpdateView';
+import TaskListMembersView from './views/TaskListMembersView';
+import TaskListInvitePersonView from './views/TaskListInvitePersonView';
+
 
 // const routes = {
 //   path: '/',
@@ -31,12 +37,17 @@ import PageNotFound from './views/PageNotFound'
 
 // export default routes
 
-export default (  
+export default (
   <Route path="/" component={App}>
     <Route component={TemplateCore} >
       <IndexRoute component={Home} />
       <Route path="/patientList" component={AllPatientsView} />
       <Route path="/addPatient" component={AddPatientView} />
+      <Route path="/taskList" component={TaskListView} />
+      <Route path="/addTaskList" component={TaskListAdd} />
+      <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
+      <Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />
+      <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
     </Route>
     <Route component={TemplateNoLogin} >
       <Route path="/register" component={Register} />
@@ -46,7 +57,5 @@ export default (
       <Route path="/forgotPassword" component={ForgotPassword} />
       <Route path="/resetPassword" component={ResetPassword} />
     </Route>
-    <Route path="/pageNotFound" component={PageNotFound} />
   </Route>
 );
-
