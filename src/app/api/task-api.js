@@ -16,6 +16,13 @@ export function getTasksForCreator(userId) {
     });
 }
 
+export function getListTasksByUser(userId, taskListId){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?taskListId=1&status=INCOMPLETE&queryStartPosition=0')
+  .then(response => {
+    return response;
+  });
+}
+
 // export function getTasksByDueDate(userId) {
 //   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'')
 // }
@@ -58,7 +65,7 @@ export function deleteTask(taskId) {
 }
 
 export function markComplete(taskId, userId){
-  console.log(taskId);
+  // console.log(taskId);
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=COMPLETE')
   .then(response => {
     return response;
@@ -66,7 +73,7 @@ export function markComplete(taskId, userId){
 }
 
 export function markIncomplete(taskId, userId){
-  console.log(taskId);
+  // console.log(taskId);
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=INCOMPLETE')
   .then(response => {
     return response;

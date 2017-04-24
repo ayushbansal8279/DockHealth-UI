@@ -39,8 +39,8 @@ class TaskList extends React.Component {
 		this.setState({comment: ''})
   	}
 
-  	handleMarkComplete(taskId, userId){
-  		this.props.markComplete(taskId, userId)
+  	handleMarkComplete(taskId, userId, status){
+  		this.props.markComplete(taskId, userId, status)
   		// this.setState({task: ''})
   	}
 
@@ -90,7 +90,7 @@ class TaskList extends React.Component {
 			}
         return (
 		<div className="task-item tag" key={task.taskId+task.description} value={task}>
-		<button onClick={(e) => this.handleMarkComplete(task.taskId, 1)} className="button primary float-right button-small">Mark Complete</button>
+		<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="button primary float-right button-small">Mark Complete</button>
 		<div className="task-item-inner-wrapper" data-toggle="">
 			<div className="mark-complete-wrapper">
 				<button className="mark-complete">
