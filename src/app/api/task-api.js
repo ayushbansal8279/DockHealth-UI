@@ -19,7 +19,7 @@ export function getTasksForCreator(userId) {
 export function getListTasksByUser(userId, taskListId){
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?taskListId=1&status=INCOMPLETE&queryStartPosition=0')
   .then(response => {
-    return response;
+    return response.data;
   });
 }
 

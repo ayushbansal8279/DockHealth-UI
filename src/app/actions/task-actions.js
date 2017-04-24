@@ -15,8 +15,8 @@ function getTasksForCreatorSuccess(tasks) {
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
 
-export function getListTasksByUser(userId, taskListId){
-  return function(dispatch){
+export function getListTasksByUser(userId, taskListId) {  
+  return function(dispatch) {
     return TaskApi.getListTasksByUser(userId, taskListId).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks));
     }).catch(error => {
@@ -28,6 +28,20 @@ export function getListTasksByUser(userId, taskListId){
 function getListTasksByUserSuccess(tasks) {  
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
+
+// export function getListTasksByUser(userId, taskListId){
+//   return function(dispatch){
+//     return TaskApi.getListTasksByUser(userId, taskListId).then(tasks => {
+//       dispatch(getListTasksByUserSuccess(tasks));
+//     }).catch(error => {
+//       throw(error);
+//     })
+//   }
+// }
+
+// function getListTasksByUserSuccess(tasks) {  
+//   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
+// }
 
 export function addTask(newTask) {  
   return function(dispatch) {

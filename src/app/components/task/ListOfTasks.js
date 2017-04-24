@@ -44,6 +44,7 @@ class TaskList extends React.Component {
   		// this.setState({task: ''})
   	}
 
+
     render() {
     	// var status = ${this.props.status};
 		if(AWS.config.credentials){
@@ -93,14 +94,14 @@ class TaskList extends React.Component {
 		<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="button primary float-right button-small">Mark Complete</button>
 		<div className="task-item-inner-wrapper" data-toggle="">
 			<div className="mark-complete-wrapper">
-				<button className="mark-complete">
+				<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="mark-complete">
 					<div className="mark-complete-completed">
 					</div>
 				</button>
 			</div>
 			<div className="task-title-wrapper clearfix">
 				<div className="task-title-left float-left">
-					{task.description} 
+					{task.read ? task.description : <b>{task.description}</b>}
 				</div>
 				<div className="task-title-right float-right">
 					{/*<img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>*/}

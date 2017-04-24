@@ -21051,14 +21051,22 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     $.fn.fdatepicker.DPGlobal = DPGlobal;
 
+    $('.mark-complete').on('click', function(){
+    	alert('finally working');
+    	debugger;
+    })
+
     $('*').on('click', function(){
     	// alert("clicked");
     	$('.mark-complete-completed').toggleClass('mark-complete-clicked');
     })
+    
 }(window.jQuery);
 'use strict';
 
 $(document).foundation();
+
+
 
 $('.due-date, .reminder').fdatepicker();
 
@@ -21071,6 +21079,7 @@ $('.priority').on('click', function () {
 $('.task-item-inner-wrapper').on('click', function () {
 	$('.edit-task').toggleClass('expanded');
 });
+
 $(".calendar .task-details-block, .task-title-left.float-left, .priority, .mark-complete-wrapper,.memberphoto").click(function (event) {
 	event.stopPropagation();
 });
