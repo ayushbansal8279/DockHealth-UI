@@ -3,8 +3,6 @@ import configureStore from '../configureStore';
 import * as ActionTypes from '../actions/action-types';
 //import { getTasksSuccess, deleteTaskSuccess, addTaskSuccess } from '../actions/task-actions';
 
-const store = configureStore();
-
 /**
  * Get all tasks for a user
  */

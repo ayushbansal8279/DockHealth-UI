@@ -2,7 +2,6 @@
  * Wrapper around AWS Cognito auth
  */
 import configureStore from '../configureStore'
-
 const store = configureStore();
 
 const {
@@ -87,6 +86,8 @@ export function resendConfirmationCode (userData) {
 
 // log user out
 export function logout () {
+  let cognitoUser = userPool.getCurrentUser();
+
   cognitoUser.signOut()
   cognitoUser = null
   store.dispatch({type: 'user/user', user: cognitoUser})
@@ -109,8 +110,6 @@ export function login (Username, Password) {
       onSuccess: function (result) {
         console.log('access token + ' + result.getAccessToken().getJwtToken())
         
-        
-
         // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
         //     IdentityPoolId : '...' // your identity pool id here
         //     Logins : {
@@ -119,6 +118,29 @@ export function login (Username, Password) {
         //     }
         // })
         
+// {AuthenticationResult: {,…}, ChallengeParameters: {}}
+// AuthenticationResult
+// :
+// {,…}
+// AccessToken
+// :
+// "eyJraWQiOiJuQWxhN3ZVTkQxVWlSVjRGRXpmczk1MXpNaVYyeWlIYjI2Tmo5MVdpY0hVPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIyZmM4YmEzYS1iOTcxLTQ1YjEtYTQ2OS01Yzc0MzE2ZTc5MjkiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfekFmQVpxek12IiwiZXhwIjoxNDkyMTMwMjA4LCJpYXQiOjE0OTIxMjY2MDgsImp0aSI6IjhhNjAxYWE4LTE0ZGUtNDc4Yy1hYmQ0LTY1Mzg4OGZmYThkMCIsImNsaWVudF9pZCI6IjVyNG01Z20xaW4yNGJpYWxyamZkZjRtOHZrIiwidXNlcm5hbWUiOiJ0ZXN0MDEifQ.dj5246gTsI8xRihDWZSfkP9OWlh1AhqxIz3gsUkRe1nl3yCyGyb8N2-Vvl0Pl-sD3Uo9MHOYiMEnOG5ryGwbjln4QL692AcS00i8kQEp-AnRpTGQ2TUiPoZgq7NNLxtZsmcstXXuoZc9xml8W3dgyCzFc_r82WTJwzNMtFwqz1_gQlwA61KCMBy_EcraHbbDkEzz3yImoA2VYkd1xPZUeJqEx0bEaeS2BiRH3wKlR5xkbNr9lMIm-Fau18NoNcbm9bTLM9To4_lTbhTLTKjdW3MMbjNgCXrSZ4lxAYaY-McRjv52ETx2zvmmR9rxmmSG7Fa50y02efsvxbb9lQODmA"
+// ExpiresIn
+// :
+// 3600
+// IdToken
+// :
+// "eyJraWQiOiJMRUFPc1Jnb0xzOWJ1aHlHSVltN25cL0dVUFRoYm40bnRlYVFJR2M3TkV1QT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyZmM4YmEzYS1iOTcxLTQ1YjEtYTQ2OS01Yzc0MzE2ZTc5MjkiLCJhdWQiOiI1cjRtNWdtMWluMjRiaWFscmpmZGY0bTh2ayIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTQ5MjEyNjYwOCwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfekFmQVpxek12IiwiY29nbml0bzp1c2VybmFtZSI6InRlc3QwMSIsImV4cCI6MTQ5MjEzMDIwOCwiaWF0IjoxNDkyMTI2NjA4LCJlbWFpbCI6Im5pdGluZ3VqcmFsQHlhaG9vLmNvbSJ9.AAbwuXRSUGqTKnXVolMVikVGk1B3f2b6Sb-8DP2tf_WtAaqeHnDteIXHqE4zspWyfP7C76VsW0nY2UV9gxevng_3XSgNmMLJQYGsRHv5mgCreTpmA8cpYGsnVB7_dbI2UDRdlSRiWis_EFpCIvKyhWWZyTUIAiPlMih6iHsDssJiDRF0pQUjaKZSpF5kx3azjV32bG1s-s4J8NHDUQA3ghwHiLfE8Fv1DDY_bubSH10QJPaJRftKbc4aOw4wS7q9uKeVy4yf75fW5uWCYI0prlZIKGc1M-4ASMhDiHcv_7vhh_mODRciKHG9S1gOeWz1vhHK9Uh5IWl6XKsJ7-Z3VQ"
+// RefreshToken
+// :
+// "eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.lHXaSHMoghPojIyIK1TtMmCjaxA15ouz89iPwhslfHZdLSdq9xMEC1NxshKLdrVu0T905lQZpoNcyfLPwGRerch2yjPoLDVENvmNAbBAP2dC-f-hFlSPBzbcYyvagevzPfeIwSesXtSWd9LsIh5Zz6DnxANLX2uT18WrOCFjf2DRfaXIHZeV-Zp7pMGma4O5QQFyz-xdIdIjMi961bQPjDEInkos1CTodbzQKM7MUiUT8MNaN0RbHnCIihjG7hmfC05H1yx8m3mdmWl3pPrcXeZe00dX9SHr2dNwoMtP4SM4mIIhclTip6eatgovLtxdHlJSufpPH12WkzP35_sX0w.1Kuu0ia7m9M0_25R.DdStmexI2NHwjVGzufIdCqcnRiis6JHTjP4LfTKHMPd2AvLJQUwT_L8CvSxom6xmxP513VzNRYPkqdxWAbfS9MvTOo6K7jfEKCn4v251jBgC90p_F0CJ7Sl5V936SqWWrIf6f9sIgVx5hyErGz8ruaAbuosPVimQA1d30nL8Wv28YYNLMeYGiRSpizyAKZJcpCp3WYeap3EgOh_DPXGsuMx7l4HyJWgu8ow_1APMaZoXRQ5rpF76CQy8AoIZ3h3_HPMIzoy6C3CseGcZqDrT7WaCHiDK4FzgJJzElB8D7XaAtf1D_a-zBHO3tU7EO--h5c8MuRAW6yDLv1budpcUb59-OEN3mBlHHkFapxwZ_GypTV7JKW28JfHgcwZwFyTHn8JVzlMPN9OByfjtCPJiXFJ7Q6P5kLyYcGjUBNf4FUJ2ypLwnBXf25S3cdFb1gsb1AP73IKXK8c7gFJ87dLwkJS5V4qlTGo3ZExcW8qL17trFX12ayJ-bissrZg_PC4b2GZXV-ixsrK-ZunaW6eHoRz_qIdkj6NwLhHbmGgDDsBTnyF65HLrJfX8I5lzyEKlrwoqJ9fJfP2CpvgUyqqQU_J1JPVMS9Y__LLiB2bNk71d7JVy9p7BXjyLa2130XuAsw8Kqnzb66ypwWReAWPKsWFh7_PEGIkiXVHomKtxGtHOinDtxNKjBR9Baxa4jlZpbe0hixL4fZoxqoxetujfZ2gqpBBga6wdPRE7wzWDCQ3VryJx9m9L0KrYOHS5Bvam_2ucl7LX7xvih0VxNosEP4MaloglMhjJMrEWQbZKh_2yhfGRzxpwC50xrctH0YlwRvQLiKi6U59rco_Kt_PV-QUdzVTJfNhlz7ejW7pVprIYd2U7QY3fEi5W97Q3Cnzon-xazZ58OOKQOWelTqda831ZrZWscl7MkuK4bz5qKMZF_N7qnW0Q0fjQ7E3967zDfkzdp1Nx4OP-lv4Z8TOM4DyDMUI-BTcE-hggOBIdZKC8ubDLy0W1YRffVIhmiyGJ3xNYeGkh3bFA7SldGjdRhZccnIcN_IpwPXwvypHXQqJ7Ctf3vhCF5F744AprI7bETrrTTeAuoIuMzXfyv8r8YGlj0EtSYYX8bY1t_2fimEre-u55LcTdNl_m3ltSjUN959c5.CLJuKJuVfoX6fl2GT8J9nQ"
+// TokenType
+// :
+// "Bearer"
+// ChallengeParameters
+// :
+// {}
+
         let cognitoUser = userPool.getCurrentUser();
         store.dispatch({type: 'user/user', user: cognitoUser})
         resolve(result)
@@ -143,7 +165,14 @@ export function login (Username, Password) {
         console.log("set the AWSCognito credentials - " + JSON.stringify(AWSCognito.config.credentials));
         */
       },
-      onFailure: reject
+
+      onFailure: reject,
+
+      mfaRequired: function(codeDeliveryDetails) {
+          // MFA is required to complete user authentication.
+          // Get the code from user and call
+          cognitoUser.sendMFACode(mfaCode, this)
+      }
     })
   })
 }
@@ -170,7 +199,73 @@ export function isAuthenticated (callback) {
         }
 }
 
-// allow user to reset password
-export function reset () {
-  console.log('Not implemented.')
+export function forgotPassword (userData) {
+  const attributeList = []
+  const {username} = userData
+  let cognitoUserData = {
+    Username: username,
+    Pool: userPool
+  };
+
+  return new Promise((resolve, reject) => {
+    var cognitoUser = new CognitoUser(cognitoUserData)
+    cognitoUser.forgotPassword({
+      onSuccess: function (result) {
+          resolve(result.user)
+          //callback.cognitoCallback(null, result);
+// CodeDeliveryDetails
+// :
+// {AttributeName: "email", DeliveryMedium: "EMAIL", Destination: "n***@y***.com"}
+// AttributeName
+// :
+// "email"
+// DeliveryMedium
+// :
+// "EMAIL"
+// Destination
+// :
+// "n***@y***.com"
+      },
+      onFailure: function (err) {
+          console.log(err);
+          return reject(err)
+          //callback.cognitoCallback(err.message, null);
+      },
+      inputVerificationCode: function(data) {
+          console.log('Code sent to: ' + data.CodeDeliveryDetails.Destination);
+          resolve(data)
+          //callback.cognitoCallback(null, null);
+          // console.log('Code sent to: ' + data);
+          // var verificationCode = prompt('Please input verification code ' ,'');
+          // var newPassword = prompt('Enter new password ' ,'');
+          // cognitoUser.confirmPassword(verificationCode, newPassword, this);
+      }
+    });
+  });
+    
 }
+
+export function resetPassword (userData) {
+  const attributeList = []
+  const {username, verificationCode, password} = userData
+  let cognitoUserData = {
+    Username: username,
+    Pool: userPool
+  };
+
+  return new Promise((resolve, reject) => {
+    var cognitoUser = new CognitoUser(cognitoUserData)
+    cognitoUser.confirmPassword(verificationCode, password, {
+      onSuccess: function (result) {
+          resolve(result)
+          //callback.cognitoCallback(null, result);
+      },
+      onFailure: function (err) {
+          console.log(err);
+          return reject(err)
+          //callback.cognitoCallback(err.message, null);
+      }
+    });
+  });
+    
+}  
