@@ -53,13 +53,13 @@ export function addTask(newTask) {
   }
 }
 
-export function deleteTask(task) {  
+export function deleteTask(taskId, userId) {  
   return function(dispatch) {
-    // return TaskApi.getTasksForCreator(newTask).then(task => {
-      dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, task});
-    // }).catch(error => {
-      // throw(error);
-    // });
+    return TaskApi.deleteTask(taskId, userId).then(task => {
+      dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId});
+    }).catch(error => {
+      throw(error);
+    });
   }
 }
 

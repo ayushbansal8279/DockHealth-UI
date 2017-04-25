@@ -13,6 +13,7 @@ class TaskList extends React.Component {
     	this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskCommentChange = this.handleTaskCommentChange.bind(this)
 		this.handleMarkComplete = this.handleMarkComplete.bind(this)
+		this.handleDeleteTask = this.handleDeleteTask.bind(this)
   	}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -42,6 +43,10 @@ class TaskList extends React.Component {
   	handleMarkComplete(taskId, userId, status){
   		this.props.markComplete(taskId, userId, status)
   		// this.setState({task: ''})
+  	}
+
+  	handleDeleteTask(taskId, userId){
+  		this.props.deleteTask(taskId, userId)
   	}
 
 
@@ -150,7 +155,7 @@ class TaskList extends React.Component {
 					<div className="medium-12 columns button-group">
 						<button onClick={this.handleSubmit} className="button primary float-right button-small">Save</button>
 						<button className="button secondary button-small float-right">Cancel</button>	
-						<button onClick={this.props.deleteTask.bind(null, task.taskId)} className="button secondary float-left button-small">Delete</button>
+						<button onClick={(e) => this.handleDeleteTask(task.taskId, 1)}  className="button secondary float-left button-small">Delete</button>
 					</div>
 				</div>
 			</div>

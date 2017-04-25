@@ -25,11 +25,20 @@ const TaskReducer = function(state = {tasks: []}, action) {
           ) 
       };
 
+    case types.DELETE_TASK_SUCCESS:
+      const taskId = action.taskId;
+      //return Object.assign({}, state, { tasks: state.tasks.filter(task => task.taskId !== taskId)});
+      return {
+          ...state,
+          tasks: state.tasks.filter(task => task.taskId !== taskId)
+        };
   }
 
   return state;
 
-
+  // return { hostnames: state.hostnames.filter(hostname =>
+  //    hostname.id !== action.hostnameId
+  // )}
 
 }
 

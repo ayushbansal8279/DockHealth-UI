@@ -54,8 +54,8 @@ export function updateTask(task) {
     });
 }
 
-export function deleteTask(taskId) {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/' + taskId + '?deleterId=' + userId)
+export function deleteTask(taskId, userId) {
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId + '?deleterId=' + userId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
       return response;
