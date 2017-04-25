@@ -14,6 +14,7 @@ class TaskList extends React.Component {
 		this.handleTaskCommentChange = this.handleTaskCommentChange.bind(this)
 		this.handleMarkComplete = this.handleMarkComplete.bind(this)
 		this.handleDeleteTask = this.handleDeleteTask.bind(this)
+		this.handleTaskDescriptionChange = this.handleTaskDescriptionChange.bind(this)
   	}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -33,6 +34,10 @@ class TaskList extends React.Component {
 
   	handleTaskCommentChange(event) {
     	this.setState({comment: event.target.value});
+  	}
+
+  	handleTaskDescriptionChange(event){
+  		this.setState({description: event.target.value})
   	}
 
   	handleSubmit () {
@@ -116,7 +121,7 @@ class TaskList extends React.Component {
 				</div>
 			</div>
 			<div className="task-details-wrapper">
-				<span className="task-details-block">Assigned by {task.creator.firstName} {task.creator.lastName}</span>
+				<span className="task-details-block">Created by {task.creator.firstName} {task.creator.lastName}</span>
 		        <span className="task-details-block"><Moment fromNow>{createdDateTime}</Moment></span>
 		        <span className="task-details-block {task.status}">{task.status}</span>
 		        <span className="calendar">
@@ -128,6 +133,14 @@ class TaskList extends React.Component {
 
 			<div className="edit-task" id="edit-task-1" data-toggler=".expanded">
 			<div className="edit-task-inner my-task-edit-section">
+				<div className="row">
+					<div className="medium-12 columns">
+						<label>
+							<svg className="icon"><use xlinkHref="#icon-comment"></use></svg>Task Description
+							<textarea placeholder="None" value={task.description} onChange={this.handleTaskDescriptionChange}></textarea>
+						</label>
+					</div>
+				</div>
 				<div className="row">
 					<div className="medium-12 columns">
 						<div className="task-comments">

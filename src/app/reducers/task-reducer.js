@@ -22,7 +22,8 @@ const TaskReducer = function(state = {tasks: []}, action) {
               { ...task, status: action.status } : 
               // otherwise return original task
               task
-          ) 
+          ).filter(task => task.taskId !== taskId) 
+          
       };
 
     case types.DELETE_TASK_SUCCESS:
