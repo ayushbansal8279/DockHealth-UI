@@ -21,7 +21,7 @@ const ConfirmUser = (props) => {
   console.log(props)
   return (
     <form onSubmit={handleSubmit}>
-      <Field name='username' type='text' component={BasicField} label='Username' />
+      <Field name='username' type='text' component={BasicField} label='Email' />
       <Field name='confirmationCode' type='text' component={BasicField} label='Confirmation Code' />
       <div className='control'>
         <button className={'button is-primary is-large' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>{type || 'save'}</button>

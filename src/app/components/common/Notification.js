@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-// import store from '../../store'
+import {bindActionCreators} from 'redux';
+import * as NotificationActions from '../../actions/notification-actions'
 
 class Notification extends React.Component {
   onClose () {
-    // store.dispatch({type: 'notification/hide'})
+    this.props.actions.hide('')
   }
   render () {
     let {type, message, hidden, stay} = this.props
@@ -42,4 +43,10 @@ const mapStateToProps = function (store) {
   }
 }
 
-export default connect(mapStateToProps)(Notification)
+const mapDispatchToProps = function (dispatch) {  
+  return {
+    actions: bindActionCreators(NotificationActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)
