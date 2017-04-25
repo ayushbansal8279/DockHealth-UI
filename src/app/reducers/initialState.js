@@ -3,6 +3,7 @@ export default {
   allPatients: [],
   tasklist: [],
   tasklistone: {},
-  tasklistmembers: []
+  tasklistmembers: [],
+  orgusersnotintasklist: []
   //addtasklisterror:''
 }

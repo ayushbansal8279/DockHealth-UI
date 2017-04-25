@@ -73,7 +73,30 @@ export function invitePersonToTaskList(formProps,taskListId) {
 
   return function(dispatch) {
     return TaskListApi.invitePersonToTaskList(taskListId,personInfo).then(res => {
-      dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, res});
+      dispatch({type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, res});
+    }).catch(error => {
+      //console.log(error.message);
+      throw(error);
+      //return dispatch({type: ActionTypes.ADD_TASKLIST_FAILURE, errorMessage});
+    });
+  };
+}
+
+export function getOrganizationUsersNotInTaskList(tasklistId,organizationId) {
+  return function(dispatch) {
+    return TaskListApi.getOrganizationUsersNotInTaskList(tasklistId,organizationId).then(users => {
+      dispatch({type: ActionTypes.GET_ORGUSERSNOTINTASKLIST_SUCCESS, users});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+
+export function inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedUsers) {
+  return function(dispatch) {
+    return TaskListApi.inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedUsers).then(res => {
+      dispatch({type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS, res});
     }).catch(error => {
       //console.log(error.message);
       throw(error);

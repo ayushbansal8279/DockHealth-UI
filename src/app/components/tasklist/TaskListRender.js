@@ -19,6 +19,7 @@ export default class TaskListRender extends React.Component {
                   <li><Link to={"/viewTaskListMembers/" + list.taskListId}>View Members</Link></li>
                   <li><Link to={"/updateTaskList/" + list.taskListId}>Update Name</Link></li>
                   <li><Link to={"/invitePersonToTaskList/" + list.taskListId}>Invite External Person</Link></li>
+                  <li><Link to={"/inviteUsersToTaskList/" + list.taskListId}>Invite Existing Users</Link></li>
                 </ul>
                 </li>
               </ul>

@@ -9,10 +9,13 @@ const TaskListReducer = function(state = initialState, action) {
       return {...state, tasklist:action.tasklist};  //whatever our current state is, add on "tasklist"
 
     case types.GET_TASKLIST_ONE_SUCCESS:
-      return {...state, tasklistone:action.tasklistone};  //whatever our current state is, add on "onetasklist"
+      return {...state, tasklistone:action.tasklistone};  //whatever our current state is, add on "tasklistone"
 
-      case types.GET_TASKLISTMEMBERS_SUCCESS:
-        return {...state, tasklistmembers:action.tasklistmembers};  //whatever our current state is, add on "tasklistmembers"
+    case types.GET_TASKLISTMEMBERS_SUCCESS:
+      return {...state, tasklistmembers:action.tasklistmembers};  //whatever our current state is, add on "tasklistmembers"
+
+    case types.GET_ORGUSERSNOTINTASKLIST_SUCCESS:
+      return {...state, orgusersnotintasklist:action.users};  //whatever our current state is, add on "orgusersnotintasklist"
 
     // case types.UPDATE_TASKLIST_SUCCESS:
     //   return {...state, updtasklist:action.updtasklist};  //whatever our current state is, add on "onetasklist"
