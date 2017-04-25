@@ -4,14 +4,24 @@ import initialState from './initialState';
 const TaskListReducer = function(state = initialState, action) {
 
   switch(action.type) {
-    //
-    // case types.ADD_TASK_SUCCESS:
-    //   // with concact make a copy of the array, and then we'll change and return the copy
-    //   return Object.assign({}, state, {tasks: state.tasks.concat([action.task])});
 
     case types.GET_TASKLIST_SUCCESS:
-      //whatever our current state is, add on "tasklist"
-      return {...state, tasklist:action.tasklist} ;
+      return {...state, tasklist:action.tasklist};  //whatever our current state is, add on "tasklist"
+
+    case types.GET_TASKLIST_ONE_SUCCESS:
+      return {...state, tasklistone:action.tasklistone};  //whatever our current state is, add on "onetasklist"
+
+      case types.GET_TASKLISTMEMBERS_SUCCESS:
+        return {...state, tasklistmembers:action.tasklistmembers};  //whatever our current state is, add on "tasklistmembers"
+
+    // case types.UPDATE_TASKLIST_SUCCESS:
+    //   return {...state, updtasklist:action.updtasklist};  //whatever our current state is, add on "onetasklist"
+
+
+    // case types.ADD_TASKLIST_FAILURE:
+    //   //whatever our current state is, add on "tasklist"
+    //   return {...state, addtasklisterror:action.errorMessage} ;
+
   }
   return state;
 }

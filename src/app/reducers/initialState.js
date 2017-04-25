@@ -1,5 +1,9 @@
 export default {
   tasks: [],
   allPatients: [],
-  tasklist: []
+  user: false,
+  tasklist: [],
+  tasklistone: {},
+  tasklistmembers: []
+  //addtasklisterror:''
 }

@@ -7,12 +7,13 @@ import Notification from '../components/common/Notification'
 class App extends React.Component {
   render() {
     return (    
-      <div id='appHome'>
-        <main>
+        <div>        
+          <NavBar />
+          <Header />
           {this.props.children}
-        </main>
-        <Notification />
-      </div>
+
+          <Notification />
+        </div>
     );
   }
 

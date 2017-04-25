@@ -50,7 +50,8 @@ class TaskList extends React.Component {
 		if(AWS.config.credentials){
 			console.log("user name: "+AWS.config.credentials.params.IdentityId);
 		}
-		userApi.isAuthenticated(this)
+		//userApi.isAuthenticated(this)
+		
     return (
     <div>
 		{this.props.tasks.map(task => {

@@ -8,20 +8,20 @@ const validate = values => {
   return errors
 }
 
-const ResendCodeForm = (props) => {
+const ForgotPasswordForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting } = props
   console.log(props)
   return (
     <form onSubmit={handleSubmit}>
-      <Field name='username' type='text' component={BasicField} label='Email' placeholder='Enter the email for the account'/>
+      <Field name='username' type='text' component={BasicField} label='Email' placeholder='Enter the email address for the account'/>
       <div className='control'>
-        <button className={'button is-primary is-large' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Resend Code</button>
+        <button className={'button is-primary is-large' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Send reset code</button>
       </div>
     </form>
   )
 }
 
 export default reduxForm({
-  form: 'ResendCodeForm',
+  form: 'ForgotPasswordForm',
   validate
-})(ResendCodeForm)
+})(ForgotPasswordForm)

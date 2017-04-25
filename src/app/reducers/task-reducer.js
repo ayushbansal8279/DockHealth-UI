@@ -1,7 +1,7 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
-const TaskReducer = function(state = initialState, action) {
+const TaskReducer = function(state = {tasks: []}, action) {
 
   switch(action.type) {    
 

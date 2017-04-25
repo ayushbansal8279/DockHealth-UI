@@ -1,7 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory, hashHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { logout } from '../../reducers/user'
+import * as userApi from '../../api/user-api'
 
 const NavLink = ({to, children}) => (
   <li>
@@ -33,8 +33,24 @@ class NavBar extends React.Component {
     }
   }
 
+  isLoggedIn(message, isLoggedIn, cognitoUser) {
+      if (!isLoggedIn || !this.props.user) {
+        console.log('not logged in')
+        // hashHistory.push('login')
+      } else {
+        console.log('logged in: '+cognitoUser.username)
+        // this.state.user = cognitoUser
+      }
+  }
+
+  componentWillMount() {
+    userApi.isAuthenticated(this)
+  }
+
   render() {
+
 	const {user} = this.props
+
 	let menuClasses = 'menu float-right'
     return (
 <nav>
@@ -47,8 +63,7 @@ class NavBar extends React.Component {
       <NavLink to='/patientList'>Patients</NavLink>
 			<li><a href="#">Learn</a></li>
 		</ul>
-		{user ? <LinksAuth className={menuClasses} onLogout={logout} user={user} /> : <LinksDefault className={menuClasses}/>}
-
+		{user ? <LinksAuth className={menuClasses} onLogout={userApi.logout} user={user} /> : <LinksDefault className={menuClasses}/>}
 	</div>
 </div>
 </nav>
@@ -58,7 +73,7 @@ class NavBar extends React.Component {
 
 const mapStateToProps = function (store) {
   return {
-    user: store.user.user
+    user: store.userState.user
   }
 }
 

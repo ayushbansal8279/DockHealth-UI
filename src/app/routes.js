@@ -1,15 +1,24 @@
 import React from 'react'
 import { Route, IndexRoute } from 'react-router';
 import App from './views/App'
+import TemplateCore from './views/TemplateCore'
+import TemplateNoLogin from './views/TemplateNoLogin'
 import Home from './views/Home'
 import AddPatientView from './views/AddPatientView'
 import AllPatientsView from './views/AllPatientsView'
-import Register from './views/Register'
-import ConfirmRegistration from './views/ConfirmRegistration'
-import ResendCode from './views/ResendCode'
-import Login from './views/Login'
+import Register from './views/auth/Register'
+import Login from './views/auth/Login'
+import ConfirmRegistration from './views/auth/ConfirmRegistration'
+import ResendCode from './views/auth/ResendCode'
+import ForgotPassword from './views/auth/ForgotPassword'
+import ResetPassword from './views/auth/ResetPassword'
 import PageNotFound from './views/PageNotFound'
 import TaskListView from './views/TaskListView'
+import TaskListAdd from './components/tasklist/TaskListAdd';
+import TaskListUpdateView from './views/TaskListUpdateView';
+import TaskListMembersView from './views/TaskListMembersView';
+import TaskListInvitePersonView from './views/TaskListInvitePersonView';
+
 
 // const routes = {
 //   path: '/',
@@ -30,14 +39,23 @@ import TaskListView from './views/TaskListView'
 
 export default (
   <Route path="/" component={App}>
-    <IndexRoute component={Home} />
-    <Route path="/taskList" component={TaskListView} />
-    <Route path="/patientList" component={AllPatientsView} />
-    <Route path="/addPatient" component={AddPatientView} />
-    <Route path="/register" component={Register} />
-    <Route path="/confirmRegistration" component={ConfirmRegistration} />
-    <Route path="/login" component={Login} />
-    <Route path="/resendCode" component={ResendCode} />
-    <Route path="/pageNotFound" component={PageNotFound} />
+    <Route component={TemplateCore} >
+      <IndexRoute component={Home} />
+      <Route path="/patientList" component={AllPatientsView} />
+      <Route path="/addPatient" component={AddPatientView} />
+      <Route path="/taskList" component={TaskListView} />
+      <Route path="/addTaskList" component={TaskListAdd} />
+      <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
+      <Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />
+      <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
+    </Route>
+    <Route component={TemplateNoLogin} >
+      <Route path="/register" component={Register} />
+      <Route path="/confirmRegistration" component={ConfirmRegistration} />
+      <Route path="/login" component={Login} />
+      <Route path="/resendCode" component={ResendCode} />
+      <Route path="/forgotPassword" component={ForgotPassword} />
+      <Route path="/resetPassword" component={ResetPassword} />
+    </Route>
   </Route>
 );

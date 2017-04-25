@@ -1,18 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import NavBar from '../components/common/NavBar'
-import Header from '../components/common/Header'
+import NavBarNoLogin from '../components/common/NavBarNoLogin'
 import Notification from '../components/common/Notification'
 
 class App extends React.Component {
   render() {
     return (    
-      <div id='appHome'>
-        <main>
+        <div>    
+          <NavBarNoLogin/>   
           {this.props.children}
-        </main>
-        <Notification />
-      </div>
+
+          <Notification />
+        </div>
     );
   }
 

@@ -1,18 +1,18 @@
 import { combineReducers } from 'redux'
 import TaskReducer from './task-reducer'
 import PatientReducer from './patient-reducer'
+import UserReducer from './user-reducer'
 import { reducer as form } from 'redux-form'
-import { reducer as user } from './user'
-import { reducer as notification } from './notification'
+import { reducer as notification } from './notification-reducer'
 import TaskListReducer from './tasklist-reducer'
 
 const rootReducer = combineReducers({
   taskState: TaskReducer,
   patientState: PatientReducer,
-  user,
+  userState: UserReducer,
   notification,
   form,
-  taskListState: TaskListReducer,
+  taskListState: TaskListReducer
 })
 
 export default rootReducer

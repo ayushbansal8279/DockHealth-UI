@@ -24,7 +24,7 @@ const LinksAuth = ({user, className, onLogout}) => (
   </div>
 )
 
-class Navbar extends React.Component {
+class NavbarDummy extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -84,4 +84,4 @@ const mapStateToProps = function (store) {
   }
 }
 
-export default connect(mapStateToProps)(Navbar)
+export default connect(mapStateToProps)(NavbarDummy)

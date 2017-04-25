@@ -58,3 +58,7 @@
   padding-left: 1rem;
   border-radius: 3px; 
 }
+
+.is-danger {
+  color: red;
+}
