@@ -80,5 +80,53 @@ export function markComplete(taskId, userId, status) {
         throw(error);
       });
     }
-  };
+  }
 }
+
+export function updateTaskDescription(taskId, userId, description){
+  return function(dispatch){
+    return TaskApi.updateTaskDescription(taskId, userId, description).then(res => {
+      dispatch({type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS, taskId, description:description});
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+export function toggleTaskPriority(taskId, userId, priority) {  
+  return function(dispatch){
+    if(priority == "LOW"){
+      return TaskApi.markHighPriority(taskId, userId).then(res => { // check for response value to be success      
+        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
+        }).catch(error => {
+        throw(error);
+      });
+    }
+    else if(priority == "HIGH"){
+      return TaskApi.markLowPriority(taskId, userId, priority).then(res => { // check for response value to be success      
+        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
+        }).catch(error => {
+        throw(error);
+      });
+    }
+  }
+}
+
+// export function toggleTaskPriority(taskId, userId, priority){
+//   return function(dispatch){
+//     if(priority == "LOW"){}
+//       return TaskApi.markHighPriority(taskId, userId).then(res => {
+//         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
+//         }).catch(error => {
+//         throw(error);
+//       });
+//     }
+//     else if(priority == "HIGH"){
+//       return TaskApi.markLowPriority(taskId, userId).then(res => {
+//         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
+//         }).catch(error => {
+//         throw(error);
+//       });
+//     }
+//   }
+// }

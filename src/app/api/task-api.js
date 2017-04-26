@@ -78,6 +78,31 @@ export function markIncomplete(taskId, userId){
   });
 }
 
+export function updateTaskDescription(taskId, userId, description){
+  // return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'')
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+taskId+'?userId='+userId, {
+    description: description
+  })
+  .then(response => {
+    return response;
+  });
+}
+
+export function markHighPriority(taskId, userId){
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')
+  .then(response => {
+    return response;
+  });
+}
+
+export function markLowPriority(taskId, userId){
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=LOW')
+  .then(response => {
+    return response;
+  });
+}
+
+// task/changePriority/1?priorityLevel=HIGH&userId=1
 
 export function addComment(task) {
   /*

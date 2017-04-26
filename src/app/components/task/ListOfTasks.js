@@ -14,7 +14,8 @@ class TaskList extends React.Component {
 		this.handleTaskCommentChange = this.handleTaskCommentChange.bind(this)
 		this.handleMarkComplete = this.handleMarkComplete.bind(this)
 		this.handleDeleteTask = this.handleDeleteTask.bind(this)
-		this.handleTaskDescriptionChange = this.handleTaskDescriptionChange.bind(this)
+		this.handleUpdateTaskDescription = this.handleUpdateTaskDescription.bind(this)
+		this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
   	}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -36,8 +37,9 @@ class TaskList extends React.Component {
     	this.setState({comment: event.target.value});
   	}
 
-  	handleTaskDescriptionChange(event){
-  		this.setState({description: event.target.value})
+  	handleUpdateTaskDescription(taskId, userId, description){
+  		// this.setState({description: event.target.value})
+  		this.props.updateTaskDescription(taskId, userId, description)
   	}
 
   	handleSubmit () {
@@ -52,6 +54,10 @@ class TaskList extends React.Component {
 
   	handleDeleteTask(taskId, userId){
   		this.props.deleteTask(taskId, userId)
+  	}
+
+  	handleToggleTaskPriority(taskId, userId, priority){
+  		this.props.toggleTaskPriority(taskId, userId, priority)
   	}
 
 
@@ -103,6 +109,7 @@ class TaskList extends React.Component {
         return (
 		<div className="task-item tag" key={task.taskId+task.description} value={task}>
 		<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="button primary float-right button-small">Mark Complete</button>
+		<button onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)} className="button primary float-right button-small">Toggle Priority</button>
 		<div className="task-item-inner-wrapper" data-toggle="">
 			<div className="mark-complete-wrapper">
 				<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="mark-complete">
@@ -117,7 +124,7 @@ class TaskList extends React.Component {
 				<div className="task-title-right float-right">
 					{/*<img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>*/}
 					{assignees}
-					<svg className={taskPriorityClass}><use xlinkHref="#icon-cross"></use></svg>
+					<svg onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)} className={taskPriorityClass}><use xlinkHref="#icon-cross"></use></svg>
 				</div>
 			</div>
 			<div className="task-details-wrapper">
@@ -137,7 +144,7 @@ class TaskList extends React.Component {
 					<div className="medium-12 columns">
 						<label>
 							<svg className="icon"><use xlinkHref="#icon-comment"></use></svg>Task Description
-							<textarea placeholder="None" value={task.description} onChange={this.handleTaskDescriptionChange}></textarea>
+							<textarea placeholder="None" type='text' placeholder={task.description} onBlur={(e) => this.handleUpdateTaskDescription(task.taskId, 1, e.target.value)}></textarea>
 						</label>
 					</div>
 				</div>

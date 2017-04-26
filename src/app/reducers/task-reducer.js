@@ -30,9 +30,35 @@ const TaskReducer = function(state = {tasks: []}, action) {
       const taskId = action.taskId;
       //return Object.assign({}, state, { tasks: state.tasks.filter(task => task.taskId !== taskId)});
       return {
-          ...state,
-          tasks: state.tasks.filter(task => task.taskId !== taskId)
-        };
+        ...state,
+        tasks: state.tasks.filter(task => task.taskId !== taskId)
+      };
+
+    // case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
+    //   return {
+    //     ...state,
+    //     tasks: state.tasks.filter(task => task.taskId !== taskId)
+    //   };    
+
+    case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, description: action.description } : 
+            // otherwise return original task
+            task
+        )
+      };    
+
+    case types.TOGGLE_TASK_PRIORITY_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks
+      };
+
+
   }
 
   return state;
