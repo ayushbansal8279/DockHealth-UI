@@ -11,7 +11,7 @@ class PatientDropdownListContainer extends React.Component {
     }
 
     render() {
-        return (<PatientDropdownList patients={this.props.patients}/>)
+        return (<PatientDropdownList patients={this.props.patients} />)
     }
 }
 

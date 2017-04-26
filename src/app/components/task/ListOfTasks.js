@@ -62,7 +62,6 @@ class TaskList extends React.Component {
 
 
     render() {
-    	// var status = ${this.props.status};
 		if(AWS.config.credentials){
 			console.log("user name: "+AWS.config.credentials.params.IdentityId);
 		}
@@ -108,7 +107,7 @@ class TaskList extends React.Component {
 			}
         return (
 		<div className="task-item tag" key={task.taskId+task.description} value={task}>
-		<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="button primary float-right button-small">Mark Complete</button>
+		<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="button primary float-right button-small">Mark{task.status == "COMPLETE" ? " Incomplete" : " Complete"}</button>
 		<button onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)} className="button primary float-right button-small">Toggle Priority</button>
 		<div className="task-item-inner-wrapper" data-toggle="">
 			<div className="mark-complete-wrapper">
@@ -144,7 +143,7 @@ class TaskList extends React.Component {
 					<div className="medium-12 columns">
 						<label>
 							<svg className="icon"><use xlinkHref="#icon-comment"></use></svg>Task Description
-							<textarea placeholder="None" type='text' placeholder={task.description} onBlur={(e) => this.handleUpdateTaskDescription(task.taskId, 1, e.target.value)}></textarea>
+							<textarea placeholder="None" type='text' placeholder={task.description} onBlur={(e) => this.handleUpdateTaskDescription(task.taskId, 1, e.target.value)}>{task.description}</textarea>
 						</label>
 					</div>
 				</div>
@@ -159,18 +158,6 @@ class TaskList extends React.Component {
 						</label>
 					</div>
 				</div>
-				<div className="row show">
-					<div className="medium-6 columns">
-						<label>Due date
-							<input type="date" placeholder="Feb 6"/>
-						</label>
-					</div>
-					<div className="medium-6 columns">
-						<label>Reminder
-							<input type="date" placeholder="Feb 5"/>
-						</label>
-					</div>
-				</div>  
 				<div className="row">
 					<div className="medium-12 columns button-group">
 						<button onClick={this.handleSubmit} className="button primary float-right button-small">Save</button>

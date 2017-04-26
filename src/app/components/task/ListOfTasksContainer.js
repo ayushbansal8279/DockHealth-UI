@@ -14,7 +14,7 @@ class ListOfTasksContainer extends React.Component {
   render () {
     return (<ListOfTasks tasks={this.props.tasks} deleteTask={this.props.actions.deleteTask}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
-            toggleTaskPriority={this.props.actions.toggleTaskPriority}
+            toggleTaskPriority={this.props.actions.toggleTaskPriority} 
             />);
   }
 

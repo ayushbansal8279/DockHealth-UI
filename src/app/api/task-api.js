@@ -102,6 +102,13 @@ export function markLowPriority(taskId, userId){
   });
 }
 
+// export function listActiveUsersByTaskList(taskList){
+//   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'/heydoc-services/user/listAllUsersByTaskListId/'+taskListId+'?status=ACTIVE')
+//   .then(response => {
+//     return response.data;
+//   });
+// }
+
 // task/changePriority/1?priorityLevel=HIGH&userId=1
 
 export function addComment(task) {
