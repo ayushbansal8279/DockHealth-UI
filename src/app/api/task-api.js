@@ -51,16 +51,9 @@ export function deleteTask(taskId) {
     });
 }
 
-export function addComment(task) {
-  /*
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
+export function addComment(taskId, taskComment) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment', taskId, taskComment)
     .then(response => {
-      //store.dispatch({type: ActionTypes.ADD_TASK, id: nextTaskId++, task: response.data});
-      store.dispatch({type: ActionTypes.ADD_TASK, task: response.data});
       return response;
     });
-  */  
-    //var data = {id:101, text:"Added Task 1"};
-    //var data = task;
-    //store.dispatch(addTaskSuccess(data));
 }

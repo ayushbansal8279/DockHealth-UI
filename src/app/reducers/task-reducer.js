@@ -11,6 +11,11 @@ const TaskReducer = function(state = {tasks: []}, action) {
 
     case types.GET_TASKS_SUCCESS:
       return Object.assign({}, state, { tasks: action.tasks });
+
+    case types.ADD_TASK_COMMENT_SUCCESS:
+      //return Object.assign({}, state, { tasks: action.tasks });
+      return state;
+      
   }
 
   return state;

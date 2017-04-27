@@ -10,7 +10,6 @@ class TaskList extends React.Component {
       		value: ''
     	};
     	this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleTaskCommentChange = this.handleTaskCommentChange.bind(this)
   	}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -28,13 +27,13 @@ class TaskList extends React.Component {
     	// this.setState({comment: event.target.value, parentTaskId: event.target.parentTaskId});
   	}
 
-  	handleTaskCommentChange(event) {
-    	this.setState({comment: event.target.value});
+  	handleTaskCommentChange(taskId, event) {
+    	this.setState({taskId: taskId, comment: event.target.value});
   	}
 
   	handleSubmit () {
-		TaskApi.addComment({description: this.state.comment, createdByUserId: 1})
-		this.setState({comment: ''})
+		this.props.addTaskComment(this.state.taskId, {comment: this.state.comment, creator:{userId: 1}})
+		this.setState({taskId: '', comment: ''})
   	}
 
     render() {
@@ -118,7 +117,7 @@ class TaskList extends React.Component {
 				</div>
 				<label>
 					<svg className="icon"><use xlinkHref="#icon-comment"></use></svg>Comment
-					<textarea placeholder="None" value={this.state.comment} onChange={this.handleTaskCommentChange}></textarea>
+					<textarea placeholder="None" value={this.state.comment} onChange={this.handleTaskCommentChange.bind(this, task.taskId)}></textarea>
 				</label>
 			</div>
 		</div>

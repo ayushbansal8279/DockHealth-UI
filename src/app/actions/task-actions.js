@@ -25,6 +25,17 @@ export function addTask(newTask) {
   };
 }
 
+export function addTaskComment(taskId, taskComment) {  
+  return function(dispatch) {
+    return TaskApi.addComment(taskId, taskComment).then(task => {
+      dispatch({type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, task});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+
 export function deleteTask(task) {  
   return function(dispatch) {
     // return TaskApi.getTasksForCreator(newTask).then(task => {
