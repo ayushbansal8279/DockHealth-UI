@@ -1,18 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
-import * as TaskListActions from '../../actions/tasklist-actions'
-// import TaskListMembersDropdownContainer from '/TaskListMembersDropdownContainer'
+//import * as TaskListActions from '../../actions/tasklist-actions'
+import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
 import * as TaskApi from '../../api/task-api'
 
 class AddTask extends React.Component {
 	constructor(props) {
     	super(props)
     	this.state = {
-      		value: ''
+      		value: '',
+      		assignedToId: ''
     	};
     	this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
+		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
   	}
   	componentDidMount () {
     	console.log("mounted AddTask component")
@@ -24,9 +26,14 @@ class AddTask extends React.Component {
   	}
 
   	handleSubmit () {
-		TaskApi.addTask({description: this.state.value, createdByUserId: 1})
+		TaskApi.addTask({description: this.state.value, createdByUserId: 1, assignedToId: this.state.assignedToId, taskListId:'1'})
 		this.setState({value: ''})
 		closeAddTask(); //JS function
+  	}
+
+  	handleAddMemberToTask(memberId){
+  		this.state.assignedToId = memberId
+  		// alert("clicked:" + this.state.memberId);
   	}
 
     render() {
@@ -54,7 +61,7 @@ class AddTask extends React.Component {
 								<svg className="icon medium-2 priority"><use xlinkHref="#icon-cross"></use></svg>
 							</div>
 						</div>
-						{PatientDropdownListContainer}
+						<TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/>
 					</div>
 					<div className="row">
 						<div className="medium-12 columns">
