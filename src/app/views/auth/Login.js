@@ -2,15 +2,19 @@ import React from 'react'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
-import FormLogin from '../../components/auth/FormLogin'
+import LoginForm from '../../components/auth/LoginForm'
 
 export default class Login extends React.Component {
   onSubmit (form) {
     return userApi.login(form.username, form.password)
       .then(data => {
-        //browserHistory.push('/resetPassword')
-        hashHistory.push('/')
-        success('Logged in.')
+        if(data == "SMS_MFA"){
+          hashHistory.push('confirmMFACode?uname='+form.username)
+        }else{
+          //browserHistory.push('/resetPassword')
+          hashHistory.push('/')
+          success('Logged in.')
+        }
       })
       .catch(e => {
         error(e && e.message ? e.message : 'Could not login.')
@@ -31,7 +35,7 @@ export default class Login extends React.Component {
             <div className="row log-in-form">
               <div className="medium-10 medium-centered large-10 large-centered columns">
                 <h4 className="text-center">Login</h4>
-                <FormLogin onSubmit={this.onSubmit} />
+                <LoginForm onSubmit={this.onSubmit} />
                 <p className="text-center"><Link to="/forgotPassword">Forgot your password?</Link></p>
                 <p className="text-center"><Link to="/register">Create Account</Link></p>
                 <p className="text-center"><Link to="/confirmRegistration">Confirm Registration</Link></p>

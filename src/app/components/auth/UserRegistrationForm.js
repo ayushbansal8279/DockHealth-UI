@@ -34,7 +34,7 @@ const validate = values => {
   return errors
 }
 
-const FormUser = (props) => {
+const UserRegistrationForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting, type } = props
   console.log(props)
   return (
@@ -57,6 +57,6 @@ const FormUser = (props) => {
 }
 
 export default reduxForm({
-  form: 'FormUser',
+  form: 'UserRegistrationForm',
   validate
-})(FormUser)
+})(UserRegistrationForm)

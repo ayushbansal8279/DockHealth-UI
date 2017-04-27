@@ -10,7 +10,7 @@ const {
   CognitoUserAttribute
 } = window.AWS.CognitoIdentityServiceProvider
 
-export let cognitoUser = null
+export let resolvedCognitoUser = null
 
 window.AWS.config.region = process.env.AWS_REGION
 window.AWS.config.userPoolId = process.env.AWS_USERPOOLID
@@ -31,7 +31,7 @@ export function register (userData) {
   return new Promise((resolve, reject) => {
     userPool.signUp(username, password, attributeList, null, (err, result) => {
       if (err) return reject(err)
-      cognitoUser = result.user
+      resolvedCognitoUser = result.user
       store.dispatch({type: 'user/user', user: cognitoUser})
       resolve(result.user)
     })
@@ -53,7 +53,15 @@ export function confirmRegistration (userData) {
         if (err) {
             return reject(err)
         } else {
-            cognitoUser = result.user
+            resolvedCognitoUser = result.user
+            //enable MFA
+            resolvedCognitoUser.enableMFA(function(err, result) {
+              if (err) {
+                  alert(err);
+                  return;
+              }
+              console.log('enabled MFA: ' + result);
+            });
             store.dispatch({type: 'user/user', user: cognitoUser})
             resolve(result.user)
         }
@@ -76,9 +84,9 @@ export function resendConfirmationCode (userData) {
         if (err) {
             return reject(err)
         } else {
-            //cognitoUser = result.user
-            //store.dispatch({type: 'user/user', user: cognitoUser})
-            resolve(result.user)
+            resolvedCognitoUser = result.user
+            //store.dispatch({type: 'user/user', user: resolvedCognitoUser})
+            resolve(resolvedCognitoUser)
         }
     })
   })
@@ -89,8 +97,8 @@ export function logout () {
   let cognitoUser = userPool.getCurrentUser();
 
   cognitoUser.signOut()
-  cognitoUser = null
-  store.dispatch({type: 'user/user', user: cognitoUser})
+  resolvedCognitoUser = null
+  store.dispatch({type: 'user/user', user: resolvedCognitoUser})
 }
 
 // authenticate user, and also ask for MFA or verification code, if needed
@@ -106,6 +114,7 @@ export function login (Username, Password) {
         Pool : userPool
     };
     var cognitoUser = new CognitoUser(cognitoUserData)
+    resolvedCognitoUser = cognitoUser
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
         console.log('access token + ' + result.getAccessToken().getJwtToken())
@@ -141,8 +150,8 @@ export function login (Username, Password) {
 // :
 // {}
 
-        let cognitoUser = userPool.getCurrentUser();
-        store.dispatch({type: 'user/user', user: cognitoUser})
+        resolvedCognitoUser = userPool.getCurrentUser();
+        store.dispatch({type: 'user/user', user: resolvedCognitoUser})
         resolve(result)
         /*
         var logins = {}
@@ -171,8 +180,35 @@ export function login (Username, Password) {
       mfaRequired: function(codeDeliveryDetails) {
           // MFA is required to complete user authentication.
           // Get the code from user and call
-          cognitoUser.sendMFACode(mfaCode, this)
+          console.log("MFA code is needed")
+          resolve(codeDeliveryDetails)
       }
+    })
+  })
+}
+
+// confirm user registration
+export function sendMFACode (userData) {
+  const attributeList = []
+  const {username, mfaCode} = userData
+  let cognitoUserData = {
+    Username: username,
+    Pool: userPool
+  };
+
+  return new Promise((resolve, reject) => {
+    //var cognitoUser = new CognitoUser(cognitoUserData)
+    var cognitoUser = resolvedCognitoUser
+    cognitoUser.sendMFACode(mfaCode, {
+      onSuccess: function (result) {
+        console.log('access token + ' + result.getAccessToken().getJwtToken())
+        
+        resolvedCognitoUser = userPool.getCurrentUser();
+        store.dispatch({type: 'user/user', user: resolvedCognitoUser})
+        resolve(result)
+        
+      },
+      onFailure: reject      
     })
   })
 }
@@ -190,6 +226,16 @@ export function isAuthenticated (callback) {
                 }
                 else {
                     console.log("Session is " + session.isValid());
+                    
+                    // NOTE: getSession must be called to authenticate user before calling getUserAttributes
+                    cognitoUser.getUserAttributes(function(err, attributes) {
+                        if (err) {
+                            // Handle error
+                        } else {
+                            // Do something with attributes
+                        }
+                    });
+
                     callback.isLoggedIn(err, session.isValid(), cognitoUser);
                 }
             });
@@ -213,18 +259,6 @@ export function forgotPassword (userData) {
       onSuccess: function (result) {
           resolve(result.user)
           //callback.cognitoCallback(null, result);
-// CodeDeliveryDetails
-// :
-// {AttributeName: "email", DeliveryMedium: "EMAIL", Destination: "n***@y***.com"}
-// AttributeName
-// :
-// "email"
-// DeliveryMedium
-// :
-// "EMAIL"
-// Destination
-// :
-// "n***@y***.com"
       },
       onFailure: function (err) {
           console.log(err);
