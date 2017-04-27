@@ -5,6 +5,7 @@ export default {
   tasklist: [],
   tasklistone: {},
   tasklistmembers: [],
-  orgusersnotintasklist: []
+  orgusersnotintasklist: [],
+  nonorgusersintasklist:[]
   //addtasklisterror:''
 }

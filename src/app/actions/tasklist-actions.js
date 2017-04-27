@@ -104,3 +104,14 @@ export function inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedU
     });
   };
 }
+
+
+export function getNonOrgUsersByTaskList(taskListId) {
+  return function(dispatch) {
+    return TaskListApi.getNonOrgUsersByTaskList(taskListId).then(users => {
+      dispatch({type: ActionTypes.GET_NONORGUSERSINTASKLIST_SUCCESS, users});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}

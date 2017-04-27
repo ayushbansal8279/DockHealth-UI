@@ -11,7 +11,7 @@ export function getTaskListForUser(userId) {
 
 
 export function addTaskList(tasklist) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list', tasklist)
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/1', tasklist)
     .then(response => {
       return response.data;
     });
@@ -54,6 +54,13 @@ export function getOrganizationUsersNotInTaskList(tasklistId,organizationId) {
 
 export function inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedUsers) {
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId+ "?invitingUserId=" + invitingUserId, invitedUsers)
+    .then(response => {
+      return response.data;
+    });
+}
+
+export function getNonOrgUsersByTaskList(taskListId) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findNonOrgUsersByTaskList/' + taskListId)
     .then(response => {
       return response.data;
     });
