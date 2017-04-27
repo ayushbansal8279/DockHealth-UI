@@ -17,6 +17,9 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_ORGUSERSNOTINTASKLIST_SUCCESS:
       return {...state, orgusersnotintasklist:action.users};  //whatever our current state is, add on "orgusersnotintasklist"
 
+    case types.GET_NONORGUSERSINTASKLIST_SUCCESS:
+        return {...state, nonorgusersintasklist:action.users};  //whatever our current state is, add on "nonorgusersintasklist"
+
     // case types.UPDATE_TASKLIST_SUCCESS:
     //   return {...state, updtasklist:action.updtasklist};  //whatever our current state is, add on "onetasklist"
 
