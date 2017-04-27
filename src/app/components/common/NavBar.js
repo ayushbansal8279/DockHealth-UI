@@ -34,13 +34,21 @@ class NavBar extends React.Component {
   }
 
   isLoggedIn(message, isLoggedIn, cognitoUser) {
-      if (!isLoggedIn || !this.props.user) {
+      if (!isLoggedIn) {
         console.log('not logged in')
-        // hashHistory.push('login')
+        hashHistory.push('login')
       } else {
+        if(!this.props.user){
+          this.state.user = cognitoUser
+        }
         console.log('logged in: '+cognitoUser.username)
         // this.state.user = cognitoUser
       }
+  }
+
+  onLogout() {
+      userApi.logout()
+      hashHistory.push('login')
   }
 
   componentWillMount() {
@@ -49,8 +57,10 @@ class NavBar extends React.Component {
 
   render() {
 
-	const {user} = this.props
-
+	var {user} = this.props
+  if(!user){
+    user = this.state.user
+  }
 	let menuClasses = 'menu float-right'
     return (
 <nav>
@@ -63,7 +73,7 @@ class NavBar extends React.Component {
       <NavLink to='/patientList'>Patients</NavLink>
 			<li><a href="#">Learn</a></li>
 		</ul>
-		{user ? <LinksAuth className={menuClasses} onLogout={userApi.logout} user={user} /> : <LinksDefault className={menuClasses}/>}
+		{user ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={user} /> : <LinksDefault className={menuClasses}/>}
 	</div>
 </div>
 </nav>

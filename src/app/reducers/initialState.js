@@ -4,6 +4,7 @@ export default {
   user: false,
   tasklist: [],
   tasklistone: {},
-  tasklistmembers: []
+  tasklistmembers: [],
+  orgusersnotintasklist: []
   //addtasklisterror:''
 }

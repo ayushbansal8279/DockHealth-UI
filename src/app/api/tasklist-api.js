@@ -44,3 +44,17 @@ export function invitePersonToTaskList(tasklistId,personInfo) {
       return response.data;
     });
 }
+
+export function getOrganizationUsersNotInTaskList(tasklistId,organizationId) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findOrganizationUsersNotInTaskList/' + tasklistId  + "?organizationId=" + organizationId)
+    .then(response => {
+      return response.data;
+    });
+}
+
+export function inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedUsers) {
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId+ "?invitingUserId=" + invitingUserId, invitedUsers)
+    .then(response => {
+      return response.data;
+    });
+}

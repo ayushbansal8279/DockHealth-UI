@@ -12,12 +12,14 @@ import ConfirmRegistration from './views/auth/ConfirmRegistration'
 import ResendCode from './views/auth/ResendCode'
 import ForgotPassword from './views/auth/ForgotPassword'
 import ResetPassword from './views/auth/ResetPassword'
+import ConfirmMFACode from './views/auth/ConfirmMFACode'
 import PageNotFound from './views/PageNotFound'
 import TaskListView from './views/TaskListView'
 import TaskListAdd from './components/tasklist/TaskListAdd';
 import TaskListUpdateView from './views/TaskListUpdateView';
 import TaskListMembersView from './views/TaskListMembersView';
 import TaskListInvitePersonView from './views/TaskListInvitePersonView';
+import TaskListInviteUserView from './views/TaskListInviteUserView';
 
 
 // const routes = {
@@ -48,6 +50,7 @@ export default (
       <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
       <Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />
       <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
+      <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} />
     </Route>
     <Route component={TemplateNoLogin} >
       <Route path="/register" component={Register} />
@@ -56,6 +59,7 @@ export default (
       <Route path="/resendCode" component={ResendCode} />
       <Route path="/forgotPassword" component={ForgotPassword} />
       <Route path="/resetPassword" component={ResetPassword} />
+      <Route path="/confirmMFACode" component={ConfirmMFACode} />
     </Route>
   </Route>
 );
