@@ -23,6 +23,10 @@ export default class ConfirmMFACode extends React.Component {
       mfaCode: form.mfaCode
     })
     .then(u => {
+        userApi.rememberDevice ()
+        .then(result => {
+          console.log("added device to be remembered: "+result)
+        })
         hashHistory.push('/')
         success('Logged in.')
     })

@@ -150,7 +150,6 @@ export function login (Username, Password) {
 // :
 // {}
 
-        resolvedCognitoUser = userPool.getCurrentUser();
         store.dispatch({type: 'user/user', user: resolvedCognitoUser})
         resolve(result)
         /*
@@ -197,13 +196,11 @@ export function sendMFACode (userData) {
   };
 
   return new Promise((resolve, reject) => {
-    //var cognitoUser = new CognitoUser(cognitoUserData)
-    var cognitoUser = resolvedCognitoUser
+    var cognitoUser = resolvedCognitoUser //ensure we use the same cognitoUser object from authenicate call since it needs the session to be initialized
     cognitoUser.sendMFACode(mfaCode, {
-      onSuccess: function (result) {
+      onSuccess: function (result, userConfirmationNecessary) {
         console.log('access token + ' + result.getAccessToken().getJwtToken())
         
-        resolvedCognitoUser = userPool.getCurrentUser();
         store.dispatch({type: 'user/user', user: resolvedCognitoUser})
         resolve(result)
         
@@ -212,6 +209,34 @@ export function sendMFACode (userData) {
     })
   })
 }
+
+//remember the device
+export function rememberDevice () {
+  return new Promise((resolve, reject) => {
+    var cognitoUser = resolvedCognitoUser //ensure we use the same cognitoUser object so the deviceKey is set from the localstorage
+    if (cognitoUser != null) {
+            cognitoUser.getSession(function (err, session) {
+                if (err) {
+                    console.log("Couldn't get the session: " + err, err.stack);
+                    callback.isLoggedIn(err, false, cognitoUser);
+                }
+                else {
+                    console.log("Session is " + session.isValid());
+                    cognitoUser.setDeviceStatusRemembered({
+                        onSuccess: function (result) {
+                            console.log('call result: ' + result);
+                            resolve(result)
+                        },
+                        onFailure: function(err) {
+                            alert(err);
+                        }
+                    })
+                }
+            })
+    }
+  })
+}
+
 
 export function isAuthenticated (callback) {
         if (callback == null)
