@@ -3,7 +3,7 @@ import { Link, browserHistory, hashHistory } from 'react-router'
 import { SubmissionError } from 'redux-form'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
-import FormUser from '../../components/auth/FormUser'
+import UserRegistrationForm from '../../components/auth/UserRegistrationForm'
 
 export default class Register extends React.Component {
   constructor (props) {
@@ -59,7 +59,7 @@ export default class Register extends React.Component {
             <div className="row log-in-form">
               <div className="medium-12 medium-centered large-12 large-centered columns1">
                 <h4 className="text-center">Create Account</h4>
-                <FormUser type='Register' onSubmit={this.onSubmit} />
+                <UserRegistrationForm type='Register' onSubmit={this.onSubmit} />
                 <p className="text-center"><Link to="/login">Login, if you already have an account</Link></p>   
                 <p className="text-center"><Link to="/confirmRegistration">Confirm Registration</Link></p>
                 <p className="text-center"><Link to="/resendCode">Resend verification link, if you have created an account</Link></p>   

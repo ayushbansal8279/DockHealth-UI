@@ -14,6 +14,17 @@ export function getTasksForCreator(userId) {
     });
 }
 
+export function getListTasksByUser(userId, taskListId){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?taskListId=1&status=INCOMPLETE&queryStartPosition=0')
+  .then(response => {
+    return response.data;
+  });
+}
+
+// export function getTasksByDueDate(userId) {
+//   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'')
+// }
+
 /**
  * Search tasks
  */
@@ -35,7 +46,7 @@ export function addTask(task) {
 }
 
 export function updateTask(task) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task'+'?userId='+userId, task)
     .then(response => {
       //store.dispatch({type: ActionTypes.ADD_TASK, id: nextTaskId++, task: response.data});
       // store.dispatch({type: ActionTypes.ADD_TASK, task: response.data});
@@ -43,13 +54,62 @@ export function updateTask(task) {
     });
 }
 
-export function deleteTask(taskId) {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/' + taskId)
+export function deleteTask(taskId, userId) {
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId + '?deleterId=' + userId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
       return response;
     });
 }
+
+export function markComplete(taskId, userId){
+  // console.log(taskId);
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=COMPLETE')
+  .then(response => {
+    return response;
+  });
+}
+
+export function markIncomplete(taskId, userId){
+  // console.log(taskId);
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=INCOMPLETE')
+  .then(response => {
+    return response;
+  });
+}
+
+export function updateTaskDescription(taskId, userId, description){
+  // return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'')
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+taskId+'?userId='+userId, {
+    description: description
+  })
+  .then(response => {
+    return response;
+  });
+}
+
+export function markHighPriority(taskId, userId){
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')
+  .then(response => {
+    return response;
+  });
+}
+
+export function markLowPriority(taskId, userId){
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=LOW')
+  .then(response => {
+    return response;
+  });
+}
+
+// export function listActiveUsersByTaskList(taskList){
+//   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'/heydoc-services/user/listAllUsersByTaskListId/'+taskListId+'?status=ACTIVE')
+//   .then(response => {
+//     return response.data;
+//   });
+// }
+
+// task/changePriority/1?priorityLevel=HIGH&userId=1
 
 export function addComment(task) {
   /*

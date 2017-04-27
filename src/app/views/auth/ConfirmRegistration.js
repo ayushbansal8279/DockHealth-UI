@@ -1,10 +1,9 @@
 import React from 'react'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import { SubmissionError } from 'redux-form'
-//import { confirmRegistration } from '../api/user-api'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
-import ConfirmUser from '../../components/auth/ConfirmUser'
+import ConfirmUserAccountForm from '../../components/auth/ConfirmUserAccountForm'
 
 export default class ConfirmRegistration extends React.Component {
   constructor (props) {
@@ -68,7 +67,7 @@ export default class ConfirmRegistration extends React.Component {
             <div className="row log-in-form">
               <div className="medium-10 medium-centered large-10 large-centered columns">
                 <h4 className="text-center">Confirm Registration</h4>
-                <ConfirmUser type='Confirm' onSubmit={this.onSubmit} />
+                <ConfirmUserAccountForm type='Confirm' onSubmit={this.onSubmit} />
                 <p className="text-center"><Link to="/resendCode">Resend verification code</Link></p>
                 <p className="text-center"><Link to="/login">Login, if you already have an account</Link></p>   
               </div>

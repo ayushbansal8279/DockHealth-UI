@@ -17,7 +17,7 @@ const validate = values => {
   return errors
 }
 
-const FormLogin = (props) => {
+const LoginForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting } = props
   return (
     <form onSubmit={handleSubmit}>
@@ -32,6 +32,6 @@ const FormLogin = (props) => {
 }
 
 export default reduxForm({
-  form: 'FormLogin',
+  form: 'LoginForm',
   validate
-})(FormLogin)
+})(LoginForm)

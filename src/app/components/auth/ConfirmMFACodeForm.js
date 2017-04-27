@@ -4,25 +4,19 @@ import BasicField from '../common/BasicField'
 
 const validate = values => {
   const errors = {}
-  if (!values.username) {
-    errors.username = 'Required'
-  }
-
   if (!values.confirmationCode) {
     errors.confirmationCode = 'Required.'
   }
-
-
   return errors
 }
 
-const ConfirmUser = (props) => {
+const ConfirmMFACodeForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting, type } = props
   console.log(props)
   return (
     <form onSubmit={handleSubmit}>
-      <Field name='username' type='text' component={BasicField} label='Email' />
-      <Field name='confirmationCode' type='text' component={BasicField} label='Confirmation Code' />
+      {/*<Field name='username' type='text' component={BasicField} label='Email' />*/}
+      <Field name='mfaCode' type='text' component={BasicField} label='Enter Authentication Code' />
       <div className='control'>
         <button className={'button is-primary is-large' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>{type || 'save'}</button>
       </div>
@@ -31,6 +25,6 @@ const ConfirmUser = (props) => {
 }
 
 export default reduxForm({
-  form: 'ConfirmUser',
+  form: 'ConfirmMFACodeForm',
   validate
-})(ConfirmUser)
+})(ConfirmMFACodeForm)

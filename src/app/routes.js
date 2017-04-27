@@ -12,6 +12,7 @@ import ConfirmRegistration from './views/auth/ConfirmRegistration'
 import ResendCode from './views/auth/ResendCode'
 import ForgotPassword from './views/auth/ForgotPassword'
 import ResetPassword from './views/auth/ResetPassword'
+import ConfirmMFACode from './views/auth/ConfirmMFACode'
 import PageNotFound from './views/PageNotFound'
 import TaskListView from './views/TaskListView'
 import TaskListAdd from './components/tasklist/TaskListAdd';
@@ -58,6 +59,7 @@ export default (
       <Route path="/resendCode" component={ResendCode} />
       <Route path="/forgotPassword" component={ForgotPassword} />
       <Route path="/resetPassword" component={ResetPassword} />
+      <Route path="/confirmMFACode" component={ConfirmMFACode} />
     </Route>
   </Route>
 );

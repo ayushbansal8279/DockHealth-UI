@@ -5471,7 +5471,8 @@ nav {
           transform: scale(0);
   transition: all .2s ease-in-out; }
 
-.mark-complete:hover .mark-complete-completed {
+
+.mark-complete:hover .mark-complete-completed, .mark-complete-clicked{
   opacity: 9;
   -webkit-transform: scale(1);
       -ms-transform: scale(1);

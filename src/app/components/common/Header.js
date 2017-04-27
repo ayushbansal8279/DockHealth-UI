@@ -17,7 +17,7 @@ class Header extends React.Component {
 				<h2>Boston Clinic <svg className="icon"><use xlinkHref="#icon-angle-down"></use></svg></h2>
 				<ul className="menu title-dropdown-menu">
 					<li className="search"><svg className="icon"><use xlinkHref="#icon-search"></use></svg>Search</li>
-					<li><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
+					<li onClick={(e) => this.alert}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
 					<li><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li>
 					<li><img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>Assigned to me</li>
 					<li><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
