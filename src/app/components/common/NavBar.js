@@ -42,7 +42,6 @@ class NavBar extends React.Component {
           this.state.user = cognitoUser
         }
         console.log('logged in: '+cognitoUser.username)
-        // this.state.user = cognitoUser
       }
   }
 
