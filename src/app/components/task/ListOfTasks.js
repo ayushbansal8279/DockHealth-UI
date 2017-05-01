@@ -130,12 +130,13 @@ class TaskList extends React.Component {
 				<span className="task-details-block">Created by {task.creator.firstName} {task.creator.lastName}</span>
 		        <span className="task-details-block"><Moment fromNow>{createdDateTime}</Moment></span>
 		        <span className="task-details-block {task.status}">{task.status}</span>
-		        <span className="calendar">
-		            <span className="task-details-block"><svg className="icon"><use xlinkHref="#icon-calendar"></use></svg> {dueDateComponent} </span>
-		            <span className="task-details-block"><svg className="icon"><use xlinkHref="#icon-bell"></use></svg> {reminderDateComponent} </span>
-		        </span>
 			</div>
+			<div className="task-details-wrapper">
+				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName : 'nobody yet'}</span>
+				<span className="task-details-block">{task.assignedBy ? 'Assigned by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName : null}</span>
 			</div>
+
+		</div>
 
 			<div className="edit-task" id="edit-task-1" data-toggler=".expanded">
 			<div className="edit-task-inner my-task-edit-section">
@@ -165,6 +166,7 @@ class TaskList extends React.Component {
 						<button onClick={(e) => this.handleDeleteTask(task.taskId, 1)}  className="button secondary float-left button-small">Delete</button>
 					</div>
 				</div>
+				
 			</div>
 			</div>
 
