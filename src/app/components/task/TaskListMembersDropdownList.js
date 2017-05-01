@@ -21,7 +21,7 @@ class TaskListMembersDropdownList extends React.Component {
 								<li onClick={(e) => this.getMemberId(member.userId)} key={member.userId}>{member.firstName}&nbsp;{member.lastName}</li>
 							);
 						})
-					}
+					}	
 				</ul>
 			</div>
 

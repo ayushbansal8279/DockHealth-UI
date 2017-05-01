@@ -102,6 +102,13 @@ export function markLowPriority(taskId, userId){
   });
 }
 
+export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId){
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/addOrUpdateTaskAssignment/' + taskId + '?assignedByUserId=' + assignedByUserId + '&assignedToUserId=' + assignedToUserId)
+    .then(response => {
+    return response;
+  });
+}
+
 // export function listActiveUsersByTaskList(taskList){
 //   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'/heydoc-services/user/listAllUsersByTaskListId/'+taskListId+'?status=ACTIVE')
 //   .then(response => {

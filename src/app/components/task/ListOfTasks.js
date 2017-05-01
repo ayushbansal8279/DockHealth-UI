@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import Moment from 'react-moment'
+import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
+import TaskListMembersContainer from './TaskListMembersContainer'
 import * as userApi from '../../api/user-api'
 
 class TaskList extends React.Component {
@@ -16,6 +18,7 @@ class TaskList extends React.Component {
 		this.handleDeleteTask = this.handleDeleteTask.bind(this)
 		this.handleUpdateTaskDescription = this.handleUpdateTaskDescription.bind(this)
 		this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
+		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
   	}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -58,6 +61,10 @@ class TaskList extends React.Component {
 
   	handleToggleTaskPriority(taskId, userId, priority){
   		this.props.toggleTaskPriority(taskId, userId, priority)
+  	}
+
+  	handleAddMemberToTask(memberId, member, taskId){
+  		this.props.assignOrReassignTask(taskId, '1', memberId, member)
   	}
 
 
@@ -111,7 +118,7 @@ class TaskList extends React.Component {
 		<button onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)} className="button primary float-right button-small">Toggle Priority</button>
 		<div className="task-item-inner-wrapper" data-toggle="">
 			<div className="mark-complete-wrapper">
-				<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="mark-complete">
+				<button className="mark-complete">
 					<div className="mark-complete-completed">
 					</div>
 				</button>
@@ -132,14 +139,16 @@ class TaskList extends React.Component {
 		        <span className="task-details-block {task.status}">{task.status}</span>
 			</div>
 			<div className="task-details-wrapper">
-				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName : 'nobody yet'}</span>
-				<span className="task-details-block">{task.assignedBy ? 'Assigned by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName : null}</span>
+				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName: 'nobody yet'}</span>
 			</div>
 
 		</div>
 
-			<div className="edit-task" id="edit-task-1" data-toggler=".expanded">
+		<div className="edit-task" id="edit-task-1" data-toggler=".expanded">
 			<div className="edit-task-inner my-task-edit-section">
+				<div className="row">
+					<TaskListMembersContainer getSelectedMemberId={this.handleAddMemberToTask} taskId={task.taskId}/>
+				</div>
 				<div className="row">
 					<div className="medium-12 columns">
 						<label>
