@@ -12,14 +12,72 @@ const TaskReducer = function(state = {tasks: []}, action) {
     case types.GET_TASKS_SUCCESS:
       return Object.assign({}, state, { tasks: action.tasks });
 
+    // handling
+    case types.MARK_TASK_STATUS_SUCCESS:
+    	return {
+          ...state,
+          tasks: state.tasks.map(task =>
+            task.taskId === action.taskId ?
+              // transform the one with a matching id
+              { ...task, status: action.status } : 
+              // otherwise return original task
+              task
+          ).filter(task => task.taskId !== taskId) 
+          
+      };
+
+    case types.DELETE_TASK_SUCCESS:
+      const taskId = action.taskId;
+      //return Object.assign({}, state, { tasks: state.tasks.filter(task => task.taskId !== taskId)});
+      return {
+        ...state,
+        tasks: state.tasks.filter(task => task.taskId !== taskId)
+      };
+
+    // case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
+    //   return {
+    //     ...state,
+    //     tasks: state.tasks.filter(task => task.taskId !== taskId)
+    //   };    
+
+    case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, description: action.description } : 
+            // otherwise return original task
+            task
+        )
+      };    
+
+    case types.TOGGLE_TASK_PRIORITY_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks
+      };
+
     case types.ADD_TASK_COMMENT_SUCCESS:
-      //return Object.assign({}, state, { tasks: action.tasks });
-      return state;
-      
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, comments: task.comments.concat([action.comment.data]) } : 
+            // otherwise return original task
+            task
+        )
+      };
   }
 
   return state;
 
+  // return { hostnames: state.hostnames.filter(hostname =>
+  //    hostname.id !== action.hostnameId
+  // )}
+
 }
+
 
 export default TaskReducer

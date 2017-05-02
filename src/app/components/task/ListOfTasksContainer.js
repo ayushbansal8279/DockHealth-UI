@@ -8,15 +8,18 @@ import * as TaskActions from '../../actions/task-actions'
 class ListOfTasksContainer extends React.Component {
 
   componentDidMount () {
-    this.props.actions.getTasksForCreator('1');
+    this.props.actions.getListTasksByUser('1', '1');
   }
 
   render () {
-    return (<ListOfTasks tasks={this.props.tasks} 
-      deleteTask={this.props.actions.deleteTask}
-      addTaskComment={this.props.actions.addTaskComment}/>);
+    return (<ListOfTasks tasks={this.props.tasks} deleteTask={this.props.actions.deleteTask}
+            markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
+            toggleTaskPriority={this.props.actions.toggleTaskPriority} 
+            addTaskComment={this.props.actions.addTaskComment}
+            />);
   }
 
+ 
 }
 
 //property validation
