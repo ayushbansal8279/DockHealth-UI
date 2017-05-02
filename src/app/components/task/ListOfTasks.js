@@ -141,7 +141,7 @@ class TaskList extends React.Component {
 		        <span className="task-details-block {task.status}">{task.status}</span>
 			</div>
 			<div className="task-details-wrapper">
-				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName: 'nobody yet'}</span>
+				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName : 'nobody yet'}</span>
 			</div>
 
 		</div>
