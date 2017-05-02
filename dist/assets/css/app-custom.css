@@ -62,3 +62,22 @@
 .is-danger {
   color: red;
 }
+
+.users{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 15px;
+  color: #fff;
+  line-height: 50px;
+  text-align: center;
+  background: #2A4A70;
+  float:left;
+  margin-right:10px;
+  margin-bottom:20px;
+  font-weight:bold;
+}  
+
+.edit-task.expanded {
+    max-height: 400px;
+}

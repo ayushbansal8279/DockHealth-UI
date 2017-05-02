@@ -15,6 +15,7 @@ class ListOfTasksContainer extends React.Component {
     return (<ListOfTasks tasks={this.props.tasks} deleteTask={this.props.actions.deleteTask}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
             toggleTaskPriority={this.props.actions.toggleTaskPriority} 
+            assignOrReassignTask={this.props.actions.assignOrReassignTask}
             addTaskComment={this.props.actions.addTaskComment}
             />);
   }

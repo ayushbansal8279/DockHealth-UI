@@ -107,18 +107,28 @@ export function toggleTaskPriority(taskId, userId, priority) {
   return function(dispatch){
     if(priority == "LOW"){
       return TaskApi.markHighPriority(taskId, userId).then(res => { // check for response value to be success      
-        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
+        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId, priority:"HIGH"});
         }).catch(error => {
         throw(error);
       });
     }
     else if(priority == "HIGH"){
       return TaskApi.markLowPriority(taskId, userId, priority).then(res => { // check for response value to be success      
-        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
+        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId, priority:"LOW"});
         }).catch(error => {
         throw(error);
       });
     }
+  }
+}
+
+export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId, member){
+  return function(dispatch){
+    return TaskApi.assignOrReassignTask(taskId, assignedByUserId, assignedToUserId).then(res => {
+      dispatch({type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS, taskId, member:member});
+    }).catch(error => {
+      throw(error);
+    })
   }
 }
 

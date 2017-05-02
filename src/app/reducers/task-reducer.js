@@ -55,8 +55,26 @@ const TaskReducer = function(state = {tasks: []}, action) {
     case types.TOGGLE_TASK_PRIORITY_SUCCESS:
       return {
         ...state,
-        tasks: state.tasks
-      };
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, priority: action.priority } : 
+            // otherwise return original task
+            task
+      )
+    };
+
+    case types.ASSIGN_OR_REASSIGN_TASK_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, assignedTo: action.member } : 
+            // otherwise return original task
+            task
+        )
+      };  
 
     case types.ADD_TASK_COMMENT_SUCCESS:
       return {
