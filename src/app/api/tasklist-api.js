@@ -65,3 +65,13 @@ export function getNonOrgUsersByTaskList(taskListId) {
       return response.data;
     });
 }
+
+
+export function changeUserRoleForList(tasklistId,settingUserId,markedUserId,role) {
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/changeUserRoleForList/' + tasklistId
+                      + "?settingUserId=" + settingUserId + "&markedUserId=" +markedUserId
+                      + "&role=" + role)
+    .then(response => {
+      return response.data;
+    });
+}

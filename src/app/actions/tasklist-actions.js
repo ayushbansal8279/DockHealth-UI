@@ -115,3 +115,24 @@ export function getNonOrgUsersByTaskList(taskListId) {
     });
   };
 }
+
+export function getActiveMembersByTaskListId(taskListId, memberStatus) {
+  return function(dispatch) {
+    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistactivemembers => {
+      dispatch({type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS, tasklistactivemembers});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+
+export function changeUserRoleForList(tasklistId,settingUserId,markedUserId,role) {
+  return function(dispatch) {
+    return TaskListApi.changeUserRoleForList(tasklistId,settingUserId,markedUserId,role).then(res => {
+      dispatch({type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS, res});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
