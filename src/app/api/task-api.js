@@ -102,6 +102,13 @@ export function markLowPriority(taskId, userId){
   });
 }
 
+export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId){
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/addOrUpdateTaskAssignment/' + taskId + '?assignedByUserId=' + assignedByUserId + '&assignedToUserId=' + assignedToUserId)
+    .then(response => {
+    return response;
+  });
+}
+
 // export function listActiveUsersByTaskList(taskList){
 //   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'/heydoc-services/user/listAllUsersByTaskListId/'+taskListId+'?status=ACTIVE')
 //   .then(response => {
@@ -111,16 +118,16 @@ export function markLowPriority(taskId, userId){
 
 // task/changePriority/1?priorityLevel=HIGH&userId=1
 
-export function addComment(task) {
-  /*
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
+export function addComment(taskId, taskComment) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment/'+ taskId, taskComment)
     .then(response => {
-      //store.dispatch({type: ActionTypes.ADD_TASK, id: nextTaskId++, task: response.data});
-      store.dispatch({type: ActionTypes.ADD_TASK, task: response.data});
       return response;
     });
-  */  
-    //var data = {id:101, text:"Added Task 1"};
-    //var data = task;
-    //store.dispatch(addTaskSuccess(data));
+}
+
+export function getTasksAssignedToUserByTaskListId(taskListId, userId) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUserByTaskListId/' + taskListId + '?userId=' + userId + '&complete=false')
+    .then(response => {
+      return response.data;
+    });
 }

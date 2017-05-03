@@ -28,7 +28,7 @@ class AddTask extends React.Component {
   	handleSubmit () {
 		TaskApi.addTask({description: this.state.value, createdByUserId: 1, assignedToId: this.state.assignedToId, taskListId:'1'})
 		this.setState({value: ''})
-		closeAddTask(); //JS function
+		//closeAddTask(); //JS function
   	}
 
   	handleAddMemberToTask(memberId){

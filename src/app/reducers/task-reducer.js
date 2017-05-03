@@ -3,7 +3,7 @@ import initialState from './initialState';
 
 const TaskReducer = function(state = {tasks: []}, action) {
 
-  switch(action.type) {    
+  switch(action.type) {
 
     case types.ADD_TASK_SUCCESS:
       // with concact make a copy of the array, and then we'll change and return the copy
@@ -19,11 +19,11 @@ const TaskReducer = function(state = {tasks: []}, action) {
           tasks: state.tasks.map(task =>
             task.taskId === action.taskId ?
               // transform the one with a matching id
-              { ...task, status: action.status } : 
+              { ...task, status: action.status } :
               // otherwise return original task
               task
-          ).filter(task => task.taskId !== taskId) 
-          
+          ).filter(task => task.taskId !== taskId)
+
       };
 
     case types.DELETE_TASK_SUCCESS:
@@ -38,7 +38,7 @@ const TaskReducer = function(state = {tasks: []}, action) {
     //   return {
     //     ...state,
     //     tasks: state.tasks.filter(task => task.taskId !== taskId)
-    //   };    
+    //   };
 
     case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
       return {
@@ -46,18 +46,47 @@ const TaskReducer = function(state = {tasks: []}, action) {
         tasks: state.tasks.map(task =>
           task.taskId === action.taskId ?
             // transform the one with a matching id
-            { ...task, description: action.description } : 
+            { ...task, description: action.description } :
             // otherwise return original task
             task
         )
-      };    
+      };
 
     case types.TOGGLE_TASK_PRIORITY_SUCCESS:
       return {
         ...state,
-        tasks: state.tasks
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, priority: action.priority } :
+            // otherwise return original task
+            task
+      )
+    };
+
+    case types.ASSIGN_OR_REASSIGN_TASK_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, assignedTo: action.member } :
+            // otherwise return original task
+            task
+        )
       };
 
+    case types.ADD_TASK_COMMENT_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, comments: task.comments.concat([action.comment.data]) } :
+            // otherwise return original task
+            task
+        )
+      };
 
   }
 

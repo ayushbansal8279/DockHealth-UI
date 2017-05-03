@@ -2,24 +2,23 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
-import TaskListMembersDropdownList from './TaskListMembersDropdownList'
+import TaskListMembers from './TaskListMembers'
 import * as TaskListActions from '../../actions/tasklist-actions'
 
-class TaskListMembersDropdownListContainer extends React.Component {
+class TaskListMembersContainer extends React.Component {
     componentDidMount () {
         //this.props.getMembersByTaskListId(taskListId, memberStatus)
         this.props.getMembersByTaskListId('1','ALL');
     }
 
     render() {
-        return (<TaskListMembersDropdownList members={this.props.members} 
-        	getSelectedMemberId={this.props.getSelectedMemberId}/>)
+        return (<TaskListMembers members={this.props.members} getSelectedMemberId={this.props.getSelectedMemberId} taskId={this.props.taskId}/>)
     }
 
 }
 
 	//property validation
-	TaskListMembersDropdownListContainer.propTypes = {  
+	TaskListMembersContainer.propTypes = {  
 	    members: PropTypes.array.isRequired,
 	    actions: PropTypes.object.isRequired
 	}
@@ -33,4 +32,4 @@ class TaskListMembersDropdownListContainer extends React.Component {
 	}
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskListMembersDropdownListContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListMembersContainer);
