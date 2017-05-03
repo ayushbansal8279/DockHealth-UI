@@ -19,7 +19,7 @@ class TaskListUsers extends React.Component {
 		    	return (
 		    		<div className="avatar">
 		    			<div className="users" key={member.userId} title={member.firstName + ' ' + member.lastName}>{member.initials}</div>
-		    			{member.taskListUserRole = "ACTIVE" ? <svg className="icon medium green"><use xlinkHref="#icon-ok"></use></svg> : <svg className="icon medium gray"><use xlinkHref="#icon-minus"></use></svg>}
+		    			{member.status == "ACTIVE" ? <svg className="icon medium green"><use xlinkHref="#icon-ok"></use></svg> : <svg className="icon medium gray"><use xlinkHref="#icon-minus"></use></svg>}
 		    		</div>
 		    	)
 			})}

@@ -6,20 +6,20 @@ import TaskListMembersContainer from './TaskListMembersContainer'
 import * as userApi from '../../api/user-api'
 
 class TaskList extends React.Component {
-	constructor(props) {
-    	super(props)
-    	this.state = {
-      		value: '',
-      		status: props.initialStatus
-    	};
-    	this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
-		this.handleMarkComplete = this.handleMarkComplete.bind(this)
-		this.handleDeleteTask = this.handleDeleteTask.bind(this)
-		this.handleUpdateTaskDescription = this.handleUpdateTaskDescription.bind(this)
-		this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
-		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
-  	}
+		constructor(props) {
+	  	super(props)
+	  	this.state = {
+	    		value: '',
+	    		status: props.initialStatus
+	  	};
+	  	this.handleSubmit = this.handleSubmit.bind(this)
+			this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
+			this.handleMarkComplete = this.handleMarkComplete.bind(this)
+			this.handleDeleteTask = this.handleDeleteTask.bind(this)
+			this.handleUpdateTaskDescription = this.handleUpdateTaskDescription.bind(this)
+			this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
+			this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
+		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
         if (!isLoggedIn) {
@@ -75,7 +75,7 @@ class TaskList extends React.Component {
 			console.log("user name: "+AWS.config.credentials.params.IdentityId);
 		}
 		//userApi.isAuthenticated(this)
-		
+
     return (
     <div>
 		{this.props.tasks.map(task => {
@@ -98,7 +98,7 @@ class TaskList extends React.Component {
 					let assigneeInitials = assignee.firstName.substr(0,1)+assignee.lastName.substr(0,1)
 					return <span className="memberphoto active" key={assignee.userId}>{assigneeInitials}</span>
 				})
-			}	
+			}
 			let commentNodes = "";
 			if(task.comments){
 				commentNodes = task.comments.map(function(comment) {
@@ -109,7 +109,7 @@ class TaskList extends React.Component {
 						</div>
 					)
 				})
-			}	
+			}
 			let taskPriorityClass = "icon medium-2 priority"
 			if(task.priority!=null && task.priority!="LOW"){
 				taskPriorityClass = taskPriorityClass + " high"
@@ -173,11 +173,11 @@ class TaskList extends React.Component {
 				<div className="row">
 					<div className="medium-12 columns button-group">
 						<button onClick={this.handleSubmit} className="button primary float-right button-small">Save</button>
-						<button className="button secondary button-small float-right">Cancel</button>	
+						<button className="button secondary button-small float-right">Cancel</button>
 						<button onClick={(e) => this.handleDeleteTask(task.taskId, 1)}  className="button secondary float-left button-small">Delete</button>
 					</div>
 				</div>
-				
+
 			</div>
 			</div>
 
