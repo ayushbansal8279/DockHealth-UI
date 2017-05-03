@@ -18,7 +18,7 @@ class TaskListUsers extends React.Component {
 		  	{this.props.members.map(member => {
 		    	return (
 		    		<div className="avatar">
-		    			<div className="users" onClick={(e) => this.getMemberId(member.userId, member)} key={member.userId} title={member.firstName + ' ' + member.lastName}>{member.initials}</div>
+		    			<div className="users" key={member.userId} title={member.firstName + ' ' + member.lastName}>{member.initials}</div>
 		    			{member.taskListUserRole = "ACTIVE" ? <svg className="icon medium green"><use xlinkHref="#icon-ok"></use></svg> : <svg className="icon medium gray"><use xlinkHref="#icon-minus"></use></svg>}
 		    		</div>
 		    	)
@@ -34,7 +34,7 @@ class TaskListUsers extends React.Component {
     return {members: store.taskListState.tasklistmembers};
 }
 
-const mapDispatchToProps = function (dispatch) {  
+const mapDispatchToProps = function (dispatch) {
   return bindActionCreators(TaskListActions, dispatch)
 }
 

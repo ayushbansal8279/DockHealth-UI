@@ -124,3 +124,10 @@ export function addComment(taskId, taskComment) {
       return response;
     });
 }
+
+export function getTasksAssignedToUserByTaskListId(taskListId, userId) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUserByTaskListId/' + taskListId + '?userId=' + userId + '&complete=false')
+    .then(response => {
+      return response.data;
+    });
+}
