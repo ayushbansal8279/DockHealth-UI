@@ -64,8 +64,8 @@ class TaskListUpdateUserRoleContainer extends React.Component {
                   :<button className="button small secondary float-right" onClick={this.onClick.bind(this,member.userId,member.taskListUserRole)}>
                     {
                       (member.taskListUserRole=='ADMIN')
-                      ?"Remove Admin"
-                      :"Make Admin"
+                      ?"Remove Admin Rights"
+                      :"Give Admin Rights"
                     }
                   </button>
                 }
