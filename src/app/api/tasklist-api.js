@@ -10,8 +10,8 @@ export function getTaskListForUser(userId) {
 }
 
 
-export function addTaskList(tasklist) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/1', tasklist)
+export function addTaskList(tasklist,orgId) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + orgId, tasklist)
     .then(response => {
       return response.data;
     });

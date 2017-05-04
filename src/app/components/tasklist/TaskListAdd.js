@@ -16,7 +16,7 @@ class TaskListAdd extends Component {
 
   onSubmit (formProps) {
     //console.log(formProps);
-    this.props.addTaskList(formProps)
+    this.props.addTaskList(formProps,'1')
     .then((res)=>{
       //this.props.resetForm;//reduxforms injected fucntion
       hashHistory.push('/taskList')

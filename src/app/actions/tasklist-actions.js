@@ -13,12 +13,12 @@ export function getTaskListForUser(userId) {
   };
 }
 
-export function addTaskList(formProps) {
+export function addTaskList(formProps,orgId) {
   var creator = {userId : '1'}
   var taskObject = {creator, listName: formProps.tasklistname};
 
   return function(dispatch) {
-    return TaskListApi.addTaskList(taskObject).then(tasklist => {
+    return TaskListApi.addTaskList(taskObject,orgId).then(tasklist => {
       dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
     }).catch(error => {
       //console.log(error.message);
