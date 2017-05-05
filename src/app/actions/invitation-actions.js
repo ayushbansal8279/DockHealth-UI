@@ -10,3 +10,23 @@ export function findInvitationsByUserId(userId) {
     });
   };
 }
+
+export function acceptInviteToTaskList(tasklistId,userId) {
+  return function(dispatch) {
+    return InvitationApi.acceptInviteToTaskList(tasklistId,userId).then(res => {
+      dispatch({type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS, res});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+export function rejectInviteToTaskList(tasklistId,userId) {
+  return function(dispatch) {
+    return InvitationApi.rejectInviteToTaskList(tasklistId,userId).then(res => {
+      dispatch({type: ActionTypes.REJECT_INVITE_TOTASKLIST_SUCCESS, res});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}

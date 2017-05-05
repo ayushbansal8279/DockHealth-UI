@@ -20,19 +20,28 @@ class InvitationContainer extends React.Component {
       this.props.findInvitationsByUserId('3');
     }
 
-    onClick(taskListId) {
+    onClickAccept(taskListId) {
+      this.props.acceptInviteToTaskList(taskListId,'3')
+      .then((res)=>{
+        this.setState({invitationProcessingResult: 'Invitation accepted successfully!!'}); //this will cause render to be called
+        this.props.findInvitationsByUserId('3');
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({invitationProcessingResult: error.message}); //this will cause render to be called
+      })
+    }
 
-      // this.props.changeUserRoleForList(this.props.taskListId,'1',markedUserId,newRole)
-      // .then((res)=>{
-      //   this.setState({changeUserRoleResult: 'User Role changed successfully!!'}); //this will cause render to be called
-      //   this.props.getActiveMembersByTaskListId(this.props.taskListId,'ACTIVE');
-      //   //hashHistory.push('/updateUserRole')
-      // })
-      // .catch((error)=>{
-      //   this.setState({changeUserRoleResult: error.message}); //this will cause render to be called
-      // })
-      alert(taskListId);
-
+    onClickReject(taskListId) {
+      this.props.rejectInviteToTaskList(taskListId,'3')
+      .then((res)=>{
+        this.setState({invitationProcessingResult: 'Invitation rejected successfully!!'}); //this will cause render to be called
+        this.props.findInvitationsByUserId('3');
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({invitationProcessingResult: error.message}); //this will cause render to be called
+      })
     }
 
     renderList() {
@@ -55,8 +64,8 @@ class InvitationContainer extends React.Component {
                 {
                   (invitation.listInviteStatus=='PENDING')
                   ? <span>
-                      <button className="button small secondary" onClick={this.onClick.bind(this,invitation.taskListId)}>Accept</button>
-                      <button className="button small secondary float-right" onClick={this.onClick.bind(this,invitation.taskListId)}>Reject</button>
+                      <button className="button small secondary" onClick={this.onClickAccept.bind(this,invitation.taskListId)}>Accept</button>
+                      <button className="button small secondary float-right" onClick={this.onClickReject.bind(this,invitation.taskListId)}>Reject</button>
                       </span>
                   :<span></span>
                 }

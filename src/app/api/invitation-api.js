@@ -6,3 +6,17 @@ export function findInvitationsByUserId(userId) {
       return response.data;
     });
 }
+
+export function acceptInviteToTaskList(tasklistId,userId) {
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/acceptInviteToTaskList/' + tasklistId + "?userId=" + userId)
+    .then(response => {
+      return response.data;
+    });
+}
+
+export function rejectInviteToTaskList(tasklistId,userId) {
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/rejectInviteToTaskList/' + tasklistId + "?userId=" + userId)
+    .then(response => {
+      return response.data;
+    });
+}
