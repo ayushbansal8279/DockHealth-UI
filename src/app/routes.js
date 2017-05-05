@@ -21,6 +21,7 @@ import TaskListMembersView from './views/TaskListMembersView';
 import TaskListInvitePersonView from './views/TaskListInvitePersonView';
 import TaskListInviteUserView from './views/TaskListInviteUserView';
 import TaskListUpdateUserRoleView from './views/TaskListUpdateUserRoleView';
+import InvitationsView from './views/InvitationsView';
 
 // const routes = {
 //   path: '/',
@@ -52,6 +53,8 @@ export default (
       <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
       <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} />
       <Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />
+      <Route path="/invitations" component={InvitationsView} />
+
     </Route>
     <Route component={TemplateNoLogin} >
       <Route path="/register" component={Register} />

@@ -71,6 +71,7 @@ class NavBar extends React.Component {
 			<li><a href="#">People</a></li>
       <NavLink to='/patientList'>Patients</NavLink>
 			<li><a href="#">Learn</a></li>
+      <NavLink to='/invitations'>Invitations</NavLink>
 		</ul>
 		{user ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={user} /> : <LinksDefault className={menuClasses}/>}
 	</div>
