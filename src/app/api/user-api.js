@@ -1,6 +1,4 @@
-/**
- * Wrapper around AWS Cognito auth
- */
+import axios from 'axios';
 import configureStore from '../configureStore'
 const store = configureStore();
 
@@ -32,7 +30,18 @@ export function register (userData) {
     userPool.signUp(username, password, attributeList, null, (err, result) => {
       if (err) return reject(err)
       resolvedCognitoUser = result.user
-      store.dispatch({type: 'user/user', user: cognitoUser})
+      store.dispatch({type: 'user/user', user: resolvedCognitoUser})
+      //enable MFA
+      /*
+      resolvedCognitoUser.enableMFA(function(err, result) {
+        if (err) {
+            alert(err);
+            return;
+        }
+        console.log('enabled MFA: ' + result);
+      });
+      */
+
       resolve(result.user)
     })
   })
@@ -53,16 +62,12 @@ export function confirmRegistration (userData) {
         if (err) {
             return reject(err)
         } else {
-            resolvedCognitoUser = result.user
-            //enable MFA
-            resolvedCognitoUser.enableMFA(function(err, result) {
-              if (err) {
-                  alert(err);
-                  return;
-              }
-              console.log('enabled MFA: ' + result);
-            });
-            store.dispatch({type: 'user/user', user: cognitoUser})
+            console.log('creating heydoc user');
+            createUser({
+              firstName: "Test",
+              lastName: "Test",
+              email: cognitoUser.username
+            })
             resolve(result.user)
         }
     })
@@ -99,6 +104,8 @@ export function logout () {
   cognitoUser.signOut()
   resolvedCognitoUser = null
   store.dispatch({type: 'user/user', user: resolvedCognitoUser})
+  sessionStorage.removeItem('accessToken');
+  sessionStorage.removeItem('userId');
 }
 
 // authenticate user, and also ask for MFA or verification code, if needed
@@ -251,7 +258,7 @@ export function isAuthenticated (callback) {
                 }
                 else {
                     console.log("Session is " + session.isValid());
-                    
+                    sessionStorage.setItem('accessToken', cognitoUser.signInUserSession.accessToken.jwtToken);
                     // NOTE: getSession must be called to authenticate user before calling getUserAttributes
                     cognitoUser.getUserAttributes(function(err, attributes) {
                         if (err) {
@@ -328,3 +335,32 @@ export function resetPassword (userData) {
   });
     
 }  
+
+export function createUser(user) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user', user)
+    .then(response => {
+      store.dispatch({type: 'user/userId', userId: response.data.userId})
+      return response;
+    });
+}
+
+export function getUserByEmail(email, cognitoUser) {
+  var accessToken = ""
+  if(cognitoUser.signInUserSession){
+    accessToken = cognitoUser.signInUserSession.accessToken.jwtToken;
+  }
+  console.log(accessToken)
+  const authString = 'Bearer '.concat(accessToken); 
+  axios.defaults.headers.common['Authorization'] = authString
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findUserByEmail?email='+email)
+    .then(response => {
+      store.dispatch({type: 'user/userProfile', userProfile: response.data})
+      sessionStorage.setItem('userId', response.data.userId);
+      sessionStorage.setItem('userProfile', response.data);
+      return response.data;
+    });
+}
+
+export function updateStoreWithCurrentUser(cognitoUser) {
+  store.dispatch({type: 'user/user', user: cognitoUser})
+}

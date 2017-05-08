@@ -8,7 +8,8 @@ import * as TaskActions from '../../actions/task-actions'
 class ListOfTasksContainer extends React.Component {
 
   componentDidMount () {
-    this.props.actions.getListTasksByUser('1', '1');
+    console.log('logged in user === '+this.props.user)
+    this.props.actions.getListTasksByUser('1', '1')
   }
 
   render () {
@@ -30,7 +31,11 @@ ListOfTasksContainer.propTypes = {
 }
 
 const mapStateToProps = function (store) {
-  return {tasks: store.taskState.tasks};
+  return {
+    tasks: store.taskState.tasks,
+    user: store.userState.user
+  };
+  
 }
 
 const mapDispatchToProps = function (dispatch) {  

@@ -113,7 +113,7 @@ export function toggleTaskPriority(taskId, userId, priority) {
       });
     }
     else if(priority == "HIGH"){
-      return TaskApi.markLowPriority(taskId, userId, priority).then(res => { // check for response value to be success      
+      return TaskApi.markLowPriority(taskId, userId).then(res => { // check for response value to be success      
         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId, priority:"LOW"});
         }).catch(error => {
         throw(error);

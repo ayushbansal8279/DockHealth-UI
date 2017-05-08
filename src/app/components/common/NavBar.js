@@ -20,7 +20,7 @@ const LinksDefault = ({className}) => (
 
 const LinksAuth = ({user, className, onLogout}) => (
   <ul className={className}>
-    <NavLink to={`/users/${user.username}`}><img className="memberphoto" src="assets/img/memberphoto.png" alt="name of user"/>{user.username}</NavLink>
+    <NavLink to={`/users/${user.username}`}><img className="memberphoto" src="assets/img/memberphoto.png" alt="name of user"/>{user.firstName} {user.lastName}</NavLink>
     <li><a className='nav-item is-tab' onClick={onLogout}>logout</a></li>
   </ul>
 )
@@ -33,33 +33,14 @@ class NavBar extends React.Component {
     }
   }
 
-  isLoggedIn(message, isLoggedIn, cognitoUser) {
-      if (!isLoggedIn) {
-        console.log('not logged in')
-        hashHistory.push('login')
-      } else {
-        if(!this.props.user){
-          this.state.user = cognitoUser
-        }
-        console.log('logged in: '+cognitoUser.username)
-      }
-  }
-
   onLogout() {
-      userApi.logout()
-      hashHistory.push('login')
-  }
-
-  componentWillMount() {
-    userApi.isAuthenticated(this)
+    userApi.logout()
+    hashHistory.push('login')
   }
 
   render() {
 
-	var {user} = this.props
-  if(!user){
-    user = this.state.user
-  }
+	var {userProfile} = this.props
 	let menuClasses = 'menu float-right'
     return (
 <nav>
@@ -72,7 +53,7 @@ class NavBar extends React.Component {
       <NavLink to='/patientList'>Patients</NavLink>
 			<li><a href="#">Learn</a></li>
 		</ul>
-		{user ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={user} /> : <LinksDefault className={menuClasses}/>}
+		{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} /> : <LinksDefault className={menuClasses}/>}
 	</div>
 </div>
 </nav>
@@ -82,7 +63,8 @@ class NavBar extends React.Component {
 
 const mapStateToProps = function (store) {
   return {
-    user: store.userState.user
+    user: store.userState.user,
+    userProfile: store.userState.userProfile
   }
 }
 

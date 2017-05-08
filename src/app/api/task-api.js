@@ -7,6 +7,8 @@ import * as ActionTypes from '../actions/action-types';
  * Get all tasks for a user
  */
 export function getTasksForCreator(userId) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksCreatedByUser/'+userId+'?organizationId=1')
     .then(response => {
       // store.dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks: response.data});
@@ -15,7 +17,9 @@ export function getTasksForCreator(userId) {
 }
 
 export function getListTasksByUser(userId, taskListId){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?taskListId=1&status=INCOMPLETE&queryStartPosition=0')
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+userId+'?taskListId='+taskListId+'&status=INCOMPLETE&queryStartPosition=0')
   .then(response => {
     return response.data;
   });
@@ -37,6 +41,8 @@ export function getListTasksByUser(userId, taskListId){
 // }
 
 export function addTask(task) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  task.createdByUserId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
     .then(response => {
       //store.dispatch({type: ActionTypes.ADD_TASK, id: nextTaskId++, task: response.data});
@@ -45,16 +51,9 @@ export function addTask(task) {
     });
 }
 
-export function updateTask(task) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task'+'?userId='+userId, task)
-    .then(response => {
-      //store.dispatch({type: ActionTypes.ADD_TASK, id: nextTaskId++, task: response.data});
-      // store.dispatch({type: ActionTypes.ADD_TASK, task: response.data});
-      return response.data;
-    });
-}
-
 export function deleteTask(taskId, userId) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId + '?deleterId=' + userId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
@@ -63,6 +62,8 @@ export function deleteTask(taskId, userId) {
 }
 
 export function markComplete(taskId, userId){
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
   // console.log(taskId);
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=COMPLETE')
   .then(response => {
@@ -71,6 +72,8 @@ export function markComplete(taskId, userId){
 }
 
 export function markIncomplete(taskId, userId){
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
   // console.log(taskId);
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=INCOMPLETE')
   .then(response => {
@@ -79,6 +82,8 @@ export function markIncomplete(taskId, userId){
 }
 
 export function updateTaskDescription(taskId, userId, description){
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
   // return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'')
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+taskId+'?userId='+userId, {
     description: description
@@ -89,6 +94,8 @@ export function updateTaskDescription(taskId, userId, description){
 }
 
 export function markHighPriority(taskId, userId){
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')
   .then(response => {
     return response;
@@ -96,6 +103,8 @@ export function markHighPriority(taskId, userId){
 }
 
 export function markLowPriority(taskId, userId){
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  userId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=LOW')
   .then(response => {
     return response;
@@ -103,6 +112,7 @@ export function markLowPriority(taskId, userId){
 }
 
 export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId){
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/addOrUpdateTaskAssignment/' + taskId + '?assignedByUserId=' + assignedByUserId + '&assignedToUserId=' + assignedToUserId)
     .then(response => {
     return response;
@@ -119,6 +129,8 @@ export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId)
 // task/changePriority/1?priorityLevel=HIGH&userId=1
 
 export function addComment(taskId, taskComment) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
+  taskComment.creator.userId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment/'+ taskId, taskComment)
     .then(response => {
       return response;
