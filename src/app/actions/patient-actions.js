@@ -1,7 +1,7 @@
 import * as ActionTypes from '../actions/action-types';
 import * as PatientApi from '../api/patient-api'
 
-export function getAllPatients() {  
+export function getAllPatients() {
   return function(dispatch) {
     return PatientApi.getAllPatients().then(patients => {
       dispatch(getAllPatientsSuccess(patients));
@@ -11,11 +11,21 @@ export function getAllPatients() {
   };
 }
 
-export function getAllPatientsSuccess(patients) {  
+export function getPatientsByTaskList(){
+  return function(dispatch){
+    return PatientApi.getPatientsByTaskList().then(patients => {
+      dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients})
+    }).catch(error => {
+      throw(error)
+    })
+  }
+}
+
+export function getAllPatientsSuccess(patients) {
   return {type: ActionTypes.GET_PATIENTS_SUCCESS, patients};
 }
 
-export function addPatient(newPatient) {  
+export function addPatient(newPatient) {
   return function(dispatch) {
     return PatientApi.addPatient(newPatient).then(patient => {
       dispatch({type: ActionTypes.ADD_PATIENT_SUCCESS, patient});
@@ -23,4 +33,14 @@ export function addPatient(newPatient) {
       throw(error);
     });
   };
+}
+
+export function addPatientToTask(patientId, taskId){
+  return function(dispatch){
+    return PatientApi.addPatientToTask(patientId, taskId).then(patient => {
+      dispatch({type: ActionTypes.ADD_PATIENT_TO_TASK_SUCCESS, patient})
+    }).catch(error => {
+      throw(error)
+    })
+  }
 }

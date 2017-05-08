@@ -33,7 +33,8 @@ class TaskFiltersContainer extends React.Component {
             </a>
   		      <ul className="menu">
     			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId('1', '1')}><a href="#">Assigned to me</a></li>
-    			    <li><a href="#">I assigned to others 42</a></li>
+              <li><a href="#">High Priority</a></li>
+    			    <li><a href="#">I assigned to others</a></li>
   		      </ul>
           </li>
 			    <li>

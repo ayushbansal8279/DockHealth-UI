@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import ListOfTasks from './ListOfTasks'
 import * as TaskActions from '../../actions/task-actions'
+import * as PatientActions from '../../actions/patient-actions'
 
 class ListOfTasksContainer extends React.Component {
 
@@ -14,17 +15,18 @@ class ListOfTasksContainer extends React.Component {
   render () {
     return (<ListOfTasks tasks={this.props.tasks} deleteTask={this.props.actions.deleteTask}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
-            toggleTaskPriority={this.props.actions.toggleTaskPriority} 
+            toggleTaskPriority={this.props.actions.toggleTaskPriority}
             assignOrReassignTask={this.props.actions.assignOrReassignTask}
             addTaskComment={this.props.actions.addTaskComment}
+            addPatientToTask={this.props.patientActions.addPatientToTask}
             />);
   }
 
- 
+
 }
 
 //property validation
-ListOfTasksContainer.propTypes = {  
+ListOfTasksContainer.propTypes = {
     tasks: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 }
@@ -33,9 +35,10 @@ const mapStateToProps = function (store) {
   return {tasks: store.taskState.tasks};
 }
 
-const mapDispatchToProps = function (dispatch) {  
+const mapDispatchToProps = function (dispatch) {
   return {
-    actions: bindActionCreators(TaskActions, dispatch)
+    actions: bindActionCreators(TaskActions, dispatch),
+    patientActions: bindActionCreators(PatientActions, dispatch)
   }
 }
 

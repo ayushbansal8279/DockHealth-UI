@@ -9,6 +9,14 @@ export function getAllPatients() {
     });
 }
 
+export function getPatientsByTaskList() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getPatientsByTaskList/1')
+    .then(response => {
+      // store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});
+      return response.data;
+    });
+}
+
 export function removePatient(patientId) {
   return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'patient/' + patientId)
     .then(response => {
@@ -23,4 +31,11 @@ export function addPatient(patient) {
       // store.dispatch({type: ActionTypes.ADD_PATIENT, patient: response.data});
       return response;
     });
+}
+
+export function addPatientToTask(patientId, taskId){
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL + 'patient/addPatientToTaskById/' + taskId + '?patientId=' + patientId)
+    .then(response => {
+      return response
+    })
 }

@@ -56,7 +56,7 @@
 .log-in-form {
   border: 1px solid #cacaca;
   padding-left: 1rem;
-  border-radius: 3px; 
+  border-radius: 3px;
 }
 
 .is-danger {
@@ -76,8 +76,13 @@
   margin-right:10px;
   margin-bottom:20px;
   font-weight:bold;
-}  
+}
 
 .edit-task.expanded {
-    max-height: 400px;
+  max-height: 800px;
+}
+
+.patients-list{
+  padding-left:60px;
+  cursor:pointer;
 }

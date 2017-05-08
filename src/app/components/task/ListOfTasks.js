@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import Moment from 'react-moment'
+import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
 import TaskListMembersContainer from './TaskListMembersContainer'
 import * as userApi from '../../api/user-api'
@@ -19,6 +20,7 @@ class TaskList extends React.Component {
 			this.handleUpdateTaskDescription = this.handleUpdateTaskDescription.bind(this)
 			this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
 			this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
+			this.addPatientToTaskCallback = this.addPatientToTaskCallback.bind(this)
 		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -68,6 +70,10 @@ class TaskList extends React.Component {
   	handleAddMemberToTask(memberId, member, taskId){
   		this.props.assignOrReassignTask(taskId, '1', memberId, member)
   	}
+
+		addPatientToTaskCallback(patientId, taskId){
+			this.props.addPatientToTask(patientId, taskId)
+		}
 
 
     render() {
@@ -142,6 +148,7 @@ class TaskList extends React.Component {
 			</div>
 			<div className="task-details-wrapper">
 				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName : 'nobody yet'}</span>
+				<span className="task-details-block">Patient: {task.patient ? task.patient.firstName + ' ' + task.patient.lastName : 'none'}</span>
 			</div>
 
 		</div>
@@ -150,6 +157,9 @@ class TaskList extends React.Component {
 			<div className="edit-task-inner my-task-edit-section">
 				<div className="row">
 					<TaskListMembersContainer getSelectedMemberId={this.handleAddMemberToTask} taskId={task.taskId}/>
+				</div>
+				<div className="row patients-list">
+					<PatientDropdownListContainer addPatientToTaskCallback={this.addPatientToTaskCallback} taskId={task.taskId}/>
 				</div>
 				<div className="row">
 					<div className="medium-12 columns">

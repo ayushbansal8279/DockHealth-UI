@@ -11,12 +11,14 @@ class PatientDropdownListContainer extends React.Component {
     }
 
     render() {
-        return (<PatientDropdownList patients={this.props.patients} />)
+        return (
+          <PatientDropdownList patients={this.props.patients} addPatientToTaskCallback={this.props.addPatientToTaskCallback} taskId={this.props.taskId}/>
+        )
     }
 }
 
 //property validation
-PatientDropdownListContainer.propTypes = {  
+PatientDropdownListContainer.propTypes = {
     patients: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 }
@@ -25,7 +27,7 @@ const mapStateToProps = function (store) {
     return {patients: store.patientState.allPatients};
 }
 
-const mapDispatchToProps = function (dispatch) {  
+const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(PatientActions, dispatch)
   }
