@@ -1,25 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import Moment from 'react-moment'
+import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
 import TaskListMembersContainer from './TaskListMembersContainer'
 import * as userApi from '../../api/user-api'
 
 class TaskList extends React.Component {
-	constructor(props) {
-    	super(props)
-    	this.state = {
-      		value: '',
-      		status: props.initialStatus
-    	};
-    	this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
-		this.handleMarkComplete = this.handleMarkComplete.bind(this)
-		this.handleDeleteTask = this.handleDeleteTask.bind(this)
-		this.handleUpdateTaskDescription = this.handleUpdateTaskDescription.bind(this)
-		this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
-		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
-  	}
+		constructor(props) {
+	  	super(props)
+	  	this.state = {
+	    		value: '',
+	    		status: props.initialStatus
+	  	};
+	  	this.handleSubmit = this.handleSubmit.bind(this)
+			this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
+			this.handleMarkComplete = this.handleMarkComplete.bind(this)
+			this.handleDeleteTask = this.handleDeleteTask.bind(this)
+			this.handleUpdateTaskDescription = this.handleUpdateTaskDescription.bind(this)
+			this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
+			this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
+			this.addPatientToTaskCallback = this.addPatientToTaskCallback.bind(this)
+		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
         if (!isLoggedIn) {
@@ -69,13 +71,17 @@ class TaskList extends React.Component {
   		this.props.assignOrReassignTask(taskId, '1', memberId, member)
   	}
 
+		addPatientToTaskCallback(patientId, taskId){
+			this.props.addPatientToTask(patientId, taskId)
+		}
+
 
     render() {
 		if(AWS.config.credentials){
 			console.log("user name: "+AWS.config.credentials.params.IdentityId);
 		}
 		//userApi.isAuthenticated(this)
-		
+
     return (
     <div>
 		{this.props.tasks.map(task => {
@@ -98,7 +104,7 @@ class TaskList extends React.Component {
 					let assigneeInitials = assignee.firstName.substr(0,1)+assignee.lastName.substr(0,1)
 					return <span className="memberphoto active" key={assignee.userId}>{assigneeInitials}</span>
 				})
-			}	
+			}
 			let commentNodes = "";
 			if(task.comments){
 				commentNodes = task.comments.map(function(comment) {
@@ -109,7 +115,7 @@ class TaskList extends React.Component {
 						</div>
 					)
 				})
-			}	
+			}
 			let taskPriorityClass = "icon medium-2 priority"
 			if(task.priority!=null && task.priority!="LOW"){
 				taskPriorityClass = taskPriorityClass + " high"
@@ -141,7 +147,8 @@ class TaskList extends React.Component {
 		        <span className="task-details-block {task.status}">{task.status}</span>
 			</div>
 			<div className="task-details-wrapper">
-				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName: 'nobody yet'}</span>
+				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName : 'nobody yet'}</span>
+				<span className="task-details-block">Patient: {task.patient ? task.patient.firstName + ' ' + task.patient.lastName : 'none'}</span>
 			</div>
 
 		</div>
@@ -150,6 +157,9 @@ class TaskList extends React.Component {
 			<div className="edit-task-inner my-task-edit-section">
 				<div className="row">
 					<TaskListMembersContainer getSelectedMemberId={this.handleAddMemberToTask} taskId={task.taskId}/>
+				</div>
+				<div className="row patients-list">
+					<PatientDropdownListContainer addPatientToTaskCallback={this.addPatientToTaskCallback} taskId={task.taskId}/>
 				</div>
 				<div className="row">
 					<div className="medium-12 columns">
@@ -173,11 +183,11 @@ class TaskList extends React.Component {
 				<div className="row">
 					<div className="medium-12 columns button-group">
 						<button onClick={this.handleSubmit} className="button primary float-right button-small">Save</button>
-						<button className="button secondary button-small float-right">Cancel</button>	
+						<button className="button secondary button-small float-right">Cancel</button>
 						<button onClick={(e) => this.handleDeleteTask(task.taskId, 1)}  className="button secondary float-left button-small">Delete</button>
 					</div>
 				</div>
-				
+
 			</div>
 			</div>
 

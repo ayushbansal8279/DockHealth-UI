@@ -20,7 +20,7 @@ class TaskListInvitePersonContainer extends Component {
     }
 
   onSubmit (formProps) {
-    console.log(formProps);
+    //console.log(formProps);
     this.props.invitePersonToTaskList(formProps,this.props.taskListId)
     .then((res)=>{
       //this.props.resetForm;//reduxforms injected fucntion

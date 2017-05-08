@@ -20132,7 +20132,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 date = arguments[0];
                 fromArgs = true;
             } else if (!currentVal && this.initialDate != null) {
-                // If value is not set, set it to the initialDate 
+                // If value is not set, set it to the initialDate
                 date = this.initialDate;
             } else {
                 date = this.isInput ? this.element.val() : this.element.data('date') || this.element.find('input').val();
@@ -21062,7 +21062,7 @@ $('.priority').on('click', function () {
 	$(this).toggleClass('high');
 });
 
-// toggle task edit 
+// toggle task edit
 $('.task-item-inner-wrapper').on('click', function () {
 	$('.edit-task').toggleClass('expanded');
 });
@@ -21074,7 +21074,7 @@ $(".calendar .task-details-block, .task-title-left.float-left, .priority, .mark-
 $('.add').click(function () {
 	$(this).toggleClass('close');
 	$('.add-task.column').slideToggle(300, function () {
-		//	var $el = $('.add-task.column');  //record the elem so you don't crawl the DOM everytime  
+		//	var $el = $('.add-task.column');  //record the elem so you don't crawl the DOM everytime
 		//	var bottom = $el.position().top + $el.outerHeight(true);
 		//		$('.task-list-filter').animate({paddingTop: bottom}, 1);
 		$('.add-task input').toggleClass('fadein');

@@ -13,12 +13,12 @@ export function getTaskListForUser(userId) {
   };
 }
 
-export function addTaskList(formProps) {
+export function addTaskList(formProps,orgId) {
   var creator = {userId : '1'}
   var taskObject = {creator, listName: formProps.tasklistname};
 
   return function(dispatch) {
-    return TaskListApi.addTaskList(taskObject).then(tasklist => {
+    return TaskListApi.addTaskList(taskObject,orgId).then(tasklist => {
       dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
     }).catch(error => {
       //console.log(error.message);
@@ -110,6 +110,27 @@ export function getNonOrgUsersByTaskList(taskListId) {
   return function(dispatch) {
     return TaskListApi.getNonOrgUsersByTaskList(taskListId).then(users => {
       dispatch({type: ActionTypes.GET_NONORGUSERSINTASKLIST_SUCCESS, users});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+export function getActiveMembersByTaskListId(taskListId, memberStatus) {
+  return function(dispatch) {
+    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistactivemembers => {
+      dispatch({type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS, tasklistactivemembers});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+
+export function changeUserRoleForList(tasklistId,settingUserId,markedUserId,role) {
+  return function(dispatch) {
+    return TaskListApi.changeUserRoleForList(tasklistId,settingUserId,markedUserId,role).then(res => {
+      dispatch({type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS, res});
     }).catch(error => {
       throw(error);
     });

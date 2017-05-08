@@ -1,7 +1,7 @@
 import * as ActionTypes from '../actions/action-types';
 import * as TaskApi from '../api/task-api'
 
-export function getTasksForCreator(userId) {  
+export function getTasksForCreator(userId) {
   return function(dispatch) {
     return TaskApi.getTasksForCreator(userId).then(tasks => {
       dispatch(getTasksForCreatorSuccess(tasks));
@@ -11,11 +11,11 @@ export function getTasksForCreator(userId) {
   }
 }
 
-function getTasksForCreatorSuccess(tasks) {  
+function getTasksForCreatorSuccess(tasks) {
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
 
-export function getListTasksByUser(userId, taskListId) {  
+export function getListTasksByUser(userId, taskListId) {
   return function(dispatch) {
     return TaskApi.getListTasksByUser(userId, taskListId).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks));
@@ -25,7 +25,17 @@ export function getListTasksByUser(userId, taskListId) {
   }
 }
 
-function getListTasksByUserSuccess(tasks) {  
+export function getTasksAssignedToUserByTaskListId(userId, taskListId) {
+  return function(dispatch) {
+    return TaskApi.getTasksAssignedToUserByTaskListId(taskListId, userId).then(tasks => {
+      dispatch(getListTasksByUserSuccess(tasks));
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+function getListTasksByUserSuccess(tasks) {
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
 
@@ -39,11 +49,11 @@ function getListTasksByUserSuccess(tasks) {
 //   }
 // }
 
-// function getListTasksByUserSuccess(tasks) {  
+// function getListTasksByUserSuccess(tasks) {
 //   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 // }
 
-export function addTask(newTask) {  
+export function addTask(newTask) {
   return function(dispatch) {
     return TaskApi.getTasksForCreator(newTask).then(task => {
       dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
@@ -53,7 +63,7 @@ export function addTask(newTask) {
   }
 }
 
-export function addTaskComment(taskId, taskComment) {  
+export function addTaskComment(taskId, taskComment) {
   return function(dispatch) {
     return TaskApi.addComment(taskId, taskComment).then(comment => {
       dispatch({type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, taskId, comment});
@@ -63,7 +73,7 @@ export function addTaskComment(taskId, taskComment) {
   };
 }
 
-export function deleteTask(taskId, userId) {  
+export function deleteTask(taskId, userId) {
   return function(dispatch) {
     return TaskApi.deleteTask(taskId, userId).then(task => {
       dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId});
@@ -74,17 +84,17 @@ export function deleteTask(taskId, userId) {
 }
 
 //checking
-export function markComplete(taskId, userId, status) {  
+export function markComplete(taskId, userId, status) {
   return function(dispatch){
     if(status == "INCOMPLETE"){
-      return TaskApi.markComplete(taskId, userId).then(res => { // check for response value to be success      
+      return TaskApi.markComplete(taskId, userId).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.MARK_TASK_STATUS_SUCCESS, taskId, status:"COMPLETE"});
         }).catch(error => {
         throw(error);
       });
     }
     else if(status == "COMPLETE"){
-      return TaskApi.markIncomplete(taskId, userId).then(res => { // check for response value to be success      
+      return TaskApi.markIncomplete(taskId, userId).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.MARK_TASK_STATUS_SUCCESS, taskId, status:"INCOMPLETE"});
         }).catch(error => {
         throw(error);
@@ -103,17 +113,17 @@ export function updateTaskDescription(taskId, userId, description){
   }
 }
 
-export function toggleTaskPriority(taskId, userId, priority) {  
+export function toggleTaskPriority(taskId, userId, priority) {
   return function(dispatch){
     if(priority == "LOW"){
-      return TaskApi.markHighPriority(taskId, userId).then(res => { // check for response value to be success      
+      return TaskApi.markHighPriority(taskId, userId).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId, priority:"HIGH"});
         }).catch(error => {
         throw(error);
       });
     }
     else if(priority == "HIGH"){
-      return TaskApi.markLowPriority(taskId, userId).then(res => { // check for response value to be success      
+      return TaskApi.markLowPriority(taskId, userId, priority).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId, priority:"LOW"});
         }).catch(error => {
         throw(error);

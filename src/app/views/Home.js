@@ -1,16 +1,16 @@
 import React from 'react'
 import ListOfTasksContainer from '../components/task/ListOfTasksContainer'
-import TaskFilters from '../components/task/TaskFilters'
+import TaskFiltersContainer from '../components/task/TaskFiltersContainer'
 import TaskListPatients from '../components/task/TaskListPatients'
 import TaskListUsers from '../components/task/TaskListUsers'
 import Notification from '../components/common/Notification'
 
 class Home extends React.Component {
     render() {
-    return (   
+    return (
       <div className="row">
         <div className="large-8 columns task-list-container">
-          <TaskFilters />
+          <TaskFiltersContainer />
           <ListOfTasksContainer />
         </div>
         <div className="large-4 columns sidebar">
@@ -23,4 +23,3 @@ class Home extends React.Component {
 }
 
 export default Home
-

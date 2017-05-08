@@ -5,6 +5,7 @@ import UserReducer from './user-reducer'
 import { reducer as form } from 'redux-form'
 import { reducer as notification } from './notification-reducer'
 import TaskListReducer from './tasklist-reducer'
+import InvitationReducer from './invitation-reducer'
 
 const rootReducer = combineReducers({
   taskState: TaskReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   userState: UserReducer,
   notification,
   form,
-  taskListState: TaskListReducer
+  taskListState: TaskListReducer,
+  invitationState: InvitationReducer
 })
 
 export default rootReducer

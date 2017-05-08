@@ -7,15 +7,15 @@ import * as TaskApi from '../../api/task-api'
 
 class AddTask extends React.Component {
 	constructor(props) {
-    	super(props)
-    	this.state = {
-      		value: '',
-      		assignedToId: ''
-    	};
-    	this.handleSubmit = this.handleSubmit.bind(this)
+  	super(props)
+  	this.state = {
+    		value: '',
+    		assignedToId: ''
+  	};
+    this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
 		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
-  	}
+		}
   	componentDidMount () {
     	console.log("mounted AddTask component")
 		//this.state.text = ""
@@ -90,7 +90,7 @@ class AddTask extends React.Component {
 		</div>
 	</div>
 
-	
+
 
     )
     }
@@ -103,5 +103,5 @@ const mapStateToProps = function(store) {
   }
 };
 
-//export default AddTask    
+//export default AddTask
 export default connect(mapStateToProps)(AddTask);
