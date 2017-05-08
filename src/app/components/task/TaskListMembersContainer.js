@@ -19,8 +19,8 @@ class TaskListMembersContainer extends React.Component {
 
 	//property validation
 	TaskListMembersContainer.propTypes = {  
-	    members: PropTypes.array.isRequired,
-	    actions: PropTypes.object.isRequired
+	    members: PropTypes.array.isRequired
+	    //actions: PropTypes.object.isRequired
 	}
 
 	 const mapStateToProps = function (store) {

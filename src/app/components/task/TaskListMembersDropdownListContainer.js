@@ -20,8 +20,8 @@ class TaskListMembersDropdownListContainer extends React.Component {
 
 	//property validation
 	TaskListMembersDropdownListContainer.propTypes = {  
-	    members: PropTypes.array.isRequired,
-	    actions: PropTypes.object.isRequired
+	    members: PropTypes.array.isRequired
+	    //actions: PropTypes.object.isRequired
 	}
 
 	 const mapStateToProps = function (store) {
