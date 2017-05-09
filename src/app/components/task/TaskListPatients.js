@@ -42,7 +42,7 @@ TaskListPatients.propTypes = {
 // allPatients comes from reducer
 const mapStateToProps = function(store) {
   return {
-    patients: store.patientState.allPatients
+    patients: store.patientState.listPatients
   }
 }
 

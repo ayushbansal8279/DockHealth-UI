@@ -19,7 +19,7 @@ export function getTasksForCreator(userId) {
 export function getListTasksByUser(userId, taskListId){
   axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
   userId = sessionStorage.userId
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+userId+'?taskListId='+taskListId+'&status=INCOMPLETE&queryStartPosition=0')
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?taskListId='+taskListId+'&status=INCOMPLETE&queryStartPosition=0')
   .then(response => {
     return response.data;
   });

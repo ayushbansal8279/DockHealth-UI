@@ -14,7 +14,7 @@ export function getAllPatients() {
 export function getPatientsByTaskList(){
   return function(dispatch){
     return PatientApi.getPatientsByTaskList().then(patients => {
-      dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients})
+      dispatch({type: ActionTypes.GET_LIST_PATIENTS_SUCCESS, patients})
     }).catch(error => {
       throw(error)
     })
