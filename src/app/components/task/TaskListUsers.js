@@ -17,8 +17,8 @@ class TaskListUsers extends React.Component {
   			<h6>Invited to this list</h6>
 		  	{this.props.members.map(member => {
 		    	return (
-		    		<div className="avatar">
-		    			<div className="users" key={member.userId} title={member.firstName + ' ' + member.lastName}>{member.initials}</div>
+		    		<div className="avatar" key={member.userId}>
+		    			<div className="users"  title={member.firstName + ' ' + member.lastName}>{member.initials}</div>
 		    			{member.status == "ACTIVE" ? <svg className="icon medium green"><use xlinkHref="#icon-ok"></use></svg> : <svg className="icon medium gray"><use xlinkHref="#icon-minus"></use></svg>}
 		    		</div>
 		    	)

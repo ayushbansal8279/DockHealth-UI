@@ -88,6 +88,18 @@ const TaskReducer = function(state = {tasks: []}, action) {
         )
       };
 
+    case types.ADD_PATIENT_TO_TASK_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            { ...task, patient: action.patient } :
+            // otherwise return original task
+            task
+        )
+      };
+
   }
 
   return state;

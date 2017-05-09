@@ -9,7 +9,7 @@ class PatientDropdownList extends React.Component {
 
 	addPatientToTask(patientId){
 		this.props.addPatientToTaskCallback(patientId, this.props.taskId);
-		alert('clicked');
+		// alert('clicked');
 	}
 
 	render(){

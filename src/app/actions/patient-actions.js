@@ -38,7 +38,7 @@ export function addPatient(newPatient) {
 export function addPatientToTask(patientId, taskId){
   return function(dispatch){
     return PatientApi.addPatientToTask(patientId, taskId).then(patient => {
-      dispatch({type: ActionTypes.ADD_PATIENT_TO_TASK_SUCCESS, patient})
+      dispatch({type: ActionTypes.ADD_PATIENT_TO_TASK_SUCCESS, patient, taskId})
     }).catch(error => {
       throw(error)
     })
