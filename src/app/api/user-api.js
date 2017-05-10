@@ -351,7 +351,9 @@ export function getUserByEmail(email, cognitoUser) {
   }
   console.log(accessToken)
   const authString = 'Bearer '.concat(accessToken); 
+  //sets global header for axios
   axios.defaults.headers.common['Authorization'] = authString
+  // axios.defaults.headers.common['CurrentUserId'] = "1"
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findUserByEmail?email='+email)
     .then(response => {
       store.dispatch({type: 'user/userProfile', userProfile: response.data})
