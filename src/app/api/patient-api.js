@@ -34,7 +34,7 @@ export function addPatient(patient) {
 }
 
 export function addPatientToTask(patientId, taskId){
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL + 'patient/addPatientToTaskById/' + taskId + '?patientId=' + patientId)
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL + 'patient/addPatientToTaskById/' + taskId + '?patientId=' + patientId)
     .then(response => {
       return response.data
     })
