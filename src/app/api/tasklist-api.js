@@ -11,7 +11,7 @@ export function getTaskListForUser(userId) {
 
 
 export function addTaskList(tasklist,orgId) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + orgId, tasklist)
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + orgId, tasklist)
     .then(response => {
       return response.data;
     });
@@ -25,7 +25,7 @@ export function getTaskListById(taskListId) {
 }
 
 export function updateTaskList(userId,taskList) { //userId - make sure authorized user can only update the task list
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + userId, taskList)
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + userId, taskList)
     .then(response => {
       return response.data;
     });
@@ -39,7 +39,7 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
 }
 
 export function invitePersonToTaskList(tasklistId,personInfo) {
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/invitePersonToTaskList/' + tasklistId,personInfo)
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/invitePersonToTaskList/' + tasklistId,personInfo)
     .then(response => {
       return response.data;
     });
@@ -53,7 +53,7 @@ export function getOrganizationUsersNotInTaskList(tasklistId,organizationId) {
 }
 
 export function inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedUsers) {
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId+ "?invitingUserId=" + invitingUserId, invitedUsers)
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId+ "?invitingUserId=" + invitingUserId, invitedUsers)
     .then(response => {
       return response.data;
     });
@@ -68,7 +68,7 @@ export function getNonOrgUsersByTaskList(taskListId) {
 
 
 export function changeUserRoleForList(tasklistId,settingUserId,markedUserId,role) {
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/changeUserRoleForList/' + tasklistId
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/changeUserRoleForList/' + tasklistId
                       + "?settingUserId=" + settingUserId + "&markedUserId=" +markedUserId
                       + "&role=" + role)
     .then(response => {

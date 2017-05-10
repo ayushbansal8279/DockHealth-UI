@@ -26,7 +26,7 @@ export function removePatient(patientId) {
 }
 
 export function addPatient(patient) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'patient?organizationId=1', patient)
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'patient?organizationId=1', patient)
     .then(response => {
       // store.dispatch({type: ActionTypes.ADD_PATIENT, patient: response.data});
       return response;
