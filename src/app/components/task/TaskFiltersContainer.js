@@ -12,10 +12,15 @@ class TaskFiltersContainer extends React.Component {
           status: props.initialStatus
       };
       this.getTasksAssignedToUserByTaskListId = this.getTasksAssignedToUserByTaskListId.bind(this)
+      this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
     }
 
     getTasksAssignedToUserByTaskListId(taskListId, userId){
       this.props.getTasksAssignedToUserByTaskListId(taskListId, userId)
+    }
+
+    getTasksAssignedByMe(taskListId){
+      this.props.getTasksAssignedByMe(taskListId)
     }
 
     render() {
@@ -34,7 +39,7 @@ class TaskFiltersContainer extends React.Component {
   		      <ul className="menu">
     			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId('1', '1')}><a href="#">Assigned to me</a></li>
               <li><a href="#">High Priority</a></li>
-    			    <li><a href="#">I assigned to others</a></li>
+    			    <li onClick={(e) => this.getTasksAssignedByMe('1')}><a href="#">I assigned to others</a></li>
   		      </ul>
           </li>
 			    <li>

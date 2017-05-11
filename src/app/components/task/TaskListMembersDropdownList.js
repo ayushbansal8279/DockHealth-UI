@@ -17,11 +17,13 @@ class TaskListMembersDropdownList extends React.Component {
 				<ul className="no-bullet expand">
 					{this.props.members
 						.map(member => {
-							return(
-								<li onClick={(e) => this.getMemberId(member.userId)} key={member.userId}>{member.firstName}&nbsp;{member.lastName}</li>
-							);
+							if(member.status == "ACTIVE"){
+								return(
+									<li onClick={(e) => this.getMemberId(member.userId)} key={member.userId}>{member.firstName}&nbsp;{member.lastName}</li>
+								)
+							}
 						})
-					}	
+					}
 				</ul>
 			</div>
 

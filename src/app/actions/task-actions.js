@@ -35,6 +35,16 @@ export function getTasksAssignedToUserByTaskListId(userId, taskListId) {
   }
 }
 
+export function getTasksAssignedByMe(taskListId){
+  return function(dispatch){
+    return TaskApi.getTasksAssignedByMe(taskListId).then(tasks => {
+      dispatch(getListTasksByUserSuccess(tasks));
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
 function getListTasksByUserSuccess(tasks) {
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
