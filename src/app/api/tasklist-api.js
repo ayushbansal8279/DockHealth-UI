@@ -2,8 +2,8 @@ import axios from 'axios';
 import * as ActionTypes from '../actions/action-types';
 
 
-export function getTaskListForUser(userId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findTaskListsByUserId/'+userId)
+export function getTaskListForUser() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findTaskListsByUserId')
     .then(response => {
       return response.data;
     });
@@ -24,8 +24,8 @@ export function getTaskListById(taskListId) {
     });
 }
 
-export function updateTaskList(userId,taskList) { //userId - make sure authorized user can only update the task list
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + userId, taskList)
+export function updateTaskList(taskList) { //userId - make sure authorized user can only update the task list
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/', taskList)
     .then(response => {
       return response.data;
     });
