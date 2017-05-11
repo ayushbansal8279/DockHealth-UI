@@ -17,14 +17,14 @@ class InvitationContainer extends React.Component {
     }
 
     componentDidMount () {
-      this.props.findInvitationsByUserId('3');
+      this.props.findInvitationsByUserId();
     }
 
     onClickAccept(taskListId) {
-      this.props.acceptInviteToTaskList(taskListId,'3')
+      this.props.acceptInviteToTaskList(taskListId)
       .then((res)=>{
         this.setState({invitationProcessingResult: 'Invitation accepted successfully!!'}); //this will cause render to be called
-        this.props.findInvitationsByUserId('3');
+        this.props.findInvitationsByUserId();
         //hashHistory.push('/updateUserRole')
       })
       .catch((error)=>{
@@ -33,10 +33,10 @@ class InvitationContainer extends React.Component {
     }
 
     onClickReject(taskListId) {
-      this.props.rejectInviteToTaskList(taskListId,'3')
+      this.props.rejectInviteToTaskList(taskListId)
       .then((res)=>{
         this.setState({invitationProcessingResult: 'Invitation rejected successfully!!'}); //this will cause render to be called
-        this.props.findInvitationsByUserId('3');
+        this.props.findInvitationsByUserId();
         //hashHistory.push('/updateUserRole')
       })
       .catch((error)=>{

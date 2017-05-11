@@ -3,9 +3,9 @@ import * as TaskListApi from '../api/tasklist-api'
 
 
 //Find all TaskLists user belongs to
-export function getTaskListForUser(userId) {
+export function getTaskListForUser() {
   return function(dispatch) {
-    return TaskListApi.getTaskListForUser(userId).then(tasklist => {
+    return TaskListApi.getTaskListForUser().then(tasklist => {
       dispatch({type: ActionTypes.GET_TASKLIST_SUCCESS, tasklist});
     }).catch(error => {
       throw(error);
@@ -14,8 +14,7 @@ export function getTaskListForUser(userId) {
 }
 
 export function addTaskList(formProps,orgId) {
-  var creator = {userId : '1'}
-  var taskObject = {creator, listName: formProps.tasklistname};
+  var taskObject = {listName: formProps.tasklistname};
 
   return function(dispatch) {
     return TaskListApi.addTaskList(taskObject,orgId).then(tasklist => {
@@ -40,11 +39,11 @@ export function getTaskListById(taskListId){
 }
 
 
-export function updateTaskList(formProps,userId,taskListId)  {
+export function updateTaskList(formProps,taskListId)  {
 
   var taskObject = {listName: formProps.tasklistname, taskListId:taskListId};
   return function(dispatch) {
-    return TaskListApi.updateTaskList(userId,taskObject).then(updtasklist => {
+    return TaskListApi.updateTaskList(taskObject).then(updtasklist => {
       dispatch({type: ActionTypes.UPDATE_TASKLIST_SUCCESS, updtasklist});
     }).catch(error => {
       throw(error);
