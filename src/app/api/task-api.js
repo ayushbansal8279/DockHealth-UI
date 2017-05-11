@@ -18,7 +18,7 @@ export function getTasksForCreator(userId) {
 export function getListTasksByUser(userId, taskListId){
   //axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
   userId = sessionStorage.userId
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?taskListId='+taskListId+'&status=INCOMPLETE&queryStartPosition=0')
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?status=INCOMPLETE&queryStartPosition=0')
   .then(response => {
     return response.data;
   });
@@ -128,7 +128,7 @@ export function addComment(taskId, taskComment) {
 }
 
 export function getTasksAssignedToUserByTaskListId(taskListId, userId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUserByTaskListId/' + taskListId + '?userId=' + userId + '&complete=false')
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUserByTaskListId/' + taskListId + '?complete=false')
     .then(response => {
       return response.data;
     });
