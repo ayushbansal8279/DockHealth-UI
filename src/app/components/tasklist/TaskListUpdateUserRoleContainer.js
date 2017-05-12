@@ -33,7 +33,7 @@ class TaskListUpdateUserRoleContainer extends React.Component {
       else {
         newRole = 'ADMIN'
       }
-      this.props.changeUserRoleForList(this.props.taskListId,'1',markedUserId,newRole)
+      this.props.changeUserRoleForList(this.props.taskListId,markedUserId,newRole)
       .then((res)=>{
         this.setState({changeUserRoleResult: 'User Role changed successfully!!'}); //this will cause render to be called
         this.props.getActiveMembersByTaskListId(this.props.taskListId,'ACTIVE');

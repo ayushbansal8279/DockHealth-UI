@@ -8,6 +8,7 @@ export default {
   orgusersnotintasklist: [],
   nonorgusersintasklist:[],
   tasklistactivemembers: [],
-  invitationlist: []
+  invitationlist: [],
+  peoplelist: []
   //addtasklisterror:''
 }

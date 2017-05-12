@@ -13,11 +13,11 @@ export function getTaskListForUser() {
   };
 }
 
-export function addTaskList(formProps,orgId) {
+export function addTaskList(formProps) {
   var taskObject = {listName: formProps.tasklistname};
 
   return function(dispatch) {
-    return TaskListApi.addTaskList(taskObject,orgId).then(tasklist => {
+    return TaskListApi.addTaskList(taskObject).then(tasklist => {
       dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
     }).catch(error => {
       //console.log(error.message);
@@ -65,9 +65,7 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
 export function invitePersonToTaskList(formProps,taskListId) {
   var personInfo = {email : formProps.email,
                   firstName:formProps.firstName,
-                  lastName:formProps.lastName,
-                  invitingUserId:1,
-                  organizationId:1
+                  lastName:formProps.lastName
                 }
 
   return function(dispatch) {
@@ -81,9 +79,9 @@ export function invitePersonToTaskList(formProps,taskListId) {
   };
 }
 
-export function getOrganizationUsersNotInTaskList(tasklistId,organizationId) {
+export function getOrganizationUsersNotInTaskList(tasklistId) {
   return function(dispatch) {
-    return TaskListApi.getOrganizationUsersNotInTaskList(tasklistId,organizationId).then(users => {
+    return TaskListApi.getOrganizationUsersNotInTaskList(tasklistId).then(users => {
       dispatch({type: ActionTypes.GET_ORGUSERSNOTINTASKLIST_SUCCESS, users});
     }).catch(error => {
       throw(error);
@@ -92,9 +90,9 @@ export function getOrganizationUsersNotInTaskList(tasklistId,organizationId) {
 }
 
 
-export function inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedUsers) {
+export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
   return function(dispatch) {
-    return TaskListApi.inviteMultipleUsersToTaskList(tasklistId,invitingUserId,invitedUsers).then(res => {
+    return TaskListApi.inviteMultipleUsersToTaskList(tasklistId,invitedUsers).then(res => {
       dispatch({type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS, res});
     }).catch(error => {
       //console.log(error.message);
@@ -126,9 +124,9 @@ export function getActiveMembersByTaskListId(taskListId, memberStatus) {
 }
 
 
-export function changeUserRoleForList(tasklistId,settingUserId,markedUserId,role) {
+export function changeUserRoleForList(tasklistId,markedUserId,role) {
   return function(dispatch) {
-    return TaskListApi.changeUserRoleForList(tasklistId,settingUserId,markedUserId,role).then(res => {
+    return TaskListApi.changeUserRoleForList(tasklistId,markedUserId,role).then(res => {
       dispatch({type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS, res});
     }).catch(error => {
       throw(error);
