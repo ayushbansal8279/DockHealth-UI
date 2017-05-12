@@ -5,6 +5,7 @@ import TemplateCore from './views/TemplateCore'
 import TemplateNoLogin from './views/TemplateNoLogin'
 import Home from './views/Home'
 import AddPatientView from './views/AddPatientView'
+import UpdatePatientView from './views/UpdatePatientView'
 import AllPatientsView from './views/AllPatientsView'
 import Register from './views/auth/Register'
 import Login from './views/auth/Login'
@@ -46,6 +47,7 @@ export default (
       <IndexRoute component={Home} />
       <Route path="/patientList" component={AllPatientsView} />
       <Route path="/addPatient" component={AddPatientView} />
+      <Route path="/updatePatient/:patientId" component={UpdatePatientView} />
       <Route path="/taskList" component={TaskListView} />
       <Route path="/addTaskList" component={TaskListAdd} />
       <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
