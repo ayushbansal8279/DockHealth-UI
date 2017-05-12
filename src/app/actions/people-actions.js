@@ -10,3 +10,21 @@ export function findAllUsersByOrganizationId() {
     });
   };
 }
+
+
+export function invitePersonToOrganization(formProps ){
+    var personInfo = {email : formProps.email,
+                    firstName:formProps.firstName,
+                    lastName:formProps.lastName
+                  }
+
+    return function(dispatch) {
+      return PeopleApi.invitePersonToOrganization(personInfo).then(res => {
+        dispatch({type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res});
+      }).catch(error => {
+        //console.log(error.message);
+        throw(error);
+        //return dispatch({type: ActionTypes.ADD_TASKLIST_FAILURE, errorMessage});
+      });
+    };
+  }

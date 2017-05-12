@@ -65,9 +65,7 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
 export function invitePersonToTaskList(formProps,taskListId) {
   var personInfo = {email : formProps.email,
                   firstName:formProps.firstName,
-                  lastName:formProps.lastName,
-                  invitingUserId:1,
-                  organizationId:1
+                  lastName:formProps.lastName
                 }
 
   return function(dispatch) {

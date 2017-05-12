@@ -86,7 +86,7 @@ class PeopleContainer extends React.Component {
           </div>
         </div>
 
-        <Link to="/invitePersontoOrg">
+        <Link to="/peopleinvite">
           <button className="button secondary button-small float-right">Invite User To Org</button>
         </Link>
 
