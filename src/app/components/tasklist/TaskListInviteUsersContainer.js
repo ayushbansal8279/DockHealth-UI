@@ -18,7 +18,7 @@ class TaskListInviteUsersContainer extends Component {
 
   componentDidMount () {
       this.props.getTaskListById(this.props.taskListId);
-      this.props.getOrganizationUsersNotInTaskList(this.props.taskListId,'1');
+      this.props.getOrganizationUsersNotInTaskList(this.props.taskListId);
     }
 
     onSubmit (formProps) {
@@ -28,7 +28,7 @@ class TaskListInviteUsersContainer extends Component {
         }
         else
         {
-        this.props.inviteMultipleUsersToTaskList(this.props.taskListId,'1',this.state.options)
+        this.props.inviteMultipleUsersToTaskList(this.props.taskListId,this.state.options)
         .then((res)=>{
           //this.props.resetForm;//reduxforms injected fucntion
           //hashHistory.push('/taskList')

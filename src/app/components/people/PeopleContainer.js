@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as PeopleActions from '../../actions/people-actions';
+import {Link} from 'react-router';
 
 class PeopleContainer extends React.Component {
     constructor(props) {
@@ -85,6 +86,9 @@ class PeopleContainer extends React.Component {
           </div>
         </div>
 
+        <Link to="/invitePersontoOrg">
+          <button className="button secondary button-small float-right">Invite User To Org</button>
+        </Link>
 
         <div className="row">
           <div className="small-12 columns">
