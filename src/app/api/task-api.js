@@ -15,13 +15,18 @@ export function getTasksForCreator(userId) {
     });
 }
 
-export function getListTasksByUser(userId, taskListId){
+export function getListTasksByUser(taskListId, status){
   //axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
-  userId = sessionStorage.userId
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/1?status=INCOMPLETE&queryStartPosition=0')
+  // userId = sessionStorage.userId
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0')
   .then(response => {
     return response.data;
   });
+}
+
+export function getCompleteListTasksByUser(taskListId){
+  userId = sessionStorage.userId
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status=COMPLETE&queryStartPosition=0')
 }
 
 // export function getTasksByDueDate(userId) {

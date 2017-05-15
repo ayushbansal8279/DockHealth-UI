@@ -11,7 +11,9 @@ class Home extends React.Component {
       <div className="row">
         <div className="large-8 columns task-list-container">
           <TaskFiltersContainer />
-          <ListOfTasksContainer />
+          <ListOfTasksContainer taskListId='1' status="INCOMPLETE"/>
+          <h1>Completed Tasks</h1>
+          <ListOfTasksContainer taskListId='1' status="COMPLETE"/>
         </div>
         <div className="large-4 columns sidebar">
           <TaskListUsers />

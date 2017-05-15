@@ -48,10 +48,10 @@ class TaskList extends React.Component {
   	}
 
   	handleSubmit () {
-		if(this.state.comment != ""){
-			this.props.addTaskComment(this.state.taskId, {comment: this.state.comment, creator:{userId: 1}})
-			this.setState({comment: ''})
-		}
+			if(this.state.comment != ""){
+				this.props.addTaskComment(this.state.taskId, {comment: this.state.comment, creator:{userId: 1}})
+				this.setState({comment: ''})
+			}
   	}
 
   	handleMarkComplete(taskId, userId, status){

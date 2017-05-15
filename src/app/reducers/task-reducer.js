@@ -1,7 +1,7 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
-const TaskReducer = function(state = {tasks: []}, action) {
+const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
 
   switch(action.type) {
 
@@ -11,6 +11,9 @@ const TaskReducer = function(state = {tasks: []}, action) {
 
     case types.GET_TASKS_SUCCESS:
       return Object.assign({}, state, { tasks: action.tasks });
+
+    case types.GET_COMPLETED_TASKS_SUCCESS:
+      return Object.assign({}, state, { completedTasks: action.tasks });
 
     // handling
     case types.MARK_TASK_STATUS_SUCCESS:

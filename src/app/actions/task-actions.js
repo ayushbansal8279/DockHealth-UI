@@ -15,15 +15,36 @@ function getTasksForCreatorSuccess(tasks) {
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
 
-export function getListTasksByUser(userId, taskListId) {
+export function getListTasksByUser(taskListId, status) {
   return function(dispatch) {
-    return TaskApi.getListTasksByUser(userId, taskListId).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks));
-    }).catch(error => {
-      throw(error);
-    })
+    if(status == "INCOMPLETE"){
+      return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
+        dispatch(getListTasksByUserSuccess(tasks));
+      }).catch(error => {
+        throw(error);
+      })
+    }
+    else if(status == "COMPLETE"){
+      return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
+        dispatch({type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks});
+      }).catch(error => {
+        throw(error);
+      })
+    }
   }
 }
+
+// export function getCompletedListTasksByUser(taskListId) {
+//   return function(dispatch) {
+//     return TaskApi.getCompletedListTasksByUser(taskListId).then(tasks => {
+//       dispatch(
+//         return {type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks}
+//       );
+//     }).catch(error => {
+//       throw(error);
+//     })
+//   }
+// }
 
 export function getTasksAssignedToUserByTaskListId(userId, taskListId) {
   return function(dispatch) {

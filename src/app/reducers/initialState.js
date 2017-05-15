@@ -1,5 +1,6 @@
 export default {
   tasks: [],
+  completedTasks: [],
   allPatients: [],
   user: false,
   tasklist: [],

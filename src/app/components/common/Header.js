@@ -9,6 +9,8 @@ class Header extends React.Component {
         value: ''
       }
     }
+
+
     render() {
     return (
 
@@ -21,7 +23,7 @@ class Header extends React.Component {
       				<ul id="mainmenu" className="menu dropdown" data-dropdown-menu data-disable-hover="true" data-click-open="true">
       				<li className="my-menu">
       				<span className="logo default"><span className="logo-text">BC</span></span>
-      				<h2>Boston Clinic <svg className="icon"><use xlinkHref="#icon-angle-down"></use></svg></h2>
+      				<h2>{this.props.taskList.listName} <svg className="icon"><use xlinkHref="#icon-angle-down"></use></svg></h2>
       				<ul className="menu title-dropdown-menu">
       					<li className="search"><svg className="icon"><use xlinkHref="#icon-search"></use></svg>Search</li>
       					<li onClick={(e) => this.alert}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>

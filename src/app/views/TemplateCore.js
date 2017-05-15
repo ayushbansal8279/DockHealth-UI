@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
+import {bindActionCreators} from 'redux'
 import Notification from '../components/common/Notification'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import { connect } from 'react-redux'
 import * as userApi from '../api/user-api'
+import * as TaskListActions from '../actions/tasklist-actions'
 
 class App extends React.Component {
   constructor (props) {
@@ -16,12 +18,11 @@ class App extends React.Component {
   }
 
   render() {
-    return (    
-        <div>        
+    return (
+        <div>
           <NavBar />
-          <Header />
+          <Header taskList={this.props.taskList}/>
           {this.props.children}
-
           <Notification />
         </div>
     );
@@ -33,6 +34,7 @@ class App extends React.Component {
 
   componentDidMount () {
     // this.renderFoundationComponents();
+    this.props.taskListActions.getTaskListById('1')
   }
 
   componentDidUpdate () {
@@ -75,10 +77,17 @@ App.propTypes = {
 
 const mapStateToProps = function (store) {
   return {
-    user: store.userState.user
+    user: store.userState.user,
+    taskList: store.taskListState.tasklistone // tasklistone is set at the reducer
   }
 }
 
-export default connect(mapStateToProps)(App)
+const mapDispatchToProps = function (dispatch) {
+  return {
+    taskListActions: bindActionCreators(TaskListActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
 
 //export default App
