@@ -21,11 +21,31 @@ class PeopleContainer extends React.Component {
       this.props.findAllUsersByOrganizationId();
     }
 
+    onClick(markedUserId,currentRole) {
+      var newRole;
+      if(currentRole === 'ADMIN'){
+        newRole = 'MEMBER'
+      }
+      else {
+        newRole = 'ADMIN'
+      }
+      this.props.changeUserRoleForOrg(markedUserId,newRole)
+      .then((res)=>{
+        this.setState({peopleProcessingResult: 'User Role changed successfully!!'}); //this will cause render to be called
+        this.props.findAllUsersByOrganizationId();
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({peopleProcessingResult: error.message}); //this will cause render to be called
+      })
+
+    }
+
     renderRole(people){
       if(people.orgUserRole=='OWNER'){
         return (<span className=" success label">{people.orgUserRole}</span>);
       }
-      else if(people.orgUserRole=='MEMBER'){
+      else if(people.orgUserRole=='MEMBER' || people.orgUserRole=='ADMIN' ){
         return (<span className=" warning label">{people.orgUserRole}</span>);
       }
       else{
@@ -38,10 +58,10 @@ class PeopleContainer extends React.Component {
         return (<span></span>);
       }
       else if(people.orgUserRole=='MEMBER'){
-        return (<button className="button small secondary float-right">Give Admin Rights</button>);
+        return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Give Admin Rights</button>);
       }
       else if(people.orgUserRole=='ADMIN'){
-        return (<button className="button small secondary float-right">Remove Admin Rights</button>);
+        return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Remove Admin Rights</button>);
       }
     }
 

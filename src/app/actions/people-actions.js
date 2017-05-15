@@ -28,3 +28,13 @@ export function invitePersonToOrganization(formProps ){
       });
     };
   }
+
+  export function changeUserRoleForOrg(markedUserId,role) {
+    return function(dispatch) {
+      return PeopleApi.changeUserRoleForOrg(markedUserId,role).then(res => {
+        dispatch({type: ActionTypes.CHANGEUSERROLE_ORG_SUCCESS, res});
+      }).catch(error => {
+        throw(error);
+      });
+    };
+  }
