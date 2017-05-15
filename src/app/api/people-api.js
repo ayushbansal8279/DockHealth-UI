@@ -13,3 +13,12 @@ export function invitePersonToOrganization(person) {
       return response.data;
     });
 }
+
+export function changeUserRoleForOrg(markedUserId,role) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/changeUserRoleForOrg/'
+                      +"?markedUserId=" +markedUserId
+                      + "&role=" + role)
+    .then(response => {
+      return response.data;
+    });
+  }
