@@ -125,14 +125,14 @@ export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId)
 // task/changePriority/1?priorityLevel=HIGH&userId=1
 
 export function addComment(taskId, taskComment) {
-  taskComment.creator.userId = sessionStorage.userId
+  // taskComment.creator.userId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment/'+ taskId, taskComment)
   .then(response => {
     return response;
   });
 }
 
-export function getTasksAssignedToUserByTaskListId(taskListId, userId) {
+export function getTasksAssignedToUserByTaskListId(taskListId) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUserByTaskListId/' + taskListId + '?complete=false')
   .then(response => {
     return response.data;
@@ -140,14 +140,21 @@ export function getTasksAssignedToUserByTaskListId(taskListId, userId) {
 }
 
 export function getTasksAssignedByMe(taskListId){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId=' + taskListId)
-  .then(response => {
-    return response.data;
-  });
+  if(taskListId != undefined){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId=' + taskListId)
+    .then(response => {
+      return response.data;
+    });
+  }else{
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser')
+    .then(response => {
+      return response.data;
+    });
+  }
 }
 
-export function getHighPriorityTasksByTaskList(taskListId, userId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findHighPriorityUserTasks/1')
+export function getHighPriorityTasksByTaskList(taskListId) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findHighPriorityListTasks/1?startPosition=0')
   .then(response => {
     return response.data;
   });

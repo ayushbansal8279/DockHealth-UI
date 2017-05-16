@@ -46,9 +46,9 @@ export function getListTasksByUser(taskListId, status) {
 //   }
 // }
 
-export function getTasksAssignedToUserByTaskListId(userId, taskListId) {
+export function getTasksAssignedToUserByTaskListId(taskListId) {
   return function(dispatch) {
-    return TaskApi.getTasksAssignedToUserByTaskListId(taskListId, userId).then(tasks => {
+    return TaskApi.getTasksAssignedToUserByTaskListId(taskListId).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks));
     }).catch(error => {
       throw(error);
@@ -59,6 +59,16 @@ export function getTasksAssignedToUserByTaskListId(userId, taskListId) {
 export function getTasksAssignedByMe(taskListId){
   return function(dispatch){
     return TaskApi.getTasksAssignedByMe(taskListId).then(tasks => {
+      dispatch(getListTasksByUserSuccess(tasks));
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+export function getHighPriorityTasksByTaskList(taskListId){
+  return function(dispatch){
+    return TaskApi.getHighPriorityTasksByTaskList(taskListId).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks));
     }).catch(error => {
       throw(error);

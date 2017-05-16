@@ -39,7 +39,7 @@ class TaskList extends React.Component {
   	}
 
   	handleTaskCommentUpdate(taskId, commentDescription) {
-		this.setState({taskId: taskId, comment: commentDescription})
+			this.setState({taskId: taskId, comment: commentDescription})
   	}
 
   	handleUpdateTaskDescription(taskId, userId, description){
@@ -149,6 +149,7 @@ class TaskList extends React.Component {
 			<div className="task-details-wrapper">
 				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName : 'nobody yet'}</span>
 				<span className="task-details-block">Patient: {task.patient ? task.patient.firstName + ' ' + task.patient.lastName : 'none'}</span>
+				<span className="task-details-block">Last Updated: {task.updatedDateTime}</span>
 			</div>
 
 		</div>

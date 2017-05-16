@@ -8,6 +8,7 @@ import { Link, browserHistory, hashHistory } from 'react-router'
 import { connect } from 'react-redux'
 import * as userApi from '../api/user-api'
 import * as TaskListActions from '../actions/tasklist-actions'
+import * as TaskActions from '../actions/task-actions'
 
 class App extends React.Component {
   constructor (props) {
@@ -21,7 +22,7 @@ class App extends React.Component {
     return (
         <div>
           <NavBar />
-          <Header taskList={this.props.taskList}/>
+          <Header taskList={this.props.taskList} getTasksAssignedByMe={this.props.taskActions.getTasksAssignedByMe}/>
           {this.props.children}
           <Notification />
         </div>
@@ -84,7 +85,8 @@ const mapStateToProps = function (store) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    taskListActions: bindActionCreators(TaskListActions, dispatch)
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    taskActions: bindActionCreators(TaskActions, dispatch)
   }
 }
 

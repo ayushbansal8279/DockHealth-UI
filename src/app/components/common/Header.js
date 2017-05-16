@@ -1,6 +1,9 @@
 import React from 'react'
 import AddTask from '../task/AddTask'
 import PropTypes from 'prop-types'
+import * as TaskActions from '../../actions/task-actions'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux';
 
 class Header extends React.Component {
     constructor(props){
@@ -8,8 +11,12 @@ class Header extends React.Component {
       this.state = {
         value: ''
       }
+      this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
     }
 
+    getTasksAssignedByMe(){
+      this.props.getTasksAssignedByMe()
+    }
 
     render() {
     return (
@@ -29,7 +36,7 @@ class Header extends React.Component {
       					<li onClick={(e) => this.alert}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
       					<li><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li>
       					<li><img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>Assigned to me</li>
-      					<li><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
+      					<li onClick={(e) => this.getTasksAssignedByMe()}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
       				    <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
       					<li><span className="list-logo small"><span className="logo-text small">BC</span></span>Boston Clinic</li>
       					<li><span className="list-logo small"><span className="logo-text small">WC</span></span>Waltham Clinic</li>
