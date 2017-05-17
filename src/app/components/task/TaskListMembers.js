@@ -17,11 +17,13 @@ class TaskListMembers extends React.Component {
 				<ul className="no-bullet">
 					{this.props.members
 						.map(member => {
-							return(
-								<div className="users" onClick={(e) => this.getMemberId(member.userId, member)} key={member.userId} title={member.firstName + ' ' + member.lastName}>{member.initials}</div>
-							);
+							if(member.status == "ACTIVE"){
+								return(
+									<div className="users" onClick={(e) => this.getMemberId(member.userId, member)} key={member.userId} title={member.firstName + ' ' + member.lastName}>{member.initials}</div>
+								);
+							}
 						})
-					}	
+					}
 				</ul>
 			</div>
 		);

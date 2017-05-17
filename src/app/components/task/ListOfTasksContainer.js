@@ -10,11 +10,11 @@ class ListOfTasksContainer extends React.Component {
 
   componentDidMount () {
     console.log('logged in user === '+this.props.user)
-    this.props.actions.getListTasksByUser('1', '1')
+    this.props.actions.getListTasksByUser(this.props.taskListId, this.props.status)
   }
 
   render () {
-    return (<ListOfTasks tasks={this.props.tasks} deleteTask={this.props.actions.deleteTask}
+    return (<ListOfTasks tasks={this.props.status == "INCOMPLETE" ? this.props.tasks : this.props.completedTasks} deleteTask={this.props.actions.deleteTask}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
             toggleTaskPriority={this.props.actions.toggleTaskPriority}
             assignOrReassignTask={this.props.actions.assignOrReassignTask}
@@ -34,10 +34,11 @@ ListOfTasksContainer.propTypes = {
 
 const mapStateToProps = function (store) {
   return {
-    tasks: store.taskState.tasks,
+    tasks: store.taskState.tasks, // actions (binded below) set states for tasks which are then returned here
+    completedTasks: store.taskState.completedTasks, // actions (binded below) set states for tasks which are then returned here
     user: store.userState.user
   };
-  
+
 }
 
 const mapDispatchToProps = function (dispatch) {

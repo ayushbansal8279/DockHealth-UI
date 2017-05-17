@@ -15,7 +15,7 @@ class TaskListOneRenderContainer extends React.Component {
 
   onSubmit (formProps) {
     //console.log(formProps);
-    this.props.updateTaskList(formProps,'1',this.props.taskListOne.taskListId)
+    this.props.updateTaskList(formProps,this.props.taskListOne.taskListId)
     .then((res)=>{
       //this.props.resetForm;//reduxforms injected fucntion
       hashHistory.push('/taskList')

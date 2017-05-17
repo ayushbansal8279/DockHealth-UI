@@ -1,5 +1,6 @@
 export default {
   tasks: [],
+  completedTasks: [],
   allPatients: [],
   user: false,
   tasklist: [],
@@ -8,6 +9,7 @@ export default {
   orgusersnotintasklist: [],
   nonorgusersintasklist:[],
   tasklistactivemembers: [],
-  invitationlist: []
+  invitationlist: [],
+  peoplelist: []
   //addtasklisterror:''
 }

@@ -12,10 +12,24 @@ class TaskFiltersContainer extends React.Component {
           status: props.initialStatus
       };
       this.getTasksAssignedToUserByTaskListId = this.getTasksAssignedToUserByTaskListId.bind(this)
+      this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
+      this.getListTasksByUser = this.getListTasksByUser.bind(this)
     }
 
-    getTasksAssignedToUserByTaskListId(taskListId, userId){
-      this.props.getTasksAssignedToUserByTaskListId(taskListId, userId)
+    getTasksAssignedToUserByTaskListId(taskListId){
+      this.props.getTasksAssignedToUserByTaskListId(taskListId)
+    }
+
+    getTasksAssignedByMe(taskListId){
+      this.props.getTasksAssignedByMe(taskListId)
+    }
+
+    getHighPriorityTasks(taskListId){
+      this.props.getHighPriorityTasksByTaskList(taskListId)
+    }
+
+    getListTasksByUser(taskListId, status){
+      this.props.getListTasksByUser(taskListId, status)
     }
 
     render() {
@@ -32,9 +46,10 @@ class TaskFiltersContainer extends React.Component {
             <svg className="icon small"><use xlinkHref="#icon-caret-down"></use></svg>
             </a>
   		      <ul className="menu">
-    			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId('1', '1')}><a href="#">Assigned to me</a></li>
-              <li><a href="#">High Priority</a></li>
-    			    <li><a href="#">I assigned to others</a></li>
+    			    <li onClick={(e) => this.getListTasksByUser('1', "INCOMPLETE")}><a href="#">All Tasks</a></li>
+    			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId('1')}><a href="#">Assigned to me</a></li>
+              <li onClick={(e) => this.getHighPriorityTasks('1')}><a href="#">High Priority</a></li>
+    			    <li onClick={(e) => this.getTasksAssignedByMe('1')}><a href="#">I assigned to others</a></li>
   		      </ul>
           </li>
 			    <li>

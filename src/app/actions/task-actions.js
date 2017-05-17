@@ -15,9 +15,40 @@ function getTasksForCreatorSuccess(tasks) {
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
 
-export function getListTasksByUser(userId, taskListId) {
+export function getListTasksByUser(taskListId, status) {
   return function(dispatch) {
-    return TaskApi.getListTasksByUser(userId, taskListId).then(tasks => {
+    if(status == "INCOMPLETE"){
+      return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
+        dispatch(getListTasksByUserSuccess(tasks));
+      }).catch(error => {
+        throw(error);
+      })
+    }
+    else if(status == "COMPLETE"){
+      return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
+        dispatch({type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks});
+      }).catch(error => {
+        throw(error);
+      })
+    }
+  }
+}
+
+// export function getCompletedListTasksByUser(taskListId) {
+//   return function(dispatch) {
+//     return TaskApi.getCompletedListTasksByUser(taskListId).then(tasks => {
+//       dispatch(
+//         return {type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks}
+//       );
+//     }).catch(error => {
+//       throw(error);
+//     })
+//   }
+// }
+
+export function getTasksAssignedToUserByTaskListId(taskListId) {
+  return function(dispatch) {
+    return TaskApi.getTasksAssignedToUserByTaskListId(taskListId).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks));
     }).catch(error => {
       throw(error);
@@ -25,9 +56,19 @@ export function getListTasksByUser(userId, taskListId) {
   }
 }
 
-export function getTasksAssignedToUserByTaskListId(userId, taskListId) {
-  return function(dispatch) {
-    return TaskApi.getTasksAssignedToUserByTaskListId(taskListId, userId).then(tasks => {
+export function getTasksAssignedByMe(taskListId){
+  return function(dispatch){
+    return TaskApi.getTasksAssignedByMe(taskListId).then(tasks => {
+      dispatch(getListTasksByUserSuccess(tasks));
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+export function getHighPriorityTasksByTaskList(taskListId){
+  return function(dispatch){
+    return TaskApi.getHighPriorityTasksByTaskList(taskListId).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks));
     }).catch(error => {
       throw(error);

@@ -10,7 +10,7 @@ import TaskListRender from './TaskListRender';
 class TaskListContainer extends React.Component {
 
     componentDidMount () {
-      this.props.getTaskListForUser('1');
+      this.props.getTaskListForUser();
     }
 
     render(){

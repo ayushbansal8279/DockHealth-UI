@@ -5,6 +5,7 @@ import TemplateCore from './views/TemplateCore'
 import TemplateNoLogin from './views/TemplateNoLogin'
 import Home from './views/Home'
 import AddPatientView from './views/AddPatientView'
+import UpdatePatientView from './views/UpdatePatientView'
 import AllPatientsView from './views/AllPatientsView'
 import Register from './views/auth/Register'
 import Login from './views/auth/Login'
@@ -22,6 +23,9 @@ import TaskListInvitePersonView from './views/TaskListInvitePersonView';
 import TaskListInviteUserView from './views/TaskListInviteUserView';
 import TaskListUpdateUserRoleView from './views/TaskListUpdateUserRoleView';
 import InvitationsView from './views/InvitationsView';
+import PeopleView from './views/PeopleView';
+import InvitePeople from './components/people/InvitePeople';
+
 
 // const routes = {
 //   path: '/',
@@ -46,6 +50,7 @@ export default (
       <IndexRoute component={Home} />
       <Route path="/patientList" component={AllPatientsView} />
       <Route path="/addPatient" component={AddPatientView} />
+      <Route path="/updatePatient/:patientId" component={UpdatePatientView} />
       <Route path="/taskList" component={TaskListView} />
       <Route path="/addTaskList" component={TaskListAdd} />
       <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
@@ -54,6 +59,9 @@ export default (
       <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} />
       <Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />
       <Route path="/invitations" component={InvitationsView} />
+      <Route path="/people" component={PeopleView} />
+      <Route path="/peopleinvite" component={InvitePeople} />
+
 
     </Route>
     <Route component={TemplateNoLogin} >
