@@ -2,6 +2,7 @@ import React from 'react'
 import AddTask from '../task/AddTask'
 import PropTypes from 'prop-types'
 import * as TaskActions from '../../actions/task-actions'
+import * as TaskListActions from '../../actions/taskList-actions'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 
@@ -9,14 +10,27 @@ class Header extends React.Component {
     constructor(props){
       super(props)
       this.state = {
-        value: ''
+        value: '',
+        title: props.taskList.listName
       }
       this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
+      this.changeTitle = this.changeTitle.bind(this)
+
     }
 
     getTasksAssignedByMe(){
-      this.props.getTasksAssignedByMe()
+      this.props.taskActions.getTasksAssignedByMe()
     }
+
+    changeTitle(newTitle){
+      // alert("working")
+      this.setState({title: newTitle})
+    }
+
+    componentWillMount() {
+      this.props.taskListActions.getTaskListById('1')
+    }
+
 
     render() {
     return (
@@ -30,15 +44,15 @@ class Header extends React.Component {
       				<ul id="mainmenu" className="menu dropdown" data-dropdown-menu data-disable-hover="true" data-click-open="true">
       				<li className="my-menu">
       				<span className="logo default"><span className="logo-text">BC</span></span>
-      				<h2>{this.props.taskList.listName} <svg className="icon"><use xlinkHref="#icon-angle-down"></use></svg></h2>
+      				<h2>{this.state.title} <svg className="icon"><use xlinkHref="#icon-angle-down"></use></svg></h2>
       				<ul className="menu title-dropdown-menu">
       					<li className="search"><svg className="icon"><use xlinkHref="#icon-search"></use></svg>Search</li>
       					<li onClick={(e) => this.alert}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
       					<li><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li>
       					<li><img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>Assigned to me</li>
-      					<li onClick={(e) => this.getTasksAssignedByMe()}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
+      					<li onClick={(e) => {this.getTasksAssignedByMe(); this.changeTitle("Assigned By Me")}}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
       				    <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
-      					<li><span className="list-logo small"><span className="logo-text small">BC</span></span>Boston Clinic</li>
+      					<li><span className="list-logo small"><span className="logo-text small">BC</span></span>Cardiology</li>
       					<li><span className="list-logo small"><span className="logo-text small">WC</span></span>Waltham Clinic</li>
       				</ul>
       			    </li>
@@ -66,4 +80,18 @@ class Header extends React.Component {
     }
 }
 
-export default Header
+const mapStateToProps = function (store) {
+  // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
+  return {
+    taskList: store.taskListState.tasklistone // tasklistone is set at the reducer
+  }
+}
+
+const mapDispatchToProps = function (dispatch) {
+  return {
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    taskActions: bindActionCreators(TaskActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

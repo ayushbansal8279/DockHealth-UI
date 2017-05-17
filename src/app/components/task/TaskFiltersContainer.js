@@ -16,20 +16,20 @@ class TaskFiltersContainer extends React.Component {
       this.getListTasksByUser = this.getListTasksByUser.bind(this)
     }
 
-    getTasksAssignedToUserByTaskListId(taskListId){
-      this.props.getTasksAssignedToUserByTaskListId(taskListId)
+    getTasksAssignedToUserByTaskListId(){
+      this.props.getTasksAssignedToUserByTaskListId(this.props.taskListId)
     }
 
-    getTasksAssignedByMe(taskListId){
-      this.props.getTasksAssignedByMe(taskListId)
+    getTasksAssignedByMe(){
+      this.props.getTasksAssignedByMe(this.props.taskListId)
     }
 
-    getHighPriorityTasks(taskListId){
-      this.props.getHighPriorityTasksByTaskList(taskListId)
+    getHighPriorityTasks(){
+      this.props.getHighPriorityTasksByTaskList(this.props.taskListId)
     }
 
-    getListTasksByUser(taskListId, status){
-      this.props.getListTasksByUser(taskListId, status)
+    getListTasksByUser(status){
+      this.props.getListTasksByUser(this.props.taskListId, status)
     }
 
     render() {
@@ -46,10 +46,10 @@ class TaskFiltersContainer extends React.Component {
             <svg className="icon small"><use xlinkHref="#icon-caret-down"></use></svg>
             </a>
   		      <ul className="menu">
-    			    <li onClick={(e) => this.getListTasksByUser('1', "INCOMPLETE")}><a href="#">All Tasks</a></li>
-    			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId('1')}><a href="#">Assigned to me</a></li>
-              <li onClick={(e) => this.getHighPriorityTasks('1')}><a href="#">High Priority</a></li>
-    			    <li onClick={(e) => this.getTasksAssignedByMe('1')}><a href="#">I assigned to others</a></li>
+    			    <li onClick={(e) => this.getListTasksByUser("INCOMPLETE")}><a href="#">All Tasks</a></li>
+    			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId()}><a href="#">Assigned to me</a></li>
+              <li onClick={(e) => this.getHighPriorityTasks()}><a href="#">High Priority</a></li>
+    			    <li onClick={(e) => this.getTasksAssignedByMe()}><a href="#">I assigned to others</a></li>
   		      </ul>
           </li>
 			    <li>

@@ -183,6 +183,16 @@ export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId,
   }
 }
 
+export function getTasksByPatient(patientId, status){
+  return function(dispatch){
+    return TaskApi.getTasksByPatient(patientId, status).then(res => {
+      dispatch(getListTasksByUserSuccess(tasks));
+      }).catch(error => {
+        throw(error);
+    })
+  }
+}
+
 // export function toggleTaskPriority(taskId, userId, priority){
 //   return function(dispatch){
 //     if(priority == "LOW"){}
