@@ -62,12 +62,14 @@ export function confirmRegistration (userData) {
         if (err) {
             return reject(err)
         } else {
+          /*
             console.log('creating heydoc user');
             createUser({
               firstName: "Test",
               lastName: "Test",
               email: cognitoUser.username
             })
+          */  
             resolve(result.user)
         }
     })
