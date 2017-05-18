@@ -133,3 +133,13 @@ export function changeUserRoleForList(tasklistId,markedUserId,role) {
     });
   };
 }
+
+export function deleteTaskListById(taskListId) {
+  return function(dispatch) {
+    return TaskListApi.deleteTaskListById(taskListId).then(res => {
+      dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
