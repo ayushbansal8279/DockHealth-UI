@@ -2,7 +2,7 @@ import React from 'react'
 import AddTask from '../task/AddTask'
 import PropTypes from 'prop-types'
 import * as TaskActions from '../../actions/task-actions'
-import * as TaskListActions from '../../actions/taskList-actions'
+import * as TaskListActions from '../../actions/tasklist-actions'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 
