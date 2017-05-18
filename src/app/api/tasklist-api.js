@@ -75,3 +75,10 @@ export function changeUserRoleForList(tasklistId,markedUserId,role) {
       return response.data;
     });
 }
+
+export function deleteTaskListById(taskListId) {
+  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'list/deleteTaskListById/' + taskListId)
+    .then(response => {
+      return response.data;
+    });
+}
