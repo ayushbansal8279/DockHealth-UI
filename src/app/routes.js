@@ -47,7 +47,7 @@ import InvitePeople from './components/people/InvitePeople';
 export default (
   <Route path="/" component={App}>
     <Route component={TemplateCore} >
-      // <IndexRoute component={Home} />
+      <IndexRoute component={Home} />
       <Route path="/patientList" component={AllPatientsView} />
       <Route path="/addPatient" component={AddPatientView} />
       <Route path="/updatePatient/:patientId" component={UpdatePatientView} />
@@ -61,6 +61,7 @@ export default (
       <Route path="/invitations" component={InvitationsView} />
       <Route path="/people" component={PeopleView} />
       <Route path="/peopleinvite" component={InvitePeople} />
+      <Route path="/inbox" component={Home} />
     </Route>
     <Route component={TemplateNoLogin} >
       <Route path="/register" component={Register} />

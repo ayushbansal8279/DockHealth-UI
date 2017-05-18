@@ -15,6 +15,14 @@ function getTasksForCreatorSuccess(tasks) {
   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 }
 
+function getIncompleteTasksSuccess(tasks) {
+  return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
+}
+
+function getCompletedTasksSuccess(tasks){
+  return {type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks}
+}
+
 export function getListTasksByUser(taskListId, status) {
   return function(dispatch) {
     if(status == "INCOMPLETE"){
@@ -185,13 +193,35 @@ export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId,
 
 export function getTasksByPatient(patientId, status){
   return function(dispatch){
-    return TaskApi.getTasksByPatient(patientId, status).then(res => {
+    return TaskApi.getTasksByPatient(patientId, status).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks));
       }).catch(error => {
         throw(error);
     })
   }
 }
+
+export function getInboxTasks(){
+  return function(dispatch){
+    return TaskApi.getInboxTasks("INCOMPLETE").then(tasks => {
+      dispatch(getIncompleteTasksSuccess(tasks));
+      getCompletedInboxTasks();
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+function getCompletedInboxTasks(){
+  return function(dispatch){
+    return TaskApi.getInboxTasks("COMPLETE").then(tasks => {
+      dispatch(getCompletedTasksSuccess(tasks));
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
 
 // export function toggleTaskPriority(taskId, userId, priority){
 //   return function(dispatch){

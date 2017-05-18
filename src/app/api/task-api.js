@@ -166,3 +166,10 @@ export function getTasksByPatient(patientId, status){
     return response.data;
   });
 }
+
+export function getInboxTasks(status){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findUnassignedTasksByUser?status='+status)
+  .then(response => {
+    return response.data;
+  });
+}

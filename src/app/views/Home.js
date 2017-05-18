@@ -10,7 +10,7 @@ class Home extends React.Component {
     return (
       <div className="row">
         <div className="large-8 columns task-list-container">
-          <TaskFiltersContainer />
+          <TaskFiltersContainer taskListId='1' />
           <ListOfTasksContainer taskListId='1' status="INCOMPLETE"/>
           <h1>Completed Tasks</h1>
           <ListOfTasksContainer taskListId='1' status="COMPLETE"/>

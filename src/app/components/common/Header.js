@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/taskList-actions'
 import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux';
+import {bindActionCreators} from 'redux'
+import {Link} from 'react-router'
 
 class Header extends React.Component {
     constructor(props){
@@ -15,11 +16,16 @@ class Header extends React.Component {
       }
       this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
       this.changeTitle = this.changeTitle.bind(this)
+      this.getInboxTasks = this.getInboxTasks.bind(this)
 
     }
 
     getTasksAssignedByMe(){
       this.props.taskActions.getTasksAssignedByMe()
+    }
+
+    getInboxTasks(){
+      this.props.taskActions.getInboxTasks()
     }
 
     changeTitle(newTitle){
@@ -47,8 +53,8 @@ class Header extends React.Component {
       				<h2>{this.state.title} <svg className="icon"><use xlinkHref="#icon-angle-down"></use></svg></h2>
       				<ul className="menu title-dropdown-menu">
       					<li className="search"><svg className="icon"><use xlinkHref="#icon-search"></use></svg>Search</li>
-      					<li onClick={(e) => this.alert}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
-      					<li><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li>
+      					<li onClick={(e) => {this.alert; this.changeTitle("Today")}}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
+      					<Link to={"/inbox/"}><li onClick={(e) => {this.getInboxTasks(); this.changeTitle("Inbox")}}><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li></Link>
       					<li><img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>Assigned to me</li>
       					<li onClick={(e) => {this.getTasksAssignedByMe(); this.changeTitle("Assigned By Me")}}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
       				    <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
