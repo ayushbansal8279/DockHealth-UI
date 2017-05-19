@@ -82,3 +82,11 @@ export function deleteTaskListById(taskListId) {
       return response.data;
     });
 }
+
+export function removeUserFromList(taskListId,removedUserId) {
+  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/removeUserFromTaskList/' + taskListId
+                  + "?removedUserId=" + removedUserId)
+    .then(response => {
+      return response.data;
+    });
+}
