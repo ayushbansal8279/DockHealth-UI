@@ -143,3 +143,14 @@ export function deleteTaskListById(taskListId) {
     });
   };
 }
+
+
+export function removeUserFromList(taskListId,removedUserId) {
+  return function(dispatch) {
+    return TaskListApi.removeUserFromList(taskListId,removedUserId).then(res => {
+      dispatch({type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS, res});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
