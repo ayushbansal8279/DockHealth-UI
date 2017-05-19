@@ -23,23 +23,23 @@ function getCompletedTasksSuccess(tasks){
   return {type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks}
 }
 
-export function getListTasksByUser(taskListId, status) {
+export function getListTasksByUser(taskListId) {
   return function(dispatch) {
-    if(status == "INCOMPLETE"){
-      return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
+      return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE").then(tasks => {
         dispatch(getListTasksByUserSuccess(tasks));
+        getCompleteListTasks(taskListId, "COMPLETE");
       }).catch(error => {
         throw(error);
       })
-    }
-    else if(status == "COMPLETE"){
-      return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
-        dispatch({type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks});
-      }).catch(error => {
-        throw(error);
-      })
-    }
   }
+}
+
+function getCompleteListTasks(taskListId){
+  return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
+    dispatch({type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks});
+  }).catch(error => {
+    throw(error);
+  })
 }
 
 // export function getCompletedListTasksByUser(taskListId) {

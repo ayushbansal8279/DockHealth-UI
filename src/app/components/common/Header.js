@@ -17,6 +17,7 @@ class Header extends React.Component {
       this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
       this.changeTitle = this.changeTitle.bind(this)
       this.getInboxTasks = this.getInboxTasks.bind(this)
+      this.getListTasks = this.getListTasks.bind(this)
 
     }
 
@@ -26,6 +27,10 @@ class Header extends React.Component {
 
     getInboxTasks(){
       this.props.taskActions.getInboxTasks()
+    }
+
+    getListTasks(taskListId){
+      this.props.taskActions.getListTasksByUser(taskListId)
     }
 
     changeTitle(newTitle){
@@ -57,8 +62,8 @@ class Header extends React.Component {
       					<Link to={"/inbox/"}><li onClick={(e) => {this.getInboxTasks(); this.changeTitle("Inbox")}}><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li></Link>
       					<li><img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>Assigned to me</li>
       					<li onClick={(e) => {this.getTasksAssignedByMe(); this.changeTitle("Assigned By Me")}}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
-      				    <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
-      					<li><span className="list-logo small"><span className="logo-text small">BC</span></span>Cardiology</li>
+      				  <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
+                <li><span className="list-logo small"><span className="logo-text small">BC</span></span>Cardiology</li>
       					<li><span className="list-logo small"><span className="logo-text small">WC</span></span>Waltham Clinic</li>
       				</ul>
       			    </li>
@@ -89,7 +94,8 @@ class Header extends React.Component {
 const mapStateToProps = function (store) {
   // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
   return {
-    taskList: store.taskListState.tasklistone // tasklistone is set at the reducer
+    taskList: store.taskListState.tasklistone, // tasklistone is set at the reducer
+    taskLists: store.taskListState.tasklist
   }
 }
 
