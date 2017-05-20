@@ -25,21 +25,23 @@ function getCompletedTasksSuccess(tasks){
 
 export function getListTasksByUser(taskListId) {
   return function(dispatch) {
-      return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE").then(tasks => {
-        dispatch(getListTasksByUserSuccess(tasks));
-        getCompleteListTasks(taskListId, "COMPLETE");
-      }).catch(error => {
-        throw(error);
-      })
+    return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE").then(tasks => {
+      dispatch(getListTasksByUserSuccess(tasks));
+      getCompleteListTasks(taskListId);
+    }).catch(error => {
+      throw(error);
+    })
   }
 }
 
 function getCompleteListTasks(taskListId){
-  return TaskApi.getListTasksByUser(taskListId, status).then(tasks => {
-    dispatch({type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks});
-  }).catch(error => {
-    throw(error);
-  })
+  return function(dispatch) {
+    return TaskApi.getListTasksByUser(taskListId, "COMPLETE").then(tasks => {
+      dispatch(getCompletedTasksSuccess(tasks));
+    }).catch(error => {
+      throw(error);
+    })
+  }
 }
 
 // export function getCompletedListTasksByUser(taskListId) {
