@@ -42,6 +42,21 @@ export function getListTasksByUser(taskListId, status) {
   }
 }
 
+export function getListTasks(taskListId){
+  return function(dispatch){
+    return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE").then(tasks => {
+      dispatch(getListTasksByUserSuccess(tasks)).then(
+        TaskApi.getListTasksByUser(taskListId, "COMPLETE").then(tasks => {
+          dispatch(getCompletedTasksSuccess(tasks));
+        })
+      )
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+
 // export function getCompletedListTasksByUser(taskListId) {
 //   return function(dispatch) {
 //     return TaskApi.getCompletedListTasksByUser(taskListId).then(tasks => {
@@ -204,8 +219,11 @@ export function getTasksByPatient(patientId, status){
 export function getInboxTasks(){
   return function(dispatch){
     return TaskApi.getInboxTasks("INCOMPLETE").then(tasks => {
-      dispatch(getIncompleteTasksSuccess(tasks));
-      getCompletedInboxTasks();
+      dispatch(getIncompleteTasksSuccess(tasks)).then(
+        TaskApi.getInboxTasks("COMPLETE").then(tasks => {
+          dispatch(getCompletedTasksSuccess(tasks));
+        })
+      )
     }).catch(error => {
       throw(error);
     })

@@ -27,6 +27,9 @@ export function getListTasksByUser(taskListId, status){
 export function getCompleteListTasksByUser(taskListId){
   userId = sessionStorage.userId
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status=COMPLETE&queryStartPosition=0')
+  .then(response => {
+    return response.data;
+  });
 }
 
 // export function getTasksByDueDate(userId) {
