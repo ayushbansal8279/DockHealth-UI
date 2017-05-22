@@ -171,7 +171,14 @@ export function getTasksByPatient(patientId, status){
 }
 
 export function getInboxTasks(status){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findUnassignedTasksByUser?status='+status)
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0')
+  .then(response => {
+    return response.data;
+  });
+}
+
+export function markTaskAsUnread(taskId, flagUnread){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/flagUserTaskAsUnread/'+taskId+'?flagUnread='+flagUnread)
   .then(response => {
     return response.data;
   });

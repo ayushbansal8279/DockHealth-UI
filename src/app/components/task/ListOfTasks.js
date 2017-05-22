@@ -21,6 +21,7 @@ class TaskList extends React.Component {
 			this.handleToggleTaskPriority = this.handleToggleTaskPriority.bind(this)
 			this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
 			this.addPatientToTaskCallback = this.addPatientToTaskCallback.bind(this)
+			this.markAsUnread = this.markAsUnread.bind(this)
 		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -75,6 +76,10 @@ class TaskList extends React.Component {
 			this.props.addPatientToTask(patientId, taskId)
 		}
 
+		markAsUnread(task, flagUnread){
+			this.props.markAsUnread(task, flagUnread)
+		}
+
 
     render() {
 		if(AWS.config.credentials){
@@ -124,6 +129,7 @@ class TaskList extends React.Component {
 		<div className="task-item tag" key={task.taskId+task.description} value={task}>
 		<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="button primary float-right button-small">Mark{task.status == "COMPLETE" ? " Incomplete" : " Complete"}</button>
 		<button onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)} className="button primary float-right button-small">Toggle Priority</button>
+		<button onClick={(e) => this.markAsUnread(task, task.read == true ? 'false' : 'true')} className="button primary float-right button-small">Mark as {task.read == true ? "Unread" : "Read"}</button>
 		<div className="task-item-inner-wrapper" data-toggle="">
 			<div className="mark-complete-wrapper">
 				<button className="mark-complete">

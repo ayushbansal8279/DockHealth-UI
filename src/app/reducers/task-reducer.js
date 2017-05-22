@@ -103,6 +103,10 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
         )
       };
 
+    case types.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS:
+      return {
+        // ...state, task.read:true
+      }
   }
 
   return state;

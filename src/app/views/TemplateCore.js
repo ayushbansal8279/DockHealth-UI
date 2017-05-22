@@ -22,7 +22,7 @@ class TemplateCore extends React.Component {
 
     return (
         <div>
-          <NavBar />
+          <NavBar/>
           <Header/>
           {this.props.children}
           <Notification />

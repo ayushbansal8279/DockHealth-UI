@@ -208,15 +208,20 @@ export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId,
   }
 }
 
-export function getTasksByPatient(patientId, status){
+export function getTasksByPatient(patientId){
   return function(dispatch){
-    return TaskApi.getTasksByPatient(patientId, status).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks));
+    return TaskApi.getTasksByPatient(patientId, "INCOMPLETE").then(tasks => {
+      dispatch(getListTasksByUserSuccess(tasks)).then(
+        TaskApi.getTasksByPatient(patientId, "COMPLETE").then(tasks => {
+          dispatch(getCompletedTasksSuccess(tasks));
+        })
+      )
       }).catch(error => {
         throw(error);
     })
   }
 }
+
 
 export function getInboxTasks(){
   return function(dispatch){
@@ -242,6 +247,15 @@ function getCompletedInboxTasks(){
   }
 }
 
+export function markAsUnread(taskId, flagUnread){
+  return function(dispatch){
+    return TaskApi.flagUnread(task.taskId, flagUnread).then(res => {
+      dispatch({type: ActionTypes.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS, task, flagUnread})
+    }).catch(error => {
+      throw(error)
+    })
+  }
+}
 
 // export function toggleTaskPriority(taskId, userId, priority){
 //   return function(dispatch){

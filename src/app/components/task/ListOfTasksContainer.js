@@ -20,6 +20,7 @@ class ListOfTasksContainer extends React.Component {
             assignOrReassignTask={this.props.actions.assignOrReassignTask}
             addTaskComment={this.props.actions.addTaskComment}
             addPatientToTask={this.props.patientActions.addPatientToTask}
+            markAsUnread={this.props.actions.markAsUnread}
             />);
   }
 
