@@ -18,7 +18,6 @@ class Header extends React.Component {
       this.changeTitle = this.changeTitle.bind(this)
       this.getInboxTasks = this.getInboxTasks.bind(this)
       this.getListTasks = this.getListTasks.bind(this)
-
     }
 
     componentDidMount () {
@@ -42,8 +41,16 @@ class Header extends React.Component {
       this.setState({title: newTitle})
     }
 
+    componentDidMount(){
+      this.props.taskListActions.getTaskListForUser()
+    }
+
     componentWillMount() {
       this.props.taskListActions.getTaskListById('1')
+    }
+
+    getListTasks(taskListId){
+      this.props.taskActions.getListTasks(taskListId)
     }
 
 
@@ -69,7 +76,8 @@ class Header extends React.Component {
       				  <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
                 {this.props.taskLists.map(taskList => {
                   return(
-                    <li key={"taskList" + taskList.taskListId} onClick={(e) => {this.changeTitle(taskList.listName); this.getListTasks(taskList.taskListId)}}><span className="list-logo small"><span className="logo-text small">BC</span></span>{taskList.listName}</li>
+
+                    <li key={taskList.taskListId} onClick={(e) => {this.changeTitle(taskList.listName); this.getListTasks(taskList.taskListId)}}><span className="list-logo small"><span className="logo-text small">BC</span></span>{taskList.listName}</li>
                   )
                 })}
       				</ul>
