@@ -29,7 +29,7 @@ class TaskFiltersContainer extends React.Component {
     }
 
     getListTasksByUser(status){
-      this.props.getListTasksByUser(this.props.taskListId, status)
+      this.props.getListTasks(this.props.taskListId, status)
     }
 
     render() {

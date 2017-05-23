@@ -47,7 +47,7 @@ class NavBar extends React.Component {
 <div className="row">
 	<div className="large-12 columns">
 		<ul className="menu float-left">
-			<li><a className="active" href="#">Tasks</a></li>
+			<NavLink to='/inbox'>Tasks</NavLink>
 			<NavLink to='/taskList'>List</NavLink>
 			<NavLink to='/people'>People</NavLink>
       <NavLink to='/patientList'>Patients</NavLink>

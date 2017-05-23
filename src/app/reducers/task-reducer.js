@@ -105,7 +105,14 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
 
     case types.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS:
       return {
-        // ...state, task.read:true
+        ...state,
+        tasks: state.tasks.map(task =>
+          task === action.task ?
+            // transform the one with a matching id
+            { ...task, read: !action.task.read } :
+            // otherwise return original task
+            task
+        )
       }
   }
 

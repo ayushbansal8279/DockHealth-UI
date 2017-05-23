@@ -59,6 +59,8 @@ export function getListTasks(taskListId){
 }
 
 
+
+
 // export function getCompletedListTasksByUser(taskListId) {
 //   return function(dispatch) {
 //     return TaskApi.getCompletedListTasksByUser(taskListId).then(tasks => {
@@ -247,7 +249,7 @@ function getCompletedInboxTasks(){
   }
 }
 
-export function markAsUnread(taskId, flagUnread){
+export function markAsUnread(task, flagUnread){
   return function(dispatch){
     return TaskApi.flagUnread(task.taskId, flagUnread).then(res => {
       dispatch({type: ActionTypes.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS, task, flagUnread})

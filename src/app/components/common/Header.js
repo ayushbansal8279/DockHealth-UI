@@ -47,6 +47,7 @@ class Header extends React.Component {
 
     componentWillMount() {
       this.props.taskListActions.getTaskListById('1')
+      this.setState({title: "Inbox"})
     }
 
     getListTasks(taskListId){

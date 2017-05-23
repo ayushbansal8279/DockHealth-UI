@@ -10,23 +10,12 @@ export function getTasksForCreator(userId) {
   userId = sessionStorage.userId
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksCreatedByUser/'+userId+'?organizationId=1')
     .then(response => {
-      // store.dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks: response.data});
       return response.data;
     });
 }
 
 export function getListTasksByUser(taskListId, status){
-  //axios.defaults.headers.common['Authorization'] = 'Bearer '.concat(sessionStorage.accessToken)
-  // userId = sessionStorage.userId
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0')
-  .then(response => {
-    return response.data;
-  });
-}
-
-export function getCompleteListTasksByUser(taskListId){
-  userId = sessionStorage.userId
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status=COMPLETE&queryStartPosition=0')
   .then(response => {
     return response.data;
   });
@@ -177,8 +166,8 @@ export function getInboxTasks(status){
   });
 }
 
-export function markTaskAsUnread(taskId, flagUnread){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/flagUserTaskAsUnread/'+taskId+'?flagUnread='+flagUnread)
+export function flagUnread(taskId, flagUnread){
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/flagUserTaskAsUnread/'+taskId+'?flagUnread='+flagUnread)
   .then(response => {
     return response.data;
   });
