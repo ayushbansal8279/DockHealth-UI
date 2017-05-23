@@ -38,3 +38,13 @@ export function invitePersonToOrganization(formProps ){
       });
     };
   }
+
+  export function cancelInviteToOrganization(markedUserEmail) {
+    return function(dispatch) {
+      return PeopleApi.cancelInviteToOrganization(markedUserEmail).then(res => {
+        dispatch({type: ActionTypes.CANCEL_USER_ORG_INVITE_SUCCESS, res});
+      }).catch(error => {
+        throw(error);
+      });
+    };
+  }

@@ -41,28 +41,46 @@ class PeopleContainer extends React.Component {
 
     }
 
+    onClickCancelInvite(email) {
+      this.props.cancelInviteToOrganization(email)
+      .then((res)=>{
+        this.setState({peopleProcessingResult: 'Invitation cancelled successfully!!'}); //this will cause render to be called
+        this.props.findAllUsersByOrganizationId();
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({peopleProcessingResult: error.message}); //this will cause render to be called
+      })
+
+    }
+
     renderRole(people){
-      if(people.orgUserRole=='OWNER'){
-        return (<span className=" success label">{people.orgUserRole}</span>);
-      }
-      else if(people.orgUserRole=='MEMBER' || people.orgUserRole=='ADMIN' ){
-        return (<span className=" warning label">{people.orgUserRole}</span>);
-      }
-      else{
-        return (<span></span>);
-      }
+          if(people.orgUserRole=='OWNER'){
+            return (<span className=" success label">{people.orgUserRole}</span>);
+          }
+          else if(people.orgUserRole=='MEMBER' || people.orgUserRole=='ADMIN' ){
+            return (<span className=" warning label">{people.orgUserRole}</span>);
+          }
+          else{
+            return (<span></span>);
+          }
     }
 
     renderRoleButton(people){
-      if(people.orgUserRole=='OWNER'){
-        return (<span></span>);
-      }
-      else if(people.orgUserRole=='MEMBER'){
-        return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Give Admin Rights</button>);
-      }
-      else if(people.orgUserRole=='ADMIN'){
-        return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Remove Admin Rights</button>);
-      }
+      if(people.userInviteStatus=='ACCEPTED'){
+          if(people.orgUserRole=='OWNER'){
+            return (<span></span>);
+          }
+          else if(people.orgUserRole=='MEMBER'){
+            return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Give Admin Rights</button>);
+          }
+          else if(people.orgUserRole=='ADMIN'){
+            return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Remove Admin Rights</button>);
+          }
+        }
+        else if(people.userInviteStatus=='PENDING'){
+          return (<button className="button small secondary float-right" onClick={this.onClickCancelInvite.bind(this,people.email)}>Cancel Invite</button>);
+        }
     }
 
     renderList() {

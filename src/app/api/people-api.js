@@ -22,3 +22,11 @@ export function changeUserRoleForOrg(markedUserId,role) {
       return response.data;
     });
   }
+
+  export function cancelInviteToOrganization(markedUserEmail) {
+    return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/cancelInviteToOrganization/'
+                        +"?markedUserEmail=" +markedUserEmail)
+      .then(response => {
+        return response.data;
+      });
+    }
