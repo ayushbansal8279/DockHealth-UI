@@ -148,9 +148,9 @@ class TaskList extends React.Component {
 				</div>
 			</div>
 			<div className="task-details-wrapper">
-				<span className="task-details-block">Created by {task.creator.firstName} {task.creator.lastName}</span>
-		        <span className="task-details-block"><Moment fromNow>{createdDateTime}</Moment></span>
-		        <span className="task-details-block {task.status}">{task.status}</span>
+				<span className="task-details-block">Created by {task.creator ? task.creator.firstName : 'me'} {task.creator ? task.creator.lastName : ''}</span>
+        <span className="task-details-block"><Moment fromNow>{createdDateTime}</Moment></span>
+        <span className="task-details-block {task.status}">{task.status}</span>
 			</div>
 			<div className="task-details-wrapper">
 				<span className="task-details-block">Assigned to {task.assignedTo ? task.assignedTo.firstName + ' ' + task.assignedTo.lastName + ' by ' + task.assignedBy.firstName + ' ' + task.assignedBy.lastName : 'nobody yet'}</span>
@@ -212,11 +212,13 @@ class TaskList extends React.Component {
   componentDidMount () {
     //alert('componentDidMount');
     enableTaskListComponents();
+		console.log("listoftasks didmount")
   }
 
   componentDidUpdate () {
     //alert('componentDidUpdate');
     enableTaskListComponents();
+		console.log("listoftasks didupdate")
   }
 
 }

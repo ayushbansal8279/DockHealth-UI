@@ -23,7 +23,7 @@ class TemplateCore extends React.Component {
     return (
         <div>
           <NavBar/>
-          <Header/>
+          <Header taskListId={this.props.params.taskListId}/>
           {this.props.children}
           <Notification />
         </div>

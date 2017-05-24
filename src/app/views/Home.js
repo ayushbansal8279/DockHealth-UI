@@ -6,19 +6,24 @@ import TaskListUsers from '../components/task/TaskListUsers'
 import Notification from '../components/common/Notification'
 
 class Home extends React.Component {
-    render() {
+
+  render() {
+    var taskListId = this.props.params.taskListId
     return (
       <div className="row">
         <div className="large-8 columns task-list-container">
-          <TaskFiltersContainer taskListId='1' />
-          <ListOfTasksContainer taskListId='1' status="INCOMPLETE"/>
+          <TaskFiltersContainer taskListId={taskListId} />
+          <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE"/>
           <h1>Completed Tasks</h1>
-          <ListOfTasksContainer taskListId='1' status="COMPLETE"/>
+          <ListOfTasksContainer taskListId={taskListId} status="COMPLETE"/>
         </div>
-        <div className="large-4 columns sidebar">
-          <TaskListUsers />
-          <TaskListPatients />
-        </div>
+        <div>TaskListId: {taskListId} (Home.js)</div>
+        {taskListId > 0 &&
+          <div className="large-4 columns sidebar">
+            <TaskListUsers taskListId={taskListId}/>
+            <TaskListPatients taskListId={taskListId}/>
+          </div>
+        }
       </div>
     );
   }

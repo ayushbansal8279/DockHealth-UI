@@ -61,7 +61,7 @@ export default (
       <Route path="/invitations" component={InvitationsView} />
       <Route path="/people" component={PeopleView} />
       <Route path="/peopleinvite" component={InvitePeople} />
-      <Route path="/inbox" component={Home} />
+      <Route path="/tasks/:taskListId" component={Home} />
     </Route>
     <Route component={TemplateNoLogin} >
       <Route path="/register" component={Register} />

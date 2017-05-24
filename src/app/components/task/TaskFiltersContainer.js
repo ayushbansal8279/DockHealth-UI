@@ -46,10 +46,10 @@ class TaskFiltersContainer extends React.Component {
             <svg className="icon small"><use xlinkHref="#icon-caret-down"></use></svg>
             </a>
   		      <ul className="menu">
-    			    <li onClick={(e) => this.getListTasksByUser("INCOMPLETE")}><a href="#">All Tasks</a></li>
-    			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId()}><a href="#">Assigned to me</a></li>
-              <li onClick={(e) => this.getHighPriorityTasks()}><a href="#">High Priority</a></li>
-    			    <li onClick={(e) => this.getTasksAssignedByMe()}><a href="#">I assigned to others</a></li>
+    			    <li onClick={(e) => this.getListTasksByUser("INCOMPLETE")}>All Tasks</li>
+    			    <li onClick={(e) => this.getTasksAssignedToUserByTaskListId()}>Assigned to me</li>
+              <li onClick={(e) => this.getHighPriorityTasks()}>High Priority</li>
+    			    <li onClick={(e) => this.getTasksAssignedByMe()}>I assigned to others</li>
   		      </ul>
           </li>
 			    <li>
@@ -90,11 +90,13 @@ class TaskFiltersContainer extends React.Component {
   componentDidMount () {
     //alert('componentDidMount');
     enableTaskListComponents();
+    console.log("listoftasks didmount")
   }
 
   componentDidUpdate () {
     //alert('componentDidUpdate');
     enableTaskListComponents();
+    console.log("listoftasks didupdate")
   }
 
 }

@@ -17,10 +17,14 @@ class TaskListPatients extends React.Component {
 	}
 
 	componentDidMount () {
-		this.props.actions.getPatientsByTaskList()
+		this.props.actions.getPatientsByTaskList(this.props.taskListId)
 		// triggers action to get data and update store in reducer > allPatients
     // this.props.actions.getAllPatients()
   }
+
+	componentWillReceiveProps(nextProps){
+		this.props.actions.getPatientsByTaskList(this.props.taskListId)
+	}
 
   render() {
     return (

@@ -7,7 +7,10 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
 
     case types.ADD_TASK_SUCCESS:
       // with concact make a copy of the array, and then we'll change and return the copy
-      return Object.assign({}, state, {tasks: state.tasks.concat([action.task])});
+      return{
+        ...state,
+        tasks: state.tasks.concat(action.task)
+      }
 
     case types.GET_TASKS_SUCCESS:
       return Object.assign({}, state, { tasks: action.tasks });

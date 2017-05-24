@@ -8,7 +8,7 @@ import * as ActionTypes from '../actions/action-types';
  */
 export function getTasksForCreator(userId) {
   userId = sessionStorage.userId
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksCreatedByUser/'+userId+'?organizationId=1')
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksCreatedByUser')
     .then(response => {
       return response.data;
     });
@@ -146,7 +146,7 @@ export function getTasksAssignedByMe(taskListId){
 }
 
 export function getHighPriorityTasksByTaskList(taskListId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findHighPriorityListTasks/1?startPosition=0')
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findHighPriorityListTasks/'+taskListId+'?startPosition=0')
   .then(response => {
     return response.data;
   });

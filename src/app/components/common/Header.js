@@ -46,7 +46,6 @@ class Header extends React.Component {
     }
 
     componentWillMount() {
-      this.props.taskListActions.getTaskListById('1')
       this.setState({title: "Inbox"})
     }
 
@@ -71,14 +70,13 @@ class Header extends React.Component {
       				<ul className="menu title-dropdown-menu">
       					<li className="search"><svg className="icon"><use xlinkHref="#icon-search"></use></svg>Search</li>
       					<li onClick={(e) => {this.alert; this.changeTitle("Today")}}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
-      					<Link to={"/inbox/"}><li onClick={(e) => {this.getInboxTasks(); this.changeTitle("Inbox")}}><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li></Link>
+      					<Link to={"/tasks/inbox"}><li onClick={(e) => {this.getInboxTasks(); this.changeTitle("Inbox")}}><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li></Link>
       					<li><img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>Assigned to me</li>
       					<li onClick={(e) => {this.getTasksAssignedByMe(); this.changeTitle("Assigned By Me")}}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
       				  <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
                 {this.props.taskLists.map(taskList => {
                   return(
-
-                    <li key={taskList.taskListId} onClick={(e) => {this.changeTitle(taskList.listName); this.getListTasks(taskList.taskListId)}}><span className="list-logo small"><span className="logo-text small">BC</span></span>{taskList.listName}</li>
+                    <Link to={"/tasks/"+taskList.taskListId} key={taskList.taskListId}><li onClick={(e) => {this.changeTitle(taskList.listName); this.getListTasks(taskList.taskListId)}}><span className="list-logo small"><span className="logo-text small">BC</span></span>{taskList.listName}</li></Link>
                   )
                 })}
       				</ul>
@@ -93,7 +91,7 @@ class Header extends React.Component {
       	    </div>
       	    </header>
 
-      	<AddTask/>
+      	<AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask}/>
 
           <div className="dropdown-pane" id="set-date" data-dropdown data-close-on-click="true">
               <label>Set due date <input type="text" className="due-date" placeholder="due date"/></label>

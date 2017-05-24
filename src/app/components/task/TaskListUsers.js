@@ -7,7 +7,11 @@ import * as TaskListActions from '../../actions/tasklist-actions'
 class TaskListUsers extends React.Component {
 	componentDidMount () {
 	    //this.props.getMembersByTaskListId(taskListId, memberStatus)
-	    this.props.getMembersByTaskListId('1','ALL');
+	    this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
+	}
+
+	componentWillReceiveProps(nextProps){
+		this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
 	}
 
 

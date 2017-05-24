@@ -9,8 +9,8 @@ export function getAllPatients() {
     });
 }
 
-export function getPatientsByTaskList() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getPatientsByTaskList/1')
+export function getPatientsByTaskList(taskListId) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getPatientsByTaskList/'+taskListId)
     .then(response => {
       // store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});
       return response.data;

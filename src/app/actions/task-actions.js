@@ -123,7 +123,7 @@ function getListTasksByUserSuccess(tasks) {
 
 export function addTask(newTask) {
   return function(dispatch) {
-    return TaskApi.getTasksForCreator(newTask).then(task => {
+    return TaskApi.addTask(newTask).then(task => {
       dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
     }).catch(error => {
       throw(error);
