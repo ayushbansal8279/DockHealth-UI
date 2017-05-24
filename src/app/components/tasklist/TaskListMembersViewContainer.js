@@ -39,6 +39,36 @@ class TaskListMembersViewContainer extends React.Component {
 
     }
 
+
+    onClickCancelInvite(email) {
+      this.props.cancelInviteToTaskList(this.props.taskListId,email)
+      .then((res)=>{
+        this.setState({removeUserResult: 'User invite cancelled successfully!!'}); //this will cause render to be called
+        this.props.getTaskListById(this.props.taskListId);
+        this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
+        this.props.getNonOrgUsersByTaskList(this.props.taskListId);
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({changeUserRoleResult: error.message}); //this will cause render to be called
+      })
+
+    }
+
+    renderRemoveUserCancelInviteButton(member){
+      if(member.status=='ACTIVE'){
+        if(member.taskListUserRole=='MEMBER'){
+          return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,member.userId)}>Remove User</button>);
+        }
+        else{
+          return (<span></span>);
+        }
+      }
+      else if (member.status=='PENDING'){
+          return (<button className="button small secondary float-right" onClick={this.onClickCancelInvite.bind(this,member.email)}>Cancel Invite</button>);
+      }
+    }
+
     renderList() {
        return this.props.tasklistmembers.map((member) =>{
           return(
@@ -59,9 +89,7 @@ class TaskListMembersViewContainer extends React.Component {
               </td>
               <td>
                 {
-                  (member.status=='ACTIVE' && member.taskListUserRole=='MEMBER')
-                  ?<button className="button small secondary float-right" onClick={this.onClick.bind(this,member.userId)}>Remove User</button>
-                  :<span></span>
+                  this.renderRemoveUserCancelInviteButton(member)
                 }
               </td>
             </tr>
@@ -74,7 +102,15 @@ class TaskListMembersViewContainer extends React.Component {
           return(
             <tr key={member.email}>
               <td><span className="alert label">{member.firstName +"," + member.lastName}</span></td>
+              <td><span className=" alert label">{member.listInviteStatus}</span></td>
               <td><span className="alert label">{member.email}</span></td>
+              <td>
+              {
+              (member.listInviteStatus=='PENDING')
+                ?<button className="button small secondary float-right" onClick={this.onClickCancelInvite.bind(this,member.email)}>Cancel Invite</button>
+                :<span></span>
+              }
+              </td>
             </tr>
           );
       })
@@ -108,7 +144,7 @@ class TaskListMembersViewContainer extends React.Component {
                 <th width="200" ><h3>Name</h3></th>
                 <th width="200" ><h3>Status</h3></th>
                 <th width="200" ><h3>Role</h3></th>
-                <th width="200" ><h3></h3></th>
+                <th width="400" ><h3></h3></th>
               </tr>
             </thead>
             <tbody>
@@ -126,7 +162,9 @@ class TaskListMembersViewContainer extends React.Component {
               <thead>
                 <tr>
                   <th width="200" ><h3>Name</h3></th>
+                  <th width="200" ><h3>Status</h3></th>
                   <th width="200" ><h3>Email</h3></th>
+                  <th width="200" ><h3></h3></th>
                 </tr>
               </thead>
               <tbody>

@@ -90,3 +90,11 @@ export function removeUserFromList(taskListId,removedUserId) {
       return response.data;
     });
 }
+
+export function cancelInviteToTaskList(taskListId,email) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/cancelInviteToTaskList/' + taskListId
+                      +"?markedUserEmail=" +email)
+    .then(response => {
+      return response.data;
+    });
+}
