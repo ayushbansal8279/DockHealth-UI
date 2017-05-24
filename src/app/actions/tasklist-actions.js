@@ -154,3 +154,13 @@ export function removeUserFromList(taskListId,removedUserId) {
     });
   };
 }
+
+export function cancelInviteToTaskList(taskListId,email) {
+  return function(dispatch) {
+    return TaskListApi.cancelInviteToTaskList(taskListId,email).then(res => {
+      dispatch({type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS, res});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
