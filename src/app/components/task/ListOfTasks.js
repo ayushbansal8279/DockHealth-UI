@@ -212,13 +212,13 @@ class TaskList extends React.Component {
   componentDidMount () {
     //alert('componentDidMount');
     enableTaskListComponents();
-		console.log("listoftasks didmount")
+		// console.log("listoftasks didmount")
   }
 
   componentDidUpdate () {
     //alert('componentDidUpdate');
     enableTaskListComponents();
-		console.log("listoftasks didupdate")
+		// console.log("listoftasks didupdate")
   }
 
 }

@@ -152,8 +152,8 @@ export function getHighPriorityTasksByTaskList(taskListId) {
   });
 }
 
-export function getTasksByPatient(patientId, status){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksByPatient/'+patientId+'?status='+status)
+export function getListTasksByPatient(patientId, status, taskListId){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByPatient/'+patientId+'/taskList/'+taskListId+'?status='+status)
   .then(response => {
     return response.data;
   });

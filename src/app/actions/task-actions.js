@@ -210,11 +210,11 @@ export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId,
   }
 }
 
-export function getTasksByPatient(patientId){
+export function getListTasksByPatient(patientId, taskListId){
   return function(dispatch){
-    return TaskApi.getTasksByPatient(patientId, "INCOMPLETE").then(tasks => {
+    return TaskApi.getListTasksByPatient(patientId, "INCOMPLETE", taskListId).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks)).then(
-        TaskApi.getTasksByPatient(patientId, "COMPLETE").then(tasks => {
+        TaskApi.getListTasksByPatient(patientId, "COMPLETE", taskListId).then(tasks => {
           dispatch(getCompletedTasksSuccess(tasks));
         })
       )

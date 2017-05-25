@@ -12,8 +12,8 @@ class TaskListPatients extends React.Component {
 		this.findTasksByPatient = this.findTasksByPatient.bind(this)
 	}
 
-	findTasksByPatient(patientId){
-		this.props.taskActions.getTasksByPatient(patientId, "INCOMPLETE")
+	findTasksByPatient(patientId, taskListId){
+		this.props.taskActions.getListTasksByPatient(patientId, taskListId)
 	}
 
 	componentDidMount () {
@@ -33,7 +33,7 @@ class TaskListPatients extends React.Component {
 				<ul className="no-bullet expand">
 					{this.props.patients.map(patient => {
 						return (
-							<li onClick={(e) => this.findTasksByPatient(patient.patientId)} key={patient.patientId}><strong>{patient.firstName} {patient.lastName} {patient.mrn}</strong></li>
+							<li onClick={(e) => this.findTasksByPatient(patient.patientId, this.props.taskListId)} key={patient.patientId}><strong>{patient.firstName} {patient.lastName} {patient.mrn}</strong></li>
 						);
 					})}
 				</ul>

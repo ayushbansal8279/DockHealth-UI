@@ -12,14 +12,14 @@ class TaskListMembersDropdownListContainer extends React.Component {
     }
 
     render() {
-        return (<TaskListMembersDropdownList members={this.props.members} 
+        return (<TaskListMembersDropdownList members={this.props.members}
         	getSelectedMemberId={this.props.getSelectedMemberId}/>)
     }
 
 }
 
 	//property validation
-	TaskListMembersDropdownListContainer.propTypes = {  
+	TaskListMembersDropdownListContainer.propTypes = {
 	    members: PropTypes.array.isRequired
 	    //actions: PropTypes.object.isRequired
 	}
@@ -28,7 +28,7 @@ class TaskListMembersDropdownListContainer extends React.Component {
 	    return {members: store.taskListState.tasklistmembers};
 	}
 
-	const mapDispatchToProps = function (dispatch) {  
+	const mapDispatchToProps = function (dispatch) {
 	  return bindActionCreators(TaskListActions, dispatch)
 	}
 
