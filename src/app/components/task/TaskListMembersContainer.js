@@ -8,7 +8,7 @@ import * as TaskListActions from '../../actions/tasklist-actions'
 class TaskListMembersContainer extends React.Component {
     componentDidMount () {
         //this.props.getMembersByTaskListId(taskListId, memberStatus)
-        this.props.getMembersByTaskListId('1','ALL');
+        // this.props.getMembersByTaskListId('1','ALL');
     }
 
     render() {
@@ -18,7 +18,7 @@ class TaskListMembersContainer extends React.Component {
 }
 
 	//property validation
-	TaskListMembersContainer.propTypes = {  
+	TaskListMembersContainer.propTypes = {
 	    members: PropTypes.array.isRequired
 	    //actions: PropTypes.object.isRequired
 	}
@@ -27,7 +27,7 @@ class TaskListMembersContainer extends React.Component {
 	    return {members: store.taskListState.tasklistmembers};
 	}
 
-	const mapDispatchToProps = function (dispatch) {  
+	const mapDispatchToProps = function (dispatch) {
 	  return bindActionCreators(TaskListActions, dispatch)
 	}
 

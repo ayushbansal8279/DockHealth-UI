@@ -23,8 +23,14 @@ class TaskListPatients extends React.Component {
   }
 
 	componentWillReceiveProps(nextProps){
-		this.props.actions.getPatientsByTaskList(this.props.taskListId)
+		if(nextProps.taskListId != this.props.taskListId){
+			this.props.actions.getPatientsByTaskList(nextProps.taskListId)
+		}
 	}
+
+	// componentWillUpdate(nextProps, nextState){
+	// 	this.props.actions.getPatientsByTaskList(this.props.taskListId)
+	// }
 
   render() {
     return (

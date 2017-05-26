@@ -10,8 +10,10 @@ class TaskListUsers extends React.Component {
 	    this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
 	}
 
-	componentWillReceiveProps(nextProps){
-		this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
+	componentWillUpdate(nextProps){
+		if(nextProps.taskListId != this.props.taskListId){
+			this.props.getMembersByTaskListId(nextProps.taskListId,'ALL');
+		}
 	}
 
 
