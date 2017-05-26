@@ -38,7 +38,18 @@ class PeopleContainer extends React.Component {
       .catch((error)=>{
         this.setState({peopleProcessingResult: error.message}); //this will cause render to be called
       })
+    }
 
+    onClickRemoveUser(markedUserId) {
+      this.props.removeUserFromOrganization(markedUserId)
+      .then((res)=>{
+        this.setState({peopleProcessingResult: 'User removed successfully!!'}); //this will cause render to be called
+        this.props.findAllUsersByOrganizationId();
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({peopleProcessingResult: error.message}); //this will cause render to be called
+      })
     }
 
     onClickCancelInvite(email) {
@@ -69,13 +80,23 @@ class PeopleContainer extends React.Component {
     renderRoleButton(people){
       if(people.userInviteStatus=='ACCEPTED'){
           if(people.orgUserRole=='OWNER'){
-            return (<span></span>);
+            return (<button className="button small secondary float-right" onClick={this.onClickRemoveUser.bind(this,people.userId)}>Remove User</button>);
           }
           else if(people.orgUserRole=='MEMBER'){
-            return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Give Admin Rights</button>);
+            return (
+              <div>
+                <button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Give Admin Rights</button>
+                <button className="button small secondary float-right" onClick={this.onClickRemoveUser.bind(this,people.userId)}>Remove User</button>
+              </div>
+            );
           }
           else if(people.orgUserRole=='ADMIN'){
-            return (<button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Remove Admin Rights</button>);
+            return (
+              <div>
+                <button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Remove Admin Rights</button>
+                <button className="button small secondary float-right" onClick={this.onClickRemoveUser.bind(this,people.userId)}>Remove User</button>
+              </div>
+              );
           }
         }
         else if(people.userInviteStatus=='PENDING'){
@@ -125,7 +146,7 @@ class PeopleContainer extends React.Component {
         </div>
 
         <Link to="/peopleinvite">
-          <button className="button secondary button-small float-right">Invite User To Org</button>
+          <button className="button secondary button-small float-right">Invite user to organization</button>
         </Link>
 
         <div className="row">

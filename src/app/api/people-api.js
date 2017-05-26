@@ -30,3 +30,11 @@ export function changeUserRoleForOrg(markedUserId,role) {
         return response.data;
       });
     }
+
+    export function removeUserFromOrganization(removedUserId) {
+      return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/removeUserFromOrganization'
+                          +"?removedUserId=" +removedUserId)
+        .then(response => {
+          return response.data;
+        });
+      }

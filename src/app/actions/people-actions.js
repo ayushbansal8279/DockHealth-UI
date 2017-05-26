@@ -48,3 +48,13 @@ export function invitePersonToOrganization(formProps ){
       });
     };
   }
+
+  export function removeUserFromOrganization(removedUserId) {
+    return function(dispatch) {
+      return PeopleApi.removeUserFromOrganization(removedUserId).then(res => {
+        dispatch({type: ActionTypes.REMOVE_USER_ORG_SUCCESS, res});
+      }).catch(error => {
+        throw(error);
+      });
+    };
+  }
