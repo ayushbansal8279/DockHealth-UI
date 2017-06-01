@@ -164,3 +164,13 @@ export function cancelInviteToTaskList(taskListId,email) {
     });
   };
 }
+
+export function findAuditsByTaskList(taskListId,queryStartPosition) {
+  return function(dispatch) {
+    return TaskListApi.findAuditsByTaskList(taskListId,queryStartPosition).then(audits => {
+      dispatch({type: ActionTypes.GET_AUDITS_BY_TASKLIST_SUCCESS, audits});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}

@@ -10,6 +10,7 @@ export default {
   nonorgusersintasklist:[],
   tasklistactivemembers: [],
   invitationlist: [],
-  peoplelist: []
+  peoplelist: [],
+  tasklistaudits: []
   //addtasklisterror:''
 }

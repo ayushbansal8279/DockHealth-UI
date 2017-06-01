@@ -41,6 +41,7 @@ class TaskListRender extends React.Component {
                   <li><Link to={"/inviteUsersToTaskList/" + list.taskListId}>Invite Existing Users</Link></li>
                   <li><Link to={"/updateUserRole/" + list.taskListId}>Update User Role</Link></li>
                   <li><Link onClick={this.onClick.bind(this,list.taskListId)}>Delete Task List</Link></li>
+                  <li><Link to={"/viewTaskListAudits/" + list.taskListId}>View Activity Feed</Link></li>
                 </ul>
                 </li>
               </ul>

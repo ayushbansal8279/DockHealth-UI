@@ -151,7 +151,7 @@ class PeopleContainer extends React.Component {
 
         <div className="row">
           <div className="small-12 columns">
-          <h4>List of memebers within organization</h4>
+          <h4>List of members within organization</h4>
           </div>
         </div>
 

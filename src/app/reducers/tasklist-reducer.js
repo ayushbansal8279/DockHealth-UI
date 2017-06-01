@@ -23,6 +23,9 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_TASKLISTACTIVEMEMBERS_SUCCESS:
       return {...state, tasklistactivemembers:action.tasklistactivemembers};  //whatever our current state is, add on "tasklistactivemembers"
 
+      case types.GET_AUDITS_BY_TASKLIST_SUCCESS:
+        return {...state, tasklistaudits:action.audits};  //whatever our current state is, add on "tasklistaudits"
+
 
     // case types.UPDATE_TASKLIST_SUCCESS:
     //   return {...state, updtasklist:action.updtasklist};  //whatever our current state is, add on "onetasklist"
