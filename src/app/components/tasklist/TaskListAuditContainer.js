@@ -18,10 +18,10 @@ class TaskListAuditContainer extends Component {
        return this.props.tasklistaudits.map((audit) =>{
           return(
             <tr key={audit.auditId}>
-              <td><span className="label">{audit.createdDateTime}</span></td>
-              <td><span className="label">{audit.auditEventType}</span></td>
-              <td><span className="label">{audit.currentState}</span></td>
-              <td><span className="label">{audit.targetIdType}</span></td>
+              <td>{audit.createdDateTime}</td>
+              <td>{audit.auditEventType}</td>
+              <td>{audit.currentState}</td>
+              <td>{audit.targetIdType}</td>
             </tr>
           );
       })
@@ -40,10 +40,10 @@ class TaskListAuditContainer extends Component {
           <table>
             <thead>
               <tr>
-                <th width="100" ><h3>Created Date</h3></th>
-                <th width="100" ><h3>Event Type</h3></th>
-                <th width="400" ><h3>Message</h3></th>
-                <th width="100" ><h3>Target type</h3></th>
+                <th>Created Date</th>
+                <th>Event Type</th>
+                <th>Message</th>
+                <th>Target type</th>
               </tr>
             </thead>
 
