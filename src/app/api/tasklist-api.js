@@ -98,3 +98,19 @@ export function cancelInviteToTaskList(taskListId,email) {
       return response.data;
     });
 }
+
+export function findAuditsByTaskList(taskListId,queryStartPosition) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findAuditsByTaskList/' + taskListId
+                  +"?queryStartPosition=" +queryStartPosition)
+    .then(response => {
+      return response.data;
+    });
+}
+
+export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findAuditsForAllTaskListsByUserId/'
+                  +"?queryStartPosition=" +queryStartPosition)
+    .then(response => {
+      return response.data;
+    });
+}

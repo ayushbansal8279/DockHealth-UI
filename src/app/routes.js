@@ -25,6 +25,8 @@ import TaskListUpdateUserRoleView from './views/TaskListUpdateUserRoleView';
 import InvitationsView from './views/InvitationsView';
 import PeopleView from './views/PeopleView';
 import InvitePeople from './components/people/InvitePeople';
+import TaskListAuditView from './views/TaskListAuditView';
+import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 
 
 // const routes = {
@@ -52,8 +54,10 @@ export default (
       <Route path="/addPatient" component={AddPatientView} />
       <Route path="/updatePatient/:patientId" component={UpdatePatientView} />
       <Route path="/taskList" component={TaskListView} />
+      <Route path="/activityfeed" component={TaskListActivityFeedView} />
       <Route path="/addTaskList" component={TaskListAdd} />
       <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
+      <Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />
       <Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />
       <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
       <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} />
