@@ -31,6 +31,7 @@ class TaskListRender extends React.Component {
           <tr key={list.taskListId}>
             <td>
               <span className="label">{list.listName}</span>
+              <span className="label">{list.numberOfTasks}</span>
 
               <ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
                 <li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
