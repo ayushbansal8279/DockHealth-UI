@@ -29,6 +29,9 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_AUDITS_BY_ALLUSERLIST_SUCCESS:
       return {...state, auditsForAllUserList:action.auditsForAllUserList};  //whatever our current state is, add on "auditsForAllUserList"
 
+    case types.TOGGLE_LIST_NOTIFICATIONS_SUCCESS:
+      return {...state
+      };
     // case types.UPDATE_TASKLIST_SUCCESS:
     //   return {...state, updtasklist:action.updtasklist};  //whatever our current state is, add on "onetasklist"
 

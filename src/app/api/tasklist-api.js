@@ -114,3 +114,10 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
       return response.data;
     });
 }
+
+export function toggleListNotifications(taskListId, receiveNotifications){
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/toggleUserNotificationsForTaskList/1?notifications=false')
+  .then(response => {
+    return response;
+  });
+}

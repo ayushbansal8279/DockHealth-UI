@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as TaskActions from '../../actions/task-actions'
+import * as TaskListActions from '../../actions/tasklist-actions'
 
 class TaskFiltersContainer extends React.Component {
     constructor(props) {
@@ -17,19 +18,19 @@ class TaskFiltersContainer extends React.Component {
     }
 
     getTasksAssignedToUserByTaskListId(){
-      this.props.getTasksAssignedToUserByTaskListId(this.props.taskListId)
+      this.props.taskActions.getTasksAssignedToUserByTaskListId(this.props.taskListId)
     }
 
     getTasksAssignedByMe(){
-      this.props.getTasksAssignedByMe(this.props.taskListId)
+      this.props.taskActions.getTasksAssignedByMe(this.props.taskListId)
     }
 
     getHighPriorityTasks(){
-      this.props.getHighPriorityTasksByTaskList(this.props.taskListId)
+      this.props.taskActions.getHighPriorityTasksByTaskList(this.props.taskListId)
     }
 
     getListTasksByUser(status){
-      this.props.getListTasks(this.props.taskListId, status)
+      this.props.taskActions.getListTasks(this.props.taskListId, status)
     }
 
     render() {
@@ -72,6 +73,11 @@ class TaskFiltersContainer extends React.Component {
 			        <li><a href="#">Inbox</a></li>
             </ul>
           </li>
+          {this.props.tasklistId > 0 &&
+          <li>
+            <button className="button success float-right button-small">{this.props.taskList.notifications ? "Turn Off Notifications" : "Turn On Notifications"}</button>
+          </li>
+          }
 				</ul>
 				<ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
 					<li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
@@ -87,9 +93,17 @@ class TaskFiltersContainer extends React.Component {
     );
     }
 
+  componentWillMount(){
+    if(this.props.taskListId != "undefined"){
+      this.props.taskListActions.getTaskListById(this.props.taskListId);
+    }
+  }
+
   componentDidMount () {
     //alert('componentDidMount');
     enableTaskListComponents();
+
+    // console.log("TaskList is: " + this.props.taskListId);
     // console.log("listoftasks didmount")
   }
 
@@ -102,11 +116,17 @@ class TaskFiltersContainer extends React.Component {
 }
 
 const mapStateToProps = function (store) {
-   return {members: store.taskListState.tasklistmembers};
+   return {
+     members: store.taskListState.tasklistmembers,
+     taskList: store.taskListState.taskListone
+   };
 }
 
 const mapDispatchToProps = function (dispatch) {
- return bindActionCreators(TaskActions, dispatch)
+  return {
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    taskActions: bindActionCreators(TaskActions, dispatch)
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskFiltersContainer);

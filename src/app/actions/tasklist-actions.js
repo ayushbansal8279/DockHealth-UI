@@ -184,3 +184,13 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
     });
   };
 }
+
+export function toggleListNotifications(taskListId, receiveNotifications){
+  return function(dispatch){
+    return TaskListApi.toggleListNotifications(taskListId, receiveNotifications).then(res => {
+      dispatch({type: ActionTypes.TOGGLE_LIST_NOTIFICATIONS_SUCCESS, taskListId, receiveNotifications});
+    }).catch(error => {
+      throw(error);
+    });
+  }
+}
