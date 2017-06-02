@@ -174,3 +174,13 @@ export function findAuditsByTaskList(taskListId,queryStartPosition) {
     });
   };
 }
+
+export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
+  return function(dispatch) {
+    return TaskListApi.findAuditsForAllTaskListsByUserId(queryStartPosition).then(auditsForAllUserList => {
+      dispatch({type: ActionTypes.GET_AUDITS_BY_ALLUSERLIST_SUCCESS, auditsForAllUserList});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}

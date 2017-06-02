@@ -1,13 +1,9 @@
-import React, { Component ,PropTypes} from 'react';
-import {reduxForm, Field} from 'redux-form';
+import React, { Component} from 'react';
 import * as TaskListActions from '../../actions/tasklist-actions';
-import {connect} from 'react-redux'
-import BasicField from '../common/BasicField';
-import { Link,hashHistory } from 'react-router';
 import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux'
 
 class TaskListAuditContainer extends Component {
-
 
   componentDidMount () {
       this.props.getTaskListById(this.props.taskListId);
@@ -57,7 +53,7 @@ class TaskListAuditContainer extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state);
+  //console.log(state);
   return {
     taskListOne: state.taskListState.tasklistone,
     tasklistaudits: state.taskListState.tasklistaudits

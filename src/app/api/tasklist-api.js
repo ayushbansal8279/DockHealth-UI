@@ -106,3 +106,11 @@ export function findAuditsByTaskList(taskListId,queryStartPosition) {
       return response.data;
     });
 }
+
+export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findAuditsForAllTaskListsByUserId/'
+                  +"?queryStartPosition=" +queryStartPosition)
+    .then(response => {
+      return response.data;
+    });
+}
