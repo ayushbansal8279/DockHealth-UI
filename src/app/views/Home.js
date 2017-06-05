@@ -4,6 +4,7 @@ import TaskFiltersContainer from '../components/task/TaskFiltersContainer'
 import TaskListPatients from '../components/task/TaskListPatients'
 import TaskListUsers from '../components/task/TaskListUsers'
 import Notification from '../components/common/Notification'
+import NotificationsToggle from '../components/tasklist/TaskListNotificationsToggle'
 
 class Home extends React.Component {
 
@@ -20,6 +21,7 @@ class Home extends React.Component {
         <div>TaskListId: {taskListId} (Home.js)</div>
         {taskListId > 0 &&
           <div className="large-4 columns sidebar">
+            <NotificationsToggle taskListId={taskListId}/>
             <TaskListUsers taskListId={taskListId}/>
             <TaskListPatients taskListId={taskListId}/>
           </div>

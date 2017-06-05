@@ -73,11 +73,7 @@ class TaskFiltersContainer extends React.Component {
 			        <li><a href="#">Inbox</a></li>
             </ul>
           </li>
-          {this.props.tasklistId > 0 &&
-          <li>
-            <button className="button success float-right button-small">{this.props.taskList.notifications ? "Turn Off Notifications" : "Turn On Notifications"}</button>
-          </li>
-          }
+
 				</ul>
 				<ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
 					<li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
@@ -93,11 +89,7 @@ class TaskFiltersContainer extends React.Component {
     );
     }
 
-  componentWillMount(){
-    if(this.props.taskListId != "undefined"){
-      this.props.taskListActions.getTaskListById(this.props.taskListId);
-    }
-  }
+
 
   componentDidMount () {
     //alert('componentDidMount');
