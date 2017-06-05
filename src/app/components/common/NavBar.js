@@ -18,9 +18,9 @@ const LinksDefault = ({className}) => (
   </ul>
 )
 
-const LinksAuth = ({user, className, onLogout}) => (
+const LinksAuth = ({user, className, onLogout,userProfilePic}) => (
   <ul className={className}>
-    <NavLink to={`/users/${user.username}`}><img className="memberphoto" src="assets/img/memberphoto.png" alt="name of user"/>{user.firstName} {user.lastName}</NavLink>
+    <NavLink to={`/users/${user.username}`}><img className="memberphoto" src={userProfilePic} alt="name of user"/>{user.firstName} {user.lastName}</NavLink>
     <li><a className='nav-item is-tab' onClick={onLogout}>logout</a></li>
   </ul>
 )
@@ -41,6 +41,13 @@ class NavBar extends React.Component {
   render() {
 
 	var {userProfile} = this.props
+  var {userProfilePic} = this.props
+  //var userProfilePicTemp = "data:image/png;base64," + userProfilePic
+  //console.log(userProfilePicTemp);
+  if(userProfilePic == undefined){
+    userProfilePic = "assets/img/dock-logo-white.png";
+  }
+
 	let menuClasses = 'menu float-right'
     return (
 <nav>
@@ -55,7 +62,7 @@ class NavBar extends React.Component {
       <NavLink to='/invitations'>List Invitations</NavLink>
       <NavLink to='/activityfeed'>Activity Feed</NavLink>
 		</ul>
-		{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} /> : <LinksDefault className={menuClasses}/>}
+		{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}
 	</div>
 </div>
 </nav>
@@ -66,7 +73,8 @@ class NavBar extends React.Component {
 const mapStateToProps = function (store) {
   return {
     user: store.userState.user,
-    userProfile: store.userState.userProfile
+    userProfile: store.userState.userProfile,
+    userProfilePic:store.userState.userProfilePic
   }
 }
 

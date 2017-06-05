@@ -69,7 +69,7 @@ export function confirmRegistration (userData) {
               lastName: "Test",
               email: cognitoUser.username
             })
-          */  
+          */
             resolve(result.user)
         }
     })
@@ -127,7 +127,7 @@ export function login (Username, Password) {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
         console.log('access token + ' + result.getAccessToken().getJwtToken())
-        
+
         // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
         //     IdentityPoolId : '...' // your identity pool id here
         //     Logins : {
@@ -135,7 +135,7 @@ export function login (Username, Password) {
         //         'cognito-idp.us-east-1.amazonaws.com/us-east-1_TcoKGbf7n' : result.getIdToken().getJwtToken()
         //     }
         // })
-        
+
 // {AuthenticationResult: {,…}, ChallengeParameters: {}}
 // AuthenticationResult
 // :
@@ -164,7 +164,7 @@ export function login (Username, Password) {
         /*
         var logins = {}
         logins['cognito-idp.' + window.AWS.config.region + '.amazonaws.com/' + userPool.userPoolId] = result.getIdToken().getJwtToken();
-        
+
         // Add the User's Id Token to the Cognito credentials login map.
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
             IdentityPoolId: window.AWS.config.identityPoolId,
@@ -177,7 +177,7 @@ export function login (Username, Password) {
                 console.log(AWS.config.credentials)
             }
         });
-        
+
         console.log("set the AWS credentials - " + JSON.stringify(AWS.config.credentials));
         console.log("set the AWSCognito credentials - " + JSON.stringify(AWSCognito.config.credentials));
         */
@@ -209,12 +209,12 @@ export function sendMFACode (userData) {
     cognitoUser.sendMFACode(mfaCode, {
       onSuccess: function (result, userConfirmationNecessary) {
         console.log('access token + ' + result.getAccessToken().getJwtToken())
-        
+
         store.dispatch({type: 'user/user', user: resolvedCognitoUser})
         resolve(result)
-        
+
       },
-      onFailure: reject      
+      onFailure: reject
     })
   })
 }
@@ -310,7 +310,7 @@ export function forgotPassword (userData) {
       }
     });
   });
-    
+
 }
 
 export function resetPassword (userData) {
@@ -335,8 +335,8 @@ export function resetPassword (userData) {
       }
     });
   });
-    
-}  
+
+}
 
 export function createUser(user) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user', user)
@@ -352,7 +352,7 @@ export function getUserByEmail(email, cognitoUser) {
     accessToken = cognitoUser.signInUserSession.accessToken.jwtToken;
   }
   console.log(accessToken)
-  const authString = 'Bearer '.concat(accessToken); 
+  const authString = 'Bearer '.concat(accessToken);
   //sets global header for axios
   axios.defaults.headers.common['Authorization'] = authString
   // axios.defaults.headers.common['CurrentUserId'] = "1"
@@ -367,4 +367,20 @@ export function getUserByEmail(email, cognitoUser) {
 
 export function updateStoreWithCurrentUser(cognitoUser) {
   store.dispatch({type: 'user/user', user: cognitoUser})
+}
+
+export function getUserProfilePic() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture',{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
+    .then(response => {
+      //let binaryImage = btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+      //let image = "data:image/png;base64," + image
+      let binaryImage = new Buffer(response.data, 'binary').toString('base64');
+      let image = `data:${response.headers['content-type'].toLowerCase()};base64,${binaryImage}`;
+
+      store.dispatch({type: 'user/userProfilePic', userProfilePic: image})
+      return image;
+    })
+    .catch(response => {
+      console.log("User does not have a profile picture yet")
+    })
 }
