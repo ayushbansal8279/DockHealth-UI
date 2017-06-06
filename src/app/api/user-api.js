@@ -365,6 +365,15 @@ export function getUserByEmail(email, cognitoUser) {
     });
 }
 
+export function getUserById() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/' + sessionStorage.userId)
+    .then(response => {
+      store.dispatch({type: 'user/userProfile', userProfile: response.data})
+      //sessionStorage.setItem('userProfile', JSON.stringify(response.data));
+      return response.data;
+    });
+}
+
 export function updateStoreWithCurrentUser(cognitoUser) {
   store.dispatch({type: 'user/user', user: cognitoUser})
 }
@@ -388,7 +397,18 @@ export function saveUserProfilePic(data) {
   //alert(data);
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture', data)
     .then(response => {
-      return getUserProfilePic(); //cal this so state change will be triggered and all locations will be updated
+      return response.data
+    }).catch(error => {
+      throw(error);
     });
+}
 
+export function updateUser(formProps) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user', formProps)
+    .then(response => {
+      //store.dispatch({type: 'user/userId', userId: response.data.userId})
+      return response.data;
+    }).catch(error => {
+      throw(error);
+    });
 }
