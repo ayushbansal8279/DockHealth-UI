@@ -20,7 +20,7 @@ const LinksDefault = ({className}) => (
 
 const LinksAuth = ({user, className, onLogout,userProfilePic}) => (
   <ul className={className}>
-    <NavLink to={`/users/${user.username}`}><img className="memberphoto" src={userProfilePic} alt="name of user"/>{user.firstName} {user.lastName}</NavLink>
+    <NavLink to={`/userprofile`}><img className="memberphoto" src={userProfilePic} alt="name of user"/>{user.firstName} {user.lastName}</NavLink>
     <li><a className='nav-item is-tab' onClick={onLogout}>logout</a></li>
   </ul>
 )
@@ -44,6 +44,7 @@ class NavBar extends React.Component {
   var {userProfilePic} = this.props
   //var userProfilePicTemp = "data:image/png;base64," + userProfilePic
   //console.log(userProfilePicTemp);
+  //alert(userProfilePic);
   if(userProfilePic == undefined){
     userProfilePic = "assets/img/dock-logo-white.png";
   }

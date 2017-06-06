@@ -360,7 +360,7 @@ export function getUserByEmail(email, cognitoUser) {
     .then(response => {
       store.dispatch({type: 'user/userProfile', userProfile: response.data})
       sessionStorage.setItem('userId', response.data.userId);
-      sessionStorage.setItem('userProfile', response.data);
+      sessionStorage.setItem('userProfile', JSON.stringify(response.data));
       return response.data;
     });
 }
@@ -374,13 +374,21 @@ export function getUserProfilePic() {
     .then(response => {
       //let binaryImage = btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
       //let image = "data:image/png;base64," + image
-      let binaryImage = new Buffer(response.data, 'binary').toString('base64');
+      let binaryImage = new Buffer(response.data, 'binary').toString('base64'); //base64 encoding of binary image data
       let image = `data:${response.headers['content-type'].toLowerCase()};base64,${binaryImage}`;
-
       store.dispatch({type: 'user/userProfilePic', userProfilePic: image})
       return image;
     })
     .catch(response => {
       console.log("User does not have a profile picture yet")
     })
+}
+
+export function saveUserProfilePic(data) {
+  //alert(data);
+  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture', data)
+    .then(response => {
+      return getUserProfilePic(); //cal this so state change will be triggered and all locations will be updated
+    });
+
 }

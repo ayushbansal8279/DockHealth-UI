@@ -27,7 +27,7 @@ import PeopleView from './views/PeopleView';
 import InvitePeople from './components/people/InvitePeople';
 import TaskListAuditView from './views/TaskListAuditView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
-
+import UserProfileView from './views/UserProfileView';
 
 // const routes = {
 //   path: '/',
@@ -66,6 +66,7 @@ export default (
       <Route path="/people" component={PeopleView} />
       <Route path="/peopleinvite" component={InvitePeople} />
       <Route path="/tasks/:taskListId" component={Home} />
+      <Route path="/userprofile" component={UserProfileView} />
     </Route>
     <Route component={TemplateNoLogin} >
       <Route path="/register" component={Register} />
