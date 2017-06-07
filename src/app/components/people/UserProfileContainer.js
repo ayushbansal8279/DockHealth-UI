@@ -55,9 +55,20 @@ class UserProfileContainer extends React.Component {
       })
     }
 
+    onClickRemovePicture() {
+      userApi.deleteUserProfilePic()
+      .then((res)=>{
+        this.setState({updateProfileResult: 'User profile picture removed successfully!!'}); //this will cause render to be called
+        userApi.getUserProfilePic()
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({updateProfileResult: error.message}); //this will cause render to be called
+      })
+    }
+
     render(){
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
-
       //var userProfile = JSON.parse(sessionStorage.userProfile) //this is needed as userProfile is stringyfied and stored
       var userProfile = this.props.userProfile
       var {userProfilePic} = this.props
@@ -96,10 +107,10 @@ class UserProfileContainer extends React.Component {
                     <h4 className="top-buffer">{userProfile.firstName} {userProfile.lastName}</h4>
                   </div>
                   <div className="columns large-12 text-center">
-                    <p>Remove photo</p>
+                    <p onClick={this.onClickRemovePicture.bind(this)}>Remove photo</p>
                     <p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
                     <label htmlFor="file">Upload photo</label></p>
-                    <p>Take photo</p>
+                    <p>Take photo (Not implemented)</p>
                   </div>
                </div>
 

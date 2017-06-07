@@ -390,6 +390,7 @@ export function getUserProfilePic() {
     })
     .catch(response => {
       console.log("User does not have a profile picture yet")
+      store.dispatch({type: 'user/userProfilePic', userProfilePic: undefined})
     })
 }
 
@@ -410,5 +411,12 @@ export function updateUser(formProps) {
       return response.data;
     }).catch(error => {
       throw(error);
+    });
+}
+
+export function deleteUserProfilePic() {
+  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture')
+    .then(response => {
+      return response.data;
     });
 }
