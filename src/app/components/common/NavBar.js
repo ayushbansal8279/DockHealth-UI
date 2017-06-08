@@ -60,7 +60,7 @@ class NavBar extends React.Component {
 					{/*<li><a href="lists.html" className="active"><svg className="icon"><use xlinkHref="#icon-user"></use></svg>Lists</a>*/}
           <li>
 					<ul className="nested vertical menu">
-            <NavLink to='/tasks'>Inbox</NavLink>
+            <NavLink to='/inbox'>Inbox</NavLink>
             <NavLink to='/tasks'>Important</NavLink>
             <NavLink to='/tasks'>Assigned to me</NavLink>
             <NavLink to='/tasks'>Assigned by me</NavLink>
