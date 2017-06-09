@@ -29,7 +29,7 @@ class TaskListUsers extends React.Component {
 		    		</div>
 		    	)
 			})}
-			<a><svg className="add icon memberphoto large"><use xlinkHref="#icon-add"></use></svg></a>
+			<a><svg className="add-send-text icon memberphoto large"><use xlinkHref="#icon-add"></use></svg></a>
 		    <button className="button secondary block">Send Text <svg className="icon"><use xlinkHref="#icon-forward"></use></svg></button>
 	    </div>
 	  )

@@ -1,6 +1,9 @@
 import React from 'react'
 import { Link, browserHistory, hashHistory } from 'react-router'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import * as TaskActions from '../../actions/task-actions'
+import * as TaskListActions from '../../actions/tasklist-actions'
 import * as userApi from '../../api/user-api'
 
 const NavLink = ({to, children, className}) => (
@@ -32,8 +35,26 @@ class NavBar extends React.Component {
     this.state = {
       user: false
     }
+    this.getInboxTasks = this.getInboxTasks.bind(this)
+    this.getListTasks = this.getListTasks.bind(this)
+    this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
   }
 
+  getTasksAssignedByMe(){
+    this.props.taskActions.getTasksAssignedByMe()
+  }
+
+  getInboxTasks(){
+    this.props.taskActions.getInboxTasks()
+  }
+
+  getListTasks(taskListId){
+    this.props.taskActions.getListTasksByUser(taskListId)
+  }
+
+  componentDidMount () {
+    this.props.taskListActions.getTaskListForUser();
+  }
   onLogout() {
     userApi.logout()
     hashHistory.push('login')
@@ -60,12 +81,19 @@ class NavBar extends React.Component {
 					{/*<li><a href="lists.html" className="active"><svg className="icon"><use xlinkHref="#icon-user"></use></svg>Lists</a>*/}
           <li>
 					<ul className="nested vertical menu">
-            <NavLink to='/tasks'>Inbox</NavLink>
-            <NavLink to='/tasks'>Important</NavLink>
-            <NavLink to='/tasks'>Assigned to me</NavLink>
-            <NavLink to='/tasks'>Assigned by me</NavLink>
-						<li><a href="index.html" className="active">Boston Clinic</a></li>
-						<li><a href="">Waltham Clinic</a></li>
+            {/*<NavLink to='/tasks'>Inbox</NavLink>*/}
+            <li onClick={(e) => {this.getInboxTasks();}}><Link className="active" to={"/tasks/inbox"}><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</Link></li>
+      			<li><Link className="active" to={"/tasks/inbox"}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned to me</Link></li>
+            {/*<NavLink to='/tasks'>Important</NavLink>*/}
+            {/*<NavLink to='/tasks'>Assigned to me</NavLink>*/}
+            {/*<NavLink to='/tasks'>Assigned by me</NavLink>*/}
+            <li onClick={(e) => {this.getTasksAssignedByMe();}}><Link className="active" to={"/tasks/inbox"}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</Link></li>
+            {this.props.taskLists.map(taskList => {
+              return(
+                <Link to={"/tasks/"+taskList.taskListId} key={taskList.taskListId}><li onClick={(e) => {this.getListTasks(taskList.taskListId)}}><span className="list-logo small"></span>{taskList.listName}</li></Link>
+              )
+            })}
+						{/*<li><a href="index.html" className="active">Boston Clinic</a></li>*/}
 					</ul>
 					</li>
 			    <NavLink to='/people'><svg className="icon"><use xlinkHref="#icon-user"></use></svg>People</NavLink>
@@ -93,8 +121,16 @@ const mapStateToProps = function (store) {
   return {
     user: store.userState.user,
     userProfile: store.userState.userProfile,
-    userProfilePic:store.userState.userProfilePic
+    userProfilePic:store.userState.userProfilePic,
+    taskLists: store.taskListState.tasklist
   }
 }
 
-export default connect(mapStateToProps)(NavBar)
+const mapDispatchToProps = function (dispatch) {
+  return {
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    taskActions: bindActionCreators(TaskActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar)
