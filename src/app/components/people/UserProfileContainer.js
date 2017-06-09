@@ -11,12 +11,13 @@ import * as userApi from '../../api/user-api'
 class UserProfileContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {file: '',imagePreviewUrl: '',updateProfileResult:''};
+    this.state = {updateProfileResult:''};
   }
 
     componentDidMount () {
       userApi.getUserById()
       userApi.getUserProfilePic()
+      userApi.getUserNotoficationPrefs()
     }
 
     handleImageChange(e) {
@@ -42,13 +43,17 @@ class UserProfileContainer extends React.Component {
     }
 
     onSubmit (formProps) {
-      //console.log(formProps);
+
       userApi.updateUser(formProps)
       .then((res)=>{
-        this.setState({updateProfileResult: 'User Profile updated successfully!!!'});
-        userApi.getUserById()
-        userApi.getUserProfilePic()
-        //hashHistory.push('/people')
+          userApi.updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
+          .then((res) =>{
+            this.setState({updateProfileResult: 'User Profile updated successfully!!!'});
+            userApi.getUserById()
+            userApi.getUserProfilePic()
+            userApi.getUserNotoficationPrefs()
+            //hashHistory.push('/people')
+          })
       })
       .catch((error)=>{
         this.setState({updateProfileResult: error.message}); //this will cause render to be called
@@ -67,25 +72,16 @@ class UserProfileContainer extends React.Component {
       })
     }
 
-    render(){
+ render(){
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       //var userProfile = JSON.parse(sessionStorage.userProfile) //this is needed as userProfile is stringyfied and stored
-      var userProfile = this.props.userProfile
+      //var userProfile = this.props.userProfile
+      var initialValues = this.props.initialValues
       var {userProfilePic} = this.props
       if(userProfilePic == undefined){
         userProfilePic = "assets/img/dock-logo-white.png";
       }
 
-      // let {imagePreviewUrl} = this.state;
-      //  let imagePreview = null;
-      //  if (imagePreviewUrl) {
-      //    imagePreview = (<img src={imagePreviewUrl} />);
-      //  }
-
-   //<p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleFileUpload}/>
-   //<label htmlFor="file">Upload photo</label></p>
-
-   //<input type="file" onChange={this.handleImageChange} />
       return(
         <div>
           <div className="off-canvas-content" data-off-canvas-content>
@@ -104,7 +100,7 @@ class UserProfileContainer extends React.Component {
                 <div className="row">
                   <div className="columns large-12 text-center">
                     <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"></img>
-                    <h4 className="top-buffer">{userProfile.firstName} {userProfile.lastName}</h4>
+                    <h4 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h4>
                   </div>
                   <div className="columns large-12 text-center">
                     <p onClick={this.onClickRemovePicture.bind(this)}>Remove photo</p>
@@ -122,30 +118,39 @@ class UserProfileContainer extends React.Component {
                 <form onSubmit = {handleSubmit(this.onSubmit.bind(this))}>
                   <div className="row">
                     <div className="medium-12 columns">
-                          <Field name='firstName'  type='text' component={BasicField} label='First Name' placeholder={userProfile.firstName}/>
+                          <Field name='firstName'  type='text' component={BasicField} label='First Name'/>
                     </div>
                     <div className="medium-12 columns">
-                          <Field name='lastName' type='text' component={BasicField} label='Last Name' placeholder={userProfile.lastName}/>
+                          <Field name='lastName' type='text' component={BasicField} label='Last Name'/>
                     </div>
                     <div className="medium-12 columns">
-                          <Field name='specialty' type='text' component={BasicField} label='Specialty' placeholder={userProfile.specialty}/>
+                          <Field name='specialty' type='text' component={BasicField} label='Specialty'/>
                     </div>
                     <div className="medium-12 columns">
-                          <Field name='subspecialties' type='text' component={BasicField} label='Subspecialties' placeholder={userProfile.subspecialties}/>
+                          <Field name='subspecialties' type='text' component={BasicField} label='Subspecialties'/>
                     </div>
                     <div className="medium-12 columns">
-                          <Field name='accountPhoneNumber' type='text' component={BasicField} label='Account Phone Number' placeholder={userProfile.accountPhoneNumber}/>
+                          <Field name='accountPhoneNumber' type='text' component={BasicField} label='Account Phone Number'/>
                     </div>
                     <div className="medium-12 columns">
-                          <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number' placeholder={userProfile.workPhoneNumber}/>
+                          <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
                     </div>
                     <div className="medium-12 columns">
-                          <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' placeholder={userProfile.faxNumber}/>
+                          <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
                     </div>
                     <div className="medium-12 columns">
-                          <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number' placeholder={userProfile.mobilePhoneNumber}/>
+                          <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number'/>
                     </div>
                   </div>
+
+                  <div className="medium-12 columns">
+                    <Field name="emailPref" id="emailPref" component={BasicField} type="checkbox" label='Email'/>
+                  </div>
+
+                  <div className="medium-12 columns">
+                    <Field name="pushPref" id="pushPref" component={BasicField} type="checkbox" label='Push'/>
+                  </div>
+
                   <div className="row">
                       <div className="medium-12 columns button-group">
                           <button className="button primary float-right button-small">Save</button>
@@ -162,10 +167,61 @@ class UserProfileContainer extends React.Component {
     }
 }
 
+/*
+var userNotificationPrefs = this.props.userNotificationPrefs
+if(userNotificationPrefs){
+  this.state.email=userNotificationPrefs.email
+  this.state.push=userNotificationPrefs.push
+}
+onChange(event) {
+  const target = event.target;
+  const value = target.type === 'checkbox' ? target.checked : target.value;
+  const name = target.name;
+  alert(value)
+  this.setState({
+    [name]: value
+  }, () =>{alert(this.state.email)});
+
+  //alert(this.state.push)
+}
+<div className="medium-12 columns">
+  <input name="email" type="checkbox" onChange={this.onChange.bind(this)}/> Email
+</div>
+<div className="medium-12 columns">
+  <input name="push" type="checkbox"  onChange={this.onChange.bind(this)}/> Push
+</div>
+
+========
+// let {imagePreviewUrl} = this.state;
+//  let imagePreview = null;
+//  if (imagePreviewUrl) {
+//    imagePreview = (<img src={imagePreviewUrl} />);
+//  }
+
+//<p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleFileUpload}/>
+//<label htmlFor="file">Upload photo</label></p>
+
+//<input type="file" onChange={this.handleImageChange} />
+
+*/
+
 function mapStateToProps(state) {
   return {
     userProfilePic:state.userState.userProfilePic,
-    userProfile: state.userState.userProfile
+    //userProfile: state.userState.userProfile,
+    userNotificationPrefs: state.userState.userNotificationPrefs,
+    initialValues:{
+      firstName: state.userState.userProfile.firstName,
+      lastName: state.userState.userProfile.lastName,
+      specialty: state.userState.userProfile.specialty,
+      subspecialties: state.userState.userProfile.subspecialties,
+      accountPhoneNumber: state.userState.userProfile.accountPhoneNumber,
+      workPhoneNumber: state.userState.userProfile.workPhoneNumber,
+      faxNumber: state.userState.userProfile.faxNumber,
+      mobilePhoneNumber: state.userState.userProfile.mobilePhoneNumber,
+      emailPref: state.userState.userNotificationPrefs.email,
+      pushPref: state.userState.userNotificationPrefs.push
+      }  //this automatically causes REDUX to load the form from state
   };
 }
 
@@ -235,5 +291,6 @@ function validatePhoneNumbers(phoneNumber){
 
 export default connect(mapStateToProps,null)(reduxForm({
     form: 'UserProfileForm',
-    validate
+    validate,
+    enableReinitialize : true  //If your initialValues prop gets updated, your form will update too.
 })(UserProfileContainer));
