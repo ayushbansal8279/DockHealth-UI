@@ -23,8 +23,14 @@ class TemplateCore extends React.Component {
     return (
         <div>
           <NavBar/>
-          {/*<Header taskListId={this.props.params.taskListId}/>*/}
-          {this.props.children}
+          <div className="off-canvas-content" data-off-canvas-content="true">
+            <div className="row expanded collapse">
+              <div className="large-12 columns">
+                <Header taskListId={this.props.params.taskListId}/>
+                {this.props.children}
+              </div>
+            </div> 
+          </div> 
           {/*<Notification />*/}
         </div>
     );

@@ -1,11 +1,11 @@
 import React from 'react'
 import AddTask from '../task/AddTask'
 import PropTypes from 'prop-types'
-import * as TaskActions from '../../actions/task-actions'
-import * as TaskListActions from '../../actions/tasklist-actions'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Link} from 'react-router'
+import * as TaskActions from '../../actions/task-actions'
+import * as TaskListActions from '../../actions/tasklist-actions'
 
 class Header extends React.Component {
     constructor(props){
@@ -14,26 +14,11 @@ class Header extends React.Component {
         value: '',
         title: props.taskList.listName
       }
-      this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
       this.changeTitle = this.changeTitle.bind(this)
-      this.getInboxTasks = this.getInboxTasks.bind(this)
-      this.getListTasks = this.getListTasks.bind(this)
     }
 
     componentDidMount () {
       this.props.taskListActions.getTaskListForUser();
-    }
-
-    getTasksAssignedByMe(){
-      this.props.taskActions.getTasksAssignedByMe()
-    }
-
-    getInboxTasks(){
-      this.props.taskActions.getInboxTasks()
-    }
-
-    getListTasks(taskListId){
-      this.props.taskActions.getListTasksByUser(taskListId)
     }
 
     changeTitle(newTitle){
@@ -42,7 +27,7 @@ class Header extends React.Component {
     }
 
     componentDidMount(){
-      this.props.taskListActions.getTaskListForUser()
+      //this.props.taskListActions.getTaskListForUser()
     }
 
     componentWillMount() {
@@ -56,50 +41,69 @@ class Header extends React.Component {
 
     render() {
     return (
+      <div>
+        <header className="nav-down">
+						<div className="top-bar">
+							<div className="top-bar-left">
+								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
+			
+								<h3>{this.state.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
+							</div>
+							<div className="top-bar-right">
+								<ul className="menu member-photo-list" data-open="list-members">
+									<li><span className="add-member circle small">+</span></li>
+									<li><span className="more-members circle small">+4</span></li>
+									<li><img className="member-photo circle small" src="assets/img/user1.png" alt="name of user"/></li>
+									<li><img className="member-photo circle small" src="assets/img/user2.png" alt="name of user"/></li>
+									<li><span className="member-initials circle small">SL</span></li>
+									<li><img className="member-photo circle small" src="assets/img/user3.png" alt="name of user"/></li>
+			          </ul>
+								</div>
+							</div>
 
-      <div id="header-start">
-          <div data-sticky-container>
-      	<div className="sticky" data-top-anchor="header-start" data-sticky data-margin-top="0">
-      		<header>
-      		<div className="row">
-      			<div className="large-12 columns">
-      				<ul id="mainmenu" className="menu dropdown" data-dropdown-menu data-disable-hover="true" data-click-open="true">
-      				<li className="my-menu">
-      				<span className="logo default"><span className="logo-text">BC</span></span>
-      				<h2>{this.state.title} <svg className="icon"><use xlinkHref="#icon-angle-down"></use></svg></h2>
-      				<ul className="menu title-dropdown-menu">
-      					<li className="search"><svg className="icon"><use xlinkHref="#icon-search"></use></svg>Search</li>
-      					<li onClick={(e) => {this.alert; this.changeTitle("Today")}}><svg className="icon green large"><use xlinkHref="#icon-calendar"></use></svg>Today</li>
-      					<Link to={"/tasks/inbox"}><li onClick={(e) => {this.getInboxTasks(); this.changeTitle("Inbox")}}><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</li></Link>
-      					<li><img className="memberphoto active" src="assets/img/memberphoto.png" alt="name of user"/>Assigned to me</li>
-      					<li onClick={(e) => {this.getTasksAssignedByMe(); this.changeTitle("Assigned By Me")}}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</li>
-      				  <li><svg className="icon large priority high"><use xlinkHref="#icon-cross"></use></svg>Important</li>
-                {this.props.taskLists.map(taskList => {
-                  return(
-                    <Link to={"/tasks/"+taskList.taskListId} key={taskList.taskListId}><li onClick={(e) => {this.changeTitle(taskList.listName); this.getListTasks(taskList.taskListId)}}><span className="list-logo small"><span className="logo-text small">BC</span></span>{taskList.listName}</li></Link>
-                  )
-                })}
-      				</ul>
-      			    </li>
-      			    </ul>
-      			</div>
-      		</div>
-      		<div className="row">
-      			<div className="large-8 columns my-task-add-button">
-      				<svg className="add icon primary xlarge"><use href="#icon-add-large"></use></svg>
-      		    </div>
-      	    </div>
-      	    </header>
+              {/*<TaskFiltersContainer taskListId={taskListId} />*/}
 
-      	<AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask}/>
+							<div className="wrapper list-filter row expanded collapse align-middle align-right">
+								<div className="columns shrink controls">
+									<button className="dropdown button primary small" data-toggle="sort-dropdown">Sort</button>
+									<div className="dropdown-pane button-dropdown" id="sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
+										<ul className="no-bullet">
+											<li>Due date</li>
+											<li className="active">Creation date</li>
+											<li>Patient</li>
+											<li>Assignee</li>
+											<li>Assigned to</li>
+											<li>Priority</li>
+											<li>Tag</li>
+										</ul>
+									</div>
+								</div>
 
-          <div className="dropdown-pane" id="set-date" data-dropdown data-close-on-click="true">
-              <label>Set due date <input type="text" className="due-date" placeholder="due date"/></label>
-              <label>Schedule reminder <input type="text" className="reminder" placeholder="reminder"/></label>
-          </div>
+								<div className="columns controls">
+									<div className="input-group searchbar">
+										<input className="input-field search-field" type="search" placeholder="Search tasks" />
+										<div className="input-group-button">
+											<button className="button search">
+												<svg className="icon"><use xlinkHref="#icon-search"></use></svg>
+											</button>
+										</div>
+									</div>
+								</div>
 
-          </div>
-          </div>
+								<div className="columns shrink icon-group controls">
+									<svg className="icon"><use xlinkHref="#icon-bell"></use></svg>
+									<svg className="icon"><use xlinkHref="#icon-print"></use></svg>
+									<svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg>
+								</div>	
+
+								<div className="columns shrink">
+									<svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
+								</div>	
+			          
+						</div>
+        </header>
+
+        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask}/>
       </div>
       );
     }

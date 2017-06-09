@@ -7,15 +7,15 @@ import * as TaskApi from '../../api/task-api'
 
 class AddTask extends React.Component {
 	constructor(props) {
-  	super(props)
-  	this.state = {
-    		value: '',
-    		assignedToId: ''
-  	};
-    this.handleSubmit = this.handleSubmit.bind(this)
+		super(props)
+		this.state = {
+				value: '',
+				assignedToId: ''
+		};
+    	this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
 		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
-		}
+	}
 
   	componentDidMount () {
     	console.log("mounted AddTask component")
@@ -43,58 +43,127 @@ class AddTask extends React.Component {
 
     render() {
     return (
+			<div className="add-form-wrapper">
+				<div className="task-item add-form row expanded">
+					<form className="inline-label">
+						<div className="main-task-wrapper">
+							<div className="column large-12 text-center">
+								<h5 className="section-title">Add a task</h5>
+							</div>
 
-			<div className="row collapse my-task-add-container">
-				<div className="large-8 columns my-task-add-section" >
-					<div className="add-task column my-task-add-section-column">
-						<form>
-							<div className="row">
-								<div className="medium-12 columns">
-									<div className="slidein-wrapper">
-										<div className="slidein">
-											<p className="small">Type <span className="highlight">@</span> to assign a task. Type <span className="highlight">#</span> to refer to a patient.</p>
-										</div>
-									</div>
+							<div className="column large-12 input-group">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input className="input-group-field" type="text" value={this.state.value} onChange={this.handleTaskDetailsChange}/>
+									<label>Task</label>
 								</div>
 							</div>
-							<div className="row">
-								<div className="medium-12 columns">
-									<div className="add-task-description-wrapper">
-										<label>
-											<input type="text" placeholder="What is your task?" value={this.state.value} onChange={this.handleTaskDetailsChange}/>
-										</label>
-										<svg className="icon medium-2 priority"><use xlinkHref="#icon-cross"></use></svg>
-									</div>
-								</div>
-								<TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/>
-							</div>
-							<div className="row">
-								<div className="medium-12 columns">
-									<div className="slidein-wrapper medium">
-										<div className="slidein item-group">
-											<div className="float-left">
-												<span className="task-details-block">
-													<img className="item memberphoto" src="assets/img/memberphoto.png" alt="name of user"/>
-													<img className="item memberphoto" src="assets/img/memberphoto2.png" alt="name of user"/>
-													<img className="item memberphoto" src="assets/img/memberphoto3.png" alt="name of user"/>
-													<svg className="item add icon memberphoto"><use xlinkHref="#icon-add"></use></svg>
-												</span>
-												<span className="task-details-block" data-toggle="set-date">
-													<svg className="item icon medium-2 align-right"><use xlinkHref="#icon-calendar"></use></svg>
-												</span>
-											</div>
-											<div className="float-right">
-												<button onClick={this.handleSubmit} className="button primary float-right button-small">Add</button>
-											</div>
-										</div>
-									</div>
+
+							<div className="column large-12 input-group">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input id="add-patient" className="add-patient input-group-field" type="text"/>
+									<label>Add Patient</label>
 								</div>
 							</div>
-						</form>
-					</div>
+
+							<div className="column large-12 input-group input-dropdown">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input className="input-group-field" type="text" data-toggle="add-task-file-in-options"/>
+									<label>File in</label>
+								</div>
+
+								<div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
+									<fieldset className="large-12 columns">
+										<input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Inbox</label><br/>
+										<input id="checkbox2" type="checkbox"/><label htmlFor="checkbox2">Boston Clinic (Mike Docktor)</label><br/>
+										<input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">Waltham Clinic (Mike Docktor)</label>
+									</fieldset>
+								</div>
+							</div>
+
+							<div className="column large-12 input-group">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input id="assign-task-to" className="assign-to input-group-field" type="text"/>
+									<label>Assigned to</label>
+								</div>
+							</div>
+
+							<div className="column large-12 input-group has-value">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-calendar"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input className="pickdate input-group-field" type="text" value=""/>
+									<label>Due date</label>
+								</div>
+							</div>
+
+							<div className="column large-12 input-group toggle-add-subtask">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input className="input-group-field" type="text"/>
+									<label>Add a subtask</label>
+								</div>
+							</div>
+
+							<div className="column large-12 text-right text-center">
+								<input type="submit" className="button secondary medium" value="Save"/>
+							</div>
+						</div>
+
+						<div className="subtask-wrapper">
+							<div className="row expanded">
+								<div className="column small-4 toggle-add-subtask">
+									<svg className="icon"><use xlinkHref="#icon-arrow-left"></use></svg>
+								</div>
+								<div className="column small-4 text-center">
+									<h5 className="section-title">Add a subtask</h5>
+								</div>
+							</div>
+
+							<div className="column large-12 input-group">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input className="input-group-field" type="text"/>
+									<label>Subtask</label>
+								</div>
+							</div>
+
+							<div className="column large-12 input-group">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input id="add-patient-subtask" className="add-patient input-group-field" type="text"/>
+									<label>Add Patient</label>
+								</div>
+							</div>
+
+							<div className="column large-12 input-group">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input id="assign-subtask-to" className="assign-to input-group-field" type="text"/>
+									<label>Assigned to</label>
+								</div>
+							</div>
+
+							<div className="column large-12 input-group">
+								<span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-calendar"></use></svg></span>
+								<div className="input-wrapper form-floating-label">
+									<input className="pickdate input-group-field" type="text"/>
+									<label>Due date</label>
+								</div>
+							</div>
+
+							<div className="column large-12 text-right">
+								<button onClick={this.handleSubmit} className="button secondary float-right button-small">Save</button>
+							</div>
+						</div>
+
+					</form>
 				</div>
+				<TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/>
 			</div>
-
+			
     )
     }
 }

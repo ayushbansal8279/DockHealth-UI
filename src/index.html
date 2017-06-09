@@ -179,21 +179,107 @@
 <script>
 function renderFoundationComponentsJquery(){
 	console.log('in JS function: renderFoundationComponentsJquery');
+
 	$(document).foundation();
 	//var elem = new Foundation.DropdownMenu($('#mainmenu'), null);
 	//console.log(elem);
 
-	// show/hide add task form
-	$('.my-task-add-button > .add').click(function() {
-		$(this).toggleClass('close');
-		$('.add-task.column').slideToggle(300, function() { 
-		//	var $el = $('.add-task.column');  //record the elem so you don't crawl the DOM everytime  
-		//	var bottom = $el.position().top + $el.outerHeight(true);
-	//		$('.task-list-filter').animate({paddingTop: bottom}, 1);
-			$('.add-task input').toggleClass('fadein');
-		});
-	//		$('.task-list-filter').toggleClass('slidedown');
+	// add task form patient autocomplete
+	// http://easyautocomplete.com/guide
+	var patients = {
+		data: [ {name: "George Vasquez", mrn: "123-32-21"},
+		{name: "Grace Chavez", mrn: "473-32-21"},
+		{name: "Pamela Riley", mrn: "383-38-59"},
+		{name: "Raymond Curtis", mrn: "433-37-47"}
+		],
+			getValue: function (element) { return $(element).prop("name") + " " + $(element).prop("mrn");},
+			list: {onLoadEvent: function() {
+				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
+				$('.easy-autocomplete-container ul').append(addnew);
+			},
+			match: {enabled: true}
+			},
+
+			template: { type: "custom", 
+						method: function(value, item) {
+							return "<span class='data-item'>" + item.mrn + "</span><span class='data-item'>" + item.name + "</span>";
+						}
+					}
+	};
+
+	$(".add-patient").easyAutocomplete(patients);
+
+	// add task form assign to
+	var people = {
+		data: [ {img: "assets/img/user1.png", name: "Terry Tucker"},
+		{img: "assets/img/user2.png", name: "Cynthia Fowler"},
+		{img: "assets/img/user3.png", name: "Edward Wong"},
+		{img: "assets/img/user1.png", name: "Louis Kim"},
+		{img: "assets/img/user2.png", name: "Jesse Murray"},
+		{img: "assets/img/user1.png", name: "Maria Hamilton"}
+		],
+			getValue: "name",
+			list: {match: {enabled: true}},
+			template: { type: "custom",
+						method: function(value, item) {
+							return "<img class='member-photo circle medium data-item' src='" + item.img + "'/><span class='data-item'>" + item.name + "</span>";
+						}
+					}
+	};
+
+	$(".assign-to").easyAutocomplete(people);
+
+
+	//more task options
+	$('.more-options-wrapper').hover(function() {
+		$(this).children('.more-task-options').toggleClass('slide-in');
+		$(this).children('.ellipses').toggleClass('slide-out');
 	});
+
+	// add subtasks
+	$('.add-form').on('click', '.toggle-add-subtask', function() { 
+		$('.subtask-wrapper').slideToggle(300);
+		$('.main-task-wrapper').slideToggle(300);
+	});
+
+	// show/hide add task/list form
+	$('.add, .edit-task').on('click', function(event) {
+		$('.add').toggleClass('close');
+		$('body').toggleClass('disable-header-scroll');
+		if($(this).hasClass('add-list')) {  
+			$('.add-list use').attr('href', function(index, attr) {
+				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+			});
+		}
+		$('.add-form-wrapper').slideToggle(300);
+		$('.list-filter .controls, .list-wrapper').toggle();
+	//	$('.list-filter .controls').toggle();
+	});
+
+	// show/hide completed tasks
+	$('.toggle-completed').click(function() {
+		$(this).toggleClass('inverse');
+		$('.completed-task-wrapper').slideToggle();
+		var $el = $(this);
+		$el.text($el.text() == "Show completed tasks" ? "Hide completed tasks": "Show completed tasks");
+	});
+
+	// toggle slim view
+	$('.toggle-slim').click(function() {
+		$(this).toggleClass('active');
+		$('.task-item-wrapper').toggleClass('slim');
+		$('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
+	});
+
+	// align middle for task list on patient pages
+	if ($('.task-item-wrapper').hasClass('slim')) {
+		$('.task-item .row, .task-item, .main-task-item').addClass('align-middle');
+		}
+
+	// datepicker
+	$('.pickdate').fdatepicker({
+	});
+
 }
 
 function enableTaskListComponents(){
@@ -211,10 +297,8 @@ function enableTaskListComponents(){
 		$(this).parent().find('.edit-task').toggleClass('expanded');
 	});
 	$(".calendar .task-details-block, .task-title-left.float-left, .priority, .mark-complete-wrapper,.memberphoto").click(function (event) {
-				event.stopPropagation();
-				})
-
-
+		event.stopPropagation();
+	});
 
 	// slide in/out extra add task details
 	$('input').on('keyup', function() {
@@ -232,7 +316,19 @@ function enableTaskListComponents(){
 			$('.user-list').css('display','none');
 		});
 	});
-  
+
+	//ensure we remove these from app.js
+	$('.form-floating-label input, .form-floating-label textarea').focusin(function(){
+		$(this).closest('.form-floating-label').addClass('has-value');
+	});
+
+	$('.form-floating-label input, .form-floating-label textarea').blur(function(){
+		if(!$(this).val().length > 0) {
+			//$(this).parent().removeClass('has-value');
+			$(this).closest('.form-floating-label').removeClass('has-value');
+		}
+	});
+
 }
 
 function closeAddTask(){

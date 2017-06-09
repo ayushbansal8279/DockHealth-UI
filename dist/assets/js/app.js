@@ -22933,7 +22933,7 @@ function hasScrolled() {
   $(this).parent().addClass('has-value');
 });
 */
-
+/*
 $('.form-floating-label input, .form-floating-label textarea').focusin(function () {
   $(this).closest('.form-floating-label').addClass('has-value');
 });
@@ -22944,6 +22944,8 @@ $('.form-floating-label input, .form-floating-label textarea').blur(function () 
     $(this).closest('.form-floating-label').removeClass('has-value');
   }
 });
+*/
+
 "use strict";
 
 $(document).foundation();
