@@ -55,8 +55,8 @@ class TaskList extends React.Component {
 			}
   	}
 
-  	handleMarkComplete(taskId, userId, status){
-  		this.props.markComplete(taskId, userId, status)
+  	handleMarkComplete(taskId, status){
+  		this.props.markComplete(taskId, status)
   		// this.setState({task: ''})
   	}
 
@@ -85,7 +85,7 @@ class TaskList extends React.Component {
 		if(AWS.config.credentials){
 			console.log("user name: "+AWS.config.credentials.params.IdentityId);
 		}
-		
+
 		//userApi.isAuthenticated(this)
 
     return (
@@ -136,39 +136,37 @@ class TaskList extends React.Component {
 			}
         return (
 
-			<div className="task-item" key={task.taskId+task.description} value={task}>
-				<div className="row expanded">
-					<div className="columns shrink">
-						<div className="mark-complete"></div>
-					</div>
-					<div className="columns shrink">
-						{task.assignedTo ?
-							<span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-							<img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
-						}
-					</div>
-					<div className="columns shrink align-right">
-						<svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' && 'flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
-					</div>
-					<div className="columns">
-						<span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>
-						<span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
-						<span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
-						{/*<span className="task-details text-light">Created by {task.creator ? task.creator.firstName : 'me'} {task.creator ? task.creator.lastName : ''} &#8226; <Moment fromNow>{createdDateTime}</Moment></span>*/}
-						{/*}<span className="task-details text-light">Last Updated: <Moment fromNow>{task.updatedDateTime}</Moment></span>*/}
-						{/*<span className="task-details-block {task.status}">{task.status}</span>*/}
-						<div className="comments-container">
-							{commentNodes}
-							<div className="row expanded collapse comment-wrapper">
-								<div className="columns shrink text-light">
-									Load 2 earlier comments
-								</div>
+			<div className="task-item row expanded" key={task.taskId+task.description} value={task}>
+				<div className="columns shrink">
+					<div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task.taskId, task.status)}><svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg></div>
+				</div>
+
+				<div className="columns shrink">
+					{task.assignedTo ?
+						<span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
+						<img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
+					}
+				</div>
+				<div className="columns shrink align-right">
+					<svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' && 'flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
+				</div>
+				<div className="columns">
+					<span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>
+					<span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
+					<span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
+					{/*<span className="task-details text-light">Created by {task.creator ? task.creator.firstName : 'me'} {task.creator ? task.creator.lastName : ''} &#8226; <Moment fromNow>{createdDateTime}</Moment></span>*/}
+					{/*}<span className="task-details text-light">Last Updated: <Moment fromNow>{task.updatedDateTime}</Moment></span>*/}
+					{/*<span className="task-details-block {task.status}">{task.status}</span>*/}
+					<div className="comments-container">
+						{commentNodes}
+						<div className="row expanded collapse comment-wrapper">
+							<div className="columns shrink text-light">
+								Load 2 earlier comments
 							</div>
-							<div className="row expanded collapse comment-wrapper">
-								<div className="columns">
-									<button onClick={(e) => this.handleMarkComplete(task.taskId, 1, task.status)} className="button primary float-right button-small">Mark{task.status == "COMPLETE" ? " Incomplete" : " Complete"}</button>
-									<button onClick={(e) => this.markAsUnread(task, task.read)} className="button primary float-right button-small">Mark as {task.read ? "Unread" : "Read"}</button>
-								</div>
+						</div>
+						<div className="row expanded collapse comment-wrapper">
+							<div className="columns">
+								<button onClick={(e) => this.markAsUnread(task, task.read)} className="button primary float-right button-small">Mark as {task.read ? "Unread" : "Read"}</button>
 							</div>
 						</div>
 					</div>

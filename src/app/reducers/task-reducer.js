@@ -29,7 +29,18 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
               // otherwise return original task
               task
           ).filter(task => task.taskId !== taskId)
+      };
 
+    case types.MARK_COMPLETED_TASK_STATUS_SUCCESS:
+      return {
+          ...state,
+          completedTasks: state.tasks.map(task =>
+            task.taskId === action.taskId ?
+              // transform the one with a matching id
+              { ...task, status: action.status } :
+              // otherwise return original task
+              task
+          ).filter(task => task.taskId !== taskId)
       };
 
     case types.DELETE_TASK_SUCCESS:

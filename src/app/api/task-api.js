@@ -48,7 +48,7 @@ export function addTask(task) {
 }
 
 export function deleteTask(taskId, userId) {
-  userId = sessionStorage.userId
+  // userId = sessionStorage.userId
   return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId + '?deleterId=' + userId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
@@ -56,26 +56,26 @@ export function deleteTask(taskId, userId) {
     });
 }
 
-export function markComplete(taskId, userId){
-  userId = sessionStorage.userId
+export function markComplete(taskId){
+  // userId = sessionStorage.userId
   // console.log(taskId);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=COMPLETE')
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?status=COMPLETE')
   .then(response => {
     return response;
   });
 }
 
-export function markIncomplete(taskId, userId){
-  userId = sessionStorage.userId
+export function markIncomplete(taskId){
+  // userId = sessionStorage.userId
   // console.log(taskId);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?userId=' + userId + '&status=INCOMPLETE')
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?status=INCOMPLETE')
   .then(response => {
     return response;
   });
 }
 
 export function updateTaskDescription(taskId, userId, description){
-  userId = sessionStorage.userId
+  // userId = sessionStorage.userId
   // return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'')
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+taskId+'?userId='+userId, {
     description: description
@@ -86,7 +86,7 @@ export function updateTaskDescription(taskId, userId, description){
 }
 
 export function markHighPriority(taskId, userId){
-  userId = sessionStorage.userId
+  // userId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')
   .then(response => {
     return response;
@@ -94,7 +94,7 @@ export function markHighPriority(taskId, userId){
 }
 
 export function markLowPriority(taskId, userId){
-  userId = sessionStorage.userId
+  // userId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=LOW')
   .then(response => {
     return response;
