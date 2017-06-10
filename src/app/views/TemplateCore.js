@@ -7,8 +7,8 @@ import Notification from '../components/common/Notification'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import { connect } from 'react-redux'
 import * as userApi from '../api/user-api'
-import * as TaskListActions from '../actions/tasklist-actions'
-import * as TaskActions from '../actions/task-actions'
+// import * as TaskListActions from '../actions/tasklist-actions'
+// import * as TaskActions from '../actions/task-actions'
 
 class TemplateCore extends React.Component {
   constructor (props) {
@@ -23,14 +23,7 @@ class TemplateCore extends React.Component {
     return (
         <div>
           <NavBar/>
-          <div className="off-canvas-content" data-off-canvas-content="true">
-            <div className="row expanded collapse">
-              <div className="large-12 columns">
-                <Header taskListId={this.props.params.taskListId}/>
-                {this.props.children}
-              </div>
-            </div> 
-          </div> 
+          {this.props.children}
           {/*<Notification />*/}
         </div>
     );
@@ -41,11 +34,11 @@ class TemplateCore extends React.Component {
   }
 
   componentDidMount () {
-    // this.renderFoundationComponents();
+    this.renderFoundationComponents();
   }
 
   componentDidUpdate () {
-    // this.renderFoundationComponents();
+    this.renderFoundationComponents();
   }
 
   renderFoundationComponents () {
@@ -95,8 +88,8 @@ const mapStateToProps = function (store) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    taskListActions: bindActionCreators(TaskListActions, dispatch),
-    taskActions: bindActionCreators(TaskActions, dispatch)
+    // taskListActions: bindActionCreators(TaskListActions, dispatch),
+    // taskActions: bindActionCreators(TaskActions, dispatch)
   }
 }
 

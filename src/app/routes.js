@@ -2,7 +2,8 @@ import React from 'react'
 import { Route, IndexRoute } from 'react-router';
 import App from './views/App'
 import TemplateCore from './views/TemplateCore'
-import TemplateNoLogin from './views/TemplateNoLogin'
+import TemplateAuth from './views/TemplateAuth'
+import TemplateAuthBase from './views/TemplateAuthBase'
 import Home from './views/Home'
 import AddPatientView from './views/AddPatientView'
 import UpdatePatientView from './views/UpdatePatientView'
@@ -68,14 +69,16 @@ export default (
       <Route path="/tasks/:taskListId" component={Home} />
       <Route path="/userprofile" component={UserProfileView} />
     </Route>
-    <Route component={TemplateNoLogin} >
+    <Route component={TemplateAuth} >
+      <Route component={TemplateAuthBase}> 
+        <Route path="/confirmRegistration" component={ConfirmRegistration}/>
+        <Route path="/login" component={Login} />
+        <Route path="/resendCode" component={ResendCode} />
+        <Route path="/forgotPassword" component={ForgotPassword} />
+        <Route path="/resetPassword" component={ResetPassword} />
+        <Route path="/confirmMFACode" component={ConfirmMFACode} />
+      </Route>
       <Route path="/register" component={Register} />
-      <Route path="/confirmRegistration" component={ConfirmRegistration} />
-      <Route path="/login" component={Login} />
-      <Route path="/resendCode" component={ResendCode} />
-      <Route path="/forgotPassword" component={ForgotPassword} />
-      <Route path="/resetPassword" component={ResetPassword} />
-      <Route path="/confirmMFACode" component={ConfirmMFACode} />
     </Route>
   </Route>
 );

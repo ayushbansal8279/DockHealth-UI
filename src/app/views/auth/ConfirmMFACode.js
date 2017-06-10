@@ -41,23 +41,7 @@ export default class ConfirmMFACode extends React.Component {
 
   render () {
     return (
-      <div className='section is-large form'>
-        <div className='columns'>
-          <div className='column is-medium'>
-            <div className='notification'>
-            </div>
-          </div>
-          <div className='column'>
-            <div className="row log-in-form">
-              <div className="medium-10 medium-centered large-10 large-centered columns">
-                <h4 className="text-center">Confirm Authentication Code</h4>
-                <ConfirmMFACodeForm type='Confirm' onSubmit={this.onSubmit} />
-                <p className="text-center"><Link to="/login">Login again</Link></p>   
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <ConfirmMFACodeForm type='Confirm' onSubmit={this.onSubmit} />
     )
   }
 }

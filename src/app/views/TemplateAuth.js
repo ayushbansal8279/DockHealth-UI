@@ -3,24 +3,24 @@ import PropTypes from 'prop-types';
 import NavBarNoLogin from '../components/common/NavBarNoLogin'
 import Notification from '../components/common/Notification'
 
-class App extends React.Component {
+class TemplateAuth extends React.Component {
   render() {
     return (    
         <div>    
-          <NavBarNoLogin/>   
+          {/*<NavBarNoLogin/>   */}
           {this.props.children}
 
-          <Notification />
+          {/*<Notification />*/}
         </div>
     );
   }
 
   componentDidMount () {
-    // this.renderFoundationComponents();
+    this.renderFoundationComponents();
   }
 
   componentDidUpdate () {
-    // this.renderFoundationComponents();
+    this.renderFoundationComponents();
   }
 
   renderFoundationComponents () {
@@ -32,8 +32,8 @@ class App extends React.Component {
 //)
 }
 
-App.propTypes = {
+TemplateAuth.propTypes = {
   children: PropTypes.object.isRequired
 };
 
-export default App
+export default TemplateAuth

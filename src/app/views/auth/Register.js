@@ -47,26 +47,16 @@ export default class Register extends React.Component {
 
   render () {
     return (
-      <div className='section is-large form'>
-        {/*<h2 className='title'>Register User</h2>*/}
-        <div className='columns1'>
-          <div className='column is-medium'>
-            <div className='notification'>
-              {/*<p>Create an account here.</p><p>If you already have one, <Link to='/login'>Login</Link>. If you forgot your password, <Link to='/reset'>Reset it</Link>. If you have created an account, but need to have the verification link resent, just <Link to='/login'>Login</Link>.</p>*/}
-            </div>
+      <div className="wrapper columns align-self-middle large-6 large-offset-3">
+        <div className="row expanded text-center">
+          <div className="columns large-12">
+            <img className="dock-logo" src="assets/img/dock-logo.png" alt="Dock Health"/>
           </div>
-          <div className='column'>
-            <div className="row log-in-form">
-              <div className="medium-12 medium-centered large-12 large-centered columns1">
-                <h4 className="text-center">Create Account</h4>
-                <UserRegistrationForm type='Register' onSubmit={this.onSubmit} />
-                <p className="text-center"><Link to="/login">Login, if you already have an account</Link></p>   
-                <p className="text-center"><Link to="/confirmRegistration">Confirm Registration</Link></p>
-                <p className="text-center"><Link to="/resendCode">Resend verification link, if you have created an account</Link></p>   
-              </div>
-            </div>
+          <div className="columns large-12">
+            <h5 className="top-buffer">Welcome! Create your account.</h5>
           </div>
         </div>
+          <UserRegistrationForm type='Register' onSubmit={this.onSubmit} />
       </div>
     )
   }

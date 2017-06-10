@@ -55,25 +55,13 @@ export default class ConfirmRegistration extends React.Component {
 
   render () {
     return (
-      <div className='section is-large form'>
-        {/*<h2 className='title'>Confirm Registration</h2>*/}
-        <div className='columns'>
-          <div className='column is-medium'>
-            <div className='notification'>
-              {/*<p>Can't find your code?, <Link to='/resendCode'>Resend</Link>.</p>*/}
+      <div className="wrapper columns large-12">
+          <div className="row expanded text-center">
+            <div className="columns large-12 top-buffer">
+              <h5>Confirm registration</h5>
             </div>
           </div>
-          <div className='column'>
-            <div className="row log-in-form">
-              <div className="medium-10 medium-centered large-10 large-centered columns">
-                <h4 className="text-center">Confirm Registration</h4>
-                <ConfirmUserAccountForm type='Confirm' onSubmit={this.onSubmit} />
-                <p className="text-center"><Link to="/resendCode">Resend verification code</Link></p>
-                <p className="text-center"><Link to="/login">Login, if you already have an account</Link></p>   
-              </div>
-            </div>
-          </div>
-        </div>
+          <ConfirmUserAccountForm type='Confirm' onSubmit={this.onSubmit} />
       </div>
     )
   }

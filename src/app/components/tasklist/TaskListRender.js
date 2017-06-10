@@ -28,27 +28,45 @@ class TaskListRender extends React.Component {
   renderList() {
      return this.props.taskList.map((list) =>{
         return(
-          <tr key={list.taskListId}>
-            <td>
-              <span className="label">{list.listName}</span>
-              <span className="label">{list.numberOfTasks}</span>
 
-              <ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
-                <li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
-                <ul className="menu">
-                  <li><Link to={"/viewTaskListMembers/" + list.taskListId}>View Members</Link></li>
-                  <li><Link to={"/updateTaskList/" + list.taskListId}>Update Name</Link></li>
-                  <li><Link to={"/invitePersonToTaskList/" + list.taskListId}>Invite External Person</Link></li>
-                  <li><Link to={"/inviteUsersToTaskList/" + list.taskListId}>Invite Existing Users</Link></li>
-                  <li><Link to={"/updateUserRole/" + list.taskListId}>Update User Role</Link></li>
-                  <li><Link onClick={this.onClick.bind(this,list.taskListId)}>Delete Task List</Link></li>
-                  <li><Link to={"/viewTaskListAudits/" + list.taskListId}>View Activity Feed</Link></li>
+						<div className="item row expanded align-middle" key={list.taskListId}>
+							<div className="columns shrink">
+								<span className="circle xxsmall transparent"></span>
+							</div>
+							<div className="columns shrink">
+								<span className="circle xxsmall blue-bg"></span>
+							</div>
+							<div className="columns">
+								<h6 className="unread">{list.listName}</h6>
+								<span className="details">Mike Docktor</span>
+							</div>
+							<div className="columns shrink">
+								<h6 className="unread">{list.numberOfTasks}</h6>
+							</div>
+							<div className="columns shrink">
+								<a className="button primary small split">
+									<span className="button-left"><svg className="icon"><use xlinkHref="#icon-checkmark"></use></svg></span>
+									<span className="button-right"><svg className="icon"><use xlinkHref="#icon-close"></use></svg></span>
+								</a>
+
+                <ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
+                  <li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
+                  <ul className="menu">
+                    <li><Link to={"/viewTaskListMembers/" + list.taskListId}>View Members</Link></li>
+                    <li><Link to={"/updateTaskList/" + list.taskListId}>Update Name</Link></li>
+                    <li><Link to={"/invitePersonToTaskList/" + list.taskListId}>Invite External Person</Link></li>
+                    <li><Link to={"/inviteUsersToTaskList/" + list.taskListId}>Invite Existing Users</Link></li>
+                    <li><Link to={"/updateUserRole/" + list.taskListId}>Update User Role</Link></li>
+                    <li><Link onClick={this.onClick.bind(this,list.taskListId)}>Delete Task List</Link></li>
+                    <li><Link to={"/viewTaskListAudits/" + list.taskListId}>View Activity Feed</Link></li>
+                  </ul>
+                  </li>
                 </ul>
-                </li>
-              </ul>
 
-            </td>
-          </tr>);
+							</div>
+						</div>
+
+        );
     })
   }
 

@@ -42,22 +42,13 @@ export default class ResetPassword extends React.Component {
     const formData = {username:this.state.username, verificationCode:this.state.verificationCode}
 
     return (
-      <div className='section is-large form'>
-        <div className='columns'>
-          <div className='column is-medium'>
-            <div className='notification'>
+      <div className="wrapper columns large-12">
+          <div className="row expanded text-center">
+            <div className="columns large-12 top-buffer">
+              <h5>Reset password</h5>
             </div>
           </div>
-          <div className='column'>
-            <div className="row log-in-form">
-              <div className="medium-10 medium-centered large-10 large-centered columns">
-                <h4 className="text-center">Reset Password</h4>
-                <ResetPasswordForm type='Confirm' onSubmit={this.onSubmit} initialValues={formData}/>
-                <p className="text-center"><Link to="/login">Login</Link></p>
-              </div>
-            </div>
-          </div>
-        </div>
+          <ResetPasswordForm type='Confirm' onSubmit={this.onSubmit} initialValues={formData}/>
       </div>
     )
   }
