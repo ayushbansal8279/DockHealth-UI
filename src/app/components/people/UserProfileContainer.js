@@ -76,77 +76,43 @@ class UserProfileContainer extends React.Component {
 
    //<input type="file" onChange={this.handleImageChange} />
       return(
-        <div>
-          <div className="off-canvas-content" data-off-canvas-content>
-
-            <div className="top-bar-left">
-                <h3>My Profile</h3>
-            </div>
-
+          <div className="wrapper large-8 large-offset-2 top-buffer">
             <div className="row">
-              <div className="small-12 columns">
-              <h3>{this.state.updateProfileResult}</h3>
+              <div className="columns large-12 text-center">
+                <div className="update-photo" data-open="update-profile-photo">
+                  <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/>
+                  <span className="update circle xlarge">Update picture</span>
+                </div>
+                <h5 className="top-buffer">{userProfile.firstName} {userProfile.lastName}</h5>
+              </div>
+              <div className="reveal text-center" id="update-profile-photo" data-reveal>
+                <h5 className="margin-bottom">Update profile photo</h5>
+                <p>Remove photo</p>
+                <p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
+                <label htmlFor="file">Upload photo</label></p>
+                <p>Take photo</p>
+                <button className="close-button" data-close aria-label="Close modal" type="button">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
             </div>
-
-              <div className="wrapper large-8 large-offset-2 top-buffer">
-                <div className="row">
-                  <div className="columns large-12 text-center">
-                    <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"></img>
-                    <h4 className="top-buffer">{userProfile.firstName} {userProfile.lastName}</h4>
-                  </div>
-                  <div className="columns large-12 text-center">
-                    <p>Remove photo</p>
-                    <p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
-                    <label htmlFor="file">Upload photo</label></p>
-                    <p>Take photo</p>
-                  </div>
-               </div>
-
+            <div className="row">
+              <form onSubmit = {handleSubmit(this.onSubmit.bind(this))} className="inline-label top-buffer expand white-bg">
+                <Field name='firstName'  type='text' component={BasicField} label='First Name' placeholder={userProfile.firstName}/>
+                <Field name='lastName' type='text' component={BasicField} label='Last Name' placeholder={userProfile.lastName}/>
+                <Field name='specialty' type='text' component={BasicField} label='Specialty' placeholder={userProfile.specialty}/>
+                <Field name='subspecialties' type='text' component={BasicField} label='Subspecialties' placeholder={userProfile.subspecialties}/>
+                <Field name='accountPhoneNumber' type='text' component={BasicField} label='Account Phone Number' placeholder={userProfile.accountPhoneNumber}/>
+                <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number' placeholder={userProfile.workPhoneNumber}/>
+                <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' placeholder={userProfile.faxNumber}/>
+                <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number' placeholder={userProfile.mobilePhoneNumber}/>
+                <div className="medium-12 columns button-group">
+                    <button className="button primary float-right button-small">Save</button>
+                  <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
+                </div>
+              </form>
             </div>
-
-
-            <div className="large-12 columns" >
-              <div className="column">
-                <form onSubmit = {handleSubmit(this.onSubmit.bind(this))}>
-                  <div className="row">
-                    <div className="medium-12 columns">
-                          <Field name='firstName'  type='text' component={BasicField} label='First Name' placeholder={userProfile.firstName}/>
-                    </div>
-                    <div className="medium-12 columns">
-                          <Field name='lastName' type='text' component={BasicField} label='Last Name' placeholder={userProfile.lastName}/>
-                    </div>
-                    <div className="medium-12 columns">
-                          <Field name='specialty' type='text' component={BasicField} label='Specialty' placeholder={userProfile.specialty}/>
-                    </div>
-                    <div className="medium-12 columns">
-                          <Field name='subspecialties' type='text' component={BasicField} label='Subspecialties' placeholder={userProfile.subspecialties}/>
-                    </div>
-                    <div className="medium-12 columns">
-                          <Field name='accountPhoneNumber' type='text' component={BasicField} label='Account Phone Number' placeholder={userProfile.accountPhoneNumber}/>
-                    </div>
-                    <div className="medium-12 columns">
-                          <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number' placeholder={userProfile.workPhoneNumber}/>
-                    </div>
-                    <div className="medium-12 columns">
-                          <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' placeholder={userProfile.faxNumber}/>
-                    </div>
-                    <div className="medium-12 columns">
-                          <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number' placeholder={userProfile.mobilePhoneNumber}/>
-                    </div>
-                  </div>
-                  <div className="row">
-                      <div className="medium-12 columns button-group">
-                          <button className="button primary float-right button-small">Save</button>
-                        <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
-                      </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-
           </div>
-      </div>
       );
     }
 }

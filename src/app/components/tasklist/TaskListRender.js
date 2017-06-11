@@ -22,49 +22,43 @@ class TaskListRender extends React.Component {
     .catch((error)=>{
       this.setState({deleteTaskListResult: error.message}); //this will cause render to be called
     })
-
   }
 
   renderList() {
      return this.props.taskList.map((list) =>{
         return(
-
-						<div className="item row expanded align-middle" key={list.taskListId}>
-							<div className="columns shrink">
-								<span className="circle xxsmall transparent"></span>
-							</div>
-							<div className="columns shrink">
-								<span className="circle xxsmall blue-bg"></span>
-							</div>
-							<div className="columns">
-								<h6 className="unread">{list.listName}</h6>
-								<span className="details">Mike Docktor</span>
-							</div>
-							<div className="columns shrink">
-								<h6 className="unread">{list.numberOfTasks}</h6>
-							</div>
-							<div className="columns shrink">
-								<a className="button primary small split">
-									<span className="button-left"><svg className="icon"><use xlinkHref="#icon-checkmark"></use></svg></span>
-									<span className="button-right"><svg className="icon"><use xlinkHref="#icon-close"></use></svg></span>
-								</a>
-
-                <ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
-                  <li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
-                  <ul className="menu">
-                    <li><Link to={"/viewTaskListMembers/" + list.taskListId}>View Members</Link></li>
-                    <li><Link to={"/updateTaskList/" + list.taskListId}>Update Name</Link></li>
-                    <li><Link to={"/invitePersonToTaskList/" + list.taskListId}>Invite External Person</Link></li>
-                    <li><Link to={"/inviteUsersToTaskList/" + list.taskListId}>Invite Existing Users</Link></li>
-                    <li><Link to={"/updateUserRole/" + list.taskListId}>Update User Role</Link></li>
-                    <li><Link onClick={this.onClick.bind(this,list.taskListId)}>Delete Task List</Link></li>
-                    <li><Link to={"/viewTaskListAudits/" + list.taskListId}>View Activity Feed</Link></li>
-                  </ul>
-                  </li>
+          <div className="item row expanded align-middle" key={list.taskListId}>
+            <div className="columns shrink">
+              <span className="circle xxsmall blue-bg"></span>
+            </div>
+            <div className="columns">
+              <h6 className="unread">{list.listName}</h6>
+              <span className="details">Mike Docktor</span>
+            </div>
+            <div className="columns shrink">
+              <h6 className="unread">{list.numberOfTasks}</h6>
+            </div>
+            <div className="columns shrink">
+              <a className="button primary small split">
+                <span className="button-left"><svg className="icon"><use xlinkHref="#icon-checkmark"></use></svg></span>
+                <span className="button-right"><svg className="icon"><use xlinkHref="#icon-close"></use></svg></span>
+              </a>
+              <ul className="menu dropdown float-right" data-dropdown-menu data-disable-hover="true" data-click-open="true">
+                <li className="align-right"><a href="#"><svg className="icon"><use xlinkHref="#icon-vertical-ellipsis"></use></svg></a>
+                <ul className="menu">
+                  <li><Link to={"/viewTaskListMembers/" + list.taskListId}>View Members</Link></li>
+                  <li><Link to={"/updateTaskList/" + list.taskListId}>Update Name</Link></li>
+                  <li><Link to={"/invitePersonToTaskList/" + list.taskListId}>Invite External Person</Link></li>
+                  <li><Link to={"/inviteUsersToTaskList/" + list.taskListId}>Invite Existing Users</Link></li>
+                  <li><Link to={"/updateUserRole/" + list.taskListId}>Update User Role</Link></li>
+                  <li><Link onClick={this.onClick.bind(this,list.taskListId)}>Delete Task List</Link></li>
+                  <li><Link to={"/viewTaskListAudits/" + list.taskListId}>View Activity Feed</Link></li>
                 </ul>
-
-							</div>
-						</div>
+                </li>
+              </ul>
+              
+            </div>
+          </div>
 
         );
     })
@@ -72,15 +66,14 @@ class TaskListRender extends React.Component {
 
   render(){
     return(
-      <div>
-
-        <div className="row">
+      <div className="item-list-wrapper">
+        {/*<div className="row">
           <div className="small-12 columns">
           <h3>{this.state.deleteTaskListResult}</h3>
           </div>
-        </div>
+        </div>*/}
 
-        <div>
+        {/*<div>
           <Link to="/addTaskList">
             <button className="button secondary button-small float-right">Create Task List</button>
           </Link>
@@ -92,10 +85,10 @@ class TaskListRender extends React.Component {
                 <th width="200"><h3>Task List</h3></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody>*/}
               {this.renderList()}
-            </tbody>
-          </table>
+            {/*</tbody>
+          </table>*/}
       </div>
     );
   }

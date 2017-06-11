@@ -82,15 +82,15 @@ class NavBar extends React.Component {
           <li>
 					<ul className="nested vertical menu">
             {/*<NavLink to='/tasks'>Inbox</NavLink>*/}
-            <li onClick={(e) => {this.getInboxTasks();}}><Link className="active" to={"/tasks/inbox"}><svg className="icon blue large"><use xlinkHref="#icon-envelope"></use></svg>Inbox</Link></li>
-      			<li><Link className="active" to={"/tasks/inbox"}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned to me</Link></li>
+            <li onClick={(e) => {this.getInboxTasks();}}><Link className="active" to={"/tasks/inbox"}>Inbox</Link></li>
+      			<li><Link to={"/tasks/inbox"}>Assigned to me</Link></li>
             {/*<NavLink to='/tasks'>Important</NavLink>*/}
             {/*<NavLink to='/tasks'>Assigned to me</NavLink>*/}
             {/*<NavLink to='/tasks'>Assigned by me</NavLink>*/}
-            <li onClick={(e) => {this.getTasksAssignedByMe();}}><Link className="active" to={"/tasks/inbox"}><svg className="icon blue large"><use xlinkHref="#icon-forward"></use></svg>Assigned by me</Link></li>
+            <li onClick={(e) => {this.getTasksAssignedByMe();}}><Link to={"/tasks/inbox"}>Assigned by me</Link></li>
             {this.props.taskLists.map(taskList => {
               return(
-                <Link to={"/tasks/"+taskList.taskListId} key={taskList.taskListId}><li onClick={(e) => {this.getListTasks(taskList.taskListId)}}><span className="list-logo small"></span>{taskList.listName}</li></Link>
+                <li onClick={(e) => {this.getListTasks(taskList.taskListId)}} key={taskList.taskListId}><Link to={"/tasks/"+taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</Link></li>
               )
             })}
 						{/*<li><a href="index.html" className="active">Boston Clinic</a></li>*/}
@@ -98,8 +98,7 @@ class NavBar extends React.Component {
 					</li>
 			    <NavLink to='/people'><svg className="icon"><use xlinkHref="#icon-user"></use></svg>People</NavLink>
           <NavLink to='/patientList'><svg className="icon"><use xlinkHref="#icon-user"></use></svg>Patients</NavLink>
-          <NavLink to='/invitations'>List Invitations</NavLink>
-          <NavLink to='/activityfeed'>Activity Feed</NavLink>
+          <NavLink to='/invitations'>Invitations</NavLink>
 				</ul>
 				<div className="share-wrapper hide">
 					<div className="social-media text-center">

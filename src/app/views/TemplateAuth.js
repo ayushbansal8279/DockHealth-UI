@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import NavBarNoLogin from '../components/common/NavBarNoLogin'
+import NavBarAuth from '../components/common/NavBarAuth'
 import Notification from '../components/common/Notification'
 
 class TemplateAuth extends React.Component {
@@ -16,11 +16,11 @@ class TemplateAuth extends React.Component {
   }
 
   componentDidMount () {
-    this.renderFoundationComponents();
+    // this.renderFoundationComponents();
   }
 
   componentDidUpdate () {
-    this.renderFoundationComponents();
+    // this.renderFoundationComponents();
   }
 
   renderFoundationComponents () {

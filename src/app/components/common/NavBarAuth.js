@@ -16,7 +16,7 @@ const LinksDefault = ({className}) => (
 )
 
 
-class NavBarNoLogin extends React.Component {
+class NavBarAuth extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -43,4 +43,4 @@ class NavBarNoLogin extends React.Component {
 }
 
 
-export default NavBarNoLogin
+export default NavBarAuth

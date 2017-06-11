@@ -5,8 +5,6 @@ import {bindActionCreators} from 'redux';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import TaskListRender from './TaskListRender';
 
-
-
 class TaskListContainer extends React.Component {
 
     componentDidMount () {
@@ -15,9 +13,7 @@ class TaskListContainer extends React.Component {
 
     render(){
         return (
-          <div>
             <TaskListRender taskList={this.props.taskList}/>
-          </div>
         );
     }
 }
@@ -25,7 +21,9 @@ class TaskListContainer extends React.Component {
 function mapStateToProps(state) {
   //console.log(state.taskListState.tasklist);
   //console.log(state);
-  return {taskList: state.taskListState.tasklist};
+  return {
+    taskList: state.taskListState.tasklist
+  };
 }
 
 function mapDispatchToProps(dispatch) {

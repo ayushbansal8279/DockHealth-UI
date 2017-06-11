@@ -69,8 +69,6 @@ class TaskListView extends React.Component {
 
 				  <div className="list-wrapper">
 					  <div className="item-list-wrapper">
-              
-
               <div className="item row expanded align-middle">
                 <div className="columns shrink">
                   <span className="circle xxsmall blue-bg"></span>
@@ -93,6 +91,13 @@ class TaskListView extends React.Component {
                   <h6>Important</h6>
                 </div>
               </div>
+
+            </div>
+
+            <TaskListContainer/>     
+
+					  <div className="item-list-wrapper">
+
               <div className="item row expanded align-middle">
                 <div className="columns shrink">
                   <span className="circle xxsmall blue-bg"></span>
@@ -107,6 +112,7 @@ class TaskListView extends React.Component {
                   <svg className="icon medium no-flag"><use xlinkHref="#icon-flag"></use></svg>	
                 </div>
               </div>
+
               <div className="item row expanded align-middle">
                 <div className="columns shrink">
                   <span className="circle xxsmall transparent"></span>
@@ -122,12 +128,12 @@ class TaskListView extends React.Component {
                 </div>
               </div>
 
-              </div>
             </div>
+          </div>
 
-            </div>
-          </div> 
+          </div>
         </div> 
+      </div> 
 
       );
   }

@@ -12,7 +12,7 @@ const validate = values => {
     errors.firstName = 'Required'
   }
   if (!values.lastName) {
-    errors.lastName = 'Required.'
+    errors.lastName = 'Required'
   }
   return errors
 }
@@ -64,52 +64,35 @@ class FormPatient extends React.Component {
 
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       return (
-        <div className="content-block">
-          <h4>Add Patient</h4>
-        	<div className="row collapse my-form-container">
-        		<div className="large-12 columns" >
-        			<div className="column">
-        				<form onSubmit={handleSubmit(this.onSubmit)}>
-                  <div className="row">
-                    <div className="small-12 columns">
-                    <h3>{this.state.saveMessage}</h3>
-                    </div>
-                  </div>
-        					<div className="row">
-        						<div className="medium-6 columns">
-                      <Field name='firstName' type='text' component={BasicField} label='First Name' placeholder='required' value={patient.firstName}/>
-        						</div>
-        						<div className="medium-6 columns">
-                      <Field name='lastName' type='text' component={BasicField} label='Last Name' placeholder='required' value={patient.firstName}/>
-        						</div>
-        					</div>
-        					<div className="row">
-        						<div className="medium-6 columns">
-                      <Field name='gender' type='text' component={BasicField} label='Gender' placeholder='required'/>
-        						</div>
-                    <div className="medium-6 columns">
-                      <Field name='mrn' type='text' component={BasicField} label='MRN' placeholder='required'/>
-                    </div>
-        					</div>
-        					<div className="row">
-        						<div className="medium-6 columns">
-                      <Field name='phoneHome' type='tel' component={BasicField} label='Home Phone' placeholder='required'/>
-        						</div>
-        						<div className="medium-6 columns">
-                      <Field name='phoneMobile' type='tel' component={BasicField} label='Cell Phone' placeholder='required'/>
-        						</div>
-        					</div>
-                  <div className="row">
-                      <div className="medium-12 columns button-group">
-                        <button className="button primary float-right button-small">Save</button>
-                        <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
-                      </div>
-                  </div>
-        				</form>
-        			</div>
-        		</div>
-        	</div>
-        </div>
+            <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
+              
+              <Field name='mrn' type='text' component={BasicField} label='MRN' placeholder='required'/>
+              <Field name='firstName' type='text' component={BasicField} label='First name' placeholder='required' value={patient.firstName}/>
+              <Field name='lastName' type='text' component={BasicField} label='Last name' placeholder='required' value={patient.firstName}/>
+          
+              <fieldset className="large-12 columns">
+                <span className="inner">
+                  <legend>Gender</legend>
+                  <span className="float-right">
+                    <input type="radio" name="gender" value="female"/><label>Female</label>
+                    <input type="radio" name="gender" value="male"/><label>Male</label>
+                  </span>
+                </span>
+              </fieldset>
+
+              <Field name='phoneHome' type='tel' component={BasicField} label='Home phone' placeholder='required'/>
+              <Field name='phoneMobile' type='tel' component={BasicField} label='Mobile' placeholder='required'/>
+              <Field name='email' type='tel' component={BasicField} label='Email' placeholder='required'/>
+
+              <div className="column large-12 text-right text-center">
+                <input type="submit" className="button secondary medium" value="Save"/>
+              </div>
+
+              <div className="column large-12 text-right text-center">
+                <h3>{this.state.saveMessage}</h3>
+              </div>
+
+            </form>
       )
     }
 }

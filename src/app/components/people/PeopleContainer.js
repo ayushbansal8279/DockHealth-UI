@@ -19,6 +19,7 @@ class PeopleContainer extends React.Component {
 
     componentDidMount () {
       this.props.findAllUsersByOrganizationId();
+      //enableMoreOptions();
     }
 
     onClick(markedUserId,currentRole) {
@@ -110,27 +111,42 @@ class PeopleContainer extends React.Component {
 
        return this.props.peoplelist.map((people) =>{
           return(
-            <tr key={people.email}>
-              <td><span className="label">{people.firstName + ", " + people.lastName}</span></td>
-              <td><span className="label">{people.email}</span></td>
-              <td>
+             <div className="item row expanded" key={people.email}>
+              <div className="columns shrink">
+                <img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
+                {/*<span className="member-initials circle">KV</span>*/}
+              </div>
+              <div className="columns">
+                <span className="item-title">{people.firstName}&nbsp;{people.lastName}</span>
+                <span className="item-details">MD, Endocrinology</span>
+                <span className="top-buffer-xsmall item-details">{people.email}</span>
+                <span className="item-details">P: 434-432-43243 | C: 434-432-43243</span>
+                <span className="item-details highlight">
                 {
                   (people.userInviteStatus=='ACCEPTED')
                   ?<div><span className=" success label">{people.userInviteStatus}</span></div>
                   :<div><span className=" alert label">{people.userInviteStatus}</span></div>
                 }
-              </td>
-              <td>
+                </span>
+              </div>
+              <div className="columns">
                 {
                   this.renderRole(people)
                 }
-              </td>
-              <td>
+              </div>
+              <div className="columns">
                 {
                   this.renderRoleButton(people)
                 }
-              </td>
-            </tr>
+              </div>
+              <div className="columns shrink more-options-wrapper more-options-people">
+                <span className="more-task-options icon-group-tooltip">
+                  <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="delete this person"><svg className="icon"><use xlinkHref="#icon-delete"></use></svg></span>
+                  <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="give admin rights"><svg className="icon"><use xlinkHref="#icon-admin"></use></svg></span>
+                </span>
+                <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
+              </div>
+            </div>
           );
       })
     }
@@ -138,8 +154,7 @@ class PeopleContainer extends React.Component {
     render(){
       return(
         <div>
-
-        <div className="row">
+        {/*<div className="row">
           <div className="small-12 columns">
           <h3>{this.state.peopleProcessingResult}</h3>
           </div>
@@ -166,10 +181,10 @@ class PeopleContainer extends React.Component {
               </tr>
             </thead>
 
-            <tbody>
+            <tbody>*/}
               {this.renderList()}
-            </tbody>
-          </table>
+            {/*</tbody>
+          </table>*/}
         </div>
       );
     }

@@ -50,17 +50,21 @@ class InvitationContainer extends React.Component {
 
        return this.props.invitationlist.map((invitation) =>{
           return(
-            <tr key={invitation.invitationId}>
-              <td><span className="label">{invitation.taskListName}</span></td>
-              <td><span className="label">{invitation.invitedByFirstName +"," + invitation.invitedByLastName}</span></td>
-              <td>
+             <div className="item row expanded" key={invitation.invitationId}>
+              <div className="columns shrink">
+                <span className="label">{invitation.taskListName}</span>
+              </div>
+              <div className="columns">
+                <span className="label">{invitation.invitedByFirstName +"," + invitation.invitedByLastName}</span>
+              </div>
+              <div className="columns">
                 {
                   (invitation.listInviteStatus=='PENDING')
                   ?<div><span className=" success label">{invitation.listInviteStatus}</span> <span>on</span> <span className=" secondary label">{invitation.updatedDateTime}</span></div>
                   :<div><span className=" warning label">{invitation.listInviteStatus}</span> <span>on</span> <span className=" secondary label">{invitation.updatedDateTime}</span></div>
                 }
-              </td>
-              <td>
+              </div>
+              <div className="columns">
                 {
                   (invitation.listInviteStatus=='PENDING')
                   ? <span>
@@ -69,43 +73,18 @@ class InvitationContainer extends React.Component {
                       </span>
                   :<span></span>
                 }
-              </td>
-            </tr>
+              </div>
+            </div>
           );
       })
     }
 
     render(){
       return(
-        <div>
-
-        <div className="row">
-          <div className="small-12 columns">
-          <h3>{this.state.invitationProcessingResult}</h3>
+        <div className="list-wrapper">
+          <div className="item-list-wrapper">
+          {this.renderList()}
           </div>
-        </div>
-
-
-        <div className="row">
-          <div className="small-12 columns">
-          <h4>List of Invitations Received</h4>
-          </div>
-        </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th width="200" ><h3>Task List Name</h3></th>
-                <th width="200" ><h3>Invited By</h3></th>
-                <th width="200" ><h3>Invitation Status</h3></th>
-                <th width="400" ></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {this.renderList()}
-            </tbody>
-          </table>
         </div>
       );
     }

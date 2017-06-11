@@ -7,35 +7,29 @@ class PatientList extends React.Component {
 		}
 	render() {
 		return (
-			<div className="content-block">
-				<h4>All Patients
-					<Link to="/addPatient">
-						<button className="button secondary button-small float-right">Add Patient</button>
-					</Link>
-				</h4>
-				<ul className="no-bullet expand">
+                <div className="list-wrapper">
+                  <div className="item-list-wrapper">
+                    
 					{this.props.patients
 						.map(patient => {
 							return (
-								<div className="task-item tag" key={patient.patientId}>
-									<div className="task-item-inner-wrapper" data-toggle="">
-										<div className="mark-complete-wrapper">
-										</div>
-										<div className="task-title-wrapper clearfix">
-											<div className="task-title-left float-left">
-													{patient.firstName}&nbsp;{patient.lastName}
-											</div>
-											<div className="task-title-right float-right">
-												<Link to={"/updatePatient/"+patient.patientId}><button className="button secondary button-small float-right">Edit</button></Link>
-											</div>
-										</div>
-									</div>
+
+							<Link to={"/patient/"+patient.patientId} key={patient.patientId}>
+							<div className="item row expanded align-middle">
+								<div className="columns shrink">
+								<span className="highlight">123-4567</span>
 								</div>
+								<div className="columns">
+								<span className="item-title">{patient.firstName}&nbsp;{patient.lastName}</span>
+								</div>
+							</div>
+							</Link>
+								
 							);
 						})
 					}
-				</ul>
-			</div>
+                  </div>
+                </div>
 		);
 	}
 }

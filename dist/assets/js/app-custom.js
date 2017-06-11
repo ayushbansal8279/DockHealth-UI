@@ -52,10 +52,22 @@ function renderFoundationComponentsJquery(){
 
 
 	//more task options
-	$('.more-options-wrapper').hover(function() {
-		$(this).children('.more-task-options').toggleClass('slide-in');
-		$(this).children('.ellipses').toggleClass('slide-out');
+	//$('.more-options-wrapper').hover(function() {
+	// 	$(this).children('.more-task-options').toggleClass('slide-in');
+	// 	$(this).children('.ellipses').toggleClass('slide-out');
+	// });
+	$(document).on('mouseenter', '.more-options-wrapper', function() {
+		$(this).children('.more-task-options').addClass('slide-in');
+		$(this).children('.ellipses').addClass('slide-out');
 	});
+	$(document).on('mouseleave', '.more-options-wrapper', function() {
+		$(this).children('.more-task-options').removeClass('slide-in');
+		$(this).children('.ellipses').removeClass('slide-out');
+	});
+	// $("#appHome").on('click', '.more-options-wrapper', function() {
+	// 	$(this).children('.more-task-options').toggleClass('slide-in');
+	// 	$(this).children('.ellipses').toggleClass('slide-out');
+	// });
 
 	// add subtasks
 	$('.add-form').on('click', '.toggle-add-subtask', function() { 

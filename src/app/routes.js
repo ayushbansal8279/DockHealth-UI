@@ -5,9 +5,9 @@ import TemplateCore from './views/TemplateCore'
 import TemplateAuth from './views/TemplateAuth'
 import TemplateAuthBase from './views/TemplateAuthBase'
 import Home from './views/Home'
-import AddPatientView from './views/AddPatientView'
-import UpdatePatientView from './views/UpdatePatientView'
 import AllPatientsView from './views/AllPatientsView'
+import PatientView from './views/PatientView'
+import PatientEditView from './views/PatientEditView'
 import Register from './views/auth/Register'
 import Login from './views/auth/Login'
 import ConfirmRegistration from './views/auth/ConfirmRegistration'
@@ -52,8 +52,8 @@ export default (
     <Route component={TemplateCore} >
       <IndexRoute component={Home} />
       <Route path="/patientList" component={AllPatientsView} />
-      <Route path="/addPatient" component={AddPatientView} />
-      <Route path="/updatePatient/:patientId" component={UpdatePatientView} />
+      <Route path="/patient/:patientId" component={PatientView} />
+      <Route path="/editPatient/:patientId" component={PatientEditView} />
       <Route path="/taskList" component={TaskListView} />
       <Route path="/activityfeed" component={TaskListActivityFeedView} />
       <Route path="/addTaskList" component={TaskListAdd} />

@@ -17,11 +17,11 @@ class App extends React.Component {
   }
 
   componentDidMount () {
-    // this.renderFoundationComponents();
+    this.renderFoundationComponents();
   }
 
   componentDidUpdate () {
-    // this.renderFoundationComponents();
+    this.renderFoundationComponents();
   }
 
   renderFoundationComponents () {

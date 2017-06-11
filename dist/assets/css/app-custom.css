@@ -95,3 +95,7 @@ ul li{
 .title-dropdown-menu li:hover{
   background-color:#ccc;
 }
+
+.more-task-options > span {
+  margin-left: .75em;
+}
