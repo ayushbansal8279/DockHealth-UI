@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import Moment from 'react-moment'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
@@ -55,8 +55,8 @@ class TaskList extends React.Component {
 		}
   	}
 
-  	handleMarkComplete(taskId, status){
-  		this.props.markComplete(taskId, status)
+  	handleMarkComplete(task, status){
+  		this.props.markComplete(task, status, this.props.listName)
   		// this.setState({task: ''})
   	}
 
@@ -138,7 +138,11 @@ class TaskList extends React.Component {
 
 			<div className="task-item row expanded" key={task.taskId+task.description} value={task}>
 				<div className="columns shrink">
-					<div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task.taskId, task.status)}><svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg></div>
+					<div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
+						{task.status == "COMPLETE" &&
+						<svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg>
+						}
+					</div>
 				</div>
 
 				<div className="columns shrink">
@@ -148,7 +152,7 @@ class TaskList extends React.Component {
 					}
 				</div>
 				<div className="columns shrink align-right">
-					<svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' && 'flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
+					<svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 				</div>
 				<div className="columns">
 					<span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>

@@ -26,13 +26,13 @@ class Home extends React.Component {
                     <a className="toggle-completed button primary small">Show completed tasks</a>
                   </div>
                   <ListOfTasksContainer taskListId={taskListId} status="COMPLETE"/>
-                </div> 
-              </div> 
+                </div>
+              </div>
 
             </div>
-          </div> 
-        </div> 
-        
+          </div>
+        </div>
+
     );
   }
 }

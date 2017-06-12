@@ -12,6 +12,6 @@ export default {
   invitationlist: [],
   peoplelist: [],
   tasklistaudits: [],
-  auditsForAllUserList: []
+  auditsForAllUserList: [],
   //addtasklisterror:''
 }

@@ -19,28 +19,29 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
       return Object.assign({}, state, { completedTasks: action.tasks });
 
     // handling
-    case types.MARK_TASK_STATUS_SUCCESS:
+    case types.MARK_TASK_STATUS_SUCCESS: // Tasks in 'incompletedTasks' state
     	return {
           ...state,
           tasks: state.tasks.map(task =>
-            task.taskId === action.taskId ?
+            task.taskId === action.task.taskId ?
               // transform the one with a matching id
               { ...task, status: action.status } :
               // otherwise return original task
               task
-          ).filter(task => task.taskId !== taskId)
+          )
       };
 
-    case types.MARK_COMPLETED_TASK_STATUS_SUCCESS:
-      return {
-          ...state,
-          completedTasks: state.tasks.map(task =>
-            task.taskId === action.taskId ?
-              // transform the one with a matching id
-              { ...task, status: action.status } :
-              // otherwise return original task
-              task
-          ).filter(task => task.taskId !== taskId)
+    // handling
+    case types.MARK_COMPLETE_TASK_STATUS_SUCCESS: // Tasks in 'completedTasks' state
+    	return {
+        ...state,
+        completedTasks: state.completedTasks.map(task =>
+          task.taskId === action.task.taskId ?
+            // transform the one with a matching id
+            { ...task, status: action.status } :
+            // otherwise return original task
+            task
+        )
       };
 
     case types.DELETE_TASK_SUCCESS:

@@ -56,19 +56,19 @@ export function deleteTask(taskId, userId) {
     });
 }
 
-export function markComplete(taskId){
+export function markComplete(task){
   // userId = sessionStorage.userId
   // console.log(taskId);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?status=COMPLETE')
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + task.taskId + '?status=COMPLETE')
   .then(response => {
     return response;
   });
 }
 
-export function markIncomplete(taskId){
+export function markIncomplete(task){
   // userId = sessionStorage.userId
   // console.log(taskId);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + taskId + '?status=INCOMPLETE')
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + task.taskId + '?status=INCOMPLETE')
   .then(response => {
     return response;
   });

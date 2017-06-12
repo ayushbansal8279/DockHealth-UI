@@ -152,18 +152,24 @@ export function deleteTask(taskId, userId) {
 }
 
 //checking
-export function markComplete(taskId, status) {
+export function markComplete(task, status, listName) {
+  var action = ""
+  if(listName == "INCOMPLETE"){
+    action = ActionTypes.MARK_TASK_STATUS_SUCCESS
+  }else{
+    action = ActionTypes.MARK_COMPLETE_TASK_STATUS_SUCCESS
+  }
   return function(dispatch){
     if(status == "INCOMPLETE"){
-      return TaskApi.markComplete(taskId).then(res => { // check for response value to be success
-        dispatch({type: ActionTypes.MARK_TASK_STATUS_SUCCESS, taskId, status:"COMPLETE"});
+      return TaskApi.markComplete(task).then(res => { // check for response value to be success
+        dispatch({type: action, task, status:"COMPLETE"});
         }).catch(error => {
         throw(error);
       });
     }
     else if(status == "COMPLETE"){
-      return TaskApi.markIncomplete(taskId).then(res => { // check for response value to be success
-        dispatch({type: ActionTypes.MARK_COMPLETED_TASK_STATUS_SUCCESS, taskId, status:"INCOMPLETE"});
+      return TaskApi.markIncomplete(task).then(res => { // check for response value to be success
+        dispatch({type: action, task, status:"INCOMPLETE"});
         }).catch(error => {
         throw(error);
       });
