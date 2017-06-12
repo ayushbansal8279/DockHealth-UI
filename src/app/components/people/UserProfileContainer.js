@@ -90,7 +90,7 @@ class UserProfileContainer extends React.Component {
                   <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/>
                   <span className="update circle xlarge">Update picture</span>
                 </div>
-                <h5 className="top-buffer">{userProfile.firstName} {userProfile.lastName}</h5>
+                <h5 className="top-buffer">{initialValues.firstName} {initialValues.firstName}</h5>
               </div>
               <div className="reveal text-center" id="update-profile-photo" data-reveal>
                 <h5 className="margin-bottom">Update profile photo</h5>
@@ -105,14 +105,14 @@ class UserProfileContainer extends React.Component {
             </div>
             <div className="row">
               <form onSubmit = {handleSubmit(this.onSubmit.bind(this))} className="inline-label top-buffer expand white-bg">
-                <Field name='firstName'  type='text' component={BasicField} label='First Name' placeholder={userProfile.firstName}/>
-                <Field name='lastName' type='text' component={BasicField} label='Last Name' placeholder={userProfile.lastName}/>
-                <Field name='specialty' type='text' component={BasicField} label='Specialty' placeholder={userProfile.specialty}/>
-                <Field name='subspecialties' type='text' component={BasicField} label='Subspecialties' placeholder={userProfile.subspecialties}/>
-                <Field name='accountPhoneNumber' type='text' component={BasicField} label='Account Phone Number' placeholder={userProfile.accountPhoneNumber}/>
-                <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number' placeholder={userProfile.workPhoneNumber}/>
-                <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' placeholder={userProfile.faxNumber}/>
-                <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number' placeholder={userProfile.mobilePhoneNumber}/>
+                <Field name='firstName'  type='text' component={BasicField} label='First Name'/>
+                <Field name='lastName' type='text' component={BasicField} label='Last Name'/>
+                <Field name='specialty' type='text' component={BasicField} label='Specialty'/>
+                <Field name='subspecialties' type='text' component={BasicField} label='Subspecialties'/>
+                <Field name='accountPhoneNumber' type='text' component={BasicField} label='Account Phone Number'/>
+                <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
+                <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
+                <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number'/>
                 <div className="medium-12 columns button-group">
                     <button className="button primary float-right button-small">Save</button>
                   <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
