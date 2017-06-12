@@ -8,7 +8,7 @@ import * as userApi from '../../api/user-api'
 
 const NavLink = ({to, children, className}) => (
   <li>
-  <Link className={className} to={to}>
+  <Link activeClassName="active" className={className} to={to}>
     {children}
   </Link>
   </li>
@@ -77,20 +77,20 @@ class NavBar extends React.Component {
           {userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}
 				<ul className="menu vertical outer">
           <NavLink to='/activityfeed'><svg className="icon"><use xlinkHref="#icon-activity"></use></svg>Activity</NavLink>
-          <NavLink to='/taskList' className="active"><svg className="icon"><use xlinkHref="#icon-user"></use></svg>Lists</NavLink>
+          <NavLink to='/taskList' activeClassName="active"><svg className="icon"><use xlinkHref="#icon-user"></use></svg>Lists</NavLink>
 					{/*<li><a href="lists.html" className="active"><svg className="icon"><use xlinkHref="#icon-user"></use></svg>Lists</a>*/}
           <li>
 					<ul className="nested vertical menu">
             {/*<NavLink to='/tasks'>Inbox</NavLink>*/}
-            <li onClick={(e) => {this.getInboxTasks();}}><Link className="active" to={"/tasks/inbox"}>Inbox</Link></li>
-      			<li><Link to={"/tasks/inbox"}>Assigned to me</Link></li>
+            <li onClick={(e) => this.getInboxTasks()}><Link activeClassName="active" to={"/tasks/inbox"}>Inbox</Link></li>
+      			<li onClick={(e) => this.getTasksAssignedByMe()}><Link activeClassName="active" to={"/tasks/assignedToMe"}>Assigned to me</Link></li>
+            <li onClick={(e) => this.getTasksAssignedByMe()}><Link activeClassName="active" to={"/tasks/assignedByMe"}>Assigned by me</Link></li>
             {/*<NavLink to='/tasks'>Important</NavLink>*/}
             {/*<NavLink to='/tasks'>Assigned to me</NavLink>*/}
             {/*<NavLink to='/tasks'>Assigned by me</NavLink>*/}
-            <li onClick={(e) => {this.getTasksAssignedByMe();}}><Link to={"/tasks/inbox"}>Assigned by me</Link></li>
             {this.props.taskLists.map(taskList => {
               return(
-                <li onClick={(e) => {this.getListTasks(taskList.taskListId)}} key={taskList.taskListId}><Link to={"/tasks/"+taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</Link></li>
+                <li onClick={(e) => {this.getListTasks(taskList.taskListId)}} key={taskList.taskListId}><Link to={"/tasks/" + taskList.listName} activeClassName="active" title={taskList.listName}><span className="list-logo small"></span>{taskList.listName}</Link></li>
               )
             })}
 						{/*<li><a href="index.html" className="active">Boston Clinic</a></li>*/}

@@ -13,5 +13,6 @@ export default {
   peoplelist: [],
   tasklistaudits: [],
   auditsForAllUserList: [],
+  title: ""
   //addtasklisterror:''
 }

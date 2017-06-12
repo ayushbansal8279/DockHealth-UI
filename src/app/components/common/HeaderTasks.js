@@ -11,8 +11,7 @@ class HeaderTasks extends React.Component {
     constructor(props){
       super(props)
       this.state = {
-        value: '',
-        title: props.taskList.listName
+        value: ''
       }
       this.changeTitle = this.changeTitle.bind(this)
     }
@@ -30,10 +29,6 @@ class HeaderTasks extends React.Component {
       //this.props.taskListActions.getTaskListForUser()
     }
 
-    componentWillMount() {
-      this.setState({title: "Inbox"})
-    }
-
     getListTasks(taskListId){
       this.props.taskActions.getListTasks(taskListId)
     }
@@ -46,8 +41,8 @@ class HeaderTasks extends React.Component {
 						<div className="top-bar">
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-			
-								<h3>{this.state.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
+
+								<h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
 							</div>
 							<div className="top-bar-right">
 								<ul className="menu member-photo-list" data-open="list-members">
@@ -94,12 +89,12 @@ class HeaderTasks extends React.Component {
 									<svg className="icon"><use xlinkHref="#icon-bell"></use></svg>
 									<svg className="icon"><use xlinkHref="#icon-print"></use></svg>
 									<svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg>
-								</div>	
+								</div>
 
 								<div className="columns shrink">
 									<svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
-								</div>	
-			          
+								</div>
+
 						</div>
         </header>
 

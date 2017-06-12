@@ -16,18 +16,18 @@ class Home extends React.Component {
         <div className="off-canvas-content" data-off-canvas-content="true">
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks taskListId={this.props.params.taskListId}/>
+              <HeaderTasks title="Inbox"/>
 
-              <div className="list-wrapper">
-                <div className="task-item-wrapper">
-                  <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
-                  <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE"/>
-                  <div className="show-completed text-center">
-                    <a className="toggle-completed button primary small">Show completed tasks</a>
+                <div className="list-wrapper">
+                  <div className="task-item-wrapper">
+                    <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
+                    <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE"/>
+                    <div className="show-completed text-center">
+                      <a className="toggle-completed button primary small">Show completed tasks</a>
+                    </div>
+                    <ListOfTasksContainer taskListId={taskListId} status="COMPLETE"/>
                   </div>
-                  <ListOfTasksContainer taskListId={taskListId} status="COMPLETE"/>
                 </div>
-              </div>
 
             </div>
           </div>

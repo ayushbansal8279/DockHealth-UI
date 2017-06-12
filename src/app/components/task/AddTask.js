@@ -163,7 +163,7 @@ class AddTask extends React.Component {
 				</div>
 				<TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/>
 			</div>
-			
+
     )
     }
 }
