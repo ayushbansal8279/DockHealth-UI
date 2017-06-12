@@ -11,12 +11,13 @@ import * as userApi from '../../api/user-api'
 class UserProfileContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {file: '',imagePreviewUrl: '',updateProfileResult:''};
+    this.state = {updateProfileResult:''};
   }
 
     componentDidMount () {
       userApi.getUserById()
       userApi.getUserProfilePic()
+      userApi.getUserNotoficationPrefs()
     }
 
     handleImageChange(e) {
@@ -42,39 +43,45 @@ class UserProfileContainer extends React.Component {
     }
 
     onSubmit (formProps) {
-      //console.log(formProps);
+
       userApi.updateUser(formProps)
       .then((res)=>{
-        this.setState({updateProfileResult: 'User Profile updated successfully!!!'});
-        userApi.getUserById()
-        userApi.getUserProfilePic()
-        //hashHistory.push('/people')
+          userApi.updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
+          .then((res) =>{
+            this.setState({updateProfileResult: 'User Profile updated successfully!!!'});
+            userApi.getUserById()
+            userApi.getUserProfilePic()
+            userApi.getUserNotoficationPrefs()
+            //hashHistory.push('/people')
+          })
       })
       .catch((error)=>{
         this.setState({updateProfileResult: error.message}); //this will cause render to be called
       })
     }
 
-    render(){
-      const handleSubmit = this.props.handleSubmit; //injected by reduxform
+    onClickRemovePicture() {
+      userApi.deleteUserProfilePic()
+      .then((res)=>{
+        this.setState({updateProfileResult: 'User profile picture removed successfully!!'}); //this will cause render to be called
+        userApi.getUserProfilePic()
+        //hashHistory.push('/updateUserRole')
+      })
+      .catch((error)=>{
+        this.setState({updateProfileResult: error.message}); //this will cause render to be called
+      })
+    }
 
+ render(){
+      const handleSubmit = this.props.handleSubmit; //injected by reduxform
       //var userProfile = JSON.parse(sessionStorage.userProfile) //this is needed as userProfile is stringyfied and stored
-      var userProfile = this.props.userProfile
+      //var userProfile = this.props.userProfile
+      var initialValues = this.props.initialValues
       var {userProfilePic} = this.props
       if(userProfilePic == undefined){
         userProfilePic = "assets/img/dock-logo-white.png";
       }
 
-      // let {imagePreviewUrl} = this.state;
-      //  let imagePreview = null;
-      //  if (imagePreviewUrl) {
-      //    imagePreview = (<img src={imagePreviewUrl} />);
-      //  }
-
-   //<p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleFileUpload}/>
-   //<label htmlFor="file">Upload photo</label></p>
-
-   //<input type="file" onChange={this.handleImageChange} />
       return(
           <div className="wrapper large-8 large-offset-2 top-buffer">
             <div className="row">
@@ -117,10 +124,61 @@ class UserProfileContainer extends React.Component {
     }
 }
 
+/*
+var userNotificationPrefs = this.props.userNotificationPrefs
+if(userNotificationPrefs){
+  this.state.email=userNotificationPrefs.email
+  this.state.push=userNotificationPrefs.push
+}
+onChange(event) {
+  const target = event.target;
+  const value = target.type === 'checkbox' ? target.checked : target.value;
+  const name = target.name;
+  alert(value)
+  this.setState({
+    [name]: value
+  }, () =>{alert(this.state.email)});
+
+  //alert(this.state.push)
+}
+<div className="medium-12 columns">
+  <input name="email" type="checkbox" onChange={this.onChange.bind(this)}/> Email
+</div>
+<div className="medium-12 columns">
+  <input name="push" type="checkbox"  onChange={this.onChange.bind(this)}/> Push
+</div>
+
+========
+// let {imagePreviewUrl} = this.state;
+//  let imagePreview = null;
+//  if (imagePreviewUrl) {
+//    imagePreview = (<img src={imagePreviewUrl} />);
+//  }
+
+//<p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleFileUpload}/>
+//<label htmlFor="file">Upload photo</label></p>
+
+//<input type="file" onChange={this.handleImageChange} />
+
+*/
+
 function mapStateToProps(state) {
   return {
     userProfilePic:state.userState.userProfilePic,
-    userProfile: state.userState.userProfile
+    //userProfile: state.userState.userProfile,
+    userNotificationPrefs: state.userState.userNotificationPrefs,
+    initialValues:{
+      firstName: state.userState.userProfile.firstName,
+      lastName: state.userState.userProfile.lastName,
+      specialty: state.userState.userProfile.specialty,
+      subspecialties: state.userState.userProfile.subspecialties,
+      accountPhoneNumber: state.userState.userProfile.accountPhoneNumber,
+      workPhoneNumber: state.userState.userProfile.workPhoneNumber,
+      faxNumber: state.userState.userProfile.faxNumber,
+      mobilePhoneNumber: state.userState.userProfile.mobilePhoneNumber,
+      emailPref: state.userState.userNotificationPrefs.email,
+      pushPref: state.userState.userNotificationPrefs.push
+      }  //this automatically causes REDUX to load the form from state
   };
 }
 
@@ -190,5 +248,6 @@ function validatePhoneNumbers(phoneNumber){
 
 export default connect(mapStateToProps,null)(reduxForm({
     form: 'UserProfileForm',
-    validate
+    validate,
+    enableReinitialize : true  //If your initialValues prop gets updated, your form will update too.
 })(UserProfileContainer));

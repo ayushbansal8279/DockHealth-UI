@@ -390,6 +390,7 @@ export function getUserProfilePic() {
     })
     .catch(response => {
       console.log("User does not have a profile picture yet")
+      store.dispatch({type: 'user/userProfilePic', userProfilePic: undefined})
     })
 }
 
@@ -404,9 +405,39 @@ export function saveUserProfilePic(data) {
 }
 
 export function updateUser(formProps) {
+  //console.log(formProps)
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user', formProps)
     .then(response => {
       //store.dispatch({type: 'user/userId', userId: response.data.userId})
+      // updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
+      // .then(response => {
+         return response.data;
+      // })
+    }).catch(error => {
+      throw(error);
+    });
+}
+
+export function deleteUserProfilePic() {
+  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture')
+    .then(response => {
+      return response.data;
+    });
+}
+
+export function getUserNotoficationPrefs() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/userNotificationPreferences')
+    .then(response => {
+      store.dispatch({type: 'user/userNotificationPrefs', userNotificationPrefs: response.data})
+      return response.data;
+    });
+}
+
+export function updateUserNotoficationPrefs(emailNotification, pushNotification) {
+  var notificationPrefObj = {email: emailNotification, push: pushNotification};
+  //console.log(notificationPrefObj);
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/userNotificationPreferences', notificationPrefObj)
+    .then(response => {
       return response.data;
     }).catch(error => {
       throw(error);
