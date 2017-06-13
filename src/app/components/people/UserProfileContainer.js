@@ -94,7 +94,7 @@ class UserProfileContainer extends React.Component {
               </div>
               <div className="reveal text-center" id="update-profile-photo" data-reveal>
                 <h5 className="margin-bottom">Update profile photo</h5>
-                <p>Remove photo</p>
+                <p onClick={this.onClickRemovePicture}>Remove photo</p>
                 <p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
                 <label htmlFor="file">Upload photo</label></p>
                 <p>Take photo</p>
