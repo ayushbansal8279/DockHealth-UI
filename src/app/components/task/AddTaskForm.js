@@ -2,24 +2,9 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 
 let AddTaskForm = props => {
-  let { handleSubmit } = props
+  const { handleSubmit, taskLists } = props
   return (
-    // <form onSubmit={ handleSubmit }>
-    //   <div>
-    //     <label htmlFor="firstName">First Name</label>
-    //     <Field name="firstName" component="input" type="text" />
-    //   </div>
-    //   <div>
-    //     <label htmlFor="lastName">Last Name</label>
-    //     <Field name="lastName" component="input" type="text" />
-    //   </div>
-    //   <div>
-    //     <label htmlFor="email">Email</label>
-    //     <Field name="email" component="input" type="email" />
-    //   </div>
-    //   <button type="submit">Submit</button>
-    // </form>
-    <form className="inline-label">
+    <form className="inline-label" onSubmit={ handleSubmit }>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
           <h5 className="section-title">Add a task</h5>
@@ -28,7 +13,7 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input className="input-group-field" type="text"/>
+            <Field className="input-group-field" name="description" component="input" type="text" />
             <label>Task</label>
           </div>
         </div>
@@ -36,7 +21,7 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input id="add-patient" className="add-patient input-group-field" type="text"/>
+            <Field id="add-patient" className="add-patient input-group-field" name="addPatient" component="input" type="text" />
             <label>Add Patient</label>
           </div>
         </div>
@@ -44,15 +29,19 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group input-dropdown">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input className="input-group-field" type="text" data-toggle="add-task-file-in-options"/>
+            <Field className="input-group-field" name="fileIn" component="input" type="text" data-toggle="add-task-file-in-options"/>
             <label>File in</label>
           </div>
 
           <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
             <fieldset className="large-12 columns">
-              <input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Inbox</label><br/>
-              <input id="checkbox2" type="checkbox"/><label htmlFor="checkbox2">Boston Clinic (Mike Docktor)</label><br/>
-              <input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">Waltham Clinic (Mike Docktor)</label>
+              {taskLists.map(taskList => {
+                return(
+                  <div key={taskList.taskListId} >
+                    <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio" /><label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label><br/>
+                  </div>
+                )
+              })}
             </fieldset>
           </div>
         </div>
@@ -60,23 +49,15 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input id="assign-task-to" className="assign-to input-group-field" type="text"/>
+            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedToId" component="input" type="text" />
             <label>Assigned to</label>
-          </div>
-        </div>
-
-        <div className="column large-12 input-group has-value">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-calendar"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <input className="pickdate input-group-field" type="text" value=""/>
-            <label>Due date</label>
           </div>
         </div>
 
         <div className="column large-12 input-group toggle-add-subtask">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input className="input-group-field" type="text"/>
+            <Field className="input-group-field" name="addSubtask" component="input" type="text" />
             <label>Add a subtask</label>
           </div>
         </div>
@@ -99,7 +80,7 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input className="input-group-field" type="text"/>
+            <Field className="input-group-field" name="subtaskDescription" component="input" type="text" />
             <label>Subtask</label>
           </div>
         </div>
@@ -107,7 +88,7 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input id="add-patient-subtask" className="add-patient input-group-field" type="text"/>
+            <Field id="add-patient-subtask" className="add-patient input-group-field" name="patient" component="input" type="text" />
             <label>Add Patient</label>
           </div>
         </div>
@@ -115,16 +96,8 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <input id="assign-subtask-to" className="assign-to input-group-field" type="text"/>
+            <Field id="assign-subtask-to" className="assign-to input-group-field" name="assignedTo" component="input" type="text" />
             <label>Assigned to</label>
-          </div>
-        </div>
-
-        <div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-calendar"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <input className="pickdate input-group-field" type="text"/>
-            <label>Due date</label>
           </div>
         </div>
 

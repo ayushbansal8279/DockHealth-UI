@@ -19,7 +19,6 @@ class TemplateCore extends React.Component {
   }
 
   render() {
-
     return (
         <div>
           <NavBar/>

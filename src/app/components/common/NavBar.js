@@ -8,18 +8,18 @@ import * as userApi from '../../api/user-api'
 
 const NavLink = ({to, children, className}) => (
   <li>
-  <Link activeClassName="active" className={className} to={to}>
-    {children}
-  </Link>
+    <Link activeClassName="active" className={className} to={to}>
+      {children}
+    </Link>
   </li>
 )
 
 const LinksDefault = ({className}) => (
   <div className="user-profile-link">
-  <ul className={className}>
-    <NavLink to='/register'>register</NavLink>
-    <NavLink to='/login'>login</NavLink>
-  </ul>
+    <ul className={className}>
+      <NavLink to='/register'>register</NavLink>
+      <NavLink to='/login'>login</NavLink>
+    </ul>
   </div>
 )
 

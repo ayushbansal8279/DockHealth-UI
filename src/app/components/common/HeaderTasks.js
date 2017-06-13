@@ -6,32 +6,30 @@ import {bindActionCreators} from 'redux'
 import {Link} from 'react-router'
 import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/tasklist-actions'
+import * as PatientActions from '../../actions/patient-actions'
 
 class HeaderTasks extends React.Component {
-    constructor(props){
-      super(props)
-      this.state = {
-        value: ''
-      }
-      this.changeTitle = this.changeTitle.bind(this)
+  constructor(props){
+    super(props)
+    this.state = {
+      value: ''
     }
+    this.changeTitle = this.changeTitle.bind(this)
+  }
 
-    componentDidMount () {
-      this.props.taskListActions.getTaskListForUser();
-    }
+  componentDidMount () {
+    this.props.taskListActions.getTaskListForUser()
+    this.props.patientActions.getAllPatients()
+  }
 
-    changeTitle(newTitle){
-      // alert("working")
-      this.setState({title: newTitle})
-    }
+  changeTitle(newTitle){
+    // alert("working")
+    this.setState({title: newTitle})
+  }
 
-    componentDidMount(){
-      //this.props.taskListActions.getTaskListForUser()
-    }
-
-    getListTasks(taskListId){
-      this.props.taskActions.getListTasks(taskListId)
-    }
+  getListTasks(taskListId){
+    this.props.taskActions.getListTasks(taskListId)
+  }
 
 
     render() {
@@ -98,7 +96,7 @@ class HeaderTasks extends React.Component {
 						</div>
         </header>
 
-        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask}/>
+        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients}/>
       </div>
       );
     }
@@ -108,14 +106,16 @@ const mapStateToProps = function (store) {
   // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
   return {
     taskList: store.taskListState.tasklistone, // tasklistone is set at the reducer
-    taskLists: store.taskListState.tasklist
+    taskLists: store.taskListState.tasklist,
+    patients: store.patientState.allPatients
   }
 }
 
 const mapDispatchToProps = function (dispatch) {
   return {
     taskListActions: bindActionCreators(TaskListActions, dispatch),
-    taskActions: bindActionCreators(TaskActions, dispatch)
+    taskActions: bindActionCreators(TaskActions, dispatch),
+    patientActions: bindActionCreators(PatientActions, dispatch)
   }
 }
 
