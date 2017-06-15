@@ -122,7 +122,7 @@ class TaskList extends React.Component {
 								<div className="mark-complete complete"><svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg></div>
 							</div>
 							<div className="columns shrink">
-								<span classNameName="member-initials circle xsmall">{subtask.creator.firstName.substr(0,1)} {subtask.creator.lastName.substr(0,1)}</span>
+								<span className="member-initials circle medium">{subtask.creator.firstName.substr(0,1)} {subtask.creator.lastName.substr(0,1)}</span>
 							</div>
 							<div className="columns shrink align-right">
 								<svg className="icon medium no-flag"><use xlinkHref="#icon-flag"></use></svg>
@@ -130,30 +130,7 @@ class TaskList extends React.Component {
 							<div className="columns">
 								<span className="task-title complete"><span className="subtask-number">{index}</span>Schedule a call with patients primary physician.</span>
 								<span className="task-details text-light">Assigned by Megan Smith &#8226; 1:22 PM</span>
-								<div className="comments-container">
-									<div className="row expanded collapse comment-wrapper">
-										<div className="columns shrink">
-											<span className="member-initials circle xsmall">MD</span>
-										</div>
-										<div className="columns">
-											<span className="comment">Ok, Ill make sure</span>
-										</div>
-										<div className="columns shrink align-right">
-											<span className="time comment-time">1m ago</span>
-										</div>
-									</div>
-									<div className="row expanded collapse comment-wrapper">
-										<div className="columns shrink">
-											<span className="member-initials circle xsmall">SL</span>
-										</div>
-										<div className="columns">
-											<span className="comment">Yes, its covered. Noted her MR.</span>
-										</div>
-										<div className="columns shrink align-right">
-											<span className="time comment-time">10m ago</span>
-										</div>
-									</div>
-								</div>
+								{commentNodes}
 							</div>
 							<div className="columns shrink align-right">
 								<svg className="icon medium text-light ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
@@ -204,51 +181,53 @@ class TaskList extends React.Component {
 				taskPriorityClass = taskPriorityClass + " high"
 			}
       return (
-				<div class="task-item has-subtasks">
-				<div className="task-item row expanded" key={task.taskId+task.description} value={task}>
-					<div className="columns shrink">
-						<div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
-							{task.status == "COMPLETE" &&
-							<svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg>
+				<div className="task-item has-subtasks">
+
+					{/* MAIN TASK START */}
+					<div className="main-task-item row expanded" key={task.taskId+task.description} value={task}>
+						<div className="columns shrink">
+							<div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
+								{task.status == "COMPLETE" &&
+								<svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg>
+								}
+							</div>
+						</div>
+
+						<div className="columns shrink">
+							{task.assignedTo ?
+								<span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
+								<img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
 							}
 						</div>
-					</div>
-					<div className="columns shrink">
-						{task.assignedTo ?
-							<span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-							<img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
-						}
-					</div>
-					<div className="columns shrink align-right">
-						<svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
-					</div>
-					<div className="columns">
-						<span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>
-						<span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
-						<span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
-						{commentNodes}
-					</div>
-					<div className="columns shrink align-right more-options-wrapper">
-						<span className="more-task-options icon-group">
-							<span onClick={(e) => this.markAsUnread(task, task.read)}><svg className="icon"><use xlinkHref={task.read ? "#icon-envelope-open" : "#icon-envelope-close"}></use></svg></span>
-							<svg className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
-							<svg className="icon edit-task"><use xlinkHref="#icon-subtask"></use></svg>
-							<svg className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
-						</span>
-						<svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-					</div>
-					<div className="reveal text-center" id={"delete-task-" + task.taskId} data-reveal>
-						<h5 className="margin-bottom">Are you sure you want to delete this task?</h5>
-						<div className="button-wrapper">
-						<a className="button medium confirm">Delete</a>
-						<a className="button medium cancel">Cancel</a>
+
+						<div className="columns shrink align-right">
+							<svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 						</div>
-							<button className="close-button" data-close aria-label="Close modal" type="button">
-								<span aria-hidden="true">&times;</span>
-							</button>
+						<div className="columns">
+							<span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>
+							<span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
+							<span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
+							{/* EMAIL */}
+							{commentNodes}
+						</div>
+
+						{/* ELLIPSES START */}
+						<div className="columns shrink align-right more-options-wrapper">
+							<span className="more-task-options icon-group">
+								<span onClick={(e) => this.markAsUnread(task, task.read)}><svg className="icon"><use xlinkHref={task.read ? "#icon-envelope-open" : "#icon-envelope-close"}></use></svg></span>
+								<svg className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
+								<svg className="icon edit-task"><use xlinkHref="#icon-subtask"></use></svg>
+								<svg className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
+							</span>
+							<svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
+						</div>
+						{/* ELLIPSES END */}
+
 					</div>
+					{/* MAIN TASK END */}
+
 					{subtaskNodes}
-				</div>
+
 				</div>
 
         );

@@ -1,45 +1,14 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
-import Select from 'react-select';
-import Autocomplete from 'react-autocomplete'
 
 let AddTaskForm = props => {
-  const { handleSubmit, taskLists} = props
-  function logChange(val) {
-    console.log("Selected: " + val);
-  }
-  var Select = require('react-select');
-
-  var options = [
-    { value: 'one', label: 'One' },
-    { value: 'two', label: 'Two' }
-  ];
-
-  var value = ""
+  const { handleSubmit, taskLists } = props
   return (
     <form className="inline-label" onSubmit={ handleSubmit }>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
           <h5 className="section-title">Add a task</h5>
         </div>
-
-        <Autocomplete
-          getItemValue={(item) => item.label}
-          items={[
-            { label: 'apple' },
-            { label: 'banana' },
-            { label: 'pear' }
-          ]}
-
-          renderItem={(item, isHighlighted) =>
-            <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-              {item.label}
-            </div>
-          }
-          value={value}
-          onChange={(e) => value = e.target.value}
-          onSelect={(val) => value = val}
-        />
 
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
@@ -49,13 +18,13 @@ let AddTaskForm = props => {
           </div>
         </div>
 
-            <div className="column large-12 input-group">
-              <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
-              <div className="input-wrapper form-floating-label">
-                <Field id="add-patient" className="input-group-field" name="addPatient" component="input" type="text" />
-                <label>Add Patient</label>
-              </div>
-            </div>
+        <div className="column large-12 input-group">
+          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+          <div className="input-wrapper form-floating-label">
+            <Field id="add-patient" className="add-patient input-group-field" name="addPatient" component="input" type="text" />
+            <label>Add Patient</label>
+          </div>
+        </div>
 
         <div className="column large-12 input-group input-dropdown">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
@@ -69,7 +38,7 @@ let AddTaskForm = props => {
               {taskLists.map(taskList => {
                 return(
                   <div key={taskList.taskListId} >
-                    <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio" /><label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label><br/>
+                    <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskList" value={taskList.taskListId.toString()} component="input" type="radio" /><label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label><br/>
                   </div>
                 )
               })}
@@ -80,7 +49,7 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedToId" component="input" type="text" />
+            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedTo" component="input" type="text" />
             <label>Assigned to</label>
           </div>
         </div>
@@ -131,7 +100,6 @@ let AddTaskForm = props => {
             <label>Assigned to</label>
           </div>
         </div>
-
 
         <div className="column large-12 text-right">
           <button type="submit" className="button secondary float-right button-small">Save</button>
