@@ -91,9 +91,19 @@ class TaskList extends React.Component {
 
     return (
 		<span>
-		{this.props.tasks.map(task => {
 
-		console.log({task})
+
+		{this.props.tasks.map(task => {
+			const listTasks = () => {
+				return(
+					<div key={task.taskId} className="task-item has-subtasks">
+						{generateTask(task, "maintask")}
+					</div>
+				)
+			}
+
+
+			{/* COMPONENTS START */}
 			let dueDateComponent = ""
 			if(task.dueDate){
 				let dueDate = new Date(task.dueDate)
@@ -112,128 +122,135 @@ class TaskList extends React.Component {
 					return <span className="memberphoto active" key={assignee.userId}>{assigneeInitials}</span>
 				})
 			}
-			let subtaskNodes = "";
-			if(task.subtasks){
-				let index = 1
-				subtaskNodes = task.subtasks.map(function(subtask){
-					return(
-						<div className="subtask-item row expanded">
-							<div className="columns shrink">
-								<div className="mark-complete complete"><svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg></div>
-							</div>
-							<div className="columns shrink">
-								<span className="member-initials circle medium">{subtask.creator.firstName.substr(0,1)} {subtask.creator.lastName.substr(0,1)}</span>
-							</div>
-							<div className="columns shrink align-right">
-								<svg className="icon medium no-flag"><use xlinkHref="#icon-flag"></use></svg>
-							</div>
-							<div className="columns">
-								<span className="task-title complete"><span className="subtask-number">{index}</span>Schedule a call with patients primary physician.</span>
-								<span className="task-details text-light">Assigned by Megan Smith &#8226; 1:22 PM</span>
-								{commentNodes}
-							</div>
-							<div className="columns shrink align-right">
-								<svg className="icon medium text-light ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-							</div>
-						</div>
-					)
-				})
-			}
-			let commentNodes = "";
-			if(task.comments){
-					commentNodes = task.comments.map(function(comment) {
-					return (
-						<div className="comments-container">
-							<div className="row expanded collapse comment-wrapper" key={comment.commentId}>
-								<div className="columns shrink">
-									{/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
-									<span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
-								</div>
-								<div className="columns">
-									<span className="comment">{comment.comment}</span>
-								</div>
-								<div className="columns shrink align-right">
-									<span className="time comment-time">1m ago</span>
-								</div>
-							</div>
-							{/*<div className="row expanded collapse comment-wrapper">
-								<div className="columns shrink text-light">
-									Load 2 earlier comments
-								</div>
-							</div>*/}
-						</div>
-					)
-				})
-			}else{
-				return (
-					<div class="row expanded collapse comment-wrapper">
-						<div class="columns shrink">
-							<img class="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>
-						</div>
-						<div class="columns">
-							<span class="comment text-light">Add a comment...</span>
-						</div>
-					</div>
-				)
-			}
 			let taskPriorityClass = "icon medium priority"
 			if(task.priority!=null && task.priority!="LOW"){
 				taskPriorityClass = taskPriorityClass + " high"
 			}
-      return (
-				<div className="task-item has-subtasks">
+			{/* COMPONENTS END */}
 
-					{/* MAIN TASK START */}
-					<div className="main-task-item row expanded" key={task.taskId+task.description} value={task}>
-						<div className="columns shrink">
-							<div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
-								{task.status == "COMPLETE" &&
-								<svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg>
-								}
-							</div>
-						</div>
 
-						<div className="columns shrink">
-							{task.assignedTo ?
-								<span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-								<img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
-							}
-						</div>
+			{/* COMMENTS START */}
+			let commentNodes = "";
+		  if(task.comments){
+		      commentNodes = task.comments.map(function(comment) {
+		      return (
+		        <div key={comment.commentId} className="comments-container">
+		          <div className="row expanded collapse comment-wrapper" key={comment.commentId}>
+		            <div className="columns shrink">
+		              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
+		              <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
+		            </div>
+		            <div className="columns">
+		              <span className="comment">{comment.comment}</span>
+		            </div>
+		            <div className="columns shrink align-right">
+		              <span className="time comment-time">1m ago</span>
+		            </div>
+		          </div>
+		          <div className="row expanded collapse comment-wrapper">
+		            <div className="columns shrink">
+		              <img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
+		            </div>
+		            <div className="columns">
+		              <span className="comment text-light">Add a comment...</span>
+		            </div>
+		          </div>
 
-						<div className="columns shrink align-right">
-							<svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
-						</div>
-						<div className="columns">
-							<span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>
-							<span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
-							<span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
-							{/* EMAIL */}
-							{commentNodes}
-						</div>
+		          {/*<div className="row expanded collapse comment-wrapper">
+		            <div className="columns shrink text-light">
+		              Load 2 earlier comments
+		            </div>
+		          </div>*/}
+		        </div>
+		      )
+		    })
+		  }else{
+		    return (
+		      <div class="row expanded collapse comment-wrapper">
+		        <div class="columns shrink">
+		          <img class="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>
+		        </div>
+		        <div class="columns">
+		          <span class="comment text-light">Add a comment...</span>
+		        </div>
+		      </div>
+		    )
+		  }
+			{/* COMMENTS END */}
 
-						{/* ELLIPSES START */}
-						<div className="columns shrink align-right more-options-wrapper">
-							<span className="more-task-options icon-group">
-								<span onClick={(e) => this.markAsUnread(task, task.read)}><svg className="icon"><use xlinkHref={task.read ? "#icon-envelope-open" : "#icon-envelope-close"}></use></svg></span>
-								<svg className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
-								<svg className="icon edit-task"><use xlinkHref="#icon-subtask"></use></svg>
-								<svg className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
-							</span>
-							<svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-						</div>
-						{/* ELLIPSES END */}
 
-					</div>
-					{/* MAIN TASK END */}
+			{/* GENERATE TASK START */}
+			const generateTask = (task, type) => (
+			  <span key={task.taskId}>
 
-					{subtaskNodes}
+			    {/* MAIN TASK START */}
+			    <div className={"row expanded " + (type == "subtask" ? 'subtask-item' : 'main-task-item')} key={task.taskId+task.description} value={task}>
+			      <div className="columns shrink">
+			        <div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
+			          {task.status == "COMPLETE" &&
+			          <svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg>
+			          }
+			        </div>
+			      </div>
 
-				</div>
+			      <div className="columns shrink">
+			        {task.assignedTo ?
+			          <span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
+			          <img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
+			        }
+			      </div>
 
-        );
-      })}
+			      <div className="columns shrink align-right">
+			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
+			      </div>
+			      <div className="columns">
+			        <span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>
+			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
+			        <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
+			        {/* EMAIL */}
+			        {commentNodes}
+			      </div>
 
-	</span>
+			      {/* ELLIPSES START */}
+			      <div className="columns shrink align-right more-options-wrapper">
+			        <span className="more-task-options icon-group">
+			          <span onClick={(e) => this.markAsUnread(task, task.read)}><svg className="icon"><use xlinkHref={task.read ? "#icon-envelope-open" : "#icon-envelope-close"}></use></svg></span>
+			          <svg className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
+			          <svg className="icon edit-task"><use xlinkHref="#icon-subtask"></use></svg>
+			          <svg className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
+			        </span>
+			        <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
+			      </div>
+			      {/* ELLIPSES END */}
+
+			    </div>
+			    {/* MAIN TASK END */}
+			    {task.subtasks &&
+			      task.subtasks.map(subtask => {
+			        return (
+			          <span key={subtask.taskId}>
+			          {generateTask(subtask, "subtask")}
+			          </span>
+			        )
+			      })
+			    }
+
+			  </span>
+			);
+			{/* GENERATE TASK END */}
+
+
+
+			return(
+				<span>
+					{listTasks()}
+				</span>
+			)
+
+    })}
+
+
+		</span>
     );
 }
 
