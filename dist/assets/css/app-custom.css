@@ -99,3 +99,22 @@ ul li{
 .more-task-options > span {
   margin-left: .75em;
 }
+
+textarea.comment {
+ 	box-shadow: 0 0 0;
+ 	font-size: .75rem;
+ 	line-height: 1;
+ 	/*border-color: $lightest-gray;	*/
+  border-color: #ededf0;
+}
+
+.comments-container textarea.comment{
+		margin-bottom: .375rem;
+	}
+.comments-container .button{
+		margin-left: .5rem;
+	}
+
+input:checked ~ .switch-paddle:after {
+  background: #a2dfb8;
+}

@@ -5343,7 +5343,7 @@ header {
 .slim.accordion-item .task-item {
   padding: .5rem 0; }
 
-/*.inline-label { 
+/*.inline-label {
 	.select2-container {
 	width: 100%;
 }
@@ -5735,7 +5735,8 @@ h6 {
   position: relative;
   overflow: hidden;
   width: 200px;
-  height: 1.5rem; }
+  /*height: 1.5rem; */
+}
   .more-options-wrapper .ellipses {
     position: absolute;
     right: .9375rem;

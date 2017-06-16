@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import Moment from 'react-moment'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
+import AddComment from './AddComment'
 import TaskListMembersContainer from './TaskListMembersContainer'
 import * as userApi from '../../api/user-api'
 
@@ -131,45 +132,59 @@ class TaskList extends React.Component {
 
 			{/* COMMENTS START */}
 			let commentNodes = "";
-		  if(task.comments){
-	      commentNodes = task.comments.map(function(comment) {
-	      return (
-	        <div key={comment.commentId} className="comments-container">
-	          <div className="row expanded collapse comment-wrapper" key={comment.commentId}>
-	            <div className="columns shrink">
-	              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
-	              <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
-	            </div>
-	            <div className="columns">
-	              <span className="comment">{comment.comment}</span>
-	            </div>
-	            <div className="columns shrink align-right">
-	              <span className="time comment-time">1m ago</span>
-	            </div>
-	          </div>
-	          <div className="row expanded collapse comment-wrapper">
-	            <div className="columns shrink">
-	              <img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
-	            </div>
-	            <div className="columns">
-	              <span className="comment text-light">Add a comment...</span>
-	            </div>
-	          </div>
-	        </div>
+		  if(task.comments.length > 0){
+		      commentNodes = task.comments.map(function(comment) {
+					let addComment = false;
+		      return (
+		        <div key={comment.commentId} className="comments-container">
+		          <div className="row expanded collapse comment-wrapper" key={comment.commentId}>
+		            <div className="columns shrink">
+		              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
+		              <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
+		            </div>
+		            <div className="columns">
+		              <span className="comment">{comment.comment}</span>
+		            </div>
+		            <div className="columns shrink align-right">
+		              <span className="time comment-time">1m ago</span>
+		            </div>
+		          </div>
+		          <div className="row expanded collapse comment-wrapper">
+		            <div className="columns shrink">
+		              <img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
+		            </div>
+								<AddComment task={task}/>
+		          </div>
+
+		          {/*<div className="row expanded collapse comment-wrapper">
+		            <div className="columns shrink text-light">
+		              Load 2 earlier comments
+		            </div>
+		          </div>*/}
+		        </div>
 		      )
-		    }
-			)
+		    })
 		  }else{
-				commentNodes = (<div key={"comment" + task.taskId}>hello</div>)}
+		    commentNodes =
+					<div key={"comment"+task.taskId} className="comments-container">
+			      <div className="row expanded collapse comment-wrapper">
+			        <div className="columns shrink">
+								<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
+			          {/*<img className="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>*/}
+			        </div>
+			        <AddComment task={task}/>
+			      </div>
+					</div>
+		  }
 			{/* COMMENTS END */}
 
 
 			{/* GENERATE TASK START */}
 			const generateTask = (task, type) => (
-			  <span key={task.taskId}>
+			  <span key={"task"+task.taskId}>
 
 			    {/* MAIN TASK START */}
-			    <div className={"row expanded " + (type == "subtask" ? 'subtask-item' : 'main-task-item')} key={task.taskId+task.description} value={task}>
+			    <div className={"row expanded " + (type == 'subtask' ? 'subtask-item' : 'main-task-item')} value={task}>
 			      <div className="columns shrink">
 			        <div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
 			          {task.status == "COMPLETE" &&
