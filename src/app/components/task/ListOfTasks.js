@@ -95,9 +95,9 @@ class TaskList extends React.Component {
 
 
 		{this.props.tasks.map(task => {
-			const listTasks = () => {
+			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
-					<div key={task.taskId} className="task-item has-subtasks">
+					<div key={"task"+task.taskId} className="task-item has-subtasks">
 						{generateTask(task, "maintask")}
 					</div>
 				)
@@ -120,7 +120,7 @@ class TaskList extends React.Component {
 			if(task.assignees){
 				assignees = task.assignees.map(function(assignee) {
 					let assigneeInitials = assignee.firstName.substr(0,1)+assignee.lastName.substr(0,1)
-					return <span className="memberphoto active" key={assignee.userId}>{assigneeInitials}</span>
+					return <span className="memberphoto active" key={"assignee"+assignee.userId}>{assigneeInitials}</span>
 				})
 			}
 			let taskPriorityClass = "icon medium priority"
@@ -134,9 +134,8 @@ class TaskList extends React.Component {
 			let commentNodes = "";
 		  if(task.comments.length > 0){
 		      commentNodes = task.comments.map(function(comment) {
-					let addComment = false;
 		      return (
-		          <div className="row expanded collapse comment-wrapper" key={comment.commentId}>
+		          <div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
 		            <div className="columns shrink">
 		              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
 		              <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
@@ -219,7 +218,7 @@ class TaskList extends React.Component {
 			    {task.subtasks &&
 			      task.subtasks.map(subtask => {
 			        return (
-			          <span key={subtask.taskId}>
+			          <span key={"subtask"+subtask.taskId}>
 			          {generateTask(subtask, "subtask")}
 			          </span>
 			        )
@@ -233,7 +232,7 @@ class TaskList extends React.Component {
 
 
 			return(
-				<span>
+				<span key={"listTask"+task.taskId}>
 					{listTasks()}
 				</span>
 			)

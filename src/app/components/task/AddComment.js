@@ -17,7 +17,6 @@ class AddComment extends React.Component {
 
   changeCommentStatus(status){
     this.setState({addComment: status})
-    this.commentInput.focus();
   }
 
   onSubmit(formProps){
@@ -36,7 +35,7 @@ class AddComment extends React.Component {
           {this.state.addComment ?
             <form className="inline-label" onSubmit={this.props.handleSubmit(this.onSubmit)}>
               <span id={"comment-form-"+this.props.task.taskId}>
-                <Field ref={(commentInput) => { this.commentInput = commentInput; }}  name="comment" type="text" component="input" value={this.state.value} placeholder='Type your comment here...' className="comment"/>
+                <Field name="comment" type="text" component="input" value={this.state.value} placeholder='Type your comment here...' className="comment"/>
                 <button type="submit" className="button primary small">Post</button>
               </span>
             </form> :
