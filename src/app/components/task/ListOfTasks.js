@@ -159,7 +159,7 @@ class TaskList extends React.Component {
 		    commentNodes =
 			      <div className="row expanded collapse comment-wrapper">
 			        <div className="columns shrink">
-								<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
+								{/*<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>*/}
 			          {/*<img className="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>*/}
 			        </div>
 			      </div>
