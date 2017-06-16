@@ -136,7 +136,6 @@ class TaskList extends React.Component {
 		      commentNodes = task.comments.map(function(comment) {
 					let addComment = false;
 		      return (
-		        <div key={comment.commentId} className="comments-container">
 		          <div className="row expanded collapse comment-wrapper" key={comment.commentId}>
 		            <div className="columns shrink">
 		              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
@@ -148,33 +147,22 @@ class TaskList extends React.Component {
 		            <div className="columns shrink align-right">
 		              <span className="time comment-time">1m ago</span>
 		            </div>
-		          </div>
-		          <div className="row expanded collapse comment-wrapper">
-		            <div className="columns shrink">
-		              <img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
-		            </div>
-								<AddComment task={task}/>
-		          </div>
-
 		          {/*<div className="row expanded collapse comment-wrapper">
 		            <div className="columns shrink text-light">
 		              Load 2 earlier comments
 		            </div>
 		          </div>*/}
-		        </div>
+							</div>
 		      )
 		    })
 		  }else{
 		    commentNodes =
-					<div key={"comment"+task.taskId} className="comments-container">
 			      <div className="row expanded collapse comment-wrapper">
 			        <div className="columns shrink">
 								<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
 			          {/*<img className="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>*/}
 			        </div>
-			        <AddComment task={task}/>
 			      </div>
-					</div>
 		  }
 			{/* COMMENTS END */}
 
@@ -208,7 +196,10 @@ class TaskList extends React.Component {
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
 			        <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
 			        {/* EMAIL */}
-			        {commentNodes}
+							<div key={"comments-comtainer-"+task.taskId} className="comments-container">
+								{commentNodes}
+								<AddComment task={task}/>
+							</div>
 			      </div>
 
 			      {/* ELLIPSES START */}
