@@ -1,35 +1,6 @@
 function renderFoundationComponentsJquery(){
 	console.log('in JS function: renderFoundationComponentsJquery');
 
-	$(document).foundation();
-	//var elem = new Foundation.DropdownMenu($('#mainmenu'), null);
-	//console.log(elem);
-
-	// add task form patient autocomplete
-	// http://easyautocomplete.com/guide
-	var patients = {
-		data: [ {name: "George Vasquez", mrn: "123-32-21"},
-		{name: "Grace Chavez", mrn: "473-32-21"},
-		{name: "Pamela Riley", mrn: "383-38-59"},
-		{name: "Raymond Curtis", mrn: "433-37-47"}
-		],
-			getValue: function (element) { return $(element).prop("name") + " " + $(element).prop("mrn");},
-			list: {onLoadEvent: function() {
-				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
-				$('.easy-autocomplete-container ul').append(addnew);
-			},
-			match: {enabled: true}
-			},
-
-			template: { type: "custom",
-						method: function(value, item) {
-							return "<span class='data-item'>" + item.mrn + "</span><span class='data-item'>" + item.name + "</span>";
-						}
-					}
-	};
-
-	$(".add-patient").easyAutocomplete(patients);
-
 	// add task form assign to
 	var people = {
 		data: [ {img: "assets/img/user1.png", name: "Terry Tucker"},
@@ -49,7 +20,6 @@ function renderFoundationComponentsJquery(){
 	};
 
 	$(".assign-to").easyAutocomplete(people);
-
 
 	//more task options
 	//$('.more-options-wrapper').hover(function() {
@@ -91,18 +61,6 @@ function renderFoundationComponentsJquery(){
 
 	// datepicker
 	$('.pickdate').fdatepicker({
-	});
-
-	//ensure we remove these from app.js
-	$('.form-floating-label input, .form-floating-label textarea').focusin(function(){
-		$(this).closest('.form-floating-label').addClass('has-value');
-	});
-
-	$('.form-floating-label input, .form-floating-label textarea').blur(function(){
-		if(!$(this).val().length > 0) {
-			//$(this).parent().removeClass('has-value');
-			$(this).closest('.form-floating-label').removeClass('has-value');
-		}
 	});
 
 }
@@ -168,6 +126,33 @@ function closeAddTask(){
 	//$('.add').click();
 }
 
+function enableAutoComplete(lookupData) {
+	// console.log(lookupData)
+	// add task form patient autocomplete
+	// http://easyautocomplete.com/guide
+	var patients = {
+		// data: [ {name: "George Vasquez", mrn: "123-32-21"},
+		// 	{name: "Grace Chavez", mrn: "473-32-21"},
+		// 	{name: "Pamela Riley", mrn: "383-38-59"},
+		// 	{name: "Raymond Curtis", mrn: "433-37-47"}
+		// ],
+		data: lookupData,
+		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
+		list: {onLoadEvent: function() {
+			var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
+			$('.easy-autocomplete-container ul').append(addnew);
+		},
+		match: {enabled: true}
+		},
+		template: { type: "custom",
+			method: function(value, item) {
+				return "<span class='data-item'>" + item.mrn + "</span><span class='data-item'>" + item.firstName + " " + item.lastName + "</span>";
+			}
+		}
+	};
+
+	$(".add-patient").easyAutocomplete(patients);
+}
 
 $(document).ready(function() {
 
@@ -202,5 +187,22 @@ $(document).ready(function() {
 	});
 
 
+	$(document).foundation();
+	//var elem = new Foundation.DropdownMenu($('#mainmenu'), null);
+	//console.log(elem);
+
+	//ensure we remove these from app.js
+	// $('.form-floating-label input, .form-floating-label textarea').focusin(function(){
+	$(document).on('focusin', '.form-floating-label input, .form-floating-label textarea', function() {
+		$(this).closest('.form-floating-label').addClass('has-value');
+	});
+
+	// $('.form-floating-label input, .form-floating-label textarea').blur(function(){
+	$(document).on('blur', '.form-floating-label input, .form-floating-label textarea', function() {
+		if(!$(this).val().length > 0) {
+			//$(this).parent().removeClass('has-value');
+			$(this).closest('.form-floating-label').removeClass('has-value');
+		}
+	});
 
 });

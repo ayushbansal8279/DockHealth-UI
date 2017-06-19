@@ -74,8 +74,8 @@ class FormPatient extends React.Component {
                 <span className="inner">
                   <legend>Gender</legend>
                   <span className="float-right">
-                    <input type="radio" name="gender" value="female"/><label>Female</label>
-                    <input type="radio" name="gender" value="male"/><label>Male</label>
+                    <input type="radio" name="gender" value="female" id="genderFemale"/><label for="genderFemale">Female</label>
+                    <input type="radio" name="gender" value="male" id="genderMale"/><label for="genderMale">Male</label>
                   </span>
                 </span>
               </fieldset>
