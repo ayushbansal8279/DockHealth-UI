@@ -7,6 +7,8 @@ import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListC
 import AddComment from './AddComment'
 import TaskListMembersContainer from './TaskListMembersContainer'
 import * as userApi from '../../api/user-api'
+import { findDOMNode } from 'react-dom'
+import $ from 'jquery'
 
 class TaskList extends React.Component {
 		constructor(props) {
@@ -24,6 +26,7 @@ class TaskList extends React.Component {
 			this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
 			this.addPatientToTaskCallback = this.addPatientToTaskCallback.bind(this)
 			this.markAsUnread = this.markAsUnread.bind(this)
+			this.editTask = this.editTask.bind(this)
 		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -36,6 +39,11 @@ class TaskList extends React.Component {
 			this.cognitoUser = cognitoUser
         }
     }
+
+		editTask(task){
+			console.log("edit working")
+			editForm()
+		}
 
   	handleSubTaskChange(event) {
     	// this.setState({comment: event.target.value, parentTaskId: event.target.parentTaskId});
@@ -51,10 +59,10 @@ class TaskList extends React.Component {
   	}
 
   	handleSubmit () {
-		if(this.state.comment != ""){
-			this.props.addTaskComment(this.state.taskId, {comment: this.state.comment, creator:{userId: 1}})
-			this.setState({comment: ''})
-		}
+			if(this.state.comment != ""){
+				this.props.addTaskComment(this.state.taskId, {comment: this.state.comment, creator:{userId: 1}})
+				this.setState({comment: ''})
+			}
   	}
 
   	handleMarkComplete(task, status){
@@ -81,6 +89,23 @@ class TaskList extends React.Component {
 		markAsUnread(task, flagUnread){
 			this.props.markAsUnread(task, flagUnread)
 		}
+
+		handleToggle = (eventType, task) => {
+			// const el = findDOMNode(this.refs.toggle);
+			// $(el).slideToggle();
+
+			// Copied from app-custom.js
+			$('.add').toggleClass('close');
+			$('body').toggleClass('disable-header-scroll');
+			if($(this).hasClass('add-list')) {
+				$('.add-list use').attr('href', function(index, attr) {
+					return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+				});
+			}
+			$('.add-form-wrapper').slideToggle(300);
+			$('.list-filter .controls, .list-wrapper').toggle();
+			//	$('.list-filter .controls').toggle();
+		};
 
 
     render() {
@@ -205,7 +230,7 @@ class TaskList extends React.Component {
 			      <div className="columns shrink align-right more-options-wrapper">
 			        <span className="more-task-options icon-group">
 			          <span onClick={(e) => this.markAsUnread(task, task.read)}><svg className="icon"><use xlinkHref={task.read ? "#icon-envelope-open" : "#icon-envelope-close"}></use></svg></span>
-			          <svg className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
+			          <svg onClick={(e) => this.handleToggle("edit", task)} className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
 			          <svg className="icon edit-task"><use xlinkHref="#icon-subtask"></use></svg>
 			          <svg className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
 			        </span>
@@ -247,6 +272,9 @@ class TaskList extends React.Component {
   componentDidMount () {
     //alert('componentDidMount');
     enableTaskListComponents();
+
+
+
 		// console.log("listoftasks didmount")
   }
 
