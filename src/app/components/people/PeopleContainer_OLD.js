@@ -109,58 +109,82 @@ class PeopleContainer extends React.Component {
 //use below if date is coming in as timestamp milliseconds
 //{new Date(invitation.updatedDateTime).toJSON()}
 
-       return this.props.peoplelist.map((person) =>{
-         if(person.userInviteStatus == 'ACCEPTED'){
-           return(
-             <div className="item row expanded" key={person.email}>
-             <div className="columns shrink pending">
-             {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
-             <span className="member-initials circle">{person.initials}</span>
-             </div>
-             <div className="columns">
-             <span className="item-title">{person.firstName + " " + person.lastName}</span>
-             <span className="item-details">RN, GI Nurse</span>
-             <span className="top-buffer-xsmall item-details">{person.email}</span>
-             <span className="item-details">P: 434-432-43243 | C: 434-432-43243</span>
-             </div>
-             <div className="columns shrink more-options-wrapper more-options-people">
-             <span className="more-task-options icon-group-tooltip">
-             <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="delete this person"><svg className="icon"><use xlinkHref="#icon-delete"></use></svg></span>
-             <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="give admin rights"><svg className="icon"><use xlinkHref="#icon-admin"></use></svg></span>
-             </span>
-             <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-             </div>
-             </div>
-           )
-         }else{
-           return(
-             <div className="item row expanded" key={person.email}>
-               <div className="columns shrink pending">
-                 <span className="member-initials circle">{person.initials}</span>
-               </div>
-               <div className="columns">
-                 <span className="item-title">{person.firstName + " " + person.lastName}</span>
-                 <span className="top-buffer-xsmall item-details">{person.email}</span>
-                 <span className="item-details highlight">Pending</span>
-               </div>
-               <div className="columns shrink more-options-wrapper more-options-people">
-                 <span className="more-task-options icon-group-tooltip">
-                   <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="delete this person"><svg className="icon"><use xlinkHref="#icon-delete"></use></svg></span>
-                   <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="give admin rights"><svg className="icon"><use xlinkHref="#icon-admin"></use></svg></span>
-                 </span>
-                 <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-               </div>
-             </div>
-           )
-         }
-
+       return this.props.peoplelist.map((people) =>{
+          return(
+             <div className="item row expanded" key={people.email}>
+              <div className="columns shrink">
+                <img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
+                {/*<span className="member-initials circle">KV</span>*/}
+              </div>
+              <div className="columns">
+                <span className="item-title">{people.firstName}&nbsp;{people.lastName}</span>
+                <span className="item-details">MD, Endocrinology</span>
+                <span className="top-buffer-xsmall item-details">{people.email}</span>
+                <span className="item-details">P: 434-432-43243 | C: 434-432-43243</span>
+                <span className="item-details highlight">
+                {
+                  (people.userInviteStatus=='ACCEPTED')
+                  ?<div><span className=" success label">{people.userInviteStatus}</span></div>
+                  :<div><span className=" alert label">{people.userInviteStatus}</span></div>
+                }
+                </span>
+              </div>
+              <div className="columns">
+                {
+                  this.renderRole(people)
+                }
+              </div>
+              <div className="columns">
+                {
+                  this.renderRoleButton(people)
+                }
+              </div>
+              <div className="columns shrink more-options-wrapper more-options-people">
+                <span className="more-task-options icon-group-tooltip">
+                  <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="delete this person"><svg className="icon"><use xlinkHref="#icon-delete"></use></svg></span>
+                  <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="give admin rights"><svg className="icon"><use xlinkHref="#icon-admin"></use></svg></span>
+                </span>
+                <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
+              </div>
+            </div>
+          );
       })
     }
 
     render(){
       return(
-        <div className="item-list-wrapper">
-  				{this.renderList()}
+        <div>
+        {/*<div className="row">
+          <div className="small-12 columns">
+          <h3>{this.state.peopleProcessingResult}</h3>
+          </div>
+        </div>
+
+        <Link to="/peopleinvite">
+          <button className="button secondary button-small float-right">Invite user to organization</button>
+        </Link>
+
+        <div className="row">
+          <div className="small-12 columns">
+          <h4>List of members within organization</h4>
+          </div>
+        </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th width="200" ><h3>Name</h3></th>
+                <th width="200" ><h3>Email</h3></th>
+                <th width="200" ><h3>Status</h3></th>
+                <th width="200" ><h3>Role</h3></th>
+                <th width="400" ></th>
+              </tr>
+            </thead>
+
+            <tbody>*/}
+              {this.renderList()}
+            {/*</tbody>
+          </table>*/}
         </div>
       );
     }

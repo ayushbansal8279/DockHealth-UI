@@ -29,6 +29,7 @@ import InvitePeople from './components/people/InvitePeople';
 import TaskListAuditView from './views/TaskListAuditView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import UserProfileView from './views/UserProfileView';
+import Test from './views/Test';
 
 // const routes = {
 //   path: '/',
@@ -70,6 +71,7 @@ export default (
       <Route path="/tasks/assignedToMe" component={Home}/>
       <Route path="/tasks/assignedByMe" component={Home}/>
       <Route path="/userprofile" component={UserProfileView} />
+      <Route path="/test" component={Test} />
     </Route>
     <Route component={TemplateAuth} >
       <Route component={TemplateAuthBase}>
