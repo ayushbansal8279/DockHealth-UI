@@ -1,6 +1,4 @@
 import React from 'react'
-import * as FoundationAccordion from '../../../dist/assets/js/foundation.accordion.js'
-import $ from 'jquery'
 import TaskListActivityFeedContainer from '../components/list/TaskListActivityFeedContainer'
 
 class TaskListActivityFeedView extends React.Component {

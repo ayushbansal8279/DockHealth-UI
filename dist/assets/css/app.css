@@ -2066,7 +2066,7 @@ select {
     content: '\2013'; }
 
 .accordion-content {
-  display: none;
+  /*display: none;*/
   padding: 1.25rem;
   border: 0px solid #dedee2;
   border-bottom: 0;

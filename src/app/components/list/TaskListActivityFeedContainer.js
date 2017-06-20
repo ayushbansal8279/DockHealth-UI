@@ -26,12 +26,12 @@ class TaskListActivityFeedContainer extends Component {
     renderList(auditlist) {
        return auditlist.map((audit) =>{
           return(
-						<div className="task-item row expanded condense align-middle" key={audit.auditId+'_'+audit.auditEventType}>
+						<div className="task-item row expanded condense align-middle" key={"audit" + audit.auditId}>
 							<div className="columns shrink">
 								<img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
 							</div>
 							<div className="columns">
-								<span className="task-title">{audit.currentState}</span>
+								<span className="task-title">{audit.auditId + " " + audit.currentState}</span>
 							</div>
 							<div className="columns shrink text-right more-options-wrapper">
 								<span className="item-details"><Moment format="MMM DD">{audit.createdDateTime}</Moment></span>
@@ -44,8 +44,9 @@ class TaskListActivityFeedContainer extends Component {
     renderTaskListName(){
       return this.props.auditsForAllUserList.map((auditsandtasklist) =>{
         return(
-					<div className="slim accordion-item" data-accordion-item key={auditsandtasklist.taskListId}>
+					<div className="slim accordion-item" data-accordion-item key={"taskList" + auditsandtasklist.taskListId}>
 						<a onClick={this.handleClick} href="#" className="accordion-title">{auditsandtasklist.listName}</a>
+						{/* app.css line 2068 : turned off display:none */}
 						<div className="accordion-content" data-tab-content>
               {this.renderList(auditsandtasklist.auditList)}
             </div>
