@@ -1,5 +1,6 @@
 export default {
   tasks: [],
+  task: {description:"Hello"},
   completedTasks: [],
   allPatients: [],
   user: false,

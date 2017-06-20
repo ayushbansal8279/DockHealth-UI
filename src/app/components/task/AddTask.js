@@ -6,6 +6,8 @@ import PatientDropdownListContainer from '../patient/PatientDropdownListContaine
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
 import * as TaskApi from '../../api/task-api'
 import * as PatientApi from '../../api/patient-api'
+import {ReactDOM, findDOMNode, getDOMNode} from 'react-dom'
+import $ from 'jquery'
 
 class AddTask extends React.Component {
 	constructor(props, container) {
@@ -15,7 +17,7 @@ class AddTask extends React.Component {
 				value: '',
 				assignedToId: ''
 		}
-    	this.handleSubmit = this.handleSubmit.bind(this)
+  	this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
 		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
 		this.unmount = this.unmount.bind(this)
@@ -32,13 +34,16 @@ class AddTask extends React.Component {
   	}
 
   	componentWillUpdate (nextProps) {
-		if(this.props.patients.length == 0 && nextProps.patients.length > 0){
-			enableAutoComplete(nextProps.patients);
-		}
+			if(this.props.patients.length == 0 && nextProps.patients.length > 0){
+				enableAutoComplete(nextProps.patients);
+			}
   	}
-	unmount() {
-		ReactDOM.unmountComponentAtNode(this.container);
-	}
+
+		unmount() {
+			var node = this.ReactDOM.getDOMNode();
+			ReactDOM.unmountComponentAtNode(node);
+			$(node).remove();
+		}
 
   	handleTaskDetailsChange(event) {
     	this.setState({value: event.target.value});
@@ -48,34 +53,41 @@ class AddTask extends React.Component {
 		// alert("unmounting")
 	}
 
-  	handleSubmit () {
-		if(this.props.taskListId != "inbox"){
-			this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId, taskListId: this.props.taskListId})
-		}else{
-			this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId})
-		}
-		this.setState({value: ''})
-		//closeAddTask(); //JS function
-  	}
+	handleSubmit () {
+	if(this.props.taskListId != "inbox"){
+		this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId, taskListId: this.props.taskListId})
+	}else{
+		this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId})
+	}
+	this.setState({value: ''})
+	//closeAddTask(); //JS function
+	}
 
-  	handleAddMemberToTask(memberId){
-  		this.state.assignedToId = memberId
-  		// alert("clicked:" + this.state.memberId);
-  	}
+	handleAddMemberToTask(memberId){
+		this.state.assignedToId = memberId
+		// alert("clicked:" + this.state.memberId);
+	}
 
 	submit = (values) => {
 		this.props.addTask(values)
-		alert("working")
 		// print the form values to the console
 		console.log(values)
-		this.unmount()
+		$('.add').toggleClass('close');
+		$('body').toggleClass('disable-header-scroll');
+		if($(this).hasClass('add-list')) {
+			$('.add-list use').attr('href', function(index, attr) {
+				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+			});
+		}
+		$('.add-form-wrapper').slideToggle(300);
+		$('.list-filter .controls, .list-wrapper').toggle();
 	}
 
     render() {
     	return (
-			<div id="addTaskFormWrapper" className="add-form-wrapper">
+			<div id="addTaskFormWrapper" className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
-					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} patients={this.props.patients}/>
+					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} patients={this.props.patients} task={this.props.task}/>
 				</div>
 				// <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/>
 				<script>
@@ -90,9 +102,9 @@ class AddTask extends React.Component {
 const mapStateToProps = function(store) {
   return {
     //tasks: store.taskState.tasks
-    task: {},
-	taskLists: store.taskListState.tasklist,
-	patients: store.patientState.allPatients,
+		taskLists: store.taskListState.tasklist,
+		patients: store.patientState.allPatients,
+		initialValues: store.taskState.task
 	// user: store.userState.user
   	}
 };

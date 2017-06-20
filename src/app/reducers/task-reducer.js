@@ -18,6 +18,9 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
     case types.GET_COMPLETED_TASKS_SUCCESS:
       return Object.assign({}, state, { completedTasks: action.tasks });
 
+    case types.EDIT_TASK:
+      return { ...state, task: action.task };
+
     // handling
     case types.MARK_TASK_STATUS_SUCCESS: // Tasks in 'incompletedTasks' state
     	return {
@@ -65,6 +68,19 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
           task.taskId === action.taskId ?
             // transform the one with a matching id
             { ...task, description: action.description } :
+            // otherwise return original task
+            task
+        )
+      };
+
+    case types.UPDATE_TASK_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId ?
+            // transform the one with a matching id
+            // return Object.assign({}, state, { tasks: action.tasks });
+            {...task, ...action.newTask} :
             // otherwise return original task
             task
         )
@@ -129,6 +145,8 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
             task
         )
       }
+
+
   }
 
   return state;

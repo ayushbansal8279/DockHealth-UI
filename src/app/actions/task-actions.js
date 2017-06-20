@@ -122,12 +122,22 @@ function getListTasksByUserSuccess(tasks) {
 // }
 
 export function addTask(newTask) {
-  return function(dispatch) {
-    return TaskApi.addTask(newTask).then(task => {
-      dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
-    }).catch(error => {
-      throw(error);
-    })
+  if(newTask.taskId != null){
+    return function(dispatch) {
+      return TaskApi.updateTask(newTask).then(task => {
+        dispatch({type: ActionTypes.UPDATE_TASK_SUCCESS, newTask});
+      }).catch(error => {
+        throw(error);
+      })
+    }
+  }else{
+    return function(dispatch) {
+      return TaskApi.addTask(newTask).then(task => {
+        dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
+      }).catch(error => {
+        throw(error);
+      })
+    }
   }
 }
 
@@ -262,6 +272,12 @@ export function markAsUnread(task, flagUnread){
     }).catch(error => {
       throw(error)
     })
+  }
+}
+
+export function taskToState(task){
+  return function(dispatch){
+    dispatch({type: ActionTypes.EDIT_TASK, task})
   }
 }
 

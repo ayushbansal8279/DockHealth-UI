@@ -65,17 +65,17 @@ class FormPatient extends React.Component {
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       return (
             <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
-              
+
               <Field name='mrn' type='text' component={BasicField} label='MRN' placeholder='required'/>
               <Field name='firstName' type='text' component={BasicField} label='First name' placeholder='required' value={patient.firstName}/>
               <Field name='lastName' type='text' component={BasicField} label='Last name' placeholder='required' value={patient.firstName}/>
-          
+
               <fieldset className="large-12 columns">
                 <span className="inner">
                   <legend>Gender</legend>
                   <span className="float-right">
-                    <input type="radio" name="gender" value="female" id="genderFemale"/><label for="genderFemale">Female</label>
-                    <input type="radio" name="gender" value="male" id="genderMale"/><label for="genderMale">Male</label>
+                    <input type="radio" name="gender" value="female"/><label>Female</label>
+                    <input type="radio" name="gender" value="male"/><label>Male</label>
                   </span>
                 </span>
               </fieldset>

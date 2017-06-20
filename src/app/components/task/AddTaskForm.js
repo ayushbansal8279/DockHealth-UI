@@ -1,35 +1,32 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
+import BasicField from '../common/BasicField';
 
 let AddTaskForm = props => {
-  const { handleSubmit, taskLists } = props
+  const { handleSubmit, taskLists, task} = props
+
   return (
-    <form className="inline-label" onSubmit={ handleSubmit }>
+    <form className="inline-label" onSubmit={ handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
           <h5 className="section-title">Add a task</h5>
         </div>
+        <Field name='description'  type='text' component={BasicField} label='Description'/>
 
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="description" component="input" type="text" />
-            <label>Task</label>
-          </div>
-        </div>
-
-        <div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <Field id="add-patient" className="add-patient input-group-field" name="addPatient" component="input" type="text" />
+            <Field id="add-patient" className="add-patient input-group-field" name="patient.firstName" component="input" type="text"/>
             <label>Add Patient</label>
           </div>
         </div>
 
+
         <div className="column large-12 input-group input-dropdown">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="fileIn" component="input" type="text" data-toggle="add-task-file-in-options"/>
+            <Field className="input-group-field" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
             <label>File in</label>
           </div>
 
@@ -49,7 +46,7 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedTo" component="input" type="text" />
+            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedTo.userName" component="input" type="text" />
             <label>Assigned to</label>
           </div>
         </div>
@@ -57,7 +54,7 @@ let AddTaskForm = props => {
         <div className="column large-12 input-group toggle-add-subtask">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="addSubtask" component="input" type="text" />
+            <Field className="input-group-field" name="subtask" component="input" type="text" />
             <label>Add a subtask</label>
           </div>
         </div>
@@ -112,7 +109,15 @@ let AddTaskForm = props => {
 
 AddTaskForm = reduxForm({
   // a unique name for the form
-  form: 'addTaskForm'
+  form: 'addTaskForm',
+  enableReinitialize : true
 })(AddTaskForm)
 
-export default AddTaskForm;
+const mapStateToProps = function(store) {
+  return {
+		initialValues: store.taskState.task,
+    tasks: store.taskState.tasks
+  	}
+};
+
+export default connect(mapStateToProps)(AddTaskForm);

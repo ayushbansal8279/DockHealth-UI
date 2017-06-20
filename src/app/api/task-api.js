@@ -41,10 +41,16 @@ export function addTask(task) {
   task.createdByUserId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
     .then(response => {
-      //store.dispatch({type: ActionTypes.ADD_TASK, id: nextTaskId++, task: response.data});
-      // store.dispatch({type: ActionTypes.ADD_TASK, task: response.data});
       return response.data;
-    });
+  });
+}
+
+export function updateTask(task) {
+  task.createdByUserId = sessionStorage.userId
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/' + task.taskId, task)
+    .then(response => {
+      return response.data;
+  });
 }
 
 export function deleteTask(taskId, userId) {

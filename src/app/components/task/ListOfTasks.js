@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux';
 import Moment from 'react-moment'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
-import AddComment from './AddComment'
 import TaskListMembersContainer from './TaskListMembersContainer'
+import AddComment from './AddComment'
+import * as TaskActions from '../../actions/task-actions'
 import * as userApi from '../../api/user-api'
 import { findDOMNode } from 'react-dom'
 import $ from 'jquery'
@@ -90,10 +92,14 @@ class TaskList extends React.Component {
 			this.props.markAsUnread(task, flagUnread)
 		}
 
+		deleteTask = (task) => {
+			console.log(task.taskId)
+		}
+
 		handleToggle = (eventType, task) => {
 			// const el = findDOMNode(this.refs.toggle);
 			// $(el).slideToggle();
-
+			this.props.taskAction.taskToState(task)
 			// Copied from app-custom.js
 			$('.add').toggleClass('close');
 			$('body').toggleClass('disable-header-scroll');
@@ -105,7 +111,12 @@ class TaskList extends React.Component {
 			$('.add-form-wrapper').slideToggle(300);
 			$('.list-filter .controls, .list-wrapper').toggle();
 			//	$('.list-filter .controls').toggle();
+			console.log(task)
 		};
+
+		autofillForm = (task) => {
+
+		}
 
 
     render() {
@@ -232,7 +243,7 @@ class TaskList extends React.Component {
 			          <span onClick={(e) => this.markAsUnread(task, task.read)}><svg className="icon"><use xlinkHref={task.read ? "#icon-envelope-open" : "#icon-envelope-close"}></use></svg></span>
 			          <svg onClick={(e) => this.handleToggle("edit", task)} className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
 			          <svg className="icon edit-task"><use xlinkHref="#icon-subtask"></use></svg>
-			          <svg className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
+			          <svg onClick={(e) => this.deleteTask(task)} className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
 			        </span>
 			        <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
 			      </div>
@@ -289,8 +300,15 @@ class TaskList extends React.Component {
 const mapStateToProps = function (store) {
 	return {
 		user: store.userState.user,
-		userProfilePic:store.userState.userProfilePic
+		userProfilePic:store.userState.userProfilePic,
+		task: store.taskState.task
 	}
 }
 
-export default connect(mapStateToProps)(TaskList)
+const mapDispatchToProps = function (dispatch) {
+  return {
+	  taskAction: bindActionCreators(TaskActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList)

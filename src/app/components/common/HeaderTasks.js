@@ -7,12 +7,15 @@ import {Link} from 'react-router'
 import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import * as PatientActions from '../../actions/patient-actions'
+import {ReactDOM, findDOMNode} from 'react-dom'
+import $ from 'jquery'
 
 class HeaderTasks extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      value: ''
+      value: '',
+      hideForm: true
     }
     this.changeTitle = this.changeTitle.bind(this)
   }
@@ -30,7 +33,6 @@ class HeaderTasks extends React.Component {
   getListTasks(taskListId){
     this.props.taskActions.getListTasks(taskListId)
   }
-
 
     render() {
     return (
