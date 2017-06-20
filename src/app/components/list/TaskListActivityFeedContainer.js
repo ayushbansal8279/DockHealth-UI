@@ -31,9 +31,6 @@ class TaskListActivityFeedContainer extends Component {
 								<img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
 							</div>
 							<div className="columns">
-								<span className="task-title">{audit.auditEventType}</span>
-							</div>
-							<div className="columns">
 								<span className="task-title">{audit.currentState}</span>
 							</div>
 							<div className="columns shrink text-right more-options-wrapper">
@@ -43,13 +40,13 @@ class TaskListActivityFeedContainer extends Component {
           );
       })
     }
-    
+
     renderTaskListName(){
       return this.props.auditsForAllUserList.map((auditsandtasklist) =>{
         return(
-          <div className="slim accordion-item is-active" data-accordion-item key={auditsandtasklist.taskListId}>
-            <a href="#" onClick={this.handleClick} className="accordion-title">{auditsandtasklist.listName}</a>
-            <div className="accordion-content1" data-tab-content>
+					<div className="slim accordion-item" data-accordion-item key={auditsandtasklist.taskListId}>
+						<a onClick={this.handleClick} href="#" className="accordion-title">{auditsandtasklist.listName}</a>
+						<div className="accordion-content" data-tab-content>
               {this.renderList(auditsandtasklist.auditList)}
             </div>
           </div>
@@ -59,7 +56,7 @@ class TaskListActivityFeedContainer extends Component {
 
     render (){
       return (
-        <div className="columns slim large-12 accordion" data-accordion="true" data-multi-expand="true" id="activityList">
+        <div className="columns slim large-12 accordion" data-accordion data-allow-all-closed="true">
           {this.renderTaskListName()}
         </div>
       )

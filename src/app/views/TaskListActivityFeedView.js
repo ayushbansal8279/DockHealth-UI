@@ -1,5 +1,6 @@
 import React from 'react'
-
+import * as FoundationAccordion from '../../../dist/assets/js/foundation.accordion.js'
+import $ from 'jquery'
 import TaskListActivityFeedContainer from '../components/list/TaskListActivityFeedContainer'
 
 class TaskListActivityFeedView extends React.Component {
@@ -11,7 +12,7 @@ class TaskListActivityFeedView extends React.Component {
               <div className="top-bar">
                 <div className="top-bar-left">
                   <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-                  <h3>Activity</h3> 
+                  <h3>Activity</h3>
                 </div>
 
               </div>
