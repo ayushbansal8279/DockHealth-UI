@@ -118,3 +118,7 @@ textarea.comment {
 input:checked ~ .switch-paddle:after {
   background: #a2dfb8;
 }
+
+.accordion-content {
+  display: block;
+}

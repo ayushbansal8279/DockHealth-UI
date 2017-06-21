@@ -46,7 +46,7 @@ class TaskListActivityFeedContainer extends Component {
         return(
 					<div className="slim accordion-item" data-accordion-item key={"taskList" + auditsandtasklist.taskListId}>
 						<a onClick={this.handleClick} href="#" className="accordion-title">{auditsandtasklist.listName}</a>
-						{/* app.css line 2068 : turned off display:none */}
+						{/* override of app.css line 2068 display:none : find in app-custonm .accordion-content line 122 */}
 						<div className="accordion-content" data-tab-content>
               {this.renderList(auditsandtasklist.auditList)}
             </div>

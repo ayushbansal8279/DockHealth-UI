@@ -89,7 +89,7 @@ class AddTask extends React.Component {
 				<div className="task-item add-form row expanded">
 					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} patients={this.props.patients} task={this.props.task}/>
 				</div>
-				// <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/>
+				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
 				<script>
   					{/*enableAutoComplete([]);*/}
 				</script>

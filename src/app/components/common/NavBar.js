@@ -72,44 +72,42 @@ class NavBar extends React.Component {
   	let menuClasses = "menu float-right"
     return (
       <div className="off-canvas position-left reveal-for-medium" id="sidebar" data-off-canvas>
-        <div>
-          {/*<LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/>*/}
-          {userProfile ? <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}
+        <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/>
+        {/*{userProfile ? <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
 
-          {/*{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
-          <ul className="menu vertical outer">
-            <NavLink to='/activityfeed'><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</NavLink>
-            <li>
-              <Link to='/taskList' activeClassName="active"><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
-              <ul className="nested vertical menu">
-                {/*<NavLink to='/tasks'>Inbox</NavLink>*/}
-                <NavLink onClick={(e) => this.getInboxTasks()} activeClassName="active" to={"/tasks/inbox"}>Inbox</NavLink>
-                <NavLink onClick={(e) => this.getTasksAssignedByMe()} activeClassName="active" to={"/tasks/assignedToMe"}>Assigned to me</NavLink>
-                <NavLink onClick={(e) => this.getTasksAssignedByMe()} activeClassName="active" to={"/tasks/assignedByMe"}>Assigned by me</NavLink>
-                {/*<NavLink to='/tasks'>Important</NavLink>*/}
-                {/*<NavLink to='/tasks'>Assigned to me</NavLink>*/}
-                {/*<NavLink to='/tasks'>Assigned by me</NavLink>*/}
-                {this.props.taskLists.map(taskList => {
-                  return(
-                    <NavLink onClick={(e) => {this.getListTasks(taskList.taskListId)}} key={taskList.taskListId} to={"/tasks/" + taskList.listName} activeClassName="active" title={taskList.listName}><span className="list-logo small"></span>{taskList.listName}</NavLink>
-                  )
-                })}
-                {/*<li><a href="index.html" className="active">Boston Clinic</a></li>*/}
-              </ul>
-            </li>
-            <NavLink to='/people'><svg className="icon"><use xlinkHref="#icon-user"></use></svg>People</NavLink>
-            <NavLink to='/patientList'><svg className="icon"><use xlinkHref="#icon-patient"></use></svg>Patients</NavLink>
-          </ul>
-          <div className="share-wrapper hide">
-            <div className="social-media text-center">
-              <a href="#"><svg className="icon"><use xlinkHref="#icon-twitter"></use></svg></a>
-              <a href="#"><svg className="icon"><use xlinkHref="#icon-facebook"></use></svg></a>
-              <a href="#"><svg className="icon"><use xlinkHref="#icon-linkedin"></use></svg></a>
-              <a href="#"><svg className="icon"><use xlinkHref="#icon-linkedin"></use></svg></a>
-            </div>
-            <div className="invite-email">
-              <svg className="icon"><use xlinkHref="#icon-email"></use></svg>Invite friends via email
-            </div>
+        {/*{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
+        <ul className="menu vertical outer">
+          <NavLink to='/activityfeed'><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</NavLink>
+          <li>
+            <Link to='/taskList' activeClassName="active"><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
+            <ul className="nested vertical menu">
+              {/*<NavLink to='/tasks'>Inbox</NavLink>*/}
+              <NavLink onClick={(e) => this.getInboxTasks()} activeClassName="active" to={"/tasks/inbox"}>Inbox</NavLink>
+              <NavLink onClick={(e) => this.getTasksAssignedByMe()} activeClassName="active" to={"/tasks/assignedToMe"}>Assigned to me</NavLink>
+              <NavLink onClick={(e) => this.getTasksAssignedByMe()} activeClassName="active" to={"/tasks/assignedByMe"}>Assigned by me</NavLink>
+              {/*<NavLink to='/tasks'>Important</NavLink>*/}
+              {/*<NavLink to='/tasks'>Assigned to me</NavLink>*/}
+              {/*<NavLink to='/tasks'>Assigned by me</NavLink>*/}
+              {this.props.taskLists.map(taskList => {
+                return(
+                  <NavLink onClick={(e) => {this.getListTasks(taskList.taskListId)}} key={taskList.taskListId} to={"/tasks/" + taskList.listName} activeClassName="active" title={taskList.listName}><span className="list-logo small"></span>{taskList.listName}</NavLink>
+                )
+              })}
+              {/*<li><a href="index.html" className="active">Boston Clinic</a></li>*/}
+            </ul>
+          </li>
+          <NavLink to='/people'><svg className="icon"><use xlinkHref="#icon-user"></use></svg>People</NavLink>
+          <NavLink to='/patientList'><svg className="icon"><use xlinkHref="#icon-patient"></use></svg>Patients</NavLink>
+        </ul>
+        <div className="share-wrapper hide">
+          <div className="social-media text-center">
+            <a href="#"><svg className="icon"><use xlinkHref="#icon-twitter"></use></svg></a>
+            <a href="#"><svg className="icon"><use xlinkHref="#icon-facebook"></use></svg></a>
+            <a href="#"><svg className="icon"><use xlinkHref="#icon-linkedin"></use></svg></a>
+            <a href="#"><svg className="icon"><use xlinkHref="#icon-linkedin"></use></svg></a>
+          </div>
+          <div className="invite-email">
+            <svg className="icon"><use xlinkHref="#icon-email"></use></svg>Invite friends via email
           </div>
         </div>
         <div className="small dropdown-pane" id="profile-dropdown" data-v-offset="0" data-h-offset="0" data-dropdown data-hover="true" data-hover-pane="true">
