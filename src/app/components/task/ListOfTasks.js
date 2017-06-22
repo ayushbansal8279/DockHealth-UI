@@ -227,7 +227,7 @@ class TaskList extends React.Component {
 			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 			      </div>
 			      <div className="columns">
-			        <span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.description}</b>}</span>
+			        <span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.taskId + " " +task.description}</b>}</span>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
 			        <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
 			        {/* EMAIL */}
