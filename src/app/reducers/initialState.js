@@ -5,6 +5,7 @@ export default {
   allPatients: [],
   user: false,
   tasklist: [],
+  pendingTasklists: [],
   tasklistone: {},
   tasklistmembers: [],
   orgusersnotintasklist: [],

@@ -8,6 +8,9 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_TASKLIST_SUCCESS:
       return {...state, tasklist:action.tasklist};  //whatever our current state is, add on "tasklist"
 
+    case types.GET_PENDING_TASKLIST_SUCCESS:
+      return {...state, pendingTasklists:action.tasklist};  //whatever our current state is, add on "tasklist"
+
     case types.GET_TASKLIST_ONE_SUCCESS:
       return {...state, tasklistone:action.tasklistone};  //whatever our current state is, add on "tasklistone"
 

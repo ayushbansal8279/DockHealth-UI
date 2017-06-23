@@ -13,6 +13,16 @@ export function getTaskListForUser() {
   };
 }
 
+export function findPendingTaskListsForUser() {
+  return function(dispatch) {
+    return TaskListApi.findPendingTaskListsForUser().then(tasklist => {
+      dispatch({type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, tasklist});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
 export function addTaskList(formProps) {
   var taskObject = {listName: formProps.tasklistname};
 

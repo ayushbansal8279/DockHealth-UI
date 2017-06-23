@@ -1,9 +1,18 @@
 import React from 'react';
-import AddTaskForm from '../components/list/AddListForm'
-import TaskListContainer from '../components/tasklist/TaskListContainer'
+import { connect } from 'react-redux'
 import Header from '../components/common/Header'
+import {bindActionCreators} from 'redux';
+import * as TaskListActions from '../actions/tasklist-actions'
+import AddTaskForm from '../components/list/AddListForm'
+import ListsComponent from '../components/list/ListsComponent'
+import PendingListsComponent from '../components/list/PendingListsComponent'
 
 class TaskListView extends React.Component {
+
+    componentDidMount(){
+      this.props.taskListAction.getTaskListForUser()
+      this.props.taskListAction.findPendingTaskListsForUser()
+    }
     render() {
       return (
 
@@ -34,61 +43,19 @@ class TaskListView extends React.Component {
 
         			<div className="list-wrapper">
         				<div className="item-list-wrapper">
-        					<div className="item row expanded align-middle">
-        						<div className="columns shrink">
-        							<span className="circle xxsmall transparent"></span>
-        						</div>
-        						<div className="columns">
-        							<a href="index.html"><h6>Boston Clinic</h6></a>
-        							<span className="details">Mike Docktor</span>
-        							<span className="item-details highlight">Pending</span>
 
-        						</div>
-        						<div className="columns shrink">
-        							<button className="button primary small split">
-        								<span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="Accept invitation" className="button-left"><svg className="icon"><use xlinkHref="#icon-checkmark"></use></svg> Accept</span>
-        								<span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="Decline invitation" className="button-right cancel-button"><svg className="icon"><use xlinkHref="#icon-close"></use></svg> Decline</span>
-        							</button>
-        						</div>
-        					</div>
-        					<div className="item row expanded align-middle">
-        						<div className="columns shrink">
-        							<span className="circle xxsmall blue-bg" data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="2 new tasks"></span>
-        						</div>
-        						<div className="columns">
-        							<a href=""><h6 className="">Waltham Clinic</h6></a>
-        							<span className="details">Christopher Richardson</span>
-        						</div>
-        						<div className="columns shrink">
-        							<span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="3 high priority tasks"><svg className="icon medium flag"><use xlinkHref="#icon-flag"></use></svg></span>
-        						</div>
-        						<div className="columns shrink align-right">
-        							<h6 className="">12</h6>
-        						</div>
-        						<div className="columns shrink more-options-wrapper">
-        							<svg className="icon ellipses medium" data-toggle="more-options-task-id-01"><use xlinkHref="#icon-ellipses"></use></svg>
-        							<div className="small dropdown-pane" id="more-options-task-id-01" data-dropdown data-close-on-click="true">
-        								<ul className="no-bullet">
-        									<li>Delete list</li>
-        									<li>Change name</li>
-        									<li>Leave list</li>
-        								</ul>
-        							</div>
-        						</div>
+                  <PendingListsComponent taskLists={this.props.pendingTaskLists}/>
+                  <ListsComponent taskLists={this.props.taskLists}/>
 
-        					</div>
-        					<div className="item row expanded align-middle">
-        						<div className="columns shrink">
-        							<span className="circle xxsmall blue-bg" data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="2 new tasks"></span>
-        						</div>
-        						<div className="columns">
-        							<h6 className="">Waltham Clinic</h6>
-        							<span className="details">Mike Docktor</span>
-        						</div>
-        						<div className="columns shrink align-right">
-        							<h6 className="">9</h6>
-        						</div>
-        					</div>
+                  {/* {this.props.pendingTaskLists.map(taskList => {
+                    return(<PendingListsComponent taskList={taskList}/>)
+                  })} */}
+
+                  {/* {this.props.taskLists.map(taskList => {
+                    return(<ListsComponent taskList={taskList}/>)
+                  })} */}
+
+                  {/* Inbox */}
         					<div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
@@ -100,6 +67,9 @@ class TaskListView extends React.Component {
         							<h6 className="">4</h6>
         						</div>
         					</div>
+                  {/* Inbox End */}
+
+                  {/* Important */}
         					<div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
@@ -111,6 +81,9 @@ class TaskListView extends React.Component {
         							<h6 className="">0</h6>
         						</div>
         					</div>
+                  {/* Important End */}
+
+                  {/* Assigned to me */}
         					<div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
@@ -122,6 +95,9 @@ class TaskListView extends React.Component {
         							<h6 className="">26</h6>
         						</div>
         					</div>
+                  {/* Assigned to me End*/}
+
+                  {/* Assigned by me */}
         					<div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
@@ -133,6 +109,8 @@ class TaskListView extends React.Component {
         							<h6 className="">0</h6>
         						</div>
         					</div>
+                  {/* Assigned by me End */}
+
         				</div>{/* <!--item-list-wrapper--> */}
         			</div>{/* <!--list-wrapper--> */}
         		</div>
@@ -143,4 +121,17 @@ class TaskListView extends React.Component {
   }
 }
 
-export default TaskListView;
+function mapStateToProps(state){
+  return{
+    taskLists: state.taskListState.tasklist,
+    pendingTaskLists: state.taskListState.pendingTasklists
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    taskListAction: bindActionCreators(TaskListActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);
