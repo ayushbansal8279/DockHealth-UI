@@ -10,12 +10,15 @@ class ListOfTasksContainer extends React.Component {
 
   componentDidMount () {
     console.log('logged in user === '+this.props.user)
-    // this.props.actions.getListTasks(this.props.taskListId)
-    this.props.actions.getInboxTasks()
+    if(this.props.taskListId){
+      this.props.actions.getListTasks(this.props.taskListId)
+    }else{
+      this.props.actions.getInboxTasks()
+    }
   }
 
   render () {
-    return (<ListOfTasks taskListId={this.props.taskListId} tasks={this.props.status == "INCOMPLETE" ? this.props.tasks : this.props.completedTasks} deleteTask={this.props.actions.deleteTask} listName={this.props.status}
+    return (<ListOfTasks tasks={this.props.status == "INCOMPLETE" ? this.props.tasks : this.props.completedTasks} deleteTask={this.props.actions.deleteTask} listName={this.props.status}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
             toggleTaskPriority={this.props.actions.toggleTaskPriority}
             assignOrReassignTask={this.props.actions.assignOrReassignTask}

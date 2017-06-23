@@ -1,4 +1,6 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux';
 import ListOfTasksContainer from '../components/task/ListOfTasksContainer'
 import TaskFiltersContainer from '../components/task/TaskFiltersContainer'
 import TaskListPatients from '../components/task/TaskListPatients'
@@ -6,8 +8,26 @@ import TaskListUsers from '../components/task/TaskListUsers'
 import Notification from '../components/common/Notification'
 import HeaderTasks from '../components/common/HeaderTasks'
 import NotificationsToggle from '../components/tasklist/TaskListNotificationsToggle'
+import * as TaskActions from '../actions/task-actions'
 
 class Home extends React.Component {
+
+  componentWillUpdate(nextProps){
+    if(nextProps.params.taskListId != this.props.params.taskListId){
+      console.log("different param")
+      //task actions -- send the tasklist id and load data
+      if(nextProps.params.taskListId == "inbox"){
+        this.props.actions.getInboxTasks()
+      }else if(nextProps.params.taskListId == "assignedByMe"){
+        this.props.actions.getTasksAssignedByMe()
+      }else if(nextProps.params.taskListId == "assignedToMe"){
+        this.props.actions.getTasksAssignedToMe()
+      }else{
+        this.props.actions.getListTasks(nextProps.params.taskListId)
+      }
+    }
+
+  }
 
   render() {
     var taskListId = this.props.params.taskListId
@@ -37,4 +57,10 @@ class Home extends React.Component {
   }
 }
 
-export default Home
+const mapDispatchToProps = function (dispatch) {
+  return {
+    actions: bindActionCreators(TaskActions, dispatch)
+  }
+}
+
+export default connect(undefined, mapDispatchToProps)(Home);
