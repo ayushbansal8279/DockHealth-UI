@@ -22,20 +22,33 @@ export function getListTasksByUser(taskListId, status){
   });
 }
 
-// export function getTasksByDueDate(userId) {
-//   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'')
-// }
+export function getTasksAssignedToMe(taskListId, status) {
+  if(taskListId != undefined){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status)
+    .then(response => {
+      return response.data;
+    });
+  }else{
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status)
+    .then(response => {
+      return response.data;
+    });
+  }
+}
 
-/**
- * Search tasks
- */
-// export function searchTasks(query = '') {
-//   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task?q='+ query)
-//     .then(response => {
-//       store.dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks: response.data});
-//       return response;
-//     });
-// }
+export function getTasksAssignedByMe(taskListId, status){
+  if(taskListId != undefined){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status)
+    .then(response => {
+      return response.data;
+    });
+  }else{
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status)
+    .then(response => {
+      return response.data;
+    });
+  }
+}
 
 export function addTask(task) {
   task.createdByUserId = sessionStorage.userId
@@ -129,27 +142,6 @@ export function addComment(taskId, taskComment) {
   .then(response => {
     return response;
   });
-}
-
-export function getTasksAssignedToUserByTaskListId(taskListId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUserByTaskListId/' + taskListId + '?complete=false')
-  .then(response => {
-    return response.data;
-  });
-}
-
-export function getTasksAssignedByMe(taskListId){
-  if(taskListId != undefined){
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId=' + taskListId)
-    .then(response => {
-      return response.data;
-    });
-  }else{
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser')
-    .then(response => {
-      return response.data;
-    });
-  }
 }
 
 export function getHighPriorityTasksByTaskList(taskListId) {
