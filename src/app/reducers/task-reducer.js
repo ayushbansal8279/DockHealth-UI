@@ -77,10 +77,9 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
       return {
         ...state,
         tasks: state.tasks.map(task =>
-          task.taskId === action.taskId ?
+          task.taskId === action.task.taskId ?
             // transform the one with a matching id
-            // return Object.assign({}, state, { tasks: action.tasks });
-            Object.assign(task, ...newTask) :
+            {...task, ...action.task } :
             // otherwise return original task
             task
         )

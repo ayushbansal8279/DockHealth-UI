@@ -119,6 +119,6 @@ input:checked ~ .switch-paddle:after {
   background: #a2dfb8;
 }
 
-.accordion-content {
+/*.accordion-content {
   display: block;
-}
+}*/

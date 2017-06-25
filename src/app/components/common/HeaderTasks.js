@@ -34,6 +34,10 @@ class HeaderTasks extends React.Component {
     this.props.taskActions.getListTasks(taskListId)
   }
 
+	handleAddTask = () => {
+		this.props.taskActions.taskToState(null)
+	};
+
     render() {
     return (
       <div>
@@ -91,7 +95,7 @@ class HeaderTasks extends React.Component {
 									<svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg>
 								</div>
 
-								<div className="columns shrink">
+								<div className="columns shrink" onClick={(e) => this.handleAddTask()}>
 									<svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
 								</div>
 

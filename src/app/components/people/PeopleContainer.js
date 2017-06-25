@@ -1,10 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
+import BaseComponent from '../BaseComponent'
 import * as PeopleActions from '../../actions/people-actions';
 import {Link} from 'react-router';
 
-class PeopleContainer extends React.Component {
+class PeopleContainer extends BaseComponent {
     constructor(props) {
       super(props);
 
@@ -18,8 +19,13 @@ class PeopleContainer extends React.Component {
     }
 
     componentDidMount () {
+      super.componentDidMount()
       this.props.findAllUsersByOrganizationId();
       //enableMoreOptions();
+    }
+
+    componentDidUpdate () {
+      super.componentDidUpdate()
     }
 
     onClick(markedUserId,currentRole) {
@@ -143,13 +149,16 @@ class PeopleContainer extends React.Component {
                  <span className="top-buffer-xsmall item-details">{person.email}</span>
                  <span className="item-details highlight">Pending</span>
                </div>
-               <div className="columns shrink more-options-wrapper more-options-people">
-                 <span className="more-task-options icon-group-tooltip">
-                   <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="delete this person"><svg className="icon"><use xlinkHref="#icon-delete"></use></svg></span>
-                   <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="give admin rights"><svg className="icon"><use xlinkHref="#icon-admin"></use></svg></span>
-                 </span>
-                 <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-               </div>
+              <div className="columns shrink more-options-wrapper">
+                <svg className="icon ellipses medium" data-toggle="more-options-person-id-01"><use xlinkHref="#icon-ellipses"></use></svg>
+                <div className="small dropdown-pane" id="more-options-person-id-01" data-dropdown data-close-on-click="true">
+                  <ul className="no-bullet">
+                    <li>Delete this person</li>
+                    <li>Make admin</li>
+                  </ul>
+                </div>
+              </div>
+
              </div>
            )
          }

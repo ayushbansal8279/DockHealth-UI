@@ -1,11 +1,12 @@
 import React from 'react'
-import AddTaskForm from './AddTaskForm'
 import { connect } from 'react-redux'
+import {bindActionCreators} from 'redux';
+import AddTaskForm from './AddTaskForm'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
-//import * as TaskListActions from '../../actions/tasklist-actions'
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
-import * as TaskApi from '../../api/task-api'
-import * as PatientApi from '../../api/patient-api'
+// import * as PatientApi from '../../api/patient-api'
+import * as PeopleActions from '../../actions/people-actions';
+import * as TaskActions from '../../actions/task-actions';
 import {ReactDOM, findDOMNode, getDOMNode} from 'react-dom'
 import $ from 'jquery'
 
@@ -17,7 +18,7 @@ class AddTask extends React.Component {
 				value: '',
 				assignedToId: ''
 		}
-  	this.handleSubmit = this.handleSubmit.bind(this)
+  		//this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
 		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
 		this.unmount = this.unmount.bind(this)
@@ -25,6 +26,7 @@ class AddTask extends React.Component {
 
   	componentDidMount () {
     	console.log("mounted AddTask component")
+		this.props.peopleActions.findAllUsersByOrganizationId();
 		// PatientApi.getAllPatients().then(allPatients => {
 		// 	enableAutoComplete(allPatients);
     	// }).catch(error => {
@@ -34,16 +36,19 @@ class AddTask extends React.Component {
   	}
 
   	componentWillUpdate (nextProps) {
-			if(this.props.patients.length == 0 && nextProps.patients.length > 0){
-				enableAutoComplete(nextProps.patients);
-			}
+		if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
+			enableAutoCompleteForPatients(nextProps.patients);
+		}
+		if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
+			enableAutoCompleteForAssignedTo(nextProps.peoplelist);
+		}
   	}
 
-		unmount() {
-			var node = this.ReactDOM.getDOMNode();
-			ReactDOM.unmountComponentAtNode(node);
-			$(node).remove();
-		}
+	unmount() {
+		var node = this.ReactDOM.getDOMNode();
+		ReactDOM.unmountComponentAtNode(node);
+		$(node).remove();
+	}
 
   	handleTaskDetailsChange(event) {
     	this.setState({value: event.target.value});
@@ -53,25 +58,30 @@ class AddTask extends React.Component {
 		// alert("unmounting")
 	}
 
+/*
 	handleSubmit () {
-	if(this.props.taskListId != "inbox"){
-		this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId, taskListId: this.props.taskListId})
-	}else{
-		this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId})
+		if(this.props.taskListId != "inbox"){
+			this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId, taskListId: this.props.taskListId, taskListId: this.props.taskListId})
+		}else{
+			this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId})
+		}
+		this.setState({value: ''})
+		//closeAddTask(); //JS function
 	}
-	this.setState({value: ''})
-	//closeAddTask(); //JS function
-	}
-
+*/
 	handleAddMemberToTask(memberId){
 		this.state.assignedToId = memberId
 		// alert("clicked:" + this.state.memberId);
 	}
 
-	submit = (values) => {
-		this.props.addTask(values)
+	submit = (form) => {
+		//TODO - manually have to get the values since react-form doesn't pick up hidden values
+		form.patientId = $("#add-patient-id").val();
+		form.assignedToId = $("#assign-task-to-id").val();
+		this.props.taskActions.saveTask(form);
+
 		// print the form values to the console
-		console.log(values)
+		console.log(form)
 		$('.add').toggleClass('close');
 		$('body').toggleClass('disable-header-scroll');
 		if($(this).hasClass('add-list')) {
@@ -87,12 +97,10 @@ class AddTask extends React.Component {
     	return (
 			<div id="addTaskFormWrapper" className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
-					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} patients={this.props.patients} task={this.props.task}/>
+					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task}/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
-				<script>
-  					{/*enableAutoComplete([]);*/}
-				</script>
+				
 			</div>
 
     	)
@@ -101,13 +109,19 @@ class AddTask extends React.Component {
 
 const mapStateToProps = function(store) {
   return {
-    //tasks: store.taskState.tasks
-		taskLists: store.taskListState.tasklist,
-		patients: store.patientState.allPatients,
-		initialValues: store.taskState.task
+	taskLists: store.taskListState.tasklist,
+	patients: store.patientState.allPatients,
+	peoplelist: store.peopleState.peoplelist
 	// user: store.userState.user
   	}
 };
 
+function mapDispatchToProps(dispatch) {
+  return {
+	  taskActions: bindActionCreators(TaskActions, dispatch),
+	  peopleActions: bindActionCreators(PeopleActions, dispatch)
+  }
+}
+
 //export default AddTask
-export default connect(mapStateToProps)(AddTask);
+export default connect(mapStateToProps, mapDispatchToProps)(AddTask);

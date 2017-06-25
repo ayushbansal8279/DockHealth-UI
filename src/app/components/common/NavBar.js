@@ -92,7 +92,7 @@ class NavBar extends React.Component {
               {this.props.taskLists.map(taskList => {
                 return(
                   // <NavLink onClick={(e) => {this.getListTasks(taskList.taskListId)}} key={taskList.taskListId} to={"/tasks/" + taskList.taskListId} activeClassName="active" title={taskList.listName}><span className="list-logo small"></span>{taskList.listName}</NavLink>
-                  <NavLink to={"/tasks/" + taskList.taskListId} activeClassName="active" title={taskList.listName}><span className="list-logo small"></span>{taskList.listName}</NavLink>
+                  <NavLink to={"/tasks/" + taskList.taskListId} activeClassName="active" title={taskList.listName} key={taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</NavLink>
                 )
               })}
               {/*<li><a href="index.html" className="active">Boston Clinic</a></li>*/}

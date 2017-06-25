@@ -1,41 +1,79 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
+import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
+import $ from 'jquery'
 
-let AddTaskForm = props => {
-  const { handleSubmit, taskLists, task} = props
+//let AddTaskForm = props => {
+class AddTaskForm extends BaseComponent {
+  constructor(props, container) {
+		super(props)
+		this.container = container
+		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
+    this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
 
+    // const { handleSubmit, taskLists, task} = props
+	}
+
+  componentDidMount () {
+    super.componentDidMount()
+  }
+
+  componentDidUpdate () {
+    super.componentDidUpdate()
+  }
+
+  handleTaskListSelection(event) {
+    $("#filed-in-taskList").val('foo-'+event.target.value);
+    $("#filed-in-taskList").parent().addClass("has-value");
+    $("#add-task-file-in-options").removeClass("is-open");
+    // $("#filed-in-taskList").attr('aria-expanded','false');
+    // $("#add-task-file-in-options").attr('aria-hidden','true');
+    // $("#filed-in-taskList").removeClass("hover");
+    // $("#filed-in-taskList").foundation('toggle');
+    // toggleDropDown("filed-in-taskList");
+  }
+
+  render() {
   return (
-    <form className="inline-label" onSubmit={ handleSubmit}>
+    <form className="inline-label" onSubmit={ this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
           <h5 className="section-title">Add a task</h5>
-        </div>
-        <Field name='description'  type='text' component={BasicField} label='Description'/>
+        </div>  
 
-        <div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+        <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil"/>
+        <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
+        
+        <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
+        <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
+
+        {/*<div className="column large-12 input-group">
+          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-patient"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field id="add-patient" className="add-patient input-group-field" name="patient.firstName" component="input" type="text"/>
+            <Field id="add-patient" className="add-patient input-group-field" name="patient" component="input" type="text"/>
+            <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
             <label>Add Patient</label>
           </div>
-        </div>
-
+        </div>*/}
 
         <div className="column large-12 input-group input-dropdown">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
+            <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
             <label>File in</label>
           </div>
 
           <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
             <fieldset className="large-12 columns">
-              {taskLists.map(taskList => {
+              {this.props.taskLists.map(taskList => {
                 return(
                   <div key={taskList.taskListId} >
-                    <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskList" value={taskList.taskListId.toString()} component="input" type="radio" /><label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label><br/>
+                    <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio" 
+                      onClick={this.handleTaskListSelection}/>
+                    <label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label>
+                    <br/>
                   </div>
                 )
               })}
@@ -43,13 +81,17 @@ let AddTaskForm = props => {
           </div>
         </div>
 
-        <div className="column large-12 input-group">
+        <Field id="assign-task-to" name='assignedTo' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
+        <Field id="assign-task-to-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
+
+        {/*<div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedTo.userName" component="input" type="text" />
+            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedTo" component="input" type="text" />
+            <Field id="assign-task-to-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
             <label>Assigned to</label>
           </div>
-        </div>
+        </div>*/}
 
         <div className="column large-12 input-group toggle-add-subtask">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
@@ -82,13 +124,13 @@ let AddTaskForm = props => {
           </div>
         </div>
 
-        <div className="column large-12 input-group">
+        {/*<div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
             <Field id="add-patient-subtask" className="add-patient input-group-field" name="patient" component="input" type="text" />
             <label>Add Patient</label>
           </div>
-        </div>
+        </div>*/}
 
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
@@ -105,6 +147,8 @@ let AddTaskForm = props => {
 
     </form>
   )
+  }
+
 }
 
 AddTaskForm = reduxForm({
@@ -114,10 +158,26 @@ AddTaskForm = reduxForm({
 })(AddTaskForm)
 
 const mapStateToProps = function(store) {
+	var initialTaskFormValues = {}
+	if(store.taskState.task){
+		var editTask = store.taskState.task;
+    initialTaskFormValues.description = editTask.description;
+		initialTaskFormValues.taskId = editTask.taskId;
+		if(editTask.patient){
+			initialTaskFormValues.patient = editTask.patient.firstName+" "+editTask.patient.lastName;
+			initialTaskFormValues.patientId = editTask.patient.patientId;
+		}
+		if(editTask.assignedTo){
+			initialTaskFormValues.assignedTo = editTask.assignedTo.firstName+" "+editTask.assignedTo.lastName;
+			initialTaskFormValues.assignedToId = editTask.assignedTo.userId;
+		}
+		//TODO - handle assigned tasklist
+	}
   return {
-		initialValues: store.taskState.task,
+		initialValues: initialTaskFormValues,
     tasks: store.taskState.tasks
-  	}
+  }
 };
 
 export default connect(mapStateToProps)(AddTaskForm);
+

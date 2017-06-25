@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import Moment from 'react-moment'
+import BaseComponent from '../BaseComponent'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
 import TaskListMembersContainer from './TaskListMembersContainer'
@@ -12,7 +13,7 @@ import * as userApi from '../../api/user-api'
 import { findDOMNode } from 'react-dom'
 import $ from 'jquery'
 
-class TaskList extends React.Component {
+class ListOfTasks extends BaseComponent {
 		constructor(props) {
 	  	super(props)
 	  	this.state = {
@@ -168,7 +169,7 @@ class TaskList extends React.Component {
 
 			{/* COMMENTS START */}
 			let commentNodes = "";
-		  if(task.comments.length > 0){
+		  if(task.comments && task.comments.length > 0){
 		      commentNodes = task.comments.map(function(comment) {
 		      return (
 		          <div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
@@ -219,7 +220,9 @@ class TaskList extends React.Component {
 			      <div className="columns shrink">
 			        {task.assignedTo ?
 			          <span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-			          <img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>
+								<span>
+			          {/*<img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>*/}
+								</span>
 			        }
 			      </div>
 
@@ -227,7 +230,7 @@ class TaskList extends React.Component {
 			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 			      </div>
 			      <div className="columns">
-			        <span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.taskId + " " + task.description : <b>{task.taskId + " " +task.description}</b>}</span>
+			        <span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
 			        <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
 			        {/* EMAIL */}
@@ -237,17 +240,17 @@ class TaskList extends React.Component {
 							</div>
 			      </div>
 
-			      {/* ELLIPSES START */}
-			      <div className="columns shrink align-right more-options-wrapper">
-			        <span className="more-task-options icon-group">
-			          <span onClick={(e) => this.markAsUnread(task, task.read)}><svg className="icon"><use xlinkHref={task.read ? "#icon-envelope-open" : "#icon-envelope-close"}></use></svg></span>
-			          <svg onClick={(e) => this.handleToggle("edit", task)} className="icon edit-task"><use xlinkHref="#icon-pencil"></use></svg>
-			          <svg className="icon edit-task"><use xlinkHref="#icon-subtask"></use></svg>
-			          <svg onClick={(e) => this.deleteTask(task)} className="icon delete-task" data-open={"delete-task-" + task.taskId}><use xlinkHref="#icon-delete"></use></svg>
-			        </span>
-			        <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-			      </div>
-			      {/* ELLIPSES END */}
+							<div className="columns shrink more-options-wrapper">
+								<svg className="icon ellipses medium" data-toggle="more-options-task-id-01"><use xlinkHref="#icon-ellipses"></use></svg>
+								<div className="small dropdown-pane" id="more-options-task-id-01" data-dropdown data-close-on-click="true">
+									<ul className="no-bullet">
+										<li onClick={(e) => this.markAsUnread(task, task.read)}>Mark as unread</li>
+										<li onClick={(e) => this.handleToggle("edit", task)} className="edit-task">Edit task</li>
+										<li>Add subtask</li>
+										<li onClick={(e) => this.deleteTask(task)}>Delete task</li>
+									</ul>
+								</div>
+							</div>
 
 			    </div>
 			    {/* MAIN TASK END */}
@@ -281,17 +284,12 @@ class TaskList extends React.Component {
 }
 
   componentDidMount () {
-    //alert('componentDidMount');
-    enableTaskListComponents();
-
-
-
+		super.componentDidMount()
 		// console.log("listoftasks didmount")
   }
 
   componentDidUpdate () {
-    //alert('componentDidUpdate');
-    enableTaskListComponents();
+		super.componentDidUpdate()
 		// console.log("listoftasks didupdate")
   }
 
@@ -311,4 +309,4 @@ const mapDispatchToProps = function (dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskList)
+export default connect(mapStateToProps, mapDispatchToProps)(ListOfTasks)

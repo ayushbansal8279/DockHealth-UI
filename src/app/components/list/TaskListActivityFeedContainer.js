@@ -1,25 +1,31 @@
 import React, { Component} from 'react'
 import Moment from 'react-moment'
+import BaseComponent from '../BaseComponent'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
-class TaskListActivityFeedContainer extends Component {
+class TaskListActivityFeedContainer extends BaseComponent {
 
 	constructor(props) {
 	  	super(props)
 	  	this.handleClick = this.handleClick.bind(this)
   }
   componentDidMount () {
+      super.componentDidMount()
       //queryStartPosition Zero is hardcoded because activity feed must alwqays return top 100 rows
       //for any more rows use findAuditsByTaskList must be used with proper queryStartPosition
       this.props.findAuditsForAllTaskListsByUserId(0);
   }
 
+    componentDidUpdate () {
+      super.componentDidUpdate()
+    }
+
   handleClick = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     //not working
-    $("#activityList").foundation('toggle', $(e.target));
+    //$("#activityList").foundation('toggle', $(e.target));
     console.log('The accordion link was clicked.');
   };
 

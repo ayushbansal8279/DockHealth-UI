@@ -10,11 +10,11 @@ class ListOfTasksContainer extends React.Component {
 
   componentDidMount () {
     console.log('logged in user === '+this.props.user)
-    if(this.props.taskListId){
-      this.props.actions.getListTasks(this.props.taskListId)
-    }else{
-      this.props.actions.getInboxTasks()
-    }
+    // if(this.props.taskListId){
+    //   this.props.actions.getListTasks(this.props.taskListId)
+    // }else{
+    //   this.props.actions.getInboxTasks()
+    // }
   }
 
   render () {

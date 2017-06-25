@@ -12,6 +12,18 @@ import * as TaskActions from '../actions/task-actions'
 
 class Home extends React.Component {
 
+  componentDidMount(){
+    if(!this.props.params.taskListId || this.props.params.taskListId == "inbox"){
+      this.props.actions.getInboxTasks()
+    }else if(this.props.params.taskListId == "assignedByMe"){
+      this.props.actions.getTasksAssignedByMe()
+    }else if(this.props.params.taskListId == "assignedToMe"){
+      this.props.actions.getTasksAssignedToMe()
+    }else{
+      this.props.actions.getListTasks(this.props.params.taskListId)
+    }
+  }
+
   componentWillUpdate(nextProps){
     if(nextProps.params.taskListId != this.props.params.taskListId){
       console.log("different param")

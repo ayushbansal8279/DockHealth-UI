@@ -2,30 +2,31 @@ function renderFoundationComponentsJquery(){
 	console.log('in JS function: renderFoundationComponentsJquery');
 
 	// add task form assign to
-	var people = {
-		data: [ {img: "assets/img/user1.png", name: "Terry Tucker"},
-		{img: "assets/img/user2.png", name: "Cynthia Fowler"},
-		{img: "assets/img/user3.png", name: "Edward Wong"},
-		{img: "assets/img/user1.png", name: "Louis Kim"},
-		{img: "assets/img/user2.png", name: "Jesse Murray"},
-		{img: "assets/img/user1.png", name: "Maria Hamilton"}
-		],
-			getValue: "name",
-			list: {match: {enabled: true}},
-			template: { type: "custom",
-						method: function(value, item) {
-							return "<img class='member-photo circle medium data-item' src='" + item.img + "'/><span class='data-item'>" + item.name + "</span>";
-						}
-					}
-	};
+	// var people = {
+	// 	data: [ {img: "assets/img/user1.png", name: "Terry Tucker"},
+	// 	{img: "assets/img/user2.png", name: "Cynthia Fowler"},
+	// 	{img: "assets/img/user3.png", name: "Edward Wong"},
+	// 	{img: "assets/img/user1.png", name: "Louis Kim"},
+	// 	{img: "assets/img/user2.png", name: "Jesse Murray"},
+	// 	{img: "assets/img/user1.png", name: "Maria Hamilton"}
+	// 	],
+	// 		getValue: "name",
+	// 		list: {match: {enabled: true}},
+	// 		template: { type: "custom",
+	// 					method: function(value, item) {
+	// 						return "<img class='member-photo circle medium data-item' src='" + item.img + "'/><span class='data-item'>" + item.name + "</span>";
+	// 					}
+	// 				}
+	// };
 
-	$(".assign-to").easyAutocomplete(people);
+	// $(".assign-to").easyAutocomplete(people);
 
 	//more task options
 	//$('.more-options-wrapper').hover(function() {
 	// 	$(this).children('.more-task-options').toggleClass('slide-in');
 	// 	$(this).children('.ellipses').toggleClass('slide-out');
 	// });
+	/*
 	$(document).on('mouseenter', '.more-options-wrapper', function() {
 		$(this).children('.more-task-options').addClass('slide-in');
 		$(this).children('.ellipses').addClass('slide-out');
@@ -34,6 +35,8 @@ function renderFoundationComponentsJquery(){
 		$(this).children('.more-task-options').removeClass('slide-in');
 		$(this).children('.ellipses').removeClass('slide-out');
 	});
+	*/
+
 	// $("#appHome").on('click', '.more-options-wrapper', function() {
 	// 	$(this).children('.more-task-options').toggleClass('slide-in');
 	// 	$(this).children('.ellipses').toggleClass('slide-out');
@@ -126,7 +129,7 @@ function closeAddTask(){
 	//$('.add').click();
 }
 
-function enableAutoComplete(lookupData) {
+function enableAutoCompleteForPatients(lookupData) {
 	// console.log(lookupData)
 	// add task form patient autocomplete
 	// http://easyautocomplete.com/guide
@@ -138,11 +141,17 @@ function enableAutoComplete(lookupData) {
 		// ],
 		data: lookupData,
 		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
-		list: {onLoadEvent: function() {
-			var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
-			$('.easy-autocomplete-container ul').append(addnew);
-		},
-		match: {enabled: true}
+		list: {
+			onLoadEvent: function() {
+				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
+				$('.easy-autocomplete-container ul').append(addnew);
+			},
+			onSelectItemEvent: function() {
+				var selItemData = $("#add-patient").getSelectedItemData();
+				$("#add-patient").val(selItemData.firstName + " " + selItemData.lastName);
+				$("#add-patient-id").val(selItemData.patientId);
+			},
+			match: {enabled: true}
 		},
 		template: { type: "custom",
 			method: function(value, item) {
@@ -152,6 +161,41 @@ function enableAutoComplete(lookupData) {
 	};
 
 	$(".add-patient").easyAutocomplete(patients);
+}
+
+function enableAutoCompleteForAssignedTo(lookupData) {
+	var people = {
+		data: lookupData,
+		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
+		list: {
+			onLoadEvent: function() {
+				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
+				$('.easy-autocomplete-container ul').append(addnew);
+			},
+			onSelectItemEvent: function() {
+				var selItemData = $("#assign-task-to").getSelectedItemData();
+				$("#assign-task-to").val(selItemData.firstName + " " + selItemData.lastName);
+				$("#assign-task-to-id").val(selItemData.userId);
+			},
+			match: {enabled: true}
+		},
+		template: { type: "custom",
+			method: function(value, item) {
+				return "<img class='member-photo circle medium data-item' src='assets/img/user2.png'/><span class='data-item'>" + item.firstName + " " + item.lastName + "</span>";
+			}
+		}
+	};
+
+	$(".assign-to").easyAutocomplete(people);
+
+}
+
+function enableFoundation() {
+	$(document).foundation();
+}
+
+function toggleDropDown(elementId) {
+	$("#"+elementId).foundation('toggle');
 }
 
 $(document).ready(function() {

@@ -112,11 +112,11 @@ function getListTasksByUserSuccess(tasks) {
 //   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 // }
 
-export function addTask(newTask) {
+export function saveTask(newTask) {
   if(newTask.taskId != null){
     return function(dispatch) {
       return TaskApi.updateTask(newTask).then(task => {
-        dispatch({type: ActionTypes.UPDATE_TASK_SUCCESS, newTask});
+        dispatch({type: ActionTypes.UPDATE_TASK_SUCCESS, task});
       }).catch(error => {
         throw(error);
       })
