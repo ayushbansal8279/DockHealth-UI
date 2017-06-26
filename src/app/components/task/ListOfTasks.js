@@ -12,6 +12,7 @@ import * as TaskActions from '../../actions/task-actions'
 import * as userApi from '../../api/user-api'
 import { findDOMNode } from 'react-dom'
 import $ from 'jquery'
+import ConfirmDelete from '../common/ConfirmDelete'
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -220,9 +221,7 @@ class ListOfTasks extends BaseComponent {
 			      <div className="columns shrink">
 			        {task.assignedTo ?
 			          <span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-								<span>
-			          {/*<img className="member-photo circle" src="assets/img/user2.png" alt="name of user"/>*/}
-								</span>
+								<span className="member-initials circle medium">?</span>
 			        }
 			      </div>
 
@@ -230,7 +229,8 @@ class ListOfTasks extends BaseComponent {
 			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 			      </div>
 			      <div className="columns">
-			        <span className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
+			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
+							<input className="task-title" type="text"/>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
 			        <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
 			        {/* EMAIL */}
@@ -241,13 +241,13 @@ class ListOfTasks extends BaseComponent {
 			      </div>
 
 							<div className="columns shrink more-options-wrapper">
-								<svg className="icon ellipses medium" data-toggle="more-options-task-id-01"><use xlinkHref="#icon-ellipses"></use></svg>
-								<div className="small dropdown-pane" id="more-options-task-id-01" data-dropdown data-close-on-click="true">
+								<svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId}><use xlinkHref="#icon-ellipses"></use></svg>
+								<div className="small dropdown-pane" id={"task-edit-" + task.taskId} data-dropdown data-close-on-click="true">
 									<ul className="no-bullet">
-										<li onClick={(e) => this.markAsUnread(task, task.read)}>Mark as unread</li>
+										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
 										<li onClick={(e) => this.handleToggle("edit", task)} className="edit-task">Edit task</li>
 										<li>Add subtask</li>
-										<li onClick={(e) => this.deleteTask(task)}>Delete task</li>
+										<li onClick={(e) => this.handleDeleteTask(task)}>Delete task</li>
 									</ul>
 								</div>
 							</div>
@@ -273,6 +273,7 @@ class ListOfTasks extends BaseComponent {
 			return(
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
+					<ConfirmDelete taskId={task.taskId}/>
 				</span>
 			)
 
@@ -286,6 +287,22 @@ class ListOfTasks extends BaseComponent {
   componentDidMount () {
 		super.componentDidMount()
 		// console.log("listoftasks didmount")
+		// edit data
+		$('body').on('click', '[data-editable]', function () {
+			$(this).hide();
+			var $el = $(this);
+			$(this).next().show().val($el.text());
+			var save = function save() {
+				if ($el.next().val()) {
+					$el.show().text($el.next().val());
+				} else {
+					$el.show();
+				}
+				$el.next().hide();
+			};
+			$el.next().one('blur', save).focus();
+		});
+
   }
 
   componentDidUpdate () {

@@ -66,9 +66,9 @@ export function updateTask(task) {
   });
 }
 
-export function deleteTask(taskId, userId) {
+export function deleteTask(taskId) {
   // userId = sessionStorage.userId
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId + '?deleterId=' + userId)
+  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
       return response;

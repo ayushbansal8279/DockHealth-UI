@@ -142,10 +142,10 @@ export function addTaskComment(taskId, taskComment) {
   };
 }
 
-export function deleteTask(taskId, userId) {
+export function deleteTask(task) {
   return function(dispatch) {
-    return TaskApi.deleteTask(taskId, userId).then(task => {
-      dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId});
+    return TaskApi.deleteTask(task.taskId).then(deletingTask => {
+      dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId:task.taskId});
     }).catch(error => {
       throw(error);
     });

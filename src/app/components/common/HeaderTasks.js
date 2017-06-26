@@ -17,17 +17,11 @@ class HeaderTasks extends React.Component {
       value: '',
       hideForm: true
     }
-    this.changeTitle = this.changeTitle.bind(this)
   }
 
   componentDidMount () {
     this.props.taskListActions.getTaskListForUser()
     this.props.patientActions.getAllPatients()
-  }
-
-  changeTitle(newTitle){
-    // alert("working")
-    this.setState({title: newTitle})
   }
 
   getListTasks(taskListId){
@@ -37,6 +31,10 @@ class HeaderTasks extends React.Component {
 	handleAddTask = () => {
 		this.props.taskActions.taskToState(null)
 	};
+
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps)
+  }
 
     render() {
     return (

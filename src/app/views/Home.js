@@ -9,19 +9,54 @@ import Notification from '../components/common/Notification'
 import HeaderTasks from '../components/common/HeaderTasks'
 import NotificationsToggle from '../components/tasklist/TaskListNotificationsToggle'
 import * as TaskActions from '../actions/task-actions'
+import * as TaskListActions from '../actions/tasklist-actions'
 import BaseComponent from '../components/BaseComponent'
+import $ from 'jquery'
 
 class Home extends BaseComponent {
+
+  constructor(props){
+    super(props)
+    this.state = {
+      title: ''
+    }
+    this.changeTitle = this.changeTitle.bind(this)
+  }
   componentDidMount(){BaseComponent
     if(!this.props.params.taskListId || this.props.params.taskListId == "inbox"){
       this.props.actions.getInboxTasks()
+      this.changeTitle("Inbox")
     }else if(this.props.params.taskListId == "assignedByMe"){
       this.props.actions.getTasksAssignedByMe()
+      this.changeTitle("Assigned By Me")
     }else if(this.props.params.taskListId == "assignedToMe"){
       this.props.actions.getTasksAssignedToMe()
+      this.changeTitle("Assigned To Me")
     }else{
       this.props.actions.getListTasks(this.props.params.taskListId)
+      this.changeTitle(nextProps.params.taskListId)
     }
+
+    // PUT ME SOMEWHERE ELSE
+    // show/hide completed tasks
+    $('.toggle-completed').click(function() {
+      $(this).toggleClass('inverse');
+      $('.completed-task-wrapper').slideToggle();
+      var $el = $(this);
+      $el.text($el.text() == "Show completed tasks" ? "Hide completed tasks": "Show completed tasks");
+    });
+
+    // toggle slim view
+    $('.toggle-slim').click(function() {
+      $(this).toggleClass('active');
+      $('.task-item-wrapper').toggleClass('slim');
+      $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
+    });
+  }
+
+  changeTitle(newTitle){
+    // alert("working")
+    this.setState({title: newTitle})
   }
 
   componentDidUpdate () {
@@ -34,12 +69,16 @@ class Home extends BaseComponent {
       //task actions -- send the tasklist id and load data
       if(nextProps.params.taskListId == "inbox"){
         this.props.actions.getInboxTasks()
+        this.changeTitle("Inbox")
       }else if(nextProps.params.taskListId == "assignedByMe"){
         this.props.actions.getTasksAssignedByMe()
+        this.changeTitle("Assigned By Me")
       }else if(nextProps.params.taskListId == "assignedToMe"){
         this.props.actions.getTasksAssignedToMe()
+        this.changeTitle("Assigned To Me")
       }else{
         this.props.actions.getListTasks(nextProps.params.taskListId)
+        this.changeTitle(nextProps.params.taskListId)
       }
     }
 
@@ -52,7 +91,7 @@ class Home extends BaseComponent {
         <div className="off-canvas-content" data-off-canvas-content="true">
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks title="Inbox"/>
+              <HeaderTasks title={this.state.title}/>
 
                 <div className="list-wrapper">
                   <div className="task-item-wrapper">
@@ -77,7 +116,8 @@ class Home extends BaseComponent {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    actions: bindActionCreators(TaskActions, dispatch)
+    actions: bindActionCreators(TaskActions, dispatch),
+    taskListActions: bindActionCreators(TaskListActions, dispatch)
   }
 }
 

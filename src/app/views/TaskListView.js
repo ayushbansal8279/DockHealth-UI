@@ -47,14 +47,6 @@ class TaskListView extends React.Component {
                   <PendingListsComponent taskLists={this.props.pendingTaskLists}/>
                   <ListsComponent taskLists={this.props.taskLists}/>
 
-                  {/* {this.props.pendingTaskLists.map(taskList => {
-                    return(<PendingListsComponent taskList={taskList}/>)
-                  })} */}
-
-                  {/* {this.props.taskLists.map(taskList => {
-                    return(<ListsComponent taskList={taskList}/>)
-                  })} */}
-
                   {/* Inbox */}
         					<div className="item row expanded align-middle">
         						<div className="columns shrink">
