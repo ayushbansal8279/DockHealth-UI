@@ -3,16 +3,52 @@ import { connect } from 'react-redux'
 import Header from '../components/common/Header'
 import {bindActionCreators} from 'redux';
 import * as TaskListActions from '../actions/tasklist-actions'
-import AddTaskForm from '../components/list/AddListForm'
+import AddListForm from '../components/list/AddListForm'
 import ListsComponent from '../components/list/ListsComponent'
 import PendingListsComponent from '../components/list/PendingListsComponent'
 
 class TaskListView extends React.Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+      taskList: {}
+    }
+  }
+
     componentDidMount(){
       this.props.taskListAction.getTaskListForUser()
       this.props.taskListAction.findPendingTaskListsForUser()
     }
+
+    submit = (form) => {
+      this.props.taskListAction.addTaskList(form)
+      // print the form values to the console
+      console.log(form)
+      $('.add').toggleClass('close');
+      $('body').toggleClass('disable-header-scroll');
+      if($(this).hasClass('add-list')) {
+        $('.add-list use').attr('href', function(index, attr) {
+          return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+        });
+      }
+      $('.add-form-wrapper').slideToggle(300);
+      $('.list-filter .controls, .list-wrapper').toggle();
+    }
+
+    editTaskList = (taskList) => {
+      this.setState({taskList:taskList})
+      $('.add').toggleClass('close');
+      $('body').toggleClass('disable-header-scroll');
+      if($(this).hasClass('add-list')) {
+        $('.add-list use').attr('href', function(index, attr) {
+          return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+        });
+      }
+      $('.add-form-wrapper').slideToggle(300);
+      $('.list-filter .controls, .list-wrapper').toggle();
+    }
+
     render() {
       return (
 
@@ -39,13 +75,13 @@ class TaskListView extends React.Component {
         			</div>{/* <!--list-filter--> */}
         			</header>{/* <!--slideUp--> */}
 
-              <AddTaskForm/>
+              <AddListForm onSubmit={this.submit} taskList={this.state.taskList}/>
 
         			<div className="list-wrapper">
         				<div className="item-list-wrapper">
 
                   <PendingListsComponent taskLists={this.props.pendingTaskLists}/>
-                  <ListsComponent taskLists={this.props.taskLists}/>
+                  <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList}/>
 
                   {/* Inbox */}
         					<div className="item row expanded align-middle">

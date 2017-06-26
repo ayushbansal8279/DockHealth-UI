@@ -97,10 +97,10 @@ class AddTask extends React.Component {
     	return (
 			<div id="addTaskFormWrapper" className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
-					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task}/>
+					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title}/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
-				
+
 			</div>
 
     	)
@@ -109,10 +109,10 @@ class AddTask extends React.Component {
 
 const mapStateToProps = function(store) {
   return {
-	taskLists: store.taskListState.tasklist,
-	patients: store.patientState.allPatients,
-	peoplelist: store.peopleState.peoplelist
-	// user: store.userState.user
+		taskLists: store.taskListState.tasklist,
+		patients: store.patientState.allPatients,
+		peoplelist: store.peopleState.peoplelist
+		// user: store.userState.user
   	}
 };
 

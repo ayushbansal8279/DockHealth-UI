@@ -24,10 +24,8 @@ export function findPendingTaskListsForUser() {
 }
 
 export function addTaskList(formProps) {
-  var taskObject = {listName: formProps.tasklistname};
-
   return function(dispatch) {
-    return TaskListApi.addTaskList(taskObject).then(tasklist => {
+    return TaskListApi.addTaskList(formProps).then(tasklist => {
       dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
     }).catch(error => {
       //console.log(error.message);

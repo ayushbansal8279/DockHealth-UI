@@ -34,14 +34,14 @@ class ListOfTasks extends BaseComponent {
 		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
-        if (!isLoggedIn) {
-            //this.router.navigate(['/home/login']);
+      if (!isLoggedIn) {
+      //this.router.navigate(['/home/login']);
 			console.log('not logged in')
-        } else {
-            //this.userParams.getParameters(new GetParametersCallback(this));
+      } else {
+      //this.userParams.getParameters(new GetParametersCallback(this));
 			console.log('logged in: '+cognitoUser.username)
 			this.cognitoUser = cognitoUser
-        }
+      }
     }
 
 		editTask(task){

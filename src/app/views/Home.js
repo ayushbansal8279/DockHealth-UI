@@ -23,18 +23,17 @@ class Home extends BaseComponent {
     this.changeTitle = this.changeTitle.bind(this)
   }
   componentDidMount(){BaseComponent
-    if(!this.props.params.taskListId || this.props.params.taskListId == "inbox"){
+    if(!this.props.routeParams.taskListId || this.props.routeParams.taskListId == "inbox"){
       this.props.actions.getInboxTasks()
       this.changeTitle("Inbox")
-    }else if(this.props.params.taskListId == "assignedByMe"){
+    }else if(this.props.routeParams.taskListId == "assignedByMe"){
       this.props.actions.getTasksAssignedByMe()
       this.changeTitle("Assigned By Me")
-    }else if(this.props.params.taskListId == "assignedToMe"){
+    }else if(this.props.routeParams.taskListId == "assignedToMe"){
       this.props.actions.getTasksAssignedToMe()
       this.changeTitle("Assigned To Me")
     }else{
-      this.props.actions.getListTasks(this.props.params.taskListId)
-      this.changeTitle(nextProps.params.taskListId)
+      this.props.actions.getListTasks(this.props.routeParams.taskListId)
     }
 
     // PUT ME SOMEWHERE ELSE
@@ -53,6 +52,7 @@ class Home extends BaseComponent {
       $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
     });
   }
+
 
   changeTitle(newTitle){
     // alert("working")

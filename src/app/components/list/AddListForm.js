@@ -1,11 +1,13 @@
 import React from 'react'
+import { Field, reduxForm } from 'redux-form'
+import { connect } from 'react-redux';
 
 class AddListForm extends React.Component{
   render(){
     return(
       <div className="add-form-wrapper">
         <div className="task-item add-form row expanded">
-          <form className="inline-label">
+          <form className="inline-label" onSubmit={this.props.handleSubmit}>
             <div className="column large-12 text-center">
               <h5 className="section-title">Add a list</h5>
             </div>
@@ -13,7 +15,7 @@ class AddListForm extends React.Component{
             {/* <!-- List name --> */}
             <div className="column large-12 input-group no-icon">
               <div className="form-floating-label input-wrapper">
-                <input className="input-group-field" type="text"/>
+                <Field className="input-group-field" type="text" name="listName" component="input"/>
                 <label>List name</label>
               </div>
             </div>
@@ -148,4 +150,20 @@ class AddListForm extends React.Component{
   }
 }
 
-export default AddListForm
+AddListForm = reduxForm({
+  // a unique name for the form
+  form: 'addListForm',
+  enableReinitialize : true
+})(AddListForm)
+
+const mapStateToProps = function(store){
+  // var initialValues = {}
+  // if(this.props.taskList){
+  //   initialValues = this.props.taskList
+  // }
+  // return{
+  //   initialValues: initialValues
+  // }
+}
+
+export default connect(mapStateToProps)(AddListForm)

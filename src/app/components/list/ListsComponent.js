@@ -1,6 +1,9 @@
 import React from 'react'
+import BaseComponent from '../BaseComponent'
+import AddListForm from './AddListForm'
 
-class ListsComponent extends React.Component{
+class ListsComponent extends BaseComponent{
+
   render(){
     const taskList = this.props.taskList
     return(
@@ -22,12 +25,12 @@ class ListsComponent extends React.Component{
                 <h6 className="">{taskList.numberOfTasks}</h6>
               </div>
               <div className="columns shrink more-options-wrapper">
-                <svg className="icon ellipses medium" data-toggle="more-options-task-id-01"><use xlinkHref="#icon-ellipses"></use></svg>
-                <div className="small dropdown-pane" id="more-options-task-id-01" data-dropdown data-close-on-click="true">
+                <svg className="icon ellipses medium" data-toggle={"more-options-task-id-" + taskList.taskListId}><use xlinkHref="#icon-ellipses"></use></svg>
+                <div className="small dropdown-pane" id={"more-options-task-id-" + taskList.taskListId} data-dropdown data-close-on-click="true">
                   <ul className="no-bullet">
                     {/* if owner */}
                     <li>Delete list</li>
-                    <li>Change name</li>
+                    <div onClick={(e) => this.props.editForm(taskList)}>Edit</div>
                     {/* if owner */}
                     <li>Leave list</li>
                   </ul>

@@ -119,6 +119,9 @@ input:checked ~ .switch-paddle:after {
   background: #a2dfb8;
 }
 
+.dropdown-pane{
+  z-index:1000;
+}
 /*.accordion-content {
   display: block;
 }*/

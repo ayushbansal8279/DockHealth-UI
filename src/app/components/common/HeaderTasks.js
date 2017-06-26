@@ -15,13 +15,32 @@ class HeaderTasks extends React.Component {
     super(props)
     this.state = {
       value: '',
-      hideForm: true
+      hideForm: true,
+      title: ''
     }
   }
 
   componentDidMount () {
     this.props.taskListActions.getTaskListForUser()
     this.props.patientActions.getAllPatients()
+    this.props.taskLists.map(taskList => {
+      if(taskList.taskListId == this.props.title){
+        this.setState({title: taskList.listName})
+      }else{
+        this.setState({title: this.props.title})
+      }
+    })
+  }
+
+  componentWillUpdate(nextProps){
+    this.props.taskLists.map(taskList => {
+      if(taskList.taskListId == this.props.title){
+        this.setState({title: taskList.listName})
+      }else{
+        this.setState({title: this.props.title})
+      }
+    })
+
   }
 
   getListTasks(taskListId){
@@ -34,6 +53,13 @@ class HeaderTasks extends React.Component {
 
   componentWillReceiveProps(nextProps){
     console.log(nextProps)
+    this.props.taskLists.map(taskList => {
+      if(taskList.taskListId == this.props.title){
+        this.setState({title: taskList.listName})
+      }else{
+        this.setState({title: this.props.title})
+      }
+    })
   }
 
     render() {
@@ -44,7 +70,7 @@ class HeaderTasks extends React.Component {
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
 
-								<h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
+								<h3>{this.state.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
 							</div>
 							<div className="top-bar-right">
 								<ul className="menu member-photo-list" data-open="list-members">
@@ -100,7 +126,7 @@ class HeaderTasks extends React.Component {
 						</div>
         </header>
 
-        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients}/>
+        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title}/>
       </div>
       );
     }

@@ -11,7 +11,6 @@ class AddTaskForm extends BaseComponent {
 		super(props)
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
-    this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
 
     // const { handleSubmit, taskLists, task} = props
 	}
@@ -41,11 +40,11 @@ class AddTaskForm extends BaseComponent {
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
           <h5 className="section-title">Add a task</h5>
-        </div>  
+        </div>
 
         <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil"/>
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
-        
+
         <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
         <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
 
@@ -58,31 +57,50 @@ class AddTaskForm extends BaseComponent {
           </div>
         </div>*/}
 
-        <div className="column large-12 input-group input-dropdown">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
-            <label>File in</label>
-          </div>
 
-          <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
-            <fieldset className="large-12 columns">
-              {this.props.taskLists.map(taskList => {
-                return(
-                  <div key={taskList.taskListId} >
-                    <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio" 
-                      onClick={this.handleTaskListSelection}/>
-                    <label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label>
-                    <br/>
-                  </div>
-                )
-              })}
-            </fieldset>
-          </div>
-        </div>
 
-        <Field id="assign-task-to" name='assignedTo' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
-        <Field id="assign-task-to-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
+        {/* Show only from inbox. Tasks can only be assigned to list from 'inbox' */}
+        {this.props.title == "Inbox" ?
+          <div className="column large-12 input-group input-dropdown">
+            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
+            <div className="input-wrapper form-floating-label">
+              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
+              <label>File in</label>
+            </div>
+            <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
+              <fieldset className="large-12 columns">
+                {this.props.taskLists.map(taskList => {
+                  return(
+                    <div key={taskList.taskListId} >
+                      <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio"
+                        onClick={this.handleTaskListSelection}/>
+                      <label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label>
+                      <br/>
+                    </div>
+                  )
+                })}
+              </fieldset>
+            </div>
+          </div>
+          :
+          <div className="column large-12 input-group input-dropdown">
+            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
+            <div className="input-wrapper form-floating-label">
+              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options" disabled/>
+              <label>File in (filing only allowed in Inbox)</label>
+            </div>
+          </div>
+        }
+
+        {/* Hide 'assignedTo' if user is adding a task to the 'inbox'. Tasks can only be assigned from lists */}
+        {this.props.title != "Inbox" ?
+          <span>
+            <Field id="assign-task-to" name='assignedTo' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
+            <Field id="assign-task-to-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
+          </span>
+          :
+          <span></span>
+        }
 
         {/*<div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
@@ -171,6 +189,9 @@ const mapStateToProps = function(store) {
 			initialTaskFormValues.assignedTo = editTask.assignedTo.firstName+" "+editTask.assignedTo.lastName;
 			initialTaskFormValues.assignedToId = editTask.assignedTo.userId;
 		}
+    if(editTask.taskList){
+      initialTaskFormValues.taskList = editTask.taskList.listName;
+    }
 		//TODO - handle assigned tasklist
 	}
   return {
@@ -180,4 +201,3 @@ const mapStateToProps = function(store) {
 };
 
 export default connect(mapStateToProps)(AddTaskForm);
-
