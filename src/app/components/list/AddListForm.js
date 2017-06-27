@@ -3,6 +3,7 @@ import { Field, reduxForm } from 'redux-form'
 import { connect } from 'react-redux';
 
 class AddListForm extends React.Component{
+
   render(){
     return(
       <div className="add-form-wrapper">
@@ -157,6 +158,13 @@ AddListForm = reduxForm({
 })(AddListForm)
 
 const mapStateToProps = function(store){
+  var initialTaskListValues = {}
+  if(store.taskListState.tasklistone){
+    initialTaskListValues = store.taskListState.tasklistone
+  }
+  return{
+    initialValues: initialTaskListValues
+  }
   // var initialValues = {}
   // if(this.props.taskList){
   //   initialValues = this.props.taskList

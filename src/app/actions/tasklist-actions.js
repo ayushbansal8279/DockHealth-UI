@@ -23,16 +23,32 @@ export function findPendingTaskListsForUser() {
   };
 }
 
+export function setTaskListAsTasklistone(tasklistone){
+  return function(dispatch){
+    dispatch({type: ActionTypes.GET_TASKLIST_ONE_SUCCESS, tasklistone})
+  }
+}
+
 export function addTaskList(formProps) {
-  return function(dispatch) {
-    return TaskListApi.addTaskList(formProps).then(tasklist => {
-      dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
-    }).catch(error => {
-      //console.log(error.message);
-      throw(error);
-      //return dispatch({type: ActionTypes.ADD_TASKLIST_FAILURE, errorMessage});
-    });
-  };
+  if(formProps.taskListId != null){
+    return function(dispatch) {
+      return TaskListApi.updateTaskList(formProps).then(updatedTasklist => {
+        dispatch({type: ActionTypes.UPDATE_TASKLIST_SUCCESS, updatedTasklist});
+      }).catch(error => {
+        throw(error);
+      });
+    };
+  }else{
+    return function(dispatch) {
+      return TaskListApi.addTaskList(formProps).then(tasklist => {
+        dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
+      }).catch(error => {
+        //console.log(error.message);
+        throw(error);
+        //return dispatch({type: ActionTypes.ADD_TASKLIST_FAILURE, errorMessage});
+      });
+    };
+  }
 }
 
 
@@ -40,19 +56,6 @@ export function getTaskListById(taskListId){
   return function(dispatch) {
     return TaskListApi.getTaskListById(taskListId).then(tasklistone => {
       dispatch({type: ActionTypes.GET_TASKLIST_ONE_SUCCESS, tasklistone});
-    }).catch(error => {
-      throw(error);
-    });
-  };
-}
-
-
-export function updateTaskList(formProps,taskListId)  {
-
-  var taskObject = {listName: formProps.tasklistname, taskListId:taskListId};
-  return function(dispatch) {
-    return TaskListApi.updateTaskList(taskObject).then(updtasklist => {
-      dispatch({type: ActionTypes.UPDATE_TASKLIST_SUCCESS, updtasklist});
     }).catch(error => {
       throw(error);
     });

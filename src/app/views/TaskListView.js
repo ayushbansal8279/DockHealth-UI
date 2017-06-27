@@ -9,13 +9,6 @@ import PendingListsComponent from '../components/list/PendingListsComponent'
 
 class TaskListView extends React.Component {
 
-  constructor(props){
-    super(props)
-    this.state = {
-      taskList: {}
-    }
-  }
-
     componentDidMount(){
       this.props.taskListAction.getTaskListForUser()
       this.props.taskListAction.findPendingTaskListsForUser()
@@ -37,7 +30,7 @@ class TaskListView extends React.Component {
     }
 
     editTaskList = (taskList) => {
-      this.setState({taskList:taskList})
+      this.props.taskListAction.setTaskListAsTasklistone(taskList)
       $('.add').toggleClass('close');
       $('body').toggleClass('disable-header-scroll');
       if($(this).hasClass('add-list')) {
@@ -75,7 +68,7 @@ class TaskListView extends React.Component {
         			</div>{/* <!--list-filter--> */}
         			</header>{/* <!--slideUp--> */}
 
-              <AddListForm onSubmit={this.submit} taskList={this.state.taskList}/>
+              <AddListForm onSubmit={this.submit}/>
 
         			<div className="list-wrapper">
         				<div className="item-list-wrapper">

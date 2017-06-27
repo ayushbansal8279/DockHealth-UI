@@ -67,9 +67,10 @@ export default (
       <Route path="/invitations" component={InvitationsView} />
       <Route path="/people" component={PeopleView} />
       <Route path="/peopleinvite" component={InvitePeople} />
-      <Route path="/tasks/:taskListId" component={Home}/>
-      <Route path="/tasks/assignedToMe" component={Home}/>
-      <Route path="/tasks/assignedByMe" component={Home}/>
+      <Route path="/tasks/:listName/:taskListId" component={Home}/>
+      <Route path="/tasks/:listName" component={Home}/>
+      <Route path="/tasks/:listName" component={Home}/>
+      <Route path="/tasks/:listName" component={Home}/>
       <Route path="/userprofile" component={UserProfileView} />
       <Route path="/test" component={Test} />
     </Route>

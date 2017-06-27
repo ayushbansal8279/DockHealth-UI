@@ -37,8 +37,16 @@ const TaskListReducer = function(state = initialState, action) {
 
     case types.TOGGLE_LIST_NOTIFICATIONS_SUCCESS:
       return {...state, tasklistone:{notifications:action.receiveNotifications}};
-    // case types.UPDATE_TASKLIST_SUCCESS:
-    //   return {...state, updtasklist:action.updtasklist};  //whatever our current state is, add on "onetasklist"
+
+    case types.UPDATE_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        tasklist: state.tasklist.map(taskList =>
+          taskList.taskListId === action.updatedTasklist.taskListId ?
+            {...taskList, ...action.updatedTasklist} :
+            taskList
+          )
+        };
 
 
     // case types.ADD_TASKLIST_FAILURE:

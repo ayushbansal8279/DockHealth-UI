@@ -179,8 +179,8 @@ const mapStateToProps = function(store) {
 	var initialTaskFormValues = {}
 	if(store.taskState.task){
 		var editTask = store.taskState.task;
-    initialTaskFormValues.description = editTask.description;
-		initialTaskFormValues.taskId = editTask.taskId;
+      initialTaskFormValues.description = editTask.description;
+  		initialTaskFormValues.taskId = editTask.taskId;
 		if(editTask.patient){
 			initialTaskFormValues.patient = editTask.patient.firstName+" "+editTask.patient.lastName;
 			initialTaskFormValues.patientId = editTask.patient.patientId;

@@ -83,16 +83,16 @@ class NavBar extends React.Component {
             <Link to='/taskList' activeClassName="active"><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
             <ul className="nested vertical menu">
               {/*<NavLink to='/tasks'>Inbox</NavLink>*/}
-              <NavLink onClick={(e) => this.getInboxTasks()} activeClassName="active" to={"/tasks/inbox"}>Inbox</NavLink>
-              <NavLink onClick={(e) => this.getTasksAssignedByMe()} activeClassName="active" to={"/tasks/assignedToMe"}>Assigned to me</NavLink>
-              <NavLink onClick={(e) => this.getTasksAssignedByMe()} activeClassName="active" to={"/tasks/assignedByMe"}>Assigned by me</NavLink>
+              <NavLink activeClassName="active" to={"/tasks/Inbox"}>Inbox</NavLink>
+              <NavLink activeClassName="active" to={"/tasks/Assigned to me"}>Assigned to me</NavLink>
+              <NavLink activeClassName="active" to={"/tasks/Assigned by me"}>Assigned by me</NavLink>
               {/*<NavLink to='/tasks'>Important</NavLink>*/}
               {/*<NavLink to='/tasks'>Assigned to me</NavLink>*/}
               {/*<NavLink to='/tasks'>Assigned by me</NavLink>*/}
               {this.props.taskLists.map(taskList => {
                 return(
                   // <NavLink onClick={(e) => {this.getListTasks(taskList.taskListId)}} key={taskList.taskListId} to={"/tasks/" + taskList.taskListId} activeClassName="active" title={taskList.listName}><span className="list-logo small"></span>{taskList.listName}</NavLink>
-                  <NavLink to={"/tasks/" + taskList.taskListId} activeClassName="active" title={taskList.listName} key={taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</NavLink>
+                  <NavLink to={"/tasks/" + taskList.listName + "/" + taskList.taskListId} activeClassName="active" title={taskList.listName} key={taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</NavLink>
                 )
               })}
               {/*<li><a href="index.html" className="active">Boston Clinic</a></li>*/}

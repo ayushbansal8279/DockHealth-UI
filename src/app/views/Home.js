@@ -23,15 +23,13 @@ class Home extends BaseComponent {
     this.changeTitle = this.changeTitle.bind(this)
   }
   componentDidMount(){BaseComponent
-    if(!this.props.routeParams.taskListId || this.props.routeParams.taskListId == "inbox"){
+    var listName = this.props.routeParams.listName
+    if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks()
-      this.changeTitle("Inbox")
-    }else if(this.props.routeParams.taskListId == "assignedByMe"){
+    }else if(listName == "Assigned by me"){
       this.props.actions.getTasksAssignedByMe()
-      this.changeTitle("Assigned By Me")
-    }else if(this.props.routeParams.taskListId == "assignedToMe"){
+    }else if(listName == "Assigned to me"){
       this.props.actions.getTasksAssignedToMe()
-      this.changeTitle("Assigned To Me")
     }else{
       this.props.actions.getListTasks(this.props.routeParams.taskListId)
     }
@@ -64,24 +62,16 @@ class Home extends BaseComponent {
   }
 
   componentWillUpdate(nextProps){
-    if(nextProps.params.taskListId != this.props.params.taskListId){
-      console.log("different param")
-      //task actions -- send the tasklist id and load data
-      if(nextProps.params.taskListId == "inbox"){
-        this.props.actions.getInboxTasks()
-        this.changeTitle("Inbox")
-      }else if(nextProps.params.taskListId == "assignedByMe"){
-        this.props.actions.getTasksAssignedByMe()
-        this.changeTitle("Assigned By Me")
-      }else if(nextProps.params.taskListId == "assignedToMe"){
-        this.props.actions.getTasksAssignedToMe()
-        this.changeTitle("Assigned To Me")
-      }else{
-        this.props.actions.getListTasks(nextProps.params.taskListId)
-        this.changeTitle(nextProps.params.taskListId)
-      }
+    var listName = this.props.routeParams.listName
+    if(!listName || listName == "Inbox"){
+      this.props.actions.getInboxTasks()
+    }else if(listName == "Assigned by me"){
+      this.props.actions.getTasksAssignedByMe()
+    }else if(listName == "Assigned to me"){
+      this.props.actions.getTasksAssignedToMe()
+    }else{
+      this.props.actions.getListTasks(this.props.routeParams.taskListId)
     }
-
   }
 
   render() {
@@ -91,7 +81,7 @@ class Home extends BaseComponent {
         <div className="off-canvas-content" data-off-canvas-content="true">
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks title={this.state.title}/>
+              <HeaderTasks title={this.props.routeParams.listName}/>
 
                 <div className="list-wrapper">
                   <div className="task-item-wrapper">
