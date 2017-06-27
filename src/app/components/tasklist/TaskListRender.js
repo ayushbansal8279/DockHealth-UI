@@ -16,7 +16,7 @@ class TaskListRender extends React.Component {
     this.props.deleteTaskListById(taskListId)
     .then((res)=>{
       this.setState({deleteTaskListResult: 'Task List deleted successfully!!'}); //this will cause render to be called
-      this.props.getTaskListForUser();
+      // this.props.getTaskListForUser();
       //hashHistory.push('/taskList')
     })
     .catch((error)=>{
@@ -56,7 +56,7 @@ class TaskListRender extends React.Component {
                 </ul>
                 </li>
               </ul>
-              
+
             </div>
           </div>
 

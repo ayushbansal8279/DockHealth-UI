@@ -7,7 +7,7 @@ import Notification from '../components/common/Notification'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import { connect } from 'react-redux'
 import * as userApi from '../api/user-api'
-// import * as TaskListActions from '../actions/tasklist-actions'
+import * as TaskListActions from '../actions/tasklist-actions'
 // import * as TaskActions from '../actions/task-actions'
 
 class TemplateCore extends React.Component {
@@ -33,6 +33,7 @@ class TemplateCore extends React.Component {
   }
 
   componentDidMount () {
+    this.props.taskListActions.getTaskListForUser()
     // this.renderFoundationComponents();
   }
 
@@ -87,7 +88,7 @@ const mapStateToProps = function (store) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    // taskListActions: bindActionCreators(TaskListActions, dispatch),
+    taskListActions: bindActionCreators(TaskListActions, dispatch)
     // taskActions: bindActionCreators(TaskActions, dispatch)
   }
 }

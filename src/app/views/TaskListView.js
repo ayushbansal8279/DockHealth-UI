@@ -10,7 +10,7 @@ import PendingListsComponent from '../components/list/PendingListsComponent'
 class TaskListView extends React.Component {
 
     componentDidMount(){
-      this.props.taskListAction.getTaskListForUser()
+      // this.props.taskListAction.getTaskListForUser()
       this.props.taskListAction.findPendingTaskListsForUser()
     }
 
