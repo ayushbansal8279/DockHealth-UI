@@ -76,8 +76,10 @@ class AddTask extends React.Component {
 
 	submit = (form) => {
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
+		console.log(form)
 		form.patientId = $("#add-patient-id").val();
 		form.assignedToId = $("#assign-task-to-id").val();
+		form.taskListId = $("#taskListId").val();
 		this.props.taskActions.saveTask(form);
 
 		// print the form values to the console
@@ -97,7 +99,7 @@ class AddTask extends React.Component {
     	return (
 			<div id="addTaskFormWrapper" className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
-					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title}/>
+					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title} taskListId={this.props.taskListId} initialValues={"taskListId:"+this.props.taskListId}/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
 

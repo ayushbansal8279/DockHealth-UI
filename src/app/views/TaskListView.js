@@ -42,6 +42,10 @@ class TaskListView extends React.Component {
       $('.list-filter .controls, .list-wrapper').toggle();
     }
 
+    deleteList = (taskListId) => {
+      this.props.taskListAction.deleteTaskListById(taskListId)
+    }
+
     render() {
       return (
 
@@ -74,7 +78,7 @@ class TaskListView extends React.Component {
         				<div className="item-list-wrapper">
 
                   <PendingListsComponent taskLists={this.props.pendingTaskLists}/>
-                  <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList}/>
+                  <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList}/>
 
                   {/* Inbox */}
         					<div className="item row expanded align-middle">

@@ -22,6 +22,23 @@ class Home extends BaseComponent {
     }
     this.changeTitle = this.changeTitle.bind(this)
   }
+
+
+
+  changeTitle(newTitle){
+    // alert("working")
+    this.setState({title: newTitle})
+  }
+
+  componentDidUpdate () {
+    super.componentDidUpdate()
+  }
+
+  componentWillMount(){
+    this.props.actions.getListTasks(this.props.routeParams.taskListId)
+    // console.log("home willMount")
+  }
+
   componentDidMount(){BaseComponent
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
@@ -51,16 +68,6 @@ class Home extends BaseComponent {
     });
   }
 
-
-  changeTitle(newTitle){
-    // alert("working")
-    this.setState({title: newTitle})
-  }
-
-  componentDidUpdate () {
-    super.componentDidUpdate()
-  }
-
   componentWillUpdate(nextProps){
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
@@ -81,7 +88,7 @@ class Home extends BaseComponent {
         <div className="off-canvas-content" data-off-canvas-content="true">
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks title={this.props.routeParams.listName}/>
+              <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId}/>
 
                 <div className="list-wrapper">
                   <div className="task-item-wrapper">

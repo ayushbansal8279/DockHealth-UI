@@ -205,3 +205,9 @@ export function toggleListNotifications(taskListId, receiveNotifications){
     });
   }
 }
+
+export function storeAsCurrentList(taskListId){
+  return function(dispatch){
+    dispatch({type: ActionTypes.SET_AS_CURRENT_LIST, taskListId})
+  }
+}

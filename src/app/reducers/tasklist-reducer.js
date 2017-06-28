@@ -48,6 +48,33 @@ const TaskListReducer = function(state = initialState, action) {
           )
         };
 
+    case types.DELETE_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        tasklist: state.tasklist.filter(taskList => taskList.taskListId !== action.taskListId)
+      }
+
+    case types.SET_AS_CURRENT_LIST:
+      var currentListVar = {}
+      state.tasklist.map(taskList =>
+        taskList.taskListId.toString() == action.taskListId ?
+        currentListVar = taskList : taskList
+      )
+      currentListVar
+      return { ...state, currentList:currentListVar };
+      break
+
+    // case types.SET_AS_CURRENT_LIST:
+    //   var currentListvar = {}
+    //   {...state, currentList:
+    //   // currentList:action.taskListId};
+    //   tasklist: state.tasklist.map(taskList =>
+    //     taskList.taskListId.toString() === action.taskListId ?
+    //     {...state, currenList:taskList} :
+    //
+    //     )
+    //   }
+
 
     // case types.ADD_TASKLIST_FAILURE:
     //   //whatever our current state is, add on "tasklist"

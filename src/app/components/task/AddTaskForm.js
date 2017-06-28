@@ -36,13 +36,13 @@ class AddTaskForm extends BaseComponent {
 
   render() {
   return (
-    <form className="inline-label" onSubmit={ this.props.handleSubmit}>
+    <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
           <h5 className="section-title">Add a task</h5>
         </div>
 
-        <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil"/>
+        <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" value="hello"/>
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
         <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
@@ -86,7 +86,8 @@ class AddTaskForm extends BaseComponent {
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
             <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options" disabled/>
+              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.props.taskListId} type="text" data-toggle="add-task-file-in-options" disabled/>
+              <Field id="taskListId" name="taskListId" className="input-group-field" value={this.props.taskListId} component="input" type="hidden"/>
               <label>File in (filing only allowed in Inbox)</label>
             </div>
           </div>
@@ -137,7 +138,7 @@ class AddTaskForm extends BaseComponent {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="subtaskDescription" component="input" type="text" />
+            <Field className="input-group-field" name="subtask[description]" component="input" type="text" />
             <label>Subtask</label>
           </div>
         </div>
@@ -150,13 +151,22 @@ class AddTaskForm extends BaseComponent {
           </div>
         </div>*/}
 
-        <div className="column large-12 input-group">
+        {/* <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
           <div className="input-wrapper form-floating-label">
             <Field id="assign-subtask-to" className="assign-to input-group-field" name="assignedTo" component="input" type="text" />
             <label>Assigned to</label>
           </div>
-        </div>
+        </div> */}
+
+        {this.props.title != "Inbox" ?
+          <span>
+            <Field id="assign-task-to" name='subtask[assignedTo]' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
+            <Field id="assign-task-to-id" name="subtask[assignedToId]" className="input-group-field" component="input" type="hidden"/>
+          </span>
+          :
+          <span></span>
+        }
 
         <div className="column large-12 text-right">
           <button type="submit" className="button secondary float-right button-small">Save</button>
@@ -177,6 +187,12 @@ AddTaskForm = reduxForm({
 
 const mapStateToProps = function(store) {
 	var initialTaskFormValues = {}
+  if(store.taskListState.currentList){
+    initialTaskFormValues.taskList = store.taskListState.currentList.listName
+    initialTaskFormValues.taskListId = store.taskListState.currentList.taskListId
+  }
+  // console.log("current list")
+  // console.log(store.taskListState.currentList)
 	if(store.taskState.task){
 		var editTask = store.taskState.task;
       initialTaskFormValues.description = editTask.description;
@@ -192,6 +208,7 @@ const mapStateToProps = function(store) {
     if(editTask.taskList){
       initialTaskFormValues.taskList = editTask.taskList.listName;
     }
+
 		//TODO - handle assigned tasklist
 	}
   return {

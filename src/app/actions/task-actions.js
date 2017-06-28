@@ -272,6 +272,8 @@ export function taskToState(task){
   }
 }
 
+
+
 // export function toggleTaskPriority(taskId, userId, priority){
 //   return function(dispatch){
 //     if(priority == "LOW"){}

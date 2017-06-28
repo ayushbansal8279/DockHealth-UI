@@ -20,23 +20,30 @@ class HeaderTasks extends React.Component {
     }
   }
 
+
   componentDidMount () {
-    // this.props.taskListActions.getTaskListForUser()
-    // alert("componentDidMount")
     this.props.patientActions.getAllPatients()
+    this.props.taskListActions.getTaskListById(this.props.taskListId)
+    this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
 
   componentWillUpdate(nextProps){
-    // alert("componentWillUpdate")
+    if(this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
+      this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
+      this.setState({title:nextProps.currentList.listName})
+      console.log("willUpdate")
+      console.log(nextProps)
+      console.log(this.props)
+    }
   }
 
   componentWillReceiveProps(nextProps){
-    console.log(nextProps)
-    // alert("componentWillReceiveProps")
-  }
-
-  getListTasks(taskListId){
-    this.props.taskActions.getListTasks(taskListId)
+    if(this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
+      this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
+      this.setState({title:nextProps.currentList.listName})
+      console.log("nextProps")
+      console.log(nextProps)
+    }
   }
 
 	handleAddTask = () => {
@@ -52,8 +59,8 @@ class HeaderTasks extends React.Component {
 						<div className="top-bar">
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-
-								<h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
+								{/* <h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span> */}
+								<h3>{this.state.title ? this.state.title : this.props.taskList.listName}</h3> <span className="number-of-tasks hide">23 Tasks</span>
 							</div>
 							<div className="top-bar-right">
 								<ul className="menu member-photo-list" data-open="list-members">
@@ -109,7 +116,7 @@ class HeaderTasks extends React.Component {
 						</div>
         </header>
 
-        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title}/>
+        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} taskListId={this.props.taskListId}/>
       </div>
       );
     }
@@ -120,7 +127,8 @@ const mapStateToProps = function (store) {
   return {
     taskList: store.taskListState.tasklistone, // tasklistone is set at the reducer
     taskLists: store.taskListState.tasklist,
-    patients: store.patientState.allPatients
+    patients: store.patientState.allPatients,
+    currentList: store.taskListState.currentList,
   }
 }
 

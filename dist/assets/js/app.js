@@ -11838,7 +11838,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }
 
       /**
-       * Goes through a form to find inputs and proceeds to validate them in ways specific to their type. 
+       * Goes through a form to find inputs and proceeds to validate them in ways specific to their type.
        * Ignores inputs with data-abide-ignore, type="hidden" or disabled attributes set
        * @fires Abide#invalid
        * @fires Abide#valid
@@ -20439,7 +20439,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 date = arguments[0];
                 fromArgs = true;
             } else if (!currentVal && this.initialDate != null) {
-                // If value is not set, set it to the initialDate 
+                // If value is not set, set it to the initialDate
                 date = this.initialDate;
             } else {
                 date = this.isInput ? this.element.val() : this.element.data('date') || this.element.find('input').val();
@@ -21372,14 +21372,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /*
  * easy-autocomplete
  * jQuery plugin for autocompletion
- * 
+ *
  * @author Łukasz Pawełczak (http://github.com/pawelczak)
  * @version 1.3.5
- * Copyright  License: 
+ * Copyright  License:
  */
 
 /*
- * EasyAutocomplete - Configuration 
+ * EasyAutocomplete - Configuration
  */
 var EasyAutocomplete = function (scope) {
 
@@ -21715,7 +21715,7 @@ var EasyAutocomplete = function (scope) {
 }(EasyAutocomplete || {});
 
 /*
- * EasyAutocomplete - Logger 
+ * EasyAutocomplete - Logger
  */
 var EasyAutocomplete = function (scope) {
 
@@ -21755,9 +21755,9 @@ var EasyAutocomplete = function (scope) {
 }(EasyAutocomplete || {});
 
 /*
- * EasyAutocomplete - ListBuilderService 
+ * EasyAutocomplete - ListBuilderService
  *
- * @author Łukasz Pawełczak 
+ * @author Łukasz Pawełczak
  *
  */
 var EasyAutocomplete = function (scope) {
@@ -21942,7 +21942,7 @@ var EasyAutocomplete = function (scope) {
  * EasyAutocomplete - Data proccess module
  *
  * Process list to display:
- * - sort 
+ * - sort
  * - decrease number to specific number
  * - show only matching list
  *
@@ -22021,9 +22021,9 @@ var EasyAutocomplete = function (scope) {
 }(EasyAutocomplete || {});
 
 /*
- * EasyAutocomplete - Template 
+ * EasyAutocomplete - Template
  *
- * 
+ *
  *
  */
 var EasyAutocomplete = function (scope) {
@@ -22336,7 +22336,7 @@ var EasyAutocomplete = function (scope) {
 			function adjustWrapperWidth() {
 				var fieldWidth = $field.outerWidth();
 
-				//	$field.parent().css("width", fieldWidth);				
+				//	$field.parent().css("width", fieldWidth);
 			}
 
 			function removeWrapper() {
@@ -22964,7 +22964,7 @@ $('body').on('click', '[data-editable]', function () {
 	$el.next().one('blur', save).focus();
 });
 
-// add a comment to a task 
+// add a comment to a task
 $('body').on('click', '[add-comment]', function () {
 	$(this).find('.comment-button').hide();
 	$(this).find('.add-comment').show();
@@ -23040,19 +23040,19 @@ $('.add-form').on('click', '.toggle-add-subtask', function () {
 });
 
 // show/hide add task/list form
-$('.add,.edit-task').on('click', function () {
-	$('.add').toggleClass('close');
-	$('body').toggleClass('disable-header-scroll');
-	var href = $(this).attr('id');
-	if ($(this).hasClass('add-other')) {
-		$('.add-other use').attr('href', function (index, attr) {
-			return attr == '#icon-add' ? '#' + href : '#icon-add';
-		});
-	}
-	$('.add-form-wrapper').slideToggle(300);
-	//	$('.list-filter .controls, .list-wrapper').toggle();
-	$('.list-filter .controls').toggle();
-});
+// $('.add,.edit-task').on('click', function () {
+// 	$('.add').toggleClass('close');
+// 	$('body').toggleClass('disable-header-scroll');
+// 	var href = $(this).attr('id');
+// 	if ($(this).hasClass('add-other')) {
+// 		$('.add-other use').attr('href', function (index, attr) {
+// 			return attr == '#icon-add' ? '#' + href : '#icon-add';
+// 		});
+// 	}
+// 	$('.add-form-wrapper').slideToggle(300);
+// 	//	$('.list-filter .controls, .list-wrapper').toggle();
+// 	$('.list-filter .controls').toggle();
+// });
 
 // show/hide completed tasks
 $('.toggle-completed').click(function () {
