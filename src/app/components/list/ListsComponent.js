@@ -23,8 +23,8 @@ class ListsComponent extends BaseComponent{
               <div className="columns shrink">
                 <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="3 high priority tasks"><svg className="icon medium flag"><use xlinkHref="#icon-flag"></use></svg></span>
               </div>
-              <div className="columns shrink align-right">
-                <h6 className="">{taskList.numberOfTasks}</h6>
+              <div data-tooltip tabIndex="2" title="tasks assigned to me" className="columns shrink align-right">
+                <h6  className="">{taskList.numberOfTasks}</h6>
               </div>
               <div className="columns shrink more-options-wrapper">
                 <svg className="icon ellipses medium" data-toggle={"more-options-task-id-" + taskList.taskListId}><use xlinkHref="#icon-ellipses"></use></svg>
@@ -34,7 +34,7 @@ class ListsComponent extends BaseComponent{
                     <li><div onClick={(e) => this.props.deleteList(taskList.taskListId)}>Delete list</div></li>
                     <li><div onClick={(e) => this.props.editForm(taskList)}>Edit</div></li>
                     {/* if owner */}
-                    <li>Leave list</li>
+                    <li><div onClick={(e) => this.props.leaveList(taskList.taskListId)}>Leave list</div></li>
                   </ul>
                 </div>
               </div>

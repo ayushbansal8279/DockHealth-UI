@@ -45,6 +45,7 @@ class AddTaskForm extends BaseComponent {
         <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" value="hello"/>
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
+        {/* **2** */}
         <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
         <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
 

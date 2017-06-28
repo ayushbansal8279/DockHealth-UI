@@ -443,3 +443,13 @@ export function updateUserNotoficationPrefs(emailNotification, pushNotification)
       throw(error);
     });
 }
+
+
+export function leaveList(taskListId){
+  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/userLeavesList/'+taskListId)
+  .then(response => {
+    return response;
+  }).catch(error => {
+    throw(error);
+  });
+}

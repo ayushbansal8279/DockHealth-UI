@@ -14,7 +14,7 @@ export function findInvitationsByUserId() {
 export function acceptInviteToTaskList(tasklistId) {
   return function(dispatch) {
     return InvitationApi.acceptInviteToTaskList(tasklistId).then(res => {
-      dispatch({type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS, res});
+      dispatch({type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS, res, tasklistId});
     }).catch(error => {
       throw(error);
     });
@@ -24,7 +24,7 @@ export function acceptInviteToTaskList(tasklistId) {
 export function rejectInviteToTaskList(tasklistId) {
   return function(dispatch) {
     return InvitationApi.rejectInviteToTaskList(tasklistId).then(res => {
-      dispatch({type: ActionTypes.REJECT_INVITE_TOTASKLIST_SUCCESS, res});
+      dispatch({type: ActionTypes.REJECT_INVITE_TOTASKLIST_SUCCESS, res, tasklistId});
     }).catch(error => {
       throw(error);
     });

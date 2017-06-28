@@ -129,6 +129,7 @@ function closeAddTask(){
 	//$('.add').click();
 }
 
+// **3**
 function enableAutoCompleteForPatients(lookupData) {
 	// console.log(lookupData)
 	// add task form patient autocomplete

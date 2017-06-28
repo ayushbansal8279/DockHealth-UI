@@ -60,7 +60,7 @@ const TaskListReducer = function(state = initialState, action) {
         taskList.taskListId.toString() == action.taskListId ?
         currentListVar = taskList : taskList
       )
-      currentListVar
+      // currentListVar
       return { ...state, currentList:currentListVar };
       break
 

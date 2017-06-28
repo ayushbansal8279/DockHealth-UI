@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Header from '../components/common/Header'
 import {bindActionCreators} from 'redux';
 import * as TaskListActions from '../actions/tasklist-actions'
+import * as InvitationActions from '../actions/invitation-actions'
 import AddListForm from '../components/list/AddListForm'
 import ListsComponent from '../components/list/ListsComponent'
 import PendingListsComponent from '../components/list/PendingListsComponent'
@@ -46,6 +47,18 @@ class TaskListView extends React.Component {
       this.props.taskListAction.deleteTaskListById(taskListId)
     }
 
+    leaveList = (taskListId) => {
+      this.props.taskListAction.leaveList(taskListId)
+    }
+
+    acceptInviteToTaskList = (taskListId) => {
+      this.props.invitationAction.acceptInviteToTaskList(taskListId)
+    }
+
+    rejectInviteToTaskList = (taskListId) => {
+      this.props.invitationAction.rejectInviteToTaskList(taskListId)
+    }
+
     render() {
       return (
 
@@ -77,8 +90,8 @@ class TaskListView extends React.Component {
         			<div className="list-wrapper">
         				<div className="item-list-wrapper">
 
-                  <PendingListsComponent taskLists={this.props.pendingTaskLists}/>
-                  <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList}/>
+                  <PendingListsComponent taskLists={this.props.pendingTaskLists} acceptInviteToTaskList={this.acceptInviteToTaskList} rejectInviteToTaskList={this.rejectInviteToTaskList}/>
+                  <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList} leaveList={this.leaveList}/>
 
                   {/* Inbox */}
         					<div className="item row expanded align-middle">
@@ -155,7 +168,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    taskListAction: bindActionCreators(TaskListActions, dispatch)
+    taskListAction: bindActionCreators(TaskListActions, dispatch),
+    invitationAction: bindActionCreators(InvitationActions, dispatch)
   }
 }
 

@@ -1,5 +1,6 @@
 import * as ActionTypes from './action-types';
 import * as TaskListApi from '../api/tasklist-api'
+import * as UserApi from '../api/user-api'
 
 
 //Find all TaskLists user belongs to
@@ -211,3 +212,13 @@ export function storeAsCurrentList(taskListId){
     dispatch({type: ActionTypes.SET_AS_CURRENT_LIST, taskListId})
   }
 }
+
+export function leaveList(taskListId){
+  return function(dispatch){
+    return UserApi.leaveList(taskListId).then(res => {
+      dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res});
+    }).catch(error => {
+      throw(error);
+    });
+  }
+};

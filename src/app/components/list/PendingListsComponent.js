@@ -18,8 +18,8 @@ class PendingListsComponent extends React.Component{
               </div>
               <div className="columns shrink">
                 <button className="button primary small split">
-                  <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="Accept invitation" className="button-left"><svg className="icon"><use xlinkHref="#icon-checkmark"></use></svg> Accept</span>
-                  <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="Decline invitation" className="button-right cancel-button"><svg className="icon"><use xlinkHref="#icon-close"></use></svg> Decline</span>
+                  <span onClick={(e) => this.props.acceptInviteToTaskList(taskList.taskListId)} data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="Accept invitation" className="button-left"><svg className="icon"><use xlinkHref="#icon-checkmark"></use></svg> Accept</span>
+                  <span onClick={(e) => this.props.rejectInviteToTaskList(taskList.taskListId)} data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="Decline invitation" className="button-right cancel-button"><svg className="icon"><use xlinkHref="#icon-close"></use></svg> Decline</span>
                 </button>
               </div>
             </div>

@@ -40,15 +40,18 @@ class Home extends BaseComponent {
   }
 
   componentDidMount(){BaseComponent
+
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks()
+
     }else if(listName == "Assigned by me"){
       this.props.actions.getTasksAssignedByMe()
     }else if(listName == "Assigned to me"){
       this.props.actions.getTasksAssignedToMe()
     }else{
       this.props.actions.getListTasks(this.props.routeParams.taskListId)
+      this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
     }
 
     // PUT ME SOMEWHERE ELSE
@@ -78,6 +81,7 @@ class Home extends BaseComponent {
       this.props.actions.getTasksAssignedToMe()
     }else{
       this.props.actions.getListTasks(this.props.routeParams.taskListId)
+      this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
     }
   }
 
@@ -89,20 +93,18 @@ class Home extends BaseComponent {
           <div className="row expanded collapse">
             <div className="large-12 columns">
               <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId}/>
-
-                <div className="list-wrapper">
-                  <div className="task-item-wrapper">
-                    <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
-                    <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE"/>
-                    <div className="show-completed text-center">
-                      <a className="toggle-completed button primary small">Show completed tasks</a>
-                    </div>
-                    <div className="completed-task-wrapper">
-                      <ListOfTasksContainer taskListId={taskListId} status="COMPLETE"/>
-                    </div>
+              <div className="list-wrapper">
+                <div className="task-item-wrapper">
+                  <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
+                  <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE"/>
+                  <div className="show-completed text-center">
+                    <a className="toggle-completed button primary small">Show completed tasks</a>
+                  </div>
+                  <div className="completed-task-wrapper">
+                    <ListOfTasksContainer taskListId={taskListId} status="COMPLETE"/>
                   </div>
                 </div>
-
+              </div>
             </div>
           </div>
         </div>

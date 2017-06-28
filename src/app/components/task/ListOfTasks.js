@@ -12,7 +12,7 @@ import * as TaskActions from '../../actions/task-actions'
 import * as userApi from '../../api/user-api'
 import { findDOMNode } from 'react-dom'
 import $ from 'jquery'
-import ConfirmDelete from '../common/ConfirmDelete'
+import BooleanModal from '../common/BooleanModal'
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -273,7 +273,7 @@ class ListOfTasks extends BaseComponent {
 			return(
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
-					<ConfirmDelete taskId={task.taskId}/>
+					<BooleanModal taskId={task.taskId}/>
 				</span>
 			)
 

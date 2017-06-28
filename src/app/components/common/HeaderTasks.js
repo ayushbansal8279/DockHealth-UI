@@ -7,6 +7,7 @@ import {Link} from 'react-router'
 import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import * as PatientActions from '../../actions/patient-actions'
+import ListMembers from '../common/ListMembers'
 import {ReactDOM, findDOMNode} from 'react-dom'
 import $ from 'jquery'
 
@@ -22,6 +23,8 @@ class HeaderTasks extends React.Component {
 
 
   componentDidMount () {
+    console.log("current user")
+    console.log(this.props.currentUser)
     this.props.patientActions.getAllPatients()
     this.props.taskListActions.getTaskListById(this.props.taskListId)
     this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
@@ -59,8 +62,8 @@ class HeaderTasks extends React.Component {
 						<div className="top-bar">
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-								{/* <h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span> */}
-								<h3>{this.state.title ? this.state.title : this.props.taskList.listName}</h3> <span className="number-of-tasks hide">23 Tasks</span>
+								<h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
+								{/* <h3>{this.state.title ? this.state.title : this.props.taskList.listName}</h3> <span className="number-of-tasks hide">23 Tasks</span> */}
 							</div>
 							<div className="top-bar-right">
 								<ul className="menu member-photo-list" data-open="list-members">
@@ -116,7 +119,8 @@ class HeaderTasks extends React.Component {
 						</div>
         </header>
 
-        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} taskListId={this.props.taskListId}/>
+        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title}/>
+        <ListMembers members={this.props.members} title={this.props.title}/>
       </div>
       );
     }
@@ -129,6 +133,8 @@ const mapStateToProps = function (store) {
     taskLists: store.taskListState.tasklist,
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,
+    members: store.taskListState.tasklistmembers,
+    currentUser: store.userState.user
   }
 }
 
