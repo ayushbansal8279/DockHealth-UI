@@ -149,7 +149,7 @@ export function changeUserRoleForList(tasklistId,markedUserId,role) {
 export function deleteTaskListById(taskListId) {
   return function(dispatch) {
     return TaskListApi.deleteTaskListById(taskListId).then(res => {
-      dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res});
+      dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res, taskListId});
     }).catch(error => {
       throw(error);
     });
@@ -216,7 +216,7 @@ export function storeAsCurrentList(taskListId){
 export function leaveList(taskListId){
   return function(dispatch){
     return UserApi.leaveList(taskListId).then(res => {
-      dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res});
+      dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res, taskListId});
     }).catch(error => {
       throw(error);
     });
