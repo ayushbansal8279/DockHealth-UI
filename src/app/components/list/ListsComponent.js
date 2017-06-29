@@ -13,18 +13,21 @@ class ListsComponent extends BaseComponent{
         {this.props.taskLists.map(taskList => {
           return(
             <div key={"taskList" + taskList.taskListId} className="item row expanded align-middle">
-              <div className="columns shrink">
-                <span className="circle xxsmall blue-bg" data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="2 new tasks"></span>
-              </div>
+                <div className="columns shrink">
+                  {taskList.numberOfUnreadTasks > 0 ?
+                    <span className="circle xxsmall blue-bg" data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title={taskList.numberOfUnreadTasks + " new tasks"}></span> :
+                    <span className="circle xxsmall transparent"></span>
+                  }
+                </div>
                 <div className="columns">
                   <Link to={"/tasks/"+taskList.listName+"/"+taskList.taskListId}><h6 className="">{taskList.listName}</h6></Link>
                   <span className="details">{taskList.creator.userName}</span>
                 </div>
-              <div className="columns shrink">
+              {/* <div className="columns shrink">
                 <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="3 high priority tasks"><svg className="icon medium flag"><use xlinkHref="#icon-flag"></use></svg></span>
-              </div>
+              </div> */}
               <div data-tooltip tabIndex="2" title="tasks assigned to me" className="columns shrink align-right">
-                <h6  className="">{taskList.numberOfTasks}</h6>
+                <h6>{taskList.numberOfTasks}</h6>
               </div>
               <div className="columns shrink more-options-wrapper">
                 <svg className="icon ellipses medium" data-toggle={"more-options-task-id-" + taskList.taskListId}><use xlinkHref="#icon-ellipses"></use></svg>
