@@ -35,7 +35,6 @@ class Home extends BaseComponent {
   }
 
   componentWillMount(){
-    this.props.actions.getListTasks(this.props.routeParams.taskListId)
     // console.log("home willMount")
   }
 
