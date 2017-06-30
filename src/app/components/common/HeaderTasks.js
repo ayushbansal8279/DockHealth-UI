@@ -26,7 +26,9 @@ class HeaderTasks extends React.Component {
     console.log("current user")
     console.log(this.props.currentUser)
     this.props.patientActions.getAllPatients()
-    this.props.taskListActions.getTaskListById(this.props.taskListId)
+    if(this.props.taskListId){
+      this.props.taskListActions.getTaskListById(this.props.taskListId)
+    }
     this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
 

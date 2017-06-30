@@ -116,7 +116,7 @@ class AddTaskForm extends BaseComponent {
         <div className="column large-12 input-group toggle-add-subtask">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="subtask" component="input" type="text" />
+            <Field className="input-group-field" name="subtasks[]" component="input" type="text" />
             <label>Add a subtask</label>
           </div>
         </div>
@@ -139,7 +139,7 @@ class AddTaskForm extends BaseComponent {
         <div className="column large-12 input-group">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="subtask[description]" component="input" type="text" />
+            <Field className="input-group-field" name="subtasks[0][description]" component="input" type="text" />
             <label>Subtask</label>
           </div>
         </div>
@@ -163,7 +163,7 @@ class AddTaskForm extends BaseComponent {
         {this.props.title != "Inbox" ?
           <span>
             <Field id="assign-task-to" name='subtask[assignedTo]' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
-            <Field id="assign-task-to-id" name="subtask[assignedToId]" className="input-group-field" component="input" type="hidden"/>
+            <Field id="assign-task-to-id" name="subtasks[0][assignedToId]" className="input-group-field" component="input" type="hidden"/>
           </span>
           :
           <span></span>

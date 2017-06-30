@@ -70,6 +70,7 @@ class ListOfTasks extends BaseComponent {
   	}
 
   	handleMarkComplete(task, status){
+			this.props.taskAction.taskToState(task)
   		this.props.markComplete(task, status, this.props.listName)
   		// this.setState({task: ''})
   	}
@@ -101,6 +102,8 @@ class ListOfTasks extends BaseComponent {
 		handleToggle = (eventType, task) => {
 			// const el = findDOMNode(this.refs.toggle);
 			// $(el).slideToggle();
+
+			// puts task to state to populate data for form
 			this.props.taskAction.taskToState(task)
 			// Copied from app-custom.js
 			$('.add').toggleClass('close');

@@ -16,6 +16,7 @@ export default {
   tasklistaudits: [],
   auditsForAllUserList: [],
   title: "",
-  currentList: {}
+  currentList: {},
+  currentTask: {}
   //addtasklisterror:''
 }

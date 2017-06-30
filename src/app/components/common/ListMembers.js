@@ -16,7 +16,7 @@ class ListMembers extends BaseComponent{
 				<div className="scroll-wrapper">
 					{this.props.members.map(member => {
 						return(
-							<div className="row condense expanded border-bottom align-middle">
+							<div key={"member"+member.userId} className="row condense expanded border-bottom align-middle">
 								<div className="columns shrink">
 
 									<MemberInitials member={member}/>

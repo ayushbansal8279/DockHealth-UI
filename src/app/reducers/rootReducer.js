@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import * as types from '../actions/action-types';
 import TaskReducer from './task-reducer'
 import PatientReducer from './patient-reducer'
 import UserReducer from './user-reducer'
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   taskListState: TaskListReducer,
   invitationState: InvitationReducer,
   peopleState: peopleReducer
+  
 })
 
 export default rootReducer

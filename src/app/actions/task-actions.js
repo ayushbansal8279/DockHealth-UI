@@ -272,6 +272,12 @@ export function taskToState(task){
   }
 }
 
+export function storeAsCurrentTask(taskId){
+  return function(dispatch){
+    dispatch({type: ActionTypes.SET_AS_CURRENT_TASK, taskId})
+  }
+}
+
 
 
 // export function toggleTaskPriority(taskId, userId, priority){

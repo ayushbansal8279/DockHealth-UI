@@ -1,7 +1,7 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
-const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
+const TaskReducer = function(state = initialState, action) {
 
   switch(action.type) {
 
@@ -9,7 +9,8 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
       // with concact make a copy of the array, and then we'll change and return the copy
       return{
         ...state,
-        tasks: state.tasks.concat(action.task)
+        // tasks: state.tasks.concat(action.task)
+        tasks: [action.task].concat(state.tasks)
       }
 
     case types.GET_TASKS_SUCCESS:
@@ -23,7 +24,7 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
 
     // handling
     case types.MARK_TASK_STATUS_SUCCESS: // Tasks in 'incompletedTasks' state
-    	return {
+      return {
           ...state,
           tasks: state.tasks.map(task =>
             task.taskId === action.task.taskId ?
@@ -33,6 +34,47 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
               task
           )
       };
+
+      // return {
+      //     ...state,
+      //     tasks: state.tasks.map(task =>
+      //       task.taskId === state.task.taskId ?
+      //         {...task, subtasks:
+      //           task.subtasks.map(subtask =>
+      //             subtask.taskId === action.task.taskId ?
+      //             {...subtask, status: action.status} :
+      //             subtask
+      //           )
+      //         }
+      //         : task
+      //     )
+      // };
+
+      // return {
+      //     ...state,
+      //     tasks: state.tasks.map(task => // LOOP THROUGH ALL THE TASKS
+      //       task.taskId === state.currentTask.taskId ? // IF A TASK MATCHES THE CURRENT TASK
+      //         {...task, subtasks:
+      //           // DO ALL THIS
+      //           task.subtasks.map(subtask => // -- loop through its subtasks
+      //             subtask.taskId === action.task.taskId ? // -- if the subtask matches the task we want to change
+      //             {...subtask, status: action.status} : // -- change the status of the task
+      //             subtask // -- otherwise just return the subtask
+      //           )
+      //         }
+      //         : task // OTHERWISE JUST RETURN THE TASK
+      //     )
+      // };
+      // ...state, tasks: {...task: subtask, status:action.status}
+      // state => tasks => task => subtasks => subtask => status
+      // return { ...state, task: {...state.task, status: "INCOMPLETE"}  };
+      // {
+      //   ...state,
+      //   myPosts: {
+      //     ...state.myPosts,
+      //     isPending: true
+      //   }
+      // }
 
     // handling
     case types.MARK_COMPLETE_TASK_STATUS_SUCCESS: // Tasks in 'completedTasks' state
@@ -144,6 +186,16 @@ const TaskReducer = function(state = {tasks: [], completedTasks: []}, action) {
             task
         )
       }
+
+    case types.SET_AS_CURRENT_TASK:
+      var currentTaskVar = {}
+      state.tasks.map(task =>
+        task.taskId == action.taskId ?
+        currentTaskVar = task : task
+      )
+      // currentListVar
+      return { ...state, currentTask:currentTaskVar };
+      break
 
 
   }
