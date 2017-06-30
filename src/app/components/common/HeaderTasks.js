@@ -8,6 +8,7 @@ import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import * as PatientActions from '../../actions/patient-actions'
 import ListMembers from '../common/ListMembers'
+import MemberInitials from '../common/MemberInitials'
 import {ReactDOM, findDOMNode} from 'react-dom'
 import $ from 'jquery'
 
@@ -67,16 +68,24 @@ class HeaderTasks extends React.Component {
 								<h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
 								{/* <h3>{this.state.title ? this.state.title : this.props.taskList.listName}</h3> <span className="number-of-tasks hide">23 Tasks</span> */}
 							</div>
-							<div className="top-bar-right">
-								<ul className="menu member-photo-list" data-open="list-members">
-									<li><span className="add-member circle small">+</span></li>
-									<li><span className="more-members circle small">+4</span></li>
-									<li><img className="member-photo circle small" src="assets/img/user1.png" alt="name of user"/></li>
-									<li><img className="member-photo circle small" src="assets/img/user2.png" alt="name of user"/></li>
-									<li><span className="member-initials circle small">SL</span></li>
-									<li><img className="member-photo circle small" src="assets/img/user3.png" alt="name of user"/></li>
-			          </ul>
+              {this.props.taskListId &&
+  							<div className="top-bar-right">
+  								<ul className="menu member-photo-list" data-open="list-members">
+                    <li><span className="add-member circle small">+</span></li>
+                    {this.props.members.map(member => {
+                        return <li><span className="member-initials circle small">{member.initials}</span></li>
+                      })
+                    }
+                    {/* <li><span className="more-members circle small">+4</span></li>
+  									<li><span className="add-member circle small">+</span></li>
+  									<li><span className="more-members circle small">+4</span></li>
+  									<li><img className="member-photo circle small" src="assets/img/user1.png" alt="name of user"/></li>
+  									<li><img className="member-photo circle small" src="assets/img/user2.png" alt="name of user"/></li>
+  									<li><span className="member-initials circle small">SL</span></li>
+  									<li><img className="member-photo circle small" src="assets/img/user3.png" alt="name of user"/></li> */}
+  			          </ul>
 								</div>
+              }
 							</div>
 
               {/*<TaskFiltersContainer taskListId={taskListId} />*/}

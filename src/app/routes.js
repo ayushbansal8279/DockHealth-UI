@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, IndexRoute } from 'react-router';
+import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import App from './views/App'
 import TemplateCore from './views/TemplateCore'
 import TemplateAuth from './views/TemplateAuth'
@@ -52,6 +52,7 @@ export default (
   <Route path="/" component={App}>
     <Route component={TemplateCore} >
       <IndexRoute component={Home} />
+      <IndexRedirect to="/tasks/Inbox"/>
       <Route path="/patientList" component={AllPatientsView} />
       <Route path="/patient/:patientId" component={PatientView} />
       <Route path="/editPatient/:patientId" component={PatientEditView} />
@@ -68,7 +69,6 @@ export default (
       <Route path="/people" component={PeopleView} />
       <Route path="/peopleinvite" component={InvitePeople} />
       <Route path="/tasks/:listName/:taskListId" component={Home}/>
-      <Route path="/tasks/:listName" component={Home}/>
       <Route path="/tasks/:listName" component={Home}/>
       <Route path="/tasks/:listName" component={Home}/>
       <Route path="/userprofile" component={UserProfileView} />

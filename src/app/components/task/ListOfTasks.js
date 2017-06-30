@@ -249,7 +249,9 @@ class ListOfTasks extends BaseComponent {
 									<ul className="no-bullet">
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
 										<li onClick={(e) => this.handleToggle("edit", task)} className="edit-task">Edit task</li>
-										<li>Add subtask</li>
+										{type != "subtask" &&
+											<li>Add subtask</li>
+										}
 										<li onClick={(e) => this.handleDeleteTask(task)}>Delete task</li>
 									</ul>
 								</div>
