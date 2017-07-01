@@ -24,70 +24,71 @@ const TaskReducer = function(state = initialState, action) {
 
     // handling
     case types.MARK_TASK_STATUS_SUCCESS: // Tasks in 'incompletedTasks' state
+      var mainTask
+      if(action.task.parentTaskId){
+        mainTask = action.task.parentTaskId
+      }else{
+        mainTask = action.task.taskId
+      }
+
       return {
           ...state,
           tasks: state.tasks.map(task =>
-            task.taskId === action.task.taskId ?
-              // transform the one with a matching id
-              { ...task, status: action.status } :
-              // otherwise return original task
-              task
+            task.taskId === mainTask ?
+            action.task.parentTaskId ?
+              {...task, subtasks:
+                task.subtasks.map(subtask =>
+                  subtask.taskId === action.task.taskId ?
+                  {...subtask, status: action.status} :
+                  subtask
+                )
+              } :
+              { ...task, status: action.status }
+
+              : task
           )
       };
 
-      // return {
-      //     ...state,
-      //     tasks: state.tasks.map(task =>
-      //       task.taskId === state.task.taskId ?
-      //         {...task, subtasks:
-      //           task.subtasks.map(subtask =>
-      //             subtask.taskId === action.task.taskId ?
-      //             {...subtask, status: action.status} :
-      //             subtask
-      //           )
-      //         }
-      //         : task
-      //     )
-      // };
+      // handling
+      case types.MARK_COMPLETE_TASK_STATUS_SUCCESS: // Tasks in 'completedTasks' state
+        var mainTask
+        if(action.task.parentTaskId){
+          mainTask = action.task.parentTaskId
+        }else{
+          mainTask = action.task.taskId
+        }
 
-      // return {
-      //     ...state,
-      //     tasks: state.tasks.map(task => // LOOP THROUGH ALL THE TASKS
-      //       task.taskId === state.currentTask.taskId ? // IF A TASK MATCHES THE CURRENT TASK
-      //         {...task, subtasks:
-      //           // DO ALL THIS
-      //           task.subtasks.map(subtask => // -- loop through its subtasks
-      //             subtask.taskId === action.task.taskId ? // -- if the subtask matches the task we want to change
-      //             {...subtask, status: action.status} : // -- change the status of the task
-      //             subtask // -- otherwise just return the subtask
-      //           )
-      //         }
-      //         : task // OTHERWISE JUST RETURN THE TASK
-      //     )
-      // };
-      // ...state, tasks: {...task: subtask, status:action.status}
-      // state => tasks => task => subtasks => subtask => status
-      // return { ...state, task: {...state.task, status: "INCOMPLETE"}  };
-      // {
-      //   ...state,
-      //   myPosts: {
-      //     ...state.myPosts,
-      //     isPending: true
-      //   }
-      // }
+        return {
+            ...state,
+            completedTasks: state.completedTasks.map(task =>
+              task.taskId === mainTask ?
+              action.task.parentTaskId ?
+                {...task, subtasks:
+                  task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId ?
+                    {...subtask, status: action.status} :
+                    subtask
+                  )
+                } :
+                { ...task, status: action.status }
 
-    // handling
-    case types.MARK_COMPLETE_TASK_STATUS_SUCCESS: // Tasks in 'completedTasks' state
-    	return {
-        ...state,
-        completedTasks: state.completedTasks.map(task =>
-          task.taskId === action.task.taskId ?
-            // transform the one with a matching id
-            { ...task, status: action.status } :
-            // otherwise return original task
-            task
-        )
-      };
+                : task
+            )
+        };
+
+    // ORIGINAL (doesn't deal with subtasks)
+    // case types.MARK_COMPLETE_TASK_STATUS_SUCCESS: // Tasks in 'completedTasks' state
+    //
+    // 	return {
+    //     ...state,
+    //     completedTasks: state.completedTasks.map(task =>
+    //       task.taskId === action.task.taskId ?
+    //         // transform the one with a matching id
+    //         { ...task, status: action.status } :
+    //         // otherwise return original task
+    //         task
+    //     )
+    //   };
 
     case types.DELETE_TASK_SUCCESS:
       const taskId = action.taskId;
