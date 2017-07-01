@@ -41,7 +41,7 @@ function renderFoundationComponentsJquery(){
 	// 	$(this).children('.more-task-options').toggleClass('slide-in');
 	// 	$(this).children('.ellipses').toggleClass('slide-out');
 	// });
-
+/*
 	// add subtasks
 	$('.add-form').on('click', '.toggle-add-subtask', function() {
 		$('.subtask-wrapper').slideToggle(300);
@@ -61,6 +61,7 @@ function renderFoundationComponentsJquery(){
 		$('.list-filter .controls, .list-wrapper').toggle();
 	//	$('.list-filter .controls').toggle();
 	});
+*/
 
 	// datepicker
 	$('.pickdate').fdatepicker({
@@ -262,6 +263,29 @@ $(document).ready(function() {
 			//$(this).parent().removeClass('has-value');
 			$(this).closest('.form-floating-label').removeClass('has-value');
 		}
+	});
+
+
+	// add subtasks
+	$(document).on('click', '.toggle-add-subtask', function() {
+	// $('.add-form').on('click', '.toggle-add-subtask', function() {
+		$('.subtask-wrapper').slideToggle(300);
+		$('.main-task-wrapper').slideToggle(300);
+	});
+
+	// show/hide add task/list form
+	$(document).on('click', '.add, .edit-task', function() {
+	// $('.add, .edit-task').on('click', function(event) {
+		$('.add').toggleClass('close');
+		$('body').toggleClass('disable-header-scroll');
+		if($(this).hasClass('add-list')) {
+			$('.add-list use').attr('href', function(index, attr) {
+				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+			});
+		}
+		$('.add-form-wrapper').slideToggle(300);
+		$('.list-filter .controls, .list-wrapper').toggle();
+	//	$('.list-filter .controls').toggle();
 	});
 
 });
