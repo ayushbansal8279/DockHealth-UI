@@ -16,6 +16,10 @@ class PeopleContainer extends BaseComponent {
       this.state = {
           peopleProcessingResult: ''
       };
+
+			this.onClickRoleChange = this.onClickRoleChange.bind(this)
+			this.onClickRemoveUser = this.onClickRemoveUser.bind(this)
+			this.onClickCancelInvite = this.onClickCancelInvite.bind(this)
     }
 
     componentDidMount () {
@@ -28,7 +32,7 @@ class PeopleContainer extends BaseComponent {
       super.componentDidUpdate()
     }
 
-    onClick(markedUserId,currentRole) {
+    onClickRoleChange(markedUserId, currentRole) {
       var newRole;
       if(currentRole === 'ADMIN'){
         newRole = 'MEMBER'
@@ -72,43 +76,66 @@ class PeopleContainer extends BaseComponent {
 
     }
 
-    renderRole(people){
-          if(people.orgUserRole=='OWNER'){
-            return (<span className=" success label">{people.orgUserRole}</span>);
+    renderRole(person){
+          if(person.orgUserRole=='OWNER'){
+            return (<span className=" success label">{person.orgUserRole}</span>);
           }
-          else if(people.orgUserRole=='MEMBER' || people.orgUserRole=='ADMIN' ){
-            return (<span className=" warning label">{people.orgUserRole}</span>);
+          else if(person.orgUserRole=='MEMBER' || person.orgUserRole=='ADMIN' ){
+            return (<span className=" warning label">{person.orgUserRole}</span>);
           }
           else{
             return (<span></span>);
           }
     }
 
-    renderRoleButton(people){
-      if(people.userInviteStatus=='ACCEPTED'){
-          if(people.orgUserRole=='OWNER'){
-            return (<button className="button small secondary float-right" onClick={this.onClickRemoveUser.bind(this,people.userId)}>Remove User</button>);
-          }
-          else if(people.orgUserRole=='MEMBER'){
+    renderRoleButton(person){
+      if(person.userInviteStatus==null || person.userInviteStatus=="" || person.userInviteStatus=='ACCEPTED'){
+          if(person.orgUserRole==null || person.orgUserRole=='MEMBER'){
             return (
-              <div>
-                <button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Give Admin Rights</button>
-                <button className="button small secondary float-right" onClick={this.onClickRemoveUser.bind(this,people.userId)}>Remove User</button>
-              </div>
+                  <ul className="no-bullet">
+                    <li onClick={(e) => this.onClickRoleChange(person.userId, person.orgUserRole)}>Make admin</li>
+                    <li onClick={(e) => this.onClickRemoveUser(person.userId)}>Delete this person</li>
+                  </ul>
             );
-          }
-          else if(people.orgUserRole=='ADMIN'){
+          }else if(person.orgUserRole=='OWNER'){
             return (
-              <div>
-                <button className="button small secondary float-right" onClick={this.onClick.bind(this,people.userId,people.orgUserRole)}>Remove Admin Rights</button>
-                <button className="button small secondary float-right" onClick={this.onClickRemoveUser.bind(this,people.userId)}>Remove User</button>
-              </div>
+                  <ul className="no-bullet">
+                    <li onClick={(e) => this.onClickRemoveUser(person.userId)}>Delete this person</li>
+                  </ul>
+            );
+          }else if(person.orgUserRole=='ADMIN'){
+            return (
+                  <ul className="no-bullet">
+                    <li onClick={(e) => this.onClickRoleChange(person.userId, person.orgUserRole)}>Remove admin rights</li>
+                    <li onClick={(e) => this.onClickRemoveUser(person.userId)}>Delete this person</li>
+                  </ul>
               );
           }
+      }else if(person.userInviteStatus=='PENDING'){
+          return (
+                  <ul className="no-bullet">
+                    <li onClick={(e) => this.onClickCancelInvite(person.email)}>Cancel Invite</li>
+                  </ul>
+          );
+      }
+    }
+
+    renderStatus(person){
+      if(person.userInviteStatus==null || person.userInviteStatus=="" || person.userInviteStatus=='ACCEPTED'){
+        if(person.orgUserRole=='OWNER'){
+            return (
+                <span>Owner</span>
+            );
+        }else if(person.orgUserRole=='ADMIN'){
+            return (
+                <span>Admin</span>
+            );
         }
-        else if(people.userInviteStatus=='PENDING'){
-          return (<button className="button small secondary float-right" onClick={this.onClickCancelInvite.bind(this,people.email)}>Cancel Invite</button>);
-        }
+      }else if(person.userInviteStatus=='PENDING'){
+            return (
+                <span>Pending</span>
+            );
+      }
     }
 
     renderList() {
@@ -116,7 +143,6 @@ class PeopleContainer extends BaseComponent {
 //{new Date(invitation.updatedDateTime).toJSON()}
 
        return this.props.peoplelist.map((person) =>{
-         if(person.userInviteStatus == 'ACCEPTED'){
            return(
              <div className="item row expanded" key={person.email}>
              <div className="columns shrink pending">
@@ -125,44 +151,25 @@ class PeopleContainer extends BaseComponent {
              </div>
              <div className="columns">
              <span className="item-title">{person.firstName + " " + person.lastName}</span>
-             <span className="item-details">RN, GI Nurse</span>
+             <span className="item-details">{person.specialty}, {person.subspecialties}</span>
              <span className="top-buffer-xsmall item-details">{person.email}</span>
-             <span className="item-details">P: 434-432-43243 | C: 434-432-43243</span>
+             <span className="item-details">C: {person.accountPhoneNumber} | W: {person.workPhoneNumber}</span>
+             <span className="item-details highlight">
+                {
+                  this.renderStatus(person)
+                }
+             </span>
              </div>
              <div className="columns shrink more-options-wrapper more-options-people">
-             <span className="more-task-options icon-group-tooltip">
-             <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="delete this person"><svg className="icon"><use xlinkHref="#icon-delete"></use></svg></span>
-             <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabindex="2" title="give admin rights"><svg className="icon"><use xlinkHref="#icon-admin"></use></svg></span>
-             </span>
-             <svg className="icon medium ellipses"><use xlinkHref="#icon-ellipses"></use></svg>
-             </div>
-             </div>
-           )
-         }else{
-           return(
-             <div className="item row expanded" key={person.email}>
-               <div className="columns shrink pending">
-                 <span className="member-initials circle">{person.initials}</span>
-               </div>
-               <div className="columns">
-                 <span className="item-title">{person.firstName + " " + person.lastName}</span>
-                 <span className="top-buffer-xsmall item-details">{person.email}</span>
-                 <span className="item-details highlight">Pending</span>
-               </div>
-              <div className="columns shrink more-options-wrapper">
-                <svg className="icon ellipses medium" data-toggle="more-options-person-id-01"><use xlinkHref="#icon-ellipses"></use></svg>
-                <div className="small dropdown-pane" id="more-options-person-id-01" data-dropdown data-close-on-click="true">
-                  <ul className="no-bullet">
-                    <li>Delete this person</li>
-                    <li>Make admin</li>
-                  </ul>
-                </div>
+              <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+              <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
+                {
+                  this.renderRoleButton(person)
+                }
               </div>
-
+             </div>
              </div>
            )
-         }
-
       })
     }
 

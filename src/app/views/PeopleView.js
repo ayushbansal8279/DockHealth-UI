@@ -1,7 +1,6 @@
 import React from 'react';
-
+import InvitePeople from '../components/people/InvitePeople'
 import PeopleContainer from '../components/people/PeopleContainer'
-
 
 class PeopleView extends React.Component {
     render() {
@@ -32,57 +31,20 @@ class PeopleView extends React.Component {
 
                 </div>
                 <div className="columns shrink">
-                  <svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
+                  <svg className="add icon"><use xlinkHref="#icon-add-person"></use></svg>
                 </div>
 
               </div>{/*list-filter*/}
               </header>{/*slideUp*/}
 
-              <div className="add-form-wrapper">
-                <div className="task-item add-form row expanded">
-                  <form className="inline-label">
-                    <div className="column large-12 text-center">
-                      <h5 className="section-title">Invite a person</h5>
-                    </div>
-
-                    {/* First name */}
-                    <div className="column large-12 input-group no-icon">
-                      <div className="form-floating-label input-wrapper">
-                        <input className="input-group-field" type="text"/>
-                        <label>First name</label>
-                      </div>
-                    </div>
-
-                    {/* Last name */}
-                    <div className="column large-12 input-group no-icon">
-                      <div className="form-floating-label input-wrapper">
-                        <input className="input-group-field" type="text"/>
-                        <label>Last name</label>
-                      </div>
-                    </div>
-
-                    {/* Email name */}
-                    <div className="column large-12 input-group no-icon">
-                      <div className="form-floating-label input-wrapper">
-                        <input className="input-group-field" type="text"/>
-                        <label>Email</label>
-                      </div>
-                    </div>
-
-                    {/* SAVE */}
-                    <div className="column large-12 text-center">
-                      <input type="submit" className="button medium secondary" value="Send invite"/>
-                    </div>
-
-                  </form>
-                </div>
-              </div>{/*add-form-wrapper*/}
+              <InvitePeople/>
 
               <div className="list-wrapper">
 
                   <PeopleContainer/>
 
   						</div>{/*list-wrapper*/}
+
             </div>
           </div>
         </div>
