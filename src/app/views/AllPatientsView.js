@@ -20,7 +20,7 @@ class AllPatientsView extends React.Component {
                 </div>
 
                 <div className="wrapper list-filter row expanded collapse align-middle align-right">
-                  <div className="columns shrink controls">
+                  {/*<div className="columns shrink controls">
                     <button className="dropdown button primary small" data-toggle="sort-dropdown">Sort</button>
                     <div className="dropdown-pane button-dropdown" id="sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
                       <ul className="no-bullet">
@@ -28,7 +28,7 @@ class AllPatientsView extends React.Component {
                         <li className="active">MRN</li>
                       </ul>
                     </div>
-                  </div>
+                  </div>*/}
                   <div className="columns controls">
                     <div className="input-group searchbar">
                       <input className="input-field search-field" type="search" placeholder="Search patients" />
@@ -40,7 +40,7 @@ class AllPatientsView extends React.Component {
                     </div>
                   </div>
                   <div className="columns shrink">
-                    <svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
+                    <svg className="add icon"><use xlinkHref="#icon-add-patient"></use></svg>
                   </div>
                 </div>
 

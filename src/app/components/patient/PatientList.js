@@ -17,7 +17,7 @@ class PatientList extends React.Component {
 							<Link to={"/patient/"+patient.patientId} key={patient.patientId}>
 							<div className="item row expanded align-middle">
 								<div className="columns shrink">
-								<span className="highlight">123-4567</span>
+								<span className="highlight">000-0000</span>
 								</div>
 								<div className="columns">
 								<span className="item-title">{patient.firstName}&nbsp;{patient.lastName}</span>
