@@ -79,8 +79,8 @@ class ListOfTasks extends BaseComponent {
   		this.props.deleteTask(taskId, userId)
   	}
 
-  	handleToggleTaskPriority(taskId, userId, priority){
-  		this.props.toggleTaskPriority(taskId, userId, priority)
+  	handleToggleTaskPriority(task, userId, priority){
+  		this.props.toggleTaskPriority(task, userId, priority)
   	}
 
   	handleAddMemberToTask(memberId, member, taskId){
@@ -230,7 +230,7 @@ class ListOfTasks extends BaseComponent {
 			      </div>
 
 			      <div className="columns shrink align-right">
-			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task.taskId, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
+			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 			      </div>
 			      <div className="columns">
 			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
@@ -238,8 +238,37 @@ class ListOfTasks extends BaseComponent {
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : 'none'}</span>
 			        <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>(createdDateTime)</Moment> : 'unassigned'}</span>
 			        {/* EMAIL */}
-							<div key={"comments-comtainer-"+task.taskId} className="comments-container">
-								{commentNodes}
+							<div className="comments-container">
+								{/* {commentNodes} */}
+								{task.comments ?
+									task.comments.map(comment => {
+										return(
+											<div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
+						            <div className="columns shrink">
+						              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
+						              <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
+						            </div>
+						            <div className="columns">
+						              <span className="comment">{comment.comment}</span>
+						            </div>
+						            <div className="columns shrink align-right">
+						              <span className="time comment-time">1m ago</span>
+						            </div>
+						          {/*<div className="row expanded collapse comment-wrapper">
+						            <div className="columns shrink text-light">
+						              Load 2 earlier comments
+						            </div>
+						          </div>*/}
+											</div>
+										)
+									}) :
+									<div className="row expanded collapse comment-wrapper">
+										<div className="columns shrink">
+											{/*<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>*/}
+											{/*<img className="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>*/}
+										</div>
+									</div>
+								}
 								<AddComment task={task}/>
 							</div>
 			      </div>

@@ -132,10 +132,10 @@ export function saveTask(newTask) {
   }
 }
 
-export function addTaskComment(taskId, taskComment) {
+export function addTaskComment(task, taskComment) {
   return function(dispatch) {
-    return TaskApi.addComment(taskId, taskComment).then(comment => {
-      dispatch({type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, taskId, comment});
+    return TaskApi.addComment(task.taskId, taskComment).then(comment => {
+      dispatch({type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, task, comment});
     }).catch(error => {
       throw(error);
     });
@@ -188,18 +188,18 @@ export function updateTaskDescription(taskId, userId, description){
   }
 }
 
-export function toggleTaskPriority(taskId, userId, priority) {
+export function toggleTaskPriority(task, userId, priority) {
   return function(dispatch){
     if(priority == "LOW"){
-      return TaskApi.markHighPriority(taskId, userId).then(res => { // check for response value to be success
-        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId, priority:"HIGH"});
+      return TaskApi.markHighPriority(task.taskId, userId).then(res => { // check for response value to be success
+        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, task, priority:"HIGH"});
         }).catch(error => {
         throw(error);
       });
     }
     else if(priority == "HIGH"){
-      return TaskApi.markLowPriority(taskId, userId, priority).then(res => { // check for response value to be success
-        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId, priority:"LOW"});
+      return TaskApi.markLowPriority(task.taskId, userId, priority).then(res => { // check for response value to be success
+        dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, task, priority:"LOW"});
         }).catch(error => {
         throw(error);
       });

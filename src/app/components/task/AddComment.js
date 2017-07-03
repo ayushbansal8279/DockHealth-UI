@@ -45,7 +45,7 @@ class AddComment extends React.Component {
   }
 
   onSubmit(formProps){
-    this.props.taskActions.addTaskComment(this.props.task.taskId, formProps)
+    this.props.taskActions.addTaskComment(this.props.task, formProps)
     this.setState({addComment: false})
     this.setState({value: ''})
     $('.comment-button').show();

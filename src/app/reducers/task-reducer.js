@@ -128,17 +128,42 @@ const TaskReducer = function(state = initialState, action) {
         )
       };
 
-    case types.TOGGLE_TASK_PRIORITY_SUCCESS:
+      case types.TOGGLE_TASK_PRIORITY_SUCCESS:
+      var mainTask
+      if(action.task.parentTaskId){
+      mainTask = action.task.parentTaskId
+      }else{
+      mainTask = action.task.taskId
+      }
+
       return {
         ...state,
         tasks: state.tasks.map(task =>
-          task.taskId === action.taskId ?
-            // transform the one with a matching id
-            { ...task, priority: action.priority } :
-            // otherwise return original task
-            task
-      )
-    };
+          task.taskId === mainTask ?
+          action.task.parentTaskId ?
+            {...task, subtasks:
+              task.subtasks.map(subtask =>
+                subtask.taskId === action.task.taskId ?
+                {...subtask, priority: action.priority} :
+                subtask
+              )
+            } :
+            { ...task, priority: action.priority }
+            : task
+        )
+      };
+
+    // case types.TOGGLE_TASK_PRIORITY_SUCCESS:
+    //   return {
+    //     ...state,
+    //     tasks: state.tasks.map(task =>
+    //       task.taskId === action.taskId ?
+    //         // transform the one with a matching id
+    //         { ...task, priority: action.priority } :
+    //         // otherwise return original task
+    //         task
+    //   )
+    // };
 
     case types.ASSIGN_OR_REASSIGN_TASK_SUCCESS:
       return {
@@ -152,17 +177,43 @@ const TaskReducer = function(state = initialState, action) {
         )
       };
 
-    case types.ADD_TASK_COMMENT_SUCCESS:
-      return {
-        ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === action.taskId ?
-            // transform the one with a matching id
-            { ...task, comments: task.comments.concat([action.comment.data]) } :
-            // otherwise return original task
-            task
-        )
-      };
+      case types.ADD_TASK_COMMENT_SUCCESS:
+        var mainTask
+        if(action.task.parentTaskId){
+          mainTask = action.task.parentTaskId
+        }else{
+          mainTask = action.task.taskId
+        }
+
+        return {
+            ...state,
+            tasks: state.tasks.map(task =>
+              task.taskId === mainTask ?
+              action.task.parentTaskId ?
+                {...task, subtasks:
+                  task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId ?
+                    {...subtask, comments: subtask.comments.concat([action.comment.data])} :
+                    subtask
+                  )
+                } :
+                { ...task, comments: task.comments.concat([action.comment.data]) }
+
+                : task
+            )
+        };
+
+    // case types.ADD_TASK_COMMENT_SUCCESS:
+    //   return {
+    //     ...state,
+    //     tasks: state.tasks.map(task =>
+    //       task.taskId === action.task.taskId ?
+    //         // transform the one with a matching id
+    //         { ...task, comments: task.comments.concat([action.comment.data]) } :
+    //         // otherwise return original task
+    //         task
+    //     )
+    //   };
 
     case types.ADD_PATIENT_TO_TASK_SUCCESS:
       return {
