@@ -41,6 +41,9 @@ const TaskListReducer = function(state = initialState, action) {
     case types.TOGGLE_LIST_NOTIFICATIONS_SUCCESS:
       return {...state, tasklistone:{notifications:action.receiveNotifications}};
 
+    case types.SET_GENERIC_LIST_COUNTS:
+      return {...state, genericLists:action.lists};
+
     case types.UPDATE_TASKLIST_SUCCESS:
       return {
         ...state,

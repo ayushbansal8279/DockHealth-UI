@@ -14,7 +14,7 @@ class TaskListView extends React.Component {
     componentDidMount(){
       // this.props.taskListAction.getTaskListForUser()
       this.props.taskListAction.findPendingTaskListsForUser()
-
+      this.props.taskListAction.getGenericListCounts()
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 							'PageName': 'Lists'
 			});
@@ -98,8 +98,24 @@ class TaskListView extends React.Component {
                   <PendingListsComponent taskLists={this.props.pendingTaskLists} acceptInviteToTaskList={this.acceptInviteToTaskList} rejectInviteToTaskList={this.rejectInviteToTaskList}/>
                   <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList} leaveList={this.leaveList}/>
 
+                  {this.props.genericLists.map(list => {
+                    return(
+                      <div className="item row expanded align-middle">
+                        <div className="columns shrink">
+                          <span className="circle xxsmall transparent"></span>
+                        </div>
+                        <div className="columns">
+                          <h6 className="">{list.listName}</h6>
+                        </div>
+                        <div className="columns shrink">
+                          <h6 className="">{list.numberOfTasks}</h6>
+                        </div>
+                      </div>
+                    )
+                  })}
+
                   {/* Inbox */}
-        					<div className="item row expanded align-middle">
+        					{/* <div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
         						</div>
@@ -109,11 +125,11 @@ class TaskListView extends React.Component {
         						<div className="columns shrink">
         							<h6 className="">4</h6>
         						</div>
-        					</div>
+        					</div> */}
                   {/* Inbox End */}
 
                   {/* Important */}
-        					<div className="item row expanded align-middle">
+        					{/* <div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
         						</div>
@@ -123,11 +139,11 @@ class TaskListView extends React.Component {
         						<div className="columns shrink">
         							<h6 className="">0</h6>
         						</div>
-        					</div>
+        					</div> */}
                   {/* Important End */}
 
                   {/* Assigned to me */}
-        					<div className="item row expanded align-middle">
+        					{/* <div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
         						</div>
@@ -137,11 +153,11 @@ class TaskListView extends React.Component {
         						<div className="columns shrink">
         							<h6 className="">26</h6>
         						</div>
-        					</div>
+        					</div> */}
                   {/* Assigned to me End*/}
 
                   {/* Assigned by me */}
-        					<div className="item row expanded align-middle">
+        					{/* <div className="item row expanded align-middle">
         						<div className="columns shrink">
         							<span className="circle xxsmall transparent"></span>
         						</div>
@@ -151,7 +167,7 @@ class TaskListView extends React.Component {
         						<div className="columns shrink">
         							<h6 className="">0</h6>
         						</div>
-        					</div>
+        					</div> */}
                   {/* Assigned by me End */}
 
         				</div>{/* <!--item-list-wrapper--> */}
@@ -167,7 +183,8 @@ class TaskListView extends React.Component {
 function mapStateToProps(state){
   return{
     taskLists: state.taskListState.tasklist,
-    pendingTaskLists: state.taskListState.pendingTasklists
+    pendingTaskLists: state.taskListState.pendingTasklists,
+    genericLists: state.taskListState.genericLists
   }
 }
 

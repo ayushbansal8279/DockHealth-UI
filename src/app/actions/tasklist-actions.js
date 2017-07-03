@@ -232,3 +232,13 @@ export function leaveList(taskListId){
     });
   }
 };
+
+export function getGenericListCounts(){
+  return function(dispatch){
+    return TaskListApi.findGenericListCountsForUser().then(lists => {
+      dispatch({type: ActionTypes.SET_GENERIC_LIST_COUNTS, lists})
+    }).catch(error => {
+      throw(error);
+    });
+  }
+};

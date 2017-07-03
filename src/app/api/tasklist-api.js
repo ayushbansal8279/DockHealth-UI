@@ -136,3 +136,10 @@ export function toggleListNotifications(taskListId, receiveNotifications){
     return response;
   });
 }
+
+export function findGenericListCountsForUser(){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findGenericListCountsForUser')
+  .then(response => {
+    return response.data;
+  });
+}

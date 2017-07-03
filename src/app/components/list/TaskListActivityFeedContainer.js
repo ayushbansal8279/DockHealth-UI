@@ -2,6 +2,7 @@ import React, { Component} from 'react'
 import Moment from 'react-moment'
 import BaseComponent from '../BaseComponent'
 import * as TaskListActions from '../../actions/tasklist-actions'
+import MemberInitials from '../common/MemberInitials'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
@@ -34,6 +35,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
           return(
 						<div className="task-item row expanded condense align-middle" key={"audit" + audit.auditId}>
 							<div className="columns shrink">
+								{/* <MemberInitials /> */}
 								<img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
 							</div>
 							<div className="columns">

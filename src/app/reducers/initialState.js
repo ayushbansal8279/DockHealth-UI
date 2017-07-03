@@ -18,6 +18,7 @@ export default {
   activityFeedForAllUserList:[],
   title: "",
   currentList: {},
-  currentTask: {}
+  currentTask: {},
+  genericLists: []
   //addtasklisterror:''
 }
