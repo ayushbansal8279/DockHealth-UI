@@ -117,7 +117,7 @@ export function login (Username, Password) {
         Username : Username,
         Password : Password,
     };
-    var authenticationDetails = new window.AWS.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
+    var authenticationDetails = new window.AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
     var cognitoUserData = {
         Username : Username,
         Pool : userPool
@@ -163,11 +163,11 @@ export function login (Username, Password) {
         resolve(result)
         /*
         var logins = {}
-        logins['cognito-idp.' + window.AWS.config.region + '.amazonaws.com/' + userPool.userPoolId] = result.getIdToken().getJwtToken();
+        logins['cognito-idp.' + window.AWSCognito.config.region + '.amazonaws.com/' + userPool.userPoolId] = result.getIdToken().getJwtToken();
 
         // Add the User's Id Token to the Cognito credentials login map.
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: window.AWS.config.identityPoolId,
+            IdentityPoolId: window.AWSCognito.config.identityPoolId,
             Logins: logins
         });
 
