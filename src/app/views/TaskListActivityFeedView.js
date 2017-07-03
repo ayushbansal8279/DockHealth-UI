@@ -1,7 +1,15 @@
 import React from 'react'
 import TaskListActivityFeedContainer from '../components/list/TaskListActivityFeedContainer'
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class TaskListActivityFeedView extends React.Component {
+
+    componentDidMount(){
+			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+							'PageName': 'ActivityFeed'
+			});
+    }
+
     render() {
       return (
         <div className="off-canvas-content" data-off-canvas-content>

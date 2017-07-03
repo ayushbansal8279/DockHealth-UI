@@ -6,10 +6,15 @@ import Moment from 'react-moment'
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
 import * as PatientActions from '../actions/patient-actions'
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class PatientView extends React.Component {
   	componentDidMount () {
       this.props.actions.getPatientById(this.props.params.patientId);
+
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'PatientView'
+      });
   	}
 
     render() {
