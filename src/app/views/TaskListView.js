@@ -7,12 +7,17 @@ import * as InvitationActions from '../actions/invitation-actions'
 import AddListForm from '../components/list/AddListForm'
 import ListsComponent from '../components/list/ListsComponent'
 import PendingListsComponent from '../components/list/PendingListsComponent'
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class TaskListView extends React.Component {
 
     componentDidMount(){
       // this.props.taskListAction.getTaskListForUser()
       this.props.taskListAction.findPendingTaskListsForUser()
+
+			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+							'PageName': 'Lists'
+			});
     }
 
     submit = (form) => {

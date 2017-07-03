@@ -1,8 +1,15 @@
 import React from 'react';
 import InvitePeople from '../components/people/InvitePeople'
 import PeopleContainer from '../components/people/PeopleContainer'
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class PeopleView extends React.Component {
+    componentDidMount(){
+			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+							'PageName': 'PeopleView'
+			});
+    }
+
     render() {
       return (
         <div className="off-canvas-content" data-off-canvas-content>

@@ -3,8 +3,16 @@ import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
 import PatientListContainer from '../components/patient/PatientListContainer'
 import FormPatient from '../components/patient/FormPatient'
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class AllPatientsView extends React.Component {
+
+    componentDidMount(){
+			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+							'PageName': 'AllPeopleView'
+			});
+    }
+
     render() {
     return ( 
         <div className="off-canvas-content" data-off-canvas-content="true">

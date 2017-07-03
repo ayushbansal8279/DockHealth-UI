@@ -6,13 +6,13 @@ const {
   CognitoUser,
   CognitoUserPool,
   CognitoUserAttribute
-} = window.AWS.CognitoIdentityServiceProvider
+} = window.AWSCognito.CognitoIdentityServiceProvider
 
 export let resolvedCognitoUser = null
 
-window.AWS.config.region = process.env.AWS_REGION
-window.AWS.config.userPoolId = process.env.AWS_USERPOOLID
-window.AWS.config.identityPoolId = process.env.AWS_IDENTITYPOOLID
+window.AWSCognito.config.region = process.env.AWS_REGION
+window.AWSCognito.config.userPoolId = process.env.AWS_USERPOOLID
+window.AWSCognito.config.identityPoolId = process.env.AWS_IDENTITYPOOLID
 
 const userPool = new CognitoUserPool({
   UserPoolId: process.env.AWS_USERPOOLID,

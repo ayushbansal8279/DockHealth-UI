@@ -12,6 +12,7 @@ import * as TaskActions from '../actions/task-actions'
 import * as TaskListActions from '../actions/tasklist-actions'
 import BaseComponent from '../components/BaseComponent'
 import $ from 'jquery'
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class Home extends BaseComponent {
 
@@ -38,7 +39,7 @@ class Home extends BaseComponent {
     // console.log("home willMount")
   }
 
-  componentDidMount(){BaseComponent
+  componentDidMount(){
 
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
@@ -68,6 +69,11 @@ class Home extends BaseComponent {
       $('.task-item-wrapper').toggleClass('slim');
       $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
     });
+
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+            'PageName': 'ListOfTasks'
+    });
+
   }
 
   componentWillUpdate(nextProps){
