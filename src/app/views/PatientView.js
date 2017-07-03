@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
+import Moment from 'react-moment'
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
 import * as PatientActions from '../actions/patient-actions'
@@ -48,7 +49,7 @@ class PatientView extends React.Component {
                   </div>
                   <div className="columns large-4">
                     <span className="item-details">Birthday</span>
-                    <span className="item-content">July 8, 2001</span>
+                    <span className="item-content"><Moment format="MMM DD, YYYY">{patient.dob}</Moment></span>
                   </div>
                 </div>
 
@@ -70,7 +71,7 @@ class PatientView extends React.Component {
                 <div className="item row condense expanded align-middle">
                   <div className="columns large-12">
                     <span className="item-details">Notes</span>
-                    <span className="item-content">Angela primarily lives with her Grandma in Boston. Her Grandma's phone number is 423-321-3241. Additional notes can go here.</span>
+                    <span className="item-content">{patient.notes}</span>
                   </div>
                 </div>
 

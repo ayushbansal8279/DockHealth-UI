@@ -3,7 +3,7 @@ import { SubmissionError, Field, reduxForm } from 'redux-form'
 import * as PatientActions from '../../actions/patient-actions'
 import { connect } from 'react-redux'
 import BasicField from '../common/BasicField'
-import { Link, browserHistory } from 'react-router'
+import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
 
 const validate = values => {
@@ -52,6 +52,7 @@ class FormPatient extends React.Component {
           })
       }
 
+      hashHistory.push('patient/'+this.props.patientId)
 
   	}
 
@@ -82,7 +83,9 @@ class FormPatient extends React.Component {
 
               <Field name='phoneHome' type='tel' component={BasicField} label='Home phone' placeholder='required'/>
               <Field name='phoneMobile' type='tel' component={BasicField} label='Mobile' placeholder='required'/>
-              <Field name='email' type='tel' component={BasicField} label='Email' placeholder='required'/>
+              <Field name='email' type='email' component={BasicField} label='Email' placeholder='required'/>
+
+              <Field name='notes' type='text' component={BasicField} label='Notes' placeholder='required'/>
 
               <div className="column large-12 text-right text-center">
                 <input type="submit" className="button secondary medium" value="Save"/>

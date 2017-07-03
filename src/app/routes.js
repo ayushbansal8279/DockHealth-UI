@@ -10,6 +10,7 @@ import PatientView from './views/PatientView'
 import PatientEditView from './views/PatientEditView'
 import Register from './views/auth/Register'
 import Login from './views/auth/Login'
+import Logout from './views/auth/Logout'
 import ConfirmRegistration from './views/auth/ConfirmRegistration'
 import ResendCode from './views/auth/ResendCode'
 import ForgotPassword from './views/auth/ForgotPassword'
@@ -78,6 +79,7 @@ export default (
       <Route component={TemplateAuthBase}>
         <Route path="/confirmRegistration" component={ConfirmRegistration}/>
         <Route path="/login" component={Login} />
+        <Route path="/logout" component={Logout} />
         <Route path="/resendCode" component={ResendCode} />
         <Route path="/forgotPassword" component={ForgotPassword} />
         <Route path="/resetPassword" component={ResetPassword} />

@@ -7,6 +7,17 @@ const PeopleReducer = function(state = initialState, action) {
 
     case types.GET_PEOPLE_SUCCESS:
       return {...state, peoplelist:action.peoplelist};  //whatever our current state is, add on "peoplelist"
+    // case types.INVITEPERSON_ORG_SUCCESS:
+    //   var invitedPerson = {}
+    //   invitedPerson.firstName = action.res.firstName
+    //   invitedPerson.lastName = action.res.lastName
+    //   invitedPerson.email = action.res.email
+    //   invitedPerson.userInviteStatus = "PENDING"
+    //   invitedPerson.orgUserRole = "MEMBER"
+    //   return{
+    //     ...state,
+    //     peoplelist: [invitedPerson].concat(state.peoplelist)
+    //   }
   }
   return state;
 }

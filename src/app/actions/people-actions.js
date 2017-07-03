@@ -24,7 +24,6 @@ export function invitePersonToOrganization(formProps ){
       }).catch(error => {
         //console.log(error.message);
         throw(error);
-        //return dispatch({type: ActionTypes.ADD_TASKLIST_FAILURE, errorMessage});
       });
     };
   }

@@ -109,7 +109,7 @@ class NavBar extends React.Component {
           <ul className="menu vertical">
             <NavLink to="/userprofile">View and edit profile</NavLink>
             <li><a href="terms2.html">Terms and conditions</a></li>
-            <li><a href="login.html">Logout</a></li>
+            <NavLink to="/logout">Logout</NavLink>
           </ul>
         </div>
       </div>
