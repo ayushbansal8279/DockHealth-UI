@@ -122,6 +122,14 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
     });
 }
 
+export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findActivityFeedForAllTaskListsByUserId/'
+                  +"?queryStartPosition=" +queryStartPosition)
+    .then(response => {
+      return response.data;
+    });
+}
+
 export function toggleListNotifications(taskListId, receiveNotifications){
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/toggleUserNotificationsForTaskList/'+taskListId+'?notifications='+receiveNotifications)
   .then(response => {

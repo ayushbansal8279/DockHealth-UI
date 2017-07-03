@@ -15,7 +15,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
       super.componentDidMount()
       //queryStartPosition Zero is hardcoded because activity feed must alwqays return top 100 rows
       //for any more rows use findAuditsByTaskList must be used with proper queryStartPosition
-      this.props.findAuditsForAllTaskListsByUserId(0);
+      this.props.findActivityFeedForAllTaskListsByUserId(0);
   }
 
     componentDidUpdate () {
@@ -37,7 +37,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
 								<img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
 							</div>
 							<div className="columns">
-								<span className="task-title">{audit.auditId + " " + audit.currentState}</span>
+								<span className="task-title">{audit.auditId + " " + audit.activityFeed}</span>
 							</div>
 							<div className="columns shrink text-right more-options-wrapper">
 								<span className="item-details"><Moment format="MMM DD">{audit.createdDateTime}</Moment></span>
@@ -48,7 +48,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
     }
 
     renderTaskListName(){
-      return this.props.auditsForAllUserList.map((auditsandtasklist) =>{
+      return this.props.activityFeedForAllUserList.map((auditsandtasklist) =>{
         return(
 					<div className="slim accordion-item" data-accordion-item key={"taskList" + auditsandtasklist.taskListId}>
 						<a onClick={this.handleClick} href="#" className="accordion-title">{auditsandtasklist.listName}</a>
@@ -73,7 +73,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
 function mapStateToProps(state) {
   //console.log(state);
   return {
-    auditsForAllUserList: state.taskListState.auditsForAllUserList
+    activityFeedForAllUserList: state.taskListState.activityFeedForAllUserList
   };
 }
 

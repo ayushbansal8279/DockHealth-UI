@@ -15,6 +15,7 @@ export default {
   peoplelist: [],
   tasklistaudits: [],
   auditsForAllUserList: [],
+  activityFeedForAllUserList:[],
   title: "",
   currentList: {},
   currentTask: {}

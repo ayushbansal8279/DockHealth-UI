@@ -35,6 +35,9 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_AUDITS_BY_ALLUSERLIST_SUCCESS:
       return {...state, auditsForAllUserList:action.auditsForAllUserList};  //whatever our current state is, add on "auditsForAllUserList"
 
+    case types.GET_ACTIVITYFEED_BY_ALLUSERLIST_SUCCESS:
+      return {...state, activityFeedForAllUserList:action.activityFeedForAllUserList};  //whatever our current state is, add on "activityFeedForAllUserList"
+
     case types.TOGGLE_LIST_NOTIFICATIONS_SUCCESS:
       return {...state, tasklistone:{notifications:action.receiveNotifications}};
 

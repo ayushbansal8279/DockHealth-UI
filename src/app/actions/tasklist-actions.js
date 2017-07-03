@@ -197,6 +197,16 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
   };
 }
 
+export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
+  return function(dispatch) {
+    return TaskListApi.findActivityFeedForAllTaskListsByUserId(queryStartPosition).then(activityFeedForAllUserList => {
+      dispatch({type: ActionTypes.GET_ACTIVITYFEED_BY_ALLUSERLIST_SUCCESS, activityFeedForAllUserList});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
 export function toggleListNotifications(taskListId, receiveNotifications){
   return function(dispatch){
     return TaskListApi.toggleListNotifications(taskListId, receiveNotifications).then(res => {
