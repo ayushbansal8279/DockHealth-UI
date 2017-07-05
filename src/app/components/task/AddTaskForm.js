@@ -73,8 +73,7 @@ class AddTaskForm extends BaseComponent {
                 {this.props.taskLists.map(taskList => {
                   return(
                     <div key={taskList.taskListId} >
-                      <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio"
-                        onClick={this.handleTaskListSelection}/>
+                      <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio" onClick={this.handleTaskListSelection}/>
                       <label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label>
                       <br/>
                     </div>

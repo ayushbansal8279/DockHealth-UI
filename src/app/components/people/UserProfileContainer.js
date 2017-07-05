@@ -90,7 +90,7 @@ class UserProfileContainer extends React.Component {
                   <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/>
                   <span className="update circle xlarge">Update picture</span>
                 </div>
-                <h5 className="top-buffer">{initialValues.firstName} {initialValues.firstName}</h5>
+                <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
               </div>
               <div className="reveal text-center" id="update-profile-photo" data-reveal>
                 <h5 className="margin-bottom">Update profile photo</h5>
@@ -113,9 +113,29 @@ class UserProfileContainer extends React.Component {
                 <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
                 <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
                 <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number'/>
-                <div className="medium-12 columns button-group">
+                {/* <div className="medium-12 columns button-group">
                     <button className="button primary float-right button-small">Save</button>
                   <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
+                </div> */}
+                <div className="column top-buffer large-12">
+                  <div className="row">
+                    <div className="column">
+                      <span className="item-title">Notifications</span>
+                      <p className="text-light">Fine print about notifications should go here</p>
+                    </div>
+                    <div className="column shrink">
+                      <div className="switch">
+                        <Field className="switch-input" id="exampleSwitch" type="checkbox" name="notifications"/>
+                        <label className="switch-paddle" htmlFor="exampleSwitch">
+                          <span className="show-for-sr">Download Kittens</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* <!-- Save --> */}
+                <div className="column large-12 text-center top-buffer">
+                  <a className="button medium secondary">Save</a>
                 </div>
               </form>
             </div>
