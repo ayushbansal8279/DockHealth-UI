@@ -171,8 +171,6 @@ function enableAutoCompleteForAssignedTo(lookupData) {
 		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
 		list: {
 			onLoadEvent: function() {
-				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
-				$('.easy-autocomplete-container ul').append(addnew);
 			},
 			onSelectItemEvent: function() {
 				var selItemData = $("#assign-task-to").getSelectedItemData();
@@ -183,12 +181,45 @@ function enableAutoCompleteForAssignedTo(lookupData) {
 		},
 		template: { type: "custom",
 			method: function(value, item) {
-				return "<img class='member-photo circle medium data-item' src='assets/img/user2.png'/><span class='data-item'>" + item.firstName + " " + item.lastName + "</span>";
+				return ""
+					//+ "<span class='member-initials circle medium'>"+item.initials+"</span>"
+					+ "<span class='data-item'>" 
+					+ item.firstName + " " + item.lastName 
+					+ "</span>";
 			}
 		}
 	};
 
-	$(".assign-to").easyAutocomplete(people);
+	$("#assign-task-to").easyAutocomplete(people);
+
+}
+
+function enableAutoCompleteForListMembers(lookupData) {
+	var people = {
+		data: lookupData,
+		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
+		list: {
+			onLoadEvent: function() {
+			},
+			onSelectItemEvent: function() {
+				var selItemData = $("#add-member-to-list").getSelectedItemData();
+				$("#add-member-to-list").val(selItemData.firstName + " " + selItemData.lastName);
+				$("#add-member-to-list-id").val(selItemData.userId);
+			},
+			match: {enabled: true}
+		},
+		template: { type: "custom",
+			method: function(value, item) {
+				return ""
+					//+ "<span class='member-initials circle medium'>"+item.initials+"</span>"
+					+ "<span class='data-item'>" 
+					+ item.firstName + " " + item.lastName 
+					+ "</span>";
+			}
+		}
+	};
+
+	$("#add-member-to-list").easyAutocomplete(people);
 
 }
 

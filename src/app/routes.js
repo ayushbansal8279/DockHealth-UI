@@ -14,6 +14,7 @@ import Logout from './views/auth/Logout'
 import ConfirmRegistration from './views/auth/ConfirmRegistration'
 import ResendCode from './views/auth/ResendCode'
 import ForgotPassword from './views/auth/ForgotPassword'
+import ChangePassword from './views/auth/ChangePassword'
 import ResetPassword from './views/auth/ResetPassword'
 import ConfirmMFACode from './views/auth/ConfirmMFACode'
 import PageNotFound from './views/PageNotFound'
@@ -59,13 +60,13 @@ export default (
       <Route path="/editPatient/:patientId" component={PatientEditView} />
       <Route path="/taskList" component={TaskListView} />
       <Route path="/activityfeed" component={TaskListActivityFeedView} />
-      <Route path="/addTaskList" component={TaskListAdd} />
-      <Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />
-      <Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />
-      <Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />
+      {/*<Route path="/addTaskList" component={TaskListAdd} />*/}
+      {/*<Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />*/}
+      {/*<Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />*/}
+      {/*<Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />*/}
       <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
       <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} />
-      <Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />
+      {/*<Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />*/}
       <Route path="/invitations" component={InvitationsView} />
       <Route path="/people" component={PeopleView} />
       <Route path="/peopleinvite" component={InvitePeople} />
@@ -82,6 +83,7 @@ export default (
         <Route path="/logout" component={Logout} />
         <Route path="/resendCode" component={ResendCode} />
         <Route path="/forgotPassword" component={ForgotPassword} />
+        <Route path="/changePassword" component={ChangePassword} />
         <Route path="/resetPassword" component={ResetPassword} />
         <Route path="/confirmMFACode" component={ConfirmMFACode} />
       </Route>
