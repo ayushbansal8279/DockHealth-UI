@@ -90,7 +90,7 @@ class UserProfileContainer extends React.Component {
                   <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/>
                   <span className="update circle xlarge">Update picture</span>
                 </div>
-                <h5 className="top-buffer">{initialValues.firstName} {initialValues.firstName}</h5>
+                <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
               </div>
               <div className="reveal text-center" id="update-profile-photo" data-reveal>
                 <h5 className="margin-bottom">Update profile photo</h5>
@@ -113,9 +113,12 @@ class UserProfileContainer extends React.Component {
                 <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
                 <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
                 <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number'/>
-                <div className="medium-12 columns button-group">
-                    <button className="button primary float-right button-small">Save</button>
-                  <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
+                <div className="medium-6 columns top-buffer details text-left">
+                  <button className="button primary float-left button-small">Save</button>
+                  <Link to="/"><button className="button secondary button-small float-left">Cancel</button></Link>
+                </div>
+                <div className="medium-6 columns top-buffer details text-right">
+                  <Link to="/changePassword"><button className="button primary float-right button-small">Change password</button></Link>
                 </div>
               </form>
             </div>

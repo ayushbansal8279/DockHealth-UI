@@ -38,7 +38,7 @@ export default class Logout extends React.Component {
 					<h3>You have been logged out</h3>
 				</div>
 				<div className="columns large-12 top-buffer text-right details">
-          <Link to="/confirmRegistration">Login here</Link>
+          <Link to="/login">Login here</Link>
 				</div>
 
 			</div>
