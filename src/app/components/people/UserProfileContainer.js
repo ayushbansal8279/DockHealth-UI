@@ -113,10 +113,6 @@ class UserProfileContainer extends React.Component {
                 <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
                 <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
                 <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number'/>
-                {/* <div className="medium-12 columns button-group">
-                    <button className="button primary float-right button-small">Save</button>
-                  <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
-                </div> */}
                 <div className="column top-buffer large-12">
                   <div className="row">
                     <div className="column">
@@ -125,7 +121,7 @@ class UserProfileContainer extends React.Component {
                     </div>
                     <div className="column shrink">
                       <div className="switch">
-                        <Field className="switch-input" id="exampleSwitch" type="checkbox" name="notifications"/>
+                        <Field className="switch-input" id="exampleSwitch" type="checkbox" name="pushPref" component="input"/>
                         <label className="switch-paddle" htmlFor="exampleSwitch">
                           <span className="show-for-sr">Download Kittens</span>
                         </label>
@@ -133,9 +129,13 @@ class UserProfileContainer extends React.Component {
                     </div>
                   </div>
                 </div>
+                {/* <div className="medium-12 columns button-group">
+                    <button className="button primary float-right button-small">Save</button>
+                  <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
+                </div> */}
                 {/* <!-- Save --> */}
                 <div className="column large-12 text-center top-buffer">
-                  <a className="button medium secondary">Save</a>
+                  <button type="submit" className="button medium secondary">Save</button>
                 </div>
               </form>
             </div>

@@ -119,7 +119,7 @@ class HeaderTasks extends React.Component {
 
 								<div className="columns shrink icon-group controls">
 									<svg className="icon"><use xlinkHref="#icon-bell"></use></svg>
-									<svg className="icon"><use xlinkHref="#icon-print"></use></svg>
+									{/* <svg className="icon"><use xlinkHref="#icon-print"></use></svg> */}
 									<svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg>
 								</div>
 
@@ -130,7 +130,7 @@ class HeaderTasks extends React.Component {
 						</div>
         </header>
 
-        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title}/>
+        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} members={this.props.members}/>
         <ListMembers taskListId={this.props.taskListId} members={this.props.members} title={this.props.title}/>
       </div>
       );

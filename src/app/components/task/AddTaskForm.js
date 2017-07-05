@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form'
+import {bindActionCreators} from 'redux'
+import * as TaskListActions from '../../actions/tasklist-actions'
+import { Field, reduxForm, formValueSelector } from 'redux-form'
 import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
 import $ from 'jquery'
@@ -27,6 +29,7 @@ class AddTaskForm extends BaseComponent {
     $("#filed-in-taskList").val('foo-'+event.target.value);
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
+    this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ACTIVE')
     // $("#filed-in-taskList").attr('aria-expanded','false');
     // $("#add-task-file-in-options").attr('aria-hidden','true');
     // $("#filed-in-taskList").removeClass("hover");
@@ -94,7 +97,7 @@ class AddTaskForm extends BaseComponent {
         }
 
         {/* Hide 'assignedTo' if user is adding a task to the 'inbox'. Tasks can only be assigned from lists */}
-        {this.props.title != "Inbox" ?
+        {this.props.title != "Inbox" || this.props.taskListSelection ?
           <span>
             <Field id="assign-task-to" name='assignedTo' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
             <Field id="assign-task-to-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
@@ -185,6 +188,8 @@ AddTaskForm = reduxForm({
   enableReinitialize : true
 })(AddTaskForm)
 
+const selector = formValueSelector('addTaskForm')
+
 const mapStateToProps = function(store) {
 	var initialTaskFormValues = {}
   if(store.taskListState.currentList){
@@ -213,8 +218,15 @@ const mapStateToProps = function(store) {
 	}
   return {
 		initialValues: initialTaskFormValues,
-    tasks: store.taskState.tasks
+    tasks: store.taskState.tasks,
+    taskListSelection: selector(store, 'taskListId')
   }
 };
 
-export default connect(mapStateToProps)(AddTaskForm);
+const mapDispatchToProps = function(dispatch){
+  return{
+    taskListActions: bindActionCreators(TaskListActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTaskForm);

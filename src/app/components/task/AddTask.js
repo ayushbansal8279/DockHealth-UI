@@ -6,6 +6,7 @@ import PatientDropdownListContainer from '../patient/PatientDropdownListContaine
 import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
 // import * as PatientApi from '../../api/patient-api'
 import * as PeopleActions from '../../actions/people-actions';
+import * as TaskListActions from '../../actions/tasklist-actions';
 import * as TaskActions from '../../actions/task-actions';
 import {ReactDOM, findDOMNode, getDOMNode} from 'react-dom'
 import $ from 'jquery'
@@ -26,7 +27,8 @@ class AddTask extends React.Component {
 
   	componentDidMount () {
     	console.log("mounted AddTask component")
-		this.props.peopleActions.findAllUsersByOrganizationId();
+			this.props.peopleActions.findAllUsersByOrganizationId();
+
 		// PatientApi.getAllPatients().then(allPatients => {
 		// 	enableAutoComplete(allPatients);
     	// }).catch(error => {
@@ -36,12 +38,12 @@ class AddTask extends React.Component {
   	}
 
   	componentWillUpdate (nextProps) {
-		if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
-			enableAutoCompleteForPatients(nextProps.patients);
-		}
-		if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
-			enableAutoCompleteForAssignedTo(nextProps.peoplelist);
-		}
+			if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
+				enableAutoCompleteForPatients(nextProps.patients);
+			}
+			if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
+				enableAutoCompleteForAssignedTo(this.props.members);
+			}
   	}
 
 	unmount() {
@@ -120,6 +122,7 @@ const mapStateToProps = function(store) {
 
 function mapDispatchToProps(dispatch) {
   return {
+	  taskListActions: bindActionCreators(TaskListActions, dispatch),
 	  taskActions: bindActionCreators(TaskActions, dispatch),
 	  peopleActions: bindActionCreators(PeopleActions, dispatch)
   }
