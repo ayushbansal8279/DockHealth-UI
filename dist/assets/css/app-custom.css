@@ -125,3 +125,7 @@ input:checked ~ .switch-paddle:after {
 /*.accordion-content {
   display: block;
 }*/
+
+.listMembersPopUp {
+  height: 700px;
+}

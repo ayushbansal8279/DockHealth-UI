@@ -131,7 +131,7 @@ class HeaderTasks extends React.Component {
         </header>
 
         <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title}/>
-        <ListMembers members={this.props.members} title={this.props.title}/>
+        <ListMembers taskListId={this.props.taskListId} members={this.props.members} title={this.props.title}/>
       </div>
       );
     }

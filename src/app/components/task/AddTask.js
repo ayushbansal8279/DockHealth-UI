@@ -36,13 +36,12 @@ class AddTask extends React.Component {
   	}
 
   	componentWillUpdate (nextProps) {
-			// **1**
-			if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
-				enableAutoCompleteForPatients(nextProps.patients);
-			}
-			if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
-				enableAutoCompleteForAssignedTo(nextProps.peoplelist);
-			}
+		if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
+			enableAutoCompleteForPatients(nextProps.patients);
+		}
+		if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
+			enableAutoCompleteForAssignedTo(nextProps.peoplelist);
+		}
   	}
 
 	unmount() {
