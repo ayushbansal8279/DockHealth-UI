@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import {bindActionCreators} from 'redux'
-import * as TaskListActions from '../../actions/tasklist-actions'
+import {bindActionCreators} from 'redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
+import * as TaskListActions from '../../actions/tasklist-actions'
 import $ from 'jquery'
 
 //let AddTaskForm = props => {
@@ -26,10 +26,11 @@ class AddTaskForm extends BaseComponent {
   }
 
   handleTaskListSelection(event) {
+    alert(event.target.value)
+    this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ACTIVE')
     $("#filed-in-taskList").val('foo-'+event.target.value);
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
-    this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ACTIVE')
     // $("#filed-in-taskList").attr('aria-expanded','false');
     // $("#add-task-file-in-options").attr('aria-hidden','true');
     // $("#filed-in-taskList").removeClass("hover");

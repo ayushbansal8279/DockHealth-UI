@@ -25,6 +25,7 @@ class ListOfTasksContainer extends React.Component {
             addTaskComment={this.props.actions.addTaskComment}
             addPatientToTask={this.props.patientActions.addPatientToTask}
             markAsUnread={this.props.actions.markAsUnread}
+            members={this.props.members}
             />);
   }
 
@@ -41,7 +42,8 @@ const mapStateToProps = function (store) {
   return {
     tasks: store.taskState.tasks, // actions (binded below) set states for tasks which are then returned here
     completedTasks: store.taskState.completedTasks, // actions (binded below) set states for tasks which are then returned here
-    user: store.userState.user
+    user: store.userState.user,
+    members: store.taskListState.tasklistmembers
   };
 
 }

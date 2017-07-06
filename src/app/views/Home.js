@@ -40,7 +40,6 @@ class Home extends BaseComponent {
   }
 
   componentDidMount(){
-
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks()
@@ -77,16 +76,20 @@ class Home extends BaseComponent {
   }
 
   componentWillUpdate(nextProps){
-    var listName = this.props.routeParams.listName
-    if(!listName || listName == "Inbox"){
-      this.props.actions.getInboxTasks()
-    }else if(listName == "Assigned by me"){
-      this.props.actions.getTasksAssignedByMe()
-    }else if(listName == "Assigned to me"){
-      this.props.actions.getTasksAssignedToMe()
-    }else{
-      this.props.actions.getListTasks(this.props.routeParams.taskListId)
-      this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
+    console.log(this.props.routeParams.listName)
+    console.log(nextProps)
+    if(nextProps.routeParams.listName != this.props.routeParams.listName){
+      var listName = nextProps.routeParams.listName
+      if(!listName || listName == "Inbox"){
+        this.props.actions.getInboxTasks()
+      }else if(listName == "Assigned by me"){
+        this.props.actions.getTasksAssignedByMe()
+      }else if(listName == "Assigned to me"){
+        this.props.actions.getTasksAssignedToMe()
+      }else if(listName != null){
+        this.props.actions.getListTasks(nextProps.routeParams.taskListId)
+        this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ACTIVE")
+      }
     }
   }
 
@@ -118,6 +121,12 @@ class Home extends BaseComponent {
   }
 }
 
+const mapStateToProps = function (store) {
+  return{
+    members: store.taskListState.tasklistmembers
+  }
+}
+
 const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(TaskActions, dispatch),
@@ -125,4 +134,6 @@ const mapDispatchToProps = function (dispatch) {
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(Home);
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

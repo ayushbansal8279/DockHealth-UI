@@ -453,3 +453,12 @@ export function leaveList(taskListId){
     throw(error);
   });
 }
+
+export function findOrgInviteByEmail(email){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findOrgInviteByEmail/', email)
+  .then(response => {
+    return response.data;
+  }).catch(error => {
+    throw(error);
+  });
+}

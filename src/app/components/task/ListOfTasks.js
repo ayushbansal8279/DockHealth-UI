@@ -13,6 +13,7 @@ import * as userApi from '../../api/user-api'
 import { findDOMNode } from 'react-dom'
 import $ from 'jquery'
 import BooleanModal from '../common/BooleanModal'
+import AssignToModal from '../common/AssignToModal'
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -186,7 +187,7 @@ class ListOfTasks extends BaseComponent {
 		              <span className="comment">{comment.comment}</span>
 		            </div>
 		            <div className="columns shrink align-right">
-		              <span className="time comment-time">1m ago</span>
+		              <span className="time comment-time"><Moment fromNow>{comment.createdDateTime}</Moment></span>
 		            </div>
 		          {/*<div className="row expanded collapse comment-wrapper">
 		            <div className="columns shrink text-light">
@@ -224,8 +225,8 @@ class ListOfTasks extends BaseComponent {
 
 			      <div className="columns shrink">
 			        {task.assignedTo ?
-			          <span className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-								<span className="member-initials circle medium">?</span>
+			          <span data-open="edit-assign-to" className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
+								<span data-open="edit-assign-to" className="member-initials circle medium">?</span>
 			        }
 			      </div>
 
@@ -233,7 +234,7 @@ class ListOfTasks extends BaseComponent {
 			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 			      </div>
 			      <div className="columns">
-			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
+			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.taskList && task.taskList.listName} {task.read ? task.description : <b>{task.description}</b>}</span>
 							<input className="task-title" type="text"/>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 							{task.assignedBy ?
@@ -256,7 +257,7 @@ class ListOfTasks extends BaseComponent {
 						              <span className="comment">{comment.comment}</span>
 						            </div>
 						            <div className="columns shrink align-right">
-						              <span className="time comment-time">1m ago</span>
+						              <span className="time comment-time"><Moment fromNow>{comment.createdDateTime}</Moment></span>
 						            </div>
 						          {/*<div className="row expanded collapse comment-wrapper">
 						            <div className="columns shrink text-light">
@@ -313,6 +314,7 @@ class ListOfTasks extends BaseComponent {
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
 					<BooleanModal taskId={task.taskId}/>
+					<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId}/>
 				</span>
 			)
 
@@ -348,6 +350,8 @@ class ListOfTasks extends BaseComponent {
 		super.componentDidUpdate()
 		// console.log("listoftasks didupdate")
   }
+
+
 
 }
 

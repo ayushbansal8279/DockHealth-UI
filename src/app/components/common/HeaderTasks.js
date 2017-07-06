@@ -144,8 +144,8 @@ const mapStateToProps = function (store) {
     taskLists: store.taskListState.tasklist,
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,
-    members: store.taskListState.tasklistmembers,
-    currentUser: store.userState.user
+    currentUser: store.userState.user,
+    members: store.taskListState.tasklistmembers
   }
 }
 
