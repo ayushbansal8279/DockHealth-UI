@@ -1,45 +1,22 @@
-import React from 'react'
-import { connect } from 'react-redux';
-import { Field, reduxForm, formValueSelector } from 'redux-form'
+import React from 'react';
 import BaseComponent from '../BaseComponent'
-import $ from 'jquery'
 
 //let AddTaskForm = props => {
 class AssignToModal extends BaseComponent {
-  constructor(props, container) {
-		super(props)
-    this.state = {
-      members: [],
-      taskListId: ""
-    }
-	}
 
-  componentDidMount () {
-    this.setState({members: this.props.members})
-    this.setState({taskListId: this.props.taskListId})
+  componentDidMount(){
+    console.log(this.props.members)
   }
-
-  componentDidUpdate () {
-  }
-
-  componentWillReceiveProps(newProps) {
-    if(newProps.params.taskListId != this.state.taskListId){
-      console.log(newProps)
-      this.setState({taskListId: newProps.taskListId})
-      this.setState({members: newProps.members});
-    }
-}
 
   render() {
     return (
-      <div className="reveal" id="edit-assign-to" data-reveal>
-        <h5>{this.state.taskListId}</h5>
+      <div className="reveal" id={"edit-assign-to-" + this.props.taskId} data-reveal>
+        <h5>{this.props.taskListId}</h5>
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
-
-          {this.state.members.map(member=>{
+          {this.props.members.map(member=>{
             return(
-              <div key={member.userId} className="row condense expanded border-bottom align-middle">
+              <div key={this.props.taskListId + member.userId} className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
                   <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/>
                 </div>
@@ -49,47 +26,6 @@ class AssignToModal extends BaseComponent {
               </div>
             )
           })}
-          {/* <div className="row condense expanded border-bottom align-middle">
-            <div className="columns shrink">
-              <img className="member-photo circle medium" src="assets/img/user2.png" alt="name of user"/>
-            </div>
-            <div className="columns">
-              <span className="item-content">Jenny Davis</span>
-            </div>
-          </div>
-          <div className="row condense expanded border-bottom align-middle">
-            <div className="columns shrink">
-              <img className="member-photo circle medium" src="assets/img/user1.png" alt="name of user"/>
-            </div>
-            <div className="columns">
-              <span className="item-content">Christopher Richardson</span>
-            </div>
-          </div>
-          <div className="row condense expanded border-bottom align-middle">
-            <div className="columns shrink">
-              <span className="member-initials circle medium">SL</span>
-            </div>
-            <div className="columns">
-              <span className="item-content">Samuel Lowe</span>
-            </div>
-          </div>
-          <div className="row condense expanded border-bottom align-middle">
-            <div className="columns shrink">
-              <span className="member-initials circle medium">JO</span>
-            </div>
-            <div className="columns">
-              <span className="item-content">Jack Oliver</span>
-            </div>
-          </div>
-          <div className="row condense expanded border-bottom align-middle">
-            <div className="columns shrink">
-              <span className="member-initials circle medium">PG</span>
-            </div>
-            <div className="columns">
-              <span className="item-content">Peter Gonzales</span>
-            </div>
-          </div>
-        </div> */}
         <form className="inline-label top-buffer">
           <div className="row collapse expanded align-middle">
             <div className="columns input-group input-wrapper">
@@ -114,19 +50,8 @@ class AssignToModal extends BaseComponent {
     </div>
     )
   }
+
 }
 
-AssignToModal = reduxForm({
-  // a unique name for the form
-  form: 'assignToModal',
-  enableReinitialize : true
-})(AssignToModal)
 
-
-const mapStateToProps = function(store) {
-  return {
-		// initialValues: initialTaskFormValues
-  }
-};
-
-export default connect(mapStateToProps)(AssignToModal);
+export default AssignToModal;

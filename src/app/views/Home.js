@@ -98,18 +98,19 @@ class Home extends BaseComponent {
     return (
 
         <div className="off-canvas-content" data-off-canvas-content="true">
+
           <div className="row expanded collapse">
             <div className="large-12 columns">
               <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId}/>
               <div className="list-wrapper">
                 <div className="task-item-wrapper">
                   <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
-                  <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE"/>
+                  <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE" members={this.props.members}/>
                   <div className="show-completed text-center">
                     <a className="toggle-completed button primary small">Show completed tasks</a>
                   </div>
                   <div className="completed-task-wrapper">
-                    <ListOfTasksContainer taskListId={taskListId} status="COMPLETE"/>
+                    <ListOfTasksContainer taskListId={taskListId} status="COMPLETE" members={this.props.members}/>
                   </div>
                 </div>
               </div>

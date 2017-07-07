@@ -42,8 +42,7 @@ const mapStateToProps = function (store) {
   return {
     tasks: store.taskState.tasks, // actions (binded below) set states for tasks which are then returned here
     completedTasks: store.taskState.completedTasks, // actions (binded below) set states for tasks which are then returned here
-    user: store.userState.user,
-    members: store.taskListState.tasklistmembers
+    user: store.userState.user
   };
 
 }

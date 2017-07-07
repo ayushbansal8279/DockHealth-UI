@@ -225,8 +225,8 @@ class ListOfTasks extends BaseComponent {
 
 			      <div className="columns shrink">
 			        {task.assignedTo ?
-			          <span data-open="edit-assign-to" className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-								<span data-open="edit-assign-to" className="member-initials circle medium">?</span>
+			          <span data-open={"edit-assign-to-" + task.taskId} className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
+								<span data-open={"edit-assign-to-" + task.taskId} className="member-initials circle medium">?</span>
 			        }
 			      </div>
 
@@ -314,7 +314,7 @@ class ListOfTasks extends BaseComponent {
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
 					<BooleanModal taskId={task.taskId}/>
-					<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId}/>
+					<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} taskId={task.taskId}/>
 				</span>
 			)
 
