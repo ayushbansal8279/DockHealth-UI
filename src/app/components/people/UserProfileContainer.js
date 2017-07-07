@@ -83,61 +83,235 @@ class UserProfileContainer extends React.Component {
       }
 
       return(
-          <div className="wrapper large-8 large-offset-2 top-buffer">
-            <div className="row">
-              <div className="columns large-12 text-center">
-                <div className="update-photo" data-open="update-profile-photo">
-                  <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/>
-                  <span className="update circle xlarge">Update picture</span>
+        <div className="wrapper top-buffer">
+            <div className="columns large-8 large-offset-2">
+              <div className="row">
+
+                {/* Profile Image */}
+                <div className="columns large-12 text-center">
+                  <div className="update-photo" data-open="update-profile-photo">
+                    <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/>
+                    <span className="update circle xlarge">Update picture</span>
+                  </div>
+                  <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
                 </div>
-                <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
-              </div>
-              <div className="reveal text-center" id="update-profile-photo" data-reveal>
-                <h5 className="margin-bottom">Update profile photo</h5>
-                <p onClick={this.onClickRemovePicture}>Remove photo</p>
-                <p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
-                <label htmlFor="file">Upload photo</label></p>
-                <p>Take photo</p>
-                <button className="close-button" data-close aria-label="Close modal" type="button">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            </div>
-            <div className="row">
-              <form onSubmit = {handleSubmit(this.onSubmit.bind(this))} className="inline-label top-buffer expand white-bg">
-                <Field name='firstName'  type='text' component={BasicField} label='First Name'/>
-                <Field name='lastName' type='text' component={BasicField} label='Last Name'/>
-                <Field name='specialty' type='text' component={BasicField} label='Specialty'/>
-                <Field name='subspecialties' type='text' component={BasicField} label='Subspecialties'/>
-                <Field name='accountPhoneNumber' type='text' component={BasicField} label='Account Phone Number'/>
-                <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
-                <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
-                <Field name='mobilePhoneNumber' type='text' component={BasicField} label='Mobile Phone Number'/>
-                <div className="column top-buffer large-12">
-                  <div className="row">
-                    <div className="column">
-                      <span className="item-title">Notifications</span>
-                      <p className="text-light">Fine print about notifications should go here</p>
+                {/* Profile Image Modal */}
+                <div className="reveal text-center" id="update-profile-photo" data-reveal>
+                  <h5 className="margin-bottom">Update profile photo</h5>
+                  <p onClick={this.onClickRemovePicture}>Remove photo</p>
+                  <p>
+                    <input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
+                    <label htmlFor="file">Upload photo</label>
+                  </p>
+                  <p>Take photo</p>
+                  <button className="close-button" data-close aria-label="Close modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                {/* <div className="columns large-12 text-center">
+                  <div className="update-photo" data-open="update-profile-photo">
+                    <img className="member-photo circle xlarge" src="assets/img/user1.png" alt="name of user"/>
+                    <span className="update circle xlarge">Update picture</span>
+                  </div>
+                  <h5 className="top-buffer">Christopher Richardson</h5>
+                </div> */}
+
+                <form onSubmit = {handleSubmit(this.onSubmit.bind(this))} className="inline-label top-buffer expand white-bg">
+                  <div className="column large-12 top-buffer">
+                    <span className="item-title">General Information</span>
+                  </div>
+
+                  {/* <!-- First name --> */}
+                  <Field name='firstName' decoratingClassName='top-buffer-small' type='text' component={BasicField} label='First Name'/>
+                  {/* <div className="top-buffer-small column large-12 input-group no-icon">
+                    <div className="form-floating-label input-wrapper has-error">
+                      <input className="input-group-field" type="text"/>
+                      <label>First name</label>
+                      <span className="form-error">
+                        Please enter your name.
+                      </span>
                     </div>
-                    <div className="column shrink">
-                      <div className="switch">
-                        <Field className="switch-input" id="exampleSwitch" type="checkbox" name="pushPref" component="input"/>
-                        <label className="switch-paddle" htmlFor="exampleSwitch">
-                          <span className="show-for-sr">Download Kittens</span>
-                        </label>
+                  </div> */}
+
+                  {/* <!-- Last name --> */}
+                  <Field name='lastName' type='text' component={BasicField} label='Last Name'/>
+                  {/* <div className="column large-12 input-group no-icon">
+                    <div className="form-floating-label input-wrapper">
+                      <input className="input-group-field" type="text"/>
+                      <label>Last name</label>
+                    </div>
+                  </div> */}
+
+                  {/* <!-- Title --> */}
+                  <div className="column large-12 input-group no-icon input-dropdown">
+                    <div className="form-floating-label input-wrapper">
+                      <input className="input-group-field" type="text" data-toggle="add-titles"/>
+                      <label>Title</label>
+                    </div>
+
+                    <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
+                      <fieldset className="large-12 columns">
+                        <ul className="no-bullet columns-2">
+                          <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">BA</label></li>
+                          <li><input id="checkbox2" type="checkbox"/><label htmlFor="checkbox2">BS</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">BSN</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CFNP</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CMA</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CPNP</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CNS</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DDS</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DMD</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DO</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FAAP</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FAAC</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FACOG</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FNP</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FNP-C</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">LCSW</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBA</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBBS</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBChB</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MD</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MS</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MPH</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">NP</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PA</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PA-C</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PhD</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RD</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RN</label></li>
+                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">Other</label></li>
+                        </ul>
+                      </fieldset>
+                    </div>
+                  </div>
+
+                  {/* <!-- Specialties --> */}
+                  <div className="column large-12">
+                    <div className="accordion" data-accordion data-allow-all-closed="true">
+                      <div className="accordion-item is-active" data-accordion-item>
+                        <a href="#" className="accordion-title">Specialties</a>
+                        <div className="accordion-content no-border" data-tab-content>
+                          <div className="column large-12">
+                            <div className="row">
+                              <ul className="tabs" data-tabs id="add-specialty-tab">
+                                <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
+                                <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>
+                              </ul>
+
+                              <div className="tabs-content large-12" data-tabs-content="add-specialty-tab">
+                                <div className="tabs-panel is-active" id="panel1">
+                                  <div className="row input-dropdown-wrapper">
+                                    <a className="dropdown button expand field" data-toggle="choosespecialty">Add a specialty</a>
+                                    <div className="dropdown-pane button-dropdown" id="choosespecialty" data-dropdown data-close-on-click="true">
+                                      <ul className="no-bullet">
+                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Allergy and Immunology</label></li>
+                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Anesthesiology</label></li>
+                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Medical Genetics and Genomics</label></li>
+                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Physical Medicine and Rehabilitation</label></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                  <div className="row top-buffer table-header">
+                                    <div className="columns large-6">
+                                      Specialty
+                                    </div>
+                                    <div className="columns large-6">
+                                      Subspecialty
+                                    </div>
+                                  </div>
+                                  <div className="row hide table-row">
+                                    <div className="columns large-12">
+                                      <span className="details">You have not added any specialties</span>
+                                    </div>
+                                  </div>
+                                  <div className="row table-row">
+                                    <div className="columns large-6">
+                                      Psychiatry
+                                    </div>
+                                    <div className="columns large-6">
+                                      <ul className="condense no-bullet no-bottom-buffer">
+                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PhD</label></li>
+                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RD</label></li>
+                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RN</label></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+
+                                  <div className="row table-row">
+                                    <div className="columns large-6">
+                                      Dermatology
+                                    </div>
+                                    <div className="columns large-6">
+                                      <ul className="no-bullet condense no-bottom-buffer">
+                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PhD</label></li>
+                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RD</label></li>
+                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RN</label></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+
+                                </div>
+                                <div className="tabs-panel" id="panel2">
+                                  <div className="row">
+                                    <div className="top-buffer-small input-group no-icon">
+                                      <div className="form-floating-label input-wrapper">
+                                        <textarea className="input-group-field"></textarea>
+                                        <label>Specialties</label>
+                                      </div>
+                                    </div>
+                                    <div className="input-group no-icon">
+                                      <div className="form-floating-label input-wrapper">
+                                        <textarea className="input-group-field"></textarea>
+                                        <label>Subspecialties</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                {/* <div className="medium-12 columns button-group">
-                    <button className="button primary float-right button-small">Save</button>
-                  <Link to="/"><button className="button secondary button-small float-right">Cancel</button></Link>
-                </div> */}
-                {/* <!-- Save --> */}
-                <div className="column large-12 text-center top-buffer">
-                  <button type="submit" className="button medium secondary">Save</button>
-                </div>
-              </form>
+
+                  <div className="column large-12 top-buffer">
+                    <span className="item-title">Contact</span>
+                  </div>
+
+                  <Field name='mobilePhoneNumber' decoratingClassName='top-buffer-small' type='text' component={BasicField} label='Mobile Phone Number'/>
+                  <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
+                  <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
+                  <Field name='emailPref' type='text' component={BasicField} label='Email'/>
+
+                  {/* <!-- Notifications --> */}
+                  <div className="column top-buffer large-12">
+                    <div className="row">
+                      <div className="column">
+                        <span className="item-title">Notifications</span>
+                        <p className="text-light">Fine print about notifications should go here</p>
+                      </div>
+                      <div className="column shrink">
+                        <div className="switch">
+                          <Field className="switch-input" id="exampleSwitch" type="checkbox" name="pushPref" component="input"/>
+                          <label className="switch-paddle" htmlFor="exampleSwitch">
+                            <span className="show-for-sr">Download Kittens</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <!-- Save --> */}
+                  <div className="column large-12 text-center top-buffer">
+                    <button type="submit" className="button medium secondary">Save</button>
+                  </div>
+                </form>
+
+              </div>
             </div>
           </div>
       );
