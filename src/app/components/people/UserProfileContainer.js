@@ -18,6 +18,7 @@ class UserProfileContainer extends React.Component {
       userApi.getUserById()
       userApi.getUserProfilePic()
       userApi.getUserNotoficationPrefs()
+      userApi.getAllSpecialtiesAndTitles()
     }
 
     handleImageChange(e) {
@@ -81,6 +82,15 @@ class UserProfileContainer extends React.Component {
       if(userProfilePic == undefined){
         userProfilePic = "assets/img/dock-logo-white.png";
       }
+      var {userSpecialtiesAndTitles} = this.props
+      var userTitles = [];
+      var userSpecialties = [];
+      if(userSpecialtiesAndTitles != null){
+        userTitles = this.props.userSpecialtiesAndTitles.titleDto
+        userSpecialties = this.props.userSpecialtiesAndTitles.specialtyDto
+      }
+      //console.log("TITLES", userTitles)
+      //console.log("SPECS", userSpecialties)
 
       return(
         <div className="wrapper top-buffer">
@@ -156,32 +166,7 @@ class UserProfileContainer extends React.Component {
                           <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">BA</label></li>
                           <li><input id="checkbox2" type="checkbox"/><label htmlFor="checkbox2">BS</label></li>
                           <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">BSN</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CFNP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CMA</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CPNP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CNS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DDS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DMD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DO</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FAAP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FAAC</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FACOG</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FNP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FNP-C</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">LCSW</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBA</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBBS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBChB</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MPH</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">NP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PA</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PA-C</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PhD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RN</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">Other</label></li>
+                          <li><input id="checkbox4" type="checkbox"/><label htmlFor="checkbox4">Other</label></li>
                         </ul>
                       </fieldset>
                     </div>
@@ -362,7 +347,9 @@ onChange(event) {
 function mapStateToProps(state) {
   return {
     userProfilePic:state.userState.userProfilePic,
-    //userProfile: state.userState.userProfile,
+    allTitles:state.userState.allSpecialtiesAndTitle.titleDto,
+    allSpecialties:state.userState.allSpecialtiesAndTitle.specialtyDto,
+    userSpecialtiesAndTitles:state.userState.userProfile.specialtyTitleDto,
     userNotificationPrefs: state.userState.userNotificationPrefs,
     initialValues:{
       firstName: state.userState.userProfile.firstName,

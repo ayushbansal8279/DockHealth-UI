@@ -1,7 +1,7 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
-const UserReducer = function(state = {user: false, userProfile: "",userProfilePic :"",userNotificationPrefs :""},  action) {
+const UserReducer = function(state = {user: false, userProfile: "",userProfilePic :"",userNotificationPrefs :"",allSpecialtiesAndTitle:""},  action) {
   let newState
   switch (action.type) {
     // trigger when user is changed
@@ -19,6 +19,9 @@ const UserReducer = function(state = {user: false, userProfile: "",userProfilePi
       return newState;
     case 'user/userNotificationPrefs':
       newState = Object.assign({}, state, { userNotificationPrefs: action.userNotificationPrefs });
+      return newState;
+    case 'user/allSpecialtiesAndTitle':
+      newState = Object.assign({}, state, { allSpecialtiesAndTitle: action.allSpecialtiesAndTitle });
       return newState;
   }
 
