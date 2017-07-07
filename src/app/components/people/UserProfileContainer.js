@@ -285,7 +285,7 @@ class UserProfileContainer extends React.Component {
                   <Field name='mobilePhoneNumber' decoratingClassName='top-buffer-small' type='text' component={BasicField} label='Mobile Phone Number'/>
                   <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
                   <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
-                  <Field name='emailPref' type='text' component={BasicField} label='Email'/>
+                  <Field name='email' type='text' component={BasicField} label='Email'/>
 
                   {/* <!-- Notifications --> */}
                   <div className="column top-buffer large-12">
@@ -370,6 +370,7 @@ function mapStateToProps(state) {
       workPhoneNumber: state.userState.userProfile.workPhoneNumber,
       faxNumber: state.userState.userProfile.faxNumber,
       mobilePhoneNumber: state.userState.userProfile.mobilePhoneNumber,
+      email: state.userState.userProfile.email,
       emailPref: state.userState.userNotificationPrefs.email,
       pushPref: state.userState.userNotificationPrefs.push
       }  //this automatically causes REDUX to load the form from state
