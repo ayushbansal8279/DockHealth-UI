@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BasicField = ({ input, label, id, type, placeholder, xlinkHref, extraClassName, decoratingClassName, pattern, meta: { touched, error } }) => (
+const BasicField = ({ input, label, id, type, placeholder,disabled, xlinkHref, extraClassName, decoratingClassName, pattern, meta: { touched, error } }) => (
   <div className={'column large-12 input-group ' + (xlinkHref ? '' : 'no-icon ') + (decoratingClassName? decoratingClassName : '')}>
 
     {/* icon   */}
@@ -14,7 +14,7 @@ const BasicField = ({ input, label, id, type, placeholder, xlinkHref, extraClass
       'input-wrapper form-floating-label ' + (touched && error && 'has-error')}>
 
 
-      <input {...input} id={id} className={extraClassName? "input-group-field " + extraClassName : "input-group-field"} type={type} pattern={pattern}/>
+      <input {...input} id={id} className={extraClassName? "input-group-field " + extraClassName : "input-group-field"} type={type} pattern={pattern} disabled={disabled}/>
       <label htmlFor={input.name}>{label}</label>
 
       {/* if touched and has error */}

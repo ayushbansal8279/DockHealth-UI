@@ -462,3 +462,11 @@ export function findOrgInviteByEmail(email){
     throw(error);
   });
 }
+
+export function getAllSpecialtiesAndTitles() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'specialtytitle/findAllSpecialtiesAndTitles')
+    .then(response => {
+      store.dispatch({type: 'user/allSpecialtiesAndTitle', allSpecialtiesAndTitle: response.data})
+      return response.data;
+    });
+}

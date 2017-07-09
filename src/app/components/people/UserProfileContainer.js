@@ -18,6 +18,7 @@ class UserProfileContainer extends React.Component {
       userApi.getUserById()
       userApi.getUserProfilePic()
       userApi.getUserNotoficationPrefs()
+      userApi.getAllSpecialtiesAndTitles()
     }
 
     handleImageChange(e) {
@@ -81,6 +82,15 @@ class UserProfileContainer extends React.Component {
       if(userProfilePic == undefined){
         userProfilePic = "assets/img/dock-logo-white.png";
       }
+      var {userSpecialtiesAndTitles} = this.props
+      var userTitles = [];
+      var userSpecialties = [];
+      if(userSpecialtiesAndTitles != null){
+        userTitles = this.props.userSpecialtiesAndTitles.titleDto
+        userSpecialties = this.props.userSpecialtiesAndTitles.specialtyDto
+      }
+      //console.log("TITLES", userTitles)
+      //console.log("SPECS", userSpecialties)
 
       return(
         <div className="wrapper top-buffer">
@@ -123,7 +133,7 @@ class UserProfileContainer extends React.Component {
                   </div>
 
                   {/* <!-- First name --> */}
-                  <Field name='firstName' decoratingClassName='top-buffer-small' type='text' component={BasicField} label='First Name'/>
+                  <Field name='firstName' type='text' component={BasicField} label='First Name'/>
                   {/* <div className="top-buffer-small column large-12 input-group no-icon">
                     <div className="form-floating-label input-wrapper has-error">
                       <input className="input-group-field" type="text"/>
@@ -156,32 +166,7 @@ class UserProfileContainer extends React.Component {
                           <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">BA</label></li>
                           <li><input id="checkbox2" type="checkbox"/><label htmlFor="checkbox2">BS</label></li>
                           <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">BSN</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CFNP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CMA</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CPNP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">CNS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DDS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DMD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">DO</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FAAP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FAAC</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FACOG</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FNP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">FNP-C</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">LCSW</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBA</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBBS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MBChB</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">MPH</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">NP</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PA</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PA-C</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PhD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RD</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RN</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">Other</label></li>
+                          <li><input id="checkbox4" type="checkbox"/><label htmlFor="checkbox4">Other</label></li>
                         </ul>
                       </fieldset>
                     </div>
@@ -282,10 +267,13 @@ class UserProfileContainer extends React.Component {
                     <span className="item-title">Contact</span>
                   </div>
 
-                  <Field name='mobilePhoneNumber' decoratingClassName='top-buffer-small' type='text' component={BasicField} label='Mobile Phone Number'/>
-                  <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone Number'/>
+                  <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true'/>
+                  <Field name='email' type='text' component={BasicField} label='Email' disabled='true'/>
+                  <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile'/>
+                  <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone'/>
                   <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
-                  <Field name='email' type='text' component={BasicField} label='Email'/>
+                  <Field name='homePhoneNumber' type='text' component={BasicField} label='Home Phone'/>
+
 
                   {/* <!-- Notifications --> */}
                   <div className="column top-buffer large-12">
@@ -359,18 +347,19 @@ onChange(event) {
 function mapStateToProps(state) {
   return {
     userProfilePic:state.userState.userProfilePic,
-    //userProfile: state.userState.userProfile,
+    allTitles:state.userState.allSpecialtiesAndTitle.titleDto,
+    allSpecialties:state.userState.allSpecialtiesAndTitle.specialtyDto,
+    userSpecialtiesAndTitles:state.userState.userProfile.specialtyTitleDto,
     userNotificationPrefs: state.userState.userNotificationPrefs,
     initialValues:{
       firstName: state.userState.userProfile.firstName,
       lastName: state.userState.userProfile.lastName,
-      specialty: state.userState.userProfile.specialty,
-      subspecialties: state.userState.userProfile.subspecialties,
       accountPhoneNumber: state.userState.userProfile.accountPhoneNumber,
       workPhoneNumber: state.userState.userProfile.workPhoneNumber,
       faxNumber: state.userState.userProfile.faxNumber,
-      mobilePhoneNumber: state.userState.userProfile.mobilePhoneNumber,
       email: state.userState.userProfile.email,
+      organizationName: state.userState.userProfile.organizationName,
+      homePhoneNumber:state.userState.userProfile.homePhoneNumber,
       emailPref: state.userState.userNotificationPrefs.email,
       pushPref: state.userState.userNotificationPrefs.push
       }  //this automatically causes REDUX to load the form from state
@@ -384,10 +373,10 @@ function mapStateToProps(state) {
 function validate(values){
   const errors = {};
 
-  var mobilePhoneNumber = values.mobilePhoneNumber
-  if(mobilePhoneNumber){
-    if(!validatePhoneNumbers(mobilePhoneNumber)){
-      errors.mobilePhoneNumber = 'Please enter 10 digit phone number';
+  var homePhoneNumber = values.homePhoneNumber
+  if(homePhoneNumber){
+    if(!validatePhoneNumbers(homePhoneNumber)){
+      errors.homePhoneNumber = 'Please enter 10 digit home phone number';
     }
     // var match = mobilePhoneNumber.match(/\D/);
     // if(match != null){
@@ -418,7 +407,7 @@ function validate(values){
   var accountPhoneNumber = values.accountPhoneNumber
   if(accountPhoneNumber){
     if(!validatePhoneNumbers(accountPhoneNumber)){
-      errors.accountPhoneNumber = 'Please enter 10 digit account phone number';
+      errors.accountPhoneNumber = 'Please enter 10 digit mobile phone number';
     }
   }
 
