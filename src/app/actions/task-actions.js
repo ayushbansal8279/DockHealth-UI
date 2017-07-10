@@ -25,11 +25,11 @@ function getCompletedTasksSuccess(tasks){
 
 
 
-export function getListTasks(taskListId){
+export function getListTasks(taskListId, sortBy){
   return function(dispatch){
-    return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE").then(tasks => {
+    return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE", sortBy).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks)).then(
-        TaskApi.getListTasksByUser(taskListId, "COMPLETE").then(tasks => {
+        TaskApi.getListTasksByUser(taskListId, "COMPLETE", sortBy).then(tasks => {
           dispatch(getCompletedTasksSuccess(tasks));
         })
       )
@@ -207,9 +207,9 @@ export function toggleTaskPriority(task, userId, priority) {
   }
 }
 
-export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId, member){
+export function assignOrReassignTask(taskId, assignedToUserId, member){
   return function(dispatch){
-    return TaskApi.assignOrReassignTask(taskId, assignedByUserId, assignedToUserId).then(res => {
+    return TaskApi.assignOrReassignTask(taskId, assignedToUserId).then(res => {
       dispatch({type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS, taskId, member:member});
     }).catch(error => {
       throw(error);

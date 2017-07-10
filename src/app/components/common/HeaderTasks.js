@@ -56,6 +56,13 @@ class HeaderTasks extends React.Component {
 		this.props.taskActions.taskToState(null)
 	};
 
+  getListTasks = (sortBy) => {
+    if(this.props.taskListId){
+      alert("inside")
+      this.props.taskListActions.getTaskListById(this.props.taskListId, sortBy)
+    }
+  }
+
 
 
     render() {
@@ -95,9 +102,9 @@ class HeaderTasks extends React.Component {
 									<button className="dropdown button primary small" data-toggle="sort-dropdown">Sort</button>
 									<div className="dropdown-pane button-dropdown" id="sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
 										<ul className="no-bullet">
-											<li>Due date</li>
+											{/* <li>Due date</li> */}
 											<li className="active">Creation date</li>
-											<li>Patient</li>
+											<li onClick={(e) => this.getListTasks('PATIENT')}>Patient</li>
 											<li>Assignee</li>
 											<li>Assigned to</li>
 											<li>Priority</li>

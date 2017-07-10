@@ -16,7 +16,7 @@ class AssignToModal extends BaseComponent {
         <div className="scroll-wrapper">
           {this.props.members.map(member=>{
             return(
-              <div key={this.props.taskListId + member.userId} className="row condense expanded border-bottom align-middle">
+              <div onClick={(e) => this.props.assignOrReassignTask(this.props.taskId, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
                   <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/>
                 </div>

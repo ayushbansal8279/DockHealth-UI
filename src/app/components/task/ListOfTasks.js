@@ -100,6 +100,11 @@ class ListOfTasks extends BaseComponent {
 			console.log(task.taskId)
 		}
 
+		assignOrReassignTask = (taskId, assignedToUserId, member) => {
+			alert("inside")
+			this.props.taskActions.assignOrReassignTask(taskId, assignedToUserId, member)
+		}
+
 		handleToggle = (eventType, task) => {
 			// const el = findDOMNode(this.refs.toggle);
 			// $(el).slideToggle();
@@ -314,7 +319,7 @@ class ListOfTasks extends BaseComponent {
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
 					<BooleanModal taskId={task.taskId}/>
-					<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} taskId={task.taskId}/>
+					<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} taskId={task.taskId} assignOrReassignTask={this.props.assignOrReassignTask}/>
 				</span>
 			)
 
@@ -329,6 +334,8 @@ class ListOfTasks extends BaseComponent {
 		super.componentDidMount()
 		// console.log("listoftasks didmount")
 		// edit data
+		console.log("user")
+		console.log(this.props.user)
 		$('body').on('click', '[data-editable]', function () {
 			$(this).hide();
 			var $el = $(this);

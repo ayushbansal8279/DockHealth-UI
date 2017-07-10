@@ -15,11 +15,18 @@ export function getTasksForCreator(userId) {
     });
 }
 
-export function getListTasksByUser(taskListId, status){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0')
-  .then(response => {
-    return response.data;
-  });
+export function getListTasksByUser(taskListId, status, sortBy){
+  if(sortBy == undefined){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0')
+    .then(response => {
+      return response.data;
+    });
+  }else{
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0&sortBy='+sortBy)
+    .then(response => {
+      return response.data;
+    });
+  }
 }
 
 export function getTasksAssignedToMe(taskListId, status) {
@@ -120,8 +127,8 @@ export function markLowPriority(taskId, userId){
   });
 }
 
-export function assignOrReassignTask(taskId, assignedByUserId, assignedToUserId){
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/addOrUpdateTaskAssignment/' + taskId + '?assignedByUserId=' + assignedByUserId + '&assignedToUserId=' + assignedToUserId)
+export function assignOrReassignTask(taskId, assignedToUserId){
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/addOrUpdateTaskAssignment/' + taskId + '?assignedToUserId=' + assignedToUserId)
     .then(response => {
     return response;
   });
