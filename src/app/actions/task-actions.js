@@ -178,9 +178,9 @@ export function markComplete(task, status, listName) {
   }
 }
 
-export function updateTaskDescription(taskId, userId, description){
+export function updateTaskDescription(taskId, description){
   return function(dispatch){
-    return TaskApi.updateTaskDescription(taskId, userId, description).then(res => {
+    return TaskApi.updateTaskDescription(taskId, description).then(res => {
       dispatch({type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS, taskId, description:description});
     }).catch(error => {
       throw(error);
@@ -232,11 +232,11 @@ export function getListTasksByPatient(patientId, taskListId){
 }
 
 
-export function getInboxTasks(){
+export function getInboxTasks(sortBy){
   return function(dispatch){
-    return TaskApi.getInboxTasks("INCOMPLETE").then(tasks => {
+    return TaskApi.getInboxTasks("INCOMPLETE", sortBy).then(tasks => {
       dispatch(getIncompleteTasksSuccess(tasks)).then(
-        TaskApi.getInboxTasks("COMPLETE").then(tasks => {
+        TaskApi.getInboxTasks("COMPLETE", sortBy).then(tasks => {
           dispatch(getCompletedTasksSuccess(tasks));
         })
       )

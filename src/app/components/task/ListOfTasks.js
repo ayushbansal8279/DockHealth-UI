@@ -20,7 +20,7 @@ class ListOfTasks extends BaseComponent {
 	  	super(props)
 	  	this.state = {
 	    		value: '',
-	    		status: props.initialStatus
+	    		status: props.initialStatus,
 	  	};
 	  	this.handleSubmit = this.handleSubmit.bind(this)
 			this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
@@ -129,6 +129,12 @@ class ListOfTasks extends BaseComponent {
 
 		}
 
+		updateDescription = (task, event) => {
+			if(task.description != event.target.value){
+				this.props.updateTaskDescription(task.taskId, event.target.value)
+			}
+		}
+
 
     render() {
 		if(AWS.config.credentials){
@@ -192,7 +198,7 @@ class ListOfTasks extends BaseComponent {
 		              <span className="comment">{comment.comment}</span>
 		            </div>
 		            <div className="columns shrink align-right">
-		              <span className="time comment-time"><Moment fromNow>{comment.createdDateTime}</Moment></span>
+		              <span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
 		            </div>
 		          {/*<div className="row expanded collapse comment-wrapper">
 		            <div className="columns shrink text-light">
@@ -239,8 +245,8 @@ class ListOfTasks extends BaseComponent {
 			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 			      </div>
 			      <div className="columns">
-			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.taskList && task.taskList.listName} {task.read ? task.description : <b>{task.description}</b>}</span>
-							<input className="task-title" type="text"/>
+			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
+							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 							{task.assignedBy ?
 				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{assignmentUpdatedDateTime}</Moment>}</span> :
@@ -262,7 +268,7 @@ class ListOfTasks extends BaseComponent {
 						              <span className="comment">{comment.comment}</span>
 						            </div>
 						            <div className="columns shrink align-right">
-						              <span className="time comment-time"><Moment fromNow>{comment.createdDateTime}</Moment></span>
+						              <span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
 						            </div>
 						          {/*<div className="row expanded collapse comment-wrapper">
 						            <div className="columns shrink text-light">
@@ -319,7 +325,9 @@ class ListOfTasks extends BaseComponent {
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
 					<BooleanModal taskId={task.taskId}/>
-					<AssignToModal members={this.props.members} taskListId={task.taskList && task.taskList.taskListId} taskId={task.taskId} assignOrReassignTask={this.props.assignOrReassignTask}/>
+					{task.taskList &&
+						<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} taskId={task.taskId} assignOrReassignTask={this.props.assignOrReassignTask}/>
+					}
 				</span>
 			)
 

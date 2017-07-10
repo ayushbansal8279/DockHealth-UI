@@ -100,10 +100,10 @@ export function markIncomplete(task){
   });
 }
 
-export function updateTaskDescription(taskId, userId, description){
+export function updateTaskDescription(taskId, description){
   // userId = sessionStorage.userId
   // return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'')
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+taskId+'?userId='+userId, {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+taskId, {
     description: description
   })
   .then(response => {
@@ -165,11 +165,18 @@ export function getListTasksByPatient(patientId, status, taskListId){
   });
 }
 
-export function getInboxTasks(status){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0')
-  .then(response => {
-    return response.data;
-  });
+export function getInboxTasks(status, sortBy){
+  if(sortBy == undefined){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0')
+    .then(response => {
+      return response.data;
+    });
+  }else{
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0&sortBy='+sortBy)
+    .then(response => {
+      return response.data;
+    });
+  }
 }
 
 export function flagUnread(taskId, flagUnread){

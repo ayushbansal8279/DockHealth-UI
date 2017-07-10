@@ -88,7 +88,7 @@
   cursor:pointer;
 }
 
-ul li{
+ul li, .member-initials{
   cursor:pointer;
 }
 

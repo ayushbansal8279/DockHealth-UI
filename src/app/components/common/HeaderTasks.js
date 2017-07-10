@@ -60,8 +60,8 @@ class HeaderTasks extends React.Component {
   getListTasks = (sortBy) => {
     if(this.props.taskListId){
       this.props.taskActions.getListTasks(this.props.taskListId, sortBy)
-    }else if(this.props.taskListId.toLowerCase() == "inbox") {
-        // this.props.taskActions.get
+    }else if(this.props.title == "Inbox") {
+      this.props.taskActions.getInboxTasks(sortBy)
     }
   }
 
@@ -107,8 +107,8 @@ class HeaderTasks extends React.Component {
 											{/* <li>Due date</li> */}
 											<li onClick={(e) => this.getListTasks('CREATED_DT')} className="active">Creation date</li>
 											<li onClick={(e) => this.getListTasks('PATIENT')}>Patient</li>
-											<li onClick={(e) => this.getListTasks('ASSIGNED_BY')}>Assigned by</li>
-											<li onClick={(e) => this.getListTasks('ASSIGNED_TO')}>Assigned to</li>
+											{this.props.title != "Inbox" && <li onClick={(e) => this.getListTasks('ASSIGNED_BY')}>Assigned by</li>}
+											{this.props.title != "Inbox" && <li onClick={(e) => this.getListTasks('ASSIGNED_TO')}>Assigned to</li>}
 											<li onClick={(e) => this.getListTasks('PRIORITY')}>Priority</li>
 											{/* <li>Tag</li> */}
 										</ul>
