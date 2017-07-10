@@ -101,7 +101,6 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		assignOrReassignTask = (taskId, assignedToUserId, member) => {
-			alert("inside")
 			this.props.taskActions.assignOrReassignTask(taskId, assignedToUserId, member)
 		}
 
@@ -164,6 +163,7 @@ class ListOfTasks extends BaseComponent {
 				reminderDateComponent = <Moment format="MMM DD">{reminderDate}</Moment>
 			}
 			let createdDateTime = new Date(task.createdDateTime)
+			let assignmentUpdatedDateTime = new Date(task.assignmentUpdatedDateTime)
 			let assignees = "";
 			if(task.assignees){
 				assignees = task.assignees.map(function(assignee) {
@@ -243,7 +243,7 @@ class ListOfTasks extends BaseComponent {
 							<input className="task-title" type="text"/>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 							{task.assignedBy ?
-				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{createdDateTime}</Moment>}</span> :
+				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{assignmentUpdatedDateTime}</Moment>}</span> :
 				        <span className="task-details text-light">unassigned</span>
 							}
 			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
@@ -319,7 +319,7 @@ class ListOfTasks extends BaseComponent {
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
 					<BooleanModal taskId={task.taskId}/>
-					<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} taskId={task.taskId} assignOrReassignTask={this.props.assignOrReassignTask}/>
+					<AssignToModal members={this.props.members} taskListId={task.taskList && task.taskList.taskListId} taskId={task.taskId} assignOrReassignTask={this.props.assignOrReassignTask}/>
 				</span>
 			)
 

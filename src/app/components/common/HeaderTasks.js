@@ -58,8 +58,11 @@ class HeaderTasks extends React.Component {
 
   getListTasks = (sortBy) => {
     if(this.props.taskListId){
-      alert("inside")
-      this.props.taskListActions.getTaskListById(this.props.taskListId, sortBy)
+      this.props.taskActions.getListTasks(this.props.taskListId, sortBy)
+    }else if{
+      this.props.taskListId.toLowerCase() == "inbox" {
+
+      }
     }
   }
 
@@ -103,12 +106,12 @@ class HeaderTasks extends React.Component {
 									<div className="dropdown-pane button-dropdown" id="sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
 										<ul className="no-bullet">
 											{/* <li>Due date</li> */}
-											<li className="active">Creation date</li>
+											<li onClick={(e) => this.getListTasks('CREATED_DT')} className="active">Creation date</li>
 											<li onClick={(e) => this.getListTasks('PATIENT')}>Patient</li>
-											<li>Assignee</li>
-											<li>Assigned to</li>
-											<li>Priority</li>
-											<li>Tag</li>
+											<li onClick={(e) => this.getListTasks('ASSIGNED_BY')}>Assigned by</li>
+											<li onClick={(e) => this.getListTasks('ASSIGNED_TO')}>Assigned to</li>
+											<li onClick={(e) => this.getListTasks('PRIORITY')}>Priority</li>
+											{/* <li>Tag</li> */}
 										</ul>
 									</div>
 								</div>
