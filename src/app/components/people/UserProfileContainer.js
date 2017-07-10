@@ -6,9 +6,10 @@ import { Link,hashHistory } from 'react-router';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as userApi from '../../api/user-api'
+import BaseComponent from '../BaseComponent'
 
 
-class UserProfileContainer extends React.Component {
+class UserProfileContainer extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {updateProfileResult:''};
@@ -43,9 +44,50 @@ class UserProfileContainer extends React.Component {
       reader.readAsArrayBuffer(file)
     }
 
-    onSubmit (formProps) {
+    getTitleDtoToPersist(formProps){
+      var {allSpecialtiesAndTitle} = this.props
+      var allTitles = [];
+      var titlesToStore = [];
+      var titleDto = {};
 
-      userApi.updateUser(formProps)
+      allTitles = allSpecialtiesAndTitle.titleDto
+      if(allTitles == undefined){
+        allTitles = []
+      }
+
+      allTitles.map((title) =>{
+        var checkBoxId = "TitleCB" + title.titleId
+        if(formProps[checkBoxId]){
+          var title = {titleId:title.titleId,name:title.name}
+          titlesToStore.push(title);
+        }
+      })
+      return titlesToStore;
+    }
+
+    onSubmit (formProps) {
+      var userDto = {};
+      var specialtyTitleDto = {};
+      var specialtyDto = [];
+      var titleDto = [];
+
+      userDto.firstName = formProps.firstName
+      userDto.lastName = formProps.lastName
+      if(formProps.accountPhoneNumber)
+        userDto.accountPhoneNumber = formProps.accountPhoneNumber
+      if(formProps.workPhoneNumber)
+        userDto.workPhoneNumber = formProps.workPhoneNumber
+      if(formProps.faxNumber)
+        userDto.faxNumber = formProps.faxNumber
+      if(formProps.homePhoneNumber)
+        userDto.homePhoneNumber = formProps.homePhoneNumber
+
+      titleDto= this.getTitleDtoToPersist(formProps)
+      specialtyTitleDto["titleDto"]=titleDto
+      specialtyTitleDto["specialtyDto"]=specialtyDto
+      userDto["specialtyTitleDto"]=specialtyTitleDto
+
+      userApi.updateUser(userDto)
       .then((res)=>{
           userApi.updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
           .then((res) =>{
@@ -73,6 +115,18 @@ class UserProfileContainer extends React.Component {
       })
     }
 
+    createTitleCheckboxes(allTitles,userTitles){
+      return allTitles.map((title) =>{
+        var checkBoxId = "TitleCB" + title.titleId
+        return(
+           <li key={title.titleId} >
+            <Field name={checkBoxId} id={checkBoxId} component="input" value={title.name} type="checkbox"/>
+            <label htmlFor={checkBoxId}>{title.name}</label>
+            </li>
+          )
+        })
+    }
+
  render(){
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       //var userProfile = JSON.parse(sessionStorage.userProfile) //this is needed as userProfile is stringyfied and stored
@@ -86,12 +140,20 @@ class UserProfileContainer extends React.Component {
       var userTitles = [];
       var userSpecialties = [];
       if(userSpecialtiesAndTitles != null){
-        userTitles = this.props.userSpecialtiesAndTitles.titleDto
-        userSpecialties = this.props.userSpecialtiesAndTitles.specialtyDto
+        userTitles = userSpecialtiesAndTitles.titleDto
+        userSpecialties = userSpecialtiesAndTitles.specialtyDto
       }
-      //console.log("TITLES", userTitles)
-      //console.log("SPECS", userSpecialties)
-
+      var {allSpecialtiesAndTitle} = this.props
+      var allTitles = [];
+      var allSpecialties = [];
+      allTitles = allSpecialtiesAndTitle.titleDto
+      if(allTitles == undefined){
+        allTitles = []
+      }
+      allSpecialties = allSpecialtiesAndTitle.specialtyDto
+      if(allSpecialties == undefined){
+        allSpecialties = []
+      }
       return(
         <div className="wrapper top-buffer">
             <div className="columns large-8 large-offset-2">
@@ -131,7 +193,6 @@ class UserProfileContainer extends React.Component {
                   <div className="column large-12 top-buffer">
                     <span className="item-title">General Information</span>
                   </div>
-
                   {/* <!-- First name --> */}
                   <Field name='firstName' type='text' component={BasicField} label='First Name'/>
                   {/* <div className="top-buffer-small column large-12 input-group no-icon">
@@ -163,10 +224,7 @@ class UserProfileContainer extends React.Component {
                     <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
                       <fieldset className="large-12 columns">
                         <ul className="no-bullet columns-2">
-                          <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">BA</label></li>
-                          <li><input id="checkbox2" type="checkbox"/><label htmlFor="checkbox2">BS</label></li>
-                          <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">BSN</label></li>
-                          <li><input id="checkbox4" type="checkbox"/><label htmlFor="checkbox4">Other</label></li>
+                            {this.createTitleCheckboxes(allTitles,userTitles)}
                         </ul>
                       </fieldset>
                     </div>
@@ -345,25 +403,48 @@ onChange(event) {
 */
 
 function mapStateToProps(state) {
-  return {
+  var userSpecTitle = state.userState.userProfile.specialtyTitleDto;
+  var userTitles = [];
+  var userSpecialties = [];
+  var userTitlesCB = {};
+
+  if(userSpecTitle != null){
+    userTitles = userSpecTitle.titleDto
+    userSpecialties = userSpecTitle.specialtyDto
+
+    if(userTitles != null){
+      userTitles.map((title) =>{
+        var CBName = "TitleCB" + title.titleId
+        userTitlesCB[CBName] = true
+      })
+    }
+  }
+
+  var initialValues = {
+    firstName: state.userState.userProfile.firstName,
+    lastName: state.userState.userProfile.lastName,
+    accountPhoneNumber: state.userState.userProfile.accountPhoneNumber,
+    workPhoneNumber: state.userState.userProfile.workPhoneNumber,
+    faxNumber: state.userState.userProfile.faxNumber,
+    email: state.userState.userProfile.email,
+    organizationName: state.userState.userProfile.organizationName,
+    homePhoneNumber:state.userState.userProfile.homePhoneNumber,
+    emailPref: state.userState.userNotificationPrefs.email,
+    pushPref: state.userState.userNotificationPrefs.push,
+    }  //this automatically causes REDUX to load the form from state
+
+  initialValues = Object.assign({}, initialValues, userTitlesCB)
+
+  var stateObj = {
     userProfilePic:state.userState.userProfilePic,
-    allTitles:state.userState.allSpecialtiesAndTitle.titleDto,
-    allSpecialties:state.userState.allSpecialtiesAndTitle.specialtyDto,
+    allSpecialtiesAndTitle:state.userState.allSpecialtiesAndTitle,
     userSpecialtiesAndTitles:state.userState.userProfile.specialtyTitleDto,
     userNotificationPrefs: state.userState.userNotificationPrefs,
-    initialValues:{
-      firstName: state.userState.userProfile.firstName,
-      lastName: state.userState.userProfile.lastName,
-      accountPhoneNumber: state.userState.userProfile.accountPhoneNumber,
-      workPhoneNumber: state.userState.userProfile.workPhoneNumber,
-      faxNumber: state.userState.userProfile.faxNumber,
-      email: state.userState.userProfile.email,
-      organizationName: state.userState.userProfile.organizationName,
-      homePhoneNumber:state.userState.userProfile.homePhoneNumber,
-      emailPref: state.userState.userNotificationPrefs.email,
-      pushPref: state.userState.userNotificationPrefs.push
-      }  //this automatically causes REDUX to load the form from state
-  };
+    };
+
+    stateObj.initialValues = initialValues
+    //console.log(Object.assign({}, stateObj, userTitlesCB))
+    return stateObj;
 }
 
 // function mapDispatchToProps(dispatch) {
@@ -372,6 +453,14 @@ function mapStateToProps(state) {
 
 function validate(values){
   const errors = {};
+
+  if(!values.firstName){
+    errors.firstName = 'Please enter First Name';
+  }
+
+  if(!values.lastName){
+    errors.lastName = 'Please enter Last Name';
+  }
 
   var homePhoneNumber = values.homePhoneNumber
   if(homePhoneNumber){

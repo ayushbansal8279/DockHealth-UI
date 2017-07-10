@@ -1,7 +1,7 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
-const UserReducer = function(state = {user: false, userProfile: "",userProfilePic :"",userNotificationPrefs :"",allSpecialtiesAndTitle:""},  action) {
+const UserReducer = function(state = {user: false, userProfile: "",userProfilePic :"",userNotificationPrefs :"",allSpecialtiesAndTitle:{}},  action) {
   let newState
   switch (action.type) {
     // trigger when user is changed
