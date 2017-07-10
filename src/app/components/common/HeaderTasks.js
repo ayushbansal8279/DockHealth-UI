@@ -29,6 +29,7 @@ class HeaderTasks extends React.Component {
     this.props.patientActions.getAllPatients()
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
+      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ACTIVE')
     }
     this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
@@ -59,10 +60,8 @@ class HeaderTasks extends React.Component {
   getListTasks = (sortBy) => {
     if(this.props.taskListId){
       this.props.taskActions.getListTasks(this.props.taskListId, sortBy)
-    }else if{
-      this.props.taskListId.toLowerCase() == "inbox" {
-
-      }
+    }else if(this.props.taskListId.toLowerCase() == "inbox") {
+        // this.props.taskActions.get
     }
   }
 
