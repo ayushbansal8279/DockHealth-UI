@@ -65,6 +65,10 @@ class HeaderTasks extends React.Component {
     }
   }
 
+  toggleListNotifications = () => {
+    this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
+  }
+
 
 
     render() {
@@ -127,7 +131,7 @@ class HeaderTasks extends React.Component {
 								</div>
 
 								<div className="columns shrink icon-group controls">
-									<svg className="icon"><use xlinkHref="#icon-bell"></use></svg>
+									<span onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
 									{/* <svg className="icon"><use xlinkHref="#icon-print"></use></svg> */}
 									<svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg>
 								</div>
