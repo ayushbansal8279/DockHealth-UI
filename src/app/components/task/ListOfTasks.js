@@ -147,7 +147,7 @@ class ListOfTasks extends BaseComponent {
 		<span>
 
 
-		{this.props.filteredTasks.map(task => {
+		{this.props.tasks.map(task => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
 					<div key={"task"+task.taskId} className="task-item has-subtasks">
@@ -342,8 +342,8 @@ class ListOfTasks extends BaseComponent {
 		super.componentDidMount()
 		// console.log("listoftasks didmount")
 		// edit data
-		console.log("user")
-		console.log(this.props.user)
+		console.log("ListOfTasks.js")
+
 		$('body').on('click', '[data-editable]', function () {
 			$(this).hide();
 			var $el = $(this);

@@ -11,8 +11,9 @@ import ListMembers from '../common/ListMembers'
 import MemberInitials from '../common/MemberInitials'
 import {ReactDOM, findDOMNode} from 'react-dom'
 import $ from 'jquery'
+import BaseComponent from '../BaseComponent'
 
-class HeaderTasks extends React.Component {
+class HeaderTasks extends BaseComponent {
   constructor(props){
     super(props)
     this.state = {
@@ -24,8 +25,6 @@ class HeaderTasks extends React.Component {
 
 
   componentDidMount () {
-    console.log("current user")
-    console.log(this.props.currentUser)
     this.props.patientActions.getAllPatients()
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
@@ -38,9 +37,6 @@ class HeaderTasks extends React.Component {
     if(this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
-      console.log("willUpdate")
-      console.log(nextProps)
-      console.log(this.props)
     }
   }
 
@@ -48,8 +44,6 @@ class HeaderTasks extends React.Component {
     if(this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
-      console.log("nextProps")
-      console.log(nextProps)
     }
   }
 
@@ -86,7 +80,7 @@ class HeaderTasks extends React.Component {
   								<ul className="menu member-photo-list" data-open="list-members">
                     <li><span className="add-member circle small">+</span></li>
                     {this.props.members.map(member => {
-                        return <li><span className="member-initials circle small">{member.initials}</span></li>
+                        return <li key={"member"+member.userId}><span className="member-initials circle small">{member.initials}</span></li>
                       })
                     }
                     {/* <li><span className="more-members circle small">+4</span></li>
@@ -103,7 +97,7 @@ class HeaderTasks extends React.Component {
 
               {/*<TaskFiltersContainer taskListId={taskListId} />*/}
 
-							<div className="wrapper list-filter row expanded collapse align-middle align-right">
+							<div className="wrapper list-filter row collapse align-middle align-right">
 								<div className="columns shrink controls">
 									<button className="dropdown button primary small" data-toggle="sort-dropdown">Sort</button>
 									<div className="dropdown-pane button-dropdown" id="sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
@@ -124,14 +118,16 @@ class HeaderTasks extends React.Component {
 										<input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated}/>
 										<div className="input-group-button">
 											<button className="button search">
-												<svg className="icon"><use xlinkHref="#icon-search"></use></svg>
+												<svg onClick={this.props.clearSearch} className="icon"><use xlinkHref="#icon-search"></use></svg>
 											</button>
 										</div>
 									</div>
 								</div>
 
 								<div className="columns shrink icon-group controls">
-									<span onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
+                  {this.props.taskListId &&
+  									<span onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
+                  }
 									{/* <svg className="icon"><use xlinkHref="#icon-print"></use></svg> */}
 									<svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg>
 								</div>

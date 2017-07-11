@@ -2,10 +2,10 @@ import React from 'react';
 import BaseComponent from '../BaseComponent'
 
 //let AddTaskForm = props => {
-class AssignToModal extends BaseComponent {
+class AssignToModal extends React.Component {
 
   componentDidMount(){
-    console.log(this.props.members)
+    console.log("AssignToModal.js")
   }
 
   render() {

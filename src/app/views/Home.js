@@ -33,6 +33,10 @@ class Home extends BaseComponent {
     this.setState({title: newTitle})
   }
 
+  clearSearch = () => {
+    this.setState({searchTerm: ''})
+  }
+
   searchUpdated = (term) => {
     this.setState({searchTerm: term.target.value})
   }
@@ -84,8 +88,7 @@ class Home extends BaseComponent {
 
 
   componentWillUpdate(nextProps){
-    console.log(this.props.routeParams.listName)
-    console.log(nextProps)
+    // console.log(this.props.routeParams.listName)
     if(nextProps.routeParams.listName != this.props.routeParams.listName){
       var listName = nextProps.routeParams.listName
       if(!listName || listName == "Inbox"){
@@ -105,13 +108,14 @@ class Home extends BaseComponent {
     var taskListId = this.props.params.taskListId
     const KEYS_TO_FILTERS = ['description', 'comments.comment', 'subtasks.description', 'subtasks.comments.comment']
     const filteredTasks = this.props.tasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+    const filteredCompletedTasks = this.props.completedTasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
     return (
 
         <div className="off-canvas-content" data-off-canvas-content="true">
 
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated}/>
+              <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch}/>
               <div className="list-wrapper">
                 <div className="task-item-wrapper">
                   <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
@@ -120,7 +124,7 @@ class Home extends BaseComponent {
                     <a className="toggle-completed button primary small">Show completed tasks</a>
                   </div>
                   <div className="completed-task-wrapper">
-                    {/* <ListOfTasksContainer taskListId={taskListId} status="COMPLETE" members={this.props.members}/> */}
+                    <ListOfTasksContainer taskListId={taskListId} status="COMPLETE" members={this.props.members} filteredTasks={filteredCompletedTasks} />
                   </div>
                 </div>
               </div>
@@ -135,7 +139,8 @@ class Home extends BaseComponent {
 const mapStateToProps = function (store) {
   return{
     members: store.taskListState.tasklistmembers,
-    tasks: store.taskState.tasks
+    tasks: store.taskState.tasks,
+    completedTasks: store.taskState.completedTasks
   }
 }
 

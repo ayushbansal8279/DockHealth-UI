@@ -6,9 +6,9 @@ class BaseComponent extends React.Component {
         // console.log("BaseComponent didmount")
     }
 
-    componentDidUpdate() {
-        enableFoundation();
-        console.log("BaseComponent didupdate")
+    componentDidUpdate(prevProps, prevState) {
+      enableFoundation();
+      console.log("BaseComponent didupdate")
     }
 
 }

@@ -18,7 +18,7 @@ class ListOfTasksContainer extends React.Component {
   }
 
   render () {
-    return (<ListOfTasks tasks={this.props.status == "INCOMPLETE" ? this.props.tasks : this.props.completedTasks} deleteTask={this.props.actions.deleteTask} listName={this.props.status}
+    return (<ListOfTasks tasks={this.props.filteredTasks} deleteTask={this.props.actions.deleteTask} listName={this.props.status}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
             toggleTaskPriority={this.props.actions.toggleTaskPriority}
             assignOrReassignTask={this.props.actions.assignOrReassignTask}
@@ -26,7 +26,6 @@ class ListOfTasksContainer extends React.Component {
             addPatientToTask={this.props.patientActions.addPatientToTask}
             markAsUnread={this.props.actions.markAsUnread}
             members={this.props.members}
-            filteredTasks={this.props.filteredTasks}
             />);
   }
 

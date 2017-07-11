@@ -23,7 +23,7 @@ const LinksDefault = ({className}) => (
   </div>
 )
 
-const LinksAuth = ({user, className, onLogout,userProfilePic}) => (
+const LinksAuth = ({user, className, onLogout, userProfilePic}) => (
     <div data-toggle="profile-dropdown" className="user-profile-link link"><img className="member-photo circle" src={userProfilePic} alt="name of user"/>{user.firstName + " " + user.lastName}</div>
 )
 

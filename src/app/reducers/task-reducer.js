@@ -98,6 +98,26 @@ const TaskReducer = function(state = initialState, action) {
         tasks: state.tasks.filter(task => task.taskId !== taskId)
       };
 
+    // case types.DELETE_TASK_SUCCESS:
+    // var mainTask
+    // if(action.task.parentTaskId){
+    //   mainTask = action.task.parentTaskId
+    // }else{
+    //   mainTask = action.task.taskId
+    // }
+    //
+    // return {
+    //     ...state,
+    //     tasks: state.tasks.map(task =>
+    //       task.taskId === mainTask ?
+    //       action.task.parentTaskId ?
+    //         {...task, subtasks: task.subtasks.filter(subtask => subtask.taskId !== mainTask)} :
+    //         { ...task, tasks: state.tasks.filter(task => task.taskId !== taskId) }
+    //
+    //         : task
+    //     )
+    // };
+
     // case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
     //   return {
     //     ...state,
@@ -227,17 +247,31 @@ const TaskReducer = function(state = initialState, action) {
         )
       };
 
-    case types.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS:
-      return {
-        ...state,
-        tasks: state.tasks.map(task =>
-          task === action.task ?
-            // transform the one with a matching id
-            { ...task, read: !action.task.read } :
-            // otherwise return original task
-            task
-        )
-      }
+      case types.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS:
+        var mainTask
+        if(action.task.parentTaskId){
+          mainTask = action.task.parentTaskId
+        }else{
+          mainTask = action.task.taskId
+        }
+
+        return {
+            ...state,
+            tasks: state.tasks.map(task =>
+              task.taskId === mainTask ?
+              action.task.parentTaskId ?
+                {...task, subtasks:
+                  task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId ?
+                    {...subtask, read: !action.task.read} :
+                    subtask
+                  )
+                } :
+                { ...task, read: !action.task.read }
+
+                : task
+            )
+        };
 
     case types.SET_AS_CURRENT_TASK:
       var currentTaskVar = {}
