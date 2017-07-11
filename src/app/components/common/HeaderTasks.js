@@ -121,7 +121,7 @@ class HeaderTasks extends React.Component {
 
 								<div className="columns controls">
 									<div className="input-group searchbar">
-										<input className="input-field search-field" type="search" placeholder="Search tasks" />
+										<input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated}/>
 										<div className="input-group-button">
 											<button className="button search">
 												<svg className="icon"><use xlinkHref="#icon-search"></use></svg>

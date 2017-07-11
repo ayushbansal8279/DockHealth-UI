@@ -26,6 +26,7 @@ class ListOfTasksContainer extends React.Component {
             addPatientToTask={this.props.patientActions.addPatientToTask}
             markAsUnread={this.props.actions.markAsUnread}
             members={this.props.members}
+            filteredTasks={this.props.filteredTasks}
             />);
   }
 

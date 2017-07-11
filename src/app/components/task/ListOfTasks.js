@@ -147,7 +147,7 @@ class ListOfTasks extends BaseComponent {
 		<span>
 
 
-		{this.props.tasks.map(task => {
+		{this.props.filteredTasks.map(task => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
 					<div key={"task"+task.taskId} className="task-item has-subtasks">
