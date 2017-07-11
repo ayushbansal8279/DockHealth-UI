@@ -12,7 +12,7 @@ import BaseComponent from '../BaseComponent'
 class UserProfileContainer extends BaseComponent {
   constructor(props) {
     super(props);
-    this.state = {updateProfileResult:''};
+    this.state = {updateProfileResult:'', userSelectedSpecialties:[]};
   }
 
     componentDidMount () {
@@ -20,6 +20,20 @@ class UserProfileContainer extends BaseComponent {
       userApi.getUserProfilePic()
       userApi.getUserNotoficationPrefs()
       userApi.getAllSpecialtiesAndTitles()
+    }
+
+    componentWillReceiveProps(nextProps){
+      //console.log("componentWillReceiveProps called")
+      var userSpecialties = [];
+
+       if (nextProps.userSpecialtiesAndTitles != this.props.userSpecialtiesAndTitles) { //Note that React may call this method even if the props have not changed, so make sure to compare the current and next values if you only want to handle changes
+        var userSpecTitle = nextProps.userSpecialtiesAndTitles;
+        if(userSpecTitle != null){
+          userSpecialties = userSpecTitle.specialtyDto
+        }
+        this.setState({userSelectedSpecialties: userSpecialties});
+        //console.log(userSpecialties)
+      }
     }
 
     handleImageChange(e) {
@@ -65,7 +79,40 @@ class UserProfileContainer extends BaseComponent {
       return titlesToStore;
     }
 
+    getSpecialtiesDtoToPersist(formProps){
+      var {allSpecialtiesAndTitle} = this.props
+      var allSpecialties = [];
+      var specialtiesToStore = [];
+      var subSpecialtiesArr = [];
+
+      allSpecialties = allSpecialtiesAndTitle.specialtyDto
+      if(allSpecialties == undefined){
+        allSpecialties = []
+      }
+
+      allSpecialties.map((specialty) =>{
+          var checkBoxId = "SpecialtyCB" + specialty.specialtyId
+          if(formProps[checkBoxId]){
+            var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
+
+            var subSpecialties = specialty.subSpecialtyDto;
+            subSpecialtiesArr = [];
+            subSpecialties.map((subspecialty) =>{
+              var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+              if(formProps[subSpecCheckBoxId]){
+                var newSubSpecialty = {specialtyId:specialty.specialtyId,subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
+                subSpecialtiesArr.push(newSubSpecialty)
+              }
+            })
+            newSpecialty["subSpecialtyDto"] = subSpecialtiesArr
+            specialtiesToStore.push(newSpecialty);
+          }
+      })
+      return specialtiesToStore;
+    }
+
     onSubmit (formProps) {
+      //console.log(formProps)
       var userDto = {};
       var specialtyTitleDto = {};
       var specialtyDto = [];
@@ -83,10 +130,11 @@ class UserProfileContainer extends BaseComponent {
         userDto.homePhoneNumber = formProps.homePhoneNumber
 
       titleDto= this.getTitleDtoToPersist(formProps)
+      specialtyDto = this.getSpecialtiesDtoToPersist(formProps)
       specialtyTitleDto["titleDto"]=titleDto
       specialtyTitleDto["specialtyDto"]=specialtyDto
       userDto["specialtyTitleDto"]=specialtyTitleDto
-
+      //console.log(userDto)
       userApi.updateUser(userDto)
       .then((res)=>{
           userApi.updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
@@ -120,14 +168,116 @@ class UserProfileContainer extends BaseComponent {
         var checkBoxId = "TitleCB" + title.titleId
         return(
            <li key={title.titleId} >
-            <Field name={checkBoxId} id={checkBoxId} component="input" value={title.name} type="checkbox"/>
+           <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox"/>
             <label htmlFor={checkBoxId}>{title.name}</label>
             </li>
           )
         })
     }
 
+    createSpecialtyDropDown(allSpecialties,userSpecialties){
+      return allSpecialties.map((specialty) =>{
+        var checkBoxId = "SpecialtyCB" + specialty.specialtyId
+        if(specialty.specialtyId !=1){ //skip the "Other" as we have "manually add Specialties"
+          return(
+               <li key={specialty.specialtyId} >
+                <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" value={checkBoxId} onChange={this.onClickSpecialtyCheckBox.bind(this)}/>
+                <label htmlFor={checkBoxId}>{specialty.name}</label>
+                </li>
+            )
+          }
+        })
+    }
+
+findObjectByKey(array, key, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][key] === value) {
+            return array[i];
+        }
+    }
+    return null;
+  }
+
+  removeObjectByKey(array, key, value) {
+     for (var i = 0; i < array.length; i++) {
+         if (array[i][key] === value) {
+           array.splice(i, 1);
+           break;
+         }
+     }
+     return array;
+   }
+
+  createSubSpecialtyCheckBoxes(specialty){
+    var subSpecialties = specialty.subSpecialtyDto;
+    return subSpecialties.map((subspecialty) =>{
+      var checkBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+        return(
+             <li key={subspecialty.subSpecialtyId} >
+              <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" />
+              <label htmlFor={checkBoxId}>{subspecialty.subSpecialtyName}</label>
+              </li>
+          )
+      })
+  }
+
+    createSpecialtySubSpecialtyTable(allSpecialties,userSpecialties){
+      if(userSpecialties.length == 0){
+        return (
+          <div className="row table-row">
+            <div className="columns large-12">
+              <span className="details">You have not added any specialties</span>
+            </div>
+          </div>
+        );
+      }
+
+      return allSpecialties.map((specialty) =>{
+        var objFoundInUserSpecialties = this.findObjectByKey(userSpecialties,"specialtyId", specialty.specialtyId);
+        if(objFoundInUserSpecialties ==null){
+          return;
+        }
+
+        return(
+            <div key ={specialty.specialtyId} className="row table-row">
+              <div className="columns large-6">
+                {specialty.name}
+              </div>
+              <div className="columns large-6">
+                <ul className="condense no-bullet no-bottom-buffer">
+                  {this.createSubSpecialtyCheckBoxes(specialty)}
+                </ul>
+              </div>
+            </div>
+        );
+      })
+    }
+
+    onClickSpecialtyCheckBox(e){
+      const tmpUserSelectedSpecialties = this.state.userSelectedSpecialties
+
+      var allSpecialties = this.props.allSpecialtiesAndTitle.specialtyDto
+      if(allSpecialties == undefined){
+        allSpecialties = []
+      }
+      var SpecialityCheckBoxId = e.target.id;
+      var specialtyId  = parseInt(SpecialityCheckBoxId.replace("SpecialtyCB", ""));
+
+        if (e.target.checked) {
+           var objFoundInAllSpecialties = this.findObjectByKey(allSpecialties,"specialtyId", specialtyId);
+           var specObject = {specialtyId:specialtyId, name:objFoundInAllSpecialties.name} //Just add the id/name (without any subspecialties), so that subspecialties wont be checked by default
+           tmpUserSelectedSpecialties.push(specObject);
+           this.setState({userSelectedSpecialties: tmpUserSelectedSpecialties});
+        }
+        else{
+          var removedSelectedSpecialties = this.removeObjectByKey(tmpUserSelectedSpecialties,"specialtyId", specialtyId);
+          this.setState({userSelectedSpecialties: removedSelectedSpecialties});
+        }
+    }
+
  render(){
+   //console.log("yyy",this.state.userSelectedSpecialties)
+
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       //var userProfile = JSON.parse(sessionStorage.userProfile) //this is needed as userProfile is stringyfied and stored
       //var userProfile = this.props.userProfile
@@ -249,10 +399,7 @@ class UserProfileContainer extends BaseComponent {
                                     <a className="dropdown button expand field" data-toggle="choosespecialty">Add a specialty</a>
                                     <div className="dropdown-pane button-dropdown" id="choosespecialty" data-dropdown data-close-on-click="true">
                                       <ul className="no-bullet">
-                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Allergy and Immunology</label></li>
-                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Anesthesiology</label></li>
-                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Medical Genetics and Genomics</label></li>
-                                        <li><input id="checkbox1" type="checkbox"/><label htmlFor="checkbox1">Physical Medicine and Rehabilitation</label></li>
+                                        {this.createSpecialtyDropDown(allSpecialties,userSpecialties)}
                                       </ul>
                                     </div>
                                   </div>
@@ -264,37 +411,7 @@ class UserProfileContainer extends BaseComponent {
                                       Subspecialty
                                     </div>
                                   </div>
-                                  <div className="row hide table-row">
-                                    <div className="columns large-12">
-                                      <span className="details">You have not added any specialties</span>
-                                    </div>
-                                  </div>
-                                  <div className="row table-row">
-                                    <div className="columns large-6">
-                                      Psychiatry
-                                    </div>
-                                    <div className="columns large-6">
-                                      <ul className="condense no-bullet no-bottom-buffer">
-                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PhD</label></li>
-                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RD</label></li>
-                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RN</label></li>
-                                      </ul>
-                                    </div>
-                                  </div>
-
-                                  <div className="row table-row">
-                                    <div className="columns large-6">
-                                      Dermatology
-                                    </div>
-                                    <div className="columns large-6">
-                                      <ul className="no-bullet condense no-bottom-buffer">
-                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">PhD</label></li>
-                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RD</label></li>
-                                        <li><input id="checkbox3" type="checkbox"/><label htmlFor="checkbox3">RN</label></li>
-                                      </ul>
-                                    </div>
-                                  </div>
-
+                                  {this.createSpecialtySubSpecialtyTable(allSpecialties,this.state.userSelectedSpecialties)}
                                 </div>
                                 <div className="tabs-panel" id="panel2">
                                   <div className="row">
@@ -407,6 +524,8 @@ function mapStateToProps(state) {
   var userTitles = [];
   var userSpecialties = [];
   var userTitlesCB = {};
+  var userSpecialtiesCB = {};
+  var userSubSpecialtiesCB = {};
 
   if(userSpecTitle != null){
     userTitles = userSpecTitle.titleDto
@@ -414,12 +533,27 @@ function mapStateToProps(state) {
 
     if(userTitles != null){
       userTitles.map((title) =>{
-        var CBName = "TitleCB" + title.titleId
-        userTitlesCB[CBName] = true
+        var CBName_Title = "TitleCB" + title.titleId
+        userTitlesCB[CBName_Title] = true
+      })
+    }
+
+    if(userSpecialties != null){
+      userSpecialties.map((specialty) =>{
+        var CBName_Specialty = "SpecialtyCB" + specialty.specialtyId
+        userSpecialtiesCB[CBName_Specialty] = true
+
+        if(specialty.subSpecialtyDto != null){
+          specialty.subSpecialtyDto.map((subspecialty) =>{
+            var CBName_SubSpecialty = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+            userSubSpecialtiesCB[CBName_SubSpecialty] = true
+          })
+
+        }
       })
     }
   }
-
+//console.log(userSubSpecialtiesCB)
   var initialValues = {
     firstName: state.userState.userProfile.firstName,
     lastName: state.userState.userProfile.lastName,
@@ -434,6 +568,9 @@ function mapStateToProps(state) {
     }  //this automatically causes REDUX to load the form from state
 
   initialValues = Object.assign({}, initialValues, userTitlesCB)
+  initialValues = Object.assign({}, initialValues,userSpecialtiesCB)
+  initialValues = Object.assign({}, initialValues,userSubSpecialtiesCB)
+  //console.log(initialValues)
 
   var stateObj = {
     userProfilePic:state.userState.userProfilePic,
