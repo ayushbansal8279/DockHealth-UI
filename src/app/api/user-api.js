@@ -463,10 +463,18 @@ export function findOrgInviteByEmail(email){
   });
 }
 
-export function getAllSpecialtiesAndTitles() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'specialtytitle/findAllSpecialtiesAndTitles')
+export function getAllSpecialties() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'reference/specialties')
     .then(response => {
-      store.dispatch({type: 'user/allSpecialtiesAndTitle', allSpecialtiesAndTitle: response.data})
+      store.dispatch({type: 'reference/allSpecialties', allSpecialties: response.data})
+      return response.data;
+    });
+}
+
+export function getAllTitles() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'reference/titles')
+    .then(response => {
+      store.dispatch({type: 'reference/allTitles', allTitles: response.data})
       return response.data;
     });
 }

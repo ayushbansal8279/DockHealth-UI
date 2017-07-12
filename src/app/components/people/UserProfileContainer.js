@@ -17,20 +17,27 @@ class UserProfileContainer extends BaseComponent {
 
     componentDidMount () {
       userApi.getUserById()
+      .then((response)=>{
+        if(response.specialties== null){
+          this.setState({userSelectedSpecialties: []});
+        }
+        else{
+          this.setState({userSelectedSpecialties:response.specialties});
+        }
+      })
       userApi.getUserProfilePic()
       userApi.getUserNotoficationPrefs()
-      userApi.getAllSpecialtiesAndTitles()
+      userApi.getAllSpecialties()
+      userApi.getAllTitles()
     }
 
     componentWillReceiveProps(nextProps){
       //console.log("componentWillReceiveProps called")
+      //console.log(nextProps)
+      //console.log(this.props)
       var userSpecialties = [];
-
-       if (nextProps.userSpecialtiesAndTitles != this.props.userSpecialtiesAndTitles) { //Note that React may call this method even if the props have not changed, so make sure to compare the current and next values if you only want to handle changes
-        var userSpecTitle = nextProps.userSpecialtiesAndTitles;
-        if(userSpecTitle != null){
-          userSpecialties = userSpecTitle.specialtyDto
-        }
+      if (nextProps.userSpecialties != this.props.userSpecialties) { //Note that React may call this method even if the props have not changed, so make sure to compare the current and next values if you only want to handle changes
+        userSpecialties = nextProps.userSpecialties;
         this.setState({userSelectedSpecialties: userSpecialties});
         //console.log(userSpecialties)
       }
@@ -58,14 +65,11 @@ class UserProfileContainer extends BaseComponent {
       reader.readAsArrayBuffer(file)
     }
 
-    getTitleDtoToPersist(formProps){
-      var {allSpecialtiesAndTitle} = this.props
-      var allTitles = [];
+    getTitlesToPersist(formProps){
       var titlesToStore = [];
-      var titleDto = {};
 
-      allTitles = allSpecialtiesAndTitle.titleDto
-      if(allTitles == undefined){
+      var {allTitles} = this.props
+      if(allTitles == undefined || allTitles == null){
         allTitles = []
       }
 
@@ -79,14 +83,12 @@ class UserProfileContainer extends BaseComponent {
       return titlesToStore;
     }
 
-    getSpecialtiesDtoToPersist(formProps){
-      var {allSpecialtiesAndTitle} = this.props
-      var allSpecialties = [];
+    getSpecialtiesToPersist(formProps){
       var specialtiesToStore = [];
       var subSpecialtiesArr = [];
 
-      allSpecialties = allSpecialtiesAndTitle.specialtyDto
-      if(allSpecialties == undefined){
+      var {allSpecialties} = this.props
+      if(allSpecialties == undefined || allSpecialties == null){
         allSpecialties = []
       }
 
@@ -95,16 +97,16 @@ class UserProfileContainer extends BaseComponent {
           if(formProps[checkBoxId]){
             var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
 
-            var subSpecialties = specialty.subSpecialtyDto;
+            var subSpecialties = specialty.subSpecialties;
             subSpecialtiesArr = [];
             subSpecialties.map((subspecialty) =>{
               var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
               if(formProps[subSpecCheckBoxId]){
-                var newSubSpecialty = {specialtyId:specialty.specialtyId,subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
+                var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
                 subSpecialtiesArr.push(newSubSpecialty)
               }
             })
-            newSpecialty["subSpecialtyDto"] = subSpecialtiesArr
+            newSpecialty["subSpecialties"] = subSpecialtiesArr
             specialtiesToStore.push(newSpecialty);
           }
       })
@@ -113,29 +115,28 @@ class UserProfileContainer extends BaseComponent {
 
     onSubmit (formProps) {
       //console.log(formProps)
-      var userDto = {};
-      var specialtyTitleDto = {};
-      var specialtyDto = [];
-      var titleDto = [];
+      var userObj = {};
+      var specialties = [];
+      var titles = [];
 
-      userDto.firstName = formProps.firstName
-      userDto.lastName = formProps.lastName
+      userObj.firstName = formProps.firstName
+      userObj.lastName = formProps.lastName
       if(formProps.accountPhoneNumber)
-        userDto.accountPhoneNumber = formProps.accountPhoneNumber
+        userObj.accountPhoneNumber = formProps.accountPhoneNumber
       if(formProps.workPhoneNumber)
-        userDto.workPhoneNumber = formProps.workPhoneNumber
+        userObj.workPhoneNumber = formProps.workPhoneNumber
       if(formProps.faxNumber)
-        userDto.faxNumber = formProps.faxNumber
+        userObj.faxNumber = formProps.faxNumber
       if(formProps.homePhoneNumber)
-        userDto.homePhoneNumber = formProps.homePhoneNumber
+        userObj.homePhoneNumber = formProps.homePhoneNumber
 
-      titleDto= this.getTitleDtoToPersist(formProps)
-      specialtyDto = this.getSpecialtiesDtoToPersist(formProps)
-      specialtyTitleDto["titleDto"]=titleDto
-      specialtyTitleDto["specialtyDto"]=specialtyDto
-      userDto["specialtyTitleDto"]=specialtyTitleDto
-      //console.log(userDto)
-      userApi.updateUser(userDto)
+      titles= this.getTitlesToPersist(formProps)
+      specialties = this.getSpecialtiesToPersist(formProps)
+      userObj["titles"]=titles
+      userObj["specialties"]=specialties
+
+      //console.log(userObj)
+      userApi.updateUser(userObj)
       .then((res)=>{
           userApi.updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
           .then((res) =>{
@@ -209,7 +210,7 @@ findObjectByKey(array, key, value) {
    }
 
   createSubSpecialtyCheckBoxes(specialty){
-    var subSpecialties = specialty.subSpecialtyDto;
+    var subSpecialties = specialty.subSpecialties;
     return subSpecialties.map((subspecialty) =>{
       var checkBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
         return(
@@ -256,7 +257,7 @@ findObjectByKey(array, key, value) {
     onClickSpecialtyCheckBox(e){
       const tmpUserSelectedSpecialties = this.state.userSelectedSpecialties
 
-      var allSpecialties = this.props.allSpecialtiesAndTitle.specialtyDto
+      var {allSpecialties} = this.props
       if(allSpecialties == undefined){
         allSpecialties = []
       }
@@ -276,7 +277,7 @@ findObjectByKey(array, key, value) {
     }
 
  render(){
-   //console.log("yyy",this.state.userSelectedSpecialties)
+      //console.log("yyy",this.state.userSelectedSpecialties)
 
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       //var userProfile = JSON.parse(sessionStorage.userProfile) //this is needed as userProfile is stringyfied and stored
@@ -286,22 +287,23 @@ findObjectByKey(array, key, value) {
       if(userProfilePic == undefined){
         userProfilePic = "assets/img/dock-logo-white.png";
       }
-      var {userSpecialtiesAndTitles} = this.props
-      var userTitles = [];
-      var userSpecialties = [];
-      if(userSpecialtiesAndTitles != null){
-        userTitles = userSpecialtiesAndTitles.titleDto
-        userSpecialties = userSpecialtiesAndTitles.specialtyDto
+
+      var {userTitles} = this.props
+      if(userTitles == undefined || userTitles == null){
+        userTitles = []
       }
-      var {allSpecialtiesAndTitle} = this.props
-      var allTitles = [];
-      var allSpecialties = [];
-      allTitles = allSpecialtiesAndTitle.titleDto
-      if(allTitles == undefined){
+
+      var {userSpecialties} = this.props
+      if(userSpecialties == undefined || userSpecialties == null){
+        userSpecialties = []
+      }
+
+      var {allTitles} = this.props
+      if(allTitles == undefined || allTitles == null){
         allTitles = []
       }
-      allSpecialties = allSpecialtiesAndTitle.specialtyDto
-      if(allSpecialties == undefined){
+      var {allSpecialties} = this.props
+      if(allSpecialties == undefined || allSpecialties == null){
         allSpecialties = []
       }
       return(
@@ -520,39 +522,35 @@ onChange(event) {
 */
 
 function mapStateToProps(state) {
-  var userSpecTitle = state.userState.userProfile.specialtyTitleDto;
-  var userTitles = [];
-  var userSpecialties = [];
+
   var userTitlesCB = {};
   var userSpecialtiesCB = {};
   var userSubSpecialtiesCB = {};
 
-  if(userSpecTitle != null){
-    userTitles = userSpecTitle.titleDto
-    userSpecialties = userSpecTitle.specialtyDto
+  var userTitles = state.userState.userProfile.titles
+  var userSpecialties = state.userState.userProfile.specialties
 
-    if(userTitles != null){
-      userTitles.map((title) =>{
-        var CBName_Title = "TitleCB" + title.titleId
-        userTitlesCB[CBName_Title] = true
-      })
-    }
-
-    if(userSpecialties != null){
-      userSpecialties.map((specialty) =>{
-        var CBName_Specialty = "SpecialtyCB" + specialty.specialtyId
-        userSpecialtiesCB[CBName_Specialty] = true
-
-        if(specialty.subSpecialtyDto != null){
-          specialty.subSpecialtyDto.map((subspecialty) =>{
-            var CBName_SubSpecialty = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
-            userSubSpecialtiesCB[CBName_SubSpecialty] = true
-          })
-
-        }
-      })
-    }
+  if(userTitles != null){
+    userTitles.map((title) =>{
+      var CBName_Title = "TitleCB" + title.titleId
+      userTitlesCB[CBName_Title] = true
+    })
   }
+
+  if(userSpecialties != null){
+    userSpecialties.map((specialty) =>{
+      var CBName_Specialty = "SpecialtyCB" + specialty.specialtyId
+      userSpecialtiesCB[CBName_Specialty] = true
+
+      if(specialty.subSpecialties != null){
+        specialty.subSpecialties.map((subspecialty) =>{
+          var CBName_SubSpecialty = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+          userSubSpecialtiesCB[CBName_SubSpecialty] = true
+        })
+      }
+    })
+  }
+
 //console.log(userSubSpecialtiesCB)
   var initialValues = {
     firstName: state.userState.userProfile.firstName,
@@ -574,8 +572,10 @@ function mapStateToProps(state) {
 
   var stateObj = {
     userProfilePic:state.userState.userProfilePic,
-    allSpecialtiesAndTitle:state.userState.allSpecialtiesAndTitle,
-    userSpecialtiesAndTitles:state.userState.userProfile.specialtyTitleDto,
+    allSpecialties:state.userState.allSpecialties,
+    allTitles:state.userState.allTitles,
+    userSpecialties:state.userState.userProfile.specialties,
+    userTitles:state.userState.userProfile.titles,
     userNotificationPrefs: state.userState.userNotificationPrefs,
     };
 
