@@ -62,7 +62,7 @@ class AddComment extends React.Component {
         <div className="columns" data-add-comment>
           <span className="comment-button comment text-light">Add a comment...</span>
           <form className="inline-label" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-            <Field className="add-comment comment" name="comment" component="textarea"/>
+            <Field className="add-comment comment" name="comment" component="textarea" value={this.state.value}/>
             <button type="submit" className="save-comment button primary xsmall">Post</button>
           </form>
         </div>

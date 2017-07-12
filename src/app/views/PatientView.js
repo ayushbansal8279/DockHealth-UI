@@ -22,7 +22,7 @@ class PatientView extends React.Component {
       if(this.props.patient){
         patient = this.props.patient
       }
-    return ( 
+    return (
         <div className="off-canvas-content" data-off-canvas-content="true">
           <div className="row expanded collapse">
             <div className="large-12 columns">
@@ -30,7 +30,7 @@ class PatientView extends React.Component {
               <div className="top-bar">
                 <div className="top-bar-left">
                   <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-                  <h3>{patient.firstName}&nbsp;{patient.lastName}</h3> 
+                  <h3>{patient.firstName}&nbsp;{patient.lastName}</h3>
                 </div>
                 <div className="top-bar-right">
                   <div className="icon-text-wrapper">
@@ -81,10 +81,10 @@ class PatientView extends React.Component {
                 </div>
 
               </div>
-                
+
           </div>
-        </div> 
-      </div> 
+        </div>
+      </div>
 
     );
   }
@@ -104,4 +104,3 @@ const mapDispatchToProps = function (dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientView);
-

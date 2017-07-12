@@ -13,7 +13,7 @@ class TaskListView extends React.Component {
 
     componentDidMount(){
       // this.props.taskListAction.getTaskListForUser()
-      this.props.taskListAction.findPendingTaskListsForUser()
+      this.props.invitationAction.findPendingTaskListsForUser()
       this.props.taskListAction.getGenericListCounts()
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 							'PageName': 'Lists'
@@ -56,12 +56,12 @@ class TaskListView extends React.Component {
       this.props.taskListAction.leaveList(taskListId)
     }
 
-    acceptInviteToTaskList = (taskListId) => {
-      this.props.invitationAction.acceptInviteToTaskList(taskListId)
+    acceptInviteToTaskList = (taskList) => {
+      this.props.invitationAction.acceptInviteToTaskList(taskList)
     }
 
-    rejectInviteToTaskList = (taskListId) => {
-      this.props.invitationAction.rejectInviteToTaskList(taskListId)
+    rejectInviteToTaskList = (taskList) => {
+      this.props.invitationAction.rejectInviteToTaskList(taskList)
     }
 
     render() {
@@ -100,7 +100,7 @@ class TaskListView extends React.Component {
 
                   {this.props.genericLists.map(list => {
                     return(
-                      <div className="item row expanded align-middle">
+                      <div key={list.listName} className="item row expanded align-middle">
                         <div className="columns shrink">
                           <span className="circle xxsmall transparent"></span>
                         </div>
@@ -183,7 +183,7 @@ class TaskListView extends React.Component {
 function mapStateToProps(state){
   return{
     taskLists: state.taskListState.tasklist,
-    pendingTaskLists: state.taskListState.pendingTasklists,
+    pendingTaskLists: state.invitationState.pendingTasklists,
     genericLists: state.taskListState.genericLists
   }
 }

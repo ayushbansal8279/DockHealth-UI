@@ -97,7 +97,7 @@ class AddTask extends React.Component {
 
     render() {
     	return (
-			<div id="addTaskFormWrapper" className="add-form-wrapper" ref="toggle">
+			<div className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
 					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title} taskListId={this.props.taskListId} initialValues={"taskListId:"+this.props.taskListId}/>
 				</div>

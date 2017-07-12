@@ -129,3 +129,12 @@ input:checked ~ .switch-paddle:after {
 .listMembersPopUp {
   height: 700px;
 }
+
+.reveal .scroll-wrapper, .reveal{
+  overflow: visible;
+}
+
+#eac-container-add-member-to-list ul{
+    max-height:220px;
+    overflow:scroll;
+}

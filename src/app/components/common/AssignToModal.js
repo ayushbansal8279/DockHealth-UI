@@ -10,13 +10,13 @@ class AssignToModal extends React.Component {
 
   render() {
     return (
-      <div className="reveal" id={"edit-assign-to-" + this.props.taskId} data-reveal>
-        <h5>{this.props.taskListId}</h5>
+      <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal>
+        {/* <h5>{this.props.taskListId}</h5> */}
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
           {this.props.members.map(member=>{
             return(
-              <div onClick={(e) => this.props.assignOrReassignTask(this.props.taskId, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
+              <div onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
                   <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/>
                 </div>

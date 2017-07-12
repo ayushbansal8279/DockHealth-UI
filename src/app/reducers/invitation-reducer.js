@@ -8,22 +8,31 @@ const InvitationReducer = function(state = initialState, action) {
     case types.GET_INVITATION_SUCCESS:
       return {...state, invitationlist:action.invitelist};  //whatever our current state is, add on "invitelist"
 
+    case types.GET_PENDING_TASKLIST_SUCCESS:
+      return {...state, pendingTasklists:action.tasklist};  //whatever our current state is, add on "tasklist"
+
+    // case types.ACCEPT_INVITE_TOTASKLIST_SUCCESS:
+    //   var pendingList = {} // Look for tasklist with same id and set as variable
+    //   state.pendingTasklists.map(taskList =>
+    //     taskList.taskListId == action.taskListId ?
+    //     pendingList = taskList : taskList
+    //   )
+    //   return{ // return new state with updated pendingtasklists and tasklist
+    //     ...state,
+    //     pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist.taskListId !== action.taskListId),
+    //     tasklist: state.tasklist.concat(pendingList)
+    //   }
+
     case types.ACCEPT_INVITE_TOTASKLIST_SUCCESS:
-      var pendingList = {} // Look for tasklist with same id and set as variable
-      state.pendingTasklists.map(taskList =>
-        taskList.taskListId == action.taskListId ?
-        pendingList = taskList : taskList
-      )
-      return{ // return new state with updated pendingtasklists and tasklist
+      return{
         ...state,
-        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist.taskListId !== action.taskListId),
-        tasklist: state.tasklist.concat(pendingList)
+        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist)
       }
 
     case types.REJECT_INVITE_TOTASKLIST_SUCCESS:
       return{ // remove tasklist from pending tasklists
         ...state,
-        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist.taskListId !== action.taskListId)
+        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist)
       }
       break
   }

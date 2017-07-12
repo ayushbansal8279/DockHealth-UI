@@ -1,10 +1,12 @@
 import React from 'react'
+import ReactDOM from 'react-dom';
 import { Link, browserHistory, hashHistory } from 'react-router'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import * as userApi from '../../api/user-api'
+import $ from 'jquery'
 
 const NavLink = ({to, children, className}) => (
   <li>
@@ -36,7 +38,22 @@ class NavBar extends React.Component {
     // this.getInboxTasks = this.getInboxTasks.bind(this)
     // this.getListTasks = this.getListTasks.bind(this)
     // this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
-  }
+}
+
+unmountAddTaskForm = () => {
+  // show/hide add task/list form
+  	$('.add').toggleClass('close');
+  	$('body').toggleClass('disable-header-scroll');
+  	var href = $(this).attr('id');
+  	if($(this).hasClass('add-other')) {
+  		$('.add-other use').attr('href', function(index, attr) {
+  			return attr =='#icon-add' ? '#'+href : '#icon-add';
+  		});
+  	}
+  	$('.add-form-wrapper').slideToggle(300);
+  	//	$('.list-filter .controls, .list-wrapper').toggle();
+  	$('.list-filter .controls').toggle();
+}
 
   // getTasksAssignedByMe(){
   //   this.props.taskActions.getTasksAssignedByMe()
@@ -71,6 +88,7 @@ class NavBar extends React.Component {
     return (
       <div className="off-canvas position-left reveal-for-medium" id="sidebar" data-off-canvas>
         <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/>
+        {/* <h1 onClick={(e) => this.unmountAddTaskForm()}>Hello</h1> */}
         {/*{userProfile ? <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
 
         {/*{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
@@ -86,7 +104,7 @@ class NavBar extends React.Component {
 
               {this.props.taskLists.map(taskList => {
                 return(
-                  <NavLink to={"/tasks/" + taskList.listName + "/" + taskList.taskListId} activeClassName="active" title={taskList.listName} key={taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</NavLink>
+                  <NavLink  to={"/tasks/" + taskList.listName + "/" + taskList.taskListId} activeClassName="active" title={taskList.listName} key={taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</NavLink>
                 )
               })}
             </ul>

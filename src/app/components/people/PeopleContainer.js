@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import BaseComponent from '../BaseComponent'
 import * as PeopleActions from '../../actions/people-actions';
 import {Link} from 'react-router';
+import SearchInput, {createFilter} from 'react-search-input'
 
 class PeopleContainer extends BaseComponent {
     constructor(props) {
@@ -141,35 +142,37 @@ class PeopleContainer extends BaseComponent {
     renderList() {
 //use below if date is coming in as timestamp milliseconds
 //{new Date(invitation.updatedDateTime).toJSON()}
-
-       return this.props.peoplelist.map((person) =>{
-           return(
-             <div className="item row expanded" key={person.email}>
-             <div className="columns shrink pending">
-             {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
-             <span className="member-initials circle">{person.initials}</span>
-             </div>
-             <div className="columns">
-             <span className="item-title">{person.firstName + " " + person.lastName}</span>
-             <span className="item-details">{person.specialty}, {person.subspecialties}</span>
-             <span className="top-buffer-xsmall item-details">{person.email}</span>
-             <span className="item-details">C: {person.accountPhoneNumber} | W: {person.workPhoneNumber}</span>
-             <span className="item-details highlight">
-                {
-                  this.renderStatus(person)
-                }
-             </span>
-             </div>
-             <div className="columns shrink more-options-wrapper more-options-people">
-              <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
-              <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
-                {
-                  this.renderRoleButton(person)
-                }
-              </div>
-             </div>
-             </div>
-           )
+      const KEYS_TO_FILTERS = ['userName', 'email', 'homePhoneNumber', 'faxNumber', 'workPhoneNumber']
+      // Creates filter with LIST, SEARCH TERM, KEYS TO FILTER
+      const filteredPeople = this.props.peoplelist.filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS))
+       return filteredPeople.map((person) =>{
+         return(
+           <div className="item row expanded" key={person.email}>
+           <div className="columns shrink pending">
+           {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
+           <span className="member-initials circle">{person.initials}</span>
+           </div>
+           <div className="columns">
+           <span className="item-title">{person.firstName + " " + person.lastName}</span>
+           <span className="item-details">{person.specialty}, {person.subspecialties}</span>
+           <span className="top-buffer-xsmall item-details">{person.email}</span>
+           <span className="item-details">C: {person.accountPhoneNumber} | W: {person.workPhoneNumber}</span>
+           <span className="item-details highlight">
+              {
+                this.renderStatus(person)
+              }
+           </span>
+           </div>
+           <div className="columns shrink more-options-wrapper more-options-people">
+            <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+            <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
+              {
+                this.renderRoleButton(person)
+              }
+            </div>
+           </div>
+           </div>
+         )
       })
     }
 

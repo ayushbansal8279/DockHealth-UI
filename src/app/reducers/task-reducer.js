@@ -186,16 +186,41 @@ const TaskReducer = function(state = initialState, action) {
     // };
 
     case types.ASSIGN_OR_REASSIGN_TASK_SUCCESS:
-      return {
-        ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === action.taskId ?
-            // transform the one with a matching id
-            { ...task, assignedTo: action.member } :
-            // otherwise return original task
-            task
-        )
-      };
+    var mainTask
+    if(action.task.parentTaskId){
+    mainTask = action.task.parentTaskId
+    }else{
+    mainTask = action.task.taskId
+    }
+
+    return {
+      ...state,
+      tasks: state.tasks.map(task =>
+        task.taskId === mainTask ?
+        action.task.parentTaskId ?
+          {...task, subtasks:
+            task.subtasks.map(subtask =>
+              subtask.taskId === action.task.taskId ?
+              {...subtask, assignedTo: action.member} :
+              subtask
+            )
+          } :
+          { ...task, assignedTo: action.member}
+          : task
+      )
+    };
+
+    // case types.ASSIGN_OR_REASSIGN_TASK_SUCCESS:
+    //   return {
+    //     ...state,
+    //     tasks: state.tasks.map(task =>
+    //       task === action.task ?
+    //         // transform the one with a matching id
+    //         { ...task, assignedTo: action.member } :
+    //         // otherwise return original task
+    //         task
+    //     )
+    //   };
 
       case types.ADD_TASK_COMMENT_SUCCESS:
         var mainTask

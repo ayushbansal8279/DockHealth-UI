@@ -1,5 +1,6 @@
 import * as ActionTypes from './action-types';
 import * as InvitationApi from '../api/invitation-api';
+import * as TaskListApi from '../api/tasklist-api';
 
 export function findInvitationsByUserId() {
   return function(dispatch) {
@@ -11,20 +12,30 @@ export function findInvitationsByUserId() {
   };
 }
 
-export function acceptInviteToTaskList(tasklistId) {
+export function acceptInviteToTaskList(tasklist) {
   return function(dispatch) {
-    return InvitationApi.acceptInviteToTaskList(tasklistId).then(res => {
-      dispatch({type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS, res, tasklistId});
+    return InvitationApi.acceptInviteToTaskList(tasklist.taskListId).then(res => {
+      dispatch({type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS, res, tasklist});
     }).catch(error => {
       throw(error);
     });
   };
 }
 
-export function rejectInviteToTaskList(tasklistId) {
+export function rejectInviteToTaskList(tasklist) {
   return function(dispatch) {
-    return InvitationApi.rejectInviteToTaskList(tasklistId).then(res => {
-      dispatch({type: ActionTypes.REJECT_INVITE_TOTASKLIST_SUCCESS, res, tasklistId});
+    return InvitationApi.rejectInviteToTaskList(tasklist.taskListId).then(res => {
+      dispatch({type: ActionTypes.REJECT_INVITE_TOTASKLIST_SUCCESS, res, tasklist});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
+export function findPendingTaskListsForUser() {
+  return function(dispatch) {
+    return TaskListApi.findPendingTaskListsForUser().then(tasklist => {
+      dispatch({type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, tasklist});
     }).catch(error => {
       throw(error);
     });

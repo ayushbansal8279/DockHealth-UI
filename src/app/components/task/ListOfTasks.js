@@ -100,8 +100,8 @@ class ListOfTasks extends BaseComponent {
 			console.log(task.taskId)
 		}
 
-		assignOrReassignTask = (taskId, assignedToUserId, member) => {
-			this.props.taskActions.assignOrReassignTask(taskId, assignedToUserId, member)
+		assignOrReassignTask = (task, assignedToUserId, member) => {
+			this.props.taskActions.assignOrReassignTask(task, assignedToUserId, member)
 		}
 
 		handleToggle = (eventType, task) => {
@@ -185,38 +185,38 @@ class ListOfTasks extends BaseComponent {
 
 
 			{/* COMMENTS START */}
-			let commentNodes = "";
-		  if(task.comments && task.comments.length > 0){
-		      commentNodes = task.comments.map(function(comment) {
-		      return (
-		          <div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
-		            <div className="columns shrink">
-		              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
-		              <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
-		            </div>
-		            <div className="columns">
-		              <span className="comment">{comment.comment}</span>
-		            </div>
-		            <div className="columns shrink align-right">
-		              <span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
-		            </div>
-		          {/*<div className="row expanded collapse comment-wrapper">
-		            <div className="columns shrink text-light">
-		              Load 2 earlier comments
-		            </div>
-		          </div>*/}
-							</div>
-		      )
-		    })
-		  }else{
-		    commentNodes =
-			      <div className="row expanded collapse comment-wrapper">
-			        <div className="columns shrink">
-								{/*<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>*/}
-			          {/*<img className="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>*/}
-			        </div>
-			      </div>
-		  }
+			// let commentNodes = "";
+		  // if(task.comments && task.comments.length > 0){
+		  //     commentNodes = task.comments.map(function(comment) {
+		  //     return (
+		  //         <div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
+		  //           <div className="columns shrink">
+		  //             {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
+		  //             <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
+		  //           </div>
+		  //           <div className="columns">
+		  //             <span className="comment">{comment.comment}</span>
+		  //           </div>
+		  //           <div className="columns shrink align-right">
+		  //             <span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
+		  //           </div>
+		  //         {/*<div className="row expanded collapse comment-wrapper">
+		  //           <div className="columns shrink text-light">
+		  //             Load 2 earlier comments
+		  //           </div>
+		  //         </div>*/}
+			// 				</div>
+		  //     )
+		  //   })
+		  // }else{
+		  //   commentNodes =
+			//       <div className="row expanded collapse comment-wrapper">
+			//         <div className="columns shrink">
+			// 					{/*<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>*/}
+			//           {/*<img className="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>*/}
+			//         </div>
+			//       </div>
+		  // }
 			{/* COMMENTS END */}
 
 
@@ -310,6 +310,9 @@ class ListOfTasks extends BaseComponent {
 			        return (
 			          <span key={"subtask"+subtask.taskId}>
 			          {generateTask(subtask, "subtask")}
+								{subtask.taskList &&
+									<AssignToModal members={this.props.members} taskListId={subtask.taskList.taskListId} task={subtask} assignOrReassignTask={this.props.assignOrReassignTask}/>
+								}
 			          </span>
 			        )
 			      })
@@ -326,7 +329,7 @@ class ListOfTasks extends BaseComponent {
 					{listTasks()}
 					<BooleanModal taskId={task.taskId}/>
 					{task.taskList &&
-						<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} taskId={task.taskId} assignOrReassignTask={this.props.assignOrReassignTask}/>
+						<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.props.assignOrReassignTask}/>
 					}
 				</span>
 			)

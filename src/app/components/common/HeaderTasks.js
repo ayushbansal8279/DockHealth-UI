@@ -115,7 +115,7 @@ class HeaderTasks extends BaseComponent {
 
 								<div className="columns controls">
 									<div className="input-group searchbar">
-										<input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated}/>
+										<input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated} value={this.props.searchTerm}/>
 										<div className="input-group-button">
 											<button className="button search">
 												<svg onClick={this.props.clearSearch} className="icon"><use xlinkHref="#icon-search"></use></svg>

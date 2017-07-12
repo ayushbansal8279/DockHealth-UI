@@ -107,6 +107,8 @@ class Home extends BaseComponent {
   render() {
     var taskListId = this.props.params.taskListId
     const KEYS_TO_FILTERS = ['description', 'comments.comment', 'subtasks.description', 'subtasks.comments.comment']
+
+    // Creates filter with LIST, SEARCH TERM, KEYS TO FILTER
     const filteredTasks = this.props.tasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
     const filteredCompletedTasks = this.props.completedTasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
     return (
@@ -115,7 +117,7 @@ class Home extends BaseComponent {
 
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch}/>
+              <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch} searchTerm={this.state.searchTerm}/>
               <div className="list-wrapper">
                 <div className="task-item-wrapper">
                   <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>

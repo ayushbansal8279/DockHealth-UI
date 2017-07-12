@@ -2,6 +2,7 @@ import React from 'react'
 import BaseComponent from '../BaseComponent'
 import MemberInitials from '../common/MemberInitials'
 import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 import { Field, reduxForm } from 'redux-form'
 import * as TaskListActions from '../../actions/tasklist-actions';
 import $ from 'jquery'
@@ -28,7 +29,7 @@ class ListMembers extends BaseComponent{
         {
 			var inviteUsers =  [];
 			inviteUsers.push(selectedUserId);
-        	this.props.inviteMultipleUsersToTaskList(this.props.taskListId, inviteUsers)
+        	this.props.taskListActions.inviteMultipleUsersToTaskList(this.props.taskListId, inviteUsers)
         .then((res)=>{
           	this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
         })
@@ -38,9 +39,13 @@ class ListMembers extends BaseComponent{
       }
     }
 
-	componentDidMount(){
+    deleteMember = (member) => {
+      this.props.taskListActions.removeUserFromList(this.props.taskListId, member)
+    }
 
-	}
+    changeUserRole = (member, role) => {
+      this.props.taskListActions.changeUserRoleForList(this.props.taskListId, member, role)
+    }
 
   	componentWillUpdate (nextProps) {
 		if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
@@ -55,7 +60,7 @@ class ListMembers extends BaseComponent{
 	render(){
 
 		return(
-			<div className="reveal listMembersPopUp" id="list-members" data-reveal>
+			<div className="reveal" id="list-members" data-reveal> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
 				<h5 className="margin-bottom text-center">{this.props.title} List Members</h5>
 				<div className="scroll-wrapper">
 					{this.props.members.map(member => {
@@ -76,10 +81,10 @@ class ListMembers extends BaseComponent{
 										<svg className="icon ellipses medium" data-toggle={"more-options-list01-member-id-"+member.userId}><use xlinkHref="#icon-ellipses"></use></svg>
 										<div className="small dropdown-pane" id={"more-options-list01-member-id-"+member.userId} data-dropdown data-close-on-click="true">
 											<ul className="no-bullet">
-													<li>Delete this person</li>
+													<li onClick={(e) => this.deleteMember(member)}>Delete this person</li>
 													{member.taskListUserRole != "MEMBER" ?
-														<li>Remove admin status</li> :
-														<li>Make admin</li>
+														<li onClick={(e) => this.changeUserRole(member, "MEMBER")}>Remove admin status</li> :
+														<li onClick={(e) => this.changeUserRole(member, "ADMIN")}>Make admin</li>
 													}
 											</ul>
 										</div>
@@ -88,34 +93,33 @@ class ListMembers extends BaseComponent{
 							</div>
 						)
 					})}
-
 				</div>{/* <!--wrapper--> */}
-				<form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}>
-					<div className="row collapse expanded align-middle">
-						<div className="columns input-group input-wrapper">
-							<span className="input-group-label">
-								<svg className="icon"><use xlinkHref="#icon-search"></use></svg>
-							</span>
-							<div className="input-wrapper">
-								<Field id="add-member-to-list" name="selectedUser" component="input" placeholder="Add a new member" type="text"/>
-								<Field id="add-member-to-list-id" name="selectedUserId" className="input-group-field" component="input" type="hidden"/>
-							</div>
-						</div>
-					</div>
-					<div className="row collapse expanded align-middle">
-						<div className="columns text-center">
-							<button type="submit" className="button secondary medium">Invite</button>
-						</div>
-					</div>
-				</form>
-				<div className="row collapse expanded align-middle">
-					<div className="columns text-center">
-						<h3>{this.state.inviteUserResult}</h3>
-					</div>
-				</div>
-				<button className="close-button" data-close aria-label="Close modal" type="button">
-					<span aria-hidden="true">&times;</span>
-				</button>
+        <form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}>
+          <div className="row collapse expanded align-middle">
+            <div className="columns input-group input-wrapper">
+              <span className="input-group-label">
+                <svg className="icon"><use xlinkHref="#icon-search"></use></svg>
+              </span>
+              <div className="input-wrapper">
+                <Field id="add-member-to-list" className="assign-to input-group-field" name="selectedUser" component="input" placeholder="Add a new member" type="text"/>
+                <Field id="add-member-to-list-id" name="selectedUserId" className="input-group-field" component="input" type="hidden"/>
+              </div>
+            </div>
+          </div>
+          <div className="row collapse expanded align-middle">
+            <div className="columns text-center">
+              <button type="submit" className="button secondary medium">Invite</button>
+            </div>
+          </div>
+        </form>
+        <div className="row collapse expanded align-middle">
+          <div className="columns text-center">
+            <h3>{this.state.inviteUserResult}</h3>
+          </div>
+        </div>
+        <button className="close-button" data-close aria-label="Close modal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
 			</div>
 
 		)
@@ -139,7 +143,13 @@ const mapStateToProps = function(store){
 	}
 }
 
-export default connect(mapStateToProps, TaskListActions)(reduxForm({
+const mapDispatchToProps = function (dispatch) {
+  return {
+    taskListActions: bindActionCreators(TaskListActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
     form: 'ListMembersAddForm',
     validate
 })(ListMembers));

@@ -9,7 +9,7 @@ class PatientList extends React.Component {
 		return (
                 <div className="list-wrapper">
                   <div className="item-list-wrapper">
-                    
+
 					{this.props.patients
 						.map(patient => {
 							return (
@@ -17,14 +17,14 @@ class PatientList extends React.Component {
 							<Link to={"/patient/"+patient.patientId} key={patient.patientId}>
 							<div className="item row expanded align-middle">
 								<div className="columns shrink">
-								<span className="highlight">000-0000</span>
+									<span className="highlight">{patient.mrn}</span>
 								</div>
 								<div className="columns">
-								<span className="item-title">{patient.firstName}&nbsp;{patient.lastName}</span>
+									<span className="item-title">{patient.firstName}&nbsp;{patient.lastName}</span>
 								</div>
 							</div>
 							</Link>
-								
+
 							);
 						})
 					}

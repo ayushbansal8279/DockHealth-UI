@@ -14,16 +14,6 @@ export function getTaskListForUser() {
   };
 }
 
-export function findPendingTaskListsForUser() {
-  return function(dispatch) {
-    return TaskListApi.findPendingTaskListsForUser().then(tasklist => {
-      dispatch({type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, tasklist});
-    }).catch(error => {
-      throw(error);
-    });
-  };
-}
-
 export function setTaskListAsTasklistone(tasklistone){
   return function(dispatch){
     dispatch({type: ActionTypes.GET_TASKLIST_ONE_SUCCESS, tasklistone})
@@ -136,10 +126,10 @@ export function getActiveMembersByTaskListId(taskListId, memberStatus) {
 }
 
 
-export function changeUserRoleForList(tasklistId,markedUserId,role) {
+export function changeUserRoleForList(tasklistId,markedUser,role) {
   return function(dispatch) {
-    return TaskListApi.changeUserRoleForList(tasklistId,markedUserId,role).then(res => {
-      dispatch({type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS, res});
+    return TaskListApi.changeUserRoleForList(tasklistId,markedUser.userId,role).then(res => {
+      dispatch({type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS, res, markedUser, role});
     }).catch(error => {
       throw(error);
     });
@@ -157,10 +147,10 @@ export function deleteTaskListById(taskListId) {
 }
 
 
-export function removeUserFromList(taskListId,removedUserId) {
+export function removeUserFromList(taskListId,removedUser) {
   return function(dispatch) {
-    return TaskListApi.removeUserFromList(taskListId,removedUserId).then(res => {
-      dispatch({type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS, res});
+    return TaskListApi.removeUserFromList(taskListId,removedUser.userId).then(res => {
+      dispatch({type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS, res, removedUser});
     }).catch(error => {
       throw(error);
     });

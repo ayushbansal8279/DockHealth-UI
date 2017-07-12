@@ -8,11 +8,11 @@ const TaskListReducer = function(state = initialState, action) {
     case types.ADD_TASKLIST_SUCCESS:
       return {...state, tasklist: [action.tasklist].concat(state.tasklist)}
 
+    case types.ACCEPT_INVITE_TOTASKLIST_SUCCESS:
+      return {...state, tasklist: [action.tasklist].concat(state.tasklist)}
+
     case types.GET_TASKLIST_SUCCESS:
       return {...state, tasklist:action.tasklist};  //whatever our current state is, add on "tasklist"
-
-    case types.GET_PENDING_TASKLIST_SUCCESS:
-      return {...state, pendingTasklists:action.tasklist};  //whatever our current state is, add on "tasklist"
 
     case types.GET_TASKLIST_ONE_SUCCESS:
       return {...state, tasklistone:action.tasklistone};  //whatever our current state is, add on "tasklistone"
@@ -69,6 +69,21 @@ const TaskListReducer = function(state = initialState, action) {
       // currentListVar
       return { ...state, currentList:currentListVar };
       break
+
+    case types.REMOVEUSER_TASKLIST_SUCCESS:
+        return {
+          ...state,
+          tasklistmembers: state.tasklistmembers.filter(member => member !== action.removedUser)
+        }
+
+    case types.CHANGEUSERROLE_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        tasklistmembers: state.tasklistmembers.map(member =>
+          member === action.markedUser ?
+          {...member, taskListUserRole:action.role} : member
+        )
+      }
 
     // case types.SET_AS_CURRENT_LIST:
     //   var currentListvar = {}

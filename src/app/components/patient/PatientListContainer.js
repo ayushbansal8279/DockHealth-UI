@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import PatientList from './PatientList'
 import * as PatientActions from '../../actions/patient-actions'
+import SearchInput, {createFilter} from 'react-search-input'
 
 class PatientListContainer extends React.Component {
     componentDidMount () {
@@ -11,21 +12,27 @@ class PatientListContainer extends React.Component {
     }
 
     render() {
-        return (<PatientList patients={this.props.patients}/>)
+      const KEYS_TO_FILTERS = ['firstName', 'lastName', 'email', 'mrn']
+      // Creates filter with LIST, SEARCH TERM, KEYS TO FILTER
+      const filteredPatients = this.props.patients.filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS))
+
+      return (<PatientList patients={filteredPatients}/>)
     }
 }
 
 //property validation
-PatientListContainer.propTypes = {  
+PatientListContainer.propTypes = {
     patients: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 }
 
 const mapStateToProps = function (store) {
-    return {patients: store.patientState.allPatients};
+    return {
+      patients: store.patientState.allPatients
+    };
 }
 
-const mapDispatchToProps = function (dispatch) {  
+const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(PatientActions, dispatch)
   }
