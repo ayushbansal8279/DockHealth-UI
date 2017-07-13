@@ -29,8 +29,6 @@ class UserProfileContainer extends BaseComponent {
       userApi.getUserNotoficationPrefs()
       userApi.getAllSpecialties()
       userApi.getAllTitles()
-
-
     }
 
     componentWillReceiveProps(nextProps){
@@ -289,35 +287,7 @@ findObjectByKey(array, key, value) {
       })
   }
 
-  activateSpecialtiesOrManualSpecialtiesTab(userSpecialties){
-      //
-      // if(temp){
-      //   console.log("FRST")
-      //   return(
-      //     <div>
-      //       <li className="tabs-title"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
-      //       <li className="tabs-title is-active"><a href="#panel2">Manually Add Specialties</a></li>
-      //     </div>
-      //   );
-      // }
-      // else{
-      //   return(
-      //     <div>
-      //       <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
-      //       <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>
-      //     </div>
-      //   );
-      // }
-
-      return(
-        <div>
-          <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
-          <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>
-        </div>
-      );
-  }
-
-    createSpecialtySubSpecialtyTable(allSpecialties,userSpecialties){
+  createSpecialtySubSpecialtyTable(allSpecialties,userSpecialties){
       if(userSpecialties.length == 0){
         return (
           <div className="row table-row">
@@ -492,9 +462,11 @@ findObjectByKey(array, key, value) {
                           <div className="column large-12">
                             <div className="row">
                               <ul className="tabs" data-tabs id="add-specialty-tab">
-                                  {this.activateSpecialtiesOrManualSpecialtiesTab(this.state.userSelectedSpecialties)}
-                              </ul>
-
+                              {/*  <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
+                                <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>*/}
+                                  <li className={"tabs-title " + (this.props.manualSpecialtiesTab==false && "is-active")}><a href="#panel1">Choose Specialties</a></li>
+                                  <li className={"tabs-title " + (this.props.manualSpecialtiesTab==true && "is-active")}><a href="#panel2">Manually Add Specialties</a></li>
+                                </ul>
                               <div className="tabs-content large-12" data-tabs-content="add-specialty-tab">
                                 <div className="tabs-panel is-active" id="panel1">
                                   <div className="row input-dropdown-wrapper">
@@ -703,6 +675,7 @@ function mapStateToProps(state) {
     userSpecialties:state.userState.userProfile.specialties,
     userTitles:state.userState.userProfile.titles,
     userNotificationPrefs: state.userState.userNotificationPrefs,
+    manualSpecialtiesTab: isManual
     };
 
     stateObj.initialValues = initialValues
