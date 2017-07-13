@@ -45,7 +45,11 @@ class AddComment extends React.Component {
   }
 
   onSubmit(formProps){
-    this.props.taskActions.addTaskComment(this.props.task, formProps)
+    var commentField = "comment"+ this.props.task.taskId
+    var commentFieldVal = formProps[commentField]
+    var comment = {comment:commentFieldVal}
+
+    this.props.taskActions.addTaskComment(this.props.task, comment)
     this.setState({addComment: false})
     this.setState({value: ''})
     $('.comment-button').show();
@@ -62,7 +66,7 @@ class AddComment extends React.Component {
         <div className="columns" data-add-comment>
           <span className="comment-button comment text-light">Add a comment...</span>
           <form className="inline-label" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-            <Field className="add-comment comment" name="comment" component="textarea" value={this.state.value}/>
+            <Field className="add-comment comment" name={"comment" + this.props.task.taskId} component="textarea" value={this.state.value}/>
             <button type="submit" className="save-comment button primary xsmall">Post</button>
           </form>
         </div>
