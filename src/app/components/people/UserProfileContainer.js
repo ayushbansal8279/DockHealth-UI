@@ -29,6 +29,8 @@ class UserProfileContainer extends BaseComponent {
       userApi.getUserNotoficationPrefs()
       userApi.getAllSpecialties()
       userApi.getAllTitles()
+
+
     }
 
     componentWillReceiveProps(nextProps){
@@ -76,7 +78,13 @@ class UserProfileContainer extends BaseComponent {
       allTitles.map((title) =>{
         var checkBoxId = "TitleCB" + title.titleId
         if(formProps[checkBoxId]){
-          var title = {titleId:title.titleId,name:title.name}
+          var title;
+          if(checkBoxId.toString() == "TitleCB1"){
+            title = {titleId:title.titleId,name:formProps.otherTitle}
+          }
+          else{
+            title = {titleId:title.titleId,name:title.name}
+          }
           titlesToStore.push(title);
         }
       })
@@ -91,25 +99,73 @@ class UserProfileContainer extends BaseComponent {
       if(allSpecialties == undefined || allSpecialties == null){
         allSpecialties = []
       }
+//console.log(formProps.manualSpecialty)
+//console.log(formProps.manualSubSpecialty)
+      if(formProps.manualSpecialty ==undefined && formProps.manualSubSpecialty ==undefined) { //specialties selected from dropdown
+        allSpecialties.map((specialty) =>{
+            var checkBoxId = "SpecialtyCB" + specialty.specialtyId
+            if(formProps[checkBoxId]){
+              var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
 
-      allSpecialties.map((specialty) =>{
-          var checkBoxId = "SpecialtyCB" + specialty.specialtyId
-          if(formProps[checkBoxId]){
-            var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
+              var subSpecialties = specialty.subSpecialties;
+              subSpecialtiesArr = [];
+              subSpecialties.map((subspecialty) =>{
+                var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+                if(formProps[subSpecCheckBoxId]){
+                  var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
+                  subSpecialtiesArr.push(newSubSpecialty)
+                }
+              })
+              newSpecialty["subSpecialties"] = subSpecialtiesArr
+              specialtiesToStore.push(newSpecialty);
+            };
+        })
+      }
+      else if(formProps.manualSpecialty =="" && formProps.manualSubSpecialty ==""){
+        allSpecialties.map((specialty) =>{
+            var checkBoxId = "SpecialtyCB" + specialty.specialtyId
+            if(formProps[checkBoxId]){
+              var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
 
-            var subSpecialties = specialty.subSpecialties;
-            subSpecialtiesArr = [];
-            subSpecialties.map((subspecialty) =>{
-              var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
-              if(formProps[subSpecCheckBoxId]){
-                var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
-                subSpecialtiesArr.push(newSubSpecialty)
-              }
-            })
-            newSpecialty["subSpecialties"] = subSpecialtiesArr
-            specialtiesToStore.push(newSpecialty);
-          }
-      })
+              var subSpecialties = specialty.subSpecialties;
+              subSpecialtiesArr = [];
+              subSpecialties.map((subspecialty) =>{
+                var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+                if(formProps[subSpecCheckBoxId]){
+                  var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
+                  subSpecialtiesArr.push(newSubSpecialty)
+                }
+              })
+              newSpecialty["subSpecialties"] = subSpecialtiesArr
+              specialtiesToStore.push(newSpecialty);
+            };
+        })
+      }
+      else{ //manual specialties selected
+
+        var manualSpecialty= formProps.manualSpecialty
+        if(manualSpecialty ==undefined){
+          manualSpecialty=""
+        }
+
+        var manualSubSpecialty= formProps.manualSubSpecialty
+        if(manualSubSpecialty ==undefined){
+          manualSubSpecialty=""
+        }
+
+        if(manualSpecialty =="" && manualSubSpecialty ==""){
+          specialtiesToStore = []
+        }
+        else{
+          var newManualSpecialty = {specialtyId:1,name:manualSpecialty}
+          var newManualSubSpecialty = {subSpecialtyId:1,subSpecialtyName:manualSubSpecialty}
+          subSpecialtiesArr = [];
+          subSpecialtiesArr.push(newManualSubSpecialty)
+          newManualSpecialty["subSpecialties"] = subSpecialtiesArr
+          specialtiesToStore.push(newManualSpecialty);
+        }
+      }
+
       return specialtiesToStore;
     }
 
@@ -164,19 +220,30 @@ class UserProfileContainer extends BaseComponent {
       })
     }
 
-    createTitleCheckboxes(allTitles,userTitles){
+    createTitleCheckboxes(allTitles){
       return allTitles.map((title) =>{
         var checkBoxId = "TitleCB" + title.titleId
-        return(
+        if(title.titleId ==1){
+          return(
+             <li key={title.titleId} >
+             <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox"/>
+              <label htmlFor={checkBoxId}>Other</label>
+              <Field name='otherTitle' type='text' component={BasicField} label='Other Title'/>
+              </li>
+            )
+        }
+        else{
+          return(
            <li key={title.titleId} >
            <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox"/>
             <label htmlFor={checkBoxId}>{title.name}</label>
             </li>
           )
-        })
+        }
+      })
     }
 
-    createSpecialtyDropDown(allSpecialties,userSpecialties){
+    createSpecialtyDropDown(allSpecialties){
       return allSpecialties.map((specialty) =>{
         var checkBoxId = "SpecialtyCB" + specialty.specialtyId
         if(specialty.specialtyId !=1){ //skip the "Other" as we have "manually add Specialties"
@@ -222,6 +289,34 @@ findObjectByKey(array, key, value) {
       })
   }
 
+  activateSpecialtiesOrManualSpecialtiesTab(userSpecialties){
+      //
+      // if(temp){
+      //   console.log("FRST")
+      //   return(
+      //     <div>
+      //       <li className="tabs-title"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
+      //       <li className="tabs-title is-active"><a href="#panel2">Manually Add Specialties</a></li>
+      //     </div>
+      //   );
+      // }
+      // else{
+      //   return(
+      //     <div>
+      //       <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
+      //       <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>
+      //     </div>
+      //   );
+      // }
+
+      return(
+        <div>
+          <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
+          <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>
+        </div>
+      );
+  }
+
     createSpecialtySubSpecialtyTable(allSpecialties,userSpecialties){
       if(userSpecialties.length == 0){
         return (
@@ -234,6 +329,10 @@ findObjectByKey(array, key, value) {
       }
 
       return allSpecialties.map((specialty) =>{
+        if(specialty.specialtyId ==1){ //1 is for "Others"
+          return;
+        }
+
         var objFoundInUserSpecialties = this.findObjectByKey(userSpecialties,"specialtyId", specialty.specialtyId);
         if(objFoundInUserSpecialties ==null){
           return;
@@ -275,6 +374,8 @@ findObjectByKey(array, key, value) {
           this.setState({userSelectedSpecialties: removedSelectedSpecialties});
         }
     }
+
+
 
  render(){
       //console.log("yyy",this.state.userSelectedSpecialties)
@@ -376,7 +477,7 @@ findObjectByKey(array, key, value) {
                     <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
                       <fieldset className="large-12 columns">
                         <ul className="no-bullet columns-2">
-                            {this.createTitleCheckboxes(allTitles,userTitles)}
+                            {this.createTitleCheckboxes(allTitles)}
                         </ul>
                       </fieldset>
                     </div>
@@ -391,8 +492,7 @@ findObjectByKey(array, key, value) {
                           <div className="column large-12">
                             <div className="row">
                               <ul className="tabs" data-tabs id="add-specialty-tab">
-                                <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
-                                <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>
+                                  {this.activateSpecialtiesOrManualSpecialtiesTab(this.state.userSelectedSpecialties)}
                               </ul>
 
                               <div className="tabs-content large-12" data-tabs-content="add-specialty-tab">
@@ -401,7 +501,7 @@ findObjectByKey(array, key, value) {
                                     <a className="dropdown button expand field" data-toggle="choosespecialty">Add a specialty</a>
                                     <div className="dropdown-pane button-dropdown" id="choosespecialty" data-dropdown data-close-on-click="true">
                                       <ul className="no-bullet">
-                                        {this.createSpecialtyDropDown(allSpecialties,userSpecialties)}
+                                        {this.createSpecialtyDropDown(allSpecialties)}
                                       </ul>
                                     </div>
                                   </div>
@@ -419,14 +519,16 @@ findObjectByKey(array, key, value) {
                                   <div className="row">
                                     <div className="top-buffer-small input-group no-icon">
                                       <div className="form-floating-label input-wrapper">
-                                        <textarea className="input-group-field"></textarea>
-                                        <label>Specialties</label>
+                                        {/*<textarea className="input-group-field"></textarea>
+                                        <label>Specialties</label>*/}
+                                        <Field name='manualSpecialty' type='text' component={BasicField} label='Specialties'/>
                                       </div>
                                     </div>
                                     <div className="input-group no-icon">
                                       <div className="form-floating-label input-wrapper">
-                                        <textarea className="input-group-field"></textarea>
-                                        <label>Subspecialties</label>
+                                        {/*<textarea className="input-group-field"></textarea>
+                                        <label>Subspecialties</label>*/}
+                                        <Field name='manualSubSpecialty' type='text' component={BasicField} label='Subspecialties'/>
                                       </div>
                                     </div>
                                   </div>
@@ -526,12 +628,18 @@ function mapStateToProps(state) {
   var userTitlesCB = {};
   var userSpecialtiesCB = {};
   var userSubSpecialtiesCB = {};
+  var userManualSpecialties = {};
+  var userOtherTitle = {};
+  var isManual = false;
 
   var userTitles = state.userState.userProfile.titles
   var userSpecialties = state.userState.userProfile.specialties
 
   if(userTitles != null){
     userTitles.map((title) =>{
+      if(title.titleId == 1){
+        userOtherTitle["otherTitle"] = title.name
+      }
       var CBName_Title = "TitleCB" + title.titleId
       userTitlesCB[CBName_Title] = true
     })
@@ -539,19 +647,33 @@ function mapStateToProps(state) {
 
   if(userSpecialties != null){
     userSpecialties.map((specialty) =>{
-      var CBName_Specialty = "SpecialtyCB" + specialty.specialtyId
-      userSpecialtiesCB[CBName_Specialty] = true
-
-      if(specialty.subSpecialties != null){
-        specialty.subSpecialties.map((subspecialty) =>{
-          var CBName_SubSpecialty = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
-          userSubSpecialtiesCB[CBName_SubSpecialty] = true
-        })
+      if(specialty.specialtyId ==1){
+        isManual = true
+        userManualSpecialties["manualSpecialty"] = specialty.name
+        if(specialty.subSpecialties != null){
+          specialty.subSpecialties.map((subspecialty) =>{
+              userManualSpecialties["manualSubSpecialty"] = subspecialty.subSpecialtyName
+          })
+        }
       }
     })
+
+    if(!isManual){
+      userSpecialties.map((specialty) =>{
+        var CBName_Specialty = "SpecialtyCB" + specialty.specialtyId
+        userSpecialtiesCB[CBName_Specialty] = true
+
+        if(specialty.subSpecialties != null){
+          specialty.subSpecialties.map((subspecialty) =>{
+            var CBName_SubSpecialty = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+            userSubSpecialtiesCB[CBName_SubSpecialty] = true
+          })
+        }
+      })
+    }
   }
 
-//console.log(userSubSpecialtiesCB)
+  //console.log(userSubSpecialtiesCB)
   var initialValues = {
     firstName: state.userState.userProfile.firstName,
     lastName: state.userState.userProfile.lastName,
@@ -568,6 +690,10 @@ function mapStateToProps(state) {
   initialValues = Object.assign({}, initialValues, userTitlesCB)
   initialValues = Object.assign({}, initialValues,userSpecialtiesCB)
   initialValues = Object.assign({}, initialValues,userSubSpecialtiesCB)
+  initialValues = Object.assign({}, initialValues,userManualSpecialties)
+  initialValues = Object.assign({}, initialValues,userOtherTitle)
+
+
   //console.log(initialValues)
 
   var stateObj = {
