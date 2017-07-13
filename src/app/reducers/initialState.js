@@ -19,6 +19,7 @@ export default {
   title: "",
   currentList: {},
   currentTask: {},
-  genericLists: []
+  genericLists: [],
+  users: []
   //addtasklisterror:''
 }

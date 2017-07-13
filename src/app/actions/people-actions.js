@@ -57,3 +57,13 @@ export function invitePersonToOrganization(formProps ){
       });
     };
   }
+
+  export function getUserById(userId) {
+    return function(dispatch) {
+      return PeopleApi.getUserById(userId).then(res => {
+        dispatch({type: ActionTypes.GET_USER_DETAILS_SUCCESS, res});
+      }).catch(error => {
+        throw(error);
+      });
+    };
+  }

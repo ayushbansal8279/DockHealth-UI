@@ -3,6 +3,7 @@ import Moment from 'react-moment'
 import BaseComponent from '../BaseComponent'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import MemberInitials from '../common/MemberInitials'
+import MemberProfilePic from '../common/MemberProfilePic'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
@@ -30,13 +31,18 @@ class TaskListActivityFeedContainer extends BaseComponent {
     console.log('The accordion link was clicked.');
   };
 
+	getUserProfilePic = () => {
+		// alert("working")
+	}
+
     renderList(auditlist) {
        return auditlist.map((audit) =>{
           return(
 						<div className="task-item row expanded condense align-middle" key={"audit" + audit.auditId}>
 							<div className="columns shrink">
 								{/* <MemberInitials /> */}
-								<img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
+								{/* <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/> */}
+								<MemberProfilePic userId={audit.createdBy}/>
 							</div>
 							<div className="columns">
 								<span className="task-title">{audit.auditId + " " + audit.activityFeed}</span>

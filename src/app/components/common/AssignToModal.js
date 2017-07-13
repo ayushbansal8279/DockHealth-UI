@@ -26,7 +26,7 @@ class AssignToModal extends React.Component {
               </div>
             )
           })}
-        <form className="inline-label top-buffer">
+        {/* <form className="inline-label top-buffer">
           <div className="row collapse expanded align-middle">
             <div className="columns input-group input-wrapper">
               <span className="input-group-label">
@@ -37,12 +37,12 @@ class AssignToModal extends React.Component {
               </div>
             </div>
           </div>
-        </form>
-        <div className="row collapse expanded align-middle">
+        </form> */}
+        {/* <div className="row collapse expanded align-middle">
           <div className="columns text-center">
             <a className="button secondary medium">Save</a>
           </div>
-        </div>
+        </div> */}
         <button className="close-button" data-close aria-label="Close modal" type="button">
           <span aria-hidden="true">&times;</span>
         </button>

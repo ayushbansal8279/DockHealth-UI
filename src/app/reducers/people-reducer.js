@@ -18,6 +18,9 @@ const PeopleReducer = function(state = initialState, action) {
     //     ...state,
     //     peoplelist: [invitedPerson].concat(state.peoplelist)
     //   }
+
+    case types.GET_USER_DETAILS_SUCCESS:
+      return {...state};
   }
   return state;
 }

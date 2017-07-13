@@ -92,6 +92,10 @@ ul li, .member-initials{
   cursor:pointer;
 }
 
+.item-content{
+  cursor:default;
+}
+
 .title-dropdown-menu li:hover{
   background-color:#ccc;
 }

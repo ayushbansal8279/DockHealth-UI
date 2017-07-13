@@ -305,33 +305,33 @@ $(document).ready(function() {
 	});
 
 	// show/hide add task/list form
-	// $(document).on('click', '.add, .edit-task', function() {
-	// // $('.add, .edit-task').on('click', function(event) {
-	// 	$('.add').toggleClass('close');
-	// 	$('body').toggleClass('disable-header-scroll');
-	// 	if($(this).hasClass('add-list')) {
-	// 		$('.add-list use').attr('href', function(index, attr) {
-	// 			return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-	// 		});
-	// 	}
-	// 	$('.add-form-wrapper').slideToggle(300);
-	// 	$('.list-filter .controls, .list-wrapper').toggle();
-	// //	$('.list-filter .controls').toggle();
-	// });
+	$(document).on('click', '.add, .edit-task', function() {
+	// $('.add, .edit-task').on('click', function(event) {
+		$('.add').toggleClass('close');
+		$('body').toggleClass('disable-header-scroll');
+		if($(this).hasClass('add-list')) {
+			$('.add-list use').attr('href', function(index, attr) {
+				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+			});
+		}
+		$('.add-form-wrapper').slideToggle(300);
+		$('.list-filter .controls, .list-wrapper').toggle();
+	//	$('.list-filter .controls').toggle();
+	});
 
 	// show/hide add task/list form
-$(document).on('click', '.add, .edit-task', function() {
-	$('.add').toggleClass('close');
-	$('body').toggleClass('disable-header-scroll');
-	var href = $(this).attr('id');
-	if($(this).hasClass('add-other')) {
-		$('.add-other use').attr('href', function(index, attr) {
-			return attr =='#icon-add' ? '#'+href : '#icon-add';
-		});
-	}
-	$('.add-form-wrapper').slideToggle(300);
-	//	$('.list-filter .controls, .list-wrapper').toggle();
-	$('.list-filter .controls').toggle();
-});
+// $(document).on('click', '.add, .edit-task', function() {
+// 	$('.add').toggleClass('close');
+// 	$('body').toggleClass('disable-header-scroll');
+// 	var href = $(this).attr('id');
+// 	if($(this).hasClass('add-other')) {
+// 		$('.add-other use').attr('href', function(index, attr) {
+// 			return attr =='#icon-add' ? '#'+href : '#icon-add';
+// 		});
+// 	}
+// 	$('.add-form-wrapper').slideToggle(300);
+// 	//	$('.list-filter .controls, .list-wrapper').toggle();
+// 	$('.list-filter .controls').toggle();
+// });
 
 });

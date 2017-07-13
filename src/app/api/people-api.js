@@ -7,6 +7,13 @@ export function findAllUsersByOrganizationId() {
     });
 }
 
+export function getUserById(userId) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/'+userId)
+    .then(response => {
+      return response.data;
+    });
+}
+
 export function invitePersonToOrganization(person) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/invitePersonToOrganization', person)
     .then(response => {
