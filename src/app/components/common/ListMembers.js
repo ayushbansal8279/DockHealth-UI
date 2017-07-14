@@ -1,27 +1,72 @@
 import React from 'react'
-import BaseComponent from '../BaseComponent'
+import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
 import MemberInitials from '../common/MemberInitials'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import { Field, reduxForm } from 'redux-form'
 import * as TaskListActions from '../../actions/tasklist-actions';
+import Autosuggest from 'react-autosuggest';
 import $ from 'jquery'
 
-
-class ListMembers extends BaseComponent{
+class ListMembers extends BaseComponentWithAutoComplete {
 
   constructor(props) {
     	super(props)
     	this.state = {
-      		inviteUserResult: ''
+      		inviteUserResult: '',
+          	selectedUserId: null,
+      		selectedSuggestion: '',
+      		suggestions: []
     	};
+		this.getSuggestions = this.getSuggestions.bind(this)
+		this.getSuggestionValue = this.getSuggestionValue.bind(this)
+		this.renderSuggestion = this.renderSuggestion.bind(this)
+		this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this)
+		this.renderInputComponent = this.renderInputComponent.bind(this)
   	}
 
+	getSuggestions = value => {
+		const inputValue = value.trim().toLowerCase();
+		const inputLength = inputValue.length;
+
+		return inputLength === 0 ? [] : this.props.peoplelist.filter(person =>
+			person.firstName.toLowerCase().slice(0, inputLength) === inputValue || person.lastName.toLowerCase().slice(0, inputLength) === inputValue
+		);
+	};
+
+	// When suggestion is clicked, Autosuggest needs to populate the input
+	// based on the clicked suggestion. Teach Autosuggest how to calculate the
+	// input value for every given suggestion.
+	getSuggestionValue = suggestion => suggestion.firstName + " " + suggestion.lastName;
+
+	// Use your imagination to render suggestions.
+	renderSuggestion = suggestion => (
+		<div className="row condense expanded border-bottom align-middle">
+			<div className="columns shrink">
+				<MemberInitials member={suggestion}/>
+				{/*<img className="member-photo circle medium" src="assets/img/user1.png" alt="name of user"/>*/}
+			</div>
+			<div className="columns">
+				<span className="item-title">{suggestion.firstName} {suggestion.lastName} </span>
+				{suggestion.userInviteStatus == "PENDING" &&
+				<span className="item-details highlight">Pending</span>
+				}
+			</div>
+		</div>		
+	);
+	
+	onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+		console.log("selected member: " + suggestion.userId);
+		this.setState({
+			selectedUserId: suggestion.userId
+		});
+	}
+	  
+    //addListMember(e) {
 	onSubmit (formProps) {
-		var selectedUserId = formProps.selectedUserId; //jquery update doesn't always update the Virtual DOM - try avoiding this mixing
-		if(!selectedUserId){
-			var selectedUserId = $("#add-member-to-list-id").val();
-		}
+		//var selectedUserId = formProps.selectedUserId;
+		//var selectedUserId = $("#selectedUserId").val();
+		var selectedUserId = this.state.selectedUserId;
         if(selectedUserId == null){
         	alert("User must be selected before inviting to this list.");
         }
@@ -34,30 +79,44 @@ class ListMembers extends BaseComponent{
           	this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
         })
         .catch((error)=>{
-          	this.setState({inviteUserResult: error.message}); //this will cause render to be called
+          	this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage}); 
         })
       }
     }
 
-    deleteMember = (member) => {
-      this.props.taskListActions.removeUserFromList(this.props.taskListId, member)
-    }
+	componentDidMount(){
 
-    changeUserRole = (member, role) => {
-      this.props.taskListActions.changeUserRoleForList(this.props.taskListId, member, role)
-    }
+	}
+
+	deleteMember = (member) => {
+		this.props.taskListActions.removeUserFromList(this.props.taskListId, member)
+	}
+
+	changeUserRole = (member, role) => {
+		this.props.taskListActions.changeUserRoleForList(this.props.taskListId, member, role)
+	}
 
   	componentWillUpdate (nextProps) {
-		if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
-			enableAutoCompleteForListMembers(nextProps.peoplelist);
-		}
+		// if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
+		// 	enableAutoCompleteForListMembers(nextProps.peoplelist);
+		// }
   	}
+
 
 	removeListMember() {
 
 	}
 
 	render(){
+
+		const { selectedSuggestion, suggestions } = this.state;
+
+		// Autosuggest will pass through all these props to the input.
+		const inputProps = {
+			placeholder: 'Add a new member',
+			value: selectedSuggestion,
+			onChange: this.onChangeSuggestionSearch
+		};
 
 		return(
 			<div className="reveal" id="list-members" data-reveal> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
@@ -94,32 +153,34 @@ class ListMembers extends BaseComponent{
 						)
 					})}
 				</div>{/* <!--wrapper--> */}
-        <form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}>
-          <div className="row collapse expanded align-middle">
-            <div className="columns input-group input-wrapper">
-              <span className="input-group-label">
-                <svg className="icon"><use xlinkHref="#icon-search"></use></svg>
-              </span>
-              <div className="input-wrapper">
-                <Field id="add-member-to-list" className="assign-to input-group-field" name="selectedUser" component="input" placeholder="Add a new member" type="text"/>
-                <Field id="add-member-to-list-id" name="selectedUserId" className="input-group-field" component="input" type="hidden"/>
-              </div>
-            </div>
-          </div>
-          <div className="row collapse expanded align-middle">
-            <div className="columns text-center">
-              <button type="submit" className="button secondary medium">Invite</button>
-            </div>
-          </div>
-        </form>
-        <div className="row collapse expanded align-middle">
-          <div className="columns text-center">
-            <h3>{this.state.inviteUserResult}</h3>
-          </div>
-        </div>
-        <button className="close-button" data-close aria-label="Close modal" type="button">
-          <span aria-hidden="true">&times;</span>
-        </button>
+				<form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}>
+					<div className="row collapse expanded align-middle">
+						<Autosuggest
+							suggestions={suggestions}
+							getSuggestionValue={this.getSuggestionValue}
+							renderSuggestion={this.renderSuggestion}
+							onSuggestionSelected={this.onSuggestionSelected}
+							inputProps={inputProps}
+							onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+							onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+							renderSuggestionsContainer={this.renderSuggestionsContainer}
+							renderInputComponent={this.renderInputComponent}
+						/>
+					</div>
+					<div className="row collapse expanded align-middle">
+						<div className="columns text-center">
+							<button type="submit" className="button secondary medium">Invite</button>
+						</div>
+					</div>
+				</form>
+				<div className="row collapse expanded align-middle">
+					<div className="columns text-center">
+						{this.state.inviteUserResult}
+					</div>
+				</div>			
+				<button className="close-button" data-close aria-label="Close modal" type="button">
+					<span aria-hidden="true">&times;</span>
+				</button>
 			</div>
 
 		)
