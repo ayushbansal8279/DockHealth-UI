@@ -142,3 +142,15 @@ input:checked ~ .switch-paddle:after {
     max-height:220px;
     overflow:scroll;
 }
+
+/*.react-autosuggest__container > input {
+    margin: 0;
+}*/
+
+.react-autosuggest__container {
+  width: 100%;
+}
+
+.react-autosuggest__suggestions-list {
+  list-style-type: none;
+}

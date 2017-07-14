@@ -378,8 +378,8 @@ export function updateStoreWithCurrentUser(cognitoUser) {
   store.dispatch({type: 'user/user', user: cognitoUser})
 }
 
-export function getUserProfilePic() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture',{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
+export function getUserProfilePic(userId, pictureType) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture/' + userId + "?UserPictureType=" + pictureType,{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
     .then(response => {
       //let binaryImage = btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
       //let image = "data:image/png;base64," + image
