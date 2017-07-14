@@ -20,6 +20,7 @@ export default {
   currentList: {},
   currentTask: {},
   genericLists: [],
-  users: []
+  users: {}
+  // users: {'1':{"image":"url", "initials":"LJ"}, '2':{"image":"url", "initials":"LJ"}}
   //addtasklisterror:''
 }
