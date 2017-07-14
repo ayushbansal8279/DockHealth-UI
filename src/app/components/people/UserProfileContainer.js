@@ -527,16 +527,35 @@ findObjectByKey(array, key, value) {
 
 
                   {/* <!-- Notifications --> */}
+                  <div className="column large-12 top-buffer">
+                    <span className="item-title">Notifications</span>
+                  </div>
                   <div className="column top-buffer large-12">
                     <div className="row">
                       <div className="column">
-                        <span className="item-title">Notifications</span>
-                        <p className="text-light">Fine print about notifications should go here</p>
+                        <span className="item-title">Email</span>
+                        <p className="text-light">Toggle email notifications</p>
                       </div>
                       <div className="column shrink">
                         <div className="switch">
-                          <Field className="switch-input" id="exampleSwitch" type="checkbox" name="pushPref" component="input"/>
-                          <label className="switch-paddle" htmlFor="exampleSwitch">
+                          <Field className="switch-input" id="emailSwitch" type="checkbox" name="emailPref" component="input"/>
+                          <label className="switch-paddle" htmlFor="emailSwitch">
+                            <span className="show-for-sr">Download Kittens</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column top-buffer large-12">
+                    <div className="row">
+                      <div className="column">
+                        <span className="item-title">Push</span>
+                        <p className="text-light">Toggle push notifications</p>
+                      </div>
+                      <div className="column shrink">
+                        <div className="switch">
+                          <Field className="switch-input" id="pushSwitch" type="checkbox" name="pushPref" component="input"/>
+                          <label className="switch-paddle" htmlFor="pushSwitch">
                             <span className="show-for-sr">Download Kittens</span>
                           </label>
                         </div>

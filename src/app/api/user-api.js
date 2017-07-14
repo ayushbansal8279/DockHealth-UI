@@ -434,6 +434,12 @@ export function getUserNotoficationPrefs() {
 }
 
 export function updateUserNotoficationPrefs(emailNotification, pushNotification) {
+  if(emailNotification == "" || emailNotification == undefined){
+    emailNotification = false
+  }
+  if(pushNotification == "" || pushNotification == undefined){
+    pushNotification = false
+  }
   var notificationPrefObj = {email: emailNotification, push: pushNotification};
   //console.log(notificationPrefObj);
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/userNotificationPreferences', notificationPrefObj)

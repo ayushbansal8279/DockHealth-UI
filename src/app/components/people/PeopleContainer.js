@@ -139,6 +139,57 @@ class PeopleContainer extends BaseComponent {
       }
     }
 
+    renderTitles(person){
+      var titles= "";
+      if(person.titles !=null){
+        person.titles.map((title) =>{
+          if(titles !=""){
+            titles= titles + ", " + title.name
+          }
+          else{
+            titles= title.name
+          }
+        })
+      }
+      titles = titles.replace('/,\s*$/', "");
+      return titles;
+    }
+
+    renderSpecialties(person){
+      var allSpecialties= "";
+        if(person.specialties !=null){
+            person.specialties.map((specialty) =>{
+              var tmpSpecialty= "";
+              var tmpSubSpecialty= "";
+              tmpSpecialty = specialty.name
+              if(specialty.subSpecialties != null){
+                  specialty.subSpecialties.map((subSpecialty) =>{
+                    if(tmpSubSpecialty !=""){
+                      tmpSubSpecialty= tmpSubSpecialty + ", " + subSpecialty.subSpecialtyName
+                    }
+                    else{
+                      tmpSubSpecialty= subSpecialty.subSpecialtyName
+                    }
+                  })
+                  tmpSubSpecialty = tmpSubSpecialty.replace('/,\s*$/', "");
+              }
+
+              if(tmpSubSpecialty !=""){
+                tmpSpecialty = tmpSpecialty +" ("  + tmpSubSpecialty + ")"
+              }
+
+              if(allSpecialties !=""){
+                allSpecialties= allSpecialties + ", " + tmpSpecialty
+              }
+              else{
+                allSpecialties= tmpSpecialty
+              }
+            })
+        }
+        allSpecialties = allSpecialties.replace('/,\s*$/', "");
+        return allSpecialties;
+    }
+
     renderList() {
 //use below if date is coming in as timestamp milliseconds
 //{new Date(invitation.updatedDateTime).toJSON()}
@@ -154,7 +205,8 @@ class PeopleContainer extends BaseComponent {
            </div>
            <div className="columns">
            <span className="item-title">{person.firstName + " " + person.lastName}</span>
-           <span className="item-details">{person.specialty}, {person.subspecialties}</span>
+           <span className="item-details">{this.renderTitles(person)}</span>
+           <span className="item-details">{this.renderSpecialties(person)}</span>
            <span className="top-buffer-xsmall item-details">{person.email}</span>
            <span className="item-details">C: {person.accountPhoneNumber} | W: {person.workPhoneNumber}</span>
            <span className="item-details highlight">
