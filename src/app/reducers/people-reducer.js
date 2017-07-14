@@ -1,5 +1,6 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
+// import update from 'immutability-helper';
 
 const PeopleReducer = function(state = initialState, action) {
 
@@ -19,11 +20,22 @@ const PeopleReducer = function(state = initialState, action) {
     //     peoplelist: [invitedPerson].concat(state.peoplelist)
     //   }
 
+    // case types.GET_USER_DETAILS_SUCCESS:
+    //   // state.users[action.userId] = {"user":action.user}
+    //   return {...state, users: state.users.concat({
+    //     ["user"]: action.user
+    //   })};
+
     case types.GET_USER_DETAILS_SUCCESS:
-      // state.users[action.userId] = {"user":action.user}
-      return {...state, users: state.users.concat({
-        ["user"]: action.user
-      })};
+      // var userId = action.userId;
+      // var user = action.user;
+      // var test= update(obj, {$merge: {userId: {"user":user, "image":"url"}}})
+
+      // return {...state, users: {[action.userId]:{"user":action.user, "image":"url"}}}
+      return {...state}
+
+
+
   }
 
   // const reducer = (state = {}, {type, compositeKey, connection}) => {

@@ -8,7 +8,8 @@ class Search extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      searchTerm: ''
+      searchTerm: '',
+      expandSearch: false
     }
   }
 
@@ -18,6 +19,9 @@ class Search extends React.Component {
 
   clearSearch = () => {
     this.setState({searchTerm: ''})
+    if(this.state.expandSearch == false){
+      this.setState({expandSearch: true})
+    }
   }
 
   searchUpdated = (term) => {
@@ -27,7 +31,7 @@ class Search extends React.Component {
   render() {
     return (
       <div className="input-group searchbar">
-        <input className="input-field search-field" type="search" placeholder="Search patients" onChange={this.props.searchUpdated}/>
+        <input className={"input-field search-field " + (this.state.expandSearch && "expand-search")} type="search" placeholder="Search patients" onChange={this.props.searchUpdated}/>
         <div className="input-group-button">
           <button className="button search">
             <svg onClick={this.props.clearSearch} className="icon"><use xlinkHref="#icon-search"></use></svg>

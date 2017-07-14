@@ -145,7 +145,7 @@ export function addTaskComment(task, taskComment) {
 export function deleteTask(task) {
   return function(dispatch) {
     return TaskApi.deleteTask(task.taskId).then(deletingTask => {
-      dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId:task.taskId});
+      dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, task});
     }).catch(error => {
       throw(error);
     });

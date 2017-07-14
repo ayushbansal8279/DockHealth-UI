@@ -2,6 +2,7 @@ import React from 'react'
 import BaseComponent from '../BaseComponent'
 import AddListForm from './AddListForm'
 import { Link } from 'react-router'
+import BooleanModal from '../common/BooleanModal'
 // PARENT: TaskListView
 
 class ListsComponent extends BaseComponent{
@@ -34,16 +35,31 @@ class ListsComponent extends BaseComponent{
                 <div className="small dropdown-pane" id={"more-options-task-id-" + taskList.taskListId} data-dropdown data-close-on-click="true">
                   <ul className="no-bullet">
                     {/* if owner */}
-                    <li><div onClick={(e) => this.props.deleteList(taskList.taskListId)}>Delete list</div></li>
+                    <li><div data-open={"delete-list-"+taskList.taskListId}>Delete list</div></li>
                     <li><div onClick={(e) => this.props.editForm(taskList)}>Edit</div></li>
                     {/* if owner */}
-                    <li><div onClick={(e) => this.props.leaveList(taskList.taskListId)}>Leave list</div></li>
+                    <li><div data-open={"leave-list-"+taskList.taskListId}>Leave list</div></li>
                   </ul>
                 </div>
               </div>
+              <BooleanModal
+                uniqueModalId={"delete-list-"+taskList.taskListId}
+                message="Are you sure you want to delete this taskList?"
+                handleConfirmation={this.props.deleteList}
+                handleConfirmationArgs={taskList.taskListId}
+                confirmBtnTxt="Delete"
+              />
+              <BooleanModal
+                uniqueModalId={"leave-list-"+taskList.taskListId}
+                message="Are you sure you want to leave this taskList?"
+                handleConfirmation={this.props.leaveList}
+                handleConfirmationArgs={taskList.taskListId}
+                confirmBtnTxt="Leave"
+              />
             </div>
           )
         })}
+
       </span>
     )
   }

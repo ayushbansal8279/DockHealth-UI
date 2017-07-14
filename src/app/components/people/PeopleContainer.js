@@ -5,6 +5,7 @@ import BaseComponent from '../BaseComponent'
 import * as PeopleActions from '../../actions/people-actions';
 import {Link} from 'react-router';
 import SearchInput, {createFilter} from 'react-search-input'
+import BooleanModal from '../common/BooleanModal'
 
 class PeopleContainer extends BaseComponent {
     constructor(props) {
@@ -95,7 +96,7 @@ class PeopleContainer extends BaseComponent {
             return (
                   <ul className="no-bullet">
                     <li onClick={(e) => this.onClickRoleChange(person.userId, person.orgUserRole)}>Make admin</li>
-                    <li onClick={(e) => this.onClickRemoveUser(person.userId)}>Delete this person</li>
+                    <li data-open={"delete-user-"+person.userId}>Delete this person</li>
                   </ul>
             );
           }else if(person.orgUserRole=='OWNER'){
@@ -108,7 +109,7 @@ class PeopleContainer extends BaseComponent {
             return (
                   <ul className="no-bullet">
                     <li onClick={(e) => this.onClickRoleChange(person.userId, person.orgUserRole)}>Remove admin rights</li>
-                    <li onClick={(e) => this.onClickRemoveUser(person.userId)}>Delete this person</li>
+                    <li data-open={"delete-user-"+person.userId}>Delete this person</li>
                   </ul>
               );
           }
@@ -199,30 +200,37 @@ class PeopleContainer extends BaseComponent {
        return filteredPeople.map((person) =>{
          return(
            <div className="item row expanded" key={person.email}>
-           <div className="columns shrink pending">
-           {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
-           <span className="member-initials circle">{person.initials}</span>
-           </div>
-           <div className="columns">
-           <span className="item-title">{person.firstName + " " + person.lastName}</span>
-           <span className="item-details">{this.renderTitles(person)}</span>
-           <span className="item-details">{this.renderSpecialties(person)}</span>
-           <span className="top-buffer-xsmall item-details">{person.email}</span>
-           <span className="item-details">C: {person.accountPhoneNumber} | W: {person.workPhoneNumber}</span>
-           <span className="item-details highlight">
-              {
-                this.renderStatus(person)
-              }
-           </span>
-           </div>
-           <div className="columns shrink more-options-wrapper more-options-people">
-            <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
-            <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
-              {
-                this.renderRoleButton(person)
-              }
-            </div>
-           </div>
+             <div className="columns shrink pending">
+             {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
+              <span className="member-initials circle">{person.initials}</span>
+             </div>
+             <div className="columns">
+               <span className="item-title">{person.firstName + " " + person.lastName}</span>
+               <span className="item-details">{this.renderTitles(person)}</span>
+               <span className="item-details">{this.renderSpecialties(person)}</span>
+               <span className="top-buffer-xsmall item-details">{person.email}</span>
+               <span className="item-details">C: {person.accountPhoneNumber} | W: {person.workPhoneNumber}</span>
+               <span className="item-details highlight">
+                  {
+                    this.renderStatus(person)
+                  }
+               </span>
+             </div>
+             <div className="columns shrink more-options-wrapper more-options-people">
+                <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+                <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
+                  {
+                    this.renderRoleButton(person)
+                  }
+              </div>
+             </div>
+             <BooleanModal
+               uniqueModalId={"delete-user-"+person.userId}
+               message="Are you sure you want to delete this user?"
+               handleConfirmation={this.onClickRemoveUser}
+               handleConfirmationArgs={person.userId}
+               confirmBtnTxt="Delete"
+             />
            </div>
          )
       })

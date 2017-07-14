@@ -14,7 +14,7 @@ class MemberProfilePic extends React.Component{
   render(){
     return(
       <span>
-        <h1>{this.props.users[this.props.userId]}</h1>
+        <h1>{this.props.users}</h1>
         <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
       </span>
     )
@@ -24,7 +24,8 @@ class MemberProfilePic extends React.Component{
 
 const mapStateToProps = function (store) {
   return {
-   users: store.userState.users
+   users: store.peopleState.users,
+   user: store.userState.user
   }
 }
 

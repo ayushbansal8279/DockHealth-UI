@@ -12,8 +12,9 @@ import * as TaskActions from '../../actions/task-actions'
 import * as userApi from '../../api/user-api'
 import { findDOMNode } from 'react-dom'
 import $ from 'jquery'
-import BooleanModal from '../common/BooleanModal'
 import AssignToModal from '../common/AssignToModal'
+import ConfirmDelete from '../common/ConfirmDelete'
+import BooleanModal from '../common/BooleanModal'
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -76,8 +77,8 @@ class ListOfTasks extends BaseComponent {
   		// this.setState({task: ''})
   	}
 
-  	handleDeleteTask(taskId, userId){
-  		this.props.deleteTask(taskId, userId)
+  	handleDeleteTask(task){
+  		this.props.deleteTask(task)
   	}
 
   	handleToggleTaskPriority(task, userId, priority){
@@ -298,7 +299,7 @@ class ListOfTasks extends BaseComponent {
 										{type != "subtask" &&
 											<li>Add subtask</li>
 										}
-										<li onClick={(e) => this.handleDeleteTask(task)}>Delete task</li>
+										<li data-open={"delete-task-"+task.taskId}>Delete task</li>
 									</ul>
 								</div>
 							</div>
@@ -310,6 +311,7 @@ class ListOfTasks extends BaseComponent {
 			        return (
 			          <span key={"subtask"+subtask.taskId}>
 			          {generateTask(subtask, "subtask")}
+								<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+subtask.taskId} handleConfirmationArgs={subtask} handleConfirmation={this.handleDeleteTask}/>
 								{subtask.taskList &&
 									<AssignToModal members={this.props.members} taskListId={subtask.taskList.taskListId} task={subtask} assignOrReassignTask={this.props.assignOrReassignTask}/>
 								}
@@ -327,7 +329,7 @@ class ListOfTasks extends BaseComponent {
 			return(
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
-					<BooleanModal taskId={task.taskId}/>
+					<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.handleDeleteTask}/>
 					{task.taskList &&
 						<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.props.assignOrReassignTask}/>
 					}

@@ -43,7 +43,7 @@ class AddTaskForm extends BaseComponent {
     <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
-          <h5 className="section-title">Add a task</h5>
+          <h5 className="section-title">{this.props.initialValues ? "Edit a task" : "Add a task"}</h5>
         </div>
 
         <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" value="hello"/>
@@ -120,7 +120,7 @@ class AddTaskForm extends BaseComponent {
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
           <div className="input-wrapper form-floating-label">
             <Field className="input-group-field" name="subtasks[]" component="input" type="text" />
-            <label>Add a subtask</label>
+            <label>{this.props.initialValues ? "Edit a subtask" : "Add a subtask"}</label>
           </div>
         </div>
 

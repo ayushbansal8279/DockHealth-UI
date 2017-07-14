@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
   taskListState: TaskListReducer,
   invitationState: InvitationReducer,
   peopleState: peopleReducer
-  
+
 })
 
 export default rootReducer
