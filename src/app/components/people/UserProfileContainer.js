@@ -25,7 +25,7 @@ class UserProfileContainer extends BaseComponent {
           this.setState({userSelectedSpecialties:response.specialties});
         }
       })
-      userApi.getUserProfilePic()
+      userApi.getUserProfilePic(sessionStorage.userId,"PROFILE")
       userApi.getUserNotoficationPrefs()
       userApi.getAllSpecialties()
       userApi.getAllTitles()
@@ -44,6 +44,7 @@ class UserProfileContainer extends BaseComponent {
     }
 
     handleImageChange(e) {
+      console.log("handleImageChange")
       e.preventDefault();
       let reader = new FileReader();
       let file = e.target.files[0];
@@ -55,7 +56,7 @@ class UserProfileContainer extends BaseComponent {
         // });
         userApi.saveUserProfilePic(reader.result)
         .then((response) =>{
-          userApi.getUserProfilePic(); //call this so state change will be triggered and all locations will be updated
+          userApi.getUserProfilePic(sessionStorage.userId,"PROFILE"); //call this so state change will be triggered and all locations will be updated
         })
         .catch((error)=>{
           this.setState({updateProfileResult: error.message}); //this will cause render to be called
@@ -196,7 +197,7 @@ class UserProfileContainer extends BaseComponent {
           .then((res) =>{
             this.setState({updateProfileResult: 'User Profile updated successfully!!!'});
             userApi.getUserById()
-            userApi.getUserProfilePic()
+            userApi.getUserProfilePic(sessionStorage.userId,"PROFILE")
             userApi.getUserNotoficationPrefs()
             //hashHistory.push('/people')
           })
@@ -210,7 +211,7 @@ class UserProfileContainer extends BaseComponent {
       userApi.deleteUserProfilePic()
       .then((res)=>{
         this.setState({updateProfileResult: 'User profile picture removed successfully!!'}); //this will cause render to be called
-        userApi.getUserProfilePic()
+        userApi.getUserProfilePic(sessionStorage.userId,"PROFILE")
         //hashHistory.push('/updateUserRole')
       })
       .catch((error)=>{

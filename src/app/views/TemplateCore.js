@@ -64,7 +64,8 @@ class TemplateCore extends React.Component {
         //check if user exists
         userApi.getUserByEmail(cognitoUser.username, cognitoUser)
           .then(data => {
-            userApi.getUserProfilePic()
+            //userId, pictureType
+            userApi.getUserProfilePic(data.userId,"PROFILE")
             .then((datapic) =>{
               //console.log (datapic);
             })
