@@ -20,8 +20,25 @@ const PeopleReducer = function(state = initialState, action) {
     //   }
 
     case types.GET_USER_DETAILS_SUCCESS:
-      return {...state};
+      // state.users[action.userId] = {"user":action.user}
+      return {...state, users: state.users.concat({
+        ["user"]: action.user
+      })};
   }
+
+  // const reducer = (state = {}, {type, compositeKey, connection}) => {
+  //   switch (type) {
+  //     case 'addConnection':
+  //       return Object.assign({}, state, {
+  //         connections: state.connections.concat({
+  //           [compositeKey]: connection
+  //         })
+  //       });
+  //     default:
+  //       return state;
+  //   }
+  // }
+
   return state;
 }
 

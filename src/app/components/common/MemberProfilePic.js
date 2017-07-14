@@ -7,23 +7,26 @@ class MemberProfilePic extends React.Component{
 
 
   componentDidMount(){
-      this.props.userActions.findAllUsersByOrganizationId()
-      // this.props.userActions.getUserById(parseInt(this.props.userId))
+      // this.props.userActions.findAllUsersByOrganizationId()
+      this.props.userActions.getUserById(this.props.userId)
   }
 
   render(){
     return(
-      <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
+      <span>
+        <h1>{this.props.users[this.props.userId]}</h1>
+        <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/>
+      </span>
     )
   }
 
 }
 
-// const mapStateToProps = function (store) {
-//   return {
-//     users: store.userState.users
-//   }
-// }
+const mapStateToProps = function (store) {
+  return {
+   users: store.userState.users
+  }
+}
 
 const mapDispatchToProps = function (dispatch) {
   return {
