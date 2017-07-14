@@ -334,4 +334,13 @@ $(document).ready(function() {
 // 	$('.list-filter .controls').toggle();
 // });
 
+	$(document).on('click', '.search', function() {
+		$(".search-field").toggleClass("expand-search");
+		$(".search-field").focus();
+		$(this).find('use').attr('href', function (index, attr) {
+			return attr == '#icon-close' ? '#icon-search' : '#icon-close';
+		});
+	});
+
+
 });
