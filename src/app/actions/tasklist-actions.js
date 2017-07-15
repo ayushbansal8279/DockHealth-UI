@@ -20,7 +20,7 @@ export function setTaskListAsTasklistone(tasklistone){
   }
 }
 
-export function addTaskList(formProps) {
+export function saveTaskList(formProps) {
   if(formProps.taskListId != null){
     return function(dispatch) {
       return TaskListApi.updateTaskList(formProps).then(updatedTasklist => {

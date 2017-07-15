@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as ActionTypes from '../actions/action-types';
 
 export function getAllPatients() {
+  axios.defaults.headers.common['CurrentUserId'] = "6"
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getAllPatients?active=true')
     .then(response => {
       // store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});

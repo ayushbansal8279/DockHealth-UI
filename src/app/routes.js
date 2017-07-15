@@ -60,7 +60,7 @@ export default (
       <Route path="/editPatient/:patientId" component={PatientEditView} />
       <Route path="/taskList" component={TaskListView} />
       <Route path="/activityfeed" component={TaskListActivityFeedView} />
-      {/*<Route path="/addTaskList" component={TaskListAdd} />*/}
+      {/*<Route path="/saveTaskList" component={TaskListAdd} />*/}
       {/*<Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />*/}
       {/*<Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />*/}
       {/*<Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />*/}

@@ -1,9 +1,9 @@
 import React from 'react'
-import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
-import MemberInitials from '../common/MemberInitials'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import { Field, reduxForm } from 'redux-form'
+import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
+import MemberInitials from '../common/MemberInitials'
 import * as TaskListActions from '../../actions/tasklist-actions';
 import Autosuggest from 'react-autosuggest';
 import $ from 'jquery'
@@ -102,7 +102,6 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		// }
   	}
 
-
 	removeListMember() {
 
 	}
@@ -126,7 +125,6 @@ class ListMembers extends BaseComponentWithAutoComplete {
 						return(
 							<div key={"member"+member.userId} className="row condense expanded border-bottom align-middle">
 								<div className="columns shrink">
-
 									<MemberInitials member={member}/>
 									{/* <span className="member-initials circle medium">{member.initials}</span> */}
 									{/* <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/> */}

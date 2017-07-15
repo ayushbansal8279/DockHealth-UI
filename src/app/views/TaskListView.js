@@ -21,7 +21,7 @@ class TaskListView extends React.Component {
     }
 
     submit = (form) => {
-      this.props.taskListAction.addTaskList(form)
+      this.props.taskListAction.saveTaskList(form)
       // print the form values to the console
       console.log(form)
       $('.add').toggleClass('close');
@@ -33,6 +33,10 @@ class TaskListView extends React.Component {
       }
       $('.add-form-wrapper').slideToggle(300);
       $('.list-filter .controls, .list-wrapper').toggle();
+    }
+
+    addTaskList = () => {
+      this.props.taskListAction.setTaskListAsTasklistone(null)
     }
 
     editTaskList = (taskList) => {
@@ -84,7 +88,7 @@ class TaskListView extends React.Component {
         					{/* {{> search}} */}
         				</div>
         				<div className="columns shrink">
-        					<svg id="icon-lists" className="add add-other icon"><use xlinkHref="#icon-lists"></use></svg>
+        					<svg id="icon-lists" className="add add-other icon" onClick={this.addTaskList}><use xlinkHref="#icon-lists"></use></svg>
         				</div>
 
         			</div>{/* <!--list-filter--> */}

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export function findAllUsersByOrganizationId() {
+  axios.defaults.headers.common['CurrentUserId'] = "6"
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findAllUsersByOrganizationId')
     .then(response => {
       return response.data;
