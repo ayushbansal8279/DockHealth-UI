@@ -102,7 +102,6 @@ class AddTask extends React.Component {
 					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title} taskListId={this.props.taskListId} initialValues={"taskListId:"+this.props.taskListId}/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
-
 			</div>
 
     	)

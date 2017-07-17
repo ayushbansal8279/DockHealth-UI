@@ -4,6 +4,9 @@ import {bindActionCreators} from 'redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
+import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
+import AddSubtaskField from './AddSubtaskField';
+import AddSubtaskForm from './AddSubtaskForm';
 import * as TaskListActions from '../../actions/tasklist-actions'
 import $ from 'jquery'
 
@@ -11,6 +14,9 @@ import $ from 'jquery'
 class AddTaskForm extends BaseComponent {
   constructor(props, container) {
 		super(props)
+    this.state = {
+      subtasks:[]
+    }
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
 
@@ -38,32 +44,36 @@ class AddTaskForm extends BaseComponent {
     // toggleDropDown("filed-in-taskList");
   }
 
+  submitSubtask = (addSubtaskForm) => {
+    this.setState({subtasks: this.state.subtasks.concat(
+      [addSubtaskForm]
+    )})
+  }
+
+  // For Testing can delete
+  addSubtask = () => {
+   this.setState({subtasks: this.state.subtasks.concat(
+     [{"description":"Hello"}]
+   )})
+  }
+
   render() {
   return (
     <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
-          <h5 className="section-title">{this.props.initialValues ? "Edit a task" : "Add a task"}</h5>
+          <h5 className="section-title">Add a Task</h5>
         </div>
 
-        <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" value="hello"/>
+        {/* Task */}
+        <Field name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
-        {/* **2** */}
+        {/* ADD PATIENT */}
         <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
         <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
 
-        {/*<div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-patient"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <Field id="add-patient" className="add-patient input-group-field" name="patient" component="input" type="text"/>
-            <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
-            <label>Add Patient</label>
-          </div>
-        </div>*/}
-
-
-
+        {/* FILE IN */}
         {/* Show only from inbox. Tasks can only be assigned to list from 'inbox' */}
         {this.props.title == "Inbox" ?
           <div className="column large-12 input-group input-dropdown">
@@ -97,6 +107,7 @@ class AddTaskForm extends BaseComponent {
           </div>
         }
 
+        {/* ASSIGNED TO */}
         {/* Hide 'assignedTo' if user is adding a task to the 'inbox'. Tasks can only be assigned from lists */}
         {this.props.title != "Inbox" || this.props.taskListSelection ?
           <span>
@@ -107,76 +118,32 @@ class AddTaskForm extends BaseComponent {
           <span></span>
         }
 
-        {/*<div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <Field id="assign-task-to" className="assign-to input-group-field" name="assignedTo" component="input" type="text" />
-            <Field id="assign-task-to-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
-            <label>Assigned to</label>
-          </div>
-        </div>*/}
+        {this.state.subtasks.map(subtask => {
+          return(<AddSubtaskField initialValues={this.props.initialValues.subtasks} />)
+        })}
 
-        <div className="column large-12 input-group toggle-add-subtask">
+        {/* SUBTASKS */}
+        {/* <div className="column large-12 input-group toggle-add-subtask has-value">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
           <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="subtasks[]" component="input" type="text" />
-            <label>{this.props.initialValues ? "Edit a subtask" : "Add a subtask"}</label>
-          </div>
-        </div>
-
-        <div className="column large-12 text-right text-center">
-          <input type="submit" className="button secondary medium" value="Save"/>
-        </div>
-      </div>
-
-      <div className="subtask-wrapper">
-        <div className="row expanded">
-          <div className="column small-4 toggle-add-subtask">
-            <svg className="icon"><use xlinkHref="#icon-arrow-left"></use></svg>
-          </div>
-          <div className="column small-4 text-center">
-            <h5 className="section-title">Add a subtask</h5>
-          </div>
-        </div>
-
-        <div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <Field className="input-group-field" name="subtasks[0][description]" component="input" type="text" />
-            <label>Subtask</label>
-          </div>
-        </div>
-
-        {/*<div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <Field id="add-patient-subtask" className="add-patient input-group-field" name="patient" component="input" type="text" />
-            <label>Add Patient</label>
-          </div>
-        </div>*/}
-
-        {/* <div className="column large-12 input-group">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-assign-to"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <Field id="assign-subtask-to" className="assign-to input-group-field" name="assignedTo" component="input" type="text" />
-            <label>Assigned to</label>
+            <input className="input-group-field" type="text" value="This is a second subtask."/>
+            <label>Subtask #2</label>
           </div>
         </div> */}
 
-        {this.props.title != "Inbox" ?
-          <span>
-            <Field id="assign-task-to" name='subtask[assignedTo]' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
-            <Field id="assign-task-to-id" name="subtasks[0][assignedToId]" className="input-group-field" component="input" type="hidden"/>
-          </span>
-          :
-          <span></span>
-        }
+        <div className="row expanded">
+          <div className="columns highlight center-content-vertical toggle-add-subtask link">
+            <svg className="icon hide"><use xlinkHref="#icon-subtask"></use></svg>+ Add a subtask
+          </div>
 
-        <div className="column large-12 text-right">
-          <button type="submit" className="button secondary float-right button-small">Save</button>
+          {/* SAVE */}
+          <div className="columns shrink align-right">
+            <input type="submit" className="button secondary medium" value="Save"/>
+          </div>
         </div>
-      </div>
+      </div>{/*main-task-wrapper*/}
 
+      <AddSubtaskForm onSubmit={this.submitSubtask}/>
     </form>
   )
   }
@@ -213,6 +180,9 @@ const mapStateToProps = function(store) {
 		}
     if(editTask.taskList){
       initialTaskFormValues.taskList = editTask.taskList.listName;
+    }
+    if(editTask.subtasks){
+      initialTaskFormValues.subtasks = editTask.taskList.subtasks;
     }
 
 		//TODO - handle assigned tasklist
