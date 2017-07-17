@@ -101,9 +101,16 @@ class FormPatient extends React.Component {
 }
 
 const mapStateToProps = function (state) {
+  var patientInitialValues = null;
+  if(state.patientState.selectedEmrPatient){
+    patientInitialValues = state.patientState.selectedEmrPatient
+  }
+  if(state.patientState.selectedPatient){
+    patientInitialValues = state.patientState.selectedPatient
+  }
   return {
     patient: state.patientState.selectedPatient,
-    initialValues: state.patientState.selectedPatient
+    initialValues: patientInitialValues
   }
 }
 

@@ -2,6 +2,7 @@ import React from 'react'
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
 import PatientListContainer from '../components/patient/PatientListContainer'
+import SearchPatient from '../components/patient/SearchPatient'
 import FormPatient from '../components/patient/FormPatient'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import BaseComponent from '../components/BaseComponent'
@@ -71,7 +72,14 @@ class AllPatientsView extends BaseComponent {
                   <div className="column large-12 text-center">
                     <h5 className="section-title">Add a patient</h5>
                   </div>
-                   <FormPatient />
+                  <SearchPatient />
+									<div className="column large-12 text-center">
+										Search for an existing patient in the database	
+									</div>
+									<div className="column large-12 text-center">
+										or enter patient manually
+									</div>
+                  <FormPatient />
                   </div>
                 </div>
                 <PatientListContainer searchTerm={this.state.searchTerm}/>

@@ -4,7 +4,6 @@ import * as ActionTypes from '../actions/action-types';
 export function getAllPatients() {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getAllPatients?active=true')
     .then(response => {
-      // store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});
       return response.data;
     });
 }
@@ -12,7 +11,6 @@ export function getAllPatients() {
 export function getPatientsByTaskList(taskListId) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getPatientsByTaskList/'+taskListId)
     .then(response => {
-      // store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});
       return response.data;
     });
 }
@@ -23,7 +21,6 @@ export function getPatientById(patientId) {
   }
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/'+patientId)
     .then(response => {
-      // store.dispatch({type: ActionTypes.GET_PATIENTS_SUCCESS, patients: response.data});
       return response.data;
     });
 }
@@ -31,7 +28,6 @@ export function getPatientById(patientId) {
 export function removePatient(patientId) {
   return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'patient/' + patientId)
     .then(response => {
-      // store.dispatch({type: ActionTypes.DELETE_PATIENT_SUCCESS, patientId: patientId});
       return response;
     });
 }
@@ -39,7 +35,6 @@ export function removePatient(patientId) {
 export function addPatient(patient) {
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'patient', patient)
     .then(response => {
-      // store.dispatch({type: ActionTypes.ADD_PATIENT, patient: response.data});
       return response.data;
     });
 }
@@ -47,7 +42,6 @@ export function addPatient(patient) {
 export function updatePatient(patient) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'patient', patient)
     .then(response => {
-      // store.dispatch({type: ActionTypes.ADD_PATIENT, patient: response.data});
       return response.data;
     });
 }
@@ -57,4 +51,11 @@ export function addPatientToTask(patientId, taskId){
     .then(response => {
       return response.data
     })
+}
+
+export function lookupEMRPatients(searchToken) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/lookupEMRPatients?searchToken='+searchToken)
+    .then(response => {
+      return response.data;
+    });
 }

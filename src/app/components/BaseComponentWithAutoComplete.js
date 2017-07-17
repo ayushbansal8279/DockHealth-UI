@@ -43,5 +43,9 @@ class BaseComponentWithAutoComplete extends BaseComponent {
 		);
 	};
 
+	// componentDidUpdate(prevProps, prevState){
+	// 	super.componentDidUpdate(prevProps, prevState)
+	// }
+
 }
 export default BaseComponentWithAutoComplete

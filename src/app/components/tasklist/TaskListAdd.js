@@ -1,6 +1,6 @@
 import React, { Component ,PropTypes} from 'react';
 import {reduxForm, Field} from 'redux-form';
-import {addTaskList} from '../../actions/tasklist-actions';
+import {saveTaskList} from '../../actions/tasklist-actions';
 import {connect} from 'react-redux'
 import BasicField from '../common/BasicField';
 import { Link,hashHistory } from 'react-router';
@@ -16,7 +16,7 @@ class TaskListAdd extends Component {
 
   onSubmit (formProps) {
     //console.log(formProps);
-    this.props.addTaskList(formProps)
+    this.props.saveTaskList(formProps)
     .then((res)=>{
       //this.props.resetForm;//reduxforms injected fucntion
       hashHistory.push('/taskList')
@@ -88,7 +88,7 @@ function validate(values){
 //redux form : 1st is form config, 2nd argument is mapStateToProps, 3rd is mapDispatchToProps
 
 //redux form Version 6 specifically needs an call to connect
-export default connect(null, {addTaskList})(reduxForm({
+export default connect(null, {saveTaskList})(reduxForm({
     form: 'TaskListAddForm',
     //fields:['tasklistname'],
     validate
