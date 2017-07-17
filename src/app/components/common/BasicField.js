@@ -1,8 +1,8 @@
 import React from 'react'
 
-const BasicField = ({ isTaskDescription, input, label, id, type, placeholder,disabled, xlinkHref, extraClassName, decoratingClassName, pattern, meta: { touched, error } }) => (
-
+const BasicField = ({ input, label, id, type, placeholder,disabled, xlinkHref, extraClassName, decoratingClassName, pattern, meta: { touched, error } }) => (
   <div className={'column large-12 input-group ' + (xlinkHref ? '' : 'no-icon ') + (decoratingClassName? decoratingClassName : '')}>
+
     {/* icon   */}
     {xlinkHref &&
       <span className="input-group-label"><svg className="icon"><use xlinkHref={xlinkHref}></use></svg></span>
@@ -16,7 +16,6 @@ const BasicField = ({ isTaskDescription, input, label, id, type, placeholder,dis
 
       <input {...input} id={id} className={extraClassName? "input-group-field " + extraClassName : "input-group-field"} type={type} pattern={pattern} disabled={disabled}/>
       <label htmlFor={input.name}>{label}</label>
-    </div>
 
       {/* if touched and has error */}
       {touched && error &&
@@ -24,6 +23,7 @@ const BasicField = ({ isTaskDescription, input, label, id, type, placeholder,dis
           {error}
         </span>
       }
+    </div>
 
   </div>
 )
