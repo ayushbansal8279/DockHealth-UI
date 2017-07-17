@@ -64,3 +64,19 @@ export function addPatientToTask(patientId, taskId){
     })
   }
 }
+
+export function lookupEMRPatients(searchToken){
+  return function(dispatch){
+    return PatientApi.lookupEMRPatients(searchToken).then(patients => {
+      dispatch({type: ActionTypes.GET_EMR_PATIENTS_SUCCESS, patients})
+    }).catch(error => {
+      throw(error)
+    })
+  }
+}
+
+export function selectEMRPatient(patient){
+  return function(dispatch){
+      dispatch({type: ActionTypes.SELECT_EMR_PATIENT_SUCCESS, patient})
+  }
+}
