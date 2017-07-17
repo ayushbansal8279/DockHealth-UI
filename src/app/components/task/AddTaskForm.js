@@ -15,7 +15,9 @@ class AddTaskForm extends BaseComponent {
   constructor(props, container) {
 		super(props)
     this.state = {
-      subtasks:[]
+      subtasks:[],
+      taskListId:"",
+      subtaskIndex:0
     }
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
@@ -25,6 +27,7 @@ class AddTaskForm extends BaseComponent {
 
   componentDidMount () {
     super.componentDidMount()
+    this.setState({"taskListId":this.props.taskListId})
   }
 
   componentDidUpdate () {
@@ -44,6 +47,13 @@ class AddTaskForm extends BaseComponent {
     // toggleDropDown("filed-in-taskList");
   }
 
+  componentWillReceiveProps(nextProps){
+    debugger;
+    if(nextProps.taskListId != this.props.taskListId){
+      this.setState({"taskListId":nextProps.taskListId})
+    }
+  }
+
   submitSubtask = (addSubtaskForm) => {
     this.setState({subtasks: this.state.subtasks.concat(
       [addSubtaskForm]
@@ -53,8 +63,9 @@ class AddTaskForm extends BaseComponent {
   // For Testing can delete
   addSubtask = () => {
    this.setState({subtasks: this.state.subtasks.concat(
-     [{"description":"Hello"}]
+     ["0":{"description":"Hello"}]
    )})
+   this.setState({subtaskIndex:this.state.subtasks.length})
   }
 
   render() {
@@ -100,8 +111,8 @@ class AddTaskForm extends BaseComponent {
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
             <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.props.taskListId} type="text" data-toggle="add-task-file-in-options" disabled/>
-              <Field id="taskListId" name="taskListId" className="input-group-field" value={this.props.taskListId} component="input" type="hidden"/>
+              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.state.taskListId} type="text" data-toggle="add-task-file-in-options" disabled/>
+              <Field id="taskListId" name="taskListId" className="input-group-field" value={this.state.taskListId} component="input" type="hidden"/>
               <label>File in (filing only allowed in Inbox)</label>
             </div>
           </div>
@@ -118,8 +129,8 @@ class AddTaskForm extends BaseComponent {
           <span></span>
         }
 
-        {this.state.subtasks.map(subtask => {
-          return(<AddSubtaskField initialValues={this.props.initialValues.subtasks} />)
+        {this.state.subtasks.map((subtask, index) => {
+          return(<AddSubtaskField initialValues={this.props.initialValues.subtasks} index={index}/>)
         })}
 
         {/* SUBTASKS */}
