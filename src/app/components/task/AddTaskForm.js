@@ -17,7 +17,9 @@ class AddTaskForm extends BaseComponent {
     this.state = {
       subtasks:[],
       taskListId:"",
-      subtaskIndex:0
+      subtaskIndex:0,
+      currentSubtask:"",
+      currentSubtaskId:""
     }
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
@@ -48,25 +50,35 @@ class AddTaskForm extends BaseComponent {
   }
 
   componentWillReceiveProps(nextProps){
-    debugger;
     if(nextProps.taskListId != this.props.taskListId){
       this.setState({"taskListId":nextProps.taskListId})
     }
   }
 
   submitSubtask = (addSubtaskForm) => {
-    this.setState({subtasks: this.state.subtasks.concat(
-      [addSubtaskForm]
-    )})
+    var key
+    if(this.state.currentSubtaskId != ""){
+      key = this.state.currentSubtaskId
+    }else{
+      var key = this.state.subtaskIndex
+    }
+    var val = addSubtaskForm
+    var obj = this.state.subtasks
+    this.state.subtasks[key] = val
+    obj[key] = val
+    this.setState(obj)
+    this.setState({subtaskIndex:this.state.subtasks.length})
+    this.setState({currentSubtaskId:""})
+    // this.setState({subtasks: this.state.subtasks.concat(
+    //   [addSubtaskForm]
+    // )})
   }
 
-  // For Testing can delete
-  addSubtask = () => {
-   this.setState({subtasks: this.state.subtasks.concat(
-     ["0":{"description":"Hello"}]
-   )})
-   this.setState({subtaskIndex:this.state.subtasks.length})
+  setCurrentSubtask = (subtask, index) => {
+    this.setState({currentSubtaskId:index})
+    this.setState({currentSubtask:subtask})
   }
+
 
   render() {
   return (
@@ -130,7 +142,7 @@ class AddTaskForm extends BaseComponent {
         }
 
         {this.state.subtasks.map((subtask, index) => {
-          return(<AddSubtaskField initialValues={this.props.initialValues.subtasks} index={index}/>)
+          return(<AddSubtaskField initialValues={this.props.initialValues.subtasks} subtask={subtask} index={index} setCurrentSubtask={this.setCurrentSubtask}/>)
         })}
 
         {/* SUBTASKS */}
@@ -154,7 +166,7 @@ class AddTaskForm extends BaseComponent {
         </div>
       </div>{/*main-task-wrapper*/}
 
-      <AddSubtaskForm onSubmit={this.submitSubtask}/>
+      <AddSubtaskForm initialValues={this.state.currentSubtask} onSubmit={this.submitSubtask}/>
     </form>
   )
   }

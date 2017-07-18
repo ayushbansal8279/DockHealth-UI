@@ -70,6 +70,7 @@ class HeaderTasks extends BaseComponent {
       <div>
         <header className="nav-down">
 						<div className="top-bar">
+              <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
 								<h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>

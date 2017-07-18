@@ -6,11 +6,11 @@ class AddSubtaskField extends React.Component{
 
   render(){
     return(
-      <div className="column large-12 input-group toggle-add-subtask has-value">
+      <div onClick={(e) => this.props.setCurrentSubtask(this.props.subtask, this.props.index)}  className="column large-12 input-group toggle-add-subtask has-value">
         <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
         <div className="input-wrapper form-floating-label">
-          <input className="input-group-field" type="text" value="This is a subtask that has been added"/>
-          <label>Subtask #1</label>
+          <input className="input-group-field" type="text" value={this.props.subtask.description}/>
+          <label>Subtask #{this.props.index + 1}</label>
         </div>
       </div>
     )

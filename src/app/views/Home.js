@@ -120,7 +120,6 @@ class Home extends BaseComponent {
               <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch} searchTerm={this.state.searchTerm}/>
               <div className="list-wrapper">
                 <div className="task-item-wrapper">
-                  <div className="new-task text-center"><span className="number-new-tasks">1 new task</span></div>
                   <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE" members={this.props.members} filteredTasks={filteredTasks} />
                   <div className="show-completed text-center">
                     <a className="toggle-completed button primary small">Show completed tasks</a>

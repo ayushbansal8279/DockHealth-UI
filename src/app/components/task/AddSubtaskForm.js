@@ -61,8 +61,8 @@ class AddSubtaskForm extends React.Component{
 
 AddSubtaskForm = reduxForm({
   // a unique name for the form
-  form: 'addSubtaskForm'
-  // enableReinitialize : true
+  form: 'addSubtaskForm',
+  enableReinitialize : true
 })(AddSubtaskForm)
 
 const mapStateToProps = function(store){
