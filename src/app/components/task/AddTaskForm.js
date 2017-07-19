@@ -15,7 +15,6 @@ class AddTaskForm extends BaseComponent {
   constructor(props, container) {
 		super(props)
     this.state = {
-      subtasks:[],
       taskListId:"",
       subtaskIndex:0,
       currentSubtask:"",
@@ -30,6 +29,7 @@ class AddTaskForm extends BaseComponent {
   componentDidMount () {
     super.componentDidMount()
     this.setState({"taskListId":this.props.taskListId})
+
   }
 
   componentDidUpdate () {
@@ -57,19 +57,23 @@ class AddTaskForm extends BaseComponent {
 
   submitSubtask = (addSubtaskForm) => {
     var key
-    if(this.state.currentSubtaskId != ""){
+    var curSubtaskId = this.state.currentSubtaskId
+    console.log(this.props.subtasks)
+    console.log(this.state.currentSubtaskId == null)
+    console.log(this.state.currentSubtaskId !== "")
+    if(this.state.currentSubtaskId !== ""){
       key = this.state.currentSubtaskId
     }else{
       var key = this.state.subtaskIndex
     }
     var val = addSubtaskForm
-    var obj = this.state.subtasks
-    this.state.subtasks[key] = val
+    var obj = this.props.subtasks
+    this.props.subtasks[key] = val
     obj[key] = val
     this.setState(obj)
-    this.setState({subtaskIndex:this.state.subtasks.length})
+    this.setState({subtaskIndex:this.props.subtasks.length})
     this.setState({currentSubtaskId:""})
-    // this.setState({subtasks: this.state.subtasks.concat(
+    // this.setState({subtasks: this.props.subtasks.concat(
     //   [addSubtaskForm]
     // )})
   }
@@ -141,8 +145,8 @@ class AddTaskForm extends BaseComponent {
           <span></span>
         }
 
-        {this.state.subtasks.map((subtask, index) => {
-          return(<AddSubtaskField initialValues={this.props.initialValues.subtasks} subtask={subtask} index={index} setCurrentSubtask={this.setCurrentSubtask}/>)
+        {this.props.subtasks.map((subtask, index) => {
+          return(<AddSubtaskField subtask={subtask} index={index} setCurrentSubtask={this.setCurrentSubtask}/>)
         })}
 
         {/* SUBTASKS */}
@@ -166,7 +170,7 @@ class AddTaskForm extends BaseComponent {
         </div>
       </div>{/*main-task-wrapper*/}
 
-      <AddSubtaskForm initialValues={this.state.currentSubtask} onSubmit={this.submitSubtask}/>
+      <AddSubtaskForm initialValues={this.state.currentSubtask} onSubmit={this.submitSubtask} submitSubtask={this.submitSubtask}/>
     </form>
   )
   }

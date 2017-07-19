@@ -16,7 +16,8 @@ class AddTask extends React.Component {
 		this.container = container
 		this.state = {
 				value: '',
-				assignedToId: ''
+				assignedToId: '',
+				subtasks:[]
 		}
   		//this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
@@ -76,32 +77,39 @@ class AddTask extends React.Component {
 
 	submit = (form) => {
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
+		form["subtasks"] = this.state.subtasks
 		console.log(form)
-		form.patientId = $("#add-patient-id").val();
-		form.assignedToId = $("#assign-task-to-id").val();
-		form.taskListId = $("#taskListId").val();
-		this.props.taskActions.saveTask(form);
+		console.log(this.state.subtasks)
+		if(form.subtasks){
+			form.patientId = $("#add-patient-id").val();
+			form.assignedToId = $("#assign-task-to-id").val();
+			form.taskListId = $("#taskListId").val();
+			this.props.taskActions.saveTask(form);
 
-		// print the form values to the console
-		console.log(form)
-		$('.add').toggleClass('close');
-		$('body').toggleClass('disable-header-scroll');
-		if($(this).hasClass('add-list')) {
-			$('.add-list use').attr('href', function(index, attr) {
-				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-			});
+			// print the form values to the console
+			console.log(form)
+			$('.add').toggleClass('close');
+			$('body').toggleClass('disable-header-scroll');
+			if($(this).hasClass('add-list')) {
+				$('.add-list use').attr('href', function(index, attr) {
+					return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+				});
+			}
+			$('.add-form-wrapper').slideToggle(300);
+			$('.list-filter .controls, .list-wrapper').toggle();
+		}else{
+			console.log(form)
 		}
-		$('.add-form-wrapper').slideToggle(300);
-		$('.list-filter .controls, .list-wrapper').toggle();
 	}
 
     render() {
     	return (
 			<div className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
-					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title} taskListId={this.props.taskListId} initialValues={"taskListId:"+this.props.taskListId}/>
+					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title} taskListId={this.props.taskListId} initialValues={"taskListId:"+this.props.taskListId} subtasks={this.state.subtasks}/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
+
 			</div>
 
     	)

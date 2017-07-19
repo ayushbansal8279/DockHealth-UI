@@ -4,9 +4,26 @@ import { connect } from 'react-redux';
 
 class AddSubtaskForm extends React.Component{
 
+  constructor(props, container) {
+		super(props)
+		this.state = {
+				description: '',
+        assignedToId: '',
+        patientId: ''
+		}
+	}
+
+  addSubtask = () => {
+    this.props.submitSubtask(this.state)
+  }
+
+  handleDescriptionChange = (e) => {
+   this.setState({description: e.target.value});
+  }
+
   render(){
     return(
-      <form onSubmit={this.props.handleSubmit}>
+      <form>
         <div className="subtask-wrapper">
           <div className="row expanded">
             <div className="column small-4 toggle-add-subtask">
@@ -26,7 +43,7 @@ class AddSubtaskForm extends React.Component{
           <div className="column large-12 input-group">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
             <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field" type="text" component="input" type="text" name="description"/>
+              <Field className="input-group-field" type="text" component="input" type="text" name="description" value={this.state.description} onChange={(e) => this.handleDescriptionChange(e)}/>
               <label>Subtask</label>
             </div>
           </div>
@@ -51,7 +68,7 @@ class AddSubtaskForm extends React.Component{
 
           {/* SAVE */}
           <div className="column large-12 text-right">
-            <input type="submit" className="button secondary" value="Save"/>
+            <input onClick={this.addSubtask} type="button" className="button secondary" value="Save"/>
           </div>
         </div>
       </form>
