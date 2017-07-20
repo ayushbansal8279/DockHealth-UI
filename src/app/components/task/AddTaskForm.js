@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions } from 'redux-form'
 import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
@@ -76,6 +76,7 @@ class AddTaskForm extends BaseComponent {
     // this.setState({subtasks: this.props.subtasks.concat(
     //   [addSubtaskForm]
     // )})
+    console.log(this.state.subtasks)
   }
 
   setCurrentSubtask = (subtask, index) => {
@@ -83,8 +84,26 @@ class AddTaskForm extends BaseComponent {
     this.setState({currentSubtask:subtask})
   }
 
+  addSubtask = (subtask) => {
+    this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtask)
+  }
+
 
   render() {
+    const renderSubtaskField = ({ fields, meta: { error } }) => (
+      <span>
+        {fields.map((subtask, index) =>
+          <div key={index} onClick={(e) => this.setCurrentSubtask(fields, index)}  className="column large-12 input-group toggle-add-subtask has-value">
+          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
+            <div className="input-wrapper form-floating-label">
+              <Field className="input-group-field" type="text" name={`${subtask}.description`} component="input"/>
+              <label>Subtask #{index + 1}</label>
+            </div>
+          </div>
+        )}
+        {/* <button type="button" onClick={() => fields.push({})}>Add Subtask</button> */}
+      </span>
+    )
   return (
     <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
@@ -145,9 +164,11 @@ class AddTaskForm extends BaseComponent {
           <span></span>
         }
 
-        {this.props.subtasks.map((subtask, index) => {
+        <FieldArray name="subtasks" component={renderSubtaskField}/>
+
+        {/* {this.props.subtasks.map((subtask, index) => {
           return(<AddSubtaskField subtask={subtask} index={index} setCurrentSubtask={this.setCurrentSubtask}/>)
-        })}
+        })} */}
 
         {/* SUBTASKS */}
         {/* <div className="column large-12 input-group toggle-add-subtask has-value">
@@ -169,8 +190,8 @@ class AddTaskForm extends BaseComponent {
           </div>
         </div>
       </div>{/*main-task-wrapper*/}
-
-      <AddSubtaskForm initialValues={this.state.currentSubtask} onSubmit={this.submitSubtask} submitSubtask={this.submitSubtask}/>
+      {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
+      <AddSubtaskForm initialValues={this.state.currentSubtask} onSubmit={this.submitSubtask} submitSubtask={this.submitSubtask} addSubtask={this.addSubtask} />
     </form>
   )
   }
@@ -209,7 +230,7 @@ const mapStateToProps = function(store) {
       initialTaskFormValues.taskList = editTask.taskList.listName;
     }
     if(editTask.subtasks){
-      initialTaskFormValues.subtasks = editTask.taskList.subtasks;
+      initialTaskFormValues.subtasks = editTask.subtasks;
     }
 
 		//TODO - handle assigned tasklist
@@ -223,7 +244,8 @@ const mapStateToProps = function(store) {
 
 const mapDispatchToProps = function(dispatch){
   return{
-    taskListActions: bindActionCreators(TaskListActions, dispatch)
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    formActions: bindActionCreators(actions, dispatch)
   }
 }
 

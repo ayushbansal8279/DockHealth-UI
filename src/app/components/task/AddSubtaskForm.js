@@ -14,7 +14,8 @@ class AddSubtaskForm extends React.Component{
 	}
 
   addSubtask = () => {
-    this.props.submitSubtask(this.state)
+    // this.props.submitSubtask(this.state)
+    this.props.addSubtask(this.state)
   }
 
   handleDescriptionChange = (e) => {
@@ -68,7 +69,7 @@ class AddSubtaskForm extends React.Component{
 
           {/* SAVE */}
           <div className="column large-12 text-right">
-            <input onClick={this.addSubtask} type="button" className="button secondary" value="Save"/>
+            <input onClick={this.addSubtask} type="button" disabled={this.props.submitting} className="button secondary" value="Save"/>
           </div>
         </div>
       </form>
