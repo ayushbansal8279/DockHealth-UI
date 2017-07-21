@@ -74,15 +74,20 @@ class Home extends BaseComponent {
 
     // toggle slim view
     $('.toggle-slim').click(function() {
-      $(this).toggleClass('active');
-      $('.task-item-wrapper').toggleClass('slim');
-      $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
+        if($(this).hasClass('active')) {//true means slim mode off
+          mobileAnalyticsClient.recordEvent('SLIM_MODE', {
+                  'Value': 'OFF'
+          });
+        }
+        else{//false means slim mode on
+          mobileAnalyticsClient.recordEvent('SLIM_MODE', {
+                  'Value': 'ON'
+          });
+        }
+        $(this).toggleClass('active');
+        $('.task-item-wrapper').toggleClass('slim');
+        $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
     });
-
-    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-            'PageName': 'ListOfTasks'
-    });
-
   }
 
 
