@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import BasicField from '../common/BasicField'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 const validate = values => {
   const errors = {}
@@ -31,6 +32,9 @@ class FormPatient extends React.Component {
     	console.log("mounted FormPatient component")
       this.props.actions.getPatientById(this.props.patientId);
 		  //this.state.text = ""
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'FormPatient'
+      });
   	}
 
   	onSubmit (formProps) {
