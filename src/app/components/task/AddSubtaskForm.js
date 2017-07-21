@@ -1,6 +1,7 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import { connect } from 'react-redux';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class AddSubtaskForm extends React.Component{
 
@@ -12,6 +13,12 @@ class AddSubtaskForm extends React.Component{
         patientId: ''
 		}
 	}
+
+  componentDidMount () {
+  mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+          'PageName': 'AddSubTaskForm'
+  });
+}
 
   addSubtask = () => {
     this.props.submitSubtask(this.state)

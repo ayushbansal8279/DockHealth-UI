@@ -5,11 +5,16 @@ import {bindActionCreators} from 'redux';
 import ListOfTasks from './ListOfTasks'
 import * as TaskActions from '../../actions/task-actions'
 import * as PatientActions from '../../actions/patient-actions'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class ListOfTasksContainer extends React.Component {
 
   componentDidMount () {
     console.log('logged in user === '+this.props.user)
+
+		mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+						'PageName': 'ListOfTasks'
+		});
     // if(this.props.taskListId){
     //   this.props.actions.getListTasks(this.props.taskListId)
     // }else{

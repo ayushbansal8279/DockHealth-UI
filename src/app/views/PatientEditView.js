@@ -6,11 +6,16 @@ import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
 import FormPatient from '../components/patient/FormPatient'
 import * as PatientActions from '../actions/patient-actions'
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class PatientEditView extends React.Component {
 
   	componentDidMount () {
       this.props.actions.getPatientById(this.props.params.patientId);
+
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'PatientEditView'
+      });
   	}
 
     render() {
@@ -27,7 +32,7 @@ class PatientEditView extends React.Component {
               <div className="top-bar">
                 <div className="top-bar-left">
                   <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-                  <h3>{patient.firstName}&nbsp;{patient.lastName}</h3> 
+                  <h3>{patient.firstName}&nbsp;{patient.lastName}</h3>
                 </div>
               </div>
 
@@ -40,8 +45,8 @@ class PatientEditView extends React.Component {
               </div>
 
           </div>
-        </div> 
-      </div> 
+        </div>
+      </div>
 
     );
   }

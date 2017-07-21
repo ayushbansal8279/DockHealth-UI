@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListRender extends React.Component {
   constructor(props) {
@@ -10,6 +11,12 @@ class TaskListRender extends React.Component {
       this.state = {
           deleteTaskListResult: ''
       };
+  }
+
+  componentDidMount () {
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+            'PageName': 'TaskListView'
+    });
   }
 
   onClick(taskListId) {

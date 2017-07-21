@@ -2,12 +2,16 @@ import React, { Component} from 'react';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListAuditContainer extends Component {
 
   componentDidMount () {
       this.props.getTaskListById(this.props.taskListId);
       this.props.findAuditsByTaskList(this.props.taskListId,0);
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'TaskListAuditView'
+      });
     }
 
     renderList() {

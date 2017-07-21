@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import TaskListOneRenderContainer from './TaskListOneRenderContainer';
 import {Link} from 'react-router';
-
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListUpdateUserRoleContainer extends React.Component {
 
@@ -23,6 +23,9 @@ class TaskListUpdateUserRoleContainer extends React.Component {
     componentDidMount () {
       this.props.getTaskListById(this.props.taskListId);
       this.props.getActiveMembersByTaskListId(this.props.taskListId,'ACTIVE');
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'TaskListUpdateUserRole'
+      });
     }
 
     onClick(markedUserId,currentRole) {

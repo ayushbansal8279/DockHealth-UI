@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import TaskListOneRenderContainer from './TaskListOneRenderContainer';
 import {Link} from 'react-router';
-
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListMembersViewContainer extends React.Component {
   constructor(props) {
@@ -22,6 +22,10 @@ class TaskListMembersViewContainer extends React.Component {
       this.props.getTaskListById(this.props.taskListId);
       this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
       this.props.getNonOrgUsersByTaskList(this.props.taskListId);
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'TaskListMembersView'
+      });
+
     }
 
     onClick(markedUserId) {

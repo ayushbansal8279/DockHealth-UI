@@ -4,6 +4,7 @@ import {saveTaskList} from '../../actions/tasklist-actions';
 import {connect} from 'react-redux'
 import BasicField from '../common/BasicField';
 import { Link,hashHistory } from 'react-router';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListAdd extends Component {
 
@@ -13,6 +14,12 @@ class TaskListAdd extends Component {
       		addtasklisterror: ''
     	};
   	}
+
+    componentDidMount () {
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'TaskListAdd'
+      });
+    }
 
   onSubmit (formProps) {
     //console.log(formProps);

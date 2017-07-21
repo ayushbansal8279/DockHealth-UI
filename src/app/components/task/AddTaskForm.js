@@ -9,6 +9,7 @@ import AddSubtaskField from './AddSubtaskField';
 import AddSubtaskForm from './AddSubtaskForm';
 import * as TaskListActions from '../../actions/tasklist-actions'
 import $ from 'jquery'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 //let AddTaskForm = props => {
 class AddTaskForm extends BaseComponent {
@@ -29,7 +30,9 @@ class AddTaskForm extends BaseComponent {
   componentDidMount () {
     super.componentDidMount()
     this.setState({"taskListId":this.props.taskListId})
-
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+            'PageName': 'AddTaskForm'
+    });
   }
 
   componentDidUpdate () {

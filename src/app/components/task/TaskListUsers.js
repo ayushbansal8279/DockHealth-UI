@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as TaskListActions from '../../actions/tasklist-actions'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListUsers extends React.Component {
 	componentDidMount () {
 	    //this.props.getMembersByTaskListId(taskListId, memberStatus)
 	    this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
+			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+							'PageName': 'TaskListUsers'
+			});
 	}
 
 	componentWillUpdate(nextProps){

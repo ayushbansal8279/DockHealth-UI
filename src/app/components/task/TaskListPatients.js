@@ -5,6 +5,7 @@ import {bindActionCreators} from 'redux';
 import { Link } from 'react-router'
 import * as PatientActions from '../../actions/patient-actions'
 import * as TaskActions from '../../actions/task-actions'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListPatients extends React.Component {
 	constructor(props) {
@@ -20,6 +21,9 @@ class TaskListPatients extends React.Component {
 		this.props.actions.getPatientsByTaskList(this.props.taskListId)
 		// triggers action to get data and update store in reducer > allPatients
     // this.props.actions.getAllPatients()
+		mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+						'PageName': 'TaskListPatients'
+		});
   }
 
 	componentWillReceiveProps(nextProps){

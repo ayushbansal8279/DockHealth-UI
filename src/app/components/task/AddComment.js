@@ -5,6 +5,7 @@ import * as TaskActions from '../../actions/task-actions'
 import {bindActionCreators} from 'redux'
 import $ from 'jquery'
 const  { DOM: { input, select, textarea } } = React
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class AddComment extends React.Component {
   constructor(props){
@@ -33,6 +34,10 @@ class AddComment extends React.Component {
     	$('.comments-container').on('click', 'button', function () {
     		save();
     	});
+    });
+
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+            'PageName': 'AddComment'
     });
   }
 
