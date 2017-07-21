@@ -14,7 +14,7 @@ class AddSubtaskForm extends React.Component{
 	}
 
   addSubtask = () => {
-    // this.props.submitSubtask(this.state)
+    this.props.submitSubtask(this.state)
     this.props.addSubtask(this.state)
   }
 
