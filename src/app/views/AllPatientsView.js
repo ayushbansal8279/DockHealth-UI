@@ -17,7 +17,7 @@ class AllPatientsView extends BaseComponent {
     }
     componentDidMount(){
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-							'PageName': 'AllPeopleView'
+							'PageName': 'AllPatientsView'
 			});
     }
     clearSearch = () => {
@@ -74,7 +74,7 @@ class AllPatientsView extends BaseComponent {
                   </div>
                   <SearchPatient />
 									<div className="column large-12 text-center">
-										Search for an existing patient in the database	
+										Search for an existing patient in the database
 									</div>
 									<div className="column large-12 text-center">
 										or enter patient manually

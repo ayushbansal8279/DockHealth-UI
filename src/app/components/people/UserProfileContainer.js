@@ -7,7 +7,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as userApi from '../../api/user-api'
 import BaseComponent from '../BaseComponent'
-
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class UserProfileContainer extends BaseComponent {
   constructor(props) {
@@ -16,6 +16,9 @@ class UserProfileContainer extends BaseComponent {
   }
 
     componentDidMount () {
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'UserProfile'
+      });
       userApi.getUserById()
       .then((response)=>{
         if(response.specialties== null){

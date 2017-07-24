@@ -1,9 +1,16 @@
 import React from 'react';
+import {mobileAnalyticsClient} from '../api/analytics-api'
 
 import InvitationContainer from '../components/invitation/InvitationContainer'
 
 
 class InvitationsView extends React.Component {
+  componentDidMount () {
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+            'PageName': 'ListInvitation'
+    });
+  }
+
     render() {
       return (
         <div className="off-canvas-content" data-off-canvas-content>
@@ -14,14 +21,14 @@ class InvitationsView extends React.Component {
               <div className="top-bar">
                 <div className="top-bar-left">
                   <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-                  <h3>Invitations</h3> 
+                  <h3>Invitations</h3>
                 </div>
               </div>
 
               </header>
 
               <InvitationContainer/>
-              
+
             </div>
           </div>
         </div>

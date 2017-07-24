@@ -5,10 +5,14 @@ import {bindActionCreators} from 'redux';
 import PatientList from './PatientList'
 import * as PatientActions from '../../actions/patient-actions'
 import SearchInput, {createFilter} from 'react-search-input'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class PatientListContainer extends React.Component {
     componentDidMount () {
         this.props.actions.getAllPatients()
+        mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+                'PageName': 'PatientList'
+        });
     }
 
     render() {

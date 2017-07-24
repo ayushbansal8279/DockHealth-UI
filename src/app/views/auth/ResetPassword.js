@@ -4,6 +4,7 @@ import { SubmissionError } from 'redux-form'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
 import ResetPasswordForm from '../../components/auth/ResetPasswordForm'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 export default class ResetPassword extends React.Component {
   constructor (props) {
@@ -26,10 +27,16 @@ export default class ResetPassword extends React.Component {
       password: form.password
     })
     .then(u => {
+      mobileAnalyticsClient.recordEvent('RESET_PASSWORD', {
+          'SUCCESS': 'YES'
+      });
       success('Reset password. Please login')
       hashHistory.push('login')
     })
     .catch(e => {
+      mobileAnalyticsClient.recordEvent('RESET_PASSWORD', {
+          'SUCCESS': 'NO'
+      });
       let msg = e.message || 'An error occurred.'
       let field = false
       if (!field) {

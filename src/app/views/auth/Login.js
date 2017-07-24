@@ -3,11 +3,15 @@ import { Link, browserHistory, hashHistory } from 'react-router'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
 import LoginForm from '../../components/auth/LoginForm'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 export default class Login extends React.Component {
   onSubmit (form) {
     return userApi.login(form.username, form.password)
       .then(data => {
+        mobileAnalyticsClient.recordEvent('LOGIN', {
+            'SUCCESS': 'YES'
+        });
         if(data == "SMS_MFA"){
           hashHistory.push('confirmMFACode?uname='+form.username)
         }else{
@@ -18,6 +22,9 @@ export default class Login extends React.Component {
       })
       .catch(e => {
         error(e && e.message ? e.message : 'Could not login.')
+        mobileAnalyticsClient.recordEvent('LOGIN', {
+            'SUCCESS': 'NO'
+        });
       })
   }
 
@@ -27,6 +34,3 @@ export default class Login extends React.Component {
     )
   }
 }
-
-
-

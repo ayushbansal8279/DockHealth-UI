@@ -4,10 +4,16 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import PatientDropdownList from './PatientDropdownList'
 import * as PatientActions from '../../actions/patient-actions'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class PatientDropdownListContainer extends React.Component {
     componentWillMount () {
         this.props.actions.getAllPatients()
+    }
+    componentDidMount () {
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'PatientDropdownList'
+      });
     }
 
     render() {

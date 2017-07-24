@@ -4,6 +4,7 @@ import { Link,hashHistory } from 'react-router';
 import {connect} from 'react-redux'
 import BasicField from '../common/BasicField';
 import {updateTaskList} from '../../actions/tasklist-actions';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListOneRenderContainer extends React.Component {
   constructor(props) {
@@ -12,6 +13,12 @@ class TaskListOneRenderContainer extends React.Component {
       		addtasklisterror: ''
     	};
   }
+
+  componentDidMount () {
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+            'PageName': 'TaskListEditName'
+      });
+    }
 
   onSubmit (formProps) {
     //console.log(formProps);

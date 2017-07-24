@@ -2,6 +2,7 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import { connect } from 'react-redux';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class AddSubtaskForm extends React.Component{
 
@@ -18,6 +19,12 @@ class AddSubtaskForm extends React.Component{
     //builds the subtask in the state
     this.setState({description: e.target.value});
   }
+  
+  componentDidMount () {
+  mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+          'PageName': 'AddSubTaskForm'
+  });
+}
 
   addSubtask = () => {
     //uses formActions to add a subtask to the dom (add task form)

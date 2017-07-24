@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import BasicField from '../common/BasicField';
 import { Link,hashHistory } from 'react-router';
 import {bindActionCreators} from 'redux';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class TaskListInviteUsersContainer extends Component {
 
@@ -19,6 +20,9 @@ class TaskListInviteUsersContainer extends Component {
   componentDidMount () {
       this.props.getTaskListById(this.props.taskListId);
       this.props.getOrganizationUsersNotInTaskList(this.props.taskListId);
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'TaskListInviteUsers'
+      });
     }
 
     onSubmit (formProps) {

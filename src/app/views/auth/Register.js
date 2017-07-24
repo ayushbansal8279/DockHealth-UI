@@ -4,6 +4,7 @@ import { SubmissionError } from 'redux-form'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
 import UserRegistrationForm from '../../components/auth/UserRegistrationForm'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 export default class Register extends React.Component {
   constructor (props) {
@@ -24,11 +25,17 @@ export default class Register extends React.Component {
       // "custom:subspecialty": form.subspecialty
     })
     .then(u => {
+      mobileAnalyticsClient.recordEvent('REGISTER', {
+          'SUCCESS': 'YES'
+      });
       success('New user created. Please check your email to confirm account registration.')
       alert("Please check your email to confirm the account registration");
       hashHistory.push('confirmRegistration')
     })
     .catch(e => {
+      mobileAnalyticsClient.recordEvent('REGISTER', {
+          'SUCCESS': 'NO'
+      });
       let msg = e.message || 'An error occurred.'
       let field = false
       if (msg.search('Password') !== -1) {

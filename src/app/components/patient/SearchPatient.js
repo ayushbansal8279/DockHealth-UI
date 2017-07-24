@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import BasicField from '../common/BasicField'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
-
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class SearchPatient extends React.Component {
 	constructor(props) {
@@ -18,6 +18,9 @@ class SearchPatient extends React.Component {
 
   	componentDidMount () {
     	console.log("mounted SearchPatient component")
+			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+							'PageName': 'SearchPatient'
+			});
   	}
 
   	onSubmit (formProps) {
@@ -25,16 +28,16 @@ class SearchPatient extends React.Component {
     //   hashHistory.push('patient/'+this.props.patientId)
   	}
 
-    onChange(event) {   
+    onChange(event) {
         this.setState({
             searchToken: event.target.value
         });
     }
-    
+
     searchPatients () {
         this.props.patientActions.lookupEMRPatients(this.state.searchToken);
     }
-    
+
     selectPatient (patient) {
         this.props.patientActions.selectEMRPatient(patient);
     }
@@ -42,7 +45,7 @@ class SearchPatient extends React.Component {
     render() {
 
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
-      
+
       return (
         <div className="column large-12 top-buffer">
             <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>

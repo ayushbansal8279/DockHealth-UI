@@ -5,6 +5,7 @@ import {bindActionCreators} from 'redux';
 import { Link,hashHistory } from 'react-router';
 import BasicField from '../common/BasicField';
 import * as PeopleActions from '../../actions/people-actions';
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class InvitePeople extends Component {
 
@@ -14,6 +15,12 @@ class InvitePeople extends Component {
       		invitePeopleResult: ''
     	};
   	}
+
+    componentDidMount () {
+      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+              'PageName': 'InvitePeople'
+      });
+    }
 
   onSubmit (formProps) {
     //console.log(formProps);
