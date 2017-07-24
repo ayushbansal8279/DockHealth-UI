@@ -2,16 +2,23 @@ import React from 'react'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 export default class Logout extends React.Component {
 
    componentDidMount(){
     return userApi.logout()
       .then(data => {
-        console.log(data);
+        mobileAnalyticsClient.recordEvent('LOGOUT', {
+            'SUCCESS': 'YES'
+        });
+        //console.log(data);
       })
       .catch(e => {
-        error(e && e.message ? e.message : 'Could not lohgout.')
+        error(e && e.message ? e.message : 'Could not logout.')
+        mobileAnalyticsClient.recordEvent('LOGOUT', {
+            'SUCCESS': 'NO'
+        });
       })
     }
 
@@ -45,6 +52,3 @@ export default class Logout extends React.Component {
     )
   }
 }
-
-
-
