@@ -136,17 +136,42 @@ const TaskReducer = function(state = initialState, action) {
         )
       };
 
+    // case types.UPDATE_TASK_SUCCESS:
+    //   return {
+    //     ...state,
+    //     tasks: state.tasks.map(task =>
+    //       task.taskId === action.task.taskId ?
+    //         // transform the one with a matching id
+    //         {...task, ...action.task } :
+    //         // otherwise return original task
+    //         task
+    //     )
+    //   };
+
     case types.UPDATE_TASK_SUCCESS:
-      return {
-        ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === action.task.taskId ?
-            // transform the one with a matching id
-            {...task, ...action.task } :
-            // otherwise return original task
-            task
-        )
-      };
+    var mainTask
+    if(action.task.parentTaskId){
+    mainTask = action.task.parentTaskId
+    }else{
+    mainTask = action.task.taskId
+    }
+
+    return {
+      ...state,
+      tasks: state.tasks.map(task =>
+        task.taskId === mainTask ?
+        action.task.parentTaskId ?
+          {...task, subtasks:
+            task.subtasks.map(subtask =>
+              subtask.taskId === action.task.taskId ?
+              {...subtask, ...action.task} :
+              subtask
+            )
+          } :
+          { ...task, ...action.task}
+          : task
+      )
+    };
 
       case types.TOGGLE_TASK_PRIORITY_SUCCESS:
       var mainTask

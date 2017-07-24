@@ -28,11 +28,7 @@ function getCompletedTasksSuccess(tasks){
 export function getListTasks(taskListId, sortBy){
   return function(dispatch){
     return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE", sortBy).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks)).then(
-        TaskApi.getListTasksByUser(taskListId, "COMPLETE", sortBy).then(tasks => {
-          dispatch(getCompletedTasksSuccess(tasks));
-        })
-      )
+      dispatch(getListTasksByUserSuccess(tasks));
     }).catch(error => {
       throw(error);
     })

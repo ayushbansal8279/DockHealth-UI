@@ -16,9 +16,10 @@ class AddTaskForm extends BaseComponent {
 		super(props)
     this.state = {
       taskListId:"",
-      subtaskIndex:0,
-      currentSubtask:"",
-      currentSubtaskId:""
+      currentSubtaskId:"",
+      currentSubtask:""
+      // subtaskIndex:0,
+
     }
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
@@ -29,7 +30,6 @@ class AddTaskForm extends BaseComponent {
   componentDidMount () {
     super.componentDidMount()
     this.setState({"taskListId":this.props.taskListId})
-
   }
 
   componentDidUpdate () {
@@ -55,33 +55,49 @@ class AddTaskForm extends BaseComponent {
     }
   }
 
-  submitSubtask = (addSubtaskForm) => {
-    var key
-    var curSubtaskId = this.state.currentSubtaskId
-    console.log(this.props.subtasks)
-    console.log(this.state.currentSubtaskId == null)
-    console.log(this.state.currentSubtaskId !== "")
-    if(this.state.currentSubtaskId !== ""){
-      key = this.state.currentSubtaskId
-    }else{
-      var key = this.state.subtaskIndex
-    }
-    var val = addSubtaskForm
-    var obj = this.props.subtasks
-    this.props.subtasks[key] = val
-    obj[key] = val
-    this.setState(obj)
-    this.setState({subtaskIndex:this.props.subtasks.length})
-    this.setState({currentSubtaskId:""})
+  // submitSubtask = (addSubtaskForm) => {
+  //   debugger;
+  //   var key
+  //   var curSubtaskId = this.state.currentSubtaskId
+  //   console.log(this.props.subtasks)
+  //   console.log(this.state.currentSubtaskId == null)
+  //   console.log(this.state.currentSubtaskId !== "")
+  //   if(this.state.currentSubtaskId !== ""){
+  //     key = this.state.currentSubtaskId
+  //   }else{
+  //     var key = this.state.subtaskIndex
+  //   }
+  //   var val = addSubtaskForm
+  //   var obj = this.props.subtasks
+  //   this.props.subtasks[key] = val
+  //   obj[key] = val
+  //   this.setState(obj)
+  //   this.setState({subtaskIndex:this.props.subtasks.length})
+  //   this.setState({currentSubtaskId:""})
+  //   // this.setState({subtasks: this.props.subtasks.concat(
+  //   //   [addSubtaskForm]
+  //   // )})
+  //   console.log(this.state.subtasks)
+  // }
+
+  submitSubtask = (subtask) => {
+    debugger;
+    this.props.addSubtaskToState(subtask)
     // this.setState({subtasks: this.props.subtasks.concat(
     //   [addSubtaskForm]
     // )})
-    console.log(this.state.subtasks)
+    // console.log(this.state.subtasks)
   }
 
-  setCurrentSubtask = (subtask, index) => {
+  setCurrentSubtask = (index) => {
     this.setState({currentSubtaskId:index})
-    this.setState({currentSubtask:subtask})
+    // console.log(this.props.subtasks)
+    console.log(this.props.currentTask.subtasks)
+    if(this.props.currentTask){
+      this.setState({currentSubtask:this.props.currentTask.subtasks[index]})
+    }else(
+      this.setState({currentSubtask:this.props.subtasks[index]})
+    )
   }
 
   addSubtask = (subtask) => {
@@ -93,7 +109,7 @@ class AddTaskForm extends BaseComponent {
     const renderSubtaskField = ({ fields, meta: { error } }) => (
       <span>
         {fields.map((subtask, index) =>
-          <div key={index} onClick={(e) => this.setCurrentSubtask(fields, index)}  className="column large-12 input-group toggle-add-subtask has-value">
+          <div key={index} onClick={(e) => this.setCurrentSubtask(index)}  className="column large-12 input-group toggle-add-subtask has-value">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
             <div className="input-wrapper form-floating-label">
               <Field className="input-group-field" type="text" name={`${subtask}.description`} component="input"/>
@@ -191,7 +207,12 @@ class AddTaskForm extends BaseComponent {
         </div>
       </div>{/*main-task-wrapper*/}
       {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
-      <AddSubtaskForm initialValues={this.state.currentSubtask} onSubmit={this.submitSubtask} submitSubtask={this.submitSubtask} addSubtask={this.addSubtask} />
+      <AddSubtaskForm
+        initialValues={this.props.currentTask}
+        onSubmit={this.submitSubtask}
+        submitSubtask={this.submitSubtask}
+        addSubtask={this.addSubtask}
+      />
     </form>
   )
   }
@@ -238,7 +259,8 @@ const mapStateToProps = function(store) {
   return {
 		initialValues: initialTaskFormValues,
     tasks: store.taskState.tasks,
-    taskListSelection: selector(store, 'taskListId')
+    taskListSelection: selector(store, 'taskListId'),
+    currentTask: store.taskState.task
   }
 };
 

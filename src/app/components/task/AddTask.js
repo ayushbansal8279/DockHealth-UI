@@ -59,6 +59,15 @@ class AddTask extends React.Component {
 		// alert("unmounting")
 	}
 
+	addSubtaskToState = (subtask) => {
+		this.setState({subtasks:this.state.subtasks.concat(subtask)})
+	}
+
+	setSubtasks = (subtasks) => {
+		this.setState({subtasks:subtasks})
+		alert(subtasks)
+	}
+
 /*
 	handleSubmit () {
 		if(this.props.taskListId != "inbox"){
@@ -77,6 +86,7 @@ class AddTask extends React.Component {
 
 	submit = (form) => {
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
+		debugger;
 		form["subtasks"] = this.state.subtasks
 		console.log(form)
 		console.log(this.state.subtasks)
@@ -106,7 +116,17 @@ class AddTask extends React.Component {
     	return (
 			<div className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
-					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title} taskListId={this.props.taskListId} initialValues={"taskListId:"+this.props.taskListId} subtasks={this.state.subtasks}/>
+					<AddTaskForm
+						onSubmit={this.submit}
+						taskLists={this.props.taskLists}
+						task={this.props.task}
+						title={this.props.title}
+						taskListId={this.props.taskListId}
+						initialValues={"taskListId:"+this.props.taskListId}
+						subtasks={this.state.subtasks}
+						addSubtaskToState={this.addSubtaskToState}
+						setSubtasks={this.setSubtasks}
+					/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
 
@@ -121,7 +141,8 @@ const mapStateToProps = function(store) {
 		taskLists: store.taskListState.tasklist,
 		patients: store.patientState.allPatients,
 		peoplelist: store.peopleState.peoplelist,
-		members: store.taskListState.tasklistmembers
+		members: store.taskListState.tasklistmembers,
+		task: store.taskState.task
 		// user: store.userState.user
   	}
 };

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import { connect } from 'react-redux';
+import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
 
 class AddSubtaskForm extends React.Component{
 
@@ -13,14 +14,18 @@ class AddSubtaskForm extends React.Component{
 		}
 	}
 
-  addSubtask = () => {
-    this.props.submitSubtask(this.state)
-    this.props.addSubtask(this.state)
+  handleDescriptionChange = (e) => {
+    //builds the subtask in the state
+    this.setState({description: e.target.value});
   }
 
-  handleDescriptionChange = (e) => {
-   this.setState({description: e.target.value});
+  addSubtask = () => {
+    //uses formActions to add a subtask to the dom (add task form)
+    this.props.addSubtask(this.state)
+    //adds subtask to state in AddTask
+    this.props.submitSubtask(this.state)
   }
+
 
   render(){
     return(
@@ -41,13 +46,17 @@ class AddSubtaskForm extends React.Component{
           </div>
 
           {/* Task */}
-          <div className="column large-12 input-group">
+          <Field onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
+          <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
+
+          {/* Task */}
+          {/* <div className="column large-12 input-group">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
             <div className="input-wrapper form-floating-label">
               <Field className="input-group-field" type="text" component="input" type="text" name="description" value={this.state.description} onChange={(e) => this.handleDescriptionChange(e)}/>
               <label>Subtask</label>
             </div>
-          </div>
+          </div> */}
 
           {/* ADD PATIENT */}
           <div className="column large-12 input-group">
