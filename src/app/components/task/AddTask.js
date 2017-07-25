@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { actions } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import AddTaskForm from './AddTaskForm'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
@@ -90,11 +91,12 @@ class AddTask extends React.Component {
 	}
 
 	submit = (form) => {
-		//TODO - manually have to get the values since react-form doesn't pick up hidden values
-		form["subtasks"] = this.state.subtasks
 		debugger;
+		//TODO - manually have to get the values since react-form doesn't pick up hidden values
+		this.props.formActions.destroy('addTaskForm')
+		// form["subtasks"] = this.state.subtasks
 		console.log(form)
-		console.log(this.state.subtasks)
+		// console.log(this.state.subtasks)
 		if(form.subtasks){
 			form.patientId = $("#add-patient-id").val();
 			form.assignedToId = $("#assign-task-to-id").val();
@@ -156,7 +158,8 @@ const mapStateToProps = function(store) {
 function mapDispatchToProps(dispatch) {
   return {
 	  taskActions: bindActionCreators(TaskActions, dispatch),
-	  peopleActions: bindActionCreators(PeopleActions, dispatch)
+	  peopleActions: bindActionCreators(PeopleActions, dispatch),
+		formActions: bindActionCreators(actions, dispatch)
   }
 }
 

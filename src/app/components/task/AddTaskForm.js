@@ -17,10 +17,9 @@ class AddTaskForm extends BaseComponent {
 		super(props)
     this.state = {
       taskListId:"",
-      currentSubtaskId:"",
-      currentSubtask:"",
-      subtaskType:"",
-      subtasks:[]
+      currentSubtaskIndex:""
+      // currentSubtask:"",
+      // subtasks:[]
       // subtaskIndex:0,
 
     }
@@ -60,17 +59,49 @@ class AddTaskForm extends BaseComponent {
     if(nextProps.taskListId != this.props.taskListId){
       this.setState({"taskListId":nextProps.taskListId})
     }
+    // if(this.props.currentTask){
+    //   if(nextProps.currentTask != this.props.currentTask){
+    //     this.props.setSubtasks(nextProps.currentTask.subtasks)
+    //     // alert("updated 1")
+    //   }
+    // }else{
+    //   if(nextProps.currentTask.subtasks != this.props.subtasks){
+    //     this.props.setSubtasks(this.props.subtasks)
+    //     // alert("updated 2")
+    //   }
+    // }
+  }
+
+  addSubtaskValues = (subtaskValues, index) => {
+    this.setState({currentSubtaskIndex:""})
+    if(index !== ""){
+      debugger;
+      subtaskValues.taskId = this.props.currentSubtasks[index].taskId
+      this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
+      this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
+      debugger;
+    }else{
+      debugger;
+      this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
+    }
+
+  }
+
+  initializeSubtaskForm = (index) => {
+    this.setState({currentSubtaskIndex: index})
+    this.props.formActions.initialize('addSubtaskForm', this.props.currentSubtasks[index], true)
+    debugger;
   }
 
   // submitSubtask = (addSubtaskForm) => {
   //   debugger;
   //   var key
-  //   var curSubtaskId = this.state.currentSubtaskId
+  //   var curSubtaskId = this.state.currentSubtaskIndex
   //   console.log(this.props.subtasks)
-  //   console.log(this.state.currentSubtaskId == null)
-  //   console.log(this.state.currentSubtaskId !== "")
-  //   if(this.state.currentSubtaskId !== ""){
-  //     key = this.state.currentSubtaskId
+  //   console.log(this.state.currentSubtaskIndex == null)
+  //   console.log(this.state.currentSubtaskIndex !== "")
+  //   if(this.state.currentSubtaskIndex !== ""){
+  //     key = this.state.currentSubtaskIndex
   //   }else{
   //     var key = this.state.subtaskIndex
   //   }
@@ -80,58 +111,63 @@ class AddTaskForm extends BaseComponent {
   //   obj[key] = val
   //   this.setState(obj)
   //   this.setState({subtaskIndex:this.props.subtasks.length})
-  //   this.setState({currentSubtaskId:""})
+  //   this.setState({currentSubtaskIndex:""})
   //   // this.setState({subtasks: this.props.subtasks.concat(
   //   //   [addSubtaskForm]
   //   // )})
   //   console.log(this.state.subtasks)
   // }
 
-  submitSubtask = (subtask) => {
-    debugger;
-    this.props.addSubtaskToState(subtask)
-    // this.setState({subtasks: this.props.subtasks.concat(
-    //   [addSubtaskForm]
-    // )})
-    // console.log(this.state.subtasks)
-  }
+  // submitSubtask = (subtask) => {
+  //   debugger;
+  //   this.props.addSubtaskToState(subtask)
+  //   // this.setState({subtasks: this.props.subtasks.concat(
+  //   //   [addSubtaskForm]
+  //   // )})
+  //   // console.log(this.state.subtasks)
+  // }
 
-  setCurrentSubtask = (index) => {
-    this.setState({currentSubtaskId:index})
-    this.props.clearSubtasks()
-    if(this.props.currentTask){
-      this.setState({currentSubtask:this.props.currentTask.subtasks[index]}),
-      this.props.setSubtasks(this.props.currentTask.subtasks)
-      // this.setState({subtaskType:"new"})
-    }else(
-      this.setState({currentSubtask:this.props.subtasks[index]}),
-      this.props.setSubtasks(this.props.subtasks)
-      // this.setState({subtaskType:"edit"})
-    )
-  }
 
-  addSubtask = (subtask) => {
-    subtask.taskId = this.state.currentSubtask.taskId
-    if(this.state.currentSubtaskId !== ""){
-      // this.setState({subtasks:this.state.subtasks.concat(subtask)})
-      var key = this.state.currentSubtaskId
-      var val = subtask
-      var obj = this.props.subtasks
-      this.props.subtasks[key] = val
-      obj[key] = val
-    }else{
-      this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtask)
-    }
-    this.setState({currentSubtaskId:""})
-    this.setState({currentSubtask:""})
-  }
+  // setCurrentSubtask = (index) => {
+  //   this.setState({currentSubtaskIndex:index})
+  //   // this.props.clearSubtasks()
+  //   var currentSubtask = this.props.subtasks[index]
+  //   debugger;
+  //   this.setState({currentSubtask:this.props.subtasks[index]})
+  //   // if(this.props.currentTask){
+  //   //   this.setState({currentSubtask:this.props.currentTask.subtasks[index]}),
+  //   //   this.props.setSubtasks(this.props.currentTask.subtasks)
+  //   //   // this.setState({subtaskType:"new"})
+  //   // }else(
+  //   //   this.setState({currentSubtask:this.props.subtasks[index]}),
+  //   //   this.props.setSubtasks(this.props.subtasks)
+  //   //   // this.setState({subtaskType:"edit"})
+  //   // )
+  // }
+
+  // addSubtask = (subtask) => {
+  //   // Add subtask form values to subtask here
+  //   subtask.taskId = this.state.currentSubtask.taskId
+  //   if(this.state.currentSubtaskIndex !== ""){
+  //     // this.setState({subtasks:this.state.subtasks.concat(subtask)})
+  //     var key = this.state.currentSubtaskIndex
+  //     var val = subtask
+  //     var obj = this.props.subtasks
+  //     this.props.subtasks[key] = val
+  //     obj[key] = val
+  //   }else{
+  //     this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtask)
+  //   }
+  //   this.setState({currentSubtaskIndex:""})
+  //   this.setState({currentSubtask:""})
+  // }
 
 
   render() {
     const renderSubtaskField = ({ fields, meta: { error } }) => (
       <span>
         {fields.map((subtask, index) =>
-          <div key={index} onClick={(e) => this.setCurrentSubtask(index)}  className="column large-12 input-group toggle-add-subtask has-value">
+          <div key={index} onClick={() => this.initializeSubtaskForm(index)} className="column large-12 input-group toggle-add-subtask has-value">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
             <div className="input-wrapper form-floating-label">
               <Field className="input-group-field" type="text" name={`${subtask}.description`} component="input"/>
@@ -230,10 +266,14 @@ class AddTaskForm extends BaseComponent {
       </div>{/*main-task-wrapper*/}
       {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
       <AddSubtaskForm
-        initialValues={this.props.subtasks[this.state.currentSubtaskId]}
+        // initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
         onSubmit={this.submitSubtask}
-        submitSubtask={this.submitSubtask}
-        addSubtask={this.addSubtask}
+        // submitSubtask={this.submitSubtask}
+        // addSubtask={this.addSubtask}
+        subtaskIndex={this.state.currentSubtaskIndex}
+        addSubtaskValues={this.addSubtaskValues}
+        currentSubtasks={this.props.currentSubtasks}
+        currentSubtaskIndex={this.state.currentSubtaskIndex}
       />
     </form>
   )
@@ -282,7 +322,8 @@ const mapStateToProps = function(store) {
 		initialValues: initialTaskFormValues,
     tasks: store.taskState.tasks,
     taskListSelection: selector(store, 'taskListId'),
-    currentTask: store.taskState.task
+    currentTask: store.taskState.task,
+    currentSubtasks: selector(store, 'subtasks')
   }
 };
 

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, formValueSelector, actions, stopSubmit } from 'redux-form'
+import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
@@ -19,18 +20,28 @@ class AddSubtaskForm extends React.Component{
     //builds the subtask in the state
     this.setState({description: e.target.value});
   }
-  
+
   componentDidMount () {
   mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
           'PageName': 'AddSubTaskForm'
   });
 }
 
-  addSubtask = () => {
-    //uses formActions to add a subtask to the dom (add task form)
-    this.props.addSubtask(this.state)
-    //adds subtask to state in AddTask
-    this.props.submitSubtask(this.state)
+  // addSubtask = () => {
+  //   // this.props.formActions.stopSubmit('addSubtaskForm')
+  //   // this.props.formActions.destroy('addSubtaskForm')
+  //   var subtask = this.state
+  //   //adds subtask to state in AddTask
+  //   this.props.submitSubtask(this.state)
+  //   //uses formActions to add a subtask to the dom (add task form)
+  //   this.props.addSubtask(this.state)
+  //   debugger;
+  // }
+
+  saveSubtaskValues = () => {
+    debugger;
+    this.props.addSubtaskValues(this.state, this.props.currentSubtaskIndex);
+    this.props.formActions.destroy('addSubtaskForm')
   }
 
 
@@ -85,7 +96,7 @@ class AddSubtaskForm extends React.Component{
 
           {/* SAVE */}
           <div className="column large-12 text-right">
-            <input onClick={this.addSubtask} type="button" disabled={this.props.submitting} className="button secondary" value="Save"/>
+            <input onClick={this.saveSubtaskValues} type="button" className="button secondary" value="Save"/>
           </div>
         </div>
       </form>
@@ -100,14 +111,19 @@ AddSubtaskForm = reduxForm({
 })(AddSubtaskForm)
 
 const mapStateToProps = function(store){
-
-  // var initialValues = {}
-  // if(this.props.taskList){
-  //   initialValues = this.props.taskList
+  // var initialSubtaskFormValues = {}
+  // if(this.props.currentSubtasks && this.props.currentSubtaskIndex){
+  //   initialSubtaskFormValues = this.props.currentSubtasks[this.props.currentSubtaskIndex]
   // }
   // return{
-  //   initialValues: initialValues
+  //   initialValues: initialSubtaskFormValues
   // }
 }
 
-export default connect(mapStateToProps)(AddSubtaskForm)
+const mapDispatchToProps = function(dispatch){
+  return{
+    formActions: bindActionCreators(actions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddSubtaskForm)
