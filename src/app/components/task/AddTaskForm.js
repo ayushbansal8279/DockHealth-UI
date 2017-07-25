@@ -18,7 +18,9 @@ class AddTaskForm extends BaseComponent {
     this.state = {
       taskListId:"",
       currentSubtaskId:"",
-      currentSubtask:""
+      currentSubtask:"",
+      subtaskType:"",
+      subtasks:[]
       // subtaskIndex:0,
 
     }
@@ -96,17 +98,32 @@ class AddTaskForm extends BaseComponent {
 
   setCurrentSubtask = (index) => {
     this.setState({currentSubtaskId:index})
-    // console.log(this.props.subtasks)
-    console.log(this.props.currentTask.subtasks)
+    this.props.clearSubtasks()
     if(this.props.currentTask){
-      this.setState({currentSubtask:this.props.currentTask.subtasks[index]})
+      this.setState({currentSubtask:this.props.currentTask.subtasks[index]}),
+      this.props.setSubtasks(this.props.currentTask.subtasks)
+      // this.setState({subtaskType:"new"})
     }else(
-      this.setState({currentSubtask:this.props.subtasks[index]})
+      this.setState({currentSubtask:this.props.subtasks[index]}),
+      this.props.setSubtasks(this.props.subtasks)
+      // this.setState({subtaskType:"edit"})
     )
   }
 
   addSubtask = (subtask) => {
-    this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtask)
+    subtask.taskId = this.state.currentSubtask.taskId
+    if(this.state.currentSubtaskId !== ""){
+      // this.setState({subtasks:this.state.subtasks.concat(subtask)})
+      var key = this.state.currentSubtaskId
+      var val = subtask
+      var obj = this.props.subtasks
+      this.props.subtasks[key] = val
+      obj[key] = val
+    }else{
+      this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtask)
+    }
+    this.setState({currentSubtaskId:""})
+    this.setState({currentSubtask:""})
   }
 
 
@@ -213,7 +230,7 @@ class AddTaskForm extends BaseComponent {
       </div>{/*main-task-wrapper*/}
       {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
       <AddSubtaskForm
-        initialValues={this.props.currentTask}
+        initialValues={this.props.subtasks[this.state.currentSubtaskId]}
         onSubmit={this.submitSubtask}
         submitSubtask={this.submitSubtask}
         addSubtask={this.addSubtask}

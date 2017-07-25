@@ -65,7 +65,12 @@ class AddTask extends React.Component {
 
 	setSubtasks = (subtasks) => {
 		this.setState({subtasks:subtasks})
-		alert(subtasks)
+		// alert(subtasks)
+	}
+
+	clearSubtasks = () => {
+		this.setState({subtasks:[]})
+		// alert(subtasks)
 	}
 
 /*
@@ -86,8 +91,8 @@ class AddTask extends React.Component {
 
 	submit = (form) => {
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
-		debugger;
 		form["subtasks"] = this.state.subtasks
+		debugger;
 		console.log(form)
 		console.log(this.state.subtasks)
 		if(form.subtasks){
@@ -126,6 +131,7 @@ class AddTask extends React.Component {
 						subtasks={this.state.subtasks}
 						addSubtaskToState={this.addSubtaskToState}
 						setSubtasks={this.setSubtasks}
+						clearSubtasks={this.clearSubtasks}
 					/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
