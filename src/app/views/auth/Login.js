@@ -16,6 +16,7 @@ export default class Login extends React.Component {
           hashHistory.push('confirmMFACode?uname='+form.username)
         }else{
           //browserHistory.push('/resetPassword')
+          sessionStorage.setItem('sessionStartTime', new Date().getTime());
           hashHistory.push('/')
           success('Logged in.')
         }

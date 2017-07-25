@@ -7,12 +7,16 @@ import {mobileAnalyticsClient} from '../../api/analytics-api'
 export default class Logout extends React.Component {
 
    componentDidMount(){
+    var durationOfTimeSpentOnApp = this.getDurationOfTimeSpentOnApp();
     return userApi.logout()
       .then(data => {
         mobileAnalyticsClient.recordEvent('LOGOUT', {
             'SUCCESS': 'YES'
         });
         //console.log(data);
+        mobileAnalyticsClient.recordEvent('DURATION_INAPP', {
+            'TIME_DURATION': durationOfTimeSpentOnApp
+        });
       })
       .catch(e => {
         error(e && e.message ? e.message : 'Could not logout.')
@@ -22,21 +26,40 @@ export default class Logout extends React.Component {
       })
     }
 
-  onSubmit (form) {
-    return userApi.login(form.username, form.password)
-      .then(data => {
-        if(data == "SMS_MFA"){
-          hashHistory.push('confirmMFACode?uname='+form.username)
-        }else{
-          //browserHistory.push('/resetPassword')
-          hashHistory.push('/')
-          success('Logged in.')
+    getDurationOfTimeSpentOnApp(){
+      var readableDifference;
+      try {
+        if(sessionStorage.sessionStartTime == undefined || sessionStorage.sessionStartTime == null){
+          return null;
         }
-      })
-      .catch(e => {
-        error(e && e.message ? e.message : 'Could not login.')
-      })
-  }
+
+        var sessionEndTime= new Date().getTime();
+        var timeDifference=sessionEndTime-sessionStorage.sessionStartTime;
+        var differenceDate = new Date(timeDifference);
+        readableDifference = differenceDate.getUTCHours() + ':' + differenceDate.getUTCMinutes() + ':' + differenceDate.getUTCSeconds();
+        return readableDifference;
+      }
+      catch(e){
+        console.log("Error in getDurationOfTimeSpentOnApp");
+        return null;
+      }
+    }
+
+  // onSubmit (form) {
+  //   return userApi.login(form.username, form.password)
+  //     .then(data => {
+  //       if(data == "SMS_MFA"){
+  //         hashHistory.push('confirmMFACode?uname='+form.username)
+  //       }else{
+  //         //browserHistory.push('/resetPassword')
+  //         hashHistory.push('/')
+  //         success('Logged in.')
+  //       }
+  //     })
+  //     .catch(e => {
+  //       error(e && e.message ? e.message : 'Could not login.')
+  //     })
+  // }
 
   render () {
     return (
