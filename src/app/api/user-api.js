@@ -109,6 +109,7 @@ export function logout () {
       store.dispatch({type: 'user/user', user: resolvedCognitoUser})
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('userId');
+      sessionStorage.removeItem('sessionStartTime');
       resolve();
     }
     else{
