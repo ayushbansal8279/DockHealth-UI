@@ -6,8 +6,9 @@ import ListOfTasks from './ListOfTasks'
 import * as TaskActions from '../../actions/task-actions'
 import * as PatientActions from '../../actions/patient-actions'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class ListOfTasksContainer extends React.Component {
+class ListOfTasksContainer extends BaseComponent {
 
   componentDidMount () {
     console.log('logged in user === '+this.props.user)

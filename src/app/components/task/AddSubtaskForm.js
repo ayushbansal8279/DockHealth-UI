@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
 import BasicField from '../common/BasicField';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class AddSubtaskForm extends React.Component{
+class AddSubtaskForm extends BaseComponent{
 
   constructor(props, container) {
 		super(props)
@@ -45,6 +46,7 @@ class AddSubtaskForm extends React.Component{
   // }
 
   saveSubtaskValues = () => {
+    var subtask = this.state
     debugger;
     this.props.addSubtaskValues(this.state, this.props.currentSubtaskIndex);
     this.props.formActions.destroy('addSubtaskForm')
@@ -83,8 +85,13 @@ class AddSubtaskForm extends React.Component{
           </div> */}
 
           {/* ADD PATIENT */}
+<<<<<<< HEAD
           <Field onChange={(e) => this.handlePatientChange(e)} id="add-patient-subtask" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
           <Field id="add-patient-subtask-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
+=======
+          <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
+          <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
+>>>>>>> 6970a7f83b404e021cf424aceaaf1d66abfc3f8f
 
           {/* ADD PATIENT */}
           {/* <div className="column large-12 input-group">

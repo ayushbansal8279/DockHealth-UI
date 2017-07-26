@@ -14,7 +14,11 @@ const exposed = [
   'AWS_USERPOOLID',
   'AWS_IDENTITYPOOLID',
   'AWS_CLIENTAPP',
-  'HEYDOC_SERVICES_BASE_URL'
+  'HEYDOC_SERVICES_BASE_URL',
+  'SYSTEM_TIMEOUT',
+  'AWS_COGNITO_IDENTITYPOOLID',
+  'AWS_MOBILEANALYTICS_APPID',
+  'AWS_MOBILEANALYTICS_APPTITLE'
 ]
 const exposedEnvironment = {}
 exposed.forEach(i => { exposedEnvironment[i] = JSON.stringify(process.env[i]) })
@@ -45,11 +49,11 @@ var config = {
         test:   /\.css$/,
         loader: "style!css"
       }
-*/      
+*/
     ]
   },
   //plugins: [HTMLWebpackPluginConfig, new BowerWebpackPlugin()]
-  plugins: [HTMLWebpackPluginConfig, 
+  plugins: [HTMLWebpackPluginConfig,
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),

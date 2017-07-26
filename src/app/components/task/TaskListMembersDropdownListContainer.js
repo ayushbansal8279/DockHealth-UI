@@ -5,8 +5,9 @@ import {bindActionCreators} from 'redux';
 import TaskListMembersDropdownList from './TaskListMembersDropdownList'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class TaskListMembersDropdownListContainer extends React.Component {
+class TaskListMembersDropdownListContainer extends BaseComponent {
     componentDidMount () {
         //this.props.getMembersByTaskListId(taskListId, memberStatus)
         this.props.getMembersByTaskListId('1','ALL');

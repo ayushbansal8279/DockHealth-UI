@@ -5,8 +5,9 @@ import {bindActionCreators} from 'redux';
 import PatientDropdownList from './PatientDropdownList'
 import * as PatientActions from '../../actions/patient-actions'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class PatientDropdownListContainer extends React.Component {
+class PatientDropdownListContainer extends BaseComponent {
     componentWillMount () {
         this.props.actions.getAllPatients()
     }

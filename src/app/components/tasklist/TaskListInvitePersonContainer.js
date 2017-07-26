@@ -6,8 +6,9 @@ import BasicField from '../common/BasicField';
 import { Link,hashHistory } from 'react-router';
 import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class TaskListInvitePersonContainer extends Component {
+class TaskListInvitePersonContainer extends BaseComponent {
 
   constructor(props) {
     	super(props)

@@ -83,9 +83,11 @@ class AddTaskForm extends BaseComponent {
       subtaskValues.taskId = this.props.currentSubtasks[index].taskId
       this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
       this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
+
       debugger;
     }else{
       debugger;
+      subtaskValues.taskId = ""
       this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
     }
 

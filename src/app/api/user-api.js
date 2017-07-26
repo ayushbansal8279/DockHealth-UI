@@ -22,7 +22,10 @@ const userPool = new CognitoUserPool({
 // register a new user
 export function register (userData) {
   const attributeList = []
-  const {username, password, ...user} = userData
+  let {username, password, ...user} = userData
+  if(username){
+    username = username.toLowerCase()
+  }
   for (let field in user) {
     attributeList.push(new CognitoUserAttribute({ Name: field, Value: user[field] }))
   }
@@ -50,7 +53,10 @@ export function register (userData) {
 // confirm user registration
 export function confirmRegistration (userData) {
   const attributeList = []
-  const {username, confirmationCode} = userData
+  let {username, confirmationCode} = userData
+  if(username){
+    username = username.toLowerCase()
+  }
   let cognitoUserData = {
     Username: username,
     Pool: userPool
@@ -79,7 +85,10 @@ export function confirmRegistration (userData) {
 // resend code
 export function resendConfirmationCode (userData) {
   const attributeList = []
-  const {username} = userData
+  let {username} = userData
+  if(username){
+    username = username.toLowerCase()
+  }
   let cognitoUserData = {
     Username: username,
     Pool: userPool
@@ -119,15 +128,18 @@ export function logout () {
 }
 
 // authenticate user, and also ask for MFA or verification code, if needed
-export function login (Username, Password) {
+export function login (username, password) {
+  if(username){
+    username = username.toLowerCase()
+  }
   return new Promise((resolve, reject) => {
     var authenticationData = {
-        Username : Username,
-        Password : Password,
+        Username : username,
+        Password : password,
     };
     var authenticationDetails = new window.AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
     var cognitoUserData = {
-        Username : Username,
+        Username : username,
         Pool : userPool
     };
     var cognitoUser = new CognitoUser(cognitoUserData)
@@ -206,7 +218,10 @@ export function login (Username, Password) {
 // confirm user registration
 export function sendMFACode (userData) {
   const attributeList = []
-  const {username, mfaCode} = userData
+  let {username, mfaCode} = userData
+  if(username){
+    username = username.toLowerCase()
+  }
   let cognitoUserData = {
     Username: username,
     Pool: userPool
@@ -289,7 +304,10 @@ export function isAuthenticated (callback) {
 
 export function forgotPassword (userData) {
   const attributeList = []
-  const {username} = userData
+  let {username} = userData
+  if(username){
+    username = username.toLowerCase()
+  }
   let cognitoUserData = {
     Username: username,
     Pool: userPool
@@ -323,7 +341,10 @@ export function forgotPassword (userData) {
 
 export function resetPassword (userData) {
   const attributeList = []
-  const {username, verificationCode, password} = userData
+  let {username, verificationCode, password} = userData
+  if(username){
+    username = username.toLowerCase()
+  }
   let cognitoUserData = {
     Username: username,
     Pool: userPool
@@ -364,6 +385,9 @@ export function getUserByEmail(email, cognitoUser) {
   //sets global header for axios
   axios.defaults.headers.common['Authorization'] = authString
   // axios.defaults.headers.common['CurrentUserId'] = "1"
+  if(email){
+    email = email.toLowerCase()
+  }
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findUserByEmail?email='+email)
     .then(response => {
       store.dispatch({type: 'user/userProfile', userProfile: response.data})
