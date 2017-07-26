@@ -2,8 +2,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as InvitationActions from '../../actions/invitation-actions';
+import BaseComponent from '../BaseComponent'
 
-class InvitationContainer extends React.Component {
+class InvitationContainer extends BaseComponent {
     constructor(props) {
       super(props);
 

@@ -4,8 +4,9 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/tasklist-actions'
+import BaseComponent from '../BaseComponent'
 
-class TaskFiltersContainer extends React.Component {
+class TaskFiltersContainer extends BaseComponent {
     constructor(props) {
       super(props)
       this.state = {

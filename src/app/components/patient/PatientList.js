@@ -1,7 +1,8 @@
 import React from 'react'
 import {Link} from 'react-router'
+import BaseComponent from '../BaseComponent'
 
-class PatientList extends React.Component {
+class PatientList extends BaseComponent {
 		constructor(props) {
 				super(props)
 		}

@@ -6,6 +6,7 @@ import BasicField from '../common/BasicField'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
 const validate = values => {
   const errors = {}
@@ -18,7 +19,7 @@ const validate = values => {
   return errors
 }
 
-class FormPatient extends React.Component {
+class FormPatient extends BaseComponent {
 	constructor(props) {
     	super(props)
     	this.state = {

@@ -6,8 +6,9 @@ import PatientList from './PatientList'
 import * as PatientActions from '../../actions/patient-actions'
 import SearchInput, {createFilter} from 'react-search-input'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class PatientListContainer extends React.Component {
+class PatientListContainer extends BaseComponent {
     componentDidMount () {
         this.props.actions.getAllPatients()
         mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {

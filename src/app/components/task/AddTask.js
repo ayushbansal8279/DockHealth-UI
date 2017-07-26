@@ -10,8 +10,9 @@ import * as PeopleActions from '../../actions/people-actions';
 import * as TaskActions from '../../actions/task-actions';
 import {ReactDOM, findDOMNode, getDOMNode} from 'react-dom'
 import $ from 'jquery'
+import BaseComponent from '../BaseComponent'
 
-class AddTask extends React.Component {
+class AddTask extends BaseComponent {
 	constructor(props, container) {
 		super(props)
 		this.container = container
