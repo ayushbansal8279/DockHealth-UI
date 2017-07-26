@@ -27,15 +27,15 @@ export default class ResetPassword extends React.Component {
       password: form.password
     })
     .then(u => {
-      mobileAnalyticsClient.recordEvent('RESET_PASSWORD', {
-          'SUCCESS': 'YES'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'RESET_PASSWORD_SUCCESS': 'YES'
       });
       success('Reset password. Please login')
       hashHistory.push('login')
     })
     .catch(e => {
-      mobileAnalyticsClient.recordEvent('RESET_PASSWORD', {
-          'SUCCESS': 'NO'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'RESET_PASSWORD_SUCCESS': 'NO'
       });
       let msg = e.message || 'An error occurred.'
       let field = false

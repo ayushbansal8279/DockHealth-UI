@@ -17,15 +17,15 @@ export default class ChangePassword extends React.Component {
       username: form.username
     })
     .then(resp => {
-      mobileAnalyticsClient.recordEvent('CHANGE_PASSWORD', {
-          'SUCCESS': 'YES'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'CHANGE_PASSWORD_SUCCESS': 'YES'
       });
       success('Sent verification code to: '+resp.CodeDeliveryDetails.Destination)
       hashHistory.push('resetPassword')
     })
     .catch(e => {
-      mobileAnalyticsClient.recordEvent('CHANGE_PASSWORD', {
-          'SUCCESS': 'NO'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'CHANGE_PASSWORD_SUCCESS': 'NO'
       });
       let msg = e.message || 'An error occurred.'
       let field = false

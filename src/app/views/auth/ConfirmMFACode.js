@@ -24,8 +24,8 @@ export default class ConfirmMFACode extends React.Component {
       mfaCode: form.mfaCode
     })
     .then(u => {
-        mobileAnalyticsClient.recordEvent('CONFIRM_MFACODE', {
-            'SUCCESS': 'YES'
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'CONFIRM_MFACODE_SUCCESS': 'YES'
         });
         userApi.rememberDevice ()
         .then(result => {
@@ -35,8 +35,8 @@ export default class ConfirmMFACode extends React.Component {
         success('Logged in.')
     })
     .catch(e => {
-      mobileAnalyticsClient.recordEvent('CONFIRM_MFACODE', {
-          'SUCCESS': 'NO'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'CONFIRM_MFACODE_SUCCESS': 'NO'
       });
       let msg = e.message || 'An error occurred.'
       let field = false

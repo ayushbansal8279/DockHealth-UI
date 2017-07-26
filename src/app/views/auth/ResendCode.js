@@ -17,15 +17,15 @@ export default class ResendCode extends React.Component {
       username: form.username
     })
     .then(u => {
-      mobileAnalyticsClient.recordEvent('RESEND_CODE', {
-          'SUCCESS': 'YES'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'RESEND_CODE_SUCCESS': 'YES'
       });
       success('Resent verification code. Please check your email.')
       hashHistory.push('confirmRegistration')
     })
     .catch(e => {
-      mobileAnalyticsClient.recordEvent('RESEND_CODE', {
-          'SUCCESS': 'NO'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'RESEND_CODE_SUCCESS': 'NO'
       });
       let msg = e.message || 'An error occurred.'
       let field = false
