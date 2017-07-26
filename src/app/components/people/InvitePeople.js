@@ -6,8 +6,9 @@ import { Link,hashHistory } from 'react-router';
 import BasicField from '../common/BasicField';
 import * as PeopleActions from '../../actions/people-actions';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class InvitePeople extends Component {
+class InvitePeople extends BaseComponent {
 
   constructor(props) {
     	super(props)

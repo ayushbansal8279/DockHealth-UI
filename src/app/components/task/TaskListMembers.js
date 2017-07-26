@@ -1,7 +1,8 @@
 import React from 'react'
 import {Link} from 'react-router'
+import BaseComponent from '../BaseComponent'
 
-class TaskListMembers extends React.Component {
+class TaskListMembers extends BaseComponent {
 	constructor(props) {
 		super(props)
 		this.getMemberId = this.getMemberId.bind(this);

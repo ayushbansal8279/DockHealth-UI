@@ -1,7 +1,8 @@
 import React from 'react'
 import {Link} from 'react-router'
+import BaseComponent from '../BaseComponent'
 
-class PatientDropdownList extends React.Component {
+class PatientDropdownList extends BaseComponent {
 	constructor(props) {
 			super(props)
 			this.addPatientToTask = this.addPatientToTask.bind(this)

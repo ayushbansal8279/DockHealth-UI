@@ -4,8 +4,9 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import * as TaskListActions from '../../actions/tasklist-actions'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class TaskListUsers extends React.Component {
+class TaskListUsers extends BaseComponent {
 	componentDidMount () {
 	    //this.props.getMembersByTaskListId(taskListId, memberStatus)
 	    this.props.getMembersByTaskListId(this.props.taskListId,'ALL');

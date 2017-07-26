@@ -6,8 +6,9 @@ import {bindActionCreators} from 'redux'
 import $ from 'jquery'
 const  { DOM: { input, select, textarea } } = React
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class AddComment extends React.Component {
+class AddComment extends BaseComponent {
   constructor(props){
     super(props)
     this.state = {

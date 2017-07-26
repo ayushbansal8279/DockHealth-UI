@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
 import BasicField from '../common/BasicField';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class AddSubtaskForm extends React.Component{
+class AddSubtaskForm extends BaseComponent{
 
   constructor(props, container) {
 		super(props)

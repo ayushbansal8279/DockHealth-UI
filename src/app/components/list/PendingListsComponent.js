@@ -1,6 +1,7 @@
 import React from 'react'
+import BaseComponent from '../BaseComponent'
 
-class PendingListsComponent extends React.Component{
+class PendingListsComponent extends BaseComponent{
   render(){
     return(
       <span>

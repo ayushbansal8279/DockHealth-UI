@@ -6,8 +6,9 @@ import { Link } from 'react-router'
 import * as PatientActions from '../../actions/patient-actions'
 import * as TaskActions from '../../actions/task-actions'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class TaskListPatients extends React.Component {
+class TaskListPatients extends BaseComponent {
 	constructor(props) {
 		super(props)
 		this.findTasksByPatient = this.findTasksByPatient.bind(this)

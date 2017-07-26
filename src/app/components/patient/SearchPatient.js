@@ -6,8 +6,9 @@ import BasicField from '../common/BasicField'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import BaseComponent from '../BaseComponent'
 
-class SearchPatient extends React.Component {
+class SearchPatient extends BaseComponent {
 	constructor(props) {
     	super(props)
     	this.state = {
