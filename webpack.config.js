@@ -15,7 +15,10 @@ const exposed = [
   'AWS_IDENTITYPOOLID',
   'AWS_CLIENTAPP',
   'HEYDOC_SERVICES_BASE_URL',
-  'SYSTEM_TIMEOUT'
+  'SYSTEM_TIMEOUT',
+  'AWS_COGNITO_IDENTITYPOOLID',
+  'AWS_MOBILEANALYTICS_APPID',
+  'AWS_MOBILEANALYTICS_APPTITLE'
 ]
 const exposedEnvironment = {}
 exposed.forEach(i => { exposedEnvironment[i] = JSON.stringify(process.env[i]) })
