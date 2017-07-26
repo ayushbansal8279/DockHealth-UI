@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { actions } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import AddTaskForm from './AddTaskForm'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
@@ -59,6 +60,20 @@ class AddTask extends React.Component {
 		// alert("unmounting")
 	}
 
+	addSubtaskToState = (subtask) => {
+		this.setState({subtasks:this.state.subtasks.concat(subtask)})
+	}
+
+	setSubtasks = (subtasks) => {
+		this.setState({subtasks:subtasks})
+		// alert(subtasks)
+	}
+
+	clearSubtasks = () => {
+		this.setState({subtasks:[]})
+		// alert(subtasks)
+	}
+
 /*
 	handleSubmit () {
 		if(this.props.taskListId != "inbox"){
@@ -76,10 +91,12 @@ class AddTask extends React.Component {
 	}
 
 	submit = (form) => {
+		debugger;
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
-		form["subtasks"] = this.state.subtasks
+		this.props.formActions.destroy('addTaskForm')
+		// form["subtasks"] = this.state.subtasks
 		console.log(form)
-		console.log(this.state.subtasks)
+		// console.log(this.state.subtasks)
 		if(form.subtasks){
 			form.patientId = $("#add-patient-id").val();
 			form.assignedToId = $("#assign-task-to-id").val();
@@ -106,7 +123,18 @@ class AddTask extends React.Component {
     	return (
 			<div className="add-form-wrapper" ref="toggle">
 				<div className="task-item add-form row expanded">
-					<AddTaskForm onSubmit={this.submit} taskLists={this.props.taskLists} task={this.props.task} title={this.props.title} taskListId={this.props.taskListId} initialValues={"taskListId:"+this.props.taskListId} subtasks={this.state.subtasks}/>
+					<AddTaskForm
+						onSubmit={this.submit}
+						taskLists={this.props.taskLists}
+						task={this.props.task}
+						title={this.props.title}
+						taskListId={this.props.taskListId}
+						initialValues={"taskListId:"+this.props.taskListId}
+						subtasks={this.state.subtasks}
+						addSubtaskToState={this.addSubtaskToState}
+						setSubtasks={this.setSubtasks}
+						clearSubtasks={this.clearSubtasks}
+					/>
 				</div>
 				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
 
@@ -121,7 +149,8 @@ const mapStateToProps = function(store) {
 		taskLists: store.taskListState.tasklist,
 		patients: store.patientState.allPatients,
 		peoplelist: store.peopleState.peoplelist,
-		members: store.taskListState.tasklistmembers
+		members: store.taskListState.tasklistmembers,
+		task: store.taskState.task
 		// user: store.userState.user
   	}
 };
@@ -129,7 +158,8 @@ const mapStateToProps = function(store) {
 function mapDispatchToProps(dispatch) {
   return {
 	  taskActions: bindActionCreators(TaskActions, dispatch),
-	  peopleActions: bindActionCreators(PeopleActions, dispatch)
+	  peopleActions: bindActionCreators(PeopleActions, dispatch),
+		formActions: bindActionCreators(actions, dispatch)
   }
 }
 

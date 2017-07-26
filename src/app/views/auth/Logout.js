@@ -2,34 +2,64 @@ import React from 'react'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 export default class Logout extends React.Component {
 
    componentDidMount(){
+    var durationOfTimeSpentOnApp = this.getDurationOfTimeSpentOnApp();
     return userApi.logout()
       .then(data => {
-        console.log(data);
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'LOGOUT_SUCCESS': 'YES'
+        });
+        //console.log(data);
+        mobileAnalyticsClient.recordEvent('DURATION_INAPP', {
+            'TIME_DURATION': durationOfTimeSpentOnApp
+        });
       })
       .catch(e => {
-        error(e && e.message ? e.message : 'Could not lohgout.')
+        error(e && e.message ? e.message : 'Could not logout.')
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'LOGOUT_SUCCESS': 'NO'
+        });
       })
     }
 
-  onSubmit (form) {
-    return userApi.login(form.username, form.password)
-      .then(data => {
-        if(data == "SMS_MFA"){
-          hashHistory.push('confirmMFACode?uname='+form.username)
-        }else{
-          //browserHistory.push('/resetPassword')
-          hashHistory.push('/')
-          success('Logged in.')
+    getDurationOfTimeSpentOnApp(){
+      var readableDifference;
+      try {
+        if(sessionStorage.sessionStartTime == undefined || sessionStorage.sessionStartTime == null){
+          return null;
         }
-      })
-      .catch(e => {
-        error(e && e.message ? e.message : 'Could not login.')
-      })
-  }
+
+        var sessionEndTime= new Date().getTime();
+        var timeDifference=sessionEndTime-sessionStorage.sessionStartTime;
+        var differenceDate = new Date(timeDifference);
+        readableDifference = differenceDate.getUTCHours() + ':' + differenceDate.getUTCMinutes() + ':' + differenceDate.getUTCSeconds();
+        return readableDifference;
+      }
+      catch(e){
+        console.log("Error in getDurationOfTimeSpentOnApp");
+        return null;
+      }
+    }
+
+  // onSubmit (form) {
+  //   return userApi.login(form.username, form.password)
+  //     .then(data => {
+  //       if(data == "SMS_MFA"){
+  //         hashHistory.push('confirmMFACode?uname='+form.username)
+  //       }else{
+  //         //browserHistory.push('/resetPassword')
+  //         hashHistory.push('/')
+  //         success('Logged in.')
+  //       }
+  //     })
+  //     .catch(e => {
+  //       error(e && e.message ? e.message : 'Could not login.')
+  //     })
+  // }
 
   render () {
     return (
@@ -45,6 +75,3 @@ export default class Logout extends React.Component {
     )
   }
 }
-
-
-

@@ -91,12 +91,36 @@ const TaskReducer = function(state = initialState, action) {
     //   };
 
     case types.DELETE_TASK_SUCCESS:
-      const taskId = action.taskId;
       //return Object.assign({}, state, { tasks: state.tasks.filter(task => task.taskId !== taskId)});
       return {
         ...state,
-        tasks: state.tasks.filter(task => task.taskId !== taskId)
+        tasks: state.tasks.filter(task => task !== action.task)
       };
+
+    // case types.DELETE_TASK_SUCCESS:
+    // var mainTask
+    // if(action.task.parentTaskId){
+    // mainTask = action.task.parentTaskId
+    // }else{
+    // mainTask = action.task.taskId
+    // }
+    //
+    // return {
+    //   ...state,
+    //   tasks: state.tasks.filter(task =>
+    //     task.taskId === mainTask ?
+    //     action.task.parentTaskId ?
+    //       {...task, subtasks:
+    //         task.subtasks.filter(subtask =>
+    //           subtask.taskId === action.task.taskId ?
+    //           (subtask => subtask.taskId !== mainTask) :
+    //           subtask
+    //         )
+    //       } :
+    //       (task => task.taskId !== mainTask)
+    //       : task
+    //   )
+    // };
 
     // case types.DELETE_TASK_SUCCESS:
     // var mainTask
@@ -136,17 +160,42 @@ const TaskReducer = function(state = initialState, action) {
         )
       };
 
+    // case types.UPDATE_TASK_SUCCESS:
+    //   return {
+    //     ...state,
+    //     tasks: state.tasks.map(task =>
+    //       task.taskId === action.task.taskId ?
+    //         // transform the one with a matching id
+    //         {...task, ...action.task } :
+    //         // otherwise return original task
+    //         task
+    //     )
+    //   };
+
     case types.UPDATE_TASK_SUCCESS:
-      return {
-        ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === action.task.taskId ?
-            // transform the one with a matching id
-            {...task, ...action.task } :
-            // otherwise return original task
-            task
-        )
-      };
+    var mainTask
+    if(action.task.parentTaskId){
+    mainTask = action.task.parentTaskId
+    }else{
+    mainTask = action.task.taskId
+    }
+
+    return {
+      ...state,
+      tasks: state.tasks.map(task =>
+        task.taskId === mainTask ?
+        action.task.parentTaskId ?
+          {...task, subtasks:
+            task.subtasks.map(subtask =>
+              subtask.taskId === action.task.taskId ?
+              {...subtask, ...action.task} :
+              subtask
+            )
+          } :
+          { ...task, ...action.task}
+          : task
+      )
+    };
 
       case types.TOGGLE_TASK_PRIORITY_SUCCESS:
       var mainTask

@@ -1,6 +1,9 @@
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, formValueSelector, actions, stopSubmit } from 'redux-form'
+import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
+import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
+import BasicField from '../common/BasicField';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class AddSubtaskForm extends React.Component{
@@ -10,9 +13,15 @@ class AddSubtaskForm extends React.Component{
 		this.state = {
 				description: '',
         assignedToId: '',
-        patientId: ''
+        patientId: '',
+        priority:'LOW'
 		}
 	}
+
+  handleDescriptionChange = (e) => {
+    //builds the subtask in the state
+    this.setState({description: e.target.value});
+  }
 
   componentDidMount () {
   mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
@@ -20,14 +29,24 @@ class AddSubtaskForm extends React.Component{
   });
 }
 
-  addSubtask = () => {
-    this.props.submitSubtask(this.state)
-    this.props.addSubtask(this.state)
+  // addSubtask = () => {
+  //   // this.props.formActions.stopSubmit('addSubtaskForm')
+  //   // this.props.formActions.destroy('addSubtaskForm')
+  //   var subtask = this.state
+  //   //adds subtask to state in AddTask
+  //   this.props.submitSubtask(this.state)
+  //   //uses formActions to add a subtask to the dom (add task form)
+  //   this.props.addSubtask(this.state)
+  //   debugger;
+  // }
+
+  saveSubtaskValues = () => {
+    var subtask = this.state
+    debugger;
+    this.props.addSubtaskValues(this.state, this.props.currentSubtaskIndex);
+    this.props.formActions.destroy('addSubtaskForm')
   }
 
-  handleDescriptionChange = (e) => {
-   this.setState({description: e.target.value});
-  }
 
   render(){
     return(
@@ -48,22 +67,30 @@ class AddSubtaskForm extends React.Component{
           </div>
 
           {/* Task */}
-          <div className="column large-12 input-group">
+          <Field onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
+          <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
+
+          {/* Task */}
+          {/* <div className="column large-12 input-group">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
             <div className="input-wrapper form-floating-label">
               <Field className="input-group-field" type="text" component="input" type="text" name="description" value={this.state.description} onChange={(e) => this.handleDescriptionChange(e)}/>
               <label>Subtask</label>
             </div>
-          </div>
+          </div> */}
 
           {/* ADD PATIENT */}
-          <div className="column large-12 input-group">
+          <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
+          <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
+
+          {/* ADD PATIENT */}
+          {/* <div className="column large-12 input-group">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
             <div className="input-wrapper form-floating-label">
               <input id="add-patient-subtask" className="add-patient input-group-field" type="text"/>
               <label>Add Patient</label>
             </div>
-          </div>
+          </div> */}
 
           {/* ASSIGNED TO */}
           <div className="column large-12 input-group">
@@ -76,7 +103,7 @@ class AddSubtaskForm extends React.Component{
 
           {/* SAVE */}
           <div className="column large-12 text-right">
-            <input onClick={this.addSubtask} type="button" disabled={this.props.submitting} className="button secondary" value="Save"/>
+            <input onClick={this.saveSubtaskValues} type="button" className="button secondary" value="Save"/>
           </div>
         </div>
       </form>
@@ -91,14 +118,19 @@ AddSubtaskForm = reduxForm({
 })(AddSubtaskForm)
 
 const mapStateToProps = function(store){
-
-  // var initialValues = {}
-  // if(this.props.taskList){
-  //   initialValues = this.props.taskList
+  // var initialSubtaskFormValues = {}
+  // if(this.props.currentSubtasks && this.props.currentSubtaskIndex){
+  //   initialSubtaskFormValues = this.props.currentSubtasks[this.props.currentSubtaskIndex]
   // }
   // return{
-  //   initialValues: initialValues
+  //   initialValues: initialSubtaskFormValues
   // }
 }
 
-export default connect(mapStateToProps)(AddSubtaskForm)
+const mapDispatchToProps = function(dispatch){
+  return{
+    formActions: bindActionCreators(actions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddSubtaskForm)

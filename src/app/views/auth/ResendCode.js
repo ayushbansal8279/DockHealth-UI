@@ -4,6 +4,7 @@ import { SubmissionError } from 'redux-form'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
 import ResendCodeForm from '../../components/auth/ResendCodeForm'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 export default class ResendCode extends React.Component {
   constructor (props) {
@@ -16,10 +17,16 @@ export default class ResendCode extends React.Component {
       username: form.username
     })
     .then(u => {
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'RESEND_CODE_SUCCESS': 'YES'
+      });
       success('Resent verification code. Please check your email.')
       hashHistory.push('confirmRegistration')
     })
     .catch(e => {
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'RESEND_CODE_SUCCESS': 'NO'
+      });
       let msg = e.message || 'An error occurred.'
       let field = false
       if (!field) {

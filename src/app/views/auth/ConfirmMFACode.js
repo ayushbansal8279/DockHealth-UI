@@ -4,6 +4,7 @@ import { SubmissionError } from 'redux-form'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
 import ConfirmMFACodeForm from '../../components/auth/ConfirmMFACodeForm'
+import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 export default class ConfirmMFACode extends React.Component {
   constructor (props) {
@@ -23,6 +24,9 @@ export default class ConfirmMFACode extends React.Component {
       mfaCode: form.mfaCode
     })
     .then(u => {
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'CONFIRM_MFACODE_SUCCESS': 'YES'
+        });
         userApi.rememberDevice ()
         .then(result => {
           console.log("added device to be remembered: "+result)
@@ -31,6 +35,9 @@ export default class ConfirmMFACode extends React.Component {
         success('Logged in.')
     })
     .catch(e => {
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'CONFIRM_MFACODE_SUCCESS': 'NO'
+      });
       let msg = e.message || 'An error occurred.'
       let field = false
       if (!field) {

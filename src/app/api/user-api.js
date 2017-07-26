@@ -110,13 +110,21 @@ export function resendConfirmationCode (userData) {
 
 // log user out
 export function logout () {
-  let cognitoUser = userPool.getCurrentUser();
-
-  cognitoUser.signOut()
-  resolvedCognitoUser = null
-  store.dispatch({type: 'user/user', user: resolvedCognitoUser})
-  sessionStorage.removeItem('accessToken');
-  sessionStorage.removeItem('userId');
+  return new Promise((resolve, reject) => {
+    let cognitoUser = userPool.getCurrentUser();
+    if(cognitoUser != null){
+      cognitoUser.signOut()
+      resolvedCognitoUser = null
+      store.dispatch({type: 'user/user', user: resolvedCognitoUser})
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('userId');
+      sessionStorage.removeItem('sessionStartTime');
+      resolve();
+    }
+    else{
+      reject();
+    }
+  })
 }
 
 // authenticate user, and also ask for MFA or verification code, if needed
