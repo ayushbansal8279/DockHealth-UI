@@ -9,8 +9,8 @@ export default class Login extends React.Component {
   onSubmit (form) {
     return userApi.login(form.username, form.password)
       .then(data => {
-        mobileAnalyticsClient.recordEvent('LOGIN', {
-            'SUCCESS': 'YES'
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'LOGIN_SUCCESS': 'YES'
         });
         if(data == "SMS_MFA"){
           hashHistory.push('confirmMFACode?uname='+form.username)
@@ -23,8 +23,8 @@ export default class Login extends React.Component {
       })
       .catch(e => {
         error(e && e.message ? e.message : 'Could not login.')
-        mobileAnalyticsClient.recordEvent('LOGIN', {
-            'SUCCESS': 'NO'
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'LOGIN_SUCCESS': 'NO'
         });
       })
   }

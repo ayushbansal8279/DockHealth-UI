@@ -25,16 +25,16 @@ export default class Register extends React.Component {
       // "custom:subspecialty": form.subspecialty
     })
     .then(u => {
-      mobileAnalyticsClient.recordEvent('REGISTER', {
-          'SUCCESS': 'YES'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'REGISTER_SUCCESS': 'YES'
       });
       success('New user created. Please check your email to confirm account registration.')
       alert("Please check your email to confirm the account registration");
       hashHistory.push('confirmRegistration')
     })
     .catch(e => {
-      mobileAnalyticsClient.recordEvent('REGISTER', {
-          'SUCCESS': 'NO'
+      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          'REGISTER_SUCCESS': 'NO'
       });
       let msg = e.message || 'An error occurred.'
       let field = false

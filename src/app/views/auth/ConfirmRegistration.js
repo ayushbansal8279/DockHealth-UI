@@ -22,16 +22,16 @@ export default class ConfirmRegistration extends React.Component {
         confirmationCode: code
       })
       .then(u => {
-        mobileAnalyticsClient.recordEvent('CONFIRM_REGISTRATION', {
-            'SUCCESS': 'YES'
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'CONFIRM_REGISTRATION_SUCCESS': 'YES'
         });
         success('Registration confirmed. Please Login')
         alert('Registration confirmed. Please Login')
         hashHistory.push('login')
       })
       .catch(e => {
-        mobileAnalyticsClient.recordEvent('CONFIRM_REGISTRATION', {
-            'SUCCESS': 'NO'
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'CONFIRM_REGISTRATION_SUCCESS': 'NO'
         });
         let msg = e.message || 'An error occurred.'
         let field = false

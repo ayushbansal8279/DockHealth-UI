@@ -10,8 +10,8 @@ export default class Logout extends React.Component {
     var durationOfTimeSpentOnApp = this.getDurationOfTimeSpentOnApp();
     return userApi.logout()
       .then(data => {
-        mobileAnalyticsClient.recordEvent('LOGOUT', {
-            'SUCCESS': 'YES'
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'LOGOUT_SUCCESS': 'YES'
         });
         //console.log(data);
         mobileAnalyticsClient.recordEvent('DURATION_INAPP', {
@@ -20,8 +20,8 @@ export default class Logout extends React.Component {
       })
       .catch(e => {
         error(e && e.message ? e.message : 'Could not logout.')
-        mobileAnalyticsClient.recordEvent('LOGOUT', {
-            'SUCCESS': 'NO'
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            'LOGOUT_SUCCESS': 'NO'
         });
       })
     }
