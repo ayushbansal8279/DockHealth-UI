@@ -165,6 +165,40 @@ function enableAutoCompleteForPatients(lookupData) {
 	$(".add-patient").easyAutocomplete(patients);
 }
 
+function enableAutoCompleteForSubtaskPatients(lookupData) {
+	// console.log(lookupData)
+	// add task form patient autocomplete
+	// http://easyautocomplete.com/guide
+	var patients = {
+		// data: [ {name: "George Vasquez", mrn: "123-32-21"},
+		// 	{name: "Grace Chavez", mrn: "473-32-21"},
+		// 	{name: "Pamela Riley", mrn: "383-38-59"},
+		// 	{name: "Raymond Curtis", mrn: "433-37-47"}
+		// ],
+		data: lookupData,
+		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
+		list: {
+			onLoadEvent: function() {
+				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
+				$('.easy-autocomplete-container ul').append(addnew);
+			},
+			onSelectItemEvent: function() {
+				var selItemData = $("#add-patient-subtask").getSelectedItemData();
+				$("#add-patient-subtask").val(selItemData.firstName + " " + selItemData.lastName);
+				$("#add-patient-subtask-id").val(selItemData.patientId);
+			},
+			match: {enabled: true}
+		},
+		template: { type: "custom",
+			method: function(value, item) {
+				return "<span class='data-item'>" + item.mrn + "</span><span class='data-item'>" + item.firstName + " " + item.lastName + "</span>";
+			}
+		}
+	};
+
+	$(".add-patient").easyAutocomplete(patients);
+}
+
 function enableAutoCompleteForAssignedTo(lookupData) {
 	var people = {
 		data: lookupData,

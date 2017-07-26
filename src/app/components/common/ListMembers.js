@@ -52,16 +52,16 @@ class ListMembers extends BaseComponentWithAutoComplete {
 				<span className="item-details highlight">Pending</span>
 				}
 			</div>
-		</div>		
+		</div>
 	);
-	
+
 	onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
 		console.log("selected member: " + suggestion.userId);
 		this.setState({
 			selectedUserId: suggestion.userId
 		});
 	}
-	  
+
     //addListMember(e) {
 	onSubmit (formProps) {
 		//var selectedUserId = formProps.selectedUserId;
@@ -79,7 +79,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
           	this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
         })
         .catch((error)=>{
-          	this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage}); 
+          	this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage});
         })
       }
     }
@@ -138,7 +138,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 										<svg className="icon ellipses medium" data-toggle={"more-options-list01-member-id-"+member.userId}><use xlinkHref="#icon-ellipses"></use></svg>
 										<div className="small dropdown-pane" id={"more-options-list01-member-id-"+member.userId} data-dropdown data-close-on-click="true">
 											<ul className="no-bullet">
-													<li onClick={(e) => this.deleteMember(member)}>Delete this person</li>
+													<li onClick={(e) => this.deleteMember(member)}>Remove user from list</li>
 													{member.taskListUserRole != "MEMBER" ?
 														<li onClick={(e) => this.changeUserRole(member, "MEMBER")}>Remove admin status</li> :
 														<li onClick={(e) => this.changeUserRole(member, "ADMIN")}>Make admin</li>
@@ -175,7 +175,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 					<div className="columns text-center">
 						{this.state.inviteUserResult}
 					</div>
-				</div>			
+				</div>
 				<button className="close-button" data-close aria-label="Close modal" type="button">
 					<span aria-hidden="true">&times;</span>
 				</button>

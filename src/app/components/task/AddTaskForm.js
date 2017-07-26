@@ -31,10 +31,10 @@ class AddTaskForm extends BaseComponent {
 
   componentDidMount () {
     super.componentDidMount()
-    this.setState({"taskListId":this.props.taskListId})
+    // this.setState({"taskListId":this.props.taskListId})
 
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-            'PageName': 'AddTaskForm'
+      'PageName': 'AddTaskForm'
     });
   }
 
@@ -42,10 +42,14 @@ class AddTaskForm extends BaseComponent {
     super.componentDidUpdate()
   }
 
+  componentWillUpdate (nextProps) {
+
+  }
+
   handleTaskListSelection(event) {
     alert(event.target.value)
     this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ACTIVE')
-    $("#filed-in-taskList").val('foo-'+event.target.value);
+    $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
     // $("#filed-in-taskList").attr('aria-expanded','false');
@@ -56,9 +60,9 @@ class AddTaskForm extends BaseComponent {
   }
 
   componentWillReceiveProps(nextProps){
-    if(nextProps.taskListId != this.props.taskListId){
-      this.setState({"taskListId":nextProps.taskListId})
-    }
+    // if(nextProps.taskListId != this.props.taskListId){
+    //   this.setState({"taskListId":nextProps.taskListId})
+    // }
     // if(this.props.currentTask){
     //   if(nextProps.currentTask != this.props.currentTask){
     //     this.props.setSubtasks(nextProps.currentTask.subtasks)

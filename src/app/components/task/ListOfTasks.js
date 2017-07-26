@@ -15,6 +15,7 @@ import $ from 'jquery'
 import AssignToModal from '../common/AssignToModal'
 import ConfirmDelete from '../common/ConfirmDelete'
 import BooleanModal from '../common/BooleanModal'
+import MemberInitials from '../common/MemberInitials'
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -223,10 +224,7 @@ class ListOfTasks extends BaseComponent {
 			      </div>
 
 			      <div className="columns shrink">
-			        {task.assignedTo ?
-			          <span data-open={"edit-assign-to-" + task.taskId} className="member-initials circle medium">{task.assignedTo.firstName.substr(0,1)} {task.assignedTo.lastName.substr(0,1)}</span> :
-								<span data-open={"edit-assign-to-" + task.taskId} className="member-initials circle medium">?</span>
-			        }
+		          <MemberInitials member={task.assignedTo}/>
 			      </div>
 
 			      <div className="columns shrink align-right">

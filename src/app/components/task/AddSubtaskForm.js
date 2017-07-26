@@ -3,6 +3,7 @@ import { Field, reduxForm, formValueSelector, actions, stopSubmit } from 'redux-
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
+import BasicField from '../common/BasicField';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 
 class AddSubtaskForm extends React.Component{
@@ -11,14 +12,19 @@ class AddSubtaskForm extends React.Component{
 		super(props)
 		this.state = {
 				description: '',
-        assignedToId: '',
-        patientId: ''
+        assignedTo: '',
+        patient: ''
 		}
 	}
 
   handleDescriptionChange = (e) => {
     //builds the subtask in the state
     this.setState({description: e.target.value});
+  }
+
+  handlePatientChange = (e) => {
+    //builds the subtask in the state
+    this.setState({patient: e.target.value});
   }
 
   componentDidMount () {
@@ -77,13 +83,17 @@ class AddSubtaskForm extends React.Component{
           </div> */}
 
           {/* ADD PATIENT */}
-          <div className="column large-12 input-group">
+          <Field onChange={(e) => this.handlePatientChange(e)} id="add-patient-subtask" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
+          <Field id="add-patient-subtask-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
+
+          {/* ADD PATIENT */}
+          {/* <div className="column large-12 input-group">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
             <div className="input-wrapper form-floating-label">
               <input id="add-patient-subtask" className="add-patient input-group-field" type="text"/>
               <label>Add Patient</label>
             </div>
-          </div>
+          </div> */}
 
           {/* ASSIGNED TO */}
           <div className="column large-12 input-group">

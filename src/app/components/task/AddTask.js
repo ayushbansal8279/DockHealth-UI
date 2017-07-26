@@ -40,6 +40,7 @@ class AddTask extends React.Component {
   	componentWillUpdate (nextProps) {
 			if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
 				enableAutoCompleteForPatients(nextProps.patients);
+				enableAutoCompleteForSubtaskPatients(nextProps.patients);
 			}
 			if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
 				enableAutoCompleteForAssignedTo(nextProps.members);
@@ -93,30 +94,28 @@ class AddTask extends React.Component {
 	submit = (form) => {
 		debugger;
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
-		this.props.formActions.destroy('addTaskForm')
+		this.props.formActions.reset('addTaskForm')
 		// form["subtasks"] = this.state.subtasks
 		console.log(form)
 		// console.log(this.state.subtasks)
-		if(form.subtasks){
-			form.patientId = $("#add-patient-id").val();
-			form.assignedToId = $("#assign-task-to-id").val();
-			form.taskListId = $("#taskListId").val();
-			this.props.taskActions.saveTask(form);
 
-			// print the form values to the console
-			console.log(form)
-			$('.add').toggleClass('close');
-			$('body').toggleClass('disable-header-scroll');
-			if($(this).hasClass('add-list')) {
-				$('.add-list use').attr('href', function(index, attr) {
-					return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-				});
-			}
-			$('.add-form-wrapper').slideToggle(300);
-			$('.list-filter .controls, .list-wrapper').toggle();
-		}else{
-			console.log(form)
+		form.patientId = $("#add-patient-id").val();
+		form.assignedToId = $("#assign-task-to-id").val();
+		// form.taskListId = $("#taskListId").val();
+		this.props.taskActions.saveTask(form);
+
+		// print the form values to the console
+		console.log(form)
+		$('.add').toggleClass('close');
+		$('body').toggleClass('disable-header-scroll');
+		if($(this).hasClass('add-list')) {
+			$('.add-list use').attr('href', function(index, attr) {
+				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+			});
 		}
+		$('.add-form-wrapper').slideToggle(300);
+		$('.list-filter .controls, .list-wrapper').toggle();
+
 	}
 
     render() {

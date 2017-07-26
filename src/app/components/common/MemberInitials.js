@@ -6,8 +6,8 @@ class MemberInitials extends React.Component{
     return(
       <span>
         {this.props.member ?
-          <span className="member-initials circle medium">{this.props.member.initials}</span> :
-          <span className="member-initials circle medium">?</span>
+          <span className="member-initials circle medium" data-tooltip tabIndex="2" title={this.props.member.userName}>{this.props.member.initials}</span> :
+          <span className="member-initials circle medium" data-tooltip tabIndex="2" title="unassigned">?</span>
         }
       </span>
     )
