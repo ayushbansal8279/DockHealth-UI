@@ -35,11 +35,11 @@ export function getListTasks(taskListId, sortBy){
   }
 }
 
-export function getTasksAssignedToMe(taskListId) {
+export function getTasksAssignedToMe(taskListId, sortBy) {
   return function(dispatch) {
-    return TaskApi.getTasksAssignedToMe(taskListId, "INCOMPLETE").then(tasks => {
+    return TaskApi.getTasksAssignedToMe(taskListId, "INCOMPLETE", sortBy).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks)).then(
-        TaskApi.getTasksAssignedToMe(taskListId, "COMPLETE").then(tasks => {
+        TaskApi.getTasksAssignedToMe(taskListId, "COMPLETE", sortBy).then(tasks => {
           dispatch(getCompletedTasksSuccess(tasks));
         })
       )
@@ -49,11 +49,11 @@ export function getTasksAssignedToMe(taskListId) {
   }
 }
 
-export function getTasksAssignedByMe(taskListId){
+export function getTasksAssignedByMe(taskListId, sortBy){
   return function(dispatch){
-    return TaskApi.getTasksAssignedByMe(taskListId, "INCOMPLETE").then(tasks => {
+    return TaskApi.getTasksAssignedByMe(taskListId, "INCOMPLETE", sortBy).then(tasks => {
       dispatch(getListTasksByUserSuccess(tasks)).then(
-        TaskApi.getTasksAssignedByMe(taskListId, "COMPLETE").then(tasks => {
+        TaskApi.getTasksAssignedByMe(taskListId, "COMPLETE", sortBy).then(tasks => {
           dispatch(getCompletedTasksSuccess(tasks));
         })
       )

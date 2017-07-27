@@ -57,8 +57,9 @@ class HeaderTasks extends BaseComponent {
     }else if(this.props.title == "Inbox") {
       this.props.taskActions.getInboxTasks(sortBy)
     }else if(this.props.title == "Assigned by me"){
-    }else if(this.props.title == "Assigned by me"){
-
+      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy)
+    }else if(this.props.title == "Assigned to me"){
+      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy)
     }
   }
 

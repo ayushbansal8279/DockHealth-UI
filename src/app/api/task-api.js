@@ -29,31 +29,59 @@ export function getListTasksByUser(taskListId, status, sortBy){
   }
 }
 
-export function getTasksAssignedToMe(taskListId, status) {
+export function getTasksAssignedToMe(taskListId, status, sortBy) {
   if(taskListId != undefined){
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status)
-    .then(response => {
-      return response.data;
-    });
+    if(sortBy != undefined){
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy)
+      .then(response => {
+        return response.data;
+      });
+    }else{
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status)
+      .then(response => {
+        return response.data;
+      });
+    }
   }else{
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status)
-    .then(response => {
-      return response.data;
-    });
+    if(sortBy != undefined){
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status+'&sortBy='+sortBy)
+      .then(response => {
+        return response.data;
+      });
+    }else{
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status)
+      .then(response => {
+        return response.data;
+      });
+    }
   }
 }
 
-export function getTasksAssignedByMe(taskListId, status){
+export function getTasksAssignedByMe(taskListId, status, sortBy){
   if(taskListId != undefined){
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status)
-    .then(response => {
-      return response.data;
-    });
+    if(sortBy != undefined){
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy)
+      .then(response => {
+        return response.data;
+      });
+    }else{
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status)
+      .then(response => {
+        return response.data;
+      });
+    }
   }else{
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status)
-    .then(response => {
-      return response.data;
-    });
+    if(sortBy != undefined){
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status+'&sortBy='+sortBy)
+      .then(response => {
+        return response.data;
+      });
+    }else{
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status)
+      .then(response => {
+        return response.data;
+      });
+    }
   }
 }
 
