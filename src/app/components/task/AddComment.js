@@ -67,7 +67,7 @@ class AddComment extends BaseComponent {
     return (
       <div className="row expanded collapse comment-wrapper">
         <div className="columns shrink">
-          <img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>
+          <img className="member-photo circle xsmall" src={this.props.userProfilePic} alt="name of user"/>
         </div>
         <div className="columns" data-add-comment>
           <span className="comment-button comment text-light">Add a comment...</span>

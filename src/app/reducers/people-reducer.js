@@ -34,7 +34,15 @@ const PeopleReducer = function(state = initialState, action) {
       // return {...state, users: {[action.userId]:{"user":action.user, "image":"url"}}}
       return {...state}
 
-
+    case types.GET_USER_AVATAR_SUCCESS:
+      return {
+        ...state,
+        peoplelist: state.peoplelist.map(user =>
+          user === action.user ?
+            { ...user, avatar: action.avatar } :
+          user
+        )
+      }
 
   }
 

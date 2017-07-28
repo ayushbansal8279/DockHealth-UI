@@ -223,7 +223,7 @@ class ListOfTasks extends BaseComponent {
 			        </div>
 			      </div>
 
-			      <div className="columns shrink">
+			      <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}>
 		          <MemberInitials member={task.assignedTo}/>
 			      </div>
 
@@ -271,7 +271,7 @@ class ListOfTasks extends BaseComponent {
 										</div>
 									</div>
 								}
-								<AddComment task={task}/>
+								<AddComment task={task} userProfilePic={this.props.userProfilePic}/>
 							</div>
 			      </div>
 

@@ -6,6 +6,7 @@ import * as PeopleActions from '../../actions/people-actions';
 import {Link} from 'react-router';
 import SearchInput, {createFilter} from 'react-search-input'
 import BooleanModal from '../common/BooleanModal'
+import MemberInitials from '../common/MemberInitials'
 
 class PeopleContainer extends BaseComponent {
     constructor(props) {
@@ -202,7 +203,8 @@ class PeopleContainer extends BaseComponent {
            <div className="item row expanded" key={person.email}>
              <div className="columns shrink pending">
              {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
-              <span className="member-initials circle">{person.initials}</span>
+              {/* <span className="member-initials circle">{person.initials}</span> */}
+              <MemberInitials member={person}/>
              </div>
              <div className="columns">
                <span className="item-title">{person.firstName + " " + person.lastName}</span>

@@ -1,13 +1,25 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import {bindActionCreators} from 'redux';
+import * as PeopleActions from '../../actions/people-actions'
 
-class MemberInitials extends React.Component{
+class MemberInitials extends React.Component {
+
+  componentDidMount(){
+    // if(this.props.member){
+    //   var member = this.props.member
+    //   if(!this.props.member.avatar){
+        // this.props.peopleActions.getUserAvatar(this.props.member)
+    //   }
+    // }
+  }
 
   render(){
     return(
       <span>
-        {this.props.member ?
-          <span className="member-initials circle medium" data-tooltip tabIndex="2" title={this.props.member.userName}>{this.props.member.initials}</span> :
-          <span className="member-initials circle medium" data-tooltip tabIndex="2" title="unassigned">?</span>
+        {this.props.member && this.props.member.profileThumbnailPictureHash ?
+          <img className="member-photo circle" src={"http://localhost:8080/heydoc-services/user/profilePicture/"+this.props.member.userId+"/"+this.props.member.profileThumbnailPictureHash} alt="name of user"/> :
+          <span className="member-initials circle" data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"}>{this.props.member ? this.props.member.initials : "?"}</span>
         }
       </span>
     )
@@ -15,4 +27,10 @@ class MemberInitials extends React.Component{
 
 }
 
-export default MemberInitials
+function mapDispatchToProps(dispatch) {
+  return {
+	  peopleActions: bindActionCreators(PeopleActions, dispatch)
+  }
+}
+
+export default connect(undefined, mapDispatchToProps)(MemberInitials)

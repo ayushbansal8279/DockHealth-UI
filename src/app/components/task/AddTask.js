@@ -30,6 +30,7 @@ class AddTask extends BaseComponent {
   	componentDidMount () {
     	console.log("mounted AddTask component")
 			this.props.peopleActions.findAllUsersByOrganizationId();
+			// this.props.peopleActions.getUserAvatar(this.props.member)
 		// PatientApi.getAllPatients().then(allPatients => {
 		// 	enableAutoComplete(allPatients);
     	// }).catch(error => {
