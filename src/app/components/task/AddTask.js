@@ -45,6 +45,7 @@ class AddTask extends BaseComponent {
 			}
 			if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
 				enableAutoCompleteForAssignedTo(nextProps.members);
+				enableAutoCompleteForSubtaskAssignedTo(nextProps.members);
 			}
   	}
 

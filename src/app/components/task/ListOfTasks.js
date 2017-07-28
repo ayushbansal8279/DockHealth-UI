@@ -120,7 +120,7 @@ class ListOfTasks extends BaseComponent {
 
 		updateDescription = (task, event) => {
 			if(task.description != event.target.value){
-				this.props.updateTaskDescription(task.taskId, event.target.value)
+				this.props.updateTaskDescription(task, event.target.value)
 			}
 		}
 

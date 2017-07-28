@@ -196,7 +196,7 @@ function enableAutoCompleteForSubtaskPatients(lookupData) {
 		}
 	};
 
-	$(".add-patient").easyAutocomplete(patients);
+	$(".add-patient-subtask").easyAutocomplete(patients);
 }
 
 function enableAutoCompleteForAssignedTo(lookupData) {
@@ -225,6 +225,35 @@ function enableAutoCompleteForAssignedTo(lookupData) {
 	};
 
 	$("#assign-task-to").easyAutocomplete(people);
+
+}
+
+function enableAutoCompleteForSubtaskAssignedTo(lookupData) {
+	var people = {
+		data: lookupData,
+		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
+		list: {
+			onLoadEvent: function() {
+			},
+			onSelectItemEvent: function() {
+				var selItemData = $("#assign-subtask-to").getSelectedItemData();
+				$("#assign-subtask-to").val(selItemData.firstName + " " + selItemData.lastName);
+				$("#assign-subtask-to-id").val(selItemData.userId);
+			},
+			match: {enabled: true}
+		},
+		template: { type: "custom",
+			method: function(value, item) {
+				return ""
+					//+ "<span class='member-initials circle medium'>"+item.initials+"</span>"
+					+ "<span class='data-item'>"
+					+ item.firstName + " " + item.lastName
+					+ "</span>";
+			}
+		}
+	};
+
+	$("#assign-subtask-to").easyAutocomplete(people);
 
 }
 
@@ -330,6 +359,13 @@ $(document).ready(function() {
 		}
 	});
 
+	$(document).on('click', '.search', function() {
+		$(".search-field").toggleClass("expand-search");
+		$(".search-field").focus();
+		$(this).find('use').attr('href', function (index, attr) {
+			return attr == '#icon-close' ? '#icon-search' : '#icon-close';
+		});
+	});
 
 	// add subtasks
 	$(document).on('click', '.toggle-add-subtask', function() {
@@ -368,13 +404,7 @@ $(document).ready(function() {
 // 	$('.list-filter .controls').toggle();
 // });
 
-	$(document).on('click', '.search', function() {
-		$(".search-field").toggleClass("expand-search");
-		$(".search-field").focus();
-		$(this).find('use').attr('href', function (index, attr) {
-			return attr == '#icon-close' ? '#icon-search' : '#icon-close';
-		});
-	});
+
 
 
 });

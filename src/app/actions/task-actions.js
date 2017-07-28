@@ -174,10 +174,10 @@ export function markComplete(task, status, listName) {
   }
 }
 
-export function updateTaskDescription(taskId, description){
+export function updateTaskDescription(task, description){
   return function(dispatch){
-    return TaskApi.updateTaskDescription(taskId, description).then(res => {
-      dispatch({type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS, taskId, description:description});
+    return TaskApi.updateTaskDescription(task, description).then(res => {
+      dispatch({type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS, task, description:description});
     }).catch(error => {
       throw(error);
     })

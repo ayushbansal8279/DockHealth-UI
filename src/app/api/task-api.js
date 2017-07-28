@@ -128,10 +128,10 @@ export function markIncomplete(task){
   });
 }
 
-export function updateTaskDescription(taskId, description){
+export function updateTaskDescription(task, description){
   // userId = sessionStorage.userId
   // return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'')
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+taskId, {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+task.taskId, {
     description: description
   })
   .then(response => {

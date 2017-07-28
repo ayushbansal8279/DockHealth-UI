@@ -81,9 +81,11 @@ class AddTaskForm extends BaseComponent {
     if(index !== ""){
       debugger;
       subtaskValues.taskId = this.props.currentSubtasks[index].taskId
-      this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
-      this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
-
+      this.props.formActions.change('addTaskForm', `subtasks[${index}]`, subtaskValues)
+      // this.props.formActions.subtasks[index] = subtaskValues
+      // this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
+      // this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
+      // var currentSubtasks = this.props.currentSubtasks
       debugger;
     }else{
       debugger;
@@ -94,9 +96,22 @@ class AddTaskForm extends BaseComponent {
   }
 
   initializeSubtaskForm = (index) => {
-    this.setState({currentSubtaskIndex: index})
-    this.props.formActions.initialize('addSubtaskForm', this.props.currentSubtasks[index], true)
     debugger;
+    this.setState({currentSubtaskIndex: index})
+    var task = this.props.currentSubtasks[index]
+
+    // Checks if task came from an object (task.patient.firstName) or has been edited (task.patient = full name)
+    if(task.patient && task.patient.firstName){
+      task.patient = task.patient.firstName + " " + task.patient.lastName
+    }
+    this.props.formActions.initialize('addSubtaskForm', task, true)
+    // $('#add-patient-subtask').val(this.props.currentSubtasks[index].patient.firstName)
+    var patient = this.props.currentSubtasks[index]
+    debugger;
+  }
+
+  resetSubtaskForm = () => {
+    this.props.formActions.reset('addSubtaskForm')
   }
 
   // submitSubtask = (addSubtaskForm) => {
@@ -260,9 +275,13 @@ class AddTaskForm extends BaseComponent {
         </div> */}
 
         <div className="row expanded">
-          <div className="columns highlight center-content-vertical toggle-add-subtask link">
-            <svg className="icon hide"><use xlinkHref="#icon-subtask"></use></svg>+ Add a subtask
-          </div>
+          {!this.props.currentTask.parentTaskId ?
+            <div onClick={(e) => this.resetSubtaskForm()} className="columns highlight center-content-vertical toggle-add-subtask link">
+              <svg className="icon hide"><use xlinkHref="#icon-subtask"></use></svg>+ Add a subtask
+            </div> :
+            <div className="columns center-content-vertical">
+            </div>
+          }
 
           {/* SAVE */}
           <div className="columns shrink align-right">
@@ -280,6 +299,8 @@ class AddTaskForm extends BaseComponent {
         addSubtaskValues={this.addSubtaskValues}
         currentSubtasks={this.props.currentSubtasks}
         currentSubtaskIndex={this.state.currentSubtaskIndex}
+        title={this.props.title}
+        currentTask={this.props.currentTask}
       />
     </form>
   )
