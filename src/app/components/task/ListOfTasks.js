@@ -239,7 +239,21 @@ class ListOfTasks extends BaseComponent {
 				        <span className="task-details text-light">unassigned</span>
 							}
 			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
-			        {/* EMAIL */}
+			        {task.type == "EMAIL" &&
+							<div className="row collapse email-wrapper">
+								<div className="columns shrink">
+									<svg className="icon"><use xlinkHref="#icon-email"></use></svg>
+								</div>
+								<div className="columns">
+									<div className="email-container">
+										<p>
+											<pre className="emailMessage">{task.sourceMessage}</pre>
+										</p>
+										<span className="expand-content circle xsmall"><svg className="icon"><use xlinkHref="#icon-slim"></use></svg></span>
+									</div>
+								</div>
+							</div>
+							}
 							<div className="comments-container">
 								{/* {commentNodes} */}
 								{task.comments ?

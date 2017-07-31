@@ -155,6 +155,6 @@ input:checked ~ .switch-paddle:after {
   list-style-type: none;
 }
 
-/*#priority[type="checkbox"] {
-    display: none;
-}*/
+pre.emailMessage {
+  white-space: pre-wrap;
+}
