@@ -154,3 +154,7 @@ input:checked ~ .switch-paddle:after {
 .react-autosuggest__suggestions-list {
   list-style-type: none;
 }
+
+pre.emailMessage {
+  white-space: pre-wrap;
+}
