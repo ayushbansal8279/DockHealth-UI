@@ -60,7 +60,9 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
 }
 
 export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId, invitedUsers)
+  var multiUserInvitation = {};
+  multiUserInvitation.invitedUsers = invitedUsers;
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId, multiUserInvitation)
     .then(response => {
       return response.data;
     });
