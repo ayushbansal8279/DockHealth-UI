@@ -25,6 +25,7 @@ export function saveTaskList(formProps) {
     return function(dispatch) {
       return TaskListApi.updateTaskList(formProps).then(updatedTasklist => {
         dispatch({type: ActionTypes.UPDATE_TASKLIST_SUCCESS, updatedTasklist});
+        toggleAlert("TaskList updated successfully!")
       }).catch(error => {
         throw(error);
       });
@@ -33,6 +34,7 @@ export function saveTaskList(formProps) {
     return function(dispatch) {
       return TaskListApi.addTaskList(formProps).then(tasklist => {
         dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
+        toggleAlert("TaskList created successfully!")
       }).catch(error => {
         //console.log(error.message);
         throw(error);
@@ -73,6 +75,7 @@ export function invitePersonToTaskList(formProps,taskListId) {
   return function(dispatch) {
     return TaskListApi.invitePersonToTaskList(taskListId,personInfo).then(res => {
       dispatch({type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, res});
+      toggleAlert("Invitation sent!")
     }).catch(error => {
       //console.log(error.message);
       throw(error);
@@ -96,6 +99,7 @@ export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
   return function(dispatch) {
     return TaskListApi.inviteMultipleUsersToTaskList(tasklistId,invitedUsers).then(res => {
       dispatch({type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS, res});
+      toggleAlert("Invitations sent!")
     }).catch(error => {
       //console.log(error.message);
       throw(error);
@@ -140,6 +144,7 @@ export function deleteTaskListById(taskListId) {
   return function(dispatch) {
     return TaskListApi.deleteTaskListById(taskListId).then(res => {
       dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res, taskListId});
+      toggleAlert("TaskList deleted")
     }).catch(error => {
       throw(error);
     });
@@ -151,6 +156,7 @@ export function removeUserFromList(taskListId,removedUser) {
   return function(dispatch) {
     return TaskListApi.removeUserFromList(taskListId,removedUser.userId).then(res => {
       dispatch({type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS, res, removedUser});
+      toggleAlert("User removed successfully")
     }).catch(error => {
       throw(error);
     });

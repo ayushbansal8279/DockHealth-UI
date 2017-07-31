@@ -52,6 +52,8 @@ class AddSubtaskForm extends BaseComponent{
   // }
 
   saveSubtaskValues = () => {
+    $('.subtask-wrapper').slideToggle(300);
+    $('.main-task-wrapper').slideToggle(300);
     console.log(this.state)
     // var patientId = $('#add-patient-subtask-id').val()
     // this.setState({patientId:patientId})
@@ -160,7 +162,7 @@ class AddSubtaskForm extends BaseComponent{
 
           {/* SAVE */}
           <div className="column large-12 text-right">
-            <input onClick={this.saveSubtaskValues} type="button" className="button secondary" value="Save"/>
+            <input className="toggle-add-subtask" onClick={this.saveSubtaskValues} type="button" className="button secondary" value="Save"/>
           </div>
         </div>
       </form>

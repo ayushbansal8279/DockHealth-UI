@@ -8,6 +8,7 @@ import AddListForm from '../components/list/AddListForm'
 import ListsComponent from '../components/list/ListsComponent'
 import PendingListsComponent from '../components/list/PendingListsComponent'
 import {mobileAnalyticsClient} from '../api/analytics-api'
+import { Link } from 'react-router'
 
 class TaskListView extends React.Component {
 
@@ -109,7 +110,7 @@ class TaskListView extends React.Component {
                           <span className="circle xxsmall transparent"></span>
                         </div>
                         <div className="columns">
-                          <h6 className="">{list.listName}</h6>
+                          <Link to={"/tasks/"+list.listName}><h6 className="">{list.listName}</h6></Link>
                         </div>
                         <div className="columns shrink">
                           <h6 className="">{list.numberOfTasks}</h6>

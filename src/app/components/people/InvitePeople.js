@@ -70,7 +70,7 @@ class InvitePeople extends BaseComponent {
                 </div>*/}
 
                 {/* Email name */}
-                <Field name='email' type='text' component={BasicField} label='Email' placeholder='required'/>
+                <Field name='email' type='email' component={BasicField} label='Email' placeholder='required'/>
                 {/*<div className="column large-12 input-group no-icon">
                   <div className="form-floating-label input-wrapper">
                     <input className="input-group-field" type="text"/>

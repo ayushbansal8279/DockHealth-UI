@@ -43,7 +43,7 @@ const UserRegistrationForm = (props) => {
 			<div className="row expanded">
         <Field name='firstName' type='text' component={AuthField} label='First name' />
         <Field name='lastName' type='text' component={AuthField} label='Last name' />
-        <Field name='username' type='text' component={AuthField} label='Email' />
+        <Field name='username' type='email' component={AuthField} label='Email' />
         <Field name='phoneNumber' type='tel' component={AuthField} label='Your mobile phone #' pattern='\d{10}'/>
         <Field name='password' type='password' component={AuthField} label='Password' />
         <Field name='password2' type='password' component={AuthField} label='Confirm password' />

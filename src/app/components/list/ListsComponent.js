@@ -24,9 +24,11 @@ class ListsComponent extends BaseComponent{
                   <Link to={"/tasks/"+taskList.listName+"/"+taskList.taskListId}><h6 className="">{taskList.listName}</h6></Link>
                   <span className="details">{taskList.creator.userName}</span>
                 </div>
-              {/* <div className="columns shrink">
-                <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title="3 high priority tasks"><svg className="icon medium flag"><use xlinkHref="#icon-flag"></use></svg></span>
-              </div> */}
+                {taskList.numberOfHighPriorityTasks > 0 &&
+                  <div className="columns shrink">
+                    <span data-tooltip aria-haspopup="true" data-disable-hover="false" tabIndex="2" title={taskList.numberOfHighPriorityTasks + " high priority tasks"}><svg className="icon medium flag"><use xlinkHref="#icon-flag"></use></svg></span>
+                  </div>
+                }
               <div data-tooltip tabIndex="2" title="tasks assigned to me" className="columns shrink align-right">
                 <h6>{taskList.numberOfTasks}</h6>
               </div>
