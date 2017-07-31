@@ -518,7 +518,7 @@ export function getAllTitles() {
 }
 
 export function performHealthCheck() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'v2/echo')
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'healthcheck/echo')
     .then(response => {
         //console.log("ALL OK")
     }).catch(error => {
