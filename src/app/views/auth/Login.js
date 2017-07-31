@@ -39,7 +39,7 @@ export default class Login extends React.Component {
             sessionStorage.removeItem('healthCheckIntervalId');
           }
 
-          performHealthCheck() //after AWS login, simply verify server health check, before starting health check timer
+          //performHealthCheck() //after AWS login, simply verify server health check, before starting health check timer
           var healthCheckInterval= parseInt(process.env.HEALTHCHECK_INTERVAL);
           var healthCheckIntervalId = setInterval(performHealthCheck,healthCheckInterval)
           sessionStorage.setItem('healthCheckIntervalId', healthCheckIntervalId);
