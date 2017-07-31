@@ -104,6 +104,11 @@ class AddTaskForm extends BaseComponent {
     if(task.patient && task.patient.firstName){
       task.patient = task.patient.firstName + " " + task.patient.lastName
     }
+    if(task.priority == "HIGH"){
+      task.priority = true
+    }else{
+      task.priority = false
+    }
     this.props.formActions.initialize('addSubtaskForm', task, true)
     // $('#add-patient-subtask').val(this.props.currentSubtasks[index].patient.firstName)
     var patient = this.props.currentSubtasks[index]
@@ -113,76 +118,6 @@ class AddTaskForm extends BaseComponent {
   resetSubtaskForm = () => {
     this.props.formActions.reset('addSubtaskForm')
   }
-
-  // submitSubtask = (addSubtaskForm) => {
-  //   debugger;
-  //   var key
-  //   var curSubtaskId = this.state.currentSubtaskIndex
-  //   console.log(this.props.subtasks)
-  //   console.log(this.state.currentSubtaskIndex == null)
-  //   console.log(this.state.currentSubtaskIndex !== "")
-  //   if(this.state.currentSubtaskIndex !== ""){
-  //     key = this.state.currentSubtaskIndex
-  //   }else{
-  //     var key = this.state.subtaskIndex
-  //   }
-  //   var val = addSubtaskForm
-  //   var obj = this.props.subtasks
-  //   this.props.subtasks[key] = val
-  //   obj[key] = val
-  //   this.setState(obj)
-  //   this.setState({subtaskIndex:this.props.subtasks.length})
-  //   this.setState({currentSubtaskIndex:""})
-  //   // this.setState({subtasks: this.props.subtasks.concat(
-  //   //   [addSubtaskForm]
-  //   // )})
-  //   console.log(this.state.subtasks)
-  // }
-
-  // submitSubtask = (subtask) => {
-  //   debugger;
-  //   this.props.addSubtaskToState(subtask)
-  //   // this.setState({subtasks: this.props.subtasks.concat(
-  //   //   [addSubtaskForm]
-  //   // )})
-  //   // console.log(this.state.subtasks)
-  // }
-
-
-  // setCurrentSubtask = (index) => {
-  //   this.setState({currentSubtaskIndex:index})
-  //   // this.props.clearSubtasks()
-  //   var currentSubtask = this.props.subtasks[index]
-  //   debugger;
-  //   this.setState({currentSubtask:this.props.subtasks[index]})
-  //   // if(this.props.currentTask){
-  //   //   this.setState({currentSubtask:this.props.currentTask.subtasks[index]}),
-  //   //   this.props.setSubtasks(this.props.currentTask.subtasks)
-  //   //   // this.setState({subtaskType:"new"})
-  //   // }else(
-  //   //   this.setState({currentSubtask:this.props.subtasks[index]}),
-  //   //   this.props.setSubtasks(this.props.subtasks)
-  //   //   // this.setState({subtaskType:"edit"})
-  //   // )
-  // }
-
-  // addSubtask = (subtask) => {
-  //   // Add subtask form values to subtask here
-  //   subtask.taskId = this.state.currentSubtask.taskId
-  //   if(this.state.currentSubtaskIndex !== ""){
-  //     // this.setState({subtasks:this.state.subtasks.concat(subtask)})
-  //     var key = this.state.currentSubtaskIndex
-  //     var val = subtask
-  //     var obj = this.props.subtasks
-  //     this.props.subtasks[key] = val
-  //     obj[key] = val
-  //   }else{
-  //     this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtask)
-  //   }
-  //   this.setState({currentSubtaskIndex:""})
-  //   this.setState({currentSubtask:""})
-  // }
-
 
   render() {
     const renderSubtaskField = ({ fields, meta: { error } }) => (
@@ -207,7 +142,7 @@ class AddTaskForm extends BaseComponent {
         </div>
 
         {/* Task */}
-        <Field name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
+        <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
         {/* ADD PATIENT */}
@@ -259,6 +194,32 @@ class AddTaskForm extends BaseComponent {
           <span></span>
         }
 
+        <div className="column top-buffer large-12">
+					<div className="row">
+						<div className="column">
+							<span className="item-title">High Priority {this.props.priority}</span>
+							<p className="text-light">Toggle task priority to high or low</p>
+						</div>
+						<div className="column shrink">
+							<div className="switch">
+								<Field className="switch-input" id="exampleSwitch" type="checkbox" name="priority" component="input"/>
+								<label className="switch-paddle" htmlFor="exampleSwitch">
+									<span className="show-for-sr">Download Kittens</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+        {/* <p>Priority</p>
+        <div className="switch">
+          <input className="switch-input" id="exampleSwitch" type="checkbox" name="exampleSwitch"/>
+          <label className="switch-paddle" htmlFor="exampleSwitch">
+            <span className="show-for-sr">Download Kittens</span>
+          </label>
+        </div> */}
+
         <FieldArray name="subtasks" component={renderSubtaskField}/>
 
         {/* {this.props.subtasks.map((subtask, index) => {
@@ -275,7 +236,7 @@ class AddTaskForm extends BaseComponent {
         </div> */}
 
         <div className="row expanded">
-          {!this.props.currentTask.parentTaskId ?
+          {!this.props.currentTask || !this.props.currentTask.parentTaskId ?
             <div onClick={(e) => this.resetSubtaskForm()} className="columns highlight center-content-vertical toggle-add-subtask link">
               <svg className="icon hide"><use xlinkHref="#icon-subtask"></use></svg>+ Add a subtask
             </div> :
@@ -342,6 +303,14 @@ const mapStateToProps = function(store) {
     if(editTask.subtasks){
       initialTaskFormValues.subtasks = editTask.subtasks;
     }
+    if(editTask.priority){
+      if(editTask.priority == "HIGH"){
+        initialTaskFormValues.priority = true;
+      }else{
+        initialTaskFormValues.priority = false;
+      }
+
+    }
 
 		//TODO - handle assigned tasklist
 	}
@@ -350,7 +319,8 @@ const mapStateToProps = function(store) {
     tasks: store.taskState.tasks,
     taskListSelection: selector(store, 'taskListId'),
     currentTask: store.taskState.task,
-    currentSubtasks: selector(store, 'subtasks')
+    currentSubtasks: selector(store, 'subtasks'),
+    priority: selector(store, 'priority')
   }
 };
 

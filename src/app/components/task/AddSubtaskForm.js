@@ -18,7 +18,8 @@ class AddSubtaskForm extends BaseComponent{
         patient: '',
         patientId: '',
         assignedTo: '',
-        assignedToId: ''
+        assignedToId: '',
+        priority: 'false'
 		}
     this.baseState = this.state
 	}
@@ -60,6 +61,11 @@ class AddSubtaskForm extends BaseComponent{
     subtask.patient = $('#add-patient-subtask').val()
     subtask.assignedToId = $('#assign-subtask-to-id').val()
     subtask.assignedTo = $('#assign-subtask-to').val()
+    if(subtask.priority){
+      subtask.priority = "HIGH"
+    }else{
+      subtask.priority = "LOW"
+    }
     this.props.addSubtaskValues(subtask, this.props.currentSubtaskIndex)
     this.props.formActions.destroy('addSubtaskForm')
     this.props.formActions.reset('addSubtaskForm')
@@ -86,11 +92,11 @@ class AddSubtaskForm extends BaseComponent{
 
           {/* Main task title */}
           <div className="column large-12 input-group has-value">
-            <span className="task-title">{"Task: " + this.props.currentTask.description}</span>
+            <span className="task-title">{"Task: " + (this.props.currentTask && this.props.currentTask.description)}</span>
           </div>
 
           {/* Task */}
-          <Field id="description-subtask" onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
+          <Field id="description-subtask" onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
           <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
           {/* Task */}
@@ -125,6 +131,23 @@ class AddSubtaskForm extends BaseComponent{
             :
             <span></span>
           }
+
+          <div className="column top-buffer large-12">
+            <div className="row">
+              <div className="column">
+                <span className="item-title">High Priority</span>
+                <p className="text-light">Toggle task priority to high or low</p>
+              </div>
+              <div className="column shrink">
+                <div className="switch">
+                  <Field className="switch-input" id="subtaskSwitch" type="checkbox" name="priority" component="input"/>
+                  <label className="switch-paddle" htmlFor="subtaskSwitch">
+                    <span className="show-for-sr">Download Kittens</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* ASSIGNED TO */}
           {/* <div className="column large-12 input-group">

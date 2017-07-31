@@ -98,12 +98,17 @@ class AddTask extends BaseComponent {
 		debugger;
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
-		// form["subtasks"] = this.state.subtasks
-		console.log(form)
 		// console.log(this.state.subtasks)
+		// form.subtasks = this.state.subtasks
+		console.log(form)
 
 		form.patientId = $("#add-patient-id").val();
 		form.assignedToId = $("#assign-task-to-id").val();
+		if(form.priority == true){
+			form.priority = "HIGH"
+		}else{
+			form.priority = "LOW"
+		}
 		// form.taskListId = $("#taskListId").val();
 		this.props.taskActions.saveTask(form);
 

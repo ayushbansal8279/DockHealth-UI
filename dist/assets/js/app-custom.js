@@ -389,6 +389,12 @@ $(document).ready(function() {
 	//	$('.list-filter .controls').toggle();
 	});
 
+	// toggle high priority flag
+	$(document).on("click", ".task-item .flag", function () {
+		$(this).toggleClass("no-flag");
+		debugger;
+	});
+
 	// show/hide add task/list form
 // $(document).on('click', '.add, .edit-task', function() {
 // 	$('.add').toggleClass('close');

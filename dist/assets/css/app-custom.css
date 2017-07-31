@@ -154,3 +154,7 @@ input:checked ~ .switch-paddle:after {
 .react-autosuggest__suggestions-list {
   list-style-type: none;
 }
+
+/*#priority[type="checkbox"] {
+    display: none;
+}*/
