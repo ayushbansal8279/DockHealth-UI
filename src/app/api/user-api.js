@@ -516,3 +516,18 @@ export function getAllTitles() {
       return response.data;
     });
 }
+
+export function performHealthCheck() {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'v2/echo')
+    .then(response => {
+        //console.log("ALL OK")
+    }).catch(error => {
+      //console.log(error) //Network Error
+      //console.log(error.status) //undefined
+      //console.log(error.response) //undefined
+      if(error.response == undefined || error.response == null){// this means network error
+          //console.log("NOT OK")
+          throw error;
+      }
+    });
+}

@@ -75,6 +75,7 @@ export default (
       <Route path="/tasks/:listName" component={Home}/>
       <Route path="/userprofile" component={UserProfileView} />
       <Route path="/test" component={Test} />
+
     </Route>
     <Route component={TemplateAuth} >
       <Route component={TemplateAuthBase}>
@@ -86,7 +87,9 @@ export default (
         <Route path="/changePassword" component={ChangePassword} />
         <Route path="/resetPassword" component={ResetPassword} />
         <Route path="/confirmMFACode" component={ConfirmMFACode} />
+        <Route path="/pagenotfound" component={PageNotFound} />
       </Route>
+
       <Route path="/register" component={Register} />
     </Route>
   </Route>

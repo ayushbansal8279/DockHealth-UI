@@ -18,7 +18,8 @@ const exposed = [
   'SYSTEM_TIMEOUT',
   'AWS_COGNITO_IDENTITYPOOLID',
   'AWS_MOBILEANALYTICS_APPID',
-  'AWS_MOBILEANALYTICS_APPTITLE'
+  'AWS_MOBILEANALYTICS_APPTITLE',
+  'HEALTHCHECK_INTERVAL'
 ]
 const exposedEnvironment = {}
 exposed.forEach(i => { exposedEnvironment[i] = JSON.stringify(process.env[i]) })
