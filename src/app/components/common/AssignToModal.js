@@ -1,5 +1,6 @@
 import React from 'react';
 import BaseComponent from '../BaseComponent'
+import MemberInitials from './MemberInitials'
 
 //let AddTaskForm = props => {
 class AssignToModal extends React.Component {
@@ -18,7 +19,8 @@ class AssignToModal extends React.Component {
             return(
               <div onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
-                  <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/>
+                  <MemberInitials member={member}/>
+                  {/* <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/> */}
                 </div>
                 <div className="columns">
                   <span className="item-content">{member.userName}</span>
