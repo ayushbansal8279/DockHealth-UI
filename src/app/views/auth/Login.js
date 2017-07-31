@@ -25,8 +25,6 @@ export default class Login extends React.Component {
   onSubmit (form) {
     return userApi.login(form.username, form.password)
       .then(data => {
-
-        userApi.performHealthCheck()
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             'LOGIN_SUCCESS': 'YES'
         });
