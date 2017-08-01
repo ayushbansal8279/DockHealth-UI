@@ -141,6 +141,7 @@ class HeaderTasks extends BaseComponent {
 								</div>
 
 								<div className="columns shrink icon-group controls">
+                  <svg className="icon"><use xlinkHref="#icon-activity"></use></svg>
                   {this.props.taskListId &&
   									<span onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
                   }
