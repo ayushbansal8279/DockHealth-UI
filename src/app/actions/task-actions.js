@@ -164,7 +164,7 @@ export function markComplete(task, status, listName) {
     if(status == "INCOMPLETE"){
       return TaskApi.markComplete(task).then(res => { // check for response value to be success
         dispatch({type: action, task, status:"COMPLETE"});
-        toggleAlert("Task status updated successfully!")
+        toggleAlert("Task completed. Great job!")
         }).catch(error => {
         throw(error);
       });

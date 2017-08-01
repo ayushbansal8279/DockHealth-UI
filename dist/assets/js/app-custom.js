@@ -294,6 +294,18 @@ function toggleDropDown(elementId) {
 	$("#"+elementId).foundation('toggle');
 }
 
+function toggleTaskForm(){
+  $('.add').toggleClass('close');
+  $('body').toggleClass('disable-header-scroll');
+  if($(this).hasClass('add-list')) {
+    $('.add-list use').attr('href', function(index, attr) {
+      return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+    });
+  }
+  $('.add-form-wrapper').slideToggle(300);
+  $('.list-filter .controls').toggle();
+}
+
 $(document).ready(function() {
 
 	// make text editable
@@ -327,18 +339,17 @@ $(document).ready(function() {
 	});
 
 	// show/hide add task/list form
-	function editForm() {
-		$('.add').toggleClass('close');
-		$('body').toggleClass('disable-header-scroll');
-		if($(this).hasClass('add-list')) {
-			$('.add-list use').attr('href', function(index, attr) {
-				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-			});
-		}
-		$('.add-form-wrapper').slideToggle(300);
-		$('.list-filter .controls, .list-wrapper').toggle();
-	//	$('.list-filter .controls').toggle();
-	};
+	// function editForm() {
+	// 	$('.add').toggleClass('close');
+	// 	$('body').toggleClass('disable-header-scroll');
+	// 	if($(this).hasClass('add-list')) {
+	// 		$('.add-list use').attr('href', function(index, attr) {
+	// 			return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+	// 		});
+	// 	}
+	// 	$('.add-form-wrapper').slideToggle(300);
+	// 	$('.list-filter .controls, .list-wrapper').toggle();
+	// };
 
 
 	$(document).foundation();
@@ -385,7 +396,8 @@ $(document).ready(function() {
 			});
 		}
 		$('.add-form-wrapper').slideToggle(300);
-		$('.list-filter .controls, .list-wrapper').toggle();
+		$('.list-filter .controls').toggle();
+		// $('.list-filter .controls, .list-wrapper').toggle();
 	//	$('.list-filter .controls').toggle();
 	});
 

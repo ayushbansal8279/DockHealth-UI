@@ -1,7 +1,6 @@
 import React from 'react'
 
 let ToggleTaskForm = function(){
-  alert("working")
   $('.add').toggleClass('close');
   $('body').toggleClass('disable-header-scroll');
   if($(this).hasClass('add-list')) {
