@@ -158,3 +158,8 @@ input:checked ~ .switch-paddle:after {
 pre.emailMessage {
   white-space: pre-wrap;
 }
+
+#errorPage{
+  text-align: center;
+  margin-top:50px;
+}

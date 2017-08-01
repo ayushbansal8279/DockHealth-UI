@@ -34,6 +34,11 @@ class TemplateCore extends React.Component {
   }
 
   componentDidMount () {
+    var bH = browserHistory
+    if(this.props.user && !this.props.user.organizationId){
+      alert(this.props.user.organizationId)
+      hashHistory.push('/errorPage');
+    }
     this.props.taskListActions.getTaskListForUser()
     // this.renderFoundationComponents();
   }
