@@ -64,7 +64,8 @@ class Home extends BaseComponent {
     }else if(listName == "Assigned to me"){
       this.props.actions.getTasksAssignedToMe()
     }else{
-      this.props.actions.getListTasks(this.props.routeParams.taskListId)
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "INCOMPLETE")
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
       this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
     }
 
@@ -108,7 +109,8 @@ class Home extends BaseComponent {
       }else if(listName == "Assigned to me"){
         this.props.actions.getTasksAssignedToMe()
       }else if(listName != null){
-        this.props.actions.getListTasks(nextProps.routeParams.taskListId)
+        this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "INCOMPLETE")
+this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "COMPLETE")
         this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ACTIVE")
       }
     }

@@ -25,10 +25,16 @@ function getCompletedTasksSuccess(tasks){
 
 
 
-export function getListTasks(taskListId, sortBy){
+export function getListTasks(taskListId, sortBy, status){
+  var action
+  if(status == "INCOMPLETE"){
+    action = ActionTypes.GET_TASKS_SUCCESS;
+  }else{
+    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+  }
   return function(dispatch){
-    return TaskApi.getListTasksByUser(taskListId, "INCOMPLETE", sortBy).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks));
+    return TaskApi.getListTasksByUser(taskListId, status, sortBy).then(tasks => {
+      dispatch({type: action, tasks});
     }).catch(error => {
       throw(error);
     })

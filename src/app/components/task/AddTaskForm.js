@@ -79,16 +79,13 @@ class AddTaskForm extends BaseComponent {
   addSubtaskValues = (subtaskValues, index) => {
     this.setState({currentSubtaskIndex:""})
     if(index !== ""){
-      debugger;
       subtaskValues.taskId = this.props.currentSubtasks[index].taskId
       this.props.formActions.change('addTaskForm', `subtasks[${index}]`, subtaskValues)
       // this.props.formActions.subtasks[index] = subtaskValues
       // this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
       // this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
       // var currentSubtasks = this.props.currentSubtasks
-      debugger;
     }else{
-      debugger;
       subtaskValues.taskId = ""
       this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
     }
@@ -96,7 +93,6 @@ class AddTaskForm extends BaseComponent {
   }
 
   initializeSubtaskForm = (index) => {
-    debugger;
     this.setState({currentSubtaskIndex: index})
     var task = this.props.currentSubtasks[index]
 
@@ -112,7 +108,6 @@ class AddTaskForm extends BaseComponent {
     this.props.formActions.initialize('addSubtaskForm', task, true)
     // $('#add-patient-subtask').val(this.props.currentSubtasks[index].patient.firstName)
     var patient = this.props.currentSubtasks[index]
-    debugger;
   }
 
   resetSubtaskForm = () => {

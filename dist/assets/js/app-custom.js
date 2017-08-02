@@ -334,7 +334,7 @@ $(document).ready(function() {
 	// });
 
 	$("#addComment").click(function(){
-			alert("working")
+			// alert("working")
 			// $("p").toggleClass("main");
 	});
 
@@ -404,8 +404,11 @@ $(document).ready(function() {
 	// toggle high priority flag
 	$(document).on("click", ".task-item .flag", function () {
 		$(this).toggleClass("no-flag");
-		debugger;
 	});
+
+	$(document).on('click', '.close-button, .close, .confirm', function() {
+		$('.reveal-overlay').hide();
+	})
 
 	// show/hide add task/list form
 // $(document).on('click', '.add, .edit-task', function() {

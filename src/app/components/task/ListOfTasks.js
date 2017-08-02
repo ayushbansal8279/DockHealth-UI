@@ -80,7 +80,6 @@ class ListOfTasks extends BaseComponent {
 
   	handleDeleteTask(task){
   		this.props.deleteTask(task)
-			debugger;
   	}
 
   	handleToggleTaskPriority(task, userId, priority){

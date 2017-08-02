@@ -22,7 +22,7 @@ export function error (message, stay) {
   alert(message);
   return notification(message, 'error', stay)
 }
- 
+
 export function hide (message, stay) {
   return notification(message, 'hide', stay)
 }

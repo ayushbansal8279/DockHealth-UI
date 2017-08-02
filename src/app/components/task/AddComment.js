@@ -51,7 +51,6 @@ class AddComment extends BaseComponent {
   }
 
   onSubmit(formProps){
-    alert("Working")
     var commentField = "comment"+ this.props.task.taskId
     var commentFieldVal = formProps[commentField]
     var comment = {comment:commentFieldVal}
@@ -59,9 +58,7 @@ class AddComment extends BaseComponent {
     this.props.taskActions.addTaskComment(this.props.task, comment)
     this.props.formActions.reset('AddComment')
     this.setState({addComment: false})
-    // $('.comment-button').show();
-    // $('.add-comment').hide();
-    // $('.save-comment').hide();
+
   }
 
   closeCommentBox = () => {
