@@ -8,10 +8,10 @@ import BooleanModal from '../common/BooleanModal'
 class ListsComponent extends BaseComponent{
 
   render(){
-    const taskList = this.props.taskList
+    const taskLists = this.props.taskLists
     return(
       <span>
-        {this.props.taskLists.map(taskList => {
+        {taskLists.map(taskList => {
           return(
             <div key={"taskList" + taskList.taskListId} className="item row expanded align-middle">
                 <div className="columns shrink">

@@ -57,12 +57,14 @@ class Home extends BaseComponent {
   componentDidMount(){
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
-      this.props.actions.getInboxTasks()
-
+      this.props.actions.getInboxTasks("COMPLETE")
+      this.props.actions.getInboxTasks("INCOMPLETE")
     }else if(listName == "Assigned by me"){
-      this.props.actions.getTasksAssignedByMe()
+      this.props.actions.getTasksAssignedByMe(undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedByMe(undefined, "INCOMPLETE")
     }else if(listName == "Assigned to me"){
-      this.props.actions.getTasksAssignedToMe()
+      this.props.actions.getTasksAssignedToMe(undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedToMe(undefined, "INCOMPLETE")
     }else{
       this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "INCOMPLETE")
       this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
@@ -103,14 +105,17 @@ class Home extends BaseComponent {
     if(nextProps.routeParams.listName != this.props.routeParams.listName){
       var listName = nextProps.routeParams.listName
       if(!listName || listName == "Inbox"){
-        this.props.actions.getInboxTasks()
+        this.props.actions.getInboxTasks("COMPLETE")
+        this.props.actions.getInboxTasks("INCOMPLETE")
       }else if(listName == "Assigned by me"){
-        this.props.actions.getTasksAssignedByMe()
+        this.props.actions.getTasksAssignedByMe(undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedByMe(undefined, "INCOMPLETE")
       }else if(listName == "Assigned to me"){
-        this.props.actions.getTasksAssignedToMe()
+        this.props.actions.getTasksAssignedToMe(undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedToMe(undefined, "INCOMPLETE")
       }else if(listName != null){
         this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "INCOMPLETE")
-this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "COMPLETE")
+        this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "COMPLETE")
         this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ACTIVE")
       }
     }

@@ -2,10 +2,12 @@ import React from 'react'
 import BaseComponent from '../BaseComponent'
 
 class PendingListsComponent extends BaseComponent{
+
   render(){
+    const taskLists = this.props.taskLists
     return(
       <span>
-        {this.props.taskLists.map(taskList => {
+        {taskLists.map(taskList => {
           return(
             <div key={"pendingTaskList" + taskList.taskListId} className="item row expanded align-middle">
               <div className="columns shrink">

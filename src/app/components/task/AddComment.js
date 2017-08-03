@@ -59,6 +59,9 @@ class AddComment extends BaseComponent {
     this.props.formActions.reset('AddComment')
     this.setState({addComment: false})
 
+    $('.comment-button').show();
+    $('.add-comment').hide();
+    $('.save-comment').hide();
   }
 
   closeCommentBox = () => {

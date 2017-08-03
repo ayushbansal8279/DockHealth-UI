@@ -16,9 +16,12 @@ class TaskListView extends React.Component {
       // this.props.taskListAction.getTaskListForUser()
       this.props.invitationAction.findPendingTaskListsForUser()
       this.props.taskListAction.getGenericListCounts()
+      this.props.taskListAction.getTaskListForUser()
+      debugger;
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 							'PageName': 'Lists'
-			});
+      })
+
     }
 
     submit = (form) => {
@@ -62,6 +65,7 @@ class TaskListView extends React.Component {
     }
 
     render() {
+      // const taskLists = this.props.taskLists;
       return (
 
         <div className="off-canvas-content" data-off-canvas-content>

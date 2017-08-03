@@ -41,28 +41,32 @@ export function getListTasks(taskListId, sortBy, status){
   }
 }
 
-export function getTasksAssignedToMe(taskListId, sortBy) {
+export function getTasksAssignedToMe(taskListId, sortBy, status) {
+  var action
+  if(status == "INCOMPLETE"){
+    action = ActionTypes.GET_TASKS_SUCCESS;
+  }else{
+    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+  }
   return function(dispatch) {
-    return TaskApi.getTasksAssignedToMe(taskListId, "INCOMPLETE", sortBy).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks)).then(
-        TaskApi.getTasksAssignedToMe(taskListId, "COMPLETE", sortBy).then(tasks => {
-          dispatch(getCompletedTasksSuccess(tasks));
-        })
-      )
+    return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy).then(tasks => {
+      dispatch({type: action, tasks});
     }).catch(error => {
       throw(error);
     })
   }
 }
 
-export function getTasksAssignedByMe(taskListId, sortBy){
+export function getTasksAssignedByMe(taskListId, sortBy, status){
+  var action
+  if(status == "INCOMPLETE"){
+    action = ActionTypes.GET_TASKS_SUCCESS;
+  }else{
+    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+  }
   return function(dispatch){
-    return TaskApi.getTasksAssignedByMe(taskListId, "INCOMPLETE", sortBy).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks)).then(
-        TaskApi.getTasksAssignedByMe(taskListId, "COMPLETE", sortBy).then(tasks => {
-          dispatch(getCompletedTasksSuccess(tasks));
-        })
-      )
+    return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy).then(tasks => {
+      dispatch({type: action, tasks});
     }).catch(error => {
       throw(error);
     })
@@ -151,7 +155,7 @@ export function deleteTask(task) {
   return function(dispatch) {
     return TaskApi.deleteTask(task.taskId).then(deletingTask => {
       dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, task});
-      toggleAlert("Task deleted")
+      toggleAlert("Task deleted", "success")
     }).catch(error => {
       throw(error);
     });
@@ -244,24 +248,16 @@ export function getListTasksByPatient(patientId, taskListId){
 }
 
 
-export function getInboxTasks(sortBy){
-  return function(dispatch){
-    return TaskApi.getInboxTasks("INCOMPLETE", sortBy).then(tasks => {
-      dispatch(getIncompleteTasksSuccess(tasks)).then(
-        TaskApi.getInboxTasks("COMPLETE", sortBy).then(tasks => {
-          dispatch(getCompletedTasksSuccess(tasks));
-        })
-      )
-    }).catch(error => {
-      throw(error);
-    })
+export function getInboxTasks(status, sortBy){
+  var action
+  if(status == "INCOMPLETE"){
+    action = ActionTypes.GET_TASKS_SUCCESS;
+  }else{
+    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
   }
-}
-
-function getCompletedInboxTasks(){
   return function(dispatch){
-    return TaskApi.getInboxTasks("COMPLETE").then(tasks => {
-      dispatch(getCompletedTasksSuccess(tasks));
+    return TaskApi.getInboxTasks(status, sortBy).then(tasks => {
+      dispatch({type: action, tasks});
     }).catch(error => {
       throw(error);
     })

@@ -82,7 +82,7 @@ class HeaderTasks extends BaseComponent {
 
 						<div className="top-bar">
               <div className="new-task text-center">
-                <span className="number-new-tasks"></span>
+                <span className="number-new-tasks success"></span>
               </div>
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
