@@ -63,14 +63,6 @@ class HeaderTasks extends BaseComponent {
     }
   }
 
-  notification = () => {
-    toggleAlert()
-    // $('.new-task').addClass('show');
-    // setTimeout(function () {
-    //   $('.new-task').removeClass('show');
-    // }, 5000);
-  }
-
   toggleListNotifications = () => {
     this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
   }
@@ -82,7 +74,7 @@ class HeaderTasks extends BaseComponent {
 
 						<div className="top-bar">
               <div className="new-task text-center">
-                <span className="number-new-tasks success"></span>
+                <span className="number-new-tasks"></span>
               </div>
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>

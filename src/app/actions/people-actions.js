@@ -21,7 +21,7 @@ export function invitePersonToOrganization(formProps ){
     return function(dispatch) {
       return PeopleApi.invitePersonToOrganization(personInfo).then(res => {
         dispatch({type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res});
-        toggleAlert("Invitation sent!")
+        toggleAlert("Invitation sent!", "success")
       }).catch(error => {
         //console.log(error.message);
         throw(error);
