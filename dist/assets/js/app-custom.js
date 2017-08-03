@@ -410,6 +410,22 @@ $(document).ready(function() {
 		$('.reveal-overlay').hide();
 	})
 
+	function toggleTaskForm(){
+		$('.add').toggleClass('close');
+		$('body').toggleClass('disable-header-scroll');
+		if($(this).hasClass('add-list')) {
+			$('.add-list use').attr('href', function(index, attr) {
+				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+			});
+		}
+		$('.add-form-wrapper').slideToggle(300);
+		$('.list-filter .controls').toggle();
+	}
+
+	// $(document).on('click', 'div', function () {
+	// 	loading();
+	// });
+
 	// show/hide add task/list form
 // $(document).on('click', '.add, .edit-task', function() {
 // 	$('.add').toggleClass('close');

@@ -35,6 +35,9 @@ export function getListTasks(taskListId, sortBy, status){
   return function(dispatch){
     return TaskApi.getListTasksByUser(taskListId, status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
+      if(status == "INCOMPLETE"){
+        loading()
+      }
     }).catch(error => {
       throw(error);
     })
@@ -51,6 +54,9 @@ export function getTasksAssignedToMe(taskListId, sortBy, status) {
   return function(dispatch) {
     return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
+      if(status == "INCOMPLETE"){
+        loading()
+      }
     }).catch(error => {
       throw(error);
     })
@@ -67,6 +73,9 @@ export function getTasksAssignedByMe(taskListId, sortBy, status){
   return function(dispatch){
     return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
+      if(status == "INCOMPLETE"){
+        loading()
+      }
     }).catch(error => {
       throw(error);
     })
@@ -144,7 +153,7 @@ export function addTaskComment(task, taskComment) {
   return function(dispatch) {
     return TaskApi.addComment(task.taskId, taskComment).then(comment => {
       dispatch({type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, task, comment});
-      toggleAlert("Comment added successfully!", "error")
+      toggleAlert("Comment added successfully!", "success")
     }).catch(error => {
       throw(error);
     });
@@ -258,6 +267,9 @@ export function getInboxTasks(status, sortBy){
   return function(dispatch){
     return TaskApi.getInboxTasks(status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
+      if(status == "INCOMPLETE"){
+        loading()
+      }
     }).catch(error => {
       throw(error);
     })

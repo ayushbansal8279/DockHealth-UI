@@ -66,6 +66,16 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
   };
 }
 
+export function getActiveMembersByTaskListId(taskListId, memberStatus) {
+  return function(dispatch) {
+    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistactivemembers => {
+      dispatch({type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS, tasklistactivemembers});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
 export function invitePersonToTaskList(formProps,taskListId) {
   var personInfo = {email : formProps.email,
                   firstName:formProps.firstName,
@@ -118,17 +128,6 @@ export function getNonOrgUsersByTaskList(taskListId) {
     });
   };
 }
-
-export function getActiveMembersByTaskListId(taskListId, memberStatus) {
-  return function(dispatch) {
-    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistactivemembers => {
-      dispatch({type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS, tasklistactivemembers});
-    }).catch(error => {
-      throw(error);
-    });
-  };
-}
-
 
 export function changeUserRoleForList(tasklistId,markedUser,role) {
   return function(dispatch) {

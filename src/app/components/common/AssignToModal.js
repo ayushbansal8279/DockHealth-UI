@@ -5,17 +5,29 @@ import MemberInitials from './MemberInitials'
 //let AddTaskForm = props => {
 class AssignToModal extends React.Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+      members:[]
+    }
+  }
+
   componentDidMount(){
-    console.log("AssignToModal.js")
+    this.setState({members:this.props.members})
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.members != this.props.members){
+      this.setState({members:nextProps.members})
+    }
   }
 
   render() {
     return (
       <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal="">
-        {/* <h5>{this.props.taskListId}</h5> */}
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
-          {this.props.members.map(member=>{
+          {this.state.members.map(member=>{
             return(
               <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
