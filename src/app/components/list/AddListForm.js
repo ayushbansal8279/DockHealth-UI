@@ -6,6 +6,7 @@ import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
 import MemberInitials from '../common/MemberInitials'
 import BasicField from '../common/BasicField';
 import * as TaskListActions from '../../actions/tasklist-actions';
+import * as PeopleActions from '../../actions/people-actions';
 import Autosuggest from 'react-autosuggest';
 import $ from 'jquery'
 
@@ -27,6 +28,32 @@ class AddListForm extends BaseComponentWithAutoComplete {
       this.renderSuggestion = this.renderSuggestion.bind(this)
       this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this)
       this.renderInputComponent = this.renderInputComponent.bind(this)
+  }
+
+	componentDidMount(){
+    this.props.peopleActions.findAllUsersByOrganizationId();
+  }
+
+  componentWillReceiveProps(nextProps){
+    console.log('componentWillReceiveProps taskListId: '+nextProps.taskListId);
+    if(this.props.taskListId != nextProps.taskListId){
+      this.setState({
+        selectedAdmins: [],
+        selectedMembers: []
+      });
+    }
+    if(nextProps.taskListId > 0){
+      if(nextProps.initialValues.adminUsers){
+        this.setState({
+          selectedAdmins: nextProps.initialValues.adminUsers
+        });
+      }
+      if(nextProps.initialValues.memberUsers){
+        this.setState({
+          selectedMembers: nextProps.initialValues.memberUsers
+        });
+      }
+    }
   }
 
 	getSuggestions = value => {
@@ -92,12 +119,25 @@ class AddListForm extends BaseComponentWithAutoComplete {
     // this.sendInvitations (selectedAdmins)
 
     var taskList = {};
+    taskList.taskListId = this.props.taskListId
     taskList.listName = formProps.listName
     taskList.notifications = formProps.notifications
-    taskList.admins = this.state.selectedAdmins
-    taskList.members = this.state.selectedMembers
+    taskList.admins = []
+    if(this.state.selectedAdmins.length > 0){
+      var k = 0;
+      for (k in this.state.selectedAdmins){
+        taskList.admins.push(this.state.selectedAdmins[k].userId);
+      }
+    }
+    taskList.members = []
+    if(this.state.selectedMembers.length > 0){
+      var k = 0;
+      for (k in this.state.selectedMembers){
+        taskList.members.push(this.state.selectedMembers[k].userId);
+      }
+    }
     
-    this.props.taskListActions.saveTaskList(formProps)
+    this.props.taskListActions.saveTaskList(taskList)
     .then((res)=>{
       this.setState({saveResultMessage: 'List saved successfully!!'});
     })
@@ -106,7 +146,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
     })
 
   }
-
+  
+/*
   sendInvitations (selectedMembers) {
     if(selectedMembers.length > 0){
 			var inviteUsers =  [];
@@ -123,11 +164,12 @@ class AddListForm extends BaseComponentWithAutoComplete {
     }
 
   }
+*/
 
   render(){
-
+    
 		const { selectedSuggestion, selectedSuggestionForAdmin, selectedSuggestionForMember, suggestions } = this.state;
-
+  
 		// Autosuggest will pass through all these props to the input.
     const inputPropsForAdmins = {
 			placeholder: 'Add a new admin',
@@ -268,13 +310,16 @@ AddListForm = reduxForm({
 
 const mapStateToProps = function(store){
   var initialTaskListValues = {}
+  var taskListId = 0
   if(store.taskListState.tasklistone){
     initialTaskListValues = store.taskListState.tasklistone
+    taskListId = store.taskListState.tasklistone.taskListId
   }
   return{
     initialValues: initialTaskListValues,
     currentUserProfile: store.userState.userProfile,
-		peoplelist: store.peopleState.peoplelist
+		peoplelist: store.peopleState.peoplelist,
+    taskListId: taskListId
   }
   // var initialValues = {}
   // if(this.props.taskList){
@@ -288,7 +333,8 @@ const mapStateToProps = function(store){
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    taskListActions: bindActionCreators(TaskListActions, dispatch)
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    peopleActions: bindActionCreators(PeopleActions, dispatch)
   }
 }
 

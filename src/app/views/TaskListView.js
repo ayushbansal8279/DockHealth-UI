@@ -11,6 +11,10 @@ import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class TaskListView extends React.Component {
 
+  constructor(props) {
+      super(props)
+  }
+
     componentDidMount(){
       // this.props.taskListAction.getTaskListForUser()
       this.props.invitationAction.findPendingTaskListsForUser()
@@ -24,15 +28,16 @@ class TaskListView extends React.Component {
       this.props.taskListAction.saveTaskList(form)
       // print the form values to the console
       console.log(form)
-      $('.add').toggleClass('close');
-      $('body').toggleClass('disable-header-scroll');
-      if($(this).hasClass('add-list')) {
-        $('.add-list use').attr('href', function(index, attr) {
-          return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-        });
-      }
-      $('.add-form-wrapper').slideToggle(300);
-      $('.list-filter .controls, .list-wrapper').toggle();
+      $('.add').click();
+      // $('.add').toggleClass('close');
+      // $('body').toggleClass('disable-header-scroll');
+      // if($(this).hasClass('add-list')) {
+      //   $('.add-list use').attr('href', function(index, attr) {
+      //     return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+      //   });
+      // }
+      // $('.add-form-wrapper').slideToggle(300);
+      // $('.list-filter .controls, .list-wrapper').toggle();
     }
 
     addTaskList = () => {
@@ -40,16 +45,18 @@ class TaskListView extends React.Component {
     }
 
     editTaskList = (taskList) => {
+      console.log("editTaskList: "+taskList.taskListId)
       this.props.taskListAction.setTaskListAsTasklistone(taskList)
-      $('.add').toggleClass('close');
-      $('body').toggleClass('disable-header-scroll');
-      if($(this).hasClass('add-list')) {
-        $('.add-list use').attr('href', function(index, attr) {
-          return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-        });
-      }
-      $('.add-form-wrapper').slideToggle(300);
-      $('.list-filter .controls, .list-wrapper').toggle();
+      $('.add').click();
+      // $('.add').toggleClass('close');
+      // $('body').toggleClass('disable-header-scroll');
+      // if($(this).hasClass('add-list')) {
+      //   $('.add-list use').attr('href', function(index, attr) {
+      //     return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+      //   });
+      // }
+      // $('.add-form-wrapper').slideToggle(300);
+      // $('.list-filter .controls, .list-wrapper').toggle();
     }
 
     deleteList = (taskListId) => {
@@ -95,7 +102,7 @@ class TaskListView extends React.Component {
         			</header>{/* <!--slideUp--> */}
 
               <AddListForm onSubmit={this.submit}/>
-
+              
         			<div className="list-wrapper">
         				<div className="item-list-wrapper">
 
