@@ -1,68 +1,6 @@
 function renderFoundationComponentsJquery(){
 	console.log('in JS function: renderFoundationComponentsJquery');
 
-	// add task form assign to
-	// var people = {
-	// 	data: [ {img: "assets/img/user1.png", name: "Terry Tucker"},
-	// 	{img: "assets/img/user2.png", name: "Cynthia Fowler"},
-	// 	{img: "assets/img/user3.png", name: "Edward Wong"},
-	// 	{img: "assets/img/user1.png", name: "Louis Kim"},
-	// 	{img: "assets/img/user2.png", name: "Jesse Murray"},
-	// 	{img: "assets/img/user1.png", name: "Maria Hamilton"}
-	// 	],
-	// 		getValue: "name",
-	// 		list: {match: {enabled: true}},
-	// 		template: { type: "custom",
-	// 					method: function(value, item) {
-	// 						return "<img class='member-photo circle medium data-item' src='" + item.img + "'/><span class='data-item'>" + item.name + "</span>";
-	// 					}
-	// 				}
-	// };
-
-	// $(".assign-to").easyAutocomplete(people);
-
-	//more task options
-	//$('.more-options-wrapper').hover(function() {
-	// 	$(this).children('.more-task-options').toggleClass('slide-in');
-	// 	$(this).children('.ellipses').toggleClass('slide-out');
-	// });
-	/*
-	$(document).on('mouseenter', '.more-options-wrapper', function() {
-		$(this).children('.more-task-options').addClass('slide-in');
-		$(this).children('.ellipses').addClass('slide-out');
-	});
-	$(document).on('mouseleave', '.more-options-wrapper', function() {
-		$(this).children('.more-task-options').removeClass('slide-in');
-		$(this).children('.ellipses').removeClass('slide-out');
-	});
-	*/
-
-	// $("#appHome").on('click', '.more-options-wrapper', function() {
-	// 	$(this).children('.more-task-options').toggleClass('slide-in');
-	// 	$(this).children('.ellipses').toggleClass('slide-out');
-	// });
-/*
-	// add subtasks
-	$('.add-form').on('click', '.toggle-add-subtask', function() {
-		$('.subtask-wrapper').slideToggle(300);
-		$('.main-task-wrapper').slideToggle(300);
-	});
-
-	// show/hide add task/list form
-	$('.add, .edit-task').on('click', function(event) {
-		$('.add').toggleClass('close');
-		$('body').toggleClass('disable-header-scroll');
-		if($(this).hasClass('add-list')) {
-			$('.add-list use').attr('href', function(index, attr) {
-				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-			});
-		}
-		$('.add-form-wrapper').slideToggle(300);
-		$('.list-filter .controls, .list-wrapper').toggle();
-	//	$('.list-filter .controls').toggle();
-	});
-*/
-
 	// datepicker
 	$('.pickdate').fdatepicker({
 	});
@@ -421,6 +359,19 @@ $(document).ready(function() {
 		$('.add-form-wrapper').slideToggle(300);
 		$('.list-filter .controls').toggle();
 	}
+
+	$('document').on('click', '.show-add-subtask', function () {
+		$('.main-task-wrapper').hide();
+		$('.subtask-wrapper').slideDown(300);
+	});
+
+	// show/hide completed tasks
+	$('document').on('click', '.toggle-completed', function() {
+		$(this).toggleClass('inverse');
+		$('.completed-task-wrapper').slideToggle();
+		var $el = $(this);
+		$el.text($el.text() == "Show completed tasks" ? "Hide completed tasks": "Show completed tasks");
+	});
 
 	// $(document).on('click', 'div', function () {
 	// 	loading();

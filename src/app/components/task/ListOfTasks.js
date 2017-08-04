@@ -322,7 +322,7 @@ class ListOfTasks extends BaseComponent {
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
 										<li onClick={(e) => this.handleToggle("edit", task)} className="edit-task">Edit task</li>
 										{type != "subtask" &&
-											<li>Add subtask</li>
+											<li className="add show-add-subtask link">Add subtask</li>
 										}
 										<li data-open={"delete-task-"+task.taskId}>Delete task</li>
 									</ul>

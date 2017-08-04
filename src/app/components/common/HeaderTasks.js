@@ -67,6 +67,8 @@ class HeaderTasks extends BaseComponent {
     this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
   }
 
+
+
     render() {
     return (
       <div>

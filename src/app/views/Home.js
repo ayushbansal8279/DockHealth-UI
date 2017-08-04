@@ -74,14 +74,6 @@ class Home extends BaseComponent {
     }
 
     // PUT ME SOMEWHERE ELSE
-    // show/hide completed tasks
-    $('.toggle-completed').click(function() {
-      $(this).toggleClass('inverse');
-      $('.completed-task-wrapper').slideToggle();
-      var $el = $(this);
-      $el.text($el.text() == "Show completed tasks" ? "Hide completed tasks": "Show completed tasks");
-    });
-
     // toggle slim view
     $('.toggle-slim').click(function() {
         if($(this).hasClass('active')) {//true means slim mode off
@@ -119,6 +111,25 @@ class Home extends BaseComponent {
         this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ACTIVE")
       }
     }
+  }
+
+  refresh = () => {
+    var listName = this.props.routeParams.listName
+    if(!listName || listName == "Inbox"){
+      this.props.actions.getInboxTasks("COMPLETE")
+      this.props.actions.getInboxTasks("INCOMPLETE")
+    }else if(listName == "Assigned by me"){
+      this.props.actions.getTasksAssignedByMe(undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedByMe(undefined, undefined, "INCOMPLETE")
+    }else if(listName == "Assigned to me"){
+      this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
+    }else{
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "INCOMPLETE")
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
+      this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
+    }
+    this.props.patientActions.getAllPatients()
   }
 
   render() {
