@@ -21,7 +21,7 @@ export function setTaskListAsTasklistone(tasklistone){
 }
 
 export function saveTaskList(formProps) {
-  if(formProps.taskListId != null){
+  if(formProps.taskListId != null && formProps.taskListId > 0){
     return function(dispatch) {
       return TaskListApi.updateTaskList(formProps).then(updatedTasklist => {
         dispatch({type: ActionTypes.UPDATE_TASKLIST_SUCCESS, updatedTasklist});
