@@ -118,7 +118,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		};
 
 		return(
-			<div className="reveal" id="list-members" data-reveal> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
+			<div className="reveal" id="list-members" data-reveal=""> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
 				<h5 className="margin-bottom text-center">{this.props.title} List Members</h5>
 				<div className="scroll-wrapper">
 					{this.props.members.map(member => {
@@ -167,7 +167,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 					</div>
 					<div className="row collapse expanded align-middle">
 						<div className="columns text-center">
-							<button type="submit" className="button secondary medium">Invite</button>
+							<button data-close="" type="submit" className="button secondary medium">Invite</button>
 						</div>
 					</div>
 				</form>
@@ -176,7 +176,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 						{this.state.inviteUserResult}
 					</div>
 				</div>
-				<button className="close-button" data-close aria-label="Close modal" type="button">
+				<button className="close-button" data-close="" aria-label="Close modal" type="button">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>

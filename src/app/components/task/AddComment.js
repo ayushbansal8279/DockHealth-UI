@@ -1,5 +1,5 @@
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, actions } from 'redux-form'
 import { connect } from 'react-redux'
 import * as TaskActions from '../../actions/task-actions'
 import {bindActionCreators} from 'redux'
@@ -56,8 +56,16 @@ class AddComment extends BaseComponent {
     var comment = {comment:commentFieldVal}
 
     this.props.taskActions.addTaskComment(this.props.task, comment)
+    this.props.formActions.reset('AddComment')
     this.setState({addComment: false})
-    this.setState({value: ''})
+
+    $('.comment-button').show();
+    $('.add-comment').hide();
+    $('.save-comment').hide();
+  }
+
+  closeCommentBox = () => {
+    alert("not submitting")
     $('.comment-button').show();
     $('.add-comment').hide();
     $('.save-comment').hide();
@@ -72,7 +80,7 @@ class AddComment extends BaseComponent {
         <div className="columns" data-add-comment>
           <span className="comment-button comment text-light">Add a comment...</span>
           <form className="inline-label" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-            <Field className="add-comment comment" name={"comment" + this.props.task.taskId} component="textarea" value={this.state.value}/>
+            <Field className="add-comment comment" name={"comment" + this.props.task.taskId} component="textarea" value={this.state.value} />
             <button type="submit" className="save-comment button primary xsmall">Post</button>
           </form>
         </div>
@@ -107,7 +115,8 @@ return (
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    taskActions: bindActionCreators(TaskActions, dispatch)
+    taskActions: bindActionCreators(TaskActions, dispatch),
+    formActions: bindActionCreators(actions, dispatch)
   }
 }
 

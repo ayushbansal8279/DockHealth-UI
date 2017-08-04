@@ -95,7 +95,6 @@ class AddTask extends BaseComponent {
 	}
 
 	submit = (form) => {
-		debugger;
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
 		// console.log(this.state.subtasks)
@@ -114,16 +113,7 @@ class AddTask extends BaseComponent {
 
 		// print the form values to the console
 		console.log(form)
-		$('.add').toggleClass('close');
-		$('body').toggleClass('disable-header-scroll');
-		if($(this).hasClass('add-list')) {
-			$('.add-list use').attr('href', function(index, attr) {
-				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-			});
-		}
-		$('.add-form-wrapper').slideToggle(300);
-		$('.list-filter .controls, .list-wrapper').toggle();
-
+		toggleTaskForm()
 	}
 
     render() {

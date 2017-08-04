@@ -294,6 +294,18 @@ function toggleDropDown(elementId) {
 	$("#"+elementId).foundation('toggle');
 }
 
+function toggleTaskForm(){
+  $('.add').toggleClass('close');
+  $('body').toggleClass('disable-header-scroll');
+  if($(this).hasClass('add-list')) {
+    $('.add-list use').attr('href', function(index, attr) {
+      return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+    });
+  }
+  $('.add-form-wrapper').slideToggle(300);
+  $('.list-filter .controls').toggle();
+}
+
 $(document).ready(function() {
 
 	// make text editable
@@ -322,23 +334,22 @@ $(document).ready(function() {
 	// });
 
 	$("#addComment").click(function(){
-			alert("working")
+			// alert("working")
 			// $("p").toggleClass("main");
 	});
 
 	// show/hide add task/list form
-	function editForm() {
-		$('.add').toggleClass('close');
-		$('body').toggleClass('disable-header-scroll');
-		if($(this).hasClass('add-list')) {
-			$('.add-list use').attr('href', function(index, attr) {
-				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-			});
-		}
-		$('.add-form-wrapper').slideToggle(300);
-		$('.list-filter .controls, .list-wrapper').toggle();
-	//	$('.list-filter .controls').toggle();
-	};
+	// function editForm() {
+	// 	$('.add').toggleClass('close');
+	// 	$('body').toggleClass('disable-header-scroll');
+	// 	if($(this).hasClass('add-list')) {
+	// 		$('.add-list use').attr('href', function(index, attr) {
+	// 			return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+	// 		});
+	// 	}
+	// 	$('.add-form-wrapper').slideToggle(300);
+	// 	$('.list-filter .controls, .list-wrapper').toggle();
+	// };
 
 
 	$(document).foundation();
@@ -385,15 +396,35 @@ $(document).ready(function() {
 			});
 		}
 		$('.add-form-wrapper').slideToggle(300);
-		$('.list-filter .controls, .list-wrapper').toggle();
+		$('.list-filter .controls').toggle();
+		// $('.list-filter .controls, .list-wrapper').toggle();
 	//	$('.list-filter .controls').toggle();
 	});
 
 	// toggle high priority flag
 	$(document).on("click", ".task-item .flag", function () {
 		$(this).toggleClass("no-flag");
-		debugger;
 	});
+
+	$(document).on('click', '.close-button, .close, .confirm', function() {
+		$('.reveal-overlay').hide();
+	})
+
+	function toggleTaskForm(){
+		$('.add').toggleClass('close');
+		$('body').toggleClass('disable-header-scroll');
+		if($(this).hasClass('add-list')) {
+			$('.add-list use').attr('href', function(index, attr) {
+				return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
+			});
+		}
+		$('.add-form-wrapper').slideToggle(300);
+		$('.list-filter .controls').toggle();
+	}
+
+	// $(document).on('click', 'div', function () {
+	// 	loading();
+	// });
 
 	// show/hide add task/list form
 // $(document).on('click', '.add, .edit-task', function() {

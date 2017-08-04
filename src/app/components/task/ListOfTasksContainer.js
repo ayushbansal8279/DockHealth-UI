@@ -27,7 +27,7 @@ class ListOfTasksContainer extends BaseComponent {
     return (<ListOfTasks tasks={this.props.filteredTasks} deleteTask={this.props.actions.deleteTask} listName={this.props.status}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}
             toggleTaskPriority={this.props.actions.toggleTaskPriority}
-            assignOrReassignTask={this.props.actions.assignOrReassignTask}
+            // assignOrReassignTask={this.props.actions.assignOrReassignTask}
             addTaskComment={this.props.actions.addTaskComment}
             addPatientToTask={this.props.patientActions.addPatientToTask}
             markAsUnread={this.props.actions.markAsUnread}

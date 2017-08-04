@@ -42,7 +42,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
 							<div className="columns shrink">
 								{/* <MemberInitials /> */}
 								{/* <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/> */}
-								<MemberProfilePic userId={audit.createdBy}/>
+								<MemberInitials member={audit.user}/>
 							</div>
 							<div className="columns">
 								<span className="task-title">{audit.auditId + " " + audit.activityFeed}</span>

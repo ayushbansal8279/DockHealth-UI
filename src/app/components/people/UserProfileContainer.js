@@ -402,7 +402,8 @@ findObjectByKey(array, key, value) {
                     <input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
                     <label htmlFor="file">Upload photo</label>
                   </p>
-                  <p>Take photo</p>
+
+                  {/* <p>Take photo</p> */}
                   <button className="close-button" data-close aria-label="Close modal" type="button">
                     <span aria-hidden="true">&times;</span>
                   </button>

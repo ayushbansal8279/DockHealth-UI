@@ -40,20 +40,20 @@ class NavBar extends React.Component {
     // this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
 }
 
-unmountAddTaskForm = () => {
-  // show/hide add task/list form
-  	$('.add').toggleClass('close');
-  	$('body').toggleClass('disable-header-scroll');
-  	var href = $(this).attr('id');
-  	if($(this).hasClass('add-other')) {
-  		$('.add-other use').attr('href', function(index, attr) {
-  			return attr =='#icon-add' ? '#'+href : '#icon-add';
-  		});
-  	}
-  	$('.add-form-wrapper').slideToggle(300);
-  	//	$('.list-filter .controls, .list-wrapper').toggle();
-  	$('.list-filter .controls').toggle();
-}
+// unmountAddTaskForm = () => {
+//   // show/hide add task/list form
+//   	$('.add').toggleClass('close');
+//   	$('body').toggleClass('disable-header-scroll');
+//   	var href = $(this).attr('id');
+//   	if($(this).hasClass('add-other')) {
+//   		$('.add-other use').attr('href', function(index, attr) {
+//   			return attr =='#icon-add' ? '#'+href : '#icon-add';
+//   		});
+//   	}
+//   	$('.add-form-wrapper').slideToggle(300);
+// 		$('.list-filter .controls, .list-wrapper').toggle();
+//   	$('.list-filter .controls').toggle();
+// }
 
   // getTasksAssignedByMe(){
   //   this.props.taskActions.getTasksAssignedByMe()

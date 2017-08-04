@@ -16,12 +16,17 @@ export function getTasksForCreator(userId) {
 }
 
 export function getListTasksByUser(taskListId, status, sortBy){
+  if(status == "INCOMPLETE"){
+    loading()
+  }
   if(sortBy == undefined){
+    closeAddForm()
     return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0')
     .then(response => {
       return response.data;
     });
   }else{
+    closeAddForm()
     return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0&sortBy='+sortBy)
     .then(response => {
       return response.data;
@@ -30,13 +35,18 @@ export function getListTasksByUser(taskListId, status, sortBy){
 }
 
 export function getTasksAssignedToMe(taskListId, status, sortBy) {
+  if(status == "INCOMPLETE"){
+    loading()
+  }
   if(taskListId != undefined){
     if(sortBy != undefined){
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy)
       .then(response => {
         return response.data;
       });
     }else{
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status)
       .then(response => {
         return response.data;
@@ -44,11 +54,13 @@ export function getTasksAssignedToMe(taskListId, status, sortBy) {
     }
   }else{
     if(sortBy != undefined){
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status+'&sortBy='+sortBy)
       .then(response => {
         return response.data;
       });
     }else{
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status)
       .then(response => {
         return response.data;
@@ -58,13 +70,18 @@ export function getTasksAssignedToMe(taskListId, status, sortBy) {
 }
 
 export function getTasksAssignedByMe(taskListId, status, sortBy){
+  if(status == "INCOMPLETE"){
+    loading()
+  }
   if(taskListId != undefined){
     if(sortBy != undefined){
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy)
       .then(response => {
         return response.data;
       });
     }else{
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status)
       .then(response => {
         return response.data;
@@ -72,11 +89,13 @@ export function getTasksAssignedByMe(taskListId, status, sortBy){
     }
   }else{
     if(sortBy != undefined){
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status+'&sortBy='+sortBy)
       .then(response => {
         return response.data;
       });
     }else{
+      closeAddForm()
       return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status)
       .then(response => {
         return response.data;
@@ -194,7 +213,11 @@ export function getListTasksByPatient(patientId, status, taskListId){
 }
 
 export function getInboxTasks(status, sortBy){
+  if(status == "INCOMPLETE"){
+    loading()
+  }
   if(sortBy == undefined){
+    closeAddForm()
     return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0')
     .then(response => {
       return response.data;

@@ -20,6 +20,7 @@ export function findPendingTaskListsForUser() {
 export function addTaskList(tasklist) {
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/', tasklist)
     .then(response => {
+      toggleTaskForm()
       return response.data;
     });
 }
@@ -34,6 +35,7 @@ export function getTaskListById(taskListId) {
 export function updateTaskList(taskList) { //userId - make sure authorized user can only update the task list
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/', taskList)
     .then(response => {
+      toggleTaskForm()
       return response.data;
     });
 }

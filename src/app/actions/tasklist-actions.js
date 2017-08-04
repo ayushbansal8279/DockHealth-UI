@@ -25,6 +25,7 @@ export function saveTaskList(formProps) {
     return function(dispatch) {
       return TaskListApi.updateTaskList(formProps).then(updatedTasklist => {
         dispatch({type: ActionTypes.UPDATE_TASKLIST_SUCCESS, updatedTasklist});
+        toggleAlert("TaskList updated successfully!", "success")
       }).catch(error => {
         throw(error);
       });
@@ -33,6 +34,7 @@ export function saveTaskList(formProps) {
     return function(dispatch) {
       return TaskListApi.addTaskList(formProps).then(tasklist => {
         dispatch({type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist});
+        toggleAlert("TaskList created successfully!", "success")
       }).catch(error => {
         //console.log(error.message);
         throw(error);
@@ -64,6 +66,16 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
   };
 }
 
+export function getActiveMembersByTaskListId(taskListId, memberStatus) {
+  return function(dispatch) {
+    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistactivemembers => {
+      dispatch({type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS, tasklistactivemembers});
+    }).catch(error => {
+      throw(error);
+    });
+  };
+}
+
 export function invitePersonToTaskList(formProps,taskListId) {
   var personInfo = {email : formProps.email,
                   firstName:formProps.firstName,
@@ -73,6 +85,7 @@ export function invitePersonToTaskList(formProps,taskListId) {
   return function(dispatch) {
     return TaskListApi.invitePersonToTaskList(taskListId,personInfo).then(res => {
       dispatch({type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, res});
+      toggleAlert("Invitation sent!", "success")
     }).catch(error => {
       //console.log(error.message);
       throw(error);
@@ -96,6 +109,7 @@ export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
   return function(dispatch) {
     return TaskListApi.inviteMultipleUsersToTaskList(tasklistId,invitedUsers).then(res => {
       dispatch({type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS, res});
+      toggleAlert("Invitations sent!", "success")
     }).catch(error => {
       //console.log(error.message);
       throw(error);
@@ -115,17 +129,6 @@ export function getNonOrgUsersByTaskList(taskListId) {
   };
 }
 
-export function getActiveMembersByTaskListId(taskListId, memberStatus) {
-  return function(dispatch) {
-    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistactivemembers => {
-      dispatch({type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS, tasklistactivemembers});
-    }).catch(error => {
-      throw(error);
-    });
-  };
-}
-
-
 export function changeUserRoleForList(tasklistId,markedUser,role) {
   return function(dispatch) {
     return TaskListApi.changeUserRoleForList(tasklistId,markedUser.userId,role).then(res => {
@@ -140,6 +143,7 @@ export function deleteTaskListById(taskListId) {
   return function(dispatch) {
     return TaskListApi.deleteTaskListById(taskListId).then(res => {
       dispatch({type: ActionTypes.DELETE_TASKLIST_SUCCESS, res, taskListId});
+      toggleAlert("TaskList deleted", "success")
     }).catch(error => {
       throw(error);
     });
@@ -151,6 +155,7 @@ export function removeUserFromList(taskListId,removedUser) {
   return function(dispatch) {
     return TaskListApi.removeUserFromList(taskListId,removedUser.userId).then(res => {
       dispatch({type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS, res, removedUser});
+      toggleAlert("User removed successfully", "success")
     }).catch(error => {
       throw(error);
     });

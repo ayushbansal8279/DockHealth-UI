@@ -72,7 +72,7 @@ class FormPatient extends BaseComponent {
       return (
             <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
 
-              <Field name='mrn' type='text' component={BasicField} label='MRN' placeholder='required'/>
+              <Field name='mrn' type='number' component={BasicField} label='MRN' placeholder='required'/>
               <Field name='firstName' type='text' component={BasicField} label='First name' placeholder='required' value={patient.firstName}/>
               <Field name='lastName' type='text' component={BasicField} label='Last name' placeholder='required' value={patient.firstName}/>
 

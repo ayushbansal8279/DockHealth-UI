@@ -8,6 +8,7 @@ import AddListForm from '../components/list/AddListForm'
 import ListsComponent from '../components/list/ListsComponent'
 import PendingListsComponent from '../components/list/PendingListsComponent'
 import {mobileAnalyticsClient} from '../api/analytics-api'
+import { Link } from 'react-router'
 
 class TaskListView extends React.Component {
 
@@ -19,9 +20,12 @@ class TaskListView extends React.Component {
       // this.props.taskListAction.getTaskListForUser()
       this.props.invitationAction.findPendingTaskListsForUser()
       this.props.taskListAction.getGenericListCounts()
+      this.props.taskListAction.getTaskListForUser()
+      // debugger;
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 							'PageName': 'Lists'
-			});
+      })
+
     }
 
     submit = (form) => {
@@ -47,7 +51,7 @@ class TaskListView extends React.Component {
     editTaskList = (taskList) => {
       console.log("editTaskList: "+taskList.taskListId)
       this.props.taskListAction.setTaskListAsTasklistone(taskList)
-      $('.add').click();
+      //$('.add').click();
       // $('.add').toggleClass('close');
       // $('body').toggleClass('disable-header-scroll');
       // if($(this).hasClass('add-list')) {
@@ -57,6 +61,7 @@ class TaskListView extends React.Component {
       // }
       // $('.add-form-wrapper').slideToggle(300);
       // $('.list-filter .controls, .list-wrapper').toggle();
+      toggleTaskForm()
     }
 
     deleteList = (taskListId) => {
@@ -76,6 +81,7 @@ class TaskListView extends React.Component {
     }
 
     render() {
+      // const taskLists = this.props.taskLists;
       return (
 
         <div className="off-canvas-content" data-off-canvas-content>
@@ -116,7 +122,7 @@ class TaskListView extends React.Component {
                           <span className="circle xxsmall transparent"></span>
                         </div>
                         <div className="columns">
-                          <h6 className="">{list.listName}</h6>
+                          <Link to={"/tasks/"+list.listName}><h6 className="">{list.listName}</h6></Link>
                         </div>
                         <div className="columns shrink">
                           <h6 className="">{list.numberOfTasks}</h6>

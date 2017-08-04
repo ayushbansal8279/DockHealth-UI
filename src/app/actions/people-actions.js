@@ -21,6 +21,7 @@ export function invitePersonToOrganization(formProps ){
     return function(dispatch) {
       return PeopleApi.invitePersonToOrganization(personInfo).then(res => {
         dispatch({type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res});
+        toggleAlert("Invitation sent!", "success")
       }).catch(error => {
         //console.log(error.message);
         throw(error);
@@ -52,6 +53,7 @@ export function invitePersonToOrganization(formProps ){
     return function(dispatch) {
       return PeopleApi.removeUserFromOrganization(removedUserId).then(res => {
         dispatch({type: ActionTypes.REMOVE_USER_ORG_SUCCESS, res});
+        toggleAlert("User removed successfully")
       }).catch(error => {
         throw(error);
       });

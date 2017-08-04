@@ -67,17 +67,19 @@ class HeaderTasks extends BaseComponent {
     this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
   }
 
-
-
     render() {
     return (
       <div>
         <header className="nav-down">
+
 						<div className="top-bar">
-              <div className="new-task text-center"><span className="number-new-tasks hide">1 new task</span></div>
+              <div className="new-task text-center">
+                <span className="number-new-tasks"></span>
+              </div>
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-								<h3>{this.props.title}</h3> <span className="number-of-tasks hide">23 Tasks</span>
+								<h3>{this.props.title}</h3>
+
 								{/* <h3>{this.state.title ? this.state.title : this.props.taskList.listName}</h3> <span className="number-of-tasks hide">23 Tasks</span> */}
 							</div>
               {this.props.taskListId &&
@@ -101,7 +103,6 @@ class HeaderTasks extends BaseComponent {
 							</div>
 
               {/*<TaskFiltersContainer taskListId={taskListId} />*/}
-
 							<div className="wrapper list-filter row collapse align-middle align-right">
 								<div className="columns shrink controls">
 									<button className="dropdown button primary small" data-toggle="sort-dropdown">Sort</button>
@@ -130,6 +131,7 @@ class HeaderTasks extends BaseComponent {
 								</div>
 
 								<div className="columns shrink icon-group controls">
+                  <svg className="icon"><use xlinkHref="#icon-activity"></use></svg>
                   {this.props.taskListId &&
   									<span onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
                   }

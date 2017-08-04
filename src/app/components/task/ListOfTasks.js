@@ -22,7 +22,7 @@ class ListOfTasks extends BaseComponent {
 	  	super(props)
 	  	this.state = {
 	    		value: '',
-	    		status: props.initialStatus,
+	    		status: props.initialStatus
 	  	};
 	  	this.handleSubmit = this.handleSubmit.bind(this)
 			this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
@@ -46,6 +46,34 @@ class ListOfTasks extends BaseComponent {
 			this.cognitoUser = cognitoUser
       }
     }
+
+		componentDidMount () {
+			super.componentDidMount()
+			// console.log("listoftasks didmount")
+			// edit data
+			console.log("ListOfTasks.js")
+
+			$('body').on('click', '[data-editable]', function () {
+				$(this).hide();
+				var $el = $(this);
+				$(this).next().show().val($el.text());
+				var save = function save() {
+					if ($el.next().val()) {
+						$el.show().text($el.next().val());
+					} else {
+						$el.show();
+					}
+					$el.next().hide();
+				};
+				$el.next().one('blur', save).focus();
+			});
+
+		}
+
+		componentDidUpdate () {
+			super.componentDidUpdate()
+			// console.log("listoftasks didupdate")
+		}
 
 		editTask(task){
 			console.log("edit working")
@@ -80,7 +108,6 @@ class ListOfTasks extends BaseComponent {
 
   	handleDeleteTask(task){
   		this.props.deleteTask(task)
-			debugger;
   	}
 
   	handleToggleTaskPriority(task, userId, priority){
@@ -104,7 +131,7 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		assignOrReassignTask = (task, assignedToUserId, member) => {
-			this.props.taskActions.assignOrReassignTask(task, assignedToUserId, member)
+			this.props.taskAction.assignOrReassignTask(task, assignedToUserId, member)
 		}
 
 		handleToggle = (eventType, task) => {
@@ -126,10 +153,10 @@ class ListOfTasks extends BaseComponent {
 
 
     render() {
-		if(AWS.config.credentials){
-			console.log("user name: "+AWS.config.credentials.params.IdentityId);
-		}
-
+			if(AWS.config.credentials){
+				console.log("user name: "+AWS.config.credentials.params.IdentityId);
+			}
+			const members = this.props.members
 		//userApi.isAuthenticated(this)
 
     return (
@@ -212,7 +239,6 @@ class ListOfTasks extends BaseComponent {
 			{/* GENERATE TASK START */}
 			const generateTask = (task, type) => (
 			  <span key={"task"+task.taskId}>
-
 			    {/* MAIN TASK START */}
 			    <div className={"row expanded " + (type == 'subtask' ? 'subtask-item' : 'main-task-item')} value={task}>
 			      <div className="columns shrink">
@@ -312,7 +338,7 @@ class ListOfTasks extends BaseComponent {
 			          {generateTask(subtask, "subtask")}
 								<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+subtask.taskId} handleConfirmationArgs={subtask} handleConfirmation={this.handleDeleteTask}/>
 								{subtask.taskList &&
-									<AssignToModal members={this.props.members} taskListId={subtask.taskList.taskListId} task={subtask} assignOrReassignTask={this.props.assignOrReassignTask}/>
+									<AssignToModal members={members} taskListId={subtask.taskList.taskListId} task={subtask} assignOrReassignTask={this.assignOrReassignTask}/>
 								}
 			          </span>
 			        )
@@ -330,7 +356,7 @@ class ListOfTasks extends BaseComponent {
 					{listTasks()}
 					<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.handleDeleteTask}/>
 					{task.taskList &&
-						<AssignToModal members={this.props.members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.props.assignOrReassignTask}/>
+						<AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/>
 					}
 				</span>
 			)
@@ -342,33 +368,7 @@ class ListOfTasks extends BaseComponent {
     );
 }
 
-  componentDidMount () {
-		super.componentDidMount()
-		// console.log("listoftasks didmount")
-		// edit data
-		console.log("ListOfTasks.js")
 
-		$('body').on('click', '[data-editable]', function () {
-			$(this).hide();
-			var $el = $(this);
-			$(this).next().show().val($el.text());
-			var save = function save() {
-				if ($el.next().val()) {
-					$el.show().text($el.next().val());
-				} else {
-					$el.show();
-				}
-				$el.next().hide();
-			};
-			$el.next().one('blur', save).focus();
-		});
-
-  }
-
-  componentDidUpdate () {
-		super.componentDidUpdate()
-		// console.log("listoftasks didupdate")
-  }
 
 
 

@@ -5,19 +5,31 @@ import MemberInitials from './MemberInitials'
 //let AddTaskForm = props => {
 class AssignToModal extends React.Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+      members:[]
+    }
+  }
+
   componentDidMount(){
-    console.log("AssignToModal.js")
+    this.setState({members:this.props.members})
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.members != this.props.members){
+      this.setState({members:nextProps.members})
+    }
   }
 
   render() {
     return (
-      <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal>
-        {/* <h5>{this.props.taskListId}</h5> */}
+      <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal="">
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
-          {this.props.members.map(member=>{
+          {this.state.members.map(member=>{
             return(
-              <div onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
+              <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
                   <MemberInitials member={member}/>
                   {/* <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/> */}
@@ -45,7 +57,7 @@ class AssignToModal extends React.Component {
             <a className="button secondary medium">Save</a>
           </div>
         </div> */}
-        <button className="close-button" data-close aria-label="Close modal" type="button">
+        <button className="close-button" data-close="" aria-label="Close modal" type="button">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

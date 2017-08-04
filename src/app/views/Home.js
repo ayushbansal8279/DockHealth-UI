@@ -14,6 +14,7 @@ import BaseComponent from '../components/BaseComponent'
 import $ from 'jquery'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import SearchInput, {createFilter} from 'react-search-input'
+import Mousetrap from 'react-mousetrap';
 
 class Home extends BaseComponent {
 
@@ -35,6 +36,11 @@ class Home extends BaseComponent {
 
   clearSearch = () => {
     this.setState({searchTerm: ''})
+    $(".search-field").toggleClass("expand-search");
+    $(".search-field").focus();
+    $(this).find('use').attr('href', function (index, attr) {
+      return $(".search-field").hasClass("expand-search") ? '#icon-search' : '#icon-close';
+    });
   }
 
   searchUpdated = (term) => {
@@ -50,16 +56,20 @@ class Home extends BaseComponent {
   }
 
   componentDidMount(){
+    // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
-      this.props.actions.getInboxTasks()
-
+      this.props.actions.getInboxTasks("COMPLETE")
+      this.props.actions.getInboxTasks("INCOMPLETE")
     }else if(listName == "Assigned by me"){
-      this.props.actions.getTasksAssignedByMe()
+      this.props.actions.getTasksAssignedByMe(undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedByMe(undefined, undefined, "INCOMPLETE")
     }else if(listName == "Assigned to me"){
-      this.props.actions.getTasksAssignedToMe()
+      this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
     }else{
-      this.props.actions.getListTasks(this.props.routeParams.taskListId)
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "INCOMPLETE")
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
       this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
     }
 
@@ -90,20 +100,22 @@ class Home extends BaseComponent {
     });
   }
 
-
-
   componentWillUpdate(nextProps){
     // console.log(this.props.routeParams.listName)
     if(nextProps.routeParams.listName != this.props.routeParams.listName){
       var listName = nextProps.routeParams.listName
       if(!listName || listName == "Inbox"){
-        this.props.actions.getInboxTasks()
+        this.props.actions.getInboxTasks("COMPLETE")
+        this.props.actions.getInboxTasks("INCOMPLETE")
       }else if(listName == "Assigned by me"){
-        this.props.actions.getTasksAssignedByMe()
+        this.props.actions.getTasksAssignedByMe(undefined, undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedByMe(undefined, undefined, "INCOMPLETE")
       }else if(listName == "Assigned to me"){
-        this.props.actions.getTasksAssignedToMe()
+        this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
       }else if(listName != null){
-        this.props.actions.getListTasks(nextProps.routeParams.taskListId)
+        this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "INCOMPLETE")
+        this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "COMPLETE")
         this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ACTIVE")
       }
     }
@@ -119,11 +131,24 @@ class Home extends BaseComponent {
     return (
 
         <div className="off-canvas-content" data-off-canvas-content="true">
-
           <div className="row expanded collapse">
             <div className="large-12 columns">
               <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch} searchTerm={this.state.searchTerm}/>
               <div className="list-wrapper">
+                <div className="sk-circle hide">
+        					<div className="sk-circle1 sk-child"></div>
+        					<div className="sk-circle2 sk-child"></div>
+        					<div className="sk-circle3 sk-child"></div>
+        					<div className="sk-circle4 sk-child"></div>
+        					<div className="sk-circle5 sk-child"></div>
+        					<div className="sk-circle6 sk-child"></div>
+        					<div className="sk-circle7 sk-child"></div>
+        					<div className="sk-circle8 sk-child"></div>
+        					<div className="sk-circle9 sk-child"></div>
+        					<div className="sk-circle10 sk-child"></div>
+        					<div className="sk-circle11 sk-child"></div>
+        					<div className="sk-circle12 sk-child"></div>
+        				</div>
                 <div className="task-item-wrapper">
                   <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE" members={this.props.members} filteredTasks={filteredTasks} />
                   <div className="show-completed text-center">

@@ -18,6 +18,7 @@ import ChangePassword from './views/auth/ChangePassword'
 import ResetPassword from './views/auth/ResetPassword'
 import ConfirmMFACode from './views/auth/ConfirmMFACode'
 import PageNotFound from './views/PageNotFound'
+import ErrorPage from './views/ErrorPage'
 import TaskListView from './views/TaskListView'
 import TaskListAdd from './components/tasklist/TaskListAdd';
 import TaskListUpdateView from './views/TaskListUpdateView';
@@ -88,6 +89,7 @@ export default (
         <Route path="/resetPassword" component={ResetPassword} />
         <Route path="/confirmMFACode" component={ConfirmMFACode} />
         <Route path="/pagenotfound" component={PageNotFound} />
+        <Route path="/errorPage" component={ErrorPage} />
       </Route>
 
       <Route path="/register" component={Register} />
