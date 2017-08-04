@@ -14,7 +14,7 @@ import BaseComponent from '../components/BaseComponent'
 import $ from 'jquery'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import SearchInput, {createFilter} from 'react-search-input'
-// import {mousetrap} from 'react-mousetrap'
+import Mousetrap from 'react-mousetrap';
 
 class Home extends BaseComponent {
 
@@ -56,7 +56,7 @@ class Home extends BaseComponent {
   }
 
   componentDidMount(){
-    // Mousetrap.bind(['ctrl+t'], toggleTaskForm);
+    // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks("COMPLETE")
