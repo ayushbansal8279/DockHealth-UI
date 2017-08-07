@@ -7,6 +7,8 @@ export function getTaskListForUser() {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findTaskListsByUserId')
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -14,6 +16,8 @@ export function findPendingTaskListsForUser() {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findPendingTaskListsForUser')
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -23,6 +27,8 @@ export function addTaskList(tasklist) {
     .then(response => {
       toggleTaskForm()
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -30,6 +36,8 @@ export function getTaskListById(taskListId) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + taskListId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -38,6 +46,8 @@ export function updateTaskList(taskList) { //userId - make sure authorized user 
     .then(response => {
       toggleTaskForm()
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -45,6 +55,8 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/listAllUsersByTaskListId/' + taskListId + "?status=" + memberStatus)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -52,6 +64,8 @@ export function invitePersonToTaskList(tasklistId,personInfo) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/invitePersonToTaskList/' + tasklistId,personInfo)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -59,6 +73,8 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findOrganizationUsersNotInTaskList/' + tasklistId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -68,6 +84,8 @@ export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId, multiUserInvitation)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -75,6 +93,8 @@ export function getNonOrgUsersByTaskList(taskListId) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findNonOrgUsersByTaskList/' + taskListId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -85,6 +105,8 @@ export function changeUserRoleForList(tasklistId,markedUserId,role) {
                       + "&role=" + role)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -92,6 +114,8 @@ export function deleteTaskListById(taskListId) {
   return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'list/deleteTaskListById/' + taskListId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -100,6 +124,8 @@ export function removeUserFromList(taskListId,removedUserId) {
                   + "?removedUserId=" + removedUserId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -108,6 +134,8 @@ export function cancelInviteToTaskList(taskListId,email) {
                       +"?markedUserEmail=" +email)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -116,6 +144,8 @@ export function findAuditsByTaskList(taskListId,queryStartPosition) {
                   +"?queryStartPosition=" +queryStartPosition)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -124,6 +154,8 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
                   +"?queryStartPosition=" +queryStartPosition)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -132,6 +164,8 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
                   +"?queryStartPosition=" +queryStartPosition)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -139,6 +173,8 @@ export function toggleListNotifications(taskListId, receiveNotifications){
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/toggleUserNotificationsForTaskList/'+taskListId+'?notifications='+receiveNotifications)
   .then(response => {
     return response;
+  }).catch(function (error){
+    console.log(error);
   });
 }
 
@@ -146,5 +182,7 @@ export function findGenericListCountsForUser(){
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findGenericListCountsForUser')
   .then(response => {
     return response.data;
+  }).catch(function (error){
+    console.log(error);
   });
 }

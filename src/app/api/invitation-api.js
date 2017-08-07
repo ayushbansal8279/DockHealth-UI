@@ -11,6 +11,8 @@ export function acceptInviteToTaskList(tasklistId) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/acceptInviteToTaskList/' + tasklistId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -18,5 +20,7 @@ export function rejectInviteToTaskList(tasklistId) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/rejectInviteToTaskList/' + tasklistId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }

@@ -233,8 +233,8 @@ export function toggleTaskPriority(task, userId, priority) {
 
 export function assignOrReassignTask(task, assignedToUserId, member){
   return function(dispatch){
-    return TaskApi.assignOrReassignTask(task.taskId, assignedToUserId).then(res => {
-      dispatch({type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS, task, member});
+    return TaskApi.assignOrReassignTask(task.taskId, assignedToUserId).then(task => {
+      dispatch({type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS, task});
       toggleAlert("Task assigned successfully", "success")
     }).catch(error => {
       throw(error);

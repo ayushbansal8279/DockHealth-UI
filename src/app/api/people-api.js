@@ -5,6 +5,8 @@ export function findAllUsersByOrganizationId() {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findAllUsersByOrganizationId')
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -12,6 +14,8 @@ export function getUserById(userId) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/'+userId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -19,6 +23,8 @@ export function invitePersonToOrganization(person) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/invitePersonToOrganization', person)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
 }
 
@@ -28,6 +34,8 @@ export function changeUserRoleForOrg(markedUserId,role) {
                       + "&role=" + role)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
   }
 
@@ -36,6 +44,8 @@ export function cancelInviteToOrganization(markedUserEmail) {
                       +"?markedUserEmail=" +markedUserEmail)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
   }
 
@@ -44,6 +54,8 @@ export function removeUserFromOrganization(removedUserId) {
                       +"?removedUserId=" +removedUserId)
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
     });
   }
 

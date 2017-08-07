@@ -360,13 +360,13 @@ $(document).ready(function() {
 		$('.list-filter .controls').toggle();
 	}
 
-	$('document').on('click', '.show-add-subtask', function () {
+	$(document).on('click', '.show-add-subtask', function () {
 		$('.main-task-wrapper').hide();
 		$('.subtask-wrapper').slideDown(300);
 	});
 
 	// show/hide completed tasks
-	$('document').on('click', '.toggle-completed', function() {
+	$(document).on('click', '.toggle-completed', function() {
 		$(this).toggleClass('inverse');
 		$('.completed-task-wrapper').slideToggle();
 		var $el = $(this);

@@ -6,7 +6,7 @@ const TaskListReducer = function(state = initialState, action) {
   switch(action.type) {
 
     case types.ADD_TASKLIST_SUCCESS:
-      return {...state, tasklist: [action.tasklist].concat(state.tasklist)}
+      return {...state, tasklist: [action.tasklist].concat(state.tasklist), tasklistone:action.tasklist}
 
     case types.ACCEPT_INVITE_TOTASKLIST_SUCCESS:
       return {...state, tasklist: [action.tasklist].concat(state.tasklist)}

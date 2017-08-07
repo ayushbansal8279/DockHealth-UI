@@ -134,7 +134,7 @@ class ListOfTasks extends BaseComponent {
 			this.props.taskAction.assignOrReassignTask(task, assignedToUserId, member)
 		}
 
-		handleToggle = (eventType, task) => {
+		handleToggle = (task) => {
 			// puts task to state to populate data for form
 			this.props.taskAction.taskToState(task)
 			// $('.add').click();
@@ -162,7 +162,6 @@ class ListOfTasks extends BaseComponent {
     return (
 		<span>
 
-
 		{this.props.tasks.map(task => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
@@ -172,69 +171,16 @@ class ListOfTasks extends BaseComponent {
 				)
 			}
 
-
 			{/* COMPONENTS START */}
 			let dueDateComponent = ""
 			if(task.dueDate){
 				let dueDate = new Date(task.dueDate)
 				dueDateComponent = <Moment format="MMM DD">{dueDate}</Moment>
 			}
-			let reminderDateComponent = ""
-			if(task.reminderDt){
-				let reminderDate = new Date(task.reminderDt);
-				reminderDateComponent = <Moment format="MMM DD">{reminderDate}</Moment>
-			}
 			let createdDateTime = new Date(task.createdDateTime)
-			let assignmentUpdatedDateTime = new Date(task.assignmentUpdatedDateTime)
-			let assignees = "";
-			if(task.assignees){
-				assignees = task.assignees.map(function(assignee) {
-					let assigneeInitials = assignee.firstName.substr(0,1)+assignee.lastName.substr(0,1)
-					return <span className="memberphoto active" key={"assignee"+assignee.userId}>{assigneeInitials}</span>
-				})
-			}
-			let taskPriorityClass = "icon medium priority"
-			if(task.priority!=null && task.priority!="LOW"){
-				taskPriorityClass = taskPriorityClass + " high"
-			}
+			// let assignmentUpdatedDateTime = new Date(task.assignmentUpdatedDateTime)
+
 			{/* COMPONENTS END */}
-
-
-			{/* COMMENTS START */}
-			// let commentNodes = "";
-		  // if(task.comments && task.comments.length > 0){
-		  //     commentNodes = task.comments.map(function(comment) {
-		  //     return (
-		  //         <div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
-		  //           <div className="columns shrink">
-		  //             {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
-		  //             <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
-		  //           </div>
-		  //           <div className="columns">
-		  //             <span className="comment">{comment.comment}</span>
-		  //           </div>
-		  //           <div className="columns shrink align-right">
-		  //             <span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
-		  //           </div>
-		  //         {/*<div className="row expanded collapse comment-wrapper">
-		  //           <div className="columns shrink text-light">
-		  //             Load 2 earlier comments
-		  //           </div>
-		  //         </div>*/}
-			// 				</div>
-		  //     )
-		  //   })
-		  // }else{
-		  //   commentNodes =
-			//       <div className="row expanded collapse comment-wrapper">
-			//         <div className="columns shrink">
-			// 					{/*<img className="member-photo circle xsmall" src="assets/img/user1.png" alt="name of user"/>*/}
-			//           {/*<img className="member-photo circle xsmall" src={userProfilePic} alt={user.firstName + user.lastName}/>*/}
-			//         </div>
-			//       </div>
-		  // }
-			{/* COMMENTS END */}
-
 
 			{/* GENERATE TASK START */}
 			const generateTask = (task, type) => (
@@ -261,7 +207,7 @@ class ListOfTasks extends BaseComponent {
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 							{task.assignedBy ?
-				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{assignmentUpdatedDateTime}</Moment>}</span> :
+				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
 				        <span className="task-details text-light">unassigned</span>
 							}
 			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
@@ -321,9 +267,9 @@ class ListOfTasks extends BaseComponent {
 								<div className="small dropdown-pane" id={"task-edit-" + task.taskId} data-dropdown data-close-on-click="true">
 									<ul className="no-bullet">
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
-										<li onClick={(e) => this.handleToggle("edit", task)} className="edit-task">Edit task</li>
+										<li onClick={(e) => this.handleToggle(task)} className="edit-task">Edit task</li>
 										{type != "subtask" &&
-											<li className="add show-add-subtask link">Add subtask</li>
+											<li onClick={(e) => this.handleToggle(task)} className="add show-add-subtask link">Add subtask</li>
 										}
 										<li data-open={"delete-task-"+task.taskId}>Delete task</li>
 									</ul>

@@ -275,11 +275,11 @@ const TaskReducer = function(state = initialState, action) {
           {...task, subtasks:
             task.subtasks.map(subtask =>
               subtask.taskId === action.task.taskId ?
-              {...subtask, assignedTo: action.member} :
+              {...subtask, assignedTo: action.task.assignedTo, assignedBy: action.task.assignedBy, assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime} :
               subtask
             )
           } :
-          { ...task, assignedTo: action.member}
+          { ...task, assignedTo: action.task.assignedTo, assignedBy: action.task.assignedBy, assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime}
           : task
       )
     };

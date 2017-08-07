@@ -168,9 +168,11 @@ class Home extends BaseComponent {
         				</div>
                 <div className="task-item-wrapper">
                   <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE" members={this.props.members} filteredTasks={filteredTasks} />
-                  <div className="show-completed text-center">
-                    <a className="toggle-completed button primary small">Show completed tasks</a>
-                  </div>
+                  {this.props.completedTasks.length > 0 &&
+                    <div className="show-completed text-center">
+                      <a className="toggle-completed button primary small">Show completed tasks</a>
+                    </div>
+                  }
                   <div className="completed-task-wrapper">
                     <ListOfTasksContainer taskListId={taskListId} status="COMPLETE" members={this.props.members} filteredTasks={filteredCompletedTasks} />
                   </div>
