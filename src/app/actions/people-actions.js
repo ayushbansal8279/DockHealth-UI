@@ -5,7 +5,7 @@ export function findAllUsersByOrganizationId() {
   return function(dispatch) {
     return PeopleApi.findAllUsersByOrganizationId().then(peoplelist => {
       dispatch({type: ActionTypes.GET_PEOPLE_SUCCESS, peoplelist});
-      loading()
+      // loading()
     }).catch(error => {
       throw(error);
     });

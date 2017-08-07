@@ -47,6 +47,14 @@ class ListOfTasks extends BaseComponent {
       }
     }
 
+		// componentWillUpdate(){
+		// 	loading()
+		// }
+		//
+		// componentDidUpdate(){
+		// 	loading()
+		// }
+
 		componentDidMount () {
 			super.componentDidMount()
 			// console.log("listoftasks didmount")
@@ -172,11 +180,11 @@ class ListOfTasks extends BaseComponent {
 			}
 
 			{/* COMPONENTS START */}
-			let dueDateComponent = ""
-			if(task.dueDate){
-				let dueDate = new Date(task.dueDate)
-				dueDateComponent = <Moment format="MMM DD">{dueDate}</Moment>
-			}
+			// let dueDateComponent = ""
+			// if(task.dueDate){
+			// 	let dueDate = new Date(task.dueDate)
+			// 	dueDateComponent = <Moment format="MMM DD">{dueDate}</Moment>
+			// }
 			let createdDateTime = new Date(task.createdDateTime)
 			// let assignmentUpdatedDateTime = new Date(task.assignmentUpdatedDateTime)
 

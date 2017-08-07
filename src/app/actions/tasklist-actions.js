@@ -8,7 +8,7 @@ export function getTaskListForUser() {
   return function(dispatch) {
     return TaskListApi.getTaskListForUser().then(tasklist => {
       dispatch({type: ActionTypes.GET_TASKLIST_SUCCESS, tasklist});
-      loading()
+      // loading()
     }).catch(error => {
       throw(error);
     });

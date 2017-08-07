@@ -19,7 +19,7 @@ export function getTasksForCreator(userId) {
 
 export function getListTasksByUser(taskListId, status, sortBy){
   if(status == "INCOMPLETE"){
-    loading()
+    // loading()
   }
   if(sortBy == undefined){
     closeAddForm()
@@ -42,7 +42,7 @@ export function getListTasksByUser(taskListId, status, sortBy){
 
 export function getTasksAssignedToMe(taskListId, status, sortBy) {
   if(status == "INCOMPLETE"){
-    loading()
+    // loading()
   }
   if(taskListId != undefined){
     if(sortBy != undefined){
@@ -87,7 +87,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy) {
 
 export function getTasksAssignedByMe(taskListId, status, sortBy){
   if(status == "INCOMPLETE"){
-    loading()
+    // loading()
   }
   if(taskListId != undefined){
     if(sortBy != undefined){
@@ -262,7 +262,7 @@ export function getListTasksByPatient(patientId, status, taskListId){
 
 export function getInboxTasks(status, sortBy){
   if(status == "INCOMPLETE"){
-    loading()
+    // loading()
   }
   if(sortBy == undefined){
     closeAddForm()

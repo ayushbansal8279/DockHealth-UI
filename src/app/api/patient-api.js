@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as ActionTypes from '../actions/action-types';
 
 export function getAllPatients() {
-  loading()
+  // loading()
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getAllPatients?active=true')
     .then(response => {
       return response.data;

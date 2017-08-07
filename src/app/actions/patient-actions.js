@@ -5,7 +5,7 @@ export function getAllPatients() {
   return function(dispatch) {
     return PatientApi.getAllPatients().then(patients => {
       dispatch(getAllPatientsSuccess(patients));
-      loading()
+      // loading()
     }).catch(error => {
       throw(error);
     });

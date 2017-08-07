@@ -36,7 +36,7 @@ export function getListTasks(taskListId, sortBy, status){
     return TaskApi.getListTasksByUser(taskListId, status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
-        loading()
+
       }
     }).catch(error => {
       throw(error);
@@ -55,7 +55,7 @@ export function getTasksAssignedToMe(taskListId, sortBy, status) {
     return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
-        loading()
+        // loading()
       }
     }).catch(error => {
       throw(error);
@@ -74,7 +74,7 @@ export function getTasksAssignedByMe(taskListId, sortBy, status){
     return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
-        loading()
+        // loading()
       }
     }).catch(error => {
       throw(error);
@@ -268,7 +268,7 @@ export function getInboxTasks(status, sortBy){
     return TaskApi.getInboxTasks(status, sortBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
-        loading()
+        // loading()
       }
     }).catch(error => {
       throw(error);
