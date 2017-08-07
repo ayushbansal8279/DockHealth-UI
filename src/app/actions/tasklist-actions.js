@@ -15,6 +15,12 @@ export function getTaskListForUser() {
   };
 }
 
+export function loading(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_LISTS})
+  }
+}
+
 export function setTaskListAsTasklistone(tasklistone){
   return function(dispatch){
     dispatch({type: ActionTypes.GET_TASKLIST_ONE_SUCCESS, tasklistone})

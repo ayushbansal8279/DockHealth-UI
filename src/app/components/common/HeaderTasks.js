@@ -26,6 +26,7 @@ class HeaderTasks extends BaseComponent {
 
   componentDidMount () {
     this.props.patientActions.getAllPatients()
+    this.props.taskActions.loading()
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
       this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ACTIVE')
@@ -52,6 +53,7 @@ class HeaderTasks extends BaseComponent {
 	};
 
   getListTasks = (sortBy) => {
+    this.props.taskActions.loading()
     if(this.props.taskListId){
       this.props.taskActions.getListTasks(this.props.taskListId, sortBy, "INCOMPLETE")
       this.props.taskActions.getListTasks(this.props.taskListId, sortBy, "COMPLETE")
@@ -157,7 +159,7 @@ class HeaderTasks extends BaseComponent {
         </header>
 
         <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} members={this.props.members}/>
-        <ListMembers taskListId={this.props.taskListId} members={this.props.members} title={this.props.title}/>
+        <ListMembers taskListId={this.props.taskListId} title={this.props.title}/>
       </div>
       );
     }

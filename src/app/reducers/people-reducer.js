@@ -7,7 +7,13 @@ const PeopleReducer = function(state = initialState, action) {
   switch(action.type) {
 
     case types.GET_PEOPLE_SUCCESS:
-      return {...state, peoplelist:action.peoplelist};  //whatever our current state is, add on "peoplelist"
+    var car = "car"
+      return Object.assign({}, state,
+        { peoplelist: action.peoplelist, isFetching:false }
+      );
+
+    case types.REQUEST_PEOPLE:
+      return Object.assign({}, state, { isFetching: true })
     // case types.INVITEPERSON_ORG_SUCCESS:
     //   var invitedPerson = {}
     //   invitedPerson.firstName = action.res.firstName

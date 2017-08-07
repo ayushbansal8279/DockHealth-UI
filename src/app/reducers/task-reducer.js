@@ -14,10 +14,13 @@ const TaskReducer = function(state = initialState, action) {
       }
 
     case types.GET_TASKS_SUCCESS:
-      return Object.assign({}, state, { tasks: action.tasks });
+      return Object.assign({}, state, { tasks: action.tasks, isFetching:false });
 
     case types.GET_COMPLETED_TASKS_SUCCESS:
       return Object.assign({}, state, { completedTasks: action.tasks });
+
+    case types.REQUEST_TASKS:
+      return Object.assign({}, state, { isFetching: true })
 
     case types.EDIT_TASK:
       return { ...state, task: action.task };

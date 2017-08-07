@@ -47,14 +47,6 @@ class ListOfTasks extends BaseComponent {
       }
     }
 
-		// componentWillUpdate(){
-		// 	loading()
-		// }
-		//
-		// componentDidUpdate(){
-		// 	loading()
-		// }
-
 		componentDidMount () {
 			super.componentDidMount()
 			// console.log("listoftasks didmount")
@@ -78,7 +70,10 @@ class ListOfTasks extends BaseComponent {
 
 		}
 
-		componentDidUpdate () {
+		componentDidUpdate (prevProps, prevState) {
+			if(prevProps.listName != "COMPLETE" && prevProps != this.props){
+				debugger;
+			}
 			super.componentDidUpdate()
 			// console.log("listoftasks didupdate")
 		}

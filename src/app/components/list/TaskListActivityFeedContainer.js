@@ -45,7 +45,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
 								<MemberInitials member={audit.user}/>
 							</div>
 							<div className="columns">
-								<span className="task-title">{audit.auditId + " " + audit.activityFeed}</span>
+								<span className="task-title">{audit.activityFeed}</span>
 							</div>
 							<div className="columns shrink text-right more-options-wrapper">
 								<span className="item-details"><Moment format="MMM DD">{audit.createdDateTime}</Moment></span>

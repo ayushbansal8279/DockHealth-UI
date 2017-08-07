@@ -27,7 +27,6 @@ class PeopleContainer extends BaseComponent {
 
     componentDidMount () {
       super.componentDidMount()
-      this.props.findAllUsersByOrganizationId();
       //enableMoreOptions();
     }
 
@@ -46,6 +45,7 @@ class PeopleContainer extends BaseComponent {
       this.props.changeUserRoleForOrg(markedUserId,newRole)
       .then((res)=>{
         this.setState({peopleProcessingResult: 'User Role changed successfully!!'}); //this will cause render to be called
+        this.props.loading();
         this.props.findAllUsersByOrganizationId();
         //hashHistory.push('/updateUserRole')
       })
@@ -58,6 +58,7 @@ class PeopleContainer extends BaseComponent {
       this.props.removeUserFromOrganization(markedUserId)
       .then((res)=>{
         this.setState({peopleProcessingResult: 'User removed successfully!!'}); //this will cause render to be called
+        this.props.loading();
         this.props.findAllUsersByOrganizationId();
         //hashHistory.push('/updateUserRole')
       })
@@ -70,6 +71,7 @@ class PeopleContainer extends BaseComponent {
       this.props.cancelInviteToOrganization(email)
       .then((res)=>{
         this.setState({peopleProcessingResult: 'Invitation cancelled successfully!!'}); //this will cause render to be called
+        this.props.loading();
         this.props.findAllUsersByOrganizationId();
         //hashHistory.push('/updateUserRole')
       })

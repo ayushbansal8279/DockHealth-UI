@@ -5,11 +5,16 @@ export function findAllUsersByOrganizationId() {
   return function(dispatch) {
     return PeopleApi.findAllUsersByOrganizationId().then(peoplelist => {
       dispatch({type: ActionTypes.GET_PEOPLE_SUCCESS, peoplelist});
-      // loading()
     }).catch(error => {
       throw(error);
     });
   };
+}
+
+export function loading(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_PEOPLE})
+  }
 }
 
 export function invitePersonToOrganization(formProps ){

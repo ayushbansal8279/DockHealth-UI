@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm} from 'redux-form'
 import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
 import MemberInitials from '../common/MemberInitials'
 import * as TaskListActions from '../../actions/tasklist-actions';
@@ -14,7 +14,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
     	super(props)
     	this.state = {
       		inviteUserResult: '',
-          	selectedUserId: null,
+          selectedUserId: null,
       		selectedSuggestion: '',
       		suggestions: []
     	};
@@ -76,6 +76,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 			inviteUsers.push(selectedUserId);
         	this.props.taskListActions.inviteMultipleUsersToTaskList(this.props.taskListId, inviteUsers)
         .then((res)=>{
+            this.props.formActions.reset('ListMembersAddForm')
           	this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
         })
         .catch((error)=>{
@@ -197,8 +198,8 @@ const mapStateToProps = function(store){
 		currentList: store.taskListState.currentList,
 		currentUser: store.userState.user,
 		taskList: store.taskListState.tasklistone,
-		peoplelist: store.peopleState.peoplelist
-
+		peoplelist: store.peopleState.peoplelist,
+    members: store.taskListState.tasklistmembers
 	}
 }
 

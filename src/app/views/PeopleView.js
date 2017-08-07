@@ -16,6 +16,8 @@ class PeopleView extends BaseComponent {
     }
   }
   componentDidMount(){
+    this.props.peopleActions.loading();
+    this.props.peopleActions.findAllUsersByOrganizationId();
 		mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 						'PageName': 'PeopleView'
 		});
@@ -29,6 +31,7 @@ class PeopleView extends BaseComponent {
   }
 
   refresh = () => {
+    this.props.peopleActions.loading()
     this.props.peopleActions.findAllUsersByOrganizationId()
   }
 
@@ -70,21 +73,23 @@ class PeopleView extends BaseComponent {
             <InvitePeople/>
 
             <div className="list-wrapper">
-              <div className="sk-circle hide">
-                <div className="sk-circle1 sk-child"></div>
-                <div className="sk-circle2 sk-child"></div>
-                <div className="sk-circle3 sk-child"></div>
-                <div className="sk-circle4 sk-child"></div>
-                <div className="sk-circle5 sk-child"></div>
-                <div className="sk-circle6 sk-child"></div>
-                <div className="sk-circle7 sk-child"></div>
-                <div className="sk-circle8 sk-child"></div>
-                <div className="sk-circle9 sk-child"></div>
-                <div className="sk-circle10 sk-child"></div>
-                <div className="sk-circle11 sk-child"></div>
-                <div className="sk-circle12 sk-child"></div>
-              </div>
-              <PeopleContainer searchTerm={this.state.searchTerm}/>
+              {this.props.isFetching ?
+                <div className="sk-circle">
+                  <div className="sk-circle1 sk-child"></div>
+                  <div className="sk-circle2 sk-child"></div>
+                  <div className="sk-circle3 sk-child"></div>
+                  <div className="sk-circle4 sk-child"></div>
+                  <div className="sk-circle5 sk-child"></div>
+                  <div className="sk-circle6 sk-child"></div>
+                  <div className="sk-circle7 sk-child"></div>
+                  <div className="sk-circle8 sk-child"></div>
+                  <div className="sk-circle9 sk-child"></div>
+                  <div className="sk-circle10 sk-child"></div>
+                  <div className="sk-circle11 sk-child"></div>
+                  <div className="sk-circle12 sk-child"></div>
+                </div> :
+                <PeopleContainer searchTerm={this.state.searchTerm}/>
+              }
 						</div>{/*list-wrapper*/}
 
           </div>
@@ -94,10 +99,16 @@ class PeopleView extends BaseComponent {
   }
 }
 
+const mapStateToProps = function (store) {
+  return{
+    isFetching: store.peopleState.isFetching
+  }
+}
+
 const mapDispatchToProps = function (dispatch) {
   return {
     peopleActions: bindActionCreators(PeopleActions, dispatch)
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(PeopleView);
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleView);

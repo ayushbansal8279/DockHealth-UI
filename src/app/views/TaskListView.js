@@ -17,7 +17,7 @@ class TaskListView extends React.Component {
   }
 
     componentDidMount(){
-      // this.props.taskListAction.getTaskListForUser()
+      this.props.taskListAction.loading()
       this.props.invitationAction.findPendingTaskListsForUser()
       this.props.taskListAction.getGenericListCounts()
       this.props.taskListAction.getTaskListForUser()
@@ -81,6 +81,7 @@ class TaskListView extends React.Component {
     }
 
     refresh = () => {
+      this.props.taskListAction.loading()
       this.props.taskListAction.getTaskListForUser()
     }
 
@@ -100,7 +101,7 @@ class TaskListView extends React.Component {
         				</div>
         			</div>
 
-        			<div className="wrapper list-filter row expanded collapse align-middle align-right">
+        			<div className="wrapper list-filter row collapse align-middle align-right">
         				<div className="columns controls">
         					{/* {{> search}} */}
         				</div>
@@ -117,98 +118,44 @@ class TaskListView extends React.Component {
               <AddListForm onSubmit={this.submit}/>
 
         			<div className="list-wrapper">
-                <div className="sk-circle hide">
-                  <div className="sk-circle1 sk-child"></div>
-                  <div className="sk-circle2 sk-child"></div>
-                  <div className="sk-circle3 sk-child"></div>
-                  <div className="sk-circle4 sk-child"></div>
-                  <div className="sk-circle5 sk-child"></div>
-                  <div className="sk-circle6 sk-child"></div>
-                  <div className="sk-circle7 sk-child"></div>
-                  <div className="sk-circle8 sk-child"></div>
-                  <div className="sk-circle9 sk-child"></div>
-                  <div className="sk-circle10 sk-child"></div>
-                  <div className="sk-circle11 sk-child"></div>
-                  <div className="sk-circle12 sk-child"></div>
-                </div>
-        				<div className="item-list-wrapper">
+                {this.props.isFetching ?
+                  <div className="sk-circle">
+                    <div className="sk-circle1 sk-child"></div>
+                    <div className="sk-circle2 sk-child"></div>
+                    <div className="sk-circle3 sk-child"></div>
+                    <div className="sk-circle4 sk-child"></div>
+                    <div className="sk-circle5 sk-child"></div>
+                    <div className="sk-circle6 sk-child"></div>
+                    <div className="sk-circle7 sk-child"></div>
+                    <div className="sk-circle8 sk-child"></div>
+                    <div className="sk-circle9 sk-child"></div>
+                    <div className="sk-circle10 sk-child"></div>
+                    <div className="sk-circle11 sk-child"></div>
+                    <div className="sk-circle12 sk-child"></div>
+                  </div>:
+          				<div className="item-list-wrapper">
 
-                  <PendingListsComponent taskLists={this.props.pendingTaskLists} acceptInviteToTaskList={this.acceptInviteToTaskList} rejectInviteToTaskList={this.rejectInviteToTaskList}/>
-                  <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList} leaveList={this.leaveList}/>
+                    <PendingListsComponent taskLists={this.props.pendingTaskLists} acceptInviteToTaskList={this.acceptInviteToTaskList} rejectInviteToTaskList={this.rejectInviteToTaskList}/>
+                    <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList} leaveList={this.leaveList}/>
 
-                  {this.props.genericLists.map(list => {
-                    return(
-                      <div key={list.listName} className="item row expanded align-middle">
-                        <div className="columns shrink">
-                          <span className="circle xxsmall transparent"></span>
+                    {this.props.genericLists.map(list => {
+                      return(
+                        <div key={list.listName} className="item row expanded align-middle">
+                          <div className="columns shrink">
+                            <span className="circle xxsmall transparent"></span>
+                          </div>
+                          <div className="columns">
+                            <Link to={"/tasks/"+list.listName}><h6 className="">{list.listName}</h6></Link>
+                          </div>
+                          <div className="columns shrink">
+                            <h6 className="">{list.numberOfTasks}</h6>
+                          </div>
                         </div>
-                        <div className="columns">
-                          <Link to={"/tasks/"+list.listName}><h6 className="">{list.listName}</h6></Link>
-                        </div>
-                        <div className="columns shrink">
-                          <h6 className="">{list.numberOfTasks}</h6>
-                        </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
 
-                  {/* Inbox */}
-        					{/* <div className="item row expanded align-middle">
-        						<div className="columns shrink">
-        							<span className="circle xxsmall transparent"></span>
-        						</div>
-        						<div className="columns">
-        							<h6 className="">Inbox</h6>
-        						</div>
-        						<div className="columns shrink">
-        							<h6 className="">4</h6>
-        						</div>
-        					</div> */}
-                  {/* Inbox End */}
-
-                  {/* Important */}
-        					{/* <div className="item row expanded align-middle">
-        						<div className="columns shrink">
-        							<span className="circle xxsmall transparent"></span>
-        						</div>
-        						<div className="columns">
-        							<h6>Important</h6>
-        						</div>
-        						<div className="columns shrink">
-        							<h6 className="">0</h6>
-        						</div>
-        					</div> */}
-                  {/* Important End */}
-
-                  {/* Assigned to me */}
-        					{/* <div className="item row expanded align-middle">
-        						<div className="columns shrink">
-        							<span className="circle xxsmall transparent"></span>
-        						</div>
-        						<div className="columns">
-        							<h6 className="">Assigned to me</h6>
-        						</div>
-        						<div className="columns shrink">
-        							<h6 className="">26</h6>
-        						</div>
-        					</div> */}
-                  {/* Assigned to me End*/}
-
-                  {/* Assigned by me */}
-        					{/* <div className="item row expanded align-middle">
-        						<div className="columns shrink">
-        							<span className="circle xxsmall transparent"></span>
-        						</div>
-        						<div className="columns">
-        							<h6>Assigned by me</h6>
-        						</div>
-        						<div className="columns shrink">
-        							<h6 className="">0</h6>
-        						</div>
-        					</div> */}
-                  {/* Assigned by me End */}
-
-        				</div>{/* <!--item-list-wrapper--> */}
+          				</div>
+                }
         			</div>{/* <!--list-wrapper--> */}
         		</div>
         	</div>
@@ -222,7 +169,8 @@ function mapStateToProps(state){
   return{
     taskLists: state.taskListState.tasklist,
     pendingTaskLists: state.invitationState.pendingTasklists,
-    genericLists: state.taskListState.genericLists
+    genericLists: state.taskListState.genericLists,
+    isFetching: state.taskListState.isFetching
   }
 }
 

@@ -8,11 +8,14 @@ const TaskListReducer = function(state = initialState, action) {
     case types.ADD_TASKLIST_SUCCESS:
       return {...state, tasklist: [action.tasklist].concat(state.tasklist), tasklistone:action.tasklist}
 
+    case types.REQUEST_LISTS:
+      return Object.assign({}, state, {isFetching:true})
+
     case types.ACCEPT_INVITE_TOTASKLIST_SUCCESS:
       return {...state, tasklist: [action.tasklist].concat(state.tasklist)}
 
     case types.GET_TASKLIST_SUCCESS:
-      return {...state, tasklist:action.tasklist};  //whatever our current state is, add on "tasklist"
+      return {...state, tasklist:action.tasklist, isFetching: false};  //whatever our current state is, add on "tasklist"
 
     case types.GET_TASKLIST_ONE_SUCCESS:
       return {...state, tasklistone:action.tasklistone};  //whatever our current state is, add on "tasklistone"

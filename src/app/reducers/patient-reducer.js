@@ -6,7 +6,10 @@ const PatientReducer = function(state = {allPatients: [], listPatients: [], sele
   switch(action.type) {
 
     case types.GET_PATIENTS_SUCCESS:
-      return Object.assign({}, state, { allPatients: action.patients });
+      return Object.assign({}, state, { allPatients: action.patients, isFetching: false });
+
+    case types.REQUEST_PATIENTS:
+      return Object.assign({}, state, { isFetching:true })
 
     case types.GET_LIST_PATIENTS_SUCCESS:
       return Object.assign({}, state, { listPatients: action.patients });

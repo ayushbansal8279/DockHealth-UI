@@ -19,6 +19,8 @@ class AllPatientsView extends BaseComponent {
       }
     }
     componentDidMount(){
+      this.props.patientActions.loading()
+      this.props.patientActions.getAllPatients()
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 							'PageName': 'AllPatientsView'
 			});
@@ -30,6 +32,7 @@ class AllPatientsView extends BaseComponent {
       this.setState({searchTerm: term.target.value})
     }
     refresh = () => {
+      this.props.patientActions.loading()
       this.props.patientActions.getAllPatients()
     }
     render() {
@@ -91,7 +94,26 @@ class AllPatientsView extends BaseComponent {
                   <FormPatient />
                   </div>
                 </div>
-                <PatientListContainer searchTerm={this.state.searchTerm}/>
+                <div className="list-wrapper">
+                  {this.props.isFetching ?
+                    <div className="sk-circle">
+                      <div className="sk-circle1 sk-child"></div>
+                      <div className="sk-circle2 sk-child"></div>
+                      <div className="sk-circle3 sk-child"></div>
+                      <div className="sk-circle4 sk-child"></div>
+                      <div className="sk-circle5 sk-child"></div>
+                      <div className="sk-circle6 sk-child"></div>
+                      <div className="sk-circle7 sk-child"></div>
+                      <div className="sk-circle8 sk-child"></div>
+                      <div className="sk-circle9 sk-child"></div>
+                      <div className="sk-circle10 sk-child"></div>
+                      <div className="sk-circle11 sk-child"></div>
+                      <div className="sk-circle12 sk-child"></div>
+                    </div>:
+                    <PatientListContainer searchTerm={this.state.searchTerm}/>
+                  }
+                </div>
+
 
           </div>
         </div>
@@ -101,13 +123,19 @@ class AllPatientsView extends BaseComponent {
   }
 }
 
+const mapStateToProps = function (store) {
+  return{
+    isFetching: store.patientState.isFetching
+  }
+}
+
 const mapDispatchToProps = function (dispatch) {
   return {
     patientActions: bindActionCreators(PatientActions, dispatch)
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(AllPatientsView);
+export default connect(mapStateToProps, mapDispatchToProps)(AllPatientsView);
 
 // AllPatientsView.route = {
 //   path: 'patientList',

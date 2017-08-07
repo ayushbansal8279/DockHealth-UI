@@ -59,6 +59,7 @@ class Home extends BaseComponent {
   componentDidMount(){
     // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
+    this.props.actions.loading()
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks("COMPLETE")
       this.props.actions.getInboxTasks("INCOMPLETE")
@@ -97,6 +98,7 @@ class Home extends BaseComponent {
     // console.log(this.props.routeParams.listName)
     if(nextProps.routeParams.listName != this.props.routeParams.listName){
       var listName = nextProps.routeParams.listName
+      this.props.actions.loading()
       if(!listName || listName == "Inbox"){
         this.props.actions.getInboxTasks("COMPLETE")
         this.props.actions.getInboxTasks("INCOMPLETE")
@@ -119,6 +121,7 @@ class Home extends BaseComponent {
     //   $('.refresh').removeClass('rotated')
     // });
     // $('.refresh').addClass('rotated');
+    this.props.actions.loading()
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks("COMPLETE")
@@ -152,20 +155,22 @@ class Home extends BaseComponent {
             <div className="large-12 columns">
               <HeaderTasks refresh={this.refresh} title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch} searchTerm={this.state.searchTerm}/>
               <div className="list-wrapper">
-                <div className="sk-circle hide">
-        					<div className="sk-circle1 sk-child"></div>
-        					<div className="sk-circle2 sk-child"></div>
-        					<div className="sk-circle3 sk-child"></div>
-        					<div className="sk-circle4 sk-child"></div>
-        					<div className="sk-circle5 sk-child"></div>
-        					<div className="sk-circle6 sk-child"></div>
-        					<div className="sk-circle7 sk-child"></div>
-        					<div className="sk-circle8 sk-child"></div>
-        					<div className="sk-circle9 sk-child"></div>
-        					<div className="sk-circle10 sk-child"></div>
-        					<div className="sk-circle11 sk-child"></div>
-        					<div className="sk-circle12 sk-child"></div>
-        				</div>
+                <h5>{this.props.isFetching}</h5>
+                {this.props.isFetching ?
+                  <div className="sk-circle">
+          					<div className="sk-circle1 sk-child"></div>
+          					<div className="sk-circle2 sk-child"></div>
+          					<div className="sk-circle3 sk-child"></div>
+          					<div className="sk-circle4 sk-child"></div>
+          					<div className="sk-circle5 sk-child"></div>
+          					<div className="sk-circle6 sk-child"></div>
+          					<div className="sk-circle7 sk-child"></div>
+          					<div className="sk-circle8 sk-child"></div>
+          					<div className="sk-circle9 sk-child"></div>
+          					<div className="sk-circle10 sk-child"></div>
+          					<div className="sk-circle11 sk-child"></div>
+          					<div className="sk-circle12 sk-child"></div>
+          				</div> :
                 <div className="task-item-wrapper">
                   <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE" members={this.props.members} filteredTasks={filteredTasks} />
                   {this.props.completedTasks.length > 0 &&
@@ -177,6 +182,7 @@ class Home extends BaseComponent {
                     <ListOfTasksContainer taskListId={taskListId} status="COMPLETE" members={this.props.members} filteredTasks={filteredCompletedTasks} />
                   </div>
                 </div>
+              }
               </div>
             </div>
           </div>
@@ -190,7 +196,8 @@ const mapStateToProps = function (store) {
   return{
     members: store.taskListState.tasklistmembers,
     tasks: store.taskState.tasks,
-    completedTasks: store.taskState.completedTasks
+    completedTasks: store.taskState.completedTasks,
+    isFetching: store.taskState.isFetching
   }
 }
 

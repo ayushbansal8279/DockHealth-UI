@@ -12,6 +12,12 @@ export function getAllPatients() {
   };
 }
 
+export function loading(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_PATIENTS})
+  }
+}
+
 export function getPatientsByTaskList(taskListId){
   return function(dispatch){
     return PatientApi.getPatientsByTaskList(taskListId).then(patients => {

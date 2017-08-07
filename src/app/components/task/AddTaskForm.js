@@ -18,10 +18,6 @@ class AddTaskForm extends BaseComponent {
     this.state = {
       taskListId:"",
       currentSubtaskIndex:""
-      // currentSubtask:"",
-      // subtasks:[]
-      // subtaskIndex:0,
-
     }
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)

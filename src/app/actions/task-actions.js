@@ -82,6 +82,13 @@ export function getTasksAssignedByMe(taskListId, sortBy, status){
   }
 }
 
+export function loading(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_TASKS})
+  }
+}
+
+
 
 
 
