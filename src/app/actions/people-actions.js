@@ -5,12 +5,12 @@ export function findAllUsersByOrganizationId() {
   return function(dispatch) {
     return PeopleApi.findAllUsersByOrganizationId().then(peoplelist => {
       dispatch({type: ActionTypes.GET_PEOPLE_SUCCESS, peoplelist});
+      loading()
     }).catch(error => {
       throw(error);
     });
   };
 }
-
 
 export function invitePersonToOrganization(formProps ){
     var personInfo = {email : formProps.email,

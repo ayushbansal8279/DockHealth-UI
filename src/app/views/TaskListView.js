@@ -23,7 +23,7 @@ class TaskListView extends React.Component {
       this.props.taskListAction.getTaskListForUser()
       // debugger;
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-							'PageName': 'Lists'
+				'PageName': 'Lists'
       })
 
     }
@@ -80,6 +80,10 @@ class TaskListView extends React.Component {
       this.props.invitationAction.rejectInviteToTaskList(taskList)
     }
 
+    refresh = () => {
+      this.props.taskListAction.getTaskListForUser()
+    }
+
     render() {
       // const taskLists = this.props.taskLists;
       return (
@@ -100,6 +104,9 @@ class TaskListView extends React.Component {
         				<div className="columns controls">
         					{/* {{> search}} */}
         				</div>
+                <div className="columns shrink icon-group controls">
+                  <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
+                </div>
         				<div className="columns shrink">
         					<svg id="icon-lists" className="add add-other icon" onClick={this.addTaskList}><use xlinkHref="#icon-lists"></use></svg>
         				</div>
@@ -108,8 +115,22 @@ class TaskListView extends React.Component {
         			</header>{/* <!--slideUp--> */}
 
               <AddListForm onSubmit={this.submit}/>
-              
+
         			<div className="list-wrapper">
+                <div className="sk-circle hide">
+                  <div className="sk-circle1 sk-child"></div>
+                  <div className="sk-circle2 sk-child"></div>
+                  <div className="sk-circle3 sk-child"></div>
+                  <div className="sk-circle4 sk-child"></div>
+                  <div className="sk-circle5 sk-child"></div>
+                  <div className="sk-circle6 sk-child"></div>
+                  <div className="sk-circle7 sk-child"></div>
+                  <div className="sk-circle8 sk-child"></div>
+                  <div className="sk-circle9 sk-child"></div>
+                  <div className="sk-circle10 sk-child"></div>
+                  <div className="sk-circle11 sk-child"></div>
+                  <div className="sk-circle12 sk-child"></div>
+                </div>
         				<div className="item-list-wrapper">
 
                   <PendingListsComponent taskLists={this.props.pendingTaskLists} acceptInviteToTaskList={this.acceptInviteToTaskList} rejectInviteToTaskList={this.rejectInviteToTaskList}/>

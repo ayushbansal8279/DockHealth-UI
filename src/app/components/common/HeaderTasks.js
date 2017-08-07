@@ -53,13 +53,21 @@ class HeaderTasks extends BaseComponent {
 
   getListTasks = (sortBy) => {
     if(this.props.taskListId){
-      this.props.taskActions.getListTasks(this.props.taskListId, sortBy)
+      this.props.taskActions.getListTasks(this.props.taskListId, sortBy, "INCOMPLETE")
+      this.props.taskActions.getListTasks(this.props.taskListId, sortBy, "COMPLETE")
+      // this.props.taskActions.getListTasks(this.props.taskListId, sortBy)
     }else if(this.props.title == "Inbox") {
-      this.props.taskActions.getInboxTasks(sortBy)
+      this.props.taskActions.getInboxTasks("COMPLETE", sortBy)
+      this.props.taskActions.getInboxTasks("INCOMPLETE", sortBy)
+      // this.props.taskActions.getInboxTasks(sortBy)
     }else if(this.props.title == "Assigned by me"){
-      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy)
+      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy, "COMPLETE")
+      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy, "INCOMPLETE")
+      // this.props.taskActions.getTasksAssignedByMe(undefined, sortBy)
     }else if(this.props.title == "Assigned to me"){
-      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy)
+      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, "COMPLETE")
+      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, "INCOMPLETE")
+      // this.props.taskActions.getTasksAssignedToMe(undefined, sortBy)
     }
   }
 
@@ -133,7 +141,7 @@ class HeaderTasks extends BaseComponent {
 								</div>
 
 								<div className="columns shrink icon-group controls">
-                  <svg className="icon"><use xlinkHref="#icon-activity"></use></svg>
+                  <span onClick={(e) => this.props.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
                   {this.props.taskListId &&
   									<span onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
                   }

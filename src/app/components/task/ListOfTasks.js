@@ -137,7 +137,7 @@ class ListOfTasks extends BaseComponent {
 		handleToggle = (eventType, task) => {
 			// puts task to state to populate data for form
 			this.props.taskAction.taskToState(task)
-			$('.add').click();
+			// $('.add').click();
 			console.log(task)
 		};
 
@@ -288,7 +288,8 @@ class ListOfTasks extends BaseComponent {
 											<div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
 						            <div className="columns shrink">
 						              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
-						              <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span>
+													<MemberInitials member={comment.creator} extraClass="xsmall"/>
+						              {/* <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span> */}
 						            </div>
 						            <div className="columns">
 						              <span className="comment">{comment.comment}</span>

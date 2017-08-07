@@ -1,6 +1,9 @@
 import React from 'react';
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import InvitePeople from '../components/people/InvitePeople'
 import PeopleContainer from '../components/people/PeopleContainer'
+import * as PeopleActions from '../actions/people-actions'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import BaseComponent from '../components/BaseComponent'
 
@@ -23,6 +26,10 @@ class PeopleView extends BaseComponent {
 
   searchUpdated = (term) => {
     this.setState({searchTerm: term.target.value})
+  }
+
+  refresh = () => {
+    this.props.peopleActions.findAllUsersByOrganizationId()
   }
 
   render() {
@@ -49,8 +56,9 @@ class PeopleView extends BaseComponent {
                     </button>
                   </div>
                 </div>
-
-
+              </div>
+              <div className="columns shrink icon-group controls">
+                <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
               </div>
               <div className="columns shrink">
                 <svg className="add icon"><use xlinkHref="#icon-add-person"></use></svg>
@@ -62,9 +70,21 @@ class PeopleView extends BaseComponent {
             <InvitePeople/>
 
             <div className="list-wrapper">
-
-                <PeopleContainer searchTerm={this.state.searchTerm}/>
-
+              <div className="sk-circle hide">
+                <div className="sk-circle1 sk-child"></div>
+                <div className="sk-circle2 sk-child"></div>
+                <div className="sk-circle3 sk-child"></div>
+                <div className="sk-circle4 sk-child"></div>
+                <div className="sk-circle5 sk-child"></div>
+                <div className="sk-circle6 sk-child"></div>
+                <div className="sk-circle7 sk-child"></div>
+                <div className="sk-circle8 sk-child"></div>
+                <div className="sk-circle9 sk-child"></div>
+                <div className="sk-circle10 sk-child"></div>
+                <div className="sk-circle11 sk-child"></div>
+                <div className="sk-circle12 sk-child"></div>
+              </div>
+              <PeopleContainer searchTerm={this.state.searchTerm}/>
 						</div>{/*list-wrapper*/}
 
           </div>
@@ -74,4 +94,10 @@ class PeopleView extends BaseComponent {
   }
 }
 
-export default PeopleView;
+const mapDispatchToProps = function (dispatch) {
+  return {
+    peopleActions: bindActionCreators(PeopleActions, dispatch)
+  }
+}
+
+export default connect(undefined, mapDispatchToProps)(PeopleView);

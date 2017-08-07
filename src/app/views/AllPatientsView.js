@@ -1,6 +1,9 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
+import * as PatientActions from '../actions/patient-actions'
 import PatientListContainer from '../components/patient/PatientListContainer'
 import SearchPatient from '../components/patient/SearchPatient'
 import FormPatient from '../components/patient/FormPatient'
@@ -25,6 +28,9 @@ class AllPatientsView extends BaseComponent {
     }
     searchUpdated = (term) => {
       this.setState({searchTerm: term.target.value})
+    }
+    refresh = () => {
+      this.props.patientActions.getAllPatients()
     }
     render() {
     return (
@@ -60,6 +66,9 @@ class AllPatientsView extends BaseComponent {
                       </div>
                     </div>
                   </div>
+                  <div className="columns shrink icon-group controls">
+                    <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
+                  </div>
                   <div className="columns shrink">
                     <svg className="add icon"><use xlinkHref="#icon-add-patient"></use></svg>
                   </div>
@@ -92,7 +101,13 @@ class AllPatientsView extends BaseComponent {
   }
 }
 
-export default AllPatientsView
+const mapDispatchToProps = function (dispatch) {
+  return {
+    patientActions: bindActionCreators(PatientActions, dispatch)
+  }
+}
+
+export default connect(undefined, mapDispatchToProps)(AllPatientsView);
 
 // AllPatientsView.route = {
 //   path: 'patientList',

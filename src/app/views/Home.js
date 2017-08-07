@@ -10,6 +10,7 @@ import HeaderTasks from '../components/common/HeaderTasks'
 import NotificationsToggle from '../components/tasklist/TaskListNotificationsToggle'
 import * as TaskActions from '../actions/task-actions'
 import * as TaskListActions from '../actions/tasklist-actions'
+import * as PatientActions from '../actions/patient-actions'
 import BaseComponent from '../components/BaseComponent'
 import $ from 'jquery'
 import {mobileAnalyticsClient} from '../api/analytics-api'
@@ -114,6 +115,10 @@ class Home extends BaseComponent {
   }
 
   refresh = () => {
+    // $('.refresh').addClass('rotated').delay(100, function() {
+    //   $('.refresh').removeClass('rotated')
+    // });
+    // $('.refresh').addClass('rotated');
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks("COMPLETE")
@@ -130,6 +135,7 @@ class Home extends BaseComponent {
       this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
     }
     this.props.patientActions.getAllPatients()
+    // $('.refresh').removeClass('rotated');
   }
 
   render() {
@@ -144,7 +150,7 @@ class Home extends BaseComponent {
         <div className="off-canvas-content" data-off-canvas-content="true">
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch} searchTerm={this.state.searchTerm}/>
+              <HeaderTasks refresh={this.refresh} title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch} searchTerm={this.state.searchTerm}/>
               <div className="list-wrapper">
                 <div className="sk-circle hide">
         					<div className="sk-circle1 sk-child"></div>
@@ -189,7 +195,8 @@ const mapStateToProps = function (store) {
 const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(TaskActions, dispatch),
-    taskListActions: bindActionCreators(TaskListActions, dispatch)
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    patientActions: bindActionCreators(PatientActions, dispatch)
   }
 }
 
