@@ -63,7 +63,7 @@ class AddSubtaskForm extends BaseComponent{
     subtask.patient = $('#add-patient-subtask').val()
     subtask.assignedToId = $('#assign-subtask-to-id').val()
     subtask.assignedTo = $('#assign-subtask-to').val()
-    if(subtask.priority){
+    if(subtask.priority == true){
       subtask.priority = "HIGH"
     }else{
       subtask.priority = "LOW"
