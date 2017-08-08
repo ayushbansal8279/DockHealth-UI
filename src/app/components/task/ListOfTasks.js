@@ -72,7 +72,7 @@ class ListOfTasks extends BaseComponent {
 
 		componentDidUpdate (prevProps, prevState) {
 			if(prevProps.listName != "COMPLETE" && prevProps != this.props){
-				debugger;
+				// debugger;
 			}
 			super.componentDidUpdate()
 			// console.log("listoftasks didupdate")
