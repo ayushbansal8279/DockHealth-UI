@@ -6,13 +6,13 @@ import AuthField from '../common/AuthField'
 const validate = values => {
   const errors = {}
   if (!values.username) {
-    errors.username = 'Required'
+    errors.username = 'Please enter an email address'
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.username)) {
-    errors.username = 'Invalid email address'
+    errors.username = 'Please enter a valid email address'
   }
 
   if (!values.password) {
-    errors.password = 'Required'
+    errors.password = 'Please enter a password'
   }
 
   return errors
@@ -30,7 +30,7 @@ const LoginForm = (props) => {
 				</div>
 
 				<div className="columns small-12 text-center top-buffer">
-					<input type="submit" className="button secondary expand" value="Login"/>
+					<input id="loginButton" type="submit" className="button secondary expand" value="Login"/>
           {/*<p><button className={'button is-primary is-large'} type='submit'>Login</button></p> */}
 				</div>
 				<div className="columns top-buffer small-6 text-left details">
