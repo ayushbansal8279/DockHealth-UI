@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux';
 import * as userApi from '../../api/user-api'
 import BaseComponent from '../BaseComponent'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import MemberInitials from '../common/MemberInitials'
 
 class UserProfileContainer extends BaseComponent {
   constructor(props) {
@@ -103,7 +104,7 @@ class UserProfileContainer extends BaseComponent {
       }
 //console.log(formProps.manualSpecialty)
 //console.log(formProps.manualSubSpecialty)
-      if(formProps.manualSpecialty ==undefined && formProps.manualSubSpecialty ==undefined) { //specialties selected from dropdown
+      if(formProps.manualSpecialty == undefined && formProps.manualSubSpecialty == undefined) { //specialties selected from dropdown
         allSpecialties.map((specialty) =>{
             var checkBoxId = "SpecialtyCB" + specialty.specialtyId
             if(formProps[checkBoxId]){
@@ -389,7 +390,8 @@ findObjectByKey(array, key, value) {
                 {/* Profile Image */}
                 <div className="columns large-12 text-center">
                   <div className="update-photo" data-open="update-profile-photo">
-                    <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/>
+                    <MemberInitials member={initialValues.userProfile} extraClass="xlarge"/>
+                    {/* <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/> */}
                     <span className="update circle xlarge">Update picture</span>
                   </div>
                   <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
@@ -681,6 +683,7 @@ function mapStateToProps(state) {
     homePhoneNumber:state.userState.userProfile.homePhoneNumber,
     emailPref: state.userState.userNotificationPrefs.email,
     pushPref: state.userState.userNotificationPrefs.push,
+    userProfile:state.userState.userProfile
     }  //this automatically causes REDUX to load the form from state
 
   initialValues = Object.assign({}, initialValues, userTitlesCB)

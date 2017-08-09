@@ -22,6 +22,11 @@ class PeopleView extends BaseComponent {
 						'PageName': 'PeopleView'
 		});
   }
+
+  componentWillUnmount(){
+    closeAddForm()
+  }
+  
   clearSearch = () => {
     this.setState({searchTerm: ''})
   }

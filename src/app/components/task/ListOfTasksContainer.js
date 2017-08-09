@@ -23,6 +23,10 @@ class ListOfTasksContainer extends BaseComponent {
     // }
   }
 
+  componentWillUnmount(){
+    closeAddForm()
+  }
+
   render () {
     return (<ListOfTasks tasks={this.props.filteredTasks} deleteTask={this.props.actions.deleteTask} listName={this.props.status}
             markComplete={this.props.actions.markComplete} updateTaskDescription={this.props.actions.updateTaskDescription}

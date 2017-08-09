@@ -178,6 +178,17 @@ pre.emailMessage {
     animation:spin 4s linear;
 }
 
+.user-profile-link{
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.user-profile-link .member-initials {
+    margin-right: .75rem;
+}
+
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

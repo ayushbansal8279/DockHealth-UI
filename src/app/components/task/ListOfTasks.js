@@ -70,6 +70,10 @@ class ListOfTasks extends BaseComponent {
 
 		}
 
+		componentWillUnmount(){
+			closeAddForm()
+		}
+
 		componentDidUpdate (prevProps, prevState) {
 			if(prevProps.listName != "COMPLETE" && prevProps != this.props){
 				// debugger;
@@ -199,7 +203,10 @@ class ListOfTasks extends BaseComponent {
 			      </div>
 
 			      <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}>
-		          <MemberInitials member={task.assignedTo}/>
+							{task.assignedTo ?
+			         	<MemberInitials member={task.assignedTo}/> :
+								<span className="member-photo member-unassigned circle">?</span>
+							}
 			      </div>
 
 			      <div className="columns shrink align-right">
@@ -210,6 +217,7 @@ class ListOfTasks extends BaseComponent {
 			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
 			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
+							<span className="subtask-count text-light">{task.subtasks.length + " subtasks"}</span>
 							{task.assignedBy ?
 				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
 				        <span className="task-details text-light">unassigned</span>
@@ -262,7 +270,7 @@ class ListOfTasks extends BaseComponent {
 										</div>
 									</div>
 								}
-								<AddComment task={task} userProfilePic={this.props.userProfilePic}/>
+								<AddComment task={task} userProfile={this.props.userProfile}/>
 							</div>
 			      </div>
 
@@ -329,6 +337,7 @@ const mapStateToProps = function (store) {
 	return {
 		user: store.userState.user,
 		userProfilePic:store.userState.userProfilePic,
+		userProfile: store.userState.userProfile,
 		task: store.taskState.task
 	}
 }

@@ -16,6 +16,10 @@ class PatientView extends React.Component {
       });
   	}
 
+    componentWillUnmount(){
+      closeAddForm()
+    }
+
     render() {
       var patient = {}
       if(this.props.patient){
