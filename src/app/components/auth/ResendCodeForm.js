@@ -26,10 +26,10 @@ const ResendCodeForm = (props) => {
 			<div className="row expanded">
         <Field name='username' type='text' component={AuthField} label='Email' xlinkHref="#icon-email"/>
         <Field name='confirmationCode' type='text' component={AuthField} label='Confirmation code' xlinkHref="#icon-password"/>
-				<div className="columns large-12 text-center top-buffer">
+				<div className="columns small-12 text-center top-buffer">
           <button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Resend code</button>
 				</div>
-				<div className="columns large-12 top-buffer text-right details">
+				<div className="columns small-12 top-buffer text-right details">
           <Link to="/confirmRegistration">Confirm registration</Link>
 				</div>
 			</div>

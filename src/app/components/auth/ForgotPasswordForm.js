@@ -21,10 +21,10 @@ const ForgotPasswordForm = (props) => {
 		<form className="inline-label top-buffer" onSubmit={handleSubmit}>
 			<div className="row expanded">
         <Field name='username' type='text' component={AuthField} label='Email' xlinkHref="#icon-email"/>
-				<div className="columns large-12 text-center top-buffer">
+				<div className="columns small-12 text-center top-buffer">
           <button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Send reset code</button>
 				</div>
-				<div className="columns large-12 top-buffer text-center details">
+				<div className="columns small-12 top-buffer text-center details">
           <Link to="/login">Login if you already have an account</Link>
 				</div>
 			</div>

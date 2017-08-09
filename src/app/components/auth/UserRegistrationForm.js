@@ -47,13 +47,13 @@ const UserRegistrationForm = (props) => {
         <Field name='phoneNumber' type='tel' component={AuthField} label='Your mobile phone #' pattern='\d{10}'/>
         <Field name='password' type='password' component={AuthField} label='Password' />
         <Field name='password2' type='password' component={AuthField} label='Confirm password' />
-				<div className="columns large-12 text-center top-buffer">
+				<div className="columns small-12 text-center top-buffer">
 					<button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Continue</button>
 				</div>
-				<div className="columns top-buffer large-6 text-left details">
+				<div className="columns top-buffer small-6 text-left details">
           I already have an account. <Link to="/login">Sign in</Link>.
 				</div>
-				<div className="columns large-6 top-buffer text-right details">
+				<div className="columns small-6 top-buffer text-right details">
           <Link to="/confirmRegistration">Confirm registration</Link>
 				</div>
 
