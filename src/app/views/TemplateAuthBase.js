@@ -6,9 +6,9 @@ class TemplateAuthBase extends React.Component {
     return (    
       <div className="bg-image row expanded">
         <div className="gradient-overlay"></div>
-        <div className="wrapper columns align-self-middle large-6 large-offset-3">
+        <div className="wrapper columns align-self-middle large-6 large-offset-3 medium-8 medium-offset-2 small-12">
           <div className="row expanded text-center">
-            <div className="columns large-12">
+            <div className="columns small-12">
               <img className="dock-logo" src="assets/img/dock-logo-white.png" alt="Dock Health"/>
             </div>
           </div> 
