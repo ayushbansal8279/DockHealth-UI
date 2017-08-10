@@ -146,8 +146,13 @@ class Home extends BaseComponent {
     const KEYS_TO_FILTERS = ['description', 'comments.comment', 'subtasks.description', 'subtasks.comments.comment']
 
     // Creates filter with LIST, SEARCH TERM, KEYS TO FILTER
-    const filteredTasks = this.props.tasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
-    const filteredCompletedTasks = this.props.completedTasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+    var filteredTasks = [];
+    var filteredCompletedTasks = [];
+
+    if(this.props.tasks && this.props.completedTasks){
+      filteredTasks = this.props.tasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+      filteredCompletedTasks = this.props.completedTasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+    }
     return (
 
         <div className="off-canvas-content" data-off-canvas-content="true">

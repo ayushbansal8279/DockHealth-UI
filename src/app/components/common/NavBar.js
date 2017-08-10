@@ -18,7 +18,7 @@ const NavLink = ({to, children, className}) => (
 )
 
 const LinksDefault = ({className}) => (
-  <div data-toggle="profile-dropdown" className="user-profile-link">
+  <div data-toggle="profile-dropdown" className="align-middle row user-profile-link link">
     <ul className={className}>
       <NavLink to='/register'>register</NavLink>
       <NavLink to='/login'>login</NavLink>
@@ -106,7 +106,7 @@ class NavBar extends React.Component {
               <NavLink activeClassName="active" to={"/tasks/Assigned to me"}>Assigned to me</NavLink>
               <NavLink activeClassName="active" to={"/tasks/Assigned by me"}>Assigned by me</NavLink>
 
-              {this.props.taskLists.map(taskList => {
+              {this.props.taskLists && this.props.taskLists.map(taskList => {
                 return(
                   <NavLink  to={"/tasks/" + taskList.listName + "/" + taskList.taskListId} activeClassName="active" title={taskList.listName} key={taskList.taskListId}><span className="list-logo small"></span>{taskList.listName}</NavLink>
                 )
