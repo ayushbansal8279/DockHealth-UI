@@ -1,5 +1,6 @@
 import * as ActionTypes from '../actions/action-types';
 import * as PatientApi from '../api/patient-api'
+import {reset} from 'redux-form';
 
 export function getAllPatients() {
   return function(dispatch) {
@@ -30,11 +31,23 @@ export function getPatientsByTaskList(taskListId){
 
 export function getPatientById(patientId){
   return function(dispatch){
+    if(!patientId){
+      var patient = null;
+      dispatch({type: ActionTypes.GET_PATIENT_SUCCESS, patient});
+    }
     return PatientApi.getPatientById(patientId).then(patient => {
       dispatch({type: ActionTypes.GET_PATIENT_SUCCESS, patient})
     }).catch(error => {
       throw(error)
     })
+  }
+}
+
+export function patientToState(patient){
+  return function(dispatch){
+    dispatch({type: ActionTypes.GET_PATIENT_SUCCESS, patient})
+    // dispatch({type: ActionTypes.PATIENT_SELECTION_RESET, patient})
+    // dispatch(reset('FormPatient'));
   }
 }
 
@@ -78,6 +91,8 @@ export function lookupEMRPatients(searchToken){
   return function(dispatch){
     return PatientApi.lookupEMRPatients(searchToken).then(patients => {
       dispatch({type: ActionTypes.GET_EMR_PATIENTS_SUCCESS, patients})
+      // var patient = null
+      // dispatch({type: ActionTypes.PATIENT_SELECTION_RESET, patient})
     }).catch(error => {
       throw(error)
     })

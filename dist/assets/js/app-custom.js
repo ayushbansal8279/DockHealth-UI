@@ -2,7 +2,21 @@ function renderFoundationComponentsJquery(){
 	console.log('in JS function: renderFoundationComponentsJquery');
 
 	// datepicker
-	$('.pickdate').fdatepicker({
+	// $('.pickdate').fdatepicker({
+	// });
+
+	$('.dobpickdate').fdatepicker()
+		.on('changeDate', function (ev) {
+			// var dob = ev.date;
+			// var mm = dob.getMonth() + 1; // getMonth() is zero-based
+  			// var dd = dob.getDate() + 1;
+  			// var dobStr = [
+          	// 	(mm>9 ? '' : '0') + mm, "/",
+			// 	(dd>9 ? '' : '0') + dd, "/",
+			// 	dob.getFullYear()
+         	// 	].join('');
+			// $('.dobpickdate').attr('value', dobStr);
+			$('.dobpickdate').fdatepicker('hide');
 	});
 
 }
@@ -372,6 +386,10 @@ $(document).ready(function() {
 		var $el = $(this);
 		$el.text($el.text() == "Show completed tasks" ? "Hide completed tasks": "Show completed tasks");
 	});
+
+
+	// $('.pickdate').fdatepicker({
+	// });
 
 	// $(document).on('click', 'div', function () {
 	// 	loading();

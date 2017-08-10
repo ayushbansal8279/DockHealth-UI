@@ -1,5 +1,6 @@
 import React from 'react'
 import { SubmissionError, Field, reduxForm } from 'redux-form'
+import Moment from 'react-moment'
 import * as PatientActions from '../../actions/patient-actions'
 import { connect } from 'react-redux'
 import BasicField from '../common/BasicField'
@@ -7,6 +8,8 @@ import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
+
+const { DOM: { input, select, textarea } } = React  
 
 const validate = values => {
   const errors = {}
@@ -38,7 +41,17 @@ class FormPatient extends BaseComponent {
       });
   	}
 
+    // onGenderChanged (e) {
+    //   this.setState({
+    //     gender: e.currentTarget.value
+    //   });
+    // }
+
   	onSubmit (formProps) {
+      var dobStr = $('.dobpickdate').val(); //form props is not picking up dob date value hence need to set it manually
+      if(dobStr && dobStr!=""){
+        formProps.dob = dobStr
+      }
       if (this.props.patientId) {
           this.props.actions.updatePatient(formProps)
           .then((res) => {
@@ -57,7 +70,7 @@ class FormPatient extends BaseComponent {
           })
       }
 
-      hashHistory.push('patient/'+this.props.patientId)
+      hashHistory.push('patientList')
 
   	}
 
@@ -67,21 +80,38 @@ class FormPatient extends BaseComponent {
         patient = this.props.patient
         //this.state.firstName = this.props.patient.firstName
       }
-
+      
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       return (
             <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
-
               <Field name='mrn' type='number' component={BasicField} label='MRN' placeholder='required'/>
-              <Field name='firstName' type='text' component={BasicField} label='First name' placeholder='required' value={patient.firstName}/>
-              <Field name='lastName' type='text' component={BasicField} label='Last name' placeholder='required' value={patient.firstName}/>
+              <Field name='firstName' type='text' component={BasicField} label='First name' placeholder='required'/>
+              <Field name='lastName' type='text' component={BasicField} label='Last name' placeholder='required'/>
 
+						  {/* <div className="column large-12 input-group no-icon">
+                <div className="form-floating-label input-wrapper has-value"> */}
+                  {/* <input className="input-group-field pickdate" type="text" value={patient.dob && <Moment format="MM/DD/YYYY">{new Date(patient.dob)}</Moment>} name="dob"/> */}
+                   {/* <Field className="input-group-field pickdate" id="dob" name='dob' type='text' component="input"/> 
+                  <label>Birthday</label>
+                </div>
+              </div> */}
+              {/* <Field name='dob' type='text' component={BasicField} extraClassName="input-group-field pickdate" label='Birthday'/>  */}
+              <fieldset className="large-12 columns">
+                <span className="inner">
+                  <legend>Birthday</legend>
+                  <span className="float-left">
+                    <Field className="input-group-field dobpickdate" id="dob" name='dob' type='text' component="input" placeholder="Select Date"/> 
+                  </span>
+                </span>
+              </fieldset>
               <fieldset className="large-12 columns">
                 <span className="inner">
                   <legend>Gender</legend>
                   <span className="float-right">
-                    <input type="radio" name="gender" value="female"/><label>Female</label>
-                    <input type="radio" name="gender" value="male"/><label>Male</label>
+                    {/* <input type="radio" name="gender" value="female" checked={patient.gender && patient.gender === 'female'} onChange={this.onGenderChanged}/><label>Female</label>
+                    <input type="radio" name="gender" value="male" checked={patient.gender && patient.gender === 'male'} onChange={this.onGenderChanged}/><label>Male</label> */}
+                     <label><Field name='gender' component="input" type='radio' value='male'/> Male</label>
+                    <label><Field name='gender' component="input" type='radio' value='female'/> Female</label> 
                   </span>
                 </span>
               </fieldset>
@@ -106,7 +136,7 @@ class FormPatient extends BaseComponent {
 }
 
 const mapStateToProps = function (state) {
-  var patientInitialValues = null;
+  var patientInitialValues = null
   if(state.patientState.selectedEmrPatient){
     patientInitialValues = state.patientState.selectedEmrPatient
   }
@@ -129,3 +159,4 @@ export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
     form: 'FormPatient',
     validate
 })(FormPatient));
+

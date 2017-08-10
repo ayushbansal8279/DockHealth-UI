@@ -21,9 +21,6 @@ export function getPatientsByTaskList(taskListId) {
 }
 
 export function getPatientById(patientId) {
-  if(!patientId){
-    patientId = -1;
-  }
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/'+patientId)
     .then(response => {
       return response.data;

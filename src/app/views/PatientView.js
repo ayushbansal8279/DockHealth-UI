@@ -53,7 +53,7 @@ class PatientView extends React.Component {
                   </div>
                   <div className="columns large-4">
                     <span className="item-details">Birthday</span>
-                    <span className="item-content"><Moment format="MMM DD, YYYY">{patient.dob}</Moment></span>
+                    <span className="item-content">{patient.dob && <Moment format="MMM DD, YYYY">{patient.dob}</Moment>}</span>
                   </div>
                 </div>
 

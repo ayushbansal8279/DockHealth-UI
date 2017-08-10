@@ -1,5 +1,5 @@
 import React from 'react'
-import { SubmissionError, Field, reduxForm } from 'redux-form'
+import { SubmissionError, Field, reduxForm, actions } from 'redux-form'
 import * as PatientActions from '../../actions/patient-actions'
 import { connect } from 'react-redux'
 import BasicField from '../common/BasicField'
@@ -7,6 +7,7 @@ import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
+import Moment from 'react-moment'
 
 class SearchPatient extends BaseComponent {
 	constructor(props) {
@@ -37,9 +38,11 @@ class SearchPatient extends BaseComponent {
 
     searchPatients () {
         this.props.patientActions.lookupEMRPatients(this.state.searchToken);
+        this.props.formActions.destroy('FormPatient');
     }
 
     selectPatient (patient) {
+        patient.dob = patient.dateOfBirth
         this.props.patientActions.selectEMRPatient(patient);
     }
 
@@ -92,7 +95,8 @@ const mapStateToProps = function (state) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    patientActions: bindActionCreators(PatientActions, dispatch)
+    patientActions: bindActionCreators(PatientActions, dispatch),
+    formActions: bindActionCreators(actions, dispatch)
   }
 }
 
