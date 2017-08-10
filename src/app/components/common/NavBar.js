@@ -7,6 +7,7 @@ import * as TaskActions from '../../actions/task-actions'
 import * as TaskListActions from '../../actions/tasklist-actions'
 import * as userApi from '../../api/user-api'
 import $ from 'jquery'
+import MemberInitials from './MemberInitials'
 
 const NavLink = ({to, children, className}) => (
   <li>
@@ -26,7 +27,10 @@ const LinksDefault = ({className}) => (
 )
 
 const LinksAuth = ({user, className, onLogout, userProfilePic}) => (
-    <div data-toggle="profile-dropdown" className="user-profile-link link"><img className="member-photo circle" src={userProfilePic} alt="name of user"/>{user.firstName + " " + user.lastName}</div>
+    <div data-toggle="profile-dropdown" className="user-profile-link link">
+      <MemberInitials member={user}/>
+      {user.firstName + " " + user.lastName}
+    </div>
 )
 
 class NavBar extends React.Component {

@@ -143,12 +143,12 @@ class HeaderTasks extends BaseComponent {
 								</div>
 
 								<div className="columns shrink icon-group controls">
-                  <span onClick={(e) => this.props.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
+                  <span title="Refresh data" onClick={(e) => this.props.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
                   {this.props.taskListId &&
-  									<span onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
+  									<span title="List alerts toggle" onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
                   }
 									{/* <svg className="icon"><use xlinkHref="#icon-print"></use></svg> */}
-									<svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg>
+									<span title="Slim view toggle"><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
 								</div>
 
 								<div className="columns shrink" onClick={(e) => this.handleAddTask()}>

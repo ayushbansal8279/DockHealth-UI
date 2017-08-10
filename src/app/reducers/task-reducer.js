@@ -14,6 +14,7 @@ const TaskReducer = function(state = initialState, action) {
       }
 
     case types.GET_TASKS_SUCCESS:
+      // isFetching is used for the loading image
       return Object.assign({}, state, { tasks: action.tasks, isFetching:false });
 
     case types.GET_COMPLETED_TASKS_SUCCESS:
@@ -315,11 +316,12 @@ const TaskReducer = function(state = initialState, action) {
                 {...task, read:false, subtasks:
                   task.subtasks.map(subtask =>
                     subtask.taskId === action.task.taskId ?
-                    {...subtask, read:false, comments: subtask.comments.concat([action.comment.data])} :
+                    {...subtask, read:false, comments: [action.comment.data].concat(subtask.comments)} :
+                    // {...subtask, read:false, comments: subtask.comments.concat([action.comment.data])} :
                     subtask
                   )
                 } :
-                { ...task, read:false, comments: task.comments.concat([action.comment.data]) }
+                { ...task, read:false, comments: [action.comment.data].concat(task.comments)}
 
                 : task
             )

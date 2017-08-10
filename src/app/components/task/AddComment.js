@@ -7,6 +7,7 @@ import $ from 'jquery'
 const  { DOM: { input, select, textarea } } = React
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
+import MemberInitials from '../common/MemberInitials'
 
 class AddComment extends BaseComponent {
   constructor(props){
@@ -75,7 +76,8 @@ class AddComment extends BaseComponent {
     return (
       <div className="row expanded collapse comment-wrapper">
         <div className="columns shrink">
-          <img className="member-photo circle xsmall" src={this.props.userProfilePic} alt="name of user"/>
+          <MemberInitials member={this.props.userProfile} extraClass="xsmall"/>
+          {/* <img className="member-photo circle xsmall" src={this.props.userProfilePic} alt="name of user"/> */}
         </div>
         <div className="columns" data-add-comment>
           <span className="comment-button comment text-light">Add a comment...</span>
