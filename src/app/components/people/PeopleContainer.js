@@ -94,36 +94,71 @@ class PeopleContainer extends BaseComponent {
     }
 
     renderRoleButton(person){
-      if(person.userInviteStatus==null || person.userInviteStatus=="" || person.userInviteStatus=='ACCEPTED'){
-          if(person.orgUserRole==null || person.orgUserRole=='MEMBER'){
-            return (
-                  <ul className="no-bullet">
-                    <li onClick={(e) => this.onClickRoleChange(person.userId, person.orgUserRole)}>Make admin</li>
-                    <li data-open={"delete-user-"+person.userId}>Delete this person</li>
-                  </ul>
-            );
-          }else if(person.orgUserRole=='OWNER'){
-            return (
-                  <ul className="no-bullet">
-                    <li onClick={(e) => this.onClickRemoveUser(person.userId)}>Delete this person</li>
-                  </ul>
-            );
-          }else if(person.orgUserRole=='ADMIN'){
-            return (
+      if(person.userId == this.props.userProfile.userId){
+        return(
+          <div className="columns shrink more-options-wrapper more-options-people">
+            <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+            <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
+                <ul className="no-bullet">
+                  <li data-open={"delete-user-"+person.userId}>Leave organization</li>
+                </ul>
+              </div>
+           </div>
+         )
+      }else if(this.props.userProfile.orgUserRole == 'ADMIN' || this.props.userProfile.orgUserRole == 'OWNER'){
+        if(person.orgUserRole==null || person.orgUserRole=='MEMBER'){
+          return (
+            <div className="columns shrink more-options-wrapper more-options-people">
+              <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+              <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
+                <ul className="no-bullet">
+                  <li onClick={(e) => this.onClickRoleChange(person.userId, person.orgUserRole)}>Make admin</li>
+                  <li data-open={"delete-user-"+person.userId}>Delete this person</li>
+                </ul>
+              </div>
+           </div>
+          );
+        }else if(person.orgUserRole=='OWNER'){
+          return (
+          <div className="columns shrink more-options-wrapper more-options-people">
+            <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+            <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
+              <ul className="no-bullet">
+                <li onClick={(e) => this.onClickRemoveUser(person.userId)}>Delete this person</li>
+              </ul>
+            </div>
+           </div>
+          );
+        }else if(person.orgUserRole=='ADMIN'){
+          return (
+            <div className="columns shrink more-options-wrapper more-options-people">
+              <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+              <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
                   <ul className="no-bullet">
                     <li onClick={(e) => this.onClickRoleChange(person.userId, person.orgUserRole)}>Remove admin rights</li>
                     <li data-open={"delete-user-"+person.userId}>Delete this person</li>
                   </ul>
-              );
+                </div>
+             </div>
+            );
           }
-      }else if(person.userInviteStatus=='PENDING'){
+        }
+
+        if(person.userInviteStatus=='PENDING'){
           return (
+            <div className="columns shrink more-options-wrapper more-options-people">
+                <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+                <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
                   <ul className="no-bullet">
                     <li onClick={(e) => this.onClickCancelInvite(person.email)}>Cancel Invite</li>
                   </ul>
+                </div>
+             </div>
           );
+        }
+
       }
-    }
+
 
     renderStatus(person){
       if(person.userInviteStatus==null || person.userInviteStatus=="" || person.userInviteStatus=='ACCEPTED'){
@@ -220,22 +255,18 @@ class PeopleContainer extends BaseComponent {
                   }
                </span>
              </div>
-             <div className="columns shrink more-options-wrapper more-options-people">
-                <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
-                <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
-                  {
-                    this.renderRoleButton(person)
-                  }
-              </div>
+
+                {this.renderRoleButton(person)}
+
+               <BooleanModal
+                 uniqueModalId={"delete-user-"+person.userId}
+                 message="Are you sure you want to delete this user?"
+                 handleConfirmation={this.onClickRemoveUser}
+                 handleConfirmationArgs={person.userId}
+                 confirmBtnTxt="Delete"
+               />
              </div>
-             <BooleanModal
-               uniqueModalId={"delete-user-"+person.userId}
-               message="Are you sure you want to delete this user?"
-               handleConfirmation={this.onClickRemoveUser}
-               handleConfirmationArgs={person.userId}
-               confirmBtnTxt="Delete"
-             />
-           </div>
+
          )
       })
     }
@@ -251,7 +282,8 @@ class PeopleContainer extends BaseComponent {
 
 function mapStateToProps(state) {
   return {
-    peoplelist: state.peopleState.peoplelist
+    peoplelist: state.peopleState.peoplelist,
+    userProfile: state.userState.userProfile
   };
 }
 

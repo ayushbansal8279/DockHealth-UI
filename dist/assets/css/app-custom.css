@@ -29,7 +29,6 @@
   flex-direction: row-reverse;
 }
 
-
 .Notification {
   /*position:absolute;*/
   bottom: 20px;
@@ -135,7 +134,7 @@ input:checked ~ .switch-paddle:after {
 }
 
 .reveal .scroll-wrapper, .reveal{
-  overflow: visible;
+  overflow: scroll;
 }
 
 #eac-container-add-member-to-list ul{
@@ -176,17 +175,6 @@ pre.emailMessage {
     -webkit-animation:spin 4s linear;
     -moz-animation:spin 4s linear;
     animation:spin 4s linear;
-}
-
-.user-profile-link{
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-}
-
-.user-profile-link .member-initials {
-    margin-right: .75rem;
 }
 
 .subtask-count{

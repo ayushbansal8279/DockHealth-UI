@@ -18,7 +18,7 @@ const NavLink = ({to, children, className}) => (
 )
 
 const LinksDefault = ({className}) => (
-  <div data-toggle="profile-dropdown" className="user-profile-link">
+  <div data-toggle="profile-dropdown" className="align-middle row user-profile-link link">
     <ul className={className}>
       <NavLink to='/register'>register</NavLink>
       <NavLink to='/login'>login</NavLink>
