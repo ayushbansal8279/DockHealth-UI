@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import { SubmissionError, Field, reduxForm, actions } from 'redux-form'
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
 import * as PatientActions from '../actions/patient-actions'
@@ -21,6 +22,7 @@ class AllPatientsView extends BaseComponent {
     componentDidMount(){
       this.props.patientActions.loading()
       this.props.patientActions.getAllPatients()
+      this.props.patientActions.patientToState(null)
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 							'PageName': 'AllPatientsView'
 			});
@@ -34,7 +36,14 @@ class AllPatientsView extends BaseComponent {
     refresh = () => {
       this.props.patientActions.loading()
       this.props.patientActions.getAllPatients()
+      this.props.patientActions.patientToState(null)
     }
+
+    handleAddPatient = () => {
+      this.props.patientActions.patientToState(null)
+      this.props.formActions.destroy('FormPatient')
+    };
+  
     render() {
     return (
         <div className="off-canvas-content" data-off-canvas-content="true">
@@ -72,12 +81,12 @@ class AllPatientsView extends BaseComponent {
                   <div className="columns shrink icon-group controls">
                     <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
                   </div>
-                  <div className="columns shrink">
+                  <div className="columns shrink" onClick={(e) => this.handleAddPatient()}>
                     <svg className="add icon"><use xlinkHref="#icon-add-patient"></use></svg>
                   </div>
                 </div>
 
-                </header>
+                </header> 
 
                 <div className="add-form-wrapper">
                   <div className="task-item add-form row expanded">
@@ -131,7 +140,8 @@ const mapStateToProps = function (store) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    patientActions: bindActionCreators(PatientActions, dispatch)
+    patientActions: bindActionCreators(PatientActions, dispatch),
+    formActions: bindActionCreators(actions, dispatch)
   }
 }
 

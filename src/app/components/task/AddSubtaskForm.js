@@ -183,9 +183,9 @@ const mapStateToProps = function(store){
   // if(this.props.currentSubtasks && this.props.currentSubtaskIndex){
   //   initialSubtaskFormValues = this.props.currentSubtasks[this.props.currentSubtaskIndex]
   // }
-  // return{
+  return{
   //   initialValues: initialSubtaskFormValues
-  // }
+  }
 }
 
 const mapDispatchToProps = function(dispatch){

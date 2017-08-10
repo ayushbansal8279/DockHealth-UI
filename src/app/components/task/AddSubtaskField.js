@@ -30,9 +30,9 @@ const mapStateToProps = function(store){
   // if(this.props.taskList){
   //   initialValues = this.props.taskList
   // }
-  // return{
+  return{
   //   initialValues: initialValues
-  // }
+  }
 }
 
 export default connect(mapStateToProps)(AddSubtaskField)
