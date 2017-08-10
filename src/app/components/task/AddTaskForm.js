@@ -197,7 +197,7 @@ class AddTaskForm extends BaseComponent {
 							<div className="switch">
 								<Field className="switch-input" id="exampleSwitch" type="checkbox" name="priority" component="input"/>
 								<label className="switch-paddle" htmlFor="exampleSwitch">
-									<span className="show-for-sr">Download Kittens</span>
+									<span className="show-for-sr">Download</span>
 								</label>
 							</div>
 						</div>
@@ -239,7 +239,7 @@ class AddTaskForm extends BaseComponent {
 
           {/* SAVE */}
           <div className="columns shrink align-right">
-            <input type="submit" className="button secondary medium" value="Save"/>
+            <input id="addTaskButton" type="submit" className="button secondary medium" value="Save"/>
           </div>
         </div>
       </div>{/*main-task-wrapper*/}
