@@ -385,8 +385,6 @@ const TaskReducer = function(state = initialState, action) {
       )
       // currentListVar
       return { ...state, currentTask:currentTaskVar };
-      break
-
 
   }
 

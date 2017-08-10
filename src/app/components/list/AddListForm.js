@@ -215,7 +215,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                     <li><span className="add-member circle medium addAdminForList">+</span></li>
                     {this.state.selectedAdmins.map(member => {
                       return(
-                        <li key={"member"+member.userId}><MemberInitials member={member}/></li>
+                        <li key={"list_admin_"+member.userId}><MemberInitials member={member}/></li>
                       )
                     })}
                   </ul>
@@ -245,7 +245,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                     <li><span className="add-member circle medium addMemberForList">+</span></li>
                     {this.state.selectedMembers.map(member => {
                       return(
-                        <li key={"member"+member.userId}><MemberInitials member={member}/></li>
+                        <li key={"list_member_"+member.userId}><MemberInitials member={member}/></li>
                       )
                     })}
                   </ul>

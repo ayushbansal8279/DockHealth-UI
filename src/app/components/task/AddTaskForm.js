@@ -128,6 +128,7 @@ class AddTaskForm extends BaseComponent {
       </span>
     )
   return (
+    <div className="column top-buffer large-12">
     <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
@@ -244,6 +245,7 @@ class AddTaskForm extends BaseComponent {
         </div>
       </div>{/*main-task-wrapper*/}
       {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
+    </form>
       <AddSubtaskForm
         // initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
         onSubmit={this.submitSubtask}
@@ -256,7 +258,7 @@ class AddTaskForm extends BaseComponent {
         title={this.props.title}
         currentTask={this.props.currentTask}
       />
-    </form>
+    </div>
   )
   }
 

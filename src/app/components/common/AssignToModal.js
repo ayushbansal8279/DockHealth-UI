@@ -29,7 +29,7 @@ class AssignToModal extends React.Component {
         <div className="scroll-wrapper">
           {this.state.members.map(member=>{
             return(
-              <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={this.props.taskListId + member.userId}  className="row condense expanded border-bottom align-middle">
+              <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={'assign_'+this.props.taskListId+'_'+member.userId} className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
                   <MemberInitials member={member}/>
                   {/* <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/> */}
