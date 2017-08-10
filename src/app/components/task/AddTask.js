@@ -40,14 +40,15 @@ class AddTask extends BaseComponent {
   	}
 
   	componentWillUpdate (nextProps) {
-			if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
-				enableAutoCompleteForPatients(nextProps.patients);
-				enableAutoCompleteForSubtaskPatients(nextProps.patients);
-			}
-			if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
-				enableAutoCompleteForAssignedTo(nextProps.members);
-				enableAutoCompleteForSubtaskAssignedTo(nextProps.members);
-			}
+		console.log('AddTask componentWillUpdate: '+nextProps)
+		//if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
+			enableAutoCompleteForPatients(nextProps.patients);
+			enableAutoCompleteForSubtaskPatients(nextProps.patients);
+		//}
+		// if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
+			enableAutoCompleteForAssignedTo(nextProps.members);
+			enableAutoCompleteForSubtaskAssignedTo(nextProps.members);
+		// }
   	}
 
 	unmount() {
