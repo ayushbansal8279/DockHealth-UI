@@ -20,9 +20,23 @@ class TemplateCore extends React.Component {
   }
 
   render() {
+    const NavLink = ({to, children, className}) => (
+      <li>
+        <Link activeClassName="active" className={className} to={to}>
+          {children}
+        </Link>
+      </li>
+    )
     return (
         <div>
           <NavBar/>
+          <div className="small dropdown-pane" id="profile-dropdown" data-v-offset="0" data-h-offset="0" data-dropdown data-hover="true" data-hover-pane="true">
+            <ul className="menu vertical">
+              <NavLink to="/userprofile">View and edit profile</NavLink>
+              <li><a href="terms2.html">Terms and conditions</a></li>
+              <NavLink to="/logout">Logout</NavLink>
+            </ul>
+          </div>
           {this.props.children}
           {/*<Notification />*/}
         </div>

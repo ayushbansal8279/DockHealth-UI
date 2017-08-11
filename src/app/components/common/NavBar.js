@@ -44,34 +44,6 @@ class NavBar extends React.Component {
     // this.getTasksAssignedByMe = this.getTasksAssignedByMe.bind(this)
 }
 
-// unmountAddTaskForm = () => {
-//   // show/hide add task/list form
-//   	$('.add').toggleClass('close');
-//   	$('body').toggleClass('disable-header-scroll');
-//   	var href = $(this).attr('id');
-//   	if($(this).hasClass('add-other')) {
-//   		$('.add-other use').attr('href', function(index, attr) {
-//   			return attr =='#icon-add' ? '#'+href : '#icon-add';
-//   		});
-//   	}
-//   	$('.add-form-wrapper').slideToggle(300);
-// 		$('.list-filter .controls, .list-wrapper').toggle();
-//   	$('.list-filter .controls').toggle();
-// }
-
-  // getTasksAssignedByMe(){
-  //   this.props.taskActions.getTasksAssignedByMe()
-  // }
-  //
-  // getInboxTasks(){
-  //   this.props.taskActions.getInboxTasks()
-  // }
-
-  // getListTasks(taskListId){
-  //   alert("getListTasks")
-  //   this.props.taskActions.getListTasksByUser(taskListId)
-  // }
-
   componentDidMount () {
     // this.props.taskListActions.getTaskListForUser();
   }
@@ -97,10 +69,16 @@ class NavBar extends React.Component {
 
         {/*{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
         <ul className="menu vertical outer">
-          <NavLink to='/activityfeed'><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</NavLink>
+          <NavLink to='/activityfeed' className="center-content-vertical"><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</NavLink>
           <li>
-            <Link to='/taskList' activeClassName="active"><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
+            <Link to='/taskList' activeClassName="active" className="center-content-vertical"><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
             <ul className="nested vertical menu">
+
+              {/* <li>
+                <Link activeClassName="active" className={className} to={to}>
+                  {children}
+                </Link>
+              </li> */}
 
               <NavLink activeClassName="active" to={"/tasks/Inbox"}>Inbox</NavLink>
               <NavLink activeClassName="active" to={"/tasks/Assigned to me"}>Assigned to me</NavLink>
@@ -113,8 +91,8 @@ class NavBar extends React.Component {
               })}
             </ul>
           </li>
-          <NavLink to='/people'><svg className="icon"><use xlinkHref="#icon-user"></use></svg>People</NavLink>
-          <NavLink to='/patientList'><svg className="icon"><use xlinkHref="#icon-patient"></use></svg>Patients</NavLink>
+          <NavLink to='/people' className="center-content-vertical"><svg className="icon"><use xlinkHref="#icon-user"></use></svg>People</NavLink>
+          <NavLink to='/patientList' className="center-content-vertical"><svg className="icon"><use xlinkHref="#icon-patient"></use></svg>Patients</NavLink>
         </ul>
         <div className="share-wrapper hide">
           <div className="social-media text-center">
@@ -126,13 +104,6 @@ class NavBar extends React.Component {
           <div className="invite-email">
             <svg className="icon"><use xlinkHref="#icon-email"></use></svg>Invite friends via email
           </div>
-        </div>
-        <div className="small dropdown-pane" id="profile-dropdown" data-v-offset="0" data-h-offset="0" data-dropdown data-hover="true" data-hover-pane="true">
-          <ul className="menu vertical">
-            <NavLink to="/userprofile">View and edit profile</NavLink>
-            <li><a href="terms2.html">Terms and conditions</a></li>
-            <NavLink to="/logout">Logout</NavLink>
-          </ul>
         </div>
       </div>
     );

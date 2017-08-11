@@ -15,10 +15,10 @@ class ListMembers extends BaseComponentWithAutoComplete {
     	super(props)
     	this.state = {
       		inviteUserResult: '',
-          	selectedUserId: null 
+          	selectedUserId: null
 		};
   }
-	
+
     //addListMember(e) {
 	onSubmit (formProps) {
 		//var selectedUserId = formProps.selectedUserId;
@@ -54,7 +54,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
   	componentWillUpdate (nextProps) {
 		console.log('ListMembers componentWillUpdate: '+nextProps)
-		enableAutoCompleteForListMembers(nextProps.peoplelist);
+		enableAutoCompleteForListMembers(nextProps.peoplelist, process.env.HEYDOC_SERVICES_BASE_URL);
   	}
 
 	deleteMember = (member) => {
@@ -70,7 +70,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 	}
 
 	render(){
-		
+
 		// const { selectedSuggestion, suggestions } = this.state;
 
 		// Autosuggest will pass through all these props to the input.
@@ -81,7 +81,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		// 	onKeyDown: this.onKeyDownSuggestionSearch,
 		// 	onBlur: this.onBlurSuggestionSearch
 		// };
-		
+
 		console.log("rendering list members")
 
 		return(
@@ -118,9 +118,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
 						)
 					})}
 				</div>{/* <!--wrapper--> */}
-				 <form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}> 
+				 <form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}>
 					<div className="row collapse expanded align-middle">
-					
+
 						{/* <Autosuggest
 							suggestions={suggestions}
 							getSuggestionValue={this.getSuggestionValue}
@@ -135,18 +135,18 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
 					{/* Members */}
 					{/* <span> */}
-						<Field id="add-member-to-list" name='assignedTo' type='text' component={BasicField} label='Add a new member' xlinkHref="#icon-assign-to" extraClassName="assign-to"/> 
+						<Field id="add-member-to-list" name='assignedTo' type='text' component={BasicField} label='Add a new member' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
 						{/* <Field id="add-member-to-list" name='assignedTo' type='text' component="input" placeholder='Add a new member' className="assign-to"/> */}
 						<Field id="add-member-to-list-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
 					{/* </span> */}
-					
+
 					</div>
 					<div className="row collapse expanded align-middle">
 						<div className="columns text-center">
 							<button data-close="" type="submit" className="button secondary medium">Invite</button>
 						</div>
 					</div>
-				 </form> 
+				 </form>
 				<div className="row collapse expanded align-middle">
 					<div className="columns text-center">
 						{this.state.inviteUserResult}

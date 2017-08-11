@@ -211,7 +211,7 @@ function enableAutoCompleteForSubtaskAssignedTo(lookupData) {
 
 var originalHeightListMembers = 500;
 
-function enableAutoCompleteForListMembers(lookupData) {
+function enableAutoCompleteForListMembers(lookupData, url) {
 
 	var originalHeight = $("#list-members").css("height");
 	originalHeight = originalHeight.replace(/px/g, "");
@@ -248,21 +248,31 @@ function enableAutoCompleteForListMembers(lookupData) {
 			match: {enabled: true}
 		},
 		template: { type: "custom",
-			method: function(value, item) {
+			method: function(value, user) {
+				var imageurl = url + "user/profilePicture/" + user.userId + "/" + user.profileThumbnailPictureHash;
+				debugger;
+				var avatar;
+				if(user.profileThumbnailPictureHash){
+					avatar = "Image";
+				}else{
+					avatar = "Initials"
+				}
 				var rowElement = ""
 					//+ "<span class='member-initials circle medium'>"+item.initials+"</span>"
 					// + "<span class='data-item'>"
 					// + item.firstName + " " + item.lastName
 					// + "</span>";
-				+ '<div class="row condense expanded align-middle" style="height:50px; clear:both; vertical-align:middle;">'
-				+ '<div class="columns1" style="width:100px; float:left; vertical-align:middle;">'
-				+ '<span class="member-initials circle" data-tooltip>'+(item.initials? item.initials : '?')+'</span>'
-				+ '</div>'
-				+ '<div class="columns1" style="vertical-align:middle;">'
-				+ '<span class="item-title">'
-				+ item.firstName + " " + item.lastName
-				+ '</span>'
-				+ '</div>'
+				+ '<div class="autoCompleteList">'
+					+ '<div class="columns1 avatar">'
+						+ (user.profileThumbnailPictureHash ? '<img class="member-photo circle" src=' + imageurl + '/>' : '<span class="member-initials circle" data-tooltip>'
+						+ (user.initials ? user.initials : '?')
+						+ '</span>')
+					+ '</div>'
+					+ '<div class="columns1">'
+						+ '<span class="item-title">'
+							+ user.firstName + " " + user.lastName
+						+ '</span>'
+					+ '</div>'
 				+ '</div>';
 				return rowElement;
 
