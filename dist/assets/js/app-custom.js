@@ -84,7 +84,7 @@ function closeAddTask(){
 
 // **3**
 function enableAutoCompleteForPatients(lookupData) {
-	// console.log(lookupData)
+	console.log("enableAutoCompleteForPatients: "+lookupData)
 	// add task form patient autocomplete
 	// http://easyautocomplete.com/guide
 	var patients = {
@@ -209,9 +209,23 @@ function enableAutoCompleteForSubtaskAssignedTo(lookupData) {
 
 }
 
+var originalHeightListMembers = 500;
+
 function enableAutoCompleteForListMembers(lookupData) {
+
+	var originalHeight = $("#list-members").css("height");
+	originalHeight = originalHeight.replace(/px/g, "");
+	originalHeightListMembers = parseInt(originalHeight);
+
+	var activeOrgMembers = []
+	for(var k in lookupData){
+		if(lookupData[k].userInviteStatus != "PENDING"){
+			activeOrgMembers.push(lookupData[k])
+		}
+	}
+
 	var people = {
-		data: lookupData,
+		data: activeOrgMembers,
 		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
 		list: {
 			onLoadEvent: function() {
@@ -221,15 +235,37 @@ function enableAutoCompleteForListMembers(lookupData) {
 				$("#add-member-to-list").val(selItemData.firstName + " " + selItemData.lastName);
 				$("#add-member-to-list-id").val(selItemData.userId);
 			},
+			onShowListEvent: function() {
+				var newHeight = originalHeightListMembers + 150;
+				// console.log('onShowListEvent: '+newHeight);
+				$("#list-members").css("height", newHeight + "px");
+			},
+			onHideListEvent: function() {
+				var newHeight = originalHeightListMembers;
+				// console.log('onHideListEvent: '+newHeight);
+				$("#list-members").css("height", newHeight + "px");
+			},
 			match: {enabled: true}
 		},
 		template: { type: "custom",
 			method: function(value, item) {
-				return ""
+				var rowElement = ""
 					//+ "<span class='member-initials circle medium'>"+item.initials+"</span>"
-					+ "<span class='data-item'>"
-					+ item.firstName + " " + item.lastName
-					+ "</span>";
+					// + "<span class='data-item'>"
+					// + item.firstName + " " + item.lastName
+					// + "</span>";
+				+ '<div class="row condense expanded align-middle" style="height:50px; clear:both; vertical-align:middle;">'
+				+ '<div class="columns1" style="width:100px; float:left; vertical-align:middle;">'
+				+ '<span class="member-initials circle" data-tooltip>'+(item.initials? item.initials : '?')+'</span>'
+				+ '</div>'
+				+ '<div class="columns1" style="vertical-align:middle;">'
+				+ '<span class="item-title">'
+				+ item.firstName + " " + item.lastName
+				+ '</span>'
+				+ '</div>'
+				+ '</div>';
+				return rowElement;
+
 			}
 		}
 	};

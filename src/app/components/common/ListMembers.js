@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { Field, reduxForm} from 'redux-form'
+import { SubmissionError, Field, input, reduxForm, actions } from 'redux-form'
+import BasicField from '../common/BasicField';
 import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
 import MemberInitials from '../common/MemberInitials'
 import * as TaskListActions from '../../actions/tasklist-actions';
-import Autosuggest from 'react-autosuggest';
+// import Autosuggest from 'react-autosuggest';
 import $ from 'jquery'
 
 class ListMembers extends BaseComponentWithAutoComplete {
@@ -14,59 +15,16 @@ class ListMembers extends BaseComponentWithAutoComplete {
     	super(props)
     	this.state = {
       		inviteUserResult: '',
-          selectedUserId: null,
-      		selectedSuggestion: '',
-      		suggestions: []
-    	};
-		this.getSuggestions = this.getSuggestions.bind(this)
-		this.getSuggestionValue = this.getSuggestionValue.bind(this)
-		this.renderSuggestion = this.renderSuggestion.bind(this)
-		this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this)
-		this.renderInputComponent = this.renderInputComponent.bind(this)
-  	}
-
-	getSuggestions = value => {
-		const inputValue = value.trim().toLowerCase();
-		const inputLength = inputValue.length;
-
-		return inputLength === 0 ? [] : this.props.peoplelist.filter(person =>
-			person.firstName.toLowerCase().slice(0, inputLength) === inputValue || person.lastName.toLowerCase().slice(0, inputLength) === inputValue
-		);
-	};
-
-	// When suggestion is clicked, Autosuggest needs to populate the input
-	// based on the clicked suggestion. Teach Autosuggest how to calculate the
-	// input value for every given suggestion.
-	getSuggestionValue = suggestion => suggestion.firstName + " " + suggestion.lastName;
-
-	// Use your imagination to render suggestions.
-	renderSuggestion = suggestion => (
-		<div className="row condense expanded border-bottom align-middle">
-			<div className="columns shrink">
-				<MemberInitials member={suggestion}/>
-				{/*<img className="member-photo circle medium" src="assets/img/user1.png" alt="name of user"/>*/}
-			</div>
-			<div className="columns">
-				<span className="item-title">{suggestion.firstName} {suggestion.lastName} </span>
-				{suggestion.userInviteStatus == "PENDING" &&
-				<span className="item-details highlight">Pending</span>
-				}
-			</div>
-		</div>
-	);
-
-	onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-		console.log("selected member: " + suggestion.userId);
-		this.setState({
-			selectedUserId: suggestion.userId
-		});
-	}
-
+          	selectedUserId: null 
+		};
+  }
+	
     //addListMember(e) {
 	onSubmit (formProps) {
 		//var selectedUserId = formProps.selectedUserId;
-		//var selectedUserId = $("#selectedUserId").val();
-		var selectedUserId = this.state.selectedUserId;
+		var selectedUserId = $("#add-member-to-list-id").val();
+		// var selectedUserId = this.state.selectedUserId;
+
         if(selectedUserId == null){
         	alert("User must be selected before inviting to this list.");
         }
@@ -86,8 +44,18 @@ class ListMembers extends BaseComponentWithAutoComplete {
     }
 
 	componentDidMount(){
-
+		console.log('mount list members');
+		this.props.formActions.destroy('ListMembersAddForm')
 	}
+
+	componentWillUnmount(){
+		console.log('unmount list members');
+	}
+
+  	componentWillUpdate (nextProps) {
+		console.log('ListMembers componentWillUpdate: '+nextProps)
+		enableAutoCompleteForListMembers(nextProps.peoplelist);
+  	}
 
 	deleteMember = (member) => {
 		this.props.taskListActions.removeUserFromList(this.props.taskListId, member)
@@ -97,34 +65,32 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		this.props.taskListActions.changeUserRoleForList(this.props.taskListId, member, role)
 	}
 
-  	componentWillUpdate (nextProps) {
-		// if(this.props.peoplelist && this.props.peoplelist.length == 0 && nextProps.peoplelist.length > 0){
-		// 	enableAutoCompleteForListMembers(nextProps.peoplelist);
-		// }
-  	}
-
 	removeListMember() {
 
 	}
 
 	render(){
-
-		const { selectedSuggestion, suggestions } = this.state;
+		
+		// const { selectedSuggestion, suggestions } = this.state;
 
 		// Autosuggest will pass through all these props to the input.
-		const inputProps = {
-			placeholder: 'Add a new member',
-			value: selectedSuggestion,
-			onChange: this.onChangeSuggestionSearch
-		};
+		// const inputProps = {
+		// 	placeholder: 'Add a new member',
+		// 	value: selectedSuggestion,
+		// 	onChange: this.onChangeSuggestionSearch,
+		// 	onKeyDown: this.onKeyDownSuggestionSearch,
+		// 	onBlur: this.onBlurSuggestionSearch
+		// };
+		
+		console.log("rendering list members")
 
 		return(
 			<div className="reveal" id="list-members" data-reveal=""> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
 				<h5 className="margin-bottom text-center">{this.props.title} List Members</h5>
 				<div className="scroll-wrapper">
-					{this.props.members.map(member => {
+					{this.props.members && this.props.members.map(member => {
 						return(
-							<div key={"member"+member.userId} className="row condense expanded border-bottom align-middle">
+							<div key={"listmember_"+member.userId} className="row condense expanded border-bottom align-middle">
 								<div className="columns shrink">
 									<MemberInitials member={member}/>
 									{/* <span className="member-initials circle medium">{member.initials}</span> */}
@@ -152,9 +118,10 @@ class ListMembers extends BaseComponentWithAutoComplete {
 						)
 					})}
 				</div>{/* <!--wrapper--> */}
-				<form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}>
+				 <form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}> 
 					<div className="row collapse expanded align-middle">
-						<Autosuggest
+					
+						{/* <Autosuggest
 							suggestions={suggestions}
 							getSuggestionValue={this.getSuggestionValue}
 							renderSuggestion={this.renderSuggestion}
@@ -164,14 +131,22 @@ class ListMembers extends BaseComponentWithAutoComplete {
 							onSuggestionsClearRequested={this.onSuggestionsClearRequested}
 							renderSuggestionsContainer={this.renderSuggestionsContainer}
 							renderInputComponent={this.renderInputComponent}
-						/>
+						/> */}
+
+					{/* Members */}
+					{/* <span> */}
+						<Field id="add-member-to-list" name='assignedTo' type='text' component={BasicField} label='Add a new member' xlinkHref="#icon-assign-to" extraClassName="assign-to"/> 
+						{/* <Field id="add-member-to-list" name='assignedTo' type='text' component="input" placeholder='Add a new member' className="assign-to"/> */}
+						<Field id="add-member-to-list-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
+					{/* </span> */}
+					
 					</div>
 					<div className="row collapse expanded align-middle">
 						<div className="columns text-center">
 							<button data-close="" type="submit" className="button secondary medium">Invite</button>
 						</div>
 					</div>
-				</form>
+				 </form> 
 				<div className="row collapse expanded align-middle">
 					<div className="columns text-center">
 						{this.state.inviteUserResult}
@@ -194,18 +169,20 @@ function validate(values){
 }
 
 const mapStateToProps = function(store){
+	console.log("people count: "+store.peopleState.peoplelist);
 	return{
 		currentList: store.taskListState.currentList,
 		currentUser: store.userState.user,
 		taskList: store.taskListState.tasklistone,
 		peoplelist: store.peopleState.peoplelist,
-    members: store.taskListState.tasklistmembers
+		members: store.taskListState.tasklistmembers
 	}
 }
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    taskListActions: bindActionCreators(TaskListActions, dispatch)
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
+    formActions: bindActionCreators(actions, dispatch)
   }
 }
 
