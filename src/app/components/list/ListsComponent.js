@@ -40,7 +40,9 @@ class ListsComponent extends BaseComponent{
                     <li><div data-open={"delete-list-"+taskList.taskListId}>Delete list</div></li>
                     <li><div onClick={(e) => this.props.editForm(taskList)}>Edit</div></li>
                     {/* if owner */}
-                    <li><div data-open={"leave-list-"+taskList.taskListId}>Leave list</div></li>
+                    {taskList.role != 'OWNER' &&
+                      <li><div data-open={"leave-list-"+taskList.taskListId}>Leave list</div></li>
+                    }
                   </ul>
                 </div>
               </div>
