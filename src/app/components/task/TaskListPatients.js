@@ -42,7 +42,7 @@ class TaskListPatients extends BaseComponent {
 			<div className="content-block">
 				<h6>Patients in this list</h6>
 				<ul className="no-bullet expand">
-					{this.props.patients.map(patient => {
+					{this.props.patients && this.props.patients.map(patient => {
 						return (
 							<li onClick={(e) => this.findTasksByPatient(patient.patientId, this.props.taskListId)} key={patient.patientId}><strong>{patient.firstName} {patient.lastName} {patient.mrn}</strong></li>
 						);

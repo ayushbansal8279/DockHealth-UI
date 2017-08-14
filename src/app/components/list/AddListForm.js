@@ -79,15 +79,15 @@ class AddListForm extends BaseComponentWithAutoComplete {
 				<span className="item-details highlight">Pending</span>
 				}
 			</div>
-		</div>		
+		</div>
 	);
-	
+
 	onChangeSuggestionSearchForAdmins = (event, { newValue }) => {
 		this.setState({
 			selectedSuggestionForAdmin: newValue
 		});
 	};
-  
+
 	onChangeSuggestionSearchForMembers = (event, { newValue }) => {
 		this.setState({
 			selectedSuggestionForMember: newValue
@@ -136,17 +136,17 @@ class AddListForm extends BaseComponentWithAutoComplete {
         taskList.members.push(this.state.selectedMembers[k].userId);
       }
     }
-    
+
     this.props.taskListActions.saveTaskList(taskList)
     .then((res)=>{
       this.setState({saveResultMessage: 'List saved successfully!!'});
     })
     .catch((error)=>{
-      this.setState({saveResultMessage: error.message + ": " + error.response.data.errorMessage}); 
+      this.setState({saveResultMessage: error.message + ": " + error.response.data.errorMessage});
     })
 
   }
-  
+
 /*
   sendInvitations (selectedMembers) {
     if(selectedMembers.length > 0){
@@ -159,7 +159,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
           	this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
         })
         .catch((error)=>{
-          	this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage}); 
+          	this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage});
         })
     }
 
@@ -167,9 +167,9 @@ class AddListForm extends BaseComponentWithAutoComplete {
 */
 
   render(){
-    
+
 		const { selectedSuggestion, selectedSuggestionForAdmin, selectedSuggestionForMember, suggestions } = this.state;
-  
+
 		// Autosuggest will pass through all these props to the input.
     const inputPropsForAdmins = {
 			placeholder: 'Add a new admin',
@@ -202,7 +202,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                 <ul className="menu member-photo-list">
                   <li><MemberInitials member={this.props.currentUserProfile}/></li>
                 </ul>
-                
+
               </div>
             </div>
 
@@ -213,7 +213,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                   <label>Admins</label>
                   <ul className="menu member-photo-list">
                     <li><span className="add-member circle medium addAdminForList">+</span></li>
-                    {this.state.selectedAdmins.map(member => {
+                    {this.state.selectedAdmins && this.state.selectedAdmins.map(member => {
                       return(
                         <li key={"list_admin_"+member.userId}><MemberInitials member={member}/></li>
                       )
@@ -243,7 +243,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                   <label>Members</label>
                   <ul className="menu member-photo-list">
                     <li><span className="add-member circle medium addMemberForList">+</span></li>
-                    {this.state.selectedMembers.map(member => {
+                    {this.state.selectedMembers && this.state.selectedMembers.map(member => {
                       return(
                         <li key={"list_member_"+member.userId}><MemberInitials member={member}/></li>
                       )
@@ -270,7 +270,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
               <div className="columns text-center">
                 {this.state.saveResultMessage}
               </div>
-            </div>	
+            </div>
 
             {/* <!-- Do not disturb --> */}
             <div className="column top-buffer large-12">

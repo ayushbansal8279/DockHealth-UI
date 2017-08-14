@@ -29,6 +29,7 @@ class AllPatientsView extends BaseComponent {
     }
     clearSearch = () => {
       this.setState({searchTerm: ''})
+      toggleSearch()
     }
     searchUpdated = (term) => {
       this.setState({searchTerm: term.target.value})
@@ -43,7 +44,7 @@ class AllPatientsView extends BaseComponent {
       this.props.patientActions.patientToState(null)
       this.props.formActions.destroy('FormPatient')
     };
-  
+
     render() {
     return (
         <div className="off-canvas-content" data-off-canvas-content="true">
@@ -86,7 +87,7 @@ class AllPatientsView extends BaseComponent {
                   </div>
                 </div>
 
-                </header> 
+                </header>
 
                 <div className="add-form-wrapper">
                   <div className="task-item add-form row expanded">

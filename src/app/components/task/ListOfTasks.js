@@ -169,7 +169,7 @@ class ListOfTasks extends BaseComponent {
     return (
 		<span>
 
-		{this.props.tasks.map(task => {
+		{this.props.tasks && this.props.tasks.map(task => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
 					<div key={"task"+task.taskId} className="task-item has-subtasks">

@@ -11,7 +11,7 @@ class ListsComponent extends BaseComponent{
     const taskLists = this.props.taskLists
     return(
       <span>
-        {taskLists.map(taskList => {
+        {taskLists && taskLists.map(taskList => {
           return(
             <div key={"taskList" + taskList.taskListId} className="item row expanded align-middle">
                 <div className="columns shrink">

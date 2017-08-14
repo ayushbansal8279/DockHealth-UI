@@ -17,8 +17,7 @@ class PatientDropdownList extends BaseComponent {
 		return(
 			<div className="patient-list">
 				<ul className="no-bullet expand">
-					{this.props.patients
-						.map(patient => {
+					{this.props.patients && this.props.patients.map(patient => {
 							return(
 								<li onClick={(e) => this.addPatientToTask(patient.patientId)} key={patient.patientId}>{patient.firstName}&nbsp;{patient.lastName}&nbsp;{patient.mrn}</li>
 							);

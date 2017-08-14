@@ -16,7 +16,7 @@ class TaskListMembersDropdownList extends BaseComponent {
 		return(
 			<div className="user-list">
 				<ul className="no-bullet expand">
-					{this.props.members
+					{this.props.members && this.props.members
 						.map(member => {
 							if(member.status == "ACTIVE"){
 								return(

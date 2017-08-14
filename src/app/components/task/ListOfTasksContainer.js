@@ -44,7 +44,7 @@ class ListOfTasksContainer extends BaseComponent {
 
 //property validation
 ListOfTasksContainer.propTypes = {
-    tasks: PropTypes.array.isRequired,
+    // tasks: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 }
 
