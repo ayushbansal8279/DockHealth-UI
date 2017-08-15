@@ -711,10 +711,6 @@ function mapStateToProps(state) {
     return stateObj;
 }
 
-// function mapDispatchToProps(dispatch) {
-//   return  bindActionCreators(PeopleActions, dispatch)
-// }
-
 function validate(values){
   const errors = {};
 
@@ -731,16 +727,6 @@ function validate(values){
     if(!validatePhoneNumbers(homePhoneNumber)){
       errors.homePhoneNumber = 'Please enter 10 digit home phone number';
     }
-    // var match = mobilePhoneNumber.match(/\D/);
-    // if(match != null){
-    //   errors.mobilePhoneNumber = 'Please enter 10 digit phone number';
-    // }
-    // else
-    // {
-    //   if(mobilePhoneNumber.length !=10){
-    //     errors.mobilePhoneNumber = 'Please enter 10 digit phone number';
-    //   }
-    // }
   }
 
   var faxNumber = values.faxNumber

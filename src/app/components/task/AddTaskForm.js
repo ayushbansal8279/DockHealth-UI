@@ -41,7 +41,6 @@ class AddTaskForm extends BaseComponent {
   }
 
   componentWillUpdate (nextProps) {
-
   }
 
   handleTaskListSelection(event) {
@@ -49,28 +48,9 @@ class AddTaskForm extends BaseComponent {
     $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
-    // $("#filed-in-taskList").attr('aria-expanded','false');
-    // $("#add-task-file-in-options").attr('aria-hidden','true');
-    // $("#filed-in-taskList").removeClass("hover");
-    // $("#filed-in-taskList").foundation('toggle');
-    // toggleDropDown("filed-in-taskList");
   }
 
   componentWillReceiveProps(nextProps){
-    // if(nextProps.taskListId != this.props.taskListId){
-    //   this.setState({"taskListId":nextProps.taskListId})
-    // }
-    // if(this.props.currentTask){
-    //   if(nextProps.currentTask != this.props.currentTask){
-    //     this.props.setSubtasks(nextProps.currentTask.subtasks)
-    //     // alert("updated 1")
-    //   }
-    // }else{
-    //   if(nextProps.currentTask.subtasks != this.props.subtasks){
-    //     this.props.setSubtasks(this.props.subtasks)
-    //     // alert("updated 2")
-    //   }
-    // }
   }
 
   addSubtaskValues = (subtaskValues, index) => {
@@ -86,7 +66,6 @@ class AddTaskForm extends BaseComponent {
       subtaskValues.taskId = ""
       this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
     }
-
   }
 
   initializeSubtaskForm = (index) => {
@@ -176,6 +155,20 @@ class AddTaskForm extends BaseComponent {
           </div>
         }
 
+        {/* Example of error field */}
+        {/* <div className="input-group-wrapper has-error column large-12">
+          <div className="large-12 input-group">
+            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-patient"></use></svg></span>
+            <div className="input-wrapper form-floating-label">
+              <input id="add-patient" className="add-patient input-group-field" type="text"/>
+              <label>Add Patient</label>
+            </div>
+          </div>
+          <span className="form-error">
+            Please enter a task title.
+          </span>
+        </div> */}
+
         {/* ASSIGNED TO */}
         {/* Hide 'assignedTo' if user is adding a task to the 'inbox'. Tasks can only be assigned from lists */}
         {this.props.title != "Inbox" || this.props.taskListSelection ?
@@ -263,19 +256,29 @@ class AddTaskForm extends BaseComponent {
 
 }
 
+function validate(values){
+  const errors = {};
+  if(!values.description){
+    errors.description = 'Please enter a task description';
+  }
+  return errors;
+}
+
 AddTaskForm = reduxForm({
   // a unique name for the form
   form: 'addTaskForm',
-  enableReinitialize : true
+  enableReinitialize : true,
+  validate
 })(AddTaskForm)
 
 const selector = formValueSelector('addTaskForm')
 
 const mapStateToProps = function(store) {
 	var initialTaskFormValues = {}
+  // initialTaskFormValues.taskList = store.taskListState.tasklistone.listName;
   if(store.taskListState.currentList){
-    initialTaskFormValues.taskList = store.taskListState.currentList.listName
-    initialTaskFormValues.taskListId = store.taskListState.currentList.taskListId
+    initialTaskFormValues.taskList = store.taskListState.tasklistone.listName
+    initialTaskFormValues.taskListId = store.taskListState.tasklistone.taskListId
   }
   // console.log("current list")
   // console.log(store.taskListState.currentList)
@@ -303,7 +306,6 @@ const mapStateToProps = function(store) {
       }else{
         initialTaskFormValues.priority = false;
       }
-
     }
 
 		//TODO - handle assigned tasklist

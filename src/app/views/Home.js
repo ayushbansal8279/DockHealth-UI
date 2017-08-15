@@ -71,6 +71,7 @@ class Home extends BaseComponent {
       this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
       this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
     }else{
+      this.props.taskListActions.getTaskListById(this.props.routeParams.taskListId)
       this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "INCOMPLETE")
       this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
       this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ACTIVE")
@@ -110,6 +111,7 @@ class Home extends BaseComponent {
         this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
         this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
       }else if(listName != null){
+        this.props.taskListActions.getTaskListById(this.props.routeParams.taskListId)
         this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "INCOMPLETE")
         this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "COMPLETE")
         this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ACTIVE")

@@ -99,7 +99,7 @@ class HeaderTasks extends BaseComponent {
   								<ul className="menu member-photo-list" data-open="list-members">
                     <li><span className="add-member circle small">+</span></li>
                     {this.props.members && this.props.members.map(member => {
-                        return <li key={"member"+member.userId}><span className="member-initials circle small">{member.initials}</span></li>
+                        return <li key={"member"+member.userId}><MemberInitials member={member} extraClass="small"/></li>
                       })
                     }
                     {/* <li><span className="more-members circle small">+4</span></li>

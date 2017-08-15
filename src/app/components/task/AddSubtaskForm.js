@@ -51,7 +51,8 @@ class AddSubtaskForm extends BaseComponent{
   //   debugger;
   // }
 
-  saveSubtaskValues = () => {
+  onSubmit = (formProps) => {
+    debugger;
     $('.subtask-wrapper').slideToggle(300);
     $('.main-task-wrapper').slideToggle(300);
     console.log(this.state)
@@ -81,7 +82,7 @@ class AddSubtaskForm extends BaseComponent{
 
   render(){
     return(
-      <form>
+      <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
         {/* Added 'inline-label' to fix broken ui */}
         <div className="subtask-wrapper inline-label">
           <div className="row expanded">
@@ -163,7 +164,7 @@ class AddSubtaskForm extends BaseComponent{
 
           {/* SAVE */}
           <div className="column large-12 text-right">
-            <input className="toggle-add-subtask" onClick={this.saveSubtaskValues} type="button" className="button secondary" value="Save"/>
+            <input type="submit" className="button secondary" value="Add Subtask"/>
           </div>
         </div>
       </form>
@@ -171,10 +172,19 @@ class AddSubtaskForm extends BaseComponent{
   }
 }
 
+function validate(values){
+  const errors = {};
+  if(!values.description){
+    errors.description = 'Please enter a task description';
+  }
+  return errors;
+}
+
 AddSubtaskForm = reduxForm({
   // a unique name for the form
   form: 'addSubtaskForm',
-  enableReinitialize : true
+  enableReinitialize : true,
+  validate
 })(AddSubtaskForm)
 
 const selector = formValueSelector('addTaskForm')
