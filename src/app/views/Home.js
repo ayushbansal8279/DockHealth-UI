@@ -36,12 +36,13 @@ class Home extends BaseComponent {
   }
 
   clearSearch = () => {
-    this.setState({searchTerm: ''})
-    $(".search-field").toggleClass("expand-search");
-    $(".search-field").focus();
-    $(this).find('use').attr('href', function (index, attr) {
-      return $(".search-field").hasClass("expand-search") ? '#icon-search' : '#icon-close';
-    });
+    this.setState({searchTerm: ''});
+    toggleSearch();
+    // $(".search-field").toggleClass("expand-search");
+		// $(".search-field").focus();
+		// $(this).find('use').attr('href', function (index, attr) {
+		// 	return attr == '#icon-close' ? '#icon-search' : '#icon-close';
+		// });
   }
 
   searchUpdated = (term) => {

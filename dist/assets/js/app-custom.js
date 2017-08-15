@@ -292,6 +292,14 @@ function toggleDropDown(elementId) {
 	$("#"+elementId).foundation('toggle');
 }
 
+function toggleSearch(){
+	$(".search-field").toggleClass("expand-search");
+	$(".search-field").focus();
+	$(this).find('use').attr('href', function(index, attr) {
+		return attr =='#icon-close' ? '#icon-search' : '#icon-close';
+	});
+}
+
 function toggleTaskForm(){
   $('.add').toggleClass('close');
   $('body').toggleClass('disable-header-scroll');
@@ -368,13 +376,13 @@ $(document).ready(function() {
 		}
 	});
 
-	$(document).on('click', '.search', function() {
-		$(".search-field").toggleClass("expand-search");
-		$(".search-field").focus();
-		$(this).find('use').attr('href', function (index, attr) {
-			return attr == '#icon-close' ? '#icon-search' : '#icon-close';
-		});
-	});
+	// $(document).on('click', '.search', function() {
+	// 	$(".search-field").toggleClass("expand-search");
+	// 	$(".search-field").focus();
+	// 	$(this).find('use').attr('href', function (index, attr) {
+	// 		return attr == '#icon-close' ? '#icon-search' : '#icon-close';
+	// 	});
+	// });
 
 	// add subtasks
 	$(document).on('click', '.toggle-add-subtask', function() {
@@ -432,6 +440,8 @@ $(document).ready(function() {
 		var $el = $(this);
 		$el.text($el.text() == "Show completed tasks" ? "Hide completed tasks": "Show completed tasks");
 	});
+
+
 
 
 	// $('.pickdate').fdatepicker({

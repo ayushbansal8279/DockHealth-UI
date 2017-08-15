@@ -68,7 +68,7 @@ class SearchPatient extends BaseComponent {
             </form>
             <div className="item row expanded align-middle">
             <div className="column large-12 search-result-wrapper">
-                {this.props.emrPatients.map(patient => {
+                {this.props.emrPatients && this.props.emrPatients.map(patient => {
                     return(
                             <div className="item row expanded align-middle" onClick={this.selectPatient.bind(this, patient)} key={patient.mrn}>
                                 <div className="columns shrink">

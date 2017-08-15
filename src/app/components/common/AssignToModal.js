@@ -27,7 +27,7 @@ class AssignToModal extends React.Component {
       <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal="">
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
-          {this.state.members.map(member=>{
+          {this.state.members && this.state.members.map(member=>{
             return(
               <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={'assign_'+this.props.taskListId+'_'+member.userId} className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">

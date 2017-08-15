@@ -9,8 +9,7 @@ class PatientList extends BaseComponent {
 	render() {
 		return (
         <div className="item-list-wrapper">
-					{this.props.patients
-						.map(patient => {
+					{this.props.patients && this.props.patients.map(patient => {
 							return (
 								<Link to={"/patient/"+patient.patientId} key={patient.patientId}>
 									<div className="item row expanded align-middle">

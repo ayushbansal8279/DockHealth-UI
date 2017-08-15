@@ -26,7 +26,7 @@ class TaskListUsers extends BaseComponent {
 	  return (
   	    <div className="content-block">
   			<h6>Invited to this list</h6>
-		  	{this.props.members.map(member => {
+		  	{this.props.members && this.props.members.map(member => {
 		    	return (
 		    		<div className="avatar" key={member.userId}>
 		    			<div className="users"  title={member.firstName + ' ' + member.lastName}>{member.initials}</div>

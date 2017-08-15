@@ -16,7 +16,7 @@ class TaskListMembers extends BaseComponent {
 		return(
 			<div className="medium-12 columns">
 				<ul className="no-bullet">
-					{this.props.members
+					{this.props.members && this.props.members
 						.map(member => {
 							if(member.status == "ACTIVE"){
 								return(

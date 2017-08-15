@@ -45,7 +45,6 @@ class AddTaskForm extends BaseComponent {
   }
 
   handleTaskListSelection(event) {
-    alert(event.target.value)
     this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ACTIVE')
     $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").parent().addClass("has-value");
@@ -115,7 +114,7 @@ class AddTaskForm extends BaseComponent {
   render() {
     const renderSubtaskField = ({ fields, meta: { error } }) => (
       <span>
-        {fields.map((subtask, index) =>
+        {fields && fields.map((subtask, index) =>
           <div key={index} onClick={() => this.initializeSubtaskForm(index)} className="column large-12 input-group toggle-add-subtask has-value">
           <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
             <div className="input-wrapper form-floating-label">
@@ -154,7 +153,7 @@ class AddTaskForm extends BaseComponent {
             </div>
             <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
               <fieldset className="large-12 columns">
-                {this.props.taskLists.map(taskList => {
+                {this.props.taskLists && this.props.taskLists.map(taskList => {
                   return(
                     <div key={taskList.taskListId} >
                       <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio" onClick={this.handleTaskListSelection}/>

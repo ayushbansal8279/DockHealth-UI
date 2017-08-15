@@ -35,14 +35,14 @@ class HeaderTasks extends BaseComponent {
   }
 
   componentWillUpdate(nextProps){
-    if(this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
+    if(this.props.taskLists && this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
     }
   }
 
   componentWillReceiveProps(nextProps){
-    if(this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
+    if(this.props.taskLists && this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
     }
@@ -135,7 +135,7 @@ class HeaderTasks extends BaseComponent {
 									<div className="input-group searchbar">
 										<input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated} value={this.props.searchTerm}/>
 										<div className="input-group-button">
-											<button className="button search">
+											<button className="button">
 												<svg onClick={this.props.clearSearch} className="icon"><use xlinkHref="#icon-search"></use></svg>
 											</button>
 										</div>

@@ -82,7 +82,8 @@ class AddSubtaskForm extends BaseComponent{
   render(){
     return(
       <form>
-        <div className="subtask-wrapper">
+        {/* Added 'inline-label' to fix broken ui */}
+        <div className="subtask-wrapper inline-label">
           <div className="row expanded">
             <div className="column small-4 toggle-add-subtask">
               <svg onClick={(e) => this.showState()} className="icon"><use xlinkHref="#icon-arrow-left"></use></svg>

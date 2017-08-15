@@ -26,9 +26,10 @@ class PeopleView extends BaseComponent {
   componentWillUnmount(){
     closeAddForm()
   }
-  
+
   clearSearch = () => {
     this.setState({searchTerm: ''})
+    toggleSearch()
   }
 
   searchUpdated = (term) => {
