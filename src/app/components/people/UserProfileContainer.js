@@ -199,6 +199,7 @@ class UserProfileContainer extends BaseComponent {
       .then((res)=>{
           userApi.updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
           .then((res) =>{
+            toggleAlert("Profile updated successfully!", "success")
             this.setState({updateProfileResult: 'User Profile updated successfully!!!'});
             userApi.getUserById()
             userApi.getUserProfilePic(sessionStorage.userId,"PROFILE")
