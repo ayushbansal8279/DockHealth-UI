@@ -20,19 +20,19 @@ import ConfirmMFACode from './views/auth/ConfirmMFACode'
 import PageNotFound from './views/PageNotFound'
 import ErrorPage from './views/ErrorPage'
 import TaskListView from './views/TaskListView'
-import TaskListAdd from './components/tasklist/TaskListAdd';
-import TaskListUpdateView from './views/TaskListUpdateView';
-import TaskListMembersView from './views/TaskListMembersView';
-import TaskListInvitePersonView from './views/TaskListInvitePersonView';
-import TaskListInviteUserView from './views/TaskListInviteUserView';
-import TaskListUpdateUserRoleView from './views/TaskListUpdateUserRoleView';
-import InvitationsView from './views/InvitationsView';
+// import TaskListAdd from './components/tasklist/TaskListAdd';
+// import TaskListUpdateView from './views/TaskListUpdateView';
+// import TaskListMembersView from './views/TaskListMembersView';
+// import TaskListInvitePersonView from './views/TaskListInvitePersonView';
+// import TaskListInviteUserView from './views/TaskListInviteUserView';
+// import TaskListUpdateUserRoleView from './views/TaskListUpdateUserRoleView';
+// import InvitationsView from './views/InvitationsView';
 import PeopleView from './views/PeopleView';
-import InvitePeople from './components/people/InvitePeople';
-import TaskListAuditView from './views/TaskListAuditView';
+// import InvitePeople from './components/people/InvitePeople';
+// import TaskListAuditView from './views/TaskListAuditView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import UserProfileView from './views/UserProfileView';
-import Test from './views/Test';
+// import Test from './views/Test';
 
 // const routes = {
 //   path: '/',
@@ -65,17 +65,17 @@ export default (
       {/*<Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />*/}
       {/*<Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />*/}
       {/*<Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />*/}
-      <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} />
-      <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} />
+      {/* <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} /> */}
+      {/* <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} /> */}
       {/*<Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />*/}
-      <Route path="/invitations" component={InvitationsView} />
+      {/* <Route path="/invitations" component={InvitationsView} /> */}
       <Route path="/people" component={PeopleView} />
-      <Route path="/peopleinvite" component={InvitePeople} />
+      {/* <Route path="/peopleinvite" component={InvitePeople} /> */}
       <Route path="/tasks/:listName/:taskListId" component={Home}/>
       <Route path="/tasks/:listName" component={Home}/>
       <Route path="/tasks/:listName" component={Home}/>
       <Route path="/userprofile" component={UserProfileView} />
-      <Route path="/test" component={Test} />
+      {/* <Route path="/test" component={Test} /> */}
 
     </Route>
     <Route component={TemplateAuth} >

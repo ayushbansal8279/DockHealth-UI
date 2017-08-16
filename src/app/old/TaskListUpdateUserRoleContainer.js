@@ -83,7 +83,7 @@ class TaskListUpdateUserRoleContainer extends React.Component {
         <div>
         <div className="row">
           <div className="small-10 columns">
-             <h4>TaskList Name: <strong>{this.props.taskListOne.listName}</strong></h4>
+             <h4>TaskList Name: <strong>{this.props.currentList.listName}</strong></h4>
           </div>
         </div>
 
@@ -126,7 +126,7 @@ function mapStateToProps(state) {
   //console.log(state);
   return {
     tasklistactivemembers: state.taskListState.tasklistactivemembers,
-    taskListOne: state.taskListState.tasklistone,
+    currentList: state.taskListState.currentList,
   };
 }
 

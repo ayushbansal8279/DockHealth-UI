@@ -5,8 +5,6 @@ import {bindActionCreators} from 'redux';
 import Moment from 'react-moment'
 import BaseComponent from '../BaseComponent'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
-import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
-import TaskListMembersContainer from './TaskListMembersContainer'
 import AddComment from './AddComment'
 import * as TaskActions from '../../actions/task-actions'
 import * as userApi from '../../api/user-api'

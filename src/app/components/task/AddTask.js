@@ -4,8 +4,6 @@ import { actions } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import AddTaskForm from './AddTaskForm'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
-import TaskListMembersDropdownListContainer from './TaskListMembersDropdownListContainer'
-// import * as PatientApi from '../../api/patient-api'
 import * as PeopleActions from '../../actions/people-actions';
 import * as TaskActions from '../../actions/task-actions';
 import {ReactDOM, findDOMNode, getDOMNode} from 'react-dom'
