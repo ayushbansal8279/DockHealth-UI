@@ -250,7 +250,7 @@ function enableAutoCompleteForListMembers(lookupData, url) {
 		template: { type: "custom",
 			method: function(value, user) {
 				var imageurl = url + "user/profilePicture/" + user.userId + "/" + user.profileThumbnailPictureHash;
-				debugger;
+				// debugger;
 				var avatar;
 				if(user.profileThumbnailPictureHash){
 					avatar = "Image";
@@ -263,12 +263,12 @@ function enableAutoCompleteForListMembers(lookupData, url) {
 					// + item.firstName + " " + item.lastName
 					// + "</span>";
 				+ '<div class="autoCompleteList">'
-					+ '<div class="columns1 avatar">'
+					+ '<div class="columns shrink avatar">'
 						+ (user.profileThumbnailPictureHash ? '<img class="member-photo circle" src=' + imageurl + '/>' : '<span class="member-initials circle" data-tooltip>'
 						+ (user.initials ? user.initials : '?')
 						+ '</span>')
 					+ '</div>'
-					+ '<div class="columns1">'
+					+ '<div class="columns">'
 						+ '<span class="item-title">'
 							+ user.firstName + " " + user.lastName
 						+ '</span>'

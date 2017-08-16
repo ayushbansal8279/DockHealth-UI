@@ -21,9 +21,9 @@ export function loading(){
   }
 }
 
-export function setTaskListAsTasklistone(tasklistone){
+export function setTaskListAsCurrentList(currentList){
   return function(dispatch){
-    dispatch({type: ActionTypes.GET_TASKLIST_ONE_SUCCESS, tasklistone})
+    dispatch({type: ActionTypes.SET_CURRENT_LIST, currentList})
   }
 }
 
@@ -54,8 +54,8 @@ export function saveTaskList(formProps) {
 
 export function getTaskListById(taskListId){
   return function(dispatch) {
-    return TaskListApi.getTaskListById(taskListId).then(tasklistone => {
-      dispatch({type: ActionTypes.GET_TASKLIST_ONE_SUCCESS, tasklistone});
+    return TaskListApi.getTaskListById(taskListId).then(currentList => {
+      dispatch({type: ActionTypes.SET_CURRENT_LIST, currentList});
     }).catch(error => {
       throw(error);
     });

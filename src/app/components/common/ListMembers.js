@@ -54,7 +54,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
   	componentWillUpdate (nextProps) {
 		console.log('ListMembers componentWillUpdate: '+nextProps)
-		enableAutoCompleteForListMembers(nextProps.peoplelist, process.env.HEYDOC_SERVICES_BASE_URL);
+		enableAutoCompleteForListMembers(nextProps.orgusersnotintasklist, process.env.HEYDOC_SERVICES_BASE_URL);
   	}
 
 	deleteMember = (member) => {
@@ -99,6 +99,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
 								<div className="columns">
 									<span className="item-content">{member.userName}</span>
 									<span className="item-details">{member.taskListUserRole}</span>
+									{member.status == "PENDING" &&
+									<span className="item-details highlight">Pending</span>
+									}
 								</div>
 								{this.props.currentUser.taskListUserRole != "MEMBER" && this.props.currentUser.username != member.email &&
 									<div className="columns shrink more-options-wrapper">
@@ -169,13 +172,14 @@ function validate(values){
 }
 
 const mapStateToProps = function(store){
-	console.log("people count: "+store.peopleState.peoplelist);
+	console.log("orgusersnotintasklist count: "+store.taskListState.orgusersnotintasklist);
 	return{
 		currentList: store.taskListState.currentList,
 		currentUser: store.userState.user,
-		taskList: store.taskListState.tasklistone,
+		taskList: store.taskListState.currentList,
 		peoplelist: store.peopleState.peoplelist,
-		members: store.taskListState.tasklistmembers
+		members: store.taskListState.tasklistmembers,
+		orgusersnotintasklist: store.taskListState.orgusersnotintasklist
 	}
 }
 

@@ -311,9 +311,9 @@ AddListForm = reduxForm({
 const mapStateToProps = function(store){
   var initialTaskListValues = {}
   var taskListId = 0
-  if(store.taskListState.tasklistone){
-    initialTaskListValues = store.taskListState.tasklistone
-    taskListId = store.taskListState.tasklistone.taskListId
+  if(store.taskListState.currentList){
+    initialTaskListValues = store.taskListState.currentList
+    taskListId = store.taskListState.currentList.taskListId
   }
   return{
     initialValues: initialTaskListValues,
