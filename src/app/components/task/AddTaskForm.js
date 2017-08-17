@@ -6,7 +6,6 @@ import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
 import AddSubtaskField from './AddSubtaskField';
-import AddSubtaskForm from './AddSubtaskForm';
 import * as TaskListActions from '../../actions/tasklist-actions'
 import $ from 'jquery'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
@@ -16,8 +15,7 @@ class AddTaskForm extends BaseComponent {
   constructor(props, container) {
 		super(props)
     this.state = {
-      taskListId:"",
-      currentSubtaskIndex:""
+      taskListId:""
     }
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
@@ -51,21 +49,6 @@ class AddTaskForm extends BaseComponent {
   }
 
   componentWillReceiveProps(nextProps){
-  }
-
-  addSubtaskValues = (subtaskValues, index) => {
-    this.setState({currentSubtaskIndex:""})
-    if(index !== ""){
-      subtaskValues.taskId = this.props.currentSubtasks[index].taskId
-      this.props.formActions.change('addTaskForm', `subtasks[${index}]`, subtaskValues)
-      // this.props.formActions.subtasks[index] = subtaskValues
-      // this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
-      // this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
-      // var currentSubtasks = this.props.currentSubtasks
-    }else{
-      subtaskValues.taskId = ""
-      this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
-    }
   }
 
   initializeSubtaskForm = (index) => {
@@ -106,7 +89,7 @@ class AddTaskForm extends BaseComponent {
       </span>
     )
   return (
-    <div className="column top-buffer large-12">
+
     <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
@@ -238,19 +221,8 @@ class AddTaskForm extends BaseComponent {
       </div>{/*main-task-wrapper*/}
       {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
     </form>
-      <AddSubtaskForm
-        // initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
-        onSubmit={this.submitSubtask}
-        // submitSubtask={this.submitSubtask}
-        // addSubtask={this.addSubtask}
-        subtaskIndex={this.state.currentSubtaskIndex}
-        addSubtaskValues={this.addSubtaskValues}
-        currentSubtasks={this.props.currentSubtasks}
-        currentSubtaskIndex={this.state.currentSubtaskIndex}
-        title={this.props.title}
-        currentTask={this.props.currentTask}
-      />
-    </div>
+
+
   )
   }
 

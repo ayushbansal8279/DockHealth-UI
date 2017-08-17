@@ -175,7 +175,13 @@ class AddSubtaskForm extends BaseComponent{
 function validate(values){
   const errors = {};
   if(!values.description){
-    errors.description = 'Please enter a task description';
+    errors.description = 'Please enter a subtask description';
+  }
+  if(!values.username){
+    errors.username = 'Please enter a username';
+  }
+  if(!values.patient){
+    errors.patient = 'Please select a patient';
   }
   return errors;
 }
@@ -187,7 +193,7 @@ AddSubtaskForm = reduxForm({
   validate
 })(AddSubtaskForm)
 
-const selector = formValueSelector('addTaskForm')
+// const selector = formValueSelector('addTaskForm')
 
 const mapStateToProps = function(store){
   // var initialSubtaskFormValues = {}
