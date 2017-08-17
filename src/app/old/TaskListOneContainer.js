@@ -15,7 +15,7 @@ class TaskListOneContainer extends React.Component {
     render(){
         return (
           <div>
-            <TaskListOneRenderContainer taskListOne={this.props.taskListOne}/>
+            <TaskListOneRenderContainer currentList={this.props.currentList}/>
           </div>
         );
     }
@@ -24,7 +24,7 @@ class TaskListOneContainer extends React.Component {
 function mapStateToProps(state) {
   //console.log(state.taskListState.tasklist);
   //console.log(state);
-  return {taskListOne: state.taskListState.tasklistone};
+  return {currentList: state.taskListState.currentList};
 }
 
 function mapDispatchToProps(dispatch) {

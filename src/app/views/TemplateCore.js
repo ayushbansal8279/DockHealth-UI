@@ -123,7 +123,6 @@ TemplateCore.propTypes = {
 };
 
 const mapStateToProps = function (store) {
-  // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
   return {
     user: store.userState.user,
   }

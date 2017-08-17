@@ -45,12 +45,12 @@ class TaskListView extends React.Component {
     }
 
     addTaskList = () => {
-      this.props.taskListAction.setTaskListAsTasklistone(null)
+      this.props.taskListAction.setTaskListAsCurrentList(null)
     }
 
     editTaskList = (taskList) => {
       console.log("editTaskList: "+taskList.taskListId)
-      this.props.taskListAction.setTaskListAsTasklistone(taskList)
+      this.props.taskListAction.setTaskListAsCurrentList(taskList)
       //$('.add').click();
       // $('.add').toggleClass('close');
       // $('body').toggleClass('disable-header-scroll');

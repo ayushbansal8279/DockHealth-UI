@@ -29,7 +29,8 @@ class HeaderTasks extends BaseComponent {
     this.props.taskActions.loading()
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
-      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ACTIVE')
+      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ALL')
+      this.props.taskListActions.getOrganizationUsersNotInTaskList(this.props.taskListId);
     }
     this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
@@ -166,9 +167,9 @@ class HeaderTasks extends BaseComponent {
 }
 
 const mapStateToProps = function (store) {
-  // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
+  // console.log('tasklist is: ' + store.taskListState.currentList.listName)
   return {
-    taskList: store.taskListState.tasklistone, // tasklistone is set at the reducer
+    taskList: store.taskListState.currentList, // currentList is set at the reducer
     taskLists: store.taskListState.tasklist,
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,

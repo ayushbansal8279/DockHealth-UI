@@ -22,7 +22,7 @@ class TaskListOneRenderContainer extends React.Component {
 
   onSubmit (formProps) {
     //console.log(formProps);
-    this.props.updateTaskList(formProps,this.props.taskListOne.taskListId)
+    this.props.updateTaskList(formProps,this.props.currentList.taskListId)
     .then((res)=>{
       //this.props.resetForm;//reduxforms injected fucntion
       hashHistory.push('/taskList')
@@ -55,7 +55,7 @@ class TaskListOneRenderContainer extends React.Component {
 
         <div className="row">
           <div className="small-10 columns">
-             Existing TaskList Name: <strong>{this.props.taskListOne.listName}</strong>
+             Existing TaskList Name: <strong>{this.props.currentList.listName}</strong>
           </div>
         </div>
 

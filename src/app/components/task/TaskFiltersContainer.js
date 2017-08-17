@@ -111,7 +111,7 @@ class TaskFiltersContainer extends BaseComponent {
 const mapStateToProps = function (store) {
    return {
      members: store.taskListState.tasklistmembers,
-     taskList: store.taskListState.taskListone
+     taskList: store.taskListState.currentList
    };
 }
 

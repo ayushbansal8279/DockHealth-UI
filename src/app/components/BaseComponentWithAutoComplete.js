@@ -24,6 +24,14 @@ class BaseComponentWithAutoComplete extends BaseComponent {
 		});
 	};
 
+	onKeyDownSuggestionSearch = (event) => {
+		console.log("onKeyDownSuggestionSearch")
+	};
+
+	onBlurSuggestionSearch = (event) => {
+		console.log("onBlurSuggestionSearch")
+	};
+
 	renderInputComponent = inputProps => (
 		<div className="columns input-group input-wrapper">
 			<span className="input-group-label">

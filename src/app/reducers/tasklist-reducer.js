@@ -6,7 +6,7 @@ const TaskListReducer = function(state = initialState, action) {
   switch(action.type) {
 
     case types.ADD_TASKLIST_SUCCESS:
-      return {...state, tasklist: [action.tasklist].concat(state.tasklist), tasklistone:action.tasklist}
+      return {...state, tasklist: [action.tasklist].concat(state.tasklist), currentList:action.tasklist}
 
     case types.REQUEST_LISTS:
       return Object.assign({}, state, {isFetching:true})
@@ -17,8 +17,8 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_TASKLIST_SUCCESS:
       return {...state, tasklist:action.tasklist, isFetching: false};  //whatever our current state is, add on "tasklist"
 
-    case types.GET_TASKLIST_ONE_SUCCESS:
-      return {...state, tasklistone:action.tasklistone};  //whatever our current state is, add on "tasklistone"
+    case types.SET_CURRENT_LIST: 
+      return {...state, currentList: action.currentList};  //whatever our current state is, add on "currentList"
 
     case types.GET_TASKLISTMEMBERS_SUCCESS:
       return {...state, tasklistmembers:action.tasklistmembers};  //whatever our current state is, add on "tasklistmembers"
@@ -42,7 +42,7 @@ const TaskListReducer = function(state = initialState, action) {
       return {...state, activityFeedForAllUserList:action.activityFeedForAllUserList};  //whatever our current state is, add on "activityFeedForAllUserList"
 
     case types.TOGGLE_LIST_NOTIFICATIONS_SUCCESS:
-      return {...state, tasklistone:{notifications:action.receiveNotifications}};
+      return {...state, currentList:{notifications:action.receiveNotifications}};
 
     case types.SET_GENERIC_LIST_COUNTS:
       return {...state, genericLists:action.lists};

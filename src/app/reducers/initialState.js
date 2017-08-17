@@ -6,7 +6,6 @@ export default {
   task: {},
   tasklist: [],
   user: false,
-  tasklistone: {},
   tasklistmembers: [],
   orgusersnotintasklist: [],
   nonorgusersintasklist:[],

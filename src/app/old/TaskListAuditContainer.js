@@ -33,7 +33,7 @@ class TaskListAuditContainer extends Component {
         <div>
           <div className="row">
             <div className="small-12 columns">
-            <h4>Activity feed for task list: <strong>{this.props.taskListOne.listName}</strong></h4>
+            <h4>Activity feed for task list: <strong>{this.props.currentList.listName}</strong></h4>
             </div>
           </div>
 
@@ -59,7 +59,7 @@ class TaskListAuditContainer extends Component {
 function mapStateToProps(state) {
   //console.log(state);
   return {
-    taskListOne: state.taskListState.tasklistone,
+    currentList: state.taskListState.currentList,
     tasklistaudits: state.taskListState.tasklistaudits
   };
 }

@@ -40,7 +40,7 @@ class NotificationsToggle extends React.Component {
 }
 
 const mapStateToProps = function(store){
-  return {taskList: store.taskListState.tasklistone}
+  return {taskList: store.taskListState.currentList}
 }
 
 const mapDispatchToProps = function (dispatch) {

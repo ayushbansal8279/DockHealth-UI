@@ -8,35 +8,71 @@ import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
 
-class TaskListInvitePersonContainer extends BaseComponent {
+class TaskListInviteUsersContainer extends BaseComponent {
 
   constructor(props) {
     	super(props)
     	this.state = {
-      		invitePersonResult: ''
+      		inviteUserResult: '',
+          options: []
     	};
   	}
 
   componentDidMount () {
       this.props.getTaskListById(this.props.taskListId);
+      this.props.getOrganizationUsersNotInTaskList(this.props.taskListId);
       mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-              'PageName': 'TaskListInvitePerson'
+              'PageName': 'TaskListInviteUsers'
       });
     }
 
-  onSubmit (formProps) {
-    //console.log(formProps);
-    this.props.invitePersonToTaskList(formProps,this.props.taskListId)
-    .then((res)=>{
-      //this.props.resetForm;//reduxforms injected fucntion
-      //hashHistory.push('/taskList')
-      this.setState({invitePersonResult: 'Invitation sent successfully!!'}); //this will cause render to be called
-    })
-    .catch((error)=>{
-      this.setState({invitePersonResult: error.message}); //this will cause render to be called
-    })
+    onSubmit (formProps) {
+      //alert(this.state.options);
+        if(this.state.options.length ==0){
+          alert("User must be selected before invitation is sent.");
+        }
+        else
+        {
+        this.props.inviteMultipleUsersToTaskList(this.props.taskListId,this.state.options)
+        .then((res)=>{
+          //this.props.resetForm;//reduxforms injected fucntion
+          //hashHistory.push('/taskList')
+          this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
+        })
+        .catch((error)=>{
+          this.setState({inviteUserResult: error.message}); //this will cause render to be called
+        })
+      }
+    }
 
-  }
+    onChange(e) {
+      // current array of options
+      const options = this.state.options
+      //alert(+e.target.value);
+      if (e.target.checked) {
+       // add the numerical value of the checkbox to options array
+       options.push(e.target.value)
+     } else {
+       // or remove the value from the unchecked checkbox from the array
+       const index = options.indexOf(e.target.value)
+       options.splice(index, 1)
+     }
+
+     // update the state with the new array of options
+     this.setState({ options: options })
+
+    }
+
+    createCheckboxes(){
+      return this.props.orgusersnotintasklist.map((user) =>{
+         return(
+          <label key={user.userId} >
+            <input type="checkbox" value={user.userId} onChange={this.onChange.bind(this)}/>
+            <b>{user.firstName + "," + user.lastName}</b>
+          </label>
+         );
+     })
+    }
 
   //{...tasklistname} destructures the objects into key and values
   //and passes properties (like onchange, onBlur etc) into  <input> object title
@@ -50,27 +86,18 @@ class TaskListInvitePersonContainer extends BaseComponent {
         <div className="large-12 columns" >
           <div className="column">
             <form onSubmit = {handleSubmit(this.onSubmit.bind(this))}>
-              <h4>Invite Person to Task List: <strong>{this.props.taskListOne.listName}</strong></h4>
+              <h4>List of user that can be invited to Task List: <strong>{this.props.currentList.listName}</strong></h4>
 
               <div className="row">
                 <div className="small-12 columns">
-                <h3>{this.state.invitePersonResult}</h3>
+                <h3>{this.state.inviteUserResult}</h3>
                 </div>
               </div>
 
-              <div className="row">
-                <div className="medium-6 columns">
-                                <Field name='firstName' type='text' component={BasicField} label='First Name' placeholder='required'/>
-                </div>
-                <div className="medium-6 columns">
-                                <Field name='lastName' type='text' component={BasicField} label='Last Name' placeholder='required'/>
-                </div>
+              <div>
+                  {this.createCheckboxes()}
               </div>
-              <div className="row">
-                <div className="medium-12 columns">
-                                <Field name='email' type='text' component={BasicField} label='Email' placeholder='required'/>
-                </div>
-              </div>
+
               <div className="row">
                   <div className="medium-12 columns button-group">
                       <button className="button primary float-right button-small">Invite</button>
@@ -90,25 +117,14 @@ class TaskListInvitePersonContainer extends BaseComponent {
 function validate(values){
   const errors = {};
 
-  if(!values.firstName){
-    errors.firstName = 'Please enter First Name';
-  }
-
-  if(!values.lastName){
-    errors.lastName = 'Please enter Last Name';
-  }
-
-  if(!values.email){
-    errors.email = 'Please enter Email Address';
-  }
-
   return errors;
 }
 
 function mapStateToProps(state) {
   //console.log(state);
   return {
-    taskListOne: state.taskListState.tasklistone
+    orgusersnotintasklist: state.taskListState.orgusersnotintasklist,
+    currentList: state.taskListState.currentList
   };
 }
 
@@ -126,4 +142,4 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, TaskListActions)(reduxForm({
     form: 'TaskListAddForm',
     validate
-})(TaskListInvitePersonContainer));
+})(TaskListInviteUsersContainer));

@@ -44,7 +44,7 @@ class AddTaskForm extends BaseComponent {
   }
 
   handleTaskListSelection(event) {
-    this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ACTIVE')
+    this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL')
     $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
@@ -275,10 +275,9 @@ const selector = formValueSelector('addTaskForm')
 
 const mapStateToProps = function(store) {
 	var initialTaskFormValues = {}
-  // initialTaskFormValues.taskList = store.taskListState.tasklistone.listName;
   if(store.taskListState.currentList){
-    initialTaskFormValues.taskList = store.taskListState.tasklistone.listName
-    initialTaskFormValues.taskListId = store.taskListState.tasklistone.taskListId
+    initialTaskFormValues.taskList = store.taskListState.currentList.listName
+    initialTaskFormValues.taskListId = store.taskListState.currentList.taskListId
   }
   // console.log("current list")
   // console.log(store.taskListState.currentList)
@@ -317,7 +316,7 @@ const mapStateToProps = function(store) {
     currentTask: store.taskState.task,
     currentSubtasks: selector(store, 'subtasks'),
     priority: selector(store, 'priority'),
-    taskList: store.taskListState.tasklistone
+    taskList: store.taskListState.currentList
   }
 };
 
