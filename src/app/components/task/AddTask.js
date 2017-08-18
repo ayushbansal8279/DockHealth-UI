@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { actions } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import AddTaskForm from './AddTaskForm'
+import AddSubtaskForm from './AddSubtaskForm';
+import { formValueSelector, actions } from 'redux-form'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import * as PeopleActions from '../../actions/people-actions';
 import * as TaskActions from '../../actions/task-actions';
@@ -17,7 +18,8 @@ class AddTask extends BaseComponent {
 		this.state = {
 				value: '',
 				assignedToId: '',
-				subtasks:[]
+				subtasks:[],
+	      currentSubtaskIndex:""
 		}
   		//this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
@@ -115,30 +117,59 @@ class AddTask extends BaseComponent {
 		toggleTaskForm()
 	}
 
+	addSubtaskValues = (subtaskValues, index) => {
+		this.setState({currentSubtaskIndex:""})
+		if(index !== ""){
+			subtaskValues.taskId = this.props.currentSubtasks[index].taskId
+			this.props.formActions.change('addTaskForm', `subtasks[${index}]`, subtaskValues)
+			// this.props.formActions.subtasks[index] = subtaskValues
+			// this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
+			// this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
+			// var currentSubtasks = this.props.currentSubtasks
+		}else{
+			subtaskValues.taskId = ""
+			this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
+		}
+	}
+
     render() {
     	return (
-			<div className="add-form-wrapper" ref="toggle">
-				<div className="task-item add-form row expanded">
-					<AddTaskForm
-						onSubmit={this.submit}
-						taskLists={this.props.taskLists}
-						task={this.props.task}
-						title={this.props.title}
-						taskListId={this.props.taskListId}
-						initialValues={"taskListId:"+this.props.taskListId}
-						subtasks={this.state.subtasks}
-						addSubtaskToState={this.addSubtaskToState}
-						setSubtasks={this.setSubtasks}
-						clearSubtasks={this.clearSubtasks}
-					/>
+				<div className="add-form-wrapper" ref="toggle">
+					<div className="task-item add-form row expanded">
+						<div className="column top-buffer large-12">
+						<AddTaskForm
+							onSubmit={this.submit}
+							taskLists={this.props.taskLists}
+							task={this.props.task}
+							title={this.props.title}
+							taskListId={this.props.taskListId}
+							initialValues={"taskListId:"+this.props.taskListId}
+							subtasks={this.state.subtasks}
+							addSubtaskToState={this.addSubtaskToState}
+							setSubtasks={this.setSubtasks}
+							clearSubtasks={this.clearSubtasks}
+						/>
+						<AddSubtaskForm
+							// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
+							onSubmit={this.submitSubtask}
+							// submitSubtask={this.submitSubtask}
+							// addSubtask={this.addSubtask}
+							addSubtaskValues={this.addSubtaskValues}
+							currentSubtasks={this.props.currentSubtasks}
+							currentSubtaskIndex={this.state.currentSubtaskIndex}
+							title={this.props.title}
+							currentTask={this.props.task}
+						/>
+						</div>
+					</div>
+					{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
 				</div>
-				{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
-
-			</div>
 
     	)
     }
 }
+
+const selector = formValueSelector('addTaskForm')
 
 const mapStateToProps = function(store) {
   return {
@@ -146,7 +177,8 @@ const mapStateToProps = function(store) {
 		patients: store.patientState.allPatients,
 		peoplelist: store.peopleState.peoplelist,
 		members: store.taskListState.tasklistmembers,
-		task: store.taskState.task
+		task: store.taskState.task,
+		currentSubtasks: selector(store, 'subtasks')
 		// user: store.userState.user
   	}
 };
