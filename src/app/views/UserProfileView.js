@@ -11,7 +11,7 @@ class UserProfileView extends React.Component {
         <div className="off-canvas-content" data-off-canvas-content>
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <header class="nav-down">
+              <header className="nav-down">
                 <div className="top-bar">
                   <div className="new-task text-center">
                     <span className="number-new-tasks"></span>
