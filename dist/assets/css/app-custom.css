@@ -201,9 +201,11 @@ pre.emailMessage {
   margin-right: .75em !important;
 }
 
-.specialty-open-link.accordion-title{
+.specialty-open-link.accordion-title, .title-open-link.accordion-title{
   display:none;
 }
+
+
 
 /*.has-error {
   border: 1px solid #f40707 !important; }*/

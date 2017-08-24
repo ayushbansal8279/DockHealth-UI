@@ -18,7 +18,9 @@ class UserProfileContainer extends BaseComponent {
       userSelectedSpecialties:[],
       userSpecialties:"",
       titles:"",
-      predefinedTitlesDisabled:''
+      predefinedTitlesDisabled:'',
+      otherTitleDescription:"",
+      selectedTitles:""
     };
   }
 
@@ -36,12 +38,17 @@ class UserProfileContainer extends BaseComponent {
           this.setState({userSpecialties:response.specialtyList});
           console.log(response.specialties)
         }
+        if(response.titles[0].titleId == 1){
+          this.setState({predefinedTitlesDisabled:true})
+          this.setState({otherTitleDescription:response.titleList})
+        }else{
+          this.setState({selectedTitles:response.titleList})
+        }
       })
       userApi.getUserProfilePic(sessionStorage.userId,"PROFILE")
       userApi.getUserNotoficationPrefs()
       userApi.getAllSpecialties()
       userApi.getAllTitles()
-
     }
 
     componentWillReceiveProps(nextProps){
@@ -57,18 +64,15 @@ class UserProfileContainer extends BaseComponent {
     }
 
     componentWillUpdate(nextProps){
-      var selected = [];
-      $('#title-checkboxes li input:checked').each(function() {
-          selected.push($(this).attr('title'));
-      });
-      if(this.state.titles != selected.toString()){
-        this.setState({titles: selected.toString()})
-        this.props.formActions.change('UserProfileForm', 'titles', selected.toString())
-      }
-      var titles = this.props.userTitles
-      if(this.state.titleObjects == "" && titles != undefined && this.props.userTitles[0].titleId == 1){
-        this.setState({predefinedTitlesDisabled:true})
-      }
+      // var selected = [];
+      // $('#title-checkboxes li input:checked').each(function() {
+      //     selected.push($(this).attr('title'));
+      // });
+      // if(this.state.titles != selected.toString()){
+      //   this.setState({titles: selected.toString()})
+      //   this.props.formActions.change('UserProfileForm', 'titles', selected.toString())
+      // }
+
     }
 
     handleImageChange(e) {
@@ -102,19 +106,21 @@ class UserProfileContainer extends BaseComponent {
         allTitles = []
       }
 
-      allTitles.map((title) =>{
-        var checkBoxId = "TitleCB" + title.titleId
-        if(formProps[checkBoxId]){
-          var title;
-          if(checkBoxId.toString() == "TitleCB1"){
-            title = {titleId:title.titleId,name:formProps.otherTitle}
+      if(this.state.predefinedTitlesDisabled){
+        var title = {titleId:1,name:formProps.otherTitle}
+        titlesToStore.push(title);
+      }else{
+        allTitles.map((title) =>{
+          var checkBoxId = "TitleCB" + title.titleId
+          if(formProps[checkBoxId]){
+            var title;
+            if(checkBoxId.toString() != "TitleCB1"){
+              title = {titleId:title.titleId,name:title.name}
+            }
+            titlesToStore.push(title);
           }
-          else{
-            title = {titleId:title.titleId,name:title.name}
-          }
-          titlesToStore.push(title);
-        }
-      })
+        })
+      }
       return titlesToStore;
     }
 
@@ -126,8 +132,7 @@ class UserProfileContainer extends BaseComponent {
       if(allSpecialties == undefined || allSpecialties == null){
         allSpecialties = []
       }
-//console.log(formProps.manualSpecialty)
-//console.log(formProps.manualSubSpecialty)
+
       if(formProps.manualSpecialty == undefined && formProps.manualSubSpecialty == undefined) { //specialties selected from dropdown
         allSpecialties.map((specialty) =>{
             var checkBoxId = "SpecialtyCB" + specialty.specialtyId
@@ -250,14 +255,31 @@ class UserProfileContainer extends BaseComponent {
     }
 
     updateTitle = (e) => {
-      debugger;
       //check if user is clicking or unclicking 'other'
       if(e.target.title == "Other"){
         if(e.target.value){
           this.setState({predefinedTitlesDisabled:false})
+
+          var inputChecked = $('#title-input input:checked')
+          var selectedTitles = [];
+          for(var i=0; i<inputChecked.length; i++){
+            var title = inputChecked[i].title
+            selectedTitles.push(title)
+          }
+
+          this.setState({selectedTitles: selectedTitles.join(', ')})
         }else{
-          this.setState({titles:"Other"})
+          this.setState({predefinedTitlesDisabled:true})
+          this.setState({titles:this.state.otherTitleDescription})
         }
+      }else{
+        var inputChecked = $('#title-input input:checked')
+        var selectedTitles = [];
+        for(var i=0; i<inputChecked.length; i++){
+          var title = inputChecked[i].title
+          selectedTitles.push(title)
+        }
+        this.setState({selectedTitles: selectedTitles.join(', ')})
       }
       // var otherChecked = $('#TitleCB1')[0].checked
       // var inputChecked = $('#title-input input:checked')
@@ -270,6 +292,11 @@ class UserProfileContainer extends BaseComponent {
       // }
     }
 
+    setTitleDescriptionState(e){
+      this.setState({otherTitleDescription:e.target.value})
+      this.setState({titles:e.target.value})
+    }
+
     createTitleCheckboxes(allTitles){
       return allTitles.map((title) =>{
         var checkBoxId = "TitleCB" + title.titleId
@@ -278,15 +305,15 @@ class UserProfileContainer extends BaseComponent {
              <li key={title.titleId} id="title-other">
                <Field onChange={(e) => this.updateTitle(e)} name={checkBoxId} id={checkBoxId} title={title.name} component="input" type="checkbox"/>
                <label htmlFor={checkBoxId}>Other</label>
-               <Field name='otherTitle' type='text' component={BasicField} label='Other Title'/>
+               <Field onChange={(e) => this.setTitleDescriptionState(e)} name='otherTitle' type='text' component={BasicField} label='Other Title'/>
             </li>
             )
         }
         else{
           return(
-           <li key={title.titleId} id="title-input">
-           <Field onChange={(e) => this.updateTitle(e)} disabled={this.state.userSelectedSpecialties} name={checkBoxId} id={checkBoxId} title={title.name} component="input" type="checkbox"/>
-            <label htmlFor={checkBoxId}>{title.name}</label>
+            <li key={title.titleId} id="title-input">
+             <Field onChange={(e) => this.updateTitle(e)} disabled={this.state.predefinedTitlesDisabled} name={checkBoxId} id={checkBoxId} title={title.name} component="input" type="checkbox"/>
+              <label htmlFor={checkBoxId}>{title.name}</label>
             </li>
           )
         }
@@ -300,7 +327,7 @@ class UserProfileContainer extends BaseComponent {
           return(
             // originally had 'checkBoxId' as field name and htmlFor but changed it to a string due to validation and was probably unneeded
                <li key={specialty.specialtyId} >
-                <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" value={checkBoxId} onChange={this.onClickSpecialtyCheckBox.bind(this)}/>
+                <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" value={checkBoxId} onChange={(e) => this.onClickSpecialtyCheckBox(e)}/>
                 <label htmlFor={checkBoxId}>{specialty.name}</label>
                 </li>
             )
@@ -326,6 +353,11 @@ findObjectByKey(array, key, value) {
      }
      return array;
    }
+
+  handleCheckboxClick = (e) => {
+    debugger;
+    e.stopPropagation()
+  }
 
   createSubSpecialtyCheckBoxes(specialty){
     var subSpecialties = specialty.subSpecialties;
@@ -396,12 +428,19 @@ findObjectByKey(array, key, value) {
           var removedSelectedSpecialties = this.removeObjectByKey(tmpUserSelectedSpecialties,"specialtyId", specialtyId);
           this.setState({userSelectedSpecialties: removedSelectedSpecialties});
         }
+
     }
 
-    openSpecialties = () => {
+    openField = (e) => {
+      debugger;
       // Clicks the hidden link that has the class 'accordion-title'
       // which is used as the trigger to open and close the 'accordion-content'
-      $('.specialty-open-link.accordion-title').trigger('click');
+      if(e.target.name == "specialties"){
+        $('.specialty-open-link.accordion-title').trigger('click');
+      }
+      if(e.target.name == "titles"){
+        $('.title-open-link.accordion-title').trigger('click');
+      }
 
       // Prevents default click event
       return false;
@@ -409,7 +448,7 @@ findObjectByKey(array, key, value) {
 
 updateSpecialty = (e) => {
   // this.setState({userSpecialties: e.target.value})
-  this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
+  actions.change('UserProfileForm', 'specialties', e.target.value)
   return false;
 }
 
@@ -506,38 +545,38 @@ updateSpecialty = (e) => {
                   </div> */}
 
                   {/* <!-- Title --> */}
-                  <div className="column large-12 input-group no-icon input-dropdown">
-                    <div className="form-floating-label input-wrapper has-value">
-                      <input className="input-group-field" type="text" data-toggle="add-titles" value={this.state.titles}/>
-                      <label>Title</label>
-                    </div>
-
-                    <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
-                      <fieldset className="large-12 columns">
-                        <ul className="no-bullet columns-2" id="title-checkboxes">
-                            {this.createTitleCheckboxes(allTitles)}
-                        </ul>
-                      </fieldset>
-                    </div>
-                  </div>
+                      <div className="column large-12 input-group no-icon input-dropdown">
+                        <div className="form-floating-label input-wrapper has-value">
+                          <input className="input-group-field" type="text" data-toggle="add-titles" value={this.state.predefinedTitlesDisabled ? this.state.otherTitleDescription : this.state.selectedTitles} />
+                          <label>Title</label>
+                        </div>
+                        <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
+                          <fieldset className="large-12 columns">
+                            <ul className="no-bullet columns-2" id="title-checkboxes">
+                                {this.createTitleCheckboxes(allTitles)}
+                            </ul>
+                          </fieldset>
+                        </div>
+                      </div>
 
 
                   {/* <!-- Specialties --> */}
-                  <Field name="specialties" component={(props) => {
-                    return (
                       <div className="column large-12">
                         <div className="accordion" data-accordion data-allow-all-closed="true">
                           <div className={"accordion-item " + (this.state.openSpecialties && 'is-active')} data-accordion-item>
-                            <div onClick={(e) => this.openSpecialties()} className="specialty-select input-group no-icon input-dropdown">
-                              <div className={" form-floating-label input-wrapper has-value  " + (props.meta.touched && props.meta.error && 'has-error')}>
-                                <input className=" input-group-field" type="text" data-toggle="add-specialties" value="Blah Blah" {...props.input} disabled/>
-                                <label>Specialties</label>
-                              </div>
-                            </div>
+                            <Field name="specialties" component={(props) => {
+                              return (
+                                <div onClick={(e) => this.openField(e)} className="specialty-select input-group no-icon input-dropdown">
+                                  <div className={" form-floating-label input-wrapper has-value  " }>
+                                    <input className=" input-group-field" type="text" data-toggle="add-specialties" {...props.input} disabled/>
+                                    <label>Specialties</label>
+                                  </div>
+                                </div>
+                              )
+                            }}/>
 
                             {/* hidden link */}
-                            <a href="#" className="specialty-open-link accordion-title" {...props.input}>Specialties</a>
-                            <h5>{this.state.titles}</h5>
+                            <a href="#" className="specialty-open-link accordion-title">Specialties</a>
 
                             <div className="accordion-content no-border" data-tab-content>
                               <div className="column large-12">
@@ -593,12 +632,11 @@ updateSpecialty = (e) => {
                             </div>
                           </div>
                         </div>
-                        {props.meta.touched && props.meta.error &&
+                        {/* {props.meta.touched && props.meta.error &&
                           <span className="form-error">{props.meta.error}</span>
-                        }
+                        } */}
                       </div>
-                    )
-                  }}/>
+
 
                   <div className="column large-12 top-buffer">
                     <span className="item-title">Contact</span>
@@ -762,13 +800,17 @@ function validate(values){
     errors.lastName = 'Please enter Last Name';
   }
 
-  if(!values.specialties){
-    errors.specialties = 'Please select or enter a specialty';
-  }
+  // if(!values.specialties){
+  //   errors.specialties = 'Please select or enter a specialty';
+  // }
+
+  // if(!values.titles){
+  //   errors.titles = 'Please select or enter a title';
+  // }
 
   var homePhoneNumber = values.homePhoneNumber
   if(homePhoneNumber){
-    if(!PhoneNumbers(homePhoneNumber)){
+    if(!validatePhoneNumbers(homePhoneNumber)){
       errors.homePhoneNumber = 'Please enter 10 digit home phone number';
     }
   }
@@ -792,6 +834,8 @@ function validate(values){
     if(!validatePhoneNumbers(accountPhoneNumber)){
       errors.accountPhoneNumber = 'Please enter 10 digit mobile phone number';
     }
+  }else if (!accountPhoneNumber) {
+    errors.accountPhoneNumber = 'Mobile number is required'
   }
 
   return errors;
@@ -815,7 +859,7 @@ function validatePhoneNumbers(phoneNumber){
 
 function mapDispatchToProps(dispatch){
   return{
-    formActions: bindActionCreators(actions, dispatch)
+    // formActions: bindActionCreators(actions, dispatch)
   }
 }
 

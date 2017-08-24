@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link,hashHistory } from 'react-router';
-
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import UserProfileContainer from '../components/people/UserProfileContainer'
 
-
 class UserProfileView extends React.Component {
+
     render() {
       return (
 
@@ -28,7 +29,7 @@ class UserProfileView extends React.Component {
             </div>
           </div>
           <div className="list-wrapper">
-            <UserProfileContainer/>
+            <UserProfileContainer userProfile={this.props.userProfile}/>
           </div>
         </div>
 
@@ -36,4 +37,10 @@ class UserProfileView extends React.Component {
   }
 }
 
-export default UserProfileView;
+const mapStateToProps = function (store) {
+  return {
+    userProfile: store.userState.userProfile
+  }
+}
+
+export default connect(mapStateToProps)(UserProfileView);
