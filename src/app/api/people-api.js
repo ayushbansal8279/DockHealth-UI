@@ -28,6 +28,15 @@ export function invitePersonToOrganization(person) {
     });
 }
 
+export function resendInviteToOrganization(person) {
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/resendInviteToOrganization', person)
+    .then(response => {
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+    });
+}
+
 export function changeUserRoleForOrg(markedUserId,role) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/changeUserRoleForOrg/'
                       +"?markedUserId=" +markedUserId

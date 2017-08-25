@@ -27,10 +27,15 @@ const LinksDefault = ({className}) => (
 )
 
 const LinksAuth = ({user, className, onLogout, userProfilePic}) => (
-    <div data-toggle="profile-dropdown" className="user-profile-link link">
-      <MemberInitials member={user}/>
-      {user.firstName + " " + user.lastName}
-    </div>
+  <div data-toggle="profile-dropdown" className="align-middle row user-profile-link link">
+    <img className="hide member-photo circle" src="assets/img/user1.png" alt="name of user">
+    <span className="member-initials circle">SL</span>
+    Christopher Richardson
+  </div>
+    // <div data-toggle="profile-dropdown" className="user-profile-link link">
+    //   <MemberInitials member={user}/>
+    //   {user.firstName + " " + user.lastName}
+    // </div>
 )
 
 class NavBar extends React.Component {
@@ -71,7 +76,7 @@ class NavBar extends React.Component {
         <ul className="menu vertical outer">
           <NavLink to='/activityfeed' className="center-content-vertical"><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</NavLink>
           <li>
-            <Link to='/taskList' activeClassName="active" className="center-content-vertical"><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
+            <Link to='/taskList' activeClassName="active" className={"center-content-vertical " + (this.props.isList && 'active')}><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
             <ul className="nested vertical menu">
 
               {/* <li>
@@ -116,7 +121,8 @@ const mapStateToProps = function (store) {
     user: store.userState.user,
     userProfile: store.userState.userProfile,
     userProfilePic:store.userState.userProfilePic,
-    taskLists: store.taskListState.tasklist
+    taskLists: store.taskListState.tasklist,
+    isList: store.taskListState.isList
   }
 }
 

@@ -20,7 +20,8 @@ export default {
   currentTask: {},
   genericLists: [],
   users: {},
-  isFetching:true
+  isFetching:true,
+  isList:false
   // users: {'1':{"image":"url", "initials":"LJ"}, '2':{"image":"url", "initials":"LJ"}}
   //addtasklisterror:''
 }

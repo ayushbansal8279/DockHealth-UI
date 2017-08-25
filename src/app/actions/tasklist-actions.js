@@ -225,6 +225,12 @@ export function storeAsCurrentList(taskListId){
   }
 }
 
+export function isList(boolean){
+  return function(dispatch){
+    dispatch({type: ActionTypes.IS_LIST, boolean})
+  }
+}
+
 export function leaveList(taskListId){
   return function(dispatch){
     return UserApi.leaveList(taskListId).then(res => {

@@ -1,5 +1,5 @@
 import React, { Component ,PropTypes} from 'react';
-import {reduxForm, Field, actions} from 'redux-form';
+import {reduxForm, Field, actions, change} from 'redux-form';
 import {invitePersonToOrganization} from '../../actions/people-actions';
 import BasicField from '../common/BasicField';
 import { Link,hashHistory } from 'react-router';
@@ -448,7 +448,7 @@ findObjectByKey(array, key, value) {
 
 updateSpecialty = (e) => {
   // this.setState({userSpecialties: e.target.value})
-  actions.change('UserProfileForm', 'specialties', e.target.value)
+  this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
   return false;
 }
 
@@ -859,7 +859,7 @@ function validatePhoneNumbers(phoneNumber){
 
 function mapDispatchToProps(dispatch){
   return{
-    // formActions: bindActionCreators(actions, dispatch)
+    formActions: bindActionCreators({change}, dispatch)
   }
 }
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {bindActionCreators} from 'redux';
 import AddTaskForm from './AddTaskForm'
 import AddSubtaskForm from './AddSubtaskForm';
-import { formValueSelector, actions } from 'redux-form'
+import { formValueSelector, actions, reset, change, arrayPush } from 'redux-form'
 import PatientDropdownListContainer from '../patient/PatientDropdownListContainer'
 import * as PeopleActions from '../../actions/people-actions';
 import * as TaskActions from '../../actions/task-actions';
@@ -187,7 +187,7 @@ function mapDispatchToProps(dispatch) {
   return {
 	  taskActions: bindActionCreators(TaskActions, dispatch),
 	  peopleActions: bindActionCreators(PeopleActions, dispatch),
-		formActions: bindActionCreators(actions, dispatch)
+		formActions: bindActionCreators({reset, change, arrayPush}, dispatch)
   }
 }
 

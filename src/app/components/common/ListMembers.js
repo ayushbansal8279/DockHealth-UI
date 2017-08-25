@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { SubmissionError, Field, input, reduxForm, actions } from 'redux-form'
+import { SubmissionError, Field, input, reduxForm, actions, reset, destroy } from 'redux-form'
 import BasicField from '../common/BasicField';
 import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
 import MemberInitials from '../common/MemberInitials'
@@ -186,7 +186,7 @@ const mapStateToProps = function(store){
 const mapDispatchToProps = function (dispatch) {
   return {
     taskListActions: bindActionCreators(TaskListActions, dispatch),
-    formActions: bindActionCreators(actions, dispatch)
+    formActions: bindActionCreators({reset, destroy}, dispatch)
   }
 }
 

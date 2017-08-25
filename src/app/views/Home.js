@@ -58,9 +58,11 @@ class Home extends BaseComponent {
   }
 
   componentDidMount(){
+    var pops = this.context
     // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
     this.props.actions.loading()
+    this.props.taskListActions.isList(true)
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks("COMPLETE")
       this.props.actions.getInboxTasks("INCOMPLETE")
@@ -119,6 +121,10 @@ class Home extends BaseComponent {
         this.props.taskListActions.getOrganizationUsersNotInTaskList(nextProps.routeParams.taskListId);
       }
     }
+  }
+
+  componentWillUnmount(){
+    this.props.taskListActions.isList(false)
   }
 
   refresh = () => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Field, reduxForm, formValueSelector, actions, stopSubmit } from 'redux-form'
+import { Field, reduxForm, formValueSelector, actions, stopSubmit, destroy, reset } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
@@ -177,12 +177,9 @@ function validate(values){
   if(!values.description){
     errors.description = 'Please enter a subtask description';
   }
-  if(!values.username){
-    errors.username = 'Please enter a username';
-  }
-  if(!values.patient){
-    errors.patient = 'Please select a patient';
-  }
+  // if(!values.patient){
+  //   errors.patient = 'Please select a patient';
+  // }
   return errors;
 }
 
@@ -207,7 +204,7 @@ const mapStateToProps = function(store){
 
 const mapDispatchToProps = function(dispatch){
   return{
-    formActions: bindActionCreators(actions, dispatch)
+    formActions: bindActionCreators({destroy, reset}, dispatch)
   }
 }
 
