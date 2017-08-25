@@ -285,7 +285,11 @@ function enableAutoCompleteForListMembers(lookupData, url) {
 }
 
 function enableFoundation() {
-	$(document).foundation();
+	$(document).foundation()
+}
+
+function enableFoundationForElement(elementName) {
+	$(elementName).foundation();
 }
 
 function toggleDropDown(elementId) {
