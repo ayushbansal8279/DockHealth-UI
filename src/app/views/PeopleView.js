@@ -5,9 +5,9 @@ import InvitePeople from '../components/people/InvitePeople'
 import PeopleContainer from '../components/people/PeopleContainer'
 import * as PeopleActions from '../actions/people-actions'
 import {mobileAnalyticsClient} from '../api/analytics-api'
-import BaseComponent from '../components/BaseComponent'
+import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 
-class PeopleView extends BaseComponent {
+class PeopleView extends BaseComponentWithFoundationUpdate {
 
   constructor(props){
     super(props)

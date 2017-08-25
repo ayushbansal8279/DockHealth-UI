@@ -10,13 +10,13 @@ import HeaderTasks from '../components/common/HeaderTasks'
 import * as TaskActions from '../actions/task-actions'
 import * as TaskListActions from '../actions/tasklist-actions'
 import * as PatientActions from '../actions/patient-actions'
-import BaseComponent from '../components/BaseComponent'
+import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 import $ from 'jquery'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import SearchInput, {createFilter} from 'react-search-input'
 import Mousetrap from 'react-mousetrap';
 
-class Home extends BaseComponent {
+class Home extends BaseComponentWithFoundationUpdate {
 
   constructor(props){
     super(props)

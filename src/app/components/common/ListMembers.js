@@ -172,7 +172,7 @@ function validate(values){
 }
 
 const mapStateToProps = function(store){
-	console.log("orgusersnotintasklist count: "+store.taskListState.orgusersnotintasklist);
+	//console.log("orgusersnotintasklist count: "+store.taskListState.orgusersnotintasklist);
 	return{
 		currentList: store.taskListState.currentList,
 		currentUser: store.userState.user,

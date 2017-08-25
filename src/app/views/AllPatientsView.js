@@ -9,9 +9,9 @@ import PatientListContainer from '../components/patient/PatientListContainer'
 import SearchPatient from '../components/patient/SearchPatient'
 import FormPatient from '../components/patient/FormPatient'
 import {mobileAnalyticsClient} from '../api/analytics-api'
-import BaseComponent from '../components/BaseComponent'
+import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 
-class AllPatientsView extends BaseComponent {
+class AllPatientsView extends BaseComponentWithFoundationUpdate {
 
     constructor(props){
       super(props)

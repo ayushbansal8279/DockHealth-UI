@@ -5,15 +5,15 @@ import {mobileAnalyticsClient} from '../api/analytics-api'
 
 class BaseComponent extends React.Component {
 
-    componentDidMount() {
-        //console.log("BaseComponent didmount")
-    }
+  componentDidMount() {
+      //console.log("BaseComponent didmount")
+  }
 
   componentDidUpdate(prevProps, prevState) {
-      enableFoundation();
-      console.log("BaseComponent didupdate")
-      this.doTimeoutValidations();
-    }
+    // enableFoundation();
+    console.log("BaseComponent didupdate")
+    this.doTimeoutValidations();
+  }
 
   doTimeoutValidations(){
     var systemTimeout= parseInt(process.env.SYSTEM_TIMEOUT);

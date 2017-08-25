@@ -1,8 +1,9 @@
 import React from 'react'
 import TaskListActivityFeedContainer from '../components/list/TaskListActivityFeedContainer'
 import {mobileAnalyticsClient} from '../api/analytics-api'
+import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 
-class TaskListActivityFeedView extends React.Component {
+class TaskListActivityFeedView extends BaseComponentWithFoundationUpdate {
 
     componentDidMount(){
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {

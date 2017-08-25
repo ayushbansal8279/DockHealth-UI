@@ -43,7 +43,9 @@ class HeaderTasks extends BaseComponent {
   }
 
   componentWillReceiveProps(nextProps){
-    if(this.props.taskLists && this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
+    if(this.props.taskLists && this.props.taskLists.length > 0 
+        && this.props.currentList
+        && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
     }

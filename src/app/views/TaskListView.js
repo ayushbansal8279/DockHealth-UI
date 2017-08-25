@@ -9,8 +9,9 @@ import ListsComponent from '../components/list/ListsComponent'
 import PendingListsComponent from '../components/list/PendingListsComponent'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import { Link } from 'react-router'
+import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 
-class TaskListView extends React.Component {
+class TaskListView extends BaseComponentWithFoundationUpdate {
 
   constructor(props) {
       super(props)
