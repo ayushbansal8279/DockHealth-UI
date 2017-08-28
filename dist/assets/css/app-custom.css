@@ -209,6 +209,10 @@ pre.emailMessage {
   height:3.75rem!important;
 }
 
+.off-canvas .menu li a {
+  color:#009bd6;
+}
+
 
 /*.has-error {
   border: 1px solid #f40707 !important; }*/
