@@ -33,8 +33,10 @@ class FormPatient extends BaseComponent {
   	}
 
   	componentDidMount () {
-    	console.log("mounted FormPatient component")
-      this.props.actions.getPatientById(this.props.patientId);
+      console.log("mounted FormPatient component")
+      if(this.props.patientId){
+        this.props.actions.getPatientById(this.props.patientId);
+      }
 		  //this.state.text = ""
       mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
               'PageName': 'FormPatient'
