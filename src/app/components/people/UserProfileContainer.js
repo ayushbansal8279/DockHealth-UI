@@ -1,5 +1,5 @@
 import React, { Component ,PropTypes} from 'react';
-import {reduxForm, Field} from 'redux-form';
+import {reduxForm, Field, actions, change} from 'redux-form';
 import {invitePersonToOrganization} from '../../actions/people-actions';
 import BasicField from '../common/BasicField';
 import { Link,hashHistory } from 'react-router';
@@ -13,7 +13,15 @@ import MemberInitials from '../common/MemberInitials'
 class UserProfileContainer extends BaseComponent {
   constructor(props) {
     super(props);
-    this.state = {updateProfileResult:'', userSelectedSpecialties:[]};
+    this.state = {
+      updateProfileResult:'',
+      userSelectedSpecialties:[],
+      userSpecialties:"",
+      titles:"",
+      predefinedTitlesDisabled:'',
+      otherTitleDescription:"",
+      selectedTitles:""
+    };
   }
 
     componentDidMount () {
@@ -27,9 +35,19 @@ class UserProfileContainer extends BaseComponent {
         }
         else{
           this.setState({userSelectedSpecialties:response.specialties});
+          this.setState({userSpecialties:response.specialtyList});
+          console.log(response.specialties)
+        }
+        if(response.titles[0].titleId == 1){
+          this.setState({predefinedTitlesDisabled:true})
+          this.setState({otherTitleDescription:response.titleList})
+        }else{
+          this.setState({selectedTitles:response.titleList})
         }
       })
-      userApi.getUserProfilePic(sessionStorage.userId,"PROFILE")
+      if(this.props.userProfile.profileThumbnailPictureHash){
+        userApi.getUserProfilePic(sessionStorage.userId, "PROFILE")
+      }
       userApi.getUserNotoficationPrefs()
       userApi.getAllSpecialties()
       userApi.getAllTitles()
@@ -47,7 +65,19 @@ class UserProfileContainer extends BaseComponent {
       }
     }
 
-    handleImageChange(e) {
+    componentWillUpdate(nextProps){
+      // var selected = [];
+      // $('#title-checkboxes li input:checked').each(function() {
+      //     selected.push($(this).attr('title'));
+      // });
+      // if(this.state.titles != selected.toString()){
+      //   this.setState({titles: selected.toString()})
+      //   this.props.formActions.change('UserProfileForm', 'titles', selected.toString())
+      // }
+
+    }
+
+    handleImageChange = (e) => {
       console.log("handleImageChange")
       e.preventDefault();
       let reader = new FileReader();
@@ -58,13 +88,13 @@ class UserProfileContainer extends BaseComponent {
         //   file: file,
         //   imagePreviewUrl: reader.result
         // });
-        userApi.saveUserProfilePic(reader.result)
-        .then((response) =>{
-          userApi.getUserProfilePic(sessionStorage.userId,"PROFILE"); //call this so state change will be triggered and all locations will be updated
+        userApi.saveUserProfilePic(reader.result, sessionStorage.userId, "PROFILE", this.props.userProfile)
+        .then((response) => {
+          toggleAlert("Profile updated!", "success")
+        }).catch((error) => {
+          toggleAlert("Error updating profile", "error")
         })
-        .catch((error)=>{
-          this.setState({updateProfileResult: error.message}); //this will cause render to be called
-        })
+        $('#profileImageClose').trigger('click');
       }
       //reader.readAsDataURL(file)
       reader.readAsArrayBuffer(file)
@@ -78,19 +108,21 @@ class UserProfileContainer extends BaseComponent {
         allTitles = []
       }
 
-      allTitles.map((title) =>{
-        var checkBoxId = "TitleCB" + title.titleId
-        if(formProps[checkBoxId]){
-          var title;
-          if(checkBoxId.toString() == "TitleCB1"){
-            title = {titleId:title.titleId,name:formProps.otherTitle}
+      if(this.state.predefinedTitlesDisabled){
+        var title = {titleId:1,name:formProps.otherTitle}
+        titlesToStore.push(title);
+      }else{
+        allTitles.map((title) =>{
+          var checkBoxId = "TitleCB" + title.titleId
+          if(formProps[checkBoxId]){
+            var title;
+            if(checkBoxId.toString() != "TitleCB1"){
+              title = {titleId:title.titleId,name:title.name}
+            }
+            titlesToStore.push(title);
           }
-          else{
-            title = {titleId:title.titleId,name:title.name}
-          }
-          titlesToStore.push(title);
-        }
-      })
+        })
+      }
       return titlesToStore;
     }
 
@@ -102,8 +134,7 @@ class UserProfileContainer extends BaseComponent {
       if(allSpecialties == undefined || allSpecialties == null){
         allSpecialties = []
       }
-//console.log(formProps.manualSpecialty)
-//console.log(formProps.manualSubSpecialty)
+
       if(formProps.manualSpecialty == undefined && formProps.manualSubSpecialty == undefined) { //specialties selected from dropdown
         allSpecialties.map((specialty) =>{
             var checkBoxId = "SpecialtyCB" + specialty.specialtyId
@@ -146,29 +177,30 @@ class UserProfileContainer extends BaseComponent {
       }
       else{ //manual specialties selected
 
-        var manualSpecialty= formProps.manualSpecialty
-        if(manualSpecialty ==undefined){
-          manualSpecialty=""
+        var manualSpecialty = formProps.manualSpecialty
+        if(manualSpecialty == undefined){
+          manualSpecialty= ""
         }
 
         var manualSubSpecialty= formProps.manualSubSpecialty
-        if(manualSubSpecialty ==undefined){
+        if(manualSubSpecialty == undefined){
           manualSubSpecialty=""
         }
 
-        if(manualSpecialty =="" && manualSubSpecialty ==""){
+        if(manualSpecialty == "" && manualSubSpecialty ==""){
           specialtiesToStore = []
         }
         else{
           var newManualSpecialty = {specialtyId:1,name:manualSpecialty}
           var newManualSubSpecialty = {subSpecialtyId:1,subSpecialtyName:manualSubSpecialty}
           subSpecialtiesArr = [];
-          subSpecialtiesArr.push(newManualSubSpecialty)
-          newManualSpecialty["subSpecialties"] = subSpecialtiesArr
+          if(manualSubSpecialty != undefined && manualSubSpecialty != ""){
+            subSpecialtiesArr.push(newManualSubSpecialty)
+            newManualSpecialty["subSpecialties"] = subSpecialtiesArr
+          }
           specialtiesToStore.push(newManualSpecialty);
         }
       }
-
       return specialtiesToStore;
     }
 
@@ -224,23 +256,66 @@ class UserProfileContainer extends BaseComponent {
       })
     }
 
+    updateTitle = (e) => {
+      //check if user is clicking or unclicking 'other'
+      if(e.target.title == "Other"){
+        if(e.target.value){
+          this.setState({predefinedTitlesDisabled:false})
+
+          var inputChecked = $('#title-input input:checked')
+          var selectedTitles = [];
+          for(var i=0; i<inputChecked.length; i++){
+            var title = inputChecked[i].title
+            selectedTitles.push(title)
+          }
+
+          this.setState({selectedTitles: selectedTitles.join(', ')})
+        }else{
+          this.setState({predefinedTitlesDisabled:true})
+          this.setState({titles:this.state.otherTitleDescription})
+        }
+      }else{
+        var inputChecked = $('#title-input input:checked')
+        var selectedTitles = [];
+        for(var i=0; i<inputChecked.length; i++){
+          var title = inputChecked[i].title
+          selectedTitles.push(title)
+        }
+        this.setState({selectedTitles: selectedTitles.join(', ')})
+      }
+      // var otherChecked = $('#TitleCB1')[0].checked
+      // var inputChecked = $('#title-input input:checked')
+      // if(otherChecked){
+      //   for(var i=0; i<inputChecked.length; i++){
+      //     var name = inputChecked[i].name
+      //     this.props.formActions.change('UserProfileForm', name, false)
+      //   }
+      //   $('#title-input input').prop('disabled', true)
+      // }
+    }
+
+    setTitleDescriptionState(e){
+      this.setState({otherTitleDescription:e.target.value})
+      this.setState({titles:e.target.value})
+    }
+
     createTitleCheckboxes(allTitles){
       return allTitles.map((title) =>{
         var checkBoxId = "TitleCB" + title.titleId
         if(title.titleId ==1){
           return(
-             <li key={title.titleId} >
-             <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox"/>
-              <label htmlFor={checkBoxId}>Other</label>
-              <Field name='otherTitle' type='text' component={BasicField} label='Other Title'/>
-              </li>
+             <li key={title.titleId} id="title-other">
+               <Field onChange={(e) => this.updateTitle(e)} name={checkBoxId} id={checkBoxId} title={title.name} component="input" type="checkbox"/>
+               <label htmlFor={checkBoxId}>Other</label>
+               <Field onChange={(e) => this.setTitleDescriptionState(e)} name='otherTitle' type='text' component={BasicField} label='Other Title'/>
+            </li>
             )
         }
         else{
           return(
-           <li key={title.titleId} >
-           <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox"/>
-            <label htmlFor={checkBoxId}>{title.name}</label>
+            <li key={title.titleId} id="title-input">
+             <Field onChange={(e) => this.updateTitle(e)} disabled={this.state.predefinedTitlesDisabled} name={checkBoxId} id={checkBoxId} title={title.name} component="input" type="checkbox"/>
+              <label htmlFor={checkBoxId}>{title.name}</label>
             </li>
           )
         }
@@ -252,8 +327,9 @@ class UserProfileContainer extends BaseComponent {
         var checkBoxId = "SpecialtyCB" + specialty.specialtyId
         if(specialty.specialtyId !=1){ //skip the "Other" as we have "manually add Specialties"
           return(
+            // originally had 'checkBoxId' as field name and htmlFor but changed it to a string due to validation and was probably unneeded
                <li key={specialty.specialtyId} >
-                <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" value={checkBoxId} onChange={this.onClickSpecialtyCheckBox.bind(this)}/>
+                <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" value={checkBoxId} onChange={(e) => this.onClickSpecialtyCheckBox(e)}/>
                 <label htmlFor={checkBoxId}>{specialty.name}</label>
                 </li>
             )
@@ -279,6 +355,11 @@ findObjectByKey(array, key, value) {
      }
      return array;
    }
+
+  handleCheckboxClick = (e) => {
+    debugger;
+    e.stopPropagation()
+  }
 
   createSubSpecialtyCheckBoxes(specialty){
     var subSpecialties = specialty.subSpecialties;
@@ -349,9 +430,28 @@ findObjectByKey(array, key, value) {
           var removedSelectedSpecialties = this.removeObjectByKey(tmpUserSelectedSpecialties,"specialtyId", specialtyId);
           this.setState({userSelectedSpecialties: removedSelectedSpecialties});
         }
+
     }
 
+    openField = (e) => {
+      // Clicks the hidden link that has the class 'accordion-title'
+      // which is used as the trigger to open and close the 'accordion-content'
+      if(e.target.name == "specialties"){
+        $('.specialty-open-link.accordion-title').trigger('click');
+      }
+      if(e.target.name == "titles"){
+        $('.title-open-link.accordion-title').trigger('click');
+      }
 
+      // Prevents default click event
+      return false;
+    }
+
+updateSpecialty = (e) => {
+  // this.setState({userSpecialties: e.target.value})
+  this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
+  return false;
+}
 
  render(){
       //console.log("yyy",this.state.userSelectedSpecialties)
@@ -391,142 +491,140 @@ findObjectByKey(array, key, value) {
                 {/* Profile Image */}
                 <div className="columns large-12 text-center">
                   <div className="update-photo" data-open="update-profile-photo">
-                    <MemberInitials member={initialValues.userProfile} extraClass="xlarge"/>
+                    {this.props.userProfile && this.props.userProfile.profileThumbnailPictureHash ?
+                      <img className="member-photo circle xlarge" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+this.props.userProfile.userId+"/"+this.props.userProfile.profilePictureHash} alt={this.props.userProfile.firstName + " " + this.props.userProfile.lastName}/> :
+                      <span className="member-initials circle xlarge">{this.props.userProfile.initials}</span>
+                    }
+                    {/* <MemberInitials member={initialValues.userProfile} extraClass="xlarge"/> */}
                     {/* <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/> */}
                     <span className="update circle xlarge">Update picture</span>
                   </div>
                   <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
                 </div>
                 {/* Profile Image Modal */}
-                <div className="reveal text-center" id="update-profile-photo" data-reveal>
+                <div className="reveal text-center" id="update-profile-photo" data-reveal="">
                   <h5 className="margin-bottom">Update profile photo</h5>
                   <p onClick={this.onClickRemovePicture}>Remove photo</p>
                   <p>
-                    <input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
+                    <input type="file" hidden name="file" id="file" className="inputfile" onChange={(e) => this.handleImageChange(e)}/>
                     <label htmlFor="file">Upload photo</label>
                   </p>
 
                   {/* <p>Take photo</p> */}
-                  <button className="close-button" data-close aria-label="Close modal" type="button">
+                  <button className="close-button" id="profileImageClose" data-close="" aria-label="Close modal" type="button">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-
-                {/* <div className="columns large-12 text-center">
-                  <div className="update-photo" data-open="update-profile-photo">
-                    <img className="member-photo circle xlarge" src="assets/img/user1.png" alt="name of user"/>
-                    <span className="update circle xlarge">Update picture</span>
-                  </div>
-                  <h5 className="top-buffer">Christopher Richardson</h5>
-                </div> */}
 
                 <form onSubmit = {handleSubmit(this.onSubmit.bind(this))} className="inline-label top-buffer expand white-bg">
                   <div className="column large-12 top-buffer">
                     <span className="item-title">General Information</span>
                   </div>
                   {/* <!-- First name --> */}
-                  <Field name='firstName' type='text' component={BasicField} label='First Name'/>
-                  {/* <div className="top-buffer-small column large-12 input-group no-icon">
-                    <div className="form-floating-label input-wrapper has-error">
-                      <input className="input-group-field" type="text"/>
-                      <label>First name</label>
-                      <span className="form-error">
-                        Please enter your name.
-                      </span>
-                    </div>
-                  </div> */}
+                  <Field name='firstName' type='text' component={BasicField} label='First Name' bufferClassName='top-buffer-small'/>
 
                   {/* <!-- Last name --> */}
                   <Field name='lastName' type='text' component={BasicField} label='Last Name'/>
-                  {/* <div className="column large-12 input-group no-icon">
-                    <div className="form-floating-label input-wrapper">
-                      <input className="input-group-field" type="text"/>
-                      <label>Last name</label>
-                    </div>
-                  </div> */}
 
                   {/* <!-- Title --> */}
-                  <div className="column large-12 input-group no-icon input-dropdown">
-                    <div className="form-floating-label input-wrapper">
-                      <input className="input-group-field" type="text" data-toggle="add-titles"/>
-                      <label>Title</label>
-                    </div>
+                      <div className="column large-12 input-group no-icon input-dropdown">
+                        <div className="form-floating-label input-wrapper has-value">
+                          <input className="input-group-field" type="text" data-toggle="add-titles" value={this.state.predefinedTitlesDisabled ? this.state.otherTitleDescription : this.state.selectedTitles} />
+                          <label>Title</label>
+                        </div>
+                        <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
+                          <fieldset className="large-12 columns">
+                            <ul className="no-bullet columns-2" id="title-checkboxes">
+                                {this.createTitleCheckboxes(allTitles)}
+                            </ul>
+                          </fieldset>
+                        </div>
+                      </div>
 
-                    <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
-                      <fieldset className="large-12 columns">
-                        <ul className="no-bullet columns-2">
-                            {this.createTitleCheckboxes(allTitles)}
-                        </ul>
-                      </fieldset>
-                    </div>
-                  </div>
 
                   {/* <!-- Specialties --> */}
-                  <div className="column large-12">
-                    <div className="accordion" data-accordion data-allow-all-closed="true">
-                      <div className="accordion-item is-active" data-accordion-item>
-                        <a href="#" className="accordion-title">Specialties</a>
-                        <div className="accordion-content no-border" data-tab-content>
-                          <div className="column large-12">
-                            <div className="row">
-                              <ul className="tabs" data-tabs id="add-specialty-tab">
-                              {/*  <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
-                                <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>*/}
-                                  <li className={"tabs-title " + (this.props.manualSpecialtiesTab==false && "is-active")}><a href="#panel1">Choose Specialties</a></li>
-                                  <li className={"tabs-title " + (this.props.manualSpecialtiesTab==true && "is-active")}><a href="#panel2">Manually Add Specialties</a></li>
-                                </ul>
-                              <div className="tabs-content large-12" data-tabs-content="add-specialty-tab">
-                                <div className="tabs-panel is-active" id="panel1">
-                                  <div className="row input-dropdown-wrapper">
-                                    <a className="dropdown button expand field" data-toggle="choosespecialty">Add a specialty</a>
-                                    <div className="dropdown-pane button-dropdown" id="choosespecialty" data-dropdown data-close-on-click="true">
-                                      <ul className="no-bullet">
-                                        {this.createSpecialtyDropDown(allSpecialties)}
-                                      </ul>
-                                    </div>
+                      <div className="column large-12">
+                        <div className="accordion" data-accordion data-allow-all-closed="true">
+                          <div className={"accordion-item " + (this.state.openSpecialties && 'is-active')} data-accordion-item>
+                            <Field name="specialties" component={(props) => {
+                              return (
+                                <div onClick={(e) => this.openField(e)} className="specialty-select input-group no-icon input-dropdown">
+                                  <div className={" form-floating-label input-wrapper has-value  " }>
+                                    <input className=" input-group-field" type="text" data-toggle="add-specialties" {...props.input} disabled/>
+                                    <label>Specialties</label>
                                   </div>
-                                  <div className="row top-buffer table-header">
-                                    <div className="columns large-6">
-                                      Specialty
-                                    </div>
-                                    <div className="columns large-6">
-                                      Subspecialty
-                                    </div>
-                                  </div>
-                                  {this.createSpecialtySubSpecialtyTable(allSpecialties,this.state.userSelectedSpecialties)}
                                 </div>
-                                <div className="tabs-panel" id="panel2">
-                                  <div className="row">
-                                    <div className="top-buffer-small input-group no-icon">
-                                      <div className="form-floating-label input-wrapper">
-                                        {/*<textarea className="input-group-field"></textarea>
-                                        <label>Specialties</label>*/}
-                                        <Field name='manualSpecialty' type='text' component={BasicField} label='Specialties'/>
+                              )
+                            }}/>
+
+                            {/* hidden link */}
+                            <a href="#" className="specialty-open-link accordion-title">Specialties</a>
+
+                            <div className="accordion-content no-border" data-tab-content>
+                              <div className="column large-12">
+                                <div className="row">
+                                  <ul className="tabs" data-tabs id="add-specialty-tab">
+                                  {/*  <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
+                                    <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>*/}
+                                      <li className={"tabs-title " + (this.props.manualSpecialtiesTab==false && "is-active")}><a href="#panel1">Choose Specialties</a></li>
+                                      <li className={"tabs-title " + (this.props.manualSpecialtiesTab==true && "is-active")}><a href="#panel2">Manually Add Specialties</a></li>
+                                    </ul>
+                                  <div className="tabs-content large-12" data-tabs-content="add-specialty-tab">
+                                    <div className="tabs-panel is-active" id="panel1">
+                                      <div className="row input-dropdown-wrapper">
+                                        <a className="dropdown button expand field" data-toggle="choosespecialty">Add a specialty</a>
+                                        <div className="dropdown-pane button-dropdown" id="choosespecialty" data-dropdown data-close-on-click="true">
+                                          <ul className="no-bullet">
+                                            {this.createSpecialtyDropDown(allSpecialties)}
+                                          </ul>
+                                        </div>
                                       </div>
+                                      <div className="row top-buffer table-header">
+                                        <div className="columns large-6">
+                                          Specialty
+                                        </div>
+                                        <div className="columns large-6">
+                                          Subspecialty
+                                        </div>
+                                      </div>
+                                      {this.createSpecialtySubSpecialtyTable(allSpecialties,this.state.userSelectedSpecialties)}
                                     </div>
-                                    <div className="input-group no-icon">
-                                      <div className="form-floating-label input-wrapper">
-                                        {/*<textarea className="input-group-field"></textarea>
-                                        <label>Subspecialties</label>*/}
-                                        <Field name='manualSubSpecialty' type='text' component={BasicField} label='Subspecialties'/>
+                                    <div className="tabs-panel" id="panel2">
+                                      <div className="row">
+                                        <div className="top-buffer-small input-group no-icon">
+                                          <div className="form-floating-label input-wrapper">
+                                            {/*<textarea className="input-group-field"></textarea>
+                                            <label>Specialties</label>*/}
+                                            <Field onChange={(e) => this.updateSpecialty(e)} name='manualSpecialty' type='text' component={BasicField} label='Specialties'/>
+                                          </div>
+                                        </div>
+                                        <div className="input-group no-icon">
+                                          <div className="form-floating-label input-wrapper">
+                                            {/*<textarea className="input-group-field"></textarea>
+                                            <label>Subspecialties</label>*/}
+                                            <Field name='manualSubSpecialty' type='text' component={BasicField} label='Subspecialties'/>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
+
                             </div>
                           </div>
-
                         </div>
+                        {/* {props.meta.touched && props.meta.error &&
+                          <span className="form-error">{props.meta.error}</span>
+                        } */}
                       </div>
-                    </div>
-                  </div>
+
 
                   <div className="column large-12 top-buffer">
                     <span className="item-title">Contact</span>
                   </div>
 
-                  <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true'/>
+                  <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true' bufferClassName='top-buffer-small'/>
                   <Field name='email' type='text' component={BasicField} label='Email' disabled='true'/>
                   <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile'/>
                   <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone'/>
@@ -583,44 +681,6 @@ findObjectByKey(array, key, value) {
       );
     }
 }
-
-/*
-var userNotificationPrefs = this.props.userNotificationPrefs
-if(userNotificationPrefs){
-  this.state.email=userNotificationPrefs.email
-  this.state.push=userNotificationPrefs.push
-}
-onChange(event) {
-  const target = event.target;
-  const value = target.type === 'checkbox' ? target.checked : target.value;
-  const name = target.name;
-  alert(value)
-  this.setState({
-    [name]: value
-  }, () =>{alert(this.state.email)});
-
-  //alert(this.state.push)
-}
-<div className="medium-12 columns">
-  <input name="email" type="checkbox" onChange={this.onChange.bind(this)}/> Email
-</div>
-<div className="medium-12 columns">
-  <input name="push" type="checkbox"  onChange={this.onChange.bind(this)}/> Push
-</div>
-
-========
-// let {imagePreviewUrl} = this.state;
-//  let imagePreview = null;
-//  if (imagePreviewUrl) {
-//    imagePreview = (<img src={imagePreviewUrl} />);
-//  }
-
-//<p><input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleFileUpload}/>
-//<label htmlFor="file">Upload photo</label></p>
-
-//<input type="file" onChange={this.handleImageChange} />
-
-*/
 
 function mapStateToProps(state) {
 
@@ -684,20 +744,21 @@ function mapStateToProps(state) {
     homePhoneNumber:state.userState.userProfile.homePhoneNumber,
     emailPref: state.userState.userNotificationPrefs.email,
     pushPref: state.userState.userNotificationPrefs.push,
-    userProfile:state.userState.userProfile
+    userProfile:state.userState.userProfile,
+    specialties:state.userState.userProfile.specialtyList
     }  //this automatically causes REDUX to load the form from state
 
   initialValues = Object.assign({}, initialValues, userTitlesCB)
-  initialValues = Object.assign({}, initialValues,userSpecialtiesCB)
-  initialValues = Object.assign({}, initialValues,userSubSpecialtiesCB)
-  initialValues = Object.assign({}, initialValues,userManualSpecialties)
-  initialValues = Object.assign({}, initialValues,userOtherTitle)
-
+  initialValues = Object.assign({}, initialValues, userSpecialtiesCB)
+  initialValues = Object.assign({}, initialValues, userSubSpecialtiesCB)
+  initialValues = Object.assign({}, initialValues, userManualSpecialties)
+  initialValues = Object.assign({}, initialValues, userOtherTitle)
 
   //console.log(initialValues)
 
   var stateObj = {
     userProfilePic:state.userState.userProfilePic,
+    userProfile: state.userState.userProfile,
     allSpecialties:state.userState.allSpecialties,
     allTitles:state.userState.allTitles,
     userSpecialties:state.userState.userProfile.specialties,
@@ -721,6 +782,14 @@ function validate(values){
   if(!values.lastName){
     errors.lastName = 'Please enter Last Name';
   }
+
+  // if(!values.specialties){
+  //   errors.specialties = 'Please select or enter a specialty';
+  // }
+
+  // if(!values.titles){
+  //   errors.titles = 'Please select or enter a title';
+  // }
 
   var homePhoneNumber = values.homePhoneNumber
   if(homePhoneNumber){
@@ -748,6 +817,8 @@ function validate(values){
     if(!validatePhoneNumbers(accountPhoneNumber)){
       errors.accountPhoneNumber = 'Please enter 10 digit mobile phone number';
     }
+  }else if (!accountPhoneNumber) {
+    errors.accountPhoneNumber = 'Mobile number is required'
   }
 
   return errors;
@@ -769,7 +840,13 @@ function validatePhoneNumbers(phoneNumber){
 
 //export default connect(mapStateToProps, mapDispatchToProps)(UserProfileContainer);
 
-export default connect(mapStateToProps,null)(reduxForm({
+function mapDispatchToProps(dispatch){
+  return{
+    formActions: bindActionCreators({change}, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
     form: 'UserProfileForm',
     validate,
     enableReinitialize : true  //If your initialValues prop gets updated, your form will update too.

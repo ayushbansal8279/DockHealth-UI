@@ -29,8 +29,7 @@ class HeaderTasks extends BaseComponent {
     this.props.taskActions.loading()
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
-      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ALL')
-      this.props.taskListActions.getOrganizationUsersNotInTaskList(this.props.taskListId);
+      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ACTIVE')
     }
     this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
@@ -148,16 +147,16 @@ class HeaderTasks extends BaseComponent {
 								<div className="columns shrink icon-group controls">
                   <span title="Refresh data" onClick={(e) => this.props.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
                   {this.props.taskListId &&
-  									<span title="List alerts toggle" onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
+  									<span title="List alerts toggle" onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList && this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
                   }
-									{/* <svg className="icon"><use xlinkHref="#icon-print"></use></svg> */}
 									<span title="Slim view toggle"><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
 								</div>
 
-								<div className="columns shrink" onClick={(e) => this.handleAddTask()}>
-									<svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
-								</div>
-
+                {this.props.title == "Inbox" || this.props.taskListId &&
+  								<div className="columns shrink" onClick={(e) => this.handleAddTask()}>
+  									<svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
+  								</div>
+                }
 						</div>
         </header>
 
@@ -169,9 +168,9 @@ class HeaderTasks extends BaseComponent {
 }
 
 const mapStateToProps = function (store) {
-  // console.log('tasklist is: ' + store.taskListState.currentList.listName)
+  // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
   return {
-    taskList: store.taskListState.currentList, // currentList is set at the reducer
+    taskList: store.taskListState.tasklistone, // tasklistone is set at the reducer
     taskLists: store.taskListState.tasklist,
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,

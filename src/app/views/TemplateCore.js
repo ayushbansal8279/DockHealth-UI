@@ -107,10 +107,13 @@ class TemplateCore extends React.Component {
               hashHistory.push('/errorPage');
             }
             //userId, pictureType
-            userApi.getUserProfilePic(data.userId,"PROFILE")
-            .then((datapic) =>{
-              //console.log (datapic);
-            })
+            if(data.profileThumbnailPictureHash){
+              userApi.getUserProfilePic(data.userId,"PROFILE")
+              .then((datapic) =>{
+                //console.log (datapic);
+              })
+            }
+
             //console.log(data);
           })
       }

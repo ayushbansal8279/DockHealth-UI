@@ -1,5 +1,5 @@
 import React from 'react'
-import { Field, reduxForm, actions } from 'redux-form'
+import { Field, reduxForm, actions, reset } from 'redux-form'
 import { connect } from 'react-redux'
 import * as TaskActions from '../../actions/task-actions'
 import {bindActionCreators} from 'redux'
@@ -118,7 +118,7 @@ return (
 const mapDispatchToProps = function (dispatch) {
   return {
     taskActions: bindActionCreators(TaskActions, dispatch),
-    formActions: bindActionCreators(actions, dispatch)
+    formActions: bindActionCreators({reset}, dispatch)
   }
 }
 

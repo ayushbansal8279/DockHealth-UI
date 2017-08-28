@@ -201,6 +201,69 @@ pre.emailMessage {
   margin-right: .75em !important;
 }
 
+.specialty-open-link.accordion-title, .title-open-link.accordion-title{
+  display:none;
+}
+
+.add-form-wrapper .accordion-item{
+  height:3.75rem!important;
+}
+
+.off-canvas .menu li a {
+  color:#009bd6;
+}
+
+/*Search Bar Styles */
+.react-autosuggest__container > .input-wrapper{
+  border:0;
+  margin: 1.5rem 0 .75rem 0;
+}
+
+.react-autosuggest__container .input-group-label{
+  border: 1px solid #0ca1c7;
+  background:#fff;
+  border-right:0px;
+}
+
+.react-autosuggest__container .input-group .input-group-field{
+  padding:0;
+  /*border: 1px solid #0ca1c7;*/
+  border-left:0;
+}
+
+.react-autosuggest__container .input-group .input-wrapper{
+  padding:0;
+  border: 1px solid #0ca1c7;
+  border-left:0;
+  background:#fff;
+
+}
+
+.add-form-wrapper .accordion-title:hover, .add-form-wrapper .accordion-title:focus{
+  background-color:transparent;
+}
+
+.react-autosuggest__container .react-autosuggest__suggestions-container ul{
+  margin:0;
+}
+
+.react-autosuggest__container .input-group .input-wrapper input{
+  border:0;
+}
+
+.react-autosuggest__container .react-autosuggest__suggestions-list li:hover{
+  background-color:#a6dcea;
+}
+
+.add-form-wrapper .static-label .input-wrapper.accordion-item .accordion-title{
+  height:3.65em;
+}
+
+/*Search Bar Styles */
+
+/*.has-error {
+  border: 1px solid #f40707 !important; }*/
+
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

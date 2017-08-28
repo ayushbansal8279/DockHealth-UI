@@ -1,9 +1,10 @@
 import React from 'react'
 
-const BasicField = ({ input, label, id, type, placeholder,disabled, xlinkHref, extraClassName, decoratingClassName, pattern, meta: { touched, error } }) => (
-  <div className={"input-group-wrapper column large-12 " + (xlinkHref && touched && error && 'has-error')}>
-    <h6>error:{error ? error : "undefined"}</h6>
+const BasicField = ({ input, label, id, type, placeholder,disabled, xlinkHref, extraClassName, decoratingClassName, pattern, bufferClassName, meta: { touched, error, visited } }) => (
+  <div className={"input-group-wrapper column large-12 " + (xlinkHref && touched && error ? 'has-error ' : ' ') + (bufferClassName ? (" " + bufferClassName) : '')}>
+    {/* <h6>error:{error ? error : "undefined"}</h6>
     <h6>error:{touched ? "touched" : "untouched"}</h6>
+    <h6>visited:{visited ? "visited" : "unvisited"}</h6> */}
     <div className={'input-group ' + (xlinkHref ? '' : 'no-icon ') + (decoratingClassName? decoratingClassName : '')}>
 
       {/* icon   */}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { SubmissionError, Field, reduxForm, actions } from 'redux-form'
+import { SubmissionError, Field, reduxForm, actions, destroy } from 'redux-form'
 import * as PatientActions from '../../actions/patient-actions'
 import { connect } from 'react-redux'
 import BasicField from '../common/BasicField'
@@ -96,7 +96,7 @@ const mapStateToProps = function (state) {
 const mapDispatchToProps = function (dispatch) {
   return {
     patientActions: bindActionCreators(PatientActions, dispatch),
-    formActions: bindActionCreators(actions, dispatch)
+    formActions: bindActionCreators({destroy}, dispatch)
   }
 }
 

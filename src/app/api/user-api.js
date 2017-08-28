@@ -426,10 +426,11 @@ export function getUserProfilePic(userId, pictureType) {
     })
 }
 
-export function saveUserProfilePic(data) {
+export function saveUserProfilePic(data, userId, pictureType, userProfile) {
   //alert(data);
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture', data)
     .then(response => {
+      getUserById()
       return response.data
     }).catch(error => {
       throw(error);

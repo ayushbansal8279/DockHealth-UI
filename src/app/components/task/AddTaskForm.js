@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions } from 'redux-form'
+import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions, reset, initialize, destroy } from 'redux-form'
 import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
@@ -65,12 +65,11 @@ class AddTaskForm extends BaseComponent {
       task.priority = false
     }
     this.props.formActions.initialize('addSubtaskForm', task, true)
-    // $('#add-patient-subtask').val(this.props.currentSubtasks[index].patient.firstName)
     var patient = this.props.currentSubtasks[index]
   }
 
   resetSubtaskForm = () => {
-    this.props.formActions.reset('addSubtaskForm')
+    // this.props.formActions.reset('addSubtaskForm')
   }
 
   render() {
@@ -295,7 +294,7 @@ const mapStateToProps = function(store) {
 const mapDispatchToProps = function(dispatch){
   return{
     taskListActions: bindActionCreators(TaskListActions, dispatch),
-    formActions: bindActionCreators(actions, dispatch)
+    formActions: bindActionCreators({reset, initialize, destroy}, dispatch)
   }
 }
 

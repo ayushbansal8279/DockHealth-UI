@@ -1,17 +1,18 @@
 import React from 'react';
 import { Link,hashHistory } from 'react-router';
-
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import UserProfileContainer from '../components/people/UserProfileContainer'
 
-
 class UserProfileView extends React.Component {
+
     render() {
       return (
 
         <div className="off-canvas-content" data-off-canvas-content>
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <header class="nav-down">
+              <header className="nav-down">
                 <div className="top-bar">
                   <div className="new-task text-center">
                     <span className="number-new-tasks"></span>
@@ -28,7 +29,7 @@ class UserProfileView extends React.Component {
             </div>
           </div>
           <div className="list-wrapper">
-            <UserProfileContainer/>
+            <UserProfileContainer userProfile={this.props.userProfile}/>
           </div>
         </div>
 
@@ -36,4 +37,10 @@ class UserProfileView extends React.Component {
   }
 }
 
-export default UserProfileView;
+const mapStateToProps = function (store) {
+  return {
+    userProfile: store.userState.userProfile
+  }
+}
+
+export default connect(mapStateToProps)(UserProfileView);

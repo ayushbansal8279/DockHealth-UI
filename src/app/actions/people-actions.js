@@ -34,6 +34,21 @@ export function invitePersonToOrganization(formProps ){
     };
   }
 
+  export function resendInviteToOrganization(email){
+      var personInfo = {email : email,
+                      organizationId:'1',
+                    }
+      return function(dispatch) {
+        return PeopleApi.resendInviteToOrganization(personInfo).then(res => {
+          dispatch({type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res});
+          toggleAlert("Invitation resent!", "success")
+        }).catch(error => {
+          //console.log(error.message);
+          throw(error);
+        });
+      };
+    }
+
   export function changeUserRoleForOrg(markedUserId,role) {
     return function(dispatch) {
       return PeopleApi.changeUserRoleForOrg(markedUserId,role).then(res => {

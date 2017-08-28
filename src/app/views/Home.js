@@ -7,6 +7,7 @@ import TaskListPatients from '../components/task/TaskListPatients'
 import TaskListUsers from '../components/task/TaskListUsers'
 import Notification from '../components/common/Notification'
 import HeaderTasks from '../components/common/HeaderTasks'
+// import NotificationsToggle from '../components/tasklist/TaskListNotificationsToggle'
 import * as TaskActions from '../actions/task-actions'
 import * as TaskListActions from '../actions/tasklist-actions'
 import * as PatientActions from '../actions/patient-actions'
@@ -57,9 +58,11 @@ class Home extends BaseComponentWithFoundationUpdate {
   }
 
   componentDidMount(){
+    var pops = this.context
     // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
     this.props.actions.loading()
+    this.props.taskListActions.isList(true)
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks("COMPLETE")
       this.props.actions.getInboxTasks("INCOMPLETE")
@@ -118,6 +121,10 @@ class Home extends BaseComponentWithFoundationUpdate {
         this.props.taskListActions.getOrganizationUsersNotInTaskList(nextProps.routeParams.taskListId);
       }
     }
+  }
+
+  componentWillUnmount(){
+    this.props.taskListActions.isList(false)
   }
 
   refresh = () => {

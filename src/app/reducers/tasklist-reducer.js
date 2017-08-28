@@ -17,7 +17,7 @@ const TaskListReducer = function(state = initialState, action) {
     case types.GET_TASKLIST_SUCCESS:
       return {...state, tasklist:action.tasklist, isFetching: false};  //whatever our current state is, add on "tasklist"
 
-    case types.SET_CURRENT_LIST: 
+    case types.SET_CURRENT_LIST:
       return {...state, currentList: action.currentList};  //whatever our current state is, add on "currentList"
 
     case types.GET_TASKLISTMEMBERS_SUCCESS:
@@ -72,6 +72,12 @@ const TaskListReducer = function(state = initialState, action) {
       // currentListVar
       return { ...state, currentList:currentListVar };
       break
+
+    case types.IS_LIST:
+      return {
+        ...state,
+        isList: action.boolean
+      }
 
     case types.REMOVEUSER_TASKLIST_SUCCESS:
         return {

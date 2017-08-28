@@ -37,7 +37,7 @@
     "react-search-input": "^0.11.2",
     "react-select": "^1.0.0-rc.5",
     "redux": "^3.6.0",
-    "redux-form": "^6.8.0",
+    "redux-form": "^7.0.3",
     "redux-thunk": "^2.2.0",
     "superagent": "^3.5.2"
   },
