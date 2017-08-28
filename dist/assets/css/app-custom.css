@@ -205,6 +205,9 @@ pre.emailMessage {
   display:none;
 }
 
+.add-form-wrapper .accordion-item{
+  height:3.75rem!important;
+}
 
 
 /*.has-error {

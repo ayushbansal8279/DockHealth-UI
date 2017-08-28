@@ -45,7 +45,9 @@ class UserProfileContainer extends BaseComponent {
           this.setState({selectedTitles:response.titleList})
         }
       })
-      userApi.getUserProfilePic(sessionStorage.userId,"PROFILE")
+      if(this.props.userProfile.profileThumbnailPictureHash){
+        userApi.getUserProfilePic(sessionStorage.userId, "PROFILE")
+      }
       userApi.getUserNotoficationPrefs()
       userApi.getAllSpecialties()
       userApi.getAllTitles()
@@ -75,7 +77,7 @@ class UserProfileContainer extends BaseComponent {
 
     }
 
-    handleImageChange(e) {
+    handleImageChange = (e) => {
       console.log("handleImageChange")
       e.preventDefault();
       let reader = new FileReader();
@@ -86,13 +88,13 @@ class UserProfileContainer extends BaseComponent {
         //   file: file,
         //   imagePreviewUrl: reader.result
         // });
-        userApi.saveUserProfilePic(reader.result)
-        .then((response) =>{
-          userApi.getUserProfilePic(sessionStorage.userId,"PROFILE"); //call this so state change will be triggered and all locations will be updated
+        userApi.saveUserProfilePic(reader.result, sessionStorage.userId, "PROFILE", this.props.userProfile)
+        .then((response) => {
+          toggleAlert("Profile updated!", "success")
+        }).catch((error) => {
+          toggleAlert("Error updating profile", "error")
         })
-        .catch((error)=>{
-          this.setState({updateProfileResult: error.message}); //this will cause render to be called
-        })
+        $('#profileImageClose').trigger('click');
       }
       //reader.readAsDataURL(file)
       reader.readAsArrayBuffer(file)
@@ -432,7 +434,6 @@ findObjectByKey(array, key, value) {
     }
 
     openField = (e) => {
-      debugger;
       // Clicks the hidden link that has the class 'accordion-title'
       // which is used as the trigger to open and close the 'accordion-content'
       if(e.target.name == "specialties"){
@@ -490,59 +491,40 @@ updateSpecialty = (e) => {
                 {/* Profile Image */}
                 <div className="columns large-12 text-center">
                   <div className="update-photo" data-open="update-profile-photo">
-                    <MemberInitials member={initialValues.userProfile} extraClass="xlarge"/>
+                    {this.props.userProfile && this.props.userProfile.profileThumbnailPictureHash ?
+                      <img className="member-photo circle xlarge" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+this.props.userProfile.userId+"/"+this.props.userProfile.profilePictureHash} alt={this.props.userProfile.firstName + " " + this.props.userProfile.lastName}/> :
+                      <span className="member-initials circle xlarge">{this.props.userProfile.initials}</span>
+                    }
+                    {/* <MemberInitials member={initialValues.userProfile} extraClass="xlarge"/> */}
                     {/* <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/> */}
                     <span className="update circle xlarge">Update picture</span>
                   </div>
                   <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
                 </div>
                 {/* Profile Image Modal */}
-                <div className="reveal text-center" id="update-profile-photo" data-reveal>
+                <div className="reveal text-center" id="update-profile-photo" data-reveal="">
                   <h5 className="margin-bottom">Update profile photo</h5>
                   <p onClick={this.onClickRemovePicture}>Remove photo</p>
                   <p>
-                    <input type="file" hidden name="file" id="file" className="inputfile" onChange={this.handleImageChange}/>
+                    <input type="file" hidden name="file" id="file" className="inputfile" onChange={(e) => this.handleImageChange(e)}/>
                     <label htmlFor="file">Upload photo</label>
                   </p>
 
                   {/* <p>Take photo</p> */}
-                  <button className="close-button" data-close aria-label="Close modal" type="button">
+                  <button className="close-button" id="profileImageClose" data-close="" aria-label="Close modal" type="button">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-
-                {/* <div className="columns large-12 text-center">
-                  <div className="update-photo" data-open="update-profile-photo">
-                    <img className="member-photo circle xlarge" src="assets/img/user1.png" alt="name of user"/>
-                    <span className="update circle xlarge">Update picture</span>
-                  </div>
-                  <h5 className="top-buffer">Christopher Richardson</h5>
-                </div> */}
 
                 <form onSubmit = {handleSubmit(this.onSubmit.bind(this))} className="inline-label top-buffer expand white-bg">
                   <div className="column large-12 top-buffer">
                     <span className="item-title">General Information</span>
                   </div>
                   {/* <!-- First name --> */}
-                  <Field name='firstName' type='text' component={BasicField} label='First Name'/>
-                  {/* <div className="top-buffer-small column large-12 input-group no-icon">
-                    <div className="form-floating-label input-wrapper has-error">
-                      <input className="input-group-field" type="text"/>
-                      <label>First name</label>
-                      <span className="form-error">
-                        Please enter your name.
-                      </span>
-                    </div>
-                  </div> */}
+                  <Field name='firstName' type='text' component={BasicField} label='First Name' bufferClassName='top-buffer-small'/>
 
                   {/* <!-- Last name --> */}
                   <Field name='lastName' type='text' component={BasicField} label='Last Name'/>
-                  {/* <div className="column large-12 input-group no-icon">
-                    <div className="form-floating-label input-wrapper">
-                      <input className="input-group-field" type="text"/>
-                      <label>Last name</label>
-                    </div>
-                  </div> */}
 
                   {/* <!-- Title --> */}
                       <div className="column large-12 input-group no-icon input-dropdown">
@@ -642,7 +624,7 @@ updateSpecialty = (e) => {
                     <span className="item-title">Contact</span>
                   </div>
 
-                  <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true'/>
+                  <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true' bufferClassName='top-buffer-small'/>
                   <Field name='email' type='text' component={BasicField} label='Email' disabled='true'/>
                   <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile'/>
                   <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone'/>
@@ -776,6 +758,7 @@ function mapStateToProps(state) {
 
   var stateObj = {
     userProfilePic:state.userState.userProfilePic,
+    userProfile: state.userState.userProfile,
     allSpecialties:state.userState.allSpecialties,
     allTitles:state.userState.allTitles,
     userSpecialties:state.userState.userProfile.specialties,

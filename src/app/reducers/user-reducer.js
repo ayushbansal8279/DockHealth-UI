@@ -15,7 +15,7 @@ const UserReducer = function(state = {user: false, userProfile: "",userProfilePi
       newState = Object.assign({}, state, { userProfile: action.userProfile });
       return newState;
     case 'user/userProfilePic':
-      newState = Object.assign({}, state, { userProfilePic: action.userProfilePic });
+      newState = Object.assign({}, state, { userProfilePic: action.userProfilePic});
       return newState;
     case 'user/userNotificationPrefs':
       newState = Object.assign({}, state, { userNotificationPrefs: action.userNotificationPrefs });

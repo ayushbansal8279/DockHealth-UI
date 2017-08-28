@@ -71,7 +71,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
 	renderSuggestion = suggestion => (
 		<div className="row condense expanded border-bottom align-middle">
 			<div className="columns shrink">
-				<MemberInitials member={suggestion}/>
+				<MemberInitials member={suggestion} extraClass='medium'/>
 			</div>
 			<div className="columns">
 				<span className="item-title">{suggestion.firstName} {suggestion.lastName} </span>
@@ -147,6 +147,10 @@ class AddListForm extends BaseComponentWithAutoComplete {
 
   }
 
+  openMemberList = (e, triggerClass) => {
+    $('.adminsList').first().trigger('click')
+  }
+
 /*
   sendInvitations (selectedMembers) {
     if(selectedMembers.length > 0){
@@ -200,11 +204,40 @@ class AddListForm extends BaseComponentWithAutoComplete {
               <div className="input-wrapper">
                 <label>Owner</label>
                 <ul className="menu member-photo-list">
-                  <li><MemberInitials member={this.props.currentUserProfile}/></li>
+                  <li><MemberInitials member={this.props.currentList.creator} extraClass='medium'/></li>
                 </ul>
 
               </div>
             </div>
+
+            {/* <!-- Admins --> */}
+            {/* <div className="column large-12 input-group no-icon static-label accordion" data-accordion data-allow-all-closed="true">
+              <div className="input-wrapper accordion-item" data-accordion-item>
+                <label>Admins</label>
+                <ul className="menu member-photo-list" onClick={(e) => this.openMemberList(e, 'adminsList')}>
+                  <li><span className="add-member circle medium addAdminForList">+</span></li>
+                  {this.state.selectedAdmins && this.state.selectedAdmins.map(member => {
+                    return(
+                      <li key={"list_admin_"+member.userId}><MemberInitials member={member} extraClass='medium'/></li>
+                    )
+                  })}
+                </ul>
+                <a href="#" className="adminsList accordion-title">Open Autosuggest</a>
+                <div className="accordion-content" data-tab-content>
+                    <Autosuggest
+                      suggestions={suggestions}
+                      getSuggestionValue={this.getSuggestionValue}
+                      renderSuggestion={this.renderSuggestion}
+                      onSuggestionSelected={this.onSuggestionSelectedForAdmins}
+                      inputProps={inputPropsForAdmins}
+                      onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                      onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                      renderSuggestionsContainer={this.renderSuggestionsContainer}
+                      renderInputComponent={this.renderInputComponent}
+                    />
+                </div>
+              </div>
+            </div> */}
 
             {/* <!-- Admins --> */}
             <div className="column large-12 input-group no-icon static-label accordion" data-accordion data-allow-all-closed="true">
@@ -215,7 +248,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                     <li><span className="add-member circle medium addAdminForList">+</span></li>
                     {this.state.selectedAdmins && this.state.selectedAdmins.map(member => {
                       return(
-                        <li key={"list_admin_"+member.userId}><MemberInitials member={member}/></li>
+                        <li key={"list_admin_"+member.userId}><MemberInitials member={member} extraClass='medium'/></li>
                       )
                     })}
                   </ul>
@@ -245,7 +278,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                     <li><span className="add-member circle medium addMemberForList">+</span></li>
                     {this.state.selectedMembers && this.state.selectedMembers.map(member => {
                       return(
-                        <li key={"list_member_"+member.userId}><MemberInitials member={member}/></li>
+                        <li key={"list_member_"+member.userId}><MemberInitials member={member} extraClass='medium'/></li>
                       )
                     })}
                   </ul>
@@ -319,7 +352,8 @@ const mapStateToProps = function(store){
     initialValues: initialTaskListValues,
     currentUserProfile: store.userState.userProfile,
 		peoplelist: store.peopleState.peoplelist,
-    taskListId: taskListId
+    taskListId: taskListId,
+    currentList: store.taskListState.currentList
   }
   // var initialValues = {}
   // if(this.props.taskList){
