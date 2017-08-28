@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import { SubmissionError, Field, reduxForm, actions } from 'redux-form'
+import { SubmissionError, Field, reduxForm, actions, destroy } from 'redux-form'
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
 import * as PatientActions from '../actions/patient-actions'
@@ -142,7 +142,7 @@ const mapStateToProps = function (store) {
 const mapDispatchToProps = function (dispatch) {
   return {
     patientActions: bindActionCreators(PatientActions, dispatch),
-    formActions: bindActionCreators(actions, dispatch)
+    formActions: bindActionCreators({destroy}, dispatch)
   }
 }
 

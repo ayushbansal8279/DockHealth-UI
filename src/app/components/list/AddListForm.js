@@ -204,7 +204,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
               <div className="input-wrapper">
                 <label>Owner</label>
                 <ul className="menu member-photo-list">
-                  <li><MemberInitials member={this.props.currentList.creator} extraClass='medium'/></li>
+                  <li><MemberInitials member={this.props.currentList && this.props.currentList.creator} extraClass='medium'/></li>
                 </ul>
 
               </div>
