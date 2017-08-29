@@ -35,14 +35,14 @@ class HeaderTasks extends BaseComponent {
   }
 
   componentWillUpdate(nextProps){
-    if(this.props.taskLists && this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
+    if(nextProps.taskListId && this.props.taskLists && this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
     }
   }
 
   componentWillReceiveProps(nextProps){
-    if(this.props.taskLists && this.props.taskLists.length > 0 
+    if(this.props.taskLists && this.props.taskLists.length > 0
         && this.props.currentList
         && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
@@ -152,7 +152,7 @@ class HeaderTasks extends BaseComponent {
 									<span title="Slim view toggle"><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
 								</div>
 
-                {this.props.title == "Inbox" || this.props.taskListId &&
+                {(this.props.title == "Inbox" || this.props.taskListId) &&
   								<div className="columns shrink" onClick={(e) => this.handleAddTask()}>
   									<svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
   								</div>
