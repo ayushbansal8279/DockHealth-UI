@@ -42,7 +42,9 @@ class AddTaskForm extends BaseComponent {
   }
 
   handleTaskListSelection(event) {
+    debugger;
     this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL')
+    // $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
@@ -117,7 +119,7 @@ class AddTaskForm extends BaseComponent {
                 {this.props.taskLists && this.props.taskLists.map(taskList => {
                   return(
                     <div key={taskList.taskListId} >
-                      <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} component="input" type="radio" onClick={this.handleTaskListSelection}/>
+                      <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} title={taskList.listName} component="input" type="radio" onClick={this.handleTaskListSelection}/>
                       <label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label>
                       <br/>
                     </div>

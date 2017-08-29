@@ -9,18 +9,9 @@ import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
 
-const { DOM: { input, select, textarea } } = React  
+const { DOM: { input, select, textarea } } = React
 
-const validate = values => {
-  const errors = {}
-  if (!values.firstName) {
-    errors.firstName = 'Required'
-  }
-  if (!values.lastName) {
-    errors.lastName = 'Required'
-  }
-  return errors
-}
+
 
 class FormPatient extends BaseComponent {
 	constructor(props) {
@@ -82,7 +73,7 @@ class FormPatient extends BaseComponent {
         patient = this.props.patient
         //this.state.firstName = this.props.patient.firstName
       }
-      
+
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       return (
             <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
@@ -93,7 +84,7 @@ class FormPatient extends BaseComponent {
 						  {/* <div className="column large-12 input-group no-icon">
                 <div className="form-floating-label input-wrapper has-value"> */}
                   {/* <input className="input-group-field pickdate" type="text" value={patient.dob && <Moment format="MM/DD/YYYY">{new Date(patient.dob)}</Moment>} name="dob"/> */}
-                   {/* <Field className="input-group-field pickdate" id="dob" name='dob' type='text' component="input"/> 
+                   {/* <Field className="input-group-field pickdate" id="dob" name='dob' type='text' component="input"/>
                   <label>Birthday</label>
                 </div>
               </div> */}
@@ -102,7 +93,7 @@ class FormPatient extends BaseComponent {
                 <span className="inner">
                   <legend>Birthday</legend>
                   <span className="float-left">
-                    <Field className="input-group-field dobpickdate" id="dob" name='dob' type='text' component="input" placeholder="Select Date"/> 
+                    <Field className="input-group-field dobpickdate" id="dob" name='dob' type='text' component="input" placeholder="Select Date"/>
                   </span>
                 </span>
               </fieldset>
@@ -113,7 +104,7 @@ class FormPatient extends BaseComponent {
                     {/* <input type="radio" name="gender" value="female" checked={patient.gender && patient.gender === 'female'} onChange={this.onGenderChanged}/><label>Female</label>
                     <input type="radio" name="gender" value="male" checked={patient.gender && patient.gender === 'male'} onChange={this.onGenderChanged}/><label>Male</label> */}
                      <label><Field name='gender' component="input" type='radio' value='male'/> Male</label>
-                    <label><Field name='gender' component="input" type='radio' value='female'/> Female</label> 
+                    <label><Field name='gender' component="input" type='radio' value='female'/> Female</label>
                   </span>
                 </span>
               </fieldset>
@@ -135,6 +126,20 @@ class FormPatient extends BaseComponent {
             </form>
       )
     }
+}
+
+const validate = (values) =>{
+  const errors = {}
+  if (!values.firstName) {
+    errors.firstName = 'First name required'
+  }
+  if (!values.lastName) {
+    errors.lastName = 'Last name required'
+  }
+  if (!values.mrn) {
+    errors.mrn = 'MRN required'
+  }
+  return errors
 }
 
 const mapStateToProps = function (state) {
@@ -161,4 +166,3 @@ export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
     form: 'FormPatient',
     validate
 })(FormPatient));
-
