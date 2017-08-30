@@ -128,7 +128,7 @@ class FormPatient extends BaseComponent {
     }
 }
 
-const validate = (values) =>{
+const validate = (values) => {
   const errors = {}
   if (!values.firstName) {
     errors.firstName = 'First name required'

@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, browserHistory, hashHistory } from 'react-router'
 import configureStore from './configureStore'
-import routes from './routes'
+import {Routes} from './routes'
 import * as PatientActions from './actions/patient-actions'
 
 const store = configureStore();
@@ -12,7 +12,9 @@ const store = configureStore();
 
 const Routing = () => (
   <Provider store={store}>
-    <Router history={hashHistory} routes={routes} />
+    <Router history={hashHistory}>
+      {Routes(store)}
+    </Router>
   </Provider>
 )
 
@@ -26,3 +28,7 @@ render(
   document.getElementById('app')
 )
 */
+
+{/* <Provider store={store}>
+  <Router history={hashHistory} routes={routes} />
+</Provider> */}

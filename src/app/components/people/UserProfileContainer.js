@@ -38,7 +38,7 @@ class UserProfileContainer extends BaseComponent {
           this.setState({userSpecialties:response.specialtyList});
           console.log(response.specialties)
         }
-        if(response.titles[0].titleId == 1){
+        if(response.titles && response.titles[0].titleId == 1){
           this.setState({predefinedTitlesDisabled:true})
           this.setState({otherTitleDescription:response.titleList})
         }else{
@@ -558,7 +558,7 @@ updateSpecialty = (e) => {
                             }}/>
 
                             {/* hidden link */}
-                            <a href="#" className="specialty-open-link accordion-title">Specialties</a>
+                            <a href="#" className="specialty-open-link accordion-title hide">Specialties</a>
 
                             <div className="accordion-content no-border" data-tab-content>
                               <div className="column large-12">

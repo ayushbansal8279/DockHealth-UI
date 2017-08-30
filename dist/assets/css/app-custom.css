@@ -91,6 +91,10 @@ ul li, .member-initials{
   cursor:pointer;
 }
 
+.pointer{
+  cursor:pointer!important;
+}
+
 .item-content{
   cursor:default;
 }
@@ -201,7 +205,7 @@ pre.emailMessage {
   margin-right: .75em !important;
 }
 
-.specialty-open-link.accordion-title, .title-open-link.accordion-title{
+.title-open-link.accordion-title{
   display:none;
 }
 
