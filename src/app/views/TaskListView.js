@@ -137,8 +137,6 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
           				<div className="item-list-wrapper">
 
                     <PendingListsComponent taskLists={this.props.pendingTaskLists} acceptInviteToTaskList={this.acceptInviteToTaskList} rejectInviteToTaskList={this.rejectInviteToTaskList}/>
-                    <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList} leaveList={this.leaveList}/>
-
                     {this.props.genericLists && this.props.genericLists.map(list => {
                       return(
                         <div key={list.listName} className="item row expanded align-middle">
@@ -154,6 +152,8 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
                         </div>
                       )
                     })}
+                    <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList} leaveList={this.leaveList}/>
+
 
           				</div>
                 }
