@@ -3,6 +3,7 @@ var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 //var BowerWebpackPlugin = require("bower-webpack-plugin");
 var dotenv = require('dotenv'); //pm2 environment files
+// var Promise = require('es6-promise').Promise;
 
 var BUILD_DIR = path.resolve(__dirname, 'dist');
 var APP_DIR = path.resolve(__dirname, 'src/app');
@@ -31,7 +32,7 @@ var HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 });
 
 var config = {
-  entry: APP_DIR + '/index.js',
+  entry: ['babel-polyfill', APP_DIR + '/index.js'],
   devtool: "source-map",
   output: {
     path: BUILD_DIR,
@@ -60,7 +61,15 @@ var config = {
     }),
     new webpack.DefinePlugin({
       'process.env': exposedEnvironment
-    })]
+    })
+    // new webpack.ProvidePlugin({
+    //   Promise: 'es6-promise-promise',
+    // })
+  ],
+  devServer: {
+    compress: false,
+    disableHostCheck: true
+ } 
 };
 
 module.exports = config;
