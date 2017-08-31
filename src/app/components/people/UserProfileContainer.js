@@ -38,7 +38,8 @@ class UserProfileContainer extends BaseComponent {
           this.setState({userSpecialties:response.specialtyList});
           console.log(response.specialties)
         }
-        if(response.titles[0].titleId == 1){
+        if(response.titles && response.titles.length > 0 
+          && response.titles[0].titleId == 1){
           this.setState({predefinedTitlesDisabled:true})
           this.setState({otherTitleDescription:response.titleList})
         }else{
