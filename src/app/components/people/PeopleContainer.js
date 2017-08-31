@@ -236,7 +236,10 @@ class PeopleContainer extends BaseComponent {
 //{new Date(invitation.updatedDateTime).toJSON()}
       const KEYS_TO_FILTERS = ['userName', 'email', 'homePhoneNumber', 'faxNumber', 'workPhoneNumber']
       // Creates filter with LIST, SEARCH TERM, KEYS TO FILTER
-      const filteredPeople = this.props.peoplelist.filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS))
+      var filteredPeople = []
+      if(this.props.peoplelist){
+        filteredPeople = this.props.peoplelist.filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS))
+      }
        return filteredPeople.map((person) =>{
          return(
            <div className="item row expanded" key={person.email}>
