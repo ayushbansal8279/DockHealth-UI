@@ -51,48 +51,62 @@ import UserProfileView from './views/UserProfileView';
 
 // export default routes
 
-export default (
-  <Route path="/" component={App}>
-    <Route component={TemplateCore} >
-      <IndexRoute component={Home} />
-      <IndexRedirect to="/tasks/Inbox"/>
-      <Route path="/patientList" component={AllPatientsView} />
-      <Route path="/patient/:patientId" component={PatientView} />
-      <Route path="/editPatient/:patientId" component={PatientEditView} />
-      <Route path="/taskList" component={TaskListView} />
-      <Route path="/activityfeed" component={TaskListActivityFeedView} />
-      {/*<Route path="/saveTaskList" component={TaskListAdd} />*/}
-      {/*<Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />*/}
-      {/*<Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />*/}
-      {/*<Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />*/}
-      {/* <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} /> */}
-      {/* <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} /> */}
-      {/*<Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />*/}
-      {/* <Route path="/invitations" component={InvitationsView} /> */}
-      <Route path="/people" component={PeopleView} />
-      {/* <Route path="/peopleinvite" component={InvitePeople} /> */}
-      <Route path="/tasks/:listName/:taskListId" component={Home}/>
-      <Route path="/tasks/:listName" component={Home}/>
-      <Route path="/tasks/:listName" component={Home}/>
-      <Route path="/userprofile" component={UserProfileView} />
-      {/* <Route path="/test" component={Test} /> */}
+export const Routes = (store) => {
+  const authRequired = (nextState, replaceState) => {
+    // Now you can access the store object here.
+    const state = store.getState();
 
-    </Route>
-    <Route component={TemplateAuth} >
-      <Route component={TemplateAuthBase}>
-        <Route path="/confirmRegistration" component={ConfirmRegistration}/>
-        <Route path="/login" component={Login} />
-        <Route path="/logout" component={Logout} />
-        <Route path="/resendCode" component={ResendCode} />
-        <Route path="/forgotPassword" component={ForgotPassword} />
-        <Route path="/changePassword" component={ChangePassword} />
-        <Route path="/resetPassword" component={ResetPassword} />
-        <Route path="/confirmMFACode" component={ConfirmMFACode} />
-        <Route path="/pagenotfound" component={PageNotFound} />
-        <Route path="/errorPage" component={ErrorPage} />
+    if (!state.user.isAuthenticated) {
+      // Not authenticated, redirect to login.
+      replaceState({ nextPathname: nextState.location.pathname }, '/login');
+    }
+  };
+
+  return (
+    <Route path="/" component={App}>
+      <Route component={TemplateCore} >
+        <IndexRoute component={Home} onEnter={authRequired}/>
+        <IndexRedirect to="/taskList" />
+        <Route path="/patientList" component={AllPatientsView} />
+        <Route path="/patient/:patientId" component={PatientView} />
+        <Route path="/editPatient/:patientId" component={PatientEditView} />
+        <Route path="/taskList" component={TaskListView} />
+        <Route path="/activityfeed" component={TaskListActivityFeedView} />
+        {/*<Route path="/saveTaskList" component={TaskListAdd} />*/}
+        {/*<Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />*/}
+        {/*<Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />*/}
+        {/*<Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />*/}
+        {/* <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} /> */}
+        {/* <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} /> */}
+        {/*<Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />*/}
+        {/* <Route path="/invitations" component={InvitationsView} /> */}
+        <Route path="/people" component={PeopleView} />
+        {/* <Route path="/peopleinvite" component={InvitePeople} /> */}
+        <Route path="/tasks/:listName/:taskListId" component={Home}/>
+        <Route path="/tasks/:listName" component={Home}/>
+        <Route path="/tasks/:listName" component={Home}/>
+        <Route path="/userprofile" component={UserProfileView} />
+        {/* <Route path="/test" component={Test} /> */}
+
       </Route>
+      <Route component={TemplateAuth} >
+        <Route component={TemplateAuthBase}>
+          <Route path="/confirmRegistration" component={ConfirmRegistration}/>
+          <Route path="/login" component={Login} />
+          <Route path="/logout" component={Logout} />
+          <Route path="/resendCode" component={ResendCode} />
+          <Route path="/forgotPassword" component={ForgotPassword} />
+          <Route path="/changePassword" component={ChangePassword} />
+          <Route path="/resetPassword" component={ResetPassword} />
+          <Route path="/confirmMFACode" component={ConfirmMFACode} />
+          <Route path="/pagenotfound" component={PageNotFound} />
+          <Route path="/errorPage" component={ErrorPage} />
+        </Route>
 
-      <Route path="/register" component={Register} />
+        <Route path="/register" component={Register} />
+      </Route>
     </Route>
-  </Route>
-);
+  );
+}
+
+export default Routes

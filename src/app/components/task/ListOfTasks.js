@@ -193,7 +193,7 @@ class ListOfTasks extends BaseComponent {
 			    {/* MAIN TASK START */}
 			    <div className={"row expanded " + (type == 'subtask' ? 'subtask-item' : 'main-task-item')} value={task}>
 			      <div className="columns shrink">
-			        <div className={"mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
+			        <div className={"pointer mark-complete " + (task.status == "COMPLETE" && "complete")} onClick={(e) => this.handleMarkComplete(task, task.status)}>
 			          {task.status == "COMPLETE" &&
 			          <svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg>
 			          }
@@ -208,7 +208,7 @@ class ListOfTasks extends BaseComponent {
 			      </div>
 
 			      <div className="columns shrink align-right">
-			        <svg className={"icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
+			        <svg className={"pointer icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 			      </div>
 			      <div className="columns">
 							{/* {type == 'subtask' && <span className="subtask-number">1.</span>} */}

@@ -28,11 +28,13 @@ const LinksDefault = ({className}) => (
 
 const LinksAuth = ({user, className, onLogout, userProfilePic}) => (
   <div data-toggle="profile-dropdown" className="align-middle row user-profile-link link">
-    {user.profileThumbnailPictureHash ?
-      <img className="member-photo circle" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+user.userId+"/"+user.profileThumbnailPictureHash} alt={user.firstName + " " + user.lastName}/> :
-      <span className="member-initials circle">{user.initials}</span>
-    }
-    {user.firstName + " " + user.lastName}
+    <Link to="/userprofile">
+      {user.profileThumbnailPictureHash ?
+        <img className="member-photo circle" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+user.userId+"/"+user.profileThumbnailPictureHash} alt={user.firstName + " " + user.lastName}/> :
+        <span className="member-initials circle">{user.initials}</span>
+      }
+      {user.firstName + " " + user.lastName}
+    </Link>
   </div>
     // <div data-toggle="profile-dropdown" className="user-profile-link link">
     //   <MemberInitials member={user}/>

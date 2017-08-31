@@ -6,7 +6,7 @@ import Notification from '../components/common/Notification'
 
 class App extends React.Component {
   render() {
-    return (    
+    return (
       <div id='appHome'>
         <main>
           {this.props.children}

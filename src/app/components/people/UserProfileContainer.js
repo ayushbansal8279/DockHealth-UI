@@ -559,7 +559,7 @@ updateSpecialty = (e) => {
                             }}/>
 
                             {/* hidden link */}
-                            <a href="#" className="specialty-open-link accordion-title">Specialties</a>
+                            <a href="#" className="specialty-open-link accordion-title hide">Specialties</a>
 
                             <div className="accordion-content no-border" data-tab-content>
                               <div className="column large-12">
