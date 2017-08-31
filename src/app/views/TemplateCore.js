@@ -103,9 +103,11 @@ class TemplateCore extends React.Component {
         //check if user exists
         userApi.getUserByEmail(cognitoUser.username, cognitoUser)
           .then(data => {
-            if(!data.organizationId){
-              hashHistory.push('/errorPage');
-            }
+            // disable no invitation check
+            // if(!data.organizationId){
+            //   hashHistory.push('/errorPage');
+            // }
+
             //userId, pictureType
             if(data.profileThumbnailPictureHash){
               userApi.getUserProfilePic(data.userId,"PROFILE")
