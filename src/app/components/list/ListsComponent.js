@@ -36,9 +36,12 @@ class ListsComponent extends BaseComponent{
                 <svg className="icon ellipses medium" data-toggle={"more-options-task-id-" + taskList.taskListId}><use xlinkHref="#icon-ellipses"></use></svg>
                 <div className="small dropdown-pane" id={"more-options-task-id-" + taskList.taskListId} data-dropdown data-close-on-click="true">
                   <ul className="no-bullet">
-                    {/* if owner */}
-                    <li><div data-open={"delete-list-"+taskList.taskListId}>Delete list</div></li>
-                    <li><div onClick={(e) => this.props.editForm(taskList)}>Edit</div></li>
+                    {(taskList.role == 'OWNER' || taskList.role == 'ADMIN') &&
+                      <li><div data-open={"delete-list-"+taskList.taskListId}>Delete list</div></li>
+                    }
+                    {taskList.role == 'OWNER' || taskList.role == 'ADMIN' &&
+                      <li><div onClick={(e) => this.props.editForm(taskList)}>Edit</div></li>
+                    }
                     {/* if owner */}
                     {taskList.role != 'OWNER' &&
                       <li><div data-open={"leave-list-"+taskList.taskListId}>Leave list</div></li>

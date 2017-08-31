@@ -17,7 +17,7 @@ const ConfirmMFACodeForm = (props) => {
   return (
 		<form className="inline-label top-buffer" onSubmit={handleSubmit}>
 			<div className="row expanded">
-        <Field name='mfaCode' type='text' component={AuthField} label='Enter authentication code' xlinkHref="#icon-password"/>
+        <Field name='mfaCode' type='text' component={AuthField} label='Enter the 6-digit code that was sent to your mobile phone' xlinkHref="#icon-password"/>
 				<div className="columns small-12 text-center top-buffer">
           <button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Confirm</button>
 				</div>
