@@ -38,7 +38,7 @@ class UserProfileContainer extends BaseComponent {
           this.setState({userSpecialties:response.specialtyList});
           console.log(response.specialties)
         }
-        if(response.titles && response.titles.length > 0 
+        if(response.titles && response.titles.length > 0
           && response.titles[0].titleId == 1){
           this.setState({predefinedTitlesDisabled:true})
           this.setState({otherTitleDescription:response.titleList})
@@ -398,10 +398,10 @@ findObjectByKey(array, key, value) {
 
         return(
             <div key ={specialty.specialtyId} className="row table-row">
-              <div className="columns large-6">
+              <div className="columns small-12 large-6">
                 {specialty.name}
               </div>
-              <div className="columns large-6">
+              <div className="columns small-12 large-6">
                 <ul className="condense no-bullet no-bottom-buffer">
                   {this.createSubSpecialtyCheckBoxes(specialty)}
                 </ul>
@@ -486,7 +486,7 @@ updateSpecialty = (e) => {
       }
       return(
         <div className="wrapper top-buffer">
-            <div className="columns large-8 large-offset-2">
+            <div className="columns small-12">
               <div className="row">
 
                 {/* Profile Image */}
@@ -508,7 +508,7 @@ updateSpecialty = (e) => {
                   <p onClick={this.onClickRemovePicture}>Remove photo</p>
                   <p>
                     <input type="file" hidden name="file" id="file" className="inputfile" onChange={(e) => this.handleImageChange(e)}/>
-                    <label htmlFor="file">Upload photo</label>
+                    <label id="upload-photo-text" htmlFor="file">Upload photo</label>
                   </p>
 
                   {/* <p>Take photo</p> */}
@@ -562,7 +562,7 @@ updateSpecialty = (e) => {
                             <a href="#" className="specialty-open-link accordion-title hide">Specialties</a>
 
                             <div className="accordion-content no-border" data-tab-content>
-                              <div className="column large-12">
+                              <div className="column small-12 large-12">
                                 <div className="row">
                                   <ul className="tabs" data-tabs id="add-specialty-tab">
                                   {/*  <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
@@ -584,7 +584,7 @@ updateSpecialty = (e) => {
                                         <div className="columns large-6">
                                           Specialty
                                         </div>
-                                        <div className="columns large-6">
+                                        <div className="columns small-12 large-6">
                                           Subspecialty
                                         </div>
                                       </div>

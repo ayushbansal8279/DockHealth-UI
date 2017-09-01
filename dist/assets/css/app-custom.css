@@ -263,6 +263,10 @@ pre.emailMessage {
   height:3.65em;
 }
 
+#upload-photo-text{
+  font-size:inherit!important;
+}
+
 /*Search Bar Styles */
 
 /*.has-error {
