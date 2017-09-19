@@ -35,6 +35,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
 		// alert("working")
 	}
 
+		// Lists Activity for a TaskList
     renderList(auditlist) {
        return auditlist.map((audit) =>{
           return(
@@ -55,6 +56,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
       })
     }
 
+		// Lists TaskLists
     renderTaskListName(){
       return this.props.activityFeedForAllUserList.map((auditsandtasklist) =>{
         return(
@@ -62,7 +64,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
 						<a onClick={this.handleClick} href="#" className="accordion-title">{auditsandtasklist.listName}</a>
 						{/* override of app.css line 2068 display:none : find in app-custonm .accordion-content line 122 */}
 						<div className="accordion-content" data-tab-content>
-              {this.renderList(auditsandtasklist.auditList)}
+              {this.renderList(auditsandtasklist.auditList) && this.renderList(auditsandtasklist.auditList).length > 0 ? this.renderList(auditsandtasklist.auditList) : <p className="light-gray">No Recent Activities</p>}
             </div>
           </div>
         );

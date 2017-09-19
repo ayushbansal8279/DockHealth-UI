@@ -170,7 +170,7 @@ class HeaderTasks extends BaseComponent {
 const mapStateToProps = function (store) {
   // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
   return {
-    taskList: store.taskListState.tasklistone, // tasklistone is set at the reducer
+    taskList: store.taskListState.currentList, // tasklistone is set at the reducer
     taskLists: store.taskListState.tasklist,
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,

@@ -773,6 +773,17 @@ function mapStateToProps(state) {
     return stateObj;
 }
 
+function convertToValidPhoneNumber(text) {
+    var result = [];
+    text = text.replace(/^\d{2}-?\d{3}-?\d{3}-?\d{3}$/, "");
+    while (text.length >= 6){
+        result.push(text.substring(0, 3));
+        text = text.substring(3);
+    }
+    if (text.length > 0) result.push(text);
+    return result.join("-");
+}
+
 function validate(values){
   const errors = {};
 
