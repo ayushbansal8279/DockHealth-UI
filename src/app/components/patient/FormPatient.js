@@ -48,18 +48,24 @@ class FormPatient extends BaseComponent {
       if (this.props.patientId) {
           this.props.actions.updatePatient(formProps)
           .then((res) => {
-            this.setState({saveMessage: 'Patient updated succesfully'})
+            // this.setState({saveMessage: 'Patient updated succesfully'})
+						toggleAlert("Patient updated succesfully!", "success")
+						closeAddForm()
           })
           .catch((e) => {
-            this.setState({saveMessage: e.message})
+            // this.setState({saveMessage: e.message})
+						toggleAlert(e.message, "error")
           })
       }else{
   		    this.props.actions.addPatient(formProps)
           .then((res) => {
-            this.setState({saveMessage: 'Patient created succesfully'})
+            // this.setState({saveMessage: 'Patient created succesfully'})
+						toggleAlert("Patient created succesfully!", "success")
+						closeAddForm()
           })
           .catch((e) => {
-            this.setState({saveMessage: e.message})
+            // this.setState({saveMessage: e.message})
+						toggleAlert(e.message, "error")
           })
       }
 
@@ -137,9 +143,9 @@ class FormPatient extends BaseComponent {
                 <input type="submit" className="button secondary medium" value="Save"/>
               </div>
 
-              <div className="column large-12 text-right text-center">
+              {/* <div className="column large-12 text-right text-center">
                 <h3>{this.state.saveMessage}</h3>
-              </div>
+              </div> */}
 
             </form>
       )
