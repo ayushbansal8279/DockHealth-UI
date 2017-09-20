@@ -51,38 +51,53 @@ class SearchPatient extends BaseComponent {
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
 
       return (
-        <div className="column large-12 top-buffer">
-            <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
-                <div className="row collapse expanded align-middle">
-                    <div className="columns input-group input-wrapper bottom-buffer-small icon-right">
-                        <div className="input-wrapper">
-                            <input id="searchPatient" name="searchPatient" className="input-group-field" type="text" placeholder="Search patient database" onChange={this.onChange.bind(this)}/>
-                        </div>
-                        <span className="input-group-label">
-                            <button className="button search" onClick={this.searchPatients.bind(this)}>
-                                <svg className="icon"><use xlinkHref="#icon-search"></use></svg>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </form>
-            <div className="item row expanded align-middle">
-            <div className="column large-12 search-result-wrapper">
-                {this.props.emrPatients && this.props.emrPatients.map(patient => {
-                    return(
-                            <div className="item row expanded align-middle" onClick={this.selectPatient.bind(this, patient)} key={patient.mrn}>
-                                <div className="columns shrink">
-                                    <span className="">{patient.mrn}</span>
-                                </div>
-                                <div className="columns">
-                                    <span className="">{patient.lastName}, {patient.firstName}</span>
-                                </div>
-                            </div>
-                    )
-                })}
-            </div>
-            </div>
-        </div>
+					<form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
+						{/* <div className="column large-12 text-center">
+							<h5 className="section-title">Add a patient</h5>
+						</div>
+
+						<div className="column large-12 text-center">
+							Search for an existing patient in the database
+						</div> */}
+
+						{/* <!-- Lookup --> */}
+						<div className="column large-12 top-buffer">
+							<div className="row collapse expanded align-middle">
+								<div className="columns input-group input-wrapper bottom-buffer-small icon-right">
+									<div className="input-wrapper">
+										<input id="add-member-to-list" className="input-group-field" type="text" placeholder="Search patient database" onChange={this.onChange.bind(this)}/>
+									</div>
+									<span className="input-group-label pointer" onClick={this.searchPatients.bind(this)}>
+										<svg className="icon"><use xlinkHref="#icon-search"></use></svg>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<div className="column large-12 search-result-wrapper">
+
+							{this.props.emrPatients && this.props.emrPatients.map(patient => {
+			            return(
+			                <div className="item row expanded align-middle" onClick={this.selectPatient.bind(this, patient)} key={patient.mrn}>
+			                    <div className="columns shrink">
+			                        <span className="">{patient.mrn}</span>
+			                    </div>
+			                    <div className="columns">
+			                        <span className="">{patient.lastName}, {patient.firstName}</span>
+			                    </div>
+			                </div>
+			            )
+			        })}
+
+						</div>
+
+
+					</form>
+
+
+
+
+
       )
     }
 }
