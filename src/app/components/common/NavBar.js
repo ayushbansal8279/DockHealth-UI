@@ -26,11 +26,11 @@ const LinksDefault = ({className}) => (
   </div>
 )
 
-const LinksAuth = ({user, className, onLogout, userProfilePic}) => (
+const LinksAuth = ({user, className, onLogout, userProfilePicThumb}) => (
   <Link to="/userprofile">
     <div data-toggle="profile-dropdown" className="align-middle row user-profile-link link">
-        {user.profileThumbnailPictureHash ?
-          <img className="member-photo circle" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+user.userId+"/"+user.profileThumbnailPictureHash} alt={user.firstName + " " + user.lastName}/> :
+        {userProfilePicThumb ?
+          <img className="member-photo circle" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+user.userId+"/"+userProfilePicThumb} alt={user.firstName + " " + user.lastName}/> :
           <span className="member-initials circle">{user.initials}</span>
         }
         {user.firstName + " " + user.lastName}
@@ -63,16 +63,16 @@ class NavBar extends React.Component {
 
   render() {
 
-  	var {userProfile} = this.props
-    var {userProfilePic} = this.props
-    if(userProfilePic == undefined){
-      userProfilePic = "assets/img/dock-logo-white.png";
-    }
+  	// var {userProfile} = this.props
+    // var {userProfilePic} = this.props
+    // if(userProfilePic == undefined){
+    //   userProfilePic = "assets/img/dock-logo-white.png";
+    // }
 
   	let menuClasses = "menu float-right"
     return (
       <div className="off-canvas position-left reveal-for-medium" id="sidebar" data-off-canvas>
-        <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/>
+        <LinksAuth className={menuClasses} user={this.props.userProfile} userProfilePicThumb={this.props.userProfile.profileThumbnailPictureHash}/>
         {/* <h1 onClick={(e) => this.unmountAddTaskForm()}>Hello</h1> */}
         {/*{userProfile ? <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
 
