@@ -86,7 +86,7 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
                     <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
                   </div>
                   <div className="columns shrink" onClick={(e) => this.handleAddPatient()}>
-                    <svg className="add icon"><use xlinkHref="#icon-add-patient"></use></svg>
+                    <svg id="icon-add-patient" className="add icon add-other"><use xlinkHref="#icon-add-patient"></use></svg>
                   </div>
                 </div>
 
