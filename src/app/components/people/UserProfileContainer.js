@@ -358,7 +358,7 @@ findObjectByKey(array, key, value) {
    }
 
   handleCheckboxClick = (e) => {
-    debugger;
+    //debugger;
     e.stopPropagation()
   }
 
@@ -826,6 +826,9 @@ function validate(values){
 }
 
 function validatePhoneNumbers(phoneNumber){
+  if(phoneNumber && phoneNumber.length == 12 && phoneNumber.startsWith("+1")){
+    phoneNumber = phoneNumber.substr(2, 10);
+  }
   var match = phoneNumber.match(/\D/);
   if(match != null){
     return false;
