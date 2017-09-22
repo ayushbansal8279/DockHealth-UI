@@ -12,7 +12,7 @@ class PatientView extends React.Component {
   	componentDidMount () {
       this.props.actions.getPatientById(this.props.params.patientId);
       mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-              'PageName': 'PatientView'
+              'PageName': 'PatientDetails'
       });
   	}
 

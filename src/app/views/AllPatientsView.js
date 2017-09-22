@@ -24,7 +24,7 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
       this.props.patientActions.getAllPatients()
       this.props.patientActions.patientToState(null)
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-							'PageName': 'AllPatientsView'
+							'PageName': 'AllPatients'
 			});
     }
     clearSearch = () => {

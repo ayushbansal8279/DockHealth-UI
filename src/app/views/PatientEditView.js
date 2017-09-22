@@ -14,7 +14,7 @@ class PatientEditView extends React.Component {
       this.props.actions.getPatientById(this.props.params.patientId);
 
       mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-              'PageName': 'PatientEditView'
+              'PageName': 'PatientEdit'
       });
   	}
 

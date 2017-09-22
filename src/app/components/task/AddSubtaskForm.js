@@ -36,7 +36,7 @@ class AddSubtaskForm extends BaseComponent{
 
   componentDidMount () {
   mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-          'PageName': 'AddSubTaskForm'
+          'PageName': 'AddSubTask'
   });
 }
 
@@ -52,7 +52,7 @@ class AddSubtaskForm extends BaseComponent{
   // }
 
   onSubmit = (formProps) => {
-    debugger;
+    //debugger;
     $('.subtask-wrapper').slideToggle(300);
     $('.main-task-wrapper').slideToggle(300);
     console.log(this.state)
