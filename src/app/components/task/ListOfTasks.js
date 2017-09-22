@@ -222,7 +222,7 @@ class ListOfTasks extends BaseComponent {
 				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
 				        <span className="task-details text-light">unassigned</span>
 							}
-							{task.status == 'COMPLETE' &&
+							{task.status == 'COMPLETE' && task.completedBy &&
 								<span className="task-details text-light">{"Completed by " + task.completedBy.userName}</span>
 							}
 			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}

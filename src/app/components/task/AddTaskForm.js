@@ -1,4 +1,4 @@
-import React from 'react'
+  import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions, reset, initialize, destroy } from 'redux-form'
@@ -54,6 +54,7 @@ class AddTaskForm extends BaseComponent {
   }
 
   initializeSubtaskForm = (index) => {
+    debugger;
     this.setState({currentSubtaskIndex: index})
     var task = this.props.currentSubtasks[index]
 
