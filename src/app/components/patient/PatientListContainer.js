@@ -19,8 +19,10 @@ class PatientListContainer extends BaseComponent {
     render() {
       const KEYS_TO_FILTERS = ['firstName', 'lastName', 'email', 'mrn']
       // Creates filter with LIST, SEARCH TERM, KEYS TO FILTER
-      const filteredPatients = this.props.patients.filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS))
-
+      var filteredPatients = []
+      if(this.props.patients){
+        filteredPatients = this.props.patients.filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS))
+      }
       return (<PatientList patients={filteredPatients}/>)
     }
 }
