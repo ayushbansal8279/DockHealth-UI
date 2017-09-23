@@ -43,7 +43,7 @@ class ListsComponent extends BaseComponent{
                       <li><div onClick={(e) => this.props.editForm(taskList)}>Edit</div></li>
                     }
                     {/* if owner */}
-                    {taskList.role != 'OWNER' &&
+                    {taskList.role != 'OWNER' && taskList.role != 'ADMIN' &&
                       <li><div data-open={"leave-list-"+taskList.taskListId}>Leave list</div></li>
                     }
                   </ul>
@@ -51,14 +51,14 @@ class ListsComponent extends BaseComponent{
               </div>
               <BooleanModal
                 uniqueModalId={"delete-list-"+taskList.taskListId}
-                message="Are you sure you want to delete this taskList?"
+                message={"Are you sure you want to delete '" + taskList.listName + "'?"}
                 handleConfirmation={this.props.deleteList}
                 handleConfirmationArgs={taskList.taskListId}
                 confirmBtnTxt="Delete"
               />
               <BooleanModal
                 uniqueModalId={"leave-list-"+taskList.taskListId}
-                message="Are you sure you want to leave this taskList?"
+                message={"Are you sure you want to leave '" + taskList.listName + "'?"}
                 handleConfirmation={this.props.leaveList}
                 handleConfirmationArgs={taskList.taskListId}
                 confirmBtnTxt="Leave"

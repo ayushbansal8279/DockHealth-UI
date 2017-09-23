@@ -214,13 +214,13 @@ class UserProfileContainer extends BaseComponent {
       userObj.firstName = formProps.firstName
       userObj.lastName = formProps.lastName
       if(formProps.accountPhoneNumber)
-        userObj.accountPhoneNumber = formProps.accountPhoneNumber
+        userObj.accountPhoneNumber = formProps.accountPhoneNumber.replace(/-/g,"")
       if(formProps.workPhoneNumber)
-        userObj.workPhoneNumber = formProps.workPhoneNumber
+        userObj.workPhoneNumber = formProps.workPhoneNumber.replace(/-/g,"")
       if(formProps.faxNumber)
-        userObj.faxNumber = formProps.faxNumber
+        userObj.faxNumber = formProps.faxNumber.replace(/-/g,"")
       if(formProps.homePhoneNumber)
-        userObj.homePhoneNumber = formProps.homePhoneNumber
+        userObj.homePhoneNumber = formProps.homePhoneNumber.replace(/-/g,"")
 
       titles= this.getTitlesToPersist(formProps)
       specialties = this.getSpecialtiesToPersist(formProps)
@@ -457,6 +457,29 @@ updateSpecialty = (e) => {
  render(){
       //console.log("yyy",this.state.userSelectedSpecialties)
 
+      const normalizePhone = (value, previousValue) => {
+        if (!value) {
+          return value
+        }
+        const onlyNums = value.replace(/[^\d]/g, '')
+        if (!previousValue || value.length > previousValue.length) {
+          // typing forward
+          if (onlyNums.length === 3) {
+            return onlyNums + '-'
+          }
+          if (onlyNums.length === 6) {
+            return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3) + '-'
+          }
+        }
+        if (onlyNums.length <= 3) {
+          return onlyNums
+        }
+        if (onlyNums.length <= 6) {
+          return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3)
+        }
+        return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3, 6) + '-' + onlyNums.slice(6, 10)
+      }
+
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       //var userProfile = JSON.parse(sessionStorage.userProfile) //this is needed as userProfile is stringyfied and stored
       //var userProfile = this.props.userProfile
@@ -627,10 +650,10 @@ updateSpecialty = (e) => {
 
                   <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true' bufferClassName='top-buffer-small'/>
                   <Field name='email' type='text' component={BasicField} label='Email' disabled='true'/>
-                  <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile'/>
-                  <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone'/>
-                  <Field name='faxNumber' type='text' component={BasicField} label='Fax Number'/>
-                  <Field name='homePhoneNumber' type='text' component={BasicField} label='Home Phone'/>
+                  <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile' normalize={normalizePhone}/>
+                  <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone' normalize={normalizePhone}/>
+                  <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' normalize={normalizePhone}/>
+                  <Field name='homePhoneNumber' type='text' component={BasicField} label='Home Phone' normalize={normalizePhone}/>
 
 
                   {/* <!-- Notifications --> */}
@@ -737,12 +760,12 @@ function mapStateToProps(state) {
   var initialValues = {
     firstName: state.userState.userProfile.firstName,
     lastName: state.userState.userProfile.lastName,
-    accountPhoneNumber: state.userState.userProfile.accountPhoneNumber,
-    workPhoneNumber: state.userState.userProfile.workPhoneNumber,
-    faxNumber: state.userState.userProfile.faxNumber,
+    accountPhoneNumber: convertToValidPhoneNumber(state.userState.userProfile.accountPhoneNumber),
+    workPhoneNumber: convertToValidPhoneNumber(state.userState.userProfile.workPhoneNumber),
+    faxNumber: convertToValidPhoneNumber(state.userState.userProfile.faxNumber),
+    homePhoneNumber: convertToValidPhoneNumber(state.userState.userProfile.homePhoneNumber),
     email: state.userState.userProfile.email,
     organizationName: state.userState.userProfile.organizationName,
-    homePhoneNumber:state.userState.userProfile.homePhoneNumber,
     emailPref: state.userState.userNotificationPrefs.email,
     pushPref: state.userState.userNotificationPrefs.push,
     userProfile:state.userState.userProfile,
@@ -771,6 +794,21 @@ function mapStateToProps(state) {
     stateObj.initialValues = initialValues
     //console.log(Object.assign({}, stateObj, userTitlesCB))
     return stateObj;
+}
+
+function convertToValidPhoneNumber(text) {
+  if(text != undefined){
+    var result = [];
+    text = text.replace(/^\d{2}-?\d{3}-?\d{3}-?\d{3}$/, "");
+    while (text.length >= 6){
+        result.push(text.substring(0, 3));
+        text = text.substring(3);
+    }
+    if (text.length > 0) result.push(text);
+    return result.join("-");
+  }else{
+    return "";
+  }
 }
 
 function validate(values){
@@ -826,16 +864,13 @@ function validate(values){
 }
 
 function validatePhoneNumbers(phoneNumber){
-  if(phoneNumber && phoneNumber.length == 12 && phoneNumber.startsWith("+1")){
-    phoneNumber = phoneNumber.substr(2, 10);
-  }
-  var match = phoneNumber.match(/\D/);
-  if(match != null){
+  var match = phoneNumber.match(/^\d{3}-\d{3}-\d{4}$/gm);
+  if(match = null){
     return false;
   }
   else
   {
-    if(phoneNumber.length !=10){
+    if(phoneNumber.length != 12){
       return false;
     }
   }

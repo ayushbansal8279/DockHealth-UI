@@ -208,7 +208,9 @@ class ListOfTasks extends BaseComponent {
 			      </div>
 
 			      <div className="columns shrink align-right">
-			        <svg className={"pointer icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
+							<span data-tooltip title={task.priority == 'HIGH' ? 'High Priority' : 'Priority'} >
+				        <svg className={"pointer icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
+							</span>
 			      </div>
 			      <div className="columns">
 							{/* {type == 'subtask' && <span className="subtask-number">1.</span>} */}
@@ -219,6 +221,9 @@ class ListOfTasks extends BaseComponent {
 							{task.assignedBy ?
 				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
 				        <span className="task-details text-light">unassigned</span>
+							}
+							{task.status == 'COMPLETE' &&
+								<span className="task-details text-light">{"Completed by " + task.completedBy.userName}</span>
 							}
 			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
 			        {task.type == "EMAIL" &&

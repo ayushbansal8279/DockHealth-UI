@@ -48,18 +48,24 @@ class FormPatient extends BaseComponent {
       if (this.props.patientId) {
           this.props.actions.updatePatient(formProps)
           .then((res) => {
-            this.setState({saveMessage: 'Patient updated succesfully'})
+            // this.setState({saveMessage: 'Patient updated succesfully'})
+						toggleAlert("Patient updated succesfully!", "success")
+						closeAddForm()
           })
           .catch((e) => {
-            this.setState({saveMessage: e.message})
+            // this.setState({saveMessage: e.message})
+						toggleAlert(e.message, "error")
           })
       }else{
   		    this.props.actions.addPatient(formProps)
           .then((res) => {
-            this.setState({saveMessage: 'Patient created succesfully'})
+            // this.setState({saveMessage: 'Patient created succesfully'})
+						toggleAlert("Patient created succesfully!", "success")
+						closeAddForm()
           })
           .catch((e) => {
-            this.setState({saveMessage: e.message})
+            // this.setState({saveMessage: e.message})
+						toggleAlert(e.message, "error")
           })
       }
 
@@ -76,7 +82,7 @@ class FormPatient extends BaseComponent {
 
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       return (
-            <form className="inline-label" onSubmit={handleSubmit(this.onSubmit)}>
+            <form className="inline-label top-buffer" onSubmit={handleSubmit(this.onSubmit)}>
               <Field name='mrn' type='number' component={BasicField} label='MRN' placeholder='required'/>
               <Field name='firstName' type='text' component={BasicField} label='First name' placeholder='required'/>
               <Field name='lastName' type='text' component={BasicField} label='Last name' placeholder='required'/>
@@ -97,31 +103,49 @@ class FormPatient extends BaseComponent {
                   </span>
                 </span>
               </fieldset>
-              <fieldset className="large-12 columns">
+
+							<fieldset className="large-12 columns ">
+								<span className="inner">
+									<legend>Gender</legend>
+									<span className="float-right center-radio-buttons">
+										<Field type="radio" component="input" name="gender" value="female"/><label>Female</label>
+										<Field type="radio" component="input" name="gender" value="male"/><label>Male</label>
+									</span>
+								</span>
+							</fieldset>
+
+              {/* <fieldset className="large-12 columns center-radio-buttons">
                 <span className="inner">
                   <legend>Gender</legend>
-                  <span className="float-right">
+                  <span className="float-right"> */}
                     {/* <input type="radio" name="gender" value="female" checked={patient.gender && patient.gender === 'female'} onChange={this.onGenderChanged}/><label>Female</label>
                     <input type="radio" name="gender" value="male" checked={patient.gender && patient.gender === 'male'} onChange={this.onGenderChanged}/><label>Male</label> */}
-                     <label><Field name='gender' component="input" type='radio' value='male'/> Male</label>
+                    {/* <label><Field name='gender' component="input" type='radio' value='male'/> Male</label>
                     <label><Field name='gender' component="input" type='radio' value='female'/> Female</label>
                   </span>
                 </span>
-              </fieldset>
+              </fieldset> */}
 
               <Field name='phoneHome' type='tel' component={BasicField} label='Home phone' placeholder='required'/>
               <Field name='phoneMobile' type='tel' component={BasicField} label='Mobile' placeholder='required'/>
               <Field name='email' type='email' component={BasicField} label='Email' placeholder='required'/>
 
-              <Field name='notes' type='text' component={BasicField} label='Notes' placeholder='required'/>
+							<div className="column large-12 input-group no-icon">
+								<div className="form-floating-label input-wrapper">
+									<Field type="text" component="textarea" className="input-group-field"/>
+									<label>Notes</label>
+								</div>
+							</div>
+
+              {/* <Field name='notes' type='text' component={BasicField} label='Notes' placeholder='required'/> */}
 
               <div className="column large-12 text-right text-center">
                 <input type="submit" className="button secondary medium" value="Save"/>
               </div>
 
-              <div className="column large-12 text-right text-center">
+              {/* <div className="column large-12 text-right text-center">
                 <h3>{this.state.saveMessage}</h3>
-              </div>
+              </div> */}
 
             </form>
       )

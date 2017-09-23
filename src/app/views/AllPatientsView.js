@@ -47,12 +47,15 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
 
     render() {
     return (
-        <div className="off-canvas-content" data-off-canvas-content="true">
+        <div className="off-canvas-content" data-off-canvas-content>
           <div className="row expanded collapse">
             <div className="large-12 columns">
 
                 <header className="nav-down">
                 <div className="top-bar">
+                  <div className="new-task text-center">
+                    <span className="number-new-tasks"></span>
+                  </div>
                   <div className="top-bar-left">
                     <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
                     <h3>Patients</h3>
@@ -94,14 +97,18 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
                   <div className="column large-12 text-center">
                     <h5 className="section-title">Add a patient</h5>
                   </div>
+                  <div className="column large-12 text-center">
+                    Search for an existing patient in the database
+                  </div>
                   <SearchPatient />
-									<div className="column large-12 text-center">
-										Search for an existing patient in the database
-									</div>
 									<div className="column large-12 text-center">
 										or enter patient manually
 									</div>
                   <FormPatient />
+
+
+
+
                   </div>
                 </div>
                 <div className="list-wrapper">

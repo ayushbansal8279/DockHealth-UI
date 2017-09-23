@@ -85,7 +85,6 @@ class HeaderTasks extends BaseComponent {
     return (
       <div>
         <header className="nav-down">
-
 						<div className="top-bar">
               <div className="new-task text-center">
                 <span className="number-new-tasks"></span>
@@ -93,7 +92,6 @@ class HeaderTasks extends BaseComponent {
 							<div className="top-bar-left">
 								<button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
 								<h3>{this.props.title}</h3>
-
 								{/* <h3>{this.state.title ? this.state.title : this.props.taskList.listName}</h3> <span className="number-of-tasks hide">23 Tasks</span> */}
 							</div>
               {this.props.taskListId &&
@@ -170,7 +168,7 @@ class HeaderTasks extends BaseComponent {
 const mapStateToProps = function (store) {
   // console.log('tasklist is: ' + store.taskListState.tasklistone.listName)
   return {
-    taskList: store.taskListState.tasklistone, // tasklistone is set at the reducer
+    taskList: store.taskListState.currentList, // tasklistone is set at the reducer
     taskLists: store.taskListState.tasklist,
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,

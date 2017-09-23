@@ -267,6 +267,16 @@ pre.emailMessage {
   font-size:inherit!important;
 }
 
+.center-radio-buttons{
+  margin-top:16px;
+}
+
+#dob{
+  border-right:0;
+  border-bottom:0;
+  padding:0;
+}
+
 /*Search Bar Styles */
 
 /*.has-error {
