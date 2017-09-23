@@ -72,7 +72,7 @@ class NavBar extends React.Component {
   	let menuClasses = "menu float-right"
     return (
       <div className="off-canvas position-left reveal-for-medium" id="sidebar" data-off-canvas>
-        <LinksAuth className={menuClasses} user={this.props.userProfile} userProfilePicThumb={this.props.userProfile.profileThumbnailPictureHash}/>
+        <LinksAuth className={menuClasses} user={this.props.userProfile} userProfilePicThumb={this.props.userProfile.profilePictureHash}/>
         {/* <h1 onClick={(e) => this.unmountAddTaskForm()}>Hello</h1> */}
         {/*{userProfile ? <LinksAuth className={menuClasses} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
 

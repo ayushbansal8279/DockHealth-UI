@@ -118,6 +118,7 @@ class AddTask extends BaseComponent {
 	}
 
 	addSubtaskValues = (subtaskValues, index) => {
+		debugger;
 		this.setState({currentSubtaskIndex:""})
 		if(index !== ""){
 			subtaskValues.taskId = this.props.currentSubtasks[index].taskId

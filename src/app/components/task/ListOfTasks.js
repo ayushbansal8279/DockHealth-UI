@@ -106,10 +106,24 @@ class ListOfTasks extends BaseComponent {
   	}
 
   	handleMarkComplete(task, status){
-			this.props.taskAction.taskToState(task)
-  		this.props.markComplete(task, status, this.props.listName)
+			if(task.subtasks.length > 0){
+				task.subtasks.map(subtask => {
+					if(subtask.status == 'INCOMPLETE'){
+						// alert('Incomplete Subtask')
+						$("#complete-task").trigger('click');
+					}
+				})
+			}else{
+				this.props.taskAction.taskToState(task)
+				this.props.markComplete(task, status, this.props.listName)
+			}
   		// this.setState({task: ''})
   	}
+
+		confirmCompleteTask(task, status){
+			this.props.taskAction.taskToState(task)
+			this.props.markComplete(task, status, this.props.listName)
+		}
 
   	handleDeleteTask(task){
   		this.props.deleteTask(task)
@@ -198,6 +212,8 @@ class ListOfTasks extends BaseComponent {
 			          <svg className="small icon"><use xlinkHref="#icon-checkmark"></use></svg>
 			          }
 			        </div>
+							{/* Triggers confirmation modal to pop up if task has subtasks */}
+							<span id="complete-task" data-open={"complete-task-"+task.taskId} className="hide">Complete</span>
 			      </div>
 
 			      <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}>
@@ -222,9 +238,10 @@ class ListOfTasks extends BaseComponent {
 				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
 				        <span className="task-details text-light">unassigned</span>
 							}
-							{task.status == 'COMPLETE' &&
+							{task.status == 'COMPLETE' && task.completedBy &&
 								<span className="task-details text-light">{"Completed by " + task.completedBy.userName}</span>
 							}
+							<span className="task-details text-light">{"Has incomplete subtask: " + task.hasIncompleteSubtask}</span>
 			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
 			        {task.type == "EMAIL" &&
 							<div className="row collapse email-wrapper">
@@ -317,6 +334,7 @@ class ListOfTasks extends BaseComponent {
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
 					<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.handleDeleteTask}/>
+					<BooleanModal message="You are about to complete a task with open subtasks. Completing the task will also complete the subtasks. Would you like to proceed?" confirmBtnTxt="Yes" uniqueModalId={"complete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.confirmCompleteTask}/>
 					{task.taskList &&
 						<AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/>
 					}
