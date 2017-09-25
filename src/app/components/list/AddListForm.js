@@ -204,7 +204,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
               <div className="input-wrapper">
                 <label>Owner</label>
                 <ul className="menu member-photo-list">
-                  <li><MemberInitials member={this.props.currentList && this.props.currentList.creator} extraClass='medium'/></li>
+                  <li><MemberInitials member={this.props.listOwner} extraClass='medium'/></li>
                 </ul>
 
               </div>
@@ -344,16 +344,21 @@ AddListForm = reduxForm({
 const mapStateToProps = function(store){
   var initialTaskListValues = {}
   var taskListId = 0
+  var listOwner = {}
   if(store.taskListState.currentList){
     initialTaskListValues = store.taskListState.currentList
     taskListId = store.taskListState.currentList.taskListId
+    listOwner = store.taskListState.currentList.creator
+  }else{
+    listOwner = store.userState.userProfile
   }
   return{
     initialValues: initialTaskListValues,
     currentUserProfile: store.userState.userProfile,
 		peoplelist: store.peopleState.peoplelist,
     taskListId: taskListId,
-    currentList: store.taskListState.currentList
+    currentList: store.taskListState.currentList,
+    listOwner: listOwner
   }
   // var initialValues = {}
   // if(this.props.taskList){
