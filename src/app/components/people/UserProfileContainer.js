@@ -1,5 +1,5 @@
 import React, { Component ,PropTypes} from 'react';
-import {reduxForm, Field, actions, change} from 'redux-form';
+import {reduxForm, Field, actions, change, formValueSelector} from 'redux-form';
 import {invitePersonToOrganization} from '../../actions/people-actions';
 import BasicField from '../common/BasicField';
 import { Link,hashHistory } from 'react-router';
@@ -20,7 +20,9 @@ class UserProfileContainer extends BaseComponent {
       titles:"",
       predefinedTitlesDisabled:'',
       otherTitleDescription:"",
-      selectedTitles:""
+      selectedTitles:"",
+      otherSpecialty:"",
+      otherSubspecialty:""
     };
   }
 
@@ -55,13 +57,24 @@ class UserProfileContainer extends BaseComponent {
     }
 
     componentWillReceiveProps(nextProps){
-      //console.log("componentWillReceiveProps called")
-      //console.log(nextProps)
-      //console.log(this.props)
+      if((nextProps.allSpecialties != this.props.allSpecialties) && nextProps.userSpecialties.length > 0){
+        nextProps.allSpecialties.map(specialtyObject => {
+          if(specialtyObject.specialtyId === nextProps.userSpecialties[0].specialtyId){
+            this.setState({specialty: specialtyObject})
+          }
+        })
+      }
       var userSpecialties = [];
       if (nextProps.userSpecialties != this.props.userSpecialties) { //Note that React may call this method even if the props have not changed, so make sure to compare the current and next values if you only want to handle changes
         userSpecialties = nextProps.userSpecialties;
         this.setState({userSelectedSpecialties: userSpecialties});
+        var specialty = userSpecialties[0];
+        var subspecialty = [];
+
+        if(specialty.subSpecialties.length > 0){
+          subspecialty = specialty.subSpecialties[0]
+        }
+        this.setState({subspecialty: subspecialty})
         //console.log(userSpecialties)
       }
     }
@@ -210,6 +223,15 @@ class UserProfileContainer extends BaseComponent {
       var userObj = {};
       var specialties = [];
       var titles = [];
+      var specialty = [];
+      if(this.state.specialty){
+        if(this.state.subspecialty){
+          this.state.specialty.subSpecialties = [this.state.subspecialty];
+        }else{
+          this.state.specialty.subSpecialties = [];
+        }
+        specialty.push(this.state.specialty)
+      }
 
       userObj.firstName = formProps.firstName
       userObj.lastName = formProps.lastName
@@ -225,7 +247,7 @@ class UserProfileContainer extends BaseComponent {
       titles= this.getTitlesToPersist(formProps)
       specialties = this.getSpecialtiesToPersist(formProps)
       userObj["titles"]=titles
-      userObj["specialties"]=specialties
+      userObj["specialties"]=specialty
 
       //console.log(userObj)
       userApi.updateUser(userObj)
@@ -284,15 +306,6 @@ class UserProfileContainer extends BaseComponent {
         }
         this.setState({selectedTitles: selectedTitles.join(', ')})
       }
-      // var otherChecked = $('#TitleCB1')[0].checked
-      // var inputChecked = $('#title-input input:checked')
-      // if(otherChecked){
-      //   for(var i=0; i<inputChecked.length; i++){
-      //     var name = inputChecked[i].name
-      //     this.props.formActions.change('UserProfileForm', name, false)
-      //   }
-      //   $('#title-input input').prop('disabled', true)
-      // }
     }
 
     setTitleDescriptionState(e){
@@ -310,7 +323,7 @@ class UserProfileContainer extends BaseComponent {
                <label htmlFor={checkBoxId}>Other</label>
                <Field onChange={(e) => this.setTitleDescriptionState(e)} name='otherTitle' type='text' component={BasicField} label='Other Title'/>
             </li>
-            )
+          )
         }
         else{
           return(
@@ -411,6 +424,10 @@ findObjectByKey(array, key, value) {
       })
     }
 
+    // updateSpecialty(e){
+    //   this.setState({specialty: e.target.value})
+    // }
+
     onClickSpecialtyCheckBox(e){
       const tmpUserSelectedSpecialties = this.state.userSelectedSpecialties
 
@@ -448,11 +465,25 @@ findObjectByKey(array, key, value) {
       return false;
     }
 
-updateSpecialty = (e) => {
-  // this.setState({userSpecialties: e.target.value})
-  this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
-  return false;
-}
+    updateSpecialty = (specialty) => {
+      // Reset subSpecialty when switching to another specialty
+      if(specialty === "Other"){
+        this.setState({specialty: {specialtyId:1, name:this.state.otherSpecialty, subSpecialties:[]}})
+      }else{
+        if((this.state.specialty != undefined) && (this.state.specialty.specialtyId != specialty.specialtyId)){
+          this.setState({subspecialty: undefined})
+        }
+        this.setState({specialty: specialty})
+      }
+      // this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
+      return false;
+    }
+
+    updateSubspecialty = (subspecialty) => {
+      this.setState({subspecialty: subspecialty})
+      // this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
+      return false;
+    }
 
  render(){
       //console.log("yyy",this.state.userSelectedSpecialties)
@@ -523,7 +554,7 @@ updateSpecialty = (e) => {
                     {/* <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/> */}
                     <span className="update circle xlarge">Update picture</span>
                   </div>
-                  <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5>
+                  {/* <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5> */}
                 </div>
                 {/* Profile Image Modal */}
                 <div className="reveal text-center" id="update-profile-photo" data-reveal="">
@@ -551,97 +582,77 @@ updateSpecialty = (e) => {
                   <Field name='lastName' type='text' component={BasicField} label='Last Name'/>
 
                   {/* <!-- Title --> */}
-                      <div className="column large-12 input-group no-icon input-dropdown">
-                        <div className="form-floating-label input-wrapper has-value">
-                          <input className="input-group-field" type="text" data-toggle="add-titles" value={this.state.predefinedTitlesDisabled ? this.state.otherTitleDescription : this.state.selectedTitles} />
-                          <label>Title</label>
-                        </div>
-                        <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
-                          <fieldset className="large-12 columns">
-                            <ul className="no-bullet columns-2" id="title-checkboxes">
-                                {this.createTitleCheckboxes(allTitles)}
-                            </ul>
-                          </fieldset>
-                        </div>
-                      </div>
+                  <div className="column large-12 input-group no-icon input-dropdown">
+                    <div className="form-floating-label input-wrapper has-value">
+                      <input className="input-group-field" type="text" data-toggle="add-titles" value={this.state.predefinedTitlesDisabled ? this.state.otherTitleDescription : this.state.selectedTitles} />
+                      <label>Title</label>
+                    </div>
+                    <div className="dropdown-pane" id="add-titles" data-dropdown data-close-on-click="true">
+                      <fieldset className="large-12 columns">
+                        <ul className="no-bullet columns-2" id="title-checkboxes">
+                            {this.createTitleCheckboxes(allTitles)}
+                        </ul>
+                      </fieldset>
+                    </div>
+                  </div>
+                  {/* <h5>{this.state.subspecialty ? this.state.subspecialty.subSpecialtyName : 'no subspecialty'}</h5> */}
 
+                  {/* <!-- SPECIALTY --> */}
+                  <div className="column large-12 input-group no-icon input-dropdown">
+                    {/* <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span> */}
+                    <div className={"form-floating-label input-wrapper " + (this.state.specialty && 'has-value')}>
+                      <input className="input-group-field" type="text" data-toggle="specialty" value={this.state.specialty && this.state.specialty.name}/>
+                      <label>Specialty</label>
+                    </div>
 
-                  {/* <!-- Specialties --> */}
-                      <div className="column large-12">
-                        <div className="accordion" data-accordion data-allow-all-closed="true">
-                          <div className={"accordion-item " + (this.state.openSpecialties && 'is-active')} data-accordion-item>
-                            <Field name="specialties" component={(props) => {
-                              return (
-                                <div onClick={(e) => this.openField(e)} className="specialty-select input-group no-icon input-dropdown">
-                                  <div className={" form-floating-label input-wrapper has-value  " }>
-                                    <input className=" input-group-field" type="text" data-toggle="add-specialties" {...props.input} disabled/>
-                                    <label>Specialties</label>
-                                  </div>
-                                </div>
-                              )
-                            }}/>
+                    <div className="dropdown-pane" id="specialty" data-dropdown data-close-on-click="true">
+                      <fieldset className="large-12 columns">
+                        {allSpecialties.map(specialty => {
+                          if(specialty.name === "Other"){
+                            return(
+                              <label key={specialty.name}>
+                                <Field onChange={(e) => this.updateSpecialty("Other")} name="specialty" component="input" type="radio" value={specialty.name} checked={this.state.specialty && this.state.specialty.specialtyId === specialty.specialtyId} />{' '}{specialty.name}
+                                <input className="other" type="text" name="otherSpecialty" value={this.state.otherSpecialty}/>
+                              </label>
+                            )
+                          }else{
+                            return(
+                              <label key={specialty.name}>
+                                <Field onChange={(e) => this.updateSpecialty(specialty)} name="specialty" component="input" type="radio" value={specialty.name} checked={this.state.specialty && this.state.specialty.specialtyId === specialty.specialtyId} />{' '}{specialty.name}
+                              </label>
+                            )
+                          }
+                        })}
+                      </fieldset>
+                    </div>
+                  </div>
 
-                            {/* hidden link */}
-                            <a href="#" className="specialty-open-link accordion-title hide">Specialties</a>
+                  {/* <!-- SUBSPECIALTY --> */}
+                  <div className="column large-12 input-group no-icon input-dropdown">
+                    {/* <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span> */}
+                    <div className={"form-floating-label input-wrapper " + (this.state.subspecialty && 'has-value')}>
+                      <input className="input-group-field" type="text" data-toggle="subspecialties" value={this.state.subspecialty ? this.state.subspecialty.subSpecialtyName : ''}/>
+                      <label>Subspecialty</label>
+                    </div>
 
-                            <div className="accordion-content no-border" data-tab-content>
-                              <div className="column small-12 large-12">
-                                <div className="row">
-                                  <ul className="tabs" data-tabs id="add-specialty-tab">
-                                  {/*  <li className="tabs-title is-active"><a href="#panel1" aria-selected="true">Choose Specialties</a></li>
-                                    <li className="tabs-title"><a href="#panel2">Manually Add Specialties</a></li>*/}
-                                      <li className={"tabs-title " + (this.props.manualSpecialtiesTab==false && "is-active")}><a href="#panel1">Choose Specialties</a></li>
-                                      <li className={"tabs-title " + (this.props.manualSpecialtiesTab==true && "is-active")}><a href="#panel2">Manually Add Specialties</a></li>
-                                    </ul>
-                                  <div className="tabs-content large-12" data-tabs-content="add-specialty-tab">
-                                    <div className="tabs-panel is-active" id="panel1">
-                                      <div className="row input-dropdown-wrapper">
-                                        <a className="dropdown button expand field" data-toggle="choosespecialty">Add a specialty</a>
-                                        <div className="dropdown-pane button-dropdown" id="choosespecialty" data-dropdown data-close-on-click="true">
-                                          <ul className="no-bullet">
-                                            {this.createSpecialtyDropDown(allSpecialties)}
-                                          </ul>
-                                        </div>
-                                      </div>
-                                      <div className="row top-buffer table-header">
-                                        <div className="columns large-6">
-                                          Specialty
-                                        </div>
-                                        <div className="columns small-12 large-6">
-                                          Subspecialty
-                                        </div>
-                                      </div>
-                                      {this.createSpecialtySubSpecialtyTable(allSpecialties,this.state.userSelectedSpecialties)}
-                                    </div>
-                                    <div className="tabs-panel" id="panel2">
-                                      <div className="row">
-                                        <div className="top-buffer-small input-group no-icon">
-                                          <div className="form-floating-label input-wrapper">
-                                            {/*<textarea className="input-group-field"></textarea>
-                                            <label>Specialties</label>*/}
-                                            <Field onChange={(e) => this.updateSpecialty(e)} name='manualSpecialty' type='text' component={BasicField} label='Specialties'/>
-                                          </div>
-                                        </div>
-                                        <div className="input-group no-icon">
-                                          <div className="form-floating-label input-wrapper">
-                                            {/*<textarea className="input-group-field"></textarea>
-                                            <label>Subspecialties</label>*/}
-                                            <Field name='manualSubSpecialty' type='text' component={BasicField} label='Subspecialties'/>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* {props.meta.touched && props.meta.error &&
-                          <span className="form-error">{props.meta.error}</span>
-                        } */}
-                      </div>
-
+                    <div className="dropdown-pane" id="subspecialties" data-dropdown data-close-on-click="true">
+                      <fieldset className="large-12 columns">
+                        <label key="Other Subspecialty">
+                          <Field onChange={(e) => this.updateSubspecialty("Other")} name="subspecialty" component="input" type="radio" value="Other"/>{' '}Other
+                          <input className="other" type="text" name="otherSubspecialty" value={this.state.otherSubspecialty}/>
+                        </label>
+                        {this.state.specialty && this.state.specialty.subSpecialties.map(subspecialty => {
+                          if(subspecialty.name != "Other"){
+                            return(
+                              <label key={subspecialty.subSpecialtyName}>
+                                <Field onChange={(e) => this.updateSubspecialty(subspecialty)} name="subspecialty" component="input" type="radio" value={subspecialty.subSpecialtyName} checked={this.state.subspecialty && this.state.subspecialty.subSpecialtyId === subspecialty.subSpecialtyId} />{' '}{subspecialty.subSpecialtyName}
+                              </label>
+                            )
+                          }
+                        })}
+                      </fieldset>
+                    </div>
+                  </div>
 
                   <div className="column large-12 top-buffer">
                     <span className="item-title">Contact</span>
@@ -705,7 +716,10 @@ updateSpecialty = (e) => {
     }
 }
 
+const selector = formValueSelector('UserProfileForm')
+
 function mapStateToProps(state) {
+  const specialty = selector(state, 'specialty')
 
   var userTitlesCB = {};
   var userSpecialtiesCB = {};
@@ -753,6 +767,8 @@ function mapStateToProps(state) {
         }
       })
     }
+
+
   }
 
   //console.log(userSubSpecialtiesCB)

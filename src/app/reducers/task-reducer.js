@@ -28,6 +28,7 @@ const TaskReducer = function(state = initialState, action) {
 
     // handling
     case types.MARK_TASK_STATUS_SUCCESS: // Tasks in 'incompletedTasks' state
+      // This is the parent task Id (if subtask) or the actual task Id (if actual task is already top level)
       var mainTask
       if(action.task.parentTaskId){
         mainTask = action.task.parentTaskId
@@ -37,19 +38,36 @@ const TaskReducer = function(state = initialState, action) {
 
       return {
           ...state,
+          // Loop through each of the top level tasks
           tasks: state.tasks.map(task =>
+            // If 1: If the task Id is the same as the mainTask Id
             task.taskId === mainTask ?
-            action.task.parentTaskId ?
-              {...task, subtasks:
+              // Do this 1
+              // If 2: If the task has a parentTaskId (is a subtask)
+              action.task.parentTaskId ?
+                // Loop through the subtasks
+                {...task, subtasks:
+                  task.subtasks.map(subtask =>
+                    // If 3
+                    subtask.taskId === action.task.taskId ?
+                    {...subtask, status: action.status} :
+                    // Else 3
+                    subtask
+                  )
+                } :
+              // Else 2: Else change the status of the task that is top level
+              // If 4: If task is 'incomplete' and has subtasks
+              action.status == 'COMPLETE' && action.task.subtasks.length > 0 ?
+              {...task, status: action.status, subtasks:
                 task.subtasks.map(subtask =>
-                  subtask.taskId === action.task.taskId ?
+                  subtask.status == 'INCOMPLETE' ?
                   {...subtask, status: action.status} :
                   subtask
                 )
               } :
               { ...task, status: action.status }
-
-              : task
+            // Else 1: Else just return the task as is (it's not the one you're trying to change)
+            : task
           )
       };
 

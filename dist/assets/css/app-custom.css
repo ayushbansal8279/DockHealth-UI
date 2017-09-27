@@ -277,6 +277,15 @@ pre.emailMessage {
   padding:0;
 }
 
+.other{
+  display: inline;
+  max-width: 200px;
+  height: inherit!important;
+  margin-left: 15px;
+  margin-bottom:0px;
+  font-size: 0.875rem;
+}
+
 /*Search Bar Styles */
 
 /*.has-error {

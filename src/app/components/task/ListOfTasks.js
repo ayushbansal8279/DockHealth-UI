@@ -32,6 +32,7 @@ class ListOfTasks extends BaseComponent {
 			this.addPatientToTaskCallback = this.addPatientToTaskCallback.bind(this)
 			this.markAsUnread = this.markAsUnread.bind(this)
 			this.editTask = this.editTask.bind(this)
+			this.confirmCompleteTask = this.confirmCompleteTask.bind(this)
 		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -106,7 +107,7 @@ class ListOfTasks extends BaseComponent {
   	}
 
   	handleMarkComplete(task, status){
-			if(task.subtasks.length > 0){
+			if(task.subtasks.length > 0 && task.status == 'INCOMPLETE'){
 				task.subtasks.map(subtask => {
 					if(subtask.status == 'INCOMPLETE'){
 						// alert('Incomplete Subtask')
@@ -120,9 +121,10 @@ class ListOfTasks extends BaseComponent {
   		// this.setState({task: ''})
   	}
 
-		confirmCompleteTask(task, status){
+		confirmCompleteTask(task){
+			var boo = this.props
 			this.props.taskAction.taskToState(task)
-			this.props.markComplete(task, status, this.props.listName)
+			this.props.markComplete(task, task.status, this.props.listName)
 		}
 
   	handleDeleteTask(task){
@@ -241,7 +243,6 @@ class ListOfTasks extends BaseComponent {
 							{task.status == 'COMPLETE' && task.completedBy &&
 								<span className="task-details text-light">{"Completed by " + task.completedBy.userName}</span>
 							}
-							<span className="task-details text-light">{"Has incomplete subtask: " + task.hasIncompleteSubtask}</span>
 			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
 			        {task.type == "EMAIL" &&
 							<div className="row collapse email-wrapper">
