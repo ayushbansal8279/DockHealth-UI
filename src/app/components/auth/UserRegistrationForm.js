@@ -45,6 +45,9 @@ const UserRegistrationForm = (props) => {
         <Field name='lastName' type='text' component={AuthField} label='Last name' />
         <Field name='username' type='email' component={AuthField} label='Email' />
         <Field name='phoneNumber' type='tel' component={AuthField} label='Your mobile phone #' pattern='\d{10}'/>
+        <div className="columns small-12 text-left details">
+        Password must include a number, a special character, lowercase and uppercase letters
+        </div>
         <Field name='password' type='password' component={AuthField} label='Password' />
         <Field name='password2' type='password' component={AuthField} label='Confirm password' />
 				<div className="columns small-12 text-center top-buffer">

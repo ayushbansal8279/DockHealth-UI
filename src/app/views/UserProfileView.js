@@ -3,8 +3,9 @@ import { Link,hashHistory } from 'react-router';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import UserProfileContainer from '../components/people/UserProfileContainer'
+import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 
-class UserProfileView extends React.Component {
+class UserProfileView extends BaseComponentWithFoundationUpdate {
 
     render() {
       return (

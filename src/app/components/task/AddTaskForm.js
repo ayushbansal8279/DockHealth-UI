@@ -30,7 +30,7 @@ class AddTaskForm extends BaseComponent {
     // this.setState({"taskListId":this.props.taskListId})
 
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-      'PageName': 'AddTaskForm'
+      'PageName': 'AddTask'
     });
   }
 
@@ -42,7 +42,7 @@ class AddTaskForm extends BaseComponent {
   }
 
   handleTaskListSelection(event) {
-    debugger;
+    //debugger;
     this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL')
     // $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").val('taskList-'+event.target.value);

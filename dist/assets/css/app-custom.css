@@ -91,6 +91,10 @@ ul li, .member-initials{
   cursor:pointer;
 }
 
+img, .member-photo{
+  cursor:pointer;
+}
+
 .pointer{
   cursor:pointer!important;
 }

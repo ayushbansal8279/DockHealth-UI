@@ -371,7 +371,7 @@ findObjectByKey(array, key, value) {
    }
 
   handleCheckboxClick = (e) => {
-    debugger;
+    //debugger;
     e.stopPropagation()
   }
 

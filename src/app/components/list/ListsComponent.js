@@ -39,11 +39,11 @@ class ListsComponent extends BaseComponent{
                     {(taskList.role == 'OWNER' || taskList.role == 'ADMIN') &&
                       <li><div data-open={"delete-list-"+taskList.taskListId}>Delete list</div></li>
                     }
-                    {taskList.role == 'OWNER' || taskList.role == 'ADMIN' &&
+                    {(taskList.role == 'OWNER' || taskList.role == 'ADMIN') &&
                       <li><div onClick={(e) => this.props.editForm(taskList)}>Edit</div></li>
                     }
-                    {/* if owner */}
-                    {taskList.role != 'OWNER' && taskList.role != 'ADMIN' &&
+                    {/* if not owner */}
+                    {(taskList.role != 'OWNER' && taskList.role != 'ADMIN') &&
                       <li><div data-open={"leave-list-"+taskList.taskListId}>Leave list</div></li>
                     }
                   </ul>
