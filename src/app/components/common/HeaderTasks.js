@@ -194,14 +194,6 @@ class HeaderTasks extends BaseComponent {
 
         <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} members={this.props.members}/>
         <ListMembers taskListId={this.props.taskListId} title={this.props.title}/>
-        <a href="#" data-reveal-id="myModal">Click Me For A Modal</a>
-
-<div id="myModal" className="reveal-modal" data-reveal="" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-  <h2 id="modalTitle">Awesome. I have it.</h2>
-  <p className="lead">Your couch.  It is mine.</p>
-  <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
-  <a className="close-reveal-modal" aria-label="Close">&#215;</a>
-</div>
       </div>
       );
     }
