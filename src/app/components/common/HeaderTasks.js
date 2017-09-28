@@ -79,6 +79,15 @@ class HeaderTasks extends BaseComponent {
     this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
   }
 
+  addDashes = (f) =>
+  {
+    if(f != undefined){
+      var test = ""
+      var formattedNumber = f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15);
+      return formattedNumber
+    }
+  }
+
 
 
     render() {
@@ -116,7 +125,7 @@ class HeaderTasks extends BaseComponent {
                                   <span className="item-details">{member.titleList}</span>
                                   <span className="item-details">{member.specialtyList}</span>
                                   <span className="top-buffer-xsmall item-details">{member.email}</span>
-                                  <span className="item-details">C: {member.accountPhoneNumber} | W: {member.workPhoneNumber}</span>
+                                  <span className="item-details">C: {this.addDashes(member.accountPhoneNumber)} | W: {this.addDashes(member.workPhoneNumber)}</span>
                                 </div>
                                 </div>
                               <button className="close-button" data-close="" aria-label="Close modal" type="button">
