@@ -20,9 +20,7 @@ class UserProfileContainer extends BaseComponent {
       titles:"",
       predefinedTitlesDisabled:'',
       otherTitleDescription:"",
-      selectedTitles:"",
-      otherSpecialty:"",
-      otherSubspecialty:""
+      selectedTitles:""
     };
   }
 
@@ -38,6 +36,9 @@ class UserProfileContainer extends BaseComponent {
         else{
           this.setState({userSelectedSpecialties:response.specialties});
           this.setState({userSpecialties:response.specialtyList});
+          // this.setState({otherSubspecialty: "Working"})
+          if(response.specialties[0].subspecialties){
+          }
           console.log(response.specialties)
         }
         if(response.titles && response.titles.length > 0
@@ -58,11 +59,17 @@ class UserProfileContainer extends BaseComponent {
 
     componentWillReceiveProps(nextProps){
       if((nextProps.allSpecialties != this.props.allSpecialties) && nextProps.userSpecialties.length > 0){
-        nextProps.allSpecialties.map(specialtyObject => {
-          if(specialtyObject.specialtyId === nextProps.userSpecialties[0].specialtyId){
-            this.setState({specialty: specialtyObject})
-          }
-        })
+        if(nextProps.userSpecialties[0].specialtyId == 1){
+          this.setState({specialty: nextProps.userSpecialties[0]})
+          this.setState({otherSpecialty: nextProps.userSpecialties[0].name})
+        }else{
+          nextProps.allSpecialties.map(specialtyObject => {
+            if(specialtyObject.specialtyId === nextProps.userSpecialties[0].specialtyId){
+              this.setState({specialty: specialtyObject})
+            }
+          })
+        }
+
       }
       var userSpecialties = [];
       if (nextProps.userSpecialties != this.props.userSpecialties) { //Note that React may call this method even if the props have not changed, so make sure to compare the current and next values if you only want to handle changes
@@ -470,7 +477,7 @@ findObjectByKey(array, key, value) {
       if(specialty === "Other"){
         this.setState({specialty: {specialtyId:1, name:this.state.otherSpecialty, subSpecialties:[]}})
       }else{
-        if((this.state.specialty != undefined) && (this.state.specialty.specialtyId != specialty.specialtyId)){
+        if((this.state.specialty != undefined) && (this.state.specialty.specialtyId != specialty.specialtyId) && (this.state.subspecialty && (this.state.subspecialty.subSpecialtyId != 1))){
           this.setState({subspecialty: undefined})
         }
         this.setState({specialty: specialty})
@@ -480,9 +487,23 @@ findObjectByKey(array, key, value) {
     }
 
     updateSubspecialty = (subspecialty) => {
-      this.setState({subspecialty: subspecialty})
+      if(subspecialty == "Other"){
+        this.setState({subspecialty: {subSpecialtyId: 1, subSpecialtyName: this.state.otherSubspecialty}})
+      }else{
+        this.setState({subspecialty: subspecialty})
+      }
       // this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
       return false;
+    }
+
+    updateOtherInput = (e) => {
+      if(e.target.name == "otherSpecialty"){
+        this.setState({specialty: {specialtyId:1, name:e.target.value, subSpecialties:[]}})
+      }
+      if(e.target.name == "otherSubspecialty"){
+        this.setState({subspecialty: {subSpecialtyId:1, subSpecialtyName:e.target.value}})
+      }
+      // return false;
     }
 
  render(){
@@ -595,7 +616,7 @@ findObjectByKey(array, key, value) {
                       </fieldset>
                     </div>
                   </div>
-                  {/* <h5>{this.state.subspecialty ? this.state.subspecialty.subSpecialtyName : 'no subspecialty'}</h5> */}
+                  <h5>{this.state.specialty ? this.state.specialty.name : 'no specialty'}</h5>
 
                   {/* <!-- SPECIALTY --> */}
                   <div className="column large-12 input-group no-icon input-dropdown">
@@ -612,7 +633,7 @@ findObjectByKey(array, key, value) {
                             return(
                               <label key={specialty.name}>
                                 <Field onChange={(e) => this.updateSpecialty("Other")} name="specialty" component="input" type="radio" value={specialty.name} checked={this.state.specialty && this.state.specialty.specialtyId === specialty.specialtyId} />{' '}{specialty.name}
-                                <input className="other" type="text" name="otherSpecialty" value={this.state.otherSpecialty}/>
+                                <input onChange={(e) => this.updateOtherInput(e)} className="other" type="text" name="otherSpecialty" value={this.state.otherSpecialty}/>
                               </label>
                             )
                           }else{
@@ -627,6 +648,7 @@ findObjectByKey(array, key, value) {
                     </div>
                   </div>
 
+                  <h5>{this.state.subspecialty ? this.state.subspecialty.subSpecialtyId : 'no subspecialty'}</h5>
                   {/* <!-- SUBSPECIALTY --> */}
                   <div className="column large-12 input-group no-icon input-dropdown">
                     {/* <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span> */}
@@ -638,8 +660,8 @@ findObjectByKey(array, key, value) {
                     <div className="dropdown-pane" id="subspecialties" data-dropdown data-close-on-click="true">
                       <fieldset className="large-12 columns">
                         <label key="Other Subspecialty">
-                          <Field onChange={(e) => this.updateSubspecialty("Other")} name="subspecialty" component="input" type="radio" value="Other"/>{' '}Other
-                          <input className="other" type="text" name="otherSubspecialty" value={this.state.otherSubspecialty}/>
+                          <Field onChange={(e) => this.updateSubspecialty("Other")} name="subspecialty" component="input" type="radio" value="Other" checked={this.state.subspecialty && this.state.subspecialty.subSpecialtyId == 1}/>{' '}Other
+                          <input onChange={(e) => this.updateOtherInput(e)} className="other" type="text" name="otherSubspecialty" value={this.state.otherSubspecialty}/>
                         </label>
                         {this.state.specialty && this.state.specialty.subSpecialties.map(subspecialty => {
                           if(subspecialty.name != "Other"){
