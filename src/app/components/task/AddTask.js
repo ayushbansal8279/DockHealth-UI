@@ -96,6 +96,7 @@ class AddTask extends BaseComponent {
 	}
 
 	submit = (form) => {
+		debugger
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
 		// console.log(this.state.subtasks)

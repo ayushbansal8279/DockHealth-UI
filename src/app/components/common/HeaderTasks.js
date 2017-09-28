@@ -96,10 +96,35 @@ class HeaderTasks extends BaseComponent {
 							</div>
               {this.props.taskListId &&
   							<div className="top-bar-right">
-  								<ul className="menu member-photo-list" data-open="list-members">
-                    <li><span className="add-member circle small">+</span></li>
+  								<ul className="menu member-photo-list">
+                    <li><span className="add-member circle small" data-open="list-members">+</span></li>
                     {this.props.members && this.props.members.map(member => {
-                        return <li key={"member"+member.userId}><MemberInitials member={member} extraClass="small"/></li>
+                        return(
+                          <li key={"member"+member.userId}>
+                            <span data-open={"member-profile-" + member.userId}><MemberInitials data-open={"member-profile-" + member.userId} member={member} extraClass="small"/></span>
+
+                            {/* Modal */}
+                            <div className="reveal" id={"member-profile-" + member.userId} data-reveal="">
+                              <div className="item row expanded" key={member.email}>
+                                <div className="columns shrink pending">
+                                {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
+                                 {/* <span className="member-initials circle">{person.initials}</span> */}
+                                 <MemberInitials member={member}/>
+                                </div>
+                                <div className="columns">
+                                  <span className="item-title">{member.firstName + " " + member.lastName}</span>
+                                  <span className="item-details">{member.titleList}</span>
+                                  <span className="item-details">{member.specialtyList}</span>
+                                  <span className="top-buffer-xsmall item-details">{member.email}</span>
+                                  <span className="item-details">C: {member.accountPhoneNumber} | W: {member.workPhoneNumber}</span>
+                                </div>
+                                </div>
+                              <button className="close-button" data-close="" aria-label="Close modal" type="button">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                          </li>
+                        )
                       })
                     }
                     {/* <li><span className="more-members circle small">+4</span></li>
@@ -160,6 +185,14 @@ class HeaderTasks extends BaseComponent {
 
         <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} members={this.props.members}/>
         <ListMembers taskListId={this.props.taskListId} title={this.props.title}/>
+        <a href="#" data-reveal-id="myModal">Click Me For A Modal</a>
+
+<div id="myModal" className="reveal-modal" data-reveal="" aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+  <h2 id="modalTitle">Awesome. I have it.</h2>
+  <p className="lead">Your couch.  It is mine.</p>
+  <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
+  <a className="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
       </div>
       );
     }
