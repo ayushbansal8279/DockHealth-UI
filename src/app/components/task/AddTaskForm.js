@@ -1,7 +1,7 @@
   import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions, reset, initialize, destroy } from 'redux-form'
+import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions, reset, initialize, destroy, change } from 'redux-form'
 import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
@@ -54,8 +54,7 @@ class AddTaskForm extends BaseComponent {
   }
 
   initializeSubtaskForm = (index) => {
-    debugger;
-    this.setState({currentSubtaskIndex: index})
+    this.props.currentSubtaskIndexToState(index)
     var task = this.props.currentSubtasks[index]
 
     // Checks if task came from an object (task.patient.firstName) or has been edited (task.patient = full name)
@@ -71,7 +70,12 @@ class AddTaskForm extends BaseComponent {
     var patient = this.props.currentSubtasks[index]
   }
 
-  resetSubtaskForm = () => {
+  resetSubtaskForm = (patient) => {
+    if(patient != undefined){
+      var patientName = patient.firstName + " " + patient.lastName
+      this.props.formActions.change("addSubtaskForm", "patient", patientName)
+      this.props.formActions.change("addSubtaskForm", "patientId", patient.patientId)
+    }
     // this.props.formActions.reset('addSubtaskForm')
   }
 
@@ -208,7 +212,7 @@ class AddTaskForm extends BaseComponent {
 
         <div className="row expanded">
           {!this.props.currentTask || !this.props.currentTask.parentTaskId ?
-            <div onClick={(e) => this.resetSubtaskForm()} className="columns highlight center-content-vertical toggle-add-subtask link">
+            <div onClick={(e) => this.resetSubtaskForm(this.props.currentTask.patient)} className="columns highlight center-content-vertical toggle-add-subtask link">
               <svg className="icon hide"><use xlinkHref="#icon-subtask"></use></svg>+ Add a subtask
             </div> :
             <div className="columns center-content-vertical">
@@ -297,7 +301,7 @@ const mapStateToProps = function(store) {
 const mapDispatchToProps = function(dispatch){
   return{
     taskListActions: bindActionCreators(TaskListActions, dispatch),
-    formActions: bindActionCreators({reset, initialize, destroy}, dispatch)
+    formActions: bindActionCreators({reset, initialize, destroy, change}, dispatch)
   }
 }
 

@@ -234,16 +234,18 @@ class ListOfTasks extends BaseComponent {
 							{/* {type == 'subtask' && <span className="subtask-number">1.</span>} */}
 			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
-			        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
-							<span className="subtask-count text-light">{task.subtasks.length + " subtasks"}</span>
-							{task.assignedBy ?
-				        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
-				        <span className="task-details text-light">unassigned</span>
-							}
-							{task.status == 'COMPLETE' && task.completedBy &&
-								<span className="task-details text-light">{"Completed by " + task.completedBy.userName}</span>
-							}
-			        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
+							<span className="edit-task">
+				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
+								<span className="subtask-count text-light">{task.subtasks.length + " subtasks"}</span>
+								{task.assignedBy ?
+					        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
+					        <span className="task-details text-light">unassigned</span>
+								}
+								{task.status == 'COMPLETE' && task.completedBy &&
+									<span className="task-details text-light">{"Completed by " + task.completedBy.userName}</span>
+								}
+				        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
+							</span>
 			        {task.type == "EMAIL" &&
 							<div className="row collapse email-wrapper">
 								<div className="columns shrink">

@@ -219,6 +219,12 @@ const TaskReducer = function(state = initialState, action) {
     //     )
     //   };
 
+    // case types.ADD_TASK_SUCCESS:
+    // return{
+    //   ...state,
+    //   tasks: [action.task].concat(state.tasks)
+    // }
+
     case types.UPDATE_TASK_SUCCESS:
     var mainTask
     if(action.task.parentTaskId){

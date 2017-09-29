@@ -30,6 +30,7 @@ class HeaderTasks extends BaseComponent {
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
       this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ACTIVE')
+      this.props.taskListActions.getActiveMembersByTaskListId(this.props.taskListId)
     }
     this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
@@ -192,7 +193,15 @@ class HeaderTasks extends BaseComponent {
 						</div>
         </header>
 
-        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} members={this.props.members}/>
+        <AddTask
+          taskListId={this.props.taskListId}
+          addTask={this.props.taskActions.addTask}
+          taskLists={this.props.taskList}
+          patients={this.props.patients}
+          title={this.props.title}
+          members={this.props.members}
+          activeListMembers={this.props.activeListMembers}
+        />
         <ListMembers taskListId={this.props.taskListId} title={this.props.title}/>
       </div>
       );
@@ -207,7 +216,8 @@ const mapStateToProps = function (store) {
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,
     currentUser: store.userState.user,
-    members: store.taskListState.tasklistmembers
+    members: store.taskListState.tasklistmembers,
+    activeListMembers: store.taskListState.tasklistactivemembers
   }
 }
 

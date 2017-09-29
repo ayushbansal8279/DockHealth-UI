@@ -73,9 +73,9 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
   };
 }
 
-export function getActiveMembersByTaskListId(taskListId, memberStatus) {
+export function getActiveMembersByTaskListId(taskListId) {
   return function(dispatch) {
-    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistactivemembers => {
+    return TaskListApi.getMembersByTaskListId(taskListId, 'ACTIVE').then(tasklistactivemembers => {
       dispatch({type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS, tasklistactivemembers});
     }).catch(error => {
       throw(error);
