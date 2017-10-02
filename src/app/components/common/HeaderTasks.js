@@ -53,7 +53,6 @@ class HeaderTasks extends BaseComponent {
 
 	handleAddTask = () => {
 		this.props.taskActions.taskToState(null)
-    this.props.setTaskEditingStatus(false)
 	};
 
   getListTasks = (sortBy) => {
@@ -202,7 +201,6 @@ class HeaderTasks extends BaseComponent {
           title={this.props.title}
           members={this.props.members}
           activeListMembers={this.props.activeListMembers}
-          isEditing={this.props.isEditing}
         />
         <ListMembers taskListId={this.props.taskListId} title={this.props.title}/>
       </div>

@@ -16,6 +16,10 @@ class PatientListContainer extends BaseComponent {
         });
     }
 
+    deletePatient = (patientId) => {
+      this.props.actions.deletePatient(patientId)
+    }
+
     render() {
       const KEYS_TO_FILTERS = ['firstName', 'lastName', 'email', 'mrn']
       // Creates filter with LIST, SEARCH TERM, KEYS TO FILTER

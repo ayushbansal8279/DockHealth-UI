@@ -19,8 +19,8 @@ class MemberInitials extends React.Component {
       <span>
         {/* Difference between member-photo and member-initials: flex and border */}
         {this.props.member && this.props.member.profileThumbnailPictureHash ?
-          <img className={"member-photo circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"} src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+this.props.member.userId+"/"+this.props.member.profileThumbnailPictureHash} alt={this.props.member.firstName + " " + this.props.member.lastName}/> :
-          <span className={"member-initials circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"}>{this.props.member ? this.props.member.initials : "?"}</span>
+          <img className={"medium member-photo circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"} src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+this.props.member.userId+"/"+this.props.member.profileThumbnailPictureHash} alt={this.props.member.firstName + " " + this.props.member.lastName}/> :
+          <span className={"medium member-initials circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"}>{this.props.member ? this.props.member.initials : "?"}</span>
         }
       </span>
     )

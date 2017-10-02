@@ -30,8 +30,8 @@ const LinksAuth = ({user, className, onLogout, userProfilePicThumb}) => (
   <Link to="/userprofile">
     <div data-toggle="profile-dropdown" className="align-middle row user-profile-link link">
         {userProfilePicThumb ?
-          <img className="member-photo circle" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+user.userId+"/"+userProfilePicThumb} alt={user.firstName + " " + user.lastName}/> :
-          <span className="member-initials circle">{user.initials}</span>
+          <img className="medium member-photo circle" src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+user.userId+"/"+userProfilePicThumb} alt={user.firstName + " " + user.lastName}/> :
+          <span className="medium member-initials circle">{user.initials}</span>
         }
         {user.firstName + " " + user.lastName}
     </div>

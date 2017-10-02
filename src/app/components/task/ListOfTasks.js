@@ -222,7 +222,7 @@ class ListOfTasks extends BaseComponent {
 			      <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}>
 							{task.assignedTo ?
 			         	<MemberInitials member={task.assignedTo}/> :
-								<span className="member-photo member-unassigned circle">?</span>
+								<span className="medium member-photo member-unassigned circle">?</span>
 							}
 			      </div>
 

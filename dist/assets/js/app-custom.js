@@ -452,6 +452,10 @@ $(document).ready(function() {
     }
   }
 
+	$(window).scroll(function() {
+    $('#profile-dropdown').foundation('close');
+	});
+
 
 	// $('.pickdate').fdatepicker({
 	// });
