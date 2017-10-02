@@ -154,6 +154,7 @@ class AddTask extends BaseComponent {
 							setSubtasks={this.setSubtasks}
 							clearSubtasks={this.clearSubtasks}
 							currentSubtaskIndexToState={this.currentSubtaskIndexToState}
+							isEditing={this.props.isEditing}
 						/>
 						<AddSubtaskForm
 							// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}

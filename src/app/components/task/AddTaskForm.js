@@ -102,9 +102,15 @@ class AddTaskForm extends BaseComponent {
           <h5 className="section-title">Add a Task</h5>
         </div>
 
-        {/* Task */}
+        {/* Description */}
         <Field name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
+
+        {/* Comment */}
+        {this.props.isEditing != true &&
+          <Field name='comment' type='text' component={BasicField} label='Comment' xlinkHref="#icon-pencil" isTaskDescription="true"/>
+        }
+        {/* <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/> */}
 
         {/* ADD PATIENT */}
         <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>

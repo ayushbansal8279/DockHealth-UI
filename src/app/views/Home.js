@@ -23,7 +23,8 @@ class Home extends BaseComponentWithFoundationUpdate {
     super(props)
     this.state = {
       title: '',
-      searchTerm: ''
+      searchTerm: '',
+      editing: false
     }
     this.changeTitle = this.changeTitle.bind(this)
   }
@@ -153,6 +154,11 @@ class Home extends BaseComponentWithFoundationUpdate {
     // $('.refresh').removeClass('rotated');
   }
 
+  setTaskEditingStatus = (isEditing) => {
+    // alert("working")
+    this.setState({editing: isEditing})
+  }
+
   render() {
     var taskListId = this.props.params.taskListId
     const KEYS_TO_FILTERS = ['description', 'comments.comment', 'subtasks.description', 'subtasks.comments.comment']
@@ -170,9 +176,19 @@ class Home extends BaseComponentWithFoundationUpdate {
         <div className="off-canvas-content" data-off-canvas-content="true">
           <div className="row expanded collapse">
             <div className="large-12 columns">
-              <HeaderTasks refresh={this.refresh} title={this.props.routeParams.listName} taskListId={this.props.routeParams.taskListId} searchUpdated={this.searchUpdated} clearSearch={this.clearSearch} searchTerm={this.state.searchTerm}/>
+              <HeaderTasks
+                refresh={this.refresh}
+                title={this.props.routeParams.listName}
+                taskListId={this.props.routeParams.taskListId}
+                searchUpdated={this.searchUpdated}
+                clearSearch={this.clearSearch}
+                searchTerm={this.state.searchTerm}
+                isEditing={this.state.editing}
+                setTaskEditingStatus={this.setTaskEditingStatus}
+              />
+
               <div className="list-wrapper">
-                <h5>{this.props.isFetching}</h5>
+                {/* <h5>{this.props.isFetching}</h5> */}
                 {this.props.isFetching ?
                   <div className="sk-circle">
           					<div className="sk-circle1 sk-child"></div>
@@ -189,7 +205,13 @@ class Home extends BaseComponentWithFoundationUpdate {
           					<div className="sk-circle12 sk-child"></div>
           				</div> :
                 <div className="task-item-wrapper">
-                  <ListOfTasksContainer taskListId={taskListId} status="INCOMPLETE" members={this.props.members} filteredTasks={filteredTasks} />
+                  {/* <h5>{this.state.editing ? 'editing' : 'not editing'}</h5> */}
+                  <ListOfTasksContainer
+                    taskListId={taskListId} status="INCOMPLETE"
+                    members={this.props.members}
+                    filteredTasks={filteredTasks}
+                    setTaskEditingStatus={this.setTaskEditingStatus}
+                  />
                   {this.props.completedTasks && this.props.completedTasks.length > 0 &&
                     <div className="show-completed text-center">
                       <a className="toggle-completed button primary small">Show completed tasks</a>

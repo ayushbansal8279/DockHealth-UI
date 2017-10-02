@@ -158,6 +158,7 @@ class ListOfTasks extends BaseComponent {
 		handleToggle = (task) => {
 			// puts task to state to populate data for form
 			this.props.taskAction.taskToState(task)
+			this.props.setTaskEditingStatus(true)
 			// $('.add').click();
 			console.log(task)
 		};

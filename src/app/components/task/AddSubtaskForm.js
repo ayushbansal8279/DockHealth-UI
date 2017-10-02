@@ -59,7 +59,7 @@ class AddSubtaskForm extends BaseComponent{
     // var patientId = $('#add-patient-subtask-id').val()
     // this.setState({patientId:patientId})
     var subtask = this.state
-    subtask.description = $('#description-subtask').val() 
+    subtask.description = $('#description-subtask').val()
     subtask.patientId = $('#add-patient-subtask-id').val()
     subtask.patient = $('#add-patient-subtask').val()
     subtask.assignedToId = $('#assign-subtask-to-id').val()
