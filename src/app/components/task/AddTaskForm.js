@@ -1,4 +1,4 @@
-  import React from 'react'
+import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions, reset, initialize, destroy } from 'redux-form'
@@ -133,8 +133,8 @@ class AddTaskForm extends BaseComponent {
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
             <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.props.taskList.taskListId} type="text" data-toggle="add-task-file-in-options" disabled/>
-              <Field id="taskListId" name="taskListId" className="input-group-field" value={this.props.taskList.taskListId} component="input" type="hidden"/>
+              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.props.taskList?this.props.taskList.taskListId:0} type="text" data-toggle="add-task-file-in-options" disabled/>
+              <Field id="taskListId" name="taskListId" className="input-group-field" value={this.props.taskList?this.props.taskList.taskListId:0} component="input" type="hidden"/>
               <label>File in (filing only allowed in Inbox)</label>
             </div>
           </div>
