@@ -314,6 +314,14 @@ pre.emailMessage {
   font-size: 0.875rem;
 }
 
+.no-top-buffer{
+  margin-top:0;
+}
+
+.no-bottom-buffer{
+  margin-bottom:0;
+}
+
 /*Search Bar Styles */
 
 /*.has-error {

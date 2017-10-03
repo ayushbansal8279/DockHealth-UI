@@ -5,6 +5,8 @@ import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
 import UserRegistrationForm from '../../components/auth/UserRegistrationForm'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import NotificationModal from '../../components/common/NotificationModal'
+import $ from 'jquery'
 
 export default class Register extends React.Component {
   constructor (props) {
@@ -29,7 +31,8 @@ export default class Register extends React.Component {
           'REGISTER_SUCCESS': 'YES'
       });
       success('New user created. Please check your email to confirm account registration.')
-      alert("Please check your email to confirm the account registration");
+      $("#open-notification-modal-registration").trigger('click');
+      // alert("Please check your email to confirm the account registration");
       hashHistory.push('confirmRegistration')
     })
     .catch(e => {
@@ -55,7 +58,7 @@ export default class Register extends React.Component {
   render () {
     return (
       <div className="wrapper columns align-self-middle large-6 large-offset-3">
-        <div className="row expanded text-center">
+        <div className="row expanded text-center top-buffer">
           <div className="columns large-12">
             <img className="dock-logo" src="assets/img/dock-logo.png" alt="Dock Health"/>
           </div>
@@ -64,6 +67,8 @@ export default class Register extends React.Component {
           </div>
         </div>
           <UserRegistrationForm type='Register' onSubmit={this.onSubmit} />
+          <div className="hide" id="open-notification-modal-registration" data-open="notification-modal-registration">Delete task</div>
+          <NotificationModal message="Please check your email to confirm the account registration" uniqueId="registration"/>
       </div>
     )
   }

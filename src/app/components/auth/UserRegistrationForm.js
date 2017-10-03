@@ -3,6 +3,7 @@ import { Field, reduxForm } from 'redux-form'
 import { Link } from 'react-router'
 import AuthField from '../common/AuthField'
 
+
 const validate = values => {
   const errors = {}
   if (!values.username) {
@@ -37,19 +38,45 @@ const validate = values => {
 
 const UserRegistrationForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting, type } = props
+
+  const normalizePhone = (value, previousValue) => {
+    if (!value) {
+      return value
+    }
+    const onlyNums = value.replace(/[^\d]/g, '')
+    if (!previousValue || value.length > previousValue.length) {
+      // typing forward
+      if (onlyNums.length === 3) {
+        return onlyNums + '-'
+      }
+      if (onlyNums.length === 6) {
+        return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3) + '-'
+      }
+    }
+    if (onlyNums.length <= 3) {
+      return onlyNums
+    }
+    if (onlyNums.length <= 6) {
+      return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3)
+    }
+    return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3, 6) + '-' + onlyNums.slice(6, 10)
+  }
+
   console.log(props)
   return (
 		<form className="inline-label top-buffer white-bg" onSubmit={handleSubmit}>
 			<div className="row expanded">
         <Field name='firstName' type='text' component={AuthField} label='First name' />
-        <Field name='lastName' type='text' component={AuthField} label='Last name' />
-        <Field name='username' type='email' component={AuthField} label='Email' />
-        <Field name='phoneNumber' type='tel' component={AuthField} label='Your mobile phone #' pattern='\d{10}'/>
-        <div className="columns small-12 text-left details">
-        Password must include a number, a special character, lowercase and uppercase letters
+        <Field name='lastName' type='text' component={AuthField} label='Last name' extraClass='no-top-buffer'/>
+        <Field name='username' type='email' component={AuthField} label='Email' extraClass='no-top-buffer'/>
+        <Field name='phoneNumber' type='tel' component={AuthField} label='Your mobile phone #' pattern='\d{10}' extraClass='no-top-buffer'/>
+
+        <div className="column text-left details">
+          Password must include a number, a special character, lowercase and uppercase letters
         </div>
-        <Field name='password' type='password' component={AuthField} label='Password' />
-        <Field name='password2' type='password' component={AuthField} label='Confirm password' />
+        <Field name='password' type='password' component={AuthField} label='Password' extraClass='no-top-buffer'/>
+
+        <Field name='password2' type='password' component={AuthField} label='Confirm password' extraClass='no-top-buffer'/>
 				<div className="columns small-12 text-center top-buffer">
 					<button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Continue</button>
 				</div>
@@ -59,7 +86,6 @@ const UserRegistrationForm = (props) => {
 				<div className="columns small-6 top-buffer text-right details">
           <Link to="/confirmRegistration">Confirm registration</Link>
 				</div>
-
 			</div>
 		</form>
   )

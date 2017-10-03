@@ -1,7 +1,7 @@
 import React from 'react'
 
-const AuthField = ({ input, label, type, placeholder, xlinkHref, pattern, meta: { touched, error } }) => (
-  <div className={'input-group-wrapper columns top-buffer small-12 '+(touched && error && 'has-error ')}>
+const AuthField = ({ input, label, type, placeholder, xlinkHref, pattern, extraClass, meta: { touched, error } }) => (
+  <div className={'input-group-wrapper column top-buffer small-12 '+(touched && error && 'has-error ') + ' ' + extraClass}>
     <div className={'input-group ' + (xlinkHref ? '' : 'no-icon')}>
       {xlinkHref &&
         <span className="input-group-label"><svg className="icon"><use xlinkHref={xlinkHref}></use></svg></span>
