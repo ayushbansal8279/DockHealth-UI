@@ -9,6 +9,7 @@ export function getTaskListForUser() {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -18,6 +19,7 @@ export function findPendingTaskListsForUser() {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -29,6 +31,7 @@ export function addTaskList(tasklist) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -38,6 +41,7 @@ export function getTaskListById(taskListId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -48,6 +52,7 @@ export function updateTaskList(taskList) { //userId - make sure authorized user 
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -57,6 +62,7 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -66,6 +72,7 @@ export function invitePersonToTaskList(tasklistId,personInfo) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -75,6 +82,7 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -86,6 +94,7 @@ export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -95,6 +104,7 @@ export function getNonOrgUsersByTaskList(taskListId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -107,6 +117,7 @@ export function changeUserRoleForList(tasklistId,markedUserId,role) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -116,6 +127,7 @@ export function deleteTaskListById(taskListId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -126,6 +138,7 @@ export function removeUserFromList(taskListId,removedUserId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -136,6 +149,7 @@ export function cancelInviteToTaskList(taskListId,email) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -146,6 +160,7 @@ export function findAuditsByTaskList(taskListId,queryStartPosition) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -156,6 +171,7 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -166,6 +182,7 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -175,6 +192,7 @@ export function toggleListNotifications(taskListId, receiveNotifications){
     return response;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -184,5 +202,6 @@ export function findGenericListCountsForUser(){
     return response.data;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }

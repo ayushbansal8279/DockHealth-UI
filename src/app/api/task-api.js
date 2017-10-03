@@ -14,6 +14,7 @@ export function getTasksForCreator(userId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -28,6 +29,7 @@ export function getListTasksByUser(taskListId, status, sortBy){
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
   }else{
     closeAddForm()
@@ -36,6 +38,7 @@ export function getListTasksByUser(taskListId, status, sortBy){
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
   }
 }
@@ -52,6 +55,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy) {
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }else{
       closeAddForm()
@@ -60,8 +64,10 @@ export function getTasksAssignedToMe(taskListId, status, sortBy) {
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }
   }else{
@@ -72,6 +78,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy) {
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }else{
       closeAddForm()
@@ -80,6 +87,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy) {
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }
   }
@@ -97,6 +105,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy){
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }else{
       closeAddForm()
@@ -105,6 +114,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy){
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }
   }else{
@@ -115,6 +125,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy){
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }else{
       closeAddForm()
@@ -123,6 +134,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy){
         return response.data;
       }).catch(function (error){
         console.log(error);
+        return error.response.data;
       });
     }
   }
@@ -135,6 +147,7 @@ export function addTask(task) {
       return response.data;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -145,6 +158,7 @@ export function updateTask(task) {
       return response.data;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -156,6 +170,7 @@ export function deleteTask(taskId) {
       return response;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -167,6 +182,7 @@ export function markComplete(task){
     return response;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -178,6 +194,7 @@ export function markIncomplete(task){
     return response;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -191,6 +208,7 @@ export function updateTaskDescription(task, description){
     return response;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -201,6 +219,7 @@ export function markHighPriority(taskId, userId){
     return response;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -211,6 +230,7 @@ export function markLowPriority(taskId, userId){
     return response;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -220,6 +240,7 @@ export function assignOrReassignTask(taskId, assignedToUserId){
     return response.data;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -239,6 +260,7 @@ export function addComment(taskId, taskComment) {
     return response;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -248,6 +270,7 @@ export function getHighPriorityTasksByTaskList(taskListId) {
     return response.data;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -257,6 +280,7 @@ export function getListTasksByPatient(patientId, status, taskListId){
     return response.data;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }
 
@@ -271,6 +295,7 @@ export function getInboxTasks(status, sortBy){
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
   }else{
     return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0&sortBy='+sortBy)
@@ -278,6 +303,7 @@ export function getInboxTasks(status, sortBy){
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
   }
 }
@@ -288,5 +314,6 @@ export function flagUnread(taskId, flagUnread){
     return response.data;
   }).catch(function (error){
     console.log(error);
+    return error.response.data;
   });
 }

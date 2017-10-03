@@ -8,6 +8,7 @@ export function getAllPatients() {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -17,6 +18,7 @@ export function getPatientsByTaskList(taskListId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -26,6 +28,7 @@ export function getPatientById(patientId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -35,6 +38,7 @@ export function removePatient(patientId) {
       return response;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -44,6 +48,7 @@ export function addPatient(patient) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -53,6 +58,7 @@ export function updatePatient(patient) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -62,6 +68,7 @@ export function addPatientToTask(patientId, taskId){
       return response.data
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -71,6 +78,7 @@ export function lookupEMRPatients(searchToken) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
