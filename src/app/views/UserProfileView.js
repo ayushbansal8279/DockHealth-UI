@@ -15,9 +15,9 @@ class UserProfileView extends BaseComponentWithFoundationUpdate {
             <div className="large-12 columns">
               <header className="nav-down">
                 <div className="top-bar">
-                  <div className="new-task text-center">
+                  {/* <div className="new-task text-center">
                     <span className="number-new-tasks"></span>
-                  </div>
+                  </div> */}
                   <div className="top-bar-left">
                     <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
                     <h3>My Profile</h3>
