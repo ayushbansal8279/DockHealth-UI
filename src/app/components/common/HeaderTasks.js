@@ -30,6 +30,7 @@ class HeaderTasks extends BaseComponent {
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
       this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ACTIVE')
+      this.props.taskListActions.getActiveMembersByTaskListId(this.props.taskListId)
     }
     this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
@@ -79,6 +80,15 @@ class HeaderTasks extends BaseComponent {
     this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
   }
 
+  addDashes = (f) =>
+  {
+    if(f != undefined){
+      var test = ""
+      var formattedNumber = f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15);
+      return formattedNumber
+    }
+  }
+
 
 
     render() {
@@ -96,10 +106,35 @@ class HeaderTasks extends BaseComponent {
 							</div>
               {this.props.taskListId &&
   							<div className="top-bar-right">
-  								<ul className="menu member-photo-list" data-open="list-members">
-                    <li><span className="add-member circle small">+</span></li>
+  								<ul className="menu member-photo-list">
+                    <li><span className="add-member circle small" data-open="list-members">+</span></li>
                     {this.props.members && this.props.members.map(member => {
-                        return <li key={"member"+member.userId}><MemberInitials member={member} extraClass="small"/></li>
+                        return(
+                          <li key={"member"+member.userId}>
+                            <span data-open={"member-profile-" + member.userId}><MemberInitials data-open={"member-profile-" + member.userId} member={member} extraClass="small"/></span>
+
+                            {/* Modal */}
+                            <div className="reveal" id={"member-profile-" + member.userId} data-reveal="">
+                              <div className="item row expanded" key={member.email}>
+                                <div className="columns shrink pending">
+                                {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
+                                 {/* <span className="member-initials circle">{person.initials}</span> */}
+                                 <MemberInitials member={member}/>
+                                </div>
+                                <div className="columns">
+                                  <span className="item-title">{member.firstName + " " + member.lastName}</span>
+                                  <span className="item-details">{member.titleList}</span>
+                                  <span className="item-details">{member.specialtyList}</span>
+                                  <span className="top-buffer-xsmall item-details">{member.email}</span>
+                                  <span className="item-details">C: {this.addDashes(member.accountPhoneNumber)} | W: {this.addDashes(member.workPhoneNumber)}</span>
+                                </div>
+                                </div>
+                              <button className="close-button" data-close="" aria-label="Close modal" type="button">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                          </li>
+                        )
                       })
                     }
                     {/* <li><span className="more-members circle small">+4</span></li>
@@ -158,7 +193,15 @@ class HeaderTasks extends BaseComponent {
 						</div>
         </header>
 
-        <AddTask taskListId={this.props.taskListId} addTask={this.props.taskActions.addTask} taskLists={this.props.taskList} patients={this.props.patients} title={this.props.title} members={this.props.members}/>
+        <AddTask
+          taskListId={this.props.taskListId}
+          addTask={this.props.taskActions.addTask}
+          taskLists={this.props.taskList}
+          patients={this.props.patients}
+          title={this.props.title}
+          members={this.props.members}
+          activeListMembers={this.props.activeListMembers}
+        />
         <ListMembers taskListId={this.props.taskListId} title={this.props.title}/>
       </div>
       );
@@ -173,7 +216,8 @@ const mapStateToProps = function (store) {
     patients: store.patientState.allPatients,
     currentList: store.taskListState.currentList,
     currentUser: store.userState.user,
-    members: store.taskListState.tasklistmembers
+    members: store.taskListState.tasklistmembers,
+    activeListMembers: store.taskListState.tasklistactivemembers
   }
 }
 

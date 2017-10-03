@@ -46,8 +46,8 @@ class AddTask extends BaseComponent {
 			enableAutoCompleteForSubtaskPatients(nextProps.patients);
 		//}
 		// if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
-			enableAutoCompleteForAssignedTo(nextProps.members);
-			enableAutoCompleteForSubtaskAssignedTo(nextProps.members);
+			enableAutoCompleteForAssignedTo(nextProps.activeListMembers);
+			enableAutoCompleteForSubtaskAssignedTo(nextProps.activeListMembers);
 		// }
   	}
 
@@ -96,6 +96,7 @@ class AddTask extends BaseComponent {
 	}
 
 	submit = (form) => {
+		debugger
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
 		// console.log(this.state.subtasks)
@@ -118,7 +119,6 @@ class AddTask extends BaseComponent {
 	}
 
 	addSubtaskValues = (subtaskValues, index) => {
-		debugger;
 		this.setState({currentSubtaskIndex:""})
 		if(index !== ""){
 			subtaskValues.taskId = this.props.currentSubtasks[index].taskId
@@ -131,6 +131,10 @@ class AddTask extends BaseComponent {
 			subtaskValues.taskId = ""
 			this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
 		}
+	}
+
+	currentSubtaskIndexToState = (index) => {
+		this.setState({currentSubtaskIndex: index})
 	}
 
     render() {
@@ -149,6 +153,8 @@ class AddTask extends BaseComponent {
 							addSubtaskToState={this.addSubtaskToState}
 							setSubtasks={this.setSubtasks}
 							clearSubtasks={this.clearSubtasks}
+							currentSubtaskIndexToState={this.currentSubtaskIndexToState}
+							isEditing={this.props.isEditing}
 						/>
 						<AddSubtaskForm
 							// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
@@ -160,6 +166,7 @@ class AddTask extends BaseComponent {
 							currentSubtaskIndex={this.state.currentSubtaskIndex}
 							title={this.props.title}
 							currentTask={this.props.task}
+
 						/>
 						</div>
 					</div>

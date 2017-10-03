@@ -81,3 +81,13 @@ export function lookupEMRPatients(searchToken) {
       return error.response.data;
     });
 }
+
+// This api call 'patient/deletePatient/' does not exist yet
+export function deletePatient(patientId){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/deletePatient/'+patientId)
+  .then(response => {
+    return response
+  }).catch(function (error){
+    console.log(error);
+  });
+}

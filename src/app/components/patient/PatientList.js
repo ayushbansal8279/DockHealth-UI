@@ -19,6 +19,14 @@ class PatientList extends BaseComponent {
 										<div className="columns">
 											<span className="item-title">{patient.firstName}&nbsp;{patient.lastName}</span>
 										</div>
+										{/* <div className="columns shrink more-options-wrapper" onClick={(e) => e.preventDefault()}>
+											<svg className="icon ellipses medium" data-toggle={"more-options-person-id-"+patient.patientId}><use xlinkHref="#icon-ellipses"></use></svg>
+											<div className="small dropdown-pane" id={"more-options-person-id-"+patient.patientId} data-dropdown data-close-on-click="true">
+												<ul className="no-bullet">
+													<li>Delete this patient</li>
+												</ul>
+											</div>
+										</div> */}
 									</div>
 								</Link>
 							);

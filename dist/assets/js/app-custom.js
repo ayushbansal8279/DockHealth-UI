@@ -444,7 +444,17 @@ $(document).ready(function() {
 		$el.text($el.text() == "Show completed tasks" ? "Hide completed tasks": "Show completed tasks");
 	});
 
+	function addDashes(f){
+    if(f != undefined){
+      var test = ""
+      var formattedNumber = f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15);
+      return formattedNumber
+    }
+  }
 
+	$(window).scroll(function() {
+    $('#profile-dropdown').foundation('close');
+	});
 
 
 	// $('.pickdate').fdatepicker({

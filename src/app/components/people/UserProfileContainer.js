@@ -20,9 +20,7 @@ class UserProfileContainer extends BaseComponent {
       titles:"",
       predefinedTitlesDisabled:'',
       otherTitleDescription:"",
-      selectedTitles:"",
-      otherSpecialty:"",
-      otherSubspecialty:""
+      selectedTitles:""
     };
   }
 
@@ -38,6 +36,9 @@ class UserProfileContainer extends BaseComponent {
         else{
           this.setState({userSelectedSpecialties:response.specialties});
           this.setState({userSpecialties:response.specialtyList});
+          // this.setState({otherSubspecialty: "Working"})
+          if(response.specialties[0].subspecialties){
+          }
           console.log(response.specialties)
         }
         if(response.titles && response.titles.length > 0
@@ -58,11 +59,17 @@ class UserProfileContainer extends BaseComponent {
 
     componentWillReceiveProps(nextProps){
       if((nextProps.allSpecialties != this.props.allSpecialties) && nextProps.userSpecialties.length > 0){
-        nextProps.allSpecialties.map(specialtyObject => {
-          if(specialtyObject.specialtyId === nextProps.userSpecialties[0].specialtyId){
-            this.setState({specialty: specialtyObject})
-          }
-        })
+        if(nextProps.userSpecialties[0].specialtyId == 1){
+          this.setState({specialty: nextProps.userSpecialties[0]})
+          this.setState({otherSpecialty: nextProps.userSpecialties[0].name})
+        }else{
+          nextProps.allSpecialties.map(specialtyObject => {
+            if(specialtyObject.specialtyId === nextProps.userSpecialties[0].specialtyId){
+              this.setState({specialty: specialtyObject})
+            }
+          })
+        }
+
       }
       var userSpecialties = [];
       if (nextProps.userSpecialties != this.props.userSpecialties) { //Note that React may call this method even if the props have not changed, so make sure to compare the current and next values if you only want to handle changes
@@ -140,83 +147,83 @@ class UserProfileContainer extends BaseComponent {
       return titlesToStore;
     }
 
-    getSpecialtiesToPersist(formProps){
-      var specialtiesToStore = [];
-      var subSpecialtiesArr = [];
-
-      var {allSpecialties} = this.props
-      if(allSpecialties == undefined || allSpecialties == null){
-        allSpecialties = []
-      }
-
-      if(formProps.manualSpecialty == undefined && formProps.manualSubSpecialty == undefined) { //specialties selected from dropdown
-        allSpecialties.map((specialty) =>{
-            var checkBoxId = "SpecialtyCB" + specialty.specialtyId
-            if(formProps[checkBoxId]){
-              var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
-
-              var subSpecialties = specialty.subSpecialties;
-              subSpecialtiesArr = [];
-              subSpecialties.map((subspecialty) =>{
-                var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
-                if(formProps[subSpecCheckBoxId]){
-                  var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
-                  subSpecialtiesArr.push(newSubSpecialty)
-                }
-              })
-              newSpecialty["subSpecialties"] = subSpecialtiesArr
-              specialtiesToStore.push(newSpecialty);
-            };
-        })
-      }
-      else if(formProps.manualSpecialty =="" && formProps.manualSubSpecialty ==""){
-        allSpecialties.map((specialty) =>{
-            var checkBoxId = "SpecialtyCB" + specialty.specialtyId
-            if(formProps[checkBoxId]){
-              var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
-
-              var subSpecialties = specialty.subSpecialties;
-              subSpecialtiesArr = [];
-              subSpecialties.map((subspecialty) =>{
-                var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
-                if(formProps[subSpecCheckBoxId]){
-                  var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
-                  subSpecialtiesArr.push(newSubSpecialty)
-                }
-              })
-              newSpecialty["subSpecialties"] = subSpecialtiesArr
-              specialtiesToStore.push(newSpecialty);
-            };
-        })
-      }
-      else{ //manual specialties selected
-
-        var manualSpecialty = formProps.manualSpecialty
-        if(manualSpecialty == undefined){
-          manualSpecialty= ""
-        }
-
-        var manualSubSpecialty= formProps.manualSubSpecialty
-        if(manualSubSpecialty == undefined){
-          manualSubSpecialty=""
-        }
-
-        if(manualSpecialty == "" && manualSubSpecialty ==""){
-          specialtiesToStore = []
-        }
-        else{
-          var newManualSpecialty = {specialtyId:1,name:manualSpecialty}
-          var newManualSubSpecialty = {subSpecialtyId:1,subSpecialtyName:manualSubSpecialty}
-          subSpecialtiesArr = [];
-          if(manualSubSpecialty != undefined && manualSubSpecialty != ""){
-            subSpecialtiesArr.push(newManualSubSpecialty)
-            newManualSpecialty["subSpecialties"] = subSpecialtiesArr
-          }
-          specialtiesToStore.push(newManualSpecialty);
-        }
-      }
-      return specialtiesToStore;
-    }
+    // getSpecialtiesToPersist(formProps){
+    //   var specialtiesToStore = [];
+    //   var subSpecialtiesArr = [];
+    //
+    //   var {allSpecialties} = this.props
+    //   if(allSpecialties == undefined || allSpecialties == null){
+    //     allSpecialties = []
+    //   }
+    //
+    //   if(formProps.manualSpecialty == undefined && formProps.manualSubSpecialty == undefined) { //specialties selected from dropdown
+    //     allSpecialties.map((specialty) =>{
+    //         var checkBoxId = "SpecialtyCB" + specialty.specialtyId
+    //         if(formProps[checkBoxId]){
+    //           var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
+    //
+    //           var subSpecialties = specialty.subSpecialties;
+    //           subSpecialtiesArr = [];
+    //           subSpecialties.map((subspecialty) =>{
+    //             var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+    //             if(formProps[subSpecCheckBoxId]){
+    //               var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
+    //               subSpecialtiesArr.push(newSubSpecialty)
+    //             }
+    //           })
+    //           newSpecialty["subSpecialties"] = subSpecialtiesArr
+    //           specialtiesToStore.push(newSpecialty);
+    //         };
+    //     })
+    //   }
+    //   else if(formProps.manualSpecialty =="" && formProps.manualSubSpecialty ==""){
+    //     allSpecialties.map((specialty) =>{
+    //         var checkBoxId = "SpecialtyCB" + specialty.specialtyId
+    //         if(formProps[checkBoxId]){
+    //           var newSpecialty = {specialtyId:specialty.specialtyId,name:specialty.name}
+    //
+    //           var subSpecialties = specialty.subSpecialties;
+    //           subSpecialtiesArr = [];
+    //           subSpecialties.map((subspecialty) =>{
+    //             var subSpecCheckBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+    //             if(formProps[subSpecCheckBoxId]){
+    //               var newSubSpecialty = {subSpecialtyId:subspecialty.subSpecialtyId,subSpecialtyName:subspecialty.subSpecialtyName}
+    //               subSpecialtiesArr.push(newSubSpecialty)
+    //             }
+    //           })
+    //           newSpecialty["subSpecialties"] = subSpecialtiesArr
+    //           specialtiesToStore.push(newSpecialty);
+    //         };
+    //     })
+    //   }
+    //   else{ //manual specialties selected
+    //
+    //     var manualSpecialty = formProps.manualSpecialty
+    //     if(manualSpecialty == undefined){
+    //       manualSpecialty= ""
+    //     }
+    //
+    //     var manualSubSpecialty= formProps.manualSubSpecialty
+    //     if(manualSubSpecialty == undefined){
+    //       manualSubSpecialty=""
+    //     }
+    //
+    //     if(manualSpecialty == "" && manualSubSpecialty ==""){
+    //       specialtiesToStore = []
+    //     }
+    //     else{
+    //       var newManualSpecialty = {specialtyId:1,name:manualSpecialty}
+    //       var newManualSubSpecialty = {subSpecialtyId:1,subSpecialtyName:manualSubSpecialty}
+    //       subSpecialtiesArr = [];
+    //       if(manualSubSpecialty != undefined && manualSubSpecialty != ""){
+    //         subSpecialtiesArr.push(newManualSubSpecialty)
+    //         newManualSpecialty["subSpecialties"] = subSpecialtiesArr
+    //       }
+    //       specialtiesToStore.push(newManualSpecialty);
+    //     }
+    //   }
+    //   return specialtiesToStore;
+    // }
 
     onSubmit (formProps) {
       //console.log(formProps)
@@ -245,7 +252,7 @@ class UserProfileContainer extends BaseComponent {
         userObj.homePhoneNumber = formProps.homePhoneNumber.replace(/-/g,"")
 
       titles= this.getTitlesToPersist(formProps)
-      specialties = this.getSpecialtiesToPersist(formProps)
+      // specialties = this.getSpecialtiesToPersist(formProps)
       userObj["titles"]=titles
       userObj["specialties"]=specialty
 
@@ -336,20 +343,20 @@ class UserProfileContainer extends BaseComponent {
       })
     }
 
-    createSpecialtyDropDown(allSpecialties){
-      return allSpecialties.map((specialty) =>{
-        var checkBoxId = "SpecialtyCB" + specialty.specialtyId
-        if(specialty.specialtyId !=1){ //skip the "Other" as we have "manually add Specialties"
-          return(
-            // originally had 'checkBoxId' as field name and htmlFor but changed it to a string due to validation and was probably unneeded
-               <li key={specialty.specialtyId} >
-                <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" value={checkBoxId} onChange={(e) => this.onClickSpecialtyCheckBox(e)}/>
-                <label htmlFor={checkBoxId}>{specialty.name}</label>
-                </li>
-            )
-          }
-        })
-    }
+    // createSpecialtyDropDown(allSpecialties){
+    //   return allSpecialties.map((specialty) =>{
+    //     var checkBoxId = "SpecialtyCB" + specialty.specialtyId
+    //     if(specialty.specialtyId !=1){ //skip the "Other" as we have "manually add Specialties"
+    //       return(
+    //         // originally had 'checkBoxId' as field name and htmlFor but changed it to a string due to validation and was probably unneeded
+    //            <li key={specialty.specialtyId} >
+    //             <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" value={checkBoxId} onChange={(e) => this.onClickSpecialtyCheckBox(e)}/>
+    //             <label htmlFor={checkBoxId}>{specialty.name}</label>
+    //             </li>
+    //         )
+    //       }
+    //     })
+    // }
 
 findObjectByKey(array, key, value) {
     for (var i = 0; i < array.length; i++) {
@@ -375,81 +382,81 @@ findObjectByKey(array, key, value) {
     e.stopPropagation()
   }
 
-  createSubSpecialtyCheckBoxes(specialty){
-    var subSpecialties = specialty.subSpecialties;
-    return subSpecialties.map((subspecialty) =>{
-      var checkBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
-        return(
-             <li key={subspecialty.subSpecialtyId} >
-              <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" />
-              <label htmlFor={checkBoxId}>{subspecialty.subSpecialtyName}</label>
-              </li>
-          )
-      })
-  }
+  // createSubSpecialtyCheckBoxes(specialty){
+  //   var subSpecialties = specialty.subSpecialties;
+  //   return subSpecialties.map((subspecialty) =>{
+  //     var checkBoxId = "SubSpecialtyCB" + specialty.specialtyId + "-" +subspecialty.subSpecialtyId;
+  //       return(
+  //            <li key={subspecialty.subSpecialtyId} >
+  //             <Field name={checkBoxId} id={checkBoxId} component="input" type="checkbox" />
+  //             <label htmlFor={checkBoxId}>{subspecialty.subSpecialtyName}</label>
+  //             </li>
+  //         )
+  //     })
+  // }
 
-  createSpecialtySubSpecialtyTable(allSpecialties,userSpecialties){
-      if(userSpecialties.length == 0){
-        return (
-          <div className="row table-row">
-            <div className="columns large-12">
-              <span className="details">You have not added any specialties</span>
-            </div>
-          </div>
-        );
-      }
-
-      return allSpecialties.map((specialty) =>{
-        if(specialty.specialtyId ==1){ //1 is for "Others"
-          return;
-        }
-
-        var objFoundInUserSpecialties = this.findObjectByKey(userSpecialties,"specialtyId", specialty.specialtyId);
-        if(objFoundInUserSpecialties ==null){
-          return;
-        }
-
-        return(
-            <div key ={specialty.specialtyId} className="row table-row">
-              <div className="columns small-12 large-6">
-                {specialty.name}
-              </div>
-              <div className="columns small-12 large-6">
-                <ul className="condense no-bullet no-bottom-buffer">
-                  {this.createSubSpecialtyCheckBoxes(specialty)}
-                </ul>
-              </div>
-            </div>
-        );
-      })
-    }
+  // createSpecialtySubSpecialtyTable(allSpecialties,userSpecialties){
+  //     if(userSpecialties.length == 0){
+  //       return (
+  //         <div className="row table-row">
+  //           <div className="columns large-12">
+  //             <span className="details">You have not added any specialties</span>
+  //           </div>
+  //         </div>
+  //       );
+  //     }
+  //
+  //     return allSpecialties.map((specialty) =>{
+  //       if(specialty.specialtyId ==1){ //1 is for "Others"
+  //         return;
+  //       }
+  //
+  //       var objFoundInUserSpecialties = this.findObjectByKey(userSpecialties,"specialtyId", specialty.specialtyId);
+  //       if(objFoundInUserSpecialties ==null){
+  //         return;
+  //       }
+  //
+  //       return(
+  //           <div key ={specialty.specialtyId} className="row table-row">
+  //             <div className="columns small-12 large-6">
+  //               {specialty.name}
+  //             </div>
+  //             <div className="columns small-12 large-6">
+  //               <ul className="condense no-bullet no-bottom-buffer">
+  //                 {this.createSubSpecialtyCheckBoxes(specialty)}
+  //               </ul>
+  //             </div>
+  //           </div>
+  //       );
+  //     })
+  //   }
 
     // updateSpecialty(e){
     //   this.setState({specialty: e.target.value})
     // }
 
-    onClickSpecialtyCheckBox(e){
-      const tmpUserSelectedSpecialties = this.state.userSelectedSpecialties
-
-      var {allSpecialties} = this.props
-      if(allSpecialties == undefined){
-        allSpecialties = []
-      }
-      var SpecialityCheckBoxId = e.target.id;
-      var specialtyId  = parseInt(SpecialityCheckBoxId.replace("SpecialtyCB", ""));
-
-        if (e.target.checked) {
-           var objFoundInAllSpecialties = this.findObjectByKey(allSpecialties,"specialtyId", specialtyId);
-           var specObject = {specialtyId:specialtyId, name:objFoundInAllSpecialties.name} //Just add the id/name (without any subspecialties), so that subspecialties wont be checked by default
-           tmpUserSelectedSpecialties.push(specObject);
-           this.setState({userSelectedSpecialties: tmpUserSelectedSpecialties});
-        }
-        else{
-          var removedSelectedSpecialties = this.removeObjectByKey(tmpUserSelectedSpecialties,"specialtyId", specialtyId);
-          this.setState({userSelectedSpecialties: removedSelectedSpecialties});
-        }
-
-    }
+    // onClickSpecialtyCheckBox(e){
+    //   const tmpUserSelectedSpecialties = this.state.userSelectedSpecialties
+    //
+    //   var {allSpecialties} = this.props
+    //   if(allSpecialties == undefined){
+    //     allSpecialties = []
+    //   }
+    //   var SpecialityCheckBoxId = e.target.id;
+    //   var specialtyId  = parseInt(SpecialityCheckBoxId.replace("SpecialtyCB", ""));
+    //
+    //     if (e.target.checked) {
+    //        var objFoundInAllSpecialties = this.findObjectByKey(allSpecialties,"specialtyId", specialtyId);
+    //        var specObject = {specialtyId:specialtyId, name:objFoundInAllSpecialties.name} //Just add the id/name (without any subspecialties), so that subspecialties wont be checked by default
+    //        tmpUserSelectedSpecialties.push(specObject);
+    //        this.setState({userSelectedSpecialties: tmpUserSelectedSpecialties});
+    //     }
+    //     else{
+    //       var removedSelectedSpecialties = this.removeObjectByKey(tmpUserSelectedSpecialties,"specialtyId", specialtyId);
+    //       this.setState({userSelectedSpecialties: removedSelectedSpecialties});
+    //     }
+    //
+    // }
 
     openField = (e) => {
       // Clicks the hidden link that has the class 'accordion-title'
@@ -469,8 +476,11 @@ findObjectByKey(array, key, value) {
       // Reset subSpecialty when switching to another specialty
       if(specialty === "Other"){
         this.setState({specialty: {specialtyId:1, name:this.state.otherSpecialty, subSpecialties:[]}})
+        if(this.state.subspecialty && (this.state.subspecialty.subSpecialtyId != 1)){
+          this.setState({subspecialty: undefined})
+        }
       }else{
-        if((this.state.specialty != undefined) && (this.state.specialty.specialtyId != specialty.specialtyId)){
+        if((this.state.specialty != undefined) && (this.state.specialty.specialtyId != specialty.specialtyId) && (this.state.subspecialty && (this.state.subspecialty.subSpecialtyId != 1))){
           this.setState({subspecialty: undefined})
         }
         this.setState({specialty: specialty})
@@ -480,9 +490,23 @@ findObjectByKey(array, key, value) {
     }
 
     updateSubspecialty = (subspecialty) => {
-      this.setState({subspecialty: subspecialty})
+      if(subspecialty == "Other"){
+        this.setState({subspecialty: {subSpecialtyId: 1, subSpecialtyName: this.state.otherSubspecialty}})
+      }else{
+        this.setState({subspecialty: subspecialty})
+      }
       // this.props.formActions.change('UserProfileForm', 'specialties', e.target.value)
       return false;
+    }
+
+    updateOtherInput = (e) => {
+      if(e.target.name == "otherSpecialty"){
+        this.setState({specialty: {specialtyId:1, name:e.target.value, subSpecialties:[]}})
+      }
+      if(e.target.name == "otherSubspecialty"){
+        this.setState({subspecialty: {subSpecialtyId:1, subSpecialtyName:e.target.value}})
+      }
+      // return false;
     }
 
  render(){
@@ -595,12 +619,12 @@ findObjectByKey(array, key, value) {
                       </fieldset>
                     </div>
                   </div>
-                  {/* <h5>{this.state.subspecialty ? this.state.subspecialty.subSpecialtyName : 'no subspecialty'}</h5> */}
+                  {/* <h5>{this.state.specialty ? this.state.specialty.name : 'no specialty'}</h5> */}
 
                   {/* <!-- SPECIALTY --> */}
                   <div className="column large-12 input-group no-icon input-dropdown">
                     {/* <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span> */}
-                    <div className={"form-floating-label input-wrapper " + (this.state.specialty && 'has-value')}>
+                    <div className={"form-floating-label input-wrapper " + (this.state.specialty ? 'has-value' : '')}>
                       <input className="input-group-field" type="text" data-toggle="specialty" value={this.state.specialty && this.state.specialty.name}/>
                       <label>Specialty</label>
                     </div>
@@ -612,7 +636,7 @@ findObjectByKey(array, key, value) {
                             return(
                               <label key={specialty.name}>
                                 <Field onChange={(e) => this.updateSpecialty("Other")} name="specialty" component="input" type="radio" value={specialty.name} checked={this.state.specialty && this.state.specialty.specialtyId === specialty.specialtyId} />{' '}{specialty.name}
-                                <input className="other" type="text" name="otherSpecialty" value={this.state.otherSpecialty}/>
+                                <input onChange={(e) => this.updateOtherInput(e)} className="other" type="text" name="otherSpecialty" value={this.state.otherSpecialty}/>
                               </label>
                             )
                           }else{
@@ -627,10 +651,11 @@ findObjectByKey(array, key, value) {
                     </div>
                   </div>
 
+                  {/* <h5>{this.state.subspecialty ? this.state.subspecialty.subSpecialtyId : 'no subspecialty'}</h5> */}
                   {/* <!-- SUBSPECIALTY --> */}
                   <div className="column large-12 input-group no-icon input-dropdown">
                     {/* <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span> */}
-                    <div className={"form-floating-label input-wrapper " + (this.state.subspecialty && 'has-value')}>
+                    <div className={"form-floating-label input-wrapper " + (this.state.subspecialty ? 'has-value' : '')}>
                       <input className="input-group-field" type="text" data-toggle="subspecialties" value={this.state.subspecialty ? this.state.subspecialty.subSpecialtyName : ''}/>
                       <label>Subspecialty</label>
                     </div>
@@ -638,8 +663,8 @@ findObjectByKey(array, key, value) {
                     <div className="dropdown-pane" id="subspecialties" data-dropdown data-close-on-click="true">
                       <fieldset className="large-12 columns">
                         <label key="Other Subspecialty">
-                          <Field onChange={(e) => this.updateSubspecialty("Other")} name="subspecialty" component="input" type="radio" value="Other"/>{' '}Other
-                          <input className="other" type="text" name="otherSubspecialty" value={this.state.otherSubspecialty}/>
+                          <Field onChange={(e) => this.updateSubspecialty("Other")} name="subspecialty" component="input" type="radio" value="Other" checked={this.state.subspecialty && this.state.subspecialty.subSpecialtyId == 1}/>{' '}Other
+                          <input onChange={(e) => this.updateOtherInput(e)} className="other" type="text" name="otherSubspecialty" value={this.state.otherSubspecialty}/>
                         </label>
                         {this.state.specialty && this.state.specialty.subSpecialties.map(subspecialty => {
                           if(subspecialty.name != "Other"){

@@ -104,3 +104,13 @@ export function selectEMRPatient(patient){
       dispatch({type: ActionTypes.SELECT_EMR_PATIENT_SUCCESS, patient})
   }
 }
+
+export function deletePatient(patientId){
+  return function(dispatch){
+    return PatientApi.deletePatient(patientId).then(res => {
+      dispatch({type: ActionTypes.DELETE_PATIENT_SUCCESS, patientId})
+    }).catch(error => {
+      throw(error)
+    })
+  }
+}

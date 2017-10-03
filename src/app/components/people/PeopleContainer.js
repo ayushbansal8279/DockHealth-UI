@@ -231,6 +231,15 @@ class PeopleContainer extends BaseComponent {
         return allSpecialties;
     }
 
+    addDashes = (f) =>
+    {
+      if(f != undefined){
+        var test = ""
+        var formattedNumber = f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15);
+        return formattedNumber
+      }
+    }
+
     renderList() {
 //use below if date is coming in as timestamp milliseconds
 //{new Date(invitation.updatedDateTime).toJSON()}
@@ -253,7 +262,7 @@ class PeopleContainer extends BaseComponent {
                <span className="item-details">{this.renderTitles(person)}</span>
                <span className="item-details">{this.renderSpecialties(person)}</span>
                <span className="top-buffer-xsmall item-details">{person.email}</span>
-               <span className="item-details">C: {person.accountPhoneNumber} | W: {person.workPhoneNumber}</span>
+               <span className="item-details">C: {this.addDashes(person.accountPhoneNumber)} | W: {this.addDashes(person.workPhoneNumber)}</span>
                <span className="item-details highlight">
                   {
                     this.renderStatus(person)
