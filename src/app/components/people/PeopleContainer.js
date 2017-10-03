@@ -109,7 +109,19 @@ class PeopleContainer extends BaseComponent {
            </div>
          )
       }else if(this.props.userProfile.orgUserRole == 'ADMIN' || this.props.userProfile.orgUserRole == 'OWNER' && person.userInviteStatus!='PENDING'){
-        if(person.orgUserRole==null || person.orgUserRole=='MEMBER'){
+        if((person.orgUserRole==null || person.orgUserRole=='MEMBER') && person.userInviteStatus=='PENDING'){
+          return (
+            <div className="columns shrink more-options-wrapper more-options-people">
+              <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
+              <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
+                <ul className="no-bullet">
+                  <li onClick={(e) => this.resendInviteToOrganization(person.email)}>Resend Invite</li>
+                  <li onClick={(e) => this.onClickCancelInvite(person.email)}>Cancel Invite</li>
+                </ul>
+              </div>
+           </div>
+          );
+        }else if((person.orgUserRole==null || person.orgUserRole=='MEMBER') && person.userInviteStatus!='PENDING'){
           return (
             <div className="columns shrink more-options-wrapper more-options-people">
               <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
@@ -145,18 +157,6 @@ class PeopleContainer extends BaseComponent {
              </div>
             );
           }
-        }else if(person.userInviteStatus=='PENDING'){
-          return (
-            <div className="columns shrink more-options-wrapper more-options-people">
-                <svg className="icon ellipses medium" data-toggle={"person-actions-" + person.userId+person.firstName+person.lastName}><use xlinkHref="#icon-ellipses"></use></svg>
-                <div className="small dropdown-pane" id={"person-actions-" + person.userId+person.firstName+person.lastName} data-dropdown data-close-on-click="true">
-                  <ul className="no-bullet">
-                    <li onClick={(e) => this.resendInviteToOrganization(person.email)}>Resend Invite</li>
-                    <li onClick={(e) => this.onClickCancelInvite(person.email)}>Cancel Invite</li>
-                  </ul>
-                </div>
-             </div>
-          );
         }
 
       }
