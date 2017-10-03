@@ -25,8 +25,13 @@ export function invitePersonToOrganization(formProps ){
 
     return function(dispatch) {
       return PeopleApi.invitePersonToOrganization(personInfo).then(res => {
-        dispatch({type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res});
-        toggleAlert("Invitation sent!", "success")
+        if(res.statusCode == 'FAILURE'){
+          toggleAlert(res.errorMessage, "error")
+        }else{
+          dispatch({type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res});
+          toggleAlert("Invitation sent!", "success")
+        }
+        return res;
       }).catch(error => {
         //console.log(error.message);
         throw(error);

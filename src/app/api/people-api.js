@@ -7,6 +7,7 @@ export function findAllUsersByOrganizationId() {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -16,6 +17,7 @@ export function getUserById(userId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -25,6 +27,7 @@ export function invitePersonToOrganization(person) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -34,6 +37,7 @@ export function resendInviteToOrganization(person) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -45,6 +49,7 @@ export function changeUserRoleForOrg(markedUserId,role) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
   }
 
@@ -55,6 +60,7 @@ export function cancelInviteToOrganization(markedUserEmail) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
   }
 
@@ -65,6 +71,7 @@ export function removeUserFromOrganization(removedUserId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
   }
 

@@ -1,5 +1,5 @@
 import React, { Component ,PropTypes} from 'react';
-import {reduxForm, Field} from 'redux-form';
+import {reduxForm, Field, actions, reset, change, arrayPush} from 'redux-form';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import { Link,hashHistory } from 'react-router';
@@ -7,6 +7,7 @@ import BasicField from '../common/BasicField';
 import * as PeopleActions from '../../actions/people-actions';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
+import $ from 'jquery'
 
 class InvitePeople extends BaseComponent {
 
@@ -27,11 +28,17 @@ class InvitePeople extends BaseComponent {
     //console.log(formProps);
     this.setState({invitePeopleResult: "Sending Invitation ..."})
     var component = this
-    this.props.invitePersonToOrganization(formProps)
+    this.props.peopleActions.invitePersonToOrganization(formProps)
     .then((res)=>{
-      component.props.findAllUsersByOrganizationId();
-      //hide the form
-      $('.add').click();
+      if(res.statusCode == 'FAILURE'){
+        component.setState({invitePeopleResult: res.errorMessage})
+      }else{
+        component.props.peopleActions.findAllUsersByOrganizationId();
+        component.setState({invitePeopleResult: "Invitation sent"})
+        component.props.formActions.reset('InvitePeopleForm')
+        //hide the form
+        $('.add').click();
+      }
     })
     .catch((error)=>{
       this.setState({invitePeopleResult: error.message}); //this will cause render to be called
@@ -126,12 +133,16 @@ function validate(values){
 //redux form : 1st is form config, 2nd argument is mapStateToProps, 3rd is mapDispatchToProps
 
 function mapDispatchToProps(dispatch) {
-  return  bindActionCreators(PeopleActions, dispatch)
+  return {
+	  peopleActions: bindActionCreators(PeopleActions, dispatch),
+		formActions: bindActionCreators({reset, change, arrayPush}, dispatch)
+  }
 }
 
 //redux form Version 6 specifically needs an call to connect
 export default connect(null, mapDispatchToProps)(reduxForm({
     form: 'InvitePeopleForm',
+    enableReinitialize : true,
     //fields:['tasklistname'],
     validate
 })(InvitePeople));

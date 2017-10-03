@@ -1,5 +1,5 @@
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, actions, reset, change, arrayPush } from 'redux-form'
 import { connect } from 'react-redux'
 import {bindActionCreators} from 'redux';
 import BaseComponentWithAutoComplete from '../BaseComponentWithAutoComplete'
@@ -137,12 +137,16 @@ class AddListForm extends BaseComponentWithAutoComplete {
       }
     }
 
+    var component = this
     this.props.taskListActions.saveTaskList(taskList)
     .then((res)=>{
-      this.setState({saveResultMessage: 'List saved successfully!!'});
+      component.setState({saveResultMessage: 'List saved successfully!!'});
+      component.props.formActions.reset('addListForm')
+      //hide the form
+      $('.add').click();
     })
     .catch((error)=>{
-      this.setState({saveResultMessage: error.message + ": " + error.response.data.errorMessage});
+      component.setState({saveResultMessage: error.message + ": " + error.response.data.errorMessage});
     })
 
   }
@@ -373,7 +377,8 @@ const mapStateToProps = function(store){
 const mapDispatchToProps = function (dispatch) {
   return {
     taskListActions: bindActionCreators(TaskListActions, dispatch),
-    peopleActions: bindActionCreators(PeopleActions, dispatch)
+    peopleActions: bindActionCreators(PeopleActions, dispatch),
+		formActions: bindActionCreators({reset, change, arrayPush}, dispatch)
   }
 }
 

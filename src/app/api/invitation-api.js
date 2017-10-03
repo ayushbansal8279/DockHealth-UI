@@ -4,6 +4,9 @@ export function findInvitationsByUserId() {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findInvitationsByUserId')
     .then(response => {
       return response.data;
+    }).catch(function (error){
+      console.log(error);
+      return error.response.data;
     });
 }
 
@@ -13,6 +16,7 @@ export function acceptInviteToTaskList(tasklistId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
 
@@ -22,5 +26,6 @@ export function rejectInviteToTaskList(tasklistId) {
       return response.data;
     }).catch(function (error){
       console.log(error);
+      return error.response.data;
     });
 }
