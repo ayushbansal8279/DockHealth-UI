@@ -564,10 +564,7 @@ findObjectByKey(array, key, value) {
       }
       return(
         <div className="wrapper top-buffer">
-
-
-
-
+          <div data-reveal-id="notification-modal">Delete task</div>
 
             <div className="columns small-12">
               <div className="row">
@@ -690,10 +687,10 @@ findObjectByKey(array, key, value) {
 
                   <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true' bufferClassName='top-buffer-small'/>
                   <Field name='email' type='text' component={BasicField} label='Email' disabled='true'/>
-                  <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile' normalize={normalizePhone}/>
+                  <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile' normalize={normalizePhone} disabled/>
                   <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone' normalize={normalizePhone}/>
-                  <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' normalize={normalizePhone}/>
-                  <Field name='homePhoneNumber' type='text' component={BasicField} label='Home Phone' normalize={normalizePhone}/>
+                  {/* <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' normalize={normalizePhone}/> */}
+                  {/* <Field name='homePhoneNumber' type='text' component={BasicField} label='Home Phone' normalize={normalizePhone}/> */}
 
 
                   {/* <!-- Notifications --> */}
