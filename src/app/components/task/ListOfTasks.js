@@ -263,6 +263,7 @@ class ListOfTasks extends BaseComponent {
 							</div>
 							}
 							<div className="comments-container">
+								<AddComment task={task} userProfile={this.props.userProfile}/>
 								{/* {commentNodes} */}
 								{task.comments ?
 									task.comments.map(comment => {
@@ -294,7 +295,7 @@ class ListOfTasks extends BaseComponent {
 										</div>
 									</div>
 								}
-								<AddComment task={task} userProfile={this.props.userProfile}/>
+
 							</div>
 			      </div>
 
