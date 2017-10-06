@@ -564,7 +564,6 @@ findObjectByKey(array, key, value) {
       }
       return(
         <div className="wrapper top-buffer">
-          <div data-reveal-id="notification-modal">Delete task</div>
 
             <div className="columns small-12">
               <div className="row">
