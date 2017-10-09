@@ -408,6 +408,21 @@ $(document).ready(function() {
 		$('.add-form-wrapper').slideToggle(300);
 		//	$('.list-filter .controls, .list-wrapper').toggle();
 		$('.list-filter .controls').toggle();
+
+	});
+
+	$(document).on('click', '.emailExpandButton', function() {
+		var emailSection = $(this).parent().find('.emailMessage');
+		var parentEmailSection = $(this).parent();
+		var emailSectionHeight = emailSection.css('height').replace(/px/g, "");
+		//console.log('emailSectionHeight: '+emailSectionHeight);
+		emailSectionHeight = parseInt(emailSectionHeight) + 20;
+ 		var height = parentEmailSection.css('height');
+		if(height == '200px'){
+			parentEmailSection.css('height', emailSectionHeight+"px");
+		}else{
+			parentEmailSection.css('height','200px');
+		}
 	});
 
 	// toggle high priority flag
