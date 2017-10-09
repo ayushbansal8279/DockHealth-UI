@@ -33,7 +33,6 @@ class TemplateCore extends React.Component {
             <span className="number-new-tasks">Hello</span>
           </div>
           <NavBar/>
-          <h5>Test</h5>
           <div className="small dropdown-pane" id="profile-dropdown" data-v-offset="0" data-h-offset="0" data-dropdown data-hover="true" data-hover-pane="true">
             <ul className="menu vertical">
               <NavLink to="/userprofile">View and edit profile</NavLink>
