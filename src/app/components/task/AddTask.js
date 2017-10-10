@@ -19,7 +19,8 @@ class AddTask extends BaseComponent {
 				value: '',
 				assignedToId: '',
 				subtasks:[],
-	      currentSubtaskIndex:""
+	      currentSubtaskIndex:"",
+				currentSubtask: undefined
 		}
   		//this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
@@ -27,29 +28,22 @@ class AddTask extends BaseComponent {
 		this.unmount = this.unmount.bind(this)
 	}
 
-  	componentDidMount () {
-    	console.log("mounted AddTask component")
-			this.props.peopleActions.findAllUsersByOrganizationId();
-			// this.props.peopleActions.getUserAvatar(this.props.member)
-		// PatientApi.getAllPatients().then(allPatients => {
-		// 	enableAutoComplete(allPatients);
-    	// }).catch(error => {
-      	// 	console.log(error);
-    	// });
-		//this.state.text = ""
-  	}
+	componentDidMount () {
+  	console.log("mounted AddTask component")
+		this.props.peopleActions.findAllUsersByOrganizationId();
+	}
 
-  	componentWillUpdate (nextProps) {
-		console.log('AddTask componentWillUpdate: '+nextProps)
-		//if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
-			enableAutoCompleteForPatients(nextProps.patients);
-			enableAutoCompleteForSubtaskPatients(nextProps.patients);
-		//}
-		// if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
-			enableAutoCompleteForAssignedTo(nextProps.activeListMembers);
-			enableAutoCompleteForSubtaskAssignedTo(nextProps.activeListMembers);
-		// }
-  	}
+	componentWillUpdate (nextProps) {
+	console.log('AddTask componentWillUpdate: '+nextProps)
+	//if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
+		enableAutoCompleteForPatients(nextProps.patients);
+		enableAutoCompleteForSubtaskPatients(nextProps.patients);
+	//}
+	// if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
+		enableAutoCompleteForAssignedTo(nextProps.activeListMembers);
+		enableAutoCompleteForSubtaskAssignedTo(nextProps.activeListMembers);
+	// }
+	}
 
 	unmount() {
 		var node = this.ReactDOM.getDOMNode();
@@ -133,9 +127,11 @@ class AddTask extends BaseComponent {
 		}
 	}
 
-	currentSubtaskIndexToState = (index) => {
+	currentSubtaskAndIndexToState = (index, task) => {
 		this.setState({currentSubtaskIndex: index})
+		this.setState({currentSubtask: task})
 	}
+
 
     render() {
     	return (
@@ -153,7 +149,7 @@ class AddTask extends BaseComponent {
 							addSubtaskToState={this.addSubtaskToState}
 							setSubtasks={this.setSubtasks}
 							clearSubtasks={this.clearSubtasks}
-							currentSubtaskIndexToState={this.currentSubtaskIndexToState}
+							currentSubtaskAndIndexToState={this.currentSubtaskAndIndexToState}
 							isEditing={this.props.isEditing}
 						/>
 						<AddSubtaskForm
@@ -166,7 +162,7 @@ class AddTask extends BaseComponent {
 							currentSubtaskIndex={this.state.currentSubtaskIndex}
 							title={this.props.title}
 							currentTask={this.props.task}
-
+							currentSubtask={this.state.currentSubtask}
 						/>
 						</div>
 					</div>

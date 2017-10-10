@@ -1,5 +1,5 @@
 import React from 'react'
-import { Field, reduxForm, formValueSelector, actions, stopSubmit, destroy, reset } from 'redux-form'
+import { Field, reduxForm, formValueSelector, actions, stopSubmit, destroy, reset, change } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
@@ -19,7 +19,8 @@ class AddSubtaskForm extends BaseComponent{
         patientId: '',
         assignedTo: '',
         assignedToId: '',
-        priority: 'false'
+        priority: undefined,
+        subtask: undefined
 		}
     this.baseState = this.state
 	}
@@ -27,6 +28,7 @@ class AddSubtaskForm extends BaseComponent{
   handleDescriptionChange = (e) => {
     //builds the subtask in the state
     this.setState({description: e.target.value});
+    return false;
   }
 
   handlePatientChange = (e) => {
@@ -35,10 +37,17 @@ class AddSubtaskForm extends BaseComponent{
   }
 
   componentDidMount () {
-  mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-          'PageName': 'AddSubTask'
-  });
-}
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+            'PageName': 'AddSubTask'
+    });
+  }
+
+  componentWillUpdate(nextProps){
+    if(this.props.currentSubtask && this.props.currentSubtask != this.state.subtask){
+      this.setState({subtask:this.props.currentSubtask})
+      this.setState({priority:this.props.currentSubtask.priority})
+    }
+  }
 
   // addSubtask = () => {
   //   // this.props.formActions.stopSubmit('addSubtaskForm')
@@ -74,13 +83,36 @@ class AddSubtaskForm extends BaseComponent{
     this.props.formActions.reset('addSubtaskForm')
     this.setState(this.baseState)
   }
-
   showState = () =>{
     console.log(this.state)
   }
 
+  changeTaskPriority = () => {
+    var priority = !this.state.priority
+    this.setState({priority:priority})
+    this.props.formActions.change("addSubtaskForm", "priority", priority)
+  }
+
 
   render(){
+    const renderDescriptionField = ({ input, label, type, meta: { touched, error, warning } }) => (
+      <div className={"input-group-wrapper column large-12 " + (touched && error ? 'has-error' : ' ')}>
+        <h5>{touched ? "touched" : "untouched"}</h5>
+        <div className="input-group icon-right icon-left">
+          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
+          <div className={"input-wrapper form-floating-label " + (input.value && "has-value")}>
+            <input {...input} className="input-group-field " type="text"/>
+            <label>Task</label>
+          </div>
+          <span onClick={() => this.changeTaskPriority()} className="input-group-label"><svg className={"icon flag medium " + (this.state.priority ? "" : "no-flag")}><use xlinkHref="#icon-flag"></use></svg></span>
+        </div>
+        {touched && error &&
+          <span className="form-error">
+            {error}
+          </span>
+        }
+      </div>
+    )
     return(
       <form onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}>
         {/* Added 'inline-label' to fix broken ui */}
@@ -100,7 +132,7 @@ class AddSubtaskForm extends BaseComponent{
           </div>
 
           {/* Task */}
-          <Field id="description-subtask" onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicField} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/>
+          <Field id="description-subtask" onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true" callback={this.changeTaskPriority} priority={this.state.priority}/>
           <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
           {/* Task */}
@@ -136,7 +168,7 @@ class AddSubtaskForm extends BaseComponent{
             <span></span>
           }
 
-          <div className="column top-buffer large-12">
+          {/* <div className="column top-buffer large-12">
             <div className="row">
               <div className="column">
                 <span className="item-title">High Priority</span>
@@ -151,7 +183,7 @@ class AddSubtaskForm extends BaseComponent{
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* ASSIGNED TO */}
           {/* <div className="column large-12 input-group">
@@ -204,7 +236,7 @@ const mapStateToProps = function(store){
 
 const mapDispatchToProps = function(dispatch){
   return{
-    formActions: bindActionCreators({destroy, reset}, dispatch)
+    formActions: bindActionCreators({destroy, reset, change}, dispatch)
   }
 }
 
