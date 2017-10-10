@@ -254,10 +254,8 @@ class ListOfTasks extends BaseComponent {
 								</div>
 								<div className="columns">
 									<div className="email-container">
-										<p>
-											<pre className="emailMessage">{task.sourceMessage}</pre>
-										</p>
-										<span className="expand-content circle xsmall"><svg className="icon"><use xlinkHref="#icon-slim"></use></svg></span>
+										<pre className="emailMessage">{task.sourceMessage}</pre>
+										<span className="expand-content circle xsmall emailExpandButton"><svg className="icon"><use xlinkHref="#icon-slim"></use></svg></span>
 									</div>
 								</div>
 							</div>
