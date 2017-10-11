@@ -41,32 +41,40 @@ class FormPatient extends BaseComponent {
     // }
 
   	onSubmit (formProps) {
+			debugger;
       var dobStr = $('.dobpickdate').val(); //form props is not picking up dob date value hence need to set it manually
+
+			if (dobStr) {
+		    dobStr = dobStr.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/, function(match,y,m,d) {
+		        return m + '/' + d + '/' + y;
+		    });
+			}
+
       if(dobStr && dobStr!=""){
         formProps.dob = dobStr
       }
       if (this.props.patientId) {
-          this.props.actions.updatePatient(formProps)
-          .then((res) => {
-            // this.setState({saveMessage: 'Patient updated succesfully'})
-						toggleAlert("Patient updated succesfully!", "success")
-						closeAddForm()
-          })
-          .catch((e) => {
-            // this.setState({saveMessage: e.message})
-						toggleAlert(e.message, "error")
-          })
+        this.props.actions.updatePatient(formProps)
+        .then((res) => {
+          // this.setState({saveMessage: 'Patient updated succesfully'})
+					toggleAlert("Patient updated succesfully!", "success")
+					closeAddForm()
+        })
+        .catch((e) => {
+          // this.setState({saveMessage: e.message})
+					toggleAlert(e.message, "error")
+        })
       }else{
-  		    this.props.actions.addPatient(formProps)
-          .then((res) => {
-            // this.setState({saveMessage: 'Patient created succesfully'})
-						toggleAlert("Patient created succesfully!", "success")
-						closeAddForm()
-          })
-          .catch((e) => {
-            // this.setState({saveMessage: e.message})
-						toggleAlert(e.message, "error")
-          })
+		    this.props.actions.addPatient(formProps)
+        .then((res) => {
+          // this.setState({saveMessage: 'Patient created succesfully'})
+					toggleAlert("Patient created succesfully!", "success")
+					closeAddForm()
+        })
+        .catch((e) => {
+          // this.setState({saveMessage: e.message})
+					toggleAlert(e.message, "error")
+        })
       }
 
       hashHistory.push('patientList')

@@ -35,9 +35,8 @@ class InvitePeople extends BaseComponent {
       }else{
         component.props.peopleActions.findAllUsersByOrganizationId();
         component.setState({invitePeopleResult: "Invitation sent"})
+        closeAddForm()
         component.props.formActions.reset('InvitePeopleForm')
-        //hide the form
-        $('.add').click();
       }
     })
     .catch((error)=>{
@@ -89,9 +88,9 @@ class InvitePeople extends BaseComponent {
                 <div className="column large-12 text-center">
                   <input type="submit" className="button medium secondary" value="Send invite"/>
                 </div>
-                <div className="column large-12 text-center">
+                {/* <div className="column large-12 text-center">
                   <h3>{this.state.invitePeopleResult}</h3>
-                </div>
+                </div> */}
 
               </form>
             </div>

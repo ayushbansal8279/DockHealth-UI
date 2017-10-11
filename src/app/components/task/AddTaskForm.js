@@ -46,7 +46,6 @@ class AddTaskForm extends BaseComponent {
   }
 
   handleTaskListSelection(event) {
-    //debugger;
     this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL')
     // $("#filed-in-taskList").val('taskList-'+event.target.value);
     $("#filed-in-taskList").val('taskList-'+event.target.value);
@@ -272,7 +271,6 @@ class AddTaskForm extends BaseComponent {
 }
 
 function validate(values){
-  debugger;
   const errors = {};
   if(!values.description){
     errors.description = 'Please enter a task description';
