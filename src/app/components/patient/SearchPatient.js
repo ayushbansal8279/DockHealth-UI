@@ -65,7 +65,7 @@ class SearchPatient extends BaseComponent {
 							<div className="row collapse expanded align-middle">
 								<div className="columns input-group input-wrapper bottom-buffer-small icon-right">
 									<div className="input-wrapper">
-										<input id="add-member-to-list" className="input-group-field" type="text" placeholder="Search patient in EMR" onChange={this.onChange.bind(this)}/>
+										<input className="input-group-field" type="text" placeholder="Search patient in EMR" onChange={this.onChange.bind(this)}/>
 									</div>
 									<span className="input-group-label pointer" onClick={this.searchPatients.bind(this)}>
 										<svg className="icon"><use xlinkHref="#icon-search"></use></svg>

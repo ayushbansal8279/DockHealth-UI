@@ -9,6 +9,7 @@ import * as PeopleActions from '../../actions/people-actions';
 import * as TaskActions from '../../actions/task-actions';
 import {ReactDOM, findDOMNode, getDOMNode} from 'react-dom'
 import $ from 'jquery'
+import AddPatientModal from '../common/AddPatientModal'
 import BaseComponent from '../BaseComponent'
 
 class AddTask extends BaseComponent {
@@ -20,7 +21,8 @@ class AddTask extends BaseComponent {
 				assignedToId: '',
 				subtasks:[],
 	      currentSubtaskIndex:"",
-				currentSubtask: undefined
+				currentSubtask: undefined,
+				isSubtask:false
 		}
   		//this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
@@ -71,6 +73,11 @@ class AddTask extends BaseComponent {
 	clearSubtasks = () => {
 		this.setState({subtasks:[]})
 		// alert(subtasks)
+	}
+
+	isSubtask = (boolean) => {
+		console.log(boolean)
+		this.setState({isSubtask:boolean})
 	}
 
 /*
@@ -150,6 +157,7 @@ class AddTask extends BaseComponent {
 							clearSubtasks={this.clearSubtasks}
 							currentSubtaskAndIndexToState={this.currentSubtaskAndIndexToState}
 							isEditing={this.props.isEditing}
+							isSubtask={this.isSubtask}
 						/>
 						<AddSubtaskForm
 							// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
@@ -162,7 +170,9 @@ class AddTask extends BaseComponent {
 							title={this.props.title}
 							currentTask={this.props.task}
 							currentSubtask={this.state.currentSubtask}
+							isSubtask={this.isSubtask}
 						/>
+						<AddPatientModal isSubtask={this.state.isSubtask}/>
 						</div>
 					</div>
 					{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}

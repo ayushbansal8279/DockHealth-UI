@@ -183,7 +183,6 @@ class ListOfTasks extends BaseComponent {
 
     return (
 		<span>
-
 		{this.props.tasks && this.props.tasks.map(task => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
@@ -336,7 +335,13 @@ class ListOfTasks extends BaseComponent {
 			return(
 				<span key={"listTask"+task.taskId}>
 					{listTasks()}
-					<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.handleDeleteTask}/>
+					<BooleanModal
+						message="Are you sure you want to delete this task?"
+						confirmBtnTxt="Delete"
+						uniqueModalId={"delete-task-"+task.taskId}
+						handleConfirmationArgs={task}
+						handleConfirmation={this.handleDeleteTask}
+					/>
 					<BooleanModal message="You are about to complete a task with open subtasks. Completing the task will also complete the subtasks. Would you like to proceed?" confirmBtnTxt="Yes" uniqueModalId={"complete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.confirmCompleteTask}/>
 					{task.taskList &&
 						<AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/>

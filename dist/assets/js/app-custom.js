@@ -97,7 +97,7 @@ function enableAutoCompleteForPatients(lookupData) {
 		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
 		list: {
 			onLoadEvent: function() {
-				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
+				var addnew = '<li><a data-open="addPatientModal" onClick="event.preventDefault()" class="button small primary float-left" href="">Add new</a></li>';
 				$('.easy-autocomplete-container ul').append(addnew);
 			},
 			onSelectItemEvent: function() {
@@ -131,7 +131,7 @@ function enableAutoCompleteForSubtaskPatients(lookupData) {
 		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
 		list: {
 			onLoadEvent: function() {
-				var addnew = '<li><a class="button small primary float-left" href="">Add new</a></li>';
+				var addnew = '<li><a data-open="addPatientModal" onClick="event.preventDefault()" class="button small primary float-left" href="">Add new</a></li>';
 				$('.easy-autocomplete-container ul').append(addnew);
 			},
 			onSelectItemEvent: function() {

@@ -34,6 +34,7 @@ class AddSubtaskForm extends BaseComponent{
   handlePatientChange = (e) => {
     //builds the subtask in the state
     this.setState({patient: e.target.value});
+    this.props.isSubtask(true)
   }
 
   componentDidMount () {

@@ -169,7 +169,7 @@ pre.emailMessage {
 .email-container {
   height: 200px;
   overflow-y: hidden;
-} 
+}
 .emailExpandButton > svg {
   margin-top:5px;
 }
@@ -328,6 +328,10 @@ pre.emailMessage {
 
 .no-bottom-buffer{
   margin-bottom:0;
+}
+
+.btnMargin{
+  margin:10px;
 }
 
 /*Search Bar Styles */

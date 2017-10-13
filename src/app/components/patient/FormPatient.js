@@ -1,5 +1,5 @@
 import React from 'react'
-import { SubmissionError, Field, reduxForm } from 'redux-form'
+import { SubmissionError, Field, reduxForm, change } from 'redux-form'
 import Moment from 'react-moment'
 import * as PatientActions from '../../actions/patient-actions'
 import { connect } from 'react-redux'
@@ -41,7 +41,7 @@ class FormPatient extends BaseComponent {
     // }
 
   	onSubmit (formProps) {
-			debugger;
+
       var dobStr = $('.dobpickdate').val(); //form props is not picking up dob date value hence need to set it manually
 
 			if (dobStr) {
@@ -69,7 +69,26 @@ class FormPatient extends BaseComponent {
         .then((res) => {
           // this.setState({saveMessage: 'Patient created succesfully'})
 					toggleAlert("Patient created succesfully!", "success")
-					closeAddForm()
+					var currentProps = this.props
+					var patientName = res.firstName + " " + formProps.lastName
+					var patientId = res.patientId
+					if(!this.props.modalForm){
+						closeAddForm()
+					}else{
+						var isProps = this.props
+						debugger;
+						if(this.props.isSubtask){
+							this.props.formActions.change("addSubtaskForm", "patient", patientName)
+							this.props.formActions.change("addSubtaskForm", "patientId", patientId)
+							$("#add-patient-subtask").val(patientName);
+							$("#add-patient-subtask-id").val(patientId);
+						}else{
+							this.props.formActions.change("addTaskForm", "patient", patientName)
+							this.props.formActions.change("addTaskForm", "patientId", patientId)
+							$("#add-patient").val(patientName);
+							$("#add-patient-id").val(patientId);
+						}
+					}
         })
         .catch((e) => {
           // this.setState({saveMessage: e.message})
@@ -77,7 +96,7 @@ class FormPatient extends BaseComponent {
         })
       }
 
-      hashHistory.push('patientList')
+      // hashHistory.push('patientList')
 
   	}
 
@@ -148,8 +167,16 @@ class FormPatient extends BaseComponent {
               {/* <Field name='notes' type='text' component={BasicField} label='Notes' placeholder='required'/> */}
 
               <div className="column large-12 text-right text-center">
-                <input type="submit" className="button secondary medium" value="Save"/>
+                <input data-close="" type="submit" className="button secondary medium btnMargin" value="Save"/>
+								{this.props.modalForm &&
+									<a data-close="" className="button medium cancel btnMargin">Cancel</a>
+								}
               </div>
+
+							{/* <div className="button-wrapper">
+								<input type="submit" className="button secondary medium" value="Save"/>
+								<a data-close="" className="button medium cancel">Cancel</a>
+							</div> */}
 
               {/* <div className="column large-12 text-right text-center">
                 <h3>{this.state.saveMessage}</h3>
@@ -190,7 +217,8 @@ const mapStateToProps = function (state) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    actions: bindActionCreators(PatientActions, dispatch)
+    actions: bindActionCreators(PatientActions, dispatch),
+		formActions: bindActionCreators({change}, dispatch)
   }
 }
 

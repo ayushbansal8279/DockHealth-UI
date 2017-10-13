@@ -143,7 +143,7 @@ class AddTaskForm extends BaseComponent {
         {/* <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/> */}
 
         {/* ADD PATIENT */}
-        <Field id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
+        <Field onChange={(e) => this.props.isSubtask(false)} id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
         <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
 
         {/* FILE IN */}

@@ -59,7 +59,9 @@ export function addPatient(newPatient) {
   return function(dispatch){
     return PatientApi.addPatient(newPatient).then(patient => {
       dispatch({type: ActionTypes.ADD_PATIENT_SUCCESS, patient});
+      return patient
     }).catch(error => {
+      toggleAlert(error.message, "error")
       throw(error);
     });
   };
@@ -71,6 +73,7 @@ export function updatePatient(newPatient) {
       dispatch({type: ActionTypes.UPDATE_PATIENT_SUCCESS, patient});
       toggleAlert("Patient updated successfully!", "success")
     }).catch(error => {
+      toggleAlert(error.message, "error")
       throw(error);
     });
   };
@@ -82,6 +85,7 @@ export function addPatientToTask(patientId, taskId){
       dispatch({type: ActionTypes.ADD_PATIENT_TO_TASK_SUCCESS, patient, taskId})
       toggleAlert("Patient added successfully!", "success")
     }).catch(error => {
+      toggleAlert(error.message, "error")
       throw(error)
     })
   }
