@@ -20,6 +20,15 @@ class PatientView extends React.Component {
       closeAddForm()
     }
 
+    addDashes = (f) =>
+    {
+      if(f != undefined && f!=""){
+        f = f.replace('\+1', '');
+        var formattedNumber = f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15);
+        return formattedNumber
+      }
+    }
+
     render() {
       var patient = {}
       if(this.props.patient){
@@ -64,11 +73,11 @@ class PatientView extends React.Component {
                 <div className="item condense row expanded align-middle">
                   <div className="columns large-4">
                     <span className="item-details">Phone</span>
-                    <span className="item-content">{patient.phoneHome}</span>
+                    <span className="item-content">{this.addDashes(patient.phoneHome)}</span>
                   </div>
                   <div className="columns large-4">
                     <span className="item-details">Cell</span>
-                    <span className="item-content">{patient.phoneMobile}</span>
+                    <span className="item-content">{this.addDashes(patient.phoneMobile)}</span>
                   </div>
                   <div className="columns large-4">
                     <span className="item-details">Email</span>

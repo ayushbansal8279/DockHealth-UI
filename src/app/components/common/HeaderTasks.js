@@ -82,8 +82,8 @@ class HeaderTasks extends BaseComponent {
 
   addDashes = (f) =>
   {
-    if(f != undefined){
-      var test = ""
+    if(f != undefined && f!=""){
+      f = f.replace('\+1', '');
       var formattedNumber = f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15);
       return formattedNumber
     }

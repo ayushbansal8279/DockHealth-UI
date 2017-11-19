@@ -420,8 +420,10 @@ $(document).ready(function() {
  		var height = parentEmailSection.css('height');
 		if(height == '200px'){
 			parentEmailSection.css('height', emailSectionHeight+"px");
+			$(this).css('color', 'black');
 		}else{
 			parentEmailSection.css('height','200px');
+			$(this).css('color', 'white');
 		}
 	});
 
@@ -460,8 +462,8 @@ $(document).ready(function() {
 	});
 
 	function addDashes(f){
-    if(f != undefined){
-      var test = ""
+    if(f != undefined & f!=""){
+      f = f.replace('\+1', '');
       var formattedNumber = f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15);
       return formattedNumber
     }
