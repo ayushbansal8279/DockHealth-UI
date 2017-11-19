@@ -170,6 +170,11 @@ pre.emailMessage {
   height: 200px;
   overflow-y: hidden;
 }
+
+.emailExpandButton {
+  margin-bottom:10px;
+}
+
 .emailExpandButton > svg {
   margin-top:5px;
 }
