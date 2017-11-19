@@ -28,7 +28,7 @@ class AssignToModal extends React.Component {
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
           {this.state.members && this.state.members.map(member=>{
-            return(
+            return(member.status!='PENDING' &&
               <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={'assign_'+this.props.taskListId+'_'+member.userId} className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
                   <MemberInitials member={member}/>
