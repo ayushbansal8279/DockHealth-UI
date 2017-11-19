@@ -246,19 +246,6 @@ class ListOfTasks extends BaseComponent {
 								}
 				        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
 							</span>
-			        {task.type == "EMAIL" &&
-							<div className="row collapse email-wrapper">
-								<div className="columns shrink">
-									<svg className="icon"><use xlinkHref="#icon-email"></use></svg>
-								</div>
-								<div className="columns">
-									<div className="email-container">
-										<pre className="emailMessage">{task.sourceMessage}</pre>
-										<span className="expand-content circle xsmall emailExpandButton"><svg className="icon"><use xlinkHref="#icon-slim"></use></svg></span>
-									</div>
-								</div>
-							</div>
-							}
 							<div className="comments-container">
 								<AddComment task={task} userProfile={this.props.userProfile}/>
 								{/* {commentNodes} */}
@@ -294,6 +281,19 @@ class ListOfTasks extends BaseComponent {
 								}
 
 							</div>
+			        {task.type == "EMAIL" &&
+							<div className="row collapse email-wrapper">
+								<div className="columns shrink">
+									<svg className="icon"><use xlinkHref="#icon-email"></use></svg>
+								</div>
+								<div className="columns">
+									<div className="email-container">
+										<pre className="emailMessage">{task.sourceMessage}</pre>
+										<span className="expand-content circle xsmall emailExpandButton"><svg className="icon"><use xlinkHref="#icon-slim"></use></svg></span>
+									</div>
+								</div>
+							</div>
+							}
 			      </div>
 
 							<div className="columns shrink more-options-wrapper">
