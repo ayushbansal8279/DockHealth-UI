@@ -19,7 +19,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		};
   }
 
-    //addListMember(e) {
+	//addListMember(e) {
 	onSubmit (formProps) {
 		//var selectedUserId = formProps.selectedUserId;
 		var selectedUserId = $("#add-member-to-list-id").val();
@@ -32,7 +32,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
         {
 			var inviteUsers =  [];
 			inviteUsers.push(selectedUserId);
-        	this.props.taskListActions.inviteMultipleUsersToTaskList(this.props.taskListId, inviteUsers)
+        	this.props.taskListActions.inviteMultipleUsersToTaskList(this.props.currentList.taskListId, inviteUsers)
         .then((res)=>{
             this.props.formActions.reset('ListMembersAddForm')
           	this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
@@ -52,17 +52,18 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		console.log('unmount list members');
 	}
 
-  	componentWillUpdate (nextProps) {
+	componentWillUpdate (nextProps) {
 		console.log('ListMembers componentWillUpdate: '+nextProps)
 		enableAutoCompleteForListMembers(nextProps.orgusersnotintasklist, process.env.HEYDOC_SERVICES_BASE_URL);
-  	}
+	}
+	
 
 	deleteMember = (member) => {
-		this.props.taskListActions.removeUserFromList(this.props.taskListId, member)
+		this.props.taskListActions.removeUserFromList(this.props.currentList.taskListId, member)
 	}
 
 	changeUserRole = (member, role) => {
-		this.props.taskListActions.changeUserRoleForList(this.props.taskListId, member, role)
+		this.props.taskListActions.changeUserRoleForList(this.props.currentList.taskListId, member, role)
 	}
 
 	removeListMember() {
@@ -86,7 +87,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
 		return(
 			<div className="reveal" id="list-members" data-reveal=""> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
-				<h5 className="margin-bottom text-center">{this.props.title} List Members</h5>
+				<h5 className="margin-bottom text-center">{this.props.currentList.listName} List Members</h5>
 				<div className="scroll-wrapper">
 					{this.props.members && this.props.members.map(member => {
 						return(

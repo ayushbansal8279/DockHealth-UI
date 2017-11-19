@@ -29,10 +29,10 @@ class HeaderTasks extends BaseComponent {
     this.props.taskActions.loading()
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
-      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ACTIVE')
+      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ALL')
       this.props.taskListActions.getActiveMembersByTaskListId(this.props.taskListId)
+      this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
     }
-    this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
   }
 
   componentWillUpdate(nextProps){
@@ -202,7 +202,7 @@ class HeaderTasks extends BaseComponent {
           members={this.props.members}
           activeListMembers={this.props.activeListMembers}
         />
-        <ListMembers taskListId={this.props.taskListId} title={this.props.title}/>
+        <ListMembers/>
       </div>
       );
     }
