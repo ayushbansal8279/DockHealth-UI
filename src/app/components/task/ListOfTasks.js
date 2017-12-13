@@ -183,11 +183,11 @@ class ListOfTasks extends BaseComponent {
 
     return (
 		<span>
-		{this.props.tasks && this.props.tasks.map(task => {
+		{this.props.tasks && this.props.tasks.map((task, index) => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
 					<div key={"task"+task.taskId} className="task-item has-subtasks">
-						{generateTask(task, "maintask")}
+						{generateTask(task, index, "maintask")}
 					</div>
 				)
 			}
@@ -204,7 +204,7 @@ class ListOfTasks extends BaseComponent {
 			{/* COMPONENTS END */}
 
 			{/* GENERATE TASK START */}
-			const generateTask = (task, type) => (
+			const generateTask = (task, index, type) => (
 			  <span key={"task"+task.taskId}>
 			    {/* MAIN TASK START */}
 			    <div className={"row expanded " + (type == 'subtask' ? 'subtask-item' : 'main-task-item')} value={task}>
@@ -217,7 +217,11 @@ class ListOfTasks extends BaseComponent {
 							{/* Triggers confirmation modal to pop up if task has subtasks */}
 							<span id="complete-task" data-open={"complete-task-"+task.taskId} className="hide">Complete</span>
 			      </div>
-
+						{type == 'subtask' &&
+							<div className="columns shrink">
+								<span className="subtask-number">{index + 1 + '.'}</span>
+							</div>
+						}
 			      <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}>
 							{task.assignedTo ?
 			         	<MemberInitials member={task.assignedTo}/> :
@@ -313,10 +317,10 @@ class ListOfTasks extends BaseComponent {
 			    </div>
 			    {/* MAIN TASK END */}
 			    {task.subtasks &&
-			      task.subtasks.map(subtask => {
+			      task.subtasks.map((subtask, index) => {
 			        return (
 			          <span key={"subtask"+subtask.taskId}>
-			          {generateTask(subtask, "subtask")}
+			          {generateTask(subtask, index, "subtask")}
 								<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+subtask.taskId} handleConfirmationArgs={subtask} handleConfirmation={this.handleDeleteTask}/>
 								{subtask.taskList &&
 									<AssignToModal members={members} taskListId={subtask.taskList.taskListId} task={subtask} assignOrReassignTask={this.assignOrReassignTask}/>

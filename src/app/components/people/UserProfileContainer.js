@@ -563,9 +563,9 @@ findObjectByKey(array, key, value) {
         allSpecialties = []
       }
       return(
-        <div className="wrapper top-buffer">
+        <div className="wrapper">
 
-            <div className="columns small-12">
+            <div className="columns large-9 large-offset-1">
               <div className="row">
 
                 {/* Profile Image */}
@@ -578,6 +578,7 @@ findObjectByKey(array, key, value) {
                     {/* <MemberInitials member={initialValues.userProfile} extraClass="xlarge"/> */}
                     {/* <img className="member-photo circle xlarge" src={userProfilePic} alt="name of user"/> */}
                     <span className="update circle xlarge">Update picture</span>
+                    <h5 className="top-buffer">{this.props.userProfile.userName}</h5>
                   </div>
                   {/* <h5 className="top-buffer">{initialValues.firstName} {initialValues.lastName}</h5> */}
                 </div>

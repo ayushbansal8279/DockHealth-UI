@@ -150,7 +150,7 @@ class HeaderTasks extends BaseComponent {
 							</div>
 
               {/*<TaskFiltersContainer taskListId={taskListId} />*/}
-							<div className="wrapper list-filter row collapse align-middle align-right">
+							<div className={"wrapper list-filter row collapse align-middle align-right "}>
 								<div className="columns shrink controls">
 									<button className="dropdown button primary small" data-toggle="sort-dropdown">Sort</button>
 									<div className="dropdown-pane button-dropdown" id="sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
