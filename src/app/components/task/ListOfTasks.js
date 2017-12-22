@@ -14,6 +14,7 @@ import AssignToModal from '../common/AssignToModal'
 import ConfirmDelete from '../common/ConfirmDelete'
 import BooleanModal from '../common/BooleanModal'
 import MemberInitials from '../common/MemberInitials'
+import {change} from 'redux-form'
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -173,6 +174,15 @@ class ListOfTasks extends BaseComponent {
 			}
 		}
 
+		resetSubtaskForm = (patient) => {
+			if(patient != undefined){
+				var patientName = patient.firstName + " " + patient.lastName
+				this.props.formActions.change("addSubtaskForm", "patient", patientName)
+				this.props.formActions.change("addSubtaskForm", "patientId", patient.patientId)
+			}
+			// this.props.formActions.reset('addSubtaskForm')
+		}
+
 
     render() {
 			if(AWS.config.credentials){
@@ -240,7 +250,7 @@ class ListOfTasks extends BaseComponent {
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
 							<span className="edit-task">
 				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
-								<span className="subtask-count text-light">{task.subtasks.length + " subtasks"}</span>
+								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"}</span>
 								{task.assignedBy ?
 					        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
 					        <span className="task-details text-light">unassigned</span>
@@ -307,7 +317,7 @@ class ListOfTasks extends BaseComponent {
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
 										<li onClick={(e) => this.handleToggle(task)} className="edit-task">Edit task</li>
 										{type != "subtask" &&
-											<li onClick={(e) => this.handleToggle(task)} className="add show-add-subtask link">Add subtask</li>
+											<li onClick={(e) => {this.handleToggle(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>
 										}
 										<li data-open={"delete-task-"+task.taskId}>Delete task</li>
 									</ul>
@@ -377,7 +387,8 @@ const mapStateToProps = function (store) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-	  taskAction: bindActionCreators(TaskActions, dispatch)
+	  taskAction: bindActionCreators(TaskActions, dispatch),
+		formActions: bindActionCreators({change}, dispatch)
   }
 }
 

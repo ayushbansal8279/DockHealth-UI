@@ -100,6 +100,8 @@ class FormPatient extends BaseComponent {
 
   	}
 
+
+
     render() {
       var patient = {}
       if(this.props.patient){

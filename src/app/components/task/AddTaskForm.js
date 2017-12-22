@@ -9,6 +9,7 @@ import AddSubtaskField from './AddSubtaskField';
 import * as TaskListActions from '../../actions/tasklist-actions'
 import $ from 'jquery'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import Moment from 'react-moment'
 
 //let AddTaskForm = props => {
 class AddTaskForm extends BaseComponent {
@@ -33,6 +34,7 @@ class AddTaskForm extends BaseComponent {
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       'PageName': 'AddTask'
     });
+
   }
 
   componentDidUpdate () {
@@ -74,6 +76,14 @@ class AddTaskForm extends BaseComponent {
     var patient = this.props.currentSubtasks[index]
   }
 
+
+
+  changeTaskPriority = () => {
+    var priority = !this.state.priority
+    this.setState({priority:priority})
+    this.props.formActions.change("addTaskForm", "priority", priority)
+  }
+
   resetSubtaskForm = (patient) => {
     if(patient != undefined){
       var patientName = patient.firstName + " " + patient.lastName
@@ -83,10 +93,8 @@ class AddTaskForm extends BaseComponent {
     // this.props.formActions.reset('addSubtaskForm')
   }
 
-  changeTaskPriority = () => {
-    var priority = !this.state.priority
-    this.setState({priority:priority})
-    this.props.formActions.change("addTaskForm", "priority", priority)
+  updateDueDate = (e) => {
+    alert("working")
   }
 
   render() {
@@ -205,31 +213,7 @@ class AddTaskForm extends BaseComponent {
           <span></span>
         }
 
-        {/* <div className="column top-buffer large-12">
-					<div className="row">
-						<div className="column">
-							<span className="item-title">High Priority {this.props.priority}</span>
-							<p className="text-light">Toggle task priority to high or low</p>
-						</div>
-						<div className="column shrink">
-							<div className="switch">
-								<Field className="switch-input" id="exampleSwitch" type="checkbox" name="priority" component="input"/>
-								<label className="switch-paddle" htmlFor="exampleSwitch">
-									<span className="show-for-sr">Download</span>
-								</label>
-							</div>
-						</div>
-					</div>
-				</div> */}
-
-
-        {/* <p>Priority</p>
-        <div className="switch">
-          <input className="switch-input" id="exampleSwitch" type="checkbox" name="exampleSwitch"/>
-          <label className="switch-paddle" htmlFor="exampleSwitch">
-            <span className="show-for-sr">Download Kittens</span>
-          </label>
-        </div> */}
+        <Field id="due-date" name='dueDate' type='text' component={BasicField} label='Due date' xlinkHref="#icon-calendar" extraClassName="dobpickdate"/>
 
         <FieldArray name="subtasks" component={renderSubtaskField}/>
 
@@ -303,6 +287,9 @@ const mapStateToProps = function(store) {
 			initialTaskFormValues.patient = editTask.patient.firstName+" "+editTask.patient.lastName;
 			initialTaskFormValues.patientId = editTask.patient.patientId;
 		}
+    if(editTask.dueDate){
+      initialTaskFormValues.dueDate = editTask.dueDate;
+    }
 		if(editTask.assignedTo){
 			initialTaskFormValues.assignedTo = editTask.assignedTo.firstName+" "+editTask.assignedTo.lastName;
 			initialTaskFormValues.assignedToId = editTask.assignedTo.userId;

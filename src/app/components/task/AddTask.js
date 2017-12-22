@@ -96,6 +96,18 @@ class AddTask extends BaseComponent {
 		// alert("clicked:" + this.state.memberId);
 	}
 
+	formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+	}
+
 	submit = (form) => {
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
@@ -105,6 +117,8 @@ class AddTask extends BaseComponent {
 
 		form.patientId = $("#add-patient-id").val();
 		form.assignedToId = $("#assign-task-to-id").val();
+		form.dueDate = $('.dobpickdate').val();
+
 		if(form.priority == true){
 			form.priority = "HIGH"
 		}else{

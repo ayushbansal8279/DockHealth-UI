@@ -148,6 +148,8 @@ export function saveTask(newTask) {
     return function(dispatch) {
       return TaskApi.addTask(newTask).then(task => {
         dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
+        console.log('task object:');
+        console.log(task);
         toggleAlert("Task created successfully!", "success")
       }).catch(error => {
         throw(error);
