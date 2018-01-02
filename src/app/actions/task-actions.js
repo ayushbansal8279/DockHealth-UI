@@ -169,6 +169,18 @@ export function addTaskComment(task, taskComment) {
   };
 }
 
+export function deleteComment(task, comment) {
+  return function(dispatch) {
+    return TaskApi.deleteComment(comment.commentId).then(deletingComment => {
+      dispatch({type: ActionTypes.DELETE_TASK_COMMENT_SUCCESS, task, comment});
+      toggleAlert("Comment deleted", "success")
+      console.log(comment.commentId);
+    }).catch(error => {
+      throw(error);
+    });
+  }
+}
+
 export function deleteTask(task) {
   return function(dispatch) {
     return TaskApi.deleteTask(task.taskId).then(deletingTask => {

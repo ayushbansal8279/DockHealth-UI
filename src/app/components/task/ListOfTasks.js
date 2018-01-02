@@ -68,6 +68,20 @@ class ListOfTasks extends BaseComponent {
 				$el.next().one('blur', save).focus();
 			});
 
+			// edit comment
+			$('body').on('click', '[data-editable-comment]', function () {
+				$(this).hide();
+				var $el = $(this);
+				$(this).next().show().val($el.text());
+				$(this).parent().next().show();
+				var save = function save() {
+					$el.show();
+					$el.next().hide();
+					$el.parent().next().hide();
+				};
+				$el.parent().parent().find('.cancel').one('click', save);
+			});
+
 		}
 
 		componentWillUnmount(){
@@ -183,6 +197,11 @@ class ListOfTasks extends BaseComponent {
 			// this.props.formActions.reset('addSubtaskForm')
 		}
 
+		deleteComment = (task, comment) => {
+			this.props.taskAction.taskToState(task);
+			this.props.taskAction.deleteComment(task, comment);
+		}
+
 
     render() {
 			if(AWS.config.credentials){
@@ -272,12 +291,36 @@ class ListOfTasks extends BaseComponent {
 													<MemberInitials member={comment.creator} extraClass="xsmall"/>
 						              {/* <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span> */}
 						            </div>
-						            <div className="columns">
-						              <span className="comment">{comment.comment}</span>
-						            </div>
-						            <div className="columns shrink align-right">
-						              <span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
-						            </div>
+
+												<div className="columns">
+													<div className="row align-justify collapse">
+														<div className="column">
+															<div className="row expanded">
+																<span className="comment" data-editable-comment>{comment.comment}</span>
+																<input className="comment" type="text"/>
+															</div>
+															<span className="comment-edit row collapse expanded align-justify">
+																<div className="column comment-edit-left">
+																	<svg onClick={() => this.deleteComment(task, comment)} className="icon medium"><use xlinkHref="#icon-delete"></use></svg>
+																</div>
+																<div className="column comment-edit-right">
+																	<span className="cancel pointer">
+																		Cancel
+																	</span>
+																	<div className="button x-small secondary">
+																		Save
+																	</div>
+																</div>
+															</span>
+														</div>
+														<div className="column shrink">
+															<span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
+														</div>
+													</div>
+												</div>
+
+
+
 						          {/*<div className="row expanded collapse comment-wrapper">
 						            <div className="columns shrink text-light">
 						              Load 2 earlier comments

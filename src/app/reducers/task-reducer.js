@@ -351,6 +351,12 @@ const TaskReducer = function(state = initialState, action) {
             )
         };
 
+    case types.DELETE_TASK_COMMENT_SUCCESS:
+      return{
+        ...state,
+        task: state.task.comments.filter(comment => comment !== action.comment)
+      };
+
     // case types.ADD_TASK_COMMENT_SUCCESS:
     //   return {
     //     ...state,
