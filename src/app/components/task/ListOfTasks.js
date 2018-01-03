@@ -21,7 +21,8 @@ class ListOfTasks extends BaseComponent {
 	  	super(props)
 	  	this.state = {
 	    		value: '',
-	    		status: props.initialStatus
+	    		status: props.initialStatus,
+					currentComment: {}
 	  	};
 	  	this.handleSubmit = this.handleSubmit.bind(this)
 			this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
@@ -80,6 +81,7 @@ class ListOfTasks extends BaseComponent {
 					$el.parent().next().hide();
 				};
 				$el.parent().parent().find('.cancel').one('click', save);
+				$el.parent().parent().find('.saveComment').one('click', save);
 			});
 
 		}
@@ -198,8 +200,12 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		deleteComment = (task, comment) => {
-			this.props.taskAction.taskToState(task);
 			this.props.taskAction.deleteComment(task, comment);
+		}
+
+		updateComment = (task, comment) => {
+			comment.comment = $('#comment-'+comment.commentId).val();
+			this.props.taskAction.updateComment(task, comment);
 		}
 
 
@@ -296,8 +302,11 @@ class ListOfTasks extends BaseComponent {
 													<div className="row align-justify collapse">
 														<div className="column">
 															<div className="row expanded">
-																<span className="comment" data-editable-comment>{comment.comment}</span>
-																<input className="comment" type="text"/>
+																{comment.creator.userId === this.props.userProfile.userId ?
+																	<span className="comment" data-editable-comment>{comment.comment}</span> :
+																	<span className="comment">{comment.comment}</span>
+																}
+																<input className="comment" id={'comment-'+comment.commentId} type="text"/>
 															</div>
 															<span className="comment-edit row collapse expanded align-justify">
 																<div className="column comment-edit-left">
@@ -307,7 +316,7 @@ class ListOfTasks extends BaseComponent {
 																	<span className="cancel pointer">
 																		Cancel
 																	</span>
-																	<div className="button x-small secondary">
+																	<div onClick={(e) => this.updateComment(task, comment)} className="button x-small secondary saveComment">
 																		Save
 																	</div>
 																</div>

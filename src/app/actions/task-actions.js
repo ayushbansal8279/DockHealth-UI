@@ -181,6 +181,17 @@ export function deleteComment(task, comment) {
   }
 }
 
+export function updateComment(task, comment) {
+  return function(dispatch) {
+    return TaskApi.updateComment(comment).then(comment => {
+      dispatch({type: ActionTypes.UPDATE_TASK_COMMENT_SUCCESS, task, comment});
+      toggleAlert("Comment updated", "success")
+    }).catch(error => {
+      throw(error);
+    });
+  }
+}
+
 export function deleteTask(task) {
   return function(dispatch) {
     return TaskApi.deleteTask(task.taskId).then(deletingTask => {

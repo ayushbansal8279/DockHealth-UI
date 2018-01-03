@@ -351,11 +351,65 @@ const TaskReducer = function(state = initialState, action) {
             )
         };
 
-    case types.DELETE_TASK_COMMENT_SUCCESS:
+    case types.UPDATE_TASK_COMMENT_SUCCESS:
+      var mainTaskId
+      if(action.task.parentTaskId){
+        mainTaskId = action.task.parentTaskId
+      }else{
+        mainTaskId = action.task.taskId
+      }
       return{
         ...state,
-        task: state.task.comments.filter(comment => comment !== action.comment)
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTaskId ?
+            action.task.parentTaskId ?
+              {...task, subtasks:
+                task.subtasks.map(subtask =>
+                  subtask === action.task ?
+                  {...subtask, comments:
+                    subtask.comments.map(comment =>
+                      comment === action.comment ?
+                      {...comment, comment: comment} :
+                      comment
+                    )
+                  } :
+                  subtask
+                )
+              } :
+              {...task, comments:
+                task.comments.map(comment =>
+                  comment === action.comment ?
+                  {...comment, comment: comment} :
+                  comment
+                )
+              } :
+              task
+            )
       };
+
+      case types.DELETE_TASK_COMMENT_SUCCESS:
+        var mainTaskId
+        if(action.task.parentTaskId){
+          mainTaskId = action.task.parentTaskId
+        }else{
+          mainTaskId = action.task.taskId
+        }
+        return{
+          ...state,
+          tasks: state.tasks.map(task =>
+            task.taskId === mainTaskId ?
+              action.task.parentTaskId ?
+                {...task, subtasks:
+                  task.subtasks.map(subtask =>
+                    subtask === action.task ?
+                    {...subtask, comments: subtask.comments.filter(comment => comment !== action.comment)} :
+                    subtask
+                  )
+                } :
+                {...task, comments: task.comments.filter(comment => comment !== action.comment)} :
+                task
+              )
+        };
 
     // case types.ADD_TASK_COMMENT_SUCCESS:
     //   return {

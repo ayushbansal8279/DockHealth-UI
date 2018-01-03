@@ -275,6 +275,17 @@ export function deleteComment(commentId) {
   });
 }
 
+export function updateComment(comment) {
+  // taskComment.creator.userId = sessionStorage.userId
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment', comment)
+  .then(response => {
+    return response;
+  }).catch(function (error){
+    console.log(error);
+    return error.response.data;
+  });
+}
+
 export function getHighPriorityTasksByTaskList(taskListId) {
   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findHighPriorityListTasks/'+taskListId+'?startPosition=0')
   .then(response => {
