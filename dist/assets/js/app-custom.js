@@ -5,7 +5,12 @@ function renderFoundationComponentsJquery(){
 	// $('.pickdate').fdatepicker({
 	// });
 
-	$('.dobpickdate').fdatepicker()
+	$('.dobpickdate').fdatepicker({
+		format: 'mm-dd-yyyy hh:ii',
+		disableDblClickSelection: true,
+		language: 'vi',
+		pickTime: true
+	})
 		.on('changeDate', function (ev) {
 			// var dob = ev.date;
 			// var mm = dob.getMonth() + 1; // getMonth() is zero-based
@@ -16,9 +21,8 @@ function renderFoundationComponentsJquery(){
 			// 	dob.getFullYear()
          	// 	].join('');
 			// $('.dobpickdate').attr('value', dobStr);
-			$('.dobpickdate').fdatepicker('hide');
+			// $('.dobpickdate').fdatepicker('hide');
 	});
-
 }
 
 function enableTaskListComponents(){

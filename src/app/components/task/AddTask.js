@@ -117,7 +117,6 @@ class AddTask extends BaseComponent {
 
 		form.patientId = $("#add-patient-id").val();
 		form.assignedToId = $("#assign-task-to-id").val();
-		debugger;
 		form.dueDate = new Date($('.dobpickdate').val());
 
 		if(form.priority == true){
