@@ -214,6 +214,7 @@ class AddTaskForm extends BaseComponent {
         }
 
         <Field id="due-date" name='dueDate' type='text' component={BasicField} label='Due date' xlinkHref="#icon-calendar" extraClassName="dobpickdate"/>
+        <Field id="reminder-date" name='reminderDt' type='text' component={BasicField} label='Reminder date' xlinkHref="#icon-calendar" extraClassName="dobpickdate"/>
 
         <FieldArray name="subtasks" component={renderSubtaskField}/>
 
@@ -289,6 +290,9 @@ const mapStateToProps = function(store) {
 		}
     if(editTask.dueDate){
       initialTaskFormValues.dueDate = editTask.dueDate;
+    }
+    if(editTask.reminderDt){
+      initialTaskFormValues.reminderDt = editTask.reminderDt;
     }
 		if(editTask.assignedTo){
 			initialTaskFormValues.assignedTo = editTask.assignedTo.firstName+" "+editTask.assignedTo.lastName;

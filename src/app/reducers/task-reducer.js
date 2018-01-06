@@ -13,6 +13,14 @@ const TaskReducer = function(state = initialState, action) {
         tasks: [action.task].concat(state.tasks)
       }
 
+    case types.DUPLICATE_TASK_SUCCESS:
+      // with concact make a copy of the array, and then we'll change and return the copy
+      return{
+        ...state,
+        // tasks: state.tasks.concat(action.task)
+        tasks: [action.duplicatedTask].concat(state.tasks)
+      }
+
     case types.GET_TASKS_SUCCESS:
       // isFetching is used for the loading image
       return Object.assign({}, state, { tasks: action.tasks, isFetching:false });

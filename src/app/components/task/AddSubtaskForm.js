@@ -74,6 +74,8 @@ class AddSubtaskForm extends BaseComponent{
     subtask.patient = $('#add-patient-subtask').val()
     subtask.assignedToId = $('#assign-subtask-to-id').val()
     subtask.assignedTo = $('#assign-subtask-to').val()
+    subtask.dueDate = new Date($('#subtask-due-date').val());
+    subtask.reminderDt = new Date($('#subtask-reminder-date').val());
     if(subtask.priority == true){
       subtask.priority = "HIGH"
     }else{
@@ -168,6 +170,9 @@ class AddSubtaskForm extends BaseComponent{
             :
             <span></span>
           }
+
+          <Field id="subtask-due-date" name='dueDate' type='text' component={BasicField} label='Due date' xlinkHref="#icon-calendar" extraClassName="dobpickdate"/>
+          <Field id="subtask-reminder-date" name='reminderDt' type='text' component={BasicField} label='Reminder date' xlinkHref="#icon-calendar" extraClassName="dobpickdate"/>
 
           {/* <div className="column top-buffer large-12">
             <div className="row">

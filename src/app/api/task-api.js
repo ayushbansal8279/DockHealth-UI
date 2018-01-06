@@ -174,6 +174,18 @@ export function deleteTask(taskId) {
     });
 }
 
+export function duplicateTask(taskId) {
+  // userId = sessionStorage.userId
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/duplicateTask/' + taskId)
+    .then(response => {
+      // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      return error.response.data;
+    });
+}
+
 export function markComplete(task){
   // userId = sessionStorage.userId
   // console.log(taskId);

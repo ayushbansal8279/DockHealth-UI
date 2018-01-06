@@ -203,6 +203,17 @@ export function deleteTask(task) {
   }
 }
 
+export function duplicateTask(task) {
+  return function(dispatch) {
+    return TaskApi.duplicateTask(task.taskId).then(duplicatedTask => {
+      dispatch({type: ActionTypes.DUPLICATE_TASK_SUCCESS, duplicatedTask});
+      toggleAlert("Task duplicated", "success")
+    }).catch(error => {
+      throw(error);
+    });
+  }
+}
+
 //checking
 export function markComplete(task, status, listName) {
   var action = ""

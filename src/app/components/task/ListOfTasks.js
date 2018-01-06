@@ -35,6 +35,7 @@ class ListOfTasks extends BaseComponent {
 			this.markAsUnread = this.markAsUnread.bind(this)
 			this.editTask = this.editTask.bind(this)
 			this.confirmCompleteTask = this.confirmCompleteTask.bind(this)
+			this.duplicateTask = this.duplicateTask.bind(this)
 		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -165,6 +166,11 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		deleteTask = (task) => {
+			console.log(task.taskId)
+		}
+
+		duplicateTask = (task) => {
+			this.props.taskAction.duplicateTask(task);
 			console.log(task.taskId)
 		}
 
@@ -372,6 +378,9 @@ class ListOfTasks extends BaseComponent {
 											<li onClick={(e) => {this.handleToggle(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>
 										}
 										<li data-open={"delete-task-"+task.taskId}>Delete task</li>
+										{type != "subtask" &&
+											<li onClick={() => this.duplicateTask(task)}>Duplicate task</li>
+										}
 									</ul>
 								</div>
 							</div>
