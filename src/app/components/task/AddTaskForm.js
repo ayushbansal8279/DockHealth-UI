@@ -71,6 +71,12 @@ class AddTaskForm extends BaseComponent {
     }else{
       task.priority = false
     }
+    if(task.dueDate){
+      task.dueDate = formatDateAndTime(task.dueDate);
+    }
+    if(task.reminderDt){
+      task.reminderDt = formatDateAndTime(task.reminderDt);
+    }
     this.props.formActions.initialize('addSubtaskForm', task, true)
     // touch(form:String, ...fields:String)
     var patient = this.props.currentSubtasks[index]
@@ -95,6 +101,10 @@ class AddTaskForm extends BaseComponent {
 
   updateDueDate = (e) => {
     alert("working")
+  }
+
+  formatDate = () => {
+    alert("format date");
   }
 
   render() {
@@ -213,8 +223,8 @@ class AddTaskForm extends BaseComponent {
           <span></span>
         }
 
-        <Field id="due-date" name='dueDate' type='text' component={BasicField} label='Due date' xlinkHref="#icon-calendar" extraClassName="dobpickdate"/>
-        <Field id="reminder-date" name='reminderDt' type='text' component={BasicField} label='Reminder date' xlinkHref="#icon-calendar" extraClassName="dobpickdate"/>
+        <Field id="due-date" name='dueDate' type='text' component={BasicField} label='Due date' xlinkHref="#icon-calendar" extraClassName="duedatepickdate"/>
+        <Field id="reminder-date" name='reminderDt' type='text' component={BasicField} label='Reminder date' xlinkHref="#icon-calendar" extraClassName="duedatepickdate"/>
 
         <FieldArray name="subtasks" component={renderSubtaskField}/>
 
@@ -249,7 +259,6 @@ class AddTaskForm extends BaseComponent {
       {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
     </form>
 
-
   )
   }
 
@@ -273,6 +282,11 @@ AddTaskForm = reduxForm({
 const selector = formValueSelector('addTaskForm')
 
 const mapStateToProps = function(store) {
+
+
+
+
+
 	var initialTaskFormValues = {}
   if(store.taskListState.currentList){
     initialTaskFormValues.taskList = store.taskListState.currentList.listName
@@ -289,10 +303,10 @@ const mapStateToProps = function(store) {
 			initialTaskFormValues.patientId = editTask.patient.patientId;
 		}
     if(editTask.dueDate){
-      initialTaskFormValues.dueDate = editTask.dueDate;
+      initialTaskFormValues.dueDate = formatDateAndTime(editTask.dueDate);
     }
     if(editTask.reminderDt){
-      initialTaskFormValues.reminderDt = editTask.reminderDt;
+      initialTaskFormValues.reminderDt = formatDateAndTime(editTask.reminderDt);
     }
 		if(editTask.assignedTo){
 			initialTaskFormValues.assignedTo = editTask.assignedTo.firstName+" "+editTask.assignedTo.lastName;

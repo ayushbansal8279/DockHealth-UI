@@ -6,12 +6,13 @@ function renderFoundationComponentsJquery(){
 	// });
 
 	$('.dobpickdate').fdatepicker({
-		format: 'mm-dd-yyyy hh:ii',
+		format: 'mm/dd/yyyy',
 		disableDblClickSelection: true,
 		language: 'vi',
 		pickTime: true
 	})
 		.on('changeDate', function (ev) {
+
 			// var dob = ev.date;
 			// var mm = dob.getMonth() + 1; // getMonth() is zero-based
   			// var dd = dob.getDate() + 1;
@@ -23,6 +24,53 @@ function renderFoundationComponentsJquery(){
 			// $('.dobpickdate').attr('value', dobStr);
 			// $('.dobpickdate').fdatepicker('hide');
 	});
+
+	$('.duedatepickdate').fdatepicker({
+		format: 'MM d @ hh:ii',
+		disableDblClickSelection: true,
+		language: 'vi',
+		pickTime: true,
+		ampm: true
+	})
+		.on('changeDate', function (ev) {
+			var dobStr = formatDateAndTime(ev.date);
+			$('.dobpickdate').attr('value', dobStr);
+
+			// var dob = ev.date;
+			// var mm = dob.getMonth() + 1; // getMonth() is zero-based
+				// var dd = dob.getDate() + 1;
+				// var dobStr = [
+						// 	(mm>9 ? '' : '0') + mm, "/",
+			// 	(dd>9 ? '' : '0') + dd, "/",
+			// 	dob.getFullYear()
+					// 	].join('');
+			// $('.dobpickdate').attr('value', dobStr);
+			// $('.dobpickdate').fdatepicker('hide');
+	});
+}
+
+var months = [ "January", "February", "March", "April", "May", "June",
+						 "July", "August", "September", "October", "November", "December" ];
+
+function formatAMPM(date) {
+	var hours = date.getHours();
+	var minutes = date.getMinutes();
+	var ampm = hours >= 12 ? 'pm' : 'am';
+	hours = hours % 12;
+	hours = hours ? hours : 12; // the hour '0' should be '12'
+	minutes = minutes < 10 ? '0'+minutes : minutes;
+	var strTime = hours + ':' + minutes + ampm;
+	return strTime;
+}
+function formatDateAndTime(dateStr){
+ var d = new Date(dateStr);
+ var month = months[d.getMonth()];
+ var day = d.getDate();
+ var time = formatAMPM(d);
+ var year = d.getFullYear();
+ // day = day < 10 ? '0' + day : day;
+ var formattedDateStr = month + ' ' + day + ' @ ' + time;
+ return formattedDateStr;
 }
 
 function enableTaskListComponents(){
