@@ -26,7 +26,7 @@ function renderFoundationComponentsJquery(){
 	});
 
 	$('.duedatepickdate').fdatepicker({
-		format: 'MM d @ hh:ii',
+		format: 'MM d @ hh:ii @ yyyy',
 		disableDblClickSelection: true,
 		language: 'vi',
 		pickTime: true,

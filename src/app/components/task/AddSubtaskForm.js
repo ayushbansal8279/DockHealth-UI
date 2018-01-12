@@ -74,8 +74,29 @@ class AddSubtaskForm extends BaseComponent{
     subtask.patient = $('#add-patient-subtask').val()
     subtask.assignedToId = $('#assign-subtask-to-id').val()
     subtask.assignedTo = $('#assign-subtask-to').val()
-    subtask.dueDate = new Date($('#subtask-due-date').val());
-    subtask.reminderDt = new Date($('#subtask-reminder-date').val());
+
+    if($('#subtask-due-date').val() != ""){
+      var d = new Date($('#subtask-due-date').val());
+      if(!isNaN(d.getTime())){
+        subtask.dueDate = d;
+      }else{
+        subtask.dueDate = subtask.originalDueDate;
+      }
+    }else{
+      subtask.dueDate = "";
+    }
+
+    if($('#subtask-reminder-date').val() != ""){
+      var d = new Date($('#subtask-reminder-date').val());
+      if(!isNaN(d.getTime())){
+        subtask.reminderDt = d;
+      }else{
+        subtask.reminderDt = subtask.originalReminderDt;
+      }
+    }else{
+      subtask.reminderDt = "";
+    }
+
     if(subtask.priority == true){
       subtask.priority = "HIGH"
     }else{

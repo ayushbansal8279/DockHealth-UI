@@ -117,8 +117,41 @@ class AddTask extends BaseComponent {
 
 		form.patientId = $("#add-patient-id").val();
 		form.assignedToId = $("#assign-task-to-id").val();
-		form.dueDate = new Date($('#due-date').val());
-		form.reminderDt = new Date($('#reminder-date').val());
+
+		if($('#due-date').val() != ""){
+			var d = new Date($('#due-date').val());
+			if(!isNaN(d.getTime())){
+				form.dueDate = d;
+			}else{
+				form.dueDate = form.originalDueDate;
+			}
+		}else{
+			form.dueDate = "";
+		}
+
+		if($('#reminder-date').val() != ""){
+			var d = new Date($('#reminder-date').val());
+			if(!isNaN(d.getTime())){
+				form.reminderDt = d;
+			}else{
+				form.reminderDt = form.originalReminderDt;
+			}
+		}else{
+			form.reminderDt = "";
+		}
+
+    //
+		// if($('#due-date').val() != ""){
+		// 	form.dueDate = new Date($('#due-date').val());
+		// }else{
+		// 	form.dueDate = "";
+		// }
+		// if($('#reminder-date').val() != ""){
+		// 	form.reminderDt = new Date($('#reminder-date').val());
+		// }else{
+		// 	form.dueDate = "";
+		// }
+
 		if(form.priority == true){
 			form.priority = "HIGH"
 		}else{

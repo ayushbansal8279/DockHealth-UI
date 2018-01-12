@@ -73,16 +73,16 @@ class AddTaskForm extends BaseComponent {
     }
     if(task.dueDate){
       task.dueDate = formatDateAndTime(task.dueDate);
+      task.originalDueDate = task.dueDate;
     }
     if(task.reminderDt){
       task.reminderDt = formatDateAndTime(task.reminderDt);
+      task.originalReminderDt = task.reminderDt;
     }
     this.props.formActions.initialize('addSubtaskForm', task, true)
     // touch(form:String, ...fields:String)
     var patient = this.props.currentSubtasks[index]
   }
-
-
 
   changeTaskPriority = () => {
     var priority = !this.state.priority
@@ -283,10 +283,6 @@ const selector = formValueSelector('addTaskForm')
 
 const mapStateToProps = function(store) {
 
-
-
-
-
 	var initialTaskFormValues = {}
   if(store.taskListState.currentList){
     initialTaskFormValues.taskList = store.taskListState.currentList.listName
@@ -304,9 +300,11 @@ const mapStateToProps = function(store) {
 		}
     if(editTask.dueDate){
       initialTaskFormValues.dueDate = formatDateAndTime(editTask.dueDate);
+      initialTaskFormValues.originalDueDate = editTask.dueDate;
     }
     if(editTask.reminderDt){
       initialTaskFormValues.reminderDt = formatDateAndTime(editTask.reminderDt);
+      initialTaskFormValues.originalReminderDt = editTask.reminderDt;
     }
 		if(editTask.assignedTo){
 			initialTaskFormValues.assignedTo = editTask.assignedTo.firstName+" "+editTask.assignedTo.lastName;
