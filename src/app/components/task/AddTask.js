@@ -116,7 +116,11 @@ class AddTask extends BaseComponent {
 		console.log(form)
 
 		form.patientId = $("#add-patient-id").val();
-		form.assignedToId = $("#assign-task-to-id").val();
+		if($('#assign-task-to').val() != ""){
+			form.assignedToId = $("#assign-task-to-id").val();
+		}else{
+			form.assignedToId = "";
+		}
 
 		if($('#due-date').val() != ""){
 			var d = new Date($('#due-date').val());

@@ -72,8 +72,12 @@ class AddSubtaskForm extends BaseComponent{
     subtask.description = $('#description-subtask').val()
     subtask.patientId = $('#add-patient-subtask-id').val()
     subtask.patient = $('#add-patient-subtask').val()
-    subtask.assignedToId = $('#assign-subtask-to-id').val()
-    subtask.assignedTo = $('#assign-subtask-to').val()
+    if($('#assign-subtask-to').val() != null){
+      subtask.assignedToId = $('#assign-subtask-to-id').val()
+      subtask.assignedTo = $('#assign-subtask-to').val()
+    }else{
+      subtask.assignedToId = "";
+    }
 
     if($('#subtask-due-date').val() != ""){
       var d = new Date($('#subtask-due-date').val());
