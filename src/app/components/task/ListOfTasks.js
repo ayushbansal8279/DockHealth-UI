@@ -377,7 +377,9 @@ class ListOfTasks extends BaseComponent {
 										{type != "subtask" &&
 											<li onClick={(e) => {this.handleToggle(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>
 										}
-										<li data-open={"delete-task-"+task.taskId}>Delete task</li>
+										{task.creator.userId == this.props.userProfile.userId &&
+											<li data-open={"delete-task-"+task.taskId}>Delete task</li>
+										}
 										{type != "subtask" &&
 											<li onClick={() => this.duplicateTask(task)}>Duplicate task</li>
 										}
@@ -416,7 +418,7 @@ class ListOfTasks extends BaseComponent {
 						uniqueModalId={"delete-task-"+task.taskId}
 						handleConfirmationArgs={task}
 						handleConfirmation={this.handleDeleteTask}
-					/>	
+					/>
 					<BooleanModal message="You are about to complete a task with open subtasks. Completing the task will also complete the subtasks. Would you like to proceed?" confirmBtnTxt="Yes" uniqueModalId={"complete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.confirmCompleteTask}/>
 					{task.taskList &&
 						<AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/>
