@@ -318,6 +318,13 @@ pre.emailMessage {
   padding:0;
 }
 
+.small-link{
+  color:#0CA1C8;
+  font-size:12px;
+  text-decoration: underline;
+  padding-top:20px;
+}
+
 .other{
   display: inline;
   max-width: 200px;

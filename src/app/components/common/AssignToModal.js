@@ -61,6 +61,9 @@ class AssignToModal extends React.Component {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      {this.props.task.assignedTo != null &&
+        <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, -1, null)} className="small-link pointer">Unassign task</div>
+      }
     </div>
     )
   }
