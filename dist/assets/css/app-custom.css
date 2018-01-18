@@ -325,6 +325,14 @@ pre.emailMessage {
   padding-top:20px;
 }
 
+.task-details .icon{
+  margin-right: .75em;
+}
+
+.overdue{
+  color:red;
+}
+
 .other{
   display: inline;
   max-width: 200px;

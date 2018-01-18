@@ -282,9 +282,13 @@ class ListOfTasks extends BaseComponent {
 							<span className="edit-task">
 				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"}</span>
-								{task.assignedBy ?
-					        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span> :
-					        <span className="task-details text-light">unassigned</span>
+								{task.assignedBy &&
+					        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{new Date(task.assignmentUpdatedDateTime)}</Moment>}</span>
+								}
+								{task.dueDate &&
+									<div className={"center-content-vertical task-details " + ((new Date(task.dueDate) < new Date()) ? "overdue" : "")}>
+										<svg className="icon small"><use xlinkHref="#icon-calendar"></use></svg><span className="">{formatDateAndTime(task.dueDate)}</span>
+									</div>
 								}
 								{task.status == 'COMPLETE' && task.completedBy &&
 									<span className="task-details text-light">{"Completed by " + task.completedBy.userName}</span>
