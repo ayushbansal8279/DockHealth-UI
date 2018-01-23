@@ -318,6 +318,10 @@ pre.emailMessage {
   padding:0;
 }
 
+.datepicker{
+  z-index:1000!important;
+}
+
 .small-link{
   color:#0CA1C8;
   font-size:12px;

@@ -224,7 +224,7 @@ class AddTaskForm extends BaseComponent {
         }
 
         <Field id="due-date" name='dueDate' type='text' component={BasicField} label='Due date' xlinkHref="#icon-calendar" extraClassName="duedatepickdate"/>
-        <Field id="reminder-date" name='reminderDt' type='text' component={BasicField} label='Reminder date' xlinkHref="#icon-calendar" extraClassName="duedatepickdate"/>
+        {/* <Field id="reminder-date" name='reminderDt' type='text' component={BasicField} label='Reminder date' xlinkHref="#icon-calendar" extraClassName="duedatepickdate"/> */}
 
         <FieldArray name="subtasks" component={renderSubtaskField}/>
 
