@@ -96,18 +96,6 @@ class AddTask extends BaseComponent {
 		// alert("clicked:" + this.state.memberId);
 	}
 
-	formatDate(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
-	}
-
 	submit = (form) => {
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
@@ -123,12 +111,14 @@ class AddTask extends BaseComponent {
 		}
 
 		if($('#due-date').val() != ""){
-			var d = new Date($('#due-date').val());
-			if(!isNaN(d.getTime())){
-				form.dueDate = d;
-			}else{
-				form.dueDate = form.originalDueDate;
-			}
+			var d = unformatDateAndTime($('#due-date').val());
+			form.dueDate = d;
+			// var d = new Date($('#due-date').val());
+			// if(!isNaN(d.getTime())){
+			// 	form.dueDate = d;
+			// }else{
+			// 	form.dueDate = form.originalDueDate;
+			// }
 		}else{
 			form.dueDate = "";
 		}

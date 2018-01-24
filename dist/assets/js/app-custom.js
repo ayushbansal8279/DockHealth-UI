@@ -8,7 +8,7 @@ function renderFoundationComponentsJquery(){
 	$('.dobpickdate').fdatepicker({
 		format: 'mm/dd/yyyy',
 		disableDblClickSelection: true,
-		language: 'vi',
+		language: 'en',
 		pickTime: true
 	})
 		.on('changeDate', function (ev) {
@@ -28,57 +28,34 @@ function renderFoundationComponentsJquery(){
 	$('.duedatepickdate').fdatepicker({
 		format: 'MM d, hh:ii @ yyyy',
 		disableDblClickSelection: true,
-		language: 'en',
 		pickTime: true
 	})
 		.on('changeDate hide', function (ev) {
-			var dobStr = formatDateAndTime($('.duedatepickdate#due-date')[0].value);
-			$('.duedatepickdate#due-date').val(dobStr);
+			// var dobStr = formatDateAndTime(ev.date);
+			// var dueDateStr = moment($('.duedatepickdate#due-date')[0].value, 'MM d, hh:mm @ yyyy').format();
+			// var dueDateStr = formatDateAndTime($('.duedatepickdate#due-date')[0].value);
+			var dueDateStr = formatDateAndTimeFromFoundation(ev.date);
+			debugger;
+			if($('.duedatepickdate#due-date')[0].value != ""){
+				$('.duedatepickdate#due-date').val(dueDateStr);
+			}
 
-			// var dob = ev.date;
-			// var mm = dob.getMonth() + 1; // getMonth() is zero-based
-				// var dd = dob.getDate() + 1;
-				// var dobStr = [
-						// 	(mm>9 ? '' : '0') + mm, "/",
-			// 	(dd>9 ? '' : '0') + dd, "/",
-			// 	dob.getFullYear()
-					// 	].join('');
-			// $('.dobpickdate').attr('value', dobStr);
-			// $('.dobpickdate').fdatepicker('hide');
 	})
 }
 
-var months = [ "Jan", "Feb", "Mar", "Apr", "May", "June",
-						 "July", "Aug", "Sept", "Oct", "Nov", "Dec" ];
-var days = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
-
-function formatAMPM(date) {
-	var hours = date.getHours();
-	var minutes = date.getMinutes();
-	var ampm = hours >= 12 ? 'PM' : 'AM';
-	hours = hours % 12;
-	hours = hours ? hours : 12; // the hour '0' should be '12'
-	minutes = minutes < 10 ? '0'+minutes : minutes;
-	var strTime = hours + ':' + minutes + ' ' + ampm;
-	return strTime;
+function formatDateAndTimeFromFoundation(dateStr){
+	var formattedDateStr = moment(dateStr).utc().format('ddd, MMM Do YYYY @ h:mm A');
+	return formattedDateStr;
 }
+
 function formatDateAndTime(dateStr){
- var d;
-	if(dateStr.substring(dateStr.length - 5) == "+0000"){
-		debugger;
-		d = new Date(dateStr.slice(0, -5));
-	}else{
-		debugger;
-		d = new Date(dateStr);
-	}
- var month = months[d.getMonth()];
- var date = d.getDate();
- var day = days[d.getDay()];
- var time = formatAMPM(d);
- var year = d.getFullYear();
- // day = day < 10 ? '0' + day : day;
- var formattedDateStr = day + ' ' + month + ' ' + date + ', ' + year + ' @ ' + time;
- return formattedDateStr;
+	var formattedDateStr = moment(dateStr).format('ddd, MMM Do YYYY @ h:mm A');
+	return formattedDateStr;
+}
+
+function unformatDateAndTime(formattedDtStr){
+	var unFormattedDateStr = moment(formattedDtStr, 'ddd, MMM Do YYYY @ h:mm A').format();
+	return unFormattedDateStr;
 }
 
 function enableTaskListComponents(){
