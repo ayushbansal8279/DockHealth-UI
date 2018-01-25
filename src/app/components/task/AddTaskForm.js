@@ -166,7 +166,7 @@ class AddTaskForm extends BaseComponent {
 
         {/* FILE IN */}
         {/* Show only from inbox. Tasks can only be assigned to list from 'inbox' */}
-        {this.props.title == "Inbox" ?
+        {this.props.title == "Inbox" &&
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
             <div className="input-wrapper form-floating-label">
@@ -187,15 +187,15 @@ class AddTaskForm extends BaseComponent {
               </fieldset>
             </div>
           </div>
-          :
-          <div className="column large-12 input-group input-dropdown">
-            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
-            <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.props.taskList?this.props.taskList.taskListId:0} type="text" data-toggle="add-task-file-in-options" disabled/>
-              <Field id="taskListId" name="taskListId" className="input-group-field" value={this.props.taskList?this.props.taskList.taskListId:0} component="input" type="hidden"/>
-              <label>File in (filing only allowed in Inbox)</label>
-            </div>
-          </div>
+          // :
+          // <div className="column large-12 input-group input-dropdown">
+          //   <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
+          //   <div className="input-wrapper form-floating-label">
+          //     <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.props.taskList?this.props.taskList.taskListId:0} type="text" data-toggle="add-task-file-in-options" disabled/>
+          //     <Field id="taskListId" name="taskListId" className="input-group-field" value={this.props.taskList?this.props.taskList.taskListId:0} component="input" type="hidden"/>
+          //     <label>File in (filing only allowed in Inbox)</label>
+          //   </div>
+          // </div>
         }
 
         {/* Example of error field */}
