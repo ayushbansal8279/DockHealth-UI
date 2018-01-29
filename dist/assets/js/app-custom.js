@@ -44,7 +44,7 @@ function renderFoundationComponentsJquery(){
 }
 
 function formatDateAndTimeFromFoundation(dateStr){
-	var formattedDateStr = moment(dateStr).utc().format('ddd, MMM Do YYYY @ h:mm A');
+	var formattedDateStr = moment(dateStr).utc().local().format('ddd, MMM Do YYYY @ h:mm A');
 	return formattedDateStr;
 }
 

@@ -103,12 +103,17 @@ class AddTask extends BaseComponent {
 		// form.subtasks = this.state.subtasks
 		console.log(form)
 
-		form.patientId = $("#add-patient-id").val();
+		if(form.patient != ""){
+			form.patientId = $("#add-patient-id").val();
+		}else{
+			form.patientId = null;
+		}
 		if($('#assign-task-to').val() != ""){
 			form.assignedToId = $("#assign-task-to-id").val();
 		}else{
 			form.assignedToId = "";
 		}
+		debugger;
 
 		if($('#due-date').val() != ""){
 			var d = unformatDateAndTime($('#due-date').val());
