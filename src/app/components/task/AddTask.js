@@ -113,8 +113,6 @@ class AddTask extends BaseComponent {
 		}else{
 			form.assignedToId = "";
 		}
-		debugger;
-
 		if($('#due-date').val() != ""){
 			var d = unformatDateAndTime($('#due-date').val());
 			form.dueDate = d;
