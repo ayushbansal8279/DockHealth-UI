@@ -108,6 +108,7 @@ class NavBar extends React.Component {
           </li>
           <NavLink to='/people' className="center-content-vertical"><svg className="icon"><use xlinkHref="#icon-user"></use></svg>People</NavLink>
           <NavLink to='/patientList' className="center-content-vertical"><svg className="icon"><use xlinkHref="#icon-patient"></use></svg>Patients</NavLink>
+          <NavLink to='/support' className="center-content-vertical"><svg className="icon"><use xlinkHref="#icon-patient"></use></svg>Support</NavLink>
         </ul>
         <div className="share-wrapper hide">
           <div className="social-media text-center">
