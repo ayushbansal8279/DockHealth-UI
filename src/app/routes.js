@@ -20,6 +20,7 @@ import ConfirmMFACode from './views/auth/ConfirmMFACode'
 import PageNotFound from './views/PageNotFound'
 import ErrorPage from './views/ErrorPage'
 import TaskListView from './views/TaskListView'
+import SupportSectionView from './views/SupportSectionView'
 // import TaskListAdd from './components/tasklist/TaskListAdd';
 // import TaskListUpdateView from './views/TaskListUpdateView';
 // import TaskListMembersView from './views/TaskListMembersView';
@@ -86,6 +87,7 @@ export const Routes = (store) => {
         <Route path="/tasks/:listName" component={Home}/>
         <Route path="/tasks/:listName" component={Home}/>
         <Route path="/userprofile" component={UserProfileView} />
+        <Route path="/support" component={SupportSectionView} />
         {/* <Route path="/test" component={Test} /> */}
 
       </Route>
