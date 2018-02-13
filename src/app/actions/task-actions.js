@@ -139,6 +139,9 @@ export function saveTask(newTask) {
     return function(dispatch) {
       return TaskApi.updateTask(newTask).then(task => {
         dispatch({type: ActionTypes.UPDATE_TASK_SUCCESS, task});
+        if(newTask.refiled == true){
+          $('#task'+task.taskId).fadeOut(1000)
+        }
         toggleAlert("Task updated successfully!", "success")
       }).catch(error => {
         throw(error);
@@ -148,8 +151,6 @@ export function saveTask(newTask) {
     return function(dispatch) {
       return TaskApi.addTask(newTask).then(task => {
         dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
-        console.log('task object:');
-        console.log(task);
         toggleAlert("Task created successfully!", "success")
       }).catch(error => {
         throw(error);

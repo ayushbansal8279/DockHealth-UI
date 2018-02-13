@@ -362,6 +362,21 @@ pre.emailMessage {
   padding-bottom:.75em;
 }
 
+.fade-out {
+  animation: FADE-OUT-ANIMATION 1s;
+  animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes FADE-OUT-ANIMATION {
+  0%   { position: 1; }
+  100% { position: 0; }
+}
+
+@-webkit-keyframes FADE-OUT-ANIMATION {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /*Search Bar Styles */
 
 /*.has-error {

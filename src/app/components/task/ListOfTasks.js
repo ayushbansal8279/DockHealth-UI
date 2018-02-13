@@ -227,7 +227,7 @@ class ListOfTasks extends BaseComponent {
 		{this.props.tasks && this.props.tasks.map((task, index) => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
-					<div key={"task"+task.taskId} className="task-item has-subtasks">
+					<div key={"task"+task.taskId} id={'task'+task.taskId} className={"task-item has-subtasks " + (task.refiled && 'refiled')}>
 						{generateTask(task, index, "maintask")}
 					</div>
 				)

@@ -116,12 +116,6 @@ class AddTask extends BaseComponent {
 		if($('#due-date').val() != ""){
 			var d = unformatDateAndTime($('#due-date').val());
 			form.dueDate = d;
-			// var d = new Date($('#due-date').val());
-			// if(!isNaN(d.getTime())){
-			// 	form.dueDate = d;
-			// }else{
-			// 	form.dueDate = form.originalDueDate;
-			// }
 		}else{
 			form.dueDate = "";
 		}
@@ -137,24 +131,15 @@ class AddTask extends BaseComponent {
 			form.reminderDt = "";
 		}
 
-    //
-		// if($('#due-date').val() != ""){
-		// 	form.dueDate = new Date($('#due-date').val());
-		// }else{
-		// 	form.dueDate = "";
-		// }
-		// if($('#reminder-date').val() != ""){
-		// 	form.reminderDt = new Date($('#reminder-date').val());
-		// }else{
-		// 	form.dueDate = "";
-		// }
-
 		if(form.priority == true){
 			form.priority = "HIGH"
 		}else{
 			form.priority = "LOW"
 		}
-		// form.taskListId = $("#taskListId").val();
+		if($("#filed-in-taskList").val()){
+			form.refiled = true;
+		}
+		debugger;
 		this.props.taskActions.saveTask(form);
 
 		// print the form values to the console
