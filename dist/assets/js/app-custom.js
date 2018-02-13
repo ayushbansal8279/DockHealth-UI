@@ -35,9 +35,9 @@ function renderFoundationComponentsJquery(){
 			// var dueDateStr = moment($('.duedatepickdate#due-date')[0].value, 'MM d, hh:mm @ yyyy').format();
 			// var dueDateStr = formatDateAndTime($('.duedatepickdate#due-date')[0].value);
 			var dueDateStr = formatDateAndTimeFromFoundation(ev.date);
-			debugger;
 			if($('.duedatepickdate#due-date')[0].value != ""){
 				$('.duedatepickdate#due-date').val(dueDateStr);
+				$('.duedatepickdate').parent().addClass('has-value');
 			}
 
 	})

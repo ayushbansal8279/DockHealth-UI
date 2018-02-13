@@ -78,7 +78,13 @@ class NavBar extends React.Component {
 
         {/*{userProfile ? <LinksAuth className={menuClasses} onLogout={this.onLogout} user={userProfile} userProfilePic={userProfilePic}/> : <LinksDefault className={menuClasses}/>}*/}
         <ul className="menu vertical outer">
-          <NavLink to='/activityfeed' className="center-content-vertical"><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</NavLink>
+          <li>
+            <Link to='/activityfeed' className="center-content-vertical"><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</Link>
+            <ul className="nested vertical menu">
+              <NavLink activeClassName="active" to={"/tasks/Assigned to me"}>Assigned to me</NavLink>
+              <NavLink activeClassName="active" to={"/tasks/Assigned by me"}>Assigned by me</NavLink>
+            </ul>
+          </li>
           <li>
             <Link to='/taskList' activeClassName="active" className={"center-content-vertical " + (this.props.isList && 'active')}><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>
             <ul className="nested vertical menu">
@@ -90,8 +96,8 @@ class NavBar extends React.Component {
               </li> */}
 
               <NavLink activeClassName="active" to={"/tasks/Inbox"}>Inbox</NavLink>
-              <NavLink activeClassName="active" to={"/tasks/Assigned to me"}>Assigned to me</NavLink>
-              <NavLink activeClassName="active" to={"/tasks/Assigned by me"}>Assigned by me</NavLink>
+              {/* <NavLink activeClassName="active" to={"/tasks/Assigned to me"}>Assigned to me</NavLink>
+              <NavLink activeClassName="active" to={"/tasks/Assigned by me"}>Assigned by me</NavLink> */}
 
               {this.props.taskLists && this.props.taskLists.map(taskList => {
                 return(

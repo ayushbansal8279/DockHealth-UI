@@ -24,8 +24,10 @@ class TaskListActivityFeedContainer extends BaseComponent {
       super.componentDidUpdate()
     }
 
-  handleClick = (e) => {
-    // e.preventDefault();
+  handleClick = (e, taskListId) => {
+    e.preventDefault();
+		toggleDropDown('activityList' + taskListId)
+		alert('yes')
     //not working
     //$("#activityList").foundation('toggle', $(e.target));
     console.log('The accordion link was clicked.');
@@ -60,22 +62,22 @@ class TaskListActivityFeedContainer extends BaseComponent {
     renderTaskListName(){
       return this.props.activityFeedForAllUserList.map((auditsandtasklist) =>{
         return(
-					<div className="slim accordion-item" data-accordion-item key={"taskList" + auditsandtasklist.taskListId}>
-						<a onClick={this.handleClick} href="#" className="accordion-title">{auditsandtasklist.listName}</a>
+					<li className="slim accordion-item" data-accordion-item key={"taskList" + auditsandtasklist.taskListId}>
+						<a  href="#" className="accordion-title">{auditsandtasklist.listName}</a>
 						{/* override of app.css line 2068 display:none : find in app-custonm .accordion-content line 122 */}
 						<div className="accordion-content" data-tab-content>
               {this.renderList(auditsandtasklist.auditList) && this.renderList(auditsandtasklist.auditList).length > 0 ? this.renderList(auditsandtasklist.auditList) : <p className="light-gray">No Recent Activities</p>}
             </div>
-          </div>
+          </li>
         );
       })
     }
 
     render (){
       return (
-        <div className="columns slim large-12 accordion" data-accordion data-allow-all-closed="true">
+        <ul className="columns slim large-12 accordion" data-accordion data-allow-all-closed="true">
           {this.renderTaskListName()}
-        </div>
+        </ul>
       )
     }
 }
