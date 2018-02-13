@@ -63,7 +63,15 @@ class Home extends BaseComponentWithFoundationUpdate {
     // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
     this.props.actions.loading()
-    this.props.taskListActions.isList(true)
+
+    if(listName == "Inbox"){
+      this.props.taskListActions.isInbox(true)
+      this.props.taskListActions.isList(false)
+    }else{
+      this.props.taskListActions.isInbox(false)
+      this.props.taskListActions.isList(true)
+    }
+
     if(!listName || listName == "Inbox"){
       this.props.actions.getInboxTasks("COMPLETE")
       this.props.actions.getInboxTasks("INCOMPLETE")
@@ -126,6 +134,7 @@ class Home extends BaseComponentWithFoundationUpdate {
 
   componentWillUnmount(){
     this.props.taskListActions.isList(false)
+    this.props.taskListActions.isInbox(false)
   }
 
   refresh = () => {

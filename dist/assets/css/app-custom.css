@@ -358,6 +358,10 @@ pre.emailMessage {
   margin:10px;
 }
 
+#inbox-link{
+  padding-bottom:.75em;
+}
+
 /*Search Bar Styles */
 
 /*.has-error {

@@ -231,6 +231,12 @@ export function isList(boolean){
   }
 }
 
+export function isInbox(boolean){
+  return function(dispatch){
+    dispatch({type: ActionTypes.IS_INBOX, boolean})
+  }
+}
+
 export function leaveList(taskListId){
   return function(dispatch){
     return UserApi.leaveList(taskListId).then(res => {

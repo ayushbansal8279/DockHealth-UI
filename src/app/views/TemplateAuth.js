@@ -5,8 +5,8 @@ import Notification from '../components/common/Notification'
 
 class TemplateAuth extends React.Component {
   render() {
-    return (    
-        <div>    
+    return (
+        <div>
           {/*<NavBarNoLogin/>   */}
           {this.props.children}
 
