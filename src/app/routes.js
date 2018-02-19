@@ -12,6 +12,7 @@ import Register from './views/auth/Register'
 import Login from './views/auth/Login'
 import Logout from './views/auth/Logout'
 import ConfirmRegistration from './views/auth/ConfirmRegistration'
+import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess'
 import ResendCode from './views/auth/ResendCode'
 import ForgotPassword from './views/auth/ForgotPassword'
 import ChangePassword from './views/auth/ChangePassword'
@@ -21,19 +22,9 @@ import PageNotFound from './views/PageNotFound'
 import ErrorPage from './views/ErrorPage'
 import TaskListView from './views/TaskListView'
 import SupportSectionView from './views/SupportSectionView'
-// import TaskListAdd from './components/tasklist/TaskListAdd';
-// import TaskListUpdateView from './views/TaskListUpdateView';
-// import TaskListMembersView from './views/TaskListMembersView';
-// import TaskListInvitePersonView from './views/TaskListInvitePersonView';
-// import TaskListInviteUserView from './views/TaskListInviteUserView';
-// import TaskListUpdateUserRoleView from './views/TaskListUpdateUserRoleView';
-// import InvitationsView from './views/InvitationsView';
 import PeopleView from './views/PeopleView';
-// import InvitePeople from './components/people/InvitePeople';
-// import TaskListAuditView from './views/TaskListAuditView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import UserProfileView from './views/UserProfileView';
-// import Test from './views/Test';
 
 // const routes = {
 //   path: '/',
@@ -73,14 +64,6 @@ export const Routes = (store) => {
         <Route path="/editPatient/:patientId" component={PatientEditView} />
         <Route path="/taskList" component={TaskListView} />
         <Route path="/activityfeed" component={TaskListActivityFeedView} />
-        {/*<Route path="/saveTaskList" component={TaskListAdd} />*/}
-        {/*<Route path="/updateTaskList/:taskListId" component={TaskListUpdateView} />*/}
-        {/*<Route path="/viewTaskListAudits/:taskListId" component={TaskListAuditView} />*/}
-        {/*<Route path="/viewTaskListMembers/:taskListId" component={TaskListMembersView} />*/}
-        {/* <Route path="/invitePersonToTaskList/:taskListId" component={TaskListInvitePersonView} /> */}
-        {/* <Route path="/inviteUsersToTaskList/:taskListId" component={TaskListInviteUserView} /> */}
-        {/*<Route path="/updateUserRole/:taskListId" component={TaskListUpdateUserRoleView} />*/}
-        {/* <Route path="/invitations" component={InvitationsView} /> */}
         <Route path="/people" component={PeopleView} />
         {/* <Route path="/peopleinvite" component={InvitePeople} /> */}
         <Route path="/tasks/:listName/:taskListId" component={Home}/>
@@ -94,6 +77,7 @@ export const Routes = (store) => {
       <Route component={TemplateAuth} >
         <Route component={TemplateAuthBase}>
           <Route path="/confirmRegistration" component={ConfirmRegistration}/>
+          <Route path="/confirmRegistrationSuccess" component={ConfirmRegistrationSuccess}/>
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <Route path="/resendCode" component={ResendCode} />

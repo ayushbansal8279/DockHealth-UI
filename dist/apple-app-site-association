@@ -1,0 +1,11 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "7E835U7QXG.com.sedasystem.test.heydoc",
+                "paths": [ "/#/confirmRegistrationSuccess", "/#/login" ]
+            }
+        ]
+    }
+}
