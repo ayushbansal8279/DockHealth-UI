@@ -26,8 +26,9 @@ export default class ConfirmRegistration extends React.Component {
             'CONFIRM_REGISTRATION_SUCCESS': 'YES'
         });
         success('Registration confirmed. Please Login')
-        alert('Registration confirmed. Please Login')
-        hashHistory.push('login')
+        //alert('Registration confirmed. Please Login')
+        // hashHistory.push('login')
+        hashHistory.push('confirmRegistrationSuccess')
       })
       .catch(e => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {

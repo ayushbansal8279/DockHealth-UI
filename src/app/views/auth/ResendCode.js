@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { Link, browserHistory, hashHistory } from 'react-router'
 import { SubmissionError } from 'redux-form'
 import * as userApi from '../../api/user-api'
 import { error, success } from '../../actions/notification-actions'
@@ -40,7 +40,7 @@ export default class ResendCode extends React.Component {
       <div className="wrapper columns large-12">
           <div className="row expanded text-center">
             <div className="columns large-12 top-buffer">
-              <h5>Resend verification code</h5>
+              <h5>Resend confirmation code</h5>
             </div>
           </div>
           <ResendCodeForm type='Confirm' onSubmit={this.onSubmit} />
