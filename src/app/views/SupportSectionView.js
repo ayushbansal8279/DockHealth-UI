@@ -33,9 +33,10 @@ class SupportSectionView extends BaseComponentWithFoundationUpdate {
               </div>
             </header>
             <div className="list-wrapper">
-              <div className="row expanded">
-                <h5>For DockHealth support, email us at:</h5><br/>
-                <a href="mailto:someone@example.com?Subject=Hello%20again" target="_top">support@dockhealth.com</a>
+              <div className="row">
+                <div className="column">
+                  <h5>For DockHealth support, email us at <a href="mailto:support@dockhealth.com?Subject=Dock%20Supoort" target="_top">support@dockhealth.com</a></h5>
+                </div>
               </div>
             </div>
           </div>
@@ -57,8 +58,3 @@ const mapDispatchToProps = function (dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SupportSectionView);
-
-// AllPatientsView.route = {
-//   path: 'patientList',
-//   component: AllPatientsView
-// }
