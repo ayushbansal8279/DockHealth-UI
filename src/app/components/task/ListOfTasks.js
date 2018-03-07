@@ -281,7 +281,7 @@ class ListOfTasks extends BaseComponent {
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
 							<span onClick={(e) => this.handleToggle(task)} className="edit-task">
 				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
-								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"}</span>
+								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"} {task.patient ? ' | ' + task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : ""}</span>
 								{task.assignedBy &&
 					        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{moment(task.assignmentUpdatedDateTime).format()}</Moment>}</span>
 								}

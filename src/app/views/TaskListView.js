@@ -154,7 +154,6 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
                     })} */}
                     <ListsComponent taskLists={this.props.taskLists} editForm={this.editTaskList} deleteList={this.deleteList} leaveList={this.leaveList}/>
 
-
           				</div>
                 }
         			</div>{/* <!--list-wrapper--> */}
