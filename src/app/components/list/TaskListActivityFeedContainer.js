@@ -6,6 +6,7 @@ import MemberInitials from '../common/MemberInitials'
 import MemberProfilePic from '../common/MemberProfilePic'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import $ from 'jquery'
 
 class TaskListActivityFeedContainer extends BaseComponent {
 
@@ -33,6 +34,10 @@ class TaskListActivityFeedContainer extends BaseComponent {
     //$("#activityList").foundation('toggle', $(e.target));
     console.log('The accordion link was clicked.');
   };
+
+	prevetRedirect = (e) => {
+		alert('working')
+	}
 
 	getUserProfilePic = () => {
 		// alert("working")
@@ -64,7 +69,7 @@ class TaskListActivityFeedContainer extends BaseComponent {
       return this.props.activityFeedForAllUserList.map((auditsandtasklist) =>{
         return(
 					<li className="slim accordion-item" data-accordion-item key={"taskList" + auditsandtasklist.taskListId}>
-						<a  href="#" className="accordion-title">{auditsandtasklist.listName}</a>
+						<a onClick={(e) => this.preventRedirect(e)} href="#" className="accordion-title">{auditsandtasklist.listName}</a>
 						{/* override of app.css line 2068 display:none : find in app-custonm .accordion-content line 122 */}
 						<div className="accordion-content" data-tab-content>
               {this.renderList(auditsandtasklist.auditList) && this.renderList(auditsandtasklist.auditList).length > 0 ? this.renderList(auditsandtasklist.auditList) : <p className="light-gray">No Recent Activities</p>}

@@ -367,6 +367,31 @@ pre.emailMessage {
   animation-fill-mode: forwards;
 }
 
+.new-list{
+  background:#a4deb9;
+  color:#2a4a70;
+  font-size:.75em;
+  padding:0 .45em;
+  -webkit-border-radius: .45em;
+  -moz-border-radius: .45em;
+  border-radius: .45em;
+  margin-bottom:.25em;
+}
+
+.new-list-notification{
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+  background:#a4deb9;
+  color:#2a4a70;
+  font-size:.75em;
+  padding:1em 5em;
+  -webkit-border-radius: .75em;
+  -moz-border-radius: .75em;
+  border-radius: .75em;
+  margin-bottom:1em;
+}
+
 @-webkit-keyframes FADE-OUT-ANIMATION {
   0%   { position: 1; }
   100% { position: 0; }
