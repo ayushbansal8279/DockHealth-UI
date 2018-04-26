@@ -22,6 +22,11 @@ class AssignToModal extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    enableFoundationForSingleComponent("edit-assign-to-" + this.props.task.taskId)
+    console.log("AssignToModal didUpdate")
+  }
+
   render() {
     return (
       <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal="">

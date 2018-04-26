@@ -11,7 +11,7 @@ class BaseComponent extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     // enableFoundation();
-    console.log("BaseComponent didupdate")
+    // console.log("BaseComponent didupdate")
     this.doTimeoutValidations();
   }
 

@@ -50,8 +50,9 @@ class Home extends BaseComponentWithFoundationUpdate {
     this.setState({searchTerm: term.target.value})
   }
 
-  componentDidUpdate () {
-    super.componentDidUpdate()
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState)
+    // enableFoundationComponent(".task-item-wrapper")
   }
 
   componentWillMount(){
@@ -227,7 +228,11 @@ class Home extends BaseComponentWithFoundationUpdate {
                     </div>
                   }
                   <div className="completed-task-wrapper">
-                    <ListOfTasksContainer taskListId={taskListId} status="COMPLETE" members={this.props.members} filteredTasks={filteredCompletedTasks} />
+                    <ListOfTasksContainer 
+                      taskListId={taskListId} 
+                      status="COMPLETE" 
+                      members={this.props.members} 
+                      filteredTasks={filteredCompletedTasks} />
                   </div>
                 </div>
               }

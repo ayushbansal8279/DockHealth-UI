@@ -5,6 +5,10 @@ import FormPatient from '../patient/FormPatient'
 import SearchPatient from '../patient/SearchPatient'
 class AddPatientModal extends React.Component {
 
+  componentDidUpdate(prevProps, prevState) {
+    enableFoundationForSingleComponent("#addPatientModal")
+  }
+
   render(){
     return(
       <div className="reveal" id="addPatientModal" data-reveal="">

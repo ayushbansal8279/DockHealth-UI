@@ -7,6 +7,16 @@ import BooleanModal from '../common/BooleanModal'
 
 class ListsComponent extends BaseComponent{
 
+  constructor(props) {
+    super(props)
+  }
+
+  componentDidUpdate() {
+    super.componentDidUpdate()
+    // enableFoundationForMultipleComponents(".task-item-wrapper", ".row")
+    console.log("ListsComponent update")
+  }
+
   render(){
     const taskLists = this.props.taskLists
     return(

@@ -8,7 +8,7 @@ class BaseComponentWithFoundationUpdate extends BaseComponent {
   
   componentDidUpdate(prevProps, prevState) {
     super.componentDidUpdate(prevProps, prevState)
-    enableFoundation();
+    //enableFoundation();
     console.log("BaseComponentWithFoundationUpdate didupdate")
     
   }

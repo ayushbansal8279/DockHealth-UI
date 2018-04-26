@@ -1,5 +1,5 @@
 function renderFoundationComponentsJquery(){
-	console.log('in JS function: renderFoundationComponentsJquery');
+	//console.log('in JS function: renderFoundationComponentsJquery');
 
 	// datepicker
 	// $('.pickdate').fdatepicker({
@@ -59,7 +59,7 @@ function unformatDateAndTime(formattedDtStr){
 }
 
 function enableTaskListComponents(){
-	console.log('in JS function: enableTaskListComponents');
+	//console.log('in JS function: enableTaskListComponents');
 
 	// show/hide completed tasks
 	$('.toggle-completed').click(function() {
@@ -121,7 +121,7 @@ function closeAddTask(){
 
 // **3**
 function enableAutoCompleteForPatients(lookupData) {
-	console.log("enableAutoCompleteForPatients: "+lookupData)
+	// console.log("enableAutoCompleteForPatients: "+lookupData)
 	// add task form patient autocomplete
 	// http://easyautocomplete.com/guide
 	var patients = {
@@ -273,14 +273,14 @@ function enableAutoCompleteForListMembers(lookupData, url) {
 				$("#add-member-to-list-id").val(selItemData.userId);
 			},
 			onShowListEvent: function() {
-				var newHeight = originalHeightListMembers + 150;
+				////var newHeight = originalHeightListMembers + 150;
 				// console.log('onShowListEvent: '+newHeight);
-				$("#list-members").css("height", newHeight + "px");
+				////$("#list-members").css("height", newHeight + "px");
 			},
 			onHideListEvent: function() {
-				var newHeight = originalHeightListMembers;
+				////var newHeight = originalHeightListMembers;
 				// console.log('onHideListEvent: '+newHeight);
-				$("#list-members").css("height", newHeight + "px");
+				////$("#list-members").css("height", newHeight + "px");
 			},
 			match: {enabled: true}
 		},
@@ -322,12 +322,110 @@ function enableAutoCompleteForListMembers(lookupData, url) {
 }
 
 function enableFoundation() {
-	$(document).foundation()
+	// $(document).foundation()
+	// console.log($(".dropdown"))
+	// console.log($(".dropdown").length)
+	// $(".dropdown").foundation()
+	// console.log($(".reveal"));
+	// console.log($(".reveal").length);
+	// $(".dropdown").foundation()
+	//Foundation.reInit(['dropdown','tooltip', 'accordion', 'reveal']);
+	//$('#taskListHeader').foundation('_destroy');
+	// if($('#taskListHeader').find(".dropdown").length==0){
+	// 	$('#taskListHeader').foundation();
+	// }
+	// try{
+	// 	Foundation.reInit($('#taskListHeader'));
+	// }catch(err){
+	// 	console.error(err)
+	// 	$('#taskListHeader').foundation();
+	// }
+	// console.log('reinit foundation');
 }
 
 function enableFoundationForElement(elementName) {
 	$(elementName).foundation();
 }
+
+
+function enableFoundationForMultipleComponents(parentSelector, selector) {
+	var elements = $(parentSelector).find(selector);
+	//console.log('elements length: '+elements.length);
+	if(elements){
+		elements.each(function(index) {
+			enableFoundationComponent(elements[index]);
+		});
+	}
+}
+
+function enableFoundationComponent(componentName) {
+	//$(document).foundation(componentName, 'reflow');
+	//$("dropdown").foundation();
+
+	var dropDownPlugins = $(componentName).find(".dropdown");
+	// console.log('dropDownPlugins length: '+dropDownPlugins.length);
+	if(dropDownPlugins){
+		dropDownPlugins.each(function(element) {
+			if(!$(dropDownPlugins[element]).data('yeti-box')){
+				$(dropDownPlugins[element]).parent().foundation();
+			}
+		});
+	}
+
+	var ellipsesPlugins = $(componentName).find(".ellipses");
+	// console.log('ellipsesPlugins length: '+ellipsesPlugins.length);
+	if(ellipsesPlugins){
+		ellipsesPlugins.each(function(element) {
+			if(!$(ellipsesPlugins[element]).data('yeti-box')){
+				$(ellipsesPlugins[element]).parent().foundation();
+			}
+		});
+	}
+
+	var revealPlugins = $(componentName).find(".reveal");
+	// console.log('revealPlugins length: '+revealPlugins.length);
+	if(revealPlugins){
+		revealPlugins.each(function(element) {
+			if(!$(revealPlugins[element]).data('yeti-box')){
+				$(revealPlugins[element]).parent().foundation();
+			}
+		});
+	}
+
+	var tooltipPlugins = $(componentName).find(".tooltip");
+	// console.log('tooltipPlugins length: '+tooltipPlugins.length);
+	if(tooltipPlugins){
+		tooltipPlugins.each(function(element) {
+			if(!$(tooltipPlugins[element]).data('yeti-box')){
+				$(tooltipPlugins[element]).parent().foundation();
+			}
+		});
+	}
+
+}
+
+function enableFoundationAccordionComponent(componentName) {
+
+	var accordionPlugins = $(componentName).find(".accordion");
+	// console.log('accordionPlugins length: '+accordionPlugins.length);
+	if(accordionPlugins){
+		accordionPlugins.each(function(element) {
+			if(!$(accordionPlugins[element]).data('yeti-box')){
+				$(accordionPlugins[element]).parent().foundation();
+			}
+		});
+	}
+
+}
+
+function enableFoundationForSingleComponent(selector) {
+	var element = $(selector);
+	if(!element.data('yeti-box')){
+		element.foundation();
+	}
+}
+
+
 
 function toggleDropDown(elementId) {
 	$("#"+elementId).foundation('toggle');
@@ -507,7 +605,8 @@ $(document).ready(function() {
   }
 
 	$(window).scroll(function() {
-    $('#profile-dropdown').foundation('close');
+		//TODO fix it
+    //$('#profile-dropdown').foundation('close');
 	});
 
 

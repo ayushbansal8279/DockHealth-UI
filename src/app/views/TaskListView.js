@@ -29,6 +29,13 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
 
     }
 
+    componentDidUpdate(prevProps, prevState) {
+      super.componentDidUpdate(prevProps, prevState)
+      //enableFoundationComponent(".item-list-wrapper")
+      enableFoundationForMultipleComponents(".item-list-wrapper", ".row")
+
+    }
+
     submit = (form) => {
       this.props.taskListAction.saveTaskList(form)
       // print the form values to the console

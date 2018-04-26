@@ -1,6 +1,11 @@
 import React from 'react'
 
 class ConfirmDelete extends React.Component {
+
+  componentDidUpdate(prevProps, prevState) {
+    enableFoundationForSingleComponent("delete-task-"+this.props.task.taskId)
+  }
+
   render(){
     return(
       <div className="reveal text-center" id={"delete-task-"+this.props.task.taskId} data-reveal>

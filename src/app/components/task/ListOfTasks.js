@@ -54,6 +54,8 @@ class ListOfTasks extends BaseComponent {
 			// console.log("listoftasks didmount")
 			// edit data
 			console.log("ListOfTasks.js")
+			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-item")
+			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-popups")
 
 			$('body').on('click', '[data-editable]', function () {
 				$(this).hide();
@@ -95,10 +97,14 @@ class ListOfTasks extends BaseComponent {
 			if(prevProps.listName != "COMPLETE" && prevProps != this.props){
 				// debugger;
 			}
-			super.componentDidUpdate()
+			super.componentDidUpdate(prevProps, prevState)
 			// console.log("listoftasks didupdate")
+			// enableFoundationComponent(".task-item-wrapper")
+			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-item")
+			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-popups")
 		}
 
+		
 		editTask(task){
 			console.log("edit working")
 			editForm()
@@ -301,7 +307,7 @@ class ListOfTasks extends BaseComponent {
 								{task.comments ?
 									task.comments.map(comment => {
 										return(
-											<div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId}>
+											<div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId+"_"+index}>
 						            <div className="columns shrink">
 						              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
 													<MemberInitials member={comment.creator} extraClass="xsmall"/>
@@ -414,8 +420,9 @@ class ListOfTasks extends BaseComponent {
 
 
 			return(
-				<span key={"listTask"+task.taskId}>
+				<span key={"listTask"+task.taskId+"_"+index} id={"listTask"+task.taskId}>
 					{listTasks()}
+					<div className="task-popups">
 					<BooleanModal
 						message="Are you sure you want to delete this task?"
 						confirmBtnTxt="Delete"
@@ -423,10 +430,16 @@ class ListOfTasks extends BaseComponent {
 						handleConfirmationArgs={task}
 						handleConfirmation={this.handleDeleteTask}
 					/>
-					<BooleanModal message="You are about to complete a task with open subtasks. Completing the task will also complete the subtasks. Would you like to proceed?" confirmBtnTxt="Yes" uniqueModalId={"complete-task-"+task.taskId} handleConfirmationArgs={task} handleConfirmation={this.confirmCompleteTask}/>
+					<BooleanModal 
+						message="You are about to complete a task with open subtasks. Completing the task will also complete the subtasks. Would you like to proceed?" 
+						confirmBtnTxt="Yes" 
+						uniqueModalId={"complete-task-"+task.taskId} 
+						handleConfirmationArgs={task} 
+						handleConfirmation={this.confirmCompleteTask}/>
 					{task.taskList &&
 						<AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/>
 					}
+					</div>
 				</span>
 			)
 

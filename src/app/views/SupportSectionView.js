@@ -3,10 +3,10 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import NavBar from '../components/common/NavBar'
 import Header from '../components/common/Header'
-import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
+import BaseComponent from '../components/BaseComponent'
 // import {mobileAnalyticsClient} from '../api/analytics-api'
 
-class SupportSectionView extends BaseComponentWithFoundationUpdate {
+class SupportSectionView extends BaseComponent {
 
     constructor(props){
       super(props)

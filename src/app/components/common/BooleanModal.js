@@ -6,6 +6,10 @@ class BooleanModal extends React.Component {
     $('a.close-reveal-modal').trigger('click');
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    enableFoundationForSingleComponent(this.props.uniqueModalId)
+  }
+  
   render(){
     return(
       <div className="reveal text-center" id={this.props.uniqueModalId} data-reveal="">

@@ -98,6 +98,11 @@ class UserProfileContainer extends BaseComponent {
 
     }
 
+    componentDidUpdate(prevProps, prevState) {
+      super.componentDidUpdate(prevProps, prevState)
+      enableFoundationForSingleComponent("#update-profile-photo")
+    }
+
     handleImageChange = (e) => {
       console.log("handleImageChange")
       e.preventDefault();

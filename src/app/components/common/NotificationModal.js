@@ -1,6 +1,11 @@
 import React from 'react'
 
 class NotificationModal extends React.Component {
+
+  componentDidUpdate(prevProps, prevState) {
+    enableFoundationForSingleComponent("notification-modal-" + this.props.uniqueId)
+  }
+
   render(){
     return(
       <div className="reveal text-center" id={"notification-modal-" + this.props.uniqueId} data-reveal="">

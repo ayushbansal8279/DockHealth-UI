@@ -56,6 +56,11 @@ class AddListForm extends BaseComponentWithAutoComplete {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState)
+		enableFoundationAccordionComponent(".add-form-wrapper")
+  }
+
 	getSuggestions = value => {
 		const inputValue = value.trim().toLowerCase();
 		const inputLength = inputValue.length;

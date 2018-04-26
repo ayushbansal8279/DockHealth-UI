@@ -56,6 +56,13 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		console.log('ListMembers componentWillUpdate: '+nextProps)
 		enableAutoCompleteForListMembers(nextProps.orgusersnotintasklist, process.env.HEYDOC_SERVICES_BASE_URL);
 	}
+
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState)
+		enableFoundationForSingleComponent("#list-members")
+		enableFoundationComponent(".scroll-wrapper")
+		console.log("ListMembers didUpdate")
+  }
 	
 
 	deleteMember = (member) => {
@@ -87,7 +94,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
 		return(
 			<div className="reveal" id="list-members" data-reveal=""> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
-				<h5 className="margin-bottom text-center">{this.props.currentList.listName} List Members</h5>
+				<h5 className="margin-bottom text-center">{this.props.currentList!=null?this.props.currentList.listName:""} List Members</h5>
 				<div className="scroll-wrapper">
 					{this.props.members && this.props.members.map(member => {
 						return(

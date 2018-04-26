@@ -23,7 +23,6 @@ class HeaderTasks extends BaseComponent {
     }
   }
 
-
   componentDidMount () {
     this.props.patientActions.getAllPatients()
     this.props.taskActions.loading()
@@ -40,6 +39,13 @@ class HeaderTasks extends BaseComponent {
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
     }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState)
+    enableFoundationComponent("#taskListHeader")
+    enableFoundationComponent(".member-photo-list")
+    console.log("HeaderTasks didupdate")
   }
 
   componentWillReceiveProps(nextProps){
@@ -94,7 +100,7 @@ class HeaderTasks extends BaseComponent {
     render() {
     return (
       <div>
-        <header className="nav-down">
+        <header className="nav-down" id="taskListHeader">
 						<div className="top-bar">
               {/* <div className="new-task text-center">
                 <span className="number-new-tasks"></span>
@@ -202,7 +208,7 @@ class HeaderTasks extends BaseComponent {
           members={this.props.members}
           activeListMembers={this.props.activeListMembers}
         />
-        <ListMembers/>
+        <ListMembers members={this.props.members}/>
       </div>
       );
     }

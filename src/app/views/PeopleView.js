@@ -27,6 +27,13 @@ class PeopleView extends BaseComponentWithFoundationUpdate {
     closeAddForm()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState)
+    enableFoundationComponent(".item-list-wrapper")
+    //enableFoundationForMultipleComponents(".item-list-wrapper", ".row")
+
+  }
+
   clearSearch = () => {
     this.setState({searchTerm: ''})
     toggleSearch()

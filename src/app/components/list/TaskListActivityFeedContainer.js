@@ -15,16 +15,17 @@ class TaskListActivityFeedContainer extends BaseComponent {
 	  	this.handleClick = this.handleClick.bind(this)
   }
   componentDidMount () {
-		enableFoundation();
+		// enableFoundation();
       super.componentDidMount()
       //queryStartPosition Zero is hardcoded because activity feed must alwqays return top 100 rows
       //for any more rows use findAuditsByTaskList must be used with proper queryStartPosition
       this.props.findActivityFeedForAllTaskListsByUserId(0);
   }
 
-    componentDidUpdate () {
-      super.componentDidUpdate()
-    }
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState)
+		enableFoundationAccordionComponent(".wrapper")
+  }
 
   handleClick = (e, taskListId) => {
     e.preventDefault();
