@@ -146,7 +146,7 @@ class AddTaskForm extends BaseComponent {
     <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
-          <h5 className="section-title">Add a Task</h5>
+          <h5 className="section-title">Add / Edit a Task</h5>
         </div>
 
         {/* Description */}
