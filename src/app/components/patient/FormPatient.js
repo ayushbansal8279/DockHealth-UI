@@ -161,7 +161,7 @@ class FormPatient extends BaseComponent {
 
 							<div className="column large-12 input-group no-icon">
 								<div className="form-floating-label input-wrapper">
-									<Field type="text" component="textarea" className="input-group-field"/>
+									<Field type="text" name="notes" component="textarea" className="input-group-field"/>
 									<label>Notes</label>
 								</div>
 							</div>
