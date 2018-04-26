@@ -28,7 +28,9 @@ export default class ConfirmRegistration extends React.Component {
         success('Registration confirmed. Please Login')
         //alert('Registration confirmed. Please Login')
         // hashHistory.push('login')
-        hashHistory.push('confirmRegistrationSuccess')
+        // window.location.href = "https://dockdev.app.link/FbMSMrsZLK";
+        window.location.href = "https://dockhealth.app.link/uwa2UNGzGL";
+        //hashHistory.push('confirmRegistrationSuccess')
       })
       .catch(e => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {

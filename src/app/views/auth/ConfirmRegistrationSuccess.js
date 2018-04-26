@@ -23,8 +23,10 @@ export default class ConfirmRegistrationSuccess extends React.Component {
           </div>
 
           <div className="row expanded">
-            <div className="columns large-12 top-buffer text-center details">
-              <Link to="/login" className="button secondary expand">Login</Link>
+            <div className="columns large-12 top-buffer text-center">
+              {/* <Link to="/login" className="button secondary expand">Login</Link> */}
+              {/* <a href="https://dockdev.app.link/FbMSMrsZLK" className="button secondary expand">Login</a> */}
+              <a href="https://dockhealth.app.link/uwa2UNGzGL" className="button secondary expand">Login</a>
             </div>
           </div>
 
