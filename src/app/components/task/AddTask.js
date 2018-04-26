@@ -32,7 +32,7 @@ class AddTask extends BaseComponent {
 
 	componentDidMount () {
   	console.log("mounted AddTask component")
-		this.props.peopleActions.findAllUsersByOrganizationId();
+		//this.props.peopleActions.findAllUsersByOrganizationId();
 	}
 
 	componentWillUpdate (nextProps) {
