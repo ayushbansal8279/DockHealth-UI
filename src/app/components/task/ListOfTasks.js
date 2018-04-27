@@ -302,7 +302,9 @@ class ListOfTasks extends BaseComponent {
 				        {/* <span className="task-details text-light">{task.assignedBy ? 'Assigned by ' + task.assignedBy.userName + " " + String.fromCharCode("8226") + " " + <Moment fromNow>{createdDateTime}</Moment> : 'unassigned'}</span> */}
 							</span>
 							<div className="comments-container">
-								<AddComment task={task} userProfile={this.props.userProfile}/>
+								{task.status == "INCOMPLETE" && 
+									<AddComment task={task} userProfile={this.props.userProfile}/>
+								}
 								{/* {commentNodes} */}
 								{task.comments ?
 									task.comments.map(comment => {
@@ -378,6 +380,7 @@ class ListOfTasks extends BaseComponent {
 							}
 			      </div>
 
+						{task.status == "INCOMPLETE" && 
 							<div className="columns shrink more-options-wrapper">
 								<svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId}><use xlinkHref="#icon-ellipses"></use></svg>
 								<div className="small dropdown-pane" id={"task-edit-" + task.taskId} data-dropdown data-close-on-click="true">
@@ -396,6 +399,7 @@ class ListOfTasks extends BaseComponent {
 									</ul>
 								</div>
 							</div>
+						}
 
 			    </div>
 			    {/* MAIN TASK END */}
@@ -436,7 +440,7 @@ class ListOfTasks extends BaseComponent {
 						uniqueModalId={"complete-task-"+task.taskId} 
 						handleConfirmationArgs={task} 
 						handleConfirmation={this.confirmCompleteTask}/>
-					{task.taskList &&
+					{task.status == "INCOMPLETE" && task.taskList &&
 						<AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/>
 					}
 					</div>
