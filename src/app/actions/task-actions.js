@@ -23,8 +23,6 @@ function getCompletedTasksSuccess(tasks){
   return {type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks}
 }
 
-
-
 export function getListTasks(taskListId, sortBy, status){
   var action
   if(status == "INCOMPLETE"){
@@ -88,9 +86,17 @@ export function loading(){
   }
 }
 
+export function loadingCompletedTasks(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_COMPLETED_TASKS})
+  }
+}
 
-
-
+export function hideCompletedTasks(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.HIDE_COMPLETED_TASKS})
+  }
+}
 
 // export function getCompletedListTasksByUser(taskListId) {
 //   return function(dispatch) {

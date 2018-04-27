@@ -21,7 +21,9 @@ export default {
   genericLists: [],
   users: {},
   isFetching:true,
-  isList:false
+  isCompletedTasksFetching:false,
+  isList:false,
+  showingCompletedTasks:false
   // users: {'1':{"image":"url", "initials":"LJ"}, '2':{"image":"url", "initials":"LJ"}}
   //addtasklisterror:''
 }
