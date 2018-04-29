@@ -47,6 +47,10 @@ class AddTaskForm extends BaseComponent {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    renderFoundationComponentsJquery();
+  }
+
   componentWillReceiveProps(nextProps){
   }
 
@@ -146,7 +150,8 @@ class AddTaskForm extends BaseComponent {
     <form className="inline-label" onSubmit={this.props.handleSubmit}>
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
-          <h5 className="section-title">Add / Edit a Task</h5>
+          {/* <h5 className="section-title">{this.props.sectionTitle}</h5> */}
+          <h5 className="section-title">{(this.props.task && this.props.task.description && this.props.task.description!="")?"Edit a Task":"Add a Task"}</h5>
         </div>
 
         {/* Description */}

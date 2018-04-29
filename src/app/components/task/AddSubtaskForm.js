@@ -160,7 +160,7 @@ class AddSubtaskForm extends BaseComponent{
 
           {/* Main task title */}
           <div className="column large-12 input-group has-value">
-            <span className="task-title">{"Task: " + (this.props.currentTask && this.props.currentTask.description)}</span>
+            <span className="task-title">{"Task: " + ((this.props.currentTask && this.props.currentTask.description)?this.props.currentTask.description:"")}</span>
           </div>
 
           {/* Task */}
