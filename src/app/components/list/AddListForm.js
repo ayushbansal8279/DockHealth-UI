@@ -319,7 +319,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
               <div className="row collapse">
                 <div className="column">
                   <span className="item-content">Do not disturb</span>
-                  <span className="details">Fine print about notifications should go here</span>
+                  <span className="details">Disable notifications for this list</span>
                 </div>
                 <div className="column shrink">
                   <div className="switch">

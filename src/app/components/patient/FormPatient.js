@@ -76,7 +76,7 @@ class FormPatient extends BaseComponent {
 						closeAddForm()
 					}else{
 						var isProps = this.props
-						debugger;
+						//debugger;
 						if(this.props.isSubtask){
 							this.props.formActions.change("addSubtaskForm", "patient", patientName)
 							this.props.formActions.change("addSubtaskForm", "patientId", patientId)

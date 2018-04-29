@@ -139,7 +139,7 @@ class AddTask extends BaseComponent {
 		if($("#filed-in-taskList").val()){
 			form.refiled = true;
 		}
-		debugger;
+		//debugger;
 		this.props.taskActions.saveTask(form);
 
 		// print the form values to the console
@@ -170,40 +170,79 @@ class AddTask extends BaseComponent {
 
     render() {
     	return (
-				<div className="add-form-wrapper" ref="toggle">
-					<div className="task-item add-form row expanded">
-						<div className="column top-buffer large-12">
-						<AddTaskForm
-							onSubmit={this.submit}
-							taskLists={this.props.taskLists}
-							task={this.props.task}
-							title={this.props.title}
-							taskListId={this.props.taskListId}
-							initialValues={"taskListId:"+this.props.taskListId}
-							subtasks={this.state.subtasks}
-							addSubtaskToState={this.addSubtaskToState}
-							setSubtasks={this.setSubtasks}
-							clearSubtasks={this.clearSubtasks}
-							currentSubtaskAndIndexToState={this.currentSubtaskAndIndexToState}
-							isEditing={this.props.isEditing}
-							isSubtask={this.isSubtask}
-						/>
-						<AddSubtaskForm
-							// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
-							onSubmit={this.submitSubtask}
-							// submitSubtask={this.submitSubtask}
-							// addSubtask={this.addSubtask}
-							addSubtaskValues={this.addSubtaskValues}
-							currentSubtasks={this.props.currentSubtasks}
-							currentSubtaskIndex={this.state.currentSubtaskIndex}
-							title={this.props.title}
-							currentTask={this.props.task}
-							currentSubtask={this.state.currentSubtask}
-							isSubtask={this.isSubtask}
-						/>
-						<AddPatientModal isSubtask={this.state.isSubtask}/>
+				<div>
+					<div className="add-form-wrapper" ref="toggle"> 
+						<div className="task-item add-form row expanded">
+							<div className="column top-buffer large-12">
+							<AddTaskForm
+								sectionTitle="Add a Task"
+								onSubmit={this.submit}
+								taskLists={this.props.taskLists}
+								task={this.props.task}
+								title={this.props.title}
+								taskListId={this.props.taskListId}
+								initialValues={"taskListId:"+this.props.taskListId}
+								subtasks={this.state.subtasks}
+								addSubtaskToState={this.addSubtaskToState}
+								setSubtasks={this.setSubtasks}
+								clearSubtasks={this.clearSubtasks}
+								currentSubtaskAndIndexToState={this.currentSubtaskAndIndexToState}
+								isEditing={this.props.isEditing}
+								isSubtask={this.isSubtask}
+							/>
+							<AddSubtaskForm
+								// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
+								onSubmit={this.submitSubtask}
+								// submitSubtask={this.submitSubtask}
+								// addSubtask={this.addSubtask}
+								addSubtaskValues={this.addSubtaskValues}
+								currentSubtasks={this.props.currentSubtasks}
+								currentSubtaskIndex={this.state.currentSubtaskIndex}
+								title={this.props.title}
+								currentTask={this.props.task}
+								currentSubtask={this.state.currentSubtask}
+								isSubtask={this.isSubtask}
+							/>
+							<AddPatientModal isSubtask={this.state.isSubtask}/>
+							</div>
 						</div>
 					</div>
+					{/* <div className="reveal" id="add-form-popup" data-reveal="">
+						<div className="task-item add-form row expanded"> 
+							<div className="column top-buffer large-12">
+							<AddTaskForm
+								sectionTitle="Edit a Task"
+								onSubmit={this.submit}
+								taskLists={this.props.taskLists}
+								task={this.props.task}
+								title={this.props.title}
+								taskListId={this.props.taskListId}
+								initialValues={"taskListId:"+this.props.taskListId}
+								subtasks={this.state.subtasks}
+								addSubtaskToState={this.addSubtaskToState}
+								setSubtasks={this.setSubtasks}
+								clearSubtasks={this.clearSubtasks}
+								currentSubtaskAndIndexToState={this.currentSubtaskAndIndexToState}
+								isEditing={this.props.isEditing}
+								isSubtask={this.isSubtask}
+							/>
+							<AddSubtaskForm
+								// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
+								onSubmit={this.submitSubtask}
+								// submitSubtask={this.submitSubtask}
+								// addSubtask={this.addSubtask}
+								addSubtaskValues={this.addSubtaskValues}
+								currentSubtasks={this.props.currentSubtasks}
+								currentSubtaskIndex={this.state.currentSubtaskIndex}
+								title={this.props.title}
+								currentTask={this.props.task}
+								currentSubtask={this.state.currentSubtask}
+								isSubtask={this.isSubtask}
+							/>
+							<AddPatientModal isSubtask={this.state.isSubtask}/>
+							</div>
+						</div>
+					</div> */}
 					{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
 				</div>
 
