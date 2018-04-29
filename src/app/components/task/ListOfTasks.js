@@ -53,11 +53,11 @@ class ListOfTasks extends BaseComponent {
 			super.componentDidMount()
 			// console.log("listoftasks didmount")
 			// edit data
-			console.log("ListOfTasks.js")
+			//console.log("ListOfTasks.js")
 			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-item")
 			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-popups")
 
-			$('body').on('click', '[data-editable]', function () {
+			$('body').on('dblclick', '[data-editable]', function () {
 				$(this).hide();
 				var $el = $(this);
 				$(this).next().show().val($el.text());
@@ -73,10 +73,11 @@ class ListOfTasks extends BaseComponent {
 			});
 
 			// edit comment
-			$('body').on('click', '[data-editable-comment]', function () {
+			$('body').on('dblclick', '[data-editable-comment]', function () {
 				$(this).hide();
 				var $el = $(this);
 				$(this).next().show().val($el.text());
+				//var matches = string.match(/\bhttps?:\/\/\S+/gi);
 				$(this).parent().next().show();
 				var save = function save() {
 					$el.show();
@@ -102,6 +103,7 @@ class ListOfTasks extends BaseComponent {
 			// enableFoundationComponent(".task-item-wrapper")
 			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-item")
 			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-popups")
+			resizeEmailBodySection(".task-item-wrapper")
 		}
 
 		
@@ -190,6 +192,10 @@ class ListOfTasks extends BaseComponent {
 			this.props.setTaskEditingStatus(true)
 			// $('.add').click();
 			console.log(task)
+			if(task && task.description && task.description!=""){
+				//scroll to top
+				scrollToTop();
+			}
 		};
 
 		autofillForm = (task) => {
@@ -285,7 +291,8 @@ class ListOfTasks extends BaseComponent {
 							{/* {type == 'subtask' && <span className="subtask-number">1.</span>} */}
 			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
-							<span onClick={(e) => this.handleToggle(task)} className="edit-task">
+							{/* <span onClick={(e) => this.handleToggle(task)} className="edit-task-popup" data-open="add-form-popup"> */}
+							<span onClick={(e) => this.handleToggle(task)} className="edit-task">							
 				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"} {task.patient ? ' | ' + task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : ""}</span>
 								{task.assignedBy &&
@@ -386,6 +393,7 @@ class ListOfTasks extends BaseComponent {
 								<div className="small dropdown-pane" id={"task-edit-" + task.taskId} data-dropdown data-close-on-click="true">
 									<ul className="no-bullet">
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
+										{/* <li onClick={(e) => this.handleToggle(task)} className="edit-task-popup" data-open="add-form-popup">Edit task</li> */}
 										<li onClick={(e) => this.handleToggle(task)} className="edit-task">Edit task</li>
 										{type != "subtask" &&
 											<li onClick={(e) => {this.handleToggle(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>

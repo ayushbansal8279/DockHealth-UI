@@ -452,6 +452,32 @@ function toggleTaskForm(){
   $('.list-filter .controls').toggle();
 }
 
+function scrollToTop(){
+	$("html, body").animate({ scrollTop: 0 }, "slow");
+}
+
+function resizeEmailBodySection(selector){
+	var elements = $(selector).find('.email-container')
+	//console.log('elements length: '+elements.length);
+	if(elements){
+		elements.each(function(index) {
+			var emailContainer = $(elements[index]);
+			var emailSection = emailContainer.find('.emailMessage');
+			var emailSectionHeight = emailSection.css('height').replace(/px/g, "");
+			//console.log('emailSectionHeight: '+emailSectionHeight);
+			emailSectionHeight = parseInt(emailSectionHeight) + 20;
+			var height = emailContainer.css('height').replace(/px/g, "");;
+			if(height >= 200){
+				emailContainer.css('height', emailSectionHeight+"px");
+				$(this).css('color', 'black');
+			}else{
+				emailContainer.css('height','200px');
+				$(this).css('color', 'white');
+			}
+		});
+	}
+}
+
 $(document).ready(function() {
 
 	// make text editable
