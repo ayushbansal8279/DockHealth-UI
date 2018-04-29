@@ -36,7 +36,7 @@ class TemplateCore extends React.Component {
           <div className="small dropdown-pane" id="profile-dropdown" data-v-offset="0" data-h-offset="0" data-dropdown data-hover="true" data-hover-pane="true">
             <ul className="menu vertical">
               <NavLink to="/userprofile">View and edit profile</NavLink>
-               <li><a href="https://dock.health/privacypolicy">Privacy Policy</a></li>
+               <li><a href="https://dock.health/privacy">Privacy Policy</a></li>
               {/* <li><a href="terms2.html">Terms and conditions</a></li> */}
               <NavLink to="/logout">Logout</NavLink>
             </ul>
