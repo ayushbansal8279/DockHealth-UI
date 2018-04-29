@@ -26,11 +26,11 @@ function renderFoundationComponentsJquery(){
 	});
 
 	$('.duedatepickdate').fdatepicker({
-		format: 'MM d, hh:ii @ yyyy',
+		// format: 'MM d, hh:ii @ yyyy',
+		format: 'MM d yyyy @ hh:ii',
 		disableDblClickSelection: true,
 		pickTime: true
-	})
-		.on('changeDate hide', function (ev) {
+	}).on('changeDate hide', function (ev) {
 			// var dobStr = formatDateAndTime(ev.date);
 			// var dueDateStr = moment($('.duedatepickdate#due-date')[0].value, 'MM d, hh:mm @ yyyy').format();
 			// var dueDateStr = formatDateAndTime($('.duedatepickdate#due-date')[0].value);
@@ -41,20 +41,21 @@ function renderFoundationComponentsJquery(){
 			}
 
 	})
+
 }
 
 function formatDateAndTimeFromFoundation(dateStr){
-	var formattedDateStr = moment(dateStr).utc().local().format('ddd, MMM Do YYYY @ h:mm A');
+	var formattedDateStr = moment(dateStr).utc().format('ddd MMM Do YYYY @ h:mm A');
 	return formattedDateStr;
 }
 
 function formatDateAndTime(dateStr){
-	var formattedDateStr = moment(dateStr).format('ddd, MMM Do YYYY @ h:mm A');
+	var formattedDateStr = moment(dateStr).format('ddd MMM Do YYYY @ h:mm A');
 	return formattedDateStr;
 }
 
 function unformatDateAndTime(formattedDtStr){
-	var unFormattedDateStr = moment(formattedDtStr, 'ddd, MMM Do YYYY @ h:mm A').format();
+	var unFormattedDateStr = moment(formattedDtStr, 'ddd MMM Do YYYY @ h:mm A').format();
 	return unFormattedDateStr;
 }
 
@@ -81,7 +82,7 @@ function enableTaskListComponents(){
 		$('.task-item .row, .task-item, .main-task-item').addClass('align-middle');
 	}
 
-	$('.due-date, .reminder').fdatepicker();
+	//$('.due-date, .reminder').fdatepicker();
 
 	// toggle task priority
 	$('.priority').on('click', function() {
@@ -506,6 +507,12 @@ $(document).ready(function() {
 	$(document).on('focusin', '.form-floating-label input, .form-floating-label textarea', function() {
 		$(this).closest('.form-floating-label').addClass('has-value');
 	});
+	
+	// $(document).on('focusin', '.duedatepickdate', function() {
+	// 	$(this).fdatepicker('show');
+	// 	$('.datepicker').css('z-index','2000')
+		
+	// });
 
 	// $('.form-floating-label input, .form-floating-label textarea').blur(function(){
 	$(document).on('blur', '.form-floating-label input, .form-floating-label textarea', function() {
@@ -631,8 +638,5 @@ $(document).ready(function() {
 // 	//	$('.list-filter .controls, .list-wrapper').toggle();
 // 	$('.list-filter .controls').toggle();
 // });
-
-
-
 
 });
