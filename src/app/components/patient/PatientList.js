@@ -13,10 +13,10 @@ class PatientList extends BaseComponent {
 							return (
 								<Link to={"/patient/"+patient.patientId} key={patient.patientId}>
 									<div className="item row expanded align-middle">
-										<div className="columns shrink">
+										<div className="columns small-4 large-2">
 											<span className="highlight">{patient.mrn}</span>
 										</div>
-										<div className="columns">
+										<div className="columns small-8 large-10">
 											<span className="item-title">{patient.firstName}&nbsp;{patient.lastName}</span>
 										</div>
 										{/* <div className="columns shrink more-options-wrapper" onClick={(e) => e.preventDefault()}>
