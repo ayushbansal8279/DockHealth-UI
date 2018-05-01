@@ -34,15 +34,15 @@ export default class Login extends React.Component {
           sessionStorage.setItem('sessionStartTime', new Date().getTime());
 
           //clear any healthCheckIntervalId
-          if(sessionStorage.healthCheckIntervalId != null || sessionStorage.healthCheckIntervalId != undefined){
-            clearInterval(sessionStorage.healthCheckIntervalId);
-            sessionStorage.removeItem('healthCheckIntervalId');
-          }
+          // if(sessionStorage.healthCheckIntervalId != null || sessionStorage.healthCheckIntervalId != undefined){
+          //   clearInterval(sessionStorage.healthCheckIntervalId);
+          //   sessionStorage.removeItem('healthCheckIntervalId');
+          // }
 
           //performHealthCheck() //after AWS login, simply verify server health check, before starting health check timer
-          var healthCheckInterval= parseInt(process.env.HEALTHCHECK_INTERVAL);
-          var healthCheckIntervalId = setInterval(performHealthCheck,healthCheckInterval)
-          sessionStorage.setItem('healthCheckIntervalId', healthCheckIntervalId);
+          // var healthCheckInterval= parseInt(process.env.HEALTHCHECK_INTERVAL);
+          // var healthCheckIntervalId = setInterval(performHealthCheck,healthCheckInterval)
+          // sessionStorage.setItem('healthCheckIntervalId', healthCheckIntervalId);
 
           hashHistory.push('/')
           success('Logged in.')
