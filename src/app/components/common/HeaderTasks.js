@@ -86,6 +86,10 @@ class HeaderTasks extends BaseComponent {
     this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
   }
 
+  openListMembers = () => {
+    openPopup("#list-members-"+this.props.taskListId)
+  }
+  
   addDashes = (f) =>
   {
     if(f != undefined && f!=""){
@@ -113,7 +117,8 @@ class HeaderTasks extends BaseComponent {
               {this.props.taskListId &&
   							<div className="top-bar-right">
   								<ul className="menu member-photo-list">
-                    <li><span className="add-member circle small" data-open="list-members">+</span></li>
+                    {/* <li><span className="add-member circle small" data-open={"list-members-"+this.props.taskListId}>+</span></li> */}
+                    <li><span className="add-member circle small" onClick={(e) => this.openListMembers()}>+</span></li>
                     {this.props.members && this.props.members.map(member => {
                         return(
                           <li key={"member"+member.userId}>

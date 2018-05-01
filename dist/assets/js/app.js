@@ -23431,18 +23431,18 @@ $('body').on('click', '[data-editable]', function () {
 });
 
 // edit comment
-$('body').on('click', '[data-editable-comment]', function () {
-	$(this).hide();
-	var $el = $(this);
-	$(this).next().show().val($el.text());
-	$(this).parent().next().show();
-	var save = function save() {
-		$el.show();
-		$el.next().hide();
-		$el.parent().next().hide();
-	};
-	$el.parent().parent().find('.cancel').one('click', save);
-});
+// $('body').on('click', '[data-editable-comment]', function () {
+// 	$(this).hide();
+// 	var $el = $(this);
+// 	$(this).next().show().val($el.text());
+// 	$(this).parent().next().show();
+// 	var save = function save() {
+// 		$el.show();
+// 		$el.next().hide();
+// 		$el.parent().next().hide();
+// 	};
+// 	$el.parent().parent().find('.cancel').one('click', save);
+// });
 
 // add a comment to a task
 $('body').on('click', '[add-comment]', function () {

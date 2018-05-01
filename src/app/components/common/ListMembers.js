@@ -15,7 +15,8 @@ class ListMembers extends BaseComponentWithAutoComplete {
     	super(props)
     	this.state = {
       		inviteUserResult: '',
-          	selectedUserId: null
+					selectedUserId: null,
+					curTaskListId: null
 		};
   }
 
@@ -35,7 +36,8 @@ class ListMembers extends BaseComponentWithAutoComplete {
         	this.props.taskListActions.inviteMultipleUsersToTaskList(this.props.currentList.taskListId, inviteUsers)
         .then((res)=>{
             this.props.formActions.reset('ListMembersAddForm')
-          	this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
+						this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
+						//this.props.taskListActions.getMembersByTaskListId(this.props.currentList.taskListId, "ALL")
         })
         .catch((error)=>{
           	this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage});
@@ -44,22 +46,33 @@ class ListMembers extends BaseComponentWithAutoComplete {
     }
 
 	componentDidMount(){
-		console.log('mount list members');
+		// console.log('mount list members');
 		this.props.formActions.destroy('ListMembersAddForm')
 	}
 
 	componentWillUnmount(){
-		console.log('unmount list members');
+		// console.log('unmount list members');
 	}
 
 	componentWillUpdate (nextProps) {
 		console.log('ListMembers componentWillUpdate: '+nextProps)
-		enableAutoCompleteForListMembers(nextProps.orgusersnotintasklist, process.env.HEYDOC_SERVICES_BASE_URL);
+		enableAutoCompleteForListMembers(nextProps.orgusersnotintasklist, nextProps.currentList.taskListId, process.env.HEYDOC_SERVICES_BASE_URL);
 	}
+
+  componentWillReceiveProps(nextProps){
+		if((nextProps.currentList && !this.props.currentList) 
+			|| (nextProps.currentList 
+        && this.props.currentList
+        && nextProps.currentList.taskListId != this.props.currentList.taskListId)){
+			this.setState({curTaskListId: nextProps.currentList.taskListId})
+			console.log('in componentWillReceiveProps -- curTaskListId: '+nextProps.currentList.taskListId);
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     super.componentDidUpdate(prevProps, prevState)
-		enableFoundationForSingleComponent("#list-members")
+		// enableFoundationForSingleComponent("#list-members-"+this.props.currentList.taskListId)
+		enableFoundationForElement("#list-members-"+this.props.currentList.taskListId)
 		enableFoundationComponent(".scroll-wrapper")
 		console.log("ListMembers didUpdate")
   }
@@ -90,10 +103,15 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		// 	onBlur: this.onBlurSuggestionSearch
 		// };
 
-		console.log("rendering list members")
+		// console.log("list name: "+ this.props.currentList.listName)
+		// console.log("list name: "+ (this.state.currentList?this.state.currentList.listName:""))
+		// console.log("rendering list members from parent props: "+ (this.props.listMembers?this.props.listMembers.length:""))
+		// console.log("rendering list members from props: "+ (this.props.members?this.props.members.length:""))
+		// console.log("rendering list members from state: "+ (this.state.members?this.state.members.length:""))
 
 		return(
-			<div className="reveal" id="list-members" data-reveal=""> {/*Removed 'listMembersPopUp' having Rachel make the popup show outside of div*/}
+			<div className="reveal list-members" id={"list-members-"+(this.props.currentList!=null?this.props.currentList.taskListId:"")} data-reveal=""> 
+			{/* <div id="list-members"> */}
 				<h5 className="margin-bottom text-center">{this.props.currentList!=null?this.props.currentList.listName:""} List Members</h5>
 				<div className="scroll-wrapper">
 					{this.props.members && this.props.members.map(member => {
@@ -107,9 +125,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
 								<div className="columns">
 									<span className="item-content">{member.userName}</span>
 									<span className="item-details">{member.taskListUserRole}</span>
-									{member.status == "PENDING" &&
+									{/* {member.status == "PENDING" &&
 									<span className="item-details highlight">Pending</span>
-									}
+									} */}
 								</div>
 								{this.props.currentUser.taskListUserRole != "MEMBER" && this.props.currentUser.username != member.email &&
 									<div className="columns shrink more-options-wrapper">
@@ -180,11 +198,11 @@ function validate(values){
 }
 
 const mapStateToProps = function(store){
-	//console.log("orgusersnotintasklist count: "+store.taskListState.orgusersnotintasklist);
+	// console.log("orgusersnotintasklist count: "+store.taskListState.orgusersnotintasklist);
+	// console.log("members count: "+store.taskListState.tasklistmembers.length);
 	return{
-		currentList: store.taskListState.currentList,
+		currentList: store.taskListState.currentList,	
 		currentUser: store.userState.user,
-		taskList: store.taskListState.currentList,
 		peoplelist: store.peopleState.peoplelist,
 		members: store.taskListState.tasklistmembers,
 		orgusersnotintasklist: store.taskListState.orgusersnotintasklist

@@ -249,11 +249,13 @@ function enableAutoCompleteForSubtaskAssignedTo(lookupData) {
 
 var originalHeightListMembers = 500;
 
-function enableAutoCompleteForListMembers(lookupData, url) {
+function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 
-	var originalHeight = $("#list-members").css("height");
-	originalHeight = originalHeight.replace(/px/g, "");
-	originalHeightListMembers = parseInt(originalHeight);
+	var originalHeight = $("#list-members-"+taskListId).css("height");
+	if(originalHeight){
+		originalHeight = originalHeight.replace(/px/g, "");
+		originalHeightListMembers = parseInt(originalHeight);
+	}
 
 	var activeOrgMembers = []
 	for(var k in lookupData){
@@ -426,7 +428,10 @@ function enableFoundationForSingleComponent(selector) {
 	}
 }
 
-
+function openPopup(selector) {
+	var popup = new Foundation.Reveal($(selector));
+	popup.open();
+}
 
 function toggleDropDown(elementId) {
 	$("#"+elementId).foundation('toggle');
@@ -473,6 +478,23 @@ function resizeEmailBodySection(selector){
 			}else{
 				emailContainer.css('height','200px');
 				$(this).css('color', 'white');
+			}
+		});
+	}
+}
+
+function updateCommentsDisplay(selector){
+	var elements = $(selector).find('span.comment-details')
+	//console.log('elements length: '+elements.length);
+	if(elements){
+		elements.each(function(index) {
+			var commentDescriptionElt = $(elements[index]);
+			var commentDescription = commentDescriptionElt.text();
+			if(commentDescription	)
+			var matches = commentDescription.match(/\bhttps?:\/\/\S+/gi);
+			if(matches && matches.length>0){
+				commentDescription = commentDescription.replace(matches[0],'<a style="text-decoration:underline" href="'+matches[0]+'" target="_blank">'+matches[0]+'</a>');
+				commentDescriptionElt.html(commentDescription)
 			}
 		});
 	}
