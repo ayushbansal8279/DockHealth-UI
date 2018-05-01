@@ -15,6 +15,7 @@ import ConfirmDelete from '../common/ConfirmDelete'
 import BooleanModal from '../common/BooleanModal'
 import MemberInitials from '../common/MemberInitials'
 import {change} from 'redux-form'
+import Linkify from 'react-linkify'
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -104,6 +105,7 @@ class ListOfTasks extends BaseComponent {
 			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-item")
 			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-popups")
 			resizeEmailBodySection(".task-item-wrapper")
+			// updateCommentsDisplay(".task-item-wrapper")
 		}
 
 		
@@ -226,14 +228,12 @@ class ListOfTasks extends BaseComponent {
 			this.props.taskAction.updateComment(task, comment);
 		}
 
-
     render() {
 			if(AWS.config.credentials){
 				console.log("user name: "+AWS.config.credentials.params.IdentityId);
 			}
 			const members = this.props.members
-		//userApi.isAuthenticated(this)
-
+			
     return (
 		<span>
 		{this.props.tasks && this.props.tasks.map((task, index) => {
@@ -328,8 +328,8 @@ class ListOfTasks extends BaseComponent {
 														<div className="column">
 															<div className="row expanded">
 																{comment.creator.userId === this.props.userProfile.userId ?
-																	<span className="comment" data-editable-comment>{comment.comment}</span> :
-																	<span className="comment">{comment.comment}</span>
+																	<span className="comment comment-details" data-editable-comment><Linkify>{comment.comment}</Linkify></span> :
+																	<span className="comment comment-details"><Linkify>{comment.comment}</Linkify></span>
 																}
 																<input className="comment" id={'comment-'+comment.commentId} type="text"/>
 															</div>

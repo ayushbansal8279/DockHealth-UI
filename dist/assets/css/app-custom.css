@@ -414,3 +414,13 @@ pre.emailMessage {
 .completed-tasks-fetching {
   margin-top: 0px;
 }
+
+.add-form-popup {
+  width: 800px;
+}
+
+.Linkify > a {
+  text-decoration: underline;
+  color: blue;
+  font-weight: bold;
+}
