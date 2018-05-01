@@ -180,7 +180,7 @@ class AddTaskForm extends BaseComponent {
             </div>
             <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
               <fieldset className="large-12 columns">
-                {this.props.taskLists && this.props.taskLists.map(taskList => {
+                {this.props.taskLists && this.props.taskLists.length>0 && this.props.taskLists.map(taskList => {
                   return(
                     <div key={taskList.taskListId} >
                       <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} title={taskList.listName} component="input" type="radio" onClick={(e) => this.handleTaskListSelection(e, taskList)}/>
