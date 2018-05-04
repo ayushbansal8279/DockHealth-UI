@@ -35,7 +35,11 @@ class HeaderTasks extends BaseComponent {
   }
 
   componentWillUpdate(nextProps){
-    if(nextProps.taskListId && this.props.taskLists && this.props.taskLists.length > 0 && nextProps.taskListId != this.props.currentList.taskListId){
+    if(this.props.taskLists 
+      && this.props.taskLists.length > 0 
+      && nextProps.taskListId 
+      && this.props.currentList
+      && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
     }
@@ -58,7 +62,9 @@ class HeaderTasks extends BaseComponent {
   }
 
 	handleAddTask = () => {
-		this.props.taskActions.taskToState(null)
+    this.props.taskActions.taskToState(null)
+
+    openAddForm();
 	};
 
   getListTasks = (sortBy) => {

@@ -160,7 +160,8 @@ class AddTaskForm extends BaseComponent {
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
         {/* Comment */}
-        {this.props.isEditing != true &&
+        {this.props.isEditing != true 
+          || !this.props.task || !this.props.task.description || this.props.task.description=="" &&
           <Field name='comment' type='text' component={BasicField} label='Comment' xlinkHref="#icon-pencil" isTaskDescription="true"/>
         }
         {/* <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/> */}
