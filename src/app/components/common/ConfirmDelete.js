@@ -3,7 +3,7 @@ import React from 'react'
 class ConfirmDelete extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
-    enableFoundationForSingleComponent("delete-task-"+this.props.task.taskId)
+    enableFoundationForSingleComponent("#delete-task-"+this.props.task.taskId)
   }
 
   render(){

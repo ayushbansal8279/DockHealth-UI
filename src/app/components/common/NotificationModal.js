@@ -3,7 +3,7 @@ import React from 'react'
 class NotificationModal extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
-    enableFoundationForSingleComponent("notification-modal-" + this.props.uniqueId)
+    enableFoundationForSingleComponent("#notification-modal-" + this.props.uniqueId)
   }
 
   render(){
