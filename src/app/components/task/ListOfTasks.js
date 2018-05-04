@@ -15,7 +15,7 @@ import ConfirmDelete from '../common/ConfirmDelete'
 import BooleanModal from '../common/BooleanModal'
 import MemberInitials from '../common/MemberInitials'
 import {change} from 'redux-form'
-import Linkify from 'react-linkify'
+import Linkify from 'linkifyjs/react';
 
 class ListOfTasks extends BaseComponent {
 		constructor(props) {
@@ -95,6 +95,10 @@ class ListOfTasks extends BaseComponent {
 			closeAddForm()
 		}
 
+		componentWillUpdate (nextProps) {
+			console.log('ListOfTasks componentWillUpdate: '+nextProps)
+		}
+
 		componentDidUpdate (prevProps, prevState) {
 			if(prevProps.listName != "COMPLETE" && prevProps != this.props){
 				// debugger;
@@ -108,7 +112,16 @@ class ListOfTasks extends BaseComponent {
 			// updateCommentsDisplay(".task-item-wrapper")
 		}
 
-		
+		// shouldComponentUpdate(nextProps, nextState) {
+		// 	if(!this.props.members 
+		// 		|| (nextProps.members && this.props.members.length != nextProps.members.length)
+		// 		|| !this.props.tasks 
+		// 		|| (nextProps.tasks && this.props.tasks.length != nextProps.tasks.length)){
+		// 		return true
+		// 	}
+		// 	return false
+		// }
+
 		editTask(task){
 			console.log("edit working")
 			editForm()
@@ -188,10 +201,31 @@ class ListOfTasks extends BaseComponent {
 			this.props.taskAction.assignOrReassignTask(task, assignedToUserId, member)
 		}
 
-		handleToggle = (task) => {
+		handleToggleForEditTask = (task) => {
+			// var formDisplayed = $('.add-form-wrapper').css("display");
+			var formDisplayed = $('.add').hasClass("close");
+			// if(formDisplayed != "none"){
+			if(formDisplayed){
+				closeAddForm()
+			}
 			// puts task to state to populate data for form
+
 			this.props.taskAction.taskToState(task)
 			this.props.setTaskEditingStatus(true)
+
+			//open form to edit
+			$('.add').toggleClass('close');
+			$('body').toggleClass('disable-header-scroll');
+			var href = $(this).attr('id');
+			if($(this).hasClass('add-other')) {
+				$('.add-other use').attr('href', function(index, attr) {
+					return attr =='#icon-add' ? '#'+href : '#icon-add';
+				});
+			}
+			$('.add-form-wrapper').slideToggle(300);
+			//	$('.list-filter .controls, .list-wrapper').toggle();
+			$('.list-filter .controls').toggle();
+
 			// $('.add').click();
 			console.log(task)
 			if(task && task.description && task.description!=""){
@@ -291,8 +325,8 @@ class ListOfTasks extends BaseComponent {
 							{/* {type == 'subtask' && <span className="subtask-number">1.</span>} */}
 			        <span data-editable className={"task-title " + (task.status == 'COMPLETE' && 'complete')}>{task.read ? task.description : <b>{task.description}</b>}</span>
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
-							{/* <span onClick={(e) => this.handleToggle(task)} className="edit-task-popup" data-open="add-form-popup"> */}
-							<span onClick={(e) => this.handleToggle(task)} className="edit-task">							
+							{/* <span onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task-popup" data-open="add-form-popup"> */}
+							<span onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task">							
 				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"} {task.patient ? ' | ' + task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : ""}</span>
 								{task.assignedBy &&
@@ -328,8 +362,8 @@ class ListOfTasks extends BaseComponent {
 														<div className="column">
 															<div className="row expanded">
 																{comment.creator.userId === this.props.userProfile.userId ?
-																	<span className="comment comment-details" data-editable-comment><Linkify>{comment.comment}</Linkify></span> :
-																	<span className="comment comment-details"><Linkify>{comment.comment}</Linkify></span>
+																	<span className="comment comment-details" data-editable-comment><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span> :
+																	<span className="comment comment-details"><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span>
 																}
 																<input className="comment" id={'comment-'+comment.commentId} type="text"/>
 															</div>
@@ -379,7 +413,7 @@ class ListOfTasks extends BaseComponent {
 								</div>
 								<div className="columns">
 									<div className="email-container">
-										<pre className="emailMessage">{task.sourceMessage}</pre>
+										<pre className="emailMessage"><Linkify options={{target: "_blank", className: "decorated-link"}}>{task.sourceMessage}</Linkify></pre>
 										<span className="expand-content circle xsmall emailExpandButton"><svg className="icon"><use xlinkHref="#icon-slim"></use></svg></span>
 									</div>
 								</div>
@@ -393,10 +427,10 @@ class ListOfTasks extends BaseComponent {
 								<div className="small dropdown-pane" id={"task-edit-" + task.taskId} data-dropdown data-close-on-click="true">
 									<ul className="no-bullet">
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
-										{/* <li onClick={(e) => this.handleToggle(task)} className="edit-task-popup" data-open="add-form-popup">Edit task</li> */}
-										<li onClick={(e) => this.handleToggle(task)} className="edit-task">Edit task</li>
+										{/* <li onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task-popup" data-open="add-form-popup">Edit task</li> */}
+										<li onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task">Edit task</li>
 										{type != "subtask" &&
-											<li onClick={(e) => {this.handleToggle(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>
+											<li onClick={(e) => {this.handleToggleForEditTask(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>
 										}
 										{task.creator.userId == this.props.userProfile.userId &&
 											<li data-open={"delete-task-"+task.taskId}>Delete task</li>

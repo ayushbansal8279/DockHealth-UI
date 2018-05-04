@@ -43,6 +43,7 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
     handleAddPatient = () => {
       this.props.patientActions.patientToState(null)
       this.props.formActions.destroy('FormPatient')
+      openAddForm();
     };
 
     render() {

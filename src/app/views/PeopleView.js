@@ -48,6 +48,10 @@ class PeopleView extends BaseComponentWithFoundationUpdate {
     this.props.peopleActions.findAllUsersByOrganizationId()
   }
 
+  addPerson = () => {
+    openAddForm();
+  }
+
   render() {
     return (
       <div className="off-canvas-content" data-off-canvas-content>
@@ -77,7 +81,7 @@ class PeopleView extends BaseComponentWithFoundationUpdate {
                 <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
               </div>
               <div className="columns shrink">
-                <svg id="icon-add-person" className="add icon add-other"><use xlinkHref="#icon-add-person"></use></svg>
+                <svg id="icon-add-person" className="add icon add-other" onClick={this.addPerson}><use xlinkHref="#icon-add-person"></use></svg>
               </div>
 
             </div>{/*list-filter*/}

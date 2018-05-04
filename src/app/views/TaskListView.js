@@ -54,6 +54,8 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
 
     addTaskList = () => {
       this.props.taskListAction.setTaskListAsCurrentList(null)
+
+      openAddForm();
     }
 
     editTaskList = (taskList) => {

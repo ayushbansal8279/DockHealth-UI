@@ -23526,7 +23526,8 @@ $('.off-canvas-content').on('click', '.show-add-subtask', function () {
 });
 
 // show/hide add task/list form
-$('.add,.edit-task').on('click', function () {
+/*
+$('.add, .edit-task').on('click', function () {
 	$('.add').toggleClass('close');
 	$('body').toggleClass('disable-header-scroll');
 	var href = $(this).attr('id');
@@ -23539,19 +23540,7 @@ $('.add,.edit-task').on('click', function () {
 	//	$('.list-filter .controls, .list-wrapper').toggle();
 	$('.list-filter .controls').toggle();
 });
-
-function closeAddForm() {
-	$('.add').removeClass('close');
-	$('body').removeClass('disable-header-scroll');
-	var href = $(this).attr('id');
-	if ($(this).hasClass('add-other')) {
-		$('.add-other use').attr('href', function (index, attr) {
-			return attr == '#icon-add' ? '#' + href : '#icon-add';
-		});
-	}
-	$('.add-form-wrapper').slideUp(300);
-	$('.list-filter .controls').slideDown();
-}
+*/
 
 // show/hide completed tasks
 $('.toggle-completed').click(function () {
