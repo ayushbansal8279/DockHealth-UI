@@ -469,15 +469,14 @@ function resizeEmailBodySection(selector){
 			var emailContainer = $(elements[index]);
 			var emailSection = emailContainer.find('.emailMessage');
 			var emailSectionHeight = emailSection.css('height').replace(/px/g, "");
-			//console.log('emailSectionHeight: '+emailSectionHeight);
+			console.log('emailSectionHeight: '+emailSectionHeight);
 			emailSectionHeight = parseInt(emailSectionHeight) + 20;
-			var height = emailContainer.css('height').replace(/px/g, "");;
-			if(height >= 200){
+			//var height = emailContainer.css('height').replace(/px/g, "");;
+			// console.log('height: '+height);
+			if(emailSectionHeight <= 200){
 				emailContainer.css('height', emailSectionHeight+"px");
-				$(this).css('color', 'black');
 			}else{
 				emailContainer.css('height','200px');
-				$(this).css('color', 'white');
 			}
 		});
 	}
@@ -607,8 +606,8 @@ $(document).ready(function() {
 		var emailSectionHeight = emailSection.css('height').replace(/px/g, "");
 		//console.log('emailSectionHeight: '+emailSectionHeight);
 		emailSectionHeight = parseInt(emailSectionHeight) + 20;
- 		var height = parentEmailSection.css('height');
-		if(height == '200px'){
+		var height = parentEmailSection.css('height').replace(/px/g, "");
+		if(height == 200){ //handles toggle
 			parentEmailSection.css('height', emailSectionHeight+"px");
 			$(this).css('color', 'black');
 		}else{

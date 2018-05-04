@@ -424,3 +424,9 @@ pre.emailMessage {
   color: blue;
   font-weight: bold;
 }
+
+.decorated-link {
+  text-decoration: underline;
+  color: blue;
+  font-weight: bold;
+}
