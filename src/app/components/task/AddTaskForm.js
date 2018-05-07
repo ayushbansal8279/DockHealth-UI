@@ -334,7 +334,6 @@ const mapStateToProps = function(store) {
 	}
   return {
 		initialValues: initialTaskFormValues,
-    tasks: store.taskState.tasks,
     taskListSelection: selector(store, 'taskListId'),
     currentTask: store.taskState.task,
     currentSubtasks: selector(store, 'subtasks'),
