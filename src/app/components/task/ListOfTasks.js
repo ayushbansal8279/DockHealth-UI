@@ -53,10 +53,6 @@ class ListOfTasks extends BaseComponent {
 		componentDidMount () {
 			super.componentDidMount()
 			// console.log("listoftasks didmount")
-			// edit data
-			//console.log("ListOfTasks.js")
-			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-item")
-			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-popups")
 
 			$('body').on('dblclick', '[data-editable]', function () {
 				$(this).hide();
@@ -93,6 +89,20 @@ class ListOfTasks extends BaseComponent {
 
 		componentWillUnmount(){
 			closeAddForm()
+			if(this.props.tasks){
+				this.props.tasks.map((task, index) => {
+					removeRevealComponent("#edit-assign-to-" + task.taskId)
+					removeRevealComponent("#delete-task-" + task.taskId)
+					removeRevealComponent("#complete-task-" + task.taskId)
+					if(task.subtasks){
+						task.subtasks.map((subtask, index) => {
+							removeRevealComponent("#edit-assign-to-" + subtask.taskId)
+							removeRevealComponent("#delete-task-" + subtask.taskId)
+							removeRevealComponent("#complete-task-" + subtask.taskId)
+						})
+					}
+				})
+			}
 		}
 
 		componentWillUpdate (nextProps) {
@@ -105,9 +115,6 @@ class ListOfTasks extends BaseComponent {
 			}
 			super.componentDidUpdate(prevProps, prevState)
 			// console.log("listoftasks didupdate")
-			// enableFoundationComponent(".task-item-wrapper")
-			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-item")
-			enableFoundationForMultipleComponents(".task-item-wrapper", ".task-popups")
 			resizeEmailBodySection(".task-item-wrapper")
 			// updateCommentsDisplay(".task-item-wrapper")
 		}
@@ -156,7 +163,6 @@ class ListOfTasks extends BaseComponent {
 					}
 				})
 			}else{
-				this.props.taskAction.taskToState(task)
 				this.props.markComplete(task, status, this.props.listName)
 			}
   		// this.setState({task: ''})
@@ -164,7 +170,6 @@ class ListOfTasks extends BaseComponent {
 
 		confirmCompleteTask(task){
 			var boo = this.props
-			this.props.taskAction.taskToState(task)
 			this.props.markComplete(task, task.status, this.props.listName)
 		}
 
@@ -210,7 +215,7 @@ class ListOfTasks extends BaseComponent {
 			}
 			// puts task to state to populate data for form
 
-			this.props.taskAction.taskToState(task)
+			this.props.taskAction.taskToState(task) //ensure dispatch is not called multiple times in the same call
 			this.props.setTaskEditingStatus(true)
 
 			//open form to edit
@@ -262,9 +267,24 @@ class ListOfTasks extends BaseComponent {
 			this.props.taskAction.updateComment(task, comment);
 		}
 
+		openAssignmentModal = (taskId) => {
+			openPopup("#edit-assign-to-"+taskId)
+		}
+		openCompleteConfirmationModal = (taskId) => {
+			openPopup("#complete-task-"+taskId)
+		}
+		openDeleteConfirmationModal = (taskId) => {
+			openPopup("#delete-task-"+taskId)
+		}
+		
+		openTaskContextMenu = (taskId) => {
+			openDropdown("#task-edit-"+taskId)
+		}
+		
+
     render() {
 			if(AWS.config.credentials){
-				console.log("user name: "+AWS.config.credentials.params.IdentityId);
+				// console.log("user name: "+AWS.config.credentials.params.IdentityId);
 			}
 			const members = this.props.members
 			
@@ -302,14 +322,17 @@ class ListOfTasks extends BaseComponent {
 			          }
 			        </div>
 							{/* Triggers confirmation modal to pop up if task has subtasks */}
-							<span id="complete-task" data-open={"complete-task-"+task.taskId} className="hide">Complete</span>
+							{/* <span id="complete-task" data-open={"complete-task-"+task.taskId} className="hide">Complete</span> */}
+							<span id="complete-task" onClick={(e) => this.openCompleteConfirmationModal(task.taskId)} className="hide">Complete</span>
 			      </div>
 						{type == 'subtask' &&
 							<div className="columns shrink">
 								<span className="subtask-number">{index + 1 + '.'}</span>
 							</div>
+						
 						}
-			      <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}>
+						{/* <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}> */}
+			      <div className="columns shrink" onClick={(e) => this.openAssignmentModal(task.taskId)}>
 							{task.assignedTo ?
 			         	<MemberInitials member={task.assignedTo}/> :
 								<span className="medium member-photo member-unassigned circle">?</span>
@@ -317,7 +340,7 @@ class ListOfTasks extends BaseComponent {
 			      </div>
 
 			      <div className="columns shrink align-right">
-							<span data-tooltip title={task.priority == 'HIGH' ? 'High Priority' : 'Priority'} >
+							<span title={task.priority == 'HIGH' ? 'High Priority' : 'Priority'} >
 				        <svg className={"pointer icon medium taskPriorityClass " + (task.priority == 'HIGH' ? 'flag' : 'no-flag')} onClick={(e) => this.handleToggleTaskPriority(task, 1, task.priority)}><use xlinkHref="#icon-flag"></use></svg>
 							</span>
 			      </div>
@@ -423,7 +446,8 @@ class ListOfTasks extends BaseComponent {
 
 						{task.status == "INCOMPLETE" && 
 							<div className="columns shrink more-options-wrapper">
-								<svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId}><use xlinkHref="#icon-ellipses"></use></svg>
+								{/* <svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId}><use xlinkHref="#icon-ellipses"></use></svg> */}
+								<svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId} onClick={(e) => this.openTaskContextMenu(task.taskId)}><use xlinkHref="#icon-ellipses"></use></svg>
 								<div className="small dropdown-pane" id={"task-edit-" + task.taskId} data-dropdown data-close-on-click="true">
 									<ul className="no-bullet">
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
@@ -432,8 +456,9 @@ class ListOfTasks extends BaseComponent {
 										{type != "subtask" &&
 											<li onClick={(e) => {this.handleToggleForEditTask(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>
 										}
+										{/* <li data-open={"delete-task-"+task.taskId}>Delete task</li> */}
 										{task.creator.userId == this.props.userProfile.userId &&
-											<li data-open={"delete-task-"+task.taskId}>Delete task</li>
+											<li onClick={(e) => this.openCompleteConfirmationModal(task.taskId)} >Delete task</li>
 										}
 										{type != "subtask" &&
 											<li onClick={() => this.duplicateTask(task)}>Duplicate task</li>

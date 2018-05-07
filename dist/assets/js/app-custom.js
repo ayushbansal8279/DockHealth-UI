@@ -247,15 +247,15 @@ function enableAutoCompleteForSubtaskAssignedTo(lookupData) {
 
 }
 
-var originalHeightListMembers = 500;
+var originalHeightListMembers = 0;
 
 function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 
-	var originalHeight = $("#list-members-"+taskListId).css("height");
-	if(originalHeight){
-		originalHeight = originalHeight.replace(/px/g, "");
-		originalHeightListMembers = parseInt(originalHeight);
-	}
+	// var originalHeight = $("#list-members-"+taskListId).css("height");
+	// if(originalHeight){
+	// 	originalHeight = originalHeight.replace(/px/g, "");
+	// 	originalHeightListMembers = parseInt(originalHeight);
+	// }
 
 	var activeOrgMembers = []
 	for(var k in lookupData){
@@ -263,6 +263,18 @@ function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 			activeOrgMembers.push(lookupData[k])
 		}
 	}
+
+	$("#list-members-"+taskListId).on('open.zf.reveal', function() {
+		//console.log('list members popup opened')
+		var originalHeight = $(this).find(".scroll-wrapper").css("height").replace(/px/g, "")
+		var newHeight = parseInt(originalHeight) + 200 + 150
+		$(this).css("height", newHeight + "px")
+		//reset previous selection
+		$(this).find("input").val("")
+		$(this).find("input").attr("value","")
+		$(this).find("#add-member-to-list").val("")
+		$(this).find("#add-member-to-list-id").val("")
+	});
 
 	var people = {
 		data: activeOrgMembers,
@@ -278,7 +290,7 @@ function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 			onShowListEvent: function() {
 				////var newHeight = originalHeightListMembers + 150;
 				// console.log('onShowListEvent: '+newHeight);
-				////$("#list-members").css("height", newHeight + "px");
+				////$("#list-members").css("height", newHeight + "px");				
 			},
 			onHideListEvent: function() {
 				////var newHeight = originalHeightListMembers;
@@ -433,8 +445,27 @@ function openPopup(selector) {
 	popup.open();
 }
 
+function openDropdown(selector) {
+	// var dropdown = new Foundation.Dropdown($(selector));
+	// dropdown.open();
+	// $(selector).foundation('open');
+	// $(selector).foundation('toggle');
+	var element = $(selector);
+	if(!element.data('yeti-box')){
+		element.foundation();
+		element.foundation('open');
+	}
+}
+
+function removeRevealComponent(selector) {
+	var element = $(selector);
+	if(element.data('yeti-box')){
+		element.parent().remove()
+	}	
+}
+
 function toggleDropDown(elementId) {
-	$("#"+elementId).foundation('toggle');
+	// $("#"+elementId).foundation('toggle');
 }
 
 function toggleSearch(){
@@ -501,7 +532,7 @@ function resizeEmailBodySection(selector){
 			var emailContainer = $(elements[index]);
 			var emailSection = emailContainer.find('.emailMessage');
 			var emailSectionHeight = emailSection.css('height').replace(/px/g, "");
-			console.log('emailSectionHeight: '+emailSectionHeight);
+			//console.log('emailSectionHeight: '+emailSectionHeight);
 			emailSectionHeight = parseInt(emailSectionHeight) + 20;
 			//var height = emailContainer.css('height').replace(/px/g, "");;
 			// console.log('height: '+height);

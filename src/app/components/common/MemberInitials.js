@@ -14,14 +14,45 @@ class MemberInitials extends React.Component {
     // }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if(!this.props.member 
+			|| (this.props.member.userId != nextProps.member.userId)){
+      return true
+    }
+    return false
+  }
+  
+  componentWillUnmount(){
+    //console.log('MemberInitials unmount')
+    if(this.props.member){
+      var element = $("#tooltip-member-"+this.props.member.userId);
+      if(element.data('yeti-box')){
+        var tooltipId = element.data('yeti-box')
+        var tooltipElement = $("#"+tooltipId);
+        if(tooltipElement){
+          tooltipElement.remove()
+        }
+      }	
+    }else{
+      var element = $("#tooltip-member-unassigned");
+      if(element.data('yeti-box')){
+        var tooltipId = element.data('yeti-box')
+        var tooltipElement = $("#"+tooltipId);
+        if(tooltipElement){
+          tooltipElement.remove()
+        }
+      }	      
+    }
+  }
+
   render(){
     return(
       <span>
         {/* Difference between member-photo and member-initials: flex and border */}
         {this.props.member && this.props.member.profileThumbnailPictureHash ?
-          <img className={"medium member-photo circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"} src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+this.props.member.userId+"/"+this.props.member.profileThumbnailPictureHash} alt={this.props.member.firstName + " " + this.props.member.lastName}/> :
-          <span className={"medium member-initials circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"}>{this.props.member ? this.props.member.initials : "?"}</span>
-        }
+          <img id={"tooltip-member-"+this.props.member.userId} className={"medium member-photo circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"} src={process.env.HEYDOC_SERVICES_BASE_URL +"user/profilePicture/"+this.props.member.userId+"/"+this.props.member.profileThumbnailPictureHash} alt={this.props.member.firstName + " " + this.props.member.lastName}/> : 
+          <span id={"tooltip-member-"+(this.props.member?this.props.member.userId:"unassigned")} className={"medium member-initials circle " + (this.props.extraClass && this.props.extraClass)} data-tooltip tabIndex="2" title={this.props.member ? this.props.member.userName : "unassigned"}>{this.props.member ? this.props.member.initials : "?"}</span>
+        } 
       </span>
     )
   }

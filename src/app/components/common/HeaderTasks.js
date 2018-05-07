@@ -47,6 +47,11 @@ class HeaderTasks extends BaseComponent {
 
   componentDidUpdate(prevProps, prevState) {
     super.componentDidUpdate(prevProps, prevState)
+    if(this.props.members){
+      this.props.members.map((member, index) => {
+        removeRevealComponent("#member-profile-" + member.userId)
+      })
+    }
     enableFoundationComponent("#taskListHeader")
     enableFoundationComponent(".member-photo-list")
     console.log("HeaderTasks didupdate")
@@ -58,6 +63,16 @@ class HeaderTasks extends BaseComponent {
         && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
+    }
+  }
+
+  componentWillUnmount(){
+    closeAddForm()
+    removeRevealComponent("#list-members-"+this.props.taskListId)
+    if(this.props.members){
+      this.props.members.map((member, index) => {
+        removeRevealComponent("#member-profile-" + member.userId)
+      })
     }
   }
 

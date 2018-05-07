@@ -53,14 +53,25 @@ class AddTask extends BaseComponent {
 		$(node).remove();
 	}
 
-  	handleTaskDetailsChange(event) {
-    	this.setState({value: event.target.value});
-  	}
+  handleTaskDetailsChange(event) {
+		this.setState({value: event.target.value});
+	}
 
 	componentWillUnmount(){
 		// alert("unmounting")
 	}
 
+  shouldComponentUpdate(nextProps, nextState) {
+		if(!this.props.task 
+			|| (nextProps.task && this.props.task.taskId != nextProps.task.taskId)
+			|| (this.props.taskListId != nextProps.taskListId)
+			|| (this.state.value != nextState.value)
+			|| (this.state.assignedToId != nextState.assignedToId)){
+      return true
+    }
+    return false
+	}
+	
 	addSubtaskToState = (subtask) => {
 		this.setState({subtasks:this.state.subtasks.concat(subtask)})
 	}

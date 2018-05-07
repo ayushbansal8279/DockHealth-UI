@@ -71,12 +71,19 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
   componentDidUpdate(prevProps, prevState) {
     super.componentDidUpdate(prevProps, prevState)
-		// enableFoundationForSingleComponent("#list-members-"+this.props.currentList.taskListId)
-		enableFoundationForElement("#list-members-"+this.props.currentList.taskListId)
 		enableFoundationComponent(".scroll-wrapper")
 		console.log("ListMembers didUpdate")
   }
 	
+	shouldComponentUpdate(nextProps, nextState) {
+		if(!this.props.currentList
+			|| !this.props.members
+			|| (nextProps.currentList && this.props.currentList.taskListId != nextProps.currentList.taskListId)
+			|| (nextProps.members && this.props.members.length != nextProps.members.length)){
+			return true
+		}
+		return false
+	}
 
 	deleteMember = (member) => {
 		this.props.taskListActions.removeUserFromList(this.props.currentList.taskListId, member)

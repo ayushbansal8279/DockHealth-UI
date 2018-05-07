@@ -7,9 +7,19 @@ class BooleanModal extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    enableFoundationForSingleComponent(this.props.uniqueModalId)
   }
-  
+
+  componentWillUpdate (nextProps) {
+    console.log('BooleanModal componentWillUpdate: ')
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.props.uniqueModalId != nextProps.uniqueModalId){
+      return true
+    }
+    return false
+  }
+
   render(){
     return(
       <div className="reveal text-center" id={this.props.uniqueModalId} data-reveal="">

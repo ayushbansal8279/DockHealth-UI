@@ -43,8 +43,22 @@ class AddComment extends BaseComponent {
     });
   }
 
+  componentWillUpdate (nextProps) {
+    console.log('AddComment componentWillUpdate: '+nextProps)
+  }
+
   componentDidUpdate () {
     // console.log("listoftasks didupdate")
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if(!this.props.task 
+      || (nextProps.task && this.props.task.taskId != nextProps.task.taskId)
+      || (this.state.value != nextState.value)
+      || (this.state.addComment != nextState.addComment)){
+      return true
+    }
+    return false
   }
 
   changeCommentStatus(status){

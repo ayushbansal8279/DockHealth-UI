@@ -10,6 +10,7 @@ class AssignToModal extends React.Component {
     this.state = {
       members:[]
     }
+    this.handleMemberAssignment = this.handleMemberAssignment.bind(this)
   }
 
   componentDidMount(){
@@ -22,20 +23,44 @@ class AssignToModal extends React.Component {
     }
   }
 
+  componentWillUpdate (nextProps) {
+    console.log('AssignToModal componentWillUpdate: ')
+  }
+
   componentDidUpdate(prevProps, prevState) {
-    enableFoundationForSingleComponent("edit-assign-to-" + this.props.task.taskId)
     console.log("AssignToModal didUpdate")
+  }
+
+  handleMemberAssignment(member) {
+    // console.log('handleMemberAssignment')
+    if(member){
+      this.props.assignOrReassignTask(this.props.task, member.userId, member)
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if(!this.props.task
+      || (nextProps.task && this.props.task.taskId != nextProps.task.taskId)
+      || (nextProps.task && this.props.task.assignedTo != nextProps.task.assignedTo)
+      || (nextState.members && this.state.members.length != nextState.members.length)){ //since we are using state to render
+      return true
+    }
+    return false
   }
 
   render() {
     return (
-      <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal="">
+        <div className="reveal" id={"edit-assign-to-" + this.props.task.taskId} data-reveal="">
+        {/* <div id={"edit-assign-to-" + this.props.task.taskId}> */}
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
-          {this.state.members && this.state.members.map(member=>{
+          {this.props.members && this.props.members.map(member=>{
             // return(member.status!='PENDING' && // PENDING members can be assigned tasks
             return(
-              <div data-close="" onClick={(e) => this.props.assignOrReassignTask(this.props.task, member.userId, member)} key={'assign_'+this.props.taskListId+'_'+member.userId} className="row condense expanded border-bottom align-middle">
+              <div data-close="" 
+                onClick={(e) => this.handleMemberAssignment(member)} 
+                key={'assign_'+this.props.taskListId+'_'+member.userId} 
+                className="row condense expanded border-bottom align-middle">
                 <div className="columns shrink">
                   <MemberInitials member={member}/>
                   {/* <img className="member-photo circle medium" src="assets/img/user3.png" alt="name of user"/> */}
@@ -75,6 +100,5 @@ class AssignToModal extends React.Component {
   }
 
 }
-
 
 export default AssignToModal;
