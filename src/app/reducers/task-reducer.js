@@ -126,12 +126,12 @@ const TaskReducer = function(state = initialState, action) {
     //     )
     //   };
 
-    case types.DELETE_TASK_SUCCESS:
+    // case types.DELETE_TASK_SUCCESS:
       //return Object.assign({}, state, { tasks: state.tasks.filter(task => task.taskId !== taskId)});
-      return {
-        ...state,
-        tasks: state.tasks.filter(task => task !== action.task)
-      };
+      // return {
+      //   ...state,
+      //   tasks: state.tasks.filter(task => task !== action.task)
+      // };
 
     // case types.DELETE_TASK_SUCCESS:
     // var mainTask
@@ -158,25 +158,25 @@ const TaskReducer = function(state = initialState, action) {
     //   )
     // };
 
-    // case types.DELETE_TASK_SUCCESS:
-    // var mainTask
-    // if(action.task.parentTaskId){
-    //   mainTask = action.task.parentTaskId
-    // }else{
-    //   mainTask = action.task.taskId
-    // }
-    //
-    // return {
-    //     ...state,
-    //     tasks: state.tasks.map(task =>
-    //       task.taskId === mainTask ?
-    //       action.task.parentTaskId ?
-    //         {...task, subtasks: task.subtasks.filter(subtask => subtask.taskId !== mainTask)} :
-    //         { ...task, tasks: state.tasks.filter(task => task.taskId !== taskId) }
-    //
-    //         : task
-    //     )
-    // };
+    case types.DELETE_TASK_SUCCESS:
+      var mainTaskId
+      if(action.task.parentTaskId){
+        mainTaskId = action.task.parentTaskId
+      }else{
+        return {
+          ...state,
+          tasks: state.tasks.filter(task => task !== action.task)
+        };
+      }
+    
+      return {
+          ...state,
+          tasks: state.tasks.map(task =>
+            task.taskId === mainTaskId ?
+              {...task, subtasks: task.subtasks.filter(subtask => subtask !== action.task)}
+              : task
+          )
+      };
 
     // case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
     //   return {

@@ -458,7 +458,7 @@ class ListOfTasks extends BaseComponent {
 										}
 										{/* <li data-open={"delete-task-"+task.taskId}>Delete task</li> */}
 										{task.creator.userId == this.props.userProfile.userId &&
-											<li onClick={(e) => this.openCompleteConfirmationModal(task.taskId)} >Delete task</li>
+											<li onClick={(e) => this.openDeleteConfirmationModal(task.taskId)} >Delete task</li>
 										}
 										{type != "subtask" &&
 											<li onClick={() => this.duplicateTask(task)}>Duplicate task</li>
