@@ -36,8 +36,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
         	this.props.taskListActions.inviteMultipleUsersToTaskList(this.props.currentList.taskListId, inviteUsers)
         .then((res)=>{
             this.props.formActions.reset('ListMembersAddForm')
-						this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
-						//this.props.taskListActions.getMembersByTaskListId(this.props.currentList.taskListId, "ALL")
+						// this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
+						this.props.taskListActions.getMembersByTaskListId(this.props.currentList.taskListId, "ALL")
+						closePopup("#list-members-"+this.props.currentList.taskListId)
         })
         .catch((error)=>{
           	this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage});
@@ -75,22 +76,34 @@ class ListMembers extends BaseComponentWithAutoComplete {
 		console.log("ListMembers didUpdate")
   }
 	
-	shouldComponentUpdate(nextProps, nextState) {
-		if(!this.props.currentList
-			|| !this.props.members
-			|| (nextProps.currentList && this.props.currentList.taskListId != nextProps.currentList.taskListId)
-			|| (nextProps.members && this.props.members.length != nextProps.members.length)){
-			return true
-		}
-		return false
-	}
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	if(!this.props.currentList
+	// 		|| !this.props.members
+	// 		|| (nextProps.currentList && this.props.currentList.taskListId != nextProps.currentList.taskListId)
+	// 		|| (nextProps.members && this.props.members.length != nextProps.members.length)){
+	// 		return true
+	// 	}
+	// 	return false
+	// }
 
 	deleteMember = (member) => {
-		this.props.taskListActions.removeUserFromList(this.props.currentList.taskListId, member)
+		this.props.taskListActions.removeUserFromList(this.props.currentList.taskListId, member) 
+		.then((res)=>{
+			closePopup("#list-members-"+this.props.currentList.taskListId)
+		})
+		.catch((error)=>{
+			this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage});
+		})
 	}
 
 	changeUserRole = (member, role) => {
 		this.props.taskListActions.changeUserRoleForList(this.props.currentList.taskListId, member, role)
+		.then((res)=>{
+			closePopup("#list-members-"+this.props.currentList.taskListId)
+		})
+		.catch((error)=>{
+			this.setState({inviteUserResult: error.message + ": " + error.response.data.errorMessage});
+		})
 	}
 
 	removeListMember() {
@@ -153,6 +166,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
 							</div>
 						)
 					})}
+					<div className="row condense expanded border-bottom align-middle">
+						<div className="columns"><span className="item-content">&nbsp;</span></div>
+					</div>
 				</div>{/* <!--wrapper--> */}
 				 <form className="inline-label top-buffer" onSubmit = {this.props.handleSubmit(this.onSubmit.bind(this))}>
 					<div className="row collapse expanded align-middle">

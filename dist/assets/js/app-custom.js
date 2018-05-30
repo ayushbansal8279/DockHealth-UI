@@ -274,6 +274,8 @@ function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 		$(this).find("input").attr("value","")
 		$(this).find("#add-member-to-list").val("")
 		$(this).find("#add-member-to-list-id").val("")
+		//var scrollHeight = parseInt(originalHeight) + 40
+		//$(".scroll-wrapper").css("height", scrollHeight + "px")
 	});
 
 	var people = {
@@ -443,6 +445,12 @@ function enableFoundationForSingleComponent(selector) {
 function openPopup(selector) {
 	var popup = new Foundation.Reveal($(selector));
 	popup.open();
+}
+
+function closePopup(selector) {
+	var popup = new Foundation.Reveal($(selector));
+	popup.close();
+	$('.reveal-overlay').hide(); //sometimes the overlay remains
 }
 
 function openDropdown(selector) {
