@@ -156,12 +156,17 @@ class ListOfTasks extends BaseComponent {
 
   	handleMarkComplete(task, status){
 			if(task.subtasks.length > 0 && task.status == 'INCOMPLETE'){
+				var allSubTasksComplete = true
 				task.subtasks.map(subtask => {
 					if(subtask.status == 'INCOMPLETE'){
 						// alert('Incomplete Subtask')
+						allSubTasksComplete = false
 						$("#complete-task").trigger('click');
 					}
 				})
+				if(allSubTasksComplete){
+					this.props.markComplete(task, status, this.props.listName)	
+				}
 			}else{
 				this.props.markComplete(task, status, this.props.listName)
 			}
