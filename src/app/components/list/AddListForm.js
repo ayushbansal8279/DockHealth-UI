@@ -66,7 +66,9 @@ class AddListForm extends BaseComponentWithAutoComplete {
 		const inputLength = inputValue.length;
 
 		return inputLength === 0 ? [] : this.props.peoplelist.filter(person =>
-			person.firstName.toLowerCase().slice(0, inputLength) === inputValue || person.lastName.toLowerCase().slice(0, inputLength) === inputValue
+      ((person.firstName.toLowerCase().slice(0, inputLength) === inputValue || person.lastName.toLowerCase().slice(0, inputLength) === inputValue)
+      && (person.firstName != this.props.currentUserProfile.firstName 
+       || person.lastName != this.props.currentUserProfile.lastName))
 		);
 	};
 
