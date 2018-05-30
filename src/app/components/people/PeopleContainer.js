@@ -251,7 +251,7 @@ class PeopleContainer extends BaseComponent {
       }
        return filteredPeople.map((person) =>{
          return(
-           <div className="item row expanded" key={person.email}>
+           <div className="item row expanded" key={person.email+'_'+person.userId}>
              <div className="columns shrink pending">
              {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
               {/* <span className="member-initials circle">{person.initials}</span> */}
