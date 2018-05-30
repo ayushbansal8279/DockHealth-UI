@@ -16,7 +16,6 @@ class AddTaskForm extends BaseComponent {
   constructor(props, container) {
 		super(props)
     this.state = {
-      taskListId:"",
       priority: undefined
     }
 		this.container = container
@@ -29,16 +28,11 @@ class AddTaskForm extends BaseComponent {
 
   componentDidMount () {
     super.componentDidMount()
-    // this.setState({"taskListId":this.props.taskListId})
 
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       'PageName': 'AddTask'
     });
 
-  }
-
-  componentDidUpdate () {
-    super.componentDidUpdate()
   }
 
   componentWillUpdate (nextProps) {
@@ -48,8 +42,19 @@ class AddTaskForm extends BaseComponent {
   }
 
   componentDidUpdate (prevProps, prevState) {
+    console.log('AddTaskForm componentDidUpdate')
     renderFoundationComponentsJquery();
   }
+
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if ((nextProps.task && this.props.currentTask && this.props.currentTask.taskId != nextProps.task.taskId)
+  //     || !this.props.taskListId
+  //     || (this.props.taskListId != nextProps.taskListId)){
+  //     return true
+  //   }
+  //   return false
+	// }
 
   componentWillReceiveProps(nextProps){
   }
@@ -86,11 +91,11 @@ class AddTaskForm extends BaseComponent {
     this.props.formActions.change("addTaskForm", "priority", priority)
   }
 
-  resetSubtaskForm = (patient) => {
-    if(patient != undefined){
-      var patientName = patient.firstName + " " + patient.lastName
+  resetSubtaskForm = (currTask) => {
+    if(currTask && currTask.patient){
+      var patientName = currTask.patient.firstName + " " + currTask.patient.lastName
       this.props.formActions.change("addSubtaskForm", "patient", patientName)
-      this.props.formActions.change("addSubtaskForm", "patientId", patient.patientId)
+      this.props.formActions.change("addSubtaskForm", "patientId", currTask.patient.patientId)
     }
     // this.props.formActions.reset('addSubtaskForm')
   }
@@ -155,13 +160,13 @@ class AddTaskForm extends BaseComponent {
         </div>
 
         {/* Description */}
-        <Field name="description" type="text" label="Description" component={BasicFieldTaskDescription} callback={this.changeTaskPriority} priority={this.state.priority}/>
+        <Field name="description" type="text" label="Description" component={BasicFieldTaskDescription} callback={this.changeTaskPriority} priority={this.state.priority} 
+        autocomplete="nope"/>
         {/* <Field name='description' type='text' component={testField} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/> */}
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
         {/* Comment */}
-        {this.props.isEditing != true 
-          || !this.props.task || !this.props.task.description || this.props.task.description=="" &&
+        {(this.props.task && this.props.task.description && this.props.task.description!="") ? "" : 
           <Field name='comment' type='text' component={BasicField} label='Comment' xlinkHref="#icon-pencil" isTaskDescription="true"/>
         }
         {/* <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/> */}
@@ -249,7 +254,7 @@ class AddTaskForm extends BaseComponent {
 
         <div className="row expanded">
           {!this.props.currentTask || !this.props.currentTask.parentTaskId ?
-            <div onClick={(e) => this.resetSubtaskForm(this.props.currentTask.patient)} className="columns highlight center-content-vertical toggle-add-subtask link">
+            <div onClick={(e) => this.resetSubtaskForm(this.props.currentTask)} className="columns highlight center-content-vertical toggle-add-subtask link">
               <svg className="icon hide"><use xlinkHref="#icon-subtask"></use></svg>+ Add a subtask
             </div> :
             <div className="columns center-content-vertical">

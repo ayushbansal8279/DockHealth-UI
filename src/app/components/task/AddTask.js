@@ -35,8 +35,12 @@ class AddTask extends BaseComponent {
 		//this.props.peopleActions.findAllUsersByOrganizationId();
 	}
 
+	componentDidUpdate () {
+		console.log('AddTask componentDidUpdate')
+	}
+
 	componentWillUpdate (nextProps) {
-	console.log('AddTask componentWillUpdate: '+nextProps)
+		console.log('AddTask componentWillUpdate: '+nextProps)
 	//if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
 		enableAutoCompleteForPatients(nextProps.patients);
 		enableAutoCompleteForSubtaskPatients(nextProps.patients);
@@ -61,16 +65,17 @@ class AddTask extends BaseComponent {
 		// alert("unmounting")
 	}
 
-  shouldComponentUpdate(nextProps, nextState) {
-		if(!this.props.task 
-			|| (nextProps.task && this.props.task.taskId != nextProps.task.taskId)
-			|| (this.props.taskListId != nextProps.taskListId)
-			|| (this.state.value != nextState.value)
-			|| (this.state.assignedToId != nextState.assignedToId)){
-      return true
-    }
-    return false
-	}
+  // shouldComponentUpdate(nextProps, nextState) {
+	// 	if((nextProps.task && this.props.task && this.props.task.taskId != nextProps.task.taskId)
+	// 		|| (this.props.taskListId != nextProps.taskListId)
+	// 		|| (this.props.patients != nextProps.patients)
+	// 		|| (this.props.activeListMembers != nextProps.activeListMembers)
+	// 		|| (this.state.value != nextState.value)
+	// 		|| (this.state.assignedToId != nextState.assignedToId)){
+  //     return true
+  //   }
+  //   return false
+	// }
 	
 	addSubtaskToState = (subtask) => {
 		this.setState({subtasks:this.state.subtasks.concat(subtask)})
@@ -87,7 +92,7 @@ class AddTask extends BaseComponent {
 	}
 
 	isSubtask = (boolean) => {
-		console.log(boolean)
+		//console.log(boolean)
 		this.setState({isSubtask:boolean})
 	}
 
@@ -270,7 +275,8 @@ const mapStateToProps = function(store) {
 		peoplelist: store.peopleState.peoplelist,
 		members: store.taskListState.tasklistmembers,
 		task: store.taskState.task,
-		currentSubtasks: selector(store, 'subtasks')
+		currentSubtasks: selector(store, 'subtasks'),
+    activeListMembers: store.taskListState.tasklistactivemembers
 		// user: store.userState.user
   	}
 };
