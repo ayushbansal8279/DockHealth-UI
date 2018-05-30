@@ -37,6 +37,10 @@ export default class ConfirmRegistration extends React.Component {
             'CONFIRM_REGISTRATION_SUCCESS': 'NO'
         });
         let msg = e.message || 'An error occurred.'
+        if(msg == "User cannot confirm because user status is not UNCONFIRMED."){
+          // window.location.href = "https://dockdev.app.link/FbMSMrsZLK";
+          window.location.href = "https://dockhealth.app.link/uwa2UNGzGL";
+        }
         let field = false
         if (!field) {
           error(msg)
