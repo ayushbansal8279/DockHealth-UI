@@ -40,6 +40,7 @@ class HeaderTasks extends BaseComponent {
       && nextProps.taskListId 
       && this.props.currentList
       && nextProps.taskListId != this.props.currentList.taskListId){
+      this.props.taskListActions.getActiveMembersByTaskListId(this.props.taskListId)
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
       this.setState({title:nextProps.currentList.listName})
     }
@@ -189,6 +190,7 @@ class HeaderTasks extends BaseComponent {
 										<ul className="no-bullet">
 											{/* <li>Due date</li> */}
 											<li onClick={(e) => this.getListTasks('CREATED_DT')} className="active">Creation date</li>
+                      <li onClick={(e) => this.getListTasks('DUE_DT')}>Due date</li>
 											<li onClick={(e) => this.getListTasks('PATIENT')}>Patient</li>
 											{this.props.title != "Inbox" && this.props.title != "Assigned by me" && <li onClick={(e) => this.getListTasks('ASSIGNED_BY')}>Assigned by</li>}
 											{this.props.title != "Inbox" && this.props.title != "Assigned to me" && <li onClick={(e) => this.getListTasks('ASSIGNED_TO')}>Assigned to</li>}
