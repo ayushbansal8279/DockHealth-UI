@@ -80,9 +80,11 @@ class PeopleView extends BaseComponentWithFoundationUpdate {
               <div className="columns shrink icon-group controls">
                 <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
               </div>
+              {(this.props.currentUserProfile.orgUserRole=='OWNER' || this.props.currentUserProfile.orgUserRole=='ADMIN') &&
               <div className="columns shrink">
                 <svg id="icon-add-person" className="add icon add-other" onClick={this.addPerson}><use xlinkHref="#icon-add-person"></use></svg>
               </div>
+              }
 
             </div>{/*list-filter*/}
             </header>{/*slideUp*/}
@@ -118,7 +120,8 @@ class PeopleView extends BaseComponentWithFoundationUpdate {
 
 const mapStateToProps = function (store) {
   return{
-    isFetching: store.peopleState.isFetching
+    isFetching: store.peopleState.isFetching,
+    currentUserProfile: store.userState.userProfile
   }
 }
 
