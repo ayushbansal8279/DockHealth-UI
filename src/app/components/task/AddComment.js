@@ -69,14 +69,17 @@ class AddComment extends BaseComponent {
     var commentField = "comment"+ this.props.task.taskId
     var commentFieldVal = formProps[commentField]
     var comment = {comment:commentFieldVal}
-
-    this.props.taskActions.addTaskComment(this.props.task, comment)
-    this.props.formActions.reset('AddComment')
-    this.setState({addComment: false})
-
-    $('.comment-button').show();
-    $('.add-comment').hide();
-    $('.save-comment').hide();
+    
+    this.props.taskActions.addTaskComment(this.props.task, comment).then(response => {
+      this.props.formActions.reset('AddComment')
+      this.setState({addComment: false})
+  
+      $('.comment-button').show();
+      $('.add-comment').hide();
+      $('.save-comment').hide();
+    }).catch(function (error){
+      console.log(error);
+    });
   }
 
   closeCommentBox = () => {

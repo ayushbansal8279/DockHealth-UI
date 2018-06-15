@@ -231,7 +231,7 @@ export function markHighPriority(taskId, userId){
     return response;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }
 
@@ -242,7 +242,7 @@ export function markLowPriority(taskId, userId){
     return response;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }
 
@@ -252,7 +252,7 @@ export function assignOrReassignTask(taskId, assignedToUserId){
     return response.data;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }
 
@@ -272,8 +272,9 @@ export function addComment(taskId, taskComment) {
     return response;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
+  
 }
 
 export function deleteComment(commentId) {
@@ -283,7 +284,7 @@ export function deleteComment(commentId) {
     return response;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }
 
@@ -294,7 +295,7 @@ export function updateComment(comment) {
     return response;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }
 
@@ -304,7 +305,7 @@ export function getHighPriorityTasksByTaskList(taskListId) {
     return response.data;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }
 
@@ -314,7 +315,7 @@ export function getListTasksByPatient(patientId, status, taskListId){
     return response.data;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }
 
@@ -329,7 +330,7 @@ export function getInboxTasks(status, sortBy){
       return response.data;
     }).catch(function (error){
       console.log(error);
-      return error.response.data;
+      throw(error)
     });
   }else{
     return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0&sortBy='+sortBy)
@@ -337,7 +338,7 @@ export function getInboxTasks(status, sortBy){
       return response.data;
     }).catch(function (error){
       console.log(error);
-      return error.response.data;
+      throw(error)
     });
   }
 }
@@ -348,6 +349,6 @@ export function flagUnread(taskId, flagUnread){
     return response.data;
   }).catch(function (error){
     console.log(error);
-    return error.response.data;
+    throw(error)
   });
 }

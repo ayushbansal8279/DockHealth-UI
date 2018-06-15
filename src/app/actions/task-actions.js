@@ -150,6 +150,7 @@ export function saveTask(newTask) {
         }
         toggleAlert("Task updated successfully!", "success")
       }).catch(error => {
+        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       })
     }
@@ -159,6 +160,7 @@ export function saveTask(newTask) {
         dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
         toggleAlert("Task created successfully!", "success")
       }).catch(error => {
+        toggleAlert("Error in creating task. Please try again.", "error")
         throw(error);
       })
     }
@@ -171,6 +173,7 @@ export function addTaskComment(task, taskComment) {
       dispatch({type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, task, comment});
       toggleAlert("Comment added successfully!", "success")
     }).catch(error => {
+      toggleAlert("Error in saving comment. Please try again.", "error")
       throw(error);
     });
   };
@@ -183,6 +186,7 @@ export function deleteComment(task, comment) {
       toggleAlert("Comment deleted", "success")
       console.log(comment.commentId);
     }).catch(error => {
+      toggleAlert("Error in deleting comment. Please try again.", "error")
       throw(error);
     });
   }
@@ -194,6 +198,7 @@ export function updateComment(task, comment) {
       dispatch({type: ActionTypes.UPDATE_TASK_COMMENT_SUCCESS, task, comment});
       toggleAlert("Comment updated", "success")
     }).catch(error => {
+      toggleAlert("Error in updating comment. Please try again.", "error")
       throw(error);
     });
   }
@@ -205,6 +210,7 @@ export function deleteTask(task) {
       dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, task});
       toggleAlert("Task deleted", "success")
     }).catch(error => {
+      toggleAlert("Error in deleting task. Please try again.", "error")
       throw(error);
     });
   }
@@ -216,6 +222,7 @@ export function duplicateTask(task) {
       dispatch({type: ActionTypes.DUPLICATE_TASK_SUCCESS, duplicatedTask});
       toggleAlert("Task duplicated", "success")
     }).catch(error => {
+      toggleAlert("Error in duplicating comment. Please try again.", "error")
       throw(error);
     });
   }
@@ -234,7 +241,8 @@ export function markComplete(task, status, listName) {
       return TaskApi.markComplete(task).then(res => { // check for response value to be success
         dispatch({type: action, task, status:"COMPLETE"});
         toggleAlert("Task completed. Great job!", "success")
-        }).catch(error => {
+      }).catch(error => {
+        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
@@ -242,7 +250,8 @@ export function markComplete(task, status, listName) {
       return TaskApi.markIncomplete(task).then(res => { // check for response value to be success
         dispatch({type: action, task, status:"INCOMPLETE"});
         toggleAlert("Task status updated successfully!", "success")
-        }).catch(error => {
+      }).catch(error => {
+        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
@@ -255,6 +264,7 @@ export function updateTaskDescription(task, description){
       dispatch({type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS, task, description:description});
       toggleAlert("Task description updated successfully!", "success")
     }).catch(error => {
+      toggleAlert("Error in updating task. Please try again.", "error")
       throw(error);
     })
   }
@@ -266,7 +276,8 @@ export function toggleTaskPriority(task, userId, priority) {
       return TaskApi.markHighPriority(task.taskId, userId).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, task, priority:"HIGH"});
         toggleAlert("Task priority updated successfully!", "success")
-        }).catch(error => {
+      }).catch(error => {
+        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
@@ -274,7 +285,8 @@ export function toggleTaskPriority(task, userId, priority) {
       return TaskApi.markLowPriority(task.taskId, userId, priority).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, task, priority:"LOW"});
         toggleAlert("Task priority updated successfully!", "success")
-        }).catch(error => {
+      }).catch(error => {
+        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
@@ -287,6 +299,7 @@ export function assignOrReassignTask(task, assignedToUserId, member){
       dispatch({type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS, task});
       toggleAlert("Task assigned successfully", "success")
     }).catch(error => {
+      toggleAlert("Error in task assignment. Please try again.", "error")
       throw(error);
     })
   }
@@ -301,6 +314,7 @@ export function getListTasksByPatient(patientId, taskListId){
         })
       )
       }).catch(error => {
+        toggleAlert("Error in retrieving tasks. Please try again.", "error")
         throw(error);
     })
   }
@@ -321,6 +335,7 @@ export function getInboxTasks(status, sortBy){
         // loading()
       }
     }).catch(error => {
+      toggleAlert("Error in retrieving tasks. Please try again.", "error")
       throw(error);
     })
   }
