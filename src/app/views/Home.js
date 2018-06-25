@@ -16,6 +16,7 @@ import $ from 'jquery'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import SearchInput, {createFilter} from 'react-search-input'
 import Mousetrap from 'react-mousetrap';
+import * as userApi from '../api/user-api'
 
 class Home extends BaseComponentWithFoundationUpdate {
 
@@ -59,7 +60,32 @@ class Home extends BaseComponentWithFoundationUpdate {
     // console.log("home willMount")
   }
 
+  refreshAccessToken(user){
+    var systemTimeout= 30000;
+
+    if(sessionStorage.timeoutId != null || sessionStorage.timeoutId != undefined){
+      clearTimeout(sessionStorage.timeoutId);
+      sessionStorage.setItem('refreshAccessTokenTimeoutId', null);
+    }
+    var comp = this;
+    var refreshAccessTokenTimeoutId = setTimeout(function () {
+        userApi.refreshAccessToken(user.username)
+         .then(data => {
+           console.log("refreshed tokens")
+        })
+        .catch(e => {
+          console.log(e)
+        });
+        //set again
+        comp.refreshAccessToken(user)
+
+    }, systemTimeout)
+
+    sessionStorage.setItem('refreshAccessTokenTimeoutId', refreshAccessTokenTimeoutId);
+  }
+
   componentDidMount(){
+    this.refreshAccessToken(this.props.user)
     var pops = this.context
     // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
@@ -289,7 +315,8 @@ const mapStateToProps = function (store) {
     completedTasks: store.taskState.completedTasks,
     isFetching: store.taskState.isFetching,
     isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
-    showingCompletedTasks: store.taskState.showingCompletedTasks
+    showingCompletedTasks: store.taskState.showingCompletedTasks,
+    user: store.userState.user
   }
 }
 

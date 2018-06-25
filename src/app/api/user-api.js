@@ -274,7 +274,7 @@ export function isAuthenticated (callback) {
         if (callback == null)
             throw("Callback in isAuthenticated() cannot be null");
         let cognitoUser = userPool.getCurrentUser();
-        console.log('cognitoUser: '+cognitoUser)
+        //console.log('cognitoUser: '+JSON.stringify(cognitoUser))
         if (cognitoUser != null) {
             cognitoUser.getSession(function (err, session) {
                 if (err) {
@@ -284,6 +284,7 @@ export function isAuthenticated (callback) {
                 else {
                     console.log("Session is " + session.isValid());
                     sessionStorage.setItem('accessToken', cognitoUser.signInUserSession.accessToken.jwtToken);
+                    //sessionStorage.setItem('refreshToken', cognitoUser.signInUserSession.refreshToken.token);
                     // NOTE: getSession must be called to authenticate user before calling getUserAttributes
                     cognitoUser.getUserAttributes(function(err, attributes) {
                         if (err) {
@@ -531,4 +532,35 @@ export function performHealthCheck() {
           throw error;
       }
     });
+}
+
+export function refreshAccessToken(email) {
+  let cognitoUserData = {
+    Username: email,
+    Pool: userPool
+  };
+
+  var comp = this
+
+  return new Promise((resolve, reject) => {
+    var cognitoUser = new CognitoUser(cognitoUserData)
+    cognitoUser.getSession(function (err, session) {
+      if (err) {
+          console.log("Couldn't get the session: " + err, err.stack);
+          reject(err);
+      }
+      else {
+          console.log("Session is " + session.isValid());
+          //console.log("AccessToken: "+session.accessToken.jwtToken);
+          var currentAccessToken = sessionStorage.getItem('accessToken');
+          if(currentAccessToken != session.accessToken.jwtToken){
+            //call an API to use new access token with axios
+            comp.getUserByEmail(email, cognitoUser);
+          }
+          sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
+          resolve(session.isValid())
+      }
+  })
+
+  })
 }
