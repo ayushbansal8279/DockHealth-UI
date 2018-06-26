@@ -30,7 +30,6 @@ class TaskListActivityFeedContainer extends BaseComponent {
   handleClick = (e, taskListId) => {
     e.preventDefault();
 		toggleDropDown('activityList' + taskListId)
-		alert('yes')
     //not working
     //$("#activityList").foundation('toggle', $(e.target));
     console.log('The accordion link was clicked.');

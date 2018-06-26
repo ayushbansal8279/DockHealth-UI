@@ -85,6 +85,7 @@ class NavBar extends React.Component {
               <NavLink activeClassName="active" to={"/tasks/Assigned by me"}>Assigned by me</NavLink>
             </ul>
           </li>
+          <NavLink to='/taskSearch' id="search-link" className={"center-content-vertical "}><svg className="icon medium"><use xlinkHref="#icon-search"></use></svg>Search</NavLink>
           <li>
             <Link to='/tasks/Inbox' activeClassName="active" id="inbox-link" className={"center-content-vertical "}><svg className="icon medium"><use xlinkHref="#icon-envelope-open"></use></svg>Inbox</Link>
             <Link to='/taskList' activeClassName="active" className={"center-content-vertical " + (this.props.isList && 'active')}><svg className="icon medium"><use xlinkHref="#icon-list"></use></svg>Lists</Link>

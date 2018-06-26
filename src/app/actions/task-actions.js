@@ -80,6 +80,17 @@ export function getTasksAssignedByMe(taskListId, sortBy, status){
   }
 }
 
+export function searchTasks(searchTerm){
+  return function(dispatch){
+    return TaskApi.searchTasks(searchTerm).then(tasks => {
+      dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks});
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
+
 export function loading(){
   return function(dispatch){
     dispatch({type: ActionTypes.REQUEST_TASKS})

@@ -140,6 +140,16 @@ export function getTasksAssignedByMe(taskListId, status, sortBy){
   }
 }
 
+export function searchTasks(searchTerm){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/searchTasks?searchTerm='+searchTerm)
+    .then(response => {
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      return error.response.data;
+    });
+}
+
 export function addTask(task) {
   task.createdByUserId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)

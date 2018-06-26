@@ -430,3 +430,15 @@ pre.emailMessage {
   color: blue;
   font-weight: bold;
 }
+
+.list-wrapper-task-search {
+  margin-top: 0;
+}
+
+.task-search-list-name {
+  background-color:#a6dcea;
+}
+
+.task-search-results-container {
+  background-color:#ededf0;
+}

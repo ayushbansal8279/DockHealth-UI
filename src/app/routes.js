@@ -24,6 +24,7 @@ import TaskListView from './views/TaskListView'
 import SupportSectionView from './views/SupportSectionView'
 import PeopleView from './views/PeopleView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
+import TaskListSearch from './views/TaskListSearch';
 import UserProfileView from './views/UserProfileView';
 
 // const routes = {
@@ -64,6 +65,7 @@ export const Routes = (store) => {
         <Route path="/editPatient/:patientId" component={PatientEditView} />
         <Route path="/taskList" component={TaskListView} />
         <Route path="/activityfeed" component={TaskListActivityFeedView} />
+        <Route path="/taskSearch" component={TaskListSearch} />
         <Route path="/people" component={PeopleView} />
         {/* <Route path="/peopleinvite" component={InvitePeople} /> */}
         <Route path="/tasks/:listName/:taskListId" component={Home}/>
