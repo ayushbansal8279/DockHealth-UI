@@ -256,3 +256,12 @@ export function getGenericListCounts(){
     });
   }
 };
+
+
+export function downloadPDF(taskListId){
+  return TaskListApi.downloadPDF(taskListId).then(response => {
+    return "success"
+  }).catch(error => {
+    throw(error);
+  });
+};

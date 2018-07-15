@@ -12,6 +12,7 @@ import MemberInitials from '../common/MemberInitials'
 import {ReactDOM, findDOMNode} from 'react-dom'
 import $ from 'jquery'
 import BaseComponent from '../BaseComponent'
+import axios from 'axios';
 
 class HeaderTasks extends BaseComponent {
   constructor(props){
@@ -101,6 +102,28 @@ class HeaderTasks extends BaseComponent {
       this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, "COMPLETE")
       this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, "INCOMPLETE")
       // this.props.taskActions.getTasksAssignedToMe(undefined, sortBy)
+    }
+  }
+
+  downloadPDF = () => {
+    if(this.props.taskListId){
+      axios({
+        url: process.env.HEYDOC_SERVICES_BASE_URL+'list/downloadPDFForTasksInList?taskListId='+this.props.taskListId,
+        method: 'GET',
+        responseType: 'blob', // important
+      })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'DOCK_ActionGrid.pdf');
+        document.body.appendChild(link);
+        link.click();
+        return "success";
+      }).catch(function (error){
+        console.log(error);
+        return error.response.data;
+      });
     }
   }
 
@@ -217,6 +240,7 @@ class HeaderTasks extends BaseComponent {
   									<span title="List alerts toggle" onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList && this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
                   }
 									<span title="Slim view toggle"><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
+                  <span title="Print" onClick={(e) => this.downloadPDF()}><svg className="icon toggle-print"><use xlinkHref="#icon-print"></use></svg></span>
 								</div>
 
                 {(this.props.title == "Inbox" || this.props.taskListId) &&

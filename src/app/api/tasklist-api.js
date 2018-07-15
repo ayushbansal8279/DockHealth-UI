@@ -205,3 +205,23 @@ export function findGenericListCountsForUser(){
     return error.response.data;
   });
 }
+
+export function downloadPDF(taskListId){
+  return axios({
+    url: process.env.HEYDOC_SERVICES_BASE_URL+'list/downloadPDFForTasksInList?taskListId='+taskListId,
+    method: 'GET',
+    responseType: 'blob', // important
+  })
+  .then(response => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'file.pdf');
+    document.body.appendChild(link);
+    link.click();
+    return "success";
+  }).catch(function (error){
+    console.log(error);
+    return error.response.data;
+  });
+}
