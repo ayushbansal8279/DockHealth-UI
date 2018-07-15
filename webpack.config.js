@@ -28,7 +28,8 @@ exposed.forEach(i => { exposedEnvironment[i] = JSON.stringify(process.env[i]) })
 var HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
   template: __dirname + '/src/index.html',
   filename: 'index.html',
-  inject: 'body'
+  inject: 'body',
+  hash: true
 });
 
 var config = {
@@ -37,6 +38,7 @@ var config = {
   output: {
     path: BUILD_DIR,
     filename: 'bundle.js'
+    // filename: '[name].[chunkhash].js'
   },
   module : {
     loaders : [
@@ -61,7 +63,13 @@ var config = {
     }),
     new webpack.DefinePlugin({
       'process.env': exposedEnvironment
-    })
+    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'vendor'
+    // }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'manifest'
+    // }),
     // new webpack.ProvidePlugin({
     //   Promise: 'es6-promise-promise',
     // })

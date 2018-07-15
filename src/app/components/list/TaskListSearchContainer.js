@@ -80,7 +80,7 @@ class TaskListSearchContainer extends BaseComponent {
     render (){
       return (
         <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
-          {this.props.tasks && this.renderTaskListName()}
+          {this.props.searchPerformed && this.props.tasks && this.renderTaskListName()}
         </ul>
       )
     }

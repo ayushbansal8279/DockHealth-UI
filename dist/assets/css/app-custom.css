@@ -438,6 +438,9 @@ pre.emailMessage {
 .task-search-list-name {
   background-color:#a6dcea;
 }
+.task-search-list-name::before {
+  content: ''
+}
 
 .task-search-results-container {
   background-color:#ededf0;
