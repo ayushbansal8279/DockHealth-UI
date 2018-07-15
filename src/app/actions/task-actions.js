@@ -319,11 +319,20 @@ export function assignOrReassignTask(task, assignedToUserId, member){
 export function getListTasksByPatient(patientId, taskListId){
   return function(dispatch){
     return TaskApi.getListTasksByPatient(patientId, "INCOMPLETE", taskListId).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks)).then(
+        dispatch(getListTasksByUserSuccess(tasks))
         TaskApi.getListTasksByPatient(patientId, "COMPLETE", taskListId).then(tasks => {
           dispatch(getCompletedTasksSuccess(tasks));
         })
-      )
+      }).catch(error => {
+        toggleAlert("Error in retrieving tasks. Please try again.", "error")
+        throw(error);
+    })
+  }
+}
+export function getIncompleteTasksByPatient(patientId){
+  return function(dispatch){
+    return TaskApi.getAllTasksByPatient(patientId, "INCOMPLETE").then(tasks => {
+        dispatch(getListTasksByUserSuccess(tasks))
       }).catch(error => {
         toggleAlert("Error in retrieving tasks. Please try again.", "error")
         throw(error);
@@ -331,6 +340,16 @@ export function getListTasksByPatient(patientId, taskListId){
   }
 }
 
+export function getCompleteTasksByPatient(patientId){
+  return function(dispatch){
+    return TaskApi.getAllTasksByPatient(patientId, "COMPLETE").then(tasks => {
+        dispatch(getCompletedTasksSuccess(tasks))
+      }).catch(error => {
+        toggleAlert("Error in retrieving tasks. Please try again.", "error")
+        throw(error);
+    })
+  }
+}
 
 export function getInboxTasks(status, sortBy){
   var action

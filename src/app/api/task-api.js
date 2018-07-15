@@ -329,6 +329,16 @@ export function getListTasksByPatient(patientId, status, taskListId){
   });
 }
 
+export function getAllTasksByPatient(patientId, status){
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findAllListTasksByPatient/'+patientId+'?status='+status)
+  .then(response => {
+    return response.data;
+  }).catch(function (error){
+    console.log(error);
+    throw(error)
+  });
+}
+
 export function getInboxTasks(status, sortBy){
   if(status == "INCOMPLETE"){
     // loading()
