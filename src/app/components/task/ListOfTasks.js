@@ -23,7 +23,8 @@ class ListOfTasks extends BaseComponent {
 	  	this.state = {
 	    		value: '',
 	    		status: props.initialStatus,
-					currentComment: {}
+					currentComment: {},
+					viewMoreCommentIds: []
 	  	};
 	  	this.handleSubmit = this.handleSubmit.bind(this)
 			this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
@@ -272,6 +273,12 @@ class ListOfTasks extends BaseComponent {
 			this.props.taskAction.updateComment(task, comment);
 		}
 
+		handleViewMoreComments = (taskId) => {
+			var commentIds = this.state.viewMoreCommentIds
+			commentIds.push(taskId)
+			this.setState({viewMoreCommentIds:commentIds})
+		}
+
 		openAssignmentModal = (taskId) => {
 			openPopup("#edit-assign-to-"+taskId)
 		}
@@ -285,7 +292,56 @@ class ListOfTasks extends BaseComponent {
 		openTaskContextMenu = (taskId) => {
 			openDropdown("#task-edit-"+taskId)
 		}
-		
+
+		renderCommentSection (task, comment, index) {
+			return(
+				<div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId+"_"+index}>
+					<div className="columns shrink">
+						{/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
+						<MemberInitials member={comment.creator} extraClass="xsmall"/>
+						{/* <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span> */}
+					</div>
+
+					<div className="columns">
+						<div className="row align-justify collapse">
+							<div className="column">
+								<div className="row expanded">
+									{comment.creator.userId === this.props.userProfile.userId ?
+										<span className="comment comment-details" data-editable-comment><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span> :
+										<span className="comment comment-details"><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span>
+									}
+									<input className="comment" id={'comment-'+comment.commentId} type="text"/>
+								</div>
+								<span className="comment-edit row collapse expanded align-justify">
+									<div className="column comment-edit-left">
+										<svg onClick={() => this.deleteComment(task, comment)} className="icon medium"><use xlinkHref="#icon-delete"></use></svg>
+									</div>
+									<div className="column comment-edit-right">
+										<span className="cancel pointer">
+											Cancel
+										</span>
+										<div onClick={(e) => this.updateComment(task, comment)} className="button x-small secondary saveComment">
+											Save
+										</div>
+									</div>
+								</span>
+							</div>
+							<div className="column shrink">
+								<span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
+							</div>
+						</div>
+					</div>
+
+
+
+				{/*<div className="row expanded collapse comment-wrapper">
+					<div className="columns shrink text-light">
+						Load 2 earlier comments
+					</div>
+				</div>*/}
+				</div>
+			)
+		};
 
     render() {
 			if(AWS.config.credentials){
@@ -355,8 +411,11 @@ class ListOfTasks extends BaseComponent {
 							<input onBlur={(e) => this.updateDescription(task, e)} className="task-title" type="text"/>
 							{/* <span onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task-popup" data-open="add-form-popup"> */}
 							<span onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task">							
+								{(type != 'subtask') &&
 				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
+								}
 								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"} {task.patient ? ' | ' + task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : ""}</span>
+								
 								{task.assignedBy &&
 					        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{moment(task.assignmentUpdatedDateTime).format()}</Moment>}</span>
 								}
@@ -375,55 +434,16 @@ class ListOfTasks extends BaseComponent {
 									<AddComment task={task} userProfile={this.props.userProfile}/>
 								}
 								{/* {commentNodes} */}
-								{task.comments ?
-									task.comments.map(comment => {
-										return(
-											<div className="row expanded collapse comment-wrapper" key={"comment"+comment.commentId+"_"+index}>
-						            <div className="columns shrink">
-						              {/*<img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/>*/}
-													<MemberInitials member={comment.creator} extraClass="xsmall"/>
-						              {/* <span className="member-initials circle xsmall">{comment.creator.firstName.substr(0,1)} {comment.creator.lastName.substr(0,1)}</span> */}
-						            </div>
-
-												<div className="columns">
-													<div className="row align-justify collapse">
-														<div className="column">
-															<div className="row expanded">
-																{comment.creator.userId === this.props.userProfile.userId ?
-																	<span className="comment comment-details" data-editable-comment><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span> :
-																	<span className="comment comment-details"><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span>
-																}
-																<input className="comment" id={'comment-'+comment.commentId} type="text"/>
-															</div>
-															<span className="comment-edit row collapse expanded align-justify">
-																<div className="column comment-edit-left">
-																	<svg onClick={() => this.deleteComment(task, comment)} className="icon medium"><use xlinkHref="#icon-delete"></use></svg>
-																</div>
-																<div className="column comment-edit-right">
-																	<span className="cancel pointer">
-																		Cancel
-																	</span>
-																	<div onClick={(e) => this.updateComment(task, comment)} className="button x-small secondary saveComment">
-																		Save
-																	</div>
-																</div>
-															</span>
-														</div>
-														<div className="column shrink">
-															<span className="time comment-time"><Moment fromNow>{comment.dateCreated}</Moment></span>
-														</div>
-													</div>
-												</div>
-
-
-
-						          {/*<div className="row expanded collapse comment-wrapper">
-						            <div className="columns shrink text-light">
-						              Load 2 earlier comments
-						            </div>
-						          </div>*/}
-											</div>
-										)
+								{task.comments ? 
+									task.comments.map((comment, index) => {
+										if(this.state.viewMoreCommentIds.indexOf(task.taskId) == -1){
+											if (index == 3){
+												return <div className="more-comments" key={"comment_more_"+comment.commentId+"_"+index}><a onClick={(e) => this.handleViewMoreComments(task.taskId)}>View More Comments</a></div>
+											}else if (index > 3){
+												return <span key={"comment_more_"+comment.commentId+"_"+index}/>
+											}
+										}
+										return this.renderCommentSection(task, comment, index)
 									}) :
 									<div className="row expanded collapse comment-wrapper">
 										<div className="columns shrink">
@@ -492,8 +512,6 @@ class ListOfTasks extends BaseComponent {
 			  </span>
 			);
 			{/* GENERATE TASK END */}
-
-
 
 			return(
 				<span key={"listTask"+task.taskId+"_"+index} id={"listTask"+task.taskId}>
