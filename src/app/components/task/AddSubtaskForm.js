@@ -177,8 +177,8 @@ class AddSubtaskForm extends BaseComponent{
           </div> */}
 
           {/* ADD PATIENT */}
-          <Field onChange={(e) => this.handlePatientChange(e)} id="add-patient-subtask" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient-subtask"/>
-          <Field id="add-patient-subtask-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
+          {/* <Field onChange={(e) => this.handlePatientChange(e)} id="add-patient-subtask" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient-subtask"/> */}
+          {/* <Field id="add-patient-subtask-id" name="patientId" className="input-group-field" component="input" type="hidden"/> */}
 
           {/* ADD PATIENT */}
           {/* <div className="column large-12 input-group">
