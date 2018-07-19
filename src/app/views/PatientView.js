@@ -204,7 +204,7 @@ class PatientView extends BaseComponent {
             <div className="columns shrink icon-group controls">
               
               <span title="Slim view toggle" onClick={(e) => this.toggleSlimView()}><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
-              <span title="Print" onClick={(e) => this.downloadPDF()}><svg className="icon toggle-print"><use xlinkHref="#icon-print"></use></svg></span>
+              {/* <span title="Print" onClick={(e) => this.downloadPDF()}><svg className="icon toggle-print"><use xlinkHref="#icon-print"></use></svg></span> */}
             </div>
         </div>
 
