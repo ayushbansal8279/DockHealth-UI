@@ -23,7 +23,7 @@ function getCompletedTasksSuccess(tasks){
   return {type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks}
 }
 
-export function getListTasks(taskListId, sortBy, status){
+export function getListTasks(taskListId, sortBy, filterBy, status){
   var action
   if(status == "INCOMPLETE"){
     action = ActionTypes.GET_TASKS_SUCCESS;
@@ -31,7 +31,7 @@ export function getListTasks(taskListId, sortBy, status){
     action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
   }
   return function(dispatch){
-    return TaskApi.getListTasksByUser(taskListId, status, sortBy).then(tasks => {
+    return TaskApi.getListTasksByUser(taskListId, status, sortBy, filterBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
 
@@ -42,7 +42,7 @@ export function getListTasks(taskListId, sortBy, status){
   }
 }
 
-export function getTasksAssignedToMe(taskListId, sortBy, status) {
+export function getTasksAssignedToMe(taskListId, sortBy, filterBy, status) {
   var action
   if(status == "INCOMPLETE"){
     action = ActionTypes.GET_TASKS_SUCCESS;
@@ -50,7 +50,7 @@ export function getTasksAssignedToMe(taskListId, sortBy, status) {
     action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
   }
   return function(dispatch) {
-    return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy).then(tasks => {
+    return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy, filterBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
         // loading()
@@ -61,7 +61,7 @@ export function getTasksAssignedToMe(taskListId, sortBy, status) {
   }
 }
 
-export function getTasksAssignedByMe(taskListId, sortBy, status){
+export function getTasksAssignedByMe(taskListId, sortBy, filterBy, status){
   var action
   if(status == "INCOMPLETE"){
     action = ActionTypes.GET_TASKS_SUCCESS;
@@ -69,7 +69,7 @@ export function getTasksAssignedByMe(taskListId, sortBy, status){
     action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
   }
   return function(dispatch){
-    return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy).then(tasks => {
+    return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy, filterBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
         // loading()
