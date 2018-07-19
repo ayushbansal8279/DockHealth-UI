@@ -35,7 +35,7 @@ class SupportSectionView extends BaseComponent {
             <div className="list-wrapper">
               <div className="row">
                 <div className="column">
-                  <h5>For DockHealth support, email us at <a href="mailto:support@dockhealth.com?Subject=Dock%20Supoort" target="_top">support@dockhealth.com</a></h5>
+                  <h5>For DockHealth support, email us at <a href="mailto:support@dock.health?Subject=Dock%20Support" target="_top">support@dock.health</a></h5>
                 </div>
               </div>
             </div>
