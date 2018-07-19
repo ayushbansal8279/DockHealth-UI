@@ -103,15 +103,15 @@ class Home extends BaseComponentWithFoundationUpdate {
       // this.props.actions.getInboxTasks("COMPLETE")
       this.props.actions.getInboxTasks("INCOMPLETE")
     }else if(listName == "Assigned by me"){
-      // this.props.actions.getTasksAssignedByMe(undefined, undefined, "COMPLETE")
-      this.props.actions.getTasksAssignedByMe(undefined, undefined, "INCOMPLETE")
+      // this.props.actions.getTasksAssignedByMe(undefined, undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedByMe(undefined, undefined, undefined, "INCOMPLETE")
     }else if(listName == "Assigned to me"){
-      // this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
-      this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
+      // this.props.actions.getTasksAssignedToMe(undefined, undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedToMe(undefined, undefined, undefined, "INCOMPLETE")
     }else{
       this.props.taskListActions.getTaskListById(this.props.routeParams.taskListId)
-      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "INCOMPLETE")
-      // this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "INCOMPLETE")
+      // this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "COMPLETE")
       this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ALL")
       this.props.taskListActions.getOrganizationUsersNotInTaskList(this.props.routeParams.taskListId);
     }
@@ -144,15 +144,15 @@ class Home extends BaseComponentWithFoundationUpdate {
         // this.props.actions.getInboxTasks("COMPLETE")
         this.props.actions.getInboxTasks("INCOMPLETE")
       }else if(listName == "Assigned by me"){
-        // this.props.actions.getTasksAssignedByMe(undefined, undefined, "COMPLETE")
-        this.props.actions.getTasksAssignedByMe(undefined, undefined, "INCOMPLETE")
+        // this.props.actions.getTasksAssignedByMe(undefined, undefined, undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedByMe(undefined, undefined, undefined, "INCOMPLETE")
       }else if(listName == "Assigned to me"){
-        // this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
-        this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
+        // this.props.actions.getTasksAssignedToMe(undefined, undefined, undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedToMe(undefined, undefined, undefined, "INCOMPLETE")
       }else if(listName != null && nextProps.routeParams.taskListId !=null){
         this.props.taskListActions.getTaskListById(nextProps.routeParams.taskListId)
-        this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "INCOMPLETE")
-        // this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, "COMPLETE")
+        this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, undefined, "INCOMPLETE")
+        // this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, undefined, "COMPLETE")
         this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ALL")
         this.props.taskListActions.getOrganizationUsersNotInTaskList(nextProps.routeParams.taskListId);
       }
@@ -175,14 +175,14 @@ class Home extends BaseComponentWithFoundationUpdate {
       // this.props.actions.getInboxTasks("COMPLETE")
       this.props.actions.getInboxTasks("INCOMPLETE")
     }else if(listName == "Assigned by me"){
-      // this.props.actions.getTasksAssignedByMe(undefined, undefined, "COMPLETE")
-      this.props.actions.getTasksAssignedByMe(undefined, undefined, "INCOMPLETE")
+      // this.props.actions.getTasksAssignedByMe(undefined, undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedByMe(undefined, undefined, undefined, "INCOMPLETE")
     }else if(listName == "Assigned to me"){
-      // this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
-      this.props.actions.getTasksAssignedToMe(undefined, undefined, "INCOMPLETE")
+      // this.props.actions.getTasksAssignedToMe(undefined, undefined, undefined, "COMPLETE")
+      this.props.actions.getTasksAssignedToMe(undefined, undefined, undefined, "INCOMPLETE")
     }else{
-      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "INCOMPLETE")
-      // this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
+      this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "INCOMPLETE")
+      // this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "COMPLETE")
       this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ALL")
       this.props.taskListActions.getOrganizationUsersNotInTaskList(this.props.routeParams.taskListId);
     }
@@ -197,11 +197,11 @@ class Home extends BaseComponentWithFoundationUpdate {
       if(!listName || listName == "Inbox"){
         this.props.actions.getInboxTasks("COMPLETE")
       }else if(listName == "Assigned by me"){
-        this.props.actions.getTasksAssignedByMe(undefined, undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedByMe(undefined, undefined, undefined, "COMPLETE")
       }else if(listName == "Assigned to me"){
-        this.props.actions.getTasksAssignedToMe(undefined, undefined, "COMPLETE")
+        this.props.actions.getTasksAssignedToMe(undefined, undefined, undefined, "COMPLETE")
       }else{
-        this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, "COMPLETE")
+        this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "COMPLETE")
       }
     }else{
       this.props.actions.hideCompletedTasks()
@@ -222,8 +222,12 @@ class Home extends BaseComponentWithFoundationUpdate {
     var filteredCompletedTasks = [];
 
     if(this.props.tasks && this.props.completedTasks){
-      filteredTasks = this.props.tasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
-      filteredCompletedTasks = this.props.completedTasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+      if(this.props.tasks){
+        filteredTasks = this.props.tasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+      }
+      if(this.props.completedTasks){
+        filteredCompletedTasks = this.props.completedTasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+      }
     }
     return (
 

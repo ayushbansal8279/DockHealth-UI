@@ -445,3 +445,32 @@ pre.emailMessage {
 .task-search-results-container {
   background-color:#ededf0;
 }
+
+.sortFilterCategory {
+  font-weight: bold;
+  background-color:#a6dcea;
+}
+
+.sortFilterCategory > span{
+  margin-left: 10px;
+}
+
+.sortFilterItem {
+  margin-left: 10px;
+}
+
+.warning-label {
+  color: red;
+  font-weight: bold;
+}
+
+.more-comments {
+  margin-left: -20px;
+  margin-top: 20px;
+}
+
+.more-comments > a {
+  color:#0CA1C8;
+  font-size:12px;
+  text-decoration: underline;
+}

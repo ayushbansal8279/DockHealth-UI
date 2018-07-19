@@ -20,7 +20,9 @@ class HeaderTasks extends BaseComponent {
     this.state = {
       value: '',
       hideForm: true,
-      title: ''
+      title: '',
+      sortBy: 'CREATED_DT',
+      filterBy: ''
     }
   }
 
@@ -84,23 +86,35 @@ class HeaderTasks extends BaseComponent {
     openAddForm();
 	};
 
-  getListTasks = (sortBy) => {
+  sortListTasks = (sortBy) => {
+    this.setState({sortBy: sortBy})
+    this.setState({filterBy: "NONE"})
+    this.getListTasks(sortBy, this.state.filterBy)
+  }
+
+  filterListTasks = (filterBy) => {
+    this.setState({filterBy: filterBy})
+    this.setState({sortBy: "CREATED_DT"})
+    this.getListTasks(this.state.sortBy, filterBy)
+  }
+
+  getListTasks = (sortBy, filterBy) => {
     this.props.taskActions.loading()
     if(this.props.taskListId){
-      this.props.taskActions.getListTasks(this.props.taskListId, sortBy, "INCOMPLETE")
-      this.props.taskActions.getListTasks(this.props.taskListId, sortBy, "COMPLETE")
+      this.props.taskActions.getListTasks(this.props.taskListId, sortBy, filterBy, "INCOMPLETE")
+      this.props.taskActions.getListTasks(this.props.taskListId, sortBy, filterBy, "COMPLETE")
       // this.props.taskActions.getListTasks(this.props.taskListId, sortBy)
     }else if(this.props.title == "Inbox") {
-      this.props.taskActions.getInboxTasks("COMPLETE", sortBy)
-      this.props.taskActions.getInboxTasks("INCOMPLETE", sortBy)
+      this.props.taskActions.getInboxTasks("COMPLETE", sortBy, filterBy)
+      this.props.taskActions.getInboxTasks("INCOMPLETE", sortBy, filterBy)
       // this.props.taskActions.getInboxTasks(sortBy)
     }else if(this.props.title == "Assigned by me"){
-      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy, "COMPLETE")
-      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy, "INCOMPLETE")
+      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy, filterBy, "COMPLETE")
+      this.props.taskActions.getTasksAssignedByMe(undefined, sortBy, filterBy, "INCOMPLETE")
       // this.props.taskActions.getTasksAssignedByMe(undefined, sortBy)
     }else if(this.props.title == "Assigned to me"){
-      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, "COMPLETE")
-      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, "INCOMPLETE")
+      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, filterBy, "COMPLETE")
+      this.props.taskActions.getTasksAssignedToMe(undefined, sortBy, filterBy, "INCOMPLETE")
       // this.props.taskActions.getTasksAssignedToMe(undefined, sortBy)
     }
   }
@@ -146,7 +160,7 @@ class HeaderTasks extends BaseComponent {
 
 
 
-    render() {
+  render() {
     return (
       <div>
         <header className="nav-down" id="taskListHeader">
@@ -208,16 +222,27 @@ class HeaderTasks extends BaseComponent {
               {/*<TaskFiltersContainer taskListId={taskListId} />*/}
 							<div className={"wrapper list-filter row collapse align-middle align-right "}>
 								<div className="columns shrink controls">
-									<button className="dropdown button primary small" data-toggle="sort-dropdown">Sort</button>
+									<button className="dropdown button primary small" data-toggle="sort-dropdown">Sort / Filter</button>
 									<div className="dropdown-pane button-dropdown" id="sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
+                    <div className="sortFilterCategory"><span>Sort by :</span></div>
 										<ul className="no-bullet">
 											{/* <li>Due date</li> */}
-											<li onClick={(e) => this.getListTasks('CREATED_DT')} className="active">Creation date</li>
-                      <li onClick={(e) => this.getListTasks('DUE_DT')}>Due date</li>
-											<li onClick={(e) => this.getListTasks('PATIENT')}>Patient</li>
-											{this.props.title != "Inbox" && this.props.title != "Assigned by me" && <li onClick={(e) => this.getListTasks('ASSIGNED_BY')}>Assigned by</li>}
-											{this.props.title != "Inbox" && this.props.title != "Assigned to me" && <li onClick={(e) => this.getListTasks('ASSIGNED_TO')}>Assigned to</li>}
-											<li onClick={(e) => this.getListTasks('PRIORITY')}>Priority</li>
+											<li className={this.state.sortBy == "CREATED_DT"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('CREATED_DT')}>Creation date</li>
+                      <li className={this.state.sortBy == "DUE_DT"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('DUE_DT')}>Due date</li>
+											<li className={this.state.sortBy == "PATIENT"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('PATIENT')}>Patient</li>
+											{this.props.title != "Inbox" && this.props.title != "Assigned by me" && <li className={this.state.sortBy == "ASSIGNED_BY"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('ASSIGNED_BY')}>Assigned by</li>}
+											{this.props.title != "Inbox" && this.props.title != "Assigned to me" && <li className={this.state.sortBy == "ASSIGNED_TO"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('ASSIGNED_TO')}>Assigned to</li>}
+											<li className={this.state.sortBy == "PRIORITY"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('PRIORITY')}>Priority</li>
+                    </ul>  
+										<div className="sortFilterCategory"><span>Filter by :</span></div>
+                    <ul className="no-bullet"> 
+											{/* <li>Due date</li> */}
+											<li className={this.state.filterBy == "NONE"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('NONE')}>None</li>
+											<li className={this.state.filterBy == "ASSIGNED_TO_ME"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('ASSIGNED_TO_ME')}>Assigned to me</li>
+                      <li className={this.state.filterBy == "CREATED_BY_ME"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('CREATED_BY_ME')}>Created by me</li>
+											<li className={this.state.filterBy == "OVERDUE"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('OVERDUE')}>Overdue</li>
+                      <li className={this.state.filterBy == "DUE_TODAY"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('DUE_TODAY')}>Due Today</li>
+											<li className={this.state.filterBy == "DUE_NEXT_WEEK"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('DUE_NEXT_WEEK')}>Due Next Week</li>
 											{/* <li>Tag</li> */}
 										</ul>
 									</div>
@@ -240,7 +265,7 @@ class HeaderTasks extends BaseComponent {
   									<span title="List alerts toggle" onClick={(e) => this.toggleListNotifications()}><svg className="icon"><use xlinkHref={this.props.taskList && this.props.taskList.notifications ? "#icon-bell" : "#icon-bell-off"}></use></svg></span>
                   }
 									<span title="Slim view toggle"><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
-                  <span title="Print" onClick={(e) => this.downloadPDF()}><svg className="icon toggle-print"><use xlinkHref="#icon-print"></use></svg></span>
+                  {/* <span title="Print" onClick={(e) => this.downloadPDF()}><svg className="icon toggle-print"><use xlinkHref="#icon-print"></use></svg></span> */}
 								</div>
 
                 {(this.props.title == "Inbox" || this.props.taskListId) &&
