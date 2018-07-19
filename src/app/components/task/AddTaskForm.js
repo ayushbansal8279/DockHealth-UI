@@ -16,7 +16,8 @@ class AddTaskForm extends BaseComponent {
   constructor(props, container) {
 		super(props)
     this.state = {
-      priority: undefined
+      priority: undefined,
+      listName: ""
     }
 		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
@@ -44,6 +45,10 @@ class AddTaskForm extends BaseComponent {
   componentDidUpdate (prevProps, prevState) {
     console.log('AddTaskForm componentDidUpdate')
     renderFoundationComponentsJquery();
+
+    if(this.props.currentTask && this.props.currentTask.taskList && this.props.currentTask.taskList.listName!=""){
+        $("#filed-in-taskList").parent().addClass('has-value');
+    }
   }
 
 
@@ -101,20 +106,30 @@ class AddTaskForm extends BaseComponent {
   }
 
   updateDueDate = (e) => {
-    alert("working")
+    // alert("working")
   }
 
   formatDate = () => {
-    alert("format date");
+    // alert("format date");
   }
 
   handleTaskListSelection(event, taskList) {
     this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL')
     // $("#filed-in-taskList").val('taskList-'+event.target.value);
-    $("#filed-in-taskList").val(taskList.listName);
+    this.setState({listName: taskList.listName})
+    $("#filed-in-taskList").val(taskList.listName)
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
+
+    //check if new task list is different
+    // if(this.props.currentTask.taskList && taskList.listName != this.props.currentTask.taskList.listName){
+    //   console.log("List changed for the task")
+    //   openPopup("#change-task-list-"+this.props.currentTask.taskId);
+    // }
   }
+
+	handleConfirmTaskUpdate = () => {
+	}
 
   render() {
     const renderSubtaskField = ({ fields, meta: { error } }) => (
@@ -172,19 +187,26 @@ class AddTaskForm extends BaseComponent {
         {/* <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/> */}
 
         {/* ADD PATIENT */}
+        {(!this.props.currentTask || !this.props.currentTask.parentTaskId) &&
         <Field onChange={(e) => this.props.isSubtask(false)} id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
+        }
+        {(!this.props.currentTask || !this.props.currentTask.parentTaskId) &&
         <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
+        }
 
         {/* FILE IN */}
         {/* Show only from inbox. Tasks can only be assigned to list from 'inbox' */}
-        {this.props.title == "Inbox" &&
+        {/* {this.props.title == "Inbox" && */}
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
             <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
+              <Field className="input-group-field has-value" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
               <label>File in</label>
             </div>
             <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
+              {this.props.title != "Inbox" && this.props.currentTask && this.props.currentTask.taskList && this.props.currentTask.taskList.listName!="" &&
+              <span className="margin-bottom warning-label">Please note, by moving a task to a new list some details of the task may be lost. Task assignments and comments will transfer only if users are members of both lists.</span>
+              }
               <fieldset className="large-12 columns">
                 {this.props.taskLists && this.props.taskLists.length>0 && this.props.taskLists.map(taskList => {
                   return(
@@ -198,16 +220,7 @@ class AddTaskForm extends BaseComponent {
               </fieldset>
             </div>
           </div>
-          // :
-          // <div className="column large-12 input-group input-dropdown">
-          //   <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
-          //   <div className="input-wrapper form-floating-label">
-          //     <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" value={this.props.taskList?this.props.taskList.taskListId:0} type="text" data-toggle="add-task-file-in-options" disabled/>
-          //     <Field id="taskListId" name="taskListId" className="input-group-field" value={this.props.taskList?this.props.taskList.taskListId:0} component="input" type="hidden"/>
-          //     <label>File in (filing only allowed in Inbox)</label>
-          //   </div>
-          // </div>
-        }
+        {/* } */}
 
         {/* Example of error field */}
         {/* <div className="input-group-wrapper has-error column large-12">

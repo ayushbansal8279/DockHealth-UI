@@ -153,7 +153,17 @@ class AddTask extends BaseComponent {
 			form.priority = "LOW"
 		}
 		if($("#filed-in-taskList").val()){
-			form.refiled = true;
+			if(this.props.title == "Inbox"
+				|| this.props.task && this.props.task.taskList && $("#filed-in-taskList").val() != this.props.task.taskList.listName){
+				form.refiled = true;
+			}
+			// if(!confirmedListChange){
+			// 	if(this.props.task.taskList && $("#filed-in-taskList").val() != this.props.task.taskList.listName){
+			// 		console.log("List changed for the task")
+			// 		$("#change-task-list-"+this.props.task.taskId).toggle();
+			// 		return;
+			// 	}
+			// }
 		}
 		//debugger;
 		this.props.taskActions.saveTask(form);
@@ -182,7 +192,6 @@ class AddTask extends BaseComponent {
 		this.setState({currentSubtaskIndex: index})
 		this.setState({currentSubtask: task})
 	}
-
 
     render() {
     	return (

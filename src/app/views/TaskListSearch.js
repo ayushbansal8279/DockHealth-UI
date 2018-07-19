@@ -104,7 +104,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
             </div>
 
             <div className={"wrapper list-filter row collapse align-middle align-right "}>
-              <div className="columns controls">
+              {/* <div className="columns controls">
                 <div className="input-group searchbar">
                   <input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated} value={this.props.searchTerm}/>
                   <div className="input-group-button">
@@ -113,7 +113,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="columns shrink icon-group controls">
                 
