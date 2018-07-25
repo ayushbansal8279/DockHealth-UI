@@ -14,6 +14,8 @@ export default class ConfirmRegistrationSuccess extends React.Component {
   }
 
   render () {
+    var branchAppLink = process.env.BRANCH_IO_APP_LINK;
+
     return (
       <div className="wrapper columns large-12">
           <div className="row expanded text-center">
@@ -26,7 +28,7 @@ export default class ConfirmRegistrationSuccess extends React.Component {
             <div className="columns large-12 top-buffer text-center">
               {/* <Link to="/login" className="button secondary expand">Login</Link> */}
               {/* <a href="https://dockdev.app.link/FbMSMrsZLK" className="button secondary expand">Login</a> */}
-              <a href="https://dockhealth.app.link/uwa2UNGzGL" className="button secondary expand">Login</a>
+              <a href={branchAppLink} className="button secondary expand">Login</a>
             </div>
           </div>
 

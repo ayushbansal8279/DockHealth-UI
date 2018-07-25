@@ -28,8 +28,7 @@ export default class ConfirmRegistration extends React.Component {
         success('Registration confirmed. Please Login')
         //alert('Registration confirmed. Please Login')
         // hashHistory.push('login')
-        // window.location.href = "https://dockdev.app.link/FbMSMrsZLK";
-        window.location.href = "https://dockhealth.app.link/uwa2UNGzGL";
+        window.location.href = process.env.BRANCH_IO_APP_LINK;
         //hashHistory.push('confirmRegistrationSuccess')
       })
       .catch(e => {
@@ -38,8 +37,8 @@ export default class ConfirmRegistration extends React.Component {
         });
         let msg = e.message || 'An error occurred.'
         if(msg == "User cannot confirm because user status is not UNCONFIRMED."){
-          // window.location.href = "https://dockdev.app.link/FbMSMrsZLK";
-          window.location.href = "https://dockhealth.app.link/uwa2UNGzGL";
+          window.location.href = process.env.BRANCH_IO_APP_LINK
+          return
         }
         let field = false
         if (!field) {
@@ -60,6 +59,10 @@ export default class ConfirmRegistration extends React.Component {
     })
     .catch(e => {
       let msg = e.message || 'An error occurred.'
+      if(msg == "User cannot confirm because user status is not UNCONFIRMED."){
+        window.location.href = process.env.BRANCH_IO_APP_LINK
+        return
+      }
       let field = false
       if (!field) {
         error(msg)
