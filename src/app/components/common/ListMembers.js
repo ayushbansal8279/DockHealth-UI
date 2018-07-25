@@ -145,9 +145,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
 								<div className="columns">
 									<span className="item-content">{member.userName}</span>
 									<span className="item-details">{member.taskListUserRole}</span>
-									{/* {member.status == "PENDING" &&
-									<span className="item-details highlight">Pending</span>
-									} */}
+									{member.status == "PENDING" &&
+									<span className="item-details highlight">Invited</span>
+									}
 								</div>
 								{this.props.currentUser.taskListUserRole != "MEMBER" && this.props.currentUser.username != member.email &&
 									<div className="columns shrink more-options-wrapper">

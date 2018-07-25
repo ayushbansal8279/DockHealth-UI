@@ -83,7 +83,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
 			<div className="columns">
 				<span className="item-title">{suggestion.firstName} {suggestion.lastName} </span>
 				{suggestion.userInviteStatus == "PENDING" &&
-				<span className="item-details highlight">Pending</span>
+				<span className="item-details highlight">Invited</span>
 				}
 			</div>
 		</div>
