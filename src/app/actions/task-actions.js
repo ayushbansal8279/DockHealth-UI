@@ -61,6 +61,25 @@ export function getTasksAssignedToMe(taskListId, sortBy, filterBy, status) {
   }
 }
 
+export function getTasksAssignedToSpecificUser(userId, taskListId, sortBy, filterBy, status) {
+  var action
+  if(status == "INCOMPLETE"){
+    action = ActionTypes.GET_TASKS_SUCCESS;
+  }else{
+    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+  }
+  return function(dispatch) {
+    return TaskApi.getTasksAssignedToSpecificUser(userId, taskListId, status, sortBy, filterBy).then(tasks => {
+      dispatch({type: action, tasks});
+      if(status == "INCOMPLETE"){
+        // loading()
+      }
+    }).catch(error => {
+      throw(error);
+    })
+  }
+}
+
 export function getTasksAssignedByMe(taskListId, sortBy, filterBy, status){
   var action
   if(status == "INCOMPLETE"){
@@ -393,7 +412,21 @@ export function storeAsCurrentTask(taskId){
   }
 }
 
+export function getTaskHistory(task){
+  return function(dispatch){
+    return TaskApi.getTaskHistory(task.taskId).then(auditDetails => {
+      dispatch({type: ActionTypes.GET_TASK_HISTORY_SUCCESS, auditDetails})
+    }).catch(error => {
+      throw(error)
+    })
+  }
+}
 
+export function clearCurrentTaskHistory(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.CLEAR_CURRENT_TASK_HISTORY})
+  }
+}
 
 // export function toggleTaskPriority(taskId, userId, priority){
 //   return function(dispatch){

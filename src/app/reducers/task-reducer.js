@@ -482,8 +482,15 @@ const TaskReducer = function(state = initialState, action) {
         currentTaskVar = task : task
       )
       // currentListVar
-      return { ...state, currentTask:currentTaskVar };
+      return { ...state, selectedTask:currentTaskVar };
 
+    case types.GET_TASK_HISTORY_SUCCESS:
+      return {...state, currentTaskHistory: action.auditDetails};
+
+    case types.CLEAR_CURRENT_TASK_HISTORY:
+      return {...state, currentTaskHistory: null};
+
+      
   }
 
   return state;

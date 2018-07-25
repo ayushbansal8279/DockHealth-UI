@@ -1,13 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
+import Moment from 'react-moment'
 import ListOfTasksContainer from '../components/task/ListOfTasksContainer'
-import TaskFiltersContainer from '../components/task/TaskFiltersContainer'
-import TaskListPatients from '../components/task/TaskListPatients'
-import TaskListUsers from '../components/task/TaskListUsers'
-import Notification from '../components/common/Notification'
 import HeaderTasks from '../components/common/HeaderTasks'
-// import NotificationsToggle from '../components/tasklist/TaskListNotificationsToggle'
+import MemberInitials from '../components/common/MemberInitials'
 import * as TaskActions from '../actions/task-actions'
 import * as TaskListActions from '../actions/tasklist-actions'
 import * as PatientActions from '../actions/patient-actions'
@@ -90,6 +87,7 @@ class Home extends BaseComponentWithFoundationUpdate {
     // Mousetrap.bind('ctrl+t', toggleTaskForm());
     var listName = this.props.routeParams.listName
     this.props.actions.loading()
+    this.closeAuditHistory();
 
     if(listName == "Inbox"){
       this.props.taskListActions.isInbox(true)
@@ -140,6 +138,7 @@ class Home extends BaseComponentWithFoundationUpdate {
     if(nextProps.routeParams.listName != this.props.routeParams.listName){
       var listName = nextProps.routeParams.listName
       this.props.actions.loading()
+      this.closeAuditHistory();
       if(!listName || listName == "Inbox"){
         // this.props.actions.getInboxTasks("COMPLETE")
         this.props.actions.getInboxTasks("INCOMPLETE")
@@ -170,6 +169,7 @@ class Home extends BaseComponentWithFoundationUpdate {
     // });
     // $('.refresh').addClass('rotated');
     this.props.actions.loading()
+    this.closeAuditHistory()
     var listName = this.props.routeParams.listName
     if(!listName || listName == "Inbox"){
       // this.props.actions.getInboxTasks("COMPLETE")
@@ -213,6 +213,33 @@ class Home extends BaseComponentWithFoundationUpdate {
     this.setState({editing: isEditing})
   }
 
+  closeAuditHistory = () => {
+    this.props.actions.storeAsCurrentTask(null)
+    //.then((resp) => {
+      this.props.actions.clearCurrentTaskHistory()
+    //})
+  }
+
+  renderAuditHistory() {
+    return this.props.currentTaskHistory.map((audit) =>{
+       return(
+         <div className="task-item row expanded condense align-middle" key={"audit" + audit.auditId}>
+           <div className="columns shrink">
+             {/* <MemberInitials /> */}
+             {/* <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/> */}
+             <MemberInitials member={audit.user}/>
+           </div>
+           <div className="columns">
+             <span className="task-title">{audit.currentState}</span>
+           </div>
+           <div className="columns shrink text-right more-options-wrapper">
+             <span className="item-details"><Moment format="MMM DD">{audit.createdDateTime}</Moment></span>
+           </div>
+         </div>
+       );
+   })
+ }
+
   render() {
     var taskListId = this.props.params.taskListId
     const KEYS_TO_FILTERS = ['description', 'comments.comment', 'subtasks.description', 'subtasks.comments.comment']
@@ -244,7 +271,8 @@ class Home extends BaseComponentWithFoundationUpdate {
                 isEditing={this.state.editing}
                 setTaskEditingStatus={this.setTaskEditingStatus}
               />
-
+              <div className="tasks-container">
+              <div className={this.props.currentTaskHistory?"large-8 columns left-column":"large-12 columns left-column"}>
               <div className="list-wrapper">
                 {/* <h5>{this.props.isFetching}</h5> */}
                 {this.props.isFetching ?
@@ -269,6 +297,7 @@ class Home extends BaseComponentWithFoundationUpdate {
                       members={this.props.members}
                       filteredTasks={filteredTasks}
                       setTaskEditingStatus={this.setTaskEditingStatus}
+                      listName={this.props.routeParams.listName}
                     />
                     <div className="show-completed text-center">
                       <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
@@ -296,13 +325,46 @@ class Home extends BaseComponentWithFoundationUpdate {
                         taskListId={taskListId} 
                         status="COMPLETE" 
                         members={this.props.members} 
-                        filteredTasks={filteredCompletedTasks} />
+                        filteredTasks={filteredCompletedTasks} 
+                        listName={this.props.routeParams.listName}/>
                     </div>
                     {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
                       <span>No completed tasks</span>
                     }
                   </div> 
                 }
+              </div>
+              </div>
+              <div className="right-column">
+              {/* <div className="large-4 columns"> */}
+                <div className="list-wrapper">
+                <div className="task-item-wrapper">
+                  <div className="task-item">
+                    <div className="row expanded">
+			                <div className="columns">
+                        <div className="row">
+                          <div className="columns more-options-wrapper">
+                            <span><strong>Audit History</strong></span>
+                          </div>
+                          <div className="columns shrink more-options-wrapper">
+                            <svg className="icon medium" onClick={(e) => this.closeAuditHistory()}><use xlinkHref="#icon-close"></use></svg>
+                          </div>
+                        </div>
+                        {this.props.selectedTask && 
+                        <div className="row">
+                          <div className="columns more-options-wrapper">
+                            <span>{this.props.selectedTask.description}</span>
+                          </div>
+                        </div>
+                        }
+                        {this.props.currentTaskHistory && this.renderAuditHistory()}
+                      </div>
+                    </div>  
+                  </div>
+                </div>
+                </div>
+              {/* </div> */}
+              </div>
               </div>
             </div>
           </div>
@@ -320,7 +382,9 @@ const mapStateToProps = function (store) {
     isFetching: store.taskState.isFetching,
     isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
     showingCompletedTasks: store.taskState.showingCompletedTasks,
-    user: store.userState.user
+    user: store.userState.user,
+    selectedTask: store.taskState.selectedTask,
+    currentTaskHistory: store.taskState.currentTaskHistory
   }
 }
 

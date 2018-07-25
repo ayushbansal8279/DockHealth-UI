@@ -93,6 +93,56 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
   }
 }
 
+export function getTasksAssignedToSpecificUser(userId, taskListId, status, sortBy, filterBy) {
+  if(status == "INCOMPLETE"){
+    // loading()
+  }
+  if(taskListId != undefined){
+    if(sortBy != undefined || filterBy != undefined){
+      closeAddForm()
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      .then(response => {
+        return response.data;
+      }).catch(function (error){
+        console.log(error);
+        return error.response.data;
+      });
+    }else{
+      closeAddForm()
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&taskListId='+taskListId+'&status='+status)
+      .then(response => {
+        return response.data;
+      }).catch(function (error){
+        console.log(error);
+        return error.response.data;
+      }).catch(function (error){
+        console.log(error);
+        return error.response.data;
+      });
+    }
+  }else{
+    if(sortBy != undefined || filterBy != undefined){
+      closeAddForm()
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      .then(response => {
+        return response.data;
+      }).catch(function (error){
+        console.log(error);
+        return error.response.data;
+      });
+    }else{
+      closeAddForm()
+      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&status='+status)
+      .then(response => {
+        return response.data;
+      }).catch(function (error){
+        console.log(error);
+        return error.response.data;
+      });
+    }
+  }
+}
+
 export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy){
   if(status == "INCOMPLETE"){
     // loading()
@@ -365,6 +415,16 @@ export function getInboxTasks(status, sortBy){
 
 export function flagUnread(taskId, flagUnread){
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/flagUserTaskAsUnread/'+taskId+'?flagUnread='+flagUnread)
+  .then(response => {
+    return response.data;
+  }).catch(function (error){
+    console.log(error);
+    throw(error)
+  });
+}
+
+export function getTaskHistory(taskId) {
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findAuditsByTask/'+taskId)
   .then(response => {
     return response.data;
   }).catch(function (error){

@@ -18,6 +18,7 @@ import ForgotPassword from './views/auth/ForgotPassword'
 import ChangePassword from './views/auth/ChangePassword'
 import ResetPassword from './views/auth/ResetPassword'
 import ConfirmMFACode from './views/auth/ConfirmMFACode'
+import UnEnrolledUser from './views/auth/UnEnrolledUser'
 import PageNotFound from './views/PageNotFound'
 import ErrorPage from './views/ErrorPage'
 import TaskListView from './views/TaskListView'
@@ -25,6 +26,7 @@ import SupportSectionView from './views/SupportSectionView'
 import PeopleView from './views/PeopleView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import TaskListSearch from './views/TaskListSearch';
+import PersonTaskList from './views/PersonTaskList';
 import UserProfileView from './views/UserProfileView';
 
 // const routes = {
@@ -48,7 +50,7 @@ export const Routes = (store) => {
   const authRequired = (nextState, replaceState) => {
     // Now you can access the store object here.
     const state = store.getState();
-
+    
     if (!state.user.isAuthenticated) {
       // Not authenticated, redirect to login.
       replaceState({ nextPathname: nextState.location.pathname }, '/login');
@@ -66,6 +68,7 @@ export const Routes = (store) => {
         <Route path="/taskList" component={TaskListView} />
         <Route path="/activityfeed" component={TaskListActivityFeedView} />
         <Route path="/taskSearch" component={TaskListSearch} />
+        <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
         <Route path="/people" component={PeopleView} />
         {/* <Route path="/peopleinvite" component={InvitePeople} /> */}
         <Route path="/tasks/:listName/:taskListId" component={Home}/>
@@ -87,6 +90,7 @@ export const Routes = (store) => {
           <Route path="/changePassword" component={ChangePassword} />
           <Route path="/resetPassword" component={ResetPassword} />
           <Route path="/confirmMFACode" component={ConfirmMFACode} />
+          <Route path="/unEnrolledUser" component={UnEnrolledUser} />
           <Route path="/pagenotfound" component={PageNotFound} />
           <Route path="/errorPage" component={ErrorPage} />
         </Route>

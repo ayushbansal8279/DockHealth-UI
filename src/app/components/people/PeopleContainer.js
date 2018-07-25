@@ -34,6 +34,14 @@ class PeopleContainer extends BaseComponent {
       super.componentDidUpdate()
     }
 
+    componentWillUnmount(){
+      if(this.props.peoplelist){
+        this.props.peoplelist.map((person, index) => {
+          removeRevealComponent("#delete-user-"+person.userId)
+        })
+      }
+    }
+
     onClickRoleChange(markedUserId, currentRole) {
       var newRole;
       if(currentRole === 'ADMIN'){
@@ -175,7 +183,7 @@ class PeopleContainer extends BaseComponent {
         }
       }else if(person.userInviteStatus=='PENDING'){
             return (
-                <span>Pending</span>
+                <span>Invited</span>
             );
       }
     }
@@ -258,7 +266,11 @@ class PeopleContainer extends BaseComponent {
               <MemberInitials member={person}/>
              </div>
              <div className="columns">
-               <span className="item-title">{person.firstName + " " + person.lastName}</span>
+               <span className="item-title">
+               <Link to={"/assignedToPerson/"+person.userId+"/"+person.firstName+" "+person.lastName}>
+               {person.firstName + " " + person.lastName}
+               </Link>
+               </span>
                <span className="item-details">{this.renderTitles(person)}</span>
                <span className="item-details">{this.renderSpecialties(person)}</span>
                <span className="top-buffer-xsmall item-details">{person.email}</span>

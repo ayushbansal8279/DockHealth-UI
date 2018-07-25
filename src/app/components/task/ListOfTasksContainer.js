@@ -30,7 +30,7 @@ class ListOfTasksContainer extends BaseComponent {
   render () {
     return (<ListOfTasks tasks={this.props.filteredTasks}
               deleteTask={this.props.actions.deleteTask}
-              listName={this.props.status}
+              taskStatusGroup={this.props.status}
               markComplete={this.props.actions.markComplete}
               updateTaskDescription={this.props.actions.updateTaskDescription}
               toggleTaskPriority={this.props.actions.toggleTaskPriority}
@@ -40,6 +40,7 @@ class ListOfTasksContainer extends BaseComponent {
               markAsUnread={this.props.actions.markAsUnread}
               members={this.props.members}
               setTaskEditingStatus={this.props.setTaskEditingStatus}
+              listName={this.props.listName}
             />);
   }
 

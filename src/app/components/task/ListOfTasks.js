@@ -38,6 +38,7 @@ class ListOfTasks extends BaseComponent {
 			this.editTask = this.editTask.bind(this)
 			this.confirmCompleteTask = this.confirmCompleteTask.bind(this)
 			this.duplicateTask = this.duplicateTask.bind(this)
+			this.showHistory = this.showHistory.bind(this)
 		}
 
     isLoggedIn(message, isLoggedIn, cognitoUser) {
@@ -111,7 +112,7 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		componentDidUpdate (prevProps, prevState) {
-			if(prevProps.listName != "COMPLETE" && prevProps != this.props){
+			if(prevProps.taskStatusGroup != "COMPLETE" && prevProps != this.props){
 				// debugger;
 			}
 			super.componentDidUpdate(prevProps, prevState)
@@ -166,17 +167,17 @@ class ListOfTasks extends BaseComponent {
 					}
 				})
 				if(allSubTasksComplete){
-					this.props.markComplete(task, status, this.props.listName)	
+					this.props.markComplete(task, status, this.props.taskStatusGroup)	
 				}
 			}else{
-				this.props.markComplete(task, status, this.props.listName)
+				this.props.markComplete(task, status, this.props.taskStatusGroup)
 			}
   		// this.setState({task: ''})
   	}
 
 		confirmCompleteTask(task){
 			var boo = this.props
-			this.props.markComplete(task, task.status, this.props.listName)
+			this.props.markComplete(task, task.status, this.props.taskStatusGroup)
 		}
 
   	handleDeleteTask(task){
@@ -197,6 +198,14 @@ class ListOfTasks extends BaseComponent {
 
 		markAsUnread(task, flagUnread){
 			this.props.markAsUnread(task, flagUnread)
+		}
+
+		showHistory(task){
+			//set current task and get audit
+			this.props.taskAction.storeAsCurrentTask(task.taskId)
+			//.then((resp) => {
+				this.props.taskAction.getTaskHistory(task)
+			//})
 		}
 
 		deleteTask = (task) => {
@@ -351,6 +360,16 @@ class ListOfTasks extends BaseComponent {
 			
     return (
 		<span>
+		{this.props.taskStatusGroup != "COMPLETE" 
+			&& this.props.listName == "Inbox"
+			&& this.props.tasks && this.props.tasks.length ==0 &&
+			<div className="inbox-message">
+				<span>Your inbox is empty.</span><br/><br/>
+				<span>Inbox is a place you can forward emails that you want to keep track of or turn into a task here on Dock.</span><br/><br/>
+				<span>From your WORK email inbox forward an email to: <a href="mailto:dock@childrens.harvard.edu">dock@childrens.harvard.edu</a></span><br/><br/>
+				<span>We'll drop it into your inbox here on Dock.</span><br/>
+			</div>
+		}
 		{this.props.tasks && this.props.tasks.map((task, index) => {
 			const listTasks = () => { 			{/*sets listTasks as const and returns below for legibility*/}
 				return(
@@ -487,6 +506,9 @@ class ListOfTasks extends BaseComponent {
 										}
 										{type != "subtask" &&
 											<li onClick={() => this.duplicateTask(task)}>Duplicate task</li>
+										}
+										{(this.props.listName == "Inbox" || this.props.members) &&
+											<li onClick={(e) => this.showHistory(task)}>Show History</li>
 										}
 									</ul>
 								</div>
