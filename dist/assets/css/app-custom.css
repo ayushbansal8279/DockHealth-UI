@@ -474,3 +474,49 @@ pre.emailMessage {
   font-size:12px;
   text-decoration: underline;
 }
+
+.inbox-message {
+  text-align: center;
+  background-color:white;
+}
+.tasks-container {
+  height: 100%;
+  /* max-height: 100%; */
+  display: flex;
+  overflow: hidden;
+  flex-direction: row;
+  flex: 1 0 auto;
+  position: relative;
+}
+.left-column {
+  /* top: 100px; */
+  top: 9rem;
+  position: relative;
+  /* max-height: 100%; */
+  /* padding: 0px 32px; */
+  /* flex: 1 1 0%; */
+  overflow: auto;
+  margin-bottom: 100px;
+}
+.left-column > .list-wrapper {
+  margin-top: 0;
+  padding-right: 0;
+}
+.right-column {
+  top: 9rem;
+  /* position: relative; */
+  /* min-height: 100%; */
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  /* margin-left: -70; */
+  /* width: 400px; */
+  width: 100%;
+}
+.right-column > .list-wrapper {
+  width: 100%;
+  padding: 0;
+  margin-left: -10;
+}
