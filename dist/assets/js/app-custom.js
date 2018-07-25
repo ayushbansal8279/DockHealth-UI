@@ -9,7 +9,7 @@ function renderFoundationComponentsJquery(){
 		format: 'mm/dd/yyyy',
 		disableDblClickSelection: true,
 		language: 'en',
-		pickTime: true
+		pickTime: false
 	})
 		.on('changeDate', function (ev) {
 
