@@ -16,16 +16,17 @@ class BaseComponent extends React.Component {
   }
 
   doTimeoutValidations(){
+
     var systemTimeout= parseInt(process.env.SYSTEM_TIMEOUT);
 
     if(sessionStorage.timeoutId != null || sessionStorage.timeoutId != undefined){
-      //console.log("clearTimeout" + sessionStorage.timeoutId)
+      console.log("clearTimeout" + sessionStorage.timeoutId)
       clearTimeout(sessionStorage.timeoutId);
       sessionStorage.setItem('timeoutId', null);
     }
 
     var timeoutId = setTimeout(function () {
-      //alert("You've timed out")
+        //alert("You've timed out")
          userApi.logout()
          .then(data => {
            mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {

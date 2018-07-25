@@ -162,7 +162,6 @@ class HeaderTasks extends BaseComponent {
 
   render() {
     return (
-      <div>
         <header className="nav-down" id="taskListHeader">
 						<div className="top-bar">
               {/* <div className="new-task text-center">
@@ -274,19 +273,18 @@ class HeaderTasks extends BaseComponent {
   								</div>
                 }
 						</div>
-        </header>
 
-        <AddTask
-          taskListId={this.props.taskListId}
-          addTask={this.props.taskActions.addTask}
-          taskLists={this.props.taskList}
-          patients={this.props.patients}
-          title={this.props.title}
-          members={this.props.members}
-          activeListMembers={this.props.activeListMembers}
-        />
-        <ListMembers members={this.props.members}/>
-      </div>
+            <AddTask
+              taskListId={this.props.taskListId}
+              addTask={this.props.taskActions.addTask}
+              taskLists={this.props.taskList}
+              patients={this.props.patients}
+              title={this.props.title}
+              members={this.props.members}
+              activeListMembers={this.props.activeListMembers}
+            />
+            <ListMembers members={this.props.members}/>
+        </header>
       );
     }
 }

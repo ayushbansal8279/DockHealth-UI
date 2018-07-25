@@ -48,6 +48,7 @@ class TaskListSearchContainer extends BaseComponent {
                   members={members}
                   filteredTasks={tasks}
                   setTaskEditingStatus={this.setTaskEditingStatus}
+                  listName="Search Tasks"
                 />
               </div>
             </div>
@@ -63,7 +64,7 @@ class TaskListSearchContainer extends BaseComponent {
       return Array.from(groupedTasks.keys()).map((listName) =>{
         const tasks = groupedTasks.get(listName)
         return(
-          <li className="accordion-item" data-accordion-item key={"taskList_" + listName}>
+          <li className="accordion-item" key={"taskList_" + listName}>
             <span className="accordion-title task-search-list-name">
               <b>{listName}</b>
             </span>  

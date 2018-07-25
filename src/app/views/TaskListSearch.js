@@ -67,9 +67,9 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
           <div className="row expanded collapse">
             <div className="large-12 columns">
 							  <div className={"wrapper list-filter row collapse align-middle align-right "}>
-                  <div className="columns shrink" onClick={(e) => this.handleAddTask()}>
+                  {/* <div className="columns shrink" onClick={(e) => this.handleAddTask()}>
                     <svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
-                  </div>
+                  </div> */}
                 </div>
             </div>
           </div>

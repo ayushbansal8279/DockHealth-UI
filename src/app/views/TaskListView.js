@@ -15,6 +15,7 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
 
   constructor(props) {
       super(props)
+      this.deleteList = this.deleteList.bind(this)
   }
 
     componentDidMount(){

@@ -38,7 +38,7 @@ export function register (userData) {
       /*
       resolvedCognitoUser.enableMFA(function(err, result) {
         if (err) {
-            alert(err);
+            //alert(err);
             return;
         }
         console.log('enabled MFA: ' + result);
@@ -260,7 +260,7 @@ export function rememberDevice () {
                             resolve(result)
                         },
                         onFailure: function(err) {
-                            alert(err);
+                            //alert(err);
                         }
                     })
                 }
