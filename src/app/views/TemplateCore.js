@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import NavBar from '../components/common/NavBar'
-import Header from '../components/common/Header'
 import {bindActionCreators} from 'redux'
-import Notification from '../components/common/Notification'
 import { Link, browserHistory, hashHistory } from 'react-router'
 import { connect } from 'react-redux'
 import * as userApi from '../api/user-api'
@@ -108,10 +106,9 @@ class TemplateCore extends React.Component {
         userApi.getUserByEmail(cognitoUser.username, cognitoUser)
           .then(data => {
             // disable no invitation check
-            // if(!data.organizationId){
-            //   hashHistory.push('/errorPage');
-            // }
-
+            if(!data.organizationId || data.organizationId==""){
+              hashHistory.push('/unEnrolledUser');
+            }
             //userId, pictureType
             if(data.profileThumbnailPictureHash){
               userApi.getUserProfilePic(data.userId,"PROFILE")
