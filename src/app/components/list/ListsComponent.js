@@ -17,6 +17,15 @@ class ListsComponent extends BaseComponent{
     console.log("ListsComponent update")
   }
 
+  componentWillUnmount(){
+    if(this.props.taskLists){
+      this.props.taskLists.map((taskList, index) => {
+        removeRevealComponent("#delete-task-" + taskList.taskListId)
+        removeRevealComponent("#leave-task-" + taskList.taskListId)
+      })
+    }
+  }
+
   render(){
     const taskLists = this.props.taskLists
     return(

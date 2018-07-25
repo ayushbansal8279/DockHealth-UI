@@ -6,6 +6,10 @@ class BooleanModal extends React.Component {
     $('a.close-reveal-modal').trigger('click');
   }
 
+	componentWillUnmount(){
+    removeRevealComponent("#" + this.props.uniqueModalId)
+  }
+  
   componentDidUpdate(prevProps, prevState) {
   }
 
