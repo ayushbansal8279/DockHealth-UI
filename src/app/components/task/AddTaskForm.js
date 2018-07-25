@@ -131,6 +131,11 @@ class AddTaskForm extends BaseComponent {
 	handleConfirmTaskUpdate = () => {
 	}
 
+	cancelEditTask = (event) => {
+    toggleTaskForm()
+    event.preventDefault();
+  }
+  
   render() {
     const renderSubtaskField = ({ fields, meta: { error } }) => (
       <span>
@@ -199,8 +204,8 @@ class AddTaskForm extends BaseComponent {
         {/* {this.props.title == "Inbox" && */}
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
-            <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field has-value" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
+            <div className={this.props.title != "Inbox"?"input-wrapper form-floating-label has-value":"input-wrapper form-floating-label"}>
+              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
               <label>File in</label>
             </div>
             <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
@@ -277,6 +282,9 @@ class AddTaskForm extends BaseComponent {
           {/* SAVE */}
           <div className="columns shrink align-right">
             <input id="addTaskButton" type="submit" className="button secondary medium" value="Save"/>
+          </div>
+          <div className="columns shrink align-right">
+            <button id="cancelTaskButton" type="button" className="button medium" onClick={(e) => this.cancelEditTask(e)}>Cancel</button>
           </div>
         </div>
       </div>{/*main-task-wrapper*/}
