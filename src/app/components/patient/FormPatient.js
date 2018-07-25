@@ -14,6 +14,7 @@ const { DOM: { input, select, textarea } } = React
 
 
 class FormPatient extends BaseComponent {
+
 	constructor(props) {
     	super(props)
     	this.state = {
@@ -112,9 +113,9 @@ class FormPatient extends BaseComponent {
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       return (
             <form className="inline-label top-buffer" onSubmit={handleSubmit(this.onSubmit)}>
-              <Field name='mrn' type='number' component={BasicField} label='MRN' placeholder='required'/>
-              <Field name='firstName' type='text' component={BasicField} label='First name' placeholder='required'/>
-              <Field name='lastName' type='text' component={BasicField} label='Last name' placeholder='required'/>
+              <Field name='mrn' type='text' component={BasicField} label='MRN (required)' placeholder='required'/>
+              <Field name='firstName' type='text' component={BasicField} label='First name (required)' placeholder='required'/>
+              <Field name='lastName' type='text' component={BasicField} label='Last name (required)' placeholder='required'/>
 
 						  {/* <div className="column large-12 input-group no-icon">
                 <div className="form-floating-label input-wrapper has-value"> */}
@@ -169,7 +170,7 @@ class FormPatient extends BaseComponent {
               {/* <Field name='notes' type='text' component={BasicField} label='Notes' placeholder='required'/> */}
 
               <div className="column large-12 text-right text-center">
-                <input data-close="" type="submit" className="button secondary medium btnMargin" value="Save"/>
+                <input data-close="" type="submit" className="button secondary medium btnMargin" value="Save" disabled={this.props.invalid || this.props.submitting}/>
 								{this.props.modalForm &&
 									<a data-close="" className="button medium cancel btnMargin">Cancel</a>
 								}
