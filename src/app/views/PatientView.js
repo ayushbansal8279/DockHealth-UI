@@ -4,12 +4,11 @@ import { Link, browserHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
 import Moment from 'react-moment'
 import BaseComponent from '../components/BaseComponent'
-import NavBar from '../components/common/NavBar'
-import Header from '../components/common/Header'
 import * as PatientActions from '../actions/patient-actions'
 import * as TaskActions from '../actions/task-actions'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import ListOfTasksContainer from '../components/task/ListOfTasksContainer'
+import AddTask from '../components/task/AddTask'
 import axios from 'axios';
 
 class PatientView extends BaseComponent {
@@ -93,6 +92,7 @@ class PatientView extends BaseComponent {
               members={members}
               filteredTasks={tasks}
               setTaskEditingStatus={this.setTaskEditingStatus}
+              listName="Patient Tasks"
             />
           </div>
         </div>
@@ -108,7 +108,7 @@ class PatientView extends BaseComponent {
       return Array.from(groupedTasks.keys()).map((listName) =>{
         const tasks = groupedTasks.get(listName)
         return(
-          <li className="accordion-item" data-accordion-item key={"taskList_" + listName}>
+          <li className="accordion-item" key={"taskList_" + listName}>
             <span className="accordion-title task-search-list-name">
               <b>{listName}</b>
             </span>  
@@ -189,8 +189,18 @@ class PatientView extends BaseComponent {
           </div>
         </div>
 
+                <AddTask
+                  taskListId={this.props.taskListId}
+                  addTask={this.props.taskActions.addTask}
+                  taskLists={this.props.taskList}
+                  patients={this.props.patients}
+                  title={this.props.title}
+                  members={this.props.members}
+                  activeListMembers={this.props.activeListMembers}
+                />
+
           <div className={"wrapper list-filter row collapse align-middle align-right "}>
-            <div className="columns controls">
+            {/* <div className="columns controls">
               <div className="input-group searchbar">
                 <input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated} value={this.props.searchTerm}/>
                 <div className="input-group-button">
@@ -199,7 +209,7 @@ class PatientView extends BaseComponent {
                   </button>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className="columns shrink icon-group controls">
               
