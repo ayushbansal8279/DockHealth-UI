@@ -4,6 +4,15 @@ import BooleanModal from '../common/BooleanModal'
 
 class PendingListsComponent extends BaseComponent{
 
+
+  componentWillUnmount(){
+    if(this.props.taskLists){
+      this.props.taskLists.map((taskList, index) => {
+        removeRevealComponent("#leave-task-" + taskList.taskListId)
+      })
+    }
+  }
+
   render(){
     const taskLists = this.props.taskLists
     return(
@@ -26,7 +35,7 @@ class PendingListsComponent extends BaseComponent{
                 <a href="index.html" onClick={(e) => this.props.acceptInviteToTaskList(taskList)}><h6>{taskList.listName}</h6></a>
                 <span className="details">{taskList.creator.userName}</span>
 
-                {/* <span className="item-details highlight">Pending</span> */}
+                {/* <span className="item-details highlight">Invited</span> */}
 
               </div>
 

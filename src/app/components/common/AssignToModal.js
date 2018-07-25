@@ -67,6 +67,10 @@ class AssignToModal extends React.Component {
                 </div>
                 <div className="columns">
                   <span className="item-content">{member.userName}</span>
+                  <span className="item-details">{member.taskListUserRole}</span>
+									{member.status == "PENDING" &&
+									<span className="item-details highlight">Invited</span>
+									}
                 </div>
               </div>
             )
