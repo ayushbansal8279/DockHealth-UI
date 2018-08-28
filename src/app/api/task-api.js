@@ -190,23 +190,35 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy){
   }
 }
 
-export function searchTasks(searchTerm){
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/searchTasks?searchTerm='+searchTerm)
+export function searchTasks(searchTerm, status, sortBy, filterBy){
+  if(sortBy != undefined || filterBy != undefined){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/searchTasks?searchTerm='+searchTerm+"&status="+status+"&sortBy="+sortBy+"&filterBy="+filterBy)
     .then(response => {
       return response.data;
     }).catch(function (error){
       console.log(error);
       return error.response.data;
     });
+  }else{
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/searchTasks?searchTerm='+searchTerm+"&status="+status)
+    .then(response => {
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      return error.response.data;
+    });
+  }
 }
 
 export function addTask(task) {
   task.createdByUserId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
     .then(response => {
+      toggleAlert("Task created successfully!", "success")
       return response.data;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in creating task. Please try again.", "error")
     return error.response.data;
   });
 }
@@ -215,9 +227,11 @@ export function updateTask(task) {
   task.createdByUserId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/' + task.taskId, task)
     .then(response => {
+      toggleAlert("Task updated successfully!", "success")
       return response.data;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in updating task. Please try again.", "error")
     return error.response.data;
   });
 }
@@ -227,9 +241,11 @@ export function deleteTask(taskId) {
   return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
+      toggleAlert("Task deleted", "success")
       return response;
     }).catch(function (error){
       console.log(error);
+      toggleAlert("Error in deleting task. Please try again.", "error")
       return error.response.data;
     });
 }
@@ -239,9 +255,24 @@ export function duplicateTask(taskId) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/duplicateTask/' + taskId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
+      toggleAlert("Task duplicated", "success")
       return response.data;
     }).catch(function (error){
       console.log(error);
+      toggleAlert("Error in duplicating comment. Please try again.", "error")
+      return error.response.data;
+    });
+}
+
+export function sortSubTask(taskId, direction) {
+  // userId = sessionStorage.userId
+  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/sortSubTask/'+taskId+'/'+direction)
+    .then(response => {
+      toggleAlert("Sub Task order changed", "success")
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      toggleAlert("Error in changing sub task order. Please try again.", "error")
       return error.response.data;
     });
 }
@@ -251,9 +282,11 @@ export function markComplete(task){
   // console.log(taskId);
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + task.taskId + '?status=COMPLETE')
   .then(response => {
+    toggleAlert("Task completed. Great job!", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in updating task. Please try again.", "error")
     return error.response.data;
   });
 }
@@ -263,9 +296,11 @@ export function markIncomplete(task){
   // console.log(taskId);
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + task.taskId + '?status=INCOMPLETE')
   .then(response => {
+    toggleAlert("Task completed. Great job!", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in updating task. Please try again.", "error")
     return error.response.data;
   });
 }
@@ -277,9 +312,11 @@ export function updateTaskDescription(task, description){
     description: description
   })
   .then(response => {
+    toggleAlert("Task description updated successfully!", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in updating task. Please try again.", "error")
     return error.response.data;
   });
 }
@@ -288,9 +325,11 @@ export function markHighPriority(taskId, userId){
   // userId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')
   .then(response => {
+    toggleAlert("Task priority updated successfully!", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in updating task. Please try again.", "error")
     throw(error)
   });
 }
@@ -299,9 +338,11 @@ export function markLowPriority(taskId, userId){
   // userId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=LOW')
   .then(response => {
+    toggleAlert("Task priority updated successfully!", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in updating task. Please try again.", "error")
     throw(error)
   });
 }
@@ -309,9 +350,11 @@ export function markLowPriority(taskId, userId){
 export function assignOrReassignTask(taskId, assignedToUserId){
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/addOrUpdateTaskAssignment/' + taskId + '?assignedToUserId=' + assignedToUserId)
     .then(response => {
+      toggleAlert("Task assigned successfully", "success")
     return response.data;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in task assignment. Please try again.", "error")
     throw(error)
   });
 }
@@ -329,9 +372,11 @@ export function addComment(taskId, taskComment) {
   // taskComment.creator.userId = sessionStorage.userId
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment/'+ taskId, taskComment)
   .then(response => {
+    toggleAlert("Comment added successfully!", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in saving comment. Please try again.", "error")
     throw(error)
   });
   
@@ -341,9 +386,11 @@ export function deleteComment(commentId) {
   // taskComment.creator.userId = sessionStorage.userId
   return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment/deleteCommentById/'+ commentId)
   .then(response => {
+    toggleAlert("Comment deleted", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in deleting comment. Please try again.", "error")
     throw(error)
   });
 }
@@ -352,9 +399,11 @@ export function updateComment(comment) {
   // taskComment.creator.userId = sessionStorage.userId
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment', comment)
   .then(response => {
+    toggleAlert("Comment updated", "success")
     return response;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in updating comment. Please try again.", "error")
     throw(error)
   });
 }
@@ -365,6 +414,7 @@ export function getHighPriorityTasksByTaskList(taskListId) {
     return response.data;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in retrieving tasks. Please try again.", "error")
     throw(error)
   });
 }
@@ -375,25 +425,38 @@ export function getListTasksByPatient(patientId, status, taskListId){
     return response.data;
   }).catch(function (error){
     console.log(error);
+    toggleAlert("Error in retrieving tasks. Please try again.", "error")
     throw(error)
   });
 }
 
-export function getAllTasksByPatient(patientId, status){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findAllListTasksByPatient/'+patientId+'?status='+status)
-  .then(response => {
-    return response.data;
-  }).catch(function (error){
-    console.log(error);
-    throw(error)
-  });
+export function getAllTasksByPatient(patientId, status, sortBy, filterBy){
+  if(sortBy != undefined || filterBy != undefined){
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findAllListTasksByPatient/'+patientId+'?status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+    .then(response => {
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      toggleAlert("Error in retrieving tasks. Please try again.", "error")
+      throw(error)
+    });
+  }else{
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findAllListTasksByPatient/'+patientId+'?status='+status)
+    .then(response => {
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      toggleAlert("Error in retrieving tasks. Please try again.", "error")
+      throw(error)
+    });
+  }
 }
 
-export function getInboxTasks(status, sortBy){
+export function getInboxTasks(status, sortBy, filterBy){
   if(status == "INCOMPLETE"){
     // loading()
   }
-  if(sortBy == undefined){
+  if(sortBy == undefined && filterBy == undefined){
     closeAddForm()
     return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0')
     .then(response => {
@@ -403,7 +466,7 @@ export function getInboxTasks(status, sortBy){
       throw(error)
     });
   }else{
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0&sortBy='+sortBy)
+    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0&sortBy='+sortBy+'&filterBy='+filterBy)
     .then(response => {
       return response.data;
     }).catch(function (error){

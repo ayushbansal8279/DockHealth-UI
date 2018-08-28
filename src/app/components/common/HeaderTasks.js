@@ -31,7 +31,9 @@ class HeaderTasks extends BaseComponent {
     this.props.taskActions.loading()
     if(this.props.taskListId){
       this.props.taskListActions.getTaskListById(this.props.taskListId)
-      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ALL')
+      if(this.props.taskListId){
+        this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, 'ALL')
+      }
       this.props.taskListActions.getActiveMembersByTaskListId(this.props.taskListId)
       this.props.taskListActions.storeAsCurrentList(this.props.taskListId)
     }
@@ -43,9 +45,11 @@ class HeaderTasks extends BaseComponent {
       && nextProps.taskListId 
       && this.props.currentList
       && nextProps.taskListId != this.props.currentList.taskListId){
-      this.props.taskListActions.getActiveMembersByTaskListId(this.props.taskListId)
+      if(this.props.taskListId){
+        this.props.taskListActions.getActiveMembersByTaskListId(this.props.taskListId)
+      }
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
-      this.setState({title:nextProps.currentList.listName})
+      this.setState({title:nextProps.currentList.listName, sortBy: 'CREATED_DT'})
     }
   }
 
@@ -66,7 +70,7 @@ class HeaderTasks extends BaseComponent {
         && this.props.currentList
         && nextProps.taskListId != this.props.currentList.taskListId){
       this.props.taskListActions.storeAsCurrentList(nextProps.taskListId)
-      this.setState({title:nextProps.currentList.listName})
+      this.setState({title:nextProps.currentList.listName, sortBy: 'CREATED_DT'})
     }
   }
 
@@ -90,12 +94,14 @@ class HeaderTasks extends BaseComponent {
     this.setState({sortBy: sortBy})
     this.setState({filterBy: "NONE"})
     this.getListTasks(sortBy, this.state.filterBy)
+    closeDropdown("#sort-dropdown")
   }
 
   filterListTasks = (filterBy) => {
     this.setState({filterBy: filterBy})
     this.setState({sortBy: "CREATED_DT"})
     this.getListTasks(this.state.sortBy, filterBy)
+    closeDropdown("#sort-dropdown")
   }
 
   getListTasks = (sortBy, filterBy) => {
@@ -232,6 +238,7 @@ class HeaderTasks extends BaseComponent {
 											{this.props.title != "Inbox" && this.props.title != "Assigned by me" && <li className={this.state.sortBy == "ASSIGNED_BY"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('ASSIGNED_BY')}>Assigned by</li>}
 											{this.props.title != "Inbox" && this.props.title != "Assigned to me" && <li className={this.state.sortBy == "ASSIGNED_TO"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('ASSIGNED_TO')}>Assigned to</li>}
 											<li className={this.state.sortBy == "PRIORITY"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('PRIORITY')}>Priority</li>
+                      <li className={this.state.sortBy == "TASK_DESCRIPTION"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.sortListTasks('TASK_DESCRIPTION')}>Alphabetical</li>
                     </ul>  
 										<div className="sortFilterCategory"><span>Filter by :</span></div>
                     <ul className="no-bullet"> 
@@ -241,6 +248,7 @@ class HeaderTasks extends BaseComponent {
                       <li className={this.state.filterBy == "CREATED_BY_ME"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('CREATED_BY_ME')}>Created by me</li>
 											<li className={this.state.filterBy == "OVERDUE"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('OVERDUE')}>Overdue</li>
                       <li className={this.state.filterBy == "DUE_TODAY"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('DUE_TODAY')}>Due Today</li>
+                      <li className={this.state.filterBy == "DUE_THIS_WEEK"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('DUE_THIS_WEEK')}>Due This Week</li>
 											<li className={this.state.filterBy == "DUE_NEXT_WEEK"?"sortFilterItem active":"sortFilterItem"} onClick={(e) => this.filterListTasks('DUE_NEXT_WEEK')}>Due Next Week</li>
 											{/* <li>Tag</li> */}
 										</ul>

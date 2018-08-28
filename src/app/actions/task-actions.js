@@ -99,10 +99,19 @@ export function getTasksAssignedByMe(taskListId, sortBy, filterBy, status){
   }
 }
 
-export function searchTasks(searchTerm){
+export function searchTasks(searchTerm, sortBy, filterBy, status){
+  var action
+  if(status == "INCOMPLETE"){
+    action = ActionTypes.GET_TASKS_SUCCESS;
+  }else{
+    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+  }
   return function(dispatch){
-    return TaskApi.searchTasks(searchTerm).then(tasks => {
-      dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks});
+    return TaskApi.searchTasks(searchTerm, status, sortBy, filterBy).then(tasks => {
+      dispatch({type: action, tasks});
+      if(status == "INCOMPLETE"){
+        // loading()
+      }
     }).catch(error => {
       throw(error);
     })
@@ -145,29 +154,21 @@ export function hideCompletedTasks(){
 export function getHighPriorityTasksByTaskList(taskListId){
   return function(dispatch){
     return TaskApi.getHighPriorityTasksByTaskList(taskListId).then(tasks => {
-      dispatch(getListTasksByUserSuccess(tasks));
+      dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks});
     }).catch(error => {
       throw(error);
     })
   }
 }
 
-function getListTasksByUserSuccess(tasks) {
-  return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
-}
-
 // export function getListTasksByUser(userId, taskListId){
 //   return function(dispatch){
 //     return TaskApi.getListTasksByUser(userId, taskListId).then(tasks => {
-//       dispatch(getListTasksByUserSuccess(tasks));
+//       dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks});
 //     }).catch(error => {
 //       throw(error);
 //     })
 //   }
-// }
-
-// function getListTasksByUserSuccess(tasks) {
-//   return {type: ActionTypes.GET_TASKS_SUCCESS, tasks};
 // }
 
 export function saveTask(newTask) {
@@ -178,9 +179,7 @@ export function saveTask(newTask) {
         if(newTask.refiled == true){
           $('#task'+task.taskId).fadeOut(1000)
         }
-        toggleAlert("Task updated successfully!", "success")
       }).catch(error => {
-        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       })
     }
@@ -188,9 +187,7 @@ export function saveTask(newTask) {
     return function(dispatch) {
       return TaskApi.addTask(newTask).then(task => {
         dispatch({type: ActionTypes.ADD_TASK_SUCCESS, task});
-        toggleAlert("Task created successfully!", "success")
       }).catch(error => {
-        toggleAlert("Error in creating task. Please try again.", "error")
         throw(error);
       })
     }
@@ -201,9 +198,7 @@ export function addTaskComment(task, taskComment) {
   return function(dispatch) {
     return TaskApi.addComment(task.taskId, taskComment).then(comment => {
       dispatch({type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, task, comment});
-      toggleAlert("Comment added successfully!", "success")
     }).catch(error => {
-      toggleAlert("Error in saving comment. Please try again.", "error")
       throw(error);
     });
   };
@@ -213,10 +208,8 @@ export function deleteComment(task, comment) {
   return function(dispatch) {
     return TaskApi.deleteComment(comment.commentId).then(deletingComment => {
       dispatch({type: ActionTypes.DELETE_TASK_COMMENT_SUCCESS, task, comment});
-      toggleAlert("Comment deleted", "success")
       console.log(comment.commentId);
     }).catch(error => {
-      toggleAlert("Error in deleting comment. Please try again.", "error")
       throw(error);
     });
   }
@@ -226,9 +219,7 @@ export function updateComment(task, comment) {
   return function(dispatch) {
     return TaskApi.updateComment(comment).then(comment => {
       dispatch({type: ActionTypes.UPDATE_TASK_COMMENT_SUCCESS, task, comment});
-      toggleAlert("Comment updated", "success")
     }).catch(error => {
-      toggleAlert("Error in updating comment. Please try again.", "error")
       throw(error);
     });
   }
@@ -238,9 +229,7 @@ export function deleteTask(task) {
   return function(dispatch) {
     return TaskApi.deleteTask(task.taskId).then(deletingTask => {
       dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, task});
-      toggleAlert("Task deleted", "success")
     }).catch(error => {
-      toggleAlert("Error in deleting task. Please try again.", "error")
       throw(error);
     });
   }
@@ -250,9 +239,17 @@ export function duplicateTask(task) {
   return function(dispatch) {
     return TaskApi.duplicateTask(task.taskId).then(duplicatedTask => {
       dispatch({type: ActionTypes.DUPLICATE_TASK_SUCCESS, duplicatedTask});
-      toggleAlert("Task duplicated", "success")
     }).catch(error => {
-      toggleAlert("Error in duplicating comment. Please try again.", "error")
+      throw(error);
+    });
+  }
+}
+
+export function sortSubTask(task, direction) {
+  return function(dispatch) {
+    return TaskApi.sortSubTask(task.taskId, direction).then(task => {
+      dispatch({type: ActionTypes.ORDER_SUB_TASK_SUCCESS, task});
+    }).catch(error => {
       throw(error);
     });
   }
@@ -270,18 +267,14 @@ export function markComplete(task, status, listName) {
     if(status == "INCOMPLETE"){
       return TaskApi.markComplete(task).then(res => { // check for response value to be success
         dispatch({type: action, task, status:"COMPLETE"});
-        toggleAlert("Task completed. Great job!", "success")
       }).catch(error => {
-        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
     else if(status == "COMPLETE"){
       return TaskApi.markIncomplete(task).then(res => { // check for response value to be success
         dispatch({type: action, task, status:"INCOMPLETE"});
-        toggleAlert("Task status updated successfully!", "success")
       }).catch(error => {
-        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
@@ -292,9 +285,7 @@ export function updateTaskDescription(task, description){
   return function(dispatch){
     return TaskApi.updateTaskDescription(task, description).then(res => {
       dispatch({type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS, task, description:description});
-      toggleAlert("Task description updated successfully!", "success")
     }).catch(error => {
-      toggleAlert("Error in updating task. Please try again.", "error")
       throw(error);
     })
   }
@@ -305,18 +296,14 @@ export function toggleTaskPriority(task, userId, priority) {
     if(priority == "LOW"){
       return TaskApi.markHighPriority(task.taskId, userId).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, task, priority:"HIGH"});
-        toggleAlert("Task priority updated successfully!", "success")
       }).catch(error => {
-        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
     else if(priority == "HIGH"){
       return TaskApi.markLowPriority(task.taskId, userId, priority).then(res => { // check for response value to be success
         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, task, priority:"LOW"});
-        toggleAlert("Task priority updated successfully!", "success")
       }).catch(error => {
-        toggleAlert("Error in updating task. Please try again.", "error")
         throw(error);
       });
     }
@@ -327,9 +314,7 @@ export function assignOrReassignTask(task, assignedToUserId, member){
   return function(dispatch){
     return TaskApi.assignOrReassignTask(task.taskId, assignedToUserId).then(task => {
       dispatch({type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS, task});
-      toggleAlert("Task assigned successfully", "success")
     }).catch(error => {
-      toggleAlert("Error in task assignment. Please try again.", "error")
       throw(error);
     })
   }
@@ -338,39 +323,16 @@ export function assignOrReassignTask(task, assignedToUserId, member){
 export function getListTasksByPatient(patientId, taskListId){
   return function(dispatch){
     return TaskApi.getListTasksByPatient(patientId, "INCOMPLETE", taskListId).then(tasks => {
-        dispatch(getListTasksByUserSuccess(tasks))
+        dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks})
         TaskApi.getListTasksByPatient(patientId, "COMPLETE", taskListId).then(tasks => {
-          dispatch(getCompletedTasksSuccess(tasks));
+          dispatch({type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks});
         })
       }).catch(error => {
-        toggleAlert("Error in retrieving tasks. Please try again.", "error")
         throw(error);
     })
   }
 }
-export function getIncompleteTasksByPatient(patientId){
-  return function(dispatch){
-    return TaskApi.getAllTasksByPatient(patientId, "INCOMPLETE").then(tasks => {
-        dispatch(getListTasksByUserSuccess(tasks))
-      }).catch(error => {
-        toggleAlert("Error in retrieving tasks. Please try again.", "error")
-        throw(error);
-    })
-  }
-}
-
-export function getCompleteTasksByPatient(patientId){
-  return function(dispatch){
-    return TaskApi.getAllTasksByPatient(patientId, "COMPLETE").then(tasks => {
-        dispatch(getCompletedTasksSuccess(tasks))
-      }).catch(error => {
-        toggleAlert("Error in retrieving tasks. Please try again.", "error")
-        throw(error);
-    })
-  }
-}
-
-export function getInboxTasks(status, sortBy){
+export function getAllTasksByPatient(patientId, sortBy, filterBy, status){
   var action
   if(status == "INCOMPLETE"){
     action = ActionTypes.GET_TASKS_SUCCESS;
@@ -378,13 +340,28 @@ export function getInboxTasks(status, sortBy){
     action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
   }
   return function(dispatch){
-    return TaskApi.getInboxTasks(status, sortBy).then(tasks => {
+    return TaskApi.getAllTasksByPatient(patientId, status, sortBy, filterBy).then(tasks => {
+        dispatch({type: action, tasks})
+      }).catch(error => {
+        throw(error);
+    })
+  }
+}
+
+export function getInboxTasks(status, sortBy, filterBy){
+  var action
+  if(status == "INCOMPLETE"){
+    action = ActionTypes.GET_TASKS_SUCCESS;
+  }else{
+    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+  }
+  return function(dispatch){
+    return TaskApi.getInboxTasks(status, sortBy, filterBy).then(tasks => {
       dispatch({type: action, tasks});
       if(status == "INCOMPLETE"){
         // loading()
       }
     }).catch(error => {
-      toggleAlert("Error in retrieving tasks. Please try again.", "error")
       throw(error);
     })
   }

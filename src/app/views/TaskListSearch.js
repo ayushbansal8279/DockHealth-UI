@@ -5,6 +5,7 @@ import TaskListSearchContainer from '../components/list/TaskListSearchContainer'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 import AddTask from '../components/task/AddTask'
+import SortFilterTasks from '../components/common/SortFilterTasks'
 import * as TaskActions from '../actions/task-actions'
 import $ from 'jquery'
 
@@ -28,14 +29,24 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
     }
 
     searchTasks = () => {
-      this.props.taskActions.searchTasks(this.state.searchTerm);
+      this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "INCOMPLETE");
+      this.setState({searchPerformed: true})
+    }
+
+    getCompletedTasks = () => {
+      this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "COMPLETE");
       this.setState({searchPerformed: true})
     }
     
+    getListTasks = (sortBy, filterBy) => {
+      this.props.taskActions.loading()
+      this.props.taskActions.searchTasks(this.state.searchTerm, sortBy, filterBy, "INCOMPLETE")
+    }
+
     handleKeyPress = (event) => {
       if(event.key == 'Enter'){
         console.log('enter press here! ')
-        this.props.taskActions.searchTasks(this.state.searchTerm);
+        this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "INCOMPLETE");
         this.setState({searchPerformed: true})
       }
     }
@@ -44,12 +55,6 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
       this.props.taskActions.taskToState(null)
       openAddForm();
     };
-    
-    toggleSlimView = () => {
-      $(this).toggleClass('active');
-      $('.task-item-wrapper').toggleClass('slim');
-      $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
-    }
 
     render() {
       return (
@@ -103,28 +108,17 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
               </div>
             </div>
 
-            <div className={"wrapper list-filter row collapse align-middle align-right "}>
-              {/* <div className="columns controls">
-                <div className="input-group searchbar">
-                  <input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated} value={this.props.searchTerm}/>
-                  <div className="input-group-button">
-                    <button className="button">
-                      <svg onClick={this.props.clearSearch} className="icon"><use xlinkHref="#icon-search"></use></svg>
-                    </button>
-                  </div>
-                </div>
-              </div> */}
+            {/* {this.state.searchPerformed &&  */}
+              <SortFilterTasks title="Search Tasks" getListTasks={this.getListTasks}/>
+            {/* } */}
 
-              <div className="columns shrink icon-group controls">
-                
-                <span title="Slim view toggle" onClick={(e) => this.toggleSlimView()}><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
-                
-              </div>
-            </div>
-
-            <div className="row expanded collapse">
-              <TaskListSearchContainer searchPerformed={this.state.searchPerformed}/>
-            </div>
+            <TaskListSearchContainer 
+              searchPerformed={this.state.searchPerformed}
+              getCompletedTasks={this.getCompletedTasks}/>
+            
+            {this.state.searchPerformed && this.props.tasks && this.props.tasks.length == 0 &&
+              <span className="taskListSearchMessage">No tasks found matching search criteria</span>
+            }
           </div>
         </div>
       );
@@ -133,6 +127,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
 
 function mapStateToProps(state){
   return{
+    tasks: state.taskState.tasks
   }
 }
 

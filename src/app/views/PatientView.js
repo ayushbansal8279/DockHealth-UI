@@ -9,13 +9,14 @@ import * as TaskActions from '../actions/task-actions'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import ListOfTasksContainer from '../components/task/ListOfTasksContainer'
 import AddTask from '../components/task/AddTask'
+import SortFilterTasks from '../components/common/SortFilterTasks'
 import axios from 'axios';
 
 class PatientView extends BaseComponent {
 
   	componentDidMount () {
       this.props.actions.getPatientById(this.props.params.patientId);
-      this.props.taskActions.getIncompleteTasksByPatient(this.props.params.patientId);
+      this.props.taskActions.getAllTasksByPatient(this.props.params.patientId, undefined, undefined, "INCOMPLETE");
       mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
               'PageName': 'PatientDetails'
       });
@@ -46,13 +47,19 @@ class PatientView extends BaseComponent {
       this.setState({editing: isEditing})
     }
     
+    getListTasks = (sortBy, filterBy) => {
+      this.props.taskActions.loading()
+      this.props.taskActions.getAllTasksByPatient(this.props.params.patientId, sortBy, filterBy, "INCOMPLETE")
+    }
+
     pullCompletedTasks = () => {
       if(!this.props.showingCompletedTasks){
-        this.props.taskActions.getCompleteTasksByPatient(this.props.params.patientId);
+        this.props.taskActions.getAllTasksByPatient(this.props.params.patientId, undefined, undefined, "COMPLETE");
       }else{
         this.props.taskActions.hideCompletedTasks()
       }
     }
+
 
     downloadPDF = () => {
       if(this.props.patient.patientId){
@@ -189,53 +196,43 @@ class PatientView extends BaseComponent {
           </div>
         </div>
 
-                <AddTask
-                  taskListId={this.props.taskListId}
-                  addTask={this.props.taskActions.addTask}
-                  taskLists={this.props.taskList}
-                  patients={this.props.patients}
-                  title={this.props.title}
-                  members={this.props.members}
-                  activeListMembers={this.props.activeListMembers}
-                />
+          <AddTask
+            taskListId={this.props.taskListId}
+            addTask={this.props.taskActions.addTask}
+            taskLists={this.props.taskList}
+            patients={this.props.patients}
+            title={this.props.title}
+            members={this.props.members}
+            activeListMembers={this.props.activeListMembers}
+          />
 
-          <div className={"wrapper list-filter row collapse align-middle align-right "}>
-            {/* <div className="columns controls">
-              <div className="input-group searchbar">
-                <input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated} value={this.props.searchTerm}/>
-                <div className="input-group-button">
-                  <button className="button">
-                    <svg onClick={this.props.clearSearch} className="icon"><use xlinkHref="#icon-search"></use></svg>
-                  </button>
+          <SortFilterTasks title="Patient Tasks" getListTasks={this.getListTasks}/>
+
+        <div className="list-wrapper overall-list-wrapper">
+          <div className="task-item-wrapper">
+            <div className="task-wrapper">
+              <div className="row expanded collapse">
+                <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
+                  {this.props.tasks && this.renderTaskListName("INCOMPLETE", this.props.tasks)}
+                </ul>
+                <div className="columns large-12">
+                  <div className="show-completed text-center">
+                    <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
+                  </div>
                 </div>
+                {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length > 0 &&
+                <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
+                  {this.props.completedTasks && this.renderTaskListName("COMPLETE", this.props.completedTasks)}
+                </ul>
+                }
+                {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
+                  <span>No completed tasks</span>
+                }          
               </div>
-            </div> */}
-
-            <div className="columns shrink icon-group controls">
-              
-              <span title="Slim view toggle" onClick={(e) => this.toggleSlimView()}><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
-              {/* <span title="Print" onClick={(e) => this.downloadPDF()}><svg className="icon toggle-print"><use xlinkHref="#icon-print"></use></svg></span> */}
-            </div>
-        </div>
-
-        <div className="row expanded collapse">
-          <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
-            {this.props.tasks && this.renderTaskListName("INCOMPLETE", this.props.tasks)}
-          </ul>
-          <div className="columns large-12">
-            <div className="show-completed text-center">
-              <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
             </div>
           </div>
-          {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length > 0 &&
-          <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
-            {this.props.tasks && this.renderTaskListName("COMPLETE", this.props.completedTasks)}
-          </ul>
-          }
-          {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
-            <span>No completed tasks</span>
-          }          
         </div>
+
       </div>
 
     );

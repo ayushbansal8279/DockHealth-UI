@@ -5,6 +5,7 @@ import PersonTaskListContainer from '../components/list/PersonTaskListContainer'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
 import AddTask from '../components/task/AddTask'
+import SortFilterTasks from '../components/common/SortFilterTasks'
 import * as TaskActions from '../actions/task-actions'
 import $ from 'jquery'
 
@@ -25,10 +26,19 @@ class PersonTaskList extends BaseComponentWithFoundationUpdate {
       this.props.taskActions.getTasksAssignedToSpecificUser(personId, undefined, undefined, undefined, "INCOMPLETE")
     }
     
+    getListTasks = (sortBy, filterBy) => {
+      this.props.taskActions.loading()
+      this.props.taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, sortBy, filterBy, "INCOMPLETE")
+    }
+
+    getCompletedTasks = () => {
+      this.props.taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, undefined, undefined, "COMPLETE")
+    }
+
     handleKeyPress = (event) => {
       if(event.key == 'Enter'){
         console.log('enter press here! ')
-        this.props.taskActions.searchTasks(this.state.searchTerm);
+        this.props.taskActions.searchTasks(this.state.searchTerm, "INCOMPLETE");
       }
     }
     
@@ -66,39 +76,21 @@ class PersonTaskList extends BaseComponentWithFoundationUpdate {
             </div>
           </div>
 
-                <AddTask
-                  taskListId={this.props.taskListId}
-                  addTask={this.props.taskActions.addTask}
-                  taskLists={this.props.taskList}
-                  patients={this.props.patients}
-                  title={this.props.title}
-                  members={this.props.members}
-                  activeListMembers={this.props.activeListMembers}
-                />
+          <AddTask
+            taskListId={this.props.taskListId}
+            addTask={this.props.taskActions.addTask}
+            taskLists={this.props.taskList}
+            patients={this.props.patients}
+            title={this.props.title}
+            members={this.props.members}
+            activeListMembers={this.props.activeListMembers}
+          />
 
           <div className="wrapper">
-
-            <div className={"wrapper list-filter row collapse align-middle align-right "}>
-              {/* <div className="columns controls">
-                <div className="input-group searchbar">
-                  <input className="input-field search-field" type="search" placeholder="Search tasks" onChange={this.props.searchUpdated} value={this.props.searchTerm}/>
-                  <div className="input-group-button">
-                    <button className="button">
-                      <svg onClick={this.props.clearSearch} className="icon"><use xlinkHref="#icon-search"></use></svg>
-                    </button>
-                  </div>
-                </div>
-              </div> */}
-
-              <div className="columns shrink icon-group controls">
-                
-                <span title="Slim view toggle" onClick={(e) => this.toggleSlimView()}><svg className="icon toggle-slim"><use xlinkHref="#icon-slim"></use></svg></span>
-                
-              </div>
-            </div>
+            <SortFilterTasks title="Person Tasks" getListTasks={this.getListTasks}/>
 
             <div className="row expanded collapse">
-              <PersonTaskListContainer/>
+              <PersonTaskListContainer getCompletedTasks={this.getCompletedTasks}/>
             </div>
           </div>
         </div>
