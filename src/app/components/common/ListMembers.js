@@ -37,7 +37,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
         .then((res)=>{
             this.props.formActions.reset('ListMembersAddForm')
 						// this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
-						this.props.taskListActions.getMembersByTaskListId(this.props.currentList.taskListId, "ALL")
+						if(this.props.currentList.taskListId){
+							this.props.taskListActions.getMembersByTaskListId(this.props.currentList.taskListId, "ALL")
+						}
 						closePopup("#list-members-"+this.props.currentList.taskListId)
         })
         .catch((error)=>{

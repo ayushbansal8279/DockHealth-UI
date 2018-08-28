@@ -65,8 +65,8 @@ export function getTaskListById(taskListId){
 
 export function getMembersByTaskListId(taskListId, memberStatus) {
   return function(dispatch) {
-    return TaskListApi.getMembersByTaskListId(taskListId,memberStatus).then(tasklistmembers => {
-      dispatch({type: ActionTypes.GET_TASKLISTMEMBERS_SUCCESS, tasklistmembers});
+    return TaskListApi.getMembersByTaskListId(taskListId, memberStatus).then(tasklistmembers => {
+      dispatch({type: ActionTypes.GET_TASKLISTMEMBERS_SUCCESS, taskListId, tasklistmembers});
     }).catch(error => {
       throw(error);
     });

@@ -21,8 +21,21 @@ const TaskListReducer = function(state = initialState, action) {
       return {...state, currentList: action.currentList};  //whatever our current state is, add on "currentList"
 
     case types.GET_TASKLISTMEMBERS_SUCCESS:
-      return {...state, tasklistmembers:action.tasklistmembers};  //whatever our current state is, add on "tasklistmembers"
-
+      var listMembersDetails = {}
+      listMembersDetails.taskListId = action.taskListId
+      listMembersDetails.tasklistmembers = action.tasklistmembers
+      var currentTaskListMembersDetails = state.allTaskListMembers.filter(details => details.taskListId == action.taskListId)
+      if(!currentTaskListMembersDetails || currentTaskListMembersDetails.length==0){
+        return {...state, tasklistmembers: action.tasklistmembers, 
+          allTaskListMembers: [listMembersDetails].concat(state.allTaskListMembers)
+        };
+      }else{
+        return {...state, tasklistmembers: action.tasklistmembers, 
+        allTaskListMembers: state.allTaskListMembers.map(listMembers =>
+          listMembers.taskListId === action.taskListId ?
+          {...listMembers, listMembersDetails} : listMembers
+        )};
+      }
     case types.GET_ORGUSERSNOTINTASKLIST_SUCCESS:
       return {...state, orgusersnotintasklist:action.users};  //whatever our current state is, add on "orgusersnotintasklist"
 

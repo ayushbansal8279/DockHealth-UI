@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import ListOfTasks from './ListOfTasks'
 import * as TaskActions from '../../actions/task-actions'
+import * as TaskListActions from '../../actions/tasklist-actions'
 import * as PatientActions from '../../actions/patient-actions'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
@@ -16,11 +17,12 @@ class ListOfTasksContainer extends BaseComponent {
 		mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 						'PageName': 'ListOfTasks'
 		});
-    // if(this.props.taskListId){
-    //   this.props.actions.getListTasks(this.props.taskListId)
-    // }else{
-    //   this.props.actions.getInboxTasks()
-    // }
+    if((!this.props.members || this.props.members.length==0)
+        && this.props.listName==""
+        && this.props.taskListId){
+      this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, "ALL")
+    }
+    
   }
 
   componentWillUnmount(){
@@ -53,16 +55,26 @@ ListOfTasksContainer.propTypes = {
     actions: PropTypes.object.isRequired
 }
 
-const mapStateToProps = function (store) {
+const mapStateToProps = function (store, props) {
+  // var listMembers = store.taskListState.tasklistmembers
+  var listMembers = []
+  var currentTaskListMembersDetails = store.taskListState.allTaskListMembers.filter(details => details.taskListId == props.taskListId)
+  if(currentTaskListMembersDetails && currentTaskListMembersDetails.length>0){
+    listMembers = currentTaskListMembersDetails[0].tasklistmembers
+  }
+
   return {
-    user: store.userState.user
+    user: store.userState.user,
+    members: listMembers,
   };
 
 }
 
+
 const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(TaskActions, dispatch),
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
     patientActions: bindActionCreators(PatientActions, dispatch)
   }
 }

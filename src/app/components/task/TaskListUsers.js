@@ -8,15 +8,17 @@ import BaseComponent from '../BaseComponent'
 
 class TaskListUsers extends BaseComponent {
 	componentDidMount () {
-	    //this.props.getMembersByTaskListId(taskListId, memberStatus)
-	    this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
+			//this.props.getMembersByTaskListId(taskListId, memberStatus)
+			if(this.props.taskListId){
+				this.props.getMembersByTaskListId(this.props.taskListId,'ALL');
+			}
 			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 							'PageName': 'TaskListUsers'
 			});
 	}
 
 	componentWillUpdate(nextProps){
-		if(nextProps.taskListId != this.props.taskListId){
+		if(nextProps.taskListId && nextProps.taskListId != this.props.taskListId){
 			this.props.getMembersByTaskListId(nextProps.taskListId,'ALL');
 		}
 	}

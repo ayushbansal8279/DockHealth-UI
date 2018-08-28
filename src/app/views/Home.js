@@ -110,7 +110,9 @@ class Home extends BaseComponentWithFoundationUpdate {
       this.props.taskListActions.getTaskListById(this.props.routeParams.taskListId)
       this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "INCOMPLETE")
       // this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "COMPLETE")
-      this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ALL")
+      if(this.props.routeParams.taskListId){
+        this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ALL")
+      }
       this.props.taskListActions.getOrganizationUsersNotInTaskList(this.props.routeParams.taskListId);
     }
 
@@ -152,7 +154,9 @@ class Home extends BaseComponentWithFoundationUpdate {
         this.props.taskListActions.getTaskListById(nextProps.routeParams.taskListId)
         this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, undefined, "INCOMPLETE")
         // this.props.actions.getListTasks(nextProps.routeParams.taskListId, undefined, undefined, "COMPLETE")
-        this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ALL")
+        if(nextProps.routeParams.taskListId){
+          this.props.taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, "ALL")
+        }
         this.props.taskListActions.getOrganizationUsersNotInTaskList(nextProps.routeParams.taskListId);
       }
     }
@@ -183,7 +187,9 @@ class Home extends BaseComponentWithFoundationUpdate {
     }else{
       this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "INCOMPLETE")
       // this.props.actions.getListTasks(this.props.routeParams.taskListId, undefined, undefined, "COMPLETE")
-      this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ALL")
+      if(this.props.routeParams.taskListId){
+        this.props.taskListActions.getMembersByTaskListId(this.props.routeParams.taskListId, "ALL")
+      }
       this.props.taskListActions.getOrganizationUsersNotInTaskList(this.props.routeParams.taskListId);
     }
     this.props.patientActions.getAllPatients()
@@ -230,10 +236,14 @@ class Home extends BaseComponentWithFoundationUpdate {
              <MemberInitials member={audit.user}/>
            </div>
            <div className="columns">
-             <span className="task-title">{audit.currentState}</span>
+             <span className="task-title">{audit.user!=null?audit.user.userName:""}</span>
            </div>
-           <div className="columns shrink text-right more-options-wrapper">
-             <span className="item-details"><Moment format="MMM DD">{audit.createdDateTime}</Moment></span>
+           <div className="columns">
+             <span className="task-title">{audit.taskHistoryDetails}</span>
+           </div>
+           <div className="columns text-right">
+             <span className="item-details"><Moment format="MM/DD/YYYY">{audit.createdDateTime}</Moment></span>
+             <span className="item-details"><Moment format="hh:mm a">{audit.createdDateTime}</Moment></span>
            </div>
          </div>
        );
@@ -249,10 +259,10 @@ class Home extends BaseComponentWithFoundationUpdate {
     var filteredCompletedTasks = [];
 
     if(this.props.tasks && this.props.completedTasks){
-      if(this.props.tasks){
+      if(this.props.tasks && this.props.tasks.length>0){
         filteredTasks = this.props.tasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
       }
-      if(this.props.completedTasks){
+      if(this.props.completedTasks && this.props.completedTasks.length>0){
         filteredCompletedTasks = this.props.completedTasks.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
       }
     }
@@ -273,6 +283,7 @@ class Home extends BaseComponentWithFoundationUpdate {
               />
               <div className="tasks-container">
               <div className={this.props.currentTaskHistory?"large-8 columns left-column":"large-12 columns left-column"}>
+              
               <div className="list-wrapper">
                 {/* <h5>{this.props.isFetching}</h5> */}
                 {this.props.isFetching ?
@@ -289,16 +300,11 @@ class Home extends BaseComponentWithFoundationUpdate {
           					<div className="sk-circle10 sk-child"></div>
           					<div className="sk-circle11 sk-child"></div>
           					<div className="sk-circle12 sk-child"></div>
-          				</div> :
+                  </div> :
                   <div className="task-item-wrapper">
-                    {/* <h5>{this.state.editing ? 'editing' : 'not editing'}</h5> */}
-                    <ListOfTasksContainer
-                      taskListId={taskListId} status="INCOMPLETE"
-                      members={this.props.members}
-                      filteredTasks={filteredTasks}
-                      setTaskEditingStatus={this.setTaskEditingStatus}
-                      listName={this.props.routeParams.listName}
-                    />
+                    <div className="task-wrapper">
+                      {filteredTasks && this.renderTaskListName(filteredTasks, "INCOMPLETE")}
+                    </div>
                     <div className="show-completed text-center">
                       <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
                     </div>
@@ -321,15 +327,10 @@ class Home extends BaseComponentWithFoundationUpdate {
                   </div> :
                   <div className="task-item-wrapper">
                     <div className="completed-task-wrapper">
-                      <ListOfTasksContainer 
-                        taskListId={taskListId} 
-                        status="COMPLETE" 
-                        members={this.props.members} 
-                        filteredTasks={filteredCompletedTasks} 
-                        listName={this.props.routeParams.listName}/>
+                      {filteredCompletedTasks && this.renderTaskListName(filteredCompletedTasks, "COMPLETE")}
                     </div>
                     {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
-                      <span>No completed tasks</span>
+                      <span className="taskListSearchMessage">No completed tasks</span>
                     }
                   </div> 
                 }
@@ -371,6 +372,63 @@ class Home extends BaseComponentWithFoundationUpdate {
         </div>
 
     );
+  }
+
+  renderList(taskListId, listName, tasks, members, memberstatus) {
+    return(
+          <ListOfTasksContainer
+            taskListId={taskListId} status={memberstatus}
+            members={members}
+            filteredTasks={tasks}
+            setTaskEditingStatus={this.setTaskEditingStatus}
+            listName=""
+          />        
+    );
+  }
+
+  // Lists TaskLists
+  renderTaskListName(tasks, memberstatus){
+    const groupedTasks = this.groupBy(tasks, task => (task.taskList ? task.taskList.listName : ""));
+    if(!groupedTasks || groupedTasks.size == 0){
+      return <div/>
+    }
+    return Array.from(groupedTasks.keys()).map((listName) =>{
+      const tasks = groupedTasks.get(listName)
+      var taskListId = 0
+      if(tasks){
+        taskListId = (tasks[0].taskList ? tasks[0].taskList.taskListId : 0)
+      }
+      return(
+        <div className="accordion-item" key={"taskList_" + listName}>
+          {(!this.props.routeParams.listName || this.props.routeParams.listName=="" 
+            || this.props.routeParams.listName=="Assigned to me"
+            || this.props.routeParams.listName=="Assigned by me") && 
+          <span className="accordion-title task-search-list-name">
+            <b>{listName}</b>
+          </span>  
+          }
+          <div>
+            {tasks && tasks.length > 0 ? 
+              this.renderList(taskListId, listName, tasks, null, memberstatus) : 
+              <p className="light-gray">No matching tasks</p>}
+          </div>
+        </div>
+      );
+    })
+  }
+
+  groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+            map.set(key, [item]);
+        } else {
+            collection.push(item);
+        }
+    });
+    return map;
   }
 }
 
