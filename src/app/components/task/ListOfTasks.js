@@ -38,6 +38,8 @@ class ListOfTasks extends BaseComponent {
 			this.editTask = this.editTask.bind(this)
 			this.confirmCompleteTask = this.confirmCompleteTask.bind(this)
 			this.duplicateTask = this.duplicateTask.bind(this)
+			this.moveSubTaskUp = this.moveSubTaskUp.bind(this)
+			this.moveSubTaskDown = this.moveSubTaskDown.bind(this)
 			this.showHistory = this.showHistory.bind(this)
 		}
 
@@ -87,6 +89,7 @@ class ListOfTasks extends BaseComponent {
 				$el.parent().parent().find('.saveComment').one('click', save);
 			});
 
+			resizeEmailBodySection(".task-item-wrapper")
 		}
 
 		componentWillUnmount(){
@@ -217,6 +220,16 @@ class ListOfTasks extends BaseComponent {
 			console.log(task.taskId)
 		}
 
+		moveSubTaskUp = (task) => {
+			this.props.taskAction.sortSubTask(task, 'up');
+			console.log(task.taskId)
+		}
+
+		moveSubTaskDown = (task) => {
+			this.props.taskAction.sortSubTask(task, 'down');
+			console.log(task.taskId)
+		}
+
 		assignOrReassignTask = (task, assignedToUserId, member) => {
 			this.props.taskAction.assignOrReassignTask(task, assignedToUserId, member)
 		}
@@ -316,10 +329,10 @@ class ListOfTasks extends BaseComponent {
 							<div className="column">
 								<div className="row expanded">
 									{comment.creator.userId === this.props.userProfile.userId ?
-										<span className="comment comment-details" data-editable-comment><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span> :
-										<span className="comment comment-details"><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></span>
+										<span className="comment comment-details" data-editable-comment><pre><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></pre></span> :
+										<span className="comment comment-details"><pre><Linkify options={{target: "_blank", className: "decorated-link"}}>{comment.comment}</Linkify></pre></span>
 									}
-									<input className="comment" id={'comment-'+comment.commentId} type="text"/>
+									<textarea rows="5" className="comment add-comment" id={'comment-'+comment.commentId} type="text"/>
 								</div>
 								<span className="comment-edit row collapse expanded align-justify">
 									<div className="column comment-edit-left">
@@ -433,7 +446,7 @@ class ListOfTasks extends BaseComponent {
 								{(type != 'subtask') &&
 				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
 								}
-								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"} {task.patient ? ' | ' + task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : ""}</span>
+								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"} {task.patient ? ' | ' + task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : ""} {task.dueDate && <span className={((new Date(task.dueDate) < new Date()) ? "overdue" : "")}> | <svg className="icon small"><use xlinkHref="#icon-calendar"></use></svg>&nbsp;{formatDateAndTime(task.dueDate)}</span>} </span>
 								
 								{task.assignedBy &&
 					        <span className="task-details text-light">{'Assigned by ' + task.assignedBy.userName + ' ' + String.fromCharCode("8226") + ' '  }{<Moment fromNow>{moment(task.assignmentUpdatedDateTime).format()}</Moment>}</span>
@@ -488,24 +501,33 @@ class ListOfTasks extends BaseComponent {
 							}
 			      </div>
 
-						{task.status == "INCOMPLETE" && 
 							<div className="columns shrink more-options-wrapper">
 								{/* <svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId}><use xlinkHref="#icon-ellipses"></use></svg> */}
 								<svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId} onClick={(e) => this.openTaskContextMenu(task.taskId)}><use xlinkHref="#icon-ellipses"></use></svg>
 								<div className="small dropdown-pane" id={"task-edit-" + task.taskId} data-dropdown data-close-on-click="true">
 									<ul className="no-bullet">
+										{task.status == "INCOMPLETE" && 
 										<li onClick={(e) => this.markAsUnread(task, task.read)}>{task.read ? "Mark as unread" : "Mark as read"}</li>
+										}
 										{/* <li onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task-popup" data-open="add-form-popup">Edit task</li> */}
+										{task.status == "INCOMPLETE" && 
 										<li onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task">Edit task</li>
-										{type != "subtask" &&
+										}
+										{task.status == "INCOMPLETE" && type != "subtask" &&
 											<li onClick={(e) => {this.handleToggleForEditTask(task); this.resetSubtaskForm(task.patient);}} className="add show-add-subtask link">Add subtask</li>
 										}
 										{/* <li data-open={"delete-task-"+task.taskId}>Delete task</li> */}
-										{task.creator.userId == this.props.userProfile.userId &&
+										{task.status == "INCOMPLETE" && task.creator.userId == this.props.userProfile.userId &&
 											<li onClick={(e) => this.openDeleteConfirmationModal(task.taskId)} >Delete task</li>
 										}
-										{type != "subtask" &&
+										{task.status == "INCOMPLETE" && type != "subtask" &&
 											<li onClick={() => this.duplicateTask(task)}>Duplicate task</li>
+										}
+										{type == "subtask" && index>0 && 
+											<li onClick={() => this.moveSubTaskUp(task)}>Move Up</li>
+										}
+										{type == "subtask" && index<this.props.tasks.length && 
+											<li onClick={() => this.moveSubTaskDown(task)}>Move Down</li>
 										}
 										{(this.props.listName == "Inbox" || this.props.members) &&
 											<li onClick={(e) => this.showHistory(task)}>Show History</li>
@@ -513,7 +535,7 @@ class ListOfTasks extends BaseComponent {
 									</ul>
 								</div>
 							</div>
-						}
+						
 
 			    </div>
 			    {/* MAIN TASK END */}

@@ -35,7 +35,7 @@ const TaskReducer = function(state = initialState, action) {
       return Object.assign({}, state, { isCompletedTasksFetching: true })
 
     case types.HIDE_COMPLETED_TASKS:
-      return Object.assign({}, state, { showingCompletedTasks: false })
+      return Object.assign({}, state, { showingCompletedTasks: false, completedTasks: [] })
 
     case types.EDIT_TASK:
       return { ...state, task: action.task };
@@ -199,9 +199,9 @@ const TaskReducer = function(state = initialState, action) {
     case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
     var mainTask
     if(action.task.parentTaskId){
-    mainTask = action.task.parentTaskId
+      mainTask = action.task.parentTaskId
     }else{
-    mainTask = action.task.taskId
+      mainTask = action.task.taskId
     }
 
     return {
@@ -490,7 +490,12 @@ const TaskReducer = function(state = initialState, action) {
     case types.CLEAR_CURRENT_TASK_HISTORY:
       return {...state, currentTaskHistory: null};
 
-      
+    case types.ORDER_SUB_TASK_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task => task.taskId === action.task.taskId ? action.task : task)
+      };
+    
   }
 
   return state;
