@@ -23395,6 +23395,7 @@ function toggleAlert(notification, type) {
 	$('.new-task').addClass('show');
 	setTimeout(function () {
 		$('.new-task').removeClass('show');
+		$('.new-task').removeClass(type);
 	}, 4000);
 }
 

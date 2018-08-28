@@ -465,6 +465,18 @@ function openDropdown(selector) {
 	}
 }
 
+function closeDropdown(selector) {
+	// var dropdown = new Foundation.Dropdown($(selector));
+	// dropdown.open();
+	$(selector).foundation('close');
+	// $(selector).foundation('toggle');
+	// var element = $(selector);
+	// if(!element.data('yeti-box')){
+	// 	element.foundation();
+	// 	element.foundation('open');
+	// }
+}
+
 function removeRevealComponent(selector) {
 	var element = $(selector);
 	if(element.data('yeti-box')){

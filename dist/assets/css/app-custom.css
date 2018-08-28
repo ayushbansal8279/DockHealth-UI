@@ -520,3 +520,11 @@ pre.emailMessage {
   padding: 0;
   margin-left: -10;
 }
+.taskListSearchMessage {
+  font-size:18px;
+  font-weight: bold;
+}
+.overall-list-wrapper {
+  margin-top: 0;
+  padding: 0;
+}
