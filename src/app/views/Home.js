@@ -133,6 +133,11 @@ class Home extends BaseComponentWithFoundationUpdate {
         $('.task-item-wrapper').toggleClass('slim');
         $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
     });
+
+    if(user.defaultSlimView){
+      $('.task-item-wrapper').toggleClass('slim');
+    }
+
   }
 
   componentWillUpdate(nextProps){

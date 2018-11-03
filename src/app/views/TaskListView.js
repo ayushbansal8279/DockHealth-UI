@@ -128,7 +128,56 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
 
               <AddListForm onSubmit={this.submit}/>
 
-        			<div className="list-wrapper">
+              <div className="list-wrapper dashboard-section">
+                <div className="row collapse">
+                    {this.props.genericLists && this.props.genericLists.map(list => {
+                      var iconName = "";
+                      var iconColor = "";
+                      var panelName = "";
+                      if(list.listName === "Inbox_Count"){
+                        iconName = "icon-email"
+                        panelName = "Inbox"
+                      }else if(list.listName === "AssignedToMe_Count"){
+                        iconName = "icon-list"
+                        panelName = "Assigned to me"
+                      }else if(list.listName === "AssignedByMe_Count"){
+                        iconName = "icon-assign-to"
+                        iconColor = "blue"
+                        panelName = "Assigned by me"
+                      }else if(list.listName === "HighPriority_Count"){
+                        iconName = "icon-flag"
+                        iconColor = "orange"
+                        panelName = "Flagged"
+                      }else if(list.listName === "Overdue_Count"){
+                        iconName = "icon-calendar"
+                        iconColor = "red"
+                        panelName = "Overdue"
+                      }else if(list.listName === "DueToday_Count"){
+                        iconName = "icon-calendar"
+                        iconColor = "blue"
+                        panelName = "Due Today"
+                      }else if(list.listName === "DueThisWeek_Count"){
+                        iconName = "icon-calendar"
+                        iconColor = "green"
+                        panelName = "Due This Week"
+                      }else if(list.listName === "CompletedThisWeek_Count"){
+                        iconName = "icon-checkmark"
+                        iconColor = "green"
+                        panelName = "Completed This Week"
+                      }
+                      return( list.dashboardDisplay &&
+                        <div className="large-3 columns" key={list.listName}>
+                          <div className="text-center block-item" data-equalizer-watch="">
+                            <svg className={"icon xlarge icon-header "+iconColor}><use xlinkHref={"#"+iconName}></use></svg>
+                            <h6 className="border">{panelName}</h6>
+                            <h4>{list.numberOfTasks}</h4>
+                          </div>
+                        </div>  
+                      )
+                    })}
+                </div>
+              </div>
+        			<div className="list-wrapper list-wrapper-all-lists">
                 {this.props.isFetching ?
                   <div className="sk-circle">
                     <div className="sk-circle1 sk-child"></div>
@@ -144,7 +193,7 @@ class TaskListView extends BaseComponentWithFoundationUpdate {
                     <div className="sk-circle11 sk-child"></div>
                     <div className="sk-circle12 sk-child"></div>
                   </div>:
-          				<div className="item-list-wrapper">
+          				<div className="item-list-wrapper list-wrapper-all-lists">
 
                     <PendingListsComponent taskLists={this.props.pendingTaskLists} acceptInviteToTaskList={this.acceptInviteToTaskList} rejectInviteToTaskList={this.rejectInviteToTaskList}/>
                     {/* {this.props.genericLists && this.props.genericLists.map(list => {

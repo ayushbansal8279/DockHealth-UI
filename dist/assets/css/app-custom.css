@@ -431,6 +431,10 @@ pre.emailMessage {
   font-weight: bold;
 }
 
+.list-wrapper-all-lists {
+  margin-top: 0;
+}
+
 .list-wrapper-task-search {
   margin-top: 0;
 }
@@ -527,4 +531,46 @@ pre.emailMessage {
 .overall-list-wrapper {
   margin-top: 0;
   padding: 0;
+}
+
+pre {
+  white-space: pre-wrap;       
+  white-space: -moz-pre-wrap;  
+  white-space: -pre-wrap;      
+  white-space: -o-pre-wrap;    
+  word-wrap: break-word;       
+}
+
+.block-item {
+  background: #fff;
+  border: 1px solid #e8ebef;
+  padding: 0.3rem 0.4rem;
+  position: relative;
+  margin: 0 .40rem .40rem 0;
+}
+
+.dashboard-section {
+  margin-top: 150px;
+}
+.dashboard-section > div > div > div > h6 {
+  margin-top: 5px;
+}
+.dashboard-section > div > div > div > h4 {
+  margin-top: 5px;
+}
+.icon.xlarge {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+.icon.green {
+  fill: #4eba8c;
+}
+.icon.blue {
+  fill: #52a1e1;
+}
+.icon.red {
+  fill: #c70c52;
+}
+.icon.orange {
+  fill: #fc7c05;
 }
