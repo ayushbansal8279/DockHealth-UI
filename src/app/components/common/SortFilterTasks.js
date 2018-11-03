@@ -31,7 +31,6 @@ class SortFilterTasks extends BaseComponent {
   }
 
   componentWillUpdate(nextProps){
-
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -61,6 +60,10 @@ class SortFilterTasks extends BaseComponent {
     closeDropdown("#nonlist-sort-dropdown")
   }
 
+  openSortFilterOptions = () => {
+    openDropdown("#nonlist-sort-dropdown")
+  }
+
   toggleListNotifications = () => {
     this.props.taskListActions.toggleListNotifications(this.props.taskListId, !this.props.taskList.notifications)
   }
@@ -86,7 +89,7 @@ class SortFilterTasks extends BaseComponent {
 
           <div className={"wrapper list-filter row collapse align-middle align-right "}>
             <div className="columns controls">
-              <button className="dropdown button primary small" data-toggle="nonlist-sort-dropdown">Sort / Filter</button>
+              <button className="dropdown button primary small" data-toggle="nonlist-sort-dropdown" onClick={(e) => this.openSortFilterOptions()}>Sort / Filter</button>
               <div className="dropdown-pane button-dropdown" id="nonlist-sort-dropdown" data-dropdown data-close-on-click="true" data-auto-focus="true">
                 <div className="sortFilterCategory"><span>Sort by :</span></div>
                 <ul className="no-bullet">
