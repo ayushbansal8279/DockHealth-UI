@@ -213,7 +213,7 @@ class AddSubtaskForm extends BaseComponent{
                 <div className="switch">
                   <Field className="switch-input" id="subtaskSwitch" type="checkbox" name="priority" component="input"/>
                   <label className="switch-paddle" htmlFor="subtaskSwitch">
-                    <span className="show-for-sr">Download Kittens</span>
+                    <span className="show-for-sr"></span>
                   </label>
                 </div>
               </div>
