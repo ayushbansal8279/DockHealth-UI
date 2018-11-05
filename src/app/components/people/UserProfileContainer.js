@@ -238,7 +238,12 @@ class UserProfileContainer extends BaseComponent {
       var specialty = [];
       if(this.state.specialty){
         if(this.state.subspecialty){
-          this.state.specialty.subSpecialties = [this.state.subspecialty];
+          if(!Array.isArray(this.state.subspecialty)){
+            this.state.specialty.subSpecialties = [];
+            this.state.specialty.subSpecialties.push(this.state.subspecialty);
+          }else if(this.state.subspecialty.length>0){
+            this.state.specialty.subSpecialties = [this.state.subspecialty];
+          }
         }else{
           this.state.specialty.subSpecialties = [];
         }
@@ -255,7 +260,7 @@ class UserProfileContainer extends BaseComponent {
         userObj.faxNumber = formProps.faxNumber.replace(/-/g,"")
       if(formProps.homePhoneNumber)
         userObj.homePhoneNumber = formProps.homePhoneNumber.replace(/-/g,"")
-
+      userObj.defaultSlimView = formProps.defaultSlimView
       titles= this.getTitlesToPersist(formProps)
       // specialties = this.getSpecialtiesToPersist(formProps)
       userObj["titles"]=titles
@@ -521,7 +526,7 @@ findObjectByKey(array, key, value) {
         if (!value) {
           return value
         }
-        const onlyNums = value.replace(/[^\d]/g, '')
+        const onlyNums = value.replace(/[^\d]/g, '').replace('\+1', '');
         if (!previousValue || value.length > previousValue.length) {
           // typing forward
           if (onlyNums.length === 3) {
@@ -537,7 +542,10 @@ findObjectByKey(array, key, value) {
         if (onlyNums.length <= 6) {
           return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3)
         }
-        return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3, 6) + '-' + onlyNums.slice(6, 10)
+        if (onlyNums.length <= 10) {
+          return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3, 6) + '-' + onlyNums.slice(6, 10)
+        }
+        return onlyNums.slice(0, 1) + '-' + onlyNums.slice(1, 4) + '-' + onlyNums.slice(4, 7) + '-' + onlyNums.slice(7, 11)
       }
 
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
@@ -692,7 +700,7 @@ findObjectByKey(array, key, value) {
 
                   <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true' bufferClassName='top-buffer-small'/>
                   <Field name='email' type='text' component={BasicField} label='Email' disabled='true'/>
-                  <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile' normalize={normalizePhone} disabled/>
+                  <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile' normalize={normalizePhone} disabled='true'/>
                   <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone' normalize={normalizePhone}/>
                   {/* <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' normalize={normalizePhone}/> */}
                   {/* <Field name='homePhoneNumber' type='text' component={BasicField} label='Home Phone' normalize={normalizePhone}/> */}
@@ -712,7 +720,7 @@ findObjectByKey(array, key, value) {
                         <div className="switch">
                           <Field className="switch-input" id="emailSwitch" type="checkbox" name="emailPref" component="input"/>
                           <label className="switch-paddle" htmlFor="emailSwitch">
-                            <span className="show-for-sr">Download Kittens</span>
+                            <span className="show-for-sr"></span>
                           </label>
                         </div>
                       </div>
@@ -728,12 +736,28 @@ findObjectByKey(array, key, value) {
                         <div className="switch">
                           <Field className="switch-input" id="pushSwitch" type="checkbox" name="pushPref" component="input"/>
                           <label className="switch-paddle" htmlFor="pushSwitch">
-                            <span className="show-for-sr">Download Kittens</span>
+                            <span className="show-for-sr"></span>
                           </label>
                         </div>
                       </div>
                     </div>
                   </div>
+                  {/* <div className="column top-buffer large-12">
+                    <div className="row">
+                      <div className="column">
+                        <span className="item-title">Slim View (default)</span>
+                        <p className="text-light">Use Slim View for Tasks in a List</p>
+                      </div>
+                      <div className="column shrink">
+                        <div className="switch">
+                          <Field className="switch-input" id="slimViewSwitch" type="checkbox" name="slimViewPref" component="input"/>
+                          <label className="switch-paddle" htmlFor="slimViewSwitch">
+                            <span className="show-for-sr"></span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div> */}
 
                   {/* <!-- Save --> */}
                   <div className="column large-12 text-center top-buffer">
@@ -813,6 +837,7 @@ function mapStateToProps(state) {
     homePhoneNumber: convertToValidPhoneNumber(state.userState.userProfile.homePhoneNumber),
     email: state.userState.userProfile.email,
     organizationName: state.userState.userProfile.organizationName,
+    defaultSlimView: state.userState.userProfile.defaultSlimView,
     emailPref: state.userState.userNotificationPrefs.email,
     pushPref: state.userState.userNotificationPrefs.push,
     userProfile:state.userState.userProfile,
@@ -846,6 +871,7 @@ function mapStateToProps(state) {
 function convertToValidPhoneNumber(text) {
   if(text != undefined){
     var result = [];
+    text = text.replace('\+1', '');
     text = text.replace(/^\d{2}-?\d{3}-?\d{3}-?\d{3}$/, "");
     while (text.length >= 6){
         result.push(text.substring(0, 3));
@@ -911,6 +937,7 @@ function validate(values){
 }
 
 function validatePhoneNumbers(phoneNumber){
+  phoneNumber = phoneNumber.replace('\+1', '');
   var match = phoneNumber.match(/^\d{3}-\d{3}-\d{4}$/gm);
   if(match = null){
     return false;
