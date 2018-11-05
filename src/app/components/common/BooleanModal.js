@@ -2,9 +2,9 @@ import React from 'react'
 import $ from 'jquery'
 class BooleanModal extends React.Component {
 
-  closeModal(){
-    $('a.close-reveal-modal').trigger('click');
-  }
+  // closeModal(){
+  //   $('a.close-reveal-modal').trigger('click');
+  // }
 
 	componentWillUnmount(){
     removeRevealComponent("#" + this.props.uniqueModalId)
@@ -15,6 +15,10 @@ class BooleanModal extends React.Component {
 
   componentWillUpdate (nextProps) {
     console.log('BooleanModal componentWillUpdate: ')
+  }
+
+  closeDialog () {
+    closePopup("#" + this.props.uniqueModalId)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -34,7 +38,9 @@ class BooleanModal extends React.Component {
             onClick={(e) => this.props.handleConfirmation(this.props.handleConfirmationArgs)}
             className="button medium confirm">{this.props.confirmBtnTxt}
           </span>
-          <a data-close="" className="button medium cancel">Cancel</a>
+          <a data-close="" 
+          onClick={(e) => this.closeDialog()}
+          className="button medium cancel">Cancel</a>
         </div>
         <button className="close-button" data-close="" aria-label="Close modal" type="button">
           <span aria-hidden="true">&times;</span>
