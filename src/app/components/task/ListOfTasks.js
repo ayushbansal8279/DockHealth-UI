@@ -166,7 +166,7 @@ class ListOfTasks extends BaseComponent {
 					if(subtask.status == 'INCOMPLETE'){
 						// alert('Incomplete Subtask')
 						allSubTasksComplete = false
-						$("#complete-task").trigger('click');
+						$("#open-complete-task-confirmation-"+task.taskId).trigger('click');
 					}
 				})
 				if(allSubTasksComplete){
@@ -179,7 +179,6 @@ class ListOfTasks extends BaseComponent {
   	}
 
 		confirmCompleteTask(task){
-			var boo = this.props
 			this.props.markComplete(task, task.status, this.props.taskStatusGroup)
 		}
 
@@ -416,7 +415,7 @@ class ListOfTasks extends BaseComponent {
 			        </div>
 							{/* Triggers confirmation modal to pop up if task has subtasks */}
 							{/* <span id="complete-task" data-open={"complete-task-"+task.taskId} className="hide">Complete</span> */}
-							<span id="complete-task" onClick={(e) => this.openCompleteConfirmationModal(task.taskId)} className="hide">Complete</span>
+							<span id={"open-complete-task-confirmation-"+task.taskId} onClick={(e) => this.openCompleteConfirmationModal(task.taskId)} className="hide">Complete</span>
 			      </div>
 						{type == 'subtask' &&
 							<div className="columns shrink">
