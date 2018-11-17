@@ -10,6 +10,7 @@ import * as TaskActions from '../../actions/task-actions';
 import {ReactDOM, findDOMNode, getDOMNode} from 'react-dom'
 import $ from 'jquery'
 import AddPatientModal from '../common/AddPatientModal'
+import BooleanModal from '../common/BooleanModal'
 import BaseComponent from '../BaseComponent'
 
 class AddTask extends BaseComponent {
@@ -22,11 +23,13 @@ class AddTask extends BaseComponent {
 				subtasks:[],
 	      currentSubtaskIndex:"",
 				currentSubtask: undefined,
-				isSubtask:false
+				isSubtask:false,
+				form:undefined
 		}
   		//this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
 		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
+		this.handleTaskRefiling = this.handleTaskRefiling.bind(this)
 		this.unmount = this.unmount.bind(this)
 	}
 
@@ -113,6 +116,7 @@ class AddTask extends BaseComponent {
 	}
 
 	submit = (form) => {
+		this.setState({form: undefined});
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
 		// console.log(this.state.subtasks)
@@ -155,7 +159,10 @@ class AddTask extends BaseComponent {
 		if($("#filed-in-taskList").val()){
 			if(this.props.title == "Inbox"
 				|| this.props.task && this.props.task.taskList && $("#filed-in-taskList").val() != this.props.task.taskList.listName){
-				form.refiled = true;
+					this.setState({form: form});
+					this.openRefileConfirmationModal()
+					return;
+					//form.refiled = true;
 			}
 			// if(!confirmedListChange){
 			// 	if(this.props.task.taskList && $("#filed-in-taskList").val() != this.props.task.taskList.listName){
@@ -167,9 +174,18 @@ class AddTask extends BaseComponent {
 		}
 		//debugger;
 		this.props.taskActions.saveTask(form);
-
-		// print the form values to the console
 		console.log(form)
+		toggleTaskForm()
+	}
+
+	openRefileConfirmationModal = () => {
+		openPopup("#refile-task")
+	}
+
+	handleTaskRefiling(task){
+		this.state.form.refiled = true;
+		this.props.taskActions.saveTask(this.state.form);
+		console.log(this.state.form)
 		toggleTaskForm()
 	}
 
@@ -229,6 +245,12 @@ class AddTask extends BaseComponent {
 								isSubtask={this.isSubtask}
 							/>
 							<AddPatientModal isSubtask={this.state.isSubtask}/>
+							<BooleanModal
+								message="Are you sure you want to move this task to another list?"
+								confirmBtnTxt="Move"
+								uniqueModalId={"refile-task"}
+								handleConfirmation={this.handleTaskRefiling}
+							/>
 							</div>
 						</div>
 					</div>
