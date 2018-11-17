@@ -11,7 +11,6 @@ import * as userApi from '../../api/user-api'
 import { findDOMNode } from 'react-dom'
 import $ from 'jquery'
 import AssignToModal from '../common/AssignToModal'
-import ConfirmDelete from '../common/ConfirmDelete'
 import BooleanModal from '../common/BooleanModal'
 import MemberInitials from '../common/MemberInitials'
 import {change} from 'redux-form'
@@ -99,11 +98,13 @@ class ListOfTasks extends BaseComponent {
 					removeRevealComponent("#edit-assign-to-" + task.taskId)
 					removeRevealComponent("#delete-task-" + task.taskId)
 					removeRevealComponent("#complete-task-" + task.taskId)
+					// removeRevealComponent("#refile-task-" + task.taskId)
 					if(task.subtasks){
 						task.subtasks.map((subtask, index) => {
 							removeRevealComponent("#edit-assign-to-" + subtask.taskId)
 							removeRevealComponent("#delete-task-" + subtask.taskId)
 							removeRevealComponent("#complete-task-" + subtask.taskId)
+							// removeRevealComponent("#refile-task-" + subtask.taskId)
 						})
 					}
 				})
