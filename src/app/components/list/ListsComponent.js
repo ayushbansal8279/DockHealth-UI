@@ -22,6 +22,7 @@ class ListsComponent extends BaseComponent{
       this.props.taskLists.map((taskList, index) => {
         removeRevealComponent("#delete-task-" + taskList.taskListId)
         removeRevealComponent("#leave-task-" + taskList.taskListId)
+        // removeRevealComponent("#refile-task-" + taskList.taskListId)
       })
     }
   }
