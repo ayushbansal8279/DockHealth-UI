@@ -172,7 +172,7 @@ class AddTaskForm extends BaseComponent {
 
   return (
 
-    <form className="inline-label" onSubmit={this.props.handleSubmit}>
+    <form className="inline-label" onSubmit={this.props.handleSubmit} autoComplete="off" >
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
           {/* <h5 className="section-title">{this.props.sectionTitle}</h5> */}
@@ -180,8 +180,7 @@ class AddTaskForm extends BaseComponent {
         </div>
 
         {/* Description */}
-        <Field name="description" type="text" label="Description" component={BasicFieldTaskDescription} callback={this.changeTaskPriority} priority={this.state.priority} 
-        autocomplete="nope"/>
+        <Field name="description" type="text" label="Description" component={BasicFieldTaskDescription} callback={this.changeTaskPriority} priority={this.state.priority} autoComplete="off"/>
         {/* <Field name='description' type='text' component={testField} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/> */}
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
@@ -205,7 +204,7 @@ class AddTaskForm extends BaseComponent {
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
             <div className={this.props.title != "Inbox"?"input-wrapper form-floating-label has-value":"input-wrapper form-floating-label"}>
-              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options"/>
+              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options" autoComplete="off"/>
               <label>File in</label>
             </div>
             <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
@@ -226,6 +225,31 @@ class AddTaskForm extends BaseComponent {
             </div>
           </div>
         {/* } */}
+
+          {/* <div className="column large-12 input-group input-dropdown">
+            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span> */}
+            {/* <div className="row"> */}
+            {/* <div>
+              <label htmlFor="progressStatus">Progress Status</label>
+            </div> */}
+            {/* <div className={this.props.title != "Inbox"?"input-wrapper form-floating-label has-value":"input-wrapper form-floating-label"}>
+              <div className="input-group-wrapper column large-12 ">
+                <div className="input-group"> */}
+                  {/* <div className='input-wrapper form-floating-label has-value '>
+                    <select name="progressStatus">
+                      <option>Select Progress Status</option>
+                      <option>Not Started</option>
+                      <option>In Progress</option>
+                      <option>Paused</option>
+                      <option>Waiting</option>
+                    </select>
+                  </div> */}
+                  {/* <label htmlFor="progressStatus">Progress Status</label> */}
+                {/* </div>
+              </div>
+            </div> */}
+            {/* </div> */}
+          {/* </div> */}
 
         {/* Example of error field */}
         {/* <div className="input-group-wrapper has-error column large-12">
