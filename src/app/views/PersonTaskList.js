@@ -22,6 +22,7 @@ class PersonTaskList extends BaseComponentWithFoundationUpdate {
 							'PageName': 'PersonTaskList'
       });
       var personId = this.props.routeParams.personId;
+      this.props.taskActions.loading()
       //var memberName = this.props.routeParams.memberName;
       this.props.taskActions.getTasksAssignedToSpecificUser(personId, undefined, undefined, undefined, "INCOMPLETE")
     }
@@ -90,7 +91,23 @@ class PersonTaskList extends BaseComponentWithFoundationUpdate {
             <SortFilterTasks title="Person Tasks" getListTasks={this.getListTasks}/>
 
             <div className="row expanded collapse">
+            {this.props.isFetching ?
+                  <div className="sk-circle">
+                    <div className="sk-circle1 sk-child"></div>
+                    <div className="sk-circle2 sk-child"></div>
+                    <div className="sk-circle3 sk-child"></div>
+                    <div className="sk-circle4 sk-child"></div>
+                    <div className="sk-circle5 sk-child"></div>
+                    <div className="sk-circle6 sk-child"></div>
+                    <div className="sk-circle7 sk-child"></div>
+                    <div className="sk-circle8 sk-child"></div>
+                    <div className="sk-circle9 sk-child"></div>
+                    <div className="sk-circle10 sk-child"></div>
+                    <div className="sk-circle11 sk-child"></div>
+                    <div className="sk-circle12 sk-child"></div>
+                  </div>:
               <PersonTaskListContainer getCompletedTasks={this.getCompletedTasks}/>
+            }
             </div>
           </div>
         </div>
@@ -100,6 +117,7 @@ class PersonTaskList extends BaseComponentWithFoundationUpdate {
 
 function mapStateToProps(state){
   return{
+    isFetching: state.taskState.isFetching
   }
 }
 

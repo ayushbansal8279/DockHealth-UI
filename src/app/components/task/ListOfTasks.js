@@ -425,12 +425,21 @@ class ListOfTasks extends BaseComponent {
 						
 						}
 						{/* <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}> */}
-			      <div className="columns shrink" onClick={(e) => this.openAssignmentModal(task.taskId)}>
-							{task.assignedTo ?
-			         	<MemberInitials member={task.assignedTo}/> :
-								<span className="medium member-photo member-unassigned circle">?</span>
-							}
-			      </div>
+						{task.status == "INCOMPLETE"?
+							<div className="columns shrink" onClick={(e) => this.openAssignmentModal(task.taskId)}>
+								{task.assignedTo ?
+									<MemberInitials member={task.assignedTo}/> :
+									<span className="medium member-photo member-unassigned circle">?</span>
+								}
+							</div>
+							:
+							<div className="columns shrink">
+								{task.assignedTo ?
+									<MemberInitials member={task.assignedTo}/> :
+									<span className="medium member-photo member-unassigned circle">?</span>
+								}
+							</div>
+						}
 
 			      <div className="columns shrink align-right">
 							<span title={task.priority == 'HIGH' ? 'High Priority' : 'Priority'} >
