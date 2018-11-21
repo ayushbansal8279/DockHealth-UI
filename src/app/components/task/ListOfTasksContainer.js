@@ -18,7 +18,6 @@ class ListOfTasksContainer extends BaseComponent {
 						'PageName': 'ListOfTasks'
 		});
     if((!this.props.members || this.props.members.length==0)
-        && this.props.listName==""
         && this.props.taskListId){
       this.props.taskListActions.getMembersByTaskListId(this.props.taskListId, "ALL")
     }
