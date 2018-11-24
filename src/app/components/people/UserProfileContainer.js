@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux';
 import * as userApi from '../../api/user-api'
 import BaseComponent from '../BaseComponent'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
+import MaskedInput from '../common/MaskedInput'
 import MemberInitials from '../common/MemberInitials'
 
 class UserProfileContainer extends BaseComponent {
@@ -78,7 +79,7 @@ class UserProfileContainer extends BaseComponent {
         var specialty = userSpecialties[0];
         var subspecialty = [];
 
-        if(specialty.subSpecialties.length > 0){
+        if(specialty && specialty.subSpecialties.length > 0){
           subspecialty = specialty.subSpecialties[0]
         }
         this.setState({subspecialty: subspecialty})
@@ -526,26 +527,7 @@ findObjectByKey(array, key, value) {
         if (!value) {
           return value
         }
-        const onlyNums = value.replace(/[^\d]/g, '').replace('\+1', '');
-        if (!previousValue || value.length > previousValue.length) {
-          // typing forward
-          if (onlyNums.length === 3) {
-            return onlyNums + '-'
-          }
-          if (onlyNums.length === 6) {
-            return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3) + '-'
-          }
-        }
-        if (onlyNums.length <= 3) {
-          return onlyNums
-        }
-        if (onlyNums.length <= 6) {
-          return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3)
-        }
-        if (onlyNums.length <= 10) {
-          return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3, 6) + '-' + onlyNums.slice(6, 10)
-        }
-        return onlyNums.slice(0, 1) + '-' + onlyNums.slice(1, 4) + '-' + onlyNums.slice(4, 7) + '-' + onlyNums.slice(7, 11)
+        return value.slice(0, 3) + '-' + onlyNums.slice(3, 6) + '-' + onlyNums.slice(6, 10)
       }
 
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
@@ -701,7 +683,7 @@ findObjectByKey(array, key, value) {
                   <Field name='organizationName' type='text' component={BasicField} label='Organization' disabled='true' bufferClassName='top-buffer-small'/>
                   <Field name='email' type='text' component={BasicField} label='Email' disabled='true'/>
                   <Field name='accountPhoneNumber' type='text' component={BasicField} label='Mobile' normalize={normalizePhone} disabled='true'/>
-                  <Field name='workPhoneNumber' type='text' component={BasicField} label='Work Phone' normalize={normalizePhone}/>
+                  <Field name='workPhoneNumber' type='text' component={MaskedInput} label='Work Phone' mask={[ /[1-9]/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]} />
                   {/* <Field name='faxNumber' type='text' component={BasicField} label='Fax Number' normalize={normalizePhone}/> */}
                   {/* <Field name='homePhoneNumber' type='text' component={BasicField} label='Home Phone' normalize={normalizePhone}/> */}
 
@@ -936,17 +918,11 @@ function validate(values){
   return errors;
 }
 
-function validatePhoneNumbers(phoneNumber){
-  phoneNumber = phoneNumber.replace('\+1', '');
-  var match = phoneNumber.match(/^\d{3}-\d{3}-\d{4}$/gm);
-  if(match = null){
+function validatePhoneNumbers(maskedNumber){  
+  let rawPhoneNumber = maskedNumber.replace(/\D/g, '');
+
+  if(rawPhoneNumber.length != 10) {
     return false;
-  }
-  else
-  {
-    if(phoneNumber.length != 12){
-      return false;
-    }
   }
   return true;
 }
