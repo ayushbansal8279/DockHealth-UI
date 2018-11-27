@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { SubmissionError, Field, reduxForm, change } from 'redux-form'
 import Moment from 'react-moment'
 import * as PatientActions from '../../actions/patient-actions'
@@ -8,10 +8,6 @@ import { Link, browserHistory, hashHistory } from 'react-router'
 import {bindActionCreators} from 'redux';
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
-
-const { DOM: { input, select, textarea } } = React
-
-
 
 class FormPatient extends BaseComponent {
 
