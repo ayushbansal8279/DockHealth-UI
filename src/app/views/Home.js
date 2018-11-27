@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import Moment from 'react-moment'
@@ -134,7 +134,7 @@ class Home extends BaseComponentWithFoundationUpdate {
         $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
     });
 
-    if(user.defaultSlimView){
+    if(this.props.user.defaultSlimView){
       $('.task-item-wrapper').toggleClass('slim');
     }
 

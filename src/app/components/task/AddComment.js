@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import * as TaskActions from '../../actions/task-actions'
 import {bindActionCreators} from 'redux'
 import $ from 'jquery'
-const  { DOM: { input, select, textarea } } = React
 import {mobileAnalyticsClient} from '../../api/analytics-api'
 import BaseComponent from '../BaseComponent'
 import MemberInitials from '../common/MemberInitials'
