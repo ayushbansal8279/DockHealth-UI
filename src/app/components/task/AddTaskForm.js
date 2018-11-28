@@ -309,6 +309,16 @@ class AddTaskForm extends BaseComponent {
             dateFormat="iii MMM do YYYY @ H:mm a"
           />
 
+          <Field
+            id="reminder-date"
+            name="reminderDate"
+            type="text"
+            component={DatePickerInput}
+            label="Reminder"
+            xlinkHref="#icon-calendar"
+            dateFormat="iii MMM do YYYY @ H:mm a"
+          />
+
           <FieldArray name="subtasks" component={renderSubtaskField} />
 
           <div className="row expanded">
@@ -386,9 +396,9 @@ const mapStateToProps = (store) => {
       initialTaskFormValues.dueDate = new Date(editTask.dueDate);
       initialTaskFormValues.originalDueDate = editTask.dueDate;
     }
-    if (editTask.reminderDt) {
-      initialTaskFormValues.reminderDt = formatDateAndTime(editTask.reminderDt);
-      initialTaskFormValues.originalReminderDt = editTask.reminderDt;
+    if (editTask.reminderDate) {
+      initialTaskFormValues.reminderDate = formatDateAndTime(editTask.reminderDt);
+      initialTaskFormValues.originalReminderDate = editTask.reminderDt;
     }
     if (editTask.assignedTo) {
       initialTaskFormValues.assignedTo = `${editTask.assignedTo.firstName} ${
