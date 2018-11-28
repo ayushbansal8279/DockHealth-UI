@@ -1,17 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { Field, reduxForm, formValueSelector, FieldArray, arrayPush, actions, reset, initialize, destroy, change, touch } from 'redux-form'
+import { Field, reduxForm, formValueSelector, FieldArray, reset, initialize, destroy, change, touch } from 'redux-form'
 import BaseComponent from '../BaseComponent'
 import BasicField from '../common/BasicField';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
-import AddSubtaskField from './AddSubtaskField';
 import * as TaskListActions from '../../actions/tasklist-actions'
 import $ from 'jquery'
 import {mobileAnalyticsClient} from '../../api/analytics-api'
-import Moment from 'react-moment'
+import DatePickerInput from '../common/DatePickerInput'
 
-//let AddTaskForm = props => {
 class AddTaskForm extends BaseComponent {
   constructor(props, container) {
 		super(props)
@@ -19,13 +17,8 @@ class AddTaskForm extends BaseComponent {
       priority: undefined,
       listName: ""
     }
-		this.container = container
 		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
-
-    // const { handleSubmit, taskLists, task} = props
 	}
-
-
 
   componentDidMount () {
     super.componentDidMount()
@@ -33,7 +26,6 @@ class AddTaskForm extends BaseComponent {
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       'PageName': 'AddTask'
     });
-
   }
 
   componentWillUpdate (nextProps) {
@@ -43,25 +35,11 @@ class AddTaskForm extends BaseComponent {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    console.log('AddTaskForm componentDidUpdate')
     renderFoundationComponentsJquery();
 
     if(this.props.currentTask && this.props.currentTask.taskList && this.props.currentTask.taskList.listName!=""){
         $("#filed-in-taskList").parent().addClass('has-value');
     }
-  }
-
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if ((nextProps.task && this.props.currentTask && this.props.currentTask.taskId != nextProps.task.taskId)
-  //     || !this.props.taskListId
-  //     || (this.props.taskListId != nextProps.taskListId)){
-  //     return true
-  //   }
-  //   return false
-	// }
-
-  componentWillReceiveProps(nextProps){
   }
 
   initializeSubtaskForm = (index) => {
@@ -86,7 +64,6 @@ class AddTaskForm extends BaseComponent {
       task.originalReminderDt = task.reminderDt;
     }
     this.props.formActions.initialize('addSubtaskForm', task, true)
-    // touch(form:String, ...fields:String)
     var patient = this.props.currentSubtasks[index]
   }
 
@@ -102,34 +79,15 @@ class AddTaskForm extends BaseComponent {
       this.props.formActions.change("addSubtaskForm", "patient", patientName)
       this.props.formActions.change("addSubtaskForm", "patientId", currTask.patient.patientId)
     }
-    // this.props.formActions.reset('addSubtaskForm')
-  }
-
-  updateDueDate = (e) => {
-    // alert("working")
-  }
-
-  formatDate = () => {
-    // alert("format date");
   }
 
   handleTaskListSelection(event, taskList) {
     this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL')
-    // $("#filed-in-taskList").val('taskList-'+event.target.value);
     this.setState({listName: taskList.listName})
     $("#filed-in-taskList").val(taskList.listName)
     $("#filed-in-taskList").parent().addClass("has-value");
     $("#add-task-file-in-options").removeClass("is-open");
-
-    //check if new task list is different
-    // if(this.props.currentTask.taskList && taskList.listName != this.props.currentTask.taskList.listName){
-    //   console.log("List changed for the task")
-    //   openPopup("#change-task-list-"+this.props.currentTask.taskId);
-    // }
   }
-
-	handleConfirmTaskUpdate = () => {
-	}
 
 	cancelEditTask = (event) => {
     toggleTaskForm()
@@ -148,26 +106,7 @@ class AddTaskForm extends BaseComponent {
             </div>
           </div>
         )}
-        {/* <button type="button" onClick={() => fields.push({})}>Add Subtask</button> */}
       </span>
-    )
-    const renderDescriptionField = ({ input, label, type, meta: { touched, error, warning } }) => (
-      <div className={"input-group-wrapper column large-12 " + (touched && error ? 'has-error' : ' ')}>
-        {/* <h5>{touched ? "touched" : "untouched"}</h5> */}
-        <div className="input-group icon-right icon-left">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-pencil"></use></svg></span>
-          <div className={"input-wrapper form-floating-label " + (input.value && "has-value")}>
-            <input {...input} className="input-group-field " type="text"/>
-            <label>Task</label>
-          </div>
-          <span onClick={() => this.changeTaskPriority()} className="input-group-label"><svg className={"icon flag medium " + (this.state.priority ? "" : "no-flag")}><use xlinkHref="#icon-flag"></use></svg></span>
-        </div>
-        {touched && error &&
-          <span className="form-error">
-            {error}
-          </span>
-        }
-      </div>
     )
 
   return (
@@ -175,20 +114,17 @@ class AddTaskForm extends BaseComponent {
     <form className="inline-label" onSubmit={this.props.handleSubmit} autoComplete="off" >
       <div className="main-task-wrapper">
         <div className="column large-12 text-center">
-          {/* <h5 className="section-title">{this.props.sectionTitle}</h5> */}
           <h5 className="section-title">{(this.props.task && this.props.task.description && this.props.task.description!="")?"Edit a Task":"Add a Task"}</h5>
         </div>
 
         {/* Description */}
         <Field name="description" type="text" label="Description" component={BasicFieldTaskDescription} callback={this.changeTaskPriority} priority={this.state.priority} autoComplete="off"/>
-        {/* <Field name='description' type='text' component={testField} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true"/> */}
         <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
         {/* Comment */}
         {(this.props.task && this.props.task.description && this.props.task.description!="") ? "" : 
           <Field name='comment' type='text' component={BasicField} label='Comment' xlinkHref="#icon-pencil" isTaskDescription="true"/>
         }
-        {/* <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/> */}
 
         {/* ADD PATIENT */}
         {(!this.props.currentTask || !this.props.currentTask.parentTaskId) &&
@@ -200,7 +136,6 @@ class AddTaskForm extends BaseComponent {
 
         {/* FILE IN */}
         {/* Show only from inbox. Tasks can only be assigned to list from 'inbox' */}
-        {/* {this.props.title == "Inbox" && */}
           <div className="column large-12 input-group input-dropdown">
             <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
             <div className={this.props.title != "Inbox"?"input-wrapper form-floating-label has-value":"input-wrapper form-floating-label"}>
@@ -224,46 +159,6 @@ class AddTaskForm extends BaseComponent {
               </fieldset>
             </div>
           </div>
-        {/* } */}
-
-          {/* <div className="column large-12 input-group input-dropdown">
-            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span> */}
-            {/* <div className="row"> */}
-            {/* <div>
-              <label htmlFor="progressStatus">Progress Status</label>
-            </div> */}
-            {/* <div className={this.props.title != "Inbox"?"input-wrapper form-floating-label has-value":"input-wrapper form-floating-label"}>
-              <div className="input-group-wrapper column large-12 ">
-                <div className="input-group"> */}
-                  {/* <div className='input-wrapper form-floating-label has-value '>
-                    <select name="progressStatus">
-                      <option>Select Progress Status</option>
-                      <option>Not Started</option>
-                      <option>In Progress</option>
-                      <option>Paused</option>
-                      <option>Waiting</option>
-                    </select>
-                  </div> */}
-                  {/* <label htmlFor="progressStatus">Progress Status</label> */}
-                {/* </div>
-              </div>
-            </div> */}
-            {/* </div> */}
-          {/* </div> */}
-
-        {/* Example of error field */}
-        {/* <div className="input-group-wrapper has-error column large-12">
-          <div className="large-12 input-group">
-            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-patient"></use></svg></span>
-            <div className="input-wrapper form-floating-label">
-              <input id="add-patient" className="add-patient input-group-field" type="text"/>
-              <label>Add Patient</label>
-            </div>
-          </div>
-          <span className="form-error">
-            Please enter a task title.
-          </span>
-        </div> */}
 
         {/* ASSIGNED TO */}
         {/* Hide 'assignedTo' if user is adding a task to the 'inbox'. Tasks can only be assigned from lists */}
@@ -275,24 +170,17 @@ class AddTaskForm extends BaseComponent {
           :
           <span></span>
         }
-
-        <Field id="due-date" name='dueDate' type='text' component={BasicField} label='Due date' xlinkHref="#icon-calendar" extraClassName="duedatepickdate"/>
-        {/* <Field id="reminder-date" name='reminderDt' type='text' component={BasicField} label='Reminder date' xlinkHref="#icon-calendar" extraClassName="duedatepickdate"/> */}
+        <Field 
+          id="due-date" 
+          name='dueDate' 
+          type='text' 
+          component={DatePickerInput} 
+          label='Due date'
+          xlinkHref="#icon-calendar"
+          dateFormat='iii MMM do YYYY @ H:mm a'
+        />
 
         <FieldArray name="subtasks" component={renderSubtaskField}/>
-
-        {/* {this.props.subtasks.map((subtask, index) => {
-          return(<AddSubtaskField subtask={subtask} index={index} setCurrentSubtask={this.setCurrentSubtask}/>)
-        })} */}
-
-        {/* SUBTASKS */}
-        {/* <div className="column large-12 input-group toggle-add-subtask has-value">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
-          <div className="input-wrapper form-floating-label">
-            <input className="input-group-field" type="text" value="This is a second subtask."/>
-            <label>Subtask #2</label>
-          </div>
-        </div> */}
 
         <div className="row expanded">
           {!this.props.currentTask || !this.props.currentTask.parentTaskId ?
@@ -311,13 +199,10 @@ class AddTaskForm extends BaseComponent {
             <button id="cancelTaskButton" type="button" className="button medium" onClick={(e) => this.cancelEditTask(e)}>Cancel</button>
           </div>
         </div>
-      </div>{/*main-task-wrapper*/}
-      {/* {this.props.initialValues.subtasks ? <h1>EDITING</h1> : <h1>Not editing</h1>} */}
+      </div>
     </form>
-
   )
   }
-
 }
 
 function validate(values){
@@ -329,7 +214,6 @@ function validate(values){
 }
 
 AddTaskForm = reduxForm({
-  // a unique name for the form
   form: 'addTaskForm',
   enableReinitialize : true,
   validate
@@ -344,9 +228,7 @@ const mapStateToProps = function(store) {
     initialTaskFormValues.taskList = store.taskListState.currentList.listName
     initialTaskFormValues.taskListId = store.taskListState.currentList.taskListId
   }
-  // console.log("current list")
-  // console.log(store.taskListState.currentList)
-	if(store.taskState.task){
+	if(store.taskState.task) {
 		var editTask = store.taskState.task;
       initialTaskFormValues.description = editTask.description;
   		initialTaskFormValues.taskId = editTask.taskId;
@@ -355,7 +237,7 @@ const mapStateToProps = function(store) {
 			initialTaskFormValues.patientId = editTask.patient.patientId;
 		}
     if(editTask.dueDate){
-      initialTaskFormValues.dueDate = formatDateAndTime(editTask.dueDate);
+      initialTaskFormValues.dueDate = new Date(editTask.dueDate);
       initialTaskFormValues.originalDueDate = editTask.dueDate;
     }
     if(editTask.reminderDt){
@@ -379,8 +261,6 @@ const mapStateToProps = function(store) {
         initialTaskFormValues.priority = false;
       }
     }
-
-		//TODO - handle assigned tasklist
 	}
   return {
 		initialValues: initialTaskFormValues,
@@ -392,8 +272,8 @@ const mapStateToProps = function(store) {
   }
 };
 
-const mapDispatchToProps = function(dispatch){
-  return{
+const mapDispatchToProps = function(dispatch) {
+  return {
     taskListActions: bindActionCreators(TaskListActions, dispatch),
     formActions: bindActionCreators({reset, initialize, destroy, change, touch}, dispatch)
   }

@@ -574,3 +574,9 @@ pre {
 .icon.orange {
   fill: #fc7c05;
 }
+
+.react-datepicker-wrapper, 
+.react-datepicker-wrapper  .react-datepicker__input-container,
+.react-datepicker-wrapper  .react-datepicker__input-container input {
+  width: 100%;
+}

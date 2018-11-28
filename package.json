@@ -29,6 +29,7 @@
     "prop-types": "^15.5.8",
     "react": "^16.6.3",
     "react-autosuggest": "^9.3.1",
+    "react-datepicker": "^2.0.0",
     "react-dom": "^16.6.3",
     "react-moment": "^0.2.2",
     "react-mousetrap": "^0.1.1",

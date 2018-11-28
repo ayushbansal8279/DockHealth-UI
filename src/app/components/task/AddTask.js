@@ -26,32 +26,18 @@ class AddTask extends BaseComponent {
 				isSubtask:false,
 				form:undefined
 		}
-  		//this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this)
 		this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this)
 		this.handleTaskRefiling = this.handleTaskRefiling.bind(this)
 		this.unmount = this.unmount.bind(this)
 	}
 
-	componentDidMount () {
-  	console.log("mounted AddTask component")
-		//this.props.peopleActions.findAllUsersByOrganizationId();
-	}
-
-	componentDidUpdate () {
-		console.log('AddTask componentDidUpdate')
-	}
-
 	componentWillUpdate (nextProps) {
-		console.log('AddTask componentWillUpdate: '+nextProps)
-	//if(this.props.patients && this.props.patients.length == 0 && nextProps.patients.length > 0){
 		enableAutoCompleteForPatients(nextProps.patients);
 		enableAutoCompleteForSubtaskPatients(nextProps.patients);
-	//}
-	// if(this.props.members && this.props.members.length == 0 && nextProps.members.length > 0){
+
 		enableAutoCompleteForAssignedTo(nextProps.activeListMembers);
 		enableAutoCompleteForSubtaskAssignedTo(nextProps.activeListMembers);
-	// }
 	}
 
 	unmount() {
@@ -63,22 +49,6 @@ class AddTask extends BaseComponent {
   handleTaskDetailsChange(event) {
 		this.setState({value: event.target.value});
 	}
-
-	componentWillUnmount(){
-		// alert("unmounting")
-	}
-
-  // shouldComponentUpdate(nextProps, nextState) {
-	// 	if((nextProps.task && this.props.task && this.props.task.taskId != nextProps.task.taskId)
-	// 		|| (this.props.taskListId != nextProps.taskListId)
-	// 		|| (this.props.patients != nextProps.patients)
-	// 		|| (this.props.activeListMembers != nextProps.activeListMembers)
-	// 		|| (this.state.value != nextState.value)
-	// 		|| (this.state.assignedToId != nextState.assignedToId)){
-  //     return true
-  //   }
-  //   return false
-	// }
 	
 	addSubtaskToState = (subtask) => {
 		this.setState({subtasks:this.state.subtasks.concat(subtask)})
@@ -86,42 +56,25 @@ class AddTask extends BaseComponent {
 
 	setSubtasks = (subtasks) => {
 		this.setState({subtasks:subtasks})
-		// alert(subtasks)
 	}
 
 	clearSubtasks = () => {
 		this.setState({subtasks:[]})
-		// alert(subtasks)
 	}
 
 	isSubtask = (boolean) => {
-		//console.log(boolean)
 		this.setState({isSubtask:boolean})
 	}
 
-/*
-	handleSubmit () {
-		if(this.props.taskListId != "inbox"){
-			this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId, taskListId: this.props.taskListId, taskListId: this.props.taskListId})
-		}else{
-			this.props.addTask({description: this.state.value, assignedToId: this.state.assignedToId})
-		}
-		this.setState({value: ''})
-		//closeAddTask(); //JS function
-	}
-*/
 	handleAddMemberToTask(memberId){
 		this.state.assignedToId = memberId
-		// alert("clicked:" + this.state.memberId);
 	}
 
 	submit = (form) => {
 		this.setState({form: undefined});
 		//TODO - manually have to get the values since react-form doesn't pick up hidden values
 		this.props.formActions.reset('addTaskForm')
-		// console.log(this.state.subtasks)
-		// form.subtasks = this.state.subtasks
-		console.log(form)
+
 
 		if(form.patient != ""){
 			form.patientId = $("#add-patient-id").val();
@@ -162,19 +115,9 @@ class AddTask extends BaseComponent {
 					this.setState({form: form});
 					this.openRefileConfirmationModal()
 					return;
-					//form.refiled = true;
 			}
-			// if(!confirmedListChange){
-			// 	if(this.props.task.taskList && $("#filed-in-taskList").val() != this.props.task.taskList.listName){
-			// 		console.log("List changed for the task")
-			// 		$("#change-task-list-"+this.props.task.taskId).toggle();
-			// 		return;
-			// 	}
-			// }
 		}
-		//debugger;
 		this.props.taskActions.saveTask(form);
-		console.log(form)
 		toggleTaskForm()
 	}
 
@@ -185,7 +128,6 @@ class AddTask extends BaseComponent {
 	handleTaskRefiling(task){
 		this.state.form.refiled = true;
 		this.props.taskActions.saveTask(this.state.form);
-		console.log(this.state.form)
 		toggleTaskForm()
 	}
 
@@ -194,10 +136,6 @@ class AddTask extends BaseComponent {
 		if(index !== ""){
 			subtaskValues.taskId = this.props.currentSubtasks[index].taskId
 			this.props.formActions.change('addTaskForm', `subtasks[${index}]`, subtaskValues)
-			// this.props.formActions.subtasks[index] = subtaskValues
-			// this.props.formActions.arrayRemove('addTaskForm', 'subtasks', index)
-			// this.props.formActions.arrayInsert('addTaskForm', 'subtasks', index, subtaskValues)
-			// var currentSubtasks = this.props.currentSubtasks
 		}else{
 			subtaskValues.taskId = ""
 			this.props.formActions.arrayPush('addTaskForm', 'subtasks', subtaskValues)
@@ -232,10 +170,7 @@ class AddTask extends BaseComponent {
 								isSubtask={this.isSubtask}
 							/>
 							<AddSubtaskForm
-								// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
 								onSubmit={this.submitSubtask}
-								// submitSubtask={this.submitSubtask}
-								// addSubtask={this.addSubtask}
 								addSubtaskValues={this.addSubtaskValues}
 								currentSubtasks={this.props.currentSubtasks}
 								currentSubtaskIndex={this.state.currentSubtaskIndex}
@@ -254,43 +189,6 @@ class AddTask extends BaseComponent {
 							</div>
 						</div>
 					</div>
-					{/* <div className="reveal" id="add-form-popup" data-reveal="">
-						<div className="task-item add-form row expanded"> 
-							<div className="column top-buffer large-12">
-							<AddTaskForm
-								sectionTitle="Edit a Task"
-								onSubmit={this.submit}
-								taskLists={this.props.taskLists}
-								task={this.props.task}
-								title={this.props.title}
-								taskListId={this.props.taskListId}
-								initialValues={"taskListId:"+this.props.taskListId}
-								subtasks={this.state.subtasks}
-								addSubtaskToState={this.addSubtaskToState}
-								setSubtasks={this.setSubtasks}
-								clearSubtasks={this.clearSubtasks}
-								currentSubtaskAndIndexToState={this.currentSubtaskAndIndexToState}
-								isEditing={this.props.isEditing}
-								isSubtask={this.isSubtask}
-							/>
-							<AddSubtaskForm
-								// initialValues={this.props.currentSubtasks[this.state.currentSubtaskIndex]}
-								onSubmit={this.submitSubtask}
-								// submitSubtask={this.submitSubtask}
-								// addSubtask={this.addSubtask}
-								addSubtaskValues={this.addSubtaskValues}
-								currentSubtasks={this.props.currentSubtasks}
-								currentSubtaskIndex={this.state.currentSubtaskIndex}
-								title={this.props.title}
-								currentTask={this.props.task}
-								currentSubtask={this.state.currentSubtask}
-								isSubtask={this.isSubtask}
-							/>
-							<AddPatientModal isSubtask={this.state.isSubtask}/>
-							</div>
-						</div>
-					</div> */}
-					{/* <TaskListMembersDropdownListContainer getSelectedMemberId={this.handleAddMemberToTask}/> */}
 				</div>
 
     	)
@@ -308,8 +206,7 @@ const mapStateToProps = function(store) {
 		task: store.taskState.task,
 		currentSubtasks: selector(store, 'subtasks'),
     activeListMembers: store.taskListState.tasklistactivemembers
-		// user: store.userState.user
-  	}
+  }
 };
 
 function mapDispatchToProps(dispatch) {
@@ -320,5 +217,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-//export default AddTask
 export default connect(mapStateToProps, mapDispatchToProps)(AddTask);
