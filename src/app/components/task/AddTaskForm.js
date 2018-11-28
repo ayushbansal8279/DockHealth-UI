@@ -396,8 +396,8 @@ const mapStateToProps = (store) => {
       initialTaskFormValues.dueDate = new Date(editTask.dueDate);
       initialTaskFormValues.originalDueDate = editTask.dueDate;
     }
-    if (editTask.reminderDate) {
-      initialTaskFormValues.reminderDate = formatDateAndTime(editTask.reminderDt);
+    if (editTask.reminderDt) {
+      initialTaskFormValues.reminderDate = new Date(editTask.reminderDt);
       initialTaskFormValues.originalReminderDate = editTask.reminderDt;
     }
     if (editTask.assignedTo) {

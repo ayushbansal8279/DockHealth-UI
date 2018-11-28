@@ -89,19 +89,13 @@ class AddTask extends BaseComponent {
       payload.assignedToId = '';
     }
     if ($('#due-date').val() !== '') {
-      const d = unformatDateAndTime($('#due-date').val());
-      payload.dueDate = d;
+      payload.dueDate = unformatDateAndTime($('#due-date').val());
     } else {
       payload.dueDate = '';
     }
 
     if ($('#reminder-date').val() !== '') {
-      const d = new Date($('#reminder-date').val());
-      if (!isNaN(d.getTime())) {
-        payload.reminderDt = d;
-      } else {
-        payload.reminderDt = payload.originalReminderDt;
-      }
+      payload.reminderDt = unformatDateAndTime($('#reminder-date').val());
     } else {
       payload.reminderDt = '';
     }
