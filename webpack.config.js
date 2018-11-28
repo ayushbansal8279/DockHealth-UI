@@ -1,12 +1,12 @@
-var webpack = require('webpack');
-var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var dotenv = require('dotenv');
+const webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const dotenv = require('dotenv');
 
-var BUILD_DIR = path.resolve(__dirname, 'dist');
-var APP_DIR = path.resolve(__dirname, 'src/app');
+const BUILD_DIR = path.resolve(__dirname, 'dist');
+const APP_DIR = path.resolve(__dirname, 'src/app');
 
-dotenv.config()
+dotenv.config();
 const exposed = [
   'NODE_ENV',
   'AWS_REGION',
@@ -19,52 +19,52 @@ const exposed = [
   'AWS_MOBILEANALYTICS_APPID',
   'AWS_MOBILEANALYTICS_APPTITLE',
   'HEALTHCHECK_INTERVAL',
-  'BRANCH_IO_APP_LINK'
-]
-const exposedEnvironment = {}
-exposed.forEach(i => { exposedEnvironment[i] = JSON.stringify(process.env[i]) })
+  'BRANCH_IO_APP_LINK',
+];
+const exposedEnvironment = {};
+exposed.forEach((i) => {
+  exposedEnvironment[i] = JSON.stringify(process.env[i]);
+});
 
-var config = {
-  entry: ['babel-polyfill', APP_DIR + '/index.js'],
-  devtool: "source-map",
+const config = {
+  entry: ['babel-polyfill', `${APP_DIR}/index.js`],
+  devtool: 'source-map',
   output: {
     path: BUILD_DIR,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
-  module : {
+  module: {
     rules: [
       {
-        test : /\.jsx?/,
-        include : APP_DIR,
+        test: /\.jsx?/,
+        include: APP_DIR,
         exclude: /node_modules/,
-        loader : ["babel-loader"]
-      }
-    ,
+        loader: ['babel-loader'],
+      },
       {
-        test:   /\.css$/,
-        loader: "style-loader!css-loader"
-      }
-
-    ]
+        test: /\.css$/,
+        loader: 'style-loader!css-loader',
+      },
+    ],
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
-      debug: true
+      debug: true,
     }),
     new webpack.DefinePlugin({
-      'process.env': exposedEnvironment
+      'process.env': exposedEnvironment,
     }),
     new HtmlWebpackPlugin({
-      template: __dirname + '/src/index.html',
+      template: `${__dirname}/src/index.html`,
       filename: 'index.html',
       inject: 'body',
-      hash: true
-    })
+      hash: true,
+    }),
   ],
   devServer: {
     compress: false,
-    disableHostCheck: true
- } 
+    disableHostCheck: true,
+  },
 };
 
 module.exports = config;
