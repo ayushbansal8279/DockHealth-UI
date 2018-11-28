@@ -1,282 +1,450 @@
-import React from 'react'
+import React from 'react';
 import { connect } from 'react-redux';
-import {bindActionCreators} from 'redux';
-import { Field, reduxForm, formValueSelector, FieldArray, reset, initialize, destroy, change, touch } from 'redux-form'
-import BaseComponent from '../BaseComponent'
+import { bindActionCreators } from 'redux';
+import {
+  Field,
+  reduxForm,
+  formValueSelector,
+  FieldArray,
+  reset,
+  initialize,
+  destroy,
+  change,
+  touch,
+} from 'redux-form';
+import $ from 'jquery';
+import BaseComponent from '../BaseComponent';
 import BasicField from '../common/BasicField';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
-import * as TaskListActions from '../../actions/tasklist-actions'
-import $ from 'jquery'
-import {mobileAnalyticsClient} from '../../api/analytics-api'
-import DatePickerInput from '../common/DatePickerInput'
+import * as TaskListActions from '../../actions/tasklist-actions';
+import { mobileAnalyticsClient } from '../../api/analytics-api';
+import DatePickerInput from '../common/DatePickerInput';
 
 class AddTaskForm extends BaseComponent {
-  constructor(props, container) {
-		super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       priority: undefined,
-      listName: ""
-    }
-		this.handleTaskListSelection = this.handleTaskListSelection.bind(this)
-	}
+      listName: '',
+    };
+    this.handleTaskListSelection = this.handleTaskListSelection.bind(this);
+  }
 
-  componentDidMount () {
-    super.componentDidMount()
+  componentDidMount() {
+    super.componentDidMount();
 
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-      'PageName': 'AddTask'
+      PageName: 'AddTask',
     });
   }
 
-  componentWillUpdate (nextProps) {
-    if(nextProps.task && this.props.currentTask != nextProps.task){
-      this.setState({priority:(nextProps.task.priority == "HIGH" ? true : false)})
+  componentWillUpdate(nextProps) {
+    if (nextProps.task && this.props.currentTask !== nextProps.task) {
+      this.setState({ priority: nextProps.task.priority === 'HIGH' });
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate() {
     renderFoundationComponentsJquery();
 
-    if(this.props.currentTask && this.props.currentTask.taskList && this.props.currentTask.taskList.listName!=""){
-        $("#filed-in-taskList").parent().addClass('has-value');
+    if (
+      this.props.currentTask
+      && this.props.currentTask.taskList
+      && this.props.currentTask.taskList.listName !== ''
+    ) {
+      $('#filed-in-taskList')
+        .parent()
+        .addClass('has-value');
     }
   }
 
   initializeSubtaskForm = (index) => {
-    var task = this.props.currentSubtasks[index]
-    this.props.currentSubtaskAndIndexToState(index, task)
+    const task = this.props.currentSubtasks[index];
+    this.props.currentSubtaskAndIndexToState(index, task);
 
-    // Checks if task came from an object (task.patient.firstName) or has been edited (task.patient = full name)
-    if(task.patient && task.patient.firstName){
-      task.patient = task.patient.firstName + " " + task.patient.lastName
+    // Checks if task came from an object (task.patient.firstName)
+    // or has been edited (task.patient = full name)
+    if (task.patient && task.patient.firstName) {
+      task.patient = `${task.patient.firstName} ${task.patient.lastName}`;
     }
-    if(task.priority == "HIGH"){
-      task.priority = true
-    }else{
-      task.priority = false
+    if (task.priority === 'HIGH') {
+      task.priority = true;
+    } else {
+      task.priority = false;
     }
-    if(task.dueDate){
+    if (task.dueDate) {
       task.dueDate = formatDateAndTime(task.dueDate);
       task.originalDueDate = task.dueDate;
     }
-    if(task.reminderDt){
+    if (task.reminderDt) {
       task.reminderDt = formatDateAndTime(task.reminderDt);
       task.originalReminderDt = task.reminderDt;
     }
-    this.props.formActions.initialize('addSubtaskForm', task, true)
-    var patient = this.props.currentSubtasks[index]
-  }
+    this.props.formActions.initialize('addSubtaskForm', task, true);
+  };
 
   changeTaskPriority = () => {
-    var priority = !this.state.priority
-    this.setState({priority:priority})
-    this.props.formActions.change("addTaskForm", "priority", priority)
-  }
+    this.setState(
+      state => ({ priority: !state.priority }),
+      () => {
+        this.props.formActions.change('addTaskForm', 'priority', this.state.priority);
+      },
+    );
+  };
 
   resetSubtaskForm = (currTask) => {
-    if(currTask && currTask.patient){
-      var patientName = currTask.patient.firstName + " " + currTask.patient.lastName
-      this.props.formActions.change("addSubtaskForm", "patient", patientName)
-      this.props.formActions.change("addSubtaskForm", "patientId", currTask.patient.patientId)
+    if (currTask && currTask.patient) {
+      const patientName = `${currTask.patient.firstName} ${currTask.patient.lastName}`;
+      this.props.formActions.change('addSubtaskForm', 'patient', patientName);
+      this.props.formActions.change('addSubtaskForm', 'patientId', currTask.patient.patientId);
     }
-  }
+  };
 
   handleTaskListSelection(event, taskList) {
-    this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL')
-    this.setState({listName: taskList.listName})
-    $("#filed-in-taskList").val(taskList.listName)
-    $("#filed-in-taskList").parent().addClass("has-value");
-    $("#add-task-file-in-options").removeClass("is-open");
+    this.props.taskListActions.getMembersByTaskListId(event.target.value, 'ALL');
+    this.setState({ listName: taskList.listName });
+    $('#filed-in-taskList').val(taskList.listName);
+    $('#filed-in-taskList')
+      .parent()
+      .addClass('has-value');
+    $('#add-task-file-in-options').removeClass('is-open');
   }
 
-	cancelEditTask = (event) => {
-    toggleTaskForm()
+  cancelEditTask = (event) => {
+    toggleTaskForm();
     event.preventDefault();
-  }
-  
+  };
+
   render() {
-    const renderSubtaskField = ({ fields, meta: { error } }) => (
+    const renderSubtaskField = ({ fields }) => (
       <span>
-        {fields && fields.map((subtask, index) =>
-          <div key={index} onClick={() => this.initializeSubtaskForm(index)} className="column large-12 input-group toggle-add-subtask has-value">
-          <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-subtask"></use></svg></span>
-            <div className="input-wrapper form-floating-label">
-              <Field className="input-group-field" type="text" name={`${subtask}.description`} component="input"/>
-              <label>Subtask #{index + 1}</label>
+        {fields
+          && fields.map((subtask, index) => (
+            <div
+              key={subtask.id}
+              onClick={() => this.initializeSubtaskForm(index)}
+              className="column large-12 input-group toggle-add-subtask has-value"
+            >
+              <span className="input-group-label">
+                <svg className="icon">
+                  <use xlinkHref="#icon-subtask" />
+                </svg>
+              </span>
+              <div className="input-wrapper form-floating-label">
+                <Field
+                  className="input-group-field"
+                  type="text"
+                  name={`${subtask}.description`}
+                  component="input"
+                />
+                <label>{`Subtask # ${index + 1}`}</label>
+              </div>
             </div>
-          </div>
-        )}
+          ))}
       </span>
-    )
+    );
 
-  return (
+    return (
+      <form className="inline-label" onSubmit={this.props.handleSubmit} autoComplete="off">
+        <div className="main-task-wrapper">
+          <div className="column large-12 text-center">
+            <h5 className="section-title">
+              {this.props.task && this.props.task.description && this.props.task.description !== ''
+                ? 'Edit a Task'
+                : 'Add a Task'}
+            </h5>
+          </div>
 
-    <form className="inline-label" onSubmit={this.props.handleSubmit} autoComplete="off" >
-      <div className="main-task-wrapper">
-        <div className="column large-12 text-center">
-          <h5 className="section-title">{(this.props.task && this.props.task.description && this.props.task.description!="")?"Edit a Task":"Add a Task"}</h5>
-        </div>
+          {/* Description */}
+          <Field
+            name="description"
+            type="text"
+            label="Description"
+            component={BasicFieldTaskDescription}
+            callback={this.changeTaskPriority}
+            priority={this.state.priority}
+            autoComplete="off"
+          />
+          <Field
+            id="taskId"
+            name="taskId"
+            className="input-group-field"
+            component="input"
+            type="hidden"
+          />
 
-        {/* Description */}
-        <Field name="description" type="text" label="Description" component={BasicFieldTaskDescription} callback={this.changeTaskPriority} priority={this.state.priority} autoComplete="off"/>
-        <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
+          {/* Comment */}
+          {this.props.task && this.props.task.description && this.props.task.description !== '' ? (
+            ''
+          ) : (
+            <Field
+              name="comment"
+              type="text"
+              component={BasicField}
+              label="Comment"
+              xlinkHref="#icon-pencil"
+              isTaskDescription="true"
+            />
+          )}
 
-        {/* Comment */}
-        {(this.props.task && this.props.task.description && this.props.task.description!="") ? "" : 
-          <Field name='comment' type='text' component={BasicField} label='Comment' xlinkHref="#icon-pencil" isTaskDescription="true"/>
-        }
+          {/* ADD PATIENT */}
+          {(!this.props.currentTask || !this.props.currentTask.parentTaskId) && (
+            <Field
+              onChange={() => this.props.isSubtask(false)}
+              id="add-patient"
+              name="patient"
+              type="text"
+              component={BasicField}
+              label="Add Patient"
+              xlinkHref="#icon-patient"
+              extraClassName="add-patient"
+            />
+          )}
+          {(!this.props.currentTask || !this.props.currentTask.parentTaskId) && (
+            <Field
+              id="add-patient-id"
+              name="patientId"
+              className="input-group-field"
+              component="input"
+              type="hidden"
+            />
+          )}
 
-        {/* ADD PATIENT */}
-        {(!this.props.currentTask || !this.props.currentTask.parentTaskId) &&
-        <Field onChange={(e) => this.props.isSubtask(false)} id="add-patient" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient"/>
-        }
-        {(!this.props.currentTask || !this.props.currentTask.parentTaskId) &&
-        <Field id="add-patient-id" name="patientId" className="input-group-field" component="input" type="hidden"/>
-        }
-
-        {/* FILE IN */}
-        {/* Show only from inbox. Tasks can only be assigned to list from 'inbox' */}
+          {/* FILE IN */}
+          {/* Show only from inbox. Tasks can only be assigned to list from 'inbox' */}
           <div className="column large-12 input-group input-dropdown">
-            <span className="input-group-label"><svg className="icon"><use xlinkHref="#icon-list"></use></svg></span>
-            <div className={this.props.title != "Inbox"?"input-wrapper form-floating-label has-value":"input-wrapper form-floating-label"}>
-              <Field className="input-group-field" id="filed-in-taskList" name="taskList" component="input" type="text" data-toggle="add-task-file-in-options" autoComplete="off"/>
+            <span className="input-group-label">
+              <svg className="icon">
+                <use xlinkHref="#icon-list" />
+              </svg>
+            </span>
+            <div
+              className={
+                this.props.title !== 'Inbox'
+                  ? 'input-wrapper form-floating-label has-value'
+                  : 'input-wrapper form-floating-label'
+              }
+            >
+              <Field
+                className="input-group-field"
+                id="filed-in-taskList"
+                name="taskList"
+                component="input"
+                type="text"
+                data-toggle="add-task-file-in-options"
+                autoComplete="off"
+              />
               <label>File in</label>
             </div>
-            <div className="dropdown-pane" id="add-task-file-in-options" data-dropdown="true" data-close-on-click="true">
-              {this.props.title != "Inbox" && this.props.currentTask && this.props.currentTask.taskList && this.props.currentTask.taskList.listName!="" &&
-              <span className="margin-bottom warning-label">Please note, by moving a task to a new list some details of the task may be lost. Task assignments and comments will transfer only if users are members of both lists.</span>
-              }
+            <div
+              className="dropdown-pane"
+              id="add-task-file-in-options"
+              data-dropdown="true"
+              data-close-on-click="true"
+            >
+              {this.props.title !== 'Inbox'
+                && this.props.currentTask
+                && this.props.currentTask.taskList
+                && this.props.currentTask.taskList.listName !== '' && (
+                  <span className="margin-bottom warning-label">
+                    Please note, by moving a task to a new list some details of the task may be
+                    lost. Task assignments and comments will transfer only if users are members of
+                    both lists.
+                  </span>
+              )}
               <fieldset className="large-12 columns">
-                {this.props.taskLists && this.props.taskLists.length>0 && this.props.taskLists.map(taskList => {
-                  return(
-                    <div key={taskList.taskListId} >
-                      <Field id={"radio" + taskList.taskListId} className="input-group-field" name="taskListId" value={taskList.taskListId.toString()} title={taskList.listName} component="input" type="radio" onClick={(e) => this.handleTaskListSelection(e, taskList)}/>
-                      <label htmlFor={"radio" + taskList.taskListId}>{taskList.listName}</label>
-                      <br/>
+                {this.props.taskLists
+                  && this.props.taskLists.length > 0
+                  && this.props.taskLists.map(taskList => (
+                    <div key={taskList.taskListId}>
+                      <Field
+                        id={`radio${taskList.taskListId}`}
+                        className="input-group-field"
+                        name="taskListId"
+                        value={taskList.taskListId.toString()}
+                        title={taskList.listName}
+                        component="input"
+                        type="radio"
+                        onClick={e => this.handleTaskListSelection(e, taskList)}
+                      />
+                      <label htmlFor={`radio${taskList.taskListId}`}>{taskList.listName}</label>
+                      <br />
                     </div>
-                  )
-                })}
+                  ))}
               </fieldset>
             </div>
           </div>
 
-        {/* ASSIGNED TO */}
-        {/* Hide 'assignedTo' if user is adding a task to the 'inbox'. Tasks can only be assigned from lists */}
-        {this.props.title != "Inbox" || this.props.taskListSelection ?
-          <span>
-            <Field id="assign-task-to" name='assignedTo' type='text' component={BasicField} label='Assigned to' xlinkHref="#icon-assign-to" extraClassName="assign-to"/>
-            <Field id="assign-task-to-id" name="assignedToId" className="input-group-field" component="input" type="hidden"/>
-          </span>
-          :
-          <span></span>
-        }
-        <Field 
-          id="due-date" 
-          name='dueDate' 
-          type='text' 
-          component={DatePickerInput} 
-          label='Due date'
-          xlinkHref="#icon-calendar"
-          dateFormat='iii MMM do YYYY @ H:mm a'
-        />
+          {/* ASSIGNED TO */}
+          {/* Hide 'assignedTo' if user is adding a task to the 'inbox'. Tasks can only be assigned from lists */}
+          {this.props.title !== 'Inbox' || this.props.taskListSelection ? (
+            <span>
+              <Field
+                id="assign-task-to"
+                name="assignedTo"
+                type="text"
+                component={BasicField}
+                label="Assigned to"
+                xlinkHref="#icon-assign-to"
+                extraClassName="assign-to"
+              />
+              <Field
+                id="assign-task-to-id"
+                name="assignedToId"
+                className="input-group-field"
+                component="input"
+                type="hidden"
+              />
+            </span>
+          ) : (
+            <span />
+          )}
+          <Field
+            id="due-date"
+            name="dueDate"
+            type="text"
+            component={DatePickerInput}
+            label="Due date"
+            xlinkHref="#icon-calendar"
+            dateFormat="iii MMM do YYYY @ H:mm a"
+          />
 
-        <FieldArray name="subtasks" component={renderSubtaskField}/>
+          <Field
+            id="reminder-date"
+            name="reminderDate"
+            type="text"
+            component={DatePickerInput}
+            label="Reminder"
+            xlinkHref="#icon-calendar"
+            dateFormat="iii MMM do YYYY @ H:mm a"
+          />
 
-        <div className="row expanded">
-          {!this.props.currentTask || !this.props.currentTask.parentTaskId ?
-            <div onClick={(e) => this.resetSubtaskForm(this.props.currentTask)} className="columns highlight center-content-vertical toggle-add-subtask link">
-              <svg className="icon hide"><use xlinkHref="#icon-subtask"></use></svg>+ Add a subtask
-            </div> :
-            <div className="columns center-content-vertical">
+          <FieldArray name="subtasks" component={renderSubtaskField} />
+
+          <div className="row expanded">
+            {!this.props.currentTask || !this.props.currentTask.parentTaskId ? (
+              <div
+                onClick={() => this.resetSubtaskForm(this.props.currentTask)}
+                className="columns highlight center-content-vertical toggle-add-subtask link"
+              >
+                <svg className="icon hide">
+                  <use xlinkHref="#icon-subtask" />
+                </svg>
+                + Add a subtask
+              </div>
+            ) : (
+              <div className="columns center-content-vertical" />
+            )}
+
+            {/* SAVE */}
+            <div className="columns shrink align-right">
+              <input
+                id="addTaskButton"
+                type="submit"
+                className="button secondary medium"
+                value="Save"
+              />
             </div>
-          }
-
-          {/* SAVE */}
-          <div className="columns shrink align-right">
-            <input id="addTaskButton" type="submit" className="button secondary medium" value="Save"/>
-          </div>
-          <div className="columns shrink align-right">
-            <button id="cancelTaskButton" type="button" className="button medium" onClick={(e) => this.cancelEditTask(e)}>Cancel</button>
+            <div className="columns shrink align-right">
+              <button
+                id="cancelTaskButton"
+                type="button"
+                className="button medium"
+                onClick={e => this.cancelEditTask(e)}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
-  )
+      </form>
+    );
   }
 }
 
-function validate(values){
+function validate(values) {
   const errors = {};
-  if(!values.description){
+  if (!values.description) {
     errors.description = 'Please enter a task description';
   }
   return errors;
 }
 
-AddTaskForm = reduxForm({
+const AddTaskFormWrapper = reduxForm({
   form: 'addTaskForm',
-  enableReinitialize : true,
-  validate
-})(AddTaskForm)
+  enableReinitialize: true,
+  validate,
+})(AddTaskForm);
 
-const selector = formValueSelector('addTaskForm')
+const selector = formValueSelector('addTaskForm');
 
-const mapStateToProps = function(store) {
-
-	var initialTaskFormValues = {}
-  if(store.taskListState.currentList){
-    initialTaskFormValues.taskList = store.taskListState.currentList.listName
-    initialTaskFormValues.taskListId = store.taskListState.currentList.taskListId
+const mapStateToProps = (store) => {
+  const initialTaskFormValues = {};
+  if (store.taskListState.currentList) {
+    initialTaskFormValues.taskList = store.taskListState.currentList.listName;
+    initialTaskFormValues.taskListId = store.taskListState.currentList.taskListId;
   }
-	if(store.taskState.task) {
-		var editTask = store.taskState.task;
-      initialTaskFormValues.description = editTask.description;
-  		initialTaskFormValues.taskId = editTask.taskId;
-		if(editTask.patient){
-			initialTaskFormValues.patient = editTask.patient.firstName+" "+editTask.patient.lastName;
-			initialTaskFormValues.patientId = editTask.patient.patientId;
-		}
-    if(editTask.dueDate){
+  if (store.taskState.task) {
+    const editTask = store.taskState.task;
+    initialTaskFormValues.description = editTask.description;
+    initialTaskFormValues.taskId = editTask.taskId;
+    if (editTask.patient) {
+      initialTaskFormValues.patient = `${editTask.patient.firstName} ${editTask.patient.lastName}`;
+      initialTaskFormValues.patientId = editTask.patient.patientId;
+    }
+    if (editTask.dueDate) {
       initialTaskFormValues.dueDate = new Date(editTask.dueDate);
       initialTaskFormValues.originalDueDate = editTask.dueDate;
     }
-    if(editTask.reminderDt){
-      initialTaskFormValues.reminderDt = formatDateAndTime(editTask.reminderDt);
-      initialTaskFormValues.originalReminderDt = editTask.reminderDt;
+    if (editTask.reminderDt) {
+      initialTaskFormValues.reminderDate = new Date(editTask.reminderDt);
+      initialTaskFormValues.originalReminderDate = editTask.reminderDt;
     }
-		if(editTask.assignedTo){
-			initialTaskFormValues.assignedTo = editTask.assignedTo.firstName+" "+editTask.assignedTo.lastName;
-			initialTaskFormValues.assignedToId = editTask.assignedTo.userId;
-		}
-    if(editTask.taskList){
+    if (editTask.assignedTo) {
+      initialTaskFormValues.assignedTo = `${editTask.assignedTo.firstName} ${
+        editTask.assignedTo.lastName
+      }`;
+      initialTaskFormValues.assignedToId = editTask.assignedTo.userId;
+    }
+    if (editTask.taskList) {
       initialTaskFormValues.taskList = editTask.taskList.listName;
     }
-    if(editTask.subtasks){
+    if (editTask.subtasks) {
       initialTaskFormValues.subtasks = editTask.subtasks;
     }
-    if(editTask.priority){
-      if(editTask.priority == "HIGH"){
+    if (editTask.priority) {
+      if (editTask.priority === 'HIGH') {
         initialTaskFormValues.priority = true;
-      }else{
+      } else {
         initialTaskFormValues.priority = false;
       }
     }
-	}
+  }
   return {
-		initialValues: initialTaskFormValues,
+    initialValues: initialTaskFormValues,
     taskListSelection: selector(store, 'taskListId'),
     currentTask: store.taskState.task,
     currentSubtasks: selector(store, 'subtasks'),
     priority: selector(store, 'priority'),
-    taskList: store.taskListState.currentList
-  }
+    taskList: store.taskListState.currentList,
+  };
 };
 
-const mapDispatchToProps = function(dispatch) {
-  return {
-    taskListActions: bindActionCreators(TaskListActions, dispatch),
-    formActions: bindActionCreators({reset, initialize, destroy, change, touch}, dispatch)
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  taskListActions: bindActionCreators(TaskListActions, dispatch),
+  formActions: bindActionCreators(
+    {
+      reset,
+      initialize,
+      destroy,
+      change,
+      touch,
+    },
+    dispatch,
+  ),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddTaskForm);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AddTaskFormWrapper);
