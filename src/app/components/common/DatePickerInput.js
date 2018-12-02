@@ -31,7 +31,7 @@ const DatePickerInput = ({
           className={extraClassName ? "input-group-field " + extraClassName : "input-group-field"} 
           type='text'
           disabled={disabled}
-          selected={input.value}
+          selected={input.value?input.value:null}
           showTimeSelect
           timeFormat="H:mm"
           timeIntervals={30}
