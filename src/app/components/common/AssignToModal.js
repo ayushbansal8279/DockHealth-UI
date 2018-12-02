@@ -54,7 +54,9 @@ class AssignToModal extends React.Component {
         {/* <div id={"edit-assign-to-" + this.props.task.taskId}> */}
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
-          {this.props.members && this.props.members.map(member=>{
+          {this.props.members 
+            && this.props.members.length > 0
+            && this.props.members.map(member=>{
             // return(member.status!='PENDING' && // PENDING members can be assigned tasks
             return(
               <div data-close="" 
