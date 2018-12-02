@@ -121,7 +121,7 @@ class AddTaskForm extends BaseComponent {
         {fields
           && fields.map((subtask, index) => (
             <div
-              key={subtask.id}
+              key={subtask.id+"_"+index}
               onClick={() => this.initializeSubtaskForm(index)}
               className="column large-12 input-group toggle-add-subtask has-value"
             >
