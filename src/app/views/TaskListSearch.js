@@ -89,7 +89,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
                   activeListMembers={this.props.activeListMembers}
                 />
 
-          <div className="wrapper">
+          <div className="wrapper-search">
             <div className="row expanded collapse">
               <div className="large-2 columns">
               </div>
@@ -112,9 +112,9 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
               <SortFilterTasks title="Search Tasks" getListTasks={this.getListTasks}/>
             {/* } */}
 
-            <TaskListSearchContainer 
-              searchPerformed={this.state.searchPerformed}
-              getCompletedTasks={this.getCompletedTasks}/>
+              <TaskListSearchContainer 
+                searchPerformed={this.state.searchPerformed}
+                getCompletedTasks={this.getCompletedTasks}/>
             
             {this.state.searchPerformed && this.props.tasks && this.props.tasks.length == 0 &&
               <span className="taskListSearchMessage">No tasks found matching search criteria</span>
@@ -127,7 +127,8 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
 
 function mapStateToProps(state){
   return{
-    tasks: state.taskState.tasks
+    tasks: state.taskState.tasks,
+    isFetching: state.taskState.isFetching
   }
 }
 

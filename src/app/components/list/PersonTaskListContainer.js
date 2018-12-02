@@ -17,6 +17,7 @@ class PersonTaskListContainer extends BaseComponent {
   }
   componentDidMount () {
       super.componentDidMount()
+      this.closeAuditHistory();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -47,6 +48,37 @@ class PersonTaskListContainer extends BaseComponent {
     this.setState({editing: isEditing})
   }
 
+
+  closeAuditHistory = () => {
+    this.props.taskActions.storeAsCurrentTask(null)
+    //.then((resp) => {
+      this.props.taskActions.clearCurrentTaskHistory()
+    //})
+  }
+
+  renderAuditHistory() {
+    return this.props.currentTaskHistory.map((audit) =>{
+       return(
+         <div className="task-item row expanded condense align-middle" key={"audit" + audit.auditId}>
+           <div className="columns shrink">
+             {/* <MemberInitials /> */}
+             {/* <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/> */}
+             <MemberInitials member={audit.user}/>
+           </div>
+           <div className="columns">
+             <span className="task-title">{audit.user!=null?audit.user.userName:""}</span>
+           </div>
+           <div className="columns">
+             <span className="task-title">{audit.taskHistoryDetails}</span>
+           </div>
+           <div className="columns text-right">
+             <span className="item-details"><Moment format="MM/DD/YYYY">{audit.createdDateTime}</Moment></span>
+             <span className="item-details"><Moment format="hh:mm a">{audit.createdDateTime}</Moment></span>
+           </div>
+         </div>
+       );
+   })
+ }
 		// Lists Activity for a TaskList
     renderList(taskListId, taskStatus, tasks, members) {
           return(
@@ -78,7 +110,7 @@ class PersonTaskListContainer extends BaseComponent {
         }
         return(
           <li className="accordion-item" key={"taskList_" + listName}>
-            <span className="accordion-title task-search-list-name">
+            <span className={this.props.currentTaskHistory?"accordion-title task-search-list-name":"accordion-title task-search-list-name large-8 large-offset-2"}>
               <b>{listName}</b>
             </span>  
             <div>
@@ -93,24 +125,56 @@ class PersonTaskListContainer extends BaseComponent {
 
     render (){
       return (
-        <div className="row expanded collapse">
-        <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
-          {this.props.tasks && this.renderTaskListName("INCOMPLETE", this.props.tasks)}
-        </ul>
-        <div className="columns large-12">
-          <div className="show-completed text-center">
-              <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
+        <div className="tasks-container">
+        <div className={this.props.currentTaskHistory?"large-8 columns left-column":"large-12 columns left-column"}>
+          <div className="row expanded collapse">
+          <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
+            {this.props.tasks && this.renderTaskListName("INCOMPLETE", this.props.tasks)}
+          </ul>
+          <div className="columns large-12">
+            <div className="show-completed text-center">
+                <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
+            </div>
           </div>
+          {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length > 0 &&
+          <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
+            {this.props.completedTasks && this.renderTaskListName("COMPLETE", this.props.completedTasks)}
+          </ul>
+          }
+          {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
+            <span>No completed tasks</span>
+          }
+          </div>   
         </div>
-        {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length > 0 &&
-        <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
-          {this.props.completedTasks && this.renderTaskListName("COMPLETE", this.props.completedTasks)}
-        </ul>
+        <div className="right-column">
+        {this.props.currentTaskHistory &&
+          <div className="task-item-wrapper">
+            <div className="task-item">
+              <div className="row expanded">
+                <div className="columns">
+                  <div className="row">
+                    <div className="columns more-options-wrapper">
+                      <span><strong>Audit History</strong></span>
+                    </div>
+                    <div className="columns shrink more-options-wrapper">
+                      <svg className="icon medium" onClick={(e) => this.closeAuditHistory()}><use xlinkHref="#icon-close"></use></svg>
+                    </div>
+                  </div>
+                  {this.props.selectedTask && 
+                  <div className="row">
+                    <div className="columns more-options-wrapper">
+                      <span>{this.props.selectedTask.description}</span>
+                    </div>
+                  </div>
+                  }
+                  {this.props.currentTaskHistory && this.renderAuditHistory()}
+                </div>
+              </div>  
+            </div>
+          </div>
         }
-        {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
-          <span>No completed tasks</span>
-        }
-      </div>        
+        </div>
+        </div>           
       )
     }
 
@@ -137,7 +201,9 @@ function mapStateToProps(state) {
     completedTasks: state.taskState.completedTasks,
     isFetching: state.taskState.isFetching,
     isCompletedTasksFetching: state.taskState.isCompletedTasksFetching,
-    showingCompletedTasks: state.taskState.showingCompletedTasks
+    showingCompletedTasks: state.taskState.showingCompletedTasks,
+    selectedTask: state.taskState.selectedTask,
+    currentTaskHistory: state.taskState.currentTaskHistory
   };
 }
 

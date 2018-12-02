@@ -16,8 +16,11 @@ class PatientList extends BaseComponent {
 										<div className="columns small-4 large-2">
 											<span className="highlight">{patient.mrn}</span>
 										</div>
-										<div className="columns small-8 large-10">
-											<span className="item-title">{patient.firstName}&nbsp;{patient.lastName}</span>
+										<div className="columns small-4 large-5">
+											<span className="item-title">{patient.firstName}</span>
+										</div>
+										<div className="columns small-4 large-5">
+											<span className="item-title">{patient.lastName}</span>
 										</div>
 										{/* <div className="columns shrink more-options-wrapper" onClick={(e) => e.preventDefault()}>
 											<svg className="icon ellipses medium" data-toggle={"more-options-person-id-"+patient.patientId}><use xlinkHref="#icon-ellipses"></use></svg>
