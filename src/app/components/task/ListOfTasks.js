@@ -112,7 +112,7 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		componentWillUpdate (nextProps) {
-			console.log('ListOfTasks componentWillUpdate: '+nextProps)
+			// console.log('ListOfTasks componentWillUpdate: '+nextProps)
 		}
 
 		componentDidUpdate (prevProps, prevState) {
@@ -209,6 +209,7 @@ class ListOfTasks extends BaseComponent {
 			//.then((resp) => {
 				this.props.taskAction.getTaskHistory(task)
 			//})
+			closeDropdown("#task-edit-"+task.taskId)
 		}
 
 		deleteTask = (task) => {
