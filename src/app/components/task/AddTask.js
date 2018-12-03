@@ -105,6 +105,9 @@ class AddTask extends BaseComponent {
     } else {
       payload.priority = 'LOW';
     }
+
+    payload.status = form.status.value;
+
     if ($('#filed-in-taskList').val()) {
       if (
         this.props.title === 'Inbox'
