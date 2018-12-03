@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link, browserHistory, hashHistory } from 'react-router'
+import { SubmissionError, Field, reduxForm, actions, destroy } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import Moment from 'react-moment'
 import BaseComponent from '../components/BaseComponent'
@@ -61,6 +62,14 @@ class PatientView extends BaseComponent {
       }
     }
 
+    handleEditPatient = (patientId) => {
+      if(patientId){
+        hashHistory.push('/editPatient/'+patientId)
+        scrollToTop();
+        // need force refresh since the current view mounts FormPatient and the Edit patient view refers to the same but doesn't reinitialize the Redux Form
+        window.location.reload();
+      }
+    };
 
     downloadPDF = () => {
       if(this.props.patient.patientId){
@@ -179,9 +188,12 @@ class PatientView extends BaseComponent {
                 </div>
                 <div className="top-bar-right">
                   <div className="icon-text-wrapper">
-                    <Link to={"/editPatient/"+patient.patientId} key={patient.patientId}>
+                    {/* <Link to={"/editPatient/"+patient.patientId} key={patient.patientId}>
                     <svg className="icon"><use xlinkHref="#icon-pencil"></use></svg> Edit
-                    </Link>
+                    </Link> */}
+                    <a className="button primary small" onClick={(e) => this.handleEditPatient(patient.patientId)}>
+                      <svg className="icon"><use xlinkHref="#icon-pencil"></use></svg> Edit
+                    </a>
                   </div>
                 </div>
               </div>
@@ -330,7 +342,8 @@ const mapStateToProps = function (state) {
 const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(PatientActions, dispatch),
-    taskActions: bindActionCreators(TaskActions, dispatch)
+    taskActions: bindActionCreators(TaskActions, dispatch),
+    formActions: bindActionCreators({destroy}, dispatch)
   }
 }
 

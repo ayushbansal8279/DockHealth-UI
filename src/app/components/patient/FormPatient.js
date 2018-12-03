@@ -1,5 +1,12 @@
 import * as React from 'react'
-import { SubmissionError, Field, reduxForm, change } from 'redux-form'
+import { SubmissionError, Field, reduxForm, 
+  formValueSelector,
+  getFormValues,
+  reset,
+  initialize,
+  destroy,
+  change,
+  touch } from 'redux-form'
 import Moment from 'react-moment'
 import * as PatientActions from '../../actions/patient-actions'
 import { connect } from 'react-redux'
@@ -21,15 +28,26 @@ class FormPatient extends BaseComponent {
   	}
 
   	componentDidMount () {
-      console.log("mounted FormPatient component")
+      // console.log("FormPatient componentDidMount")
       if(this.props.patientId){
-        this.props.actions.getPatientById(this.props.patientId);
+        // this.props.actions.getPatientById(this.props.patientId);
       }
-		  //this.state.text = ""
       mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
               'PageName': 'FormPatient'
       });
-  	}
+    }
+
+    componentWillUpdate (nextProps) {
+      //console.log('FormPatient componentWillUpdate: '+nextProps)
+    }
+  
+    componentWillReceiveProps(nextProps){
+      //console.log('FormPatient componentWillReceiveProps: '+nextProps);
+    }
+  
+    componentDidUpdate(prevProps, prevState) {
+      //console.log('FormPatient componentDidUpdate: ')
+    }
 
     // onGenderChanged (e) {
     //   this.setState({
@@ -54,7 +72,6 @@ class FormPatient extends BaseComponent {
         this.props.actions.updatePatient(formProps)
         .then((res) => {
           // this.setState({saveMessage: 'Patient updated succesfully'})
-					toggleAlert("Patient updated succesfully!", "success")
 					closeAddForm()
         })
         .catch((e) => {
@@ -73,18 +90,10 @@ class FormPatient extends BaseComponent {
 						closeAddForm()
 					}else{
 						var isProps = this.props
-						//debugger;
-						if(this.props.isSubtask){
-							this.props.formActions.change("addSubtaskForm", "patient", patientName)
-							this.props.formActions.change("addSubtaskForm", "patientId", patientId)
-							$("#add-patient-subtask").val(patientName);
-							$("#add-patient-subtask-id").val(patientId);
-						}else{
-							this.props.formActions.change("addTaskForm", "patient", patientName)
-							this.props.formActions.change("addTaskForm", "patientId", patientId)
-							$("#add-patient").val(patientName);
-							$("#add-patient-id").val(patientId);
-						}
+            this.props.formActions.change("addTaskForm", "patient", patientName)
+            this.props.formActions.change("addTaskForm", "patientId", patientId)
+            $("#add-patient").val(patientName);
+            $("#add-patient-id").val(patientId);
 					}
         })
         .catch((e) => {
@@ -93,11 +102,19 @@ class FormPatient extends BaseComponent {
         })
       }
 
-      // hashHistory.push('patientList')
-
+      hashHistory.push('/patient/'+this.props.patient.patientId)
+      scrollToTop();
   	}
 
-
+    cancelEdit = (event) => {
+      if(this.props.patient && this.props.patient.patientId){
+        hashHistory.push('/patient/'+this.props.patient.patientId)
+        scrollToTop();
+      }else{
+        toggleTaskForm();
+        event.preventDefault();
+      }
+    };
 
     render() {
       var patient = {}
@@ -106,12 +123,17 @@ class FormPatient extends BaseComponent {
         //this.state.firstName = this.props.patient.firstName
       }
 
+      // console.log(this.props.patient)
+      // console.log(this.props.formValues)
+      // console.log(this.props.allFormValues)
+
       const handleSubmit = this.props.handleSubmit; //injected by reduxform
       return (
-            <form className="inline-label top-buffer" onSubmit={handleSubmit(this.onSubmit)}>
-              <Field name='mrn' type='text' component={BasicField} label='MRN (required)' placeholder='required'/>
-              <Field name='firstName' type='text' component={BasicField} label='First name (required)' placeholder='required'/>
-              <Field name='lastName' type='text' component={BasicField} label='Last name (required)' placeholder='required'/>
+            <form className="inline-label top-buffer" onSubmit={handleSubmit(this.onSubmit)} autoComplete="off">
+              <Field name='patientId' type='hidden' component={BasicField}/>
+              <Field name='mrn' type='text' component={BasicField} label='MRN (required)' placeholder='required' autoComplete="off"/>
+              <Field name='firstName' type='text' component={BasicField} label='First name (required)' placeholder='required' autoComplete="off"/>
+              <Field name='lastName' type='text' component={BasicField} label='Last name (required)' placeholder='required' autoComplete="off"/>
 
 						  {/* <div className="column large-12 input-group no-icon">
                 <div className="form-floating-label input-wrapper has-value"> */}
@@ -152,24 +174,37 @@ class FormPatient extends BaseComponent {
                 </span>
               </fieldset> */}
 
-              <Field name='phoneHome' type='tel' component={BasicField} label='Home phone' placeholder='required'/>
-              <Field name='phoneMobile' type='tel' component={BasicField} label='Mobile' placeholder='required'/>
-              <Field name='email' type='email' component={BasicField} label='Email' placeholder='required'/>
+              <Field name='phoneHome' type='tel' component={BasicField} label='Home phone' placeholder='required' autoComplete="off"/>
+              <Field name='phoneMobile' type='tel' component={BasicField} label='Mobile' placeholder='required' autoComplete="off"/>
+              <Field name='email' type='email' component={BasicField} label='Email' placeholder='required' autoComplete="off"/>
 
 							<div className="column large-12 input-group no-icon">
-								<div className="form-floating-label input-wrapper">
-									<Field type="text" name="notes" component="textarea" className="input-group-field"/>
+								<div className={"form-floating-label input-wrapper " + (this.props.patient && this.props.patient.notes ? 'has-value' : '')}>
+									<Field type="text" name="notes" component="textarea" className="input-group-field" autoComplete="off"/>
 									<label>Notes</label>
 								</div>
 							</div>
 
               {/* <Field name='notes' type='text' component={BasicField} label='Notes' placeholder='required'/> */}
 
-              <div className="column large-12 text-right text-center">
-                <input data-close="" type="submit" className="button secondary medium btnMargin" value="Save" disabled={this.props.invalid || this.props.submitting}/>
-								{this.props.modalForm &&
+              <div className="row large-12 text-right text-center">
+                <div className="columns shrink align-right">
+                  <input data-close="" type="submit" className="button secondary medium btnMargin" value="Save" disabled={this.props.submitting}/>
+                </div>
+								{this.props.modalForm?
 									<a data-close="" className="button medium cancel btnMargin">Cancel</a>
-								}
+								  :
+                  <div className="columns shrink align-right">
+                    <button
+                      id="cancelButton"
+                      type="button"
+                      className="button medium btnMargin"
+                      onClick={e => this.cancelEdit(e)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                }
               </div>
 
 							{/* <div className="button-wrapper">
@@ -200,28 +235,58 @@ const validate = (values) => {
   return errors
 }
 
+const selector = formValueSelector('FormPatient') // <-- same as form name
+
 const mapStateToProps = function (state) {
-  var patientInitialValues = null
+  var patientInfo = null
+  var patientInitialValues = {}
   if(state.patientState.selectedEmrPatient){
-    patientInitialValues = state.patientState.selectedEmrPatient
+    patientInfo = state.patientState.selectedEmrPatient
   }
   if(state.patientState.selectedPatient){
-    patientInitialValues = state.patientState.selectedPatient
+    patientInfo = state.patientState.selectedPatient
   }
+  if(patientInfo){
+    patientInitialValues.patientId = patientInfo.patientId
+    patientInitialValues.firstName = patientInfo.firstName
+    patientInitialValues.lastName = patientInfo.lastName
+    patientInitialValues.mrn = patientInfo.mrn
+    patientInitialValues.dob = patientInfo.dob
+    patientInitialValues.gender = patientInfo.gender
+    patientInitialValues.phoneHome = patientInfo.phoneHome
+    patientInitialValues.phoneMobile = patientInfo.phoneMobile
+    patientInitialValues.email = patientInfo.email
+    patientInitialValues.notes = patientInfo.notes
+  }
+  const formValues = getFormValues("FormPatient")(state) || {};
+  // console.log("in mapStateToProps: "+patientInitialValues.patientId)
+  // console.log("in mapStateToProps formValues: "+formValues.patientId)
+  // console.log(patientInitialValues)
+
   return {
     patient: state.patientState.selectedPatient,
-    initialValues: patientInitialValues
+    initialValues: patientInitialValues,
+    allFormValues: selector(state, 'firstName', 'lastName'),
+    formValues
   }
 }
 
 const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(PatientActions, dispatch),
-		formActions: bindActionCreators({change}, dispatch)
+		formActions: bindActionCreators({
+      reset,
+      initialize,
+      destroy,
+      change,
+      touch
+    },dispatch)
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
     form: 'FormPatient',
+    enableReinitialize: true,
+    destroyOnUnmount: true,
     validate
 })(FormPatient));

@@ -23,7 +23,7 @@ class AddPatientModal extends React.Component {
         <div className="column large-12 text-center">
           or enter patient manually
         </div>
-        <FormPatient modalForm="true" isSubtask={this.props.isSubtask}/>
+        <FormPatient modalForm="true"/>
         <button className="close-button" data-close="" aria-label="Close modal" type="button">
           <span aria-hidden="true">&times;</span>
         </button>
