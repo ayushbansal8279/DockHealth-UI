@@ -45,9 +45,11 @@ export function removePatient(patientId) {
 export function addPatient(patient) {
   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'patient', patient)
     .then(response => {
+      toggleAlert("Patient added successfully!", "success")
       return response.data;
     }).catch(function (error){
       console.log(error);
+      toggleAlert("Error in adding patient. Please try again.", "error")
       return error.response.data;
     });
 }
@@ -55,9 +57,11 @@ export function addPatient(patient) {
 export function updatePatient(patient) {
   return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'patient', patient)
     .then(response => {
+      toggleAlert("Patient updated successfully!", "success")
       return response.data;
     }).catch(function (error){
       console.log(error);
+      toggleAlert("Error in updating patient. Please try again.", "error")
       return error.response.data;
     });
 }
