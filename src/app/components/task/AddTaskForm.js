@@ -24,7 +24,7 @@ class AddTaskForm extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {
-      priority: undefined,
+      priorityFlag: undefined,
       listName: '',
     };
     this.handleTaskListSelection = this.handleTaskListSelection.bind(this);
@@ -40,7 +40,7 @@ class AddTaskForm extends BaseComponent {
 
   componentWillUpdate(nextProps) {
     if (nextProps.task && this.props.currentTask !== nextProps.task) {
-      this.setState({ priority: nextProps.task.priority === 'HIGH' });
+      this.setState({ priorityFlag: nextProps.task.priority === 'HIGH' });
     }
   }
 
@@ -68,9 +68,9 @@ class AddTaskForm extends BaseComponent {
       task.patient = `${task.patient.firstName} ${task.patient.lastName}`;
     }
     if (task.priority === 'HIGH') {
-      task.priority = true;
+      task.priorityFlag = true;
     } else {
-      task.priority = false;
+      task.priorityFlag = false;
     }
     if (task.dueDate) {
       task.dueDate = formatDateAndTime(task.dueDate);
@@ -85,9 +85,9 @@ class AddTaskForm extends BaseComponent {
 
   changeTaskPriority = () => {
     this.setState(
-      state => ({ priority: !state.priority }),
+      state => ({ priorityFlag: !state.priorityFlag }),
       () => {
-        this.props.formActions.change('addTaskForm', 'priority', this.state.priority);
+        this.props.formActions.change('addTaskForm', 'priorityFlag', this.state.priorityFlag);
       },
     );
   };
@@ -162,7 +162,7 @@ class AddTaskForm extends BaseComponent {
             label="Description"
             component={BasicFieldTaskDescription}
             callback={this.changeTaskPriority}
-            priority={this.state.priority}
+            priority={this.state.priorityFlag}
             autoComplete="off"
           />
           <Field
@@ -414,9 +414,9 @@ const mapStateToProps = (store) => {
     }
     if (editTask.priority) {
       if (editTask.priority === 'HIGH') {
-        initialTaskFormValues.priority = true;
+        initialTaskFormValues.priorityFlag = true;
       } else {
-        initialTaskFormValues.priority = false;
+        initialTaskFormValues.priorityFlag = false;
       }
     }
   }
@@ -425,7 +425,7 @@ const mapStateToProps = (store) => {
     taskListSelection: selector(store, 'taskListId'),
     currentTask: store.taskState.task,
     currentSubtasks: selector(store, 'subtasks'),
-    priority: selector(store, 'priority'),
+    priorityFlag: selector(store, 'priorityFlag'),
     taskList: store.taskListState.currentList,
   };
 };

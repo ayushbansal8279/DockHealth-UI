@@ -35,7 +35,6 @@ class AddTask extends BaseComponent {
 
   componentWillUpdate(nextProps) {
     enableAutoCompleteForPatients(nextProps.patients);
-    enableAutoCompleteForSubtaskPatients(nextProps.patients);
 
     enableAutoCompleteForAssignedTo(nextProps.activeListMembers);
     enableAutoCompleteForSubtaskAssignedTo(nextProps.activeListMembers);
@@ -64,7 +63,7 @@ class AddTask extends BaseComponent {
   };
 
   isSubtask = (boolean) => {
-    this.setState({ isSubtask: boolean });
+    // this.setState({ isSubtask: boolean });
   };
 
   handleAddMemberToTask(memberId) {
@@ -100,7 +99,7 @@ class AddTask extends BaseComponent {
       payload.reminderDt = '';
     }
 
-    if (payload.priority === true) {
+    if (payload.priorityFlag === true) {
       payload.priority = 'HIGH';
     } else {
       payload.priority = 'LOW';
@@ -180,7 +179,7 @@ class AddTask extends BaseComponent {
                 currentSubtask={this.state.currentSubtask}
                 isSubtask={this.isSubtask}
               />
-              <AddPatientModal isSubtask={this.state.isSubtask} />
+              <AddPatientModal/>
               <BooleanModal
                 message="Are you sure you want to move this task to another list?"
                 confirmBtnTxt="Move"
