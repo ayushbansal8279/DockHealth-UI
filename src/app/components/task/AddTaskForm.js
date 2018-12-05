@@ -117,7 +117,7 @@ class AddTaskForm extends BaseComponent {
 
   render() {
     const renderSubtaskField = ({ fields }) => (
-      <span>
+      <div>
         {fields
           && fields.map((subtask, index) => (
             <div
@@ -141,7 +141,7 @@ class AddTaskForm extends BaseComponent {
               </div>
             </div>
           ))}
-      </span>
+      </div>
     );
 
     return (
