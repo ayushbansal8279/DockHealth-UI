@@ -58,7 +58,7 @@ class Home extends BaseComponentWithFoundationUpdate {
   }
 
   refreshAccessToken(user){
-    var systemTimeout= 15*60*1000;
+    var systemTimeout= 1*60*1000;
 
     if(sessionStorage.refreshAccessTokenTimeoutId != null || sessionStorage.refreshAccessTokenTimeoutId != undefined){
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
