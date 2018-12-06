@@ -122,14 +122,14 @@ function closeAddTask(){
 
 // **3**
 function enableAutoCompleteForPatients(lookupData) {
-	// console.log("enableAutoCompleteForPatients: "+lookupData)
+	// console.log("-> enableAutoCompleteForPatients: "+JSON.stringify(lookupData))
 	// add task form patient autocomplete
 	// http://easyautocomplete.com/guide
 	var patients = {
-		// data: [ {name: "George Vasquez", mrn: "123-32-21"},
-		// 	{name: "Grace Chavez", mrn: "473-32-21"},
-		// 	{name: "Pamela Riley", mrn: "383-38-59"},
-		// 	{name: "Raymond Curtis", mrn: "433-37-47"}
+		// data: [ {firstName: "George Vasquez", mrn: "123-32-21"},
+		// 	{firstName: "Grace Chavez", mrn: "473-32-21"},
+		// 	{firstName: "Pamela Riley", mrn: "383-38-59"},
+		// 	{firstName: "Raymond Curtis", mrn: "433-37-47"}
 		// ],
 		data: lookupData,
 		getValue: function (element) { return $(element).prop("firstName") + " " + $(element).prop("lastName");},
@@ -152,7 +152,7 @@ function enableAutoCompleteForPatients(lookupData) {
 		}
 	};
 
-	$(".add-patient").easyAutocomplete(patients);
+	$("#add-patient").easyAutocomplete(patients);
 }
 
 function enableAutoCompleteForSubtaskPatients(lookupData) {
@@ -186,7 +186,7 @@ function enableAutoCompleteForSubtaskPatients(lookupData) {
 		}
 	};
 
-	$(".add-patient-subtask").easyAutocomplete(patients);
+	$("#add-patient-subtask").easyAutocomplete(patients);
 }
 
 function enableAutoCompleteForAssignedTo(lookupData) {

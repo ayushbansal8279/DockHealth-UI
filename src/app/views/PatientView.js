@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link, browserHistory, hashHistory } from 'react-router'
+import { SubmissionError, Field, reduxForm, actions, destroy } from 'redux-form'
 import {bindActionCreators} from 'redux';
 import Moment from 'react-moment'
 import BaseComponent from '../components/BaseComponent'
@@ -10,6 +11,7 @@ import {mobileAnalyticsClient} from '../api/analytics-api'
 import ListOfTasksContainer from '../components/task/ListOfTasksContainer'
 import AddTask from '../components/task/AddTask'
 import SortFilterTasks from '../components/common/SortFilterTasks'
+import MemberInitials from '../components/common/MemberInitials'
 import axios from 'axios';
 
 class PatientView extends BaseComponent {
@@ -60,6 +62,14 @@ class PatientView extends BaseComponent {
       }
     }
 
+    handleEditPatient = (patientId) => {
+      if(patientId){
+        hashHistory.push('/editPatient/'+patientId)
+        scrollToTop();
+        // need force refresh since the current view mounts FormPatient and the Edit patient view refers to the same but doesn't reinitialize the Redux Form
+        window.location.reload();
+      }
+    };
 
     downloadPDF = () => {
       if(this.props.patient.patientId){
@@ -89,6 +99,37 @@ class PatientView extends BaseComponent {
       $('.task-item .row, .task-item, .main-task-item').toggleClass('align-middle');
     }
 
+    closeAuditHistory = () => {
+      this.props.taskActions.storeAsCurrentTask(null)
+      //.then((resp) => {
+        this.props.taskActions.clearCurrentTaskHistory()
+      //})
+    }
+  
+    renderAuditHistory() {
+      return this.props.currentTaskHistory.map((audit) =>{
+        return(
+          <div className="task-item row expanded condense align-middle" key={"audit" + audit.auditId}>
+            <div className="columns shrink">
+              {/* <MemberInitials /> */}
+              {/* <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/> */}
+              <MemberInitials member={audit.user}/>
+            </div>
+            <div className="columns">
+              <span className="task-title">{audit.user!=null?audit.user.userName:""}</span>
+            </div>
+            <div className="columns">
+              <span className="task-title">{audit.taskHistoryDetails}</span>
+            </div>
+            <div className="columns text-right">
+              <span className="item-details"><Moment format="MM/DD/YYYY">{audit.createdDateTime}</Moment></span>
+              <span className="item-details"><Moment format="hh:mm a">{audit.createdDateTime}</Moment></span>
+            </div>
+          </div>
+        );
+      })
+    }
+
 		// Lists Activity for a TaskList
     renderList(taskStatus, tasks, members) {
       return(
@@ -116,7 +157,7 @@ class PatientView extends BaseComponent {
         const tasks = groupedTasks.get(listName)
         return(
           <li className="accordion-item" key={"taskList_" + listName}>
-            <span className="accordion-title task-search-list-name">
+            <span className={this.props.currentTaskHistory?"accordion-title task-search-list-name":"accordion-title task-search-list-name large-8 large-offset-2"}>
               <b>{listName}</b>
             </span>  
             <div>
@@ -147,9 +188,12 @@ class PatientView extends BaseComponent {
                 </div>
                 <div className="top-bar-right">
                   <div className="icon-text-wrapper">
-                    <Link to={"/editPatient/"+patient.patientId} key={patient.patientId}>
+                    {/* <Link to={"/editPatient/"+patient.patientId} key={patient.patientId}>
                     <svg className="icon"><use xlinkHref="#icon-pencil"></use></svg> Edit
-                    </Link>
+                    </Link> */}
+                    <a className="button primary small" onClick={(e) => this.handleEditPatient(patient.patientId)}>
+                      <svg className="icon"><use xlinkHref="#icon-pencil"></use></svg> Edit
+                    </a>
                   </div>
                 </div>
               </div>
@@ -207,30 +251,57 @@ class PatientView extends BaseComponent {
           />
 
           <SortFilterTasks title="Patient Tasks" getListTasks={this.getListTasks}/>
-
-        <div className="list-wrapper overall-list-wrapper">
-          <div className="task-item-wrapper">
-            <div className="task-wrapper">
-              <div className="row expanded collapse">
-                <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
-                  {this.props.tasks && this.renderTaskListName("INCOMPLETE", this.props.tasks)}
-                </ul>
-                <div className="columns large-12">
-                  <div className="show-completed text-center">
-                    <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
+        <div className="wrapper-search">
+            <div className="tasks-container">
+              <div className={this.props.currentTaskHistory?"large-8 columns left-column":"large-12 columns left-column"}>
+                <div className="row expanded collapse">
+                  <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
+                    {this.props.tasks && this.renderTaskListName("INCOMPLETE", this.props.tasks)}
+                  </ul>
+                  <div className="columns large-12">
+                    <div className="show-completed text-center">
+                      <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
+                    </div>
                   </div>
+                  {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length > 0 &&
+                  <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
+                    {this.props.completedTasks && this.renderTaskListName("COMPLETE", this.props.completedTasks)}
+                  </ul>
+                  }
+                  {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
+                    <span>No completed tasks</span>
+                  }          
                 </div>
-                {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length > 0 &&
-                <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
-                  {this.props.completedTasks && this.renderTaskListName("COMPLETE", this.props.completedTasks)}
-                </ul>
-                }
-                {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length == 0 &&
-                  <span>No completed tasks</span>
-                }          
               </div>
-            </div>
-          </div>
+              <div className="right-column">
+                {this.props.currentTaskHistory &&
+                  <div className="task-item-wrapper">
+                    <div className="task-item">
+                      <div className="row expanded">
+                        <div className="columns">
+                          <div className="row">
+                            <div className="columns more-options-wrapper">
+                              <span><strong>Audit History</strong></span>
+                            </div>
+                            <div className="columns shrink more-options-wrapper">
+                              <svg className="icon medium" onClick={(e) => this.closeAuditHistory()}><use xlinkHref="#icon-close"></use></svg>
+                            </div>
+                          </div>
+                          {this.props.selectedTask && 
+                          <div className="row">
+                            <div className="columns more-options-wrapper">
+                              <span>{this.props.selectedTask.description}</span>
+                            </div>
+                          </div>
+                          }
+                          {this.props.currentTaskHistory && this.renderAuditHistory()}
+                        </div>
+                      </div>  
+                    </div>
+                  </div>
+                }
+                </div>
+              </div>
         </div>
 
       </div>
@@ -262,14 +333,17 @@ const mapStateToProps = function (state) {
     completedTasks: state.taskState.completedTasks,
     isFetching: state.taskState.isFetching,
     isCompletedTasksFetching: state.taskState.isCompletedTasksFetching,
-    showingCompletedTasks: state.taskState.showingCompletedTasks
+    showingCompletedTasks: state.taskState.showingCompletedTasks,
+    selectedTask: state.taskState.selectedTask,
+    currentTaskHistory: state.taskState.currentTaskHistory
   }
 }
 
 const mapDispatchToProps = function (dispatch) {
   return {
     actions: bindActionCreators(PatientActions, dispatch),
-    taskActions: bindActionCreators(TaskActions, dispatch)
+    taskActions: bindActionCreators(TaskActions, dispatch),
+    formActions: bindActionCreators({destroy}, dispatch)
   }
 }
 

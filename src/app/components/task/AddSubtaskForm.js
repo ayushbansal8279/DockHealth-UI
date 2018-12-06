@@ -19,7 +19,7 @@ class AddSubtaskForm extends BaseComponent{
         patientId: '',
         assignedTo: '',
         assignedToId: '',
-        priority: undefined,
+        priorityFlag: undefined,
         subtask: undefined
 		}
     this.baseState = this.state
@@ -46,7 +46,7 @@ class AddSubtaskForm extends BaseComponent{
   componentWillUpdate(nextProps){
     if(this.props.currentSubtask && this.props.currentSubtask != this.state.subtask){
       this.setState({subtask:this.props.currentSubtask})
-      this.setState({priority:this.props.currentSubtask.priority})
+      this.setState({priorityFlag: this.props.currentSubtask.priority === 'HIGH' })
     }
   }
 
@@ -105,7 +105,7 @@ class AddSubtaskForm extends BaseComponent{
       subtask.reminderDt = "";
     }
 
-    if(subtask.priority == true){
+    if(subtask.priorityFlag == true){
       subtask.priority = "HIGH"
     }else{
       subtask.priority = "LOW"
@@ -120,9 +120,9 @@ class AddSubtaskForm extends BaseComponent{
   }
 
   changeTaskPriority = () => {
-    var priority = !this.state.priority
-    this.setState({priority:priority})
-    this.props.formActions.change("addSubtaskForm", "priority", priority)
+    var priorityFlag = !this.state.priorityFlag
+    this.setState({priorityFlag: priorityFlag})
+    this.props.formActions.change("addSubtaskForm", "priorityFlag", priorityFlag)
   }
 
 
@@ -136,7 +136,7 @@ class AddSubtaskForm extends BaseComponent{
             <input {...input} className="input-group-field " type="text"/>
             <label>Task</label>
           </div>
-          <span onClick={() => this.changeTaskPriority()} className="input-group-label"><svg className={"icon flag medium " + (this.state.priority ? "" : "no-flag")}><use xlinkHref="#icon-flag"></use></svg></span>
+          <span onClick={() => this.changeTaskPriority()} className="input-group-label"><svg className={"icon flag medium " + (this.state.priorityFlag ? "" : "no-flag")}><use xlinkHref="#icon-flag"></use></svg></span>
         </div>
         {touched && error &&
           <span className="form-error">
@@ -164,7 +164,7 @@ class AddSubtaskForm extends BaseComponent{
           </div>
 
           {/* Task */}
-          <Field id="description-subtask" onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true" callback={this.changeTaskPriority} priority={this.state.priority}/>
+          <Field id="description-subtask" onChange={(e) => this.handleDescriptionChange(e)} name='description' type='text' component={BasicFieldTaskDescription} label='Task' xlinkHref="#icon-pencil" isTaskDescription="true" callback={this.changeTaskPriority} priority={this.state.priorityFlag}/>
           <Field id="taskId" name="taskId" className="input-group-field" component="input" type="hidden"/>
 
           {/* Task */}

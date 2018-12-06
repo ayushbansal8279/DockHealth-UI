@@ -16,14 +16,18 @@ import MemberInitials from '../common/MemberInitials'
 import {change} from 'redux-form'
 import Linkify from 'linkifyjs/react';
 
+var TASKS_PER_PAGE = 50
+
 class ListOfTasks extends BaseComponent {
+		
 		constructor(props) {
 	  	super(props)
 	  	this.state = {
 	    		value: '',
 	    		status: props.initialStatus,
 					currentComment: {},
-					viewMoreCommentIds: []
+					viewMoreComments: [],
+					viewMoreTasksIndex: TASKS_PER_PAGE
 	  	};
 	  	this.handleSubmit = this.handleSubmit.bind(this)
 			this.handleTaskCommentUpdate = this.handleTaskCommentUpdate.bind(this)
@@ -112,7 +116,7 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		componentWillUpdate (nextProps) {
-			console.log('ListOfTasks componentWillUpdate: '+nextProps)
+			// console.log('ListOfTasks componentWillUpdate: '+nextProps)
 		}
 
 		componentDidUpdate (prevProps, prevState) {
@@ -209,6 +213,7 @@ class ListOfTasks extends BaseComponent {
 			//.then((resp) => {
 				this.props.taskAction.getTaskHistory(task)
 			//})
+			closeDropdown("#task-edit-"+task.taskId)
 		}
 
 		deleteTask = (task) => {
@@ -296,10 +301,15 @@ class ListOfTasks extends BaseComponent {
 		}
 
 		handleViewMoreComments = (taskId) => {
-			var commentIds = this.state.viewMoreCommentIds
-			commentIds.push(taskId)
-			this.setState({viewMoreCommentIds:commentIds})
+			var taskIds = this.state.viewMoreComments
+			taskIds.push(taskId)
+			this.setState({viewMoreComments:taskIds})
 		}
+
+		handleViewMoreTasks = () => {
+			console.log('show more tasks')
+			this.setState({viewMoreTasksIndex: this.state.viewMoreTasksIndex + TASKS_PER_PAGE})
+		};
 
 		openAssignmentModal = (taskId) => {
 			openPopup("#edit-assign-to-"+taskId)
@@ -477,7 +487,7 @@ class ListOfTasks extends BaseComponent {
 								{/* {commentNodes} */}
 								{task.comments ? 
 									task.comments.map((comment, index) => {
-										if(this.state.viewMoreCommentIds.indexOf(task.taskId) == -1){
+										if(this.state.viewMoreComments.indexOf(task.taskId) == -1){
 											if (index == 3){
 												return <div className="more-comments" key={"comment_more_"+comment.commentId+"_"+index}><a onClick={(e) => this.handleViewMoreComments(task.taskId)}>View More Comments</a></div>
 											}else if (index > 3){
@@ -566,6 +576,14 @@ class ListOfTasks extends BaseComponent {
 			);
 			{/* GENERATE TASK END */}
 
+
+			if(index >= this.state.viewMoreTasksIndex){
+				if (index == this.state.viewMoreTasksIndex){
+					return <div key={"listTask"+task.taskId+"_"+index} className="more-tasks"><a onClick={(e) => this.handleViewMoreTasks()}>View More Tasks</a></div>
+				}else if (index >= this.state.viewMoreTasksIndex){
+					return ""
+				}
+			}
 			return(
 				<span key={"listTask"+task.taskId+"_"+index} id={"listTask"+task.taskId}>
 					{listTasks()}

@@ -87,10 +87,9 @@ class PersonTaskList extends BaseComponentWithFoundationUpdate {
             activeListMembers={this.props.activeListMembers}
           />
 
-          <div className="wrapper">
+          <div className="wrapper-search">
             <SortFilterTasks title="Person Tasks" getListTasks={this.getListTasks}/>
 
-            <div className="row expanded collapse">
             {this.props.isFetching ?
                   <div className="sk-circle">
                     <div className="sk-circle1 sk-child"></div>
@@ -108,7 +107,6 @@ class PersonTaskList extends BaseComponentWithFoundationUpdate {
                   </div>:
               <PersonTaskListContainer getCompletedTasks={this.getCompletedTasks}/>
             }
-            </div>
           </div>
         </div>
       );

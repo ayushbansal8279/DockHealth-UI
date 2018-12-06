@@ -479,6 +479,18 @@ pre.emailMessage {
   text-decoration: underline;
 }
 
+.more-tasks {
+  margin-left: -20px;
+  margin-top: 20px;
+}
+
+.more-tasks > a {
+  color:#0CA1C8;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 .inbox-message {
   text-align: center;
   background-color:white;
@@ -492,9 +504,11 @@ pre.emailMessage {
   flex: 1 0 auto;
   position: relative;
 }
-.left-column {
+.left-column-lists {
   /* top: 100px; */
   top: 9rem;
+}
+.left-column {
   position: relative;
   /* max-height: 100%; */
   /* padding: 0px 32px; */
@@ -506,8 +520,10 @@ pre.emailMessage {
   margin-top: 0;
   padding-right: 0;
 }
-.right-column {
+.right-column-lists {
   top: 9rem;
+}
+.right-column {
   /* position: relative; */
   /* min-height: 100%; */
   overflow-y: auto;
@@ -579,4 +595,12 @@ pre {
 .react-datepicker-wrapper  .react-datepicker__input-container,
 .react-datepicker-wrapper  .react-datepicker__input-container input {
   width: 100%;
+}
+
+.wrapper-search {
+  width: 100%;
+}
+
+.unenrolled-terms {
+  text-align: left;
 }

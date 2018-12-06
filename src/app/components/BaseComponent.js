@@ -20,7 +20,7 @@ class BaseComponent extends React.Component {
     var systemTimeout= parseInt(process.env.SYSTEM_TIMEOUT);
 
     if(sessionStorage.timeoutId != null || sessionStorage.timeoutId != undefined){
-      console.log("clearTimeout" + sessionStorage.timeoutId)
+      // console.log("clearTimeout" + sessionStorage.timeoutId)
       clearTimeout(sessionStorage.timeoutId);
       sessionStorage.setItem('timeoutId', null);
     }

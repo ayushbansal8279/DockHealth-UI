@@ -12,7 +12,7 @@ import BaseComponent from '../BaseComponent'
 class ListOfTasksContainer extends BaseComponent {
 
   componentDidMount () {
-    console.log('logged in user === '+this.props.user)
+    // console.log('logged in user === '+this.props.user)
 
 		mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
 						'PageName': 'ListOfTasks'

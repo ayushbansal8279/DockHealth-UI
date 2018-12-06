@@ -58,10 +58,10 @@ class Home extends BaseComponentWithFoundationUpdate {
   }
 
   refreshAccessToken(user){
-    var systemTimeout= 30000;
+    var systemTimeout= 1*60*1000;
 
-    if(sessionStorage.timeoutId != null || sessionStorage.timeoutId != undefined){
-      clearTimeout(sessionStorage.timeoutId);
+    if(sessionStorage.refreshAccessTokenTimeoutId != null || sessionStorage.refreshAccessTokenTimeoutId != undefined){
+      clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
       sessionStorage.setItem('refreshAccessTokenTimeoutId', null);
     }
     var comp = this;
@@ -287,7 +287,7 @@ class Home extends BaseComponentWithFoundationUpdate {
                 setTaskEditingStatus={this.setTaskEditingStatus}
               />
               <div className="tasks-container">
-              <div className={this.props.currentTaskHistory?"large-8 columns left-column":"large-12 columns left-column"}>
+              <div className={this.props.currentTaskHistory?"large-8 columns left-column left-column-lists":"large-12 columns left-column left-column-lists"}>
               
               <div className="list-wrapper">
                 {/* <h5>{this.props.isFetching}</h5> */}
@@ -341,7 +341,7 @@ class Home extends BaseComponentWithFoundationUpdate {
                 }
               </div>
               </div>
-              <div className="right-column">
+              <div className="right-column right-column-lists">
               {/* <div className="large-4 columns"> */}
                 <div className="list-wrapper">
                 <div className="task-item-wrapper">
