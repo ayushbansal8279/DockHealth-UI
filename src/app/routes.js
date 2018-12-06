@@ -19,6 +19,7 @@ import ChangePassword from './views/auth/ChangePassword'
 import ResetPassword from './views/auth/ResetPassword'
 import ConfirmMFACode from './views/auth/ConfirmMFACode'
 import UnEnrolledUser from './views/auth/UnEnrolledUser'
+import SelfEnrolledUser from './views/auth/SelfEnrolledUser'
 import PageNotFound from './views/PageNotFound'
 import ErrorPage from './views/ErrorPage'
 import TaskListView from './views/TaskListView'
@@ -90,13 +91,17 @@ export const Routes = (store) => {
           <Route path="/changePassword" component={ChangePassword} />
           <Route path="/resetPassword" component={ResetPassword} />
           <Route path="/confirmMFACode" component={ConfirmMFACode} />
-          <Route path="/unEnrolledUser" component={UnEnrolledUser} />
           <Route path="/pagenotfound" component={PageNotFound} />
           <Route path="/errorPage" component={ErrorPage} />
+          <Route path="/unEnrolledUser" component={UnEnrolledUser} />
         </Route>
+        
 
         <Route path="/register" component={Register} />
       </Route>
+
+      <Route path="/selfEnrolledUser" component={SelfEnrolledUser} />
+
     </Route>
   );
 }

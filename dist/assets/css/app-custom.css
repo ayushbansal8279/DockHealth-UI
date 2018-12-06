@@ -600,3 +600,7 @@ pre {
 .wrapper-search {
   width: 100%;
 }
+
+.unenrolled-terms {
+  text-align: left;
+}

@@ -108,6 +108,8 @@ class TemplateCore extends React.Component {
             // disable no invitation check
             if(!data.organizationId || data.organizationId==""){
               hashHistory.push('/unEnrolledUser');
+            }else if(data.personalOrganization && data.presentHippaAlert){
+              hashHistory.push('/selfEnrolledUser');
             }
             //userId, pictureType
             if(data.profileThumbnailPictureHash){
