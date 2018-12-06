@@ -54,10 +54,22 @@ const DatePickerInput = ({
           disabled={disabled}
           selected={input.value ? input.value : null}
           showTimeSelect
-          timeFormat="H:mm"
+          timeFormat="h:mm a"
           timeIntervals={30}
           dateFormat={dateFormat}
           timeCaption="time"
+          popperPlacement="right-end"
+          popperModifiers={{
+            offset: {
+              enabled: true,
+              offset: '2px, 5px'
+            },
+            preventOverflow: {
+              enabled: true,
+              escapeWithReference: false, // force popper to stay in viewport (even when input is scrolled out of view)
+              boundariesElement: 'viewport'
+            }
+          }}
         />
         <label htmlFor={input.name}>{label}</label>
 
