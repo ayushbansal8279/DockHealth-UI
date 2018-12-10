@@ -565,7 +565,7 @@ class ListOfTasks extends BaseComponent {
 			          {generateTask(subtask, index, "subtask")}
 								<BooleanModal message="Are you sure you want to delete this task?" confirmBtnTxt="Delete" uniqueModalId={"delete-task-"+subtask.taskId} handleConfirmationArgs={subtask} handleConfirmation={this.handleDeleteTask}/>
 								{subtask.taskList &&
-									<AssignToModal members={members} taskListId={subtask.taskList.taskListId} task={subtask} assignOrReassignTask={this.assignOrReassignTask}/>
+									<div><AssignToModal members={members} taskListId={subtask.taskList.taskListId} task={subtask} assignOrReassignTask={this.assignOrReassignTask}/></div>
 								}
 			          </span>
 			        )
@@ -602,7 +602,7 @@ class ListOfTasks extends BaseComponent {
 						handleConfirmationArgs={task} 
 						handleConfirmation={this.confirmCompleteTask}/>
 					{task.status == "INCOMPLETE" && task.taskList &&
-						<AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/>
+						<div><AssignToModal members={members} taskListId={task.taskList.taskListId} task={task} assignOrReassignTask={this.assignOrReassignTask}/></div>
 					}
 					</div>
 				</span>
