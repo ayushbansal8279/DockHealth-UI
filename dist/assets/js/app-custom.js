@@ -334,7 +334,10 @@ function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 		}
 	};
 
-	$("#add-member-to-list").easyAutocomplete(people);
+	var eacContainer = $("#eac-container-add-member-to-list");
+	if(people && people.data && people.data.length>0 && eacContainer && eacContainer.length==0){
+		$("#add-member-to-list").easyAutocomplete(people);
+	}
 
 }
 
