@@ -6,12 +6,10 @@ const SelectInput = ({
   label,
   options,
   id,
-  type,
   disabled,
   xlinkHref,
   extraClassName,
   decoratingClassName,
-  pattern,
   bufferClassName,
   meta: { touched, error },
 }) => (
@@ -32,8 +30,8 @@ const SelectInput = ({
           </svg>
         </span>
       )}
-
       {/* has input value (like when editing) makes label float */}
+      {console.log(input.value)}
       <div
         className={
           input.value
@@ -46,15 +44,12 @@ const SelectInput = ({
       >
         <ReactSelect
           {...input}
+          onBlur={() => {}}
           options={options}
-          value={options.find(el => el.value === input.value)}
-          onChange={val => val.value}
           id={id}
           className={extraClassName ? `input-group-field ${extraClassName}` : 'input-group-field'}
-          type={type}
-          placeholder=""
-          pattern={pattern}
           disabled={disabled}
+          placeholder=""
           styles={{
             container: provided => ({
               ...provided,

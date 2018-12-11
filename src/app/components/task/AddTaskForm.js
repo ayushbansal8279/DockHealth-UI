@@ -302,8 +302,8 @@ class AddTaskForm extends BaseComponent {
           )}
 
           <Field
-            id="status"
-            name="status"
+            id="task-status"
+            name="task-status"
             component={SelectInput}
             options={[
               { value: 'IN_PROGRESS', label: 'In Progress' },
