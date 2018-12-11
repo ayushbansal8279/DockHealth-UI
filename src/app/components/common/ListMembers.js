@@ -151,7 +151,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 									<span className="item-details highlight">Invited</span>
 									}
 								</div>
-								{this.props.currentUser.taskListUserRole != "MEMBER" && this.props.currentUser.username != member.email &&
+								{this.props.currentUser && this.props.currentUser.taskListUserRole != "MEMBER" && this.props.currentUser.username != member.email &&
 									<div className="columns shrink more-options-wrapper">
 										<svg className="icon ellipses medium" data-toggle={"more-options-list01-member-id-"+member.userId}><use xlinkHref="#icon-ellipses"></use></svg>
 										<div className="small dropdown-pane" id={"more-options-list01-member-id-"+member.userId} data-dropdown data-close-on-click="true">
