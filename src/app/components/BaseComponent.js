@@ -12,7 +12,7 @@ class BaseComponent extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     // enableFoundation();
     // console.log("BaseComponent didupdate")
-    this.doTimeoutValidations();
+    // this.doTimeoutValidations();
   }
 
   doTimeoutValidations(){
@@ -20,7 +20,7 @@ class BaseComponent extends React.Component {
     var systemTimeout= parseInt(process.env.SYSTEM_TIMEOUT);
 
     if(sessionStorage.timeoutId != null || sessionStorage.timeoutId != undefined){
-      // console.log("clearTimeout" + sessionStorage.timeoutId)
+      console.log((new Date())+": - clearTimeout" + sessionStorage.timeoutId)
       clearTimeout(sessionStorage.timeoutId);
       sessionStorage.setItem('timeoutId', null);
     }
