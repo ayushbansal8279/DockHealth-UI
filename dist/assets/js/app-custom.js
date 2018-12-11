@@ -634,7 +634,7 @@ $(document).ready(function() {
 
 	//ensure we remove these from app.js
 	// $('.form-floating-label input, .form-floating-label textarea').focusin(function(){
-	$(document).on('focusin', '.form-floating-label input, .form-floating-label textarea', function() {
+	$(document).on('focusin', '.form-floating-label input[type="text"], .form-floating-label textarea', function() {
 		$(this).closest('.form-floating-label').addClass('has-value');
 	});
 	
@@ -645,7 +645,7 @@ $(document).ready(function() {
 	// });
 
 	// $('.form-floating-label input, .form-floating-label textarea').blur(function(){
-	$(document).on('blur', '.form-floating-label input, .form-floating-label textarea', function() {
+	$(document).on('blur', '.form-floating-label input[type="text"], .form-floating-label textarea', function() {
 		if(!$(this).val().length > 0) {
 			//$(this).parent().removeClass('has-value');
 			$(this).closest('.form-floating-label').removeClass('has-value');

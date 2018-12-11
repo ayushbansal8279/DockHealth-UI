@@ -303,9 +303,11 @@ class AddTaskForm extends BaseComponent {
 
           <Field
             id="task-status"
-            name="task-status"
+            name="taskStatus"
             component={SelectInput}
             options={[
+              // { value: 'INCOMPLETE', label: 'INCOMPLETE' },
+              // { value: 'COMPLETE', label: 'COMPLETE' },
               { value: 'IN_PROGRESS', label: 'In Progress' },
               { value: 'PAUSED', label: 'Paused' },
               { value: 'WAITING', label: 'Waiting' },
@@ -429,6 +431,9 @@ const mapStateToProps = (store) => {
     }
     if (editTask.status) {
       initialTaskFormValues.status = editTask.status;
+    }
+    if (editTask.taskStatus) {
+      initialTaskFormValues.taskStatus = editTask.taskStatus;
     }
     if (editTask.priority) {
       if (editTask.priority === 'HIGH') {

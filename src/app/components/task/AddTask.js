@@ -106,6 +106,7 @@ class AddTask extends BaseComponent {
     }
 
     payload.status = form.status.value;
+    payload.taskStatus = form.taskStatus.value;
 
     if ($('#filed-in-taskList').val()) {
       if (
