@@ -15,6 +15,7 @@ import BooleanModal from '../common/BooleanModal'
 import MemberInitials from '../common/MemberInitials'
 import {change} from 'redux-form'
 import Linkify from 'linkifyjs/react';
+import { Link } from 'react-router';
 
 var TASKS_PER_PAGE = 50
 
@@ -463,7 +464,7 @@ class ListOfTasks extends BaseComponent {
 							{/* <span onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task-popup" data-open="add-form-popup"> */}
 							<span onClick={(e) => this.handleToggleForEditTask(task)} className="edit-task">							
 								{(type != 'subtask') &&
-				        <span className="task-patient text-em">{task.patient ? task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : String.fromCharCode("8212")}</span>
+				        <span className="task-patient text-em">{task.patient ? <Link to={`/patient/${task.patient.patientId}`}>{`${task.patient.firstName} ${task.patient.lastName}, ${task.patient.mrn}`}</Link> : String.fromCharCode("8212")}</span>
 								}
 								<span className="subtask-count text-light">{task.subtasks && task.subtasks.length + " subtasks"} {task.patient ? ' | ' + task.patient.firstName + ' ' + task.patient.lastName + ', ' + task.patient.mrn : ""} {task.dueDate && <span className={((new Date(task.dueDate) < new Date()) ? "overdue" : "")}> | <svg className="icon small"><use xlinkHref="#icon-calendar"></use></svg>&nbsp;{formatDateAndTime(task.dueDate)}</span>} </span>
 								
