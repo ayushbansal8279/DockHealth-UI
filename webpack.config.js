@@ -27,7 +27,7 @@ exposed.forEach((i) => {
 });
 
 const config = {
-  entry: ['babel-polyfill', `${APP_DIR}/index.js`],
+  entry: ['@babel/polyfill', `${APP_DIR}/index.js`],
   devtool: 'source-map',
   output: {
     path: BUILD_DIR,
