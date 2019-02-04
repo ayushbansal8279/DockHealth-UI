@@ -1,6 +1,6 @@
 import * as ActionTypes from './action-types';
-import * as TaskListApi from '../api/tasklist-api'
-import * as UserApi from '../api/user-api'
+import * as TaskListApi from '../api/tasklist-api';
+import * as UserApi from '../api/user-api';
 
 
 //Find all TaskLists user belongs to

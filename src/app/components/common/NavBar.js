@@ -81,8 +81,8 @@ class NavBar extends React.Component {
           <li>
             <Link to='/activityfeed' className="center-content-vertical"><svg className="icon medium"><use xlinkHref="#icon-activity"></use></svg>Activity</Link>
             <ul className="nested vertical menu">
-              <NavLink activeClassName="active" to={"/tasks/Assigned to me"}>Assigned to me</NavLink>
-              <NavLink activeClassName="active" to={"/tasks/Assigned by me"}>Assigned by me</NavLink>
+              <NavLink activeClassName="active" to="/tasks/assigned_to_me">Assigned to me</NavLink>
+              <NavLink activeClassName="active" to="/tasks/assigned_by_me">Assigned by me</NavLink>
             </ul>
           </li>
           <NavLink to='/taskSearch' id="search-link" className={"center-content-vertical "}><svg className="icon medium"><use xlinkHref="#icon-search"></use></svg>Search</NavLink>

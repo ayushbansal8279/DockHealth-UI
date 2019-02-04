@@ -9,67 +9,54 @@ import * as PatientActions from '../actions/patient-actions';
 import * as userApi from '../api/user-api';
 import { downloadPDF } from '../api/tasklist-api';
 
-class Home extends React.Component {
+class AssignedToMe extends React.Component {
   componentDidMount() {
     const {
-      user, routeParams, actions, taskListActions,
+      user, actions,
     } = this.props;
 
     this.refreshAccessToken(user);
     actions.loading();
-    taskListActions.getTaskListById(routeParams.taskListId);
-    actions.getListTasks(routeParams.taskListId, undefined, undefined, 'INCOMPLETE');
-    if (routeParams.taskListId) {
-      taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL');
-    }
-    taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId);
+    actions.getTasksAssignedToMe(undefined, undefined, undefined, 'INCOMPLETE');
   }
 
   componentWillUpdate(nextProps) {
     const { routeParams } = this.props;
 
     if (nextProps.routeParams.listName !== routeParams.listName) {
-      const { actions, taskListActions } = this.props;
-      const { listName } = nextProps.routeParams;
+      const { actions } = this.props;
 
       actions.loading();
-      if (listName != null && nextProps.routeParams.taskListId != null) {
-        taskListActions.getTaskListById(nextProps.routeParams.taskListId);
-        actions.getListTasks(nextProps.routeParams.taskListId, undefined, undefined, 'INCOMPLETE');
-        if (nextProps.routeParams.taskListId) {
-          taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, 'ALL');
-        }
-        taskListActions.getOrganizationUsersNotInTaskList(nextProps.routeParams.taskListId);
-      }
+      actions.getTasksAssignedToMe(undefined, undefined, undefined, 'INCOMPLETE');
     }
   }
 
   refresh = () => {
     const {
       actions,
-      routeParams,
-      taskListActions,
       patientActions,
     } = this.props;
 
     actions.loading();
-    actions.getListTasks(routeParams.taskListId, undefined, undefined, 'INCOMPLETE');
-    if (routeParams.taskListId) {
-      taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL');
-    }
-    taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId);
+    actions.getTasksAssignedToMe(undefined, undefined, undefined, 'INCOMPLETE');
     patientActions.getAllPatients();
   }
 
   pullCompletedTasks = () => {
-    const { showingCompletedTasks, actions, routeParams } = this.props;
+    const { showingCompletedTasks, actions } = this.props;
 
     if (!showingCompletedTasks) {
       actions.loadingCompletedTasks();
-      actions.getListTasks(routeParams.taskListId, undefined, undefined, 'COMPLETE');
+      actions.getTasksAssignedToMe(undefined, undefined, undefined, 'COMPLETE');
     } else {
       actions.hideCompletedTasks();
     }
+  }
+
+  closeAuditHistory = () => {
+    const { actions } = this.props;
+    actions.storeAsCurrentTask(null);
+    // actions.clearCurrentTaskHistory();
   }
 
   downloadPDF = () => {
@@ -81,11 +68,11 @@ class Home extends React.Component {
   }
 
   handleFilterChange = (filterBy, sortBy) => {
-    const { actions, routeParams: { taskListId } } = this.props;
+    const { actions } = this.props;
 
     actions.loading();
-    actions.getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE');
-    actions.getListTasks(taskListId, sortBy, filterBy, 'COMPLETE');
+    actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE');
+    actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE');
   }
 
   handleSearch = () => {
@@ -118,22 +105,15 @@ class Home extends React.Component {
 
   render() {
     const {
-      members,
       tasks,
       completedTasks,
       isFetching,
       isCompletedTasksFetching,
       showingCompletedTasks,
       actions: { markComplete },
-      tasklists,
-      routeParams: { taskListId },
     } = this.props;
 
-    const loadedTasklist = tasklists.find(t => `${t.taskListId}` === taskListId);
-    const title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
-
     const taskViewProps = {
-      members,
       tasks,
       completedTasks,
       isFetching,
@@ -144,7 +124,7 @@ class Home extends React.Component {
       onFilter: this.filter,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
-      title,
+      title: 'Assigned to me',
     };
 
     return <TaskView {...taskViewProps} />;
@@ -152,7 +132,6 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = store => ({
-  tasklists: store.taskListState.tasklist,
   members: store.taskListState.tasklistmembers,
   tasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
@@ -171,4 +150,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(AssignedToMe);
