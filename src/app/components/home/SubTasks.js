@@ -44,7 +44,7 @@ const StyledContainer = styled.div`
   border-top: none;
 `;
 
-const StyledBar = styled(ButtonBase)`
+const StyledBar = styled(({ isCollapsed, ...rest }) => <ButtonBase {...rest} />)`
   && {
     display: flex;
     flex-direction: row;

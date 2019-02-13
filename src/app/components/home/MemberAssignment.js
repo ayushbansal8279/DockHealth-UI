@@ -55,7 +55,7 @@ const MemberAssignment = ({ member, onClick, small }) => (
 );
 
 MemberAssignment.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   member: PropTypes.shape({
     userId: PropTypes.number,
     profileThumbnailPictureHash: PropTypes.string,
@@ -67,6 +67,7 @@ MemberAssignment.propTypes = {
 
 MemberAssignment.defaultProps = {
   member: null,
+  onClick: null,
 };
 
 export default MemberAssignment;

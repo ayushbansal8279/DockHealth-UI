@@ -61,7 +61,7 @@ StyledTaskDescription.defaultProps = {
   completed: false,
 };
 
-const TaskList = ({ tasks = [], markComplete }) => (
+const TaskList = ({ tasks = [], markComplete, members }) => (
   <StyledTable padding="dense">
     <StyledTableHead>
       <StyledTableRow>
@@ -82,7 +82,7 @@ const TaskList = ({ tasks = [], markComplete }) => (
     {tasks.length === 0
       ? <tbody><tr><td colSpan="9" style={{ textAlign: 'center', height: '32' }}>List is empty.</td></tr></tbody>
       : tasks.map(task => (
-        <Task task={task} markComplete={markComplete} key={task.taskId} />
+        <Task task={task} markComplete={markComplete} members={members} key={task.taskId} />
       ))}
   </StyledTable>
 );

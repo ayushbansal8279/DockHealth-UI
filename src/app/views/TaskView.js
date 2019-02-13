@@ -86,7 +86,8 @@ class TaskView extends React.Component {
 
   }
 
-  renderTasklists = (tasks, markComplete) => {
+  renderTasklists = () => {
+    const { tasks, markComplete } = this.props;
     const groupedTasks = groupBy(tasks, task => (task.taskList ? task.taskList.listName : ''));
     const tasklistCount = Array.from(groupedTasks.keys()).length;
 
@@ -139,7 +140,7 @@ class TaskView extends React.Component {
 
   render() {
     const {
-      tasks, isFetching, markComplete, downloadPDF, title, members,
+      tasks, isFetching, downloadPDF, title, members,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -191,7 +192,7 @@ class TaskView extends React.Component {
               )
               : (
                 <TaskListContainer>
-                  {this.renderTasklists(tasks, markComplete)}
+                  {this.renderTasklists()}
                   {this.renderCompleted()}
                 </TaskListContainer>
               )}

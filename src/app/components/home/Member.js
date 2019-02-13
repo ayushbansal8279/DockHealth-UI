@@ -48,17 +48,19 @@ const Member = ({
     color,
   };
 
-  return (
-    <StyledButtonBase onClick={onClick} style={style}>
-      <StyledAvatar {...avatarProps} className={className}>
-        {children || (!member.profileThumbnailPictureHash && member.initials)}
-      </StyledAvatar>
-    </StyledButtonBase>
+  const avatar = (
+    <StyledAvatar {...avatarProps} className={className}>
+      {children || (!member.profileThumbnailPictureHash && member.initials)}
+    </StyledAvatar>
   );
+
+  return onClick
+    ? <StyledButtonBase onClick={onClick} style={style}>{avatar}</StyledButtonBase>
+    : <div>{avatar}</div>;
 };
 
 Member.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   member: PropTypes.shape({
     userId: PropTypes.number,
     firstName: PropTypes.string,
@@ -70,6 +72,7 @@ Member.propTypes = {
 
 Member.defaultProps = {
   member: null,
+  onClick: null,
 };
 
 export default Member;

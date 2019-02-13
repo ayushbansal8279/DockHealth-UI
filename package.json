@@ -74,7 +74,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
     "exports-loader": "^0.6.3",
-    "file-loader": "^0.10.0",
+    "file-loader": "^3.0.1",
     "html-webpack-plugin": "^3.2.0",
     "json-loader": "^0.5.4",
     "prettier": "^1.15.3",
