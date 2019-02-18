@@ -160,6 +160,7 @@ class TaskView extends React.Component {
       storeAsCurrentTask,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
+      selectedTaskId,
     };
 
     return (
