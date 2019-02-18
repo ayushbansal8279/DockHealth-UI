@@ -130,7 +130,7 @@ const Task = ({
           checked={task.status === 'COMPLETE'}
           onChange={(event) => {
             const status = event.target.checked ? 'INCOMPLETE' : 'COMPLETE';
-            markComplete(task, status, 'INCOMPLETE');
+            markComplete(task, status);
           }}
           onClick={(e) => { e.stopPropagation(); }}
         />

@@ -105,7 +105,7 @@ class TaskView extends React.Component {
 
     const tasklistProps = {
       tasks,
-      markComplete,
+      markComplete: (task, status) => { markComplete(task, status, 'INCOMPLETE'); },
       storeAsCurrentTask,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
@@ -156,7 +156,7 @@ class TaskView extends React.Component {
     const isCollapsed = selectedTaskId != null;
     const tasklistProps = {
       tasks: completedTasks,
-      markComplete,
+      markComplete: (task, status) => { markComplete(task, status, 'COMPLETE'); },
       storeAsCurrentTask,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
