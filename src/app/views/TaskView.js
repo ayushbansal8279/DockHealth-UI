@@ -178,7 +178,8 @@ class TaskView extends React.Component {
 
     const taskId = selectedTaskId != null && selectedTaskId;
     const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
-    const allTasks = [...unfinishedTasks, ...completedTasks];
+    const finishedTasks = completedTasks.flatMap(task => [task, ...task.subtasks]);
+    const allTasks = [...unfinishedTasks, ...finishedTasks];
     const task = allTasks.find(t => t.taskId === taskId);
 
     return (
