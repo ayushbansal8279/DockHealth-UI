@@ -14,6 +14,7 @@ import Search from '../components/Search';
 import Header from '../components/home/Header';
 import AddTask from '../components/home/AddTask';
 import TaskList from '../components/home/TaskList';
+import TaskDetails from '../components/home/TaskDetails';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -37,6 +38,7 @@ const FadeContainer = styled.div`
 
 const TaskListContainer = styled.div`
   padding: 0 8px;
+  flex: 1;
 `;
 
 const StyledButton = styled(ButtonBase)`
@@ -86,20 +88,39 @@ class TaskView extends React.Component {
 
   }
 
+  handleClose = () => {
+    const { storeAsCurrentTask } = this.props;
+    storeAsCurrentTask(null);
+  }
+
   renderTasklists = () => {
-    const { tasks, markComplete } = this.props;
+    const {
+      tasks, markComplete, storeAsCurrentTask, selectedTaskId,
+    } = this.props;
+
     const groupedTasks = groupBy(tasks, task => (task.taskList ? task.taskList.listName : ''));
     const tasklistCount = Array.from(groupedTasks.keys()).length;
 
+    const isCollapsed = selectedTaskId != null;
+
+    const tasklistProps = {
+      tasks,
+      markComplete,
+      storeAsCurrentTask,
+      hideDate: isCollapsed,
+      hideTags: isCollapsed,
+      selectedTaskId,
+    };
+
     if (tasks.length === 0 || tasklistCount <= 1) {
-      return <TaskList tasks={tasks} markComplete={markComplete} />;
+      return <TaskList {...tasklistProps} />;
     }
 
     return (
       Array.from(groupedTasks.keys()).map(taskListId => (
         <React.Fragment key={taskListId}>
           <h5>{taskListId}</h5>
-          <TaskList tasks={groupedTasks.get(taskListId)} markComplete={markComplete} />
+          <TaskList {...tasklistProps} />
         </React.Fragment>
       ))
     );
@@ -112,6 +133,8 @@ class TaskView extends React.Component {
       showingCompletedTasks,
       markComplete,
       pullCompletedTasks,
+      selectedTaskId,
+      storeAsCurrentTask,
     } = this.props;
 
     if (!showingCompletedTasks) {
@@ -130,19 +153,33 @@ class TaskView extends React.Component {
       return <StyledButton onClick={pullCompletedTasks}>No completed tasks</StyledButton>;
     }
 
+    const isCollapsed = selectedTaskId != null;
+    const tasklistProps = {
+      tasks: completedTasks,
+      markComplete,
+      storeAsCurrentTask,
+      hideDate: isCollapsed,
+      hideTags: isCollapsed,
+    };
+
     return (
       <React.Fragment>
         <StyledButton onClick={pullCompletedTasks}>Hide completed tasks</StyledButton>
-        <TaskList tasks={completedTasks} markComplete={markComplete} />
+        <TaskList {...tasklistProps} />
       </React.Fragment>
     );
   }
 
   render() {
     const {
-      tasks, isFetching, downloadPDF, title, members,
+      tasks, completedTasks, isFetching, selectedTaskId, downloadPDF, title, members, markComplete, toggleTaskPriority,
     } = this.props;
     const { filterBy } = this.state;
+
+    const taskId = selectedTaskId != null && selectedTaskId;
+    const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
+    const allTasks = [...unfinishedTasks, ...completedTasks];
+    const task = allTasks.find(t => t.taskId === taskId);
 
     return (
       <div className="off-canvas-content" data-off-canvas-content="true">
@@ -161,7 +198,7 @@ class TaskView extends React.Component {
                 value={filterBy}
                 options={[
                   { value: '', description: 'Unfiltered' },
-                  { value: 'ASSIGNED_TO_ME', description: 'Assigned to me' }, // TODO: 
+                  { value: 'ASSIGNED_TO_ME', description: 'Assigned to me' }, // TODO:
                   { value: 'CREATED_BY_ME', description: 'Created by me' },
                   { value: 'OVERDUE', description: 'Overdue' },
                   { value: 'DUE_TODAY', description: 'Due Today' },
@@ -191,10 +228,13 @@ class TaskView extends React.Component {
                 </FadeContainer>
               )
               : (
-                <TaskListContainer>
-                  {this.renderTasklists()}
-                  {this.renderCompleted()}
-                </TaskListContainer>
+                <div style={{ display: 'flex' }}>
+                  <TaskListContainer>
+                    {this.renderTasklists()}
+                    {this.renderCompleted()}
+                  </TaskListContainer>
+                  {task && <TaskDetails selectedTask={task} close={this.handleClose} markComplete={markComplete} toggleTaskPriority={toggleTaskPriority} />}
+                </div>
               )}
           </div>
         </div>

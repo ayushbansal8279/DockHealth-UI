@@ -31,10 +31,6 @@ const StyledTable = styled(Table)`
     border: none;
     border-collapse: collapse;
     padding: 0 8px;
-
-    tbody {
-      background-color: #f5f8fa;
-    }
   }
 `;
 
@@ -122,6 +118,10 @@ class Subtasks extends React.Component {
     this.setState({ isCollapsed: !isCollapsed });
   }
 
+  captureClicks = (e) => {
+    e.stopPropagation();
+  }
+
   renderCollapsed = () => {
     const { subtasks } = this.props;
 
@@ -141,7 +141,9 @@ class Subtasks extends React.Component {
   }
 
   renderExpanded = () => {
-    const { subtasks, markComplete } = this.props;
+    const {
+      subtasks, markComplete, storeAsCurrentTask, hideDate, hideTags, selectedTaskId,
+    } = this.props;
 
     return (
       <div>
@@ -158,7 +160,16 @@ class Subtasks extends React.Component {
           <TableContainer>
             <StyledTable padding="dense">
               {subtasks.map(subtask => (
-                <Task task={subtask} markComplete={markComplete} key={subtask.taskId} isSubtask />
+                <Task
+                  task={subtask}
+                  markComplete={markComplete}
+                  key={subtask.taskId}
+                  isSubtask
+                  storeAsCurrentTask={storeAsCurrentTask}
+                  hideDate={hideDate}
+                  hideTags={hideTags}
+                  selectedTaskId={selectedTaskId}
+                />
               ))}
             </StyledTable>
           </TableContainer>
@@ -175,7 +186,7 @@ class Subtasks extends React.Component {
     const { isCollapsed } = this.state;
 
     return (
-      <StyledRow>
+      <StyledRow onClick={this.captureClicks}>
         <StyledCell colSpan={9}>
           { isCollapsed ? this.renderCollapsed() : this.renderExpanded() }
         </StyledCell>

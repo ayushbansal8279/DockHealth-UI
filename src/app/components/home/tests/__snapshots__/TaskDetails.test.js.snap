@@ -1,0 +1,355 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaskDetails should render complete status 1`] = `
+<StyledCheckbox
+  checked={true}
+  onChange={[Function]}
+/>
+`;
+
+exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
+<DetailsContainer>
+  <StickyContainer>
+    <DetailsBox>
+      <DetailsHeader>
+        <BookmarkContainer>
+          <Bookmark
+            isActive={false}
+            onClick={[Function]}
+          />
+        </BookmarkContainer>
+        <StatusContainer>
+          Status 
+          <StatusSelect
+            onChange={[Function]}
+            options={
+              Array [
+                Object {
+                  "description": "Blocked",
+                  "value": "HIGH",
+                },
+                Object {
+                  "description": "On Hold",
+                  "value": "MEDIUM",
+                },
+              ]
+            }
+            value="HIGH"
+          />
+        </StatusContainer>
+        <StyledCloseButton
+          onClick={[MockFunction]}
+        >
+          ✕
+        </StyledCloseButton>
+      </DetailsHeader>
+      <table>
+        <tr>
+          <StyledLabel>
+            <strong>
+              Assigned to 
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Connect(MemberPicker)
+              member={
+                Object {
+                  "firstName": "John",
+                  "initials": "JS",
+                  "lastName": "Smith",
+                }
+              }
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": null,
+                  "status": "INCOMPLETE",
+                  "subtasks": null,
+                  "taskId": 0,
+                }
+              }
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            <StyledCheckbox
+              checked={false}
+              onChange={[Function]}
+            />
+          </StyledLabel>
+          <StyledDescription>
+            Just do it.
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            Patient 
+          </StyledLabel>
+          <StyledDescription>
+            None
+          </StyledDescription>
+        </tr>
+      </table>
+    </DetailsBox>
+  </StickyContainer>
+</DetailsContainer>
+`;
+
+exports[`TaskDetails should render disabled flag 1`] = `
+<Bookmark
+  isActive={false}
+  onClick={[Function]}
+/>
+`;
+
+exports[`TaskDetails should render enabled flag 1`] = `
+<Bookmark
+  isActive={true}
+  onClick={[Function]}
+/>
+`;
+
+exports[`TaskDetails should render incomplete status 1`] = `
+<StyledCheckbox
+  checked={false}
+  onChange={[Function]}
+/>
+`;
+
+exports[`TaskDetails should render patient 1`] = `
+<DetailsContainer>
+  <StickyContainer>
+    <DetailsBox>
+      <DetailsHeader>
+        <BookmarkContainer>
+          <Bookmark
+            isActive={false}
+            onClick={[Function]}
+          />
+        </BookmarkContainer>
+        <StatusContainer>
+          Status 
+          <StatusSelect
+            onChange={[Function]}
+            options={
+              Array [
+                Object {
+                  "description": "Blocked",
+                  "value": "HIGH",
+                },
+                Object {
+                  "description": "On Hold",
+                  "value": "MEDIUM",
+                },
+              ]
+            }
+            value="HIGH"
+          />
+        </StatusContainer>
+        <StyledCloseButton
+          onClick={[MockFunction]}
+        >
+          ✕
+        </StyledCloseButton>
+      </DetailsHeader>
+      <table>
+        <tr>
+          <StyledLabel>
+            <strong>
+              Assigned to 
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Connect(MemberPicker)
+              member={
+                Object {
+                  "firstName": "John",
+                  "initials": "JS",
+                  "lastName": "Smith",
+                }
+              }
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": Object {
+                    "firstName": "Jane",
+                    "lastName": "Doe",
+                    "mrn": "1234567",
+                  },
+                  "status": "INCOMPLETE",
+                  "subtasks": null,
+                  "taskId": 0,
+                }
+              }
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            <StyledCheckbox
+              checked={false}
+              onChange={[Function]}
+            />
+          </StyledLabel>
+          <StyledDescription>
+            Just do it.
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            Patient 
+          </StyledLabel>
+          <StyledDescription>
+            <Patient
+              patient={
+                Object {
+                  "firstName": "Jane",
+                  "lastName": "Doe",
+                  "mrn": "1234567",
+                }
+              }
+            />
+          </StyledDescription>
+        </tr>
+      </table>
+    </DetailsBox>
+  </StickyContainer>
+</DetailsContainer>
+`;
+
+exports[`TaskDetails should render subtasks 1`] = `
+<DetailsContainer>
+  <StickyContainer>
+    <DetailsBox>
+      <DetailsHeader>
+        <BookmarkContainer>
+          <Bookmark
+            isActive={false}
+            onClick={[Function]}
+          />
+        </BookmarkContainer>
+        <StatusContainer>
+          Status 
+          <StatusSelect
+            onChange={[Function]}
+            options={
+              Array [
+                Object {
+                  "description": "Blocked",
+                  "value": "HIGH",
+                },
+                Object {
+                  "description": "On Hold",
+                  "value": "MEDIUM",
+                },
+              ]
+            }
+            value="HIGH"
+          />
+        </StatusContainer>
+        <StyledCloseButton
+          onClick={[MockFunction]}
+        >
+          ✕
+        </StyledCloseButton>
+      </DetailsHeader>
+      <table>
+        <tr>
+          <StyledLabel>
+            <strong>
+              Assigned to 
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Connect(MemberPicker)
+              member={
+                Object {
+                  "firstName": "John",
+                  "initials": "JS",
+                  "lastName": "Smith",
+                }
+              }
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": null,
+                  "status": "INCOMPLETE",
+                  "subtasks": Array [
+                    Object {
+                      "id": 0,
+                    },
+                    Object {
+                      "id": 1,
+                    },
+                  ],
+                  "taskId": 0,
+                }
+              }
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            <StyledCheckbox
+              checked={false}
+              onChange={[Function]}
+            />
+          </StyledLabel>
+          <StyledDescription>
+            Just do it.
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            Patient 
+          </StyledLabel>
+          <StyledDescription>
+            None
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            <strong>
+              Subtasks (2)
+            </strong>
+          </StyledLabel>
+        </tr>
+      </table>
+    </DetailsBox>
+  </StickyContainer>
+</DetailsContainer>
+`;

@@ -61,7 +61,9 @@ StyledTaskDescription.defaultProps = {
   completed: false,
 };
 
-const TaskList = ({ tasks = [], markComplete, members }) => (
+const TaskList = ({
+  tasks = [], markComplete, storeAsCurrentTask, hideDate, hideTags, selectedTaskId,
+}) => (
   <StyledTable padding="dense">
     <StyledTableHead>
       <StyledTableRow>
@@ -74,15 +76,23 @@ const TaskList = ({ tasks = [], markComplete, members }) => (
         <StyledTableCell align="center">ASSIGNED</StyledTableCell>
         <StyledTableCell><strong>TASK</strong></StyledTableCell>
         <StyledTableCell>PATIENT</StyledTableCell>
-        <StyledTableCell>DUE DATE</StyledTableCell>
-        <StyledTableCell>TAGS</StyledTableCell>
+        {!hideDate && <StyledTableCell>DUE DATE</StyledTableCell>}
+        {!hideTags && <StyledTableCell>TAGS</StyledTableCell>}
         <StyledTableCell align="center" style={{ width: 64 }} />
       </StyledTableRow>
     </StyledTableHead>
     {tasks.length === 0
       ? <tbody><tr><td colSpan="9" style={{ textAlign: 'center', height: '32' }}>List is empty.</td></tr></tbody>
       : tasks.map(task => (
-        <Task task={task} markComplete={markComplete} members={members} key={task.taskId} />
+        <Task
+          task={task}
+          markComplete={markComplete}
+          storeAsCurrentTask={storeAsCurrentTask}
+          hideDate={hideDate}
+          hideTags={hideTags}
+          selectedTaskId={selectedTaskId}
+          key={task.taskId}
+        />
       ))}
   </StyledTable>
 );

@@ -58,6 +58,7 @@ const HeaderClose = styled.div`
   padding: 4px;
   font-size: 14px;
   color: #fff;
+  font-weight: bold;
 `;
 
 const HeaderTitle = styled.strong`
@@ -167,6 +168,7 @@ class MemberPicker extends React.Component {
   }
 
   handleOpen = (e) => {
+    e.stopPropagation();
     const { members } = this.props;
     if (members == null) { return; }
     this.setState({ anchorEl: e.currentTarget });
@@ -186,13 +188,17 @@ class MemberPicker extends React.Component {
     this.setState({ searchTerm: e.target.value });
   }
 
+  captureClicks = (e) => {
+    e.stopPropagation();
+  }
+
   renderHeader = () => {
     const { task } = this.props;
 
     return (
       <Header>
         <IconButton onClick={this.handleClose} aria-label="Close user selection">
-          <HeaderClose>X</HeaderClose>
+          <HeaderClose>✕</HeaderClose>
         </IconButton>
         <img src={PersonAssignment} style={{ marginLeft: 5 }} alt="" />
         <HeaderTitle>
@@ -258,6 +264,7 @@ class MemberPicker extends React.Component {
       <React.Fragment>
         <MemberAssignment onClick={this.handleOpen} member={member} small={small} />
         <StyledPopover
+          onClick={this.captureClicks}
           open={isOpen}
           anchorEl={anchorEl}
           onClose={this.handleClose}
@@ -272,9 +279,19 @@ class MemberPicker extends React.Component {
         >
           {isSearching ? this.renderSearchHeader() : this.renderHeader()}
           <List>
-            <ListItem selected={member == null} onClick={this.handleSelect} id={UNASSIGNED_MEMBER_ID} />
+            <ListItem
+              selected={member == null}
+              onClick={this.handleSelect}
+              id={UNASSIGNED_MEMBER_ID}
+            />
             {sortedMembers && sortedMembers.map(m => (
-              <ListItem member={m} key={m.userId} selected={member && m.userId === member.userId} onClick={this.handleSelect} id={m.userId} />
+              <ListItem
+                member={m}
+                key={m.userId}
+                selected={member && m.userId === member.userId}
+                onClick={this.handleSelect}
+                id={m.userId}
+              />
             ))}
           </List>
           <Footer onClick={() => {}} focusRipple>

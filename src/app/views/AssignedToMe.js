@@ -105,12 +105,14 @@ class AssignedToMe extends React.Component {
 
   render() {
     const {
+      user,
       tasks,
       completedTasks,
       isFetching,
       isCompletedTasksFetching,
       showingCompletedTasks,
-      actions: { markComplete },
+      selectedTaskId,
+      actions: { markComplete, storeAsCurrentTask, toggleTaskPriority },
     } = this.props;
 
     const taskViewProps = {
@@ -120,6 +122,9 @@ class AssignedToMe extends React.Component {
       isCompletedTasksFetching,
       showingCompletedTasks,
       markComplete,
+      selectedTaskId,
+      storeAsCurrentTask,
+      toggleTaskPriority: (task, priority) => toggleTaskPriority(task, user.userId, priority),
       pullCompletedTasks: this.pullCompletedTasks,
       onFilter: this.filter,
       refresh: this.refresh,
@@ -139,7 +144,7 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   showingCompletedTasks: store.taskState.showingCompletedTasks,
   user: store.userState.user,
-  selectedTask: store.taskState.selectedTask,
+  selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
 });
 

@@ -15,15 +15,33 @@ import Subtasks from './SubTasks';
 import Tag from './Tag';
 import SquareTag from './SquareTag';
 import Bookmark from './Bookmark';
+import Patient from './Patient';
 
-const StyledTableBody = styled(TableBody)`
+const StyledTableBody = styled(({ isSubtask, isSelected, ...rest }) => <TableBody {...rest} />)`
   && {
     border: none;
-    border-bottom: 8px solid rgba(100,255,255,0);
+    border-bottom: 8px solid  rgba(100,255,255,0);
     background-clip: padding-box;
     background-color: #fff;
+    cursor: pointer;
+    ${({ isSubtask }) => isSubtask && 'background-color: #f5f8fa;'}
+    ${({ isSelected }) => isSelected && 'background-color: rgba(166, 220, 234, 0.39);'}
+
+    :hover {
+      background-color: rgba(166, 220, 234, 0.39);
+    }
   }
 `;
+
+StyledTableBody.propTypes = {
+  isSubtask: PropTypes.bool,
+  isSelected: PropTypes.bool,
+};
+
+StyledTableBody.defaultProps = {
+  isSubtask: false,
+  isSelected: false,
+};
 
 const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
   && {
@@ -95,37 +113,30 @@ const Comments = ({ comments }) => {
     </StyledTaskCommentCount>);
 };
 
-const Patient = ({ patient }) => (
-  patient && (
-    <StyledTaskDescription>
-      <Link to={`#/patient/${patient.patientId}`}>
-        {`${patient.lastName}, ${patient.firstName}`}
-        <br />
-        {patient.mrn}
-      </Link>
-    </StyledTaskDescription>
-  )
-);
-
 const Task = ({
-  task, markComplete, isSubtask,
+  task, markComplete, storeAsCurrentTask, isSubtask, hideDate, hideTags, selectedTaskId,
 }) => (
-  <StyledTableBody>
+  <StyledTableBody
+    isSubtask={isSubtask}
+    isSelected={selectedTaskId === task.taskId}
+    onClick={(e) => { e.stopPropagation(); storeAsCurrentTask(task.taskId); }}
+  >
     <TableRow>
       <StyledTableCell align="center" style={{ width: 36 }}>
         <Priority priority={task.priority} />
       </StyledTableCell>
       <StyledTableCell align="center" style={{ width: 36 }}>
         <StyledCheckbox
-          defaultChecked={task.status === 'COMPLETE'}
+          checked={task.status === 'COMPLETE'}
           onChange={(event) => {
             const status = event.target.checked ? 'INCOMPLETE' : 'COMPLETE';
             markComplete(task, status, 'INCOMPLETE');
           }}
+          onClick={(e) => { e.stopPropagation(); }}
         />
       </StyledTableCell>
       <StyledTableCell align="center" style={{ width: 72 }}>
-        <MemberPicker task={task} member={task.assignedTo} onClick={() => {}} small={isSubtask} />
+        <MemberPicker task={task} member={task.assignedTo} small={isSubtask} />
       </StyledTableCell>
       <StyledTableCell>
         <StyledTaskDescription completed={task.status === 'COMPLETE'}>{task.description}</StyledTaskDescription>
@@ -137,22 +148,35 @@ const Task = ({
         <Comments comments={task.comments} />
       </StyledTableCell>
       <StyledTableCell>
-        <Patient patient={task.patient} />
+        {task.patient && <Patient patient={task.patient} />}
       </StyledTableCell>
+      {!hideDate && (
       <StyledTableCell style={{ width: 108 }}>
         <DueDate completed={task.status === 'COMPLETE'}>{task.dueDate}</DueDate>
       </StyledTableCell>
+      )}
+      {!hideTags && (
       <StyledTableCell style={{ width: 216 }}>
         <Tag>Placeholder</Tag>
       </StyledTableCell>
+      )}
       <StyledTableCell align="center" style={{ verticalAlign: 'top', width: 36 }}>
-        <Bookmark />
+        {task.priority === 'HIGH' && <Bookmark style={{ marginTop: -4 }} isActive />}
       </StyledTableCell>
     </TableRow>
     {
       task.subtasks
         && task.subtasks.length > 0
-        && <Subtasks subtasks={task.subtasks} markComplete={markComplete} />
+        && (
+        <Subtasks
+          subtasks={task.subtasks}
+          markComplete={markComplete}
+          storeAsCurrentTask={storeAsCurrentTask}
+          hideDate={hideDate}
+          hideTags={hideTags}
+          selectedTaskId={selectedTaskId}
+        />
+        )
     }
   </StyledTableBody>
 );
@@ -160,6 +184,7 @@ const Task = ({
 Task.propTypes = {
   isSubtask: PropTypes.bool,
   markComplete: PropTypes.func.isRequired,
+  storeAsCurrentTask: PropTypes.func.isRequired,
   task: PropTypes.shape({
     taskId: PropTypes.number,
     firstName: PropTypes.string,

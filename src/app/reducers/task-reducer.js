@@ -476,13 +476,7 @@ const TaskReducer = function(state = initialState, action) {
         };
 
     case types.SET_AS_CURRENT_TASK:
-      var currentTaskVar = {}
-      state.tasks.map(task =>
-        task.taskId == action.taskId ?
-        currentTaskVar = task : task
-      )
-      // currentListVar
-      return { ...state, selectedTask:currentTaskVar };
+      return { ...state, selectedTaskId: action.taskId };
 
     case types.GET_TASK_HISTORY_SUCCESS:
       return {...state, currentTaskHistory: action.auditDetails};

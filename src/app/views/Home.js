@@ -40,6 +40,9 @@ class Home extends React.Component {
           taskListActions.getMembersByTaskListId(nextProps.routeParams.taskListId, 'ALL');
         }
         taskListActions.getOrganizationUsersNotInTaskList(nextProps.routeParams.taskListId);
+
+        // Start with no selected tasks
+        actions.storeAsCurrentTask(null);
       }
     }
   }
@@ -118,13 +121,15 @@ class Home extends React.Component {
 
   render() {
     const {
+      user,
       members,
       tasks,
       completedTasks,
       isFetching,
       isCompletedTasksFetching,
       showingCompletedTasks,
-      actions: { markComplete },
+      selectedTaskId,
+      actions: { markComplete, storeAsCurrentTask, toggleTaskPriority },
       tasklists,
       routeParams: { taskListId },
     } = this.props;
@@ -140,6 +145,9 @@ class Home extends React.Component {
       isCompletedTasksFetching,
       showingCompletedTasks,
       markComplete,
+      selectedTaskId,
+      storeAsCurrentTask,
+      toggleTaskPriority: (task, priority) => toggleTaskPriority(task, user.userId, priority),
       pullCompletedTasks: this.pullCompletedTasks,
       onFilter: this.filter,
       refresh: this.refresh,
@@ -160,7 +168,7 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   showingCompletedTasks: store.taskState.showingCompletedTasks,
   user: store.userState.user,
-  selectedTask: store.taskState.selectedTask,
+  selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
 });
 

@@ -6,12 +6,14 @@ import MaterialSelect from '@material-ui/core/Select';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import Priority from './Priority';
+
 const StyledSelect = styled(MaterialSelect)`
   && {
     height: 28px;
-    background: #c8c8ce;
-    border: 1px solid #aab8c3;
-    color: #14171a;
+    background: #ededf0;
+    border: 1px solid #ababb2;
+    color: #303538;
     font-size: 14px;
   }
 
@@ -30,35 +32,38 @@ const StyledSelect = styled(MaterialSelect)`
 
 const StyledDropDownIcon = styled(ArrowDropDown)`
   && {
-    color: black;
+    color: #ababb2;
     margin-right: 4px;
-    border-left: 2px solid #fff;
+    border-left: 1px solid #ababb2;
     height: 100%;
-    margin-top: -3px;
+    margin-top: -2.5px;
   }
 `;
 
-const Select = ({ onChange, value, options }) => (
+const StatusSelect = ({ onChange, value, options }) => (
   <FormControl variant="filled" style={{ minWidth: 186 }}>
     <StyledSelect
       value={value}
       displayEmpty
       onChange={onChange}
-      name="filter"
+      name="status"
       IconComponent={StyledDropDownIcon}
       classes={{ selectMenu: 'selectMenu', root: 'selectRoot' }}
       disableUnderline
     >
       {options.map(({ value, description }) => ( // eslint-disable-line no-shadow
         <MenuItem value={value} key={value}>
-          {value === '' ? <em>{description}</em> : description}
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+            <Priority priority={value} />
+            <div style={{ flex: 1, marginLeft: 5 }}>{value === '' ? <em>{description}</em> : description}</div>
+          </div>
         </MenuItem>
       ))}
     </StyledSelect>
   </FormControl>
 );
 
-Select.propTypes = {
+StatusSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
@@ -67,4 +72,4 @@ Select.propTypes = {
   })).isRequired,
 };
 
-export default Select;
+export default StatusSelect;
