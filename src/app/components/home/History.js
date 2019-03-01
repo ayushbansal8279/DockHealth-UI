@@ -96,6 +96,13 @@ export class History extends React.Component {
     clearHistory();
   }
 
+  componentDidUpdate(prevProps) {
+    const { taskId } = this.props;
+    if (prevProps.taskId !== taskId) {
+      this.setState({ isOpen: false }); // eslint-disable-line react/no-did-update-set-state
+    }
+  }
+
   toggleHistory = () => {
     const { isOpen } = this.state;
     const { taskId, fetchHistory, clearHistory } = this.props;
