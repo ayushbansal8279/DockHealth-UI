@@ -95,17 +95,18 @@ class Inbox extends React.Component {
 
   render() {
     const {
-      user,
+      userId,
       tasks,
       completedTasks,
       isFetching,
       isCompletedTasksFetching,
       showingCompletedTasks,
       selectedTaskId,
-      actions: { markComplete, storeAsCurrentTask, toggleTaskPriority },
+      actions: { markComplete, storeAsCurrentTask, toggleTaskPriority, addTaskComment },
     } = this.props;
 
     const taskViewProps = {
+      userId,
       tasks,
       completedTasks,
       isFetching,
@@ -114,7 +115,8 @@ class Inbox extends React.Component {
       markComplete,
       selectedTaskId,
       storeAsCurrentTask,
-      toggleTaskPriority: (task, priority) => toggleTaskPriority(task, user.userId, priority),
+      addTaskComment,
+      toggleTaskPriority: (task, priority) => toggleTaskPriority(task, userId, priority),
       pullCompletedTasks: this.pullCompletedTasks,
       onFilter: this.filter,
       refresh: this.refresh,
@@ -134,6 +136,7 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   showingCompletedTasks: store.taskState.showingCompletedTasks,
   user: store.userState.user,
+  userId: store.userState.userProfile.userId,
   selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
 });

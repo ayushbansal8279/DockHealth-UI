@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SubmitComment should render correctly 1`] = `
+<form
+  onSubmit={[Function]}
+>
+  <StyledTextField
+    InputProps={
+      Object {
+        "endAdornment": <ForwardRef
+          position="end"
+        >
+          <ForwardRef
+            onClick={[Function]}
+          >
+            <pure(AddIcon) />
+          </ForwardRef>
+        </ForwardRef>,
+        "style": Object {
+          "padding": 0,
+        },
+      }
+    }
+    onChange={[Function]}
+    placeholder="+ Add a comment"
+    value=""
+  >
+    + Add Comment
+  </StyledTextField>
+</form>
+`;

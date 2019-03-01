@@ -103,6 +103,33 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
         </tr>
       </table>
     </DetailsBox>
+    <DetailsBox
+      style={
+        Object {
+          "marginTop": 4,
+        }
+      }
+    >
+      <StyledLabel
+        style={
+          Object {
+            "lineHeight": "30px",
+            "verticalAlign": "top",
+          }
+        }
+      >
+        <strong>
+          Comments 
+        </strong>
+      </StyledLabel>
+      <StyledDescription>
+        <Comments
+          comments={Array []}
+          submit={[MockFunction]}
+          userId={142}
+        />
+      </StyledDescription>
+    </DetailsBox>
     <DetailsBox>
       <table>
         <tr>
@@ -259,6 +286,33 @@ exports[`TaskDetails should render patient 1`] = `
         </tr>
       </table>
     </DetailsBox>
+    <DetailsBox
+      style={
+        Object {
+          "marginTop": 4,
+        }
+      }
+    >
+      <StyledLabel
+        style={
+          Object {
+            "lineHeight": "30px",
+            "verticalAlign": "top",
+          }
+        }
+      >
+        <strong>
+          Comments 
+        </strong>
+      </StyledLabel>
+      <StyledDescription>
+        <Comments
+          comments={Array []}
+          submit={[MockFunction]}
+          userId={142}
+        />
+      </StyledDescription>
+    </DetailsBox>
     <DetailsBox>
       <table>
         <tr>
@@ -388,13 +442,47 @@ exports[`TaskDetails should render subtasks 1`] = `
           </StyledDescription>
         </tr>
         <tr>
-          <StyledLabel>
+          <StyledLabel
+            style={
+              Object {
+                "lineHeight": "30px",
+                "verticalAlign": "top",
+              }
+            }
+          >
             <strong>
               Subtasks (2)
             </strong>
           </StyledLabel>
         </tr>
       </table>
+    </DetailsBox>
+    <DetailsBox
+      style={
+        Object {
+          "marginTop": 4,
+        }
+      }
+    >
+      <StyledLabel
+        style={
+          Object {
+            "lineHeight": "30px",
+            "verticalAlign": "top",
+          }
+        }
+      >
+        <strong>
+          Comments 
+        </strong>
+      </StyledLabel>
+      <StyledDescription>
+        <Comments
+          comments={Array []}
+          submit={[MockFunction]}
+          userId={142}
+        />
+      </StyledDescription>
     </DetailsBox>
     <DetailsBox>
       <table>

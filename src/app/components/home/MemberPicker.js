@@ -95,7 +95,7 @@ const Footer = styled(ButtonBase)`
 const FooterText = styled.span`
   margin-left: 16px;
   font-size: 14px;
-  color: '#0ca1c7';
+  color: #0ca1c7;
 `;
 
 const ItemContainer = styled(ButtonBase)`

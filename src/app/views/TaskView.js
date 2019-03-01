@@ -173,7 +173,17 @@ class TaskView extends React.Component {
 
   render() {
     const {
-      tasks, completedTasks, isFetching, selectedTaskId, downloadPDF, title, members, markComplete, toggleTaskPriority,
+      userId,
+      tasks,
+      completedTasks,
+      isFetching,
+      selectedTaskId,
+      downloadPDF,
+      title,
+      members,
+      markComplete,
+      toggleTaskPriority,
+      addTaskComment,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -235,7 +245,16 @@ class TaskView extends React.Component {
                     {this.renderTasklists()}
                     {this.renderCompleted()}
                   </TaskListContainer>
-                  {task && <TaskDetails selectedTask={task} close={this.handleClose} markComplete={markComplete} toggleTaskPriority={toggleTaskPriority} />}
+                  {task && (
+                  <TaskDetails
+                    addTaskComment={comment => addTaskComment(task, ({ comment }))}
+                    userId={userId}
+                    selectedTask={task}
+                    close={this.handleClose}
+                    markComplete={markComplete}
+                    toggleTaskPriority={toggleTaskPriority}
+                  />
+                  )}
                 </div>
               )}
           </div>

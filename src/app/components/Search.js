@@ -44,7 +44,6 @@ const Search = ({ onChange, style }) => (
       ),
       'aria-label': 'Search',
       type: 'search',
-      style: { padding: 0 },
     }}
   />
 );

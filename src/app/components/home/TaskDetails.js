@@ -8,11 +8,13 @@ import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
 import Patient from './Patient';
 import StatusSelect from './StatusSelect';
+import Comments from './comments/Comments';
 import History from './History';
 
 const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
   && {
     width: 36px;
+    height: 36px;
   }
   &&.checked {
     color: #00a73c;
@@ -125,11 +127,11 @@ class TaskDetails extends React.PureComponent {
   }
 
   render() {
-    const { selectedTask } = this.props;
+    const { selectedTask, userId, addTaskComment } = this.props;
     if (selectedTask == null) { return null; }
 
     const {
-      description, patient, subtasks, status,
+      description, patient, subtasks, status, comments,
     } = selectedTask;
 
     const isCompleted = status === 'COMPLETE';
@@ -163,12 +165,20 @@ class TaskDetails extends React.PureComponent {
               </tr>
               {(subtasks && subtasks.length !== 0) && (
               <tr>
-                <StyledLabel>
+                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
                   <strong>{`Subtasks (${subtasks.length})`}</strong>
                 </StyledLabel>
               </tr>
               )}
             </table>
+          </DetailsBox>
+          <DetailsBox style={{ marginTop: 4 }}>
+            <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+              <strong>Comments </strong>
+            </StyledLabel>
+            <StyledDescription>
+              <Comments comments={comments} userId={userId} submit={addTaskComment} />
+            </StyledDescription>
           </DetailsBox>
           <DetailsBox>
             <table>
