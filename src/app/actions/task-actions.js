@@ -391,10 +391,12 @@ export function storeAsCurrentTask(taskId){
 
 export function getTaskHistory(task){
   return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_HISTORY})
+
     return TaskApi.getTaskHistory(task.taskId).then(auditDetails => {
-      dispatch({type: ActionTypes.GET_TASK_HISTORY_SUCCESS, auditDetails})
+      dispatch({ type: ActionTypes.GET_TASK_HISTORY_SUCCESS, auditDetails })
     }).catch(error => {
-      throw(error)
+      dispatch({ type: ActionTypes.GET_TASK_HISTORY_ERROR, error })
     })
   }
 }

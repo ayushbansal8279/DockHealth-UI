@@ -8,6 +8,7 @@ import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
 import Patient from './Patient';
 import StatusSelect from './StatusSelect';
+import History from './History';
 
 const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
   && {
@@ -71,6 +72,7 @@ const DetailsContainer = styled.div`
 
 const DetailsBox = styled.div`
   padding: 13px;
+  margin-bottom: 4px;
   background: #fff;
   border: 2px solid #ddf2f7;
 `;
@@ -166,6 +168,18 @@ class TaskDetails extends React.PureComponent {
                 </StyledLabel>
               </tr>
               )}
+            </table>
+          </DetailsBox>
+          <DetailsBox>
+            <table>
+              <tr>
+                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+                  <strong>History</strong>
+                </StyledLabel>
+                <StyledDescription>
+                  <History taskId={selectedTask.taskId} />
+                </StyledDescription>
+              </tr>
             </table>
           </DetailsBox>
         </StickyContainer>

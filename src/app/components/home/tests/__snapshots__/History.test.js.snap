@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`History should collapse history on second click 1`] = `
+<div>
+  <HistoryToggle
+    onClick={[Function]}
+  >
+    Show
+  </HistoryToggle>
+</div>
+`;
+
+exports[`History should render correctly when collapsed 1`] = `
+<div>
+  <HistoryToggle
+    onClick={[Function]}
+  >
+    Show
+  </HistoryToggle>
+</div>
+`;
+
+exports[`History should render history 1`] = `
+<div>
+  <HistoryToggle
+    onClick={[Function]}
+  >
+    Hide
+  </HistoryToggle>
+  <OverflowTooltips>
+    <AuditContainer>
+      <Audit
+        auditEventTypeDescription="Description"
+        auditId={0}
+        createdDateTime=" Feb 20  4:08pm"
+        key="0"
+        user={
+          Object {
+            "userId": 0,
+            "userName": "John Smith",
+          }
+        }
+      />
+      <Audit
+        auditEventTypeDescription="Another description"
+        auditId={1}
+        createdDateTime=" Jan 20  4:08pm"
+        key="1"
+        user={
+          Object {
+            "userId": 1,
+            "userName": "Jane Doe",
+          }
+        }
+      />
+    </AuditContainer>
+  </OverflowTooltips>
+</div>
+`;
+
+exports[`History should show loading 1`] = `
+<div>
+  <HistoryToggle
+    onClick={[Function]}
+  >
+    Show
+  </HistoryToggle>
+  <FadeContainer>
+    <WithTheme(Fade)
+      in={true}
+      style={
+        Object {
+          "transitionDelay": "800ms",
+        }
+      }
+      unmountOnExit={true}
+    >
+      <WithStyles(CircularProgress) />
+    </WithTheme(Fade)>
+  </FadeContainer>
+</div>
+`;
+
+exports[`generateFormat should correctly show current double-digit time 1`] = `"  h:mma"`;
+
+exports[`generateFormat should correctly show current single-digit time 1`] = `"   h:mma"`;
+
+exports[`generateFormat should show past months 1`] = `" MMM D  h:mma"`;
+
+exports[`generateFormat should show past years 1`] = `"'YY MMM D  h:mma"`;

@@ -1,6 +1,23 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
+const requestHistory = taskState => ({ ...taskState, isHistoryFetching: true });
+
+const requestHistorySuccess = (taskState, { auditDetails }) => ({
+  ...taskState,
+  historyError: null,
+  isHistoryFetching: false,
+  currentTaskHistory: auditDetails,
+});
+
+const requestHistoryError = (taskState, { error }) => ({
+  ...taskState,
+  historyError: error,
+  isHistoryFetching: false,
+});
+
+const clearHistory = taskState => ({ ...taskState, currentTaskHistory: null });
+
 const TaskReducer = function(state = initialState, action) {
 
   switch(action.type) {
@@ -31,8 +48,12 @@ const TaskReducer = function(state = initialState, action) {
     case types.REQUEST_TASKS:
       return Object.assign({}, state, { isFetching: true, tasks: [], completedTasks: [], showingCompletedTasks: false })
 
+
     case types.REQUEST_COMPLETED_TASKS:
       return Object.assign({}, state, { isCompletedTasksFetching: true })
+
+    case types.REQUEST_HISTORY:
+      return requestHistory(state, action);
 
     case types.HIDE_COMPLETED_TASKS:
       return Object.assign({}, state, { showingCompletedTasks: false, completedTasks: [] })
@@ -479,10 +500,13 @@ const TaskReducer = function(state = initialState, action) {
       return { ...state, selectedTaskId: action.taskId };
 
     case types.GET_TASK_HISTORY_SUCCESS:
-      return {...state, currentTaskHistory: action.auditDetails};
+      return requestHistorySuccess(state, action);
+
+    case types.GET_TASK_HISTORY_ERROR:
+      return requestHistoryError(state, action);
 
     case types.CLEAR_CURRENT_TASK_HISTORY:
-      return {...state, currentTaskHistory: null};
+      return clearHistory(state, action);
 
     case types.ORDER_SUB_TASK_SUCCESS:
       return {

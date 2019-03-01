@@ -9,22 +9,23 @@ export default {
   tasklistmembers: [],
   allTaskListMembers: [],
   orgusersnotintasklist: [],
-  nonorgusersintasklist:[],
+  nonorgusersintasklist: [],
   tasklistactivemembers: [],
   invitationlist: [],
   peoplelist: [],
   tasklistaudits: [],
   auditsForAllUserList: [],
-  activityFeedForAllUserList:[],
-  title: "",
+  activityFeedForAllUserList: [],
+  title: '',
   currentList: {},
   currentTask: {},
   genericLists: [],
   users: {},
-  isFetching:true,
-  isCompletedTasksFetching:false,
-  isList:false,
-  showingCompletedTasks:false
-  // users: {'1':{"image":"url", "initials":"LJ"}, '2':{"image":"url", "initials":"LJ"}}
-  //addtasklisterror:''
-}
+  isFetching: true,
+  isCompletedTasksFetching: false,
+  isHistoryFetching: false,
+  historyError: null,
+  isList: false,
+  showingCompletedTasks: false,
+  currentTaskHistory: null,
+};
