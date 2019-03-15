@@ -9,6 +9,7 @@ import Bookmark from './Bookmark';
 import Patient from './Patient';
 import StatusSelect from './StatusSelect';
 import Comments from './comments/Comments';
+import Attachments from './Attachments';
 import History from './History';
 
 const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
@@ -182,6 +183,14 @@ class TaskDetails extends React.PureComponent {
           </DetailsBox>
           <DetailsBox>
             <table>
+              <tr>
+                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+                  <strong>Attachments</strong>
+                </StyledLabel>
+                <StyledDescription>
+                  <Attachments taskId={selectedTask.taskId} />
+                </StyledDescription>
+              </tr>
               <tr>
                 <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
                   <strong>History</strong>
