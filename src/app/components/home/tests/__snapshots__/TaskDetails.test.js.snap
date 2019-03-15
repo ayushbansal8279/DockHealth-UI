@@ -154,6 +154,11 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
                     "name": "broken ankle.xray",
                     "size": 15,
                   },
+                  Object {
+                    "id": 0,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
                 ]
               }
               taskId={0}
@@ -365,6 +370,11 @@ exports[`TaskDetails should render patient 1`] = `
                     "name": "broken ankle.xray",
                     "size": 15,
                   },
+                  Object {
+                    "id": 0,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
                 ]
               }
               taskId={0}
@@ -559,6 +569,11 @@ exports[`TaskDetails should render subtasks 1`] = `
             <Attachments
               attachments={
                 Array [
+                  Object {
+                    "id": 0,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
                   Object {
                     "id": 0,
                     "name": "broken ankle.xray",

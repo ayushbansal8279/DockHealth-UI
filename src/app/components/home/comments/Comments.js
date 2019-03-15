@@ -13,6 +13,11 @@ const CommentStream = styled.div`
   height: 365px;
   overflow: auto;
   white-space: pre-line;
+  padding-right: 23px;
+`;
+
+const SubmitContainer = styled.div`
+  padding-right: 23px;
 `;
 
 class Comments extends React.PureComponent {
@@ -39,7 +44,9 @@ class Comments extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <SubmitComment submit={submit} />
+        <SubmitContainer>
+          <SubmitComment submit={submit} />
+        </SubmitContainer>
         <CommentStream>
           {days.map(({ date, creators }) => (
             <Day date={date} key={date.format()}>

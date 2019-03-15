@@ -2,9 +2,11 @@
 
 exports[`Comments should render correctly 1`] = `
 <Fragment>
-  <SubmitComment
-    submit={[MockFunction]}
-  />
+  <SubmitContainer>
+    <SubmitComment
+      submit={[MockFunction]}
+    />
+  </SubmitContainer>
   <CommentStream>
     <Day
       date={"2012-06-19T22:00:00.000Z"}

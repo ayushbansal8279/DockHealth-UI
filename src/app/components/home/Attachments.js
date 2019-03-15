@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Attachment from './Attachment';
 
+const Container = styled.div`
+  padding-right: 23px;
+`;
+
 const AddAttachment = styled(ButtonBase)`
   && {
     font-size: 14px;
@@ -19,10 +23,10 @@ const Attachments = ({ taskId, attachments }) => {
   const handleUpload = useCallback(() => { console.log('NYI'); });
 
   return (
-    <React.Fragment>
+    <Container>
       <AddAttachment>Add an attachment</AddAttachment>
       {attachments.map(attachment => <Attachment {...attachment} key={attachment.id} />)}
-    </React.Fragment>
+    </Container>
   );
 };
 
@@ -37,6 +41,11 @@ Attachments.propTypes = {
 
 Attachments.defaultProps = {
   attachments: [{
+    id: 0,
+    name: 'broken ankle.xray',
+    size: 15,
+  },
+  {
     id: 0,
     name: 'broken ankle.xray',
     size: 15,
