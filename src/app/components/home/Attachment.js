@@ -37,28 +37,25 @@ const Open = styled(ButtonBase)`
 `;
 
 const Remove = styled(ButtonBase)`
-&& {
-  height: 100%;
-  width: 26px;
-  color: #aab8c4;
-  font-size: 12px;
-  font-weight: 500;
-  margin-left: auto;
-}
+  && {
+    height: 100%;
+    width: 26px;
+    color: #aab8c4;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: auto;
+  }
 `;
 
 const Attachment = ({
   id, name, size, remove,
 }) => {
-  const handleOpen = useCallback((e) => {
-    e.stopPropagation();
-    console.log('DOWNLOAD');
-  });
+  const handleOpen = useCallback(() => {
+    console.error('ATTACHMENT DOWNLOAD NYI');
+  }, [id]);
 
-  const handleRemove = useCallback((e) => {
-    e.stopPropagation();
-    console.log('REMOVE');
-    // remove(id);
+  const handleRemove = useCallback(() => {
+    remove(id);
   }, [id]);
 
   return (
@@ -72,11 +69,10 @@ const Attachment = ({
 };
 
 Attachment.propTypes = {
-  attachment: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-    size: PropTypes.number,
-  }).isRequired,
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  size: PropTypes.number.isRequired,
+  remove: PropTypes.func.isRequired,
 };
 
 export default Attachment;

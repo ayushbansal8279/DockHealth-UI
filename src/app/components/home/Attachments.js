@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useDropzone } from 'react-dropzone';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Attachment from './Attachment';
 
@@ -19,13 +20,35 @@ const AddAttachment = styled(ButtonBase)`
   }
 `;
 
-const Attachments = ({ taskId, attachments }) => {
-  const handleUpload = useCallback(() => { console.log('NYI'); });
+const Attachments = ({
+  taskId, attachments,
+}) => {
+  const onDrop = useCallback((files) => {
+    console.error('ATTACHMENT UPLOAD NYI', files);
+  }, [taskId]);
+
+  const handleRemove = useCallback(() => {
+    console.error('REMOVING ATTACHMENTS NYI');
+  }, [taskId]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const {
+    tabIndex, onClick, onKeyDown, onFocus, onBlur, ...rootProps
+  } = getRootProps();
+  const buttonProps = {
+    tabIndex, onClick, onKeyDown, onFocus, onBlur,
+  };
 
   return (
     <Container>
-      <AddAttachment>Add an attachment</AddAttachment>
-      {attachments.map(attachment => <Attachment {...attachment} key={attachment.id} />)}
+      <div isDragActive={isDragActive} {...rootProps}>
+        <input {...getInputProps()} />
+        <AddAttachment {...buttonProps}>{isDragActive ? 'Drop files here to add them as attachments' : 'Add an attachment'}</AddAttachment>
+        {attachments.map(attachment => (
+          <Attachment {...attachment} remove={handleRemove} key={attachment.id} />
+        ))}
+      </div>
     </Container>
   );
 };
@@ -37,6 +60,8 @@ Attachments.propTypes = {
     name: PropTypes.string,
     size: PropTypes.number,
   })),
+  upload: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired,
 };
 
 Attachments.defaultProps = {
@@ -46,7 +71,7 @@ Attachments.defaultProps = {
     size: 15,
   },
   {
-    id: 0,
+    id: 1,
     name: 'broken ankle.xray',
     size: 15,
   }],

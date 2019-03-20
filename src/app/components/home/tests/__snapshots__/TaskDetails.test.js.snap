@@ -155,7 +155,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
                     "size": 15,
                   },
                   Object {
-                    "id": 0,
+                    "id": 1,
                     "name": "broken ankle.xray",
                     "size": 15,
                   },
@@ -371,7 +371,7 @@ exports[`TaskDetails should render patient 1`] = `
                     "size": 15,
                   },
                   Object {
-                    "id": 0,
+                    "id": 1,
                     "name": "broken ankle.xray",
                     "size": 15,
                   },
@@ -575,7 +575,7 @@ exports[`TaskDetails should render subtasks 1`] = `
                     "size": 15,
                   },
                   Object {
-                    "id": 0,
+                    "id": 1,
                     "name": "broken ankle.xray",
                     "size": 15,
                   },
