@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchHeader should render correctly 1`] = `
+<Header>
+  <SearchTextField
+    InputProps={
+      Object {
+        "aria-label": "Search",
+        "classes": Object {
+          "root": "input-base",
+        },
+        "endAdornment": <WithStyles(WithFormControlContext(InputAdornment))
+          position="end"
+          style={
+            Object {
+              "pointerEvents": "none",
+            }
+          }
+        >
+          <div
+            style={
+              Object {
+                "height": 22,
+                "margin": "0 12px 0 0",
+                "width": 21,
+              }
+            }
+          >
+            <img
+              alt=""
+              src="test-file-stub"
+            />
+          </div>
+        </WithStyles(WithFormControlContext(InputAdornment))>,
+        "startAdornment": <WithStyles(WithFormControlContext(InputAdornment))
+          position="start"
+        >
+          <WithStyles(IconButton)
+            aria-label="Close search"
+            onClick={[MockFunction]}
+          >
+            <pure(ArrowBackIcon) />
+          </WithStyles(IconButton)>
+        </WithStyles(WithFormControlContext(InputAdornment))>,
+        "type": "search",
+      }
+    }
+    autoFocus={true}
+    id="member-search"
+    onChange={[MockFunction]}
+    placeholder="Search"
+    variant="outlined"
+  />
+</Header>
+`;

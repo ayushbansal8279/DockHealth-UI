@@ -48,7 +48,6 @@ const TaskReducer = function(state = initialState, action) {
     case types.REQUEST_TASKS:
       return Object.assign({}, state, { isFetching: true, tasks: [], completedTasks: [], showingCompletedTasks: false })
 
-
     case types.REQUEST_COMPLETED_TASKS:
       return Object.assign({}, state, { isCompletedTasksFetching: true })
 
@@ -260,30 +259,56 @@ const TaskReducer = function(state = initialState, action) {
     //   tasks: [action.task].concat(state.tasks)
     // }
 
-    case types.UPDATE_TASK_SUCCESS:
-    var mainTask
-    if(action.task.parentTaskId){
-    mainTask = action.task.parentTaskId
-    }else{
-    mainTask = action.task.taskId
+    case types.MOVE_TASK_SUCCESS: {
+      const { task } = action;
+      const isSubtask = Boolean(task.parentTaskId);
+
+      if (!isSubtask) {
+        return ({
+          ...state,
+          tasks: state.tasks.filter(t => t.taskId !== task.taskId),
+        });
+      }
+      
+      return ({
+        ...state,
+        tasks: state.tasks.map(t => t.taskId !== task.parentTaskId
+          ? t
+          : ({
+            ...t,
+            subtasks: t.subtasks.filter(subtask => subtask.taskId !== task.taskId),
+          })),
+      });
     }
 
-    return {
-      ...state,
-      tasks: state.tasks.map(task =>
-        task.taskId === mainTask ?
-          action.task.parentTaskId ?
-          {...task, read:false, subtasks:
-            task.subtasks.map(subtask =>
-              subtask.taskId === action.task.taskId ?
-              {...subtask, ...action.task} :
-              subtask
-            )
-          } :
-          { ...task, ...action.task}
-          : task
-      )
-    };
+    case types.UPDATE_TASK_SUCCESS: {
+      const { task } = action;
+      const mainTaskId = task.parentTaskId || task.taskId;
+
+      const newState = {
+        ...state,
+        tasks: state.tasks.map(t => {
+          if (t.taskId !== mainTaskId) {
+            return t;
+          }
+
+          if (!task.parentTaskId) {
+            return ({...t, ...task });
+          }
+
+          return ({
+            ...t,
+            read: false,
+            subtasks: t.subtasks.map(subtask =>
+              subtask.taskId === task.taskId
+                ? {...subtask, ...task}
+                : subtask),
+          });
+        }),
+      };
+
+      return newState;
+    }
 
       case types.TOGGLE_TASK_PRIORITY_SUCCESS:
       var mainTask

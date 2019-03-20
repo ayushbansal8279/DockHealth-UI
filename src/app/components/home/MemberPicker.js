@@ -3,81 +3,35 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Popover from '@material-ui/core/Popover';
-import IconButton from '@material-ui/core/IconButton';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import BackIcon from '@material-ui/icons/ArrowBack';
-import PersonAssignment from '../../img/person-assign.svg';
+import SearchHeader from './SearchHeader';
+import PickerHeader from './PickerHeader';
+import ListItem from './ListItem';
 import PersonInvite from '../../img/person-invite.svg';
-import Search from '../../img/search.svg';
-import SearchDark from '../../img/search-dark.svg';
 import { assignOrReassignTask } from '../../actions/task-actions';
 import MemberAssignment from './MemberAssignment';
 
-const SearchTextField = styled(TextField)`
-  && {
-    width: 100%;
-    height: 48px;
-    border-radius: 2px;
-    background: #fff;
+const StyledPopover = styled(Popover).attrs({ paper: 'paper' })`
+  && .paper {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 235px;
   }
-
-  && .input-base {
-    padding: 0;
-  }
-
-  && input {
-    height: 100%;
-    border: none;
-    box-shadow: none;
-    background: none;
-    background: none;
-    padding: 16px 14px;
-  }
-  
-  && fieldset {
-    border: none;
-    top: 0;
-  }
-`;
-
-const Header = styled.div`
-  flex: 0 0;
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
-  background: #2a4a70;
-  width: 494px;
-  height: 73px;
-`;
-
-const HeaderClose = styled.div`
-  width: 22px;
-  height: 22px;
-  padding: 4px;
-  font-size: 14px;
-  color: #fff;
-  font-weight: bold;
-`;
-
-const HeaderTitle = styled.strong`
-  margin-left: 15px;
-  color: #fff;
-  font-size: 18px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-`;
-
-const HeaderTaskName = styled.span`
-  text-decoration: underline;
 `;
 
 const List = styled.div`
   background: #fff;
   max-height: 255px;
   overflow: auto;
+`;
+
+const HeaderTaskName = styled.span`
+  text-decoration: underline;
+`;
+
+const MemberName = styled.span`
+  margin-left: 20px;
 `;
 
 const Footer = styled(ButtonBase)`
@@ -96,61 +50,6 @@ const FooterText = styled.span`
   margin-left: 16px;
   font-size: 14px;
   color: #0ca1c7;
-`;
-
-const ItemContainer = styled(ButtonBase)`
-  && {
-    display: block;
-    height: 56px;
-    width: 100%;
-    padding: 0 8px;
-    ${({ selected }) => (selected && 'background: #a6dcea;')}
-
-    :hover, :focus {
-      ${({ selected }) => (!selected && 'background: rgba(0, 0, 0, 0.08);')}
-    }
-  }
-`;
-
-ItemContainer.propTypes = {
-  selected: PropTypes.bool,
-};
-
-ItemContainer.defaultProps = {
-  selected: false,
-};
-
-const Item = styled.div`
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-`;
-
-const MemberName = styled.span`
-  margin-left: 20px;
-`;
-
-const ListItem = ({
-  member, selected, onClick, id,
-}) => (
-  <ItemContainer selected={selected} onClick={onClick} id={id}>
-    <Item>
-      <MemberAssignment member={member} />
-      <MemberName>{member ? member.userName : <em>Unassigned</em>}</MemberName>
-    </Item>
-  </ItemContainer>
-);
-
-const StyledPopover = styled(props => <Popover {...props} classes={{ paper: 'paper' }} />)`
-  && .paper {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 235px;
-  }
 `;
 
 const UNASSIGNED_MEMBER_ID = -1;
@@ -194,53 +93,20 @@ class MemberPicker extends React.Component {
 
   renderHeader = () => {
     const { task } = this.props;
-
     return (
-      <Header>
-        <IconButton onClick={this.handleClose} aria-label="Close user selection">
-          <HeaderClose>✕</HeaderClose>
-        </IconButton>
-        <img src={PersonAssignment} style={{ marginLeft: 5 }} alt="" />
-        <HeaderTitle>
-          {'Assign to '}
-          <HeaderTaskName>{task.description}</HeaderTaskName>
-        </HeaderTitle>
-        <IconButton aria-label="Search" onClick={this.handleSearchToggle} style={{ marginLeft: 'auto' }}>
-          <img src={Search} alt="" />
-        </IconButton>
-      </Header>
+      <PickerHeader
+        handleClose={this.handleClose}
+        handleSearchToggle={this.handleSearchToggle}
+        closeLabel="Close user selection"
+      >
+        {'Assign to '}
+        <HeaderTaskName>{task.description}</HeaderTaskName>
+      </PickerHeader>
     );
   }
 
   renderSearchHeader = () => (
-    <Header>
-      <SearchTextField
-        autoFocus
-        onChange={this.handleSearch}
-        id="member-search"
-        placeholder="Search"
-        variant="outlined"
-        InputProps={{
-          classes: { root: 'input-base' },
-          'aria-label': 'Search',
-          type: 'search',
-          startAdornment: (
-            <InputAdornment position="start">
-              <IconButton onClick={this.handleSearchToggle} aria-label="Close search">
-                <BackIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end" style={{ pointerEvents: 'none' }}>
-              <div style={{ margin: '0 12px 0 0', width: 21, height: 22 }}>
-                <img src={SearchDark} alt="" />
-              </div>
-            </InputAdornment>
-          ),
-        }}
-      />
-    </Header>
+    <SearchHeader handleSearch={this.handleSearch} handleSearchToggle={this.handleSearchToggle} />
   );
 
   render() {
@@ -283,7 +149,10 @@ class MemberPicker extends React.Component {
               selected={member == null}
               onClick={this.handleSelect}
               id={UNASSIGNED_MEMBER_ID}
-            />
+            >
+              <MemberAssignment />
+              <MemberName><em>Unassigned</em></MemberName>
+            </ListItem>
             {sortedMembers && sortedMembers.map(m => (
               <ListItem
                 member={m}
@@ -291,7 +160,10 @@ class MemberPicker extends React.Component {
                 selected={member && m.userId === member.userId}
                 onClick={this.handleSelect}
                 id={m.userId}
-              />
+              >
+                <MemberAssignment member={m} />
+                <MemberName>{m.userName}</MemberName>
+              </ListItem>
             ))}
           </List>
           <Footer onClick={() => {}} focusRipple>

@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListPicker should render correctly 1`] = `
+<Fragment>
+  <ToggleButton
+    onClick={[Function]}
+  >
+    List #1
+  </ToggleButton>
+  <StyledPopover
+    anchorEl={null}
+    anchorOrigin={
+      Object {
+        "horizontal": "center",
+        "vertical": "bottom",
+      }
+    }
+    onClick={[Function]}
+    onClose={[Function]}
+    open={false}
+    transformOrigin={
+      Object {
+        "horizontal": "center",
+        "vertical": "top",
+      }
+    }
+  >
+    <PickerHeader
+      closeLabel="Close list selection"
+      handleClose={[Function]}
+      handleSearchToggle={[Function]}
+    >
+      File in
+    </PickerHeader>
+    <List />
+  </StyledPopover>
+  <WithStyles(Dialog)
+    aria-describedby="alert-dialog-description"
+    aria-labelledby="alert-dialog-title"
+    onClose={[Function]}
+    open={false}
+  >
+    <WithStyles(DialogTitle)
+      id="alert-dialog-title"
+    >
+      Are you sure you want to move this task to another list?
+    </WithStyles(DialogTitle)>
+    <WithStyles(DialogContent)>
+      <WithStyles(DialogContentText)
+        id="alert-dialog-description"
+      >
+        Please note, by moving a task to a new list some details of the task may be lost. Task assignments and comments will transfer only if users are members of both lists.
+      </WithStyles(DialogContentText)>
+    </WithStyles(DialogContent)>
+    <WithStyles(DialogActions)>
+      <WithStyles(Button)
+        color="primary"
+        onClick={[Function]}
+      >
+        Cancel
+      </WithStyles(Button)>
+      <WithStyles(Button)
+        autoFocus={true}
+        color="primary"
+        onClick={[Function]}
+      >
+        Move
+      </WithStyles(Button)>
+    </WithStyles(DialogActions)>
+  </WithStyles(Dialog)>
+</Fragment>
+`;

@@ -8,6 +8,7 @@ import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
 import Patient from './Patient';
 import StatusSelect from './StatusSelect';
+import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
 import History from './History';
 
@@ -77,6 +78,7 @@ const DetailsBox = styled.div`
   margin-bottom: 4px;
   background: #fff;
   border: 2px solid #ddf2f7;
+  margin-bottom: 4px;
 `;
 
 const StickyContainer = styled.div`
@@ -164,11 +166,11 @@ class TaskDetails extends React.PureComponent {
                 </StyledDescription>
               </tr>
               {(subtasks && subtasks.length !== 0) && (
-              <tr>
-                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
-                  <strong>{`Subtasks (${subtasks.length})`}</strong>
-                </StyledLabel>
-              </tr>
+                <tr>
+                  <StyledLabel>
+                    <strong>{`Subtasks (${subtasks.length})`}</strong>
+                  </StyledLabel>
+                </tr>
               )}
             </table>
           </DetailsBox>
@@ -182,6 +184,12 @@ class TaskDetails extends React.PureComponent {
           </DetailsBox>
           <DetailsBox>
             <table>
+              <tr>
+                <StyledLabel><strong>Filed in</strong></StyledLabel>
+                <StyledDescription>
+                  <ListPicker item={selectedTask.taskList} task={selectedTask} />
+                </StyledDescription>
+              </tr>
               <tr>
                 <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
                   <strong>History</strong>

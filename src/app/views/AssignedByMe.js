@@ -128,7 +128,7 @@ class AssignedByMe extends React.Component {
       addTaskComment,
       toggleTaskPriority: (task, priority) => toggleTaskPriority(task, userId, priority),
       pullCompletedTasks: this.pullCompletedTasks,
-      onFilter: this.filter,
+      onFilter: this.handleFilterChange,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
       title: 'Assigned by me',

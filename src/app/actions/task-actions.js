@@ -194,6 +194,39 @@ export function saveTask(newTask) {
   }
 }
 
+export const moveTask = (task, taskList) => (dispatch) => {
+  const {
+    assignedTo,
+    description,
+    dueDate,
+    patient,
+    priority,
+    reminderDt,
+    subtasks,
+    taskId,
+    parentTaskId,
+  } = task;
+
+  const updatedTask = {
+    refiled: true,
+    assignedToId: assignedTo ? assignedTo.userId : null,
+    description,
+    dueDate,
+    patientId: patient ? patient.patientId : null,
+    priority,
+    reminderDt,
+    subtasks,
+    taskId,
+    taskList: taskList.listName,
+    taskListId: taskList.taskListId,
+    parentTaskId,
+  };
+
+  return TaskApi.updateTask(updatedTask).then(() => {
+    dispatch({ type: ActionTypes.MOVE_TASK_SUCCESS, task });
+  }).catch((error) => { throw error; });
+};
+
 export function addTaskComment(task, taskComment) {
   return function(dispatch) {
     return TaskApi.addComment(task.taskId, taskComment).then(comment => {
