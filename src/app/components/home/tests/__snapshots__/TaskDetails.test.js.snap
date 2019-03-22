@@ -184,6 +184,11 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
         </tr>
       </table>
     </DetailsBox>
+    <DetailsBox>
+      <Connect(TaskActions)
+        taskId={0}
+      />
+    </DetailsBox>
   </StickyContainer>
 </DetailsContainer>
 `;
@@ -402,6 +407,11 @@ exports[`TaskDetails should render patient 1`] = `
         </tr>
       </table>
     </DetailsBox>
+    <DetailsBox>
+      <Connect(TaskActions)
+        taskId={0}
+      />
+    </DetailsBox>
   </StickyContainer>
 </DetailsContainer>
 `;
@@ -603,6 +613,11 @@ exports[`TaskDetails should render subtasks 1`] = `
           </StyledDescription>
         </tr>
       </table>
+    </DetailsBox>
+    <DetailsBox>
+      <Connect(TaskActions)
+        taskId={0}
+      />
     </DetailsBox>
   </StickyContainer>
 </DetailsContainer>

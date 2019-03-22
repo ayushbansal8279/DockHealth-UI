@@ -178,25 +178,25 @@ const TaskReducer = function(state = initialState, action) {
     //   )
     // };
 
-    case types.DELETE_TASK_SUCCESS:
-      var mainTaskId
-      if(action.task.parentTaskId){
-        mainTaskId = action.task.parentTaskId
-      }else{
+    case types.DELETE_TASK_SUCCESS: {
+      const mainTaskId = action.task.parentTaskId;
+
+      if (mainTaskId) {
         return {
-          ...state,
-          tasks: state.tasks.filter(task => task !== action.task)
-        };
-      }
-    
-      return {
           ...state,
           tasks: state.tasks.map(task =>
             task.taskId === mainTaskId ?
-              {...task, subtasks: task.subtasks.filter(subtask => subtask !== action.task)}
+              {...task, subtasks: task.subtasks.filter(({ taskId }) => taskId !== action.task.taskId)}
               : task
           )
+        };
+      }
+
+      return {
+        ...state,
+        tasks: state.tasks.filter(({ taskId }) => taskId !== action.task.taskId)
       };
+    }
 
     // case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
     //   return {
