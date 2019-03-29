@@ -6,7 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import AddIcon from '@material-ui/icons/Add';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
-const StyledTextField = styled(props => <TextField {...props} variant="outlined" />)`
+const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   && {
     width: 100%;
     height: 30px;
@@ -20,7 +20,8 @@ const StyledTextField = styled(props => <TextField {...props} variant="outlined"
     box-shadow: none;
     background: none;
     /* autocomplete */
-    padding: 14px;
+    height: 28px;
+    padding: 0 0 0 14px;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
 
