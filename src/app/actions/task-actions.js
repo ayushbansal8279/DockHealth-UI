@@ -1,5 +1,15 @@
-import * as ActionTypes from '../actions/action-types';
-import * as TaskApi from '../api/task-api'
+import * as TaskApi from '../api/task-api';
+import * as ActionTypes from './action-types';
+
+const shapeTask = (task) => {
+  const { assignedTo, patient } = task;
+
+  return {
+    ...task,
+    assignedToId: assignedTo ? assignedTo.userId : null,
+    patientId: patient ? patient.patientId : null,
+  };
+};
 
 export function getTasksForCreator(userId) {
   return function(dispatch) {
@@ -323,6 +333,18 @@ export function updateTaskDescription(task, description){
     })
   }
 }
+
+export const updateDueDate = (task, dueDate) => dispatch => (
+  TaskApi.updateTask(shapeTask({ ...task, dueDate }))
+    .then(() => {
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_DUE_DATE,
+        taskId: task.taskId,
+        dueDate,
+      });
+    })
+    .catch((err) => { throw err; })
+);
 
 export function toggleTaskPriority(task, userId, priority) {
   return function(dispatch){

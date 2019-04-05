@@ -4,6 +4,7 @@ import {
   GET_TASK_HISTORY_SUCCESS,
   GET_TASK_HISTORY_ERROR,
   CLEAR_CURRENT_TASK_HISTORY,
+  UPDATE_TASK_DUE_DATE,
 } from '../../actions/action-types';
 
 describe('task-reducer', () => {
@@ -49,5 +50,16 @@ describe('task-reducer', () => {
     expect(state.isHistoryFetching).toBe(false);
     expect(state.currentTaskHistory).toBe(null);
     expect(state.historyError).toBe(null);
+  });
+
+  it('should handle UPDATE_TASK_DUE_DATE', () => {
+    const action = { type: UPDATE_TASK_DUE_DATE, taskId: 0, dueDate: '2019-03-27T03:00:00.000Z' };
+    const initialState = {
+      tasks: [{ taskId: 0, dueDate: '' }],
+    };
+    const state = reducer(initialState, action);
+
+    expect(state.tasks[0].dueDate).toEqual(action.dueDate);
+    expect(state.tasks).toMatchSnapshot();
   });
 });

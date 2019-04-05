@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from './axios-heydoc';
 
 export function findAllUsersByOrganizationId() {
   // loading()
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findAllUsersByOrganizationId')
+  return axios.get('user/findAllUsersByOrganizationId')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -12,7 +12,7 @@ export function findAllUsersByOrganizationId() {
 }
 
 export function getUserById(userId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/'+userId)
+  return axios.get('user/'+userId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -22,7 +22,7 @@ export function getUserById(userId) {
 }
 
 export function invitePersonToOrganization(person) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/invitePersonToOrganization', person)
+  return axios.put('organization/invitePersonToOrganization', person)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -32,7 +32,7 @@ export function invitePersonToOrganization(person) {
 }
 
 export function resendInviteToOrganization(person) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/resendInviteToOrganization', person)
+  return axios.put('organization/resendInviteToOrganization', person)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -42,7 +42,7 @@ export function resendInviteToOrganization(person) {
 }
 
 export function changeUserRoleForOrg(markedUserId,role) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/changeUserRoleForOrg/'
+  return axios.put('organization/changeUserRoleForOrg/'
                       +"?markedUserId=" +markedUserId
                       + "&role=" + role)
     .then(response => {
@@ -54,7 +54,7 @@ export function changeUserRoleForOrg(markedUserId,role) {
   }
 
 export function cancelInviteToOrganization(markedUserEmail) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'organization/cancelInviteToOrganization/'
+  return axios.put('organization/cancelInviteToOrganization/'
                       +"?markedUserEmail=" +markedUserEmail)
     .then(response => {
       return response.data;
@@ -65,7 +65,7 @@ export function cancelInviteToOrganization(markedUserEmail) {
   }
 
 export function removeUserFromOrganization(removedUserId) {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/removeUserFromOrganization'
+  return axios.delete('user/removeUserFromOrganization'
                       +"?removedUserId=" +removedUserId)
     .then(response => {
       return response.data;
@@ -77,7 +77,7 @@ export function removeUserFromOrganization(removedUserId) {
 
 
 // export function getUserAvatar(user) {
-//   return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture/'+user.userId+'?UserPictureType=PROFILE', {responseType: 'arraybuffer'})
+//   return axios.get('user/profilePicture/'+user.userId+'?UserPictureType=PROFILE', {responseType: 'arraybuffer'})
 //     .then(response => {
 //       let binaryImage = new Buffer(response.data, 'binary').toString('base64'); //base64 encoding of binary image data
 //       let image = `data:${response.headers['content-type'].toLowerCase()};base64,${binaryImage}`;
@@ -88,7 +88,7 @@ export function removeUserFromOrganization(removedUserId) {
 // }
 
 export function getUserAvatar(user, pictureType) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture/1?UserPictureType=PROFILE',{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
+  return axios.get('user/profilePicture/1?UserPictureType=PROFILE',{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
     .then(response => {
       let binaryImage = new Buffer(response.data, 'binary').toString('base64'); //base64 encoding of binary image data
       let image = `data:${response.headers['content-type'].toLowerCase()};base64,${binaryImage}`;

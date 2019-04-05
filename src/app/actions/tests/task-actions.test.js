@@ -1,11 +1,14 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { getTaskHistory, clearCurrentTaskHistory, moveTask } from '../task-actions';
+import {
+  getTaskHistory, clearCurrentTaskHistory, moveTask, updateDueDate,
+} from '../task-actions';
 import {
   REQUEST_HISTORY,
   GET_TASK_HISTORY_SUCCESS,
   GET_TASK_HISTORY_ERROR,
   CLEAR_CURRENT_TASK_HISTORY,
+  UPDATE_TASK_DUE_DATE,
   MOVE_TASK_SUCCESS,
 } from '../action-types';
 import TaskApi from '../../api/task-api';
@@ -124,6 +127,26 @@ describe('moveTask', () => {
     TaskApi.updateTask.mockReturnValue(Promise.resolve(updatedTask));
 
     await store.dispatch(moveTask(task, { taskListId: 1, listName: 'List #2' }));
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+});
+
+
+describe('updateDueDate', () => {
+  it('should update due date', async () => {
+    const expectedActions = [
+      { type: UPDATE_TASK_DUE_DATE, taskId: 0, dueDate: '2019-03-27T03:00:00.000Z' },
+    ];
+
+    const store = mockStore({
+      taskState: {
+        tasks: [{ taskId: 0, dueDate: null }],
+      },
+    });
+
+    TaskApi.updateTask.mockReturnValue(Promise.resolve({}));
+
+    await store.dispatch(updateDueDate({ taskId: 0, dueDate: null }, '2019-03-27T03:00:00.000Z'));
     expect(store.getActions()).toEqual(expectedActions);
   });
 });

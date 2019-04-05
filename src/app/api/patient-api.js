@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from './axios-heydoc';
 import * as ActionTypes from '../actions/action-types';
 
 export function getAllPatients() {
   // loading()
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getAllPatients?active=true')
+  return axios.get('patient/getAllPatients?active=true')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -13,7 +13,7 @@ export function getAllPatients() {
 }
 
 export function getPatientsByTaskList(taskListId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/getPatientsByTaskList/'+taskListId)
+  return axios.get('patient/getPatientsByTaskList/'+taskListId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -23,7 +23,7 @@ export function getPatientsByTaskList(taskListId) {
 }
 
 export function getPatientById(patientId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/'+patientId)
+  return axios.get('patient/'+patientId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -33,7 +33,7 @@ export function getPatientById(patientId) {
 }
 
 export function removePatient(patientId) {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'patient/' + patientId)
+  return axios.delete('patient/' + patientId)
     .then(response => {
       return response;
     }).catch(function (error){
@@ -43,7 +43,7 @@ export function removePatient(patientId) {
 }
 
 export function addPatient(patient) {
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'patient', patient)
+  return axios.post('patient', patient)
     .then(response => {
       toggleAlert("Patient added successfully!", "success")
       return response.data;
@@ -55,7 +55,7 @@ export function addPatient(patient) {
 }
 
 export function updatePatient(patient) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'patient', patient)
+  return axios.put('patient', patient)
     .then(response => {
       toggleAlert("Patient updated successfully!", "success")
       return response.data;
@@ -67,7 +67,7 @@ export function updatePatient(patient) {
 }
 
 export function addPatientToTask(patientId, taskId){
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL + 'patient/addPatientToTaskById/' + taskId + '?patientId=' + patientId)
+  return axios.put('patient/addPatientToTaskById/' + taskId + '?patientId=' + patientId)
     .then(response => {
       return response.data
     }).catch(function (error){
@@ -77,7 +77,7 @@ export function addPatientToTask(patientId, taskId){
 }
 
 export function lookupEMRPatients(searchToken) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/lookupEMRPatients?searchToken='+searchToken)
+  return axios.get('patient/lookupEMRPatients?searchToken='+searchToken)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -88,7 +88,7 @@ export function lookupEMRPatients(searchToken) {
 
 // This api call 'patient/deletePatient/' does not exist yet
 export function deletePatient(patientId){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'patient/deletePatient/'+patientId)
+  return axios.get('patient/deletePatient/'+patientId)
   .then(response => {
     return response
   }).catch(function (error){

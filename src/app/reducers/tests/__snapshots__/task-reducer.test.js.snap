@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`task-reducer should handle UPDATE_TASK_DUE_DATE 1`] = `
+Array [
+  Object {
+    "dueDate": "2019-03-27T03:00:00.000Z",
+    "taskId": 0,
+  },
+]
+`;

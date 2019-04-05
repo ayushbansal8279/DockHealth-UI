@@ -11,6 +11,7 @@ import StatusSelect from './StatusSelect';
 import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
 import History from './History';
+import DetailsDueDate from './DetailsDueDate';
 
 const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
   && {
@@ -188,6 +189,17 @@ class TaskDetails extends React.PureComponent {
                 <StyledLabel><strong>Filed in</strong></StyledLabel>
                 <StyledDescription>
                   <ListPicker item={selectedTask.taskList} task={selectedTask} />
+                </StyledDescription>
+              </tr>
+              <tr>
+                <StyledLabel><strong>Due date</strong></StyledLabel>
+                <StyledDescription>
+                  <DetailsDueDate
+                    completed={selectedTask.status === 'COMPLETE'}
+                    task={selectedTask}
+                  >
+                    {selectedTask.dueDate}
+                  </DetailsDueDate>
                 </StyledDescription>
               </tr>
               <tr>

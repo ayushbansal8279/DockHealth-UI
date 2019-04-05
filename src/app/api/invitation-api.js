@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from './axios-heydoc';
 
 export function findInvitationsByUserId() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findInvitationsByUserId')
+  return axios.get('user/findInvitationsByUserId')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -11,7 +11,7 @@ export function findInvitationsByUserId() {
 }
 
 export function acceptInviteToTaskList(tasklistId) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/acceptInviteToTaskList/' + tasklistId)
+  return axios.put('list/acceptInviteToTaskList/' + tasklistId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -21,7 +21,7 @@ export function acceptInviteToTaskList(tasklistId) {
 }
 
 export function rejectInviteToTaskList(tasklistId) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/rejectInviteToTaskList/' + tasklistId)
+  return axios.put('list/rejectInviteToTaskList/' + tasklistId)
     .then(response => {
       return response.data;
     }).catch(function (error){
