@@ -20,7 +20,8 @@ const StyledTextField = styled(props => <TextField {...props} variant="outlined"
     box-shadow: none;
     background: none;
     /* autocomplete */
-    padding: 14px;
+    height: 28px;
+    padding: 0 14px;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
 
@@ -37,6 +38,7 @@ const StyledTextField = styled(props => <TextField {...props} variant="outlined"
 const StyledAdornment = styled(InputAdornment)`
   && {
     background: #d9036b;
+    border-radius: 1px;
     height: 100%;
     width: 34px;
     justify-content: center;

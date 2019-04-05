@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-import Toolbar from '@material-ui/core/Toolbar';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import AddIcon from '@material-ui/icons/Add';
+import Toolbar from '@material-ui/core/Toolbar';
+import { saveTask } from '../../actions/task-actions';
 
 const StyledToolbar = styled(Toolbar)`
   && {
@@ -11,13 +15,51 @@ const StyledToolbar = styled(Toolbar)`
   }
 `;
 
-const StyledButton = styled(ButtonBase)`
+const StyledForm = styled.form`
+  width: 100%;
+`;
+
+const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   && {
     background: #e6ecf0;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     height: 40px;
     width: 100%;
+  }
+
+  && input {
+    border: none;
+    box-shadow: none;
+    background: none;
+    font-size: 14px;
+    color: #303538;
+    padding: 0;
+
+    ::placeholder {
+      color: #303538;
+      opacity: 1;
+    }
+
+    :focus::placeholder {
+      opacity: 0.5;
+    }
+  }
+  
+  && fieldset {
+    border: none;
+    top: 0;
+  }
+`;
+
+const StyledAdornment = styled(InputAdornment)`
+  && {
+    flex-shrink: 0;
+    border-radius: 1px;
+    height: 100%;
+    max-height: 100%;
+    width: 40px;
+    justify-content: center;
   }
 `;
 
@@ -37,24 +79,72 @@ const StyledAddIconRight = styled(StyledAddIcon)`
   }
 `;
 
-const StyledButtonLabel = styled.span`
-  font-size: 14px;
-  flex-grow: 1;
-  text-align: left;
+const StyledButton = styled(ButtonBase)`
+  && {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
-const AddTask = ({ onClick }) => (
-  <StyledToolbar>
-    <StyledButton focusRipple onClick={onClick}>
-      <StyledAddIcon />
-      <StyledButtonLabel>Add a task</StyledButtonLabel>
-      <StyledAddIconRight />
-    </StyledButton>
-  </StyledToolbar>
-);
+export const AddTask = ({ submit }) => {
+  const [draft, setDraft] = useState('');
 
-AddTask.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  const handleChange = useCallback(
+    (e) => { setDraft(e.target.value); },
+  );
+
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (draft === '') { return; }
+      submit(draft);
+      setDraft('');
+    },
+    [draft],
+  );
+
+  return (
+    <StyledToolbar>
+      <StyledForm onSubmit={handleSubmit}>
+        <StyledTextField
+          onChange={handleChange}
+          value={draft}
+          placeholder="Add a task"
+          InputProps={{
+            startAdornment: (
+              <StyledAdornment disablePointerEvents>
+                <StyledAddIcon />
+              </StyledAdornment>
+            ),
+            endAdornment: (
+              <StyledAdornment>
+                <StyledButton onClick={handleSubmit}>
+                  <StyledAddIconRight />
+                </StyledButton>
+              </StyledAdornment>
+            ),
+            style: {
+              padding: 0,
+            },
+          }}
+        />
+      </StyledForm>
+    </StyledToolbar>
+  );
 };
 
-export default AddTask;
+AddTask.propTypes = {
+  submit: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch, { taskListId }) => ({
+  submit: (description) => { saveTask({ description, taskListId })(dispatch); },
+});
+
+const ConnectedAddTask = connect(undefined, mapDispatchToProps)(AddTask);
+
+ConnectedAddTask.propTypes = {
+  taskListId: PropTypes.number.isRequired,
+};
+
+export default ConnectedAddTask;

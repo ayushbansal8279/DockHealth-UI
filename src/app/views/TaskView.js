@@ -193,6 +193,10 @@ class TaskView extends React.Component {
     const allTasks = [...unfinishedTasks, ...finishedTasks];
     const task = allTasks.find(t => t.taskId === taskId);
 
+    const groupedTasks = groupBy(tasks, t => (t.taskList ? t.taskList.listName : ''));
+    const tasklistCount = Array.from(groupedTasks.keys()).length;
+    const isSingleTaskList = tasklistCount === 1;
+
     return (
       <div className="off-canvas-content" data-off-canvas-content="true">
         <div className="row expanded collapse">
@@ -203,7 +207,7 @@ class TaskView extends React.Component {
               taskCount={tasks.length}
               members={members}
             />
-            <AddTask onClick={() => {}} />
+            {isSingleTaskList && <AddTask taskListId={tasks[0].taskList.taskListId} />}
             <Toolbar style={{ padding: '0 38px 0 48px' }}>
               <Select
                 onChange={this.handleFilterChange}
