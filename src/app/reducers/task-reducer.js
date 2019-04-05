@@ -18,6 +18,11 @@ const requestHistoryError = (taskState, { error }) => ({
 
 const clearHistory = taskState => ({ ...taskState, currentTaskHistory: null });
 
+const updateDueDate = (taskState, { taskId, dueDate }) => ({
+  ...taskState,
+  tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, dueDate }) : task)),
+});
+
 const TaskReducer = function(state = initialState, action) {
 
   switch(action.type) {
@@ -240,6 +245,9 @@ const TaskReducer = function(state = initialState, action) {
           : task
       )
     };
+
+    case types.UPDATE_TASK_DUE_DATE:
+      return updateDueDate(state, action);
 
     // case types.UPDATE_TASK_SUCCESS:
     //   return {

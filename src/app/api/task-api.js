@@ -1,15 +1,11 @@
-import axios from 'axios';
-import configureStore from '../configureStore';
-import * as ActionTypes from '../actions/action-types';
-
-//import { getTasksSuccess, deleteTaskSuccess, addTaskSuccess } from '../actions/task-actions';
+import axios from './axios-heydoc';
 
 /**
  * Get all tasks for a user
  */
 export function getTasksForCreator(userId) {
   userId = sessionStorage.userId
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksCreatedByUser')
+  return axios.get('task/findTasksCreatedByUser')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -24,7 +20,7 @@ export function getListTasksByUser(taskListId, status, sortBy, filterBy){
   }
   if(sortBy == undefined && filterBy == undefined){
     closeAddForm()
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0')
+    return axios.get('task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -33,7 +29,7 @@ export function getListTasksByUser(taskListId, status, sortBy, filterBy){
     });
   }else{
     closeAddForm()
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0&sortBy='+sortBy+'&filterBy='+filterBy)
+    return axios.get('task/findListTasksByUser/'+taskListId+'?status='+status+'&queryStartPosition=0&sortBy='+sortBy+'&filterBy='+filterBy)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -50,7 +46,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
   if(taskListId != undefined){
     if(sortBy != undefined || filterBy != undefined){
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      return axios.get('task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -59,7 +55,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
       });
     }else{
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status)
+      return axios.get('task/findTasksAssignedToUser?taskListId='+taskListId+'&status='+status)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -73,7 +69,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
   }else{
     if(sortBy != undefined || filterBy != undefined){
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      return axios.get('task/findTasksAssignedToUser?status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -82,7 +78,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
       });
     }else{
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToUser?status='+status)
+      return axios.get('task/findTasksAssignedToUser?status='+status)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -100,7 +96,7 @@ export function getTasksAssignedToSpecificUser(userId, taskListId, status, sortB
   if(taskListId != undefined){
     if(sortBy != undefined || filterBy != undefined){
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      return axios.get('task/findTasksAssignedToSpecificUser?userId='+userId+'&taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -109,7 +105,7 @@ export function getTasksAssignedToSpecificUser(userId, taskListId, status, sortB
       });
     }else{
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&taskListId='+taskListId+'&status='+status)
+      return axios.get('task/findTasksAssignedToSpecificUser?userId='+userId+'&taskListId='+taskListId+'&status='+status)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -123,7 +119,7 @@ export function getTasksAssignedToSpecificUser(userId, taskListId, status, sortB
   }else{
     if(sortBy != undefined || filterBy != undefined){
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      return axios.get('task/findTasksAssignedToSpecificUser?userId='+userId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -132,7 +128,7 @@ export function getTasksAssignedToSpecificUser(userId, taskListId, status, sortB
       });
     }else{
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedToSpecificUser?userId='+userId+'&status='+status)
+      return axios.get('task/findTasksAssignedToSpecificUser?userId='+userId+'&status='+status)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -150,7 +146,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy){
   if(taskListId != undefined){
     if(sortBy != undefined || filterBy != undefined){
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      return axios.get('task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -159,7 +155,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy){
       });
     }else{
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status)
+      return axios.get('task/findTasksAssignedByUser?taskListId='+taskListId+'&status='+status)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -170,7 +166,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy){
   }else{
     if(sortBy != undefined || filterBy != undefined){
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+      return axios.get('task/findTasksAssignedByUser?status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -179,7 +175,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy){
       });
     }else{
       closeAddForm()
-      return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findTasksAssignedByUser?status='+status)
+      return axios.get('task/findTasksAssignedByUser?status='+status)
       .then(response => {
         return response.data;
       }).catch(function (error){
@@ -192,7 +188,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy){
 
 export function searchTasks(searchTerm, status, sortBy, filterBy){
   if(sortBy != undefined || filterBy != undefined){
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/searchTasks?searchTerm='+searchTerm+"&status="+status+"&sortBy="+sortBy+"&filterBy="+filterBy)
+    return axios.get('task/searchTasks?searchTerm='+searchTerm+"&status="+status+"&sortBy="+sortBy+"&filterBy="+filterBy)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -200,7 +196,7 @@ export function searchTasks(searchTerm, status, sortBy, filterBy){
       return error.response.data;
     });
   }else{
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/searchTasks?searchTerm='+searchTerm+"&status="+status)
+    return axios.get('task/searchTasks?searchTerm='+searchTerm+"&status="+status)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -212,7 +208,7 @@ export function searchTasks(searchTerm, status, sortBy, filterBy){
 
 export function addTask(task) {
   task.createdByUserId = sessionStorage.userId
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task', task)
+  return axios.post('task', task)
     .then(response => {
       toggleAlert("Task created successfully!", "success")
       return response.data;
@@ -225,7 +221,7 @@ export function addTask(task) {
 
 export function updateTask(task) {
   task.createdByUserId = sessionStorage.userId
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/' + task.taskId, task)
+  return axios.put('task/' + task.taskId, task)
     .then(response => {
       toggleAlert("Task updated successfully!", "success")
       return response.data;
@@ -238,7 +234,7 @@ export function updateTask(task) {
 
 export function deleteTask(taskId) {
   // userId = sessionStorage.userId
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/deleteTaskById/' + taskId)
+  return axios.delete('task/deleteTaskById/' + taskId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
       toggleAlert("Task deleted", "success")
@@ -252,7 +248,7 @@ export function deleteTask(taskId) {
 
 export function duplicateTask(taskId) {
   // userId = sessionStorage.userId
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/duplicateTask/' + taskId)
+  return axios.put('task/duplicateTask/' + taskId)
     .then(response => {
       // store.dispatch({type: ActionTypes.DELETE_TASK_SUCCESS, taskId: taskId});
       toggleAlert("Task duplicated", "success")
@@ -266,7 +262,7 @@ export function duplicateTask(taskId) {
 
 export function sortSubTask(taskId, direction) {
   // userId = sessionStorage.userId
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/sortSubTask/'+taskId+'/'+direction)
+  return axios.put('task/sortSubTask/'+taskId+'/'+direction)
     .then(response => {
       toggleAlert("Sub Task order changed", "success")
       return response.data;
@@ -280,7 +276,7 @@ export function sortSubTask(taskId, direction) {
 export function markComplete(task){
   // userId = sessionStorage.userId
   // console.log(taskId);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + task.taskId + '?status=COMPLETE')
+  return axios.put('task/updateTaskStatus/' + task.taskId + '?status=COMPLETE')
   .then(response => {
     toggleAlert("Task completed. Great job!", "success")
     return response;
@@ -294,7 +290,7 @@ export function markComplete(task){
 export function markIncomplete(task){
   // userId = sessionStorage.userId
   // console.log(taskId);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/updateTaskStatus/' + task.taskId + '?status=INCOMPLETE')
+  return axios.put('task/updateTaskStatus/' + task.taskId + '?status=INCOMPLETE')
   .then(response => {
     toggleAlert("Task completed. Great job!", "success")
     return response;
@@ -307,8 +303,8 @@ export function markIncomplete(task){
 
 export function updateTaskDescription(task, description){
   // userId = sessionStorage.userId
-  // return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'')
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/'+task.taskId, {
+  // return axios.post('')
+  return axios.put('task/'+task.taskId, {
     description: description
   })
   .then(response => {
@@ -321,9 +317,14 @@ export function updateTaskDescription(task, description){
   });
 }
 
+export const updateDueDate = (taskId, dueDate) => (
+  axios.put(`task/addOrUpdateDueDate/${taskId}?dueDate=${dueDate.format('MM/DD/YYYY')}`)
+    .catch(err => err.response.data)
+);
+
 export function markHighPriority(taskId, userId){
   // userId = sessionStorage.userId
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')
+  return axios.put('task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')
   .then(response => {
     toggleAlert("Task priority updated successfully!", "success")
     return response;
@@ -336,7 +337,7 @@ export function markHighPriority(taskId, userId){
 
 export function markLowPriority(taskId, userId){
   // userId = sessionStorage.userId
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=LOW')
+  return axios.put('task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=LOW')
   .then(response => {
     toggleAlert("Task priority updated successfully!", "success")
     return response;
@@ -348,7 +349,7 @@ export function markLowPriority(taskId, userId){
 }
 
 export function assignOrReassignTask(taskId, assignedToUserId){
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/addOrUpdateTaskAssignment/' + taskId + '?assignedToUserId=' + assignedToUserId)
+  return axios.put('task/addOrUpdateTaskAssignment/' + taskId + '?assignedToUserId=' + assignedToUserId)
     .then(response => {
       toggleAlert("Task assigned successfully", "success")
     return response.data;
@@ -360,7 +361,7 @@ export function assignOrReassignTask(taskId, assignedToUserId){
 }
 
 // export function listActiveUsersByTaskList(taskList){
-//   return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'/heydoc-services/user/listAllUsersByTaskListId/'+taskListId+'?status=ACTIVE')
+//   return axios.post('/heydoc-services/user/listAllUsersByTaskListId/'+taskListId+'?status=ACTIVE')
 //   .then(response => {
 //     return response.data;
 //   });
@@ -370,7 +371,7 @@ export function assignOrReassignTask(taskId, assignedToUserId){
 
 export function addComment(taskId, taskComment) {
   // taskComment.creator.userId = sessionStorage.userId
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment/'+ taskId, taskComment)
+  return axios.post('task/comment/'+ taskId, taskComment)
   .then(response => {
     toggleAlert("Comment added successfully!", "success")
     return response;
@@ -384,7 +385,7 @@ export function addComment(taskId, taskComment) {
 
 export function deleteComment(commentId) {
   // taskComment.creator.userId = sessionStorage.userId
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment/deleteCommentById/'+ commentId)
+  return axios.delete('task/comment/deleteCommentById/'+ commentId)
   .then(response => {
     toggleAlert("Comment deleted", "success")
     return response;
@@ -397,7 +398,7 @@ export function deleteComment(commentId) {
 
 export function updateComment(comment) {
   // taskComment.creator.userId = sessionStorage.userId
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/comment', comment)
+  return axios.put('task/comment', comment)
   .then(response => {
     toggleAlert("Comment updated", "success")
     return response;
@@ -409,7 +410,7 @@ export function updateComment(comment) {
 }
 
 export function getHighPriorityTasksByTaskList(taskListId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findHighPriorityListTasks/'+taskListId+'?startPosition=0')
+  return axios.get('task/findHighPriorityListTasks/'+taskListId+'?startPosition=0')
   .then(response => {
     return response.data;
   }).catch(function (error){
@@ -420,7 +421,7 @@ export function getHighPriorityTasksByTaskList(taskListId) {
 }
 
 export function getListTasksByPatient(patientId, status, taskListId){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findListTasksByPatient/'+patientId+'/taskList/'+taskListId+'?status='+status)
+  return axios.get('task/findListTasksByPatient/'+patientId+'/taskList/'+taskListId+'?status='+status)
   .then(response => {
     return response.data;
   }).catch(function (error){
@@ -432,7 +433,7 @@ export function getListTasksByPatient(patientId, status, taskListId){
 
 export function getAllTasksByPatient(patientId, status, sortBy, filterBy){
   if(sortBy != undefined || filterBy != undefined){
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findAllListTasksByPatient/'+patientId+'?status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
+    return axios.get('task/findAllListTasksByPatient/'+patientId+'?status='+status+'&sortBy='+sortBy+'&filterBy='+filterBy)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -441,7 +442,7 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy){
       throw(error)
     });
   }else{
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findAllListTasksByPatient/'+patientId+'?status='+status)
+    return axios.get('task/findAllListTasksByPatient/'+patientId+'?status='+status)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -458,7 +459,7 @@ export function getInboxTasks(status, sortBy, filterBy){
   }
   if(sortBy == undefined && filterBy == undefined){
     closeAddForm()
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0')
+    return axios.get('task/findInboxTasks?status='+status+'&queryStartPosition=0')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -466,7 +467,7 @@ export function getInboxTasks(status, sortBy, filterBy){
       throw(error)
     });
   }else{
-    return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'task/findInboxTasks?status='+status+'&queryStartPosition=0&sortBy='+sortBy+'&filterBy='+filterBy)
+    return axios.get('task/findInboxTasks?status='+status+'&queryStartPosition=0&sortBy='+sortBy+'&filterBy='+filterBy)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -477,7 +478,7 @@ export function getInboxTasks(status, sortBy, filterBy){
 }
 
 export function flagUnread(taskId, flagUnread){
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'task/flagUserTaskAsUnread/'+taskId+'?flagUnread='+flagUnread)
+  return axios.put('task/flagUserTaskAsUnread/'+taskId+'?flagUnread='+flagUnread)
   .then(response => {
     return response.data;
   }).catch(function (error){
@@ -487,7 +488,7 @@ export function flagUnread(taskId, flagUnread){
 }
 
 export function getTaskHistory(taskId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findAuditsByTask/'+taskId)
+  return axios.get('audit/findAuditsByTask/'+taskId)
   .then(response => {
     return response.data;
   }).catch(function (error){

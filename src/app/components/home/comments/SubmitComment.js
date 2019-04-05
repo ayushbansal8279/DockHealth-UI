@@ -21,7 +21,7 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
     background: none;
     /* autocomplete */
     height: 28px;
-    padding: 0 0 0 14px;
+    padding: 0 14px;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
 
@@ -38,6 +38,7 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
 const StyledAdornment = styled(InputAdornment)`
   && {
     background: #d9036b;
+    border-radius: 1px;
     height: 100%;
     width: 34px;
     justify-content: center;

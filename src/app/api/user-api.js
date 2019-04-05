@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axios-heydoc';
 import configureStore from '../configureStore'
 const store = configureStore();
 
@@ -369,7 +369,7 @@ export function resetPassword (userData) {
 }
 
 export function createUser(user) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user', user)
+  return axios.put('user', user)
     .then(response => {
       store.dispatch({type: 'user/userId', userId: response.data.userId})
       return response;
@@ -389,7 +389,7 @@ export function getUserByEmail(email, cognitoUser) {
   if(email){
     email = email.toLowerCase()
   }
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findUserByEmail?email='+email)
+  return axios.get('user/findUserByEmail?email='+email)
     .then(response => {
       store.dispatch({type: 'user/userProfile', userProfile: response.data})
       sessionStorage.setItem('userId', response.data.userId);
@@ -399,7 +399,7 @@ export function getUserByEmail(email, cognitoUser) {
 }
 
 export function getUserById() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/' + sessionStorage.userId)
+  return axios.get('user/' + sessionStorage.userId)
     .then(response => {
       store.dispatch({type: 'user/userProfile', userProfile: response.data})
       //sessionStorage.setItem('userProfile', JSON.stringify(response.data));
@@ -412,7 +412,7 @@ export function updateStoreWithCurrentUser(cognitoUser) {
 }
 
 export function getUserProfilePic(userId, pictureType) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture/' + userId + "?UserPictureType=" + pictureType,{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
+  return axios.get('user/profilePicture/' + userId + "?UserPictureType=" + pictureType,{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
     .then(response => {
       //let binaryImage = btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
       //let image = "data:image/png;base64," + image
@@ -429,7 +429,7 @@ export function getUserProfilePic(userId, pictureType) {
 
 export function saveUserProfilePic(data, userId, pictureType, userProfile) {
   //alert(data);
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture', data)
+  return axios.post('user/profilePicture', data)
     .then(response => {
       getUserById()
       return response.data
@@ -440,7 +440,7 @@ export function saveUserProfilePic(data, userId, pictureType, userProfile) {
 
 export function updateUser(formProps) {
   //console.log(formProps)
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user', formProps)
+  return axios.put('user', formProps)
     .then(response => {
       //store.dispatch({type: 'user/userId', userId: response.data.userId})
       // updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
@@ -453,14 +453,14 @@ export function updateUser(formProps) {
 }
 
 export function deleteUserProfilePic() {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture')
+  return axios.delete('user/profilePicture')
     .then(response => {
       return response.data;
     });
 }
 
 export function getUserNotoficationPrefs() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/userNotificationPreferences')
+  return axios.get('user/userNotificationPreferences')
     .then(response => {
       store.dispatch({type: 'user/userNotificationPrefs', userNotificationPrefs: response.data})
       return response.data;
@@ -476,7 +476,7 @@ export function updateUserNotoficationPrefs(emailNotification, pushNotification)
   }
   var notificationPrefObj = {email: emailNotification, push: pushNotification};
   //console.log(notificationPrefObj);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/userNotificationPreferences', notificationPrefObj)
+  return axios.put('user/userNotificationPreferences', notificationPrefObj)
     .then(response => {
       return response.data;
     }).catch(error => {
@@ -486,7 +486,7 @@ export function updateUserNotoficationPrefs(emailNotification, pushNotification)
 
 
 export function leaveList(taskListId){
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/userLeavesList/'+taskListId)
+  return axios.delete('user/userLeavesList/'+taskListId)
   .then(response => {
     return response;
   }).catch(error => {
@@ -495,7 +495,7 @@ export function leaveList(taskListId){
 }
 
 export function findOrgInviteByEmail(email){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findOrgInviteByEmail/', email)
+  return axios.get('user/findOrgInviteByEmail/', email)
   .then(response => {
     return response.data;
   }).catch(error => {
@@ -504,7 +504,7 @@ export function findOrgInviteByEmail(email){
 }
 
 export function getAllSpecialties() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'reference/specialties')
+  return axios.get('reference/specialties')
     .then(response => {
       store.dispatch({type: 'reference/allSpecialties', allSpecialties: response.data})
       return response.data;
@@ -512,7 +512,7 @@ export function getAllSpecialties() {
 }
 
 export function getAllTitles() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'reference/titles')
+  return axios.get('reference/titles')
     .then(response => {
       store.dispatch({type: 'reference/allTitles', allTitles: response.data})
       return response.data;
@@ -520,7 +520,7 @@ export function getAllTitles() {
 }
 
 export function performHealthCheck() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'healthcheck/echo')
+  return axios.get('healthcheck/echo')
     .then(response => {
         //console.log("ALL OK")
     }).catch(error => {

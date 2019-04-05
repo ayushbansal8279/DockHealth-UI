@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from './axios-heydoc';
 import * as ActionTypes from '../actions/action-types';
 
 
 export function getTaskListForUser() {
   // loading()
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findTaskListsByUserId')
+  return axios.get('list/findTaskListsByUserId')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -14,7 +14,7 @@ export function getTaskListForUser() {
 }
 
 export function findPendingTaskListsForUser() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findPendingTaskListsForUser')
+  return axios.get('list/findPendingTaskListsForUser')
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -25,7 +25,7 @@ export function findPendingTaskListsForUser() {
 
 
 export function addTaskList(tasklist) {
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'list/', tasklist)
+  return axios.post('list/', tasklist)
     .then(response => {
       toggleTaskForm()
       return response.data;
@@ -36,7 +36,7 @@ export function addTaskList(tasklist) {
 }
 
 export function getTaskListById(taskListId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/' + taskListId)
+  return axios.get('list/' + taskListId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -46,7 +46,7 @@ export function getTaskListById(taskListId) {
 }
 
 export function updateTaskList(taskList) { //userId - make sure authorized user can only update the task list
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/', taskList)
+  return axios.put('list/', taskList)
     .then(response => {
       toggleTaskForm()
       return response.data;
@@ -57,7 +57,7 @@ export function updateTaskList(taskList) { //userId - make sure authorized user 
 }
 
 export function getMembersByTaskListId(taskListId, memberStatus) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/listAllUsersByTaskListId/' + taskListId + "?status=" + memberStatus)
+  return axios.get('user/listAllUsersByTaskListId/' + taskListId + "?status=" + memberStatus)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -67,7 +67,7 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
 }
 
 export function invitePersonToTaskList(tasklistId,personInfo) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/invitePersonToTaskList/' + tasklistId,personInfo)
+  return axios.put('list/invitePersonToTaskList/' + tasklistId,personInfo)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -77,7 +77,7 @@ export function invitePersonToTaskList(tasklistId,personInfo) {
 }
 
 export function getOrganizationUsersNotInTaskList(tasklistId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findOrganizationUsersNotInTaskList/' + tasklistId)
+  return axios.get('user/findOrganizationUsersNotInTaskList/' + tasklistId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -89,7 +89,7 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
 export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
   var multiUserInvitation = {};
   multiUserInvitation.invitedUsers = invitedUsers;
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/inviteMultipleUsersToTaskList/' + tasklistId, multiUserInvitation)
+  return axios.put('user/inviteMultipleUsersToTaskList/' + tasklistId, multiUserInvitation)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -99,7 +99,7 @@ export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
 }
 
 export function getNonOrgUsersByTaskList(taskListId) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findNonOrgUsersByTaskList/' + taskListId)
+  return axios.get('user/findNonOrgUsersByTaskList/' + taskListId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -110,7 +110,7 @@ export function getNonOrgUsersByTaskList(taskListId) {
 
 
 export function changeUserRoleForList(tasklistId,markedUserId,role) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/changeUserRoleForList/' + tasklistId
+  return axios.put('list/changeUserRoleForList/' + tasklistId
                       +"?markedUserId=" +markedUserId
                       + "&role=" + role)
     .then(response => {
@@ -122,7 +122,7 @@ export function changeUserRoleForList(tasklistId,markedUserId,role) {
 }
 
 export function deleteTaskListById(taskListId) {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'list/deleteTaskListById/' + taskListId)
+  return axios.delete('list/deleteTaskListById/' + taskListId)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -132,7 +132,7 @@ export function deleteTaskListById(taskListId) {
 }
 
 export function removeUserFromList(taskListId,removedUserId) {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/removeUserFromTaskList/' + taskListId
+  return axios.delete('user/removeUserFromTaskList/' + taskListId
                   + "?removedUserId=" + removedUserId)
     .then(response => {
       return response.data;
@@ -143,7 +143,7 @@ export function removeUserFromList(taskListId,removedUserId) {
 }
 
 export function cancelInviteToTaskList(taskListId,email) {
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/cancelInviteToTaskList/' + taskListId
+  return axios.put('list/cancelInviteToTaskList/' + taskListId
                       +"?markedUserEmail=" +email)
     .then(response => {
       return response.data;
@@ -154,7 +154,7 @@ export function cancelInviteToTaskList(taskListId,email) {
 }
 
 export function findAuditsByTaskList(taskListId,queryStartPosition) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findAuditsByTaskList/' + taskListId
+  return axios.get('audit/findAuditsByTaskList/' + taskListId
                   +"?queryStartPosition=" +queryStartPosition)
     .then(response => {
       return response.data;
@@ -165,7 +165,7 @@ export function findAuditsByTaskList(taskListId,queryStartPosition) {
 }
 
 export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findAuditsForAllTaskListsByUserId/'
+  return axios.get('audit/findAuditsForAllTaskListsByUserId/'
                   +"?queryStartPosition=" +queryStartPosition)
     .then(response => {
       return response.data;
@@ -176,7 +176,7 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
 }
 
 export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'audit/findActivityFeedForAllTaskListsByUserId/'
+  return axios.get('audit/findActivityFeedForAllTaskListsByUserId/'
                   +"?queryStartPosition=" +queryStartPosition)
     .then(response => {
       return response.data;
@@ -187,7 +187,7 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
 }
 
 export function toggleListNotifications(taskListId, receiveNotifications){
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'list/toggleUserNotificationsForTaskList/'+taskListId+'?notifications='+receiveNotifications)
+  return axios.put('list/toggleUserNotificationsForTaskList/'+taskListId+'?notifications='+receiveNotifications)
   .then(response => {
     return response;
   }).catch(function (error){
@@ -197,7 +197,7 @@ export function toggleListNotifications(taskListId, receiveNotifications){
 }
 
 export function findGenericListCountsForUser(){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'list/findGenericListCountsForUser')
+  return axios.get('list/findGenericListCountsForUser')
   .then(response => {
     return response.data;
   }).catch(function (error){
@@ -208,7 +208,7 @@ export function findGenericListCountsForUser(){
 
 export function downloadPDF(taskListId){
   return axios({
-    url: process.env.HEYDOC_SERVICES_BASE_URL+'list/downloadPDFForTasksInList?taskListId='+taskListId,
+    url: 'list/downloadPDFForTasksInList?taskListId='+taskListId,
     method: 'GET',
     responseType: 'blob', // important
   })
