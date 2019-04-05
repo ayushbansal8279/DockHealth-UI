@@ -11,6 +11,7 @@ import StatusSelect from './StatusSelect';
 import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
 import History from './History';
+import TaskActions from './TaskActions';
 import DetailsDueDate from './DetailsDueDate';
 
 const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
@@ -72,6 +73,7 @@ const StatusContainer = styled.div`
 const DetailsContainer = styled.div`
   flex: 1;
   padding-right: 8px;
+  padding-bottom: 4px;
 `;
 
 const DetailsBox = styled.div`
@@ -79,7 +81,6 @@ const DetailsBox = styled.div`
   margin-bottom: 4px;
   background: #fff;
   border: 2px solid #ddf2f7;
-  margin-bottom: 4px;
 `;
 
 const StickyContainer = styled.div`
@@ -211,6 +212,9 @@ class TaskDetails extends React.PureComponent {
                 </StyledDescription>
               </tr>
             </table>
+          </DetailsBox>
+          <DetailsBox>
+            <TaskActions taskId={selectedTask.taskId} />
           </DetailsBox>
         </StickyContainer>
       </DetailsContainer>
