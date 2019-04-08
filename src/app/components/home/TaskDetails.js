@@ -164,7 +164,7 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  {patient ? <Patient patient={patient} /> : 'None'}
+                  {patient ? <Patient patient={patient} isCompact /> : 'None'}
                 </StyledDescription>
               </tr>
               {(subtasks && subtasks.length !== 0) && (

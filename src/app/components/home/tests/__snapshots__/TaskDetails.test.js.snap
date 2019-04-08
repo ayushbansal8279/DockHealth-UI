@@ -342,6 +342,7 @@ exports[`TaskDetails should render patient 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Patient
+              isCompact={true}
               patient={
                 Object {
                   "firstName": "Jane",
