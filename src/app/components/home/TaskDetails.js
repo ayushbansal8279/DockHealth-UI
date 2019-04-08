@@ -208,7 +208,7 @@ class TaskDetails extends React.PureComponent {
                 <StyledLabel><strong>Reminder</strong></StyledLabel>
                 <StyledDescription>
                   <Reminder
-                    // completed={selectedTask.status === 'COMPLETE'}
+                    completed={selectedTask.status === 'COMPLETE'}
                     task={selectedTask}
                   >
                     {selectedTask.reminderDt}

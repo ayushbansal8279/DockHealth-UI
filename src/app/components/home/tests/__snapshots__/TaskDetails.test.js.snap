@@ -203,6 +203,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(Reminder)
+              completed={false}
               task={
                 Object {
                   "assignedBy": Object {
@@ -493,6 +494,7 @@ exports[`TaskDetails should render patient 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(Reminder)
+              completed={false}
               task={
                 Object {
                   "assignedBy": Object {
@@ -774,6 +776,7 @@ exports[`TaskDetails should render subtasks 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(Reminder)
+              completed={false}
               task={
                 Object {
                   "assignedBy": Object {
