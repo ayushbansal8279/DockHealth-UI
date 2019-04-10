@@ -98,7 +98,29 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
             Patient 
           </StyledLabel>
           <StyledDescription>
-            None
+            <Connect(PatientAssignment)
+              patient={null}
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": null,
+                  "status": "INCOMPLETE",
+                  "subtasks": null,
+                  "taskId": 0,
+                }
+              }
+            />
           </StyledDescription>
         </tr>
       </table>
@@ -341,12 +363,36 @@ exports[`TaskDetails should render patient 1`] = `
             Patient 
           </StyledLabel>
           <StyledDescription>
-            <Patient
+            <Connect(PatientAssignment)
               patient={
                 Object {
                   "firstName": "Jane",
                   "lastName": "Doe",
                   "mrn": "1234567",
+                }
+              }
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": Object {
+                    "firstName": "Jane",
+                    "lastName": "Doe",
+                    "mrn": "1234567",
+                  },
+                  "status": "INCOMPLETE",
+                  "subtasks": null,
+                  "taskId": 0,
                 }
               }
             />
@@ -582,7 +628,36 @@ exports[`TaskDetails should render subtasks 1`] = `
             Patient 
           </StyledLabel>
           <StyledDescription>
-            None
+            <Connect(PatientAssignment)
+              patient={null}
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": null,
+                  "status": "INCOMPLETE",
+                  "subtasks": Array [
+                    Object {
+                      "id": 0,
+                    },
+                    Object {
+                      "id": 1,
+                    },
+                  ],
+                  "taskId": 0,
+                }
+              }
+            />
           </StyledDescription>
         </tr>
         <tr>

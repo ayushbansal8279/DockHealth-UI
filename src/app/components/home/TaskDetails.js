@@ -6,7 +6,7 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 
 import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
-import Patient from './Patient';
+import PatientAssignment from './PatientAssignment';
 import StatusSelect from './StatusSelect';
 import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
@@ -164,7 +164,7 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  {patient ? <Patient patient={patient} /> : 'None'}
+                  <PatientAssignment patient={patient} task={selectedTask} />
                 </StyledDescription>
               </tr>
               {(subtasks && subtasks.length !== 0) && (
