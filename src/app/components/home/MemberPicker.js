@@ -11,7 +11,7 @@ import PersonInvite from '../../img/person-invite.svg';
 import { assignOrReassignTask } from '../../actions/task-actions';
 import MemberAssignment from './MemberAssignment';
 
-const StyledPopover = styled(Popover).attrs({ paper: 'paper' })`
+const StyledPopover = styled(Popover).attrs({ classes: { paper: 'paper' } })`
   && .paper {
     overflow: hidden;
     display: flex;
