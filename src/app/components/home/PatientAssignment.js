@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { addPatientToTask } from '../../actions/patient-actions';
+import { addPatientToTask, getAllPatients } from '../../actions/patient-actions';
 import Patient from './Patient';
 import PatientPicker from './PatientPicker';
 
@@ -15,18 +15,24 @@ const StyledButtonBase = styled(ButtonBase)`
   }
 `;
 
-const PatientAssignment = ({ patient, patients, update }) => (
-  <PatientPicker assign={update} patient={patient} patients={patients}>
-    {({ open }) => (
-      <StyledButtonBase onClick={open}>
-        {patient
-          ? <Patient patient={patient} />
-          : 'None'
+const PatientAssignment = ({
+  patient, patients, update, fetch,
+}) => {
+  useEffect(fetch, []);
+
+  return (
+    <PatientPicker assign={update} patient={patient} patients={patients}>
+      {({ open }) => (
+        <StyledButtonBase onClick={open}>
+          {patient
+            ? <Patient patient={patient} />
+            : 'None'
         }
-      </StyledButtonBase>
-    )}
-  </PatientPicker>
-);
+        </StyledButtonBase>
+      )}
+    </PatientPicker>
+  );
+};
 
 const patientShape = PropTypes.shape({
   patientId: PropTypes.number,
@@ -39,6 +45,7 @@ PatientAssignment.propTypes = {
   patient: patientShape,
   patients: PropTypes.arrayOf(patientShape),
   update: PropTypes.func.isRequired,
+  fetch: PropTypes.func.isRequired,
 };
 
 PatientAssignment.defaultProps = {
@@ -52,6 +59,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = (dispatch, { task }) => ({
   update: (patientId) => { addPatientToTask(patientId, task.taskId)(dispatch); },
+  fetch: () => { getAllPatients()(dispatch); },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PatientAssignment);

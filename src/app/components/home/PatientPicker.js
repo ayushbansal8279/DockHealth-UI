@@ -31,17 +31,15 @@ const MemberName = styled.span`
 
 const UNASSIGNED_ELEMENT_ID = -1;
 
-const PatientPickerHeader = ({ close, toggleSearch }) => {
-  return (
-    <PickerHeader
-      handleClose={close}
-      handleSearchToggle={toggleSearch}
-      closeLabel="Close user selection"
-    >
+const PatientPickerHeader = ({ close, toggleSearch }) => (
+  <PickerHeader
+    handleClose={close}
+    handleSearchToggle={toggleSearch}
+    closeLabel="Close user selection"
+  >
       Assign patient
-    </PickerHeader>
-  );
-};
+  </PickerHeader>
+);
 
 const PatientPickerSearchHeader = ({ search, toggleSearch }) => (
   <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
@@ -86,17 +84,28 @@ const PatientPicker = ({
     },
   );
 
+  // Patient search
+  const matchListing = (term, { firstName, lastName, mrn }) => {
+    const firstNameMatches = firstName && firstName.toLowerCase().includes(term);
+    const lastNameMatches = lastName && lastName.toLowerCase().includes(term);
+    const mrnMatches = mrn && mrn.toLowerCase().includes(term);
+
+    return firstNameMatches || lastNameMatches || mrnMatches;
+  };
+
+  const orderListings = (p1, p2) => (p1.lastName ? p1.lastName.localeCompare(p2.lastName) : -1);
+
   // Search
   const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
-  const isMatch = text => searchTerms.every(term => text.toLowerCase().includes(term));
+  const isMatch = listing => searchTerms.every(term => matchListing(term, listing));
 
-  const filteredPatients = patients
+  const filteredListings = patients
     && (searchTerms.length === 0
       ? patients
-      : patients.filter(({ firstName, lastName }) => isMatch(firstName) || isMatch(lastName)));
+      : patients.filter(isMatch));
 
-  const sortedPatients = filteredPatients
-    && filteredPatients.sort((a, b) => a.lastName.localeCompare(b.lastName));
+  const sortedListings = filteredListings
+    && filteredListings.sort(orderListings);
 
   return (
     <React.Fragment>
@@ -117,7 +126,7 @@ const PatientPicker = ({
           >
             <MemberName><em>Unassigned</em></MemberName>
           </ListItem>
-          {sortedPatients && sortedPatients.map(m => (
+          {sortedListings && sortedListings.map(m => (
             <ListItem
               member={m}
               key={m.patientId}
