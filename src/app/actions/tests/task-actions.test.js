@@ -21,7 +21,7 @@ jest.mock('../../api/task-api', () => ({
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
-describe('getTaskHistory', async () => {
+describe('getTaskHistory', () => {
   it('should fetch audit history', async () => {
     const expectedActions = [
       { type: REQUEST_HISTORY },
