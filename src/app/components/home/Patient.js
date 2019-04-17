@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link } from 'react-router';
 
-const StyledLink = styled(Link)`
+const PatientContainer = styled.div`
   font-size: 14px;
   color: #303538;
   line-height: 18px;
 `;
 
 const Patient = ({ patient }) => (
-  <StyledLink to={`#/patient/${patient.patientId}`}>
+  <PatientContainer to={`#/patient/${patient.patientId}`}>
     {`${patient.lastName}, ${patient.firstName} `}
     {patient.mrn}
-  </StyledLink>
+  </PatientContainer>
 );
 
 Patient.propTypes = {
