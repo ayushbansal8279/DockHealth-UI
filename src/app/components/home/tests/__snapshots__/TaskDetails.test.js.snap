@@ -51,7 +51,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
             </strong>
           </StyledLabel>
           <StyledDescription>
-            <Connect(MemberPicker)
+            <Connect(MemberAssignment)
               member={
                 Object {
                   "firstName": "John",
@@ -312,7 +312,7 @@ exports[`TaskDetails should render patient 1`] = `
             </strong>
           </StyledLabel>
           <StyledDescription>
-            <Connect(MemberPicker)
+            <Connect(MemberAssignment)
               member={
                 Object {
                   "firstName": "John",
@@ -574,7 +574,7 @@ exports[`TaskDetails should render subtasks 1`] = `
             </strong>
           </StyledLabel>
           <StyledDescription>
-            <Connect(MemberPicker)
+            <Connect(MemberAssignment)
               member={
                 Object {
                   "firstName": "John",

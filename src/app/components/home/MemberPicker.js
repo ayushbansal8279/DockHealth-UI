@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Popover from '@material-ui/core/Popover';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import PersonInvite from '../../img/person-invite.svg';
 import SearchHeader from './SearchHeader';
 import PickerHeader from './PickerHeader';
 import ListItem from './ListItem';
-import PersonInvite from '../../img/person-invite.svg';
-import { assignOrReassignTask } from '../../actions/task-actions';
-import MemberAssignment from './MemberAssignment';
+import MemberSlot from './MemberSlot';
 
-const StyledPopover = styled(Popover).attrs({ classes: { paper: 'paper' } })`
+const StyledPopover = styled(Popover).attrs({
+  paper: 'paper',
+  anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+  transformOrigin: { vertical: 'top', horizontal: 'center' },
+})`
   && .paper {
     overflow: hidden;
     display: flex;
@@ -52,141 +54,148 @@ const FooterText = styled.span`
   color: #0ca1c7;
 `;
 
-const UNASSIGNED_MEMBER_ID = -1;
+const UNASSIGNED_ELEMENT_ID = -1;
 
-class MemberPicker extends React.Component {
-  state = {
-    anchorEl: null,
-    isSearching: false,
-    searchTerm: '',
-  }
+const MemberPickerHeader = ({ close, toggleSearch, task }) => (
+  <PickerHeader
+    handleClose={close}
+    handleSearchToggle={toggleSearch}
+    closeLabel="Close user selection"
+  >
+    {'Assign to '}
+    <HeaderTaskName>{task.description}</HeaderTaskName>
+  </PickerHeader>
+);
 
-  handleSearchToggle = () => {
-    const { isSearching } = this.state;
-    this.setState({ isSearching: !isSearching, searchTerm: '' });
-  }
+const MemberPickerSearchHeader = ({ search, toggleSearch }) => (
+  <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
+);
 
-  handleOpen = (e) => {
-    e.stopPropagation();
-    const { members } = this.props;
-    if (members == null) { return; }
-    this.setState({ anchorEl: e.currentTarget });
-  }
+const MemberPickerFooter = ({ onClick }) => (
+  <Footer onClick={onClick} focusRipple>
+    <img src={PersonInvite} alt="" />
+    <FooterText>Invite to list</FooterText>
+  </Footer>
+);
 
-  handleClose = () => {
-    this.setState({ anchorEl: null, isSearching: false, searchTerm: '' });
-  }
-
-  handleSelect = (e) => {
-    const { task, assign } = this.props;
-    const userId = e.currentTarget.id;
-    assign(task, userId);
-  }
-
-  handleSearch = (e) => {
-    this.setState({ searchTerm: e.target.value });
-  }
-
-  captureClicks = (e) => {
-    e.stopPropagation();
-  }
-
-  renderHeader = () => {
-    const { task } = this.props;
-    return (
-      <PickerHeader
-        handleClose={this.handleClose}
-        handleSearchToggle={this.handleSearchToggle}
-        closeLabel="Close user selection"
-      >
-        {'Assign to '}
-        <HeaderTaskName>{task.description}</HeaderTaskName>
-      </PickerHeader>
-    );
-  }
-
-  renderSearchHeader = () => (
-    <SearchHeader handleSearch={this.handleSearch} handleSearchToggle={this.handleSearchToggle} />
+const MemberPicker = ({
+  member, members, assign, children: Component, task,
+}) => {
+  const select = useCallback(
+    (e) => {
+      const memberId = e.currentTarget.id;
+      assign(memberId);
+    },
   );
 
-  render() {
-    const { member, small, members } = this.props;
-    const { anchorEl, isSearching, searchTerm } = this.state;
-    const isOpen = Boolean(anchorEl);
+  const [searchTerm, setSearchTerm] = useState('');
+  const search = useCallback(
+    (e) => { setSearchTerm(e.target.value); },
+  );
 
-    // Member search
-    const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
-    const isMatch = userName => searchTerms.every(term => userName.toLowerCase().includes(term));
+  const [isSearching, setIsSearching] = useState(false);
+  const toggleSearch = useCallback(
+    () => {
+      setIsSearching(!isSearching);
+      setSearchTerm('');
+    },
+    [isSearching],
+  );
 
-    const filteredMembers = members
-      && (searchTerms.length === 0
-        ? members
-        : members.filter(({ userName }) => isMatch(userName)));
+  const [anchor, setAnchor] = useState(null);
+  const open = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setAnchor(e.currentTarget);
+    },
+  );
+  const close = useCallback(
+    () => {
+      setAnchor(null);
+      setIsSearching(false);
+      setSearchTerm('');
+    },
+  );
 
-    const sortedMembers = filteredMembers
-      && filteredMembers.sort((a, b) => a.lastName.localeCompare(b.lastName));
+  const captureClicks = useCallback(
+    (e) => { e.stopPropagation(); },
+  );
 
-    return (
-      <React.Fragment>
-        <MemberAssignment onClick={this.handleOpen} member={member} small={small} />
-        <StyledPopover
-          onClick={this.captureClicks}
-          open={isOpen}
-          anchorEl={anchorEl}
-          onClose={this.handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-          {isSearching ? this.renderSearchHeader() : this.renderHeader()}
-          <List>
+  // member search
+  const matchListing = (term, { userName }) => {
+    const userNameMatches = userName && userName.toLowerCase().includes(term);
+    return userNameMatches;
+  };
+
+  const orderListings = (p1, p2) => (p1.lastName ? p1.lastName.localeCompare(p2.lastName) : -1);
+
+  // Search
+  const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
+  const isMatch = listing => searchTerms.every(term => matchListing(term, listing));
+
+  const filteredListings = members
+    && (searchTerms.length === 0
+      ? members
+      : members.filter(isMatch));
+
+  const sortedListings = filteredListings
+    && filteredListings.sort(orderListings);
+
+  return (
+    <React.Fragment>
+      <Component open={open} />
+      <StyledPopover
+        onClick={captureClicks}
+        open={Boolean(anchor)}
+        anchorEl={anchor}
+        onClose={close}
+      >
+        {isSearching
+          ? <MemberPickerSearchHeader search={search} toggleSearch={toggleSearch} />
+          : <MemberPickerHeader close={close} toggleSearch={toggleSearch} task={task} />}
+        <List>
+          <ListItem
+            selected={member == null}
+            onClick={select}
+            id={UNASSIGNED_ELEMENT_ID}
+          >
+            <MemberSlot />
+            <MemberName><em>Unassigned</em></MemberName>
+          </ListItem>
+          {sortedListings && sortedListings.map(m => (
             <ListItem
-              selected={member == null}
-              onClick={this.handleSelect}
-              id={UNASSIGNED_MEMBER_ID}
+              member={m}
+              key={m.userId}
+              selected={member && m.userId === member.userId}
+              onClick={select}
+              id={m.userId}
             >
-              <MemberAssignment />
-              <MemberName><em>Unassigned</em></MemberName>
+              <MemberSlot member={m} />
+              <MemberName>{m.userName}</MemberName>
             </ListItem>
-            {sortedMembers && sortedMembers.map(m => (
-              <ListItem
-                member={m}
-                key={m.userId}
-                selected={member && m.userId === member.userId}
-                onClick={this.handleSelect}
-                id={m.userId}
-              >
-                <MemberAssignment member={m} />
-                <MemberName>{m.userName}</MemberName>
-              </ListItem>
-            ))}
-          </List>
-          <Footer onClick={() => {}} focusRipple>
-            <img src={PersonInvite} alt="" />
-            <FooterText>Invite to list</FooterText>
-          </Footer>
-        </StyledPopover>
-      </React.Fragment>
-    );
-  }
-}
+          ))}
+        </List>
+        <MemberPickerFooter onClick={() => {}} />
+      </StyledPopover>
+    </React.Fragment>
+  );
+};
 
 const memberShape = PropTypes.shape({
-  userId: PropTypes.number,
-  profileThumbnailPictureHash: PropTypes.string,
-  initials: PropTypes.string,
-  firstName: PropTypes.string,
+  memberId: PropTypes.number,
   lastName: PropTypes.string,
+  firstName: PropTypes.string,
+  mrn: PropTypes.string,
 });
 
 MemberPicker.propTypes = {
   member: memberShape,
   members: PropTypes.arrayOf(memberShape),
+  assign: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+  task: PropTypes.shape({
+    description: PropTypes.string,
+  }).isRequired,
 };
 
 MemberPicker.defaultProps = {
@@ -194,12 +203,4 @@ MemberPicker.defaultProps = {
   members: null,
 };
 
-const mapStateToProps = store => ({
-  members: store.taskListState.tasklistmembers,
-});
-
-const mapDispatchToProps = {
-  assign: assignOrReassignTask,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MemberPicker);
+export default MemberPicker;

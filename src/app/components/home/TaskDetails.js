@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
-import MemberPicker from './MemberPicker';
+import MemberAssignment from './MemberAssignment';
 import Bookmark from './Bookmark';
 import PatientAssignment from './PatientAssignment';
 import StatusSelect from './StatusSelect';
@@ -149,7 +149,7 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel><strong>Assigned to </strong></StyledLabel>
                 <StyledDescription>
-                  <MemberPicker task={selectedTask} member={selectedTask.assignedTo} />
+                  <MemberAssignment task={selectedTask} member={selectedTask.assignedTo} />
                 </StyledDescription>
               </tr>
               <tr>
