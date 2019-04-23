@@ -49,11 +49,12 @@ ListItem.propTypes = {
   children: PropTypes.node.isRequired,
   selected: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 ListItem.defaultProps = {
   selected: false,
+  id: null,
 };
 
 export default ListItem;

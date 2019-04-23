@@ -39,10 +39,6 @@ const PatientPickerHeader = ({ close, toggleSearch }) => (
   </PickerHeader>
 );
 
-const PatientPickerSearchHeader = ({ search, toggleSearch }) => (
-  <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
-);
-
 const PatientPicker = ({
   patient, patients, assign, children: Component,
 }) => {
@@ -118,7 +114,7 @@ const PatientPicker = ({
         onClose={close}
       >
         {isSearching
-          ? <PatientPickerSearchHeader search={search} toggleSearch={toggleSearch} />
+          ? <SearchHeader search={search} toggleSearch={toggleSearch} />
           : <PatientPickerHeader close={close} toggleSearch={toggleSearch} />}
         <List>
           <ListItem
