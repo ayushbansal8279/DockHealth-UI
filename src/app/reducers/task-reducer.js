@@ -23,6 +23,11 @@ const updateDueDate = (taskState, { taskId, dueDate }) => ({
   tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, dueDate }) : task)),
 });
 
+const updatePatient = (taskState, { taskId, patient }) => ({
+  ...taskState,
+  tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, patient }) : task)),
+});
+
 const TaskReducer = function(state = initialState, action) {
 
   switch(action.type) {
@@ -248,6 +253,9 @@ const TaskReducer = function(state = initialState, action) {
 
     case types.UPDATE_TASK_DUE_DATE:
       return updateDueDate(state, action);
+
+    case types.UPDATE_TASK_PATIENT:
+      return updatePatient(state, action);
 
     // case types.UPDATE_TASK_SUCCESS:
     //   return {

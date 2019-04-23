@@ -1,7 +1,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  getTaskHistory, clearCurrentTaskHistory, moveTask, updateDueDate,
+  getTaskHistory, clearCurrentTaskHistory, moveTask, updateDueDate, updatePatient,
 } from '../task-actions';
 import {
   REQUEST_HISTORY,
@@ -9,6 +9,7 @@ import {
   GET_TASK_HISTORY_ERROR,
   CLEAR_CURRENT_TASK_HISTORY,
   UPDATE_TASK_DUE_DATE,
+  UPDATE_TASK_PATIENT,
   MOVE_TASK_SUCCESS,
 } from '../action-types';
 import TaskApi from '../../api/task-api';
@@ -144,9 +145,28 @@ describe('updateDueDate', () => {
       },
     });
 
-    TaskApi.updateTask.mockReturnValue(Promise.resolve({}));
+    TaskApi.updateTask.mockReturnValue(Promise.resolve({ taskId: 0, dueDate: '2019-03-27T03:00:00.000Z' }));
 
     await store.dispatch(updateDueDate({ taskId: 0, dueDate: null }, '2019-03-27T03:00:00.000Z'));
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+});
+
+describe('updatePatient', () => {
+  it('should update assigned patient', async () => {
+    const expectedActions = [
+      { type: UPDATE_TASK_PATIENT, taskId: 0, patient: { patientId: 1 } },
+    ];
+
+    const store = mockStore({
+      taskState: {
+        tasks: [{ taskId: 0, patient: null }],
+      },
+    });
+
+    TaskApi.updateTask.mockReturnValue(Promise.resolve({ taskId: 0, patient: { patientId: 1 } }));
+
+    await store.dispatch(updatePatient({ taskId: 0, patient: null }, { patientId: 1 }));
     expect(store.getActions()).toEqual(expectedActions);
   });
 });

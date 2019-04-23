@@ -55,6 +55,10 @@ const PatientPicker = ({
     },
   );
 
+  const deselect = useCallback(
+    () => { assign(null); },
+  );
+
   const [searchTerm, setSearchTerm] = useState('');
   const search = useCallback(
     (e) => { setSearchTerm(e.target.value); },
@@ -121,8 +125,7 @@ const PatientPicker = ({
         <List>
           <ListItem
             selected={patient == null}
-            onClick={select}
-            id={UNASSIGNED_ELEMENT_ID}
+            onClick={deselect}
           >
             <MemberName><em>Unassigned</em></MemberName>
           </ListItem>

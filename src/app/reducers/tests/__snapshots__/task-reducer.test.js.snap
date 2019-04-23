@@ -8,3 +8,14 @@ Array [
   },
 ]
 `;
+
+exports[`task-reducer should handle UPDATE_TASK_PATIENT 1`] = `
+Array [
+  Object {
+    "patient": Object {
+      "patientId": 1,
+    },
+    "taskId": 0,
+  },
+]
+`;

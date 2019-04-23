@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { addPatientToTask, getAllPatients } from '../../actions/patient-actions';
+import { getAllPatients } from '../../actions/patient-actions';
+import { updatePatient } from '../../actions/task-actions';
 import Patient from './Patient';
 import PatientPicker from './PatientPicker';
 
@@ -58,7 +59,7 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = (dispatch, { task }) => ({
-  update: (patientId) => { addPatientToTask(patientId, task.taskId)(dispatch); },
+  update: (patientId) => { updatePatient(task, { patientId })(dispatch); },
   fetch: () => { getAllPatients()(dispatch); },
 });
 

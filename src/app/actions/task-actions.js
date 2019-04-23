@@ -336,11 +336,23 @@ export function updateTaskDescription(task, description){
 
 export const updateDueDate = (task, dueDate) => dispatch => (
   TaskApi.updateTask(shapeTask({ ...task, dueDate }))
-    .then(() => {
+    .then((res) => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_DUE_DATE,
-        taskId: task.taskId,
-        dueDate,
+        taskId: res.taskId,
+        dueDate: res.dueDate,
+      });
+    })
+    .catch((err) => { throw err; })
+);
+
+export const updatePatient = (task, patient) => dispatch => (
+  TaskApi.updateTask(shapeTask({ ...task, patient }))
+    .then((res) => {
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_PATIENT,
+        taskId: res.taskId,
+        patient: res.patient,
       });
     })
     .catch((err) => { throw err; })

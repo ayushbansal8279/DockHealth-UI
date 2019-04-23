@@ -5,6 +5,7 @@ import {
   GET_TASK_HISTORY_ERROR,
   CLEAR_CURRENT_TASK_HISTORY,
   UPDATE_TASK_DUE_DATE,
+  UPDATE_TASK_PATIENT,
 } from '../../actions/action-types';
 
 describe('task-reducer', () => {
@@ -60,6 +61,17 @@ describe('task-reducer', () => {
     const state = reducer(initialState, action);
 
     expect(state.tasks[0].dueDate).toEqual(action.dueDate);
+    expect(state.tasks).toMatchSnapshot();
+  });
+
+  it('should handle UPDATE_TASK_PATIENT', () => {
+    const action = { type: UPDATE_TASK_PATIENT, taskId: 0, patient: { patientId: 1 } };
+    const initialState = {
+      tasks: [{ taskId: 0, patient: null }],
+    };
+    const state = reducer(initialState, action);
+
+    expect(state.tasks[0].patient).toEqual(action.patient);
     expect(state.tasks).toMatchSnapshot();
   });
 });
