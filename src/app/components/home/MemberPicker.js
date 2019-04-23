@@ -10,7 +10,7 @@ import ListItem from './ListItem';
 import MemberSlot from './MemberSlot';
 
 const StyledPopover = styled(Popover).attrs({
-  paper: 'paper',
+  classes: { paper: 'paper' },
   anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
   transformOrigin: { vertical: 'top', horizontal: 'center' },
 })`
