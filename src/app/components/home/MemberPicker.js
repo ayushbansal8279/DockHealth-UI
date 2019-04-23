@@ -88,6 +88,10 @@ const MemberPicker = ({
     },
   );
 
+  const deselect = useCallback(
+    () => { assign(UNASSIGNED_ELEMENT_ID); },
+  );
+
   const [searchTerm, setSearchTerm] = useState('');
   const search = useCallback(
     (e) => { setSearchTerm(e.target.value); },
@@ -156,8 +160,7 @@ const MemberPicker = ({
         <List>
           <ListItem
             selected={member == null}
-            onClick={select}
-            id={UNASSIGNED_ELEMENT_ID}
+            onClick={deselect}
           >
             <MemberSlot />
             <MemberName><em>Unassigned</em></MemberName>

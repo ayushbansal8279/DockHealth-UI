@@ -7,7 +7,7 @@ import PickerHeader from './PickerHeader';
 import ListItem from './ListItem';
 
 const StyledPopover = styled(Popover).attrs({
-  paper: 'paper',
+  classes: { paper: 'paper' },
   anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
   transformOrigin: { vertical: 'top', horizontal: 'center' },
 })`
@@ -29,15 +29,13 @@ const MemberName = styled.span`
   margin-left: 20px;
 `;
 
-const UNASSIGNED_ELEMENT_ID = -1;
-
 const PatientPickerHeader = ({ close, toggleSearch }) => (
   <PickerHeader
     handleClose={close}
     handleSearchToggle={toggleSearch}
     closeLabel="Close user selection"
   >
-      Assign patient
+    Assign patient
   </PickerHeader>
 );
 
