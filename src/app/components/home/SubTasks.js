@@ -18,7 +18,7 @@ const StyledRow = styled(TableRow)`
 const StyledCell = styled(TableCell)`
   && {
     border: none;
-    padding: 0 13px 13px 13px;
+    padding: 3px 13px 13px 13px;
 
     :last-child {
       padding-right: 13px;
