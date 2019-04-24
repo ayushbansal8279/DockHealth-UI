@@ -81,13 +81,11 @@ const MemberInvitationPopup = ({
   const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
   const isMatch = listing => searchTerms.every(term => matchListing(term, listing));
 
-  const filteredListings = members
-    && (searchTerms.length === 0
-      ? members
-      : members.filter(isMatch));
+  const filteredListings = searchTerms.length === 0
+    ? members
+    : members.filter(isMatch);
 
-  const sortedListings = filteredListings
-    && filteredListings.sort(orderListings);
+  const sortedListings = filteredListings.sort(orderListings);
 
   return (
     <React.Fragment>
@@ -95,7 +93,7 @@ const MemberInvitationPopup = ({
         ? <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
         : <MemberPickerHeader close={handleClose} toggleSearch={toggleSearch} task={task} />}
       <List>
-        {sortedListings && sortedListings.map(m => (
+        {sortedListings.map(m => (
           <ListItem
             member={m}
             key={m.userId}
@@ -129,7 +127,7 @@ MemberInvitationPopup.propTypes = {
 
 MemberInvitationPopup.defaultProps = {
   member: null,
-  members: null,
+  members: [],
 };
 
 const mapStateToProps = store => ({

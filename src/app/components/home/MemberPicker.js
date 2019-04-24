@@ -120,7 +120,7 @@ MemberPicker.propTypes = {
   member: memberShape,
   members: PropTypes.arrayOf(memberShape),
   assign: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.func.isRequired,
   task: PropTypes.shape({
     description: PropTypes.string,
   }).isRequired,
