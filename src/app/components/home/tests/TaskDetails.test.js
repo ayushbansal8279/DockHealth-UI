@@ -2,6 +2,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import TaskDetails from '../TaskDetails';
 
+jest.mock('../../../api/user-api', () => ({ }));
+
 describe('TaskDetails', () => {
   const mockTask = {
     taskId: 0,

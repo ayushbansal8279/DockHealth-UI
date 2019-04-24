@@ -137,7 +137,9 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = (dispatch, { task }) => ({
-  invite: (userId) => { inviteMultipleUsersToTaskList(task.taskList.taskListId, [userId])(dispatch); },
+  invite: (userId) => {
+    inviteMultipleUsersToTaskList(task.taskList.taskListId, [userId])(dispatch);
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MemberInvitationPopup);
