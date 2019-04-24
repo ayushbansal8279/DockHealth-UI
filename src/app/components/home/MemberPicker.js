@@ -25,6 +25,7 @@ const Footer = styled(ButtonBase)`
     justify-content: flex-start;
     flex: 0 0;
     display: flex;
+    margin-top: auto;
     align-items: center;
     padding: 0 25px;
     background: #fff;
@@ -102,7 +103,7 @@ const MemberPicker = ({
               task={task}
             />
           )}
-        <MemberPickerFooter onClick={openInvitation} />
+        {!isInviting && <MemberPickerFooter onClick={openInvitation} />}
       </StyledPopover>
     </React.Fragment>
   );
