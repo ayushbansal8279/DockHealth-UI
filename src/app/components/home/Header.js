@@ -40,7 +40,7 @@ const StyledSubtitle = styled(Typography)`
 const nbsp = '\u00A0'; // Used to preserve line height when there's no subtitle
 
 const Header = ({
-  title, taskCount, members, isFetching,
+  title, taskCount, members, isFetching, taskList,
 }) => (
   <StyledAppBar position="sticky" color="default" elevation={0}>
     <StyledToolbar>
@@ -48,7 +48,7 @@ const Header = ({
         <StyledTitle variant="h5">{title}</StyledTitle>
         <StyledSubtitle variant="subtitle1">{isFetching ? nbsp : `${taskCount} ${taskCount === 1 ? 'task' : 'tasks'}`}</StyledSubtitle>
       </div>
-      {members && <Members members={members} onClick={() => {}} />}
+      {members && <Members members={members} taskList={taskList} />}
     </StyledToolbar>
   </StyledAppBar>
 );

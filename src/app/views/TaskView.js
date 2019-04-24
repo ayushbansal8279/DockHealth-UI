@@ -206,6 +206,7 @@ class TaskView extends React.Component {
               title={title}
               taskCount={tasks.length}
               members={members}
+              taskList={isSingleTaskList && tasks[0].taskList}
             />
             {isSingleTaskList && <AddTask taskListId={tasks[0].taskList.taskListId} />}
             <Toolbar style={{ padding: '0 38px 0 48px' }}>

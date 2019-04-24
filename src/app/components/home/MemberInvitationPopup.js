@@ -24,15 +24,20 @@ const MemberName = styled.span`
   margin-left: 20px;
 `;
 
-const MemberPickerHeader = ({ close, toggleSearch, task }) => (
+const MemberPickerHeader = ({
+  backInsteadOfClose,
+  close,
+  toggleSearch,
+  taskList,
+}) => (
   <PickerHeader
     handleClose={close}
     handleSearchToggle={toggleSearch}
     closeLabel="Close user selection"
-    backInsteadOfClose
+    backInsteadOfClose={backInsteadOfClose}
   >
     {'Invite to '}
-    <HeaderTaskName>{task.taskList.listName}</HeaderTaskName>
+    <HeaderTaskName>{taskList.listName}</HeaderTaskName>
   </PickerHeader>
 );
 
@@ -42,7 +47,7 @@ const NoResults = styled.div`
 `;
 
 const MemberInvitationPopup = ({
-  members, task, back, invite,
+  members, taskList, back, close, invite,
 }) => {
   // TODO: Fetch getOrganizationUsersNotInTaskList ?
   const select = useCallback(
@@ -70,7 +75,11 @@ const MemberInvitationPopup = ({
     () => {
       setIsSearching(false);
       setSearchTerm('');
-      back();
+      if (back) {
+        back();
+      } else {
+        close();
+      }
     },
   );
 
@@ -96,7 +105,12 @@ const MemberInvitationPopup = ({
     <React.Fragment>
       {isSearching
         ? <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
-        : <MemberPickerHeader close={handleClose} toggleSearch={toggleSearch} task={task} />}
+        : <MemberPickerHeader
+            backInsteadOfClose={back !== undefined}
+            close={handleClose}
+            toggleSearch={toggleSearch}
+            taskList={taskList}
+          />}
       <List>
         {sortedListings.length === 0 && <NoResults>No matching results.</NoResults>}
         {sortedListings.map(m => (
@@ -126,8 +140,9 @@ const memberShape = PropTypes.shape({
 MemberInvitationPopup.propTypes = {
   members: PropTypes.arrayOf(memberShape),
   invite: PropTypes.func.isRequired,
-  task: PropTypes.shape({
-    description: PropTypes.string,
+  taskList: PropTypes.shape({
+    listName: PropTypes.string,
+    taskListId: PropTypes.number,
   }).isRequired,
 };
 
@@ -140,9 +155,9 @@ const mapStateToProps = store => ({
   members: store.taskListState.orgusersnotintasklist,
 });
 
-const mapDispatchToProps = (dispatch, { task }) => ({
+const mapDispatchToProps = (dispatch, { taskList }) => ({
   invite: (userId) => {
-    inviteMultipleUsersToTaskList(task.taskList.taskListId, [userId])(dispatch);
+    inviteMultipleUsersToTaskList(taskList.taskListId, [userId])(dispatch);
   },
 });
 

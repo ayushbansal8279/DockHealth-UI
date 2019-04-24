@@ -87,9 +87,7 @@ const MemberPicker = ({
         {isInviting
           ? (
             <MemberInvitationPopup
-              members={members}
-              assign={assign}
-              task={task}
+              taskList={task.taskList}
               close={close}
               back={closeInvitation}
             />
