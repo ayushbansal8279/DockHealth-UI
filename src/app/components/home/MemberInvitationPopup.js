@@ -36,6 +36,11 @@ const MemberPickerHeader = ({ close, toggleSearch, task }) => (
   </PickerHeader>
 );
 
+const NoResults = styled.div`
+  margin-top: 60px;
+  text-align: center;
+`;
+
 const MemberInvitationPopup = ({
   members, task, back, invite,
 }) => {
@@ -93,6 +98,7 @@ const MemberInvitationPopup = ({
         ? <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
         : <MemberPickerHeader close={handleClose} toggleSearch={toggleSearch} task={task} />}
       <List>
+        {sortedListings.length === 0 && <NoResults>No matching results.</NoResults>}
         {sortedListings.map(m => (
           <ListItem
             member={m}
