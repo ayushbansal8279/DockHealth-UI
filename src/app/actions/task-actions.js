@@ -205,31 +205,11 @@ export function saveTask(newTask) {
 }
 
 export const moveTask = (task, taskList) => (dispatch) => {
-  const {
-    assignedTo,
-    description,
-    dueDate,
-    patient,
-    priority,
-    reminderDt,
-    subtasks,
-    taskId,
-    parentTaskId,
-  } = task;
-
   const updatedTask = {
+    ...shapeTask(task),
     refiled: true,
-    assignedToId: assignedTo ? assignedTo.userId : null,
-    description,
-    dueDate,
-    patientId: patient ? patient.patientId : null,
-    priority,
-    reminderDt,
-    subtasks,
-    taskId,
     taskList: taskList.listName,
     taskListId: taskList.taskListId,
-    parentTaskId,
   };
 
   return TaskApi.updateTask(updatedTask).then(() => {
@@ -341,6 +321,18 @@ export const updateDueDate = (task, dueDate) => dispatch => (
         type: ActionTypes.UPDATE_TASK_DUE_DATE,
         taskId: task.taskId,
         dueDate,
+      });
+    })
+    .catch((err) => { throw err; })
+);
+
+export const updateReminder = (task, reminderDt) => dispatch => (
+  TaskApi.updateTask(shapeTask({ ...task, reminderDt }))
+    .then(() => {
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_REMINDER,
+        taskId: task.taskId,
+        reminderDt,
       });
     })
     .catch((err) => { throw err; })

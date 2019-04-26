@@ -1,7 +1,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  getTaskHistory, clearCurrentTaskHistory, moveTask, updateDueDate,
+  getTaskHistory, clearCurrentTaskHistory, moveTask, updateDueDate, updateReminder,
 } from '../task-actions';
 import {
   REQUEST_HISTORY,
@@ -9,6 +9,7 @@ import {
   GET_TASK_HISTORY_ERROR,
   CLEAR_CURRENT_TASK_HISTORY,
   UPDATE_TASK_DUE_DATE,
+  UPDATE_TASK_REMINDER,
   MOVE_TASK_SUCCESS,
 } from '../action-types';
 import TaskApi from '../../api/task-api';
@@ -147,6 +148,25 @@ describe('updateDueDate', () => {
     TaskApi.updateTask.mockReturnValue(Promise.resolve({}));
 
     await store.dispatch(updateDueDate({ taskId: 0, dueDate: null }, '2019-03-27T03:00:00.000Z'));
+    expect(store.getActions()).toEqual(expectedActions);
+  });
+});
+
+describe('updateReminder', () => {
+  it('should update due date', async () => {
+    const expectedActions = [
+      { type: UPDATE_TASK_REMINDER, taskId: 0, reminderDt: '2019-03-27T03:00:00.000Z' },
+    ];
+
+    const store = mockStore({
+      taskState: {
+        tasks: [{ taskId: 0, reminderDt: null }],
+      },
+    });
+
+    TaskApi.updateTask.mockReturnValue(Promise.resolve({}));
+
+    await store.dispatch(updateReminder({ taskId: 0, reminderDt: null }, '2019-03-27T03:00:00.000Z'));
     expect(store.getActions()).toEqual(expectedActions);
   });
 });

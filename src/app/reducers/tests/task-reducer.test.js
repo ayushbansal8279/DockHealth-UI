@@ -5,6 +5,7 @@ import {
   GET_TASK_HISTORY_ERROR,
   CLEAR_CURRENT_TASK_HISTORY,
   UPDATE_TASK_DUE_DATE,
+  UPDATE_TASK_REMINDER,
 } from '../../actions/action-types';
 
 describe('task-reducer', () => {
@@ -60,6 +61,17 @@ describe('task-reducer', () => {
     const state = reducer(initialState, action);
 
     expect(state.tasks[0].dueDate).toEqual(action.dueDate);
+    expect(state.tasks).toMatchSnapshot();
+  });
+
+  it('should handle UPDATE_TASK_REMINDER', () => {
+    const action = { type: UPDATE_TASK_REMINDER, taskId: 0, reminderDt: '2019-03-27T03:00:00.000Z' };
+    const initialState = {
+      tasks: [{ taskId: 0, reminderDt: '' }],
+    };
+    const state = reducer(initialState, action);
+
+    expect(state.tasks[0].reminderDt).toEqual(action.reminderDt);
     expect(state.tasks).toMatchSnapshot();
   });
 });

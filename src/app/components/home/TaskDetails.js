@@ -13,6 +13,7 @@ import Comments from './comments/Comments';
 import History from './History';
 import TaskActions from './TaskActions';
 import DetailsDueDate from './DetailsDueDate';
+import Reminder from './Reminder';
 
 const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
   && {
@@ -201,6 +202,17 @@ class TaskDetails extends React.PureComponent {
                   >
                     {selectedTask.dueDate}
                   </DetailsDueDate>
+                </StyledDescription>
+              </tr>
+              <tr>
+                <StyledLabel><strong>Reminder</strong></StyledLabel>
+                <StyledDescription>
+                  <Reminder
+                    completed={selectedTask.status === 'COMPLETE'}
+                    task={selectedTask}
+                  >
+                    {selectedTask.reminderDt}
+                  </Reminder>
                 </StyledDescription>
               </tr>
               <tr>

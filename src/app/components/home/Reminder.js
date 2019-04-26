@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { updateDueDate } from '../../actions/task-actions';
+import { updateReminder } from '../../actions/task-actions';
 import DateTimeSelect from '../DateTimeSelect';
 import DueDate from './DueDate';
 
@@ -21,29 +21,29 @@ const Placeholder = styled.div`
   color: #aab8c3;
 `;
 
-const DetailsDueDate = ({ children, update }) => (
+const Reminder = ({ children, update }) => (
   <DateTimeSelect value={children} onChange={update}>
     {({ open }) => (
       <StyledButtonBase onClick={open}>
         {children
           ? <DueDate>{children}</DueDate>
-          : <Placeholder>Set a due date</Placeholder>
+          : <Placeholder>Set a reminder</Placeholder>
             }
       </StyledButtonBase>
     )}
   </DateTimeSelect>
 );
 
-DetailsDueDate.propTypes = {
+Reminder.propTypes = {
   children: PropTypes.node,
 };
 
-DetailsDueDate.defaultProps = {
+Reminder.defaultProps = {
   children: null,
 };
 
 const mapDispatchToProps = (dispatch, { task }) => ({
-  update: (dueDate) => { updateDueDate(task, dueDate)(dispatch); },
+  update: (reminder) => { updateReminder(task, reminder)(dispatch); },
 });
 
-export default connect(undefined, mapDispatchToProps)(DetailsDueDate);
+export default connect(undefined, mapDispatchToProps)(Reminder);

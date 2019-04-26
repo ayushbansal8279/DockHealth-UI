@@ -196,6 +196,38 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
           </StyledDescription>
         </tr>
         <tr>
+          <StyledLabel>
+            <strong>
+              Reminder
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Connect(Reminder)
+              completed={false}
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": null,
+                  "status": "INCOMPLETE",
+                  "subtasks": null,
+                  "taskId": 0,
+                }
+              }
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
           <StyledLabel
             style={
               Object {
@@ -456,6 +488,42 @@ exports[`TaskDetails should render patient 1`] = `
           </StyledDescription>
         </tr>
         <tr>
+          <StyledLabel>
+            <strong>
+              Reminder
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Connect(Reminder)
+              completed={false}
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": Object {
+                    "firstName": "Jane",
+                    "lastName": "Doe",
+                    "mrn": "1234567",
+                  },
+                  "status": "INCOMPLETE",
+                  "subtasks": null,
+                  "taskId": 0,
+                }
+              }
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
           <StyledLabel
             style={
               Object {
@@ -670,6 +738,45 @@ exports[`TaskDetails should render subtasks 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(DetailsDueDate)
+              completed={false}
+              task={
+                Object {
+                  "assignedBy": Object {
+                    "firstName": "Janet",
+                    "lastName": "Cook",
+                  },
+                  "assignedTo": Object {
+                    "firstName": "John",
+                    "initials": "JS",
+                    "lastName": "Smith",
+                  },
+                  "comments": Array [],
+                  "description": "Just do it.",
+                  "dueDate": "",
+                  "patient": null,
+                  "status": "INCOMPLETE",
+                  "subtasks": Array [
+                    Object {
+                      "id": 0,
+                    },
+                    Object {
+                      "id": 1,
+                    },
+                  ],
+                  "taskId": 0,
+                }
+              }
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel>
+            <strong>
+              Reminder
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Connect(Reminder)
               completed={false}
               task={
                 Object {
