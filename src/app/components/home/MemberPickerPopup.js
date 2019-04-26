@@ -18,9 +18,25 @@ const HeaderTaskName = styled.span`
 
 const MemberName = styled.span`
   margin-left: 20px;
+  flex: 1;
+  text-align: left;
+`;
+
+const MemberRole = styled.div`
+  color: #ababb2;
+  width: 100px;
+  text-align: center;
+`;
+
+const MemberStatus = styled.div`
+  color: #0ca1c7;
+  width: 100px;
+  text-align: center;
 `;
 
 const UNASSIGNED_ELEMENT_ID = -1;
+
+const MEMBER_ACTIVE_STATUS = 'ACTIVE';
 
 const MemberPickerHeader = ({ close, toggleSearch, task }) => (
   <PickerHeader
@@ -112,6 +128,8 @@ const MemberPickerPopup = ({
           >
             <MemberSlot member={m} />
             <MemberName>{m.userName}</MemberName>
+            {m.status !== MEMBER_ACTIVE_STATUS && <MemberStatus>{m.status}</MemberStatus>}
+            <MemberRole>{m.taskListUserRole}</MemberRole>
           </ListItem>
         ))}
       </List>
@@ -124,6 +142,8 @@ const memberShape = PropTypes.shape({
   lastName: PropTypes.string,
   firstName: PropTypes.string,
   mrn: PropTypes.string,
+  taskListUserRole: PropTypes.string,
+  status: PropTypes.string,
 });
 
 MemberPickerPopup.propTypes = {

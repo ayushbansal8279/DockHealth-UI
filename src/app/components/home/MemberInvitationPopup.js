@@ -105,12 +105,14 @@ const MemberInvitationPopup = ({
     <React.Fragment>
       {isSearching
         ? <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
-        : <MemberPickerHeader
+        : (
+          <MemberPickerHeader
             backInsteadOfClose={back !== undefined}
             close={handleClose}
             toggleSearch={toggleSearch}
             taskList={taskList}
-          />}
+          />
+        )}
       <List>
         {sortedListings.length === 0 && <NoResults>No matching results.</NoResults>}
         {sortedListings.map(m => (
@@ -122,7 +124,6 @@ const MemberInvitationPopup = ({
           >
             <MemberSlot member={m} />
             <MemberName>{m.userName}</MemberName>
-            <strong>{m.userInviteStatus}</strong>
           </ListItem>
         ))}
       </List>
