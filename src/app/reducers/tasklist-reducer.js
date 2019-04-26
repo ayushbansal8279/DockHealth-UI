@@ -1,9 +1,37 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
+const inviteUser = (state, { userId }) => ({
+  ...state,
+  tasklistmembers: [
+    ...state.tasklistmembers,
+    ...state.orgusersnotintasklist.filter(user => user.userId == userId)
+      .map(user => ({ ...user, status: 'ACTIVE', taskListUserRole: 'MEMBER' })),
+  ],
+  orgusersnotintasklist: state.orgusersnotintasklist.filter(user => user.userId != userId),
+});
+
+const inviteMultipleUsers = (state, { invitedUsers }) => ({
+  ...state,
+  tasklistmembers: [
+    ...state.tasklistmembers,
+    ...state.orgusersnotintasklist
+      .filter(user => invitedUsers.some(userId => user.userId == userId))
+      .map(user => ({ ...user, status: 'ACTIVE', taskListUserRole: 'MEMBER' })),
+  ],
+  orgusersnotintasklist: state.orgusersnotintasklist
+    .filter(user => invitedUsers.every(userId => user.userId != userId)),
+});
+
 const TaskListReducer = function(state = initialState, action) {
 
   switch(action.type) {
+
+    case types.INVITE_USER_TO_TASKLIST_SUCCESS:
+      return inviteUser(state, action);
+
+    case types.INVITEMULUSERS_TASKLIST_SUCCESS:
+      return inviteMultipleUsers(state, action);
 
     case types.ADD_TASKLIST_SUCCESS:
       return {...state, tasklist: [action.tasklist].concat(state.tasklist), currentList:action.tasklist}
