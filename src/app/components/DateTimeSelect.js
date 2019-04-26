@@ -98,10 +98,10 @@ const DateTimeSelect = ({ children: Component, onChange, value }) => {
     () => setAnchor(null),
   );
 
-  const today = moment();
+  const dateNow = moment();
 
   return (
-    <React.Fragment>
+    <>
       <Component open={open} />
       <StyledPopover
         open={Boolean(anchor)}
@@ -121,12 +121,12 @@ const DateTimeSelect = ({ children: Component, onChange, value }) => {
           onChange={(date) => { onChange(date); close(); }}
         >
           {({ date, handleChange, handleAccept }) => (
-            <React.Fragment>
+            <>
               <DatePickerHeader
                 handleClose={close}
-                isOverdue={date < today}
+                isOverdue={date < dateNow}
               >
-                {date < today ? 'This reminder is overdue!' : 'Set a reminder'}
+                {date < dateNow ? 'This reminder is overdue!' : 'Set a reminder'}
               </DatePickerHeader>
               <DatePickerBody>
                 <Calendar date={date} onChange={handleChange} />
@@ -141,12 +141,12 @@ const DateTimeSelect = ({ children: Component, onChange, value }) => {
                   </ButtonContainer>
                 </FooterContainer>
               </DatePickerBody>
-            </React.Fragment>
+            </>
           )
         }
         </BasePicker>
       </StyledPopover>
-    </React.Fragment>
+    </>
   );
 };
 
