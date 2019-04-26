@@ -10,7 +10,7 @@ import Comment from './Comment';
 
 const CommentStream = styled.div`
   margin-top: 12px;
-  height: 365px;
+  max-height: 365px;
   overflow: auto;
   white-space: pre-line;
 `;
