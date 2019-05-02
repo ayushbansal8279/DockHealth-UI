@@ -38,7 +38,7 @@ const Item = styled.div`
 const ListItem = ({
   children, selected, onClick, id,
 }) => (
-  <ItemContainer selected={selected} onClick={onClick} id={id}>
+  <ItemContainer selected={selected} onClick={onClick} id={id} as={onClick ? undefined : 'div'}>
     <Item>
       {children}
     </Item>
