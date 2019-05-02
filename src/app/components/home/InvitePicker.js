@@ -2,6 +2,9 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Popover from '@material-ui/core/Popover';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import PersonInvite from '../../img/person-invite.svg';
+import MemberManagementPopup from './MemberManagementPopup';
 import MemberInvitationPopup from './MemberInvitationPopup';
 
 const StyledPopover = styled(Popover).attrs({
@@ -17,9 +20,43 @@ const StyledPopover = styled(Popover).attrs({
   }
 `;
 
+const Footer = styled(ButtonBase)`
+  && {
+    justify-content: flex-start;
+    flex: 0 0;
+    display: flex;
+    margin-top: auto;
+    align-items: center;
+    padding: 0 25px;
+    background: #fff;
+    height: 75px;
+  }
+`;
+
+const FooterText = styled.span`
+  margin-left: 16px;
+  font-size: 14px;
+  color: #0ca1c7;
+`;
+
+const InvitePickerFooter = ({ onClick }) => (
+  <Footer onClick={onClick} focusRipple>
+    <img src={PersonInvite} alt="" />
+    <FooterText>Invite to list</FooterText>
+  </Footer>
+);
+
 const InvitePicker = ({
-  children: Component, taskList,
+  children: Component, taskList, members,
 }) => {
+  const [isInviting, setIsInviting] = useState(false);
+  const openInvitation = useCallback(
+    () => { setIsInviting(true); },
+  );
+  const closeInvitation = useCallback(
+    () => { setIsInviting(false); },
+  );
+
   const [anchor, setAnchor] = useState(null);
   const open = useCallback(
     (e) => {
@@ -30,6 +67,7 @@ const InvitePicker = ({
   const close = useCallback(
     () => {
       setAnchor(null);
+      closeInvitation();
     },
   );
 
@@ -46,21 +84,45 @@ const InvitePicker = ({
         anchorEl={anchor}
         onClose={close}
       >
-        <MemberInvitationPopup
-          taskList={taskList}
-          close={close}
-        />
+        {isInviting
+          ? (
+            <MemberInvitationPopup
+              taskList={taskList}
+              close={close}
+              back={closeInvitation}
+            />
+          )
+          : (
+            <MemberManagementPopup
+              close={close}
+              members={members}
+              taskList={taskList}
+            />
+          )}
+        {!isInviting && <InvitePickerFooter onClick={openInvitation} />}
       </StyledPopover>
     </React.Fragment>
   );
 };
 
+const memberShape = PropTypes.shape({
+  memberId: PropTypes.number,
+  lastName: PropTypes.string,
+  firstName: PropTypes.string,
+  mrn: PropTypes.string,
+});
+
 InvitePicker.propTypes = {
   children: PropTypes.func.isRequired,
+  members: PropTypes.arrayOf(memberShape),
   taskList: PropTypes.shape({
     listName: PropTypes.string,
-    taskListId: PropTypes.number,
   }).isRequired,
+};
+
+InvitePicker.defaultProps = {
+  member: null,
+  members: null,
 };
 
 export default InvitePicker;

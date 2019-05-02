@@ -24,7 +24,7 @@ const Members = ({ members, taskList }) => {
 
   return (
     <StyledContainer>
-      <InvitePicker taskList={taskList}>
+      <InvitePicker taskList={taskList} members={members}>
         {({ open }) => (
           <AddMember onClick={open}>
             <AddIcon fontSize="small" />

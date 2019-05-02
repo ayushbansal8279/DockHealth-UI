@@ -22,41 +22,39 @@ const MemberName = styled.span`
   text-align: left;
 `;
 
+const MemberRole = styled.div`
+  color: #ababb2;
+  width: 100px;
+  text-align: center;
+`;
+
 const MemberStatus = styled.div`
   color: #0ca1c7;
   width: 100px;
   text-align: center;
 `;
 
-const UNASSIGNED_ELEMENT_ID = -1;
-
 const MEMBER_ACTIVE_STATUS = 'ACTIVE';
 
-const MemberPickerHeader = ({ close, toggleSearch, task }) => (
+const MemberPickerHeader = ({ close, toggleSearch, taskList }) => (
   <PickerHeader
     handleClose={close}
     handleSearchToggle={toggleSearch}
     closeLabel="Close user selection"
   >
-    {'Assign to '}
-    <HeaderTaskName>{task.description}</HeaderTaskName>
+    {'Members of '}
+    <HeaderTaskName>{taskList.listName}</HeaderTaskName>
   </PickerHeader>
 );
 
-const MemberPickerPopup = ({
-  member, members, assign, task, close,
+const NoResults = styled.div`
+  margin-top: 10%;
+  text-align: center;
+`;
+
+const MemberManagementPopup = ({
+  member, members, taskList, close,
 }) => {
-  const select = useCallback(
-    (e) => {
-      const memberId = e.currentTarget.id;
-      assign(memberId);
-    },
-  );
-
-  const deselect = useCallback(
-    () => { assign(UNASSIGNED_ELEMENT_ID); },
-  );
-
   const [searchTerm, setSearchTerm] = useState('');
   const search = useCallback(
     (e) => { setSearchTerm(e.target.value); },
@@ -103,26 +101,26 @@ const MemberPickerPopup = ({
     <React.Fragment>
       {isSearching
         ? <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
-        : <MemberPickerHeader close={handleClose} toggleSearch={toggleSearch} task={task} />}
+        : (
+          <MemberPickerHeader
+            close={handleClose}
+            toggleSearch={toggleSearch}
+            taskList={taskList}
+          />
+        )}
       <List>
-        <ListItem
-          selected={member == null}
-          onClick={deselect}
-        >
-          <MemberSlot />
-          <MemberName><em>Unassigned</em></MemberName>
-        </ListItem>
+        {sortedListings.length === 0 && <NoResults>No matching results.</NoResults>}
         {sortedListings && sortedListings.map(m => (
           <ListItem
             member={m}
             key={m.userId}
             selected={member && m.userId === member.userId}
-            onClick={select}
             id={m.userId}
           >
             <MemberSlot member={m} />
             <MemberName>{m.userName}</MemberName>
             {m.status !== MEMBER_ACTIVE_STATUS && <MemberStatus>{m.status}</MemberStatus>}
+            <MemberRole>{m.taskListUserRole}</MemberRole>
           </ListItem>
         ))}
       </List>
@@ -139,18 +137,15 @@ const memberShape = PropTypes.shape({
   status: PropTypes.string,
 });
 
-MemberPickerPopup.propTypes = {
-  member: memberShape,
+MemberManagementPopup.propTypes = {
   members: PropTypes.arrayOf(memberShape),
-  assign: PropTypes.func.isRequired,
-  task: PropTypes.shape({
-    description: PropTypes.string,
+  taskList: PropTypes.shape({
+    listName: PropTypes.string,
   }).isRequired,
 };
 
-MemberPickerPopup.defaultProps = {
-  member: null,
+MemberManagementPopup.defaultProps = {
   members: null,
 };
 
-export default MemberPickerPopup;
+export default MemberManagementPopup;

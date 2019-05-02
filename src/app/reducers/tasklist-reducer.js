@@ -6,7 +6,7 @@ const inviteUser = (state, { userId }) => ({
   tasklistmembers: [
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist.filter(user => user.userId == userId)
-      .map(user => ({ ...user, status: 'ACTIVE', taskListUserRole: 'MEMBER' })),
+      .map(user => ({ ...user, status: 'PENDING', taskListUserRole: 'MEMBER' })),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist.filter(user => user.userId != userId),
 });
@@ -17,7 +17,7 @@ const inviteMultipleUsers = (state, { invitedUsers }) => ({
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
       .filter(user => invitedUsers.some(userId => user.userId == userId))
-      .map(user => ({ ...user, status: 'ACTIVE', taskListUserRole: 'MEMBER' })),
+      .map(user => ({ ...user, status: 'PENDING', taskListUserRole: 'MEMBER' })),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist
     .filter(user => invitedUsers.every(userId => user.userId != userId)),
