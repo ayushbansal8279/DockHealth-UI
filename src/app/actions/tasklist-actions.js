@@ -143,6 +143,13 @@ export function getNonOrgUsersByTaskList(taskListId) {
   };
 }
 
+/**
+ * Updates user's role in a list.
+ * @param {number} tasklistId
+ * @param {{userId: number}} markedUser
+ * @param {('OWNER'|'ADMIN'|'MEMBER')} role
+ * @returns {Promise}
+ */
 export function changeUserRoleForList(tasklistId,markedUser,role) {
   return function(dispatch) {
     return TaskListApi.changeUserRoleForList(tasklistId,markedUser.userId,role).then(res => {
@@ -163,7 +170,6 @@ export function deleteTaskListById(taskListId) {
     });
   };
 }
-
 
 export function removeUserFromList(taskListId,removedUser) {
   return function(dispatch) {

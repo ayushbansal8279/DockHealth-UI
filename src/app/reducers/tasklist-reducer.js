@@ -123,7 +123,7 @@ const TaskListReducer = function(state = initialState, action) {
     case types.REMOVEUSER_TASKLIST_SUCCESS:
         return {
           ...state,
-          tasklistmembers: state.tasklistmembers.filter(member => member !== action.removedUser)
+          tasklistmembers: state.tasklistmembers.filter(member => member.userId !== action.removedUser.userId)
         }
 
     case types.CHANGEUSERROLE_TASKLIST_SUCCESS:

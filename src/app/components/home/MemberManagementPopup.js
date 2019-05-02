@@ -5,6 +5,7 @@ import SearchHeader from './SearchHeader';
 import PickerHeader from './PickerHeader';
 import ListItem from './ListItem';
 import MemberSlot from './MemberSlot';
+import MemberManagementOptions from './MemberManagementOptions';
 
 const List = styled.div`
   background: #fff;
@@ -121,6 +122,7 @@ const MemberManagementPopup = ({
             <MemberName>{m.userName}</MemberName>
             {m.status !== MEMBER_ACTIVE_STATUS && <MemberStatus>{m.status}</MemberStatus>}
             <MemberRole>{m.taskListUserRole}</MemberRole>
+            <MemberManagementOptions taskListId={taskList.taskListId} userId={m.userId} />
           </ListItem>
         ))}
       </List>
