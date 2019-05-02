@@ -130,7 +130,7 @@ const TaskListReducer = function(state = initialState, action) {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.map(member =>
-          member === action.markedUser ?
+          member.userId === action.markedUser.userId ?
           {...member, taskListUserRole:action.role} : member
         )
       }

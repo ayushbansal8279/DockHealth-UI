@@ -122,7 +122,7 @@ const MemberManagementPopup = ({
             <MemberName>{m.userName}</MemberName>
             {m.status !== MEMBER_ACTIVE_STATUS && <MemberStatus>{m.status}</MemberStatus>}
             <MemberRole>{m.taskListUserRole}</MemberRole>
-            <MemberManagementOptions taskListId={taskList.taskListId} userId={m.userId} />
+            <MemberManagementOptions taskListId={taskList.taskListId} member={m} />
           </ListItem>
         ))}
       </List>

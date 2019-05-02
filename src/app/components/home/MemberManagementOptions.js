@@ -5,9 +5,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { removeUserFromList } from '../../actions/tasklist-actions';
+import { removeUserFromList, changeUserRoleForList } from '../../actions/tasklist-actions';
 
-export const ManageButton = ({ remove }) => {
+const MEMBER_ROLE = 'MEMBER';
+const ADMIN_ROLE = 'ADMIN';
+
+export const ManageButton = ({ remove, changeRole, member: { taskListUserRole } }) => {
   const [anchor, setAnchor] = useState(null);
   const isOpen = Boolean(anchor);
 
@@ -24,6 +27,14 @@ export const ManageButton = ({ remove }) => {
       remove();
       close();
     }, [close, remove],
+  );
+
+  const handleChangeRole = useCallback(
+    () => {
+      const newRole = taskListUserRole === MEMBER_ROLE ? ADMIN_ROLE : MEMBER_ROLE;
+      changeRole(newRole);
+      close();
+    }, [changeRole, close, taskListUserRole],
   );
 
   return (
@@ -45,6 +56,17 @@ export const ManageButton = ({ remove }) => {
             <MenuItem onClick={handleRemove}>
               Remove user from list
             </MenuItem>
+            { taskListUserRole === MEMBER_ROLE
+              ? (
+                <MenuItem onClick={handleChangeRole}>
+                  Make admin
+                </MenuItem>
+              )
+              : (
+                <MenuItem onClick={handleChangeRole}>
+                  Remove admin status
+                </MenuItem>
+              )}
           </Menu>
         </>
   );
@@ -52,18 +74,25 @@ export const ManageButton = ({ remove }) => {
 
 ManageButton.propTypes = {
   remove: PropTypes.func.isRequired,
-  promote: PropTypes.func.isRequired,
+  changeRole: PropTypes.func.isRequired,
+  member: PropTypes.shape({
+    taskListUserRole: PropTypes.string,
+  }).isRequired,
 };
 
-const mapDispatchToProps = (dispatch, { taskListId, userId }) => ({
+const mapDispatchToProps = (dispatch, { taskListId, member: { userId } }) => ({
   remove: () => { removeUserFromList(taskListId, { userId })(dispatch); },
+  changeRole: (role) => { changeUserRoleForList(taskListId, { userId }, role)(dispatch); },
 });
 
 const ConnectedManageButton = connect(undefined, mapDispatchToProps)(ManageButton);
 
 ConnectedManageButton.propTypes = {
   taskListId: PropTypes.number.isRequired,
-  userId: PropTypes.number.isRequired,
+  member: PropTypes.shape({
+    userId: PropTypes.number,
+    taskListUserRole: PropTypes.string,
+  }).isRequired,
 };
 
 export default ConnectedManageButton;
