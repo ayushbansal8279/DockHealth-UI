@@ -150,7 +150,11 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel><strong>Assigned to </strong></StyledLabel>
                 <StyledDescription>
-                  <MemberPicker task={selectedTask} member={selectedTask.assignedTo} />
+                  <MemberPicker
+                    task={selectedTask}
+                    member={selectedTask.assignedTo}
+                    disabled={isCompleted}
+                  />
                 </StyledDescription>
               </tr>
               <tr>

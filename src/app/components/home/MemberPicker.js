@@ -110,7 +110,9 @@ class MemberPicker extends React.Component {
   );
 
   render() {
-    const { member, small, members } = this.props;
+    const {
+      member, small, members, disabled,
+    } = this.props;
     const { anchorEl, isSearching, searchTerm } = this.state;
     const isOpen = Boolean(anchorEl);
 
@@ -128,7 +130,12 @@ class MemberPicker extends React.Component {
 
     return (
       <React.Fragment>
-        <MemberAssignment onClick={this.handleOpen} member={member} small={small} />
+        <MemberAssignment
+          onClick={this.handleOpen}
+          member={member}
+          small={small}
+          disabled={disabled}
+        />
         <StyledPopover
           onClick={this.captureClicks}
           open={isOpen}
@@ -185,11 +192,13 @@ const memberShape = PropTypes.shape({
 });
 
 MemberPicker.propTypes = {
+  disabled: PropTypes.bool,
   member: memberShape,
   members: PropTypes.arrayOf(memberShape),
 };
 
 MemberPicker.defaultProps = {
+  disabled: false,
   member: null,
   members: null,
 };

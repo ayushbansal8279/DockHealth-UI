@@ -48,13 +48,16 @@ const UnassignedMember = styled(AssignedMember)`
   }
 `;
 
-const MemberAssignment = ({ member, onClick, small }) => (
+const MemberAssignment = ({
+  member, onClick, small, disabled,
+}) => (
   member
-    ? <AssignedMember onClick={onClick} member={member} small={small} />
-    : <UnassignedMember onClick={onClick} alt="Unassigned" small={small}>{' '}</UnassignedMember>
+    ? <AssignedMember onClick={disabled ? undefined : onClick} member={member} small={small} />
+    : <UnassignedMember onClick={disabled ? undefined : onClick} alt="Unassigned" small={small}>{' '}</UnassignedMember>
 );
 
 MemberAssignment.propTypes = {
+  disabled: PropTypes.bool,
   onClick: PropTypes.func,
   member: PropTypes.shape({
     userId: PropTypes.number,
@@ -66,6 +69,7 @@ MemberAssignment.propTypes = {
 };
 
 MemberAssignment.defaultProps = {
+  disabled: false,
   member: null,
   onClick: null,
 };
