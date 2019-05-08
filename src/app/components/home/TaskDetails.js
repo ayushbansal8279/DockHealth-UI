@@ -206,7 +206,11 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel><strong>Filed in</strong></StyledLabel>
                 <StyledDescription>
-                  <ListPicker item={selectedTask.taskList} task={selectedTask} />
+                  <ListPicker
+                    item={selectedTask.taskList}
+                    task={selectedTask}
+                    disabled={isCompleted}
+                  />
                 </StyledDescription>
               </tr>
               <tr>

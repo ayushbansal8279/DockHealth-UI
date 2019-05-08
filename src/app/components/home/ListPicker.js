@@ -117,7 +117,9 @@ export class ListPicker extends React.Component {
   );
 
   render() {
-    const { item, items, task } = this.props;
+    const {
+ item, items, task, disabled 
+} = this.props;
     const {
       anchorEl,
       isSearching,
@@ -142,7 +144,7 @@ export class ListPicker extends React.Component {
       <React.Fragment>
         <ToggleButton
           onClick={this.handleOpen}
-          disabled={task.parentTaskId}
+          disabled={disabled || task.parentTaskId}
         >
           {item.listName}
         </ToggleButton>
@@ -211,6 +213,7 @@ const itemShape = PropTypes.shape({
 });
 
 ListPicker.propTypes = {
+  disabled: PropTypes.bool,
   item: itemShape.isRequired,
   items: PropTypes.arrayOf(itemShape),
   assign: PropTypes.func.isRequired,
@@ -220,6 +223,7 @@ ListPicker.propTypes = {
 };
 
 ListPicker.defaultProps = {
+  disabled: false,
   items: null,
 };
 
