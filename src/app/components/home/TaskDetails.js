@@ -193,7 +193,12 @@ class TaskDetails extends React.PureComponent {
               <strong>Comments </strong>
             </StyledLabel>
             <StyledDescription>
-              <Comments comments={comments} userId={userId} submit={addTaskComment} />
+              <Comments
+                comments={comments}
+                userId={userId}
+                submit={addTaskComment}
+                disabled={isCompleted}
+              />
             </StyledDescription>
           </DetailsBox>
           <DetailsBox>

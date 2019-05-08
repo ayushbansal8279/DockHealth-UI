@@ -17,7 +17,7 @@ const CommentStream = styled.div`
 
 class Comments extends React.PureComponent {
   render() {
-    const { userId, comments, submit } = this.props;
+    const { userId, comments, submit, disabled } = this.props;
 
     const sameDay = (comment1, comment2) => comment1.dateCreated.date()
       === comment2.dateCreated.date();
@@ -39,7 +39,7 @@ class Comments extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <SubmitComment submit={submit} />
+        <SubmitComment submit={submit} disabled={disabled} />
         <CommentStream>
           {days.map(({ date, creators }) => (
             <Day date={date} key={date.format()}>
@@ -60,6 +60,7 @@ class Comments extends React.PureComponent {
 }
 
 Comments.propTypes = {
+  disabled: PropTypes.bool,
   submit: PropTypes.func.isRequired,
   comments: PropTypes.arrayOf(PropTypes.shape({
     commentId: PropTypes.number,
@@ -73,6 +74,10 @@ Comments.propTypes = {
     }),
   })).isRequired,
   userId: PropTypes.number.isRequired,
+};
+
+Comments.defaultProps = {
+  disabled: false,
 };
 
 export default Comments;
