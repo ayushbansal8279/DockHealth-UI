@@ -162,6 +162,7 @@ class TaskDetails extends React.PureComponent {
                   <StyledCheckbox
                     checked={isCompleted}
                     onChange={this.handleChange}
+                    disabled={isCompleted}
                   />
                 </StyledLabel>
                 <StyledDescription>{description}</StyledDescription>
