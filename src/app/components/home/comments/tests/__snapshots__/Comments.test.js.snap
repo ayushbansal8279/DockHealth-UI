@@ -3,6 +3,7 @@
 exports[`Comments should render correctly 1`] = `
 <Fragment>
   <SubmitComment
+    disabled={false}
     submit={[MockFunction]}
   />
   <CommentStream>
