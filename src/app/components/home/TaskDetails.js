@@ -42,7 +42,6 @@ const StyledDescription = styled.td`
   font-size: 14px;
 `;
 
-
 const DetailsHeader = styled.div`
   display: flex;
   flex-direction: row;
@@ -171,7 +170,9 @@ class TaskDetails extends React.PureComponent {
                     disabled={isCompleted}
                   />
                 </StyledLabel>
-                <StyledDescription>{description}</StyledDescription>
+                <StyledDescription>
+                  {description}
+                </StyledDescription>
               </tr>
               <tr>
                 <StyledLabel>Patient </StyledLabel>
@@ -262,7 +263,7 @@ TaskDetails.propTypes = {
     taskId: PropTypes.number,
     dueDate: PropTypes.string,
     description: PropTypes.string,
-    status: PropTypes.string,
+    status: PropTypes.oneOf(['INCOMPLETE', 'COMPLETE']),
     assignedTo: PropTypes.shape({
       profileThumbnailPictureHash: PropTypes.string,
       firstName: PropTypes.string,

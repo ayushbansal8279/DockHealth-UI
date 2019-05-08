@@ -21,20 +21,21 @@ const Placeholder = styled.div`
   color: #aab8c3;
 `;
 
-const Reminder = ({ children, update }) => (
+const Reminder = ({ children, update, completed }) => (
   <DateTimeSelect value={children} onChange={update}>
     {({ open }) => (
-      <StyledButtonBase onClick={open}>
+      <StyledButtonBase onClick={open} disabled={completed}>
         {children
-          ? <DueDate>{children}</DueDate>
+          ? <DueDate completed={completed}>{children}</DueDate>
           : <Placeholder>Set a reminder</Placeholder>
-            }
+        }
       </StyledButtonBase>
     )}
   </DateTimeSelect>
 );
 
 Reminder.propTypes = {
+  completed: PropTypes.bool.isRequired,
   children: PropTypes.node,
 };
 
