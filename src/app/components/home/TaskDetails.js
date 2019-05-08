@@ -108,11 +108,16 @@ class TaskDetails extends React.PureComponent {
 
   renderHeader() {
     const { close, selectedTask } = this.props;
+    const isCompleted = selectedTask.status === 'COMPLETE';
 
     return (
       <DetailsHeader>
         <BookmarkContainer>
-          <Bookmark isActive={selectedTask.priority === 'HIGH'} onClick={this.handleBookmarkClick} />
+          <Bookmark
+            isActive={selectedTask.priority === 'HIGH'}
+            onClick={this.handleBookmarkClick}
+            disabled={isCompleted}
+          />
         </BookmarkContainer>
         <StatusContainer>
           {'Status '}

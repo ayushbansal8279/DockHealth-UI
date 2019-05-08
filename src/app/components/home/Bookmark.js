@@ -27,13 +27,30 @@ const StyledButton = styled(IconButton)`
 `;
 
 const Bookmark = ({
-  onClick, isActive, style, className,
+  onClick, isActive, style, className, disabled,
 }) => (onClick
   ? (
-    <StyledButton onClick={onClick} style={style} className={className}>
+    <StyledButton
+      onClick={onClick}
+      disabled={disabled}
+      style={style}
+      className={className}
+    >
       <Flag isActive={isActive} />
     </StyledButton>
   )
   : <Flag isActive={isActive} style={style} className={className} />);
+
+Bookmark.propTypes = {
+  onClick: PropTypes.func,
+  isActive: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+};
+
+Bookmark.defaultProps = {
+  onClick: undefined,
+  disabled: false,
+};
+
 
 export default Bookmark;
