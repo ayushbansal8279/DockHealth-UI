@@ -123,6 +123,7 @@ class TaskDetails extends React.PureComponent {
           {'Status '}
           <StatusSelect
             onChange={this.handleStatusChange}
+            disabled={isCompleted}
             value="HIGH"
             options={[
               { value: 'HIGH', description: 'Blocked' },
