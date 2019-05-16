@@ -350,6 +350,18 @@ export const updateReminder = (task, reminderDt) => dispatch => (
     .catch((err) => { throw err; })
 );
 
+export const updateReminder = (task, reminderDt) => dispatch => (
+  TaskApi.updateTask(shapeTask({ ...task, reminderDt }))
+    .then(() => {
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_REMINDER,
+        taskId: task.taskId,
+        reminderDt,
+      });
+    })
+    .catch((err) => { throw err; })
+);
+
 export function toggleTaskPriority(task, userId, priority) {
   return function(dispatch){
     if(priority == "LOW"){
