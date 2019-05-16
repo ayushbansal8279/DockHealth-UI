@@ -23,9 +23,15 @@ const updateDueDate = (taskState, { taskId, dueDate }) => ({
   tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, dueDate }) : task)),
 });
 
+<<<<<<< HEAD
 const updateReminder = (taskState, { taskId, reminderDt }) => ({
   ...taskState,
   tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, reminderDt }) : task)),
+=======
+const updatePatient = (taskState, { taskId, patient }) => ({
+  ...taskState,
+  tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, patient }) : task)),
+>>>>>>> 9a3dac98a6493f4fd082d9dc6802ffce8e52d75e
 });
 
 const TaskReducer = function(state = initialState, action) {
@@ -254,8 +260,13 @@ const TaskReducer = function(state = initialState, action) {
     case types.UPDATE_TASK_DUE_DATE:
       return updateDueDate(state, action);
 
+<<<<<<< HEAD
     case types.UPDATE_TASK_REMINDER:
       return updateReminder(state, action);
+=======
+    case types.UPDATE_TASK_PATIENT:
+      return updatePatient(state, action);
+>>>>>>> 9a3dac98a6493f4fd082d9dc6802ffce8e52d75e
 
     // case types.UPDATE_TASK_SUCCESS:
     //   return {

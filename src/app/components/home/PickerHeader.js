@@ -2,8 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import IconButton from '@material-ui/core/IconButton';
+import BackIcon from '@material-ui/icons/ArrowBack';
 import ItemAssignment from '../../img/folder.svg';
 import Search from '../../img/search.svg';
+
+const StyledBackIcon = styled(BackIcon)`
+  && {
+    width: 22px;
+    color: #fff;
+  }
+`;
 
 const Header = styled.div`
   flex: 0 0;
@@ -38,10 +46,13 @@ const PickerHeader = ({
   handleSearchToggle,
   children,
   closeLabel,
+  backInsteadOfClose,
 }) => (
   <Header>
     <IconButton onClick={handleClose} aria-label={closeLabel}>
-      <HeaderClose>✕</HeaderClose>
+      {backInsteadOfClose
+        ? <StyledBackIcon />
+        : <HeaderClose>✕</HeaderClose>}
     </IconButton>
     <img src={ItemAssignment} style={{ marginLeft: 5 }} alt="" />
     <HeaderTitle>

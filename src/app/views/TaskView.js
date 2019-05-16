@@ -196,6 +196,7 @@ class TaskView extends React.Component {
     const groupedTasks = groupBy(tasks, t => (t.taskList ? t.taskList.listName : ''));
     const tasklistCount = Array.from(groupedTasks.keys()).length;
     const isSingleTaskList = tasklistCount === 1;
+    const isInbox = tasks.length !== 0 && tasks[0].taskList === null;
 
     return (
       <div className="off-canvas-content" data-off-canvas-content="true">
@@ -206,8 +207,9 @@ class TaskView extends React.Component {
               title={title}
               taskCount={tasks.length}
               members={members}
+              taskList={isSingleTaskList && tasks[0].taskList}
             />
-            {isSingleTaskList && <AddTask taskListId={tasks[0].taskList.taskListId} />}
+            {isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} />}
             <Toolbar style={{ padding: '0 38px 0 48px' }}>
               <Select
                 onChange={this.handleFilterChange}

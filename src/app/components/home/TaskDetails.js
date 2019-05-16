@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
-import MemberPicker from './MemberPicker';
+import MemberAssignment from './MemberAssignment';
 import Bookmark from './Bookmark';
-import Patient from './Patient';
+import PatientAssignment from './PatientAssignment';
 import StatusSelect from './StatusSelect';
 import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
@@ -150,7 +150,7 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel><strong>Assigned to </strong></StyledLabel>
                 <StyledDescription>
-                  <MemberPicker task={selectedTask} member={selectedTask.assignedTo} />
+                  <MemberAssignment task={selectedTask} member={selectedTask.assignedTo} />
                 </StyledDescription>
               </tr>
               <tr>
@@ -165,7 +165,7 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  {patient ? <Patient patient={patient} isCompact /> : 'None'}
+                  <PatientAssignment patient={patient} task={selectedTask} />
                 </StyledDescription>
               </tr>
               {(subtasks && subtasks.length !== 0) && (

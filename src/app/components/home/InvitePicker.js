@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Popover from '@material-ui/core/Popover';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import PersonInvite from '../../img/person-invite.svg';
-import MemberPickerPopup from './MemberPickerPopup';
+import MemberManagementPopup from './MemberManagementPopup';
 import MemberInvitationPopup from './MemberInvitationPopup';
 
 const StyledPopover = styled(Popover).attrs({
@@ -39,15 +39,15 @@ const FooterText = styled.span`
   color: #0ca1c7;
 `;
 
-const MemberPickerFooter = ({ onClick }) => (
+const InvitePickerFooter = ({ onClick }) => (
   <Footer onClick={onClick} focusRipple>
     <img src={PersonInvite} alt="" />
     <FooterText>Invite to list</FooterText>
   </Footer>
 );
 
-const MemberPicker = ({
-  member, members, assign, children: Component, task,
+const InvitePicker = ({
+  children: Component, taskList, members,
 }) => {
   const [isInviting, setIsInviting] = useState(false);
   const openInvitation = useCallback(
@@ -87,21 +87,19 @@ const MemberPicker = ({
         {isInviting
           ? (
             <MemberInvitationPopup
-              taskList={task.taskList}
+              taskList={taskList}
               close={close}
               back={closeInvitation}
             />
           )
           : (
-            <MemberPickerPopup
+            <MemberManagementPopup
               close={close}
-              member={member}
               members={members}
-              assign={assign}
-              task={task}
+              taskList={taskList}
             />
           )}
-        {!isInviting && <MemberPickerFooter onClick={openInvitation} />}
+        {!isInviting && <InvitePickerFooter onClick={openInvitation} />}
       </StyledPopover>
     </React.Fragment>
   );
@@ -114,19 +112,17 @@ const memberShape = PropTypes.shape({
   mrn: PropTypes.string,
 });
 
-MemberPicker.propTypes = {
-  member: memberShape,
-  members: PropTypes.arrayOf(memberShape),
-  assign: PropTypes.func.isRequired,
+InvitePicker.propTypes = {
   children: PropTypes.func.isRequired,
-  task: PropTypes.shape({
-    description: PropTypes.string,
+  members: PropTypes.arrayOf(memberShape),
+  taskList: PropTypes.shape({
+    listName: PropTypes.string,
   }).isRequired,
 };
 
-MemberPicker.defaultProps = {
+InvitePicker.defaultProps = {
   member: null,
   members: null,
 };
 
-export default MemberPicker;
+export default InvitePicker;

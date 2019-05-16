@@ -86,6 +86,12 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
     });
 }
 
+export const inviteUserToTaskList = (tasklistId, userId) => (
+  axios.put(`/user/inviteUserToTaskList/${tasklistId}/user/${userId}`)
+    .then(response => response.data)
+    .catch(error => error.response.data)
+);
+
 export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
   var multiUserInvitation = {};
   multiUserInvitation.invitedUsers = invitedUsers;

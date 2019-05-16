@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import AddIcon from '@material-ui/icons/Add';
-
+import InvitePicker from './InvitePicker';
 import Member from './Member';
 
 const AddMember = styled(Member)`
@@ -18,15 +18,19 @@ const StyledContainer = styled.div`
   flex-direction: row-reverse;
 `;
 
-const Members = ({ members }) => {
+const Members = ({ members, taskList }) => {
   const visibleMembers = members.slice(0, 4);
   const hiddenMemberCount = members.length - visibleMembers.length;
 
   return (
     <StyledContainer>
-      <AddMember onClick={() => {}}>
-        <AddIcon fontSize="small" />
-      </AddMember>
+      <InvitePicker taskList={taskList} members={members}>
+        {({ open }) => (
+          <AddMember onClick={open}>
+            <AddIcon fontSize="small" />
+          </AddMember>
+        )}
+      </InvitePicker>
       {hiddenMemberCount > 0 && (
         <Member
           onClick={() => {}}

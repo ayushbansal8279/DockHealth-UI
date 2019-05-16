@@ -111,11 +111,18 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
   };
 }
 
+export const inviteUserToTaskList = (tasklistId, userId) => dispatch => (
+  TaskListApi.inviteUserToTaskList(tasklistId, userId)
+    .then(() => {
+      dispatch({ type: ActionTypes.INVITE_USER_TO_TASKLIST_SUCCESS, userId });
+    })
+    .catch((error) => { throw error; })
+);
 
 export function inviteMultipleUsersToTaskList(tasklistId,invitedUsers) {
   return function(dispatch) {
     return TaskListApi.inviteMultipleUsersToTaskList(tasklistId,invitedUsers).then(res => {
-      dispatch({type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS, res});
+      dispatch({type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS, res, invitedUsers});
       toggleAlert("Invitations sent!", "success")
     }).catch(error => {
       //console.log(error.message);
@@ -136,6 +143,13 @@ export function getNonOrgUsersByTaskList(taskListId) {
   };
 }
 
+/**
+ * Updates user's role in a list.
+ * @param {number} tasklistId
+ * @param {{userId: number}} markedUser
+ * @param {('OWNER'|'ADMIN'|'MEMBER')} role
+ * @returns {Promise}
+ */
 export function changeUserRoleForList(tasklistId,markedUser,role) {
   return function(dispatch) {
     return TaskListApi.changeUserRoleForList(tasklistId,markedUser.userId,role).then(res => {
@@ -156,7 +170,6 @@ export function deleteTaskListById(taskListId) {
     });
   };
 }
-
 
 export function removeUserFromList(taskListId,removedUser) {
   return function(dispatch) {

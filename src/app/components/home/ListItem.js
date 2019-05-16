@@ -38,7 +38,7 @@ const Item = styled.div`
 const ListItem = ({
   children, selected, onClick, id,
 }) => (
-  <ItemContainer selected={selected} onClick={onClick} id={id}>
+  <ItemContainer selected={selected} onClick={onClick} id={id} as={onClick ? undefined : 'div'}>
     <Item>
       {children}
     </Item>
@@ -49,11 +49,12 @@ ListItem.propTypes = {
   children: PropTypes.node.isRequired,
   selected: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 ListItem.defaultProps = {
   selected: false,
+  id: null,
 };
 
 export default ListItem;

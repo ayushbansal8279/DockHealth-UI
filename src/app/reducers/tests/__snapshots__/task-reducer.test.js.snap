@@ -12,7 +12,18 @@ Array [
 exports[`task-reducer should handle UPDATE_TASK_REMINDER 1`] = `
 Array [
   Object {
-    "reminderDt": "2019-03-27T03:00:00.000Z",
+    "reminderDt": "2019-03-27T03:00:00.000Z",    
+    "taskId": 0,
+  },
+]
+`;
+
+exports[`task-reducer should handle UPDATE_TASK_PATIENT 1`] = `
+Array [
+  Object {
+    "patient": Object {
+      "patientId": 1,
+    },
     "taskId": 0,
   },
 ]

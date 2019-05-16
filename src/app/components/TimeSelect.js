@@ -10,6 +10,14 @@ const StyledSelect = styled(Select).attrs({
   classes: {
     selectMenu: 'selectMenu',
     root: 'selectRoot',
+    menu: 'menu',
+  },
+  MenuProps: {
+    PaperProps: {
+      style: {
+        maxHeight: 355,
+      },
+    },
   },
 })`
   && {
