@@ -13,6 +13,7 @@ import {
   touch,
 } from 'redux-form';
 import $ from 'jquery';
+import SelectInput from '../common/SelectInput';
 import BaseComponent from '../BaseComponent';
 import BasicField from '../common/BasicField';
 import BasicFieldTaskDescription from '../common/BasicFieldTaskDescription';
@@ -299,6 +300,22 @@ class AddTaskForm extends BaseComponent {
           ) : (
             <span />
           )}
+
+          <Field
+            id="task-status"
+            name="taskStatus"
+            component={SelectInput}
+            options={[
+              // { value: 'INCOMPLETE', label: 'INCOMPLETE' },
+              // { value: 'COMPLETE', label: 'COMPLETE' },
+              { value: 'IN_PROGRESS', label: 'In Progress' },
+              { value: 'PAUSED', label: 'Paused' },
+              { value: 'WAITING', label: 'Waiting' },
+            ]}
+            label="Status"
+            xlinkHref="#icon-assign-to"
+          />
+
           <Field
             id="due-date"
             name="dueDate"
@@ -411,6 +428,12 @@ const mapStateToProps = (store) => {
     }
     if (editTask.subtasks) {
       initialTaskFormValues.subtasks = editTask.subtasks;
+    }
+    if (editTask.status) {
+      initialTaskFormValues.status = editTask.status;
+    }
+    if (editTask.taskStatus) {
+      initialTaskFormValues.taskStatus = editTask.taskStatus;
     }
     if (editTask.priority) {
       if (editTask.priority === 'HIGH') {
