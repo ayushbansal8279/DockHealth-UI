@@ -22,7 +22,7 @@ const Placeholder = styled.div`
 `;
 
 const Reminder = ({ children, update, completed }) => (
-  <DateTimeSelect value={children} onChange={update}>
+  <DateTimeSelect value={children} onChange={update} label="Select a reminder">
     {({ open }) => (
       <StyledButtonBase onClick={open} disabled={completed}>
         {children

@@ -87,7 +87,7 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const DateTimeSelect = ({ children: Component, onChange, value }) => {
+const DateTimeSelect = ({ children: Component, onChange, value, label }) => {
   const [anchor, setAnchor] = useState(null);
 
   const open = useCallback(
@@ -98,7 +98,8 @@ const DateTimeSelect = ({ children: Component, onChange, value }) => {
     () => setAnchor(null),
   );
 
-  const dateNow = moment();
+  const dateYesterday = moment();
+  dateYesterday.subtract(1,'days')
 
   return (
     <>
@@ -124,9 +125,9 @@ const DateTimeSelect = ({ children: Component, onChange, value }) => {
             <>
               <DatePickerHeader
                 handleClose={close}
-                isOverdue={date < dateNow}
+                isOverdue={date < dateYesterday}
               >
-                {date < dateNow ? 'This reminder is overdue!' : 'Set a reminder'}
+                {date < dateYesterday ? 'Past date selected!' : label}
               </DatePickerHeader>
               <DatePickerBody>
                 <Calendar date={date} onChange={handleChange} />

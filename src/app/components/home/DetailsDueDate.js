@@ -22,7 +22,7 @@ const Placeholder = styled.div`
 `;
 
 const DetailsDueDate = ({ children, update, completed }) => (
-  <DateTimeSelect value={children} onChange={update}>
+  <DateTimeSelect value={children} onChange={update} label="Select a due date">
     {({ open }) => (
       <StyledButtonBase onClick={open} disabled={completed}>
         {children
