@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
-import MemberAssignment from './MemberAssignment';
+import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
-import PatientAssignment from './PatientAssignment';
+import Patient from './Patient';
 import StatusSelect from './StatusSelect';
 import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
@@ -41,7 +41,6 @@ const StyledDescription = styled.td`
   padding-left: 16px;
   font-size: 14px;
 `;
-
 
 const DetailsHeader = styled.div`
   display: flex;
@@ -108,16 +107,22 @@ class TaskDetails extends React.PureComponent {
 
   renderHeader() {
     const { close, selectedTask } = this.props;
+    const isCompleted = selectedTask.status === 'COMPLETE';
 
     return (
       <DetailsHeader>
         <BookmarkContainer>
-          <Bookmark isActive={selectedTask.priority === 'HIGH'} onClick={this.handleBookmarkClick} />
+          <Bookmark
+            isActive={selectedTask.priority === 'HIGH'}
+            onClick={this.handleBookmarkClick}
+            disabled={isCompleted}
+          />
         </BookmarkContainer>
         <StatusContainer>
           {'Status '}
           <StatusSelect
             onChange={this.handleStatusChange}
+            disabled={isCompleted}
             value="HIGH"
             options={[
               { value: 'HIGH', description: 'Blocked' },
@@ -150,7 +155,11 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel><strong>Assigned to </strong></StyledLabel>
                 <StyledDescription>
-                  <MemberAssignment task={selectedTask} member={selectedTask.assignedTo} />
+                  <MemberPicker
+                    task={selectedTask}
+                    member={selectedTask.assignedTo}
+                    disabled={isCompleted}
+                  />
                 </StyledDescription>
               </tr>
               <tr>
@@ -158,14 +167,17 @@ class TaskDetails extends React.PureComponent {
                   <StyledCheckbox
                     checked={isCompleted}
                     onChange={this.handleChange}
+                    disabled={isCompleted}
                   />
                 </StyledLabel>
-                <StyledDescription>{description}</StyledDescription>
+                <StyledDescription>
+                  {description}
+                </StyledDescription>
               </tr>
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  <PatientAssignment patient={patient} task={selectedTask} />
+                  {patient ? <Patient patient={patient} isCompact /> : 'None'}
                 </StyledDescription>
               </tr>
               {(subtasks && subtasks.length !== 0) && (
@@ -182,7 +194,12 @@ class TaskDetails extends React.PureComponent {
               <strong>Comments </strong>
             </StyledLabel>
             <StyledDescription>
-              <Comments comments={comments} userId={userId} submit={addTaskComment} />
+              <Comments
+                comments={comments}
+                userId={userId}
+                submit={addTaskComment}
+                disabled={isCompleted}
+              />
             </StyledDescription>
           </DetailsBox>
           <DetailsBox>
@@ -190,7 +207,11 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel><strong>Filed in</strong></StyledLabel>
                 <StyledDescription>
-                  <ListPicker item={selectedTask.taskList} task={selectedTask} />
+                  <ListPicker
+                    item={selectedTask.taskList}
+                    task={selectedTask}
+                    disabled={isCompleted}
+                  />
                 </StyledDescription>
               </tr>
               <tr>
@@ -242,7 +263,7 @@ TaskDetails.propTypes = {
     taskId: PropTypes.number,
     dueDate: PropTypes.string,
     description: PropTypes.string,
-    status: PropTypes.string,
+    status: PropTypes.oneOf(['INCOMPLETE', 'COMPLETE']),
     assignedTo: PropTypes.shape({
       profileThumbnailPictureHash: PropTypes.string,
       firstName: PropTypes.string,

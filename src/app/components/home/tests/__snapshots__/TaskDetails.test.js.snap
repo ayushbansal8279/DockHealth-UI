@@ -3,6 +3,7 @@
 exports[`TaskDetails should render complete status 1`] = `
 <StyledCheckbox
   checked={true}
+  disabled={true}
   onChange={[Function]}
 />
 `;
@@ -14,6 +15,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
       <DetailsHeader>
         <BookmarkContainer>
           <Bookmark
+            disabled={false}
             isActive={false}
             onClick={[Function]}
           />
@@ -21,6 +23,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
         <StatusContainer>
           Status 
           <StatusSelect
+            disabled={false}
             onChange={[Function]}
             options={
               Array [
@@ -51,7 +54,8 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
             </strong>
           </StyledLabel>
           <StyledDescription>
-            <Connect(MemberAssignment)
+            <Connect(MemberPicker)
+              disabled={false}
               member={
                 Object {
                   "firstName": "John",
@@ -86,6 +90,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
           <StyledLabel>
             <StyledCheckbox
               checked={false}
+              disabled={false}
               onChange={[Function]}
             />
           </StyledLabel>
@@ -98,29 +103,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
             Patient 
           </StyledLabel>
           <StyledDescription>
-            <Connect(PatientAssignment)
-              patient={null}
-              task={
-                Object {
-                  "assignedBy": Object {
-                    "firstName": "Janet",
-                    "lastName": "Cook",
-                  },
-                  "assignedTo": Object {
-                    "firstName": "John",
-                    "initials": "JS",
-                    "lastName": "Smith",
-                  },
-                  "comments": Array [],
-                  "description": "Just do it.",
-                  "dueDate": "",
-                  "patient": null,
-                  "status": "INCOMPLETE",
-                  "subtasks": null,
-                  "taskId": 0,
-                }
-              }
-            />
+            None
           </StyledDescription>
         </tr>
       </table>
@@ -147,6 +130,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
       <StyledDescription>
         <Comments
           comments={Array []}
+          disabled={false}
           submit={[MockFunction]}
           userId={142}
         />
@@ -162,6 +146,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(ListPicker)
+              disabled={false}
               task={
                 Object {
                   "assignedBy": Object {
@@ -281,6 +266,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
 
 exports[`TaskDetails should render disabled flag 1`] = `
 <Bookmark
+  disabled={false}
   isActive={false}
   onClick={[Function]}
 />
@@ -288,6 +274,7 @@ exports[`TaskDetails should render disabled flag 1`] = `
 
 exports[`TaskDetails should render enabled flag 1`] = `
 <Bookmark
+  disabled={false}
   isActive={true}
   onClick={[Function]}
 />
@@ -296,6 +283,7 @@ exports[`TaskDetails should render enabled flag 1`] = `
 exports[`TaskDetails should render incomplete status 1`] = `
 <StyledCheckbox
   checked={false}
+  disabled={false}
   onChange={[Function]}
 />
 `;
@@ -307,6 +295,7 @@ exports[`TaskDetails should render patient 1`] = `
       <DetailsHeader>
         <BookmarkContainer>
           <Bookmark
+            disabled={false}
             isActive={false}
             onClick={[Function]}
           />
@@ -314,6 +303,7 @@ exports[`TaskDetails should render patient 1`] = `
         <StatusContainer>
           Status 
           <StatusSelect
+            disabled={false}
             onChange={[Function]}
             options={
               Array [
@@ -344,7 +334,8 @@ exports[`TaskDetails should render patient 1`] = `
             </strong>
           </StyledLabel>
           <StyledDescription>
-            <Connect(MemberAssignment)
+            <Connect(MemberPicker)
+              disabled={false}
               member={
                 Object {
                   "firstName": "John",
@@ -383,6 +374,7 @@ exports[`TaskDetails should render patient 1`] = `
           <StyledLabel>
             <StyledCheckbox
               checked={false}
+              disabled={false}
               onChange={[Function]}
             />
           </StyledLabel>
@@ -395,36 +387,13 @@ exports[`TaskDetails should render patient 1`] = `
             Patient 
           </StyledLabel>
           <StyledDescription>
-            <Connect(PatientAssignment)
+            <Patient
+              isCompact={true}
               patient={
                 Object {
                   "firstName": "Jane",
                   "lastName": "Doe",
                   "mrn": "1234567",
-                }
-              }
-              task={
-                Object {
-                  "assignedBy": Object {
-                    "firstName": "Janet",
-                    "lastName": "Cook",
-                  },
-                  "assignedTo": Object {
-                    "firstName": "John",
-                    "initials": "JS",
-                    "lastName": "Smith",
-                  },
-                  "comments": Array [],
-                  "description": "Just do it.",
-                  "dueDate": "",
-                  "patient": Object {
-                    "firstName": "Jane",
-                    "lastName": "Doe",
-                    "mrn": "1234567",
-                  },
-                  "status": "INCOMPLETE",
-                  "subtasks": null,
-                  "taskId": 0,
                 }
               }
             />
@@ -454,6 +423,7 @@ exports[`TaskDetails should render patient 1`] = `
       <StyledDescription>
         <Comments
           comments={Array []}
+          disabled={false}
           submit={[MockFunction]}
           userId={142}
         />
@@ -469,6 +439,7 @@ exports[`TaskDetails should render patient 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(ListPicker)
+              disabled={false}
               task={
                 Object {
                   "assignedBy": Object {
@@ -605,6 +576,7 @@ exports[`TaskDetails should render subtasks 1`] = `
       <DetailsHeader>
         <BookmarkContainer>
           <Bookmark
+            disabled={false}
             isActive={false}
             onClick={[Function]}
           />
@@ -612,6 +584,7 @@ exports[`TaskDetails should render subtasks 1`] = `
         <StatusContainer>
           Status 
           <StatusSelect
+            disabled={false}
             onChange={[Function]}
             options={
               Array [
@@ -642,7 +615,8 @@ exports[`TaskDetails should render subtasks 1`] = `
             </strong>
           </StyledLabel>
           <StyledDescription>
-            <Connect(MemberAssignment)
+            <Connect(MemberPicker)
+              disabled={false}
               member={
                 Object {
                   "firstName": "John",
@@ -684,6 +658,7 @@ exports[`TaskDetails should render subtasks 1`] = `
           <StyledLabel>
             <StyledCheckbox
               checked={false}
+              disabled={false}
               onChange={[Function]}
             />
           </StyledLabel>
@@ -696,36 +671,7 @@ exports[`TaskDetails should render subtasks 1`] = `
             Patient 
           </StyledLabel>
           <StyledDescription>
-            <Connect(PatientAssignment)
-              patient={null}
-              task={
-                Object {
-                  "assignedBy": Object {
-                    "firstName": "Janet",
-                    "lastName": "Cook",
-                  },
-                  "assignedTo": Object {
-                    "firstName": "John",
-                    "initials": "JS",
-                    "lastName": "Smith",
-                  },
-                  "comments": Array [],
-                  "description": "Just do it.",
-                  "dueDate": "",
-                  "patient": null,
-                  "status": "INCOMPLETE",
-                  "subtasks": Array [
-                    Object {
-                      "id": 0,
-                    },
-                    Object {
-                      "id": 1,
-                    },
-                  ],
-                  "taskId": 0,
-                }
-              }
-            />
+            None
           </StyledDescription>
         </tr>
         <tr>
@@ -759,6 +705,7 @@ exports[`TaskDetails should render subtasks 1`] = `
       <StyledDescription>
         <Comments
           comments={Array []}
+          disabled={false}
           submit={[MockFunction]}
           userId={142}
         />
@@ -774,6 +721,7 @@ exports[`TaskDetails should render subtasks 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(ListPicker)
+              disabled={false}
               task={
                 Object {
                   "assignedBy": Object {

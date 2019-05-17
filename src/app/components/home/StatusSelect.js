@@ -40,10 +40,11 @@ const StyledDropDownIcon = styled(ArrowDropDown)`
   }
 `;
 
-const StatusSelect = ({ onChange, value, options }) => (
+const StatusSelect = ({ onChange, value, options, disabled }) => (
   <FormControl variant="filled" style={{ minWidth: 186 }}>
     <StyledSelect
       value={value}
+      disabled={disabled}
       displayEmpty
       onChange={onChange}
       name="status"
@@ -64,12 +65,17 @@ const StatusSelect = ({ onChange, value, options }) => (
 );
 
 StatusSelect.propTypes = {
+  disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string,
     description: PropTypes.string,
   })).isRequired,
+};
+
+StatusSelect.defaultProps = {
+  disabled: false,
 };
 
 export default StatusSelect;

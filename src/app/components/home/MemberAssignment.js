@@ -1,47 +1,77 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { assignOrReassignTask } from '../../actions/task-actions';
-import MemberSlot from './MemberSlot';
-import MemberPicker from './MemberPicker';
+import styled from 'styled-components';
+import Member from './Member';
+
+const AssignedMember = styled(Member)`
+  && {
+    margin: 0 auto;
+    width: 41px;
+    height: 41px;
+    font-size: 16px;
+  }
+
+  & .img {
+    ${({ small }) => (small
+    ? `border: 1px solid #0ca1c7;
+        padding: 2px;`
+    : `border: 2px solid #0ca1c7;
+        padding: 3px;`)}
+  }
+`;
+
+const UnassignedMember = styled(AssignedMember)`
+  && {
+    background: #fff;
+    border-radius: 50%;
+    ${({ small }) => (small
+    ? `border: 1px solid #0ca1c7;
+        padding: 2px;`
+    : `border: 2px solid #0ca1c7;
+        padding: 3px;`)}
+  
+    :before {
+      content: " ";
+      position: absolute;
+      border: 1px solid #aab8c3;
+      border-radius: 50%;
+      ${({ small }) => (small
+    ? `top: 2px;
+        bottom: 2px;
+        left: 2px;
+        right: 2px;`
+    : `top: 3px;
+        bottom: 3px;
+        left: 3px;
+        right: 3px;`)}
+    }
+  }
+`;
 
 const MemberAssignment = ({
-  member, members, update, small, task,
+  member, onClick, small, disabled,
 }) => (
-  <MemberPicker assign={update} member={member} members={members} task={task}>
-    {({ open }) => (
-      <MemberSlot onClick={open} member={member} small={small} />
-    )}
-  </MemberPicker>
+  member
+    ? <AssignedMember onClick={disabled ? undefined : onClick} member={member} small={small} />
+    : <UnassignedMember onClick={disabled ? undefined : onClick} alt="Unassigned" small={small}>{' '}</UnassignedMember>
 );
 
-const memberShape = PropTypes.shape({
-  memberId: PropTypes.number,
-  lastName: PropTypes.string,
-  firstName: PropTypes.string,
-  mrn: PropTypes.string,
-});
-
 MemberAssignment.propTypes = {
-  member: memberShape,
-  members: PropTypes.arrayOf(memberShape),
-  update: PropTypes.func.isRequired,
-  task: PropTypes.shape({
-    description: PropTypes.string,
-  }).isRequired,
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func,
+  member: PropTypes.shape({
+    userId: PropTypes.number,
+    profileThumbnailPictureHash: PropTypes.string,
+    initials: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+  }),
 };
 
 MemberAssignment.defaultProps = {
+  disabled: false,
   member: null,
-  members: null,
+  onClick: null,
 };
 
-const mapStateToProps = store => ({
-  members: store.taskListState.tasklistmembers,
-});
-
-const mapDispatchToProps = (dispatch, { task }) => ({
-  update: (memberId) => { assignOrReassignTask(task, memberId)(dispatch); },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MemberAssignment);
+export default MemberAssignment;

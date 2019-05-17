@@ -74,6 +74,7 @@ class SubmitComment extends React.Component {
   }
 
   render() {
+    const { disabled } = this.props;
     const { draft } = this.state;
 
     return (
@@ -81,11 +82,12 @@ class SubmitComment extends React.Component {
         <StyledTextField
           onChange={this.handleChange}
           value={draft}
+          disabled={disabled}
           placeholder="+ Add a comment"
           InputProps={{
             endAdornment: (
               <StyledAdornment position="end">
-                <StyledButton onClick={this.handleSubmit}>
+                <StyledButton onClick={this.handleSubmit} disabled={disabled}>
                   <AddIcon />
                 </StyledButton>
               </StyledAdornment>
@@ -104,6 +106,11 @@ class SubmitComment extends React.Component {
 
 SubmitComment.propTypes = {
   submit: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+SubmitComment.defaultProps = {
+  disabled: false,
 };
 
 export default SubmitComment;

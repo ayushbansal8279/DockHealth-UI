@@ -21,12 +21,12 @@ const Placeholder = styled.div`
   color: #aab8c3;
 `;
 
-const DetailsDueDate = ({ children, update }) => (
+const DetailsDueDate = ({ children, update, completed }) => (
   <DateTimeSelect value={children} onChange={update}>
     {({ open }) => (
-      <StyledButtonBase onClick={open}>
+      <StyledButtonBase onClick={open} disabled={completed}>
         {children
-          ? <DueDate>{children}</DueDate>
+          ? <DueDate completed={completed}>{children}</DueDate>
           : <Placeholder>Set a due date</Placeholder>
             }
       </StyledButtonBase>
@@ -35,6 +35,7 @@ const DetailsDueDate = ({ children, update }) => (
 );
 
 DetailsDueDate.propTypes = {
+  completed: PropTypes.bool.isRequired,
   children: PropTypes.node,
 };
 

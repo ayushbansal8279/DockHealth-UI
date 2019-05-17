@@ -11,6 +11,7 @@ exports[`SubmitComment should render correctly 1`] = `
           position="end"
         >
           <ForwardRef
+            disabled={false}
             onClick={[Function]}
           >
             <pure(AddIcon) />
@@ -21,6 +22,7 @@ exports[`SubmitComment should render correctly 1`] = `
         },
       }
     }
+    disabled={false}
     onChange={[Function]}
     placeholder="+ Add a comment"
     value=""

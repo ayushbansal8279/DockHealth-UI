@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Avatar from '@material-ui/core/Avatar';
 
-export const StyledAvatar = styled(props => <Avatar {...props} classes={{ img: 'img' }} />)`
+export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
   && {
     width: 31px;
     height: 31px;
@@ -28,6 +28,10 @@ const StyledButtonBase = styled(ButtonBase)`
   && {
     border-radius: 50%;
   }
+`;
+
+const StyledContainer = styled.div`
+  display: inline-flex;
 `;
 
 const getThumbnailUrl = ({ userId, profileThumbnailPictureHash }) => (
@@ -56,7 +60,7 @@ const Member = ({
 
   return onClick
     ? <StyledButtonBase onClick={onClick} style={style}>{avatar}</StyledButtonBase>
-    : <div>{avatar}</div>;
+    : <StyledContainer>{avatar}</StyledContainer>;
 };
 
 Member.propTypes = {
