@@ -191,7 +191,7 @@ export class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  <PatientAssignment patient={patient} task={selectedTask} />
+                  <PatientAssignment patient={patient} task={selectedTask} isCompact />
                 </StyledDescription>
               </tr>
               {(subtasks && subtasks.length !== 0) && (

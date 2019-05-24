@@ -8,9 +8,10 @@ const PatientContainer = styled.div`
   line-height: 18px;
 `;
 
-const Patient = ({ patient }) => (
+const Patient = ({ patient, isCompact }) => (
   <PatientContainer to={`#/patient/${patient.patientId}`}>
     {`${patient.lastName}, ${patient.firstName} `}
+    {!isCompact && <br />}
     {patient.mrn}
   </PatientContainer>
 );
@@ -22,6 +23,11 @@ Patient.propTypes = {
     firstName: PropTypes.string,
     mrn: PropTypes.string,
   }).isRequired,
+  isCompact: PropTypes.bool,
+};
+
+Patient.defaultProps = {
+  isCompact: false,
 };
 
 export default Patient;

@@ -17,7 +17,7 @@ const StyledButtonBase = styled(ButtonBase)`
 `;
 
 const PatientAssignment = ({
-  patient, patients, update, fetch,
+  patient, patients, update, fetch, isCompact,
 }) => {
   useEffect(fetch, []);
 
@@ -26,7 +26,7 @@ const PatientAssignment = ({
       {({ open }) => (
         <StyledButtonBase onClick={open}>
           {patient
-            ? <Patient patient={patient} />
+            ? <Patient patient={patient} isCompact={isCompact} />
             : 'None'
         }
         </StyledButtonBase>
