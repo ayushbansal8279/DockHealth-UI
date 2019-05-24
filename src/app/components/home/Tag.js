@@ -6,7 +6,7 @@ const Tag = styled.span`
   font-size: 12px;
   height: 18px;
   background: #7f92a6;
-  padding: 2px 8px;
+  padding: 0 8px;
   margin-right: 3px;
   margin-bottom: 3px;
   display: inline-block;
