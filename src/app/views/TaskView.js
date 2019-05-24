@@ -74,10 +74,9 @@ class TaskView extends React.Component {
     patientActions.getAllPatients();
   }
 
-  handleFilterChange = (event) => {
+  handleFilterChange = (filterBy) => {
     const { onFilter } = this.props;
     const sortBy = 'CREATED_DT';
-    const filterBy = event.target.value;
 
     this.setState({ filterBy });
 
@@ -199,8 +198,8 @@ class TaskView extends React.Component {
     const isInbox = tasks.length !== 0 && tasks[0].taskList === null;
 
     return (
-      <div className="off-canvas-content" data-off-canvas-content="true">
-        <div className="row expanded collapse">
+      <div className="off-canvas-content" data-off-canvas-content="true" style={{ minHeight: '100%' }}>
+        <div className="row expanded collapse" style={{ minHeight: '100%' }}>
           <div className="large-12 columns" style={{ minHeight: '100%', background: '#f5f8fa' }}>
             <Header
               isFetching={isFetching}
@@ -212,10 +211,10 @@ class TaskView extends React.Component {
             {isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} />}
             <Toolbar style={{ padding: '0 38px 0 48px' }}>
               <Select
-                onChange={this.handleFilterChange}
+                updateFilter={this.handleFilterChange}
                 value={filterBy}
                 options={[
-                  { value: '', description: 'Unfiltered' },
+                  { value: '', description: 'Filter' },
                   { value: 'ASSIGNED_TO_ME', description: 'Assigned to me' }, // TODO:
                   { value: 'CREATED_BY_ME', description: 'Created by me' },
                   { value: 'OVERDUE', description: 'Overdue' },

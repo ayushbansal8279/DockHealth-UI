@@ -14,6 +14,7 @@ const StyledTextField = styled(TextField)`
   }
 
   && input {
+    height: 28px;
     border: none;
     box-shadow: none;
     background: none;
@@ -21,6 +22,7 @@ const StyledTextField = styled(TextField)`
     padding: 14px;
     border-top-right-radius: 57px;
     border-bottom-right-radius: 57px;
+    font-size: 14px;
   }
   
   && fieldset {
