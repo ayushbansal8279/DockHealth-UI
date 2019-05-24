@@ -1,13 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
 
-const EditableTextField = ({ onSubmit, onChange, value }) => (
+const EditableTextField = ({
+  value, onChange, onSubmit, onBlur,
+}) => (
   <form onSubmit={onSubmit}>
-    <TextField
-      onChange={onChange}
-      value={value}
+    <input
       placeholder="Enter task description"
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
     />
   </form>
 );
@@ -19,13 +21,18 @@ const EditableDescription = ({ value, onChange, disabled }) => {
       setIsEditing(true);
     }, [setIsEditing],
   );
+  const stopEditing = useCallback(
+    () => {
+      setIsEditing(false);
+    }, [setIsEditing],
+  );
 
   const [draft, setDraft] = useState(value);
   useEffect(
     () => {
       setDraft(value);
-      setIsEditing(false);
-    }, [value],
+      stopEditing();
+    }, [value, stopEditing],
   );
 
   const handleChange = useCallback(
@@ -38,9 +45,9 @@ const EditableDescription = ({ value, onChange, disabled }) => {
     (e) => {
       e.preventDefault();
       if (draft === '') { return; }
-      setIsEditing(false);
+      stopEditing();
       onChange(draft);
-    }, [onChange, setIsEditing, draft],
+    }, [onChange, stopEditing, draft],
   );
 
   if (!isEditing || disabled) {
@@ -52,6 +59,7 @@ const EditableDescription = ({ value, onChange, disabled }) => {
       value={draft}
       onChange={handleChange}
       onSubmit={handleSubmit}
+      onBlur={handleSubmit}
     />
   );
 };
