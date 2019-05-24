@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { updateWorkflowStatus } from '../../actions/task-actions';
+import { updateWorkflowStatus, updateTaskDescription } from '../../actions/task-actions';
+import EditableDescription from './EditableDescription';
 import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
 import PatientAssignment from './PatientAssignment';
@@ -107,6 +108,11 @@ export class TaskDetails extends React.PureComponent {
     updateStatus(selectedTask.taskId, status);
   }
 
+  handleDescriptionChange = (description) => {
+    const { selectedTask, updateTaskDescription: updateDescription } = this.props;
+    updateDescription(selectedTask, description);
+  }
+
   renderHeader() {
     const { close, selectedTask } = this.props;
     const isCompleted = selectedTask.status === 'COMPLETE';
@@ -175,7 +181,11 @@ export class TaskDetails extends React.PureComponent {
                   />
                 </StyledLabel>
                 <StyledDescription>
-                  {description}
+                  <EditableDescription
+                    value={description}
+                    onChange={this.handleDescriptionChange}
+                    disabled={isCompleted}
+                  />
                 </StyledDescription>
               </tr>
               <tr>
@@ -288,4 +298,4 @@ TaskDetails.propTypes = {
   }).isRequired,
 };
 
-export default connect(undefined, { updateWorkflowStatus })(TaskDetails);
+export default connect(undefined, { updateWorkflowStatus, updateTaskDescription })(TaskDetails);
