@@ -46,8 +46,9 @@ const EditableDescription = ({ value, onChange, disabled }) => {
       e.preventDefault();
       if (draft === '') { return; }
       stopEditing();
+      if (draft === value) { return; }
       onChange(draft);
-    }, [onChange, stopEditing, draft],
+    }, [onChange, stopEditing, draft, value],
   );
 
   if (!isEditing || disabled) {
