@@ -29,6 +29,7 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   }
 
   && input {
+    height: 100%;
     border: none;
     box-shadow: none;
     background: none;
