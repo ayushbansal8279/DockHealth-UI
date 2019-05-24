@@ -173,7 +173,7 @@ export class TaskDetails extends React.PureComponent {
                 </StyledDescription>
               </tr>
               <tr>
-                <StyledLabel>
+                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
                   <StyledCheckbox
                     checked={isCompleted}
                     onChange={this.handleChange}
