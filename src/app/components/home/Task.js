@@ -9,7 +9,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import { StyledTableCell } from './TaskList';
 import DueDate from './DueDate';
-import MemberAssignment from './MemberAssignment';
+import MemberPicker from './MemberPicker';
 import Priority from './Priority';
 import Subtasks from './SubTasks';
 import Tag from './Tag';
@@ -124,7 +124,7 @@ const Task = ({
   >
     <TableRow>
       <StyledTableCell align="center" style={{ width: 36 }}>
-        <Priority priority={task.priority} />
+        <Priority priority={task.workflowStatus} />
       </StyledTableCell>
       <StyledTableCell align="center" style={{ width: 36 }}>
         <StyledCheckbox
@@ -137,7 +137,7 @@ const Task = ({
         />
       </StyledTableCell>
       <StyledTableCell align="center" style={{ width: 72 }}>
-        <MemberAssignment task={task} member={task.assignedTo} small={isSubtask} />
+        <MemberPicker task={task} member={task.assignedTo} small={isSubtask} />
       </StyledTableCell>
       <StyledTableCell>
         <StyledTaskDescription completed={task.status === 'COMPLETE'}>{task.description}</StyledTaskDescription>

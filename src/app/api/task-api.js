@@ -322,6 +322,17 @@ export const updateDueDate = (taskId, dueDate) => (
     .catch(err => err.response.data)
 );
 
+/**
+ * Updates task workflow status.
+ * @param {number} taskId 
+ * @param {('BLOCKED'|'ON_HOLD'|'IN_PROGRESS')} workflowStatus
+ * @returns {Promise}
+ */
+export const updateWorkflowStatus = (taskId, workflowStatus) => (
+  axios.put(`task/updateTaskWorkflowStatus/${taskId}?workflowStatus=${workflowStatus}`)
+    .catch(err => err.response.data)
+);
+
 export function markHighPriority(taskId, userId){
   // userId = sessionStorage.userId
   return axios.put('task/changePriority/' + taskId + '?userId=' + userId + '&priorityLevel=HIGH')

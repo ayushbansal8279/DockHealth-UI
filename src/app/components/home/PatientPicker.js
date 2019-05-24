@@ -114,7 +114,7 @@ const PatientPicker = ({
         onClose={close}
       >
         {isSearching
-          ? <SearchHeader search={search} toggleSearch={toggleSearch} />
+          ? <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
           : <PatientPickerHeader close={close} toggleSearch={toggleSearch} />}
         <List>
           <ListItem

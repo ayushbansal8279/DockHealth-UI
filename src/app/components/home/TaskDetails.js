@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
-
+import { updateWorkflowStatus } from '../../actions/task-actions';
 import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
-import Patient from './Patient';
+import PatientAssignment from './PatientAssignment';
 import StatusSelect from './StatusSelect';
 import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
@@ -88,7 +89,7 @@ const StickyContainer = styled.div`
   top: 100;
 `;
 
-class TaskDetails extends React.PureComponent {
+export class TaskDetails extends React.PureComponent {
   handleChange = (event) => {
     const { markComplete, selectedTask } = this.props;
     const status = event.target.checked ? 'INCOMPLETE' : 'COMPLETE';
@@ -101,8 +102,9 @@ class TaskDetails extends React.PureComponent {
   }
 
   handleStatusChange = (e) => {
-    console.log('NYI', e);
-    // TODO: Call redux action
+    const status = e.target.value;
+    const { selectedTask, updateWorkflowStatus: updateStatus } = this.props;
+    updateStatus(selectedTask.taskId, status);
   }
 
   renderHeader() {
@@ -122,11 +124,13 @@ class TaskDetails extends React.PureComponent {
           {'Status '}
           <StatusSelect
             onChange={this.handleStatusChange}
+            value={selectedTask.workflowStatus}
             disabled={isCompleted}
-            value="HIGH"
             options={[
-              { value: 'HIGH', description: 'Blocked' },
-              { value: 'MEDIUM', description: 'On Hold' }]}
+              { value: 'IN_PROGRESS', description: 'In Progress' },
+              { value: 'ON_HOLD', description: 'On Hold' },
+              { value: 'BLOCKED', description: 'Blocked' },
+            ]}
           />
         </StatusContainer>
         <StyledCloseButton onClick={close}>
@@ -177,7 +181,7 @@ class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  {patient ? <Patient patient={patient} isCompact /> : 'None'}
+                  <PatientAssignment patient={patient} task={selectedTask} />
                 </StyledDescription>
               </tr>
               {(subtasks && subtasks.length !== 0) && (
@@ -284,4 +288,4 @@ TaskDetails.propTypes = {
   }).isRequired,
 };
 
-export default TaskDetails;
+export default connect(undefined, { updateWorkflowStatus })(TaskDetails);

@@ -16,7 +16,8 @@ const StyledPopover = styled(Popover).attrs({ classes: { paper: 'paper' } })`
 `;
 
 const Header = styled.div`
-  flex: 0 0;
+  flex-shrink: 0;
+  flex-grow: 0;
   padding: 0 10px;
   display: flex;
   align-items: center;

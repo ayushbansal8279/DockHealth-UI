@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import TaskDetails from '../TaskDetails';
+import { TaskDetails } from '../TaskDetails';
 
 jest.mock('../../../api/user-api', () => ({ }));
 
@@ -10,6 +10,7 @@ describe('TaskDetails', () => {
     dueDate: '',
     description: 'Just do it.',
     status: 'INCOMPLETE',
+    workflowStatus: 'IN_PROGRESS',
     assignedTo: {
       firstName: 'John',
       lastName: 'Smith',

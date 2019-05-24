@@ -8,7 +8,7 @@ import TableCell from '@material-ui/core/TableCell';
 import CheckIcon from '@material-ui/icons/Check';
 
 import Task from './Task';
-import Priority from './Priority';
+import { PriorityDot } from './Priority';
 
 const StyledTable = styled(Table)`
   && {
@@ -68,7 +68,7 @@ const TaskList = ({
     <StyledTableHead>
       <StyledTableRow>
         <StyledTableCell align="center">
-          <Priority />
+          <PriorityDot color="#7f92a6" />
         </StyledTableCell>
         <StyledTableCell align="center">
           <CheckIcon />

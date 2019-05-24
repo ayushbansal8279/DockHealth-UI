@@ -23,7 +23,8 @@ const StyledPopover = styled(Popover).attrs({
 const Footer = styled(ButtonBase)`
   && {
     justify-content: flex-start;
-    flex: 0 0;
+    flex-shrink: 0;
+    flex-grow: 0;
     display: flex;
     margin-top: auto;
     align-items: center;

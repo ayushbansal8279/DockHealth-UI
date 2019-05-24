@@ -16,19 +16,17 @@ PriorityDot.defaultProps = {
 
 const Priority = ({ priority }) => {
   switch (priority) {
-    case 'HIGH':
+    case 'BLOCKED':
       return <PriorityDot color="#d0021b" />;
-    case 'MEDIUM':
-      return <PriorityDot color="#fb7c06" />;
-    case 'LOW':
+    case 'ON_HOLD':
       return <PriorityDot color="#f6b039" />;
     default:
-      return <PriorityDot color="#7f92a6" />;
+      return <PriorityDot />;
   }
 };
 
 Priority.propTypes = {
-  priority: PropTypes.oneOf(['HIGH', 'MEDIUM', 'LOW', null]),
+  priority: PropTypes.oneOf(['BLOCKED', 'ON_HOLD', 'IN_PROGRESS', null]),
 };
 
 Priority.defaultProps = {

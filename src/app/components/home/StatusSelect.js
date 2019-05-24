@@ -8,7 +8,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import Priority from './Priority';
 
-const StyledSelect = styled(MaterialSelect)`
+const StyledSelect = styled(MaterialSelect).attrs({
+  classes: { selectMenu: 'selectMenu', root: 'selectRoot' },
+  disableUnderline: true,
+})`
   && {
     height: 28px;
     background: #ededf0;
@@ -43,14 +46,12 @@ const StyledDropDownIcon = styled(ArrowDropDown)`
 const StatusSelect = ({ onChange, value, options, disabled }) => (
   <FormControl variant="filled" style={{ minWidth: 186 }}>
     <StyledSelect
-      value={value}
+      value={value || 'IN_PROGRESS'}
       disabled={disabled}
       displayEmpty
       onChange={onChange}
       name="status"
       IconComponent={StyledDropDownIcon}
-      classes={{ selectMenu: 'selectMenu', root: 'selectRoot' }}
-      disableUnderline
     >
       {options.map(({ value, description }) => ( // eslint-disable-line no-shadow
         <MenuItem value={value} key={value}>

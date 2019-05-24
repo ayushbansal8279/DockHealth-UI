@@ -350,6 +350,18 @@ export const updateReminder = (task, reminderDt) => dispatch => (
     .catch((err) => { throw err; })
 );
 
+export const updateWorkflowStatus = (taskId, workflowStatus) => dispatch => (
+  TaskApi.updateWorkflowStatus(taskId, workflowStatus)
+    .then(() => {
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_WORKFLOW_STATUS,
+        taskId,
+        workflowStatus,
+      });
+    })
+    .catch((err) => { throw err; })
+);
+
 export function toggleTaskPriority(task, userId, priority) {
   return function(dispatch){
     if(priority == "LOW"){

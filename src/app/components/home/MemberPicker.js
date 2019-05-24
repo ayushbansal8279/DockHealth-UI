@@ -37,7 +37,8 @@ const MemberName = styled.span`
 const Footer = styled(ButtonBase)`
   && {
     justify-content: flex-start;
-    flex: 0 0;
+    flex-shrink: 0;
+    flex-grow: 0;
     display: flex;
     align-items: center;
     padding: 0 25px;

@@ -23,6 +23,19 @@ const updateDueDate = (taskState, { taskId, dueDate }) => ({
   tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, dueDate }) : task)),
 });
 
+const updateWorkflowStatus = (taskState, { taskId, workflowStatus }) => ({
+  ...taskState,
+  tasks: taskState.tasks.map(task => (task.taskId === taskId
+    ? ({ ...task, workflowStatus })
+    : task)),
+});
+
+const updatePatient = (taskState, { taskId, patient }) => ({
+  ...taskState,
+  tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, patient }) : task)),
+});
+
+
 const updateReminder = (taskState, { taskId, reminderDt }) => ({
   ...taskState,
   tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, reminderDt }) : task)),
@@ -254,6 +267,9 @@ const TaskReducer = function(state = initialState, action) {
     case types.UPDATE_TASK_DUE_DATE:
       return updateDueDate(state, action);
 
+    case types.UPDATE_TASK_WORKFLOW_STATUS:
+      return updateWorkflowStatus(state, action);
+      
     case types.UPDATE_TASK_REMINDER:
       return updateReminder(state, action);
 
