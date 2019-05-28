@@ -325,7 +325,9 @@ export const updateDueDate = (task, dueDate) => dispatch => (
         dueDate: res.dueDate,
       });
     })
-    .catch((err) => { throw err; })
+    .catch((err) => {
+      console.log(err);
+    })
 );
 
 export const updatePatient = (task, patient) => dispatch => (

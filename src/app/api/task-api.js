@@ -301,9 +301,7 @@ export function markIncomplete(task){
   });
 }
 
-export function updateTaskDescription(task, description){
-  // userId = sessionStorage.userId
-  // return axios.post('')
+export function updateTaskDescription(task, description) {
   return axios.put('task/'+task.taskId, {
     description: description
   })
@@ -311,11 +309,10 @@ export function updateTaskDescription(task, description){
     toggleAlert("Task description updated successfully!", "success")
     return response.data;
   }).catch(function (error){
-    console.log(error);
     toggleAlert("Error in updating task. Please try again.", "error")
-    return error.response.data;
+    throw error.response.data;
   });
-}
+} 
 
 export const updateDueDate = (taskId, dueDate) => (
   axios.put(`task/addOrUpdateDueDate/${taskId}?dueDate=${dueDate.format('MM/DD/YYYY')}`)
