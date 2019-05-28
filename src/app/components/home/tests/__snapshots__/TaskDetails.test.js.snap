@@ -92,7 +92,14 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
           </StyledDescription>
         </tr>
         <tr>
-          <StyledLabel>
+          <StyledLabel
+            style={
+              Object {
+                "lineHeight": "30px",
+                "verticalAlign": "top",
+              }
+            }
+          >
             <StyledCheckbox
               checked={false}
               disabled={false}
@@ -100,7 +107,11 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
             />
           </StyledLabel>
           <StyledDescription>
-            Just do it.
+            <EditableDescription
+              disabled={false}
+              onChange={[Function]}
+              value="Just do it."
+            />
           </StyledDescription>
         </tr>
         <tr>
@@ -109,6 +120,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(PatientAssignment)
+              isCompact={true}
               patient={null}
               task={
                 Object {
@@ -407,7 +419,14 @@ exports[`TaskDetails should render patient 1`] = `
           </StyledDescription>
         </tr>
         <tr>
-          <StyledLabel>
+          <StyledLabel
+            style={
+              Object {
+                "lineHeight": "30px",
+                "verticalAlign": "top",
+              }
+            }
+          >
             <StyledCheckbox
               checked={false}
               disabled={false}
@@ -415,7 +434,11 @@ exports[`TaskDetails should render patient 1`] = `
             />
           </StyledLabel>
           <StyledDescription>
-            Just do it.
+            <EditableDescription
+              disabled={false}
+              onChange={[Function]}
+              value="Just do it."
+            />
           </StyledDescription>
         </tr>
         <tr>
@@ -424,6 +447,7 @@ exports[`TaskDetails should render patient 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(PatientAssignment)
+              isCompact={true}
               patient={
                 Object {
                   "firstName": "Jane",
@@ -723,7 +747,14 @@ exports[`TaskDetails should render subtasks 1`] = `
           </StyledDescription>
         </tr>
         <tr>
-          <StyledLabel>
+          <StyledLabel
+            style={
+              Object {
+                "lineHeight": "30px",
+                "verticalAlign": "top",
+              }
+            }
+          >
             <StyledCheckbox
               checked={false}
               disabled={false}
@@ -731,7 +762,11 @@ exports[`TaskDetails should render subtasks 1`] = `
             />
           </StyledLabel>
           <StyledDescription>
-            Just do it.
+            <EditableDescription
+              disabled={false}
+              onChange={[Function]}
+              value="Just do it."
+            />
           </StyledDescription>
         </tr>
         <tr>
@@ -740,6 +775,7 @@ exports[`TaskDetails should render subtasks 1`] = `
           </StyledLabel>
           <StyledDescription>
             <Connect(PatientAssignment)
+              isCompact={true}
               patient={null}
               task={
                 Object {
