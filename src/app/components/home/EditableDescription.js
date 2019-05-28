@@ -86,7 +86,7 @@ const EditableDescription = ({ value, onChange, disabled }) => {
   );
 
   if (!isEditing || disabled) {
-    return <div onDoubleClick={startEditing}>{value}</div>;
+    return <div onDoubleClick={startEditing}>{draft}</div>;
   }
 
   return (
