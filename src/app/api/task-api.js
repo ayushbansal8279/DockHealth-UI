@@ -309,7 +309,7 @@ export function updateTaskDescription(task, description){
   })
   .then(response => {
     toggleAlert("Task description updated successfully!", "success")
-    return response;
+    return response.data;
   }).catch(function (error){
     console.log(error);
     toggleAlert("Error in updating task. Please try again.", "error")

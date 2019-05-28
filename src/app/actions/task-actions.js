@@ -304,15 +304,17 @@ export function markComplete(task, status, listName) {
   }
 }
 
-export function updateTaskDescription(task, description){
-  return function(dispatch){
-    return TaskApi.updateTaskDescription(task, description).then(res => {
-      dispatch({type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS, task, description:description});
-    }).catch(error => {
-      throw(error);
-    })
-  }
-}
+export const updateTaskDescription = (task, description) => dispatch => (
+  TaskApi.updateTaskDescription(task, description).then((res) => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS,
+      task,
+      description: res.description,
+    });
+  }).catch((error) => {
+    throw error;
+  })
+);
 
 export const updateDueDate = (task, dueDate) => dispatch => (
   TaskApi.updateTask(shapeTask({ ...task, dueDate }))
