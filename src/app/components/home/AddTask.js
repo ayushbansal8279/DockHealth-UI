@@ -101,7 +101,7 @@ export const AddTask = ({ submit }) => {
       submit(draft);
       setDraft('');
     },
-    [draft],
+    [draft, submit],
   );
 
   return (

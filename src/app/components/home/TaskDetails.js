@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { updateWorkflowStatus } from '../../actions/task-actions';
+import AddSubtask from './AddSubtask';
 import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
 import PatientAssignment from './PatientAssignment';
@@ -150,6 +151,8 @@ export class TaskDetails extends React.PureComponent {
 
     const isCompleted = status === 'COMPLETE';
 
+    const isSubtask = selectedTask.parentTaskId !== null;
+
     return (
       <DetailsContainer>
         <StickyContainer>
@@ -184,13 +187,18 @@ export class TaskDetails extends React.PureComponent {
                   <PatientAssignment patient={patient} task={selectedTask} />
                 </StyledDescription>
               </tr>
-              {(subtasks && subtasks.length !== 0) && (
-                <tr>
-                  <StyledLabel>
-                    <strong>{`Subtasks (${subtasks.length})`}</strong>
-                  </StyledLabel>
-                </tr>
-              )}
+              <tr>
+                <StyledLabel />
+                <StyledDescription>
+                  {
+                    !isSubtask && (
+                      (subtasks && subtasks.length === 0)
+                        ? (<AddSubtask />)
+                        : (<strong>{`Subtasks (${subtasks.length})`}</strong>)
+                    )
+                  }
+                </StyledDescription>
+              </tr>
             </table>
           </DetailsBox>
           <DetailsBox style={{ marginTop: 4 }}>
