@@ -15,6 +15,7 @@ import Subtasks from './SubTasks';
 import Tag from './Tag';
 import SquareTag from './SquareTag';
 import Bookmark from './Bookmark';
+import Flag from './Flag';
 import Patient from './Patient';
 
 const StyledTableBody = styled(({ isSubtask, isSelected, ...rest }) => <TableBody {...rest} />)`
@@ -123,8 +124,8 @@ const Task = ({
     onClick={(e) => { e.stopPropagation(); storeAsCurrentTask(task.taskId); }}
   >
     <TableRow>
-      <StyledTableCell align="center" style={{ width: 36 }}>
-        <Priority priority={task.workflowStatus} />
+      <StyledTableCell align="center" style={{ verticalAlign: 'top', margin: 0, padding: 0, width: 5 }}>
+        <Flag priority={task.priority} />
       </StyledTableCell>
       <StyledTableCell align="center" style={{ width: 36 }}>
         <StyledCheckbox
@@ -142,8 +143,8 @@ const Task = ({
       <StyledTableCell>
         <StyledTaskDescription completed={task.status === 'COMPLETE'}>{task.description}</StyledTaskDescription>
         <StyledTaskFooter>
-          <SquareTag background="#ff585b">New</SquareTag>
-          <SquareTag>Updated</SquareTag>
+          {/* <SquareTag background="#ff585b">New</SquareTag> */}
+          {/* <SquareTag>Updated</SquareTag> */}
           <Info task={task} />
         </StyledTaskFooter>
         <Comments comments={task.comments} />
@@ -161,8 +162,11 @@ const Task = ({
         <Tag>Placeholder</Tag>
       </StyledTableCell>
       )}
-      <StyledTableCell align="center" style={{ verticalAlign: 'top', width: 36 }}>
+      {/* <StyledTableCell align="center" style={{ verticalAlign: 'top', width: 36 }}>
         {task.priority === 'HIGH' && <Bookmark style={{ marginTop: -4 }} isActive />}
+      </StyledTableCell> */}
+      <StyledTableCell align="center" style={{ width: 36 }}>
+        <Priority priority={task.workflowStatus} />
       </StyledTableCell>
     </TableRow>
     {

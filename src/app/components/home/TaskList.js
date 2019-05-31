@@ -67,9 +67,7 @@ const TaskList = ({
   <StyledTable padding="dense">
     <StyledTableHead>
       <StyledTableRow>
-        <StyledTableCell align="center">
-          <PriorityDot color="#7f92a6" />
-        </StyledTableCell>
+        <StyledTableCell align="center"></StyledTableCell>
         <StyledTableCell align="center">
           <CheckIcon />
         </StyledTableCell>
@@ -78,7 +76,10 @@ const TaskList = ({
         <StyledTableCell>PATIENT</StyledTableCell>
         {!hideDate && <StyledTableCell>DUE DATE</StyledTableCell>}
         {!hideTags && <StyledTableCell>TAGS</StyledTableCell>}
-        <StyledTableCell align="center" style={{ width: 64 }} />
+        {/* <StyledTableCell align="center" style={{ width: 64 }} /> */}
+        <StyledTableCell align="center">
+          <PriorityDot color="#7f92a6" />
+        </StyledTableCell>
       </StyledTableRow>
     </StyledTableHead>
     {tasks.length === 0
