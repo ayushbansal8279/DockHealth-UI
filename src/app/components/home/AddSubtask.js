@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import AddIcon from '@material-ui/icons/Add';
@@ -43,12 +44,21 @@ const AddLabel = styled.div`
   line-height: 16px;
 `;
 
-const AddSubtask = ({ onClick }) => (
-  <AddSubtaskContainer onClick={onClick}>
+const AddSubtask = ({ onClick, disabled }) => (
+  <AddSubtaskContainer onClick={onClick} disabled={disabled}>
     <AddButton><StyledAddIcon /></AddButton>
     <AddLabel>Add a subtask</AddLabel>
   </AddSubtaskContainer>
 );
+
+AddSubtask.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+AddSubtask.defaultProps = {
+  disabled: false,
+};
 
 const mapDispatchToProps = (dispatch, { taskId }) => ({
   onClick: () => { addSubtask(taskId)(dispatch); },

@@ -193,7 +193,7 @@ export class TaskDetails extends React.PureComponent {
                   {
                     !isSubtask && (
                       (subtasks && subtasks.length === 0)
-                        ? (<AddSubtask taskId={selectedTask.taskId} />)
+                        ? (<AddSubtask taskId={selectedTask.taskId} disabled={isCompleted} />)
                         : (<strong>{`Subtasks (${subtasks.length})`}</strong>)
                     )
                   }

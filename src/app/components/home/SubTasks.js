@@ -120,7 +120,7 @@ class Subtasks extends React.Component {
 
   renderExpanded = () => {
     const {
-      subtasks, markComplete, storeAsCurrentTask, hideDate, hideTags, selectedTaskId, parentTaskId,
+      subtasks, markComplete, storeAsCurrentTask, hideDate, hideTags, selectedTaskId, parentTaskId, isCompleted,
     } = this.props;
 
     return (
@@ -152,7 +152,7 @@ class Subtasks extends React.Component {
             </StyledTable>
           </TableContainer>
           <StyledFooter>
-            <AddSubtask taskId={parentTaskId} />
+            <AddSubtask taskId={parentTaskId} disabled={isCompleted} />
           </StyledFooter>
         </StyledContainer>
       </div>

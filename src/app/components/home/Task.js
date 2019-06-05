@@ -171,6 +171,7 @@ const Task = ({
         && (
         <Subtasks
           parentTaskId={task.taskId}
+          isCompleted={task.status === 'COMPLETE'}
           subtasks={task.subtasks}
           markComplete={markComplete}
           storeAsCurrentTask={storeAsCurrentTask}
