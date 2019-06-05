@@ -193,7 +193,7 @@ export class TaskDetails extends React.PureComponent {
                   {
                     !isSubtask && (
                       (subtasks && subtasks.length === 0)
-                        ? (<AddSubtask />)
+                        ? (<AddSubtask taskId={selectedTask.taskId} />)
                         : (<strong>{`Subtasks (${subtasks.length})`}</strong>)
                     )
                   }
@@ -216,6 +216,7 @@ export class TaskDetails extends React.PureComponent {
           </DetailsBox>
           <DetailsBox>
             <table>
+              {selectedTask.taskList && (
               <tr>
                 <StyledLabel><strong>Filed in</strong></StyledLabel>
                 <StyledDescription>
@@ -226,6 +227,7 @@ export class TaskDetails extends React.PureComponent {
                   />
                 </StyledDescription>
               </tr>
+              )}
               <tr>
                 <StyledLabel><strong>Due date</strong></StyledLabel>
                 <StyledDescription>

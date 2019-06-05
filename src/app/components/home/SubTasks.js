@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
 import Task from './Task';
+import AddSubtask from './AddSubtask';
 
 const StyledRow = styled(TableRow)`
   && {
@@ -74,34 +75,11 @@ const StyledAction = styled.div`
 
 const StyledFooter = styled.div`
   display: flex;
-  margin-bottom: 21px;
-  margin-top: 19px;
   margin-left: 24px;
+  margin-bottom: 8px;
   font-size: 12px;
   font-weight: 550;
   color: #0ca1c7;
-`;
-
-const AddCircle = styled.div`
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  background: #0ca1c7;
-  border-radius: 50%;
-
-  ::before {
-    content: '+';
-    color: #fff;
-    display: block;
-    text-align: center;
-    font-size: 13px;
-    font-weight: normal;
-  }
-`;
-
-const StyledAddLabel = styled.div`
-  padding-top: 2px;
-  margin-left: 5px;
 `;
 
 const TableContainer = styled.div`
@@ -142,7 +120,7 @@ class Subtasks extends React.Component {
 
   renderExpanded = () => {
     const {
-      subtasks, markComplete, storeAsCurrentTask, hideDate, hideTags, selectedTaskId,
+      subtasks, markComplete, storeAsCurrentTask, hideDate, hideTags, selectedTaskId, parentTaskId,
     } = this.props;
 
     return (
@@ -174,8 +152,7 @@ class Subtasks extends React.Component {
             </StyledTable>
           </TableContainer>
           <StyledFooter>
-            <AddCircle />
-            <StyledAddLabel>Add a subtask</StyledAddLabel>
+            <AddSubtask taskId={parentTaskId} />
           </StyledFooter>
         </StyledContainer>
       </div>
@@ -196,6 +173,7 @@ class Subtasks extends React.Component {
 }
 
 Subtasks.propTypes = {
+  parentTaskId: PropTypes.number.isRequired,
   subtasks: PropTypes.arrayOf(PropTypes.shape({
     taskId: PropTypes.number,
     firstName: PropTypes.string,
