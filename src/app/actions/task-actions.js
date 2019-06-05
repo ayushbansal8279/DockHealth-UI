@@ -204,15 +204,6 @@ export function saveTask(newTask) {
   }
 }
 
-export const addSubtask = parentTaskId => dispatch => (
-  TaskApi.addTask({ parentTaskId, description: 'New subtask' })
-    .then((task) => {
-      dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
-    }).catch((error) => {
-      console.log(error);
-    })
-);
-
 export const moveTask = (task, taskList) => (dispatch) => {
   const updatedTask = {
     ...shapeTask(task),
@@ -486,6 +477,16 @@ export function clearCurrentTaskHistory(){
     dispatch({type: ActionTypes.CLEAR_CURRENT_TASK_HISTORY})
   }
 }
+
+export const addSubtask = parentTaskId => dispatch => (
+  TaskApi.addTask({ parentTaskId, description: 'New subtask' })
+    .then((task) => {
+      dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+      storeAsCurrentTask(task.taskId)(dispatch);
+    }).catch((error) => {
+      console.log(error);
+    })
+);
 
 // export function toggleTaskPriority(taskId, userId, priority){
 //   return function(dispatch){
