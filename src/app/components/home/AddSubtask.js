@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import AddIcon from '@material-ui/icons/Add';
+import { addSubtask } from '../../actions/task-actions';
 
 const AddSubtaskContainer = styled(ButtonBase)`
   && {
@@ -41,8 +43,17 @@ const AddLabel = styled.div`
   line-height: 16px;
 `;
 
-const AddSubtask = () => {
-    return <AddSubtaskContainer><AddButton><StyledAddIcon /></AddButton><AddLabel>Add a subtask</AddLabel></AddSubtaskContainer>;
-};
+const AddSubtask = ({ onClick }) => (
+  <AddSubtaskContainer onClick={onClick}>
+    <AddButton><StyledAddIcon /></AddButton>
+    <AddLabel>Add a subtask</AddLabel>
+  </AddSubtaskContainer>
+);
 
-export default AddSubtask;
+const mapDispatchToProps = (dispatch, { taskId }) => ({
+  onClick: () => { addSubtask(taskId)(dispatch); },
+});
+
+const ConnectedAddSubtask = connect(undefined, mapDispatchToProps)(AddSubtask);
+
+export default ConnectedAddSubtask;
