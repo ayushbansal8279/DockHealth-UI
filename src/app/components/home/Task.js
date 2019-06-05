@@ -170,6 +170,7 @@ const Task = ({
         && task.subtasks.length > 0
         && (
         <Subtasks
+          parentTaskId={task.taskId}
           subtasks={task.subtasks}
           markComplete={markComplete}
           storeAsCurrentTask={storeAsCurrentTask}
