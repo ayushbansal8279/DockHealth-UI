@@ -482,6 +482,16 @@ export function clearCurrentTaskHistory(){
   }
 }
 
+export const addSubtask = parentTaskId => dispatch => (
+  TaskApi.addTask({ parentTaskId, description: 'New subtask' })
+    .then((task) => {
+      dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+      storeAsCurrentTask(task.taskId)(dispatch);
+    }).catch((error) => {
+      console.log(error);
+    })
+);
+
 // export function toggleTaskPriority(taskId, userId, priority){
 //   return function(dispatch){
 //     if(priority == "LOW"){}

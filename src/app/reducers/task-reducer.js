@@ -45,13 +45,20 @@ const TaskReducer = function(state = initialState, action) {
 
   switch(action.type) {
 
-    case types.ADD_TASK_SUCCESS:
-      // with concact make a copy of the array, and then we'll change and return the copy
-      return{
-        ...state,
-        // tasks: state.tasks.concat(action.task)
-        tasks: [action.task].concat(state.tasks)
-      }
+    case types.ADD_TASK_SUCCESS: {
+      const { task: addedTask } = action;
+
+      const isSubtask = ({ parentTaskId }) => parentTaskId !== null;
+      const isParentOfAddedTask = ({ taskId }) => taskId === addedTask.parentTaskId;
+
+      const tasks = isSubtask(addedTask)
+        ? state.tasks.map(task => isParentOfAddedTask(task)
+          ? { ...task, subtasks: [addedTask].concat(task.subtasks) }
+          : task)
+        : [addedTask].concat(state.tasks);
+
+      return { ...state, tasks };
+    }
 
     case types.DUPLICATE_TASK_SUCCESS:
       // with concact make a copy of the array, and then we'll change and return the copy

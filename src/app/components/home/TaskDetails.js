@@ -6,6 +6,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { updateWorkflowStatus, updateTaskDescription } from '../../actions/task-actions';
 import EditableDescription from './EditableDescription';
+import AddSubtask from './AddSubtask';
 import MemberPicker from './MemberPicker';
 import Bookmark from './Bookmark';
 import PatientAssignment from './PatientAssignment';
@@ -156,6 +157,8 @@ export class TaskDetails extends React.PureComponent {
 
     const isCompleted = status === 'COMPLETE';
 
+    const isSubtask = selectedTask.parentTaskId !== null;
+
     return (
       <DetailsContainer>
         <StickyContainer>
@@ -194,13 +197,18 @@ export class TaskDetails extends React.PureComponent {
                   <PatientAssignment patient={patient} task={selectedTask} isCompact />
                 </StyledDescription>
               </tr>
-              {(subtasks && subtasks.length !== 0) && (
-                <tr>
-                  <StyledLabel>
-                    <strong>{`Subtasks (${subtasks.length})`}</strong>
-                  </StyledLabel>
-                </tr>
-              )}
+              <tr>
+                <StyledLabel />
+                <StyledDescription>
+                  {
+                    !isSubtask && (
+                      (subtasks && subtasks.length === 0)
+                        ? (<AddSubtask taskId={selectedTask.taskId} disabled={isCompleted} />)
+                        : (<strong>{`Subtasks (${subtasks.length})`}</strong>)
+                    )
+                  }
+                </StyledDescription>
+              </tr>
             </table>
           </DetailsBox>
           <DetailsBox style={{ marginTop: 4 }}>
@@ -218,6 +226,7 @@ export class TaskDetails extends React.PureComponent {
           </DetailsBox>
           <DetailsBox>
             <table>
+              {selectedTask.taskList && (
               <tr>
                 <StyledLabel><strong>Filed in</strong></StyledLabel>
                 <StyledDescription>
@@ -228,6 +237,7 @@ export class TaskDetails extends React.PureComponent {
                   />
                 </StyledDescription>
               </tr>
+              )}
               <tr>
                 <StyledLabel><strong>Due date</strong></StyledLabel>
                 <StyledDescription>
