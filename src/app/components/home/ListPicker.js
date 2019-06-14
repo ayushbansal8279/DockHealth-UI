@@ -79,6 +79,7 @@ export class ListPicker extends React.Component {
     const newItem = items.find(i => `${i.taskListId}` === itemId);
 
     assign(newItem);
+    this.handleClose();
   }
 
   handleSearch = (e) => {
@@ -118,8 +119,8 @@ export class ListPicker extends React.Component {
 
   render() {
     const {
- item, items, task, disabled 
-} = this.props;
+      item, items, task, disabled,
+    } = this.props;
     const {
       anchorEl,
       isSearching,

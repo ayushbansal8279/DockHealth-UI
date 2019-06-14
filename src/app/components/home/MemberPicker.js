@@ -82,6 +82,7 @@ class MemberPicker extends React.Component {
     const { task, assign } = this.props;
     const userId = e.currentTarget.id;
     assign(task, userId);
+    this.handleClose();
   }
 
   handleSearch = (e) => {

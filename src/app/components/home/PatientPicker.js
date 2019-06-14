@@ -42,17 +42,6 @@ const PatientPickerHeader = ({ close, toggleSearch }) => (
 const PatientPicker = ({
   patient, patients, assign, children: Component,
 }) => {
-  const select = useCallback(
-    (e) => {
-      const patientId = e.currentTarget.id;
-      assign(patientId);
-    },
-  );
-
-  const deselect = useCallback(
-    () => { assign(null); },
-  );
-
   const [searchTerm, setSearchTerm] = useState('');
   const search = useCallback(
     (e) => { setSearchTerm(e.target.value); },
@@ -80,6 +69,18 @@ const PatientPicker = ({
       setIsSearching(false);
       setSearchTerm('');
     },
+  );
+
+  const select = useCallback(
+    (e) => {
+      const patientId = e.currentTarget.id;
+      assign(patientId);
+      close();
+    },
+  );
+
+  const deselect = useCallback(
+    () => { assign(null); },
   );
 
   // Patient search
