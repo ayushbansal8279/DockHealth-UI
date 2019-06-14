@@ -16,6 +16,12 @@ const StyledButtonBase = styled(ButtonBase)`
   }
 `;
 
+const StyledText = styled.span`
+  font-size: 14px;
+  font-style: italic;
+  color: #aab8c3;
+`;
+
 const PatientAssignment = ({
   patient, patients, update, fetch, isCompact,
 }) => {
@@ -27,7 +33,7 @@ const PatientAssignment = ({
         <StyledButtonBase onClick={open}>
           {patient
             ? <Patient patient={patient} isCompact={isCompact} />
-            : 'None'
+            : <StyledText>None</StyledText>
         }
         </StyledButtonBase>
       )}
