@@ -8,8 +8,8 @@ const PatientContainer = styled.div`
   line-height: 18px;
 `;
 
-const Patient = ({ patient, isCompact }) => (
-  <PatientContainer to={`#/patient/${patient.patientId}`}>
+const Patient = ({ patient, isCompact, style }) => (
+  <PatientContainer style={style}>
     {`${patient.lastName}, ${patient.firstName} `}
     {!isCompact && <br />}
     {patient.mrn}

@@ -154,7 +154,7 @@ const Task = ({
         <Comments comments={task.comments} />
       </StyledTableCell>
       <StyledTableCell>
-        {task.patient && <Patient patient={task.patient} />}
+        {task.patient && <Link to={`/patient/${task.patient.patientId}`}><Patient patient={task.patient} style={{ color: '#0ca1c7' }} /></Link>}
       </StyledTableCell>
       {!hideDate && (
       <StyledTableCell style={{ width: 108 }}>
