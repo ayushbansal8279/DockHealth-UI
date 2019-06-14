@@ -27,10 +27,11 @@ const requestHistoryError = (taskState, { error }) => ({
 
 const clearHistory = taskState => ({ ...taskState, currentTaskHistory: null });
 
-const updateDueDate = (taskState, { taskId, dueDate }) => ({
-  ...taskState,
-  tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, dueDate }) : task)),
-});
+const updateDueDate = (taskState, { taskId, dueDate }) => {
+  const updateStatus = t => ({ ...t, dueDate });
+  const updatedTasks = updateTaskOrSubtask(taskState.tasks, taskId, updateStatus);
+  return ({ ...taskState, tasks: updatedTasks });
+};
 
 const updateWorkflowStatus = (taskState, { taskId, workflowStatus }) => {
   const updateStatus = t => ({ ...t, workflowStatus });
@@ -43,11 +44,11 @@ const updatePatient = (taskState, { taskId, patient }) => ({
   tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, patient }) : task)),
 });
 
-
-const updateReminder = (taskState, { taskId, reminderDt }) => ({
-  ...taskState,
-  tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, reminderDt }) : task)),
-});
+const updateReminder = (taskState, { taskId, reminderDt }) => {
+  const updateStatus = t => ({ ...t, reminderDt });
+  const updatedTasks = updateTaskOrSubtask(taskState.tasks, taskId, updateStatus);
+  return ({ ...taskState, tasks: updatedTasks });
+};
 
 const TaskReducer = function(state = initialState, action) {
 
