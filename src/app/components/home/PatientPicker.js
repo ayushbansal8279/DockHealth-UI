@@ -80,7 +80,7 @@ const PatientPicker = ({
   );
 
   const deselect = useCallback(
-    () => { assign(null); },
+    () => { assign(null); close(); },
   );
 
   // Patient search
