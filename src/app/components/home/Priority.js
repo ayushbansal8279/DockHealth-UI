@@ -11,13 +11,13 @@ export const PriorityDot = styled.div`
 `;
 
 PriorityDot.defaultProps = {
-  color: 'transparent',
+  color: '#00a73c',
 };
 
 const Priority = ({ priority }) => {
   switch (priority) {
     case 'BLOCKED':
-      return <PriorityDot color="#d0021b" />;
+      return <PriorityDot color="#0ca1c7" />;
     case 'ON_HOLD':
       return <PriorityDot color="#f6b039" />;
     default:

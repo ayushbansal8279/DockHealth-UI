@@ -136,7 +136,7 @@ export class TaskDetails extends React.PureComponent {
             options={[
               { value: 'IN_PROGRESS', description: 'In Progress' },
               { value: 'ON_HOLD', description: 'On Hold' },
-              { value: 'BLOCKED', description: 'Blocked' },
+              { value: 'BLOCKED', description: 'Planned' },
             ]}
           />
         </StatusContainer>

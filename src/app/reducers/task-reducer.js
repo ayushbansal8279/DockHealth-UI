@@ -1,6 +1,15 @@
 import * as types from '../actions/action-types';
 import initialState from './initialState';
 
+const updateTaskOrSubtask = (tasks, taskId, update) => {
+  const updatedTasks = tasks.map(t => (t.taskId === taskId
+    ? update(t)
+    : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === taskId ? update(st) : st)) })
+  ));
+
+  return updatedTasks;
+};
+
 const requestHistory = taskState => ({ ...taskState, isHistoryFetching: true });
 
 const requestHistorySuccess = (taskState, { auditDetails }) => ({
@@ -23,12 +32,11 @@ const updateDueDate = (taskState, { taskId, dueDate }) => ({
   tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, dueDate }) : task)),
 });
 
-const updateWorkflowStatus = (taskState, { taskId, workflowStatus }) => ({
-  ...taskState,
-  tasks: taskState.tasks.map(task => (task.taskId === taskId
-    ? ({ ...task, workflowStatus })
-    : task)),
-});
+const updateWorkflowStatus = (taskState, { taskId, workflowStatus }) => {
+  const updateStatus = t => ({ ...t, workflowStatus });
+  const updatedTasks = updateTaskOrSubtask(taskState.tasks, taskId, updateStatus);
+  return ({ ...taskState, tasks: updatedTasks });
+};
 
 const updatePatient = (taskState, { taskId, patient }) => ({
   ...taskState,

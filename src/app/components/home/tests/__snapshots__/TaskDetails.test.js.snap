@@ -36,7 +36,7 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
                   "value": "ON_HOLD",
                 },
                 Object {
-                  "description": "Blocked",
+                  "description": "Planned",
                   "value": "BLOCKED",
                 },
               ]
@@ -330,7 +330,7 @@ exports[`TaskDetails should render patient 1`] = `
                   "value": "ON_HOLD",
                 },
                 Object {
-                  "description": "Blocked",
+                  "description": "Planned",
                   "value": "BLOCKED",
                 },
               ]
@@ -622,7 +622,7 @@ exports[`TaskDetails should render subtasks 1`] = `
                   "value": "ON_HOLD",
                 },
                 Object {
-                  "description": "Blocked",
+                  "description": "Planned",
                   "value": "BLOCKED",
                 },
               ]
