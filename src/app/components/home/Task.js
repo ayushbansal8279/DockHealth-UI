@@ -115,6 +115,10 @@ const Comments = ({ comments }) => {
     </StyledTaskCommentCount>);
 };
 
+const UnnamedTask = styled.span`
+  color: #ababb2;
+`;
+
 const Task = ({
   task, markComplete, storeAsCurrentTask, isSubtask, hideDate, hideTags, selectedTaskId,
 }) => (
@@ -141,7 +145,7 @@ const Task = ({
         <MemberPicker task={task} member={task.assignedTo} small={isSubtask} />
       </StyledTableCell>
       <StyledTableCell>
-        <StyledTaskDescription completed={task.status === 'COMPLETE'}>{task.description}</StyledTaskDescription>
+        <StyledTaskDescription completed={task.status === 'COMPLETE'}>{task.description || <UnnamedTask>Unnamed task</UnnamedTask>}</StyledTaskDescription>
         <StyledTaskFooter>
           {/* <SquareTag background="#ff585b">New</SquareTag> */}
           {/* <SquareTag>Updated</SquareTag> */}

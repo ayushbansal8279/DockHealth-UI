@@ -483,7 +483,7 @@ export function clearCurrentTaskHistory(){
 }
 
 export const addSubtask = parentTaskId => dispatch => (
-  TaskApi.addTask({ parentTaskId, description: 'New subtask' })
+  TaskApi.addTask({ parentTaskId, description: '' })
     .then((task) => {
       dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
       storeAsCurrentTask(task.taskId)(dispatch);

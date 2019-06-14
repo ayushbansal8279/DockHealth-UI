@@ -85,7 +85,7 @@ const EditableDescription = ({ value, onChange, disabled }) => {
     }, [onChange, stopEditing, draft, value],
   );
 
-  if (!isEditing || disabled) {
+  if ((!isEditing || disabled) && value !== '') {
     return <div style={{ whiteSpace: 'pre-wrap' }} onDoubleClick={startEditing}>{value}</div>;
   }
 
