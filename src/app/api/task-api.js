@@ -292,7 +292,7 @@ export function markIncomplete(task){
   // console.log(taskId);
   return axios.put('task/updateTaskStatus/' + task.taskId + '?status=INCOMPLETE')
   .then(response => {
-    toggleAlert("Task completed. Great job!", "success")
+    toggleAlert("You have re-activated a task.", "success")
     return response;
   }).catch(function (error){
     console.log(error);
