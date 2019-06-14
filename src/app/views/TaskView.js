@@ -231,9 +231,6 @@ class TaskView extends React.Component {
                 <IconButton onClick={downloadPDF} aria-label="Disable notifications" style={{ padding: '8px' }}>
                   <PrintIcon style={{ width: '20px', height: '20px' }}>alarm</PrintIcon>
                 </IconButton>
-                <IconButton aria-label="Disable notifications" style={{ padding: '8px' }}>
-                  <MenuIcon style={{ width: '20px', height: '20px' }}>alarm</MenuIcon>
-                </IconButton>
               </div>
             </Toolbar>
             {isFetching
