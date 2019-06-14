@@ -39,7 +39,7 @@ const useDialog = (callback) => {
   const confirm = useCallback(() => {
     callback();
     close();
-  }, [callback]);
+  }, [callback, close]);
 
   return {
     isOpen, open, close, confirm,
@@ -81,9 +81,9 @@ TaskActions.propTypes = {
   duplicate: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = (dispatch, { taskId }) => ({
-  remove: () => deleteTask({ taskId })(dispatch),
-  duplicate: () => duplicateTask({ taskId })(dispatch),
+const mapDispatchToProps = (dispatch, { task }) => ({
+  remove: () => deleteTask({ taskId: task.taskId, parentTaskId: task.parentTaskId })(dispatch),
+  duplicate: () => duplicateTask({ taskId: task.taskId })(dispatch),
 });
 
 const ConnectedTaskActions = connect(undefined, mapDispatchToProps)(TaskActions);

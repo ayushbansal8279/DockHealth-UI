@@ -219,7 +219,7 @@ const TaskReducer = function(state = initialState, action) {
 
     case types.DELETE_TASK_SUCCESS: {
       const mainTaskId = action.task.parentTaskId;
-
+      console.log('del');
       if (mainTaskId) {
         return {
           ...state,

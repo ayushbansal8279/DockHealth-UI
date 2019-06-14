@@ -271,7 +271,7 @@ export class TaskDetails extends React.PureComponent {
             </table>
           </DetailsBox>
           <DetailsBox>
-            <TaskActions taskId={selectedTask.taskId} />
+            <TaskActions task={selectedTask} />
           </DetailsBox>
         </StickyContainer>
       </DetailsContainer>
