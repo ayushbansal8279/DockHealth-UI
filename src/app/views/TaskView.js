@@ -137,7 +137,7 @@ class TaskView extends React.Component {
     } = this.props;
 
     if (!showingCompletedTasks) {
-      return <StyledButton onClick={pullCompletedTasks}>Load completed tasks</StyledButton>;
+      return <StyledButton onClick={pullCompletedTasks}>Show completed tasks</StyledButton>;
     }
 
     if (isCompletedTasksFetching) {
