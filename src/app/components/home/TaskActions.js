@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
+import useDialog from '../../helpers/useDialog';
 
 const Container = styled.div`
   display: flex;
@@ -31,20 +32,6 @@ const Divider = styled.div`
     line-height: 28px;
   }
 `;
-
-const useDialog = (callback) => {
-  const [isOpen, setOpen] = useState(false);
-  const open = useCallback(() => { setOpen(true); }, [setOpen]);
-  const close = useCallback(() => { setOpen(false); }, [setOpen]);
-  const confirm = useCallback(() => {
-    callback();
-    close();
-  }, [callback, close]);
-
-  return {
-    isOpen, open, close, confirm,
-  };
-};
 
 const TaskActions = ({ remove, duplicate }) => {
   const {
