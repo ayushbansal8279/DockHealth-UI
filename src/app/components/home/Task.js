@@ -194,9 +194,9 @@ const Task = ({
           </StyledTaskFooter>
           <Comments comments={task.comments} />
         </StyledTableCell>
-        <StyledTableCell>
+        {!isSubtask && <StyledTableCell>
           {task.patient && <Link to={`/patient/${task.patient.patientId}`}><Patient patient={task.patient} style={{ color: '#0ca1c7' }} /></Link>}
-        </StyledTableCell>
+        </StyledTableCell>}
         {!hideDate && (
         <StyledTableCell style={{ width: 108 }}>
           <DueDate completed={task.status === 'COMPLETE'}>{task.dueDate}</DueDate>

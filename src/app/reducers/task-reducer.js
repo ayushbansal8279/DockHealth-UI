@@ -39,9 +39,11 @@ const updateWorkflowStatus = (taskState, { taskId, workflowStatus }) => {
   return ({ ...taskState, tasks: updatedTasks });
 };
 
-const updatePatient = (taskState, { taskId, patient }) => ({
+const updatePatient = (taskState, { parentTaskId, patient }) => ({
   ...taskState,
-  tasks: taskState.tasks.map(task => (task.taskId === taskId ? ({ ...task, patient }) : task)),
+  tasks: taskState.tasks.map(task => (task.taskId === parentTaskId
+    ? ({ ...task, patient, subtasks: task.subtasks.map(subtask => ({ ...subtask, patient })) })
+    : task)),
 });
 
 const updateReminder = (taskState, { taskId, reminderDt }) => {

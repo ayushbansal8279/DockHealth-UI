@@ -335,7 +335,7 @@ export const updatePatient = (task, patient) => dispatch => (
     .then((res) => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_PATIENT,
-        taskId: res.taskId,
+        parentTaskId: res.parentTaskId || res.taskId,
         patient: res.patient,
       });
     })
