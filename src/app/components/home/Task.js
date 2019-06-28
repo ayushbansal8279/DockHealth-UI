@@ -153,7 +153,7 @@ const Task = ({
           <StyledCheckbox
             checked={task.status === 'COMPLETE'}
             onChange={() => {
-              if (isSubtask) {
+              if (isSubtask || task.status === 'COMPLETE') {
                 confirm();
                 return;
               }
