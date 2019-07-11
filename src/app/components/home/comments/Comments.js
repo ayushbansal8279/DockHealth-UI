@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import groupWith from 'ramda/src/groupWith';
@@ -7,6 +8,8 @@ import SubmitComment from './SubmitComment';
 import Day from './Day';
 import Creator from './Creator';
 import Comment from './Comment';
+import EditableDescription from '../EditableDescription';
+import { updateComment } from '../../../actions/task-actions';
 
 const CommentStream = styled.div`
   margin-top: 12px;
@@ -15,7 +18,13 @@ const CommentStream = styled.div`
   white-space: pre-line;
 `;
 
-class Comments extends React.PureComponent {
+export class Comments extends React.PureComponent {
+  handleCommentEdition = (value, name) => {
+    const { task, updateComment: editComment } = this.props;
+    const comment = { commentId: name, comment: value };
+    editComment(task, comment);
+  }
+
   render() {
     const { userId, comments, submit, disabled } = this.props;
 
@@ -47,7 +56,14 @@ class Comments extends React.PureComponent {
                 <Creator {...creator} isOwn={isUser(creator)} key={creator.userId}>
                   {comments.map(({ comment, commentId }) => (
                     <Comment isOwn={isUser(creator)} key={commentId}>
-                      {comment}
+                      {/* {comment} */}
+                      <EditableDescription
+                        placeholder="Enter your comment"
+                        name={commentId}
+                        value={comment}
+                        onChange={this.handleCommentEdition}
+                        disabled={disabled}
+                      />
                     </Comment>))
                   }
                 </Creator>
@@ -80,4 +96,4 @@ Comments.defaultProps = {
   disabled: false,
 };
 
-export default Comments;
+export default connect(undefined, { updateComment })(Comments);

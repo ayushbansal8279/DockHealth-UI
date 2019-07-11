@@ -240,7 +240,7 @@ export function deleteComment(task, comment) {
 
 export function updateComment(task, comment) {
   return function(dispatch) {
-    return TaskApi.updateComment(comment).then(comment => {
+    return TaskApi.updateComment(comment).then(res => {
       dispatch({type: ActionTypes.UPDATE_TASK_COMMENT_SUCCESS, task, comment});
     }).catch(error => {
       throw(error);

@@ -15,6 +15,7 @@ Array [
     "patient": Object {
       "patientId": 1,
     },
+    "subtasks": Array [],
     "taskId": 0,
   },
 ]

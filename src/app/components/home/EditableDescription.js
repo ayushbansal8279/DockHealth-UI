@@ -36,11 +36,11 @@ const StyledTextField = styled(TextField).attrs({
 `;
 
 const EditableTextField = ({
-  value, onChange, onSubmit, onBlur,
+  value, onChange, onSubmit, onBlur, placeholder,
 }) => (
   <form onSubmit={onSubmit}>
     <StyledTextField
-      placeholder="Enter task description"
+      placeholder={placeholder}
       value={value}
       onChange={onChange}
       onBlur={onBlur}
@@ -48,7 +48,7 @@ const EditableTextField = ({
   </form>
 );
 
-const EditableDescription = ({ value, onChange, disabled }) => {
+const EditableDescription = ({ value, onChange, disabled, name, placeholder }) => {
   const [isEditing, setIsEditing] = useState(false);
   const startEditing = useCallback(
     () => {
@@ -81,8 +81,8 @@ const EditableDescription = ({ value, onChange, disabled }) => {
       if (draft === '') { return; }
       stopEditing();
       if (draft === value) { return; }
-      onChange(draft);
-    }, [onChange, stopEditing, draft, value],
+      onChange(draft, name);
+    }, [onChange, stopEditing, draft, value, name],
   );
 
   if ((!isEditing || disabled) && value !== '') {
@@ -95,6 +95,7 @@ const EditableDescription = ({ value, onChange, disabled }) => {
       onChange={handleChange}
       onSubmit={handleSubmit}
       onBlur={handleSubmit}
+      placeholder={placeholder}
     />
   );
 };

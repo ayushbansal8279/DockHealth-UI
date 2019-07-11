@@ -76,7 +76,9 @@ const mapDispatchToProps = (dispatch, { task }) => ({
 const ConnectedTaskActions = connect(undefined, mapDispatchToProps)(TaskActions);
 
 ConnectedTaskActions.propTypes = {
-  taskId: PropTypes.number.isRequired,
+  task: PropTypes.shape({
+    taskId: PropTypes.number.isRequired,
+  }),
 };
 
 export default ConnectedTaskActions;

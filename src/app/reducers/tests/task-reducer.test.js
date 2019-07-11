@@ -74,11 +74,11 @@ describe('task-reducer', () => {
 
     expect(state.tasks[0].reminderDt).toEqual(action.reminderDt);
   });
-  
+
   it('should handle UPDATE_TASK_PATIENT', () => {
-    const action = { type: UPDATE_TASK_PATIENT, taskId: 0, patient: { patientId: 1 } };
+    const action = { type: UPDATE_TASK_PATIENT, parentTaskId: 0, patient: { patientId: 1 } };
     const initialState = {
-      tasks: [{ taskId: 0, patient: null }],
+      tasks: [{ taskId: 0, patient: null, subtasks: [] }],
     };
     const state = reducer(initialState, action);
 

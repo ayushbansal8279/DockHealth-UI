@@ -22,7 +22,13 @@ exports[`Comments should render correctly 1`] = `
           isOwn={false}
           key="0"
         >
-          Lipsum
+          <EditableDescription
+            disabled={false}
+            name={0}
+            onChange={[Function]}
+            placeholder="Enter your comment"
+            value="Lipsum"
+          />
         </Comment>
       </Creator>
     </Day>

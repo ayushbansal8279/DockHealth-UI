@@ -185,6 +185,7 @@ export class TaskDetails extends React.PureComponent {
                 </StyledLabel>
                 <StyledDescription>
                   <EditableDescription
+                    placeholder="Enter task description"
                     value={description}
                     onChange={this.handleDescriptionChange}
                     disabled={isCompleted}
@@ -217,6 +218,7 @@ export class TaskDetails extends React.PureComponent {
             </StyledLabel>
             <StyledDescription>
               <Comments
+                task={selectedTask}
                 comments={comments}
                 userId={userId}
                 submit={addTaskComment}

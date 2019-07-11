@@ -438,12 +438,18 @@ const TaskReducer = function(state = initialState, action) {
     //   };
 
       case types.ADD_TASK_COMMENT_SUCCESS:
+        console.log('add,', action)
         var mainTask
         if(action.task.parentTaskId){
           mainTask = action.task.parentTaskId
         }else{
           mainTask = action.task.taskId
         }
+
+        // HACK - TODO: Make backend return correct initials and userName
+        let comment = action.comment.data;
+        comment.creator.initials = comment.creator.initials || `${comment.creator.firstName.charAt(0)} ${comment.creator.firstName.charAt(1)}`;
+        comment.creator.userName = `${comment.creator.firstName} ${comment.creator.lastName}`;
 
         return {
             ...state,
@@ -453,12 +459,12 @@ const TaskReducer = function(state = initialState, action) {
                 {...task, read:false, subtasks:
                   task.subtasks.map(subtask =>
                     subtask.taskId === action.task.taskId ?
-                    {...subtask, read:false, comments: [action.comment.data].concat(subtask.comments)} :
+                    {...subtask, read:false, comments: [comment].concat(subtask.comments)} :
                     // {...subtask, read:false, comments: subtask.comments.concat([action.comment.data])} :
                     subtask
                   )
                 } :
-                { ...task, read:false, comments: [action.comment.data].concat(task.comments)}
+                { ...task, read:false, comments: [comment].concat(task.comments)}
 
                 : task
             )

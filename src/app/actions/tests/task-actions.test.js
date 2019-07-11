@@ -176,7 +176,7 @@ describe('updateReminder', () => {
 describe('updatePatient', () => {
   it('should update assigned patient', async () => {
     const expectedActions = [
-      { type: UPDATE_TASK_PATIENT, taskId: 0, patient: { patientId: 1 } },
+      { type: UPDATE_TASK_PATIENT, parentTaskId: 0, patient: { patientId: 1 } },
     ];
 
     const store = mockStore({
