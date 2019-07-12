@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link } from 'react-router';
 import moment from 'moment';
+import PatientsFilter from './PatientsFilter';
 
 const PatientsHeaderContainer = styled.div`
   display: flex;
@@ -44,11 +45,41 @@ const PatientsHeader = ({ patientCount = 0 }) => (
   </PatientsHeaderContainer>
 );
 
+const ALL_PATIENTS = 'ALL_PATIENTS';
+const MY_PATIENTS = 'MY_PATIENTS';
+const MY_PATIENTS_WITH_ACTIVE_TASKS = 'MY_PATIENTS_WITH_ACTIVE_TASKS';
+
+const PatientsToolbarFilter = () => {
+  const [filter, setFilter] = useState(ALL_PATIENTS);
+  const handleFilterChange = useCallback((e) => {
+    const { value } = e.target;
+    setFilter(value);
+  }, [setFilter]);
+
+  return (
+    <PatientsFilter
+      onChange={handleFilterChange}
+      value={filter}
+      options={[
+        { value: ALL_PATIENTS, description: 'All patients' },
+        { value: MY_PATIENTS, description: 'My patients' },
+        { value: MY_PATIENTS_WITH_ACTIVE_TASKS, description: 'My patients with active tasks' },
+      ]}
+    />
+  );
+};
+
+const PatientsToolbarContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 41px 0 32px 43px;
+`;
+
 const PatientsToolbar = () => (
-  <div>
-    <div>Filter</div>
-    <div>Search</div>
-  </div>);
+  <PatientsToolbarContainer>
+    <PatientsToolbarFilter />
+    <div style={{ marginLeft: '46px' }}>Search</div>
+  </PatientsToolbarContainer>);
 
 const EmptyListContainer = styled.div`
   background: #fff;

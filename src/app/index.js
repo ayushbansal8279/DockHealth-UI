@@ -21,6 +21,21 @@ const theme = createMuiTheme({
       'sans-serif',
     ].join(','),
   },
+  overrides: {
+    MuiListItem: {
+      selected: {
+        '&&': {
+          backgroundColor: '#a6dcea',
+        },
+        '&&:focus': {
+          backgroundColor: '#a6dcea',
+        },
+        '&&:hover': {
+          backgroundColor: '#a6dcea',
+        },
+      },
+    },
+  },
 });
 
 const Routing = () => (
