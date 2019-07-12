@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import moment from 'moment';
+import { loading, getAllPatients } from '../../actions/patient-actions';
 import PatientsFilter from './PatientsFilter';
 import PatientsSearch from './PatientsSearch';
 
@@ -70,6 +72,16 @@ const PatientsToolbarFilter = () => {
   );
 };
 
+const PatientsToolbarSearch = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSearch = useCallback((e) => {
+    const { value } = e.target;
+    setSearchTerm(value);
+  }, [setSearchTerm]);
+
+  return (<PatientsSearch onChange={handleSearch} style={{ marginLeft: '46px' }} />);
+};
+
 const PatientsToolbarContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -79,7 +91,7 @@ const PatientsToolbarContainer = styled.div`
 const PatientsToolbar = () => (
   <PatientsToolbarContainer>
     <PatientsToolbarFilter />
-    <PatientsSearch onChange={() => {}} style={{ marginLeft: '46px' }} />
+    <PatientsToolbarSearch />
   </PatientsToolbarContainer>);
 
 const EmptyListContainer = styled.div`
@@ -186,86 +198,52 @@ const PatientsList = ({ patients }) => (
 
 const PatientsLayoutContainer = styled.div``;
 
-const PatientsLayout = ({ patients = [] }) => (
-  <PatientsLayoutContainer>
-    <PatientsHeader patientCount={patients.length} />
-    <PatientsToolbar />
-    <PatientsList patients={patients} />
-  </PatientsLayoutContainer>
-);
+const PatientsLayout = ({ patients = [], fetchPatients }) =>  {
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
-const Patients = ({ patients = [] }) => (
+  return (
+    <PatientsLayoutContainer>
+      <PatientsHeader patientCount={patients.length} />
+      <PatientsToolbar />
+      <PatientsList patients={patients} />
+    </PatientsLayoutContainer>
+  );
+};
+
+const mapStateToProps = state => ({
+  isFetching: state.patientState.isFetching,
+  patients: state.patientState.allPatients,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchPatients: () => {
+    loading()(dispatch);
+    getAllPatients()(dispatch);
+  },
+});
+
+const ConnectedPatientsLayout = connect(mapStateToProps, mapDispatchToProps)(PatientsLayout);
+
+const Patients = () => (
   <div className="off-canvas-content" data-off-canvas-content>
     <div className="row expanded collapse" style={{ minHeight: '100%' }}>
       <div className="large-12 columns" style={{ background: '#f5f8fa' }}>
-        <PatientsLayout patients={patients} />
+        <ConnectedPatientsLayout />
       </div>
     </div>
   </div>
 );
 
-Patients.propTypes = {
+PatientsLayout.propTypes = {
   patients: PropTypes.arrayOf(PropTypes.shape({
     patientId: PropTypes.number,
   })),
 };
 
-const patients = [
-  {
-    patientId: 35,
-    mrn: '126',
-    firstName: null,
-    lastName: null,
-    dob: '2015-08-11',
-    gender: null,
-    phoneHome: null,
-    phoneMobile: null,
-    email: null,
-    creator: null,
-    notes: null,
-  },
-  {
-    patientId: 39,
-    mrn: '123113123',
-    firstName: '1234',
-    lastName: '1234',
-    dob: null,
-    gender: 'female',
-    phoneHome: '',
-    phoneMobile: '',
-    email: 'kjggg@gdgg.com',
-    creator: null,
-    notes: '',
-  },
-  {
-    patientId: 44,
-    mrn: '987654321',
-    firstName: 'a',
-    lastName: 'b',
-    dob: null,
-    gender: 'male',
-    phoneHome: '',
-    phoneMobile: '',
-    email: 'a@b.c',
-    creator: null,
-    notes: '',
-  },
-  {
-    patientId: 55,
-    mrn: '12345666',
-    firstName: 'Frank',
-    lastName: 'Beans',
-    dob: null,
-    gender: 'male',
-    phoneHome: '',
-    phoneMobile: '',
-    email: '',
-    creator: null,
-    notes: null,
-  }];
-
-Patients.defaultProps = {
-  patients,
+PatientsLayout.defaultProps = {
+  patients: [],
 };
 
 export default Patients;
