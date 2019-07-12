@@ -32,23 +32,7 @@ import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import TaskListSearch from './views/TaskListSearch';
 import PersonTaskList from './views/PersonTaskList';
 import UserProfileView from './views/UserProfileView';
-
-// const routes = {
-//   path: '/',
-//   component: App,
-//   indexRoute: Home.route,
-//   childRoutes: [
-//     AddPatientView,
-//     AllPatientsView,
-//     Register,
-//     ConfirmRegistration,
-//     Login,
-//     ResendCode,
-//     PageNotFound
-//   ].map(r => r.route)
-// }
-
-// export default routes
+import Patients from './components/patients/Patients';
 
 export const Routes = (store) => {
   const authRequired = (nextState, replaceState) => {
@@ -67,6 +51,7 @@ export const Routes = (store) => {
         <IndexRoute component={Home} onEnter={authRequired} />
         <IndexRedirect to="/taskList" />
         <Route path="/patientList" component={AllPatientsView} />
+        <Route path="/patients" component={Patients} />
         <Route path="/patient/:patientId" component={PatientView} />
         <Route path="/editPatient/:patientId" component={PatientEditView} />
         <Route path="/taskList" component={TaskListView} />
@@ -74,15 +59,12 @@ export const Routes = (store) => {
         <Route path="/taskSearch" component={TaskListSearch} />
         <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
         <Route path="/people" component={PeopleView} />
-        {/* <Route path="/peopleinvite" component={InvitePeople} /> */}
         <Route path="/tasks/inbox" component={Inbox} />
         <Route path="/tasks/assigned_by_me" component={AssignedByMe} />
         <Route path="/tasks/assigned_to_me" component={AssignedToMe} />
         <Route path="/tasks/:listName/:taskListId" component={Home} />
-        {/* <Route path="/tasks/:listName" component={Home} /> */}
         <Route path="/userprofile" component={UserProfileView} />
         <Route path="/support" component={SupportSectionView} />
-        {/* <Route path="/test" component={Test} /> */}
       </Route>
       <Route component={TemplateAuth}>
         <Route component={TemplateAuthBase}>
