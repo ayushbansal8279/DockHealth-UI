@@ -23,14 +23,14 @@ const theme = createMuiTheme({
   },
   overrides: {
     MuiListItem: {
-      selected: {
-        '&&': {
+      root: {
+        '&$selected': {
           backgroundColor: '#a6dcea',
         },
-        '&&:focus': {
+        '&$selected:hover': {
           backgroundColor: '#a6dcea',
         },
-        '&&:hover': {
+        '&$selected:focus': {
           backgroundColor: '#a6dcea',
         },
       },
