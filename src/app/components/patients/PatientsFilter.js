@@ -10,6 +10,7 @@ const StyledSelect = styled(MaterialSelect).attrs({
   disableUnderline: true,
 })`
   && {
+    width: 266px;
     height: 36px;
     background: #fff;
     box-shadow: 0 0 2px 0 rgba(46, 58, 67, 0.4);

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router';
 import moment from 'moment';
 import PatientsFilter from './PatientsFilter';
+import PatientsSearch from './PatientsSearch';
 
 const PatientsHeaderContainer = styled.div`
   display: flex;
@@ -78,7 +79,7 @@ const PatientsToolbarContainer = styled.div`
 const PatientsToolbar = () => (
   <PatientsToolbarContainer>
     <PatientsToolbarFilter />
-    <div style={{ marginLeft: '46px' }}>Search</div>
+    <PatientsSearch onChange={() => {}} style={{ marginLeft: '46px' }} />
   </PatientsToolbarContainer>);
 
 const EmptyListContainer = styled.div`
@@ -123,6 +124,7 @@ const NonEmptyListTable = styled.table`
   
   tbody {
     line-height: 49px;
+    font-weight: 600;
   
     tr:nth-child(even) {
       background: none;
