@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import moment from 'moment';
+import Fade from '@material-ui/core/Fade';
+import ProgressIcon from '@material-ui/core/CircularProgress/CircularProgress';
 import { loading, getAllPatients } from '../../actions/patient-actions';
 import PatientsFilter from './PatientsFilter';
 import PatientsSearch from './PatientsSearch';
@@ -34,12 +36,12 @@ const PatientsHeaderSubheading = styled.span`
   color: #2e3a43;
 `;
 
-const PatientsHeader = ({ patientCount = 0 }) => (
+const PatientsHeader = ({ patientCount = 0, isFetching }) => (
   <PatientsHeaderContainer>
     <PatientsHeaderLeftSide>
       <PatientsHeaderHeading>My Patients</PatientsHeaderHeading>
       <PatientsHeaderSubheading>
-        {`${patientCount} patients`}
+        {isFetching ? '' : `${patientCount} patients`}
       </PatientsHeaderSubheading>
     </PatientsHeaderLeftSide>
     {/* <div> */}
@@ -196,19 +198,33 @@ const PatientsList = ({ patients }) => (
       : <NonEmptyList patients={patients} />}
   </>);
 
-const PatientsLayoutContainer = styled.div``;
+const FadeContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+`;
 
-const PatientsLayout = ({ patients = [], fetchPatients }) =>  {
+const PatientsListSpinner = ({ isFetching }) => (
+  <FadeContainer>
+    <Fade in={isFetching} unmountOnExit style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}>
+      <ProgressIcon />
+    </Fade>
+  </FadeContainer>
+);
+
+const PatientsLayout = ({ patients = [], fetchPatients, isFetching }) => {
   useEffect(() => {
     fetchPatients();
-  }, []);
+  }, [fetchPatients]);
 
   return (
-    <PatientsLayoutContainer>
-      <PatientsHeader patientCount={patients.length} />
+    <div>
+      <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
       <PatientsToolbar />
-      <PatientsList patients={patients} />
-    </PatientsLayoutContainer>
+      {isFetching
+        ? <PatientsListSpinner isFetching={isFetching} />
+        : <PatientsList patients={patients} />}
+    </div>
   );
 };
 
