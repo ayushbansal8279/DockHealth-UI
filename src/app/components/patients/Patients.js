@@ -42,7 +42,6 @@ const PatientsLayout = () => {
   const isFetching = useSelector(state => state.patientState.isFetching);
   const patients = useSelector(state => state.patientState.allPatients);
 
-  // Search
   const [searchTerm, setSearchTerm] = useState('');
   const handleSearch = useCallback((e) => {
     const { value } = e.target;

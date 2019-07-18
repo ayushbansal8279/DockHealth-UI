@@ -42,16 +42,6 @@ const PatientsToolbarFilter = () => {
   );
 };
 
-// const PatientsToolbarSearch = () => {
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const handleSearch = useCallback((e) => {
-//     const { value } = e.target;
-//     setSearchTerm(value);
-//   }, [setSearchTerm]);
-//
-//   return (<PatientsSearch onChange={handleSearch} style={{ marginLeft: '46px' }} />);
-// };
-
 const PatientsToolbar = ({ handleSearch }) => (
   <PatientsToolbarContainer>
     <PatientsToolbarFilter />
