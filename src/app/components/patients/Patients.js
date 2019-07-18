@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import Fade from '@material-ui/core/Fade';
@@ -22,6 +22,16 @@ const PatientsListSpinner = ({ isFetching }) => (
   </FadeContainer>
 );
 
+const searchPatients = (patients, searchTerm) => {
+  const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
+  const compareField = (field, term) => field && field.toLowerCase().includes(term);
+  const termMatchesPatient = ({ mrn, lastName, firstName }) => term => compareField(mrn, term)
+      || compareField(lastName, term)
+      || compareField(firstName, term);
+  const isMatch = patient => searchTerms.every(termMatchesPatient(patient));
+  return patients.filter(isMatch);
+};
+
 const PatientsLayout = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -32,13 +42,22 @@ const PatientsLayout = () => {
   const isFetching = useSelector(state => state.patientState.isFetching);
   const patients = useSelector(state => state.patientState.allPatients);
 
+  // Search
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSearch = useCallback((e) => {
+    const { value } = e.target;
+    setSearchTerm(value);
+  }, [setSearchTerm]);
+
+  const filteredPatients = searchPatients(patients, searchTerm);
+
   return (
     <>
       <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
-      <PatientsToolbar />
+      <PatientsToolbar handleSearch={handleSearch} />
       {isFetching
         ? <PatientsListSpinner isFetching={isFetching} />
-        : <PatientsList patients={patients} />}
+        : <PatientsList patients={filteredPatients} />}
     </>
   );
 };
