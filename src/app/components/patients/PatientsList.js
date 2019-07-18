@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import { Link } from 'react-router';
-import moment from './Patients';
+import moment from 'moment';
 
 const EmptyListContainer = styled.div`
   background: #fff;
