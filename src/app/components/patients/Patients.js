@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import moment from 'moment';
 import Fade from '@material-ui/core/Fade';
@@ -44,9 +44,6 @@ const PatientsHeader = ({ patientCount = 0, isFetching }) => (
         {isFetching ? '' : `${patientCount} patients`}
       </PatientsHeaderSubheading>
     </PatientsHeaderLeftSide>
-    {/* <div> */}
-    {/* Add Patient */}
-    {/* </div> */}
   </PatientsHeaderContainer>
 );
 
@@ -212,10 +209,15 @@ const PatientsListSpinner = ({ isFetching }) => (
   </FadeContainer>
 );
 
-const PatientsLayout = ({ patients = [], fetchPatients, isFetching }) => {
+const PatientsLayout = () => {
+  const dispatch = useDispatch();
   useEffect(() => {
-    fetchPatients();
-  }, [fetchPatients]);
+    loading()(dispatch);
+    getAllPatients()(dispatch);
+  }, [dispatch]);
+
+  const isFetching = useSelector(state => state.patientState.isFetching);
+  const patients = useSelector(state => state.patientState.allPatients);
 
   return (
     <div>
@@ -228,38 +230,14 @@ const PatientsLayout = ({ patients = [], fetchPatients, isFetching }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  isFetching: state.patientState.isFetching,
-  patients: state.patientState.allPatients,
-});
-
-const mapDispatchToProps = dispatch => ({
-  fetchPatients: () => {
-    loading()(dispatch);
-    getAllPatients()(dispatch);
-  },
-});
-
-const ConnectedPatientsLayout = connect(mapStateToProps, mapDispatchToProps)(PatientsLayout);
-
 const Patients = () => (
   <div className="off-canvas-content" data-off-canvas-content>
     <div className="row expanded collapse" style={{ minHeight: '100%' }}>
       <div className="large-12 columns" style={{ background: '#f5f8fa' }}>
-        <ConnectedPatientsLayout />
+        <PatientsLayout />
       </div>
     </div>
   </div>
 );
-
-PatientsLayout.propTypes = {
-  patients: PropTypes.arrayOf(PropTypes.shape({
-    patientId: PropTypes.number,
-  })),
-};
-
-PatientsLayout.defaultProps = {
-  patients: [],
-};
 
 export default Patients;
