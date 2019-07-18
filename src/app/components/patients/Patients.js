@@ -57,7 +57,7 @@ const PatientsLayout = () => {
       <PatientsToolbar handleSearch={handleSearch} />
       {isFetching
         ? <PatientsListSpinner isFetching={isFetching} />
-        : <PatientsList patients={filteredPatients} />}
+        : <PatientsList patients={filteredPatients} isFiltered={searchTerm !== ''} />}
     </>
   );
 };

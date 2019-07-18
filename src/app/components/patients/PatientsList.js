@@ -28,6 +28,13 @@ const EmptyList = () => (
   </EmptyListContainer>
 );
 
+const EmptyFilteredList = () => (
+  <EmptyListContainer>
+    <EmptyListIcon />
+    <p><strong>There are no matching patients.</strong></p>
+  </EmptyListContainer>
+);
+
 const NonEmptyListTable = styled.table`
   border-spacing: 0 4px;
   color: #303538;
@@ -103,11 +110,11 @@ const NonEmptyList = ({ patients }) => (
     </tbody>
   </NonEmptyListTable>);
 
-const PatientsList = ({ patients }) => (
-  <>
-    {patients.length === 0
-      ? <EmptyList />
-      : <NonEmptyList patients={patients} />}
-  </>);
+const PatientsList = ({ patients, isFiltered }) => {
+  if (patients.length === 0) {
+    return isFiltered ? <EmptyFilteredList /> : <EmptyList />;
+  }
+  return <NonEmptyList patients={patients} />;
+};
 
 export default PatientsList;
