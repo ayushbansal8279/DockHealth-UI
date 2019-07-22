@@ -1,6 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
+import styled from 'styled-components';
+import Fade from '@material-ui/core/Fade';
+import ProgressIcon from '@material-ui/core/CircularProgress';
 import TaskListSearchContainer from '../components/list/TaskListSearchContainer'
 import {mobileAnalyticsClient} from '../api/analytics-api'
 import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
@@ -8,6 +11,12 @@ import AddTask from '../components/task/AddTask'
 import SortFilterTasks from '../components/common/SortFilterTasks'
 import * as TaskActions from '../actions/task-actions'
 import $ from 'jquery'
+
+const FadeContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+`;
 
 class TaskListSearch extends BaseComponentWithFoundationUpdate {
     constructor(props){
@@ -29,11 +38,13 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
     }
 
     searchTasks = () => {
+      this.props.taskActions.loading()
       this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "INCOMPLETE");
       this.setState({searchPerformed: true})
     }
 
     getCompletedTasks = () => {
+      this.props.taskActions.loading()
       this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "COMPLETE");
       this.setState({searchPerformed: true})
     }
@@ -46,6 +57,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
     handleKeyPress = (event) => {
       if(event.key == 'Enter'){
         console.log('enter press here! ')
+        this.props.taskActions.loading()
         this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "INCOMPLETE");
         this.setState({searchPerformed: true})
       }
@@ -79,7 +91,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
             </div>
           </div>
 
-                <AddTask
+                {/* <AddTask
                   taskListId={this.props.taskListId}
                   addTask={this.props.taskActions.addTask}
                   taskLists={this.props.taskList}
@@ -87,7 +99,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
                   title={this.props.title}
                   members={this.props.members}
                   activeListMembers={this.props.activeListMembers}
-                />
+                /> */}
 
           <div className="wrapper-search">
             <div className="row expanded collapse">
@@ -108,17 +120,25 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
               </div>
             </div>
 
+
+            {this.props.isFetching && 
+                <FadeContainer>
+                  <Fade in={this.props.isFetching} unmountOnExit style={{ transitionDelay: this.props.isFetching ? '800ms' : '0ms' }}>
+                    <ProgressIcon />
+                  </Fade>
+                </FadeContainer>
+            }
             {/* {this.state.searchPerformed &&  */}
-              <SortFilterTasks title="Search Tasks" getListTasks={this.getListTasks}/>
+              {/* <SortFilterTasks title="Search Tasks" getListTasks={this.getListTasks}/> */}
             {/* } */}
 
               <TaskListSearchContainer 
                 searchPerformed={this.state.searchPerformed}
                 getCompletedTasks={this.getCompletedTasks}/>
             
-            {this.state.searchPerformed && this.props.tasks && this.props.tasks.length == 0 &&
+            {/* {this.state.searchPerformed && this.props.tasks && this.props.tasks.length == 0 &&
               <span className="taskListSearchMessage">No tasks found matching search criteria</span>
-            }
+            } */}
           </div>
         </div>
       );

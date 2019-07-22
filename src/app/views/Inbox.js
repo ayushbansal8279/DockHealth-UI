@@ -122,6 +122,7 @@ class Inbox extends React.Component {
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
       title: 'Inbox',
+      showToolbar: true,
     };
 
     return <TaskView {...taskViewProps} />;

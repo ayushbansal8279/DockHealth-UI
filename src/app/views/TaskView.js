@@ -208,7 +208,8 @@ class TaskView extends React.Component {
               members={members}
               taskList={isSingleTaskList && tasks[0].taskList}
             />
-            {isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} />}
+            {this.props.showToolbar && isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} />}
+            {this.props.showToolbar && 
             <Toolbar style={{ padding: '0 38px 0 48px' }}>
               <Select
                 updateFilter={this.handleFilterChange}
@@ -233,6 +234,7 @@ class TaskView extends React.Component {
                 </IconButton>
               </div>
             </Toolbar>
+            }
             {isFetching
               ? (
                 <FadeContainer>

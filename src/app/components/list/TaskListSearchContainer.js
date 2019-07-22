@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import $ from 'jquery'
 import ListOfTasksContainer from '../task/ListOfTasksContainer'
+import TaskView from '../../views/TaskView';
 
 class TaskListSearchContainer extends BaseComponent {
 
@@ -26,6 +27,12 @@ class TaskListSearchContainer extends BaseComponent {
     
     resizeEmailBodySection(".task-item-wrapper")
   }
+
+  // componentWillUpdate(nextProps) {
+  //   const { taskActions } = this.props;
+  //   taskActions.loading();
+  //   taskActions.storeAsCurrentTask(null);
+  // }
 
   pullCompletedTasks = () => {
     if(!this.props.showingCompletedTasks){
@@ -79,27 +86,67 @@ class TaskListSearchContainer extends BaseComponent {
     })
   }
 		// Lists Activity for a TaskList
-    renderList(taskListId, taskStatus, tasks, members) {
-          return(
-            <div className="list-wrapper list-wrapper-task-search">
-              <div className="task-item-wrapper">
-                <ListOfTasksContainer
-                  taskListId={taskListId} status={taskStatus}
-                  members={members}
-                  filteredTasks={tasks}
-                  setTaskEditingStatus={this.setTaskEditingStatus}
-                  listName=""
-                />
-              </div>
-            </div>
-          );
+    renderList(taskListId, listName, taskStatus, tasks, members) {
+          // return(
+          //   <div className="list-wrapper list-wrapper-task-search">
+          //     <div className="task-item-wrapper">
+          //       <ListOfTasksContainer
+          //         taskListId={taskListId} status={taskStatus}
+          //         members={members}
+          //         filteredTasks={tasks}
+          //         setTaskEditingStatus={this.setTaskEditingStatus}
+          //         listName=""
+          //       />
+          //     </div>
+          //   </div>
+          // );
+
+          const {
+            userId,
+            completedTasks,
+            isFetching,
+            isCompletedTasksFetching,
+            showingCompletedTasks,
+            selectedTaskId,
+            taskActions: { markComplete, storeAsCurrentTask, toggleTaskPriority, addTaskComment },
+            tasklists,
+          } = this.props;
+
+          const title = listName;
+
+          const taskViewProps = {
+            userId,
+            members,
+            tasks,
+            completedTasks,
+            isFetching,
+            isCompletedTasksFetching,
+            showingCompletedTasks,
+            markComplete,
+            selectedTaskId,
+            storeAsCurrentTask,
+            addTaskComment,
+            toggleTaskPriority: (task, priority) => toggleTaskPriority(task, userId, priority),
+            pullCompletedTasks: this.pullCompletedTasks,
+            onFilter: this.handleFilterChange,
+            refresh: this.refresh,
+            downloadPDF: this.downloadPDF,
+            title,
+            showToolbar: false,
+          };
+      
+          return <TaskView {...taskViewProps} />;          
     }
 
 		// Lists TaskLists
     renderTaskListName(taskStatus, searchedTasks){
       const groupedTasks = this.groupBy(searchedTasks, task => task.taskList.listName);
-      if(!groupedTasks || groupedTasks.size == 0){
-        return <li/>
+      if(!this.props.isFetching && (!groupedTasks || groupedTasks.size == 0)){
+        return (
+          <li>
+            <p className="light-gray" style={{fontWeight: "bold"}}>No matching tasks</p>
+          </li>
+        )
       }
       return Array.from(groupedTasks.keys()).map((listName) =>{
         const tasks = groupedTasks.get(listName)
@@ -109,12 +156,12 @@ class TaskListSearchContainer extends BaseComponent {
         }
         return(
           <li className="accordion-item" key={"taskList_" + listName}>
-            <span className={this.props.currentTaskHistory?"accordion-title task-search-list-name":"accordion-title task-search-list-name large-8 large-offset-2"}>
+            {/* <span className={this.props.currentTaskHistory?"accordion-title task-search-list-name":"accordion-title task-search-list-name large-8 large-offset-2"}>
               <b>{listName}</b>
-            </span>  
+            </span>   */}
             <div>
               {tasks && tasks.length > 0 ? 
-                this.renderList(taskListId, taskStatus, tasks, null) : 
+                this.renderList(taskListId, listName, taskStatus, tasks, null) : 
                 <p className="light-gray">No matching tasks</p>}
             </div>
           </li>
@@ -124,19 +171,19 @@ class TaskListSearchContainer extends BaseComponent {
 
     render (){
       return (
-        <div className="tasks-container">
-        <div className={this.props.currentTaskHistory?"large-8 columns left-column":"large-12 columns left-column"}>
+        <div className="tasks-container-new">
+        {/* <div className="large-12 columns left-column"> */}
           <div className="row expanded collapse">
             <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
               {this.props.searchPerformed && this.props.tasks && this.renderTaskListName("INCOMPLETE", this.props.tasks)}
             </ul>
-            <div className="columns large-12">
+            {/* <div className="columns large-12">
               {this.props.searchPerformed && 
                 <div className="show-completed text-center">
                   <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
                 </div>
               }
-            </div>
+            </div> */}
             {this.props.showingCompletedTasks && this.props.completedTasks && this.props.completedTasks.length > 0 &&
             <ul className="columns large-12 accordion task-search-results-container" data-accordion data-allow-all-closed="true">
               {this.props.searchPerformed && this.props.completedTasks && this.renderTaskListName("COMPLETE", this.props.completedTasks)}
@@ -146,35 +193,7 @@ class TaskListSearchContainer extends BaseComponent {
               <span>No completed tasks</span>
             }
           </div>
-        </div>
-        <div className="right-column">
-        {this.props.currentTaskHistory &&
-          <div className="task-item-wrapper">
-            <div className="task-item">
-              <div className="row expanded">
-                <div className="columns">
-                  <div className="row">
-                    <div className="columns more-options-wrapper">
-                      <span><strong>Audit History</strong></span>
-                    </div>
-                    <div className="columns shrink more-options-wrapper">
-                      <svg className="icon medium" onClick={(e) => this.closeAuditHistory()}><use xlinkHref="#icon-close"></use></svg>
-                    </div>
-                  </div>
-                  {this.props.selectedTask && 
-                  <div className="row">
-                    <div className="columns more-options-wrapper">
-                      <span>{this.props.selectedTask.description}</span>
-                    </div>
-                  </div>
-                  }
-                  {this.props.currentTaskHistory && this.renderAuditHistory()}
-                </div>
-              </div>  
-            </div>
-          </div>
-        }
-        </div>
+        {/* </div> */}
         </div>
       )
     }
@@ -198,11 +217,15 @@ function mapStateToProps(state) {
   //console.log(state);
   return {
     //taskSearchResults: state.taskState.taskSearchResults
+    tasklists: state.taskListState.tasklist,
     tasks: state.taskState.tasks,
     completedTasks: state.taskState.completedTasks,
     isFetching: state.taskState.isFetching,
     isCompletedTasksFetching: state.taskState.isCompletedTasksFetching,
     showingCompletedTasks: state.taskState.showingCompletedTasks,
+    user: state.userState.user,
+    userId: state.userState.userProfile.userId,
+    selectedTaskId: state.taskState.selectedTaskId,
     selectedTask: state.taskState.selectedTask,
     currentTaskHistory: state.taskState.currentTaskHistory
   };
@@ -210,7 +233,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(TaskListActions, dispatch),
+    taskListActions: bindActionCreators(TaskListActions, dispatch),
     taskActions: bindActionCreators(TaskActions, dispatch)
   }
 }
