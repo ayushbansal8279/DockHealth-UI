@@ -35,7 +35,7 @@ const searchPatients = (patients, searchTerm) => {
 const PatientsLayout = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    loading()(dispatch);
+    dispatch(loading());
     getAllPatients()(dispatch);
   }, [dispatch]);
 
