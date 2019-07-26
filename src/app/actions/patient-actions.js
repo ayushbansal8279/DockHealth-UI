@@ -7,7 +7,7 @@ import {
   UPDATE_PATIENT_SUCCESS,
   ADD_PATIENT_TO_TASK_SUCCESS,
   GET_EMR_PATIENTS_SUCCESS,
-  SELECT_EMR_PATIENT_SUCCESS, DELETE_PATIENT_SUCCESS,
+  SELECT_EMR_PATIENT_SUCCESS, DELETE_PATIENT_SUCCESS, HIGHLIGHT_PATIENT,
 } from './action-types';
 import * as PatientApi from '../api/patient-api';
 
@@ -26,6 +26,11 @@ export const getAllPatientsSuccess = patients => ({
 export const selectEMRPatient = patient => ({
   type: SELECT_EMR_PATIENT_SUCCESS,
   patient,
+});
+
+export const highlightPatient = patientId => ({
+  type: HIGHLIGHT_PATIENT,
+  patientId,
 });
 
 export const getAllPatients = () => async (dispatch) => {

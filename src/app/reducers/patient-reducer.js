@@ -7,10 +7,12 @@ import {
   GET_PATIENT_SUCCESS,
   GET_EMR_PATIENTS_SUCCESS,
   SELECT_EMR_PATIENT_SUCCESS,
+  HIGHLIGHT_PATIENT,
 } from '../actions/action-types';
 
 const initialState = {
   allPatients: [],
+  highlightedPatientId: null,
   listPatients: [],
   selectedPatient: null,
   emrPatients: [],
@@ -19,6 +21,14 @@ const initialState = {
 
 const PatientReducer = (state = initialState, action) => {
   switch (action.type) {
+    case HIGHLIGHT_PATIENT: {
+      const { patientId } = action;
+      return ({
+        ...state,
+        highlightedPatientId: patientId,
+      });
+    }
+
     case GET_PATIENTS_SUCCESS: {
       const { patients } = action;
       return ({

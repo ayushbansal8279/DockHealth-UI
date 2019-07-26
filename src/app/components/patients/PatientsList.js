@@ -1,7 +1,9 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { highlightPatient } from '../../actions/patient-actions';
 
 const EmptyListContainer = styled.div`
   background: #fff;
@@ -60,7 +62,10 @@ const NonEmptyListTable = styled.table`
   }
   
   th, td {
-    padding-left: 43px;
+    padding-left: 28px;
+    :first-of-type {
+      padding-left: 43px;    
+    }
   }
   
   td {
@@ -72,6 +77,14 @@ const StyledLink = styled(Link)`
   color: #0ca1c7;
 `;
 
+const QuickViewCell = styled.td`
+  text-align: right;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0ca1c7;
+  padding-right: 27px;
+`;
+
 const NonEmptyListCell = ({ children }) => (<td>{children || <i>—</i>}</td>);
 
 const capitalize = str => ((typeof str === 'string')
@@ -80,41 +93,55 @@ const capitalize = str => ((typeof str === 'string')
 const formatDateOfBirth = dob => dob && moment(dob).format('MMM. M, YYYY');
 const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
 
-const NonEmptyList = ({ patients }) => (
-  <NonEmptyListTable>
-    <thead>
-      <tr>
-        <th>MRN</th>
-        <th>Last Name</th>
-        <th>First Name</th>
-        <th>DOB</th>
-        <th>Age</th>
-        <th>Gender</th>
-      </tr>
-    </thead>
-    <tbody>
-      {patients.map(({
-        patientId, mrn, lastName, firstName, dob, gender,
-      }) => (
-        <tr key={patientId}>
-          <NonEmptyListCell>
-            <StyledLink to={`/patient/${patientId}`}>{mrn}</StyledLink>
-          </NonEmptyListCell>
-          <NonEmptyListCell>{capitalize(lastName)}</NonEmptyListCell>
-          <NonEmptyListCell>{capitalize(firstName)}</NonEmptyListCell>
-          <NonEmptyListCell>{formatDateOfBirth(dob)}</NonEmptyListCell>
-          <NonEmptyListCell>{calculateAgeFromDateOfBirth(dob)}</NonEmptyListCell>
-          <NonEmptyListCell>{capitalize(gender)}</NonEmptyListCell>
-        </tr>
-      ))}
-    </tbody>
-  </NonEmptyListTable>);
+const NonEmptyList = ({ patients, isCompact }) => {
+  const dispatch = useDispatch();
+  const selectPatient = useCallback((e) => {
+    const patientId = e.target.getAttribute('data-patient');
+    dispatch(highlightPatient(patientId));
+  }, [dispatch]);
 
-const PatientsList = ({ patients, isFiltered }) => {
+  return (
+    <NonEmptyListTable>
+      <thead>
+        <tr>
+          <th>MRN</th>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th>DOB</th>
+          <th>Age</th>
+          {!isCompact && <th>Gender</th>}
+          {!isCompact && <th />}
+        </tr>
+      </thead>
+      <tbody>
+        {patients.map(({
+          patientId, mrn, lastName, firstName, dob, gender,
+        }) => (
+          <tr key={patientId}>
+            <NonEmptyListCell>
+              <StyledLink to={`/patient/${patientId}`}>{mrn}</StyledLink>
+            </NonEmptyListCell>
+            <NonEmptyListCell>{capitalize(lastName)}</NonEmptyListCell>
+            <NonEmptyListCell>{capitalize(firstName)}</NonEmptyListCell>
+            <NonEmptyListCell>{formatDateOfBirth(dob)}</NonEmptyListCell>
+            <NonEmptyListCell>{calculateAgeFromDateOfBirth(dob)}</NonEmptyListCell>
+            {!isCompact && <NonEmptyListCell>{capitalize(gender)}</NonEmptyListCell>}
+            {!isCompact && (
+              <QuickViewCell onClick={selectPatient} data-patient={patientId}>
+                Quick view
+              </QuickViewCell>
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </NonEmptyListTable>);
+};
+
+const PatientsList = ({ patients, isFiltered, isCompact }) => {
   if (patients.length === 0) {
     return isFiltered ? <EmptyFilteredList /> : <EmptyList />;
   }
-  return <NonEmptyList patients={patients} />;
+  return <NonEmptyList patients={patients} isCompact={isCompact} />;
 };
 
 export default PatientsList;

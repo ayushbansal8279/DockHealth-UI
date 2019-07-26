@@ -7,6 +7,7 @@ import { getAllPatients, loading } from '../../actions/patient-actions';
 import PatientsHeader from './PatientsHeader';
 import PatientsToolbar from './PatientsToolbar';
 import PatientsList from './PatientsList';
+import PatientsSidebar from './PatientsSidebar';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -32,6 +33,10 @@ const searchPatients = (patients, searchTerm) => {
   return patients.filter(isMatch);
 };
 
+const PatientsBody = styled.div`
+  display: flex;
+`;
+
 const PatientsLayout = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -39,8 +44,13 @@ const PatientsLayout = () => {
     getAllPatients()(dispatch);
   }, [dispatch]);
 
-  const isFetching = useSelector(state => state.patientState.isFetching);
-  const patients = useSelector(state => state.patientState.allPatients);
+  const isFetching = useSelector(({ patientState }) => patientState.isFetching);
+  const patients = useSelector(({ patientState }) => patientState.allPatients);
+  const highlightedPatient = useSelector(({ patientState }) => {
+    const { highlightedPatientId } = patientState;
+    if (highlightedPatientId === null) { return null; }
+    return patientState.allPatients.find(({ patientId }) => patientId === +highlightedPatientId);
+  });
 
   const [searchTerm, setSearchTerm] = useState('');
   const handleSearch = useCallback((e) => {
@@ -54,9 +64,18 @@ const PatientsLayout = () => {
     <>
       <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
       <PatientsToolbar handleSearch={handleSearch} />
-      {isFetching
-        ? <PatientsListSpinner isFetching={isFetching} />
-        : <PatientsList patients={filteredPatients} isFiltered={searchTerm !== ''} />}
+      <PatientsBody>
+        {isFetching
+          ? <PatientsListSpinner isFetching={isFetching} />
+          : (
+            <PatientsList
+              patients={filteredPatients}
+              isFiltered={searchTerm !== ''}
+              isCompact={highlightedPatient !== null}
+            />
+          )}
+        {highlightedPatient && <PatientsSidebar />}
+      </PatientsBody>
     </>
   );
 };
