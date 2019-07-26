@@ -212,8 +212,7 @@ const PatientsSidebar = ({ patient }) => {
         <PatientsSidebarDetailsHeader>
           <PatientsSidebarDetailsHeading>Boston Clinic</PatientsSidebarDetailsHeading>
         </PatientsSidebarDetailsHeader>
-        {/* WIP: Currently PatientsTasklist is just a mock */}
-        {/*<PatientsTasklist />*/}
+        <PatientsTasklist />
       </PatientsSidebarTaskList>
     </PatientsSidebarContainer>
   );
