@@ -74,7 +74,7 @@ const PatientsLayout = () => {
               isCompact={highlightedPatient !== null}
             />
           )}
-        {highlightedPatient && <PatientsSidebar />}
+        {highlightedPatient && <PatientsSidebar patient={highlightedPatient} />}
       </PatientsBody>
     </>
   );

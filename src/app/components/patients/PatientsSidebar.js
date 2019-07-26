@@ -1,22 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { useDispatch } from 'react-redux';
+import moment from 'moment';
 import { highlightPatient } from '../../actions/patient-actions';
-
-const patient = {
-  patientId: 11,
-  mrn: '14322343',
-  firstName: 'Anastasia',
-  lastName: 'Blame',
-  dob: '2015-08-11',
-  gender: 'Female',
-  phoneHome: '(917) 722-8899',
-  phoneMobile: '(415) 698-0003',
-  email: 'anastasia@blame.com',
-  creator: null,
-  notes: null,
-};
 
 const PatientsSidebarContainer = styled.div`
   width: 632px;
@@ -129,7 +116,10 @@ const PatientsSidebarCloseButton = styled(ButtonBase)`
   }
 `;
 
-const PatientsSidebar = () => {
+const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
+const formatAge = age => (age === 1 ? '1yr old' : `${age}yrs old`);
+
+const PatientsSidebar = ({ patient }) => {
   const {
     mrn, firstName, lastName, dob, gender, phoneHome, phoneMobile, email, notes,
   } = patient;
@@ -137,6 +127,10 @@ const PatientsSidebar = () => {
   const deselectPatient = useCallback(() => {
     dispatch(highlightPatient(null));
   }, [dispatch]);
+
+  useEffect(() => () => {
+    deselectPatient();
+  }, [deselectPatient]);
 
   return (
     <PatientsSidebarContainer>
@@ -149,17 +143,17 @@ const PatientsSidebar = () => {
           <PatientsSidebarDetailsHeading>Patient Details</PatientsSidebarDetailsHeading>
         </PatientsSidebarDetailsHeader>
         <PatientsSidebarField>
-          <div>Birthday</div>
-          <div>3yrs old</div>
-          <div>{dob}</div>
+          <div style={{ flex: 0.5 }}>Birthday</div>
+          <div style={{ flex: 0.25, textAlign: 'right' }}>{dob && formatAge(calculateAgeFromDateOfBirth(dob))}</div>
+          <div style={{ flex: 0.25, textAlign: 'right' }}>{dob || '—'}</div>
         </PatientsSidebarField>
         <PatientsSidebarField>
           <div>Gender</div>
-          <div>{gender}</div>
+          <div>{gender || '—'}</div>
         </PatientsSidebarField>
         <PatientsSidebarField>
           <div>Email</div>
-          <div>{email}</div>
+          <div>{email || '—'}</div>
         </PatientsSidebarField>
         <PatientsSidebarSubsection>
           <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
@@ -177,7 +171,7 @@ const PatientsSidebar = () => {
               }}
               />
               <div style={{ marginLeft: '15px' }}>
-                <PatientsSidebarContactNumber>{phoneHome}</PatientsSidebarContactNumber>
+                <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
                 <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
               </div>
             </PatientsSidebarContact>
@@ -190,7 +184,7 @@ const PatientsSidebar = () => {
               }}
               />
               <div style={{ marginLeft: '15px' }}>
-                <PatientsSidebarContactNumber>{phoneMobile}</PatientsSidebarContactNumber>
+                <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
                 <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
               </div>
             </PatientsSidebarContact>
@@ -200,12 +194,11 @@ const PatientsSidebar = () => {
           <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
           <div>
             <PatientsSidebarNoteDescription>
-              Sean primarily lives with his Grandma in Boston. Her number is 423-321-3241.
-              Additional notes can go here. Sean’s Grandma is kind and gentle.
+              {notes || '—'}
             </PatientsSidebarNoteDescription>
-            <PatientsSidebarNoteInfo>
-              Michael Docktor | Tuesday, October 2nd
-            </PatientsSidebarNoteInfo>
+            {/* <PatientsSidebarNoteInfo> */}
+            {/*  Michael Docktor | Tuesday, October 2nd */}
+            {/* </PatientsSidebarNoteInfo> */}
           </div>
         </PatientsSidebarSubsection>
       </PatientsSidebarDetails>
