@@ -135,7 +135,7 @@ const PatientsSidebar = ({ patient }) => {
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
-        <div>{`${firstName} ${lastName} ${mrn}`}</div>
+        <div>{`${firstName || ''} ${lastName || ''} ${mrn}`}</div>
         <PatientsSidebarCloseButton onClick={deselectPatient}>✕</PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
       <PatientsSidebarDetails>
