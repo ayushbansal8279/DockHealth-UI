@@ -4,6 +4,7 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import { highlightPatient } from '../../actions/patient-actions';
+import PatientsTasklist from './PatientsTasklist';
 
 const PatientsSidebarContainer = styled.div`
   width: 632px;
@@ -58,8 +59,13 @@ const PatientsSidebarTaskList = styled(PatientsSidebarSection)`
 const PatientsSidebarSubsection = styled.div`
   border-top: solid 1px #a6dcea;
   margin-top: 22px;
+  
+  margin-left: -11px;
+  margin-right: -11px;
+  padding-left: 11px;
+  padding-right: 11px;
 `;
-// 28
+
 const PatientsSidebarSubsectionHeading = styled.div`
   font-size: 14px;
   font-weight: bold;
@@ -205,8 +211,9 @@ const PatientsSidebar = ({ patient }) => {
       <PatientsSidebarTaskList>
         <PatientsSidebarDetailsHeader>
           <PatientsSidebarDetailsHeading>Boston Clinic</PatientsSidebarDetailsHeading>
-          {/* <div>v</div> */}
         </PatientsSidebarDetailsHeader>
+        {/* WIP: Currently PatientsTasklist is just a mock */}
+        {/*<PatientsTasklist />*/}
       </PatientsSidebarTaskList>
     </PatientsSidebarContainer>
   );
