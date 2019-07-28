@@ -132,6 +132,7 @@ class AssignedByMe extends React.Component {
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
       title: 'Assigned by me',
+      showToolbar: true,
     };
 
     return <TaskView {...taskViewProps} />;
