@@ -1,16 +1,16 @@
-import React from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import Fade from '@material-ui/core/Fade';
 import ProgressIcon from '@material-ui/core/CircularProgress';
-import TaskListSearchContainer from '../components/list/TaskListSearchContainer'
-import {mobileAnalyticsClient} from '../api/analytics-api'
-import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
-import AddTask from '../components/task/AddTask'
-import SortFilterTasks from '../components/common/SortFilterTasks'
-import * as TaskActions from '../actions/task-actions'
-import $ from 'jquery'
+import $ from 'jquery';
+import TaskListSearchContainer from '../components/list/TaskListSearchContainer';
+import { mobileAnalyticsClient } from '../api/analytics-api';
+import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate';
+import AddTask from '../components/task/AddTask';
+import SortFilterTasks from '../components/common/SortFilterTasks';
+import * as TaskActions from '../actions/task-actions';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -19,52 +19,52 @@ const FadeContainer = styled.div`
 `;
 
 class TaskListSearch extends BaseComponentWithFoundationUpdate {
-    constructor(props){
-      super(props)
-      this.state = {
-        searchTerm: '',
-        searchPerformed: false
-      }
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchTerm: '',
+      searchPerformed: false,
+    };
+  }
 
-    componentDidMount(){
-			mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-							'PageName': 'TaskListSearch'
-      });
-    }
+  componentDidMount() {
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+      PageName: 'TaskListSearch',
+    });
+  }
 
     searchUpdated = (term) => {
-      this.setState({searchTerm: term.target.value})
+      this.setState({ searchTerm: term.target.value });
     }
 
     searchTasks = () => {
-      this.props.taskActions.loading()
-      this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "INCOMPLETE");
-      this.setState({searchPerformed: true})
+      this.props.taskActions.loading();
+      this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, 'INCOMPLETE');
+      this.setState({ searchPerformed: true });
     }
 
     getCompletedTasks = () => {
-      this.props.taskActions.loading()
-      this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "COMPLETE");
-      this.setState({searchPerformed: true})
+      this.props.taskActions.loading();
+      this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, 'COMPLETE');
+      this.setState({ searchPerformed: true });
     }
-    
+
     getListTasks = (sortBy, filterBy) => {
-      this.props.taskActions.loading()
-      this.props.taskActions.searchTasks(this.state.searchTerm, sortBy, filterBy, "INCOMPLETE")
+      this.props.taskActions.loading();
+      this.props.taskActions.searchTasks(this.state.searchTerm, sortBy, filterBy, 'INCOMPLETE');
     }
 
     handleKeyPress = (event) => {
-      if(event.key == 'Enter'){
-        console.log('enter press here! ')
-        this.props.taskActions.loading()
-        this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, "INCOMPLETE");
-        this.setState({searchPerformed: true})
+      if (event.key == 'Enter') {
+        console.log('enter press here! ');
+        this.props.taskActions.loading();
+        this.props.taskActions.searchTasks(this.state.searchTerm, undefined, undefined, 'INCOMPLETE');
+        this.setState({ searchPerformed: true });
       }
     }
-    
+
     handleAddTask = () => {
-      this.props.taskActions.taskToState(null)
+      this.props.taskActions.taskToState(null);
       openAddForm();
     };
 
@@ -75,7 +75,7 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
             <div className="large-12 columns">
               <div className="top-bar">
                 <div className="top-bar-left">
-                  <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
+                  <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar" />
                   <h3>Search</h3>
                 </div>
               </div>
@@ -83,15 +83,15 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
           </div>
           <div className="row expanded collapse">
             <div className="large-12 columns">
-							  <div className={"wrapper list-filter row collapse align-middle align-right "}>
-                  {/* <div className="columns shrink" onClick={(e) => this.handleAddTask()}>
+              <div className="wrapper list-filter row collapse align-middle align-right ">
+                {/* <div className="columns shrink" onClick={(e) => this.handleAddTask()}>
                     <svg className="add icon"><use xlinkHref="#icon-add"></use></svg>
                   </div> */}
-                </div>
+              </div>
             </div>
           </div>
 
-                {/* <AddTask
+          {/* <AddTask
                   taskListId={this.props.taskListId}
                   addTask={this.props.taskActions.addTask}
                   taskLists={this.props.taskList}
@@ -103,59 +103,67 @@ class TaskListSearch extends BaseComponentWithFoundationUpdate {
 
           <div className="wrapper-search">
             <div className="row expanded collapse">
-              <div className="large-2 columns">
-              </div>
+              <div className="large-2 columns" />
               <div className="large-8 columns">
                 <div className="input-group searchbar">
-                  <input className="input-field search-field expand-search" id="task-search-field" type="search" placeholder="Search tasks" 
-                    onKeyPress={this.handleKeyPress} onChange={this.searchUpdated} value={this.state.searchTerm}/>
+                  <input
+                    className="input-field search-field expand-search"
+                    id="task-search-field"
+                    type="search"
+                    placeholder="Search tasks"
+                    onKeyPress={this.handleKeyPress}
+                    onChange={this.searchUpdated}
+                    value={this.state.searchTerm}
+                  />
                   <div className="input-group-button">
                     <button className="button">
-                      <svg onClick={this.searchTasks} id="task-search-button" className="icon"><use xlinkHref="#icon-search"></use></svg>
+                      <svg onClick={this.searchTasks} id="task-search-button" className="icon"><use xlinkHref="#icon-search" /></svg>
                     </button>
                   </div>
                 </div>
               </div>
-              <div className="large-2 columns">
-              </div>
+              <div className="large-2 columns" />
             </div>
 
 
-            {this.props.isFetching && 
+            {this.props.isFetching
+                && (
                 <FadeContainer>
                   <Fade in={this.props.isFetching} unmountOnExit style={{ transitionDelay: this.props.isFetching ? '800ms' : '0ms' }}>
                     <ProgressIcon />
                   </Fade>
                 </FadeContainer>
+                )
             }
             {/* {this.state.searchPerformed &&  */}
-              {/* <SortFilterTasks title="Search Tasks" getListTasks={this.getListTasks}/> */}
+            {/* <SortFilterTasks title="Search Tasks" getListTasks={this.getListTasks}/> */}
             {/* } */}
 
-              <TaskListSearchContainer 
-                searchPerformed={this.state.searchPerformed}
-                getCompletedTasks={this.getCompletedTasks}/>
-            
+            <TaskListSearchContainer
+              searchPerformed={this.state.searchPerformed}
+              getCompletedTasks={this.getCompletedTasks}
+            />
+
             {/* {this.state.searchPerformed && this.props.tasks && this.props.tasks.length == 0 &&
               <span className="taskListSearchMessage">No tasks found matching search criteria</span>
             } */}
           </div>
         </div>
       );
-  }
+    }
 }
 
-function mapStateToProps(state){
-  return{
-    tasks: state.taskState.tasks,
-    isFetching: state.taskState.isFetching
-  }
-}
-
-function mapDispatchToProps(dispatch){
+function mapStateToProps(state) {
   return {
-    taskActions: bindActionCreators(TaskActions, dispatch)
-  }
+    tasks: state.taskState.tasks,
+    isFetching: state.taskState.isFetching,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    taskActions: bindActionCreators(TaskActions, dispatch),
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskListSearch);

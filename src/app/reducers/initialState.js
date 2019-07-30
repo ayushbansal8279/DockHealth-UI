@@ -21,7 +21,7 @@ export default {
   currentTask: {},
   genericLists: [],
   users: {},
-  isFetching: true,
+  isFetching: false,
   isCompletedTasksFetching: false,
   isHistoryFetching: false,
   historyError: null,

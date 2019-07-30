@@ -1,39 +1,86 @@
-import * as types from '../actions/action-types';
-import initialState from './initialState';
+import {
+  GET_PATIENTS_SUCCESS,
+  REQUEST_PATIENTS,
+  GET_LIST_PATIENTS_SUCCESS,
+  ADD_PATIENT_SUCCESS,
+  UPDATE_PATIENT_SUCCESS,
+  GET_PATIENT_SUCCESS,
+  GET_EMR_PATIENTS_SUCCESS,
+  SELECT_EMR_PATIENT_SUCCESS,
+  HIGHLIGHT_PATIENT,
+} from '../actions/action-types';
 
-const PatientReducer = function(state = {allPatients: [], listPatients: [], selectedPatient: null, emrPatients: [], selectedEmrPatient: null}, action) {
+const initialState = {
+  allPatients: [],
+  highlightedPatientId: null,
+  listPatients: [],
+  selectedPatient: null,
+  emrPatients: [],
+  selectedEmrPatient: null,
+};
 
-  switch(action.type) {
+const PatientReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case HIGHLIGHT_PATIENT: {
+      const { patientId } = action;
+      return ({
+        ...state,
+        highlightedPatientId: patientId,
+      });
+    }
 
-    case types.GET_PATIENTS_SUCCESS:
-      return Object.assign({}, state, { allPatients: action.patients, isFetching: false });
+    case GET_PATIENTS_SUCCESS: {
+      const { patients } = action;
+      return ({
+        ...state,
+        allPatients: patients,
+        isFetching: false,
+      });
+    }
 
-    case types.REQUEST_PATIENTS:
-      return Object.assign({}, state, { isFetching:true })
+    case REQUEST_PATIENTS: {
+      return ({
+        ...state,
+        isFetching: true,
+      });
+    }
 
-    case types.GET_LIST_PATIENTS_SUCCESS:
-      return Object.assign({}, state, { listPatients: action.patients });
+    case GET_LIST_PATIENTS_SUCCESS: {
+      const { patients } = action;
+      return ({ ...state, listPatients: patients });
+    }
 
-    case types.ADD_PATIENT_SUCCESS:
-      return Object.assign({}, state, {allPatients: state.allPatients.concat([action.patient])});
+    case ADD_PATIENT_SUCCESS: {
+      const { patient } = action;
+      return ({ ...state, allPatients: [...state.allPatients, patient] });
+    }
 
-    case types.UPDATE_PATIENT_SUCCESS:
-      //return Object.assign({}, state, {tasks: state.allPatients.concat([action.patient])});
+    case UPDATE_PATIENT_SUCCESS: {
+      // const { patient } = action;
+      return state; // TODO
+    }
 
-    case types.GET_PATIENT_SUCCESS:
-      return Object.assign({}, state, {selectedPatient: action.patient});
-      //return {...state, selectedPatient: action.patient};
+    case GET_PATIENT_SUCCESS: {
+      const { patient } = action;
+      return ({
+        ...state,
+        selectedPatient: patient,
+      });
+    }
 
-    case types.GET_EMR_PATIENTS_SUCCESS:
-      return Object.assign({}, state, { emrPatients: action.patients });
+    case GET_EMR_PATIENTS_SUCCESS: {
+      const { patients } = action;
+      return ({ ...state, emrPatients: patients });
+    }
 
-    case types.SELECT_EMR_PATIENT_SUCCESS:
-      return Object.assign({}, state, { selectedEmrPatient: action.patient, emrPatients: [] });
+    case SELECT_EMR_PATIENT_SUCCESS: {
+      const { patient } = action;
+      return ({ ...state, selectedEmrPatient: patient, emrPatients: [] });
+    }
 
+    default:
+      return state;
   }
+};
 
-  return state;
-
-}
-
-export default PatientReducer
+export default PatientReducer;

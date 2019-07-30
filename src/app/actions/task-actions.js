@@ -109,17 +109,12 @@ export function getTasksAssignedByMe(taskListId, sortBy, filterBy, status){
   }
 }
 
-export function searchTasks(searchTerm, sortBy, filterBy, status){
-  var action
-  if(status == "INCOMPLETE"){
-    action = ActionTypes.GET_TASKS_SUCCESS;
-  }else{
-    action = ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
-  }
-  return function(dispatch){
+export function searchTasks(searchTerm, sortBy, filterBy, status) {
+  const action = status == "INCOMPLETE" ? ActionTypes.GET_TASKS_SUCCESS : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+  return function(dispatch) {
     return TaskApi.searchTasks(searchTerm, status, sortBy, filterBy).then(tasks => {
       dispatch({type: action, tasks});
-      if(status == "INCOMPLETE"){
+      if(status == "INCOMPLETE") {
         // loading()
       }
     }).catch(error => {
