@@ -6,6 +6,8 @@ import {
   ADD_PATIENT_SUCCESS,
   UPDATE_PATIENT_SUCCESS,
   ADD_PATIENT_TO_TASK_SUCCESS,
+  REQUEST_EMR_PATIENTS,
+  CLEAR_EMR_PATIENTS,
   GET_EMR_PATIENTS_SUCCESS,
   SELECT_EMR_PATIENT_SUCCESS, DELETE_PATIENT_SUCCESS, HIGHLIGHT_PATIENT,
 } from './action-types';
@@ -105,13 +107,13 @@ export const addPatientToTask = (patientId, taskId) => async (dispatch) => {
 
 export function loadingEMRPatients(){
   return function(dispatch){
-    dispatch({type: ActionTypes.REQUEST_EMR_PATIENTS})
+    dispatch({type: REQUEST_EMR_PATIENTS})
   }
 };
 
 export function clearEMRPatients(){
   return function(dispatch){
-    dispatch({type: ActionTypes.CLEAR_EMR_PATIENTS})
+    dispatch({type: CLEAR_EMR_PATIENTS})
   }
 };
 
