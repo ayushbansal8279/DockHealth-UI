@@ -121,6 +121,10 @@ class TemplateCore extends React.Component {
 
             //console.log(data);
           })
+          .catch(error => {
+            console.log(error)
+            hashHistory.push('login')
+          })
       }
   }
 //)

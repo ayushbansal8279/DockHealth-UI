@@ -13,6 +13,7 @@ import PatientView from './views/PatientView';
 import PatientEditView from './views/PatientEditView';
 import Register from './views/auth/Register';
 import Login from './views/auth/Login';
+import LoginUser from './views/auth/LoginUser'
 import Logout from './views/auth/Logout';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
 import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess';
@@ -89,6 +90,7 @@ export const Routes = (store) => {
           <Route path="/confirmRegistration" component={ConfirmRegistration} />
           <Route path="/confirmRegistrationSuccess" component={ConfirmRegistrationSuccess} />
           <Route path="/login" component={Login} />
+          <Route path="/loginUser" component={LoginUser} />
           <Route path="/logout" component={Logout} />
           <Route path="/resendCode" component={ResendCode} />
           <Route path="/forgotPassword" component={ForgotPassword} />

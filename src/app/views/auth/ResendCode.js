@@ -37,8 +37,8 @@ export default class ResendCode extends React.Component {
 
   render () {
     return (
-      <div className="wrapper columns large-12">
-          <div className="row expanded text-center">
+      <div className="columns large-12">
+          <div className="row expanded text-left">
             <div className="columns large-12 top-buffer">
               <h5>Resend confirmation code</h5>
             </div>

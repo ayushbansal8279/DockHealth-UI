@@ -629,3 +629,59 @@ pre {
 .unenrolled-terms {
   text-align: left;
 }
+
+.Mask {
+  width: 1440px;
+  height: 1601px;
+  background-color: #2e3a43;
+}
+
+.iStock-587519500-Copy-2 {
+  width: 1312px;
+  height: 1128px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.iStock-587519500-Copy-3 {
+  width: 1440px;
+  height: 1601px;
+  opacity: 0.2;
+}
+
+.Rectangle-7-Copy {
+  width: 758.7px;
+  height: 1127px;
+  border-radius: 6px;
+  background-color: #ffffff;
+}
+
+.clip-circle {
+  clip-path: circle(60px at center);
+  /* OLD VALUE example: circle(245px, 140px, 50px); */
+  /* Yep, even the new clip-path has deprecated stuff. */
+}
+
+.auth-container {
+  color: #000000
+}
+.auth-container .inline-label .input-group-label {
+  color: #000000
+}
+.auth-container .inline-label .input-group-field {
+  color: #000000
+}
+.auth-container .form-floating-label label, 
+.auth-container .form-floating-label input,
+.auth-container .form-floating-label .input-group-label {
+  color: #000000
+}
+.auth-container .has-value label {
+  color: #000000 !important
+}
+.auth-container a {
+  color: #0ca1c7
+}
+
+.auth-container .button {
+  border-radius: 0rem
+}

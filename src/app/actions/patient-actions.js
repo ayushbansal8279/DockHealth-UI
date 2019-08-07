@@ -86,6 +86,18 @@ export function addPatientToTask(patientId, taskId){
   }
 }
 
+export function loadingEMRPatients(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_EMR_PATIENTS})
+  }
+}
+
+export function clearEMRPatients(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.CLEAR_EMR_PATIENTS})
+  }
+}
+
 export function lookupEMRPatients(searchToken){
   return function(dispatch){
     return PatientApi.lookupEMRPatients(searchToken).then(patients => {

@@ -72,8 +72,8 @@ export default class ConfirmRegistration extends React.Component {
 
   render () {
     return (
-      <div className="wrapper columns large-12">
-          <div className="row expanded text-center">
+      <div className="columns large-12">
+          <div className="row expanded text-left">
             <div className="columns large-12 top-buffer">
               <h5>Confirm registration</h5>
             </div>
