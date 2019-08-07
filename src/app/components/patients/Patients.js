@@ -11,7 +11,6 @@ import PatientsSidebar from './PatientsSidebar';
 
 const FadeContainer = styled.div`
   display: flex;
-  flex: 1;
   justify-content: center;
   padding-top: 100px;
 `;
@@ -73,7 +72,6 @@ const PatientsLayout = () => {
               patients={filteredPatients}
               isFiltered={searchTerm !== ''}
               isCompact={highlightedPatient !== null}
-              highlightedPatient={highlightedPatient}
             />
           )}
         {highlightedPatient && <PatientsSidebar patient={highlightedPatient} />}
@@ -85,7 +83,7 @@ const PatientsLayout = () => {
 const Patients = () => (
   <div className="off-canvas-content" data-off-canvas-content>
     <div className="row expanded collapse" style={{ minHeight: '100%' }}>
-      <div className="columns" style={{ background: '#f5f8fa' }}>
+      <div className="large-12 columns" style={{ background: '#f5f8fa' }}>
         <PatientsLayout />
       </div>
     </div>

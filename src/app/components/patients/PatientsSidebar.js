@@ -1,12 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
-import IconButton from '@material-ui/core/IconButton';
-import { Flag } from '../../flags';
 import { highlightPatient } from '../../actions/patient-actions';
-import CollapseIcon from '../../img/collapse.svg';
 import PatientsTasklist from './PatientsTasklist';
 
 const PatientsSidebarContainer = styled.div`
@@ -27,23 +24,18 @@ const PatientsSidebarHeader = styled.div`
   padding: 15px 13.5px 19px 27px;
 `;
 
-
-const PatientsSidebarSectionContainer = styled.div`
+const PatientsSidebarSection = styled.div`
   border: solid 2px #ddf2f7;
   background: #fff;
   padding: 18px 27px 27px 24px;
-  
-  :not(:first-child) {
-    margin-top: 4px;
-  }
 `;
 
-const PatientsSidebarSectionHeader = styled.div`
+const PatientsSidebarDetailsHeader = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const PatientsSidebarSectionHeading = styled.div`
+const PatientsSidebarDetailsHeading = styled.div`
   font-size: 24px;
   font-weight: 600;
   color: #0ca1c7;
@@ -56,6 +48,12 @@ const PatientsSidebarField = styled.div`
   justify-content: space-between;
   padding: 10px 22px 10px 14px;
   margin-top: 9px;
+`;
+
+const PatientsSidebarDetails = styled(PatientsSidebarSection)``;
+
+const PatientsSidebarTaskList = styled(PatientsSidebarSection)`
+  margin-top: 4px;
 `;
 
 const PatientsSidebarSubsection = styled.div`
@@ -124,32 +122,6 @@ const PatientsSidebarCloseButton = styled(ButtonBase)`
   }
 `;
 
-const StyledButton = styled(({ isCollapsed, ...props }) => <IconButton {...props} />)`
-  && {
-    height: 36px;
-    width: 36px;
-    padding: 0;
-    ${({ isCollapsed }) => isCollapsed && 'transform: rotate(180deg);'}
-  }
-`;
-
-const PatientsSidebarSection = ({ heading, children }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const toggleIsCollapsed = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
-  return (
-    <PatientsSidebarSectionContainer>
-      <PatientsSidebarSectionHeader>
-        <PatientsSidebarSectionHeading>{heading}</PatientsSidebarSectionHeading>
-        <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}><img src={CollapseIcon} alt="Collapse Details" /></StyledButton>
-      </PatientsSidebarSectionHeader>
-      {!isCollapsed && children }
-    </PatientsSidebarSectionContainer>
-  );
-};
-
 const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
 const formatAge = age => (age === 1 ? '1yr old' : `${age}yrs old`);
 
@@ -172,74 +144,76 @@ const PatientsSidebar = ({ patient }) => {
         <div>{`${firstName || ''} ${lastName || ''} ${mrn}`}</div>
         <PatientsSidebarCloseButton onClick={deselectPatient}>✕</PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
-      <div>
-        <PatientsSidebarSection heading="Patient Details">
-          <PatientsSidebarField>
-            <div style={{ flex: 0.5 }}>Birthday</div>
-            <div style={{ flex: 0.25, textAlign: 'right' }}>{dob && formatAge(calculateAgeFromDateOfBirth(dob))}</div>
-            <div style={{ flex: 0.25, textAlign: 'right' }}>{dob || '—'}</div>
-          </PatientsSidebarField>
-          <PatientsSidebarField>
-            <div>Gender</div>
-            <div>{gender || '—'}</div>
-          </PatientsSidebarField>
-          <PatientsSidebarField>
-            <div>Email</div>
-            <div>{email || '—'}</div>
-          </PatientsSidebarField>
-          <PatientsSidebarSubsection>
-            <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-            >
-              <PatientsSidebarContact>
-                <div style={{
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '50%',
-                  background: '#00a73c',
-                }}
-                />
-                <div style={{ marginLeft: '15px' }}>
-                  <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
-                  <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
-                </div>
-              </PatientsSidebarContact>
-              <PatientsSidebarContact>
-                <div style={{
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '50%',
-                  background: '#05adec',
-                }}
-                />
-                <div style={{ marginLeft: '15px' }}>
-                  <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
-                  <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
-                </div>
-              </PatientsSidebarContact>
-            </div>
-          </PatientsSidebarSubsection>
-          <PatientsSidebarSubsection>
-            <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
-            <div>
-              <PatientsSidebarNoteDescription>
-                {notes || '—'}
-              </PatientsSidebarNoteDescription>
-              {/* <PatientsSidebarNoteInfo> */}
-              {/*  Michael Docktor | Tuesday, October 2nd */}
-              {/* </PatientsSidebarNoteInfo> */}
-            </div>
-          </PatientsSidebarSubsection>
-        </PatientsSidebarSection>
-        <Flag name={['features', 'showTasksInPatientDrawer']}>
-          <PatientsSidebarSection heading="Boston Clinic">
-            <PatientsTasklist />
-          </PatientsSidebarSection>
-        </Flag>
-      </div>
+      <PatientsSidebarDetails>
+        <PatientsSidebarDetailsHeader>
+          <PatientsSidebarDetailsHeading>Patient Details</PatientsSidebarDetailsHeading>
+        </PatientsSidebarDetailsHeader>
+        <PatientsSidebarField>
+          <div style={{ flex: 0.5 }}>Birthday</div>
+          <div style={{ flex: 0.25, textAlign: 'right' }}>{dob && formatAge(calculateAgeFromDateOfBirth(dob))}</div>
+          <div style={{ flex: 0.25, textAlign: 'right' }}>{dob || '—'}</div>
+        </PatientsSidebarField>
+        <PatientsSidebarField>
+          <div>Gender</div>
+          <div>{gender || '—'}</div>
+        </PatientsSidebarField>
+        <PatientsSidebarField>
+          <div>Email</div>
+          <div>{email || '—'}</div>
+        </PatientsSidebarField>
+        <PatientsSidebarSubsection>
+          <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+          >
+            <PatientsSidebarContact>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                background: '#00a73c',
+              }}
+              />
+              <div style={{ marginLeft: '15px' }}>
+                <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
+                <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
+              </div>
+            </PatientsSidebarContact>
+            <PatientsSidebarContact>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                background: '#05adec',
+              }}
+              />
+              <div style={{ marginLeft: '15px' }}>
+                <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
+                <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
+              </div>
+            </PatientsSidebarContact>
+          </div>
+        </PatientsSidebarSubsection>
+        <PatientsSidebarSubsection>
+          <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
+          <div>
+            <PatientsSidebarNoteDescription>
+              {notes || '—'}
+            </PatientsSidebarNoteDescription>
+            {/* <PatientsSidebarNoteInfo> */}
+            {/*  Michael Docktor | Tuesday, October 2nd */}
+            {/* </PatientsSidebarNoteInfo> */}
+          </div>
+        </PatientsSidebarSubsection>
+      </PatientsSidebarDetails>
+      <PatientsSidebarTaskList>
+        <PatientsSidebarDetailsHeader>
+          <PatientsSidebarDetailsHeading>Boston Clinic</PatientsSidebarDetailsHeading>
+        </PatientsSidebarDetailsHeader>
+        <PatientsTasklist />
+      </PatientsSidebarTaskList>
     </PatientsSidebarContainer>
   );
 };

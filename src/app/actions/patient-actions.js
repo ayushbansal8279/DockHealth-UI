@@ -23,25 +23,6 @@ export const getAllPatientsSuccess = patients => ({
   patients,
 });
 
-export const selectEMRPatient = patient => ({
-  type: SELECT_EMR_PATIENT_SUCCESS,
-  patient,
-});
-
-export const highlightPatient = patientId => ({
-  type: HIGHLIGHT_PATIENT,
-  patientId,
-});
-
-export const getAllPatients = () => async (dispatch) => {
-  try {
-    const patients = await PatientApi.getAllPatients();
-    dispatch(getAllPatientsSuccess(patients));
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const getPatientsByTaskList = taskListId => async (dispatch) => {
   try {
     const patients = await PatientApi.getPatientsByTaskList(taskListId);
@@ -61,6 +42,25 @@ export const getPatientById = patientId => async (dispatch) => {
       type: GET_PATIENT_SUCCESS,
       patient,
     });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const selectEMRPatient = patient => ({
+  type: SELECT_EMR_PATIENT_SUCCESS,
+  patient,
+});
+
+export const highlightPatient = patientId => ({
+  type: HIGHLIGHT_PATIENT,
+  patientId,
+});
+
+export const getAllPatients = () => async (dispatch) => {
+  try {
+    const patients = await PatientApi.getAllPatients();
+    dispatch(getAllPatientsSuccess(patients));
   } catch (error) {
     throw error;
   }
@@ -107,13 +107,13 @@ export function loadingEMRPatients(){
   return function(dispatch){
     dispatch({type: ActionTypes.REQUEST_EMR_PATIENTS})
   }
-}
+};
 
 export function clearEMRPatients(){
   return function(dispatch){
     dispatch({type: ActionTypes.CLEAR_EMR_PATIENTS})
   }
-}
+};
 
 export const lookupEMRPatients = searchToken => async (dispatch) => {
   try {

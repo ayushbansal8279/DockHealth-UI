@@ -68,14 +68,16 @@ const PatientReducer = (state = initialState, action) => {
       });
     }
 
-    case types.REQUEST_EMR_PATIENTS:
+    case REQUEST_EMR_PATIENTS:
       return Object.assign({}, state, { emrPatients: [], isFetching:true })
 
-    case types.CLEAR_EMR_PATIENTS:
+    case CLEAR_EMR_PATIENTS:
       return Object.assign({}, state, { emrPatients: [] })
 
-    case types.GET_EMR_PATIENTS_SUCCESS:
-      return Object.assign({}, state, { emrPatients: action.patients, isFetching: false });
+    case GET_EMR_PATIENTS_SUCCESS: {
+      const { patients } = action;
+      return ({ ...state, emrPatients: patients, isFetching: false });
+    }
 
     case SELECT_EMR_PATIENT_SUCCESS: {
       const { patient } = action;

@@ -9,7 +9,6 @@ const EmptyListContainer = styled.div`
   background: #fff;
   padding: 41px 24px 50px 24px;
   text-align: center;
-  flex: 1;
 `;
 
 const EmptyListIcon = styled.div`
@@ -86,10 +85,6 @@ const QuickViewCell = styled.td`
   padding-right: 27px;
 `;
 
-const NonEmptyListRow = styled.tr`
-  ${({ isHighlighted }) => isHighlighted && '&&& { background: #a6dcea; }'}
-`;
-
 const NonEmptyListCell = ({ children }) => (<td>{children || <i>—</i>}</td>);
 
 const capitalize = str => ((typeof str === 'string')
@@ -98,7 +93,7 @@ const capitalize = str => ((typeof str === 'string')
 const formatDateOfBirth = dob => dob && moment(dob).format('MMM. M, YYYY');
 const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
 
-const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
+const NonEmptyList = ({ patients, isCompact }) => {
   const dispatch = useDispatch();
   const selectPatient = useCallback((e) => {
     const patientId = e.target.getAttribute('data-patient');
@@ -122,10 +117,7 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
         {patients.map(({
           patientId, mrn, lastName, firstName, dob, gender,
         }) => (
-          <NonEmptyListRow
-            key={patientId}
-            isHighlighted={highlightedPatient && patientId === highlightedPatient.patientId}
-          >
+          <tr key={patientId}>
             <NonEmptyListCell>
               <StyledLink to={`/patient/${patientId}`}>{mrn}</StyledLink>
             </NonEmptyListCell>
@@ -135,29 +127,21 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
             <NonEmptyListCell>{calculateAgeFromDateOfBirth(dob)}</NonEmptyListCell>
             {!isCompact && <NonEmptyListCell>{capitalize(gender)}</NonEmptyListCell>}
             {!isCompact && (
-            <QuickViewCell onClick={selectPatient} data-patient={patientId}>
-              Quick view
-            </QuickViewCell>
+              <QuickViewCell onClick={selectPatient} data-patient={patientId}>
+                Quick view
+              </QuickViewCell>
             )}
-          </NonEmptyListRow>
+          </tr>
         ))}
       </tbody>
     </NonEmptyListTable>);
 };
 
-const PatientsList = ({
-  patients, isFiltered, isCompact, highlightedPatient,
-}) => {
+const PatientsList = ({ patients, isFiltered, isCompact }) => {
   if (patients.length === 0) {
     return isFiltered ? <EmptyFilteredList /> : <EmptyList />;
   }
-  return (
-    <NonEmptyList
-      patients={patients}
-      isCompact={isCompact}
-      highlightedPatient={highlightedPatient}
-    />
-  );
+  return <NonEmptyList patients={patients} isCompact={isCompact} />;
 };
 
 export default PatientsList;
