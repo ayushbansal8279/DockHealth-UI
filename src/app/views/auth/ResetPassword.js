@@ -49,8 +49,8 @@ export default class ResetPassword extends React.Component {
     const formData = {username:this.state.username, verificationCode:this.state.verificationCode}
 
     return (
-      <div className="wrapper columns large-12">
-          <div className="row expanded text-center">
+      <div className="columns large-12">
+          <div className="row expanded text-left">
             <div className="columns large-12 top-buffer">
               <h5>Reset password</h5>
             </div>

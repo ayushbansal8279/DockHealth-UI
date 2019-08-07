@@ -101,7 +101,19 @@ export const addPatientToTask = (patientId, taskId) => async (dispatch) => {
   } catch (error) {
     throw error;
   }
-};
+}
+
+export function loadingEMRPatients(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.REQUEST_EMR_PATIENTS})
+  }
+}
+
+export function clearEMRPatients(){
+  return function(dispatch){
+    dispatch({type: ActionTypes.CLEAR_EMR_PATIENTS})
+  }
+}
 
 export const lookupEMRPatients = searchToken => async (dispatch) => {
   try {

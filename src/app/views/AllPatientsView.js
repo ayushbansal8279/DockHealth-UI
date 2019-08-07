@@ -87,7 +87,11 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
                     <span onClick={(e) => this.refresh()}><svg className="icon refresh"><use xlinkHref="#icon-activity"></use></svg></span>
                   </div>
                   <div className="columns shrink" onClick={(e) => this.handleAddPatient()}>
-                    <svg id="icon-add-patient" className="add icon add-other"><use xlinkHref="#icon-add-patient"></use></svg>
+                    {/* <svg id="icon-add-patient" className="add icon add-other"><use xlinkHref="#icon-add-patient"></use></svg> */}
+                    <svg id="icon-add-patient" className="add icon add-other">
+                      <image width="62px" height="62px" xlinkHref="assets/img/icons/add-patient.png"/>
+                    </svg>
+                    
                   </div>
                 </div>
 
@@ -98,13 +102,17 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
                   <div className="column large-12 text-center">
                     <h5 className="section-title">Add a patient</h5>
                   </div>
-                  <div className="column large-12 text-center">
-                    Search for an existing patient in the database
+                  {this.props.currentUserProfile && this.props.currentUserProfile.emrIntegrationEnabled &&
+                  <div>
+                    <div className="column large-12 text-center">
+                      Search for an existing patient in the Electronic Medical Records
+                    </div>
+                    <SearchPatient />
+                    <div className="column large-12 text-center">
+                      or enter patient manually
+                    </div>
                   </div>
-                  <SearchPatient />
-									<div className="column large-12 text-center">
-										or enter patient manually
-									</div>
+                  }
                   <FormPatient />
 
 
@@ -143,7 +151,8 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
 
 const mapStateToProps = function (store) {
   return{
-    isFetching: store.patientState.isFetching
+    isFetching: store.patientState.isFetching,
+    currentUserProfile: store.userState.userProfile,
   }
 }
 

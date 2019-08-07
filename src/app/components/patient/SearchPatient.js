@@ -35,8 +35,15 @@ class SearchPatient extends BaseComponent {
             searchToken: event.target.value
         });
     }
+		handleKeyPress = (event) => {
+			if(event.key == 'Enter'){
+				console.log('enter press here! ')
+				this.searchPatients()
+			}
+		}
 
     searchPatients () {
+				this.props.patientActions.loadingEMRPatients();
         this.props.patientActions.lookupEMRPatients(this.state.searchToken);
         this.props.formActions.destroy('FormPatient');
     }
@@ -44,6 +51,11 @@ class SearchPatient extends BaseComponent {
     selectPatient (patient) {
         patient.dob = patient.dateOfBirth
         this.props.patientActions.selectEMRPatient(patient);
+		}
+		
+    clearSearch () {
+				this.props.patientActions.clearEMRPatients();
+        this.props.formActions.destroy('FormPatient');
     }
 
     render() {
@@ -57,7 +69,7 @@ class SearchPatient extends BaseComponent {
 						</div>
 
 						<div className="column large-12 text-center">
-							Search for an existing patient in the database
+							Search for an existing patient in the Electronic Medical Records
 						</div> */}
 
 						{/* <!-- Lookup --> */}
@@ -65,33 +77,52 @@ class SearchPatient extends BaseComponent {
 							<div className="row collapse expanded align-middle">
 								<div className="columns input-group input-wrapper bottom-buffer-small icon-right">
 									<div className="input-wrapper">
-										<input className="input-group-field" type="text" placeholder="Search patient in EMR" onChange={this.onChange.bind(this)}/>
+										<input className="input-group-field" type="text" placeholder="Search patient in EMR" onChange={this.onChange.bind(this)} onKeyPress={this.handleKeyPress}/>
 									</div>
 									<span className="input-group-label pointer" onClick={this.searchPatients.bind(this)}>
 										<svg className="icon"><use xlinkHref="#icon-search"></use></svg>
 									</span>
 								</div>
+								{this.props.emrPatients && this.props.emrPatients.length > 0 &&
+								<div><a onClick={this.clearSearch.bind(this)}>&nbsp;&nbsp;&nbsp;&nbsp;Clear</a></div>
+								}
 							</div>
 						</div>
-
+					{this.props.isFetching ?
+						<div className="sk-circle">
+							<div className="sk-circle1 sk-child"></div>
+							<div className="sk-circle2 sk-child"></div>
+							<div className="sk-circle3 sk-child"></div>
+							<div className="sk-circle4 sk-child"></div>
+							<div className="sk-circle5 sk-child"></div>
+							<div className="sk-circle6 sk-child"></div>
+							<div className="sk-circle7 sk-child"></div>
+							<div className="sk-circle8 sk-child"></div>
+							<div className="sk-circle9 sk-child"></div>
+							<div className="sk-circle10 sk-child"></div>
+							<div className="sk-circle11 sk-child"></div>
+							<div className="sk-circle12 sk-child"></div>
+						</div>:
 						<div className="column large-12 search-result-wrapper">
 
-							{this.props.emrPatients && this.props.emrPatients.map(patient => {
+							{this.props.emrPatients && this.props.emrPatients.map((patient, index) => {
 			            return(
-			                <div className="item row expanded align-middle" onClick={this.selectPatient.bind(this, patient)} key={patient.mrn}>
+			                <div className="item row expanded align-middle" onClick={this.selectPatient.bind(this, patient)} key={'mrn_'+patient.mrn+'_'+index}>
 			                    <div className="columns shrink">
 			                        <span className="">{patient.mrn}</span>
 			                    </div>
 			                    <div className="columns">
 			                        <span className="">{patient.lastName}, {patient.firstName}</span>
 			                    </div>
+			                    <div className="columns">
+			                        <span className=""><Moment format="MMM DD, YYYY">{patient.dateOfBirth}</Moment> ({patient.gender})</span>
+			                    </div>
 			                </div>
 			            )
 			        })}
 
 						</div>
-
-
+					}
 					</form>
       )
     }
@@ -99,7 +130,8 @@ class SearchPatient extends BaseComponent {
 
 const mapStateToProps = function (state) {
   return {
-    emrPatients: state.patientState.emrPatients
+		emrPatients: state.patientState.emrPatients,
+		isFetching: state.patientState.isFetching,
   }
 }
 
