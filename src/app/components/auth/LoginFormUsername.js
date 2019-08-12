@@ -64,7 +64,7 @@ export class LoginFormUsername extends Component {
       <form className="inline-label top-buffer" onSubmit={handleSubmit}>
         {!this.state.showLoginMessage &&
         <div className="row expanded">
-          <h5>Login to your account</h5>
+          <h4>Login to your account</h4>
           <Field name='username' type='text' component={AuthField} label='Email' xlinkHref="#icon-email"/>
 
           <div className="columns small-6 text-center top-buffer">

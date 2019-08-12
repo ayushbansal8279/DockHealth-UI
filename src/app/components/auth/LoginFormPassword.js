@@ -54,7 +54,7 @@ export class LoginFormPassword extends Component {
       <form className="inline-label top-buffer" onSubmit={handleSubmit}>
         <div className="row expanded">
           <h5>Please enter your password</h5>
-          <Field name='password' type='password' component={AuthFieldAutoFocus} label='Password' xlinkHref="#icon-password" 
+          <Field name='password' type='password' component={AuthFieldAutoFocus} label='' xlinkHref="#icon-password" 
             setFieldToBeFocused={input => {
               this.passwordInput = input;
             }}/>
