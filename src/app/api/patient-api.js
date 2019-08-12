@@ -12,6 +12,28 @@ export function getAllPatients() {
     });
 }
 
+export function getMyPatientsAll() {
+  // loading()
+  return axios.get('patient/getPatientsForCurrentUser')
+    .then(response => {
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      return error.response.data;
+    });
+}
+
+export function getMyPatientsActive() {
+  // loading()
+  return axios.get('patient/getPatientsForCurrentUser?taskStatus=INCOMPLETE')
+    .then(response => {
+      return response.data;
+    }).catch(function (error){
+      console.log(error);
+      return error.response.data;
+    });
+}
+
 export function getPatientsByTaskList(taskListId) {
   return axios.get('patient/getPatientsByTaskList/'+taskListId)
     .then(response => {

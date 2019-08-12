@@ -13,11 +13,12 @@ const ALL_PATIENTS = 'ALL_PATIENTS';
 const MY_PATIENTS = 'MY_PATIENTS';
 const MY_PATIENTS_WITH_ACTIVE_TASKS = 'MY_PATIENTS_WITH_ACTIVE_TASKS';
 
-const PatientsToolbarFilter = () => {
+const PatientsToolbarFilter = ({handlePatientFilter}) => {
   const [filter, setFilter] = useState(ALL_PATIENTS);
   const handleFilterChange = useCallback((e) => {
     const { value } = e.target;
     setFilter(value);
+    handlePatientFilter(value);
   }, [setFilter]);
 
   return (
@@ -42,9 +43,9 @@ const PatientsToolbarFilter = () => {
   );
 };
 
-const PatientsToolbar = ({ handleSearch }) => (
+const PatientsToolbar = ({ handleSearch, handlePatientFilter }) => (
   <PatientsToolbarContainer>
-    <PatientsToolbarFilter />
+    <PatientsToolbarFilter handlePatientFilter={handlePatientFilter}/>
     <PatientsSearch onChange={handleSearch} style={{ marginLeft: '46px' }} />
   </PatientsToolbarContainer>);
 

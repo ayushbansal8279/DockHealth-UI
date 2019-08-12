@@ -68,6 +68,24 @@ export const getAllPatients = () => async (dispatch) => {
   }
 };
 
+export const getMyPatientsAll = () => async (dispatch) => {
+  try {
+    const patients = await PatientApi.getMyPatientsAll();
+    dispatch(getAllPatientsSuccess(patients));
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getMyPatientsActive = () => async (dispatch) => {
+  try {
+    const patients = await PatientApi.getMyPatientsActive();
+    dispatch(getAllPatientsSuccess(patients));
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const addPatient = newPatient => async (dispatch) => {
   try {
     const patient = await PatientApi.addPatient(newPatient);

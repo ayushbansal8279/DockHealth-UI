@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import Fade from '@material-ui/core/Fade';
 import ProgressIcon from '@material-ui/core/CircularProgress/CircularProgress';
-import { getAllPatients, loading } from '../../actions/patient-actions';
+import { getAllPatients, getMyPatientsAll, getMyPatientsActive, loading } from '../../actions/patient-actions';
 import PatientsHeader from './PatientsHeader';
 import PatientsToolbar from './PatientsToolbar';
 import PatientsList from './PatientsList';
@@ -57,13 +57,24 @@ const PatientsLayout = () => {
     const { value } = e.target;
     setSearchTerm(value);
   }, [setSearchTerm]);
+  const handlePatientFilter = useCallback((selectedFilter) => {
+    console.log('selected filter: '+selectedFilter);
+    if(selectedFilter == "MY_PATIENTS"){
+      getMyPatientsAll()(dispatch);
+    }else if(selectedFilter == "MY_PATIENTS_WITH_ACTIVE_TASKS"){
+      getMyPatientsActive()(dispatch);
+    }else{
+      getAllPatients()(dispatch);
+    }
+
+  }, [setSearchTerm]);
 
   const filteredPatients = searchPatients(patients, searchTerm);
 
   return (
     <>
       <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
-      <PatientsToolbar handleSearch={handleSearch} />
+      <PatientsToolbar handleSearch={handleSearch} handlePatientFilter={handlePatientFilter}/>
       <PatientsBody>
         {isFetching
           ? <PatientsListSpinner isFetching={isFetching} />
