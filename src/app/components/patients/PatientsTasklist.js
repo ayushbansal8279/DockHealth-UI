@@ -5,6 +5,7 @@ import { ButtonBase } from '@material-ui/core';
 import BellIcon from '../../img/bell.svg';
 import Priority from '../home/Priority';
 import MemberAssignment from '../home/MemberAssignment';
+import { Link } from 'react-router';
 
 const PatientsTasklistCount = styled.div`
   font-size: 16px;
@@ -91,7 +92,7 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
 `;
 
 const PatientsTaskBody = ({
-  isSubtask, createdDateTime, dueDate, comments, priority, read, description, reminderDt, creator, assignedTo,
+  isSubtask, createdDateTime, dueDate, comments, priority, read, description, reminderDt, creator, assignedTo, taskList, taskId,
 }) => {
   const formattedCreationDate = moment(createdDateTime).format('h:ma');
   const formattedDueDate = moment(dueDate).format('ddd, MMM D');
@@ -118,9 +119,11 @@ const PatientsTaskBody = ({
         }}
         >
           <div>
-            <PatientsTasklistDescription>
-              {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
-            </PatientsTasklistDescription>
+            <Link to={`/tasks/${taskList.listName}${taskList.taskListId ? `/${taskList.taskListId}` : ''}/${taskId}`}>
+              <PatientsTasklistDescription>
+                {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
+              </PatientsTasklistDescription>
+            </Link>
             <PatientsTasklistInfo>
               {`Assigned by ${creator.userName} • ${formattedCreationDate}`}
             </PatientsTasklistInfo>
@@ -181,7 +184,7 @@ const PatientsTask = (props) => {
   );
 };
 
-const PatientsTasklist = ({ tasks, completedTasks }) => {
+const PatientsTasklist = ({ tasks = [], completedTasks = [] }) => {
   const [isShowingCompleted, setShowCompleted] = useState(false);
   const toggleShowCompleted = useCallback(() => {
     setShowCompleted(!isShowingCompleted);

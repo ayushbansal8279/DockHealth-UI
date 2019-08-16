@@ -60,10 +60,10 @@ export const Routes = (store) => {
         <Route path="/taskSearch" component={TaskListSearch} />
         <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
         <Route path="/people" component={PeopleView} />
-        <Route path="/tasks/inbox" component={Inbox} />
+        <Route path="/tasks/inbox(/:taskId)" component={Inbox} />
         <Route path="/tasks/assigned_by_me" component={AssignedByMe} />
         <Route path="/tasks/assigned_to_me" component={AssignedToMe} />
-        <Route path="/tasks/:listName/:taskListId" component={Home} />
+        <Route path="/tasks/:listName/:taskListId(/:taskId)" component={Home} />
         <Route path="/userprofile" component={UserProfileView} />
         <Route path="/support" component={SupportSectionView} />
       </Route>

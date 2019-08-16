@@ -180,10 +180,14 @@ const PatientsSidebar = ({ patient }) => {
   const [completedTasks, setCompletedTasks] = useState([]);
   useEffect(() => {
     findUserTasksByPatient(patientId, 'INCOMPLETE').then((result) => {
-      setTasks(result);
+      const resultWInbox = result.map(task => ({ ...task, taskList: task.taskList || ({ listName: 'Inbox' }) }));
+      const resultWSubtasks = resultWInbox.map(task => ({ ...task, subtasks: task.subtasks.map(subtask => ({ ...subtask, taskList: task.taskList })) }));
+      setTasks(resultWSubtasks);
     });
     findUserTasksByPatient(patientId, 'COMPLETE').then((result) => {
-      setCompletedTasks(result);
+      const resultWInbox = result.map(task => ({ ...task, taskList: task.taskList || ({ listName: 'Inbox' }) }));
+      const resultWSubtasks = resultWInbox.map(task => ({ ...task, subtasks: task.subtasks.map(subtask => ({ ...subtask, taskList: task.taskList })) }));
+      setCompletedTasks(resultWSubtasks);
     });
   }, [patientId]);
 
@@ -196,7 +200,7 @@ const PatientsSidebar = ({ patient }) => {
 
   const taskLists = taskListsIncomplete.map(taskList => ({
     ...taskList,
-    completedTasks: (taskListsComplete.find(tl => tl.taskListId === taskList.taskListId)).tasks,
+    completedTasks: (taskListsComplete.find(tl => tl.taskListId === taskList.taskListId))?.tasks,
   }));
 
   return (
