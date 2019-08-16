@@ -177,16 +177,27 @@ const PatientsSidebar = ({ patient }) => {
 
   // Fetch tasks
   const [tasks, setTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
   useEffect(() => {
     findUserTasksByPatient(patientId, 'INCOMPLETE').then((result) => {
       setTasks(result);
+    });
+    findUserTasksByPatient(patientId, 'COMPLETE').then((result) => {
+      setCompletedTasks(result);
     });
   }, [patientId]);
 
   // Group by tasklist
   const sameTasklist = (a, b) => a.taskList.taskListId === b.taskList.taskListId;
-  // eslint-disable-next-line no-shadow
-  const taskLists = groupWith(sameTasklist, tasks).map(tasks => ({ ...tasks[0].taskList, tasks }));
+  const taskListsIncomplete = groupWith(sameTasklist, tasks)
+    .map(tasks => ({ ...tasks[0].taskList, tasks })); // eslint-disable-line no-shadow
+  const taskListsComplete = groupWith(sameTasklist, completedTasks)
+    .map(tasks => ({ ...tasks[0].taskList, tasks })); // eslint-disable-line no-shadow
+
+  const taskLists = taskListsIncomplete.map(taskList => ({
+    ...taskList,
+    completedTasks: (taskListsComplete.find(tl => tl.taskListId === taskList.taskListId)).tasks,
+  }));
 
   return (
     <PatientsSidebarContainer>
@@ -276,7 +287,7 @@ const PatientsSidebar = ({ patient }) => {
         <Flag name={['features', 'showTasksInPatientDrawer']}>
           {taskLists.map(taskList => (
             <PatientsSidebarSection heading={taskList.listName}>
-              <PatientsTasklist tasks={taskList.tasks} />
+              <PatientsTasklist tasks={taskList.tasks} completedTasks={taskList.completedTasks} />
             </PatientsSidebarSection>
           ))}
         </Flag>

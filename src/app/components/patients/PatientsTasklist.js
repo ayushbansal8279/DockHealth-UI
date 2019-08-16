@@ -73,18 +73,21 @@ const PatientsTasklistSubtasks = styled(ButtonBase)`
   }
 `;
 
-const PatientsTasklistShowCompleted = styled.div`
-  width: 344px;
-  height: 37px;
-  border-radius: 57.4px;
-  background-color: #0ca1c7;
-  
-  font-size: 20px;
-  color: #ffffff;
-  
-  text-align: center;
-  margin: 36px auto 0 auto;
-  line-height: 36px;
+const PatientsTasklistShowCompleted = styled(ButtonBase)`
+  && {
+    display: block;
+    width: 344px;
+    height: 37px;
+    border-radius: 57.4px;
+    background-color: #0ca1c7;
+
+    font-size: 20px;
+    color: #ffffff;
+
+    text-align: center;
+    margin: 36px auto 0 auto;
+    line-height: 36px;
+  }
 `;
 
 const PatientsTaskBody = ({
@@ -178,14 +181,26 @@ const PatientsTask = (props) => {
   );
 };
 
-const PatientsTasklist = ({ tasks }) => (
-  <div>
-    <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
-    {tasks.map(task => <PatientsTask {...task} />)}
-    <PatientsTasklistShowCompleted>
-      Show completed tasks (2)
-    </PatientsTasklistShowCompleted>
-  </div>
-);
+const PatientsTasklist = ({ tasks, completedTasks }) => {
+  const [isShowingCompleted, setShowCompleted] = useState(false);
+  const toggleShowCompleted = useCallback(() => {
+    setShowCompleted(!isShowingCompleted);
+  }, [isShowingCompleted]);
+
+  return (
+    <div>
+      <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
+      {tasks.map(task => <PatientsTask {...task} key={task.taskId} />)}
+      {completedTasks.length > 0 && (
+        <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
+          {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${completedTasks.length})`}
+        </PatientsTasklistShowCompleted>)}
+      {isShowingCompleted && (
+        <div style={{ marginTop: '22px' }}>
+          {completedTasks.map(task => <PatientsTask {...task} key={task.taskId} />)}
+        </div>)}
+    </div>
+  );
+};
 
 export default PatientsTasklist;
