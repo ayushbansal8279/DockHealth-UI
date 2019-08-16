@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import Fade from '@material-ui/core/Fade';
 import ProgressIcon from '@material-ui/core/CircularProgress/CircularProgress';
-import { getAllPatients, getMyPatientsAll, getMyPatientsActive, loading } from '../../actions/patient-actions';
+import {
+  getAllPatients, getMyPatientsAll, getMyPatientsActive, loading,
+} from '../../actions/patient-actions';
 import PatientsHeader from './PatientsHeader';
 import PatientsToolbar from './PatientsToolbar';
 import PatientsList from './PatientsList';
@@ -11,6 +13,7 @@ import PatientsSidebar from './PatientsSidebar';
 
 const FadeContainer = styled.div`
   display: flex;
+  flex: 1;
   justify-content: center;
   padding-top: 100px;
 `;
@@ -58,23 +61,22 @@ const PatientsLayout = () => {
     setSearchTerm(value);
   }, [setSearchTerm]);
   const handlePatientFilter = useCallback((selectedFilter) => {
-    console.log('selected filter: '+selectedFilter);
-    if(selectedFilter == "MY_PATIENTS"){
+    // console.log(`selected filter: ${selectedFilter}`);
+    if (selectedFilter === 'MY_PATIENTS') {
       getMyPatientsAll()(dispatch);
-    }else if(selectedFilter == "MY_PATIENTS_WITH_ACTIVE_TASKS"){
+    } else if (selectedFilter === 'MY_PATIENTS_WITH_ACTIVE_TASKS') {
       getMyPatientsActive()(dispatch);
-    }else{
+    } else {
       getAllPatients()(dispatch);
     }
-
-  }, [setSearchTerm]);
+  }, [dispatch]);
 
   const filteredPatients = searchPatients(patients, searchTerm);
 
   return (
     <>
       <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
-      <PatientsToolbar handleSearch={handleSearch} handlePatientFilter={handlePatientFilter}/>
+      <PatientsToolbar handleSearch={handleSearch} handlePatientFilter={handlePatientFilter} />
       <PatientsBody>
         {isFetching
           ? <PatientsListSpinner isFetching={isFetching} />
@@ -83,6 +85,7 @@ const PatientsLayout = () => {
               patients={filteredPatients}
               isFiltered={searchTerm !== ''}
               isCompact={highlightedPatient !== null}
+              highlightedPatient={highlightedPatient}
             />
           )}
         {highlightedPatient && <PatientsSidebar patient={highlightedPatient} />}
@@ -94,7 +97,7 @@ const PatientsLayout = () => {
 const Patients = () => (
   <div className="off-canvas-content" data-off-canvas-content>
     <div className="row expanded collapse" style={{ minHeight: '100%' }}>
-      <div className="large-12 columns" style={{ background: '#f5f8fa' }}>
+      <div className="columns" style={{ background: '#f5f8fa' }}>
         <PatientsLayout />
       </div>
     </div>

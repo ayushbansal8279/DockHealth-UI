@@ -3,20 +3,26 @@ import React, { useCallback } from 'react';
 import { Link } from 'react-router';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
+import PatientsEmptyIcon from '../../img/patients-empty.svg';
 import { highlightPatient } from '../../actions/patient-actions';
 
 const EmptyListContainer = styled.div`
   background: #fff;
   padding: 41px 24px 50px 24px;
   text-align: center;
+  flex: 1;
 `;
 
 const EmptyListIcon = styled.div`
-  background: #000;
+  //background: #000;
   display: inline-block;
   margin-bottom: 21px;
   height: 71px;
   width: 47px;
+`;
+
+const NonEmptyListRow = styled.tr`
+  ${({ isHighlighted }) => isHighlighted && '&&& { background: #a6dcea; }'}
 `;
 
 const EmptyList = () => (
@@ -32,7 +38,7 @@ const EmptyList = () => (
 
 const EmptyFilteredList = () => (
   <EmptyListContainer>
-    <EmptyListIcon />
+    <EmptyListIcon><img src={PatientsEmptyIcon} alt="Empty patients list" /></EmptyListIcon>
     <p><strong>There are no matching patients.</strong></p>
   </EmptyListContainer>
 );
@@ -93,7 +99,7 @@ const capitalize = str => ((typeof str === 'string')
 const formatDateOfBirth = dob => dob && moment(dob).format('MMM. M, YYYY');
 const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
 
-const NonEmptyList = ({ patients, isCompact }) => {
+const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
   const dispatch = useDispatch();
   const selectPatient = useCallback((e) => {
     const patientId = e.target.getAttribute('data-patient');
@@ -117,7 +123,10 @@ const NonEmptyList = ({ patients, isCompact }) => {
         {patients.map(({
           patientId, mrn, lastName, firstName, dob, gender,
         }) => (
-          <tr key={patientId}>
+          <NonEmptyListRow
+            key={patientId}
+            isHighlighted={highlightedPatient && patientId === highlightedPatient.patientId}
+          >
             <NonEmptyListCell>
               <StyledLink to={`/patient/${patientId}`}>{mrn}</StyledLink>
             </NonEmptyListCell>
@@ -131,17 +140,24 @@ const NonEmptyList = ({ patients, isCompact }) => {
                 Quick view
               </QuickViewCell>
             )}
-          </tr>
+          </NonEmptyListRow>
         ))}
       </tbody>
     </NonEmptyListTable>);
 };
 
-const PatientsList = ({ patients, isFiltered, isCompact }) => {
+const PatientsList = ({
+  patients, isFiltered, isCompact, highlightedPatient,
+}) => {
   if (patients.length === 0) {
     return isFiltered ? <EmptyFilteredList /> : <EmptyList />;
   }
-  return <NonEmptyList patients={patients} isCompact={isCompact} />;
+  return (
+    <NonEmptyList
+      patients={patients}
+      isCompact={isCompact}
+      highlightedPatient={highlightedPatient}
+    />);
 };
 
 export default PatientsList;

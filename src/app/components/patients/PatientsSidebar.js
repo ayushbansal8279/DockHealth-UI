@@ -1,10 +1,17 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
+import IconButton from '@material-ui/core/IconButton';
+import { groupWith } from 'ramda';
+import { Flag } from '../../flags';
 import { highlightPatient } from '../../actions/patient-actions';
+import CollapseIcon from '../../img/collapse.svg';
+import PhoneHomeIcon from '../../img/phone-home.svg';
+import PhoneCellIcon from '../../img/phone-cell.svg';
 import PatientsTasklist from './PatientsTasklist';
+import { findUserTasksByPatient } from '../../api/patient-api';
 
 const PatientsSidebarContainer = styled.div`
   width: 632px;
@@ -24,18 +31,22 @@ const PatientsSidebarHeader = styled.div`
   padding: 15px 13.5px 19px 27px;
 `;
 
-const PatientsSidebarSection = styled.div`
+const PatientsSidebarSectionContainer = styled.div`
   border: solid 2px #ddf2f7;
   background: #fff;
   padding: 18px 27px 27px 24px;
+  
+  :not(:first-child) {
+     margin-top: 4px;
+   }
 `;
 
-const PatientsSidebarDetailsHeader = styled.div`
+const PatientsSidebarSectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const PatientsSidebarDetailsHeading = styled.div`
+const PatientsSidebarSectionHeading = styled.div`
   font-size: 24px;
   font-weight: 600;
   color: #0ca1c7;
@@ -48,12 +59,6 @@ const PatientsSidebarField = styled.div`
   justify-content: space-between;
   padding: 10px 22px 10px 14px;
   margin-top: 9px;
-`;
-
-const PatientsSidebarDetails = styled(PatientsSidebarSection)``;
-
-const PatientsSidebarTaskList = styled(PatientsSidebarSection)`
-  margin-top: 4px;
 `;
 
 const PatientsSidebarSubsection = styled.div`
@@ -122,12 +127,44 @@ const PatientsSidebarCloseButton = styled(ButtonBase)`
   }
 `;
 
+const StyledButton = styled(({ isCollapsed, ...props }) => <IconButton {...props} />)`
+  && {
+    height: 36px;
+    width: 36px;
+    padding: 0;
+    ${({ isCollapsed }) => isCollapsed && 'transform: rotate(180deg);'}
+  }
+`;
+
+const PatientsSidebarSection = ({ heading, children }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const toggleIsCollapsed = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  return (
+    <PatientsSidebarSectionContainer>
+      <PatientsSidebarSectionHeader>
+        <PatientsSidebarSectionHeading>{heading}</PatientsSidebarSectionHeading>
+        <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
+          <img src={CollapseIcon} alt="Collapse Details" />
+        </StyledButton>
+      </PatientsSidebarSectionHeader>
+      {!isCollapsed && children }
+    </PatientsSidebarSectionContainer>
+  );
+};
+
+const PatientsSidebarValue = styled.div`
+  font-weight: 600;
+`;
+
 const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
 const formatAge = age => (age === 1 ? '1yr old' : `${age}yrs old`);
 
 const PatientsSidebar = ({ patient }) => {
   const {
-    mrn, firstName, lastName, dob, gender, phoneHome, phoneMobile, email, notes,
+    mrn, firstName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, patientId,
   } = patient;
   const dispatch = useDispatch();
   const deselectPatient = useCallback(() => {
@@ -138,82 +175,112 @@ const PatientsSidebar = ({ patient }) => {
     deselectPatient();
   }, [deselectPatient]);
 
+  // Fetch tasks
+  const [tasks, setTasks] = useState([]);
+  useEffect(() => {
+    findUserTasksByPatient(patientId, 'INCOMPLETE').then((result) => {
+      setTasks(result);
+    });
+  }, [patientId]);
+
+  // Group by tasklist
+  const sameTasklist = (a, b) => a.taskList.taskListId === b.taskList.taskListId;
+  // eslint-disable-next-line no-shadow
+  const taskLists = groupWith(sameTasklist, tasks).map(tasks => ({ ...tasks[0].taskList, tasks }));
+
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
         <div>{`${firstName || ''} ${lastName || ''} ${mrn}`}</div>
         <PatientsSidebarCloseButton onClick={deselectPatient}>✕</PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
-      <PatientsSidebarDetails>
-        <PatientsSidebarDetailsHeader>
-          <PatientsSidebarDetailsHeading>Patient Details</PatientsSidebarDetailsHeading>
-        </PatientsSidebarDetailsHeader>
-        <PatientsSidebarField>
-          <div style={{ flex: 0.5 }}>Birthday</div>
-          <div style={{ flex: 0.25, textAlign: 'right' }}>{dob && formatAge(calculateAgeFromDateOfBirth(dob))}</div>
-          <div style={{ flex: 0.25, textAlign: 'right' }}>{dob || '—'}</div>
-        </PatientsSidebarField>
-        <PatientsSidebarField>
-          <div>Gender</div>
-          <div>{gender || '—'}</div>
-        </PatientsSidebarField>
-        <PatientsSidebarField>
-          <div>Email</div>
-          <div>{email || '—'}</div>
-        </PatientsSidebarField>
-        <PatientsSidebarSubsection>
-          <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}
-          >
-            <PatientsSidebarContact>
-              <div style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                background: '#00a73c',
-              }}
-              />
-              <div style={{ marginLeft: '15px' }}>
-                <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
-                <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
-              </div>
-            </PatientsSidebarContact>
-            <PatientsSidebarContact>
-              <div style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                background: '#05adec',
-              }}
-              />
-              <div style={{ marginLeft: '15px' }}>
-                <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
-                <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
-              </div>
-            </PatientsSidebarContact>
-          </div>
-        </PatientsSidebarSubsection>
-        <PatientsSidebarSubsection>
-          <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
-          <div>
-            <PatientsSidebarNoteDescription>
-              {notes || '—'}
-            </PatientsSidebarNoteDescription>
-            {/* <PatientsSidebarNoteInfo> */}
-            {/*  Michael Docktor | Tuesday, October 2nd */}
-            {/* </PatientsSidebarNoteInfo> */}
-          </div>
-        </PatientsSidebarSubsection>
-      </PatientsSidebarDetails>
-      <PatientsSidebarTaskList>
-        <PatientsSidebarDetailsHeader>
-          <PatientsSidebarDetailsHeading>Boston Clinic</PatientsSidebarDetailsHeading>
-        </PatientsSidebarDetailsHeader>
-        <PatientsTasklist />
-      </PatientsSidebarTaskList>
+
+      <div>
+        <PatientsSidebarSection heading="Patient Details">
+          <PatientsSidebarField>
+            <div style={{ flex: 0.5 }}>Birthday</div>
+            <div style={{ flex: 0.25, textAlign: 'right' }}>
+              {dob && <PatientsSidebarValue>{formatAge(calculateAgeFromDateOfBirth(dob))}</PatientsSidebarValue>}
+            </div>
+            <div style={{ flex: 0.25, textAlign: 'right' }}>
+              {(dob && <PatientsSidebarValue>{dob}</PatientsSidebarValue>) || '—'}
+            </div>
+          </PatientsSidebarField>
+          <PatientsSidebarField>
+            <div>Gender</div>
+            <div>
+              {(gender && <PatientsSidebarValue>{gender}</PatientsSidebarValue>) || '—'}
+            </div>
+          </PatientsSidebarField>
+          <PatientsSidebarField>
+            <div>Email</div>
+            <div>
+              {(email && <PatientsSidebarValue style={{ color: '#0ca1c7' }}><a href={`mailto:${email}`}>{email}</a></PatientsSidebarValue>) || '—'}
+            </div>
+          </PatientsSidebarField>
+          <PatientsSidebarSubsection>
+            <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+            >
+              <PatientsSidebarContact>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '50%',
+                  background: '#00a73c',
+                }}
+                >
+                  <img src={PhoneHomeIcon} alt="Phone Number (Home)" />
+                </div>
+                <div style={{ marginLeft: '15px' }}>
+                  <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
+                  <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
+                </div>
+              </PatientsSidebarContact>
+              <PatientsSidebarContact>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '50%',
+                  background: '#FB7C06',
+                }}
+                >
+                  <img src={PhoneCellIcon} alt="Phone Number (Cell)" />
+                </div>
+                <div style={{ marginLeft: '15px' }}>
+                  <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
+                  <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
+                </div>
+              </PatientsSidebarContact>
+            </div>
+          </PatientsSidebarSubsection>
+          <PatientsSidebarSubsection>
+            <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
+            <div>
+              <PatientsSidebarNoteDescription>
+                {notes || '—'}
+              </PatientsSidebarNoteDescription>
+              {/* <PatientsSidebarNoteInfo> */}
+              {/*  Michael Docktor | Tuesday, October 2nd */}
+              {/* </PatientsSidebarNoteInfo> */}
+            </div>
+          </PatientsSidebarSubsection>
+        </PatientsSidebarSection>
+        <Flag name={['features', 'showTasksInPatientDrawer']}>
+          {taskLists.map(taskList => (
+            <PatientsSidebarSection heading={taskList.listName}>
+              <PatientsTasklist tasks={taskList.tasks} />
+            </PatientsSidebarSection>
+          ))}
+        </Flag>
+      </div>
     </PatientsSidebarContainer>
   );
 };

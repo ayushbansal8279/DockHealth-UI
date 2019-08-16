@@ -6,8 +6,8 @@ import Member from './Member';
 const AssignedMember = styled(Member)`
   && {
     margin: 0 auto;
-    width: 41px;
-    height: 41px;
+    width: ${({ large }) => (large ? '67' : '41')}px;
+    height: ${({ large }) => (large ? '67' : '41')}px;
     font-size: 16px;
   }
 
@@ -49,11 +49,11 @@ const UnassignedMember = styled(AssignedMember)`
 `;
 
 const MemberAssignment = ({
-  member, onClick, small, disabled,
+  member, onClick, small, disabled, large,
 }) => (
   member
-    ? <AssignedMember onClick={disabled ? undefined : onClick} member={member} small={small} />
-    : <UnassignedMember onClick={disabled ? undefined : onClick} alt="Unassigned" small={small}>{' '}</UnassignedMember>
+    ? <AssignedMember onClick={disabled ? undefined : onClick} member={member} size={small} large={large} />
+    : <UnassignedMember onClick={disabled ? undefined : onClick} alt="Unassigned" size={small} large={large}>{' '}</UnassignedMember>
 );
 
 MemberAssignment.propTypes = {
