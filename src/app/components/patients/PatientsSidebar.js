@@ -196,7 +196,7 @@ const PatientsSidebar = ({ patient }) => {
 
   const taskLists = taskListsIncomplete.map(taskList => ({
     ...taskList,
-    completedTasks: (taskListsComplete.find(tl => tl.taskListId === taskList.taskListId)).tasks,
+    completedTasks: ((taskListsComplete.find(tl => tl.taskListId === taskList.taskListId))!=null?(taskListsComplete.find(tl => tl.taskListId === taskList.taskListId)).tasks:[]),
   }));
 
   return (
