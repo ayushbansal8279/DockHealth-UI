@@ -9,7 +9,7 @@ import {
   SELECT_EMR_PATIENT_SUCCESS,
   REQUEST_EMR_PATIENTS,
   CLEAR_EMR_PATIENTS,
-  HIGHLIGHT_PATIENT,
+  HIGHLIGHT_PATIENT, BEGIN_PATIENT_CREATION, ABORT_PATIENT_CREATION, ADD_PATIENT_ERROR,
 } from '../actions/action-types';
 
 const initialState = {
@@ -19,12 +19,51 @@ const initialState = {
   selectedPatient: null,
   emrPatients: [],
   selectedEmrPatient: null,
+  isCreatingPatient: false,
 };
 
 const PatientReducer = (state = initialState, action) => {
   switch (action.type) {
+    case BEGIN_PATIENT_CREATION: {
+      return ({
+        ...state,
+        isCreatingPatient: true,
+        highlightedPatientId: null,
+      });
+    }
+
+    case ABORT_PATIENT_CREATION: {
+      return ({
+        ...state,
+        isCreatingPatient: false,
+      });
+    }
+
+    case ADD_PATIENT_SUCCESS: {
+      const { patient } = action;
+      return ({
+        ...state,
+        allPatients: [...state.allPatients, patient],
+        isCreatingPatient: false,
+        highlightedPatientId: patient.patientId,
+      });
+    }
+
+    case ADD_PATIENT_ERROR: {
+      const { error } = action;
+      return ({
+        ...state,
+        creatingPatientError: error,
+      });
+    }
+
     case HIGHLIGHT_PATIENT: {
+      if (state.isCreatingPatient) {
+        return state;
+      }
+
       const { patientId } = action;
+
       return ({
         ...state,
         highlightedPatientId: patientId,
@@ -49,12 +88,10 @@ const PatientReducer = (state = initialState, action) => {
 
     case GET_LIST_PATIENTS_SUCCESS: {
       const { patients } = action;
-      return ({ ...state, listPatients: patients });
-    }
-
-    case ADD_PATIENT_SUCCESS: {
-      const { patient } = action;
-      return ({ ...state, allPatients: [...state.allPatients, patient] });
+      return ({
+        ...state,
+        listPatients: patients,
+      });
     }
 
     case UPDATE_PATIENT_SUCCESS: {
@@ -71,19 +108,30 @@ const PatientReducer = (state = initialState, action) => {
     }
 
     case REQUEST_EMR_PATIENTS:
-      return Object.assign({}, state, { emrPatients: [], isFetching:true })
+      return Object.assign({}, state, {
+        emrPatients: [],
+        isFetching: true,
+      });
 
     case CLEAR_EMR_PATIENTS:
-      return Object.assign({}, state, { emrPatients: [] })
+      return Object.assign({}, state, { emrPatients: [] });
 
     case GET_EMR_PATIENTS_SUCCESS: {
       const { patients } = action;
-      return ({ ...state, emrPatients: patients, isFetching: false });
+      return ({
+        ...state,
+        emrPatients: patients,
+        isFetching: false,
+      });
     }
 
     case SELECT_EMR_PATIENT_SUCCESS: {
       const { patient } = action;
-      return ({ ...state, selectedEmrPatient: patient, emrPatients: [] });
+      return ({
+        ...state,
+        selectedEmrPatient: patient,
+        emrPatients: [],
+      });
     }
 
     default:

@@ -10,6 +10,7 @@ import PatientsHeader from './PatientsHeader';
 import PatientsToolbar from './PatientsToolbar';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
+import PatientsCreation from './PatientCreation';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -54,6 +55,7 @@ const PatientsLayout = () => {
     if (highlightedPatientId === null) { return null; }
     return patientState.allPatients.find(({ patientId }) => patientId === +highlightedPatientId);
   });
+  const isCreatingPatient = useSelector(({ patientState }) => patientState.isCreatingPatient);
 
   const [searchTerm, setSearchTerm] = useState('');
   const handleSearch = useCallback((e) => {
@@ -84,11 +86,12 @@ const PatientsLayout = () => {
             <PatientsList
               patients={filteredPatients}
               isFiltered={searchTerm !== ''}
-              isCompact={highlightedPatient !== null}
+              isCompact={highlightedPatient !== null || isCreatingPatient}
               highlightedPatient={highlightedPatient}
             />
           )}
         {highlightedPatient && <PatientsSidebar patient={highlightedPatient} />}
+        {isCreatingPatient && <PatientsCreation />}
       </PatientsBody>
     </>
   );

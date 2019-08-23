@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
+import PatientsAdd from './PatientsAdd';
 
 const PatientsHeaderContainer = styled.div`
   display: flex;
@@ -35,6 +36,7 @@ const PatientsHeader = ({ patientCount = 0, isFetching }) => (
         {isFetching ? '' : `${patientCount} patients`}
       </PatientsHeaderSubheading>
     </PatientsHeaderLeftSide>
+    <PatientsAdd />
   </PatientsHeaderContainer>
 );
 

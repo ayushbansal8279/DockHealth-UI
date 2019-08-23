@@ -13,13 +13,13 @@ import PhoneCellIcon from '../../img/phone-cell.svg';
 import PatientsTasklist from './PatientsTasklist';
 import { findUserTasksByPatient } from '../../api/patient-api';
 
-const PatientsSidebarContainer = styled.div`
+export const PatientsSidebarContainer = styled.div`
   width: 632px;
   flex-shrink: 0;
   padding: 4px;
 `;
 
-const PatientsSidebarHeader = styled.div`
+export const PatientsSidebarHeader = styled.div`
   display: flex;
   position: relative;
   height: 67px;
@@ -31,7 +31,7 @@ const PatientsSidebarHeader = styled.div`
   padding: 15px 13.5px 19px 27px;
 `;
 
-const PatientsSidebarSectionContainer = styled.div`
+export const PatientsSidebarSectionContainer = styled.div`
   border: solid 2px #ddf2f7;
   background: #fff;
   padding: 18px 27px 27px 24px;
@@ -41,12 +41,12 @@ const PatientsSidebarSectionContainer = styled.div`
    }
 `;
 
-const PatientsSidebarSectionHeader = styled.div`
+export const PatientsSidebarSectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const PatientsSidebarSectionHeading = styled.div`
+export const PatientsSidebarSectionHeading = styled.div`
   font-size: 24px;
   font-weight: 600;
   color: #0ca1c7;
@@ -114,7 +114,7 @@ const PatientsSidebarContactCategory = styled.div`
   color: rgba(0, 0, 0, 0.54);
 `;
 
-const PatientsSidebarCloseButton = styled(ButtonBase)`
+export const PatientsSidebarCloseButton = styled(ButtonBase)`
   && {
     margin-left: auto;
     width: 36px;
@@ -136,19 +136,20 @@ const StyledButton = styled(({ isCollapsed, ...props }) => <IconButton {...props
   }
 `;
 
-const PatientsSidebarSection = ({ heading, children }) => {
+export const PatientsSidebarSection = ({ heading, children, hideCollapse = false, style }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleIsCollapsed = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   return (
-    <PatientsSidebarSectionContainer>
+    <PatientsSidebarSectionContainer style={style}>
       <PatientsSidebarSectionHeader>
         <PatientsSidebarSectionHeading>{heading}</PatientsSidebarSectionHeading>
-        <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
-          <img src={CollapseIcon} alt="Collapse Details" />
-        </StyledButton>
+        {!hideCollapse && (
+          <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
+            <img src={CollapseIcon} alt="Collapse Details" />
+          </StyledButton>)}
       </PatientsSidebarSectionHeader>
       {!isCollapsed && children }
     </PatientsSidebarSectionContainer>
@@ -206,7 +207,7 @@ const PatientsSidebar = ({ patient }) => {
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
-        <div>{`${firstName || ''} ${lastName || ''} ${mrn}`}</div>
+        <div>{`${firstName || ''} ${lastName || ''} ${mrn || ''}`}</div>
         <PatientsSidebarCloseButton onClick={deselectPatient}>✕</PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
 

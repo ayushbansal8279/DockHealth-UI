@@ -60,7 +60,7 @@ export function addPatient(patient) {
     }).catch((error) => {
       console.log(error);
       toggleAlert('Error in adding patient. Please try again.', 'error');
-      return error.response.data;
+      throw error.response.data;
     });
 }
 
