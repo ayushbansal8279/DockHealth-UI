@@ -27,7 +27,7 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     }}
     InputLabelProps={{
       ...InputLabelProps,
-      FormLabelClasses: { asterisk: 'asterisk', focused: 'focused' },
+      FormLabelClasses: { asterisk: 'asterisk', error: 'error' },
       classes: { shrink: 'shrink' },
     }}
   />
@@ -56,6 +56,11 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     
     .shrink {
       color: #ABABB2;
+    }
+    
+    .error {
+      color: #DA0D71;
+      background: none;
     }
     
     label {
@@ -181,6 +186,7 @@ const PatientCreation = () => {
             InputProps={{
               inputComponent: BirthdayTextMask,
             }}
+            error={formState.dob && !validateBirthday(formState.dob)}
           />
           <StyledTextField
             name="gender"
