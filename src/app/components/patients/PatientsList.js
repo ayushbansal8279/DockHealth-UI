@@ -128,9 +128,11 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
             isHighlighted={highlightedPatient && patientId === highlightedPatient.patientId}
           >
             <NonEmptyListCell>
-              <StyledLink to={`/patient/${patientId}`}>{mrn}</StyledLink>
+              {mrn && <StyledLink to={`/patient/${patientId}`}>{mrn}</StyledLink>}
             </NonEmptyListCell>
-            <NonEmptyListCell>{capitalize(lastName)}</NonEmptyListCell>
+            <NonEmptyListCell>
+              {lastName && <StyledLink to={`/patient/${patientId}`}>{capitalize(lastName)}</StyledLink>}
+            </NonEmptyListCell>
             <NonEmptyListCell>{capitalize(firstName)}</NonEmptyListCell>
             <NonEmptyListCell>{formatDateOfBirth(dob)}</NonEmptyListCell>
             <NonEmptyListCell>{calculateAgeFromDateOfBirth(dob)}</NonEmptyListCell>
