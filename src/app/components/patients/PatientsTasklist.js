@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
+import { Link } from 'react-router';
 import { ButtonBase } from '@material-ui/core';
 import BellIcon from '../../img/bell.svg';
 import Priority from '../home/Priority';
 import MemberAssignment from '../home/MemberAssignment';
-import { Link } from 'react-router';
 
 const PatientsTasklistCount = styled.div`
   font-size: 16px;
@@ -16,7 +16,7 @@ const PatientsTasklistCount = styled.div`
 const PatientsTasklistTask = styled.div`
   border-radius: 3px;
   border: solid 1px #a6dcea;
-  background-color: #ffffff;
+  background-color: ${({ isCollapsed }) => (isCollapsed ? '#fff' : '#E6ECF0')};
   
   margin-left: -20px;
   margin-right: -23px;
@@ -37,7 +37,7 @@ const PatientsTasklistNew = styled.div`
 `;
 
 const PatientsTasklistDescription = styled.div`
-  font-size: 20px;
+  font-size: 16px;
   color: #303538;
 `;
 
@@ -52,7 +52,7 @@ const PatientsTasklistComments = styled.div`
 `;
 
 const PatientsTasklistDate = styled.div`
-  font-size: ${({ isSubtask }) => (isSubtask ? '18px' : '20px')};
+  font-size: ${({ isSubtask }) => (isSubtask ? '16px' : '16px')};
   color: #303538;
 `;
 
@@ -64,12 +64,12 @@ const PatientsTasklistSubtasks = styled(ButtonBase)`
     height: 44px;
     border-radius: 1px;
     border: solid 3px #f5f8fa;
-    ${({ isCollapsed }) => !isCollapsed && 'border-color: transparent;'}
+    ${({ isCollapsed }) => isCollapsed && 'border: none;'}
   
-    font-size: 20px;
+    font-size: 16px;
     line-height: 38px;
     color: #2e3a43;
-    margin: 18px auto 12px auto;
+    margin: 6px auto 12px auto;
     padding-left: 15px;
   }
 `;
@@ -82,7 +82,7 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
     border-radius: 57.4px;
     background-color: #0ca1c7;
 
-    font-size: 20px;
+    font-size: 16px;
     color: #ffffff;
 
     text-align: center;
@@ -94,13 +94,13 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
 const PatientsTaskBody = ({
   isSubtask, createdDateTime, dueDate, comments, priority, read, description, reminderDt, creator, assignedTo, taskList, taskId,
 }) => {
-  const formattedCreationDate = moment(createdDateTime).format('h:ma');
+  const formattedCreationDate = moment(createdDateTime).format('h:mma');
   const formattedDueDate = moment(dueDate).format('ddd, MMM D');
-  const formattedDueTime = moment(dueDate).format('@ h:ma');
+  const formattedDueTime = moment(dueDate).format('@ h:mma');
 
   return (
     <div style={{ display: 'flex' }}>
-      <div style={{ margin: '14px 8px 0 8px', width: '67px', height: '67px' }}>
+      <div style={{ margin: '14px 8px', width: '67px', height: '67px' }}>
         <MemberAssignment member={assignedTo} disabled large />
       </div>
       <div style={{ flex: 1 }}>
@@ -162,7 +162,7 @@ const PatientsTask = (props) => {
   }, [setIsCollapsed, isCollapsed]);
 
   return (
-    <PatientsTasklistTask style={style}>
+    <PatientsTasklistTask style={style} isCollapsed={isCollapsed}>
       <div style={{ display: 'flex' }}>
         {priority !== 'LOW' && <PatientsTasklistFlag />}
         <div style={{ flex: 1 }}>
@@ -174,7 +174,7 @@ const PatientsTask = (props) => {
               </PatientsTasklistSubtasks>
               {!isCollapsed && (
                 <div>
-                  {subtasks.map(subtask => <PatientsTask {...subtask} isSubtask style={{ marginLeft: '14px', marginRight: 0, borderColor: 'transparent' }} />)}
+                  {subtasks.map(subtask => <PatientsTask {...subtask} isSubtask style={{ marginLeft: '14px', marginRight: '4px', border: 'none' }} />)}
                 </div>)}
             </>
           )}
