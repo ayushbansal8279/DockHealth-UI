@@ -3,6 +3,7 @@ import { createFlags } from 'flag';
 const flags = {
   features: {
     showTasksInPatientDrawer: true,
+    showOldPatientDetails: false,
   },
 };
 

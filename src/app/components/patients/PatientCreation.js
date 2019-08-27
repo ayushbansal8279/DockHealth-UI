@@ -23,7 +23,7 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     InputProps={{
       ...InputProps,
       disableUnderline: true,
-      classes: { root: 'root' },
+      classes: { root: 'root', disabled: 'disabled' },
     }}
     InputLabelProps={{
       ...InputLabelProps,
@@ -44,10 +44,18 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
         border: none;
         background: none;
       }
+      :disabled {
+        background: none;
+        cursor: default;
+      }
     }
     
     .root {
       background-color: rgba(243, 245, 246, 0.5);
+    }
+    
+    .disabled {
+      color: #2e3a43;
     }
     
     .asterisk {
@@ -69,6 +77,18 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   }
 `;
 
+const Cancel = styled(Button)`
+  && {
+    display: flex;
+    width: 108px;
+    height: 38px;
+    border-radius: 0;
+    font-size: 16px;
+    margin-right: 4px;
+    margin-top: 18px;
+  }
+`;
+
 const Save = styled(Button).attrs({ variant: 'contained', color: 'secondary' })`
   && {
     display: flex;
@@ -77,7 +97,6 @@ const Save = styled(Button).attrs({ variant: 'contained', color: 'secondary' })`
     border-radius: 0;
     background: #DA0D71; 
     box-shadow: none;
-    margin-left: auto;
     margin-top: 18px;
     font-size: 16px;
   }
@@ -96,6 +115,133 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
     keepCharPositions
   />
 );
+
+export const PatientsForm = ({
+  mrn, firstName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel,
+}) => {
+  const readOnlyProps = placeholder => ({
+    InputLabelProps: { shrink: isReadOnly || undefined },
+    // disabled: isReadOnly,
+    placeholder: isReadOnly ? undefined : placeholder,
+  });
+
+  return (
+    <>
+      <PatientsSidebarSection heading="Patient Details" hideCollapse={hideCollapse}>
+        <StyledTextField
+          name="mrn"
+          value={mrn || ''}
+          onChange={onChange}
+          label="MRN"
+          style={{ marginTop: '18px' }}
+          {...readOnlyProps('123-123-23444')}
+        />
+        <div style={{ display: 'flex' }}>
+          <div style={{
+            flex: 1,
+            marginRight: '4px',
+          }}
+          >
+            <StyledTextField
+              name="firstName"
+              value={firstName || ''}
+              onChange={onChange}
+              required={!isReadOnly}
+              label="First Name"
+              {...readOnlyProps('Sam')}
+            />
+          </div>
+          {/* <div style={{ margin: '0 4px' }}> */}
+          {/*  <StyledTextField */}
+          {/*    name="middleName" */}
+          {/*    value={formState.middleName} */}
+          {/*    label="Middle Name" */}
+          {/*  /> */}
+          {/* </div> */}
+          <div style={{ flex: 1 }}>
+            <StyledTextField
+              name="lastName"
+              value={lastName || ''}
+              onChange={onChange}
+              required={!isReadOnly}
+              label="Last Name"
+              {...readOnlyProps('Nelson')}
+            />
+          </div>
+        </div>
+        <StyledTextField
+          name="dob"
+          value={dob || ''}
+          onChange={onChange}
+          label="Birthday"
+          error={errors?.dob}
+          InputProps={{
+            inputComponent: isReadOnly ? undefined : BirthdayTextMask,
+          }}
+          {...readOnlyProps()}
+        />
+        <StyledTextField
+          name="gender"
+          value={gender || ''}
+          onChange={onChange}
+          label="Gender"
+          select
+          {...readOnlyProps()}
+        >
+          <MenuItem value="female">Female</MenuItem>
+          <MenuItem value="male">Male</MenuItem>
+          {/* <MenuItem value="other">Other</MenuItem> */}
+        </StyledTextField>
+        <StyledTextField
+          name="phoneHome"
+          value={phoneHome || ''}
+          onChange={onChange}
+          label="Home Phone"
+          type="tel"
+          {...readOnlyProps('234-234-2333')}
+        />
+        <StyledTextField
+          name="phoneMobile"
+          value={phoneMobile || ''}
+          onChange={onChange}
+          label="Mobile Phone"
+          type="tel"
+          {...readOnlyProps('456-456-4444')}
+        />
+        <StyledTextField
+          name="email"
+          value={email || ''}
+          onChange={onChange}
+          label="Email"
+          type="email"
+          {...readOnlyProps('name@email.com')}
+        />
+      </PatientsSidebarSection>
+      <PatientsSidebarSection
+        hideCollapse
+        style={{
+          marginTop: 0,
+          borderTop: 'none',
+        }}
+      >
+        <StyledTextField
+          name="notes"
+          value={notes || ''}
+          onChange={onChange}
+          label="Notes"
+          multiline
+          rows={3}
+          {...readOnlyProps('Primarily lives with their grandma in Boston.')}
+        />
+        {/* {error && (error?.statusMessage || 'Error.')} */}
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+          {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
+          {!isReadOnly && <Save onClick={onSubmit} disabled={isDisabled}>Save</Save>}
+        </div>
+      </PatientsSidebarSection>
+    </>
+  );
+};
 
 const PatientCreation = () => {
   const dispatch = useDispatch();
@@ -143,104 +289,16 @@ const PatientCreation = () => {
         <PatientsSidebarCloseButton onClick={abort}>✕</PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
       <div>
-        <PatientsSidebarSection heading="Patient Details" hideCollapse>
-          <StyledTextField
-            name="mrn"
-            value={formState.mrn}
-            onChange={handleInputChange}
-            label="MRN"
-            style={{ marginTop: '18px' }}
-          />
-          <div style={{ display: 'flex' }}>
-            <div style={{ flex: 1, marginRight: '4px' }}>
-              <StyledTextField
-                name="firstName"
-                value={formState.firstName}
-                onChange={handleInputChange}
-                required
-                label="First Name"
-              />
-            </div>
-            {/* <div style={{ margin: '0 4px' }}> */}
-            {/*  <StyledTextField */}
-            {/*    name="middleName" */}
-            {/*    value={formState.middleName} */}
-            {/*    label="Middle Name" */}
-            {/*  /> */}
-            {/* </div> */}
-            <div style={{ flex: 1 }}>
-              <StyledTextField
-                name="lastName"
-                value={formState.lastName}
-                onChange={handleInputChange}
-                required
-                label="Last Name"
-              />
-            </div>
-          </div>
-          <StyledTextField
-            name="dob"
-            value={formState.dob}
-            onChange={handleInputChange}
-            label="Birthday"
-            InputProps={{
-              inputComponent: BirthdayTextMask,
-            }}
-            error={formState.dob && !validateBirthday(formState.dob)}
-          />
-          <StyledTextField
-            name="gender"
-            value={formState.gender}
-            onChange={handleInputChange}
-            label="Gender"
-            select
-            InputLabelProps={{
-              shrink: true,
-            }}
-          >
-            <MenuItem value="female">Female</MenuItem>
-            <MenuItem value="male">Male</MenuItem>
-          </StyledTextField>
-          <StyledTextField
-            name="phoneHome"
-            value={formState.phoneHome}
-            onChange={handleInputChange}
-            label="Home Phone"
-            type="tel"
-          />
-          <StyledTextField
-            name="phoneMobile"
-            value={formState.phoneMobile}
-            onChange={handleInputChange}
-            label="Mobile Phone"
-            type="tel"
-          />
-          <StyledTextField
-            name="email"
-            value={formState.email}
-            onChange={handleInputChange}
-            label="Email"
-            type="email"
-          />
-        </PatientsSidebarSection>
-        <PatientsSidebarSection
-          hideCollapse
-          style={{
-            marginTop: 0,
-            borderTop: 'none',
+        <PatientsForm
+          {...formState}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          isDisabled={!canSubmit() || isSubmitting}
+          errors={{
+            dob: formState.dob && !validateBirthday(formState.dob),
           }}
-        >
-          <StyledTextField
-            name="notes"
-            value={formState.notes}
-            onChange={handleInputChange}
-            label="Notes"
-            multiline
-            rows={3}
-          />
-          {/* {error && (error?.statusMessage || 'Error.')} */}
-          <Save onClick={handleSubmit} disabled={!canSubmit() || isSubmitting}>Save</Save>
-        </PatientsSidebarSection>
+          hideCollapse
+        />
       </div>
     </PatientsSidebarContainer>
   );

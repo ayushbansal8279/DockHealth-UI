@@ -4,14 +4,18 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
-import { groupWith } from 'ramda';
+import { groupWith, equals } from 'ramda';
 import { Flag } from '../../flags';
-import { highlightPatient } from '../../actions/patient-actions';
+import {
+  highlightPatient,
+  updatePatient,
+} from '../../actions/patient-actions';
 import CollapseIcon from '../../img/collapse.svg';
 import PhoneHomeIcon from '../../img/phone-home.svg';
 import PhoneCellIcon from '../../img/phone-cell.svg';
 import PatientsTasklist from './PatientsTasklist';
 import { findUserTasksByPatient } from '../../api/patient-api';
+import { PatientsForm } from './PatientCreation';
 
 export const PatientsSidebarContainer = styled.div`
   width: 632px;
@@ -136,7 +140,9 @@ const StyledButton = styled(({ isCollapsed, ...props }) => <IconButton {...props
   }
 `;
 
-export const PatientsSidebarSection = ({ heading, children, hideCollapse = false, style }) => {
+export const PatientsSidebarSection = ({
+  heading, children, hideCollapse = false, style,
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleIsCollapsed = () => {
     setIsCollapsed(!isCollapsed);
@@ -162,6 +168,158 @@ const PatientsSidebarValue = styled.div`
 
 const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
 const formatAge = age => (age === 1 ? '1yr old' : `${age}yrs old`);
+
+const PatientsDetailsSection = ({
+  dob, gender, email, phoneHome, phoneMobile, notes,
+}) => (
+  <PatientsSidebarSection heading="Patient Details">
+    <PatientsSidebarField>
+      <div style={{ flex: 0.5 }}>Birthday</div>
+      <div style={{
+        flex: 0.25,
+        textAlign: 'right',
+      }}
+      >
+        {dob && <PatientsSidebarValue>{formatAge(calculateAgeFromDateOfBirth(dob))}</PatientsSidebarValue>}
+      </div>
+      <div style={{
+        flex: 0.25,
+        textAlign: 'right',
+      }}
+      >
+        {(dob && <PatientsSidebarValue>{dob}</PatientsSidebarValue>) || '—'}
+      </div>
+    </PatientsSidebarField>
+    <PatientsSidebarField>
+      <div>Gender</div>
+      <div>
+        {(gender && <PatientsSidebarValue>{gender}</PatientsSidebarValue>) || '—'}
+      </div>
+    </PatientsSidebarField>
+    <PatientsSidebarField>
+      <div>Email</div>
+      <div>
+        {(email && (
+          <PatientsSidebarValue style={{ color: '#0ca1c7' }}>
+            <a href={`mailto:${email}`}>
+              {email}
+            </a>
+          </PatientsSidebarValue>
+        )) || '—'}
+      </div>
+    </PatientsSidebarField>
+    <PatientsSidebarSubsection>
+      <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}
+      >
+        <PatientsSidebarContact>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            background: '#00a73c',
+          }}
+          >
+            <img src={PhoneHomeIcon} alt="Phone Number (Home)" />
+          </div>
+          <div style={{ marginLeft: '15px' }}>
+            <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
+            <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
+          </div>
+        </PatientsSidebarContact>
+        <PatientsSidebarContact>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            background: '#FB7C06',
+          }}
+          >
+            <img src={PhoneCellIcon} alt="Phone Number (Cell)" />
+          </div>
+          <div style={{ marginLeft: '15px' }}>
+            <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
+            <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
+          </div>
+        </PatientsSidebarContact>
+      </div>
+    </PatientsSidebarSubsection>
+    <PatientsSidebarSubsection>
+      <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
+      <div>
+        <PatientsSidebarNoteDescription>
+          {notes || '—'}
+        </PatientsSidebarNoteDescription>
+        {/* <PatientsSidebarNoteInfo> */}
+        {/*  Michael Docktor | Tuesday, October 2nd */}
+        {/* </PatientsSidebarNoteInfo> */}
+      </div>
+    </PatientsSidebarSubsection>
+  </PatientsSidebarSection>
+);
+
+const NewPatientsDetailsSection = ({ patient }) => {
+  const dispatch = useDispatch();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formState, setFormState] = useState(patient);
+  const isClean = equals(formState, patient);
+
+  const handleInputChange = useCallback((event) => {
+    const { target } = event;
+    const { name } = target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+
+    setFormState({
+      ...formState,
+      [name]: value,
+    });
+  }, [formState]);
+
+  const handleSubmit = useCallback(async () => {
+    setIsSubmitting(true);
+    await dispatch(updatePatient(formState));
+    setIsSubmitting(false);
+  }, [dispatch, formState]);
+
+  const validateBirthday = (dob) => {
+    const now = moment();
+    const birthday = moment(dob, 'MM/DD/YYYY', true);
+    return birthday.isBefore(now);
+  };
+
+  const canSubmit = () => {
+    const { firstName, lastName, dob } = formState;
+    return (firstName && firstName !== '')
+      && (lastName && lastName !== '')
+      && (!dob || validateBirthday(dob));
+  };
+
+  const clear = () => {
+    setFormState(patient);
+  };
+
+  return (
+    <PatientsForm
+      {...formState}
+      onChange={handleInputChange}
+      onSubmit={handleSubmit}
+      isDisabled={!canSubmit() || isSubmitting}
+      errors={isClean ? {} : {
+        dob: formState.dob && !validateBirthday(formState.dob),
+      }}
+      isReadOnly={isClean}
+      cancel={isClean ? undefined : clear}
+    />
+  );
+};
 
 const PatientsSidebar = ({ patient }) => {
   const {
@@ -210,85 +368,26 @@ const PatientsSidebar = ({ patient }) => {
         <div>{`${firstName || ''} ${lastName || ''} ${mrn || ''}`}</div>
         <PatientsSidebarCloseButton onClick={deselectPatient}>✕</PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
-
       <div>
-        <PatientsSidebarSection heading="Patient Details">
-          <PatientsSidebarField>
-            <div style={{ flex: 0.5 }}>Birthday</div>
-            <div style={{ flex: 0.25, textAlign: 'right' }}>
-              {dob && <PatientsSidebarValue>{formatAge(calculateAgeFromDateOfBirth(dob))}</PatientsSidebarValue>}
-            </div>
-            <div style={{ flex: 0.25, textAlign: 'right' }}>
-              {(dob && <PatientsSidebarValue>{dob}</PatientsSidebarValue>) || '—'}
-            </div>
-          </PatientsSidebarField>
-          <PatientsSidebarField>
-            <div>Gender</div>
-            <div>
-              {(gender && <PatientsSidebarValue>{gender}</PatientsSidebarValue>) || '—'}
-            </div>
-          </PatientsSidebarField>
-          <PatientsSidebarField>
-            <div>Email</div>
-            <div>
-              {(email && <PatientsSidebarValue style={{ color: '#0ca1c7' }}><a href={`mailto:${email}`}>{email}</a></PatientsSidebarValue>) || '—'}
-            </div>
-          </PatientsSidebarField>
-          <PatientsSidebarSubsection>
-            <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
+        <Flag
+          name={['features', 'showOldPatientDetails']}
+          render={() => (
+            <PatientsDetailsSection
+              dob={dob}
+              gender={gender}
+              email={email}
+              phoneHome={phoneHome}
+              phoneMobile={phoneMobile}
+              notes={notes}
+            />
+          )}
+          fallbackRender={() => (
+            <NewPatientsDetailsSection patient={{
+              patientId, mrn, firstName, lastName, dob: dob && moment(dob).format('MM/DD/YYYY'), gender, phoneHome, phoneMobile, email, notes,
             }}
-            >
-              <PatientsSidebarContact>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '50%',
-                  background: '#00a73c',
-                }}
-                >
-                  <img src={PhoneHomeIcon} alt="Phone Number (Home)" />
-                </div>
-                <div style={{ marginLeft: '15px' }}>
-                  <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
-                  <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
-                </div>
-              </PatientsSidebarContact>
-              <PatientsSidebarContact>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '50%',
-                  background: '#FB7C06',
-                }}
-                >
-                  <img src={PhoneCellIcon} alt="Phone Number (Cell)" />
-                </div>
-                <div style={{ marginLeft: '15px' }}>
-                  <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
-                  <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
-                </div>
-              </PatientsSidebarContact>
-            </div>
-          </PatientsSidebarSubsection>
-          <PatientsSidebarSubsection>
-            <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
-            <div>
-              <PatientsSidebarNoteDescription>
-                {notes || '—'}
-              </PatientsSidebarNoteDescription>
-              {/* <PatientsSidebarNoteInfo> */}
-              {/*  Michael Docktor | Tuesday, October 2nd */}
-              {/* </PatientsSidebarNoteInfo> */}
-            </div>
-          </PatientsSidebarSubsection>
-        </PatientsSidebarSection>
+            />
+          )}
+        />
         <Flag name={['features', 'showTasksInPatientDrawer']}>
           {taskLists.map(taskList => (
             <PatientsSidebarSection heading={taskList.listName}>

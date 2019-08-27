@@ -95,8 +95,13 @@ const PatientReducer = (state = initialState, action) => {
     }
 
     case UPDATE_PATIENT_SUCCESS: {
-      // const { patient } = action;
-      return state; // TODO
+      const { patient } = action;
+      return ({
+        ...state,
+        allPatients: state.allPatients.map(existingPatient => (
+          existingPatient.patientId === patient.patientId ? patient : existingPatient
+        )),
+      });
     }
 
     case GET_PATIENT_SUCCESS: {
