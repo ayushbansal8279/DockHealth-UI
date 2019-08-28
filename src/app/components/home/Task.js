@@ -122,7 +122,7 @@ const UnnamedTask = styled.span`
 `;
 
 const Task = ({
-  task, markComplete, storeAsCurrentTask, isSubtask, hideDate, hideTags, selectedTaskId, router,
+  task, markComplete, storeAsCurrentTask, isSubtask, hideDate, hideTags, selectedTaskId,
 }) => {
   // Check all subtasks confirmation dialog
   const [isOpen, setOpen] = useState(false);
@@ -156,7 +156,8 @@ const Task = ({
           <StyledCheckbox
             checked={task.status === 'COMPLETE'}
             onChange={() => {
-              if (isSubtask || task.status === 'COMPLETE') {
+              const hasSubtasks = task.subtasks?.length > 0;
+              if (!hasSubtasks || task.status === 'COMPLETE') {
                 confirm();
                 return;
               }
