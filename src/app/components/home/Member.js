@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 
 export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
   && {
@@ -58,9 +59,15 @@ const Member = ({
     </StyledAvatar>
   );
 
-  return onClick
+  const containedAvatar = onClick
     ? <StyledButtonBase onClick={onClick} style={style}>{avatar}</StyledButtonBase>
     : <StyledContainer>{avatar}</StyledContainer>;
+
+  if (avatarProps.alt) {
+    return <Tooltip title={avatarProps.alt}>{containedAvatar}</Tooltip>;
+  }
+
+  return containedAvatar;
 };
 
 Member.propTypes = {
