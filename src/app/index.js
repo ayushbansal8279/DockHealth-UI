@@ -1,7 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, hashHistory } from 'react-router';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import MomentUtils from '@date-io/moment';
@@ -17,9 +16,7 @@ const Routing = () => (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <FlagsProvider flags={flags}>
         <Provider store={store}>
-          <Router history={hashHistory}>
-            {Routes(store)}
-          </Router>
+            <Routes store={store} />
         </Provider>
       </FlagsProvider>
     </MuiPickersUtilsProvider>

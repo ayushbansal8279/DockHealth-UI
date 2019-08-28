@@ -1,34 +1,48 @@
-import * as types from '../actions/action-types';
-import initialState from './initialState';
+const initialState = {
+  user: false,
+  userProfile: '',
+  userProfilePic: '',
+  userNotificationPrefs: '',
+  allSpecialties: [],
+  allTitles: [],
+};
 
-const UserReducer = function(state = {user: false, userProfile: "",userProfilePic :"",userNotificationPrefs :"",allSpecialties:[],allTitles:[]},  action) {
-  let newState
+const UserReducer = (state = initialState, action) => {
   switch (action.type) {
     // trigger when user is changed
-    case 'user/user':
-      // newState = Object.assign({}, state)
-      // newState.user = action.user
-      // return newState
-      newState = Object.assign({}, state, { user: action.user });
-      return newState;
-    case 'user/userProfile':
-      newState = Object.assign({}, state, { userProfile: action.userProfile });
-      return newState;
-    case 'user/userProfilePic':
-      newState = Object.assign({}, state, { userProfilePic: action.userProfilePic});
-      return newState;
-    case 'user/userNotificationPrefs':
-      newState = Object.assign({}, state, { userNotificationPrefs: action.userNotificationPrefs });
-      return newState;
-    case 'reference/allSpecialties':
-      newState = Object.assign({}, state, { allSpecialties: action.allSpecialties });
-      return newState;
-    case 'reference/allTitles':
-      newState = Object.assign({}, state, { allTitles: action.allTitles });
-      return newState;
+    case 'user/user': {
+      const { user } = action;
+      return ({ ...state, user });
+    }
+
+    case 'user/userProfile': {
+      const { userProfile } = action;
+      return ({ ...state, userProfile });
+    }
+
+    case 'user/userProfilePic': {
+      const { userProfilePic } = action;
+      return ({ ...state, userProfilePic });
+    }
+
+    case 'user/userNotificationPrefs': {
+      const { userNotificationPrefs } = action;
+      return ({ ...state, userNotificationPrefs });
+    }
+
+    case 'reference/allSpecialties': {
+      const { allSpecialties } = action;
+      return ({ ...state, allSpecialties });
+    }
+
+    case 'reference/allTitles': {
+      const { allTitles } = action;
+      return ({ ...state, allTitles });
+    }
+
+    default:
+      return state;
   }
+};
 
-  return state;
-}
-
-export default UserReducer
+export default UserReducer;

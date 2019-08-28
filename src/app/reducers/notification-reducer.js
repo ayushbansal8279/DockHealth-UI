@@ -1,5 +1,11 @@
-export function reducer (state = {message: false, type: false, hidden: true, stay: false}, action) {
-  let newState
+const initialState = {
+  message: false,
+  type: false,
+  hidden: true,
+  stay: false,
+};
+
+const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'notification/info':
     case 'notification/success':
@@ -9,13 +15,15 @@ export function reducer (state = {message: false, type: false, hidden: true, sta
         hidden: false,
         message: action.message,
         type: action.type.replace('notification/', ''),
-        stay: action.stay
-      }
+        stay: action.stay,
+      };
+
     case 'notification/hide':
-      newState = Object.assign({}, state)
-      newState.hidden = true
-      return newState
+      return ({ ...state, hidden: true });
+
     default:
-      return state
+      return state;
   }
-}
+};
+
+export default reducer;

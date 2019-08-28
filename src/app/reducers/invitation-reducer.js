@@ -1,42 +1,44 @@
-import * as types from '../actions/action-types';
-import initialState from './initialState';
+import {
+  GET_INVITATION_SUCCESS,
+  GET_PENDING_TASKLIST_SUCCESS,
+  ACCEPT_INVITE_TOTASKLIST_SUCCESS,
+  REJECT_INVITE_TOTASKLIST_SUCCESS,
+} from '../actions/action-types';
 
-const InvitationReducer = function(state = initialState, action) {
+const initialState = {
+  invitationlist: [],
+  pendingTasklists: [],
+};
 
-  switch(action.type) {
-
-    case types.GET_INVITATION_SUCCESS:
-      return {...state, invitationlist:action.invitelist};  //whatever our current state is, add on "invitelist"
-
-    case types.GET_PENDING_TASKLIST_SUCCESS:
-      return {...state, pendingTasklists:action.tasklist};  //whatever our current state is, add on "tasklist"
-
-    // case types.ACCEPT_INVITE_TOTASKLIST_SUCCESS:
-    //   var pendingList = {} // Look for tasklist with same id and set as variable
-    //   state.pendingTasklists.map(taskList =>
-    //     taskList.taskListId == action.taskListId ?
-    //     pendingList = taskList : taskList
-    //   )
-    //   return{ // return new state with updated pendingtasklists and tasklist
-    //     ...state,
-    //     pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist.taskListId !== action.taskListId),
-    //     tasklist: state.tasklist.concat(pendingList)
-    //   }
-
-    case types.ACCEPT_INVITE_TOTASKLIST_SUCCESS:
-      return{
+const InvitationReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case GET_INVITATION_SUCCESS:
+      return {
         ...state,
-        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist)
-      }
+        invitationlist: action.invitelist,
+      };
 
-    case types.REJECT_INVITE_TOTASKLIST_SUCCESS:
-      return{ // remove tasklist from pending tasklists
+    case GET_PENDING_TASKLIST_SUCCESS:
+      return {
         ...state,
-        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist)
-      }
-      break
+        pendingTasklists: action.tasklist,
+      };
+
+    case ACCEPT_INVITE_TOTASKLIST_SUCCESS:
+      return {
+        ...state,
+        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist),
+      };
+
+    case REJECT_INVITE_TOTASKLIST_SUCCESS:
+      return {
+        ...state,
+        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist),
+      };
+
+    default:
+      return state;
   }
-  return state;
-}
+};
 
-export default InvitationReducer
+export default InvitationReducer;

@@ -122,7 +122,7 @@ const UnnamedTask = styled.span`
 `;
 
 const Task = ({
-  task, markComplete, storeAsCurrentTask, isSubtask, hideDate, hideTags, selectedTaskId,
+  task, markComplete, storeAsCurrentTask, isSubtask, hideDate, hideTags, selectedTaskId, router,
 }) => {
   // Check all subtasks confirmation dialog
   const [isOpen, setOpen] = useState(false);
@@ -138,7 +138,10 @@ const Task = ({
     <StyledTableBody
       isSubtask={isSubtask}
       isSelected={selectedTaskId === task.taskId}
-      onClick={(e) => { e.stopPropagation(); storeAsCurrentTask(task.taskId); }}
+      onClick={(e) => {
+        e.stopPropagation();
+        storeAsCurrentTask(task.taskId);
+      }}
     >
       <TableRow>
         <StyledTableCell

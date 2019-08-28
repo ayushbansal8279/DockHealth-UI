@@ -39,6 +39,9 @@ const PatientsTasklistNew = styled.div`
 const PatientsTasklistDescription = styled.div`
   font-size: 16px;
   color: #303538;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const PatientsTasklistInfo = styled.div`
@@ -52,7 +55,7 @@ const PatientsTasklistComments = styled.div`
 `;
 
 const PatientsTasklistDate = styled.div`
-  font-size: ${({ isSubtask }) => (isSubtask ? '16px' : '16px')};
+  font-size: 16px;
   color: #303538;
 `;
 
@@ -63,8 +66,7 @@ const PatientsTasklistSubtasks = styled(ButtonBase)`
     width: 560px;
     height: 44px;
     border-radius: 1px;
-    border: solid 3px #f5f8fa;
-    ${({ isCollapsed }) => isCollapsed && 'border: none;'}
+    border: solid 3px ${({ isCollapsed }) => (isCollapsed ? '#f5f8fa' : 'transparent')};
   
     font-size: 16px;
     line-height: 38px;
@@ -103,7 +105,7 @@ const PatientsTaskBody = ({
       <div style={{ margin: '14px 8px', width: '67px', height: '67px' }}>
         <MemberAssignment member={assignedTo} disabled large />
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, width: 0 }}>
         <div style={{
           height: '22px',
           marginBottom: '-7px',
@@ -118,8 +120,12 @@ const PatientsTaskBody = ({
           justifyContent: 'space-between',
         }}
         >
-          <div>
-            <Link to={`/tasks/${taskList.listName}${taskList.taskListId ? `/${taskList.taskListId}` : ''}/${taskId}`}>
+          <div style={{ minWidth: 0, flexGrow: 1 }}>
+            <Link to={{
+              pathname: `/tasks/${taskList.listName}${taskList.taskListId ? `/${taskList.taskListId}` : ''}`,
+              state: { taskId },
+            }}
+            >
               <PatientsTasklistDescription>
                 {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
               </PatientsTasklistDescription>
