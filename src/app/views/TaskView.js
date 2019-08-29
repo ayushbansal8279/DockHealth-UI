@@ -58,6 +58,7 @@ const StyledButton = styled(ButtonBase)`
 class TaskView extends React.Component {
   state = {
     filterBy: '',
+    searchTerms: [],
   }
 
   refresh = () => {
@@ -83,8 +84,24 @@ class TaskView extends React.Component {
     onFilter(filterBy, sortBy);
   }
 
-  handleSearch = () => {
+  handleSearch = (e) => {
+    const { value } = e.target;
+    const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
+    this.setState({ searchTerms });
+  }
 
+  search = (tasks) => {
+    if (tasks?.length === 0) {
+      return tasks;
+    }
+
+    const { searchTerms } = this.state;
+    const isMatch = text => searchTerms.every(term => text?.toLowerCase().includes(term));
+    const filteredTasks = searchTerms.length === 0
+      ? tasks
+      : tasks.filter(({ description }) => isMatch(description));
+
+    return filteredTasks;
   }
 
   handleClose = () => {
@@ -103,7 +120,7 @@ class TaskView extends React.Component {
     const isCollapsed = selectedTaskId != null;
 
     const tasklistProps = {
-      tasks,
+      tasks: this.search(tasks),
       markComplete: (task, status) => { markComplete(task, status, 'INCOMPLETE'); },
       storeAsCurrentTask,
       hideDate: isCollapsed,
@@ -154,7 +171,7 @@ class TaskView extends React.Component {
 
     const isCollapsed = selectedTaskId != null;
     const tasklistProps = {
-      tasks: completedTasks,
+      tasks: this.search(completedTasks),
       markComplete: (task, status) => { markComplete(task, status, 'COMPLETE'); },
       storeAsCurrentTask,
       hideDate: isCollapsed,
@@ -209,31 +226,33 @@ class TaskView extends React.Component {
               taskList={isSingleTaskList && tasks[0].taskList}
             />
             {this.props.showToolbar && isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} />}
-            {this.props.showToolbar && 
-            <Toolbar style={{ padding: '0 38px 0 48px' }}>
-              <Select
-                updateFilter={this.handleFilterChange}
-                value={filterBy}
-                options={[
-                  { value: '', description: 'Filter' },
-                  { value: 'ASSIGNED_TO_ME', description: 'Assigned to me' }, // TODO:
-                  { value: 'CREATED_BY_ME', description: 'Created by me' },
-                  { value: 'OVERDUE', description: 'Overdue' },
-                  { value: 'DUE_TODAY', description: 'Due Today' },
-                  { value: 'DUE_THIS_WEEK', description: 'Due This Week' },
-                  { value: 'DUE_NEXT_WEEK', description: 'Due Next Week' },
-                ]}
-              />
-              <Search onChange={this.handleSearch} style={{ marginLeft: '14px' }} />
-              <div style={{ marginLeft: 'auto', marginRight: '-8px' }}>
-                <IconButton aria-label="Disable notifications" style={{ padding: '8px' }}>
-                  <NotificationsOffIcon style={{ width: '20px', height: '20px' }}>alarm</NotificationsOffIcon>
-                </IconButton>
-                <IconButton onClick={downloadPDF} aria-label="Disable notifications" style={{ padding: '8px' }}>
-                  <PrintIcon style={{ width: '20px', height: '20px' }}>alarm</PrintIcon>
-                </IconButton>
-              </div>
-            </Toolbar>
+            {this.props.showToolbar
+            && (
+              <Toolbar style={{ padding: '0 38px 0 48px' }}>
+                <Select
+                  updateFilter={this.handleFilterChange}
+                  value={filterBy}
+                  options={[
+                    { value: '', description: 'Filter' },
+                    { value: 'ASSIGNED_TO_ME', description: 'Assigned to me' }, // TODO:
+                    { value: 'CREATED_BY_ME', description: 'Created by me' },
+                    { value: 'OVERDUE', description: 'Overdue' },
+                    { value: 'DUE_TODAY', description: 'Due Today' },
+                    { value: 'DUE_THIS_WEEK', description: 'Due This Week' },
+                    { value: 'DUE_NEXT_WEEK', description: 'Due Next Week' },
+                  ]}
+                />
+                <Search onChange={this.handleSearch} style={{ marginLeft: '14px' }} />
+                <div style={{ marginLeft: 'auto', marginRight: '-8px' }}>
+                  <IconButton aria-label="Disable notifications" style={{ padding: '8px' }}>
+                    <NotificationsOffIcon style={{ width: '20px', height: '20px' }}>alarm</NotificationsOffIcon>
+                  </IconButton>
+                  <IconButton onClick={downloadPDF} aria-label="Disable notifications" style={{ padding: '8px' }}>
+                    <PrintIcon style={{ width: '20px', height: '20px' }}>alarm</PrintIcon>
+                  </IconButton>
+                </div>
+              </Toolbar>
+            )
             }
             {isFetching
               ? (
@@ -250,14 +269,14 @@ class TaskView extends React.Component {
                     {this.renderCompleted()}
                   </TaskListContainer>
                   {task && (
-                  <TaskDetails
-                    addTaskComment={comment => addTaskComment(task, ({ comment }))}
-                    userId={userId}
-                    selectedTask={task}
-                    close={this.handleClose}
-                    markComplete={markComplete}
-                    toggleTaskPriority={toggleTaskPriority}
-                  />
+                    <TaskDetails
+                      addTaskComment={comment => addTaskComment(task, ({ comment }))}
+                      userId={userId}
+                      selectedTask={task}
+                      close={this.handleClose}
+                      markComplete={markComplete}
+                      toggleTaskPriority={toggleTaskPriority}
+                    />
                   )}
                 </div>
               )}
