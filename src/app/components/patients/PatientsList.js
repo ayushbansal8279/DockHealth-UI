@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import { Link } from 'react-router';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
+import PatientsDetailsIcon from '../../img/details.svg';
 import PatientsEmptyIcon from '../../img/patients-empty.svg';
 import { highlightPatient } from '../../actions/patient-actions';
 
@@ -91,13 +92,33 @@ const QuickViewCell = styled.td`
   padding-right: 27px;
 `;
 
-const NonEmptyListCell = ({ children }) => (<td>{children || <i>—</i>}</td>);
+const QuickViewIcon = styled.img.attrs({
+  src: PatientsDetailsIcon,
+  alt: 'Show patient details',
+})`
+  width: 21px;
+  height: 21px;
+  max-width: none;
+`;
+
+const NonEmptyListCell = ({ children }) => (<td>{children || ' '}</td>);
 
 const capitalize = str => ((typeof str === 'string')
   ? str.charAt(0).toUpperCase() + str.slice(1)
   : str);
 const formatDateOfBirth = dob => dob && moment(dob).format('MMM. M, YYYY');
-const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
+
+const calculateAgeFromDateOfBirth = (dob) => {
+  if (!dob) {
+    return null;
+  }
+
+  const now = moment();
+  const dayAgo = moment().subtract(1, 'day');
+  const clampedDob = moment.min(dayAgo, moment(dob));
+  const diff = now.diff(clampedDob, 'days');
+  return moment.duration(diff, 'days').humanize();
+};
 
 const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
   const dispatch = useDispatch();
@@ -110,38 +131,34 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
     <NonEmptyListTable>
       <thead>
         <tr>
+          <th>Name</th>
           <th>MRN</th>
-          <th>Last Name</th>
-          <th>First Name</th>
           <th>DOB</th>
           <th>Age</th>
           {!isCompact && <th>Gender</th>}
-          {!isCompact && <th />}
+          <th />
         </tr>
       </thead>
       <tbody>
         {patients.map(({
-          patientId, mrn, lastName, firstName, dob, gender,
+          patientId, mrn, lastName, firstName, middleName, dob, gender,
         }) => (
           <NonEmptyListRow
             key={patientId}
             isHighlighted={highlightedPatient && patientId === highlightedPatient.patientId}
           >
             <NonEmptyListCell>
-              {mrn && <StyledLink to={`/patient/${patientId}`}>{mrn}</StyledLink>}
+              <StyledLink to={`/patient/${patientId}`}>
+                {`${capitalize(lastName) || '—'}, ${capitalize(firstName) || '—'} ${capitalize(middleName) || ''}`}
+              </StyledLink>
             </NonEmptyListCell>
-            <NonEmptyListCell>
-              {lastName && <StyledLink to={`/patient/${patientId}`}>{capitalize(lastName)}</StyledLink>}
-            </NonEmptyListCell>
-            <NonEmptyListCell>{capitalize(firstName)}</NonEmptyListCell>
+            <NonEmptyListCell>{mrn}</NonEmptyListCell>
             <NonEmptyListCell>{formatDateOfBirth(dob)}</NonEmptyListCell>
             <NonEmptyListCell>{calculateAgeFromDateOfBirth(dob)}</NonEmptyListCell>
             {!isCompact && <NonEmptyListCell>{capitalize(gender)}</NonEmptyListCell>}
-            {!isCompact && (
-              <QuickViewCell onClick={selectPatient} data-patient={patientId}>
-                Quick view
-              </QuickViewCell>
-            )}
+            <QuickViewCell>
+              <QuickViewIcon onClick={selectPatient} data-patient={patientId} />
+            </QuickViewCell>
           </NonEmptyListRow>
         ))}
       </tbody>

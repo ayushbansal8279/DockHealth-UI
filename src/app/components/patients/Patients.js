@@ -45,7 +45,7 @@ const PatientsLayout = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loading());
-    getAllPatients()(dispatch);
+    getMyPatientsAll()(dispatch);
   }, [dispatch]);
 
   const isFetching = useSelector(({ patientState }) => patientState.isFetching);

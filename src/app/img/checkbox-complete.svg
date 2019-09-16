@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="38px" height="38px" viewBox="0 0 38 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57 (83077) - https://sketch.com -->
+    <title>Group 9</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="30" height="30" rx="5"></rect>
+        <filter x="-23.3%" y="-16.7%" width="146.7%" height="146.7%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0.8   0 0 0 0 0.839215686   0 0 0 0 0.866666667  0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons" transform="translate(-111.000000, -1111.000000)">
+            <g id="Group-9" transform="translate(115.000000, 1113.000000)">
+                <g id="Group-8-Copy-3">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                        <rect stroke="#00AE05" stroke-width="1" stroke-linejoin="square" fill="#00A73C" fill-rule="evenodd" x="0.5" y="0.5" width="29" height="29" rx="5"></rect>
+                    </g>
+                </g>
+                <path d="M26.8235953,5.11773837 C27.4891249,5.61925089 27.6079664,6.56930293 27.0909888,7.25535546 L13.8502414,24.8273574 C13.8061478,25.1577785 13.5962146,25.5657936 13.2537991,25.9329893 C12.6854671,26.5424508 11.9794994,26.7956768 11.6653717,26.502748 L11.6653717,26.502748 L3.28863324,18.6913131 C2.97869392,18.40229 3.17786897,17.6764721 3.74620094,17.0670107 C4.31453291,16.4575492 5.02050063,16.2043232 5.33462832,16.497252 L5.33462832,16.497252 L11.8159014,22.5414264 L24.6950822,5.44991039 C25.2120599,4.76385786 26.1580657,4.61622585 26.8235953,5.11773837 Z" id="Check" fill="#FFFFFF" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
+import { useDispatch } from 'react-redux';
 import Members from './Members';
+import NotificationsOnIcon from '../../img/notifications-on.svg';
+import NotificationsOffIcon from '../../img/notifications-off.svg';
+import TaskListAction from '../TaskListAction';
+import { toggleListNotifications } from '../../actions/tasklist-actions';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -37,21 +42,54 @@ const StyledSubtitle = styled(Typography)`
   }
 `;
 
+const Notifications = ({ value, onClick }) => {
+  const notificationProps = {
+    icon: value ? NotificationsOnIcon : NotificationsOffIcon,
+    alt: value ? 'Disable notifications' : 'Enable notifications',
+    children: `Notifications: ${value ? 'on' : 'off'}`,
+    onClick,
+  };
+
+  return <TaskListAction {...notificationProps} />;
+};
+
 const nbsp = '\u00A0'; // Used to preserve line height when there's no subtitle
 
 const Header = ({
-  title, taskCount, members, isFetching, taskList,
-}) => (
-  <StyledAppBar position="sticky" color="default" elevation={0}>
-    <StyledToolbar>
-      <div style={{ flexGrow: 1 }}>
-        <StyledTitle variant="h5">{title}</StyledTitle>
-        <StyledSubtitle variant="subtitle1">{isFetching ? nbsp : `${taskCount} ${taskCount === 1 ? 'task' : 'tasks'}`}</StyledSubtitle>
-      </div>
-      {members && <Members members={members} taskList={taskList} />}
-    </StyledToolbar>
-  </StyledAppBar>
-);
+  title, taskCount, isFetching, members, taskList,
+}) => {
+  const taskListId = taskList?.taskListId;
+  const notificationsStatus = taskList?.notifications;
+
+  const dispatch = useDispatch();
+  const toggleNotifications = useCallback(() => {
+    dispatch(toggleListNotifications(taskListId, !notificationsStatus));
+  }, [dispatch, notificationsStatus, taskListId]);
+
+  return (
+    <StyledAppBar position="sticky" color="default" elevation={0}>
+      <StyledToolbar>
+        <div style={{ flex: 0.35 }}>
+          <StyledTitle variant="h5">{title}</StyledTitle>
+          <StyledSubtitle variant="subtitle1">
+            {isFetching ? nbsp : `${taskCount} ${taskCount === 1 ? 'task' : 'tasks'}`}
+          </StyledSubtitle>
+        </div>
+        <div style={{
+          flex: 0.3,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+        >
+          {taskList && <Notifications onClick={toggleNotifications} value={notificationsStatus} />}
+        </div>
+        <div style={{ flex: 0.35 }}>
+          {members && <Members members={members} taskList={taskList} />}
+        </div>
+      </StyledToolbar>
+    </StyledAppBar>
+  );
+};
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,

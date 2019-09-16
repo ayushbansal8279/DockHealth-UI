@@ -1,11 +1,20 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { Link } from 'react-router';
 import { ButtonBase } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 import BellIcon from '../../img/bell.svg';
 import Priority from '../home/Priority';
-import MemberAssignment from '../home/MemberAssignment';
+import Flag from '../home/Flag';
+import TaskCheckbox from '../TaskCheckbox';
+import MemberPicker from '../home/MemberPicker';
+import AddSubtask from '../home/AddSubtask';
 
 const PatientsTasklistCount = styled.div`
   font-size: 16px;
@@ -16,17 +25,10 @@ const PatientsTasklistCount = styled.div`
 const PatientsTasklistTask = styled.div`
   border-radius: 3px;
   border: solid 1px #a6dcea;
-  background-color: ${({ isCollapsed }) => (isCollapsed ? '#fff' : '#E6ECF0')};
-  
+  background-color: ${({ isSelected, isCollapsed }) => (isSelected ? '#ddf2f7' : isCollapsed ? '#fff' : '#E6ECF0')};
   margin-left: -20px;
   margin-right: -23px;
   margin-bottom: 4px;
-`;
-
-const PatientsTasklistFlag = styled.div`
-  width: 5px;
-  background-color: #fb7c06;
-  flex-shrink: 0;
 `;
 
 const PatientsTasklistNew = styled.div`
@@ -42,15 +44,16 @@ const PatientsTasklistDescription = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  ${({ isComplete }) => isComplete && 'text-decoration: line-through;'}
 `;
 
 const PatientsTasklistInfo = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   color: #5e6366;
 `;
 
 const PatientsTasklistComments = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   color: #0ca1c7;
 `;
 
@@ -63,7 +66,7 @@ const PatientsTasklistSubtasks = styled(ButtonBase)`
   && {
     display: flex;
     justify-content: flex-start;
-    width: 560px;
+    width: 100%;
     height: 44px;
     border-radius: 1px;
     border: solid 3px ${({ isCollapsed }) => (isCollapsed ? '#f5f8fa' : 'transparent')};
@@ -71,7 +74,6 @@ const PatientsTasklistSubtasks = styled(ButtonBase)`
     font-size: 16px;
     line-height: 38px;
     color: #2e3a43;
-    margin: 6px auto 12px auto;
     padding-left: 15px;
   }
 `;
@@ -93,17 +95,36 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
   }
 `;
 
+const usePrevious = (value) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
 const PatientsTaskBody = ({
-  isSubtask, createdDateTime, dueDate, comments, priority, read, description, reminderDt, creator, assignedTo, taskList, taskId,
+  isSubtask, task, handleStatusChange, hideDate, hidePriority, hidePatient, disabled, isParentComplete = task?.status === 'COMPLETE', hideCheckbox,
 }) => {
+  const {
+    createdDateTime, dueDate, comments, priority, read, description, reminderDt, creator, assignedTo, taskList, taskId, status, patient,
+  } = task;
+
   const formattedCreationDate = moment(createdDateTime).format('h:mma');
   const formattedDueDate = moment(dueDate).format('ddd, MMM D');
   const formattedDueTime = moment(dueDate).format('@ h:mma');
-
+  console.log('tasl', task)
   return (
     <div style={{ display: 'flex' }}>
-      <div style={{ margin: '14px 8px', width: '67px', height: '67px' }}>
-        <MemberAssignment member={assignedTo} disabled large />
+      {!hideCheckbox && <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TaskCheckbox
+          checked={status === 'COMPLETE'}
+          onChange={handleStatusChange}
+          disabled={disabled || (isSubtask && isParentComplete)}
+        />
+      </div>}
+      <div style={{ margin: '14px 8px', display: 'flex', justifyContent: 'center', width: '67px' }}>
+        <MemberPicker task={task} member={assignedTo} disabled={disabled || isParentComplete} />
       </div>
       <div style={{ flex: 1, width: 0 }}>
         <div style={{
@@ -120,13 +141,13 @@ const PatientsTaskBody = ({
           justifyContent: 'space-between',
         }}
         >
-          <div style={{ minWidth: 0, flexGrow: 1 }}>
+          <div style={{ minWidth: 0, flexGrow: 1, paddingRight: '24px' }}>
             <Link to={{
               pathname: `/tasks/${taskList.listName}${taskList.taskListId ? `/${taskList.taskListId}` : ''}`,
               state: { taskId },
             }}
             >
-              <PatientsTasklistDescription>
+              <PatientsTasklistDescription isComplete={status === 'COMPLETE'}>
                 {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
               </PatientsTasklistDescription>
             </Link>
@@ -135,8 +156,29 @@ const PatientsTaskBody = ({
             </PatientsTasklistInfo>
             <PatientsTasklistComments>{`${comments.length} comments`}</PatientsTasklistComments>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div style={{ width: '20px', marginTop: '3px' }}>
+          {!isSubtask && !hidePatient && (
+          <div style={{ width: '120px', marginRight: '24px', flexShrink: 0 }}>
+            {patient && (
+            <Link to={`/patient/${patient.patientId}`} style={{ color: '#0ca1c7' }}>
+              <div>{`${patient?.lastName}, ${patient?.firstName}`}</div>
+              <div>{patient?.mrn}</div>
+            </Link>
+            )}
+          </div>
+          )}
+          {!hideDate && (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginRight: '24px',
+            flexShrink: 0,
+          }}
+          >
+            <div style={{
+              width: '20px',
+              marginTop: '3px',
+            }}
+            >
               {reminderDt && <img src={BellIcon} alt="Collapse Details" />}
             </div>
             <div style={{ width: '100px' }}>
@@ -150,39 +192,127 @@ const PatientsTaskBody = ({
               </>)}
             </div>
           </div>
-          <Priority priority={priority} style={{ margin: '0 23px 0 0 ' }} />
+          )}
+          {!hidePriority && <Priority priority={priority} style={{ margin: '8px 23px 0 0 ' }} />}
         </div>
       </div>
     </div>
   );
 };
 
-const PatientsTask = (props) => {
+export const PatientsTask = (props) => {
   const {
-    subtasks, isSubtask, style, priority,
+    task, isSubtask, style, markComplete, hideDate, hidePriority, selectedTaskId, hidePatient, disabled, hideCheckbox,
   } = props;
+  const {
+    taskId, parentTaskId, subtasks, status, priority, taskList,
+  } = task;
+
 
   const [isCollapsed, setIsCollapsed] = useState(true);
   const toggleIsCollapsed = useCallback(() => {
     setIsCollapsed(!isCollapsed);
   }, [setIsCollapsed, isCollapsed]);
 
+  const previousSelectedTaskId = usePrevious(selectedTaskId);
+
+  useEffect(() => {
+    if (isSubtask) {
+      return;
+    }
+
+    if (selectedTaskId !== previousSelectedTaskId
+      && isCollapsed
+      && subtasks.find(subtask => subtask.taskId == selectedTaskId)) {
+      setIsCollapsed(true);
+    }
+  }, [isCollapsed, isSubtask, previousSelectedTaskId, selectedTaskId, subtasks]);
+
+  // Check all subtasks confirmation dialog
+  const [isOpen, setOpen] = useState(false);
+  const open = useCallback(() => { setOpen(true); }, [setOpen]);
+  const close = useCallback(() => { setOpen(false); }, [setOpen]);
+  const confirm = useCallback(() => {
+    const updatedStatus = status === 'COMPLETE' ? 'COMPLETE' : 'INCOMPLETE';
+    markComplete({ taskId, parentTaskId, subtasks }, updatedStatus);
+    close();
+  }, [status, markComplete, taskId, parentTaskId, subtasks, close]);
+
+  const handleStatusChange = () => {
+    const hasSubtasks = subtasks?.length > 0;
+    if (status === 'COMPLETE'
+      || !hasSubtasks
+      || subtasks.every(subtask => subtask.status === 'COMPLETE')) {
+      confirm();
+      return;
+    }
+    open();
+  };
+
   return (
-    <PatientsTasklistTask style={style} isCollapsed={isCollapsed}>
+    <PatientsTasklistTask style={style} isCollapsed={isCollapsed} isSelected={selectedTaskId === task.taskId}>
+      {!isSubtask && (
+        <Dialog
+          open={isOpen}
+          onClose={close}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            You are about to complete a task with open subtasks.
+            Completing the task will also complete the subtasks.
+            Would you like to proceed?
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={close} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={confirm} color="primary" autoFocus>
+              Complete all
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
       <div style={{ display: 'flex' }}>
-        {priority !== 'LOW' && <PatientsTasklistFlag />}
+        <Flag priority={priority} />
         <div style={{ flex: 1 }}>
-          <PatientsTaskBody {...props} />
+          <PatientsTaskBody {...props} handleStatusChange={handleStatusChange} />
           {!isSubtask && subtasks.length > 0 && (
-            <>
+            <div style={{ padding: '0 22px', margin: '6px auto 12px auto' }}>
               <PatientsTasklistSubtasks onClick={toggleIsCollapsed} isCollapsed={isCollapsed}>
                 {`Subtasks (${subtasks.length}) ${isCollapsed ? '▸' : '▾'}`}
+                <div
+                  style={{ marginLeft: 'auto' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  {!disabled && task.status !== 'COMPLETE' && !isCollapsed && <AddSubtask taskId={task.taskId} disabled={task.status === 'COMPLETE'} />}
+                </div>
               </PatientsTasklistSubtasks>
               {!isCollapsed && (
                 <div>
-                  {subtasks.map(subtask => <PatientsTask {...subtask} isSubtask style={{ marginLeft: '14px', marginRight: '4px', border: 'none' }} />)}
+                  {subtasks.map(subtask => (
+                    <PatientsTask
+                      task={{ ...subtask, taskList }}
+                      isSubtask
+                      isParentComplete={task.status === 'COMPLETE'}
+                      selectedTaskId={selectedTaskId}
+                      markComplete={markComplete}
+                      style={{
+                        marginLeft: '14px',
+                        marginRight: '4px',
+                        border: 'none',
+                      }}
+                      hideDate={hideDate}
+                      hidePriority={hidePriority}
+                      hideCheckbox={hideCheckbox}
+                      disabled={disabled}
+                    />
+                  ))}
                 </div>)}
-            </>
+            </div>
           )}
         </div>
       </div>
@@ -199,14 +329,14 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [] }) => {
   return (
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
-      {tasks.map(task => <PatientsTask {...task} key={task.taskId} />)}
+      {tasks.map(task => <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />)}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
           {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${completedTasks.length})`}
         </PatientsTasklistShowCompleted>)}
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
-          {completedTasks.map(task => <PatientsTask {...task} key={task.taskId} />)}
+          {completedTasks.map(task => <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />)}
         </div>)}
     </div>
   );

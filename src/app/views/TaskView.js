@@ -2,19 +2,19 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import Toolbar from '@material-ui/core/Toolbar';
-import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import IconButton from '@material-ui/core/IconButton';
-import PrintIcon from '@material-ui/icons/Print';
 import MenuIcon from '@material-ui/icons/Menu';
 import Fade from '@material-ui/core/Fade';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import PrintIcon from '../img/print.svg';
 import Select from '../components/Select';
 import Search from '../components/Search';
 import Header from '../components/home/Header';
 import AddTask from '../components/home/AddTask';
 import TaskList from '../components/home/TaskList';
 import TaskDetails from '../components/home/TaskDetails';
+import TaskListAction from '../components/TaskListAction';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -125,6 +125,7 @@ class TaskView extends React.Component {
       storeAsCurrentTask,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
+      hidePriority: isCollapsed,
       selectedTaskId,
     };
 
@@ -176,6 +177,7 @@ class TaskView extends React.Component {
       storeAsCurrentTask,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
+      hidePriority: isCollapsed,
       selectedTaskId,
     };
 
@@ -200,6 +202,7 @@ class TaskView extends React.Component {
       markComplete,
       toggleTaskPriority,
       addTaskComment,
+      taskList,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -223,7 +226,7 @@ class TaskView extends React.Component {
               title={title}
               taskCount={tasks.length}
               members={members}
-              taskList={isSingleTaskList && tasks[0].taskList}
+              taskList={taskList}
             />
             {this.props.showToolbar && isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} />}
             {this.props.showToolbar
@@ -243,13 +246,10 @@ class TaskView extends React.Component {
                   ]}
                 />
                 <Search onChange={this.handleSearch} style={{ marginLeft: '14px' }} />
-                <div style={{ marginLeft: 'auto', marginRight: '-8px' }}>
-                  <IconButton aria-label="Disable notifications" style={{ padding: '8px' }}>
-                    <NotificationsOffIcon style={{ width: '20px', height: '20px' }}>alarm</NotificationsOffIcon>
-                  </IconButton>
-                  <IconButton onClick={downloadPDF} aria-label="Disable notifications" style={{ padding: '8px' }}>
-                    <PrintIcon style={{ width: '20px', height: '20px' }}>alarm</PrintIcon>
-                  </IconButton>
+                <div style={{ marginLeft: 'auto' }}>
+                  <TaskListAction onClick={downloadPDF} icon={PrintIcon} alt="Print">
+                    Print
+                  </TaskListAction>
                 </div>
               </Toolbar>
             )

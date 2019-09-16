@@ -8,50 +8,19 @@ const AssignedMember = styled(Member)`
     margin: 0 auto;
     width: 41px;
     height: 41px;
-    font-size: 16px;
-  }
-
-  & .img {
-    ${({ small }) => (small
-    ? `border: 1px solid #0ca1c7;
-        padding: 2px;`
-    : `border: 2px solid #0ca1c7;
-        padding: 3px;`)}
+    font-size: 12px;
   }
 `;
-
-const UnassignedMember = styled(AssignedMember)`
-  && {
-    background: #fff;
-    border-radius: 50%;
-    ${({ small }) => (small
-    ? `border: 1px solid #0ca1c7;
-        padding: 2px;`
-    : `border: 2px solid #0ca1c7;
-        padding: 3px;`)}
-  
-    :before {
-      content: " ";
-      position: absolute;
-      border: 1px solid #aab8c3;
-      border-radius: 50%;
-      ${({ small }) => (small
-    ? `top: 2px;
-        bottom: 2px;
-        left: 2px;
-        right: 2px;`
-    : `top: 3px;
-        bottom: 3px;
-        left: 3px;
-        right: 3px;`)}
-    }
-  }
+const UnassignedText = styled.div`
+  font-size: 16px;
+  font-weight: bolder;
+  color: white;
 `;
 
 const MemberSlot = ({ member, onClick, small }) => (
   member
     ? <AssignedMember onClick={onClick} member={member} small={small} />
-    : <UnassignedMember onClick={onClick} alt="Unassigned" small={small}>{' '}</UnassignedMember>
+    : <AssignedMember onClick={onClick} alt="Unassigned" small={small} color="black"><UnassignedText>?</UnassignedText></AssignedMember>
 );
 
 MemberSlot.propTypes = {

@@ -31,7 +31,7 @@ const PatientsHeaderSubheading = styled.span`
 const PatientsHeader = ({ patientCount = 0, isFetching }) => (
   <PatientsHeaderContainer>
     <PatientsHeaderLeftSide>
-      <PatientsHeaderHeading>My Patients</PatientsHeaderHeading>
+      <PatientsHeaderHeading>Patients</PatientsHeaderHeading>
       <PatientsHeaderSubheading>
         {isFetching ? '' : `${patientCount} patients`}
       </PatientsHeaderSubheading>

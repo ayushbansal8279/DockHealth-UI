@@ -18,8 +18,8 @@ import { findUserTasksByPatient } from '../../api/patient-api';
 import { PatientsForm } from './PatientCreation';
 
 export const PatientsSidebarContainer = styled.div`
-  width: 632px;
-  flex-shrink: 0;
+  min-width: 562px;
+  //flex-shrink: 0;
   padding: 4px;
 `;
 
@@ -270,6 +270,11 @@ const NewPatientsDetailsSection = ({ patient }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formState, setFormState] = useState(patient);
+
+  useEffect(() => {
+    setFormState(patient);
+  }, [patient]);
+
   const isClean = equals(formState, patient);
 
   const handleInputChange = useCallback((event) => {
@@ -323,7 +328,7 @@ const NewPatientsDetailsSection = ({ patient }) => {
 
 const PatientsSidebar = ({ patient }) => {
   const {
-    mrn, firstName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, patientId,
+    mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, patientId,
   } = patient;
   const dispatch = useDispatch();
   const deselectPatient = useCallback(() => {
@@ -383,7 +388,7 @@ const PatientsSidebar = ({ patient }) => {
           )}
           fallbackRender={() => (
             <NewPatientsDetailsSection patient={{
-              patientId, mrn, firstName, lastName, dob: dob && moment(dob).format('MM/DD/YYYY'), gender, phoneHome, phoneMobile, email, notes,
+              patientId, mrn, firstName, middleName, lastName, dob: dob && moment(dob).format('MM/DD/YYYY'), gender, phoneHome, phoneMobile, email, notes,
             }}
             />
           )}

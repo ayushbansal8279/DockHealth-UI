@@ -51,7 +51,7 @@ export const Routes = ({ store }) => {
   };
 
   const dispatch = useDispatch();
-  const preselectTask = (nextState) => {
+  const preselectTask = (prevState, nextState) => {
     const taskId = nextState.location?.state?.taskId;
     if (!taskId) {
       return;
@@ -74,10 +74,25 @@ export const Routes = ({ store }) => {
           <Route path="/taskSearch" component={TaskListSearch} />
           <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
           <Route path="/people" component={PeopleView} />
-          <Route path="/tasks/inbox(/:taskId)" component={Inbox} />
+          <Route
+            path="/tasks/(inbox|Inbox)(/:taskId)"
+            component={Inbox}
+            onChange={preselectTask}
+          />
+          {/* DIRTY FIX -> TODO: Update react-router and use sensitive prop */}
+          <Route
+            path="/tasks/Inbox(/:taskId)"
+            component={Inbox}
+            onChange={preselectTask}
+          />
           <Route path="/tasks/assigned_by_me" component={AssignedByMe} />
           <Route path="/tasks/assigned_to_me" component={AssignedToMe} />
-          <Route path="/tasks/:listName/:taskListId(/:taskId)" component={Home} onEnter={preselectTask} />
+          <Route
+            path="/tasks/:listName/:taskListId(/:taskId)"
+            component={Home}
+            onChange={preselectTask}
+            onEnter={nextState => preselectTask(null, nextState)}
+          />
           <Route path="/userprofile" component={UserProfileView} />
           <Route path="/support" component={SupportSectionView} />
         </Route>

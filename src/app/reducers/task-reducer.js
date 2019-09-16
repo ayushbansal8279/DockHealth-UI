@@ -1,4 +1,7 @@
 import {
+  map, equals, when, always, assoc, evolve, propEq, identity, unless, uncurryN, ifElse,
+} from 'ramda';
+import {
   ADD_PATIENT_TO_TASK_SUCCESS,
   ADD_TASK_COMMENT_SUCCESS,
   ADD_TASK_SUCCESS,
@@ -101,6 +104,36 @@ const updateReminder = (state, { taskId, reminderDt }) => {
   return ({ ...state, tasks: updatedTasks });
 };
 
+const TASK_COMPLETE = 'COMPLETE';
+
+const updateMainTaskStatus = status => evolve({
+  status: always(status),
+  subtasks:
+    equals(status, TASK_COMPLETE)
+      ? map(assoc('status', status))
+      : identity,
+});
+
+const updateSubTaskStatus = (status, subtask) => evolve({
+  subtasks: map(when(
+    propEq('taskId', subtask.taskId),
+    assoc('status', status),
+  )),
+});
+
+const updateTaskStatus = uncurryN(3,
+  status => task => map(when(
+    propEq('taskId', task.parentTaskId || task.taskId),
+    ifElse(
+      propEq('taskId', task.taskId),
+      updateMainTaskStatus(status),
+      unless(
+        propEq('status', TASK_COMPLETE),
+        updateSubTaskStatus(status, task),
+      ),
+    ),
+  )));
+
 const TaskReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TASK_SUCCESS: {
@@ -164,64 +197,18 @@ const TaskReducer = (state = initialState, action) => {
       return { ...state, task };
     }
 
-    // handling
     case MARK_TASK_STATUS_SUCCESS: {
-      // Tasks in 'incompletedTasks' state
-      // This is the parent task Id (if subtask) or the actual task Id (if actual task is already top level)
-      const mainTask = getMainTaskId(action.task);
+      const { task, status } = action;
+      const tasks = updateTaskStatus(status, task, state.tasks);
 
-      return {
-        ...state,
-        // Loop through each of the top level tasks
-        tasks: state.tasks.map(task => (task.taskId === mainTask
-        // Do this 1
-        // If 2: If the task has a parentTaskId (is a subtask)
-          ? action.task.parentTaskId
-          // Loop through the subtasks
-            ? {
-              ...task,
-              subtasks:
-                  task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
-                    ? { ...subtask, status: action.status }
-                    // Else 3
-                    : subtask)),
-            }
-          // Else 2: Else change the status of the task that is top level
-          // If 4: If task is 'incomplete' and has subtasks
-            : action.status == 'COMPLETE' && action.task.subtasks.length > 0
-              ? {
-                ...task,
-                status: action.status,
-                subtasks:
-                task.subtasks.map(subtask => (subtask.status == 'INCOMPLETE'
-                  ? { ...subtask, status: action.status }
-                  : subtask)),
-              }
-              : { ...task, status: action.status }
-        // Else 1: Else just return the task as is (it's not the one you're trying to change)
-          : task)),
-      };
+      return { ...state, tasks };
     }
 
-    // handling
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
-      // Tasks in 'completedTasks' state
-      const mainTask = getMainTaskId(action.task);
+      const { task, status } = action;
+      const completedTasks = updateTaskStatus(status, task, state.completedTasks);
 
-      return {
-        ...state,
-        completedTasks: state.completedTasks.map(task => (task.taskId === mainTask
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              subtasks:
-                  task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
-                    ? { ...subtask, status: action.status }
-                    : subtask)),
-            }
-            : { ...task, status: action.status }
-          : task)),
-      };
+      return { ...state, completedTasks };
     }
 
     case DELETE_TASK_SUCCESS: {

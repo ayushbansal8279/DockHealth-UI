@@ -46,7 +46,7 @@ StyledTableBody.defaultProps = {
   isSelected: false,
 };
 
-const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
+const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }}/>)`
   && {
     width: 36px;
     height: 36px;

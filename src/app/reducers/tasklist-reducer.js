@@ -1,4 +1,7 @@
 import {
+  map, set, when, propEq, lensProp,
+} from 'ramda';
+import {
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,
   ADD_TASKLIST_SUCCESS,
   CHANGEUSERROLE_TASKLIST_SUCCESS,
@@ -175,11 +178,20 @@ const TaskListReducer = (state = initialState, action) => {
         activityFeedForAllUserList: action.activityFeedForAllUserList,
       };
 
-    case TOGGLE_LIST_NOTIFICATIONS_SUCCESS:
+    case TOGGLE_LIST_NOTIFICATIONS_SUCCESS: {
+      const { taskListId, receiveNotifications } = action;
+
+      const updateTasklist = map(when(
+        propEq('taskListId', taskListId),
+        set(lensProp('notifications'), receiveNotifications),
+      ));
+
       return {
         ...state,
-        currentList: { notifications: action.receiveNotifications },
+        tasklist: updateTasklist(state.tasklist),
+        currentList: { notifications: receiveNotifications },
       };
+    }
 
     case SET_GENERIC_LIST_COUNTS:
       return {

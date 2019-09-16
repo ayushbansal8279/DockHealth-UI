@@ -41,7 +41,6 @@ const PatientsFilter = ({
       disabled={disabled}
       onChange={onChange}
       name="filter"
-      IconComponent={() => <div />}
     >
       {options.map(({ value, description }) => ( // eslint-disable-line no-shadow
         <MenuItem value={value} key={value}>

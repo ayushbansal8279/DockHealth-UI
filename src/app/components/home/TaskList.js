@@ -1,42 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import CheckIcon from '@material-ui/icons/Check';
-
-import Task from './Task';
+import CheckIcon from '../../img/check.svg';
+import { PatientsTask } from '../patients/PatientsTasklist';
 import { PriorityDot } from './Priority';
 
-const StyledTable = styled(Table)`
-  && {
-    border: none;
-    border-collapse: collapse;
-    padding: 0 8px;
-    
-    table {
-      margin-bottom: 0;
-    }
-  }
-`;
-
-const StyledTableRow = styled(TableRow)``;
-
-const StyledTableHead = styled(TableHead)`
-  && {
-    border: none;
-    border-bottom: 8px solid  transparent;
-    background-clip: padding-box;
-    background-color: #fff;
-  
-    ${StyledTableRow} {
-      height: 32px;
-      color: #303538;
-    }
-  }
-`;
 
 const StyledTableCell = styled(TableCell)`
   && {
@@ -61,41 +30,79 @@ StyledTaskDescription.defaultProps = {
   completed: false,
 };
 
+const Heading = ({ hideDate, hideStatus }) => (
+  <div style={{
+    height: '32px',
+    marginBottom: '5px',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    background: 'white',
+    fontSize: '14px',
+    fontWeight: 600,
+  }}
+  >
+    <div style={{ width: '60px', textAlign: 'center', marginLeft: '5px' }}>
+      <img src={CheckIcon} alt="Task status column" style={{ width: '21px', height: '17px' }} />
+    </div>
+    <div style={{ width: '83px', textAlign: 'center' }}>
+      ASSIGNED
+    </div>
+    <div style={{ flex: 1 }}>TASK</div>
+    <div style={{ width: '120px', marginRight: '24px' }}>
+      PATIENT
+    </div>
+    {!hideDate && (
+      <div style={{ width: '120px', paddingLeft: '20px', marginRight: '24px' }}>
+        DUE
+      </div>
+    )}
+    {!hideStatus && (
+      <div style={{ width: '10px', marginRight: '24px', textAlign: 'center' }}>
+        <PriorityDot color="#303538" />
+      </div>
+    )}
+  </div>
+);
+
 const TaskList = ({
-  tasks = [], markComplete, storeAsCurrentTask, hideDate, hideTags, selectedTaskId,
+  tasks = [], markComplete, storeAsCurrentTask, hideDate, hideTags, hidePriority, selectedTaskId,
 }) => (
-  <StyledTable padding="dense">
-    <StyledTableHead>
-      <StyledTableRow>
-        <StyledTableCell align="center"></StyledTableCell>
-        <StyledTableCell align="center">
-          <CheckIcon />
-        </StyledTableCell>
-        <StyledTableCell align="center">ASSIGNED</StyledTableCell>
-        <StyledTableCell><strong>TASK</strong></StyledTableCell>
-        <StyledTableCell>PATIENT</StyledTableCell>
-        {!hideDate && <StyledTableCell>DUE DATE</StyledTableCell>}
-        {!hideTags && <StyledTableCell>TAGS</StyledTableCell>}
-        {/* <StyledTableCell align="center" style={{ width: 64 }} /> */}
-        <StyledTableCell align="center">
-          <PriorityDot color="#7f92a6" />
-        </StyledTableCell>
-      </StyledTableRow>
-    </StyledTableHead>
+  <div>
+    <Heading hideDate={hideDate} hideStatus={hidePriority} hideTags={hideTags} />
     {tasks.length === 0
-      ? <tbody><tr><td colSpan="9" style={{ textAlign: 'center', height: '32' }}>List is empty.</td></tr></tbody>
+      ? (
+        <div
+          style={{
+            textAlign: 'center',
+            verticalAlign: 'middle',
+            height: '32px',
+            lineHeight: '32px',
+            background: 'white',
+          }}
+        >
+List is empty.
+        </div>
+      )
       : tasks.map(task => (
-        <Task
-          task={task}
-          markComplete={markComplete}
-          storeAsCurrentTask={storeAsCurrentTask}
-          hideDate={hideDate}
-          hideTags={hideTags}
-          selectedTaskId={selectedTaskId}
-          key={task.taskId}
+        <PatientsTask {...({
+          markComplete,
+          task,
+          isSubtask: task.parentTaskId !== null,
+          selectedTaskId,
+          style: {
+            borderColor: 'transparent',
+            marginLeft: 0,
+            marginRight: 0,
+          },
+          hideDate,
+          hideTags,
+          hidePriority,
+          key: task.taskId,
+        })}
         />
       ))}
-  </StyledTable>
+  </div>
 );
 
 TaskList.propTypes = {

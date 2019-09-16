@@ -7,23 +7,34 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
   && {
-    width: 31px;
-    height: 31px;
-    font-size: 12px;
-    background: ${({ color }) => color};
+    width: 55px;
+    height: 55px;
+    font-size: 16px;
+    font-weight: bold;
+    background: ${({ color }) => color || 'white'};
+    box-sizing: border-box;
+    
+    border: 2px solid ${({ color }) => color || '#00a73c'};
+    padding: 3px;
+    color: white;
   }
 
   & .img {
-    border: 1px solid #0ca1c7;
     border-radius: 50%;
-    padding: 2px;
-    background: #fff;
+    box-sizing: border-box;
+  }
+  
+  :before {
+    content: " ";
+    position: absolute;
+    border: 3px solid white;
+    border-radius: 50%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 `;
-
-StyledAvatar.defaultProps = {
-  color: '#00a73c',
-};
 
 const StyledButtonBase = styled(ButtonBase)`
   && {
@@ -43,14 +54,18 @@ const Member = ({
   onClick,
   member,
   children,
-  color,
   className,
   style,
+  color,
 }) => {
+  const alt = member && `${member.firstName} ${member.lastName}`;
+  const src = member && member.profileThumbnailPictureHash && getThumbnailUrl(member);
+  const memberColor = member && (src ? undefined : (member.color || '#00a73c'));
+
   const avatarProps = {
-    alt: member && `${member.firstName} ${member.lastName}`,
-    src: member && member.profileThumbnailPictureHash && getThumbnailUrl(member),
-    color,
+    alt,
+    src,
+    color: color || memberColor,
   };
 
   const avatar = (

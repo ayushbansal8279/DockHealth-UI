@@ -6,7 +6,9 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import AddIcon from '@material-ui/icons/Add';
 import { addSubtask } from '../../actions/task-actions';
 
-const AddSubtaskContainer = styled(ButtonBase)`
+const AddSubtaskContainer = styled(ButtonBase).attrs({
+  disableRipple: true,
+})`
   && {
     padding: 8px;
     margin-left: -8px;

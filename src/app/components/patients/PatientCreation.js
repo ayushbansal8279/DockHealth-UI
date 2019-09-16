@@ -117,7 +117,7 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
 );
 
 export const PatientsForm = ({
-  mrn, firstName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel,
+  mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel,
 }) => {
   const readOnlyProps = placeholder => ({
     InputLabelProps: { shrink: isReadOnly || undefined },
@@ -128,18 +128,9 @@ export const PatientsForm = ({
   return (
     <>
       <PatientsSidebarSection heading="Patient Details" hideCollapse={hideCollapse}>
-        <StyledTextField
-          name="mrn"
-          value={mrn || ''}
-          onChange={onChange}
-          label="MRN"
-          style={{ marginTop: '18px' }}
-          {...readOnlyProps('123-123-23444')}
-        />
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', marginTop: '18px' }}>
           <div style={{
             flex: 1,
-            marginRight: '4px',
           }}
           >
             <StyledTextField
@@ -151,13 +142,15 @@ export const PatientsForm = ({
               {...readOnlyProps('Sam')}
             />
           </div>
-          {/* <div style={{ margin: '0 4px' }}> */}
-          {/*  <StyledTextField */}
-          {/*    name="middleName" */}
-          {/*    value={formState.middleName} */}
-          {/*    label="Middle Name" */}
-          {/*  /> */}
-          {/* </div> */}
+          <div style={{ margin: '0 4px' }}>
+            <StyledTextField
+              name="middleName"
+              value={middleName || ''}
+              onChange={onChange}
+              label="Middle Name"
+              {...readOnlyProps('Max')}
+            />
+          </div>
           <div style={{ flex: 1 }}>
             <StyledTextField
               name="lastName"
@@ -169,6 +162,13 @@ export const PatientsForm = ({
             />
           </div>
         </div>
+        <StyledTextField
+          name="mrn"
+          value={mrn || ''}
+          onChange={onChange}
+          label="MRN"
+          {...readOnlyProps('123-123-23444')}
+        />
         <StyledTextField
           name="dob"
           value={dob || ''}
@@ -190,7 +190,7 @@ export const PatientsForm = ({
         >
           <MenuItem value="female">Female</MenuItem>
           <MenuItem value="male">Male</MenuItem>
-          {/* <MenuItem value="other">Other</MenuItem> */}
+          <MenuItem value="other">Other</MenuItem>
         </StyledTextField>
         <StyledTextField
           name="phoneHome"

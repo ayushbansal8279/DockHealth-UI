@@ -4,8 +4,7 @@ import styled from 'styled-components';
 
 export const FlagLine = styled.div`
   width: 5px;
-  height: 50px;
-  margin: 0 auto;
+  flex-shrink: 0;
   background: ${({ color }) => color};
 `;
 

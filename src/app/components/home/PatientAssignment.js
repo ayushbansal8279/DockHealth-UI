@@ -17,7 +17,7 @@ const StyledButtonBase = styled(ButtonBase)`
 `;
 
 const StyledText = styled.span`
-  font-size: 14px;
+  font-size: 16px;
   font-style: italic;
   color: #aab8c3;
 `;

@@ -156,6 +156,7 @@ class Home extends React.Component {
       downloadPDF: this.downloadPDF,
       title,
       showToolbar: true,
+      taskList: loadedTasklist || undefined,
     };
 
     return <TaskView {...taskViewProps} />;
