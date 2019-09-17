@@ -190,7 +190,11 @@ export function saveTask(newTask) {
   }
   return function (dispatch) {
     return TaskApi.addTask(newTask).then((task) => {
-      dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+      if (!task.taskList) {
+        dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task: { ...task, taskList: { listName: 'Inbox' } } });
+      } else {
+        dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+      }
     }).catch((error) => {
       throw (error);
     });
