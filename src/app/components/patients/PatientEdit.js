@@ -13,8 +13,9 @@ import {
   PatientsSidebarHeader,
   PatientsSidebarSection,
 } from './PatientsSidebar';
+import PatientNotes from './PatientNotes';
 
-export const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
+const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
     {...rest}
     variant="filled"
@@ -77,7 +78,7 @@ export const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest })
   }
 `;
 
-export const Cancel = styled(Button)`
+const Cancel = styled(Button)`
   && {
     display: flex;
     width: 108px;
@@ -89,7 +90,7 @@ export const Cancel = styled(Button)`
   }
 `;
 
-export const Save = styled(Button).attrs({ variant: 'contained', color: 'secondary' })`
+const Save = styled(Button).attrs({ variant: 'contained', color: 'secondary' })`
   && {
     display: flex;
     width: 163px;
@@ -117,8 +118,8 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
 );
 
 export const PatientsForm = ({
-  mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel, hideNotes,
-}) => {
+                               patientId, mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, allNotes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel,
+                             }) => {
   const readOnlyProps = placeholder => ({
     InputLabelProps: { shrink: isReadOnly || undefined },
     // disabled: isReadOnly,
@@ -216,34 +217,26 @@ export const PatientsForm = ({
           type="email"
           {...readOnlyProps('name@email.com')}
         />
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+          {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
+          {!isReadOnly && <Save onClick={onSubmit} disabled={isDisabled}>Save</Save>}
+        </div>
       </PatientsSidebarSection>
       <PatientsSidebarSection
+        // heading="Notes"
         hideCollapse
         style={{
           marginTop: 0,
           borderTop: 'none',
         }}
       >
-        <StyledTextField
-          name="notes"
-          value={notes || ''}
-          onChange={onChange}
-          label="Notes"
-          multiline
-          rows={3}
-          {...readOnlyProps('Primarily lives with their grandma in Boston.')}
-        />
-        {/* {error && (error?.statusMessage || 'Error.')} */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-          {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
-          {!isReadOnly && <Save onClick={onSubmit} disabled={isDisabled}>Save</Save>}
-        </div>
+        <PatientNotes notes={allNotes} patientId={patientId} />
       </PatientsSidebarSection>
     </>
   );
 };
 
-const PatientCreation = () => {
+const PatientEdit = () => {
   const dispatch = useDispatch();
   const abort = () => {
     dispatch(abortPatientCreation());
@@ -304,4 +297,4 @@ const PatientCreation = () => {
   );
 };
 
-export default PatientCreation;
+export default PatientEdit;

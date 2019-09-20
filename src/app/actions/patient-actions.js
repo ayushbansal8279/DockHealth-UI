@@ -13,7 +13,11 @@ import {
   DELETE_PATIENT_SUCCESS,
   HIGHLIGHT_PATIENT,
   BEGIN_PATIENT_CREATION,
-  ABORT_PATIENT_CREATION, ADD_PATIENT_ERROR,
+  ABORT_PATIENT_CREATION,
+  ADD_PATIENT_ERROR,
+  ADD_PATIENT_NOTE_ERROR,
+  DELETE_PATIENT_NOTE_ERROR,
+  UPDATE_PATIENT_NOTE_ERROR, ADD_PATIENT_NOTE, UPDATE_PATIENT_NOTE, DELETE_PATIENT_NOTE,
 } from './action-types';
 import * as PatientApi from '../api/patient-api';
 
@@ -161,11 +165,59 @@ export const lookupEMRPatients = searchToken => async (dispatch) => {
 export const deletePatient = patientId => async (dispatch) => {
   try {
     await PatientApi.deletePatient(patientId);
-    dispatch({
-      type: DELETE_PATIENT_SUCCESS,
-      patientId,
-    });
   } catch (error) {
     throw error;
+  }
+};
+
+export const addPatientNote = (patientId, description) => async (dispatch) => {
+  try {
+    const note = await PatientApi.createPatientNote(patientId, { description });
+    dispatch({
+      type: ADD_PATIENT_NOTE,
+      patientId,
+      note,
+    });
+  } catch (e) {
+    // toggleAlert('Error adding note. Please try again.', 'error');
+    dispatch({
+      type: ADD_PATIENT_NOTE_ERROR,
+      patientId,
+    });
+    throw e;
+  }
+};
+
+export const editPatientNote = (patientId, note, description) => async (dispatch) => {
+  try {
+    const updatedNote = await PatientApi.updatePatientNote({ ...note, description });
+    dispatch({
+      type: UPDATE_PATIENT_NOTE,
+      patientId,
+      note: updatedNote,
+    });
+  } catch (e) {
+    // toggleAlert('Error updating note. Please try again.', 'error');
+    dispatch({
+      type: UPDATE_PATIENT_NOTE_ERROR,
+    });
+    throw e;
+  }
+};
+
+export const deletePatientNote = (patientId, note) => async (dispatch) => {
+  try {
+    await PatientApi.deletePatientNote(note.patientNoteId);
+    dispatch({
+      type: DELETE_PATIENT_NOTE,
+      patientId,
+      note,
+    });
+  } catch (e) {
+    // toggleAlert('Error in deleting note. Please try again.', 'error');
+    dispatch({
+      type: DELETE_PATIENT_NOTE_ERROR,
+    });
+    throw e;
   }
 };

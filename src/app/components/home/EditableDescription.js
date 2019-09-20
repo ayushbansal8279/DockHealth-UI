@@ -14,11 +14,12 @@ const StyledTextField = styled(TextField).attrs({
   },
 })`
   && .inputRoot {
+    font-size: inherit;
     padding: 0;
   }
 
   && textarea {
-    font-size: 14px;
+    font-size: inherit;
     color: #303538;
     border: 0;
     box-shadow: none;
@@ -36,7 +37,7 @@ const StyledTextField = styled(TextField).attrs({
 `;
 
 const EditableTextField = ({
-  value, onChange, onSubmit, onBlur, placeholder,
+  value, onChange, onSubmit, onBlur, placeholder, style,
 }) => (
   <form onSubmit={onSubmit}>
     <StyledTextField
@@ -44,6 +45,7 @@ const EditableTextField = ({
       value={value}
       onChange={onChange}
       onBlur={onBlur}
+      style={style}
     />
   </form>
 );

@@ -15,7 +15,7 @@ import PhoneHomeIcon from '../../img/phone-home.svg';
 import PhoneCellIcon from '../../img/phone-cell.svg';
 import PatientsTasklist from './PatientsTasklist';
 import { findUserTasksByPatient } from '../../api/patient-api';
-import { PatientsForm } from './PatientCreation';
+import { PatientsForm } from './PatientEdit';
 
 export const PatientsSidebarContainer = styled.div`
   min-width: 562px;
@@ -75,7 +75,7 @@ const PatientsSidebarSubsection = styled.div`
   padding-right: 11px;
 `;
 
-const PatientsSidebarSubsectionHeading = styled.div`
+export const PatientsSidebarSubsectionHeading = styled.div`
   font-size: 14px;
   font-weight: bold;
   line-height: 36px;
@@ -257,9 +257,9 @@ const PatientsDetailsSection = ({
         <PatientsSidebarNoteDescription>
           {notes || '—'}
         </PatientsSidebarNoteDescription>
-        {/* <PatientsSidebarNoteInfo> */}
-        {/*  Michael Docktor | Tuesday, October 2nd */}
-        {/* </PatientsSidebarNoteInfo> */}
+         {/*<PatientsSidebarNoteInfo>*/}
+         {/* Michael Docktor | Tuesday, October 2nd*/}
+         {/*</PatientsSidebarNoteInfo>*/}
       </div>
     </PatientsSidebarSubsection>
   </PatientsSidebarSection>
@@ -328,7 +328,7 @@ const NewPatientsDetailsSection = ({ patient }) => {
 
 const PatientsSidebar = ({ patient }) => {
   const {
-    mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, patientId,
+    mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, patientId, allNotes,
   } = patient;
   const dispatch = useDispatch();
   const deselectPatient = useCallback(() => {
@@ -388,7 +388,7 @@ const PatientsSidebar = ({ patient }) => {
           )}
           fallbackRender={() => (
             <NewPatientsDetailsSection patient={{
-              patientId, mrn, firstName, middleName, lastName, dob: dob && moment(dob).format('MM/DD/YYYY'), gender, phoneHome, phoneMobile, email, notes,
+              allNotes, patientId, mrn, firstName, middleName, lastName, dob: dob && moment(dob).format('MM/DD/YYYY'), gender, phoneHome, phoneMobile, email, notes,
             }}
             />
           )}
