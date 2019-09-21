@@ -34,6 +34,9 @@ import {
   UPDATE_TASK_WORKFLOW_STATUS,
   SHOW_SUBTASKS,
   HIDE_SUBTASKS,
+  TASK_ATTACHMENT_ADDED,
+  TASK_ATTACHMENT_REMOVED
+
 } from '../actions/action-types';
 
 const initialState = {
