@@ -28,7 +28,7 @@ import ConfirmMFACode from './views/auth/ConfirmMFACode';
 import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
 import PageNotFound from './views/PageNotFound';
-import ErrorPage from './views/errorPage';
+import ErrorPage from './views/ErrorPage';
 import TaskListView from './views/TaskListView';
 import SupportSectionView from './views/SupportSectionView';
 import PeopleView from './views/PeopleView';

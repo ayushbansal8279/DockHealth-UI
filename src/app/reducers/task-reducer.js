@@ -480,7 +480,7 @@ const TaskReducer = (state = initialState, action) => {
         tasks: state.tasks.map(task => (task.taskId === action.task.taskId ? action.task : task)),
       };
 
-    case types.TASK_ATTACHMENT_ADDED:
+    case TASK_ATTACHMENT_ADDED:
       var mainTaskId = action.taskId
       var taskAttachment = action.taskAttachment
 
@@ -494,7 +494,7 @@ const TaskReducer = (state = initialState, action) => {
         ))
       };
 
-    case types.TASK_ATTACHMENT_REMOVED:
+    case TASK_ATTACHMENT_REMOVED:
       var mainTaskId = action.taskId
       var taskAttachmentId = action.taskAttachmentId
 
