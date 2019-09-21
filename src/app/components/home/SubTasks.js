@@ -100,6 +100,24 @@ class Subtasks extends React.Component {
     e.stopPropagation();
   }
 
+  componentDidMount() {
+    const { selectedTaskId, subtasks = [] } = this.props;
+    if (subtasks.find(subtask => subtask.taskId == selectedTaskId)) {
+      this.setState({ isCollapsed: false });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { isCollapsed } = this.state;
+    const { selectedTaskId, subtasks = [] } = this.props;
+
+    if (selectedTaskId !== prevProps.selectedTaskId
+      && isCollapsed
+      && subtasks.find(subtask => subtask.taskId == selectedTaskId)) {
+      this.setState({ isCollapsed: false });
+    }
+  }
+
   renderCollapsed = () => {
     const { subtasks } = this.props;
 

@@ -1,318 +1,267 @@
-import * as types from '../actions/action-types';
-import initialState from './initialState';
+import {
+  map, equals, when, always, assoc, evolve, propEq, identity, unless, uncurryN, ifElse,
+} from 'ramda';
+import {
+  ADD_PATIENT_TO_TASK_SUCCESS,
+  ADD_TASK_COMMENT_SUCCESS,
+  ADD_TASK_SUCCESS,
+  ASSIGN_OR_REASSIGN_TASK_SUCCESS,
+  CLEAR_CURRENT_TASK_HISTORY,
+  DELETE_TASK_COMMENT_SUCCESS,
+  DELETE_TASK_SUCCESS,
+  DUPLICATE_TASK_SUCCESS,
+  EDIT_TASK,
+  FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS,
+  GET_COMPLETED_TASKS_SUCCESS,
+  GET_TASK_HISTORY_ERROR,
+  GET_TASK_HISTORY_SUCCESS,
+  GET_TASKS_SUCCESS,
+  HIDE_COMPLETED_TASKS,
+  MARK_COMPLETE_TASK_STATUS_SUCCESS,
+  MARK_TASK_STATUS_SUCCESS,
+  MOVE_TASK_SUCCESS, ORDER_SUB_TASK_SUCCESS,
+  REQUEST_COMPLETED_TASKS,
+  REQUEST_HISTORY,
+  REQUEST_TASKS,
+  SET_AS_CURRENT_TASK,
+  TOGGLE_TASK_PRIORITY_SUCCESS,
+  UPDATE_TASK_COMMENT_SUCCESS,
+  UPDATE_TASK_DESCRIPTION_SUCCESS,
+  UPDATE_TASK_DUE_DATE,
+  UPDATE_TASK_PATIENT,
+  UPDATE_TASK_REMINDER,
+  UPDATE_TASK_SUCCESS,
+  UPDATE_TASK_WORKFLOW_STATUS,
+  SHOW_SUBTASKS,
+  HIDE_SUBTASKS,
+} from '../actions/action-types';
+
+const initialState = {
+  completedTasks: [],
+  tasks: [],
+  task: {},
+  isFetching: false,
+  isCompletedTasksFetching: false,
+  isHistoryFetching: false,
+  historyError: null,
+  showingCompletedTasks: false,
+  currentTaskHistory: null,
+  selectedTaskId: null,
+
+};
+
+const getMainTaskId = ({ parentTaskId, taskId }) => parentTaskId || taskId;
 
 const updateTaskOrSubtask = (tasks, taskId, update) => {
-  const updatedTasks = tasks.map(t => (t.taskId === taskId
-    ? update(t)
-    : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === taskId ? update(st) : st)) })
+  const updatedTasks = tasks.map(t => (
+    t.taskId === taskId
+      ? update(t)
+      : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === taskId ? update(st) : st)) })
   ));
 
   return updatedTasks;
 };
 
-const requestHistory = taskState => ({ ...taskState, isHistoryFetching: true });
+const requestHistory = state => ({ ...state, isHistoryFetching: true });
 
-const requestHistorySuccess = (taskState, { auditDetails }) => ({
-  ...taskState,
+const requestHistorySuccess = (state, { auditDetails }) => ({
+  ...state,
   historyError: null,
   isHistoryFetching: false,
   currentTaskHistory: auditDetails,
 });
 
-const requestHistoryError = (taskState, { error }) => ({
-  ...taskState,
+const requestHistoryError = (state, { error }) => ({
+  ...state,
   historyError: error,
   isHistoryFetching: false,
 });
 
-const clearHistory = taskState => ({ ...taskState, currentTaskHistory: null });
+const clearHistory = state => ({ ...state, currentTaskHistory: null });
 
-const updateDueDate = (taskState, { taskId, dueDate }) => {
+const updateDueDate = (state, { taskId, dueDate }) => {
   const updateStatus = t => ({ ...t, dueDate });
-  const updatedTasks = updateTaskOrSubtask(taskState.tasks, taskId, updateStatus);
-  return ({ ...taskState, tasks: updatedTasks });
+  const updatedTasks = updateTaskOrSubtask(state.tasks, taskId, updateStatus);
+  return ({ ...state, tasks: updatedTasks });
 };
 
-const updateWorkflowStatus = (taskState, { taskId, workflowStatus }) => {
+const updateWorkflowStatus = (state, { taskId, workflowStatus }) => {
   const updateStatus = t => ({ ...t, workflowStatus });
-  const updatedTasks = updateTaskOrSubtask(taskState.tasks, taskId, updateStatus);
-  return ({ ...taskState, tasks: updatedTasks });
+  const updatedTasks = updateTaskOrSubtask(state.tasks, taskId, updateStatus);
+  return ({ ...state, tasks: updatedTasks });
 };
 
-const updatePatient = (taskState, { parentTaskId, patient }) => ({
-  ...taskState,
-  tasks: taskState.tasks.map(task => (task.taskId === parentTaskId
+const updatePatient = (state, { parentTaskId, patient }) => ({
+  ...state,
+  tasks: state.tasks.map(task => (task.taskId === parentTaskId
     ? ({ ...task, patient, subtasks: task.subtasks.map(subtask => ({ ...subtask, patient })) })
     : task)),
 });
 
-const updateReminder = (taskState, { taskId, reminderDt }) => {
+const updateReminder = (state, { taskId, reminderDt }) => {
   const updateStatus = t => ({ ...t, reminderDt });
-  const updatedTasks = updateTaskOrSubtask(taskState.tasks, taskId, updateStatus);
-  return ({ ...taskState, tasks: updatedTasks });
+  const updatedTasks = updateTaskOrSubtask(state.tasks, taskId, updateStatus);
+  return ({ ...state, tasks: updatedTasks });
 };
 
-const TaskReducer = function(state = initialState, action) {
+const TASK_COMPLETE = 'COMPLETE';
 
-  switch(action.type) {
+const updateMainTaskStatus = status => evolve({
+  status: always(status),
+  subtasks:
+    equals(status, TASK_COMPLETE)
+      ? map(assoc('status', status))
+      : identity,
+});
 
-    case types.ADD_TASK_SUCCESS: {
+const updateSubTaskStatus = (status, subtask) => evolve({
+  subtasks: map(when(
+    propEq('taskId', subtask.taskId),
+    assoc('status', status),
+  )),
+});
+
+const updateTaskStatus = uncurryN(3,
+  status => task => map(when(
+    propEq('taskId', task.parentTaskId || task.taskId),
+    ifElse(
+      propEq('taskId', task.taskId),
+      updateMainTaskStatus(status),
+      unless(
+        propEq('status', TASK_COMPLETE),
+        updateSubTaskStatus(status, task),
+      ),
+    ),
+  )));
+
+const TaskReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       const isSubtask = ({ parentTaskId }) => parentTaskId !== null;
       const isParentOfAddedTask = ({ taskId }) => taskId === addedTask.parentTaskId;
 
       const tasks = isSubtask(addedTask)
-        ? state.tasks.map(task => isParentOfAddedTask(task)
+        ? state.tasks.map(task => (isParentOfAddedTask(task)
           ? { ...task, subtasks: [addedTask].concat(task.subtasks) }
-          : task)
+          : task))
         : [addedTask].concat(state.tasks);
 
       return { ...state, tasks };
     }
 
-    case types.DUPLICATE_TASK_SUCCESS:
+    case DUPLICATE_TASK_SUCCESS:
       // with concact make a copy of the array, and then we'll change and return the copy
-      return{
-        ...state,
-        // tasks: state.tasks.concat(action.task)
-        tasks: [action.duplicatedTask].concat(state.tasks)
-      }
-
-    case types.GET_TASKS_SUCCESS:
-      // isFetching is used for the loading image
-      return Object.assign({}, state, { tasks: action.tasks, isFetching:false });
-
-    case types.GET_COMPLETED_TASKS_SUCCESS:
-      return Object.assign({}, state, { completedTasks: action.tasks, isCompletedTasksFetching:false, showingCompletedTasks: true  });
-
-    case types.REQUEST_TASKS:
-      return Object.assign({}, state, { isFetching: true, tasks: [], completedTasks: [], showingCompletedTasks: false })
-
-    case types.REQUEST_COMPLETED_TASKS:
-      return Object.assign({}, state, { isCompletedTasksFetching: true })
-
-    case types.REQUEST_HISTORY:
-      return requestHistory(state, action);
-
-    case types.HIDE_COMPLETED_TASKS:
-      return Object.assign({}, state, { showingCompletedTasks: false, completedTasks: [] })
-
-    case types.EDIT_TASK:
-      return { ...state, task: action.task };
-
-    // handling
-    case types.MARK_TASK_STATUS_SUCCESS: // Tasks in 'incompletedTasks' state
-      // This is the parent task Id (if subtask) or the actual task Id (if actual task is already top level)
-      var mainTask
-      if(action.task.parentTaskId){
-        mainTask = action.task.parentTaskId
-      }else{
-        mainTask = action.task.taskId
-      }
-
       return {
-          ...state,
-          // Loop through each of the top level tasks
-          tasks: state.tasks.map(task =>
-            // If 1: If the task Id is the same as the mainTask Id
-            task.taskId === mainTask ?
-              // Do this 1
-              // If 2: If the task has a parentTaskId (is a subtask)
-              action.task.parentTaskId ?
-                // Loop through the subtasks
-                {...task, subtasks:
-                  task.subtasks.map(subtask =>
-                    // If 3
-                    subtask.taskId === action.task.taskId ?
-                    {...subtask, status: action.status} :
-                    // Else 3
-                    subtask
-                  )
-                } :
-              // Else 2: Else change the status of the task that is top level
-              // If 4: If task is 'incomplete' and has subtasks
-              action.status == 'COMPLETE' && action.task.subtasks.length > 0 ?
-              {...task, status: action.status, subtasks:
-                task.subtasks.map(subtask =>
-                  subtask.status == 'INCOMPLETE' ?
-                  {...subtask, status: action.status} :
-                  subtask
-                )
-              } :
-              { ...task, status: action.status }
-            // Else 1: Else just return the task as is (it's not the one you're trying to change)
-            : task
-          )
+        ...state,
+        tasks: [action.duplicatedTask].concat(state.tasks),
       };
 
-      // handling
-      case types.MARK_COMPLETE_TASK_STATUS_SUCCESS: // Tasks in 'completedTasks' state
-        var mainTask
-        if(action.task.parentTaskId){
-          mainTask = action.task.parentTaskId
-        }else{
-          mainTask = action.task.taskId
-        }
+    case GET_TASKS_SUCCESS: {
+      // isFetching is used for the loading image
+      const { tasks } = action;
+      return { ...state, tasks, isFetching: false };
+    }
 
-        return {
-            ...state,
-            completedTasks: state.completedTasks.map(task =>
-              task.taskId === mainTask ?
-              action.task.parentTaskId ?
-                {...task, subtasks:
-                  task.subtasks.map(subtask =>
-                    subtask.taskId === action.task.taskId ?
-                    {...subtask, status: action.status} :
-                    subtask
-                  )
-                } :
-                { ...task, status: action.status }
+    case GET_COMPLETED_TASKS_SUCCESS: {
+      const { tasks } = action;
+      return {
+        ...state,
+        completedTasks: tasks,
+        isCompletedTasksFetching: false,
+        showingCompletedTasks: true,
+      };
+    }
 
-                : task
-            )
-        };
+    case REQUEST_TASKS:
+      return {
+        ...state,
+        isFetching: true,
+        tasks: [],
+        completedTasks: [],
+        showingCompletedTasks: false,
+      };
 
-    // ORIGINAL (doesn't deal with subtasks)
-    // case types.MARK_COMPLETE_TASK_STATUS_SUCCESS: // Tasks in 'completedTasks' state
-    //
-    // 	return {
-    //     ...state,
-    //     completedTasks: state.completedTasks.map(task =>
-    //       task.taskId === action.task.taskId ?
-    //         // transform the one with a matching id
-    //         { ...task, status: action.status } :
-    //         // otherwise return original task
-    //         task
-    //     )
-    //   };
+    case REQUEST_COMPLETED_TASKS:
+      return { ...state, isCompletedTasksFetching: true };
 
-    // case types.DELETE_TASK_SUCCESS:
-      //return Object.assign({}, state, { tasks: state.tasks.filter(task => task.taskId !== taskId)});
-      // return {
-      //   ...state,
-      //   tasks: state.tasks.filter(task => task !== action.task)
-      // };
+    case REQUEST_HISTORY:
+      return requestHistory(state, action);
 
-    // case types.DELETE_TASK_SUCCESS:
-    // var mainTask
-    // if(action.task.parentTaskId){
-    // mainTask = action.task.parentTaskId
-    // }else{
-    // mainTask = action.task.taskId
-    // }
-    //
-    // return {
-    //   ...state,
-    //   tasks: state.tasks.filter(task =>
-    //     task.taskId === mainTask ?
-    //     action.task.parentTaskId ?
-    //       {...task, subtasks:
-    //         task.subtasks.filter(subtask =>
-    //           subtask.taskId === action.task.taskId ?
-    //           (subtask => subtask.taskId !== mainTask) :
-    //           subtask
-    //         )
-    //       } :
-    //       (task => task.taskId !== mainTask)
-    //       : task
-    //   )
-    // };
+    case HIDE_COMPLETED_TASKS:
+      return { ...state, showingCompletedTasks: false, completedTasks: [] };
 
-    case types.DELETE_TASK_SUCCESS: {
+    case EDIT_TASK: {
+      const { task } = action;
+      return { ...state, task };
+    }
+
+    case MARK_TASK_STATUS_SUCCESS: {
+      const { task, status } = action;
+      const tasks = updateTaskStatus(status, task, state.tasks);
+
+      return { ...state, tasks };
+    }
+
+    case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
+      const { task, status } = action;
+      const completedTasks = updateTaskStatus(status, task, state.completedTasks);
+
+      return { ...state, completedTasks };
+    }
+
+    case DELETE_TASK_SUCCESS: {
       const mainTaskId = action.task.parentTaskId;
-      console.log('del');
+
       if (mainTaskId) {
         return {
           ...state,
-          tasks: state.tasks.map(task =>
-            task.taskId === mainTaskId ?
-              {...task, subtasks: task.subtasks.filter(({ taskId }) => taskId !== action.task.taskId)}
-              : task
-          )
+          tasks: state.tasks.map(task => (task.taskId === mainTaskId
+            ? { ...task, subtasks: task.subtasks.filter(({ taskId }) => taskId !== action.task.taskId) }
+            : task)),
         };
       }
 
       return {
         ...state,
-        tasks: state.tasks.filter(({ taskId }) => taskId !== action.task.taskId)
+        tasks: state.tasks.filter(({ taskId }) => taskId !== action.task.taskId),
       };
     }
 
-    // case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
-    //   return {
-    //     ...state,
-    //     tasks: state.tasks.filter(task => task.taskId !== taskId)
-    //   };
+    case UPDATE_TASK_DESCRIPTION_SUCCESS: {
+      const mainTask = getMainTaskId(action.task);
 
-    // case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
-    //   return {
-    //     ...state,
-    //     tasks: state.tasks.map(task =>
-    //       task.taskId === action.taskId ?
-    //         // transform the one with a matching id
-    //         { ...task, description: action.description } :
-    //         // otherwise return original task
-    //         task
-    //     )
-    //   };
-
-    case types.UPDATE_TASK_DESCRIPTION_SUCCESS:
-    var mainTask
-    if(action.task.parentTaskId){
-      mainTask = action.task.parentTaskId
-    }else{
-      mainTask = action.task.taskId
+      return {
+        ...state,
+        tasks: state.tasks.map(task => (task.taskId === mainTask
+          ? action.task.parentTaskId
+            ? {
+              ...task,
+              read: false,
+              subtasks:
+            task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
+              ? { ...subtask, read: false, description: action.description }
+              : subtask)),
+            }
+            : { ...task, read: false, description: action.description }
+          : task)),
+      };
     }
 
-    return {
-      ...state,
-      tasks: state.tasks.map(task =>
-        task.taskId === mainTask ?
-          action.task.parentTaskId ?
-          {...task, read:false, subtasks:
-            task.subtasks.map(subtask =>
-              subtask.taskId === action.task.taskId ?
-              {...subtask, read:false, description: action.description} :
-              subtask
-            )
-          } :
-          { ...task, read:false, description: action.description }
-          : task
-      )
-    };
-
-    case types.UPDATE_TASK_DUE_DATE:
+    case UPDATE_TASK_DUE_DATE:
       return updateDueDate(state, action);
 
-    case types.UPDATE_TASK_WORKFLOW_STATUS:
+    case UPDATE_TASK_WORKFLOW_STATUS:
       return updateWorkflowStatus(state, action);
-      
-    case types.UPDATE_TASK_REMINDER:
+
+    case UPDATE_TASK_REMINDER:
       return updateReminder(state, action);
 
-    case types.UPDATE_TASK_PATIENT:
+    case UPDATE_TASK_PATIENT:
       return updatePatient(state, action);
 
-    // case types.UPDATE_TASK_SUCCESS:
-    //   return {
-    //     ...state,
-    //     tasks: state.tasks.map(task =>
-    //       task.taskId === action.task.taskId ?
-    //         // transform the one with a matching id
-    //         {...task, ...action.task } :
-    //         // otherwise return original task
-    //         task
-    //     )
-    //   };
-
-    // case types.ADD_TASK_SUCCESS:
-    // return{
-    //   ...state,
-    //   tasks: [action.task].concat(state.tasks)
-    // }
-
-    case types.MOVE_TASK_SUCCESS: {
+    case MOVE_TASK_SUCCESS: {
       const { task } = action;
       const isSubtask = Boolean(task.parentTaskId);
 
@@ -322,40 +271,39 @@ const TaskReducer = function(state = initialState, action) {
           tasks: state.tasks.filter(t => t.taskId !== task.taskId),
         });
       }
-      
+
       return ({
         ...state,
-        tasks: state.tasks.map(t => t.taskId !== task.parentTaskId
+        tasks: state.tasks.map(t => (t.taskId !== task.parentTaskId
           ? t
           : ({
             ...t,
             subtasks: t.subtasks.filter(subtask => subtask.taskId !== task.taskId),
-          })),
+          }))),
       });
     }
 
-    case types.UPDATE_TASK_SUCCESS: {
+    case UPDATE_TASK_SUCCESS: {
       const { task } = action;
       const mainTaskId = task.parentTaskId || task.taskId;
 
       const newState = {
         ...state,
-        tasks: state.tasks.map(t => {
+        tasks: state.tasks.map((t) => {
           if (t.taskId !== mainTaskId) {
             return t;
           }
 
           if (!task.parentTaskId) {
-            return ({...t, ...task });
+            return ({ ...t, ...task });
           }
 
           return ({
             ...t,
             read: false,
-            subtasks: t.subtasks.map(subtask =>
-              subtask.taskId === task.taskId
-                ? {...subtask, ...task}
-                : subtask),
+            subtasks: t.subtasks.map(subtask => (subtask.taskId === task.taskId
+              ? { ...subtask, ...task }
+              : subtask)),
           });
         }),
       };
@@ -363,239 +311,173 @@ const TaskReducer = function(state = initialState, action) {
       return newState;
     }
 
-      case types.TOGGLE_TASK_PRIORITY_SUCCESS:
-      var mainTask
-      if(action.task.parentTaskId){
-      mainTask = action.task.parentTaskId
-      }else{
-      mainTask = action.task.taskId
-      }
+    case TOGGLE_TASK_PRIORITY_SUCCESS: {
+      const mainTask = getMainTaskId(action.task);
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTask ?
-          action.task.parentTaskId ?
-            {...task, subtasks:
-              task.subtasks.map(subtask =>
-                subtask.taskId === action.task.taskId ?
-                {...subtask, priority: action.priority} :
-                subtask
-              )
-            } :
-            { ...task, priority: action.priority }
-            : task
-        )
+        tasks: state.tasks.map(task => (task.taskId === mainTask
+          ? action.task.parentTaskId
+            ? {
+              ...task,
+              subtasks:
+              task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
+                ? { ...subtask, priority: action.priority }
+                : subtask)),
+            }
+            : { ...task, priority: action.priority }
+          : task)),
       };
-
-    // case types.TOGGLE_TASK_PRIORITY_SUCCESS:
-    //   return {
-    //     ...state,
-    //     tasks: state.tasks.map(task =>
-    //       task.taskId === action.taskId ?
-    //         // transform the one with a matching id
-    //         { ...task, priority: action.priority } :
-    //         // otherwise return original task
-    //         task
-    //   )
-    // };
-
-    case types.ASSIGN_OR_REASSIGN_TASK_SUCCESS:
-    var mainTask
-    if(action.task.parentTaskId){
-    mainTask = action.task.parentTaskId
-    }else{
-    mainTask = action.task.taskId
     }
 
-    return {
-      ...state,
-      tasks: state.tasks.map(task =>
-        task.taskId === mainTask ?
-        action.task.parentTaskId ?
-          {...task, subtasks:
-            task.subtasks.map(subtask =>
-              subtask.taskId === action.task.taskId ?
-              {...subtask, assignedTo: action.task.assignedTo, assignedBy: action.task.assignedBy, assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime} :
-              subtask
-            )
-          } :
-          { ...task, assignedTo: action.task.assignedTo, assignedBy: action.task.assignedBy, assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime}
-          : task
-      )
-    };
+    case ASSIGN_OR_REASSIGN_TASK_SUCCESS: {
+      const mainTask = getMainTaskId(action.task);
 
-    // case types.ASSIGN_OR_REASSIGN_TASK_SUCCESS:
-    //   return {
-    //     ...state,
-    //     tasks: state.tasks.map(task =>
-    //       task === action.task ?
-    //         // transform the one with a matching id
-    //         { ...task, assignedTo: action.member } :
-    //         // otherwise return original task
-    //         task
-    //     )
-    //   };
-
-      case types.ADD_TASK_COMMENT_SUCCESS:
-        console.log('add,', action)
-        var mainTask
-        if(action.task.parentTaskId){
-          mainTask = action.task.parentTaskId
-        }else{
-          mainTask = action.task.taskId
-        }
-
-        // HACK - TODO: Make backend return correct initials and userName
-        let comment = action.comment.data;
-        comment.creator.initials = comment.creator.initials || `${comment.creator.firstName.charAt(0)} ${comment.creator.firstName.charAt(1)}`;
-        comment.creator.userName = `${comment.creator.firstName} ${comment.creator.lastName}`;
-
-        return {
-            ...state,
-            tasks: state.tasks.map(task =>
-              task.taskId === mainTask ?
-              action.task.parentTaskId ?
-                {...task, read:false, subtasks:
-                  task.subtasks.map(subtask =>
-                    subtask.taskId === action.task.taskId ?
-                    {...subtask, read:false, comments: [comment].concat(subtask.comments)} :
-                    // {...subtask, read:false, comments: subtask.comments.concat([action.comment.data])} :
-                    subtask
-                  )
-                } :
-                { ...task, read:false, comments: [comment].concat(task.comments)}
-
-                : task
-            )
-        };
-
-    case types.UPDATE_TASK_COMMENT_SUCCESS:
-      var mainTaskId
-      if(action.task.parentTaskId){
-        mainTaskId = action.task.parentTaskId
-      }else{
-        mainTaskId = action.task.taskId
-      }
-      return{
-        ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTaskId ?
-            action.task.parentTaskId ?
-              {...task, subtasks:
-                task.subtasks.map(subtask =>
-                  subtask === action.task ?
-                  {...subtask, comments:
-                    subtask.comments.map(comment =>
-                      comment === action.comment ?
-                      {...comment, comment: comment} :
-                      comment
-                    )
-                  } :
-                  subtask
-                )
-              } :
-              {...task, comments:
-                task.comments.map(comment =>
-                  comment === action.comment ?
-                  {...comment, comment: comment} :
-                  comment
-                )
-              } :
-              task
-            )
-      };
-
-      case types.DELETE_TASK_COMMENT_SUCCESS:
-        var mainTaskId
-        if(action.task.parentTaskId){
-          mainTaskId = action.task.parentTaskId
-        }else{
-          mainTaskId = action.task.taskId
-        }
-        return{
-          ...state,
-          tasks: state.tasks.map(task =>
-            task.taskId === mainTaskId ?
-              action.task.parentTaskId ?
-                {...task, subtasks:
-                  task.subtasks.map(subtask =>
-                    subtask === action.task ?
-                    {...subtask, comments: subtask.comments.filter(comment => comment !== action.comment)} :
-                    subtask
-                  )
-                } :
-                {...task, comments: task.comments.filter(comment => comment !== action.comment)} :
-                task
-              )
-        };
-
-    // case types.ADD_TASK_COMMENT_SUCCESS:
-    //   return {
-    //     ...state,
-    //     tasks: state.tasks.map(task =>
-    //       task.taskId === action.task.taskId ?
-    //         // transform the one with a matching id
-    //         { ...task, comments: task.comments.concat([action.comment.data]) } :
-    //         // otherwise return original task
-    //         task
-    //     )
-    //   };
-
-    case types.ADD_PATIENT_TO_TASK_SUCCESS:
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === action.taskId ?
-            // transform the one with a matching id
-            { ...task, patient: action.patient } :
-            // otherwise return original task
-            task
-        )
+        tasks: state.tasks.map(task => (task.taskId === mainTask
+          ? action.task.parentTaskId
+            ? {
+              ...task,
+              subtasks:
+            task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
+              ? {
+                ...subtask,
+                assignedTo: action.task.assignedTo,
+                assignedBy: action.task.assignedBy,
+                assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime,
+              }
+              : subtask)),
+            }
+            : {
+              ...task,
+              assignedTo: action.task.assignedTo,
+              assignedBy: action.task.assignedBy,
+              assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime,
+            }
+          : task)),
+      };
+    }
+
+    case ADD_TASK_COMMENT_SUCCESS: {
+      const mainTask = getMainTaskId(action.task);
+      // HACK - TODO: Make backend return correct initials and userName
+      const comment = action.comment.data;
+      comment.creator.initials = comment.creator.initials || `${comment.creator.firstName.charAt(0)} ${comment.creator.firstName.charAt(1)}`;
+      comment.creator.userName = `${comment.creator.firstName} ${comment.creator.lastName}`;
+
+      return {
+        ...state,
+        tasks: state.tasks.map(task => (task.taskId === mainTask
+          ? action.task.parentTaskId
+            ? {
+              ...task,
+              read: false,
+              subtasks:
+                  task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
+                    ? { ...subtask, read: false, comments: [comment].concat(subtask.comments) }
+                    : subtask)),
+            }
+            : { ...task, read: false, comments: [comment].concat(task.comments) }
+
+          : task)),
+      };
+    }
+
+    case UPDATE_TASK_COMMENT_SUCCESS: {
+      const mainTaskId = getMainTaskId(action.task);
+
+      return {
+        ...state,
+        tasks: state.tasks.map(task => (task.taskId === mainTaskId
+          ? action.task.parentTaskId
+            ? {
+              ...task,
+              subtasks:
+                task.subtasks.map(subtask => (subtask === action.task
+                  ? {
+                    ...subtask,
+                    comments:
+                    subtask.comments.map(comment => (comment === action.comment
+                      ? { ...comment, comment }
+                      : comment)),
+                  }
+                  : subtask)),
+            }
+            : {
+              ...task,
+              comments:
+                task.comments.map(comment => (comment === action.comment
+                  ? { ...comment, comment }
+                  : comment)),
+            }
+          : task)),
+      };
+    }
+
+    case DELETE_TASK_COMMENT_SUCCESS: {
+      const mainTaskId = getMainTaskId(action.task);
+
+      return {
+        ...state,
+        tasks: state.tasks.map(task => (task.taskId === mainTaskId
+          ? action.task.parentTaskId
+            ? {
+              ...task,
+              subtasks:
+                  task.subtasks.map(subtask => (subtask === action.task
+                    ? { ...subtask, comments: subtask.comments.filter(comment => comment !== action.comment) }
+                    : subtask)),
+            }
+            : { ...task, comments: task.comments.filter(comment => comment !== action.comment) }
+          : task)),
+      };
+    }
+
+    case ADD_PATIENT_TO_TASK_SUCCESS:
+      return {
+        ...state,
+        tasks: state.tasks.map(task => (task.taskId === action.taskId
+          ? { ...task, patient: action.patient }
+          : task)),
       };
 
-      case types.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS:
-        var mainTask
-        if(action.task.parentTaskId){
-          mainTask = action.task.parentTaskId
-        }else{
-          mainTask = action.task.taskId
-        }
+    case FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS: {
+      const mainTask = getMainTaskId(action.task);
 
-        return {
-            ...state,
-            tasks: state.tasks.map(task =>
-              task.taskId === mainTask ?
-              action.task.parentTaskId ?
-                {...task, subtasks:
-                  task.subtasks.map(subtask =>
-                    subtask.taskId === action.task.taskId ?
-                    {...subtask, read: !action.task.read} :
-                    subtask
-                  )
-                } :
-                { ...task, read: !action.task.read }
+      return {
+        ...state,
+        tasks: state.tasks.map(task => (task.taskId === mainTask
+          ? action.task.parentTaskId
+            ? {
+              ...task,
+              subtasks:
+                  task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
+                    ? { ...subtask, read: !action.task.read }
+                    : subtask)),
+            }
+            : { ...task, read: !action.task.read }
 
-                : task
-            )
-        };
+          : task)),
+      };
+    }
 
-    case types.SET_AS_CURRENT_TASK:
+    case SET_AS_CURRENT_TASK:
       return { ...state, selectedTaskId: action.taskId };
 
-    case types.GET_TASK_HISTORY_SUCCESS:
+    case GET_TASK_HISTORY_SUCCESS:
       return requestHistorySuccess(state, action);
 
-    case types.GET_TASK_HISTORY_ERROR:
+    case GET_TASK_HISTORY_ERROR:
       return requestHistoryError(state, action);
 
-    case types.CLEAR_CURRENT_TASK_HISTORY:
+    case CLEAR_CURRENT_TASK_HISTORY:
       return clearHistory(state, action);
 
-    case types.ORDER_SUB_TASK_SUCCESS:
+    case ORDER_SUB_TASK_SUCCESS:
       return {
         ...state,
-        tasks: state.tasks.map(task => task.taskId === action.task.taskId ? action.task : task)
+        tasks: state.tasks.map(task => (task.taskId === action.task.taskId ? action.task : task)),
       };
 
     case types.TASK_ATTACHMENT_ADDED:
@@ -625,15 +507,11 @@ const TaskReducer = function(state = initialState, action) {
               : st)) })
           ))
       };
+
+    default:
+      return state;
   }
-
-  return state;
-
-  // return { hostnames: state.hostnames.filter(hostname =>
-  //    hostname.id !== action.hostnameId
-  // )}
-
-}
+};
 
 
-export default TaskReducer
+export default TaskReducer;

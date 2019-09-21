@@ -70,7 +70,7 @@ export class Comments extends React.PureComponent {
                         name={commentId}
                         value={comment}
                         onChange={this.handleCommentEdition}
-                        disabled={disabled}
+                        disabled={disabled || !isUser(creator)}
                       />
                     </Comment>))
                   }

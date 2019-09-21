@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const PatientContainer = styled.div`
-  font-size: 14px;
+  font-size: 16px;
   color: #303538;
   line-height: 18px;
 `;

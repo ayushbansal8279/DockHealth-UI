@@ -19,14 +19,12 @@ import History from './History';
 import TaskActions from './TaskActions';
 import DetailsDueDate from './DetailsDueDate';
 import Reminder from './Reminder';
+import TaskCheckbox from '../TaskCheckbox';
 
-const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
+const StyledCheckbox = styled(TaskCheckbox)`
   && {
     width: 36px;
     height: 36px;
-  }
-  &&.checked {
-    color: #00a73c;
   }
 `;
 
@@ -198,10 +196,11 @@ export class TaskDetails extends React.PureComponent {
                   <StyledCheckbox
                     checked={isCompleted}
                     onChange={this.handleChange}
-                    disabled={isCompleted}
+                    disabled={isSubtask && isCompleted}
+                    style={{ marginRight: '-15px' }}
                   />
                 </StyledLabel>
-                <StyledDescription>
+                <StyledDescription style={{ fontSize: '16px' }}>
                   <EditableDescription
                     placeholder="Enter task description"
                     value={description}

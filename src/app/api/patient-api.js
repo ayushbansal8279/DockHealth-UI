@@ -1,8 +1,6 @@
 import axios from './axios-heydoc';
-import * as ActionTypes from '../actions/action-types';
 
 export function getAllPatients() {
-  // loading()
   return axios.get('patient/getAllPatients?active=true')
     .then(response => response.data).catch((error) => {
       console.log(error);
@@ -11,7 +9,6 @@ export function getAllPatients() {
 }
 
 export function getMyPatientsAll() {
-  // loading()
   return axios.get('patient/getPatientsForCurrentUser')
     .then(response => response.data).catch((error) => {
       console.log(error);
@@ -20,7 +17,6 @@ export function getMyPatientsAll() {
 }
 
 export function getMyPatientsActive() {
-  // loading()
   return axios.get('patient/getPatientsForCurrentUser?taskStatus=INCOMPLETE')
     .then(response => response.data).catch((error) => {
       console.log(error);
@@ -60,7 +56,7 @@ export function addPatient(patient) {
     }).catch((error) => {
       console.log(error);
       toggleAlert('Error in adding patient. Please try again.', 'error');
-      return error.response.data;
+      throw error.response.data;
     });
 }
 
@@ -95,7 +91,8 @@ export function lookupEMRPatients(searchToken) {
 // This api call 'patient/deletePatient/' does not exist yet
 export function deletePatient(patientId) {
   return axios.get(`patient/deletePatient/${patientId}`)
-    .then(response => response).catch((error) => {
+    .then(response => response)
+    .catch((error) => {
       console.log(error);
     });
 }
@@ -115,3 +112,15 @@ export const findUserTasksByPatient = (patientId, status) => axios.get(`/task/fi
     console.error(error);
     return error.response.data;
   });
+
+export const createPatientNote = (patientId, note) => axios.post(`/patients/note/${patientId}`, note)
+  .then(response => response.data)
+  .catch((error) => { throw error.response.data; });
+
+export const updatePatientNote = note => axios.put('/patient/note', note)
+  .then(response => response.data)
+  .catch((error) => { throw error.response.data; });
+
+export const deletePatientNote = patientNoteId => axios.delete(`/patient/note/deletePatientNoteById/${patientNoteId}`)
+  .then(response => response.data)
+  .catch((error) => { throw error.response.data; });

@@ -46,7 +46,7 @@ StyledTableBody.defaultProps = {
   isSelected: false,
 };
 
-const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
+const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }}/>)`
   && {
     width: 36px;
     height: 36px;
@@ -138,7 +138,10 @@ const Task = ({
     <StyledTableBody
       isSubtask={isSubtask}
       isSelected={selectedTaskId === task.taskId}
-      onClick={(e) => { e.stopPropagation(); storeAsCurrentTask(task.taskId); }}
+      onClick={(e) => {
+        e.stopPropagation();
+        storeAsCurrentTask(task.taskId);
+      }}
     >
       <TableRow>
         <StyledTableCell
@@ -153,7 +156,8 @@ const Task = ({
           <StyledCheckbox
             checked={task.status === 'COMPLETE'}
             onChange={() => {
-              if (isSubtask || task.status === 'COMPLETE') {
+              const hasSubtasks = task.subtasks?.length > 0;
+              if (!hasSubtasks || task.status === 'COMPLETE') {
                 confirm();
                 return;
               }

@@ -19,26 +19,28 @@ const StyledContainer = styled.div`
 `;
 
 const Members = ({ members, taskList }) => {
-  const visibleMembers = members.slice(0, 4);
+  const visibleMembers = members.slice(0, 5);
   const hiddenMemberCount = members.length - visibleMembers.length;
 
   return (
     <StyledContainer>
       <InvitePicker taskList={taskList} members={members}>
         {({ open }) => (
-          <AddMember onClick={open}>
-            <AddIcon fontSize="small" />
-          </AddMember>
+          <>
+            <AddMember onClick={open}>
+              <AddIcon fontSize="small" />
+            </AddMember>
+            {hiddenMemberCount > 0 && (
+              <Member
+                onClick={open}
+                color="#0ca1c7"
+                style={{ marginRight: '-8px' }}
+              >
+                {`+${hiddenMemberCount}`}
+              </Member>)}
+          </>
         )}
       </InvitePicker>
-      {hiddenMemberCount > 0 && (
-        <Member
-          onClick={() => {}}
-          color="#0ca1c7"
-          style={{ marginRight: '-8px' }}
-        >
-          {`+${hiddenMemberCount}`}
-        </Member>)}
       {visibleMembers.map(member => (
         <Member
           onClick={() => {}}

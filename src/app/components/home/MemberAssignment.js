@@ -3,57 +3,18 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Member from './Member';
 
-const AssignedMember = styled(Member)`
-  && {
-    margin: 0 auto;
-    width: ${({ large }) => (large ? '67' : '41')}px;
-    height: ${({ large }) => (large ? '67' : '41')}px;
-    font-size: 16px;
-  }
-
-  & .img {
-    ${({ small }) => (small
-    ? `border: 1px solid #0ca1c7;
-        padding: 2px;`
-    : `border: 2px solid #0ca1c7;
-        padding: 3px;`)}
-  }
-`;
-
-const UnassignedMember = styled(AssignedMember)`
-  && {
-    background: #fff;
-    border-radius: 50%;
-    ${({ small }) => (small
-    ? `border: 1px solid #0ca1c7;
-        padding: 2px;`
-    : `border: 2px solid #0ca1c7;
-        padding: 3px;`)}
-  
-    :before {
-      content: " ";
-      position: absolute;
-      border: 1px solid #aab8c3;
-      border-radius: 50%;
-      ${({ small }) => (small
-    ? `top: 2px;
-        bottom: 2px;
-        left: 2px;
-        right: 2px;`
-    : `top: 3px;
-        bottom: 3px;
-        left: 3px;
-        right: 3px;`)}
-    }
-  }
+const UnassignedText = styled.div`
+  font-size: 26px;
+  font-weight: bolder;
+  color: white;
 `;
 
 const MemberAssignment = ({
-  member, onClick, small, disabled, large,
+  member, onClick, disabled, large,
 }) => (
   member
-    ? <AssignedMember onClick={disabled ? undefined : onClick} member={member} size={small} large={large} />
-    : <UnassignedMember onClick={disabled ? undefined : onClick} alt="Unassigned" size={small} large={large}>{' '}</UnassignedMember>
+    ? <Member onClick={disabled ? undefined : onClick} member={member} large={large} />
+    : <Member onClick={disabled ? undefined : onClick} alt="Unassigned" large={large} color="black"><UnassignedText>?</UnassignedText></Member>
 );
 
 MemberAssignment.propTypes = {

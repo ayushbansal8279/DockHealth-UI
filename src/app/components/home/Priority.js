@@ -19,6 +19,7 @@ export const PriorityDot = styled.div`
   margin: 0 auto;
   border-radius: 50%;
   background: ${({ color }) => color};
+  flex-shrink: 0;
 `;
 
 PriorityDot.defaultProps = {

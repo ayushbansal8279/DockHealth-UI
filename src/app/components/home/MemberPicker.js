@@ -10,6 +10,7 @@ import ListItem from './ListItem';
 import PersonInvite from '../../img/person-invite.svg';
 import { assignOrReassignTask } from '../../actions/task-actions';
 import MemberAssignment from './MemberAssignment';
+import MemberSlot from './MemberSlot';
 
 const StyledPopover = styled(Popover).attrs({ paper: 'paper' })`
   && .paper {
@@ -159,7 +160,7 @@ class MemberPicker extends React.Component {
               onClick={this.handleSelect}
               id={UNASSIGNED_MEMBER_ID}
             >
-              <MemberAssignment />
+              <MemberSlot />
               <MemberName><em>Unassigned</em></MemberName>
             </ListItem>
             {sortedMembers && sortedMembers.map(m => (
@@ -170,15 +171,15 @@ class MemberPicker extends React.Component {
                 onClick={this.handleSelect}
                 id={m.userId}
               >
-                <MemberAssignment member={m} />
+                <MemberSlot member={m} />
                 <MemberName>{m.userName}</MemberName>
               </ListItem>
             ))}
           </List>
-          <Footer onClick={() => {}} focusRipple>
-            <img src={PersonInvite} alt="" />
-            <FooterText>Invite to list</FooterText>
-          </Footer>
+          {/*<Footer onClick={() => {}} focusRipple>*/}
+          {/*  <img src={PersonInvite} alt="" />*/}
+          {/*  <FooterText>Invite to list</FooterText>*/}
+          {/*</Footer>*/}
         </StyledPopover>
       </React.Fragment>
     );

@@ -9,7 +9,15 @@ import {
   REQUEST_EMR_PATIENTS,
   CLEAR_EMR_PATIENTS,
   GET_EMR_PATIENTS_SUCCESS,
-  SELECT_EMR_PATIENT_SUCCESS, DELETE_PATIENT_SUCCESS, HIGHLIGHT_PATIENT,
+  SELECT_EMR_PATIENT_SUCCESS,
+  DELETE_PATIENT_SUCCESS,
+  HIGHLIGHT_PATIENT,
+  BEGIN_PATIENT_CREATION,
+  ABORT_PATIENT_CREATION,
+  ADD_PATIENT_ERROR,
+  ADD_PATIENT_NOTE_ERROR,
+  DELETE_PATIENT_NOTE_ERROR,
+  UPDATE_PATIENT_NOTE_ERROR, ADD_PATIENT_NOTE, UPDATE_PATIENT_NOTE, DELETE_PATIENT_NOTE,
 } from './action-types';
 import * as PatientApi from '../api/patient-api';
 
@@ -59,6 +67,14 @@ export const highlightPatient = patientId => ({
   patientId,
 });
 
+export const beginPatientCreation = () => ({
+  type: BEGIN_PATIENT_CREATION,
+});
+
+export const abortPatientCreation = () => ({
+  type: ABORT_PATIENT_CREATION,
+});
+
 export const getAllPatients = () => async (dispatch) => {
   try {
     const patients = await PatientApi.getAllPatients();
@@ -94,7 +110,10 @@ export const addPatient = newPatient => async (dispatch) => {
       patient,
     });
   } catch (error) {
-    throw error;
+    dispatch({
+      type: ADD_PATIENT_ERROR,
+      error,
+    });
   }
 };
 
@@ -121,18 +140,14 @@ export const addPatientToTask = (patientId, taskId) => async (dispatch) => {
   } catch (error) {
     throw error;
   }
-}
-
-export function loadingEMRPatients(){
-  return function(dispatch){
-    dispatch({type: REQUEST_EMR_PATIENTS})
-  }
 };
 
-export function clearEMRPatients(){
-  return function(dispatch){
-    dispatch({type: CLEAR_EMR_PATIENTS})
-  }
+export const loadingEMRPatients = () => (dispatch) => {
+  dispatch({ type: REQUEST_EMR_PATIENTS });
+};
+
+export const clearEMRPatients = () => (dispatch) => {
+  dispatch({ type: CLEAR_EMR_PATIENTS });
 };
 
 export const lookupEMRPatients = searchToken => async (dispatch) => {
@@ -150,11 +165,59 @@ export const lookupEMRPatients = searchToken => async (dispatch) => {
 export const deletePatient = patientId => async (dispatch) => {
   try {
     await PatientApi.deletePatient(patientId);
-    dispatch({
-      type: DELETE_PATIENT_SUCCESS,
-      patientId,
-    });
   } catch (error) {
     throw error;
+  }
+};
+
+export const addPatientNote = (patientId, description) => async (dispatch) => {
+  try {
+    const note = await PatientApi.createPatientNote(patientId, { description });
+    dispatch({
+      type: ADD_PATIENT_NOTE,
+      patientId,
+      note,
+    });
+  } catch (e) {
+    // toggleAlert('Error adding note. Please try again.', 'error');
+    dispatch({
+      type: ADD_PATIENT_NOTE_ERROR,
+      patientId,
+    });
+    throw e;
+  }
+};
+
+export const editPatientNote = (patientId, note, description) => async (dispatch) => {
+  try {
+    const updatedNote = await PatientApi.updatePatientNote({ ...note, description });
+    dispatch({
+      type: UPDATE_PATIENT_NOTE,
+      patientId,
+      note: updatedNote,
+    });
+  } catch (e) {
+    // toggleAlert('Error updating note. Please try again.', 'error');
+    dispatch({
+      type: UPDATE_PATIENT_NOTE_ERROR,
+    });
+    throw e;
+  }
+};
+
+export const deletePatientNote = (patientId, note) => async (dispatch) => {
+  try {
+    await PatientApi.deletePatientNote(note.patientNoteId);
+    dispatch({
+      type: DELETE_PATIENT_NOTE,
+      patientId,
+      note,
+    });
+  } catch (e) {
+    // toggleAlert('Error in deleting note. Please try again.', 'error');
+    dispatch({
+      type: DELETE_PATIENT_NOTE_ERROR,
+    });
+    throw e;
   }
 };
