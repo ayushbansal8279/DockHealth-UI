@@ -597,7 +597,34 @@ const TaskReducer = function(state = initialState, action) {
         ...state,
         tasks: state.tasks.map(task => task.taskId === action.task.taskId ? action.task : task)
       };
-    
+
+    case types.TASK_ATTACHMENT_ADDED:
+      var mainTaskId = action.taskId
+      var taskAttachment = action.taskAttachment
+
+      return{
+        ...state,
+        tasks: state.tasks.map(t => (t.taskId === mainTaskId
+          ? {...t, read:false, attachments: [taskAttachment].concat(t.attachments)}
+          : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ? 
+            {...st, read:false, attachments: [taskAttachment].concat(st.attachments)} 
+            : st)) })
+        ))
+      };
+
+    case types.TASK_ATTACHMENT_REMOVED:
+      var mainTaskId = action.taskId
+      var taskAttachmentId = action.taskAttachmentId
+
+      return {
+          ...state,
+          tasks: state.tasks.map(t => (t.taskId === mainTaskId
+            ? {...t, read:false, attachments: t.attachments.filter(att => att.attachmentId !== taskAttachmentId)}
+            : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ? 
+              {...st, read:false, attachments: st.attachments.filter(att => att.attachmentId !== taskAttachmentId)} 
+              : st)) })
+          ))
+      };
   }
 
   return state;

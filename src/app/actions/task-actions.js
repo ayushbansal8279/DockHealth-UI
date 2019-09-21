@@ -505,3 +505,27 @@ export const addSubtask = parentTaskId => dispatch => (
 //     }
 //   }
 // }
+
+export const addTaskAttachment = (taskId, fileData) => dispatch => (
+  TaskApi.addTaskAttachment(taskId, fileData)
+    .then((res) => {
+      dispatch({
+        type: ActionTypes.TASK_ATTACHMENT_ADDED,
+        taskId: taskId,
+        taskAttachment: res.data
+      });
+    })
+    .catch((err) => { throw err; })
+);
+
+export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch => (
+  TaskApi.removeTaskAttachment(taskAttachmentId)
+    .then((res) => {
+      dispatch({
+        type: ActionTypes.TASK_ATTACHMENT_REMOVED,
+        taskId: taskId,
+        taskAttachmentId: taskAttachmentId
+      });
+    })
+    .catch((err) => { throw err; })
+);

@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { updateWorkflowStatus, updateTaskDescription } from '../../actions/task-actions';
+import { updateWorkflowStatus, updateTaskDescription, 
+  addTaskAttachment, removeTaskAttachment } from '../../actions/task-actions';
 import EditableDescription from './EditableDescription';
 import AddSubtask from './AddSubtask';
 import MemberPicker from './MemberPicker';
@@ -13,6 +14,7 @@ import PatientAssignment from './PatientAssignment';
 import StatusSelect from './StatusSelect';
 import ListPicker from './ListPicker';
 import Comments from './comments/Comments';
+import Attachments from './Attachments';
 import History from './History';
 import TaskActions from './TaskActions';
 import DetailsDueDate from './DetailsDueDate';
@@ -112,6 +114,22 @@ export class TaskDetails extends React.PureComponent {
   handleDescriptionChange = (description) => {
     const { selectedTask, updateTaskDescription: updateDescription } = this.props;
     updateDescription(selectedTask, description);
+  }
+
+  handleAddAttachment = (files, e) => {
+    if (files && files.length>0) {
+      var fileData = files[0]
+      const { selectedTask } = this.props;
+      this.props.addTaskAttachment(selectedTask.taskId, fileData);
+    }
+  }
+
+  handleRemoveAttachment = (attachmentId, e) => {
+    // const targetVal = e.target.value;
+    if (attachmentId && attachmentId > 0 ) {
+      const { selectedTask } = this.props;
+        this.props.removeTaskAttachment(selectedTask.taskId, attachmentId);
+    }
   }
 
   renderHeader() {
@@ -264,6 +282,16 @@ export class TaskDetails extends React.PureComponent {
               </tr>
               <tr>
                 <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+                  <strong>Attachments</strong>
+                </StyledLabel>
+                <StyledDescription>
+                  <Attachments task={selectedTask.taskId} attachments={selectedTask.attachments}
+                  onAddAttachment={this.handleAddAttachment}
+                  onRemoveAttachment={this.handleRemoveAttachment}/>
+                </StyledDescription>
+              </tr>
+              <tr>
+                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
                   <strong>History</strong>
                 </StyledLabel>
                 <StyledDescription>
@@ -310,4 +338,5 @@ TaskDetails.propTypes = {
   }).isRequired,
 };
 
-export default connect(undefined, { updateWorkflowStatus, updateTaskDescription })(TaskDetails);
+export default connect(undefined, { updateWorkflowStatus, updateTaskDescription,
+  addTaskAttachment, removeTaskAttachment })(TaskDetails);

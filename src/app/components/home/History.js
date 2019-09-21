@@ -18,10 +18,9 @@ const FadeContainer = styled.div`
 `;
 
 const AuditContainer = styled.div`
-  width: 500px;
+  padding-right: 23px;
   height: 350px;
   overflow: auto;
-  padding-right: 23px;
 `;
 
 const AuditEntry = styled.div`

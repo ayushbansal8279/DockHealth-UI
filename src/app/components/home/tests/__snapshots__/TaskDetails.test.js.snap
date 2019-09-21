@@ -280,6 +280,39 @@ exports[`TaskDetails should render correctly w/o patient and subtasks 1`] = `
             }
           >
             <strong>
+              Attachments
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Attachments
+              attachments={
+                Array [
+                  Object {
+                    "id": 0,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
+                  Object {
+                    "id": 1,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
+                ]
+              }
+              taskId={0}
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel
+            style={
+              Object {
+                "lineHeight": "30px",
+                "verticalAlign": "top",
+              }
+            }
+          >
+            <strong>
               History
             </strong>
           </StyledLabel>
@@ -642,6 +675,39 @@ exports[`TaskDetails should render patient 1`] = `
             }
           >
             <strong>
+              Attachments
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Attachments
+              attachments={
+                Array [
+                  Object {
+                    "id": 0,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
+                  Object {
+                    "id": 1,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
+                ]
+              }
+              taskId={0}
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel
+            style={
+              Object {
+                "lineHeight": "30px",
+                "verticalAlign": "top",
+              }
+            }
+          >
+            <strong>
               History
             </strong>
           </StyledLabel>
@@ -980,6 +1046,39 @@ exports[`TaskDetails should render subtasks 1`] = `
                   "workflowStatus": "IN_PROGRESS",
                 }
               }
+            />
+          </StyledDescription>
+        </tr>
+        <tr>
+          <StyledLabel
+            style={
+              Object {
+                "lineHeight": "30px",
+                "verticalAlign": "top",
+              }
+            }
+          >
+            <strong>
+              Attachments
+            </strong>
+          </StyledLabel>
+          <StyledDescription>
+            <Attachments
+              attachments={
+                Array [
+                  Object {
+                    "id": 0,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
+                  Object {
+                    "id": 1,
+                    "name": "broken ankle.xray",
+                    "size": 15,
+                  },
+                ]
+              }
+              taskId={0}
             />
           </StyledDescription>
         </tr>

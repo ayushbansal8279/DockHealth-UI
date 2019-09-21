@@ -388,7 +388,7 @@ export function addComment(taskId, taskComment) {
     toggleAlert("Error in saving comment. Please try again.", "error")
     throw(error)
   });
-  
+ 
 }
 
 export function deleteComment(commentId) {
@@ -503,4 +503,40 @@ export function getTaskHistory(taskId) {
     console.log(error);
     throw(error)
   });
+}
+
+export function addTaskAttachment(taskId, fileData) {
+  var formData = new FormData();
+  formData.append( "file", fileData );
+  // var fileDataToPost = {
+  //   file: fileData
+  // }
+  return axios.post('task/attachment/'+ taskId, formData, 
+  {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  .then(response => {
+    toggleAlert("Attachment added successfully!", "success")
+    return response;
+  }).catch(function (error){
+    console.log(error);
+    toggleAlert("Error in saving attachment. Please try again.", "error")
+    throw(error)
+  });
+ 
+}
+
+export function removeTaskAttachment(taskAttachmentId) {
+  return axios.delete('task/attachment/'+ taskAttachmentId)
+  .then(response => {
+    toggleAlert("Attachment removed successfully!", "success")
+    return response;
+  }).catch(function (error){
+    console.log(error);
+    toggleAlert("Error in removing attachment. Please try again.", "error")
+    throw(error)
+  });
+ 
 }
