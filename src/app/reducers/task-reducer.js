@@ -401,8 +401,8 @@ const TaskReducer = (state = initialState, action) => {
                   ? {
                     ...subtask,
                     comments:
-                    subtask.comments.map(comment => (comment === action.comment
-                      ? { ...comment, comment }
+                    subtask.comments.map(comment => (comment.commentId === action.comment.commentId
+                      ? { ...comment, comment: action.comment.comment }
                       : comment)),
                   }
                   : subtask)),
@@ -410,8 +410,8 @@ const TaskReducer = (state = initialState, action) => {
             : {
               ...task,
               comments:
-                task.comments.map(comment => (comment === action.comment
-                  ? { ...comment, comment }
+                task.comments.map(comment => (comment.commentId === action.comment.commentId
+                  ? { ...comment, comment: action.comment.comment }
                   : comment)),
             }
           : task)),
@@ -429,10 +429,10 @@ const TaskReducer = (state = initialState, action) => {
               ...task,
               subtasks:
                   task.subtasks.map(subtask => (subtask === action.task
-                    ? { ...subtask, comments: subtask.comments.filter(comment => comment !== action.comment) }
+                    ? { ...subtask, comments: subtask.comments.filter(comment => comment.commentId !== action.comment.commentId) }
                     : subtask)),
             }
-            : { ...task, comments: task.comments.filter(comment => comment !== action.comment) }
+            : { ...task, comments: task.comments.filter(comment => comment.commentId !== action.comment.commentId) }
           : task)),
       };
     }
@@ -491,8 +491,8 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         tasks: state.tasks.map(t => (t.taskId === mainTaskId
           ? {...t, read:false, attachments: [taskAttachment].concat(t.attachments)}
-          : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ? 
-            {...st, read:false, attachments: [taskAttachment].concat(st.attachments)} 
+          : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ?
+            {...st, read:false, attachments: [taskAttachment].concat(st.attachments)}
             : st)) })
         ))
       };
@@ -505,8 +505,8 @@ const TaskReducer = (state = initialState, action) => {
           ...state,
           tasks: state.tasks.map(t => (t.taskId === mainTaskId
             ? {...t, read:false, attachments: t.attachments.filter(att => att.attachmentId !== taskAttachmentId)}
-            : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ? 
-              {...st, read:false, attachments: st.attachments.filter(att => att.attachmentId !== taskAttachmentId)} 
+            : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ?
+              {...st, read:false, attachments: st.attachments.filter(att => att.attachmentId !== taskAttachmentId)}
               : st)) })
           ))
       };
