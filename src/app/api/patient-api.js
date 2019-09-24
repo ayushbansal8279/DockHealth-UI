@@ -113,7 +113,7 @@ export const findUserTasksByPatient = (patientId, status) => axios.get(`/task/fi
     return error.response.data;
   });
 
-export const createPatientNote = (patientId, note) => axios.post(`/patients/note/${patientId}`, note)
+export const createPatientNote = (patientId, note) => axios.post(`/patient/note/${patientId}`, note)
   .then(response => response.data)
   .catch((error) => { throw error.response.data; });
 
