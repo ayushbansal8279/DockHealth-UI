@@ -83,12 +83,14 @@ const PatientsLayout = () => {
         {isFetching
           ? <PatientsListSpinner isFetching={isFetching} />
           : (
-            <PatientsList
-              patients={filteredPatients}
-              isFiltered={searchTerm !== ''}
-              isCompact={highlightedPatient !== null || isCreatingPatient}
-              highlightedPatient={highlightedPatient}
-            />
+            <div style={{ display: 'flex', flex: 1 }}>
+              <PatientsList
+                patients={filteredPatients}
+                isFiltered={searchTerm !== ''}
+                isCompact={highlightedPatient !== null || isCreatingPatient}
+                highlightedPatient={highlightedPatient}
+              />
+            </div>
           )}
         {highlightedPatient && <PatientsSidebar patient={highlightedPatient} />}
         {isCreatingPatient && <PatientsCreation />}
