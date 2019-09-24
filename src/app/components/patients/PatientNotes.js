@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import * as PropTypes from 'prop-types';
 import moment from 'moment';
 import { ButtonBase } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useBoolean from '../../helpers/useBoolean';
 import { Cancel, Save, StyledTextField } from './PatientCreation';
 import { addPatientNote, editPatientNote } from '../../actions/patient-actions';
@@ -46,13 +46,14 @@ const getCreatorName = creator => `${creator.firstName} ${creator.lastName}`;
 
 const formatDate = date => moment(date).format('dddd, MMMM Do');
 
-const EditablePatientNote = ({ update, note, style }) => (
+const EditablePatientNote = ({ update, note, isOwn, style }) => (
   <div style={style}>
     <EditableNoteDescription
       placeholder="Enter your note"
       value={note.description || '—'}
       name={note.patientNoteId}
       onChange={update}
+      disabled={!isOwn}
     />
     <NoteInfo>
       {`${getCreatorName(note.creator)} | ${formatDate(note.dateUpdated)}`}
@@ -102,6 +103,9 @@ const PatientNotes = ({ patientId, notes }) => {
       .catch(() => { toggleAlert('Error updating note. Please try again.', 'error'); });
   };
 
+  const userId = useSelector(state => state.userState.userProfile.userId);
+  const isOwn = note => note.creator.userId === userId;
+
   return (
     <div style={{ background: 'rgba(243,245,246,0.5)', padding: '7px 12px' }}>
       <div style={{
@@ -112,7 +116,7 @@ const PatientNotes = ({ patientId, notes }) => {
       >
         Notes
       </div>
-      {notes.map(note => <EditablePatientNote update={handleUpdate} note={note} style={{ marginTop: '12px' }} />)}
+      {notes.map(note => <EditablePatientNote update={handleUpdate} note={note} isOwn={isOwn(note)} style={{ marginTop: '12px' }} />)}
       {isCreating
         ? (
           <div style={{ marginTop: '15px' }}>
