@@ -75,7 +75,7 @@ export const Routes = ({ store }) => {
           <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
           <Route path="/people" component={PeopleView} />
           <Route
-            path="/tasks/(inbox|Inbox)(/:taskId)"
+            path="/tasks/inbox(/:taskId)"
             component={Inbox}
             onChange={preselectTask}
           />
