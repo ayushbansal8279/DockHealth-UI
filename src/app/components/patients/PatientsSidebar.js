@@ -4,7 +4,7 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
-import { groupWith, equals } from 'ramda';
+import { groupWith, equals, evolve } from 'ramda';
 import { Flag } from '../../flags';
 import {
   highlightPatient,
@@ -15,7 +15,8 @@ import PhoneHomeIcon from '../../img/phone-home.svg';
 import PhoneCellIcon from '../../img/phone-cell.svg';
 import PatientsTasklist from './PatientsTasklist';
 import { findUserTasksByPatient } from '../../api/patient-api';
-import { PatientsForm } from './PatientEdit';
+import PatientEdit, { PatientsForm } from './PatientEdit';
+import { capitalize, capitalizeWords } from '../../helpers/capitalize';
 
 export const PatientsSidebarContainer = styled.div`
   min-width: 562px;
@@ -265,67 +266,6 @@ const PatientsDetailsSection = ({
   </PatientsSidebarSection>
 );
 
-const NewPatientsDetailsSection = ({ patient }) => {
-  const dispatch = useDispatch();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState(patient);
-
-  useEffect(() => {
-    setFormState(patient);
-  }, [patient]);
-
-  const isClean = equals(formState, patient);
-
-  const handleInputChange = useCallback((event) => {
-    const { target } = event;
-    const { name } = target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
-  }, [formState]);
-
-  const handleSubmit = useCallback(async () => {
-    setIsSubmitting(true);
-    await dispatch(updatePatient(formState));
-    setIsSubmitting(false);
-  }, [dispatch, formState]);
-
-  const validateBirthday = (dob) => {
-    const now = moment();
-    const birthday = moment(dob, 'MM/DD/YYYY', true);
-    return birthday.isBefore(now);
-  };
-
-  const canSubmit = () => {
-    const { firstName, lastName, dob } = formState;
-    return (firstName && firstName !== '')
-      && (lastName && lastName !== '')
-      && (!dob || validateBirthday(dob));
-  };
-
-  const clear = () => {
-    setFormState(patient);
-  };
-
-  return (
-    <PatientsForm
-      {...formState}
-      onChange={handleInputChange}
-      onSubmit={handleSubmit}
-      isDisabled={!canSubmit() || isSubmitting}
-      errors={isClean ? {} : {
-        dob: formState.dob && !validateBirthday(formState.dob),
-      }}
-      isReadOnly={isClean}
-      cancel={isClean ? undefined : clear}
-    />
-  );
-};
-
 const PatientsSidebar = ({ patient }) => {
   const {
     mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, patientId, allNotes,
@@ -387,7 +327,7 @@ const PatientsSidebar = ({ patient }) => {
             />
           )}
           fallbackRender={() => (
-            <NewPatientsDetailsSection patient={{
+            <PatientEdit patient={{
               allNotes, patientId, mrn, firstName, middleName, lastName, dob: dob && moment(dob).format('MM/DD/YYYY'), gender, phoneHome, phoneMobile, email, notes,
             }}
             />

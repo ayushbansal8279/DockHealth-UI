@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import MaskedInput from 'react-text-mask';
@@ -6,7 +6,7 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import { abortPatientCreation, addPatient } from '../../actions/patient-actions';
+import { abortPatientCreation, addPatient, updatePatient } from '../../actions/patient-actions';
 import {
   PatientsSidebarCloseButton,
   PatientsSidebarContainer,
@@ -14,6 +14,8 @@ import {
   PatientsSidebarSection,
 } from './PatientsSidebar';
 import PatientNotes from './PatientNotes';
+import { equals, evolve } from 'ramda';
+import { capitalize, capitalizeWords } from '../../helpers/capitalize';
 
 const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -256,28 +258,40 @@ export const PatientsForm = ({
   );
 };
 
-const PatientEdit = () => {
+const PatientEdit = ({ patient }) => {
   const dispatch = useDispatch();
-  const abort = () => {
-    dispatch(abortPatientCreation());
-  };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState({ gender: 'female' });
+  const [formState, setFormState] = useState(patient);
+
+  useEffect(() => {
+    setFormState(patient);
+  }, [patient]);
+
+  const isClean = equals(formState, patient);
+
   const handleInputChange = useCallback((event) => {
     const { target } = event;
     const { name } = target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
-    setFormState({
+    const updatedFormState = {
       ...formState,
       [name]: value,
+    };
+
+    const formatFormState = evolve({
+      firstName: capitalizeWords,
+      middleName: capitalizeWords,
+      lastName: capitalizeWords,
     });
+
+    setFormState(formatFormState(updatedFormState));
   }, [formState]);
 
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
-    await dispatch(addPatient(formState));
+    await dispatch(updatePatient(formState));
     setIsSubmitting(false);
   }, [dispatch, formState]);
 
@@ -294,27 +308,24 @@ const PatientEdit = () => {
       && (!dob || validateBirthday(dob));
   };
 
-  // const error = useSelector(({ patientState }) => patientState.creatingPatientError);
+  const clear = () => {
+    setFormState(patient);
+  };
+
   return (
-    <PatientsSidebarContainer>
-      <PatientsSidebarHeader>
-        <div>Add a new patient</div>
-        <PatientsSidebarCloseButton onClick={abort}>✕</PatientsSidebarCloseButton>
-      </PatientsSidebarHeader>
-      <div>
-        <PatientsForm
-          {...formState}
-          onChange={handleInputChange}
-          onSubmit={handleSubmit}
-          isDisabled={!canSubmit() || isSubmitting}
-          errors={{
-            dob: formState.dob && !validateBirthday(formState.dob),
-          }}
-          hideCollapse
-        />
-      </div>
-    </PatientsSidebarContainer>
+    <PatientsForm
+      {...formState}
+      onChange={handleInputChange}
+      onSubmit={handleSubmit}
+      isDisabled={!canSubmit() || isSubmitting}
+      errors={isClean ? {} : {
+        dob: formState.dob && !validateBirthday(formState.dob),
+      }}
+      isReadOnly={isClean}
+      cancel={isClean ? undefined : clear}
+    />
   );
 };
+
 
 export default PatientEdit;

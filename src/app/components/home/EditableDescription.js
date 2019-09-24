@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
+import { capitalize } from '../../helpers/capitalize';
 
 const StyledTextField = styled(TextField).attrs({
   variant: 'outlined',
@@ -66,7 +67,7 @@ const EditableDescription = ({ value, onChange, disabled, name, placeholder }) =
   const [draft, setDraft] = useState(value);
   useEffect(
     () => {
-      setDraft(value);
+      setDraft(capitalize(value));
       stopEditing();
     }, [value, stopEditing],
   );
@@ -74,7 +75,7 @@ const EditableDescription = ({ value, onChange, disabled, name, placeholder }) =
   const handleChange = useCallback(
     (e) => {
       const { value: updatedDraft } = e.target;
-      setDraft(updatedDraft);
+      setDraft(capitalize(updatedDraft));
     }, [setDraft],
   );
   const handleSubmit = useCallback(

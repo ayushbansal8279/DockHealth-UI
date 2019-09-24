@@ -8,6 +8,7 @@ import useBoolean from '../../helpers/useBoolean';
 import { Cancel, Save, StyledTextField } from './PatientCreation';
 import { addPatientNote, editPatientNote } from '../../actions/patient-actions';
 import EditableDescription from '../home/EditableDescription';
+import { capitalize } from '../../helpers/capitalize';
 
 const NoteTextField = styled(StyledTextField)`
   && {
@@ -83,7 +84,7 @@ const PatientNotes = ({ patientId, notes }) => {
   const [isCreating, startCreating, stopCreating] = useBoolean(false);
   const [note, setNote] = useState('');
   const handleChange = (e) => {
-    setNote(e.currentTarget.value);
+    setNote(capitalize(e.currentTarget.value));
   };
   const handleCancel = useCallback(() => {
     setNote('');

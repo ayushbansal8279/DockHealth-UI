@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { evolve } from 'ramda';
 import styled from 'styled-components';
 import MaskedInput from 'react-text-mask';
 import moment from 'moment';
@@ -13,6 +14,7 @@ import {
   PatientsSidebarHeader,
   PatientsSidebarSection,
 } from './PatientsSidebar';
+import { capitalize, capitalizeWords } from '../../helpers/capitalize';
 
 export const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -276,10 +278,19 @@ const PatientCreation = () => {
     const { name } = target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
-    setFormState({
+    const updatedFormState = {
       ...formState,
       [name]: value,
+    };
+
+    const formatFormState = evolve({
+      firstName: capitalizeWords,
+      middleName: capitalizeWords,
+      lastName: capitalizeWords,
+      notes: capitalize,
     });
+
+    setFormState(formatFormState(updatedFormState));
   }, [formState]);
 
   const handleSubmit = useCallback(async () => {
