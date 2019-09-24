@@ -26,7 +26,7 @@ const DueDate = ({ children, completed }) => {
     }
   }
 
-  return <Moment format="ddd, MMM D">{due}</Moment>;
+  return <Moment format="ddd, MMM D @ h:mma">{due}</Moment>;
 };
 
 DueDate.propTypes = {
