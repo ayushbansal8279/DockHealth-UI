@@ -117,6 +117,19 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
   />
 );
 
+const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
+  <MaskedInput
+    {...rest}
+    ref={(ref) => {
+      inputRef(ref ? ref.inputElement : null);
+    }}
+    placeholder="123-123-1234"
+    mask={[/\d/, /\d/, /\d/,'-', /\d/, /\d/, /\d/,'-', /\d/, /\d/, /\d/, /\d/]}
+    placeholderChar={'\u2000'}
+    keepCharPositions
+  />
+);
+
 export const PatientsForm = ({
                                patientId, mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, allNotes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel,
                              }) => {
@@ -199,6 +212,9 @@ export const PatientsForm = ({
           onChange={onChange}
           label="Home Phone"
           type="tel"
+          InputProps={{
+            inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+          }}
           {...readOnlyProps('234-234-2333')}
         />
         <StyledTextField
@@ -207,6 +223,9 @@ export const PatientsForm = ({
           onChange={onChange}
           label="Mobile Phone"
           type="tel"
+          InputProps={{
+            inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+          }}
           {...readOnlyProps('456-456-4444')}
         />
         <StyledTextField
