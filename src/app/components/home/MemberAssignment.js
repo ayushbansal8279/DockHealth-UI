@@ -14,7 +14,7 @@ const MemberAssignment = ({
 }) => (
   member
     ? <Member onClick={disabled ? undefined : onClick} member={member} large={large} />
-    : <Member onClick={disabled ? undefined : onClick} alt="Unassigned" large={large} color="black"><UnassignedText>?</UnassignedText></Member>
+    : <Member onClick={disabled ? undefined : onClick} alt="Unassigned" large={large} color="#DEDEE2"> </Member>
 );
 
 MemberAssignment.propTypes = {
