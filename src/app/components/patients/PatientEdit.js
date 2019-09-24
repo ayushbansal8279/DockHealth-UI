@@ -21,6 +21,7 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     variant="filled"
     margin="dense"
     fullWidth
+    autoComplete="no"
     InputProps={{
       ...InputProps,
       disableUnderline: true,
