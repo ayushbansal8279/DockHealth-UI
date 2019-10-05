@@ -142,19 +142,6 @@ export function hideCompletedTasks() {
   };
 }
 
-// export function getCompletedListTasksByUser(taskListId) {
-//   return function(dispatch) {
-//     return TaskApi.getCompletedListTasksByUser(taskListId).then(tasks => {
-//       dispatch(
-//         return {type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS, tasks}
-//       );
-//     }).catch(error => {
-//       throw(error);
-//     })
-//   }
-// }
-
-
 export function getHighPriorityTasksByTaskList(taskListId) {
   return function (dispatch) {
     return TaskApi.getHighPriorityTasksByTaskList(taskListId).then((tasks) => {
@@ -164,16 +151,6 @@ export function getHighPriorityTasksByTaskList(taskListId) {
     });
   };
 }
-
-// export function getListTasksByUser(userId, taskListId){
-//   return function(dispatch){
-//     return TaskApi.getListTasksByUser(userId, taskListId).then(tasks => {
-//       dispatch({type: ActionTypes.GET_TASKS_SUCCESS, tasks});
-//     }).catch(error => {
-//       throw(error);
-//     })
-//   }
-// }
 
 export function saveTask(newTask) {
   if (newTask.taskId != null) {
@@ -210,7 +187,7 @@ export const moveTask = (task, taskList) => (dispatch) => {
   };
 
   return TaskApi.updateTask(updatedTask).then(() => {
-    dispatch({ type: ActionTypes.MOVE_TASK_SUCCESS, task });
+    dispatch({ type: ActionTypes.MOVE_TASK_SUCCESS, task, taskList });
   }).catch((error) => { throw error; });
 };
 
@@ -456,9 +433,9 @@ export function taskToState(task) {
   };
 }
 
-export function storeAsCurrentTask(taskId) {
+export function storeAsCurrentTask(task) {
   return function (dispatch) {
-    dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, taskId });
+    dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
   };
 }
 
@@ -484,38 +461,19 @@ export const addSubtask = parentTaskId => dispatch => (
   TaskApi.addTask({ parentTaskId, description: '' })
     .then((task) => {
       dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
-      storeAsCurrentTask(task.taskId)(dispatch);
+      storeAsCurrentTask(task)(dispatch);
     }).catch((error) => {
       console.log(error);
     })
 );
-
-// export function toggleTaskPriority(taskId, userId, priority){
-//   return function(dispatch){
-//     if(priority == "LOW"){}
-//       return TaskApi.markHighPriority(taskId, userId).then(res => {
-//         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
-//         }).catch(error => {
-//         throw(error);
-//       });
-//     }
-//     else if(priority == "HIGH"){
-//       return TaskApi.markLowPriority(taskId, userId).then(res => {
-//         dispatch({type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS, taskId});
-//         }).catch(error => {
-//         throw(error);
-//       });
-//     }
-//   }
-// }
 
 export const addTaskAttachment = (taskId, fileData) => dispatch => (
   TaskApi.addTaskAttachment(taskId, fileData)
     .then((res) => {
       dispatch({
         type: ActionTypes.TASK_ATTACHMENT_ADDED,
-        taskId: taskId,
-        taskAttachment: res.data
+        taskId,
+        taskAttachment: res.data,
       });
     })
     .catch((err) => { throw err; })
@@ -526,9 +484,10 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch => (
     .then((res) => {
       dispatch({
         type: ActionTypes.TASK_ATTACHMENT_REMOVED,
-        taskId: taskId,
-        taskAttachmentId: taskAttachmentId
+        taskId,
+        taskAttachmentId,
       });
     })
     .catch((err) => { throw err; })
 );
+

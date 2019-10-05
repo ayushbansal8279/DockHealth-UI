@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { updateWorkflowStatus, updateTaskDescription, 
+import { updateWorkflowStatus, updateTaskDescription,
   addTaskAttachment, removeTaskAttachment } from '../../actions/task-actions';
 import EditableDescription from './EditableDescription';
 import AddSubtask from './AddSubtask';
@@ -77,6 +77,7 @@ const DetailsContainer = styled.div`
   flex: 1;
   padding-right: 8px;
   padding-bottom: 4px;
+  min-width: 500px;
 `;
 
 const DetailsBox = styled.div`
@@ -111,6 +112,7 @@ export class TaskDetails extends React.PureComponent {
 
   handleDescriptionChange = (description) => {
     const { selectedTask, updateTaskDescription: updateDescription } = this.props;
+    console.log('task', selectedTask, description)
     updateDescription(selectedTask, description);
   }
 
@@ -164,7 +166,7 @@ export class TaskDetails extends React.PureComponent {
   }
 
   render() {
-    const { selectedTask, userId, addTaskComment } = this.props;
+    const { selectedTask, userId, addTaskComment, stickyStyle } = this.props;
     if (selectedTask == null) { return null; }
 
     const {
@@ -172,12 +174,12 @@ export class TaskDetails extends React.PureComponent {
     } = selectedTask;
 
     const isCompleted = status === 'COMPLETE';
-
+    const isInbox = !(selectedTask?.taskList?.taskListId);
     const isSubtask = selectedTask.parentTaskId !== null;
 
     return (
       <DetailsContainer>
-        <StickyContainer>
+        <StickyContainer style={stickyStyle}>
           <DetailsBox>
             {this.renderHeader()}
             <table>
@@ -187,7 +189,7 @@ export class TaskDetails extends React.PureComponent {
                   <MemberPicker
                     task={selectedTask}
                     member={selectedTask.assignedTo}
-                    disabled={isCompleted}
+                    disabled={isCompleted || isInbox}
                   />
                 </StyledDescription>
               </tr>
@@ -212,7 +214,7 @@ export class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  <PatientAssignment patient={patient} task={selectedTask} isCompact />
+                  <PatientAssignment patient={patient} task={selectedTask} isCompact disabled={isCompleted} />
                 </StyledDescription>
               </tr>
               <tr>
@@ -284,9 +286,13 @@ export class TaskDetails extends React.PureComponent {
                   <strong>Attachments</strong>
                 </StyledLabel>
                 <StyledDescription>
-                  <Attachments task={selectedTask.taskId} attachments={selectedTask.attachments}
-                  onAddAttachment={this.handleAddAttachment}
-                  onRemoveAttachment={this.handleRemoveAttachment}/>
+                  <Attachments
+                    task={selectedTask.taskId}
+                    attachments={selectedTask.attachments}
+                    onAddAttachment={this.handleAddAttachment}
+                    onRemoveAttachment={this.handleRemoveAttachment}
+                    disabled={isCompleted}
+                  />
                 </StyledDescription>
               </tr>
               <tr>

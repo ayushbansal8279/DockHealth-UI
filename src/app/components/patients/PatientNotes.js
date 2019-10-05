@@ -107,15 +107,7 @@ const PatientNotes = ({ patientId, notes }) => {
   const isOwn = note => note.creator.userId === userId;
 
   return (
-    <div style={{ background: 'rgba(243,245,246,0.5)', padding: '7px 12px' }}>
-      <div style={{
-        color: '#ABABB2',
-        fontSize: '12px',
-        lineHeight: '12px',
-      }}
-      >
-        Notes
-      </div>
+    <div style={{ padding: '0 12px' }}>
       {notes.map(note => <EditablePatientNote update={handleUpdate} note={note} isOwn={isOwn(note)} style={{ marginTop: '12px' }} />)}
       {isCreating
         ? (

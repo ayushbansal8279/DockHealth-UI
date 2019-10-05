@@ -1,4 +1,5 @@
 import axios from './axios-heydoc';
+import { fixList } from '../helpers/inbox-fix';
 
 export function getAllPatients() {
   return axios.get('patient/getAllPatients?active=true')
@@ -34,9 +35,10 @@ export function getPatientsByTaskList(taskListId) {
 
 export function getPatientById(patientId) {
   return axios.get(`patient/${patientId}`)
-    .then(response => response.data).catch((error) => {
+    .then(response => response.data)
+    .catch((error) => {
       console.log(error);
-      return error.response.data;
+      throw error.response.data;
     });
 }
 
@@ -106,11 +108,11 @@ export function deletePatient(patientId) {
 export const findUserTasksByPatient = (patientId, status) => axios.get(`/task/findUserTasksByPatient/${patientId}?status=${status}`)
   .then((response) => {
     console.log('RESPONSE', response);
-    return response.data;
+    return fixList(response.data);
   })
   .catch((error) => {
     console.error(error);
-    return error.response.data;
+    throw error.response.data;
   });
 
 export const createPatientNote = (patientId, note) => axios.post(`/patient/note/${patientId}`, note)

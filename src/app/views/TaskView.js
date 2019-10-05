@@ -228,7 +228,7 @@ class TaskView extends React.Component {
               members={members}
               taskList={taskList}
             />
-            {this.props.showToolbar && isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} />}
+            {this.props.showToolbar && isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} style={{ padding: '7px 38px 0 48px' }} />}
             {this.props.showToolbar
             && (
               <Toolbar style={{ padding: '0 38px 0 48px' }}>

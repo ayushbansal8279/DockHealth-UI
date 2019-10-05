@@ -50,7 +50,6 @@ const initialState = {
   showingCompletedTasks: false,
   currentTaskHistory: null,
   selectedTaskId: null,
-
 };
 
 const getMainTaskId = ({ parentTaskId, taskId }) => parentTaskId || taskId;
@@ -466,7 +465,7 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case SET_AS_CURRENT_TASK:
-      return { ...state, selectedTaskId: action.taskId };
+      return { ...state, selectedTaskId: action.task?.taskId };
 
     case GET_TASK_HISTORY_SUCCESS:
       return requestHistorySuccess(state, action);

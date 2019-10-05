@@ -4,19 +4,17 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
-import { groupWith, equals, evolve } from 'ramda';
 import { Flag } from '../../flags';
 import {
   highlightPatient,
-  updatePatient,
 } from '../../actions/patient-actions';
 import CollapseIcon from '../../img/collapse.svg';
 import PhoneHomeIcon from '../../img/phone-home.svg';
 import PhoneCellIcon from '../../img/phone-cell.svg';
 import PatientsTasklist from './PatientsTasklist';
 import { findUserTasksByPatient } from '../../api/patient-api';
-import PatientEdit, { PatientsForm } from './PatientEdit';
-import { capitalize, capitalizeWords } from '../../helpers/capitalize';
+import PatientEdit from './PatientEdit';
+import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
 
 export const PatientsSidebarContainer = styled.div`
   min-width: 562px;
@@ -142,7 +140,7 @@ const StyledButton = styled(({ isCollapsed, ...props }) => <IconButton {...props
 `;
 
 export const PatientsSidebarSection = ({
-  heading, children, hideCollapse = false, style,
+  heading, children, hideCollapse = false, style, headingStyle,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleIsCollapsed = () => {
@@ -152,7 +150,7 @@ export const PatientsSidebarSection = ({
   return (
     <PatientsSidebarSectionContainer style={style}>
       <PatientsSidebarSectionHeader>
-        <PatientsSidebarSectionHeading>{heading}</PatientsSidebarSectionHeading>
+        <PatientsSidebarSectionHeading style={headingStyle}>{heading}</PatientsSidebarSectionHeading>
         {!hideCollapse && (
           <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
             <img src={CollapseIcon} alt="Collapse Details" />
@@ -258,9 +256,9 @@ const PatientsDetailsSection = ({
         <PatientsSidebarNoteDescription>
           {notes || '—'}
         </PatientsSidebarNoteDescription>
-         {/*<PatientsSidebarNoteInfo>*/}
-         {/* Michael Docktor | Tuesday, October 2nd*/}
-         {/*</PatientsSidebarNoteInfo>*/}
+        {/* <PatientsSidebarNoteInfo> */}
+        {/* Michael Docktor | Tuesday, October 2nd */}
+        {/* </PatientsSidebarNoteInfo> */}
       </div>
     </PatientsSidebarSubsection>
   </PatientsSidebarSection>
@@ -284,28 +282,14 @@ const PatientsSidebar = ({ patient }) => {
   const [completedTasks, setCompletedTasks] = useState([]);
   useEffect(() => {
     findUserTasksByPatient(patientId, 'INCOMPLETE').then((result) => {
-      const resultWInbox = result.map(task => ({ ...task, taskList: task.taskList || ({ listName: 'Inbox' }) }));
-      const resultWSubtasks = resultWInbox.map(task => ({ ...task, subtasks: task.subtasks.map(subtask => ({ ...subtask, taskList: task.taskList })) }));
-      setTasks(resultWSubtasks);
+      setTasks(result);
     });
     findUserTasksByPatient(patientId, 'COMPLETE').then((result) => {
-      const resultWInbox = result.map(task => ({ ...task, taskList: task.taskList || ({ listName: 'Inbox' }) }));
-      const resultWSubtasks = resultWInbox.map(task => ({ ...task, subtasks: task.subtasks.map(subtask => ({ ...subtask, taskList: task.taskList })) }));
-      setCompletedTasks(resultWSubtasks);
+      setCompletedTasks(result);
     });
   }, [patientId]);
 
-  // Group by tasklist
-  const sameTasklist = (a, b) => a.taskList.taskListId === b.taskList.taskListId;
-  const taskListsIncomplete = groupWith(sameTasklist, tasks)
-    .map(tasks => ({ ...tasks[0].taskList, tasks })); // eslint-disable-line no-shadow
-  const taskListsComplete = groupWith(sameTasklist, completedTasks)
-    .map(tasks => ({ ...tasks[0].taskList, tasks })); // eslint-disable-line no-shadow
-
-  const taskLists = taskListsIncomplete.map(taskList => ({
-    ...taskList,
-    completedTasks: (taskListsComplete.find(tl => tl.taskListId === taskList.taskListId))?.tasks,
-  }));
+  const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
   return (
     <PatientsSidebarContainer>
@@ -328,7 +312,7 @@ const PatientsSidebar = ({ patient }) => {
           )}
           fallbackRender={() => (
             <PatientEdit patient={{
-              allNotes, patientId, mrn, firstName, middleName, lastName, dob: dob && moment(dob).format('MM/DD/YYYY'), gender, phoneHome, phoneMobile, email, notes,
+              allNotes, patientId, mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes,
             }}
             />
           )}

@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import MaskedInput from 'react-text-mask';
@@ -6,16 +8,11 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import { abortPatientCreation, addPatient, updatePatient } from '../../actions/patient-actions';
-import {
-  PatientsSidebarCloseButton,
-  PatientsSidebarContainer,
-  PatientsSidebarHeader,
-  PatientsSidebarSection,
-} from './PatientsSidebar';
-import PatientNotes from './PatientNotes';
 import { equals, evolve } from 'ramda';
-import { capitalize, capitalizeWords } from '../../helpers/capitalize';
+import { updatePatient } from '../../actions/patient-actions';
+import { PatientsSidebarSection } from './PatientsSidebar';
+import PatientNotes from './PatientNotes';
+import { capitalizeWords } from '../../helpers/capitalize';
 
 const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -27,11 +24,17 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     InputProps={{
       ...InputProps,
       disableUnderline: true,
-      classes: { root: 'root', disabled: 'disabled' },
+      classes: {
+        root: 'root',
+        disabled: 'disabled',
+      },
     }}
     InputLabelProps={{
       ...InputLabelProps,
-      FormLabelClasses: { asterisk: 'asterisk', error: 'error' },
+      FormLabelClasses: {
+        asterisk: 'asterisk',
+        error: 'error',
+      },
       classes: { shrink: 'shrink' },
     }}
   />
@@ -93,7 +96,11 @@ const Cancel = styled(Button)`
   }
 `;
 
-const Save = styled(Button).attrs({ variant: 'contained', color: 'secondary' })`
+const Save = styled(Button)
+  .attrs({
+    variant: 'contained',
+    color: 'secondary',
+  })`
   && {
     display: flex;
     width: 163px;
@@ -115,7 +122,6 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
     placeholder="MM/DD/YYYY"
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
-    // guide={false}
     keepCharPositions
   />
 );
@@ -127,129 +133,147 @@ const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
       inputRef(ref ? ref.inputElement : null);
     }}
     placeholder="123-123-1234"
-    mask={[/\d/, /\d/, /\d/,'-', /\d/, /\d/, /\d/,'-', /\d/, /\d/, /\d/, /\d/]}
+    mask={[/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
     keepCharPositions
   />
 );
 
 export const PatientsForm = ({
-                               patientId, mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, allNotes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel,
-                             }) => {
+  patientId, mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, allNotes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, cancel,
+}) => {
   const readOnlyProps = placeholder => ({
     InputLabelProps: { shrink: isReadOnly || undefined },
-    // disabled: isReadOnly,
     placeholder: isReadOnly ? undefined : placeholder,
   });
 
   return (
     <>
       <PatientsSidebarSection heading="Patient Details" hideCollapse={hideCollapse}>
-        <div style={{ display: 'flex', marginTop: '18px' }}>
-          <div style={{
-            flex: 1,
-          }}
-          >
+        <div style={{
+          columnCount: 2,
+          columnWidth: '500px',
+          paddingTop: '14px',
+        }}
+        >
+          <div>
+            <div style={{ display: 'flex' }}>
+              <div style={{
+                flex: 1,
+              }}
+              >
+                <StyledTextField
+                  name="firstName"
+                  value={firstName || ''}
+                  onChange={onChange}
+                  required={!isReadOnly}
+                  label="First Name"
+                  {...readOnlyProps('Sam')}
+                />
+              </div>
+              <div style={{ margin: '0 4px' }}>
+                <StyledTextField
+                  name="middleName"
+                  value={middleName || ''}
+                  onChange={onChange}
+                  label="Middle Name"
+                  {...readOnlyProps('Max')}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <StyledTextField
+                  name="lastName"
+                  value={lastName || ''}
+                  onChange={onChange}
+                  required={!isReadOnly}
+                  label="Last Name"
+                  {...readOnlyProps('Nelson')}
+                />
+              </div>
+            </div>
             <StyledTextField
-              name="firstName"
-              value={firstName || ''}
+              name="mrn"
+              value={mrn || ''}
               onChange={onChange}
-              required={!isReadOnly}
-              label="First Name"
-              {...readOnlyProps('Sam')}
+              label="MRN"
+              {...readOnlyProps('123-123-23444')}
             />
-          </div>
-          <div style={{ margin: '0 4px' }}>
             <StyledTextField
-              name="middleName"
-              value={middleName || ''}
+              name="dob"
+              value={dob || ''}
               onChange={onChange}
-              label="Middle Name"
-              {...readOnlyProps('Max')}
+              label="Birthday"
+              error={errors?.dob}
+              InputProps={{
+                inputComponent: isReadOnly ? undefined : BirthdayTextMask,
+              }}
+              {...readOnlyProps()}
             />
-          </div>
-          <div style={{ flex: 1 }}>
             <StyledTextField
-              name="lastName"
-              value={lastName || ''}
+              name="gender"
+              value={gender || ''}
               onChange={onChange}
-              required={!isReadOnly}
-              label="Last Name"
-              {...readOnlyProps('Nelson')}
+              label="Gender"
+              select
+              {...readOnlyProps()}
+            >
+              <MenuItem value="female">Female</MenuItem>
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="other">Other</MenuItem>
+            </StyledTextField>
+          </div>
+          <div>
+            <StyledTextField
+              name="phoneHome"
+              value={phoneHome || ''}
+              onChange={onChange}
+              label="Home Phone"
+              type="tel"
+              InputProps={{
+                inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+              }}
+              {...readOnlyProps('234-234-2333')}
+            />
+            <StyledTextField
+              name="phoneMobile"
+              value={phoneMobile || ''}
+              onChange={onChange}
+              label="Mobile Phone"
+              type="tel"
+              InputProps={{
+                inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+              }}
+              {...readOnlyProps('456-456-4444')}
+            />
+            <StyledTextField
+              name="email"
+              value={email || ''}
+              onChange={onChange}
+              label="Email"
+              type="email"
+              {...readOnlyProps('name@email.com')}
             />
           </div>
         </div>
-        <StyledTextField
-          name="mrn"
-          value={mrn || ''}
-          onChange={onChange}
-          label="MRN"
-          {...readOnlyProps('123-123-23444')}
-        />
-        <StyledTextField
-          name="dob"
-          value={dob || ''}
-          onChange={onChange}
-          label="Birthday"
-          error={errors?.dob}
-          InputProps={{
-            inputComponent: isReadOnly ? undefined : BirthdayTextMask,
-          }}
-          {...readOnlyProps()}
-        />
-        <StyledTextField
-          name="gender"
-          value={gender || ''}
-          onChange={onChange}
-          label="Gender"
-          select
-          {...readOnlyProps()}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+        }}
         >
-          <MenuItem value="female">Female</MenuItem>
-          <MenuItem value="male">Male</MenuItem>
-          <MenuItem value="other">Other</MenuItem>
-        </StyledTextField>
-        <StyledTextField
-          name="phoneHome"
-          value={phoneHome || ''}
-          onChange={onChange}
-          label="Home Phone"
-          type="tel"
-          InputProps={{
-            inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
-          }}
-          {...readOnlyProps('234-234-2333')}
-        />
-        <StyledTextField
-          name="phoneMobile"
-          value={phoneMobile || ''}
-          onChange={onChange}
-          label="Mobile Phone"
-          type="tel"
-          InputProps={{
-            inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
-          }}
-          {...readOnlyProps('456-456-4444')}
-        />
-        <StyledTextField
-          name="email"
-          value={email || ''}
-          onChange={onChange}
-          label="Email"
-          type="email"
-          {...readOnlyProps('name@email.com')}
-        />
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
           {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
           {!isReadOnly && <Save onClick={onSubmit} disabled={isDisabled}>Save</Save>}
         </div>
       </PatientsSidebarSection>
       <PatientsSidebarSection
-        // heading="Notes"
-        hideCollapse
+        heading="Notes"
         style={{
           marginTop: 0,
           borderTop: 'none',
+        }}
+        headingStyle={{
+          fontSize: '16px',
+          lineHeigth: '16px',
         }}
       >
         <PatientNotes notes={allNotes} patientId={patientId} />
@@ -259,16 +283,21 @@ export const PatientsForm = ({
 };
 
 const PatientEdit = ({ patient }) => {
+  const formattedPatient = useMemo(() => ({
+    ...patient,
+    dob: patient.dob && moment(patient.dob).format('MM/DD/YYYY'),
+  }), [patient]);
+
   const dispatch = useDispatch();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState(patient);
+  const [formState, setFormState] = useState(formattedPatient);
 
   useEffect(() => {
-    setFormState(patient);
-  }, [patient]);
+    setFormState(formattedPatient);
+  }, [formattedPatient]);
 
-  const isClean = equals(formState, patient);
+  const isClean = equals(formState, formattedPatient);
 
   const handleInputChange = useCallback((event) => {
     const { target } = event;
@@ -309,7 +338,7 @@ const PatientEdit = ({ patient }) => {
   };
 
   const clear = () => {
-    setFormState(patient);
+    setFormState(formattedPatient);
   };
 
   return (
@@ -326,6 +355,5 @@ const PatientEdit = ({ patient }) => {
     />
   );
 };
-
 
 export default PatientEdit;

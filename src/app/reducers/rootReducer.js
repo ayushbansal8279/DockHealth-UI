@@ -7,6 +7,7 @@ import TaskListReducer from './tasklist-reducer';
 import InvitationReducer from './invitation-reducer';
 import PeopleReducer from './people-reducer';
 import FormReducer from './form-reducer';
+import patient from './patient';
 
 
 const rootReducer = combineReducers({
@@ -18,6 +19,8 @@ const rootReducer = combineReducers({
   invitationState: InvitationReducer,
   peopleState: PeopleReducer,
   form: FormReducer,
+  // Redesign clean-up
+  patient,
 });
 
 export default rootReducer;

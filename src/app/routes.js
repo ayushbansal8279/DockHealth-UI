@@ -12,7 +12,6 @@ import Inbox from './views/Inbox';
 import AssignedByMe from './views/AssignedByMe';
 import AssignedToMe from './views/AssignedToMe';
 import AllPatientsView from './views/AllPatientsView';
-import PatientView from './views/PatientView';
 import PatientEditView from './views/PatientEditView';
 import Register from './views/auth/Register';
 import Login from './views/auth/Login';
@@ -38,6 +37,7 @@ import PersonTaskList from './views/PersonTaskList';
 import UserProfileView from './views/UserProfileView';
 import Patients from './components/patients/Patients';
 import { storeAsCurrentTask } from './actions/task-actions';
+import PatientProfile from './components/patient/PatientProfile';
 
 export const Routes = ({ store }) => {
   const authRequired = (nextState, replaceState) => {
@@ -67,7 +67,7 @@ export const Routes = ({ store }) => {
           <IndexRedirect to="/taskList" />
           <Route path="/patientList" component={AllPatientsView} />
           <Route path="/patients" component={Patients} />
-          <Route path="/patient/:patientId" component={PatientView} />
+          <Route path="/patient/:patientId" component={PatientProfile} />
           <Route path="/editPatient/:patientId" component={PatientEditView} />
           <Route path="/taskList" component={TaskListView} />
           <Route path="/activityfeed" component={TaskListActivityFeedView} />

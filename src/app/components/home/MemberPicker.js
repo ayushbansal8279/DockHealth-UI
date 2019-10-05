@@ -11,6 +11,7 @@ import PersonInvite from '../../img/person-invite.svg';
 import { assignOrReassignTask } from '../../actions/task-actions';
 import MemberAssignment from './MemberAssignment';
 import MemberSlot from './MemberSlot';
+import { getMembersByTaskListId } from '../../actions/tasklist-actions';
 
 const StyledPopover = styled(Popover).attrs({ paper: 'paper' })`
   && .paper {
@@ -70,7 +71,8 @@ class MemberPicker extends React.Component {
 
   handleOpen = (e) => {
     e.stopPropagation();
-    const { members } = this.props;
+    const { members, loadMembers, task } = this.props;
+    loadMembers(task.taskList.taskListId, 'ALL');
     if (members == null) { return; }
     this.setState({ anchorEl: e.currentTarget });
   }
@@ -212,6 +214,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = {
   assign: assignOrReassignTask,
+  loadMembers: getMembersByTaskListId,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MemberPicker);

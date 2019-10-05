@@ -23,18 +23,23 @@ const StyledText = styled.span`
 `;
 
 const PatientAssignment = ({
-  patient, patients, update, fetch, isCompact,
+  patient, patients, update, fetch, isCompact, disabled,
 }) => {
   useEffect(fetch, []);
+
+  const patientComponent = patient
+    ? <Patient patient={patient} isCompact={isCompact} />
+    : <StyledText>None</StyledText>;
+
+  if (disabled) {
+    return patientComponent;
+  }
 
   return (
     <PatientPicker assign={update} patient={patient} patients={patients}>
       {({ open }) => (
         <StyledButtonBase onClick={open}>
-          {patient
-            ? <Patient patient={patient} isCompact={isCompact} />
-            : <StyledText>None</StyledText>
-        }
+          {patientComponent}
         </StyledButtonBase>
       )}
     </PatientPicker>

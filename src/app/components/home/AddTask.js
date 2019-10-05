@@ -9,9 +9,11 @@ import AddIcon from '@material-ui/icons/Add';
 import Toolbar from '@material-ui/core/Toolbar';
 import { saveTask } from '../../actions/task-actions';
 
-const StyledToolbar = styled(Toolbar)`
+const StyledToolbar = styled(Toolbar).attrs({
+  disableGutters: true,
+})`
   && {
-    padding: 0 38px 0 48px;
+    //padding: 0 38px 0 48px;
   }
 `;
 
@@ -87,7 +89,7 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
-export const AddTask = ({ submit }) => {
+export const AddTask = ({ submit, style }) => {
   const [draft, setDraft] = useState('');
 
   const handleChange = useCallback(
@@ -105,7 +107,7 @@ export const AddTask = ({ submit }) => {
   );
 
   return (
-    <StyledToolbar>
+    <StyledToolbar style={style}>
       <StyledForm onSubmit={handleSubmit}>
         <StyledTextField
           onChange={handleChange}

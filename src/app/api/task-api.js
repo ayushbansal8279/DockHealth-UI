@@ -253,6 +253,9 @@ export function markIncomplete(task) {
 
 export function updateTaskDescription(task, description) {
   return axios.put(`task/${task.taskId}`, {
+    // Fix overwriting other fields with null...
+    ...task,
+    patientId: task?.patient?.patientId,
     description,
   })
     .then((response) => {
@@ -440,7 +443,7 @@ export function addTaskAttachment(taskId, fileData) {
   // var fileDataToPost = {
   //   file: fileData
   // }
-  return axios.post('task/attachment/'+ taskId, formData, 
+  return axios.post('task/attachment/'+ taskId, formData,
   {
     headers: {
       'Content-Type': 'multipart/form-data'
@@ -454,7 +457,7 @@ export function addTaskAttachment(taskId, fileData) {
     toggleAlert("Error in saving attachment. Please try again.", "error")
     throw(error)
   });
- 
+
 }
 
 export function removeTaskAttachment(taskAttachmentId) {
@@ -467,5 +470,5 @@ export function removeTaskAttachment(taskAttachmentId) {
     toggleAlert("Error in removing attachment. Please try again.", "error")
     throw(error)
   });
- 
+
 }

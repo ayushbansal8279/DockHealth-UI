@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import TableCell from '@material-ui/core/TableCell';
 import CheckIcon from '../../img/check.svg';
-import { PatientsTask } from '../patients/PatientsTasklist';
 import { PriorityDot } from './Priority';
-
+import PatientsTask from '../patients/PatientsTask';
 
 const StyledTableCell = styled(TableCell)`
   && {
@@ -86,6 +85,7 @@ List is empty.
       )
       : tasks.map(task => (
         <PatientsTask {...({
+          storeAsCurrentTask,
           markComplete,
           task,
           isSubtask: task.parentTaskId !== null,
