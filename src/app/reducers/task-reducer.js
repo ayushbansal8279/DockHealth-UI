@@ -465,7 +465,7 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case SET_AS_CURRENT_TASK:
-      return { ...state, selectedTaskId: action.task?.taskId };
+      return { ...state, selectedTaskId: (action.task != null ? action.task.taskId : null)};
 
     case GET_TASK_HISTORY_SUCCESS:
       return requestHistorySuccess(state, action);
