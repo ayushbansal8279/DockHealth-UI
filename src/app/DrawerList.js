@@ -160,10 +160,6 @@ const DrawerList = ({ open, user, lists }) => (
           to={`/tasks/${list.listName}/${list.taskListId}`}
         />
       ))}
-      <NestedItem
-        label="DockHealth Tasks"
-        highlighted
-      />
     </Item>
     <Item
       label="Patients"
