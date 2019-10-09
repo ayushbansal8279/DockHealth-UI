@@ -64,12 +64,11 @@ export const Routes = ({ store }) => {
       <Route path="/" component={App}>
         <Route component={TemplateCore}>
           <IndexRoute component={Home} onEnter={authRequired} />
-          <IndexRedirect to="/taskList" />
+          <IndexRedirect to="/tasks" />
           <Route path="/patientList" component={AllPatientsView} />
           <Route path="/patients" component={Patients} />
           <Route path="/patient/:patientId" component={PatientProfile} />
           <Route path="/editPatient/:patientId" component={PatientEditView} />
-          <Route path="/taskList" component={TaskListView} />
           <Route path="/activityfeed" component={TaskListActivityFeedView} />
           <Route path="/taskSearch" component={TaskListSearch} />
           <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
@@ -85,14 +84,17 @@ export const Routes = ({ store }) => {
             component={Inbox}
             onChange={preselectTask}
           />
-          <Route path="/tasks/assigned_by_me" component={AssignedByMe} />
-          <Route path="/tasks/assigned_to_me" component={AssignedToMe} />
-          <Route
-            path="/tasks/:listName/:taskListId(/:taskId)"
-            component={Home}
-            onChange={preselectTask}
-            onEnter={nextState => preselectTask(null, nextState)}
-          />
+          <Route path="/tasks">
+            <IndexRoute component={TaskListView} />
+            <Route path="assigned_by_me" component={AssignedByMe} />
+            <Route path="assigned_to_me" component={AssignedToMe} />
+            <Route
+              path=":listName/:taskListId(/:taskId)"
+              component={Home}
+              onChange={preselectTask}
+              onEnter={nextState => preselectTask(null, nextState)}
+            />
+          </Route>
           <Route path="/userprofile" component={UserProfileView} />
           <Route path="/support" component={SupportSectionView} />
         </Route>

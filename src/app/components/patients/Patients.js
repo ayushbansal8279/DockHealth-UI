@@ -76,7 +76,7 @@ const PatientsLayout = () => {
   const filteredPatients = searchPatients(patients, searchTerm);
 
   return (
-    <>
+    <div>
       <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
       <PatientsToolbar handleSearch={handleSearch} handlePatientFilter={handlePatientFilter} />
       <PatientsBody>
@@ -95,18 +95,12 @@ const PatientsLayout = () => {
         {highlightedPatient && <PatientsSidebar patient={highlightedPatient} />}
         {isCreatingPatient && <PatientsCreation />}
       </PatientsBody>
-    </>
+    </div>
   );
 };
 
 const Patients = () => (
-  <div className="off-canvas-content" data-off-canvas-content>
-    <div className="row expanded collapse" style={{ minHeight: '100%' }}>
-      <div className="columns" style={{ background: '#f5f8fa' }}>
-        <PatientsLayout />
-      </div>
-    </div>
-  </div>
+  <PatientsLayout />
 );
 
 export default Patients;
