@@ -5,12 +5,12 @@ import React from 'react';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link } from 'react-router';
-import SearchIcon from './img/drawer/search.svg';
-import InboxIcon from './img/drawer/inbox.svg';
-import ListsIcon from './img/drawer/lists.svg';
-import PatientsIcon from './img/drawer/patients.svg';
-import PeopleIcon from './img/drawer/people.svg';
-import SupportIcon from './img/drawer/support.svg';
+import SearchIcon from '../../img/drawer/search.svg';
+import InboxIcon from '../../img/drawer/inbox.svg';
+import ListsIcon from '../../img/drawer/lists.svg';
+import PatientsIcon from '../../img/drawer/patients.svg';
+import PeopleIcon from '../../img/drawer/people.svg';
+import SupportIcon from '../../img/drawer/support.svg';
 import DrawerHeader from './DrawerHeader';
 
 const StyledList = styled(List).attrs({

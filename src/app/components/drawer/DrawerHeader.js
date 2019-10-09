@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import ListItem from '@material-ui/core/es/ListItem/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MemberAssignment from './components/home/MemberAssignment';
+import MemberAssignment from '../home/MemberAssignment';
 
 const StyledListItem = styled(ListItem)`
   && {

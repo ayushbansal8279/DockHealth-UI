@@ -7,7 +7,7 @@ import NavBar from '../components/common/NavBar';
 import * as userApi from '../api/user-api';
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
-import Drawer from '../Drawer';
+import Drawer from '../components/drawer/Drawer';
 
 class TemplateCore extends React.Component {
   constructor(props) {

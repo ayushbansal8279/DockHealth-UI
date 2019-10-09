@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { path } from 'ramda';
 import MaterialDrawer from '@material-ui/core/Drawer';
-import useBoolean from './helpers/useBoolean';
+import useBoolean from '../../helpers/useBoolean';
 import DrawerList from './DrawerList';
 
 const StyledDrawer = styled(MaterialDrawer).attrs({
