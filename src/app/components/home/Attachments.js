@@ -21,7 +21,7 @@ const AddAttachment = styled(ButtonBase)`
 `;
 
 const Attachments = ({
-  taskId, attachments, onAddAttachment, onRemoveAttachment
+  taskId, attachments, onAddAttachment, onRemoveAttachment, disabled,
 }) => {
   const onDrop = useCallback((files) => {
     console.log('ATTACHMENT UPLOAD', files);
@@ -33,13 +33,13 @@ const Attachments = ({
     onRemoveAttachment(attachmentId)
   }, [taskId]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, disabled });
 
   const {
     tabIndex, onClick, onKeyDown, onFocus, onBlur, ...rootProps
   } = getRootProps();
   const buttonProps = {
-    tabIndex, onClick, onKeyDown, onFocus, onBlur,
+    tabIndex, onClick, onKeyDown, onFocus, onBlur, disabled,
   };
 
   return (
