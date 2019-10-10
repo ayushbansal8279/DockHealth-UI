@@ -212,6 +212,10 @@ class TaskView extends React.Component {
     const allTasks = [...unfinishedTasks, ...finishedTasks];
     const task = allTasks.find(t => t.taskId === taskId);
 
+    // TODO: Optimize!!!
+    const isCompletedTaskSelected = task && !unfinishedTasks.find(t => t.taskId === task.taskId);
+    const isMainTaskComplete = task && task.parentTaskId && allTasks.find(t => t.taskId === task.parentTaskId && t.status === 'COMPLETE');
+
     const groupedTasks = groupBy(tasks, t => (t.taskList ? t.taskList.listName : ''));
     const tasklistCount = Array.from(groupedTasks.keys()).length;
     const isSingleTaskList = tasklistCount === 1;
@@ -274,8 +278,9 @@ class TaskView extends React.Component {
                       userId={userId}
                       selectedTask={task}
                       close={this.handleClose}
-                      markComplete={markComplete}
+                      markComplete={(_task, status) => { markComplete(_task, status, isCompletedTaskSelected ? 'COMPLETE' : 'INCOMPLETE'); }}
                       toggleTaskPriority={toggleTaskPriority}
+                      isMainTaskComplete={isMainTaskComplete}
                     />
                   )}
                 </div>

@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { updateWorkflowStatus, updateTaskDescription,
-  addTaskAttachment, removeTaskAttachment } from '../../actions/task-actions';
+import {
+  updateWorkflowStatus, updateTaskDescription,
+  addTaskAttachment, removeTaskAttachment,
+} from '../../actions/task-actions';
 import EditableDescription from './EditableDescription';
 import AddSubtask from './AddSubtask';
 import MemberPicker from './MemberPicker';
@@ -19,7 +21,7 @@ import History from './History';
 import TaskActions from './TaskActions';
 import DetailsDueDate from './DetailsDueDate';
 import Reminder from './Reminder';
-import TaskCheckbox from '../TaskCheckbox';
+import TaskCheckbox, { Confirmation, useConfirmation, withConfirmation } from '../TaskCheckbox';
 
 const StyledCheckbox = styled(TaskCheckbox)`
   && {
@@ -112,13 +114,13 @@ export class TaskDetails extends React.PureComponent {
 
   handleDescriptionChange = (description) => {
     const { selectedTask, updateTaskDescription: updateDescription } = this.props;
-    console.log('task', selectedTask, description)
+    console.log('task', selectedTask, description);
     updateDescription(selectedTask, description);
   }
 
   handleAddAttachment = (files, e) => {
-    if (files && files.length>0) {
-      var fileData = files[0]
+    if (files && files.length > 0) {
+      const fileData = files[0];
       const { selectedTask } = this.props;
       this.props.addTaskAttachment(selectedTask.taskId, fileData);
     }
@@ -126,9 +128,9 @@ export class TaskDetails extends React.PureComponent {
 
   handleRemoveAttachment = (attachmentId, e) => {
     // const targetVal = e.target.value;
-    if (attachmentId && attachmentId > 0 ) {
+    if (attachmentId && attachmentId > 0) {
       const { selectedTask } = this.props;
-        this.props.removeTaskAttachment(selectedTask.taskId, attachmentId);
+      this.props.removeTaskAttachment(selectedTask.taskId, attachmentId);
     }
   }
 
@@ -166,7 +168,12 @@ export class TaskDetails extends React.PureComponent {
   }
 
   render() {
-    const { selectedTask, userId, addTaskComment, stickyStyle } = this.props;
+    const {
+      selectedTask, userId, addTaskComment, stickyStyle, confirmation, isMainTaskComplete,
+    } = this.props;
+    const {
+      isOpen, close, handleStatusChange, confirm,
+    } = confirmation;
     if (selectedTask == null) { return null; }
 
     const {
@@ -194,11 +201,12 @@ export class TaskDetails extends React.PureComponent {
                 </StyledDescription>
               </tr>
               <tr>
+                {!isSubtask && (<Confirmation isOpen={isOpen} close={close} confirm={confirm} />)}
                 <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
                   <StyledCheckbox
                     checked={isCompleted}
-                    onChange={this.handleChange}
-                    disabled={isSubtask && isCompleted}
+                    onChange={handleStatusChange}
+                    disabled={isSubtask && isMainTaskComplete}
                     style={{ marginRight: '-15px' }}
                   />
                 </StyledLabel>
@@ -343,5 +351,15 @@ TaskDetails.propTypes = {
   }).isRequired,
 };
 
-export default connect(undefined, { updateWorkflowStatus, updateTaskDescription,
-  addTaskAttachment, removeTaskAttachment })(TaskDetails);
+const TaskDetailsWithConfirmation = (props) => {
+  const { selectedTask, markComplete } = props;
+  const confirmation = useConfirmation(selectedTask, markComplete);
+  return <TaskDetails {...props} confirmation={confirmation} />;
+};
+
+export default connect(undefined, {
+  updateWorkflowStatus,
+  updateTaskDescription,
+  addTaskAttachment,
+  removeTaskAttachment,
+})(TaskDetailsWithConfirmation);

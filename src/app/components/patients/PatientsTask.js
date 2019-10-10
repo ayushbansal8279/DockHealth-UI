@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import Priority from '../home/Priority';
 import BellIcon from '../../img/bell.svg';
 import MemberPicker from '../home/MemberPicker';
-import TaskCheckbox from '../TaskCheckbox';
+import TaskCheckbox, { Confirmation, useConfirmation } from '../TaskCheckbox';
 import Flag from '../home/Flag';
 import AddSubtask from '../home/AddSubtask';
 
@@ -150,22 +150,22 @@ const PatientsTaskBody = ({
           }}
           >
             {storeAsCurrentTask
-            ?
-              (
+              ? (
                 <PatientsTasklistDescription isComplete={status === 'COMPLETE'} onClick={() => { storeAsCurrentTask(task); }}>
                   {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
                 </PatientsTasklistDescription>
               )
-              :
-              (<Link to={{
-              pathname: `/tasks/${taskList.listName}${taskList.taskListId ? `/${taskList.taskListId}` : ''}`,
-              state: { taskId },
-            }}
-            >
-              <PatientsTasklistDescription isComplete={status === 'COMPLETE'}>
-                {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
-              </PatientsTasklistDescription>
-            </Link>)}
+              : (
+                <Link to={{
+                  pathname: `/tasks/${taskList.listName}${taskList.taskListId ? `/${taskList.taskListId}` : ''}`,
+                  state: { taskId },
+                }}
+                >
+                  <PatientsTasklistDescription isComplete={status === 'COMPLETE'}>
+                    {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
+                  </PatientsTasklistDescription>
+                </Link>
+              )}
             <PatientsTasklistInfo>
               {`Assigned by ${creator.userName} • ${formattedCreationDate}`}
             </PatientsTasklistInfo>
@@ -235,7 +235,7 @@ export const PatientsTask = (props) => {
     storeAsCurrentTask,
   } = props;
   const {
-    taskId, parentTaskId, subtasks, status, priority, taskList,
+    subtasks, priority, taskList,
   } = task;
 
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -258,29 +258,9 @@ export const PatientsTask = (props) => {
   }, [isCollapsed, isSubtask, previousSelectedTaskId, selectedTaskId, subtasks]);
 
   // Check all subtasks confirmation dialog
-  const [isOpen, setOpen] = useState(false);
-  const open = useCallback(() => {
-    setOpen(true);
-  }, [setOpen]);
-  const close = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-  const confirm = useCallback(() => {
-    const updatedStatus = status === 'COMPLETE' ? 'COMPLETE' : 'INCOMPLETE';
-    markComplete(task, updatedStatus);
-    close();
-  }, [status, markComplete, task, close]);
-
-  const handleStatusChange = () => {
-    const hasSubtasks = subtasks?.length > 0;
-    if (status === 'COMPLETE'
-      || !hasSubtasks
-      || subtasks.every(subtask => subtask.status === 'COMPLETE')) {
-      confirm();
-      return;
-    }
-    open();
-  };
+  const {
+    isOpen, close, handleStatusChange, confirm,
+  } = useConfirmation(task, markComplete);
 
   return (
     <PatientsTasklistTask
@@ -288,28 +268,7 @@ export const PatientsTask = (props) => {
       isCollapsed={isCollapsed}
       isSelected={selectedTaskId === task.taskId}
     >
-      {!isSubtask && (
-        <Dialog
-          open={isOpen}
-          onClose={close}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            You are about to complete a task with open subtasks.
-            Completing the task will also complete the subtasks.
-            Would you like to proceed?
-          </DialogTitle>
-          <DialogActions>
-            <Button onClick={close} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={confirm} color="primary" autoFocus>
-              Complete all
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      {!isSubtask && (<Confirmation isOpen={isOpen} close={close} confirm={confirm} />)}
       <div style={{ display: 'flex' }}>
         <Flag priority={priority} />
         <div style={{ flex: 1 }}>
