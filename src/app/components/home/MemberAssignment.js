@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Member from './Member';
+import ProfileIcon from '../../img/profile.svg';
 
 const UnassignedText = styled.div`
   font-size: 26px;
@@ -14,7 +15,11 @@ const MemberAssignment = ({
 }) => (
   member
     ? <Member onClick={disabled ? undefined : onClick} member={member} large={large} />
-    : <Member onClick={disabled ? undefined : onClick} alt="Unassigned" large={large} color="#DEDEE2"> </Member>
+    : (
+      <Member onClick={disabled ? undefined : onClick} alt="Unassigned" large={large} color="#DEDEE2">
+        <img src={ProfileIcon} alt="Unassigned" style={{ marginBottom: '3px' }}/>
+      </Member>
+    )
 );
 
 MemberAssignment.propTypes = {
