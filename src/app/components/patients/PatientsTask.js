@@ -84,7 +84,7 @@ const PatientsTaskBody = ({
   isSubtask, task, handleStatusChange, hideDate, hidePriority, hidePatient, disabled, isParentComplete = task?.status === 'COMPLETE', hideCheckbox, storeAsCurrentTask,
 }) => {
   const {
-    createdDateTime, dueDate, comments, priority, read, description, reminderDt, creator, assignedTo, taskList, taskId, status, patient,
+    createdDateTime, dueDate, comments, workflowStatus, read, description, reminderDt, creator, assignedTo, taskList, taskId, status, patient,
   } = task;
 
   const formattedCreationDate = moment(createdDateTime)
@@ -213,7 +213,7 @@ const PatientsTaskBody = ({
               </div>
             </div>
           )}
-          {!hidePriority && <Priority priority={priority} style={{ margin: '8px 23px 0 0 ' }} />}
+          {!hidePriority && <Priority priority={workflowStatus} style={{ margin: '8px 23px 0 0 ' }} />}
         </div>
       </div>
     </div>
