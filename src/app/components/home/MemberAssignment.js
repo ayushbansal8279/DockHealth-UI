@@ -17,7 +17,7 @@ const MemberAssignment = ({
     ? <Member onClick={disabled ? undefined : onClick} member={member} large={large} />
     : (
       <Member onClick={disabled ? undefined : onClick} alt="Unassigned" large={large} color="#DEDEE2">
-        <img src={ProfileIcon} alt="Unassigned" style={{ marginBottom: '3px' }}/>
+        <img src={ProfileIcon} alt="Unassigned" style={{ marginBottom: '3px' }} />
       </Member>
     )
 );
