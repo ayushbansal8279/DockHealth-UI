@@ -169,7 +169,9 @@ const PatientsTaskBody = ({
             <PatientsTasklistInfo>
               {`Assigned by ${creator.userName} • ${formattedCreationDate}`}
             </PatientsTasklistInfo>
-            <PatientsTasklistComments>{`${comments.length} comments`}</PatientsTasklistComments>
+            {comments.length > 0 && 
+              <PatientsTasklistComments>{`${comments.length} comments`}</PatientsTasklistComments>
+            }
           </div>
           {!isSubtask && !hidePatient && (
             <div style={{
