@@ -19,7 +19,7 @@ class SupportSectionView extends BaseComponent {
               <div className="row">
                 <div className="column">
                   <h5>
-For DockHealth support, email us at
+For DockHealth support, email us at 
                     <a href="mailto:support@dock.health?Subject=Dock%20Support" target="_top">support@dock.health</a>
                   </h5>
                 </div>
