@@ -42,7 +42,7 @@ const StyledSelect = styled(Select).attrs({
 const halfHourIntervals = [...Array(48).keys()]
   .map(i => moment()
     .startOf('day')
-    .add(30 * i, 'minutes'));
+    .add(15 * i, 'minutes'));
 
 const isSameTime = t1 => t2 => t1.hour() === t2.hour() && t1.minute() === t2.minute();
 
