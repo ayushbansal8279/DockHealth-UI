@@ -18,7 +18,7 @@ const DueDate = ({ children, completed }) => {
 
   if (!completed) {
     if (due.isSame(now, 'day')) {
-      return <Overdue>Today!</Overdue>;
+      return <Overdue>Today! <Moment format="@ h:mma">{due}</Moment></Overdue>;
     }
 
     if (due < now) {
