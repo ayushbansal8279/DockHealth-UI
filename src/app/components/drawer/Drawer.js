@@ -26,7 +26,9 @@ const StyledDrawer = styled(MaterialDrawer).attrs({
 
 const ContentContainer = styled.div`
   ${({ open }) => (open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);')}
-  ${({ open }) => (open ? 'margin-left: 260px;' : 'margin-left: 85px;')}
+  ${({ open }) => (open
+    ? 'margin-left: 260px;'
+    : 'margin-left: 85px;')}
   transition: width .2s ease-out, margin .2s ease-out;
 `;
 
@@ -38,9 +40,7 @@ const Drawer = ({ user, lists, children }) => {
         <DrawerList open={isOpen} user={user} lists={lists} />
         <div onClick={toggle} style={{ flex: '1' }} />
       </StyledDrawer>
-      <ContentContainer open={isOpen}>
-        {children}
-      </ContentContainer>
+      <ContentContainer open={isOpen}>{children}</ContentContainer>
     </div>
   );
 };
@@ -48,7 +48,11 @@ const Drawer = ({ user, lists, children }) => {
 const ConnectedDrawer = ({ children }) => {
   const user = useSelector(path(['userState', 'userProfile']));
   const lists = useSelector(path(['taskListState', 'tasklist']));
-  return <Drawer user={user} lists={lists}>{children}</Drawer>;
+  return (
+    <Drawer user={user} lists={lists}>
+      {children}
+    </Drawer>
+  );
 };
 
 export default ConnectedDrawer;
