@@ -57,7 +57,13 @@ class LoginFormUsername extends Component {
             </TitleTypography>
             <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
             <Grid item xs={12}>
-              <Field name="username" type="text" component={AuthField} label="Email" />
+              <Field
+                marginTop="2.5rem"
+                name="username"
+                type="text"
+                component={AuthField}
+                label="Email"
+              />
             </Grid>
 
             <Grid item xs={6}>
@@ -68,7 +74,7 @@ class LoginFormUsername extends Component {
                 variant="contained"
                 color="primary"
                 style={{
-                  marginTop: '4em',
+                  marginTop: '5.75rem',
                 }}
               >
                 Next

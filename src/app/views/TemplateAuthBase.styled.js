@@ -55,6 +55,16 @@ export const BackgroundRectangleContainer = styled.div`
   }
 `;
 
+export const SmallBackgroundRectangleContainer = styled.div`
+  background-color: #fff;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+`;
+
 export const DockLogoContainer = styled(Grid)`
   && {
     flex: 15;

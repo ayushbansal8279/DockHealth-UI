@@ -1,3 +1,4 @@
+import { Hidden } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { node } from 'prop-types';
 import React, { Component } from 'react';
@@ -14,6 +15,7 @@ import {
   DockLogo,
   DockLogoContainer,
   MainContentContainer,
+  SmallBackgroundRectangleContainer,
 } from './TemplateAuthBase.styled';
 
 const MODAL_CONTAINER_RATIO = 1312 / 1128;
@@ -72,9 +74,14 @@ class TemplateAuthBase extends Component {
         <BackgroundCenterContainer>
           <BackgroundVerticalFiller />
           <BackgroundModalContainer container style={{ width: modalContainerWidth }}>
-            <BackgroundRectangleContainer ref={this.rectangleContainerRef}>
-              <img src="assets/img/svg/login-rectangle.svg" alt="Background" />
-            </BackgroundRectangleContainer>
+            <Hidden smDown>
+              <BackgroundRectangleContainer ref={this.rectangleContainerRef}>
+                <img src="assets/img/svg/login-rectangle.svg" alt="Background" />
+              </BackgroundRectangleContainer>
+            </Hidden>
+            <Hidden mdUp>
+              <SmallBackgroundRectangleContainer ref={this.rectangleContainerRef} />
+            </Hidden>
             <ContentContainer
               padding={contentContainerPadding}
               container

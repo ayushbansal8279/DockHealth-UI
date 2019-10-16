@@ -8,6 +8,7 @@ import styled from 'styled-components';
 export const TitleTypography = styled(Typography)`
   && {
     color: #2e3a43;
+    width: 100%;
   }
 `;
 
@@ -33,6 +34,7 @@ export const NextButton = withStyles({
   active: {
     backgroundColor: '#007cab',
     color: '#fff',
+    cursor: 'pointer',
   },
   inactive: {
     backgroundColor: '#125375',

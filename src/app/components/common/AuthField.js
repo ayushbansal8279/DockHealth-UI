@@ -66,9 +66,9 @@ const StyledInputContainer = styled.div`
   background-color: #f3f5f6;
   border-radius: 0;
   box-sizing: border-box;
-  margin-top: 2.5em;
   max-width: 85%;
   position: relative;
+  margin-top: ${props => props.marginTop};
 `;
 
 const StyledErrorLabel = styled.div`
@@ -80,7 +80,7 @@ const StyledErrorLabel = styled.div`
 `;
 
 const AuthField = ({
-  input, label, type, meta: { touched, error },
+  input, marginTop, label, type, meta: { touched, error },
 }) => {
   const hasError = Boolean(touched && error);
 
@@ -89,7 +89,7 @@ const AuthField = ({
   inputClassName += hasError ? ' error' : '';
 
   return (
-    <StyledInputContainer className={inputClassName.trim()}>
+    <StyledInputContainer marginTop={marginTop} className={inputClassName.trim()}>
       {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
       <StyledInput type={type} {...input} className={inputClassName.trim()} />
       <StyledInputIcon />
