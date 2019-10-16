@@ -8,11 +8,17 @@ import {
   BackgroundContainer,
   BackgroundHorizontalFiller,
   BackgroundModalContainer,
-  BackgroundVerticalFiller,
   BackgroundRectangleContainer,
+  BackgroundVerticalFiller,
+  ContentContainer,
+  DockLogo,
+  DockLogoContainer,
+  MainContentContainer,
 } from './TemplateAuthBase.styled';
 
 const MODAL_CONTAINER_RATIO = 1312 / 1128;
+const PADDING_CONTAINER_RATIO = 50 / 1312;
+const IMAGE_HEIGHT_RATIO = 112 / 1312;
 
 class TemplateAuthBase extends Component {
   state = {
@@ -57,6 +63,9 @@ class TemplateAuthBase extends Component {
     const { children } = this.props;
     const { modalContainerWidth } = this.state;
 
+    const contentContainerPadding = Math.floor(modalContainerWidth * PADDING_CONTAINER_RATIO);
+    const logoImageHeight = Math.floor(modalContainerWidth * IMAGE_HEIGHT_RATIO);
+
     return (
       <BackgroundContainer>
         <BackgroundHorizontalFiller />
@@ -66,14 +75,25 @@ class TemplateAuthBase extends Component {
             <BackgroundRectangleContainer ref={this.rectangleContainerRef}>
               <img src="assets/img/svg/login-rectangle.svg" alt="Background" />
             </BackgroundRectangleContainer>
-            <Grid container item sm={12} md={6}>
-              <Grid container item xs={12} justify="center">
-                <img className="dock-logo" src="assets/img/dock-logo.png" alt="Dock Health" />
-              </Grid>
-              <Grid item xs={12}>
+            <ContentContainer
+              padding={contentContainerPadding}
+              container
+              item
+              sm={12}
+              md={6}
+              direction="column"
+            >
+              <DockLogoContainer container item xs={12} justify="flex-start" alignItems="flex-end">
+                <DockLogo
+                  height={logoImageHeight}
+                  src="assets/img/dock-logo.png"
+                  alt="Dock Health"
+                />
+              </DockLogoContainer>
+              <MainContentContainer item xs={12}>
                 {children}
-              </Grid>
-            </Grid>
+              </MainContentContainer>
+            </ContentContainer>
             <Grid item sm={12} md={6}>
               &nbsp;
             </Grid>

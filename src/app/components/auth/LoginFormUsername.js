@@ -1,3 +1,4 @@
+import Grid from '@material-ui/core/Grid';
 import queryString from 'query-string';
 import React, { Component } from 'react';
 import { Link } from 'react-router';
@@ -5,6 +6,7 @@ import { Field, reduxForm } from 'redux-form';
 
 import * as UserApi from '../../api/user-api';
 import AuthField from '../common/AuthField';
+import { NextButton, StyledLabel, TitleTypography } from './AuthComponents.styled';
 
 const validate = (values) => {
   const errors = {};
@@ -43,37 +45,44 @@ class LoginFormUsername extends Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, invalid } = this.props;
     const { showLoginMessage } = this.state;
 
     return (
       <form className="inline-label top-buffer" onSubmit={handleSubmit}>
         {!showLoginMessage && (
-          <div className="row expanded">
-            <h4>Login to your account</h4>
-            <Field
-              name="username"
-              type="text"
-              component={AuthField}
-              label="Email"
-              xlinkHref="#icon-email"
-            />
+          <Grid container>
+            <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+              Welcome to Dock Health
+            </TitleTypography>
+            <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
+            <Grid item xs={12}>
+              <Field name="username" type="text" component={AuthField} label="Email" />
+            </Grid>
 
-            <div className="columns small-6 text-center top-buffer">
-              <input
+            <Grid item xs={6}>
+              <NextButton
+                active={!invalid}
                 id="loginButton"
                 type="submit"
-                className="button secondary expand"
-                value="Next"
-              />
-            </div>
-            <div className="columns small-12" style={{ marginTop: '200px' }}>
-              <span>Don’t have an account yet ?</span>
-              <div className="columnssmall-6 text-left details">
+                variant="contained"
+                color="primary"
+                style={{
+                  marginTop: '4em',
+                }}
+              >
+                Next
+              </NextButton>
+            </Grid>
+            <Grid item xs={12}>
+              <StyledLabel bold marginTop>
+                Don’t have an account yet?
+              </StyledLabel>
+              <StyledLabel>
                 <Link to="/register">Create account</Link>
-              </div>
-            </div>
-          </div>
+              </StyledLabel>
+            </Grid>
+          </Grid>
         )}
         {showLoginMessage && (
           <div>

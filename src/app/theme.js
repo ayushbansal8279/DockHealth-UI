@@ -10,6 +10,15 @@ const theme = createMuiTheme({
       'Arial',
       'sans-serif',
     ].join(','),
+    h2: {
+      fontSize: '150%',
+      fontWeight: 'bold',
+      marginBottom: '0.5em',
+    },
+    h4: {
+      fontSize: '100%',
+      fontWeight: 'normal',
+    },
   },
   overrides: {
     MuiListItem: {

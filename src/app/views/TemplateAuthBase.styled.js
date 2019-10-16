@@ -1,4 +1,5 @@
 import Grid from '@material-ui/core/Grid';
+import React from 'react';
 import styled from 'styled-components';
 
 export const BackgroundContainer = styled.div`
@@ -39,9 +40,6 @@ export const BackgroundVerticalFiller = styled.div`
 export const BackgroundModalContainer = styled(Grid)`
   max-width: 1312px;
   position: relative;
-  &:before {
-    padding-top: 50%;
-  }
 `;
 
 export const BackgroundRectangleContainer = styled.div`
@@ -56,3 +54,23 @@ export const BackgroundRectangleContainer = styled.div`
     height: 100%;
   }
 `;
+
+export const DockLogoContainer = styled(Grid)`
+  && {
+    flex: 15;
+  }
+`;
+
+export const MainContentContainer = styled(Grid)`
+  && {
+    flex: 85;
+  }
+`;
+
+export const DockLogo = ({ height, alt, ...props }) => (
+  <img style={{ height }} alt={alt} {...props} />
+);
+
+export const ContentContainer = ({ padding, ...props }) => (
+  <Grid style={{ padding: `${padding}px 0 ${padding}px ${padding}px` }} {...props} />
+);
