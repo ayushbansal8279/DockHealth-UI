@@ -1,41 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { node } from 'prop-types';
+import React, { PureComponent } from 'react';
 import IdleTimer from 'react-idle-timer';
 import { hashHistory } from 'react-router';
-import Notification from '../components/common/Notification';
-import * as userApi from '../api/user-api';
+import styled from 'styled-components';
+
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import * as userApi from '../api/user-api';
+import Notification from '../components/common/Notification';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.idleTimer = null;
-    this.onAction = this._onAction.bind(this);
-    this.onActive = this._onActive.bind(this);
-    this.onIdle = this._onIdle.bind(this);
+const AppContainer = styled.div`
+  &&& * {
+    font-family: 'Open Sans', sans-serif;
   }
+`;
 
-  render() {
-    const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT);
-
-    return (
-      <div id="appHome">
-        <IdleTimer
-          ref={(ref) => { this.idleTimer = ref; }}
-          element={document}
-          onActive={this.onActive}
-          onIdle={this.onIdle}
-          onAction={this.onAction}
-          debounce={250}
-          timeout={systemTimeout}
-        />
-        <main>
-          {this.props.children}
-        </main>
-        <Notification />
-      </div>
-    );
-  }
+class App extends PureComponent {
+  idleTimer = null;
 
   componentDidMount() {
     this.renderFoundationComponents();
@@ -45,42 +25,66 @@ class App extends React.Component {
     this.renderFoundationComponents();
   }
 
-  renderFoundationComponents() {
-  // render the buy button with jQuery
-    renderFoundationComponentsJquery();
-  }
-
-  _onAction(e) {
+  onAction = (e) => {
     console.log('user did something', e);
-  }
+  };
 
-  _onActive(e) {
+  onActive = (e) => {
     console.log('user is active', e);
     console.log('time remaining', this.idleTimer.getRemainingTime());
-  }
+  };
 
-  _onIdle(e) {
+  onIdle = (e) => {
     console.log(`${new Date()}: - user is idle`, e);
     console.log('last active', this.idleTimer.getLastActiveTime());
-    userApi.logout()
-      .then((data) => {
+    userApi
+      .logout()
+      .then(() => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           TIMEOUT_SUCCESS: 'YES',
         });
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           TIMEOUT_SUCCESS: 'NO',
         });
       });
 
     hashHistory.push('/login');
+  };
+
+  // eslint-disable-next-line class-methods-use-this
+  renderFoundationComponents() {
+    // render the buy button with jQuery
+    renderFoundationComponentsJquery();
+  }
+
+  render() {
+    const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
+    const { children } = this.props;
+
+    return (
+      <AppContainer id="appHome">
+        <IdleTimer
+          ref={(ref) => {
+            this.idleTimer = ref;
+          }}
+          element={document}
+          onActive={this.onActive}
+          onIdle={this.onIdle}
+          onAction={this.onAction}
+          debounce={250}
+          timeout={systemTimeout}
+        />
+        <main>{children}</main>
+        <Notification />
+      </AppContainer>
+    );
   }
 }
 
 App.propTypes = {
-  children: PropTypes.object.isRequired,
+  children: node.isRequired,
 };
 
 export default App;

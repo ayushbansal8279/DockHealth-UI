@@ -13,6 +13,7 @@
   "extends": ["airbnb"],
   "plugins": ["jest", "react-hooks"],
   "globals": {
+    "renderFoundationComponentsJquery": true,
     "toggleAlert": true
   },
   "rules": {
