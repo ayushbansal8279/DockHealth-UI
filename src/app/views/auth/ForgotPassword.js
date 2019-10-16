@@ -16,7 +16,7 @@ export default class ForgotPassword extends PureComponent {
         FORGOT_PASSWORD_SUCCESS: 'YES',
       });
       success(`Sent verification code to: ${resp.CodeDeliveryDetails.Destination}`);
-      hashHistory.push('resetPassword');
+      hashHistory.push('resetPasswordEmailSent');
     })
     .catch((e) => {
       mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {

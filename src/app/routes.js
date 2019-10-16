@@ -15,6 +15,7 @@ import ChangePassword from './views/auth/ChangePassword';
 import ConfirmMFACode from './views/auth/ConfirmMFACode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
 import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess';
+import EmailSent from './views/auth/EmailSent';
 import ForgotPassword from './views/auth/ForgotPassword';
 import LoginPassword from './views/auth/LoginPassword';
 import LoginUser from './views/auth/LoginUser';
@@ -106,6 +107,7 @@ export const Routes = ({ store }) => {
             <Route path="/pagenotfound" component={PageNotFound} />
             <Route path="/errorPage" component={ErrorPage} />
             <Route path="/unEnrolledUser" component={UnEnrolledUser} />
+            <Route path="/resetPasswordEmailSent" component={EmailSent} />
           </Route>
           <Route path="/register" component={Register} />
         </Route>
