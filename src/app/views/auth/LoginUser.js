@@ -1,39 +1,28 @@
-import React from 'react'
-import { Link, browserHistory, hashHistory } from 'react-router'
-import * as userApi from '../../api/user-api'
-import { error, success } from '../../actions/notification-actions'
-import LoginFormPassword from '../../components/auth/LoginFormPassword'
-import {mobileAnalyticsClient} from '../../api/analytics-api'
+import React from 'react';
+import { hashHistory } from 'react-router';
 
+import LoginFormUsername from '../../components/auth/LoginFormUsername';
 
-export default class LoginUser extends React.Component {
-  onSubmit (form) {
-    var username = window.sessionStorage.getItem("username")
-    return userApi.login(username, form.password)
-      .then(data => {
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            'LOGIN_SUCCESS': 'YES'
-        });
-        if(data == "SMS_MFA"){
-          hashHistory.push('confirmMFACode?uname='+form.username)
-        }else{
-          sessionStorage.setItem('sessionStartTime', new Date().getTime());
+const onSubmit = (form) => {
+  const { username } = form;
 
-          hashHistory.push('/')
-          success('Logged in.')
-        }
-      })
-      .catch(e => {
-        error(e && e.message ? e.message : 'Could not login.')
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            'LOGIN_SUCCESS': 'NO'
-        });
-      })
+  window.sessionStorage.setItem('username', username);
+  window.sessionStorage.removeItem('SSO_ACCESSTOKEN');
+  window.sessionStorage.removeItem('SSO_REFRESHTOKEN');
+  window.sessionStorage.removeItem('SSO_USEREMAIL');
+  if (
+    username != null
+    && (username.indexOf('@childrens.harvard.edu') !== -1
+      || username.indexOf('@tch.harvard.edu') !== -1
+      || username.indexOf('@chboston.org') !== -1
+      || username.indexOf('@cardio.chboston.org') !== -1)
+  ) {
+    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize`;
+  } else {
+    hashHistory.push('loginUser');
   }
+};
 
-  render () {
-    return (
-        <LoginFormPassword onSubmit={this.onSubmit} />
-    )
-  }
-}
+const LoginUser = () => <LoginFormUsername onSubmit={onSubmit} />;
+
+export default LoginUser;

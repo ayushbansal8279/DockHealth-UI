@@ -12,6 +12,9 @@
   },
   "extends": ["airbnb"],
   "plugins": ["jest", "react-hooks"],
+  "globals": {
+    "toggleAlert": true
+  },
   "rules": {
     "react/jsx-filename-extension": 0,
     "react/prop-types": 0,

@@ -1,42 +1,93 @@
-import React from 'react'
-import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
+import { node } from 'prop-types';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 
-class TemplateAuthBase extends React.Component {
-  render() {
-    return (    
-      <div className="bg-image row expanded auth-container">
-        <div className="gradient-overlay" style={{backgroundColor: "rgba(46, 58, 67, 0.5)"}}></div>
-        <div className="wrapper row large-12 large-offset-0 medium-10 medium-offset-1 small-10 small-offset-1" 
-          style={{marginTop: "50px", marginBottom: "50px", padding: "0px", boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.5)"}}>
-          <div className="columns large-6 large-offset-0 medium-6 medium-offset-0 small-12 small-offset-0"
-            style={{backgroundColor: "#ffffff", borderRadius: "6px"}}>
-            <div className="row expanded text-center">
-              <div className="columns small-12" style={{marginTop: "10px"}}>
-                <img className="dock-logo" src="assets/img/dock-logo.png" alt="Dock Health"/>
-              </div>
-            </div> 
-            {this.props.children}
-          </div>
-          {/* <div className="columns large-6 large-offset-0 medium-4 medium-offset-1 small-10 small-offset-1" 
-            style={{backgroundColor: "#ff0000"}}>
-            <div className="row expanded text-center" style={{backgroundColor: "#ff0000"}}>
-              <h3>&nbsp;</h3>
-            </div>
-          </div> */}
-          <div className="columns large-6 large-offset-0 medium-6 medium-offset-0 small-12 small-offset-0"
-            style={{backgroundColor: "rgba(256, 256, 256, 0.2)"}}>
-            <div className="row expanded text-center">
-                <h3>&nbsp;</h3>
-            </div> 
-          </div>          
-        </div>
-      </div>
+import {
+  BackgroundCenterContainer,
+  BackgroundContainer,
+  BackgroundHorizontalFiller,
+  BackgroundModalContainer,
+  BackgroundVerticalFiller,
+  BackgroundRectangleContainer,
+} from './TemplateAuthBase.styled';
+
+const MODAL_CONTAINER_RATIO = 1312 / 1128;
+
+class TemplateAuthBase extends Component {
+  state = {
+    modalContainerWidth: 0,
+  };
+
+  rectangleContainerRef = React.createRef();
+
+  componentDidMount = async () => {
+    const { router } = this.props;
+
+    window.addEventListener('resize', this.onResize);
+
+    this.removeRouterListener = router.listen(() => {
+      this.onResize();
+    });
+
+    // First render does not return the valid offset height of ref element
+    // thus the second resizing is invoked here
+    await this.onResize();
+    await this.onResize();
+  };
+
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.onResize);
+    this.removeRouterListener();
+  };
+
+  onResize = () => {
+    const { current } = this.rectangleContainerRef;
+
+    if (current) {
+      const modalContainerWidth = Math.floor(current.offsetHeight * MODAL_CONTAINER_RATIO);
+
+      this.setState({
+        modalContainerWidth,
+      });
+    }
+  };
+
+  render = () => {
+    const { children } = this.props;
+    const { modalContainerWidth } = this.state;
+
+    return (
+      <BackgroundContainer>
+        <BackgroundHorizontalFiller />
+        <BackgroundCenterContainer>
+          <BackgroundVerticalFiller />
+          <BackgroundModalContainer container style={{ width: modalContainerWidth }}>
+            <BackgroundRectangleContainer ref={this.rectangleContainerRef}>
+              <img src="assets/img/svg/login-rectangle.svg" alt="Background" />
+            </BackgroundRectangleContainer>
+            <Grid container item sm={12} md={6}>
+              <Grid container item xs={12} justify="center">
+                <img className="dock-logo" src="assets/img/dock-logo.png" alt="Dock Health" />
+              </Grid>
+              <Grid item xs={12}>
+                {children}
+              </Grid>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              &nbsp;
+            </Grid>
+          </BackgroundModalContainer>
+          <BackgroundVerticalFiller />
+        </BackgroundCenterContainer>
+        <BackgroundHorizontalFiller />
+      </BackgroundContainer>
     );
-  }
+  };
 }
 
 TemplateAuthBase.propTypes = {
-  children: PropTypes.object.isRequired
+  children: node.isRequired,
 };
 
-export default TemplateAuthBase
+export default withRouter(TemplateAuthBase);

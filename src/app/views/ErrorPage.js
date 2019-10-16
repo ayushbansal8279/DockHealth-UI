@@ -17,6 +17,4 @@ const ErrorPage = () => (
   </div>
 );
 
-// PageNotFound.route = { path: '*', component: PageNotFound }
-
 export default ErrorPage;

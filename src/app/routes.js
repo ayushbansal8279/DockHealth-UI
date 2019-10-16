@@ -1,43 +1,44 @@
 import React from 'react';
-import {
-  Route, IndexRoute, IndexRedirect, hashHistory, Router,
-} from 'react-router';
 import { useDispatch } from 'react-redux';
-import App from './views/App';
-import TemplateCore from './views/TemplateCore';
-import TemplateAuth from './views/TemplateAuth';
-import TemplateAuthBase from './views/TemplateAuthBase';
-import Home from './views/Home';
-import Inbox from './views/Inbox';
-import AssignedByMe from './views/AssignedByMe';
-import AssignedToMe from './views/AssignedToMe';
-import AllPatientsView from './views/AllPatientsView';
-import PatientEditView from './views/PatientEditView';
-import Register from './views/auth/Register';
-import Login from './views/auth/Login';
-import LoginUser from './views/auth/LoginUser';
-import Logout from './views/auth/Logout';
-import ConfirmRegistration from './views/auth/ConfirmRegistration';
-import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess';
-import ResendCode from './views/auth/ResendCode';
-import ForgotPassword from './views/auth/ForgotPassword';
-import ChangePassword from './views/auth/ChangePassword';
-import ResetPassword from './views/auth/ResetPassword';
-import ConfirmMFACode from './views/auth/ConfirmMFACode';
-import UnEnrolledUser from './views/auth/UnEnrolledUser';
-import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
-import PageNotFound from './views/PageNotFound';
-import ErrorPage from './views/ErrorPage';
-import TaskListView from './views/TaskListView';
-import SupportSectionView from './views/SupportSectionView';
-import PeopleView from './views/PeopleView';
-import TaskListActivityFeedView from './views/TaskListActivityFeedView';
-import TaskListSearch from './views/TaskListSearch';
-import PersonTaskList from './views/PersonTaskList';
-import UserProfileView from './views/UserProfileView';
-import Patients from './components/patients/Patients';
+import {
+  hashHistory, IndexRedirect, IndexRoute, Route, Router,
+} from 'react-router';
+
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
+import Patients from './components/patients/Patients';
+import AllPatientsView from './views/AllPatientsView';
+import App from './views/App';
+import AssignedByMe from './views/AssignedByMe';
+import AssignedToMe from './views/AssignedToMe';
+import ChangePassword from './views/auth/ChangePassword';
+import ConfirmMFACode from './views/auth/ConfirmMFACode';
+import ConfirmRegistration from './views/auth/ConfirmRegistration';
+import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess';
+import ForgotPassword from './views/auth/ForgotPassword';
+import LoginPassword from './views/auth/LoginPassword';
+import LoginUser from './views/auth/LoginUser';
+import Logout from './views/auth/Logout';
+import Register from './views/auth/Register';
+import ResendCode from './views/auth/ResendCode';
+import ResetPassword from './views/auth/ResetPassword';
+import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
+import UnEnrolledUser from './views/auth/UnEnrolledUser';
+import ErrorPage from './views/ErrorPage';
+import Home from './views/Home';
+import Inbox from './views/Inbox';
+import PageNotFound from './views/PageNotFound';
+import PatientEditView from './views/PatientEditView';
+import PeopleView from './views/PeopleView';
+import PersonTaskList from './views/PersonTaskList';
+import SupportSectionView from './views/SupportSectionView';
+import TaskListActivityFeedView from './views/TaskListActivityFeedView';
+import TaskListSearch from './views/TaskListSearch';
+import TaskListView from './views/TaskListView';
+import TemplateAuth from './views/TemplateAuth';
+import TemplateAuthBase from './views/TemplateAuthBase';
+import TemplateCore from './views/TemplateCore';
+import UserProfileView from './views/UserProfileView';
 
 export const Routes = ({ store }) => {
   const authRequired = (nextState, replaceState) => {
@@ -73,17 +74,9 @@ export const Routes = ({ store }) => {
           <Route path="/taskSearch" component={TaskListSearch} />
           <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
           <Route path="/people" component={PeopleView} />
-          <Route
-            path="/tasks/inbox(/:taskId)"
-            component={Inbox}
-            onChange={preselectTask}
-          />
+          <Route path="/tasks/inbox(/:taskId)" component={Inbox} onChange={preselectTask} />
           {/* DIRTY FIX -> TODO: Update react-router and use sensitive prop */}
-          <Route
-            path="/tasks/Inbox(/:taskId)"
-            component={Inbox}
-            onChange={preselectTask}
-          />
+          <Route path="/tasks/Inbox(/:taskId)" component={Inbox} onChange={preselectTask} />
           <Route path="/tasks">
             <IndexRoute component={TaskListView} />
             <Route path="assigned_by_me" component={AssignedByMe} />
@@ -102,8 +95,8 @@ export const Routes = ({ store }) => {
           <Route component={TemplateAuthBase}>
             <Route path="/confirmRegistration" component={ConfirmRegistration} />
             <Route path="/confirmRegistrationSuccess" component={ConfirmRegistrationSuccess} />
-            <Route path="/login" component={Login} />
-            <Route path="/loginUser" component={LoginUser} />
+            <Route path="/login" component={LoginUser} />
+            <Route path="/loginUser" component={LoginPassword} />
             <Route path="/logout" component={Logout} />
             <Route path="/resendCode" component={ResendCode} />
             <Route path="/forgotPassword" component={ForgotPassword} />
