@@ -35,7 +35,7 @@ const StyledInput = styled.input`
   font-family: 'Open Sans', sans-serif;
   font-weight: 600;
   outline: none;
-  padding: 1rem 2rem 0 1rem;
+  padding: 1rem 2.5rem 0 1rem;
 
   &:focus ~ ${StyledLabel}, &:not([value='']) ~ ${StyledLabel} {
     top: 25%;
@@ -66,7 +66,6 @@ const StyledInputContainer = styled.div`
   background-color: #f3f5f6;
   border-radius: 0;
   box-sizing: border-box;
-  max-width: 85%;
   position: relative;
   margin-top: ${props => props.marginTop};
 `;

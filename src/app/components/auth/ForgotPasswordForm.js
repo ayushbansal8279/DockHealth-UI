@@ -1,38 +1,66 @@
-import React from 'react'
-import { Field, reduxForm } from 'redux-form'
-import { Link } from 'react-router'
-import AuthField from '../common/AuthField'
+import Grid from '@material-ui/core/Grid';
+import React from 'react';
+import { Field, reduxForm } from 'redux-form';
 
-const validate = values => {
-  const errors = {}
+import AuthField from '../common/AuthField';
+import { NextButton, TitleTypography } from './AuthComponents.styled';
+
+const validate = (values) => {
+  const errors = {};
+
   if (!values.username) {
-    errors.username = 'Required'
+    errors.username = 'Please enter an email address';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)) {
-    errors.username = 'Invalid email address'
+    errors.username = 'Please enter a valid email address';
   }
 
-  return errors
-}
+  return errors;
+};
 
 const ForgotPasswordForm = (props) => {
-  const { handleSubmit, invalid, pristine, submitting } = props
-  console.log(props)
+  const { handleSubmit, invalid } = props;
+
   return (
-		<form className="inline-label top-buffer" onSubmit={handleSubmit}>
-			<div className="row expanded">
-        <Field name='username' type='text' component={AuthField} label='Email' xlinkHref="#icon-email"/>
-				<div className="columns small-12 text-center top-buffer">
-          <button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Send reset code</button>
-				</div>
-				<div className="columns small-12 top-buffer text-center details">
-          <Link to="/login">Login if you already have an account</Link>
-				</div>
-			</div>
-		</form>
-  )
-}
+    <form className="inline-label top-buffer" onSubmit={handleSubmit}>
+      <Grid container>
+        <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+          Forgot your password?
+        </TitleTypography>
+        <Grid item sm={12} md={10}>
+          <TitleTypography variant="h4">
+            Don’t worry, it happens to the best of us. Enter the email associated with your account.
+          </TitleTypography>
+        </Grid>
+        <Grid item md={9} sm={12}>
+          <Field
+            marginTop="2.5rem"
+            name="username"
+            type="text"
+            component={AuthField}
+            label="Email"
+          />
+        </Grid>
+
+        <Grid item md={9} sm={12}>
+          <NextButton
+            active={!invalid}
+            id="loginButton"
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{
+              marginTop: '3rem',
+            }}
+          >
+            Email me a recovery link
+          </NextButton>
+        </Grid>
+      </Grid>
+    </form>
+  );
+};
 
 export default reduxForm({
   form: 'ForgotPasswordForm',
-  validate
-})(ForgotPasswordForm)
+  validate,
+})(ForgotPasswordForm);

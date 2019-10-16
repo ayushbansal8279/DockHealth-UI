@@ -26,7 +26,7 @@ export const NextButton = withStyles({
   root: {
     borderRadius: 4,
     fontFamily: '"Open Sans", sans-serif',
-    fontSize: 20,
+    fontSize: '1.1em',
     fontWeight: 'bold',
     padding: '13px 0 14px',
     width: '100%',
