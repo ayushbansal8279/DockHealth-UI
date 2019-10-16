@@ -76,16 +76,16 @@ export const generateFormat = (date) => {
   const isToday = d => d.isSame(currentDate, 'day');
   const isCurrentYear = d => d.isSame(currentDate, 'year');
 
-  const yearFormat = isCurrentYear(date) ? '' : '\'YY';
+  const yearFormat = isCurrentYear(date) ? '' : "'YY";
   const monthDayFormat = isToday(date) ? '' : 'MMM D';
-  const timeFormat = (date.hour() % 13) < 10 ? ' h:mma' : 'h:mma';
+  const timeFormat = date.hour() % 13 < 10 ? ' h:mma' : 'h:mma';
 
   return `${yearFormat} ${monthDayFormat} ${timeFormat}`;
 };
 
 const formatDate = date => date.format(generateFormat(date));
 
-export class History extends React.Component {
+class History extends React.Component {
   state = {
     isOpen: false,
   };
@@ -113,26 +113,33 @@ export class History extends React.Component {
     }
 
     this.setState({ isOpen: !isOpen });
-  }
+  };
 
   render() {
     const { history, isLoading, error } = this.props;
     const { isOpen } = this.state;
 
-    const parsedHistory = history && history.map(audit => ({
-      ...audit,
-      createdDateTime: formatDate(moment(audit.createdDateTime)),
-    }));
+    const parsedHistory = history
+      && history.map(audit => ({
+        ...audit,
+        createdDateTime: formatDate(moment(audit.createdDateTime)),
+      }));
 
     return (
       <div>
-        <HistoryToggle onClick={this.toggleHistory}>{isOpen && !error ? 'Hide' : 'Show'}</HistoryToggle>
+        <HistoryToggle onClick={this.toggleHistory}>
+          {isOpen && !error ? 'Hide' : 'Show'}
+        </HistoryToggle>
         {isLoading && (
-        <FadeContainer>
-          <Fade in={isLoading} unmountOnExit style={{ transitionDelay: isLoading ? '800ms' : '0ms' }}>
-            <ProgressIcon />
-          </Fade>
-        </FadeContainer>
+          <FadeContainer>
+            <Fade
+              in={isLoading}
+              unmountOnExit
+              style={{ transitionDelay: isLoading ? '800ms' : '0ms' }}
+            >
+              <ProgressIcon />
+            </Fade>
+          </FadeContainer>
         )}
         {isOpen && !error && parsedHistory && (
           <OverflowTooltips>
@@ -153,15 +160,17 @@ History.propTypes = {
   fetchHistory: PropTypes.func.isRequired,
   clearHistory: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  history: PropTypes.arrayOf(PropTypes.shape({
-    auditId: PropTypes.number,
-    auditEventTypeDescription: PropTypes.string,
-    createdDateTime: PropTypes.string,
-    user: PropTypes.shape({
-      userId: PropTypes.number,
-      userName: PropTypes.string,
+  history: PropTypes.arrayOf(
+    PropTypes.shape({
+      auditId: PropTypes.number,
+      auditEventTypeDescription: PropTypes.string,
+      createdDateTime: PropTypes.string,
+      user: PropTypes.shape({
+        userId: PropTypes.number,
+        userName: PropTypes.string,
+      }),
     }),
-  })),
+  ),
 };
 
 History.defaultProps = {
@@ -179,4 +188,7 @@ const mapDispatchToProps = {
   clearHistory: clearCurrentTaskHistory,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(History);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(History);

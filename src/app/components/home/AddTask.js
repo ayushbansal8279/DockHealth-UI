@@ -48,7 +48,7 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
       opacity: 0.5;
     }
   }
-  
+
   && fieldset {
     border: none;
     top: 0;
@@ -89,17 +89,21 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
-export const AddTask = ({ submit, style }) => {
+const AddTask = ({ storeAsCurrentTask, submit, style }) => {
   const [draft, setDraft] = useState('');
 
-  const handleChange = useCallback(
-    (e) => { setDraft(e.target.value); },
-  );
+  const handleChange = useCallback((e) => {
+    setDraft(e.target.value);
+  });
+
+  const handleFocus = useCallback(() => storeAsCurrentTask(null));
 
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      if (draft === '') { return; }
+      if (draft === '') {
+        return;
+      }
       submit(draft);
       setDraft('');
     },
@@ -110,6 +114,7 @@ export const AddTask = ({ submit, style }) => {
     <StyledToolbar style={style}>
       <StyledForm onSubmit={handleSubmit}>
         <StyledTextField
+          onFocus={handleFocus}
           onChange={handleChange}
           value={draft}
           placeholder="Add a task"
@@ -141,10 +146,15 @@ AddTask.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch, { taskListId }) => ({
-  submit: (description) => { saveTask({ description, taskListId })(dispatch); },
+  submit: (description) => {
+    saveTask({ description, taskListId })(dispatch);
+  },
 });
 
-const ConnectedAddTask = connect(undefined, mapDispatchToProps)(AddTask);
+const ConnectedAddTask = connect(
+  undefined,
+  mapDispatchToProps,
+)(AddTask);
 
 ConnectedAddTask.propTypes = {
   taskListId: PropTypes.number.isRequired,

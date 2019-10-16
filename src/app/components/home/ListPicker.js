@@ -41,36 +41,39 @@ const ToggleButton = styled(ButtonBase)`
     padding: 8px;
     margin-left: -8px;
     border-radius: 4px;
-    
-    :hover, :focus {
-       color: #13a7d1;
+
+    :hover,
+    :focus {
+      color: #13a7d1;
     }
   }
 `;
 
-export class ListPicker extends React.Component {
+class ListPicker extends React.Component {
   state = {
     anchorEl: null,
     isSearching: false,
     searchTerm: '',
     isConfirmation: false,
-  }
+  };
 
   handleSearchToggle = () => {
     const { isSearching } = this.state;
     this.setState({ isSearching: !isSearching, searchTerm: '' });
-  }
+  };
 
   handleOpen = (e) => {
     e.stopPropagation();
     const { items } = this.props;
-    if (items == null) { return; }
+    if (items == null) {
+      return;
+    }
     this.setState({ anchorEl: e.currentTarget });
-  }
+  };
 
   handleClose = () => {
     this.setState({ anchorEl: null, isSearching: false, searchTerm: '' });
-  }
+  };
 
   handleSelect = () => {
     const { items, assign } = this.props;
@@ -80,28 +83,28 @@ export class ListPicker extends React.Component {
 
     assign(newItem);
     this.handleClose();
-  }
+  };
 
   handleSearch = (e) => {
     this.setState({ searchTerm: e.target.value });
-  }
+  };
 
   captureClicks = (e) => {
     e.stopPropagation();
-  }
+  };
 
   openConfirmation = (e) => {
     this.setState({ isConfirmation: true, itemId: e.currentTarget.id });
-  }
+  };
 
   closeConfirmation = () => {
     this.setState({ isConfirmation: false });
-  }
+  };
 
   handleConfirmation = () => {
     this.handleSelect();
     this.closeConfirmation();
-  }
+  };
 
   renderHeader = () => (
     <PickerHeader
@@ -122,10 +125,7 @@ export class ListPicker extends React.Component {
       item, items, task, disabled,
     } = this.props;
     const {
-      anchorEl,
-      isSearching,
-      searchTerm,
-      isConfirmation,
+      anchorEl, isSearching, searchTerm, isConfirmation,
     } = this.state;
     const isOpen = Boolean(anchorEl);
 
@@ -134,19 +134,13 @@ export class ListPicker extends React.Component {
     const isMatch = name => searchTerms.every(term => name.toLowerCase().includes(term));
 
     const filteredItems = items
-      && (searchTerms.length === 0
-        ? items
-        : items.filter(({ listName }) => isMatch(listName)));
+      && (searchTerms.length === 0 ? items : items.filter(({ listName }) => isMatch(listName)));
 
-    const sortedItems = filteredItems
-      && filteredItems.sort((a, b) => a.listName.localeCompare(b.listName));
+    const sortedItems = (filteredItems || []).sort((a, b) => a.listName.localeCompare(b.listName));
 
     return (
-      <React.Fragment>
-        <ToggleButton
-          onClick={this.handleOpen}
-          disabled={disabled || task.parentTaskId}
-        >
+      <>
+        <ToggleButton onClick={this.handleOpen} disabled={disabled || task.parentTaskId}>
           {item.listName}
         </ToggleButton>
         <StyledPopover
@@ -166,16 +160,17 @@ export class ListPicker extends React.Component {
           {isSearching ? this.renderSearchHeader() : this.renderHeader()}
           <List>
             {sortedItems && sortedItems.length === 0 && <ListEmpty>No matching items.</ListEmpty>}
-            {sortedItems && sortedItems.map(i => (
-              <ListItem
-                key={i.taskListId}
-                selected={item && i.taskListId === item.taskListId}
-                onClick={this.openConfirmation}
-                id={i.taskListId}
-              >
-                {`${i.listName} (${i.creator.userName})`}
-              </ListItem>
-            ))}
+            {sortedItems
+              && sortedItems.map(i => (
+                <ListItem
+                  key={i.taskListId}
+                  selected={item && i.taskListId === item.taskListId}
+                  onClick={this.openConfirmation}
+                  id={i.taskListId}
+                >
+                  {`${i.listName} (${i.creator.userName})`}
+                </ListItem>
+              ))}
           </List>
         </StyledPopover>
         <Dialog
@@ -184,11 +179,13 @@ export class ListPicker extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Are you sure you want to move this task to another list?</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            Are you sure you want to move this task to another list?
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please note, by moving a task to a new list some details of the task may be lost.
-              Task assignments and comments will transfer only if users are members of both lists.
+              Please note, by moving a task to a new list some details of the task may be lost. Task
+              assignments and comments will transfer only if users are members of both lists.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -200,7 +197,7 @@ export class ListPicker extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-      </React.Fragment>
+      </>
     );
   }
 }
@@ -238,4 +235,7 @@ const mapDispatchToProps = (dispatch, { task }) => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListPicker);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ListPicker);

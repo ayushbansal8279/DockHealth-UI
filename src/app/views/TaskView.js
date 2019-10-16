@@ -1,20 +1,18 @@
+import ButtonBase from '@material-ui/core/ButtonBase';
+import ProgressIcon from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+import Toolbar from '@material-ui/core/Toolbar';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Fade from '@material-ui/core/Fade';
-import ProgressIcon from '@material-ui/core/CircularProgress';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import PrintIcon from '../img/print.svg';
-import Select from '../components/Select';
-import Search from '../components/Search';
-import Header from '../components/home/Header';
 import AddTask from '../components/home/AddTask';
-import TaskList from '../components/home/TaskList';
+import Header from '../components/home/Header';
 import TaskDetails from '../components/home/TaskDetails';
+import TaskList from '../components/home/TaskList';
+import Search from '../components/Search';
+import Select from '../components/Select';
 import TaskListAction from '../components/TaskListAction';
+import PrintIcon from '../img/print.svg';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -59,13 +57,10 @@ class TaskView extends React.Component {
   state = {
     filterBy: '',
     searchTerms: [],
-  }
+  };
 
   refresh = () => {
-    const {
-      actions,
-      patientActions,
-    } = this.props;
+    const { actions, patientActions } = this.props;
 
     actions.loading();
     this.closeAuditHistory();
@@ -73,7 +68,7 @@ class TaskView extends React.Component {
     actions.getInboxTasks('INCOMPLETE');
 
     patientActions.getAllPatients();
-  }
+  };
 
   handleFilterChange = (filterBy) => {
     const { onFilter } = this.props;
@@ -82,13 +77,13 @@ class TaskView extends React.Component {
     this.setState({ filterBy });
 
     onFilter(filterBy, sortBy);
-  }
+  };
 
   handleSearch = (e) => {
     const { value } = e.target;
     const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
     this.setState({ searchTerms });
-  }
+  };
 
   search = (tasks) => {
     if (tasks?.length === 0) {
@@ -97,17 +92,15 @@ class TaskView extends React.Component {
 
     const { searchTerms } = this.state;
     const isMatch = text => searchTerms.every(term => text?.toLowerCase().includes(term));
-    const filteredTasks = searchTerms.length === 0
-      ? tasks
-      : tasks.filter(({ description }) => isMatch(description));
+    const filteredTasks = tasks.filter(({ description }) => isMatch(description));
 
     return filteredTasks;
-  }
+  };
 
   handleClose = () => {
     const { storeAsCurrentTask } = this.props;
     storeAsCurrentTask(null);
-  }
+  };
 
   renderTasklists = () => {
     const {
@@ -121,7 +114,9 @@ class TaskView extends React.Component {
 
     const tasklistProps = {
       tasks: this.search(tasks),
-      markComplete: (task, status) => { markComplete(task, status, 'INCOMPLETE'); },
+      markComplete: (task, status) => {
+        markComplete(task, status, 'INCOMPLETE');
+      },
       storeAsCurrentTask,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
@@ -133,15 +128,13 @@ class TaskView extends React.Component {
       return <TaskList {...tasklistProps} />;
     }
 
-    return (
-      Array.from(groupedTasks.keys()).map(taskListId => (
-        <React.Fragment key={taskListId}>
-          <h5>{taskListId}</h5>
-          <TaskList {...tasklistProps} />
-        </React.Fragment>
-      ))
-    );
-  }
+    return Array.from(groupedTasks.keys()).map(taskListId => (
+      <React.Fragment key={taskListId}>
+        <h5>{taskListId}</h5>
+        <TaskList {...tasklistProps} />
+      </React.Fragment>
+    ));
+  };
 
   renderCompleted = () => {
     const {
@@ -159,11 +152,7 @@ class TaskView extends React.Component {
     }
 
     if (isCompletedTasksFetching) {
-      return (
-        <StyledButton onClick={pullCompletedTasks}>
-          Fetching completed tasks...
-        </StyledButton>
-      );
+      return <StyledButton onClick={pullCompletedTasks}>Fetching completed tasks...</StyledButton>;
     }
 
     if (completedTasks == null || completedTasks.length === 0) {
@@ -173,7 +162,9 @@ class TaskView extends React.Component {
     const isCollapsed = selectedTaskId != null;
     const tasklistProps = {
       tasks: this.search(completedTasks),
-      markComplete: (task, status) => { markComplete(task, status, 'COMPLETE'); },
+      markComplete: (task, status) => {
+        markComplete(task, status, 'COMPLETE');
+      },
       storeAsCurrentTask,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
@@ -187,7 +178,7 @@ class TaskView extends React.Component {
         <TaskList {...tasklistProps} />
       </React.Fragment>
     );
-  }
+  };
 
   render() {
     const {
@@ -203,6 +194,8 @@ class TaskView extends React.Component {
       toggleTaskPriority,
       addTaskComment,
       taskList,
+      showToolbar,
+      storeAsCurrentTask,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -214,7 +207,9 @@ class TaskView extends React.Component {
 
     // TODO: Optimize!!!
     const isCompletedTaskSelected = task && !unfinishedTasks.find(t => t.taskId === task.taskId);
-    const isMainTaskComplete = task && task.parentTaskId && allTasks.find(t => t.taskId === task.parentTaskId && t.status === 'COMPLETE');
+    const isMainTaskComplete = task
+      && task.parentTaskId
+      && allTasks.find(t => t.taskId === task.parentTaskId && t.status === 'COMPLETE');
 
     const groupedTasks = groupBy(tasks, t => (t.taskList ? t.taskList.listName : ''));
     const tasklistCount = Array.from(groupedTasks.keys()).length;
@@ -222,7 +217,11 @@ class TaskView extends React.Component {
     const isInbox = tasks.length !== 0 && tasks[0].taskList === null;
 
     return (
-      <div className="off-canvas-content" data-off-canvas-content="true" style={{ minHeight: '100%' }}>
+      <div
+        className="off-canvas-content"
+        data-off-canvas-content="true"
+        style={{ minHeight: '100%' }}
+      >
         <div className="row expanded collapse" style={{ minHeight: '100%' }}>
           <div className="large-12 columns" style={{ minHeight: '100%', background: '#f5f8fa' }}>
             <Header
@@ -232,9 +231,14 @@ class TaskView extends React.Component {
               members={members}
               taskList={taskList}
             />
-            {this.props.showToolbar && isSingleTaskList && !isInbox && <AddTask taskListId={tasks[0].taskList.taskListId} style={{ padding: '7px 38px 0 48px' }} />}
-            {this.props.showToolbar
-            && (
+            {showToolbar && isSingleTaskList && !isInbox && (
+              <AddTask
+                taskListId={tasks[0].taskList.taskListId}
+                style={{ padding: '7px 38px 0 48px' }}
+                storeAsCurrentTask={storeAsCurrentTask}
+              />
+            )}
+            {showToolbar && (
               <Toolbar style={{ padding: '0 38px 0 48px' }}>
                 <Select
                   updateFilter={this.handleFilterChange}
@@ -256,39 +260,45 @@ class TaskView extends React.Component {
                   </TaskListAction>
                 </div>
               </Toolbar>
-            )
-            }
-            {isFetching
-              ? (
-                <FadeContainer>
-                  <Fade in={isFetching} unmountOnExit style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}>
-                    <ProgressIcon />
-                  </Fade>
-                </FadeContainer>
-              )
-              : (
-                <div style={{ display: 'flex' }}>
-                  <TaskListContainer>
-                    {this.renderTasklists()}
-                    {this.renderCompleted()}
-                  </TaskListContainer>
-                  {task && (
-                    <TaskDetails
-                      addTaskComment={comment => addTaskComment(task, ({ comment }))}
-                      userId={userId}
-                      selectedTask={task}
-                      close={this.handleClose}
-                      markComplete={(_task, status) => { markComplete(_task, status, isCompletedTaskSelected ? 'COMPLETE' : 'INCOMPLETE'); }}
-                      toggleTaskPriority={toggleTaskPriority}
-                      isMainTaskComplete={isMainTaskComplete}
-                    />
-                  )}
-                </div>
-              )}
+            )}
+            {isFetching ? (
+              <FadeContainer>
+                <Fade
+                  in={isFetching}
+                  unmountOnExit
+                  style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
+                >
+                  <ProgressIcon />
+                </Fade>
+              </FadeContainer>
+            ) : (
+              <div style={{ display: 'flex' }}>
+                <TaskListContainer>
+                  {this.renderTasklists()}
+                  {this.renderCompleted()}
+                </TaskListContainer>
+                {task && (
+                  <TaskDetails
+                    addTaskComment={comment => addTaskComment(task, { comment })}
+                    userId={userId}
+                    selectedTask={task}
+                    close={this.handleClose}
+                    markComplete={(_task, status) => {
+                      markComplete(
+                        _task,
+                        status,
+                        isCompletedTaskSelected ? 'COMPLETE' : 'INCOMPLETE',
+                      );
+                    }}
+                    toggleTaskPriority={toggleTaskPriority}
+                    isMainTaskComplete={isMainTaskComplete}
+                  />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
-
     );
   }
 }

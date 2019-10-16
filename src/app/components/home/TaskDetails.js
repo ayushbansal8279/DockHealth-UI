@@ -1,27 +1,29 @@
-import React from 'react';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import Checkbox from '@material-ui/core/Checkbox';
-import ButtonBase from '@material-ui/core/ButtonBase';
+
 import {
-  updateWorkflowStatus, updateTaskDescription,
-  addTaskAttachment, removeTaskAttachment,
+  addTaskAttachment,
+  removeTaskAttachment,
+  updateTaskDescription,
+  updateWorkflowStatus,
 } from '../../actions/task-actions';
-import EditableDescription from './EditableDescription';
+import TaskCheckbox, { Confirmation, useConfirmation } from '../TaskCheckbox';
 import AddSubtask from './AddSubtask';
-import MemberPicker from './MemberPicker';
-import Bookmark from './Bookmark';
-import PatientAssignment from './PatientAssignment';
-import StatusSelect from './StatusSelect';
-import ListPicker from './ListPicker';
-import Comments from './comments/Comments';
 import Attachments from './Attachments';
-import History from './History';
-import TaskActions from './TaskActions';
+import Bookmark from './Bookmark';
+import Comments from './comments/Comments';
 import DetailsDueDate from './DetailsDueDate';
+import EditableDescription from './EditableDescription';
+import History from './History';
+import ListPicker from './ListPicker';
+import MemberPicker from './MemberPicker';
+import PatientAssignment from './PatientAssignment';
 import Reminder from './Reminder';
-import TaskCheckbox, { Confirmation, useConfirmation, withConfirmation } from '../TaskCheckbox';
+import StatusSelect from './StatusSelect';
+import TaskActions from './TaskActions';
 
 const StyledCheckbox = styled(TaskCheckbox)`
   && {
@@ -94,45 +96,46 @@ const StickyContainer = styled.div`
   top: 100;
 `;
 
-export class TaskDetails extends React.PureComponent {
+class TaskDetails extends React.PureComponent {
   handleChange = (event) => {
     const { markComplete, selectedTask } = this.props;
     const status = event.target.checked ? 'INCOMPLETE' : 'COMPLETE';
     markComplete(selectedTask, status, 'INCOMPLETE');
-  }
+  };
 
   handleBookmarkClick = () => {
     const { toggleTaskPriority, selectedTask } = this.props;
     toggleTaskPriority(selectedTask, selectedTask.priority);
-  }
+  };
 
   handleStatusChange = (e) => {
     const status = e.target.value;
     const { selectedTask, updateWorkflowStatus: updateStatus } = this.props;
     updateStatus(selectedTask.taskId, status);
-  }
+  };
 
   handleDescriptionChange = (description) => {
     const { selectedTask, updateTaskDescription: updateDescription } = this.props;
-    console.log('task', selectedTask, description);
     updateDescription(selectedTask, description);
-  }
+  };
 
-  handleAddAttachment = (files, e) => {
+  handleAddAttachment = (files) => {
     if (files && files.length > 0) {
       const fileData = files[0];
       const { selectedTask } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
       this.props.addTaskAttachment(selectedTask.taskId, fileData);
     }
-  }
+  };
 
-  handleRemoveAttachment = (attachmentId, e) => {
+  handleRemoveAttachment = (attachmentId) => {
     // const targetVal = e.target.value;
     if (attachmentId && attachmentId > 0) {
       const { selectedTask } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
       this.props.removeTaskAttachment(selectedTask.taskId, attachmentId);
     }
-  }
+  };
 
   renderHeader() {
     const { close, selectedTask } = this.props;
@@ -160,28 +163,33 @@ export class TaskDetails extends React.PureComponent {
             ]}
           />
         </StatusContainer>
-        <StyledCloseButton onClick={close}>
-          {'✕'}
-        </StyledCloseButton>
+        <StyledCloseButton onClick={close}>✕</StyledCloseButton>
       </DetailsHeader>
     );
   }
 
   render() {
     const {
-      selectedTask, userId, addTaskComment, stickyStyle, confirmation, isMainTaskComplete,
+      selectedTask,
+      userId,
+      addTaskComment,
+      stickyStyle,
+      confirmation,
+      isMainTaskComplete,
     } = this.props;
     const {
       isOpen, close, handleStatusChange, confirm,
     } = confirmation;
-    if (selectedTask == null) { return null; }
+    if (selectedTask == null) {
+      return null;
+    }
 
     const {
       description, patient, subtasks, status, comments,
     } = selectedTask;
 
     const isCompleted = status === 'COMPLETE';
-    const isInbox = !(selectedTask?.taskList?.taskListId);
+    const isInbox = !selectedTask?.taskList?.taskListId;
     const isSubtask = selectedTask.parentTaskId !== null;
 
     return (
@@ -191,7 +199,9 @@ export class TaskDetails extends React.PureComponent {
             {this.renderHeader()}
             <table>
               <tr>
-                <StyledLabel><strong>Assigned to </strong></StyledLabel>
+                <StyledLabel>
+                  <strong>Assigned to </strong>
+                </StyledLabel>
                 <StyledDescription>
                   <MemberPicker
                     task={selectedTask}
@@ -201,7 +211,7 @@ export class TaskDetails extends React.PureComponent {
                 </StyledDescription>
               </tr>
               <tr>
-                {!isSubtask && (<Confirmation isOpen={isOpen} close={close} confirm={confirm} />)}
+                {!isSubtask && <Confirmation isOpen={isOpen} close={close} confirm={confirm} />}
                 <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
                   <StyledCheckbox
                     checked={isCompleted}
@@ -222,19 +232,23 @@ export class TaskDetails extends React.PureComponent {
               <tr>
                 <StyledLabel>Patient </StyledLabel>
                 <StyledDescription>
-                  <PatientAssignment patient={patient} task={selectedTask} isCompact disabled={isCompleted} />
+                  <PatientAssignment
+                    patient={patient}
+                    task={selectedTask}
+                    isCompact
+                    disabled={isCompleted}
+                  />
                 </StyledDescription>
               </tr>
               <tr>
                 <StyledLabel />
                 <StyledDescription>
-                  {
-                    !isSubtask && (
-                      (subtasks && subtasks.length === 0)
-                        ? (<AddSubtask taskId={selectedTask.taskId} disabled={isCompleted} />)
-                        : (<strong>{`Subtasks (${subtasks.length})`}</strong>)
-                    )
-                  }
+                  {!isSubtask
+                    && (subtasks && subtasks.length === 0 ? (
+                      <AddSubtask taskId={selectedTask.taskId} disabled={isCompleted} />
+                    ) : (
+                      <strong>{`Subtasks (${subtasks.length})`}</strong>
+                    ))}
                 </StyledDescription>
               </tr>
             </table>
@@ -256,19 +270,23 @@ export class TaskDetails extends React.PureComponent {
           <DetailsBox>
             <table>
               {selectedTask.taskList && (
-              <tr>
-                <StyledLabel><strong>Filed in</strong></StyledLabel>
-                <StyledDescription>
-                  <ListPicker
-                    item={selectedTask.taskList}
-                    task={selectedTask}
-                    disabled={isCompleted}
-                  />
-                </StyledDescription>
-              </tr>
+                <tr>
+                  <StyledLabel>
+                    <strong>Filed in</strong>
+                  </StyledLabel>
+                  <StyledDescription>
+                    <ListPicker
+                      item={selectedTask.taskList}
+                      task={selectedTask}
+                      disabled={isCompleted}
+                    />
+                  </StyledDescription>
+                </tr>
               )}
               <tr>
-                <StyledLabel><strong>Due date</strong></StyledLabel>
+                <StyledLabel>
+                  <strong>Due date</strong>
+                </StyledLabel>
                 <StyledDescription>
                   <DetailsDueDate
                     completed={selectedTask.status === 'COMPLETE'}
@@ -279,12 +297,11 @@ export class TaskDetails extends React.PureComponent {
                 </StyledDescription>
               </tr>
               <tr>
-                <StyledLabel><strong>Reminder</strong></StyledLabel>
+                <StyledLabel>
+                  <strong>Reminder</strong>
+                </StyledLabel>
                 <StyledDescription>
-                  <Reminder
-                    completed={selectedTask.status === 'COMPLETE'}
-                    task={selectedTask}
-                  >
+                  <Reminder completed={selectedTask.status === 'COMPLETE'} task={selectedTask}>
                     {selectedTask.reminderDt}
                   </Reminder>
                 </StyledDescription>
@@ -357,9 +374,12 @@ const TaskDetailsWithConfirmation = (props) => {
   return <TaskDetails {...props} confirmation={confirmation} />;
 };
 
-export default connect(undefined, {
-  updateWorkflowStatus,
-  updateTaskDescription,
-  addTaskAttachment,
-  removeTaskAttachment,
-})(TaskDetailsWithConfirmation);
+export default connect(
+  undefined,
+  {
+    updateWorkflowStatus,
+    updateTaskDescription,
+    addTaskAttachment,
+    removeTaskAttachment,
+  },
+)(TaskDetailsWithConfirmation);
