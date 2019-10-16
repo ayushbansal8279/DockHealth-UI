@@ -25,17 +25,15 @@ export default class ResetPassword extends PureComponent {
           RESET_PASSWORD_SUCCESS: 'YES',
         });
         success('Reset password. Please login');
-        hashHistory.push('login');
+        hashHistory.push('resetPasswordSuccess');
       })
       .catch((e) => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           RESET_PASSWORD_SUCCESS: 'NO',
         });
         const msg = e.message || 'An error occurred.';
-        const field = false;
-        if (!field) {
-          error(msg);
-        }
+
+        error(msg);
       });
   };
 

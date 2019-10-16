@@ -33,8 +33,10 @@ class LoginFormPassword extends PureComponent {
           <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
             Welcome to Dock Health
           </TitleTypography>
-          <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
-          <Grid item xs={12}>
+          <Grid item sm={12} md={9}>
+            <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
+          </Grid>
+          <Grid item sm={12} md={9}>
             <Field
               name="username"
               type="text"
@@ -43,7 +45,7 @@ class LoginFormPassword extends PureComponent {
               label="Email"
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item sm={12} md={9}>
             <Field
               name="password"
               type="password"
@@ -53,7 +55,7 @@ class LoginFormPassword extends PureComponent {
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item sm={12} md={6}>
             <NextButton
               active={!invalid}
               id="loginButton"

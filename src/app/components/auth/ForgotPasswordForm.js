@@ -26,7 +26,7 @@ const ForgotPasswordForm = (props) => {
         <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
           Forgot your password?
         </TitleTypography>
-        <Grid item sm={12} md={10}>
+        <Grid item sm={12} md={9}>
           <TitleTypography variant="h4">
             Don’t worry, it happens to the best of us. Enter the email associated with your account.
           </TitleTypography>

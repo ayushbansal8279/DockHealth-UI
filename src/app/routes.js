@@ -23,6 +23,7 @@ import Logout from './views/auth/Logout';
 import Register from './views/auth/Register';
 import ResendCode from './views/auth/ResendCode';
 import ResetPassword from './views/auth/ResetPassword';
+import ResetPasswordSuccess from './views/auth/ResetPasswordSuccess';
 import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
 import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
@@ -108,6 +109,7 @@ export const Routes = ({ store }) => {
             <Route path="/errorPage" component={ErrorPage} />
             <Route path="/unEnrolledUser" component={UnEnrolledUser} />
             <Route path="/resetPasswordEmailSent" component={EmailSent} />
+            <Route path="/resetPasswordSuccess" component={ResetPasswordSuccess} />
           </Route>
           <Route path="/register" component={Register} />
         </Route>

@@ -55,8 +55,10 @@ class LoginFormUsername extends Component {
             <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
               Welcome to Dock Health
             </TitleTypography>
-            <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
-            <Grid item xs={12}>
+            <Grid item sm={12} md={9}>
+              <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
+            </Grid>
+            <Grid item sm={12} md={9}>
               <Field
                 marginTop="2.5rem"
                 name="username"
