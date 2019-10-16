@@ -23,7 +23,7 @@ import Patient from './Patient';
 const StyledTableBody = styled(({ isSubtask, isSelected, ...rest }) => <TableBody {...rest} />)`
   && {
     border: none;
-    border-bottom: 8px solid  rgba(100,255,255,0);
+    border-bottom: 8px solid rgba(100, 255, 255, 0);
     background-clip: padding-box;
     background-color: #fff;
     cursor: pointer;
@@ -46,7 +46,7 @@ StyledTableBody.defaultProps = {
   isSelected: false,
 };
 
-const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }}/>)`
+const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
   && {
     width: 36px;
     height: 36px;
@@ -81,25 +81,21 @@ const StyledTaskCommentCount = styled.div`
 
 const Info = ({ task }) => (
   <React.Fragment>
-    {task.assignedBy !== null
-      ? (
-        <React.Fragment>
-          {'Assigned by '}
-          <Link to={`#/assignedToPerson/${task.assignedBy.userId}/${task.assignedBy.userName}`}>
-            {`${task.assignedBy.firstName} ${task.assignedBy.lastName}`}
-          </Link>
-        </React.Fragment>
-      )
-      : (
-        <Link to={`#/assignedToPerson/${task.creator.userId}/${task.creator.userName}`}>
-          {`${task.creator.firstName} ${task.creator.lastName}`}
+    {task.assignedBy !== null ? (
+      <React.Fragment>
+        {'Assigned by '}
+        <Link to={`#/assignedToPerson/${task.assignedBy.userId}/${task.assignedBy.userName}`}>
+          {`${task.assignedBy.firstName} ${task.assignedBy.lastName}`}
         </Link>
-      )}
+      </React.Fragment>
+    ) : (
+      <Link to={`#/assignedToPerson/${task.creator.userId}/${task.creator.userName}`}>
+        {`${task.creator.firstName} ${task.creator.lastName}`}
+      </Link>
+    )}
     {' • '}
     <Moment format="h:mma">
-      {task.assignedBy !== null
-        ? task.assignmentUpdatedDateTime
-        : task.createdDateTime}
+      {task.assignedBy !== null ? task.assignmentUpdatedDateTime : task.createdDateTime}
     </Moment>
   </React.Fragment>
 );
@@ -114,7 +110,8 @@ const Comments = ({ comments }) => {
       {comments.length}
       {' '}
       {comments.length === 1 ? 'comment' : 'comments'}
-    </StyledTaskCommentCount>);
+    </StyledTaskCommentCount>
+  );
 };
 
 const UnnamedTask = styled.span`
@@ -122,17 +119,36 @@ const UnnamedTask = styled.span`
 `;
 
 const Task = ({
-  task, markComplete, storeAsCurrentTask, isSubtask, hideDate, hideTags, selectedTaskId,
+  task,
+  markComplete,
+  storeAsCurrentTask,
+  isSubtask,
+  hideDate,
+  hideTags,
+  selectedTaskId,
 }) => {
   // Check all subtasks confirmation dialog
   const [isOpen, setOpen] = useState(false);
-  const open = useCallback(() => { setOpen(true); }, [setOpen]);
-  const close = useCallback(() => { setOpen(false); }, [setOpen]);
-  const confirm = useCallback(() => {
-    const status = task.status === 'COMPLETE' ? 'COMPLETE' : 'INCOMPLETE';
-    markComplete(task, status);
-    close();
-  }, [markComplete, task, close]);
+  const open = useCallback(
+    () => {
+      setOpen(true);
+    },
+    [setOpen],
+  );
+  const close = useCallback(
+    () => {
+      setOpen(false);
+    },
+    [setOpen],
+  );
+  const confirm = useCallback(
+    () => {
+      const status = task.status === 'COMPLETE' ? 'COMPLETE' : 'INCOMPLETE';
+      markComplete(task, status);
+      close();
+    },
+    [markComplete, task, close],
+  );
 
   return (
     <StyledTableBody
@@ -147,7 +163,10 @@ const Task = ({
         <StyledTableCell
           align="center"
           style={{
-            verticalAlign: 'top', margin: 0, padding: 0, width: 5,
+            verticalAlign: 'top',
+            margin: 0,
+            padding: 0,
+            width: 5,
           }}
         >
           <Flag priority={task.priority} />
@@ -163,62 +182,68 @@ const Task = ({
               }
               open();
             }}
-            onClick={(e) => { e.stopPropagation(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           />
           {!isSubtask && (
-          <Dialog
-            open={isOpen}
-            onClose={close}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              You are about to complete a task with open subtasks.
-              Completing the task will also complete the subtasks.
-              Would you like to proceed?
-            </DialogTitle>
-            <DialogActions>
-              <Button onClick={close} color="primary">
-            Cancel
-              </Button>
-              <Button onClick={confirm} color="primary" autoFocus>
-            Complete all
-              </Button>
-            </DialogActions>
-          </Dialog>
+            <Dialog
+              open={isOpen}
+              onClose={close}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                You are about to complete a task with open subtasks. Completing the task will also
+                complete the subtasks. Would you like to proceed?
+              </DialogTitle>
+              <DialogActions>
+                <Button onClick={close} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={confirm} color="primary" autoFocus>
+                  Complete all
+                </Button>
+              </DialogActions>
+            </Dialog>
           )}
         </StyledTableCell>
         <StyledTableCell align="center" style={{ width: 72 }}>
           <MemberPicker task={task} member={task.assignedTo} small={isSubtask} />
         </StyledTableCell>
         <StyledTableCell>
-          <StyledTaskDescription completed={task.status === 'COMPLETE'}>{task.description || <UnnamedTask>Unnamed task</UnnamedTask>}</StyledTaskDescription>
+          <StyledTaskDescription completed={task.status === 'COMPLETE'}>
+            {task.description || <UnnamedTask>Unnamed task</UnnamedTask>}
+          </StyledTaskDescription>
           <StyledTaskFooter>
             <Info task={task} />
           </StyledTaskFooter>
           <Comments comments={task.comments} />
         </StyledTableCell>
-        {!isSubtask && <StyledTableCell>
-          {task.patient && <Link to={`/patient/${task.patient.patientId}`}><Patient patient={task.patient} style={{ color: '#0ca1c7' }} /></Link>}
-        </StyledTableCell>}
+        {!isSubtask && (
+          <StyledTableCell>
+            {task.patient && (
+              <Link to={`/patient/${task.patient.patientId}`}>
+                <Patient patient={task.patient} style={{ color: '#0ca1c7' }} />
+              </Link>
+            )}
+          </StyledTableCell>
+        )}
         {!hideDate && (
-        <StyledTableCell style={{ width: 108 }}>
-          <DueDate completed={task.status === 'COMPLETE'}>{task.dueDate}</DueDate>
-        </StyledTableCell>
+          <StyledTableCell style={{ width: 108 }}>
+            <DueDate completed={task.status === 'COMPLETE'}>{task.dueDate}</DueDate>
+          </StyledTableCell>
         )}
         {!hideTags && (
-        <StyledTableCell style={{ width: 216 }}>
-          <Tag>Placeholder</Tag>
-        </StyledTableCell>
+          <StyledTableCell style={{ width: 216 }}>
+            <Tag>Placeholder</Tag>
+          </StyledTableCell>
         )}
         <StyledTableCell align="center" style={{ width: 36 }}>
           <Priority priority={task.workflowStatus} />
         </StyledTableCell>
       </TableRow>
-      {
-      task.subtasks
-        && task.subtasks.length > 0
-        && (
+      {task.subtasks && task.subtasks.length > 0 && (
         <Subtasks
           parentTaskId={task.taskId}
           isCompleted={task.status === 'COMPLETE'}
@@ -229,8 +254,7 @@ const Task = ({
           hideTags={hideTags}
           selectedTaskId={selectedTaskId}
         />
-        )
-    }
+      )}
     </StyledTableBody>
   );
 };
