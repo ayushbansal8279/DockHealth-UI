@@ -39,7 +39,7 @@ const StyledSelect = styled(Select).attrs({
   }
 `;
 
-const halfHourIntervals = [...Array(48).keys()]
+const halfHourIntervals = [...Array(96).keys()]
   .map(i => moment()
     .startOf('day')
     .add(15 * i, 'minutes'));
