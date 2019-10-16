@@ -1,53 +1,72 @@
-import React from 'react'
-import { Field, reduxForm } from 'redux-form'
-import { Link } from 'react-router'
-import AuthField from '../common/AuthField'
+import Grid from '@material-ui/core/Grid';
+import React from 'react';
+import { Field, reduxForm } from 'redux-form';
 
-const validate = values => {
-  const errors = {}
-  if (!values.username) {
-    errors.username = 'Required'
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)) {
-    errors.username = 'Invalid email address'
+import AuthField from '../common/AuthField';
+import { NextButton, TitleTypography } from './AuthComponents.styled';
+
+const MIN_PASSWORD_LENGTH = 8;
+
+const validate = (values) => {
+  const errors = {};
+
+  const { password } = values;
+
+  if (!password) {
+    errors.password = 'Password is required';
+  } else if (password.length < MIN_PASSWORD_LENGTH) {
+    errors.password = 'Password needs at least 8 characters';
+  } else if (!password.match(/[0-9]/)) {
+    errors.password = 'Password needs at least 1 number';
+  } else if (!password.match(/[A-Z]/)) {
+    errors.password = 'Password needs at least 1 capital letter';
   }
 
-  if (!values.verificationCode) {
-    errors.verificationCode = 'Required'
-  }
-
-  if (!values.password) {
-    errors.password = 'Required'
-  }
-
-  return errors
-}
+  return errors;
+};
 
 const ResetPasswordForm = (props) => {
-  const { handleSubmit, invalid, pristine, submitting } = props
-  console.log(props)
-  //props.initialValues = {username: username, verificationCode: verificationCode}
-  //props.initialValues.username = username
-  //props.initialValues.verificationCode = verificationCode
-  console.log(props.initialValues)
+  const { handleSubmit, invalid } = props;
 
   return (
-		<form className="inline-label top-buffer" onSubmit={handleSubmit}>
-			<div className="row expanded">
-        <Field name='username' type='text' component={AuthField} label='Email' xlinkHref="#icon-email"/>
-        <Field name='verificationCode' type='text' component={AuthField} label='Verification code' xlinkHref="#icon-password"/>
-        <Field name='password' type='password' component={AuthField} label='New password' xlinkHref="#icon-password"/>
-				<div className="columns small-12 text-center top-buffer">
-          <button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Reset password</button>
-				</div>
-				<div className="columns small-12 top-buffer text-center details">
-          <Link to="/login">Login if you already have an account</Link>
-				</div>
-			</div>
-		</form>
-  )
-}
+    <form className="inline-label top-buffer" onSubmit={handleSubmit}>
+      <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+        Let’s set a new password
+      </TitleTypography>
+      <Grid item sm={12} md={9}>
+        <TitleTypography variant="h4">
+          In order to protect your account, please make sure your password is 8 character minimum,
+          includes at least one number and one capital letter
+        </TitleTypography>
+      </Grid>
+      <Grid item sm={12} md={9}>
+        <Field
+          marginTop="1.5rem"
+          name="password"
+          type="password"
+          component={AuthField}
+          label="New password"
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <NextButton
+          active={!invalid}
+          id="loginButton"
+          type="submit"
+          variant="contained"
+          color="primary"
+          style={{
+            marginTop: '3rem',
+          }}
+        >
+          Next
+        </NextButton>
+      </Grid>
+    </form>
+  );
+};
 
 export default reduxForm({
   form: 'ResetPasswordForm',
-  validate
-})(ResetPasswordForm)
+  validate,
+})(ResetPasswordForm);

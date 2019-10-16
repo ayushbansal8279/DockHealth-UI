@@ -34,9 +34,7 @@ class TemplateAuthBase extends Component {
 
     window.addEventListener('resize', this.onResize);
 
-    this.removeRouterListener = router.listen(() => {
-      this.onResize();
-    });
+    this.removeRouterListener = router.listen(this.onResize);
 
     // First render does not return the valid offset height of ref element
     // thus the second resizing is invoked here
@@ -57,6 +55,10 @@ class TemplateAuthBase extends Component {
 
       this.setState({
         modalContainerWidth,
+      });
+    } else {
+      setImmediate(() => {
+        this.onResize();
       });
     }
   };
