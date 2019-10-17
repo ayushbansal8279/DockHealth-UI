@@ -70,10 +70,17 @@ class TaskView extends React.Component {
     patientActions.getAllPatients();
   };
 
+  clearStoredCurrentTask = () => {
+    const { storeAsCurrentTask } = this.props;
+
+    storeAsCurrentTask(null);
+  };
+
   handleFilterChange = (filterBy) => {
     const { onFilter } = this.props;
     const sortBy = 'CREATED_DT';
 
+    this.clearStoredCurrentTask();
     this.setState({ filterBy });
 
     onFilter(filterBy, sortBy);
@@ -82,6 +89,8 @@ class TaskView extends React.Component {
   handleSearch = (e) => {
     const { value } = e.target;
     const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
+
+    this.clearStoredCurrentTask();
     this.setState({ searchTerms });
   };
 
@@ -173,10 +182,10 @@ class TaskView extends React.Component {
     };
 
     return (
-      <React.Fragment>
+      <>
         <StyledButton onClick={pullCompletedTasks}>Hide completed tasks</StyledButton>
         <TaskList {...tasklistProps} />
-      </React.Fragment>
+      </>
     );
   };
 
@@ -211,10 +220,8 @@ class TaskView extends React.Component {
       && task.parentTaskId
       && allTasks.find(t => t.taskId === task.parentTaskId && t.status === 'COMPLETE');
 
-    const groupedTasks = groupBy(tasks, t => (t.taskList ? t.taskList.listName : ''));
-    const tasklistCount = Array.from(groupedTasks.keys()).length;
-    const isSingleTaskList = tasklistCount === 1;
     const isInbox = tasks.length !== 0 && tasks[0].taskList === null;
+    const taskListId = taskList?.taskListId;
 
     return (
       <div
@@ -231,9 +238,10 @@ class TaskView extends React.Component {
               members={members}
               taskList={taskList}
             />
-            {showToolbar && isSingleTaskList && !isInbox && (
+            {showToolbar && !isInbox && taskListId && (
               <AddTask
-                taskListId={tasks[0].taskList.taskListId}
+                storeAsCurrentTask={storeAsCurrentTask}
+                taskListId={taskListId}
                 style={{ padding: '7px 38px 0 48px' }}
               />
             )}
