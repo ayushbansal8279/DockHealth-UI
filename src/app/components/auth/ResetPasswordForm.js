@@ -46,6 +46,7 @@ const ResetPasswordForm = (props) => {
           type="password"
           component={AuthField}
           label="New password"
+          autoFocus
         />
       </Grid>
       <Grid item xs={6}>

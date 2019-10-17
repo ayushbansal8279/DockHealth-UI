@@ -79,7 +79,12 @@ const StyledErrorLabel = styled.div`
 `;
 
 const AuthField = ({
-  input, marginTop, label, type, meta: { touched, error },
+  input,
+  marginTop,
+  label,
+  type,
+  meta: { touched, error },
+  autoFocus = false,
 }) => {
   const inputRef = useRef(null);
 
@@ -92,7 +97,13 @@ const AuthField = ({
   return (
     <StyledInputContainer marginTop={marginTop} className={inputClassName.trim()}>
       {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
-      <StyledInput ref={inputRef} type={type} {...input} className={inputClassName.trim()} />
+      <StyledInput
+        ref={inputRef}
+        type={type}
+        autoFocus={autoFocus}
+        {...input}
+        className={inputClassName.trim()}
+      />
       <StyledInputIcon />
       <StyledLabel onClickCapture={() => inputRef.current?.focus()}>{label}</StyledLabel>
     </StyledInputContainer>

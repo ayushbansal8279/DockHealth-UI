@@ -38,6 +38,7 @@ const ForgotPasswordForm = (props) => {
             type="text"
             component={AuthField}
             label="Email"
+            autoFocus
           />
         </Grid>
 

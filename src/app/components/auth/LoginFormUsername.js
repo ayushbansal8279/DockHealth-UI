@@ -65,6 +65,7 @@ class LoginFormUsername extends Component {
                 type="text"
                 component={AuthField}
                 label="Email"
+                autoFocus
               />
             </Grid>
 

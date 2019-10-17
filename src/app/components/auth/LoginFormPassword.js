@@ -52,6 +52,7 @@ class LoginFormPassword extends PureComponent {
               component={AuthField}
               marginTop="0.5rem"
               label="Password"
+              autoFocus
             />
           </Grid>
 
