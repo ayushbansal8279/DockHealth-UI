@@ -24,7 +24,8 @@ export const StyledDescription = styled.td`
   border-top: 12px solid transparent;
   width: 100%;
   padding-left: 16px;
-  font-size: 14px;
+  font-size: ${props => (props.big ? '16px' : '14px')};
+  ${props => props.lineThrough && 'text-decoration: line-through;'}
 `;
 
 export const DetailsHeader = styled.div`

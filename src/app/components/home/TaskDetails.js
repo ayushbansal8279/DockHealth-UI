@@ -161,7 +161,7 @@ class TaskDetails extends React.PureComponent {
                     style={{ marginRight: '-15px' }}
                   />
                 </StyledLabel>
-                <StyledDescription style={{ fontSize: '16px' }}>
+                <StyledDescription big lineThrough={isCompleted}>
                   <EditableDescription
                     placeholder="Enter task description"
                     value={description}
