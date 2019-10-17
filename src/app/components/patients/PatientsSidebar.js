@@ -15,8 +15,6 @@ import PatientEdit from './PatientEdit';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
 
 export const PatientsSidebarContainer = styled.div`
-  min-width: 562px;
-  //flex-shrink: 0;
   padding: 4px;
 `;
 

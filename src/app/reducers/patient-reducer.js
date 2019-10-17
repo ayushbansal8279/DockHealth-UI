@@ -1,5 +1,5 @@
 import {
-  reject, map, lensProp, over, propEq, when, append, set,
+  reject, map, lensProp, over, propEq, when, append, set, isNil,
 } from 'ramda';
 import {
   GET_PATIENTS_SUCCESS,
@@ -16,7 +16,9 @@ import {
   BEGIN_PATIENT_CREATION,
   ABORT_PATIENT_CREATION,
   ADD_PATIENT_ERROR,
-  ADD_PATIENT_NOTE, UPDATE_PATIENT_NOTE, DELETE_PATIENT_NOTE,
+  ADD_PATIENT_NOTE,
+  UPDATE_PATIENT_NOTE,
+  DELETE_PATIENT_NOTE,
 } from '../actions/action-types';
 
 const initialState = {
@@ -32,91 +34,91 @@ const initialState = {
 const PatientReducer = (state = initialState, action) => {
   switch (action.type) {
     case BEGIN_PATIENT_CREATION: {
-      return ({
+      return {
         ...state,
         isCreatingPatient: true,
         highlightedPatientId: null,
-      });
+      };
     }
 
     case ABORT_PATIENT_CREATION: {
-      return ({
+      return {
         ...state,
         isCreatingPatient: false,
-      });
+      };
     }
 
     case ADD_PATIENT_SUCCESS: {
       const { patient } = action;
-      return ({
+      return {
         ...state,
         allPatients: [...state.allPatients, patient],
         isCreatingPatient: false,
         highlightedPatientId: patient.patientId,
-      });
+      };
     }
 
     case ADD_PATIENT_ERROR: {
       const { error } = action;
-      return ({
+      return {
         ...state,
         creatingPatientError: error,
-      });
+      };
     }
 
     case HIGHLIGHT_PATIENT: {
-      if (state.isCreatingPatient) {
+      const { patientId } = action;
+      const { isCreatingPatient } = state;
+
+      if (isNil(patientId) && isCreatingPatient) {
         return state;
       }
 
-      const { patientId } = action;
-
-      return ({
+      return {
         ...state,
+        isCreatingPatient: false,
         highlightedPatientId: patientId,
-      });
+      };
     }
 
     case GET_PATIENTS_SUCCESS: {
       const { patients } = action;
-      return ({
+      return {
         ...state,
         allPatients: patients,
         isFetching: false,
-      });
+      };
     }
 
     case REQUEST_PATIENTS: {
-      return ({
+      return {
         ...state,
         isFetching: true,
-      });
+      };
     }
 
     case GET_LIST_PATIENTS_SUCCESS: {
       const { patients } = action;
-      return ({
+      return {
         ...state,
         listPatients: patients,
-      });
+      };
     }
 
     case UPDATE_PATIENT_SUCCESS: {
       const { patient } = action;
-      return ({
+      return {
         ...state,
-        allPatients: state.allPatients.map(existingPatient => (
-          existingPatient.patientId === patient.patientId ? patient : existingPatient
-        )),
-      });
+        allPatients: state.allPatients.map(existingPatient => (existingPatient.patientId === patient.patientId ? patient : existingPatient)),
+      };
     }
 
     case GET_PATIENT_SUCCESS: {
       const { patient } = action;
-      return ({
+      return {
         ...state,
         selectedPatient: patient,
-      });
+      };
     }
 
     case REQUEST_EMR_PATIENTS:
@@ -130,58 +132,60 @@ const PatientReducer = (state = initialState, action) => {
 
     case GET_EMR_PATIENTS_SUCCESS: {
       const { patients } = action;
-      return ({
+      return {
         ...state,
         emrPatients: patients,
         isFetching: false,
-      });
+      };
     }
 
     case SELECT_EMR_PATIENT_SUCCESS: {
       const { patient } = action;
-      return ({
+      return {
         ...state,
         selectedEmrPatient: patient,
         emrPatients: [],
-      });
+      };
     }
 
     case ADD_PATIENT_NOTE: {
       const { patientId, note } = action;
 
-      const addNoteToPatient = map(when(
-        propEq('patientId', patientId),
-        over(lensProp('allNotes'), append(note)),
-      ));
+      const addNoteToPatient = map(
+        when(propEq('patientId', patientId), over(lensProp('allNotes'), append(note))),
+      );
 
       return { ...state, allPatients: addNoteToPatient(state.allPatients) };
     }
 
     case UPDATE_PATIENT_NOTE: {
-      const { patientId, note: { patientNoteId, description } } = action;
+      const {
+        patientId,
+        note: { patientNoteId, description },
+      } = action;
 
-      const updateNote = map(when(
-        propEq('patientNoteId', patientNoteId),
-        set(lensProp('description'), description),
-      ));
+      const updateNote = map(
+        when(propEq('patientNoteId', patientNoteId), set(lensProp('description'), description)),
+      );
 
-      const updateNoteInPatient = map(when(
-        propEq('patientId', patientId),
-        over(lensProp('allNotes'), updateNote),
-      ));
+      const updateNoteInPatient = map(
+        when(propEq('patientId', patientId), over(lensProp('allNotes'), updateNote)),
+      );
 
       return { ...state, allPatients: updateNoteInPatient(state.allPatients) };
     }
 
     case DELETE_PATIENT_NOTE: {
-      const { patientId, note: { patientNoteId } } = action;
+      const {
+        patientId,
+        note: { patientNoteId },
+      } = action;
 
       const removeNote = reject(propEq('patientNoteId', patientNoteId));
 
-      const removeNoteFromPatient = map(when(
-        propEq('patientId', patientId),
-        over(lensProp('allNotes'), removeNote),
-      ));
+      const removeNoteFromPatient = map(
+        when(propEq('patientId', patientId), over(lensProp('allNotes'), removeNote)),
+      );
 
       return { ...state, allPatients: removeNoteFromPatient(state.allPatients) };
     }
