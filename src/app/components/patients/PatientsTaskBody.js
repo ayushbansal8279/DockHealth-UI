@@ -51,7 +51,8 @@ const PatientsTaskBody = ({
   return (
     <div
       style={{ cursor: 'pointer', display: 'flex' }}
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         // eslint-disable-next-line no-unused-expressions
         storeAsCurrentTask?.(task);
       }}
@@ -66,6 +67,9 @@ const PatientsTaskBody = ({
           <TaskCheckbox
             checked={status === 'COMPLETE'}
             onChange={handleStatusChange}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             disabled={disabled || (isSubtask && isParentComplete)}
           />
         </div>
@@ -186,7 +190,7 @@ const PatientsTaskBody = ({
             </div>
           )}
           {!hidePriority && (
-            <Priority priority={workflowStatus} style={{ margin: '8px 23px 0 0 ' }} />
+            <Priority priority={workflowStatus} style={{ margin: '8px 23px 0 0' }} />
           )}
         </div>
       </div>

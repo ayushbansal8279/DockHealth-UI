@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { ButtonBase } from '@material-ui/core';
-import { AddTask } from '../home/AddTask';
+import AddTask from '../home/AddTask';
 import PatientsTask from './PatientsTask';
 
 const PatientsTasklistCount = styled.div`
@@ -27,27 +27,34 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
   }
 `;
 
-const PatientsTasklist = ({
-  tasks = [], completedTasks = [], submitTask,
-}) => {
+const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
   const [isShowingCompleted, setShowCompleted] = useState(false);
-  const toggleShowCompleted = useCallback(() => {
-    setShowCompleted(!isShowingCompleted);
-  }, [isShowingCompleted]);
+  const toggleShowCompleted = useCallback(
+    () => {
+      setShowCompleted(!isShowingCompleted);
+    },
+    [isShowingCompleted],
+  );
 
   return (
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
       {submitTask && <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />}
-      {tasks.map(task => <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />)}
+      {tasks.map(task => (
+        <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />
+      ))}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
           {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${completedTasks.length})`}
-        </PatientsTasklistShowCompleted>)}
+        </PatientsTasklistShowCompleted>
+      )}
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
-          {completedTasks.map(task => <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />)}
-        </div>)}
+          {completedTasks.map(task => (
+            <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
