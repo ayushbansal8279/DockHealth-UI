@@ -23,11 +23,12 @@ const StyledSelect = styled(MaterialSelect)`
     height: 30px;
   }
 
-   & .selectMenu {
+  & .selectMenu {
     padding-left: 19px;
   }
 
-  &&, & .selectMenu:focus {
+  &&,
+  & .selectMenu:focus {
     border-radius: 57px;
   }
 `;
@@ -43,10 +44,13 @@ const StyledDropDownIcon = styled(ArrowDropDown)`
 `;
 
 const Select = ({ updateFilter, value, options }) => {
-  const handleChange = useCallback((e) => {
-    const selected = e.target.value;
-    updateFilter(selected === value ? '' : selected);
-  }, [updateFilter, value]);
+  const handleChange = useCallback(
+    (e) => {
+      const selected = e.target.value;
+      updateFilter(selected === value ? '' : selected);
+    },
+    [updateFilter, value],
+  );
 
   return (
     <FormControl variant="filled" style={{ minWidth: 186 }}>
@@ -59,7 +63,9 @@ const Select = ({ updateFilter, value, options }) => {
         classes={{ selectMenu: 'selectMenu', root: 'selectRoot' }}
         disableUnderline
       >
-        {options.map(({ value, description }) => ( // eslint-disable-line no-shadow
+        {options.map((
+          { value, description }, // eslint-disable-line no-shadow
+        ) => (
           <MenuItem value={value} key={value}>
             {value === '' ? <em>{description}</em> : description}
           </MenuItem>
@@ -72,10 +78,12 @@ const Select = ({ updateFilter, value, options }) => {
 Select.propTypes = {
   updateFilter: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string,
-    description: PropTypes.string,
-  })).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string,
+      description: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 export default Select;

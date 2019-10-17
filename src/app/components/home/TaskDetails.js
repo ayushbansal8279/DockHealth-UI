@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { ClickAwayListener } from '@material-ui/core';
 import {
   addTaskAttachment,
   removeTaskAttachment,
@@ -137,6 +138,11 @@ class TaskDetails extends React.PureComponent {
     }
   };
 
+  onClickAway = () => {
+    const { storeAsCurrentTask } = this.props;
+    storeAsCurrentTask(null);
+  };
+
   renderHeader() {
     const { close, selectedTask } = this.props;
     const isCompleted = selectedTask.status === 'COMPLETE';
@@ -193,148 +199,150 @@ class TaskDetails extends React.PureComponent {
     const isSubtask = selectedTask.parentTaskId !== null;
 
     return (
-      <DetailsContainer>
-        <StickyContainer style={stickyStyle}>
-          <DetailsBox>
-            {this.renderHeader()}
-            <table>
-              <tr>
-                <StyledLabel>
-                  <strong>Assigned to </strong>
-                </StyledLabel>
-                <StyledDescription>
-                  <MemberPicker
-                    task={selectedTask}
-                    member={selectedTask.assignedTo}
-                    disabled={isCompleted || isInbox}
-                  />
-                </StyledDescription>
-              </tr>
-              <tr>
-                {!isSubtask && <Confirmation isOpen={isOpen} close={close} confirm={confirm} />}
-                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
-                  <StyledCheckbox
-                    checked={isCompleted}
-                    onChange={handleStatusChange}
-                    disabled={isSubtask && isMainTaskComplete}
-                    style={{ marginRight: '-15px' }}
-                  />
-                </StyledLabel>
-                <StyledDescription style={{ fontSize: '16px' }}>
-                  <EditableDescription
-                    placeholder="Enter task description"
-                    value={description}
-                    onChange={this.handleDescriptionChange}
-                    disabled={isCompleted}
-                  />
-                </StyledDescription>
-              </tr>
-              <tr>
-                <StyledLabel>Patient </StyledLabel>
-                <StyledDescription>
-                  <PatientAssignment
-                    patient={patient}
-                    task={selectedTask}
-                    isCompact
-                    disabled={isCompleted}
-                  />
-                </StyledDescription>
-              </tr>
-              <tr>
-                <StyledLabel />
-                <StyledDescription>
-                  {!isSubtask
-                    && (subtasks && subtasks.length === 0 ? (
-                      <AddSubtask taskId={selectedTask.taskId} disabled={isCompleted} />
-                    ) : (
-                      <strong>{`Subtasks (${subtasks.length})`}</strong>
-                    ))}
-                </StyledDescription>
-              </tr>
-            </table>
-          </DetailsBox>
-          <DetailsBox style={{ marginTop: 4 }}>
-            <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
-              <strong>Comments </strong>
-            </StyledLabel>
-            <StyledDescription>
-              <Comments
-                task={selectedTask}
-                comments={comments}
-                userId={userId}
-                submit={addTaskComment}
-                disabled={isCompleted}
-              />
-            </StyledDescription>
-          </DetailsBox>
-          <DetailsBox>
-            <table>
-              {selectedTask.taskList && (
+      <ClickAwayListener onClickAway={this.onClickAway}>
+        <DetailsContainer>
+          <StickyContainer style={stickyStyle}>
+            <DetailsBox>
+              {this.renderHeader()}
+              <table>
                 <tr>
                   <StyledLabel>
-                    <strong>Filed in</strong>
+                    <strong>Assigned to </strong>
                   </StyledLabel>
                   <StyledDescription>
-                    <ListPicker
-                      item={selectedTask.taskList}
+                    <MemberPicker
                       task={selectedTask}
+                      member={selectedTask.assignedTo}
+                      disabled={isCompleted || isInbox}
+                    />
+                  </StyledDescription>
+                </tr>
+                <tr>
+                  {!isSubtask && <Confirmation isOpen={isOpen} close={close} confirm={confirm} />}
+                  <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+                    <StyledCheckbox
+                      checked={isCompleted}
+                      onChange={handleStatusChange}
+                      disabled={isSubtask && isMainTaskComplete}
+                      style={{ marginRight: '-15px' }}
+                    />
+                  </StyledLabel>
+                  <StyledDescription style={{ fontSize: '16px' }}>
+                    <EditableDescription
+                      placeholder="Enter task description"
+                      value={description}
+                      onChange={this.handleDescriptionChange}
                       disabled={isCompleted}
                     />
                   </StyledDescription>
                 </tr>
-              )}
-              <tr>
-                <StyledLabel>
-                  <strong>Due date</strong>
-                </StyledLabel>
-                <StyledDescription>
-                  <DetailsDueDate
-                    completed={selectedTask.status === 'COMPLETE'}
-                    task={selectedTask}
-                  >
-                    {selectedTask.dueDate}
-                  </DetailsDueDate>
-                </StyledDescription>
-              </tr>
-              <tr>
-                <StyledLabel>
-                  <strong>Reminder</strong>
-                </StyledLabel>
-                <StyledDescription>
-                  <Reminder completed={selectedTask.status === 'COMPLETE'} task={selectedTask}>
-                    {selectedTask.reminderDt}
-                  </Reminder>
-                </StyledDescription>
-              </tr>
-              <tr>
-                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
-                  <strong>Attachments</strong>
-                </StyledLabel>
-                <StyledDescription>
-                  <Attachments
-                    task={selectedTask.taskId}
-                    attachments={selectedTask.attachments}
-                    onAddAttachment={this.handleAddAttachment}
-                    onRemoveAttachment={this.handleRemoveAttachment}
-                    disabled={isCompleted}
-                  />
-                </StyledDescription>
-              </tr>
-              <tr>
-                <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
-                  <strong>History</strong>
-                </StyledLabel>
-                <StyledDescription>
-                  <History taskId={selectedTask.taskId} />
-                </StyledDescription>
-              </tr>
-            </table>
-          </DetailsBox>
-          <DetailsBox>
-            <TaskActions task={selectedTask} />
-          </DetailsBox>
-        </StickyContainer>
-      </DetailsContainer>
+                <tr>
+                  <StyledLabel>Patient </StyledLabel>
+                  <StyledDescription>
+                    <PatientAssignment
+                      patient={patient}
+                      task={selectedTask}
+                      isCompact
+                      disabled={isCompleted}
+                    />
+                  </StyledDescription>
+                </tr>
+                <tr>
+                  <StyledLabel />
+                  <StyledDescription>
+                    {!isSubtask
+                      && (subtasks && subtasks.length === 0 ? (
+                        <AddSubtask taskId={selectedTask.taskId} disabled={isCompleted} />
+                      ) : (
+                        <strong>{`Subtasks (${subtasks.length})`}</strong>
+                      ))}
+                  </StyledDescription>
+                </tr>
+              </table>
+            </DetailsBox>
+            <DetailsBox style={{ marginTop: 4 }}>
+              <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+                <strong>Comments </strong>
+              </StyledLabel>
+              <StyledDescription>
+                <Comments
+                  task={selectedTask}
+                  comments={comments}
+                  userId={userId}
+                  submit={addTaskComment}
+                  disabled={isCompleted}
+                />
+              </StyledDescription>
+            </DetailsBox>
+            <DetailsBox>
+              <table>
+                {selectedTask.taskList && (
+                  <tr>
+                    <StyledLabel>
+                      <strong>Filed in</strong>
+                    </StyledLabel>
+                    <StyledDescription>
+                      <ListPicker
+                        item={selectedTask.taskList}
+                        task={selectedTask}
+                        disabled={isCompleted}
+                      />
+                    </StyledDescription>
+                  </tr>
+                )}
+                <tr>
+                  <StyledLabel>
+                    <strong>Due date</strong>
+                  </StyledLabel>
+                  <StyledDescription>
+                    <DetailsDueDate
+                      completed={selectedTask.status === 'COMPLETE'}
+                      task={selectedTask}
+                    >
+                      {selectedTask.dueDate}
+                    </DetailsDueDate>
+                  </StyledDescription>
+                </tr>
+                <tr>
+                  <StyledLabel>
+                    <strong>Reminder</strong>
+                  </StyledLabel>
+                  <StyledDescription>
+                    <Reminder completed={selectedTask.status === 'COMPLETE'} task={selectedTask}>
+                      {selectedTask.reminderDt}
+                    </Reminder>
+                  </StyledDescription>
+                </tr>
+                <tr>
+                  <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+                    <strong>Attachments</strong>
+                  </StyledLabel>
+                  <StyledDescription>
+                    <Attachments
+                      task={selectedTask.taskId}
+                      attachments={selectedTask.attachments}
+                      onAddAttachment={this.handleAddAttachment}
+                      onRemoveAttachment={this.handleRemoveAttachment}
+                      disabled={isCompleted}
+                    />
+                  </StyledDescription>
+                </tr>
+                <tr>
+                  <StyledLabel style={{ verticalAlign: 'top', lineHeight: '30px' }}>
+                    <strong>History</strong>
+                  </StyledLabel>
+                  <StyledDescription>
+                    <History taskId={selectedTask.taskId} />
+                  </StyledDescription>
+                </tr>
+              </table>
+            </DetailsBox>
+            <DetailsBox>
+              <TaskActions task={selectedTask} />
+            </DetailsBox>
+          </StickyContainer>
+        </DetailsContainer>
+      </ClickAwayListener>
     );
   }
 }

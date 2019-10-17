@@ -89,14 +89,12 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
-const AddTask = ({ storeAsCurrentTask, submit, style }) => {
+const AddTask = ({ submit, style }) => {
   const [draft, setDraft] = useState('');
 
   const handleChange = useCallback((e) => {
     setDraft(e.target.value);
   });
-
-  const handleFocus = useCallback(() => storeAsCurrentTask(null));
 
   const handleSubmit = useCallback(
     (e) => {
@@ -114,7 +112,6 @@ const AddTask = ({ storeAsCurrentTask, submit, style }) => {
     <StyledToolbar style={style}>
       <StyledForm onSubmit={handleSubmit}>
         <StyledTextField
-          onFocus={handleFocus}
           onChange={handleChange}
           value={draft}
           placeholder="Add a task"

@@ -235,7 +235,6 @@ class TaskView extends React.Component {
               <AddTask
                 taskListId={tasks[0].taskList.taskListId}
                 style={{ padding: '7px 38px 0 48px' }}
-                storeAsCurrentTask={storeAsCurrentTask}
               />
             )}
             {showToolbar && (
@@ -292,6 +291,7 @@ class TaskView extends React.Component {
                     }}
                     toggleTaskPriority={toggleTaskPriority}
                     isMainTaskComplete={isMainTaskComplete}
+                    storeAsCurrentTask={storeAsCurrentTask}
                   />
                 )}
               </div>

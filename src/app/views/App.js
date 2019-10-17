@@ -25,18 +25,18 @@ class App extends PureComponent {
     this.renderFoundationComponents();
   }
 
-  onAction = (e) => {
-    console.log('user did something', e);
+  onAction = () => {
+    // console.log('user did something', e);
   };
 
-  onActive = (e) => {
-    console.log('user is active', e);
-    console.log('time remaining', this.idleTimer.getRemainingTime());
+  onActive = () => {
+    // console.log('user is active', e);
+    // console.log('time remaining', this.idleTimer.getRemainingTime());
   };
 
-  onIdle = (e) => {
-    console.log(`${new Date()}: - user is idle`, e);
-    console.log('last active', this.idleTimer.getLastActiveTime());
+  onIdle = () => {
+    // console.log(`${new Date()}: - user is idle`, e);
+    // console.log('last active', this.idleTimer.getLastActiveTime());
     userApi
       .logout()
       .then(() => {
