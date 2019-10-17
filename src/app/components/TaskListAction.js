@@ -9,18 +9,19 @@ const StyledButton = styled(Button)`
     font-size: 16px;
     color: #303538;
     text-transform: none;
-    padding: 3px 9px 3px 9px;
+    padding: 3px 9px;
   }
 `;
 
 const StyledImage = styled.img`
   width: 20px;
   height: 20px;
-  margin-right: 7px;
-  margin-left: -3px;
+  margin-right: 6px;
 `;
 
-const TaskListAction = ({ children, icon, alt, onClick }) => (
+const TaskListAction = ({
+  children, icon, alt, onClick,
+}) => (
   <StyledButton onClick={onClick}>
     {icon && <StyledImage src={icon} alt={alt} />}
     {children}
