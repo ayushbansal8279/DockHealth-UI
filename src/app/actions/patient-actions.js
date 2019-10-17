@@ -10,14 +10,16 @@ import {
   CLEAR_EMR_PATIENTS,
   GET_EMR_PATIENTS_SUCCESS,
   SELECT_EMR_PATIENT_SUCCESS,
-  DELETE_PATIENT_SUCCESS,
   HIGHLIGHT_PATIENT,
   BEGIN_PATIENT_CREATION,
   ABORT_PATIENT_CREATION,
   ADD_PATIENT_ERROR,
   ADD_PATIENT_NOTE_ERROR,
   DELETE_PATIENT_NOTE_ERROR,
-  UPDATE_PATIENT_NOTE_ERROR, ADD_PATIENT_NOTE, UPDATE_PATIENT_NOTE, DELETE_PATIENT_NOTE,
+  UPDATE_PATIENT_NOTE_ERROR,
+  ADD_PATIENT_NOTE,
+  UPDATE_PATIENT_NOTE,
+  DELETE_PATIENT_NOTE,
 } from './action-types';
 import * as PatientApi from '../api/patient-api';
 
@@ -162,7 +164,7 @@ export const lookupEMRPatients = searchToken => async (dispatch) => {
   }
 };
 
-export const deletePatient = patientId => async (dispatch) => {
+export const deletePatient = patientId => async () => {
   try {
     await PatientApi.deletePatient(patientId);
   } catch (error) {

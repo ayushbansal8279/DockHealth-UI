@@ -5,9 +5,7 @@ import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
 import { Flag } from '../../flags';
-import {
-  highlightPatient,
-} from '../../actions/patient-actions';
+import { highlightPatient } from '../../actions/patient-actions';
 import CollapseIcon from '../../img/collapse.svg';
 import PhoneHomeIcon from '../../img/phone-home.svg';
 import PhoneCellIcon from '../../img/phone-cell.svg';
@@ -38,10 +36,10 @@ export const PatientsSidebarSectionContainer = styled.div`
   border: solid 2px #ddf2f7;
   background: #fff;
   padding: 18px 27px 27px 24px;
-  
+
   :not(:first-child) {
-     margin-top: 4px;
-   }
+    margin-top: 4px;
+  }
 `;
 
 export const PatientsSidebarSectionHeader = styled.div`
@@ -67,7 +65,7 @@ const PatientsSidebarField = styled.div`
 const PatientsSidebarSubsection = styled.div`
   border-top: solid 1px #a6dcea;
   margin-top: 22px;
-  
+
   margin-left: -11px;
   margin-right: -11px;
   padding-left: 11px;
@@ -86,11 +84,6 @@ const PatientsSidebarNoteDescription = styled.div`
   color: #303538;
 `;
 
-const PatientsSidebarNoteInfo = styled.div`
-  font-size: 14px;
-  color: #ababb2;
-`;
-
 const PatientsSidebarContact = styled.div`
   display: flex;
   padding: 8px;
@@ -100,9 +93,22 @@ const PatientsSidebarContact = styled.div`
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
   border-style: solid;
   border-width: 0.5px;
-  border-image-source: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.02) 95%, rgba(0, 0, 0, 0.04));
+  border-image-source: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0) 80%,
+    rgba(0, 0, 0, 0.02) 95%,
+    rgba(0, 0, 0, 0.04)
+  );
   border-image-slice: 1;
-  background-image: #ffffff, linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.02) 95%, rgba(0, 0, 0, 0.04));
+  background-image: #ffffff,
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0) 80%,
+      rgba(0, 0, 0, 0.02) 95%,
+      rgba(0, 0, 0, 0.04)
+    );
   background-origin: border-box;
   background-clip: content-box, border-box;
 `;
@@ -140,7 +146,11 @@ const StyledButton = styled(({ isCollapsed, ...props }) => <IconButton {...props
 `;
 
 export const PatientsSidebarSection = ({
-  heading, children, hideCollapse = false, style, headingStyle,
+  heading,
+  children,
+  hideCollapse = false,
+  style,
+  headingStyle,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleIsCollapsed = () => {
@@ -150,13 +160,16 @@ export const PatientsSidebarSection = ({
   return (
     <PatientsSidebarSectionContainer style={style}>
       <PatientsSidebarSectionHeader>
-        <PatientsSidebarSectionHeading style={headingStyle}>{heading}</PatientsSidebarSectionHeading>
+        <PatientsSidebarSectionHeading style={headingStyle}>
+          {heading}
+        </PatientsSidebarSectionHeading>
         {!hideCollapse && (
           <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
             <img src={CollapseIcon} alt="Collapse Details" />
-          </StyledButton>)}
+          </StyledButton>
+        )}
       </PatientsSidebarSectionHeader>
-      {!isCollapsed && children }
+      {!isCollapsed && children}
     </PatientsSidebarSectionContainer>
   );
 };
@@ -174,55 +187,58 @@ const PatientsDetailsSection = ({
   <PatientsSidebarSection heading="Patient Details">
     <PatientsSidebarField>
       <div style={{ flex: 0.5 }}>Birthday</div>
-      <div style={{
-        flex: 0.25,
-        textAlign: 'right',
-      }}
+      <div
+        style={{
+          flex: 0.25,
+          textAlign: 'right',
+        }}
       >
-        {dob && <PatientsSidebarValue>{formatAge(calculateAgeFromDateOfBirth(dob))}</PatientsSidebarValue>}
+        {dob && (
+          <PatientsSidebarValue>{formatAge(calculateAgeFromDateOfBirth(dob))}</PatientsSidebarValue>
+        )}
       </div>
-      <div style={{
-        flex: 0.25,
-        textAlign: 'right',
-      }}
+      <div
+        style={{
+          flex: 0.25,
+          textAlign: 'right',
+        }}
       >
         {(dob && <PatientsSidebarValue>{dob}</PatientsSidebarValue>) || '—'}
       </div>
     </PatientsSidebarField>
     <PatientsSidebarField>
       <div>Gender</div>
-      <div>
-        {(gender && <PatientsSidebarValue>{gender}</PatientsSidebarValue>) || '—'}
-      </div>
+      <div>{(gender && <PatientsSidebarValue>{gender}</PatientsSidebarValue>) || '—'}</div>
     </PatientsSidebarField>
     <PatientsSidebarField>
       <div>Email</div>
       <div>
         {(email && (
           <PatientsSidebarValue style={{ color: '#0ca1c7' }}>
-            <a href={`mailto:${email}`}>
-              {email}
-            </a>
+            <a href={`mailto:${email}`}>{email}</a>
           </PatientsSidebarValue>
-        )) || '—'}
+        ))
+          || '—'}
       </div>
     </PatientsSidebarField>
     <PatientsSidebarSubsection>
       <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-      }}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
       >
         <PatientsSidebarContact>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            background: '#00a73c',
-          }}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              background: '#00a73c',
+            }}
           >
             <img src={PhoneHomeIcon} alt="Phone Number (Home)" />
           </div>
@@ -232,14 +248,15 @@ const PatientsDetailsSection = ({
           </div>
         </PatientsSidebarContact>
         <PatientsSidebarContact>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            background: '#FB7C06',
-          }}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              background: '#FB7C06',
+            }}
           >
             <img src={PhoneCellIcon} alt="Phone Number (Cell)" />
           </div>
@@ -253,9 +270,7 @@ const PatientsDetailsSection = ({
     <PatientsSidebarSubsection>
       <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
       <div>
-        <PatientsSidebarNoteDescription>
-          {notes || '—'}
-        </PatientsSidebarNoteDescription>
+        <PatientsSidebarNoteDescription>{notes || '—'}</PatientsSidebarNoteDescription>
         {/* <PatientsSidebarNoteInfo> */}
         {/* Michael Docktor | Tuesday, October 2nd */}
         {/* </PatientsSidebarNoteInfo> */}
@@ -266,28 +281,48 @@ const PatientsDetailsSection = ({
 
 const PatientsSidebar = ({ patient }) => {
   const {
-    mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, patientId, allNotes,
+    mrn,
+    firstName,
+    middleName,
+    lastName,
+    dob,
+    gender,
+    phoneHome,
+    phoneMobile,
+    email,
+    notes,
+    patientId,
+    allNotes,
   } = patient;
   const dispatch = useDispatch();
-  const deselectPatient = useCallback(() => {
-    dispatch(highlightPatient(null));
-  }, [dispatch]);
+  const deselectPatient = useCallback(
+    () => {
+      dispatch(highlightPatient(null));
+    },
+    [dispatch],
+  );
 
-  useEffect(() => () => {
-    deselectPatient();
-  }, [deselectPatient]);
+  useEffect(
+    () => () => {
+      deselectPatient();
+    },
+    [deselectPatient],
+  );
 
   // Fetch tasks
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
-  useEffect(() => {
-    findUserTasksByPatient(patientId, 'INCOMPLETE').then((result) => {
-      setTasks(result);
-    });
-    findUserTasksByPatient(patientId, 'COMPLETE').then((result) => {
-      setCompletedTasks(result);
-    });
-  }, [patientId]);
+  useEffect(
+    () => {
+      findUserTasksByPatient(patientId, 'INCOMPLETE').then((result) => {
+        setTasks(result);
+      });
+      findUserTasksByPatient(patientId, 'COMPLETE').then((result) => {
+        setCompletedTasks(result);
+      });
+    },
+    [patientId],
+  );
 
   const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
@@ -311,9 +346,21 @@ const PatientsSidebar = ({ patient }) => {
             />
           )}
           fallbackRender={() => (
-            <PatientEdit patient={{
-              allNotes, patientId, mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes,
-            }}
+            <PatientEdit
+              patient={{
+                allNotes,
+                patientId,
+                mrn,
+                firstName,
+                middleName,
+                lastName,
+                dob,
+                gender,
+                phoneHome,
+                phoneMobile,
+                email,
+                notes,
+              }}
             />
           )}
         />

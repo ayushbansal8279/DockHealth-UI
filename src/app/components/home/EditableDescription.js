@@ -24,7 +24,7 @@ const StyledTextField = styled(TextField).attrs({
     color: #303538;
     border: 0;
     box-shadow: none;
-    background: rgb(244,244,246);
+    background: rgb(244, 244, 246);
     border-radius: 4px;
     margin: 0;
     padding: 8px;
@@ -35,6 +35,14 @@ const StyledTextField = styled(TextField).attrs({
     border: 0;
     top: 0;
   }
+`;
+
+const StyledNote = styled.div`
+  white-space: pre-wrap;
+`;
+
+const StyledPlaceholderNote = styled(StyledNote)`
+  color: #ababb2;
 `;
 
 const EditableTextField = ({
@@ -51,17 +59,21 @@ const EditableTextField = ({
   </form>
 );
 
-const EditableDescription = ({ value, onChange, disabled, name, placeholder }) => {
+const EditableDescription = ({
+  value, onChange, disabled, name, placeholder,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const startEditing = useCallback(
     () => {
       setIsEditing(true);
-    }, [setIsEditing],
+    },
+    [setIsEditing],
   );
   const stopEditing = useCallback(
     () => {
       setIsEditing(false);
-    }, [setIsEditing],
+    },
+    [setIsEditing],
   );
 
   const [draft, setDraft] = useState(value);
@@ -69,27 +81,35 @@ const EditableDescription = ({ value, onChange, disabled, name, placeholder }) =
     () => {
       setDraft(capitalize(value));
       stopEditing();
-    }, [value, stopEditing],
+    },
+    [value, stopEditing],
   );
 
   const handleChange = useCallback(
     (e) => {
       const { value: updatedDraft } = e.target;
       setDraft(capitalize(updatedDraft));
-    }, [setDraft],
+    },
+    [setDraft],
   );
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      if (draft === '') { return; }
       stopEditing();
-      if (draft === value) { return; }
+      if (draft === value) {
+        return;
+      }
       onChange(draft, name);
-    }, [onChange, stopEditing, draft, value, name],
+    },
+    [onChange, stopEditing, draft, value, name],
   );
 
-  if ((!isEditing || disabled) && value !== '') {
-    return <div style={{ whiteSpace: 'pre-wrap' }} onDoubleClick={startEditing}>{value}</div>;
+  if (!isEditing || disabled) {
+    const { NoteComponent, noteValue } = value
+      ? { NoteComponent: StyledNote, noteValue: value }
+      : { NoteComponent: StyledPlaceholderNote, noteValue: 'No note available' };
+
+    return <NoteComponent onDoubleClick={startEditing}>{noteValue}</NoteComponent>;
   }
 
   return (
@@ -102,7 +122,6 @@ const EditableDescription = ({ value, onChange, disabled, name, placeholder }) =
     />
   );
 };
-
 
 EditableDescription.propTypes = {
   value: PropTypes.string.isRequired,

@@ -46,18 +46,18 @@ const getCreatorName = creator => `${creator.firstName} ${creator.lastName}`;
 
 const formatDate = date => moment(date).format('dddd, MMMM Do');
 
-const EditablePatientNote = ({ update, note, isOwn, style }) => (
+const EditablePatientNote = ({
+  update, note, isOwn, style,
+}) => (
   <div style={style}>
     <EditableNoteDescription
       placeholder="Enter your note"
-      value={note.description || '—'}
+      value={note.description || ''}
       name={note.patientNoteId}
       onChange={update}
       disabled={!isOwn}
     />
-    <NoteInfo>
-      {`${getCreatorName(note.creator)} | ${formatDate(note.dateUpdated)}`}
-    </NoteInfo>
+    <NoteInfo>{`${getCreatorName(note.creator)} | ${formatDate(note.dateUpdated)}`}</NoteInfo>
   </div>
 );
 
@@ -87,54 +87,68 @@ const PatientNotes = ({ patientId, notes }) => {
   const handleChange = (e) => {
     setNote(capitalize(e.currentTarget.value));
   };
-  const handleCancel = useCallback(() => {
-    setNote('');
-    stopCreating();
-  }, [stopCreating]);
+  const handleCancel = useCallback(
+    () => {
+      setNote('');
+      stopCreating();
+    },
+    [stopCreating],
+  );
   const dispatch = useDispatch();
   const handleSubmit = () => {
     dispatch(addPatientNote(patientId, note))
-      .then(() => { handleCancel(); })
-      .catch(() => { toggleAlert('Error adding note. Please try again.', 'error'); });
+      .then(() => {
+        handleCancel();
+      })
+      .catch(() => {
+        toggleAlert('Error adding note. Please try again.', 'error');
+      });
   };
   const handleUpdate = (description, patientNoteId) => {
-    const modifiedNote = notes.find(n => n.patientNoteId == patientNoteId);
-    dispatch(editPatientNote(patientId, modifiedNote, description))
-      .catch(() => { toggleAlert('Error updating note. Please try again.', 'error'); });
+    const modifiedNote = notes.find(n => n.patientNoteId === patientNoteId);
+    dispatch(editPatientNote(patientId, modifiedNote, description)).catch(() => {
+      toggleAlert('Error updating note. Please try again.', 'error');
+    });
   };
 
   const userId = useSelector(state => state.userState.userProfile.userId);
-  const isOwn = note => note.creator.userId === userId;
+  const isOwn = patientNote => patientNote.creator.userId === userId;
 
   return (
     <div style={{ padding: '0 12px' }}>
-      {notes.map(note => <EditablePatientNote update={handleUpdate} note={note} isOwn={isOwn(note)} style={{ marginTop: '12px' }} />)}
-      {isCreating
-        ? (
-          <div style={{ marginTop: '15px' }}>
-            <NoteTextField
-              value={note}
-              onChange={handleChange}
-              multiline
-              rows={3}
-              hiddenLabel
-              style={{ padding: 0 }}
-            />
-            <div style={{
+      {notes.map(patientNote => (
+        <EditablePatientNote
+          update={handleUpdate}
+          note={patientNote}
+          isOwn={isOwn(patientNote)}
+          style={{ marginTop: '12px' }}
+        />
+      ))}
+      {isCreating ? (
+        <div style={{ marginTop: '15px' }}>
+          <NoteTextField
+            value={note}
+            onChange={handleChange}
+            multiline
+            rows={3}
+            hiddenLabel
+            style={{ padding: 0 }}
+          />
+          <div
+            style={{
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'flex-end',
               marginBottom: '16px',
             }}
-            >
-              <Cancel onClick={handleCancel}>Cancel</Cancel>
-              <Save onClick={handleSubmit}>
-              Add note
-              </Save>
-            </div>
+          >
+            <Cancel onClick={handleCancel}>Cancel</Cancel>
+            <Save onClick={handleSubmit}>Add note</Save>
           </div>
-        )
-        : <AddNote onClick={startCreating} style={{ marginTop: '18px', marginBottom: '18px' }} />}
+        </div>
+      ) : (
+        <AddNote onClick={startCreating} style={{ marginTop: '18px', marginBottom: '18px' }} />
+      )}
     </div>
   );
 };

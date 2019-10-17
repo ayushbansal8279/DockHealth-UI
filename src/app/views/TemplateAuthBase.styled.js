@@ -34,7 +34,6 @@ export const BackgroundCenterContainer = styled.div`
 export const BackgroundVerticalFiller = styled.div`
   background-color: rgb(46, 58, 67, 0.7);
   flex: 1;
-  height: 100%;
 `;
 
 export const BackgroundModalContainer = styled(Grid)`

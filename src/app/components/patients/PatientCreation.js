@@ -1,20 +1,21 @@
+import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
+import moment from 'moment';
+import { evolve } from 'ramda';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { evolve } from 'ramda';
-import styled from 'styled-components';
 import MaskedInput from 'react-text-mask';
-import moment from 'moment';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
+import styled from 'styled-components';
+
 import { abortPatientCreation, addPatient } from '../../actions/patient-actions';
+import { capitalize, capitalizeWords } from '../../helpers/capitalize';
 import {
   PatientsSidebarCloseButton,
   PatientsSidebarContainer,
   PatientsSidebarHeader,
   PatientsSidebarSection,
 } from './PatientsSidebar';
-import { capitalize, capitalizeWords } from '../../helpers/capitalize';
 
 export const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -38,8 +39,9 @@ export const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest })
   && {
     margin-top: 4px;
     margin-bottom: 0;
-  
-    input, textarea {
+
+    input,
+    textarea {
       height: inherit;
       box-shadow: none;
       color: #2e3a43;
@@ -52,28 +54,28 @@ export const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest })
         cursor: default;
       }
     }
-    
+
     .root {
       background-color: rgba(243, 245, 246, 0.5);
     }
-    
+
     .disabled {
       color: #2e3a43;
     }
-    
+
     .asterisk {
-      color: #DA0D71;
+      color: #da0d71;
     }
-    
+
     .shrink {
-      color: #ABABB2;
+      color: #ababb2;
     }
-    
+
     .error {
-      color: #DA0D71;
+      color: #da0d71;
       background: none;
     }
-    
+
     label {
       color: #2e3a43;
     }
@@ -98,7 +100,7 @@ export const Save = styled(Button).attrs({ variant: 'contained', color: 'seconda
     width: 163px;
     height: 38px;
     border-radius: 0;
-    background: #DA0D71; 
+    background: #da0d71;
     box-shadow: none;
     margin-top: 18px;
     font-size: 16px;
@@ -126,14 +128,30 @@ const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
       inputRef(ref ? ref.inputElement : null);
     }}
     placeholder="123-123-1234"
-    mask={[/\d/, /\d/, /\d/,'-', /\d/, /\d/, /\d/,'-', /\d/, /\d/, /\d/, /\d/]}
+    mask={[/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
     keepCharPositions
   />
 );
 
 export const PatientsForm = ({
-  mrn, firstName, middleName, lastName, dob, gender, phoneHome, phoneMobile, email, notes, onChange, onSubmit, isDisabled, errors, hideCollapse, isReadOnly, isClean, cancel, hideNotes,
+  mrn,
+  firstName,
+  middleName,
+  lastName,
+  dob,
+  gender,
+  phoneHome,
+  phoneMobile,
+  email,
+  notes,
+  onChange,
+  onSubmit,
+  isDisabled,
+  errors,
+  hideCollapse,
+  isReadOnly,
+  cancel,
 }) => {
   const readOnlyProps = placeholder => ({
     InputLabelProps: { shrink: isReadOnly || undefined },
@@ -145,9 +163,10 @@ export const PatientsForm = ({
     <>
       <PatientsSidebarSection heading="Patient Details" hideCollapse={hideCollapse}>
         <div style={{ display: 'flex', marginTop: '18px' }}>
-          <div style={{
-            flex: 1,
-          }}
+          <div
+            style={{
+              flex: 1,
+            }}
           >
             <StyledTextField
               name="firstName"
@@ -255,10 +274,13 @@ export const PatientsForm = ({
           rows={3}
           {...readOnlyProps('Primarily lives with their grandma in Boston.')}
         />
-        {/* {error && (error?.statusMessage || 'Error.')} */}
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
           {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
-          {!isReadOnly && <Save onClick={onSubmit} disabled={isDisabled}>Save</Save>}
+          {!isReadOnly && (
+            <Save onClick={onSubmit} disabled={isDisabled}>
+              Save
+            </Save>
+          )}
         </div>
       </PatientsSidebarSection>
     </>
@@ -272,32 +294,49 @@ const PatientCreation = () => {
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState({ gender: 'female' });
-  const handleInputChange = useCallback((event) => {
-    const { target } = event;
-    const { name } = target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+  const [formState, setFormState] = useState({
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    mrn: '',
+    dob: null,
+    gender: 'female',
+    phoneHome: '',
+    phoneMobile: '',
+    email: '',
+    notes: '',
+  });
+  const handleInputChange = useCallback(
+    (event) => {
+      const { target } = event;
+      const { name } = target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
 
-    const updatedFormState = {
-      ...formState,
-      [name]: value,
-    };
+      const updatedFormState = {
+        ...formState,
+        [name]: value,
+      };
 
-    const formatFormState = evolve({
-      firstName: capitalizeWords,
-      middleName: capitalizeWords,
-      lastName: capitalizeWords,
-      notes: capitalize,
-    });
+      const formatFormState = evolve({
+        firstName: capitalizeWords,
+        middleName: capitalizeWords,
+        lastName: capitalizeWords,
+        notes: capitalize,
+      });
 
-    setFormState(formatFormState(updatedFormState));
-  }, [formState]);
+      setFormState(formatFormState(updatedFormState));
+    },
+    [formState],
+  );
 
-  const handleSubmit = useCallback(async () => {
-    setIsSubmitting(true);
-    await dispatch(addPatient(formState));
-    setIsSubmitting(false);
-  }, [dispatch, formState]);
+  const handleSubmit = useCallback(
+    async () => {
+      setIsSubmitting(true);
+      await dispatch(addPatient(formState));
+      setIsSubmitting(false);
+    },
+    [dispatch, formState],
+  );
 
   const validateBirthday = (dob) => {
     const now = moment();
@@ -307,12 +346,14 @@ const PatientCreation = () => {
 
   const canSubmit = () => {
     const { firstName, lastName, dob } = formState;
-    return (firstName && firstName !== '')
+    return (
+      firstName
+      && firstName !== ''
       && (lastName && lastName !== '')
-      && (!dob || validateBirthday(dob));
+      && (!dob || validateBirthday(dob))
+    );
   };
 
-  // const error = useSelector(({ patientState }) => patientState.creatingPatientError);
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
