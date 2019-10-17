@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 const StyledLabel = styled.div`
@@ -81,6 +81,8 @@ const StyledErrorLabel = styled.div`
 const AuthField = ({
   input, marginTop, label, type, meta: { touched, error },
 }) => {
+  const inputRef = useRef(null);
+
   const hasError = Boolean(touched && error);
 
   let inputClassName = '';
@@ -90,9 +92,9 @@ const AuthField = ({
   return (
     <StyledInputContainer marginTop={marginTop} className={inputClassName.trim()}>
       {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
-      <StyledInput type={type} {...input} className={inputClassName.trim()} />
+      <StyledInput ref={inputRef} type={type} {...input} className={inputClassName.trim()} />
       <StyledInputIcon />
-      <StyledLabel>{label}</StyledLabel>
+      <StyledLabel onClickCapture={() => inputRef.current?.focus()}>{label}</StyledLabel>
     </StyledInputContainer>
   );
 };
