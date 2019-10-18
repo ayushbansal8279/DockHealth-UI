@@ -6,13 +6,13 @@ import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router';
 import styled from 'styled-components';
 
-import InboxIcon from '../../img/drawer/inbox.svg';
-import ListsIcon from '../../img/drawer/lists.svg';
-import LogoutIcon from '../../img/drawer/logout.svg';
-import PatientsIcon from '../../img/drawer/patients.svg';
-import PeopleIcon from '../../img/drawer/people.svg';
-import SearchIcon from '../../img/drawer/search.svg';
-import SupportIcon from '../../img/drawer/support.svg';
+import InboxIcon from '../../img/drawer/inbox';
+import ListsIcon from '../../img/drawer/lists';
+import LogoutIcon from '../../img/drawer/logout';
+import PatientsIcon from '../../img/drawer/patients';
+import PeopleIcon from '../../img/drawer/people';
+import SearchIcon from '../../img/drawer/search';
+import SupportIcon from '../../img/drawer/support';
 import DrawerHeader from './DrawerHeader';
 
 const NESTED_LIST_PREFIX = 'nested';
@@ -86,12 +86,17 @@ const NestedListItem = styled(ListItem)`
 
 const StyledListItemIcon = styled(ListItemIcon)`
   && {
+    align-items: center;
     display: flex;
     width: 29px;
     height: 29px;
     justify-content: center;
     margin-right: 9px;
     transition: all 0.25s ease;
+
+    & svg {
+      transition: all 0.25s ease;
+    }
   }
 `;
 
@@ -104,7 +109,12 @@ const StyledListItem = styled(ListItem)`
   &&:hover {
     background-color: transparent;
     ${StyledListItemIcon} {
-      filter: brightness(2);
+      & svg.stroke-only {
+        stroke: #fff;
+      }
+      & svg:not(.stroke-only) {
+        fill: #fff;
+      }
     }
     ${StyledListItemText} {
       color: #fff;
@@ -126,7 +136,12 @@ const StyledRouterLinkContainer = styled.div`
 
   &&.highlighted {
     ${StyledListItemIcon} {
-      filter: brightness(100);
+      & svg.stroke-only {
+        stroke: #fff;
+      }
+      & svg:not(.stroke-only) {
+        fill: #fff;
+      }
     }
     ${StyledListItemText} {
       color: #fff;
@@ -190,7 +205,7 @@ const RouterLink = ({ active, highlighted, ...props }) => {
 
 const Item = ({
   activeId,
-  icon,
+  icon: Icon,
   id,
   label,
   childItems,
@@ -216,7 +231,8 @@ const Item = ({
       open={open}
     >
       <StyledListItemIcon>
-        <img src={icon} alt={label} />
+        <Icon />
+        {/* <img src={icon} alt={label} /> */}
       </StyledListItemIcon>
       {open && <StyledListItemText primary={label} />}
     </ItemComponent>

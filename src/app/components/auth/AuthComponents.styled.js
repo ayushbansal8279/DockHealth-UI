@@ -46,5 +46,13 @@ export const StyledLabel = styled.div`
   font-family: 'Open Sans', sans-serif;
   font-size: 1rem;
   font-weight: ${props => (props.bold ? 600 : 'normal')};
-  ${props => props.marginTop && 'margin-top: 2em'};
+  ${props => props.marginTop && 'margin-top: 14rem'};
+
+  & > a {
+    color: #007cab;
+
+    &:hover {
+      color: #0ca1c7;
+    }
+  }
 `;

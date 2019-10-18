@@ -16,7 +16,7 @@ const StyledDrawer = styled(MaterialDrawer).attrs({
     flex-shrink: 0;
     white-space: nowrap;
     .paper {
-      background: #125375;
+      background: #2a4a70;
       border: 0;
       ${({ open }) => (open ? 'width: 260px;' : 'width: 85px;')}
       transition: width .2s ease-out;

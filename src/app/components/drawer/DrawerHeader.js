@@ -2,6 +2,7 @@ import ListItem from '@material-ui/core/es/ListItem/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import React, { useRef } from 'react';
+import { Link } from 'react-router';
 import styled from 'styled-components';
 
 import MemberAssignment from '../home/MemberAssignment';
@@ -32,13 +33,17 @@ const Name = styled.div`
   text-overflow: ellipsis;
 `;
 
+const ProfileLink = React.forwardRef((props, ref) => (
+  <Link innerRef={ref} to="/userProfile" activeClassName="active" {...props} />
+));
+
 const DrawerHeader = ({ user }) => {
   const nameRef = useRef(null);
 
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
 
   return (
-    <StyledListItem button>
+    <StyledListItem button component={ProfileLink}>
       <ListItemIcon
         style={{
           marginLeft: '-2px',

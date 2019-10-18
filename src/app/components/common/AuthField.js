@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+
 import useBoolean from '../../helpers/useBoolean';
 
 const StyledLabel = styled.div`
@@ -8,6 +9,7 @@ const StyledLabel = styled.div`
   font-size: 14px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 600;
+  pointer-events: none;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -60,6 +62,13 @@ const StyledInput = styled.input`
     &.error {
       border: 1.5px solid #e40909;
     }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:active,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 40px rgba(243, 245, 246) inset !important;
+    }
   }
 `;
 
@@ -101,11 +110,15 @@ const AuthField = ({
   type,
   meta: { touched, error },
   autoFocus = false,
+  customError = '',
+  setCustomError = () => {},
 }) => {
   const inputRef = useRef(null);
   const [passwordShown, , , togglePasswordShown] = useBoolean(false);
 
-  const hasError = Boolean(touched && error);
+  const errorValue = customError || error;
+
+  const hasError = Boolean(touched && errorValue);
 
   let inputClassName = '';
 
@@ -114,14 +127,22 @@ const AuthField = ({
   const isPassword = type === 'password';
   const inputType = isPassword && passwordShown ? 'text' : type;
 
+  const { onChange: oldOnChange, ...otherInput } = input;
+
+  const onChange = (e) => {
+    oldOnChange(e);
+    setCustomError('');
+  };
+
   return (
     <StyledInputContainer marginTop={marginTop} className={inputClassName.trim()}>
-      {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
+      {hasError && <StyledErrorLabel>{errorValue}</StyledErrorLabel>}
       <StyledInput
         ref={inputRef}
         type={inputType}
         autoFocus={autoFocus}
-        {...input}
+        {...otherInput}
+        onChange={onChange}
         className={inputClassName.trim()}
         isPassword={isPassword}
       />
@@ -131,7 +152,7 @@ const AuthField = ({
           {passwordShown ? 'Hide' : 'Show'}
         </StyledPasswordSwitch>
       )}
-      <StyledLabel onClickCapture={() => inputRef.current?.focus()}>{label}</StyledLabel>
+      <StyledLabel>{label}</StyledLabel>
     </StyledInputContainer>
   );
 };

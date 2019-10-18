@@ -25,7 +25,9 @@ class LoginFormPassword extends PureComponent {
   };
 
   render() {
-    const { handleSubmit, invalid } = this.props;
+    const {
+      customError, setCustomError, handleSubmit, invalid,
+    } = this.props;
 
     return (
       <form className="inline-label top-buffer" onSubmit={handleSubmit}>
@@ -53,6 +55,8 @@ class LoginFormPassword extends PureComponent {
               marginTop="0.5rem"
               label="Password"
               autoFocus
+              customError={customError}
+              setCustomError={setCustomError}
             />
           </Grid>
 
