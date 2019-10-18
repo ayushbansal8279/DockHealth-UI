@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+import useBoolean from '../../helpers/useBoolean';
 
 const StyledLabel = styled.div`
   color: #ababb2;
@@ -25,8 +26,6 @@ const StyledInputIcon = styled.div`
   right: 1rem;
   width: 1rem;
   z-index: 1;
-  border: 0;
-  outline: none;
 `;
 
 const StyledInput = styled.input`
@@ -36,6 +35,8 @@ const StyledInput = styled.input`
   font-weight: 600;
   outline: none;
   padding: 1rem 2.5rem 0 1rem;
+
+  ${props => props.isPassword && 'padding-right: 5rem;'}
 
   &:focus ~ ${StyledLabel}, &:not([value='']) ~ ${StyledLabel} {
     top: 25%;
@@ -71,11 +72,26 @@ const StyledInputContainer = styled.div`
 `;
 
 const StyledErrorLabel = styled.div`
-  color: #f40707;
+  color: #e40909;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   position: absolute;
   top: -1.5em;
+`;
+
+const StyledPasswordSwitch = styled.div`
+  bottom: 1rem;
+  color: rgba(48, 53, 56, 0.8);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 300;
+  height: 1rem;
+  line-height: 1rem;
+  position: absolute;
+  right: 2.5rem;
+  text-align: right;
+  user-select: none;
+  z-index: 1;
 `;
 
 const AuthField = ({
@@ -87,6 +103,7 @@ const AuthField = ({
   autoFocus = false,
 }) => {
   const inputRef = useRef(null);
+  const [passwordShown, , , togglePasswordShown] = useBoolean(false);
 
   const hasError = Boolean(touched && error);
 
@@ -94,17 +111,26 @@ const AuthField = ({
 
   inputClassName += hasError ? ' error' : '';
 
+  const isPassword = type === 'password';
+  const inputType = isPassword && passwordShown ? 'text' : type;
+
   return (
     <StyledInputContainer marginTop={marginTop} className={inputClassName.trim()}>
       {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
       <StyledInput
         ref={inputRef}
-        type={type}
+        type={inputType}
         autoFocus={autoFocus}
         {...input}
         className={inputClassName.trim()}
+        isPassword={isPassword}
       />
       <StyledInputIcon />
+      {isPassword && (
+        <StyledPasswordSwitch onClick={togglePasswordShown}>
+          {passwordShown ? 'Hide' : 'Show'}
+        </StyledPasswordSwitch>
+      )}
       <StyledLabel onClickCapture={() => inputRef.current?.focus()}>{label}</StyledLabel>
     </StyledInputContainer>
   );

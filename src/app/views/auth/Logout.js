@@ -6,7 +6,7 @@ import { hashHistory } from 'react-router';
 import { error } from '../../actions/notification-actions';
 import { mobileAnalyticsClient } from '../../api/analytics-api';
 import * as userApi from '../../api/user-api';
-import { NextButton, TitleTypography } from '../../components/auth/AuthComponents.styled';
+import { TitleTypography } from '../../components/auth/AuthComponents.styled';
 
 export default class Logout extends PureComponent {
   componentDidMount = () => {
@@ -22,12 +22,16 @@ export default class Logout extends PureComponent {
         mobileAnalyticsClient.recordEvent('DURATION_INAPP', {
           TIME_DURATION: durationOfTimeSpentOnApp,
         });
+
+        this.redirectToLogin();
       })
       .catch((e) => {
         error(e && e.message ? e.message : 'Could not logout.');
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'NO',
         });
+
+        this.redirectToLogin();
       });
   };
 
@@ -55,20 +59,6 @@ export default class Logout extends PureComponent {
       <TitleTypography variant="h2" style={{ marginTop: '6em' }}>
         You have been logged out
       </TitleTypography>
-      <Grid item sm={12} md={6}>
-        <NextButton
-          active
-          id="loginButton"
-          variant="contained"
-          color="primary"
-          style={{
-            marginTop: '5rem',
-          }}
-          onClick={this.redirectToLogin}
-        >
-          Sign In
-        </NextButton>
-      </Grid>
     </Grid>
   );
 }

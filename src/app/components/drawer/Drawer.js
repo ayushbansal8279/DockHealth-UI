@@ -33,12 +33,11 @@ const ContentContainer = styled.div`
 `;
 
 const Drawer = ({ user, lists, children }) => {
-  const [isOpen, , , toggle] = useBoolean(true);
+  const [isOpen, open, close] = useBoolean(false);
   return (
     <div style={{ display: 'flex' }}>
-      <StyledDrawer open={isOpen}>
+      <StyledDrawer onMouseEnter={open} open={isOpen} onMouseLeave={close}>
         <DrawerList open={isOpen} user={user} lists={lists} />
-        <div onClick={toggle} style={{ flex: '1' }} />
       </StyledDrawer>
       <ContentContainer open={isOpen}>{children}</ContentContainer>
     </div>

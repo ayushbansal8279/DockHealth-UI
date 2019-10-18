@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
@@ -162,12 +163,8 @@ export const PatientsForm = ({
   return (
     <>
       <PatientsSidebarSection heading="Patient Details" hideCollapse={hideCollapse}>
-        <div style={{ display: 'flex', marginTop: '18px' }}>
-          <div
-            style={{
-              flex: 1,
-            }}
-          >
+        <Grid container style={{ marginTop: '18px' }} wrap="nowrap">
+          <Grid item xs={5}>
             <StyledTextField
               name="firstName"
               value={firstName || ''}
@@ -176,8 +173,8 @@ export const PatientsForm = ({
               label="First Name"
               {...readOnlyProps('Sam')}
             />
-          </div>
-          <div style={{ margin: '0 4px' }}>
+          </Grid>
+          <Grid item xs={2} style={{ margin: '0 4px' }}>
             <StyledTextField
               name="middleName"
               value={middleName || ''}
@@ -185,8 +182,8 @@ export const PatientsForm = ({
               label="Middle Name"
               {...readOnlyProps('Max')}
             />
-          </div>
-          <div style={{ flex: 1 }}>
+          </Grid>
+          <Grid item xs={5}>
             <StyledTextField
               name="lastName"
               value={lastName || ''}
@@ -195,13 +192,14 @@ export const PatientsForm = ({
               label="Last Name"
               {...readOnlyProps('Nelson')}
             />
-          </div>
-        </div>
+          </Grid>
+        </Grid>
         <StyledTextField
           name="mrn"
           value={mrn || ''}
           onChange={onChange}
           label="MRN"
+          required={!isReadOnly}
           {...readOnlyProps('123-123-23444')}
         />
         <StyledTextField
@@ -221,6 +219,7 @@ export const PatientsForm = ({
           onChange={onChange}
           label="Gender"
           select
+          required={!isReadOnly}
           {...readOnlyProps()}
         >
           <MenuItem value="female">Female</MenuItem>
@@ -300,7 +299,7 @@ const PatientCreation = () => {
     lastName: '',
     mrn: '',
     dob: null,
-    gender: 'female',
+    gender: '',
     phoneHome: '',
     phoneMobile: '',
     email: '',
@@ -345,13 +344,10 @@ const PatientCreation = () => {
   };
 
   const canSubmit = () => {
-    const { firstName, lastName, dob } = formState;
-    return (
-      firstName
-      && firstName !== ''
-      && (lastName && lastName !== '')
-      && (!dob || validateBirthday(dob))
-    );
+    const {
+      firstName, lastName, dob, gender, mrn,
+    } = formState;
+    return firstName && lastName && gender && mrn && (!dob || validateBirthday(dob));
   };
 
   return (

@@ -1,15 +1,17 @@
-import styled from 'styled-components';
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import React, { useState, useEffect } from 'react';
-import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router';
-import SearchIcon from '../../img/drawer/search.svg';
+import styled from 'styled-components';
+
 import InboxIcon from '../../img/drawer/inbox.svg';
 import ListsIcon from '../../img/drawer/lists.svg';
+import LogoutIcon from '../../img/drawer/logout.svg';
 import PatientsIcon from '../../img/drawer/patients.svg';
 import PeopleIcon from '../../img/drawer/people.svg';
+import SearchIcon from '../../img/drawer/search.svg';
 import SupportIcon from '../../img/drawer/support.svg';
 import DrawerHeader from './DrawerHeader';
 
@@ -19,8 +21,13 @@ const StyledList = styled(List).attrs({
   paper: 'paper',
 })`
   && {
-    padding: 0;
     border: none;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 0;
+    padding-bottom: 24px;
     ${({ open }) => (open ? '' : 'overflow-x: hidden;')}
     .paper {
       ${({ open }) => (open ? '' : 'overflow-x: hidden;')}
@@ -41,17 +48,20 @@ const StyledListItemText = styled(ListItemText).attrs({
 })`
   && {
     color: #5ccced;
-    font-size: 21px;
+    font-size: 16px;
     line-height: 29px;
     font-weight: normal;
+    overflow: hidden;
     padding: 0;
+    text-overflow: ellipsis;
+    transition: all 0.25s ease;
   }
 `;
 
 const NestedListItemText = styled(StyledListItemText)`
   && {
     margin-left: 49px;
-    font-size: 18px;
+    font-size: 14px;
     line-height: 29px;
     color: #fff;
     font-weight: normal;
@@ -66,13 +76,22 @@ const NestedListItem = styled(ListItem)`
   &&.active {
     background: rgba(255, 255, 255, 0.1);
   }
+  &&:hover {
+    background-color: transparent;
+    ${StyledListItemText} {
+      color: #fff;
+    }
+  }
 `;
 
 const StyledListItemIcon = styled(ListItemIcon)`
   && {
+    display: flex;
     width: 29px;
     height: 29px;
+    justify-content: center;
     margin-right: 9px;
+    transition: all 0.25s ease;
   }
 `;
 
@@ -81,12 +100,30 @@ const StyledListItem = styled(ListItem)`
     padding: 6px 16px 6px 27px;
     margin-top: 32px;
   }
+
+  &&:hover {
+    background-color: transparent;
+    ${StyledListItemIcon} {
+      filter: brightness(2);
+    }
+    ${StyledListItemText} {
+      color: #fff;
+    }
+  }
 `;
 
-const StyledRouterLinkContainer = styled('div')`
+const StyledRouterLinkContainer = styled.div`
+  display: flex;
+
   &&.active {
-    background: rgba(255, 255, 255, 0.1);
+    ${StyledListItem} {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    ${NestedListItem} {
+      background: rgba(255, 255, 255, 0.1);
+    }
   }
+
   &&.highlighted {
     ${StyledListItemIcon} {
       filter: brightness(100);
@@ -97,8 +134,40 @@ const StyledRouterLinkContainer = styled('div')`
   }
 `;
 
-const NestedListContainer = styled('div')`
-  display: ${props => (props.active ? 'block' : 'none')};
+const BackgroundListItem = styled(ListItem)`
+  && {
+    box-sizing: border-box;
+    color: #fff;
+    margin: 12px;
+    padding: 12px 16px;
+    ${props => props.open
+      && `
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    `}
+    ${StyledListItemText} {
+      color: #fff;
+    }
+  }
+`;
+
+const StyledSpacer = styled.div`
+  && {
+    flex: 1;
+  }
+`;
+
+const NestedListContainer = styled.div`
+  && {
+    display: ${props => (props.active ? 'flex' : 'none')};
+
+    & + ${StyledRouterLinkContainer} > a {
+      margin-top: 0;
+    }
+  }
 `;
 
 const RouterLink = ({ active, highlighted, ...props }) => {
@@ -120,32 +189,44 @@ const RouterLink = ({ active, highlighted, ...props }) => {
 };
 
 const Item = ({
-  activeId, icon, id, label, childItems, open, setActiveId, to,
+  activeId,
+  icon,
+  id,
+  label,
+  childItems,
+  open,
+  setActiveId,
+  to,
+  withBackground = false,
 }) => {
   const active = id === activeId;
   const nestedActive = activeId.startsWith(`${NESTED_LIST_PREFIX}-${id}`);
+  const childOrSelfActive = active || nestedActive;
+
+  const ItemComponent = withBackground ? BackgroundListItem : StyledListItem;
 
   const item = (
-    <StyledListItem
+    <ItemComponent
       button
       component={RouterLink}
       to={to}
       active={active || (nestedActive && !open)}
       highlighted={active || nestedActive}
       onClick={() => setActiveId(id)}
+      open={open}
     >
       <StyledListItemIcon>
         <img src={icon} alt={label} />
       </StyledListItemIcon>
       {open && <StyledListItemText primary={label} />}
-    </StyledListItem>
+    </ItemComponent>
   );
 
   return (
     <>
       {item}
-      {open && childItems && (
-        <NestedListContainer active={active || nestedActive}>
+      {open && childItems && childOrSelfActive && (
+        <NestedListContainer active={childOrSelfActive}>
           <NestedList>
             {childItems.map(({ id: childId, ...childItemProps }) => (
               <NestedItem
@@ -258,8 +339,19 @@ const DrawerList = ({
 
   return (
     <StyledList>
-      <DrawerHeader user={user} open={open} setActiveId={setActiveId} />
+      <DrawerHeader user={user} />
       {drawerItems.map(renderDrawerItem({ activeId, open, setActiveId }))}
+      <StyledSpacer />
+      <Item
+        id="logout"
+        label="Logout"
+        icon={LogoutIcon}
+        to="logout"
+        activeId={activeId}
+        open={open}
+        setActiveId={setActiveId}
+        withBackground
+      />
     </StyledList>
   );
 };

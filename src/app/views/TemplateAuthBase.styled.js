@@ -7,7 +7,6 @@ export const BackgroundContainer = styled.div`
   background-image: url(/assets/img/bg.png);
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
   bottom: 0;
   display: flex;
   flex-direction: column;

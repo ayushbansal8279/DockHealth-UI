@@ -39,6 +39,7 @@ const StyledTextField = styled(TextField).attrs({
 
 const StyledNote = styled.div`
   white-space: pre-wrap;
+  word-break: break-all;
 `;
 
 const StyledPlaceholderNote = styled(StyledNote)`
