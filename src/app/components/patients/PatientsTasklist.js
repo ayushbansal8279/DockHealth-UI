@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import AddTask from '../task/AddTask';
-import PatientsTask from './PatientsTask';
+import Task from '../task/Task';
 
 const PatientsTasklistCount = styled.div`
   font-size: 16px;
@@ -44,13 +44,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
         <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
       )}
       {tasks.map(task => (
-        <PatientsTask
-          task={task}
-          key={task.taskId}
-          hidePatient
-          hideCheckbox
-          disabled
-        />
+        <Task task={task} key={task.taskId} hidePatient hideCheckbox disabled />
       ))}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
@@ -62,7 +56,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
           {completedTasks.map(task => (
-            <PatientsTask
+            <Task
               task={task}
               key={task.taskId}
               hidePatient

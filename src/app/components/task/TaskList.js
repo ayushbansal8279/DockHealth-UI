@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import CheckIcon from '../../img/check.svg';
-import PatientsTask from '../patients/PatientsTask';
+import Task from './Task';
 import { PriorityDot } from '../common/Priority';
 
 const StyledTableCell = styled(TableCell)`
@@ -95,7 +95,7 @@ const TaskList = ({
       </div>
     ) : (
       tasks.map(task => (
-        <PatientsTask
+        <Task
           {...{
             storeAsCurrentTask,
             markComplete,

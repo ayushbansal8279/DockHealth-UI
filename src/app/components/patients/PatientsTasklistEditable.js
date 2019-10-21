@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { selectPatientTask } from '../../actions/patient';
 import { markComplete } from '../../actions/task-actions';
 import AddTask from '../task/AddTask';
-import PatientsTask from './PatientsTask';
+import Task from '../task/Task';
 
 const PatientsTasklistCount = styled.div`
   font-size: 16px;
@@ -60,7 +60,7 @@ const PatientsTasklistEditable = ({
         <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
       )}
       {tasks.map(task => (
-        <PatientsTask
+        <Task
           task={task}
           key={task.taskId}
           hidePatient
@@ -79,7 +79,7 @@ const PatientsTasklistEditable = ({
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
           {completedTasks.map(task => (
-            <PatientsTask
+            <Task
               task={task}
               key={task.taskId}
               hidePatient

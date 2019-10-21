@@ -1,296 +1,179 @@
-import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
+import { ButtonBase } from '@material-ui/core';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Moment from 'react-moment';
-import { Link } from 'react-router';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
 
-import { StyledTableCell } from './TaskList';
-import DueDate from './DueDate';
-import MemberPicker from './MemberPicker';
-import Priority from './Priority';
-import Subtasks from './SubTasks';
-import Tag from './Tag';
-import Flag from './Flag';
-import Patient from './Patient';
+import useConfirmation from '../../hooks/useConfirmation';
+import Flag from '../common/Flag';
+import { Confirmation } from '../common/TaskCheckbox';
+import PatientsTaskBody from '../patients/PatientsTaskBody';
+import AddSubtask from './AddSubtask';
 
-const StyledTableBody = styled(({ isSubtask, isSelected, ...rest }) => <TableBody {...rest} />)`
-  && {
-    border: none;
-    border-bottom: 8px solid rgba(100, 255, 255, 0);
-    background-clip: padding-box;
-    background-color: #fff;
-    cursor: pointer;
-    ${({ isSubtask }) => isSubtask && 'background-color: #f5f8fa;'}
-    ${({ isSelected }) => isSelected && 'background-color: rgba(166, 220, 234, 0.39);'}
-
-    :hover {
-      background-color: rgba(166, 220, 234, 0.39);
+const PatientsTasklistTask = styled.div`
+  border-radius: 3px;
+  border: solid 1px #a6dcea;
+  background-color: ${({ isSelected, isCollapsed }) => {
+    if (isSelected) {
+      return '#ddf2f7';
     }
-  }
+
+    return isCollapsed ? '#fff' : '#E6ECF0';
+  }};
+  margin-left: -20px;
+  margin-right: -23px;
+  margin-bottom: 4px;
 `;
 
-StyledTableBody.propTypes = {
-  isSubtask: PropTypes.bool,
-  isSelected: PropTypes.bool,
-};
-
-StyledTableBody.defaultProps = {
-  isSubtask: false,
-  isSelected: false,
-};
-
-const StyledCheckbox = styled(props => <Checkbox {...props} classes={{ checked: 'checked' }} />)`
+const PatientsTasklistSubtasks = styled(ButtonBase)`
   && {
-    width: 36px;
-    height: 36px;
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    height: 44px;
+    border-radius: 1px;
+    border: solid 3px
+      ${({ isCollapsed }) => (isCollapsed ? '#f5f8fa' : 'transparent')};
+
+    font-size: 16px;
+    line-height: 38px;
+    color: #2e3a43;
+    padding-left: 15px;
   }
-  &&.checked {
-    color: #00a73c;
-  }
 `;
 
-const StyledTaskDescription = styled.div`
-  font-size: 14px;
-  color: #303538;
-  line-height: 18px;
-  ${({ completed }) => completed && 'text-decoration: line-through;'}
-`;
-
-StyledTaskDescription.defaultProps = {
-  completed: false,
-};
-
-const StyledTaskFooter = styled.div`
-  font-size: 12px;
-  color: #ababb2;
-  line-height: 16px;
-`;
-
-const StyledTaskCommentCount = styled.div`
-  font-size: 12px;
-  color: #0ca1c7;
-  line-height: 16px;
-`;
-
-const Info = ({ task }) => (
-  <React.Fragment>
-    {task.assignedBy !== null ? (
-      <React.Fragment>
-        {'Assigned by '}
-        <Link to={`#/assignedToPerson/${task.assignedBy.userId}/${task.assignedBy.userName}`}>
-          {`${task.assignedBy.firstName} ${task.assignedBy.lastName}`}
-        </Link>
-      </React.Fragment>
-    ) : (
-      <Link to={`#/assignedToPerson/${task.creator.userId}/${task.creator.userName}`}>
-        {`${task.creator.firstName} ${task.creator.lastName}`}
-      </Link>
-    )}
-    {' • '}
-    <Moment format="h:mma">
-      {task.assignedBy !== null ? task.assignmentUpdatedDateTime : task.createdDateTime}
-    </Moment>
-  </React.Fragment>
-);
-
-const Comments = ({ comments }) => {
-  if (comments === null || comments.length === 0) {
-    return null;
-  }
-
-  return (
-    <StyledTaskCommentCount>
-      {comments.length}
-      {' '}
-      {comments.length === 1 ? 'comment' : 'comments'}
-    </StyledTaskCommentCount>
+const usePrevious = value => {
+  const ref = useRef();
+  useEffect(
+    () => {
+      ref.current = value;
+    },
+    [value],
   );
+  return ref.current;
 };
 
-const UnnamedTask = styled.span`
-  color: #ababb2;
-`;
+const Task = props => {
+  const {
+    style,
+    task,
+    isSubtask,
+    markComplete,
+    hideDate,
+    hidePriority,
+    selectedTaskId,
+    disabled,
+    hideCheckbox,
+    storeAsCurrentTask,
+  } = props;
+  const { subtasks, priority, taskList } = task;
 
-const Task = ({
-  task,
-  markComplete,
-  storeAsCurrentTask,
-  isSubtask,
-  hideDate,
-  hideTags,
-  selectedTaskId,
-}) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const toggleIsCollapsed = useCallback(
+    () => {
+      setIsCollapsed(!isCollapsed);
+    },
+    [setIsCollapsed, isCollapsed],
+  );
+
+  const previousSelectedTaskId = usePrevious(selectedTaskId);
+
+  useEffect(
+    () => {
+      if (isSubtask) {
+        return;
+      }
+
+      if (
+        selectedTaskId !== previousSelectedTaskId &&
+        isCollapsed &&
+        subtasks.find(subtask => subtask.taskId === selectedTaskId)
+      ) {
+        setIsCollapsed(false);
+      }
+    },
+    [isCollapsed, isSubtask, previousSelectedTaskId, selectedTaskId, subtasks],
+  );
+
   // Check all subtasks confirmation dialog
-  const [isOpen, setOpen] = useState(false);
-  const open = useCallback(
-    () => {
-      setOpen(true);
-    },
-    [setOpen],
-  );
-  const close = useCallback(
-    () => {
-      setOpen(false);
-    },
-    [setOpen],
-  );
-  const confirm = useCallback(
-    () => {
-      const status = task.status === 'COMPLETE' ? 'COMPLETE' : 'INCOMPLETE';
-      markComplete(task, status);
-      close();
-    },
-    [markComplete, task, close],
+  const { isOpen, close, handleStatusChange, confirm } = useConfirmation(
+    task,
+    markComplete,
   );
 
   return (
-    <StyledTableBody
-      isSubtask={isSubtask}
+    <PatientsTasklistTask
+      style={style}
+      isCollapsed={isCollapsed}
       isSelected={selectedTaskId === task.taskId}
-      onClick={(e) => {
-        e.stopPropagation();
-        storeAsCurrentTask(task.taskId);
-      }}
     >
-      <TableRow>
-        <StyledTableCell
-          align="center"
-          style={{
-            verticalAlign: 'top',
-            margin: 0,
-            padding: 0,
-            width: 5,
-          }}
-        >
-          <Flag priority={task.priority} />
-        </StyledTableCell>
-        <StyledTableCell align="center" style={{ width: 36 }}>
-          <StyledCheckbox
-            checked={task.status === 'COMPLETE'}
-            onChange={() => {
-              const hasSubtasks = task.subtasks?.length > 0;
-              if (!hasSubtasks || task.status === 'COMPLETE') {
-                confirm();
-                return;
-              }
-              open();
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          />
-          {!isSubtask && (
-            <Dialog
-              open={isOpen}
-              onClose={close}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                You are about to complete a task with open subtasks. Completing the task will also
-                complete the subtasks. Would you like to proceed?
-              </DialogTitle>
-              <DialogActions>
-                <Button onClick={close} color="primary">
-                  Cancel
-                </Button>
-                <Button onClick={confirm} color="primary" autoFocus>
-                  Complete all
-                </Button>
-              </DialogActions>
-            </Dialog>
-          )}
-        </StyledTableCell>
-        <StyledTableCell align="center" style={{ width: 72 }}>
-          <MemberPicker task={task} member={task.assignedTo} small={isSubtask} />
-        </StyledTableCell>
-        <StyledTableCell>
-          <StyledTaskDescription completed={task.status === 'COMPLETE'}>
-            {task.description || <UnnamedTask>Unnamed task</UnnamedTask>}
-          </StyledTaskDescription>
-          <StyledTaskFooter>
-            <Info task={task} />
-          </StyledTaskFooter>
-          <Comments comments={task.comments} />
-        </StyledTableCell>
-        {!isSubtask && (
-          <StyledTableCell>
-            {task.patient && (
-              <Link to={`/patient/${task.patient.patientId}`}>
-                <Patient patient={task.patient} style={{ color: '#0ca1c7' }} />
-              </Link>
-            )}
-          </StyledTableCell>
-        )}
-        {!hideDate && (
-          <StyledTableCell style={{ width: 108 }}>
-            <DueDate completed={task.status === 'COMPLETE'}>{task.dueDate}</DueDate>
-          </StyledTableCell>
-        )}
-        {!hideTags && (
-          <StyledTableCell style={{ width: 216 }}>
-            <Tag>Placeholder</Tag>
-          </StyledTableCell>
-        )}
-        <StyledTableCell align="center" style={{ width: 36 }}>
-          <Priority priority={task.workflowStatus} />
-        </StyledTableCell>
-      </TableRow>
-      {task.subtasks && task.subtasks.length > 0 && (
-        <Subtasks
-          parentTaskId={task.taskId}
-          isCompleted={task.status === 'COMPLETE'}
-          subtasks={task.subtasks}
-          markComplete={markComplete}
-          storeAsCurrentTask={storeAsCurrentTask}
-          hideDate={hideDate}
-          hideTags={hideTags}
-          selectedTaskId={selectedTaskId}
-        />
+      {!isSubtask && (
+        <Confirmation isOpen={isOpen} close={close} confirm={confirm} />
       )}
-    </StyledTableBody>
+      <div style={{ display: 'flex' }}>
+        <Flag priority={priority} />
+        <div style={{ flex: 1 }}>
+          <PatientsTaskBody
+            {...props}
+            handleStatusChange={handleStatusChange}
+          />
+          {!isSubtask && subtasks.length > 0 && (
+            <div
+              style={{
+                padding: '0 22px',
+                margin: '6px auto 12px auto',
+              }}
+            >
+              <PatientsTasklistSubtasks
+                onClick={toggleIsCollapsed}
+                isCollapsed={isCollapsed}
+              >
+                {`Subtasks (${subtasks.length}) ${isCollapsed ? '▸' : '▾'}`}
+                <div
+                  style={{ marginLeft: 'auto' }}
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  {!disabled && task.status !== 'COMPLETE' && !isCollapsed && (
+                    <AddSubtask
+                      taskId={task.taskId}
+                      disabled={task.status === 'COMPLETE'}
+                    />
+                  )}
+                </div>
+              </PatientsTasklistSubtasks>
+              {!isCollapsed && (
+                <div>
+                  {subtasks.map(subtask => (
+                    <Task
+                      task={{
+                        ...subtask,
+                        taskList,
+                      }}
+                      isSubtask
+                      isParentComplete={task.status === 'COMPLETE'}
+                      selectedTaskId={selectedTaskId}
+                      markComplete={markComplete}
+                      style={{
+                        marginLeft: '14px',
+                        marginRight: '4px',
+                        border: 'none',
+                      }}
+                      hideDate={hideDate}
+                      hidePriority={hidePriority}
+                      hideCheckbox={hideCheckbox}
+                      disabled={disabled}
+                      storeAsCurrentTask={storeAsCurrentTask}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </PatientsTasklistTask>
   );
-};
-
-Task.propTypes = {
-  isSubtask: PropTypes.bool,
-  markComplete: PropTypes.func.isRequired,
-  storeAsCurrentTask: PropTypes.func.isRequired,
-  task: PropTypes.shape({
-    taskId: PropTypes.number,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    dueDate: PropTypes.string,
-    assignedTo: PropTypes.shape({
-      userId: PropTypes.number,
-      profileThumbnailPictureHash: PropTypes.string,
-      initials: PropTypes.string,
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-    }),
-    assignedBy: PropTypes.shape({
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-    }),
-    patient: PropTypes.shape({
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      mrn: PropTypes.string,
-    }),
-    comments: PropTypes.array,
-    subtasks: PropTypes.array,
-  }).isRequired,
-};
-
-Task.defaultProps = {
-  isSubtask: false,
 };
 
 export default Task;
