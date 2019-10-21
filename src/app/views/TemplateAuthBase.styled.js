@@ -80,5 +80,8 @@ export const DockLogo = ({ height, alt, ...props }) => (
 );
 
 export const ContentContainer = ({ padding, ...props }) => (
-  <Grid style={{ padding: `${padding}px 0 ${padding}px ${padding}px` }} {...props} />
+  <Grid
+    style={{ padding: `${padding}px 0 ${padding}px ${padding}px` }}
+    {...props}
+  />
 );

@@ -2,21 +2,21 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Toolbar from '@material-ui/core/Toolbar';
-import * as React from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import AddTask from '../components/home/AddTask';
-import Header from '../components/home/Header';
-import TaskDetails from '../components/home/TaskDetails';
-import TaskList from '../components/home/TaskList';
-import Search from '../components/Search';
-import Select from '../components/Select';
-import TaskListAction from '../components/TaskListAction';
+import AddTask from '../components/task/AddTask';
+import TaskDetails from '../components/task/TaskDetails';
+import TaskList from '../components/task/TaskList';
+import Header from '../components/taskView/Header';
+import Search from '../components/taskView/Search';
+import Select from '../components/taskView/Select';
+import TaskListAction from '../components/taskView/TaskListAction';
 import PrintIcon from '../img/print.svg';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
-  list.forEach((item) => {
+  list.forEach(item => {
     const key = keyGetter(item);
     const collection = map.get(key);
     if (!collection) {
@@ -53,7 +53,7 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
-class TaskView extends React.Component {
+class TaskView extends PureComponent {
   state = {
     filterBy: '',
     searchTerms: [],
@@ -76,7 +76,7 @@ class TaskView extends React.Component {
     storeAsCurrentTask(null);
   };
 
-  handleFilterChange = (filterBy) => {
+  handleFilterChange = filterBy => {
     const { onFilter } = this.props;
     const sortBy = 'CREATED_DT';
 
@@ -86,7 +86,7 @@ class TaskView extends React.Component {
     onFilter(filterBy, sortBy);
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     const { value } = e.target;
     const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
 
@@ -94,14 +94,17 @@ class TaskView extends React.Component {
     this.setState({ searchTerms });
   };
 
-  search = (tasks) => {
+  search = tasks => {
     if (tasks?.length === 0) {
       return tasks;
     }
 
     const { searchTerms } = this.state;
-    const isMatch = text => searchTerms.every(term => text?.toLowerCase().includes(term));
-    const filteredTasks = tasks.filter(({ description }) => isMatch(description));
+    const isMatch = text =>
+      searchTerms.every(term => text?.toLowerCase().includes(term));
+    const filteredTasks = tasks.filter(({ description }) =>
+      isMatch(description),
+    );
 
     return filteredTasks;
   };
@@ -113,10 +116,15 @@ class TaskView extends React.Component {
 
   renderTasklists = () => {
     const {
-      tasks, markComplete, storeAsCurrentTask, selectedTaskId,
+      tasks,
+      markComplete,
+      storeAsCurrentTask,
+      selectedTaskId,
     } = this.props;
 
-    const groupedTasks = groupBy(tasks, task => (task.taskList ? task.taskList.listName : ''));
+    const groupedTasks = groupBy(tasks, task =>
+      task.taskList ? task.taskList.listName : '',
+    );
     const tasklistCount = Array.from(groupedTasks.keys()).length;
 
     const isCollapsed = selectedTaskId != null;
@@ -157,15 +165,27 @@ class TaskView extends React.Component {
     } = this.props;
 
     if (!showingCompletedTasks) {
-      return <StyledButton onClick={pullCompletedTasks}>Show completed tasks</StyledButton>;
+      return (
+        <StyledButton onClick={pullCompletedTasks}>
+          Show completed tasks
+        </StyledButton>
+      );
     }
 
     if (isCompletedTasksFetching) {
-      return <StyledButton onClick={pullCompletedTasks}>Fetching completed tasks...</StyledButton>;
+      return (
+        <StyledButton onClick={pullCompletedTasks}>
+          Fetching completed tasks...
+        </StyledButton>
+      );
     }
 
     if (completedTasks == null || completedTasks.length === 0) {
-      return <StyledButton onClick={pullCompletedTasks}>No completed tasks</StyledButton>;
+      return (
+        <StyledButton onClick={pullCompletedTasks}>
+          No completed tasks
+        </StyledButton>
+      );
     }
 
     const isCollapsed = selectedTaskId != null;
@@ -183,7 +203,9 @@ class TaskView extends React.Component {
 
     return (
       <>
-        <StyledButton onClick={pullCompletedTasks}>Hide completed tasks</StyledButton>
+        <StyledButton onClick={pullCompletedTasks}>
+          Hide completed tasks
+        </StyledButton>
         <TaskList {...tasklistProps} />
       </>
     );
@@ -210,15 +232,22 @@ class TaskView extends React.Component {
 
     const taskId = selectedTaskId != null && selectedTaskId;
     const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
-    const finishedTasks = completedTasks.flatMap(task => [task, ...task.subtasks]);
+    const finishedTasks = completedTasks.flatMap(task => [
+      task,
+      ...task.subtasks,
+    ]);
     const allTasks = [...unfinishedTasks, ...finishedTasks];
     const task = allTasks.find(t => t.taskId === taskId);
 
     // TODO: Optimize!!!
-    const isCompletedTaskSelected = task && !unfinishedTasks.find(t => t.taskId === task.taskId);
-    const isMainTaskComplete = task
-      && task.parentTaskId
-      && allTasks.find(t => t.taskId === task.parentTaskId && t.status === 'COMPLETE');
+    const isCompletedTaskSelected =
+      task && !unfinishedTasks.find(t => t.taskId === task.taskId);
+    const isMainTaskComplete =
+      task &&
+      task.parentTaskId &&
+      allTasks.find(
+        t => t.taskId === task.parentTaskId && t.status === 'COMPLETE',
+      );
 
     const isInbox = tasks.length !== 0 && tasks[0].taskList === null;
     const taskListId = taskList?.taskListId;
@@ -230,7 +259,10 @@ class TaskView extends React.Component {
         style={{ minHeight: '100%' }}
       >
         <div className="row expanded collapse" style={{ minHeight: '100%' }}>
-          <div className="large-12 columns" style={{ minHeight: '100%', background: '#f5f8fa' }}>
+          <div
+            className="large-12 columns"
+            style={{ minHeight: '100%', background: '#f5f8fa' }}
+          >
             <Header
               isFetching={isFetching}
               title={title}
@@ -260,9 +292,16 @@ class TaskView extends React.Component {
                     { value: 'DUE_NEXT_WEEK', description: 'Due Next Week' },
                   ]}
                 />
-                <Search onChange={this.handleSearch} style={{ marginLeft: '14px' }} />
+                <Search
+                  onChange={this.handleSearch}
+                  style={{ marginLeft: '14px' }}
+                />
                 <div style={{ marginLeft: 'auto' }}>
-                  <TaskListAction onClick={downloadPDF} icon={PrintIcon} alt="Print">
+                  <TaskListAction
+                    onClick={downloadPDF}
+                    icon={PrintIcon}
+                    alt="Print"
+                  >
                     Print
                   </TaskListAction>
                 </div>
@@ -286,7 +325,9 @@ class TaskView extends React.Component {
                 </TaskListContainer>
                 {task && (
                   <TaskDetails
-                    addTaskComment={comment => addTaskComment(task, { comment })}
+                    addTaskComment={comment =>
+                      addTaskComment(task, { comment })
+                    }
                     userId={userId}
                     selectedTask={task}
                     close={this.handleClose}

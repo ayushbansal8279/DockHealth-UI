@@ -1,118 +1,137 @@
-import React, { Component ,PropTypes} from 'react';
-import {reduxForm, Field, actions, reset, change, arrayPush} from 'redux-form';
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux';
-import { Link,hashHistory } from 'react-router';
-import BasicField from '../common/BasicField';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { arrayPush, change, Field, reduxForm, reset } from 'redux-form';
+
 import * as PeopleActions from '../../actions/people-actions';
-import {mobileAnalyticsClient} from '../../api/analytics-api'
-import BaseComponent from '../BaseComponent'
-import $ from 'jquery'
+import { mobileAnalyticsClient } from '../../api/analytics-api';
+import BasicField from '../common/BasicField';
 
-class InvitePeople extends BaseComponent {
-
+class InvitePeople extends PureComponent {
   constructor(props) {
-    	super(props)
-    	this.state = {
-      		invitePeopleResult: ''
-    	};
-  	}
-
-    componentDidMount () {
-      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-              'PageName': 'InvitePeople'
-      });
-    }
-
-  onSubmit (formProps) {
-    //console.log(formProps);
-    this.setState({invitePeopleResult: "Sending Invitation ..."})
-    var component = this
-    this.props.peopleActions.invitePersonToOrganization(formProps)
-    .then((res)=>{
-      if(res.statusCode == 'FAILURE'){
-        component.setState({invitePeopleResult: res.errorMessage})
-      }else{
-        component.props.peopleActions.findAllUsersByOrganizationId();
-        component.setState({invitePeopleResult: "Invitation sent"})
-        closeAddForm()
-        component.props.formActions.reset('InvitePeopleForm')
-      }
-    })
-    .catch((error)=>{
-      this.setState({invitePeopleResult: error.message}); //this will cause render to be called
-    })
-
+    super(props);
+    this.state = {
+      invitePeopleResult: '',
+    };
   }
 
-  render (){
-    const handleSubmit = this.props.handleSubmit; //injected by reduxform
+  componentDidMount() {
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+      PageName: 'InvitePeople',
+    });
+  }
 
-      return(
+  onSubmit(formProps) {
+    // console.log(formProps);
+    this.setState({ invitePeopleResult: 'Sending Invitation ...' });
+    const component = this;
+    this.props.peopleActions
+      .invitePersonToOrganization(formProps)
+      .then(res => {
+        if (res.statusCode == 'FAILURE') {
+          component.setState({ invitePeopleResult: res.errorMessage });
+        } else {
+          component.props.peopleActions.findAllUsersByOrganizationId();
+          component.setState({ invitePeopleResult: 'Invitation sent' });
+          closeAddForm();
+          component.props.formActions.reset('InvitePeopleForm');
+        }
+      })
+      .catch(error => {
+        this.setState({ invitePeopleResult: error.message }); // this will cause render to be called
+      });
+  }
 
-          <div className="add-form-wrapper">
-            <div className="task-item add-form row expanded">
-              <form className="inline-label" onSubmit = {handleSubmit(this.onSubmit.bind(this))}>
-                <div className="column large-12 text-center">
-                  <h5 className="section-title">Invite a person</h5>
-                </div>
+  render() {
+    const handleSubmit = this.props.handleSubmit; // injected by reduxform
 
-                {/* First name */}
-                <Field name='firstName' type='text' component={BasicField} label='First Name' placeholder='required'/>
-                {/*<div className="column large-12 input-group no-icon">
+    return (
+      <div className="add-form-wrapper">
+        <div className="task-item add-form row expanded">
+          <form
+            className="inline-label"
+            onSubmit={handleSubmit(this.onSubmit.bind(this))}
+          >
+            <div className="column large-12 text-center">
+              <h5 className="section-title">Invite a person</h5>
+            </div>
+
+            {/* First name */}
+            <Field
+              name="firstName"
+              type="text"
+              component={BasicField}
+              label="First Name"
+              placeholder="required"
+            />
+            {/* <div className="column large-12 input-group no-icon">
                   <div className="form-floating-label input-wrapper">
                     <input className="input-group-field" type="text"/>
                     <label>First name</label>
                   </div>
-                </div>*/}
+                </div> */}
 
-                {/* Last name */}
-                <Field name='lastName' type='text' component={BasicField} label='Last Name' placeholder='required'/>
-                {/*<div className="column large-12 input-group no-icon">
+            {/* Last name */}
+            <Field
+              name="lastName"
+              type="text"
+              component={BasicField}
+              label="Last Name"
+              placeholder="required"
+            />
+            {/* <div className="column large-12 input-group no-icon">
                   <div className="form-floating-label input-wrapper">
                     <input className="input-group-field" type="text"/>
                     <label>Last name</label>
                   </div>
-                </div>*/}
+                </div> */}
 
-                {/* Email name */}
-                <Field name='email' type='email' component={BasicField} label='Email' placeholder='required'/>
-                {/*<div className="column large-12 input-group no-icon">
+            {/* Email name */}
+            <Field
+              name="email"
+              type="email"
+              component={BasicField}
+              label="Email"
+              placeholder="required"
+            />
+            {/* <div className="column large-12 input-group no-icon">
                   <div className="form-floating-label input-wrapper">
                     <input className="input-group-field" type="text"/>
                     <label>Email</label>
                   </div>
-                </div>*/}
-
-                {/* SAVE */}
-                <div className="column large-12 text-center">
-                  <input type="submit" className="button medium secondary" value="Send invite"/>
-                </div>
-                {/* <div className="column large-12 text-center">
-                  <h3>{this.state.invitePeopleResult}</h3>
                 </div> */}
 
-              </form>
+            {/* SAVE */}
+            <div className="column large-12 text-center">
+              <input
+                type="submit"
+                className="button medium secondary"
+                value="Send invite"
+              />
             </div>
-          </div>
-
-      );
-    }
+            {/* <div className="column large-12 text-center">
+                  <h3>{this.state.invitePeopleResult}</h3>
+                </div> */}
+          </form>
+        </div>
+      </div>
+    );
+  }
 }
 
-//this is automatically called as mentioned in last line reduxForm
-function validate(values){
+// this is automatically called as mentioned in last line reduxForm
+function validate(values) {
   const errors = {};
 
-  if(!values.firstName){
+  if (!values.firstName) {
     errors.firstName = 'Please enter First Name';
   }
 
-  if(!values.lastName){
+  if (!values.lastName) {
     errors.lastName = 'Please enter Last Name';
   }
 
-  if(!values.email){
+  if (!values.email) {
     errors.email = 'Please enter Email Address';
   }
 
@@ -125,23 +144,28 @@ function validate(values){
 //   };
 // }
 
-//this is almost similar to connect function from react-redux
-//redux-form is injecting some helpers (like handleSubmit) that will be available to us on this.props
-//this tells redux form about the fields that are contained within the form
-//connect: 1st argument is mapStateToProps, 2nd is mapDispatchToProps
-//redux form : 1st is form config, 2nd argument is mapStateToProps, 3rd is mapDispatchToProps
+// this is almost similar to connect function from react-redux
+// redux-form is injecting some helpers (like handleSubmit) that will be available to us on this.props
+// this tells redux form about the fields that are contained within the form
+// connect: 1st argument is mapStateToProps, 2nd is mapDispatchToProps
+// redux form : 1st is form config, 2nd argument is mapStateToProps, 3rd is mapDispatchToProps
 
 function mapDispatchToProps(dispatch) {
   return {
-	  peopleActions: bindActionCreators(PeopleActions, dispatch),
-		formActions: bindActionCreators({reset, change, arrayPush}, dispatch)
-  }
+    peopleActions: bindActionCreators(PeopleActions, dispatch),
+    formActions: bindActionCreators({ reset, change, arrayPush }, dispatch),
+  };
 }
 
-//redux form Version 6 specifically needs an call to connect
-export default connect(null, mapDispatchToProps)(reduxForm({
+// redux form Version 6 specifically needs an call to connect
+export default connect(
+  null,
+  mapDispatchToProps,
+)(
+  reduxForm({
     form: 'InvitePeopleForm',
-    enableReinitialize : true,
-    //fields:['tasklistname'],
-    validate
-})(InvitePeople));
+    enableReinitialize: true,
+    // fields:['tasklistname'],
+    validate,
+  })(InvitePeople),
+);

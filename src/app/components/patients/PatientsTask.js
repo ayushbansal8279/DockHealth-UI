@@ -1,12 +1,11 @@
 import { ButtonBase } from '@material-ui/core';
-import React, {
-  useCallback, useEffect, useRef, useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import AddSubtask from '../home/AddSubtask';
-import Flag from '../home/Flag';
-import { Confirmation, useConfirmation } from '../TaskCheckbox';
+import useConfirmation from '../../hooks/useConfirmation';
+import Flag from '../common/Flag';
+import AddSubtask from '../task/AddSubtask';
+import { Confirmation } from '../common/TaskCheckbox';
 import PatientsTaskBody from './PatientsTaskBody';
 
 const PatientsTasklistTask = styled.div`
@@ -31,7 +30,8 @@ const PatientsTasklistSubtasks = styled(ButtonBase)`
     width: 100%;
     height: 44px;
     border-radius: 1px;
-    border: solid 3px ${({ isCollapsed }) => (isCollapsed ? '#f5f8fa' : 'transparent')};
+    border: solid 3px
+      ${({ isCollapsed }) => (isCollapsed ? '#f5f8fa' : 'transparent')};
 
     font-size: 16px;
     line-height: 38px;
@@ -40,7 +40,7 @@ const PatientsTasklistSubtasks = styled(ButtonBase)`
   }
 `;
 
-const usePrevious = (value) => {
+const usePrevious = value => {
   const ref = useRef();
   useEffect(
     () => {
@@ -51,7 +51,7 @@ const usePrevious = (value) => {
   return ref.current;
 };
 
-const PatientsTask = (props) => {
+const PatientsTask = props => {
   const {
     style,
     task,
@@ -83,9 +83,9 @@ const PatientsTask = (props) => {
       }
 
       if (
-        selectedTaskId !== previousSelectedTaskId
-        && isCollapsed
-        && subtasks.find(subtask => subtask.taskId === selectedTaskId)
+        selectedTaskId !== previousSelectedTaskId &&
+        isCollapsed &&
+        subtasks.find(subtask => subtask.taskId === selectedTaskId)
       ) {
         setIsCollapsed(false);
       }
@@ -94,9 +94,10 @@ const PatientsTask = (props) => {
   );
 
   // Check all subtasks confirmation dialog
-  const {
-    isOpen, close, handleStatusChange, confirm,
-  } = useConfirmation(task, markComplete);
+  const { isOpen, close, handleStatusChange, confirm } = useConfirmation(
+    task,
+    markComplete,
+  );
 
   return (
     <PatientsTasklistTask
@@ -104,11 +105,16 @@ const PatientsTask = (props) => {
       isCollapsed={isCollapsed}
       isSelected={selectedTaskId === task.taskId}
     >
-      {!isSubtask && <Confirmation isOpen={isOpen} close={close} confirm={confirm} />}
+      {!isSubtask && (
+        <Confirmation isOpen={isOpen} close={close} confirm={confirm} />
+      )}
       <div style={{ display: 'flex' }}>
         <Flag priority={priority} />
         <div style={{ flex: 1 }}>
-          <PatientsTaskBody {...props} handleStatusChange={handleStatusChange} />
+          <PatientsTaskBody
+            {...props}
+            handleStatusChange={handleStatusChange}
+          />
           {!isSubtask && subtasks.length > 0 && (
             <div
               style={{
@@ -116,17 +122,23 @@ const PatientsTask = (props) => {
                 margin: '6px auto 12px auto',
               }}
             >
-              <PatientsTasklistSubtasks onClick={toggleIsCollapsed} isCollapsed={isCollapsed}>
+              <PatientsTasklistSubtasks
+                onClick={toggleIsCollapsed}
+                isCollapsed={isCollapsed}
+              >
                 {`Subtasks (${subtasks.length}) ${isCollapsed ? '▸' : '▾'}`}
                 <div
                   style={{ marginLeft: 'auto' }}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
                 >
                   {!disabled && task.status !== 'COMPLETE' && !isCollapsed && (
-                    <AddSubtask taskId={task.taskId} disabled={task.status === 'COMPLETE'} />
+                    <AddSubtask
+                      taskId={task.taskId}
+                      disabled={task.status === 'COMPLETE'}
+                    />
                   )}
                 </div>
               </PatientsTasklistSubtasks>

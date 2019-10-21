@@ -2,7 +2,11 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import PatientApi from '../../api/patient-api';
 import { fetchPatient } from '../patient';
-import { FETCH_PATIENT, FETCH_PATIENT_ERROR, FETCH_PATIENT_SUCCESS } from '../action-types';
+import {
+  FETCH_PATIENT,
+  FETCH_PATIENT_ERROR,
+  FETCH_PATIENT_SUCCESS,
+} from '../action-types';
 
 jest.mock('../../api/patient-api', () => ({
   getPatientById: jest.fn(),

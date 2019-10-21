@@ -1,97 +1,120 @@
-import React from 'react'
-import { Field, reduxForm } from 'redux-form'
-import { Link } from 'react-router'
-import AuthField from '../common/AuthField'
-
+import React from 'react';
+import { Field, reduxForm } from 'redux-form';
+import { Link } from 'react-router';
+import AuthField from '../common/AuthField';
 
 const validate = values => {
-  const errors = {}
+  const errors = {};
   if (!values.username) {
-    errors.username = 'Required'
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)) {
-    errors.username = 'Invalid email address'
+    errors.username = 'Required';
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)
+  ) {
+    errors.username = 'Invalid email address';
   }
   if (!values.phoneNumber) {
-    errors.phoneNumber = 'Required'
-  } else if (values.phoneNumber.length != 10) {
-    errors.phoneNumber = 'Must be 10 characters'
+    errors.phoneNumber = 'Required';
+  } else if (values.phoneNumber.length !== 10) {
+    errors.phoneNumber = 'Must be 10 characters';
   }
 
   if (!values.password) {
-    errors.password = 'Required'
+    errors.password = 'Required';
   }
   if (!values.password2) {
-    errors.password2 = 'Required'
+    errors.password2 = 'Required';
   }
   if (values.password !== values.password2) {
-    errors.password2 = 'Must match password'
+    errors.password2 = 'Must match password';
   }
   if (!values.firstName) {
-    errors.firstName = 'Required'
+    errors.firstName = 'Required';
   }
   if (!values.lastName) {
-    errors.lastName = 'Required'
+    errors.lastName = 'Required';
   }
 
-  return errors
-}
+  return errors;
+};
 
-const UserRegistrationForm = (props) => {
-  const { handleSubmit, invalid, pristine, submitting, type } = props
+const UserRegistrationForm = props => {
+  const { handleSubmit, invalid, pristine, submitting } = props;
 
-  const normalizePhone = (value, previousValue) => {
-    if (!value) {
-      return value
-    }
-    const onlyNums = value.replace(/[^\d]/g, '')
-    if (!previousValue || value.length > previousValue.length) {
-      // typing forward
-      if (onlyNums.length === 3) {
-        return onlyNums + '-'
-      }
-      if (onlyNums.length === 6) {
-        return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3) + '-'
-      }
-    }
-    if (onlyNums.length <= 3) {
-      return onlyNums
-    }
-    if (onlyNums.length <= 6) {
-      return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3)
-    }
-    return onlyNums.slice(0, 3) + '-' + onlyNums.slice(3, 6) + '-' + onlyNums.slice(6, 10)
-  }
-
-  console.log(props)
   return (
-		<form className="inline-label top-buffer white-bg" onSubmit={handleSubmit}>
-			<div className="row expanded">
-        <Field name='firstName' type='text' component={AuthField} label='First name' />
-        <Field name='lastName' type='text' component={AuthField} label='Last name' extraClass='no-top-buffer'/>
-        <Field name='username' type='email' component={AuthField} label='Email' extraClass='no-top-buffer'/>
-        <Field name='phoneNumber' type='tel' component={AuthField} label='Your mobile phone #' pattern='\d{10}' extraClass='no-top-buffer'/>
+    <form className="inline-label top-buffer white-bg" onSubmit={handleSubmit}>
+      <div className="row expanded">
+        <Field
+          name="firstName"
+          type="text"
+          component={AuthField}
+          label="First name"
+        />
+        <Field
+          name="lastName"
+          type="text"
+          component={AuthField}
+          label="Last name"
+          extraClass="no-top-buffer"
+        />
+        <Field
+          name="username"
+          type="email"
+          component={AuthField}
+          label="Email"
+          extraClass="no-top-buffer"
+        />
+        <Field
+          name="phoneNumber"
+          type="tel"
+          component={AuthField}
+          label="Your mobile phone #"
+          pattern="\d{10}"
+          extraClass="no-top-buffer"
+        />
 
         <div className="column text-left details">
           Password must include a number, lowercase and uppercase letters
         </div>
-        <Field name='password' type='password' component={AuthField} label='Password' extraClass='no-top-buffer'/>
+        <Field
+          name="password"
+          type="password"
+          component={AuthField}
+          label="Password"
+          extraClass="no-top-buffer"
+        />
 
-        <Field name='password2' type='password' component={AuthField} label='Confirm password' extraClass='no-top-buffer'/>
-				<div className="columns small-12 text-center top-buffer">
-					<button className={'button secondary expand' + (submitting ? ' is-loading' : '')} type='submit' disabled={invalid || pristine || submitting}>Continue</button>
-				</div>
-				<div className="columns top-buffer small-6 text-left details">
-          I already have an account. <Link to="/login">Sign in</Link>.
-				</div>
-				<div className="columns small-6 top-buffer text-right details">
+        <Field
+          name="password2"
+          type="password"
+          component={AuthField}
+          label="Confirm password"
+          extraClass="no-top-buffer"
+        />
+        <div className="columns small-12 text-center top-buffer">
+          <button
+            className={`button secondary expand${
+              submitting ? ' is-loading' : ''
+            }`}
+            type="submit"
+            disabled={invalid || pristine || submitting}
+          >
+            Continue
+          </button>
+        </div>
+        <div className="columns top-buffer small-6 text-left details">
+          <>I already have an account.</>
+          <Link to="/login">Sign in</Link>
+          <>.</>
+        </div>
+        <div className="columns small-6 top-buffer text-right details">
           <Link to="/confirmRegistration">Confirm registration</Link>
-				</div>
-			</div>
-		</form>
-  )
-}
+        </div>
+      </div>
+    </form>
+  );
+};
 
 export default reduxForm({
   form: 'UserRegistrationForm',
-  validate
-})(UserRegistrationForm)
+  validate,
+})(UserRegistrationForm);

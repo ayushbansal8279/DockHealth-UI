@@ -25,18 +25,11 @@ class App extends PureComponent {
     this.renderFoundationComponents();
   }
 
-  onAction = () => {
-    // console.log('user did something', e);
-  };
+  onAction = () => {};
 
-  onActive = () => {
-    // console.log('user is active', e);
-    // console.log('time remaining', this.idleTimer.getRemainingTime());
-  };
+  onActive = () => {};
 
   onIdle = () => {
-    // console.log(`${new Date()}: - user is idle`, e);
-    // console.log('last active', this.idleTimer.getLastActiveTime());
     userApi
       .logout()
       .then(() => {
@@ -55,7 +48,6 @@ class App extends PureComponent {
 
   // eslint-disable-next-line class-methods-use-this
   renderFoundationComponents() {
-    // render the buy button with jQuery
     renderFoundationComponentsJquery();
   }
 
@@ -66,7 +58,7 @@ class App extends PureComponent {
     return (
       <AppContainer id="appHome">
         <IdleTimer
-          ref={(ref) => {
+          ref={ref => {
             this.idleTimer = ref;
           }}
           element={document}

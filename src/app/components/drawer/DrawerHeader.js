@@ -5,7 +5,7 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
-import MemberAssignment from '../home/MemberAssignment';
+import MemberAssignment from '../members/MemberAssignment';
 
 const StyledListItem = styled(ListItem)`
   && {

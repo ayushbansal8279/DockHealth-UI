@@ -25,7 +25,7 @@ export default class Logout extends PureComponent {
 
         this.redirectToLogin();
       })
-      .catch((e) => {
+      .catch(e => {
         error(e && e.message ? e.message : 'Could not logout.');
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'NO',

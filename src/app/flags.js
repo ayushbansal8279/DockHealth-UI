@@ -7,8 +7,6 @@ const flags = {
   },
 };
 
-export const {
-  FlagsProvider, Flag, useFlag, useFlags,
-} = createFlags();
+export const { FlagsProvider, Flag, useFlag, useFlags } = createFlags();
 
 export default flags;

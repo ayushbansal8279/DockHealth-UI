@@ -7,7 +7,7 @@ import {
 import { storeAsCurrentTask } from './task-actions';
 import { getMembersByTaskListId } from './tasklist-actions';
 
-export const fetchPatient = patientId => async (dispatch) => {
+export const fetchPatient = patientId => async dispatch => {
   dispatch({ type: FETCH_PATIENT });
   try {
     const fetchDetails = getPatientById(patientId);
@@ -20,13 +20,18 @@ export const fetchPatient = patientId => async (dispatch) => {
       fetchCompletedTasks,
     ]);
 
-    dispatch({ type: FETCH_PATIENT_SUCCESS, details, tasks, completedTasks });
+    dispatch({
+      type: FETCH_PATIENT_SUCCESS,
+      details,
+      tasks,
+      completedTasks,
+    });
   } catch (error) {
     dispatch({ type: FETCH_PATIENT_ERROR, error });
   }
 };
 
-export const selectPatientTask = task => async (dispatch) => {
+export const selectPatientTask = task => async dispatch => {
   const taskListId = task?.taskList?.taskListId;
   if (taskListId) {
     dispatch(getMembersByTaskListId(taskListId, 'ALL'));

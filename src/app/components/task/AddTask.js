@@ -1,222 +1,165 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {
-  formValueSelector, reset, change, arrayPush,
-} from 'redux-form';
-import { ReactDOM } from 'react-dom';
-import $ from 'jquery';
-import AddTaskForm from './AddTaskForm';
-import AddSubtaskForm from './AddSubtaskForm';
-import * as PeopleActions from '../../actions/people-actions';
-import * as TaskActions from '../../actions/task-actions';
-import AddPatientModal from '../common/AddPatientModal';
-import BooleanModal from '../common/BooleanModal';
-import BaseComponent from '../BaseComponent';
+import styled from 'styled-components';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import AddIcon from '@material-ui/icons/Add';
+import Toolbar from '@material-ui/core/Toolbar';
+import { saveTask } from '../../actions/task-actions';
 
-class AddTask extends BaseComponent {
-  constructor(props, container) {
-    super(props);
-    this.container = container;
-    this.state = {
-      value: '',
-      assignedToId: '',
-      subtasks: [],
-      currentSubtaskIndex: '',
-      currentSubtask: undefined,
-      isSubtask: false,
-      form: undefined,
-    };
-    this.handleTaskDetailsChange = this.handleTaskDetailsChange.bind(this);
-    this.handleAddMemberToTask = this.handleAddMemberToTask.bind(this);
-    this.handleTaskRefiling = this.handleTaskRefiling.bind(this);
-    this.unmount = this.unmount.bind(this);
+const StyledToolbar = styled(Toolbar).attrs({
+  disableGutters: true,
+})`
+  && {
+    //padding: 0 38px 0 48px;
+  }
+`;
+
+const StyledForm = styled.form`
+  width: 100%;
+`;
+
+const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
+  && {
+    background: #e6ecf0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    height: 40px;
+    width: 100%;
   }
 
-  componentWillUpdate(nextProps) {
-    enableAutoCompleteForPatients(nextProps.patients);
+  && input {
+    height: 100%;
+    border: none;
+    box-shadow: none;
+    background: none;
+    font-size: 14px;
+    color: #303538;
+    padding: 0;
 
-    enableAutoCompleteForAssignedTo(nextProps.activeListMembers);
-    enableAutoCompleteForSubtaskAssignedTo(nextProps.activeListMembers);
+    ::placeholder {
+      color: #303538;
+      opacity: 1;
+    }
+
+    :focus::placeholder {
+      opacity: 0.5;
+    }
   }
 
-  unmount() {
-    const node = this.ReactDOM.getDOMNode();
-    ReactDOM.unmountComponentAtNode(node);
-    $(node).remove();
+  && fieldset {
+    border: none;
+    top: 0;
   }
+`;
 
-  handleTaskDetailsChange(event) {
-    this.setState({ value: event.target.value });
+const StyledAdornment = styled(InputAdornment)`
+  && {
+    flex-shrink: 0;
+    border-radius: 1px;
+    height: 100%;
+    max-height: 100%;
+    width: 40px;
+    justify-content: center;
   }
+`;
 
-  addSubtaskToState = (subtask) => {
-    this.setState(state => ({ subtasks: state.subtasks.concat(subtask) }));
-  };
-
-  setSubtasks = (subtasks) => {
-    this.setState({ subtasks });
-  };
-
-  clearSubtasks = () => {
-    this.setState({ subtasks: [] });
-  };
-
-  isSubtask = (boolean) => {
-    // this.setState({ isSubtask: boolean });
-  };
-
-  handleAddMemberToTask(memberId) {
-    this.state.assignedToId = memberId;
+const StyledAddIcon = styled(AddIcon)`
+  && {
+    color: #d9036b;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
   }
+`;
 
-  submit = (form) => {
-    this.setState({ form: undefined });
-    // TODO - manually have to get the values since react-form doesn't pick up hidden values
-    this.props.formActions.reset('addTaskForm');
+const StyledAddIconRight = styled(StyledAddIcon)`
+  && {
+    color: #fff;
+    background: #d9036b;
+  }
+`;
 
-    const payload = { ...form };
+const StyledButton = styled(ButtonBase)`
+  && {
+    width: 100%;
+    height: 100%;
+  }
+`;
 
-    if (form.patient !== '') {
-      payload.patientId = $('#add-patient-id').val();
-    } else {
-      payload.patientId = null;
-    }
-    if ($('#assign-task-to').val() !== '') {
-      payload.assignedToId = $('#assign-task-to-id').val();
-    } else {
-      payload.assignedToId = '';
-    }
-    if ($('#due-date').val() !== '') {
-      payload.dueDate = unformatDateAndTime($('#due-date').val());
-    } else {
-      payload.dueDate = '';
-    }
+const AddTask = ({ storeAsCurrentTask, submit, style }) => {
+  const [draft, setDraft] = useState('');
 
-    if ($('#reminder-date').val() !== '') {
-      payload.reminderDt = unformatDateAndTime($('#reminder-date').val());
-    } else {
-      payload.reminderDt = '';
-    }
+  const handleChange = useCallback(e => {
+    setDraft(e.target.value);
+  });
 
-    if (payload.priorityFlag === true) {
-      payload.priority = 'HIGH';
-    } else {
-      payload.priority = 'LOW';
-    }
+  const onFocus = useCallback(() => {
+    storeAsCurrentTask(null);
+  });
 
-    payload.status = form.status.value;
-    payload.taskStatus = form.taskStatus.value;
-
-    if ($('#filed-in-taskList').val()) {
-      if (
-        this.props.title === 'Inbox'
-        || (this.props.task
-          && this.props.task.taskList
-          && $('#filed-in-taskList').val() !== this.props.task.taskList.listName)
-      ) {
-        this.setState({ form: payload });
-        this.openRefileConfirmationModal();
+  const handleSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      if (draft === '') {
         return;
       }
-    }
-    this.props.taskActions.saveTask(payload);
-    toggleTaskForm();
-  };
+      submit(draft);
+      setDraft('');
+    },
+    [draft, submit],
+  );
 
-  openRefileConfirmationModal = () => {
-    openPopup('#refile-task');
-  };
+  return (
+    <StyledToolbar style={style}>
+      <StyledForm onSubmit={handleSubmit}>
+        <StyledTextField
+          onFocus={onFocus}
+          onChange={handleChange}
+          value={draft}
+          placeholder="Add a task"
+          InputProps={{
+            startAdornment: (
+              <StyledAdornment disablePointerEvents>
+                <StyledAddIcon />
+              </StyledAdornment>
+            ),
+            endAdornment: (
+              <StyledAdornment>
+                <StyledButton onClick={handleSubmit}>
+                  <StyledAddIconRight />
+                </StyledButton>
+              </StyledAdornment>
+            ),
+            style: {
+              padding: 0,
+            },
+          }}
+        />
+      </StyledForm>
+    </StyledToolbar>
+  );
+};
 
-  handleTaskRefiling() {
-    this.state.form.refiled = true;
-    this.props.taskActions.saveTask(this.state.form);
-    toggleTaskForm();
-  }
+AddTask.propTypes = {
+  submit: PropTypes.func.isRequired,
+};
 
-  addSubtaskValues = (subtaskValues, index) => {
-    this.setState({ currentSubtaskIndex: '' });
-    if (index !== '') {
-      this.props.formActions.change('addTaskForm', `subtasks[${index}]`, {
-        ...subtaskValues,
-        taskId: this.props.currentSubtasks[index].taskId,
-      });
-    } else {
-      this.props.formActions.arrayPush('addTaskForm', 'subtasks', { ...subtaskValues, taskId: '' });
-    }
-  };
-
-  currentSubtaskAndIndexToState = (index, task) => {
-    this.setState({ currentSubtaskIndex: index });
-    this.setState({ currentSubtask: task });
-  };
-
-  render() {
-    return (
-      <div>
-        <div className="add-form-wrapper" ref="toggle">
-          <div className="task-item add-form row expanded">
-            <div className="column top-buffer large-12">
-              <AddTaskForm
-                sectionTitle="Add a Task"
-                onSubmit={this.submit}
-                taskLists={this.props.taskLists}
-                task={this.props.task}
-                title={this.props.title}
-                taskListId={this.props.taskListId}
-                initialValues={`taskListId:${this.props.taskListId}`}
-                subtasks={this.state.subtasks}
-                addSubtaskToState={this.addSubtaskToState}
-                setSubtasks={this.setSubtasks}
-                clearSubtasks={this.clearSubtasks}
-                currentSubtaskAndIndexToState={this.currentSubtaskAndIndexToState}
-                isEditing={this.props.isEditing}
-                isSubtask={this.isSubtask}
-              />
-              <AddSubtaskForm
-                onSubmit={this.submitSubtask}
-                addSubtaskValues={this.addSubtaskValues}
-                currentSubtasks={this.props.currentSubtasks}
-                currentSubtaskIndex={this.state.currentSubtaskIndex}
-                title={this.props.title}
-                currentTask={this.props.task}
-                currentSubtask={this.state.currentSubtask}
-                isSubtask={this.isSubtask}
-              />
-              <AddPatientModal/>
-              <BooleanModal
-                message="Are you sure you want to move this task to another list?"
-                confirmBtnTxt="Move"
-                uniqueModalId="refile-task"
-                handleConfirmation={this.handleTaskRefiling}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
-const selector = formValueSelector('addTaskForm');
-
-const mapStateToProps = store => ({
-  taskLists: store.taskListState.tasklist,
-  patients: store.patientState.allPatients,
-  peoplelist: store.peopleState.peoplelist,
-  members: store.taskListState.tasklistmembers,
-  task: store.taskState.task,
-  currentSubtasks: selector(store, 'subtasks'),
-  activeListMembers: store.taskListState.tasklistactivemembers,
+const mapDispatchToProps = (dispatch, { taskListId }) => ({
+  submit: description => {
+    saveTask({ description, taskListId })(dispatch);
+  },
 });
 
-const mapDispatchToProps = dispatch => ({
-  taskActions: bindActionCreators(TaskActions, dispatch),
-  peopleActions: bindActionCreators(PeopleActions, dispatch),
-  formActions: bindActionCreators({ reset, change, arrayPush }, dispatch),
-});
-
-export default connect(
-  mapStateToProps,
+const ConnectedAddTask = connect(
+  undefined,
   mapDispatchToProps,
 )(AddTask);
+
+ConnectedAddTask.propTypes = {
+  taskListId: PropTypes.number.isRequired,
+};
+
+export default ConnectedAddTask;

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 
-import useBoolean from '../../helpers/useBoolean';
+import useBoolean from '../../hooks/useBoolean';
 
 const StyledLabel = styled.div`
   color: #ababb2;
@@ -129,13 +129,16 @@ const AuthField = ({
 
   const { onChange: oldOnChange, ...otherInput } = input;
 
-  const onChange = (e) => {
+  const onChange = e => {
     oldOnChange(e);
     setCustomError('');
   };
 
   return (
-    <StyledInputContainer marginTop={marginTop} className={inputClassName.trim()}>
+    <StyledInputContainer
+      marginTop={marginTop}
+      className={inputClassName.trim()}
+    >
       {hasError && <StyledErrorLabel>{errorValue}</StyledErrorLabel>}
       <StyledInput
         ref={inputRef}

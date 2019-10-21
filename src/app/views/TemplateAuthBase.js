@@ -51,7 +51,9 @@ class TemplateAuthBase extends Component {
     const { current } = this.rectangleContainerRef;
 
     if (current) {
-      const modalContainerWidth = Math.floor(current.offsetHeight * MODAL_CONTAINER_RATIO);
+      const modalContainerWidth = Math.floor(
+        current.offsetHeight * MODAL_CONTAINER_RATIO,
+      );
 
       this.setState({
         modalContainerWidth,
@@ -67,22 +69,34 @@ class TemplateAuthBase extends Component {
     const { children } = this.props;
     const { modalContainerWidth } = this.state;
 
-    const contentContainerPadding = Math.floor(modalContainerWidth * PADDING_CONTAINER_RATIO);
-    const logoImageHeight = Math.floor(modalContainerWidth * IMAGE_HEIGHT_RATIO);
+    const contentContainerPadding = Math.floor(
+      modalContainerWidth * PADDING_CONTAINER_RATIO,
+    );
+    const logoImageHeight = Math.floor(
+      modalContainerWidth * IMAGE_HEIGHT_RATIO,
+    );
 
     return (
       <BackgroundContainer>
         <BackgroundHorizontalFiller />
         <BackgroundCenterContainer>
           <BackgroundVerticalFiller />
-          <BackgroundModalContainer container style={{ width: modalContainerWidth }}>
+          <BackgroundModalContainer
+            container
+            style={{ width: modalContainerWidth }}
+          >
             <Hidden smDown>
               <BackgroundRectangleContainer ref={this.rectangleContainerRef}>
-                <img src="assets/img/svg/login-rectangle.svg" alt="Background" />
+                <img
+                  src="assets/img/svg/login-rectangle.svg"
+                  alt="Background"
+                />
               </BackgroundRectangleContainer>
             </Hidden>
             <Hidden mdUp>
-              <SmallBackgroundRectangleContainer ref={this.rectangleContainerRef} />
+              <SmallBackgroundRectangleContainer
+                ref={this.rectangleContainerRef}
+              />
             </Hidden>
             <ContentContainer
               padding={contentContainerPadding}
@@ -92,7 +106,13 @@ class TemplateAuthBase extends Component {
               md={6}
               direction="column"
             >
-              <DockLogoContainer container item xs={12} justify="flex-start" alignItems="flex-end">
+              <DockLogoContainer
+                container
+                item
+                xs={12}
+                justify="flex-start"
+                alignItems="flex-end"
+              >
                 <DockLogo
                   height={logoImageHeight}
                   src="assets/img/dock-logo.png"

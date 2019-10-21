@@ -4,9 +4,13 @@ import { Link } from 'react-router';
 import { Field, reduxForm } from 'redux-form';
 
 import AuthField from '../common/AuthField';
-import { NextButton, StyledLabel, TitleTypography } from './AuthComponents.styled';
+import {
+  NextButton,
+  StyledLabel,
+  TitleTypography,
+} from './AuthComponents.styled';
 
-const validate = (values) => {
+const validate = values => {
   const errors = {};
 
   if (!values.password) {
@@ -25,9 +29,7 @@ class LoginFormPassword extends PureComponent {
   };
 
   render() {
-    const {
-      customError, setCustomError, handleSubmit, invalid,
-    } = this.props;
+    const { customError, setCustomError, handleSubmit, invalid } = this.props;
 
     return (
       <form className="inline-label top-buffer" onSubmit={handleSubmit}>
@@ -36,7 +38,9 @@ class LoginFormPassword extends PureComponent {
             Welcome to Dock Health
           </TitleTypography>
           <Grid item sm={12} md={9}>
-            <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
+            <TitleTypography variant="h4">
+              Please sign in to your account
+            </TitleTypography>
           </Grid>
           <Grid item sm={12} md={9}>
             <Field

@@ -13,7 +13,9 @@ export const TitleTypography = styled(Typography)`
 `;
 
 const NextButtonComponent = ({ active, classes, ...props }) => {
-  const className = `${active ? classes.active : classes.inactive} ${classes.root}`;
+  const className = `${active ? classes.active : classes.inactive} ${
+    classes.root
+  }`;
 
   return <ButtonBase disabled={!active} className={className} {...props} />;
 };

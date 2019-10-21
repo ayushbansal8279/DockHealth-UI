@@ -1,52 +1,62 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import {bindActionCreators} from 'redux';
-import * as NotificationActions from '../../actions/notification-actions'
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as NotificationActions from '../../actions/notification-actions';
 
 class Notification extends React.Component {
-  onClose () {
-    this.props.actions.hide('')
+  onClose() {
+    const { actions } = this.props;
+    actions.hide('');
   }
-  render () {
-    let {type, message, hidden, stay} = this.props
+
+  render() {
+    const { type, message, hidden, stay } = this.props;
     if (!type) {
-      return null
+      return null;
     }
-    const classes = ['Notification', 'message']
+    const classes = ['Notification', 'message'];
     if (type === 'info') {
-      classes.push('is-info')
+      classes.push('is-info');
     }
     if (type === 'success') {
-      classes.push('is-success')
+      classes.push('is-success');
     }
     if (type === 'error') {
-      classes.push('is-danger')
+      classes.push('is-danger');
     }
     if (hidden) {
-      classes.push('hidden')
+      classes.push('hidden');
     }
-    return (<div className={classes.join(' ')}>
-      <div className='message-body'>
-        {message}
-        {stay ? <button style={{marginLeft: 5}} onClick={this.onClose} className='delete'></button> : null}
+    return (
+      <div className={classes.join(' ')}>
+        <div className="message-body">
+          {message}
+          {stay ?? (
+            <button
+              style={{ marginLeft: 5 }}
+              onClick={this.onClose}
+              className="delete"
+              type="button"
+            />
+          )}
+        </div>
       </div>
-    </div>)
+    );
   }
 }
 
-const mapStateToProps = function (store) {
-  return {
-    message: store.notification.message,
-    type: store.notification.type,
-    hidden: store.notification.hidden,
-    stay: store.notification.stay
-  }
-}
+const mapStateToProps = store => ({
+  message: store.notification.message,
+  type: store.notification.type,
+  hidden: store.notification.hidden,
+  stay: store.notification.stay,
+});
 
-const mapDispatchToProps = function (dispatch) {  
-  return {
-    actions: bindActionCreators(NotificationActions, dispatch)
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(NotificationActions, dispatch),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notification)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Notification);

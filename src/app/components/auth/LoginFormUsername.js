@@ -6,13 +6,19 @@ import { Field, reduxForm } from 'redux-form';
 
 import * as UserApi from '../../api/user-api';
 import AuthField from '../common/AuthField';
-import { NextButton, StyledLabel, TitleTypography } from './AuthComponents.styled';
+import {
+  NextButton,
+  StyledLabel,
+  TitleTypography,
+} from './AuthComponents.styled';
 
-const validate = (values) => {
+const validate = values => {
   const errors = {};
   if (!values.username) {
     errors.username = 'Please enter an email address';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)) {
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)
+  ) {
     errors.username = 'Please enter a valid email address';
   }
   return errors;
@@ -26,7 +32,10 @@ class LoginFormUsername extends Component {
   componentWillMount() {
     if (window.location.href) {
       const index = window.location.href.indexOf('?');
-      const queryStr = window.location.href.substr(index + 1, window.location.href.length - 1);
+      const queryStr = window.location.href.substr(
+        index + 1,
+        window.location.href.length - 1,
+      );
       const queryValues = queryString.parse(queryStr);
 
       if (queryValues.code !== undefined) {
@@ -37,7 +46,7 @@ class LoginFormUsername extends Component {
             window.location.href = '/#/taskList';
             this.setState({ showLoginMessage: false });
           })
-          .catch((e) => {
+          .catch(e => {
             toggleAlert(e.message, 'error');
           });
       }
@@ -56,7 +65,9 @@ class LoginFormUsername extends Component {
               Welcome to Dock Health
             </TitleTypography>
             <Grid item sm={12} md={9}>
-              <TitleTypography variant="h4">Please sign in to your account</TitleTypography>
+              <TitleTypography variant="h4">
+                Please sign in to your account
+              </TitleTypography>
             </Grid>
             <Grid item sm={12} md={9}>
               <Field

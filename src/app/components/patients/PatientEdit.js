@@ -4,9 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
 import { equals, evolve } from 'ramda';
-import React, {
-  useCallback, useEffect, useMemo, useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
@@ -118,7 +116,7 @@ const Save = styled(Button).attrs({
 const BirthdayTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={(ref) => {
+    ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
     placeholder="MM/DD/YYYY"
@@ -131,11 +129,24 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
 const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={(ref) => {
+    ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
     placeholder="123-123-1234"
-    mask={[/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+    mask={[
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      /\d/,
+      /\d/,
+    ]}
     placeholderChar={'\u2000'}
     keepCharPositions
   />
@@ -168,7 +179,10 @@ export const PatientsForm = ({
 
   return (
     <>
-      <PatientsSidebarSection heading="Patient Details" hideCollapse={hideCollapse}>
+      <PatientsSidebarSection
+        heading="Patient Details"
+        hideCollapse={hideCollapse}
+      >
         <div
           style={{
             columnCount: 2,
@@ -328,7 +342,7 @@ const PatientEdit = ({ patient }) => {
   const isClean = equals(formState, formattedPatient);
 
   const handleInputChange = useCallback(
-    (event) => {
+    event => {
       const { target } = event;
       const { name } = target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -358,7 +372,7 @@ const PatientEdit = ({ patient }) => {
     [dispatch, formState],
   );
 
-  const validateBirthday = (dob) => {
+  const validateBirthday = dob => {
     const now = moment();
     const birthday = moment(dob, 'MM/DD/YYYY', true);
     return birthday.isBefore(now);
@@ -367,10 +381,10 @@ const PatientEdit = ({ patient }) => {
   const canSubmit = () => {
     const { firstName, lastName, dob } = formState;
     return (
-      firstName
-      && firstName !== ''
-      && (lastName && lastName !== '')
-      && (!dob || validateBirthday(dob))
+      firstName &&
+      firstName !== '' &&
+      (lastName && lastName !== '') &&
+      (!dob || validateBirthday(dob))
     );
   };
 
@@ -388,8 +402,8 @@ const PatientEdit = ({ patient }) => {
         isClean
           ? {}
           : {
-            dob: formState.dob && !validateBirthday(formState.dob),
-          }
+              dob: formState.dob && !validateBirthday(formState.dob),
+            }
       }
       isReadOnly={isClean}
       cancel={isClean ? undefined : clear}

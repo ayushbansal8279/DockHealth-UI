@@ -1,7 +1,12 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  getTaskHistory, clearCurrentTaskHistory, moveTask, updateDueDate, updateReminder, updatePatient,
+  getTaskHistory,
+  clearCurrentTaskHistory,
+  moveTask,
+  updateDueDate,
+  updateReminder,
+  updatePatient,
 } from '../task-actions';
 import {
   REQUEST_HISTORY,
@@ -82,29 +87,28 @@ describe('clearCurrentTaskHistory', () => {
   });
 });
 
-
 describe('moveTask', () => {
   it('should remove task from current tasklist after update', async () => {
     const taskList = { taskListId: 0, listName: 'List #1' };
     const task = { taskId: 0, taskList };
 
-    const expectedActions = [
-      { type: MOVE_TASK_SUCCESS, task },
-    ];
+    const expectedActions = [{ type: MOVE_TASK_SUCCESS, task }];
 
     const store = mockStore({
       taskState: {
-        tasks: [
-          task,
-          { taskId: 1, taskList },
-        ],
+        tasks: [task, { taskId: 1, taskList }],
       },
     });
 
-    const updatedTask = { taskId: 0, taskList: { taskListId: 1, listName: 'List #2' } };
+    const updatedTask = {
+      taskId: 0,
+      taskList: { taskListId: 1, listName: 'List #2' },
+    };
     TaskApi.updateTask.mockReturnValue(Promise.resolve(updatedTask));
 
-    await store.dispatch(moveTask(task, { taskListId: 1, listName: 'List #2' }));
+    await store.dispatch(
+      moveTask(task, { taskListId: 1, listName: 'List #2' }),
+    );
     expect(store.getActions()).toEqual(expectedActions);
   });
 
@@ -112,9 +116,7 @@ describe('moveTask', () => {
     const taskList = { taskListId: 0, listName: 'List #1' };
     const task = { taskId: 2, parentTaskId: 0, taskList };
 
-    const expectedActions = [
-      { type: MOVE_TASK_SUCCESS, task },
-    ];
+    const expectedActions = [{ type: MOVE_TASK_SUCCESS, task }];
 
     const store = mockStore({
       taskState: {
@@ -125,19 +127,28 @@ describe('moveTask', () => {
       },
     });
 
-    const updatedTask = { taskId: 0, parentTaskId: null, taskList: { taskListId: 1, listName: 'List #2' } };
+    const updatedTask = {
+      taskId: 0,
+      parentTaskId: null,
+      taskList: { taskListId: 1, listName: 'List #2' },
+    };
     TaskApi.updateTask.mockReturnValue(Promise.resolve(updatedTask));
 
-    await store.dispatch(moveTask(task, { taskListId: 1, listName: 'List #2' }));
+    await store.dispatch(
+      moveTask(task, { taskListId: 1, listName: 'List #2' }),
+    );
     expect(store.getActions()).toEqual(expectedActions);
   });
 });
 
-
 describe('updateDueDate', () => {
   it('should update due date', async () => {
     const expectedActions = [
-      { type: UPDATE_TASK_DUE_DATE, taskId: 0, dueDate: '2019-03-27T03:00:00.000Z' },
+      {
+        type: UPDATE_TASK_DUE_DATE,
+        taskId: 0,
+        dueDate: '2019-03-27T03:00:00.000Z',
+      },
     ];
 
     const store = mockStore({
@@ -146,9 +157,13 @@ describe('updateDueDate', () => {
       },
     });
 
-    TaskApi.updateTask.mockReturnValue(Promise.resolve({ taskId: 0, dueDate: '2019-03-27T03:00:00.000Z' }));
+    TaskApi.updateTask.mockReturnValue(
+      Promise.resolve({ taskId: 0, dueDate: '2019-03-27T03:00:00.000Z' }),
+    );
 
-    await store.dispatch(updateDueDate({ taskId: 0, dueDate: null }, '2019-03-27T03:00:00.000Z'));
+    await store.dispatch(
+      updateDueDate({ taskId: 0, dueDate: null }, '2019-03-27T03:00:00.000Z'),
+    );
     expect(store.getActions()).toEqual(expectedActions);
   });
 });
@@ -156,7 +171,11 @@ describe('updateDueDate', () => {
 describe('updateReminder', () => {
   it('should update due date', async () => {
     const expectedActions = [
-      { type: UPDATE_TASK_REMINDER, taskId: 0, reminderDt: '2019-03-27T03:00:00.000Z' },
+      {
+        type: UPDATE_TASK_REMINDER,
+        taskId: 0,
+        reminderDt: '2019-03-27T03:00:00.000Z',
+      },
     ];
 
     const store = mockStore({
@@ -167,11 +186,15 @@ describe('updateReminder', () => {
 
     TaskApi.updateTask.mockReturnValue(Promise.resolve({}));
 
-    await store.dispatch(updateReminder({ taskId: 0, reminderDt: null }, '2019-03-27T03:00:00.000Z'));
+    await store.dispatch(
+      updateReminder(
+        { taskId: 0, reminderDt: null },
+        '2019-03-27T03:00:00.000Z',
+      ),
+    );
     expect(store.getActions()).toEqual(expectedActions);
   });
 });
-
 
 describe('updatePatient', () => {
   it('should update assigned patient', async () => {
@@ -185,9 +208,13 @@ describe('updatePatient', () => {
       },
     });
 
-    TaskApi.updateTask.mockReturnValue(Promise.resolve({ taskId: 0, patient: { patientId: 1 } }));
+    TaskApi.updateTask.mockReturnValue(
+      Promise.resolve({ taskId: 0, patient: { patientId: 1 } }),
+    );
 
-    await store.dispatch(updatePatient({ taskId: 0, patient: null }, { patientId: 1 }));
+    await store.dispatch(
+      updatePatient({ taskId: 0, patient: null }, { patientId: 1 }),
+    );
     expect(store.getActions()).toEqual(expectedActions);
   });
 });

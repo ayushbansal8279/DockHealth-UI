@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import React from 'react';
+import styled from 'styled-components';
+
 import PatientsAdd from './PatientsAdd';
 
 const PatientsHeaderContainer = styled.div`

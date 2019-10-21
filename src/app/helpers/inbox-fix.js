@@ -1,4 +1,13 @@
-import { always, evolve, isNil, lensProp, map, propSatisfies, set, when } from 'ramda';
+import {
+  always,
+  evolve,
+  isNil,
+  lensProp,
+  map,
+  propSatisfies,
+  set,
+  when,
+} from 'ramda';
 
 const fromInbox = propSatisfies(isNil, 'taskList');
 const inbox = { listName: 'Inbox' };

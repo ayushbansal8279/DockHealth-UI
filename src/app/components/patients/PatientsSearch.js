@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
 
 const StyledTextField = styled(TextField)`
   && {

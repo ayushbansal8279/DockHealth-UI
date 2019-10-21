@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { selectPatientTask } from '../../actions/patient';
 import { markComplete } from '../../actions/task-actions';
-import AddTask from '../home/AddTask';
+import AddTask from '../task/AddTask';
 import PatientsTask from './PatientsTask';
 
 const PatientsTasklistCount = styled.div`
@@ -49,14 +49,16 @@ const PatientsTasklistEditable = ({
   const mark = listType => (task, status) => {
     dispatch(markComplete(task, status, listType));
   };
-  const select = (task) => {
+  const select = task => {
     dispatch(selectPatientTask(task));
   };
 
   return (
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
-      {submitTask && <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />}
+      {submitTask && (
+        <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
+      )}
       {tasks.map(task => (
         <PatientsTask
           task={task}
@@ -69,7 +71,9 @@ const PatientsTasklistEditable = ({
       ))}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
-          {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${completedTasks.length})`}
+          {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${
+            completedTasks.length
+          })`}
         </PatientsTasklistShowCompleted>
       )}
       {isShowingCompleted && (

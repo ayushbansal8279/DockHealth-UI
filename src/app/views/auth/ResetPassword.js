@@ -7,7 +7,7 @@ import * as userApi from '../../api/user-api';
 import ResetPasswordForm from '../../components/auth/ResetPasswordForm';
 
 export default class ResetPassword extends PureComponent {
-  onSubmit = (form) => {
+  onSubmit = form => {
     const {
       location: {
         query: { uname, code },
@@ -27,7 +27,7 @@ export default class ResetPassword extends PureComponent {
         success('Reset password. Please login');
         hashHistory.push('resetPasswordSuccess');
       })
-      .catch((e) => {
+      .catch(e => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           RESET_PASSWORD_SUCCESS: 'NO',
         });

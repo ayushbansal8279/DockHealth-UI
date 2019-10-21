@@ -7,7 +7,7 @@ import { NextButton, TitleTypography } from './AuthComponents.styled';
 
 const MIN_PASSWORD_LENGTH = 8;
 
-const validate = (values) => {
+const validate = values => {
   const errors = {};
 
   const { password } = values;
@@ -25,7 +25,7 @@ const validate = (values) => {
   return errors;
 };
 
-const ResetPasswordForm = (props) => {
+const ResetPasswordForm = props => {
   const { handleSubmit, invalid } = props;
 
   return (
@@ -35,8 +35,8 @@ const ResetPasswordForm = (props) => {
       </TitleTypography>
       <Grid item sm={12} md={9}>
         <TitleTypography variant="h4">
-          In order to protect your account, please make sure your password is 8 character minimum,
-          includes at least one number and one capital letter
+          In order to protect your account, please make sure your password is 8
+          character minimum, includes at least one number and one capital letter
         </TitleTypography>
       </Grid>
       <Grid item sm={12} md={9}>

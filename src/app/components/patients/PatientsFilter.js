@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import FormControl from '@material-ui/core/FormControl';
-import MaterialSelect from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import MaterialSelect from '@material-ui/core/Select';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
 
 const StyledSelect = styled(MaterialSelect).attrs({
   classes: { selectMenu: 'selectMenu', root: 'selectRoot', select: 'select' },
@@ -19,22 +19,17 @@ const StyledSelect = styled(MaterialSelect).attrs({
     line-height: 24px;
   }
 
-  & .selectRoot {
-      //height: 23px;
-  }
-
-   & .selectMenu {
+  & .selectMenu {
     padding-left: 16px;
   }
 
-  &&, & .selectMenu:focus {
+  &&,
+  & .selectMenu:focus {
     border-radius: 3px;
   }
 `;
 
-const PatientsFilter = ({
-  onChange, value, options, disabled,
-}) => (
+const PatientsFilter = ({ onChange, value, options, disabled }) => (
   <FormControl variant="filled" style={{ minWidth: 186 }}>
     <StyledSelect
       value={value || 'ALL_PATIENTS'}
@@ -42,9 +37,17 @@ const PatientsFilter = ({
       onChange={onChange}
       name="filter"
     >
-      {options.map(({ value, description }) => ( // eslint-disable-line no-shadow
+      {options.map((
+        { value, description }, // eslint-disable-line no-shadow
+      ) => (
         <MenuItem value={value} key={value}>
-          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}
+          >
             <div style={{ flex: 1, marginLeft: 5 }}>{description}</div>
           </div>
         </MenuItem>
@@ -57,10 +60,12 @@ PatientsFilter.propTypes = {
   disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string,
-    description: PropTypes.string,
-  })).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string,
+      description: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 PatientsFilter.defaultProps = {

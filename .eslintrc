@@ -10,11 +10,20 @@
     "modules": true,
     "jsx": true
   },
-  "extends": ["airbnb"],
+  "extends": ["airbnb", "plugin:prettier/recommended"],
   "plugins": ["jest", "react-hooks"],
   "globals": {
+    "closeDropdown": true,
+    "closePopup": true,
+    "enableFoundationComponent": true,
+    "enableFoundationForSingleComponent": true,
+    "formatDateAndTime": true,
+    "openAddForm": true,
+    "openDropdown": true,
+    "removeRevealComponent": true,
     "renderFoundationComponentsJquery": true,
-    "toggleAlert": true
+    "toggleAlert": true,
+    "toggleTaskForm": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,

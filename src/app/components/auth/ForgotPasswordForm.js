@@ -5,19 +5,21 @@ import { Field, reduxForm } from 'redux-form';
 import AuthField from '../common/AuthField';
 import { NextButton, TitleTypography } from './AuthComponents.styled';
 
-const validate = (values) => {
+const validate = values => {
   const errors = {};
 
   if (!values.username) {
     errors.username = 'Please enter an email address';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)) {
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)
+  ) {
     errors.username = 'Please enter a valid email address';
   }
 
   return errors;
 };
 
-const ForgotPasswordForm = (props) => {
+const ForgotPasswordForm = props => {
   const { handleSubmit, invalid } = props;
 
   return (
@@ -28,7 +30,8 @@ const ForgotPasswordForm = (props) => {
         </TitleTypography>
         <Grid item sm={12} md={9}>
           <TitleTypography variant="h4">
-            Don’t worry, it happens to the best of us. Enter the email associated with your account.
+            Don’t worry, it happens to the best of us. Enter the email
+            associated with your account.
           </TitleTypography>
         </Grid>
         <Grid item md={9} sm={12}>

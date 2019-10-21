@@ -3,9 +3,9 @@ import React from 'react';
 import { Link } from 'react-router';
 
 import BellIcon from '../../img/bell.svg';
-import MemberPicker from '../home/MemberPicker';
-import Priority from '../home/Priority';
-import TaskCheckbox from '../TaskCheckbox';
+import Priority from '../common/Priority';
+import MemberPicker from '../members/MemberPicker';
+import TaskCheckbox from '../common/TaskCheckbox';
 import {
   PatientsTasklistComments,
   PatientsTasklistDate,
@@ -51,7 +51,7 @@ const PatientsTaskBody = ({
   return (
     <div
       style={{ cursor: 'pointer', display: 'flex' }}
-      onClick={(e) => {
+      onClick={e => {
         e.stopPropagation();
         // eslint-disable-next-line no-unused-expressions
         storeAsCurrentTask?.(task);
@@ -67,7 +67,7 @@ const PatientsTaskBody = ({
           <TaskCheckbox
             checked={status === 'COMPLETE'}
             onChange={handleStatusChange}
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
             }}
             disabled={disabled || (isSubtask && isParentComplete)}
@@ -119,7 +119,9 @@ const PatientsTaskBody = ({
           >
             {storeAsCurrentTask ? (
               <PatientsTasklistDescription isComplete={status === 'COMPLETE'}>
-                {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
+                {description || (
+                  <div style={{ color: '#ababb2' }}>Unnamed task</div>
+                )}
               </PatientsTasklistDescription>
             ) : (
               <Link
@@ -131,7 +133,9 @@ const PatientsTaskBody = ({
                 }}
               >
                 <PatientsTasklistDescription isComplete={status === 'COMPLETE'}>
-                  {description || <div style={{ color: '#ababb2' }}>Unnamed task</div>}
+                  {description || (
+                    <div style={{ color: '#ababb2' }}>Unnamed task</div>
+                  )}
                 </PatientsTasklistDescription>
               </Link>
             )}
@@ -139,7 +143,9 @@ const PatientsTaskBody = ({
               {`Assigned by ${creator.userName} • ${formattedCreationDate}`}
             </PatientsTasklistInfo>
             {comments.length > 0 && (
-              <PatientsTasklistComments>{`${comments.length} comments`}</PatientsTasklistComments>
+              <PatientsTasklistComments>
+                {`${comments.length} comments`}
+              </PatientsTasklistComments>
             )}
           </div>
           {!isSubtask && !hidePatient && (
@@ -151,7 +157,10 @@ const PatientsTaskBody = ({
               }}
             >
               {patient && (
-                <Link to={`/patient/${patient.patientId}`} style={{ color: '#0ca1c7' }}>
+                <Link
+                  to={`/patient/${patient.patientId}`}
+                  style={{ color: '#0ca1c7' }}
+                >
                   <div>{`${patient?.lastName}, ${patient?.firstName}`}</div>
                   <div>{patient?.mrn}</div>
                 </Link>
@@ -190,7 +199,10 @@ const PatientsTaskBody = ({
             </div>
           )}
           {!hidePriority && (
-            <Priority priority={workflowStatus} style={{ margin: '8px 23px 0 0' }} />
+            <Priority
+              priority={workflowStatus}
+              style={{ margin: '8px 23px 0 0' }}
+            />
           )}
         </div>
       </div>

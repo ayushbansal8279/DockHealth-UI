@@ -1,47 +1,44 @@
 import React from 'react';
-import { Link,hashHistory } from 'react-router';
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import UserProfileContainer from '../components/people/UserProfileContainer'
-import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate'
+import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
-class UserProfileView extends BaseComponentWithFoundationUpdate {
+import UserProfileContainer from '../components/people/UserProfileContainer';
 
-    render() {
-      return (
-
-        <div className="off-canvas-content" data-off-canvas-content>
-          <div className="row expanded collapse">
-            <div className="large-12 columns">
-              <header className="nav-down">
-                <div className="top-bar">
-                  {/* <div className="new-task text-center">
-                    <span className="number-new-tasks"></span>
-                  </div> */}
-                  <div className="top-bar-left">
-                    <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar"></button>
-                    <h3>My Profile</h3>
-                  </div>
-                  <div className="top-bar-right">
-                    <Link to="/logout" className="button small primary">Logout</Link>
-                  </div>
-                </div>
-              </header>
+const UserProfileView = ({ userProfile }) => {
+  return (
+    <div className="off-canvas-content" data-off-canvas-content>
+      <div className="row expanded collapse">
+        <div className="large-12 columns">
+          <header className="nav-down">
+            <div className="top-bar">
+              <div className="top-bar-left">
+                <button
+                  className="menu-icon hide-for-medium"
+                  type="button"
+                  data-toggle="sidebar"
+                />
+                <h3>My Profile</h3>
+              </div>
+              <div className="top-bar-right">
+                <Link to="/logout" className="button small primary">
+                  Logout
+                </Link>
+              </div>
             </div>
-          </div>
-          <div className="list-wrapper">
-            <UserProfileContainer userProfile={this.props.userProfile}/>
-          </div>
+          </header>
         </div>
+      </div>
+      <div className="list-wrapper">
+        <UserProfileContainer userProfile={userProfile} />
+      </div>
+    </div>
+  );
+};
 
-      );
-  }
-}
-
-const mapStateToProps = function (store) {
+const mapStateToProps = store => {
   return {
-    userProfile: store.userState.userProfile
-  }
-}
+    userProfile: store.userState.userProfile,
+  };
+};
 
 export default connect(mapStateToProps)(UserProfileView);

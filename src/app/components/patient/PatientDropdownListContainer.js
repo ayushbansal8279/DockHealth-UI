@@ -1,43 +1,51 @@
-import React from 'react'
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux';
-import PatientDropdownList from './PatientDropdownList'
-import * as PatientActions from '../../actions/patient-actions'
-import {mobileAnalyticsClient} from '../../api/analytics-api'
-import BaseComponent from '../BaseComponent'
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-class PatientDropdownListContainer extends BaseComponent {
-    componentWillMount () {
-        this.props.actions.getAllPatients()
-    }
-    componentDidMount () {
-      mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
-              'PageName': 'PatientDropdownList'
-      });
-    }
+import * as PatientActions from '../../actions/patient-actions';
+import { mobileAnalyticsClient } from '../../api/analytics-api';
+import PatientDropdownList from './PatientDropdownList';
 
-    render() {
-        return (
-          <PatientDropdownList patients={this.props.patients} addPatientToTaskCallback={this.props.addPatientToTaskCallback} taskId={this.props.taskId}/>
-        )
-    }
-}
+class PatientDropdownListContainer extends PureComponent {
+  componentWillMount() {
+    this.props.actions.getAllPatients();
+  }
 
-//property validation
-PatientDropdownListContainer.propTypes = {
-    patients: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired
-}
+  componentDidMount() {
+    mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
+      PageName: 'PatientDropdownList',
+    });
+  }
 
-const mapStateToProps = function (store) {
-    return {patients: store.patientState.allPatients};
-}
-
-const mapDispatchToProps = function (dispatch) {
-  return {
-    actions: bindActionCreators(PatientActions, dispatch)
+  render() {
+    return (
+      <PatientDropdownList
+        patients={this.props.patients}
+        addPatientToTaskCallback={this.props.addPatientToTaskCallback}
+        taskId={this.props.taskId}
+      />
+    );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PatientDropdownListContainer);
+// property validation
+PatientDropdownListContainer.propTypes = {
+  patients: PropTypes.array.isRequired,
+  actions: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = function(store) {
+  return { patients: store.patientState.allPatients };
+};
+
+const mapDispatchToProps = function(dispatch) {
+  return {
+    actions: bindActionCreators(PatientActions, dispatch),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PatientDropdownListContainer);

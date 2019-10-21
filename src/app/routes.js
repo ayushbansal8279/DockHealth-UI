@@ -1,12 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  hashHistory, IndexRedirect, IndexRoute, Route, Router,
+  hashHistory,
+  IndexRedirect,
+  IndexRoute,
+  Route,
+  Router,
 } from 'react-router';
 
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
 import Patients from './components/patients/Patients';
+import Register from './LEGACY_views/auth/Register';
+import PersonTaskList from './LEGACY_views/PersonTaskList';
 import AllPatientsView from './views/AllPatientsView';
 import App from './views/App';
 import AssignedByMe from './views/AssignedByMe';
@@ -20,7 +26,6 @@ import ForgotPassword from './views/auth/ForgotPassword';
 import LoginPassword from './views/auth/LoginPassword';
 import LoginUser from './views/auth/LoginUser';
 import Logout from './views/auth/Logout';
-import Register from './views/auth/Register';
 import ResendCode from './views/auth/ResendCode';
 import ResetPassword from './views/auth/ResetPassword';
 import ResetPasswordSuccess from './views/auth/ResetPasswordSuccess';
@@ -32,7 +37,6 @@ import Inbox from './views/Inbox';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
-import PersonTaskList from './views/PersonTaskList';
 import SupportSectionView from './views/SupportSectionView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import TaskListSearch from './views/TaskListSearch';
@@ -74,11 +78,22 @@ export const Routes = ({ store }) => {
           <Route path="/editPatient/:patientId" component={PatientEditView} />
           <Route path="/activityfeed" component={TaskListActivityFeedView} />
           <Route path="/taskSearch" component={TaskListSearch} />
-          <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
+          <Route
+            path="/assignedToPerson/:personId/:memberName"
+            component={PersonTaskList}
+          />
           <Route path="/people" component={PeopleView} />
-          <Route path="/tasks/inbox(/:taskId)" component={Inbox} onChange={preselectTask} />
+          <Route
+            path="/tasks/inbox(/:taskId)"
+            component={Inbox}
+            onChange={preselectTask}
+          />
           {/* DIRTY FIX -> TODO: Update react-router and use sensitive prop */}
-          <Route path="/tasks/Inbox(/:taskId)" component={Inbox} onChange={preselectTask} />
+          <Route
+            path="/tasks/Inbox(/:taskId)"
+            component={Inbox}
+            onChange={preselectTask}
+          />
           <Route path="/tasks">
             <IndexRoute component={TaskListView} />
             <Route path="assigned_by_me" component={AssignedByMe} />
@@ -95,8 +110,14 @@ export const Routes = ({ store }) => {
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>
-            <Route path="/confirmRegistration" component={ConfirmRegistration} />
-            <Route path="/confirmRegistrationSuccess" component={ConfirmRegistrationSuccess} />
+            <Route
+              path="/confirmRegistration"
+              component={ConfirmRegistration}
+            />
+            <Route
+              path="/confirmRegistrationSuccess"
+              component={ConfirmRegistrationSuccess}
+            />
             <Route path="/login" component={LoginUser} />
             <Route path="/loginUser" component={LoginPassword} />
             <Route path="/logout" component={Logout} />
@@ -109,7 +130,10 @@ export const Routes = ({ store }) => {
             <Route path="/errorPage" component={ErrorPage} />
             <Route path="/unEnrolledUser" component={UnEnrolledUser} />
             <Route path="/resetPasswordEmailSent" component={EmailSent} />
-            <Route path="/resetPasswordSuccess" component={ResetPasswordSuccess} />
+            <Route
+              path="/resetPasswordSuccess"
+              component={ResetPasswordSuccess}
+            />
           </Route>
           <Route path="/register" component={Register} />
         </Route>

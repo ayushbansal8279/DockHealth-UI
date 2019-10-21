@@ -1,14 +1,15 @@
-import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
-import * as PropTypes from 'prop-types';
-import moment from 'moment';
 import { ButtonBase } from '@material-ui/core';
+import moment from 'moment';
+import * as PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useBoolean from '../../helpers/useBoolean';
-import { Cancel, Save, StyledTextField } from './PatientCreation';
+import styled from 'styled-components';
+
 import { addPatientNote, editPatientNote } from '../../actions/patient-actions';
-import EditableDescription from '../home/EditableDescription';
 import { capitalize } from '../../helpers/capitalize';
+import useBoolean from '../../hooks/useBoolean';
+import EditableDescription from '../common/EditableDescription';
+import { Cancel, Save, StyledTextField } from './PatientCreation';
 
 const NoteTextField = styled(StyledTextField)`
   && {
@@ -46,20 +47,24 @@ const getCreatorName = creator => `${creator.firstName} ${creator.lastName}`;
 
 const formatDate = date => moment(date).format('dddd, MMMM Do');
 
-const EditablePatientNote = ({
-  update, note, isOwn, style,
-}) => (
-  <div style={style}>
-    <EditableNoteDescription
-      placeholder="Enter your note"
-      value={note.description || ''}
-      name={note.patientNoteId}
-      onChange={update}
-      disabled={!isOwn}
-    />
-    <NoteInfo>{`${getCreatorName(note.creator)} | ${formatDate(note.dateUpdated)}`}</NoteInfo>
-  </div>
-);
+const EditablePatientNote = ({ update, note, isOwn, style }) => {
+  const noteInfo = `${getCreatorName(note.creator)} | ${formatDate(
+    note.dateUpdated,
+  )}`;
+
+  return (
+    <div style={style}>
+      <EditableNoteDescription
+        placeholder="Enter your note"
+        value={note.description || ''}
+        name={note.patientNoteId}
+        onChange={update}
+        disabled={!isOwn}
+      />
+      <NoteInfo>{noteInfo}</NoteInfo>
+    </div>
+  );
+};
 
 const CreatorPropType = PropTypes.shape({
   firstName: PropTypes.string,
@@ -84,7 +89,7 @@ EditablePatientNote.propTypes = { note: NotePropType.isRequired };
 const PatientNotes = ({ patientId, notes }) => {
   const [isCreating, startCreating, stopCreating] = useBoolean(false);
   const [note, setNote] = useState('');
-  const handleChange = (e) => {
+  const handleChange = e => {
     setNote(capitalize(e.currentTarget.value));
   };
   const handleCancel = useCallback(
@@ -106,9 +111,11 @@ const PatientNotes = ({ patientId, notes }) => {
   };
   const handleUpdate = (description, patientNoteId) => {
     const modifiedNote = notes.find(n => n.patientNoteId === patientNoteId);
-    dispatch(editPatientNote(patientId, modifiedNote, description)).catch(() => {
-      toggleAlert('Error updating note. Please try again.', 'error');
-    });
+    dispatch(editPatientNote(patientId, modifiedNote, description)).catch(
+      () => {
+        toggleAlert('Error updating note. Please try again.', 'error');
+      },
+    );
   };
 
   const userId = useSelector(state => state.userState.userProfile.userId);
@@ -147,7 +154,10 @@ const PatientNotes = ({ patientId, notes }) => {
           </div>
         </div>
       ) : (
-        <AddNote onClick={startCreating} style={{ marginTop: '18px', marginBottom: '18px' }} />
+        <AddNote
+          onClick={startCreating}
+          style={{ marginTop: '18px', marginBottom: '18px' }}
+        />
       )}
     </div>
   );

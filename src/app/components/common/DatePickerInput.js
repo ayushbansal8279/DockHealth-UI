@@ -20,7 +20,11 @@ const DatePickerInput = ({
       xlinkHref && touched && error ? 'has-error ' : ' '
     }${bufferClassName ? ` ${bufferClassName}` : ''}`}
   >
-    <div className={`input-group ${xlinkHref ? '' : 'no-icon '}${decoratingClassName || ''}`}>
+    <div
+      className={`input-group ${
+        xlinkHref ? '' : 'no-icon '
+      }${decoratingClassName || ''}`}
+    >
       {xlinkHref && (
         <span className="input-group-label">
           <svg className="icon">
@@ -32,17 +36,24 @@ const DatePickerInput = ({
       <div
         className={
           input.value
-            ? `input-wrapper form-floating-label has-value ${!xlinkHref
-                && touched
-                && error
-                && 'has-error'}`
-            : `input-wrapper form-floating-label ${!xlinkHref && touched && error && 'has-error'}`
+            ? `input-wrapper form-floating-label has-value ${!xlinkHref &&
+                touched &&
+                error &&
+                'has-error'}`
+            : `input-wrapper form-floating-label ${!xlinkHref &&
+                touched &&
+                error &&
+                'has-error'}`
         }
       >
         <DatePicker
           onChange={input.onChange}
           id={id}
-          className={extraClassName ? `input-group-field ${extraClassName}` : 'input-group-field'}
+          className={
+            extraClassName
+              ? `input-group-field ${extraClassName}`
+              : 'input-group-field'
+          }
           type="text"
           disabled={disabled}
           selected={input.value ? input.value : null}
@@ -66,10 +77,14 @@ const DatePickerInput = ({
         />
         <label htmlFor={input.name}>{label}</label>
 
-        {!xlinkHref && touched && error && <span className="form-error">{error}</span>}
+        {!xlinkHref && touched && error && (
+          <span className="form-error">{error}</span>
+        )}
       </div>
     </div>
-    {xlinkHref && touched && error && <span className="form-error">{error}</span>}
+    {xlinkHref && touched && error && (
+      <span className="form-error">{error}</span>
+    )}
   </div>
 );
 

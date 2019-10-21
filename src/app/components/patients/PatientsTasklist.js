@@ -1,7 +1,8 @@
+import { ButtonBase } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { ButtonBase } from '@material-ui/core';
-import AddTask from '../home/AddTask';
+
+import AddTask from '../task/AddTask';
 import PatientsTask from './PatientsTask';
 
 const PatientsTasklistCount = styled.div`
@@ -39,19 +40,35 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
   return (
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
-      {submitTask && <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />}
+      {submitTask && (
+        <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
+      )}
       {tasks.map(task => (
-        <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />
+        <PatientsTask
+          task={task}
+          key={task.taskId}
+          hidePatient
+          hideCheckbox
+          disabled
+        />
       ))}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
-          {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${completedTasks.length})`}
+          {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${
+            completedTasks.length
+          })`}
         </PatientsTasklistShowCompleted>
       )}
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
           {completedTasks.map(task => (
-            <PatientsTask task={task} key={task.taskId} hidePatient hideCheckbox disabled />
+            <PatientsTask
+              task={task}
+              key={task.taskId}
+              hidePatient
+              hideCheckbox
+              disabled
+            />
           ))}
         </div>
       )}

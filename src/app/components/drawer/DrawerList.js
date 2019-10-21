@@ -39,7 +39,8 @@ const NestedList = styled(StyledList).attrs({
   component: 'div',
 })`
   && {
-    ${({ highlighted }) => (highlighted ? 'background: rgba(255,255,255,0.1);' : '')}
+    ${({ highlighted }) =>
+      highlighted ? 'background: rgba(255,255,255,0.1);' : ''}
   }
 `;
 
@@ -155,8 +156,9 @@ const BackgroundListItem = styled(ListItem)`
     color: #fff;
     margin: 12px;
     padding: 12px 16px;
-    ${props => props.open
-      && `
+    ${props =>
+      props.open &&
+      `
       background-color: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
       &:hover {
@@ -260,9 +262,7 @@ const Item = ({
   );
 };
 
-const NestedItem = ({
-  activeId, label, setActiveId, to, id,
-}) => {
+const NestedItem = ({ activeId, label, setActiveId, to, id }) => {
   const active = id === activeId;
 
   return (
@@ -330,16 +330,16 @@ const renderDrawerItem = drawerListProps => ({ id, ...drawerItemProps }) => (
   <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />
 );
 
-const DrawerList = ({
-  open, user, lists, location,
-}) => {
+const DrawerList = ({ open, user, lists, location }) => {
   const [activeId, setActiveId] = useState('');
 
   const drawerItems = getDrawerItems({ lists });
 
   useEffect(
     () => {
-      const drawerChildItems = drawerItems.flatMap(({ childItems }) => childItems).filter(Boolean);
+      const drawerChildItems = drawerItems
+        .flatMap(({ childItems }) => childItems)
+        .filter(Boolean);
 
       const currentDrawerItem = drawerItems
         .concat(drawerChildItems)

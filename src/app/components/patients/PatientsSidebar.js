@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import { useDispatch } from 'react-redux';
-import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
-import { Flag } from '../../flags';
+import moment from 'moment';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+
 import { highlightPatient } from '../../actions/patient-actions';
-import CollapseIcon from '../../img/collapse.svg';
-import PhoneHomeIcon from '../../img/phone-home.svg';
-import PhoneCellIcon from '../../img/phone-cell.svg';
-import PatientsTasklist from './PatientsTasklist';
 import { findUserTasksByPatient } from '../../api/patient-api';
-import PatientEdit from './PatientEdit';
+import { Flag } from '../../flags';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
+import CollapseIcon from '../../img/collapse.svg';
+import PhoneCellIcon from '../../img/phone-cell.svg';
+import PhoneHomeIcon from '../../img/phone-home.svg';
+import PatientEdit from './PatientEdit';
+import PatientsTasklist from './PatientsTasklist';
 
 export const PatientsSidebarContainer = styled.div`
   padding: 4px;
@@ -134,7 +135,9 @@ export const PatientsSidebarCloseButton = styled(ButtonBase)`
   }
 `;
 
-const StyledButton = styled(({ isCollapsed, ...props }) => <IconButton {...props} />)`
+const StyledButton = styled(({ isCollapsed, ...props }) => (
+  <IconButton {...props} />
+))`
   && {
     height: 36px;
     width: 36px;
@@ -180,7 +183,12 @@ const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
 const formatAge = age => (age === 1 ? '1yr old' : `${age}yrs old`);
 
 const PatientsDetailsSection = ({
-  dob, gender, email, phoneHome, phoneMobile, notes,
+  dob,
+  gender,
+  email,
+  phoneHome,
+  phoneMobile,
+  notes,
 }) => (
   <PatientsSidebarSection heading="Patient Details">
     <PatientsSidebarField>
@@ -192,7 +200,9 @@ const PatientsDetailsSection = ({
         }}
       >
         {dob && (
-          <PatientsSidebarValue>{formatAge(calculateAgeFromDateOfBirth(dob))}</PatientsSidebarValue>
+          <PatientsSidebarValue>
+            {formatAge(calculateAgeFromDateOfBirth(dob))}
+          </PatientsSidebarValue>
         )}
       </div>
       <div
@@ -206,7 +216,10 @@ const PatientsDetailsSection = ({
     </PatientsSidebarField>
     <PatientsSidebarField>
       <div>Gender</div>
-      <div>{(gender && <PatientsSidebarValue>{gender}</PatientsSidebarValue>) || '—'}</div>
+      <div>
+        {(gender && <PatientsSidebarValue>{gender}</PatientsSidebarValue>) ||
+          '—'}
+      </div>
     </PatientsSidebarField>
     <PatientsSidebarField>
       <div>Email</div>
@@ -215,12 +228,14 @@ const PatientsDetailsSection = ({
           <PatientsSidebarValue style={{ color: '#0ca1c7' }}>
             <a href={`mailto:${email}`}>{email}</a>
           </PatientsSidebarValue>
-        ))
-          || '—'}
+        )) ||
+          '—'}
       </div>
     </PatientsSidebarField>
     <PatientsSidebarSubsection>
-      <PatientsSidebarSubsectionHeading>Patient Contact</PatientsSidebarSubsectionHeading>
+      <PatientsSidebarSubsectionHeading>
+        Patient Contact
+      </PatientsSidebarSubsectionHeading>
       <div
         style={{
           display: 'flex',
@@ -241,8 +256,12 @@ const PatientsDetailsSection = ({
             <img src={PhoneHomeIcon} alt="Phone Number (Home)" />
           </div>
           <div style={{ marginLeft: '15px' }}>
-            <PatientsSidebarContactNumber>{phoneHome || '—'}</PatientsSidebarContactNumber>
-            <PatientsSidebarContactCategory>Home</PatientsSidebarContactCategory>
+            <PatientsSidebarContactNumber>
+              {phoneHome || '—'}
+            </PatientsSidebarContactNumber>
+            <PatientsSidebarContactCategory>
+              Home
+            </PatientsSidebarContactCategory>
           </div>
         </PatientsSidebarContact>
         <PatientsSidebarContact>
@@ -259,8 +278,12 @@ const PatientsDetailsSection = ({
             <img src={PhoneCellIcon} alt="Phone Number (Cell)" />
           </div>
           <div style={{ marginLeft: '15px' }}>
-            <PatientsSidebarContactNumber>{phoneMobile || '—'}</PatientsSidebarContactNumber>
-            <PatientsSidebarContactCategory>Mobile</PatientsSidebarContactCategory>
+            <PatientsSidebarContactNumber>
+              {phoneMobile || '—'}
+            </PatientsSidebarContactNumber>
+            <PatientsSidebarContactCategory>
+              Mobile
+            </PatientsSidebarContactCategory>
           </div>
         </PatientsSidebarContact>
       </div>
@@ -268,7 +291,9 @@ const PatientsDetailsSection = ({
     <PatientsSidebarSubsection>
       <PatientsSidebarSubsectionHeading>Notes</PatientsSidebarSubsectionHeading>
       <div>
-        <PatientsSidebarNoteDescription>{notes || '—'}</PatientsSidebarNoteDescription>
+        <PatientsSidebarNoteDescription>
+          {notes || '—'}
+        </PatientsSidebarNoteDescription>
         {/* <PatientsSidebarNoteInfo> */}
         {/* Michael Docktor | Tuesday, October 2nd */}
         {/* </PatientsSidebarNoteInfo> */}
@@ -312,10 +337,10 @@ const PatientsSidebar = ({ patient }) => {
   const [completedTasks, setCompletedTasks] = useState([]);
   useEffect(
     () => {
-      findUserTasksByPatient(patientId, 'INCOMPLETE').then((result) => {
+      findUserTasksByPatient(patientId, 'INCOMPLETE').then(result => {
         setTasks(result);
       });
-      findUserTasksByPatient(patientId, 'COMPLETE').then((result) => {
+      findUserTasksByPatient(patientId, 'COMPLETE').then(result => {
         setCompletedTasks(result);
       });
     },
@@ -328,7 +353,9 @@ const PatientsSidebar = ({ patient }) => {
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
         <div>{`${firstName || ''} ${lastName || ''} ${mrn || ''}`}</div>
-        <PatientsSidebarCloseButton onClick={deselectPatient}>✕</PatientsSidebarCloseButton>
+        <PatientsSidebarCloseButton onClick={deselectPatient}>
+          ✕
+        </PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
       <div>
         <Flag
@@ -365,7 +392,10 @@ const PatientsSidebar = ({ patient }) => {
         <Flag name={['features', 'showTasksInPatientDrawer']}>
           {taskLists.map(taskList => (
             <PatientsSidebarSection heading={taskList.listName}>
-              <PatientsTasklist tasks={taskList.tasks} completedTasks={taskList.completedTasks} />
+              <PatientsTasklist
+                tasks={taskList.tasks}
+                completedTasks={taskList.completedTasks}
+              />
             </PatientsSidebarSection>
           ))}
         </Flag>

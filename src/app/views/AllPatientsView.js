@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { destroy } from 'redux-form';
+
 import * as PatientActions from '../actions/patient-actions';
+import { mobileAnalyticsClient } from '../api/analytics-api';
+import FormPatient from '../components/patient/FormPatient';
 import PatientListContainer from '../components/patient/PatientListContainer';
 import SearchPatient from '../components/patient/SearchPatient';
-import FormPatient from '../components/patient/FormPatient';
-import { mobileAnalyticsClient } from '../api/analytics-api';
-import BaseComponentWithFoundationUpdate from '../components/BaseComponentWithFoundationUpdate';
 
-class AllPatientsView extends BaseComponentWithFoundationUpdate {
+class AllPatientsView extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +32,7 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
     toggleSearch();
   };
 
-  searchUpdated = (term) => {
+  searchUpdated = term => {
     this.setState({ searchTerm: term.target.value });
   };
 
@@ -88,15 +88,20 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
                 <div className="columns shrink icon-group controls">
                   <span onClick={e => this.refresh()}>
                     <svg className="icon refresh">
-                      <use
-                        xlinkHref="#icon-activity"
-                      />
+                      <use xlinkHref="#icon-activity" />
                     </svg>
                   </span>
                 </div>
-                <div className="columns shrink" onClick={e => this.handleAddPatient()}>
+                <div
+                  className="columns shrink"
+                  onClick={e => this.handleAddPatient()}
+                >
                   <svg id="icon-add-patient" className="add icon add-other">
-                    <image width="62px" height="62px" xlinkHref="assets/img/icons/add-patient.png" />
+                    <image
+                      width="62px"
+                      height="62px"
+                      xlinkHref="assets/img/icons/add-patient.png"
+                    />
                   </svg>
                 </div>
               </div>
@@ -106,49 +111,45 @@ class AllPatientsView extends BaseComponentWithFoundationUpdate {
                 <div className="column large-12 text-center">
                   <h5 className="section-title">Add a patient</h5>
                 </div>
-                {this.props.currentUserProfile && this.props.currentUserProfile.emrIntegrationEnabled
-                && (
-                  <div>
-                    <div className="column large-12 text-center">
-                      Search for an existing patient in the Electronic Medical Records
+                {this.props.currentUserProfile &&
+                  this.props.currentUserProfile.emrIntegrationEnabled && (
+                    <div>
+                      <div className="column large-12 text-center">
+                        Search for an existing patient in the Electronic Medical
+                        Records
+                      </div>
+                      <SearchPatient />
+                      <div className="column large-12 text-center">
+                        or enter patient manually
+                      </div>
                     </div>
-                    <SearchPatient />
-                    <div className="column large-12 text-center">
-                      or enter patient manually
-                    </div>
-                  </div>
-                )
-                }
+                  )}
                 <FormPatient />
               </div>
             </div>
             <div className="list-wrapper">
-              {this.props.isFetching
-                ? (
-                  <div className="sk-circle">
-                    <div className="sk-circle1 sk-child" />
-                    <div className="sk-circle2 sk-child" />
-                    <div className="sk-circle3 sk-child" />
-                    <div className="sk-circle4 sk-child" />
-                    <div className="sk-circle5 sk-child" />
-                    <div className="sk-circle6 sk-child" />
-                    <div className="sk-circle7 sk-child" />
-                    <div className="sk-circle8 sk-child" />
-                    <div className="sk-circle9 sk-child" />
-                    <div className="sk-circle10 sk-child" />
-                    <div className="sk-circle11 sk-child" />
-                    <div className="sk-circle12 sk-child" />
-                  </div>
-                )
-                : <PatientListContainer searchTerm={this.state.searchTerm} />
-              }
+              {this.props.isFetching ? (
+                <div className="sk-circle">
+                  <div className="sk-circle1 sk-child" />
+                  <div className="sk-circle2 sk-child" />
+                  <div className="sk-circle3 sk-child" />
+                  <div className="sk-circle4 sk-child" />
+                  <div className="sk-circle5 sk-child" />
+                  <div className="sk-circle6 sk-child" />
+                  <div className="sk-circle7 sk-child" />
+                  <div className="sk-circle8 sk-child" />
+                  <div className="sk-circle9 sk-child" />
+                  <div className="sk-circle10 sk-child" />
+                  <div className="sk-circle11 sk-child" />
+                  <div className="sk-circle12 sk-child" />
+                </div>
+              ) : (
+                <PatientListContainer searchTerm={this.state.searchTerm} />
+              )}
             </div>
-
-
           </div>
         </div>
       </div>
-
     );
   }
 }
@@ -163,4 +164,7 @@ const mapDispatchToProps = dispatch => ({
   formActions: bindActionCreators({ destroy }, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllPatientsView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AllPatientsView);

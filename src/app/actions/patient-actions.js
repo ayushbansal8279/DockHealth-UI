@@ -35,7 +35,7 @@ export const getAllPatientsSuccess = patients => ({
   patients,
 });
 
-export const getPatientsByTaskList = taskListId => async (dispatch) => {
+export const getPatientsByTaskList = taskListId => async dispatch => {
   try {
     const patients = await PatientApi.getPatientsByTaskList(taskListId);
     dispatch({
@@ -47,9 +47,11 @@ export const getPatientsByTaskList = taskListId => async (dispatch) => {
   }
 };
 
-export const getPatientById = patientId => async (dispatch) => {
+export const getPatientById = patientId => async dispatch => {
   try {
-    const patient = patientId ? await PatientApi.getPatientById(patientId) : null;
+    const patient = patientId
+      ? await PatientApi.getPatientById(patientId)
+      : null;
     dispatch({
       type: GET_PATIENT_SUCCESS,
       patient,
@@ -77,7 +79,7 @@ export const abortPatientCreation = () => ({
   type: ABORT_PATIENT_CREATION,
 });
 
-export const getAllPatients = () => async (dispatch) => {
+export const getAllPatients = () => async dispatch => {
   try {
     const patients = await PatientApi.getAllPatients();
     dispatch(getAllPatientsSuccess(patients));
@@ -86,7 +88,7 @@ export const getAllPatients = () => async (dispatch) => {
   }
 };
 
-export const getMyPatientsAll = () => async (dispatch) => {
+export const getMyPatientsAll = () => async dispatch => {
   try {
     const patients = await PatientApi.getMyPatientsAll();
     dispatch(getAllPatientsSuccess(patients));
@@ -95,7 +97,7 @@ export const getMyPatientsAll = () => async (dispatch) => {
   }
 };
 
-export const getMyPatientsActive = () => async (dispatch) => {
+export const getMyPatientsActive = () => async dispatch => {
   try {
     const patients = await PatientApi.getMyPatientsActive();
     dispatch(getAllPatientsSuccess(patients));
@@ -104,7 +106,7 @@ export const getMyPatientsActive = () => async (dispatch) => {
   }
 };
 
-export const addPatient = newPatient => async (dispatch) => {
+export const addPatient = newPatient => async dispatch => {
   try {
     const patient = await PatientApi.addPatient(newPatient);
     dispatch({
@@ -119,7 +121,7 @@ export const addPatient = newPatient => async (dispatch) => {
   }
 };
 
-export const updatePatient = newPatient => async (dispatch) => {
+export const updatePatient = newPatient => async dispatch => {
   try {
     const patient = await PatientApi.updatePatient(newPatient);
     dispatch({
@@ -131,7 +133,7 @@ export const updatePatient = newPatient => async (dispatch) => {
   }
 };
 
-export const addPatientToTask = (patientId, taskId) => async (dispatch) => {
+export const addPatientToTask = (patientId, taskId) => async dispatch => {
   try {
     const patient = await PatientApi.addPatientToTask(patientId, taskId);
     dispatch({
@@ -144,15 +146,15 @@ export const addPatientToTask = (patientId, taskId) => async (dispatch) => {
   }
 };
 
-export const loadingEMRPatients = () => (dispatch) => {
+export const loadingEMRPatients = () => dispatch => {
   dispatch({ type: REQUEST_EMR_PATIENTS });
 };
 
-export const clearEMRPatients = () => (dispatch) => {
+export const clearEMRPatients = () => dispatch => {
   dispatch({ type: CLEAR_EMR_PATIENTS });
 };
 
-export const lookupEMRPatients = searchToken => async (dispatch) => {
+export const lookupEMRPatients = searchToken => async dispatch => {
   try {
     const patients = await PatientApi.lookupEMRPatients(searchToken);
     dispatch({
@@ -172,7 +174,7 @@ export const deletePatient = patientId => async () => {
   }
 };
 
-export const addPatientNote = (patientId, description) => async (dispatch) => {
+export const addPatientNote = (patientId, description) => async dispatch => {
   try {
     const note = await PatientApi.createPatientNote(patientId, { description });
     dispatch({
@@ -190,9 +192,16 @@ export const addPatientNote = (patientId, description) => async (dispatch) => {
   }
 };
 
-export const editPatientNote = (patientId, note, description) => async (dispatch) => {
+export const editPatientNote = (
+  patientId,
+  note,
+  description,
+) => async dispatch => {
   try {
-    const updatedNote = await PatientApi.updatePatientNote({ ...note, description });
+    const updatedNote = await PatientApi.updatePatientNote({
+      ...note,
+      description,
+    });
     dispatch({
       type: UPDATE_PATIENT_NOTE,
       patientId,
@@ -207,7 +216,7 @@ export const editPatientNote = (patientId, note, description) => async (dispatch
   }
 };
 
-export const deletePatientNote = (patientId, note) => async (dispatch) => {
+export const deletePatientNote = (patientId, note) => async dispatch => {
   try {
     await PatientApi.deletePatientNote(note.patientNoteId);
     dispatch({

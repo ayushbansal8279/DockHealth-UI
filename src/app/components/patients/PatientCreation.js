@@ -9,7 +9,10 @@ import { useDispatch } from 'react-redux';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 
-import { abortPatientCreation, addPatient } from '../../actions/patient-actions';
+import {
+  abortPatientCreation,
+  addPatient,
+} from '../../actions/patient-actions';
 import { capitalize, capitalizeWords } from '../../helpers/capitalize';
 import {
   PatientsSidebarCloseButton,
@@ -18,25 +21,27 @@ import {
   PatientsSidebarSection,
 } from './PatientsSidebar';
 
-export const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
-  <TextField
-    {...rest}
-    variant="filled"
-    margin="dense"
-    fullWidth
-    autoComplete="no"
-    InputProps={{
-      ...InputProps,
-      disableUnderline: true,
-      classes: { root: 'root', disabled: 'disabled' },
-    }}
-    InputLabelProps={{
-      ...InputLabelProps,
-      FormLabelClasses: { asterisk: 'asterisk', error: 'error' },
-      classes: { shrink: 'shrink' },
-    }}
-  />
-))`
+export const StyledTextField = styled(
+  ({ InputProps, InputLabelProps, ...rest }) => (
+    <TextField
+      {...rest}
+      variant="filled"
+      margin="dense"
+      fullWidth
+      autoComplete="no"
+      InputProps={{
+        ...InputProps,
+        disableUnderline: true,
+        classes: { root: 'root', disabled: 'disabled' },
+      }}
+      InputLabelProps={{
+        ...InputLabelProps,
+        FormLabelClasses: { asterisk: 'asterisk', error: 'error' },
+        classes: { shrink: 'shrink' },
+      }}
+    />
+  ),
+)`
   && {
     margin-top: 4px;
     margin-bottom: 0;
@@ -95,7 +100,10 @@ export const Cancel = styled(Button)`
   }
 `;
 
-export const Save = styled(Button).attrs({ variant: 'contained', color: 'secondary' })`
+export const Save = styled(Button).attrs({
+  variant: 'contained',
+  color: 'secondary',
+})`
   && {
     display: flex;
     width: 163px;
@@ -111,7 +119,7 @@ export const Save = styled(Button).attrs({ variant: 'contained', color: 'seconda
 const BirthdayTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={(ref) => {
+    ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
     placeholder="MM/DD/YYYY"
@@ -125,11 +133,24 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
 const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={(ref) => {
+    ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
     placeholder="123-123-1234"
-    mask={[/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+    mask={[
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      /\d/,
+      /\d/,
+    ]}
     placeholderChar={'\u2000'}
     keepCharPositions
   />
@@ -162,7 +183,10 @@ export const PatientsForm = ({
 
   return (
     <>
-      <PatientsSidebarSection heading="Patient Details" hideCollapse={hideCollapse}>
+      <PatientsSidebarSection
+        heading="Patient Details"
+        hideCollapse={hideCollapse}
+      >
         <Grid container style={{ marginTop: '18px' }} wrap="nowrap">
           <Grid item xs={5}>
             <StyledTextField
@@ -273,7 +297,13 @@ export const PatientsForm = ({
           rows={3}
           {...readOnlyProps('Primarily lives with their grandma in Boston.')}
         />
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+          }}
+        >
           {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
           {!isReadOnly && (
             <Save onClick={onSubmit} disabled={isDisabled}>
@@ -306,7 +336,7 @@ const PatientCreation = () => {
     notes: '',
   });
   const handleInputChange = useCallback(
-    (event) => {
+    event => {
       const { target } = event;
       const { name } = target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -337,24 +367,26 @@ const PatientCreation = () => {
     [dispatch, formState],
   );
 
-  const validateBirthday = (dob) => {
+  const validateBirthday = dob => {
     const now = moment();
     const birthday = moment(dob, 'MM/DD/YYYY', true);
     return birthday.isBefore(now);
   };
 
   const canSubmit = () => {
-    const {
-      firstName, lastName, dob, gender, mrn,
-    } = formState;
-    return firstName && lastName && gender && mrn && (!dob || validateBirthday(dob));
+    const { firstName, lastName, dob, gender, mrn } = formState;
+    return (
+      firstName && lastName && gender && mrn && (!dob || validateBirthday(dob))
+    );
   };
 
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
         <div>Add a new patient</div>
-        <PatientsSidebarCloseButton onClick={abort}>✕</PatientsSidebarCloseButton>
+        <PatientsSidebarCloseButton onClick={abort}>
+          ✕
+        </PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
       <div>
         <PatientsForm

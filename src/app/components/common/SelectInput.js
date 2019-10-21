@@ -76,13 +76,11 @@ const styles = {
 };
 
 class SelectInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFocused: false,
-    };
-    this.containerRef = React.createRef();
-  }
+  state = {
+    isFocused: false,
+  };
+
+  containerRef = React.createRef();
 
   render() {
     const {
@@ -106,11 +104,12 @@ class SelectInput extends React.Component {
         }${bufferClassName ? ` ${bufferClassName}` : ''}`}
       >
         <div
-          className={`input-group ${xlinkHref ? '' : 'no-icon '}${decoratingClassName || ''}`}
+          className={`input-group ${
+            xlinkHref ? '' : 'no-icon '
+          }${decoratingClassName || ''}`}
           style={{ height: 60 }}
           ref={this.containerRef}
         >
-          {/* icon   */}
           {xlinkHref && (
             <span className="input-group-label">
               <svg className="icon">
@@ -118,15 +117,17 @@ class SelectInput extends React.Component {
               </svg>
             </span>
           )}
-          {/* has input value (like when editing) makes label float */}
           <div
             className={
-              (input.value || isFocused)
-                ? `input-wrapper form-floating-label has-value ${!xlinkHref
-                    && touched
-                    && error
-                    && 'has-error'}`
-                : `input-wrapper form-floating-label ${!xlinkHref && touched && error && 'has-error'}`
+              input.value || isFocused
+                ? `input-wrapper form-floating-label has-value ${!xlinkHref &&
+                    touched &&
+                    error &&
+                    'has-error'}`
+                : `input-wrapper form-floating-label ${!xlinkHref &&
+                    touched &&
+                    error &&
+                    'has-error'}`
             }
           >
             <ReactSelect
@@ -136,7 +137,11 @@ class SelectInput extends React.Component {
               onFocus={() => this.setState({ isFocused: true })}
               onBlur={() => this.setState({ isFocused: false })}
               id={id}
-              className={extraClassName ? `input-group-field ${extraClassName}` : 'input-group-field'}
+              className={
+                extraClassName
+                  ? `input-group-field ${extraClassName}`
+                  : 'input-group-field'
+              }
               disabled={disabled}
               placeholder=""
               noOptionsMessage={() => 'No Matches'}
@@ -146,24 +151,26 @@ class SelectInput extends React.Component {
               theme={theme}
               styles={{
                 ...styles,
-                menuPortal: (provided) => {
+                menuPortal: provided => {
                   const rect = this.containerRef.current.getBoundingClientRect();
-                  return ({
+                  return {
                     ...provided,
                     zIndex: 201,
                     width: rect.width,
                     left: 'none',
-                  });
+                  };
                 },
               }}
             />
             <label htmlFor={input.name}>{label}</label>
-
-            {/* if touched and has error */}
-            {!xlinkHref && touched && error && <span className="form-error">{error}</span>}
+            {!xlinkHref && touched && error && (
+              <span className="form-error">{error}</span>
+            )}
           </div>
         </div>
-        {xlinkHref && touched && error && <span className="form-error">{error}</span>}
+        {xlinkHref && touched && error && (
+          <span className="form-error">{error}</span>
+        )}
       </div>
     );
   }

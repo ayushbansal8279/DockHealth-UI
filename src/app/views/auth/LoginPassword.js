@@ -9,27 +9,29 @@ import LoginFormPassword from '../../components/auth/LoginFormPassword';
 const LoginPassword = () => {
   const [customError, setCustomError] = useState('');
 
-  const onSubmit = useCallback(form => userApi
-    .login(form.username, form.password)
-    .then((data) => {
-      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-        LOGIN_SUCCESS: 'YES',
-      });
-      if (data === 'SMS_MFA') {
-        hashHistory.push(`confirmMFACode?uname=${form.username}`);
-      } else {
-        sessionStorage.setItem('sessionStartTime', new Date().getTime());
+  const onSubmit = useCallback(form =>
+    userApi
+      .login(form.username, form.password)
+      .then(data => {
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          LOGIN_SUCCESS: 'YES',
+        });
+        if (data === 'SMS_MFA') {
+          hashHistory.push(`confirmMFACode?uname=${form.username}`);
+        } else {
+          sessionStorage.setItem('sessionStartTime', new Date().getTime());
 
-        hashHistory.push('/');
-        success('Logged in.');
-      }
-    })
-    .catch((e) => {
-      setCustomError(e && e.message ? e.message : 'Could not login.');
-      mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-        LOGIN_SUCCESS: 'NO',
-      });
-    }));
+          hashHistory.push('/');
+          success('Logged in.');
+        }
+      })
+      .catch(e => {
+        setCustomError(e && e.message ? e.message : 'Could not login.');
+        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+          LOGIN_SUCCESS: 'NO',
+        });
+      }),
+  );
 
   return (
     <LoginFormPassword

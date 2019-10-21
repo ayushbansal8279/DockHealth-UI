@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import FormPatient from '../components/patient/FormPatient';
+
 import * as PatientActions from '../actions/patient-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import FormPatient from '../components/patient/FormPatient';
 
-class PatientEditView extends React.Component {
+class PatientEditView extends PureComponent {
   componentDidMount() {
     const { params, actions } = this.props;
     actions.getPatientById(params.patientId);
@@ -22,10 +23,13 @@ class PatientEditView extends React.Component {
       <div className="off-canvas-content" data-off-canvas-content="true">
         <div className="row expanded collapse">
           <div className="large-12 columns">
-
             <div className="top-bar">
               <div className="top-bar-left">
-                <button className="menu-icon hide-for-medium" type="button" data-toggle="sidebar" />
+                <button
+                  className="menu-icon hide-for-medium"
+                  type="button"
+                  data-toggle="sidebar"
+                />
                 <h3>
                   {patient.firstName}
                   &nbsp;
@@ -41,11 +45,9 @@ class PatientEditView extends React.Component {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
     );
   }
 }
@@ -59,4 +61,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(PatientActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PatientEditView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PatientEditView);

@@ -1,19 +1,17 @@
-import * as React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import TaskView from './TaskView';
+import * as PatientActions from '../actions/patient-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
-import * as PatientActions from '../actions/patient-actions';
-import * as userApi from '../api/user-api';
 import { downloadPDF } from '../api/tasklist-api';
+import * as userApi from '../api/user-api';
+import TaskView from './TaskView';
 
-class AssignedToMe extends React.Component {
+class AssignedToMe extends PureComponent {
   componentDidMount() {
-    const {
-      user, actions,
-    } = this.props;
+    const { user, actions } = this.props;
 
     this.refreshAccessToken(user);
     actions.loading();
@@ -27,20 +25,22 @@ class AssignedToMe extends React.Component {
       const { actions } = this.props;
 
       actions.loading();
-      actions.getTasksAssignedToMe(undefined, undefined, undefined, 'INCOMPLETE');
+      actions.getTasksAssignedToMe(
+        undefined,
+        undefined,
+        undefined,
+        'INCOMPLETE',
+      );
     }
   }
 
   refresh = () => {
-    const {
-      actions,
-      patientActions,
-    } = this.props;
+    const { actions, patientActions } = this.props;
 
     actions.loading();
     actions.getTasksAssignedToMe(undefined, undefined, undefined, 'INCOMPLETE');
     patientActions.getAllPatients();
-  }
+  };
 
   pullCompletedTasks = () => {
     const { showingCompletedTasks, actions } = this.props;
@@ -51,21 +51,23 @@ class AssignedToMe extends React.Component {
     } else {
       actions.hideCompletedTasks();
     }
-  }
+  };
 
   closeAuditHistory = () => {
     const { actions } = this.props;
     actions.storeAsCurrentTask(null);
     // actions.clearCurrentTaskHistory();
-  }
+  };
 
   downloadPDF = () => {
-    const { routeParams: { taskListId } } = this.props;
+    const {
+      routeParams: { taskListId },
+    } = this.props;
 
     if (taskListId) {
       downloadPDF(taskListId);
     }
-  }
+  };
 
   handleFilterChange = (filterBy, sortBy) => {
     const { actions } = this.props;
@@ -73,34 +75,38 @@ class AssignedToMe extends React.Component {
     actions.loading();
     actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE');
     actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE');
-  }
+  };
 
-  handleSearch = () => {
-
-  }
+  handleSearch = () => {};
 
   refreshAccessToken(user) {
     const systemTimeout = 5 * 60 * 1000;
 
-    if (sessionStorage.refreshAccessTokenTimeoutId != null
-      || sessionStorage.refreshAccessTokenTimeoutId !== undefined) {
+    if (
+      sessionStorage.refreshAccessTokenTimeoutId != null ||
+      sessionStorage.refreshAccessTokenTimeoutId !== undefined
+    ) {
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
       sessionStorage.setItem('refreshAccessTokenTimeoutId', null);
     }
     const comp = this;
     const refreshAccessTokenTimeoutId = setTimeout(() => {
-      userApi.refreshAccessToken(user.username)
+      userApi
+        .refreshAccessToken(user.username)
         .then(() => {
           console.log('refreshed tokens');
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
         });
       // set again
       comp.refreshAccessToken(user);
     }, systemTimeout);
 
-    sessionStorage.setItem('refreshAccessTokenTimeoutId', refreshAccessTokenTimeoutId);
+    sessionStorage.setItem(
+      'refreshAccessTokenTimeoutId',
+      refreshAccessTokenTimeoutId,
+    );
   }
 
   render() {
@@ -112,7 +118,12 @@ class AssignedToMe extends React.Component {
       isCompletedTasksFetching,
       showingCompletedTasks,
       selectedTaskId,
-      actions: { markComplete, storeAsCurrentTask, toggleTaskPriority, addTaskComment },
+      actions: {
+        markComplete,
+        storeAsCurrentTask,
+        toggleTaskPriority,
+        addTaskComment,
+      },
     } = this.props;
 
     const taskViewProps = {
@@ -126,7 +137,8 @@ class AssignedToMe extends React.Component {
       selectedTaskId,
       storeAsCurrentTask,
       addTaskComment,
-      toggleTaskPriority: (task, priority) => toggleTaskPriority(task, userId, priority),
+      toggleTaskPriority: (task, priority) =>
+        toggleTaskPriority(task, userId, priority),
       pullCompletedTasks: this.pullCompletedTasks,
       onFilter: this.handleFilterChange,
       refresh: this.refresh,
@@ -158,5 +170,7 @@ const mapDispatchToProps = dispatch => ({
   patientActions: bindActionCreators(PatientActions, dispatch),
 });
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(AssignedToMe);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AssignedToMe);
