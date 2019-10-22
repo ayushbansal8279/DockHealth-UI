@@ -25,10 +25,12 @@ const StyledDrawer = styled(MaterialDrawer).attrs({
 `;
 
 const ContentContainer = styled.div`
-  ${({ open }) => (open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);')}
-  ${({ open }) => (open
-    ? 'margin-left: 260px;'
-    : 'margin-left: 85px;')}
+  ${({ open }) =>
+    open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
+  ${({ open }) =>
+    open
+      ? 'margin-left: 260px;'
+      : 'margin-left: 85px;'}
   transition: width .2s ease-out, margin .2s ease-out;
 `;
 

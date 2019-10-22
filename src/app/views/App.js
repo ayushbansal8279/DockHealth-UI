@@ -1,3 +1,5 @@
+import 'animate.css/animate.min.css';
+
 import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
 import IdleTimer from 'react-idle-timer';
@@ -11,6 +13,27 @@ import Notification from '../components/common/Notification';
 const AppContainer = styled.div`
   &&& * {
     font-family: 'Open Sans', sans-serif;
+  }
+`;
+
+const MainContainer = styled.main`
+  .fade-enter {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: translateY(0px);
+    transition: opacity 200ms, transform 200ms;
+  }
+  .fade-exit {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 200ms, transform 200ms;
   }
 `;
 
@@ -68,7 +91,7 @@ class App extends PureComponent {
           debounce={250}
           timeout={systemTimeout}
         />
-        <main>{children}</main>
+        <MainContainer>{children}</MainContainer>
         <Notification />
       </AppContainer>
     );
