@@ -14,6 +14,7 @@ import {
 
 const validate = values => {
   const errors = {};
+
   if (!values.username) {
     errors.username = 'Please enter an email address';
   } else if (
@@ -21,6 +22,7 @@ const validate = values => {
   ) {
     errors.username = 'Please enter a valid email address';
   }
+
   return errors;
 };
 
