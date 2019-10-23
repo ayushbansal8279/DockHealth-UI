@@ -1,6 +1,9 @@
 import { boolean, object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
+const PHONE_MASK = /[1-9]\d{2}-\d{3}-\d{4}/;
+const MASK_MESSAGE =
+  'Phone number has incorrect format (NNN-NNN-NNNN is required)';
 
 export default object().shape({
   firstName: string().required(REQUIRED_MESSAGE),
@@ -9,8 +12,12 @@ export default object().shape({
   specialty: string().nullable(),
   subspecialty: string().nullable(),
   department: string().nullable(),
-  accountPhoneNumber: string().nullable(),
-  workPhoneNumber: string().nullable(),
+  accountPhoneNumber: string()
+    .matches(PHONE_MASK, MASK_MESSAGE)
+    .nullable(),
+  workPhoneNumber: string()
+    .matches(PHONE_MASK, MASK_MESSAGE)
+    .nullable(),
   emailNotificationsEnabled: boolean(),
   pushNotificationsEnabled: boolean(),
 });

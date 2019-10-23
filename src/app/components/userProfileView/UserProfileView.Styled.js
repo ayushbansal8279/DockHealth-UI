@@ -1,7 +1,10 @@
-import styled from 'styled-components';
-import ListItem from '@material-ui/core/ListItem';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import ListItem from '@material-ui/core/ListItem';
+import Popover from '@material-ui/core/Popover';
+import withStyles from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router';
+import styled from 'styled-components';
 
 export const FormContainer = styled.form`
   &.invisible {
@@ -22,26 +25,61 @@ export const SectionTypography = styled(SectionSubtypography)`
   font-weight: bold;
 `;
 
-export const SubmitButton = styled.button.attrs({
+export const SmallButton = styled(Button)`
+  && {
+    align-items: center;
+    background-color: #125375;
+    border-radius: 0;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    font-size: 20px;
+    font-weight: bold;
+    height: 55px;
+    padding: 0 1rem;
+    justify-content: center;
+    text-transform: initial;
+    transition: filter 0.2s ease-out;
+    width: 200px;
+
+    &:hover {
+      background-color: #125375;
+      filter: brightness(1.25);
+    }
+
+    &[disabled] {
+      cursor: progress;
+      filter: brightness(0.75);
+    }
+
+    & input[type='file'] {
+      height: 1px;
+      position: absolute;
+      left: 1px;
+      opacity: 0.1;
+      overflow: hidden;
+      top: 1px;
+      width: 1px;
+    }
+
+    ${props =>
+      props.padLabel &&
+      `
+      & span:last-of-type {
+        margin-left: 0.5rem
+      }
+    `}
+  }
+`;
+
+export const SubmitButton = styled(SmallButton).attrs({
   type: 'submit',
 })`
-  align-items: center;
-  background-color: #125375;
-  border-radius: 0;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  font-size: 20px;
-  font-weight: bold;
-  height: 75px;
-  justify-content: center;
-  margin-top: 4rem;
-  transition: filter 0.2s ease-out;
-  width: 100%;
-
-  &[disabled] {
-    cursor: progress;
-    filter: brightness(0.75);
+  && {
+    height: 75px;
+    margin-top: 4rem;
+    padding: 0;
+    width: 100%;
   }
 `;
 
@@ -62,8 +100,8 @@ export const AvatarContainer = styled.div`
   background-color: #fff;
   border: 2px solid #007cab;
   border-radius: 50%;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
+  ${props => props.withShadow && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)'};
+  cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
   display: inline-flex;
   height: 90px;
   padding: 6px;
@@ -89,8 +127,11 @@ export const InnerAvatarContainer = styled.div`
 `;
 
 export const AvatarImageContainer = styled.img`
-  height: 100%;
-  width: 100%;
+  && {
+    cursor: inherit;
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 export const CameraContainer = styled.div`
@@ -117,7 +158,7 @@ export const UserAvatarSupplement = styled.div`
 export const PlainLink = styled.a`
   color: #0ca1c7;
   font-size: 20px;
-  margin-top: 4rem;
+  ${props => props.topPadded && 'margin-top: 4rem;'}
   text-decoration: none;
   transition: filter 0.2s ease;
 
@@ -145,4 +186,36 @@ export const LogoutHeaderButton = styled(Link)`
   & > span:last-of-type {
     margin-left: 0.75rem;
   }
+`;
+
+export const UploadImagePopover = withStyles({
+  paper: {
+    alignItems: 'center',
+    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+    display: 'flex',
+    height: 380,
+    position: 'relative',
+    width: 460,
+  },
+})(Popover);
+
+export const UploadImagePopoverGrid = styled(Grid)`
+  && > * {
+    transition: all 0.2s ease-out;
+  }
+`;
+
+export const UploadImagePopoverLabel = styled.div`
+  color: #303538;
+  font-size: 20px;
+`;
+
+export const UploadImagePopoverClose = styled.div`
+  color: #ababb2;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 24px;
+  top: 1rem;
+  position: absolute;
+  right: 1rem;
 `;

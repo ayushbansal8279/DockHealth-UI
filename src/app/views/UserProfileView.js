@@ -5,33 +5,32 @@ import React, { useEffect } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { setHeader, unsetHeader } from '../actions/header-actions';
 import * as userApi from '../api/user-api';
 import CubesLoader from '../components/common/CubesLoader';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import StyledInput from '../components/userProfileView/StyledInput';
 import StyledSwitch from '../components/userProfileView/StyledSwitch';
 import UserAvatar from '../components/userProfileView/UserAvatar';
-import LogoutIcon from '../img/drawer/logout';
-
 import {
   FormContainer,
   FormSwitchListItem,
+  LogoutHeaderButton,
+  PlainLink,
   SectionSubtypography,
   SectionTypography,
   SubmitButton,
   UserAvatarGrid,
   UserAvatarSupplement,
   ViewContainer,
-  PlainLink,
-  LogoutHeaderButton,
 } from '../components/userProfileView/UserProfileView.Styled';
 import { noop } from '../helpers/utilityFunctions';
+import LogoutIcon from '../img/drawer/logout';
 import {
   formFieldDefinitions,
   formSwitchDefinitions,
 } from './UserProfileView.FormDefinitions';
 import validationSchema from './UserProfileView.ValidationSchema';
-import { setHeader, unsetHeader } from '../actions/header-actions';
 
 const renderFormFieldDefinition = ({
   key,
@@ -39,6 +38,7 @@ const renderFormFieldDefinition = ({
   required = false,
   readOnly = false,
   type = 'text',
+  isPhoneNumber = false,
 }) => (
   <Grid key={key} item xs={12}>
     <StyledInput
@@ -47,6 +47,7 @@ const renderFormFieldDefinition = ({
       label={label}
       required={required}
       readOnly={readOnly}
+      isPhoneNumber={isPhoneNumber}
     />
   </Grid>
 );
@@ -73,7 +74,16 @@ const onSubmit = async data => {
   } = data;
 
   try {
-    await userApi.updateUser(otherData);
+    const requestData = {};
+    formFieldDefinitions
+      .filter(({ readOnly = false }) => !readOnly)
+      .forEach(({ key, isPhoneNumber }) => {
+        const value = otherData[key];
+
+        requestData[key] = isPhoneNumber ? value?.replace(/-/g, '') : value;
+      });
+
+    await userApi.updateUser(requestData);
 
     await userApi.updateUserNotoficationPrefs(
       emailNotificationsEnabled,
@@ -144,7 +154,11 @@ const UserProfileView = ({ defaultValues, formContainerClassName }) => {
               </Grid>
             </Grid>
             <Grid item container xs={12} justify="flex-end">
-              <PlainLink href="https://www.dock.health/privacy" target="_blank">
+              <PlainLink
+                topPadded
+                href="https://www.dock.health/privacy"
+                target="_blank"
+              >
                 Privacy Policy
               </PlainLink>
             </Grid>
@@ -199,12 +213,21 @@ const UserProfileViewAsync = () => {
 
   const defaultValues = Object.fromEntries(
     [...formFieldDefinitions, ...formSwitchDefinitions].map(
-      ({ key, defaultValue = '' }) => [
-        key,
-        (userNotificationPreferences || {})[key] ||
+      ({ key, isPhoneNumber = false, defaultValue = '' }) => {
+        let newDefaultValue =
+          (userNotificationPreferences || {})[key] ||
           (userProfile || {})[key] ||
-          defaultValue,
-      ],
+          defaultValue;
+
+        if (isPhoneNumber) {
+          newDefaultValue = newDefaultValue.replace(
+            /(\d{3})(\d{3})(\d{4})/,
+            '$1-$2-$3',
+          );
+        }
+
+        return [key, newDefaultValue];
+      },
     ),
   );
 

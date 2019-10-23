@@ -30,6 +30,25 @@ const StyledLabel = styled.div`
   }
 `;
 
+const StyledInputContainer = styled.div`
+  && {
+    background-color: #f3f5f6;
+    border-radius: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+`;
+
+const StyledErrorLabel = styled.div`
+  && {
+    color: #e40909;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    position: absolute;
+    top: -1.5em;
+  }
+`;
+
 const StyledInput = styled.input`
   && {
     background-color: transparent;
@@ -55,32 +74,15 @@ const StyledInput = styled.input`
   }
 `;
 
-const StyledInputContainer = styled.div`
-  && {
-    background-color: #f3f5f6;
-    border-radius: 0;
-    box-sizing: border-box;
-    position: relative;
-  }
-`;
-
-const StyledErrorLabel = styled.div`
-  && {
-    color: #e40909;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 14px;
-    position: absolute;
-    top: -1.5em;
-  }
-`;
-
-export default ({ name, label, required, ...props }) => {
+export default ({ name, label, required, isPhoneNumber, ...props }) => {
   const { errors, watch, register } = useFormContext();
 
   const error = (errors[name] || {}).message;
   const hasError = Boolean(error);
 
   const currentValue = watch(name);
+
+  const maxLength = isPhoneNumber ? 12 : undefined;
 
   return (
     <StyledInputContainer>
@@ -89,6 +91,7 @@ export default ({ name, label, required, ...props }) => {
         className={currentValue ? '' : EMPTY_CLASS_NAME}
         name={name}
         ref={register}
+        maxLength={maxLength}
         {...props}
       />
       <StyledLabel>

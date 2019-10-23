@@ -40,10 +40,12 @@ export const formFieldDefinitions = [
   {
     key: 'accountPhoneNumber',
     label: 'Mobile',
+    isPhoneNumber: true,
   },
   {
     key: 'workPhoneNumber',
     label: 'Additional Phone Number',
+    isPhoneNumber: true,
   },
 ];
 
