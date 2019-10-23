@@ -5,6 +5,7 @@ import { path } from 'ramda';
 import MaterialDrawer from '@material-ui/core/Drawer';
 import useBoolean from '../../hooks/useBoolean';
 import DrawerList from './DrawerList';
+import DrawerTitle from './DrawerTitle';
 
 const StyledDrawer = styled(MaterialDrawer).attrs({
   variant: 'permanent',
@@ -18,8 +19,9 @@ const StyledDrawer = styled(MaterialDrawer).attrs({
     .paper {
       background: #2a4a70;
       border: 0;
-      ${({ open }) => (open ? 'width: 260px;' : 'width: 85px;')}
-      transition: width .2s ease-out;
+      overflow: initial;
+      width: ${({ open }) => (open ? 260 : 85)}px;
+      transition: width 0.2s ease-out;
     }
   }
 `;
@@ -27,33 +29,41 @@ const StyledDrawer = styled(MaterialDrawer).attrs({
 const ContentContainer = styled.div`
   ${({ open }) =>
     open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
-  ${({ open }) =>
-    open
-      ? 'margin-left: 260px;'
-      : 'margin-left: 85px;'}
+  ${({ open }) => (open ? 'margin-left: 260px;' : 'margin-left: 85px;')}
+	margin-top: ${props => (props.topPadded ? 88 : 0)}px;
   transition: width .2s ease-out, margin .2s ease-out;
 `;
 
-const Drawer = ({ user, lists, children }) => {
+const Drawer = ({ header, user, lists, children }) => {
   const [isOpen, open, close] = useBoolean(false);
+
   return (
     <div style={{ display: 'flex' }}>
-      <StyledDrawer onMouseEnter={open} open={isOpen} onMouseLeave={close}>
-        <DrawerList open={isOpen} user={user} lists={lists} />
+      <StyledDrawer open={isOpen}>
+        <DrawerList
+          onMouseEnter={open}
+          onMouseLeave={close}
+          open={isOpen}
+          user={user}
+          lists={lists}
+        />
+        <DrawerTitle header={header} />
       </StyledDrawer>
-      <ContentContainer open={isOpen}>{children}</ContentContainer>
+      <ContentContainer topPadded={header.show} open={isOpen}>
+        {children}
+      </ContentContainer>
     </div>
   );
 };
 
 const ConnectedDrawer = ({ children }) => {
-  const user = useSelector(path(['userState', 'userProfile']));
-  const lists = useSelector(path(['taskListState', 'tasklist']));
-  return (
-    <Drawer user={user} lists={lists}>
-      {children}
-    </Drawer>
-  );
+  const selectors = {
+    user: useSelector(path(['userState', 'userProfile'])),
+    lists: useSelector(path(['taskListState', 'tasklist'])),
+    header: useSelector(path(['header'])),
+  };
+
+  return <Drawer {...selectors}>{children}</Drawer>;
 };
 
 export default ConnectedDrawer;

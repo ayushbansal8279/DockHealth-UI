@@ -234,7 +234,6 @@ const Item = ({
     >
       <StyledListItemIcon>
         <Icon />
-        {/* <img src={icon} alt={label} /> */}
       </StyledListItemIcon>
       {open && <StyledListItemText primary={label} />}
     </ItemComponent>
@@ -330,7 +329,14 @@ const renderDrawerItem = drawerListProps => ({ id, ...drawerItemProps }) => (
   <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />
 );
 
-const DrawerList = ({ open, user, lists, location }) => {
+const DrawerList = ({
+  open,
+  user,
+  lists,
+  location,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
   const [activeId, setActiveId] = useState('');
 
   const drawerItems = getDrawerItems({ lists });
@@ -354,7 +360,7 @@ const DrawerList = ({ open, user, lists, location }) => {
   );
 
   return (
-    <StyledList>
+    <StyledList onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <DrawerHeader user={user} />
       {drawerItems.map(renderDrawerItem({ activeId, open, setActiveId }))}
       <StyledSpacer />

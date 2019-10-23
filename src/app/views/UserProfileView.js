@@ -3,19 +3,27 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import React, { useEffect } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as userApi from '../api/user-api';
 import CubesLoader from '../components/common/CubesLoader';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import StyledInput from '../components/userProfileView/StyledInput';
 import StyledSwitch from '../components/userProfileView/StyledSwitch';
+import UserAvatar from '../components/userProfileView/UserAvatar';
+import LogoutIcon from '../img/drawer/logout';
+
 import {
   FormContainer,
+  FormSwitchListItem,
   SectionSubtypography,
   SectionTypography,
   SubmitButton,
+  UserAvatarGrid,
+  UserAvatarSupplement,
   ViewContainer,
+  PlainLink,
+  LogoutHeaderButton,
 } from '../components/userProfileView/UserProfileView.Styled';
 import { noop } from '../helpers/utilityFunctions';
 import {
@@ -23,7 +31,7 @@ import {
   formSwitchDefinitions,
 } from './UserProfileView.FormDefinitions';
 import validationSchema from './UserProfileView.ValidationSchema';
-import UserAvatar from '../components/userProfileView/UserAvatar';
+import { setHeader, unsetHeader } from '../actions/header-actions';
 
 const renderFormFieldDefinition = ({
   key,
@@ -44,7 +52,7 @@ const renderFormFieldDefinition = ({
 );
 
 const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
-  <ListItem key={key}>
+  <FormSwitchListItem key={key}>
     <Grid container alignItems="flex-start" justify="space-between">
       <div>
         <SectionTypography>{label}</SectionTypography>
@@ -54,7 +62,7 @@ const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
       </div>
       <StyledSwitch name={key} />
     </Grid>
-  </ListItem>
+  </FormSwitchListItem>
 );
 
 const onSubmit = async data => {
@@ -101,9 +109,20 @@ const UserProfileView = ({ defaultValues, formContainerClassName }) => {
       >
         <Grid container justify="center">
           <Grid item sm={12} md={6} container>
-            <Grid item xs={12}>
+            <UserAvatarGrid
+              alignItems="center"
+              container
+              item
+              xs={12}
+              direction="row"
+              wrap="nowrap"
+            >
               <UserAvatar />
-            </Grid>
+              <UserAvatarSupplement>
+                <div>Add a picture to</div>
+                <div>personalize your avatar</div>
+              </UserAvatarSupplement>
+            </UserAvatarGrid>
             {formFieldDefinitions.map(renderFormFieldDefinition)}
             <Grid item xs={12}>
               <List>
@@ -124,6 +143,11 @@ const UserProfileView = ({ defaultValues, formContainerClassName }) => {
                 </SubmitButton>
               </Grid>
             </Grid>
+            <Grid item container xs={12} justify="flex-end">
+              <PlainLink href="https://www.dock.health/privacy" target="_blank">
+                Privacy Policy
+              </PlainLink>
+            </Grid>
           </Grid>
         </Grid>
       </FormContainer>
@@ -132,15 +156,36 @@ const UserProfileView = ({ defaultValues, formContainerClassName }) => {
 };
 
 const UserProfileViewAsync = () => {
+  const dispatch = useDispatch();
   const userProfile = useSelector(store => store.userState.userProfile);
-  const userNotificationPrefs = useSelector(store => ({
+  const userNotificationPreferences = useSelector(store => ({
     emailNotificationsEnabled: store.userState.userNotificationPrefs.email,
     pushNotificationsEnabled: store.userState.userNotificationPrefs.push,
   }));
 
-  useEffect(() => {
-    userApi.getUserNotoficationPrefs();
-  }, []);
+  useEffect(
+    () => {
+      userApi.getUserNotoficationPrefs();
+
+      setHeader(dispatch)({
+        title: 'Profile & Settings',
+        rightComponents: (
+          <Grid container item xs={3} justify="flex-end">
+            <LogoutHeaderButton to="logout">
+              <LogoutIcon />
+              <span>Logout</span>
+            </LogoutHeaderButton>
+          </Grid>
+        ),
+      });
+
+      return () => {
+        unsetHeader(dispatch)();
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   const { loaderContainerClassName, formContainerClassName } = userProfile
     ? {
@@ -156,7 +201,7 @@ const UserProfileViewAsync = () => {
     [...formFieldDefinitions, ...formSwitchDefinitions].map(
       ({ key, defaultValue = '' }) => [
         key,
-        (userNotificationPrefs || {})[key] ||
+        (userNotificationPreferences || {})[key] ||
           (userProfile || {})[key] ||
           defaultValue,
       ],
@@ -166,7 +211,7 @@ const UserProfileViewAsync = () => {
   return (
     <ViewContainer>
       <CubesLoaderOverlay className={loaderContainerClassName} />
-      {userProfile && userNotificationPrefs && (
+      {userProfile && userNotificationPreferences && (
         <UserProfileView
           defaultValues={defaultValues}
           userProfile={userProfile}
