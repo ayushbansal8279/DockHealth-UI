@@ -20,7 +20,7 @@ import Reminder from '../common/Reminder';
 import StatusSelect from '../common/StatusSelect';
 import MemberPicker from '../members/MemberPicker';
 import PatientAssignment from '../patient/PatientAssignment';
-import { Confirmation } from '../common/TaskCheckbox';
+import { Confirmation } from './TaskCheckbox';
 import AddSubtask from './AddSubtask';
 import TaskActions from './TaskActions';
 import {

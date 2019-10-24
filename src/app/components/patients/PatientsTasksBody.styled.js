@@ -7,12 +7,23 @@ export const PatientsTasklistNew = styled.div`
 `;
 
 export const PatientsTasklistDescription = styled.div`
-  font-size: 16px;
   color: #303538;
-  white-space: nowrap;
+  display: inline-block;
+  font-size: 16px;
   overflow: hidden;
+  position: relative;
   text-overflow: ellipsis;
-  ${({ isComplete }) => isComplete && 'text-decoration: line-through;'}
+  white-space: nowrap;
+`;
+
+export const PatientsTasklistStrikeThrough = styled.div`
+  background-color: #303538;
+  left: 0;
+  height: 1px;
+  position: absolute;
+  top: 50%;
+  transition: width 0.3s ease-out 0.1s;
+  width: ${props => (props.active ? 100 : 0)}%;
 `;
 
 export const PatientsTasklistInfo = styled.div`

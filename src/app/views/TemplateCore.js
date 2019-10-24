@@ -9,6 +9,7 @@ import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import * as userApi from '../api/user-api';
 import Drawer from '../components/drawer/Drawer';
+import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 
 const getBrowserInfo = () => {
   const ua = navigator.userAgent;
@@ -48,6 +49,7 @@ const NavLink = ({ to, children, className }) => (
 
 class TemplateCore extends PureComponent {
   state = {
+    loading: true,
     locationPathname: null,
   };
 
@@ -66,14 +68,21 @@ class TemplateCore extends PureComponent {
     return {};
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { taskListActions } = this.props;
 
+    await userApi.isAuthenticated(this);
+
     taskListActions.getTaskListForUser();
-    userApi.isAuthenticated(this);
   }
 
-  isLoggedIn(message, isLoggedIn, cognitoUser) {
+  unlockLoading = () => {
+    this.setState({
+      loading: false,
+    });
+  };
+
+  async isLoggedIn(message, isLoggedIn, cognitoUser) {
     const { user } = this.props;
     if (!isLoggedIn) {
       hashHistory.push('login');
@@ -88,27 +97,36 @@ class TemplateCore extends PureComponent {
         Version: browser.version,
       });
 
-      userApi
-        .getUserByEmail(cognitoUser.username, cognitoUser)
-        .then(data => {
-          if (!data.organizationId || data.organizationId === '') {
-            hashHistory.push('/unEnrolledUser');
-          } else if (data.personalOrganization && data.presentHippaAlert) {
-            hashHistory.push('/selfEnrolledUser');
-          }
-          if (data.profileThumbnailPictureHash) {
-            userApi.getUserProfilePic(data.userId, 'PROFILE');
-          }
-        })
-        .catch(() => {
-          hashHistory.push('login');
-        });
+      try {
+        const data = await userApi.getUserByEmail(
+          cognitoUser.username,
+          cognitoUser,
+        );
+
+        if (!data.organizationId || data.organizationId === '') {
+          hashHistory.push('/unEnrolledUser');
+        } else if (data.personalOrganization && data.presentHippaAlert) {
+          hashHistory.push('/selfEnrolledUser');
+        }
+
+        if (data.profileThumbnailPictureHash) {
+          userApi.getUserProfilePic(data.userId, 'PROFILE');
+        }
+      } catch {
+        hashHistory.push('login');
+      } finally {
+        this.unlockLoading();
+      }
     }
   }
 
   render() {
     const { children } = this.props;
-    const { locationPathname } = this.state;
+    const { loading, locationPathname } = this.state;
+
+    if (loading) {
+      return <CubesLoaderOverlay withBackground />;
+    }
 
     return (
       <div>

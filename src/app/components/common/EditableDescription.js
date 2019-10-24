@@ -38,12 +38,24 @@ const StyledTextField = styled(TextField).attrs({
 `;
 
 const StyledNote = styled.div`
+  display: inline-block;
+  position: relative;
   white-space: pre-wrap;
   word-break: break-all;
 `;
 
 const StyledPlaceholderNote = styled(StyledNote)`
   color: #ababb2;
+`;
+
+const StyledNoteStrikethrough = styled.div`
+  background-color: #303538;
+  left: 0;
+  height: 1px;
+  position: absolute;
+  top: 50%;
+  transition: width 0.3s ease-out 0.1s;
+  width: ${props => (props.active ? 100 : 0)}%;
 `;
 
 const EditableTextField = ({
@@ -123,7 +135,10 @@ const EditableDescription = ({
         };
 
     return (
-      <NoteComponent onDoubleClick={startEditing}>{noteValue}</NoteComponent>
+      <NoteComponent onDoubleClick={startEditing}>
+        {noteValue}
+        <StyledNoteStrikethrough active={disabled} />
+      </NoteComponent>
     );
   }
 

@@ -5,6 +5,7 @@ import CubesLoader from './CubesLoader';
 import ScreenCenterContainer from './ScreenCenterContainer';
 
 const AbsoluteScreenCenterContainer = styled(ScreenCenterContainer)`
+  ${props => props.withBackground && '#ededf0'}
   bottom: 0;
   left: 0;
   position: fixed;

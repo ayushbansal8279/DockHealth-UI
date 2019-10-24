@@ -382,7 +382,6 @@ export function getUserByEmail(email, cognitoUser) {
 }
 
 export function getUserByEmailAndAccessToken(email, accessToken) {
-  console.log(accessToken)
   const authString = 'Bearer '.concat(accessToken);
   //sets global header for axios
   axios.defaults.headers.common['Authorization'] = authString

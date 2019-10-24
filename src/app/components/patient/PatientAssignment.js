@@ -17,9 +17,17 @@ const StyledButtonBase = styled(ButtonBase)`
 `;
 
 const StyledText = styled.span`
+  color: #aab8c3;
+  display: block;
   font-size: 16px;
   font-style: italic;
-  color: #aab8c3;
+  ${props =>
+    props.padded &&
+    `
+    align-items: center;
+    display: flex;
+    height: 32px;
+  `}
 `;
 
 const PatientAssignment = ({
@@ -32,20 +40,23 @@ const PatientAssignment = ({
 }) => {
   useEffect(fetch, []);
 
-  const patientComponent = patient ? (
-    <Patient patient={patient} isCompact={isCompact} />
-  ) : (
-    <StyledText>None</StyledText>
-  );
+  const patientComponent = ({ padded }) =>
+    patient ? (
+      <Patient patient={patient} isCompact={isCompact} padded={padded} />
+    ) : (
+      <StyledText padded={padded}>None</StyledText>
+    );
 
   if (disabled) {
-    return patientComponent;
+    return patientComponent({ padded: true });
   }
 
   return (
     <PatientPicker assign={update} patient={patient} patients={patients}>
       {({ open }) => (
-        <StyledButtonBase onClick={open}>{patientComponent}</StyledButtonBase>
+        <StyledButtonBase onClick={open}>
+          {patientComponent({ padded: false })}
+        </StyledButtonBase>
       )}
     </PatientPicker>
   );

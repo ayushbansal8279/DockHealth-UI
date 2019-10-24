@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import useConfirmation from '../../hooks/useConfirmation';
 import Flag from '../common/Flag';
-import { Confirmation } from '../common/TaskCheckbox';
+import { Confirmation } from './TaskCheckbox';
 import PatientsTaskBody from '../patients/PatientsTaskBody';
 import AddSubtask from './AddSubtask';
 

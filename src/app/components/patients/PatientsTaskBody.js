@@ -5,13 +5,14 @@ import { Link } from 'react-router';
 import BellIcon from '../../img/bell.svg';
 import Priority from '../common/Priority';
 import MemberPicker from '../members/MemberPicker';
-import TaskCheckbox from '../common/TaskCheckbox';
+import TaskCheckbox from '../task/TaskCheckbox';
 import {
   PatientsTasklistComments,
   PatientsTasklistDate,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
   PatientsTasklistNew,
+  PatientsTasklistStrikeThrough,
 } from './PatientsTasksBody.styled';
 
 const PatientsTaskBody = ({
@@ -60,8 +61,10 @@ const PatientsTaskBody = ({
       {!hideCheckbox && (
         <div
           style={{
-            display: 'flex',
             alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            width: 60,
           }}
         >
           <TaskCheckbox
@@ -118,10 +121,11 @@ const PatientsTaskBody = ({
             }}
           >
             {storeAsCurrentTask ? (
-              <PatientsTasklistDescription isComplete={status === 'COMPLETE'}>
+              <PatientsTasklistDescription>
                 {description || (
                   <div style={{ color: '#ababb2' }}>Unnamed task</div>
                 )}
+                <PatientsTasklistStrikeThrough active={status === 'COMPLETE'} />
               </PatientsTasklistDescription>
             ) : (
               <Link

@@ -1,5 +1,7 @@
-import * as TaskApi from "../api/task-api";
-import * as ActionTypes from "./action-types";
+import $ from 'jquery';
+
+import * as TaskApi from '../api/task-api';
+import * as ActionTypes from './action-types';
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -7,7 +9,7 @@ const shapeTask = task => {
   return {
     ...task,
     assignedToId: assignedTo ? assignedTo.userId : null,
-    patientId: patient ? patient.patientId : null
+    patientId: patient ? patient.patientId : null,
   };
 };
 
@@ -28,7 +30,7 @@ export function getTasksForCreator(userId) {
 
 export function getListTasks(taskListId, sortBy, filterBy, status) {
   const action =
-    status === "INCOMPLETE"
+    status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
@@ -44,7 +46,7 @@ export function getListTasks(taskListId, sortBy, filterBy, status) {
 
 export function getTasksAssignedToMe(taskListId, sortBy, filterBy, status) {
   const action =
-    status === "INCOMPLETE"
+    status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
@@ -63,10 +65,10 @@ export function getTasksAssignedToSpecificUser(
   taskListId,
   sortBy,
   filterBy,
-  status
+  status,
 ) {
   const action =
-    status === "INCOMPLETE"
+    status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
@@ -76,7 +78,7 @@ export function getTasksAssignedToSpecificUser(
       taskListId,
       status,
       sortBy,
-      filterBy
+      filterBy,
     )
       .then(tasks => {
         dispatch({ type: action, tasks });
@@ -88,7 +90,7 @@ export function getTasksAssignedToSpecificUser(
 
 export function getTasksAssignedByMe(taskListId, sortBy, filterBy, status) {
   const action =
-    status === "INCOMPLETE"
+    status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
@@ -104,7 +106,7 @@ export function getTasksAssignedByMe(taskListId, sortBy, filterBy, status) {
 
 export function searchTasks(searchTerm, sortBy, filterBy, status) {
   const action =
-    status === "INCOMPLETE"
+    status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
@@ -168,7 +170,7 @@ export function saveTask(newTask) {
         if (!task.taskList) {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
-            task: { ...task, taskList: { listName: "Inbox" } }
+            task: { ...task, taskList: { listName: 'Inbox' } },
           });
         } else {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
@@ -184,7 +186,7 @@ export const moveTask = (task, taskList) => dispatch => {
     ...shapeTask(task),
     refiled: true,
     taskList: taskList.listName,
-    taskListId: taskList.taskListId
+    taskListId: taskList.taskListId,
   };
 
   return TaskApi.updateTask(updatedTask)
@@ -214,7 +216,7 @@ export function deleteComment(task, comment) {
         dispatch({
           type: ActionTypes.DELETE_TASK_COMMENT_SUCCESS,
           task,
-          comment
+          comment,
         });
       })
       .catch(error => {
@@ -229,7 +231,7 @@ export function updateComment(task, comment) {
         dispatch({
           type: ActionTypes.UPDATE_TASK_COMMENT_SUCCESS,
           task,
-          comment
+          comment,
         });
       })
       .catch(error => {
@@ -270,21 +272,25 @@ export function sortSubTask(task, direction) {
       });
 }
 
-export function markComplete(task, status) {
+export function markComplete(task, status, listName) {
   const action =
-    status === "INCOMPLETE"
+    listName === 'INCOMPLETE'
       ? ActionTypes.MARK_TASK_STATUS_SUCCESS
       : ActionTypes.MARK_COMPLETE_TASK_STATUS_SUCCESS;
 
   return dispatch => {
     const { newStatus, apiEndpoint } =
-      status === "INCOMPLETE"
-        ? { newStatus: "COMPLETE", apiEndpoint: "markComplete" }
-        : { newStatus: "INCOMPLETE", apiEndpoint: "markIncomplete" };
+      status === 'INCOMPLETE'
+        ? { newStatus: 'COMPLETE', apiEndpoint: 'markComplete' }
+        : { newStatus: 'INCOMPLETE', apiEndpoint: 'markIncomplete' };
 
     return TaskApi[apiEndpoint](task)
       .then(() => {
-        dispatch({ type: action, task, status: newStatus });
+        dispatch({
+          type: action,
+          task,
+          status: newStatus,
+        });
       })
       .catch(error => {
         throw error;
@@ -298,7 +304,7 @@ export const updateTaskDescription = (task, description) => dispatch =>
       dispatch({
         type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS,
         task,
-        description: res.description
+        description: res.description,
       });
     })
     .catch(error => {
@@ -311,7 +317,7 @@ export const updateDueDate = (task, dueDate) => dispatch =>
       dispatch({
         type: ActionTypes.UPDATE_TASK_DUE_DATE,
         taskId: res.taskId,
-        dueDate: res.dueDate
+        dueDate: res.dueDate,
       });
     })
     .catch(() => {});
@@ -322,7 +328,7 @@ export const updatePatient = (task, patient) => dispatch =>
       dispatch({
         type: ActionTypes.UPDATE_TASK_PATIENT,
         parentTaskId: res.parentTaskId || res.taskId,
-        patient: res.patient
+        patient: res.patient,
       });
     })
     .catch(err => {
@@ -335,7 +341,7 @@ export const updateReminder = (task, reminderDt) => dispatch =>
       dispatch({
         type: ActionTypes.UPDATE_TASK_REMINDER,
         taskId: task.taskId,
-        reminderDt
+        reminderDt,
       });
     })
     .catch(err => {
@@ -348,7 +354,7 @@ export const updateWorkflowStatus = (taskId, workflowStatus) => dispatch =>
       dispatch({
         type: ActionTypes.UPDATE_TASK_WORKFLOW_STATUS,
         taskId,
-        workflowStatus
+        workflowStatus,
       });
     })
     .catch(err => {
@@ -358,16 +364,16 @@ export const updateWorkflowStatus = (taskId, workflowStatus) => dispatch =>
 export function toggleTaskPriority(task, userId, priority) {
   return dispatch => {
     const { newPriority, apiEndpoint } =
-      priority === "LOW"
-        ? { newPriority: "HIGH", apiEndpoint: "markHighPriority" }
-        : { newPriority: "LOW", apiEndpoint: "markLowPriority" };
+      priority === 'LOW'
+        ? { newPriority: 'HIGH', apiEndpoint: 'markHighPriority' }
+        : { newPriority: 'LOW', apiEndpoint: 'markLowPriority' };
 
     return TaskApi[apiEndpoint](task.taskId, userId, priority)
       .then(() => {
         dispatch({
           type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS,
           task,
-          priority: newPriority
+          priority: newPriority,
         });
       })
       .catch(error => {
@@ -382,7 +388,7 @@ export function assignOrReassignTask(task, assignedToUserId) {
       .then(assignedTask => {
         dispatch({
           type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS,
-          task: assignedTask
+          task: assignedTask,
         });
       })
       .catch(error => {
@@ -392,16 +398,16 @@ export function assignOrReassignTask(task, assignedToUserId) {
 
 export function getListTasksByPatient(patientId, taskListId) {
   return dispatch =>
-    TaskApi.getListTasksByPatient(patientId, "INCOMPLETE", taskListId)
+    TaskApi.getListTasksByPatient(patientId, 'INCOMPLETE', taskListId)
       .then(tasks => {
         dispatch({ type: ActionTypes.GET_TASKS_SUCCESS, tasks });
-        TaskApi.getListTasksByPatient(patientId, "COMPLETE", taskListId).then(
+        TaskApi.getListTasksByPatient(patientId, 'COMPLETE', taskListId).then(
           patientsTasks => {
             dispatch({
               type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS,
-              tasks: patientsTasks
+              tasks: patientsTasks,
             });
-          }
+          },
         );
       })
       .catch(error => {
@@ -410,7 +416,7 @@ export function getListTasksByPatient(patientId, taskListId) {
 }
 export function getAllTasksByPatient(patientId, sortBy, filterBy, status) {
   const action =
-    status === "INCOMPLETE"
+    status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
@@ -426,18 +432,18 @@ export function getAllTasksByPatient(patientId, sortBy, filterBy, status) {
 
 export function getInboxTasks(status, sortBy, filterBy) {
   const action =
-    status === "INCOMPLETE"
+    status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
       : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 
   return dispatch =>
     TaskApi.getInboxTasks(status, sortBy, filterBy)
       .then(tasks => {
-        const taskList = { listName: "Inbox" };
+        const taskList = { listName: 'Inbox' };
         const tasksWithFixedTaskList = tasks.map(task => ({
           ...task,
           taskList,
-          subtasks: task.subtasks.map(subtask => ({ ...subtask, taskList }))
+          subtasks: task.subtasks.map(subtask => ({ ...subtask, taskList })),
         }));
         dispatch({ type: action, tasks: tasksWithFixedTaskList });
       })
@@ -453,7 +459,7 @@ export function markAsUnread(task, flagUnread) {
         dispatch({
           type: ActionTypes.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS,
           task,
-          flagUnread
+          flagUnread,
         });
       })
       .catch(error => {
@@ -494,7 +500,7 @@ export function clearCurrentTaskHistory() {
 }
 
 export const addSubtask = parentTaskId => dispatch =>
-  TaskApi.addTask({ parentTaskId, description: "" })
+  TaskApi.addTask({ parentTaskId, description: '' })
     .then(task => {
       dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
       storeAsCurrentTask(task)(dispatch);
@@ -507,7 +513,7 @@ export const addTaskAttachment = (taskId, fileData) => dispatch =>
       dispatch({
         type: ActionTypes.TASK_ATTACHMENT_ADDED,
         taskId,
-        taskAttachment: res.data
+        taskAttachment: res.data,
       });
     })
     .catch(err => {
@@ -520,7 +526,7 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
       dispatch({
         type: ActionTypes.TASK_ATTACHMENT_REMOVED,
         taskId,
-        taskAttachmentId
+        taskAttachmentId,
       });
     })
     .catch(err => {

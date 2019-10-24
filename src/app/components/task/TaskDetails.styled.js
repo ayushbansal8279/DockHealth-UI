@@ -1,7 +1,7 @@
 import ButtonBase from '@material-ui/core/ButtonBase';
 import styled from 'styled-components';
 
-import TaskCheckbox from '../common/TaskCheckbox';
+import TaskCheckbox from './TaskCheckbox';
 
 export const StyledCheckbox = styled(TaskCheckbox)`
   && {
