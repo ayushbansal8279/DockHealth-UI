@@ -119,6 +119,15 @@ class MemberPicker extends React.Component {
       filteredMembers &&
       filteredMembers.sort((a, b) => a.lastName.localeCompare(b.lastName));
 
+    const currentUserMembers =
+      members && member && members.filter(
+        m => m.userId == member.userId
+      );
+
+    if(currentUserMembers && currentUserMembers.length>0){
+        member.bubbleColor = currentUserMembers[0].bubbleColor
+    }
+
     return (
       <React.Fragment>
         <MemberAssignment
