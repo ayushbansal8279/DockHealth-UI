@@ -1,31 +1,25 @@
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import React, { useEffect } from 'react';
+import React from 'react';
 import useForm, { FormContext } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { setHeader, unsetHeader } from '../actions/header-actions';
 import * as userApi from '../api/user-api';
 import CubesLoader from '../components/common/CubesLoader';
-import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import StyledInput from '../components/userProfileView/StyledInput';
 import StyledSwitch from '../components/userProfileView/StyledSwitch';
 import UserAvatar from '../components/userProfileView/UserAvatar';
 import {
   FormContainer,
   FormSwitchListItem,
-  LogoutHeaderButton,
   PlainLink,
   SectionSubtypography,
   SectionTypography,
   SubmitButton,
   UserAvatarGrid,
   UserAvatarSupplement,
-  ViewContainer,
 } from '../components/userProfileView/UserProfileView.Styled';
 import { noop } from '../helpers/utilityFunctions';
-import LogoutIcon from '../img/drawer/logout';
 import {
   formFieldDefinitions,
   formSwitchDefinitions,
@@ -66,7 +60,11 @@ const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
   </FormSwitchListItem>
 );
 
-const onSubmit = async data => {
+const onSubmit = ({
+  otherSpecialty,
+  otherSubspecialty,
+  otherTitle,
+}) => async data => {
   const {
     emailNotificationsEnabled,
     pushNotificationsEnabled,
@@ -82,6 +80,26 @@ const onSubmit = async data => {
 
         requestData[key] = isPhoneNumber ? value?.replace(/-/g, '') : value;
       });
+
+    requestData.specialties = [
+      {
+        name: requestData.specialty,
+        specialtyId: otherSpecialty.specialtyId,
+        subSpecialties: [
+          {
+            subSpecialtyId: otherSubspecialty.subSpecialtyId,
+            subSpecialtyName: requestData.subspecialty,
+          },
+        ],
+      },
+    ];
+
+    requestData.titles = [
+      {
+        name: requestData.title,
+        titleId: otherTitle.titleId,
+      },
+    ];
 
     await userApi.updateUser(requestData);
 
@@ -100,7 +118,11 @@ const onSubmit = async data => {
   }
 };
 
-const UserProfileView = ({ defaultValues, formContainerClassName }) => {
+const UserProfileView = ({
+  defaultValues,
+  formContainerClassName,
+  ...otherEntries
+}) => {
   const formMethods = useForm({
     defaultValues,
     validationSchema,
@@ -115,7 +137,9 @@ const UserProfileView = ({ defaultValues, formContainerClassName }) => {
     <FormContext {...formMethods}>
       <FormContainer
         className={formContainerClassName}
-        onSubmit={handleSubmit(isSubmitting ? noop : onSubmit)}
+        onSubmit={handleSubmit(
+          isSubmitting ? noop : onSubmit({ ...otherEntries }),
+        )}
       >
         <Grid container justify="center">
           <Grid item sm={12} md={6} container>
@@ -169,80 +193,4 @@ const UserProfileView = ({ defaultValues, formContainerClassName }) => {
   );
 };
 
-const UserProfileViewAsync = () => {
-  const dispatch = useDispatch();
-  const userProfile = useSelector(store => store.userState.userProfile);
-  const userNotificationPreferences = useSelector(store => ({
-    emailNotificationsEnabled: store.userState.userNotificationPrefs.email,
-    pushNotificationsEnabled: store.userState.userNotificationPrefs.push,
-  }));
-
-  useEffect(
-    () => {
-      userApi.getUserNotoficationPrefs();
-
-      setHeader(dispatch)({
-        title: 'Profile & Settings',
-        rightComponents: (
-          <Grid container item xs={3} justify="flex-end">
-            <LogoutHeaderButton to="logout">
-              <LogoutIcon />
-              <span>Logout</span>
-            </LogoutHeaderButton>
-          </Grid>
-        ),
-      });
-
-      return () => {
-        unsetHeader(dispatch)();
-      };
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
-  const { loaderContainerClassName, formContainerClassName } = userProfile
-    ? {
-        loaderContainerClassName: 'animated fadeOut',
-        formContainerClassName: 'animated fadeIn',
-      }
-    : {
-        loaderContainerClassName: '',
-        formContainerClassName: 'invisible',
-      };
-
-  const defaultValues = Object.fromEntries(
-    [...formFieldDefinitions, ...formSwitchDefinitions].map(
-      ({ key, isPhoneNumber = false, defaultValue = '' }) => {
-        let newDefaultValue =
-          (userNotificationPreferences || {})[key] ||
-          (userProfile || {})[key] ||
-          defaultValue;
-
-        if (isPhoneNumber) {
-          newDefaultValue = newDefaultValue.replace(
-            /(\d{3})(\d{3})(\d{4})/,
-            '$1-$2-$3',
-          );
-        }
-
-        return [key, newDefaultValue];
-      },
-    ),
-  );
-
-  return (
-    <ViewContainer>
-      <CubesLoaderOverlay className={loaderContainerClassName} />
-      {userProfile && userNotificationPreferences && (
-        <UserProfileView
-          defaultValues={defaultValues}
-          userProfile={userProfile}
-          formContainerClassName={formContainerClassName}
-        />
-      )}
-    </ViewContainer>
-  );
-};
-
-export default UserProfileViewAsync;
+export default UserProfileView;

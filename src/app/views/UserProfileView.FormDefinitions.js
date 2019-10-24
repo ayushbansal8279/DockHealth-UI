@@ -1,3 +1,5 @@
+import head from 'ramda/es/head';
+
 export const formFieldDefinitions = [
   {
     key: 'firstName',
@@ -13,14 +15,18 @@ export const formFieldDefinitions = [
     key: 'title',
     label: 'Title',
     required: true,
+    defaultValueGetter: ({ titles }) => head(titles || [])?.name,
   },
   {
     key: 'specialty',
     label: 'My Specialty',
+    defaultValueGetter: ({ specialties }) => head(specialties || [])?.name,
   },
   {
     key: 'subspecialty',
     label: 'My Subspecialty',
+    defaultValueGetter: ({ specialties }) =>
+      head(head(specialties || [])?.subSpecialties || [])?.subSpecialtyName,
   },
   {
     key: 'organizationName',
@@ -41,6 +47,7 @@ export const formFieldDefinitions = [
     key: 'accountPhoneNumber',
     label: 'Mobile',
     isPhoneNumber: true,
+    readOnly: true,
   },
   {
     key: 'workPhoneNumber',

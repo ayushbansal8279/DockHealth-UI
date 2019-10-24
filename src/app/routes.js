@@ -44,7 +44,7 @@ import TaskListView from './views/TaskListView';
 import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
-import UserProfileView from './views/UserProfileView';
+import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
 
 export const Routes = ({ store }) => {
   const authRequired = (nextState, replaceState) => {
@@ -105,7 +105,7 @@ export const Routes = ({ store }) => {
               onEnter={nextState => preselectTask(null, nextState)}
             />
           </Route>
-          <Route path="/userprofile" component={UserProfileView} />
+          <Route path="/userprofile" component={UserProfileViewWrapper} />
           <Route path="/support" component={SupportSectionView} />
         </Route>
         <Route component={TemplateAuth}>
