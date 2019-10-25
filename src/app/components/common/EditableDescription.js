@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import { capitalize } from '../../helpers/capitalize';
+import EditIcon from '../../img/edit.svg';
 
 const StyledTextField = styled(TextField).attrs({
   variant: 'outlined',
@@ -37,11 +38,36 @@ const StyledTextField = styled(TextField).attrs({
   }
 `;
 
+const StyledEditIconContainer = styled.div`
+  && {
+    align-items: center;
+    display: inline-flex;
+    fill: #000;
+    height: 22px;
+    margin-left: 8px;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.1s linear;
+    vertical-align: bottom;
+    width: 18px;
+
+    > img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+`;
+
 const StyledNote = styled.div`
   display: inline-block;
   position: relative;
   white-space: pre-wrap;
   word-break: break-all;
+
+  &&:hover ${StyledEditIconContainer} {
+    cursor: pointer;
+    opacity: 1;
+  }
 `;
 
 const StyledPlaceholderNote = styled(StyledNote)`
@@ -136,8 +162,13 @@ const EditableDescription = ({
         };
 
     return (
-      <NoteComponent onDoubleClick={startEditing}>
+      <NoteComponent>
         {noteValue}
+        {!isEditing && !disabled && (
+          <StyledEditIconContainer onClick={startEditing}>
+            <img src={EditIcon} alt="Edit icon" />
+          </StyledEditIconContainer>
+        )}
         <StyledNoteStrikethrough
           hasValue={Boolean(value)}
           active={strikethrough}
