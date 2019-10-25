@@ -21,7 +21,7 @@ export const PatientsTasklistDescription = styled.div`
 `;
 
 export const PatientsTasklistStrikeThrough = styled.div`
-  background-color: #303538;
+  background-color: ${props => (props.hasDescription ? '#303538' : '#ababb2')};
   left: 0;
   height: 1px;
   position: absolute;

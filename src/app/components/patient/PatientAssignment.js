@@ -37,8 +37,11 @@ const PatientAssignment = ({
   fetch,
   isCompact,
   disabled,
+  task,
 }) => {
   useEffect(fetch, []);
+
+  const { parentTaskId } = task;
 
   const patientComponent = ({ padded }) =>
     patient ? (
@@ -47,7 +50,7 @@ const PatientAssignment = ({
       <StyledText padded={padded}>None</StyledText>
     );
 
-  if (disabled) {
+  if (disabled || parentTaskId) {
     return patientComponent({ padded: true });
   }
 

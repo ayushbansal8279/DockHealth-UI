@@ -1,5 +1,15 @@
 import {
-  map, equals, when, always, assoc, evolve, propEq, identity, unless, uncurryN, ifElse,
+  map,
+  equals,
+  when,
+  always,
+  assoc,
+  evolve,
+  propEq,
+  identity,
+  unless,
+  uncurryN,
+  ifElse,
 } from 'ramda';
 import {
   ADD_PATIENT_TO_TASK_SUCCESS,
@@ -19,7 +29,8 @@ import {
   HIDE_COMPLETED_TASKS,
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   MARK_TASK_STATUS_SUCCESS,
-  MOVE_TASK_SUCCESS, ORDER_SUB_TASK_SUCCESS,
+  MOVE_TASK_SUCCESS,
+  ORDER_SUB_TASK_SUCCESS,
   REQUEST_COMPLETED_TASKS,
   REQUEST_HISTORY,
   REQUEST_TASKS,
@@ -32,11 +43,8 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
-  SHOW_SUBTASKS,
-  HIDE_SUBTASKS,
   TASK_ATTACHMENT_ADDED,
-  TASK_ATTACHMENT_REMOVED
-
+  TASK_ATTACHMENT_REMOVED,
 } from '../actions/action-types';
 
 const initialState = {
@@ -55,11 +63,16 @@ const initialState = {
 const getMainTaskId = ({ parentTaskId, taskId }) => parentTaskId || taskId;
 
 const updateTaskOrSubtask = (tasks, taskId, update) => {
-  const updatedTasks = tasks.map(t => (
+  const updatedTasks = tasks.map(t =>
     t.taskId === taskId
       ? update(t)
-      : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === taskId ? update(st) : st)) })
-  ));
+      : {
+          ...t,
+          subtasks: t.subtasks.map(st =>
+            st.taskId === taskId ? update(st) : st,
+          ),
+        },
+  );
 
   return updatedTasks;
 };
@@ -84,70 +97,90 @@ const clearHistory = state => ({ ...state, currentTaskHistory: null });
 const updateDueDate = (state, { taskId, dueDate }) => {
   const updateStatus = t => ({ ...t, dueDate });
   const updatedTasks = updateTaskOrSubtask(state.tasks, taskId, updateStatus);
-  return ({ ...state, tasks: updatedTasks });
+  return { ...state, tasks: updatedTasks };
 };
 
 const updateWorkflowStatus = (state, { taskId, workflowStatus }) => {
   const updateStatus = t => ({ ...t, workflowStatus });
   const updatedTasks = updateTaskOrSubtask(state.tasks, taskId, updateStatus);
-  return ({ ...state, tasks: updatedTasks });
+  return { ...state, tasks: updatedTasks };
 };
 
 const updatePatient = (state, { parentTaskId, patient }) => ({
   ...state,
-  tasks: state.tasks.map(task => (task.taskId === parentTaskId
-    ? ({ ...task, patient, subtasks: task.subtasks.map(subtask => ({ ...subtask, patient })) })
-    : task)),
+  tasks: state.tasks.map(task =>
+    task.taskId === parentTaskId
+      ? {
+          ...task,
+          patient,
+          subtasks: task.subtasks.map(subtask => ({ ...subtask, patient })),
+        }
+      : task,
+  ),
 });
 
 const updateReminder = (state, { taskId, reminderDt }) => {
   const updateStatus = t => ({ ...t, reminderDt });
   const updatedTasks = updateTaskOrSubtask(state.tasks, taskId, updateStatus);
-  return ({ ...state, tasks: updatedTasks });
+  return { ...state, tasks: updatedTasks };
 };
 
 const TASK_COMPLETE = 'COMPLETE';
 
-const updateMainTaskStatus = status => evolve({
-  status: always(status),
-  subtasks:
-    equals(status, TASK_COMPLETE)
+const updateMainTaskStatus = status =>
+  evolve({
+    status: always(status),
+    subtasks: equals(status, TASK_COMPLETE)
       ? map(assoc('status', status))
       : identity,
-});
+  });
 
-const updateSubTaskStatus = (status, subtask) => evolve({
-  subtasks: map(when(
-    propEq('taskId', subtask.taskId),
-    assoc('status', status),
-  )),
-});
+const updateSubTaskStatus = (status, subtask) =>
+  evolve({
+    subtasks: map(
+      when(propEq('taskId', subtask.taskId), assoc('status', status)),
+    ),
+  });
 
-const updateTaskStatus = uncurryN(3,
-  status => task => map(when(
-    propEq('taskId', task.parentTaskId || task.taskId),
-    ifElse(
-      propEq('taskId', task.taskId),
-      updateMainTaskStatus(status),
-      unless(
-        propEq('status', TASK_COMPLETE),
-        updateSubTaskStatus(status, task),
+const updateTaskStatus = uncurryN(3, status => task =>
+  map(
+    when(
+      propEq('taskId', task.parentTaskId || task.taskId),
+      ifElse(
+        propEq('taskId', task.taskId),
+        updateMainTaskStatus(status),
+        unless(
+          propEq('status', TASK_COMPLETE),
+          updateSubTaskStatus(status, task),
+        ),
       ),
     ),
-  )));
+  ),
+);
+
+const isSubtask = ({ parentTaskId }) => parentTaskId !== null;
+const isParentOfAddedTask = addedTask => ({ taskId }) =>
+  taskId === addedTask.parentTaskId;
 
 const TaskReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
-      const isSubtask = ({ parentTaskId }) => parentTaskId !== null;
-      const isParentOfAddedTask = ({ taskId }) => taskId === addedTask.parentTaskId;
+      const parentTask = state.tasks.find(({ taskId }) =>
+        isParentOfAddedTask(addedTask)({ taskId }),
+      );
+
+      if (isSubtask(addedTask)) {
+        addedTask.patient = parentTask?.patient;
+      }
 
       const tasks = isSubtask(addedTask)
-        ? state.tasks.map(task => (isParentOfAddedTask(task)
-          ? { ...task, subtasks: [addedTask].concat(task.subtasks) }
-          : task))
+        ? state.tasks.map(task =>
+            isParentOfAddedTask(addedTask)(task)
+              ? { ...task, subtasks: [addedTask].concat(task.subtasks) }
+              : task,
+          )
         : [addedTask].concat(state.tasks);
 
       return { ...state, tasks };
@@ -162,12 +195,30 @@ const TaskReducer = (state = initialState, action) => {
 
     case GET_TASKS_SUCCESS: {
       // isFetching is used for the loading image
-      const { tasks } = action;
+      let { tasks } = action;
+
+      tasks = tasks.map(task => ({
+        ...task,
+        subtasks: task.subtasks?.map(subtask => ({
+          ...subtask,
+          patient: task.patient,
+        })),
+      }));
+
       return { ...state, tasks, isFetching: false };
     }
 
     case GET_COMPLETED_TASKS_SUCCESS: {
-      const { tasks } = action;
+      let { tasks } = action;
+
+      tasks = tasks.map(task => ({
+        ...task,
+        subtasks: task.subtasks?.map(subtask => ({
+          ...subtask,
+          patient: task.patient,
+        })),
+      }));
+
       return {
         ...state,
         completedTasks: tasks,
@@ -208,7 +259,11 @@ const TaskReducer = (state = initialState, action) => {
 
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
       const { task, status } = action;
-      const completedTasks = updateTaskStatus(status, task, state.completedTasks);
+      const completedTasks = updateTaskStatus(
+        status,
+        task,
+        state.completedTasks,
+      );
 
       return { ...state, completedTasks };
     }
@@ -219,15 +274,24 @@ const TaskReducer = (state = initialState, action) => {
       if (mainTaskId) {
         return {
           ...state,
-          tasks: state.tasks.map(task => (task.taskId === mainTaskId
-            ? { ...task, subtasks: task.subtasks.filter(({ taskId }) => taskId !== action.task.taskId) }
-            : task)),
+          tasks: state.tasks.map(task =>
+            task.taskId === mainTaskId
+              ? {
+                  ...task,
+                  subtasks: task.subtasks.filter(
+                    ({ taskId }) => taskId !== action.task.taskId,
+                  ),
+                }
+              : task,
+          ),
         };
       }
 
       return {
         ...state,
-        tasks: state.tasks.filter(({ taskId }) => taskId !== action.task.taskId),
+        tasks: state.tasks.filter(
+          ({ taskId }) => taskId !== action.task.taskId,
+        ),
       };
     }
 
@@ -236,18 +300,25 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === mainTask
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              read: false,
-              subtasks:
-            task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
-              ? { ...subtask, read: false, description: action.description }
-              : subtask)),
-            }
-            : { ...task, read: false, description: action.description }
-          : task)),
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTask
+            ? action.task.parentTaskId
+              ? {
+                  ...task,
+                  read: false,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId
+                      ? {
+                          ...subtask,
+                          read: false,
+                          description: action.description,
+                        }
+                      : subtask,
+                  ),
+                }
+              : { ...task, read: false, description: action.description }
+            : task,
+        ),
       };
     }
 
@@ -265,24 +336,27 @@ const TaskReducer = (state = initialState, action) => {
 
     case MOVE_TASK_SUCCESS: {
       const { task } = action;
-      const isSubtask = Boolean(task.parentTaskId);
 
-      if (!isSubtask) {
-        return ({
+      if (!isSubtask(task)) {
+        return {
           ...state,
           tasks: state.tasks.filter(t => t.taskId !== task.taskId),
-        });
+        };
       }
 
-      return ({
+      return {
         ...state,
-        tasks: state.tasks.map(t => (t.taskId !== task.parentTaskId
-          ? t
-          : ({
-            ...t,
-            subtasks: t.subtasks.filter(subtask => subtask.taskId !== task.taskId),
-          }))),
-      });
+        tasks: state.tasks.map(t =>
+          t.taskId !== task.parentTaskId
+            ? t
+            : {
+                ...t,
+                subtasks: t.subtasks.filter(
+                  subtask => subtask.taskId !== task.taskId,
+                ),
+              },
+        ),
+      };
     }
 
     case UPDATE_TASK_SUCCESS: {
@@ -291,22 +365,24 @@ const TaskReducer = (state = initialState, action) => {
 
       const newState = {
         ...state,
-        tasks: state.tasks.map((t) => {
+        tasks: state.tasks.map(t => {
           if (t.taskId !== mainTaskId) {
             return t;
           }
 
           if (!task.parentTaskId) {
-            return ({ ...t, ...task });
+            return { ...t, ...task };
           }
 
-          return ({
+          return {
             ...t,
             read: false,
-            subtasks: t.subtasks.map(subtask => (subtask.taskId === task.taskId
-              ? { ...subtask, ...task }
-              : subtask)),
-          });
+            subtasks: t.subtasks.map(subtask =>
+              subtask.taskId === task.taskId
+                ? { ...subtask, ...task }
+                : subtask,
+            ),
+          };
         }),
       };
 
@@ -318,17 +394,20 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === mainTask
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              subtasks:
-              task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
-                ? { ...subtask, priority: action.priority }
-                : subtask)),
-            }
-            : { ...task, priority: action.priority }
-          : task)),
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTask
+            ? action.task.parentTaskId
+              ? {
+                  ...task,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId
+                      ? { ...subtask, priority: action.priority }
+                      : subtask,
+                  ),
+                }
+              : { ...task, priority: action.priority }
+            : task,
+        ),
       };
     }
 
@@ -337,27 +416,32 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === mainTask
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              subtasks:
-            task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTask
+            ? action.task.parentTaskId
               ? {
-                ...subtask,
-                assignedTo: action.task.assignedTo,
-                assignedBy: action.task.assignedBy,
-                assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime,
-              }
-              : subtask)),
-            }
-            : {
-              ...task,
-              assignedTo: action.task.assignedTo,
-              assignedBy: action.task.assignedBy,
-              assignmentUpdatedDateTime: action.task.assignmentUpdatedDateTime,
-            }
-          : task)),
+                  ...task,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId
+                      ? {
+                          ...subtask,
+                          assignedTo: action.task.assignedTo,
+                          assignedBy: action.task.assignedBy,
+                          assignmentUpdatedDateTime:
+                            action.task.assignmentUpdatedDateTime,
+                        }
+                      : subtask,
+                  ),
+                }
+              : {
+                  ...task,
+                  assignedTo: action.task.assignedTo,
+                  assignedBy: action.task.assignedBy,
+                  assignmentUpdatedDateTime:
+                    action.task.assignmentUpdatedDateTime,
+                }
+            : task,
+        ),
       };
     }
 
@@ -365,24 +449,40 @@ const TaskReducer = (state = initialState, action) => {
       const mainTask = getMainTaskId(action.task);
       // HACK - TODO: Make backend return correct initials and userName
       const comment = action.comment.data;
-      comment.creator.initials = comment.creator.initials || `${comment.creator.firstName.charAt(0)} ${comment.creator.firstName.charAt(1)}`;
-      comment.creator.userName = `${comment.creator.firstName} ${comment.creator.lastName}`;
+      comment.creator.initials =
+        comment.creator.initials ||
+        `${comment.creator.firstName.charAt(
+          0,
+        )} ${comment.creator.firstName.charAt(1)}`;
+      comment.creator.userName = `${comment.creator.firstName} ${
+        comment.creator.lastName
+      }`;
 
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === mainTask
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              read: false,
-              subtasks:
-                  task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
-                    ? { ...subtask, read: false, comments: [comment].concat(subtask.comments) }
-                    : subtask)),
-            }
-            : { ...task, read: false, comments: [comment].concat(task.comments) }
-
-          : task)),
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTask
+            ? action.task.parentTaskId
+              ? {
+                  ...task,
+                  read: false,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId
+                      ? {
+                          ...subtask,
+                          read: false,
+                          comments: [comment].concat(subtask.comments),
+                        }
+                      : subtask,
+                  ),
+                }
+              : {
+                  ...task,
+                  read: false,
+                  comments: [comment].concat(task.comments),
+                }
+            : task,
+        ),
       };
     }
 
@@ -391,29 +491,34 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === mainTaskId
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              subtasks:
-                task.subtasks.map(subtask => (subtask === action.task
-                  ? {
-                    ...subtask,
-                    comments:
-                    subtask.comments.map(comment => (comment.commentId === action.comment.commentId
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTaskId
+            ? action.task.parentTaskId
+              ? {
+                  ...task,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask === action.task
+                      ? {
+                          ...subtask,
+                          comments: subtask.comments.map(comment =>
+                            comment.commentId === action.comment.commentId
+                              ? { ...comment, comment: action.comment.comment }
+                              : comment,
+                          ),
+                        }
+                      : subtask,
+                  ),
+                }
+              : {
+                  ...task,
+                  comments: task.comments.map(comment =>
+                    comment.commentId === action.comment.commentId
                       ? { ...comment, comment: action.comment.comment }
-                      : comment)),
-                  }
-                  : subtask)),
-            }
-            : {
-              ...task,
-              comments:
-                task.comments.map(comment => (comment.commentId === action.comment.commentId
-                  ? { ...comment, comment: action.comment.comment }
-                  : comment)),
-            }
-          : task)),
+                      : comment,
+                  ),
+                }
+            : task,
+        ),
       };
     }
 
@@ -422,26 +527,42 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === mainTaskId
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              subtasks:
-                  task.subtasks.map(subtask => (subtask === action.task
-                    ? { ...subtask, comments: subtask.comments.filter(comment => comment.commentId !== action.comment.commentId) }
-                    : subtask)),
-            }
-            : { ...task, comments: task.comments.filter(comment => comment.commentId !== action.comment.commentId) }
-          : task)),
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTaskId
+            ? action.task.parentTaskId
+              ? {
+                  ...task,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask === action.task
+                      ? {
+                          ...subtask,
+                          comments: subtask.comments.filter(
+                            comment =>
+                              comment.commentId !== action.comment.commentId,
+                          ),
+                        }
+                      : subtask,
+                  ),
+                }
+              : {
+                  ...task,
+                  comments: task.comments.filter(
+                    comment => comment.commentId !== action.comment.commentId,
+                  ),
+                }
+            : task,
+        ),
       };
     }
 
     case ADD_PATIENT_TO_TASK_SUCCESS:
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === action.taskId
-          ? { ...task, patient: action.patient }
-          : task)),
+        tasks: state.tasks.map(task =>
+          task.taskId === action.taskId
+            ? { ...task, patient: action.patient }
+            : task,
+        ),
       };
 
     case FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS: {
@@ -449,23 +570,28 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === mainTask
-          ? action.task.parentTaskId
-            ? {
-              ...task,
-              subtasks:
-                  task.subtasks.map(subtask => (subtask.taskId === action.task.taskId
-                    ? { ...subtask, read: !action.task.read }
-                    : subtask)),
-            }
-            : { ...task, read: !action.task.read }
-
-          : task)),
+        tasks: state.tasks.map(task =>
+          task.taskId === mainTask
+            ? action.task.parentTaskId
+              ? {
+                  ...task,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask.taskId === action.task.taskId
+                      ? { ...subtask, read: !action.task.read }
+                      : subtask,
+                  ),
+                }
+              : { ...task, read: !action.task.read }
+            : task,
+        ),
       };
     }
 
     case SET_AS_CURRENT_TASK:
-      return { ...state, selectedTaskId: (action.task != null ? action.task.taskId : null)};
+      return {
+        ...state,
+        selectedTaskId: action.task != null ? action.task.taskId : null,
+      };
 
     case GET_TASK_HISTORY_SUCCESS:
       return requestHistorySuccess(state, action);
@@ -479,41 +605,76 @@ const TaskReducer = (state = initialState, action) => {
     case ORDER_SUB_TASK_SUCCESS:
       return {
         ...state,
-        tasks: state.tasks.map(task => (task.taskId === action.task.taskId ? action.task : task)),
+        tasks: state.tasks.map(task =>
+          task.taskId === action.task.taskId ? action.task : task,
+        ),
       };
 
-    case TASK_ATTACHMENT_ADDED:
-      var mainTaskId = action.taskId
-      var taskAttachment = action.taskAttachment
-
-      return{
-        ...state,
-        tasks: state.tasks.map(t => (t.taskId === mainTaskId
-          ? {...t, read:false, attachments: [taskAttachment].concat(t.attachments)}
-          : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ?
-            {...st, read:false, attachments: [taskAttachment].concat(st.attachments)}
-            : st)) })
-        ))
-      };
-
-    case TASK_ATTACHMENT_REMOVED:
-      var mainTaskId = action.taskId
-      var taskAttachmentId = action.taskAttachmentId
+    case TASK_ATTACHMENT_ADDED: {
+      const mainTaskId = action.taskId;
+      const { taskAttachment } = action;
 
       return {
-          ...state,
-          tasks: state.tasks.map(t => (t.taskId === mainTaskId
-            ? {...t, read:false, attachments: t.attachments.filter(att => att.attachmentId !== taskAttachmentId)}
-            : ({ ...t, subtasks: t.subtasks.map(st => (st.taskId === mainTaskId ?
-              {...st, read:false, attachments: st.attachments.filter(att => att.attachmentId !== taskAttachmentId)}
-              : st)) })
-          ))
+        ...state,
+        tasks: state.tasks.map(t =>
+          t.taskId === mainTaskId
+            ? {
+                ...t,
+                read: false,
+                attachments: [taskAttachment].concat(t.attachments),
+              }
+            : {
+                ...t,
+                subtasks: t.subtasks.map(st =>
+                  st.taskId === mainTaskId
+                    ? {
+                        ...st,
+                        read: false,
+                        attachments: [taskAttachment].concat(st.attachments),
+                      }
+                    : st,
+                ),
+              },
+        ),
       };
+    }
+
+    case TASK_ATTACHMENT_REMOVED: {
+      const mainTaskId = action.taskId;
+      const { taskAttachmentId } = action;
+
+      return {
+        ...state,
+        tasks: state.tasks.map(t =>
+          t.taskId === mainTaskId
+            ? {
+                ...t,
+                read: false,
+                attachments: t.attachments.filter(
+                  att => att.attachmentId !== taskAttachmentId,
+                ),
+              }
+            : {
+                ...t,
+                subtasks: t.subtasks.map(st =>
+                  st.taskId === mainTaskId
+                    ? {
+                        ...st,
+                        read: false,
+                        attachments: st.attachments.filter(
+                          att => att.attachmentId !== taskAttachmentId,
+                        ),
+                      }
+                    : st,
+                ),
+              },
+        ),
+      };
+    }
 
     default:
       return state;
   }
 };
-
 
 export default TaskReducer;

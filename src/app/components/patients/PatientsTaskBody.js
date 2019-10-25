@@ -132,7 +132,10 @@ const PatientsTaskBody = ({
                 {description || (
                   <div style={{ color: '#ababb2' }}>Unnamed task</div>
                 )}
-                <PatientsTasklistStrikeThrough active={status === 'COMPLETE'} />
+                <PatientsTasklistStrikeThrough
+                  hasDescription={Boolean(description)}
+                  active={status === 'COMPLETE'}
+                />
               </PatientsTasklistDescription>
             ) : (
               <Link

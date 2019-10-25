@@ -49,7 +49,7 @@ const StyledPlaceholderNote = styled(StyledNote)`
 `;
 
 const StyledNoteStrikethrough = styled.div`
-  background-color: #303538;
+  background-color: ${props => (props.hasValue ? '#303538' : '#ababb2')};
   left: 0;
   height: 1px;
   position: absolute;
@@ -138,7 +138,10 @@ const EditableDescription = ({
     return (
       <NoteComponent onDoubleClick={startEditing}>
         {noteValue}
-        <StyledNoteStrikethrough active={strikethrough} />
+        <StyledNoteStrikethrough
+          hasValue={Boolean(value)}
+          active={strikethrough}
+        />
       </NoteComponent>
     );
   }
