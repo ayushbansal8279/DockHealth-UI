@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import useConfirmation from '../../hooks/useConfirmation';
 import Flag from '../common/Flag';
-import { Confirmation } from './TaskCheckbox';
+import ConfirmationDialog from './ConfirmationDialog';
 import PatientsTaskBody from '../patients/PatientsTaskBody';
 import AddSubtask from './AddSubtask';
 
@@ -106,7 +106,7 @@ const Task = props => {
       isSelected={selectedTaskId === task.taskId}
     >
       {!isSubtask && (
-        <Confirmation isOpen={isOpen} close={close} confirm={confirm} />
+        <ConfirmationDialog isOpen={isOpen} close={close} confirm={confirm} />
       )}
       <div style={{ display: 'flex' }}>
         <Flag priority={priority} />

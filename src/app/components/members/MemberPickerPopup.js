@@ -108,9 +108,7 @@ const MemberPickerPopup = ({ member, members, assign, task, close }) => {
       <List>
         <ListItem selected={member == null} onClick={deselect}>
           <MemberSlot />
-          <MemberName>
-            <em>Unassigned</em>
-          </MemberName>
+          <MemberName>Unassigned</MemberName>
         </ListItem>
         {sortedListings &&
           sortedListings.map(m => (

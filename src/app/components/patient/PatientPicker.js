@@ -115,9 +115,7 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
         )}
         <List>
           <ListItem selected={patient == null} onClick={deselect}>
-            <MemberName>
-              <em>Unassigned</em>
-            </MemberName>
+            <MemberName>Unassigned</MemberName>
           </ListItem>
           {sortedListings &&
             sortedListings.map(m => (

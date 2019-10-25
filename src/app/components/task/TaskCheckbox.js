@@ -1,34 +1,8 @@
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import CheckIcon from '../../img/checkbox-check';
 
 import useBoolean from '../../hooks/useBoolean';
-
-export const Confirmation = ({ isOpen, close, confirm }) => (
-  <Dialog
-    open={isOpen}
-    onClose={close}
-    aria-labelledby="alert-dialog-title"
-    aria-describedby="alert-dialog-description"
-  >
-    <DialogTitle id="alert-dialog-title">
-      You are about to complete a task with open subtasks. Completing the task
-      will also complete the subtasks. Would you like to proceed?
-    </DialogTitle>
-    <DialogActions>
-      <Button onClick={close} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={confirm} color="primary" autoFocus>
-        Complete all
-      </Button>
-    </DialogActions>
-  </Dialog>
-);
+import CheckIcon from '../../img/checkbox-check';
 
 const LINE_HEIGHT = 4;
 const LINE_OFFSET = 5;

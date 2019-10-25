@@ -20,7 +20,7 @@ import Reminder from '../common/Reminder';
 import StatusSelect from '../common/StatusSelect';
 import MemberPicker from '../members/MemberPicker';
 import PatientAssignment from '../patient/PatientAssignment';
-import { Confirmation } from './TaskCheckbox';
+import ConfirmationDialog from './ConfirmationDialog';
 import AddSubtask from './AddSubtask';
 import TaskActions from './TaskActions';
 import {
@@ -153,7 +153,7 @@ class TaskDetails extends React.PureComponent {
               </tr>
               <tr>
                 {!isSubtask && (
-                  <Confirmation
+                  <ConfirmationDialog
                     isOpen={isOpen}
                     close={close}
                     confirm={confirm}
@@ -175,6 +175,7 @@ class TaskDetails extends React.PureComponent {
                     value={description}
                     onChange={this.handleDescriptionChange}
                     disabled={isCompleted}
+                    strikethrough={isCompleted}
                   />
                 </StyledDescription>
               </tr>

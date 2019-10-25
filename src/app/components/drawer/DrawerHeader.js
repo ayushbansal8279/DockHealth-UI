@@ -15,13 +15,13 @@ const StyledListItem = styled(ListItem)`
       background: #007cab;
     }
     :hover {
-      background: #5cccec;
+      background: #007cab;
     }
   }
   &&.active {
     background: #007cab;
     :hover {
-      background: #5cccec;
+      background: #007cab;
     }
   }
 `;

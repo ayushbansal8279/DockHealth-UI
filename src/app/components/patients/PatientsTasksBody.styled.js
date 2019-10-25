@@ -4,12 +4,16 @@ export const PatientsTasklistNew = styled.div`
   color: #d9036b;
   font-size: 10px;
   font-variant: small-caps;
+  left: 0;
+  position: absolute;
+  top: -16px;
 `;
 
 export const PatientsTasklistDescription = styled.div`
   color: #303538;
   display: inline-block;
   font-size: 16px;
+  font-weight: bold;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
@@ -17,7 +21,7 @@ export const PatientsTasklistDescription = styled.div`
 `;
 
 export const PatientsTasklistStrikeThrough = styled.div`
-  background-color: #303538;
+  background-color: ${props => (props.hasDescription ? '#303538' : '#ababb2')};
   left: 0;
   height: 1px;
   position: absolute;
@@ -27,16 +31,37 @@ export const PatientsTasklistStrikeThrough = styled.div`
 `;
 
 export const PatientsTasklistInfo = styled.div`
-  font-size: 12px;
   color: #5e6366;
-`;
-
-export const PatientsTasklistComments = styled.div`
   font-size: 12px;
-  color: #0ca1c7;
+  line-height: 1;
 `;
 
 export const PatientsTasklistDate = styled.div`
   font-size: 16px;
   color: #303538;
+`;
+
+export const PatientTasklistContainer = styled.div`
+  flex: 1;
+  min-width: 0;
+  padding-right: 24px;
+  position: relative;
+`;
+
+export const CompletedBy = styled.div`
+  align-items: flex-end;
+  display: flex;
+  height: ${props => (props.isCompleted ? 20 : 0)}px;
+  overflow: hidden;
+  transition: height 0.1s ease-out;
+  transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
+  width: 100%;
+
+  > span {
+    color: #20b255;
+    font-size: 12px;
+    transition: transform 0.4s ease-out;
+    transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
+    transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
+  }
 `;

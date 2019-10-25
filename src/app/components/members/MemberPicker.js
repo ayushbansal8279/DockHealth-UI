@@ -158,9 +158,7 @@ class MemberPicker extends React.Component {
               id={UNASSIGNED_MEMBER_ID}
             >
               <MemberSlot />
-              <MemberName>
-                <em>Unassigned</em>
-              </MemberName>
+              <MemberName>Unassigned</MemberName>
             </ListItem>
             {sortedMembers &&
               sortedMembers.map(m => (
@@ -176,10 +174,6 @@ class MemberPicker extends React.Component {
                 </ListItem>
               ))}
           </List>
-          {/* <Footer onClick={() => {}} focusRipple> */}
-          {/*  <img src={PersonInvite} alt="" /> */}
-          {/*  <FooterText>Invite to list</FooterText> */}
-          {/* </Footer> */}
         </StyledPopover>
       </React.Fragment>
     );
