@@ -1,3 +1,4 @@
+import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router';
@@ -7,12 +8,13 @@ import Priority from '../common/Priority';
 import MemberPicker from '../members/MemberPicker';
 import TaskCheckbox from '../task/TaskCheckbox';
 import {
-  PatientsTasklistComments,
   PatientsTasklistDate,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
   PatientsTasklistNew,
   PatientsTasklistStrikeThrough,
+  PatientTasklistContainer,
+  CompletedBy,
 } from './PatientsTasksBody.styled';
 
 const PatientsTaskBody = ({
@@ -31,6 +33,7 @@ const PatientsTaskBody = ({
     createdDateTime,
     dueDate,
     comments,
+    subtasks,
     workflowStatus,
     read,
     description,
@@ -41,13 +44,42 @@ const PatientsTaskBody = ({
     taskId,
     status,
     patient,
+    completedDt: completedDateTime,
+    completedBy,
   } = task;
 
   const formattedCreationDate = moment(createdDateTime).format('h:mma');
   const formattedDueDate = moment(dueDate).format('ddd, MMM D');
   const formattedDueTime = moment(dueDate).format('@ h:mma');
+  const completedDateTimeMoment = moment(completedDateTime);
+  const formattedCompletedDateTime = completedDateTimeMoment.isValid()
+    ? completedDateTimeMoment.format('h:mma')
+    : '';
 
   const isInbox = !task?.taskList?.taskListId;
+
+  const subtaskCount = subtasks?.length ?? 0;
+  const commentsCount = comments?.length ?? 0;
+
+  const countInfoContentArray = [];
+
+  if (subtaskCount) {
+    countInfoContentArray.push(`${subtaskCount} subtasks`);
+  }
+
+  if (commentsCount) {
+    countInfoContentArray.push(`${commentsCount} comments`);
+  }
+
+  let countInfoContent = countInfoContentArray.join(' | ');
+
+  if (countInfoContent.trim().length > 0) {
+    countInfoContent = ` • ${countInfoContent.trim()}`;
+  }
+
+  const completedByContent =
+    formattedCompletedDateTime &&
+    `Completed by ${completedBy?.userName} at ${formattedCompletedDateTime}`;
 
   return (
     <div
@@ -91,35 +123,10 @@ const PatientsTaskBody = ({
           disabled={disabled || isParentComplete || isInbox}
         />
       </div>
-      <div
-        style={{
-          flex: 1,
-          width: 0,
-        }}
-      >
-        <div
-          style={{
-            height: '22px',
-            marginBottom: '-7px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div
-            style={{
-              minWidth: 0,
-              flexGrow: 1,
-              paddingRight: '24px',
-            }}
-          >
+
+      <Grid container alignItems="center">
+        <Grid item container xs={12} justifyContent="space-between">
+          <PatientTasklistContainer>
             {storeAsCurrentTask ? (
               <PatientsTasklistDescription>
                 {description || (
@@ -144,14 +151,17 @@ const PatientsTaskBody = ({
               </Link>
             )}
             <PatientsTasklistInfo>
-              {`Assigned by ${creator.userName} • ${formattedCreationDate}`}
+              {`Assigned by ${
+                creator.userName
+              } at ${formattedCreationDate}${countInfoContent}`}
             </PatientsTasklistInfo>
-            {comments.length > 0 && (
-              <PatientsTasklistComments>
-                {`${comments.length} comments`}
-              </PatientsTasklistComments>
-            )}
-          </div>
+            <CompletedBy
+              isCompleted={status === 'COMPLETE' && completedByContent}
+            >
+              <span>{completedByContent}</span>
+            </CompletedBy>
+            {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
+          </PatientTasklistContainer>
           {!isSubtask && !hidePatient && (
             <div
               style={{
@@ -208,8 +218,8 @@ const PatientsTaskBody = ({
               style={{ margin: '8px 23px 0 0' }}
             />
           )}
-        </div>
-      </div>
+        </Grid>
+      </Grid>
     </div>
   );
 };

@@ -83,6 +83,7 @@ const EditableDescription = ({
   disabled,
   name,
   placeholder,
+  strikethrough = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const startEditing = useCallback(
@@ -137,7 +138,7 @@ const EditableDescription = ({
     return (
       <NoteComponent onDoubleClick={startEditing}>
         {noteValue}
-        <StyledNoteStrikethrough active={disabled} />
+        <StyledNoteStrikethrough active={strikethrough} />
       </NoteComponent>
     );
   }

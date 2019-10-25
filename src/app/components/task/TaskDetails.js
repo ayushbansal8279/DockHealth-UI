@@ -175,6 +175,7 @@ class TaskDetails extends React.PureComponent {
                     value={description}
                     onChange={this.handleDescriptionChange}
                     disabled={isCompleted}
+                    strikethrough={isCompleted}
                   />
                 </StyledDescription>
               </tr>
