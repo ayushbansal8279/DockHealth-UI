@@ -389,7 +389,7 @@ export function getUserByEmailAndAccessToken(email, accessToken) {
   if(email){
     email = email.toLowerCase()
   }
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findUserByEmail?email='+email)
+  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findUserByEmail?email='+encodeURIComponent(email))
     .then(response => {
       store.dispatch({type: 'user/userProfile', userProfile: response.data})
       sessionStorage.setItem('userId', response.data.userId);

@@ -55,7 +55,7 @@ export function changeUserRoleForOrg(markedUserId,role) {
 
 export function cancelInviteToOrganization(markedUserEmail) {
   return axios.put('organization/cancelInviteToOrganization/'
-                      +"?markedUserEmail=" +markedUserEmail)
+                      +"?markedUserEmail=" +encodeURIComponent(markedUserEmail))
     .then(response => {
       return response.data;
     }).catch(function (error){
