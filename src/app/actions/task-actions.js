@@ -452,10 +452,10 @@ export function getInboxTasks(status, sortBy, filterBy) {
       });
 }
 
-export function markAsUnread(task, flagUnread) {
+export function markAsUnread(currentTask, flagUnread) {
   return dispatch =>
-    TaskApi.flagUnread(task.taskId, flagUnread)
-      .then(() => {
+    TaskApi.flagUnread(currentTask.taskId, flagUnread)
+      .then((task) => {
         dispatch({
           type: ActionTypes.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS,
           task,

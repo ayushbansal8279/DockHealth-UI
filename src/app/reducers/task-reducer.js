@@ -305,18 +305,16 @@ const TaskReducer = (state = initialState, action) => {
             ? action.task.parentTaskId
               ? {
                   ...task,
-                  read: false,
                   subtasks: task.subtasks.map(subtask =>
                     subtask.taskId === action.task.taskId
                       ? {
                           ...subtask,
-                          read: false,
                           description: action.description,
                         }
                       : subtask,
                   ),
                 }
-              : { ...task, read: false, description: action.description }
+              : { ...task, description: action.description }
             : task,
         ),
       };
@@ -376,7 +374,6 @@ const TaskReducer = (state = initialState, action) => {
 
           return {
             ...t,
-            read: false,
             subtasks: t.subtasks.map(subtask =>
               subtask.taskId === task.taskId
                 ? { ...subtask, ...task }
@@ -465,12 +462,10 @@ const TaskReducer = (state = initialState, action) => {
             ? action.task.parentTaskId
               ? {
                   ...task,
-                  read: false,
                   subtasks: task.subtasks.map(subtask =>
                     subtask.taskId === action.task.taskId
                       ? {
                           ...subtask,
-                          read: false,
                           comments: [comment].concat(subtask.comments),
                         }
                       : subtask,
@@ -478,7 +473,6 @@ const TaskReducer = (state = initialState, action) => {
                 }
               : {
                   ...task,
-                  read: false,
                   comments: [comment].concat(task.comments),
                 }
             : task,
@@ -577,11 +571,11 @@ const TaskReducer = (state = initialState, action) => {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
                     subtask.taskId === action.task.taskId
-                      ? { ...subtask, read: !action.task.read }
+                      ? { ...subtask, read: action.task.read, updated: action.task.updated }
                       : subtask,
                   ),
                 }
-              : { ...task, read: !action.task.read }
+              : { ...task, read: action.task.read, updated: action.task.updated }
             : task,
         ),
       };
@@ -620,7 +614,6 @@ const TaskReducer = (state = initialState, action) => {
           t.taskId === mainTaskId
             ? {
                 ...t,
-                read: false,
                 attachments: [taskAttachment].concat(t.attachments),
               }
             : {
@@ -629,7 +622,6 @@ const TaskReducer = (state = initialState, action) => {
                   st.taskId === mainTaskId
                     ? {
                         ...st,
-                        read: false,
                         attachments: [taskAttachment].concat(st.attachments),
                       }
                     : st,
@@ -649,7 +641,6 @@ const TaskReducer = (state = initialState, action) => {
           t.taskId === mainTaskId
             ? {
                 ...t,
-                read: false,
                 attachments: t.attachments.filter(
                   att => att.attachmentId !== taskAttachmentId,
                 ),
@@ -660,7 +651,6 @@ const TaskReducer = (state = initialState, action) => {
                   st.taskId === mainTaskId
                     ? {
                         ...st,
-                        read: false,
                         attachments: st.attachments.filter(
                           att => att.attachmentId !== taskAttachmentId,
                         ),

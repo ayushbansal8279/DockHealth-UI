@@ -121,6 +121,7 @@ class AssignedByMe extends PureComponent {
       actions: {
         markComplete,
         storeAsCurrentTask,
+        markAsUnread,
         toggleTaskPriority,
         addTaskComment,
       },
@@ -136,6 +137,7 @@ class AssignedByMe extends PureComponent {
       markComplete,
       selectedTaskId,
       storeAsCurrentTask,
+      markAsUnread,
       addTaskComment,
       toggleTaskPriority: (task, priority) =>
         toggleTaskPriority(task, userId, priority),

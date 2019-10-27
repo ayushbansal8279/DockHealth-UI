@@ -119,6 +119,7 @@ class TaskView extends PureComponent {
       tasks,
       markComplete,
       storeAsCurrentTask,
+      markAsUnread,
       selectedTaskId,
     } = this.props;
 
@@ -135,6 +136,7 @@ class TaskView extends PureComponent {
         markComplete(task, status, 'INCOMPLETE');
       },
       storeAsCurrentTask,
+      markAsUnread,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
       hidePriority: isCollapsed,
@@ -162,6 +164,7 @@ class TaskView extends PureComponent {
       pullCompletedTasks,
       selectedTaskId,
       storeAsCurrentTask,
+      markAsUnread,
     } = this.props;
 
     if (!showingCompletedTasks) {
@@ -195,6 +198,7 @@ class TaskView extends PureComponent {
         markComplete(task, status, 'COMPLETE');
       },
       storeAsCurrentTask,
+      markAsUnread,
       hideDate: isCollapsed,
       hideTags: isCollapsed,
       hidePriority: isCollapsed,
@@ -227,6 +231,7 @@ class TaskView extends PureComponent {
       taskList,
       showToolbar,
       storeAsCurrentTask,
+      markAsUnread,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -341,6 +346,7 @@ class TaskView extends PureComponent {
                     toggleTaskPriority={toggleTaskPriority}
                     isMainTaskComplete={isMainTaskComplete}
                     storeAsCurrentTask={storeAsCurrentTask}
+                    markAsUnread={markAsUnread}
                   />
                 )}
               </div>
