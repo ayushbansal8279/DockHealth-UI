@@ -17,7 +17,7 @@ const LoginPassword = () => {
           LOGIN_SUCCESS: 'YES',
         });
         if (data === 'SMS_MFA') {
-          hashHistory.push(`confirmMFACode?uname=${form.username}`);
+          hashHistory.push('confirmMFACode?uname='+encodeURIComponent(form.username));
         } else {
           sessionStorage.setItem('sessionStartTime', new Date().getTime());
 

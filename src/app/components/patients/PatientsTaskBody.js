@@ -7,6 +7,8 @@ import BellIcon from '../../img/bell.svg';
 import Priority from '../common/Priority';
 import MemberPicker from '../members/MemberPicker';
 import TaskCheckbox from '../task/TaskCheckbox';
+import UpdateIndicatorIcon from '../../img/update-indicator.svg';
+
 import {
   PatientsTasklistDate,
   PatientsTasklistDescription,
@@ -28,14 +30,17 @@ const PatientsTaskBody = ({
   isParentComplete = task?.status === 'COMPLETE',
   hideCheckbox,
   storeAsCurrentTask,
+  markAsUnread,
 }) => {
   const {
     createdDateTime,
+    updatedDateTime,
     dueDate,
     comments,
     subtasks,
     workflowStatus,
     read,
+    updated,
     description,
     reminderDt,
     creator,
@@ -88,6 +93,7 @@ const PatientsTaskBody = ({
         e.stopPropagation();
         // eslint-disable-next-line no-unused-expressions
         storeAsCurrentTask?.(task);
+        markAsUnread?.(task, false);
       }}
     >
       {!hideCheckbox && (
@@ -154,6 +160,11 @@ const PatientsTaskBody = ({
               </Link>
             )}
             <PatientsTasklistInfo>
+              {updated && <img
+                src={UpdateIndicatorIcon}
+                alt="Updated"
+                style={{ width: '17px', height: '17px', papaddingRight: '2px' }}
+              /> }
               {`Assigned by ${
                 creator.userName
               } at ${formattedCreationDate}${countInfoContent}`}

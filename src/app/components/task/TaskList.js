@@ -70,6 +70,7 @@ const TaskList = ({
   tasks = [],
   markComplete,
   storeAsCurrentTask,
+  markAsUnread,
   hideDate,
   hideTags,
   hidePriority,
@@ -98,6 +99,7 @@ const TaskList = ({
         <Task
           {...{
             storeAsCurrentTask,
+            markAsUnread,
             markComplete,
             task,
             isSubtask: task.parentTaskId !== null,

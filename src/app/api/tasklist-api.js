@@ -124,8 +124,7 @@ export function removeUserFromList(taskListId, removedUserId) {
 }
 
 export function cancelInviteToTaskList(taskListId, email) {
-  return axios.put(`list/cancelInviteToTaskList/${taskListId
-  }?markedUserEmail=${email}`)
+  return axios.put("list/cancelInviteToTaskList/"+taskListId+"?markedUserEmail="+encodeURIComponent(email))
     .then(response => response.data).catch((error) => {
       console.log(error);
       throw error.response.data;

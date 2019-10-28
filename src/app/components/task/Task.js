@@ -63,6 +63,7 @@ const Task = props => {
     disabled,
     hideCheckbox,
     storeAsCurrentTask,
+    markAsUnread,
   } = props;
   const { subtasks, priority, taskList } = task;
 
@@ -164,6 +165,7 @@ const Task = props => {
                       hideCheckbox={hideCheckbox}
                       disabled={disabled}
                       storeAsCurrentTask={storeAsCurrentTask}
+                      markAsUnread={markAsUnread}
                     />
                   ))}
                 </div>
