@@ -1,44 +1,23 @@
-import { ButtonBase } from '@material-ui/core';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import Grid from '@material-ui/core/Grid';
+import pick from 'ramda/es/pick';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
+import useBoolean from '../../hooks/useBoolean';
 import useConfirmation from '../../hooks/useConfirmation';
+import CubesLoader from '../common/CubesLoader';
 import Flag from '../common/Flag';
-import ConfirmationDialog from './ConfirmationDialog';
-import PatientsTaskBody from '../patients/PatientsTaskBody';
 import AddSubtask from './AddSubtask';
-
-const PatientsTasklistTask = styled.div`
-  border-radius: 3px;
-  border: solid 1px #a6dcea;
-  background-color: ${({ isSelected, isCollapsed }) => {
-    if (isSelected) {
-      return '#ddf2f7';
-    }
-
-    return isCollapsed ? '#fff' : '#E6ECF0';
-  }};
-  margin-left: -20px;
-  margin-right: -23px;
-  margin-bottom: 4px;
-`;
-
-const PatientsTasklistSubtasks = styled(ButtonBase)`
-  && {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    height: 44px;
-    border-radius: 1px;
-    border: solid 3px
-      ${({ isCollapsed }) => (isCollapsed ? '#f5f8fa' : 'transparent')};
-
-    font-size: 16px;
-    line-height: 38px;
-    color: #2e3a43;
-    padding-left: 15px;
-  }
-`;
+import ConfirmationDialog from './ConfirmationDialog';
+import {
+  SubtaskLoadingContainer,
+  SubtaskOrderContainer,
+  TaskAnimationContainer,
+  TaskBodyContainer,
+  TaskContainer,
+  TaskSelectionContainer,
+} from './Task.styled';
+import TaskBody from './TaskBody';
 
 const usePrevious = value => {
   const ref = useRef();
@@ -53,7 +32,6 @@ const usePrevious = value => {
 
 const Task = props => {
   const {
-    style,
     task,
     isSubtask,
     markComplete,
@@ -63,19 +41,20 @@ const Task = props => {
     disabled,
     hideCheckbox,
     storeAsCurrentTask,
+    subtaskIndex,
+    slimView,
     markAsUnread,
   } = props;
-  const { subtasks, priority, taskList } = task;
+  const { subtasks, priority, taskList, isNewSubtask } = task;
 
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const toggleIsCollapsed = useCallback(
-    () => {
-      setIsCollapsed(!isCollapsed);
-    },
-    [setIsCollapsed, isCollapsed],
-  );
-
+  const [isCollapsed, setIsCollapsed, , toggleIsCollapsed] = useBoolean(true);
   const previousSelectedTaskId = usePrevious(selectedTaskId);
+  const { addingNewSubtask, addingNewSubtaskParentId } = useSelector(state =>
+    pick(['addingNewSubtask', 'addingNewSubtaskParentId'])(state.taskState),
+  );
+  const animationContainer = useRef(null);
+
+  const hasSubtasks = subtasks.length > 0;
 
   useEffect(
     () => {
@@ -91,7 +70,34 @@ const Task = props => {
         setIsCollapsed(false);
       }
     },
-    [isCollapsed, isSubtask, previousSelectedTaskId, selectedTaskId, subtasks],
+    [
+      isCollapsed,
+      isSubtask,
+      previousSelectedTaskId,
+      selectedTaskId,
+      setIsCollapsed,
+      subtasks,
+    ],
+  );
+
+  useEffect(
+    () => {
+      if (isNewSubtask) {
+        animationContainer.current.style.height =
+          animationContainer.current.scrollHeight;
+      }
+    },
+    [isNewSubtask],
+  );
+
+  useEffect(
+    () => {
+      if (slimView) {
+        storeAsCurrentTask(null);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [slimView],
   );
 
   // Check all subtasks confirmation dialog
@@ -100,81 +106,96 @@ const Task = props => {
     markComplete,
   );
 
+  const isNewSubtaskForCurrentTask =
+    addingNewSubtask &&
+    !isNewSubtask &&
+    addingNewSubtaskParentId === task.taskId;
+
+  const renderedSubtasks = isNewSubtaskForCurrentTask
+    ? subtasks.concat({
+        subtasks: [],
+        isNewSubtask: true,
+        taskId: 'new-subtask',
+      })
+    : subtasks;
+
+  const isSelfOrSubtaskActive =
+    selectedTaskId === task.taskId ||
+    Boolean(
+      !isSubtask && subtasks.find(({ taskId }) => taskId === selectedTaskId),
+    );
+
   return (
-    <PatientsTasklistTask
-      style={style}
-      isCollapsed={isCollapsed}
-      isSelected={selectedTaskId === task.taskId}
-    >
-      {!isSubtask && (
-        <ConfirmationDialog isOpen={isOpen} close={close} confirm={confirm} />
-      )}
-      <div style={{ display: 'flex' }}>
-        <Flag priority={priority} />
-        <div style={{ flex: 1 }}>
-          <PatientsTaskBody
-            {...props}
-            handleStatusChange={handleStatusChange}
-          />
-          {!isSubtask && subtasks.length > 0 && (
-            <div
-              style={{
-                padding: '0 22px',
-                margin: '6px auto 12px auto',
-              }}
-            >
-              <PatientsTasklistSubtasks
-                onClick={toggleIsCollapsed}
-                isCollapsed={isCollapsed}
-              >
-                {`Subtasks (${subtasks.length}) ${isCollapsed ? '▸' : '▾'}`}
-                <div
-                  style={{ marginLeft: 'auto' }}
-                  onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                >
-                  {!disabled && task.status !== 'COMPLETE' && !isCollapsed && (
-                    <AddSubtask
-                      taskId={task.taskId}
-                      disabled={task.status === 'COMPLETE'}
-                    />
-                  )}
-                </div>
-              </PatientsTasklistSubtasks>
-              {!isCollapsed && (
-                <div>
-                  {subtasks.map(subtask => (
-                    <Task
-                      task={{
-                        ...subtask,
-                        taskList,
-                      }}
-                      isSubtask
-                      isParentComplete={task.status === 'COMPLETE'}
-                      selectedTaskId={selectedTaskId}
-                      markComplete={markComplete}
-                      style={{
-                        marginLeft: '14px',
-                        marginRight: '4px',
-                        border: 'none',
-                      }}
-                      hideDate={hideDate}
-                      hidePriority={hidePriority}
-                      hideCheckbox={hideCheckbox}
-                      disabled={disabled}
-                      storeAsCurrentTask={storeAsCurrentTask}
-                      markAsUnread={markAsUnread}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+    <>
+      <TaskAnimationContainer
+        isNewSubtask={isNewSubtask}
+        ref={animationContainer}
+      >
+        <TaskContainer
+          isCollapsed={isCollapsed}
+          hasSubtasks={hasSubtasks}
+          isSubtask={isSubtask}
+        >
+          {!isSubtask && (
+            <ConfirmationDialog
+              isOpen={isOpen}
+              close={close}
+              confirm={confirm}
+            />
           )}
-        </div>
-      </div>
-    </PatientsTasklistTask>
+          <TaskSelectionContainer isSelected={selectedTaskId === task.taskId}>
+            <Grid container wrap="nowrap">
+              {isSubtask && (
+                <SubtaskOrderContainer>
+                  {`${subtaskIndex}.`}
+                </SubtaskOrderContainer>
+              )}
+              <TaskBodyContainer item xs={12}>
+                {isNewSubtask ? (
+                  <SubtaskLoadingContainer>
+                    <CubesLoader size={30} />
+                  </SubtaskLoadingContainer>
+                ) : (
+                  <>
+                    <Flag absolute priority={priority} />
+                    <TaskBody
+                      {...props}
+                      handleStatusChange={handleStatusChange}
+                    />
+                  </>
+                )}
+              </TaskBodyContainer>
+            </Grid>
+          </TaskSelectionContainer>
+        </TaskContainer>
+      </TaskAnimationContainer>
+      {!slimView &&
+        isSelfOrSubtaskActive &&
+        renderedSubtasks.map((subtask, index) => (
+          <Task
+            key={subtask.taskId}
+            task={{
+              ...subtask,
+              taskList,
+            }}
+            isSubtask
+            isParentComplete={task.status === 'COMPLETE'}
+            selectedTaskId={selectedTaskId}
+            markComplete={markComplete}
+            hideDate={hideDate}
+            hidePriority={hidePriority}
+            hideCheckbox={hideCheckbox}
+            disabled={disabled}
+            storeAsCurrentTask={storeAsCurrentTask}
+            markAsUnread={markAsUnread}
+            subtaskIndex={index + 1}
+            isNewSubtask={subtask.isNewSubtask}
+          />
+        ))}
+      {!slimView && isSelfOrSubtaskActive && !isSubtask && (
+        <AddSubtask taskId={task.taskId} />
+      )}
+    </>
   );
 };
 

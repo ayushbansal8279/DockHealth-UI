@@ -38,23 +38,11 @@ class TaskListView extends PureComponent {
 
   addTaskList = () => {
     this.props.taskListAction.setTaskListAsCurrentList(null);
-
     openAddForm();
   };
 
   editTaskList = taskList => {
-    console.log(`editTaskList: ${taskList.taskListId}`);
     this.props.taskListAction.setTaskListAsCurrentList(taskList);
-    // $('.add').click();
-    // $('.add').toggleClass('close');
-    // $('body').toggleClass('disable-header-scroll');
-    // if($(this).hasClass('add-list')) {
-    //   $('.add-list use').attr('href', function(index, attr) {
-    //     return attr =='#icon-add' ? '#icon-lists' : '#icon-add';
-    //   });
-    // }
-    // $('.add-form-wrapper').slideToggle(300);
-    // $('.list-filter .controls, .list-wrapper').toggle();
     toggleTaskForm();
   };
 
@@ -80,7 +68,6 @@ class TaskListView extends PureComponent {
   };
 
   render() {
-    // const taskLists = this.props.taskLists;
     return (
       <div className="off-canvas-content" data-off-canvas-content>
         <div className="row expanded collapse">
@@ -116,11 +103,7 @@ class TaskListView extends PureComponent {
                   </svg>
                 </div>
               </div>
-              {/* <!--list-filter--> */}
             </header>
-            {/* <!--slideUp--> */}
-
-            <AddListForm onSubmit={this.submit} />
 
             <div className="list-wrapper dashboard-section">
               <div className="row collapse">
@@ -204,21 +187,6 @@ class TaskListView extends PureComponent {
                     acceptInviteToTaskList={this.acceptInviteToTaskList}
                     rejectInviteToTaskList={this.rejectInviteToTaskList}
                   />
-                  {/* {this.props.genericLists && this.props.genericLists.map(list => {
-                      return(
-                        <div key={list.listName} className="item row expanded align-middle">
-                          <div className="columns shrink">
-                            <span className="circle xxsmall transparent"></span>
-                          </div>
-                          <div className="columns">
-                            <Link to={"/tasks/"+list.listName}><h6 className="">{list.listName}</h6></Link>
-                          </div>
-                          <div className="columns shrink">
-                            <h6 className="">{list.numberOfTasks}</h6>
-                          </div>
-                        </div>
-                      )
-                    })} */}
                   <ListsComponent
                     taskLists={this.props.taskLists}
                     editForm={this.editTaskList}
@@ -228,7 +196,6 @@ class TaskListView extends PureComponent {
                 </div>
               )}
             </div>
-            {/* <!--list-wrapper--> */}
           </div>
         </div>
       </div>

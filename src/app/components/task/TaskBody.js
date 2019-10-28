@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 import BellIcon from '../../img/bell.svg';
 import Priority from '../common/Priority';
 import MemberPicker from '../members/MemberPicker';
-import TaskCheckbox from '../task/TaskCheckbox';
+import TaskCheckbox from './TaskCheckbox';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 
 import {
@@ -17,9 +17,9 @@ import {
   PatientsTasklistStrikeThrough,
   PatientTasklistContainer,
   CompletedBy,
-} from './PatientsTasksBody.styled';
+} from './TaskBody.styled';
 
-const PatientsTaskBody = ({
+const TaskBody = ({
   isSubtask,
   task,
   handleStatusChange,
@@ -34,7 +34,6 @@ const PatientsTaskBody = ({
 }) => {
   const {
     createdDateTime,
-    updatedDateTime,
     dueDate,
     comments,
     subtasks,
@@ -131,7 +130,7 @@ const PatientsTaskBody = ({
       </div>
 
       <Grid container alignItems="center">
-        <Grid item container xs={12} justifyContent="space-between">
+        <Grid item container xs={12} justify="space-between">
           <PatientTasklistContainer>
             {storeAsCurrentTask ? (
               <PatientsTasklistDescription>
@@ -160,11 +159,17 @@ const PatientsTaskBody = ({
               </Link>
             )}
             <PatientsTasklistInfo>
-              {updated && <img
-                src={UpdateIndicatorIcon}
-                alt="Updated"
-                style={{ width: '17px', height: '17px', papaddingRight: '2px' }}
-              /> }
+              {updated && (
+                <img
+                  src={UpdateIndicatorIcon}
+                  alt="Updated"
+                  style={{
+                    width: '17px',
+                    height: '17px',
+                    papaddingRight: '2px',
+                  }}
+                />
+              )}
               {`Assigned by ${
                 creator.userName
               } at ${formattedCreationDate}${countInfoContent}`}
@@ -238,4 +243,4 @@ const PatientsTaskBody = ({
   );
 };
 
-export default PatientsTaskBody;
+export default TaskBody;

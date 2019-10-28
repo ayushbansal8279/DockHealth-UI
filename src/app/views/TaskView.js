@@ -13,6 +13,7 @@ import Search from '../components/taskView/Search';
 import Select from '../components/taskView/Select';
 import TaskListAction from '../components/taskView/TaskListAction';
 import PrintIcon from '../img/print.svg';
+import { StyledSlimViewSwitch } from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -57,6 +58,7 @@ class TaskView extends PureComponent {
   state = {
     filterBy: '',
     searchTerms: [],
+    slimView: false,
   };
 
   refresh = () => {
@@ -114,6 +116,12 @@ class TaskView extends PureComponent {
     storeAsCurrentTask(null);
   };
 
+  switchSlimView = () => {
+    this.setState(prevState => ({
+      slimView: !prevState.slimView,
+    }));
+  };
+
   renderTasklists = () => {
     const {
       tasks,
@@ -122,6 +130,7 @@ class TaskView extends PureComponent {
       markAsUnread,
       selectedTaskId,
     } = this.props;
+    const { slimView } = this.state;
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
@@ -141,6 +150,7 @@ class TaskView extends PureComponent {
       hideTags: isCollapsed,
       hidePriority: isCollapsed,
       selectedTaskId,
+      slimView,
     };
 
     if (tasks.length === 0 || tasklistCount <= 1) {
@@ -166,6 +176,7 @@ class TaskView extends PureComponent {
       storeAsCurrentTask,
       markAsUnread,
     } = this.props;
+    const { slimView } = this.state;
 
     if (!showingCompletedTasks) {
       return (
@@ -203,6 +214,7 @@ class TaskView extends PureComponent {
       hideTags: isCollapsed,
       hidePriority: isCollapsed,
       selectedTaskId,
+      slimView,
     };
 
     return (
@@ -233,7 +245,7 @@ class TaskView extends PureComponent {
       storeAsCurrentTask,
       markAsUnread,
     } = this.props;
-    const { filterBy } = this.state;
+    const { filterBy, slimView } = this.state;
 
     const taskId = selectedTaskId != null && selectedTaskId;
     const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
@@ -284,6 +296,12 @@ class TaskView extends PureComponent {
             )}
             {showToolbar && (
               <Toolbar style={{ padding: '0 38px 0 48px' }}>
+                <StyledSlimViewSwitch
+                  onClick={this.switchSlimView}
+                  slimView={slimView}
+                  variant="contained"
+                />
+
                 <Select
                   updateFilter={this.handleFilterChange}
                   value={filterBy}

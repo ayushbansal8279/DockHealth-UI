@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import useBoolean from '../../hooks/useBoolean';
 import CheckIcon from '../../img/checkbox-check';
@@ -12,7 +12,7 @@ const CheckboxContainer = styled.div`
   && {
     align-items: center;
     background-color: #fff;
-    border: 2px solid #aab8c3;
+    border: 1px solid #aab8c3;
     border-radius: 5px;
     box-shadow: 0px 2px 4px #ccd6dd;
     cursor: pointer;
@@ -25,7 +25,7 @@ const CheckboxContainer = styled.div`
 
     &:hover {
       background-color: #20b255;
-      border: 2px solid #aab8c3;
+      border: 1px solid #aab8c3;
     }
 
     ${props =>
@@ -69,25 +69,25 @@ const CheckboxOutLines = ({ className }) => (
   </svg>
 );
 
+const dashAnimation = keyframes`
+  from {
+    stroke-dashoffset: ${LINE_HEIGHT};
+  }
+  to {
+    stroke-dashoffset: -${LINE_HEIGHT};
+  }
+`;
+
 const outLinesStyle = `
   && {
-    animation: dash 0.3s ease-out forwards;
     position: absolute;
     stroke-dasharray: ${LINE_HEIGHT};
     stroke-dashoffset: ${LINE_HEIGHT};
-
-    @keyframes dash {
-      0% {
-        stroke-dashoffset: ${LINE_HEIGHT};
-      }
-      100% {
-        stroke-dashoffset: -${LINE_HEIGHT};
-      }
-    }
   }
 `;
 
 const StyledOutLinesBase = styled(CheckboxOutLines)`
+  animation: ${dashAnimation} 0.3s ease-out forwards;
   ${outLinesStyle}
 `;
 
@@ -126,6 +126,7 @@ const CheckboxOutLine = ({ className }) => (
 );
 
 const StyledOutLineBase = styled(CheckboxOutLine)`
+  animation: ${dashAnimation} 0.3s ease-out forwards;
   ${outLinesStyle}
 `;
 
@@ -163,7 +164,13 @@ const StyledCheckIcon = styled(CheckIcon)`
   }
 `;
 
-const TaskCheckbox = ({ checked, onChange, onClick = () => {}, disabled }) => {
+const TaskCheckbox = ({
+  checked,
+  onChange,
+  onClick = () => {},
+  disabled,
+  className,
+}) => {
   const [outlinesShown, showOutlines, hideOutlines] = useBoolean(false);
 
   const triggerOutlinesAnimation = useCallback(() => {
@@ -185,6 +192,7 @@ const TaskCheckbox = ({ checked, onChange, onClick = () => {}, disabled }) => {
       }}
       disabled={disabled}
       checked={checked}
+      className={className}
     >
       <span>
         <StyledCheckIcon checked={checked} />

@@ -75,6 +75,7 @@ const TaskList = ({
   hideTags,
   hidePriority,
   selectedTaskId,
+  slimView,
 }) => (
   <div>
     <Heading
@@ -104,15 +105,12 @@ const TaskList = ({
             task,
             isSubtask: task.parentTaskId !== null,
             selectedTaskId,
-            style: {
-              borderColor: 'transparent',
-              marginLeft: 0,
-              marginRight: 0,
-            },
+            style: {},
             hideDate,
             hideTags,
             hidePriority,
             key: task.taskId,
+            slimView,
           }}
         />
       ))
