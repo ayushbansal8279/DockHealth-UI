@@ -1,6 +1,13 @@
 import ButtonBase from '@material-ui/core/ButtonBase';
 import styled from 'styled-components';
 import React from 'react';
+import Grid from '@material-ui/core/Grid';
+
+export const TaskViewGrid = styled(Grid)`
+  && {
+    position: relative;
+  }
+`;
 
 const SwitchButton = styled(ButtonBase)`
   && {

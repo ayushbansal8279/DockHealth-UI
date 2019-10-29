@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { hashHistory } from 'react-router';
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { bindActionCreators } from 'redux';
-import { SwitchTransition, CSSTransition } from 'react-transition-group';
 
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import * as userApi from '../api/user-api';
-import Drawer from '../components/drawer/Drawer';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
+import Drawer from '../components/drawer/Drawer';
 
 const getBrowserInfo = () => {
   const ua = navigator.userAgent;
@@ -38,14 +38,6 @@ const getBrowserInfo = () => {
     version: M[1],
   };
 };
-
-const NavLink = ({ to, children, className }) => (
-  <li>
-    <Link activeClassName="active" className={className} to={to}>
-      {children}
-    </Link>
-  </li>
-);
 
 class TemplateCore extends PureComponent {
   state = {
@@ -129,39 +121,13 @@ class TemplateCore extends PureComponent {
     }
 
     return (
-      <div>
-        <div className="new-task text-center">
-          <span className="number-new-tasks">Hello</span>
-        </div>
-        <div
-          className="small dropdown-pane"
-          id="profile-dropdown"
-          data-v-offset="0"
-          data-h-offset="0"
-          data-dropdown
-          data-hover="true"
-          data-hover-pane="true"
-        >
-          <ul className="menu vertical">
-            <NavLink to="/userprofile">View and edit profile</NavLink>
-            <li>
-              <a href="https://dock.health/privacy">Privacy Policy</a>
-            </li>
-            <NavLink to="/logout">Logout</NavLink>
-          </ul>
-        </div>
-        <Drawer>
-          <SwitchTransition>
-            <CSSTransition
-              key={locationPathname}
-              timeout={250}
-              classNames="fade"
-            >
-              {children}
-            </CSSTransition>
-          </SwitchTransition>
-        </Drawer>
-      </div>
+      <Drawer locationPathname={locationPathname}>
+        <SwitchTransition>
+          <CSSTransition key={locationPathname} timeout={250} classNames="fade">
+            {children}
+          </CSSTransition>
+        </SwitchTransition>
+      </Drawer>
     );
   }
 }

@@ -10,7 +10,7 @@ export const AddSubtaskContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   padding: 8px;
-  padding-left: 53px;
+  padding-left: ${props => (props.padded ? 'calc(53px - 1ch)' : 0)};
   padding-top: 6px;
 
   > span {
@@ -24,7 +24,7 @@ export const AddSubtaskContainer = styled.div`
   }
 `;
 
-const AddSubtask = ({ disabled, taskId }) => {
+const AddSubtask = ({ disabled, padded, taskId }) => {
   const dispatch = useDispatch();
   const addingNewSubtask = useSelector(
     state => state.taskState.addingNewSubtask,
@@ -33,11 +33,11 @@ const AddSubtask = ({ disabled, taskId }) => {
   const addingDisabled = disabled || addingNewSubtask;
 
   return (
-    <AddSubtaskContainer disabled={addingDisabled}>
+    <AddSubtaskContainer disabled={addingDisabled} padded={padded}>
       <span
         onClick={addingDisabled ? () => {} : () => addSubtask(taskId)(dispatch)}
       >
-        {addingDisabled ? 'adding a subtask...' : '+ add a subtask'}
+        {'+ add a subtask'}
       </span>
     </AddSubtaskContainer>
   );

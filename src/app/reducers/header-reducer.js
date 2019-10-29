@@ -3,8 +3,8 @@ import { SET_HEADER, UNSET_HEADER, HIDE_HEADER } from '../actions/action-types';
 
 const initialState = {
   show: false,
-  title: '',
-  rightComponents: null,
+  backgroundColor: '#fff',
+  layout: [],
 };
 
 const reducer = (state = initialState, { type, ...payload }) => {

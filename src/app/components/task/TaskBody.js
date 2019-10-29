@@ -3,24 +3,30 @@ import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router';
 
-import BellIcon from '../../img/bell.svg';
-import Priority from '../common/Priority';
-import MemberPicker from '../members/MemberPicker';
-import TaskCheckbox from './TaskCheckbox';
+import ChevronRightIcon from '../../img/chevron-right.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
-
 import {
+  priorityColor,
+  PriorityContainer,
+  PriorityDot,
+} from '../common/Priority';
+import MemberPicker from '../members/MemberPicker';
+import {
+  CompletedBy,
   PatientsTasklistDate,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
   PatientsTasklistNew,
   PatientsTasklistStrikeThrough,
   PatientTasklistContainer,
-  CompletedBy,
 } from './TaskBody.styled';
+import TaskCheckbox from './TaskCheckbox';
+import { SubtaskOrderContainer, SubtaskLoadingContainer } from './Task.styled';
+import CubesLoader from '../common/CubesLoader';
 
 const TaskBody = ({
   isSubtask,
+  subtaskIndex,
   task,
   handleStatusChange,
   hideDate,
@@ -41,7 +47,6 @@ const TaskBody = ({
     read,
     updated,
     description,
-    reminderDt,
     creator,
     assignedTo,
     taskList,
@@ -50,6 +55,7 @@ const TaskBody = ({
     patient,
     completedDt: completedDateTime,
     completedBy,
+    isNewSubtask,
   } = task;
 
   const formattedCreationDate = moment(createdDateTime).format('h:mma');
@@ -62,17 +68,21 @@ const TaskBody = ({
 
   const isInbox = !task?.taskList?.taskListId;
 
-  const subtaskCount = subtasks?.length ?? 0;
+  const subtasksCount = subtasks?.length ?? 0;
   const commentsCount = comments?.length ?? 0;
 
   const countInfoContentArray = [];
 
-  if (subtaskCount) {
-    countInfoContentArray.push(`${subtaskCount} subtasks`);
+  if (subtasksCount) {
+    countInfoContentArray.push(
+      `${subtasksCount} subtask${subtasksCount > 1 ? 's' : ''}`,
+    );
   }
 
   if (commentsCount) {
-    countInfoContentArray.push(`${commentsCount} comments`);
+    countInfoContentArray.push(
+      `${commentsCount} comment${commentsCount > 1 ? 's' : ''}`,
+    );
   }
 
   let countInfoContent = countInfoContentArray.join(' | ');
@@ -87,158 +97,188 @@ const TaskBody = ({
 
   return (
     <div
-      style={{ cursor: 'pointer', display: 'flex' }}
+      style={{ height: '100%', cursor: 'pointer', display: 'flex' }}
       onClick={e => {
         e.stopPropagation();
-        // eslint-disable-next-line no-unused-expressions
+        /* eslint-disable no-unused-expressions */
         storeAsCurrentTask?.(task);
         markAsUnread?.(task, false);
+        /* eslint-enable no-unused-expressions */
       }}
     >
-      {!hideCheckbox && (
-        <div
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            width: 60,
-          }}
-        >
-          <TaskCheckbox
-            checked={status === 'COMPLETE'}
-            onChange={handleStatusChange}
-            onClick={e => {
-              e.stopPropagation();
-            }}
-            disabled={disabled || (isSubtask && isParentComplete)}
-          />
-        </div>
+      {isSubtask && (
+        <SubtaskOrderContainer>{`${subtaskIndex}.`}</SubtaskOrderContainer>
       )}
-      <div
-        style={{
-          margin: '14px 8px',
-          display: 'flex',
-          justifyContent: 'center',
-          width: '67px',
-        }}
-      >
-        <MemberPicker
-          task={task}
-          member={assignedTo}
-          disabled={disabled || isParentComplete || isInbox}
-        />
-      </div>
 
-      <Grid container alignItems="center">
-        <Grid item container xs={12} justify="space-between">
-          <PatientTasklistContainer>
-            {storeAsCurrentTask ? (
-              <PatientsTasklistDescription>
-                {description || (
-                  <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                )}
-                <PatientsTasklistStrikeThrough
-                  hasDescription={Boolean(description)}
-                  active={status === 'COMPLETE'}
-                />
-              </PatientsTasklistDescription>
-            ) : (
-              <Link
-                to={{
-                  pathname: `/tasks/${taskList.listName}${
-                    taskList.taskListId ? `/${taskList.taskListId}` : ''
-                  }`,
-                  state: { taskId },
-                }}
-              >
-                <PatientsTasklistDescription isComplete={status === 'COMPLETE'}>
-                  {description || (
-                    <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                  )}
-                </PatientsTasklistDescription>
-              </Link>
-            )}
-            <PatientsTasklistInfo>
-              {updated && (
-                <img
-                  src={UpdateIndicatorIcon}
-                  alt="Updated"
-                  style={{
-                    width: '17px',
-                    height: '17px',
-                    papaddingRight: '2px',
-                  }}
-                />
-              )}
-              {`Assigned by ${
-                creator.userName
-              } at ${formattedCreationDate}${countInfoContent}`}
-            </PatientsTasklistInfo>
-            <CompletedBy
-              isCompleted={status === 'COMPLETE' && completedByContent}
-            >
-              <span>{completedByContent}</span>
-            </CompletedBy>
-            {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
-          </PatientTasklistContainer>
-          {!isSubtask && !hidePatient && (
+      {isNewSubtask ? (
+        <SubtaskLoadingContainer>
+          <CubesLoader size={30} />
+        </SubtaskLoadingContainer>
+      ) : (
+        <>
+          {!hideCheckbox && (
             <div
               style={{
-                width: '120px',
-                marginRight: '24px',
-                flexShrink: 0,
-              }}
-            >
-              {patient && (
-                <Link
-                  to={`/patient/${patient.patientId}`}
-                  style={{ color: '#0ca1c7' }}
-                >
-                  <div>{`${patient?.lastName}, ${patient?.firstName}`}</div>
-                  <div>{patient?.mrn}</div>
-                </Link>
-              )}
-            </div>
-          )}
-          {!hideDate && (
-            <div
-              style={{
+                alignItems: 'center',
                 display: 'flex',
-                flexDirection: 'row',
-                marginRight: '24px',
-                flexShrink: 0,
+                justifyContent: 'center',
+                width: 60,
               }}
             >
-              <div
-                style={{
-                  width: '20px',
-                  marginTop: '3px',
+              <TaskCheckbox
+                checked={status === 'COMPLETE'}
+                onChange={handleStatusChange}
+                onClick={e => {
+                  e.stopPropagation();
                 }}
-              >
-                {reminderDt && <img src={BellIcon} alt="Collapse Details" />}
-              </div>
-              <div style={{ width: '100px' }}>
-                {dueDate && (
-                  <>
-                    <PatientsTasklistDate isSubtask={isSubtask}>
-                      {formattedDueDate}
-                    </PatientsTasklistDate>
-                    <PatientsTasklistDate isSubtask={isSubtask}>
-                      {formattedDueTime}
-                    </PatientsTasklistDate>
-                  </>
-                )}
-              </div>
+                disabled={disabled || (isSubtask && isParentComplete)}
+              />
             </div>
           )}
-          {!hidePriority && (
-            <Priority
-              priority={workflowStatus}
-              style={{ margin: '8px 23px 0 0' }}
+          <div
+            style={{
+              margin: '14px 8px',
+              display: 'flex',
+              justifyContent: 'center',
+              width: '67px',
+            }}
+          >
+            <MemberPicker
+              task={task}
+              member={assignedTo}
+              disabled={disabled || isParentComplete || isInbox}
             />
-          )}
-        </Grid>
-      </Grid>
+          </div>
+
+          <Grid container alignItems="center">
+            <Grid item container xs={12} justify="space-between">
+              <PatientTasklistContainer>
+                {storeAsCurrentTask ? (
+                  <PatientsTasklistDescription>
+                    {description || (
+                      <div style={{ color: '#ababb2' }}>Unnamed task</div>
+                    )}
+                    <PatientsTasklistStrikeThrough
+                      hasDescription={Boolean(description)}
+                      active={status === 'COMPLETE'}
+                    />
+                  </PatientsTasklistDescription>
+                ) : (
+                  <Link
+                    to={{
+                      pathname: `/tasks/${taskList.listName}${
+                        taskList.taskListId ? `/${taskList.taskListId}` : ''
+                      }`,
+                      state: { taskId },
+                    }}
+                  >
+                    <PatientsTasklistDescription
+                      isComplete={status === 'COMPLETE'}
+                    >
+                      {description || (
+                        <div style={{ color: '#ababb2' }}>Unnamed task</div>
+                      )}
+                    </PatientsTasklistDescription>
+                  </Link>
+                )}
+                <PatientsTasklistInfo>
+                  {updated && (
+                    <img
+                      src={UpdateIndicatorIcon}
+                      alt="Updated"
+                      style={{
+                        width: '17px',
+                        height: '17px',
+                        paddingRight: '2px',
+                      }}
+                    />
+                  )}
+                  {`Assigned by ${
+                    creator.userName
+                  } at ${formattedCreationDate}${countInfoContent}`}
+                </PatientsTasklistInfo>
+                <CompletedBy
+                  isCompleted={status === 'COMPLETE' && completedByContent}
+                >
+                  <span>{completedByContent}</span>
+                </CompletedBy>
+                {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
+              </PatientTasklistContainer>
+              {!isSubtask && !hidePatient && (
+                <div
+                  style={{
+                    alignItems: 'flex-end',
+                    display: 'flex',
+                    lineHeight: '12px',
+                    marginRight: '24px',
+                    width: '140px',
+                  }}
+                >
+                  {patient && (
+                    <Link
+                      to={`/patient/${patient.patientId}`}
+                      style={{ color: '#0ca1c7', fontSize: '12px' }}
+                    >
+                      <div>
+                        {`${patient?.lastName}, ${patient?.firstName} ${
+                          patient?.mrn
+                        }`}
+                      </div>
+                    </Link>
+                  )}
+                </div>
+              )}
+              {!hideDate && (
+                <div
+                  style={{
+                    alignItems: 'flex-end',
+                    display: 'flex',
+                    lineHeight: '12px',
+                    marginRight: '24px',
+                    width: '140px',
+                  }}
+                >
+                  {dueDate && (
+                    <PatientsTasklistDate isSubtask={isSubtask}>
+                      {`${formattedDueDate} ${formattedDueTime}`}
+                    </PatientsTasklistDate>
+                  )}
+                </div>
+              )}
+              {!hidePriority && (
+                <>
+                  <div
+                    style={{
+                      width: '90px',
+                    }}
+                  >
+                    <PriorityContainer>
+                      <PriorityDot color={priorityColor(workflowStatus)} />
+                    </PriorityContainer>
+                  </div>
+                  <div
+                    style={{
+                      alignItems: 'flex-end',
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      marginRight: '24px',
+                      width: '120px',
+                    }}
+                  >
+                    <img
+                      style={{
+                        height: '10px',
+                      }}
+                      src={ChevronRightIcon}
+                      alt="Chevron icon"
+                    />
+                  </div>
+                </>
+              )}
+            </Grid>
+          </Grid>
+        </>
+      )}
     </div>
   );
 };

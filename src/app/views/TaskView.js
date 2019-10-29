@@ -1,19 +1,23 @@
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import AddTask from '../components/task/AddTask';
+import { setHeader, unsetHeader } from '../actions/header-actions';
 import TaskDetails from '../components/task/TaskDetails';
 import TaskList from '../components/task/TaskList';
+import AddTaskButton from '../components/taskView/AddTaskButton';
 import Header from '../components/taskView/Header';
+import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
 import Select from '../components/taskView/Select';
 import TaskListAction from '../components/taskView/TaskListAction';
 import PrintIcon from '../img/print.svg';
-import { StyledSlimViewSwitch } from './TaskView.styled';
+import { StyledSlimViewSwitch, TaskViewGrid } from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -54,12 +58,15 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
-class TaskView extends PureComponent {
+class TaskView extends Component {
   state = {
     filterBy: '',
     searchTerms: [],
     slimView: false,
+    addingNewTask: false,
   };
+
+  headsUpArea = React.createRef();
 
   refresh = () => {
     const { actions, patientActions } = this.props;
@@ -70,6 +77,52 @@ class TaskView extends PureComponent {
     actions.getInboxTasks('INCOMPLETE');
 
     patientActions.getAllPatients();
+  };
+
+  componentDidMount = () => {
+    this.resetHeader();
+  };
+
+  componentDidUpdate = ({ isFetching: prevIsFetching }) => {
+    const { isFetching } = this.props;
+    if (prevIsFetching !== isFetching) {
+      this.resetHeader();
+    }
+  };
+
+  componentWillUnmount = () => {
+    const { unsetHeader: dispatchedUnsetHeader } = this.props;
+    dispatchedUnsetHeader();
+  };
+
+  resetHeader = () => {
+    const {
+      tasks,
+      isFetching,
+      title,
+      members,
+      taskList,
+      setHeader: dispatchedSetHeader,
+    } = this.props;
+
+    dispatchedSetHeader({
+      backgroundColor: '#fff',
+      layout: [
+        {
+          key: 'header',
+          component: (
+            <Header
+              isFetching={isFetching}
+              title={title}
+              taskCount={tasks.length}
+              members={members}
+              taskList={taskList}
+            />
+          ),
+          xs: 12,
+        },
+      ],
+    });
   };
 
   clearStoredCurrentTask = () => {
@@ -119,6 +172,12 @@ class TaskView extends PureComponent {
   switchSlimView = () => {
     this.setState(prevState => ({
       slimView: !prevState.slimView,
+    }));
+  };
+
+  onAddTaskButtonClick = () => {
+    this.setState(prevState => ({
+      addingNewTask: !prevState.addingNewTask,
     }));
   };
 
@@ -235,8 +294,6 @@ class TaskView extends PureComponent {
       isFetching,
       selectedTaskId,
       downloadPDF,
-      title,
-      members,
       markComplete,
       toggleTaskPriority,
       addTaskComment,
@@ -245,7 +302,7 @@ class TaskView extends PureComponent {
       storeAsCurrentTask,
       markAsUnread,
     } = this.props;
-    const { filterBy, slimView } = this.state;
+    const { filterBy, slimView, addingNewTask } = this.state;
 
     const taskId = selectedTaskId != null && selectedTaskId;
     const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
@@ -270,64 +327,73 @@ class TaskView extends PureComponent {
     const taskListId = taskList?.taskListId;
 
     return (
-      <div
-        className="off-canvas-content"
-        data-off-canvas-content="true"
-        style={{ minHeight: '100%' }}
-      >
-        <div className="row expanded collapse" style={{ minHeight: '100%' }}>
-          <div
-            className="large-12 columns"
-            style={{ minHeight: '100%', background: '#f5f8fa' }}
-          >
-            <Header
-              isFetching={isFetching}
-              title={title}
-              taskCount={tasks.length}
-              members={members}
-              taskList={taskList}
-            />
-            {showToolbar && !isInbox && taskListId && (
-              <AddTask
-                storeAsCurrentTask={storeAsCurrentTask}
-                taskListId={taskListId}
-                style={{ padding: '7px 38px 0 48px' }}
-              />
-            )}
+      <>
+        <div ref={this.headsUpArea}>Heads-up placeholder</div>
+        <TaskViewGrid container>
+          <NewTaskDrawer
+            headsUpAreaHeight={this.headsUpArea.current?.scrollHeight ?? 0}
+            addingNewTask={addingNewTask}
+          />
+          <AddTaskButton
+            addingNewTask={addingNewTask}
+            onClick={this.onAddTaskButtonClick}
+          />
+          <Grid item xs={12}>
+            {/* {showToolbar && !isInbox && taskListId && (
+              <Toolbar>
+                <AddTask
+                  storeAsCurrentTask={storeAsCurrentTask}
+                  taskListId={taskListId}
+                />
+              </Toolbar>
+            )} */}
             {showToolbar && (
-              <Toolbar style={{ padding: '0 38px 0 48px' }}>
-                <StyledSlimViewSwitch
-                  onClick={this.switchSlimView}
-                  slimView={slimView}
-                  variant="contained"
-                />
-
-                <Select
-                  updateFilter={this.handleFilterChange}
-                  value={filterBy}
-                  options={[
-                    { value: '', description: 'Filter' },
-                    { value: 'ASSIGNED_TO_ME', description: 'Assigned to me' }, // TODO:
-                    { value: 'CREATED_BY_ME', description: 'Created by me' },
-                    { value: 'OVERDUE', description: 'Overdue' },
-                    { value: 'DUE_TODAY', description: 'Due Today' },
-                    { value: 'DUE_THIS_WEEK', description: 'Due This Week' },
-                    { value: 'DUE_NEXT_WEEK', description: 'Due Next Week' },
-                  ]}
-                />
-                <Search
-                  onChange={this.handleSearch}
-                  style={{ marginLeft: '14px' }}
-                />
-                <div style={{ marginLeft: 'auto' }}>
-                  <TaskListAction
-                    onClick={downloadPDF}
-                    icon={PrintIcon}
-                    alt="Print"
-                  >
-                    Print
-                  </TaskListAction>
-                </div>
+              <Toolbar>
+                <Grid container justify="space-between">
+                  <div>
+                    <StyledSlimViewSwitch
+                      onClick={this.switchSlimView}
+                      slimView={slimView}
+                      variant="contained"
+                    />
+                    <Select
+                      updateFilter={this.handleFilterChange}
+                      value={filterBy}
+                      options={[
+                        { value: '', description: 'Filter' },
+                        {
+                          value: 'ASSIGNED_TO_ME',
+                          description: 'Assigned to me',
+                        }, // TODO:
+                        {
+                          value: 'CREATED_BY_ME',
+                          description: 'Created by me',
+                        },
+                        { value: 'OVERDUE', description: 'Overdue' },
+                        { value: 'DUE_TODAY', description: 'Due Today' },
+                        {
+                          value: 'DUE_THIS_WEEK',
+                          description: 'Due This Week',
+                        },
+                        {
+                          value: 'DUE_NEXT_WEEK',
+                          description: 'Due Next Week',
+                        },
+                      ]}
+                    />
+                    <Search
+                      onChange={this.handleSearch}
+                      style={{ marginLeft: '14px' }}
+                    />
+                    <TaskListAction
+                      onClick={downloadPDF}
+                      icon={PrintIcon}
+                      alt="Print"
+                    >
+                      Print
+                    </TaskListAction>
+                  </div>
+                </Grid>
               </Toolbar>
             )}
             {isFetching ? (
@@ -369,11 +435,19 @@ class TaskView extends PureComponent {
                 )}
               </div>
             )}
-          </div>
-        </div>
-      </div>
+          </Grid>
+        </TaskViewGrid>
+      </>
     );
   }
 }
 
-export default TaskView;
+const mapDispatchToProps = dispatch => ({
+  setHeader: setHeader(dispatch),
+  unsetHeader: unsetHeader(dispatch),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(TaskView);

@@ -17,6 +17,8 @@ const AppContainer = styled.div`
 `;
 
 const MainContainer = styled.main`
+  height: 100vh;
+
   .fade-enter {
     opacity: 0;
     transform: translateY(10px);

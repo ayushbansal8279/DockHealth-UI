@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import CheckIcon from '../../img/check.svg';
 import Task from './Task';
-import { PriorityDot } from '../common/Priority';
 
 const StyledTableCell = styled(TableCell)`
   && {
@@ -50,18 +49,17 @@ const Heading = ({ hideDate, hideStatus }) => (
         style={{ width: '21px', height: '17px' }}
       />
     </div>
-    <div style={{ width: '83px', textAlign: 'center' }}>ASSIGNED</div>
+    <div style={{ width: '90px', marginRight: '10px' }}>ASSIGNED</div>
     <div style={{ flex: 1 }}>TASK</div>
-    <div style={{ width: '120px', marginRight: '24px' }}>PATIENT</div>
+    <div style={{ width: '140px', marginRight: '24px' }}>PATIENT</div>
     {!hideDate && (
-      <div style={{ width: '120px', paddingLeft: '20px', marginRight: '24px' }}>
-        DUE
-      </div>
+      <div style={{ width: '140px', marginRight: '24px' }}>DUE</div>
     )}
     {!hideStatus && (
-      <div style={{ width: '10px', marginRight: '24px', textAlign: 'center' }}>
-        <PriorityDot color="#303538" />
-      </div>
+      <>
+        <div style={{ width: '90px' }}>STATUS</div>
+        <div style={{ width: '120px', marginRight: '24px' }} />
+      </>
     )}
   </div>
 );

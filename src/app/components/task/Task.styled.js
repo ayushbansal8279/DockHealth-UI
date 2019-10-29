@@ -3,22 +3,18 @@ import Grid from '@material-ui/core/Grid';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
-import { AddSubtaskContainer } from './AddSubtask';
 
 export const TaskAnimationContainer = styled.div`
+  ${props => props.isSubtask && 'background-color: #fff;'}
   height: ${props => (props.isNewSubtask ? 0 : 'auto')};
   overflow: hidden;
   transition: height 0.25s ease-out;
-
-  & + ${AddSubtaskContainer} {
-    border-top: 1px solid #ededf0;
-    padding-top: 8px;
-  }
 `;
 
 export const TaskContainer = styled.div`
   box-sizing: border-box;
   background-color: #fff;
+  height: ${props => (props.isSubtask ? 75 : 85)}px;
   margin-left: 0;
   margin-right: 0;
   margin-top: 8px;
@@ -27,12 +23,10 @@ export const TaskContainer = styled.div`
   ${props =>
     props.isSubtask &&
     `
-    margin-top: 0;
-    padding-bottom: 4px;
+    margin: 3px 4px 3px 15px;
 
     > div {
-      border-bottom: 1px solid #ededf0;
-      border-top: 1px solid #ededf0;
+      border: 1px solid #ededf0;
     }
   `}
 `;
@@ -70,11 +64,17 @@ export const SubtasksContainer = withStyles(collapsibleButtonStyles)(
 
 export const TaskSelectionContainer = styled.div`
   background-color: ${props => props.isSelected && '#ddf2f7'};
+  box-sizing: content-box;
+  height: 100%;
   transition: all 0.25s ease-out;
 `;
 
+export const TaskGrid = styled(Grid)`
+  height: 100%;
+`;
+
 export const TaskBodyContainer = styled(Grid)`
-  min-height: 83px;
+  height: 100%;
   padding-left: 5px;
   position: relative;
 `;
@@ -88,15 +88,15 @@ export const SubtaskOrderContainer = styled.div`
   font-weight: bold;
   justify-content: center;
   overflow: hidden;
-  padding-left: 5px;
+  padding-left: 10px;
   text-overflow: ellipsis;
-  width: 50px;
+  width: 30px;
 `;
 
 export const SubtaskLoadingContainer = styled.div`
   align-items: center;
   display: flex;
-  height: 83px;
+  height: 100%;
   width: 60px;
   justify-content: center;
 `;

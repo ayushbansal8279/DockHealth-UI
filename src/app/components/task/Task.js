@@ -1,20 +1,17 @@
-import Grid from '@material-ui/core/Grid';
 import pick from 'ramda/es/pick';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import useBoolean from '../../hooks/useBoolean';
 import useConfirmation from '../../hooks/useConfirmation';
-import CubesLoader from '../common/CubesLoader';
 import Flag from '../common/Flag';
 import AddSubtask from './AddSubtask';
 import ConfirmationDialog from './ConfirmationDialog';
 import {
-  SubtaskLoadingContainer,
-  SubtaskOrderContainer,
   TaskAnimationContainer,
   TaskBodyContainer,
   TaskContainer,
+  TaskGrid,
   TaskSelectionContainer,
 } from './Task.styled';
 import TaskBody from './TaskBody';
@@ -41,7 +38,6 @@ const Task = props => {
     disabled,
     hideCheckbox,
     storeAsCurrentTask,
-    subtaskIndex,
     slimView,
     markAsUnread,
   } = props;
@@ -92,7 +88,10 @@ const Task = props => {
 
   useEffect(
     () => {
-      if (slimView) {
+      if (
+        slimView &&
+        subtasks.find(({ taskId }) => taskId === selectedTaskId)
+      ) {
         storeAsCurrentTask(null);
       }
     },
@@ -129,12 +128,13 @@ const Task = props => {
     <>
       <TaskAnimationContainer
         isNewSubtask={isNewSubtask}
+        isSubtask={isSubtask}
         ref={animationContainer}
       >
         <TaskContainer
           isCollapsed={isCollapsed}
-          hasSubtasks={hasSubtasks}
           isSubtask={isSubtask}
+          hasSubtasks={hasSubtasks}
         >
           {!isSubtask && (
             <ConfirmationDialog
@@ -144,28 +144,12 @@ const Task = props => {
             />
           )}
           <TaskSelectionContainer isSelected={selectedTaskId === task.taskId}>
-            <Grid container wrap="nowrap">
-              {isSubtask && (
-                <SubtaskOrderContainer>
-                  {`${subtaskIndex}.`}
-                </SubtaskOrderContainer>
-              )}
-              <TaskBodyContainer item xs={12}>
-                {isNewSubtask ? (
-                  <SubtaskLoadingContainer>
-                    <CubesLoader size={30} />
-                  </SubtaskLoadingContainer>
-                ) : (
-                  <>
-                    <Flag absolute priority={priority} />
-                    <TaskBody
-                      {...props}
-                      handleStatusChange={handleStatusChange}
-                    />
-                  </>
-                )}
+            <TaskGrid container wrap="nowrap">
+              <TaskBodyContainer isSubtask={isSubtask} item xs={12}>
+                <Flag absolute priority={priority} />
+                <TaskBody {...props} handleStatusChange={handleStatusChange} />
               </TaskBodyContainer>
-            </Grid>
+            </TaskGrid>
           </TaskSelectionContainer>
         </TaskContainer>
       </TaskAnimationContainer>
@@ -190,11 +174,15 @@ const Task = props => {
             markAsUnread={markAsUnread}
             subtaskIndex={index + 1}
             isNewSubtask={subtask.isNewSubtask}
+            slimView={slimView}
           />
         ))}
-      {!slimView && isSelfOrSubtaskActive && !isSubtask && (
-        <AddSubtask taskId={task.taskId} />
-      )}
+      {!slimView &&
+        isSelfOrSubtaskActive &&
+        !isSubtask &&
+        task.status !== 'COMPLETE' && (
+          <AddSubtask padded taskId={task.taskId} />
+        )}
     </>
   );
 };

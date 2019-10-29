@@ -37,7 +37,7 @@ export const PatientsTasklistInfo = styled.div`
 `;
 
 export const PatientsTasklistDate = styled.div`
-  font-size: 16px;
+  font-size: 12px;
   color: #303538;
 `;
 
