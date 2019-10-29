@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import ListItem from '../common/ListItem';
@@ -155,4 +156,15 @@ MemberManagementPopup.defaultProps = {
   members: null,
 };
 
-export default MemberManagementPopup;
+const mapStateToProps = store => ({
+  members: store.taskListState.tasklistmembers,
+});
+
+const mapDispatchToProps = (dispatch, { taskList }) => ({
+  
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MemberManagementPopup);

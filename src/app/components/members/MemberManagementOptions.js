@@ -8,6 +8,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
   removeUserFromList,
   changeUserRoleForList,
+  getOrganizationUsersNotInTaskList,
 } from '../../actions/tasklist-actions';
 
 const MEMBER_ROLE = 'MEMBER';
@@ -79,10 +80,14 @@ ManageButton.propTypes = {
 
 const mapDispatchToProps = (dispatch, { taskListId, member: { userId } }) => ({
   remove: () => {
-    removeUserFromList(taskListId, { userId })(dispatch);
+    removeUserFromList(taskListId, { userId })(dispatch).then(() => 
+      getOrganizationUsersNotInTaskList(taskListId, 'ALL')(dispatch)
+    );
   },
   changeRole: role => {
-    changeUserRoleForList(taskListId, { userId }, role)(dispatch);
+    changeUserRoleForList(taskListId, { userId }, role)(dispatch).then(() => 
+      getOrganizationUsersNotInTaskList(taskListId, 'ALL')(dispatch)
+    );
   },
 });
 

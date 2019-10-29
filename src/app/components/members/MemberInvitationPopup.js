@@ -3,7 +3,8 @@ import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { inviteMultipleUsersToTaskList } from '../../actions/tasklist-actions';
+import { inviteMultipleUsersToTaskList, 
+  getMembersByTaskListId } from '../../actions/tasklist-actions';
 import ListItem from '../common/ListItem';
 import PickerHeader from '../common/PickerHeader';
 import SearchHeader from '../common/SearchHeader';
@@ -149,7 +150,10 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = (dispatch, { taskList }) => ({
   invite: userId => {
-    inviteMultipleUsersToTaskList(taskList.taskListId, [userId])(dispatch);
+    inviteMultipleUsersToTaskList(taskList.taskListId, [userId])(dispatch)
+    .then(() => 
+      getMembersByTaskListId(taskList.taskListId, 'ALL')(dispatch)
+    );
   },
 });
 
