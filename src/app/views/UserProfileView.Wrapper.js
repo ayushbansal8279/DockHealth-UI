@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { setHeader, unsetHeader } from '../actions/header-actions';
+import { setHeader } from '../actions/header-actions';
 import * as userApi from '../api/user-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import {
@@ -87,10 +87,6 @@ const UserProfileViewWrapper = () => {
           },
         ],
       });
-
-      return () => {
-        unsetHeader(dispatch)();
-      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

@@ -10,6 +10,7 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import * as userApi from '../api/user-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import Drawer from '../components/drawer/Drawer';
+import { unsetHeader } from '../actions/header-actions';
 
 const getBrowserInfo = () => {
   const ua = navigator.userAgent;
@@ -113,7 +114,7 @@ class TemplateCore extends PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const { dispatchedUnsetHeader, children } = this.props;
     const { loading, locationPathname } = this.state;
 
     if (loading) {
@@ -123,7 +124,17 @@ class TemplateCore extends PureComponent {
     return (
       <Drawer locationPathname={locationPathname}>
         <SwitchTransition>
-          <CSSTransition key={locationPathname} timeout={250} classNames="fade">
+          <CSSTransition
+            key={locationPathname}
+            timeout={{
+              exit: 250,
+              appear: 250,
+            }}
+            onExiting={() => {
+              dispatchedUnsetHeader();
+            }}
+            classNames="fade"
+          >
             {children}
           </CSSTransition>
         </SwitchTransition>
@@ -142,6 +153,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   taskListActions: bindActionCreators(TaskListActions, dispatch),
+  dispatchedUnsetHeader: unsetHeader(dispatch),
 });
 
 export default connect(

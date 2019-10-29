@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { setHeader, unsetHeader } from '../actions/header-actions';
+import { setHeader } from '../actions/header-actions';
 import TaskDetails from '../components/task/TaskDetails';
 import TaskList from '../components/task/TaskList';
 import AddTaskButton from '../components/taskView/AddTaskButton';
@@ -90,11 +90,6 @@ class TaskView extends Component {
     }
   };
 
-  componentWillUnmount = () => {
-    const { unsetHeader: dispatchedUnsetHeader } = this.props;
-    dispatchedUnsetHeader();
-  };
-
   resetHeader = () => {
     const {
       tasks,
@@ -102,7 +97,7 @@ class TaskView extends Component {
       title,
       members,
       taskList,
-      setHeader: dispatchedSetHeader,
+      dispatchedSetHeader,
     } = this.props;
 
     dispatchedSetHeader({
@@ -327,7 +322,7 @@ class TaskView extends Component {
     const taskListId = taskList?.taskListId;
 
     return (
-      <>
+      <div>
         <div ref={this.headsUpArea}>Heads-up placeholder</div>
         <TaskViewGrid container>
           <NewTaskDrawer
@@ -437,14 +432,13 @@ class TaskView extends Component {
             )}
           </Grid>
         </TaskViewGrid>
-      </>
+      </div>
     );
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  setHeader: setHeader(dispatch),
-  unsetHeader: unsetHeader(dispatch),
+  dispatchedSetHeader: setHeader(dispatch),
 });
 
 export default connect(
