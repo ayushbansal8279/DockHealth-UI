@@ -32,7 +32,7 @@ import ResetPasswordSuccess from './views/auth/ResetPasswordSuccess';
 import SelfEnrolledUser from './views/auth/SelfEnrolledUser';
 import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
-import Home from './views/Home';
+import ListDetailsView from './views/ListDetailsView';
 import Inbox from './views/Inbox';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
@@ -70,7 +70,7 @@ export const Routes = ({ store }) => {
     <Router history={hashHistory}>
       <Route path="/" component={App}>
         <Route component={TemplateCore}>
-          <IndexRoute component={Home} onEnter={authRequired} />
+          <IndexRoute component={ListDetailsView} onEnter={authRequired} />
           <IndexRedirect to="/tasks" />
           <Route path="/patientList" component={AllPatientsView} />
           <Route path="/patients" component={Patients} />
@@ -100,7 +100,7 @@ export const Routes = ({ store }) => {
             <Route path="assigned_to_me" component={AssignedToMe} />
             <Route
               path=":listName/:taskListId(/:taskId)"
-              component={Home}
+              component={ListDetailsView}
               onChange={preselectTask}
               onEnter={nextState => preselectTask(null, nextState)}
             />

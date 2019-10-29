@@ -74,6 +74,13 @@ const StyledPlaceholderNote = styled(StyledNote)`
   color: #ababb2;
 `;
 
+const NoteValueContainer = styled.div`
+  display: inline-block;
+  position: relative;
+  white-space: pre-wrap;
+  word-break: break-all;
+`;
+
 const StyledNoteStrikethrough = styled.div`
   background-color: ${props => (props.hasValue ? '#303538' : '#ababb2')};
   left: 0;
@@ -163,16 +170,18 @@ const EditableDescription = ({
 
     return (
       <NoteComponent>
-        {noteValue}
+        <NoteValueContainer>
+          {noteValue}
+          <StyledNoteStrikethrough
+            hasValue={Boolean(value)}
+            active={strikethrough}
+          />
+        </NoteValueContainer>
         {!isEditing && !disabled && (
           <StyledEditIconContainer onClick={startEditing}>
             <img src={EditIcon} alt="Edit icon" />
           </StyledEditIconContainer>
         )}
-        <StyledNoteStrikethrough
-          hasValue={Boolean(value)}
-          active={strikethrough}
-        />
       </NoteComponent>
     );
   }

@@ -1,8 +1,8 @@
-import Grid from '@material-ui/core/Grid';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 
-import { setHeader, unsetHeader } from '../actions/header-actions';
+import { setHeader } from '../actions/header-actions';
 import * as userApi from '../api/user-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import {
@@ -15,6 +15,12 @@ import {
   formFieldDefinitions,
   formSwitchDefinitions,
 } from './UserProfileView.FormDefinitions';
+
+const Title = styled.div`
+  color: #fff;
+  font-size: 32px;
+  padding-left: 2rem;
+`;
 
 const UserProfileViewWrapper = () => {
   const dispatch = useDispatch();
@@ -53,20 +59,34 @@ const UserProfileViewWrapper = () => {
       userApi.getAllTitles();
 
       setHeader(dispatch)({
-        title: 'Profile & Settings',
-        rightComponents: (
-          <Grid container item xs={3} justify="flex-end">
-            <LogoutHeaderButton to="logout">
-              <LogoutIcon />
-              <span>Logout</span>
-            </LogoutHeaderButton>
-          </Grid>
-        ),
+        backgroundColor: '#007cab',
+        layout: [
+          {
+            key: 'title',
+            component: (
+              <div>
+                <Title>Profile & Settings</Title>
+              </div>
+            ),
+            xs: 6,
+            alignItems: 'center',
+          },
+          {
+            key: 'logout',
+            component: (
+              <div>
+                <LogoutHeaderButton to="logout">
+                  <LogoutIcon />
+                  <span>Logout</span>
+                </LogoutHeaderButton>
+              </div>
+            ),
+            alignItems: 'center',
+            justify: 'flex-end',
+            xs: 3,
+          },
+        ],
       });
-
-      return () => {
-        unsetHeader(dispatch)();
-      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

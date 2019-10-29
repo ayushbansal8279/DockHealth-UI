@@ -16,7 +16,6 @@ export const priorityColor = priority => {
 export const PriorityDot = styled.div`
   width: 10px;
   height: 10px;
-  margin: 0 auto;
   border-radius: 50%;
   background: ${({ color }) => color};
   flex-shrink: 0;
@@ -27,7 +26,13 @@ PriorityDot.defaultProps = {
 };
 
 const Priority = ({ priority, style }) => (
-  <PriorityDot color={priorityColor(priority)} style={style} />
+  <PriorityDot
+    color={priorityColor(priority)}
+    style={{
+      margin: '0 auto',
+      ...style,
+    }}
+  />
 );
 
 Priority.propTypes = {
@@ -37,5 +42,13 @@ Priority.propTypes = {
 Priority.defaultProps = {
   priority: null,
 };
+
+export const PriorityContainer = styled.div`
+  align-items: flex-end;
+  display: flex;
+  height: 100%;
+  justify-content: flex-start;
+  width: 90px;
+`;
 
 export default Priority;

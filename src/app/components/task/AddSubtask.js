@@ -1,62 +1,49 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import AddIcon from '@material-ui/icons/Add';
 import { addSubtask } from '../../actions/task-actions';
 
-const AddSubtaskContainer = styled(ButtonBase).attrs({
-  disableRipple: true,
-})`
-  && {
-    padding: 8px;
-    margin-left: -8px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
+export const AddSubtaskContainer = styled.div`
+  align-items: center;
+  background-color: #fff;
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px;
+  padding-left: ${props => (props.padded ? 'calc(53px - 1ch)' : 0)};
+  padding-top: 6px;
+
+  > span {
+    color: ${props => (props.disabled ? '#ababb2' : '#0ca1c7')};
+    cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+    transition: filter 0.25s linear;
+
+    &:hover {
+      ${props => !props.disabled && 'filter: brightness(1.25);'}
+    }
   }
 `;
 
-const AddButton = styled.div`
-  && {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 19px;
-    height: 19px;
-    border-radius: 50%;
-    background: #0ca1c7;
-    color: #fff;
-    font-weight: bold;
-  }
-`;
+const AddSubtask = ({ disabled, padded, taskId }) => {
+  const dispatch = useDispatch();
+  const addingNewSubtask = useSelector(
+    state => state.taskState.addingNewSubtask,
+  );
 
-const StyledAddIcon = styled(AddIcon)`
-  && {
-    width: 17px;
-    height: 17px;
-  }
-`;
+  const addingDisabled = disabled || addingNewSubtask;
 
-const AddLabel = styled.div`
-  margin-left: 4px;
-  color: #0ca1c7;
-  font-size: 14px;
-  line-height: 16px;
-`;
-
-const AddSubtask = ({ onClick, disabled }) => (
-  <AddSubtaskContainer onClick={onClick} disabled={disabled}>
-    <AddButton>
-      <StyledAddIcon />
-    </AddButton>
-    <AddLabel>Add a subtask</AddLabel>
-  </AddSubtaskContainer>
-);
+  return (
+    <AddSubtaskContainer disabled={addingDisabled} padded={padded}>
+      <span
+        onClick={addingDisabled ? () => {} : () => addSubtask(taskId)(dispatch)}
+      >
+        {'+ add a subtask'}
+      </span>
+    </AddSubtaskContainer>
+  );
+};
 
 AddSubtask.propTypes = {
-  onClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
 };
 
@@ -64,15 +51,4 @@ AddSubtask.defaultProps = {
   disabled: false,
 };
 
-const mapDispatchToProps = (dispatch, { taskId }) => ({
-  onClick: () => {
-    addSubtask(taskId)(dispatch);
-  },
-});
-
-const ConnectedAddSubtask = connect(
-  undefined,
-  mapDispatchToProps,
-)(AddSubtask);
-
-export default ConnectedAddSubtask;
+export default AddSubtask;

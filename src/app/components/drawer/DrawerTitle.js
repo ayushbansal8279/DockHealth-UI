@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const TitleContainer = styled.div`
   align-items: center;
-  background-color: #007cab;
+  background-color: ${props => props.backgroundColor ?? '#007cab'};
   color: #000;
   display: flex;
   height: 88px;
@@ -16,23 +16,22 @@ const TitleContainer = styled.div`
   z-index: 10;
 `;
 
-const Title = styled.div`
-  color: #fff;
-  font-size: 32px;
-  padding-left: 2rem;
+const MainGrid = styled(Grid)`
+  height: 100%;
 `;
 
+const renderLayoutColumn = ({ key, component, ...otherProps }) => (
+  <MainGrid item container key={key} {...otherProps}>
+    {component}
+  </MainGrid>
+);
+
 export default ({ header }) => {
-  const { show, title, rightComponents } = header;
+  const { show, backgroundColor, layout } = header;
 
   return (
-    <TitleContainer open={show}>
-      <Grid container>
-        <Grid item xs={6}>
-          <Title>{title}</Title>
-        </Grid>
-        {rightComponents}
-      </Grid>
+    <TitleContainer backgroundColor={backgroundColor} open={show}>
+      <MainGrid container>{layout.map(renderLayoutColumn)}</MainGrid>
     </TitleContainer>
   );
 };

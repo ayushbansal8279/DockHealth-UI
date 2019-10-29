@@ -11,11 +11,7 @@ import { saveTask } from '../../actions/task-actions';
 
 const StyledToolbar = styled(Toolbar).attrs({
   disableGutters: true,
-})`
-  && {
-    //padding: 0 38px 0 48px;
-  }
-`;
+})``;
 
 const StyledForm = styled.form`
   width: 100%;

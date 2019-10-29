@@ -3,6 +3,8 @@ import $ from 'jquery';
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
 
+import { noop } from '../helpers/utilityFunctions';
+
 const shapeTask = task => {
   const { assignedTo, patient } = task;
 
@@ -499,13 +501,27 @@ export function clearCurrentTaskHistory() {
   };
 }
 
-export const addSubtask = parentTaskId => dispatch =>
-  TaskApi.addTask({ parentTaskId, description: '' })
-    .then(task => {
-      dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
-      storeAsCurrentTask(task)(dispatch);
-    })
-    .catch(() => {});
+export const addSubtask = parentTaskId => async dispatch => {
+  dispatch({
+    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
+    addingNewSubtask: true,
+    addingNewSubtaskParentId: parentTaskId,
+  });
+
+  try {
+    const task = await TaskApi.addTask({ parentTaskId, description: '' });
+    dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+    storeAsCurrentTask(task)(dispatch);
+  } catch {
+    noop();
+  } finally {
+    dispatch({
+      type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
+      addingNewSubtask: false,
+      addingNewSubtaskParentId: null,
+    });
+  }
+};
 
 export const addTaskAttachment = (taskId, fileData) => dispatch =>
   TaskApi.addTaskAttachment(taskId, fileData)

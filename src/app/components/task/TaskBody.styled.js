@@ -6,7 +6,7 @@ export const PatientsTasklistNew = styled.div`
   font-variant: small-caps;
   left: 0;
   position: absolute;
-  top: -16px;
+  top: -8px;
 `;
 
 export const PatientsTasklistDescription = styled.div`
@@ -33,11 +33,11 @@ export const PatientsTasklistStrikeThrough = styled.div`
 export const PatientsTasklistInfo = styled.div`
   color: #5e6366;
   font-size: 12px;
-  line-height: 1;
+  line-height: 1.15;
 `;
 
 export const PatientsTasklistDate = styled.div`
-  font-size: 16px;
+  font-size: 12px;
   color: #303538;
 `;
 

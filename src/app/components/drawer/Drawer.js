@@ -38,7 +38,7 @@ const Drawer = ({ header, user, lists, children }) => {
   const [isOpen, open, close] = useBoolean(false);
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', height: '100%' }}>
       <StyledDrawer open={isOpen}>
         <DrawerList
           onMouseEnter={open}
@@ -56,14 +56,18 @@ const Drawer = ({ header, user, lists, children }) => {
   );
 };
 
-const ConnectedDrawer = ({ children }) => {
+const ConnectedDrawer = ({ children, ...props }) => {
   const selectors = {
     user: useSelector(path(['userState', 'userProfile'])),
     lists: useSelector(path(['taskListState', 'tasklist'])),
     header: useSelector(path(['header'])),
   };
 
-  return <Drawer {...selectors}>{children}</Drawer>;
+  return (
+    <Drawer {...props} {...selectors}>
+      {children}
+    </Drawer>
+  );
 };
 
 export default ConnectedDrawer;

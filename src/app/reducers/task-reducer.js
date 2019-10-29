@@ -1,21 +1,23 @@
 import {
-  map,
-  equals,
-  when,
   always,
   assoc,
+  equals,
   evolve,
-  propEq,
   identity,
-  unless,
-  uncurryN,
   ifElse,
+  map,
+  propEq,
+  uncurryN,
+  unless,
+  when,
 } from 'ramda';
+
 import {
   ADD_PATIENT_TO_TASK_SUCCESS,
   ADD_TASK_COMMENT_SUCCESS,
   ADD_TASK_SUCCESS,
   ASSIGN_OR_REASSIGN_TASK_SUCCESS,
+  CHANGE_ADDING_NEW_SUBTASK,
   CLEAR_CURRENT_TASK_HISTORY,
   DELETE_TASK_COMMENT_SUCCESS,
   DELETE_TASK_SUCCESS,
@@ -35,6 +37,8 @@ import {
   REQUEST_HISTORY,
   REQUEST_TASKS,
   SET_AS_CURRENT_TASK,
+  TASK_ATTACHMENT_ADDED,
+  TASK_ATTACHMENT_REMOVED,
   TOGGLE_TASK_PRIORITY_SUCCESS,
   UPDATE_TASK_COMMENT_SUCCESS,
   UPDATE_TASK_DESCRIPTION_SUCCESS,
@@ -43,8 +47,6 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
-  TASK_ATTACHMENT_ADDED,
-  TASK_ATTACHMENT_REMOVED,
 } from '../actions/action-types';
 
 const initialState = {
@@ -58,6 +60,8 @@ const initialState = {
   showingCompletedTasks: false,
   currentTaskHistory: null,
   selectedTaskId: null,
+  addingNewSubtask: false,
+  addingNewSubtaskParentId: null,
 };
 
 const getMainTaskId = ({ parentTaskId, taskId }) => parentTaskId || taskId;
@@ -178,7 +182,7 @@ const TaskReducer = (state = initialState, action) => {
       const tasks = isSubtask(addedTask)
         ? state.tasks.map(task =>
             isParentOfAddedTask(addedTask)(task)
-              ? { ...task, subtasks: [addedTask].concat(task.subtasks) }
+              ? { ...task, subtasks: task.subtasks.concat([addedTask]) }
               : task,
           )
         : [addedTask].concat(state.tasks);
@@ -190,7 +194,7 @@ const TaskReducer = (state = initialState, action) => {
       // with concact make a copy of the array, and then we'll change and return the copy
       return {
         ...state,
-        tasks: [action.duplicatedTask].concat(state.tasks),
+        tasks: state.tasks.concat([action.duplicatedTask]),
       };
 
     case GET_TASKS_SUCCESS: {
@@ -659,6 +663,15 @@ const TaskReducer = (state = initialState, action) => {
                 ),
               },
         ),
+      };
+    }
+
+    case CHANGE_ADDING_NEW_SUBTASK: {
+      const { addingNewSubtask, addingNewSubtaskParentId } = action;
+      return {
+        ...state,
+        addingNewSubtask,
+        addingNewSubtaskParentId,
       };
     }
 
