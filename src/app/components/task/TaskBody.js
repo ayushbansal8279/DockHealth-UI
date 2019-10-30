@@ -95,6 +95,8 @@ const TaskBody = ({
     formattedCompletedDateTime &&
     `Completed by ${completedBy?.userName} at ${formattedCompletedDateTime}`;
 
+  const elementPaddingBottom = `${isSubtask ? 12 : 16}px`;
+
   return (
     <div
       style={{ height: '100%', cursor: 'pointer', display: 'flex' }}
@@ -150,9 +152,14 @@ const TaskBody = ({
             />
           </div>
 
-          <Grid container alignItems="center">
-            <Grid item container xs={12} justify="space-between">
-              <PatientTasklistContainer>
+          <Grid container alignItems="flex-end" wrap="nowrap" direction="row">
+            <PatientTasklistContainer
+              item
+              container
+              alignItems="center"
+              xs={12}
+            >
+              <Grid item xs={12}>
                 {storeAsCurrentTask ? (
                   <PatientsTasklistDescription>
                     {description || (
@@ -181,6 +188,8 @@ const TaskBody = ({
                     </PatientsTasklistDescription>
                   </Link>
                 )}
+              </Grid>
+              <Grid item xs={12}>
                 <PatientsTasklistInfo>
                   {updated && (
                     <img
@@ -197,85 +206,95 @@ const TaskBody = ({
                     creator.userName
                   } at ${formattedCreationDate}${countInfoContent}`}
                 </PatientsTasklistInfo>
+              </Grid>
+              <Grid item xs={12}>
                 <CompletedBy
                   isCompleted={status === 'COMPLETE' && completedByContent}
                 >
                   <span>{completedByContent}</span>
                 </CompletedBy>
-                {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
-              </PatientTasklistContainer>
-              {!isSubtask && !hidePatient && (
+              </Grid>
+              {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
+            </PatientTasklistContainer>
+            {!isSubtask && !hidePatient && (
+              <div
+                style={{
+                  alignItems: 'flex-end',
+                  display: 'flex',
+                  lineHeight: '12px',
+                  marginRight: '24px',
+                  paddingBottom: elementPaddingBottom,
+                  minWidth: '140px',
+                  width: '140px',
+                }}
+              >
+                {patient && (
+                  <Link
+                    to={`/patient/${patient.patientId}`}
+                    style={{ color: '#0ca1c7', fontSize: '12px' }}
+                  >
+                    <div>
+                      {`${patient?.lastName}, ${patient?.firstName} ${
+                        patient?.mrn
+                      }`}
+                    </div>
+                  </Link>
+                )}
+              </div>
+            )}
+            {!hideDate && (
+              <div
+                style={{
+                  alignItems: 'flex-end',
+                  display: 'flex',
+                  lineHeight: '12px',
+                  marginRight: '24px',
+                  paddingBottom: elementPaddingBottom,
+                  minWidth: '140px',
+                  width: '140px',
+                }}
+              >
+                {dueDate && (
+                  <PatientsTasklistDate isSubtask={isSubtask}>
+                    {`${formattedDueDate} ${formattedDueTime}`}
+                  </PatientsTasklistDate>
+                )}
+              </div>
+            )}
+            {!hidePriority && (
+              <>
+                <div
+                  style={{
+                    paddingBottom: elementPaddingBottom,
+                    minWidth: '90px',
+                    width: '90px',
+                  }}
+                >
+                  <PriorityContainer>
+                    <PriorityDot color={priorityColor(workflowStatus)} />
+                  </PriorityContainer>
+                </div>
                 <div
                   style={{
                     alignItems: 'flex-end',
                     display: 'flex',
-                    lineHeight: '12px',
+                    justifyContent: 'flex-start',
                     marginRight: '24px',
-                    width: '140px',
+                    minWidth: '120px',
+                    width: '120px',
+                    paddingBottom: elementPaddingBottom,
                   }}
                 >
-                  {patient && (
-                    <Link
-                      to={`/patient/${patient.patientId}`}
-                      style={{ color: '#0ca1c7', fontSize: '12px' }}
-                    >
-                      <div>
-                        {`${patient?.lastName}, ${patient?.firstName} ${
-                          patient?.mrn
-                        }`}
-                      </div>
-                    </Link>
-                  )}
-                </div>
-              )}
-              {!hideDate && (
-                <div
-                  style={{
-                    alignItems: 'flex-end',
-                    display: 'flex',
-                    lineHeight: '12px',
-                    marginRight: '24px',
-                    width: '140px',
-                  }}
-                >
-                  {dueDate && (
-                    <PatientsTasklistDate isSubtask={isSubtask}>
-                      {`${formattedDueDate} ${formattedDueTime}`}
-                    </PatientsTasklistDate>
-                  )}
-                </div>
-              )}
-              {!hidePriority && (
-                <>
-                  <div
+                  <img
                     style={{
-                      width: '90px',
+                      height: '10px',
                     }}
-                  >
-                    <PriorityContainer>
-                      <PriorityDot color={priorityColor(workflowStatus)} />
-                    </PriorityContainer>
-                  </div>
-                  <div
-                    style={{
-                      alignItems: 'flex-end',
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      marginRight: '24px',
-                      width: '120px',
-                    }}
-                  >
-                    <img
-                      style={{
-                        height: '10px',
-                      }}
-                      src={ChevronRightIcon}
-                      alt="Chevron icon"
-                    />
-                  </div>
-                </>
-              )}
-            </Grid>
+                    src={ChevronRightIcon}
+                    alt="Chevron icon"
+                  />
+                </div>
+              </>
+            )}
           </Grid>
         </>
       )}
