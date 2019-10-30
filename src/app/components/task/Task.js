@@ -52,6 +52,12 @@ const Task = props => {
 
   const hasSubtasks = subtasks.length > 0;
 
+  const isSelfOrSubtaskActive =
+    selectedTaskId === task.taskId ||
+    Boolean(
+      !isSubtask && subtasks.find(({ taskId }) => taskId === selectedTaskId),
+    );
+
   useEffect(
     () => {
       if (isSubtask) {
@@ -90,7 +96,8 @@ const Task = props => {
     () => {
       if (
         slimView &&
-        subtasks.find(({ taskId }) => taskId === selectedTaskId)
+        subtasks.find(({ taskId }) => taskId === selectedTaskId) &&
+        !isSelfOrSubtaskActive
       ) {
         storeAsCurrentTask(null);
       }
@@ -117,12 +124,6 @@ const Task = props => {
         taskId: 'new-subtask',
       })
     : subtasks;
-
-  const isSelfOrSubtaskActive =
-    selectedTaskId === task.taskId ||
-    Boolean(
-      !isSubtask && subtasks.find(({ taskId }) => taskId === selectedTaskId),
-    );
 
   return (
     <>
@@ -153,8 +154,7 @@ const Task = props => {
           </TaskSelectionContainer>
         </TaskContainer>
       </TaskAnimationContainer>
-      {!slimView &&
-        isSelfOrSubtaskActive &&
+      {(!slimView || (slimView && isSelfOrSubtaskActive)) &&
         renderedSubtasks.map((subtask, index) => (
           <Task
             key={subtask.taskId}
@@ -177,12 +177,9 @@ const Task = props => {
             slimView={slimView}
           />
         ))}
-      {!slimView &&
-        isSelfOrSubtaskActive &&
-        !isSubtask &&
-        task.status !== 'COMPLETE' && (
-          <AddSubtask padded taskId={task.taskId} />
-        )}
+      {isSelfOrSubtaskActive && !isSubtask && task.status !== 'COMPLETE' && (
+        <AddSubtask padded taskId={task.taskId} />
+      )}
     </>
   );
 };
