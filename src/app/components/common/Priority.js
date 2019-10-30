@@ -46,7 +46,7 @@ Priority.defaultProps = {
 export const PriorityContainer = styled.div`
   align-items: flex-end;
   display: flex;
-  height: 100%;
+  height: 10px;
   justify-content: flex-start;
   width: 90px;
 `;

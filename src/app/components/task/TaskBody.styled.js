@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Grid from '@material-ui/core/Grid';
 
 export const PatientsTasklistNew = styled.div`
   color: #d9036b;
@@ -41,9 +42,8 @@ export const PatientsTasklistDate = styled.div`
   color: #303538;
 `;
 
-export const PatientTasklistContainer = styled.div`
-  flex: 1;
-  min-width: 0;
+export const PatientTasklistContainer = styled(Grid)`
+  align-self: center;
   padding-right: 24px;
   position: relative;
 `;
