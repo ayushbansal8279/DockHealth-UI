@@ -112,40 +112,40 @@ class TaskListView extends PureComponent {
                     let iconName = '';
                     let iconColor = '';
                     let panelName = '';
-                    if (list.listName === 'Inbox_Count') {
+                    if (list.metricName === 'Inbox_Count') {
                       iconName = 'icon-email';
                       panelName = 'Inbox';
-                    } else if (list.listName === 'AssignedToMe_Count') {
+                    } else if (list.metricName === 'AssignedToMe_Count') {
                       iconName = 'icon-list';
                       panelName = 'Assigned to me';
-                    } else if (list.listName === 'AssignedByMe_Count') {
+                    } else if (list.metricName === 'AssignedByMe_Count') {
                       iconName = 'icon-assign-to';
                       iconColor = 'blue';
                       panelName = 'Assigned by me';
-                    } else if (list.listName === 'HighPriority_Count') {
+                    } else if (list.metricName === 'HighPriority_Count') {
                       iconName = 'icon-flag';
                       iconColor = 'orange';
                       panelName = 'Flagged';
-                    } else if (list.listName === 'Overdue_Count') {
+                    } else if (list.metricName === 'Overdue_Count') {
                       iconName = 'icon-calendar';
                       iconColor = 'red';
                       panelName = 'Overdue';
-                    } else if (list.listName === 'DueToday_Count') {
+                    } else if (list.metricName === 'DueToday_Count') {
                       iconName = 'icon-calendar';
                       iconColor = 'blue';
                       panelName = 'Due Today';
-                    } else if (list.listName === 'DueThisWeek_Count') {
+                    } else if (list.metricName === 'DueThisWeek_Count') {
                       iconName = 'icon-calendar';
                       iconColor = 'green';
                       panelName = 'Due This Week';
-                    } else if (list.listName === 'CompletedThisWeek_Count') {
+                    } else if (list.metricName === 'CompletedThisWeek_Count') {
                       iconName = 'icon-checkmark';
                       iconColor = 'green';
                       panelName = 'Completed This Week';
                     }
                     return (
-                      list.dashboardDisplay && (
-                        <div className="large-3 columns" key={list.listName}>
+                      list.metricName.indexOf("Count")!=-1 && (
+                        <div className="large-3 columns" key={list.metricName}>
                           <div
                             className="text-center block-item"
                             data-equalizer-watch=""
@@ -156,7 +156,7 @@ class TaskListView extends PureComponent {
                               <use xlinkHref={`#${iconName}`} />
                             </svg>
                             <h6 className="border">{panelName}</h6>
-                            <h4>{list.numberOfTasks}</h4>
+                            <h4>{list.metricValue}</h4>
                           </div>
                         </div>
                       )

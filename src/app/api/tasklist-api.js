@@ -167,7 +167,7 @@ export function toggleListNotifications(taskListId, receiveNotifications) {
 }
 
 export function findGenericListCountsForUser() {
-  return axios.get('list/findGenericListCountsForUser')
+  return axios.get('list/getGenericListCountsForUser')
     .then(response => response.data).catch((error) => {
       console.log(error);
       throw error.response.data;
