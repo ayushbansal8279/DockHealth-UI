@@ -160,6 +160,8 @@ export function saveTask(newTask) {
           if (newTask.refiled) {
             $(`#task${task.taskId}`).fadeOut(1000);
           }
+
+          return task;
         })
         .catch(error => {
           throw error;
@@ -177,6 +179,8 @@ export function saveTask(newTask) {
         } else {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
         }
+
+        return task;
       })
       .catch(error => {
         throw error;
@@ -457,7 +461,7 @@ export function getInboxTasks(status, sortBy, filterBy) {
 export function markAsUnread(currentTask, flagUnread) {
   return dispatch =>
     TaskApi.flagUnread(currentTask.taskId, flagUnread)
-      .then((task) => {
+      .then(task => {
         dispatch({
           type: ActionTypes.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS,
           task,

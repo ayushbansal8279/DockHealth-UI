@@ -8,10 +8,10 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
-import TaskDetails from '../components/task/TaskDetails';
 import TaskList from '../components/task/TaskList';
 import AddTaskButton from '../components/taskView/AddTaskButton';
 import Header from '../components/taskView/Header';
+import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
 import Select from '../components/taskView/Select';
@@ -63,7 +63,7 @@ class TaskView extends Component {
     filterBy: '',
     searchTerms: [],
     slimView: false,
-    addingNewTask: false,
+    taskDrawerOpen: false,
   };
 
   headsUpArea = React.createRef();
@@ -87,6 +87,33 @@ class TaskView extends Component {
     const { isFetching } = this.props;
     if (prevIsFetching !== isFetching) {
       this.resetHeader();
+    }
+  };
+
+  openTaskDrawer = () => {
+    this.setState({
+      taskDrawerOpen: true,
+    });
+  };
+
+  closeTaskDrawer = () => {
+    const { storeAsCurrentTask } = this.props;
+
+    this.setState({
+      taskDrawerOpen: false,
+    });
+    setTimeout(() => {
+      storeAsCurrentTask(null);
+    }, 250);
+  };
+
+  toggleTaskDrawer = () => {
+    const { taskDrawerOpen } = this.state;
+
+    if (taskDrawerOpen) {
+      this.closeTaskDrawer();
+    } else {
+      this.openTaskDrawer();
     }
   };
 
@@ -171,9 +198,13 @@ class TaskView extends Component {
   };
 
   onAddTaskButtonClick = () => {
-    this.setState(prevState => ({
-      addingNewTask: !prevState.addingNewTask,
-    }));
+    const { storeAsCurrentTask } = this.props;
+    const { taskDrawerOpen } = this.state;
+
+    if (!taskDrawerOpen) {
+      storeAsCurrentTask(null);
+    }
+    this.toggleTaskDrawer();
   };
 
   renderTasklists = () => {
@@ -191,8 +222,6 @@ class TaskView extends Component {
     );
     const tasklistCount = Array.from(groupedTasks.keys()).length;
 
-    const isCollapsed = selectedTaskId != null;
-
     const tasklistProps = {
       tasks: this.search(tasks),
       markComplete: (task, status) => {
@@ -200,11 +229,9 @@ class TaskView extends Component {
       },
       storeAsCurrentTask,
       markAsUnread,
-      hideDate: isCollapsed,
-      hideTags: isCollapsed,
-      hidePriority: isCollapsed,
       selectedTaskId,
       slimView,
+      openTaskDrawer: this.openTaskDrawer,
     };
 
     if (tasks.length === 0 || tasklistCount <= 1) {
@@ -256,7 +283,6 @@ class TaskView extends Component {
       );
     }
 
-    const isCollapsed = selectedTaskId != null;
     const tasklistProps = {
       tasks: this.search(completedTasks),
       markComplete: (task, status) => {
@@ -264,11 +290,9 @@ class TaskView extends Component {
       },
       storeAsCurrentTask,
       markAsUnread,
-      hideDate: isCollapsed,
-      hideTags: isCollapsed,
-      hidePriority: isCollapsed,
       selectedTaskId,
       slimView,
+      openTaskDrawer: this.openTaskDrawer,
     };
 
     return (
@@ -283,21 +307,15 @@ class TaskView extends Component {
 
   render() {
     const {
-      userId,
       tasks,
       completedTasks,
       isFetching,
       selectedTaskId,
       downloadPDF,
-      markComplete,
-      toggleTaskPriority,
-      addTaskComment,
       taskList,
       showToolbar,
-      storeAsCurrentTask,
-      markAsUnread,
     } = this.props;
-    const { filterBy, slimView, addingNewTask } = this.state;
+    const { filterBy, slimView, taskDrawerOpen } = this.state;
 
     const taskId = selectedTaskId != null && selectedTaskId;
     const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
@@ -323,25 +341,19 @@ class TaskView extends Component {
 
     return (
       <div>
-        <div ref={this.headsUpArea}>Heads-up placeholder</div>
+        <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
         <TaskViewGrid container>
           <NewTaskDrawer
-            headsUpAreaHeight={this.headsUpArea.current?.scrollHeight ?? 0}
-            addingNewTask={addingNewTask}
+            headsUpAreaRef={this.headsUpArea.current}
+            open={taskDrawerOpen}
+            closeDrawer={this.closeTaskDrawer}
+            taskList={taskList}
           />
           <AddTaskButton
-            addingNewTask={addingNewTask}
+            addingNewTask={taskDrawerOpen}
             onClick={this.onAddTaskButtonClick}
           />
           <Grid item xs={12}>
-            {/* {showToolbar && !isInbox && taskListId && (
-              <Toolbar>
-                <AddTask
-                  storeAsCurrentTask={storeAsCurrentTask}
-                  taskListId={taskListId}
-                />
-              </Toolbar>
-            )} */}
             {showToolbar && (
               <Toolbar>
                 <Grid container justify="space-between">
@@ -407,7 +419,7 @@ class TaskView extends Component {
                   {this.renderTasklists()}
                   {this.renderCompleted()}
                 </TaskListContainer>
-                {task && (
+                {/* {task && (
                   <TaskDetails
                     addTaskComment={comment =>
                       addTaskComment(task, { comment })
@@ -427,7 +439,7 @@ class TaskView extends Component {
                     storeAsCurrentTask={storeAsCurrentTask}
                     markAsUnread={markAsUnread}
                   />
-                )}
+                )} */}
               </div>
             )}
           </Grid>
