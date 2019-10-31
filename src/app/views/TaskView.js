@@ -8,10 +8,10 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
-import TaskDetails from '../components/task/TaskDetails';
 import TaskList from '../components/task/TaskList';
 import AddTaskButton from '../components/taskView/AddTaskButton';
 import Header from '../components/taskView/Header';
+import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
 import Select from '../components/taskView/Select';
@@ -341,10 +341,10 @@ class TaskView extends Component {
 
     return (
       <div>
-        <div ref={this.headsUpArea}>Heads-up placeholder</div>
+        <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
         <TaskViewGrid container>
           <NewTaskDrawer
-            headsUpAreaHeight={this.headsUpArea.current?.scrollHeight ?? 0}
+            headsUpAreaRef={this.headsUpArea.current}
             open={taskDrawerOpen}
             closeDrawer={this.closeTaskDrawer}
             taskList={taskList}
@@ -354,14 +354,6 @@ class TaskView extends Component {
             onClick={this.onAddTaskButtonClick}
           />
           <Grid item xs={12}>
-            {/* {showToolbar && !isInbox && taskListId && (
-              <Toolbar>
-                <AddTask
-                  storeAsCurrentTask={storeAsCurrentTask}
-                  taskListId={taskListId}
-                />
-              </Toolbar>
-            )} */}
             {showToolbar && (
               <Toolbar>
                 <Grid container justify="space-between">

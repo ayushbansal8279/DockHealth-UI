@@ -1,6 +1,5 @@
-import {
-  map, set, when, propEq, lensProp,
-} from 'ramda';
+import { lensProp, map, propEq, set, when } from 'ramda';
+
 import {
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,
   ADD_TASKLIST_SUCCESS,
@@ -11,6 +10,8 @@ import {
   GET_AUDITS_BY_TASKLIST_SUCCESS,
   GET_NONORGUSERSINTASKLIST_SUCCESS,
   GET_ORGUSERSNOTINTASKLIST_SUCCESS,
+  GET_TASKLIST_STATS_FAILURE,
+  GET_TASKLIST_STATS_SUCCESS,
   GET_TASKLIST_SUCCESS,
   GET_TASKLISTACTIVEMEMBERS_SUCCESS,
   GET_TASKLISTMEMBERS_SUCCESS,
@@ -19,6 +20,7 @@ import {
   IS_LIST,
   REMOVEUSER_TASKLIST_SUCCESS,
   REQUEST_LISTS,
+  RESET_TASKLIST_STATS,
   SET_AS_CURRENT_LIST,
   SET_CURRENT_LIST,
   SET_GENERIC_LIST_COUNTS,
@@ -40,8 +42,9 @@ const initialState = {
   genericLists: [],
   isFetching: false,
   isList: false,
+  taskListStats: null,
+  taskListStatsOk: null,
 };
-
 
 const DEFAULT_USER_STATUS = 'PENDING';
 const DEFAULT_USER_ROLE = 'MEMBER';
@@ -50,14 +53,17 @@ const inviteUser = (state, { userId }) => ({
   ...state,
   tasklistmembers: [
     ...state.tasklistmembers,
-    ...state.orgusersnotintasklist.filter(user => user.userId == userId)
+    ...state.orgusersnotintasklist
+      .filter(user => user.userId == userId)
       .map(user => ({
         ...user,
         status: DEFAULT_USER_STATUS,
         taskListUserRole: DEFAULT_USER_ROLE,
       })),
   ],
-  orgusersnotintasklist: state.orgusersnotintasklist.filter(user => user.userId != userId),
+  orgusersnotintasklist: state.orgusersnotintasklist.filter(
+    user => user.userId != userId,
+  ),
 });
 
 const inviteMultipleUsers = (state, { invitedUsers }) => ({
@@ -72,8 +78,9 @@ const inviteMultipleUsers = (state, { invitedUsers }) => ({
         taskListUserRole: DEFAULT_USER_ROLE,
       })),
   ],
-  orgusersnotintasklist: state.orgusersnotintasklist
-    .filter(user => invitedUsers.every(userId => user.userId != userId)),
+  orgusersnotintasklist: state.orgusersnotintasklist.filter(user =>
+    invitedUsers.every(userId => user.userId != userId),
+  ),
 });
 
 const TaskListReducer = (state = initialState, action) => {
@@ -92,7 +99,7 @@ const TaskListReducer = (state = initialState, action) => {
       };
 
     case REQUEST_LISTS:
-      return ({ ...state, isFetching: true });
+      return { ...state, isFetching: true };
 
     case ACCEPT_INVITE_TOTASKLIST_SUCCESS:
       return {
@@ -121,24 +128,31 @@ const TaskListReducer = (state = initialState, action) => {
         tasklistmembers,
       };
 
-      const currentTaskListMembersDetails = state.allTaskListMembers
-        .filter(details => details.taskListId == action.taskListId);
+      const currentTaskListMembersDetails = state.allTaskListMembers.filter(
+        details => details.taskListId == action.taskListId,
+      );
 
-      if (!currentTaskListMembersDetails || currentTaskListMembersDetails.length == 0) {
+      if (
+        !currentTaskListMembersDetails ||
+        currentTaskListMembersDetails.length == 0
+      ) {
         return {
           ...state,
           tasklistmembers,
-          allTaskListMembers: [listMembersDetails].concat(state.allTaskListMembers),
+          allTaskListMembers: [listMembersDetails].concat(
+            state.allTaskListMembers,
+          ),
         };
       }
 
       return {
         ...state,
         tasklistmembers,
-        allTaskListMembers: state.allTaskListMembers.map(listMembers => (
+        allTaskListMembers: state.allTaskListMembers.map(listMembers =>
           listMembers.taskListId === action.taskListId
-            ? ({ ...listMembers, listMembersDetails })
-            : listMembers)),
+            ? { ...listMembers, listMembersDetails }
+            : listMembers,
+        ),
       };
     }
 
@@ -181,10 +195,12 @@ const TaskListReducer = (state = initialState, action) => {
     case TOGGLE_LIST_NOTIFICATIONS_SUCCESS: {
       const { taskListId, receiveNotifications } = action;
 
-      const updateTasklist = map(when(
-        propEq('taskListId', taskListId),
-        set(lensProp('notifications'), receiveNotifications),
-      ));
+      const updateTasklist = map(
+        when(
+          propEq('taskListId', taskListId),
+          set(lensProp('notifications'), receiveNotifications),
+        ),
+      );
 
       return {
         ...state,
@@ -202,23 +218,26 @@ const TaskListReducer = (state = initialState, action) => {
     case UPDATE_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklist: state.tasklist.map(taskList => (
+        tasklist: state.tasklist.map(taskList =>
           taskList.taskListId === action.updatedTasklist.taskListId
             ? { ...taskList, ...action.updatedTasklist }
-            : taskList)),
+            : taskList,
+        ),
       };
 
     case DELETE_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklist: state.tasklist.filter(taskList => taskList.taskListId !== action.taskListId),
+        tasklist: state.tasklist.filter(
+          taskList => taskList.taskListId !== action.taskListId,
+        ),
       };
 
     case SET_AS_CURRENT_LIST:
       return {
         ...state,
         currentList: state.tasklist.find(
-          taskList => (taskList.taskListId.toString() == action.taskListId),
+          taskList => taskList.taskListId.toString() == action.taskListId,
         ),
       };
 
@@ -231,17 +250,40 @@ const TaskListReducer = (state = initialState, action) => {
     case REMOVEUSER_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklistmembers: state.tasklistmembers
-          .filter(member => member.userId !== action.removedUser.userId),
+        tasklistmembers: state.tasklistmembers.filter(
+          member => member.userId !== action.removedUser.userId,
+        ),
       };
 
     case CHANGEUSERROLE_TASKLIST_SUCCESS:
       return {
         ...state,
-        tasklistmembers: state.tasklistmembers.map(member => (
+        tasklistmembers: state.tasklistmembers.map(member =>
           member.userId === action.markedUser.userId
-            ? ({ ...member, taskListUserRole: action.role })
-            : member)),
+            ? { ...member, taskListUserRole: action.role }
+            : member,
+        ),
+      };
+
+    case GET_TASKLIST_STATS_SUCCESS:
+      return {
+        ...state,
+        taskListStats: action.taskListStats,
+        taskListStatsOk: true,
+      };
+
+    case GET_TASKLIST_STATS_FAILURE:
+      return {
+        ...state,
+        taskListStats: null,
+        taskListStatsOk: false,
+      };
+
+    case RESET_TASKLIST_STATS:
+      return {
+        ...state,
+        taskListStats: null,
+        taskListStatsOk: null,
       };
 
     default:

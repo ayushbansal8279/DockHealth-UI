@@ -294,3 +294,21 @@ export function downloadPDF(taskListId) {
       throw error;
     });
 }
+
+export const getTaskListStats = ({ taskListId }) => async dispatch => {
+  try {
+    const { data } = await TaskListApi.getTaskListStats({ taskListId });
+    dispatch({
+      type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
+      taskListStats: data,
+    });
+  } catch (error) {
+    dispatch({ type: ActionTypes.GET_TASKLIST_STATS_FAILURE });
+  }
+};
+
+export const resetTasklistStats = () => dispatch => {
+  dispatch({
+    type: ActionTypes.RESET_TASKLIST_STATS,
+  });
+};

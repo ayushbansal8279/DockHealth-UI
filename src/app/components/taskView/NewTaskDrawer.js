@@ -184,7 +184,7 @@ const onDelete = ({ afterDelete, dispatch, task }) => async () => {
   }
 };
 
-export default ({ closeDrawer, open, headsUpAreaHeight, taskList }) => {
+export default ({ closeDrawer, open, headsUpAreaRef, taskList }) => {
   const [
     priorityActive,
     setPriorityActive,
@@ -195,6 +195,7 @@ export default ({ closeDrawer, open, headsUpAreaHeight, taskList }) => {
     false,
   );
   const [status, setStatus] = useState(head(statusSelectData));
+  const [headsUpAreaHeight, setHeadsUpAreaHeight] = useState(0);
   const statusSelectRef = useRef(null);
   const task = useSelector(store => store.taskState.selectedTask);
   const dispatch = useDispatch();
@@ -227,6 +228,14 @@ export default ({ closeDrawer, open, headsUpAreaHeight, taskList }) => {
       }
     },
     [setPriorityActive, task, unsetPriorityActive],
+  );
+
+  useEffect(
+    () => {
+      setHeadsUpAreaHeight(headsUpAreaRef?.scrollHeight ?? 0);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [headsUpAreaRef?.scrollHeight],
   );
 
   let defaultValues = {};
