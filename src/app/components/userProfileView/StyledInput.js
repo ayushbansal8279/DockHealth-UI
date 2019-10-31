@@ -36,6 +36,18 @@ const StyledInputContainer = styled.div`
     border-radius: 0;
     box-sizing: border-box;
     position: relative;
+
+    ${props => {
+      if (props.controlled) {
+        if (props.containerDisabled) {
+          return 'cursor: not-allowed';
+        }
+
+        return 'cursor: pointer';
+      }
+
+      return '';
+    }}
   }
 `;
 
@@ -62,6 +74,13 @@ const StyledInput = styled.input`
     margin-top: 8px;
     outline: none;
     padding: 1rem 2.5rem 0 1rem;
+    ${props =>
+      props.controlled &&
+      `
+      cursor: pointer;
+      pointer-events: none;
+    `}
+    ${props => props.fullWidth && 'width: 100%;'}
 
     &:focus ~ ${StyledLabel}, &:not(.${EMPTY_CLASS_NAME}) ~ ${StyledLabel} {
       font-size: 12px;
@@ -74,30 +93,54 @@ const StyledInput = styled.input`
   }
 `;
 
-export default ({ name, label, required, isPhoneNumber, ...props }) => {
-  const { errors, watch, register } = useFormContext();
+export default React.forwardRef(
+  (
+    {
+      name,
+      label,
+      required,
+      isPhoneNumber,
+      containerDisabled = false,
+      controlled = false,
+      onContainerClick = () => {},
+      ...props
+    },
+    ref,
+  ) => {
+    const { errors, watch, register } = useFormContext();
 
-  const error = (errors[name] || {}).message;
-  const hasError = Boolean(error);
+    const error = (errors[name] || {}).message;
+    const hasError = Boolean(error);
 
-  const currentValue = watch(name);
+    const currentValue = watch(name);
 
-  const maxLength = isPhoneNumber ? 12 : undefined;
+    const maxLength = isPhoneNumber ? 12 : undefined;
 
-  return (
-    <StyledInputContainer>
-      {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
-      <StyledInput
-        className={currentValue ? '' : EMPTY_CLASS_NAME}
-        name={name}
-        ref={register}
-        maxLength={maxLength}
-        {...props}
-      />
-      <StyledLabel>
-        <span className="input-label">{label}</span>
-        {required && <span className="required">*</span>}
-      </StyledLabel>
-    </StyledInputContainer>
-  );
-};
+    return (
+      <StyledInputContainer
+        controlled={controlled}
+        containerDisabled={containerDisabled}
+        onClick={e => {
+          if (!containerDisabled) {
+            onContainerClick(e);
+          }
+        }}
+        ref={ref}
+      >
+        {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
+        <StyledInput
+          className={currentValue ? '' : EMPTY_CLASS_NAME}
+          name={name}
+          ref={register}
+          maxLength={maxLength}
+          controlled={controlled}
+          {...props}
+        />
+        <StyledLabel>
+          <span className="input-label">{label}</span>
+          {required && <span className="required">*</span>}
+        </StyledLabel>
+      </StyledInputContainer>
+    );
+  },
+);

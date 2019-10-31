@@ -46,6 +46,7 @@
     "es6-promise-promise": "^1.0.0",
     "es6-promisify": "^4.1.0",
     "flag": "^4.2.1",
+    "immer": "^4.0.2",
     "jquery": "^3.4.0",
     "linkifyjs": "^2.1.7",
     "material-ui-pickers": "^2.2.4",

@@ -2,7 +2,6 @@ import pick from 'ramda/es/pick';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import useBoolean from '../../hooks/useBoolean';
 import useConfirmation from '../../hooks/useConfirmation';
 import Flag from '../common/Flag';
 import AddSubtask from './AddSubtask';
@@ -16,35 +15,28 @@ import {
 } from './Task.styled';
 import TaskBody from './TaskBody';
 
-const usePrevious = value => {
-  const ref = useRef();
-  useEffect(
-    () => {
-      ref.current = value;
-    },
-    [value],
-  );
-  return ref.current;
-};
+// const usePrevious = value => {
+//   const ref = useRef();
+//   useEffect(
+//     () => {
+//       ref.current = value;
+//     },
+//     [value],
+//   );
+//   return ref.current;
+// };
 
 const Task = props => {
   const {
     task,
     isSubtask,
     markComplete,
-    hideDate,
-    hidePriority,
     selectedTaskId,
-    disabled,
-    hideCheckbox,
     storeAsCurrentTask,
     slimView,
-    markAsUnread,
   } = props;
   const { subtasks, priority, taskList, isNewSubtask } = task;
 
-  const [isCollapsed, setIsCollapsed, , toggleIsCollapsed] = useBoolean(true);
-  const previousSelectedTaskId = usePrevious(selectedTaskId);
   const { addingNewSubtask, addingNewSubtaskParentId } = useSelector(state =>
     pick(['addingNewSubtask', 'addingNewSubtaskParentId'])(state.taskState),
   );
@@ -57,30 +49,6 @@ const Task = props => {
     Boolean(
       !isSubtask && subtasks.find(({ taskId }) => taskId === selectedTaskId),
     );
-
-  useEffect(
-    () => {
-      if (isSubtask) {
-        return;
-      }
-
-      if (
-        selectedTaskId !== previousSelectedTaskId &&
-        isCollapsed &&
-        subtasks.find(subtask => subtask.taskId === selectedTaskId)
-      ) {
-        setIsCollapsed(false);
-      }
-    },
-    [
-      isCollapsed,
-      isSubtask,
-      previousSelectedTaskId,
-      selectedTaskId,
-      setIsCollapsed,
-      subtasks,
-    ],
-  );
 
   useEffect(
     () => {
@@ -132,11 +100,7 @@ const Task = props => {
         isSubtask={isSubtask}
         ref={animationContainer}
       >
-        <TaskContainer
-          isCollapsed={isCollapsed}
-          isSubtask={isSubtask}
-          hasSubtasks={hasSubtasks}
-        >
+        <TaskContainer isSubtask={isSubtask} hasSubtasks={hasSubtasks}>
           {!isSubtask && (
             <ConfirmationDialog
               isOpen={isOpen}
@@ -158,23 +122,15 @@ const Task = props => {
         renderedSubtasks.map((subtask, index) => (
           <Task
             key={subtask.taskId}
+            {...props}
             task={{
               ...subtask,
               taskList,
             }}
             isSubtask
             isParentComplete={task.status === 'COMPLETE'}
-            selectedTaskId={selectedTaskId}
-            markComplete={markComplete}
-            hideDate={hideDate}
-            hidePriority={hidePriority}
-            hideCheckbox={hideCheckbox}
-            disabled={disabled}
-            storeAsCurrentTask={storeAsCurrentTask}
-            markAsUnread={markAsUnread}
             subtaskIndex={index + 1}
             isNewSubtask={subtask.isNewSubtask}
-            slimView={slimView}
           />
         ))}
       {isSelfOrSubtaskActive && !isSubtask && task.status !== 'COMPLETE' && (

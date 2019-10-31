@@ -37,6 +37,7 @@ const TaskBody = ({
   hideCheckbox,
   storeAsCurrentTask,
   markAsUnread,
+  openTaskDrawer,
 }) => {
   const {
     createdDateTime,
@@ -102,6 +103,7 @@ const TaskBody = ({
       style={{ height: '100%', cursor: 'pointer', display: 'flex' }}
       onClick={e => {
         e.stopPropagation();
+        openTaskDrawer();
         /* eslint-disable no-unused-expressions */
         storeAsCurrentTask?.(task);
         markAsUnread?.(task, false);

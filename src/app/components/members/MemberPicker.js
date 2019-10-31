@@ -31,7 +31,7 @@ const HeaderTaskName = styled.span`
   text-decoration: underline;
 `;
 
-const MemberName = styled.span`
+export const MemberName = styled.span`
   margin-left: 20px;
 `;
 

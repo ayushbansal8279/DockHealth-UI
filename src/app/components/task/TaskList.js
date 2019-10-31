@@ -74,6 +74,7 @@ const TaskList = ({
   hidePriority,
   selectedTaskId,
   slimView,
+  openTaskDrawer,
 }) => (
   <div>
     <Heading
@@ -109,6 +110,7 @@ const TaskList = ({
             hidePriority,
             key: task.taskId,
             slimView,
+            openTaskDrawer,
           }}
         />
       ))
