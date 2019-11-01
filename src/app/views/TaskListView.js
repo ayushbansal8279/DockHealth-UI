@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -55,7 +56,10 @@ class TaskListView extends PureComponent {
   };
 
   acceptInviteToTaskList = taskList => {
-    this.props.invitationAction.acceptInviteToTaskList(taskList);
+    this.props.invitationAction.acceptInviteToTaskList(taskList).then(() => {
+      var taskListLink = `tasks/${taskList.listName}/${taskList.taskListId}`
+      hashHistory.push(taskListLink)
+    });
   };
 
   rejectInviteToTaskList = taskList => {
