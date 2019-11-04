@@ -1,16 +1,12 @@
-import { Hidden } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 import { node } from 'prop-types';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
 import {
-  BackgroundCenterContainer,
   BackgroundContainer,
-  BackgroundHorizontalFiller,
   BackgroundModalContainer,
   BackgroundRectangleContainer,
-  BackgroundVerticalFiller,
   ContentContainer,
   DockLogo,
   DockLogoContainer,
@@ -20,7 +16,8 @@ import {
 
 const MODAL_CONTAINER_RATIO = 1312 / 1128;
 const PADDING_CONTAINER_RATIO = 50 / 1312;
-const IMAGE_HEIGHT_RATIO = 112 / 1312;
+
+const MAX_MODAL_CONTAINER_WIDTH = 984;
 
 class TemplateAuthBase extends Component {
   state = {
@@ -72,64 +69,43 @@ class TemplateAuthBase extends Component {
     const contentContainerPadding = Math.floor(
       modalContainerWidth * PADDING_CONTAINER_RATIO,
     );
-    const logoImageHeight = Math.floor(
-      modalContainerWidth * IMAGE_HEIGHT_RATIO,
-    );
+
+    const transformScale = modalContainerWidth / MAX_MODAL_CONTAINER_WIDTH;
 
     return (
       <BackgroundContainer>
-        <BackgroundHorizontalFiller />
-        <BackgroundCenterContainer>
-          <BackgroundVerticalFiller />
-          <BackgroundModalContainer
+        <BackgroundModalContainer
+          container
+          style={{
+            width: modalContainerWidth,
+            transform: `scale(${transformScale})`,
+          }}
+        >
+          <Hidden smDown>
+            <BackgroundRectangleContainer ref={this.rectangleContainerRef}>
+              <img src="assets/img/svg/login-rectangle.svg" alt="Background" />
+            </BackgroundRectangleContainer>
+          </Hidden>
+          <Hidden mdUp>
+            <SmallBackgroundRectangleContainer
+              ref={this.rectangleContainerRef}
+            />
+          </Hidden>
+          <ContentContainer
+            padding={contentContainerPadding * transformScale}
             container
-            style={{ width: modalContainerWidth }}
+            item
+            sm={12}
+            md={6}
+            direction="column"
+            wrap="nowrap"
           >
-            <Hidden smDown>
-              <BackgroundRectangleContainer ref={this.rectangleContainerRef}>
-                <img
-                  src="assets/img/svg/login-rectangle.svg"
-                  alt="Background"
-                />
-              </BackgroundRectangleContainer>
-            </Hidden>
-            <Hidden mdUp>
-              <SmallBackgroundRectangleContainer
-                ref={this.rectangleContainerRef}
-              />
-            </Hidden>
-            <ContentContainer
-              padding={contentContainerPadding}
-              container
-              item
-              sm={12}
-              md={6}
-              direction="column"
-            >
-              <DockLogoContainer
-                container
-                item
-                xs={12}
-                justify="flex-start"
-                alignItems="flex-end"
-              >
-                <DockLogo
-                  height={logoImageHeight}
-                  src="assets/img/dock-logo.png"
-                  alt="Dock Health"
-                />
-              </DockLogoContainer>
-              <MainContentContainer item xs={12}>
-                {children}
-              </MainContentContainer>
-            </ContentContainer>
-            <Grid item sm={12} md={6}>
-              &nbsp;
-            </Grid>
-          </BackgroundModalContainer>
-          <BackgroundVerticalFiller />
-        </BackgroundCenterContainer>
-        <BackgroundHorizontalFiller />
+            <DockLogoContainer>
+              <DockLogo src="assets/img/dock-logo.png" alt="Dock Health" />
+            </DockLogoContainer>
+            <MainContentContainer>{children}</MainContentContainer>
+          </ContentContainer>
+        </BackgroundModalContainer>
       </BackgroundContainer>
     );
   };
