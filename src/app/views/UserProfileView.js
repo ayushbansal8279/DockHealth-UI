@@ -17,7 +17,7 @@ import {
   SectionTypography,
   SubmitButton,
   UserAvatarGrid,
-  UserAvatarSupplement,
+  UserProfileViewGrid,
 } from '../components/userProfileView/UserProfileView.Styled';
 import { noop } from '../helpers/utilityFunctions';
 import {
@@ -42,6 +42,8 @@ const renderFormFieldDefinition = ({
       required={required}
       readOnly={readOnly}
       isPhoneNumber={isPhoneNumber}
+      fontSize={16}
+      backgroundColor="#f3f5f6"
     />
   </Grid>
 );
@@ -124,6 +126,8 @@ const UserProfileView = ({
   ...otherEntries
 }) => {
   const formMethods = useForm({
+    reValidateMode: 'onChange',
+    mode: 'onChange',
     defaultValues,
     validationSchema,
   });
@@ -142,7 +146,7 @@ const UserProfileView = ({
         )}
       >
         <Grid container justify="center">
-          <Grid item sm={12} md={6} container>
+          <UserProfileViewGrid item sm={12} md={6} container>
             <UserAvatarGrid
               alignItems="center"
               container
@@ -152,10 +156,6 @@ const UserProfileView = ({
               wrap="nowrap"
             >
               <UserAvatar />
-              <UserAvatarSupplement>
-                <div>Add a picture to</div>
-                <div>personalize your avatar</div>
-              </UserAvatarSupplement>
             </UserAvatarGrid>
             {formFieldDefinitions.map(renderFormFieldDefinition)}
             <Grid item xs={12}>
@@ -186,7 +186,7 @@ const UserProfileView = ({
                 Privacy Policy
               </PlainLink>
             </Grid>
-          </Grid>
+          </UserProfileViewGrid>
         </Grid>
       </FormContainer>
     </FormContext>

@@ -13,12 +13,14 @@ import {
   AvatarImageContainer,
   CameraContainer,
   InnerAvatarContainer,
+  PlainLink,
   SmallButton,
   UploadImagePopover,
   UploadImagePopoverClose,
   UploadImagePopoverGrid,
   UploadImagePopoverLabel,
-  PlainLink,
+  UserAvatarSupplement,
+  OuterAvatarContainer,
 } from './UserProfileView.Styled';
 
 export default () => {
@@ -91,19 +93,38 @@ export default () => {
     );
   });
 
+  const popoverLabelContent = userProfilePic ? (
+    <UploadImagePopoverLabel>Try another picture</UploadImagePopoverLabel>
+  ) : (
+    <>
+      <UploadImagePopoverLabel>Add a picture</UploadImagePopoverLabel>
+      <UploadImagePopoverLabel>
+        to personalize your avatar
+      </UploadImagePopoverLabel>
+    </>
+  );
+
   return (
     <>
-      <AvatarContainer
-        withCursor
-        withShadow
-        ref={avatarRef}
-        onClick={openPopover}
-      >
-        <InnerAvatarContainer>{avatarContent}</InnerAvatarContainer>
-        <CameraContainer>
-          <img src={CameraIcon} alt="Camera" />
-        </CameraContainer>
-      </AvatarContainer>
+      <OuterAvatarContainer>
+        <AvatarContainer
+          onClick={openPopover}
+          withCursor
+          withShadow
+          ref={avatarRef}
+        >
+          <InnerAvatarContainer>{avatarContent}</InnerAvatarContainer>
+          <CameraContainer>
+            <img src={CameraIcon} alt="Camera" />
+          </CameraContainer>
+        </AvatarContainer>
+        {!userProfilePic && (
+          <UserAvatarSupplement onClick={openPopover}>
+            <div>Add a picture to</div>
+            <div>personalize your avatar</div>
+          </UserAvatarSupplement>
+        )}
+      </OuterAvatarContainer>
       <UploadImagePopover
         open={popoverOpen}
         anchorEl={avatarRef?.current}
@@ -127,12 +148,7 @@ export default () => {
                 {"That's a keeper!"}
               </UploadImagePopoverLabel>
             ) : (
-              <>
-                <UploadImagePopoverLabel>Add a picture</UploadImagePopoverLabel>
-                <UploadImagePopoverLabel>
-                  to personalize your avatar
-                </UploadImagePopoverLabel>
-              </>
+              popoverLabelContent
             )}
           </Grid>
           <Grid container item xs={12} justify="center">

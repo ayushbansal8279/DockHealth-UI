@@ -13,12 +13,13 @@ export const FormContainer = styled.form`
 `;
 
 export const ViewContainer = styled.div`
-  margin: 100px 0;
+  background-color: #fff;
+  padding: 100px 0;
   position: relative;
 `;
 
 export const SectionSubtypography = styled.div`
-  font-size: 14px;
+  font-size: 16px;
 `;
 
 export const SectionTypography = styled(SectionSubtypography)`
@@ -95,6 +96,13 @@ export const UserAvatarGrid = styled(Grid)`
   }
 `;
 
+export const OuterAvatarContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+`;
+
 export const AvatarContainer = styled.div`
   align-items: center;
   background-color: #fff;
@@ -103,11 +111,11 @@ export const AvatarContainer = styled.div`
   ${props => props.withShadow && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)'};
   cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
   display: inline-flex;
-  height: 90px;
+  height: 110px;
   padding: 6px;
   justify-content: center;
   position: relative;
-  width: 90px;
+  width: 110px;
 `;
 
 export const InnerAvatarContainer = styled.div`
@@ -150,9 +158,12 @@ export const CameraContainer = styled.div`
 `;
 
 export const UserAvatarSupplement = styled.div`
+  border: 0.0625rem solid #dadada;
   color: #ababb2;
-  cursor: default;
-  margin-left: 1.5rem;
+  cursor: pointer;
+  margin-left: 0.6rem;
+  padding: 1rem;
+  padding-right: 4rem;
 `;
 
 export const PlainLink = styled.a`
@@ -218,4 +229,14 @@ export const UploadImagePopoverClose = styled.div`
   top: 1rem;
   position: absolute;
   right: 1rem;
+`;
+
+export const UserProfileViewGrid = styled(Grid)`
+  && {
+    max-width: 780px;
+  }
+`;
+
+export const LogoutButtonContainer = styled.div`
+  padding-right: 2rem;
 `;
