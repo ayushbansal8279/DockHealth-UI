@@ -1,15 +1,15 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useRef, useEffect } from 'react';
-import useForm, { FormContext, useFormContext } from 'react-hook-form';
-import styled from 'styled-components';
+import React, { useEffect, useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import styled from 'styled-components';
 
+import { getPatientName } from '../../helpers/utilityFunctions';
+import useBoolean from '../../hooks/useBoolean';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';
-import useBoolean from '../../hooks/useBoolean';
 import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
-import { getPatientName } from '../../helpers/utilityFunctions';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -73,6 +73,11 @@ export default ({ defaultValues, isSubtask }) => {
     closePatientPopover();
   };
 
+  const styledInputProps = {
+    fontSize: 20,
+    labelFontSize: 16,
+  };
+
   return (
     <>
       <input ref={register} type="hidden" name="assignedToUserId" />
@@ -80,10 +85,16 @@ export default ({ defaultValues, isSubtask }) => {
       <input ref={register} type="hidden" name="patientId" />
       <FormContainer container spacing={8}>
         <Grid item xs={12}>
-          <StyledInput name="description" label="Task" />
+          <StyledInput
+            {...styledInputProps}
+            isTextarea
+            name="description"
+            label="Task"
+          />
         </Grid>
         <Grid item xs={12}>
           <StyledInput
+            {...styledInputProps}
             ref={patientRef}
             name="patientName"
             label="Patient Information"
@@ -97,6 +108,7 @@ export default ({ defaultValues, isSubtask }) => {
         </Grid>
         <Grid item xs={12}>
           <StyledInput
+            {...styledInputProps}
             ref={assignedToRef}
             name="assignedToUserName"
             label="Assigned to"

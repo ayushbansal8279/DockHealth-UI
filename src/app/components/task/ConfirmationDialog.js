@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core';
 
 const StyledDialogGrid = styled(Grid)`
   && {
+    overflow: hidden;
     padding: 32px 24px;
     position: relative;
   }

@@ -6,19 +6,19 @@ import * as userApi from '../../api/user-api';
 import { noop } from '../../helpers/utilityFunctions';
 import useBoolean from '../../hooks/useBoolean';
 import ArrowUpIcon from '../../img/arrow-up.svg';
-import CameraIcon from '../../img/camera.svg';
+import Avatar from '../common/Avatar';
+import { AvatarImageContainer } from '../common/Avatar.styled';
 import CubesLoader from '../common/CubesLoader';
 import {
-  AvatarContainer,
-  AvatarImageContainer,
-  CameraContainer,
-  InnerAvatarContainer,
+  OuterAvatarContainer,
+  PaddedButtonLabel,
+  PlainLink,
   SmallButton,
   UploadImagePopover,
   UploadImagePopoverClose,
   UploadImagePopoverGrid,
   UploadImagePopoverLabel,
-  PlainLink,
+  UserAvatarSupplement,
 } from './UserProfileView.Styled';
 
 export default () => {
@@ -86,24 +86,41 @@ export default () => {
     return (
       <>
         <img src={ArrowUpIcon} alt="Arrow up" />
-        <span>Upload image</span>
+        <PaddedButtonLabel>Upload image</PaddedButtonLabel>
       </>
     );
   });
 
+  const popoverLabelContent = userProfilePic ? (
+    <UploadImagePopoverLabel>Try another picture</UploadImagePopoverLabel>
+  ) : (
+    <>
+      <UploadImagePopoverLabel>Add a picture</UploadImagePopoverLabel>
+      <UploadImagePopoverLabel>
+        to personalize your avatar
+      </UploadImagePopoverLabel>
+    </>
+  );
+
   return (
     <>
-      <AvatarContainer
-        withCursor
-        withShadow
-        ref={avatarRef}
-        onClick={openPopover}
-      >
-        <InnerAvatarContainer>{avatarContent}</InnerAvatarContainer>
-        <CameraContainer>
-          <img src={CameraIcon} alt="Camera" />
-        </CameraContainer>
-      </AvatarContainer>
+      <OuterAvatarContainer>
+        <Avatar
+          avatarRef={avatarRef}
+          onClick={openPopover}
+          withCameraIcon
+          withCursor
+          withShadow
+        >
+          {avatarContent}
+        </Avatar>
+        {!userProfilePic && (
+          <UserAvatarSupplement onClick={openPopover}>
+            <div>Add a picture to</div>
+            <div>personalize your avatar</div>
+          </UserAvatarSupplement>
+        )}
+      </OuterAvatarContainer>
       <UploadImagePopover
         open={popoverOpen}
         anchorEl={avatarRef?.current}
@@ -127,24 +144,16 @@ export default () => {
                 {"That's a keeper!"}
               </UploadImagePopoverLabel>
             ) : (
-              <>
-                <UploadImagePopoverLabel>Add a picture</UploadImagePopoverLabel>
-                <UploadImagePopoverLabel>
-                  to personalize your avatar
-                </UploadImagePopoverLabel>
-              </>
+              popoverLabelContent
             )}
           </Grid>
           <Grid container item xs={12} justify="center">
-            <AvatarContainer>
-              <InnerAvatarContainer>{avatarContent}</InnerAvatarContainer>
-            </AvatarContainer>
+            <Avatar>{avatarContent}</Avatar>
           </Grid>
           <Grid container item xs={12} justify="center">
             <SmallButton
               disabled={fileLoading}
               onClick={fileLoaded ? unsetPopoverOpen : activateFileInput}
-              padLabel
             >
               {getSmallButtonContent()}
               <input

@@ -2,10 +2,13 @@ import ListItem from '@material-ui/core/es/ListItem/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
+import { AvatarImageContainer } from '../common/Avatar.styled';
 import MemberAssignment from '../members/MemberAssignment';
+import Avatar from '../common/Avatar';
 
 const StyledListItem = styled(ListItem)`
   && {
@@ -40,7 +43,17 @@ const ProfileLink = React.forwardRef((props, ref) => (
 const DrawerHeader = ({ user }) => {
   const nameRef = useRef(null);
 
+  const userProfilePic = useSelector(state => state.userState.userProfilePic);
+
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
+
+  const avatarInitials = user?.initials ?? '';
+
+  const avatarContent = userProfilePic ? (
+    <AvatarImageContainer src={userProfilePic} alt="User profile picture" />
+  ) : (
+    avatarInitials
+  );
 
   return (
     <StyledListItem button component={ProfileLink}>
@@ -49,7 +62,9 @@ const DrawerHeader = ({ user }) => {
           marginLeft: '-2px',
         }}
       >
-        <MemberAssignment member={user} disabled />
+        <Avatar withCursor size={55}>
+          {avatarContent}
+        </Avatar>
       </ListItemIcon>
       <ListItemText
         style={{

@@ -6,6 +6,7 @@ import { setHeader } from '../actions/header-actions';
 import * as userApi from '../api/user-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import {
+  LogoutButtonContainer,
   LogoutHeaderButton,
   ViewContainer,
 } from '../components/userProfileView/UserProfileView.Styled';
@@ -74,16 +75,17 @@ const UserProfileViewWrapper = () => {
           {
             key: 'logout',
             component: (
-              <div>
+              <LogoutButtonContainer>
                 <LogoutHeaderButton to="logout">
                   <LogoutIcon />
                   <span>Logout</span>
                 </LogoutHeaderButton>
-              </div>
+              </LogoutButtonContainer>
             ),
             alignItems: 'center',
             justify: 'flex-end',
-            xs: 3,
+            sm: 6,
+            md: 3,
           },
         ],
       });

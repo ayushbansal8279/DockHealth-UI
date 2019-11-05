@@ -1,0 +1,62 @@
+import styled from 'styled-components';
+
+const INITIAL_AVATAR_SIZE = 110;
+const getScaledSize = ({ normalSize, propSize }) =>
+  Math.floor(
+    (normalSize * (propSize ?? INITIAL_AVATAR_SIZE)) / INITIAL_AVATAR_SIZE,
+  );
+
+export const AvatarContainer = styled.div`
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #007cab;
+  border-radius: 50%;
+  ${props => props.withShadow && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)'};
+  cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
+  display: inline-flex;
+  height: ${props => props.size ?? 110}px;
+  padding: ${({ size }) => getScaledSize({ normalSize: 6, propSize: size })}px;
+  justify-content: center;
+  position: relative;
+  width: ${props => props.size ?? 110}px;
+`;
+
+export const InnerAvatarContainer = styled.div`
+  align-items: center;
+  background-color: #007cab;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: ${({ size }) =>
+    getScaledSize({ normalSize: 2, propSize: size })}rem;
+  font-weight: bold;
+  justify-content: center;
+  line-height: 1;
+  height: 100%;
+  object-fit: cover;
+  overflow: hidden;
+  width: 100%;
+`;
+
+export const AvatarImageContainer = styled.img`
+  && {
+    cursor: inherit;
+    height: 100%;
+    width: 100%;
+  }
+`;
+
+export const CameraContainer = styled.div`
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #007cab;
+  border-radius: 50%;
+  display: flex;
+  height: ${({ size }) => getScaledSize({ normalSize: 40, propSize: size })}px;
+  justify-content: center;
+  left: 90%;
+  position: absolute;
+  top: 15%;
+  transform: translate(-50%, -50%);
+  width: ${({ size }) => getScaledSize({ normalSize: 40, propSize: size })}px;
+`;

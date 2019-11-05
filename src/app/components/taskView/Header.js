@@ -60,16 +60,27 @@ const Notifications = ({ value, onClick }) => {
 
 const nbsp = '\u00A0';
 
-const Header = ({ title, taskCount, isFetching, members, taskList }) => {
+const Header = ({
+  title,
+  taskCount,
+  isFetching,
+  members,
+  taskList,
+  resetHeader = () => {},
+}) => {
   const taskListId = taskList?.taskListId;
   const notificationsStatus = taskList?.notifications;
 
   const dispatch = useDispatch();
   const toggleNotifications = useCallback(
     () => {
-      dispatch(toggleListNotifications(taskListId, !notificationsStatus));
+      toggleListNotifications(taskListId, !notificationsStatus)(dispatch).then(
+        () => {
+          resetHeader();
+        },
+      );
     },
-    [dispatch, notificationsStatus, taskListId],
+    [dispatch, notificationsStatus, resetHeader, taskListId],
   );
 
   return (
@@ -98,7 +109,9 @@ const Header = ({ title, taskCount, isFetching, members, taskList }) => {
             >
               {taskList && (
                 <Notifications
-                  onClick={toggleNotifications}
+                  onClick={() => {
+                    toggleNotifications();
+                  }}
                   value={notificationsStatus}
                 />
               )}
