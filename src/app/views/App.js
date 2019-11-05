@@ -83,6 +83,7 @@ class App extends PureComponent {
 
     return (
       <AppContainer id="appHome">
+        <div className="new-task" />
         <IdleTimer
           ref={ref => {
             this.idleTimer = ref;
