@@ -59,12 +59,12 @@ const TaskBody = ({
     isNewSubtask,
   } = task;
 
-  const formattedCreationDate = moment(createdDateTime).format('h:mma');
+  const formattedCreationDate = moment(createdDateTime).format('MMM D, YYYY @ h:mma');
   const formattedDueDate = moment(dueDate).format('ddd, MMM D');
   const formattedDueTime = moment(dueDate).format('@ h:mma');
   const completedDateTimeMoment = moment(completedDateTime);
   const formattedCompletedDateTime = completedDateTimeMoment.isValid()
-    ? completedDateTimeMoment.format('h:mma')
+    ? completedDateTimeMoment.format('MMM D, YYYY @ h:mma')
     : '';
 
   const isInbox = !task?.taskList?.taskListId;
