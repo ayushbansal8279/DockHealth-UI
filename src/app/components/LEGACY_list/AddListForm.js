@@ -176,6 +176,11 @@ class AddListForm extends BaseComponentWithAutoComplete {
       });
   }
 
+  cancelEdit = (event) => {
+    toggleTaskForm();
+    event.preventDefault();
+  };
+
   openMemberList = (e, triggerClass) => {
     $('.adminsList')
       .first()
@@ -204,7 +209,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
     };
 
     return (
-      <div className="add-form-wrapper">
+      <div className="add-form-wrapper" style={{marginTop: "10px", marginBottom: "-50px"}}>
         <div className="task-item add-form row expanded">
           <form
             className="inline-label"
@@ -395,12 +400,25 @@ class AddListForm extends BaseComponentWithAutoComplete {
             </div>
 
             {/* <!-- SAVE --> */}
-            <div className="column large-12 text-center top-buffer">
-              <input
-                type="submit"
-                className="button secondary medium"
-                value="Save"
-              />
+            <div className="row expanded">
+              <div className="columns shrink align-right">
+                <input
+                  id="addTaskListButton"
+                  type="submit"
+                  className="button secondary medium"
+                  value="Save"
+                />
+              </div>
+              <div className="columns shrink align-right">
+                <button
+                  id="cancelTaskListButton"
+                  type="button"
+                  className="button medium"
+                  onClick={e => this.cancelEdit(e)}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </form>
         </div>
