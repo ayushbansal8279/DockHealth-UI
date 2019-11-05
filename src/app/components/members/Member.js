@@ -65,7 +65,7 @@ const Member = ({ onClick, member, children, className, style, color }) => {
 
   const avatar = (
     <StyledAvatar {...avatarProps} className={className}>
-      {children || (!member.profileThumbnailPictureHash && member.initials)}
+      {children || (member && !member.profileThumbnailPictureHash && member.initials)}
     </StyledAvatar>
   );
 

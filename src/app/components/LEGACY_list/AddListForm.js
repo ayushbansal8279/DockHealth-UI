@@ -10,6 +10,7 @@ import * as TaskListActions from '../../actions/tasklist-actions';
 import BaseComponentWithAutoComplete from '../LEGACY_base/BaseComponentWithAutoComplete';
 import BasicField from '../common/BasicField';
 import MemberInitials from '../members/MemberInitials';
+import Member from '../members/Member';
 
 class AddListForm extends BaseComponentWithAutoComplete {
   constructor(props) {
@@ -85,7 +86,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
   renderSuggestion = suggestion => (
     <div className="row condense expanded border-bottom align-middle">
       <div className="columns shrink">
-        <MemberInitials member={suggestion} extraClass="medium" />
+        <Member member={suggestion}/>
       </div>
       <div className="columns">
         <span className="item-title">
@@ -234,9 +235,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
                 <label>Owner</label>
                 <ul className="menu member-photo-list">
                   <li>
-                    <MemberInitials
+                    <Member
                       member={this.props.listOwner}
-                      extraClass="medium"
                     />
                   </li>
                 </ul>
@@ -251,7 +251,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                   <li><span className="add-member circle medium addAdminForList">+</span></li>
                   {this.state.selectedAdmins && this.state.selectedAdmins.map(member => {
                     return(
-                      <li key={"list_admin_"+member.userId}><MemberInitials member={member} extraClass='medium'/></li>
+                      <li key={"list_admin_"+member.userId}><Member member={member}/></li>
                     )
                   })}
                 </ul>
@@ -291,9 +291,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
                       this.state.selectedAdmins.map(member => {
                         return (
                           <li key={`list_admin_${member.userId}`}>
-                            <MemberInitials
+                            <Member
                               member={member}
-                              extraClass="medium"
                             />
                           </li>
                         );
@@ -339,9 +338,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
                       this.state.selectedMembers.map(member => {
                         return (
                           <li key={`list_member_${member.userId}`}>
-                            <MemberInitials
+                            <Member
                               member={member}
-                              extraClass="medium"
                             />
                           </li>
                         );
