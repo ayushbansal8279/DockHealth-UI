@@ -548,3 +548,9 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
     .catch(err => {
       throw err;
     });
+
+export function refreshTask(task) {
+  return dispatch => {
+    dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
+  };          
+}
