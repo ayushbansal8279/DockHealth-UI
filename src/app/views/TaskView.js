@@ -1,8 +1,10 @@
+import { List, ListItem, Popover } from '@material-ui/core';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
+import equals from 'ramda/es/equals';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -14,10 +16,16 @@ import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
-import Select from '../components/taskView/Select';
 import TaskListAction from '../components/taskView/TaskListAction';
+import FilterIcon from '../img/filter.svg';
 import PrintIcon from '../img/print.svg';
-import { StyledSlimViewSwitch, TaskViewGrid } from './TaskView.styled';
+import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
+import SortingStatsIcon from '../img/sorting-stats.svg';
+import {
+  StyledSlimViewSwitch,
+  TaskViewGrid,
+  ToolbarContainer,
+} from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -58,15 +66,42 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
+const filterOptions = [
+  {
+    value: '',
+    description: 'Clear',
+  },
+  {
+    value: 'ASSIGNED_TO_ME',
+    description: 'Assigned to me',
+  },
+  {
+    value: 'CREATED_BY_ME',
+    description: 'Created by me',
+  },
+  { value: 'OVERDUE', description: 'Overdue' },
+  { value: 'DUE_TODAY', description: 'Due Today' },
+  {
+    value: 'DUE_THIS_WEEK',
+    description: 'Due This Week',
+  },
+  {
+    value: 'DUE_NEXT_WEEK',
+    description: 'Due Next Week',
+  },
+];
+
 class TaskView extends Component {
   state = {
-    filterBy: '',
+    filterPopoverOpen: false,
     searchTerms: [],
     slimView: false,
     taskDrawerOpen: false,
   };
 
   headsUpArea = React.createRef();
+
+  filterButton = React.createRef();
 
   refresh = () => {
     const { actions, patientActions } = this.props;
@@ -83,9 +118,12 @@ class TaskView extends Component {
     this.resetHeader();
   };
 
-  componentDidUpdate = ({ isFetching: prevIsFetching }) => {
-    const { isFetching } = this.props;
-    if (prevIsFetching !== isFetching) {
+  componentDidUpdate = ({
+    isFetching: prevIsFetching,
+    members: prevMembers,
+  }) => {
+    const { isFetching, members } = this.props;
+    if (prevIsFetching !== isFetching || !equals(members, prevMembers)) {
       this.resetHeader();
     }
   };
@@ -139,6 +177,7 @@ class TaskView extends Component {
               taskCount={tasks.length}
               members={members}
               taskList={taskList}
+              resetHeader={this.resetHeader}
             />
           ),
           xs: 12,
@@ -158,7 +197,6 @@ class TaskView extends Component {
     const sortBy = 'CREATED_DT';
 
     this.clearStoredCurrentTask();
-    this.setState({ filterBy });
 
     onFilter(filterBy, sortBy);
   };
@@ -205,6 +243,55 @@ class TaskView extends Component {
       storeAsCurrentTask(null);
     }
     this.toggleTaskDrawer();
+  };
+
+  openFilterPopover = () => {
+    this.setState({
+      filterPopoverOpen: true,
+    });
+  };
+
+  closeFilterPopover = () => {
+    this.setState({
+      filterPopoverOpen: false,
+    });
+  };
+
+  onFilterChange = ({ value }) => () => {
+    this.handleFilterChange(value);
+    this.closeFilterPopover();
+  };
+
+  renderFilterPopover = () => {
+    const { filterPopoverOpen } = this.state;
+
+    return (
+      <Popover
+        open={filterPopoverOpen}
+        anchorEl={this.filterButton?.current}
+        onClose={this.closeFilterPopover}
+        anchorOrigin={{
+          horizontal: 'left',
+          vertical: 'top',
+        }}
+        transformOrigin={{
+          horizontal: 'left',
+          vertical: 'top',
+        }}
+      >
+        <List>
+          {filterOptions.map(({ value, description }) => (
+            <ListItem
+              key={value}
+              button
+              onClick={this.onFilterChange({ value })}
+            >
+              {value ? description : <em>{description}</em>}
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
+    );
   };
 
   renderTasklists = () => {
@@ -315,7 +402,7 @@ class TaskView extends Component {
       taskList,
       showToolbar,
     } = this.props;
-    const { filterBy, slimView, taskDrawerOpen } = this.state;
+    const { slimView, taskDrawerOpen } = this.state;
 
     const taskId = selectedTaskId != null && selectedTaskId;
     const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
@@ -357,49 +444,40 @@ class TaskView extends Component {
             {showToolbar && (
               <Toolbar>
                 <Grid container justify="space-between">
-                  <div>
+                  <ToolbarContainer>
                     <StyledSlimViewSwitch
                       onClick={this.switchSlimView}
                       slimView={slimView}
                       variant="contained"
                     />
-                    <Select
-                      updateFilter={this.handleFilterChange}
-                      value={filterBy}
-                      options={[
-                        { value: '', description: 'Filter' },
-                        {
-                          value: 'ASSIGNED_TO_ME',
-                          description: 'Assigned to me',
-                        }, // TODO:
-                        {
-                          value: 'CREATED_BY_ME',
-                          description: 'Created by me',
-                        },
-                        { value: 'OVERDUE', description: 'Overdue' },
-                        { value: 'DUE_TODAY', description: 'Due Today' },
-                        {
-                          value: 'DUE_THIS_WEEK',
-                          description: 'Due This Week',
-                        },
-                        {
-                          value: 'DUE_NEXT_WEEK',
-                          description: 'Due Next Week',
-                        },
-                      ]}
-                    />
-                    <Search
-                      onChange={this.handleSearch}
-                      style={{ marginLeft: '14px' }}
-                    />
                     <TaskListAction
-                      onClick={downloadPDF}
-                      icon={PrintIcon}
+                      alt="Filter"
+                      backgroundColor="#fff"
+                      icon={FilterIcon}
+                      onClick={this.openFilterPopover}
+                      ref={this.filterButton}
+                    >
+                      Filter
+                    </TaskListAction>
+                    <TaskListAction
+                      alt="Filter"
+                      active
+                      activeIcon={SortingStatsActiveIcon}
+                      backgroundColor="#fff"
+                      icon={SortingStatsIcon}
+                    >
+                      Sorting & Stats
+                    </TaskListAction>
+                    <Search onChange={this.handleSearch} />
+                    <TaskListAction
                       alt="Print"
+                      backgroundColor="#fff"
+                      icon={PrintIcon}
+                      onClick={downloadPDF}
                     >
                       Print
                     </TaskListAction>
-                  </div>
+                  </ToolbarContainer>
                 </Grid>
               </Toolbar>
             )}
@@ -444,6 +522,7 @@ class TaskView extends Component {
             )}
           </Grid>
         </TaskViewGrid>
+        {this.renderFilterPopover()}
       </div>
     );
   }
