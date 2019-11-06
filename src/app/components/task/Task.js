@@ -133,7 +133,7 @@ const Task = props => {
             isNewSubtask={subtask.isNewSubtask}
           />
         ))}
-      {isSelfOrSubtaskActive && !isSubtask && task.status !== 'COMPLETE' && (
+      {!isSubtask && task.status !== 'COMPLETE' && (
         <AddSubtask padded taskId={task.taskId} />
       )}
     </>

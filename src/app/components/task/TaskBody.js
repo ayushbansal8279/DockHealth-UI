@@ -5,24 +5,26 @@ import { Link } from 'react-router';
 
 import ChevronRightIcon from '../../img/chevron-right.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
+import CubesLoader from '../common/CubesLoader';
 import {
   priorityColor,
   PriorityContainer,
   PriorityDot,
 } from '../common/Priority';
 import MemberPicker from '../members/MemberPicker';
+import { SubtaskLoadingContainer, SubtaskOrderContainer } from './Task.styled';
 import {
   CompletedBy,
+  MemberPickerContainer,
   PatientsTasklistDate,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
   PatientsTasklistNew,
   PatientsTasklistStrikeThrough,
   PatientTasklistContainer,
+  PatientTasklistPatient,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
-import { SubtaskOrderContainer, SubtaskLoadingContainer } from './Task.styled';
-import CubesLoader from '../common/CubesLoader';
 
 const TaskBody = ({
   isSubtask,
@@ -59,7 +61,9 @@ const TaskBody = ({
     isNewSubtask,
   } = task;
 
-  const formattedCreationDate = moment(createdDateTime).format('MMM D, YYYY @ h:mma');
+  const formattedCreationDate = moment(createdDateTime).format(
+    'MMM D, YYYY @ h:mma',
+  );
   const formattedDueDate = moment(dueDate).format('ddd, MMM D');
   const formattedDueTime = moment(dueDate).format('@ h:mma');
   const completedDateTimeMoment = moment(completedDateTime);
@@ -139,20 +143,13 @@ const TaskBody = ({
               />
             </div>
           )}
-          <div
-            style={{
-              margin: '14px 8px',
-              display: 'flex',
-              justifyContent: 'center',
-              width: '67px',
-            }}
-          >
+          <MemberPickerContainer>
             <MemberPicker
               task={task}
               member={assignedTo}
               disabled={disabled || isParentComplete || isInbox}
             />
-          </div>
+          </MemberPickerContainer>
 
           <Grid container alignItems="flex-end" wrap="nowrap" direction="row">
             <PatientTasklistContainer
@@ -219,21 +216,13 @@ const TaskBody = ({
               {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
             </PatientTasklistContainer>
             {!isSubtask && !hidePatient && (
-              <div
-                style={{
-                  alignItems: 'flex-end',
-                  display: 'flex',
-                  lineHeight: '12px',
-                  marginRight: '24px',
-                  paddingBottom: elementPaddingBottom,
-                  minWidth: '140px',
-                  width: '140px',
-                }}
+              <PatientTasklistPatient
+                elementPaddingBottom={elementPaddingBottom}
               >
                 {patient && (
                   <Link
                     to={`/patient/${patient.patientId}`}
-                    style={{ color: '#0ca1c7', fontSize: '12px' }}
+                    style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
                   >
                     <div>
                       {`${patient?.lastName}, ${patient?.firstName} ${
@@ -242,7 +231,7 @@ const TaskBody = ({
                     </div>
                   </Link>
                 )}
-              </div>
+              </PatientTasklistPatient>
             )}
             {!hideDate && (
               <div
@@ -281,7 +270,7 @@ const TaskBody = ({
                     alignItems: 'flex-end',
                     display: 'flex',
                     justifyContent: 'flex-start',
-                    marginRight: '24px',
+                    marginRight: isSubtask ? '18px' : '24px',
                     minWidth: '120px',
                     width: '120px',
                     paddingBottom: elementPaddingBottom,

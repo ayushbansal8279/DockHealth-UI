@@ -13,8 +13,10 @@ export const PatientsTasklistNew = styled.div`
 export const PatientsTasklistDescription = styled.div`
   color: #303538;
   display: inline-block;
-  font-size: 16px;
+  font-size: 1.25rem;
   font-weight: bold;
+  line-height: 1;
+  padding-bottom: 0.125rem;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
@@ -33,12 +35,23 @@ export const PatientsTasklistStrikeThrough = styled.div`
 
 export const PatientsTasklistInfo = styled.div`
   color: #5e6366;
-  font-size: 12px;
-  line-height: 1.15;
+  font-size: 0.875rem;
+  line-height: 1;
+  padding-bottom: 0.1875rem;
+`;
+
+export const PatientTasklistPatient = styled.div`
+  align-items: flex-end;
+  display: flex;
+  line-height: 12px;
+  margin-right: 24px;
+  padding-bottom: ${props => props.elementPaddingBottom};
+  min-width: 140px;
+  width: 140px;
 `;
 
 export const PatientsTasklistDate = styled.div`
-  font-size: 12px;
+  font-size: 0.875rem;
   color: #303538;
 `;
 
@@ -51,7 +64,7 @@ export const PatientTasklistContainer = styled(Grid)`
 export const CompletedBy = styled.div`
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 20 : 0)}px;
+  height: ${props => (props.isCompleted ? 0.875 : 0)}rem;
   overflow: hidden;
   transition: height 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
@@ -59,9 +72,18 @@ export const CompletedBy = styled.div`
 
   > span {
     color: #20b255;
-    font-size: 12px;
+    font-size: 0.875rem;
+    line-height: 1;
     transition: transform 0.4s ease-out;
     transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
     transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
   }
+`;
+
+export const MemberPickerContainer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 8px;
+  width: 4rem;
 `;
