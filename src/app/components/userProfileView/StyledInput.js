@@ -49,6 +49,8 @@ const StyledInputContainer = styled.div`
     margin-top: 0.5rem;
     position: relative;
 
+    ${props => props.gutterBottom && 'margin-bottom: 1rem;'}
+
     ${props => {
       if (props.controlled) {
         if (props.containerDisabled) {
@@ -105,7 +107,7 @@ const inputStyle = styleExtension => props =>
           border: '1.5px solid #dedee2',
         },
 
-        [`&:${ERROR_CLASS_NAME}`]: {
+        [`&.${ERROR_CLASS_NAME}`]: {
           border: '1.5px solid #e40909',
         },
 
@@ -183,6 +185,7 @@ export default React.forwardRef(
       labelFontSize,
       isTextarea = false,
       backgroundColor,
+      gutterBottom = false,
       ...props
     },
     ref,
@@ -231,6 +234,17 @@ export default React.forwardRef(
 
     const InputComponent = isTextarea ? StyledTextarea : StyledInput;
 
+    const labelComponent = (
+      <StyledLabel fontSize={fontSize}>
+        <span className="input-label">{label}</span>
+        {required && <span className="required">*</span>}
+      </StyledLabel>
+    );
+
+    const inputContainerProps = {
+      gutterBottom,
+    };
+
     return (
       <StyledInputContainer
         controlled={controlled}
@@ -243,13 +257,17 @@ export default React.forwardRef(
         }}
         ref={ref}
         backgroundColor={backgroundColor}
+        {...inputContainerProps}
       >
         {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
         {isPhoneNumber ? (
-          <MaskedInput
-            mask={PHONE_MASK_ARRAY}
-            render={renderPhoneNumberField({ inputProps, props, register })}
-          />
+          <TextareaWrapper>
+            <MaskedInput
+              mask={PHONE_MASK_ARRAY}
+              render={renderPhoneNumberField({ inputProps, props, register })}
+            />
+            {labelComponent}
+          </TextareaWrapper>
         ) : (
           <TextareaWrapper
             className={isTextarea ? wrapperClassName : ''}
@@ -263,10 +281,7 @@ export default React.forwardRef(
               onFocus={() => setInputState(FOCUS_CLASS_NAME)}
               onBlur={() => setInputState('')}
             />
-            <StyledLabel fontSize={fontSize}>
-              <span className="input-label">{label}</span>
-              {required && <span className="required">*</span>}
-            </StyledLabel>
+            {labelComponent}
           </TextareaWrapper>
         )}
       </StyledInputContainer>

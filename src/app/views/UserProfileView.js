@@ -44,6 +44,7 @@ const renderFormFieldDefinition = ({
       isPhoneNumber={isPhoneNumber}
       fontSize={16}
       backgroundColor="#f3f5f6"
+      gutterBottom
     />
   </Grid>
 );
