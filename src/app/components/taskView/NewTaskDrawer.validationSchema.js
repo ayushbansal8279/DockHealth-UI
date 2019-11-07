@@ -14,7 +14,7 @@ export const matchEmptyNumber = value =>
 export const matchEmptyDate = value =>
   value.replace(/_/g, '').replace(/^-\/$/, '');
 
-export default object().shape({
+export const addPatientValidationSchema = object().shape({
   firstName: string().required(REQUIRED_MESSAGE),
   middleName: string().notRequired(),
   lastName: string().required(REQUIRED_MESSAGE),
@@ -40,6 +40,16 @@ export default object().shape({
     })
     .matches(PHONE_MASK, PHONE_MASK_MESSAGE)
     .notRequired(),
-  email: string().notRequired(),
+  email: string()
+    .email()
+    .notRequired(),
   notes: string().notRequired(),
+});
+
+export const inviteValidationSchema = object().shape({
+  firstName: string().required(REQUIRED_MESSAGE),
+  lastName: string().required(REQUIRED_MESSAGE),
+  email: string()
+    .email()
+    .required(REQUIRED_MESSAGE),
 });

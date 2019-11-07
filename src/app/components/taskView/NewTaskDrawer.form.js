@@ -9,8 +9,9 @@ import useBoolean from '../../hooks/useBoolean';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';
-import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
 import NewTaskDrawerAddPatientForm from './NewTaskDrawer.addPatientForm';
+import NewTaskDrawerInviteToListForm from './NewTaskDrawer.inviteToListForm';
+import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -50,6 +51,34 @@ const PatientItemContainer = styled.div`
   }
 `;
 
+const AssignedToItemContainer = styled(PatientItemContainer)`
+  height: 4.0625rem;
+
+  && > div {
+    &:first-child {
+      height: 3.4375rem;
+      width: 3.4375rem;
+
+      > div {
+        height: 100%;
+        width: 100%;
+
+        & img[alt='Unassigned'] {
+          width: 1.75rem !important;
+        }
+      }
+    }
+
+    &:last-child {
+      flex: 1;
+
+      &:not(:only-child) {
+        margin-left: 1rem;
+      }
+    }
+  }
+`;
+
 const renderPatientItem = ({ handlePatientSelect }) => patient => {
   const patientName = getPatientName({ withMrn: false, ...patient });
 
@@ -70,18 +99,24 @@ const renderNoPatientItem = ({ handlePatientSelect }) => () => (
   </PatientItemContainer>
 );
 
-const renderAssignedToItem = ({ handleAssignedToSelect }) => member => (
-  <>
-    <MemberSlot member={member} />
-    <MemberName>{member?.userName ?? 'Unassigned'}</MemberName>
-  </>
-);
+const renderAssignedToItem = ({ handleAssignedToSelect }) => member => {
+  return (
+    <AssignedToItemContainer
+      key={member?.userId}
+      onClick={handleAssignedToSelect(member)}
+    >
+      <MemberSlot member={member} />
+      <MemberName>{member?.userName ?? 'Unassigned'}</MemberName>
+    </AssignedToItemContainer>
+  );
+};
 
 const renderNoAssignedToItem = ({ handleAssignedToSelect }) => () => {
   return (
-    <Grid container justify="center">
-      No people found.
-    </Grid>
+    <AssignedToItemContainer onClick={handleAssignedToSelect(null)}>
+      <MemberSlot member={null} />
+      <MemberName>Unassigned</MemberName>
+    </AssignedToItemContainer>
   );
 };
 
@@ -188,10 +223,11 @@ export default ({ defaultValues, isSubtask }) => {
               items={members}
               itemFilterPropertyKeys={['userName']}
               label="Assigned to"
+              maxPeopleRecordsVisible={5}
               renderItem={renderAssignedToItem({ handleAssignedToSelect })}
               renderNoItems={renderNoAssignedToItem({ handleAssignedToSelect })}
-              personRecordHeightInRem={2.3125}
-              maxPeopleRecordsVisible={5}
+              personRecordHeightInRem={4.0625}
+              AddingPersonForm={NewTaskDrawerInviteToListForm}
             />
           )}
           <StyledInput

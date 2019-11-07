@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { addPatient } from '../../actions/patient-actions';
 import useBoolean from '../../hooks/useBoolean';
 import StyledInput from '../userProfileView/StyledInput';
-import validationSchema from './NewTaskDrawer.validationSchema';
+import { addPatientValidationSchema } from './NewTaskDrawer.validationSchema';
 
 const FormLabel = styled.div`
   color: #0ca1c7;
@@ -47,7 +47,6 @@ const formFieldDefinitions = [
   {
     key: 'middleName',
     label: 'Middle Name',
-    required: true,
     size: 4,
   },
   {
@@ -194,7 +193,7 @@ const onSubmit = ({ dispatch, toggleAddingNewPerson }) => async data => {
 
 export default ({ toggleAddingNewPerson }) => {
   const formMethods = useForm({
-    validationSchema,
+    validationSchema: addPatientValidationSchema,
   });
   const dispatch = useDispatch();
 
