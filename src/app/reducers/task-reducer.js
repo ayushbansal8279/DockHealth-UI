@@ -448,7 +448,7 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case ADD_TASK_COMMENT_SUCCESS: {
-      const mainTask = getMainTaskId(action.task);
+      const mainTaskId = getMainTaskId(action.task);
       // HACK - TODO: Make backend return correct initials and userName
       const comment = action.comment.data;
       comment.creator.initials =
@@ -462,26 +462,28 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTask
-            ? action.task.parentTaskId
-              ? {
-                  ...task,
-                  subtasks: task.subtasks.map(subtask =>
-                    subtask.taskId === action.task.taskId
-                      ? {
-                          ...subtask,
-                          comments: [comment].concat(subtask.comments),
-                        }
-                      : subtask,
-                  ),
-                }
-              : {
-                  ...task,
-                  comments: [comment].concat(task.comments),
-                }
-            : task,
-        ),
+        tasks: state.tasks.map(task => {
+          if (task.taskId !== mainTaskId) {
+            return task;
+          }
+
+          return action.task.parentTaskId
+            ? {
+                ...task,
+                subtasks: task.subtasks.map(subtask =>
+                  subtask.taskId === action.task.taskId
+                    ? {
+                        ...subtask,
+                        comments: [comment].concat(subtask.comments),
+                      }
+                    : subtask,
+                ),
+              }
+            : {
+                ...task,
+                comments: [comment].concat(task.comments),
+              };
+        }),
       };
     }
 

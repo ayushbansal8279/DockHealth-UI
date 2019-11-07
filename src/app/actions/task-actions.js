@@ -205,6 +205,7 @@ export function addTaskComment(task, taskComment) {
     TaskApi.addComment(task.taskId, taskComment)
       .then(comment => {
         dispatch({ type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, task, comment });
+        return comment;
       })
       .catch(error => {
         throw error;

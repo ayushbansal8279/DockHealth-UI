@@ -398,12 +398,10 @@ export function addComment(taskId, taskComment) {
   return axios
     .post(`task/comment/${taskId}`, taskComment)
     .then(response => {
-      toggleAlert('Comment added successfully!', 'success');
       return response;
     })
     .catch(error => {
       console.log(error);
-      toggleAlert('Error in saving comment. Please try again.', 'error');
       throw error;
     });
 }

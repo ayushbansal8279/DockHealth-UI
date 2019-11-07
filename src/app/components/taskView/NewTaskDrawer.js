@@ -24,6 +24,7 @@ import PriorityFlag from './PriorityFlag';
 import { noop, getPatientName } from '../../helpers/utilityFunctions';
 import { getAllPatients } from '../../actions/patient-actions';
 import { CloseTaskButton } from './TaskDrawerButtons';
+import NewTaskDrawerCommentSection from './NewTaskDrawer.commentSection';
 
 const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
@@ -67,6 +68,10 @@ const FormSectionDivider = styled.div`
 const FormSection = styled(FormSectionNoBorder)`
   background-color: #fff;
   border: 2px solid #ddf2f7;
+`;
+
+const CondensedFormSection = styled(FormSection)`
+  padding: 0;
 `;
 
 const StatusSelect = styled.div`
@@ -332,9 +337,11 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
               </FormContext>
             </Grid>
           </FormSection>
-          <FormSection container item xs={12}>
-            <div>Comments placeholder</div>
-          </FormSection>
+          {task && (
+            <CondensedFormSection container item xs={12}>
+              <NewTaskDrawerCommentSection task={task} />
+            </CondensedFormSection>
+          )}
           <FormSection container item xs={12}>
             <div>Other data placeholder</div>
             <FormSectionDivider condensed />
