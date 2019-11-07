@@ -222,6 +222,7 @@ export default React.forwardRef(
       containerHeight,
       containerMarginTop,
       labelInactiveTop,
+      rightAdornment,
       ...props
     },
     ref,
@@ -331,6 +332,7 @@ export default React.forwardRef(
             {labelComponent}
           </TextareaWrapper>
         )}
+        {rightAdornment}
       </StyledInputContainer>
     );
   },

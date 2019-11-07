@@ -1,5 +1,5 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -79,6 +79,27 @@ const AssignedToItemContainer = styled(PatientItemContainer)`
   }
 `;
 
+const MemberSlotContainer = styled.div`
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  && > div {
+    height: 3.4375rem;
+    width: 3.4375rem;
+
+    > div {
+      height: 100%;
+      width: 100%;
+
+      & img[alt='Unassigned'] {
+        width: 1.75rem !important;
+      }
+    }
+  }
+`;
+
 const renderPatientItem = ({ handlePatientSelect }) => patient => {
   const patientName = getPatientName({ withMrn: false, ...patient });
 
@@ -124,6 +145,8 @@ export default ({ defaultValues, isSubtask }) => {
   const formMethods = useFormContext();
   const { reset, register, setValue } = formMethods;
 
+  const [currentMember, setCurrentMember] = useState(defaultValues?.assignedTo);
+
   const [
     assignedToPopoverOpen,
     openAssignedToPopover,
@@ -144,6 +167,14 @@ export default ({ defaultValues, isSubtask }) => {
     [defaultValues?.taskId],
   );
 
+  useEffect(
+    () => {
+      setCurrentMember(defaultValues?.assignedTo);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [defaultValues?.assignedToUserId],
+  );
+
   const members = useSelector(store => store.taskListState.tasklistmembers);
   const patients = useSelector(store => store.patientState.allPatients);
 
@@ -151,6 +182,7 @@ export default ({ defaultValues, isSubtask }) => {
     const { userId, userName } = member || {};
     setValue('assignedToUserId', userId);
     setValue('assignedToUserName', userName);
+    setCurrentMember(member);
     closeAssignedToPopover();
   };
 
@@ -165,6 +197,12 @@ export default ({ defaultValues, isSubtask }) => {
     fontSize: 20,
     labelFontSize: 16,
   };
+
+  const rightAdornment = (
+    <MemberSlotContainer>
+      <MemberSlot member={currentMember} />
+    </MemberSlotContainer>
+  );
 
   return (
     <>
@@ -240,6 +278,7 @@ export default ({ defaultValues, isSubtask }) => {
             onContainerClick={() => {
               openAssignedToPopover();
             }}
+            rightAdornment={rightAdornment}
           />
         </Grid>
       </FormContainer>
