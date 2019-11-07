@@ -2,20 +2,6 @@ import { boolean, object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
 const PHONE_MASK = /[1-9]\d{2}-\d{3}-\d{4}|^$/;
-export const PHONE_MASK_ARRAY = [
-  /[1-9]/,
-  /\d/,
-  /\d/,
-  '-',
-  /\d/,
-  /\d/,
-  /\d/,
-  '-',
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-];
 const MASK_MESSAGE =
   'Phone number has incorrect format (NNN-NNN-NNNN is required)';
 

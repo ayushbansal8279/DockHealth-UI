@@ -15,17 +15,6 @@ import {
 } from './Task.styled';
 import TaskBody from './TaskBody';
 
-// const usePrevious = value => {
-//   const ref = useRef();
-//   useEffect(
-//     () => {
-//       ref.current = value;
-//     },
-//     [value],
-//   );
-//   return ref.current;
-// };
-
 const Task = props => {
   const {
     task,

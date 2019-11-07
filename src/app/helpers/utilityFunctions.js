@@ -1,10 +1,11 @@
 export const noop = () => {};
 
-export const getPatientName = patient => {
+export const getPatientName = patientData => {
+  const { withMrn = true, ...patient } = patientData || {};
   const { mrn, firstName, middleName, lastName } = patient || {};
 
-  return `${lastName || ''}, ${firstName || ''} ${middleName || ''} ${mrn ||
-    ''}`
+  return `${lastName || ''}, ${firstName || ''} ${middleName ||
+    ''} ${(withMrn && mrn) || ''}`
     .replace(/\s{2,}/g, '')
     .trim()
     .replace(/^,$|^,|,$/, '');

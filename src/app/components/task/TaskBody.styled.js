@@ -3,11 +3,11 @@ import Grid from '@material-ui/core/Grid';
 
 export const PatientsTasklistNew = styled.div`
   color: #d9036b;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-variant: small-caps;
   left: 0;
   position: absolute;
-  top: -8px;
+  top: -0.625rem;
 `;
 
 export const PatientsTasklistDescription = styled.div`

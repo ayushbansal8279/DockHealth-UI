@@ -29,7 +29,7 @@ StyledTaskDescription.defaultProps = {
   completed: false,
 };
 
-const Heading = ({ hideDate, hideStatus }) => (
+const Heading = ({ taskDrawerOpen }) => (
   <div
     style={{
       height: '32px',
@@ -52,10 +52,10 @@ const Heading = ({ hideDate, hideStatus }) => (
     <div style={{ width: '90px', marginRight: '10px' }}>ASSIGNED</div>
     <div style={{ flex: 1 }}>TASK</div>
     <div style={{ width: '140px', marginRight: '24px' }}>PATIENT</div>
-    {!hideDate && (
+    {!taskDrawerOpen && (
       <div style={{ width: '140px', marginRight: '24px' }}>DUE</div>
     )}
-    {!hideStatus && (
+    {!taskDrawerOpen && (
       <>
         <div style={{ width: '90px' }}>STATUS</div>
         <div style={{ width: '120px', marginRight: '24px' }} />
@@ -64,24 +64,9 @@ const Heading = ({ hideDate, hideStatus }) => (
   </div>
 );
 
-const TaskList = ({
-  tasks = [],
-  markComplete,
-  storeAsCurrentTask,
-  markAsUnread,
-  hideDate,
-  hideTags,
-  hidePriority,
-  selectedTaskId,
-  slimView,
-  openTaskDrawer,
-}) => (
+const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => (
   <div>
-    <Heading
-      hideDate={hideDate}
-      hideStatus={hidePriority}
-      hideTags={hideTags}
-    />
+    <Heading taskDrawerOpen={taskDrawerOpen} />
     {tasks.length === 0 ? (
       <div
         style={{
@@ -98,19 +83,11 @@ const TaskList = ({
       tasks.map(task => (
         <Task
           {...{
-            storeAsCurrentTask,
-            markAsUnread,
-            markComplete,
             task,
             isSubtask: task.parentTaskId !== null,
-            selectedTaskId,
-            style: {},
-            hideDate,
-            hideTags,
-            hidePriority,
+            taskDrawerOpen,
             key: task.taskId,
-            slimView,
-            openTaskDrawer,
+            ...otherTaskListProps,
           }}
         />
       ))

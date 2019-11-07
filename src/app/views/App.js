@@ -1,5 +1,6 @@
-import 'normalize.css/normalize.css';
 import 'animate.css/animate.min.css';
+import 'normalize.css/normalize.css';
+import 'simplebar/dist/simplebar.min.css';
 
 import { node } from 'prop-types';
 import React, { PureComponent } from 'react';

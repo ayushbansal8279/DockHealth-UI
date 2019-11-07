@@ -1,111 +1,268 @@
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Popover from '@material-ui/core/Popover';
-import React, { useState } from 'react';
+import getProps from 'ramda/es/props';
+import React, { useState, useEffect } from 'react';
+import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
-import props from 'ramda/es/props';
 
 import useBoolean from '../../hooks/useBoolean';
-import PickerHeader from '../common/PickerHeader';
-import SearchHeader from '../common/SearchHeader';
+import PersonPickerCrossIcon from '../../img/person-picker-cross.svg';
+import SearchHeadsupIcon from '../../img/search-headsup.svg';
 
-const HeaderTaskName = styled.span`
-  text-decoration: underline;
+const PersonPickerContainer = styled.div`
+  background-color: #f3f5f6;
+  margin-top: 0.5rem;
+  width: 100%;
 `;
 
-const captureClicks = e => e.stopPropagation();
+const PersonPickerTopSectionContainer = styled.div`
+  align-items: center;
+  display: flex;
+  height: 3.5625rem;
+  justify-content: space-between;
+  padding: 0 1.125rem;
+`;
 
-const renderHeader = ({ handleClose, handleSearchToggle, task }) => {
+const PersonPickerIconsContainer = styled.div`
+  align-items: center;
+  display: flex;
+
+  > div {
+    margin-left: 0.75rem;
+  }
+`;
+
+const PersonPickerTopSectionLabel = styled.div`
+  color: #303538;
+  font-size: 1rem;
+`;
+
+const PersonPickerDivider = styled.div`
+  height: 1px;
+  background-color: #dedee2;
+`;
+
+const PersonPickerIconContainer = styled.div`
+  cursor: pointer;
+  height: ${props => props.size ?? '1.5rem'};
+  width: ${props => props.size ?? '1.5rem'};
+
+  > img {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+
+  ${props =>
+    (props.startAdornment || props.endAdornment) &&
+    `
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+  `}
+
+  ${props => props.startAdornment && 'left: 0.5rem;'}
+
+  ${props => props.endAdornment && 'right: 0.375rem;'}
+
+  ${props => props.disallowClicking && 'pointer-events: none;'}
+`;
+
+const PersonPickerSearchFieldContainer = styled.div`
+  height: 2.375rem;
+  margin-right: 0.75rem;
+  position: relative;
+  width: 100%;
+`;
+
+const PersonPickerSearchField = styled.input`
+  background-color: #fff;
+  border: none;
+  box-shadow: none;
+  font-size: 0.875rem;
+  height: 100%;
+  padding-left: 2.5rem;
+  padding-right: 1.875rem;
+  outline: none;
+  width: 100%;
+
+  &::placeholder {
+    color: #dedee2;
+  }
+`;
+
+const StyledSimpleBar = styled(SimpleBar)`
+  & .simplebar-scrollbar::before,
+  & .simplebar-scrollbar.simplebar-visible::before {
+    background-color: #c8c8ce;
+    opacity: ${props => (props.visible ? 1 : 0)};
+  }
+
+  & .simplebar-track.simplebar-vertical {
+    background-color: white;
+    border-radius: 0.5rem;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+  }
+`;
+
+const AddNewPersonLabel = styled.div`
+  align-items: center;
+  color: #0ca1c7;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.875rem;
+  height: 2.8125rem;
+  padding-left: 1.125rem;
+  transition: all 0.25s ease-out;
+
+  ${props =>
+    props.button &&
+    `
+    &:hover {
+      filter: brightness(1.25);
+    }
+  `}
+`;
+
+const AddingPersonFormContainer = styled.div`
+  padding: 1rem;
+`;
+
+const SimpleBarComponent = ({
+  filteredItems,
+  renderItem,
+  renderNoItems,
+  maxPeopleRecordsVisible,
+  maxPeopleContainerHeight,
+}) => {
+  const [simpleBarItemsVisible, setSimpleBarItemsVisible] = useBoolean(false);
+
+  useEffect(setSimpleBarItemsVisible, []);
+
   return (
-    <PickerHeader
-      handleClose={handleClose}
-      handleSearchToggle={handleSearchToggle}
-      closeLabel="Close user selection"
+    <StyledSimpleBar
+      visible={filteredItems.length > maxPeopleRecordsVisible}
+      style={{ maxHeight: maxPeopleContainerHeight }}
     >
-      {'Assign to '}
-      <HeaderTaskName>{task?.description ?? 'new task'}</HeaderTaskName>
-    </PickerHeader>
+      {simpleBarItemsVisible && (
+        <>
+          {renderNoItems()}
+          {filteredItems.length > 0 && filteredItems.map(renderItem)}
+        </>
+      )}
+    </StyledSimpleBar>
   );
 };
 
-const renderSearchHeader = ({ handleSearch, handleSearchToggle }) => (
-  <SearchHeader
-    handleSearch={handleSearch}
-    handleSearchToggle={handleSearchToggle}
-  />
-);
-
 export default ({
-  anchorEl,
-  closePopover,
-  currentItem,
+  addNewPersonLabel,
+  addingNewPersonLabel,
+  closePicker,
   items,
-  itemComparisonKey,
   itemFilterPropertyKeys,
-  open,
-  onPersonClick,
+  label,
+  maxPeopleRecordsVisible,
   renderItem,
+  renderNoItems,
+  personRecordHeightInRem,
+  AddingPersonForm,
 }) => {
   const [isSearching, , , toggleIsSearching] = useBoolean(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const task = useSelector(store => store.taskState.selectedTask);
+  const [addingNewPerson, , , toggleAddingNewPerson] = useBoolean(false);
 
-  const handleSearchToggle = () => {
-    toggleIsSearching();
+  const maxPeopleContainerHeight = `${maxPeopleRecordsVisible *
+    personRecordHeightInRem}rem`;
+
+  const clearSearchTerm = () => {
     setSearchTerm('');
   };
 
-  const headerParams = {
-    handleClose: closePopover,
-    handleSearch: e => setSearchTerm(e?.target?.value),
-    handleSearchToggle,
-    searchTerm,
-    task,
+  const onClosePicker = () => {
+    if (isSearching) {
+      toggleIsSearching();
+      clearSearchTerm();
+    } else {
+      closePicker();
+    }
+  };
+
+  const onSearchChange = event => {
+    setSearchTerm(event.target?.value);
   };
 
   const filteredItems = items.filter(item => {
-    const properties = props(itemFilterPropertyKeys, item);
+    const properties = getProps(itemFilterPropertyKeys, item);
 
     return properties.some(property =>
       property?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   });
 
+  const simpleBarComponentProps = {
+    filteredItems,
+    renderItem,
+    renderNoItems,
+    maxPeopleRecordsVisible,
+    maxPeopleContainerHeight,
+  };
+
   return (
-    <Popover
-      onClick={captureClicks}
-      open={open}
-      anchorEl={anchorEl?.current}
-      onClose={closePopover}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
-      {isSearching
-        ? renderSearchHeader(headerParams)
-        : renderHeader(headerParams)}
-      <List>
-        <ListItem selected={currentItem == null} onClick={onPersonClick(null)}>
-          {renderItem(null)}
-        </ListItem>
-        {filteredItems?.map(item => (
-          <ListItem
-            key={item?.[itemComparisonKey]}
-            selected={
-              item?.[itemComparisonKey] === currentItem?.[itemComparisonKey]
-            }
-            onClick={onPersonClick(item)}
-          >
-            {renderItem(item)}
-          </ListItem>
-        ))}
-      </List>
-    </Popover>
+    <PersonPickerContainer>
+      {addingNewPerson ? (
+        <>
+          <PersonPickerTopSectionContainer>
+            <PersonPickerTopSectionLabel>
+              {addingNewPersonLabel}
+            </PersonPickerTopSectionLabel>
+          </PersonPickerTopSectionContainer>
+          <PersonPickerDivider />
+          <AddingPersonFormContainer>
+            <AddingPersonForm toggleAddingNewPerson={toggleAddingNewPerson} />
+          </AddingPersonFormContainer>
+        </>
+      ) : (
+        <>
+          <PersonPickerTopSectionContainer>
+            {isSearching ? (
+              <PersonPickerSearchFieldContainer>
+                <PersonPickerSearchField
+                  autoFocus
+                  onChange={onSearchChange}
+                  placeholder="Search"
+                  value={searchTerm}
+                />
+                <PersonPickerIconContainer startAdornment disallowClicking>
+                  <img src={SearchHeadsupIcon} alt="Search icon" />
+                </PersonPickerIconContainer>
+                <PersonPickerIconContainer
+                  endAdornment
+                  onClick={clearSearchTerm}
+                  size="1rem"
+                >
+                  <img src={PersonPickerCrossIcon} alt="Cross icon" />
+                </PersonPickerIconContainer>
+              </PersonPickerSearchFieldContainer>
+            ) : (
+              <PersonPickerTopSectionLabel>{label}</PersonPickerTopSectionLabel>
+            )}
+            <PersonPickerIconsContainer>
+              {!isSearching && (
+                <PersonPickerIconContainer onClick={toggleIsSearching}>
+                  <img src={SearchHeadsupIcon} alt="Search icon" />
+                </PersonPickerIconContainer>
+              )}
+              <PersonPickerIconContainer onClick={onClosePicker}>
+                <img src={PersonPickerCrossIcon} alt="Cross icon" />
+              </PersonPickerIconContainer>
+            </PersonPickerIconsContainer>
+          </PersonPickerTopSectionContainer>
+          <PersonPickerDivider />
+          <SimpleBarComponent {...simpleBarComponentProps} />
+          <PersonPickerDivider />
+          <AddNewPersonLabel button onClick={toggleAddingNewPerson}>
+            {addNewPersonLabel}
+          </AddNewPersonLabel>
+        </>
+      )}
+    </PersonPickerContainer>
   );
 };

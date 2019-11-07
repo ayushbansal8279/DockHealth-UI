@@ -152,15 +152,11 @@ export function getHighPriorityTasksByTaskList(taskListId) {
 }
 
 export function saveTask(newTask) {
-  if (newTask.taskId != null) {
+  if (newTask.taskId) {
     return dispatch =>
       TaskApi.updateTask(newTask)
         .then(task => {
           dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
-          if (newTask.refiled) {
-            $(`#task${task.taskId}`).fadeOut(1000);
-          }
-
           return task;
         })
         .catch(error => {

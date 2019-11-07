@@ -31,15 +31,12 @@ const TaskBody = ({
   subtaskIndex,
   task,
   handleStatusChange,
-  hideDate,
-  hidePriority,
-  hidePatient,
   disabled,
   isParentComplete = task?.status === 'COMPLETE',
-  hideCheckbox,
   storeAsCurrentTask,
   markAsUnread,
   openTaskDrawer,
+  taskDrawerOpen,
 }) => {
   const {
     createdDateTime,
@@ -124,25 +121,23 @@ const TaskBody = ({
         </SubtaskLoadingContainer>
       ) : (
         <>
-          {!hideCheckbox && (
-            <div
-              style={{
-                alignItems: 'center',
-                display: 'flex',
-                justifyContent: 'center',
-                width: 60,
+          <div
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              width: 60,
+            }}
+          >
+            <TaskCheckbox
+              checked={status === 'COMPLETE'}
+              onChange={handleStatusChange}
+              onClick={e => {
+                e.stopPropagation();
               }}
-            >
-              <TaskCheckbox
-                checked={status === 'COMPLETE'}
-                onChange={handleStatusChange}
-                onClick={e => {
-                  e.stopPropagation();
-                }}
-                disabled={disabled || (isSubtask && isParentComplete)}
-              />
-            </div>
-          )}
+              disabled={disabled || (isSubtask && isParentComplete)}
+            />
+          </div>
           <MemberPickerContainer>
             <MemberPicker
               task={task}
@@ -215,7 +210,7 @@ const TaskBody = ({
               </Grid>
               {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
             </PatientTasklistContainer>
-            {!isSubtask && !hidePatient && (
+            {!isSubtask && (
               <PatientTasklistPatient
                 elementPaddingBottom={elementPaddingBottom}
               >
@@ -233,7 +228,7 @@ const TaskBody = ({
                 )}
               </PatientTasklistPatient>
             )}
-            {!hideDate && (
+            {!taskDrawerOpen && (
               <div
                 style={{
                   alignItems: 'flex-end',
@@ -252,7 +247,7 @@ const TaskBody = ({
                 )}
               </div>
             )}
-            {!hidePriority && (
+            {!taskDrawerOpen && (
               <>
                 <div
                   style={{

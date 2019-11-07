@@ -23,38 +23,28 @@ import NewTaskDrawerForm from './NewTaskDrawer.form';
 import PriorityFlag from './PriorityFlag';
 import { noop, getPatientName } from '../../helpers/utilityFunctions';
 import { getAllPatients } from '../../actions/patient-actions';
+import { CloseTaskButton } from './TaskDrawerButtons';
 
 const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
-  background-color: #fff;
   display: flex;
   height: 100%;
-  min-height: calc(100vh - 88px - ${props => props.headsUpAreaHeight}px);
+  margin-top: 3.75rem;
   justify-content: flex-start;
   padding: 4px;
-  position: absolute;
-  right: 0;
+  position: sticky;
   transition: all 0.25s ease-out;
-  top: 0;
-  transform: translateX(100%);
-  width: 30%;
-  z-index: 1;
-
-  ${props =>
-    props.hasTask &&
-    `
-    transform: translateX(0%);
-    right: 9px;
-  `}
+  top: 6.25rem;
+  width: 40%;
 `;
 
 const TopLabel = styled.div`
   color: #000;
   font-size: 24px;
   line-height: 44px;
-  margin-bottom: 5px;
-  padding-left: 20px;
-  padding-top: 15px;
+  margin-bottom: 0.75rem;
+  padding-left: 1rem;
+  padding-top: 0.75rem;
 `;
 
 const FormSectionNoBorder = styled(Grid)`
@@ -66,7 +56,16 @@ const FormSectionNoBorder = styled(Grid)`
   }
 `;
 
+const FormSectionDivider = styled.div`
+  background-color: #ddf2f7;
+  height: 2px;
+  width: 100%;
+
+  ${props => props.condensed && 'padding: 0 0.5rem;'}
+`;
+
 const FormSection = styled(FormSectionNoBorder)`
+  background-color: #fff;
   border: 2px solid #ddf2f7;
 `;
 
@@ -80,6 +79,10 @@ const StatusSelect = styled.div`
     font-size: 14px;
     margin-left: 6px;
   }
+`;
+
+const CloseTaskButtonContainer = styled.div`
+  padding-right: 0.5rem;
 `;
 
 const statusSelectData = [
@@ -184,7 +187,7 @@ const onDelete = ({ afterDelete, dispatch, task }) => async () => {
   }
 };
 
-export default ({ closeDrawer, open, headsUpAreaRef, taskList }) => {
+export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   const [
     priorityActive,
     setPriorityActive,
@@ -256,10 +259,7 @@ export default ({ closeDrawer, open, headsUpAreaRef, taskList }) => {
   }
 
   return (
-    <NewTaskDrawerContainer
-      hasTask={open}
-      headsUpAreaHeight={headsUpAreaHeight}
-    >
+    <NewTaskDrawerContainer headsUpAreaHeight={headsUpAreaHeight}>
       <form
         onSubmit={formMethods.handleSubmit(
           onSubmit({
@@ -273,10 +273,20 @@ export default ({ closeDrawer, open, headsUpAreaRef, taskList }) => {
         )}
       >
         <Grid container>
-          <Grid item xs={12}>
-            <TopLabel>{`${task ? 'Edit' : 'Add'} a task`}</TopLabel>
-          </Grid>
           <FormSection container item xs={12}>
+            <Grid
+              container
+              item
+              xs={12}
+              alignItems="center"
+              justify="space-between"
+            >
+              <TopLabel>{`${task ? 'Edit' : 'Add'} a task`}</TopLabel>
+              <CloseTaskButtonContainer>
+                <CloseTaskButton onClick={closeDrawer} />
+              </CloseTaskButtonContainer>
+            </Grid>
+            <FormSectionDivider condensed />
             <Grid
               container
               item
@@ -327,42 +337,43 @@ export default ({ closeDrawer, open, headsUpAreaRef, taskList }) => {
           </FormSection>
           <FormSection container item xs={12}>
             <div>Other data placeholder</div>
-          </FormSection>
-          <FormSectionNoBorder
-            alignItems="center"
-            justify="center"
-            spacing={8}
-            container
-            item
-            xs={12}
-          >
-            {task && task?.status !== 'COMPLETE' && (
+            <FormSectionDivider condensed />
+            <Grid
+              alignItems="center"
+              justify="center"
+              spacing={8}
+              container
+              item
+              xs={12}
+            >
+              {task && task?.status !== 'COMPLETE' && (
+                <Grid item xs={3}>
+                  <Button
+                    fullWidth
+                    onClick={onDelete({
+                      afterDelete: () => {
+                        closeDrawer();
+                      },
+                      dispatch,
+                      task,
+                    })}
+                  >
+                    Delete
+                  </Button>
+                </Grid>
+              )}
               <Grid item xs={3}>
                 <Button
+                  type="submit"
                   fullWidth
-                  onClick={onDelete({
-                    afterDelete: () => {
-                      closeDrawer();
-                    },
-                    dispatch,
-                    task,
-                  })}
+                  color="primary"
+                  variant="contained"
                 >
-                  Delete
+                  Save
                 </Button>
               </Grid>
-            )}
-            <Grid item xs={3}>
-              <Button
-                type="submit"
-                fullWidth
-                color="primary"
-                variant="contained"
-              >
-                Save
-              </Button>
             </Grid>
-          </FormSectionNoBorder>
+          </FormSection>
         </Grid>
       </form>
     </NewTaskDrawerContainer>

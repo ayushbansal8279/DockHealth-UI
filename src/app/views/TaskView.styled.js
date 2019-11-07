@@ -104,3 +104,7 @@ export const ToolbarContainer = styled.div`
     margin-right: 1rem;
   }
 `;
+
+export const TableWrapper = styled.div`
+  width: ${props => (props.taskDrawerOpen ? 'calc(60% - 1rem)' : '100%')};
+`;

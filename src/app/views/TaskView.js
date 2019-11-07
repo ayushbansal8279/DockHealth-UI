@@ -11,11 +11,11 @@ import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
 import TaskList from '../components/task/TaskList';
-import AddTaskButton from '../components/taskView/AddTaskButton';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
+import { AddTaskButton } from '../components/taskView/TaskDrawerButtons';
 import TaskListAction from '../components/taskView/TaskListAction';
 import FilterIcon from '../img/filter.svg';
 import PrintIcon from '../img/print.svg';
@@ -23,6 +23,7 @@ import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
 import SortingStatsIcon from '../img/sorting-stats.svg';
 import {
   StyledSlimViewSwitch,
+  TableWrapper,
   TaskViewGrid,
   ToolbarContainer,
 } from './TaskView.styled';
@@ -302,7 +303,7 @@ class TaskView extends Component {
       markAsUnread,
       selectedTaskId,
     } = this.props;
-    const { slimView } = this.state;
+    const { slimView, taskDrawerOpen } = this.state;
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
@@ -319,6 +320,7 @@ class TaskView extends Component {
       selectedTaskId,
       slimView,
       openTaskDrawer: this.openTaskDrawer,
+      taskDrawerOpen,
     };
 
     if (tasks.length === 0 || tasklistCount <= 1) {
@@ -429,21 +431,11 @@ class TaskView extends Component {
     return (
       <div>
         <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
-        <TaskViewGrid container>
-          <NewTaskDrawer
-            headsUpAreaRef={this.headsUpArea.current}
-            open={taskDrawerOpen}
-            closeDrawer={this.closeTaskDrawer}
-            taskList={taskList}
-          />
-          <AddTaskButton
-            addingNewTask={taskDrawerOpen}
-            onClick={this.onAddTaskButtonClick}
-          />
-          <Grid item xs={12}>
+        <TaskViewGrid container wrap="nowrap">
+          <TableWrapper taskDrawerOpen={taskDrawerOpen}>
             {showToolbar && (
               <Toolbar>
-                <Grid container justify="space-between">
+                <Grid container alignItems="center" justify="space-between">
                   <ToolbarContainer>
                     <StyledSlimViewSwitch
                       onClick={this.switchSlimView}
@@ -478,6 +470,9 @@ class TaskView extends Component {
                       Print
                     </TaskListAction>
                   </ToolbarContainer>
+                  {!taskDrawerOpen && (
+                    <AddTaskButton onClick={this.onAddTaskButtonClick} />
+                  )}
                 </Grid>
               </Toolbar>
             )}
@@ -497,30 +492,16 @@ class TaskView extends Component {
                   {this.renderTasklists()}
                   {this.renderCompleted()}
                 </TaskListContainer>
-                {/* {task && (
-                  <TaskDetails
-                    addTaskComment={comment =>
-                      addTaskComment(task, { comment })
-                    }
-                    userId={userId}
-                    selectedTask={task}
-                    close={this.handleClose}
-                    markComplete={(_task, status) => {
-                      markComplete(
-                        _task,
-                        status,
-                        isCompletedTaskSelected ? 'COMPLETE' : 'INCOMPLETE',
-                      );
-                    }}
-                    toggleTaskPriority={toggleTaskPriority}
-                    isMainTaskComplete={isMainTaskComplete}
-                    storeAsCurrentTask={storeAsCurrentTask}
-                    markAsUnread={markAsUnread}
-                  />
-                )} */}
               </div>
             )}
-          </Grid>
+          </TableWrapper>
+          {taskDrawerOpen && (
+            <NewTaskDrawer
+              headsUpAreaRef={this.headsUpArea.current}
+              closeDrawer={this.closeTaskDrawer}
+              taskList={taskList}
+            />
+          )}
         </TaskViewGrid>
         {this.renderFilterPopover()}
       </div>

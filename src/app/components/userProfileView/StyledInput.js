@@ -5,14 +5,39 @@ import styled from 'styled-components';
 import mergeDeepRight from 'ramda/es/mergeDeepRight';
 
 import { mergeRefs } from '../../helpers/utilityFunctions';
-import {
-  matchEmptyNumber,
-  PHONE_MASK_ARRAY,
-} from '../../views/UserProfileView.ValidationSchema';
+import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
 
 const EMPTY_CLASS_NAME = 'empty';
 const ERROR_CLASS_NAME = 'error';
 const FOCUS_CLASS_NAME = 'focus';
+
+const PHONE_MASK_ARRAY = [
+  /[1-9]/,
+  /\d/,
+  /\d/,
+  '-',
+  /\d/,
+  /\d/,
+  /\d/,
+  '-',
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+];
+
+const BIRTH_DATE_MASK_ARRAY = [
+  /[0-1]/,
+  /\d/,
+  '/',
+  /[0-2]/,
+  /\d/,
+  '/',
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+];
 
 const StyledLabel = styled.div`
   && {
@@ -22,7 +47,7 @@ const StyledLabel = styled.div`
     font-weight: normal;
     pointer-events: none;
     position: absolute;
-    top: 2.34375rem;
+    top: ${props => props.labelInactiveTop ?? 2.34375}rem;
     transform: translateY(-50%);
     transition: font-size 0.2s ease-out, top 0.2s ease-out;
     z-index: 1;
@@ -45,11 +70,17 @@ const StyledInputContainer = styled.div`
     background-color: ${props => props.backgroundColor ?? '#f3f5f6'};
     border-radius: 0;
     box-sizing: border-box;
-    height: ${props => (props.isTextarea ? 9.375 : 4.6875)}rem;
-    margin-top: 0.5rem;
+    height: ${props =>
+      props.containerHeight || (props.isTextarea ? 9.375 : 4.6875)}rem;
+    margin-top: ${props => props.containerMarginTop ?? 0.5}rem;
     position: relative;
 
     ${props => props.gutterBottom && 'margin-bottom: 1rem;'}
+    ${props =>
+      !props.visible &&
+      `
+      display: none;
+    `}
 
     ${props => {
       if (props.controlled) {
@@ -113,8 +144,8 @@ const inputStyle = styleExtension => props =>
 
         [`&:-webkit-autofill, &:-webkit-autofill:active, &:-webkit-autofill:hover, &:-webkit-autofill:focus`]: {
           transition: 'all 0.25s ease-out, -webkit-box-shadow 0s',
-          '-webkit-box-shadow':
-            '0 0 0 40px rgba(243, 245, 246) inset !important',
+          '-webkit-box-shadow': `0 0 0 40px ${props.backgroundColor ??
+            'rgba(243, 245, 246, 0)'} inset !important`,
         },
       },
     },
@@ -177,6 +208,7 @@ export default React.forwardRef(
       name,
       label,
       required,
+      isBirthDate,
       isPhoneNumber,
       containerDisabled = false,
       controlled = false,
@@ -186,6 +218,10 @@ export default React.forwardRef(
       isTextarea = false,
       backgroundColor,
       gutterBottom = false,
+      visible = true,
+      containerHeight,
+      containerMarginTop,
+      labelInactiveTop,
       ...props
     },
     ref,
@@ -230,20 +266,31 @@ export default React.forwardRef(
       labelFontSize,
       isTextarea,
       fullWidth: true,
+      backgroundColor,
     };
 
     const InputComponent = isTextarea ? StyledTextarea : StyledInput;
 
     const labelComponent = (
-      <StyledLabel fontSize={fontSize}>
+      <StyledLabel fontSize={fontSize} labelInactiveTop={labelInactiveTop}>
         <span className="input-label">{label}</span>
         {required && <span className="required">*</span>}
       </StyledLabel>
     );
 
     const inputContainerProps = {
+      containerHeight,
+      containerMarginTop,
       gutterBottom,
+      visible,
     };
+
+    const isMaskedInput = isPhoneNumber || isBirthDate;
+    const inputMask = (() => {
+      if (isPhoneNumber) return PHONE_MASK_ARRAY;
+      if (isBirthDate) return BIRTH_DATE_MASK_ARRAY;
+      return null;
+    })();
 
     return (
       <StyledInputContainer
@@ -260,10 +307,10 @@ export default React.forwardRef(
         {...inputContainerProps}
       >
         {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
-        {isPhoneNumber ? (
+        {isMaskedInput ? (
           <TextareaWrapper>
             <MaskedInput
-              mask={PHONE_MASK_ARRAY}
+              mask={inputMask}
               render={renderPhoneNumberField({ inputProps, props, register })}
             />
             {labelComponent}
