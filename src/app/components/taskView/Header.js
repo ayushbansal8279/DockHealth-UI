@@ -47,15 +47,36 @@ const StyledSubtitle = styled(Typography)`
   }
 `;
 
+
+const NotificationToggle = ({ value }) => {
+  return (
+      <span style={{width: "34px", 
+        height: "31px", 
+        background: (value?"#007CAB":"#303538"), 
+        borderRadius: "4px", 
+        color: "white",
+        marginLeft: "10px",
+        paddingTop: "3px"}}>
+      {value ? 'on' : 'off'}
+      </span>
+  );
+};
+
 const Notifications = ({ value, onClick }) => {
   const notificationProps = {
     icon: value ? NotificationsOnIcon : NotificationsOffIcon,
     alt: value ? 'Disable notifications' : 'Enable notifications',
-    children: `Notifications: ${value ? 'on' : 'off'}`,
+    // children: `Notifications: ${value ? 'on' : 'off'}`,
     onClick,
   };
 
-  return <TaskListAction {...notificationProps} />;
+  return (
+    <TaskListAction {...notificationProps} style={{paddingRight: "0px"}}>
+      <span> Notifications: </span>
+      <NotificationToggle value={value}/>
+
+    </TaskListAction>
+  );
 };
 
 const nbsp = '\u00A0';
