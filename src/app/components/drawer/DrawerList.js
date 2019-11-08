@@ -197,10 +197,13 @@ const RouterLink = ({ active, highlighted, ...props }) => {
   if (highlighted) {
     className += ' highlighted';
   }
+  if (props.to=="support") {
+    className += ' navsupport';
+  }
 
   return (
     <StyledRouterLinkContainer className={className.trim()}>
-      <Link {...props} />
+      <Link {...props}/>
     </StyledRouterLinkContainer>
   );
 };

@@ -40,7 +40,8 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const intercomUser = {
     email: user.email,
-    name: `${user.firstName} ${user.lastName}`
+    name: `${user.firstName} ${user.lastName}`,
+    // custom_launcher_selector: '.navsupport',
   };
   console.log(intercomUser)
 
