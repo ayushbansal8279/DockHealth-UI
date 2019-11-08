@@ -47,6 +47,7 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
+  CHANGE_ADDING_NEW_TASK,
 } from '../actions/action-types';
 
 const initialState = {
@@ -63,6 +64,7 @@ const initialState = {
   selectedTaskId: null,
   addingNewSubtask: false,
   addingNewSubtaskParentId: null,
+  addingNewTask: false,
 };
 
 const getMainTaskId = ({ parentTaskId, taskId }) => parentTaskId || taskId;
@@ -456,9 +458,7 @@ const TaskReducer = (state = initialState, action) => {
         `${comment.creator.firstName.charAt(
           0,
         )} ${comment.creator.firstName.charAt(1)}`;
-      comment.creator.userName = `${comment.creator.firstName} ${
-        comment.creator.lastName
-      }`;
+      comment.creator.userName = `${comment.creator.firstName} ${comment.creator.lastName}`;
 
       return {
         ...state,
@@ -687,6 +687,15 @@ const TaskReducer = (state = initialState, action) => {
       };
     }
 
+    case CHANGE_ADDING_NEW_TASK:
+      {
+        const { addingNewTask } = action;
+        return {
+          ...state,
+          addingNewTask,
+        };
+      }
+      k;
     default:
       return state;
   }

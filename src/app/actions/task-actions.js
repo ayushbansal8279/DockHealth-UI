@@ -162,16 +162,28 @@ export function saveTask(newTask) {
         });
   }
 
-  return dispatch =>
-    TaskApi.addTask(newTask)
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+      addingNewTask: true,
+    });
+    return TaskApi.addTask(newTask)
       .then(task => {
         if (!task.taskList) {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
             task: { ...task, taskList: { listName: 'Inbox' } },
           });
+          dispatch({
+            type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+            addingNewTask: false,
+          });
         } else {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+          dispatch({
+            type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+            addingNewTask: false,
+          });
         }
 
         return task;
@@ -179,6 +191,7 @@ export function saveTask(newTask) {
       .catch(error => {
         throw error;
       });
+  };
 }
 
 export const moveTask = (task, taskList) => dispatch => {

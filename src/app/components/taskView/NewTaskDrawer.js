@@ -11,6 +11,7 @@ import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import moment from 'moment';
 import {
   saveTask,
   assignOrReassignTask,
@@ -178,7 +179,7 @@ const onSubmit = ({
     patientId,
   };
 
-  if (newTaskDueDate) {
+  if (newTaskDueDate && moment(newTaskDueDate).isValid()) {
     requestData.dueDate = newTaskDueDate;
   }
 
