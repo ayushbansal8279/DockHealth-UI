@@ -6,6 +6,7 @@ import sortBy from 'ramda/es/sortBy';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import SimpleBar from 'simplebar-react';
 
 import useBoolean from '../../hooks/useBoolean';
 import BubbleFinishCurrentUserIcon from '../../img/bubble-finish-current-user.svg';
@@ -168,6 +169,23 @@ const AddCommentButtonContainer = styled.div`
   width: 2.125rem;
 `;
 
+const StyledSimpleBar = styled(SimpleBar)`
+  max-height: 22.8125rem;
+  overflow-y: auto;
+  width: 100%;
+
+  & .simplebar-scrollbar::before,
+  & .simplebar-scrollbar.simplebar-visible::before {
+    background-color: #c8c8ce;
+    opacity: ${props => (props.visible ? 1 : 0)};
+  }
+
+  & .simplebar-track.simplebar-vertical {
+    background-color: #ededf0;
+    border-radius: 0.5rem;
+  }
+`;
+
 const getGroupedComments = ({ comments }) => {
   const sortedComments = sortBy(
     comment => moment(comment.dateCreated).unix(),
@@ -328,9 +346,11 @@ export default ({ task }) => {
         <>
           <CommentsDivider />
           <CommentsContainer>
-            {Object.entries(groupedComments).map(
-              renderComment({ currentUserId }),
-            )}
+            <StyledSimpleBar visible>
+              {Object.entries(groupedComments).map(
+                renderComment({ currentUserId }),
+              )}
+            </StyledSimpleBar>
           </CommentsContainer>
         </>
       )}

@@ -28,6 +28,11 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiPickersDay: {
+      isSelected: {
+        fontWeight: 'bold',
+      },
+    },
   },
 });
 

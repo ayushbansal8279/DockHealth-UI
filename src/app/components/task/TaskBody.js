@@ -62,7 +62,6 @@ const TaskBody = ({
     'MMM D, YYYY @ h:mma',
   );
   const formattedDueDate = moment(dueDate).format('ddd, MMM D');
-  const formattedDueTime = moment(dueDate).format('@ h:mma');
   const completedDateTimeMoment = moment(completedDateTime);
   const formattedCompletedDateTime = completedDateTimeMoment.isValid()
     ? completedDateTimeMoment.format('MMM D, YYYY @ h:mma')
@@ -196,9 +195,7 @@ const TaskBody = ({
                       }}
                     />
                   )}
-                  {`Assigned by ${
-                    creator.userName
-                  } at ${formattedCreationDate}${countInfoContent}`}
+                  {`Assigned by ${creator.userName} at ${formattedCreationDate}${countInfoContent}`}
                 </PatientsTasklistInfo>
               </Grid>
               <Grid item xs={12}>
@@ -220,9 +217,7 @@ const TaskBody = ({
                     style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
                   >
                     <div>
-                      {`${patient?.lastName}, ${patient?.firstName} ${
-                        patient?.mrn
-                      }`}
+                      {`${patient?.lastName}, ${patient?.firstName} ${patient?.mrn}`}
                     </div>
                   </Link>
                 )}
@@ -242,7 +237,7 @@ const TaskBody = ({
               >
                 {dueDate && (
                   <PatientsTasklistDate isSubtask={isSubtask}>
-                    {`${formattedDueDate} ${formattedDueTime}`}
+                    {formattedDueDate}
                   </PatientsTasklistDate>
                 )}
               </div>

@@ -16,6 +16,7 @@ import {
   assignOrReassignTask,
   updatePatient,
   deleteTask,
+  moveTask,
 } from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import { PriorityDot } from '../common/Priority';
@@ -25,6 +26,7 @@ import { noop, getPatientName } from '../../helpers/utilityFunctions';
 import { getAllPatients } from '../../actions/patient-actions';
 import { CloseTaskButton } from './TaskDrawerButtons';
 import NewTaskDrawerCommentSection from './NewTaskDrawer.commentSection';
+import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
 
 const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
@@ -62,7 +64,7 @@ const FormSectionDivider = styled.div`
   height: 2px;
   width: 100%;
 
-  ${props => props.condensed && 'padding: 0 0.5rem;'}
+  ${props => props.condensed && 'margin: 0 0.5rem;'}
 `;
 
 const FormSection = styled(FormSectionNoBorder)`
@@ -88,6 +90,18 @@ const StatusSelect = styled.div`
 
 const CloseTaskButtonContainer = styled.div`
   padding-right: 0.5rem;
+`;
+
+const StyledButton = styled(Button)`
+  && {
+    ${props => props.variant === 'contained' && 'background-color: #007cab;'}
+    box-shadow: none;
+    color: ${props => (props.variant === 'contained' ? '#fff' : '#009fcd')};
+    font-size: ${props => (props.variant === 'contained' ? 1 : 0.875)}rem;
+    ${props => props.variant === 'contained' && 'font-weight: bold;'}
+    margin: 1.5rem 0.25rem;
+    text-transform: none;
+  }
 `;
 
 const statusSelectData = [
@@ -148,6 +162,8 @@ const onSubmit = ({
     assignedToUserId,
     patientId,
     patient: unusedPatient,
+    newTaskListId,
+    newTaskDueDate,
     ...newData
   } = data;
   let { patient } = data;
@@ -162,6 +178,10 @@ const onSubmit = ({
     patientId,
   };
 
+  if (newTaskDueDate) {
+    requestData.dueDate = newTaskDueDate;
+  }
+
   try {
     patient = JSON.parse(patient);
   } catch {
@@ -174,6 +194,10 @@ const onSubmit = ({
       assignOrReassignTask(newTask, assignedToUserId || -1)(dispatch),
       updatePatient(newTask, patient)(dispatch),
     ]);
+
+    if (newTaskListId) {
+      await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
+    }
   } catch {
     noop();
   } finally {
@@ -217,26 +241,23 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(
-    () => {
-      const isPriorityHigh = task?.priority === 'HIGH';
+  useEffect(() => {
+    const isPriorityHigh = task?.priority === 'HIGH';
 
-      if (isPriorityHigh) {
-        setPriorityActive();
-      } else {
-        unsetPriorityActive();
-      }
+    if (isPriorityHigh) {
+      setPriorityActive();
+    } else {
+      unsetPriorityActive();
+    }
 
-      const newWorkflowStatus = statusSelectData.find(
-        ({ value }) => value === task?.workflowStatus,
-      );
+    const newWorkflowStatus = statusSelectData.find(
+      ({ value }) => value === task?.workflowStatus,
+    );
 
-      if (newWorkflowStatus) {
-        setStatus(newWorkflowStatus);
-      }
-    },
-    [setPriorityActive, task, unsetPriorityActive],
-  );
+    if (newWorkflowStatus) {
+      setStatus(newWorkflowStatus);
+    }
+  }, [setPriorityActive, task, unsetPriorityActive]);
 
   useEffect(
     () => {
@@ -337,13 +358,12 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
               </FormContext>
             </Grid>
           </FormSection>
-          {task && (
-            <CondensedFormSection container item xs={12}>
-              <NewTaskDrawerCommentSection task={task} />
-            </CondensedFormSection>
-          )}
-          <FormSection container item xs={12}>
-            <div>Other data placeholder</div>
+          <CondensedFormSection container item xs={12}>
+            {task && <NewTaskDrawerCommentSection task={task} />}
+            <FormSectionDivider condensed />
+            <FormContext {...formMethods}>
+              <NewTaskDrawerOtherDataSection task={task} />
+            </FormContext>
             <FormSectionDivider condensed />
             <Grid
               alignItems="center"
@@ -355,7 +375,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
             >
               {task && task?.status !== 'COMPLETE' && (
                 <Grid item xs={3}>
-                  <Button
+                  <StyledButton
                     fullWidth
                     onClick={onDelete({
                       afterDelete: () => {
@@ -366,21 +386,21 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
                     })}
                   >
                     Delete
-                  </Button>
+                  </StyledButton>
                 </Grid>
               )}
               <Grid item xs={3}>
-                <Button
+                <StyledButton
                   type="submit"
                   fullWidth
                   color="primary"
                   variant="contained"
                 >
                   Save
-                </Button>
+                </StyledButton>
               </Grid>
             </Grid>
-          </FormSection>
+          </CondensedFormSection>
         </Grid>
       </form>
     </NewTaskDrawerContainer>

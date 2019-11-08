@@ -39,15 +39,12 @@ const Task = props => {
       !isSubtask && subtasks.find(({ taskId }) => taskId === selectedTaskId),
     );
 
-  useEffect(
-    () => {
-      if (isNewSubtask) {
-        animationContainer.current.style.height =
-          animationContainer.current.scrollHeight;
-      }
-    },
-    [isNewSubtask],
-  );
+  useEffect(() => {
+    if (isNewSubtask) {
+      animationContainer.current.style.height =
+        animationContainer.current.scrollHeight;
+    }
+  }, [isNewSubtask]);
 
   useEffect(
     () => {
@@ -122,7 +119,7 @@ const Task = props => {
             isNewSubtask={subtask.isNewSubtask}
           />
         ))}
-      {!isSubtask && task.status !== 'COMPLETE' && (
+      {!isSubtask && isSelfOrSubtaskActive && task.status !== 'COMPLETE' && (
         <AddSubtask padded taskId={task.taskId} />
       )}
     </>

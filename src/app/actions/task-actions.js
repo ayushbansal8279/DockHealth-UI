@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
 
@@ -489,9 +487,11 @@ export function getTaskHistory(task) {
     return TaskApi.getTaskHistory(task.taskId)
       .then(auditDetails => {
         dispatch({ type: ActionTypes.GET_TASK_HISTORY_SUCCESS, auditDetails });
+        return auditDetails;
       })
       .catch(error => {
         dispatch({ type: ActionTypes.GET_TASK_HISTORY_ERROR, error });
+        throw error;
       });
   };
 }
