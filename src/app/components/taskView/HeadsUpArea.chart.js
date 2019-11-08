@@ -1,6 +1,7 @@
 import Chart from 'chart.js';
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import _ from 'lodash';
 
 const ChartOuterContainer = styled.div`
   flex: 1;
@@ -13,13 +14,17 @@ const ChartContainer = styled.div`
   position: relative;
 `;
 
-export default () => {
+export default (taskListStats) => {
   const chartRef = useRef(null);
   const [chart, setChart] = useState(null);
 
   useEffect(
     () => {
       if (chartRef.current && !chart) {
+        var trendsArray = taskListStats.taskListStats.newTasksByDate;
+        var slicedTrendsArray = trendsArray.splice(0,7)
+        var labels = _.map(slicedTrendsArray, "date") 
+        var data = _.map(slicedTrendsArray, "metricValue")
         setChart(
           new Chart(chartRef.current, {
             options: {
@@ -34,6 +39,14 @@ export default () => {
                       padding: 8,
                       fontFamily: '"Open Sans", sans-serif',
                     },
+                    type: 'time',
+                    time: {
+                        unit: 'week',
+                        displayFormats: {
+                          week: 'll'
+                        }
+                    },
+                    distribution: 'series'
                   },
                 ],
                 yAxes: [
@@ -60,11 +73,11 @@ export default () => {
             },
             type: 'line',
             data: {
-              labels: ['1', '2', '3', '4', '5'],
+              labels: labels,
               datasets: [
                 {
-                  label: 'Test',
-                  data: [7, 6, 5, 8, 2],
+                  label: 'Tasks',
+                  data: data,
                   backgroundColor: 'rgba(0, 124, 171, 0.2)',
                   borderColor: 'rgba(0, 124, 171)',
                   pointBorderColor: 'transparent',

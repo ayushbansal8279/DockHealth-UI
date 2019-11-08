@@ -76,7 +76,7 @@ const renderCurrentTab = ({ currentStatsTab, taskListStats }) => {
     .filter(({ tab }) => tab === currentStatsTab)
     .map(({ key, label }) => {
       const value =
-        taskListStats?.find(({ metricName }) => metricName === key)
+        taskListStats?.stats?.find(({ metricName }) => metricName === key)
           ?.metricValue ?? 0;
 
       return (
@@ -162,10 +162,10 @@ export default forwardRef(({ taskList }, ref) => {
               <div>
                 <HeadsUpSectionHeader>
                   <span>Daily</span>
-                  <small>(not ready yet)</small>
+                  <small> (All) </small>
                 </HeadsUpSectionHeader>
               </div>
-              <HeadsUpAreaChart />
+              <HeadsUpAreaChart taskListStats={taskListStats}/>
             </HeadsUpSectionContainer>
           </HeadsUpSectionGrid>
         </Grid>
