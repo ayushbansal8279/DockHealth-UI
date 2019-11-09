@@ -2,11 +2,14 @@ import Chart from 'chart.js';
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
+import moment from 'moment';
+import { isWithinInterval } from 'date-fns/fp';
 
 const ChartOuterContainer = styled.div`
   flex: 1;
   overflow: hidden;
   padding: 5px;
+  height: 120px;
 `;
 
 const ChartContainer = styled.div`
@@ -14,17 +17,49 @@ const ChartContainer = styled.div`
   position: relative;
 `;
 
-export default (taskListStats) => {
+export default ({taskListTrends, currentTab}) => {
   const chartRef = useRef(null);
   const [chart, setChart] = useState(null);
+  const [tabName, setTabName] = useState(null);
+
+  const getSpecificDayListTrends = (taskListTrends) => {
+    if(!taskListTrends){
+      return taskListTrends
+    }
+    var taskListTrendsSpecificDays = []
+    var dayIndex = 0
+    while(dayIndex < 7){
+      var dateVal = moment().subtract(dayIndex, 'days').format('YYYY-MM-DDT00:00:00.000+0000')
+      var exisitingElt = _.find(taskListTrends, {date: dateVal})
+      if(!exisitingElt) {
+        taskListTrendsSpecificDays.push({date: dateVal, metricValue: 0});
+      }else{
+        taskListTrendsSpecificDays.push(exisitingElt);
+      }
+      dayIndex++
+    }
+    return taskListTrendsSpecificDays
+  };
+
+  if (chart && currentTab!=tabName) {
+    var specificDaysListTrends = getSpecificDayListTrends(taskListTrends)
+    var slicedTrendsArray = (specificDaysListTrends?specificDaysListTrends.slice(0,7):[])
+    var labels = _.map(slicedTrendsArray, "date") 
+    var data = _.map(slicedTrendsArray, "metricValue")
+    chart.data.labels = labels
+    chart.data.datasets[0].data = data
+    chart.update()
+    setTabName(currentTab)
+  }
 
   useEffect(
     () => {
-      if (chartRef.current && !chart) {
-        var trendsArray = taskListStats.taskListStats.newTasksByDate;
-        var slicedTrendsArray = trendsArray.splice(0,7)
+      if (chartRef.current && !chart && currentTab!=tabName) {
+        var specificDaysListTrends = getSpecificDayListTrends(taskListTrends)
+        var slicedTrendsArray = (specificDaysListTrends?specificDaysListTrends.slice(0,7):[])
         var labels = _.map(slicedTrendsArray, "date") 
         var data = _.map(slicedTrendsArray, "metricValue")
+        setTabName(currentTab)
         setChart(
           new Chart(chartRef.current, {
             options: {
@@ -41,9 +76,9 @@ export default (taskListStats) => {
                     },
                     type: 'time',
                     time: {
-                        unit: 'week',
+                        unit: 'day',
                         displayFormats: {
-                          week: 'll'
+                          day: 'MMM D'
                         }
                     },
                     distribution: 'series'
