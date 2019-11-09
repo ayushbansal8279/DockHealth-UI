@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
-const StyledButton = styled(Button)`
+// const StyledButton = styled(Button)`
+const StyledButton = styled(({ active, backgroundColor, ...props }) => <Button {...props} />)`
   && {
     border-radius: 0.25rem;
     background-color: ${props =>
