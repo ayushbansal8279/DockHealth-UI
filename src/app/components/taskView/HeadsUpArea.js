@@ -19,7 +19,11 @@ import {
 import HeadsUpAreaChart from './HeadsUpArea.chart';
 
 const taskListStatsTabs = {
-  me: 'Me',
+  me: 'For Me',
+  all: 'All',
+};
+const taskListTrendsTabs = {
+  me: 'For Me',
   all: 'All',
 };
 
@@ -93,6 +97,24 @@ const renderCurrentTab = ({ currentStatsTab, taskListStats }) => {
     });
 };
 
+const renderCurrentTrendTab = ({ currentTrendsTab, taskListStats }) => {
+    var taskListTrends = []
+    if (taskListStats){
+      if (currentTrendsTab == taskListTrendsTabs.me){
+        taskListTrends = taskListStats.newTasksByMeByDate
+        return (
+          <HeadsUpAreaChart taskListTrends={taskListTrends} currentTab={currentTrendsTab}/>
+        );
+      }else if (currentTrendsTab == taskListTrendsTabs.all){
+        taskListTrends = taskListStats.newTasksByDate
+        return (
+          <HeadsUpAreaChart taskListTrends={taskListTrends} currentTab={currentTrendsTab}/>
+        );
+      }
+    }
+    return null
+};
+
 const renderTabSwitches = ({ currentActiveTab, tabData, tabSwitchMethod }) =>
   Object.keys(tabData).map(tabKey => {
     const tabLabel = tabData[tabKey];
@@ -116,6 +138,7 @@ export default forwardRef(({ taskList }, ref) => {
   }));
 
   const [currentStatsTab, setCurrentStatsTab] = useState(taskListStatsTabs.me);
+  const [currentTrendsTab, setCurrentTrendsTab] = useState(taskListTrendsTabs.me);
 
   const taskListId = taskList?.taskListId;
 
@@ -162,10 +185,17 @@ export default forwardRef(({ taskList }, ref) => {
               <div>
                 <HeadsUpSectionHeader>
                   <span>Daily</span>
-                  <small> (All) </small>
+                  {renderTabSwitches({
+                    currentActiveTab: currentTrendsTab,
+                    tabData: taskListTrendsTabs,
+                    tabSwitchMethod: setCurrentTrendsTab,
+                  })}
                 </HeadsUpSectionHeader>
               </div>
-              <HeadsUpAreaChart taskListStats={taskListStats} />
+              <HeadsUpButtonsContainer>
+                {renderCurrentTrendTab({ currentTrendsTab, taskListStats })}
+              </HeadsUpButtonsContainer>
+              {/* <HeadsUpAreaChart taskListStats={taskListStats} /> */}
             </HeadsUpSectionContainer>
           </HeadsUpSectionGrid>
         </Grid>

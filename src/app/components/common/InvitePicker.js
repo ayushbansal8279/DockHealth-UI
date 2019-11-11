@@ -110,7 +110,8 @@ InvitePicker.propTypes = {
   members: PropTypes.arrayOf(memberShape),
   taskList: PropTypes.shape({
     listName: PropTypes.string,
-  }).isRequired,
+  })
+  // .isRequired,
 };
 
 InvitePicker.defaultProps = {

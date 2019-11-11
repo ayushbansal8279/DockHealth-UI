@@ -96,7 +96,7 @@ const Task = props => {
           )}
           <TaskSelectionContainer isSelected={selectedTaskId === task.taskId}>
             <TaskGrid container wrap="nowrap">
-              <TaskBodyContainer isSubtask={isSubtask} item xs={12}>
+              <TaskBodyContainer item xs={12}>
                 <Flag absolute priority={priority} />
                 <TaskBody {...props} handleStatusChange={handleStatusChange} />
               </TaskBodyContainer>

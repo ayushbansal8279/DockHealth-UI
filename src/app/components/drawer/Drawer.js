@@ -6,6 +6,7 @@ import MaterialDrawer from '@material-ui/core/Drawer';
 import useBoolean from '../../hooks/useBoolean';
 import DrawerList from './DrawerList';
 import DrawerTitle from './DrawerTitle';
+import Intercom from 'react-intercom';
 
 const StyledDrawer = styled(MaterialDrawer).attrs({
   variant: 'permanent',
@@ -37,6 +38,13 @@ const ContentContainer = styled.div`
 const Drawer = ({ header, user, lists, children }) => {
   const [isOpen, open, close] = useBoolean(false);
 
+  const intercomUser = {
+    email: user.email,
+    name: `${user.firstName} ${user.lastName}`,
+    // custom_launcher_selector: '.navsupport',
+  };
+  console.log(intercomUser)
+
   return (
     <div style={{ display: 'flex', height: '100%' }}>
       <StyledDrawer open={isOpen}>
@@ -48,6 +56,7 @@ const Drawer = ({ header, user, lists, children }) => {
           lists={lists}
         />
         <DrawerTitle header={header} />
+        <Intercom appID="q7dotpic" { ...intercomUser } />
       </StyledDrawer>
       <ContentContainer topPadded={header.show} open={isOpen}>
         {children}

@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { toggleListNotifications } from '../../actions/tasklist-actions';
@@ -103,6 +103,17 @@ const Header = ({
     },
     [dispatch, notificationsStatus, resetHeader, taskListId],
   );
+  const { taskListStats, taskListStatsOk } = useSelector(store => ({
+    taskListStats: store.taskListState.taskListStats,
+    taskListStatsOk: store.taskListState.taskListStatsOk,
+  }));
+
+  taskCount = 0
+  if(taskListStatsOk){
+    var key = "Incomplete_TaskList_Count"
+    taskCount = taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
+      ?.metricValue ?? 0;
+  }
 
   return (
     <StyledAppBar position="sticky" color="default" elevation={0}>
