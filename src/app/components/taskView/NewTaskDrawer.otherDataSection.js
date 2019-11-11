@@ -81,7 +81,7 @@ const renderHistoryItem = ({
   const userName = user?.userName ?? '';
   const createdMoment = moment(createdDateTime);
   const formattedDate = createdMoment.isValid()
-    ? createdMoment.format('LL')
+    ? createdMoment.format('MMM D, YYYY @ h:mma by')
     : '';
 
   const bottomRowData = `${formattedDate} ${userName}`.trim();
