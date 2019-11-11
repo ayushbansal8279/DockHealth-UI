@@ -332,6 +332,8 @@ class AddTaskForm extends PureComponent {
             options={[
               // { value: 'INCOMPLETE', label: 'INCOMPLETE' },
               // { value: 'COMPLETE', label: 'COMPLETE' },
+              // Inserted No Status Status
+              { value: 'NO_STATUS', label: 'No Status'},
               { value: 'IN_PROGRESS', label: 'In Progress' },
               { value: 'PAUSED', label: 'Paused' },
               { value: 'WAITING', label: 'Waiting' },

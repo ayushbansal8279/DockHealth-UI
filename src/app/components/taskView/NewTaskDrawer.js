@@ -106,9 +106,16 @@ const StyledButton = styled(Button)`
 `;
 
 const statusSelectData = [
+  //Inserted No Status status
+  {
+    key: 'no-status',
+    value: null,
+    label: 'No Status',
+    color: '#808080'
+  },
   {
     key: 'in-progress',
-    value: null,
+    value: 'IN_PROGRESS',
     label: 'In Progress',
     color: '#00a73c',
   },
@@ -122,7 +129,8 @@ const statusSelectData = [
     key: 'planned',
     value: 'BLOCKED',
     label: 'Planned',
-    color: '#0ca1c7',
+    color: '#DC143C',
+    //Original color: #0ca1c7
   },
 ];
 

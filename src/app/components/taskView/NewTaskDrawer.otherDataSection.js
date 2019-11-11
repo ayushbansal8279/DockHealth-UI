@@ -81,10 +81,11 @@ const renderHistoryItem = ({
   const userName = user?.userName ?? '';
   const createdMoment = moment(createdDateTime);
   const formattedDate = createdMoment.isValid()
-    ? createdMoment.format('MMM D, YYYY @ h:mma by')
+    //This is where the History Event timeDate is formated.
+    ? createdMoment.format('MMM D, YYYY @ h:mma')
     : '';
 
-  const bottomRowData = `${formattedDate} ${userName}`.trim();
+  const bottomRowData = `${formattedDate} by ${userName}`.trim();
 
   return (
     <HistoryItemContainer key={auditId}>
