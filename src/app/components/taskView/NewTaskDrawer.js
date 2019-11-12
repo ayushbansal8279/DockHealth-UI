@@ -180,7 +180,7 @@ const onSubmit = ({
   const requestData = {
     ...task,
     ...newData,
-    taskListId: taskList.taskListId,
+    taskListId: taskList,
     workflowStatus: status.value,
     priority: priorityActive ? 'HIGH' : 'LOW',
     assignedToId: assignedToUserId,
