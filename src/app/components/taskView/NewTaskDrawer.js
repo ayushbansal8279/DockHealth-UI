@@ -177,10 +177,15 @@ const onSubmit = ({
   } = data;
   let { patient } = data;
 
+  var currTaskListId = 0;
+  if(taskList && taskList.taskListId){
+    currTaskListId = taskList.taskListId
+  }
+
   const requestData = {
     ...task,
     ...newData,
-    taskListId: taskList,
+    taskListId: currTaskListId,
     workflowStatus: status.value,
     priority: priorityActive ? 'HIGH' : 'LOW',
     assignedToId: assignedToUserId,
