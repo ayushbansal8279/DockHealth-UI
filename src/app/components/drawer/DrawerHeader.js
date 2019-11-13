@@ -6,14 +6,14 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
-import { AvatarImageContainer } from '../common/Avatar.styled';
-import MemberAssignment from '../members/MemberAssignment';
 import Avatar from '../common/Avatar';
+import { AvatarImageContainer } from '../common/Avatar.styled';
 
 const StyledListItem = styled(ListItem)`
   && {
-    height: 88px;
     background: #007cab;
+    height: 88px;
+    min-height: 88px;
     :focus {
       background: #007cab;
     }
