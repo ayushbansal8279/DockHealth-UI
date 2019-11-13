@@ -115,7 +115,7 @@ export default ({ task }) => {
     setTaskListPopoverOpen,
     unsetTaskListPopoverOpen,
   ] = useBoolean(false);
-  const [isHistoryShown, , , toggleHistory] = useBoolean(false);
+  const [isHistoryShown, , hideHistory, toggleHistory] = useBoolean(false);
   const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] = useBoolean(
     false,
   );
@@ -154,6 +154,14 @@ export default ({ task }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHistoryShown]);
+
+  useEffect(() => {
+    setHistory([]);
+    hideHistory();
+    unsetHistoryLoading();
+    unsetTaskListPopoverOpen();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task?.taskId]);
 
   return (
     <OtherDataSectionContainer>

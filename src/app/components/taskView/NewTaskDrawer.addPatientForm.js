@@ -46,7 +46,8 @@ const formFieldDefinitions = [
   },
   {
     key: 'middleName',
-    label: 'Middle Name',
+    label: 'Mid. Name',
+    required: true,
     size: 4,
   },
   {
@@ -58,6 +59,7 @@ const formFieldDefinitions = [
   {
     key: 'mrn',
     label: 'MRN',
+    required: true,
   },
   {
     key: 'dob',
@@ -127,21 +129,24 @@ const renderFormFieldDefinition = ({ setValue }) => ({
     : {};
 
   return (
-    <Grid key={key} item xs={size ?? 12}>
-      <StyledInput
-        backgroundColor="#fff"
-        containerHeight={isTextarea ? 6.6875 : 3.5}
-        containerMarginTop={isTextarea ? 1.1875 : 0}
-        fontSize={16}
-        isTextarea={isTextarea}
-        label={label}
-        labelFontSize={14}
-        labelInactiveTop={1.75}
-        name={key}
-        ref={inputRef}
-        {...inputPopoverProps}
-        {...props}
-      />
+    <Grid key={key} container item xs={size ?? 12} alignItems="flex-end">
+      <Grid item xs>
+        <StyledInput
+          backgroundColor="#fff"
+          containerHeight={isTextarea ? 6.6875 : 3.5}
+          containerMarginTop={isTextarea ? 1.1875 : 0}
+          containerMarginTopOnError={0.75}
+          fontSize={16}
+          isTextarea={isTextarea}
+          label={label}
+          labelFontSize={14}
+          labelInactiveTop={1.75}
+          name={key}
+          ref={inputRef}
+          {...inputPopoverProps}
+          {...props}
+        />
+      </Grid>
       {popoverOptions && (
         <Popover
           anchorEl={inputRef.current}
