@@ -687,15 +687,13 @@ const TaskReducer = (state = initialState, action) => {
       };
     }
 
-    case CHANGE_ADDING_NEW_TASK:
-      {
-        const { addingNewTask } = action;
-        return {
-          ...state,
-          addingNewTask,
-        };
-      }
-      k;
+    case CHANGE_ADDING_NEW_TASK: {
+      const { addingNewTask } = action;
+      return {
+        ...state,
+        addingNewTask,
+      };
+    }
     default:
       return state;
   }

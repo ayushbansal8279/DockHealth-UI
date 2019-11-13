@@ -1,9 +1,12 @@
 import Chart from 'chart.js';
-import React, { useRef, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import _ from 'lodash';
 import moment from 'moment';
-import { isWithinInterval } from 'date-fns/fp';
+import find from 'ramda/es/find';
+import map from 'ramda/es/map';
+import prop from 'ramda/es/prop';
+import propEq from 'ramda/es/propEq';
+import range from 'ramda/es/range';
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
 
 const ChartOuterContainer = styled.div`
   flex: 1;
@@ -17,49 +20,60 @@ const ChartContainer = styled.div`
   position: relative;
 `;
 
-export default ({taskListTrends, currentTab}) => {
+export default ({ taskListTrends, currentTab }) => {
   const chartRef = useRef(null);
   const [chart, setChart] = useState(null);
   const [tabName, setTabName] = useState(null);
 
-  const getSpecificDayListTrends = (taskListTrends) => {
-    if(!taskListTrends){
-      return taskListTrends
+  const getSpecificDayListTrends = trends => {
+    if (!trends) {
+      return trends;
     }
-    var taskListTrendsSpecificDays = []
-    var dayIndex = 0
-    while(dayIndex < 7){
-      var dateVal = moment().subtract(dayIndex, 'days').format('YYYY-MM-DDT00:00:00.000+0000')
-      var exisitingElt = _.find(taskListTrends, {date: dateVal})
-      if(!exisitingElt) {
-        taskListTrendsSpecificDays.push({date: dateVal, metricValue: 0});
-      }else{
+
+    const taskListTrendsSpecificDays = [];
+
+    range(0, 7).forEach(dayIndex => {
+      const dateVal = moment()
+        .subtract(dayIndex, 'days')
+        .format('YYYY-MM-DDT00:00:00.000+0000');
+
+      const exisitingElt = find(propEq('date', dateVal), trends);
+      if (!exisitingElt) {
+        taskListTrendsSpecificDays.push({ date: dateVal, metricValue: 0 });
+      } else {
         taskListTrendsSpecificDays.push(exisitingElt);
       }
-      dayIndex++
-    }
-    return taskListTrendsSpecificDays
+    });
+
+    return taskListTrendsSpecificDays;
   };
 
-  if (chart && currentTab!=tabName) {
-    var specificDaysListTrends = getSpecificDayListTrends(taskListTrends)
-    var slicedTrendsArray = (specificDaysListTrends?specificDaysListTrends.slice(0,7):[])
-    var labels = _.map(slicedTrendsArray, "date") 
-    var data = _.map(slicedTrendsArray, "metricValue")
-    chart.data.labels = labels
-    chart.data.datasets[0].data = data
-    chart.update()
-    setTabName(currentTab)
-  }
+  const getChartDataFromTrends = trends => {
+    const specificDaysListTrends = getSpecificDayListTrends(trends);
+    const slicedTrendsArray = specificDaysListTrends?.slice(0, 7) ?? [];
+    const labels = map(prop('date'), slicedTrendsArray);
+    const data = map(prop('metricValue'), slicedTrendsArray);
+
+    return { data, labels };
+  };
+
+  useEffect(() => {
+    if (chart && currentTab !== tabName) {
+      const { data, labels } = getChartDataFromTrends(taskListTrends);
+      chart.data.labels = labels;
+      chart.data.datasets[0].data = data;
+      chart.update();
+      setTabName(currentTab);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab]);
 
   useEffect(
     () => {
-      if (chartRef.current && !chart && currentTab!=tabName) {
-        var specificDaysListTrends = getSpecificDayListTrends(taskListTrends)
-        var slicedTrendsArray = (specificDaysListTrends?specificDaysListTrends.slice(0,7):[])
-        var labels = _.map(slicedTrendsArray, "date") 
-        var data = _.map(slicedTrendsArray, "metricValue")
-        setTabName(currentTab)
+      if (chartRef.current && !chart && currentTab !== tabName) {
+        const { data, labels } = getChartDataFromTrends(taskListTrends);
+        setTabName(currentTab);
+
         setChart(
           new Chart(chartRef.current, {
             options: {
@@ -76,12 +90,12 @@ export default ({taskListTrends, currentTab}) => {
                     },
                     type: 'time',
                     time: {
-                        unit: 'day',
-                        displayFormats: {
-                          day: 'MMM D'
-                        }
+                      unit: 'day',
+                      displayFormats: {
+                        day: 'MMM D',
+                      },
                     },
-                    distribution: 'series'
+                    distribution: 'series',
                   },
                 ],
                 yAxes: [
@@ -108,11 +122,11 @@ export default ({taskListTrends, currentTab}) => {
             },
             type: 'line',
             data: {
-              labels: labels,
+              labels,
               datasets: [
                 {
                   label: 'Tasks',
-                  data: data,
+                  data,
                   backgroundColor: 'rgba(0, 124, 171, 0.2)',
                   borderColor: 'rgba(0, 124, 171)',
                   pointBorderColor: 'transparent',
@@ -128,13 +142,6 @@ export default ({taskListTrends, currentTab}) => {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [chartRef.current],
-  );
-
-  useEffect(
-    () => {
-      console.log(chart);
-    },
-    [chart],
   );
 
   return (

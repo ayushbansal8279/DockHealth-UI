@@ -1,10 +1,12 @@
 import ButtonBase from '@material-ui/core/ButtonBase';
-import styled from 'styled-components';
-import React from 'react';
 import Grid from '@material-ui/core/Grid';
+import Toolbar from '@material-ui/core/Toolbar';
+import React from 'react';
+import styled from 'styled-components';
 
 export const TaskViewGrid = styled(Grid)`
   && {
+    max-width: 1152px;
     position: relative;
   }
 `;
@@ -99,6 +101,12 @@ export const StyledSlimViewSwitch = ({ slimView, ...props }) => (
   </SwitchButton>
 );
 
+export const StyledToolbar = styled(Toolbar)`
+  && {
+    padding: 0 0.625rem;
+  }
+`;
+
 export const ToolbarContainer = styled.div`
   & > *:not(:last-child) {
     margin-right: 1rem;
@@ -106,5 +114,5 @@ export const ToolbarContainer = styled.div`
 `;
 
 export const TableWrapper = styled.div`
-  width: ${props => (props.taskDrawerOpen ? 'calc(60% - 1rem)' : '100%')};
+  width: 100%;
 `;

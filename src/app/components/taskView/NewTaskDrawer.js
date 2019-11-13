@@ -32,14 +32,13 @@ import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
 const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
   display: flex;
+  flex: 1.4;
   height: 100%;
-  margin-top: 3.75rem;
   justify-content: flex-start;
-  padding: 4px;
+  padding: 0 0.25rem;
   position: sticky;
   transition: all 0.25s ease-out;
   top: 6.25rem;
-  width: 40%;
 `;
 
 const TopLabel = styled.div`

@@ -15,6 +15,7 @@ import {
   HeadsUpSectionGrid,
   HeadsUpSectionHeader,
   HeadsUpSectionHeaderButton,
+  HeadsUpSectionDivider,
 } from './HeadsUpArea.styled';
 import HeadsUpAreaChart from './HeadsUpArea.chart';
 
@@ -174,6 +175,7 @@ export default forwardRef(({ taskList }, ref) => {
                     tabSwitchMethod: setCurrentStatsTab,
                   })}
                 </HeadsUpSectionHeader>
+                <HeadsUpSectionDivider />
               </div>
               <HeadsUpButtonsContainer>
                 {renderCurrentTab({ currentStatsTab, taskListStats })}
@@ -191,6 +193,7 @@ export default forwardRef(({ taskList }, ref) => {
                     tabSwitchMethod: setCurrentTrendsTab,
                   })}
                 </HeadsUpSectionHeader>
+                <HeadsUpSectionDivider />
               </div>
               <HeadsUpButtonsContainer>
                 {renderCurrentTrendTab({ currentTrendsTab, taskListStats })}

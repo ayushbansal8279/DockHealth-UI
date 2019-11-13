@@ -3,7 +3,6 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
 import equals from 'ramda/es/equals';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -23,6 +22,7 @@ import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
 import SortingStatsIcon from '../img/sorting-stats.svg';
 import {
   StyledSlimViewSwitch,
+  StyledToolbar,
   TableWrapper,
   TaskViewGrid,
   ToolbarContainer,
@@ -49,8 +49,8 @@ const FadeContainer = styled.div`
 `;
 
 const TaskListContainer = styled.div`
-  padding: 0 8px;
-  flex: 1;
+  flex: 2;
+  padding: 0 0.375rem;
 `;
 
 const StyledButton = styled(ButtonBase)`
@@ -395,115 +395,97 @@ class TaskView extends Component {
   };
 
   render() {
-    const {
-      tasks,
-      completedTasks,
-      isFetching,
-      selectedTaskId,
-      downloadPDF,
-      taskList,
-      showToolbar,
-    } = this.props;
+    const { isFetching, downloadPDF, taskList, showToolbar } = this.props;
     const { slimView, taskDrawerOpen } = this.state;
 
-    const taskId = selectedTaskId != null && selectedTaskId;
-    const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
-    const finishedTasks = completedTasks.flatMap(task => [
-      task,
-      ...task.subtasks,
-    ]);
-    const allTasks = [...unfinishedTasks, ...finishedTasks];
-    const task = allTasks.find(t => t.taskId === taskId);
-
-    // TODO: Optimize!!!
-    const isCompletedTaskSelected =
-      task && !unfinishedTasks.find(t => t.taskId === task.taskId);
-    const isMainTaskComplete =
-      task &&
-      task.parentTaskId &&
-      allTasks.find(
-        t => t.taskId === task.parentTaskId && t.status === 'COMPLETE',
-      );
-
-    const isInbox = tasks.length !== 0 && tasks[0].taskList === null;
-    const taskListId = taskList?.taskListId;
-
     return (
-      <div>
-        <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
-        <TaskViewGrid container wrap="nowrap">
-          <TableWrapper taskDrawerOpen={taskDrawerOpen}>
-            {showToolbar && (
-              <Toolbar>
-                <Grid container alignItems="center" justify="space-between">
-                  <ToolbarContainer>
-                    <StyledSlimViewSwitch
-                      onClick={this.switchSlimView}
-                      slimView={slimView}
-                      variant="contained"
-                    />
-                    <TaskListAction
-                      alt="Filter"
-                      backgroundColor="#fff"
-                      icon={FilterIcon}
-                      onClick={this.openFilterPopover}
-                      ref={this.filterButton}
-                    >
-                      Filter
-                    </TaskListAction>
-                    <TaskListAction
-                      alt="Filter"
-                      active
-                      activeIcon={SortingStatsActiveIcon}
-                      backgroundColor="#fff"
-                      icon={SortingStatsIcon}
-                    >
-                      Sorting & Stats
-                    </TaskListAction>
-                    <Search onChange={this.handleSearch} />
-                    <TaskListAction
-                      alt="Print"
-                      backgroundColor="#fff"
-                      icon={PrintIcon}
-                      onClick={downloadPDF}
-                    >
-                      Print
-                    </TaskListAction>
-                  </ToolbarContainer>
-                  {!taskDrawerOpen && (
-                    <AddTaskButton onClick={this.onAddTaskButtonClick} />
-                  )}
-                </Grid>
-              </Toolbar>
-            )}
-            {isFetching ? (
-              <FadeContainer>
-                <Fade
-                  in={isFetching}
-                  unmountOnExit
-                  style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
-                >
-                  <ProgressIcon />
-                </Fade>
-              </FadeContainer>
-            ) : (
-              <div style={{ display: 'flex' }}>
-                <TaskListContainer>
-                  {this.renderTasklists()}
-                  {this.renderCompleted()}
-                </TaskListContainer>
-              </div>
-            )}
-          </TableWrapper>
-          {taskDrawerOpen && (
-            <NewTaskDrawer
-              headsUpAreaRef={this.headsUpArea.current}
-              closeDrawer={this.closeTaskDrawer}
-              taskList={taskList}
-            />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1152px',
+          }}
+        >
+          <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
+          {showToolbar && (
+            <StyledToolbar>
+              <Grid container alignItems="center" justify="space-between">
+                <ToolbarContainer>
+                  <StyledSlimViewSwitch
+                    onClick={this.switchSlimView}
+                    slimView={slimView}
+                    variant="contained"
+                  />
+                  <TaskListAction
+                    alt="Filter"
+                    backgroundColor="#fff"
+                    icon={FilterIcon}
+                    onClick={this.openFilterPopover}
+                    ref={this.filterButton}
+                  >
+                    Filter
+                  </TaskListAction>
+                  <TaskListAction
+                    alt="Filter"
+                    active
+                    activeIcon={SortingStatsActiveIcon}
+                    backgroundColor="#fff"
+                    icon={SortingStatsIcon}
+                  >
+                    Sorting & Stats
+                  </TaskListAction>
+                  <Search onChange={this.handleSearch} />
+                  <TaskListAction
+                    alt="Print"
+                    backgroundColor="#fff"
+                    icon={PrintIcon}
+                    onClick={downloadPDF}
+                  >
+                    Print
+                  </TaskListAction>
+                </ToolbarContainer>
+                {!taskDrawerOpen && (
+                  <AddTaskButton onClick={this.onAddTaskButtonClick} />
+                )}
+              </Grid>
+            </StyledToolbar>
           )}
-        </TaskViewGrid>
-        {this.renderFilterPopover()}
+          <TaskViewGrid container wrap="nowrap">
+            <TableWrapper taskDrawerOpen={taskDrawerOpen}>
+              {isFetching ? (
+                <FadeContainer>
+                  <Fade
+                    in={isFetching}
+                    unmountOnExit
+                    style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
+                  >
+                    <ProgressIcon />
+                  </Fade>
+                </FadeContainer>
+              ) : (
+                <div style={{ display: 'flex' }}>
+                  <TaskListContainer>
+                    {this.renderTasklists()}
+                    {this.renderCompleted()}
+                  </TaskListContainer>
+                  {taskDrawerOpen && (
+                    <NewTaskDrawer
+                      headsUpAreaRef={this.headsUpArea.current}
+                      closeDrawer={this.closeTaskDrawer}
+                      taskList={taskList}
+                    />
+                  )}
+                </div>
+              )}
+            </TableWrapper>
+          </TaskViewGrid>
+          {this.renderFilterPopover()}
+        </div>
       </div>
     );
   }

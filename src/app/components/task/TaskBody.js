@@ -98,6 +98,11 @@ const TaskBody = ({
 
   const elementPaddingBottom = `${isSubtask ? 12 : 16}px`;
 
+  const firstLetterName = creator?.firstName?.charAt(0);
+  const formattedUserName = `${firstLetterName ? `${firstLetterName}.` : ''} ${
+    creator?.lastName
+  }`;
+
   return (
     <div
       style={{ height: '100%', cursor: 'pointer', display: 'flex' }}
@@ -113,7 +118,6 @@ const TaskBody = ({
       {isSubtask && (
         <SubtaskOrderContainer>{`${subtaskIndex}.`}</SubtaskOrderContainer>
       )}
-
       {isNewSubtask ? (
         <SubtaskLoadingContainer>
           <CubesLoader size={30} />
@@ -125,7 +129,8 @@ const TaskBody = ({
               alignItems: 'center',
               display: 'flex',
               justifyContent: 'center',
-              width: 60,
+              width: 54,
+              minWidth: 54,
             }}
           >
             <TaskCheckbox
@@ -195,7 +200,7 @@ const TaskBody = ({
                       }}
                     />
                   )}
-                  {`Assigned by ${creator.userName} at ${formattedCreationDate}${countInfoContent}`}
+                  {`Assigned by ${formattedUserName} at ${formattedCreationDate}${countInfoContent}`}
                 </PatientsTasklistInfo>
               </Grid>
               <Grid item xs={12}>
@@ -207,7 +212,7 @@ const TaskBody = ({
               </Grid>
               {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
             </PatientTasklistContainer>
-            {!isSubtask && (
+            {!isSubtask && !taskDrawerOpen && (
               <PatientTasklistPatient
                 elementPaddingBottom={elementPaddingBottom}
               >
@@ -229,10 +234,10 @@ const TaskBody = ({
                   alignItems: 'flex-end',
                   display: 'flex',
                   lineHeight: '12px',
-                  marginRight: '24px',
+                  paddingRight: '24px',
                   paddingBottom: elementPaddingBottom,
-                  minWidth: '140px',
-                  width: '140px',
+                  minWidth: '180px',
+                  width: '180px',
                 }}
               >
                 {dueDate && (
@@ -247,8 +252,8 @@ const TaskBody = ({
                 <div
                   style={{
                     paddingBottom: elementPaddingBottom,
-                    minWidth: '90px',
-                    width: '90px',
+                    minWidth: '39px',
+                    width: '39px',
                   }}
                 >
                   <PriorityContainer>
@@ -260,9 +265,9 @@ const TaskBody = ({
                     alignItems: 'flex-end',
                     display: 'flex',
                     justifyContent: 'flex-start',
-                    marginRight: isSubtask ? '18px' : '24px',
-                    minWidth: '120px',
-                    width: '120px',
+                    paddingRight: isSubtask ? 0 : 6,
+                    minWidth: '39px',
+                    width: '39px',
                     paddingBottom: elementPaddingBottom,
                   }}
                 >
