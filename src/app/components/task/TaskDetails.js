@@ -103,8 +103,8 @@ class TaskDetails extends React.PureComponent {
               //Inserted No status status
               { value: 'NO_STATUS', description: 'No Status'},
               { value: 'IN_PROGRESS', description: 'In Progress' },
-              { value: 'ON_HOLD', description: 'On Hold' },
               { value: 'BLOCKED', description: 'Planned' },
+              { value: 'ON_HOLD', description: 'On Hold' },
             ]}
           />
         </StatusContainer>

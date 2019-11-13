@@ -145,10 +145,15 @@ export default ({ task }) => {
   useEffect(() => {
     if (isHistoryShown) {
       setHistoryLoading();
-      getTaskHistory(task)(dispatch).then(historyDetails => {
-        setHistory(historyDetails);
-        unsetHistoryLoading();
-      });
+      //The following if statement checks if task is null.
+      if(task != null){
+        getTaskHistory(task)(dispatch).then(historyDetails => {
+          //This is the step that causes the webage to blank out if history is clicked
+          setHistory(historyDetails);
+          //unsetHistoryLoading();
+        });
+      }
+      unsetHistoryLoading();
     } else {
       setHistory([]);
     }

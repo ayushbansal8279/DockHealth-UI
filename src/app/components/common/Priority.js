@@ -8,10 +8,12 @@ export const priorityColor = priority => {
     default: 
       return '#808080'
     case 'BLOCKED':
-      return '#DC143C';
-      //Original Color: #0ca1c7
-    case 'ON_HOLD':
       return '#f6b039';
+    // Original color: #0ca1c7
+    // Second color: #dc143c
+    case 'ON_HOLD':
+      return '#dc143c';
+      //Original color: #f6b039
     case 'IN_PROGRESS':
       return '#00a73c';
   }

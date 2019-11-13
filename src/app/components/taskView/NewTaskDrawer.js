@@ -119,17 +119,19 @@ const statusSelectData = [
     color: '#00a73c',
   },
   {
-    key: 'on-hold',
-    value: 'ON_HOLD',
-    label: 'On Hold',
-    color: '#f6b039',
-  },
-  {
     key: 'planned',
     value: 'BLOCKED',
     label: 'Planned',
-    color: '#dc143c',
+    color: '#f6b039',
     // Original color: #0ca1c7
+    // Second color: #dc143c
+  },
+  {
+    key: 'on-hold',
+    value: 'ON_HOLD',
+    label: 'On Hold',
+    color: '#dc143c',
+    //Original color: #f6b039
   },
 ];
 
