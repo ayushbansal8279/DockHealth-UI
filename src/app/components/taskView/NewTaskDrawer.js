@@ -105,12 +105,12 @@ const StyledButton = styled(Button)`
 `;
 
 const statusSelectData = [
-  //Inserted No Status status
+  // Inserted No Status status
   {
     key: 'no-status',
     value: null,
     label: 'No Status',
-    color: '#808080'
+    color: '#808080',
   },
   {
     key: 'in-progress',
@@ -128,8 +128,8 @@ const statusSelectData = [
     key: 'planned',
     value: 'BLOCKED',
     label: 'Planned',
-    color: '#DC143C',
-    //Original color: #0ca1c7
+    color: '#dc143c',
+    // Original color: #0ca1c7
   },
 ];
 
@@ -176,9 +176,9 @@ const onSubmit = ({
   } = data;
   let { patient } = data;
 
-  var currTaskListId = 0;
-  if(taskList && taskList.taskListId){
-    currTaskListId = taskList.taskListId
+  let currTaskListId = 0;
+  if (taskList && taskList.taskListId) {
+    currTaskListId = taskList.taskListId;
   }
 
   const requestData = {

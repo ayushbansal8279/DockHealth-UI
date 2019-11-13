@@ -80,8 +80,9 @@ const renderHistoryItem = ({
 }) => {
   const userName = user?.userName ?? '';
   const createdMoment = moment(createdDateTime);
+
+  // This is where the History Event timeDate is formated.
   const formattedDate = createdMoment.isValid()
-    //This is where the History Event timeDate is formated.
     ? createdMoment.format('MMM D, YYYY @ h:mma')
     : '';
 
