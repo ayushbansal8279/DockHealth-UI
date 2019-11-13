@@ -121,6 +121,27 @@ export const PlainLink = styled.a`
   }
 `;
 
+export const StyledLinkLabel = styled.div`
+  display: inline-flex;
+  font-size: 20px;
+  margin-right: 0.5rem;
+  margin-top: 4rem;
+`;
+
+export const StyledRouterLink = styled(Link)`
+  color: #0ca1c7;
+  display: inline-flex;
+  font-size: 20px;
+  margin-top: 4rem;
+  text-decoration: none;
+  transition: filter 0.2s ease;
+
+  &:hover {
+    color: #0ca1c7;
+    filter: brightness(1.25);
+  }
+`;
+
 export const LogoutHeaderButton = styled(Link)`
   align-items: center;
   background-color: rgba(255, 255, 255, 0.2);
