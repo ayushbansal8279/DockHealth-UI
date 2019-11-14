@@ -7,7 +7,7 @@ export const PatientsTasklistNew = styled.div`
   font-variant: small-caps;
   left: 0;
   position: absolute;
-  top: -0.625rem;
+  top: -0.75rem;
 `;
 
 export const PatientsTasklistDescription = styled.div`
