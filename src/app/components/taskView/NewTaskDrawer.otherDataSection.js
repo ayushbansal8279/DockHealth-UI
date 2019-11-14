@@ -9,6 +9,7 @@ import useBoolean from '../../hooks/useBoolean';
 import DateTimeSelect from '../common/DateTimeSelect';
 import { getTaskHistory } from '../../actions/task-actions';
 import CubesLoader from '../common/CubesLoader';
+import { TASK_ATTACHMENT_ADDED } from '../../actions/action-types';
 
 const OtherDataSectionContainer = styled.div`
   padding: 1rem 1.5rem;
@@ -25,6 +26,8 @@ const SectionRow = styled.div`
 
 const SectionButtonContainer = styled.div`
   flex: 5;
+  //Modified font of the history container.
+  font-size: 0.875rem;
 `;
 
 const SectionButton = styled.span`
@@ -98,6 +101,9 @@ const renderHistoryItem = ({
 
 export default ({ task }) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];
+  const currentUser = useSelector(store => store.userState.userProfile) ;
+  //TODO better style the time/date used while creating a task
+  const todaysMoment = moment().format('MMM D, YYYY @ h:mma');
 
   const { register, setValue } = useFormContext();
   const dispatch = useDispatch();
@@ -237,14 +243,22 @@ export default ({ task }) => {
       </SectionRow>
       <SectionRow>
         <SectionLabel>History</SectionLabel>
-        <SectionButtonContainer>
-          <SectionButton
-            color="#0ca1c7"
-            onClick={isHistoryLoading ? undefined : toggleHistory}
-          >
-            {isHistoryShown ? 'Hide' : 'Show'}
-          </SectionButton>
-        </SectionButtonContainer>
+        {task && task.taskId && (
+          <SectionButtonContainer>   
+            <SectionButton
+              color="#0ca1c7"
+              onClick={isHistoryLoading ? undefined : toggleHistory}
+              >
+              {isHistoryShown ? 'Hide' : 'Show'}
+            </SectionButton>
+          </SectionButtonContainer>
+        )}
+        {(!task || !task.taskId) && (
+          //TOdone Add date to the created by text...     @ {moment.format('MMM D, YYYY h:mma')}
+          <SectionButtonContainer>  
+            Created by {currentUser.firstName} {currentUser.lastName} on {todaysMoment}
+          </SectionButtonContainer>
+        )}
       </SectionRow>
       {isHistoryShown && (
         <SectionRow>
