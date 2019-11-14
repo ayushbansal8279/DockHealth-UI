@@ -549,8 +549,17 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
       throw err;
     });
 
-export function refreshTask(task) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
-  };          
+export function refreshTask(selectedTask) {
+  TaskApi.getTaskDetails(selectedTask.taskId)
+    .then((task) => {
+      //explicitly mark task as updated so we can show the flag
+      task.updated = true
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_SUCCESS,
+        task
+      });
+    })
+    .catch(err => {
+      throw err;
+    });
 }

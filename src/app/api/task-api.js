@@ -561,3 +561,13 @@ export function removeTaskAttachment(taskAttachmentId) {
       throw error;
     });
 }
+
+export function getTaskDetails(taskId) {
+  return axios
+    .get(`task/${taskId}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw error;
+    });
+}
