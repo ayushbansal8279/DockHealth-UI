@@ -1,23 +1,18 @@
 import IconButton from '@material-ui/core/IconButton';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
-import {
-  addTaskComment,
-  markComplete,
-  saveTask,
-  storeAsCurrentTask,
-  toggleTaskPriority,
-} from '../../actions/task-actions';
+import { saveTask, storeAsCurrentTask } from '../../actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
+import useBoolean from '../../hooks/useBoolean';
 import usePatient from '../../hooks/usePatient';
 import BackIcon from '../../img/back.svg';
-import TaskDetails from '../task/TaskDetails';
 import PatientEdit from '../patients/PatientEdit';
 import { PatientsSidebarSection } from '../patients/PatientsSidebar';
 import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
+import NewTaskDrawer from '../taskView/NewTaskDrawer';
 
 const PatientProfileHeaderContainer = styled.div`
   display: flex;
@@ -54,7 +49,9 @@ const Back = () => (
 const PatientProfileHeader = ({ patient }) => (
   <PatientProfileHeaderContainer>
     <Back />
-    {patient && <Heading>{`${patient.firstName} ${patient.lastName} ${patient.mrn}`}</Heading>}
+    {patient && (
+      <Heading>{`${patient.firstName} ${patient.lastName} ${patient.mrn}`}</Heading>
+    )}
   </PatientProfileHeaderContainer>
 );
 
@@ -63,29 +60,61 @@ const PatientDetails = styled.div`
   flex: 1;
 `;
 
-const renderPatientSection = ({ selectedTask, patientId, dispatch }) => ({
-  listName,
-  taskListId,
-  tasks,
-  completedTasks,
-}) => (
-  <PatientsSidebarSection heading={listName} key={listName}>
-    <PatientsTasklistEditable
-      tasks={tasks}
-      completedTasks={completedTasks}
-      submitTask={description => dispatch(saveTask({ description, taskListId, patientId }))}
-      selectedTaskId={selectedTask?.taskId}
-    />
-  </PatientsSidebarSection>
-);
+const PatientBottomContainer = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+`;
+
+const PatientListsContainer = styled.div`
+  flex: 2;
+`;
+
+const PatientDrawerContainer = styled.div`
+  flex: 1.4;
+`;
+
+const renderPatientSection = ({
+  selectedTask,
+  patientId,
+  dispatch,
+  closeTaskDrawer,
+  ...otherProps
+}) => ({ listName, taskListId, tasks, completedTasks }) => {
+  const selectCurrentTask = task => {
+    if (!task) {
+      closeTaskDrawer();
+    }
+    storeAsCurrentTask(task)(dispatch);
+  };
+
+  return (
+    <PatientsSidebarSection heading={listName} key={listName}>
+      <PatientsTasklistEditable
+        tasks={tasks}
+        completedTasks={completedTasks}
+        submitTask={description =>
+          saveTask({ description, taskListId, patientId })(dispatch)
+        }
+        selectCurrentTask={selectCurrentTask}
+        {...otherProps}
+      />
+    </PatientsSidebarSection>
+  );
+};
 
 const PatientProfileLayout = ({ patientId }) => {
   const dispatch = useDispatch();
-  const {
-    details, tasks, completedTasks, selectedTask,
-  } = usePatient(patientId);
+  const [taskDrawerOpen, openTaskDrawer, closeTaskDrawer] = useBoolean(false);
+  const { details, tasks, completedTasks, selectedTask } = usePatient(
+    patientId,
+  );
   const lists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
-  const userId = useSelector(store => store.userState.userProfile.userId);
+
+  const selectedTaskId = taskDrawerOpen ? selectedTask?.taskId : undefined;
+
+  const selectedTaskList = lists?.find(
+    ({ taskListId }) => taskListId === selectedTask?.taskListId,
+  );
 
   return (
     <>
@@ -94,27 +123,30 @@ const PatientProfileLayout = ({ patientId }) => {
         {details && (
           <PatientDetails>
             <PatientEdit patient={details} />
-            {lists.map(renderPatientSection({ selectedTask, patientId, dispatch }))}
+            <PatientBottomContainer>
+              <PatientListsContainer>
+                {lists.map(
+                  renderPatientSection({
+                    selectedTask,
+                    selectedTaskId,
+                    patientId,
+                    dispatch,
+                    closeTaskDrawer,
+                    openTaskDrawer,
+                    taskDrawerOpen,
+                  }),
+                )}
+              </PatientListsContainer>
+              {taskDrawerOpen && (
+                <PatientDrawerContainer>
+                  <NewTaskDrawer
+                    closeDrawer={closeTaskDrawer}
+                    taskList={selectedTaskList}
+                  />
+                </PatientDrawerContainer>
+              )}
+            </PatientBottomContainer>
           </PatientDetails>
-        )}
-        {selectedTask && (
-          <TaskDetails
-            addTaskComment={(comment) => {
-              dispatch(addTaskComment(selectedTask, { comment }));
-            }}
-            userId={userId}
-            selectedTask={selectedTask}
-            close={() => {
-              dispatch(storeAsCurrentTask(null));
-            }}
-            markComplete={(task, status, listName) => {
-              dispatch(markComplete(task, status, listName));
-            }}
-            toggleTaskPriority={(task, priority) => {
-              dispatch(toggleTaskPriority(task, userId, priority));
-            }}
-            stickyStyle={{ paddingTop: '9px', top: 0 }}
-          />
         )}
       </div>
     </>

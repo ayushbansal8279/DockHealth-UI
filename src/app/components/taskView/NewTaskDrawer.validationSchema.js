@@ -16,15 +16,16 @@ export const matchEmptyDate = value =>
 
 export const addPatientValidationSchema = object().shape({
   firstName: string().required(REQUIRED_MESSAGE),
-  middleName: string().notRequired(),
+  middleName: string().required(REQUIRED_MESSAGE),
   lastName: string().required(REQUIRED_MESSAGE),
-  mrn: string().notRequired(),
+  mrn: string().required(REQUIRED_MESSAGE),
   dob: string()
     // eslint-disable-next-line func-names
     .transform(function(value) {
       return this.isType(value) && matchEmptyDate(value);
     })
-    .matches(DATE_MASK, DATE_MASK_MESSAGE),
+    .matches(DATE_MASK, DATE_MASK_MESSAGE)
+    .nullable(),
   gender: string().notRequired(),
   phoneHome: string()
     // eslint-disable-next-line func-names

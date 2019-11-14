@@ -162,6 +162,8 @@ export default ({ defaultValues, isSubtask }) => {
   useEffect(
     () => {
       reset(defaultValues);
+      closeAssignedToPopover();
+      closePatientPopover();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [defaultValues?.taskId],

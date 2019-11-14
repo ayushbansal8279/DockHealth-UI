@@ -37,6 +37,9 @@ const TaskBody = ({
   markAsUnread,
   openTaskDrawer,
   taskDrawerOpen,
+  hidePatient,
+  hideCheckbox,
+  readOnly,
 }) => {
   const {
     createdDateTime,
@@ -49,8 +52,6 @@ const TaskBody = ({
     description,
     creator,
     assignedTo,
-    taskList,
-    taskId,
     status,
     patient,
     completedDt: completedDateTime,
@@ -98,45 +99,58 @@ const TaskBody = ({
 
   const elementPaddingBottom = `${isSubtask ? 12 : 16}px`;
 
+  const firstLetterName = creator?.firstName?.charAt(0);
+  const formattedUserName = `${firstLetterName ? `${firstLetterName}.` : ''} ${
+    creator?.lastName
+  }`;
+
   return (
     <div
-      style={{ height: '100%', cursor: 'pointer', display: 'flex' }}
+      style={{
+        height: '100%',
+        cursor: readOnly ? 'default' : 'pointer',
+        display: 'flex',
+      }}
       onClick={e => {
         e.stopPropagation();
-        openTaskDrawer();
-        /* eslint-disable no-unused-expressions */
-        storeAsCurrentTask?.(task);
-        markAsUnread?.(task, false);
-        /* eslint-enable no-unused-expressions */
+        if (!readOnly) {
+          /* eslint-disable no-unused-expressions */
+          openTaskDrawer?.();
+          storeAsCurrentTask?.(task);
+          markAsUnread?.(task, false);
+          /* eslint-enable no-unused-expressions */
+        }
       }}
     >
       {isSubtask && (
         <SubtaskOrderContainer>{`${subtaskIndex}.`}</SubtaskOrderContainer>
       )}
-
       {isNewSubtask ? (
         <SubtaskLoadingContainer>
           <CubesLoader size={30} />
         </SubtaskLoadingContainer>
       ) : (
         <>
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              width: 60,
-            }}
-          >
-            <TaskCheckbox
-              checked={status === 'COMPLETE'}
-              onChange={handleStatusChange}
-              onClick={e => {
-                e.stopPropagation();
+          {!hideCheckbox && (
+            <div
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                width: 54,
+                minWidth: 54,
               }}
-              disabled={disabled || (isSubtask && isParentComplete)}
-            />
-          </div>
+            >
+              <TaskCheckbox
+                checked={status === 'COMPLETE'}
+                onChange={handleStatusChange}
+                onClick={e => {
+                  e.stopPropagation();
+                }}
+                disabled={disabled || (isSubtask && isParentComplete)}
+              />
+            </div>
+          )}
           <MemberPickerContainer>
             <MemberPicker
               task={task}
@@ -153,34 +167,15 @@ const TaskBody = ({
               xs={12}
             >
               <Grid item xs={12}>
-                {storeAsCurrentTask ? (
-                  <PatientsTasklistDescription>
-                    {description || (
-                      <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                    )}
-                    <PatientsTasklistStrikeThrough
-                      hasDescription={Boolean(description)}
-                      active={status === 'COMPLETE'}
-                    />
-                  </PatientsTasklistDescription>
-                ) : (
-                  <Link
-                    to={{
-                      pathname: `/tasks/${taskList.listName}${
-                        taskList.taskListId ? `/${taskList.taskListId}` : ''
-                      }`,
-                      state: { taskId },
-                    }}
-                  >
-                    <PatientsTasklistDescription
-                      isComplete={status === 'COMPLETE'}
-                    >
-                      {description || (
-                        <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                      )}
-                    </PatientsTasklistDescription>
-                  </Link>
-                )}
+                <PatientsTasklistDescription>
+                  {description || (
+                    <div style={{ color: '#ababb2' }}>Unnamed task</div>
+                  )}
+                  <PatientsTasklistStrikeThrough
+                    hasDescription={Boolean(description)}
+                    active={status === 'COMPLETE'}
+                  />
+                </PatientsTasklistDescription>
               </Grid>
               <Grid item xs={12}>
                 <PatientsTasklistInfo>
@@ -195,7 +190,7 @@ const TaskBody = ({
                       }}
                     />
                   )}
-                  {`Assigned by ${creator.userName} at ${formattedCreationDate}${countInfoContent}`}
+                  {`Assigned by ${formattedUserName} at ${formattedCreationDate}${countInfoContent}`}
                 </PatientsTasklistInfo>
               </Grid>
               <Grid item xs={12}>
@@ -207,7 +202,7 @@ const TaskBody = ({
               </Grid>
               {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
             </PatientTasklistContainer>
-            {!isSubtask && (
+            {!isSubtask && !taskDrawerOpen && !hidePatient && (
               <PatientTasklistPatient
                 elementPaddingBottom={elementPaddingBottom}
               >
@@ -217,7 +212,9 @@ const TaskBody = ({
                     style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
                   >
                     <div>
-                      {`${patient?.lastName}, ${patient?.firstName} ${patient?.mrn}`}
+                      {`${patient?.lastName}, ${
+                        patient?.firstName
+                      } ${patient?.mrn ?? ''}`.trim()}
                     </div>
                   </Link>
                 )}
@@ -229,10 +226,10 @@ const TaskBody = ({
                   alignItems: 'flex-end',
                   display: 'flex',
                   lineHeight: '12px',
-                  marginRight: '24px',
+                  paddingRight: '24px',
                   paddingBottom: elementPaddingBottom,
-                  minWidth: '140px',
-                  width: '140px',
+                  minWidth: '180px',
+                  width: '180px',
                 }}
               >
                 {dueDate && (
@@ -247,8 +244,8 @@ const TaskBody = ({
                 <div
                   style={{
                     paddingBottom: elementPaddingBottom,
-                    minWidth: '90px',
-                    width: '90px',
+                    minWidth: '39px',
+                    width: '39px',
                   }}
                 >
                   <PriorityContainer>
@@ -260,9 +257,9 @@ const TaskBody = ({
                     alignItems: 'flex-end',
                     display: 'flex',
                     justifyContent: 'flex-start',
-                    marginRight: isSubtask ? '18px' : '24px',
-                    minWidth: '120px',
-                    width: '120px',
+                    paddingRight: isSubtask ? 0 : 6,
+                    minWidth: '39px',
+                    width: '39px',
                     paddingBottom: elementPaddingBottom,
                   }}
                 >

@@ -32,14 +32,13 @@ import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
 const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
   display: flex;
+  flex: 1.4;
   height: 100%;
-  margin-top: 3.75rem;
   justify-content: flex-start;
-  padding: 4px;
+  padding: 0 0.25rem;
   position: sticky;
   transition: all 0.25s ease-out;
   top: 6.25rem;
-  width: 40%;
 `;
 
 const TopLabel = styled.div`
@@ -106,12 +105,12 @@ const StyledButton = styled(Button)`
 `;
 
 const statusSelectData = [
-  //Inserted No Status status
+  // Inserted No Status status
   {
     key: 'no-status',
     value: null,
     label: 'No Status',
-    color: '#808080'
+    color: '#808080',
   },
   {
     key: 'in-progress',
@@ -120,17 +119,19 @@ const statusSelectData = [
     color: '#00a73c',
   },
   {
-    key: 'on-hold',
-    value: 'ON_HOLD',
-    label: 'On Hold',
-    color: '#f6b039',
-  },
-  {
     key: 'planned',
     value: 'BLOCKED',
     label: 'Planned',
-    color: '#DC143C',
-    //Original color: #0ca1c7
+    color: '#f6b039',
+    // Original color: #0ca1c7
+    // Second color: #dc143c
+  },
+  {
+    key: 'on-hold',
+    value: 'ON_HOLD',
+    label: 'On Hold',
+    color: '#dc143c',
+    //Original color: #f6b039
   },
 ];
 
@@ -177,9 +178,9 @@ const onSubmit = ({
   } = data;
   let { patient } = data;
 
-  var currTaskListId = 0;
-  if(taskList && taskList.taskListId){
-    currTaskListId = taskList.taskListId
+  let currTaskListId = 0;
+  if (taskList && taskList.taskListId) {
+    currTaskListId = taskList.taskListId;
   }
 
   const requestData = {

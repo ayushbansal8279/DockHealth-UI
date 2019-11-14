@@ -76,11 +76,9 @@ const StyledInputContainer = styled.div`
     position: relative;
 
     ${props => props.gutterBottom && 'margin-bottom: 1rem;'}
-    ${props =>
-      !props.visible &&
-      `
-      display: none;
-    `}
+    ${props => !props.visible && 'display: none;'}
+    margin-top: ${props =>
+      props.hasError ? props.containerMarginTopOnError ?? 0 : 0}rem;
 
     ${props => {
       if (props.controlled) {
@@ -221,6 +219,7 @@ export default React.forwardRef(
       visible = true,
       containerHeight,
       containerMarginTop,
+      containerMarginTopOnError,
       labelInactiveTop,
       rightAdornment,
       ...props
@@ -282,6 +281,8 @@ export default React.forwardRef(
     const inputContainerProps = {
       containerHeight,
       containerMarginTop,
+      containerMarginTopOnError,
+      hasError,
       gutterBottom,
       visible,
     };

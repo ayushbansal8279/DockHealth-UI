@@ -11,11 +11,14 @@ export const PatientsTasklistNew = styled.div`
 `;
 
 export const PatientsTasklistDescription = styled.div`
+  box-sizing: border-box;
   color: #303538;
   display: inline-block;
   font-size: 1.25rem;
   font-weight: bold;
   line-height: 1;
+  flex: 1;
+  max-width: 450px;
   padding-bottom: 0.125rem;
   overflow: hidden;
   position: relative;
@@ -44,10 +47,10 @@ export const PatientTasklistPatient = styled.div`
   align-items: flex-end;
   display: flex;
   line-height: 12px;
-  margin-right: 24px;
+  padding-right: 24px;
   padding-bottom: ${props => props.elementPaddingBottom};
-  min-width: 140px;
-  width: 140px;
+  min-width: 218px;
+  width: 218px;
 `;
 
 export const PatientsTasklistDate = styled.div`
@@ -57,7 +60,6 @@ export const PatientsTasklistDate = styled.div`
 
 export const PatientTasklistContainer = styled(Grid)`
   align-self: center;
-  padding-right: 24px;
   position: relative;
 `;
 

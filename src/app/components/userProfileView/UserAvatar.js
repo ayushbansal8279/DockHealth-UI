@@ -74,6 +74,25 @@ export default () => {
     }
   });
 
+  const removeProfilePicture = useCallback(event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!fileLoading) {
+      setFileLoading();
+      openPopover();
+      userApi.deleteUserProfilePic().then(async () => {
+        try {
+          await userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+        } catch {
+          noop();
+        } finally {
+          unsetFileLoading();
+        }
+      });
+    }
+  });
+
   const getSmallButtonContent = useCallback(() => {
     if (fileLoading) {
       return <CubesLoader size={20} color="#fff" />;
@@ -163,25 +182,37 @@ export default () => {
               />
             </SmallButton>
           </Grid>
-          {fileLoaded && (
-            <Grid container item xs={12} justify="center">
-              <PlainLink
-                disabled={fileLoading}
-                onClick={event => {
-                  event.preventDefault();
-                  event.stopPropagation();
+          <Grid container item xs={12} spacing={8}>
+            {fileLoaded && (
+              <Grid container item xs={12} justify="center">
+                <PlainLink
+                  disabled={fileLoading}
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
 
-                  if (!fileLoading) {
-                    activateFileInput();
-                    openPopover();
-                    setFileLoaded();
-                  }
-                }}
-              >
-                Try another picture
-              </PlainLink>
-            </Grid>
-          )}
+                    if (!fileLoading) {
+                      activateFileInput();
+                      openPopover();
+                      setFileLoaded();
+                    }
+                  }}
+                >
+                  Try another picture
+                </PlainLink>
+              </Grid>
+            )}
+            {userProfilePic && (
+              <Grid container item xs={12} justify="center">
+                <PlainLink
+                  disabled={fileLoading}
+                  onClick={removeProfilePicture}
+                >
+                  Remove image and use my initials
+                </PlainLink>
+              </Grid>
+            )}
+          </Grid>
         </UploadImagePopoverGrid>
         <UploadImagePopoverClose onClick={unsetPopoverOpen}>
           &times;

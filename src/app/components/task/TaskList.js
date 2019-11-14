@@ -45,7 +45,7 @@ const Heading = ({ taskDrawerOpen }) => (
       fontWeight: 600,
     }}
   >
-    <div style={{ width: '60px', textAlign: 'center', marginLeft: '5px' }}>
+    <div style={{ width: '54px', textAlign: 'center', marginLeft: '5px' }}>
       <img
         src={CheckIcon}
         alt="Task status column"
@@ -54,16 +54,9 @@ const Heading = ({ taskDrawerOpen }) => (
     </div>
     <div style={{ width: '90px', marginRight: '10px' }}>ASSIGNED</div>
     <div style={{ flex: 1 }}>TASK</div>
-    <div style={{ width: '140px', marginRight: '24px' }}>PATIENT</div>
-    {!taskDrawerOpen && (
-      <div style={{ width: '140px', marginRight: '24px' }}>DUE</div>
-    )}
-    {!taskDrawerOpen && (
-      <>
-        <div style={{ width: '90px' }}>STATUS</div>
-        <div style={{ width: '120px', marginRight: '24px' }} />
-      </>
-    )}
+    {!taskDrawerOpen && <div style={{ width: '218px' }}>PATIENT</div>}
+    {!taskDrawerOpen && <div style={{ width: '180px' }}>DUE</div>}
+    {!taskDrawerOpen && <div style={{ width: '80px' }}>STATUS</div>}
   </div>
 );
 

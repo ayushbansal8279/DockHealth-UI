@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 
 export const HeadsUpSectionGrid = styled(Grid)`
-  padding: 14px 0 14px 14px;
+  padding: 0.625rem 0 0.625rem 0.625rem;
 
   &:last-child {
-    padding-right: 14px;
+    padding-right: 0.625rem;
   }
 `;
 
@@ -20,13 +20,18 @@ export const HeadsUpSectionContainer = styled.div`
 
 export const HeadsUpSectionHeader = styled.div`
   align-items: center;
-  border-bottom: 1px solid rgba(217, 217, 217, 0.5);
   color: #2e3a43;
   display: flex;
   font-size: 20px;
   font-weight: 800;
   padding: 5px 10px;
   text-transform: uppercase;
+`;
+
+export const HeadsUpSectionDivider = styled.div`
+  background-color: rgba(217, 217, 217, 0.5);
+  height: 1px;
+  margin: 0 0.375rem;
 `;
 
 export const HeadsUpSectionHeaderButton = styled.div`
