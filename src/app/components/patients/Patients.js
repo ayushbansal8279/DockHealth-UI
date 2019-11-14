@@ -49,19 +49,12 @@ const searchPatients = (patients, searchTerm) => {
   return patients.filter(isMatch);
 };
 
-const PatientsBody = styled.div`
-  display: flex;
-`;
-
 const PatientsLayout = () => {
   const dispatch = useDispatch();
-  useEffect(
-    () => {
-      dispatch(loading());
-      getMyPatientsAll()(dispatch);
-    },
-    [dispatch],
-  );
+  useEffect(() => {
+    dispatch(loading());
+    getMyPatientsAll()(dispatch);
+  }, [dispatch]);
 
   const isFetching = useSelector(({ patientState }) => patientState.isFetching);
   const patients = useSelector(({ patientState }) => patientState.allPatients);
@@ -101,6 +94,7 @@ const PatientsLayout = () => {
   );
 
   const filteredPatients = searchPatients(patients, searchTerm);
+  const patientSidebarOpen = highlightedPatient || isCreatingPatient;
 
   return (
     <div>
@@ -109,11 +103,11 @@ const PatientsLayout = () => {
         handleSearch={handleSearch}
         handlePatientFilter={handlePatientFilter}
       />
-      <PatientsBody>
+      <Grid container>
         {isFetching ? (
           <PatientsListSpinner isFetching={isFetching} />
         ) : (
-          <Grid xs>
+          <Grid xs={patientSidebarOpen ? 4 : 12} item>
             <PatientsList
               patients={filteredPatients}
               isFiltered={searchTerm !== ''}
@@ -123,16 +117,16 @@ const PatientsLayout = () => {
           </Grid>
         )}
         {highlightedPatient && (
-          <Grid xs>
+          <Grid xs={8} item>
             <PatientsSidebar patient={highlightedPatient} />
           </Grid>
         )}
         {isCreatingPatient && (
-          <Grid xs>
+          <Grid xs={8} item>
             <PatientsCreation />
           </Grid>
         )}
-      </PatientsBody>
+      </Grid>
     </div>
   );
 };

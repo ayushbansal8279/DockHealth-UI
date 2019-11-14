@@ -30,12 +30,9 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
 
 const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
   const [isShowingCompleted, setShowCompleted] = useState(false);
-  const toggleShowCompleted = useCallback(
-    () => {
-      setShowCompleted(!isShowingCompleted);
-    },
-    [isShowingCompleted],
-  );
+  const toggleShowCompleted = useCallback(() => {
+    setShowCompleted(!isShowingCompleted);
+  }, [isShowingCompleted]);
 
   return (
     <div>
@@ -44,7 +41,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
         <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
       )}
       {tasks.map(task => (
-        <Task task={task} key={task.taskId} hidePatient hideCheckbox disabled />
+        <Task task={task} key={task.taskId} hidePatient hideCheckbox readOnly />
       ))}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
@@ -61,7 +58,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
               key={task.taskId}
               hidePatient
               hideCheckbox
-              disabled
+              readOnly
             />
           ))}
         </div>

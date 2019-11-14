@@ -294,11 +294,14 @@ const PatientsDetailsSection = ({
         <PatientsSidebarNoteDescription>
           {notes || '—'}
         </PatientsSidebarNoteDescription>
-        {/* <PatientsSidebarNoteInfo> */}
-        {/* Michael Docktor | Tuesday, October 2nd */}
-        {/* </PatientsSidebarNoteInfo> */}
       </div>
     </PatientsSidebarSubsection>
+  </PatientsSidebarSection>
+);
+
+const renderTaskList = ({ listName, tasks, completedTasks, taskListId }) => (
+  <PatientsSidebarSection key={taskListId} heading={listName}>
+    <PatientsTasklist tasks={tasks} completedTasks={completedTasks} />
   </PatientsSidebarSection>
 );
 
@@ -318,12 +321,9 @@ const PatientsSidebar = ({ patient }) => {
     allNotes,
   } = patient;
   const dispatch = useDispatch();
-  const deselectPatient = useCallback(
-    () => {
-      dispatch(highlightPatient(null));
-    },
-    [dispatch],
-  );
+  const deselectPatient = useCallback(() => {
+    dispatch(highlightPatient(null));
+  }, [dispatch]);
 
   useEffect(
     () => () => {
@@ -332,20 +332,17 @@ const PatientsSidebar = ({ patient }) => {
     [deselectPatient],
   );
 
-  // Fetch tasks
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
-  useEffect(
-    () => {
-      findUserTasksByPatient(patientId, 'INCOMPLETE').then(result => {
-        setTasks(result);
-      });
-      findUserTasksByPatient(patientId, 'COMPLETE').then(result => {
-        setCompletedTasks(result);
-      });
-    },
-    [patientId],
-  );
+
+  useEffect(() => {
+    findUserTasksByPatient(patientId, 'INCOMPLETE').then(result => {
+      setTasks(result);
+    });
+    findUserTasksByPatient(patientId, 'COMPLETE').then(result => {
+      setCompletedTasks(result);
+    });
+  }, [patientId]);
 
   const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
@@ -390,14 +387,7 @@ const PatientsSidebar = ({ patient }) => {
           )}
         />
         <Flag name={['features', 'showTasksInPatientDrawer']}>
-          {taskLists.map(taskList => (
-            <PatientsSidebarSection heading={taskList.listName}>
-              <PatientsTasklist
-                tasks={taskList.tasks}
-                completedTasks={taskList.completedTasks}
-              />
-            </PatientsSidebarSection>
-          ))}
+          {taskLists.map(renderTaskList)}
         </Flag>
       </div>
     </PatientsSidebarContainer>

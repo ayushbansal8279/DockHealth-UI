@@ -37,6 +37,9 @@ const TaskBody = ({
   markAsUnread,
   openTaskDrawer,
   taskDrawerOpen,
+  hidePatient,
+  hideCheckbox,
+  readOnly,
 }) => {
   const {
     createdDateTime,
@@ -49,8 +52,6 @@ const TaskBody = ({
     description,
     creator,
     assignedTo,
-    taskList,
-    taskId,
     status,
     patient,
     completedDt: completedDateTime,
@@ -105,14 +106,20 @@ const TaskBody = ({
 
   return (
     <div
-      style={{ height: '100%', cursor: 'pointer', display: 'flex' }}
+      style={{
+        height: '100%',
+        cursor: readOnly ? 'default' : 'pointer',
+        display: 'flex',
+      }}
       onClick={e => {
         e.stopPropagation();
-        openTaskDrawer();
-        /* eslint-disable no-unused-expressions */
-        storeAsCurrentTask?.(task);
-        markAsUnread?.(task, false);
-        /* eslint-enable no-unused-expressions */
+        if (!readOnly) {
+          /* eslint-disable no-unused-expressions */
+          openTaskDrawer?.();
+          storeAsCurrentTask?.(task);
+          markAsUnread?.(task, false);
+          /* eslint-enable no-unused-expressions */
+        }
       }}
     >
       {isSubtask && (
@@ -124,24 +131,26 @@ const TaskBody = ({
         </SubtaskLoadingContainer>
       ) : (
         <>
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              width: 54,
-              minWidth: 54,
-            }}
-          >
-            <TaskCheckbox
-              checked={status === 'COMPLETE'}
-              onChange={handleStatusChange}
-              onClick={e => {
-                e.stopPropagation();
+          {!hideCheckbox && (
+            <div
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                width: 54,
+                minWidth: 54,
               }}
-              disabled={disabled || (isSubtask && isParentComplete)}
-            />
-          </div>
+            >
+              <TaskCheckbox
+                checked={status === 'COMPLETE'}
+                onChange={handleStatusChange}
+                onClick={e => {
+                  e.stopPropagation();
+                }}
+                disabled={disabled || (isSubtask && isParentComplete)}
+              />
+            </div>
+          )}
           <MemberPickerContainer>
             <MemberPicker
               task={task}
@@ -158,34 +167,15 @@ const TaskBody = ({
               xs={12}
             >
               <Grid item xs={12}>
-                {storeAsCurrentTask ? (
-                  <PatientsTasklistDescription>
-                    {description || (
-                      <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                    )}
-                    <PatientsTasklistStrikeThrough
-                      hasDescription={Boolean(description)}
-                      active={status === 'COMPLETE'}
-                    />
-                  </PatientsTasklistDescription>
-                ) : (
-                  <Link
-                    to={{
-                      pathname: `/tasks/${taskList.listName}${
-                        taskList.taskListId ? `/${taskList.taskListId}` : ''
-                      }`,
-                      state: { taskId },
-                    }}
-                  >
-                    <PatientsTasklistDescription
-                      isComplete={status === 'COMPLETE'}
-                    >
-                      {description || (
-                        <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                      )}
-                    </PatientsTasklistDescription>
-                  </Link>
-                )}
+                <PatientsTasklistDescription>
+                  {description || (
+                    <div style={{ color: '#ababb2' }}>Unnamed task</div>
+                  )}
+                  <PatientsTasklistStrikeThrough
+                    hasDescription={Boolean(description)}
+                    active={status === 'COMPLETE'}
+                  />
+                </PatientsTasklistDescription>
               </Grid>
               <Grid item xs={12}>
                 <PatientsTasklistInfo>
@@ -212,7 +202,7 @@ const TaskBody = ({
               </Grid>
               {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
             </PatientTasklistContainer>
-            {!isSubtask && !taskDrawerOpen && (
+            {!isSubtask && !taskDrawerOpen && !hidePatient && (
               <PatientTasklistPatient
                 elementPaddingBottom={elementPaddingBottom}
               >
@@ -222,7 +212,9 @@ const TaskBody = ({
                     style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
                   >
                     <div>
-                      {`${patient?.lastName}, ${patient?.firstName} ${patient?.mrn}`}
+                      {`${patient?.lastName}, ${
+                        patient?.firstName
+                      } ${patient?.mrn ?? ''}`.trim()}
                     </div>
                   </Link>
                 )}
