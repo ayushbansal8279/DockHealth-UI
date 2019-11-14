@@ -23,9 +23,10 @@ const StyledList = styled(List).attrs({
   && {
     border: none;
     display: flex;
-    height: 100%;
     flex-direction: column;
     flex-wrap: nowrap;
+    height: 100%;
+    min-height: 100%;
     padding: 0;
     padding-bottom: 24px;
     ${({ open }) => (open ? '' : 'overflow-x: hidden;')}
@@ -39,6 +40,11 @@ const NestedList = styled(StyledList).attrs({
   component: 'div',
 })`
   && {
+    height: unset;
+    min-height: unset;
+    overflow-y: auto;
+    padding-bottom: 0;
+
     ${({ highlighted }) =>
       highlighted ? 'background: rgba(255,255,255,0.1);' : ''}
   }
@@ -104,7 +110,6 @@ const StyledListItemIcon = styled(ListItemIcon)`
 const StyledListItem = styled(ListItem)`
   && {
     padding: 6px 16px 6px 27px;
-    margin-top: 32px;
   }
 
   &&:hover {
@@ -125,6 +130,10 @@ const StyledListItem = styled(ListItem)`
 
 const StyledRouterLinkContainer = styled.div`
   display: flex;
+  height: ${props => (props.withBackground ? 2.625 : 2.3125)}rem;
+  min-height: ${props => (props.withBackground ? 2.625 : 2.3125)}rem;
+
+  ${props => !props.nested && !props.withBackground && 'margin-top: 1.5rem;'}
 
   &&.active {
     ${StyledListItem} {
@@ -154,7 +163,9 @@ const BackgroundListItem = styled(ListItem)`
   && {
     box-sizing: border-box;
     color: #fff;
-    margin: 12px;
+    height: 2.625rem;
+    margin: 0 12px;
+    min-height: 2.625rem;
     padding: 12px 16px;
     ${props =>
       props.open &&
@@ -180,6 +191,7 @@ const StyledSpacer = styled.div`
 const NestedListContainer = styled.div`
   && {
     display: ${props => (props.active ? 'flex' : 'none')};
+    overflow-y: auto;
 
     & + ${StyledRouterLinkContainer} > a {
       margin-top: 0;
@@ -187,7 +199,15 @@ const NestedListContainer = styled.div`
   }
 `;
 
-const RouterLink = ({ active, highlighted, ...props }) => {
+const RouterLink = ({
+  active,
+  highlighted,
+  nested = false,
+  withBackground = false,
+  ...props
+}) => {
+  const { to } = props;
+
   let className = ' ';
 
   if (active) {
@@ -197,13 +217,17 @@ const RouterLink = ({ active, highlighted, ...props }) => {
   if (highlighted) {
     className += ' highlighted';
   }
-  if (props.to=="support") {
+  if (to === 'support') {
     className += ' navsupport';
   }
 
   return (
-    <StyledRouterLinkContainer className={className.trim()}>
-      <Link {...props}/>
+    <StyledRouterLinkContainer
+      nested={nested}
+      className={className.trim()}
+      withBackground={withBackground}
+    >
+      <Link {...props} />
     </StyledRouterLinkContainer>
   );
 };
@@ -218,6 +242,7 @@ const Item = ({
   setActiveId,
   to,
   withBackground = false,
+  ...otherProps
 }) => {
   const active = id === activeId;
   const nestedActive = activeId.startsWith(`${NESTED_LIST_PREFIX}-${id}`);
@@ -234,6 +259,8 @@ const Item = ({
       highlighted={active || nestedActive}
       onClick={() => setActiveId(id)}
       open={open}
+      withBackground={withBackground}
+      {...otherProps}
     >
       <StyledListItemIcon>
         <Icon />
@@ -271,6 +298,7 @@ const NestedItem = ({ activeId, label, setActiveId, to, id }) => {
     <NestedListItem
       active={active}
       button
+      nested
       component={RouterLink}
       to={to}
       onClick={() => setActiveId(id)}
