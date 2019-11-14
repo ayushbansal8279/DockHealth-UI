@@ -89,17 +89,17 @@ EditablePatientNote.propTypes = { note: NotePropType.isRequired };
 const PatientNotes = ({ patientId, notes }) => {
   const [isCreating, startCreating, stopCreating] = useBoolean(false);
   const [note, setNote] = useState('');
+  const dispatch = useDispatch();
+
   const handleChange = e => {
     setNote(capitalize(e.currentTarget.value));
   };
-  const handleCancel = useCallback(
-    () => {
-      setNote('');
-      stopCreating();
-    },
-    [stopCreating],
-  );
-  const dispatch = useDispatch();
+
+  const handleCancel = useCallback(() => {
+    setNote('');
+    stopCreating();
+  }, [stopCreating]);
+
   const handleSubmit = () => {
     dispatch(addPatientNote(patientId, note))
       .then(() => {
@@ -109,6 +109,7 @@ const PatientNotes = ({ patientId, notes }) => {
         toggleAlert('Error adding note. Please try again.', 'error');
       });
   };
+
   const handleUpdate = (description, patientNoteId) => {
     const modifiedNote = notes.find(n => n.patientNoteId === patientNoteId);
     dispatch(editPatientNote(patientId, modifiedNote, description)).catch(
@@ -125,6 +126,7 @@ const PatientNotes = ({ patientId, notes }) => {
     <div style={{ padding: '0 12px' }}>
       {notes.map(patientNote => (
         <EditablePatientNote
+          key={patientNote.patientNoteId}
           update={handleUpdate}
           note={patientNote}
           isOwn={isOwn(patientNote)}

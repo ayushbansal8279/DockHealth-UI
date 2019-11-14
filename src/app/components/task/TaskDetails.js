@@ -72,11 +72,12 @@ class TaskDetails extends React.PureComponent {
   };
 
   handleRemoveAttachment = attachmentId => {
-    // const targetVal = e.target.value;
     if (attachmentId && attachmentId > 0) {
-      const { selectedTask } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      this.props.removeTaskAttachment(selectedTask.taskId, attachmentId);
+      const {
+        removeTaskAttachment: removeAttachment,
+        selectedTask,
+      } = this.props;
+      removeAttachment(selectedTask.taskId, attachmentId);
     }
   };
 
@@ -100,8 +101,7 @@ class TaskDetails extends React.PureComponent {
             value={selectedTask.workflowStatus}
             disabled={isCompleted}
             options={[
-              //Inserted No status status
-              { value: 'NO_STATUS', description: 'No Status'},
+              { value: 'NO_STATUS', description: 'No Status' },
               { value: 'IN_PROGRESS', description: 'In Progress' },
               { value: 'BLOCKED', description: 'Planned' },
               { value: 'ON_HOLD', description: 'On Hold' },

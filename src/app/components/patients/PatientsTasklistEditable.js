@@ -34,16 +34,15 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
 const PatientsTasklistEditable = ({
   tasks = [],
   completedTasks = [],
+  selectCurrentTask,
   submitTask,
   selectedTaskId,
+  ...otherProps
 }) => {
   const [isShowingCompleted, setShowCompleted] = useState(false);
-  const toggleShowCompleted = useCallback(
-    () => {
-      setShowCompleted(!isShowingCompleted);
-    },
-    [isShowingCompleted],
-  );
+  const toggleShowCompleted = useCallback(() => {
+    setShowCompleted(!isShowingCompleted);
+  }, [isShowingCompleted]);
 
   const dispatch = useDispatch();
   const mark = listType => (task, status) => {
@@ -57,7 +56,11 @@ const PatientsTasklistEditable = ({
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
       {submitTask && (
-        <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
+        <AddTask
+          storeAsCurrentTask={selectCurrentTask}
+          submitBound={submitTask}
+          style={{ marginTop: '-11px' }}
+        />
       )}
       {tasks.map(task => (
         <Task
@@ -67,6 +70,7 @@ const PatientsTasklistEditable = ({
           markComplete={mark('INCOMPLETE')}
           storeAsCurrentTask={select}
           selectedTaskId={selectedTaskId}
+          {...otherProps}
         />
       ))}
       {completedTasks.length > 0 && (
@@ -86,6 +90,7 @@ const PatientsTasklistEditable = ({
               markComplete={mark('COMPLETE')}
               storeAsCurrentTask={select}
               selectedTaskId={selectedTaskId}
+              {...otherProps}
             />
           ))}
         </div>

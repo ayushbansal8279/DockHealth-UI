@@ -332,12 +332,9 @@ const PatientEdit = ({ patient }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formState, setFormState] = useState(formattedPatient);
 
-  useEffect(
-    () => {
-      setFormState(formattedPatient);
-    },
-    [formattedPatient],
-  );
+  useEffect(() => {
+    setFormState(formattedPatient);
+  }, [formattedPatient]);
 
   const isClean = equals(formState, formattedPatient);
 
@@ -363,14 +360,11 @@ const PatientEdit = ({ patient }) => {
     [formState],
   );
 
-  const handleSubmit = useCallback(
-    async () => {
-      setIsSubmitting(true);
-      await dispatch(updatePatient(formState));
-      setIsSubmitting(false);
-    },
-    [dispatch, formState],
-  );
+  const handleSubmit = useCallback(async () => {
+    setIsSubmitting(true);
+    await dispatch(updatePatient(formState));
+    setIsSubmitting(false);
+  }, [dispatch, formState]);
 
   const validateBirthday = dob => {
     const now = moment();

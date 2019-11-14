@@ -85,8 +85,10 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
-const AddTask = ({ storeAsCurrentTask, submit, style }) => {
+const AddTask = ({ storeAsCurrentTask, submit, submitBound, style }) => {
   const [draft, setDraft] = useState('');
+
+  const onSubmit = submitBound ?? submit;
 
   const handleChange = useCallback(e => {
     setDraft(e.target.value);
@@ -102,10 +104,10 @@ const AddTask = ({ storeAsCurrentTask, submit, style }) => {
       if (draft === '') {
         return;
       }
-      submit(draft);
+      onSubmit(draft);
       setDraft('');
     },
-    [draft, submit],
+    [draft, onSubmit],
   );
 
   return (
