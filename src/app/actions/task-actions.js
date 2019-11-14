@@ -523,8 +523,10 @@ export const addSubtask = parentTaskId => async dispatch => {
   });
 
   try {
-    const task = await TaskApi.addTask({ parentTaskId, description: '' });
-    dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+    //do not save a temporary task
+    // const task = await TaskApi.addTask({ parentTaskId, description: '' });
+    const task = { parentTaskId: parentTaskId, description: '', subtasks: [] }
+    // dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
     storeAsCurrentTask(task)(dispatch);
   } catch {
     noop();

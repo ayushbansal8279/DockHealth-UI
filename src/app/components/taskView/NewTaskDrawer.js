@@ -322,7 +322,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
               alignItems="center"
               justify="space-between"
             >
-              <TopLabel>{`${task ? 'Edit' : 'Add'} a task`}</TopLabel>
+              <TopLabel>{`${task && task.taskId ? 'Edit' : 'Add'} a ${task && task.parentTaskId ? 'SubTask' : 'Task'}`}</TopLabel>
               <CloseTaskButtonContainer>
                 <CloseTaskButton onClick={closeDrawer} />
               </CloseTaskButtonContainer>
