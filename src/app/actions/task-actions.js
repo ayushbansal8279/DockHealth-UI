@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
 
@@ -152,35 +150,48 @@ export function getHighPriorityTasksByTaskList(taskListId) {
 }
 
 export function saveTask(newTask) {
-  if (newTask.taskId != null) {
+  if (newTask.taskId) {
     return dispatch =>
       TaskApi.updateTask(newTask)
         .then(task => {
           dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
-          if (newTask.refiled) {
-            $(`#task${task.taskId}`).fadeOut(1000);
-          }
+          return task;
         })
         .catch(error => {
           throw error;
         });
   }
 
-  return dispatch =>
-    TaskApi.addTask(newTask)
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+      addingNewTask: true,
+    });
+    return TaskApi.addTask(newTask)
       .then(task => {
         if (!task.taskList) {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
             task: { ...task, taskList: { listName: 'Inbox' } },
           });
+          dispatch({
+            type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+            addingNewTask: false,
+          });
         } else {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+          dispatch({
+            type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+            addingNewTask: false,
+          });
         }
+
+        return task;
       })
       .catch(error => {
         throw error;
       });
+  };
 }
 
 export const moveTask = (task, taskList) => dispatch => {
@@ -205,6 +216,7 @@ export function addTaskComment(task, taskComment) {
     TaskApi.addComment(task.taskId, taskComment)
       .then(comment => {
         dispatch({ type: ActionTypes.ADD_TASK_COMMENT_SUCCESS, task, comment });
+        return comment;
       })
       .catch(error => {
         throw error;
@@ -457,7 +469,7 @@ export function getInboxTasks(status, sortBy, filterBy) {
 export function markAsUnread(currentTask, flagUnread) {
   return dispatch =>
     TaskApi.flagUnread(currentTask.taskId, flagUnread)
-      .then((task) => {
+      .then(task => {
         dispatch({
           type: ActionTypes.FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS,
           task,
@@ -488,9 +500,11 @@ export function getTaskHistory(task) {
     return TaskApi.getTaskHistory(task.taskId)
       .then(auditDetails => {
         dispatch({ type: ActionTypes.GET_TASK_HISTORY_SUCCESS, auditDetails });
+        return auditDetails;
       })
       .catch(error => {
         dispatch({ type: ActionTypes.GET_TASK_HISTORY_ERROR, error });
+        throw error;
       });
   };
 }
@@ -509,8 +523,10 @@ export const addSubtask = parentTaskId => async dispatch => {
   });
 
   try {
-    const task = await TaskApi.addTask({ parentTaskId, description: '' });
-    dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+    //do not save a temporary task
+    // const task = await TaskApi.addTask({ parentTaskId, description: '' });
+    const task = { parentTaskId: parentTaskId, description: '', subtasks: [] }
+    // dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
     storeAsCurrentTask(task)(dispatch);
   } catch {
     noop();

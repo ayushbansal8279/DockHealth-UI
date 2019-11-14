@@ -86,16 +86,16 @@ class ListsComponent extends PureComponent {
                       {(taskList.role == 'OWNER' ||
                         taskList.role == 'ADMIN') && (
                         <li>
-                          <div data-open={`delete-list-${taskList.taskListId}`}>
-                            Delete list
+                          <div onClick={e => this.props.editForm(taskList)}>
+                            Edit
                           </div>
                         </li>
                       )}
                       {(taskList.role == 'OWNER' ||
                         taskList.role == 'ADMIN') && (
                         <li>
-                          <div onClick={e => this.props.editForm(taskList)}>
-                            Edit
+                          <div data-open={`delete-list-${taskList.taskListId}`}>
+                            Delete list
                           </div>
                         </li>
                       )}

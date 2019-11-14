@@ -7,6 +7,8 @@ import { bindActionCreators } from 'redux';
 import * as PeopleActions from '../../actions/people-actions';
 import MemberInitials from '../members/MemberInitials';
 import BooleanModal from '../modals/BooleanModal';
+import Member from '../members/Member';
+
 
 class PeopleContainer extends PureComponent {
   constructor(props) {
@@ -376,6 +378,7 @@ class PeopleContainer extends PureComponent {
       );
     }
     return filteredPeople.map(person => {
+
       return (
         <div
           className="item row expanded"
@@ -384,17 +387,18 @@ class PeopleContainer extends PureComponent {
           <div className="columns shrink pending">
             {/* <img className="member-photo circle" src="assets/img/user3.png" alt="name of user"/> */}
             {/* <span className="member-initials circle">{person.initials}</span> */}
-            <MemberInitials member={person} />
+            <Member member={person} />
           </div>
           <div className="columns">
             <span className="item-title">
-              <Link
+              {`${person.firstName} ${person.lastName}`}
+              {/* <Link
                 to={`/assignedToPerson/${person.userId}/${person.firstName} ${
                   person.lastName
                 }`}
               >
                 {`${person.firstName} ${person.lastName}`}
-              </Link>
+              </Link> */}
             </span>
             <span className="item-details">{this.renderTitles(person)}</span>
             <span className="item-details">

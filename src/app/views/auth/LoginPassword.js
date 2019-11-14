@@ -26,7 +26,8 @@ const LoginPassword = () => {
         }
       })
       .catch(e => {
-        setCustomError(e && e.message ? e.message : 'Could not login.');
+        console.log(e && e.message ? e.message : 'Could not login.');
+        setCustomError("Incorrect email or password. Please try again.");
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGIN_SUCCESS: 'NO',
         });

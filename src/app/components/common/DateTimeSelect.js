@@ -25,15 +25,18 @@ const Header = styled.div`
   background: ${({ isOverdue }) => (isOverdue ? '#d9036b' : '#2a4a70')};
   height: 73px;
   width: 329px;
+  justify-content: space-between;
 `;
 
 const HeaderClose = styled.div`
-  width: 22px;
-  height: 22px;
-  padding: 4px;
-  font-size: 14px;
+  align-items: center;
   color: #fff;
+  display: flex;
+  font-size: 1.5rem;
   font-weight: bold;
+  height: 1.5rem;
+  padding: 0.25rem;
+  width: 1.5rem;
 `;
 
 const HeaderTitle = styled.strong`
@@ -45,15 +48,22 @@ const HeaderTitle = styled.strong`
   overflow: hidden;
 `;
 
+const HeaderLeftContainer = styled.div`
+  align-items: center;
+  display: flex;
+`;
+
 const DatePickerHeader = ({ children, handleClose, isOverdue }) => (
   <Header isOverdue={isOverdue}>
+    <HeaderLeftContainer>
+      <img src={CalendarIcon} style={{ marginLeft: 5 }} alt="" />
+      <HeaderTitle>
+        <strong>{children}</strong>
+      </HeaderTitle>
+    </HeaderLeftContainer>
     <IconButton onClick={handleClose} aria-label="Close user selection">
       <HeaderClose>✕</HeaderClose>
     </IconButton>
-    <img src={CalendarIcon} style={{ marginLeft: 5 }} alt="" />
-    <HeaderTitle>
-      <strong>{children}</strong>
-    </HeaderTitle>
   </Header>
 );
 
@@ -78,18 +88,80 @@ const FooterContainer = styled.div`
   align-items: center;
 `;
 
-const ButtonContainer = styled.div`
-  margin-left: auto;
-`;
-
 const StyledButton = styled(Button)`
   && {
     color: #007cab;
     margin-left: 4px;
+    text-transform: none;
+
+    ${props => props.bold && 'font-weight: 600;'}
   }
 `;
 
-const DateTimeSelect = ({ children: Component, onChange, value, label }) => {
+const ButtonContainer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+
+  ${props =>
+    props.centered &&
+    `
+    justify-content: center;
+    width: 100%;
+
+    ${StyledButton} {
+      width: 6rem;
+    }
+  `}
+`;
+
+const DayButton = styled.div`
+  align-items: center;
+  color: rgba(0, 0, 0, 0.87);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.75rem;
+  height: 2.25rem;
+  justify-content: center;
+  margin: 0 0.125rem;
+  position: relative;
+  width: 2.25rem;
+
+  ${props => props.pastDay && 'color: rgba(48, 53, 56, 0.5);'}
+  ${props => props.notShown && 'color: rgba(48, 53, 56, 0.1);'}
+  ${props =>
+    props.current &&
+    'background-color: rgba(42, 74, 112, 0.3); color: #2e3a43; font-weight: bold;'}
+  ${props =>
+    props.selected &&
+    'background-color: #007CAB; border-radius: 50%; color: #fff; font-weight: bold;'}
+`;
+
+const DayButtonLabel = styled.div`
+  bottom: 0.1875rem;
+  font-size: 0.375rem;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+
+  ${props => props.selected && 'color: #fff;'}
+`;
+
+const DateTimeSelect = ({
+  children: Component,
+  onChange,
+  value,
+  label,
+  showTimeSelect = true,
+  anchorOrigin = {
+    vertical: 'bottom',
+    horizontal: 'center',
+  },
+  transformOrigin = {
+    vertical: 'top',
+    horizontal: 'center',
+  },
+}) => {
   const [anchor, setAnchor] = useState(null);
 
   const open = useCallback(e => setAnchor(e.currentTarget));
@@ -99,6 +171,8 @@ const DateTimeSelect = ({ children: Component, onChange, value, label }) => {
   const dateYesterday = moment();
   dateYesterday.subtract(1, 'days');
 
+  const todayMoment = moment();
+
   return (
     <>
       <Component open={open} />
@@ -106,14 +180,8 @@ const DateTimeSelect = ({ children: Component, onChange, value, label }) => {
         open={Boolean(anchor)}
         anchorEl={anchor}
         onClose={close}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
+        anchorOrigin={anchorOrigin}
+        transformOrigin={transformOrigin}
       >
         <BasePicker
           value={value ? moment(value) : moment().startOf('day')}
@@ -131,12 +199,48 @@ const DateTimeSelect = ({ children: Component, onChange, value, label }) => {
                 {date < dateYesterday ? 'Past date selected!' : label}
               </DatePickerHeader>
               <DatePickerBody>
-                <Calendar date={date} onChange={handleChange} />
+                <Calendar
+                  date={date}
+                  onChange={handleChange}
+                  renderDay={(
+                    shownMoment,
+                    selectedMoment,
+                    active,
+                    calendarComponent,
+                  ) => {
+                    const {
+                      children: day,
+                      current,
+                      hidden,
+                      selected,
+                    } = calendarComponent.props;
+
+                    return (
+                      <DayButton
+                        current={current}
+                        selected={selected}
+                        notShown={hidden}
+                        pastDay={shownMoment.isBefore(todayMoment)}
+                      >
+                        <span>{day}</span>
+                        {current && (
+                          <DayButtonLabel selected={selected}>
+                            Today
+                          </DayButtonLabel>
+                        )}
+                      </DayButton>
+                    );
+                  }}
+                />
                 <FooterContainer>
-                  <TimeSelect value={date} onChange={handleChange} />
-                  <ButtonContainer>
-                    <StyledButton onClick={close}>CANCEL</StyledButton>
-                    <StyledButton onClick={handleAccept}>SET</StyledButton>
+                  {showTimeSelect && (
+                    <TimeSelect value={date} onChange={handleChange} />
+                  )}
+                  <ButtonContainer centered={!showTimeSelect}>
+                    <StyledButton onClick={close}>Cancel</StyledButton>
+                    <StyledButton bold onClick={handleAccept}>
+                      Set
+                    </StyledButton>
                   </ButtonContainer>
                 </FooterContainer>
               </DatePickerBody>

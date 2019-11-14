@@ -1,27 +1,32 @@
+import { List, ListItem, Popover } from '@material-ui/core';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
+import equals from 'ramda/es/equals';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
-import TaskDetails from '../components/task/TaskDetails';
 import TaskList from '../components/task/TaskList';
-import AddTaskButton from '../components/taskView/AddTaskButton';
 import Header from '../components/taskView/Header';
+import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
-import Select from '../components/taskView/Select';
+import { AddTaskButton } from '../components/taskView/TaskDrawerButtons';
 import TaskListAction from '../components/taskView/TaskListAction';
+import FilterIcon from '../img/filter.svg';
 import PrintIcon from '../img/print.svg';
-import { StyledSlimViewSwitch, TaskViewGrid } from './TaskView.styled';
-import Pusher from 'pusher-js';
-
-const APP_KEY = process.env.PUSHER_APP_KEY;
-const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
+import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
+import SortingStatsIcon from '../img/sorting-stats.svg';
+import {
+  StyledSlimViewSwitch,
+  StyledToolbar,
+  TableWrapper,
+  TaskViewGrid,
+  ToolbarContainer,
+} from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -44,8 +49,8 @@ const FadeContainer = styled.div`
 `;
 
 const TaskListContainer = styled.div`
-  padding: 0 8px;
-  flex: 1;
+  flex: 2;
+  padding: 0 0.375rem;
 `;
 
 const StyledButton = styled(ButtonBase)`
@@ -62,16 +67,42 @@ const StyledButton = styled(ButtonBase)`
   }
 `;
 
+const filterOptions = [
+  {
+    value: '',
+    description: 'Clear',
+  },
+  {
+    value: 'ASSIGNED_TO_ME',
+    description: 'Assigned to me',
+  },
+  {
+    value: 'CREATED_BY_ME',
+    description: 'Created by me',
+  },
+  { value: 'OVERDUE', description: 'Overdue' },
+  { value: 'DUE_TODAY', description: 'Due Today' },
+  {
+    value: 'DUE_THIS_WEEK',
+    description: 'Due This Week',
+  },
+  {
+    value: 'DUE_NEXT_WEEK',
+    description: 'Due Next Week',
+  },
+];
+
 class TaskView extends Component {
   state = {
-    filterBy: '',
+    filterPopoverOpen: false,
     searchTerms: [],
     slimView: false,
-    addingNewTask: false,
-    initiator: false,
+    taskDrawerOpen: false,
   };
 
   headsUpArea = React.createRef();
+
+  filterButton = React.createRef();
 
   refresh = () => {
     const { actions, patientActions } = this.props;
@@ -86,38 +117,42 @@ class TaskView extends Component {
 
   componentDidMount = () => {
     this.resetHeader();
-    const socket = new Pusher(APP_KEY, {
-      cluster: APP_CLUSTER,
-    });
-
-    const channel = socket.subscribe('dock-task-channel');
-
-    // Listen to the channel for new entries.
-    // The server publishes to this channel whenever a entry is updated
-    channel.bind('task-update', data => {
-      // Since the app is going to be realtime, we don't want the same item to
-      // be shown twice. Device A publishes an entry, all other devices including itself
-      // receives the entry, so act like a basic filter
-      console.log("received data")
-      console.log(data)
-      this.props.refreshTask(data.task)
-      // if (!this.state.initiator) {
-      //   this.setState(prevState => {
-      //     return { tasks: [...prevState.tasks, data] };
-      //   });
-      // } else {
-      //   this.setState({
-      //     initiator: false,
-      //   });
-      // }
-    });
-
   };
 
-  componentDidUpdate = ({ isFetching: prevIsFetching }) => {
-    const { isFetching } = this.props;
-    if (prevIsFetching !== isFetching) {
+  componentDidUpdate = ({
+    isFetching: prevIsFetching,
+    members: prevMembers,
+  }) => {
+    const { isFetching, members } = this.props;
+    if (prevIsFetching !== isFetching || !equals(members, prevMembers)) {
       this.resetHeader();
+    }
+  };
+
+  openTaskDrawer = () => {
+    this.setState({
+      taskDrawerOpen: true,
+    });
+  };
+
+  closeTaskDrawer = () => {
+    const { storeAsCurrentTask } = this.props;
+
+    this.setState({
+      taskDrawerOpen: false,
+    });
+    setTimeout(() => {
+      storeAsCurrentTask(null);
+    }, 250);
+  };
+
+  toggleTaskDrawer = () => {
+    const { taskDrawerOpen } = this.state;
+
+    if (taskDrawerOpen) {
+      this.closeTaskDrawer();
+    } else {
+      this.openTaskDrawer();
     }
   };
 
@@ -143,6 +178,7 @@ class TaskView extends Component {
               taskCount={tasks.length}
               members={members}
               taskList={taskList}
+              resetHeader={this.resetHeader}
             />
           ),
           xs: 12,
@@ -162,7 +198,6 @@ class TaskView extends Component {
     const sortBy = 'CREATED_DT';
 
     this.clearStoredCurrentTask();
-    this.setState({ filterBy });
 
     onFilter(filterBy, sortBy);
   };
@@ -202,9 +237,62 @@ class TaskView extends Component {
   };
 
   onAddTaskButtonClick = () => {
-    this.setState(prevState => ({
-      addingNewTask: !prevState.addingNewTask,
-    }));
+    const { storeAsCurrentTask } = this.props;
+    const { taskDrawerOpen } = this.state;
+
+    if (!taskDrawerOpen) {
+      storeAsCurrentTask(null);
+    }
+    this.toggleTaskDrawer();
+  };
+
+  openFilterPopover = () => {
+    this.setState({
+      filterPopoverOpen: true,
+    });
+  };
+
+  closeFilterPopover = () => {
+    this.setState({
+      filterPopoverOpen: false,
+    });
+  };
+
+  onFilterChange = ({ value }) => () => {
+    this.handleFilterChange(value);
+    this.closeFilterPopover();
+  };
+
+  renderFilterPopover = () => {
+    const { filterPopoverOpen } = this.state;
+
+    return (
+      <Popover
+        open={filterPopoverOpen}
+        anchorEl={this.filterButton?.current}
+        onClose={this.closeFilterPopover}
+        anchorOrigin={{
+          horizontal: 'left',
+          vertical: 'top',
+        }}
+        transformOrigin={{
+          horizontal: 'left',
+          vertical: 'top',
+        }}
+      >
+        <List>
+          {filterOptions.map(({ value, description }) => (
+            <ListItem
+              key={value}
+              button
+              onClick={this.onFilterChange({ value })}
+            >
+              {value ? description : <em>{description}</em>}
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
+    );
   };
 
   renderTasklists = () => {
@@ -215,14 +303,12 @@ class TaskView extends Component {
       markAsUnread,
       selectedTaskId,
     } = this.props;
-    const { slimView } = this.state;
+    const { slimView, taskDrawerOpen } = this.state;
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
     );
     const tasklistCount = Array.from(groupedTasks.keys()).length;
-
-    const isCollapsed = selectedTaskId != null;
 
     const tasklistProps = {
       tasks: this.search(tasks),
@@ -231,11 +317,10 @@ class TaskView extends Component {
       },
       storeAsCurrentTask,
       markAsUnread,
-      hideDate: isCollapsed,
-      hideTags: isCollapsed,
-      hidePriority: isCollapsed,
       selectedTaskId,
       slimView,
+      openTaskDrawer: this.openTaskDrawer,
+      taskDrawerOpen,
     };
 
     if (tasks.length === 0 || tasklistCount <= 1) {
@@ -259,7 +344,7 @@ class TaskView extends Component {
       pullCompletedTasks,
       selectedTaskId,
       storeAsCurrentTask,
-      markAsUnread
+      markAsUnread,
     } = this.props;
     const { slimView } = this.state;
 
@@ -287,7 +372,6 @@ class TaskView extends Component {
       );
     }
 
-    const isCollapsed = selectedTaskId != null;
     const tasklistProps = {
       tasks: this.search(completedTasks),
       markComplete: (task, status) => {
@@ -295,11 +379,9 @@ class TaskView extends Component {
       },
       storeAsCurrentTask,
       markAsUnread,
-      hideDate: isCollapsed,
-      hideTags: isCollapsed,
-      hidePriority: isCollapsed,
       selectedTaskId,
       slimView,
+      openTaskDrawer: this.openTaskDrawer,
     };
 
     return (
@@ -313,156 +395,97 @@ class TaskView extends Component {
   };
 
   render() {
-    const {
-      userId,
-      tasks,
-      completedTasks,
-      isFetching,
-      selectedTaskId,
-      downloadPDF,
-      markComplete,
-      toggleTaskPriority,
-      addTaskComment,
-      taskList,
-      showToolbar,
-      storeAsCurrentTask,
-      markAsUnread,
-    } = this.props;
-    const { filterBy, slimView, addingNewTask } = this.state;
-
-    const taskId = selectedTaskId != null && selectedTaskId;
-    const unfinishedTasks = tasks.flatMap(task => [task, ...task.subtasks]);
-    const finishedTasks = completedTasks.flatMap(task => [
-      task,
-      ...task.subtasks,
-    ]);
-    const allTasks = [...unfinishedTasks, ...finishedTasks];
-    const task = allTasks.find(t => t.taskId === taskId);
-
-    // TODO: Optimize!!!
-    const isCompletedTaskSelected =
-      task && !unfinishedTasks.find(t => t.taskId === task.taskId);
-    const isMainTaskComplete =
-      task &&
-      task.parentTaskId &&
-      allTasks.find(
-        t => t.taskId === task.parentTaskId && t.status === 'COMPLETE',
-      );
-
-    const isInbox = tasks.length !== 0 && tasks[0].taskList === null;
-    const taskListId = taskList?.taskListId;
+    const { isFetching, downloadPDF, taskList, showToolbar } = this.props;
+    const { slimView, taskDrawerOpen } = this.state;
 
     return (
-      <div>
-        <div ref={this.headsUpArea}>Heads-up placeholder</div>
-        <TaskViewGrid container>
-          <NewTaskDrawer
-            headsUpAreaHeight={this.headsUpArea.current?.scrollHeight ?? 0}
-            addingNewTask={addingNewTask}
-          />
-          <AddTaskButton
-            addingNewTask={addingNewTask}
-            onClick={this.onAddTaskButtonClick}
-          />
-          <Grid item xs={12}>
-            {/* {showToolbar && !isInbox && taskListId && (
-              <Toolbar>
-                <AddTask
-                  storeAsCurrentTask={storeAsCurrentTask}
-                  taskListId={taskListId}
-                />
-              </Toolbar>
-            )} */}
-            {showToolbar && (
-              <Toolbar>
-                <Grid container justify="space-between">
-                  <div>
-                    <StyledSlimViewSwitch
-                      onClick={this.switchSlimView}
-                      slimView={slimView}
-                      variant="contained"
-                    />
-                    <Select
-                      updateFilter={this.handleFilterChange}
-                      value={filterBy}
-                      options={[
-                        { value: '', description: 'Filter' },
-                        {
-                          value: 'ASSIGNED_TO_ME',
-                          description: 'Assigned to me',
-                        }, // TODO:
-                        {
-                          value: 'CREATED_BY_ME',
-                          description: 'Created by me',
-                        },
-                        { value: 'OVERDUE', description: 'Overdue' },
-                        { value: 'DUE_TODAY', description: 'Due Today' },
-                        {
-                          value: 'DUE_THIS_WEEK',
-                          description: 'Due This Week',
-                        },
-                        {
-                          value: 'DUE_NEXT_WEEK',
-                          description: 'Due Next Week',
-                        },
-                      ]}
-                    />
-                    <Search
-                      onChange={this.handleSearch}
-                      style={{ marginLeft: '14px' }}
-                    />
-                    <TaskListAction
-                      onClick={downloadPDF}
-                      icon={PrintIcon}
-                      alt="Print"
-                    >
-                      Print
-                    </TaskListAction>
-                  </div>
-                </Grid>
-              </Toolbar>
-            )}
-            {isFetching ? (
-              <FadeContainer>
-                <Fade
-                  in={isFetching}
-                  unmountOnExit
-                  style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
-                >
-                  <ProgressIcon />
-                </Fade>
-              </FadeContainer>
-            ) : (
-              <div style={{ display: 'flex' }}>
-                <TaskListContainer>
-                  {this.renderTasklists()}
-                  {this.renderCompleted()}
-                </TaskListContainer>
-                {task && (
-                  <TaskDetails
-                    addTaskComment={comment =>
-                      addTaskComment(task, { comment })
-                    }
-                    userId={userId}
-                    selectedTask={task}
-                    close={this.handleClose}
-                    markComplete={(_task, status) => {
-                      markComplete(
-                        _task,
-                        status,
-                        isCompletedTaskSelected ? 'COMPLETE' : 'INCOMPLETE',
-                      );
-                    }}
-                    toggleTaskPriority={toggleTaskPriority}
-                    isMainTaskComplete={isMainTaskComplete}
-                    storeAsCurrentTask={storeAsCurrentTask}
-                    markAsUnread={markAsUnread}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1152px',
+          }}
+        >
+          <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
+          {showToolbar && (
+            <StyledToolbar>
+              <Grid container alignItems="center" justify="space-between">
+                <ToolbarContainer>
+                  <StyledSlimViewSwitch
+                    onClick={this.switchSlimView}
+                    slimView={slimView}
+                    variant="contained"
                   />
+                  <TaskListAction
+                    alt="Filter"
+                    backgroundColor="#fff"
+                    icon={FilterIcon}
+                    onClick={this.openFilterPopover}
+                    ref={this.filterButton}
+                  >
+                    Filter
+                  </TaskListAction>
+                  <TaskListAction
+                    alt="Filter"
+                    active
+                    activeIcon={SortingStatsActiveIcon}
+                    backgroundColor="#fff"
+                    icon={SortingStatsIcon}
+                  >
+                    Sorting & Stats
+                  </TaskListAction>
+                  <Search onChange={this.handleSearch} />
+                  <TaskListAction
+                    alt="Print"
+                    backgroundColor="#fff"
+                    icon={PrintIcon}
+                    onClick={downloadPDF}
+                  >
+                    Print
+                  </TaskListAction>
+                </ToolbarContainer>
+                {!taskDrawerOpen && (
+                  <AddTaskButton onClick={this.onAddTaskButtonClick} />
                 )}
-              </div>
-            )}
-          </Grid>
-        </TaskViewGrid>
+              </Grid>
+            </StyledToolbar>
+          )}
+          <TaskViewGrid container wrap="nowrap">
+            <TableWrapper taskDrawerOpen={taskDrawerOpen}>
+              {isFetching ? (
+                <FadeContainer>
+                  <Fade
+                    in={isFetching}
+                    unmountOnExit
+                    style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
+                  >
+                    <ProgressIcon />
+                  </Fade>
+                </FadeContainer>
+              ) : (
+                <div style={{ display: 'flex' }}>
+                  <TaskListContainer>
+                    {this.renderTasklists()}
+                    {this.renderCompleted()}
+                  </TaskListContainer>
+                  {taskDrawerOpen && (
+                    <NewTaskDrawer
+                      headsUpAreaRef={this.headsUpArea.current}
+                      closeDrawer={this.closeTaskDrawer}
+                      taskList={taskList}
+                    />
+                  )}
+                </div>
+              )}
+            </TableWrapper>
+          </TaskViewGrid>
+          {this.renderFilterPopover()}
+        </div>
       </div>
     );
   }

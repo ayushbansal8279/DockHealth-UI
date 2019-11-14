@@ -69,7 +69,7 @@ const SelfEnrolledUser = () => {
       <div className="row expanded">
         <div className="columns large-12 top-buffer text-right details">
           <h4 className="subtitle">
-            <Link to="/tasklist">
+            <Link to="/tasks">
               <button type="button" className="button secondary expand">
                 I agree
               </button>

@@ -1,10 +1,13 @@
 import TableCell from '@material-ui/core/TableCell';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import CheckIcon from '../../img/check.svg';
 import Task from './Task';
+import TaskCheckbox from './TaskCheckbox';
+import CubesLoader from '../common/CubesLoader';
 
 const StyledTableCell = styled(TableCell)`
   && {
@@ -29,7 +32,7 @@ StyledTaskDescription.defaultProps = {
   completed: false,
 };
 
-const Heading = ({ hideDate, hideStatus }) => (
+const Heading = ({ taskDrawerOpen }) => (
   <div
     style={{
       height: '32px',
@@ -42,7 +45,7 @@ const Heading = ({ hideDate, hideStatus }) => (
       fontWeight: 600,
     }}
   >
-    <div style={{ width: '60px', textAlign: 'center', marginLeft: '5px' }}>
+    <div style={{ width: '54px', textAlign: 'center', marginLeft: '5px' }}>
       <img
         src={CheckIcon}
         alt="Task status column"
@@ -51,70 +54,95 @@ const Heading = ({ hideDate, hideStatus }) => (
     </div>
     <div style={{ width: '90px', marginRight: '10px' }}>ASSIGNED</div>
     <div style={{ flex: 1 }}>TASK</div>
-    <div style={{ width: '140px', marginRight: '24px' }}>PATIENT</div>
-    {!hideDate && (
-      <div style={{ width: '140px', marginRight: '24px' }}>DUE</div>
-    )}
-    {!hideStatus && (
-      <>
-        <div style={{ width: '90px' }}>STATUS</div>
-        <div style={{ width: '120px', marginRight: '24px' }} />
-      </>
-    )}
+    {!taskDrawerOpen && <div style={{ width: '218px' }}>PATIENT</div>}
+    {!taskDrawerOpen && <div style={{ width: '180px' }}>DUE</div>}
+    {!taskDrawerOpen && <div style={{ width: '80px' }}>STATUS</div>}
   </div>
 );
 
-const TaskList = ({
-  tasks = [],
-  markComplete,
-  storeAsCurrentTask,
-  markAsUnread,
-  hideDate,
-  hideTags,
-  hidePriority,
-  selectedTaskId,
-  slimView,
-}) => (
-  <div>
-    <Heading
-      hideDate={hideDate}
-      hideStatus={hidePriority}
-      hideTags={hideTags}
-    />
-    {tasks.length === 0 ? (
-      <div
-        style={{
-          textAlign: 'center',
-          verticalAlign: 'middle',
-          height: '32px',
-          lineHeight: '32px',
-          background: 'white',
-        }}
-      >
-        List is empty.
-      </div>
-    ) : (
-      tasks.map(task => (
-        <Task
-          {...{
-            storeAsCurrentTask,
-            markAsUnread,
-            markComplete,
-            task,
-            isSubtask: task.parentTaskId !== null,
-            selectedTaskId,
-            style: {},
-            hideDate,
-            hideTags,
-            hidePriority,
-            key: task.taskId,
-            slimView,
-          }}
-        />
-      ))
-    )}
-  </div>
-);
+const ListEmptyElement = ({ addingNewTask }) => {
+  if (addingNewTask) {
+    return null;
+  }
+
+  return (
+    <div
+      style={{
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        height: '32px',
+        lineHeight: '32px',
+        background: 'white',
+      }}
+    >
+      List is empty.
+    </div>
+  );
+};
+
+const NewTaskContainer = styled.div`
+  align-items: center;
+  background-color: #fff;
+  display: flex;
+  height: ${props => (props.addingNewTask ? 85 : 0)};
+  margin-top: ${props => (props.addingNewTask ? 0.5 : 0)}rem;
+  overflow: hidden;
+  transition: all ${props => (props.addingNewTask ? 0.25 : 0)}s ease-out;
+  width: 100%;
+`;
+
+const NewTaskCheckboxContainer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 60px;
+`;
+
+const NewTaskLoaderContainer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 1rem;
+`;
+
+const NewTaskElement = props => {
+  return (
+    <NewTaskContainer {...props}>
+      <NewTaskCheckboxContainer>
+        <TaskCheckbox />
+      </NewTaskCheckboxContainer>
+      <NewTaskLoaderContainer>
+        <CubesLoader size={32} />
+      </NewTaskLoaderContainer>
+    </NewTaskContainer>
+  );
+};
+
+const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
+  const addingNewTask = useSelector(store => store.taskState.addingNewTask);
+
+  return (
+    <div>
+      <Heading taskDrawerOpen={taskDrawerOpen} />
+      <NewTaskElement addingNewTask={addingNewTask} />
+      {tasks.length === 0 ? (
+        <ListEmptyElement addingNewTask={addingNewTask} />
+      ) : (
+        tasks.map(task => (
+          <Task
+            {...{
+              task,
+              isSubtask: task.parentTaskId !== null,
+              taskDrawerOpen,
+              key: task.taskId,
+              ...otherTaskListProps,
+            }}
+          />
+        ))
+      )}
+    </div>
+  );
+};
 
 TaskList.propTypes = {
   tasks: PropTypes.arrayOf(

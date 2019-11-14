@@ -9,6 +9,7 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import AddListForm from '../components/LEGACY_list/AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
+import AddTaskListButton from '../components/taskList/AddTaskListButton';
 
 class TaskListView extends PureComponent {
   constructor(props) {
@@ -40,11 +41,13 @@ class TaskListView extends PureComponent {
   addTaskList = () => {
     this.props.taskListAction.setTaskListAsCurrentList(null);
     openAddForm();
+    scrollToTop();
   };
 
   editTaskList = taskList => {
     this.props.taskListAction.setTaskListAsCurrentList(taskList);
     toggleTaskForm();
+    scrollToTop();
   };
 
   deleteList = taskListId => {
@@ -88,8 +91,7 @@ class TaskListView extends PureComponent {
                 </div>
               </div>
 
-              <div className="wrapper list-filter row collapse align-middle align-right">
-                <div className="columns controls">{/* {{> search}} */}</div>
+              {/* <div className="wrapper list-filter row collapse align-middle align-right">
                 <div className="columns shrink icon-group controls">
                   <span onClick={e => this.refresh()}>
                     <svg className="icon refresh">
@@ -106,8 +108,14 @@ class TaskListView extends PureComponent {
                     <use xlinkHref="#icon-lists" />
                   </svg>
                 </div>
-              </div>
-            </header>
+              </div> */}
+
+          <AddTaskListButton
+            onClick={this.addTaskList}
+          />              
+          </header>
+
+          <AddListForm onSubmit={this.submit}/>
 
             <div className="list-wrapper dashboard-section">
               <div className="row collapse">

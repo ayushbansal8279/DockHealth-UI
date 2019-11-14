@@ -7,9 +7,12 @@ import { Field, reduxForm } from 'redux-form';
 import * as UserApi from '../../api/user-api';
 import AuthField from '../common/AuthField';
 import {
+  BottomGridContainer,
+  FieldItemContainer,
   NextButton,
   StyledLabel,
   TitleTypography,
+  StyledForm,
 } from './AuthComponents.styled';
 
 const validate = values => {
@@ -60,51 +63,50 @@ class LoginFormUsername extends Component {
     const { showLoginMessage } = this.state;
 
     return (
-      <form className="inline-label top-buffer" onSubmit={handleSubmit}>
+      <StyledForm onSubmit={handleSubmit}>
         {!showLoginMessage && (
-          <Grid container>
+          <>
             <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
               Welcome to Dock Health
             </TitleTypography>
-            <Grid item sm={12} md={9}>
-              <TitleTypography variant="h4">
-                Please sign in to your account
-              </TitleTypography>
-            </Grid>
-            <Grid item sm={12} md={9}>
-              <Field
-                marginTop="2.5rem"
-                name="username"
-                type="text"
-                component={AuthField}
-                label="Email"
-                autoFocus
-              />
-            </Grid>
+            <TitleTypography variant="h4">
+              Please sign in to your account
+            </TitleTypography>
 
-            <Grid item xs={6}>
-              <NextButton
-                active={!invalid}
-                id="loginButton"
-                type="submit"
-                variant="contained"
-                color="primary"
-                style={{
-                  marginTop: '5.75rem',
-                }}
-              >
-                Next
-              </NextButton>
-            </Grid>
-            <Grid item xs={12}>
-              <StyledLabel bold marginTop>
-                Don’t have an account yet?
-              </StyledLabel>
-              <StyledLabel>
-                <Link to="/register">Create account</Link>
-              </StyledLabel>
-            </Grid>
-          </Grid>
+            <FieldItemContainer>
+              <Grid item md={9} sm={12}>
+                <Field
+                  name="username"
+                  type="text"
+                  component={AuthField}
+                  label="Email"
+                  autoFocus
+                />
+              </Grid>
+            </FieldItemContainer>
+
+            <div>
+              <Grid item xs={6}>
+                <NextButton
+                  active={!invalid}
+                  id="loginButton"
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                >
+                  Next
+                </NextButton>
+              </Grid>
+            </div>
+            <BottomGridContainer>
+              <Grid container item xs={9} direction="column" justify="flex-end">
+                <StyledLabel bold>Don’t have an account yet?</StyledLabel>
+                <StyledLabel>
+                  <Link to="/register">Create account</Link>
+                </StyledLabel>
+              </Grid>
+            </BottomGridContainer>
+          </>
         )}
         {showLoginMessage && (
           <div>
@@ -125,7 +127,7 @@ class LoginFormUsername extends Component {
             </div>
           </div>
         )}
-      </form>
+      </StyledForm>
     );
   }
 }

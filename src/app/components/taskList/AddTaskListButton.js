@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import AddTaskCrossIcon from '../../img/add-task-cross.svg';
 
-const AddTaskButtonContainer = styled.div`
+const AddTaskListButtonContainer = styled.div`
   align-items: center;
   display: flex;
   height: 64px;
@@ -17,7 +17,7 @@ const AddTaskButtonContainer = styled.div`
   z-index: 2;
 `;
 
-const AddTaskButton = styled(ButtonBase)`
+const AddTaskListButton = styled(ButtonBase)`
   && {
     align-items: center;
     background-color: #d9036b;
@@ -32,30 +32,30 @@ const AddTaskButton = styled(ButtonBase)`
   }
 `;
 
-const AddTaskButtonImage = styled.img`
+const AddTaskListButtonImage = styled.img`
   margin-right: 10px;
   transition: all 0.25s ease-out;
   transform: rotate(0deg);
 
   ${props =>
-    props.addingNewTask &&
+    props.addingNew &&
     `
     margin-right: 0;
     transform: rotate(45deg);
   `}
 `;
 
-const AddTaskButtonLabel = styled.span`
+const AddTaskListButtonLabel = styled.span`
   font-size: 20px;
   overflow: hidden;
   text-overflow: clip;
   transition: all 0.25s ease-out;
   white-space: nowrap;
   ${props =>
-    props.width && `width: ${props.addingNewTask ? 0 : props.width}px`};
+    props.width && `width: ${props.addingNew ? 0 : props.width}px`};
 `;
 
-export default ({ addingNewTask, onClick }) => {
+export default ({ addingNew, onClick }) => {
   const [addTaskLabelWidth, setAddTaskLabelWidth] = useState(null);
   const addTaskLabel = useRef(null);
 
@@ -64,20 +64,20 @@ export default ({ addingNewTask, onClick }) => {
   }, []);
 
   return (
-    <AddTaskButtonContainer addingNewTask={addingNewTask}>
-      <AddTaskButton onClick={onClick} variant="contained">
-        <AddTaskButtonImage
-          addingNewTask={addingNewTask}
+    <AddTaskListButtonContainer addingNew={addingNew}>
+      <AddTaskListButton onClick={onClick} variant="contained">
+        <AddTaskListButtonImage
+          addingNew={addingNew}
           src={AddTaskCrossIcon}
         />
-        <AddTaskButtonLabel
-          addingNewTask={addingNewTask}
+        <AddTaskListButtonLabel
+          addingNew={addingNew}
           width={addTaskLabelWidth}
           ref={addTaskLabel}
         >
-          Add a task
-        </AddTaskButtonLabel>
-      </AddTaskButton>
-    </AddTaskButtonContainer>
+          Add a list
+        </AddTaskListButtonLabel>
+      </AddTaskListButton>
+    </AddTaskListButtonContainer>
   );
 };

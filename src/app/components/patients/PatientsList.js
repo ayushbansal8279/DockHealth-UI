@@ -70,6 +70,10 @@ const NonEmptyListTable = styled.table`
     line-height: 49px;
     font-weight: 600;
 
+    tr {
+      cursor: pointer;
+    }
+
     tr:nth-child(even) {
       background: none;
     }
@@ -130,8 +134,7 @@ const calculateAgeFromDateOfBirth = dob => {
 const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
   const dispatch = useDispatch();
   const selectPatient = useCallback(
-    e => {
-      const patientId = e.target.getAttribute('data-patient');
+    ({ patientId }) => () => {
       dispatch(highlightPatient(patientId));
     },
     [dispatch],
@@ -165,6 +168,7 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
               isHighlighted={
                 highlightedPatient && patientId === highlightedPatient.patientId
               }
+              onClick={selectPatient({ patientId })}
             >
               <NonEmptyListCell>
                 <StyledLink to={`/patient/${patientId}`}>
@@ -181,10 +185,7 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
                 <NonEmptyListCell>{capitalize(gender)}</NonEmptyListCell>
               )}
               <QuickViewCell>
-                <QuickViewIcon
-                  onClick={selectPatient}
-                  data-patient={patientId}
-                />
+                <QuickViewIcon onClick={selectPatient({ patientId })} />
               </QuickViewCell>
             </NonEmptyListRow>
           ),

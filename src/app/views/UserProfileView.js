@@ -4,7 +4,6 @@ import ListItem from '@material-ui/core/ListItem';
 import React from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 
-import * as userApi from '../api/user-api';
 import CubesLoader from '../components/common/CubesLoader';
 import StyledInput from '../components/userProfileView/StyledInput';
 import StyledSwitch from '../components/userProfileView/StyledSwitch';
@@ -17,14 +16,11 @@ import {
   SectionTypography,
   SubmitButton,
   UserAvatarGrid,
-  UserAvatarSupplement,
+  UserProfileViewGrid,
+  StyledRouterLink,
+  StyledLinkLabel,
 } from '../components/userProfileView/UserProfileView.Styled';
 import { noop } from '../helpers/utilityFunctions';
-import {
-  formFieldDefinitions,
-  formSwitchDefinitions,
-} from './UserProfileView.FormDefinitions';
-import validationSchema from './UserProfileView.ValidationSchema';
 
 const renderFormFieldDefinition = ({
   key,
@@ -33,8 +29,10 @@ const renderFormFieldDefinition = ({
   readOnly = false,
   type = 'text',
   isPhoneNumber = false,
+  PreFieldComponent,
 }) => (
   <Grid key={key} item xs={12}>
+    {PreFieldComponent && <PreFieldComponent />}
     <StyledInput
       type={type}
       name={key}
@@ -42,6 +40,9 @@ const renderFormFieldDefinition = ({
       required={required}
       readOnly={readOnly}
       isPhoneNumber={isPhoneNumber}
+      fontSize={16}
+      backgroundColor="#f3f5f6"
+      gutterBottom
     />
   </Grid>
 );
@@ -60,70 +61,20 @@ const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
   </FormSwitchListItem>
 );
 
-const onSubmit = ({
-  otherSpecialty,
-  otherSubspecialty,
-  otherTitle,
-}) => async data => {
-  const {
-    emailNotificationsEnabled,
-    pushNotificationsEnabled,
-    ...otherData
-  } = data;
-
-  try {
-    const requestData = {};
-    formFieldDefinitions
-      .filter(({ readOnly = false }) => !readOnly)
-      .forEach(({ key, isPhoneNumber }) => {
-        const value = otherData[key];
-
-        requestData[key] = isPhoneNumber ? value?.replace(/-/g, '') : value;
-      });
-
-    requestData.specialties = [
-      {
-        name: requestData.specialty,
-        specialtyId: otherSpecialty.specialtyId,
-        subSpecialties: [
-          {
-            subSpecialtyId: otherSubspecialty.subSpecialtyId,
-            subSpecialtyName: requestData.subspecialty,
-          },
-        ],
-      },
-    ];
-
-    requestData.titles = [
-      {
-        name: requestData.title,
-        titleId: otherTitle.titleId,
-      },
-    ];
-
-    await userApi.updateUser(requestData);
-
-    await userApi.updateUserNotoficationPrefs(
-      emailNotificationsEnabled,
-      pushNotificationsEnabled,
-    );
-
-    toggleAlert('Profile updated successfully!', 'success');
-
-    userApi.getUserById();
-    userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
-    userApi.getUserNotoficationPrefs();
-  } catch {
-    toggleAlert('Error updating profile', 'error');
-  }
-};
-
 const UserProfileView = ({
   defaultValues,
   formContainerClassName,
-  ...otherEntries
+  formFieldDefinitions,
+  formSwitchDefinitions,
+  onSubmit,
+  renderAvatarUploader = true,
+  saveButtonProps = {},
+  showSignInLabel = false,
+  validationSchema,
 }) => {
   const formMethods = useForm({
+    reValidateMode: 'onChange',
+    mode: 'onChange',
     defaultValues,
     validationSchema,
   });
@@ -133,60 +84,70 @@ const UserProfileView = ({
     formState: { isSubmitting },
   } = formMethods;
 
+  const {
+    label: saveButtonLabel = 'Save',
+    ...otherSaveButtonProps
+  } = saveButtonProps;
+
   return (
     <FormContext {...formMethods}>
       <FormContainer
         className={formContainerClassName}
-        onSubmit={handleSubmit(
-          isSubmitting ? noop : onSubmit({ ...otherEntries }),
-        )}
+        onSubmit={handleSubmit(isSubmitting ? noop : onSubmit)}
       >
         <Grid container justify="center">
-          <Grid item sm={12} md={6} container>
-            <UserAvatarGrid
-              alignItems="center"
-              container
-              item
-              xs={12}
-              direction="row"
-              wrap="nowrap"
-            >
-              <UserAvatar />
-              <UserAvatarSupplement>
-                <div>Add a picture to</div>
-                <div>personalize your avatar</div>
-              </UserAvatarSupplement>
-            </UserAvatarGrid>
+          <UserProfileViewGrid item sm={12} md={6} container>
+            {renderAvatarUploader && (
+              <UserAvatarGrid
+                alignItems="center"
+                container
+                item
+                xs={12}
+                direction="row"
+                wrap="nowrap"
+              >
+                <UserAvatar />
+              </UserAvatarGrid>
+            )}
             {formFieldDefinitions.map(renderFormFieldDefinition)}
-            <Grid item xs={12}>
-              <List>
-                <ListItem divider>
-                  <SectionTypography>Notifications</SectionTypography>
-                </ListItem>
-                {formSwitchDefinitions.map(renderFormSwitchDefinition)}
-              </List>
-            </Grid>
+            {formSwitchDefinitions?.length > 0 && (
+              <Grid item xs={12}>
+                <List>
+                  <ListItem divider>
+                    <SectionTypography>Notifications</SectionTypography>
+                  </ListItem>
+                  {formSwitchDefinitions.map(renderFormSwitchDefinition)}
+                </List>
+              </Grid>
+            )}
             <Grid item container xs={12} justify="flex-end">
               <Grid item sm={12} md={6}>
-                <SubmitButton disabled={isSubmitting}>
+                <SubmitButton disabled={isSubmitting} {...otherSaveButtonProps}>
                   {isSubmitting ? (
                     <CubesLoader size={24} color="#fff" />
                   ) : (
-                    'Save'
+                    saveButtonLabel
                   )}
                 </SubmitButton>
               </Grid>
             </Grid>
             <Grid item container xs={12} justify="flex-end">
-              <PlainLink
-                topPadded
-                href="https://www.dock.health/privacy"
-                target="_blank"
-              >
-                Privacy Policy
-              </PlainLink>
+              {showSignInLabel ? (
+                <>
+                  <StyledLinkLabel>I already have an account.</StyledLinkLabel>
+                  <StyledRouterLink to="/login">Sign in</StyledRouterLink>
+                </>
+              ) : (
+                <PlainLink
+                  topPadded
+                  href="https://www.dock.health/privacy"
+                  target="_blank"
+                >
+                  Privacy Policy
+                </PlainLink>
+              )}
             </Grid>
-          </Grid>
+          </UserProfileViewGrid>
         </Grid>
       </FormContainer>
     </FormContext>

@@ -1,11 +1,15 @@
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router';
 import { Field, reduxForm } from 'redux-form';
 
 import AuthField from '../common/AuthField';
 import {
+  BottomGridContainer,
+  FieldItemContainer,
   NextButton,
+  StyledForm,
   StyledLabel,
   TitleTypography,
 } from './AuthComponents.styled';
@@ -40,59 +44,58 @@ class LoginFormPassword extends PureComponent {
     const { customError, setCustomError, handleSubmit, invalid } = this.props;
 
     return (
-      <form className="inline-label top-buffer" onSubmit={handleSubmit}>
-        <Grid container>
-          <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
-            Welcome to Dock Health
-          </TitleTypography>
-          <Grid item sm={12} md={9}>
-            <TitleTypography variant="h4">
-              Please sign in to your account
-            </TitleTypography>
-          </Grid>
-          <Grid item sm={12} md={9}>
+      <StyledForm onSubmit={handleSubmit}>
+        <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+          Welcome to Dock Health
+        </TitleTypography>
+        <TitleTypography variant="h4">
+          Please sign in to your account
+        </TitleTypography>
+
+        <FieldItemContainer>
+          <Grid item md={9} sm={12}>
             <Field
               name="username"
               type="text"
               component={AuthField}
-              marginTop="2.5rem"
               label="Email"
             />
           </Grid>
-          <Grid item sm={12} md={9}>
+          <Grid item md={9} sm={12}>
             <Field
               name="password"
               type="password"
               component={AuthField}
-              marginTop="0.5rem"
               label="Password"
               autoFocus
               customError={customError}
               setCustomError={setCustomError}
             />
           </Grid>
+        </FieldItemContainer>
 
-          <Grid item sm={12} md={6}>
+        <div>
+          <Grid item md={6} sm={12}>
             <NextButton
               active={!invalid}
               id="loginButton"
               type="submit"
               variant="contained"
               color="primary"
-              style={{
-                marginTop: '0.5rem',
-              }}
             >
               Next
             </NextButton>
           </Grid>
-          <Grid item xs={12}>
-            <StyledLabel marginTop>
+        </div>
+
+        <BottomGridContainer>
+          <Grid container item xs={9} direction="column" justify="flex-end">
+            <StyledLabel>
               <Link to="/forgotPassword">Forgot password?</Link>
             </StyledLabel>
           </Grid>
-        </Grid>
-      </form>
+        </BottomGridContainer>
+      </StyledForm>
     );
   }
 }

@@ -13,16 +13,21 @@ export const FormContainer = styled.form`
 `;
 
 export const ViewContainer = styled.div`
-  margin: 100px 0;
+  background-color: #fff;
+  padding: 100px 0;
   position: relative;
 `;
 
 export const SectionSubtypography = styled.div`
-  font-size: 14px;
+  font-size: 16px;
 `;
 
 export const SectionTypography = styled(SectionSubtypography)`
   font-weight: bold;
+`;
+
+export const PaddedButtonLabel = styled.span`
+  margin-left: 0.5rem;
 `;
 
 export const SmallButton = styled(Button)`
@@ -61,14 +66,6 @@ export const SmallButton = styled(Button)`
       top: 1px;
       width: 1px;
     }
-
-    ${props =>
-      props.padLabel &&
-      `
-      & span:last-of-type {
-        margin-left: 0.5rem
-      }
-    `}
   }
 `;
 
@@ -95,70 +92,47 @@ export const UserAvatarGrid = styled(Grid)`
   }
 `;
 
-export const AvatarContainer = styled.div`
+export const OuterAvatarContainer = styled.div`
   align-items: center;
-  background-color: #fff;
-  border: 2px solid #007cab;
-  border-radius: 50%;
-  ${props => props.withShadow && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)'};
-  cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
-  display: inline-flex;
-  height: 90px;
-  padding: 6px;
-  justify-content: center;
-  position: relative;
-  width: 90px;
-`;
-
-export const InnerAvatarContainer = styled.div`
-  align-items: center;
-  background-color: #007cab;
-  border-radius: 50%;
-  color: #fff;
   display: flex;
-  font-size: 2rem;
-  font-weight: bold;
-  justify-content: center;
-  line-height: 1;
-  height: 100%;
-  object-fit: cover;
-  overflow: hidden;
-  width: 100%;
-`;
-
-export const AvatarImageContainer = styled.img`
-  && {
-    cursor: inherit;
-    height: 100%;
-    width: 100%;
-  }
-`;
-
-export const CameraContainer = styled.div`
-  align-items: center;
-  background-color: #fff;
-  border: 2px solid #007cab;
-  border-radius: 50%;
-  display: flex;
-  height: 40px;
-  justify-content: center;
-  left: 90%;
-  position: absolute;
-  top: 15%;
-  transform: translate(-50%, -50%);
-  width: 40px;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
 `;
 
 export const UserAvatarSupplement = styled.div`
+  border: 0.0625rem solid #dadada;
   color: #ababb2;
-  cursor: default;
-  margin-left: 1.5rem;
+  cursor: pointer;
+  margin-left: 0.6rem;
+  padding: 1rem;
+  padding-right: 4rem;
 `;
 
 export const PlainLink = styled.a`
   color: #0ca1c7;
   font-size: 20px;
   ${props => props.topPadded && 'margin-top: 4rem;'}
+  text-decoration: none;
+  transition: filter 0.2s ease;
+
+  &:hover {
+    color: #0ca1c7;
+    filter: brightness(1.25);
+  }
+`;
+
+export const StyledLinkLabel = styled.div`
+  display: inline-flex;
+  font-size: 20px;
+  margin-right: 0.5rem;
+  margin-top: 4rem;
+`;
+
+export const StyledRouterLink = styled(Link)`
+  color: #0ca1c7;
+  display: inline-flex;
+  font-size: 20px;
+  margin-top: 4rem;
   text-decoration: none;
   transition: filter 0.2s ease;
 
@@ -218,4 +192,14 @@ export const UploadImagePopoverClose = styled.div`
   top: 1rem;
   position: absolute;
   right: 1rem;
+`;
+
+export const UserProfileViewGrid = styled(Grid)`
+  && {
+    max-width: 780px;
+  }
+`;
+
+export const LogoutButtonContainer = styled.div`
+  padding-right: 2rem;
 `;

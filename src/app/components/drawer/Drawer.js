@@ -1,8 +1,10 @@
 import React from 'react';
+import Intercom from 'react-intercom';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { path } from 'ramda';
 import MaterialDrawer from '@material-ui/core/Drawer';
+
 import useBoolean from '../../hooks/useBoolean';
 import DrawerList from './DrawerList';
 import DrawerTitle from './DrawerTitle';
@@ -30,12 +32,18 @@ const ContentContainer = styled.div`
   ${({ open }) =>
     open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
   ${({ open }) => (open ? 'margin-left: 260px;' : 'margin-left: 85px;')}
-	margin-top: ${props => (props.topPadded ? 88 : 0)}px;
+  margin-top: ${props => (props.topPadded ? 88 : 0)}px;
   transition: width .2s ease-out, margin .2s ease-out;
 `;
 
 const Drawer = ({ header, user, lists, children }) => {
   const [isOpen, open, close] = useBoolean(false);
+
+  const intercomUser = {
+    email: user.email,
+    name: `${user.firstName} ${user.lastName}`,
+    // custom_launcher_selector: '.navsupport',
+  };
 
   return (
     <div style={{ display: 'flex', height: '100%' }}>
@@ -48,6 +56,7 @@ const Drawer = ({ header, user, lists, children }) => {
           lists={lists}
         />
         <DrawerTitle header={header} />
+        <Intercom appID="q7dotpic" {...intercomUser} />
       </StyledDrawer>
       <ContentContainer topPadded={header.show} open={isOpen}>
         {children}

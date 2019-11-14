@@ -118,6 +118,7 @@ export const addPatient = newPatient => async dispatch => {
       type: ADD_PATIENT_ERROR,
       error,
     });
+    throw error;
   }
 };
 

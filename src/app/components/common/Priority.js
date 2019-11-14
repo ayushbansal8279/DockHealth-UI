@@ -4,11 +4,17 @@ import styled from 'styled-components';
 
 export const priorityColor = priority => {
   switch (priority) {
+    //Inserted the No Status status
+    default: 
+      return '#808080'
     case 'BLOCKED':
-      return '#0ca1c7';
-    case 'ON_HOLD':
       return '#f6b039';
-    default:
+    // Original color: #0ca1c7
+    // Second color: #dc143c
+    case 'ON_HOLD':
+      return '#dc143c';
+      //Original color: #f6b039
+    case 'IN_PROGRESS':
       return '#00a73c';
   }
 };

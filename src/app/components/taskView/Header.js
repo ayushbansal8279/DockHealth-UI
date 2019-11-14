@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { toggleListNotifications } from '../../actions/tasklist-actions';
@@ -47,30 +47,73 @@ const StyledSubtitle = styled(Typography)`
   }
 `;
 
+
+const NotificationToggle = ({ value }) => {
+  return (
+      <span style={{width: "34px", 
+        height: "31px", 
+        background: (value?"#007CAB":"#303538"), 
+        borderRadius: "4px", 
+        color: "white",
+        marginLeft: "10px",
+        paddingTop: "3px"}}>
+      {value ? 'on' : 'off'}
+      </span>
+  );
+};
+
 const Notifications = ({ value, onClick }) => {
   const notificationProps = {
     icon: value ? NotificationsOnIcon : NotificationsOffIcon,
     alt: value ? 'Disable notifications' : 'Enable notifications',
-    children: `Notifications: ${value ? 'on' : 'off'}`,
+    // children: `Notifications: ${value ? 'on' : 'off'}`,
     onClick,
   };
 
-  return <TaskListAction {...notificationProps} />;
+  return (
+    <TaskListAction {...notificationProps} style={{paddingRight: "0px"}}>
+      <span> Notifications: </span>
+      <NotificationToggle value={value}/>
+
+    </TaskListAction>
+  );
 };
 
 const nbsp = '\u00A0';
 
-const Header = ({ title, taskCount, isFetching, members, taskList }) => {
+const Header = ({
+  title,
+  taskCount,
+  isFetching,
+  members,
+  taskList,
+  resetHeader = () => {},
+}) => {
   const taskListId = taskList?.taskListId;
   const notificationsStatus = taskList?.notifications;
 
   const dispatch = useDispatch();
   const toggleNotifications = useCallback(
     () => {
-      dispatch(toggleListNotifications(taskListId, !notificationsStatus));
+      toggleListNotifications(taskListId, !notificationsStatus)(dispatch).then(
+        () => {
+          resetHeader();
+        },
+      );
     },
-    [dispatch, notificationsStatus, taskListId],
+    [dispatch, notificationsStatus, resetHeader, taskListId],
   );
+  const { taskListStats, taskListStatsOk } = useSelector(store => ({
+    taskListStats: store.taskListState.taskListStats,
+    taskListStatsOk: store.taskListState.taskListStatsOk,
+  }));
+
+  taskCount = 0
+  if(taskListStatsOk){
+    var key = "Incomplete_TaskList_Count"
+    taskCount = taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
+      ?.metricValue ?? 0;
+  }
 
   return (
     <StyledAppBar position="sticky" color="default" elevation={0}>
@@ -98,7 +141,9 @@ const Header = ({ title, taskCount, isFetching, members, taskList }) => {
             >
               {taskList && (
                 <Notifications
-                  onClick={toggleNotifications}
+                  onClick={() => {
+                    toggleNotifications();
+                  }}
                   value={notificationsStatus}
                 />
               )}

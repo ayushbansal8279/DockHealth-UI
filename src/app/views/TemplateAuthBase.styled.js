@@ -4,9 +4,7 @@ import styled from 'styled-components';
 
 export const BackgroundContainer = styled.div`
   align-items: center;
-  background-image: url(/assets/img/bg.png);
-  background-position: center;
-  background-repeat: no-repeat;
+  background: linear-gradient(180deg, #0a0909 -21.76%, #125375 100%), #125375;
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -17,39 +15,38 @@ export const BackgroundContainer = styled.div`
   top: 0;
 `;
 
-export const BackgroundHorizontalFiller = styled.div`
-  background-color: rgb(46, 58, 67, 0.7);
-  flex: 260;
-  width: 100%;
-`;
-
-export const BackgroundCenterContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex: 1127;
-  width: 100%;
-`;
-
-export const BackgroundVerticalFiller = styled.div`
-  background-color: rgb(46, 58, 67, 0.7);
-  flex: 1;
-`;
-
 export const BackgroundModalContainer = styled(Grid)`
-  max-width: 1312px;
+  background-image: url(/assets/img/login-background.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 6px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  height: 846px;
+  max-height: 846px;
+  max-width: 984px;
+  overflow: hidden;
   position: relative;
+  z-index: -1;
 `;
 
 export const BackgroundRectangleContainer = styled.div`
-  bottom: 0;
+  display: flex;
+  height: 100%;
   left: 0;
+  max-width: 100%;
   position: absolute;
   top: 0;
+  width: 100%;
   z-index: -1;
 
   & img {
-    max-width: 760px;
     height: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: left center;
+    width: 100%;
   }
 `;
 
@@ -63,25 +60,30 @@ export const SmallBackgroundRectangleContainer = styled.div`
   z-index: -1;
 `;
 
-export const DockLogoContainer = styled(Grid)`
+export const DockLogoContainer = styled.div`
   && {
-    flex: 15;
+    height: 100px;
+    max-height: 100px;
   }
 `;
 
-export const MainContentContainer = styled(Grid)`
-  && {
-    flex: 85;
-  }
+export const MainContentContainer = styled.div`
+  display: flex;
+  flex: 1;
 `;
 
-export const DockLogo = ({ height, alt, ...props }) => (
-  <img style={{ height }} alt={alt} {...props} />
-);
+export const DockLogo = styled.img`
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+`;
 
-export const ContentContainer = ({ padding, ...props }) => (
+export const ContentContainer = ({ padding, transformScale, ...props }) => (
   <Grid
-    style={{ padding: `${padding}px 0 ${padding}px ${padding}px` }}
+    style={{
+      padding: `${padding}px 0 ${padding}px ${padding}px`,
+      transform: `scale(${transformScale})`,
+    }}
     {...props}
   />
 );

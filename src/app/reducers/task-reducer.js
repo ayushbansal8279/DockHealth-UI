@@ -47,6 +47,7 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
+  CHANGE_ADDING_NEW_TASK,
 } from '../actions/action-types';
 
 const initialState = {
@@ -59,9 +60,11 @@ const initialState = {
   historyError: null,
   showingCompletedTasks: false,
   currentTaskHistory: null,
+  selectedTask: null,
   selectedTaskId: null,
   addingNewSubtask: false,
   addingNewSubtaskParentId: null,
+  addingNewTask: false,
 };
 
 const getMainTaskId = ({ parentTaskId, taskId }) => parentTaskId || taskId;
@@ -447,7 +450,7 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case ADD_TASK_COMMENT_SUCCESS: {
-      const mainTask = getMainTaskId(action.task);
+      const mainTaskId = getMainTaskId(action.task);
       // HACK - TODO: Make backend return correct initials and userName
       const comment = action.comment.data;
       comment.creator.initials =
@@ -455,32 +458,32 @@ const TaskReducer = (state = initialState, action) => {
         `${comment.creator.firstName.charAt(
           0,
         )} ${comment.creator.firstName.charAt(1)}`;
-      comment.creator.userName = `${comment.creator.firstName} ${
-        comment.creator.lastName
-      }`;
+      comment.creator.userName = `${comment.creator.firstName} ${comment.creator.lastName}`;
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTask
-            ? action.task.parentTaskId
-              ? {
-                  ...task,
-                  subtasks: task.subtasks.map(subtask =>
-                    subtask.taskId === action.task.taskId
-                      ? {
-                          ...subtask,
-                          comments: [comment].concat(subtask.comments),
-                        }
-                      : subtask,
-                  ),
-                }
-              : {
-                  ...task,
-                  comments: [comment].concat(task.comments),
-                }
-            : task,
-        ),
+        tasks: state.tasks.map(task => {
+          if (task.taskId !== mainTaskId) {
+            return task;
+          }
+
+          return action.task.parentTaskId
+            ? {
+                ...task,
+                subtasks: task.subtasks.map(subtask =>
+                  subtask.taskId === action.task.taskId
+                    ? {
+                        ...subtask,
+                        comments: [comment].concat(subtask.comments),
+                      }
+                    : subtask,
+                ),
+              }
+            : {
+                ...task,
+                comments: [comment].concat(task.comments),
+              };
+        }),
       };
     }
 
@@ -575,11 +578,19 @@ const TaskReducer = (state = initialState, action) => {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
                     subtask.taskId === action.task.taskId
-                      ? { ...subtask, read: action.task.read, updated: action.task.updated }
+                      ? {
+                          ...subtask,
+                          read: action.task.read,
+                          updated: action.task.updated,
+                        }
                       : subtask,
                   ),
                 }
-              : { ...task, read: action.task.read, updated: action.task.updated }
+              : {
+                  ...task,
+                  read: action.task.read,
+                  updated: action.task.updated,
+                }
             : task,
         ),
       };
@@ -588,6 +599,7 @@ const TaskReducer = (state = initialState, action) => {
     case SET_AS_CURRENT_TASK:
       return {
         ...state,
+        selectedTask: action.task,
         selectedTaskId: action.task != null ? action.task.taskId : null,
       };
 
@@ -675,6 +687,13 @@ const TaskReducer = (state = initialState, action) => {
       };
     }
 
+    case CHANGE_ADDING_NEW_TASK: {
+      const { addingNewTask } = action;
+      return {
+        ...state,
+        addingNewTask,
+      };
+    }
     default:
       return state;
   }

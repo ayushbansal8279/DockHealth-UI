@@ -11,6 +11,7 @@ const theme = createMuiTheme({
     h4: {
       fontSize: '100%',
       fontWeight: 'normal',
+      lineHeight: '1.25',
     },
   },
   overrides: {
@@ -25,6 +26,11 @@ const theme = createMuiTheme({
         '&$selected:focus': {
           backgroundColor: '#a6dcea',
         },
+      },
+    },
+    MuiPickersDay: {
+      isSelected: {
+        fontWeight: 'bold',
       },
     },
   },

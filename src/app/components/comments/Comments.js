@@ -32,7 +32,7 @@ class Comments extends React.PureComponent {
 
     /* eslint-disable max-len */
     const sameDay = (comment1, comment2) =>
-      comment1.dateCreated.date() === comment2.dateCreated.date();
+      comment1.dateCreatedObj.date() === comment2.dateCreatedObj.date();
     const sameCreator = (comment1, comment2) =>
       comment1.creator.userName === comment2.creator.userName;
     /* eslint-enable max-len */
@@ -41,11 +41,11 @@ class Comments extends React.PureComponent {
 
     const parsedComments = comments.map(comment => ({
       ...comment,
-      dateCreated: moment(comment.dateCreated),
+      dateCreatedObj: moment(comment.dateCreated),
     }));
 
     const days = groupWith(sameDay, parsedComments).map(dayComments => ({
-      date: dayComments[0].dateCreated,
+      date: dayComments[0].dateCreatedObj,
       creators: groupWith(sameCreator, dayComments).map(creatorComments => ({
         creator: creatorComments[0].creator,
         comments: creatorComments,
@@ -66,7 +66,7 @@ class Comments extends React.PureComponent {
                   isOwn={isUser(creator)}
                   key={creator.userId}
                 >
-                  {comments.map(({ comment, commentId }) => (
+                  {comments.map(({ comment, commentId, dateCreated, dateUpdated }) => (
                     <Comment isOwn={isUser(creator)} key={commentId}>
                       {/* {comment} */}
                       <EditableDescription
@@ -76,6 +76,9 @@ class Comments extends React.PureComponent {
                         onChange={this.handleCommentEdition}
                         disabled={disabled || !isUser(creator)}
                       />
+                      {dateCreated!=dateUpdated
+                      && <div style={{color:"#ff8317"}}><small>(edited)</small></div>
+                      }
                     </Comment>
                   ))}
                 </Creator>

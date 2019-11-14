@@ -55,7 +55,7 @@ const Member = ({ onClick, member, children, className, style, color }) => {
   const alt = member && `${member.firstName} ${member.lastName}`;
   const src =
     member && member.profileThumbnailPictureHash && getThumbnailUrl(member);
-  const memberColor = member && (src ? undefined : member.color || '#00a73c');
+  const memberColor = member && (src ? undefined : member.bubbleColor || '#00a73c');
 
   const avatarProps = {
     alt,
@@ -65,7 +65,7 @@ const Member = ({ onClick, member, children, className, style, color }) => {
 
   const avatar = (
     <StyledAvatar {...avatarProps} className={className}>
-      {children || (!member.profileThumbnailPictureHash && member.initials)}
+      {children || (member && !member.profileThumbnailPictureHash && member.initials)}
     </StyledAvatar>
   );
 
