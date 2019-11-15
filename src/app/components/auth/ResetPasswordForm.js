@@ -26,28 +26,32 @@ const validate = values => {
 };
 
 const ResetPasswordForm = props => {
-  const { handleSubmit, invalid } = props;
+  const { handleSubmit, invalid, authTokenReceived } = props;
 
   return (
     <form className="inline-label top-buffer" onSubmit={handleSubmit}>
       <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
         Let’s set a new password
       </TitleTypography>
-      <Grid item sm={12} md={9}>
-        <TitleTypography variant="h4">
-        First enter the six digit authorization code that was sent to your cell phone
-        </TitleTypography>
-      </Grid>
-      <Grid item sm={12} md={9}>
-        <Field
-          marginTop="1.5rem"
-          name="code"
-          type="text"
-          component={AuthField}
-          label="Authorization code"
-          autoFocus
-        />
-      </Grid>
+      {!authTokenReceived &&
+        <Grid item sm={12} md={9}>
+          <TitleTypography variant="h4">
+          First enter the six digit verification code that was sent to your cell phone
+          </TitleTypography>
+        </Grid>
+      }
+      {!authTokenReceived &&
+        <Grid item sm={12} md={9}>
+          <Field
+            marginTop="1.5rem"
+            name="code"
+            type="text"
+            component={AuthField}
+            label="Verification code"
+            autoFocus
+          />
+        </Grid>
+      }
       <Grid item sm={12} md={9}>
         <TitleTypography variant="h4">
           In order to protect your account, please make sure your password is 8

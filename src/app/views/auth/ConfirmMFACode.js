@@ -12,14 +12,14 @@ export default class ConfirmMFACode extends PureComponent {
     this.onSubmit = this.onSubmit.bind(this);
     this.state = { username: '' };
   }
-
+  
   componentWillMount() {
     const uname = this.props.location.query.uname;
     this.state.username = uname;
   }
 
-  onSubmit(form) {
-    return userApi
+  onSubmit = form =>
+    userApi
       .sendMFACode({
         username: this.state.username,
         mfaCode: form.mfaCode,
@@ -44,7 +44,7 @@ export default class ConfirmMFACode extends PureComponent {
           error(msg);
         }
       });
-  }
+  
 
   render() {
     return <ConfirmMFACodeForm type="Confirm" onSubmit={this.onSubmit} />;
