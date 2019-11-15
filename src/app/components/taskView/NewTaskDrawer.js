@@ -32,14 +32,19 @@ import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
 
 const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
+  box-sizing: border-box;
   display: flex;
   flex: 1.4;
-  height: 100%;
+  height: 100vh;
   justify-content: flex-start;
   padding: 0 0.25rem;
   position: sticky;
   transition: all 0.25s ease-out;
   top: 6.25rem;
+
+  & > form {
+    overflow-y: auto;
+  }
 `;
 
 const TopLabel = styled.div`
@@ -230,6 +235,37 @@ const onDelete = ({ afterDelete, dispatch, task }) => async () => {
   }
 };
 
+const thresholds = [];
+
+for (let threshold = 0; threshold <= 1; threshold += 0.01) {
+  thresholds.push(threshold);
+}
+
+const intersectionCallback = entries => {
+  entries.forEach(({ intersectionRect: { height }, target }) => {
+    const form = target.querySelector('form');
+
+    if (form) {
+      form.style.height = height;
+      form.style.minHeight = height;
+    }
+  });
+};
+
+let observer;
+try {
+  observer = new IntersectionObserver(intersectionCallback, {
+    root: null,
+    rootMargin: '0px',
+    threshold: thresholds,
+  });
+} catch {
+  observer = {
+    observe: () => {},
+    unobserve: () => {},
+  };
+}
+
 export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   const [
     priorityActive,
@@ -245,6 +281,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   const statusSelectRef = useRef(null);
   const task = useSelector(store => store.taskState.selectedTask);
   const dispatch = useDispatch();
+  const taskContainerRef = useRef(null);
 
   const storeAsCurrentTask = useCallback(
     newTask => storeAsCurrentTaskAction(newTask)(dispatch),
@@ -286,6 +323,16 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
     [headsUpAreaRef?.scrollHeight],
   );
 
+  useEffect(() => {
+    if (taskContainerRef.current) {
+      observer.observe(taskContainerRef.current);
+
+      return () => {
+        observer.unobserve(taskContainerRef.current);
+      };
+    }
+  }, []);
+
   let defaultValues = {};
 
   if (task) {
@@ -316,7 +363,10 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   );
 
   return (
-    <NewTaskDrawerContainer headsUpAreaHeight={headsUpAreaHeight}>
+    <NewTaskDrawerContainer
+      headsUpAreaHeight={headsUpAreaHeight}
+      ref={taskContainerRef}
+    >
       <form onSubmit={handleSubmit}>
         <Grid container>
           <FormSection container item xs={12}>
