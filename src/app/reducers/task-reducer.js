@@ -1,12 +1,9 @@
-import produce from 'immer';
 import {
   always,
-  assoc,
-  equals,
   evolve,
-  identity,
   ifElse,
   map,
+  mergeDeepLeft,
   propEq,
   uncurryN,
   unless,
@@ -135,32 +132,29 @@ const updateReminder = (state, { taskId, reminderDt }) => {
 
 const TASK_COMPLETE = 'COMPLETE';
 
-const updateMainTaskStatus = status =>
+const updateMainTask = taskData =>
   evolve({
-    status: always(status),
-    subtasks: equals(status, TASK_COMPLETE)
-      ? map(assoc('status', status))
-      : identity,
-  });
-
-const updateSubTaskStatus = (status, subtask) =>
-  evolve({
+    ...map(always, taskData),
     subtasks: map(
-      when(propEq('taskId', subtask.taskId), assoc('status', status)),
+      unless(propEq('status', TASK_COMPLETE), mergeDeepLeft(taskData)),
     ),
   });
 
-const updateTaskStatus = uncurryN(3, status => task =>
+const updateSubTask = (taskData, subtask) =>
+  evolve({
+    subtasks: map(
+      when(propEq('taskId', subtask.taskId), mergeDeepLeft(taskData)),
+    ),
+  });
+
+const updateTask = uncurryN(3, taskData => task =>
   map(
     when(
       propEq('taskId', task.parentTaskId || task.taskId),
       ifElse(
         propEq('taskId', task.taskId),
-        updateMainTaskStatus(status),
-        unless(
-          propEq('status', TASK_COMPLETE),
-          updateSubTaskStatus(status, task),
-        ),
+        updateMainTask(taskData),
+        unless(propEq('status', TASK_COMPLETE), updateSubTask(taskData, task)),
       ),
     ),
   ),
@@ -259,19 +253,19 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case MARK_TASK_STATUS_SUCCESS: {
-      const { task, status } = action;
-      const tasks = updateTaskStatus(status, task, state.tasks);
+      const { task, status, completedDt, completedBy } = action;
+      const taskData = { status, completedBy, completedDt };
+
+      const tasks = updateTask(taskData, task, state.tasks);
 
       return { ...state, tasks };
     }
 
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
-      const { task, status } = action;
-      const completedTasks = updateTaskStatus(
-        status,
-        task,
-        state.completedTasks,
-      );
+      const { task, status, completedDt, completedBy } = action;
+      const taskData = { status, completedBy, completedDt };
+
+      const completedTasks = updateTask(taskData, task, state.completedTasks);
 
       return { ...state, completedTasks };
     }

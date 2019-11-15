@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import * as TaskApi from '../api/task-api';
 import { noop } from '../helpers/utilityFunctions';
 import * as ActionTypes from './action-types';
@@ -285,7 +287,7 @@ export function sortSubTask(task, direction) {
       });
 }
 
-export function markComplete(task, status, listName) {
+export function markComplete(task, status, listName, currentUser = null) {
   const action =
     listName === 'INCOMPLETE'
       ? ActionTypes.MARK_TASK_STATUS_SUCCESS
@@ -303,6 +305,14 @@ export function markComplete(task, status, listName) {
           type: action,
           task,
           status: newStatus,
+          completedBy:
+            newStatus === 'COMPLETE'
+              ? currentUser ?? task.completedBy
+              : task.completedBy,
+          completedDt:
+            newStatus === 'COMPLETE'
+              ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+              : task.completedBy,
         });
       })
       .catch(error => {
@@ -522,9 +532,9 @@ export const addSubtask = parentTaskId => async dispatch => {
   });
 
   try {
-    //do not save a temporary task
+    // do not save a temporary task
     // const task = await TaskApi.addTask({ parentTaskId, description: '' });
-    const task = { parentTaskId: parentTaskId, description: '', subtasks: [] };
+    const task = { parentTaskId, description: '', subtasks: [] };
     // dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
     storeAsCurrentTask(task)(dispatch);
   } catch {

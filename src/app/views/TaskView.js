@@ -138,12 +138,14 @@ class TaskView extends Component {
   closeTaskDrawer = () => {
     const { storeAsCurrentTask } = this.props;
 
-    this.setState({
-      taskDrawerOpen: false,
-    });
-    setTimeout(() => {
-      storeAsCurrentTask(null);
-    }, 250);
+    this.setState(
+      {
+        taskDrawerOpen: false,
+      },
+      () => {
+        storeAsCurrentTask(null);
+      },
+    );
   };
 
   toggleTaskDrawer = () => {
@@ -208,6 +210,7 @@ class TaskView extends Component {
 
     this.clearStoredCurrentTask();
     this.setState({ searchTerms });
+    this.closeTaskDrawer();
   };
 
   search = tasks => {
@@ -238,12 +241,9 @@ class TaskView extends Component {
 
   onAddTaskButtonClick = () => {
     const { storeAsCurrentTask } = this.props;
-    const { taskDrawerOpen } = this.state;
 
-    if (!taskDrawerOpen) {
-      storeAsCurrentTask(null);
-    }
-    this.toggleTaskDrawer();
+    storeAsCurrentTask(null);
+    this.openTaskDrawer();
   };
 
   openFilterPopover = () => {
@@ -302,6 +302,7 @@ class TaskView extends Component {
       storeAsCurrentTask,
       markAsUnread,
       selectedTaskId,
+      currentUser,
     } = this.props;
     const { slimView, taskDrawerOpen } = this.state;
 
@@ -313,7 +314,7 @@ class TaskView extends Component {
     const tasklistProps = {
       tasks: this.search(tasks),
       markComplete: (task, status) => {
-        markComplete(task, status, 'INCOMPLETE');
+        markComplete(task, status, 'INCOMPLETE', currentUser);
       },
       storeAsCurrentTask,
       markAsUnread,
@@ -345,6 +346,7 @@ class TaskView extends Component {
       selectedTaskId,
       storeAsCurrentTask,
       markAsUnread,
+      currentUser,
     } = this.props;
     const { slimView } = this.state;
 
@@ -375,7 +377,7 @@ class TaskView extends Component {
     const tasklistProps = {
       tasks: this.search(completedTasks),
       markComplete: (task, status) => {
-        markComplete(task, status, 'COMPLETE');
+        markComplete(task, status, 'COMPLETE', currentUser);
       },
       storeAsCurrentTask,
       markAsUnread,
@@ -395,7 +397,14 @@ class TaskView extends Component {
   };
 
   render() {
-    const { isFetching, downloadPDF, taskList, showToolbar } = this.props;
+    const {
+      isFetching,
+      downloadPDF,
+      taskList,
+      showToolbar,
+      selectedTask,
+      markComplete,
+    } = this.props;
     const { slimView, taskDrawerOpen } = this.state;
 
     return (
@@ -449,7 +458,7 @@ class TaskView extends Component {
                     Print
                   </TaskListAction>
                 </ToolbarContainer>
-                {!taskDrawerOpen && (
+                {(selectedTask || !taskDrawerOpen) && (
                   <AddTaskButton onClick={this.onAddTaskButtonClick} />
                 )}
               </Grid>
@@ -478,6 +487,7 @@ class TaskView extends Component {
                       headsUpAreaRef={this.headsUpArea.current}
                       closeDrawer={this.closeTaskDrawer}
                       taskList={taskList}
+                      markComplete={markComplete}
                     />
                   )}
                 </div>
@@ -495,7 +505,12 @@ const mapDispatchToProps = dispatch => ({
   dispatchedSetHeader: setHeader(dispatch),
 });
 
+const mapStateToProps = store => ({
+  selectedTask: store.taskState.selectedTask,
+  currentUser: store.userState.userProfile,
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(TaskView);

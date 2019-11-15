@@ -3,7 +3,7 @@ import groupBy from 'ramda/es/groupBy';
 import groupWith from 'ramda/es/groupWith';
 import mapObjIndexed from 'ramda/es/mapObjIndexed';
 import sortBy from 'ramda/es/sortBy';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';

@@ -6,7 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Popover from '@material-ui/core/Popover';
 import head from 'ramda/es/head';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -18,6 +18,7 @@ import {
   updatePatient,
   deleteTask,
   moveTask,
+  storeAsCurrentTask as storeAsCurrentTaskAction,
 } from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import { PriorityDot } from '../common/Priority';
@@ -105,7 +106,6 @@ const StyledButton = styled(Button)`
 `;
 
 const statusSelectData = [
-  // Inserted No Status status
   {
     key: 'no-status',
     value: null,
@@ -123,15 +123,12 @@ const statusSelectData = [
     value: 'BLOCKED',
     label: 'Planned',
     color: '#f6b039',
-    // Original color: #0ca1c7
-    // Second color: #dc143c
   },
   {
     key: 'on-hold',
     value: 'ON_HOLD',
     label: 'On Hold',
     color: '#dc143c',
-    //Original color: #f6b039
   },
 ];
 
@@ -161,12 +158,12 @@ const renderStatusSelectOption = ({
 };
 
 const onSubmit = ({
-  closeDrawer,
   dispatch,
   status,
   task,
   taskList,
   priorityActive,
+  storeAsCurrentTask,
 }) => async data => {
   const {
     assignedToUserId,
@@ -213,10 +210,12 @@ const onSubmit = ({
     if (newTaskListId) {
       await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
     }
+
+    if (!requestData.taskId) {
+      storeAsCurrentTask({ ...newTask, ...requestData });
+    }
   } catch {
     noop();
-  } finally {
-    closeDrawer();
   }
 };
 
@@ -246,6 +245,11 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   const statusSelectRef = useRef(null);
   const task = useSelector(store => store.taskState.selectedTask);
   const dispatch = useDispatch();
+
+  const storeAsCurrentTask = useCallback(
+    newTask => storeAsCurrentTaskAction(newTask)(dispatch),
+    [dispatch],
+  );
 
   const isSubtask = Boolean(task?.parentTaskId);
 
@@ -299,35 +303,40 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
     };
   }
 
+  const handleSubmit = formMethods.handleSubmit(
+    onSubmit({
+      closeDrawer,
+      dispatch,
+      status,
+      task,
+      taskList,
+      priorityActive,
+      storeAsCurrentTask,
+    }),
+  );
+
   return (
     <NewTaskDrawerContainer headsUpAreaHeight={headsUpAreaHeight}>
-      <form
-        onSubmit={formMethods.handleSubmit(
-          onSubmit({
-            closeDrawer,
-            dispatch,
-            status,
-            task,
-            taskList,
-            priorityActive,
-          }),
-        )}
-      >
+      <form onSubmit={handleSubmit}>
         <Grid container>
           <FormSection container item xs={12}>
-            <Grid
-              container
-              item
-              xs={12}
-              alignItems="center"
-              justify="space-between"
-            >
-              <TopLabel>{`${task && task.taskId ? 'Edit' : 'Add'} a ${task && task.parentTaskId ? 'SubTask' : 'Task'}`}</TopLabel>
-              <CloseTaskButtonContainer>
-                <CloseTaskButton onClick={closeDrawer} />
-              </CloseTaskButtonContainer>
-            </Grid>
-            <FormSectionDivider condensed />
+            {!task && (
+              <>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  alignItems="center"
+                  justify="space-between"
+                >
+                  <TopLabel>Add a task</TopLabel>
+                  <CloseTaskButtonContainer>
+                    <CloseTaskButton onClick={closeDrawer} />
+                  </CloseTaskButtonContainer>
+                </Grid>
+                <FormSectionDivider condensed />
+              </>
+            )}
             <Grid
               container
               item
@@ -369,6 +378,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
                 <NewTaskDrawerForm
                   isSubtask={isSubtask}
                   defaultValues={defaultValues}
+                  handleSubmit={handleSubmit}
                 />
               </FormContext>
             </Grid>

@@ -71,7 +71,7 @@ const StyledInputContainer = styled.div`
     border-radius: 0;
     box-sizing: border-box;
     height: ${props =>
-      props.containerHeight || (props.isTextarea ? 9.375 : 4.6875)}rem;
+      props.containerHeight || (props.isTextarea ? 7.03125 : 4.6875)}rem;
     margin-top: ${props => props.containerMarginTop ?? 0.5}rem;
     position: relative;
 
@@ -120,6 +120,8 @@ const inputStyle = styleExtension => props =>
 
         cursor: props.controlled && 'pointer',
         pointerEvents: props.controlled && 'none',
+
+        lineHeight: props.isTextarea && '2rem',
 
         width: props.fullWidth && '100%',
 
