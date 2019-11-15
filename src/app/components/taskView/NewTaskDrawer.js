@@ -120,7 +120,7 @@ const statusSelectData = [
   },
   {
     key: 'planned',
-    value: 'BLOCKED',
+    value: 'PLANNED',
     label: 'Planned',
     color: '#f6b039',
     // Original color: #0ca1c7

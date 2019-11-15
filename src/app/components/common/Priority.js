@@ -7,10 +7,11 @@ export const priorityColor = priority => {
     //Inserted the No Status status
     default: 
       return '#808080'
-    case 'BLOCKED':
+    case 'PLANNED':
       return '#f6b039';
     // Original color: #0ca1c7
     // Second color: #dc143c
+    //This case used to be BLOCKED
     case 'ON_HOLD':
       return '#dc143c';
       //Original color: #f6b039
@@ -42,7 +43,7 @@ const Priority = ({ priority, style }) => (
 );
 
 Priority.propTypes = {
-  priority: PropTypes.oneOf(['BLOCKED', 'ON_HOLD', 'IN_PROGRESS', null]),
+  priority: PropTypes.oneOf(['PLANNED', 'ON_HOLD', 'IN_PROGRESS', null]),
 };
 
 Priority.defaultProps = {
