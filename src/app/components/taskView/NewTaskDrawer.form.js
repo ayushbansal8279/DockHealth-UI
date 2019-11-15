@@ -12,6 +12,7 @@ import StyledInput from '../userProfileView/StyledInput';
 import NewTaskDrawerAddPatientForm from './NewTaskDrawer.addPatientForm';
 import NewTaskDrawerInviteToListForm from './NewTaskDrawer.inviteToListForm';
 import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
+import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.editTaskComponent';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -141,11 +142,13 @@ const renderNoAssignedToItem = ({ handleAssignedToSelect }) => () => {
   );
 };
 
-export default ({ defaultValues, isSubtask }) => {
+export default ({ defaultValues, isSubtask, handleSubmit }) => {
   const formMethods = useFormContext();
   const { reset, register, setValue } = formMethods;
 
   const [currentMember, setCurrentMember] = useState(defaultValues?.assignedTo);
+
+  const hasTask = Boolean(defaultValues?.taskId);
 
   const [
     assignedToPopoverOpen,
@@ -166,7 +169,7 @@ export default ({ defaultValues, isSubtask }) => {
       closePatientPopover();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [defaultValues?.taskId],
+    [hasTask],
   );
 
   useEffect(
@@ -213,12 +216,23 @@ export default ({ defaultValues, isSubtask }) => {
       <input ref={register} type="hidden" name="patientId" />
       <FormContainer container spacing={8}>
         <Grid item xs={12}>
-          <StyledInput
-            {...styledInputProps}
-            isTextarea
-            name="description"
-            label="Task"
-          />
+          {hasTask ? (
+            <NewTaskDrawerEditTaskComponent handleSubmit={handleSubmit} />
+          ) : (
+            <StyledInput
+              {...styledInputProps}
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handleSubmit();
+                }
+              }}
+              isTextarea
+              name="description"
+              label="Task"
+            />
+          )}
         </Grid>
         <Grid item xs={12}>
           {patientPopoverOpen && (

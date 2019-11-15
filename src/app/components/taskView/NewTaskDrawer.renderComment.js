@@ -1,10 +1,9 @@
 import moment from 'moment';
-import React, { useRef, useEffect } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import BubbleFinishCurrentUserIcon from '../../img/bubble-finish-current-user.svg';
 import BubbleFinishIcon from '../../img/bubble-finish.svg';
-import useBoolean from '../../hooks/useBoolean';
 
 const CommentBubble = styled.div`
   background-color: #ededf0;
@@ -24,12 +23,9 @@ const CommentBubble = styled.div`
   }
 `;
 
-const CommentBubbleText = styled.span`
-  display: inline-block;
+const CommentBubbleText = styled.div`
   min-height: 1em;
   outline: none;
-  pointer-events: none;
-  user-select: none;
   word-break: break-all;
 `;
 
@@ -103,67 +99,119 @@ const SmallLabel = styled.label`
   font-size: 0.625rem;
 `;
 
+class SingleComment extends Component {
+  state = {
+    commentBubbleTextFocused: false,
+    newComment: '',
+  };
+
+  commentBubbleTextRef = React.createRef();
+
+  componentDidUpdate(prevProps, prevState) {
+    const { commentBubbleTextFocused } = this.state;
+    if (
+      commentBubbleTextFocused !== prevState.commentBubbleTextFocused &&
+      commentBubbleTextFocused
+    ) {
+      // eslint-disable-next-line no-unused-expressions
+      this.commentBubbleTextRef.current?.focus();
+    }
+  }
+
+  setCommentBubbleTextFocused = () => {
+    this.setState({
+      commentBubbleTextFocused: true,
+    });
+  };
+
+  unsetCommentBubbleTextFocused = () => {
+    this.setState({
+      commentBubbleTextFocused: false,
+    });
+  };
+
+  saveComment = () => {
+    const { updateComment, commentId } = this.props;
+
+    updateComment({
+      comment: this.commentBubbleTextRef.current?.textContent,
+      commentId,
+    });
+  };
+
+  onCommentBubbleBlur = event => {
+    const { comment } = this.props;
+    const { newComment: previousNewComment } = this.state;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const newComment = this.commentBubbleTextRef.current?.textContent;
+
+    if (newComment) {
+      this.unsetCommentBubbleTextFocused();
+      this.saveComment();
+      this.setState({
+        newComment,
+      });
+    } else {
+      toggleAlert('Empty comment is not allowed, please try again', 'error');
+      const oldCommentContent = previousNewComment || comment;
+      this.commentBubbleTextRef.current.textContent = oldCommentContent;
+    }
+  };
+
+  render() {
+    const { commentBubbleTextFocused } = this.state;
+    const { comment, isLastBubble, isCurrentUser } = this.props;
+
+    return (
+      <CommentBubble>
+        <CommentBubbleText
+          ref={this.commentBubbleTextRef}
+          onDoubleClick={
+            commentBubbleTextFocused
+              ? undefined
+              : this.setCommentBubbleTextFocused
+          }
+          contentEditable={commentBubbleTextFocused}
+          onBlur={this.onCommentBubbleBlur}
+          onKeyPress={event => {
+            if (event.key === 'Enter') {
+              this.onCommentBubbleBlur(event);
+            }
+          }}
+        >
+          {comment}
+        </CommentBubbleText>
+        {isLastBubble && (
+          <BubbleFinish
+            isCurrentUser={isCurrentUser}
+            src={isCurrentUser ? BubbleFinishCurrentUserIcon : BubbleFinishIcon}
+            alt="bubble"
+          />
+        )}
+      </CommentBubble>
+    );
+  }
+}
+
 const renderSingleComment = ({ isCurrentUser, updateComment }) => (
   { comment, commentId },
   commentIndex,
   commentsFromSingleAuthor,
 ) => {
-  const lastBubble = commentsFromSingleAuthor.length - 1 === commentIndex;
-  const commentBubbleTextRef = useRef(null);
+  const isLastBubble = commentsFromSingleAuthor.length - 1 === commentIndex;
 
-  const [
-    commentBubbleTextFocused,
-    setCommentBubbleTextFocused,
-    unsetCommentBubbleTextFocused,
-  ] = useBoolean(false);
+  const singleCommentProps = {
+    isLastBubble,
+    isCurrentUser,
+    updateComment,
+    comment,
+    commentId,
+  };
 
-  useEffect(() => {
-    if (commentBubbleTextFocused) {
-      // eslint-disable-next-line no-unused-expressions
-      commentBubbleTextRef.current?.focus();
-    }
-  }, [commentBubbleTextFocused]);
-
-  const saveComment = () =>
-    updateComment({
-      comment: commentBubbleTextRef.current?.textContent,
-      commentId,
-    });
-
-  return (
-    <CommentBubble
-      onDoubleClick={setCommentBubbleTextFocused}
-      onBlur={event => {
-        event.preventDefault();
-        event.stopPropagation();
-        unsetCommentBubbleTextFocused();
-        saveComment();
-      }}
-      key={commentId}
-    >
-      <CommentBubbleText
-        ref={commentBubbleTextRef}
-        contentEditable={commentBubbleTextFocused}
-        onKeyPress={event => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            event.stopPropagation();
-            unsetCommentBubbleTextFocused();
-            saveComment();
-          }
-        }}
-      >
-        {comment}
-      </CommentBubbleText>
-      {lastBubble && (
-        <BubbleFinish
-          isCurrentUser={isCurrentUser}
-          src={isCurrentUser ? BubbleFinishCurrentUserIcon : BubbleFinishIcon}
-          alt="bubble"
-        />
-      )}
-    </CommentBubble>
-  );
+  return <SingleComment key={commentId} {...singleCommentProps} />;
 };
 
 export default ({ currentUserId, updateComment }) => ([

@@ -104,7 +104,7 @@ class MemberPicker extends React.Component {
     const { anchorEl, isSearching, searchTerm } = this.state;
     const isOpen = Boolean(anchorEl);
 
-    const member = { ...propMember };
+    const member = propMember ? { ...propMember } : null;
 
     // Member search
     const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];

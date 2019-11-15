@@ -20,7 +20,14 @@ export default class ForgotPassword extends PureComponent {
           `Sent verification code to: ${resp.CodeDeliveryDetails.Destination}`,
         );
         window.sessionStorage.setItem('username', form.username)
-        hashHistory.push('resetPassword');
+        if(resp.CodeDeliveryDetails){
+          const deliveryMedium = resp.CodeDeliveryDetails.DeliveryMedium
+          if(deliveryMedium == "EMAIL"){
+            hashHistory.push('resetPasswordEmailSent');
+          }else{
+            hashHistory.push('resetPassword');
+          }
+        }
       })
       .catch(e => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {

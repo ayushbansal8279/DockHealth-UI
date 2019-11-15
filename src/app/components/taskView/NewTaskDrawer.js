@@ -6,7 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Popover from '@material-ui/core/Popover';
 import head from 'ramda/es/head';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -18,6 +18,7 @@ import {
   updatePatient,
   deleteTask,
   moveTask,
+  storeAsCurrentTask as storeAsCurrentTaskAction,
 } from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import { PriorityDot } from '../common/Priority';
@@ -31,14 +32,19 @@ import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
 
 const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
+  box-sizing: border-box;
   display: flex;
   flex: 1.4;
-  height: 100%;
+  height: 100vh;
   justify-content: flex-start;
   padding: 0 0.25rem;
   position: sticky;
   transition: all 0.25s ease-out;
   top: 6.25rem;
+
+  & > form {
+    overflow-y: auto;
+  }
 `;
 
 const TopLabel = styled.div`
@@ -105,7 +111,6 @@ const StyledButton = styled(Button)`
 `;
 
 const statusSelectData = [
-  // Inserted No Status status
   {
     key: 'no-status',
     value: null,
@@ -123,15 +128,12 @@ const statusSelectData = [
     value: 'PLANNED',
     label: 'Planned',
     color: '#f6b039',
-    // Original color: #0ca1c7
-    // Second color: #dc143c
   },
   {
     key: 'on-hold',
     value: 'ON_HOLD',
     label: 'On Hold',
     color: '#dc143c',
-    //Original color: #f6b039
   },
 ];
 
@@ -161,12 +163,12 @@ const renderStatusSelectOption = ({
 };
 
 const onSubmit = ({
-  closeDrawer,
   dispatch,
   status,
   task,
   taskList,
   priorityActive,
+  storeAsCurrentTask,
 }) => async data => {
   const {
     assignedToUserId,
@@ -213,10 +215,12 @@ const onSubmit = ({
     if (newTaskListId) {
       await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
     }
+
+    if (!requestData.taskId) {
+      storeAsCurrentTask({ ...newTask, ...requestData });
+    }
   } catch {
     noop();
-  } finally {
-    closeDrawer();
   }
 };
 
@@ -230,6 +234,37 @@ const onDelete = ({ afterDelete, dispatch, task }) => async () => {
     }
   }
 };
+
+const thresholds = [];
+
+for (let threshold = 0; threshold <= 1; threshold += 0.01) {
+  thresholds.push(threshold);
+}
+
+const intersectionCallback = entries => {
+  entries.forEach(({ intersectionRect: { height }, target }) => {
+    const form = target.querySelector('form');
+
+    if (form) {
+      form.style.height = height;
+      form.style.minHeight = height;
+    }
+  });
+};
+
+let observer;
+try {
+  observer = new IntersectionObserver(intersectionCallback, {
+    root: null,
+    rootMargin: '0px',
+    threshold: thresholds,
+  });
+} catch {
+  observer = {
+    observe: () => {},
+    unobserve: () => {},
+  };
+}
 
 export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   const [
@@ -246,6 +281,12 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   const statusSelectRef = useRef(null);
   const task = useSelector(store => store.taskState.selectedTask);
   const dispatch = useDispatch();
+  const taskContainerRef = useRef(null);
+
+  const storeAsCurrentTask = useCallback(
+    newTask => storeAsCurrentTaskAction(newTask)(dispatch),
+    [dispatch],
+  );
 
   const isSubtask = Boolean(task?.parentTaskId);
 
@@ -282,6 +323,16 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
     [headsUpAreaRef?.scrollHeight],
   );
 
+  useEffect(() => {
+    if (taskContainerRef.current) {
+      observer.observe(taskContainerRef.current);
+
+      return () => {
+        observer.unobserve(taskContainerRef.current);
+      };
+    }
+  }, []);
+
   let defaultValues = {};
 
   if (task) {
@@ -299,35 +350,43 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
     };
   }
 
+  const handleSubmit = formMethods.handleSubmit(
+    onSubmit({
+      closeDrawer,
+      dispatch,
+      status,
+      task,
+      taskList,
+      priorityActive,
+      storeAsCurrentTask,
+    }),
+  );
+
   return (
-    <NewTaskDrawerContainer headsUpAreaHeight={headsUpAreaHeight}>
-      <form
-        onSubmit={formMethods.handleSubmit(
-          onSubmit({
-            closeDrawer,
-            dispatch,
-            status,
-            task,
-            taskList,
-            priorityActive,
-          }),
-        )}
-      >
+    <NewTaskDrawerContainer
+      headsUpAreaHeight={headsUpAreaHeight}
+      ref={taskContainerRef}
+    >
+      <form onSubmit={handleSubmit}>
         <Grid container>
           <FormSection container item xs={12}>
-            <Grid
-              container
-              item
-              xs={12}
-              alignItems="center"
-              justify="space-between"
-            >
-              <TopLabel>{`${task && task.taskId ? 'Edit' : 'Add'} a ${task && task.parentTaskId ? 'SubTask' : 'Task'}`}</TopLabel>
-              <CloseTaskButtonContainer>
-                <CloseTaskButton onClick={closeDrawer} />
-              </CloseTaskButtonContainer>
-            </Grid>
-            <FormSectionDivider condensed />
+            {!task && (
+              <>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  alignItems="center"
+                  justify="space-between"
+                >
+                  <TopLabel>Add a task</TopLabel>
+                  <CloseTaskButtonContainer>
+                    <CloseTaskButton onClick={closeDrawer} />
+                  </CloseTaskButtonContainer>
+                </Grid>
+                <FormSectionDivider condensed />
+              </>
+            )}
             <Grid
               container
               item
@@ -369,6 +428,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
                 <NewTaskDrawerForm
                   isSubtask={isSubtask}
                   defaultValues={defaultValues}
+                  handleSubmit={handleSubmit}
                 />
               </FormContext>
             </Grid>

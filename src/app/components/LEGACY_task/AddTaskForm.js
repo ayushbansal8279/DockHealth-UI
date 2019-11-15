@@ -324,8 +324,8 @@ class AddTaskForm extends PureComponent {
           ) : (
             <span />
           )}
-
           <Field
+          //Is this old workflowStatus stuff
             id="task-status"
             name="taskStatus"
             component={SelectInput}

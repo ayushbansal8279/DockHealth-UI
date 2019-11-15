@@ -31,7 +31,7 @@ const Task = props => {
   );
   const animationContainer = useRef(null);
 
-  const hasSubtasks = (subtasks?subtasks.length > 0:false);
+  const hasSubtasks = subtasks?.length > 0;
 
   const isSelfOrSubtaskActive =
     selectedTaskId === task.taskId ||

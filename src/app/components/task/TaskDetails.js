@@ -103,7 +103,7 @@ class TaskDetails extends React.PureComponent {
             options={[
               { value: 'NO_STATUS', description: 'No Status' },
               { value: 'IN_PROGRESS', description: 'In Progress' },
-              { value: 'BLOCKED', description: 'Planned' },
+              { value: 'PLANNED', description: 'Planned' },
               { value: 'ON_HOLD', description: 'On Hold' },
             ]}
           />
