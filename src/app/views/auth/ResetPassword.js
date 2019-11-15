@@ -8,11 +8,18 @@ import ResetPasswordForm from '../../components/auth/ResetPasswordForm';
 
 export default class ResetPassword extends PureComponent {
   onSubmit = form => {
-    const {
+    var {
       location: {
         query: { uname, code },
       },
     } = this.props;
+
+    if(form.code){
+      code = form.code
+    }
+    if(window.sessionStorage.getItem('username')){
+      uname = window.sessionStorage.getItem('username')
+    }
 
     return userApi
       .resetPassword({

@@ -56,7 +56,7 @@ const ForgotPasswordForm = props => {
               marginTop: '3rem',
             }}
           >
-            Email me a recovery link
+            Send me a recovery code
           </NextButton>
         </Grid>
       </Grid>
