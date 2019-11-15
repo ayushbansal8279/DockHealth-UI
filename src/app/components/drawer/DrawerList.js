@@ -4,7 +4,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Popover from '@material-ui/core/Popover';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, withRouter, hashHistory } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import styled from 'styled-components';
 
 import useBoolean from '../../hooks/useBoolean';
@@ -75,9 +75,14 @@ const RolloverNestedListItemText = styled.div`
   font-size: 0.875rem;
   line-height: 1;
   padding: 0.5rem;
+  pointer-events: none;
 `;
 
 const RolloverPopover = styled(Popover)`
+  && {
+    pointer-events: none;
+  }
+
   && > div {
     border-radius: 0;
   }
@@ -92,6 +97,7 @@ const NestedListItemText = styled.li`
   overflow: hidden;
   padding-left: 0.5rem;
   text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const NestedListItem = styled(ListItem)`
@@ -228,7 +234,7 @@ const RouterLink = ({
 }) => {
   const { to } = props;
 
-  let className = ' ';
+  let className = '';
 
   if (active) {
     className += ' active';
@@ -262,11 +268,11 @@ const Item = ({
   setActiveId,
   to,
   withBackground = false,
+  closePopover,
   openPopover,
   rolloverPopoverAnchor,
   setRolloverLabel,
   setRolloverPopoverAnchor,
-  setRolloverPopoverOnClick,
   ...otherProps
 }) => {
   const active = id === activeId;
@@ -307,11 +313,11 @@ const Item = ({
                 {...childItemProps}
                 activeId={activeId}
                 setActiveId={setActiveId}
+                closePopover={closePopover}
                 openPopover={openPopover}
                 rolloverPopoverAnchor={rolloverPopoverAnchor}
                 setRolloverLabel={setRolloverLabel}
                 setRolloverPopoverAnchor={setRolloverPopoverAnchor}
-                setRolloverPopoverOnClick={setRolloverPopoverOnClick}
               />
             ))}
           </NestedList>
@@ -327,56 +333,54 @@ const NestedItem = ({
   setActiveId,
   to,
   id,
+  closePopover,
   openPopover,
   setRolloverLabel,
   setRolloverPopoverAnchor,
-  setRolloverPopoverOnClick,
   rolloverPopoverAnchor,
 }) => {
   const active = id === activeId;
 
   const nestedItemTextRef = useRef(null);
 
-  const onMouseEnter = useCallback(() => {
+  const onMouseEnter = () => {
     if (rolloverPopoverAnchor !== nestedItemTextRef) {
       const currentElement = nestedItemTextRef.current;
 
       if (currentElement?.scrollWidth > currentElement?.offsetWidth) {
         setRolloverLabel(label);
         setRolloverPopoverAnchor(nestedItemTextRef);
-        setRolloverPopoverOnClick(() => () => hashHistory.push(to));
         openPopover();
       }
     }
-  }, [
-    label,
-    setRolloverLabel,
-    setRolloverPopoverAnchor,
-    openPopover,
-    rolloverPopoverAnchor,
-    setRolloverPopoverOnClick,
-    to,
-  ]);
+  };
+
+  const onMouseLeave = () => {
+    if (rolloverPopoverAnchor === nestedItemTextRef) {
+      setRolloverLabel('');
+      setRolloverPopoverAnchor(null);
+      closePopover();
+    }
+  };
 
   return (
-    <>
-      <NestedListItem
-        active={active}
-        button
-        nested
-        component={RouterLink}
-        to={to}
-        onClick={() => setActiveId(id)}
+    <NestedListItem
+      active={active}
+      button
+      nested
+      component={RouterLink}
+      to={to}
+      onClick={() => setActiveId(id)}
+    >
+      <NestedListItemText
+        onMouseOver={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={() => {}}
+        ref={nestedItemTextRef}
       >
-        <NestedListItemText
-          onMouseOver={onMouseEnter}
-          onFocus={() => {}}
-          ref={nestedItemTextRef}
-        >
-          {label}
-        </NestedListItemText>
-      </NestedListItem>
-    </>
+        {label}
+      </NestedListItemText>
+    </NestedListItem>
   );
 };
 
@@ -443,9 +447,6 @@ const DrawerList = ({
   const [activeId, setActiveId] = useState('');
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
-  const [rolloverPopoverOnClick, setRolloverPopoverOnClick] = useState(
-    () => {},
-  );
   const [rolloverLabel, setRolloverLabel] = useState('');
 
   const drawerItems = getDrawerItems({ lists });
@@ -472,7 +473,6 @@ const DrawerList = ({
     closePopover();
     setRolloverPopoverAnchor(null);
     setRolloverLabel('');
-    setRolloverPopoverOnClick(() => () => {});
   }, [closePopover]);
 
   return (
@@ -484,11 +484,11 @@ const DrawerList = ({
             activeId,
             open,
             setActiveId,
+            closePopover,
             openPopover,
             rolloverPopoverAnchor,
             setRolloverLabel,
             setRolloverPopoverAnchor,
-            setRolloverPopoverOnClick,
           }),
         )}
         <StyledSpacer />
@@ -515,14 +515,9 @@ const DrawerList = ({
           vertical: 'top',
           horizontal: 'left',
         }}
-        transitionDuration={0}
+        transitionDuration={100}
       >
-        <RolloverNestedListItemText
-          onClick={rolloverPopoverOnClick}
-          onMouseLeave={onPopoverClose}
-        >
-          {rolloverLabel}
-        </RolloverNestedListItemText>
+        <RolloverNestedListItemText>{rolloverLabel}</RolloverNestedListItemText>
       </RolloverPopover>
     </>
   );
