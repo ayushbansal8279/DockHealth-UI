@@ -1,13 +1,15 @@
 import moment from 'moment';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 import BubbleFinishCurrentUserIcon from '../../img/bubble-finish-current-user.svg';
 import BubbleFinishIcon from '../../img/bubble-finish.svg';
+import useBoolean from '../../hooks/useBoolean';
 
 const CommentBubble = styled.div`
   background-color: #ededf0;
   border-radius: 0.25rem;
+  cursor: text;
   flex: 1;
   font-size: 0.75rem;
   padding: 0.5rem 0.75rem;
@@ -16,21 +18,31 @@ const CommentBubble = styled.div`
   &:not(:first-child) {
     margin-top: 0.25rem;
   }
+
+  &:last-child {
+    margin-bottom: 0.125rem;
+  }
+`;
+
+const CommentBubbleText = styled.span`
+  display: inline-block;
+  min-height: 1em;
+  outline: none;
+  pointer-events: none;
+  user-select: none;
+  word-break: break-all;
 `;
 
 const BubbleFinish = styled.img`
   bottom: -2.1758px;
+  pointer-events: none;
   position: absolute;
+  user-select: none;
 
   ${props =>
     props.isCurrentUser
-      ? `
-    right: -3.649px;
-    transform: scaleX(-1);
-  `
-      : `
-    left: -3.649px;
-  `}
+      ? 'right: -3.649px; transform: scaleX(-1);'
+      : 'left: -3.649px;'}
 `;
 
 const CommentsDateContainer = styled.div`
@@ -91,7 +103,73 @@ const SmallLabel = styled.label`
   font-size: 0.625rem;
 `;
 
-export default ({ currentUserId }) => ([date, commentsArray]) => {
+const renderSingleComment = ({ isCurrentUser, updateComment }) => (
+  { comment, commentId },
+  commentIndex,
+  commentsFromSingleAuthor,
+) => {
+  const lastBubble = commentsFromSingleAuthor.length - 1 === commentIndex;
+  const commentBubbleTextRef = useRef(null);
+
+  const [
+    commentBubbleTextFocused,
+    setCommentBubbleTextFocused,
+    unsetCommentBubbleTextFocused,
+  ] = useBoolean(false);
+
+  useEffect(() => {
+    if (commentBubbleTextFocused) {
+      // eslint-disable-next-line no-unused-expressions
+      commentBubbleTextRef.current?.focus();
+    }
+  }, [commentBubbleTextFocused]);
+
+  const saveComment = () =>
+    updateComment({
+      comment: commentBubbleTextRef.current?.textContent,
+      commentId,
+    });
+
+  return (
+    <CommentBubble
+      onDoubleClick={setCommentBubbleTextFocused}
+      onBlur={event => {
+        event.preventDefault();
+        event.stopPropagation();
+        unsetCommentBubbleTextFocused();
+        saveComment();
+      }}
+      key={commentId}
+    >
+      <CommentBubbleText
+        ref={commentBubbleTextRef}
+        contentEditable={commentBubbleTextFocused}
+        onKeyPress={event => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            unsetCommentBubbleTextFocused();
+            saveComment();
+          }
+        }}
+      >
+        {comment}
+      </CommentBubbleText>
+      {lastBubble && (
+        <BubbleFinish
+          isCurrentUser={isCurrentUser}
+          src={isCurrentUser ? BubbleFinishCurrentUserIcon : BubbleFinishIcon}
+          alt="bubble"
+        />
+      )}
+    </CommentBubble>
+  );
+};
+
+export default ({ currentUserId, updateComment }) => ([
+  date,
+  commentsArray,
+]) => {
   return (
     <CommentsDateContainer key={date}>
       <SmallLabel>{moment(date).format('dddd, MMMM Do')}</SmallLabel>
@@ -121,27 +199,7 @@ export default ({ currentUserId }) => ([date, commentsArray]) => {
                 {`${commentUserName} ${formattedCreatedDate}`.trim()}
               </SmallLabel>
               {commentsFromSingleAuthor.map(
-                ({ comment, commentId }, commentIndex) => {
-                  const lastBubble =
-                    commentsFromSingleAuthor.length - 1 === commentIndex;
-                  return (
-                    <CommentBubble key={commentId}>
-                      <span>{comment}</span>
-
-                      {lastBubble && (
-                        <BubbleFinish
-                          isCurrentUser={isCurrentUser}
-                          src={
-                            isCurrentUser
-                              ? BubbleFinishCurrentUserIcon
-                              : BubbleFinishIcon
-                          }
-                          alt="bubble"
-                        />
-                      )}
-                    </CommentBubble>
-                  );
-                },
+                renderSingleComment({ isCurrentUser, updateComment }),
               )}
             </CommentGroupContainer>
             {!isCurrentUser && (

@@ -1,7 +1,6 @@
 import * as TaskApi from '../api/task-api';
-import * as ActionTypes from './action-types';
-
 import { noop } from '../helpers/utilityFunctions';
+import * as ActionTypes from './action-types';
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -241,11 +240,11 @@ export function deleteComment(task, comment) {
 export function updateComment(task, comment) {
   return dispatch =>
     TaskApi.updateComment(comment)
-      .then(() => {
+      .then(({ data }) => {
         dispatch({
           type: ActionTypes.UPDATE_TASK_COMMENT_SUCCESS,
           task,
-          comment,
+          comment: data,
         });
       })
       .catch(error => {
@@ -525,7 +524,7 @@ export const addSubtask = parentTaskId => async dispatch => {
   try {
     //do not save a temporary task
     // const task = await TaskApi.addTask({ parentTaskId, description: '' });
-    const task = { parentTaskId: parentTaskId, description: '', subtasks: [] }
+    const task = { parentTaskId: parentTaskId, description: '', subtasks: [] };
     // dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
     storeAsCurrentTask(task)(dispatch);
   } catch {

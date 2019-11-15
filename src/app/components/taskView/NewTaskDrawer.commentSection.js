@@ -3,12 +3,15 @@ import groupBy from 'ramda/es/groupBy';
 import groupWith from 'ramda/es/groupWith';
 import mapObjIndexed from 'ramda/es/mapObjIndexed';
 import sortBy from 'ramda/es/sortBy';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
 
-import { addTaskComment } from '../../actions/task-actions';
+import {
+  addTaskComment,
+  updateComment as updateCommentAction,
+} from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import renderComment from './NewTaskDrawer.renderComment';
@@ -135,10 +138,22 @@ export default ({ task }) => {
   ] = useBoolean(false);
   const [commentContent, setCommentContent] = useState('');
 
+  const updateComment = commentData => {
+    updateCommentAction(task, commentData)(dispatch)
+      .then(() => {
+        toggleAlert('Comment updated successfully', 'success');
+      })
+      .catch(() => {
+        toggleAlert('Error updating comment, please try again later', 'error');
+      });
+  };
+
   const comments = (task?.comments ?? []).concat(addedComments);
   const commentsEmpty = comments.length === 0;
 
-  const groupedComments = getGroupedComments({ comments });
+  const groupedComments = getGroupedComments({
+    comments,
+  });
 
   const publishComment = async () => {
     if (commentContent.trim().length === 0) {
@@ -204,7 +219,10 @@ export default ({ task }) => {
           <CommentsContainer>
             <StyledSimpleBar visible>
               {Object.entries(groupedComments).map(
-                renderComment({ currentUserId }),
+                renderComment({
+                  currentUserId,
+                  updateComment,
+                }),
               )}
             </StyledSimpleBar>
           </CommentsContainer>

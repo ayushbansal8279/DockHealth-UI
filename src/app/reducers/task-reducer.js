@@ -1,3 +1,4 @@
+import produce from 'immer';
 import {
   always,
   assoc,
@@ -18,6 +19,7 @@ import {
   ADD_TASK_SUCCESS,
   ASSIGN_OR_REASSIGN_TASK_SUCCESS,
   CHANGE_ADDING_NEW_SUBTASK,
+  CHANGE_ADDING_NEW_TASK,
   CLEAR_CURRENT_TASK_HISTORY,
   DELETE_TASK_COMMENT_SUCCESS,
   DELETE_TASK_SUCCESS,
@@ -47,7 +49,6 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
-  CHANGE_ADDING_NEW_TASK,
 } from '../actions/action-types';
 
 const initialState = {
@@ -492,34 +493,44 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTaskId
-            ? action.task.parentTaskId
-              ? {
-                  ...task,
-                  subtasks: task.subtasks.map(subtask =>
-                    subtask === action.task
-                      ? {
-                          ...subtask,
-                          comments: subtask.comments.map(comment =>
-                            comment.commentId === action.comment.commentId
-                              ? { ...comment, comment: action.comment.comment }
-                              : comment,
-                          ),
-                        }
-                      : subtask,
-                  ),
-                }
-              : {
-                  ...task,
-                  comments: task.comments.map(comment =>
-                    comment.commentId === action.comment.commentId
-                      ? { ...comment, comment: action.comment.comment }
-                      : comment,
-                  ),
-                }
-            : task,
-        ),
+        tasks: state.tasks.map(task => {
+          if (task.taskId === mainTaskId) {
+            if (action.task.parentTaskId) {
+              return {
+                ...task,
+                subtasks: task.subtasks.map(subtask => ({
+                  ...subtask,
+                  comments: subtask.comments.map(comment => {
+                    if (comment.commentId === action.comment.commentId) {
+                      return {
+                        ...comment,
+                        ...action.comment,
+                        creator: comment.creator,
+                      };
+                    }
+
+                    return comment;
+                  }),
+                })),
+              };
+            }
+
+            return {
+              ...task,
+              comments: task.comments.map(comment =>
+                comment.commentId === action.comment.commentId
+                  ? {
+                      ...comment,
+                      ...action.comment,
+                      creator: comment.creator,
+                    }
+                  : comment,
+              ),
+            };
+          }
+
+          return task;
+        }),
       };
     }
 
