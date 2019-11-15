@@ -114,7 +114,9 @@ class TaskListView extends PureComponent {
           <AddListForm onSubmit={this.submit}/>
 
             <div className="list-wrapper dashboard-section">
-              <div className="row collapse">
+
+              {/*This commented behemoth is the dashboard HUD for the lists page. */}
+          {/* <div className="row collapse">
                 {this.props.genericLists &&
                   this.props.genericLists.map(list => {
                     let iconName = '';
@@ -170,8 +172,8 @@ class TaskListView extends PureComponent {
                       )
                     );
                   })}
-              </div>
-            </div>
+                </div> */}
+            </div> 
             <div className="list-wrapper list-wrapper-all-lists">
               {this.props.isFetching ? (
                 <div className="sk-circle">
