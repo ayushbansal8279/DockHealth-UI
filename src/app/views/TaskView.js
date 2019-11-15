@@ -98,6 +98,7 @@ class TaskView extends Component {
     searchTerms: [],
     slimView: false,
     taskDrawerOpen: false,
+    displayHUD: true,
   };
 
   headsUpArea = React.createRef();
@@ -223,6 +224,12 @@ class TaskView extends Component {
     );
 
     return filteredTasks;
+  };
+
+  toggleHUD = () => {
+    this.setState(prevState => ({
+      displayHUD: !prevState.displayHUD,
+    }));
   };
 
   handleClose = () => {
@@ -396,7 +403,7 @@ class TaskView extends Component {
 
   render() {
     const { isFetching, downloadPDF, taskList, showToolbar } = this.props;
-    const { slimView, taskDrawerOpen } = this.state;
+    const { slimView, taskDrawerOpen, displayHUD } = this.state;
 
     return (
       <div
@@ -411,7 +418,9 @@ class TaskView extends Component {
             maxWidth: '1152px',
           }}
         >
+          {displayHUD && 
           <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
+          }
           {showToolbar && (
             <StyledToolbar>
               <Grid container alignItems="center" justify="space-between">
@@ -436,6 +445,7 @@ class TaskView extends Component {
                     activeIcon={SortingStatsActiveIcon}
                     backgroundColor="#fff"
                     icon={SortingStatsIcon}
+                    onClick={this.toggleHUD}
                   >
                     Sorting & Stats
                   </TaskListAction>

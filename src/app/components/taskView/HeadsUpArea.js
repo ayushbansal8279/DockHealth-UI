@@ -29,11 +29,12 @@ const taskListTrendsTabs = {
 };
 
 const taskListStatsElements = [
-  {
-    key: 'Incomplete_TaskList_Count',
-    label: 'All active tasks',
-    tab: taskListStatsTabs.me,
-  },
+  // This is the code for the all active tasks tab under the for me heads up section
+  // {
+  //   key: 'Incomplete_TaskList_Count',
+  //   label: 'All active tasks',
+  //   tab: taskListStatsTabs.me,
+  // },
   {
     key: 'AssignedToMe_TaskList_Count',
     label: 'Assigned to me',
