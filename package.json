@@ -55,6 +55,7 @@
     "moment-timezone": "^0.5.23",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.6.2",
+    "pusher-js": "^5.0.2",
     "query-string": "^6.5.0",
     "ramda": "^0.26.1",
     "react": "^16.8.4",
