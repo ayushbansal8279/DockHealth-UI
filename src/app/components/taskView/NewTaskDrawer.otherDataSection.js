@@ -9,7 +9,6 @@ import useBoolean from '../../hooks/useBoolean';
 import DateTimeSelect from '../common/DateTimeSelect';
 import { getTaskHistory } from '../../actions/task-actions';
 import CubesLoader from '../common/CubesLoader';
-import { TASK_ATTACHMENT_ADDED } from '../../actions/action-types';
 
 const OtherDataSectionContainer = styled.div`
   padding: 1rem 1.5rem;
@@ -32,7 +31,7 @@ const SectionButtonContainer = styled.div`
 
 const SectionButton = styled.span`
   color: ${props => props.color ?? '#2e3a43'};
-  cursor: pointer;
+  cursor: ${props => (props.clickable ? 'pointer' : 'defualt')};
   font-size: 0.875rem;
 `;
 
@@ -99,18 +98,25 @@ const renderHistoryItem = ({
   );
 };
 
-export default ({ task }) => {
+const renderEmptyHistory = () => (
+  <HistoryLabel>No history available</HistoryLabel>
+);
+
+const renderHistory = history => {
+  if (history?.length === 0) {
+    return renderEmptyHistory();
+  }
+  return history?.map(renderHistoryItem);
+};
+
+export default ({ task, taskList }) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];
-  const currentUser = useSelector(store => store.userState.userProfile) ;
-  //TODO better style the time/date used while creating a task
+  const currentUser = useSelector(store => store.userState.userProfile);
+  // TODO better style the time/date used while creating a task
   const todaysMoment = moment().format('MMM D, YYYY @ h:mma');
 
   const { register, setValue } = useFormContext();
   const dispatch = useDispatch();
-
-  const currentTaskList = taskLists?.find(
-    taskList => taskList?.taskListId === task?.taskList?.taskListId,
-  );
 
   const [newTaskListName, setNewTaskListName] = useState('');
   const [newDueDate, setNewDueDate] = useState(
@@ -150,16 +156,16 @@ export default ({ task }) => {
 
   useEffect(() => {
     if (isHistoryShown) {
-      setHistoryLoading();
-      //The following if statement checks if task is null.
-      if(task != null){
-        getTaskHistory(task)(dispatch).then(historyDetails => {
-          //This is the step that causes the webage to blank out if history is clicked
-          setHistory(historyDetails);
-          //unsetHistoryLoading();
-        });
+      if (task) {
+        getTaskHistory(task)(dispatch)
+          .then(historyDetails => {
+            setHistory(historyDetails);
+            unsetHistoryLoading();
+          })
+          .catch(() => {
+            unsetHistoryLoading();
+          });
       }
-      unsetHistoryLoading();
     } else {
       setHistory([]);
     }
@@ -174,6 +180,13 @@ export default ({ task }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task?.taskId]);
 
+  const onToggleHistoryButtonClicked = () => {
+    if (!isHistoryShown) {
+      setHistoryLoading();
+    }
+    toggleHistory();
+  };
+
   return (
     <OtherDataSectionContainer>
       {!task?.parentTaskId && (
@@ -181,12 +194,17 @@ export default ({ task }) => {
           <input type="hidden" name="newTaskListId" ref={register} />
           <SectionLabel>Filed In</SectionLabel>
           <SectionButtonContainer>
-            <SectionButton
-              ref={taskListButtonRef}
-              onClick={setTaskListPopoverOpen}
-            >
-              {newTaskListName || currentTaskList?.listName}
-            </SectionButton>
+            {task ? (
+              <SectionButton
+                clickable
+                ref={taskListButtonRef}
+                onClick={setTaskListPopoverOpen}
+              >
+                {newTaskListName || taskList?.listName}
+              </SectionButton>
+            ) : (
+              <SectionButton>{taskList?.listName}</SectionButton>
+            )}
           </SectionButtonContainer>
           <Popover
             anchorEl={taskListButtonRef.current}
@@ -243,22 +261,20 @@ export default ({ task }) => {
       </SectionRow>
       <SectionRow>
         <SectionLabel>History</SectionLabel>
-        {task && task.taskId && (
-          <SectionButtonContainer>   
+        <SectionButtonContainer>
+          {task?.taskId ? (
             <SectionButton
               color="#0ca1c7"
-              onClick={isHistoryLoading ? undefined : toggleHistory}
-              >
+              onClick={
+                isHistoryLoading ? undefined : onToggleHistoryButtonClicked
+              }
+            >
               {isHistoryShown ? 'Hide' : 'Show'}
             </SectionButton>
-          </SectionButtonContainer>
-        )}
-        {(!task || !task.taskId) && (
-          //TOdone Add date to the created by text...     @ {moment.format('MMM D, YYYY h:mma')}
-          <SectionButtonContainer>  
-            Created by {currentUser.firstName} {currentUser.lastName} on {todaysMoment}
-          </SectionButtonContainer>
-        )}
+          ) : (
+            `Created by ${currentUser.firstName} ${currentUser.lastName} on ${todaysMoment}`
+          )}
+        </SectionButtonContainer>
       </SectionRow>
       {isHistoryShown && (
         <SectionRow>
@@ -267,7 +283,7 @@ export default ({ task }) => {
             {isHistoryLoading ? (
               <CubesLoader size={16} />
             ) : (
-              history.map(renderHistoryItem)
+              renderHistory(history)
             )}
           </SectionButtonContainer>
         </SectionRow>

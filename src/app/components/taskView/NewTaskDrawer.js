@@ -284,6 +284,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
   const task = useSelector(store => store.taskState.selectedTask);
   const dispatch = useDispatch();
   const taskContainerRef = useRef(null);
+  const [cachedTaskContainerRef, setCachedTaskContainerRef] = useState(null);
 
   const storeAsCurrentTask = useCallback(
     newTask => storeAsCurrentTaskAction(newTask)(dispatch),
@@ -326,14 +327,20 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
   );
 
   useEffect(() => {
-    if (taskContainerRef.current) {
-      observer.observe(taskContainerRef.current);
-
-      return () => {
-        observer.unobserve(taskContainerRef.current);
-      };
-    }
+    setCachedTaskContainerRef(taskContainerRef.current);
   }, []);
+
+  useEffect(() => {
+    if (cachedTaskContainerRef) {
+      observer.observe(taskContainerRef.current);
+    }
+
+    return () => {
+      if (cachedTaskContainerRef) {
+        observer.unobserve(cachedTaskContainerRef);
+      }
+    };
+  }, [cachedTaskContainerRef]);
 
   let defaultValues = {};
 
@@ -438,9 +445,9 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
           </FormSection>
           <CondensedFormSection container item xs={12}>
             {task && <NewTaskDrawerCommentSection task={task} />}
-            <FormSectionDivider condensed />
+            {task && <FormSectionDivider condensed />}
             <FormContext {...formMethods}>
-              <NewTaskDrawerOtherDataSection task={task} />
+              <NewTaskDrawerOtherDataSection task={task} taskList={taskList} />
             </FormContext>
             <FormSectionDivider condensed />
             <Grid
