@@ -53,9 +53,9 @@ Priority.defaultProps = {
 export const PriorityContainer = styled.div`
   align-items: flex-end;
   display: flex;
-  height: 10px;
+  ${props => (props.archivable ? 'margin-bottom: -0.375rem;' : 'height: 10px;')}
   justify-content: flex-start;
-  width: 90px;
+  width: 100%;
 `;
 
 export default Priority;

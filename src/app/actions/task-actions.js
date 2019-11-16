@@ -588,3 +588,12 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
     .catch(err => {
       throw err;
     });
+
+export const archiveTask = (task, currentUserProfile) => dispatch => {
+  // TODO: Archive task API call
+  dispatch({
+    type: ActionTypes.TASK_ARCHIVED,
+    task,
+    currentUserProfile,
+  });
+};
