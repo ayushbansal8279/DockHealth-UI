@@ -1,13 +1,14 @@
 import TableCell from '@material-ui/core/TableCell';
 import PropTypes from 'prop-types';
-import React from 'react';
+import take from 'ramda/es/take';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import CheckIcon from '../../img/check.svg';
+import CubesLoader from '../common/CubesLoader';
 import Task from './Task';
 import TaskCheckbox from './TaskCheckbox';
-import CubesLoader from '../common/CubesLoader';
 
 const StyledTableCell = styled(TableCell)`
   && {
@@ -105,6 +106,33 @@ const NewTaskLoaderContainer = styled.div`
   margin-left: 1rem;
 `;
 
+const ShowMoreButtonContainer = styled.div`
+  height: ${props => (props.active ? 2.25 : 0)}rem;
+  overflow: hidden;
+  position: relative;
+  transition: height 0.25s ease-out;
+  width: 100%;
+`;
+
+const ShowMoreButton = styled.div`
+  align-items: center;
+  background-color: #d9036b;
+  border-radius: 0 0 0.5rem 0.5rem;
+  color: #fff;
+  cursor: ${props => (props.active ? 'pointer' : 'not-allowed')};
+  display: flex;
+  font-size: 1.125rem;
+  font-weight: 600;
+  padding: 0 2rem;
+  position: absolute;
+  height: 2.25rem;
+  justify-content: center;
+  left: 50%;
+  transform: translateX(-50%);
+  top: ${props => (props.active ? 0 : -2.25)}rem;
+  transition: top 0.25s ease-out;
+`;
+
 const NewTaskElement = props => {
   return (
     <NewTaskContainer {...props}>
@@ -118,8 +146,24 @@ const NewTaskElement = props => {
   );
 };
 
+const TASK_LIST_SHOW_MORE_STEP = 5;
+
 const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
   const addingNewTask = useSelector(store => store.taskState.addingNewTask);
+
+  const [taskListShowMoreIndex, setTaskListShowMoreIndex] = useState(1);
+
+  const tasksToShow = take(
+    TASK_LIST_SHOW_MORE_STEP * taskListShowMoreIndex,
+    tasks,
+  );
+  const shouldhowShowMoreButton = tasksToShow.length < tasks.length;
+
+  const incrementTaskListShowMoreIndex = useCallback(() => {
+    if (shouldhowShowMoreButton) {
+      setTaskListShowMoreIndex(taskListShowMoreIndex + 1);
+    }
+  }, [shouldhowShowMoreButton, taskListShowMoreIndex]);
 
   return (
     <div>
@@ -128,7 +172,7 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
       {tasks.length === 0 ? (
         <ListEmptyElement addingNewTask={addingNewTask} />
       ) : (
-        tasks.map(task => (
+        tasksToShow.map(task => (
           <Task
             {...{
               task,
@@ -140,6 +184,14 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
           />
         ))
       )}
+      <ShowMoreButtonContainer active={shouldhowShowMoreButton}>
+        <ShowMoreButton
+          onClick={incrementTaskListShowMoreIndex}
+          active={shouldhowShowMoreButton}
+        >
+          Show more
+        </ShowMoreButton>
+      </ShowMoreButtonContainer>
     </div>
   );
 };
