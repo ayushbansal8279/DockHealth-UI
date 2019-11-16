@@ -296,7 +296,7 @@ class TaskView extends Component {
 
   handleFilterChange = filterBy => {
     const { onFilter } = this.props;
-    const sortBy = 'CREATED_DT';
+    const sortBy = '';
 
     this.clearStoredCurrentTask();
 
@@ -531,7 +531,7 @@ class TaskView extends Component {
       >
         <TaskViewContainer>
           {displayHUD && (
-            <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
+            <HeadsUpArea ref={this.headsUpArea} taskList={taskList} filterChange={this.handleFilterChange}/>
           )}
           {showToolbar && (
             <StyledToolbar>

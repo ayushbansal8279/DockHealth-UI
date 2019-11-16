@@ -39,48 +39,56 @@ const taskListStatsElements = [
     key: 'AssignedToMe_TaskList_Count',
     label: 'Assigned to me',
     tab: taskListStatsTabs.me,
+    filter: 'ASSIGNED_TO_ME',
   },
   {
     key: 'HighPriority_AssignToMe_Count',
     tab: taskListStatsTabs.me,
     label: 'Flagged',
+    filter: 'ASSIGNED_TO_ME_FLAGGED',
   },
   {
     key: 'DueToday_AssignToMe_Count',
     label: 'Due today',
     tab: taskListStatsTabs.me,
+    filter: 'ASSIGNED_TO_ME_DUE_TODAY',
   },
   {
     key: 'OverDue_AssignToMe_Count',
     label: 'Overdue',
     tab: taskListStatsTabs.me,
+    filter: 'ASSIGNED_TO_ME_OVERDUE',
   },
   {
     key: 'Incomplete_TaskList_Count',
     label: 'All active tasks',
     tab: taskListStatsTabs.all,
+    filter: '',
   },
   {
     key: 'HighPriority_TaskList_Count',
     label: 'Flagged',
     tab: taskListStatsTabs.all,
+    filter: 'FLAGGED',
   },
   {
     key: 'DueToday_TaskList_Count',
     label: 'Due today',
     tab: taskListStatsTabs.all,
+    filter: 'DUE_TODAY',
   },
   {
     key: 'OverDue_TaskList_Count',
     label: 'Overdue',
     tab: taskListStatsTabs.all,
+    filter: 'OVERDUE',
   },
 ];
 
-const renderCurrentTab = ({ currentStatsTab, taskListStats }) => {
+const renderCurrentTab = ({ currentStatsTab, taskListStats, filterChange }) => {
   return taskListStatsElements
     .filter(({ tab }) => tab === currentStatsTab)
-    .map(({ key, label }) => {
+    .map(({ key, label, filter }) => {
       const value =
         taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
           ?.metricValue ?? 0;
@@ -88,7 +96,7 @@ const renderCurrentTab = ({ currentStatsTab, taskListStats }) => {
       return (
         <HeadsUpSectionButton
           onClick={e => {
-            e.preventDefault();
+            filterChange(filter);
           }}
           key={key}
         >
@@ -139,7 +147,7 @@ const renderTabSwitches = ({ currentActiveTab, tabData, tabSwitchMethod }) =>
     );
   });
 
-export default forwardRef(({ taskList }, ref) => {
+export default forwardRef(({ taskList, filterChange }, ref) => {
   const dispatch = useDispatch();
   const { taskListStats, taskListStatsOk } = useSelector(store => ({
     taskListStats: store.taskListState.taskListStats,
@@ -188,7 +196,7 @@ export default forwardRef(({ taskList }, ref) => {
                 <HeadsUpSectionDivider />
               </div>
               <HeadsUpButtonsContainer>
-                {renderCurrentTab({ currentStatsTab, taskListStats })}
+                {renderCurrentTab({ currentStatsTab, taskListStats, filterChange })}
               </HeadsUpButtonsContainer>
             </HeadsUpSectionContainer>
           </HeadsUpSectionGrid>
