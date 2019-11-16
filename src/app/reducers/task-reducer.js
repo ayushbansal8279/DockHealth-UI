@@ -47,6 +47,7 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
+  TASK_ARCHIVED,
 } from '../actions/action-types';
 
 const initialState = {
@@ -727,6 +728,25 @@ const TaskReducer = (state = initialState, action) => {
         addingNewTask,
       };
     }
+
+    case TASK_ARCHIVED: {
+      const { task: actionTask, currentUserProfile } = action;
+
+      return {
+        ...state,
+        completedTasks: state.completedTasks.map(task => {
+          if (task.taskId === actionTask.taskId) {
+            return {
+              ...task,
+              archivedBy: currentUserProfile,
+            };
+          }
+
+          return task;
+        }),
+      };
+    }
+
     default:
       return state;
   }

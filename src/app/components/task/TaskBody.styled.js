@@ -104,3 +104,15 @@ export const MemberPickerContainer = styled.div`
   margin: 0 8px;
   width: 4rem;
 `;
+
+export const ArchiveButton = styled.div`
+  align-items: center;
+  border: 1px solid #2aadce;
+  border-radius: 0.25rem;
+  color: #0ca1c7;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.75rem;
+  height: 1.6875rem;
+  padding: 0 0.5rem;
+`;

@@ -1,8 +1,10 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 
+import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utilityFunctions';
 import ChevronRightIcon from '../../img/chevron-right.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import CubesLoader from '../common/CubesLoader';
@@ -15,6 +17,7 @@ import MemberPicker from '../members/MemberPicker';
 import { SubtaskLoadingContainer, SubtaskOrderContainer } from './Task.styled';
 import {
   AnimatedPatientsTasklistDate,
+  ArchiveButton,
   CompletedBy,
   MemberPickerContainer,
   PatientsTasklistDate,
@@ -26,6 +29,7 @@ import {
   PatientTasklistPatient,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
+import { archiveTask as archiveTaskAction } from '../../actions/task-actions';
 
 const TaskBody = ({
   isSubtask,
@@ -70,7 +74,12 @@ const TaskBody = ({
     ? completedDateTimeMoment.format('MMM D, YYYY @ h:mma')
     : '';
 
+  const dispatch = useDispatch();
+  const currentUserProfile = useSelector(store => store.userState.userProfile);
+
   const isInbox = !task?.taskList?.taskListId;
+
+  const isTaskArchivable = isTaskArchivableMethod(currentUserProfile, task);
 
   const isTaskTimingOut =
     status === 'COMPLETE' &&
@@ -109,6 +118,12 @@ const TaskBody = ({
   const formattedUserName = `${firstLetterName ? `${firstLetterName}.` : ''} ${
     creator?.lastName
   }`;
+
+  const archiveTask = event => {
+    event.preventDefault();
+    event.stopPropagation();
+    archiveTaskAction(task, currentUserProfile)(dispatch);
+  };
 
   return (
     <div
@@ -232,15 +247,15 @@ const TaskBody = ({
                   alignItems: 'flex-end',
                   display: 'flex',
                   lineHeight: '12px',
-                  paddingRight: '24px',
+                  paddingRight: `${isTaskArchivable ? 0 : 24}px`,
                   paddingBottom: elementPaddingBottom,
-                  minWidth: '180px',
-                  width: '180px',
+                  minWidth: `${isTaskArchivable ? 160 : 180}px`,
+                  width: `${isTaskArchivable ? 160 : 180}px`,
                 }}
               >
-                {dueDate && (
+                {dueDate && !isTaskTimingOut && (
                   <PatientsTasklistDate>
-                    {isTaskTimingOut ? 'Nice work!' : formattedDueDate}
+                    {formattedDueDate}
                   </PatientsTasklistDate>
                 )}
                 {isTaskTimingOut && (
@@ -255,13 +270,19 @@ const TaskBody = ({
                 <div
                   style={{
                     paddingBottom: elementPaddingBottom,
-                    minWidth: '39px',
-                    width: '39px',
+                    minWidth: `${isTaskArchivable ? 83 : 39}px`,
+                    width: `${isTaskArchivable ? 83 : 39}px`,
                   }}
                 >
-                  <PriorityContainer>
-                    {status !== 'COMPLETE' && (
-                      <PriorityDot color={priorityColor(workflowStatus)} />
+                  <PriorityContainer archivable={isTaskArchivable}>
+                    {isTaskArchivable ? (
+                      <ArchiveButton onClick={archiveTask}>
+                        Archive
+                      </ArchiveButton>
+                    ) : (
+                      status !== 'COMPLETE' && (
+                        <PriorityDot color={priorityColor(workflowStatus)} />
+                      )
                     )}
                   </PriorityContainer>
                 </div>

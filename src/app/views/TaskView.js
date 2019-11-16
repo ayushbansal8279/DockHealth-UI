@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import map from 'ramda/es/map';
+import reject from 'ramda/es/reject';
 import filter from 'ramda/es/filter';
 
 import { setHeader } from '../actions/header-actions';
@@ -31,6 +32,7 @@ import {
   ToolbarContainer,
   TaskViewContainer,
 } from './TaskView.styled';
+import { isTaskArchivable } from '../helpers/utilityFunctions';
 
 const groupBy = (list, keyGetter) => {
   const checkMap = new Map();
@@ -410,7 +412,8 @@ class TaskView extends Component {
 
   renderTasklists = () => {
     const {
-      tasks,
+      tasks: incompleteTasks,
+      completedTasks,
       markComplete,
       storeAsCurrentTask,
       markAsUnread,
@@ -418,6 +421,12 @@ class TaskView extends Component {
       currentUser,
     } = this.props;
     const { slimView, taskDrawerOpen, taskTimeouts } = this.state;
+
+    const archivableTasks = completedTasks.filter(
+      isTaskArchivable(currentUser),
+    );
+
+    const tasks = [...incompleteTasks, ...archivableTasks];
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
@@ -454,7 +463,7 @@ class TaskView extends Component {
 
   renderCompleted = () => {
     const {
-      completedTasks,
+      completedTasks: completedOrArchivedTasks,
       markComplete,
       selectedTaskId,
       storeAsCurrentTask,
@@ -467,6 +476,11 @@ class TaskView extends Component {
       taskDrawerOpen,
       taskTimeouts,
     } = this.state;
+
+    const completedTasks = reject(
+      isTaskArchivable(currentUser),
+      completedOrArchivedTasks,
+    );
 
     const tasklistProps = {
       tasks: this.search(completedTasks),

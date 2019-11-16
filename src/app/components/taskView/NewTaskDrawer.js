@@ -189,8 +189,6 @@ const onSubmit = ({
     currTaskListId = taskList.taskListId;
   }
 
-  console.log('new description', descriptionEdit, description);
-
   const requestData = {
     ...task,
     ...newData,
