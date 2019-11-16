@@ -80,3 +80,15 @@ export const StyledForm = styled.form`
   flex-direction: column;
   width: '100%';
 `;
+
+export const HeightDependentGrid = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  flex-basis: ${props => (100 * props.sm) / 12}%;
+  max-width: ${props => (100 * props.sm) / 12}%;
+
+  @media screen and (min-width: 959.95px) and (min-height: 845.95px) {
+    flex-basis: ${props => (100 * props.md) / 12}%;
+    max-width: ${props => (100 * props.md) / 12}%;
+  }
+`;

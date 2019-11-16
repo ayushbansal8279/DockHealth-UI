@@ -84,6 +84,7 @@ export const StyledInputContainer = styled.div`
   height: 3.75rem;
   margin-top: 1.5rem;
   ${props => props.invisible && 'opacity: 0;'}
+  width: 100%;
 
   &.error {
     margin-top: 0.25rem;

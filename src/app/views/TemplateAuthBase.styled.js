@@ -78,12 +78,34 @@ export const DockLogo = styled.img`
   object-position: left center;
 `;
 
-export const ContentContainer = ({ padding, transformScale, ...props }) => (
-  <Grid
-    style={{
-      padding: `${padding}px 0 ${padding}px ${padding}px`,
-      transform: `scale(${transformScale})`,
-    }}
-    {...props}
-  />
-);
+export const ContentContainer = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 0;
+  padding: 2rem;
+  width: 100%;
+
+  flex-basis: 100%;
+  max-width: 100%;
+
+  @media screen and (min-width: 959.95px) and (min-height: 845.95px) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+`;
+
+export const BigTemplateAuthBaseContainer = styled.div`
+  @media screen and (max-width: 959.95px), screen and (max-height: 845.95px) {
+    display: none;
+  }
+`;
+
+export const SmallTemplateAuthBaseContainer = styled.div`
+  min-height: 846px;
+  overflow-y: auto;
+
+  @media screen and (min-width: 960px) and (min-height: 846px) {
+    display: none;
+  }
+`;

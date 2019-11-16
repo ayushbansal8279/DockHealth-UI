@@ -1,9 +1,12 @@
-import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 
 import AuthField from '../common/AuthField';
-import { NextButton, TitleTypography } from './AuthComponents.styled';
+import {
+  HeightDependentGrid,
+  NextButton,
+  TitleTypography,
+} from './AuthComponents.styled';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -33,15 +36,16 @@ const ResetPasswordForm = props => {
       <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
         Let’s set a new password
       </TitleTypography>
-      {!authTokenReceived &&
-        <Grid item sm={12} md={9}>
+      {!authTokenReceived && (
+        <HeightDependentGrid sm={12} md={9}>
           <TitleTypography variant="h4">
-          First enter the six digit verification code that was sent to your cell phone
+            First enter the six digit verification code that was sent to your
+            cell phone
           </TitleTypography>
-        </Grid>
-      }
-      {!authTokenReceived &&
-        <Grid item sm={12} md={9}>
+        </HeightDependentGrid>
+      )}
+      {!authTokenReceived && (
+        <HeightDependentGrid sm={12} md={9}>
           <Field
             marginTop="1.5rem"
             name="code"
@@ -50,15 +54,15 @@ const ResetPasswordForm = props => {
             label="Verification code"
             autoFocus
           />
-        </Grid>
-      }
-      <Grid item sm={12} md={9}>
+        </HeightDependentGrid>
+      )}
+      <HeightDependentGrid sm={12} md={9}>
         <TitleTypography variant="h4">
           In order to protect your account, please make sure your password is 8
           character minimum, includes at least one number and one capital letter
         </TitleTypography>
-      </Grid>
-      <Grid item sm={12} md={9}>
+      </HeightDependentGrid>
+      <HeightDependentGrid sm={12} md={9}>
         <Field
           marginTop="1.5rem"
           name="password"
@@ -66,8 +70,8 @@ const ResetPasswordForm = props => {
           component={AuthField}
           label="New password"
         />
-      </Grid>
-      <Grid item xs={6}>
+      </HeightDependentGrid>
+      <HeightDependentGrid sm={12} md={6}>
         <NextButton
           active={!invalid}
           id="loginButton"
@@ -80,7 +84,7 @@ const ResetPasswordForm = props => {
         >
           Next
         </NextButton>
-      </Grid>
+      </HeightDependentGrid>
     </form>
   );
 };

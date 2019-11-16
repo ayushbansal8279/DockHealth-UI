@@ -3,7 +3,11 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 
 import AuthField from '../common/AuthField';
-import { NextButton, TitleTypography } from './AuthComponents.styled';
+import {
+  HeightDependentGrid,
+  NextButton,
+  TitleTypography,
+} from './AuthComponents.styled';
 
 const validate = values => {
   const errors = {};
@@ -28,13 +32,13 @@ const ForgotPasswordForm = props => {
         <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
           Forgot your password?
         </TitleTypography>
-        <Grid item sm={12} md={9}>
+        <HeightDependentGrid md={9} sm={12}>
           <TitleTypography variant="h4">
             Don’t worry, it happens to the best of us. Enter the email
             associated with your account.
           </TitleTypography>
-        </Grid>
-        <Grid item md={9} sm={12}>
+        </HeightDependentGrid>
+        <HeightDependentGrid md={9} sm={12}>
           <Field
             marginTop="2.5rem"
             name="username"
@@ -43,9 +47,9 @@ const ForgotPasswordForm = props => {
             label="Email"
             autoFocus
           />
-        </Grid>
+        </HeightDependentGrid>
 
-        <Grid item md={9} sm={12}>
+        <HeightDependentGrid md={9} sm={12}>
           <NextButton
             active={!invalid}
             id="loginButton"
@@ -58,7 +62,7 @@ const ForgotPasswordForm = props => {
           >
             Send me a recovery code
           </NextButton>
-        </Grid>
+        </HeightDependentGrid>
       </Grid>
     </form>
   );

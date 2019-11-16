@@ -12,6 +12,7 @@ import {
   StyledForm,
   StyledLabel,
   TitleTypography,
+  HeightDependentGrid,
 } from './AuthComponents.styled';
 
 const validate = values => {
@@ -53,15 +54,15 @@ class LoginFormPassword extends PureComponent {
         </TitleTypography>
 
         <FieldItemContainer>
-          <Grid item md={9} sm={12}>
+          <HeightDependentGrid md={9} sm={12}>
             <Field
               name="username"
               type="text"
               component={AuthField}
               label="Email"
             />
-          </Grid>
-          <Grid item md={9} sm={12}>
+          </HeightDependentGrid>
+          <HeightDependentGrid md={9} sm={12}>
             <Field
               name="password"
               type="password"
@@ -71,11 +72,11 @@ class LoginFormPassword extends PureComponent {
               customError={customError}
               setCustomError={setCustomError}
             />
-          </Grid>
+          </HeightDependentGrid>
         </FieldItemContainer>
 
         <div>
-          <Grid item md={6} sm={12}>
+          <HeightDependentGrid md={6} sm={12}>
             <NextButton
               active={!invalid}
               id="loginButton"
@@ -85,7 +86,7 @@ class LoginFormPassword extends PureComponent {
             >
               Next
             </NextButton>
-          </Grid>
+          </HeightDependentGrid>
         </div>
 
         <BottomGridContainer>

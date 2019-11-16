@@ -13,6 +13,7 @@ import {
   StyledLabel,
   TitleTypography,
   StyledForm,
+  HeightDependentGrid,
 } from './AuthComponents.styled';
 
 const validate = values => {
@@ -74,7 +75,7 @@ class LoginFormUsername extends Component {
             </TitleTypography>
 
             <FieldItemContainer>
-              <Grid item md={9} sm={12}>
+              <HeightDependentGrid md={9} sm={12}>
                 <Field
                   name="username"
                   type="text"
@@ -82,11 +83,11 @@ class LoginFormUsername extends Component {
                   label="Email"
                   autoFocus
                 />
-              </Grid>
+              </HeightDependentGrid>
             </FieldItemContainer>
 
             <div>
-              <Grid item xs={6}>
+              <HeightDependentGrid md={6} sm={12}>
                 <NextButton
                   active={!invalid}
                   id="loginButton"
@@ -96,7 +97,7 @@ class LoginFormUsername extends Component {
                 >
                   Next
                 </NextButton>
-              </Grid>
+              </HeightDependentGrid>
             </div>
             <BottomGridContainer>
               <Grid container item xs={9} direction="column" justify="flex-end">
