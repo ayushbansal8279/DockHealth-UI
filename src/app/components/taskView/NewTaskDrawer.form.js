@@ -232,6 +232,7 @@ export default ({ defaultValues, isSubtask, handleSubmit, onMarkComplete }) => {
                 }
               }}
               isTextarea
+              autoFocus
               name="description"
               label="Task"
             />
