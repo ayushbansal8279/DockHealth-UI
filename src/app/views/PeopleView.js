@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Grid from '@material-ui/core/Grid';
 
 import * as PeopleActions from '../actions/people-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import InvitePeople from '../components/people/InvitePeople';
 import PeopleContainer from '../components/people/PeopleContainer';
+import GenericHeader from '../components/common/GenericHeader';
+import InvitePeopleButton from '../components/people/InvitePeopleButton';
 
 class PeopleView extends PureComponent {
   constructor(props) {
@@ -48,71 +51,62 @@ class PeopleView extends PureComponent {
 
   addPerson = () => {
     openAddForm();
+    scrollToTop();
   };
 
   render() {
     return (
-      <div className="off-canvas-content" data-off-canvas-content>
-        <div className="row expanded collapse">
-          <div className="large-12 columns">
-            <header className="nav-down">
-              <div className="top-bar">
-                <div className="top-bar-left">
-                  <button
-                    className="menu-icon hide-for-medium"
-                    type="button"
-                    data-toggle="sidebar"
-                  />
-                  <h3>People</h3>
-                </div>
-              </div>
-
-              <div className="wrapper list-filter row collapse align-middle align-right">
-                <div className="columns controls">
-                  <div className="input-group searchbar">
-                    <input
-                      className="input-field search-field"
-                      type="search"
-                      placeholder="Search tasks"
-                      onChange={this.searchUpdated}
-                      value={this.state.searchTerm}
-                    />
-                    <div className="input-group-button">
-                      <button className="button search">
-                        <svg onClick={this.clearSearch} className="icon">
-                          <use xlinkHref="#icon-search" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="columns shrink icon-group controls">
-                  <span onClick={e => this.refresh()}>
-                    <svg className="icon refresh">
-                      <use xlinkHref="#icon-activity" />
-                    </svg>
-                  </span>
-                </div>
-                {(this.props.currentUserProfile.orgUserRole == 'OWNER' ||
-                  this.props.currentUserProfile.orgUserRole == 'ADMIN') && (
-                  <div className="columns shrink">
-                    <svg
-                      id="icon-add-person"
-                      className="add icon add-other"
-                      onClick={this.addPerson}
-                    >
-                      <use xlinkHref="#icon-add-person" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-              {/* list-filter */}
-            </header>
-            {/* slideUp */}
-
-            <InvitePeople />
-
-            <div className="list-wrapper">
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <GenericHeader
+          isFetching={false}
+          title="People"
+        />
+        <Grid container alignItems="center" direction="row" alignContent="flex-end" lg="10" md="10" sm="12">
+          <div className="input-group searchbar" style={{width: "70%", marginTop: "5px", paddingLeft: "0em 10em"}}>
+            <input
+              className="input-field search-field"
+              type="search"
+              placeholder="Search tasks"
+              onChange={this.searchUpdated}
+              value={this.state.searchTerm}
+            />
+            <div className="input-group-button">
+              <button className="button search">
+                <svg onClick={this.clearSearch} className="icon">
+                  <use xlinkHref="#icon-search" />
+                </svg>
+              </button>
+            </div>
+            {/* <div className="icon-group controls">
+              <span onClick={e => this.refresh()}>
+                <svg className="icon refresh">
+                  <use xlinkHref="#icon-activity" />
+                </svg>
+              </span>
+            </div> */}
+          </div>
+          {(this.props.currentUserProfile.orgUserRole == 'OWNER' ||
+            this.props.currentUserProfile.orgUserRole == 'ADMIN') && 
+            <InvitePeopleButton onClick={this.addPerson}/>
+          }
+        </Grid>
+        {/* <Grid container alignItems="center" justify="flex-end" direction="row">
+          {(this.props.currentUserProfile.orgUserRole == 'OWNER' ||
+            this.props.currentUserProfile.orgUserRole == 'ADMIN') && 
+            <InvitePeopleButton onClick={this.addPerson}/>
+          }
+        </Grid> */}
+        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
+          <InvitePeople />
+        </Grid>
+        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
+            <div className="list-wrapper" style={{width: "100%", marginTop: "0px"}}>
               {this.props.isFetching ? (
                 <div className="sk-circle">
                   <div className="sk-circle1 sk-child" />
@@ -133,8 +127,7 @@ class PeopleView extends PureComponent {
               )}
             </div>
             {/* list-wrapper */}
-          </div>
-        </div>
+          </Grid>
       </div>
     );
   }

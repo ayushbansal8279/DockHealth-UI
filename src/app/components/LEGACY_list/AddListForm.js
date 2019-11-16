@@ -210,7 +210,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
     };
 
     return (
-      <div className="add-form-wrapper" style={{marginTop: "10px", marginBottom: "-50px"}}>
+      <div className="add-form-wrapper" style={{marginTop: "-50px", marginBottom: "20px", width:"100%"}}>
         <div className="task-item add-form row expanded">
           <form
             className="inline-label"

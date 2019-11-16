@@ -2,6 +2,7 @@ import $ from 'jquery';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Grid from '@material-ui/core/Grid';
 
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
@@ -10,6 +11,7 @@ import AddListForm from '../components/LEGACY_list/AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import AddTaskListButton from '../components/taskList/AddTaskListButton';
+import GenericHeader from '../components/common/GenericHeader';
 
 class TaskListView extends PureComponent {
   constructor(props) {
@@ -84,46 +86,28 @@ class TaskListView extends PureComponent {
     const { isFetching, pendingTaskLists, taskLists } = this.props;
 
     return (
-      <div className="off-canvas-content" data-off-canvas-content>
-        <div className="row expanded collapse">
-          <div className="large-12 columns">
-            <header className="nav-down">
-              <div className="top-bar">
-                <div className="top-bar-left">
-                  <button
-                    className="menu-icon hide-for-medium"
-                    type="button"
-                    data-toggle="sidebar"
-                  />
-                  <h3>Lists</h3>
-                </div>
-              </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <GenericHeader
+          isFetching={false}
+          title="Lists"
+        />
+        <Grid container alignItems="center" justify="flex-end" direction="row">
+          <AddTaskListButton onClick={this.addTaskList} />
+        </Grid>
+        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
+          <AddListForm onSubmit={this.submit} />
+        </Grid>
+        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
+        {/* <div className="row expanded collapse">
+          <div className="large-12 columns"> */}
 
-              {/* <div className="wrapper list-filter row collapse align-middle align-right">
-                <div className="columns shrink icon-group controls">
-                  <span onClick={e => this.refresh()}>
-                    <svg className="icon refresh">
-                      <use xlinkHref="#icon-activity" />
-                    </svg>
-                  </span>
-                </div>
-                <div className="columns shrink">
-                  <svg
-                    id="icon-lists"
-                    className="add add-other icon"
-                    onClick={this.addTaskList}
-                  >
-                    <use xlinkHref="#icon-lists" />
-                  </svg>
-                </div>
-              </div> */}
-
-              <AddTaskListButton onClick={this.addTaskList} />
-            </header>
-
-            <AddListForm onSubmit={this.submit} />
-
-            <div className="list-wrapper dashboard-section">
+            {/* <div className="list-wrapper dashboard-section"> */}
               {/* This commented behemoth is the dashboard HUD for the lists page. */}
               {/* <div className="row collapse">
                 {this.props.genericLists &&
@@ -182,8 +166,8 @@ class TaskListView extends PureComponent {
                     );
                   })}
                 </div> */}
-            </div>
-            <div className="list-wrapper list-wrapper-all-lists">
+            {/* </div> */}
+            <div className="list-wrapper list-wrapper-all-lists" style={{width: "100%"}}>
               {isFetching ? (
                 <div className="sk-circle">
                   <div className="sk-circle1 sk-child" />
@@ -215,8 +199,9 @@ class TaskListView extends PureComponent {
                 </div>
               )}
             </div>
-          </div>
-        </div>
+          {/* </div>
+        </div> */}
+        </Grid>
       </div>
     );
   }
