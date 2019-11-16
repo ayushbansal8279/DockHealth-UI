@@ -4,7 +4,7 @@ import groupBy from 'ramda/es/groupBy';
 import groupWith from 'ramda/es/groupWith';
 import mapObjIndexed from 'ramda/es/mapObjIndexed';
 import sortBy from 'ramda/es/sortBy';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
@@ -25,17 +25,19 @@ const CommentSectionLabel = styled.div`
   padding: 0 1.5rem;
 `;
 
-const CommentSectionInputField = styled.input`
+const CommentSectionInputField = styled.div`
   border: 0;
   color: #2e3a43;
   flex: 1;
   font-size: 0.875rem;
   height: 100%;
   outline: none;
-  padding: 0 1.5rem;
+  padding: 0.5rem 2rem 0.5rem 1.5rem;
+  word-break: break-all;
 
-  &::placeholder {
+  &:empty ::after {
     color: #dedee2;
+    content: '+ add a comment';
   }
 `;
 
@@ -56,7 +58,7 @@ const CommentsContainer = styled.div`
 const CommentSectionInputFieldContainer = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  height: 2.25rem;
+  min-height: 2.25rem;
   position: relative;
   width: 100%;
 `;
@@ -65,7 +67,7 @@ const CubesLoaderContainer = styled.div`
   height: 1rem;
   position: absolute;
   right: 0.75rem;
-  top: 50%;
+  top: 1.125rem;
   transform: translateY(-50%);
   width: 3.125rem;
 `;
@@ -77,6 +79,7 @@ const AddCommentButtonContainer = styled.div`
   color: #fff;
   cursor: pointer;
   display: flex;
+  height: 2.25rem;
   font-size: 2rem;
   justify-content: center;
   line-height: 1;
@@ -130,18 +133,28 @@ export default ({ task }) => {
   const dispatch = useDispatch();
   const [addingComment, , , toggleAddingComment] = useBoolean(false);
   const [addedComments, setAddedComments] = useState([]);
+  const commentSectionInputFieldRef = useRef(null);
+  const simpleBarRef = useRef(null);
   const [
     isPublishingComment,
     setPublishingComment,
     unsetPublishingComment,
   ] = useBoolean(false);
-  const [commentContent, setCommentContent] = useState('');
+
+  const clearCommentContent = useCallback(() => {
+    if (commentSectionInputFieldRef.current) {
+      commentSectionInputFieldRef.current.textContent = '';
+    }
+  }, []);
 
   useEffect(() => {
-    if (!addingComment) {
-      setCommentContent('');
+    if (addingComment) {
+      // eslint-disable-next-line no-unused-expressions
+      commentSectionInputFieldRef.current?.focus();
+    } else {
+      clearCommentContent();
     }
-  }, [addingComment]);
+  }, [addingComment, clearCommentContent]);
 
   const comments = (task?.comments ?? []).concat(addedComments);
   const commentsEmpty = comments.length === 0;
@@ -149,7 +162,9 @@ export default ({ task }) => {
   const groupedComments = getGroupedComments({ comments });
 
   const publishComment = async () => {
-    if (commentContent.trim().length === 0) {
+    const commentContent = commentSectionInputFieldRef.current?.textContent;
+
+    if (commentContent?.trim().length === 0) {
       return;
     }
 
@@ -160,10 +175,16 @@ export default ({ task }) => {
         comment: commentContent.trim(),
       })(dispatch);
 
-      setCommentContent('');
+      clearCommentContent();
+
       toggleAlert('Comment added successfully', 'success');
 
       setAddedComments([...addedComments, data]);
+
+      const scrollElement = simpleBarRef.current?.getScrollElement();
+      if (scrollElement) {
+        scrollElement.scrollTop = scrollElement.scrollHeight;
+      }
     } catch {
       toggleAlert('Error adding comment, please try again later', 'error');
     } finally {
@@ -184,17 +205,13 @@ export default ({ task }) => {
         <ClickAwayListener onClickAway={toggleAddingComment}>
           <CommentSectionInputFieldContainer>
             <CommentSectionInputField
-              autoFocus
-              onChange={event => {
-                setCommentContent(event.target?.value);
-              }}
+              ref={commentSectionInputFieldRef}
+              contentEditable
               onKeyPress={event => {
                 if (event.key === 'Enter' && !isPublishingComment) {
                   handlePublishComment(event);
                 }
               }}
-              placeholder="+ add a comment"
-              value={commentContent}
             />
             <AddCommentButtonContainer
               onBlur={event => {
@@ -221,7 +238,7 @@ export default ({ task }) => {
         <>
           <CommentsDivider />
           <CommentsContainer>
-            <StyledSimpleBar visible>
+            <StyledSimpleBar ref={simpleBarRef} visible>
               {Object.entries(groupedComments).map(
                 renderComment({ currentUserId }),
               )}
