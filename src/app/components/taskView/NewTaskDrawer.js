@@ -178,6 +178,8 @@ const onSubmit = ({
     patient: unusedPatient,
     newTaskListId,
     newTaskDueDate,
+    description,
+    descriptionEdit,
     ...newData
   } = data;
   let { patient } = data;
@@ -187,9 +189,12 @@ const onSubmit = ({
     currTaskListId = taskList.taskListId;
   }
 
+  console.log('new description', descriptionEdit, description);
+
   const requestData = {
     ...task,
     ...newData,
+    description: descriptionEdit || description,
     taskListId: currTaskListId,
     workflowStatus: status.value,
     priority: priorityActive ? 'HIGH' : 'LOW',

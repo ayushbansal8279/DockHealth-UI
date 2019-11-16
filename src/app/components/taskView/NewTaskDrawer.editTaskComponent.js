@@ -124,7 +124,7 @@ class EditTaskDescription extends Component {
 }
 
 export default ({ handleSubmit, onMarkComplete }) => {
-  const { register, setValue, watch } = useFormContext();
+  const { register, setValue } = useFormContext();
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskId,
   );
@@ -149,11 +149,9 @@ export default ({ handleSubmit, onMarkComplete }) => {
     ? 'INCOMPLETE'
     : 'COMPLETE';
 
-  const description = watch('description');
-
   const setDescription = useCallback(
     newDescription => {
-      setValue('description', newDescription);
+      setValue('descriptionEdit', newDescription);
     },
     [setValue],
   );
@@ -170,11 +168,10 @@ export default ({ handleSubmit, onMarkComplete }) => {
       />
       <EditTaskDescription
         setDescription={setDescription}
-        description={description}
         handleSubmit={handleSubmit}
         selectedTask={selectedTask}
       />
-      <input ref={register} type="hidden" name="description" />
+      <input ref={register} type="hidden" name="descriptionEdit" />
     </EditTaskContainer>
   );
 };
