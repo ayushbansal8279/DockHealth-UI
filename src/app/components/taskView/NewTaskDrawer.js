@@ -35,16 +35,12 @@ const NewTaskDrawerContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex: 1.4;
-  height: 100vh;
+  height: calc(100vh - 5.5rem);
   justify-content: flex-start;
   padding: 0 0.25rem;
   position: sticky;
   transition: all 0.25s ease-out;
   top: 6.25rem;
-
-  & > form {
-    overflow-y: auto;
-  }
 `;
 
 const TopLabel = styled.div`
@@ -108,6 +104,12 @@ const StyledButton = styled(Button)`
     margin: 1.5rem 0.25rem;
     text-transform: none;
   }
+`;
+
+const StyledForm = styled.form`
+  overflow-y: auto;
+  margin-right -1rem;
+  padding-right: 1rem;
 `;
 
 const statusSelectData = [
@@ -237,7 +239,7 @@ const onDelete = ({ afterDelete, dispatch, task }) => async () => {
 
 const thresholds = [];
 
-for (let threshold = 0; threshold <= 1; threshold += 0.01) {
+for (let threshold = 0; threshold <= 1; threshold += 0.02) {
   thresholds.push(threshold);
 }
 
@@ -266,7 +268,7 @@ try {
   };
 }
 
-export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
+export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
   const [
     priorityActive,
     setPriorityActive,
@@ -367,7 +369,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
       headsUpAreaHeight={headsUpAreaHeight}
       ref={taskContainerRef}
     >
-      <form onSubmit={handleSubmit}>
+      <StyledForm onSubmit={handleSubmit}>
         <Grid container>
           <FormSection container item xs={12}>
             {!task && (
@@ -429,6 +431,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
                   isSubtask={isSubtask}
                   defaultValues={defaultValues}
                   handleSubmit={handleSubmit}
+                  onMarkComplete={onMarkComplete}
                 />
               </FormContext>
             </Grid>
@@ -477,7 +480,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
             </Grid>
           </CondensedFormSection>
         </Grid>
-      </form>
+      </StyledForm>
     </NewTaskDrawerContainer>
   );
 };

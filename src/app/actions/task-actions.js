@@ -212,6 +212,12 @@ export const moveTask = (task, taskList) => dispatch => {
     });
 };
 
+export const moveTaskBetweenLists = task => dispatch =>
+  dispatch({
+    type: ActionTypes.MOVE_TASK_BETWEEN_LISTS,
+    task,
+  });
+
 export function addTaskComment(task, taskComment) {
   return dispatch =>
     TaskApi.addComment(task.taskId, taskComment)
@@ -301,9 +307,7 @@ export function markComplete(task, status, listName, currentUser = null) {
 
     return TaskApi[apiEndpoint](task)
       .then(() => {
-        dispatch({
-          type: action,
-          task,
+        const newTaskData = {
           status: newStatus,
           completedBy:
             newStatus === 'COMPLETE'
@@ -313,7 +317,18 @@ export function markComplete(task, status, listName, currentUser = null) {
             newStatus === 'COMPLETE'
               ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
               : task.completedBy,
+        };
+
+        dispatch({
+          type: action,
+          task,
+          ...newTaskData,
         });
+
+        return {
+          ...task,
+          ...newTaskData,
+        };
       })
       .catch(error => {
         throw error;

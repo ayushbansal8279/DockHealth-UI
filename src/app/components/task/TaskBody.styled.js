@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 
 export const PatientsTasklistNew = styled.div`
@@ -53,9 +53,24 @@ export const PatientTasklistPatient = styled.div`
   width: 218px;
 `;
 
+const patientsTaskListDateAnimation = keyframes`
+  0%, 20%, 100% {
+    opacity: 0;
+  }
+
+  25%, 95% {
+    opacity: 1
+  }
+`;
+
 export const PatientsTasklistDate = styled.div`
   font-size: 0.875rem;
   color: #303538;
+`;
+
+export const AnimatedPatientsTasklistDate = styled(PatientsTasklistDate)`
+  animation: ${patientsTaskListDateAnimation} 3s ease 0s 1 normal forwards;
+  color: #20b255;
 `;
 
 export const PatientTasklistContainer = styled(Grid)`

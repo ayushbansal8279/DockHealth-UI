@@ -142,7 +142,7 @@ const renderNoAssignedToItem = ({ handleAssignedToSelect }) => () => {
   );
 };
 
-export default ({ defaultValues, isSubtask, handleSubmit }) => {
+export default ({ defaultValues, isSubtask, handleSubmit, onMarkComplete }) => {
   const formMethods = useFormContext();
   const { reset, register, setValue } = formMethods;
 
@@ -217,7 +217,10 @@ export default ({ defaultValues, isSubtask, handleSubmit }) => {
       <FormContainer container spacing={8}>
         <Grid item xs={12}>
           {hasTask ? (
-            <NewTaskDrawerEditTaskComponent handleSubmit={handleSubmit} />
+            <NewTaskDrawerEditTaskComponent
+              handleSubmit={handleSubmit}
+              onMarkComplete={onMarkComplete}
+            />
           ) : (
             <StyledInput
               {...styledInputProps}

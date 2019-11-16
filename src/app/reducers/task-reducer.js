@@ -31,6 +31,7 @@ import {
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   MARK_TASK_STATUS_SUCCESS,
   MOVE_TASK_SUCCESS,
+  MOVE_TASK_BETWEEN_LISTS,
   ORDER_SUB_TASK_SUCCESS,
   REQUEST_COMPLETED_TASKS,
   REQUEST_HISTORY,
@@ -356,6 +357,33 @@ const TaskReducer = (state = initialState, action) => {
                 ),
               },
         ),
+      };
+    }
+
+    case MOVE_TASK_BETWEEN_LISTS: {
+      const { task } = action;
+
+      if (isSubtask(task)) {
+        return state;
+      }
+
+      const { tasks, completedTasks } =
+        task.status === 'COMPLETE'
+          ? {
+              tasks: state.tasks.filter(({ taskId }) => taskId !== task.taskId),
+              completedTasks: [task, ...state.completedTasks],
+            }
+          : {
+              completedTasks: state.completedTasks.filter(
+                ({ taskId }) => taskId !== task.taskId,
+              ),
+              tasks: [task, ...state.tasks],
+            };
+
+      return {
+        ...state,
+        tasks,
+        completedTasks,
       };
     }
 

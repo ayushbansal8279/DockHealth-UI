@@ -14,6 +14,7 @@ import {
 import MemberPicker from '../members/MemberPicker';
 import { SubtaskLoadingContainer, SubtaskOrderContainer } from './Task.styled';
 import {
+  AnimatedPatientsTasklistDate,
   CompletedBy,
   MemberPickerContainer,
   PatientsTasklistDate,
@@ -40,6 +41,7 @@ const TaskBody = ({
   hidePatient,
   hideCheckbox,
   readOnly,
+  taskTimeouts,
 }) => {
   const {
     createdDateTime,
@@ -69,6 +71,10 @@ const TaskBody = ({
     : '';
 
   const isInbox = !task?.taskList?.taskListId;
+
+  const isTaskTimingOut =
+    status === 'COMPLETE' &&
+    Boolean(taskTimeouts?.find(({ taskId }) => taskId === task?.taskId));
 
   const subtasksCount = subtasks?.length ?? 0;
   const commentsCount = comments?.length ?? 0;
@@ -233,9 +239,14 @@ const TaskBody = ({
                 }}
               >
                 {dueDate && (
-                  <PatientsTasklistDate isSubtask={isSubtask}>
-                    {formattedDueDate}
+                  <PatientsTasklistDate>
+                    {isTaskTimingOut ? 'Nice work!' : formattedDueDate}
                   </PatientsTasklistDate>
+                )}
+                {isTaskTimingOut && (
+                  <AnimatedPatientsTasklistDate>
+                    Nice work!
+                  </AnimatedPatientsTasklistDate>
                 )}
               </div>
             )}
@@ -249,7 +260,9 @@ const TaskBody = ({
                   }}
                 >
                   <PriorityContainer>
-                    <PriorityDot color={priorityColor(workflowStatus)} />
+                    {status !== 'COMPLETE' && (
+                      <PriorityDot color={priorityColor(workflowStatus)} />
+                    )}
                   </PriorityContainer>
                 </div>
                 <div
@@ -257,7 +270,7 @@ const TaskBody = ({
                     alignItems: 'flex-end',
                     display: 'flex',
                     justifyContent: 'flex-start',
-                    paddingRight: isSubtask ? 0 : 6,
+                    marginRight: isSubtask ? 0 : 6,
                     minWidth: '39px',
                     width: '39px',
                     paddingBottom: elementPaddingBottom,

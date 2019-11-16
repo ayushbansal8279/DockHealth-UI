@@ -7,8 +7,11 @@ import equals from 'ramda/es/equals';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import map from 'ramda/es/map';
+import filter from 'ramda/es/filter';
 
 import { setHeader } from '../actions/header-actions';
+import { moveTaskBetweenLists } from '../actions/task-actions';
 import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
@@ -29,17 +32,17 @@ import {
 } from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
-  const map = new Map();
+  const checkMap = new Map();
   list.forEach(item => {
     const key = keyGetter(item);
-    const collection = map.get(key);
+    const collection = checkMap.get(key);
     if (!collection) {
-      map.set(key, [item]);
+      checkMap.set(key, [item]);
     } else {
       collection.push(item);
     }
   });
-  return map;
+  return checkMap;
 };
 
 const FadeContainer = styled.div`
@@ -56,13 +59,12 @@ const TaskListContainer = styled.div`
 const StyledButton = styled(ButtonBase)`
   && {
     display: flex;
-    margin: 33px auto;
-    width: 224px;
+    margin: 2rem auto;
     background: #0ca1c7;
-    border-radius: 57px;
-    height: 30px;
-    padding: 8px 37px;
-    font-size: 14px;
+    border-radius: 1rem;
+    height: 2rem;
+    padding: 0.5rem 2.25rem;
+    font-size: 0.875rem;
     color: #fff;
   }
 `;
@@ -95,10 +97,15 @@ const filterOptions = [
 class TaskView extends Component {
   state = {
     filterPopoverOpen: false,
+    completedTasksShown: false,
     searchTerms: [],
     slimView: false,
     taskDrawerOpen: false,
     displayHUD: true,
+    taskTimeouts: {
+      complete: [],
+      incomplete: [],
+    },
   };
 
   headsUpArea = React.createRef();
@@ -120,6 +127,16 @@ class TaskView extends Component {
     this.resetHeader();
   };
 
+  componentWillUnmount = () => {
+    const { taskTimeouts } = this.state;
+
+    Object.values(taskTimeouts)
+      .flat()
+      .forEach(({ taskTimeoutId }) => {
+        clearTimeout(taskTimeoutId);
+      });
+  };
+
   componentDidUpdate = ({
     isFetching: prevIsFetching,
     members: prevMembers,
@@ -130,10 +147,88 @@ class TaskView extends Component {
     }
   };
 
+  clearTaskTimeouts = (taskTimeoutId, callback = () => {}) => {
+    this.setState(prevState => {
+      return {
+        taskTimeouts: map(
+          filter(
+            taskTimeoutData => taskTimeoutData.taskTimeoutId !== taskTimeoutId,
+          ),
+          prevState.taskTimeouts,
+        ),
+      };
+    }, callback);
+  };
+
+  addTaskMoveTimeout = task => {
+    const {
+      dispatchedMoveTaskBetweenLists,
+      selectedTask,
+      storeAsCurrentTask,
+    } = this.props;
+
+    const { taskTimeouts } = this.state;
+
+    const taskTimeoutArrayKey =
+      task.status === 'COMPLETE' ? 'complete' : 'incomplete';
+
+    const timeoutFired =
+      Object.values(taskTimeouts)
+        .flat()
+        .map(({ taskTimeoutId: oldTaskTimeoutId, taskId }) => {
+          if (taskId === task?.taskId) {
+            clearTimeout(oldTaskTimeoutId);
+            this.clearTaskTimeouts(oldTaskTimeoutId);
+
+            return true;
+          }
+
+          return false;
+        })
+        .filter(Boolean).length > 0;
+
+    if (!timeoutFired) {
+      const taskTimeoutId = setTimeout(() => {
+        if (selectedTask?.taskId === task?.taskId && !task?.parentTaskId) {
+          storeAsCurrentTask(null);
+          this.closeTaskDrawer();
+        }
+
+        dispatchedMoveTaskBetweenLists(task);
+
+        this.clearTaskTimeouts(taskTimeoutId);
+      }, 3000);
+
+      this.setState(prevState => {
+        const previousTaskTimeouts =
+          prevState.taskTimeouts[taskTimeoutArrayKey];
+
+        return {
+          taskTimeouts: {
+            ...prevState.taskTimeouts,
+            [taskTimeoutArrayKey]: [
+              ...previousTaskTimeouts,
+              {
+                taskTimeoutId,
+                taskId: task?.taskId,
+              },
+            ],
+          },
+        };
+      });
+    }
+  };
+
   openTaskDrawer = () => {
     this.setState({
       taskDrawerOpen: true,
     });
+  };
+
+  toggleCompletedTasks = () => {
+    this.setState(prevState => ({
+      completedTasksShown: !prevState.completedTasksShown,
+    }));
   };
 
   closeTaskDrawer = () => {
@@ -302,6 +397,16 @@ class TaskView extends Component {
     );
   };
 
+  onMarkComplete = newTask => {
+    const { storeAsCurrentTask, currentTask } = this.props;
+
+    this.addTaskMoveTimeout(newTask);
+
+    if (currentTask) {
+      storeAsCurrentTask(newTask);
+    }
+  };
+
   renderTasklists = () => {
     const {
       tasks,
@@ -311,7 +416,7 @@ class TaskView extends Component {
       selectedTaskId,
       currentUser,
     } = this.props;
-    const { slimView, taskDrawerOpen } = this.state;
+    const { slimView, taskDrawerOpen, taskTimeouts } = this.state;
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
@@ -321,7 +426,9 @@ class TaskView extends Component {
     const tasklistProps = {
       tasks: this.search(tasks),
       markComplete: (task, status) => {
-        markComplete(task, status, 'INCOMPLETE', currentUser);
+        markComplete(task, status, 'INCOMPLETE', currentUser).then(
+          this.onMarkComplete,
+        );
       },
       storeAsCurrentTask,
       markAsUnread,
@@ -329,6 +436,7 @@ class TaskView extends Component {
       slimView,
       openTaskDrawer: this.openTaskDrawer,
       taskDrawerOpen,
+      taskTimeouts: Object.values(taskTimeouts).flat(),
     };
 
     if (tasks.length === 0 || tasklistCount <= 1) {
@@ -346,59 +454,43 @@ class TaskView extends Component {
   renderCompleted = () => {
     const {
       completedTasks,
-      isCompletedTasksFetching,
-      showingCompletedTasks,
       markComplete,
-      pullCompletedTasks,
       selectedTaskId,
       storeAsCurrentTask,
       markAsUnread,
       currentUser,
     } = this.props;
-    const { slimView } = this.state;
-
-    if (!showingCompletedTasks) {
-      return (
-        <StyledButton onClick={pullCompletedTasks}>
-          Show completed tasks
-        </StyledButton>
-      );
-    }
-
-    if (isCompletedTasksFetching) {
-      return (
-        <StyledButton onClick={pullCompletedTasks}>
-          Fetching completed tasks...
-        </StyledButton>
-      );
-    }
-
-    if (completedTasks == null || completedTasks.length === 0) {
-      return (
-        <StyledButton onClick={pullCompletedTasks}>
-          No completed tasks
-        </StyledButton>
-      );
-    }
+    const {
+      slimView,
+      completedTasksShown,
+      taskDrawerOpen,
+      taskTimeouts,
+    } = this.state;
 
     const tasklistProps = {
       tasks: this.search(completedTasks),
       markComplete: (task, status) => {
-        markComplete(task, status, 'COMPLETE', currentUser);
+        markComplete(task, status, 'COMPLETE', currentUser).then(
+          this.onMarkComplete,
+        );
       },
       storeAsCurrentTask,
       markAsUnread,
       selectedTaskId,
       slimView,
       openTaskDrawer: this.openTaskDrawer,
+      taskDrawerOpen,
+      taskTimeouts: Object.values(taskTimeouts).flat(),
     };
+
+    const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
 
     return (
       <>
-        <StyledButton onClick={pullCompletedTasks}>
-          Hide completed tasks
+        <StyledButton onClick={this.toggleCompletedTasks}>
+          {`${buttonToggleWord} completed tasks (${completedTasks.length})`}
         </StyledButton>
-        <TaskList {...tasklistProps} />
+        {completedTasksShown && <TaskList {...tasklistProps} />}
       </>
     );
   };
@@ -498,6 +590,7 @@ class TaskView extends Component {
                       closeDrawer={this.closeTaskDrawer}
                       taskList={taskList}
                       markComplete={markComplete}
+                      onMarkComplete={this.onMarkComplete}
                     />
                   )}
                 </div>
@@ -513,6 +606,7 @@ class TaskView extends Component {
 
 const mapDispatchToProps = dispatch => ({
   dispatchedSetHeader: setHeader(dispatch),
+  dispatchedMoveTaskBetweenLists: task => moveTaskBetweenLists(task)(dispatch),
 });
 
 const mapStateToProps = store => ({

@@ -123,7 +123,7 @@ class EditTaskDescription extends Component {
   }
 }
 
-export default ({ handleSubmit }) => {
+export default ({ handleSubmit, onMarkComplete }) => {
   const { register, setValue, watch } = useFormContext();
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskId,
@@ -163,7 +163,9 @@ export default ({ handleSubmit }) => {
       <TaskCheckbox
         checked={status === 'COMPLETE'}
         onChange={() => {
-          markComplete(selectedTask, status, listName, currentUser)(dispatch);
+          markComplete(selectedTask, status, listName, currentUser)(
+            dispatch,
+          ).then(onMarkComplete);
         }}
       />
       <EditTaskDescription
