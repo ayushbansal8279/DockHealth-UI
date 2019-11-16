@@ -29,6 +29,7 @@ import {
   TableWrapper,
   TaskViewGrid,
   ToolbarContainer,
+  TaskViewContainer,
 } from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
@@ -514,11 +515,7 @@ class TaskView extends Component {
           alignItems: 'center',
         }}
       >
-        <div
-          style={{
-            maxWidth: '1152px',
-          }}
-        >
+        <TaskViewContainer>
           {displayHUD && (
             <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
           )}
@@ -598,7 +595,7 @@ class TaskView extends Component {
             </TableWrapper>
           </TaskViewGrid>
           {this.renderFilterPopover()}
-        </div>
+        </TaskViewContainer>
       </div>
     );
   }

@@ -116,3 +116,10 @@ export const ToolbarContainer = styled.div`
 export const TableWrapper = styled.div`
   width: 100%;
 `;
+
+export const TaskViewContainer = styled.div`
+  max-width: 1152px;
+  width: 1152px;
+  width: -webkit-fill-available;
+  width: -moz-available;
+`;
