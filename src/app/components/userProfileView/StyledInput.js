@@ -72,13 +72,14 @@ const StyledInputContainer = styled.div`
     box-sizing: border-box;
     height: ${props =>
       props.containerHeight || (props.isTextarea ? 7.03125 : 4.6875)}rem;
-    margin-top: ${props => props.containerMarginTop ?? 0.5}rem;
     position: relative;
 
     ${props => props.gutterBottom && 'margin-bottom: 1rem;'}
     ${props => !props.visible && 'display: none;'}
     margin-top: ${props =>
-      props.hasError ? props.containerMarginTopOnError ?? 0 : 0}rem;
+      props.hasError
+        ? props.containerMarginTopOnError ?? 0
+        : props.containerMarginTop ?? 0.5}rem;
 
     ${props => {
       if (props.controlled) {
@@ -99,8 +100,7 @@ const StyledErrorLabel = styled.div`
     color: #e40909;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
-    position: absolute;
-    top: -1.5em;
+    margin-bottom: 0.125rem;
   }
 `;
 
@@ -283,7 +283,6 @@ export default React.forwardRef(
     const inputContainerProps = {
       containerHeight,
       containerMarginTop,
-      containerMarginTopOnError,
       hasError,
       gutterBottom,
       visible,
@@ -297,46 +296,48 @@ export default React.forwardRef(
     })();
 
     return (
-      <StyledInputContainer
-        controlled={controlled}
-        containerDisabled={containerDisabled}
-        isTextarea={isTextarea}
-        onClick={e => {
-          if (!containerDisabled) {
-            onContainerClick(e);
-          }
-        }}
-        ref={ref}
-        backgroundColor={backgroundColor}
-        {...inputContainerProps}
-      >
+      <>
         {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
-        {isMaskedInput ? (
-          <TextareaWrapper>
-            <MaskedInput
-              mask={inputMask}
-              render={renderPhoneNumberField({ inputProps, props, register })}
-            />
-            {labelComponent}
-          </TextareaWrapper>
-        ) : (
-          <TextareaWrapper
-            className={isTextarea ? wrapperClassName : ''}
-            isTextarea={isTextarea}
-            onClick={onTextareaWrapperClicked}
-          >
-            <InputComponent
-              ref={register}
-              {...inputProps}
-              {...props}
-              onFocus={() => setInputState(FOCUS_CLASS_NAME)}
-              onBlur={() => setInputState('')}
-            />
-            {labelComponent}
-          </TextareaWrapper>
-        )}
-        {rightAdornment}
-      </StyledInputContainer>
+        <StyledInputContainer
+          controlled={controlled}
+          containerDisabled={containerDisabled}
+          isTextarea={isTextarea}
+          onClick={e => {
+            if (!containerDisabled) {
+              onContainerClick(e);
+            }
+          }}
+          ref={ref}
+          backgroundColor={backgroundColor}
+          {...inputContainerProps}
+        >
+          {isMaskedInput ? (
+            <TextareaWrapper>
+              <MaskedInput
+                mask={inputMask}
+                render={renderPhoneNumberField({ inputProps, props, register })}
+              />
+              {labelComponent}
+            </TextareaWrapper>
+          ) : (
+            <TextareaWrapper
+              className={isTextarea ? wrapperClassName : ''}
+              isTextarea={isTextarea}
+              onClick={onTextareaWrapperClicked}
+            >
+              <InputComponent
+                ref={register}
+                {...inputProps}
+                {...props}
+                onFocus={() => setInputState(FOCUS_CLASS_NAME)}
+                onBlur={() => setInputState('')}
+              />
+              {labelComponent}
+            </TextareaWrapper>
+          )}
+          {rightAdornment}
+        </StyledInputContainer>
+      </>
     );
   },
 );

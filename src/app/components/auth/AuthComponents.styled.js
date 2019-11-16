@@ -61,7 +61,7 @@ export const StyledLabel = styled.div`
 `;
 
 export const FieldItemContainer = styled.div`
-  height: 10.5rem;
+  min-height: 10.5rem;
 `;
 
 export const BottomGridContainer = styled(Grid)`

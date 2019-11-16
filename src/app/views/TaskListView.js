@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,60 +18,71 @@ class TaskListView extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.taskListAction.loading();
-    this.props.invitationAction.findPendingTaskListsForUser();
-    this.props.taskListAction.getGenericListCounts();
-    this.props.taskListAction.getTaskListForUser();
-    // debugger;
+    const { taskListAction, invitationAction } = this.props;
+    taskListAction.loading();
+    invitationAction.findPendingTaskListsForUser();
+    taskListAction.getGenericListCounts();
+    taskListAction.getTaskListForUser();
+
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'Lists',
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     // enableFoundationComponent(".item-list-wrapper")
     enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
   }
 
   submit = form => {
-    this.props.taskListAction.saveTaskList(form);
+    const { taskListAction } = this.props;
+    taskListAction.saveTaskList(form);
     $('.add').click();
   };
 
   addTaskList = () => {
-    this.props.taskListAction.setTaskListAsCurrentList(null);
+    const { taskListAction } = this.props;
+    taskListAction.setTaskListAsCurrentList(null);
     openAddForm();
     scrollToTop();
   };
 
   editTaskList = taskList => {
-    this.props.taskListAction.setTaskListAsCurrentList(taskList);
+    const { taskListAction } = this.props;
+    taskListAction.setTaskListAsCurrentList(taskList);
     toggleTaskForm();
     scrollToTop();
   };
 
   deleteList = taskListId => {
-    this.props.taskListAction.deleteTaskListById(taskListId);
+    const { taskListAction } = this.props;
+    taskListAction.deleteTaskListById(taskListId);
   };
 
   leaveList = taskListId => {
-    this.props.taskListAction.leaveList(taskListId);
+    const { taskListAction } = this.props;
+    taskListAction.leaveList(taskListId);
   };
 
   acceptInviteToTaskList = taskList => {
-    this.props.invitationAction.acceptInviteToTaskList(taskList);
+    const { invitationAction } = this.props;
+    invitationAction.acceptInviteToTaskList(taskList);
   };
 
   rejectInviteToTaskList = taskList => {
-    this.props.invitationAction.rejectInviteToTaskList(taskList);
+    const { invitationAction } = this.props;
+    invitationAction.rejectInviteToTaskList(taskList);
   };
 
   refresh = () => {
-    this.props.taskListAction.loading();
-    this.props.taskListAction.getTaskListForUser();
+    const { taskListAction } = this.props;
+    taskListAction.loading();
+    taskListAction.getTaskListForUser();
   };
 
   render() {
+    const { isFetching, pendingTaskLists, taskLists } = this.props;
+
     return (
       <div className="off-canvas-content" data-off-canvas-content>
         <div className="row expanded collapse">
@@ -106,17 +118,14 @@ class TaskListView extends PureComponent {
                 </div>
               </div> */}
 
-          <AddTaskListButton
-            onClick={this.addTaskList}
-          />              
-          </header>
+              <AddTaskListButton onClick={this.addTaskList} />
+            </header>
 
-          <AddListForm onSubmit={this.submit}/>
+            <AddListForm onSubmit={this.submit} />
 
             <div className="list-wrapper dashboard-section">
-
-              {/*This commented behemoth is the dashboard HUD for the lists page. */}
-          {/* <div className="row collapse">
+              {/* This commented behemoth is the dashboard HUD for the lists page. */}
+              {/* <div className="row collapse">
                 {this.props.genericLists &&
                   this.props.genericLists.map(list => {
                     let iconName = '';
@@ -173,9 +182,9 @@ class TaskListView extends PureComponent {
                     );
                   })}
                 </div> */}
-            </div> 
+            </div>
             <div className="list-wrapper list-wrapper-all-lists">
-              {this.props.isFetching ? (
+              {isFetching ? (
                 <div className="sk-circle">
                   <div className="sk-circle1 sk-child" />
                   <div className="sk-circle2 sk-child" />
@@ -193,12 +202,12 @@ class TaskListView extends PureComponent {
               ) : (
                 <div className="item-list-wrapper list-wrapper-all-lists">
                   <PendingListsComponent
-                    taskLists={this.props.pendingTaskLists}
+                    taskLists={pendingTaskLists}
                     acceptInviteToTaskList={this.acceptInviteToTaskList}
                     rejectInviteToTaskList={this.rejectInviteToTaskList}
                   />
                   <ListsComponent
-                    taskLists={this.props.taskLists}
+                    taskLists={taskLists}
                     editForm={this.editTaskList}
                     deleteList={this.deleteList}
                     leaveList={this.leaveList}

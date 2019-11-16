@@ -1,9 +1,10 @@
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import moment from 'moment';
 import groupBy from 'ramda/es/groupBy';
 import groupWith from 'ramda/es/groupWith';
 import mapObjIndexed from 'ramda/es/mapObjIndexed';
 import sortBy from 'ramda/es/sortBy';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
@@ -80,6 +81,7 @@ const AddCommentButtonContainer = styled.div`
   justify-content: center;
   line-height: 1;
   width: 2.125rem;
+  z-index: 1;
 `;
 
 const StyledSimpleBar = styled(SimpleBar)`
@@ -135,6 +137,12 @@ export default ({ task }) => {
   ] = useBoolean(false);
   const [commentContent, setCommentContent] = useState('');
 
+  useEffect(() => {
+    if (!addingComment) {
+      setCommentContent('');
+    }
+  }, [addingComment]);
+
   const comments = (task?.comments ?? []).concat(addedComments);
   const commentsEmpty = comments.length === 0;
 
@@ -163,37 +171,47 @@ export default ({ task }) => {
     }
   };
 
+  const handlePublishComment = event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    publishComment();
+  };
+
   return (
     <>
       {addingComment ? (
-        //TODO analyze the comment posting code and add the post on enter event to the task posting.
-        <CommentSectionInputFieldContainer>
-          <CommentSectionInputField
-            autoFocus
-            onBlur={toggleAddingComment}
-            onChange={event => {
-              setCommentContent(event.target?.value);
-            }}
-            onKeyPress={event => {
-              if (event.key === 'Enter' && !isPublishingComment) {
+        <ClickAwayListener onClickAway={toggleAddingComment}>
+          <CommentSectionInputFieldContainer>
+            <CommentSectionInputField
+              autoFocus
+              onChange={event => {
+                setCommentContent(event.target?.value);
+              }}
+              onKeyPress={event => {
+                if (event.key === 'Enter' && !isPublishingComment) {
+                  handlePublishComment(event);
+                }
+              }}
+              placeholder="+ add a comment"
+              value={commentContent}
+            />
+            <AddCommentButtonContainer
+              onBlur={event => {
                 event.preventDefault();
                 event.stopPropagation();
-
-                publishComment();
-              }
-            }}
-            placeholder="+ add a comment"
-            value={commentContent}
-          />
-          <AddCommentButtonContainer onClick={publishComment}>
-            +
-          </AddCommentButtonContainer>
-          {isPublishingComment && (
-            <CubesLoaderContainer>
-              <CubesLoader size={16} />
-            </CubesLoaderContainer>
-          )}
-        </CommentSectionInputFieldContainer>
+              }}
+              onClick={handlePublishComment}
+            >
+              +
+            </AddCommentButtonContainer>
+            {isPublishingComment && (
+              <CubesLoaderContainer>
+                <CubesLoader size={16} />
+              </CubesLoaderContainer>
+            )}
+          </CommentSectionInputFieldContainer>
+        </ClickAwayListener>
       ) : (
         <CommentSectionLabel onClick={toggleAddingComment}>
           + add a comment

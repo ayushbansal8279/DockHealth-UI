@@ -43,6 +43,7 @@ const renderFormFieldDefinition = ({
       fontSize={16}
       backgroundColor="#f3f5f6"
       gutterBottom
+      containerMarginTop={0}
     />
   </Grid>
 );

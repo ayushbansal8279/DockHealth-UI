@@ -100,21 +100,28 @@ const renderCurrentTab = ({ currentStatsTab, taskListStats }) => {
 };
 
 const renderCurrentTrendTab = ({ currentTrendsTab, taskListStats }) => {
-    var taskListTrends = []
-    if (taskListStats){
-      if (currentTrendsTab == taskListTrendsTabs.me){
-        taskListTrends = taskListStats.newTasksByMeByDate
-        return (
-          <HeadsUpAreaChart taskListTrends={taskListTrends} currentTab={currentTrendsTab}/>
-        );
-      }else if (currentTrendsTab == taskListTrendsTabs.all){
-        taskListTrends = taskListStats.newTasksByDate
-        return (
-          <HeadsUpAreaChart taskListTrends={taskListTrends} currentTab={currentTrendsTab}/>
-        );
-      }
-    }
-    return null
+  let taskListTrends = [];
+
+  switch (currentTrendsTab) {
+    case taskListTrendsTabs.me:
+      taskListTrends = taskListStats.newTasksByMeByDate;
+      break;
+    case taskListStatsTabs.all:
+      taskListTrends = taskListStats.newTasksByDate;
+      break;
+    default:
+      break;
+  }
+
+  if (taskListStats) {
+    return (
+      <HeadsUpAreaChart
+        taskListTrends={taskListTrends}
+        currentTab={currentTrendsTab}
+      />
+    );
+  }
+  return null;
 };
 
 const renderTabSwitches = ({ currentActiveTab, tabData, tabSwitchMethod }) =>
@@ -140,7 +147,9 @@ export default forwardRef(({ taskList }, ref) => {
   }));
 
   const [currentStatsTab, setCurrentStatsTab] = useState(taskListStatsTabs.me);
-  const [currentTrendsTab, setCurrentTrendsTab] = useState(taskListTrendsTabs.me);
+  const [currentTrendsTab, setCurrentTrendsTab] = useState(
+    taskListTrendsTabs.me,
+  );
 
   const taskListId = taskList?.taskListId;
 

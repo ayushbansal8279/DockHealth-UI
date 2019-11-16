@@ -48,28 +48,30 @@ const AuthField = ({
   };
 
   return (
-    <StyledInputContainer
-      invisible={invisible}
-      className={inputClassName.trim()}
-    >
+    <>
       {hasError && <StyledErrorLabel>{errorValue}</StyledErrorLabel>}
-      <StyledInput
-        ref={inputRef}
-        type={inputType}
-        autoFocus={autoFocus}
-        {...otherInput}
-        onChange={onChange}
+      <StyledInputContainer
+        invisible={invisible}
         className={inputClassName.trim()}
-        isPassword={isPassword}
-      />
-      <StyledInputIcon onClick={onCrossIconClick({ onChange, hasError })} />
-      {isPassword && (
-        <StyledPasswordSwitch onClick={togglePasswordShown}>
-          {passwordShown ? 'Hide' : 'Show'}
-        </StyledPasswordSwitch>
-      )}
-      <StyledLabel>{label}</StyledLabel>
-    </StyledInputContainer>
+      >
+        <StyledInput
+          ref={inputRef}
+          type={inputType}
+          autoFocus={autoFocus}
+          {...otherInput}
+          onChange={onChange}
+          className={inputClassName.trim()}
+          isPassword={isPassword}
+        />
+        <StyledInputIcon onClick={onCrossIconClick({ onChange, hasError })} />
+        {isPassword && (
+          <StyledPasswordSwitch onClick={togglePasswordShown}>
+            {passwordShown ? 'Hide' : 'Show'}
+          </StyledPasswordSwitch>
+        )}
+        <StyledLabel>{label}</StyledLabel>
+      </StyledInputContainer>
+    </>
   );
 };
 

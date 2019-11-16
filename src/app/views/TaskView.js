@@ -412,7 +412,7 @@ class TaskView extends Component {
       selectedTask,
       markComplete,
     } = this.props;
-    const { slimView, taskDrawerOpen, displayHUD} = this.state;
+    const { slimView, taskDrawerOpen, displayHUD } = this.state;
 
     return (
       <div
@@ -427,9 +427,9 @@ class TaskView extends Component {
             maxWidth: '1152px',
           }}
         >
-          {displayHUD && 
-          <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
-          }
+          {displayHUD && (
+            <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
+          )}
           {showToolbar && (
             <StyledToolbar>
               <Grid container alignItems="center" justify="space-between">
