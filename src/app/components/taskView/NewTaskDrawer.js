@@ -399,6 +399,23 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
                 <FormSectionDivider condensed />
               </>
             )}
+            {task && (
+              <>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  alignItems="center"
+                  justify="space-between"
+                >
+                  <TopLabel>Edit a task</TopLabel>
+                  <CloseTaskButtonContainer>
+                    <CloseTaskButton onClick={closeDrawer} />
+                  </CloseTaskButtonContainer>
+                </Grid>
+                <FormSectionDivider condensed />
+              </>
+            )}
             <Grid
               container
               item
