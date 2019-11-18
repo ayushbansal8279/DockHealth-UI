@@ -590,10 +590,15 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
     });
 
 export const archiveTask = (task, currentUserProfile) => dispatch => {
-  // TODO: Archive task API call
-  dispatch({
-    type: ActionTypes.TASK_ARCHIVED,
-    task,
-    currentUserProfile,
+  TaskApi.flagArchivedForUser(task.taskId, true)
+  .then(task => {
+    dispatch({
+      type: ActionTypes.TASK_ARCHIVED,
+      task,
+      currentUserProfile,
+    });
+  })
+  .catch(error => {
+    throw error;
   });
 };

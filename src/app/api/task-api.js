@@ -559,3 +559,13 @@ export function removeTaskAttachment(taskAttachmentId) {
       throw error;
     });
 }
+
+export function flagArchivedForUser(taskId, flagArchived) {
+  return axios
+    .put(`task/flagUserTaskAsArchived/${taskId}?flagArchived=${flagArchived}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw error;
+    });
+}

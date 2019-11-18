@@ -28,6 +28,5 @@ export const isTaskArchivable = curry(
   (currentUserProfile, task) =>
     task?.status === 'COMPLETE' &&
     !task?.parentTaskId &&
-    task?.completedBy?.userId !== currentUserProfile?.userId &&
-    !task?.archivedBy?.userId,
+    !task?.archivedByUser
 );
