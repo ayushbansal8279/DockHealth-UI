@@ -738,7 +738,7 @@ const TaskReducer = (state = initialState, action) => {
           if (task.taskId === actionTask.taskId) {
             return {
               ...task,
-              archivedByUser: false,
+              archivedByUser: true,
             };
           }
 
