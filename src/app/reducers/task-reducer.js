@@ -256,11 +256,20 @@ const TaskReducer = (state = initialState, action) => {
 
     case MARK_TASK_STATUS_SUCCESS: {
       const { task, status, completedDt, completedBy } = action;
-      const taskData = { status, completedBy, completedDt };
+      const archivedByUser = true
+      const taskData = { status, completedBy, completedDt, archivedByUser };
 
       const tasks = updateTask(taskData, task, state.tasks);
-
-      return { ...state, tasks };
+      //Need to update the task otherwise the completed list is not updated
+      if(!task.parentTaskId){
+        task.status = status
+        task.completedBy = completedBy
+        task.completedDt = completedDt
+        task.archivedByUser = archivedByUser
+      }
+      return { ...state, 
+        tasks: tasks
+      };
     }
 
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
