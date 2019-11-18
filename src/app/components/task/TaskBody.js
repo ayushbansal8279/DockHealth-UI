@@ -252,8 +252,8 @@ const TaskBody = ({
                   lineHeight: '12px',
                   paddingRight: `${isTaskArchivable ? 0 : 24}px`,
                   paddingBottom: elementPaddingBottom,
-                  minWidth: `${isTaskArchivable ? 160 : 180}px`,
-                  width: `${isTaskArchivable ? 160 : 180}px`,
+                  minWidth: `${isTaskArchivable ? 136 : 180}px`,
+                  width: `${isTaskArchivable ? 136 : 180}px`,
                 }}
               >
                 {dueDate && !isTaskTimingOut && (
