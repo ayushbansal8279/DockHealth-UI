@@ -298,6 +298,8 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
 
   const formMethods = useForm({});
 
+  const taskId = task?.taskId;
+
   useEffect(() => {
     getAllPatients()(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -312,14 +314,12 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
       unsetPriorityActive();
     }
 
-    const newWorkflowStatus = statusSelectData.find(
-      ({ value }) => value === task?.workflowStatus,
-    );
+    const newWorkflowStatus =
+      statusSelectData.find(({ value }) => value === task?.workflowStatus) ??
+      head(statusSelectData);
 
-    if (newWorkflowStatus) {
-      setStatus(newWorkflowStatus);
-    }
-  }, [setPriorityActive, task, unsetPriorityActive]);
+    setStatus(newWorkflowStatus);
+  }, [setPriorityActive, task, unsetPriorityActive, taskId]);
 
   useEffect(
     () => {
