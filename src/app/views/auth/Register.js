@@ -13,7 +13,7 @@ const onFormSubmit = () => async data => {
   const {
     firstName,
     lastName,
-    // title,
+    title,
     email,
     accountPhoneNumber,
     password,
@@ -27,7 +27,7 @@ const onFormSubmit = () => async data => {
       phone_number: `+1${accountPhoneNumber.replace(/\D/g, '')}`,
       family_name: lastName,
       given_name: firstName,
-      // title,
+      "custom:title": title,
     });
 
     hashHistory.push('login');
