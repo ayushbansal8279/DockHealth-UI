@@ -84,6 +84,7 @@ export const StyledForm = styled.form`
 export const HeightDependentGrid = styled.div`
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   flex-basis: ${props => (100 * props.sm) / 12}%;
   max-width: ${props => (100 * props.sm) / 12}%;
 

@@ -531,7 +531,11 @@ class TaskView extends Component {
       >
         <TaskViewContainer>
           {displayHUD && (
-            <HeadsUpArea ref={this.headsUpArea} taskList={taskList} filterChange={this.handleFilterChange}/>
+            <HeadsUpArea
+              ref={this.headsUpArea}
+              taskList={taskList}
+              filterChange={this.handleFilterChange}
+            />
           )}
           {showToolbar && (
             <StyledToolbar>
@@ -553,7 +557,7 @@ class TaskView extends Component {
                   </TaskListAction>
                   <TaskListAction
                     alt="Filter"
-                    active
+                    active={displayHUD}
                     activeIcon={SortingStatsActiveIcon}
                     backgroundColor="#fff"
                     icon={SortingStatsIcon}

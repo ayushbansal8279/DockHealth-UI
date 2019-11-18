@@ -65,7 +65,7 @@ const patientsTaskListDateAnimation = keyframes`
 
 export const PatientsTasklistDate = styled.div`
   font-size: 0.875rem;
-  color: #303538;
+  color: ${props => (props.overdue ? '#f40707' : '#303538')};
 `;
 
 export const AnimatedPatientsTasklistDate = styled(PatientsTasklistDate)`
