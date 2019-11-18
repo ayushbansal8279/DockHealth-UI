@@ -68,7 +68,8 @@ const TaskBody = ({
   const formattedCreationDate = moment(createdDateTime).format(
     'MMM D, YYYY @ h:mma',
   );
-  const formattedDueDate = moment(dueDate).format('ddd, MMM D');
+  const dueDateMoment = moment(dueDate);
+  const formattedDueDate = dueDateMoment.format('ddd, MMM D');
   const completedDateTimeMoment = moment(completedDateTime);
   const formattedCompletedDateTime = completedDateTimeMoment.isValid()
     ? completedDateTimeMoment.format('MMM D, YYYY @ h:mma')
@@ -124,6 +125,8 @@ const TaskBody = ({
     event.stopPropagation();
     archiveTaskAction(task, currentUserProfile)(dispatch);
   };
+
+  const overdue = dueDateMoment.isBefore(moment().format('YYYY-MM-DD'));
 
   return (
     <div
@@ -254,7 +257,7 @@ const TaskBody = ({
                 }}
               >
                 {dueDate && !isTaskTimingOut && (
-                  <PatientsTasklistDate>
+                  <PatientsTasklistDate overdue={overdue}>
                     {formattedDueDate}
                   </PatientsTasklistDate>
                 )}
