@@ -52,6 +52,8 @@ const CommentsDateContainer = styled.div`
   }
 `;
 
+const a=3;
+
 const CommentGroupContainer = styled.div`
   padding: 0 2rem;
   width: 70%;

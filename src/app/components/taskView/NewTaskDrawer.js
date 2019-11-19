@@ -171,6 +171,7 @@ const onSubmit = ({
   taskList,
   priorityActive,
   storeAsCurrentTask,
+  deferredCommentsPromises,
 }) => async data => {
   const {
     assignedToUserId,
@@ -224,6 +225,14 @@ const onSubmit = ({
     if (!requestData.taskId) {
       storeAsCurrentTask({ ...newTask, ...requestData });
     }
+
+    let commentPromise = Promise.resolve();
+
+    deferredCommentsPromises.forEach(deferredCommentPromise => {
+      commentPromise = commentPromise.then(async () =>
+        deferredCommentPromise({ task: { ...newTask, ...requestData } }),
+      );
+    });
   } catch {
     noop();
   }
@@ -283,6 +292,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
   );
   const [status, setStatus] = useState(head(statusSelectData));
   const [headsUpAreaHeight, setHeadsUpAreaHeight] = useState(0);
+  const [deferredCommentsPromises, setDeferredCommentsPromises] = useState([]);
   const statusSelectRef = useRef(null);
   const task = useSelector(store => store.taskState.selectedTask);
   const dispatch = useDispatch();
@@ -362,6 +372,21 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
     };
   }
 
+  const addDeferredCommentToQueue = useCallback(
+    ({ promise, clearMethod }) => {
+      if (deferredCommentsPromises.length === 0) {
+        setDeferredCommentsPromises([clearMethod, promise]);
+      } else {
+        setDeferredCommentsPromises([...deferredCommentsPromises, promise]);
+      }
+    },
+    [deferredCommentsPromises],
+  );
+
+  useEffect(() => {
+    setDeferredCommentsPromises([]);
+  }, [taskId]);
+
   const handleSubmit = formMethods.handleSubmit(
     onSubmit({
       closeDrawer,
@@ -371,6 +396,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
       taskList,
       priorityActive,
       storeAsCurrentTask,
+      deferredCommentsPromises,
     }),
   );
 
@@ -464,8 +490,11 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
             </Grid>
           </FormSection>
           <CondensedFormSection container item xs={12}>
-            {task && <NewTaskDrawerCommentSection task={task} />}
-            {task && <FormSectionDivider condensed />}
+            <NewTaskDrawerCommentSection
+              task={task}
+              addDeferredCommentToQueue={addDeferredCommentToQueue}
+            />
+            <FormSectionDivider condensed />
             <FormContext {...formMethods}>
               <NewTaskDrawerOtherDataSection task={task} taskList={taskList} />
             </FormContext>
