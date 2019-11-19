@@ -3,13 +3,14 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
+import { AnimatePresence } from 'framer-motion';
 import equals from 'ramda/es/equals';
+import filter from 'ramda/es/filter';
+import map from 'ramda/es/map';
+import reject from 'ramda/es/reject';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import map from 'ramda/es/map';
-import reject from 'ramda/es/reject';
-import filter from 'ramda/es/filter';
 
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
@@ -20,19 +21,24 @@ import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
 import { AddTaskButton } from '../components/taskView/TaskDrawerButtons';
 import TaskListAction from '../components/taskView/TaskListAction';
+import { isTaskArchivable } from '../helpers/utilityFunctions';
+import FilterActiveIcon from '../img/filter-active.svg';
 import FilterIcon from '../img/filter.svg';
 import PrintIcon from '../img/print.svg';
 import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
 import SortingStatsIcon from '../img/sorting-stats.svg';
 import {
+  FilterByBoldLabel,
+  FilterByLabel,
+  FilterByLinkLabel,
+  FilterByTextContainer,
   StyledSlimViewSwitch,
   StyledToolbar,
   TableWrapper,
+  TaskViewContainer,
   TaskViewGrid,
   ToolbarContainer,
-  TaskViewContainer,
 } from './TaskView.styled';
-import { isTaskArchivable } from '../helpers/utilityFunctions';
 
 const groupBy = (list, keyGetter) => {
   const checkMap = new Map();
@@ -74,10 +80,6 @@ const StyledButton = styled(ButtonBase)`
 
 const filterOptions = [
   {
-    value: '',
-    description: 'Clear',
-  },
-  {
     value: 'ASSIGNED_TO_ME',
     description: 'Assigned to me',
   },
@@ -97,8 +99,20 @@ const filterOptions = [
   },
 ];
 
+const animationProperties = {
+  variants: {
+    hidden: { height: 0, opacity: 0 },
+    visible: { height: '2.5rem', opacity: 1 },
+  },
+  initial: 'hidden',
+  exit: 'hidden',
+  animate: 'visible',
+  transition: { ease: 'backInOut', duration: 0.25 },
+};
+
 class TaskView extends Component {
   state = {
+    filterBy: '',
     filterPopoverOpen: false,
     completedTasksShown: false,
     searchTerms: [],
@@ -298,6 +312,10 @@ class TaskView extends Component {
     const { onFilter } = this.props;
     const sortBy = '';
 
+    this.setState({
+      filterBy,
+    });
+
     this.clearStoredCurrentTask();
 
     onFilter(filterBy, sortBy);
@@ -368,6 +386,10 @@ class TaskView extends Component {
     this.closeFilterPopover();
   };
 
+  clearFilter = () => {
+    this.onFilterChange({ value: '' })();
+  };
+
   renderFilterPopover = () => {
     const { filterPopoverOpen } = this.state;
 
@@ -392,7 +414,7 @@ class TaskView extends Component {
               button
               onClick={this.onFilterChange({ value })}
             >
-              {value ? description : <em>{description}</em>}
+              {description}
             </ListItem>
           ))}
         </List>
@@ -519,7 +541,10 @@ class TaskView extends Component {
       selectedTask,
       markComplete,
     } = this.props;
-    const { slimView, taskDrawerOpen, displayHUD } = this.state;
+    const { slimView, taskDrawerOpen, displayHUD, filterBy } = this.state;
+
+    const currentFilterDescription =
+      filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
 
     return (
       <div
@@ -548,15 +573,19 @@ class TaskView extends Component {
                   />
                   <TaskListAction
                     alt="Filter"
+                    activeIcon={FilterActiveIcon}
                     backgroundColor="#fff"
                     icon={FilterIcon}
-                    onClick={this.openFilterPopover}
+                    active={Boolean(filterBy)}
+                    onClick={
+                      filterBy ? this.clearFilter : this.openFilterPopover
+                    }
                     ref={this.filterButton}
                   >
                     Filter
                   </TaskListAction>
                   <TaskListAction
-                    alt="Filter"
+                    alt="Sorting & stats"
                     active={displayHUD}
                     activeIcon={SortingStatsActiveIcon}
                     backgroundColor="#fff"
@@ -581,6 +610,20 @@ class TaskView extends Component {
               </Grid>
             </StyledToolbar>
           )}
+          <AnimatePresence>
+            {currentFilterDescription && (
+              <FilterByTextContainer {...animationProperties}>
+                <img src={FilterIcon} alt="Filter icon" />
+                <FilterByLabel>Filter:</FilterByLabel>
+                <FilterByBoldLabel>
+                  {currentFilterDescription}
+                </FilterByBoldLabel>
+                <FilterByLinkLabel onClick={this.clearFilter}>
+                  clear filter
+                </FilterByLinkLabel>
+              </FilterByTextContainer>
+            )}
+          </AnimatePresence>
           <TaskViewGrid container wrap="nowrap">
             <TableWrapper taskDrawerOpen={taskDrawerOpen}>
               {isFetching ? (
