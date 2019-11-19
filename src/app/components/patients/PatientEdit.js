@@ -119,7 +119,8 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    placeholder="MM/DD/YYYY"
+    //Placeholder text unnecissary.
+    //placeholder="MM/DD/YYYY"
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
     keepCharPositions
@@ -132,7 +133,8 @@ const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    placeholder="123-123-1234"
+    //Phone number doesnt need placeholder text?
+    //placeholder="123-123-1234"
     mask={[
       /\d/,
       /\d/,
@@ -199,7 +201,8 @@ export const PatientsForm = ({
                   onChange={onChange}
                   required={!isReadOnly}
                   label="First Name"
-                  {...readOnlyProps('Sam')}
+                  //Placeholder unnecissary.
+                  //{...readOnlyProps('Sam')}
                 />
               </Grid>
               <Grid item xs={2} style={{ margin: '0 4px' }}>
@@ -208,7 +211,8 @@ export const PatientsForm = ({
                   value={middleName || ''}
                   onChange={onChange}
                   label="Middle Name"
-                  {...readOnlyProps('Max')}
+                  //Placeholder unnecissary.
+                  //{...readOnlyProps('Max')}
                 />
               </Grid>
               <Grid item xs={5}>
@@ -218,16 +222,19 @@ export const PatientsForm = ({
                   onChange={onChange}
                   required={!isReadOnly}
                   label="Last Name"
-                  {...readOnlyProps('Nelson')}
+                  //{...readOnlyProps('Nelson')}
                 />
               </Grid>
             </Grid>
             <StyledTextField
+            //TODO MRN should not be required
               name="mrn"
               value={mrn || ''}
               onChange={onChange}
               label="MRN"
-              {...readOnlyProps('123-123-23444')}
+              //Placeholder text unnecissary.
+              //{...readOnlyProps('123-123-23444')}
+              //required={!isReadOnly}
             />
             <StyledTextField
               name="dob"
@@ -238,7 +245,8 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : BirthdayTextMask,
               }}
-              {...readOnlyProps()}
+              //Placeholder text unnecissary.
+              //{...readOnlyProps()}
             />
             <StyledTextField
               name="gender"
@@ -246,7 +254,8 @@ export const PatientsForm = ({
               onChange={onChange}
               label="Gender"
               select
-              {...readOnlyProps()}
+              //Placeholder text unnecissary.
+              //{...readOnlyProps()}
             >
               <MenuItem value="female">Female</MenuItem>
               <MenuItem value="male">Male</MenuItem>
@@ -263,7 +272,8 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
               }}
-              {...readOnlyProps('234-234-2333')}
+              //Phone number doesnt need placeholder text?
+              //{...readOnlyProps('234-234-2333')}
             />
             <StyledTextField
               name="phoneMobile"
@@ -274,7 +284,8 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
               }}
-              {...readOnlyProps('456-456-4444')}
+              //Phone number doesnt need placeholder text?
+              //{...readOnlyProps('456-456-4444')}
             />
             <StyledTextField
               name="email"
@@ -282,7 +293,8 @@ export const PatientsForm = ({
               onChange={onChange}
               label="Email"
               type="email"
-              {...readOnlyProps('name@email.com')}
+              //Email doesnt need placeholder text?
+              //{...readOnlyProps('name@email.com')}
             />
           </div>
         </div>
