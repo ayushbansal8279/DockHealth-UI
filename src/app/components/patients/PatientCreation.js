@@ -229,7 +229,6 @@ export const PatientsForm = ({
           value={mrn || ''}
           onChange={onChange}
           label="MRN"
-          //required={!isReadOnly}
           //Placeholder text unnecissary.
           //{...readOnlyProps('123-123-23444')}
         />
@@ -251,7 +250,6 @@ export const PatientsForm = ({
           onChange={onChange}
           label="Gender"
           select
-          required={!isReadOnly}
           //Reminder text isn't necissary.
           //{...readOnlyProps()}
         >
@@ -358,7 +356,6 @@ const PatientCreation = () => {
         ...formState,
         [name]: value,
       };
-
       const formatFormState = evolve({
         firstName: capitalizeWords,
         middleName: capitalizeWords,
@@ -387,9 +384,9 @@ const PatientCreation = () => {
   };
 
   const canSubmit = () => {
-    const { firstName, lastName, dob, gender, mrn } = formState;
+    const { firstName, lastName, dob} = formState;
     return (
-      firstName && lastName && gender && mrn && (!dob || validateBirthday(dob))
+      firstName && lastName && (!dob || validateBirthday(dob))
     );
   };
 
