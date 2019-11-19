@@ -142,6 +142,7 @@ const PatientNotes = ({ patientId, notes }) => {
             rows={3}
             hiddenLabel
             style={{ padding: 0 }}
+            autoFocus
           />
           <div
             style={{
