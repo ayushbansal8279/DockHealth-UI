@@ -26,7 +26,5 @@ export const mergeRefs = refs => value => {
 
 export const isTaskArchivable = curry(
   (currentUserProfile, task) =>
-    task?.status === 'COMPLETE' &&
-    !task?.parentTaskId &&
-    !task?.archivedByUser
+    task?.status === 'COMPLETE' && !task?.parentTaskId && !task?.archivedByUser,
 );
