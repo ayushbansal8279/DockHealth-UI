@@ -183,7 +183,7 @@ export function saveTask(newTask) {
         if (!task.taskList) {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
-            task: { ...task, taskList: { listName: 'Inbox' } },
+            task: { ...task, taskList: { listName: 'Inbox', taskListId: 0 } },
           });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
@@ -489,7 +489,7 @@ export function getInboxTasks(status, sortBy, filterBy) {
   return dispatch =>
     TaskApi.getInboxTasks(status, sortBy, filterBy)
       .then(tasks => {
-        const taskList = { listName: 'Inbox' };
+        const taskList = { listName: 'Inbox', taskListId: 0 };
         const tasksWithFixedTaskList = tasks.map(task => ({
           ...task,
           taskList,
