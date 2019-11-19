@@ -224,7 +224,7 @@ export default React.forwardRef(
       containerMarginTopOnError,
       labelInactiveTop,
       rightAdornment,
-      autofocus = false,
+      autoFocus = false,
       ...props
     },
     ref,
@@ -270,7 +270,7 @@ export default React.forwardRef(
       isTextarea,
       fullWidth: true,
       backgroundColor,
-      autofocus
+      autoFocus,
     };
 
     const InputComponent = isTextarea ? StyledTextarea : StyledInput;
@@ -333,7 +333,6 @@ export default React.forwardRef(
                 {...props}
                 onFocus={() => setInputState(FOCUS_CLASS_NAME)}
                 onBlur={() => setInputState('')}
-                autofocus={autofocus}
               />
               {labelComponent}
             </TextareaWrapper>

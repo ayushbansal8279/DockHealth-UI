@@ -104,6 +104,7 @@ export const StyledSlimViewSwitch = ({ slimView, ...props }) => (
 
 export const StyledToolbar = styled(Toolbar)`
   && {
+    min-width: 1067px;
     padding: 0 0.625rem;
   }
 `;

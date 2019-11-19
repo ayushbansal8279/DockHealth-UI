@@ -354,7 +354,6 @@ export function markHighPriority(taskId, userId) {
   return axios
     .put(`task/changePriority/${taskId}?userId=${userId}&priorityLevel=HIGH`)
     .then(response => {
-      toggleAlert('Task priority updated successfully!', 'success');
       return response;
     })
     .catch(error => {
@@ -368,7 +367,6 @@ export function markLowPriority(taskId, userId) {
   return axios
     .put(`task/changePriority/${taskId}?userId=${userId}&priorityLevel=LOW`)
     .then(response => {
-      toggleAlert('Task priority updated successfully!', 'success');
       return response;
     })
     .catch(error => {

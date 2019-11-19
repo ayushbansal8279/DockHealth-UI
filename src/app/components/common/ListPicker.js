@@ -1,19 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import Popover from '@material-ui/core/Popover';
+import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import SearchHeader from './SearchHeader';
-import PickerHeader from './PickerHeader';
-import ListItem from './ListItem';
+import Popover from '@material-ui/core/Popover';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
+
 import { moveTask } from '../../actions/task-actions';
+import ListItem from './ListItem';
+import NoOverflowDialog from './NoOverflowDialog';
+import PickerHeader from './PickerHeader';
+import SearchHeader from './SearchHeader';
 
 export const StyledPopover = styled(Popover).attrs({ paper: 'paper' })`
   && .paper {
@@ -183,7 +184,7 @@ class ListPicker extends React.Component {
               ))}
           </List>
         </StyledPopover>
-        <Dialog
+        <NoOverflowDialog
           open={isConfirmation}
           onClose={this.closeConfirmation}
           aria-labelledby="alert-dialog-title"
@@ -207,7 +208,7 @@ class ListPicker extends React.Component {
               Move
             </Button>
           </DialogActions>
-        </Dialog>
+        </NoOverflowDialog>
       </>
     );
   }

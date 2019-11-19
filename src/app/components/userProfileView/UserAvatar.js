@@ -32,7 +32,9 @@ export default () => {
   const [fileLoaded, setFileLoaded, unsetFileLoaded] = useBoolean(false);
 
   const avatarInitials = userProfile
-    ? `${userProfile.firstName[0]}${userProfile.lastName[0]}`.trim()
+    ? `${userProfile.firstName[0]}${userProfile.lastName[0]}`
+        .trim()
+        .toUpperCase()
     : '';
 
   const avatarContent = userProfilePic ? (
@@ -84,6 +86,8 @@ export default () => {
       userApi.deleteUserProfilePic().then(async () => {
         try {
           await userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+          unsetPopoverOpen();
+          unsetFileLoaded();
         } catch {
           noop();
         } finally {
@@ -176,6 +180,7 @@ export default () => {
             >
               {getSmallButtonContent()}
               <input
+                accept="image/png, image/jpeg"
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChanged}

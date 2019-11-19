@@ -1,14 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
+
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
 import useDialog from '../../hooks/useDialog';
+import NoOverflowDialog from '../common/NoOverflowDialog';
 
 const Container = styled.div`
   display: flex;
@@ -41,7 +42,7 @@ const TaskActions = ({ remove, duplicate }) => {
       <ActionButton onClick={open}>Delete</ActionButton>
       <Divider />
       <ActionButton onClick={duplicate}>Duplicate</ActionButton>
-      <Dialog
+      <NoOverflowDialog
         open={isOpen}
         onClose={close}
         aria-labelledby="alert-dialog-title"
@@ -58,7 +59,7 @@ const TaskActions = ({ remove, duplicate }) => {
             Delete
           </Button>
         </DialogActions>
-      </Dialog>
+      </NoOverflowDialog>
     </Container>
   );
 };

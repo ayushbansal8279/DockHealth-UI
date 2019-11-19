@@ -1,9 +1,10 @@
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
+import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
-import { withStyles } from '@material-ui/core';
+
+import NoOverflowDialog from '../common/NoOverflowDialog';
 
 const StyledDialogGrid = styled(Grid)`
   && {
@@ -64,7 +65,7 @@ const StyledCompleteButton = withStyles({
 })(Button);
 
 export default ({ isOpen, close, confirm }) => (
-  <Dialog
+  <NoOverflowDialog
     open={isOpen}
     onClose={close}
     aria-labelledby="alert-dialog-title"
@@ -95,5 +96,5 @@ export default ({ isOpen, close, confirm }) => (
         </StyledCompleteButton>
       </Grid>
     </StyledDialogGrid>
-  </Dialog>
+  </NoOverflowDialog>
 );

@@ -8,7 +8,7 @@ export const getPatientName = patientData => {
 
   return `${lastName || ''}, ${firstName || ''} ${middleName ||
     ''} ${(withMrn && mrn) || ''}`
-    .replace(/\s{2,}/g, '')
+    .replace(/\s{2,}/g, ' ')
     .trim()
     .replace(/^,$|^,|,$/, '');
 };

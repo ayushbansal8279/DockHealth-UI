@@ -1,116 +1,48 @@
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Popover from '@material-ui/core/Popover';
+import moment from 'moment';
 import head from 'ramda/es/head';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 
-import moment from 'moment';
+import { getAllPatients } from '../../actions/patient-actions';
 import {
-  saveTask,
   assignOrReassignTask,
-  updatePatient,
   deleteTask,
   moveTask,
+  saveTask,
   storeAsCurrentTask as storeAsCurrentTaskAction,
+  toggleTaskPriority,
+  updatePatient,
+  updateWorkflowStatus,
 } from '../../actions/task-actions';
+import { getPatientName, noop } from '../../helpers/utilityFunctions';
 import useBoolean from '../../hooks/useBoolean';
 import { PriorityDot } from '../common/Priority';
-import NewTaskDrawerForm from './NewTaskDrawer.form';
-import PriorityFlag from './PriorityFlag';
-import { noop, getPatientName } from '../../helpers/utilityFunctions';
-import { getAllPatients } from '../../actions/patient-actions';
-import { CloseTaskButton } from './TaskDrawerButtons';
 import NewTaskDrawerCommentSection from './NewTaskDrawer.commentSection';
+import NewTaskDrawerForm from './NewTaskDrawer.form';
 import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
-
-const NewTaskDrawerContainer = styled.div`
-  align-items: flex-start;
-  box-sizing: border-box;
-  display: flex;
-  flex: 1.4;
-  height: calc(100vh - 5.5rem);
-  justify-content: flex-start;
-  padding: 0 0.25rem;
-  position: sticky;
-  transition: all 0.25s ease-out;
-  top: 6.25rem;
-`;
-
-const TopLabel = styled.div`
-  color: #000;
-  font-size: 24px;
-  line-height: 44px;
-  margin-bottom: 0.75rem;
-  padding-left: 1rem;
-  padding-top: 0.75rem;
-`;
-
-const FormSectionNoBorder = styled(Grid)`
-  margin-top: 5px;
-  padding: 0 8px 8px;
-
-  &:not(:first-child) {
-    margin-top: 8px;
-  }
-`;
-
-const FormSectionDivider = styled.div`
-  background-color: #ddf2f7;
-  height: 2px;
-  width: 100%;
-
-  ${props => props.condensed && 'margin: 0 0.5rem;'}
-`;
-
-const FormSection = styled(FormSectionNoBorder)`
-  background-color: #fff;
-  border: 2px solid #ddf2f7;
-`;
-
-const CondensedFormSection = styled(FormSection)`
-  padding: 0;
-`;
-
-const StatusSelect = styled.div`
-  align-items: center;
-  cursor: pointer;
-  display: inline-flex;
-  flex-flow: row nowrap;
-
-  & > * {
-    font-size: 14px;
-    margin-left: 6px;
-  }
-`;
-
-const CloseTaskButtonContainer = styled.div`
-  padding-right: 0.5rem;
-`;
-
-const StyledButton = styled(Button)`
-  && {
-    ${props => props.variant === 'contained' && 'background-color: #007cab;'}
-    box-shadow: none;
-    color: ${props => (props.variant === 'contained' ? '#fff' : '#009fcd')};
-    font-size: ${props => (props.variant === 'contained' ? 1 : 0.875)}rem;
-    ${props => props.variant === 'contained' && 'font-weight: bold;'}
-    margin: 1.5rem 0.25rem;
-    text-transform: none;
-  }
-`;
-
-const StyledForm = styled.form`
-  overflow-y: auto;
-  margin-right -1rem;
-  padding-right: 1rem;
-`;
+import PriorityFlag from './PriorityFlag';
+import { CloseTaskButton } from './TaskDrawerButtons';
+import {
+  NewTaskDrawerContainer,
+  StyledForm,
+  NewTaskDrawerInnerContainer,
+  FormSection,
+  TopLabel,
+  CloseTaskButtonContainer,
+  FormSectionDivider,
+  AutoSaveContainer,
+  StatusSelect,
+  CondensedFormSection,
+  StyledButton,
+  AutoSaveLabel,
+} from './NewTaskDrawer.styled';
 
 const statusSelectData = [
   {
@@ -142,8 +74,10 @@ const statusSelectData = [
 const renderStatusSelectOption = ({
   closeStatusPopover,
   setStatus,
+  saveTaskStatus,
+  taskId,
 }) => status => {
-  const { key, label, color } = status;
+  const { key, label, color, value } = status;
 
   return (
     <ListItem
@@ -152,6 +86,9 @@ const renderStatusSelectOption = ({
       onClick={() => {
         setStatus(status);
         closeStatusPopover();
+        if (taskId) {
+          saveTaskStatus({ newTaskStatus: value });
+        }
       }}
     >
       <ListItemIcon>
@@ -172,6 +109,7 @@ const onSubmit = ({
   priorityActive,
   storeAsCurrentTask,
   deferredCommentsPromises,
+  setAutoSaveVisible,
 }) => async data => {
   const {
     assignedToUserId,
@@ -223,7 +161,11 @@ const onSubmit = ({
     }
 
     if (!requestData.taskId) {
-      storeAsCurrentTask({ ...newTask, ...requestData });
+      storeAsCurrentTask({
+        ...newTask,
+        ...requestData,
+        taskId: newTask.taskId || requestData.taskId,
+      });
     }
 
     let commentPromise = Promise.resolve();
@@ -233,6 +175,8 @@ const onSubmit = ({
         deferredCommentPromise({ task: { ...newTask, ...requestData } }),
       );
     });
+
+    setAutoSaveVisible();
   } catch {
     noop();
   }
@@ -295,28 +239,88 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
   const [deferredCommentsPromises, setDeferredCommentsPromises] = useState([]);
   const statusSelectRef = useRef(null);
   const task = useSelector(store => store.taskState.selectedTask);
+  const userProfile = useSelector(store => store.userState.userProfile);
   const dispatch = useDispatch();
   const taskContainerRef = useRef(null);
   const [cachedTaskContainerRef, setCachedTaskContainerRef] = useState(null);
+  const [
+    autoSaveVisible,
+    setAutoSaveVisible,
+    unsetAutoSaveVisible,
+  ] = useBoolean(false);
+  const [autoSaveTimeoutId, setAutoSaveTimeoutId] = useState(null);
+
+  const formMethods = useForm({});
+
+  const isSubtask = Boolean(task?.parentTaskId);
+  const userId = userProfile?.userId;
+  const taskId = task?.taskId;
+  const taskWorkflowStatus = task?.workflowStatus;
+  const taskPriority = task?.priority;
 
   const storeAsCurrentTask = useCallback(
     newTask => storeAsCurrentTaskAction(newTask)(dispatch),
     [dispatch],
   );
 
-  const isSubtask = Boolean(task?.parentTaskId);
+  const saveTaskPriority = useCallback(
+    ({ newTaskPriority }) => {
+      toggleTaskPriority(task, parseInt(userId, 10) || -1, newTaskPriority)(
+        dispatch,
+      )
+        .then(() => {
+          setAutoSaveVisible();
+        })
+        .catch(() => {
+          toggleAlert(
+            'Error updating priority, please try again later',
+            'error',
+          );
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [taskId, userId],
+  );
 
-  const formMethods = useForm({});
-
-  const taskId = task?.taskId;
+  const saveTaskStatus = useCallback(
+    ({ newTaskStatus }) => {
+      updateWorkflowStatus(taskId, newTaskStatus)(dispatch)
+        .then(() => {
+          setAutoSaveVisible();
+        })
+        .catch(() => {
+          toggleAlert('Error updating status, please try again later', 'error');
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [taskId],
+  );
 
   useEffect(() => {
     getAllPatients()(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const clearAutoSaveTimeout = () => {
+    clearTimeout(autoSaveTimeoutId);
+    setAutoSaveTimeoutId(null);
+    unsetAutoSaveVisible();
+  };
+
   useEffect(() => {
-    const isPriorityHigh = task?.priority === 'HIGH';
+    if (autoSaveVisible) {
+      clearTimeout(autoSaveTimeoutId);
+      setAutoSaveTimeoutId(
+        setTimeout(() => {
+          clearAutoSaveTimeout();
+        }, 1000),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSaveVisible]);
+
+  useEffect(() => {
+    const isPriorityHigh = taskPriority === 'HIGH';
 
     if (isPriorityHigh) {
       setPriorityActive();
@@ -324,12 +328,16 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
       unsetPriorityActive();
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskPriority, taskId]);
+
+  useEffect(() => {
     const newWorkflowStatus =
-      statusSelectData.find(({ value }) => value === task?.workflowStatus) ??
+      statusSelectData.find(({ value }) => value === taskWorkflowStatus) ??
       head(statusSelectData);
 
     setStatus(newWorkflowStatus);
-  }, [setPriorityActive, task, unsetPriorityActive, taskId]);
+  }, [taskWorkflowStatus, taskId]);
 
   useEffect(
     () => {
@@ -385,6 +393,8 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
 
   useEffect(() => {
     setDeferredCommentsPromises([]);
+    clearAutoSaveTimeout();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskId]);
 
   const handleSubmit = formMethods.handleSubmit(
@@ -397,8 +407,25 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
       priorityActive,
       storeAsCurrentTask,
       deferredCommentsPromises,
+      setAutoSaveVisible,
     }),
   );
+
+  const topLabel = (() => {
+    if (task) {
+      if (task.taskId) {
+        if (task.parentTaskId) {
+          return 'Edit a subtask';
+        }
+
+        return 'Edit a task';
+      }
+
+      return 'Add a subtask';
+    }
+
+    return 'Add a task';
+  })();
 
   return (
     <NewTaskDrawerContainer
@@ -406,42 +433,30 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
       ref={taskContainerRef}
     >
       <StyledForm onSubmit={handleSubmit}>
-        <Grid container>
+        <NewTaskDrawerInnerContainer>
           <FormSection container item xs={12}>
-            {!task && (
-              <>
-                <Grid
-                  container
-                  item
-                  xs={12}
-                  alignItems="center"
-                  justify="space-between"
-                >
-                  <TopLabel>Add a task</TopLabel>
-                  <CloseTaskButtonContainer>
-                    <CloseTaskButton onClick={closeDrawer} />
-                  </CloseTaskButtonContainer>
-                </Grid>
-                <FormSectionDivider condensed />
-              </>
-            )}
-            {task && (
-              <>
-                <Grid
-                  container
-                  item
-                  xs={12}
-                  alignItems="center"
-                  justify="space-between"
-                >
-                  <TopLabel>Edit a task</TopLabel>
-                  <CloseTaskButtonContainer>
-                    <CloseTaskButton onClick={closeDrawer} />
-                  </CloseTaskButtonContainer>
-                </Grid>
-                <FormSectionDivider condensed />
-              </>
-            )}
+            <Grid
+              container
+              item
+              xs={12}
+              alignItems="center"
+              justify="space-between"
+            >
+              <TopLabel>{topLabel}</TopLabel>
+              <CloseTaskButtonContainer>
+                <CloseTaskButton
+                  onClick={() => {
+                    closeDrawer();
+                    storeAsCurrentTask(null);
+                  }}
+                />
+              </CloseTaskButtonContainer>
+            </Grid>
+            <FormSectionDivider active={autoSaveVisible}>
+              <AutoSaveContainer visible={autoSaveVisible}>
+                <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
+              </AutoSaveContainer>
+            </FormSectionDivider>
             <Grid
               container
               item
@@ -451,7 +466,13 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
             >
               <PriorityFlag
                 active={priorityActive}
-                onClick={togglePriorityActive}
+                onClick={() => {
+                  const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
+                  togglePriorityActive();
+                  if (taskId) {
+                    saveTaskPriority({ newTaskPriority });
+                  }
+                }}
               />
               <StatusSelect ref={statusSelectRef} onClick={openStatusPopover}>
                 <span>Status:</span>
@@ -473,7 +494,12 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
               >
                 <List>
                   {statusSelectData.map(
-                    renderStatusSelectOption({ closeStatusPopover, setStatus }),
+                    renderStatusSelectOption({
+                      closeStatusPopover,
+                      setStatus,
+                      saveTaskStatus,
+                      taskId,
+                    }),
                   )}
                 </List>
               </Popover>
@@ -485,6 +511,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
                   defaultValues={defaultValues}
                   handleSubmit={handleSubmit}
                   onMarkComplete={onMarkComplete}
+                  setAutoSaveVisible={setAutoSaveVisible}
                 />
               </FormContext>
             </Grid>
@@ -496,7 +523,12 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
             />
             <FormSectionDivider condensed />
             <FormContext {...formMethods}>
-              <NewTaskDrawerOtherDataSection task={task} taskList={taskList} />
+              <NewTaskDrawerOtherDataSection
+                task={task}
+                taskList={taskList}
+                closeDrawer={closeDrawer}
+                setAutoSaveVisible={setAutoSaveVisible}
+              />
             </FormContext>
             <FormSectionDivider condensed />
             <Grid
@@ -507,7 +539,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
               item
               xs={12}
             >
-              {task && task?.status !== 'COMPLETE' && (
+              {task && task.taskId != null && task.status !== 'COMPLETE' && (
                 <Grid item xs={3}>
                   <StyledButton
                     fullWidth
@@ -535,7 +567,7 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
               </Grid>
             </Grid>
           </CondensedFormSection>
-        </Grid>
+        </NewTaskDrawerInnerContainer>
       </StyledForm>
     </NewTaskDrawerContainer>
   );

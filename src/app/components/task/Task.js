@@ -26,8 +26,14 @@ const Task = props => {
   } = props;
   const { subtasks, priority, taskList, isNewSubtask } = task;
 
-  const { addingNewSubtask, addingNewSubtaskParentId } = useSelector(state =>
-    pick(['addingNewSubtask', 'addingNewSubtaskParentId'])(state.taskState),
+  const {
+    addingNewSubtask,
+    addingNewSubtaskParentId,
+    subtaskShape,
+  } = useSelector(state =>
+    pick(['addingNewSubtask', 'addingNewSubtaskParentId', 'subtaskShape'])(
+      state.taskState,
+    ),
   );
   const animationContainer = useRef(null);
 
@@ -60,24 +66,16 @@ const Task = props => {
     [slimView],
   );
 
+  const renderedSubtasks =
+    addingNewSubtask && addingNewSubtaskParentId === task?.taskId
+      ? [...subtasks, subtaskShape]
+      : subtasks;
+
   // Check all subtasks confirmation dialog
   const { isOpen, close, handleStatusChange, confirm } = useConfirmation(
     task,
     markComplete,
   );
-
-  const isNewSubtaskForCurrentTask =
-    addingNewSubtask &&
-    !isNewSubtask &&
-    addingNewSubtaskParentId === task.taskId;
-
-  const renderedSubtasks = isNewSubtaskForCurrentTask
-    ? subtasks.concat({
-        subtasks: [],
-        isNewSubtask: true,
-        taskId: 'new-subtask',
-      })
-    : subtasks;
 
   return (
     <>
