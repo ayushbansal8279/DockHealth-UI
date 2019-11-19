@@ -47,6 +47,7 @@
     "es6-promise-promise": "^1.0.0",
     "es6-promisify": "^4.1.0",
     "flag": "^4.2.1",
+    "framer-motion": "^1.6.15",
     "immer": "^4.0.2",
     "jquery": "^3.4.0",
     "linkifyjs": "^2.1.7",
