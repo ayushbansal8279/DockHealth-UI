@@ -2,6 +2,7 @@ import moment from 'moment';
 
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
+import * as TaskListActions from './tasklist-actions';
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -164,6 +165,7 @@ export function saveTask(newTask) {
       TaskApi.updateTask(newTask)
         .then(task => {
           dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
+          reloadTaskListStats(dispatch, task);
           return task;
         })
         .catch(error => {
@@ -189,12 +191,14 @@ export function saveTask(newTask) {
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
+          reloadTaskListStats(dispatch, task);
         } else {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
+          reloadTaskListStats(dispatch, task);
         }
 
         clearPreparedSubtask()(dispatch);
@@ -218,17 +222,20 @@ export const moveTask = (task, taskList) => dispatch => {
   return TaskApi.updateTask(updatedTask)
     .then(() => {
       dispatch({ type: ActionTypes.MOVE_TASK_SUCCESS, task, taskList });
+      reloadTaskListStats(dispatch, task);
     })
     .catch(error => {
       throw error;
     });
 };
 
-export const moveTaskBetweenLists = task => dispatch =>
+export const moveTaskBetweenLists = task => dispatch => {
   dispatch({
     type: ActionTypes.MOVE_TASK_BETWEEN_LISTS,
     task,
   });
+  reloadTaskListStats(dispatch, task);
+}
 
 export function addTaskComment(task, taskComment) {
   return dispatch =>
@@ -277,6 +284,7 @@ export function deleteTask(task) {
     TaskApi.deleteTask(task.taskId)
       .then(() => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
+        reloadTaskListStats(dispatch, task);
       })
       .catch(error => {
         throw error;
@@ -288,6 +296,7 @@ export function duplicateTask(task) {
     TaskApi.duplicateTask(task.taskId)
       .then(duplicatedTask => {
         dispatch({ type: ActionTypes.DUPLICATE_TASK_SUCCESS, duplicatedTask });
+        reloadTaskListStats(dispatch, task);
         return duplicatedTask;
       })
       .catch(error => {
@@ -337,6 +346,7 @@ export function markComplete(task, status, listName, currentUser = null) {
           task,
           ...newTaskData,
         });
+        reloadTaskListStats(dispatch, task);
 
         return {
           ...task,
@@ -370,6 +380,7 @@ export const updateDueDate = (task, dueDate) => dispatch =>
         taskId: res.taskId,
         dueDate: res.dueDate,
       });
+      reloadTaskListStats(dispatch, task);
     })
     .catch(() => {});
 
@@ -407,6 +418,7 @@ export const updateWorkflowStatus = (taskId, workflowStatus) => dispatch =>
         taskId,
         workflowStatus,
       });
+      reloadTaskListStats(dispatch, task);
     })
     .catch(err => {
       throw err;
@@ -426,6 +438,7 @@ export function toggleTaskPriority(task, userId, priority) {
           task,
           priority: newPriority,
         });
+        reloadTaskListStats(dispatch, task);
       })
       .catch(error => {
         throw error;
@@ -441,6 +454,7 @@ export function assignOrReassignTask(task, assignedToUserId) {
           type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS,
           task: assignedTask,
         });
+        reloadTaskListStats(dispatch, assignedTask);
       })
       .catch(error => {
         throw error;
@@ -606,7 +620,14 @@ export const archiveTask = (task, currentUserProfile) => dispatch =>
         task: responseTask,
         currentUserProfile,
       });
+      reloadTaskListStats(dispatch, task);
     })
     .catch(error => {
       throw error;
     });
+
+export const reloadTaskListStats = (dispatch, task) => {
+  if (task.taskList) {
+    TaskListActions.getTaskListStats(task.taskList)(dispatch);
+  }
+}
