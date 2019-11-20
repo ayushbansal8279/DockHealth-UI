@@ -29,13 +29,8 @@ const taskListTrendsTabs = {
   all: 'All',
 };
 
+// This is the code for the all active tasks tab under the for me heads up section
 const taskListStatsElements = [
-  // This is the code for the all active tasks tab under the for me heads up section
-  // {
-  //   key: 'Incomplete_TaskList_Count',
-  //   label: 'All active tasks',
-  //   tab: taskListStatsTabs.me,
-  // },
   {
     key: 'AssignedToMe_TaskList_Count',
     label: 'Assigned to me',
@@ -86,10 +81,16 @@ const taskListStatsElements = [
   },
 ];
 
-const renderCurrentTab = ({ currentStatsTab, taskListStats, filterChange }) => {
+const renderCurrentTab = ({
+  currentStatsTab,
+  currentFilter,
+  taskListStats,
+  filterChange,
+}) => {
   return taskListStatsElements
     .filter(({ tab }) => tab === currentStatsTab)
     .map(({ key, label, filter }) => {
+      const isFilterCurrentlySelected = currentFilter === filter;
       const value =
         taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
           ?.metricValue ?? 0;
@@ -100,9 +101,14 @@ const renderCurrentTab = ({ currentStatsTab, taskListStats, filterChange }) => {
             filterChange(filter);
           }}
           key={key}
+          active={isFilterCurrentlySelected}
         >
-          <HeadsUpSectionButtonCount>{value}</HeadsUpSectionButtonCount>
-          <HeadsUpSectionButtonLabel>{label}</HeadsUpSectionButtonLabel>
+          <HeadsUpSectionButtonCount active={isFilterCurrentlySelected}>
+            {value}
+          </HeadsUpSectionButtonCount>
+          <HeadsUpSectionButtonLabel active={isFilterCurrentlySelected}>
+            {label}
+          </HeadsUpSectionButtonLabel>
         </HeadsUpSectionButton>
       );
     });
@@ -148,7 +154,7 @@ const renderTabSwitches = ({ currentActiveTab, tabData, tabSwitchMethod }) =>
     );
   });
 
-export default forwardRef(({ taskList, filterChange }, ref) => {
+export default forwardRef(({ taskList, currentFilter, filterChange }, ref) => {
   const dispatch = useDispatch();
   const { taskListStats, taskListStatsOk } = useSelector(store => ({
     taskListStats: store.taskListState.taskListStats,
@@ -181,7 +187,7 @@ export default forwardRef(({ taskList, filterChange }, ref) => {
 
   return (
     <HeadsUpAreaContainer ref={ref}>
-      {taskListStatsOk === true && (
+      {taskListStatsOk && (
         <Grid container>
           <HeadsUpSectionGrid container item xs={8}>
             <HeadsUpSectionContainer>
@@ -201,6 +207,7 @@ export default forwardRef(({ taskList, filterChange }, ref) => {
                   currentStatsTab,
                   taskListStats,
                   filterChange,
+                  currentFilter,
                 })}
               </HeadsUpButtonsContainer>
             </HeadsUpSectionContainer>
@@ -221,7 +228,6 @@ export default forwardRef(({ taskList, filterChange }, ref) => {
               <HeadsUpButtonsContainer>
                 {renderCurrentTrendTab({ currentTrendsTab, taskListStats })}
               </HeadsUpButtonsContainer>
-              {/* <HeadsUpAreaChart taskListStats={taskListStats} /> */}
             </HeadsUpSectionContainer>
           </HeadsUpSectionGrid>
         </Grid>

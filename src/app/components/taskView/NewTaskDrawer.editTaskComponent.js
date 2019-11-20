@@ -115,9 +115,7 @@ class EditTaskDescription extends Component {
             this.handleDescriptionEdit(event);
           }
         }}
-        onDoubleClick={
-          componentEditable ? undefined : this.setComponentEditable
-        }
+        onClick={componentEditable ? undefined : this.setComponentEditable}
       />
     );
   }

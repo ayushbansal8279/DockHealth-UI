@@ -90,11 +90,9 @@ class LoginFormPassword extends PureComponent {
         </div>
 
         <BottomGridContainer>
-          <Grid container item xs={9} direction="column" justify="flex-end">
-            <StyledLabel>
-              <Link to="/forgotPassword">Forgot password?</Link>
-            </StyledLabel>
-          </Grid>
+          <StyledLabel>
+            <Link to="/forgotPassword">Forgot password?</Link>
+          </StyledLabel>
         </BottomGridContainer>
       </StyledForm>
     );

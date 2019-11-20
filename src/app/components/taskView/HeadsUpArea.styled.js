@@ -76,7 +76,9 @@ export const HeadsUpSectionButton = styled.div`
   margin: 5px;
   transition: all 0.25s ease-out;
 
-  ${props => props.active && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);'}
+  ${props =>
+    props.active &&
+    'background-color: #cce5ee; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);'}
 `;
 
 export const HeadsUpSectionButtonCount = styled.div`
@@ -84,6 +86,9 @@ export const HeadsUpSectionButtonCount = styled.div`
   font-size: 48px;
   font-weight: 800;
   pointer-events: none;
+  transition: all 0.25s ease-out;
+
+  ${props => props.active && 'color: #303538;'}
 `;
 
 export const HeadsUpSectionButtonLabel = styled.div`
@@ -91,6 +96,9 @@ export const HeadsUpSectionButtonLabel = styled.div`
   font-size: 14px;
   opacity: 0.5;
   pointer-events: none;
+  transition: all 0.25s ease-out;
+
+  ${props => props.active && 'color: #303538;'}
 `;
 
 export const HeadsUpAreaContainer = styled.div`

@@ -100,12 +100,10 @@ class LoginFormUsername extends Component {
               </HeightDependentGrid>
             </div>
             <BottomGridContainer>
-              <Grid container item xs={9} direction="column" justify="flex-end">
-                <StyledLabel bold>Don’t have an account yet?</StyledLabel>
-                <StyledLabel>
-                  <Link to="/register">Create account</Link>
-                </StyledLabel>
-              </Grid>
+              <StyledLabel bold>Don’t have an account yet?</StyledLabel>
+              <StyledLabel>
+                <Link to="/register">Create account</Link>
+              </StyledLabel>
             </BottomGridContainer>
           </>
         )}

@@ -3,8 +3,11 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import ascend from 'ramda/es/ascend';
 import descend from 'ramda/es/descend';
-import head from 'ramda/es/head';
-import sort from 'ramda/es/sort';
+import find from 'ramda/es/find';
+import partition from 'ramda/es/partition';
+import reverse from 'ramda/es/reverse';
+import propEq from 'ramda/es/propEq';
+import sortWith from 'ramda/es/sortWith';
 import take from 'ramda/es/take';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -80,10 +83,8 @@ const OrderIconImage = styled.img`
   transition: transform 0.25s ease-out;
 `;
 
-const OrderIcon = ({ currentKey, order, sortingKey }) => {
-  if (currentKey !== sortingKey) {
-    return null;
-  }
+const OrderIcon = ({ sortingKey, sorting }) => {
+  const { order } = find(propEq('key', sortingKey), sorting);
 
   return (
     <OrderIconContainer>
@@ -96,11 +97,7 @@ const OrderIcon = ({ currentKey, order, sortingKey }) => {
   );
 };
 
-const Heading = ({
-  onSortingChanged,
-  taskDrawerOpen,
-  sorting: { key, order } = {},
-}) => (
+const Heading = ({ onSortingChanged, taskDrawerOpen, sorting }) => (
   <div
     style={{
       height: '32px',
@@ -125,22 +122,14 @@ const Heading = ({
       onClick={onSortingChanged({ key: SORTING_KEYS.ASSIGNED_TO })}
     >
       <span>ASSIGNED</span>
-      <OrderIcon
-        currentKey={key}
-        sortingKey={SORTING_KEYS.ASSIGNED_TO}
-        order={order}
-      />
+      <OrderIcon sortingKey={SORTING_KEYS.ASSIGNED_TO} sorting={sorting} />
     </div>
     <div
       style={{ cursor: 'pointer', flex: 1 }}
       onClick={onSortingChanged({ key: SORTING_KEYS.TASK })}
     >
       <span>TASK</span>
-      <OrderIcon
-        currentKey={key}
-        sortingKey={SORTING_KEYS.TASK}
-        order={order}
-      />
+      <OrderIcon sortingKey={SORTING_KEYS.TASK} sorting={sorting} />
     </div>
     {!taskDrawerOpen && (
       <div
@@ -148,11 +137,7 @@ const Heading = ({
         onClick={onSortingChanged({ key: SORTING_KEYS.PATIENT })}
       >
         <span>PATIENT</span>
-        <OrderIcon
-          currentKey={key}
-          sortingKey={SORTING_KEYS.PATIENT}
-          order={order}
-        />
+        <OrderIcon sortingKey={SORTING_KEYS.PATIENT} sorting={sorting} />
       </div>
     )}
     {!taskDrawerOpen && (
@@ -161,11 +146,7 @@ const Heading = ({
         onClick={onSortingChanged({ key: SORTING_KEYS.DUE_DATE })}
       >
         <span>DUE</span>
-        <OrderIcon
-          currentKey={key}
-          sortingKey={SORTING_KEYS.DUE_DATE}
-          order={order}
-        />
+        <OrderIcon sortingKey={SORTING_KEYS.DUE_DATE} sorting={sorting} />
       </div>
     )}
     {!taskDrawerOpen && (
@@ -174,11 +155,7 @@ const Heading = ({
         onClick={onSortingChanged({ key: SORTING_KEYS.STATUS })}
       >
         <span>STATUS</span>
-        <OrderIcon
-          currentKey={key}
-          sortingKey={SORTING_KEYS.STATUS}
-          order={order}
-        />
+        <OrderIcon sortingKey={SORTING_KEYS.STATUS} sorting={sorting} />
       </div>
     )}
   </div>
@@ -271,10 +248,12 @@ const NewTaskElement = props => {
 
 const TASK_LIST_SHOW_MORE_STEP = 5;
 
-const DEFAULT_SORTING = {
-  ...head(sortingColumns),
-  order: 'asc',
-};
+const DEFAULT_SORTING = [
+  ...sortingColumns.map(sortingColumn => ({
+    ...sortingColumn,
+    order: 'asc',
+  })),
+];
 
 const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
   const addingNewTask = useSelector(store => store.taskState.addingNewTask);
@@ -295,27 +274,27 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
   }, [shouldhowShowMoreButton, taskListShowMoreIndex]);
 
   const onSortingChanged = useCallback(({ key }) => () => {
-    const order =
-      key === currentSorting.key && currentSorting.order === 'asc'
-        ? 'desc'
-        : 'asc';
-    const sortingColumnData = sortingColumns.find(
-      ({ key: sortingKey }) => key === sortingKey,
+    const [[currentSortingColumn], otherSortingColumns] = partition(
+      propEq('key', key),
+      currentSorting,
     );
 
-    if (sortingColumnData) {
-      setCurrentSorting({
-        ...sortingColumnData,
+    const order = currentSortingColumn.order === 'asc' ? 'desc' : 'asc';
+
+    setCurrentSorting([
+      ...otherSortingColumns,
+      {
+        ...currentSortingColumn,
         order,
-      });
-    }
+      },
+    ]);
   });
 
-  const { order, valueGetter } = currentSorting ?? DEFAULT_SORTING;
+  const sortingMethods = currentSorting.map(({ order, valueGetter }) =>
+    (order === 'asc' ? ascend : descend)(valueGetter),
+  );
 
-  const sortingMethod = (order === 'asc' ? ascend : descend)(valueGetter);
-
-  const sortedTasksToShow = sort(sortingMethod, tasksToShow);
+  const sortedTasksToShow = sortWith(reverse(sortingMethods), tasksToShow);
 
   return (
     <div>

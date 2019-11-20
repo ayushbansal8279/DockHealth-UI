@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { ClickAwayListener } from '@material-ui/core';
 import { getAllPatients } from '../../actions/patient-actions';
 import {
   assignOrReassignTask,
@@ -20,6 +21,7 @@ import {
   toggleTaskPriority,
   updatePatient,
   updateWorkflowStatus,
+  duplicateTask,
 } from '../../actions/task-actions';
 import { getPatientName, noop } from '../../helpers/utilityFunctions';
 import useBoolean from '../../hooks/useBoolean';
@@ -42,6 +44,7 @@ import {
   CondensedFormSection,
   StyledButton,
   AutoSaveLabel,
+  StyledVerticalDivider,
 } from './NewTaskDrawer.styled';
 
 const statusSelectData = [
@@ -182,11 +185,26 @@ const onSubmit = ({
   }
 };
 
-const onDelete = ({ afterDelete, dispatch, task }) => async () => {
+const onDelete = ({ afterDelete, dispatch, task }) => async event => {
+  event.preventDefault();
+  event.stopPropagation();
   if (task) {
     try {
       await deleteTask(task)(dispatch);
       afterDelete();
+    } catch {
+      noop();
+    }
+  }
+};
+
+const onDuplicate = ({ afterDuplicate, dispatch, task }) => async event => {
+  event.preventDefault();
+  event.stopPropagation();
+  if (task && task.taskId != null) {
+    try {
+      const newTask = await duplicateTask(task)(dispatch);
+      afterDuplicate({ newTask });
     } catch {
       noop();
     }
@@ -412,20 +430,14 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
   );
 
   const topLabel = (() => {
-    if (task) {
-      if (task.taskId) {
-        if (task.parentTaskId) {
-          return 'Edit a subtask';
-        }
-
-        return 'Edit a task';
-      }
-
+    if (task && !task.taskId) {
       return 'Add a subtask';
     }
 
     return 'Add a task';
   })();
+
+  const addingTaskOrSubtask = !task || (task && !task.taskId);
 
   return (
     <NewTaskDrawerContainer
@@ -433,116 +445,135 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
       ref={taskContainerRef}
     >
       <StyledForm onSubmit={handleSubmit}>
-        <NewTaskDrawerInnerContainer>
-          <FormSection container item xs={12}>
-            <Grid
-              container
-              item
-              xs={12}
-              alignItems="center"
-              justify="space-between"
-            >
-              <TopLabel>{topLabel}</TopLabel>
-              <CloseTaskButtonContainer>
-                <CloseTaskButton
-                  onClick={() => {
-                    closeDrawer();
-                    storeAsCurrentTask(null);
-                  }}
-                />
-              </CloseTaskButtonContainer>
-            </Grid>
-            <FormSectionDivider active={autoSaveVisible}>
-              <AutoSaveContainer visible={autoSaveVisible}>
-                <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
-              </AutoSaveContainer>
-            </FormSectionDivider>
-            <Grid
-              container
-              item
-              xs={12}
-              alignItems="center"
-              justify="space-between"
-            >
-              <PriorityFlag
-                active={priorityActive}
-                onClick={() => {
-                  const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
-                  togglePriorityActive();
-                  if (taskId) {
-                    saveTaskPriority({ newTaskPriority });
-                  }
-                }}
-              />
-              <StatusSelect ref={statusSelectRef} onClick={openStatusPopover}>
-                <span>Status:</span>
-                <PriorityDot color={status.color} />
-                <span>{status.label}</span>
-              </StatusSelect>
-              <Popover
-                open={statusPopoverOpen}
-                anchorEl={statusSelectRef?.current}
-                onClose={closeStatusPopover}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
+        <ClickAwayListener onClickAway={closeDrawer}>
+          <div>
+            <NewTaskDrawerInnerContainer>
+              <FormSection
+                topBorderActive={!addingTaskOrSubtask && autoSaveVisible}
+                container
+                item
+                xs={12}
               >
-                <List>
-                  {statusSelectData.map(
-                    renderStatusSelectOption({
-                      closeStatusPopover,
-                      setStatus,
-                      saveTaskStatus,
-                      taskId,
-                    }),
-                  )}
-                </List>
-              </Popover>
-            </Grid>
-            <Grid item xs={12}>
-              <FormContext {...formMethods}>
-                <NewTaskDrawerForm
-                  isSubtask={isSubtask}
-                  defaultValues={defaultValues}
-                  handleSubmit={handleSubmit}
-                  onMarkComplete={onMarkComplete}
-                  setAutoSaveVisible={setAutoSaveVisible}
+                {addingTaskOrSubtask && (
+                  <Grid
+                    container
+                    item
+                    xs={12}
+                    alignItems="center"
+                    justify="space-between"
+                  >
+                    <TopLabel>{topLabel}</TopLabel>
+                    <CloseTaskButtonContainer>
+                      <CloseTaskButton
+                        onClick={() => {
+                          closeDrawer();
+                          storeAsCurrentTask(null);
+                        }}
+                      />
+                    </CloseTaskButtonContainer>
+                  </Grid>
+                )}
+                <FormSectionDivider
+                  addingTaskOrSubtask={addingTaskOrSubtask}
+                  active={autoSaveVisible}
+                >
+                  <AutoSaveContainer visible={autoSaveVisible}>
+                    <AutoSaveLabel visible={autoSaveVisible}>
+                      Saved
+                    </AutoSaveLabel>
+                  </AutoSaveContainer>
+                </FormSectionDivider>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  alignItems="center"
+                  justify="space-between"
+                >
+                  <PriorityFlag
+                    active={priorityActive}
+                    onClick={() => {
+                      const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
+                      togglePriorityActive();
+                      if (taskId) {
+                        saveTaskPriority({ newTaskPriority });
+                      }
+                    }}
+                  />
+                  <StatusSelect
+                    ref={statusSelectRef}
+                    onClick={openStatusPopover}
+                  >
+                    <span>Status:</span>
+                    <PriorityDot color={status.color} />
+                    <span>{status.label}</span>
+                  </StatusSelect>
+                  <Popover
+                    anchorEl={statusSelectRef?.current}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                    disablePortal
+                    onClose={closeStatusPopover}
+                    open={statusPopoverOpen}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                  >
+                    <List>
+                      {statusSelectData.map(
+                        renderStatusSelectOption({
+                          closeStatusPopover,
+                          setStatus,
+                          saveTaskStatus,
+                          taskId,
+                        }),
+                      )}
+                    </List>
+                  </Popover>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormContext {...formMethods}>
+                    <NewTaskDrawerForm
+                      isSubtask={isSubtask}
+                      defaultValues={defaultValues}
+                      handleSubmit={handleSubmit}
+                      onMarkComplete={onMarkComplete}
+                      setAutoSaveVisible={setAutoSaveVisible}
+                    />
+                  </FormContext>
+                </Grid>
+              </FormSection>
+              <CondensedFormSection container item xs={12}>
+                <NewTaskDrawerCommentSection
+                  task={task}
+                  addDeferredCommentToQueue={addDeferredCommentToQueue}
                 />
-              </FormContext>
-            </Grid>
-          </FormSection>
-          <CondensedFormSection container item xs={12}>
-            <NewTaskDrawerCommentSection
-              task={task}
-              addDeferredCommentToQueue={addDeferredCommentToQueue}
-            />
-            <FormSectionDivider condensed />
-            <FormContext {...formMethods}>
-              <NewTaskDrawerOtherDataSection
-                task={task}
-                taskList={taskList}
-                closeDrawer={closeDrawer}
-                setAutoSaveVisible={setAutoSaveVisible}
-              />
-            </FormContext>
-            <FormSectionDivider condensed />
+                <FormSectionDivider condensed />
+                <FormContext {...formMethods}>
+                  <NewTaskDrawerOtherDataSection
+                    task={task}
+                    taskList={taskList}
+                    closeDrawer={closeDrawer}
+                    setAutoSaveVisible={setAutoSaveVisible}
+                  />
+                </FormContext>
+              </CondensedFormSection>
+            </NewTaskDrawerInnerContainer>
             <Grid
               alignItems="center"
               justify="center"
-              spacing={8}
+              direction="row"
+              wrap="nowrap"
               container
               item
               xs={12}
             >
               {task && task.taskId != null && task.status !== 'COMPLETE' && (
-                <Grid item xs={3}>
+                <>
                   <StyledButton
-                    fullWidth
                     onClick={onDelete({
                       afterDelete: () => {
                         closeDrawer();
@@ -553,21 +584,23 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
                   >
                     Delete
                   </StyledButton>
-                </Grid>
+                  <StyledVerticalDivider />
+                </>
               )}
-              <Grid item xs={3}>
-                <StyledButton
-                  type="submit"
-                  fullWidth
-                  color="primary"
-                  variant="contained"
-                >
-                  Save
-                </StyledButton>
-              </Grid>
+              <StyledButton
+                onClick={onDuplicate({
+                  afterDuplicate: ({ newTask }) => {
+                    storeAsCurrentTask(newTask);
+                  },
+                  dispatch,
+                  task,
+                })}
+              >
+                Duplicate
+              </StyledButton>
             </Grid>
-          </CondensedFormSection>
-        </NewTaskDrawerInnerContainer>
+          </div>
+        </ClickAwayListener>
       </StyledForm>
     </NewTaskDrawerContainer>
   );

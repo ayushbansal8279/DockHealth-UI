@@ -34,7 +34,7 @@ export const FormSectionNoBorder = styled(Grid)`
 
 export const FormSectionDivider = styled.div`
   background-color: ${props => (props.active ? '#d9036b' : '#ddf2f7')};
-  height: 2px;
+  height: ${props => (props.addingTaskOrSubtask ? 0.125 : 0)}rem;
   position: relative;
   transition: background-color 0.25s ease-out;
   width: 100%;
@@ -45,6 +45,8 @@ export const FormSectionDivider = styled.div`
 export const FormSection = styled(FormSectionNoBorder)`
   background-color: #fff;
   border: 2px solid #ddf2f7;
+  ${props => props.topBorderActive && 'border-top-color: #d9036b;'}
+  transition: border 0.25s ease-out;
 `;
 
 export const CondensedFormSection = styled(FormSection)`
@@ -74,7 +76,8 @@ export const StyledButton = styled(Button)`
     color: ${props => (props.variant === 'contained' ? '#fff' : '#009fcd')};
     font-size: ${props => (props.variant === 'contained' ? 1 : 0.875)}rem;
     ${props => props.variant === 'contained' && 'font-weight: bold;'}
-    margin: 1.5rem 0.25rem;
+    height: 2rem;
+    margin: 1rem 0.25rem;
     text-transform: none;
   }
 `;
@@ -118,4 +121,10 @@ export const AutoSaveLabel = styled.div`
   top: ${props => (props.visible ? 0 : -1.5)}rem;
   transition: top 0.25s ease-out;
   transform: translateX(-50%);
+`;
+
+export const StyledVerticalDivider = styled.div`
+  background-color: #acb6c4;
+  height: 2rem;
+  width: 0.0625rem;
 `;

@@ -83,6 +83,7 @@ export const ContentContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
   flex-grow: 0;
+  height: 100%;
   padding: 2rem;
   width: 100%;
 

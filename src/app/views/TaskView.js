@@ -1,8 +1,10 @@
-import { List, ListItem, Popover } from '@material-ui/core';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
 import equals from 'ramda/es/equals';
 import filter from 'ramda/es/filter';
@@ -560,6 +562,7 @@ class TaskView extends Component {
               ref={this.headsUpArea}
               taskList={taskList}
               filterChange={this.handleFilterChange}
+              currentFilter={filterBy}
             />
           )}
           {showToolbar && (

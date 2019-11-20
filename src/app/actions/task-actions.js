@@ -288,6 +288,7 @@ export function duplicateTask(task) {
     TaskApi.duplicateTask(task.taskId)
       .then(duplicatedTask => {
         dispatch({ type: ActionTypes.DUPLICATE_TASK_SUCCESS, duplicatedTask });
+        return duplicatedTask;
       })
       .catch(error => {
         throw error;
