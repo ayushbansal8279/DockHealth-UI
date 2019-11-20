@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 
@@ -27,9 +27,12 @@ import {
   PatientsTasklistStrikeThrough,
   PatientTasklistContainer,
   PatientTasklistPatient,
+  RolloverPopover,
+  RolloverNestedListItemText,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
 import { archiveTask as archiveTaskAction } from '../../actions/task-actions';
+import useBoolean from '../../hooks/useBoolean';
 
 const TaskBody = ({
   isSubtask,
@@ -77,6 +80,8 @@ const TaskBody = ({
 
   const dispatch = useDispatch();
   const currentUserProfile = useSelector(store => store.userState.userProfile);
+  const taskDescriptionRef = useRef(null);
+  const [isPopoverOpen, setPopoverOpen, unsetPopoverOpen] = useBoolean(false);
 
   const isInbox = !task?.taskList?.taskListId;
 
@@ -127,6 +132,19 @@ const TaskBody = ({
   };
 
   const overdue = dueDateMoment.isBefore(moment().format('YYYY-MM-DD'));
+
+  const onTaskDescriptionMouseEnter = useCallback(() => {
+    if (
+      taskDescriptionRef.current?.scrollWidth >
+      taskDescriptionRef.current?.offsetWidth
+    ) {
+      setPopoverOpen();
+    }
+  });
+
+  const onTaskDescriptionMouseLeave = useCallback(() => {
+    unsetPopoverOpen();
+  });
 
   return (
     <div
@@ -191,7 +209,11 @@ const TaskBody = ({
               xs={12}
             >
               <Grid item xs={12}>
-                <PatientsTasklistDescription>
+                <PatientsTasklistDescription
+                  ref={taskDescriptionRef}
+                  onMouseEnter={onTaskDescriptionMouseEnter}
+                  onMouseLeave={onTaskDescriptionMouseLeave}
+                >
                   {description || (
                     <div style={{ color: '#ababb2' }}>Unnamed task</div>
                   )}
@@ -313,6 +335,23 @@ const TaskBody = ({
           </Grid>
         </>
       )}
+      <RolloverPopover
+        anchorEl={taskDescriptionRef.current}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'left',
+        }}
+        open={isPopoverOpen && !taskDrawerOpen}
+        onClose={unsetPopoverOpen}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'left',
+        }}
+      >
+        <RolloverNestedListItemText>
+          {description ?? 'Unnamed task'}
+        </RolloverNestedListItemText>
+      </RolloverPopover>
     </div>
   );
 };

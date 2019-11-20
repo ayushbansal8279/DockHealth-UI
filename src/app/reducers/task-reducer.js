@@ -64,6 +64,7 @@ const initialState = {
   selectedTaskId: null,
   addingNewSubtask: false,
   addingNewSubtaskParentId: null,
+  subtaskShape: {},
   addingNewTask: false,
 };
 
@@ -256,20 +257,18 @@ const TaskReducer = (state = initialState, action) => {
 
     case MARK_TASK_STATUS_SUCCESS: {
       const { task, status, completedDt, completedBy } = action;
-      const archivedByUser = true
+      const archivedByUser = true;
       const taskData = { status, completedBy, completedDt, archivedByUser };
 
       const tasks = updateTask(taskData, task, state.tasks);
       //Need to update the task otherwise the completed list is not updated
-      if(!task.parentTaskId){
-        task.status = status
-        task.completedBy = completedBy
-        task.completedDt = completedDt
-        task.archivedByUser = archivedByUser
+      if (!task.parentTaskId) {
+        task.status = status;
+        task.completedBy = completedBy;
+        task.completedDt = completedDt;
+        task.archivedByUser = archivedByUser;
       }
-      return { ...state, 
-        tasks: tasks
-      };
+      return { ...state, tasks: tasks };
     }
 
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
@@ -722,11 +721,16 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case CHANGE_ADDING_NEW_SUBTASK: {
-      const { addingNewSubtask, addingNewSubtaskParentId } = action;
+      const {
+        addingNewSubtask,
+        addingNewSubtaskParentId,
+        subtaskShape,
+      } = action;
       return {
         ...state,
         addingNewSubtask,
         addingNewSubtaskParentId,
+        subtaskShape,
       };
     }
 

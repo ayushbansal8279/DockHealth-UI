@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 export const TaskViewGrid = styled(Grid)`
   && {
@@ -103,6 +104,7 @@ export const StyledSlimViewSwitch = ({ slimView, ...props }) => (
 
 export const StyledToolbar = styled(Toolbar)`
   && {
+    min-width: 1067px;
     padding: 0 0.625rem;
   }
 `;
@@ -122,4 +124,35 @@ export const TaskViewContainer = styled.div`
   width: 1152px;
   width: -webkit-fill-available;
   width: -moz-available;
+`;
+
+export const FilterByTextContainer = styled(motion.div)`
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 0.625rem 0.625rem;
+
+  > *:not(:last-child) {
+    margin-right: 0.25rem;
+  }
+`;
+
+export const FilterByLabel = styled.div`
+  color: #5e6366;
+  font-size: 0.875rem;
+`;
+
+export const FilterByBoldLabel = styled(FilterByLabel)`
+  font-weight: bold;
+`;
+
+export const FilterByLinkLabel = styled(FilterByLabel)`
+  color: #487ba8;
+  cursor: pointer;
+  transition: filter 0.25s ease-out;
+
+  &:hover {
+    filter: brightness(1.25);
+  }
 `;

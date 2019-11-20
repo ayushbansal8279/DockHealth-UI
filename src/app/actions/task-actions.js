@@ -1,7 +1,6 @@
 import moment from 'moment';
 
 import * as TaskApi from '../api/task-api';
-import { noop } from '../helpers/utilityFunctions';
 import * as ActionTypes from './action-types';
 
 const shapeTask = task => {
@@ -150,6 +149,15 @@ export function getHighPriorityTasksByTaskList(taskListId) {
       });
 }
 
+export const clearPreparedSubtask = () => dispatch => {
+  dispatch({
+    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
+    addingNewSubtask: false,
+    addingNewSubtaskParentId: null,
+    subtaskShape: {},
+  });
+};
+
 export function saveTask(newTask) {
   if (newTask.taskId) {
     return dispatch =>
@@ -164,16 +172,18 @@ export function saveTask(newTask) {
   }
 
   return dispatch => {
-    dispatch({
-      type: ActionTypes.CHANGE_ADDING_NEW_TASK,
-      addingNewTask: true,
-    });
+    if (!newTask.taskId && !newTask.parentTaskId) {
+      dispatch({
+        type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+        addingNewTask: true,
+      });
+    }
     return TaskApi.addTask(newTask)
       .then(task => {
         if (!task.taskList) {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
-            task: { ...task, taskList: { listName: 'Inbox' } },
+            task: { ...task, taskList: { listName: 'Inbox', taskListId: 0 } },
           });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
@@ -186,6 +196,8 @@ export function saveTask(newTask) {
             addingNewTask: false,
           });
         }
+
+        clearPreparedSubtask()(dispatch);
 
         return task;
       })
@@ -477,7 +489,7 @@ export function getInboxTasks(status, sortBy, filterBy) {
   return dispatch =>
     TaskApi.getInboxTasks(status, sortBy, filterBy)
       .then(tasks => {
-        const taskList = { listName: 'Inbox' };
+        const taskList = { listName: 'Inbox', taskListId: 0 };
         const tasksWithFixedTaskList = tasks.map(task => ({
           ...task,
           taskList,
@@ -514,8 +526,28 @@ export function taskToState(task) {
 export function storeAsCurrentTask(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
+    if ((task && task.taskId !== null) || task == null) {
+      clearPreparedSubtask()(dispatch);
+    }
   };
 }
+
+export const prepareSubtask = parentTaskId => dispatch => {
+  const subtaskShape = {
+    taskId: null,
+    parentTaskId,
+    description: '',
+    subtasks: [],
+  };
+
+  dispatch({
+    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
+    addingNewSubtask: true,
+    addingNewSubtaskParentId: parentTaskId,
+    subtaskShape,
+  });
+  storeAsCurrentTask(subtaskShape)(dispatch);
+};
 
 export function getTaskHistory(task) {
   return dispatch => {
@@ -538,30 +570,6 @@ export function clearCurrentTaskHistory() {
     dispatch({ type: ActionTypes.CLEAR_CURRENT_TASK_HISTORY });
   };
 }
-
-export const addSubtask = parentTaskId => async dispatch => {
-  dispatch({
-    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtask: true,
-    addingNewSubtaskParentId: parentTaskId,
-  });
-
-  try {
-    // do not save a temporary task
-    // const task = await TaskApi.addTask({ parentTaskId, description: '' });
-    const task = { parentTaskId, description: '', subtasks: [] };
-    // dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
-    storeAsCurrentTask(task)(dispatch);
-  } catch {
-    noop();
-  } finally {
-    dispatch({
-      type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-      addingNewSubtask: false,
-      addingNewSubtaskParentId: null,
-    });
-  }
-};
 
 export const addTaskAttachment = (taskId, fileData) => dispatch =>
   TaskApi.addTaskAttachment(taskId, fileData)
@@ -589,16 +597,15 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
       throw err;
     });
 
-export const archiveTask = (task, currentUserProfile) => dispatch => {
+export const archiveTask = (task, currentUserProfile) => dispatch =>
   TaskApi.flagArchivedForUser(task.taskId, true)
-  .then(task => {
-    dispatch({
-      type: ActionTypes.TASK_ARCHIVED,
-      task,
-      currentUserProfile,
+    .then(responseTask => {
+      dispatch({
+        type: ActionTypes.TASK_ARCHIVED,
+        task: responseTask,
+        currentUserProfile,
+      });
+    })
+    .catch(error => {
+      throw error;
     });
-  })
-  .catch(error => {
-    throw error;
-  });
-};

@@ -8,7 +8,7 @@ export const getPatientName = patientData => {
 
   return `${lastName || ''}, ${firstName || ''} ${middleName ||
     ''} ${(withMrn && mrn) || ''}`
-    .replace(/\s{2,}/g, '')
+    .replace(/\s{2,}/g, ' ')
     .trim()
     .replace(/^,$|^,|,$/, '');
 };
@@ -26,7 +26,5 @@ export const mergeRefs = refs => value => {
 
 export const isTaskArchivable = curry(
   (currentUserProfile, task) =>
-    task?.status === 'COMPLETE' &&
-    !task?.parentTaskId &&
-    !task?.archivedByUser
+    task?.status === 'COMPLETE' && !task?.parentTaskId && !task?.archivedByUser,
 );

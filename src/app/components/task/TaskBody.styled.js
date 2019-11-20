@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import Grid from '@material-ui/core/Grid';
+import Popover from '@material-ui/core/Popover';
 
 export const PatientsTasklistNew = styled.div`
   color: #d9036b;
@@ -115,4 +116,26 @@ export const ArchiveButton = styled.div`
   font-size: 0.75rem;
   height: 1.6875rem;
   padding: 0 0.5rem;
+`;
+
+export const RolloverNestedListItemText = styled.div`
+  background-color: #05adec;
+  border-radius: 0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.875rem;
+  max-width: 50vw;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  word-break: break-word;
+`;
+
+export const RolloverPopover = styled(Popover)`
+  && {
+    pointer-events: none;
+  }
+
+  && > div {
+    border-radius: 0;
+  }
 `;

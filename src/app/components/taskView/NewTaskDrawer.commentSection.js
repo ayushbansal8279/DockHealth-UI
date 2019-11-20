@@ -3,8 +3,9 @@ import moment from 'moment';
 import groupBy from 'ramda/es/groupBy';
 import groupWith from 'ramda/es/groupWith';
 import mapObjIndexed from 'ramda/es/mapObjIndexed';
+import prop from 'ramda/es/prop';
 import sortBy from 'ramda/es/sortBy';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
@@ -105,9 +106,11 @@ const StyledSimpleBar = styled(SimpleBar)`
 `;
 
 const getGroupedComments = ({ comments }) => {
+  const commentsSortedById = sortBy(prop('commentId'), comments);
+
   const sortedComments = sortBy(
     comment => moment(comment.dateCreated).unix(),
-    comments,
+    commentsSortedById,
   );
 
   const datedComments = groupBy(
@@ -126,10 +129,10 @@ const getGroupedComments = ({ comments }) => {
   return groupedComments;
 };
 
-export default ({ task }) => {
-  const currentUserId = useSelector(
-    store => store.userState.userProfile.userId,
-  );
+export default ({ addDeferredCommentToQueue, task }) => {
+  const currentUserProfile = useSelector(store => store.userState.userProfile);
+  const currentUserId = currentUserProfile?.userId;
+
   const dispatch = useDispatch();
   const [addingComment, , , toggleAddingComment] = useBoolean(false);
   const [addedComments, setAddedComments] = useState([]);
@@ -147,6 +150,8 @@ export default ({ task }) => {
     }
   }, []);
 
+  const taskId = task?.taskId;
+
   useEffect(() => {
     if (addingComment) {
       // eslint-disable-next-line no-unused-expressions
@@ -159,36 +164,70 @@ export default ({ task }) => {
   const comments = (task?.comments ?? []).concat(addedComments);
   const commentsEmpty = comments.length === 0;
 
-  const groupedComments = getGroupedComments({ comments });
+  const groupedComments = getGroupedComments({ comments, task });
 
-  const publishComment = async () => {
+  const scrollToBottom = useCallback(() => {
+    const scrollElement = simpleBarRef.current?.getScrollElement();
+    if (scrollElement) {
+      scrollElement.scrollTop = scrollElement.scrollHeight;
+    }
+  });
+
+  useEffect(() => {
+    setAddedComments([]);
+  }, [taskId]);
+
+  const addComment = useCallback(
+    data => {
+      setAddedComments([...addedComments, data]);
+    },
+    [addedComments],
+  );
+
+  const publishComment = () => {
     const commentContent = commentSectionInputFieldRef.current?.textContent;
 
     if (commentContent?.trim().length === 0) {
       return;
     }
 
-    try {
-      setPublishingComment();
+    const addTaskPromise = async ({ task: newTask }) => {
+      try {
+        setPublishingComment();
 
-      const { data } = await addTaskComment(task, {
-        comment: commentContent.trim(),
-      })(dispatch);
+        const { data } = await addTaskComment(newTask, {
+          comment: commentContent.trim(),
+        })(dispatch);
 
-      clearCommentContent();
+        clearCommentContent();
 
-      toggleAlert('Comment added successfully', 'success');
+        toggleAlert('Comment added successfully', 'success');
 
-      setAddedComments([...addedComments, data]);
+        addComment(data);
 
-      const scrollElement = simpleBarRef.current?.getScrollElement();
-      if (scrollElement) {
-        scrollElement.scrollTop = scrollElement.scrollHeight;
+        scrollToBottom();
+      } catch {
+        toggleAlert('Error adding comment, please try again later', 'error');
+      } finally {
+        unsetPublishingComment();
       }
-    } catch {
-      toggleAlert('Error adding comment, please try again later', 'error');
-    } finally {
-      unsetPublishingComment();
+    };
+
+    if (task) {
+      addTaskPromise({ task });
+    } else {
+      addDeferredCommentToQueue({
+        promise: addTaskPromise,
+        clearMethod: async () => setAddedComments([]),
+        addComment,
+      });
+      addComment({
+        comment: commentContent.trim(),
+        creator: currentUserProfile,
+        dateCreated: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      });
+      scrollToBottom();
+      clearCommentContent();
     }
   };
 

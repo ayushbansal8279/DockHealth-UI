@@ -6,18 +6,19 @@ import {
   getTaskListStats,
   resetTasklistStats,
 } from '../../actions/tasklist-actions';
+import HeadsUpAreaChart from './HeadsUpArea.chart';
 import {
+  HeadsUpAreaContainer,
   HeadsUpButtonsContainer,
   HeadsUpSectionButton,
   HeadsUpSectionButtonCount,
   HeadsUpSectionButtonLabel,
   HeadsUpSectionContainer,
+  HeadsUpSectionDivider,
   HeadsUpSectionGrid,
   HeadsUpSectionHeader,
   HeadsUpSectionHeaderButton,
-  HeadsUpSectionDivider,
 } from './HeadsUpArea.styled';
-import HeadsUpAreaChart from './HeadsUpArea.chart';
 
 const taskListStatsTabs = {
   me: 'For Me',
@@ -95,7 +96,7 @@ const renderCurrentTab = ({ currentStatsTab, taskListStats, filterChange }) => {
 
       return (
         <HeadsUpSectionButton
-          onClick={e => {
+          onClick={() => {
             filterChange(filter);
           }}
           key={key}
@@ -179,7 +180,7 @@ export default forwardRef(({ taskList, filterChange }, ref) => {
   }, []);
 
   return (
-    <div ref={ref}>
+    <HeadsUpAreaContainer ref={ref}>
       {taskListStatsOk === true && (
         <Grid container>
           <HeadsUpSectionGrid container item xs={8}>
@@ -196,7 +197,11 @@ export default forwardRef(({ taskList, filterChange }, ref) => {
                 <HeadsUpSectionDivider />
               </div>
               <HeadsUpButtonsContainer>
-                {renderCurrentTab({ currentStatsTab, taskListStats, filterChange })}
+                {renderCurrentTab({
+                  currentStatsTab,
+                  taskListStats,
+                  filterChange,
+                })}
               </HeadsUpButtonsContainer>
             </HeadsUpSectionContainer>
           </HeadsUpSectionGrid>
@@ -221,6 +226,6 @@ export default forwardRef(({ taskList, filterChange }, ref) => {
           </HeadsUpSectionGrid>
         </Grid>
       )}
-    </div>
+    </HeadsUpAreaContainer>
   );
 });

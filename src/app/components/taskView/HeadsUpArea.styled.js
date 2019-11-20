@@ -92,3 +92,7 @@ export const HeadsUpSectionButtonLabel = styled.div`
   opacity: 0.5;
   pointer-events: none;
 `;
+
+export const HeadsUpAreaContainer = styled.div`
+  min-width: 1067px;
+`;

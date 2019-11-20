@@ -123,7 +123,7 @@ class EditTaskDescription extends Component {
   }
 }
 
-export default ({ handleSubmit, onMarkComplete }) => {
+export default ({ handleSubmit, onMarkComplete, setAutoSaveVisible }) => {
   const { register, setValue } = useFormContext();
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskId,
@@ -163,7 +163,10 @@ export default ({ handleSubmit, onMarkComplete }) => {
         onChange={() => {
           markComplete(selectedTask, status, listName, currentUser)(
             dispatch,
-          ).then(onMarkComplete);
+          ).then((...args) => {
+            onMarkComplete(...args);
+            setAutoSaveVisible();
+          });
         }}
       />
       <EditTaskDescription
