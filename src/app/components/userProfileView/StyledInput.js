@@ -169,6 +169,10 @@ const TextareaWrapper = styled.div`
   height: 100%;
   transition: all 0.25s ease-out;
 
+  && {
+    background-color: transparent;
+  }
+
   ${props =>
     props.isTextarea &&
     `

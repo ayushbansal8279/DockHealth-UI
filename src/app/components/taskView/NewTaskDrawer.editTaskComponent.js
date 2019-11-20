@@ -32,11 +32,6 @@ const EditTaskDescriptionElement = styled.div`
   background-color: #f3f5f6;
   border: 1px solid #dedee2;
   `}
-
-  &:empty ::after {
-    color: #c8c8ce;
-    content: 'Unnamed task';
-  }
 `;
 
 class EditTaskDescription extends Component {
@@ -47,8 +42,7 @@ class EditTaskDescription extends Component {
   componentRef = React.createRef();
 
   componentDidMount() {
-    const { selectedTask } = this.props;
-    this.componentRef.current.textContent = selectedTask?.description;
+    this.resetTextContent();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -64,8 +58,13 @@ class EditTaskDescription extends Component {
     }
 
     if (prevProps.selectedTask?.taskId !== selectedTask?.taskId) {
-      this.componentRef.current.textContent = selectedTask?.description;
+      this.resetTextContent();
     }
+  }
+
+  resetTextContent = () => {
+    const { selectedTask } = this.props;
+    this.componentRef.current.textContent = selectedTask?.description;
   }
 
   setComponentEditable = () => {
@@ -88,11 +87,15 @@ class EditTaskDescription extends Component {
 
     const newDescription = this.componentRef.current?.textContent;
 
-    if (newDescription != null) {
+    if (newDescription) {
       setDescription(newDescription);
       this.unsetComponentEditable(() => {
         handleSubmit();
       });
+    } else {
+      toggleAlert('Task description cannot be empty', 'error');
+      this.resetTextContent();
+      this.unsetComponentEditable();
     }
   };
 

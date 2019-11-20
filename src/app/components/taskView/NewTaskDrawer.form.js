@@ -270,6 +270,7 @@ export default ({
               autoFocus
               name="description"
               label="Task"
+              required
             />
           )}
         </Grid>

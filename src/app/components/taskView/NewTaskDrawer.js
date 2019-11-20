@@ -9,6 +9,7 @@ import head from 'ramda/es/head';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { object, string } from 'yup'
 
 import { ClickAwayListener } from '@material-ui/core';
 import { getAllPatients } from '../../actions/patient-actions';
@@ -268,7 +269,11 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
   ] = useBoolean(false);
   const [autoSaveTimeoutId, setAutoSaveTimeoutId] = useState(null);
 
-  const formMethods = useForm({});
+  const formMethods = useForm({
+    validationSchema: object().shape({
+      description: string().required('This field is required')
+    }),
+  });
 
   const isSubtask = Boolean(task?.parentTaskId);
   const userId = userProfile?.userId;
@@ -588,16 +593,16 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
                   <StyledButton
                     onClick={onDuplicate({
                       afterDuplicate: ({ newTask }) => {
-                      storeAsCurrentTask(newTask);
+                        storeAsCurrentTask(newTask);
                       },
                       dispatch,
                       task,
                     })}
                   >
-                  Duplicate
-                </StyledButton>
+                    Duplicate
+                  </StyledButton>
                 </>
-              )} 
+              )}
               {/* If you want to add a button to the Add a task sidebar, do so here.  */}
             </Grid>
           </div>
