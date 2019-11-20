@@ -585,19 +585,20 @@ export default ({ closeDrawer, headsUpAreaRef, taskList, onMarkComplete }) => {
                     Delete
                   </StyledButton>
                   <StyledVerticalDivider />
+                  <StyledButton
+                    onClick={onDuplicate({
+                      afterDuplicate: ({ newTask }) => {
+                      storeAsCurrentTask(newTask);
+                      },
+                      dispatch,
+                      task,
+                    })}
+                  >
+                  Duplicate
+                </StyledButton>
                 </>
-              )}
-              <StyledButton
-                onClick={onDuplicate({
-                  afterDuplicate: ({ newTask }) => {
-                    storeAsCurrentTask(newTask);
-                  },
-                  dispatch,
-                  task,
-                })}
-              >
-                Duplicate
-              </StyledButton>
+              )} 
+              {/* If you want to add a button to the Add a task sidebar, do so here.  */}
             </Grid>
           </div>
         </ClickAwayListener>
