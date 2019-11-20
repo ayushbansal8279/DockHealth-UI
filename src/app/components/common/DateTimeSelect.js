@@ -182,6 +182,7 @@ const DateTimeSelect = ({
         onClose={close}
         anchorOrigin={anchorOrigin}
         transformOrigin={transformOrigin}
+        disablePortal
       >
         <BasePicker
           value={value ? moment(value) : moment().startOf('day')}
