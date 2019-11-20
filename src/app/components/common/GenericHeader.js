@@ -14,7 +14,7 @@ const StyledAppBar = styled(AppBar)`
     background: #fff;
     border-bottom: 1px solid #e4e4e4;
     box-sizing: content-box;
-    height: 100%;
+    height: 88px;
   }
 `;
 

@@ -52,7 +52,7 @@ class InvitePeople extends PureComponent {
     const handleSubmit = this.props.handleSubmit; // injected by reduxform
 
     return (
-      <div className="add-form-wrapper" style={{marginTop: "-50px", marginBottom: "20px", width:"100%"}}>
+      <div className="add-form-wrapper" style={{marginTop: "-50px", marginBottom: "20px", width:"80%"}}>
         <div className="task-item add-form row expanded">
           <form
             className="inline-label"

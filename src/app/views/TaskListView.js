@@ -97,13 +97,11 @@ class TaskListView extends PureComponent {
           isFetching={false}
           title="Lists"
         />
-        <Grid container alignItems="center" justify="flex-end" direction="row">
+        <Grid container alignItems="center" justify="flex-end" direction="row" style={{height: "88px"}}>
           <AddTaskListButton onClick={this.addTaskList} />
         </Grid>
-        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
-          <AddListForm onSubmit={this.submit} />
-        </Grid>
-        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
+        <AddListForm onSubmit={this.submit} />
+        <Grid container direction="row" lg="10" md="10" sm="12">
         {/* <div className="row expanded collapse">
           <div className="large-12 columns"> */}
 

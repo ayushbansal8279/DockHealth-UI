@@ -67,12 +67,13 @@ class PeopleView extends PureComponent {
           isFetching={false}
           title="People"
         />
-        <Grid container alignItems="center" direction="row" alignContent="flex-end" lg="10" md="10" sm="12">
+        <Grid container xs={9} direction="row" justify="flex-end" wrap="nowrap"
+          style={{ maxHeight: "80px"}}>
           <div className="input-group searchbar" style={{width: "70%", marginTop: "5px", paddingLeft: "0em 10em"}}>
             <input
               className="input-field search-field"
               type="search"
-              placeholder="Search tasks"
+              placeholder="Search people"
               onChange={this.searchUpdated}
               value={this.state.searchTerm}
             />
@@ -96,16 +97,7 @@ class PeopleView extends PureComponent {
             <InvitePeopleButton onClick={this.addPerson}/>
           }
         </Grid>
-        {/* <Grid container alignItems="center" justify="flex-end" direction="row">
-          {(this.props.currentUserProfile.orgUserRole == 'OWNER' ||
-            this.props.currentUserProfile.orgUserRole == 'ADMIN') && 
-            <InvitePeopleButton onClick={this.addPerson}/>
-          }
-        </Grid> */}
-        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
-          <InvitePeople />
-        </Grid>
-        <Grid container alignItems="center" direction="row" lg="10" md="10" sm="12">
+        <InvitePeople />
             <div className="list-wrapper" style={{width: "100%", marginTop: "0px"}}>
               {this.props.isFetching ? (
                 <div className="sk-circle">
@@ -127,7 +119,6 @@ class PeopleView extends PureComponent {
               )}
             </div>
             {/* list-wrapper */}
-          </Grid>
       </div>
     );
   }
