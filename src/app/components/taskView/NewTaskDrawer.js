@@ -134,6 +134,7 @@ const onSubmit = ({
     priority: priorityActive ? 'HIGH' : 'LOW',
     assignedToId: assignedToUserId,
     patientId,
+    taskListId: taskList?.taskListId,
   };
 
   if (newTaskDueDate && moment(newTaskDueDate).isValid()) {
@@ -148,12 +149,6 @@ const onSubmit = ({
 
   try {
     const newTask = await saveTask(requestData)(dispatch);
-    if (!newTask.taskList) {
-      newTask.taskList = {
-        listName: 'Inbox',
-        taskListId: 0,
-      };
-    }
     await Promise.all([
       assignOrReassignTask(newTask, assignedToUserId || -1)(dispatch),
       updatePatient(newTask, patient)(dispatch),

@@ -279,40 +279,42 @@ export default ({
             />
           )}
         </Grid>
-        <Grid item xs={12}>
-          {patientPopoverOpen && (
-            <NewTaskDrawerPersonPicker
-              addNewPersonLabel="+ Add a new patient"
-              addingNewPersonLabel="Add a new patient"
-              closePicker={closePatientPopover}
-              items={patients}
-              itemFilterPropertyKeys={[
-                'mrn',
-                'firstName',
-                'middleName',
-                'lastName',
-              ]}
+        {!isSubtask && (
+          <Grid item xs={12}>
+            {patientPopoverOpen && (
+              <NewTaskDrawerPersonPicker
+                addNewPersonLabel="+ Add a new patient"
+                addingNewPersonLabel="Add a new patient"
+                closePicker={closePatientPopover}
+                items={patients}
+                itemFilterPropertyKeys={[
+                  'mrn',
+                  'firstName',
+                  'middleName',
+                  'lastName',
+                ]}
+                label="Patient Information"
+                maxPeopleRecordsVisible={7}
+                renderItem={renderPatientItem({ handlePatientSelect })}
+                renderNoItems={renderNoPatientItem({ handlePatientSelect })}
+                personRecordHeightInRem={2.3125}
+                AddingPersonForm={NewTaskDrawerAddPatientForm}
+              />
+            )}
+            <StyledInput
+              {...styledInputProps}
+              name="patientName"
               label="Patient Information"
-              maxPeopleRecordsVisible={7}
-              renderItem={renderPatientItem({ handlePatientSelect })}
-              renderNoItems={renderNoPatientItem({ handlePatientSelect })}
-              personRecordHeightInRem={2.3125}
-              AddingPersonForm={NewTaskDrawerAddPatientForm}
+              controlled
+              fullWidth
+              visible={!patientPopoverOpen}
+              containerDisabled={isSubtask}
+              onContainerClick={() => {
+                openPatientPopover();
+              }}
             />
-          )}
-          <StyledInput
-            {...styledInputProps}
-            name="patientName"
-            label="Patient Information"
-            controlled
-            fullWidth
-            visible={!patientPopoverOpen}
-            containerDisabled={isSubtask}
-            onContainerClick={() => {
-              openPatientPopover();
-            }}
-          />
-        </Grid>
+          </Grid>
+        )}
         <Grid item xs={12}>
           {assignedToPopoverOpen && (
             <NewTaskDrawerPersonPicker

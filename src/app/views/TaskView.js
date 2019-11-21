@@ -452,7 +452,18 @@ class TaskView extends Component {
       isTaskArchivable(currentUser),
     );
 
-    const tasks = [...incompleteTasks, ...archivableTasks];
+    const tasks = [...incompleteTasks, ...archivableTasks].map(task => {
+      const taskListId = task?.taskList?.taskListId;
+
+      if (isInbox && taskListId === 0) {
+        return {
+          ...task,
+          taskList: null,
+        };
+      }
+
+      return task;
+    });
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
@@ -495,6 +506,7 @@ class TaskView extends Component {
       storeAsCurrentTask,
       markAsUnread,
       currentUser,
+      isInbox,
     } = this.props;
     const {
       slimView,
@@ -506,7 +518,18 @@ class TaskView extends Component {
     const completedTasks = reject(
       isTaskArchivable(currentUser),
       completedOrArchivedTasks,
-    );
+    ).map(task => {
+      const taskListId = task?.taskList?.taskListId;
+
+      if (isInbox && taskListId === 0) {
+        return {
+          ...task,
+          taskList: null,
+        };
+      }
+
+      return task;
+    });
 
     const tasklistProps = {
       tasks: this.search(completedTasks),
