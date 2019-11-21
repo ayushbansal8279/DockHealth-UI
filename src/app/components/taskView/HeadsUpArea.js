@@ -154,17 +154,11 @@ const renderTabSwitches = ({ currentActiveTab, tabData, tabSwitchMethod }) =>
     );
   });
 
-const renderChartLabel = ({ currentActiveTab }) =>
-  { 
-    return (
-      <HeadsUpSectionHeaderButton
-        key={currentActiveTab}
-      >
-        {currentActiveTab}
-      </HeadsUpSectionHeaderButton>
-    );
-  };
-
+const renderChartLabel = ({ currentActiveTab }) => (
+  <HeadsUpSectionHeaderButton key={currentActiveTab}>
+    {currentActiveTab}
+  </HeadsUpSectionHeaderButton>
+);
 export default forwardRef(({ taskList, currentFilter, filterChange }, ref) => {
   const dispatch = useDispatch();
   const { taskListStats, taskListStatsOk } = useSelector(store => ({

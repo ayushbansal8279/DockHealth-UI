@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 
 export const TaskViewGrid = styled(Grid)`
   && {
-    max-width: 1152px;
+    width: 1050px;
     position: relative;
   }
 `;
@@ -104,7 +104,7 @@ export const StyledSlimViewSwitch = ({ slimView, ...props }) => (
 
 export const StyledToolbar = styled(Toolbar)`
   && {
-    min-width: 1067px;
+    width: 1050px;
     padding: 0 0.625rem;
   }
 `;
@@ -120,8 +120,8 @@ export const TableWrapper = styled.div`
 `;
 
 export const TaskViewContainer = styled.div`
-  max-width: 1152px;
-  width: 1152px;
+  max-width: 1050px;
+  width: 1050px;
   width: -webkit-fill-available;
   width: -moz-available;
 `;
