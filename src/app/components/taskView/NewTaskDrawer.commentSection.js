@@ -273,9 +273,9 @@ export default ({ addDeferredCommentToQueue, task }) => {
           + add a comment
         </CommentSectionLabel>
       )}
+      <CommentsDivider />
       {!commentsEmpty && (
         <>
-          <CommentsDivider />
           <CommentsContainer>
             <StyledSimpleBar ref={simpleBarRef} visible>
               {Object.entries(groupedComments).map(

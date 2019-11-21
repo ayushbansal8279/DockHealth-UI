@@ -51,7 +51,7 @@ class TaskDetails extends React.PureComponent {
   handleStatusChange = e => {
     const status = e.target.value;
     const { selectedTask, updateWorkflowStatus: updateStatus } = this.props;
-    updateStatus(selectedTask.taskId, status);
+    updateStatus(selectedTask, status);
   };
 
   handleDescriptionChange = description => {

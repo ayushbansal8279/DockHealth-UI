@@ -54,3 +54,24 @@ export const inviteValidationSchema = object().shape({
     .email()
     .required(REQUIRED_MESSAGE),
 });
+
+export const taskValidationSchema = object().shape({
+  // eslint-disable-next-line func-names
+  description: string().test('description', REQUIRED_MESSAGE, function(value) {
+    if (typeof this.parent.descriptionEdit !== 'undefined') {
+      return true;
+    }
+
+    return value && value.length > 0;
+  }),
+  // eslint-disable-next-line func-names
+  descriptionEdit: string().test('descriptionEdit', REQUIRED_MESSAGE, function(
+    value,
+  ) {
+    if (typeof this.parent.description !== 'undefined') {
+      return true;
+    }
+
+    return value && value.length > 0;
+  }),
+});

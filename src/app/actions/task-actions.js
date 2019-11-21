@@ -159,6 +159,12 @@ export const clearPreparedSubtask = () => dispatch => {
   });
 };
 
+export const reloadTaskListStats = (dispatch, task) => {
+  if (task.taskList) {
+    TaskListActions.getTaskListStats(task.taskList)(dispatch);
+  }
+};
+
 export function saveTask(newTask) {
   if (newTask.taskId) {
     return dispatch =>
@@ -235,7 +241,7 @@ export const moveTaskBetweenLists = task => dispatch => {
     task,
   });
   reloadTaskListStats(dispatch, task);
-}
+};
 
 export function addTaskComment(task, taskComment) {
   return dispatch =>
@@ -410,8 +416,9 @@ export const updateReminder = (task, reminderDt) => dispatch =>
       throw err;
     });
 
-export const updateWorkflowStatus = (taskId, workflowStatus) => dispatch =>
-  TaskApi.updateWorkflowStatus(taskId, workflowStatus)
+export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
+  const { taskId } = task;
+  return TaskApi.updateWorkflowStatus(taskId, workflowStatus)
     .then(() => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_WORKFLOW_STATUS,
@@ -423,6 +430,7 @@ export const updateWorkflowStatus = (taskId, workflowStatus) => dispatch =>
     .catch(err => {
       throw err;
     });
+};
 
 export function toggleTaskPriority(task, userId, priority) {
   return dispatch => {
@@ -448,7 +456,7 @@ export function toggleTaskPriority(task, userId, priority) {
 
 export function assignOrReassignTask(task, assignedToUserId) {
   return dispatch =>
-    TaskApi.assignOrReassignTask(task.taskId, assignedToUserId)
+    TaskApi.assignOrReassignTask(task, assignedToUserId)
       .then(assignedTask => {
         dispatch({
           type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS,
@@ -625,9 +633,3 @@ export const archiveTask = (task, currentUserProfile) => dispatch =>
     .catch(error => {
       throw error;
     });
-
-export const reloadTaskListStats = (dispatch, task) => {
-  if (task.taskList) {
-    TaskListActions.getTaskListStats(task.taskList)(dispatch);
-  }
-}

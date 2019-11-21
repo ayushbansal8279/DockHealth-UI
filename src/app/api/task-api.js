@@ -231,7 +231,6 @@ export function updateTask(task) {
       return response.data;
     })
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in updating task. Please try again.', 'error');
       return error.response.data;
     });
@@ -376,7 +375,8 @@ export function markLowPriority(taskId, userId) {
     });
 }
 
-export function assignOrReassignTask(taskId, assignedToUserId) {
+export function assignOrReassignTask(task, assignedToUserId) {
+  const { taskId } = task;
   return axios
     .put(
       `task/addOrUpdateTaskAssignment/${taskId}?assignedToUserId=${assignedToUserId}`,
