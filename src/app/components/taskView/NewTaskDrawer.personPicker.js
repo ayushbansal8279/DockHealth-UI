@@ -168,7 +168,7 @@ export default ({
   const [isSearching, , , toggleIsSearching] = useBoolean(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [addingNewPerson, , , toggleAddingNewPerson] = useBoolean(false);
-  //When will the add new user tab show up? Its decided by the question below.
+  //When will the add new user tab show up? Its decided by the question.
   const isUser = (addNewPersonLabel == "+ Invite to list");
 
   const maxPeopleContainerHeight = `${maxPeopleRecordsVisible *
@@ -271,7 +271,8 @@ export default ({
             </AddNewPersonLabel>
           ) : (
             //console.log("My name is yeff")
-            <PersonPickerDivider />
+            <>
+            </>
           )}
         </>
       )}

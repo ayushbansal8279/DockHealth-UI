@@ -224,7 +224,6 @@ export const PatientsForm = ({
           </Grid>
         </Grid>
         <StyledTextField
-        //TODO MRN should not be required
           name="mrn"
           value={mrn || ''}
           onChange={onChange}
@@ -287,6 +286,7 @@ export const PatientsForm = ({
           onChange={onChange}
           label="Email"
           type="email"
+          error={errors?.email}
           //Email doesnt need placeholder text
           //{...readOnlyProps('name@email.com')}
         />
@@ -343,7 +343,7 @@ const PatientCreation = () => {
     gender: '',
     phoneHome: '',
     phoneMobile: '',
-    email: '',
+    email: null,
     notes: '',
   });
   const handleInputChange = useCallback(
@@ -383,10 +383,15 @@ const PatientCreation = () => {
     return birthday.isBefore(now);
   };
 
+  const validateEmail = email => {
+    const valid =  (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email));
+    return valid;
+  };
+
   const canSubmit = () => {
-    const { firstName, lastName, dob} = formState;
+    const { firstName, lastName, dob, email} = formState;
     return (
-      firstName && lastName && (!dob || validateBirthday(dob))
+      firstName && lastName && (!email || validateEmail(email)) && (!dob || validateBirthday(dob))
     );
   };
 
@@ -406,6 +411,7 @@ const PatientCreation = () => {
           isDisabled={!canSubmit() || isSubmitting}
           errors={{
             dob: formState.dob && !validateBirthday(formState.dob),
+            email: formState.email && !validateEmail(formState.email),
           }}
           hideCollapse
         />
