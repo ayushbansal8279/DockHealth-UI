@@ -122,7 +122,13 @@ const renderHistory = history => {
   return history?.map(renderHistoryItem);
 };
 
-export default ({ task, taskList, closeDrawer, setAutoSaveVisible }) => {
+export default ({
+  task,
+  taskList,
+  closeDrawer,
+  setAutoSaveVisible,
+  isInbox,
+}) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];
   const currentUser = useSelector(store => store.userState.userProfile);
   const todaysMoment = moment().format('MMM D, YYYY @ h:mma');
@@ -249,7 +255,7 @@ export default ({ task, taskList, closeDrawer, setAutoSaveVisible }) => {
           <input type="hidden" name="newTaskListId" ref={register} />
           <SectionLabel>Filed In</SectionLabel>
           <SectionButtonContainer>
-            {task ? (
+            {task && !isInbox ? (
               <SectionButton
                 clickable
                 ref={taskListButtonRef}
@@ -258,7 +264,9 @@ export default ({ task, taskList, closeDrawer, setAutoSaveVisible }) => {
                 {newTaskListName || taskList?.listName}
               </SectionButton>
             ) : (
-              <SectionButton>{taskList?.listName}</SectionButton>
+              <SectionButton>
+                {isInbox ? 'Inbox' : taskList?.listName}
+              </SectionButton>
             )}
           </SectionButtonContainer>
           <Popover

@@ -65,7 +65,7 @@ class EditTaskDescription extends Component {
   resetTextContent = () => {
     const { selectedTask } = this.props;
     this.componentRef.current.textContent = selectedTask?.description;
-  }
+  };
 
   setComponentEditable = () => {
     this.setState({

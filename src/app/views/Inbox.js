@@ -131,6 +131,8 @@ class Inbox extends PureComponent {
       downloadPDF: this.downloadPDF,
       title: 'Inbox',
       showToolbar: true,
+      showSortingStats: false,
+      isInbox: true,
     };
 
     return <TaskView {...taskViewProps} />;

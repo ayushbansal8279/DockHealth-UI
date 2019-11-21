@@ -152,6 +152,7 @@ export default ({
   handleSubmit,
   onMarkComplete,
   setAutoSaveVisible,
+  isInbox,
 }) => {
   const formMethods = useFormContext();
   const [currentMember, setCurrentMember] = useState(defaultValues?.assignedTo);
@@ -191,7 +192,11 @@ export default ({
     [defaultValues?.assignedToUserId],
   );
 
-  const members = useSelector(store => store.taskListState.tasklistmembers);
+  const members = useSelector(store =>
+    isInbox
+      ? [store.userState.userProfile]
+      : store.taskListState.tasklistmembers,
+  );
   const patients = useSelector(store => store.patientState.allPatients);
 
   const handleAssignedToSelect = member => async () => {
