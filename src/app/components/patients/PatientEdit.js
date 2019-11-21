@@ -288,9 +288,10 @@ export const PatientsForm = ({
             />
             <StyledTextField
               name="email"
-              value={email || ''}
+              value={email || null}
               onChange={onChange}
               label="Email"
+              error={errors?.email}
               type="email"
               //Email doesnt need placeholder text?
               //{...readOnlyProps('name@email.com')}
@@ -383,13 +384,19 @@ const PatientEdit = ({ patient }) => {
     return birthday.isBefore(now);
   };
 
+  const validateEmail = email => {
+    const valid =  (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email));
+    return valid;
+  };
+
   const canSubmit = () => {
-    const { firstName, lastName, dob } = formState;
+    const { firstName, lastName, dob, email } = formState;
     return (
       firstName &&
       firstName !== '' &&
       (lastName && lastName !== '') &&
-      (!dob || validateBirthday(dob))
+      (!dob || dob == '' || validateBirthday(dob)) &&
+      (!email || email == '' || validateEmail(email))
     );
   };
 
@@ -408,6 +415,7 @@ const PatientEdit = ({ patient }) => {
           ? {}
           : {
               dob: formState.dob && !validateBirthday(formState.dob),
+              email: formState.email && !validateEmail(formState.email),
             }
       }
       isReadOnly={isClean}
