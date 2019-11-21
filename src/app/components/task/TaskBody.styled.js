@@ -48,8 +48,9 @@ export const PatientTasklistPatient = styled.div`
   align-items: flex-end;
   display: flex;
   line-height: 12px;
+  height: 2.5rem;
+  padding-bottom: 0.1875rem;
   padding-right: 24px;
-  padding-bottom: ${props => props.elementPaddingBottom};
   min-width: 218px;
   width: 218px;
 `;
@@ -65,8 +66,12 @@ const patientsTaskListDateAnimation = keyframes`
 `;
 
 export const PatientsTasklistDate = styled.div`
-  font-size: 0.875rem;
+  align-items: flex-end;
   color: ${props => (props.overdue ? '#f40707' : '#303538')};
+  display: flex;
+  font-size: 0.875rem;
+  height: 2.5rem;
+  padding-bottom: 0.1875rem;
 `;
 
 export const AnimatedPatientsTasklistDate = styled(PatientsTasklistDate)`
@@ -75,7 +80,6 @@ export const AnimatedPatientsTasklistDate = styled(PatientsTasklistDate)`
 `;
 
 export const PatientTasklistContainer = styled(Grid)`
-  align-self: center;
   position: relative;
 `;
 
@@ -138,4 +142,15 @@ export const RolloverPopover = styled(Popover)`
   && > div {
     border-radius: 0;
   }
+`;
+
+export const TaskBodyChevronContainer = styled.div`
+  align-items: flex-end;
+  display: flex;
+  height: 2.5rem;
+  justify-content: flex-start;
+  margin-right: ${props => (props.isSubtask ? 0 : 4)}px;
+  min-width: 2.4375rem;
+  padding-bottom: 0.1875rem;
+  width: 2.4375rem;
 `;

@@ -1,10 +1,12 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-import React, { useRef, useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 
+import { archiveTask as archiveTaskAction } from '../../actions/task-actions';
 import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utilityFunctions';
+import useBoolean from '../../hooks/useBoolean';
 import ChevronRightIcon from '../../img/chevron-right.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import CubesLoader from '../common/CubesLoader';
@@ -27,12 +29,11 @@ import {
   PatientsTasklistStrikeThrough,
   PatientTasklistContainer,
   PatientTasklistPatient,
-  RolloverPopover,
   RolloverNestedListItemText,
+  RolloverPopover,
+  TaskBodyChevronContainer,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
-import { archiveTask as archiveTaskAction } from '../../actions/task-actions';
-import useBoolean from '../../hooks/useBoolean';
 
 const TaskBody = ({
   isSubtask,
@@ -118,8 +119,6 @@ const TaskBody = ({
     formattedCompletedDateTime &&
     `Completed by ${completedBy?.userName} at ${formattedCompletedDateTime}`;
 
-  const elementPaddingBottom = `${isSubtask ? 12 : 16}px`;
-
   const firstLetterName = creator?.firstName?.charAt(0);
   const formattedUserName = `${firstLetterName ? `${firstLetterName}.` : ''} ${
     creator?.lastName
@@ -201,7 +200,7 @@ const TaskBody = ({
             />
           </MemberPickerContainer>
 
-          <Grid container alignItems="flex-end" wrap="nowrap" direction="row">
+          <Grid container alignItems="center" wrap="nowrap" direction="row">
             <PatientTasklistContainer
               item
               container
@@ -249,9 +248,7 @@ const TaskBody = ({
               {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
             </PatientTasklistContainer>
             {!isSubtask && !taskDrawerOpen && !hidePatient && (
-              <PatientTasklistPatient
-                elementPaddingBottom={elementPaddingBottom}
-              >
+              <PatientTasklistPatient>
                 {patient && (
                   <Link
                     to={`/patient/${patient.patientId}`}
@@ -273,7 +270,6 @@ const TaskBody = ({
                   display: 'flex',
                   lineHeight: '12px',
                   paddingRight: `${isTaskArchivable ? 0 : 24}px`,
-                  paddingBottom: elementPaddingBottom,
                   minWidth: `${isTaskArchivable ? 136 : 180}px`,
                   width: `${isTaskArchivable ? 136 : 180}px`,
                 }}
@@ -294,7 +290,6 @@ const TaskBody = ({
               <>
                 <div
                   style={{
-                    paddingBottom: elementPaddingBottom,
                     minWidth: `${isTaskArchivable ? 83 : 39}px`,
                     width: `${isTaskArchivable ? 83 : 39}px`,
                   }}
@@ -311,17 +306,7 @@ const TaskBody = ({
                     )}
                   </PriorityContainer>
                 </div>
-                <div
-                  style={{
-                    alignItems: 'flex-end',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    marginRight: isSubtask ? 0 : 6,
-                    minWidth: '39px',
-                    width: '39px',
-                    paddingBottom: elementPaddingBottom,
-                  }}
-                >
+                <TaskBodyChevronContainer isSubtask={isSubtask}>
                   <img
                     style={{
                       height: '10px',
@@ -329,7 +314,7 @@ const TaskBody = ({
                     src={ChevronRightIcon}
                     alt="Chevron icon"
                   />
-                </div>
+                </TaskBodyChevronContainer>
               </>
             )}
           </Grid>
