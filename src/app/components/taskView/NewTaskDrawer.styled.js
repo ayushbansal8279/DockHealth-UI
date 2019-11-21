@@ -84,8 +84,6 @@ export const StyledButton = styled(Button)`
 
 export const StyledForm = styled.form`
   overflow-y: auto;
-  margin-right -1rem;
-  padding-right: 1rem;
 `;
 
 export const NewTaskDrawerInnerContainer = styled(Grid).attrs({

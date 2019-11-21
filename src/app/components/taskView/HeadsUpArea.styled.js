@@ -102,5 +102,5 @@ export const HeadsUpSectionButtonLabel = styled.div`
 `;
 
 export const HeadsUpAreaContainer = styled.div`
-  min-width: 1067px;
+  width: 1050px;
 `;
