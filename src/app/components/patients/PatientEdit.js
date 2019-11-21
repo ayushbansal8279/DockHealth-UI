@@ -227,7 +227,6 @@ export const PatientsForm = ({
               </Grid>
             </Grid>
             <StyledTextField
-            //TODO MRN should not be required
               name="mrn"
               value={mrn || ''}
               onChange={onChange}

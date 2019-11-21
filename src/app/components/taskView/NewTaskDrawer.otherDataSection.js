@@ -125,7 +125,6 @@ const renderHistory = history => {
 export default ({ task, taskList, closeDrawer, setAutoSaveVisible }) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];
   const currentUser = useSelector(store => store.userState.userProfile);
-  // TODO better style the time/date used while creating a task
   const todaysMoment = moment().format('MMM D, YYYY @ h:mma');
 
   const { register, setValue } = useFormContext();
