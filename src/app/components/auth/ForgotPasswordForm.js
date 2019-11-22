@@ -32,13 +32,13 @@ const ForgotPasswordForm = props => {
         <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
           Forgot your password?
         </TitleTypography>
-        <HeightDependentGrid md={9} sm={12}>
+        <HeightDependentGrid size={9}>
           <TitleTypography variant="h4">
             Don’t worry, it happens to the best of us. Enter the email
             associated with your account.
           </TitleTypography>
         </HeightDependentGrid>
-        <HeightDependentGrid md={9} sm={12}>
+        <HeightDependentGrid size={9}>
           <Field
             marginTop="2.5rem"
             name="username"
@@ -49,7 +49,7 @@ const ForgotPasswordForm = props => {
           />
         </HeightDependentGrid>
 
-        <HeightDependentGrid md={9} sm={12}>
+        <HeightDependentGrid size={9}>
           <NextButton
             active={!invalid}
             id="loginButton"

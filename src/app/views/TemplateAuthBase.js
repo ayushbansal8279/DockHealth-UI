@@ -1,18 +1,16 @@
 import { node } from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router';
 
 import {
   BackgroundContainer,
   BackgroundModalContainer,
-  BackgroundRectangleContainer,
-  BigTemplateAuthBaseContainer,
   ContentContainer,
   DockLogo,
   DockLogoContainer,
   MainContentContainer,
-  SmallBackgroundRectangleContainer,
-  SmallTemplateAuthBaseContainer,
+  SlantedBackgroundRectangleContainer,
+  TemplateAuthBaseContainer,
 } from './TemplateAuthBase.styled';
 
 const TemplateAuthBase = ({ children }) => (
@@ -23,14 +21,9 @@ const TemplateAuthBase = ({ children }) => (
         width: '100vw',
       }}
     >
-      <BigTemplateAuthBaseContainer>
-        <BackgroundRectangleContainer>
-          <img src="assets/img/svg/login-rectangle.svg" alt="Background" />
-        </BackgroundRectangleContainer>
-      </BigTemplateAuthBaseContainer>
-      <SmallTemplateAuthBaseContainer>
-        <SmallBackgroundRectangleContainer />
-      </SmallTemplateAuthBaseContainer>
+      <TemplateAuthBaseContainer>
+        <SlantedBackgroundRectangleContainer />
+      </TemplateAuthBaseContainer>
       <ContentContainer>
         <DockLogoContainer>
           <DockLogo src="assets/img/dock-logo.png" alt="Dock Health" />

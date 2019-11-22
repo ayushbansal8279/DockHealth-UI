@@ -1,4 +1,3 @@
-import Grid from '@material-ui/core/Grid';
 import queryString from 'query-string';
 import React, { Component } from 'react';
 import { Link } from 'react-router';
@@ -75,7 +74,7 @@ class LoginFormUsername extends Component {
             </TitleTypography>
 
             <FieldItemContainer>
-              <HeightDependentGrid md={9} sm={12}>
+              <HeightDependentGrid size={9}>
                 <Field
                   name="username"
                   type="text"
@@ -87,7 +86,7 @@ class LoginFormUsername extends Component {
             </FieldItemContainer>
 
             <div>
-              <HeightDependentGrid md={6} sm={12}>
+              <HeightDependentGrid size={6}>
                 <NextButton
                   active={!invalid}
                   id="loginButton"

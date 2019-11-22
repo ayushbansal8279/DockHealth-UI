@@ -1,5 +1,4 @@
 import Grid from '@material-ui/core/Grid';
-import React from 'react';
 import styled from 'styled-components';
 
 export const BackgroundContainer = styled.div`
@@ -22,8 +21,8 @@ export const BackgroundModalContainer = styled(Grid)`
   background-size: cover;
   border-radius: 6px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-  height: 846px;
-  max-height: 846px;
+  height: 848px;
+  max-height: 848px;
   max-width: 984px;
   overflow: hidden;
   position: relative;
@@ -50,13 +49,15 @@ export const BackgroundRectangleContainer = styled.div`
   }
 `;
 
-export const SmallBackgroundRectangleContainer = styled.div`
+export const SlantedBackgroundRectangleContainer = styled.div`
   background-color: #fff;
-  bottom: 0;
+  box-shadow: 0px 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
+  height: 100%;
   left: 0;
   position: absolute;
-  right: 0;
   top: 0;
+  transform: translateX(-50%) scale(2) rotate(12.37deg);
+  width: 50%;
   z-index: -1;
 `;
 
@@ -81,32 +82,15 @@ export const DockLogo = styled.img`
 export const ContentContainer = styled.div`
   box-sizing: border-box;
   display: flex;
+  flex-basis: 50%;
   flex-flow: column nowrap;
   flex-grow: 0;
   height: 100%;
+  max-width: 50%;
   padding: 2rem;
-  width: 100%;
-
-  flex-basis: 100%;
-  max-width: 100%;
-
-  @media screen and (min-width: 959.95px) and (min-height: 845.95px) {
-    flex-basis: 50%;
-    max-width: 50%;
-  }
 `;
 
-export const BigTemplateAuthBaseContainer = styled.div`
-  @media screen and (max-width: 959.95px), screen and (max-height: 845.95px) {
-    display: none;
-  }
-`;
-
-export const SmallTemplateAuthBaseContainer = styled.div`
-  min-height: 846px;
+export const TemplateAuthBaseContainer = styled.div`
+  min-height: 848px;
   overflow-y: auto;
-
-  @media screen and (min-width: 960px) and (min-height: 846px) {
-    display: none;
-  }
 `;

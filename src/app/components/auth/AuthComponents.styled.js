@@ -78,18 +78,13 @@ export const StyledForm = styled.form`
   display: flex;
   flex: 1;
   flex-direction: column;
-  width: '100%';
+  width: 100%;
 `;
 
 export const HeightDependentGrid = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  flex-basis: ${props => (100 * props.sm) / 12}%;
-  max-width: ${props => (100 * props.sm) / 12}%;
-
-  @media screen and (min-width: 959.95px) and (min-height: 845.95px) {
-    flex-basis: ${props => (100 * props.md) / 12}%;
-    max-width: ${props => (100 * props.md) / 12}%;
-  }
+  flex-basis: ${props => (100 * props.size) / 12}%;
+  max-width: ${props => (100 * props.size) / 12}%;
 `;

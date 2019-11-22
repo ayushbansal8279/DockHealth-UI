@@ -1,5 +1,3 @@
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router';
 import { Field, reduxForm } from 'redux-form';
@@ -54,7 +52,7 @@ class LoginFormPassword extends PureComponent {
         </TitleTypography>
 
         <FieldItemContainer>
-          <HeightDependentGrid md={9} sm={12}>
+          <HeightDependentGrid size={9}>
             <Field
               name="username"
               type="text"
@@ -62,7 +60,7 @@ class LoginFormPassword extends PureComponent {
               label="Email"
             />
           </HeightDependentGrid>
-          <HeightDependentGrid md={9} sm={12}>
+          <HeightDependentGrid size={9}>
             <Field
               name="password"
               type="password"
@@ -76,7 +74,7 @@ class LoginFormPassword extends PureComponent {
         </FieldItemContainer>
 
         <div>
-          <HeightDependentGrid md={6} sm={12}>
+          <HeightDependentGrid size={6}>
             <NextButton
               active={!invalid}
               id="loginButton"
