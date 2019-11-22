@@ -13,6 +13,8 @@ import NewTaskDrawerAddPatientForm from './NewTaskDrawer.addPatientForm';
 import NewTaskDrawerInviteToListForm from './NewTaskDrawer.inviteToListForm';
 import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
 import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.editTaskComponent';
+import NewTaskDrawerEmailBodyContainer from './NewTaskDrawer.emailBody';
+
 import {
   updatePatient,
   assignOrReassignTask,
@@ -279,6 +281,11 @@ export default ({
             />
           )}
         </Grid>
+        {defaultValues.sourceMessage && 
+        <Grid item xs={12}>
+          <NewTaskDrawerEmailBodyContainer emailBody={defaultValues.sourceMessage}/>
+        </Grid>
+        }
         {!isSubtask && (
           <Grid item xs={12}>
             {patientPopoverOpen && (

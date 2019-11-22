@@ -9,6 +9,7 @@ import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utilit
 import useBoolean from '../../hooks/useBoolean';
 import ChevronRightIcon from '../../img/chevron-right.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
+import EnvelopeIcon from '../../img/envelope.svg';
 import CubesLoader from '../common/CubesLoader';
 import {
   priorityColor,
@@ -208,6 +209,13 @@ const TaskBody = ({
               xs={12}
             >
               <Grid item xs={12}>
+                {task.sourceMessage && 
+                  <img src={EnvelopeIcon} alt="Email" 
+                  style={{
+                    paddingRight: '5px',
+                    paddingBottom: '15px',
+                  }}/>
+                }
                 <PatientsTasklistDescription
                   ref={taskDescriptionRef}
                   onMouseEnter={onTaskDescriptionMouseEnter}
