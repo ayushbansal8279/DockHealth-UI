@@ -255,13 +255,13 @@ export default ({
           <input type="hidden" name="newTaskListId" ref={register} />
           <SectionLabel>Filed In</SectionLabel>
           <SectionButtonContainer>
-            {task && !isInbox ? (
+            {task ? (
               <SectionButton
                 clickable
                 ref={taskListButtonRef}
                 onClick={setTaskListPopoverOpen}
               >
-                {newTaskListName || taskList?.listName}
+                {isInbox ? 'Inbox' : (newTaskListName || taskList?.listName)}
               </SectionButton>
             ) : (
               <SectionButton>
