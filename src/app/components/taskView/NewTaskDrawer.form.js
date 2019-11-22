@@ -281,11 +281,13 @@ export default ({
             />
           )}
         </Grid>
-        {defaultValues.sourceMessage && 
-        <Grid item xs={12}>
-          <NewTaskDrawerEmailBodyContainer emailBody={defaultValues.sourceMessage}/>
-        </Grid>
-        }
+        {defaultValues.sourceMessage && (
+          <Grid item xs={12}>
+            <NewTaskDrawerEmailBodyContainer
+              emailBody={defaultValues.sourceMessage}
+            />
+          </Grid>
+        )}
         {!isSubtask && (
           <Grid item xs={12}>
             {patientPopoverOpen && (

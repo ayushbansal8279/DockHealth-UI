@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import EnvelopeIcon from '../../img/envelope.svg';
 
@@ -8,18 +8,11 @@ const EmailBodyContainer = styled.div`
   width: 100%;
 `;
 
-export default ({
-  emailBody
-}) => {
-
-  return (
-    <EmailBodyContainer>
-      <>
-        <img src={EnvelopeIcon} alt="Email" />
-          <pre style={{height: "240px", fontSize: "14px"}}>
-            {emailBody}
-          </pre>
-      </>
-    </EmailBodyContainer>
-  );
-};
+export default ({ emailBody }) => (
+  <EmailBodyContainer>
+    <>
+      <img src={EnvelopeIcon} alt="Email" />
+      <pre style={{ height: '240px', fontSize: '14px' }}>{emailBody}</pre>
+    </>
+  </EmailBodyContainer>
+);

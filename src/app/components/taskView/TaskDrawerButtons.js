@@ -4,8 +4,9 @@ import styled from 'styled-components';
 
 import AddTaskCrossIcon from '../../img/add-task-cross.svg';
 
-// const AddTaskButtonBase = styled(ButtonBase)`
-const AddTaskButtonBase = styled(({ padded, circle, ...props }) => <ButtonBase {...props} />)`
+const AddTaskButtonBase = styled(({ padded, circle, ...props }) => (
+  <ButtonBase {...props} />
+))`
   && {
     align-items: center;
     background-color: #d9036b;

@@ -35,6 +35,7 @@ import {
   FilterByLabel,
   FilterByLinkLabel,
   FilterByTextContainer,
+  InboxNoMessagesAvailable,
   StyledSlimViewSwitch,
   StyledToolbar,
   TableWrapper,
@@ -486,6 +487,10 @@ class TaskView extends Component {
       taskTimeouts: Object.values(taskTimeouts).flat(),
     };
 
+    if (isInbox && tasks.length === 0) {
+      return <InboxNoMessagesAvailable />;
+    }
+
     if (tasks.length === 0 || tasklistCount <= 1 || isInbox) {
       return <TaskList {...tasklistProps} />;
     }
@@ -547,6 +552,10 @@ class TaskView extends Component {
       taskTimeouts: Object.values(taskTimeouts).flat(),
     };
 
+    if (isInbox && completedTasks.length === 0) {
+      return null;
+    }
+
     const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
 
     return (
@@ -569,11 +578,14 @@ class TaskView extends Component {
       markComplete,
       showSortingStats = true,
       isInbox = false,
+      tasks,
     } = this.props;
     const { slimView, taskDrawerOpen, displayHUD, filterBy } = this.state;
 
     const currentFilterDescription =
       filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
+
+    const toolbarContainerVisible = (isInbox && tasks.length > 0) || !isInbox;
 
     return (
       <ClickAwayListener onClickAway={this.closeTaskDrawer}>
@@ -595,48 +607,56 @@ class TaskView extends Component {
             )}
             {showToolbar && (
               <StyledToolbar>
-                <Grid container alignItems="center" justify="space-between">
-                  <ToolbarContainer>
-                    <StyledSlimViewSwitch
-                      onClick={this.switchSlimView}
-                      slimView={slimView}
-                      variant="contained"
-                    />
-                    <TaskListAction
-                      alt="Filter"
-                      activeIcon={FilterActiveIcon}
-                      backgroundColor="#fff"
-                      icon={FilterIcon}
-                      active={Boolean(filterBy)}
-                      onClick={
-                        filterBy ? this.clearFilter : this.openFilterPopover
-                      }
-                      ref={this.filterButton}
-                    >
-                      Filter
-                    </TaskListAction>
-                    {showSortingStats && (
+                <Grid
+                  container
+                  alignItems="center"
+                  justify={
+                    toolbarContainerVisible ? 'space-between' : 'flex-end'
+                  }
+                >
+                  {toolbarContainerVisible && (
+                    <ToolbarContainer>
+                      <StyledSlimViewSwitch
+                        onClick={this.switchSlimView}
+                        slimView={slimView}
+                        variant="contained"
+                      />
                       <TaskListAction
-                        alt="Sorting & stats"
-                        active={displayHUD}
-                        activeIcon={SortingStatsActiveIcon}
+                        alt="Filter"
+                        activeIcon={FilterActiveIcon}
                         backgroundColor="#fff"
-                        icon={SortingStatsIcon}
-                        onClick={this.toggleHUD}
+                        icon={FilterIcon}
+                        active={Boolean(filterBy)}
+                        onClick={
+                          filterBy ? this.clearFilter : this.openFilterPopover
+                        }
+                        ref={this.filterButton}
                       >
-                        Sorting & Stats
+                        Filter
                       </TaskListAction>
-                    )}
-                    <Search onChange={this.handleSearch} />
-                    <TaskListAction
-                      alt="Print"
-                      backgroundColor="#fff"
-                      icon={PrintIcon}
-                      onClick={downloadPDF}
-                    >
-                      Print
-                    </TaskListAction>
-                  </ToolbarContainer>
+                      {showSortingStats && (
+                        <TaskListAction
+                          alt="Sorting & stats"
+                          active={displayHUD}
+                          activeIcon={SortingStatsActiveIcon}
+                          backgroundColor="#fff"
+                          icon={SortingStatsIcon}
+                          onClick={this.toggleHUD}
+                        >
+                          Sorting & Stats
+                        </TaskListAction>
+                      )}
+                      <Search onChange={this.handleSearch} />
+                      <TaskListAction
+                        alt="Print"
+                        backgroundColor="#fff"
+                        icon={PrintIcon}
+                        onClick={downloadPDF}
+                      >
+                        Print
+                      </TaskListAction>
+                    </ToolbarContainer>
+                  )}
                   {(selectedTask || !taskDrawerOpen) && (
                     <AddTaskButton onClick={this.onAddTaskButtonClick} />
                   )}
