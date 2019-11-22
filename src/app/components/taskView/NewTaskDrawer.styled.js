@@ -66,6 +66,10 @@ export const StatusSelect = styled.div`
 `;
 
 export const CloseTaskButtonContainer = styled.div`
+  align-items: center;
+  display: flex;
+  height: 3rem;
+  justify-content: center;
   padding-right: 0.5rem;
 `;
 

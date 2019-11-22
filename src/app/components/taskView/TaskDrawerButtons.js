@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import AddTaskCrossIcon from '../../img/add-task-cross.svg';
 
-const AddTaskButtonBase = styled(({ padded, circle, ...props }) => (
-  <ButtonBase {...props} />
-))`
+const AddTaskButtonBase = styled(
+  ({ padded, paddedSmall, circle, ...props }) => <ButtonBase {...props} />,
+)`
   && {
     align-items: center;
     background-color: #d9036b;
@@ -19,6 +19,7 @@ const AddTaskButtonBase = styled(({ padded, circle, ...props }) => (
     height: 2.5rem;
 
     ${props => props.padded && 'padding: 0 1rem;'}
+    ${props => props.paddedSmall && 'margin: 0.5rem 0 0;'}
     ${props => props.circle && 'width: 2.5rem;'}
   }
 `;
@@ -51,10 +52,19 @@ export const AddTaskButton = ({ onClick }) => {
   );
 };
 
-export const CloseTaskButton = ({ onClick }) => {
+export const CloseTaskButton = ({ onClick, paddedSmall }) => {
   return (
-    <AddTaskButtonBase circle onClick={onClick} variant="contained">
-      <AddTaskButtonImage rotated src={AddTaskCrossIcon} />
+    <AddTaskButtonBase
+      paddedSmall={paddedSmall}
+      circle
+      onClick={onClick}
+      variant="contained"
+    >
+      <AddTaskButtonImage
+        paddedSmall={paddedSmall}
+        rotated
+        src={AddTaskCrossIcon}
+      />
     </AddTaskButtonBase>
   );
 };

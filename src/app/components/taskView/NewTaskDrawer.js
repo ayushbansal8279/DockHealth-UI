@@ -511,6 +511,17 @@ export default ({
                 <PriorityDot color={status.color} />
                 <span>{status.label}</span>
               </StatusSelect>
+              {!addingTaskOrSubtask && (
+                <CloseTaskButtonContainer>
+                  <CloseTaskButton
+                    onClick={() => {
+                      closeDrawer();
+                      storeAsCurrentTask(null);
+                    }}
+                    paddedSmall
+                  />
+                </CloseTaskButtonContainer>
+              )}
               <Popover
                 anchorEl={statusSelectRef?.current}
                 anchorOrigin={{
