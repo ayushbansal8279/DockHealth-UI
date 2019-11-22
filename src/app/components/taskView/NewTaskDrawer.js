@@ -446,6 +446,7 @@ export default ({
     <NewTaskDrawerContainer
       headsUpAreaHeight={headsUpAreaHeight}
       ref={taskContainerRef}
+      onBlur={() => handleSubmit()}
     >
       <StyledForm onSubmit={handleSubmit}>
         <div>
