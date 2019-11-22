@@ -211,3 +211,15 @@ export const InboxNoMessagesAvailable = () => (
     </InboxNoMessagesContainer>
   </InboxNoMessagesOuterContainer>
 );
+
+export const SideClickListener = styled.div`
+  flex: 1;
+  ${props => props.heightMax && 'height: 100%;'}
+`;
+
+export const CompletedButtonRowContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: row wrap;
+  justify-content: center;
+`;

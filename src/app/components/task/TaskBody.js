@@ -208,14 +208,16 @@ const TaskBody = ({
               alignItems="center"
               xs={12}
             >
-              <Grid item xs={12}>
-                {task.sourceMessage && 
-                  <img src={EnvelopeIcon} alt="Email" 
-                  style={{
-                    paddingRight: '5px',
-                    paddingBottom: '15px',
-                  }}/>
-                }
+              <Grid item xs={12} container alignItems="center">
+                {task.sourceMessage && (
+                  <img
+                    src={EnvelopeIcon}
+                    alt="Email"
+                    style={{
+                      paddingRight: '5px',
+                    }}
+                  />
+                )}
                 <PatientsTasklistDescription
                   ref={taskDescriptionRef}
                   onMouseEnter={onTaskDescriptionMouseEnter}

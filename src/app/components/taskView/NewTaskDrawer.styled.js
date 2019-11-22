@@ -83,6 +83,8 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledForm = styled.form`
+  display: flex;
+  flex-flow: column nowrap;
   overflow-y: auto;
 `;
 
@@ -125,4 +127,16 @@ export const StyledVerticalDivider = styled.div`
   background-color: #acb6c4;
   height: 2rem;
   width: 0.0625rem;
+`;
+
+export const BottomButtomContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  width: 100%;
+`;
+
+export const SideClickListener = styled.div`
+  flex: 1;
 `;

@@ -30,6 +30,7 @@ import PrintIcon from '../img/print.svg';
 import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
 import SortingStatsIcon from '../img/sorting-stats.svg';
 import {
+  CompletedButtonRowContainer,
   FilterByBoldLabel,
   FilterByLabel,
   FilterByLinkLabel,
@@ -41,6 +42,7 @@ import {
   TaskViewContainer,
   TaskViewGrid,
   ToolbarContainer,
+  SideClickListener,
 } from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
@@ -64,7 +66,9 @@ const FadeContainer = styled.div`
 `;
 
 const TaskListContainer = styled.div`
+  display: flex;
   flex: 2;
+  flex-flow: column wrap;
   padding: 0 0.375rem;
 `;
 
@@ -559,9 +563,13 @@ class TaskView extends Component {
 
     return (
       <>
-        <StyledButton onClick={this.toggleCompletedTasks}>
-          {`${buttonToggleWord} completed tasks (${completedTasks.length})`}
-        </StyledButton>
+        <CompletedButtonRowContainer>
+          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+          <StyledButton onClick={this.toggleCompletedTasks}>
+            {`${buttonToggleWord} completed tasks (${completedTasks.length})`}
+          </StyledButton>
+          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+        </CompletedButtonRowContainer>
         {completedTasksShown && <TaskList {...tasklistProps} />}
       </>
     );
@@ -590,10 +598,11 @@ class TaskView extends Component {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          flexFlow: 'row nowrap',
+          justifyContent: 'center',
         }}
       >
+        <SideClickListener onClick={this.closeTaskDrawer} />
         <TaskViewContainer>
           {showSortingStats && displayHUD && (
             <HeadsUpArea
@@ -690,6 +699,7 @@ class TaskView extends Component {
                   <TaskListContainer>
                     {this.renderTasklists()}
                     {this.renderCompleted()}
+                    <SideClickListener onClick={this.closeTaskDrawer} />
                   </TaskListContainer>
                   {taskDrawerOpen && (
                     <NewTaskDrawer
@@ -707,6 +717,7 @@ class TaskView extends Component {
           </TaskViewGrid>
           {this.renderFilterPopover()}
         </TaskViewContainer>
+        <SideClickListener onClick={this.closeTaskDrawer} />
       </div>
     );
   }

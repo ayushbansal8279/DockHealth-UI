@@ -14,13 +14,13 @@ import { getAllPatients } from '../../actions/patient-actions';
 import {
   assignOrReassignTask,
   deleteTask,
+  duplicateTask,
   moveTask,
   saveTask,
   storeAsCurrentTask as storeAsCurrentTaskAction,
   toggleTaskPriority,
   updatePatient,
   updateWorkflowStatus,
-  duplicateTask,
 } from '../../actions/task-actions';
 import { getPatientName, noop } from '../../helpers/utilityFunctions';
 import useBoolean from '../../hooks/useBoolean';
@@ -28,24 +28,26 @@ import { PriorityDot } from '../common/Priority';
 import NewTaskDrawerCommentSection from './NewTaskDrawer.commentSection';
 import NewTaskDrawerForm from './NewTaskDrawer.form';
 import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
-import PriorityFlag from './PriorityFlag';
-import { CloseTaskButton } from './TaskDrawerButtons';
 import {
-  NewTaskDrawerContainer,
-  StyledForm,
-  NewTaskDrawerInnerContainer,
-  FormSection,
-  TopLabel,
-  CloseTaskButtonContainer,
-  FormSectionDivider,
   AutoSaveContainer,
-  StatusSelect,
-  CondensedFormSection,
-  StyledButton,
   AutoSaveLabel,
+  BottomButtomContainer,
+  CloseTaskButtonContainer,
+  CondensedFormSection,
+  FormSection,
+  FormSectionDivider,
+  NewTaskDrawerContainer,
+  NewTaskDrawerInnerContainer,
+  SideClickListener,
+  StatusSelect,
+  StyledButton,
+  StyledForm,
   StyledVerticalDivider,
+  TopLabel,
 } from './NewTaskDrawer.styled';
 import { taskValidationSchema } from './NewTaskDrawer.validationSchema';
+import PriorityFlag from './PriorityFlag';
+import { CloseTaskButton } from './TaskDrawerButtons';
 
 const statusSelectData = [
   {
@@ -218,7 +220,6 @@ const intersectionCallback = entries => {
       intersectionRect: { height },
       target,
     } = entry;
-    console.log(height, target.scrollHeight);
     const form = target.querySelector('form');
 
     if (form) {
@@ -566,44 +567,35 @@ export default ({
             </FormContext>
           </CondensedFormSection>
         </NewTaskDrawerInnerContainer>
-        <Grid
-          alignItems="center"
-          justify="center"
-          direction="row"
-          wrap="nowrap"
-          container
-          item
-          xs={12}
-        >
-          {task && task.taskId != null && task.status !== 'COMPLETE' && (
-            <>
-              <StyledButton
-                onClick={onDelete({
-                  afterDelete: () => {
-                    closeDrawer();
-                  },
-                  dispatch,
-                  task,
-                })}
-              >
-                Delete
-              </StyledButton>
-              <StyledVerticalDivider />
-              <StyledButton
-                onClick={onDuplicate({
-                  afterDuplicate: ({ newTask }) => {
-                    storeAsCurrentTask(newTask);
-                  },
-                  dispatch,
-                  task,
-                })}
-              >
-                Duplicate
-              </StyledButton>
-            </>
-          )}
-          {/* If you want to add a button to the Add a task sidebar, do so here.  */}
-        </Grid>
+        {task && task.taskId != null && task.status !== 'COMPLETE' && (
+          <BottomButtomContainer>
+            <StyledButton
+              onClick={onDelete({
+                afterDelete: () => {
+                  closeDrawer();
+                },
+                dispatch,
+                task,
+              })}
+            >
+              Delete
+            </StyledButton>
+            <StyledVerticalDivider />
+            <StyledButton
+              onClick={onDuplicate({
+                afterDuplicate: ({ newTask }) => {
+                  storeAsCurrentTask(newTask);
+                },
+                dispatch,
+                task,
+              })}
+            >
+              Duplicate
+            </StyledButton>
+          </BottomButtomContainer>
+        )}
+        {/* If you want to add a button to the Add a task sidebar, do so here.  */}
+        <SideClickListener onClick={closeDrawer} />
       </StyledForm>
     </NewTaskDrawerContainer>
   );
