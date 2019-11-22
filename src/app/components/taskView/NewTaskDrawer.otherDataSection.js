@@ -261,7 +261,7 @@ export default ({
                 ref={taskListButtonRef}
                 onClick={setTaskListPopoverOpen}
               >
-                {isInbox ? 'Inbox' : (newTaskListName || taskList?.listName)}
+                {isInbox ? 'Inbox' : newTaskListName || taskList?.listName}
               </SectionButton>
             ) : (
               <SectionButton>
@@ -275,6 +275,7 @@ export default ({
               vertical: 'top',
               horizontal: 'left',
             }}
+            disablePortal
             open={isTaskListPopoverOpen}
             onClose={unsetTaskListPopoverOpen}
             transformOrigin={{
