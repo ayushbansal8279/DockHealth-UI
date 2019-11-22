@@ -213,7 +213,12 @@ for (let threshold = 0; threshold <= 1; threshold += 0.02) {
 }
 
 const intersectionCallback = entries => {
-  entries.forEach(({ intersectionRect: { height }, target }) => {
+  entries.forEach(entry => {
+    const {
+      intersectionRect: { height },
+      target,
+    } = entry;
+    console.log(height, target.scrollHeight);
     const form = target.querySelector('form');
 
     if (form) {
@@ -449,41 +454,14 @@ export default ({
       onBlur={() => handleSubmit()}
     >
       <StyledForm onSubmit={handleSubmit}>
-        <div>
-          <NewTaskDrawerInnerContainer>
-            <FormSection
-              topBorderActive={!addingTaskOrSubtask && autoSaveVisible}
-              container
-              item
-              xs={12}
-            >
-              {addingTaskOrSubtask && (
-                <Grid
-                  container
-                  item
-                  xs={12}
-                  alignItems="center"
-                  justify="space-between"
-                >
-                  <TopLabel>{topLabel}</TopLabel>
-                  <CloseTaskButtonContainer>
-                    <CloseTaskButton
-                      onClick={() => {
-                        closeDrawer();
-                        storeAsCurrentTask(null);
-                      }}
-                    />
-                  </CloseTaskButtonContainer>
-                </Grid>
-              )}
-              <FormSectionDivider
-                addingTaskOrSubtask={addingTaskOrSubtask}
-                active={autoSaveVisible}
-              >
-                <AutoSaveContainer visible={autoSaveVisible}>
-                  <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
-                </AutoSaveContainer>
-              </FormSectionDivider>
+        <NewTaskDrawerInnerContainer>
+          <FormSection
+            topBorderActive={!addingTaskOrSubtask && autoSaveVisible}
+            container
+            item
+            xs={12}
+          >
+            {addingTaskOrSubtask && (
               <Grid
                 container
                 item
@@ -491,116 +469,141 @@ export default ({
                 alignItems="center"
                 justify="space-between"
               >
-                <PriorityFlag
-                  active={priorityActive}
-                  onClick={() => {
-                    const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
-                    togglePriorityActive();
-                    if (taskId) {
-                      saveTaskPriority({ newTaskPriority });
-                    }
-                  }}
-                />
-                <StatusSelect ref={statusSelectRef} onClick={openStatusPopover}>
-                  <span>Status:</span>
-                  <PriorityDot color={status.color} />
-                  <span>{status.label}</span>
-                </StatusSelect>
-                <Popover
-                  anchorEl={statusSelectRef?.current}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                  disablePortal
-                  onClose={closeStatusPopover}
-                  open={statusPopoverOpen}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                >
-                  <List>
-                    {statusSelectData.map(
-                      renderStatusSelectOption({
-                        closeStatusPopover,
-                        setStatus,
-                        saveTaskStatus,
-                        taskId,
-                      }),
-                    )}
-                  </List>
-                </Popover>
-              </Grid>
-              <Grid item xs={12}>
-                <FormContext {...formMethods}>
-                  <NewTaskDrawerForm
-                    isSubtask={isSubtask}
-                    defaultValues={defaultValues}
-                    handleSubmit={handleSubmit}
-                    onMarkComplete={onMarkComplete}
-                    setAutoSaveVisible={setAutoSaveVisible}
-                    isInbox={isInbox}
+                <TopLabel>{topLabel}</TopLabel>
+                <CloseTaskButtonContainer>
+                  <CloseTaskButton
+                    onClick={() => {
+                      closeDrawer();
+                      storeAsCurrentTask(null);
+                    }}
                   />
-                </FormContext>
+                </CloseTaskButtonContainer>
               </Grid>
-            </FormSection>
-            <CondensedFormSection container item xs={12}>
-              <NewTaskDrawerCommentSection
-                task={task}
-                addDeferredCommentToQueue={addDeferredCommentToQueue}
+            )}
+            <FormSectionDivider
+              addingTaskOrSubtask={addingTaskOrSubtask}
+              active={autoSaveVisible}
+            >
+              <AutoSaveContainer visible={autoSaveVisible}>
+                <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
+              </AutoSaveContainer>
+            </FormSectionDivider>
+            <Grid
+              container
+              item
+              xs={12}
+              alignItems="center"
+              justify="space-between"
+            >
+              <PriorityFlag
+                active={priorityActive}
+                onClick={() => {
+                  const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
+                  togglePriorityActive();
+                  if (taskId) {
+                    saveTaskPriority({ newTaskPriority });
+                  }
+                }}
               />
-              <FormSectionDivider condensed />
+              <StatusSelect ref={statusSelectRef} onClick={openStatusPopover}>
+                <span>Status:</span>
+                <PriorityDot color={status.color} />
+                <span>{status.label}</span>
+              </StatusSelect>
+              <Popover
+                anchorEl={statusSelectRef?.current}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                disablePortal
+                onClose={closeStatusPopover}
+                open={statusPopoverOpen}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+              >
+                <List>
+                  {statusSelectData.map(
+                    renderStatusSelectOption({
+                      closeStatusPopover,
+                      setStatus,
+                      saveTaskStatus,
+                      taskId,
+                    }),
+                  )}
+                </List>
+              </Popover>
+            </Grid>
+            <Grid item xs={12}>
               <FormContext {...formMethods}>
-                <NewTaskDrawerOtherDataSection
-                  task={task}
-                  taskList={taskList}
-                  closeDrawer={closeDrawer}
+                <NewTaskDrawerForm
+                  isSubtask={isSubtask}
+                  defaultValues={defaultValues}
+                  handleSubmit={handleSubmit}
+                  onMarkComplete={onMarkComplete}
                   setAutoSaveVisible={setAutoSaveVisible}
                   isInbox={isInbox}
                 />
               </FormContext>
-            </CondensedFormSection>
-          </NewTaskDrawerInnerContainer>
-          <Grid
-            alignItems="center"
-            justify="center"
-            direction="row"
-            wrap="nowrap"
-            container
-            item
-            xs={12}
-          >
-            {task && task.taskId != null && task.status !== 'COMPLETE' && (
-              <>
-                <StyledButton
-                  onClick={onDelete({
-                    afterDelete: () => {
-                      closeDrawer();
-                    },
-                    dispatch,
-                    task,
-                  })}
-                >
-                  Delete
-                </StyledButton>
-                <StyledVerticalDivider />
-                <StyledButton
-                  onClick={onDuplicate({
-                    afterDuplicate: ({ newTask }) => {
-                      storeAsCurrentTask(newTask);
-                    },
-                    dispatch,
-                    task,
-                  })}
-                >
-                  Duplicate
-                </StyledButton>
-              </>
-            )}
-            {/* If you want to add a button to the Add a task sidebar, do so here.  */}
-          </Grid>
-        </div>
+            </Grid>
+          </FormSection>
+          <CondensedFormSection container item xs={12}>
+            <NewTaskDrawerCommentSection
+              task={task}
+              addDeferredCommentToQueue={addDeferredCommentToQueue}
+            />
+            <FormSectionDivider condensed />
+            <FormContext {...formMethods}>
+              <NewTaskDrawerOtherDataSection
+                task={task}
+                taskList={taskList}
+                closeDrawer={closeDrawer}
+                setAutoSaveVisible={setAutoSaveVisible}
+                isInbox={isInbox}
+              />
+            </FormContext>
+          </CondensedFormSection>
+        </NewTaskDrawerInnerContainer>
+        <Grid
+          alignItems="center"
+          justify="center"
+          direction="row"
+          wrap="nowrap"
+          container
+          item
+          xs={12}
+        >
+          {task && task.taskId != null && task.status !== 'COMPLETE' && (
+            <>
+              <StyledButton
+                onClick={onDelete({
+                  afterDelete: () => {
+                    closeDrawer();
+                  },
+                  dispatch,
+                  task,
+                })}
+              >
+                Delete
+              </StyledButton>
+              <StyledVerticalDivider />
+              <StyledButton
+                onClick={onDuplicate({
+                  afterDuplicate: ({ newTask }) => {
+                    storeAsCurrentTask(newTask);
+                  },
+                  dispatch,
+                  task,
+                })}
+              >
+                Duplicate
+              </StyledButton>
+            </>
+          )}
+          {/* If you want to add a button to the Add a task sidebar, do so here.  */}
+        </Grid>
       </StyledForm>
     </NewTaskDrawerContainer>
   );

@@ -27,12 +27,22 @@ const Members = ({ members, taskList }) => {
       <InvitePicker taskList={taskList} members={members}>
         {({ open }) => (
           <>
-            <AddMember onClick={open}>
+            <AddMember
+              onClick={event => {
+                event.preventDefault();
+                event.stopPropagation();
+                open(event);
+              }}
+            >
               <AddIcon fontSize="small" />
             </AddMember>
             {hiddenMemberCount > 0 && (
               <Member
-                onClick={open}
+                onClick={event => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  open(event);
+                }}
                 color="#0ca1c7"
                 style={{ marginRight: '-8px' }}
               >

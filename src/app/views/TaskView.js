@@ -1,6 +1,5 @@
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -588,131 +587,127 @@ class TaskView extends Component {
     const toolbarContainerVisible = (isInbox && tasks.length > 0) || !isInbox;
 
     return (
-      <ClickAwayListener onClickAway={this.closeTaskDrawer}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <TaskViewContainer>
-            {showSortingStats && displayHUD && (
-              <HeadsUpArea
-                ref={this.headsUpArea}
-                taskList={taskList}
-                filterChange={this.handleFilterChange}
-                currentFilter={filterBy}
-              />
-            )}
-            {showToolbar && (
-              <StyledToolbar>
-                <Grid
-                  container
-                  alignItems="center"
-                  justify={
-                    toolbarContainerVisible ? 'space-between' : 'flex-end'
-                  }
-                >
-                  {toolbarContainerVisible && (
-                    <ToolbarContainer>
-                      <StyledSlimViewSwitch
-                        onClick={this.switchSlimView}
-                        slimView={slimView}
-                        variant="contained"
-                      />
-                      <TaskListAction
-                        alt="Filter"
-                        activeIcon={FilterActiveIcon}
-                        backgroundColor="#fff"
-                        icon={FilterIcon}
-                        active={Boolean(filterBy)}
-                        onClick={
-                          filterBy ? this.clearFilter : this.openFilterPopover
-                        }
-                        ref={this.filterButton}
-                      >
-                        Filter
-                      </TaskListAction>
-                      {showSortingStats && (
-                        <TaskListAction
-                          alt="Sorting & stats"
-                          active={displayHUD}
-                          activeIcon={SortingStatsActiveIcon}
-                          backgroundColor="#fff"
-                          icon={SortingStatsIcon}
-                          onClick={this.toggleHUD}
-                        >
-                          Sorting & Stats
-                        </TaskListAction>
-                      )}
-                      <Search onChange={this.handleSearch} />
-                      <TaskListAction
-                        alt="Print"
-                        backgroundColor="#fff"
-                        icon={PrintIcon}
-                        onClick={downloadPDF}
-                      >
-                        Print
-                      </TaskListAction>
-                    </ToolbarContainer>
-                  )}
-                  {(selectedTask || !taskDrawerOpen) && (
-                    <AddTaskButton onClick={this.onAddTaskButtonClick} />
-                  )}
-                </Grid>
-              </StyledToolbar>
-            )}
-            <AnimatePresence>
-              {currentFilterDescription && (
-                <FilterByTextContainer {...animationProperties}>
-                  <img src={FilterIcon} alt="Filter icon" />
-                  <FilterByLabel>Filter:</FilterByLabel>
-                  <FilterByBoldLabel>
-                    {currentFilterDescription}
-                  </FilterByBoldLabel>
-                  <FilterByLinkLabel onClick={this.clearFilter}>
-                    clear filter
-                  </FilterByLinkLabel>
-                </FilterByTextContainer>
-              )}
-            </AnimatePresence>
-            <TaskViewGrid container wrap="nowrap">
-              <TableWrapper taskDrawerOpen={taskDrawerOpen}>
-                {isFetching ? (
-                  <FadeContainer>
-                    <Fade
-                      in={isFetching}
-                      unmountOnExit
-                      style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <TaskViewContainer>
+          {showSortingStats && displayHUD && (
+            <HeadsUpArea
+              ref={this.headsUpArea}
+              taskList={taskList}
+              filterChange={this.handleFilterChange}
+              currentFilter={filterBy}
+            />
+          )}
+          {showToolbar && (
+            <StyledToolbar>
+              <Grid
+                container
+                alignItems="center"
+                justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
+              >
+                {toolbarContainerVisible && (
+                  <ToolbarContainer>
+                    <StyledSlimViewSwitch
+                      onClick={this.switchSlimView}
+                      slimView={slimView}
+                      variant="contained"
+                    />
+                    <TaskListAction
+                      alt="Filter"
+                      activeIcon={FilterActiveIcon}
+                      backgroundColor="#fff"
+                      icon={FilterIcon}
+                      active={Boolean(filterBy)}
+                      onClick={
+                        filterBy ? this.clearFilter : this.openFilterPopover
+                      }
+                      ref={this.filterButton}
                     >
-                      <ProgressIcon />
-                    </Fade>
-                  </FadeContainer>
-                ) : (
-                  <div style={{ display: 'flex' }}>
-                    <TaskListContainer>
-                      {this.renderTasklists()}
-                      {this.renderCompleted()}
-                    </TaskListContainer>
-                    {taskDrawerOpen && (
-                      <NewTaskDrawer
-                        headsUpAreaRef={this.headsUpArea.current}
-                        closeDrawer={this.closeTaskDrawer}
-                        taskList={taskList}
-                        markComplete={markComplete}
-                        onMarkComplete={this.onMarkComplete}
-                        isInbox={isInbox}
-                      />
+                      Filter
+                    </TaskListAction>
+                    {showSortingStats && (
+                      <TaskListAction
+                        alt="Sorting & stats"
+                        active={displayHUD}
+                        activeIcon={SortingStatsActiveIcon}
+                        backgroundColor="#fff"
+                        icon={SortingStatsIcon}
+                        onClick={this.toggleHUD}
+                      >
+                        Sorting & Stats
+                      </TaskListAction>
                     )}
-                  </div>
+                    <Search onChange={this.handleSearch} />
+                    <TaskListAction
+                      alt="Print"
+                      backgroundColor="#fff"
+                      icon={PrintIcon}
+                      onClick={downloadPDF}
+                    >
+                      Print
+                    </TaskListAction>
+                  </ToolbarContainer>
                 )}
-              </TableWrapper>
-            </TaskViewGrid>
-            {this.renderFilterPopover()}
-          </TaskViewContainer>
-        </div>
-      </ClickAwayListener>
+                {(selectedTask || !taskDrawerOpen) && (
+                  <AddTaskButton onClick={this.onAddTaskButtonClick} />
+                )}
+              </Grid>
+            </StyledToolbar>
+          )}
+          <AnimatePresence>
+            {currentFilterDescription && (
+              <FilterByTextContainer {...animationProperties}>
+                <img src={FilterIcon} alt="Filter icon" />
+                <FilterByLabel>Filter:</FilterByLabel>
+                <FilterByBoldLabel>
+                  {currentFilterDescription}
+                </FilterByBoldLabel>
+                <FilterByLinkLabel onClick={this.clearFilter}>
+                  clear filter
+                </FilterByLinkLabel>
+              </FilterByTextContainer>
+            )}
+          </AnimatePresence>
+          <TaskViewGrid container wrap="nowrap">
+            <TableWrapper taskDrawerOpen={taskDrawerOpen}>
+              {isFetching ? (
+                <FadeContainer>
+                  <Fade
+                    in={isFetching}
+                    unmountOnExit
+                    style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
+                  >
+                    <ProgressIcon />
+                  </Fade>
+                </FadeContainer>
+              ) : (
+                <div style={{ display: 'flex' }}>
+                  <TaskListContainer>
+                    {this.renderTasklists()}
+                    {this.renderCompleted()}
+                  </TaskListContainer>
+                  {taskDrawerOpen && (
+                    <NewTaskDrawer
+                      headsUpAreaRef={this.headsUpArea.current}
+                      closeDrawer={this.closeTaskDrawer}
+                      taskList={taskList}
+                      markComplete={markComplete}
+                      onMarkComplete={this.onMarkComplete}
+                      isInbox={isInbox}
+                    />
+                  )}
+                </div>
+              )}
+            </TableWrapper>
+          </TaskViewGrid>
+          {this.renderFilterPopover()}
+        </TaskViewContainer>
+      </div>
     );
   }
 }
