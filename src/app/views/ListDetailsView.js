@@ -94,7 +94,8 @@ class Home extends PureComponent {
     } = this.props;
 
     if (taskListId) {
-      downloadPDF(taskListId);
+      // downloadPDF(taskListId);
+      window.print();
     }
   };
 
