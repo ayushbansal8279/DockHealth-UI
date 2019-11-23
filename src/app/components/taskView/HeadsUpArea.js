@@ -21,12 +21,12 @@ import {
 } from './HeadsUpArea.styled';
 
 const taskListStatsTabs = {
-  me: 'For Me',
   all: 'All',
+  me: 'For Me',
 };
 const taskListTrendsTabs = {
-  me: 'For Me',
   all: 'All',
+  me: 'For Me',
 };
 
 // This is the code for the all active tasks tab under the for me heads up section
@@ -53,7 +53,7 @@ const taskListStatsElements = [
     key: 'OverDue_AssignToMe_Count',
     label: 'Overdue',
     tab: taskListStatsTabs.me,
-    filter: 'ASSIGNED_TO_ME_OVERDUE',
+    filter: 'ASSIGNED_TO_ME_OVERDUE',   
   },
   {
     key: 'Incomplete_TaskList_Count',
@@ -166,10 +166,19 @@ export default forwardRef(({ taskList, currentFilter, filterChange }, ref) => {
     taskListStatsOk: store.taskListState.taskListStatsOk,
   }));
 
-  const [currentStatsTab, setCurrentStatsTab] = useState(taskListStatsTabs.me);
+  const [currentStatsTab, setCurrentStatsTab] = useState(taskListStatsTabs.all);
   const [currentTrendsTab, setCurrentTrendsTab] = useState(
-    taskListTrendsTabs.me,
+    taskListTrendsTabs.all,
   );
+
+  const tabSwitchAction = (tabLabel) => {
+    setCurrentStatsTab(tabLabel);
+    if(tabLabel == taskListStatsTabs.all){
+      filterChange("")
+    }else{
+      filterChange("ASSIGNED_TO_ME")
+    }
+  }
 
   const taskListId = taskList?.taskListId;
 
@@ -202,7 +211,7 @@ export default forwardRef(({ taskList, currentFilter, filterChange }, ref) => {
                   {renderTabSwitches({
                     currentActiveTab: currentStatsTab,
                     tabData: taskListStatsTabs,
-                    tabSwitchMethod: setCurrentStatsTab,
+                    tabSwitchMethod: tabSwitchAction,
                   })}
                 </HeadsUpSectionHeader>
                 <HeadsUpSectionDivider />
