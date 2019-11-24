@@ -35,6 +35,7 @@ import {
   TaskBodyChevronContainer,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
+import Linkify from 'linkifyjs/react';
 
 const TaskBody = ({
   isSubtask,
@@ -223,9 +224,11 @@ const TaskBody = ({
                   onMouseEnter={onTaskDescriptionMouseEnter}
                   onMouseLeave={onTaskDescriptionMouseLeave}
                 >
+                  <Linkify options={{target: "_blank", className: "decorated-link"}}>
                   {description || (
                     <div style={{ color: '#ababb2' }}>Unnamed task</div>
                   )}
+                  </Linkify>
                   <PatientsTasklistStrikeThrough
                     hasDescription={Boolean(description)}
                     active={status === 'COMPLETE'}

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import BubbleFinishCurrentUserIcon from '../../img/bubble-finish-current-user.svg';
 import BubbleFinishIcon from '../../img/bubble-finish.svg';
+import Linkify from 'linkifyjs/react';
 
 const CommentBubble = styled.div`
   background-color: #ededf0;
@@ -184,7 +185,7 @@ class SingleComment extends Component {
             }
           }}
         >
-          {comment}
+          <Linkify options={{target: "_blank", className: "decorated-link"}}>{comment}</Linkify>
         </CommentBubbleText>
         {isLastBubble && (
           <BubbleFinish
