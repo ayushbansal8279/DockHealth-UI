@@ -1,36 +1,32 @@
 import React from 'react';
+import GenericHeader from '../components/common/GenericHeader';
 
 const SupportSectionView = () => {
   return (
-    <div className="off-canvas-content" data-off-canvas-content>
-      <div className="row expanded collapse">
-        <div className="large-12 columns">
-          <header className="nav-down">
-            <div className="top-bar">
-              <div className="top-bar-left">
-                <button
-                  className="menu-icon hide-for-medium"
-                  type="button"
-                  data-toggle="sidebar"
-                />
-                <h3>DockHealth Support</h3>
-              </div>
-            </div>
-          </header>
-          <div className="list-wrapper">
-            <div className="row">
-              <div className="column">
-                <h5>
-                  <span>For DockHealth support, email us at</span>
-                  <a
-                    href="mailto:support@dock.health?Subject=Dock%20Support"
-                    target="_top"
-                  >
-                    support@dock.health
-                  </a>
-                </h5>
-              </div>
-            </div>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <GenericHeader
+        isFetching={false}
+        title="Support"
+      />
+      <div className="list-wrapper">
+        <div className="row">
+          <div className="column">
+            <h5>
+              <span>For Dock Health support, email us at &nbsp;</span>
+              <a
+                href="mailto:support@dock.health?Subject=Dock%20Support"
+                target="_top"
+                style={{color:"#007cab"}}
+              >
+                support@dock.health
+              </a>
+            </h5>
           </div>
         </div>
       </div>
