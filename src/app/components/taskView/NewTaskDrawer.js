@@ -139,6 +139,10 @@ const onSubmit = ({
     taskListId: taskList?.taskListId,
   };
 
+  if(!requestData.description || requestData.description == ""){
+    return false;
+  }
+
   if (newTaskDueDate && moment(newTaskDueDate).isValid()) {
     requestData.dueDate = newTaskDueDate;
   }
@@ -448,11 +452,19 @@ export default ({
 
   const addingTaskOrSubtask = !task || (task && !task.taskId);
 
+  console.log('render NewTaskDrawer')
   return (
     <NewTaskDrawerContainer
       headsUpAreaHeight={headsUpAreaHeight}
       ref={taskContainerRef}
-      onBlur={() => handleSubmit()}
+      onBlur={
+        () => {
+          setTimeout(() => {
+            console.log('on blur')
+            handleSubmit()
+          }, 500)
+        }
+      }
     >
       <StyledForm onSubmit={handleSubmit}>
         <NewTaskDrawerInnerContainer>
