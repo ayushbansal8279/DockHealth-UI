@@ -139,7 +139,7 @@ const SimpleBarComponent = ({
 
   return (
     <StyledSimpleBar
-      visible={filteredItems.length > maxPeopleRecordsVisible}
+      visible={""+(filteredItems.length > maxPeopleRecordsVisible)}
       style={{ maxHeight: maxPeopleContainerHeight }}
     >
       {simpleBarItemsVisible && (
