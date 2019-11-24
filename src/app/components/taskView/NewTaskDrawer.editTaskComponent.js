@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { markComplete } from '../../actions/task-actions';
 import TaskCheckbox from '../task/TaskCheckbox';
+import linkifyHtml from 'linkifyjs/html';
 
 const EditTaskContainer = styled.div`
   display: flex;
@@ -64,7 +65,15 @@ class EditTaskDescription extends Component {
 
   resetTextContent = () => {
     const { selectedTask } = this.props;
-    this.componentRef.current.textContent = selectedTask?.description;
+    if (this.state.componentEditable){
+      this.componentRef.current.textContent = selectedTask?.description;
+    }else{
+      const linkifyDescription = linkifyHtml(selectedTask?.description, {
+        defaultProtocol: 'https',
+        className: 'decorated-link'
+      });
+      this.componentRef.current.innerHTML = linkifyDescription;
+    }
   };
 
   setComponentEditable = () => {
