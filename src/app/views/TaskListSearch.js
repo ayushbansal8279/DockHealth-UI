@@ -1,5 +1,6 @@
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -8,6 +9,7 @@ import styled from 'styled-components';
 import * as TaskActions from '../actions/task-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import TaskListSearchContainer from '../components/LEGACY_list/TaskListSearchContainer';
+import GenericHeader from '../components/common/GenericHeader';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -86,56 +88,42 @@ class TaskListSearch extends PureComponent {
 
   render() {
     return (
-      <div className="off-canvas-content" data-off-canvas-content>
-        <div className="row expanded collapse">
-          <div className="large-12 columns">
-            <div className="top-bar">
-              <div className="top-bar-left">
-                <button
-                  className="menu-icon hide-for-medium"
-                  type="button"
-                  data-toggle="sidebar"
-                />
-                <h3>Search</h3>
-              </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <GenericHeader
+          isFetching={false}
+          title="Search"
+        />
+        <Grid container alignItems="center" justify="flex-end" direction="row" style={{height: "88px", paddingTop: "10px", width: "80%"}}>
+          <div className="input-group searchbar">
+            <input
+              className="input-field search-field expand-search"
+              id="task-search-field"
+              type="search"
+              placeholder="Search tasks"
+              onKeyPress={this.handleKeyPress}
+              onChange={this.searchUpdated}
+              value={this.state.searchTerm}
+            />
+            <div className="input-group-button">
+              <button className="button">
+                <svg
+                  onClick={this.searchTasks}
+                  id="task-search-button"
+                  className="icon"
+                >
+                  <use xlinkHref="#icon-search" />
+                </svg>
+              </button>
             </div>
           </div>
-        </div>
-        <div className="row expanded collapse">
-          <div className="large-12 columns">
-            <div className="wrapper list-filter row collapse align-middle align-right " />
-          </div>
-        </div>
-
+        </Grid>
         <div className="wrapper-search">
-          <div className="row expanded collapse">
-            <div className="large-2 columns" />
-            <div className="large-8 columns">
-              <div className="input-group searchbar">
-                <input
-                  className="input-field search-field expand-search"
-                  id="task-search-field"
-                  type="search"
-                  placeholder="Search tasks"
-                  onKeyPress={this.handleKeyPress}
-                  onChange={this.searchUpdated}
-                  value={this.state.searchTerm}
-                />
-                <div className="input-group-button">
-                  <button className="button">
-                    <svg
-                      onClick={this.searchTasks}
-                      id="task-search-button"
-                      className="icon"
-                    >
-                      <use xlinkHref="#icon-search" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="large-2 columns" />
-          </div>
 
           {this.props.isFetching && (
             <FadeContainer>
