@@ -119,8 +119,6 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    //Placeholder text unnecissary.
-    //placeholder="MM/DD/YYYY"
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
     keepCharPositions
@@ -133,8 +131,6 @@ const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    //Phone number doesnt need placeholder text?
-    //placeholder="123-123-1234"
     mask={[
       /\d/,
       /\d/,
@@ -174,11 +170,6 @@ export const PatientsForm = ({
   isReadOnly,
   cancel,
 }) => {
-  const readOnlyProps = placeholder => ({
-    InputLabelProps: { shrink: isReadOnly || undefined },
-    placeholder: isReadOnly ? undefined : placeholder,
-  });
-
   return (
     <>
       <PatientsSidebarSection
@@ -194,35 +185,30 @@ export const PatientsForm = ({
         >
           <div>
             <Grid container wrap="nowrap">
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <StyledTextField
                   name="firstName"
                   value={firstName || ''}
                   onChange={onChange}
                   required={!isReadOnly}
                   label="First Name"
-                  //Placeholder unnecissary.
-                  //{...readOnlyProps('Sam')}
                 />
               </Grid>
-              <Grid item xs={2} style={{ margin: '0 4px' }}>
+              <Grid item xs={4} style={{ margin: '0 4px' }}>
                 <StyledTextField
                   name="middleName"
                   value={middleName || ''}
                   onChange={onChange}
                   label="Middle Name"
-                  //Placeholder unnecissary.
-                  //{...readOnlyProps('Max')}
                 />
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <StyledTextField
                   name="lastName"
                   value={lastName || ''}
                   onChange={onChange}
                   required={!isReadOnly}
                   label="Last Name"
-                  //{...readOnlyProps('Nelson')}
                 />
               </Grid>
             </Grid>
@@ -231,9 +217,6 @@ export const PatientsForm = ({
               value={mrn || ''}
               onChange={onChange}
               label="MRN"
-              //Placeholder text unnecissary.
-              //{...readOnlyProps('123-123-23444')}
-              //required={!isReadOnly}
             />
             <StyledTextField
               name="dob"
@@ -244,8 +227,6 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : BirthdayTextMask,
               }}
-              //Placeholder text unnecissary.
-              //{...readOnlyProps()}
             />
             <StyledTextField
               name="gender"
@@ -253,8 +234,6 @@ export const PatientsForm = ({
               onChange={onChange}
               label="Gender"
               select
-              //Placeholder text unnecissary.
-              //{...readOnlyProps()}
             >
               <MenuItem value="female">Female</MenuItem>
               <MenuItem value="male">Male</MenuItem>
@@ -271,8 +250,6 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
               }}
-              //Phone number doesnt need placeholder text?
-              //{...readOnlyProps('234-234-2333')}
             />
             <StyledTextField
               name="phoneMobile"
@@ -283,8 +260,6 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
               }}
-              //Phone number doesnt need placeholder text?
-              //{...readOnlyProps('456-456-4444')}
             />
             <StyledTextField
               name="email"
@@ -293,8 +268,6 @@ export const PatientsForm = ({
               label="Email"
               error={errors?.email}
               type="email"
-              //Email doesnt need placeholder text?
-              //{...readOnlyProps('name@email.com')}
             />
           </div>
         </div>
@@ -385,7 +358,7 @@ const PatientEdit = ({ patient }) => {
   };
 
   const validateEmail = email => {
-    const valid =  (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email));
+    const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email);
     return valid;
   };
 
@@ -395,8 +368,8 @@ const PatientEdit = ({ patient }) => {
       firstName &&
       firstName !== '' &&
       (lastName && lastName !== '') &&
-      (!dob || dob == '' || validateBirthday(dob)) &&
-      (!email || email == '' || validateEmail(email))
+      (!dob || dob === '' || validateBirthday(dob)) &&
+      (!email || email === '' || validateEmail(email))
     );
   };
 
