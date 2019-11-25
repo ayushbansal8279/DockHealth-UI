@@ -27,6 +27,11 @@ export const PatientsTasklistDescription = styled.div`
   white-space: nowrap;
 `;
 
+export const PatientsTaskListInnerDescription = styled.span`
+  ${props => !props.hasDescription && 'color: #ababb2;'}
+  position: relative;
+`;
+
 export const PatientsTasklistStrikeThrough = styled.div`
   background-color: ${props => (props.hasDescription ? '#303538' : '#ababb2')};
   left: 0;

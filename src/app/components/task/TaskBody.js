@@ -34,6 +34,7 @@ import {
   RolloverNestedListItemText,
   RolloverPopover,
   TaskBodyChevronContainer,
+  PatientsTaskListInnerDescription,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
 
@@ -225,16 +226,19 @@ const TaskBody = ({
                   onMouseLeave={onTaskDescriptionMouseLeave}
                 >
                   <Linkify
+                    tagName="span"
                     options={{ target: '_blank', className: 'decorated-link' }}
                   >
-                    {description || (
-                      <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                    )}
+                    <PatientsTaskListInnerDescription
+                      hasDescription={Boolean(description)}
+                    >
+                      {description || 'Unnamed task'}
+                      <PatientsTasklistStrikeThrough
+                        hasDescription={Boolean(description)}
+                        active={status === 'COMPLETE'}
+                      />
+                    </PatientsTaskListInnerDescription>
                   </Linkify>
-                  <PatientsTasklistStrikeThrough
-                    hasDescription={Boolean(description)}
-                    active={status === 'COMPLETE'}
-                  />
                 </PatientsTasklistDescription>
               </Grid>
               <Grid item xs={12}>
