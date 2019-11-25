@@ -94,7 +94,6 @@ const PatientsLayout = () => {
   );
 
   const filteredPatients = searchPatients(patients, searchTerm);
-  const patientSidebarOpen = highlightedPatient || isCreatingPatient;
 
   return (
     <div>
@@ -107,7 +106,7 @@ const PatientsLayout = () => {
         {isFetching ? (
           <PatientsListSpinner isFetching={isFetching} />
         ) : (
-          <Grid xs={patientSidebarOpen ? 4 : 12} item>
+          <Grid xs item>
             <PatientsList
               patients={filteredPatients}
               isFiltered={searchTerm !== ''}
@@ -117,12 +116,12 @@ const PatientsLayout = () => {
           </Grid>
         )}
         {highlightedPatient && (
-          <Grid xs={8} item>
+          <Grid xs item>
             <PatientsSidebar patient={highlightedPatient} />
           </Grid>
         )}
         {isCreatingPatient && (
-          <Grid xs={8} item>
+          <Grid xs item>
             <PatientsCreation />
           </Grid>
         )}

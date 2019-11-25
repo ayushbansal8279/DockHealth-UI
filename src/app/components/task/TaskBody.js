@@ -1,4 +1,5 @@
 import Grid from '@material-ui/core/Grid';
+import Linkify from 'linkifyjs/react';
 import moment from 'moment';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,8 +9,8 @@ import { archiveTask as archiveTaskAction } from '../../actions/task-actions';
 import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utilityFunctions';
 import useBoolean from '../../hooks/useBoolean';
 import ChevronRightIcon from '../../img/chevron-right.svg';
-import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import EnvelopeIcon from '../../img/envelope.svg';
+import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import CubesLoader from '../common/CubesLoader';
 import {
   priorityColor,
@@ -35,7 +36,6 @@ import {
   TaskBodyChevronContainer,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
-import Linkify from 'linkifyjs/react';
 
 const TaskBody = ({
   isSubtask,
@@ -224,10 +224,12 @@ const TaskBody = ({
                   onMouseEnter={onTaskDescriptionMouseEnter}
                   onMouseLeave={onTaskDescriptionMouseLeave}
                 >
-                  <Linkify options={{target: "_blank", className: "decorated-link"}}>
-                  {description || (
-                    <div style={{ color: '#ababb2' }}>Unnamed task</div>
-                  )}
+                  <Linkify
+                    options={{ target: '_blank', className: 'decorated-link' }}
+                  >
+                    {description || (
+                      <div style={{ color: '#ababb2' }}>Unnamed task</div>
+                    )}
                   </Linkify>
                   <PatientsTasklistStrikeThrough
                     hasDescription={Boolean(description)}
@@ -319,15 +321,17 @@ const TaskBody = ({
                     )}
                   </PriorityContainer>
                 </div>
-                <TaskBodyChevronContainer isSubtask={isSubtask}>
-                  <img
-                    style={{
-                      height: '10px',
-                    }}
-                    src={ChevronRightIcon}
-                    alt="Chevron icon"
-                  />
-                </TaskBodyChevronContainer>
+                {!readOnly && (
+                  <TaskBodyChevronContainer isSubtask={isSubtask}>
+                    <img
+                      style={{
+                        height: '10px',
+                      }}
+                      src={ChevronRightIcon}
+                      alt="Chevron icon"
+                    />
+                  </TaskBodyChevronContainer>
+                )}
               </>
             )}
           </Grid>

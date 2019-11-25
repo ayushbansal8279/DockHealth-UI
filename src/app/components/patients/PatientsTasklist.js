@@ -53,13 +53,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
           {completedTasks.map(task => (
-            <Task
-              task={task}
-              key={task.taskId}
-              hidePatient
-              hideCheckbox
-              readOnly
-            />
+            <Task task={task} key={task.taskId} readOnly />
           ))}
         </div>
       )}
