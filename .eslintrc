@@ -25,7 +25,8 @@
     "renderFoundationComponentsJquery": true,
     "scrollToTop": true,
     "toggleAlert": true,
-    "toggleTaskForm": true
+    "toggleTaskForm": true,
+    "closeAddForm": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,

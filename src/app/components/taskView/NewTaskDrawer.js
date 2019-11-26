@@ -114,6 +114,7 @@ const onDelete = ({ afterDelete, dispatch, task }) => async event => {
   if (task) {
     try {
       await deleteTask(task)(dispatch);
+      toggleAlert('Task deleted successfully', 'success');
       afterDelete();
     } catch {
       noop();
@@ -393,11 +394,6 @@ export default ({
     <NewTaskDrawerContainer
       headsUpAreaHeight={headsUpAreaHeight}
       ref={taskContainerRef}
-      onBlur={() => {
-        setTimeout(() => {
-          handleSubmit();
-        }, 500);
-      }}
     >
       {parentTask && (
         <>

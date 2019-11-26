@@ -1,3 +1,4 @@
+import linkifyHtml from 'linkifyjs/html';
 import prop from 'ramda/es/prop';
 import React, { Component, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -6,7 +7,6 @@ import styled from 'styled-components';
 
 import { markComplete } from '../../actions/task-actions';
 import TaskCheckbox from '../task/TaskCheckbox';
-import linkifyHtml from 'linkifyjs/html';
 
 const EditTaskContainer = styled.div`
   display: flex;
@@ -65,12 +65,13 @@ class EditTaskDescription extends Component {
 
   resetTextContent = () => {
     const { selectedTask } = this.props;
-    if (this.state.componentEditable){
+    const { componentEditable } = this.state;
+    if (componentEditable) {
       this.componentRef.current.textContent = selectedTask?.description;
-    }else{
-      const linkifyDescription = linkifyHtml(selectedTask?.description, {
+    } else {
+      const linkifyDescription = linkifyHtml(selectedTask?.description ?? '', {
         defaultProtocol: 'https',
-        className: 'decorated-link'
+        className: 'decorated-link',
       });
       this.componentRef.current.innerHTML = linkifyDescription;
     }
