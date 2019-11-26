@@ -30,8 +30,14 @@ export default [
   },
   {
     key: 'accountPhoneNumber',
-    label: 'Your phone number',
+    label: 'Your Mobile Phone Number',
     isPhoneNumber: true,
+    PreFieldComponent: () => (
+      <PrePasswordLabel>
+        A valid mobile phone number is required to send an authentication code
+        for HIPAA compliance
+      </PrePasswordLabel>
+    ),
   },
   {
     key: 'password',
