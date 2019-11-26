@@ -4,7 +4,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Popover from '@material-ui/core/Popover';
-import moment from 'moment';
 import head from 'ramda/es/head';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
@@ -12,14 +11,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { getAllPatients } from '../../actions/patient-actions';
 import {
-  assignOrReassignTask,
   deleteTask,
   duplicateTask,
-  moveTask,
-  saveTask,
   storeAsCurrentTask as storeAsCurrentTaskAction,
   toggleTaskPriority,
-  updatePatient,
   updateWorkflowStatus,
 } from '../../actions/task-actions';
 import { getPatientName, noop } from '../../helpers/utilityFunctions';
@@ -27,6 +22,7 @@ import useBoolean from '../../hooks/useBoolean';
 import { PriorityDot } from '../common/Priority';
 import NewTaskDrawerCommentSection from './NewTaskDrawer.commentSection';
 import NewTaskDrawerForm from './NewTaskDrawer.form';
+import onSubmit from './NewTaskDrawer.onSubmit';
 import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
 import {
   AutoSaveContainer,
@@ -38,12 +34,18 @@ import {
   FormSectionDivider,
   NewTaskDrawerContainer,
   NewTaskDrawerInnerContainer,
+  ParentDescription,
+  ParentInfoContainer,
+  ParentRead,
   SideClickListener,
   StatusSelect,
   StyledButton,
   StyledForm,
   StyledVerticalDivider,
+  SubtaskInfoContainer,
+  SubtaskLabel,
   TopLabel,
+  SubtaskCloseContainer,
 } from './NewTaskDrawer.styled';
 import { taskValidationSchema } from './NewTaskDrawer.validationSchema';
 import PriorityFlag from './PriorityFlag';
@@ -104,86 +106,6 @@ const renderStatusSelectOption = ({
       </ListItemText>
     </ListItem>
   );
-};
-
-const onSubmit = ({
-  dispatch,
-  status,
-  task,
-  taskList,
-  priorityActive,
-  storeAsCurrentTask,
-  deferredCommentsPromises,
-  setAutoSaveVisible,
-}) => async data => {
-  const {
-    assignedToUserId,
-    patientId,
-    patient: unusedPatient,
-    newTaskListId,
-    newTaskDueDate,
-    description,
-    descriptionEdit,
-    ...newData
-  } = data;
-  let { patient } = data;
-
-  const requestData = {
-    ...task,
-    ...newData,
-    description: descriptionEdit || description,
-    workflowStatus: status.value,
-    priority: priorityActive ? 'HIGH' : 'LOW',
-    assignedToId: assignedToUserId,
-    patientId,
-    taskListId: taskList?.taskListId,
-  };
-
-  if(!requestData.description || requestData.description == ""){
-    return false;
-  }
-
-  if (newTaskDueDate && moment(newTaskDueDate).isValid()) {
-    requestData.dueDate = newTaskDueDate;
-  }
-
-  try {
-    patient = JSON.parse(patient);
-  } catch {
-    noop();
-  }
-
-  try {
-    const newTask = await saveTask(requestData)(dispatch);
-    await Promise.all([
-      assignOrReassignTask(newTask, assignedToUserId || -1)(dispatch),
-      updatePatient(newTask, patient)(dispatch),
-    ]);
-
-    if (newTaskListId) {
-      await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
-    }
-
-    if (!requestData.taskId) {
-      storeAsCurrentTask({
-        ...newTask,
-        ...requestData,
-        taskId: newTask.taskId || requestData.taskId,
-      });
-    }
-
-    let commentPromise = Promise.resolve();
-
-    deferredCommentsPromises.forEach(deferredCommentPromise => {
-      commentPromise = commentPromise.then(async () =>
-        deferredCommentPromise({ task: { ...newTask, ...requestData } }),
-      );
-    });
-
-    setAutoSaveVisible();
-  } catch {
-    noop();
-  }
 };
 
 const onDelete = ({ afterDelete, dispatch, task }) => async event => {
@@ -288,6 +210,29 @@ export default ({
   const taskId = task?.taskId;
   const taskWorkflowStatus = task?.workflowStatus;
   const taskPriority = task?.priority;
+
+  const { parentTask, subtaskOrder } = useSelector(({ taskState }) => {
+    const tasks = [...taskState.tasks, ...taskState.completedTasks];
+
+    if (!isSubtask) {
+      return {
+        parentTask: null,
+        subtaskOrder: null,
+      };
+    }
+
+    const foundParentTask = tasks.find(
+      ({ taskId: storeTaskId }) => task.parentTaskId === storeTaskId,
+    );
+    const foundSubtaskOrder = foundParentTask?.subtasks.findIndex(
+      ({ taskId: subtaskId }) => subtaskId === taskId,
+    );
+
+    return {
+      parentTask: foundParentTask,
+      subtaskOrder: foundSubtaskOrder >= 0 ? foundSubtaskOrder + 1 : 0,
+    };
+  });
 
   const storeAsCurrentTask = useCallback(
     newTask => storeAsCurrentTaskAction(newTask)(dispatch),
@@ -442,39 +387,55 @@ export default ({
     }),
   );
 
-  const topLabel = (() => {
-    if (task && !task.taskId) {
-      return 'Add a subtask';
-    }
-
-    return 'Add a task';
-  })();
-
   const addingTaskOrSubtask = !task || (task && !task.taskId);
 
-  console.log('render NewTaskDrawer')
   return (
     <NewTaskDrawerContainer
       headsUpAreaHeight={headsUpAreaHeight}
       ref={taskContainerRef}
-      onBlur={
-        () => {
-          setTimeout(() => {
-            console.log('on blur')
-            handleSubmit()
-          }, 500)
-        }
-      }
+      onBlur={() => {
+        setTimeout(() => {
+          handleSubmit();
+        }, 500);
+      }}
     >
+      {parentTask && (
+        <>
+          <ParentInfoContainer>
+            {!parentTask.read && <ParentRead>NEW</ParentRead>}
+            <ParentDescription>{parentTask.description}</ParentDescription>
+          </ParentInfoContainer>
+          <SubtaskInfoContainer topBorderActive={autoSaveVisible}>
+            <SubtaskLabel>
+              {addingTaskOrSubtask ? 'New subtask' : `Subtask #${subtaskOrder}`}
+            </SubtaskLabel>
+            <SubtaskCloseContainer
+              onClick={event => {
+                event.preventDefault();
+                event.stopPropagation();
+                closeDrawer();
+                storeAsCurrentTask(null);
+              }}
+            >
+              &times;
+            </SubtaskCloseContainer>
+            <AutoSaveContainer visible={autoSaveVisible}>
+              <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
+            </AutoSaveContainer>
+          </SubtaskInfoContainer>
+        </>
+      )}
       <StyledForm onSubmit={handleSubmit}>
         <NewTaskDrawerInnerContainer>
           <FormSection
-            topBorderActive={!addingTaskOrSubtask && autoSaveVisible}
+            topBorderActive={
+              !addingTaskOrSubtask && !parentTask && autoSaveVisible
+            }
             container
             item
             xs={12}
           >
-            {addingTaskOrSubtask && (
+            {!task && (
               <Grid
                 container
                 item
@@ -482,7 +443,7 @@ export default ({
                 alignItems="center"
                 justify="space-between"
               >
-                <TopLabel>{topLabel}</TopLabel>
+                <TopLabel>Add a task</TopLabel>
                 <CloseTaskButtonContainer>
                   <CloseTaskButton
                     onClick={() => {
@@ -493,13 +454,12 @@ export default ({
                 </CloseTaskButtonContainer>
               </Grid>
             )}
-            <FormSectionDivider
-              addingTaskOrSubtask={addingTaskOrSubtask}
-              active={autoSaveVisible}
-            >
-              <AutoSaveContainer visible={autoSaveVisible}>
-                <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
-              </AutoSaveContainer>
+            <FormSectionDivider addingTask={!task} active={autoSaveVisible}>
+              {!parentTask && (
+                <AutoSaveContainer visible={autoSaveVisible}>
+                  <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
+                </AutoSaveContainer>
+              )}
             </FormSectionDivider>
             <Grid
               container
@@ -523,7 +483,7 @@ export default ({
                 <PriorityDot color={status.color} />
                 <span>{status.label}</span>
               </StatusSelect>
-              {!addingTaskOrSubtask && (
+              {task && !parentTask && (
                 <CloseTaskButtonContainer>
                   <CloseTaskButton
                     onClick={() => {

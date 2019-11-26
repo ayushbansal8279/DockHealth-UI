@@ -6,12 +6,55 @@ export const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   height: calc(100vh - 5.5rem);
   justify-content: flex-start;
   padding: 0 0.25rem;
   position: sticky;
   transition: all 0.25s ease-out;
   top: 6.25rem;
+`;
+
+export const ParentInfoContainer = styled.div`
+  background-color: white;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+`;
+
+export const ParentRead = styled.div`
+  color: #d9036b;
+  font-size: 0.625rem;
+`;
+
+export const ParentDescription = styled.div`
+  color: #303538;
+  font-size: 1.25rem;
+  font-weight: bold;
+`;
+
+export const SubtaskInfoContainer = styled(ParentInfoContainer)`
+  align-items: center;
+  background-color: #d4f3ff;
+  border-top: 0.125rem solid transparent;
+  ${props => props.topBorderActive && 'border-top-color: #d9036b;'}
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  transition: border-top-color 0.25s all;
+`;
+
+export const SubtaskLabel = styled.div`
+  color: #303538;
+  font-size: 1.25rem;
+  line-height: 1;
+  height: 1.25rem;
+`;
+
+export const SubtaskCloseContainer = styled.div`
+  color: rgba(48, 53, 56, 0.54);
+  cursor: pointer;
+  font-size: 2rem;
 `;
 
 export const TopLabel = styled.div`
@@ -34,7 +77,7 @@ export const FormSectionNoBorder = styled(Grid)`
 
 export const FormSectionDivider = styled.div`
   background-color: ${props => (props.active ? '#d9036b' : '#ddf2f7')};
-  height: ${props => (props.addingTaskOrSubtask ? 0.125 : 0)}rem;
+  height: ${props => (props.addingTask ? 0.125 : 0)}rem;
   position: relative;
   transition: background-color 0.25s ease-out;
   width: 100%;
