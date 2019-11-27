@@ -8,9 +8,7 @@ import AddSubtask from './AddSubtask';
 import ConfirmationDialog from './ConfirmationDialog';
 import {
   TaskAnimationContainer,
-  TaskBodyContainer,
   TaskContainer,
-  TaskGrid,
   TaskSelectionContainer,
 } from './Task.styled';
 import TaskBody from './TaskBody';
@@ -23,6 +21,7 @@ const Task = props => {
     selectedTaskId,
     storeAsCurrentTask,
     slimView,
+    taskDrawerOpen,
   } = props;
   const { subtasks, priority, taskList, isNewSubtask } = task;
 
@@ -82,6 +81,7 @@ const Task = props => {
       <TaskAnimationContainer
         isNewSubtask={isNewSubtask}
         isSubtask={isSubtask}
+        drawerOpen={taskDrawerOpen}
         ref={animationContainer}
       >
         <TaskContainer isSubtask={isSubtask} hasSubtasks={hasSubtasks}>
@@ -93,12 +93,8 @@ const Task = props => {
             />
           )}
           <TaskSelectionContainer isSelected={selectedTaskId === task.taskId}>
-            <TaskGrid container wrap="nowrap">
-              <TaskBodyContainer item xs={12}>
-                <Flag absolute priority={priority} />
-                <TaskBody {...props} handleStatusChange={handleStatusChange} />
-              </TaskBodyContainer>
-            </TaskGrid>
+            <Flag priority={priority} />
+            <TaskBody {...props} handleStatusChange={handleStatusChange} />
           </TaskSelectionContainer>
         </TaskContainer>
       </TaskAnimationContainer>

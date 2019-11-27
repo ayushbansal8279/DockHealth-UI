@@ -72,6 +72,7 @@ const renderTaskList = ({
 
   return (
     <ListItem
+      key={taskId}
       onClick={() => {
         setValue('newTaskListId', taskListId);
         setNewTaskListName(listName);

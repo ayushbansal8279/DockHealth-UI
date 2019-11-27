@@ -1,4 +1,3 @@
-import Grid from '@material-ui/core/Grid';
 import Linkify from 'linkifyjs/react';
 import moment from 'moment';
 import React, { useCallback, useRef } from 'react';
@@ -27,6 +26,7 @@ import {
   PatientsTasklistDate,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
+  PatientsTaskListInnerDescription,
   PatientsTasklistNew,
   PatientsTasklistStrikeThrough,
   PatientTasklistContainer,
@@ -34,7 +34,9 @@ import {
   RolloverNestedListItemText,
   RolloverPopover,
   TaskBodyChevronContainer,
-  PatientsTaskListInnerDescription,
+  TaskBodyMainContainer,
+  TaskDateContainer,
+  TaskStatusContainer,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
 
@@ -118,9 +120,14 @@ const TaskBody = ({
     countInfoContent = ` • ${countInfoContent.trim()}`;
   }
 
+  const completedByName =
+    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+      .trim()
+      .replace(/^\.$/, '') || 'Unknown';
+
   const completedByContent =
     formattedCompletedDateTime &&
-    `Completed by ${completedBy?.userName} at ${formattedCompletedDateTime}`;
+    `Completed by ${completedByName} at ${formattedCompletedDateTime}`;
 
   const firstLetterName = creator?.firstName?.charAt(0);
   const formattedUserName = `${firstLetterName ? `${firstLetterName}.` : ''} ${
@@ -149,12 +156,8 @@ const TaskBody = ({
   });
 
   return (
-    <div
-      style={{
-        height: '100%',
-        cursor: readOnly ? 'default' : 'pointer',
-        display: 'flex',
-      }}
+    <TaskBodyMainContainer
+      readOnly={readOnly}
       onClick={e => {
         e.stopPropagation();
         if (!readOnly) {
@@ -202,143 +205,119 @@ const TaskBody = ({
               disabled={disabled || isParentComplete || isInbox}
             />
           </MemberPickerContainer>
-
-          <Grid container alignItems="center" wrap="nowrap" direction="row">
-            <PatientTasklistContainer
-              item
-              container
-              alignItems="center"
-              xs={12}
-            >
-              <Grid item xs={12} container alignItems="center">
-                {task.sourceMessage && (
+          <PatientTasklistContainer isSubtask={isSubtask}>
+            <div>
+              {task.sourceMessage && (
+                <img
+                  src={EnvelopeIcon}
+                  alt="Email"
+                  style={{
+                    paddingRight: '5px',
+                  }}
+                />
+              )}
+              <PatientsTasklistDescription
+                ref={taskDescriptionRef}
+                onMouseEnter={onTaskDescriptionMouseEnter}
+                onMouseLeave={onTaskDescriptionMouseLeave}
+              >
+                <Linkify
+                  tagName="span"
+                  options={{ target: '_blank', className: 'decorated-link' }}
+                >
+                  <PatientsTaskListInnerDescription
+                    hasDescription={Boolean(description)}
+                  >
+                    {description || 'Unnamed task'}
+                    <PatientsTasklistStrikeThrough
+                      hasDescription={Boolean(description)}
+                      active={status === 'COMPLETE'}
+                    />
+                  </PatientsTaskListInnerDescription>
+                </Linkify>
+              </PatientsTasklistDescription>
+            </div>
+            <div>
+              <PatientsTasklistInfo>
+                {updated && (
                   <img
-                    src={EnvelopeIcon}
-                    alt="Email"
+                    src={UpdateIndicatorIcon}
+                    alt="Updated"
                     style={{
-                      paddingRight: '5px',
+                      width: '17px',
+                      height: '17px',
+                      paddingRight: '2px',
                     }}
                   />
                 )}
-                <PatientsTasklistDescription
-                  ref={taskDescriptionRef}
-                  onMouseEnter={onTaskDescriptionMouseEnter}
-                  onMouseLeave={onTaskDescriptionMouseLeave}
-                >
-                  <Linkify
-                    tagName="span"
-                    options={{ target: '_blank', className: 'decorated-link' }}
-                  >
-                    <PatientsTaskListInnerDescription
-                      hasDescription={Boolean(description)}
-                    >
-                      {description || 'Unnamed task'}
-                      <PatientsTasklistStrikeThrough
-                        hasDescription={Boolean(description)}
-                        active={status === 'COMPLETE'}
-                      />
-                    </PatientsTaskListInnerDescription>
-                  </Linkify>
-                </PatientsTasklistDescription>
-              </Grid>
-              <Grid item xs={12}>
-                <PatientsTasklistInfo>
-                  {updated && (
-                    <img
-                      src={UpdateIndicatorIcon}
-                      alt="Updated"
-                      style={{
-                        width: '17px',
-                        height: '17px',
-                        paddingRight: '2px',
-                      }}
-                    />
-                  )}
-                  {`Assigned by ${formattedUserName} at ${formattedCreationDate}${countInfoContent}`}
-                </PatientsTasklistInfo>
-              </Grid>
-              <Grid item xs={12}>
-                <CompletedBy
-                  isCompleted={status === 'COMPLETE' && completedByContent}
-                >
-                  <span>{completedByContent}</span>
-                </CompletedBy>
-              </Grid>
-              {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
-            </PatientTasklistContainer>
-            {!isSubtask && !taskDrawerOpen && !hidePatient && (
-              <PatientTasklistPatient>
-                {patient && (
-                  <Link
-                    to={`/patient/${patient.patientId}`}
-                    style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
-                  >
-                    <div>
-                      {`${patient?.lastName}, ${
-                        patient?.firstName
-                      } ${patient?.mrn ?? ''}`.trim()}
-                    </div>
-                  </Link>
-                )}
-              </PatientTasklistPatient>
-            )}
-            {!taskDrawerOpen && (
-              <div
-                style={{
-                  alignItems: 'flex-end',
-                  display: 'flex',
-                  lineHeight: '12px',
-                  paddingRight: `${isTaskArchivable ? 0 : 24}px`,
-                  minWidth: `${isTaskArchivable ? 136 : 180}px`,
-                  width: `${isTaskArchivable ? 136 : 180}px`,
-                }}
+                {`Assigned by ${formattedUserName} at ${formattedCreationDate}${countInfoContent}`}
+              </PatientsTasklistInfo>
+            </div>
+            <div>
+              <CompletedBy
+                isCompleted={status === 'COMPLETE' && completedByContent}
               >
-                {dueDate && !isTaskTimingOut && (
-                  <PatientsTasklistDate overdue={overdue}>
-                    {formattedDueDate}
-                  </PatientsTasklistDate>
-                )}
-                {isTaskTimingOut && (
-                  <AnimatedPatientsTasklistDate>
-                    Nice work!
-                  </AnimatedPatientsTasklistDate>
-                )}
-              </div>
-            )}
-            {!taskDrawerOpen && (
-              <>
-                <div
-                  style={{
-                    minWidth: `${isTaskArchivable ? 83 : 39}px`,
-                    width: `${isTaskArchivable ? 83 : 39}px`,
-                  }}
+                <span>{completedByContent}</span>
+              </CompletedBy>
+            </div>
+            {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
+          </PatientTasklistContainer>
+          {!taskDrawerOpen && !hidePatient && (
+            <PatientTasklistPatient>
+              {patient && !isSubtask && (
+                <Link
+                  to={`/patient/${patient.patientId}`}
+                  style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
                 >
-                  <PriorityContainer archivable={isTaskArchivable}>
-                    {isTaskArchivable ? (
-                      <ArchiveButton onClick={archiveTask}>
-                        Archive
-                      </ArchiveButton>
-                    ) : (
-                      status !== 'COMPLETE' && (
-                        <PriorityDot color={priorityColor(workflowStatus)} />
-                      )
-                    )}
-                  </PriorityContainer>
-                </div>
-                {!readOnly && (
-                  <TaskBodyChevronContainer isSubtask={isSubtask}>
-                    <img
-                      style={{
-                        height: '10px',
-                      }}
-                      src={ChevronRightIcon}
-                      alt="Chevron icon"
-                    />
-                  </TaskBodyChevronContainer>
-                )}
-              </>
-            )}
-          </Grid>
+                  <div>
+                    {`${patient?.lastName}, ${
+                      patient?.firstName
+                    } ${patient?.mrn ?? ''}`.trim()}
+                  </div>
+                </Link>
+              )}
+            </PatientTasklistPatient>
+          )}
+          {!taskDrawerOpen && (
+            <TaskDateContainer isTaskArchivable={isTaskArchivable}>
+              {dueDate && !isTaskTimingOut && (
+                <PatientsTasklistDate overdue={overdue}>
+                  {formattedDueDate}
+                </PatientsTasklistDate>
+              )}
+              {isTaskTimingOut && (
+                <AnimatedPatientsTasklistDate>
+                  Nice work!
+                </AnimatedPatientsTasklistDate>
+              )}
+            </TaskDateContainer>
+          )}
+          {!taskDrawerOpen && (
+            <>
+              <TaskStatusContainer isTaskArchivable={isTaskArchivable}>
+                <PriorityContainer archivable={isTaskArchivable}>
+                  {isTaskArchivable ? (
+                    <ArchiveButton onClick={archiveTask}>Archive</ArchiveButton>
+                  ) : (
+                    status !== 'COMPLETE' && (
+                      <PriorityDot color={priorityColor(workflowStatus)} />
+                    )
+                  )}
+                </PriorityContainer>
+              </TaskStatusContainer>
+              {!readOnly && (
+                <TaskBodyChevronContainer isSubtask={isSubtask}>
+                  <img
+                    style={{
+                      height: '10px',
+                    }}
+                    src={ChevronRightIcon}
+                    alt="Chevron icon"
+                  />
+                </TaskBodyChevronContainer>
+              )}
+            </>
+          )}
         </>
       )}
       <RolloverPopover
@@ -358,7 +337,7 @@ const TaskBody = ({
           {description ?? 'Unnamed task'}
         </RolloverNestedListItemText>
       </RolloverPopover>
-    </div>
+    </TaskBodyMainContainer>
   );
 };
 

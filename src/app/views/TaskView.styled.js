@@ -6,6 +6,31 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import InboxNoMessagesIcon from '../img/inbox-no-messages-icon.svg';
 
+export const FadeContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+`;
+
+export const TaskListContainer = styled.div`
+  display: flex;
+  flex: 2;
+  flex-flow: column wrap;
+`;
+
+export const StyledButton = styled(ButtonBase)`
+  && {
+    display: flex;
+    margin: 2rem auto;
+    background: #0ca1c7;
+    border-radius: 1rem;
+    height: 2rem;
+    padding: 0.5rem 2.25rem;
+    font-size: 0.875rem;
+    color: #fff;
+  }
+`;
+
 export const TaskViewGrid = styled(Grid)`
   && {
     width: 1050px;
@@ -105,8 +130,8 @@ export const StyledSlimViewSwitch = ({ slimView, ...props }) => (
 
 export const StyledToolbar = styled(Toolbar)`
   && {
-    width: 1050px;
     padding: 0 0.625rem;
+    width: 1050px;
   }
 `;
 

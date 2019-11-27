@@ -58,7 +58,7 @@ export const PriorityContainer = styled.div`
     props.archivable
       ? 'margin-bottom: -0.375rem;'
       : 'padding-bottom: 0.1875rem;'}
-  justify-content: flex-start;
+  justify-content: center;
   width: 100%;
 `;
 

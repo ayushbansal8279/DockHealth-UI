@@ -1,0 +1,29 @@
+import find from 'ramda/es/find';
+import propEq from 'ramda/es/propEq';
+import React from 'react';
+import styled from 'styled-components';
+
+import SortingIcon from '../../img/sorting-icon.svg';
+
+const OrderIconContainer = styled.span`
+  margin-left: 0.25rem;
+`;
+
+const OrderIconImage = styled.img`
+  transform: rotate(${props => (props.rotated ? 180 : 0)}deg);
+  transition: transform 0.25s ease-out;
+`;
+
+export default ({ sortingKey, sorting }) => {
+  const { order } = find(propEq('key', sortingKey), sorting);
+
+  return (
+    <OrderIconContainer>
+      <OrderIconImage
+        rotated={order === 'desc'}
+        src={SortingIcon}
+        alt="Sort icon"
+      />
+    </OrderIconContainer>
+  );
+};

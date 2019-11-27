@@ -1,4 +1,3 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
 import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
@@ -12,7 +11,6 @@ import map from 'ramda/es/map';
 import reject from 'ramda/es/reject';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
@@ -31,18 +29,21 @@ import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
 import SortingStatsIcon from '../img/sorting-stats.svg';
 import {
   CompletedButtonRowContainer,
+  FadeContainer,
   FilterByBoldLabel,
   FilterByLabel,
   FilterByLinkLabel,
   FilterByTextContainer,
   InboxNoMessagesAvailable,
+  SideClickListener,
+  StyledButton,
   StyledSlimViewSwitch,
   StyledToolbar,
   TableWrapper,
+  TaskListContainer,
   TaskViewContainer,
   TaskViewGrid,
   ToolbarContainer,
-  SideClickListener,
 } from './TaskView.styled';
 
 const groupBy = (list, keyGetter) => {
@@ -58,32 +59,6 @@ const groupBy = (list, keyGetter) => {
   });
   return checkMap;
 };
-
-const FadeContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-top: 100px;
-`;
-
-const TaskListContainer = styled.div`
-  display: flex;
-  flex: 2;
-  flex-flow: column wrap;
-  padding: 0 0.375rem;
-`;
-
-const StyledButton = styled(ButtonBase)`
-  && {
-    display: flex;
-    margin: 2rem auto;
-    background: #0ca1c7;
-    border-radius: 1rem;
-    height: 2rem;
-    padding: 0.5rem 2.25rem;
-    font-size: 0.875rem;
-    color: #fff;
-  }
-`;
 
 const filterOptions = [
   {

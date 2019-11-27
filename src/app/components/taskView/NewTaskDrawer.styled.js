@@ -1,6 +1,8 @@
-import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import withStyles from '@material-ui/core/styles/withStyles';
+import React from 'react';
+import styled from 'styled-components';
 
 export const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
@@ -85,12 +87,26 @@ export const FormSectionDivider = styled.div`
   ${props => props.condensed && 'margin: 0 0.5rem;'}
 `;
 
-export const FormSection = styled(FormSectionNoBorder)`
-  background-color: #fff;
-  border: 2px solid #ddf2f7;
-  ${props => props.topBorderActive && 'border-top-color: #d9036b;'}
-  transition: border 0.25s ease-out;
-`;
+const FormSectionElement = ({ classes, topBorderActive, ...props }) => {
+  const className = `${classes.root} ${
+    topBorderActive ? classes.topBorderActive : ''
+  }`.trim();
+
+  return <FormSectionNoBorder className={className} {...props} />;
+};
+
+const formSectionStyles = {
+  root: {
+    backgroundColor: '#fff',
+    border: '2px solid #ddf2f7',
+    transition: 'border 0.25s ease-out',
+  },
+  topBorderActive: {
+    borderTopColor: '#d9036b',
+  },
+};
+
+export const FormSection = withStyles(formSectionStyles)(FormSectionElement);
 
 export const CondensedFormSection = styled(FormSection)`
   padding: 0;
