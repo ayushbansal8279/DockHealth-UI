@@ -14,6 +14,7 @@ import { addTaskComment } from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import renderComment from './NewTaskDrawer.renderComment';
+import { FormSectionDivider } from './NewTaskDrawer.styled';
 
 const CommentSectionLabel = styled.div`
   align-items: center;
@@ -283,6 +284,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
               )}
             </StyledSimpleBar>
           </CommentsContainer>
+          <FormSectionDivider condensed />
         </>
       )}
     </>

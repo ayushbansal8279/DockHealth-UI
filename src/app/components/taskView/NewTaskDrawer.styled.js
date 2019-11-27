@@ -79,7 +79,7 @@ export const FormSectionNoBorder = styled(Grid)`
 
 export const FormSectionDivider = styled.div`
   background-color: ${props => (props.active ? '#d9036b' : '#ddf2f7')};
-  height: ${props => (props.addingTask ? 0.125 : 0)}rem;
+  height: 0.0625rem;
   position: relative;
   transition: background-color 0.25s ease-out;
   width: 100%;
@@ -87,12 +87,17 @@ export const FormSectionDivider = styled.div`
   ${props => props.condensed && 'margin: 0 0.5rem;'}
 `;
 
-const FormSectionElement = ({ classes, topBorderActive, ...props }) => {
-  const className = `${classes.root} ${
+const FormSectionElement = ({
+  classes,
+  className,
+  topBorderActive,
+  ...props
+}) => {
+  const newClassName = `${classes.root} ${
     topBorderActive ? classes.topBorderActive : ''
-  }`.trim();
+  } ${className ?? ''}`.trim();
 
-  return <FormSectionNoBorder className={className} {...props} />;
+  return <FormSectionNoBorder className={newClassName} {...props} />;
 };
 
 const formSectionStyles = {

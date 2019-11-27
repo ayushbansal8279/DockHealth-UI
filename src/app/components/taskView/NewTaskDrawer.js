@@ -450,7 +450,7 @@ export default ({
                 </CloseTaskButtonContainer>
               </Grid>
             )}
-            <FormSectionDivider addingTask={!task} active={autoSaveVisible}>
+            <FormSectionDivider hidden={task} active={autoSaveVisible}>
               {!parentTask && (
                 <AutoSaveContainer visible={autoSaveVisible}>
                   <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
@@ -534,7 +534,6 @@ export default ({
               task={task}
               addDeferredCommentToQueue={addDeferredCommentToQueue}
             />
-            <FormSectionDivider condensed />
             <FormContext {...formMethods}>
               <NewTaskDrawerOtherDataSection
                 task={task}
