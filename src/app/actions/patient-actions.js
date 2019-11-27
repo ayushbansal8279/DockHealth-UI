@@ -184,7 +184,6 @@ export const addPatientNote = (patientId, description) => async dispatch => {
       note,
     });
   } catch (e) {
-    // toggleAlert('Error adding note. Please try again.', 'error');
     dispatch({
       type: ADD_PATIENT_NOTE_ERROR,
       patientId,

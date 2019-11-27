@@ -1,24 +1,33 @@
 import {
-  reject, map, lensProp, over, propEq, when, append, set, isNil,
+  append,
+  isNil,
+  lensProp,
+  map,
+  over,
+  propEq,
+  reject,
+  set,
+  when,
 } from 'ramda';
+
 import {
-  GET_PATIENTS_SUCCESS,
-  REQUEST_PATIENTS,
-  GET_LIST_PATIENTS_SUCCESS,
-  ADD_PATIENT_SUCCESS,
-  UPDATE_PATIENT_SUCCESS,
-  GET_PATIENT_SUCCESS,
-  GET_EMR_PATIENTS_SUCCESS,
-  SELECT_EMR_PATIENT_SUCCESS,
-  REQUEST_EMR_PATIENTS,
-  CLEAR_EMR_PATIENTS,
-  HIGHLIGHT_PATIENT,
-  BEGIN_PATIENT_CREATION,
   ABORT_PATIENT_CREATION,
   ADD_PATIENT_ERROR,
   ADD_PATIENT_NOTE,
-  UPDATE_PATIENT_NOTE,
+  ADD_PATIENT_SUCCESS,
+  BEGIN_PATIENT_CREATION,
+  CLEAR_EMR_PATIENTS,
   DELETE_PATIENT_NOTE,
+  GET_EMR_PATIENTS_SUCCESS,
+  GET_LIST_PATIENTS_SUCCESS,
+  GET_PATIENT_SUCCESS,
+  GET_PATIENTS_SUCCESS,
+  HIGHLIGHT_PATIENT,
+  REQUEST_EMR_PATIENTS,
+  REQUEST_PATIENTS,
+  SELECT_EMR_PATIENT_SUCCESS,
+  UPDATE_PATIENT_NOTE,
+  UPDATE_PATIENT_SUCCESS,
 } from '../actions/action-types';
 
 const initialState = {
@@ -109,7 +118,11 @@ const PatientReducer = (state = initialState, action) => {
       const { patient } = action;
       return {
         ...state,
-        allPatients: state.allPatients.map(existingPatient => (existingPatient.patientId === patient.patientId ? patient : existingPatient)),
+        allPatients: state.allPatients.map(existingPatient =>
+          existingPatient.patientId === patient.patientId
+            ? patient
+            : existingPatient,
+        ),
       };
     }
 
@@ -152,7 +165,10 @@ const PatientReducer = (state = initialState, action) => {
       const { patientId, note } = action;
 
       const addNoteToPatient = map(
-        when(propEq('patientId', patientId), over(lensProp('allNotes'), append(note))),
+        when(
+          propEq('patientId', patientId),
+          over(lensProp('allNotes'), append(note)),
+        ),
       );
 
       return { ...state, allPatients: addNoteToPatient(state.allPatients) };
@@ -165,11 +181,17 @@ const PatientReducer = (state = initialState, action) => {
       } = action;
 
       const updateNote = map(
-        when(propEq('patientNoteId', patientNoteId), set(lensProp('description'), description)),
+        when(
+          propEq('patientNoteId', patientNoteId),
+          set(lensProp('description'), description),
+        ),
       );
 
       const updateNoteInPatient = map(
-        when(propEq('patientId', patientId), over(lensProp('allNotes'), updateNote)),
+        when(
+          propEq('patientId', patientId),
+          over(lensProp('allNotes'), updateNote),
+        ),
       );
 
       return { ...state, allPatients: updateNoteInPatient(state.allPatients) };
@@ -184,10 +206,16 @@ const PatientReducer = (state = initialState, action) => {
       const removeNote = reject(propEq('patientNoteId', patientNoteId));
 
       const removeNoteFromPatient = map(
-        when(propEq('patientId', patientId), over(lensProp('allNotes'), removeNote)),
+        when(
+          propEq('patientId', patientId),
+          over(lensProp('allNotes'), removeNote),
+        ),
       );
 
-      return { ...state, allPatients: removeNoteFromPatient(state.allPatients) };
+      return {
+        ...state,
+        allPatients: removeNoteFromPatient(state.allPatients),
+      };
     }
 
     default:

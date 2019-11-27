@@ -196,3 +196,9 @@ export const TaskStatusContainer = styled.div`
   min-width: ${props => (props.isTaskArchivable ? 5.1875 : 2.4375)}rem;
   width: ${props => (props.isTaskArchivable ? 5.1875 : 2.4375)}rem;
 `;
+
+export const TaskDescriptionOuterContainer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+`;

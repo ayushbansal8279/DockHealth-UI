@@ -36,6 +36,7 @@ import {
   TaskBodyChevronContainer,
   TaskBodyMainContainer,
   TaskDateContainer,
+  TaskDescriptionOuterContainer,
   TaskStatusContainer,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
@@ -206,7 +207,7 @@ const TaskBody = ({
             />
           </MemberPickerContainer>
           <PatientTasklistContainer isSubtask={isSubtask}>
-            <div>
+            <TaskDescriptionOuterContainer>
               {task.sourceMessage && (
                 <img
                   src={EnvelopeIcon}
@@ -236,7 +237,7 @@ const TaskBody = ({
                   </PatientsTaskListInnerDescription>
                 </Linkify>
               </PatientsTasklistDescription>
-            </div>
+            </TaskDescriptionOuterContainer>
             <div>
               <PatientsTasklistInfo>
                 {updated && (
