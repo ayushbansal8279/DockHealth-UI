@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
+
 import { capitalize } from '../../helpers/capitalize';
 import EditIcon from '../../img/edit.svg';
 
@@ -117,29 +118,25 @@ const EditableDescription = ({
   name,
   placeholder,
   strikethrough = false,
+  onNoteChange = () => {},
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const startEditing = useCallback(
-    () => {
-      setIsEditing(true);
-    },
-    [setIsEditing],
-  );
-  const stopEditing = useCallback(
-    () => {
-      setIsEditing(false);
-    },
-    [setIsEditing],
-  );
+  const startEditing = useCallback(() => {
+    setIsEditing(true);
+  }, [setIsEditing]);
+  const stopEditing = useCallback(() => {
+    setIsEditing(false);
+  }, [setIsEditing]);
 
   const [draft, setDraft] = useState(value);
-  useEffect(
-    () => {
-      setDraft(capitalize(value));
-      stopEditing();
-    },
-    [value, stopEditing],
-  );
+  useEffect(() => {
+    setDraft(capitalize(value));
+    stopEditing();
+  }, [value, stopEditing]);
+
+  useEffect(() => {
+    onNoteChange();
+  }, [draft, isEditing, onNoteChange]);
 
   const handleChange = useCallback(
     e => {
@@ -148,6 +145,7 @@ const EditableDescription = ({
     },
     [setDraft],
   );
+
   const handleSubmit = useCallback(
     e => {
       e.preventDefault();

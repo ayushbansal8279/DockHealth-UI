@@ -25,7 +25,7 @@ import {
 import TaskReducer from './task-reducer';
 
 const initialState = {
-  details: null,
+  details: {},
   isLoading: false,
   error: null,
   tasks: null,
@@ -98,14 +98,13 @@ const reducer = (state = initialState, action) => {
 
     case ADD_PATIENT_NOTE: {
       const { note } = action;
-      const {
-        details: { allNotes },
-      } = state;
+      const allNotes = state.details?.allNotes ?? [];
 
+      /* eslint-disable no-param-reassign */
       return produce(state, draftState => {
-        // eslint-disable-next-line no-param-reassign
         draftState.details.allNotes = [note, ...allNotes];
       });
+      /* eslint-enable no-param-reassign */
     }
 
     case UPDATE_PATIENT_NOTE: {

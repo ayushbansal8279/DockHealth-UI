@@ -263,7 +263,7 @@ export const PatientsForm = ({
             />
             <StyledTextField
               name="email"
-              value={email}
+              value={email || ''}
               onChange={onChange}
               label="Email"
               error={Boolean(errors?.email)}
