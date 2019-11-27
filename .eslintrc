@@ -13,6 +13,7 @@
   "extends": ["airbnb", "plugin:prettier/recommended"],
   "plugins": ["jest", "react-hooks"],
   "globals": {
+    "closeAddForm": true,
     "closeDropdown": true,
     "closePopup": true,
     "enableFoundationComponent": true,
@@ -25,8 +26,8 @@
     "renderFoundationComponentsJquery": true,
     "scrollToTop": true,
     "toggleAlert": true,
-    "toggleTaskForm": true,
-    "closeAddForm": true
+    "toggleSearch": true,
+    "toggleTaskForm": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,

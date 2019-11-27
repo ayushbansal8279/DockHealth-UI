@@ -1,4 +1,3 @@
-import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -14,6 +13,7 @@ import { connect } from 'react-redux';
 
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
+import CubesLoader from '../components/common/CubesLoader';
 import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
@@ -666,7 +666,7 @@ class TaskView extends Component {
                     unmountOnExit
                     style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
                   >
-                    <ProgressIcon />
+                    <CubesLoader size={40} />
                   </Fade>
                 </FadeContainer>
               ) : (

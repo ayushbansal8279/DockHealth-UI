@@ -1,4 +1,3 @@
-import ProgressIcon from '@material-ui/core/CircularProgress/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -16,6 +15,7 @@ import PatientsHeader from './PatientsHeader';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
 import PatientsToolbar from './PatientsToolbar';
+import CubesLoader from '../common/CubesLoader';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -31,7 +31,7 @@ const PatientsListSpinner = ({ isFetching }) => (
       unmountOnExit
       style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
     >
-      <ProgressIcon />
+      <CubesLoader size={40} />
     </Fade>
   </FadeContainer>
 );
@@ -130,6 +130,4 @@ const PatientsLayout = () => {
   );
 };
 
-const Patients = () => <PatientsLayout />;
-
-export default Patients;
+export default PatientsLayout;

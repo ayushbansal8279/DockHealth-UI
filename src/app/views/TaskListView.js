@@ -1,17 +1,26 @@
+import Grid from '@material-ui/core/Grid';
 import $ from 'jquery';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Grid from '@material-ui/core/Grid';
+import styled from 'styled-components';
 
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import CubesLoader from '../components/common/CubesLoader';
+import GenericHeader from '../components/common/GenericHeader';
 import AddListForm from '../components/LEGACY_list/AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import AddTaskListButton from '../components/taskList/AddTaskListButton';
-import GenericHeader from '../components/common/GenericHeader';
+
+const CubesLoaderContainer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
 
 class TaskListView extends PureComponent {
   constructor(props) {
@@ -32,7 +41,6 @@ class TaskListView extends PureComponent {
   }
 
   componentDidUpdate() {
-    // enableFoundationComponent(".item-list-wrapper")
     enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
   }
 
@@ -93,21 +101,23 @@ class TaskListView extends PureComponent {
           alignItems: 'center',
         }}
       >
-        <GenericHeader
-          isFetching={false}
-          title="Lists"
-        />
-        <Grid container alignItems="center" justify="flex-end" direction="row" style={{height: "88px"}}>
+        <GenericHeader isFetching={false} title="Lists" />
+        <Grid
+          container
+          alignItems="center"
+          justify="flex-end"
+          direction="row"
+          style={{ height: '88px' }}
+        >
           <AddTaskListButton onClick={this.addTaskList} />
         </Grid>
         <AddListForm onSubmit={this.submit} />
         <Grid container direction="row" lg="10" md="10" sm="12">
-        {/* <div className="row expanded collapse">
+          {/* <div className="row expanded collapse">
           <div className="large-12 columns"> */}
-
-            {/* <div className="list-wrapper dashboard-section"> */}
-              {/* This commented behemoth is the dashboard HUD for the lists page. */}
-              {/* <div className="row collapse">
+          {/* <div className="list-wrapper dashboard-section"> */}
+          {/* This commented behemoth is the dashboard HUD for the lists page. */}
+          {/* <div className="row collapse">
                 {this.props.genericLists &&
                   this.props.genericLists.map(list => {
                     let iconName = '';
@@ -164,39 +174,31 @@ class TaskListView extends PureComponent {
                     );
                   })}
                 </div> */}
-            {/* </div> */}
-            <div className="list-wrapper list-wrapper-all-lists" style={{width: "100%"}}>
-              {isFetching ? (
-                <div className="sk-circle">
-                  <div className="sk-circle1 sk-child" />
-                  <div className="sk-circle2 sk-child" />
-                  <div className="sk-circle3 sk-child" />
-                  <div className="sk-circle4 sk-child" />
-                  <div className="sk-circle5 sk-child" />
-                  <div className="sk-circle6 sk-child" />
-                  <div className="sk-circle7 sk-child" />
-                  <div className="sk-circle8 sk-child" />
-                  <div className="sk-circle9 sk-child" />
-                  <div className="sk-circle10 sk-child" />
-                  <div className="sk-circle11 sk-child" />
-                  <div className="sk-circle12 sk-child" />
-                </div>
-              ) : (
-                <div className="item-list-wrapper list-wrapper-all-lists">
-                  <PendingListsComponent
-                    taskLists={pendingTaskLists}
-                    acceptInviteToTaskList={this.acceptInviteToTaskList}
-                    rejectInviteToTaskList={this.rejectInviteToTaskList}
-                  />
-                  <ListsComponent
-                    taskLists={taskLists}
-                    editForm={this.editTaskList}
-                    deleteList={this.deleteList}
-                    leaveList={this.leaveList}
-                  />
-                </div>
-              )}
-            </div>
+          {/* </div> */}
+          <div
+            className="list-wrapper list-wrapper-all-lists"
+            style={{ width: '100%' }}
+          >
+            {isFetching ? (
+              <CubesLoaderContainer>
+                <CubesLoader size={40} />
+              </CubesLoaderContainer>
+            ) : (
+              <div className="item-list-wrapper list-wrapper-all-lists">
+                <PendingListsComponent
+                  taskLists={pendingTaskLists}
+                  acceptInviteToTaskList={this.acceptInviteToTaskList}
+                  rejectInviteToTaskList={this.rejectInviteToTaskList}
+                />
+                <ListsComponent
+                  taskLists={taskLists}
+                  editForm={this.editTaskList}
+                  deleteList={this.deleteList}
+                  leaveList={this.leaveList}
+                />
+              </div>
+            )}
+          </div>
           {/* </div>
         </div> */}
         </Grid>
