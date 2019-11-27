@@ -57,10 +57,11 @@ export default ({
 
   try {
     const newTask = await saveTask(requestData)(dispatch);
-    await Promise.all([
-      assignOrReassignTask(newTask, assignedToUserId || -1)(dispatch),
-      updatePatient(newTask, patient)(dispatch),
-    ]);
+    // This was commented out to impliment autoassignment of inbox tasks.
+    // await Promise.all([
+    //   assignOrReassignTask(newTask, assignedToUserId || -1)(dispatch),
+    //   updatePatient(newTask, patient)(dispatch),
+    // ]);
 
     if (newTaskListId) {
       await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
@@ -90,3 +91,4 @@ export default ({
     return false;
   }
 };
+
