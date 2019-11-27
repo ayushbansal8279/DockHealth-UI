@@ -158,11 +158,7 @@ export const StyledForm = styled.form`
 
 export const NewTaskDrawerInnerContainer = styled(Grid).attrs({
   container: true,
-})`
-  && {
-    width: 30.25rem;
-  }
-`;
+})``;
 
 export const AutoSaveContainer = styled.div`
   height: ${props => (props.visible ? 1.5 : 0)}rem;

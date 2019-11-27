@@ -51,12 +51,12 @@ Priority.defaultProps = {
 };
 
 export const PriorityContainer = styled.div`
-  align-items: flex-end;
+  align-items: center;
   display: flex;
-  height: 2.5rem;
+  height: 100%;
   ${props =>
     props.archivable
-      ? 'margin-bottom: -0.375rem;'
+      ? 'margin-bottom: 0.375rem;'
       : 'padding-bottom: 0.1875rem;'}
   justify-content: center;
   width: 100%;

@@ -58,8 +58,8 @@ export const PatientsTasklistInfo = styled.div`
 export const PatientTasklistPatient = styled.div`
   align-items: flex-end;
   display: flex;
-  line-height: 12px;
-  height: 2rem;
+  line-height: 1.625rem;
+  height: 100%;
   padding-bottom: 0.1875rem;
   margin-right: 0.625rem;
   min-width: 13rem;
@@ -163,9 +163,10 @@ export const RolloverPopover = styled(Popover)`
 `;
 
 export const TaskBodyChevronContainer = styled.div`
-  align-items: flex-end;
+  align-items: center;
+  align-self: flex-end;
   display: flex;
-  height: 2rem;
+  height: 1.625rem;
   justify-content: center;
   min-width: 2.4375rem;
   padding-bottom: 0.1875rem;
@@ -175,8 +176,8 @@ export const TaskBodyChevronContainer = styled.div`
 export const TaskDateContainer = styled.div`
   align-items: flex-end;
   display: flex;
-  height: 2rem;
-  line-height: 12px;
+  height: 100%;
+  line-height: 1.625rem;
   min-width: 11.25rem;
   width: 11.25rem;
 
@@ -190,9 +191,11 @@ export const TaskDateContainer = styled.div`
 `;
 
 export const TaskStatusContainer = styled.div`
-  align-items: flex-end;
+  align-self: flex-end;
+  align-items: center;
   display: flex;
-  height: 2rem;
+  height: 1.625rem;
+  justify-content: center;
   min-width: ${props => (props.isTaskArchivable ? 5.1875 : 2.4375)}rem;
   width: ${props => (props.isTaskArchivable ? 5.1875 : 2.4375)}rem;
 `;

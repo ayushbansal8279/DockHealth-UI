@@ -112,7 +112,7 @@ class TaskListView extends PureComponent {
           <AddTaskListButton onClick={this.addTaskList} />
         </Grid>
         <AddListForm onSubmit={this.submit} />
-        <Grid container direction="row" lg="10" md="10" sm="12">
+        <Grid container direction="row" justify="center">
           {/* <div className="row expanded collapse">
           <div className="large-12 columns"> */}
           {/* <div className="list-wrapper dashboard-section"> */}
@@ -175,30 +175,32 @@ class TaskListView extends PureComponent {
                   })}
                 </div> */}
           {/* </div> */}
-          <div
-            className="list-wrapper list-wrapper-all-lists"
-            style={{ width: '100%' }}
-          >
-            {isFetching ? (
-              <CubesLoaderContainer>
-                <CubesLoader size={40} />
-              </CubesLoaderContainer>
-            ) : (
-              <div className="item-list-wrapper list-wrapper-all-lists">
-                <PendingListsComponent
-                  taskLists={pendingTaskLists}
-                  acceptInviteToTaskList={this.acceptInviteToTaskList}
-                  rejectInviteToTaskList={this.rejectInviteToTaskList}
-                />
-                <ListsComponent
-                  taskLists={taskLists}
-                  editForm={this.editTaskList}
-                  deleteList={this.deleteList}
-                  leaveList={this.leaveList}
-                />
-              </div>
-            )}
-          </div>
+          <Grid item md={10} sm={12}>
+            <div
+              className="list-wrapper list-wrapper-all-lists"
+              style={{ width: '100%' }}
+            >
+              {isFetching ? (
+                <CubesLoaderContainer>
+                  <CubesLoader size={40} />
+                </CubesLoaderContainer>
+              ) : (
+                <div className="item-list-wrapper list-wrapper-all-lists">
+                  <PendingListsComponent
+                    taskLists={pendingTaskLists}
+                    acceptInviteToTaskList={this.acceptInviteToTaskList}
+                    rejectInviteToTaskList={this.rejectInviteToTaskList}
+                  />
+                  <ListsComponent
+                    taskLists={taskLists}
+                    editForm={this.editTaskList}
+                    deleteList={this.deleteList}
+                    leaveList={this.leaveList}
+                  />
+                </div>
+              )}
+            </div>
+          </Grid>
           {/* </div>
         </div> */}
         </Grid>

@@ -75,14 +75,12 @@ const TaskBody = ({
     isNewSubtask,
   } = task;
 
-  const formattedCreationDate = moment(createdDateTime).format(
-    'MMM D, YYYY @ h:mma',
-  );
+  const formattedCreationDate = moment(createdDateTime).format('h:mma');
   const dueDateMoment = moment(dueDate);
   const formattedDueDate = dueDateMoment.format('ddd, MMM D');
   const completedDateTimeMoment = moment(completedDateTime);
   const formattedCompletedDateTime = completedDateTimeMoment.isValid()
-    ? completedDateTimeMoment.format('MMM D, YYYY @ h:mma')
+    ? completedDateTimeMoment.format('h:mma')
     : '';
 
   const dispatch = useDispatch();
@@ -92,7 +90,8 @@ const TaskBody = ({
 
   const isInbox = !task?.taskList?.taskListId;
 
-  const isTaskArchivable = isTaskArchivableMethod(currentUserProfile, task);
+  const isTaskArchivable =
+    isTaskArchivableMethod(currentUserProfile, task) || !isSubtask;
 
   const isTaskTimingOut =
     status === 'COMPLETE' &&
