@@ -223,7 +223,7 @@ export const PatientsForm = ({
               value={dob || ''}
               onChange={onChange}
               label="Birthday"
-              error={errors?.dob}
+              error={Boolean(errors?.dob)}
               InputProps={{
                 inputComponent: isReadOnly ? undefined : BirthdayTextMask,
               }}
@@ -263,10 +263,10 @@ export const PatientsForm = ({
             />
             <StyledTextField
               name="email"
-              value={email || null}
+              value={email}
               onChange={onChange}
               label="Email"
-              error={errors?.email}
+              error={Boolean(errors?.email)}
               type="email"
             />
           </div>
