@@ -120,7 +120,7 @@ const ListEmptyElement = ({ addingNewTask }) => {
   );
 };
 
-const TASK_LIST_SHOW_MORE_STEP = 5;
+const TASK_LIST_SHOW_MORE_STEP = 50;
 
 const DEFAULT_SORTING = [
   ...sortingColumns.map(sortingColumn => ({
