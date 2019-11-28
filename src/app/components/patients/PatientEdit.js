@@ -329,18 +329,33 @@ const PatientEdit = ({ patient }) => {
       const { name } = target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
 
-      const updatedFormState = {
+      var updatedFormState = {
         ...formState,
         [name]: value,
       };
 
-      const formatFormState = evolve({
-        firstName: capitalizeWords,
-        middleName: capitalizeWords,
-        lastName: capitalizeWords,
+
+      const formatFirstNameState = evolve({
+        firstName: capitalizeWords
+      });
+      const formatMiddleNameState = evolve({
+        middleName: capitalizeWords
+      });
+      const formatLastNameState = evolve({
+        lastName: capitalizeWords
       });
 
-      setFormState(formatFormState(updatedFormState));
+      if(updatedFormState.firstName){
+        updatedFormState = formatFirstNameState(updatedFormState)
+      }
+      if(updatedFormState.middleName){
+        updatedFormState = formatMiddleNameState(updatedFormState)
+      }
+      if(updatedFormState.lastName){
+        updatedFormState = formatLastNameState(updatedFormState)
+      }
+
+      setFormState(updatedFormState);
     },
     [formState],
   );
