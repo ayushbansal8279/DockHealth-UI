@@ -117,7 +117,7 @@ class TaskListView extends PureComponent {
           <div className="large-12 columns"> */}
           {/* <div className="list-wrapper dashboard-section"> */}
           {/* This commented behemoth is the dashboard HUD for the lists page. */}
-          {/* <div className="row collapse">
+          <div className="row collapse">
                 {this.props.genericLists &&
                   this.props.genericLists.map(list => {
                     let iconName = '';
@@ -173,7 +173,7 @@ class TaskListView extends PureComponent {
                       )
                     );
                   })}
-                </div> */}
+                </div>
           {/* </div> */}
           <Grid item md={10} sm={12}>
             <div
