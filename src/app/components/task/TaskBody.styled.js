@@ -1,5 +1,6 @@
 import Popover from '@material-ui/core/Popover';
 import styled, { keyframes } from 'styled-components';
+import { motion } from 'framer-motion';
 
 export const TaskBodyMainContainer = styled.div`
   align-items: center;
@@ -8,13 +9,11 @@ export const TaskBodyMainContainer = styled.div`
   height: 100%;
 `;
 
-export const PatientsTasklistNew = styled.div`
+export const PatientsTasklistNew = styled(motion.div)`
   color: #d9036b;
   font-size: 0.625rem;
   font-variant: small-caps;
-  left: 0;
-  position: absolute;
-  top: -0.75rem;
+  line-height: 1;
 `;
 
 export const PatientsTasklistDescription = styled.div`
@@ -57,6 +56,7 @@ export const PatientsTasklistInfo = styled.div`
 
 export const PatientTasklistPatient = styled.div`
   align-items: flex-end;
+  align-self: flex-end;
   display: flex;
   line-height: 1.625rem;
   height: 100%;
@@ -96,6 +96,7 @@ export const PatientTasklistContainer = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   margin-right: 0.625rem;
+  padding: 0.25rem 0;
   position: relative;
   min-width: ${props => (props.isSubtask ? 25.125 : 27.5)}rem;
   width: ${props => (props.isSubtask ? 25.125 : 27.5)}rem;
@@ -104,8 +105,9 @@ export const PatientTasklistContainer = styled.div`
 export const CompletedBy = styled.div`
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 0.875 : 0)}rem;
+  height: ${props => (props.isCompleted ? 1 : 0)}rem;
   overflow: hidden;
+  padding-bottom: 0.1875rem;
   transition: height 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
   width: 100%;
@@ -175,6 +177,7 @@ export const TaskBodyChevronContainer = styled.div`
 
 export const TaskDateContainer = styled.div`
   align-items: flex-end;
+  align-self: flex-end;
   display: flex;
   height: 100%;
   line-height: 1.625rem;
