@@ -4,16 +4,17 @@ import styled from 'styled-components';
 
 export const priorityColor = priority => {
   switch (priority) {
-    //Inserted the No Status status
-    default: 
-      return '#808080'
-    case 'BLOCKED':
+    // Inserted the No Status status
+    default:
+      return '#808080';
+    case 'PLANNED':
       return '#f6b039';
     // Original color: #0ca1c7
     // Second color: #dc143c
+    // This case used to be BLOCKED
     case 'ON_HOLD':
       return '#dc143c';
-      //Original color: #f6b039
+    // Original color: #f6b039
     case 'IN_PROGRESS':
       return '#00a73c';
   }
@@ -42,7 +43,7 @@ const Priority = ({ priority, style }) => (
 );
 
 Priority.propTypes = {
-  priority: PropTypes.oneOf(['BLOCKED', 'ON_HOLD', 'IN_PROGRESS', null]),
+  priority: PropTypes.oneOf(['PLANNED', 'ON_HOLD', 'IN_PROGRESS', null]),
 };
 
 Priority.defaultProps = {
@@ -50,11 +51,15 @@ Priority.defaultProps = {
 };
 
 export const PriorityContainer = styled.div`
-  align-items: flex-end;
+  align-items: center;
   display: flex;
-  height: 10px;
-  justify-content: flex-start;
-  width: 90px;
+  height: 100%;
+  ${props =>
+    props.archivable
+      ? 'margin-bottom: 0.375rem;'
+      : 'padding-bottom: 0.1875rem;'}
+  justify-content: center;
+  width: 100%;
 `;
 
 export default Priority;

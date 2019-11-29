@@ -8,9 +8,7 @@ import AddSubtask from './AddSubtask';
 import ConfirmationDialog from './ConfirmationDialog';
 import {
   TaskAnimationContainer,
-  TaskBodyContainer,
   TaskContainer,
-  TaskGrid,
   TaskSelectionContainer,
 } from './Task.styled';
 import TaskBody from './TaskBody';
@@ -23,15 +21,22 @@ const Task = props => {
     selectedTaskId,
     storeAsCurrentTask,
     slimView,
+    taskDrawerOpen,
   } = props;
   const { subtasks, priority, taskList, isNewSubtask } = task;
 
-  const { addingNewSubtask, addingNewSubtaskParentId } = useSelector(state =>
-    pick(['addingNewSubtask', 'addingNewSubtaskParentId'])(state.taskState),
+  const {
+    addingNewSubtask,
+    addingNewSubtaskParentId,
+    subtaskShape,
+  } = useSelector(state =>
+    pick(['addingNewSubtask', 'addingNewSubtaskParentId', 'subtaskShape'])(
+      state.taskState,
+    ),
   );
   const animationContainer = useRef(null);
 
-  const hasSubtasks = (subtasks?subtasks.length > 0:false);
+  const hasSubtasks = subtasks?.length > 0;
 
   const isSelfOrSubtaskActive =
     selectedTaskId === task.taskId ||
@@ -60,30 +65,23 @@ const Task = props => {
     [slimView],
   );
 
+  const renderedSubtasks =
+    addingNewSubtask && addingNewSubtaskParentId === task?.taskId
+      ? [...subtasks, subtaskShape]
+      : subtasks;
+
   // Check all subtasks confirmation dialog
   const { isOpen, close, handleStatusChange, confirm } = useConfirmation(
     task,
     markComplete,
   );
 
-  const isNewSubtaskForCurrentTask =
-    addingNewSubtask &&
-    !isNewSubtask &&
-    addingNewSubtaskParentId === task.taskId;
-
-  const renderedSubtasks = isNewSubtaskForCurrentTask
-    ? subtasks.concat({
-        subtasks: [],
-        isNewSubtask: true,
-        taskId: 'new-subtask',
-      })
-    : subtasks;
-
   return (
     <>
       <TaskAnimationContainer
         isNewSubtask={isNewSubtask}
         isSubtask={isSubtask}
+        drawerOpen={taskDrawerOpen}
         ref={animationContainer}
       >
         <TaskContainer isSubtask={isSubtask} hasSubtasks={hasSubtasks}>
@@ -95,12 +93,8 @@ const Task = props => {
             />
           )}
           <TaskSelectionContainer isSelected={selectedTaskId === task.taskId}>
-            <TaskGrid container wrap="nowrap">
-              <TaskBodyContainer item xs={12}>
-                <Flag absolute priority={priority} />
-                <TaskBody {...props} handleStatusChange={handleStatusChange} />
-              </TaskBodyContainer>
-            </TaskGrid>
+            <Flag priority={priority} />
+            <TaskBody {...props} handleStatusChange={handleStatusChange} />
           </TaskSelectionContainer>
         </TaskContainer>
       </TaskAnimationContainer>

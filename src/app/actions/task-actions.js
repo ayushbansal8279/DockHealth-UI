@@ -1,7 +1,8 @@
+import moment from 'moment';
+
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
-
-import { noop } from '../helpers/utilityFunctions';
+import * as TaskListActions from './tasklist-actions';
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -149,12 +150,28 @@ export function getHighPriorityTasksByTaskList(taskListId) {
       });
 }
 
+export const clearPreparedSubtask = () => dispatch => {
+  dispatch({
+    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
+    addingNewSubtask: false,
+    addingNewSubtaskParentId: null,
+    subtaskShape: {},
+  });
+};
+
+export const reloadTaskListStats = (dispatch, task) => {
+  if (task.taskList) {
+    TaskListActions.getTaskListStats(task.taskList)(dispatch);
+  }
+};
+
 export function saveTask(newTask) {
   if (newTask.taskId) {
     return dispatch =>
       TaskApi.updateTask(newTask)
         .then(task => {
           dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
+          reloadTaskListStats(dispatch, task);
           return task;
         })
         .catch(error => {
@@ -163,28 +180,34 @@ export function saveTask(newTask) {
   }
 
   return dispatch => {
-    dispatch({
-      type: ActionTypes.CHANGE_ADDING_NEW_TASK,
-      addingNewTask: true,
-    });
+    if (!newTask.taskId && !newTask.parentTaskId) {
+      dispatch({
+        type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+        addingNewTask: true,
+      });
+    }
     return TaskApi.addTask(newTask)
       .then(task => {
         if (!task.taskList) {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
-            task: { ...task, taskList: { listName: 'Inbox' } },
+            task: { ...task, taskList: { listName: 'Inbox', taskListId: 0 } },
           });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
+          reloadTaskListStats(dispatch, task);
         } else {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
+          reloadTaskListStats(dispatch, task);
         }
+
+        clearPreparedSubtask()(dispatch);
 
         return task;
       })
@@ -205,10 +228,19 @@ export const moveTask = (task, taskList) => dispatch => {
   return TaskApi.updateTask(updatedTask)
     .then(() => {
       dispatch({ type: ActionTypes.MOVE_TASK_SUCCESS, task, taskList });
+      reloadTaskListStats(dispatch, task);
     })
     .catch(error => {
       throw error;
     });
+};
+
+export const moveTaskBetweenLists = task => dispatch => {
+  dispatch({
+    type: ActionTypes.MOVE_TASK_BETWEEN_LISTS,
+    task,
+  });
+  reloadTaskListStats(dispatch, task);
 };
 
 export function addTaskComment(task, taskComment) {
@@ -241,11 +273,11 @@ export function deleteComment(task, comment) {
 export function updateComment(task, comment) {
   return dispatch =>
     TaskApi.updateComment(comment)
-      .then(() => {
+      .then(({ data }) => {
         dispatch({
           type: ActionTypes.UPDATE_TASK_COMMENT_SUCCESS,
           task,
-          comment,
+          comment: data,
         });
       })
       .catch(error => {
@@ -258,6 +290,7 @@ export function deleteTask(task) {
     TaskApi.deleteTask(task.taskId)
       .then(() => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
+        reloadTaskListStats(dispatch, task);
       })
       .catch(error => {
         throw error;
@@ -269,6 +302,8 @@ export function duplicateTask(task) {
     TaskApi.duplicateTask(task.taskId)
       .then(duplicatedTask => {
         dispatch({ type: ActionTypes.DUPLICATE_TASK_SUCCESS, duplicatedTask });
+        reloadTaskListStats(dispatch, task);
+        return duplicatedTask;
       })
       .catch(error => {
         throw error;
@@ -286,7 +321,7 @@ export function sortSubTask(task, direction) {
       });
 }
 
-export function markComplete(task, status, listName) {
+export function markComplete(task, status, listName, currentUser = null) {
   const action =
     listName === 'INCOMPLETE'
       ? ActionTypes.MARK_TASK_STATUS_SUCCESS
@@ -300,11 +335,29 @@ export function markComplete(task, status, listName) {
 
     return TaskApi[apiEndpoint](task)
       .then(() => {
+        const newTaskData = {
+          status: newStatus,
+          completedBy:
+            newStatus === 'COMPLETE'
+              ? currentUser ?? task.completedBy
+              : task.completedBy,
+          completedDt:
+            newStatus === 'COMPLETE'
+              ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+              : task.completedBy,
+        };
+
         dispatch({
           type: action,
           task,
-          status: newStatus,
+          ...newTaskData,
         });
+        reloadTaskListStats(dispatch, task);
+
+        return {
+          ...task,
+          ...newTaskData,
+        };
       })
       .catch(error => {
         throw error;
@@ -333,6 +386,7 @@ export const updateDueDate = (task, dueDate) => dispatch =>
         taskId: res.taskId,
         dueDate: res.dueDate,
       });
+      reloadTaskListStats(dispatch, task);
     })
     .catch(() => {});
 
@@ -362,18 +416,21 @@ export const updateReminder = (task, reminderDt) => dispatch =>
       throw err;
     });
 
-export const updateWorkflowStatus = (taskId, workflowStatus) => dispatch =>
-  TaskApi.updateWorkflowStatus(taskId, workflowStatus)
+export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
+  const { taskId } = task;
+  return TaskApi.updateWorkflowStatus(taskId, workflowStatus)
     .then(() => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_WORKFLOW_STATUS,
         taskId,
         workflowStatus,
       });
+      reloadTaskListStats(dispatch, task);
     })
     .catch(err => {
       throw err;
     });
+};
 
 export function toggleTaskPriority(task, userId, priority) {
   return dispatch => {
@@ -389,6 +446,7 @@ export function toggleTaskPriority(task, userId, priority) {
           task,
           priority: newPriority,
         });
+        reloadTaskListStats(dispatch, task);
       })
       .catch(error => {
         throw error;
@@ -398,12 +456,13 @@ export function toggleTaskPriority(task, userId, priority) {
 
 export function assignOrReassignTask(task, assignedToUserId) {
   return dispatch =>
-    TaskApi.assignOrReassignTask(task.taskId, assignedToUserId)
+    TaskApi.assignOrReassignTask(task, assignedToUserId)
       .then(assignedTask => {
         dispatch({
           type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS,
           task: assignedTask,
         });
+        reloadTaskListStats(dispatch, assignedTask);
       })
       .catch(error => {
         throw error;
@@ -453,7 +512,7 @@ export function getInboxTasks(status, sortBy, filterBy) {
   return dispatch =>
     TaskApi.getInboxTasks(status, sortBy, filterBy)
       .then(tasks => {
-        const taskList = { listName: 'Inbox' };
+        const taskList = { listName: 'Inbox', taskListId: 0 };
         const tasksWithFixedTaskList = tasks.map(task => ({
           ...task,
           taskList,
@@ -490,8 +549,28 @@ export function taskToState(task) {
 export function storeAsCurrentTask(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
+    if ((task && task.taskId !== null) || task == null) {
+      clearPreparedSubtask()(dispatch);
+    }
   };
 }
+
+export const prepareSubtask = parentTaskId => dispatch => {
+  const subtaskShape = {
+    taskId: null,
+    parentTaskId,
+    description: '',
+    subtasks: [],
+  };
+
+  dispatch({
+    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
+    addingNewSubtask: true,
+    addingNewSubtaskParentId: parentTaskId,
+    subtaskShape,
+  });
+  storeAsCurrentTask(subtaskShape)(dispatch);
+};
 
 export function getTaskHistory(task) {
   return dispatch => {
@@ -514,30 +593,6 @@ export function clearCurrentTaskHistory() {
     dispatch({ type: ActionTypes.CLEAR_CURRENT_TASK_HISTORY });
   };
 }
-
-export const addSubtask = parentTaskId => async dispatch => {
-  dispatch({
-    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtask: true,
-    addingNewSubtaskParentId: parentTaskId,
-  });
-
-  try {
-    //do not save a temporary task
-    // const task = await TaskApi.addTask({ parentTaskId, description: '' });
-    const task = { parentTaskId: parentTaskId, description: '', subtasks: [] }
-    // dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
-    storeAsCurrentTask(task)(dispatch);
-  } catch {
-    noop();
-  } finally {
-    dispatch({
-      type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-      addingNewSubtask: false,
-      addingNewSubtaskParentId: null,
-    });
-  }
-};
 
 export const addTaskAttachment = (taskId, fileData) => dispatch =>
   TaskApi.addTaskAttachment(taskId, fileData)
@@ -579,3 +634,17 @@ export function refreshTask(selectedTask) {
       throw err;
     });
 }
+
+export const archiveTask = (task, currentUserProfile) => dispatch =>
+  TaskApi.flagArchivedForUser(task.taskId, true)
+    .then(responseTask => {
+      dispatch({
+        type: ActionTypes.TASK_ARCHIVED,
+        task: responseTask,
+        currentUserProfile,
+      });
+      reloadTaskListStats(dispatch, task);
+    })
+    .catch(error => {
+      throw error;
+    });

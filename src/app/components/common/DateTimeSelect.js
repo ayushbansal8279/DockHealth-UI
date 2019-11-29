@@ -182,6 +182,7 @@ const DateTimeSelect = ({
         onClose={close}
         anchorOrigin={anchorOrigin}
         transformOrigin={transformOrigin}
+        disablePortal
       >
         <BasePicker
           value={value ? moment(value) : moment().startOf('day')}
@@ -253,8 +254,9 @@ const DateTimeSelect = ({
 };
 
 DateTimeSelect.propTypes = {
-  children: PropTypes.node,
-  value: PropTypes.string.isRequired,
+  children: PropTypes.func,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
+    .isRequired,
   onChange: PropTypes.func.isRequired,
 };
 

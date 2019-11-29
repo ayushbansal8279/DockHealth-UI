@@ -3,10 +3,37 @@ import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import InboxNoMessagesIcon from '../img/inbox-no-messages-icon.svg';
+
+export const FadeContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+`;
+
+export const TaskListContainer = styled.div`
+  display: flex;
+  flex: 2;
+  flex-flow: column wrap;
+`;
+
+export const StyledButton = styled(ButtonBase)`
+  && {
+    display: flex;
+    margin: 2rem auto;
+    background: #0ca1c7;
+    border-radius: 1rem;
+    height: 2rem;
+    padding: 0.5rem 2.25rem;
+    font-size: 0.875rem;
+    color: #fff;
+  }
+`;
 
 export const TaskViewGrid = styled(Grid)`
   && {
-    max-width: 1152px;
+    width: 1050px;
     position: relative;
   }
 `;
@@ -104,6 +131,7 @@ export const StyledSlimViewSwitch = ({ slimView, ...props }) => (
 export const StyledToolbar = styled(Toolbar)`
   && {
     padding: 0 0.625rem;
+    width: 1050px;
   }
 `;
 
@@ -115,4 +143,108 @@ export const ToolbarContainer = styled.div`
 
 export const TableWrapper = styled.div`
   width: 100%;
+`;
+
+export const TaskViewContainer = styled.div`
+  max-width: 1050px;
+  width: 1050px;
+  width: -webkit-fill-available;
+  width: -moz-available;
+`;
+
+export const FilterByTextContainer = styled(motion.div)`
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 0.625rem 0.625rem;
+
+  > *:not(:last-child) {
+    margin-right: 0.25rem;
+  }
+`;
+
+export const FilterByLabel = styled.div`
+  color: #5e6366;
+  font-size: 0.875rem;
+`;
+
+export const FilterByBoldLabel = styled(FilterByLabel)`
+  font-weight: bold;
+`;
+
+export const FilterByLinkLabel = styled(FilterByLabel)`
+  color: #487ba8;
+  cursor: pointer;
+  transition: filter 0.25s ease-out;
+
+  &:hover {
+    filter: brightness(1.25);
+  }
+`;
+
+const InboxNoMessagesOuterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const InboxNoMessagesContainer = styled.div`
+  align-items: center;
+  background-color: #fff;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  padding: 2.5rem 6rem;
+  width: 48rem;
+`;
+
+const InboxNoMessagesLabel = styled.div`
+  font-size: 1rem;
+  padding-top: 1.5rem;
+  text-align: center;
+
+  > a {
+    font-weight: 600;
+    margin-left: 0.5ch;
+  }
+`;
+
+const InboxNoMessagesBoldLabel = styled(InboxNoMessagesLabel)`
+  font-size: 1.5rem;
+`;
+
+export const InboxNoMessagesAvailable = () => (
+  <InboxNoMessagesOuterContainer>
+    <InboxNoMessagesContainer>
+      <img src={InboxNoMessagesIcon} alt="Mailbox" />
+      <InboxNoMessagesBoldLabel>Your inbox is empty</InboxNoMessagesBoldLabel>
+      <InboxNoMessagesLabel>
+        Your inbox is a place you can forward emails that you want to turn into
+        tasks here on Dock.
+        <InboxNoMessagesLabel>
+          To forward an email into Dock and automatically create a task, simply
+          forward an email to
+          <a href="mailto:dock@childrens.harvard.edu">
+            dock@childrens.harvard.edu
+          </a>
+        </InboxNoMessagesLabel>
+        <InboxNoMessagesLabel>
+          We’ll drop it into your inbox here on Dock for you.
+        </InboxNoMessagesLabel>
+      </InboxNoMessagesLabel>
+    </InboxNoMessagesContainer>
+  </InboxNoMessagesOuterContainer>
+);
+
+export const SideClickListener = styled.div`
+  flex: 1;
+  ${props => props.heightMax && 'height: 100%;'}
+`;
+
+export const CompletedButtonRowContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: row wrap;
+  justify-content: center;
 `;

@@ -1,7 +1,7 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { getPatientName } from '../../helpers/utilityFunctions';
@@ -12,6 +12,13 @@ import StyledInput from '../userProfileView/StyledInput';
 import NewTaskDrawerAddPatientForm from './NewTaskDrawer.addPatientForm';
 import NewTaskDrawerInviteToListForm from './NewTaskDrawer.inviteToListForm';
 import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
+import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.editTaskComponent';
+import NewTaskDrawerEmailBodyContainer from './NewTaskDrawer.emailBody';
+
+import {
+  updatePatient,
+  assignOrReassignTask,
+} from '../../actions/task-actions';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -108,8 +115,8 @@ const renderPatientItem = ({ handlePatientSelect }) => patient => {
       key={patient?.patientId}
       onClick={handlePatientSelect(patient)}
     >
-      <div>{patient?.mrn || '-'}</div>
-      <div>{patientName || '-'}</div>
+      <div>{patient?.mrn || ''}</div>
+      <div>{patientName || ''}</div>
     </PatientItemContainer>
   );
 };
@@ -141,11 +148,21 @@ const renderNoAssignedToItem = ({ handleAssignedToSelect }) => () => {
   );
 };
 
-export default ({ defaultValues, isSubtask }) => {
+export default ({
+  defaultValues,
+  isSubtask,
+  handleSubmit,
+  onMarkComplete,
+  setAutoSaveVisible,
+  isInbox,
+}) => {
   const formMethods = useFormContext();
+  const [currentMember, setCurrentMember] = useState(defaultValues?.assignedTo);
+  const dispatch = useDispatch();
+
   const { reset, register, setValue } = formMethods;
 
-  const [currentMember, setCurrentMember] = useState(defaultValues?.assignedTo);
+  const hasTask = Boolean(defaultValues?.taskId);
 
   const [
     assignedToPopoverOpen,
@@ -166,7 +183,7 @@ export default ({ defaultValues, isSubtask }) => {
       closePatientPopover();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [defaultValues?.taskId],
+    [hasTask],
   );
 
   useEffect(
@@ -177,22 +194,49 @@ export default ({ defaultValues, isSubtask }) => {
     [defaultValues?.assignedToUserId],
   );
 
-  const members = useSelector(store => store.taskListState.tasklistmembers);
+  const members = useSelector(store =>
+    isInbox
+      ? [store.userState.userProfile]
+      : store.taskListState.tasklistmembers,
+  );
   const patients = useSelector(store => store.patientState.allPatients);
 
-  const handleAssignedToSelect = member => () => {
+  const handleAssignedToSelect = member => async () => {
     const { userId, userName } = member || {};
     setValue('assignedToUserId', userId);
     setValue('assignedToUserName', userName);
     setCurrentMember(member);
     closeAssignedToPopover();
+
+    if (hasTask) {
+      try {
+        await assignOrReassignTask(defaultValues, parseInt(userId, 10) || -1)(
+          dispatch,
+        );
+        setAutoSaveVisible();
+      } catch {
+        toggleAlert(
+          'Error updating assignment, please try again later',
+          'error',
+        );
+      }
+    }
   };
 
-  const handlePatientSelect = patient => () => {
+  const handlePatientSelect = patient => async () => {
     setValue('patient', JSON.stringify(patient));
     setValue('patientId', patient?.patientId);
     setValue('patientName', getPatientName(patient));
     closePatientPopover();
+
+    if (hasTask) {
+      try {
+        await updatePatient(defaultValues, patient)(dispatch);
+        setAutoSaveVisible();
+      } catch {
+        toggleAlert('Error updating patient, please try again later', 'error');
+      }
+    }
   };
 
   const styledInputProps = {
@@ -213,47 +257,73 @@ export default ({ defaultValues, isSubtask }) => {
       <input ref={register} type="hidden" name="patientId" />
       <FormContainer container spacing={8}>
         <Grid item xs={12}>
-          <StyledInput
-            {...styledInputProps}
-            isTextarea
-            name="description"
-            label="Task"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {patientPopoverOpen && (
-            <NewTaskDrawerPersonPicker
-              addNewPersonLabel="+ Add a new patient"
-              addingNewPersonLabel="Add a new patient"
-              closePicker={closePatientPopover}
-              items={patients}
-              itemFilterPropertyKeys={[
-                'mrn',
-                'firstName',
-                'middleName',
-                'lastName',
-              ]}
-              label="Patient Information"
-              maxPeopleRecordsVisible={7}
-              renderItem={renderPatientItem({ handlePatientSelect })}
-              renderNoItems={renderNoPatientItem({ handlePatientSelect })}
-              personRecordHeightInRem={2.3125}
-              AddingPersonForm={NewTaskDrawerAddPatientForm}
+          {hasTask ? (
+            <NewTaskDrawerEditTaskComponent
+              handleSubmit={handleSubmit}
+              onMarkComplete={onMarkComplete}
+              setAutoSaveVisible={setAutoSaveVisible}
+            />
+          ) : (
+            <StyledInput
+              {...styledInputProps}
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handleSubmit();
+                }
+              }}
+              isTextarea
+              autoFocus
+              name="description"
+              label="Task"
+              required
             />
           )}
-          <StyledInput
-            {...styledInputProps}
-            name="patientName"
-            label="Patient Information"
-            controlled
-            fullWidth
-            visible={!patientPopoverOpen}
-            containerDisabled={isSubtask}
-            onContainerClick={() => {
-              openPatientPopover();
-            }}
-          />
         </Grid>
+        {defaultValues.sourceMessage && (
+          <Grid item xs={12}>
+            <NewTaskDrawerEmailBodyContainer
+              emailBody={defaultValues.sourceMessage}
+            />
+          </Grid>
+        )}
+        {!isSubtask && (
+          <Grid item xs={12}>
+            {patientPopoverOpen && (
+              <NewTaskDrawerPersonPicker
+                addNewPersonLabel="+ Add a new patient"
+                addingNewPersonLabel="Add a new patient"
+                closePicker={closePatientPopover}
+                items={patients}
+                itemFilterPropertyKeys={[
+                  'mrn',
+                  'firstName',
+                  'middleName',
+                  'lastName',
+                ]}
+                label="Patient Information"
+                maxPeopleRecordsVisible={7}
+                renderItem={renderPatientItem({ handlePatientSelect })}
+                renderNoItems={renderNoPatientItem({ handlePatientSelect })}
+                personRecordHeightInRem={2.3125}
+                AddingPersonForm={NewTaskDrawerAddPatientForm}
+              />
+            )}
+            <StyledInput
+              {...styledInputProps}
+              name="patientName"
+              label="Patient Information"
+              controlled
+              fullWidth
+              visible={!patientPopoverOpen}
+              containerDisabled={isSubtask}
+              onContainerClick={() => {
+                openPatientPopover();
+              }}
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           {assignedToPopoverOpen && (
             <NewTaskDrawerPersonPicker

@@ -13,16 +13,20 @@
   "extends": ["airbnb", "plugin:prettier/recommended"],
   "plugins": ["jest", "react-hooks"],
   "globals": {
+    "closeAddForm": true,
     "closeDropdown": true,
     "closePopup": true,
     "enableFoundationComponent": true,
+    "enableFoundationForMultipleComponents": true,
     "enableFoundationForSingleComponent": true,
     "formatDateAndTime": true,
     "openAddForm": true,
     "openDropdown": true,
     "removeRevealComponent": true,
     "renderFoundationComponentsJquery": true,
+    "scrollToTop": true,
     "toggleAlert": true,
+    "toggleSearch": true,
     "toggleTaskForm": true
   },
   "rules": {

@@ -1,13 +1,18 @@
 import { List, ListItem, Popover } from '@material-ui/core';
 import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import useBoolean from '../../hooks/useBoolean';
 import DateTimeSelect from '../common/DateTimeSelect';
-import { getTaskHistory } from '../../actions/task-actions';
+import {
+  getTaskHistory,
+  updateDueDate,
+  moveTask,
+  storeAsCurrentTask,
+} from '../../actions/task-actions';
 import CubesLoader from '../common/CubesLoader';
 
 const OtherDataSectionContainer = styled.div`
@@ -25,11 +30,13 @@ const SectionRow = styled.div`
 
 const SectionButtonContainer = styled.div`
   flex: 5;
+  //Modified font of the history container.
+  font-size: 0.875rem;
 `;
 
 const SectionButton = styled.span`
   color: ${props => props.color ?? '#2e3a43'};
-  cursor: pointer;
+  cursor: ${props => (props.clickable ? 'pointer' : 'defualt')};
   font-size: 0.875rem;
 `;
 
@@ -54,16 +61,25 @@ const HistoryItemContainer = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const renderTaskList = ({ closePopover, setNewTaskListName, setValue }) => ({
-  taskListId,
-  listName,
-}) => {
+const renderTaskList = ({
+  closePopover,
+  setNewTaskListName,
+  setValue,
+  saveTaskList,
+  taskId,
+}) => taskList => {
+  const { taskListId, listName } = taskList;
+
   return (
     <ListItem
+      key={taskId}
       onClick={() => {
         setValue('newTaskListId', taskListId);
         setNewTaskListName(listName);
         closePopover();
+        if (taskId) {
+          saveTaskList({ newTaskList: taskList });
+        }
       }}
       button
     >
@@ -96,15 +112,30 @@ const renderHistoryItem = ({
   );
 };
 
-export default ({ task }) => {
+const renderEmptyHistory = () => (
+  <HistoryLabel>No history available</HistoryLabel>
+);
+
+const renderHistory = history => {
+  if (history?.length === 0) {
+    return renderEmptyHistory();
+  }
+  return history?.map(renderHistoryItem);
+};
+
+export default ({
+  task,
+  taskList,
+  closeDrawer,
+  setAutoSaveVisible,
+  isInbox,
+}) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];
+  const currentUser = useSelector(store => store.userState.userProfile);
+  const todaysMoment = moment().format('MMM D, YYYY @ h:mma');
 
   const { register, setValue } = useFormContext();
   const dispatch = useDispatch();
-
-  const currentTaskList = taskLists?.find(
-    taskList => taskList?.taskListId === task?.taskList?.taskListId,
-  );
 
   const [newTaskListName, setNewTaskListName] = useState('');
   const [newDueDate, setNewDueDate] = useState(
@@ -123,6 +154,7 @@ export default ({ task }) => {
   const taskListButtonRef = useRef(null);
 
   const newDueDateMoment = moment(newDueDate);
+  const taskId = task?.taskId;
 
   useEffect(() => {
     setValue('newTaskListId', null);
@@ -144,16 +176,16 @@ export default ({ task }) => {
 
   useEffect(() => {
     if (isHistoryShown) {
-      setHistoryLoading();
-      //The following if statement checks if task is null.
-      if(task != null){
-        getTaskHistory(task)(dispatch).then(historyDetails => {
-          //This is the step that causes the webage to blank out if history is clicked
-          setHistory(historyDetails);
-          //unsetHistoryLoading();
-        });
+      if (task) {
+        getTaskHistory(task)(dispatch)
+          .then(historyDetails => {
+            setHistory(historyDetails);
+            unsetHistoryLoading();
+          })
+          .catch(() => {
+            unsetHistoryLoading();
+          });
       }
-      unsetHistoryLoading();
     } else {
       setHistory([]);
     }
@@ -166,7 +198,56 @@ export default ({ task }) => {
     unsetHistoryLoading();
     unsetTaskListPopoverOpen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task?.taskId]);
+  }, [taskId]);
+
+  const onToggleHistoryButtonClicked = () => {
+    if (!isHistoryShown) {
+      setHistoryLoading();
+    }
+    toggleHistory();
+  };
+
+  const saveDueDate = useCallback(
+    ({ updatedDueDate }) => {
+      updateDueDate(
+        task,
+        moment(updatedDueDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      )(dispatch)
+        .then(() => {
+          setAutoSaveVisible();
+        })
+        .catch(() => {
+          toggleAlert(
+            'Error updating due date, please try again later',
+            'error',
+          );
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [taskId],
+  );
+
+  const saveTaskList = useCallback(
+    ({ newTaskList }) => {
+      moveTask(task, newTaskList)(dispatch)
+        .then(() => {
+          toggleAlert(
+            `Task moved successfully to list ${newTaskList.listName}`,
+            'success',
+          );
+          storeAsCurrentTask(null)(dispatch);
+          closeDrawer();
+        })
+        .catch(() => {
+          toggleAlert(
+            `Error moving task to list ${newTaskList.listName}, please try again later`,
+            'error',
+          );
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [taskId],
+  );
 
   return (
     <OtherDataSectionContainer>
@@ -175,12 +256,19 @@ export default ({ task }) => {
           <input type="hidden" name="newTaskListId" ref={register} />
           <SectionLabel>Filed In</SectionLabel>
           <SectionButtonContainer>
-            <SectionButton
-              ref={taskListButtonRef}
-              onClick={setTaskListPopoverOpen}
-            >
-              {newTaskListName || currentTaskList?.listName}
-            </SectionButton>
+            {task ? (
+              <SectionButton
+                clickable
+                ref={taskListButtonRef}
+                onClick={setTaskListPopoverOpen}
+              >
+                {isInbox ? 'Inbox' : newTaskListName || taskList?.listName}
+              </SectionButton>
+            ) : (
+              <SectionButton>
+                {isInbox ? 'Inbox' : taskList?.listName}
+              </SectionButton>
+            )}
           </SectionButtonContainer>
           <Popover
             anchorEl={taskListButtonRef.current}
@@ -188,6 +276,7 @@ export default ({ task }) => {
               vertical: 'top',
               horizontal: 'left',
             }}
+            disablePortal
             open={isTaskListPopoverOpen}
             onClose={unsetTaskListPopoverOpen}
             transformOrigin={{
@@ -201,6 +290,8 @@ export default ({ task }) => {
                   closePopover: unsetTaskListPopoverOpen,
                   setNewTaskListName,
                   setValue,
+                  saveTaskList,
+                  taskId,
                 }),
               )}
             </List>
@@ -212,7 +303,12 @@ export default ({ task }) => {
         <SectionLabel>Due date</SectionLabel>
         <DateTimeSelect
           value={newDueDate}
-          onChange={setNewDueDate}
+          onChange={updatedDueDate => {
+            setNewDueDate(updatedDueDate);
+            if (taskId) {
+              saveDueDate({ updatedDueDate });
+            }
+          }}
           label="Set a due date"
           showTimeSelect={false}
           anchorOrigin={{
@@ -226,7 +322,7 @@ export default ({ task }) => {
         >
           {({ open }) => (
             <SectionButtonContainer>
-              <SectionButton onClick={open}>
+              <SectionButton clickable onClick={open}>
                 {newDueDateMoment.isValid()
                   ? newDueDateMoment.format('MMM. D, YYYY')
                   : 'Set a due date'}
@@ -238,12 +334,19 @@ export default ({ task }) => {
       <SectionRow>
         <SectionLabel>History</SectionLabel>
         <SectionButtonContainer>
-          <SectionButton
-            color="#0ca1c7"
-            onClick={isHistoryLoading ? undefined : toggleHistory}
-          >
-            {isHistoryShown ? 'Hide' : 'Show'}
-          </SectionButton>
+          {task?.taskId ? (
+            <SectionButton
+              clickable
+              color="#0ca1c7"
+              onClick={
+                isHistoryLoading ? undefined : onToggleHistoryButtonClicked
+              }
+            >
+              {isHistoryShown ? 'Hide' : 'Show'}
+            </SectionButton>
+          ) : (
+            `Created by ${currentUser.firstName} ${currentUser.lastName} on ${todaysMoment}`
+          )}
         </SectionButtonContainer>
       </SectionRow>
       {isHistoryShown && (
@@ -253,7 +356,7 @@ export default ({ task }) => {
             {isHistoryLoading ? (
               <CubesLoader size={16} />
             ) : (
-              history.map(renderHistoryItem)
+              renderHistory(history)
             )}
           </SectionButtonContainer>
         </SectionRow>

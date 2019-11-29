@@ -84,14 +84,18 @@ export const StyledInputContainer = styled.div`
   height: 3.75rem;
   margin-top: 1.5rem;
   ${props => props.invisible && 'opacity: 0;'}
+  width: 100%;
+
+  &.error {
+    margin-top: 0.25rem;
+  }
 `;
 
 export const StyledErrorLabel = styled.div`
   color: #e40909;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
-  position: absolute;
-  top: -1.5em;
+  margin-top: 0.5rem;
 `;
 
 export const StyledPasswordSwitch = styled.div`

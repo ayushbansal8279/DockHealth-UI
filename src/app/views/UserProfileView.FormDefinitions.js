@@ -1,4 +1,12 @@
 import head from 'ramda/es/head';
+import React from 'react';
+import styled from 'styled-components';
+
+const PrePasswordLabel = styled.div`
+  margin-bottom: 1rem;
+  text-align: left;
+  width: 80%;
+`;
 
 export const formFieldDefinitions = [
   {
@@ -45,14 +53,24 @@ export const formFieldDefinitions = [
   },
   {
     key: 'accountPhoneNumber',
-    label: 'Mobile',
+    label: 'Your Mobile Phone Number',
     isPhoneNumber: true,
     readOnly: true,
+    PreFieldComponent: () => (
+      <PrePasswordLabel>
+        A valid mobile phone number is required to send an authentication code
+        for HIPAA compliance
+      </PrePasswordLabel>
+    ),
+    defaultValueGetter: ({ accountPhoneNumber }) =>
+      accountPhoneNumber.replace(/^\+1/, ''),
   },
   {
     key: 'workPhoneNumber',
-    label: 'Additional Phone Number',
+    label: 'Your Additional Phone Number',
     isPhoneNumber: true,
+    defaultValueGetter: ({ workPhoneNumber }) =>
+      workPhoneNumber.replace(/^\+1/, ''),
   },
 ];
 

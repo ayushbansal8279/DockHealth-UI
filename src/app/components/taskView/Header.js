@@ -47,18 +47,21 @@ const StyledSubtitle = styled(Typography)`
   }
 `;
 
-
 const NotificationToggle = ({ value }) => {
   return (
-      <span style={{width: "34px", 
-        height: "31px", 
-        background: (value?"#007CAB":"#303538"), 
-        borderRadius: "4px", 
-        color: "white",
-        marginLeft: "10px",
-        paddingTop: "3px"}}>
+    <span
+      style={{
+        width: '34px',
+        height: '31px',
+        background: value ? '#007CAB' : '#303538',
+        borderRadius: '4px',
+        color: 'white',
+        marginLeft: '10px',
+        paddingTop: '3px',
+      }}
+    >
       {value ? 'on' : 'off'}
-      </span>
+    </span>
   );
 };
 
@@ -71,10 +74,9 @@ const Notifications = ({ value, onClick }) => {
   };
 
   return (
-    <TaskListAction {...notificationProps} style={{paddingRight: "0px"}}>
+    <TaskListAction {...notificationProps} style={{ paddingRight: '0px' }}>
       <span> Notifications: </span>
-      <NotificationToggle value={value}/>
-
+      <NotificationToggle value={value} />
     </TaskListAction>
   );
 };
@@ -83,7 +85,7 @@ const nbsp = '\u00A0';
 
 const Header = ({
   title,
-  taskCount,
+  taskCount: propTaskCount = 0,
   isFetching,
   members,
   taskList,
@@ -93,26 +95,25 @@ const Header = ({
   const notificationsStatus = taskList?.notifications;
 
   const dispatch = useDispatch();
-  const toggleNotifications = useCallback(
-    () => {
-      toggleListNotifications(taskListId, !notificationsStatus)(dispatch).then(
-        () => {
-          resetHeader();
-        },
-      );
-    },
-    [dispatch, notificationsStatus, resetHeader, taskListId],
-  );
+  const toggleNotifications = useCallback(() => {
+    toggleListNotifications(taskListId, !notificationsStatus)(dispatch).then(
+      () => {
+        resetHeader();
+      },
+    );
+  }, [dispatch, notificationsStatus, resetHeader, taskListId]);
   const { taskListStats, taskListStatsOk } = useSelector(store => ({
     taskListStats: store.taskListState.taskListStats,
     taskListStatsOk: store.taskListState.taskListStatsOk,
   }));
 
-  taskCount = 0
-  if(taskListStatsOk){
-    var key = "Incomplete_TaskList_Count"
-    taskCount = taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
-      ?.metricValue ?? 0;
+  let taskCount = propTaskCount;
+
+  if (taskListStatsOk) {
+    const key = 'Incomplete_TaskList_Count';
+    taskCount =
+      taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
+        ?.metricValue ?? 0;
   }
 
   return (

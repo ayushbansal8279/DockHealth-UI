@@ -100,9 +100,11 @@ class MemberPicker extends React.Component {
   );
 
   render() {
-    const { member, small, members, disabled } = this.props;
+    const { member: propMember, small, members, disabled } = this.props;
     const { anchorEl, isSearching, searchTerm } = this.state;
     const isOpen = Boolean(anchorEl);
+
+    const member = propMember ? { ...propMember } : null;
 
     // Member search
     const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
@@ -120,12 +122,10 @@ class MemberPicker extends React.Component {
       filteredMembers.sort((a, b) => a.lastName.localeCompare(b.lastName));
 
     const currentUserMembers =
-      members && member && members.filter(
-        m => m.userId == member.userId
-      );
+      members && member && members.filter(m => m.userId === member.userId);
 
-    if(currentUserMembers && currentUserMembers.length>0){
-        member.bubbleColor = currentUserMembers[0].bubbleColor
+    if (currentUserMembers && currentUserMembers.length > 0) {
+      member.bubbleColor = currentUserMembers[0].bubbleColor;
     }
 
     return (

@@ -1,15 +1,14 @@
+/* eslint-disable eqeqeq */
 import axios from './axios-heydoc';
 
 /**
  * Get all tasks for a user
  */
-export function getTasksForCreator(userId) {
-  userId = sessionStorage.userId;
+export function getTasksForCreator() {
   return axios
     .get('task/findTasksCreatedByUser')
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       return error.response.data;
     });
 }
@@ -23,7 +22,6 @@ export function getListTasksByUser(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -33,7 +31,6 @@ export function getListTasksByUser(taskListId, status, sortBy, filterBy) {
     )
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       return error.response.data;
     });
 }
@@ -48,7 +45,6 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
         )
         .then(response => response.data)
         .catch(error => {
-          console.log(error);
           return error.response.data;
         });
     }
@@ -58,11 +54,9 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       })
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -73,7 +67,6 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -81,7 +74,6 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
     .get(`task/findTasksAssignedToUser?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       return error.response.data;
     });
 }
@@ -102,7 +94,6 @@ export function getTasksAssignedToSpecificUser(
         )
         .then(response => response.data)
         .catch(error => {
-          console.log(error);
           return error.response.data;
         });
     }
@@ -112,11 +103,9 @@ export function getTasksAssignedToSpecificUser(
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       })
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -127,7 +116,6 @@ export function getTasksAssignedToSpecificUser(
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -137,7 +125,6 @@ export function getTasksAssignedToSpecificUser(
     )
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       return error.response.data;
     });
 }
@@ -152,7 +139,6 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
         )
         .then(response => response.data)
         .catch(error => {
-          console.log(error);
           return error.response.data;
         });
     }
@@ -162,7 +148,6 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -173,7 +158,6 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -181,7 +165,6 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
     .get(`task/findTasksAssignedByUser?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       return error.response.data;
     });
 }
@@ -194,7 +177,6 @@ export function searchTasks(searchTerm, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         return error.response.data;
       });
   }
@@ -202,37 +184,37 @@ export function searchTasks(searchTerm, status, sortBy, filterBy) {
     .get(`task/searchTasks?searchTerm=${searchTerm}&status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       return error.response.data;
     });
 }
 
 export function addTask(task) {
-  task.createdByUserId = sessionStorage.userId;
   return axios
-    .post('task', task)
+    .post('task', {
+      ...task,
+      createdByUserId: sessionStorage.userId,
+    })
     .then(response => {
       toggleAlert('Task created successfully!', 'success');
       return response.data;
     })
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in creating task. Please try again.', 'error');
       return error.response.data;
     });
 }
 
 export function updateTask(task) {
-  task.createdByUserId = sessionStorage.userId;
   return axios
-    .put(`task/${task.taskId}`, task)
+    .put(`task/${task.taskId}`, {
+      ...task,
+      createdByUserId: sessionStorage.userId,
+    })
     .then(response => {
       toggleAlert('Task updated successfully!', 'success');
       return response.data;
     })
     .catch(error => {
-      console.log(error);
-      toggleAlert('Error in updating task. Please try again.', 'error');
       return error.response.data;
     });
 }
@@ -245,8 +227,6 @@ export function deleteTask(taskId) {
       return response;
     })
     .catch(error => {
-      console.log(error);
-      toggleAlert('Error in deleting task. Please try again.', 'error');
       return error.response.data;
     });
 }
@@ -259,7 +239,6 @@ export function duplicateTask(taskId) {
       return response.data;
     })
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in duplicating comment. Please try again.', 'error');
       return error.response.data;
     });
@@ -273,7 +252,6 @@ export function sortSubTask(taskId, direction) {
       return response.data;
     })
     .catch(error => {
-      console.log(error);
       toggleAlert(
         'Error in changing sub task order. Please try again.',
         'error',
@@ -290,8 +268,6 @@ export function markComplete(task) {
       return response;
     })
     .catch(error => {
-      console.log(error);
-      toggleAlert('Error in updating task. Please try again.', 'error');
       return error.response.data;
     });
 }
@@ -304,8 +280,6 @@ export function markIncomplete(task) {
       return response;
     })
     .catch(error => {
-      console.log(error);
-      toggleAlert('Error in updating task. Please try again.', 'error');
       return error.response.data;
     });
 }
@@ -323,7 +297,6 @@ export function updateTaskDescription(task, description) {
       return response.data;
     })
     .catch(error => {
-      toggleAlert('Error in updating task. Please try again.', 'error');
       throw error.response.data;
     });
 }
@@ -354,12 +327,9 @@ export function markHighPriority(taskId, userId) {
   return axios
     .put(`task/changePriority/${taskId}?userId=${userId}&priorityLevel=HIGH`)
     .then(response => {
-      toggleAlert('Task priority updated successfully!', 'success');
       return response;
     })
     .catch(error => {
-      console.log(error);
-      toggleAlert('Error in updating task. Please try again.', 'error');
       throw error;
     });
 }
@@ -368,17 +338,15 @@ export function markLowPriority(taskId, userId) {
   return axios
     .put(`task/changePriority/${taskId}?userId=${userId}&priorityLevel=LOW`)
     .then(response => {
-      toggleAlert('Task priority updated successfully!', 'success');
       return response;
     })
     .catch(error => {
-      console.log(error);
-      toggleAlert('Error in updating task. Please try again.', 'error');
       throw error;
     });
 }
 
-export function assignOrReassignTask(taskId, assignedToUserId) {
+export function assignOrReassignTask(task, assignedToUserId) {
+  const { taskId } = task;
   return axios
     .put(
       `task/addOrUpdateTaskAssignment/${taskId}?assignedToUserId=${assignedToUserId}`,
@@ -388,7 +356,6 @@ export function assignOrReassignTask(taskId, assignedToUserId) {
       return response.data;
     })
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in task assignment. Please try again.', 'error');
       throw error;
     });
@@ -401,7 +368,6 @@ export function addComment(taskId, taskComment) {
       return response;
     })
     .catch(error => {
-      console.log(error);
       throw error;
     });
 }
@@ -414,7 +380,6 @@ export function deleteComment(commentId) {
       return response;
     })
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in deleting comment. Please try again.', 'error');
       throw error;
     });
@@ -428,7 +393,6 @@ export function updateComment(comment) {
       return response;
     })
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in updating comment. Please try again.', 'error');
       throw error;
     });
@@ -439,7 +403,6 @@ export function getHighPriorityTasksByTaskList(taskListId) {
     .get(`task/findHighPriorityListTasks/${taskListId}?startPosition=0`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in retrieving tasks. Please try again.', 'error');
       throw error;
     });
@@ -452,7 +415,6 @@ export function getListTasksByPatient(patientId, status, taskListId) {
     )
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in retrieving tasks. Please try again.', 'error');
       throw error;
     });
@@ -466,7 +428,6 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         toggleAlert('Error in retrieving tasks. Please try again.', 'error');
         throw error;
       });
@@ -475,7 +436,6 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
     .get(`task/findAllListTasksByPatient/${patientId}?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       toggleAlert('Error in retrieving tasks. Please try again.', 'error');
       throw error;
     });
@@ -488,7 +448,6 @@ export function getInboxTasks(status, sortBy, filterBy) {
       .get(`task/findInboxTasks?status=${status}&queryStartPosition=0`)
       .then(response => response.data)
       .catch(error => {
-        console.log(error);
         throw error;
       });
   }
@@ -498,17 +457,15 @@ export function getInboxTasks(status, sortBy, filterBy) {
     )
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       throw error;
     });
 }
 
-export function flagUnread(taskId, flagUnread) {
+export function flagUnread(taskId, unread) {
   return axios
-    .put(`task/flagUserTaskAsUnread/${taskId}?flagUnread=${flagUnread}`)
+    .put(`task/flagUserTaskAsUnread/${taskId}?flagUnread=${unread}`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       throw error;
     });
 }
@@ -518,7 +475,6 @@ export function getTaskHistory(taskId) {
     .get(`audit/findAuditsByTask/${taskId}`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       throw error;
     });
 }
@@ -539,8 +495,7 @@ export function addTaskAttachment(taskId, fileData) {
       toggleAlert('Attachment added successfully!', 'success');
       return response;
     })
-    .catch(function(error) {
-      console.log(error);
+    .catch(error => {
       toggleAlert('Error in saving attachment. Please try again.', 'error');
       throw error;
     });
@@ -553,8 +508,7 @@ export function removeTaskAttachment(taskAttachmentId) {
       toggleAlert('Attachment removed successfully!', 'success');
       return response;
     })
-    .catch(function(error) {
-      console.log(error);
+    .catch(error => {
       toggleAlert('Error in removing attachment. Please try again.', 'error');
       throw error;
     });
@@ -566,6 +520,14 @@ export function getTaskDetails(taskId) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
+      throw error;
+    });
+}
+export function flagArchivedForUser(taskId, flagArchived) {
+  return axios
+    .put(`task/flagUserTaskAsArchived/${taskId}?flagArchived=${flagArchived}`)
+    .then(response => response.data)
+    .catch(error => {
       throw error;
     });
 }

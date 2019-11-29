@@ -11,8 +11,6 @@ import {
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
 import Patients from './components/patients/Patients';
-import PersonTaskList from './LEGACY_views/PersonTaskList';
-import AllPatientsView from './views/AllPatientsView';
 import App from './views/App';
 import AssignedByMe from './views/AssignedByMe';
 import AssignedToMe from './views/AssignedToMe';
@@ -72,16 +70,11 @@ export const Routes = ({ store }) => {
         <Route component={TemplateCore}>
           <IndexRoute component={ListDetailsView} onEnter={authRequired} />
           <IndexRedirect to="/tasks" />
-          <Route path="/patientList" component={AllPatientsView} />
           <Route path="/patients" component={Patients} />
           <Route path="/patient/:patientId" component={PatientProfile} />
           <Route path="/editPatient/:patientId" component={PatientEditView} />
           <Route path="/activityfeed" component={TaskListActivityFeedView} />
           <Route path="/taskSearch" component={TaskListSearch} />
-          <Route
-            path="/assignedToPerson/:personId/:memberName"
-            component={PersonTaskList}
-          />
           <Route path="/people" component={PeopleView} />
           <Route
             path="/tasks/inbox(/:taskId)"

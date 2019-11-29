@@ -21,6 +21,12 @@ class InvitePeople extends PureComponent {
     });
   }
 
+  cancelEdit = (event) => {
+    toggleTaskForm();
+    scrollToTop();
+    event.preventDefault();
+  };
+
   onSubmit(formProps) {
     // console.log(formProps);
     this.setState({ invitePeopleResult: 'Sending Invitation ...' });
@@ -46,7 +52,7 @@ class InvitePeople extends PureComponent {
     const handleSubmit = this.props.handleSubmit; // injected by reduxform
 
     return (
-      <div className="add-form-wrapper">
+      <div className="add-form-wrapper" style={{marginTop: "-50px", marginBottom: "20px", width:"80%"}}>
         <div className="task-item add-form row expanded">
           <form
             className="inline-label"
@@ -102,12 +108,24 @@ class InvitePeople extends PureComponent {
                 </div> */}
 
             {/* SAVE */}
-            <div className="column large-12 text-center">
-              <input
-                type="submit"
-                className="button medium secondary"
-                value="Send invite"
-              />
+            <div className="row expanded">
+              <div className="columns shrink align-right">
+                <input
+                  type="submit"
+                  className="button medium secondary"
+                  value="Send invite"
+                />
+              </div>
+              <div className="columns shrink align-right">
+                <button
+                  id="cancelTaskListButton"
+                  type="button"
+                  className="button medium"
+                  onClick={e => this.cancelEdit(e)}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
             {/* <div className="column large-12 text-center">
                   <h3>{this.state.invitePeopleResult}</h3>

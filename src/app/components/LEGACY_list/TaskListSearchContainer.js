@@ -1,34 +1,231 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useCallback, useState } from 'react';
 import Moment from 'react-moment';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import IconButton from '@material-ui/core/IconButton';
 
+import useBoolean from '../../hooks/useBoolean';
+
+import { saveTask, storeAsCurrentTask } from '../../actions/task-actions';
 import * as TaskActions from '../../actions/task-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import TaskView from '../../views/TaskView';
 import MemberInitials from '../members/MemberInitials';
 
+// import { TaskListSection } from '../patients/TaskList';
+import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
+import CollapseIcon from '../../img/collapse.svg';
+
+
+const TaskDrawerContainer = styled.div`
+  flex: 1.4;
+`;
+
+export const TaskListContainer = styled.div`
+  flex: 2;
+  padding: 4px;
+`;
+
+export const TaskListHeader = styled.div`
+  display: flex;
+  position: relative;
+  height: 67px;
+  background: #2a4a70;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 15px 13.5px 19px 27px;
+`;
+
+export const TaskListSectionContainer = styled.div`
+  border: solid 2px #ddf2f7;
+  background: #fff;
+  padding: 18px 27px 27px 24px;
+
+  :not(:first-child) {
+    margin-top: 4px;
+  }
+`;
+
+export const TaskListSectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const TaskListSectionHeading = styled.div`
+  font-size: 24px;
+  font-weight: 600;
+  color: #0ca1c7;
+`;
+
+const StyledButton = styled(({ isCollapsed, ...props }) => (
+  <IconButton {...props} />
+))`
+  && {
+    height: 36px;
+    width: 36px;
+    padding: 0;
+    ${({ isCollapsed }) => isCollapsed && 'transform: rotate(180deg);'}
+  }
+`;
+
+export const TaskListSection = ({
+  heading,
+  children,
+  hideCollapse = false,
+  style,
+  headingStyle,
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const toggleIsCollapsed = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  return (
+    <TaskListSectionContainer style={style}>
+      <TaskListSectionHeader>
+        <TaskListSectionHeading style={headingStyle}>
+          {heading}
+        </TaskListSectionHeading>
+        {!hideCollapse && (
+          <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
+            <img src={CollapseIcon} alt="Collapse Details" />
+          </StyledButton>
+        )}
+      </TaskListSectionHeader>
+      {!isCollapsed && children}
+    </TaskListSectionContainer>
+  );
+};
+
+  // Lists TaskLists
+  const TaskListLayout = ({ searchedTasks, isFetching }) => {
+    const dispatch = useDispatch();
+    const [taskDrawerOpen, openTaskDrawer, closeTaskDrawer] = useBoolean(false);
+
+    const groupBy = (list, keyGetter) => {
+      const map = new Map();
+      list.forEach(item => {
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+          map.set(key, [item]);
+        } else {
+          collection.push(item);
+        }
+      });
+      return map;
+    }
+
+    const groupedTasks = groupBy(
+      searchedTasks,
+      task => task.taskList.listName,
+    );
+
+    var listMap = Array.from(groupedTasks.keys())
+
+    // const selectedTaskId = taskDrawerOpen ? selectedTask?.taskId : undefined;
+  
+    // const selectedTaskList = lists?.find(
+    //   ({ taskListId }) => taskListId === selectedTask?.taskListId,
+    // );
+    
+    const selectedTaskList = undefined;
+
+    return (
+      <>
+      {(!isFetching && (!groupedTasks || groupedTasks.size == 0)) ?
+        <div>
+          <p className="light-gray" style={{ fontWeight: 'bold' }}>
+            No matching tasks
+          </p>
+        </div>
+      : <>
+          <p className="light-gray" style={{ fontWeight: 'bold'}}>
+            {/* <span>Tasks found</span> */}
+          </p>
+          <TaskListContainer>
+            {listMap.map(
+                renderTaskListSection({
+                  groupedTasks,
+                  dispatch,
+                  closeTaskDrawer,
+                  openTaskDrawer,
+                  taskDrawerOpen
+                })
+              )
+            }
+          </TaskListContainer>
+          {taskDrawerOpen && (
+            <TaskDrawerContainer>
+              <NewTaskDrawer
+                closeDrawer={closeTaskDrawer}
+                taskList={selectedTaskList}
+              />
+            </TaskDrawerContainer>
+          )}
+        </>
+      }
+      </>
+    )
+  }
+
+  const renderTaskListSection = ({
+      groupedTasks,
+      dispatch,
+      closeTaskDrawer,
+      openTaskDrawer,
+      taskDrawerOpen,
+      ...otherProps
+    }) => ( listName ) => {
+      const tasks = groupedTasks.get(listName);
+      let taskListId = 0;
+      if (tasks) {
+        taskListId = tasks[0].taskList.taskListId;
+      }
+
+      const selectCurrentTask = task => {
+        if (!task) {
+          closeTaskDrawer();
+        }
+        storeAsCurrentTask(task)(dispatch);
+      };
+    return (
+      <div key={"taskList_"+listName}>
+          <div>
+            {tasks && tasks.length > 0 ? 
+              <TaskListSection heading={listName} key={listName}>
+                <PatientsTasklistEditable
+                  tasks={tasks}
+                  completedTasks={tasks}
+                  submitTask={description =>
+                    saveTask({ description, taskListId, patientId })(dispatch)
+                  }
+                  selectCurrentTask={selectCurrentTask}
+                  {...otherProps}
+                />
+              </TaskListSection>              
+             : (
+              <p className="light-gray">No matching tasks</p>
+            )}
+          </div>
+      </div>
+    )
+  }
+
 class TaskListSearchContainer extends PureComponent {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    this.closeAuditHistory();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    enableFoundationAccordionComponent('.wrapper');
-
-    resizeEmailBodySection('.task-item-wrapper');
   }
-
-  // componentWillUpdate(nextProps) {
-  //   const { taskActions } = this.props;
-  //   taskActions.loading();
-  //   taskActions.storeAsCurrentTask(null);
-  // }
 
   pullCompletedTasks = () => {
     if (!this.props.showingCompletedTasks) {
@@ -38,75 +235,12 @@ class TaskListSearchContainer extends PureComponent {
     }
   };
 
-  handleClick = (e, taskListId) => {
-    e.preventDefault();
-    // toggleDropDown('activityList' + taskListId)
-    // not working
-    // $("#activityList").foundation('toggle', $(e.target));
-    console.log('The accordion link was clicked.');
-  };
-
   setTaskEditingStatus = isEditing => {
-    // alert("working")
     this.setState({ editing: isEditing });
   };
 
-  closeAuditHistory = () => {
-    this.props.taskActions.storeAsCurrentTask(null);
-    // .then((resp) => {
-    this.props.taskActions.clearCurrentTaskHistory();
-    // })
-  };
-
-  renderAuditHistory() {
-    return this.props.currentTaskHistory.map(audit => {
-      return (
-        <div
-          className="task-item row expanded condense align-middle"
-          key={`audit${audit.auditId}`}
-        >
-          <div className="columns shrink">
-            {/* <MemberInitials /> */}
-            {/* <img className="member-photo circle" src="assets/img/user1.png" alt="name of user"/> */}
-            <MemberInitials member={audit.user} />
-          </div>
-          <div className="columns">
-            <span className="task-title">
-              {audit.user != null ? audit.user.userName : ''}
-            </span>
-          </div>
-          <div className="columns">
-            <span className="task-title">{audit.taskHistoryDetails}</span>
-          </div>
-          <div className="columns text-right">
-            <span className="item-details">
-              <Moment format="MM/DD/YYYY">{audit.createdDateTime}</Moment>
-            </span>
-            <span className="item-details">
-              <Moment format="hh:mm a">{audit.createdDateTime}</Moment>
-            </span>
-          </div>
-        </div>
-      );
-    });
-  }
-
   // Lists Activity for a TaskList
   renderList(taskListId, listName, taskStatus, tasks, members) {
-    // return(
-    //   <div className="list-wrapper list-wrapper-task-search">
-    //     <div className="task-item-wrapper">
-    //       <ListOfTasksContainer
-    //         taskListId={taskListId} status={taskStatus}
-    //         members={members}
-    //         filteredTasks={tasks}
-    //         setTaskEditingStatus={this.setTaskEditingStatus}
-    //         listName=""
-    //       />
-    //     </div>
-    //   </div>
-    // );
-
     const {
       userId,
       completedTasks,
@@ -152,104 +286,20 @@ class TaskListSearchContainer extends PureComponent {
     return <TaskView {...taskViewProps} />;
   }
 
-  // Lists TaskLists
-  renderTaskListName(taskStatus, searchedTasks) {
-    const groupedTasks = this.groupBy(
-      searchedTasks,
-      task => task.taskList.listName,
-    );
-    if (!this.props.isFetching && (!groupedTasks || groupedTasks.size == 0)) {
-      return (
-        <li>
-          <p className="light-gray" style={{ fontWeight: 'bold' }}>
-            No matching tasks
-          </p>
-        </li>
-      );
-    }
-    return Array.from(groupedTasks.keys()).map(listName => {
-      const tasks = groupedTasks.get(listName);
-      let taskListId = 0;
-      if (tasks) {
-        taskListId = tasks[0].taskList.taskListId;
-      }
-      return (
-        <li className="accordion-item" key={`taskList_${listName}`}>
-          {/* <span className={this.props.currentTaskHistory?"accordion-title task-search-list-name":"accordion-title task-search-list-name large-8 large-offset-2"}>
-              <b>{listName}</b>
-            </span>   */}
-          <div>
-            {tasks && tasks.length > 0 ? (
-              this.renderList(taskListId, listName, taskStatus, tasks, null)
-            ) : (
-              <p className="light-gray">No matching tasks</p>
-            )}
-          </div>
-        </li>
-      );
-    });
-  }
-
   render() {
     return (
       <div className="tasks-container-new">
-        {/* <div className="large-12 columns left-column"> */}
         <div className="row expanded collapse">
-          <ul
-            className="columns large-12 accordion task-search-results-container"
-            data-accordion
-            data-allow-all-closed="true"
-          >
-            {this.props.searchPerformed &&
-              this.props.tasks &&
-              this.renderTaskListName('INCOMPLETE', this.props.tasks)}
-          </ul>
-          {/* <div className="columns large-12">
-              {this.props.searchPerformed && 
-                <div className="show-completed text-center">
-                  <a className="toggle-completed button primary small" onClick={(e) => this.pullCompletedTasks()}>Show completed tasks</a>
-                </div>
-              }
-            </div> */}
-          {this.props.showingCompletedTasks &&
-            this.props.completedTasks &&
-            this.props.completedTasks.length > 0 && (
-              <ul
-                className="columns large-12 accordion task-search-results-container"
-                data-accordion
-                data-allow-all-closed="true"
-              >
-                {this.props.searchPerformed &&
-                  this.props.completedTasks &&
-                  this.renderTaskListName(
-                    'COMPLETE',
-                    this.props.completedTasks,
-                  )}
-              </ul>
-            )}
-          {this.props.showingCompletedTasks &&
-            this.props.completedTasks &&
-            this.props.completedTasks.length == 0 && (
-              <span>No completed tasks</span>
-            )}
+            {this.props.tasks &&
+              // this.renderTaskListName('INCOMPLETE', this.props.tasks)
+              <TaskListLayout 
+              searchedTasks={this.props.tasks}
+              isFetching={this.props.isFetching}
+              />
+            }
         </div>
-        {/* </div> */}
       </div>
     );
-  }
-
-  groupBy(list, keyGetter) {
-    const map = new Map();
-    list.forEach(item => {
-      const key = keyGetter(item);
-      const collection = map.get(key);
-      if (!collection) {
-        map.set(key, [item]);
-      } else {
-        collection.push(item);
-      }
-    });
-    return map;
   }
 }
 

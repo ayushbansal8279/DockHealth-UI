@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
-const DATE_MASK = /[0-2]\d\/[0-2]\d\/\d{4}/;
+const DATE_MASK = /[0-2]\d\/[0-2]\d\/\d{4}|^$/;
 const DATE_MASK_MESSAGE =
   'Birthday has incorrect format (MM/DD/YYYY is required)';
 const PHONE_MASK = /[1-9]\d{2}-\d{3}-\d{4}|^$/;
@@ -12,7 +12,7 @@ export const matchEmptyNumber = value =>
   value.replace(/_/g, '').replace(/^-+$/, '');
 
 export const matchEmptyDate = value =>
-  value.replace(/_/g, '').replace(/^-\/$/, '');
+  value.replace(/_/g, '').replace(/^\/+$/, '');
 
 export const addPatientValidationSchema = object().shape({
   firstName: string().required(REQUIRED_MESSAGE),
@@ -25,7 +25,7 @@ export const addPatientValidationSchema = object().shape({
       return this.isType(value) && matchEmptyDate(value);
     })
     .matches(DATE_MASK, DATE_MASK_MESSAGE)
-    .nullable(),
+    .notRequired(),
   gender: string().notRequired(),
   phoneHome: string()
     // eslint-disable-next-line func-names
@@ -53,4 +53,25 @@ export const inviteValidationSchema = object().shape({
   email: string()
     .email()
     .required(REQUIRED_MESSAGE),
+});
+
+export const taskValidationSchema = object().shape({
+  // eslint-disable-next-line func-names
+  description: string().test('description', REQUIRED_MESSAGE, function(value) {
+    if (typeof this.parent.descriptionEdit !== 'undefined') {
+      return true;
+    }
+
+    return value && value.length > 0;
+  }),
+  // eslint-disable-next-line func-names
+  descriptionEdit: string().test('descriptionEdit', REQUIRED_MESSAGE, function(
+    value,
+  ) {
+    if (typeof this.parent.description !== 'undefined') {
+      return true;
+    }
+
+    return value && value.length > 0;
+  }),
 });

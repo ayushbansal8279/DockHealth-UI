@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -6,106 +5,53 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Popover from '@material-ui/core/Popover';
 import head from 'ramda/es/head';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 
-import moment from 'moment';
+import { getAllPatients } from '../../actions/patient-actions';
 import {
-  saveTask,
-  assignOrReassignTask,
-  updatePatient,
   deleteTask,
-  moveTask,
+  duplicateTask,
+  storeAsCurrentTask as storeAsCurrentTaskAction,
+  toggleTaskPriority,
+  updateWorkflowStatus,
 } from '../../actions/task-actions';
+import { getPatientName, noop } from '../../helpers/utilityFunctions';
 import useBoolean from '../../hooks/useBoolean';
 import { PriorityDot } from '../common/Priority';
-import NewTaskDrawerForm from './NewTaskDrawer.form';
-import PriorityFlag from './PriorityFlag';
-import { noop, getPatientName } from '../../helpers/utilityFunctions';
-import { getAllPatients } from '../../actions/patient-actions';
-import { CloseTaskButton } from './TaskDrawerButtons';
 import NewTaskDrawerCommentSection from './NewTaskDrawer.commentSection';
+import NewTaskDrawerForm from './NewTaskDrawer.form';
+import onSubmit from './NewTaskDrawer.onSubmit';
 import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
-
-const NewTaskDrawerContainer = styled.div`
-  align-items: flex-start;
-  display: flex;
-  flex: 1.4;
-  height: 100%;
-  justify-content: flex-start;
-  padding: 0 0.25rem;
-  position: sticky;
-  transition: all 0.25s ease-out;
-  top: 6.25rem;
-`;
-
-const TopLabel = styled.div`
-  color: #000;
-  font-size: 24px;
-  line-height: 44px;
-  margin-bottom: 0.75rem;
-  padding-left: 1rem;
-  padding-top: 0.75rem;
-`;
-
-const FormSectionNoBorder = styled(Grid)`
-  margin-top: 5px;
-  padding: 0 8px 8px;
-
-  &:not(:first-child) {
-    margin-top: 8px;
-  }
-`;
-
-const FormSectionDivider = styled.div`
-  background-color: #ddf2f7;
-  height: 2px;
-  width: 100%;
-
-  ${props => props.condensed && 'margin: 0 0.5rem;'}
-`;
-
-const FormSection = styled(FormSectionNoBorder)`
-  background-color: #fff;
-  border: 2px solid #ddf2f7;
-`;
-
-const CondensedFormSection = styled(FormSection)`
-  padding: 0;
-`;
-
-const StatusSelect = styled.div`
-  align-items: center;
-  cursor: pointer;
-  display: inline-flex;
-  flex-flow: row nowrap;
-
-  & > * {
-    font-size: 14px;
-    margin-left: 6px;
-  }
-`;
-
-const CloseTaskButtonContainer = styled.div`
-  padding-right: 0.5rem;
-`;
-
-const StyledButton = styled(Button)`
-  && {
-    ${props => props.variant === 'contained' && 'background-color: #007cab;'}
-    box-shadow: none;
-    color: ${props => (props.variant === 'contained' ? '#fff' : '#009fcd')};
-    font-size: ${props => (props.variant === 'contained' ? 1 : 0.875)}rem;
-    ${props => props.variant === 'contained' && 'font-weight: bold;'}
-    margin: 1.5rem 0.25rem;
-    text-transform: none;
-  }
-`;
+import {
+  AutoSaveContainer,
+  AutoSaveLabel,
+  BottomButtomContainer,
+  CloseTaskButtonContainer,
+  CondensedFormSection,
+  FormSection,
+  FormSectionDivider,
+  NewTaskDrawerContainer,
+  NewTaskDrawerInnerContainer,
+  ParentDescription,
+  ParentInfoContainer,
+  ParentRead,
+  SideClickListener,
+  StatusSelect,
+  StyledButton,
+  StyledForm,
+  StyledVerticalDivider,
+  SubtaskInfoContainer,
+  SubtaskLabel,
+  TopLabel,
+  SubtaskCloseContainer,
+} from './NewTaskDrawer.styled';
+import { taskValidationSchema } from './NewTaskDrawer.validationSchema';
+import PriorityFlag from './PriorityFlag';
+import { CloseTaskButton } from './TaskDrawerButtons';
 
 const statusSelectData = [
-  // Inserted No Status status
   {
     key: 'no-status',
     value: null,
@@ -120,26 +66,25 @@ const statusSelectData = [
   },
   {
     key: 'planned',
-    value: 'BLOCKED',
+    value: 'PLANNED',
     label: 'Planned',
     color: '#f6b039',
-    // Original color: #0ca1c7
-    // Second color: #dc143c
   },
   {
     key: 'on-hold',
     value: 'ON_HOLD',
     label: 'On Hold',
     color: '#dc143c',
-    //Original color: #f6b039
   },
 ];
 
 const renderStatusSelectOption = ({
   closeStatusPopover,
   setStatus,
+  saveTaskStatus,
+  taskId,
 }) => status => {
-  const { key, label, color } = status;
+  const { key, label, color, value } = status;
 
   return (
     <ListItem
@@ -148,6 +93,9 @@ const renderStatusSelectOption = ({
       onClick={() => {
         setStatus(status);
         closeStatusPopover();
+        if (taskId) {
+          saveTaskStatus({ newTaskStatus: value });
+        }
       }}
     >
       <ListItemIcon>
@@ -160,70 +108,13 @@ const renderStatusSelectOption = ({
   );
 };
 
-const onSubmit = ({
-  closeDrawer,
-  dispatch,
-  status,
-  task,
-  taskList,
-  priorityActive,
-}) => async data => {
-  const {
-    assignedToUserId,
-    patientId,
-    patient: unusedPatient,
-    newTaskListId,
-    newTaskDueDate,
-    ...newData
-  } = data;
-  let { patient } = data;
-
-  let currTaskListId = 0;
-  if (taskList && taskList.taskListId) {
-    currTaskListId = taskList.taskListId;
-  }
-
-  const requestData = {
-    ...task,
-    ...newData,
-    taskListId: currTaskListId,
-    workflowStatus: status.value,
-    priority: priorityActive ? 'HIGH' : 'LOW',
-    assignedToId: assignedToUserId,
-    patientId,
-  };
-
-  if (newTaskDueDate && moment(newTaskDueDate).isValid()) {
-    requestData.dueDate = newTaskDueDate;
-  }
-
-  try {
-    patient = JSON.parse(patient);
-  } catch {
-    noop();
-  }
-
-  try {
-    const newTask = await saveTask(requestData)(dispatch);
-    await Promise.all([
-      assignOrReassignTask(newTask, assignedToUserId || -1)(dispatch),
-      updatePatient(newTask, patient)(dispatch),
-    ]);
-
-    if (newTaskListId) {
-      await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
-    }
-  } catch {
-    noop();
-  } finally {
-    closeDrawer();
-  }
-};
-
-const onDelete = ({ afterDelete, dispatch, task }) => async () => {
+const onDelete = ({ afterDelete, dispatch, task }) => async event => {
+  event.preventDefault();
+  event.stopPropagation();
   if (task) {
     try {
       await deleteTask(task)(dispatch);
+      toggleAlert('Task deleted successfully', 'success');
       afterDelete();
     } catch {
       noop();
@@ -231,7 +122,61 @@ const onDelete = ({ afterDelete, dispatch, task }) => async () => {
   }
 };
 
-export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
+const onDuplicate = ({ afterDuplicate, dispatch, task }) => async event => {
+  event.preventDefault();
+  event.stopPropagation();
+  if (task && task.taskId != null) {
+    try {
+      const newTask = await duplicateTask(task)(dispatch);
+      afterDuplicate({ newTask });
+    } catch {
+      noop();
+    }
+  }
+};
+
+const thresholds = [];
+
+for (let threshold = 0; threshold <= 1; threshold += 0.02) {
+  thresholds.push(threshold);
+}
+
+const intersectionCallback = entries => {
+  entries.forEach(entry => {
+    const {
+      intersectionRect: { height },
+      target,
+    } = entry;
+    const form = target.querySelector('form');
+
+    if (form) {
+      form.style.height = height;
+      form.style.minHeight = height;
+    }
+  });
+};
+
+let observer;
+try {
+  observer = new IntersectionObserver(intersectionCallback, {
+    root: null,
+    rootMargin: '0px',
+    threshold: thresholds,
+  });
+} catch {
+  observer = {
+    observe: () => {},
+    unobserve: () => {},
+  };
+}
+
+export default ({
+  closeDrawer,
+  headsUpAreaRef,
+  taskList,
+  onMarkComplete,
+  isInbox,
+}) => {
   const [
     priorityActive,
     setPriorityActive,
@@ -243,21 +188,116 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
   );
   const [status, setStatus] = useState(head(statusSelectData));
   const [headsUpAreaHeight, setHeadsUpAreaHeight] = useState(0);
+  const [deferredCommentsPromises, setDeferredCommentsPromises] = useState([]);
   const statusSelectRef = useRef(null);
   const task = useSelector(store => store.taskState.selectedTask);
+  const userProfile = useSelector(store => store.userState.userProfile);
   const dispatch = useDispatch();
+  const taskContainerRef = useRef(null);
+  const [cachedTaskContainerRef, setCachedTaskContainerRef] = useState(null);
+  const [
+    autoSaveVisible,
+    setAutoSaveVisible,
+    unsetAutoSaveVisible,
+  ] = useBoolean(false);
+  const [autoSaveTimeoutId, setAutoSaveTimeoutId] = useState(null);
+
+  const formMethods = useForm({
+    validationSchema: taskValidationSchema,
+  });
 
   const isSubtask = Boolean(task?.parentTaskId);
+  const userId = userProfile?.userId;
+  const taskId = task?.taskId;
+  const taskWorkflowStatus = task?.workflowStatus;
+  const taskPriority = task?.priority;
 
-  const formMethods = useForm({});
+  const { parentTask, subtaskOrder } = useSelector(({ taskState }) => {
+    const tasks = [...taskState.tasks, ...taskState.completedTasks];
+
+    if (!isSubtask) {
+      return {
+        parentTask: null,
+        subtaskOrder: null,
+      };
+    }
+
+    const foundParentTask = tasks.find(
+      ({ taskId: storeTaskId }) => task.parentTaskId === storeTaskId,
+    );
+    const foundSubtaskOrder = foundParentTask?.subtasks.findIndex(
+      ({ taskId: subtaskId }) => subtaskId === taskId,
+    );
+
+    return {
+      parentTask: foundParentTask,
+      subtaskOrder: foundSubtaskOrder >= 0 ? foundSubtaskOrder + 1 : 0,
+    };
+  });
+
+  const storeAsCurrentTask = useCallback(
+    newTask => storeAsCurrentTaskAction(newTask)(dispatch),
+    [dispatch],
+  );
+
+  const saveTaskPriority = useCallback(
+    ({ newTaskPriority }) => {
+      toggleTaskPriority(task, parseInt(userId, 10) || -1, newTaskPriority)(
+        dispatch,
+      )
+        .then(() => {
+          setAutoSaveVisible();
+        })
+        .catch(() => {
+          toggleAlert(
+            'Error updating priority, please try again later',
+            'error',
+          );
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [taskId, userId],
+  );
+
+  const saveTaskStatus = useCallback(
+    ({ newTaskStatus }) => {
+      updateWorkflowStatus(task, newTaskStatus)(dispatch)
+        .then(() => {
+          setAutoSaveVisible();
+        })
+        .catch(() => {
+          toggleAlert('Error updating status, please try again later', 'error');
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [taskId],
+  );
 
   useEffect(() => {
     getAllPatients()(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const clearAutoSaveTimeout = () => {
+    clearTimeout(autoSaveTimeoutId);
+    setAutoSaveTimeoutId(null);
+    unsetAutoSaveVisible();
+  };
+
   useEffect(() => {
-    const isPriorityHigh = task?.priority === 'HIGH';
+    if (autoSaveVisible) {
+      clearTimeout(autoSaveTimeoutId);
+      setAutoSaveTimeoutId(
+        setTimeout(() => {
+          clearAutoSaveTimeout();
+        }, 1000),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSaveVisible]);
+
+  useEffect(() => {
+    const isPriorityHigh = taskPriority === 'HIGH';
 
     if (isPriorityHigh) {
       setPriorityActive();
@@ -265,14 +305,16 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
       unsetPriorityActive();
     }
 
-    const newWorkflowStatus = statusSelectData.find(
-      ({ value }) => value === task?.workflowStatus,
-    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskPriority, taskId]);
 
-    if (newWorkflowStatus) {
-      setStatus(newWorkflowStatus);
-    }
-  }, [setPriorityActive, task, unsetPriorityActive]);
+  useEffect(() => {
+    const newWorkflowStatus =
+      statusSelectData.find(({ value }) => value === taskWorkflowStatus) ??
+      head(statusSelectData);
+
+    setStatus(newWorkflowStatus);
+  }, [taskWorkflowStatus, taskId]);
 
   useEffect(
     () => {
@@ -281,6 +323,22 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [headsUpAreaRef?.scrollHeight],
   );
+
+  useEffect(() => {
+    setCachedTaskContainerRef(taskContainerRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (cachedTaskContainerRef) {
+      observer.observe(taskContainerRef.current);
+    }
+
+    return () => {
+      if (cachedTaskContainerRef) {
+        observer.unobserve(cachedTaskContainerRef);
+      }
+    };
+  }, [cachedTaskContainerRef]);
 
   let defaultValues = {};
 
@@ -299,35 +357,106 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
     };
   }
 
+  const addDeferredCommentToQueue = useCallback(
+    ({ promise, clearMethod }) => {
+      if (deferredCommentsPromises.length === 0) {
+        setDeferredCommentsPromises([clearMethod, promise]);
+      } else {
+        setDeferredCommentsPromises([...deferredCommentsPromises, promise]);
+      }
+    },
+    [deferredCommentsPromises],
+  );
+
+  useEffect(() => {
+    setDeferredCommentsPromises([]);
+    clearAutoSaveTimeout();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskId]);
+
+  const handleSubmit = formMethods.handleSubmit(
+    onSubmit({
+      closeDrawer,
+      dispatch,
+      status,
+      task,
+      taskList,
+      priorityActive,
+      storeAsCurrentTask,
+      deferredCommentsPromises,
+      setAutoSaveVisible,
+    }),
+  );
+
+  const addingTaskOrSubtask = !task || (task && !task.taskId);
+
   return (
-    <NewTaskDrawerContainer headsUpAreaHeight={headsUpAreaHeight}>
-      <form
-        onSubmit={formMethods.handleSubmit(
-          onSubmit({
-            closeDrawer,
-            dispatch,
-            status,
-            task,
-            taskList,
-            priorityActive,
-          }),
-        )}
-      >
-        <Grid container>
-          <FormSection container item xs={12}>
-            <Grid
-              container
-              item
-              xs={12}
-              alignItems="center"
-              justify="space-between"
+    <NewTaskDrawerContainer
+      headsUpAreaHeight={headsUpAreaHeight}
+      ref={taskContainerRef}
+    >
+      {parentTask && (
+        <>
+          <ParentInfoContainer>
+            {!parentTask.read && <ParentRead>NEW</ParentRead>}
+            <ParentDescription>{parentTask.description}</ParentDescription>
+          </ParentInfoContainer>
+          <SubtaskInfoContainer topBorderActive={autoSaveVisible}>
+            <SubtaskLabel>
+              {addingTaskOrSubtask ? 'New subtask' : `Subtask #${subtaskOrder}`}
+            </SubtaskLabel>
+            <SubtaskCloseContainer
+              onClick={event => {
+                event.preventDefault();
+                event.stopPropagation();
+                closeDrawer();
+                storeAsCurrentTask(null);
+              }}
             >
-              <TopLabel>{`${task && task.taskId ? 'Edit' : 'Add'} a ${task && task.parentTaskId ? 'SubTask' : 'Task'}`}</TopLabel>
-              <CloseTaskButtonContainer>
-                <CloseTaskButton onClick={closeDrawer} />
-              </CloseTaskButtonContainer>
-            </Grid>
-            <FormSectionDivider condensed />
+              &times;
+            </SubtaskCloseContainer>
+            <AutoSaveContainer visible={autoSaveVisible}>
+              <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
+            </AutoSaveContainer>
+          </SubtaskInfoContainer>
+        </>
+      )}
+      <StyledForm onSubmit={handleSubmit}>
+        <NewTaskDrawerInnerContainer>
+          <FormSection
+            topBorderActive={
+              !addingTaskOrSubtask && !parentTask && autoSaveVisible
+            }
+            container
+            item
+            xs={12}
+          >
+            {!task && (
+              <Grid
+                container
+                item
+                xs={12}
+                alignItems="center"
+                justify="space-between"
+              >
+                <TopLabel>Add a task</TopLabel>
+                <CloseTaskButtonContainer>
+                  <CloseTaskButton
+                    onClick={() => {
+                      closeDrawer();
+                      storeAsCurrentTask(null);
+                    }}
+                  />
+                </CloseTaskButtonContainer>
+              </Grid>
+            )}
+            <FormSectionDivider hidden={task} active={autoSaveVisible}>
+              {!parentTask && (
+                <AutoSaveContainer visible={autoSaveVisible}>
+                  <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>
+                </AutoSaveContainer>
+              )}
+            </FormSectionDivider>
             <Grid
               container
               item
@@ -337,21 +466,39 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
             >
               <PriorityFlag
                 active={priorityActive}
-                onClick={togglePriorityActive}
+                onClick={() => {
+                  const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
+                  togglePriorityActive();
+                  if (taskId) {
+                    saveTaskPriority({ newTaskPriority });
+                  }
+                }}
               />
               <StatusSelect ref={statusSelectRef} onClick={openStatusPopover}>
                 <span>Status:</span>
                 <PriorityDot color={status.color} />
                 <span>{status.label}</span>
               </StatusSelect>
+              {task && !parentTask && (
+                <CloseTaskButtonContainer>
+                  <CloseTaskButton
+                    onClick={() => {
+                      closeDrawer();
+                      storeAsCurrentTask(null);
+                    }}
+                    paddedSmall
+                  />
+                </CloseTaskButtonContainer>
+              )}
               <Popover
-                open={statusPopoverOpen}
                 anchorEl={statusSelectRef?.current}
-                onClose={closeStatusPopover}
                 anchorOrigin={{
                   vertical: 'top',
                   horizontal: 'left',
                 }}
+                disablePortal
+                onClose={closeStatusPopover}
+                open={statusPopoverOpen}
                 transformOrigin={{
                   vertical: 'top',
                   horizontal: 'left',
@@ -359,7 +506,12 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
               >
                 <List>
                   {statusSelectData.map(
-                    renderStatusSelectOption({ closeStatusPopover, setStatus }),
+                    renderStatusSelectOption({
+                      closeStatusPopover,
+                      setStatus,
+                      saveTaskStatus,
+                      taskId,
+                    }),
                   )}
                 </List>
               </Popover>
@@ -369,55 +521,60 @@ export default ({ closeDrawer, headsUpAreaRef, taskList }) => {
                 <NewTaskDrawerForm
                   isSubtask={isSubtask}
                   defaultValues={defaultValues}
+                  handleSubmit={handleSubmit}
+                  onMarkComplete={onMarkComplete}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                  isInbox={isInbox}
                 />
               </FormContext>
             </Grid>
           </FormSection>
           <CondensedFormSection container item xs={12}>
-            {task && <NewTaskDrawerCommentSection task={task} />}
-            <FormSectionDivider condensed />
+            <NewTaskDrawerCommentSection
+              task={task}
+              addDeferredCommentToQueue={addDeferredCommentToQueue}
+            />
             <FormContext {...formMethods}>
-              <NewTaskDrawerOtherDataSection task={task} />
+              <NewTaskDrawerOtherDataSection
+                task={task}
+                taskList={taskList}
+                closeDrawer={closeDrawer}
+                setAutoSaveVisible={setAutoSaveVisible}
+                isInbox={isInbox}
+              />
             </FormContext>
-            <FormSectionDivider condensed />
-            <Grid
-              alignItems="center"
-              justify="center"
-              spacing={8}
-              container
-              item
-              xs={12}
-            >
-              {task && task?.status !== 'COMPLETE' && (
-                <Grid item xs={3}>
-                  <StyledButton
-                    fullWidth
-                    onClick={onDelete({
-                      afterDelete: () => {
-                        closeDrawer();
-                      },
-                      dispatch,
-                      task,
-                    })}
-                  >
-                    Delete
-                  </StyledButton>
-                </Grid>
-              )}
-              <Grid item xs={3}>
-                <StyledButton
-                  type="submit"
-                  fullWidth
-                  color="primary"
-                  variant="contained"
-                >
-                  Save
-                </StyledButton>
-              </Grid>
-            </Grid>
           </CondensedFormSection>
-        </Grid>
-      </form>
+        </NewTaskDrawerInnerContainer>
+        {task && task.taskId != null && task.status !== 'COMPLETE' && (
+          <BottomButtomContainer>
+            <StyledButton
+              onClick={onDelete({
+                afterDelete: () => {
+                  closeDrawer();
+                },
+                dispatch,
+                task,
+              })}
+            >
+              Delete
+            </StyledButton>
+            <StyledVerticalDivider />
+            <StyledButton
+              onClick={onDuplicate({
+                afterDuplicate: ({ newTask }) => {
+                  storeAsCurrentTask(newTask);
+                },
+                dispatch,
+                task,
+              })}
+            >
+              Duplicate
+            </StyledButton>
+          </BottomButtomContainer>
+        )}
+        {/* If you want to add a button to the Add a task sidebar, do so here.  */}
+        <SideClickListener onClick={closeDrawer} />
+      </StyledForm>
     </NewTaskDrawerContainer>
   );
 };

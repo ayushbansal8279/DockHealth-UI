@@ -1,11 +1,9 @@
 import {
   always,
-  assoc,
-  equals,
   evolve,
-  identity,
   ifElse,
   map,
+  mergeDeepLeft,
   propEq,
   uncurryN,
   unless,
@@ -18,6 +16,7 @@ import {
   ADD_TASK_SUCCESS,
   ASSIGN_OR_REASSIGN_TASK_SUCCESS,
   CHANGE_ADDING_NEW_SUBTASK,
+  CHANGE_ADDING_NEW_TASK,
   CLEAR_CURRENT_TASK_HISTORY,
   DELETE_TASK_COMMENT_SUCCESS,
   DELETE_TASK_SUCCESS,
@@ -32,6 +31,7 @@ import {
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   MARK_TASK_STATUS_SUCCESS,
   MOVE_TASK_SUCCESS,
+  MOVE_TASK_BETWEEN_LISTS,
   ORDER_SUB_TASK_SUCCESS,
   REQUEST_COMPLETED_TASKS,
   REQUEST_HISTORY,
@@ -47,7 +47,7 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
-  CHANGE_ADDING_NEW_TASK,
+  TASK_ARCHIVED,
 } from '../actions/action-types';
 
 const initialState = {
@@ -64,6 +64,7 @@ const initialState = {
   selectedTaskId: null,
   addingNewSubtask: false,
   addingNewSubtaskParentId: null,
+  subtaskShape: {},
   addingNewTask: false,
 };
 
@@ -134,32 +135,29 @@ const updateReminder = (state, { taskId, reminderDt }) => {
 
 const TASK_COMPLETE = 'COMPLETE';
 
-const updateMainTaskStatus = status =>
+const updateMainTask = taskData =>
   evolve({
-    status: always(status),
-    subtasks: equals(status, TASK_COMPLETE)
-      ? map(assoc('status', status))
-      : identity,
-  });
-
-const updateSubTaskStatus = (status, subtask) =>
-  evolve({
+    ...map(always, taskData),
     subtasks: map(
-      when(propEq('taskId', subtask.taskId), assoc('status', status)),
+      unless(propEq('status', TASK_COMPLETE), mergeDeepLeft(taskData)),
     ),
   });
 
-const updateTaskStatus = uncurryN(3, status => task =>
+const updateSubTask = (taskData, subtask) =>
+  evolve({
+    subtasks: map(
+      when(propEq('taskId', subtask.taskId), mergeDeepLeft(taskData)),
+    ),
+  });
+
+const updateTask = uncurryN(3, taskData => task =>
   map(
     when(
       propEq('taskId', task.parentTaskId || task.taskId),
       ifElse(
         propEq('taskId', task.taskId),
-        updateMainTaskStatus(status),
-        unless(
-          propEq('status', TASK_COMPLETE),
-          updateSubTaskStatus(status, task),
-        ),
+        updateMainTask(taskData),
+        unless(propEq('status', TASK_COMPLETE), updateSubTask(taskData, task)),
       ),
     ),
   ),
@@ -258,19 +256,26 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case MARK_TASK_STATUS_SUCCESS: {
-      const { task, status } = action;
-      const tasks = updateTaskStatus(status, task, state.tasks);
+      const { task, status, completedDt, completedBy } = action;
+      const archivedByUser = true;
+      const taskData = { status, completedBy, completedDt, archivedByUser };
 
-      return { ...state, tasks };
+      const tasks = updateTask(taskData, task, state.tasks);
+      //Need to update the task otherwise the completed list is not updated
+      if (!task.parentTaskId) {
+        task.status = status;
+        task.completedBy = completedBy;
+        task.completedDt = completedDt;
+        task.archivedByUser = archivedByUser;
+      }
+      return { ...state, tasks: tasks };
     }
 
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
-      const { task, status } = action;
-      const completedTasks = updateTaskStatus(
-        status,
-        task,
-        state.completedTasks,
-      );
+      const { task, status, completedDt, completedBy } = action;
+      const taskData = { status, completedBy, completedDt };
+
+      const completedTasks = updateTask(taskData, task, state.completedTasks);
 
       return { ...state, completedTasks };
     }
@@ -361,6 +366,33 @@ const TaskReducer = (state = initialState, action) => {
                 ),
               },
         ),
+      };
+    }
+
+    case MOVE_TASK_BETWEEN_LISTS: {
+      const { task } = action;
+
+      if (isSubtask(task)) {
+        return state;
+      }
+
+      const { tasks, completedTasks } =
+        task.status === 'COMPLETE'
+          ? {
+              tasks: state.tasks.filter(({ taskId }) => taskId !== task.taskId),
+              completedTasks: [task, ...state.completedTasks],
+            }
+          : {
+              completedTasks: state.completedTasks.filter(
+                ({ taskId }) => taskId !== task.taskId,
+              ),
+              tasks: [task, ...state.tasks],
+            };
+
+      return {
+        ...state,
+        tasks,
+        completedTasks,
       };
     }
 
@@ -492,34 +524,44 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTaskId
-            ? action.task.parentTaskId
-              ? {
-                  ...task,
-                  subtasks: task.subtasks.map(subtask =>
-                    subtask === action.task
-                      ? {
-                          ...subtask,
-                          comments: subtask.comments.map(comment =>
-                            comment.commentId === action.comment.commentId
-                              ? { ...comment, comment: action.comment.comment }
-                              : comment,
-                          ),
-                        }
-                      : subtask,
-                  ),
-                }
-              : {
-                  ...task,
-                  comments: task.comments.map(comment =>
-                    comment.commentId === action.comment.commentId
-                      ? { ...comment, comment: action.comment.comment }
-                      : comment,
-                  ),
-                }
-            : task,
-        ),
+        tasks: state.tasks.map(task => {
+          if (task.taskId === mainTaskId) {
+            if (action.task.parentTaskId) {
+              return {
+                ...task,
+                subtasks: task.subtasks.map(subtask => ({
+                  ...subtask,
+                  comments: subtask.comments.map(comment => {
+                    if (comment.commentId === action.comment.commentId) {
+                      return {
+                        ...comment,
+                        ...action.comment,
+                        creator: comment.creator,
+                      };
+                    }
+
+                    return comment;
+                  }),
+                })),
+              };
+            }
+
+            return {
+              ...task,
+              comments: task.comments.map(comment =>
+                comment.commentId === action.comment.commentId
+                  ? {
+                      ...comment,
+                      ...action.comment,
+                      creator: comment.creator,
+                    }
+                  : comment,
+              ),
+            };
+          }
+
+          return task;
+        }),
       };
     }
 
@@ -679,11 +721,16 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case CHANGE_ADDING_NEW_SUBTASK: {
-      const { addingNewSubtask, addingNewSubtaskParentId } = action;
+      const {
+        addingNewSubtask,
+        addingNewSubtaskParentId,
+        subtaskShape,
+      } = action;
       return {
         ...state,
         addingNewSubtask,
         addingNewSubtaskParentId,
+        subtaskShape,
       };
     }
 
@@ -694,6 +741,25 @@ const TaskReducer = (state = initialState, action) => {
         addingNewTask,
       };
     }
+
+    case TASK_ARCHIVED: {
+      const { task: actionTask, currentUserProfile } = action;
+
+      return {
+        ...state,
+        completedTasks: state.completedTasks.map(task => {
+          if (task.taskId === actionTask.taskId) {
+            return {
+              ...task,
+              archivedByUser: true,
+            };
+          }
+
+          return task;
+        }),
+      };
+    }
+
     default:
       return state;
   }

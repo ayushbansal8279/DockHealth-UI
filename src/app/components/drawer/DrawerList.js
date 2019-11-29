@@ -1,11 +1,7 @@
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router';
-import styled from 'styled-components';
 
+import useBoolean from '../../hooks/useBoolean';
 import InboxIcon from '../../img/drawer/inbox';
 import ListsIcon from '../../img/drawer/lists';
 import LogoutIcon from '../../img/drawer/logout';
@@ -14,190 +10,23 @@ import PeopleIcon from '../../img/drawer/people';
 import SearchIcon from '../../img/drawer/search';
 import SupportIcon from '../../img/drawer/support';
 import DrawerHeader from './DrawerHeader';
+import {
+  BackgroundListItem,
+  NestedList,
+  NestedListContainer,
+  NestedListItem,
+  NestedListItemText,
+  RolloverNestedListItemText,
+  RolloverPopover,
+  StyledList,
+  StyledListItem,
+  StyledListItemIcon,
+  StyledListItemText,
+  StyledRouterLinkContainer,
+  StyledSpacer,
+} from './DrawerList.styled';
 
 const NESTED_LIST_PREFIX = 'nested';
-
-const StyledList = styled(List).attrs({
-  paper: 'paper',
-})`
-  && {
-    border: none;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    height: 100%;
-    min-height: 100%;
-    padding: 0;
-    padding-bottom: 24px;
-    ${({ open }) => (open ? '' : 'overflow-x: hidden;')}
-    .paper {
-      ${({ open }) => (open ? '' : 'overflow-x: hidden;')}
-    }
-  }
-`;
-
-const NestedList = styled(StyledList).attrs({
-  component: 'div',
-})`
-  && {
-    height: unset;
-    min-height: unset;
-    overflow-y: auto;
-    padding-bottom: 0;
-
-    ${({ highlighted }) =>
-      highlighted ? 'background: rgba(255,255,255,0.1);' : ''}
-  }
-`;
-
-const StyledListItemText = styled(ListItemText).attrs({
-  disableTypography: true,
-})`
-  && {
-    color: #5ccced;
-    font-size: 16px;
-    line-height: 29px;
-    font-weight: normal;
-    overflow: hidden;
-    padding: 0;
-    text-overflow: ellipsis;
-    transition: all 0.25s ease;
-  }
-`;
-
-const NestedListItemText = styled(StyledListItemText)`
-  && {
-    margin-left: 49px;
-    font-size: 14px;
-    line-height: 29px;
-    color: #fff;
-    font-weight: normal;
-  }
-`;
-
-const NestedListItem = styled(ListItem)`
-  && {
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-  &&.active {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  &&:hover {
-    background-color: transparent;
-    ${StyledListItemText} {
-      color: #fff;
-    }
-  }
-`;
-
-const StyledListItemIcon = styled(ListItemIcon)`
-  && {
-    align-items: center;
-    display: flex;
-    width: 29px;
-    height: 29px;
-    justify-content: center;
-    margin-right: 9px;
-    transition: all 0.25s ease;
-
-    & svg {
-      transition: all 0.25s ease;
-    }
-  }
-`;
-
-const StyledListItem = styled(ListItem)`
-  && {
-    padding: 6px 16px 6px 27px;
-  }
-
-  &&:hover {
-    background-color: transparent;
-    ${StyledListItemIcon} {
-      & svg.stroke-only {
-        stroke: #fff;
-      }
-      & svg:not(.stroke-only) {
-        fill: #fff;
-      }
-    }
-    ${StyledListItemText} {
-      color: #fff;
-    }
-  }
-`;
-
-const StyledRouterLinkContainer = styled.div`
-  display: flex;
-  height: ${props => (props.withBackground ? 2.625 : 2.3125)}rem;
-  min-height: ${props => (props.withBackground ? 2.625 : 2.3125)}rem;
-
-  ${props => !props.nested && !props.withBackground && 'margin-top: 1.5rem;'}
-
-  &&.active {
-    ${StyledListItem} {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    ${NestedListItem} {
-      background: rgba(255, 255, 255, 0.1);
-    }
-  }
-
-  &&.highlighted {
-    ${StyledListItemIcon} {
-      & svg.stroke-only {
-        stroke: #fff;
-      }
-      & svg:not(.stroke-only) {
-        fill: #fff;
-      }
-    }
-    ${StyledListItemText} {
-      color: #fff;
-    }
-  }
-`;
-
-const BackgroundListItem = styled(ListItem)`
-  && {
-    box-sizing: border-box;
-    color: #fff;
-    height: 2.625rem;
-    margin: 0 12px;
-    min-height: 2.625rem;
-    padding: 12px 16px;
-    ${props =>
-      props.open &&
-      `
-      background-color: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-    `}
-    ${StyledListItemText} {
-      color: #fff;
-    }
-  }
-`;
-
-const StyledSpacer = styled.div`
-  && {
-    flex: 1;
-  }
-`;
-
-const NestedListContainer = styled.div`
-  && {
-    display: ${props => (props.active ? 'flex' : 'none')};
-    overflow-y: auto;
-
-    & + ${StyledRouterLinkContainer} > a {
-      margin-top: 0;
-    }
-  }
-`;
 
 const RouterLink = ({
   active,
@@ -208,7 +37,7 @@ const RouterLink = ({
 }) => {
   const { to } = props;
 
-  let className = ' ';
+  let className = '';
 
   if (active) {
     className += ' active';
@@ -242,6 +71,11 @@ const Item = ({
   setActiveId,
   to,
   withBackground = false,
+  closePopover,
+  openPopover,
+  rolloverPopoverAnchor,
+  setRolloverLabel,
+  setRolloverPopoverAnchor,
   ...otherProps
 }) => {
   const active = id === activeId;
@@ -282,6 +116,11 @@ const Item = ({
                 {...childItemProps}
                 activeId={activeId}
                 setActiveId={setActiveId}
+                closePopover={closePopover}
+                openPopover={openPopover}
+                rolloverPopoverAnchor={rolloverPopoverAnchor}
+                setRolloverLabel={setRolloverLabel}
+                setRolloverPopoverAnchor={setRolloverPopoverAnchor}
               />
             ))}
           </NestedList>
@@ -291,8 +130,41 @@ const Item = ({
   );
 };
 
-const NestedItem = ({ activeId, label, setActiveId, to, id }) => {
+const NestedItem = ({
+  activeId,
+  label,
+  setActiveId,
+  to,
+  id,
+  closePopover,
+  openPopover,
+  setRolloverLabel,
+  setRolloverPopoverAnchor,
+  rolloverPopoverAnchor,
+}) => {
   const active = id === activeId;
+
+  const nestedItemTextRef = useRef(null);
+
+  const onMouseEnter = () => {
+    if (rolloverPopoverAnchor !== nestedItemTextRef) {
+      const currentElement = nestedItemTextRef.current;
+
+      if (currentElement?.scrollWidth > currentElement?.offsetWidth) {
+        setRolloverLabel(label);
+        setRolloverPopoverAnchor(nestedItemTextRef);
+        openPopover();
+      }
+    }
+  };
+
+  const onMouseLeave = () => {
+    if (rolloverPopoverAnchor === nestedItemTextRef) {
+      setRolloverLabel('');
+      setRolloverPopoverAnchor(null);
+      closePopover();
+    }
+  };
 
   return (
     <NestedListItem
@@ -303,7 +175,14 @@ const NestedItem = ({ activeId, label, setActiveId, to, id }) => {
       to={to}
       onClick={() => setActiveId(id)}
     >
-      <NestedListItemText primary={label} />
+      <NestedListItemText
+        onMouseOver={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={() => {}}
+        ref={nestedItemTextRef}
+      >
+        {label}
+      </NestedListItemText>
     </NestedListItem>
   );
 };
@@ -369,6 +248,9 @@ const DrawerList = ({
   onMouseLeave,
 }) => {
   const [activeId, setActiveId] = useState('');
+  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
+  const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
+  const [rolloverLabel, setRolloverLabel] = useState('');
 
   const drawerItems = getDrawerItems({ lists });
 
@@ -390,22 +272,57 @@ const DrawerList = ({
     [drawerItems],
   );
 
+  const onPopoverClose = useCallback(() => {
+    closePopover();
+    setRolloverPopoverAnchor(null);
+    setRolloverLabel('');
+  }, [closePopover]);
+
   return (
-    <StyledList onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-      <DrawerHeader user={user} />
-      {drawerItems.map(renderDrawerItem({ activeId, open, setActiveId }))}
-      <StyledSpacer />
-      <Item
-        id="logout"
-        label="Logout"
-        icon={LogoutIcon}
-        to="logout"
-        activeId={activeId}
-        open={open}
-        setActiveId={setActiveId}
-        withBackground
-      />
-    </StyledList>
+    <>
+      <StyledList onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+        <DrawerHeader user={user} />
+        {drawerItems.map(
+          renderDrawerItem({
+            activeId,
+            open,
+            setActiveId,
+            closePopover,
+            openPopover,
+            rolloverPopoverAnchor,
+            setRolloverLabel,
+            setRolloverPopoverAnchor,
+          }),
+        )}
+        <StyledSpacer />
+        <Item
+          id="logout"
+          label="Logout"
+          icon={LogoutIcon}
+          to="logout"
+          activeId={activeId}
+          open={open}
+          setActiveId={setActiveId}
+          withBackground
+        />
+      </StyledList>
+      <RolloverPopover
+        anchorEl={rolloverPopoverAnchor?.current}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={onPopoverClose}
+        open={isPopoverOpen}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transitionDuration={100}
+      >
+        <RolloverNestedListItemText>{rolloverLabel}</RolloverNestedListItemText>
+      </RolloverPopover>
+    </>
   );
 };
 

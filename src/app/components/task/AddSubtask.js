@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { addSubtask } from '../../actions/task-actions';
+
+import { prepareSubtask } from '../../actions/task-actions';
 
 export const AddSubtaskContainer = styled.div`
   align-items: center;
@@ -24,31 +24,27 @@ export const AddSubtaskContainer = styled.div`
   }
 `;
 
-const AddSubtask = ({ disabled, padded, taskId }) => {
+const AddSubtask = ({ padded, taskId }) => {
   const dispatch = useDispatch();
   const addingNewSubtask = useSelector(
     state => state.taskState.addingNewSubtask,
   );
 
-  const addingDisabled = disabled || addingNewSubtask;
-
   return (
-    <AddSubtaskContainer disabled={addingDisabled} padded={padded}>
+    <AddSubtaskContainer disabled={addingNewSubtask} padded={padded}>
       <span
-        onClick={addingDisabled ? () => {} : () => addSubtask(taskId)(dispatch)}
+        onClick={event => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!addingNewSubtask) {
+            prepareSubtask(taskId)(dispatch);
+          }
+        }}
       >
         {'+ add a subtask'}
       </span>
     </AddSubtaskContainer>
   );
-};
-
-AddSubtask.propTypes = {
-  disabled: PropTypes.bool,
-};
-
-AddSubtask.defaultProps = {
-  disabled: false,
 };
 
 export default AddSubtask;

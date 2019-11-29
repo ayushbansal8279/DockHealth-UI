@@ -1,5 +1,3 @@
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router';
 import { Field, reduxForm } from 'redux-form';
@@ -12,6 +10,7 @@ import {
   StyledForm,
   StyledLabel,
   TitleTypography,
+  HeightDependentGrid,
 } from './AuthComponents.styled';
 
 const validate = values => {
@@ -53,15 +52,15 @@ class LoginFormPassword extends PureComponent {
         </TitleTypography>
 
         <FieldItemContainer>
-          <Grid item md={9} sm={12}>
+          <HeightDependentGrid size={9}>
             <Field
               name="username"
               type="text"
               component={AuthField}
               label="Email"
             />
-          </Grid>
-          <Grid item md={9} sm={12}>
+          </HeightDependentGrid>
+          <HeightDependentGrid size={9}>
             <Field
               name="password"
               type="password"
@@ -71,11 +70,11 @@ class LoginFormPassword extends PureComponent {
               customError={customError}
               setCustomError={setCustomError}
             />
-          </Grid>
+          </HeightDependentGrid>
         </FieldItemContainer>
 
         <div>
-          <Grid item md={6} sm={12}>
+          <HeightDependentGrid size={6}>
             <NextButton
               active={!invalid}
               id="loginButton"
@@ -85,15 +84,13 @@ class LoginFormPassword extends PureComponent {
             >
               Next
             </NextButton>
-          </Grid>
+          </HeightDependentGrid>
         </div>
 
         <BottomGridContainer>
-          <Grid container item xs={9} direction="column" justify="flex-end">
-            <StyledLabel>
-              <Link to="/forgotPassword">Forgot password?</Link>
-            </StyledLabel>
-          </Grid>
+          <StyledLabel>
+            <Link to="/forgotPassword">Forgot password?</Link>
+          </StyledLabel>
         </BottomGridContainer>
       </StyledForm>
     );

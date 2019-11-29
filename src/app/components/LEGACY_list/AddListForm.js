@@ -4,6 +4,7 @@ import Autosuggest from 'react-autosuggest';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { arrayPush, change, Field, reduxForm, reset } from 'redux-form';
+import Grid from '@material-ui/core/Grid';
 
 import * as PeopleActions from '../../actions/people-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
@@ -62,6 +63,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
     enableFoundationAccordionComponent('.add-form-wrapper');
   }
 
+  //TODO Make sure not to suggest added users.
   getSuggestions = value => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
@@ -74,10 +76,33 @@ class AddListForm extends BaseComponentWithAutoComplete {
               inputValue ||
               person.lastName.toLowerCase().slice(0, inputLength) ===
                 inputValue) &&
+                //TODO Literally right here. Replace this check with a check against every first name or last name in the list.
             (person.firstName != this.props.currentUserProfile.firstName ||
-              person.lastName != this.props.currentUserProfile.lastName),
+              person.lastName != this.props.currentUserProfile.lastName)
+              && !this.checkPersonAlreadySelected(person),
         );
   };
+
+  //Checks if the user has already been put into the list. 
+  checkPersonAlreadySelected = (person) => {
+    if (this.state.selectedAdmins.length > 0) {
+      var k = 0;
+      for (k in this.state.selectedAdmins) {
+        if(this.state.selectedAdmins[k].userId == person.userId){
+          return true
+        }
+      }
+    }
+    if (this.state.selectedMembers.length > 0) {
+      var k = 0;
+      for (k in this.state.selectedMembers) {
+        if(this.state.selectedMembers[k].userId == person.userId){
+          return true
+        }
+      }
+    }
+    return false;
+  }
 
   getSuggestionValue = suggestion =>
     `${suggestion.firstName} ${suggestion.lastName}`;
@@ -107,6 +132,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
   };
 
   onChangeSuggestionSearchForMembers = (event, { newValue }) => {
+
     this.setState({
       selectedSuggestionForMember: newValue,
     });
@@ -210,7 +236,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
     };
 
     return (
-      <div className="add-form-wrapper" style={{marginTop: "10px", marginBottom: "-50px"}}>
+        <div className="add-form-wrapper" style={{marginTop: "-50px", marginBottom: "20px", width: "80%"}}>
         <div className="task-item add-form row expanded">
           <form
             className="inline-label"

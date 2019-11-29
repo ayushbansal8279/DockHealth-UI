@@ -122,7 +122,8 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    placeholder="MM/DD/YYYY"
+    //Placeholder text unnecissary.
+    //placeholder="MM/DD/YYYY"
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
     // guide={false}
@@ -136,7 +137,8 @@ const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    placeholder="123-123-1234"
+    //Phone number doesnt need placeholder text
+    //placeholder="123-123-1234"
     mask={[
       /\d/,
       /\d/,
@@ -195,7 +197,8 @@ export const PatientsForm = ({
               onChange={onChange}
               required={!isReadOnly}
               label="First Name"
-              {...readOnlyProps('Sam')}
+              //Names dont need placeholder text
+              //{...readOnlyProps('Sam')}
             />
           </Grid>
           <Grid item xs={2} style={{ margin: '0 4px' }}>
@@ -204,7 +207,8 @@ export const PatientsForm = ({
               value={middleName || ''}
               onChange={onChange}
               label="Middle Name"
-              {...readOnlyProps('Max')}
+              //Names dont need placeholder text
+              //{...readOnlyProps('Max')}
             />
           </Grid>
           <Grid item xs={5}>
@@ -214,7 +218,8 @@ export const PatientsForm = ({
               onChange={onChange}
               required={!isReadOnly}
               label="Last Name"
-              {...readOnlyProps('Nelson')}
+              //Names dont need placeholder text
+              //{...readOnlyProps('Nelson')}
             />
           </Grid>
         </Grid>
@@ -223,8 +228,8 @@ export const PatientsForm = ({
           value={mrn || ''}
           onChange={onChange}
           label="MRN"
-          required={!isReadOnly}
-          {...readOnlyProps('123-123-23444')}
+          //Placeholder text unnecissary.
+          //{...readOnlyProps('123-123-23444')}
         />
         <StyledTextField
           name="dob"
@@ -235,7 +240,8 @@ export const PatientsForm = ({
           InputProps={{
             inputComponent: isReadOnly ? undefined : BirthdayTextMask,
           }}
-          {...readOnlyProps()}
+          //Reminder text isn't necissary.
+          //{...readOnlyProps()}
         />
         <StyledTextField
           name="gender"
@@ -243,8 +249,8 @@ export const PatientsForm = ({
           onChange={onChange}
           label="Gender"
           select
-          required={!isReadOnly}
-          {...readOnlyProps()}
+          //Reminder text isn't necissary.
+          //{...readOnlyProps()}
         >
           <MenuItem value="female">Female</MenuItem>
           <MenuItem value="male">Male</MenuItem>
@@ -259,7 +265,8 @@ export const PatientsForm = ({
           InputProps={{
             inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
           }}
-          {...readOnlyProps('234-234-2333')}
+          //Phone number doesnt need placeholder text
+          //{...readOnlyProps('234-234-2333')}
         />
         <StyledTextField
           name="phoneMobile"
@@ -270,7 +277,8 @@ export const PatientsForm = ({
           InputProps={{
             inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
           }}
-          {...readOnlyProps('456-456-4444')}
+          //Phone number doesnt need placeholder text
+          //{...readOnlyProps('456-456-4444')}
         />
         <StyledTextField
           name="email"
@@ -278,7 +286,9 @@ export const PatientsForm = ({
           onChange={onChange}
           label="Email"
           type="email"
-          {...readOnlyProps('name@email.com')}
+          error={errors?.email}
+          //Email doesnt need placeholder text
+          //{...readOnlyProps('name@email.com')}
         />
       </PatientsSidebarSection>
       <PatientsSidebarSection
@@ -295,7 +305,8 @@ export const PatientsForm = ({
           label="Notes"
           multiline
           rows={3}
-          {...readOnlyProps('Primarily lives with their grandma in Boston.')}
+          //Patient notes doesnt need placeholder text
+          //{...readOnlyProps('Primarily lives with their grandma in Boston.')}
         />
         <div
           style={{
@@ -332,7 +343,7 @@ const PatientCreation = () => {
     gender: '',
     phoneHome: '',
     phoneMobile: '',
-    email: '',
+    email: null,
     notes: '',
   });
   const handleInputChange = useCallback(
@@ -345,7 +356,6 @@ const PatientCreation = () => {
         ...formState,
         [name]: value,
       };
-
       const formatFormState = evolve({
         firstName: capitalizeWords,
         middleName: capitalizeWords,
@@ -373,10 +383,15 @@ const PatientCreation = () => {
     return birthday.isBefore(now);
   };
 
+  const validateEmail = email => {
+    const valid =  (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email));
+    return valid;
+  };
+
   const canSubmit = () => {
-    const { firstName, lastName, dob, gender, mrn } = formState;
+    const { firstName, lastName, dob, email} = formState;
     return (
-      firstName && lastName && gender && mrn && (!dob || validateBirthday(dob))
+      firstName && lastName && (!email || validateEmail(email)) && (!dob || validateBirthday(dob))
     );
   };
 
@@ -396,6 +411,7 @@ const PatientCreation = () => {
           isDisabled={!canSubmit() || isSubmitting}
           errors={{
             dob: formState.dob && !validateBirthday(formState.dob),
+            email: formState.email && !validateEmail(formState.email),
           }}
           hideCollapse
         />

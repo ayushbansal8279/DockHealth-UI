@@ -7,12 +7,25 @@ import * as userApi from '../../api/user-api';
 import ResetPasswordForm from '../../components/auth/ResetPasswordForm';
 
 export default class ResetPassword extends PureComponent {
+  constructor(props) {
+    super(props);
+  }
+  componentWillMount() {
+  }
+
   onSubmit = form => {
-    const {
+    var {
       location: {
         query: { uname, code },
       },
     } = this.props;
+
+    if(form.code){
+      code = form.code
+    }
+    if(window.sessionStorage.getItem('username')){
+      uname = window.sessionStorage.getItem('username')
+    }
 
     return userApi
       .resetPassword({
@@ -37,5 +50,16 @@ export default class ResetPassword extends PureComponent {
       });
   };
 
-  render = () => <ResetPasswordForm type="Confirm" onSubmit={this.onSubmit} />;
+  render(){
+    var authTokenReceived = false
+    const uname = this.props.location.query.uname;
+    const code = this.props.location.query.code;
+    console.log(`uname: ${uname} code:${code}`);
+    if (uname && code) {
+      authTokenReceived = true
+    }
+    return (
+      <ResetPasswordForm type="Confirm" onSubmit={this.onSubmit} authTokenReceived={authTokenReceived}/>
+    )
+  };
 }

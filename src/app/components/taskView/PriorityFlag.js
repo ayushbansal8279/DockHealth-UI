@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const PriorityFlagContainer = styled.div`
+  align-self: flex-start;
   cursor: pointer;
   margin-left: 22px;
 

@@ -97,9 +97,7 @@ class AddTaskForm extends PureComponent {
 
   resetSubtaskForm = currTask => {
     if (currTask && currTask.patient) {
-      const patientName = `${currTask.patient.firstName} ${
-        currTask.patient.lastName
-      }`;
+      const patientName = `${currTask.patient.firstName} ${currTask.patient.lastName}`;
       this.props.formActions.change('addSubtaskForm', 'patient', patientName);
       this.props.formActions.change(
         'addSubtaskForm',
@@ -324,8 +322,8 @@ class AddTaskForm extends PureComponent {
           ) : (
             <span />
           )}
-
           <Field
+            // Is this old workflowStatus stuff
             id="task-status"
             name="taskStatus"
             component={SelectInput}
@@ -333,7 +331,7 @@ class AddTaskForm extends PureComponent {
               // { value: 'INCOMPLETE', label: 'INCOMPLETE' },
               // { value: 'COMPLETE', label: 'COMPLETE' },
               // Inserted No Status Status
-              { value: 'NO_STATUS', label: 'No Status'},
+              { value: 'NO_STATUS', label: 'No Status' },
               { value: 'IN_PROGRESS', label: 'In Progress' },
               { value: 'PAUSED', label: 'Paused' },
               { value: 'WAITING', label: 'Waiting' },
@@ -433,9 +431,7 @@ const mapStateToProps = store => {
     initialTaskFormValues.description = editTask.description;
     initialTaskFormValues.taskId = editTask.taskId;
     if (editTask.patient) {
-      initialTaskFormValues.patient = `${editTask.patient.firstName} ${
-        editTask.patient.lastName
-      }`;
+      initialTaskFormValues.patient = `${editTask.patient.firstName} ${editTask.patient.lastName}`;
       initialTaskFormValues.patientId = editTask.patient.patientId;
     }
     if (editTask.dueDate) {
@@ -447,9 +443,7 @@ const mapStateToProps = store => {
       initialTaskFormValues.originalReminderDate = editTask.reminderDt;
     }
     if (editTask.assignedTo) {
-      initialTaskFormValues.assignedTo = `${editTask.assignedTo.firstName} ${
-        editTask.assignedTo.lastName
-      }`;
+      initialTaskFormValues.assignedTo = `${editTask.assignedTo.firstName} ${editTask.assignedTo.lastName}`;
       initialTaskFormValues.assignedToId = editTask.assignedTo.userId;
     }
     if (editTask.taskList) {

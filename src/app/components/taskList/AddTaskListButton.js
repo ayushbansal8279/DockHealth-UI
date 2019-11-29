@@ -9,9 +9,7 @@ const AddTaskListButtonContainer = styled.div`
   display: flex;
   height: 64px;
   justify-content: center;
-  position: absolute;
-  right: 24px;
-  top: 0;
+  margin-right: 2em;
   transition: width 0.25s ease-out;
   width: ${props => (props.addingNewTask ? 44 : 160)}px;
   z-index: 2;

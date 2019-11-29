@@ -1,11 +1,22 @@
+import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
 
 import * as PeopleActions from '../actions/people-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import CubesLoader from '../components/common/CubesLoader';
+import GenericHeader from '../components/common/GenericHeader';
 import InvitePeople from '../components/people/InvitePeople';
+import InvitePeopleButton from '../components/people/InvitePeopleButton';
 import PeopleContainer from '../components/people/PeopleContainer';
+
+const CubesLoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
 
 class PeopleView extends PureComponent {
   constructor(props) {
@@ -16,20 +27,20 @@ class PeopleView extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.peopleActions.loading();
-    this.props.peopleActions.findAllUsersByOrganizationId();
+    const { peopleActions } = this.props;
+    peopleActions.loading();
+    peopleActions.findAllUsersByOrganizationId();
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'PeopleView',
     });
   }
 
-  componentWillUnmount() {
-    closeAddForm();
-  }
-
   componentDidUpdate() {
     enableFoundationComponent('.item-list-wrapper');
-    // enableFoundationForMultipleComponents(".item-list-wrapper", ".row")
+  }
+
+  componentWillUnmount() {
+    closeAddForm();
   }
 
   clearSearch = () => {
@@ -42,116 +53,94 @@ class PeopleView extends PureComponent {
   };
 
   refresh = () => {
-    this.props.peopleActions.loading();
-    this.props.peopleActions.findAllUsersByOrganizationId();
+    const { peopleActions } = this.props;
+    peopleActions.loading();
+    peopleActions.findAllUsersByOrganizationId();
   };
 
   addPerson = () => {
     openAddForm();
+    scrollToTop();
   };
 
   render() {
+    const { searchTerm } = this.state;
+    const { currentUserProfile, isFetching } = this.props;
+    const orgUserRole = currentUserProfile?.orgUserRole;
+
     return (
-      <div className="off-canvas-content" data-off-canvas-content>
-        <div className="row expanded collapse">
-          <div className="large-12 columns">
-            <header className="nav-down">
-              <div className="top-bar">
-                <div className="top-bar-left">
-                  <button
-                    className="menu-icon hide-for-medium"
-                    type="button"
-                    data-toggle="sidebar"
-                  />
-                  <h3>People</h3>
-                </div>
-              </div>
-
-              <div className="wrapper list-filter row collapse align-middle align-right">
-                <div className="columns controls">
-                  <div className="input-group searchbar">
-                    <input
-                      className="input-field search-field"
-                      type="search"
-                      placeholder="Search tasks"
-                      onChange={this.searchUpdated}
-                      value={this.state.searchTerm}
-                    />
-                    <div className="input-group-button">
-                      <button className="button search">
-                        <svg onClick={this.clearSearch} className="icon">
-                          <use xlinkHref="#icon-search" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="columns shrink icon-group controls">
-                  <span onClick={e => this.refresh()}>
-                    <svg className="icon refresh">
-                      <use xlinkHref="#icon-activity" />
-                    </svg>
-                  </span>
-                </div>
-                {(this.props.currentUserProfile.orgUserRole == 'OWNER' ||
-                  this.props.currentUserProfile.orgUserRole == 'ADMIN') && (
-                  <div className="columns shrink">
-                    <svg
-                      id="icon-add-person"
-                      className="add icon add-other"
-                      onClick={this.addPerson}
-                    >
-                      <use xlinkHref="#icon-add-person" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-              {/* list-filter */}
-            </header>
-            {/* slideUp */}
-
-            <InvitePeople />
-
-            <div className="list-wrapper">
-              {this.props.isFetching ? (
-                <div className="sk-circle">
-                  <div className="sk-circle1 sk-child" />
-                  <div className="sk-circle2 sk-child" />
-                  <div className="sk-circle3 sk-child" />
-                  <div className="sk-circle4 sk-child" />
-                  <div className="sk-circle5 sk-child" />
-                  <div className="sk-circle6 sk-child" />
-                  <div className="sk-circle7 sk-child" />
-                  <div className="sk-circle8 sk-child" />
-                  <div className="sk-circle9 sk-child" />
-                  <div className="sk-circle10 sk-child" />
-                  <div className="sk-circle11 sk-child" />
-                  <div className="sk-circle12 sk-child" />
-                </div>
-              ) : (
-                <PeopleContainer searchTerm={this.state.searchTerm} />
-              )}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <GenericHeader isFetching={false} title="People" />
+        <Grid
+          container
+          xs={9}
+          direction="row"
+          justify="flex-end"
+          wrap="nowrap"
+          style={{ maxHeight: '80px' }}
+        >
+          <div
+            className="input-group searchbar"
+            style={{ width: '70%', marginTop: '5px', paddingLeft: '0em 10em' }}
+          >
+            <input
+              className="input-field search-field"
+              type="search"
+              placeholder="Search people"
+              onChange={this.searchUpdated}
+              value={searchTerm}
+            />
+            <div className="input-group-button">
+              <button className="button search" type="button">
+                <svg onClick={this.clearSearch} className="icon">
+                  <use xlinkHref="#icon-search" />
+                </svg>
+              </button>
             </div>
-            {/* list-wrapper */}
+            {/* <div className="icon-group controls">
+              <span onClick={e => this.refresh()}>
+                <svg className="icon refresh">
+                  <use xlinkHref="#icon-activity" />
+                </svg>
+              </span>
+            </div> */}
           </div>
+          {(orgUserRole === 'OWNER' || orgUserRole === 'ADMIN') && (
+            <InvitePeopleButton onClick={this.addPerson} />
+          )}
+        </Grid>
+        <InvitePeople />
+        <div
+          className="list-wrapper"
+          style={{ width: '100%', marginTop: '0px' }}
+        >
+          {isFetching ? (
+            <CubesLoaderContainer>
+              <CubesLoader size={40} />
+            </CubesLoaderContainer>
+          ) : (
+            <PeopleContainer searchTerm={searchTerm} />
+          )}
         </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = function(store) {
-  return {
-    isFetching: store.peopleState.isFetching,
-    currentUserProfile: store.userState.userProfile,
-  };
-};
+const mapStateToProps = store => ({
+  isFetching: store.peopleState.isFetching,
+  currentUserProfile: store.userState.userProfile,
+});
 
-const mapDispatchToProps = function(dispatch) {
-  return {
-    peopleActions: bindActionCreators(PeopleActions, dispatch),
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  peopleActions: bindActionCreators(PeopleActions, dispatch),
+});
 
 export default connect(
   mapStateToProps,

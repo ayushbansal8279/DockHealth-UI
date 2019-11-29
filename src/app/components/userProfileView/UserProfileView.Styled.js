@@ -100,7 +100,6 @@ export const OuterAvatarContainer = styled.div`
 `;
 
 export const UserAvatarSupplement = styled.div`
-  border: 0.0625rem solid #dadada;
   color: #ababb2;
   cursor: pointer;
   margin-left: 0.6rem;
@@ -167,15 +166,20 @@ export const UploadImagePopover = withStyles({
     alignItems: 'center',
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
     display: 'flex',
-    height: 380,
+    minHeight: 380,
+    overflow: 'hidden',
     position: 'relative',
     width: 460,
   },
 })(Popover);
 
 export const UploadImagePopoverGrid = styled(Grid)`
-  && > * {
-    transition: all 0.2s ease-out;
+  && {
+    overflow: hidden;
+
+    & > * {
+      transition: all 0.2s ease-out;
+    }
   }
 `;
 

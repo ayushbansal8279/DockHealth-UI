@@ -1,4 +1,3 @@
-import ProgressIcon from '@material-ui/core/CircularProgress/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -16,6 +15,7 @@ import PatientsHeader from './PatientsHeader';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
 import PatientsToolbar from './PatientsToolbar';
+import CubesLoader from '../common/CubesLoader';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -31,7 +31,7 @@ const PatientsListSpinner = ({ isFetching }) => (
       unmountOnExit
       style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
     >
-      <ProgressIcon />
+      <CubesLoader size={40} />
     </Fade>
   </FadeContainer>
 );
@@ -94,7 +94,6 @@ const PatientsLayout = () => {
   );
 
   const filteredPatients = searchPatients(patients, searchTerm);
-  const patientSidebarOpen = highlightedPatient || isCreatingPatient;
 
   return (
     <div>
@@ -107,7 +106,7 @@ const PatientsLayout = () => {
         {isFetching ? (
           <PatientsListSpinner isFetching={isFetching} />
         ) : (
-          <Grid xs={patientSidebarOpen ? 4 : 12} item>
+          <Grid xs item>
             <PatientsList
               patients={filteredPatients}
               isFiltered={searchTerm !== ''}
@@ -117,12 +116,12 @@ const PatientsLayout = () => {
           </Grid>
         )}
         {highlightedPatient && (
-          <Grid xs={8} item>
+          <Grid xs item>
             <PatientsSidebar patient={highlightedPatient} />
           </Grid>
         )}
         {isCreatingPatient && (
-          <Grid xs={8} item>
+          <Grid xs item>
             <PatientsCreation />
           </Grid>
         )}
@@ -131,6 +130,4 @@ const PatientsLayout = () => {
   );
 };
 
-const Patients = () => <PatientsLayout />;
-
-export default Patients;
+export default PatientsLayout;

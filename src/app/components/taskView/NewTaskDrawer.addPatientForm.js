@@ -9,6 +9,7 @@ import styled from 'styled-components';
 
 import { addPatient } from '../../actions/patient-actions';
 import useBoolean from '../../hooks/useBoolean';
+import DropdownIcon from '../../img/dropdown-icon.svg';
 import StyledInput from '../userProfileView/StyledInput';
 import { addPatientValidationSchema } from './NewTaskDrawer.validationSchema';
 
@@ -35,6 +36,13 @@ const BottomFormLabel = styled.button`
   }
 
   ${props => props.bold && 'font-weight: 600;'}
+`;
+
+const DropdownIconContainer = styled.div`
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const formFieldDefinitions = [
@@ -143,6 +151,15 @@ const renderFormFieldDefinition = ({ setValue }) => ({
           labelInactiveTop={1.75}
           name={key}
           ref={inputRef}
+          rightAdornment={
+            popoverOptions ? (
+              <DropdownIconContainer>
+                <img src={DropdownIcon} alt="dropdown" />
+              </DropdownIconContainer>
+            ) : (
+              undefined
+            )
+          }
           {...inputPopoverProps}
           {...props}
         />
@@ -156,6 +173,11 @@ const renderFormFieldDefinition = ({ setValue }) => ({
           }}
           onClose={closePopover}
           open={isPopoverOpen}
+          PaperProps={{
+            style: {
+              width: inputRef.current?.offsetWidth,
+            },
+          }}
           transformOrigin={{
             vertical: 'top',
             horizontal: 'left',

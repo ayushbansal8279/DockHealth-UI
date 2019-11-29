@@ -1,5 +1,5 @@
-import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -7,6 +7,8 @@ import styled from 'styled-components';
 
 import * as TaskActions from '../actions/task-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import CubesLoader from '../components/common/CubesLoader';
+import GenericHeader from '../components/common/GenericHeader';
 import TaskListSearchContainer from '../components/LEGACY_list/TaskListSearchContainer';
 
 const FadeContainer = styled.div`
@@ -16,13 +18,10 @@ const FadeContainer = styled.div`
 `;
 
 class TaskListSearch extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchTerm: '',
-      searchPerformed: false,
-    };
-  }
+  state = {
+    searchTerm: '',
+    searchPerformed: false,
+  };
 
   componentDidMount() {
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
@@ -35,123 +34,95 @@ class TaskListSearch extends PureComponent {
   };
 
   searchTasks = () => {
-    this.props.taskActions.loading();
-    this.props.taskActions.searchTasks(
-      this.state.searchTerm,
-      undefined,
-      undefined,
-      'INCOMPLETE',
-    );
-    this.setState({ searchPerformed: true });
+    this.getListTasks({ status: 'INCOMPLETE' });
   };
 
   getCompletedTasks = () => {
-    this.props.taskActions.loading();
-    this.props.taskActions.searchTasks(
-      this.state.searchTerm,
-      undefined,
-      undefined,
-      'COMPLETE',
-    );
-    this.setState({ searchPerformed: true });
+    this.getListTasks({ status: 'COMPLETE' });
   };
 
-  getListTasks = (sortBy, filterBy) => {
-    this.props.taskActions.loading();
-    this.props.taskActions.searchTasks(
-      this.state.searchTerm,
-      sortBy,
-      filterBy,
-      'INCOMPLETE',
-    );
+  getListTasks = ({
+    sortBy = undefined,
+    filterBy = undefined,
+    status = 'INCOMPLETE',
+  } = {}) => {
+    const { taskActions } = this.props;
+    const { searchTerm } = this.state;
+    taskActions.loading();
+    taskActions.searchTasks(searchTerm, sortBy, filterBy, status);
   };
 
   handleKeyPress = event => {
-    if (event.key == 'Enter') {
-      this.props.taskActions.loading();
-      this.props.taskActions.searchTasks(
-        this.state.searchTerm,
-        undefined,
-        undefined,
-        'INCOMPLETE',
-      );
-      this.setState({ searchPerformed: true });
+    if (event.key === 'Enter') {
+      this.searchTasks();
     }
   };
 
   handleAddTask = () => {
-    this.props.taskActions.taskToState(null);
+    const { taskActions } = this.props;
+    taskActions.taskToState(null);
     openAddForm();
   };
 
   render() {
+    const { isFetching } = this.props;
+    const { searchPerformed, searchTerm } = this.state;
+
     return (
-      <div className="off-canvas-content" data-off-canvas-content>
-        <div className="row expanded collapse">
-          <div className="large-12 columns">
-            <div className="top-bar">
-              <div className="top-bar-left">
-                <button
-                  className="menu-icon hide-for-medium"
-                  type="button"
-                  data-toggle="sidebar"
-                />
-                <h3>Search</h3>
-              </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <GenericHeader isFetching={false} title="Search" />
+        <Grid
+          container
+          alignItems="center"
+          justify="flex-end"
+          direction="row"
+          style={{ height: '88px', paddingTop: '10px', width: '80%' }}
+        >
+          <div className="input-group searchbar">
+            <input
+              className="input-field search-field expand-search"
+              id="task-search-field"
+              type="search"
+              placeholder="Search tasks"
+              onKeyPress={this.handleKeyPress}
+              onChange={this.searchUpdated}
+              value={searchTerm}
+            />
+            <div className="input-group-button">
+              <button className="button" type="button">
+                <svg
+                  onClick={this.searchTasks}
+                  id="task-search-button"
+                  className="icon"
+                >
+                  <use xlinkHref="#icon-search" />
+                </svg>
+              </button>
             </div>
           </div>
-        </div>
-        <div className="row expanded collapse">
-          <div className="large-12 columns">
-            <div className="wrapper list-filter row collapse align-middle align-right " />
-          </div>
-        </div>
-
+        </Grid>
         <div className="wrapper-search">
-          <div className="row expanded collapse">
-            <div className="large-2 columns" />
-            <div className="large-8 columns">
-              <div className="input-group searchbar">
-                <input
-                  className="input-field search-field expand-search"
-                  id="task-search-field"
-                  type="search"
-                  placeholder="Search tasks"
-                  onKeyPress={this.handleKeyPress}
-                  onChange={this.searchUpdated}
-                  value={this.state.searchTerm}
-                />
-                <div className="input-group-button">
-                  <button className="button">
-                    <svg
-                      onClick={this.searchTasks}
-                      id="task-search-button"
-                      className="icon"
-                    >
-                      <use xlinkHref="#icon-search" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="large-2 columns" />
-          </div>
-
-          {this.props.isFetching && (
+          {isFetching && (
             <FadeContainer>
               <Fade
-                in={this.props.isFetching}
+                in={isFetching}
                 unmountOnExit
                 style={{
-                  transitionDelay: this.props.isFetching ? '800ms' : '0ms',
+                  transitionDelay: isFetching ? '800ms' : '0ms',
                 }}
               >
-                <ProgressIcon />
+                <CubesLoader size={40} />
               </Fade>
             </FadeContainer>
           )}
           <TaskListSearchContainer
-            searchPerformed={this.state.searchPerformed}
+            searchPerformed={searchPerformed}
             getCompletedTasks={this.getCompletedTasks}
           />
         </div>

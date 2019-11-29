@@ -1,9 +1,11 @@
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import moment from 'moment';
 import groupBy from 'ramda/es/groupBy';
 import groupWith from 'ramda/es/groupWith';
 import mapObjIndexed from 'ramda/es/mapObjIndexed';
+import prop from 'ramda/es/prop';
 import sortBy from 'ramda/es/sortBy';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
@@ -12,6 +14,7 @@ import { addTaskComment } from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import renderComment from './NewTaskDrawer.renderComment';
+import { FormSectionDivider } from './NewTaskDrawer.styled';
 
 const CommentSectionLabel = styled.div`
   align-items: center;
@@ -24,17 +27,19 @@ const CommentSectionLabel = styled.div`
   padding: 0 1.5rem;
 `;
 
-const CommentSectionInputField = styled.input`
+const CommentSectionInputField = styled.div`
   border: 0;
   color: #2e3a43;
   flex: 1;
   font-size: 0.875rem;
   height: 100%;
   outline: none;
-  padding: 0 1.5rem;
+  padding: 0.5rem 2rem 0.5rem 1.5rem;
+  word-break: break-all;
 
-  &::placeholder {
+  &:empty ::after {
     color: #dedee2;
+    content: '+ add a comment';
   }
 `;
 
@@ -55,7 +60,7 @@ const CommentsContainer = styled.div`
 const CommentSectionInputFieldContainer = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  height: 2.25rem;
+  min-height: 2.25rem;
   position: relative;
   width: 100%;
 `;
@@ -64,7 +69,7 @@ const CubesLoaderContainer = styled.div`
   height: 1rem;
   position: absolute;
   right: 0.75rem;
-  top: 50%;
+  top: 1.125rem;
   transform: translateY(-50%);
   width: 3.125rem;
 `;
@@ -76,10 +81,12 @@ const AddCommentButtonContainer = styled.div`
   color: #fff;
   cursor: pointer;
   display: flex;
+  height: 2.25rem;
   font-size: 2rem;
   justify-content: center;
   line-height: 1;
   width: 2.125rem;
+  z-index: 1;
 `;
 
 const StyledSimpleBar = styled(SimpleBar)`
@@ -100,9 +107,11 @@ const StyledSimpleBar = styled(SimpleBar)`
 `;
 
 const getGroupedComments = ({ comments }) => {
+  const commentsSortedById = sortBy(prop('commentId'), comments);
+
   const sortedComments = sortBy(
     comment => moment(comment.dateCreated).unix(),
-    comments,
+    commentsSortedById,
   );
 
   const datedComments = groupBy(
@@ -121,93 +130,161 @@ const getGroupedComments = ({ comments }) => {
   return groupedComments;
 };
 
-export default ({ task }) => {
-  const currentUserId = useSelector(
-    store => store.userState.userProfile.userId,
-  );
+export default ({ addDeferredCommentToQueue, task }) => {
+  const currentUserProfile = useSelector(store => store.userState.userProfile);
+  const currentUserId = currentUserProfile?.userId;
+
   const dispatch = useDispatch();
   const [addingComment, , , toggleAddingComment] = useBoolean(false);
   const [addedComments, setAddedComments] = useState([]);
+  const commentSectionInputFieldRef = useRef(null);
+  const simpleBarRef = useRef(null);
   const [
     isPublishingComment,
     setPublishingComment,
     unsetPublishingComment,
   ] = useBoolean(false);
-  const [commentContent, setCommentContent] = useState('');
+
+  const clearCommentContent = useCallback(() => {
+    if (commentSectionInputFieldRef.current) {
+      commentSectionInputFieldRef.current.textContent = '';
+    }
+  }, []);
+
+  const taskId = task?.taskId;
+
+  useEffect(() => {
+    if (addingComment) {
+      // eslint-disable-next-line no-unused-expressions
+      commentSectionInputFieldRef.current?.focus();
+    } else {
+      clearCommentContent();
+    }
+  }, [addingComment, clearCommentContent]);
 
   const comments = (task?.comments ?? []).concat(addedComments);
   const commentsEmpty = comments.length === 0;
 
-  const groupedComments = getGroupedComments({ comments });
+  const groupedComments = getGroupedComments({ comments, task });
 
-  const publishComment = async () => {
-    if (commentContent.trim().length === 0) {
+  const scrollToBottom = useCallback(() => {
+    const scrollElement = simpleBarRef.current?.getScrollElement();
+    if (scrollElement) {
+      scrollElement.scrollTop = scrollElement.scrollHeight;
+    }
+  });
+
+  useEffect(() => {
+    setAddedComments([]);
+  }, [taskId]);
+
+  const addComment = useCallback(
+    data => {
+      setAddedComments([...addedComments, data]);
+    },
+    [addedComments],
+  );
+
+  const publishComment = () => {
+    const commentContent = commentSectionInputFieldRef.current?.textContent;
+
+    if (commentContent?.trim().length === 0) {
       return;
     }
 
-    try {
-      setPublishingComment();
+    const addTaskPromise = async ({ task: newTask }) => {
+      try {
+        setPublishingComment();
 
-      const { data } = await addTaskComment(task, {
+        const { data } = await addTaskComment(newTask, {
+          comment: commentContent.trim(),
+        })(dispatch);
+
+        clearCommentContent();
+
+        toggleAlert('Comment added successfully', 'success');
+
+        addComment(data);
+
+        scrollToBottom();
+      } catch {
+        toggleAlert('Error adding comment, please try again later', 'error');
+      } finally {
+        unsetPublishingComment();
+      }
+    };
+
+    if (task) {
+      addTaskPromise({ task });
+    } else {
+      addDeferredCommentToQueue({
+        promise: addTaskPromise,
+        clearMethod: async () => setAddedComments([]),
+        addComment,
+      });
+      addComment({
         comment: commentContent.trim(),
-      })(dispatch);
-
-      setCommentContent('');
-      toggleAlert('Comment added successfully', 'success');
-
-      setAddedComments([...addedComments, data]);
-    } catch {
-      toggleAlert('Error adding comment, please try again later', 'error');
-    } finally {
-      unsetPublishingComment();
+        creator: currentUserProfile,
+        dateCreated: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      });
+      scrollToBottom();
+      clearCommentContent();
     }
+  };
+
+  const handlePublishComment = event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    publishComment();
   };
 
   return (
     <>
       {addingComment ? (
-        <CommentSectionInputFieldContainer>
-          <CommentSectionInputField
-            autoFocus
-            onBlur={toggleAddingComment}
-            onChange={event => {
-              setCommentContent(event.target?.value);
-            }}
-            onKeyPress={event => {
-              if (event.key === 'Enter' && !isPublishingComment) {
+        <ClickAwayListener onClickAway={toggleAddingComment}>
+          <CommentSectionInputFieldContainer>
+            <CommentSectionInputField
+              ref={commentSectionInputFieldRef}
+              contentEditable
+              onKeyPress={event => {
+                if (event.key === 'Enter' && !isPublishingComment) {
+                  handlePublishComment(event);
+                }
+              }}
+            />
+            <AddCommentButtonContainer
+              onBlur={event => {
                 event.preventDefault();
                 event.stopPropagation();
-
-                publishComment();
-              }
-            }}
-            placeholder="+ add a comment"
-            value={commentContent}
-          />
-          <AddCommentButtonContainer onClick={publishComment}>
-            +
-          </AddCommentButtonContainer>
-          {isPublishingComment && (
-            <CubesLoaderContainer>
-              <CubesLoader size={16} />
-            </CubesLoaderContainer>
-          )}
-        </CommentSectionInputFieldContainer>
+              }}
+              onClick={handlePublishComment}
+            >
+              +
+            </AddCommentButtonContainer>
+            {isPublishingComment && (
+              <CubesLoaderContainer>
+                <CubesLoader size={16} />
+              </CubesLoaderContainer>
+            )}
+          </CommentSectionInputFieldContainer>
+        </ClickAwayListener>
       ) : (
         <CommentSectionLabel onClick={toggleAddingComment}>
           + add a comment
         </CommentSectionLabel>
       )}
+      <CommentsDivider />
       {!commentsEmpty && (
         <>
-          <CommentsDivider />
           <CommentsContainer>
-            <StyledSimpleBar visible>
+            <StyledSimpleBar ref={simpleBarRef} visible>
               {Object.entries(groupedComments).map(
                 renderComment({ currentUserId }),
               )}
             </StyledSimpleBar>
           </CommentsContainer>
+          <FormSectionDivider condensed />
         </>
       )}
     </>

@@ -1,14 +1,19 @@
-import { List, ListItem, Popover } from '@material-ui/core';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import ProgressIcon from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Popover from '@material-ui/core/Popover';
+import { AnimatePresence } from 'framer-motion';
 import equals from 'ramda/es/equals';
+import filter from 'ramda/es/filter';
+import map from 'ramda/es/map';
+import reject from 'ramda/es/reject';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
+import { moveTaskBetweenLists } from '../actions/task-actions';
+import CubesLoader from '../components/common/CubesLoader';
 import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
@@ -16,14 +21,27 @@ import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Search from '../components/taskView/Search';
 import { AddTaskButton } from '../components/taskView/TaskDrawerButtons';
 import TaskListAction from '../components/taskView/TaskListAction';
+import { isTaskArchivable } from '../helpers/utilityFunctions';
+import FilterActiveIcon from '../img/filter-active.svg';
 import FilterIcon from '../img/filter.svg';
 import PrintIcon from '../img/print.svg';
 import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
 import SortingStatsIcon from '../img/sorting-stats.svg';
 import {
+  CompletedButtonRowContainer,
+  FadeContainer,
+  FilterByBoldLabel,
+  FilterByLabel,
+  FilterByLinkLabel,
+  FilterByTextContainer,
+  InboxNoMessagesAvailable,
+  SideClickListener,
+  StyledButton,
   StyledSlimViewSwitch,
   StyledToolbar,
   TableWrapper,
+  TaskListContainer,
+  TaskViewContainer,
   TaskViewGrid,
   ToolbarContainer,
 } from './TaskView.styled';
@@ -34,49 +52,20 @@ const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
 
 const groupBy = (list, keyGetter) => {
-  const map = new Map();
+  const checkMap = new Map();
   list.forEach(item => {
     const key = keyGetter(item);
-    const collection = map.get(key);
+    const collection = checkMap.get(key);
     if (!collection) {
-      map.set(key, [item]);
+      checkMap.set(key, [item]);
     } else {
       collection.push(item);
     }
   });
-  return map;
+  return checkMap;
 };
 
-const FadeContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-top: 100px;
-`;
-
-const TaskListContainer = styled.div`
-  flex: 2;
-  padding: 0 0.375rem;
-`;
-
-const StyledButton = styled(ButtonBase)`
-  && {
-    display: flex;
-    margin: 33px auto;
-    width: 224px;
-    background: #0ca1c7;
-    border-radius: 57px;
-    height: 30px;
-    padding: 8px 37px;
-    font-size: 14px;
-    color: #fff;
-  }
-`;
-
 const filterOptions = [
-  {
-    value: '',
-    description: 'Clear',
-  },
   {
     value: 'ASSIGNED_TO_ME',
     description: 'Assigned to me',
@@ -97,12 +86,30 @@ const filterOptions = [
   },
 ];
 
+const animationProperties = {
+  variants: {
+    hidden: { height: 0, opacity: 0 },
+    visible: { height: '2.5rem', opacity: 1 },
+  },
+  initial: 'hidden',
+  exit: 'hidden',
+  animate: 'visible',
+  transition: { ease: 'backInOut', duration: 0.25 },
+};
+
 class TaskView extends Component {
   state = {
+    filterBy: '',
     filterPopoverOpen: false,
+    completedTasksShown: false,
     searchTerms: [],
     slimView: false,
     taskDrawerOpen: false,
+    displayHUD: true,
+    taskTimeouts: {
+      complete: [],
+      incomplete: [],
+    },
   };
 
   headsUpArea = React.createRef();
@@ -138,6 +145,16 @@ class TaskView extends Component {
     });
   };
 
+  componentWillUnmount = () => {
+    const { taskTimeouts } = this.state;
+
+    Object.values(taskTimeouts)
+      .flat()
+      .forEach(({ taskTimeoutId }) => {
+        clearTimeout(taskTimeoutId);
+      });
+  };
+
   componentDidUpdate = ({
     isFetching: prevIsFetching,
     members: prevMembers,
@@ -148,21 +165,101 @@ class TaskView extends Component {
     }
   };
 
+  clearTaskTimeouts = (taskTimeoutId, callback = () => {}) => {
+    this.setState(prevState => {
+      return {
+        taskTimeouts: map(
+          filter(
+            taskTimeoutData => taskTimeoutData.taskTimeoutId !== taskTimeoutId,
+          ),
+          prevState.taskTimeouts,
+        ),
+      };
+    }, callback);
+  };
+
+  addTaskMoveTimeout = task => {
+    const {
+      dispatchedMoveTaskBetweenLists,
+      selectedTask,
+      storeAsCurrentTask,
+    } = this.props;
+
+    const { taskTimeouts } = this.state;
+
+    const taskTimeoutArrayKey =
+      task.status === 'COMPLETE' ? 'complete' : 'incomplete';
+
+    const timeoutFired =
+      Object.values(taskTimeouts)
+        .flat()
+        .map(({ taskTimeoutId: oldTaskTimeoutId, taskId }) => {
+          if (taskId === task?.taskId) {
+            clearTimeout(oldTaskTimeoutId);
+            this.clearTaskTimeouts(oldTaskTimeoutId);
+
+            return true;
+          }
+
+          return false;
+        })
+        .filter(Boolean).length > 0;
+
+    if (!timeoutFired) {
+      const taskTimeoutId = setTimeout(() => {
+        if (selectedTask?.taskId === task?.taskId && !task?.parentTaskId) {
+          storeAsCurrentTask(null);
+          this.closeTaskDrawer();
+        }
+
+        dispatchedMoveTaskBetweenLists(task);
+
+        this.clearTaskTimeouts(taskTimeoutId);
+      }, 3000);
+
+      this.setState(prevState => {
+        const previousTaskTimeouts =
+          prevState.taskTimeouts[taskTimeoutArrayKey];
+
+        return {
+          taskTimeouts: {
+            ...prevState.taskTimeouts,
+            [taskTimeoutArrayKey]: [
+              ...previousTaskTimeouts,
+              {
+                taskTimeoutId,
+                taskId: task?.taskId,
+              },
+            ],
+          },
+        };
+      });
+    }
+  };
+
   openTaskDrawer = () => {
     this.setState({
       taskDrawerOpen: true,
     });
   };
 
+  toggleCompletedTasks = () => {
+    this.setState(prevState => ({
+      completedTasksShown: !prevState.completedTasksShown,
+    }));
+  };
+
   closeTaskDrawer = () => {
     const { storeAsCurrentTask } = this.props;
 
-    this.setState({
-      taskDrawerOpen: false,
-    });
-    setTimeout(() => {
-      storeAsCurrentTask(null);
-    }, 250);
+    this.setState(
+      {
+        taskDrawerOpen: false,
+      },
+      () => {
+        storeAsCurrentTask(null);
+      },
+    );
   };
 
   toggleTaskDrawer = () => {
@@ -214,7 +311,11 @@ class TaskView extends Component {
 
   handleFilterChange = filterBy => {
     const { onFilter } = this.props;
-    const sortBy = 'CREATED_DT';
+    const sortBy = '';
+
+    this.setState({
+      filterBy,
+    });
 
     this.clearStoredCurrentTask();
 
@@ -227,6 +328,7 @@ class TaskView extends Component {
 
     this.clearStoredCurrentTask();
     this.setState({ searchTerms });
+    this.closeTaskDrawer();
   };
 
   search = tasks => {
@@ -244,6 +346,12 @@ class TaskView extends Component {
     return filteredTasks;
   };
 
+  toggleHUD = () => {
+    this.setState(prevState => ({
+      displayHUD: !prevState.displayHUD,
+    }));
+  };
+
   handleClose = () => {
     const { storeAsCurrentTask } = this.props;
     storeAsCurrentTask(null);
@@ -257,12 +365,9 @@ class TaskView extends Component {
 
   onAddTaskButtonClick = () => {
     const { storeAsCurrentTask } = this.props;
-    const { taskDrawerOpen } = this.state;
 
-    if (!taskDrawerOpen) {
-      storeAsCurrentTask(null);
-    }
-    this.toggleTaskDrawer();
+    storeAsCurrentTask(null);
+    this.openTaskDrawer();
   };
 
   openFilterPopover = () => {
@@ -280,6 +385,10 @@ class TaskView extends Component {
   onFilterChange = ({ value }) => () => {
     this.handleFilterChange(value);
     this.closeFilterPopover();
+  };
+
+  clearFilter = () => {
+    this.onFilterChange({ value: '' })();
   };
 
   renderFilterPopover = () => {
@@ -306,7 +415,7 @@ class TaskView extends Component {
               button
               onClick={this.onFilterChange({ value })}
             >
-              {value ? description : <em>{description}</em>}
+              {description}
             </ListItem>
           ))}
         </List>
@@ -314,15 +423,45 @@ class TaskView extends Component {
     );
   };
 
+  onMarkComplete = newTask => {
+    const { storeAsCurrentTask, currentTask } = this.props;
+
+    this.addTaskMoveTimeout(newTask);
+
+    if (currentTask) {
+      storeAsCurrentTask(newTask);
+    }
+  };
+
   renderTasklists = () => {
     const {
-      tasks,
+      tasks: incompleteTasks,
+      completedTasks,
       markComplete,
       storeAsCurrentTask,
       markAsUnread,
       selectedTaskId,
+      currentUser,
+      isInbox,
     } = this.props;
-    const { slimView, taskDrawerOpen } = this.state;
+    const { slimView, taskDrawerOpen, taskTimeouts } = this.state;
+
+    const archivableTasks = completedTasks.filter(
+      isTaskArchivable(currentUser),
+    );
+
+    const tasks = [...incompleteTasks, ...archivableTasks].map(task => {
+      const taskListId = task?.taskList?.taskListId;
+
+      if (isInbox && taskListId === 0) {
+        return {
+          ...task,
+          taskList: null,
+        };
+      }
+
+      return task;
+    });
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
@@ -332,7 +471,9 @@ class TaskView extends Component {
     const tasklistProps = {
       tasks: this.search(tasks),
       markComplete: (task, status) => {
-        markComplete(task, status, 'INCOMPLETE');
+        markComplete(task, status, 'INCOMPLETE', currentUser).then(
+          this.onMarkComplete,
+        );
       },
       storeAsCurrentTask,
       markAsUnread,
@@ -340,9 +481,14 @@ class TaskView extends Component {
       slimView,
       openTaskDrawer: this.openTaskDrawer,
       taskDrawerOpen,
+      taskTimeouts: Object.values(taskTimeouts).flat(),
     };
 
-    if (tasks.length === 0 || tasklistCount <= 1) {
+    if (isInbox && tasks.length === 0) {
+      return <InboxNoMessagesAvailable />;
+    }
+
+    if (tasks.length === 0 || tasklistCount <= 1 || isInbox) {
       return <TaskList {...tasklistProps} />;
     }
 
@@ -356,124 +502,180 @@ class TaskView extends Component {
 
   renderCompleted = () => {
     const {
-      completedTasks,
-      isCompletedTasksFetching,
-      showingCompletedTasks,
+      completedTasks: completedOrArchivedTasks,
       markComplete,
-      pullCompletedTasks,
       selectedTaskId,
       storeAsCurrentTask,
       markAsUnread,
+      currentUser,
+      isInbox,
     } = this.props;
-    const { slimView } = this.state;
+    const {
+      slimView,
+      completedTasksShown,
+      taskDrawerOpen,
+      taskTimeouts,
+    } = this.state;
 
-    if (!showingCompletedTasks) {
-      return (
-        <StyledButton onClick={pullCompletedTasks}>
-          Show completed tasks
-        </StyledButton>
-      );
-    }
+    const completedTasks = reject(
+      isTaskArchivable(currentUser),
+      completedOrArchivedTasks,
+    ).map(task => {
+      const taskListId = task?.taskList?.taskListId;
 
-    if (isCompletedTasksFetching) {
-      return (
-        <StyledButton onClick={pullCompletedTasks}>
-          Fetching completed tasks...
-        </StyledButton>
-      );
-    }
+      if (isInbox && taskListId === 0) {
+        return {
+          ...task,
+          taskList: null,
+        };
+      }
 
-    if (completedTasks == null || completedTasks.length === 0) {
-      return (
-        <StyledButton onClick={pullCompletedTasks}>
-          No completed tasks
-        </StyledButton>
-      );
-    }
+      return task;
+    });
 
     const tasklistProps = {
       tasks: this.search(completedTasks),
       markComplete: (task, status) => {
-        markComplete(task, status, 'COMPLETE');
+        markComplete(task, status, 'COMPLETE', currentUser).then(
+          this.onMarkComplete,
+        );
       },
       storeAsCurrentTask,
       markAsUnread,
       selectedTaskId,
       slimView,
       openTaskDrawer: this.openTaskDrawer,
+      taskDrawerOpen,
+      taskTimeouts: Object.values(taskTimeouts).flat(),
     };
+
+    if (isInbox && completedTasks.length === 0) {
+      return null;
+    }
+
+    const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
 
     return (
       <>
-        <StyledButton onClick={pullCompletedTasks}>
-          Hide completed tasks
-        </StyledButton>
-        <TaskList {...tasklistProps} />
+        <CompletedButtonRowContainer>
+          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+          <StyledButton onClick={this.toggleCompletedTasks}>
+            {`${buttonToggleWord} completed tasks (${completedTasks.length})`}
+          </StyledButton>
+          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+        </CompletedButtonRowContainer>
+        {completedTasksShown && <TaskList {...tasklistProps} />}
       </>
     );
   };
 
   render() {
-    const { isFetching, downloadPDF, taskList, showToolbar } = this.props;
-    const { slimView, taskDrawerOpen } = this.state;
+    const {
+      isFetching,
+      downloadPDF,
+      taskList,
+      showToolbar,
+      selectedTask,
+      markComplete,
+      showSortingStats = true,
+      isInbox = false,
+      tasks,
+    } = this.props;
+    const { slimView, taskDrawerOpen, displayHUD, filterBy } = this.state;
+
+    const currentFilterDescription =
+      filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
+
+    const toolbarContainerVisible = (isInbox && tasks.length > 0) || !isInbox;
 
     return (
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          flexFlow: 'row nowrap',
+          justifyContent: 'center',
         }}
       >
-        <div
-          style={{
-            maxWidth: '1152px',
-          }}
-        >
-          <HeadsUpArea ref={this.headsUpArea} taskList={taskList} />
+        <SideClickListener onClick={this.closeTaskDrawer} />
+        <TaskViewContainer>
+          {showSortingStats && displayHUD && (
+            <HeadsUpArea
+              ref={this.headsUpArea}
+              taskList={taskList}
+              filterChange={this.handleFilterChange}
+              currentFilter={filterBy}
+            />
+          )}
           {showToolbar && (
             <StyledToolbar>
-              <Grid container alignItems="center" justify="space-between">
-                <ToolbarContainer>
-                  <StyledSlimViewSwitch
-                    onClick={this.switchSlimView}
-                    slimView={slimView}
-                    variant="contained"
-                  />
-                  <TaskListAction
-                    alt="Filter"
-                    backgroundColor="#fff"
-                    icon={FilterIcon}
-                    onClick={this.openFilterPopover}
-                    ref={this.filterButton}
-                  >
-                    Filter
-                  </TaskListAction>
-                  <TaskListAction
-                    alt="Filter"
-                    active
-                    activeIcon={SortingStatsActiveIcon}
-                    backgroundColor="#fff"
-                    icon={SortingStatsIcon}
-                  >
-                    Sorting & Stats
-                  </TaskListAction>
-                  <Search onChange={this.handleSearch} />
-                  <TaskListAction
-                    alt="Print"
-                    backgroundColor="#fff"
-                    icon={PrintIcon}
-                    onClick={downloadPDF}
-                  >
-                    Print
-                  </TaskListAction>
-                </ToolbarContainer>
-                {!taskDrawerOpen && (
+              <Grid
+                container
+                alignItems="center"
+                justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
+              >
+                {toolbarContainerVisible && (
+                  <ToolbarContainer>
+                    <StyledSlimViewSwitch
+                      onClick={this.switchSlimView}
+                      slimView={slimView}
+                      variant="contained"
+                    />
+                    <TaskListAction
+                      alt="Filter"
+                      activeIcon={FilterActiveIcon}
+                      backgroundColor="#fff"
+                      icon={FilterIcon}
+                      active={Boolean(filterBy)}
+                      onClick={
+                        filterBy ? this.clearFilter : this.openFilterPopover
+                      }
+                      ref={this.filterButton}
+                    >
+                      Filter
+                    </TaskListAction>
+                    {showSortingStats && (
+                      <TaskListAction
+                        alt="Sorting & stats"
+                        active={displayHUD}
+                        activeIcon={SortingStatsActiveIcon}
+                        backgroundColor="#fff"
+                        icon={SortingStatsIcon}
+                        onClick={this.toggleHUD}
+                      >
+                        Sorting & Stats
+                      </TaskListAction>
+                    )}
+                    <Search onChange={this.handleSearch} />
+                    <TaskListAction
+                      alt="Print"
+                      backgroundColor="#fff"
+                      icon={PrintIcon}
+                      onClick={downloadPDF}
+                    >
+                      Print
+                    </TaskListAction>
+                  </ToolbarContainer>
+                )}
+                {(selectedTask || !taskDrawerOpen) && (
                   <AddTaskButton onClick={this.onAddTaskButtonClick} />
                 )}
               </Grid>
             </StyledToolbar>
           )}
+          <AnimatePresence>
+            {currentFilterDescription && (
+              <FilterByTextContainer {...animationProperties}>
+                <img src={FilterIcon} alt="Filter icon" />
+                <FilterByLabel>Filter:</FilterByLabel>
+                <FilterByBoldLabel>
+                  {currentFilterDescription}
+                </FilterByBoldLabel>
+                <FilterByLinkLabel onClick={this.clearFilter}>
+                  clear filter
+                </FilterByLinkLabel>
+              </FilterByTextContainer>
+            )}
+          </AnimatePresence>
           <TaskViewGrid container wrap="nowrap">
             <TableWrapper taskDrawerOpen={taskDrawerOpen}>
               {isFetching ? (
@@ -483,7 +685,7 @@ class TaskView extends Component {
                     unmountOnExit
                     style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
                   >
-                    <ProgressIcon />
+                    <CubesLoader size={40} />
                   </Fade>
                 </FadeContainer>
               ) : (
@@ -491,12 +693,16 @@ class TaskView extends Component {
                   <TaskListContainer>
                     {this.renderTasklists()}
                     {this.renderCompleted()}
+                    <SideClickListener onClick={this.closeTaskDrawer} />
                   </TaskListContainer>
                   {taskDrawerOpen && (
                     <NewTaskDrawer
                       headsUpAreaRef={this.headsUpArea.current}
                       closeDrawer={this.closeTaskDrawer}
                       taskList={taskList}
+                      markComplete={markComplete}
+                      onMarkComplete={this.onMarkComplete}
+                      isInbox={isInbox}
                     />
                   )}
                 </div>
@@ -504,7 +710,8 @@ class TaskView extends Component {
             </TableWrapper>
           </TaskViewGrid>
           {this.renderFilterPopover()}
-        </div>
+        </TaskViewContainer>
+        <SideClickListener onClick={this.closeTaskDrawer} />
       </div>
     );
   }
@@ -512,9 +719,15 @@ class TaskView extends Component {
 
 const mapDispatchToProps = dispatch => ({
   dispatchedSetHeader: setHeader(dispatch),
+  dispatchedMoveTaskBetweenLists: task => moveTaskBetweenLists(task)(dispatch),
+});
+
+const mapStateToProps = store => ({
+  selectedTask: store.taskState.selectedTask,
+  currentUser: store.userState.userProfile,
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(TaskView);

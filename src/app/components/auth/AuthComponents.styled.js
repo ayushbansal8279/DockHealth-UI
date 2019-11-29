@@ -61,7 +61,7 @@ export const StyledLabel = styled.div`
 `;
 
 export const FieldItemContainer = styled.div`
-  height: 10.5rem;
+  min-height: 10.5rem;
 `;
 
 export const BottomGridContainer = styled(Grid)`
@@ -78,5 +78,13 @@ export const StyledForm = styled.form`
   display: flex;
   flex: 1;
   flex-direction: column;
-  width: '100%';
+  width: 100%;
+`;
+
+export const HeightDependentGrid = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-basis: ${props => (100 * props.size) / 12}%;
+  max-width: ${props => (100 * props.size) / 12}%;
 `;

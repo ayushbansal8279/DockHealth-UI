@@ -139,7 +139,7 @@ const SimpleBarComponent = ({
 
   return (
     <StyledSimpleBar
-      visible={filteredItems.length > maxPeopleRecordsVisible}
+      visible={""+(filteredItems.length > maxPeopleRecordsVisible)}
       style={{ maxHeight: maxPeopleContainerHeight }}
     >
       {simpleBarItemsVisible && (
@@ -168,6 +168,8 @@ export default ({
   const [isSearching, , , toggleIsSearching] = useBoolean(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [addingNewPerson, , , toggleAddingNewPerson] = useBoolean(false);
+  //When will the add new user tab show up? Its decided by the question.
+  const isUser = (addNewPersonLabel == "+ Invite to list");
 
   const maxPeopleContainerHeight = `${maxPeopleRecordsVisible *
     personRecordHeightInRem}rem`;
@@ -244,6 +246,8 @@ export default ({
             ) : (
               <PersonPickerTopSectionLabel>{label}</PersonPickerTopSectionLabel>
             )}
+
+
             <PersonPickerIconsContainer>
               {!isSearching && (
                 <PersonPickerIconContainer onClick={toggleIsSearching}>
@@ -255,12 +259,21 @@ export default ({
               </PersonPickerIconContainer>
             </PersonPickerIconsContainer>
           </PersonPickerTopSectionContainer>
+
           <PersonPickerDivider />
           <SimpleBarComponent {...simpleBarComponentProps} />
           <PersonPickerDivider />
-          <AddNewPersonLabel button onClick={toggleAddingNewPerson}>
-            {addNewPersonLabel}
-          </AddNewPersonLabel>
+          {/* TODOne? Only have the adding new Person button on the patient tab. */}
+            
+          {!isUser ? (
+            <AddNewPersonLabel button onClick={toggleAddingNewPerson}>
+              {addNewPersonLabel}
+            </AddNewPersonLabel>
+          ) : (
+            //console.log("My name is yeff")
+            <>
+            </>
+          )}
         </>
       )}
     </PersonPickerContainer>

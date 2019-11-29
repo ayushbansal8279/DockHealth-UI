@@ -1,5 +1,4 @@
 import ButtonBase from '@material-ui/core/ButtonBase';
-import Grid from '@material-ui/core/Grid';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
@@ -7,6 +6,7 @@ import styled from 'styled-components';
 export const TaskAnimationContainer = styled.div`
   ${props => props.isSubtask && 'background-color: #fff;'}
   height: ${props => (props.isNewSubtask ? 0 : 'auto')};
+  ${props => !props.drawerOpen && 'max-width: 1050px;'}
   overflow: hidden;
   transition: height 0.25s ease-out;
 `;
@@ -14,10 +14,10 @@ export const TaskAnimationContainer = styled.div`
 export const TaskContainer = styled.div`
   box-sizing: border-box;
   background-color: #fff;
-  height: ${props => (props.isSubtask ? 75 : 85)}px;
+  height: 3.875rem;
   margin-left: 0;
   margin-right: 0;
-  margin-top: 8px;
+  margin-top: 0.25rem;
   transition: all 0.25s ease-out;
 
   ${props =>
@@ -63,20 +63,13 @@ export const SubtasksContainer = withStyles(collapsibleButtonStyles)(
 );
 
 export const TaskSelectionContainer = styled.div`
+  align-items: center;
   background-color: ${props => props.isSelected && '#ddf2f7'};
-  box-sizing: content-box;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row nowrap;
   height: 100%;
   transition: all 0.25s ease-out;
-`;
-
-export const TaskGrid = styled(Grid)`
-  height: 100%;
-`;
-
-export const TaskBodyContainer = styled(Grid)`
-  height: 100%;
-  padding-left: 5px;
-  position: relative;
 `;
 
 export const SubtaskOrderContainer = styled.div`
@@ -84,13 +77,12 @@ export const SubtaskOrderContainer = styled.div`
   color: #303538;
   cursor: pointer;
   display: flex;
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: bold;
   justify-content: center;
   overflow: hidden;
-  padding-left: 10px;
   text-overflow: ellipsis;
-  width: 30px;
+  width: 1.375rem;
 `;
 
 export const SubtaskLoadingContainer = styled.div`

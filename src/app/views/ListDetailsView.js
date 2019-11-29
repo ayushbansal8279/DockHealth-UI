@@ -17,12 +17,17 @@ class Home extends PureComponent {
     this.refreshAccessToken(user);
     actions.loading();
     taskListActions.getTaskListById(routeParams.taskListId);
-    actions.getListTasks(
-      routeParams.taskListId,
-      undefined,
-      undefined,
-      'INCOMPLETE',
-    );
+    actions
+      .getListTasks(routeParams.taskListId, undefined, undefined, 'INCOMPLETE')
+      .then(() => {
+        actions.loadingCompletedTasks();
+        actions.getListTasks(
+          routeParams.taskListId,
+          undefined,
+          undefined,
+          'COMPLETE',
+        );
+      });
     if (routeParams.taskListId) {
       taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL');
     }
@@ -83,29 +88,14 @@ class Home extends PureComponent {
     patientActions.getAllPatients();
   };
 
-  pullCompletedTasks = () => {
-    const { showingCompletedTasks, actions, routeParams } = this.props;
-
-    if (!showingCompletedTasks) {
-      actions.loadingCompletedTasks();
-      actions.getListTasks(
-        routeParams.taskListId,
-        undefined,
-        undefined,
-        'COMPLETE',
-      );
-    } else {
-      actions.hideCompletedTasks();
-    }
-  };
-
   downloadPDF = () => {
     const {
       routeParams: { taskListId },
     } = this.props;
 
     if (taskListId) {
-      downloadPDF(taskListId);
+      // downloadPDF(taskListId);
+      window.print();
     }
   };
 
@@ -191,7 +181,6 @@ class Home extends PureComponent {
       addTaskComment,
       toggleTaskPriority: (task, priority) =>
         toggleTaskPriority(task, userId, priority),
-      pullCompletedTasks: this.pullCompletedTasks,
       onFilter: this.handleFilterChange,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,

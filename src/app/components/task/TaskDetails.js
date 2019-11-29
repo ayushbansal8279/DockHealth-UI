@@ -51,7 +51,7 @@ class TaskDetails extends React.PureComponent {
   handleStatusChange = e => {
     const status = e.target.value;
     const { selectedTask, updateWorkflowStatus: updateStatus } = this.props;
-    updateStatus(selectedTask.taskId, status);
+    updateStatus(selectedTask, status);
   };
 
   handleDescriptionChange = description => {
@@ -103,7 +103,7 @@ class TaskDetails extends React.PureComponent {
             options={[
               { value: 'NO_STATUS', description: 'No Status' },
               { value: 'IN_PROGRESS', description: 'In Progress' },
-              { value: 'BLOCKED', description: 'Planned' },
+              { value: 'PLANNED', description: 'Planned' },
               { value: 'ON_HOLD', description: 'On Hold' },
             ]}
           />

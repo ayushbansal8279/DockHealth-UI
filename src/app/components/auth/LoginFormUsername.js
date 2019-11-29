@@ -1,4 +1,3 @@
-import Grid from '@material-ui/core/Grid';
 import queryString from 'query-string';
 import React, { Component } from 'react';
 import { Link } from 'react-router';
@@ -6,13 +5,15 @@ import { Field, reduxForm } from 'redux-form';
 
 import * as UserApi from '../../api/user-api';
 import AuthField from '../common/AuthField';
+import CubesLoader from '../common/CubesLoader';
 import {
   BottomGridContainer,
   FieldItemContainer,
+  HeightDependentGrid,
   NextButton,
+  StyledForm,
   StyledLabel,
   TitleTypography,
-  StyledForm,
 } from './AuthComponents.styled';
 
 const validate = values => {
@@ -74,7 +75,7 @@ class LoginFormUsername extends Component {
             </TitleTypography>
 
             <FieldItemContainer>
-              <Grid item md={9} sm={12}>
+              <HeightDependentGrid size={9}>
                 <Field
                   name="username"
                   type="text"
@@ -82,11 +83,11 @@ class LoginFormUsername extends Component {
                   label="Email"
                   autoFocus
                 />
-              </Grid>
+              </HeightDependentGrid>
             </FieldItemContainer>
 
             <div>
-              <Grid item xs={6}>
+              <HeightDependentGrid size={6}>
                 <NextButton
                   active={!invalid}
                   id="loginButton"
@@ -96,35 +97,22 @@ class LoginFormUsername extends Component {
                 >
                   Next
                 </NextButton>
-              </Grid>
+              </HeightDependentGrid>
             </div>
             <BottomGridContainer>
-              <Grid container item xs={9} direction="column" justify="flex-end">
-                <StyledLabel bold>Don’t have an account yet?</StyledLabel>
-                <StyledLabel>
-                  <Link to="/register">Create account</Link>
-                </StyledLabel>
-              </Grid>
+              <StyledLabel bold>Don’t have an account yet?</StyledLabel>
+              <StyledLabel>
+                <Link to="/register">Create account</Link>
+              </StyledLabel>
             </BottomGridContainer>
           </>
         )}
         {showLoginMessage && (
           <div>
-            <h3>Signing you in...</h3>
-            <div className="sk-circle" style={{ margin: 0 }}>
-              <div className="sk-circle1 sk-child" />
-              <div className="sk-circle2 sk-child" />
-              <div className="sk-circle3 sk-child" />
-              <div className="sk-circle4 sk-child" />
-              <div className="sk-circle5 sk-child" />
-              <div className="sk-circle6 sk-child" />
-              <div className="sk-circle7 sk-child" />
-              <div className="sk-circle8 sk-child" />
-              <div className="sk-circle9 sk-child" />
-              <div className="sk-circle10 sk-child" />
-              <div className="sk-circle11 sk-child" />
-              <div className="sk-circle12 sk-child" />
-            </div>
+            <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+              Signing you in...
+            </TitleTypography>
+            <CubesLoader size={40} />
           </div>
         )}
       </StyledForm>

@@ -22,13 +22,13 @@ const exposed = [
   'BRANCH_IO_APP_LINK',
 ];
 const exposedEnvironment = {};
-exposed.forEach((i) => {
+exposed.forEach(i => {
   exposedEnvironment[i] = JSON.stringify(process.env[i]);
 });
 
 const config = {
   entry: ['@babel/polyfill', `${APP_DIR}/index.js`],
-  devtool: 'source-map',
+  devtool: 'inline-cheap-source-map',
   output: {
     path: BUILD_DIR,
     filename: 'bundle.js',

@@ -119,7 +119,6 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    placeholder="MM/DD/YYYY"
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
     keepCharPositions
@@ -132,7 +131,6 @@ const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
     ref={ref => {
       inputRef(ref ? ref.inputElement : null);
     }}
-    placeholder="123-123-1234"
     mask={[
       /\d/,
       /\d/,
@@ -172,11 +170,6 @@ export const PatientsForm = ({
   isReadOnly,
   cancel,
 }) => {
-  const readOnlyProps = placeholder => ({
-    InputLabelProps: { shrink: isReadOnly || undefined },
-    placeholder: isReadOnly ? undefined : placeholder,
-  });
-
   return (
     <>
       <PatientsSidebarSection
@@ -192,33 +185,30 @@ export const PatientsForm = ({
         >
           <div>
             <Grid container wrap="nowrap">
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <StyledTextField
                   name="firstName"
                   value={firstName || ''}
                   onChange={onChange}
                   required={!isReadOnly}
                   label="First Name"
-                  {...readOnlyProps('Sam')}
                 />
               </Grid>
-              <Grid item xs={2} style={{ margin: '0 4px' }}>
+              <Grid item xs={4} style={{ margin: '0 4px' }}>
                 <StyledTextField
                   name="middleName"
                   value={middleName || ''}
                   onChange={onChange}
                   label="Middle Name"
-                  {...readOnlyProps('Max')}
                 />
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <StyledTextField
                   name="lastName"
                   value={lastName || ''}
                   onChange={onChange}
                   required={!isReadOnly}
                   label="Last Name"
-                  {...readOnlyProps('Nelson')}
                 />
               </Grid>
             </Grid>
@@ -227,18 +217,16 @@ export const PatientsForm = ({
               value={mrn || ''}
               onChange={onChange}
               label="MRN"
-              {...readOnlyProps('123-123-23444')}
             />
             <StyledTextField
               name="dob"
               value={dob || ''}
               onChange={onChange}
               label="Birthday"
-              error={errors?.dob}
+              error={Boolean(errors?.dob)}
               InputProps={{
                 inputComponent: isReadOnly ? undefined : BirthdayTextMask,
               }}
-              {...readOnlyProps()}
             />
             <StyledTextField
               name="gender"
@@ -246,7 +234,6 @@ export const PatientsForm = ({
               onChange={onChange}
               label="Gender"
               select
-              {...readOnlyProps()}
             >
               <MenuItem value="female">Female</MenuItem>
               <MenuItem value="male">Male</MenuItem>
@@ -263,7 +250,6 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
               }}
-              {...readOnlyProps('234-234-2333')}
             />
             <StyledTextField
               name="phoneMobile"
@@ -274,15 +260,14 @@ export const PatientsForm = ({
               InputProps={{
                 inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
               }}
-              {...readOnlyProps('456-456-4444')}
             />
             <StyledTextField
               name="email"
               value={email || ''}
               onChange={onChange}
               label="Email"
+              error={Boolean(errors?.email)}
               type="email"
-              {...readOnlyProps('name@email.com')}
             />
           </div>
         </div>
@@ -344,18 +329,33 @@ const PatientEdit = ({ patient }) => {
       const { name } = target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
 
-      const updatedFormState = {
+      var updatedFormState = {
         ...formState,
         [name]: value,
       };
 
-      const formatFormState = evolve({
-        firstName: capitalizeWords,
-        middleName: capitalizeWords,
-        lastName: capitalizeWords,
+
+      const formatFirstNameState = evolve({
+        firstName: capitalizeWords
+      });
+      const formatMiddleNameState = evolve({
+        middleName: capitalizeWords
+      });
+      const formatLastNameState = evolve({
+        lastName: capitalizeWords
       });
 
-      setFormState(formatFormState(updatedFormState));
+      if(updatedFormState.firstName){
+        updatedFormState = formatFirstNameState(updatedFormState)
+      }
+      if(updatedFormState.middleName){
+        updatedFormState = formatMiddleNameState(updatedFormState)
+      }
+      if(updatedFormState.lastName){
+        updatedFormState = formatLastNameState(updatedFormState)
+      }
+
+      setFormState(updatedFormState);
     },
     [formState],
   );
@@ -372,13 +372,19 @@ const PatientEdit = ({ patient }) => {
     return birthday.isBefore(now);
   };
 
+  const validateEmail = email => {
+    const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email);
+    return valid;
+  };
+
   const canSubmit = () => {
-    const { firstName, lastName, dob } = formState;
+    const { firstName, lastName, dob, email } = formState;
     return (
       firstName &&
       firstName !== '' &&
       (lastName && lastName !== '') &&
-      (!dob || validateBirthday(dob))
+      (!dob || dob === '' || validateBirthday(dob)) &&
+      (!email || email === '' || validateEmail(email))
     );
   };
 
@@ -397,6 +403,7 @@ const PatientEdit = ({ patient }) => {
           ? {}
           : {
               dob: formState.dob && !validateBirthday(formState.dob),
+              email: formState.email && !validateEmail(formState.email),
             }
       }
       isReadOnly={isClean}
