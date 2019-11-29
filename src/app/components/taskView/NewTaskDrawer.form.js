@@ -277,6 +277,9 @@ export default ({
               autoFocus
               name="description"
               label="Task"
+              fontSize={16}
+              labelFontSize={13}
+              labelInactiveTop={1.75}
               required
             />
           )}
@@ -318,6 +321,9 @@ export default ({
               fullWidth
               visible={!patientPopoverOpen}
               containerDisabled={isSubtask}
+              fontSize={16}
+              labelFontSize={13}
+              containerHeight={4.375}
               onContainerClick={() => {
                 openPatientPopover();
               }}
@@ -347,6 +353,9 @@ export default ({
             visible={!assignedToPopoverOpen}
             controlled
             fullWidth
+            fontSize={16}
+            labelFontSize={13}
+            containerHeight={4.375}
             onContainerClick={() => {
               openAssignedToPopover();
             }}
