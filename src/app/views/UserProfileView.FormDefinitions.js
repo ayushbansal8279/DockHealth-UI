@@ -62,11 +62,15 @@ export const formFieldDefinitions = [
         for HIPAA compliance
       </PrePasswordLabel>
     ),
+    defaultValueGetter: ({ accountPhoneNumber }) =>
+      accountPhoneNumber.replace(/^\+1/, ''),
   },
   {
     key: 'workPhoneNumber',
     label: 'Your Additional Phone Number',
     isPhoneNumber: true,
+    defaultValueGetter: ({ workPhoneNumber }) =>
+      workPhoneNumber.replace(/^\+1/, ''),
   },
 ];
 
