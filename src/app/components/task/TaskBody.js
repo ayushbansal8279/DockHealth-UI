@@ -44,8 +44,8 @@ import TaskCheckbox from './TaskCheckbox';
 
 const animationProperties = {
   variants: {
-    hidden: { height: 0, marginBottom: 0, opacity: 0 },
-    visible: { height: '0.625rem', marginBottom: '0.25rem', opacity: 1 },
+    hidden: { height: 0, opacity: 0 },
+    visible: { height: '0.625rem', opacity: 1 },
   },
   initial: 'hidden',
   exit: 'hidden',
