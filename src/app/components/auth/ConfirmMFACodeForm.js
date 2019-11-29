@@ -14,7 +14,7 @@ const validate = values => {
 };
 
 const ConfirmMFACodeForm = props => {
-  const { handleSubmit, invalid, pristine, submitting } = props;
+  const { handleSubmit, invalid, pristine, submitting, customError, setCustomError } = props;
 
   return (
     <form className="inline-label top-buffer" onSubmit={handleSubmit}>
@@ -34,6 +34,8 @@ const ConfirmMFACodeForm = props => {
           component={AuthField}
           label="Authentication code"
           autoFocus
+          customError={customError}
+          setCustomError={setCustomError}
         />
       </Grid>
       <Grid item xs={6}>
