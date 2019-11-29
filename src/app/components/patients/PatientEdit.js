@@ -24,6 +24,7 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     InputProps={{
       ...InputProps,
       disableUnderline: true,
+      spellCheck: false,
       classes: {
         root: 'root',
         disabled: 'disabled',
@@ -75,7 +76,6 @@ const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     }
 
     .error {
-      color: #da0d71;
       background: none;
     }
 
