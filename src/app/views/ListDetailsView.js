@@ -16,22 +16,52 @@ class Home extends PureComponent {
 
     this.refreshAccessToken(user);
     actions.loading();
-    taskListActions.getTaskListById(routeParams.taskListId);
-    actions
-      .getListTasks(routeParams.taskListId, undefined, undefined, 'INCOMPLETE')
+
+    const listName = routeParams.listName
+    const filterBy = routeParams.filterBy
+    var taskStatus = routeParams.taskStatus
+    if(taskStatus == undefined){
+      taskStatus = "INCOMPLETE"
+    }
+    var sortBy = undefined
+    if(filterBy != undefined){
+      sortBy = "CREATED_DT"
+    }
+
+    if(listName == "assigned_by_me"){
+      actions.getTasksAssignedByMe(undefined, sortBy, filterBy, taskStatus)
       .then(() => {
         actions.loadingCompletedTasks();
-        actions.getListTasks(
-          routeParams.taskListId,
-          undefined,
-          undefined,
-          'COMPLETE',
-        );
+        if(taskStatus=="INCOMPLETE"){
+          actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
+        }
       });
-    if (routeParams.taskListId) {
-      taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL');
+    }else if(listName == "assigned_to_me"){
+      actions.getTasksAssignedToMe(undefined, sortBy, filterBy, taskStatus)
+      .then(() => {
+        actions.loadingCompletedTasks();
+        if(taskStatus=="INCOMPLETE"){
+          actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
+        }
+      });
+    }else{
+      taskListActions.getTaskListById(routeParams.taskListId)
+      actions
+        .getListTasks(routeParams.taskListId, undefined, undefined, 'INCOMPLETE')
+        .then(() => {
+          actions.loadingCompletedTasks();
+          actions.getListTasks(
+            routeParams.taskListId,
+            undefined,
+            undefined,
+            'COMPLETE',
+          );
+        });
+      if (routeParams.taskListId) {
+        taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL');
+      }
+      taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId);
     }
-    taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId);
   }
 
   componentWillUpdate(nextProps) {
@@ -163,7 +193,16 @@ class Home extends PureComponent {
     const loadedTasklist = tasklists.find(
       t => `${t.taskListId}` === taskListId,
     );
-    const title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
+
+    var isMultiList = false
+    var title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
+    if(this.props.routeParams.listName == 'assigned_by_me'){
+      title = 'Assigned by me'
+      isMultiList = true
+    }else if(this.props.routeParams.listName == 'assigned_to_me'){
+      title = 'Assigned to me'
+      isMultiList = true
+    }
 
     const taskViewProps = {
       userId,
@@ -187,6 +226,7 @@ class Home extends PureComponent {
       title,
       showToolbar: true,
       taskList: loadedTasklist || undefined,
+      isMultiList: isMultiList
     };
 
     return <TaskView {...taskViewProps} />;

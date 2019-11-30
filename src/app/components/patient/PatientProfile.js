@@ -95,6 +95,7 @@ const renderPatientSection = ({
         submitTask={description =>
           saveTask({ description, taskListId, patientId })(dispatch)
         }
+        isAddTaskEnabled={true}
         selectCurrentTask={selectCurrentTask}
         {...otherProps}
       />

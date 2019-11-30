@@ -391,14 +391,14 @@ class PeopleContainer extends PureComponent {
           </div>
           <div className="columns">
             <span className="item-title">
-              {`${person.firstName} ${person.lastName}`}
-              {/* <Link
+              {/* {`${person.firstName} ${person.lastName}`} */}
+              <Link
                 to={`/assignedToPerson/${person.userId}/${person.firstName} ${
                   person.lastName
                 }`}
               >
                 {`${person.firstName} ${person.lastName}`}
-              </Link> */}
+              </Link>
             </span>
             <span className="item-details">{this.renderTitles(person)}</span>
             <span className="item-details">

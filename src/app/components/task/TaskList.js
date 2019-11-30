@@ -135,6 +135,10 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
     store => store.taskState.newlyAddedTaskIds,
   );
 
+  if(otherTaskListProps.listTasks){
+    tasks = otherTaskListProps.listTasks;
+  }
+
   const [taskListShowMoreIndex, setTaskListShowMoreIndex] = useState(1);
   const [currentSorting, setCurrentSorting] = useState(DEFAULT_SORTING);
 

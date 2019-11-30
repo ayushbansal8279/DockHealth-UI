@@ -16,8 +16,9 @@ import MemberInitials from '../members/MemberInitials';
 
 // import { TaskListSection } from '../patients/TaskList';
 import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
-import CollapseIcon from '../../img/collapse.svg';
+import NewTaskDrawer from '../taskView/NewTaskDrawer';
 
+import CollapseIcon from '../../img/collapse.svg';
 
 const TaskDrawerContainer = styled.div`
   flex: 1.4;
@@ -177,8 +178,6 @@ export const TaskListSection = ({
       groupedTasks,
       dispatch,
       closeTaskDrawer,
-      openTaskDrawer,
-      taskDrawerOpen,
       ...otherProps
     }) => ( listName ) => {
       const tasks = groupedTasks.get(listName);
@@ -200,10 +199,11 @@ export const TaskListSection = ({
               <TaskListSection heading={listName} key={listName}>
                 <PatientsTasklistEditable
                   tasks={tasks}
-                  completedTasks={tasks}
+                  completedTasks={[]}
                   submitTask={description =>
                     saveTask({ description, taskListId, patientId })(dispatch)
                   }
+                  isAddTaskEnabled={false}
                   selectCurrentTask={selectCurrentTask}
                   {...otherProps}
                 />

@@ -459,6 +459,7 @@ class TaskView extends Component {
       selectedTaskId,
       currentUser,
       isInbox,
+      isMultiList,
     } = this.props;
     const { slimView, taskDrawerOpen, taskTimeouts } = this.state;
 
@@ -504,14 +505,15 @@ class TaskView extends Component {
       return <InboxNoMessagesAvailable />;
     }
 
-    if (tasks.length === 0 || tasklistCount <= 1 || isInbox) {
+    if (tasks.length === 0 || (!isMultiList && tasklistCount <= 1) || isInbox) {
       return <TaskList {...tasklistProps} />;
     }
 
-    return Array.from(groupedTasks.keys()).map(taskListId => (
-      <React.Fragment key={taskListId}>
-        <h5>{taskListId}</h5>
-        <TaskList {...tasklistProps} />
+    var listMap = Array.from(groupedTasks.keys())
+    return listMap.map(listName => (
+      <React.Fragment key={listName}>
+        <h5>{listName}</h5>
+        <TaskList listTasks={groupedTasks.get(listName)} {...tasklistProps} />
       </React.Fragment>
     ));
   };

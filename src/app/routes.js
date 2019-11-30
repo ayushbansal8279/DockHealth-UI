@@ -34,6 +34,7 @@ import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetailsView';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
+import PersonTaskList from './views/PersonTaskList';
 import PeopleView from './views/PeopleView';
 import SupportSectionView from './views/SupportSectionView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
@@ -81,6 +82,7 @@ export const Routes = ({ store }) => {
           <Route path="/editPatient/:patientId" component={PatientEditView} />
           <Route path="/activityfeed" component={TaskListActivityFeedView} />
           <Route path="/taskSearch" component={TaskListSearch} />
+          <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
           <Route path="/people" component={PeopleView} />
           <Route
             path="/tasks/inbox(/:taskId)"
@@ -102,6 +104,10 @@ export const Routes = ({ store }) => {
               component={ListDetailsView}
               onChange={preselectTask}
               onEnter={nextState => preselectTask(null, nextState)}
+            />
+            <Route
+              path="filtered/:listName/:taskStatus/:filterBy"
+              component={ListDetailsView}
             />
           </Route>
           <Route path="/userprofile" component={UserProfileViewWrapper} />

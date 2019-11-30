@@ -36,6 +36,7 @@ const PatientsTasklistEditable = ({
   completedTasks = [],
   selectCurrentTask,
   submitTask,
+  isAddTaskEnabled,
   selectedTaskId,
   ...otherProps
 }) => {
@@ -55,7 +56,7 @@ const PatientsTasklistEditable = ({
   return (
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
-      {submitTask && (
+      {isAddTaskEnabled && submitTask && (
         <AddTask
           storeAsCurrentTask={selectCurrentTask}
           submitBound={submitTask}
