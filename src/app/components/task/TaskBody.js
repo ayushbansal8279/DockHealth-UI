@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import Linkify from 'linkifyjs/react';
 import moment from 'moment';
 import React, { useCallback, useRef } from 'react';
@@ -40,6 +41,17 @@ import {
   TaskStatusContainer,
 } from './TaskBody.styled';
 import TaskCheckbox from './TaskCheckbox';
+
+const animationProperties = {
+  variants: {
+    hidden: { height: 0, opacity: 0 },
+    visible: { height: '0.625rem', opacity: 1 },
+  },
+  initial: 'hidden',
+  exit: 'hidden',
+  animate: 'visible',
+  transition: { ease: 'backInOut', duration: 0.25 },
+};
 
 const TaskBody = ({
   isSubtask,
@@ -90,8 +102,7 @@ const TaskBody = ({
 
   const isInbox = !task?.taskList?.taskListId;
 
-  const isTaskArchivable =
-    isTaskArchivableMethod(currentUserProfile, task) || !isSubtask;
+  const isTaskArchivable = isTaskArchivableMethod(currentUserProfile, task);
 
   const isTaskTimingOut =
     status === 'COMPLETE' &&
@@ -206,6 +217,13 @@ const TaskBody = ({
             />
           </MemberPickerContainer>
           <PatientTasklistContainer isSubtask={isSubtask}>
+            <AnimatePresence>
+              {!read && (
+                <PatientsTasklistNew {...animationProperties}>
+                  NEW
+                </PatientsTasklistNew>
+              )}
+            </AnimatePresence>
             <TaskDescriptionOuterContainer>
               {task.sourceMessage && (
                 <img
@@ -260,7 +278,6 @@ const TaskBody = ({
                 <span>{completedByContent}</span>
               </CompletedBy>
             </div>
-            {!read && <PatientsTasklistNew>NEW</PatientsTasklistNew>}
           </PatientTasklistContainer>
           {!taskDrawerOpen && !hidePatient && (
             <PatientTasklistPatient>

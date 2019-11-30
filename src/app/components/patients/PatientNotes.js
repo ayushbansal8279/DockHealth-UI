@@ -5,6 +5,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { VariableSizeList } from 'react-window';
+import equals from 'ramda/es/equals';
 import take from 'ramda/es/take';
 
 import { addPatientNote, editPatientNote } from '../../actions/patient-actions';
@@ -125,8 +126,7 @@ const PatientNotes = ({ patientId, notes }) => {
       .then(() => {
         handleCancel();
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
         toggleAlert('Error adding note. Please try again.', 'error');
       });
   };
@@ -144,8 +144,14 @@ const PatientNotes = ({ patientId, notes }) => {
   const isOwn = patientNote => patientNote.creator.userId === userId;
 
   const onNoteChange = ({ index }) => noteHeight => {
+    const prevValues = Array.from(noteHeightMap.entries());
     noteHeightMap.set(index, noteHeight);
     setNoteHeightMap(noteHeightMap);
+    const newValues = Array.from(noteHeightMap.entries());
+
+    if (!equals(prevValues, newValues)) {
+      notesListRef.current.resetAfterIndex(0);
+    }
   };
 
   useEffect(() => {

@@ -131,14 +131,23 @@ const DEFAULT_SORTING = [
 
 const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
   const addingNewTask = useSelector(store => store.taskState.addingNewTask);
+  const newlyAddedTaskIds = useSelector(
+    store => store.taskState.newlyAddedTaskIds,
+  );
 
   const [taskListShowMoreIndex, setTaskListShowMoreIndex] = useState(1);
   const [currentSorting, setCurrentSorting] = useState(DEFAULT_SORTING);
 
-  const tasksToShow = take(
+  const unfilteredTasks = take(
     TASK_LIST_SHOW_MORE_STEP * taskListShowMoreIndex,
     tasks,
   );
+
+  const [newlyAddedTasks, tasksToShow] = partition(
+    ({ taskId }) => newlyAddedTaskIds.includes(taskId),
+    unfilteredTasks,
+  );
+
   const shouldhowShowMoreButton = tasksToShow.length < tasks.length;
 
   const incrementTaskListShowMoreIndex = useCallback(() => {
@@ -168,7 +177,10 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
     (order === 'asc' ? ascend : descend)(valueGetter),
   );
 
-  const sortedTasksToShow = sortWith(reverse(sortingMethods), tasksToShow);
+  const sortedTasksToShow = [
+    ...newlyAddedTasks,
+    ...sortWith(reverse(sortingMethods), tasksToShow),
+  ];
 
   return (
     <TaskListOuterContainer>

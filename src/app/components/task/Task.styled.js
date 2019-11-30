@@ -14,7 +14,7 @@ export const TaskAnimationContainer = styled.div`
 export const TaskContainer = styled.div`
   box-sizing: border-box;
   background-color: #fff;
-  height: 3.875rem;
+  height: min-content;
   margin-left: 0;
   margin-right: 0;
   margin-top: 0.25rem;
@@ -68,7 +68,8 @@ export const TaskSelectionContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-flow: row nowrap;
-  height: 100%;
+  height: min-content;
+  min-height: 3.875rem;
   transition: all 0.25s ease-out;
 `;
 

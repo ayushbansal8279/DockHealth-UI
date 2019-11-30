@@ -127,7 +127,7 @@ const inputStyle = styleExtension => props =>
 
         [`&:focus ~ ${StyledLabel}, &:not(.${EMPTY_CLASS_NAME}) ~ ${StyledLabel}`]: {
           fontSize: `${props.labelFontSize ?? 12}px`,
-          top: `${props.isTextarea ? 1.25 : 1}rem`,
+          top: '1rem',
 
           '& > .input-label': {
             color: '#ababb2',

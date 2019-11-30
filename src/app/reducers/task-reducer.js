@@ -30,13 +30,14 @@ import {
   HIDE_COMPLETED_TASKS,
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   MARK_TASK_STATUS_SUCCESS,
-  MOVE_TASK_SUCCESS,
   MOVE_TASK_BETWEEN_LISTS,
+  MOVE_TASK_SUCCESS,
   ORDER_SUB_TASK_SUCCESS,
   REQUEST_COMPLETED_TASKS,
   REQUEST_HISTORY,
   REQUEST_TASKS,
   SET_AS_CURRENT_TASK,
+  TASK_ARCHIVED,
   TASK_ATTACHMENT_ADDED,
   TASK_ATTACHMENT_REMOVED,
   TOGGLE_TASK_PRIORITY_SUCCESS,
@@ -47,12 +48,12 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
-  TASK_ARCHIVED,
 } from '../actions/action-types';
 
 const initialState = {
   completedTasks: [],
   tasks: [],
+  newlyAddedTaskIds: [],
   task: {},
   isFetching: false,
   isCompletedTasksFetching: false,
@@ -188,18 +189,27 @@ const TaskReducer = (state = initialState, action) => {
           )
         : [addedTask].concat(state.tasks);
 
-      return { ...state, tasks };
+      return {
+        ...state,
+        tasks,
+        newlyAddedTaskIds: [
+          addedTask.taskId,
+          ...(state.newlyAddedTaskIds || []),
+        ],
+      };
     }
 
     case DUPLICATE_TASK_SUCCESS:
-      // with concact make a copy of the array, and then we'll change and return the copy
       return {
         ...state,
         tasks: state.tasks.concat([action.duplicatedTask]),
+        newlyAddedTaskIds: [
+          action.duplicatedTask.taskId,
+          ...(state.newlyAddedTaskIds || []),
+        ],
       };
 
     case GET_TASKS_SUCCESS: {
-      // isFetching is used for the loading image
       let { tasks } = action;
 
       tasks = tasks.map(task => ({
@@ -261,14 +271,16 @@ const TaskReducer = (state = initialState, action) => {
       const taskData = { status, completedBy, completedDt, archivedByUser };
 
       const tasks = updateTask(taskData, task, state.tasks);
-      //Need to update the task otherwise the completed list is not updated
+
+      // Need to update the task otherwise the completed list is not updated
       if (!task.parentTaskId) {
         task.status = status;
         task.completedBy = completedBy;
         task.completedDt = completedDt;
         task.archivedByUser = archivedByUser;
       }
-      return { ...state, tasks: tasks };
+
+      return { ...state, tasks };
     }
 
     case MARK_COMPLETE_TASK_STATUS_SUCCESS: {
@@ -743,7 +755,7 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case TASK_ARCHIVED: {
-      const { task: actionTask, currentUserProfile } = action;
+      const { task: actionTask } = action;
 
       return {
         ...state,
