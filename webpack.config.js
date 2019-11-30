@@ -20,6 +20,8 @@ const exposed = [
   'AWS_MOBILEANALYTICS_APPTITLE',
   'HEALTHCHECK_INTERVAL',
   'BRANCH_IO_APP_LINK',
+  'PUSHER_APP_KEY',
+  'PUSHER_CLUSTER_NAME',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {

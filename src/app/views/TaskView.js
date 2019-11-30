@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
+import { getTaskListStats } from '../actions/tasklist-actions';
 import CubesLoader from '../components/common/CubesLoader';
 import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
@@ -129,20 +130,9 @@ class TaskView extends Component {
 
   componentDidMount = () => {
     this.resetHeader();
-    const socket = new Pusher(APP_KEY, {
-      cluster: APP_CLUSTER,
-    });
-    const channel = socket.subscribe('dock-task-channel');
-    // Listen to the channel for new entries.
-    // The server publishes to this channel whenever a entry is updated
-    channel.bind('task-update', data => {
-      // Since the app is going to be realtime, we don't want the same item to
-      // be shown twice. Device A publishes an entry, all other devices including itself
-      // receives the entry, so act like a basic filter
-      console.log("received data")
-      console.log(data)
-      this.props.refreshTask(data.task)
-    });
+  };
+
+  componentWillMount = () => {
   };
 
   componentWillUnmount = () => {
@@ -164,6 +154,32 @@ class TaskView extends Component {
       this.resetHeader();
     }
   };
+
+  componentWillUpdate(nextProps) {
+    if((!this.props.taskList && nextProps && nextProps.taskList)
+      || ( nextProps && nextProps.taskList
+        && this.props.taskList.taskListId != nextProps.taskList.taskListId)){
+      const socket = new Pusher(APP_KEY, {
+        cluster: APP_CLUSTER,
+      });
+      const currentTaskListId = nextProps.taskList.taskListId;
+      const channelName = 'dock-task-channel-'+currentTaskListId;
+      const channel = socket.subscribe(channelName);
+      console.log('subscribed to channel: '+channelName)
+      // Listen to the channel for new entries.
+      // The server publishes to this channel whenever a entry is updated
+      channel.bind('task-update', data => {
+        // Since the app is going to be realtime, we don't want the same item to
+        // be shown twice. Device A publishes an entry, all other devices including itself
+        // receives the entry, so act like a basic filter
+        console.log("received data")
+        console.log(data)
+        this.props.refreshTask(data.task)
+        this.props.refreshTask(data.task)
+        getTaskListStats(nextProps.taskList);
+      });
+    }
+  }
 
   clearTaskTimeouts = (taskTimeoutId, callback = () => {}) => {
     this.setState(prevState => {
