@@ -152,6 +152,7 @@ class Home extends PureComponent {
         markComplete,
         storeAsCurrentTask,
         markAsUnread,
+        refreshTask,
         toggleTaskPriority,
         addTaskComment,
       },
@@ -176,6 +177,7 @@ class Home extends PureComponent {
       selectedTaskId,
       storeAsCurrentTask,
       markAsUnread,
+      refreshTask,
       addTaskComment,
       toggleTaskPriority: (task, priority) =>
         toggleTaskPriority(task, userId, priority),

@@ -620,6 +620,21 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
       throw err;
     });
 
+export const refreshTask = (selectedTask)  => dispatch => 
+  TaskApi.getTaskDetails(selectedTask.taskId)
+    .then((task) => {
+      //explicitly mark task as updated so we can show the flag
+      task.updated = true
+      dispatch({
+        type: ActionTypes.UPDATE_TASK_SUCCESS,
+        task
+      });
+    })
+    .catch(err => {
+      throw err;
+    });
+
+
 export const archiveTask = (task, currentUserProfile) => dispatch =>
   TaskApi.flagArchivedForUser(task.taskId, true)
     .then(responseTask => {

@@ -2,12 +2,17 @@ import React, { PureComponent } from 'react';
 import BooleanModal from '../modals/BooleanModal';
 
 class PendingListsComponent extends PureComponent {
+
   componentWillUnmount() {
     if (this.props.taskLists) {
       this.props.taskLists.map((taskList, index) => {
         removeRevealComponent(`#leave-task-${taskList.taskListId}`);
       });
     }
+  }
+
+  acceptInvitationToTaskList = (taskList) => {
+    this.props.acceptInviteToTaskList(taskList)
   }
 
   render() {
@@ -38,8 +43,7 @@ class PendingListsComponent extends PureComponent {
                     <div className="new-list">New</div>
                   </div>
                   <a
-                    href="index.html"
-                    onClick={e => this.props.acceptInviteToTaskList(taskList)}
+                    onClick={e => this.acceptInvitationToTaskList(taskList)}
                   >
                     <h6>{taskList.listName}</h6>
                   </a>

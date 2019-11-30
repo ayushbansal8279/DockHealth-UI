@@ -514,6 +514,15 @@ export function removeTaskAttachment(taskAttachmentId) {
     });
 }
 
+export function getTaskDetails(taskId) {
+  return axios
+    .get(`task/${taskId}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.log(error);
+      throw error;
+    });
+}
 export function flagArchivedForUser(taskId, flagArchived) {
   return axios
     .put(`task/flagUserTaskAsArchived/${taskId}?flagArchived=${flagArchived}`)

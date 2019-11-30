@@ -1,6 +1,7 @@
 import Grid from '@material-ui/core/Grid';
 import $ from 'jquery';
 import React, { PureComponent } from 'react';
+import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
