@@ -20,11 +20,11 @@ const EditTaskDescriptionElement = styled.div`
   color: #303538;
   cursor: text;
   flex: 1;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   margin-left: 1rem;
   outline: none;
-  padding: 0.0625rem 0.5rem 0.5rem;
+  padding: 0.1875rem 0.5rem 0.5rem;
   transition: all 0.25s ease-out;
 
   ${props =>

@@ -43,6 +43,7 @@ import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
+import { unsetHeader } from './actions/header-actions';
 
 export const Routes = ({ store }) => {
   const authRequired = (nextState, replaceState) => {
@@ -56,6 +57,7 @@ export const Routes = ({ store }) => {
   };
 
   const dispatch = useDispatch();
+
   const preselectTask = (prevState, nextState) => {
     const taskId = nextState.location?.state?.taskId;
     if (!taskId) {
@@ -64,8 +66,12 @@ export const Routes = ({ store }) => {
     dispatch(storeAsCurrentTask(taskId));
   };
 
+  const onRouterUpdate = () => {
+    unsetHeader(dispatch)();
+  };
+
   return (
-    <Router history={hashHistory}>
+    <Router history={hashHistory} onUpdate={onRouterUpdate}>
       <Route path="/" component={App}>
         <Route component={TemplateCore}>
           <IndexRoute component={ListDetailsView} onEnter={authRequired} />

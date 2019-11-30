@@ -1,10 +1,10 @@
+import Linkify from 'linkifyjs/react';
 import moment from 'moment';
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import BubbleFinishCurrentUserIcon from '../../img/bubble-finish-current-user.svg';
 import BubbleFinishIcon from '../../img/bubble-finish.svg';
-import Linkify from 'linkifyjs/react';
 
 const CommentBubble = styled.div`
   background-color: #ededf0;
@@ -53,10 +53,9 @@ const CommentsDateContainer = styled.div`
   }
 `;
 
-const a=3;
-
 const CommentGroupContainer = styled.div`
-  padding: 0 2rem;
+  padding: ${props =>
+    props.isCurrentUser ? '0 0.5rem 0 2rem' : '0 2rem 0 0.5rem'};
   width: 70%;
 
   &:not(:first-of-type) {
@@ -185,7 +184,9 @@ class SingleComment extends Component {
             }
           }}
         >
-          <Linkify options={{target: "_blank", className: "decorated-link"}}>{comment}</Linkify>
+          <Linkify options={{ target: '_blank', className: 'decorated-link' }}>
+            {comment}
+          </Linkify>
         </CommentBubbleText>
         {isLastBubble && (
           <BubbleFinish
