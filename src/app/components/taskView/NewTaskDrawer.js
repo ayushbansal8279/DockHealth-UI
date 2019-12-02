@@ -141,35 +141,6 @@ for (let threshold = 0; threshold <= 1; threshold += 0.02) {
   thresholds.push(threshold);
 }
 
-const intersectionCallback = entries => {
-  entries.forEach(entry => {
-    const {
-      intersectionRect: { height },
-      target,
-    } = entry;
-    const form = target.querySelector('form');
-
-    if (form) {
-      form.style.height = height;
-      form.style.minHeight = height;
-    }
-  });
-};
-
-let observer;
-try {
-  observer = new IntersectionObserver(intersectionCallback, {
-    root: null,
-    rootMargin: '0px',
-    threshold: thresholds,
-  });
-} catch {
-  observer = {
-    observe: () => {},
-    unobserve: () => {},
-  };
-}
-
 export default ({
   closeDrawer,
   headsUpAreaRef,
@@ -194,7 +165,6 @@ export default ({
   const userProfile = useSelector(store => store.userState.userProfile);
   const dispatch = useDispatch();
   const taskContainerRef = useRef(null);
-  const [cachedTaskContainerRef, setCachedTaskContainerRef] = useState(null);
   const [
     autoSaveVisible,
     setAutoSaveVisible,
@@ -323,22 +293,6 @@ export default ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [headsUpAreaRef?.scrollHeight],
   );
-
-  useEffect(() => {
-    setCachedTaskContainerRef(taskContainerRef.current);
-  }, []);
-
-  useEffect(() => {
-    if (cachedTaskContainerRef) {
-      observer.observe(taskContainerRef.current);
-    }
-
-    return () => {
-      if (cachedTaskContainerRef) {
-        observer.unobserve(cachedTaskContainerRef);
-      }
-    };
-  }, [cachedTaskContainerRef]);
 
   let defaultValues = {};
 
