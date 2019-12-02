@@ -450,7 +450,7 @@ export default ({
                 </CloseTaskButtonContainer>
               </Grid>
             )}
-            <FormSectionDivider hidden={task} active={autoSaveVisible}>
+            <FormSectionDivider shown={!task} active={autoSaveVisible}>
               {!parentTask && (
                 <AutoSaveContainer visible={autoSaveVisible}>
                   <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel>

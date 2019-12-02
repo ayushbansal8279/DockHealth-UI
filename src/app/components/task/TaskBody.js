@@ -23,6 +23,7 @@ import {
   AnimatedPatientsTasklistDate,
   ArchiveButton,
   CompletedBy,
+  EditedTaskDescriptionLabel,
   MemberPickerContainer,
   PatientsTasklistDate,
   PatientsTasklistDescription,
@@ -71,6 +72,7 @@ const TaskBody = ({
 }) => {
   const {
     createdDateTime,
+    updatedDateTime,
     dueDate,
     comments,
     subtasks,
@@ -253,6 +255,11 @@ const TaskBody = ({
                     />
                   </PatientsTaskListInnerDescription>
                 </Linkify>
+                {createdDateTime !== updatedDateTime && (
+                  <EditedTaskDescriptionLabel>
+                    (edited)
+                  </EditedTaskDescriptionLabel>
+                )}
               </PatientsTasklistDescription>
             </TaskDescriptionOuterContainer>
             <div>
@@ -352,6 +359,7 @@ const TaskBody = ({
       >
         <RolloverNestedListItemText>
           {description ?? 'Unnamed task'}
+          {createdDateTime !== updatedDateTime && ' (edited)'}
         </RolloverNestedListItemText>
       </RolloverPopover>
     </TaskBodyMainContainer>

@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Flag = styled.div`
+  align-self: stretch;
   background-color: ${({ priority }) =>
     priority === 'HIGH' ? '#fb7c06' : 'transparent'};
   flex-shrink: 0;
-  height: 100%;
+  transition: background-color 0.25s linear;
   width: 5px;
   ${props =>
     props.absolute &&
