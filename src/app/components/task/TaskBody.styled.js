@@ -17,9 +17,10 @@ export const PatientsTasklistNew = styled(motion.div)`
 `;
 
 export const PatientsTasklistDescription = styled.div`
+  align-items: center;
   box-sizing: border-box;
   color: #303538;
-  display: inline-block;
+  display: inline-flex;
   font-size: 1rem;
   font-weight: bold;
   line-height: 1;
@@ -107,8 +108,8 @@ export const CompletedBy = styled.div`
   display: flex;
   height: ${props => (props.isCompleted ? 1 : 0)}rem;
   overflow: hidden;
-  padding-bottom: 0.1875rem;
-  transition: height 0.1s ease-out;
+  padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
+  transition: all 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
   width: 100%;
 
@@ -207,4 +208,11 @@ export const TaskDescriptionOuterContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: flex-start;
+`;
+
+export const EditedTaskDescriptionLabel = styled.span`
+  color: #aaa9b0;
+  font-size: 0.9rem;
+  font-weight: normal;
+  margin-left: 0.5ch;
 `;
