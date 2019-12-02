@@ -132,6 +132,11 @@ export function loadingCompletedTasks() {
     dispatch({ type: ActionTypes.REQUEST_COMPLETED_TASKS });
   };
 }
+export function resetTaskSearch() {
+  return dispatch => {
+    dispatch({ type: ActionTypes.CLEAR_TASKS_SEARCH });
+  };
+}
 
 export function hideCompletedTasks() {
   return dispatch => {

@@ -75,6 +75,7 @@ const filterOptions = [
     value: 'CREATED_BY_ME',
     description: 'Created by me',
   },
+  { value: 'FLAGGED', description: 'Flagged' },
   { value: 'OVERDUE', description: 'Overdue' },
   { value: 'DUE_TODAY', description: 'Due Today' },
   {

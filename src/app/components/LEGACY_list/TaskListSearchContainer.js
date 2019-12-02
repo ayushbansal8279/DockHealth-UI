@@ -5,26 +5,54 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import IconButton from '@material-ui/core/IconButton';
+import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Popover from '@material-ui/core/Popover';
+import { AnimatePresence } from 'framer-motion';
 
 import useBoolean from '../../hooks/useBoolean';
 
-import { saveTask, storeAsCurrentTask } from '../../actions/task-actions';
+import { saveTask, storeAsCurrentTask, resetTaskSearch } from '../../actions/task-actions';
+import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
 import * as TaskActions from '../../actions/task-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import TaskView from '../../views/TaskView';
 import MemberInitials from '../members/MemberInitials';
 
+import CubesLoader from '../../components/common/CubesLoader';
+
 // import { TaskListSection } from '../patients/TaskList';
 import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';
-
+import TaskListAction from '../taskView/TaskListAction';
+import Search from '../taskView/Search';
 import CollapseIcon from '../../img/collapse.svg';
+import FilterActiveIcon from '../../img/filter-active.svg';
+import FilterIcon from '../../img/filter.svg';
+import PrintIcon from '../../img/print.svg';
+
+import {
+  CompletedButtonRowContainer,
+  FadeContainer,
+  FilterByBoldLabel,
+  FilterByLabel,
+  FilterByLinkLabel,
+  FilterByTextContainer,
+  InboxNoMessagesAvailable,
+  SideClickListener,
+  StyledSlimViewSwitch,
+  StyledToolbar,
+  TableWrapper,
+  ToolbarContainer,
+} from '../../views/TaskView.styled';
 
 const TaskDrawerContainer = styled.div`
   flex: 1.4;
 `;
 
-export const TaskListContainer = styled.div`
+export const TaskListContainerWrapper = styled.div`
   flex: 2;
   padding: 4px;
 `;
@@ -73,6 +101,39 @@ const StyledButton = styled(({ isCollapsed, ...props }) => (
   }
 `;
 
+const filterOptions = [
+  {
+    value: 'ASSIGNED_TO_ME',
+    description: 'Assigned to me',
+  },
+  {
+    value: 'CREATED_BY_ME',
+    description: 'Created by me',
+  },
+  { value: 'FLAGGED', description: 'Flagged' },
+  { value: 'OVERDUE', description: 'Overdue' },
+  { value: 'DUE_TODAY', description: 'Due Today' },
+  {
+    value: 'DUE_THIS_WEEK',
+    description: 'Due This Week',
+  },
+  {
+    value: 'DUE_NEXT_WEEK',
+    description: 'Due Next Week',
+  },
+];
+
+const animationProperties = {
+  variants: {
+    hidden: { height: 0, opacity: 0 },
+    visible: { height: '2.5rem', opacity: 1 },
+  },
+  initial: 'hidden',
+  exit: 'hidden',
+  animate: 'visible',
+  transition: { ease: 'backInOut', duration: 0.25 },
+};
+
 export const TaskListSection = ({
   heading,
   children,
@@ -103,7 +164,7 @@ export const TaskListSection = ({
 };
 
   // Lists TaskLists
-  const TaskListLayout = ({ searchedTasks, isFetching }) => {
+  const TaskListLayout = ({ searchedTasks, isFetching, slimView }) => {
     const dispatch = useDispatch();
     const [taskDrawerOpen, openTaskDrawer, closeTaskDrawer] = useBoolean(false);
 
@@ -121,24 +182,30 @@ export const TaskListSection = ({
       return map;
     }
 
-    const groupedTasks = groupBy(
-      searchedTasks,
-      task => task.taskList.listName,
-    );
+    const lists = groupTasksAndCompletedTasksByList(searchedTasks.tasks, searchedTasks.completedTasks);
 
-    var listMap = Array.from(groupedTasks.keys())
-
-    // const selectedTaskId = taskDrawerOpen ? selectedTask?.taskId : undefined;
-  
-    // const selectedTaskList = lists?.find(
-    //   ({ taskListId }) => taskListId === selectedTask?.taskListId,
+    // const groupedTasks = groupBy(
+    //   searchedTasks.tasks,
+    //   task => task.taskList.listName,
     // );
-    
+    // var listMap = Array.from(groupedTasks.keys())
+
     const selectedTaskList = undefined;
 
     return (
       <>
-      {(!isFetching && (!groupedTasks || groupedTasks.size == 0)) ?
+      {isFetching &&
+        <FadeContainer>
+          <Fade
+            in={isFetching}
+            unmountOnExit
+            style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
+          >
+            <CubesLoader size={40} />
+          </Fade>
+        </FadeContainer>
+      }
+      {(!isFetching && (!lists || lists.size == 0)) ?
         <div>
           <p className="light-gray" style={{ fontWeight: 'bold' }}>
             No matching tasks
@@ -148,18 +215,18 @@ export const TaskListSection = ({
           <p className="light-gray" style={{ fontWeight: 'bold'}}>
             {/* <span>Tasks found</span> */}
           </p>
-          <TaskListContainer>
-            {listMap.map(
+          <TaskListContainerWrapper>
+            {lists.map(
                 renderTaskListSection({
-                  groupedTasks,
                   dispatch,
                   closeTaskDrawer,
                   openTaskDrawer,
-                  taskDrawerOpen
+                  taskDrawerOpen,
+                  slimView
                 })
               )
             }
-          </TaskListContainer>
+          </TaskListContainerWrapper>
           {taskDrawerOpen && (
             <TaskDrawerContainer>
               <NewTaskDrawer
@@ -175,17 +242,11 @@ export const TaskListSection = ({
   }
 
   const renderTaskListSection = ({
-      groupedTasks,
       dispatch,
       closeTaskDrawer,
       ...otherProps
-    }) => ( listName ) => {
-      const tasks = groupedTasks.get(listName);
-      let taskListId = 0;
-      if (tasks) {
-        taskListId = tasks[0].taskList.taskListId;
-      }
-
+    }) => ({listName, taskListId, tasks, completedTasks}) => {
+      
       const selectCurrentTask = task => {
         if (!task) {
           closeTaskDrawer();
@@ -199,7 +260,7 @@ export const TaskListSection = ({
               <TaskListSection heading={listName} key={listName}>
                 <PatientsTasklistEditable
                   tasks={tasks}
-                  completedTasks={[]}
+                  completedTasks={completedTasks}
                   submitTask={description =>
                     saveTask({ description, taskListId, patientId })(dispatch)
                   }
@@ -209,7 +270,7 @@ export const TaskListSection = ({
                 />
               </TaskListSection>              
              : (
-              <p className="light-gray">No matching tasks</p>
+              <p className="light-gray"></p>
             )}
           </div>
       </div>
@@ -221,22 +282,133 @@ class TaskListSearchContainer extends PureComponent {
     super(props);
   }
 
+  state = {
+    filterBy: '',
+    filterPopoverOpen: false,
+    searchTerms: [],
+    slimView: false
+  };
+
+  filterButton = React.createRef();
+
   componentDidMount() {
   }
 
   componentDidUpdate(prevProps, prevState) {
   }
 
-  pullCompletedTasks = () => {
-    if (!this.props.showingCompletedTasks) {
-      this.props.getCompletedTasks();
-    } else {
-      this.props.taskActions.hideCompletedTasks();
-    }
+  componentWillUnmount = () => {
+    resetTaskSearch(); // task actions
   };
+
+  // pullCompletedTasks = () => {
+  //   if (!this.props.showingCompletedTasks) {
+  //     this.props.getCompletedTasks();
+  //   } else {
+  //     this.props.taskActions.hideCompletedTasks();
+  //   }
+  // };
 
   setTaskEditingStatus = isEditing => {
     this.setState({ editing: isEditing });
+  };
+
+  switchSlimView = () => {
+    this.setState(prevState => ({
+      slimView: !prevState.slimView,
+    }));
+  };
+
+  handleFilterChange = filterBy => {
+    const { onFilter } = this.props;
+    const sortBy = '';
+
+    this.setState({
+      filterBy,
+    });
+
+    // this.clearStoredCurrentTask();
+
+    onFilter(filterBy, sortBy);
+  };
+
+  handleSearch = e => {
+    const { value } = e.target;
+    const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
+
+    // this.clearStoredCurrentTask();
+    this.setState({ searchTerms });
+
+    // const [taskDrawerOpen, openTaskDrawer, closeTaskDrawer] = useBoolean(false);
+    // closeTaskDrawer();
+
+  };
+
+  search = tasks => {
+    if (tasks?.length === 0) {
+      return tasks;
+    }
+
+    const { searchTerms } = this.state;
+    const isMatch = text =>
+      searchTerms.every(term => text?.toLowerCase().includes(term));
+    const filteredTasks = tasks.filter(({ description }) =>
+      isMatch(description),
+    );
+
+    return filteredTasks;
+  };
+  openFilterPopover = () => {
+    this.setState({
+      filterPopoverOpen: true,
+    });
+  };
+
+  closeFilterPopover = () => {
+    this.setState({
+      filterPopoverOpen: false,
+    });
+  };
+
+  onFilterChange = ({ value }) => () => {
+    this.handleFilterChange(value);
+    this.closeFilterPopover();
+  };
+
+  clearFilter = () => {
+    this.onFilterChange({ value: '' })();
+  };
+
+  renderFilterPopover = () => {
+    const { filterPopoverOpen } = this.state;
+
+    return (
+      <Popover
+        open={filterPopoverOpen}
+        anchorEl={this.filterButton?.current}
+        onClose={this.closeFilterPopover}
+        anchorOrigin={{
+          horizontal: 'left',
+          vertical: 'top',
+        }}
+        transformOrigin={{
+          horizontal: 'left',
+          vertical: 'top',
+        }}
+      >
+        <List>
+          {filterOptions.map(({ value, description }) => (
+            <ListItem
+              key={value}
+              button
+              onClick={this.onFilterChange({ value })}
+            >
+              {description}
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
+    );
   };
 
   // Lists Activity for a TaskList
@@ -287,16 +459,70 @@ class TaskListSearchContainer extends PureComponent {
   }
 
   render() {
+    const toolbarContainerVisible = (this.props.tasks.length > 0);
+    const { slimView, filterBy } = this.state;
+    const currentFilterDescription =
+      filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
+    
+    const searchedTasks = {tasks: this.search(this.props.tasks), completedTasks: this.search(this.props.completedTasks)}
+    
     return (
       <div className="tasks-container-new">
-        <div className="row expanded collapse">
+        <div className="column expanded collapse">
+          <StyledToolbar>
+              <Grid
+                container
+                alignItems="center"
+                justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
+              >
+                {toolbarContainerVisible && (
+                  <ToolbarContainer>
+                    <StyledSlimViewSwitch
+                      onClick={this.switchSlimView}
+                      slimView={slimView}
+                      variant="contained"
+                    />
+                    <TaskListAction
+                      alt="Filter"
+                      activeIcon={FilterActiveIcon}
+                      backgroundColor="#fff"
+                      icon={FilterIcon}
+                      active={Boolean(filterBy)}
+                      onClick={
+                        filterBy ? this.clearFilter : this.openFilterPopover
+                      }
+                      ref={this.filterButton}
+                    >
+                      Filter
+                    </TaskListAction>
+                    <Search onChange={this.handleSearch} />
+                  </ToolbarContainer>
+                )}
+              </Grid>
+            </StyledToolbar>
+            <AnimatePresence>
+              {currentFilterDescription && (
+                <FilterByTextContainer {...animationProperties}>
+                  <img src={FilterIcon} alt="Filter icon" />
+                  <FilterByLabel>Filter:</FilterByLabel>
+                  <FilterByBoldLabel>
+                    {currentFilterDescription}
+                  </FilterByBoldLabel>
+                  <FilterByLinkLabel onClick={this.clearFilter}>
+                    clear filter
+                  </FilterByLinkLabel>
+                </FilterByTextContainer>
+              )}
+            </AnimatePresence>
             {this.props.tasks &&
               // this.renderTaskListName('INCOMPLETE', this.props.tasks)
               <TaskListLayout 
-              searchedTasks={this.props.tasks}
+              searchedTasks={searchedTasks}
               isFetching={this.props.isFetching}
+              slimView={slimView}
               />
             }
+            {this.renderFilterPopover()}
         </div>
       </div>
     );

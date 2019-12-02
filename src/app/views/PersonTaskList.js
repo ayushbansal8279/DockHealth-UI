@@ -30,22 +30,36 @@ class TaskListSearch extends PureComponent {
     var personId = this.props.routeParams.personId;
     this.props.taskActions.loading()
     this.props.taskActions.getTasksAssignedToSpecificUser(personId, undefined, undefined, undefined, "INCOMPLETE")
+    this.props.taskActions.getTasksAssignedToSpecificUser(personId, undefined, undefined, undefined, "COMPLETE")
   }
 
   getListTasks = (sortBy, filterBy) => {
     this.props.taskActions.loading()
     this.props.taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, sortBy, filterBy, "INCOMPLETE")
+    this.props.taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, sortBy, filterBy, "COMPLETE")
   }
 
-  getCompletedTasks = () => {
-    this.props.taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, undefined, undefined, "COMPLETE")
-  }
+  // getCompletedTasks = () => {
+  //   this.props.taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, undefined, undefined, "COMPLETE")
+  // }
 
   handleKeyPress = (event) => {
     if(event.key == 'Enter'){
       this.props.taskActions.searchTasks(this.state.searchTerm, "INCOMPLETE");
     }
   }
+
+  handleFilterChange = (filterBy, sortBy) => {
+    const {
+      taskActions,
+      routeParams: { taskListId },
+    } = this.props;
+
+    taskActions.loading();
+    taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, sortBy, filterBy, "INCOMPLETE")
+    taskActions.getTasksAssignedToSpecificUser(this.props.routeParams.personId, undefined, sortBy, filterBy, "COMPLETE")
+    
+  };
 
   render() {
     const { isFetching } = this.props;
@@ -63,7 +77,8 @@ class TaskListSearch extends PureComponent {
         <div className="wrapper-search">
           <TaskListSearchContainer
             searchPerformed={searchPerformed}
-            getCompletedTasks={this.getCompletedTasks}
+            // getCompletedTasks={this.getCompletedTasks}
+            onFilter={this.handleFilterChange}
           />
         </div>
       </div>

@@ -18,6 +18,7 @@ import {
   CHANGE_ADDING_NEW_SUBTASK,
   CHANGE_ADDING_NEW_TASK,
   CLEAR_CURRENT_TASK_HISTORY,
+  CLEAR_TASKS_SEARCH,
   DELETE_TASK_COMMENT_SUCCESS,
   DELETE_TASK_SUCCESS,
   DUPLICATE_TASK_SUCCESS,
@@ -252,7 +253,18 @@ const TaskReducer = (state = initialState, action) => {
       };
 
     case REQUEST_COMPLETED_TASKS:
-      return { ...state, isCompletedTasksFetching: true };
+      return { 
+        ...state, 
+        completedTasks: [], 
+        isCompletedTasksFetching: true 
+      };
+
+    case CLEAR_TASKS_SEARCH:
+      return {
+        ...state,
+        tasks: [],
+        completedTasks: []
+      };
 
     case REQUEST_HISTORY:
       return requestHistory(state, action);
