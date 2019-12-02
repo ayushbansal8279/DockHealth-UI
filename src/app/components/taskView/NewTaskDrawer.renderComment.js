@@ -54,8 +54,7 @@ const CommentsDateContainer = styled.div`
 `;
 
 const CommentGroupContainer = styled.div`
-  padding: ${props =>
-    props.isCurrentUser ? '0 0.5rem 0 2rem' : '0 2rem 0 0.5rem'};
+  padding: 0 2rem;
   width: 70%;
 
   &:not(:first-of-type) {
