@@ -43,7 +43,7 @@ export const SubtaskInfoContainer = styled(ParentInfoContainer)`
   display: flex;
   justify-content: space-between;
   position: relative;
-  transition: border-top-color 0.25s all;
+  transition: border-top-color 0.25s ease-out;
 `;
 
 export const SubtaskLabel = styled.div`
@@ -79,7 +79,7 @@ export const FormSectionNoBorder = styled(Grid)`
 
 export const FormSectionDivider = styled.div`
   background-color: ${props => (props.active ? '#d9036b' : '#ddf2f7')};
-  height: 0.0625rem;
+  height: ${props => (props.shown ? '0.0625rem' : 0)};
   position: relative;
   transition: background-color 0.25s ease-out;
   width: 100%;

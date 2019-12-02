@@ -126,7 +126,7 @@ class Inbox extends PureComponent {
       toggleTaskPriority: (task, priority) =>
         toggleTaskPriority(task, userId, priority),
       pullCompletedTasks: this.pullCompletedTasks,
-      onFilter: this.handleFilterChange,
+      onFilter: this.filter,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
       title: 'Inbox',

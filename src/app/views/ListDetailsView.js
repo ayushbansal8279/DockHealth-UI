@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import * as PatientActions from '../actions/patient-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
-import { downloadPDF } from '../api/tasklist-api';
 import * as userApi from '../api/user-api';
 import TaskView from './TaskView';
 import { noop } from '../helpers/utilityFunctions';
@@ -17,37 +16,41 @@ class Home extends PureComponent {
     this.refreshAccessToken(user);
     actions.loading();
 
-    const listName = routeParams.listName
-    const filterBy = routeParams.filterBy
-    var taskStatus = routeParams.taskStatus
-    if(taskStatus == undefined){
-      taskStatus = "INCOMPLETE"
-    }
-    var sortBy = undefined
-    if(filterBy != undefined){
-      sortBy = "CREATED_DT"
+    const { filterBy, listName } = routeParams;
+    let { taskStatus } = routeParams;
+    let sortBy;
+
+    if (!taskStatus) {
+      taskStatus = 'INCOMPLETE';
     }
 
-    if(listName == "assigned_by_me"){
-      actions.getTasksAssignedByMe(undefined, sortBy, filterBy, taskStatus)
-      .then(() => {
-        actions.loadingCompletedTasks();
-        if(taskStatus=="INCOMPLETE"){
-          actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
-        }
-      });
-    }else if(listName == "assigned_to_me"){
-      actions.getTasksAssignedToMe(undefined, sortBy, filterBy, taskStatus)
-      .then(() => {
-        actions.loadingCompletedTasks();
-        if(taskStatus=="INCOMPLETE"){
-          actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
-        }
-      });
-    }else{
-      taskListActions.getTaskListById(routeParams.taskListId)
+    if (filterBy) {
+      sortBy = 'CREATED_DT';
+    }
+
+    if (listName === 'assigned_by_me' || listName === 'assigned_to_me') {
       actions
-        .getListTasks(routeParams.taskListId, undefined, undefined, 'INCOMPLETE')
+        .getTasksAssignedByMe(undefined, sortBy, filterBy, taskStatus)
+        .then(() => {
+          actions.loadingCompletedTasks();
+          if (taskStatus === 'INCOMPLETE') {
+            actions.getTasksAssignedByMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+            );
+          }
+        });
+    } else {
+      taskListActions.getTaskListById(routeParams.taskListId);
+      actions
+        .getListTasks(
+          routeParams.taskListId,
+          undefined,
+          undefined,
+          'INCOMPLETE',
+        )
         .then(() => {
           actions.loadingCompletedTasks();
           actions.getListTasks(
@@ -124,7 +127,6 @@ class Home extends PureComponent {
     } = this.props;
 
     if (taskListId) {
-      // downloadPDF(taskListId);
       window.print();
     }
   };
@@ -187,21 +189,22 @@ class Home extends PureComponent {
         addTaskComment,
       },
       tasklists,
-      routeParams: { taskListId },
+      routeParams: { listName, taskListId },
     } = this.props;
 
     const loadedTasklist = tasklists.find(
       t => `${t.taskListId}` === taskListId,
     );
 
-    var isMultiList = false
-    var title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
-    if(this.props.routeParams.listName == 'assigned_by_me'){
-      title = 'Assigned by me'
-      isMultiList = true
-    }else if(this.props.routeParams.listName == 'assigned_to_me'){
-      title = 'Assigned to me'
-      isMultiList = true
+    let isMultiList = false;
+    let title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
+
+    if (listName === 'assigned_by_me') {
+      title = 'Assigned by me';
+      isMultiList = true;
+    } else if (listName === 'assigned_to_me') {
+      title = 'Assigned to me';
+      isMultiList = true;
     }
 
     const taskViewProps = {
@@ -226,7 +229,7 @@ class Home extends PureComponent {
       title,
       showToolbar: true,
       taskList: loadedTasklist || undefined,
-      isMultiList: isMultiList
+      isMultiList,
     };
 
     return <TaskView {...taskViewProps} />;
