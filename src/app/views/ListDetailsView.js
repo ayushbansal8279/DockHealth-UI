@@ -28,13 +28,27 @@ class Home extends PureComponent {
       sortBy = 'CREATED_DT';
     }
 
-    if (listName === 'assigned_by_me' || listName === 'assigned_to_me') {
+    if (listName === 'assigned_by_me') {
       actions
         .getTasksAssignedByMe(undefined, sortBy, filterBy, taskStatus)
         .then(() => {
           actions.loadingCompletedTasks();
           if (taskStatus === 'INCOMPLETE') {
             actions.getTasksAssignedByMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+            );
+          }
+        });
+    }else if (listName === 'assigned_to_me') {
+      actions
+        .getTasksAssignedToMe(undefined, sortBy, filterBy, taskStatus)
+        .then(() => {
+          actions.loadingCompletedTasks();
+          if (taskStatus === 'INCOMPLETE') {
+            actions.getTasksAssignedToMe(
               undefined,
               sortBy,
               filterBy,
