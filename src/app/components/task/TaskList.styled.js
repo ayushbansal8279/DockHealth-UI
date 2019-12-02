@@ -79,3 +79,12 @@ export const HeadingDueDateContainer = styled(HeadingLabelContainer)`
 export const HeadingStatusContainer = styled(HeadingLabelContainer)`
   width: 4.875rem;
 `;
+
+export const EmptyListElementContainer = styled.div`
+  align-items: center;
+  background-color: white;
+  display: flex;
+  height: 2rem;
+  margin-top: 0.25rem;
+  justify-content: center;
+`;

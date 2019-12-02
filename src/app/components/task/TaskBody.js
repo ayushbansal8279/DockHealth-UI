@@ -100,6 +100,7 @@ const TaskBody = ({
   const dispatch = useDispatch();
   const currentUserProfile = useSelector(store => store.userState.userProfile);
   const taskDescriptionRef = useRef(null);
+  const taskInnerDescriptionRef = useRef(null);
   const [isPopoverOpen, setPopoverOpen, unsetPopoverOpen] = useBoolean(false);
 
   const isInbox = !task?.taskList?.taskListId;
@@ -157,7 +158,7 @@ const TaskBody = ({
 
   const onTaskDescriptionMouseEnter = useCallback(() => {
     if (
-      taskDescriptionRef.current?.scrollWidth >
+      taskInnerDescriptionRef.current?.scrollWidth >
       taskDescriptionRef.current?.offsetWidth
     ) {
       setPopoverOpen();
@@ -244,9 +245,14 @@ const TaskBody = ({
                 <Linkify
                   tagName="span"
                   options={{ target: '_blank', className: 'decorated-link' }}
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
                 >
                   <PatientsTaskListInnerDescription
                     hasDescription={Boolean(description)}
+                    ref={taskInnerDescriptionRef}
                   >
                     {description || 'Unnamed task'}
                     <PatientsTasklistStrikeThrough

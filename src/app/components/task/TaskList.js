@@ -25,6 +25,7 @@ import {
   ShowMoreButtonContainer,
   StyledTableCell,
   TaskListOuterContainer,
+  EmptyListElementContainer,
 } from './TaskList.styled';
 
 const SORTING_KEYS = {
@@ -105,19 +106,7 @@ const ListEmptyElement = ({ addingNewTask }) => {
     return null;
   }
 
-  return (
-    <div
-      style={{
-        textAlign: 'center',
-        verticalAlign: 'middle',
-        height: '32px',
-        lineHeight: '32px',
-        background: 'white',
-      }}
-    >
-      List is empty.
-    </div>
-  );
+  return <EmptyListElementContainer>List is empty.</EmptyListElementContainer>;
 };
 
 const TASK_LIST_SHOW_MORE_STEP = 50;
@@ -135,7 +124,8 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
     store => store.taskState.newlyAddedTaskIds,
   );
 
-  if(otherTaskListProps.listTasks){
+  if (otherTaskListProps.listTasks) {
+    // eslint-disable-next-line no-param-reassign
     tasks = otherTaskListProps.listTasks;
   }
 
