@@ -10,7 +10,6 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
 import TaskListSearchContainer from '../components/LEGACY_list/TaskListSearchContainer';
-import PersonTaskListContainer from '../components/LEGACY_list/PersonTaskListContainer'
 
 const FadeContainer = styled.div`
   display: flex;

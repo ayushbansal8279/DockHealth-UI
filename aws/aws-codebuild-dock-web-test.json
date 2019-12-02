@@ -1,0 +1,29 @@
+{
+    "name": "DockWebTest", 
+    "source": {
+        "type": "CODEPIPELINE",
+        "buildspec": "aws/buildspec-test.yml"
+    }, 
+    "artifacts": {
+        "type": "CODEPIPELINE"
+    }, 
+    "environment": {
+        "type": "LINUX_CONTAINER", 
+        "computeType": "BUILD_GENERAL1_SMALL", 
+        "privilegedMode": true, 
+        "image": "aws/codebuild/standard:2.0", 
+        "environmentVariables": [
+            {
+                "name": "DeployBucketName",
+                "value": "dockdev-v2.childrensaccelerator.com",
+                "type": "PLAINTEXT"
+            },
+            {
+                "name": "CloudFrontDistributionID",
+                "value": "E2JZYLD193ARWQ",
+                "type": "PLAINTEXT"
+            }
+        ]
+    }, 
+    "serviceRole": "arn:aws:iam::771014269929:role/service-role/codebuild-dock-role"
+}

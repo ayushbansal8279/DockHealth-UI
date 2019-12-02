@@ -1,0 +1,29 @@
+{
+    "name": "DockWebCert", 
+    "source": {
+        "type": "CODEPIPELINE",
+        "buildspec": "aws/buildspec-cert.yml"
+    }, 
+    "artifacts": {
+        "type": "CODEPIPELINE"
+    }, 
+    "environment": {
+        "type": "LINUX_CONTAINER", 
+        "computeType": "BUILD_GENERAL1_SMALL", 
+        "privilegedMode": true, 
+        "image": "aws/codebuild/standard:2.0", 
+        "environmentVariables": [
+            {
+                "name": "DeployBucketName",
+                "value": "app-cert.dock.health",
+                "type": "PLAINTEXT"
+            },
+            {
+                "name": "CloudFrontDistributionID",
+                "value": "E8RIMT7FP8F8I",
+                "type": "PLAINTEXT"
+            }
+        ]
+    }, 
+    "serviceRole": "arn:aws:iam::012573982681:role/service-role/codebuild-dock-role"
+}
