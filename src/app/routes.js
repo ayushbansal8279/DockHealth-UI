@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
 import {
   hashHistory,
@@ -7,7 +8,9 @@ import {
   Route,
   Router,
 } from 'react-router';
+import { useEffectOnce } from 'react-use';
 
+import { unsetHeader } from './actions/header-actions';
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
 import Patients from './components/patients/Patients';
@@ -34,8 +37,8 @@ import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetailsView';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
-import PersonTaskList from './views/PersonTaskList';
 import PeopleView from './views/PeopleView';
+import PersonTaskList from './views/PersonTaskList';
 import SupportSectionView from './views/SupportSectionView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import TaskListSearch from './views/TaskListSearch';
@@ -44,16 +47,40 @@ import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
-import { unsetHeader } from './actions/header-actions';
+
+const transformPathname = pathname =>
+  decodeURIComponent(pathname).replace(/^\//, '');
 
 export const Routes = ({ store }) => {
+  useEffectOnce(() => {
+    const firstPathname = transformPathname(
+      hashHistory.getCurrentLocation()?.pathname,
+    );
+    ReactGA.pageview(firstPathname);
+
+    const removeHistoryListener = hashHistory.listen(({ action, pathname }) => {
+      if (action === 'PUSH') {
+        ReactGA.pageview(transformPathname(pathname));
+      }
+    });
+
+    return () => {
+      removeHistoryListener();
+    };
+  });
+
   const authRequired = (nextState, replaceState) => {
     // Now you can access the store object here.
     const state = store.getState();
 
     if (!state.user.isAuthenticated) {
       // Not authenticated, redirect to login.
-      replaceState({ nextPathname: nextState.location.pathname }, '/login');
+      replaceState(
+        {
+          nextPathname: nextState.location.pathname,
+        },
+        '/login',
+      );
     }
   };
 
@@ -82,7 +109,10 @@ export const Routes = ({ store }) => {
           <Route path="/editPatient/:patientId" component={PatientEditView} />
           <Route path="/activityfeed" component={TaskListActivityFeedView} />
           <Route path="/taskSearch" component={TaskListSearch} />
-          <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
+          <Route
+            path="/assignedToPerson/:personId/:memberName"
+            component={PersonTaskList}
+          />
           <Route path="/people" component={PeopleView} />
           <Route
             path="/tasks/inbox(/:taskId)"
