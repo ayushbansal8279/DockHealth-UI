@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactGA from 'react-ga';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -30,6 +31,10 @@ moment.updateLocale('en', {
 });
 
 const store = configureStore();
+
+ReactGA.initialize('TRACKING_CODE_HERE', {
+  debug: true,
+});
 
 const App = () => (
   <MuiThemeProvider theme={theme}>
