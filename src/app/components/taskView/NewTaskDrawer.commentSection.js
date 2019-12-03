@@ -4,6 +4,7 @@ import groupBy from 'ramda/es/groupBy';
 import groupWith from 'ramda/es/groupWith';
 import mapObjIndexed from 'ramda/es/mapObjIndexed';
 import prop from 'ramda/es/prop';
+import reverse from 'ramda/es/reverse';
 import sortBy from 'ramda/es/sortBy';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -109,9 +110,8 @@ const StyledSimpleBar = styled(SimpleBar)`
 const getGroupedComments = ({ comments }) => {
   const commentsSortedById = sortBy(prop('commentId'), comments);
 
-  const sortedComments = sortBy(
-    comment => moment(comment.dateCreated).unix(),
-    commentsSortedById,
+  const sortedComments = reverse(
+    sortBy(comment => moment(comment.dateCreated).unix(), commentsSortedById),
   );
 
   const datedComments = groupBy(
