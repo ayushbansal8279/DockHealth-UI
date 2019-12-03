@@ -82,7 +82,10 @@ export const Routes = ({ store }) => {
           <Route path="/editPatient/:patientId" component={PatientEditView} />
           <Route path="/activityfeed" component={TaskListActivityFeedView} />
           <Route path="/taskSearch" component={TaskListSearch} />
-          <Route path="/assignedToPerson/:personId/:memberName" component={PersonTaskList} />
+          <Route
+            path="/assignedToPerson/:personId/:memberName"
+            component={PersonTaskList}
+          />
           <Route path="/people" component={PeopleView} />
           <Route
             path="/tasks/inbox(/:taskId)"

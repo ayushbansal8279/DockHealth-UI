@@ -91,12 +91,153 @@ class TaskListView extends PureComponent {
     taskListAction.getTaskListForUser();
   };
 
-  onSelectHUD = (link) => {
+  onSelectHUD = link => {
     hashHistory.push(link);
   };
 
+  getGenericProxyListMetricTarget = metricName => {
+    switch (metricName) {
+      case 'Inbox_Count': {
+        return {
+          iconName: 'icon-email',
+          panelName: 'Inbox',
+          listName: 'Inbox',
+          filterBy: 'NONE',
+          taskStatus: 'INCOMPLETE',
+        };
+      }
+      case 'AssignedToMe_Count': {
+        return {
+          iconName: 'icon-list',
+          panelName: 'Assigned to me',
+          listName: 'assigned_to_me',
+          filterBy: 'NONE',
+          taskStatus: 'INCOMPLETE',
+        };
+      }
+      case 'AssignedByMe_Count': {
+        return {
+          iconName: 'icon-assign-to',
+          iconColor: 'blue',
+          panelName: 'Assigned by me',
+          listName: 'assigned_by_me',
+          filterBy: 'NONE',
+          taskStatus: 'INCOMPLETE',
+        };
+      }
+      case 'HighPriority_Count': {
+        return {
+          iconName: 'icon-flag',
+          iconColor: 'orange',
+          panelName: 'Flagged',
+          listName: 'assigned_to_me',
+          filterBy: 'FLAGGED',
+          taskStatus: 'INCOMPLETE',
+        };
+      }
+      case 'Overdue_Count': {
+        return {
+          iconName: 'icon-calendar',
+          iconColor: 'red',
+          panelName: 'Overdue',
+          listName: 'assigned_to_me',
+          filterBy: 'OVERDUE',
+          taskStatus: 'INCOMPLETE',
+        };
+      }
+      case 'DueToday_Count': {
+        return {
+          iconName: 'icon-calendar',
+          iconColor: 'blue',
+          panelName: 'Due Today',
+          listName: 'assigned_to_me',
+          filterBy: 'DUE_TODAY',
+          taskStatus: 'INCOMPLETE',
+        };
+      }
+      case 'DueThisWeek_Count': {
+        return {
+          iconName: 'icon-calendar',
+          iconColor: 'green',
+          panelName: 'Due This Week',
+          listName: 'assigned_to_me',
+          filterBy: 'DUE_THIS_WEEK',
+          taskStatus: 'INCOMPLETE',
+        };
+      }
+      case 'CompletedThisWeek_Count': {
+        return {
+          iconName: 'icon-checkmark',
+          iconColor: 'green',
+          panelName: 'Completed This Week',
+          listName: 'assigned_to_me',
+          filterBy: 'COMPLETED_THIS_WEEK',
+          taskStatus: 'COMPLETE',
+        };
+      }
+      default: {
+        return {};
+      }
+    }
+  };
+
+  getGenericListMetricData = metricName => {
+    const metricProxyTarget = this.getGenericProxyListMetricTarget(metricName);
+
+    return new Proxy(metricProxyTarget, {
+      get: (target, name) => target[name] ?? '',
+    });
+  };
+
+  onGenericListTileClick = ({ listName, taskStatus, filterBy }) => () => {
+    this.onSelectHUD(
+      listName === 'Inbox'
+        ? 'tasks/Inbox'
+        : `tasks/filtered/${listName}/${taskStatus}/${filterBy}`,
+    );
+  };
+
+  renderGenericList = list => {
+    const {
+      iconName,
+      iconColor,
+      panelName,
+      listName,
+      filterBy,
+      taskStatus,
+    } = this.getGenericListMetricData(list.metricName);
+
+    return (
+      list.metricName.includes('Count') && (
+        <div
+          className="large-3 columns"
+          key={list.metricName}
+          onClick={this.onGenericListTileClick({
+            listName,
+            taskStatus,
+            filterBy,
+          })}
+          style={{ cursor: 'pointer' }}
+        >
+          <div className="text-center block-item" data-equalizer-watch="">
+            <svg className={`icon xlarge icon-header ${iconColor}`}>
+              <use xlinkHref={`#${iconName}`} />
+            </svg>
+            <h6 className="border">{panelName}</h6>
+            <h4>{list.metricValue}</h4>
+          </div>
+        </div>
+      )
+    );
+  };
+
   render() {
-    const { isFetching, pendingTaskLists, taskLists } = this.props;
+    const {
+      isFetching,
+      pendingTaskLists,
+      taskLists,
+      genericLists,
+    } = this.props;
 
     return (
       <div
@@ -118,96 +259,9 @@ class TaskListView extends PureComponent {
         </Grid>
         <AddListForm onSubmit={this.submit} />
         <Grid container direction="row" justify="center">
-          {/* <div className="row expanded collapse">
-          <div className="large-12 columns"> */}
-          {/* <div className="list-wrapper dashboard-section"> */}
-          {/* This commented behemoth is the dashboard HUD for the lists page. */}
           <div className="row collapse">
-                {this.props.genericLists &&
-                  this.props.genericLists.map(list => {
-                    let iconName = '';
-                    let iconColor = '';
-                    let panelName = '';
-                    var listName = "";
-                    var filterBy = "";
-                    var taskStatus = "";
-                    if (list.metricName === 'Inbox_Count') {
-                      iconName = 'icon-email';
-                      panelName = 'Inbox';
-                      listName = "Inbox"
-                      filterBy = "NONE"
-                      taskStatus = "INCOMPLETE"
-                    } else if (list.metricName === 'AssignedToMe_Count') {
-                      iconName = 'icon-list';
-                      panelName = 'Assigned to me';
-                      listName = 'assigned_to_me';
-                      filterBy = "NONE"
-                      taskStatus = "INCOMPLETE"
-                    } else if (list.metricName === 'AssignedByMe_Count') {
-                      iconName = 'icon-assign-to';
-                      iconColor = 'blue';
-                      panelName = 'Assigned by me';
-                      listName = 'assigned_by_me';
-                      filterBy = "NONE"
-                      taskStatus = "INCOMPLETE"
-                    } else if (list.metricName === 'HighPriority_Count') {
-                      iconName = 'icon-flag';
-                      iconColor = 'orange';
-                      panelName = 'Flagged';
-                      listName = 'assigned_to_me';
-                      filterBy = "FLAGGED"
-                      taskStatus = "INCOMPLETE"
-                    } else if (list.metricName === 'Overdue_Count') {
-                      iconName = 'icon-calendar';
-                      iconColor = 'red';
-                      panelName = 'Overdue';
-                      listName = 'assigned_to_me';
-                      filterBy = "OVERDUE"
-                      taskStatus = "INCOMPLETE"
-                    } else if (list.metricName === 'DueToday_Count') {
-                      iconName = 'icon-calendar';
-                      iconColor = 'blue';
-                      panelName = 'Due Today';
-                      listName = 'assigned_to_me';
-                      filterBy = "DUE_TODAY"
-                      taskStatus = "INCOMPLETE"
-                    } else if (list.metricName === 'DueThisWeek_Count') {
-                      iconName = 'icon-calendar';
-                      iconColor = 'green';
-                      panelName = 'Due This Week';
-                      listName = 'assigned_to_me';
-                      filterBy = "DUE_THIS_WEEK"
-                      taskStatus = "INCOMPLETE"
-                    } else if (list.metricName === 'CompletedThisWeek_Count') {
-                      iconName = 'icon-checkmark';
-                      iconColor = 'green';
-                      panelName = 'Completed This Week';
-                      listName = 'assigned_to_me';
-                      filterBy = "COMPLETED_THIS_WEEK"
-                      taskStatus = "COMPLETE"
-                    }
-                    return (
-                      list.metricName.indexOf("Count")!=-1 && (
-                        <div className="large-3 columns" key={list.metricName} 
-                          onClick={e => this.onSelectHUD((listName=='Inbox'?'tasks/Inbox':`tasks/filtered/${listName}/${taskStatus}/${filterBy}`))} style={{cursor: "pointer"}}>
-                          <div
-                            className="text-center block-item"
-                            data-equalizer-watch=""
-                          >
-                            <svg
-                              className={`icon xlarge icon-header ${iconColor}`}
-                            >
-                              <use xlinkHref={`#${iconName}`} />
-                            </svg>
-                            <h6 className="border">{panelName}</h6>
-                            <h4>{list.metricValue}</h4>
-                          </div>
-                        </div>
-                      )
-                    );
-                  })}
-                </div>
-          {/* </div> */}
+            {genericLists?.map(this.renderGenericList)}
+          </div>
           <Grid item md={10} sm={12}>
             <div
               className="list-wrapper list-wrapper-all-lists"

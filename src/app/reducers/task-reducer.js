@@ -240,6 +240,7 @@ const TaskReducer = (state = initialState, action) => {
         completedTasks: tasks,
         isCompletedTasksFetching: false,
         showingCompletedTasks: true,
+        isFetching: false,
       };
     }
 
@@ -253,17 +254,17 @@ const TaskReducer = (state = initialState, action) => {
       };
 
     case REQUEST_COMPLETED_TASKS:
-      return { 
-        ...state, 
-        completedTasks: [], 
-        isCompletedTasksFetching: true 
+      return {
+        ...state,
+        completedTasks: [],
+        isCompletedTasksFetching: true,
       };
 
     case CLEAR_TASKS_SEARCH:
       return {
         ...state,
         tasks: [],
-        completedTasks: []
+        completedTasks: [],
       };
 
     case REQUEST_HISTORY:

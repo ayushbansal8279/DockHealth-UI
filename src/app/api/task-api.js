@@ -515,7 +515,6 @@ export function getTaskDetails(taskId) {
     .get(`task/${taskId}`)
     .then(response => response.data)
     .catch(error => {
-      console.log(error);
       throw error;
     });
 }

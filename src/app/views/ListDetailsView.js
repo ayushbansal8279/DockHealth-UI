@@ -28,34 +28,17 @@ class Home extends PureComponent {
       sortBy = 'CREATED_DT';
     }
 
-    if (listName === 'assigned_by_me') {
-      actions
-        .getTasksAssignedByMe(undefined, sortBy, filterBy, taskStatus)
-        .then(() => {
+    if (listName === 'assigned_by_me' || listName === 'assigned_to_me') {
+      const taskAction =
+        listName === 'assigned_by_me'
+          ? actions.getTasksAssignedByMe
+          : actions.getTasksAssignedToMe;
+      taskAction(undefined, sortBy, filterBy, taskStatus).then(() => {
+        if (taskStatus === 'INCOMPLETE') {
           actions.loadingCompletedTasks();
-          if (taskStatus === 'INCOMPLETE') {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          }
-        });
-    }else if (listName === 'assigned_to_me') {
-      actions
-        .getTasksAssignedToMe(undefined, sortBy, filterBy, taskStatus)
-        .then(() => {
-          actions.loadingCompletedTasks();
-          if (taskStatus === 'INCOMPLETE') {
-            actions.getTasksAssignedToMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          }
-        });
+          taskAction(undefined, sortBy, filterBy, 'COMPLETE');
+        }
+      });
     } else {
       taskListActions.getTaskListById(routeParams.taskListId);
       actions
