@@ -132,6 +132,11 @@ export function loadingCompletedTasks() {
     dispatch({ type: ActionTypes.REQUEST_COMPLETED_TASKS });
   };
 }
+export function resetTaskSearch() {
+  return dispatch => {
+    dispatch({ type: ActionTypes.CLEAR_TASKS_SEARCH });
+  };
+}
 
 export function hideCompletedTasks() {
   return dispatch => {
@@ -620,20 +625,19 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
       throw err;
     });
 
-export const refreshTask = (selectedTask)  => dispatch => 
+export const refreshTask = selectedTask => dispatch =>
   TaskApi.getTaskDetails(selectedTask.taskId)
-    .then((task) => {
-      //explicitly mark task as updated so we can show the flag
-      task.updated = true
+    .then(task => {
+      // explicitly mark task as updated so we can show the flag
+      task.updated = true; // eslint-disable-line no-param-reassign
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task
+        task,
       });
     })
     .catch(err => {
       throw err;
     });
-
 
 export const archiveTask = (task, currentUserProfile) => dispatch =>
   TaskApi.flagArchivedForUser(task.taskId, true)
@@ -648,3 +652,54 @@ export const archiveTask = (task, currentUserProfile) => dispatch =>
     .catch(error => {
       throw error;
     });
+
+export const getTaskPage = ({
+  taskListId,
+  status,
+  sortBy,
+  filterBy,
+  queryStartPosition = 0,
+  search,
+  isInbox = false,
+  isAssignedByMeList = false,
+  isAssignedToMeList = false,
+}) => dispatch => {
+  const getTaskPagePromise = () => {
+    if (isInbox) {
+      return TaskApi.getInboxTasks(
+        status,
+        sortBy,
+        filterBy,
+        queryStartPosition,
+      );
+    }
+
+    if (isAssignedByMeList) {
+      return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy, filterBy);
+    }
+    if (isAssignedToMeList) {
+      return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy, filterBy);
+    }
+
+    return TaskApi.getListTasksByUser(
+      taskListId,
+      status,
+      sortBy,
+      filterBy,
+      queryStartPosition,
+    );
+  };
+
+  return getTaskPagePromise()
+    .then(tasks => {
+      dispatch({
+        type: ActionTypes.TASK_NEW_PAGE_DOWNLOADED,
+        tasks: search(tasks),
+        taskListId,
+        queryStartPosition,
+      });
+    })
+    .catch(error => {
+      throw error;
+    });
+};

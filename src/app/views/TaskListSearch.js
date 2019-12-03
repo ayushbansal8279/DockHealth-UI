@@ -27,6 +27,7 @@ class TaskListSearch extends PureComponent {
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'TaskListSearch',
     });
+    this.props.taskActions.resetTaskSearch();
   }
 
   searchUpdated = term => {
@@ -35,11 +36,12 @@ class TaskListSearch extends PureComponent {
 
   searchTasks = () => {
     this.getListTasks({ status: 'INCOMPLETE' });
-  };
-
-  getCompletedTasks = () => {
     this.getListTasks({ status: 'COMPLETE' });
   };
+
+  // getCompletedTasks = () => {
+  //   this.getListTasks({ status: 'COMPLETE' });
+  // };
 
   getListTasks = ({
     sortBy = undefined,
@@ -123,7 +125,8 @@ class TaskListSearch extends PureComponent {
           )}
           <TaskListSearchContainer
             searchPerformed={searchPerformed}
-            getCompletedTasks={this.getCompletedTasks}
+            // getCompletedTasks={this.getCompletedTasks}
+            onFilter={this.handleFilterChange}
           />
         </div>
       </div>

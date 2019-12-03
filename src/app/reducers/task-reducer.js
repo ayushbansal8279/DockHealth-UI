@@ -18,6 +18,7 @@ import {
   CHANGE_ADDING_NEW_SUBTASK,
   CHANGE_ADDING_NEW_TASK,
   CLEAR_CURRENT_TASK_HISTORY,
+  CLEAR_TASKS_SEARCH,
   DELETE_TASK_COMMENT_SUCCESS,
   DELETE_TASK_SUCCESS,
   DUPLICATE_TASK_SUCCESS,
@@ -48,6 +49,7 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
+  TASK_NEW_PAGE_DOWNLOADED,
 } from '../actions/action-types';
 
 const initialState = {
@@ -239,6 +241,7 @@ const TaskReducer = (state = initialState, action) => {
         completedTasks: tasks,
         isCompletedTasksFetching: false,
         showingCompletedTasks: true,
+        isFetching: false,
       };
     }
 
@@ -252,7 +255,18 @@ const TaskReducer = (state = initialState, action) => {
       };
 
     case REQUEST_COMPLETED_TASKS:
-      return { ...state, isCompletedTasksFetching: true };
+      return {
+        ...state,
+        completedTasks: [],
+        isCompletedTasksFetching: true,
+      };
+
+    case CLEAR_TASKS_SEARCH:
+      return {
+        ...state,
+        tasks: [],
+        completedTasks: [],
+      };
 
     case REQUEST_HISTORY:
       return requestHistory(state, action);
@@ -769,6 +783,15 @@ const TaskReducer = (state = initialState, action) => {
 
           return task;
         }),
+      };
+    }
+
+    case TASK_NEW_PAGE_DOWNLOADED: {
+      const { tasks: actionTasks } = action;
+
+      return {
+        ...state,
+        tasks: [...(state.tasks || []), ...(actionTasks || [])],
       };
     }
 

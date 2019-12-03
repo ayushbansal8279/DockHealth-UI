@@ -1,4 +1,4 @@
-import { lensProp, map, propEq, set, when } from 'ramda';
+import { lensProp, map, propEq, set, when, pickBy, isNil } from 'ramda';
 
 import {
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,
@@ -220,7 +220,10 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         tasklist: state.tasklist.map(taskList =>
           taskList.taskListId === action.updatedTasklist.taskListId
-            ? { ...taskList, ...action.updatedTasklist }
+            ? {
+                ...taskList,
+                ...pickBy(value => !isNil(value), action.updatedTasklist),
+              }
             : taskList,
         ),
       };

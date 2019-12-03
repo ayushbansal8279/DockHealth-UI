@@ -6,11 +6,12 @@ import partition from 'ramda/es/partition';
 import propEq from 'ramda/es/propEq';
 import reverse from 'ramda/es/reverse';
 import sortWith from 'ramda/es/sortWith';
-import take from 'ramda/es/take';
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { getTaskPage } from '../../actions/task-actions';
 import { getPatientName } from '../../helpers/utilityFunctions';
+import CubesLoader from '../common/CubesLoader';
 import Task from './Task';
 import NewTaskElement from './TaskList.NewTaskElement';
 import OrderIcon from './TaskList.OrderIcon';
@@ -109,7 +110,7 @@ const ListEmptyElement = ({ addingNewTask }) => {
   return <EmptyListElementContainer>List is empty.</EmptyListElementContainer>;
 };
 
-const TASK_LIST_SHOW_MORE_STEP = 50;
+const TASK_LIST_SHOW_MORE_STEP = 100;
 
 const DEFAULT_SORTING = [
   ...sortingColumns.map(sortingColumn => ({
@@ -118,11 +119,23 @@ const DEFAULT_SORTING = [
   })),
 ];
 
-const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
+const TaskList = ({
+  tasks = [],
+  taskDrawerOpen,
+  taskListId,
+  status,
+  search,
+  filterBy,
+  isInbox,
+  listName,
+  ...otherTaskListProps
+}) => {
   const addingNewTask = useSelector(store => store.taskState.addingNewTask);
   const newlyAddedTaskIds = useSelector(
     store => store.taskState.newlyAddedTaskIds,
   );
+
+  const dispatch = useDispatch();
 
   if (otherTaskListProps.listTasks) {
     // eslint-disable-next-line no-param-reassign
@@ -130,25 +143,42 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
   }
 
   const [taskListShowMoreIndex, setTaskListShowMoreIndex] = useState(1);
+  const [isShowMoreLocked, setShowMoreLocked] = useState(false);
   const [currentSorting, setCurrentSorting] = useState(DEFAULT_SORTING);
-
-  const unfilteredTasks = take(
-    TASK_LIST_SHOW_MORE_STEP * taskListShowMoreIndex,
-    tasks,
-  );
 
   const [newlyAddedTasks, tasksToShow] = partition(
     ({ taskId }) => newlyAddedTaskIds.includes(taskId),
-    unfilteredTasks,
+    tasks,
   );
 
-  const shouldhowShowMoreButton = tasksToShow.length < tasks.length;
+  const showMoreButtonVisible =
+    taskListShowMoreIndex * TASK_LIST_SHOW_MORE_STEP < tasks.length &&
+    (taskListId || isInbox);
 
   const incrementTaskListShowMoreIndex = useCallback(() => {
-    if (shouldhowShowMoreButton) {
-      setTaskListShowMoreIndex(taskListShowMoreIndex + 1);
+    if (showMoreButtonVisible && !isShowMoreLocked) {
+      setShowMoreLocked(true);
+      getTaskPage({
+        taskListId,
+        status,
+        filterBy,
+        sortBy: 'TASK_DESCRIPTION',
+        queryStartPosition: taskListShowMoreIndex * TASK_LIST_SHOW_MORE_STEP,
+        search,
+        isInbox,
+        isAssignedByMeList: listName === 'assigned_by_me',
+        isAssignedToMeList: listName === 'assigned_to_me',
+      })(dispatch)
+        .then(() => {
+          setTaskListShowMoreIndex(taskListShowMoreIndex + 1);
+          setShowMoreLocked(false);
+        })
+        .catch(() => {
+          setShowMoreLocked(false);
+        });
     }
-  }, [shouldhowShowMoreButton, taskListShowMoreIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showMoreButtonVisible, isShowMoreLocked, taskListShowMoreIndex]);
 
   const onSortingChanged = useCallback(({ key }) => () => {
     const [[currentSortingColumn], otherSortingColumns] = partition(
@@ -199,12 +229,16 @@ const TaskList = ({ tasks = [], taskDrawerOpen, ...otherTaskListProps }) => {
           />
         ))
       )}
-      <ShowMoreButtonContainer active={shouldhowShowMoreButton}>
+      <ShowMoreButtonContainer active={showMoreButtonVisible}>
         <ShowMoreButton
           onClick={incrementTaskListShowMoreIndex}
-          active={shouldhowShowMoreButton}
+          active={showMoreButtonVisible}
         >
-          Show more
+          {isShowMoreLocked ? (
+            <CubesLoader size={24} color="#fff" />
+          ) : (
+            'Show more'
+          )}
         </ShowMoreButton>
       </ShowMoreButtonContainer>
     </TaskListOuterContainer>

@@ -20,11 +20,9 @@ class Inbox extends PureComponent {
   }
 
   componentWillUpdate(nextProps) {
-    const { routeParams } = this.props;
+    const { actions, routeParams } = this.props;
 
     if (nextProps.routeParams.listName !== routeParams.listName) {
-      const { actions } = this.props;
-
       actions.loading();
       actions.getInboxTasks('INCOMPLETE');
     }
@@ -133,6 +131,7 @@ class Inbox extends PureComponent {
       showToolbar: true,
       showSortingStats: false,
       isInbox: true,
+      taskListId: 0,
     };
 
     return <TaskView {...taskViewProps} />;

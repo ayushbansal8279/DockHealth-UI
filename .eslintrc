@@ -16,6 +16,7 @@
     "closeAddForm": true,
     "closeDropdown": true,
     "closePopup": true,
+    "enableFoundationAccordionComponent": true,
     "enableFoundationComponent": true,
     "enableFoundationForMultipleComponents": true,
     "enableFoundationForSingleComponent": true,

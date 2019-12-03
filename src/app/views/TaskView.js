@@ -74,6 +74,7 @@ const filterOptions = [
     value: 'CREATED_BY_ME',
     description: 'Created by me',
   },
+  { value: 'FLAGGED', description: 'Flagged' },
   { value: 'OVERDUE', description: 'Overdue' },
   { value: 'DUE_TODAY', description: 'Due Today' },
   {
@@ -458,17 +459,19 @@ class TaskView extends Component {
       currentUser,
       isInbox,
       isMultiList,
+      taskListId,
+      listName,
     } = this.props;
-    const { slimView, taskDrawerOpen, taskTimeouts } = this.state;
+    const { filterBy, slimView, taskDrawerOpen, taskTimeouts } = this.state;
 
     const archivableTasks = completedTasks.filter(
       isTaskArchivable(currentUser),
     );
 
     const tasks = [...incompleteTasks, ...archivableTasks].map(task => {
-      const taskListId = task?.taskList?.taskListId;
+      const mappedTaskListId = task?.taskList?.taskListId;
 
-      if (isInbox && taskListId === 0) {
+      if (isInbox && mappedTaskListId === 0) {
         return {
           ...task,
           taskList: null,
@@ -497,6 +500,12 @@ class TaskView extends Component {
       openTaskDrawer: this.openTaskDrawer,
       taskDrawerOpen,
       taskTimeouts: Object.values(taskTimeouts).flat(),
+      taskListId,
+      status: 'INCOMPLETE',
+      search: this.search,
+      filterBy,
+      isInbox,
+      listName,
     };
 
     if (isInbox && tasks.length === 0) {
@@ -507,10 +516,13 @@ class TaskView extends Component {
       return <TaskList {...tasklistProps} />;
     }
 
-    return Array.from(groupedTasks.keys()).map(listName => (
-      <React.Fragment key={listName}>
-        <h5>{listName}</h5>
-        <TaskList listTasks={groupedTasks.get(listName)} {...tasklistProps} />
+    return Array.from(groupedTasks.keys()).map(groupedListName => (
+      <React.Fragment key={groupedListName}>
+        <h5>{groupedListName}</h5>
+        <TaskList
+          listTasks={groupedTasks.get(groupedListName)}
+          {...tasklistProps}
+        />
       </React.Fragment>
     ));
   };
@@ -524,21 +536,24 @@ class TaskView extends Component {
       markAsUnread,
       currentUser,
       isInbox,
+      taskListId,
+      listName,
     } = this.props;
     const {
       slimView,
       completedTasksShown,
       taskDrawerOpen,
       taskTimeouts,
+      filterBy,
     } = this.state;
 
     const completedTasks = reject(
       isTaskArchivable(currentUser),
       completedOrArchivedTasks,
     ).map(task => {
-      const taskListId = task?.taskList?.taskListId;
+      const mappedTaskListId = task?.taskList?.taskListId;
 
-      if (isInbox && taskListId === 0) {
+      if (isInbox && mappedTaskListId === 0) {
         return {
           ...task,
           taskList: null,
@@ -562,6 +577,12 @@ class TaskView extends Component {
       openTaskDrawer: this.openTaskDrawer,
       taskDrawerOpen,
       taskTimeouts: Object.values(taskTimeouts).flat(),
+      taskListId,
+      status: 'COMPLETE',
+      search: this.search,
+      filterBy,
+      isInbox,
+      listName,
     };
 
     if (isInbox && completedTasks.length === 0) {

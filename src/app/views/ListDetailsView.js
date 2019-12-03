@@ -29,19 +29,16 @@ class Home extends PureComponent {
     }
 
     if (listName === 'assigned_by_me' || listName === 'assigned_to_me') {
-      actions
-        .getTasksAssignedByMe(undefined, sortBy, filterBy, taskStatus)
-        .then(() => {
+      const taskAction =
+        listName === 'assigned_by_me'
+          ? actions.getTasksAssignedByMe
+          : actions.getTasksAssignedToMe;
+      taskAction(undefined, sortBy, filterBy, taskStatus).then(() => {
+        if (taskStatus === 'INCOMPLETE') {
           actions.loadingCompletedTasks();
-          if (taskStatus === 'INCOMPLETE') {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          }
-        });
+          taskAction(undefined, sortBy, filterBy, 'COMPLETE');
+        }
+      });
     } else {
       taskListActions.getTaskListById(routeParams.taskListId);
       actions
@@ -230,6 +227,8 @@ class Home extends PureComponent {
       showToolbar: true,
       taskList: loadedTasklist || undefined,
       isMultiList,
+      taskListId,
+      listName,
     };
 
     return <TaskView {...taskViewProps} />;
