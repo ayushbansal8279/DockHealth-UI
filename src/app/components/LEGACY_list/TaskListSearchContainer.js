@@ -1,55 +1,45 @@
-import React, { PureComponent, useCallback, useState } from 'react';
-import Moment from 'react-moment';
-import { connect, useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import IconButton from '@material-ui/core/IconButton';
-import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
+import React, { PureComponent, useState } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
 
-import useBoolean from '../../hooks/useBoolean';
-
-import { saveTask, storeAsCurrentTask, resetTaskSearch } from '../../actions/task-actions';
-import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
 import * as TaskActions from '../../actions/task-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
-import TaskView from '../../views/TaskView';
-import MemberInitials from '../members/MemberInitials';
-
-import CubesLoader from '../../components/common/CubesLoader';
-
-// import { TaskListSection } from '../patients/TaskList';
-import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
-import NewTaskDrawer from '../taskView/NewTaskDrawer';
-import TaskListAction from '../taskView/TaskListAction';
-import Search from '../taskView/Search';
+import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
+import useBoolean from '../../hooks/useBoolean';
 import CollapseIcon from '../../img/collapse.svg';
 import FilterActiveIcon from '../../img/filter-active.svg';
 import FilterIcon from '../../img/filter.svg';
-import PrintIcon from '../../img/print.svg';
-
+import TaskView from '../../views/TaskView';
 import {
-  CompletedButtonRowContainer,
-  FadeContainer,
   FilterByBoldLabel,
   FilterByLabel,
   FilterByLinkLabel,
   FilterByTextContainer,
-  InboxNoMessagesAvailable,
-  SideClickListener,
   StyledSlimViewSwitch,
   StyledToolbar,
-  TableWrapper,
   ToolbarContainer,
 } from '../../views/TaskView.styled';
+import CubesLoader from '../common/CubesLoader';
+import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
+import NewTaskDrawer from '../taskView/NewTaskDrawer';
+import Search from '../taskView/Search';
+import TaskListAction from '../taskView/TaskListAction';
 
 const TaskDrawerContainer = styled.div`
   flex: 1.4;
+`;
+
+const CubesLoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;
 
 export const TaskListContainerWrapper = styled.div`
@@ -123,6 +113,40 @@ const filterOptions = [
   },
 ];
 
+const renderTaskListSection = ({
+  dispatch,
+  closeTaskDrawer,
+  ...otherProps
+}) => ({ listName, taskListId, tasks, completedTasks }) => {
+  const selectCurrentTask = task => {
+    if (!task) {
+      closeTaskDrawer();
+    }
+    TaskActions.storeAsCurrentTask(task)(dispatch);
+  };
+
+  return (
+    <div key={`taskList_${listName}`}>
+      <div>
+        {tasks && tasks.length > 0 && (
+          <TaskListSection heading={listName} key={listName}>
+            <PatientsTasklistEditable
+              tasks={tasks}
+              completedTasks={completedTasks}
+              submitTask={description =>
+                TaskActions.saveTask({ description, taskListId })(dispatch)
+              }
+              isAddTaskEnabled={false}
+              selectCurrentTask={selectCurrentTask}
+              {...otherProps}
+            />
+          </TaskListSection>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const animationProperties = {
   variants: {
     hidden: { height: 0, opacity: 0 },
@@ -163,154 +187,74 @@ export const TaskListSection = ({
   );
 };
 
-  // Lists TaskLists
-  const TaskListLayout = ({ searchedTasks, isFetching, slimView }) => {
-    const dispatch = useDispatch();
-    const [taskDrawerOpen, openTaskDrawer, closeTaskDrawer] = useBoolean(false);
+const TaskListLayout = ({ searchedTasks, isFetching, slimView }) => {
+  const dispatch = useDispatch();
+  const [taskDrawerOpen, openTaskDrawer, hideTaskDrawer] = useBoolean(false);
+  const selectedTaskId = useSelector(
+    store => store.taskState.selectedTask?.taskId,
+  );
 
-    const groupBy = (list, keyGetter) => {
-      const map = new Map();
-      list.forEach(item => {
-        const key = keyGetter(item);
-        const collection = map.get(key);
-        if (!collection) {
-          map.set(key, [item]);
-        } else {
-          collection.push(item);
-        }
-      });
-      return map;
-    }
+  const closeTaskDrawer = () => {
+    hideTaskDrawer();
+    TaskActions.storeAsCurrentTask(null)(dispatch);
+  };
 
-    const lists = groupTasksAndCompletedTasksByList(searchedTasks.tasks, searchedTasks.completedTasks);
+  const lists = groupTasksAndCompletedTasksByList(
+    searchedTasks.tasks,
+    searchedTasks.completedTasks,
+  );
 
-    // const groupedTasks = groupBy(
-    //   searchedTasks.tasks,
-    //   task => task.taskList.listName,
-    // );
-    // var listMap = Array.from(groupedTasks.keys())
-
-    const selectedTaskList = undefined;
-
-    return (
-      <>
-      {isFetching &&
-        <FadeContainer>
-          <Fade
-            in={isFetching}
-            unmountOnExit
-            style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
-          >
-            <CubesLoader size={40} />
-          </Fade>
-        </FadeContainer>
-      }
-      {(!isFetching && (!lists || lists.size == 0)) ?
+  return (
+    <>
+      {isFetching && (
+        <CubesLoaderContainer>
+          <CubesLoader size={40} />
+        </CubesLoaderContainer>
+      )}
+      {!isFetching && (!lists || lists.size === 0) ? (
         <div>
           <p className="light-gray" style={{ fontWeight: 'bold' }}>
             No matching tasks
           </p>
         </div>
-      : <>
-          <p className="light-gray" style={{ fontWeight: 'bold'}}>
-            {/* <span>Tasks found</span> */}
-          </p>
+      ) : (
+        <>
           <TaskListContainerWrapper>
             {lists.map(
-                renderTaskListSection({
-                  dispatch,
-                  closeTaskDrawer,
-                  openTaskDrawer,
-                  taskDrawerOpen,
-                  slimView
-                })
-              )
-            }
+              renderTaskListSection({
+                dispatch,
+                closeTaskDrawer,
+                openTaskDrawer,
+                taskDrawerOpen,
+                slimView,
+                selectedTaskId,
+              }),
+            )}
           </TaskListContainerWrapper>
           {taskDrawerOpen && (
             <TaskDrawerContainer>
-              <NewTaskDrawer
-                closeDrawer={closeTaskDrawer}
-                taskList={selectedTaskList}
-              />
+              <NewTaskDrawer closeDrawer={closeTaskDrawer} />
             </TaskDrawerContainer>
           )}
         </>
-      }
-      </>
-    )
-  }
-
-  const renderTaskListSection = ({
-      dispatch,
-      closeTaskDrawer,
-      ...otherProps
-    }) => ({listName, taskListId, tasks, completedTasks}) => {
-      
-      const selectCurrentTask = task => {
-        if (!task) {
-          closeTaskDrawer();
-        }
-        storeAsCurrentTask(task)(dispatch);
-      };
-    return (
-      <div key={"taskList_"+listName}>
-          <div>
-            {tasks && tasks.length > 0 ? 
-              <TaskListSection heading={listName} key={listName}>
-                <PatientsTasklistEditable
-                  tasks={tasks}
-                  completedTasks={completedTasks}
-                  submitTask={description =>
-                    saveTask({ description, taskListId, patientId })(dispatch)
-                  }
-                  isAddTaskEnabled={false}
-                  selectCurrentTask={selectCurrentTask}
-                  {...otherProps}
-                />
-              </TaskListSection>              
-             : (
-              <p className="light-gray"></p>
-            )}
-          </div>
-      </div>
-    )
-  }
+      )}
+    </>
+  );
+};
 
 class TaskListSearchContainer extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     filterBy: '',
     filterPopoverOpen: false,
     searchTerms: [],
-    slimView: false
+    slimView: false,
   };
 
   filterButton = React.createRef();
 
-  componentDidMount() {
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-  }
-
   componentWillUnmount = () => {
-    resetTaskSearch(); // task actions
-  };
-
-  // pullCompletedTasks = () => {
-  //   if (!this.props.showingCompletedTasks) {
-  //     this.props.getCompletedTasks();
-  //   } else {
-  //     this.props.taskActions.hideCompletedTasks();
-  //   }
-  // };
-
-  setTaskEditingStatus = isEditing => {
-    this.setState({ editing: isEditing });
+    const { taskActions } = this.props;
+    taskActions.resetTaskSearch();
   };
 
   switchSlimView = () => {
@@ -327,8 +271,6 @@ class TaskListSearchContainer extends PureComponent {
       filterBy,
     });
 
-    // this.clearStoredCurrentTask();
-
     onFilter(filterBy, sortBy);
   };
 
@@ -336,12 +278,7 @@ class TaskListSearchContainer extends PureComponent {
     const { value } = e.target;
     const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
 
-    // this.clearStoredCurrentTask();
     this.setState({ searchTerms });
-
-    // const [taskDrawerOpen, openTaskDrawer, closeTaskDrawer] = useBoolean(false);
-    // closeTaskDrawer();
-
   };
 
   search = tasks => {
@@ -358,6 +295,7 @@ class TaskListSearchContainer extends PureComponent {
 
     return filteredTasks;
   };
+
   openFilterPopover = () => {
     this.setState({
       filterPopoverOpen: true,
@@ -411,7 +349,6 @@ class TaskListSearchContainer extends PureComponent {
     );
   };
 
-  // Lists Activity for a TaskList
   renderList(taskListId, listName, taskStatus, tasks, members) {
     const {
       userId,
@@ -427,7 +364,6 @@ class TaskListSearchContainer extends PureComponent {
         toggleTaskPriority,
         addTaskComment,
       },
-      tasklists,
     } = this.props;
 
     const title = listName;
@@ -459,80 +395,80 @@ class TaskListSearchContainer extends PureComponent {
   }
 
   render() {
-    const toolbarContainerVisible = (this.props.tasks.length > 0);
+    const { tasks, completedTasks, isFetching } = this.props;
+
+    const toolbarContainerVisible = tasks.length > 0;
     const { slimView, filterBy } = this.state;
     const currentFilterDescription =
       filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
-    
-    const searchedTasks = {tasks: this.search(this.props.tasks), completedTasks: this.search(this.props.completedTasks)}
-    
+
+    const searchedTasks = {
+      tasks: this.search(tasks),
+      completedTasks: this.search(completedTasks),
+    };
+
     return (
       <div className="tasks-container-new">
-        <div className="column expanded collapse">
-          <StyledToolbar>
-              <Grid
-                container
-                alignItems="center"
-                justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
-              >
-                {toolbarContainerVisible && (
-                  <ToolbarContainer>
-                    <StyledSlimViewSwitch
-                      onClick={this.switchSlimView}
-                      slimView={slimView}
-                      variant="contained"
-                    />
-                    <TaskListAction
-                      alt="Filter"
-                      activeIcon={FilterActiveIcon}
-                      backgroundColor="#fff"
-                      icon={FilterIcon}
-                      active={Boolean(filterBy)}
-                      onClick={
-                        filterBy ? this.clearFilter : this.openFilterPopover
-                      }
-                      ref={this.filterButton}
-                    >
-                      Filter
-                    </TaskListAction>
-                    <Search onChange={this.handleSearch} />
-                  </ToolbarContainer>
-                )}
-              </Grid>
-            </StyledToolbar>
-            <AnimatePresence>
-              {currentFilterDescription && (
-                <FilterByTextContainer {...animationProperties}>
-                  <img src={FilterIcon} alt="Filter icon" />
-                  <FilterByLabel>Filter:</FilterByLabel>
-                  <FilterByBoldLabel>
-                    {currentFilterDescription}
-                  </FilterByBoldLabel>
-                  <FilterByLinkLabel onClick={this.clearFilter}>
-                    clear filter
-                  </FilterByLinkLabel>
-                </FilterByTextContainer>
-              )}
-            </AnimatePresence>
-            {this.props.tasks &&
-              // this.renderTaskListName('INCOMPLETE', this.props.tasks)
-              <TaskListLayout 
+        <StyledToolbar>
+          <Grid
+            container
+            alignItems="center"
+            justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
+          >
+            {toolbarContainerVisible && (
+              <ToolbarContainer>
+                <StyledSlimViewSwitch
+                  onClick={this.switchSlimView}
+                  slimView={slimView}
+                  variant="contained"
+                />
+                <TaskListAction
+                  alt="Filter"
+                  activeIcon={FilterActiveIcon}
+                  backgroundColor="#fff"
+                  icon={FilterIcon}
+                  active={Boolean(filterBy)}
+                  onClick={filterBy ? this.clearFilter : this.openFilterPopover}
+                  ref={this.filterButton}
+                >
+                  Filter
+                </TaskListAction>
+                <Search onChange={this.handleSearch} />
+              </ToolbarContainer>
+            )}
+          </Grid>
+        </StyledToolbar>
+        <Grid container direction="row" wrap="nowrap">
+          <AnimatePresence>
+            {currentFilterDescription && (
+              <FilterByTextContainer {...animationProperties}>
+                <img src={FilterIcon} alt="Filter icon" />
+                <FilterByLabel>Filter:</FilterByLabel>
+                <FilterByBoldLabel>
+                  {currentFilterDescription}
+                </FilterByBoldLabel>
+                <FilterByLinkLabel onClick={this.clearFilter}>
+                  clear filter
+                </FilterByLinkLabel>
+              </FilterByTextContainer>
+            )}
+          </AnimatePresence>
+          {tasks && (
+            <TaskListLayout
               searchedTasks={searchedTasks}
-              isFetching={this.props.isFetching}
+              isFetching={isFetching}
               slimView={slimView}
-              />
-            }
-            {this.renderFilterPopover()}
-        </div>
+            />
+          )}
+          {this.renderFilterPopover()}
+        </Grid>
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  // console.log(state);
   return {
-    // taskSearchResults: state.taskState.taskSearchResults
     tasklists: state.taskListState.tasklist,
     tasks: state.taskState.tasks,
     completedTasks: state.taskState.completedTasks,
