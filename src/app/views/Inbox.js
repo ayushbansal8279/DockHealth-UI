@@ -131,6 +131,7 @@ class Inbox extends PureComponent {
       showToolbar: true,
       showSortingStats: false,
       isInbox: true,
+      taskListId: 0,
     };
 
     return <TaskView {...taskViewProps} />;

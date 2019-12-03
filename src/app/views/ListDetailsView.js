@@ -227,6 +227,8 @@ class Home extends PureComponent {
       showToolbar: true,
       taskList: loadedTasklist || undefined,
       isMultiList,
+      taskListId,
+      listName,
     };
 
     return <TaskView {...taskViewProps} />;

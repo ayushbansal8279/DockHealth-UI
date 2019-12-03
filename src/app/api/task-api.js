@@ -13,12 +13,18 @@ export function getTasksForCreator() {
     });
 }
 
-export function getListTasksByUser(taskListId, status, sortBy, filterBy) {
+export function getListTasksByUser(
+  taskListId,
+  status,
+  sortBy,
+  filterBy,
+  queryStartPosition = 0,
+) {
   closeAddForm();
   if (sortBy == undefined && filterBy == undefined) {
     return axios
       .get(
-        `task/findListTasksByUser/${taskListId}?status=${status}&queryStartPosition=0`,
+        `task/findListTasksByUser/${taskListId}?status=${status}&queryStartPosition=${queryStartPosition}`,
       )
       .then(response => response.data)
       .catch(error => {
@@ -27,7 +33,7 @@ export function getListTasksByUser(taskListId, status, sortBy, filterBy) {
   }
   return axios
     .get(
-      `task/findListTasksByUser/${taskListId}?status=${status}&queryStartPosition=0&sortBy=${sortBy}&filterBy=${filterBy}`,
+      `task/findListTasksByUser/${taskListId}?status=${status}&queryStartPosition=${queryStartPosition}&sortBy=${sortBy}&filterBy=${filterBy}`,
     )
     .then(response => response.data)
     .catch(error => {
@@ -441,12 +447,17 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
     });
 }
 
-export function getInboxTasks(status, sortBy, filterBy) {
+export function getInboxTasks(
+  status,
+  sortBy,
+  filterBy,
+  queryStartPosition = 0,
+) {
   return axios
     .get(`task/findInboxTasks`, {
       params: {
         status,
-        queryStartPosition: 0,
+        queryStartPosition,
         sortBy: 'TASK_DESCRIPTION',
         filterBy,
       },

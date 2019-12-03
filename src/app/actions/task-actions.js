@@ -652,3 +652,54 @@ export const archiveTask = (task, currentUserProfile) => dispatch =>
     .catch(error => {
       throw error;
     });
+
+export const getTaskPage = ({
+  taskListId,
+  status,
+  sortBy,
+  filterBy,
+  queryStartPosition = 0,
+  search,
+  isInbox = false,
+  isAssignedByMeList = false,
+  isAssignedToMeList = false,
+}) => dispatch => {
+  const getTaskPagePromise = () => {
+    if (isInbox) {
+      return TaskApi.getInboxTasks(
+        status,
+        sortBy,
+        filterBy,
+        queryStartPosition,
+      );
+    }
+
+    if (isAssignedByMeList) {
+      return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy, filterBy);
+    }
+    if (isAssignedToMeList) {
+      return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy, filterBy);
+    }
+
+    return TaskApi.getListTasksByUser(
+      taskListId,
+      status,
+      sortBy,
+      filterBy,
+      queryStartPosition,
+    );
+  };
+
+  return getTaskPagePromise()
+    .then(tasks => {
+      dispatch({
+        type: ActionTypes.TASK_NEW_PAGE_DOWNLOADED,
+        tasks: search(tasks),
+        taskListId,
+        queryStartPosition,
+      });
+    })
+    .catch(error => {
+      throw error;
+    });
+};

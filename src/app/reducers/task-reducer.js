@@ -49,6 +49,7 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
+  TASK_NEW_PAGE_DOWNLOADED,
 } from '../actions/action-types';
 
 const initialState = {
@@ -782,6 +783,15 @@ const TaskReducer = (state = initialState, action) => {
 
           return task;
         }),
+      };
+    }
+
+    case TASK_NEW_PAGE_DOWNLOADED: {
+      const { tasks: actionTasks } = action;
+
+      return {
+        ...state,
+        tasks: [...(state.tasks || []), ...(actionTasks || [])],
       };
     }
 
