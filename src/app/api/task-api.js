@@ -442,19 +442,15 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
 }
 
 export function getInboxTasks(status, sortBy, filterBy) {
-  if (sortBy == undefined && filterBy == undefined) {
-    closeAddForm();
-    return axios
-      .get(`task/findInboxTasks?status=${status}&queryStartPosition=0`)
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      });
-  }
   return axios
-    .get(
-      `task/findInboxTasks?status=${status}&queryStartPosition=0&sortBy=${sortBy}&filterBy=${filterBy}`,
-    )
+    .get(`task/findInboxTasks`, {
+      params: {
+        status,
+        queryStartPosition: 0,
+        sortBy: 'TASK_DESCRIPTION',
+        filterBy,
+      },
+    })
     .then(response => response.data)
     .catch(error => {
       throw error;

@@ -625,20 +625,19 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
       throw err;
     });
 
-export const refreshTask = (selectedTask)  => dispatch => 
+export const refreshTask = selectedTask => dispatch =>
   TaskApi.getTaskDetails(selectedTask.taskId)
-    .then((task) => {
-      //explicitly mark task as updated so we can show the flag
-      task.updated = true
+    .then(task => {
+      // explicitly mark task as updated so we can show the flag
+      task.updated = true; // eslint-disable-line no-param-reassign
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task
+        task,
       });
     })
     .catch(err => {
       throw err;
     });
-
 
 export const archiveTask = (task, currentUserProfile) => dispatch =>
   TaskApi.flagArchivedForUser(task.taskId, true)

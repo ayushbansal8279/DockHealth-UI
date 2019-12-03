@@ -20,11 +20,9 @@ class Inbox extends PureComponent {
   }
 
   componentWillUpdate(nextProps) {
-    const { routeParams } = this.props;
+    const { actions, routeParams } = this.props;
 
     if (nextProps.routeParams.listName !== routeParams.listName) {
-      const { actions } = this.props;
-
       actions.loading();
       actions.getInboxTasks('INCOMPLETE');
     }
