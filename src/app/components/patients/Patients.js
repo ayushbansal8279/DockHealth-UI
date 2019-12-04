@@ -106,7 +106,11 @@ const PatientsLayout = () => {
         {isFetching ? (
           <PatientsListSpinner isFetching={isFetching} />
         ) : (
-          <Grid xs item>
+          <Grid
+            md={12}
+            lg={highlightedPatient || isCreatingPatient ? 6 : 12}
+            item
+          >
             <PatientsList
               patients={filteredPatients}
               isFiltered={searchTerm !== ''}
@@ -116,12 +120,12 @@ const PatientsLayout = () => {
           </Grid>
         )}
         {highlightedPatient && (
-          <Grid xs item>
+          <Grid md={12} lg={6} item>
             <PatientsSidebar patient={highlightedPatient} />
           </Grid>
         )}
         {isCreatingPatient && (
-          <Grid xs item>
+          <Grid md={12} lg={6} item>
             <PatientsCreation />
           </Grid>
         )}
