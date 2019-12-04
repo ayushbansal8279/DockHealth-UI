@@ -38,7 +38,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.jsx?/,
+        test: /\.jsx?$/,
         include: APP_DIR,
         exclude: /node_modules/,
         loader: ['babel-loader'],
@@ -67,6 +67,9 @@ const config = {
       hash: true,
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.json', '.jsx', '.png', '.svg'],
+  },
   devServer: {
     compress: false,
     disableHostCheck: true,

@@ -10,8 +10,16 @@
     "modules": true,
     "jsx": true
   },
-  "extends": ["airbnb", "plugin:prettier/recommended"],
-  "plugins": ["jest", "react-hooks"],
+  "extends": [
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:unicorn/recommended",
+    "plugin:sonarjs/recommended",
+    "prettier",
+    "prettier/react",
+    "prettier/standard"
+  ],
+  "plugins": ["jest", "react", "react-hooks", "unicorn", "prettier"],
   "globals": {
     "closeAddForm": true,
     "closeDropdown": true,
@@ -31,14 +39,25 @@
     "toggleTaskForm": true
   },
   "rules": {
-    "react/jsx-filename-extension": 0,
-    "react/prop-types": 0,
-    "jsx-a11y/no-static-element-interactions": 0,
-    "jsx-a11y/click-events-have-key-events": 0,
-    "jsx-a11y/label-has-for": 0,
-    "jsx-a11y/label-has-associated-control": 0,
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
-    "import/no-named-as-default-member": 0
+    "react/prop-types": "off",
+    "react/jsx-props-no-spreading": "off",
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "pascalCase",
+        "ignore": [".config.js(on)?$"]
+      }
+    ],
+    "unicorn/prevent-abbreviations": [
+      "error",
+      {
+        "extendDefaultReplacements": false,
+        "replacements": {
+          "props": {
+            "properties": false
+          }
+        }
+      }
+    ]
   }
 }
