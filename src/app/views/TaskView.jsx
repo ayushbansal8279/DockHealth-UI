@@ -1,5 +1,4 @@
 import Fade from '@material-ui/core/Fade';
-import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Popover from '@material-ui/core/Popover';
@@ -20,15 +19,9 @@ import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
-import Search from '../components/taskView/Search';
-import { AddTaskButton } from '../components/taskView/TaskDrawerButtons';
-import TaskListAction from '../components/taskView/TaskListAction';
+import Toolbar from '../components/taskView/Toolbar';
 import { isTaskArchivable } from '../helpers/utilityFunctions';
-import FilterActiveIcon from '../img/filter-active.svg';
 import FilterIcon from '../img/filter.svg';
-import PrintIcon from '../img/print.svg';
-import SortingStatsActiveIcon from '../img/sorting-stats-active.svg';
-import SortingStatsIcon from '../img/sorting-stats.svg';
 import {
   CompletedButtonRowContainer,
   FadeContainer,
@@ -39,13 +32,10 @@ import {
   InboxNoMessagesAvailable,
   SideClickListener,
   StyledButton,
-  StyledSlimViewSwitch,
-  StyledToolbar,
   TableWrapper,
   TaskListContainer,
   TaskViewContainer,
   TaskViewGrid,
-  ToolbarContainer,
 } from './TaskView.styled';
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
@@ -98,6 +88,9 @@ const animationProperties = {
   transition: { ease: 'backInOut', duration: 0.25 },
 };
 
+const TASK_VIEW_STORAGE_PREFIX = 'task-view-';
+const TASK_VIEW_STORAGE_CURRENT_VERSION = 1;
+
 class TaskView extends Component {
   state = {
     filterBy: '',
@@ -105,12 +98,14 @@ class TaskView extends Component {
     completedTasksShown: false,
     searchTerms: [],
     slimView: false,
+    initialSearchValue: null,
     taskDrawerOpen: false,
     displayHUD: true,
     taskTimeouts: {
       complete: [],
       incomplete: [],
     },
+    preferencesInitialized: false,
   };
 
   headsUpArea = React.createRef();
@@ -118,6 +113,40 @@ class TaskView extends Component {
   filterButton = React.createRef();
 
   componentDidMount = () => {
+    const { taskList } = this.props;
+
+    const taskListId = taskList?.taskListId;
+    const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
+
+    let taskListPreferences = {};
+
+    try {
+      taskListPreferences =
+        JSON.parse(localStorage.getItem(localStorageKey)) || {};
+
+      const { version } = taskListPreferences;
+
+      if (
+        (version && version !== TASK_VIEW_STORAGE_CURRENT_VERSION) ||
+        !version
+      ) {
+        taskListPreferences = {};
+        localStorage.removeItem(localStorageKey);
+        this.saveTaskListPreferences();
+      }
+    } catch {
+      taskListPreferences = {};
+      this.saveTaskListPreferences();
+    }
+
+    this.setState({
+      ...taskListPreferences,
+      initialSearchValue: (taskListPreferences.searchTerms || [])
+        .join(' ')
+        .trim(),
+      preferencesInitialized: true,
+    });
+
     this.resetHeader();
   };
 
@@ -150,12 +179,37 @@ class TaskView extends Component {
   }
 
   componentDidUpdate = ({
-    isFetching: prevIsFetching,
-    members: prevMembers,
+    isFetching: previousIsFetching,
+    members: previousMembers,
   }) => {
     const { isFetching, members } = this.props;
-    if (prevIsFetching !== isFetching || !equals(members, prevMembers)) {
+    if (
+      previousIsFetching !== isFetching ||
+      !equals(members, previousMembers)
+    ) {
       this.resetHeader();
+    }
+  };
+
+  saveTaskListPreferences = () => {
+    const { taskList } = this.props;
+
+    const taskListId = taskList?.taskListId;
+
+    if (taskListId) {
+      const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
+      const { slimView, filterBy, displayHUD, searchTerms } = this.state;
+
+      localStorage.setItem(
+        localStorageKey,
+        JSON.stringify({
+          slimView,
+          filterBy,
+          displayHUD,
+          searchTerms,
+          version: TASK_VIEW_STORAGE_CURRENT_VERSION,
+        }),
+      );
     }
   };
 
@@ -181,13 +235,13 @@ class TaskView extends Component {
   };
 
   clearTaskTimeouts = (taskTimeoutId, callback = () => {}) => {
-    this.setState(prevState => {
+    this.setState(previousState => {
       return {
         taskTimeouts: map(
           filter(
             taskTimeoutData => taskTimeoutData.taskTimeoutId !== taskTimeoutId,
           ),
-          prevState.taskTimeouts,
+          previousState.taskTimeouts,
         ),
       };
     }, callback);
@@ -232,13 +286,13 @@ class TaskView extends Component {
         this.clearTaskTimeouts(taskTimeoutId);
       }, 3000);
 
-      this.setState(prevState => {
+      this.setState(previousState => {
         const previousTaskTimeouts =
-          prevState.taskTimeouts[taskTimeoutArrayKey];
+          previousState.taskTimeouts[taskTimeoutArrayKey];
 
         return {
           taskTimeouts: {
-            ...prevState.taskTimeouts,
+            ...previousState.taskTimeouts,
             [taskTimeoutArrayKey]: [
               ...previousTaskTimeouts,
               {
@@ -259,8 +313,8 @@ class TaskView extends Component {
   };
 
   toggleCompletedTasks = () => {
-    this.setState(prevState => ({
-      completedTasksShown: !prevState.completedTasksShown,
+    this.setState(previousState => ({
+      completedTasksShown: !previousState.completedTasksShown,
     }));
   };
 
@@ -328,21 +382,28 @@ class TaskView extends Component {
     const { onFilter } = this.props;
     const sortBy = '';
 
-    this.setState({
-      filterBy,
-    });
+    this.setState(
+      {
+        filterBy,
+      },
+      () => {
+        this.saveTaskListPreferences();
+      },
+    );
 
     this.clearStoredCurrentTask();
 
     onFilter(filterBy, sortBy);
   };
 
-  handleSearch = e => {
-    const { value } = e.target;
-    const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
+  handleSearch = event => {
+    const { value } = event.target;
+    const searchTerms = value.toLowerCase().match(/\S+/g) || [];
 
     this.clearStoredCurrentTask();
-    this.setState({ searchTerms });
+    this.setState({ searchTerms }, () => {
+      this.saveTaskListPreferences();
+    });
     this.closeTaskDrawer();
   };
 
@@ -354,16 +415,13 @@ class TaskView extends Component {
     const { searchTerms } = this.state;
     const isMatch = text =>
       searchTerms.every(term => text?.toLowerCase().includes(term));
-    const filteredTasks = tasks.filter(({ description }) =>
-      isMatch(description),
-    );
 
-    return filteredTasks;
+    return tasks.filter(({ description }) => isMatch(description));
   };
 
   toggleHUD = () => {
-    this.setState(prevState => ({
-      displayHUD: !prevState.displayHUD,
+    this.setState(previousState => ({
+      displayHUD: !previousState.displayHUD,
     }));
   };
 
@@ -373,9 +431,14 @@ class TaskView extends Component {
   };
 
   switchSlimView = () => {
-    this.setState(prevState => ({
-      slimView: !prevState.slimView,
-    }));
+    this.setState(
+      previousState => ({
+        slimView: !previousState.slimView,
+      }),
+      () => {
+        this.saveTaskListPreferences();
+      },
+    );
   };
 
   onAddTaskButtonClick = () => {
@@ -448,6 +511,19 @@ class TaskView extends Component {
     }
   };
 
+  mapInboxTasks = ({ isInbox }) => task => {
+    const mappedTaskListId = task?.taskList?.taskListId;
+
+    if (isInbox && mappedTaskListId === 0) {
+      return {
+        ...task,
+        taskList: null,
+      };
+    }
+
+    return task;
+  };
+
   renderTasklists = () => {
     const {
       tasks: incompleteTasks,
@@ -468,23 +544,14 @@ class TaskView extends Component {
       isTaskArchivable(currentUser),
     );
 
-    const tasks = [...incompleteTasks, ...archivableTasks].map(task => {
-      const mappedTaskListId = task?.taskList?.taskListId;
-
-      if (isInbox && mappedTaskListId === 0) {
-        return {
-          ...task,
-          taskList: null,
-        };
-      }
-
-      return task;
-    });
+    const tasks = [...incompleteTasks, ...archivableTasks].map(
+      this.mapInboxTasks({ isInbox }),
+    );
 
     const groupedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
     );
-    const tasklistCount = Array.from(groupedTasks.keys()).length;
+    const tasklistCount = [...groupedTasks.keys()].length;
 
     const tasklistProps = {
       tasks: this.search(tasks),
@@ -516,7 +583,7 @@ class TaskView extends Component {
       return <TaskList {...tasklistProps} />;
     }
 
-    return Array.from(groupedTasks.keys()).map(groupedListName => (
+    return [...groupedTasks.keys()].map(groupedListName => (
       <React.Fragment key={groupedListName}>
         <h5>{groupedListName}</h5>
         <TaskList
@@ -550,18 +617,7 @@ class TaskView extends Component {
     const completedTasks = reject(
       isTaskArchivable(currentUser),
       completedOrArchivedTasks,
-    ).map(task => {
-      const mappedTaskListId = task?.taskList?.taskListId;
-
-      if (isInbox && mappedTaskListId === 0) {
-        return {
-          ...task,
-          taskList: null,
-        };
-      }
-
-      return task;
-    });
+    ).map(this.mapInboxTasks({ isInbox }));
 
     const tasklistProps = {
       tasks: this.search(completedTasks),
@@ -617,7 +673,14 @@ class TaskView extends Component {
       isInbox = false,
       tasks,
     } = this.props;
-    const { slimView, taskDrawerOpen, displayHUD, filterBy } = this.state;
+    const {
+      initialSearchValue,
+      slimView,
+      taskDrawerOpen,
+      displayHUD,
+      filterBy,
+      preferencesInitialized,
+    } = this.state;
 
     const currentFilterDescription =
       filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
@@ -644,60 +707,25 @@ class TaskView extends Component {
             />
           )}
           {showToolbar && (
-            <StyledToolbar>
-              <Grid
-                container
-                alignItems="center"
-                justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
-              >
-                {toolbarContainerVisible && (
-                  <ToolbarContainer>
-                    <StyledSlimViewSwitch
-                      onClick={this.switchSlimView}
-                      slimView={slimView}
-                      variant="contained"
-                    />
-                    <TaskListAction
-                      alt="Filter"
-                      activeIcon={FilterActiveIcon}
-                      backgroundColor="#fff"
-                      icon={FilterIcon}
-                      active={Boolean(filterBy)}
-                      onClick={
-                        filterBy ? this.clearFilter : this.openFilterPopover
-                      }
-                      ref={this.filterButton}
-                    >
-                      Filter
-                    </TaskListAction>
-                    {showSortingStats && (
-                      <TaskListAction
-                        alt="Sorting & stats"
-                        active={displayHUD}
-                        activeIcon={SortingStatsActiveIcon}
-                        backgroundColor="#fff"
-                        icon={SortingStatsIcon}
-                        onClick={this.toggleHUD}
-                      >
-                        Sorting & Stats
-                      </TaskListAction>
-                    )}
-                    <Search onChange={this.handleSearch} />
-                    <TaskListAction
-                      alt="Print"
-                      backgroundColor="#fff"
-                      icon={PrintIcon}
-                      onClick={downloadPDF}
-                    >
-                      Print
-                    </TaskListAction>
-                  </ToolbarContainer>
-                )}
-                {(selectedTask || !taskDrawerOpen) && (
-                  <AddTaskButton onClick={this.onAddTaskButtonClick} />
-                )}
-              </Grid>
-            </StyledToolbar>
+            <Toolbar
+              clearFilter={this.clearFilter}
+              displayHUD={displayHUD}
+              downloadPDF={downloadPDF}
+              filterButton={this.filterButton}
+              filterBy={filterBy}
+              handleSearch={this.handleSearch}
+              onAddTaskButtonClick={this.onAddTaskButtonClick}
+              openFilterPopover={this.openFilterPopover}
+              preferencesInitialized={preferencesInitialized}
+              initialSearchValue={initialSearchValue}
+              selectedTask={selectedTask}
+              showSortingStats={showSortingStats}
+              slimView={slimView}
+              switchSlimView={this.switchSlimView}
+              taskDrawerOpen={taskDrawerOpen}
+              toggleHUD={this.toggleHUD}
+              toolbarContainerVisible={toolbarContainerVisible}
+            />
           )}
           <AnimatePresence>
             {currentFilterDescription && (

@@ -34,7 +34,7 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const Search = ({ onChange }) => (
+const Search = ({ onChange, initialValue }) => (
   <StyledTextField
     onChange={onChange}
     placeholder="Search"
@@ -50,10 +50,10 @@ const Search = ({ onChange }) => (
       },
       'aria-label': 'Search',
       type: 'search',
+      defaultValue: initialValue,
     }}
   />
 );
-
 Search.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
