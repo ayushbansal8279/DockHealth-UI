@@ -11,7 +11,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
 
-import { addTaskComment } from '../../actions/task-actions';
+import {
+  addTaskComment,
+  updateComment as updateCommentAction,
+} from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import renderComment from './NewTaskDrawer.renderComment';
@@ -239,6 +242,16 @@ export default ({ addDeferredCommentToQueue, task }) => {
     publishComment();
   };
 
+  const updateComment = commentData => {
+    updateCommentAction(task, commentData)(dispatch)
+      .then(() => {
+        toggleAlert('Comment updated successfully', 'success');
+      })
+      .catch(() => {
+        toggleAlert('Error updating comment, please try again later', 'error');
+      });
+  };
+
   return (
     <>
       {addingComment ? (
@@ -280,7 +293,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
           <CommentsContainer>
             <StyledSimpleBar ref={simpleBarRef} visible>
               {Object.entries(groupedComments).map(
-                renderComment({ currentUserId }),
+                renderComment({ currentUserId, updateComment }),
               )}
             </StyledSimpleBar>
           </CommentsContainer>

@@ -27,7 +27,7 @@ const CommentBubble = styled.div`
 const CommentBubbleText = styled.div`
   min-height: 1em;
   outline: none;
-  word-break: break-all;
+  word-break: break-word;
 `;
 
 const BubbleFinish = styled.img`
