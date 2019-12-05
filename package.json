@@ -39,6 +39,7 @@
     "@date-io/moment": "^1.1.0",
     "@material-ui/core": "^3.7.1",
     "@material-ui/icons": "^3.0.1",
+    "@shopify/draggable": "^1.0.0-beta.8",
     "animate.css": "^3.7.2",
     "axios": "^0.18.0",
     "babel-loader": "^8.0.0",

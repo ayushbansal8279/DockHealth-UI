@@ -47,7 +47,10 @@
     "unicorn/filename-case": [
       "error",
       {
-        "case": "pascalCase",
+        "cases": {
+          "pascalCase": true,
+          "kebabCase": true
+        },
         "ignore": [".config.js(on)?$"]
       }
     ],

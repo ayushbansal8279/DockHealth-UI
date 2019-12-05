@@ -1,4 +1,5 @@
 import moment from 'moment';
+import curry from 'ramda/es/curry';
 
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
@@ -155,14 +156,14 @@ export function getHighPriorityTasksByTaskList(taskListId) {
       });
 }
 
-export const clearPreparedSubtask = () => dispatch => {
+export const clearPreparedSubtask = curry(dispatch =>
   dispatch({
     type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
     addingNewSubtask: false,
     addingNewSubtaskParentId: null,
     subtaskShape: {},
-  });
-};
+  }),
+);
 
 export const reloadTaskListStats = (dispatch, task) => {
   if (task.taskList) {
@@ -212,7 +213,7 @@ export function saveTask(newTask) {
           reloadTaskListStats(dispatch, task);
         }
 
-        clearPreparedSubtask()(dispatch);
+        clearPreparedSubtask(dispatch);
 
         return task;
       })
@@ -372,11 +373,11 @@ export function markComplete(task, status, listName, currentUser = null) {
 
 export const updateTaskDescription = (task, description) => dispatch =>
   TaskApi.updateTaskDescription(task, description)
-    .then(res => {
+    .then(response => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS,
         task,
-        description: res.description,
+        description: response.description,
       });
     })
     .catch(error => {
@@ -385,11 +386,11 @@ export const updateTaskDescription = (task, description) => dispatch =>
 
 export const updateDueDate = (task, dueDate) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, dueDate }))
-    .then(res => {
+    .then(response => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_DUE_DATE,
-        taskId: res.taskId,
-        dueDate: res.dueDate,
+        taskId: response.taskId,
+        dueDate: response.dueDate,
       });
       reloadTaskListStats(dispatch, task);
     })
@@ -397,15 +398,15 @@ export const updateDueDate = (task, dueDate) => dispatch =>
 
 export const updatePatient = (task, patient) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))
-    .then(res => {
+    .then(response => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_PATIENT,
-        parentTaskId: res.parentTaskId || res.taskId,
-        patient: res.patient,
+        parentTaskId: response.parentTaskId || response.taskId,
+        patient: response.patient,
       });
     })
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 
 export const updateReminder = (task, reminderDt) => dispatch =>
@@ -417,8 +418,8 @@ export const updateReminder = (task, reminderDt) => dispatch =>
         reminderDt,
       });
     })
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 
 export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
@@ -432,8 +433,8 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
       });
       reloadTaskListStats(dispatch, task);
     })
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 };
 
@@ -555,7 +556,7 @@ export function storeAsCurrentTask(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
     if ((task && task.taskId !== null) || task == null) {
-      clearPreparedSubtask()(dispatch);
+      clearPreparedSubtask(dispatch);
     }
   };
 }
@@ -601,15 +602,15 @@ export function clearCurrentTaskHistory() {
 
 export const addTaskAttachment = (taskId, fileData) => dispatch =>
   TaskApi.addTaskAttachment(taskId, fileData)
-    .then(res => {
+    .then(response => {
       dispatch({
         type: ActionTypes.TASK_ATTACHMENT_ADDED,
         taskId,
-        taskAttachment: res.data,
+        taskAttachment: response.data,
       });
     })
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 
 export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
@@ -621,8 +622,8 @@ export const removeTaskAttachment = (taskId, taskAttachmentId) => dispatch =>
         taskAttachmentId,
       });
     })
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 
 export const refreshTask = selectedTask => dispatch =>
@@ -635,8 +636,8 @@ export const refreshTask = selectedTask => dispatch =>
         task,
       });
     })
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 
 export const archiveTask = (task, currentUserProfile) => dispatch =>
@@ -653,6 +654,36 @@ export const archiveTask = (task, currentUserProfile) => dispatch =>
       throw error;
     });
 
+const getTaskPagePromise = ({
+  isInbox,
+  status,
+  sortBy,
+  filterBy,
+  queryStartPosition,
+  taskListId,
+  isAssignedByMeList,
+  isAssignedToMeList,
+}) => {
+  if (isInbox) {
+    return TaskApi.getInboxTasks(status, sortBy, filterBy, queryStartPosition);
+  }
+
+  if (isAssignedByMeList) {
+    return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy, filterBy);
+  }
+  if (isAssignedToMeList) {
+    return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy, filterBy);
+  }
+
+  return TaskApi.getListTasksByUser(
+    taskListId,
+    status,
+    sortBy,
+    filterBy,
+    queryStartPosition,
+  );
+};
+
 export const getTaskPage = ({
   taskListId,
   status,
@@ -664,33 +695,16 @@ export const getTaskPage = ({
   isAssignedByMeList = false,
   isAssignedToMeList = false,
 }) => dispatch => {
-  const getTaskPagePromise = () => {
-    if (isInbox) {
-      return TaskApi.getInboxTasks(
-        status,
-        sortBy,
-        filterBy,
-        queryStartPosition,
-      );
-    }
-
-    if (isAssignedByMeList) {
-      return TaskApi.getTasksAssignedByMe(taskListId, status, sortBy, filterBy);
-    }
-    if (isAssignedToMeList) {
-      return TaskApi.getTasksAssignedToMe(taskListId, status, sortBy, filterBy);
-    }
-
-    return TaskApi.getListTasksByUser(
-      taskListId,
-      status,
-      sortBy,
-      filterBy,
-      queryStartPosition,
-    );
-  };
-
-  return getTaskPagePromise()
+  return getTaskPagePromise({
+    isInbox,
+    status,
+    sortBy,
+    filterBy,
+    queryStartPosition,
+    taskListId,
+    isAssignedByMeList,
+    isAssignedToMeList,
+  })
     .then(tasks => {
       dispatch({
         type: ActionTypes.TASK_NEW_PAGE_DOWNLOADED,
@@ -703,3 +717,27 @@ export const getTaskPage = ({
       throw error;
     });
 };
+
+export const sortSubtasks = curry(({ task, subtasks }, dispatch) => {
+  const newTask = {
+    ...task,
+    subtasks: subtasks.map((subtask, subTaskSortIndex) => ({
+      ...subtask,
+      subTaskSortIndex,
+    })),
+  };
+
+  return TaskApi.updateTask(newTask)
+    .then(() => {
+      dispatch({
+        type: ActionTypes.UPDATED_SUBTASK_ORDER,
+        task: newTask,
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: ActionTypes.UPDATED_SUBTASK_ORDER,
+        task,
+      });
+    });
+});

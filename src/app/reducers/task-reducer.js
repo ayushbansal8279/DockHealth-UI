@@ -41,6 +41,7 @@ import {
   TASK_ARCHIVED,
   TASK_ATTACHMENT_ADDED,
   TASK_ATTACHMENT_REMOVED,
+  TASK_NEW_PAGE_DOWNLOADED,
   TOGGLE_TASK_PRIORITY_SUCCESS,
   UPDATE_TASK_COMMENT_SUCCESS,
   UPDATE_TASK_DESCRIPTION_SUCCESS,
@@ -49,7 +50,7 @@ import {
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
-  TASK_NEW_PAGE_DOWNLOADED,
+  UPDATED_SUBTASK_ORDER,
 } from '../actions/action-types';
 
 const initialState = {
@@ -74,7 +75,7 @@ const initialState = {
 const getMainTaskId = ({ parentTaskId, taskId }) => parentTaskId || taskId;
 
 const updateTaskOrSubtask = (tasks, taskId, update) => {
-  const updatedTasks = tasks.map(t =>
+  return tasks.map(t =>
     t.taskId === taskId
       ? update(t)
       : {
@@ -84,8 +85,6 @@ const updateTaskOrSubtask = (tasks, taskId, update) => {
           ),
         },
   );
-
-  return updatedTasks;
 };
 
 const requestHistory = state => ({ ...state, isHistoryFetching: true });
@@ -269,7 +268,7 @@ const TaskReducer = (state = initialState, action) => {
       };
 
     case REQUEST_HISTORY:
-      return requestHistory(state, action);
+      return requestHistory(state);
 
     case HIDE_COMPLETED_TASKS:
       return { ...state, showingCompletedTasks: false, completedTasks: [] };
@@ -340,7 +339,7 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         tasks: state.tasks.map(task =>
           task.taskId === mainTask
-            ? action.task.parentTaskId
+            ? (action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -352,7 +351,7 @@ const TaskReducer = (state = initialState, action) => {
                       : subtask,
                   ),
                 }
-              : { ...task, description: action.description }
+              : { ...task, description: action.description })
             : task,
         ),
       };
@@ -426,7 +425,7 @@ const TaskReducer = (state = initialState, action) => {
       const { task } = action;
       const mainTaskId = task.parentTaskId || task.taskId;
 
-      const newState = {
+      return {
         ...state,
         tasks: state.tasks.map(t => {
           if (t.taskId !== mainTaskId) {
@@ -447,8 +446,6 @@ const TaskReducer = (state = initialState, action) => {
           };
         }),
       };
-
-      return newState;
     }
 
     case TOGGLE_TASK_PRIORITY_SUCCESS: {
@@ -458,7 +455,7 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         tasks: state.tasks.map(task =>
           task.taskId === mainTask
-            ? action.task.parentTaskId
+            ? (action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -467,7 +464,7 @@ const TaskReducer = (state = initialState, action) => {
                       : subtask,
                   ),
                 }
-              : { ...task, priority: action.priority }
+              : { ...task, priority: action.priority })
             : task,
         ),
       };
@@ -480,7 +477,7 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         tasks: state.tasks.map(task =>
           task.taskId === mainTask
-            ? action.task.parentTaskId
+            ? (action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -501,7 +498,7 @@ const TaskReducer = (state = initialState, action) => {
                   assignedBy: action.task.assignedBy,
                   assignmentUpdatedDateTime:
                     action.task.assignmentUpdatedDateTime,
-                }
+                })
             : task,
         ),
       };
@@ -598,7 +595,7 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         tasks: state.tasks.map(task =>
           task.taskId === mainTaskId
-            ? action.task.parentTaskId
+            ? (action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -618,7 +615,7 @@ const TaskReducer = (state = initialState, action) => {
                   comments: task.comments.filter(
                     comment => comment.commentId !== action.comment.commentId,
                   ),
-                }
+                })
             : task,
         ),
       };
@@ -641,7 +638,7 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         tasks: state.tasks.map(task =>
           task.taskId === mainTask
-            ? action.task.parentTaskId
+            ? (action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -658,7 +655,7 @@ const TaskReducer = (state = initialState, action) => {
                   ...task,
                   read: action.task.read,
                   updated: action.task.updated,
-                }
+                })
             : task,
         ),
       };
@@ -678,7 +675,7 @@ const TaskReducer = (state = initialState, action) => {
       return requestHistoryError(state, action);
 
     case CLEAR_CURRENT_TASK_HISTORY:
-      return clearHistory(state, action);
+      return clearHistory(state);
 
     case ORDER_SUB_TASK_SUCCESS:
       return {
@@ -792,6 +789,22 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         tasks: [...(state.tasks || []), ...(actionTasks || [])],
+      };
+    }
+
+    case UPDATED_SUBTASK_ORDER: {
+      const { task: actionTask } = action;
+
+      return {
+        ...state,
+        tasks: state.tasks.map(task => {
+          const { taskId } = task;
+          if (taskId === actionTask?.taskId) {
+            return { ...task, subtasks: actionTask.subtasks };
+          }
+
+          return task;
+        }),
       };
     }
 

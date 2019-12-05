@@ -58,24 +58,24 @@ export const HeadsUpSectionHeaderButton = styled.div`
 `;
 
 export const HeadsUpButtonsContainer = styled.div`
-  display: flex;
-  padding: 5px;
   flex: 1;
-  flex-flow: row nowrap;
+  padding: 5px;
+  white-space: nowrap;
 `;
 
 export const HeadsUpSectionButton = styled.div`
   align-items: center;
   background-color: #ededf0;
   border-radius: 4px;
+  box-sizing: border-box;
   cursor: pointer;
-  display: flex;
-  flex: 1;
+  display: inline-flex;
   flex-direction: column;
+  height: calc(100% - 10px);
   justify-content: center;
   margin: 5px;
-  max-width: ${props => `${100 / props.elementsCount ?? 1}%`};
   transition: all 0.25s ease-out;
+  width: ${props => `calc(${100 / props.elementsCount ?? 1}% - 10px)`};
 
   ${props =>
     props.active &&
@@ -115,11 +115,11 @@ export const HeadsUpSectionLabelOuterContainer = styled.div`
 
 const innerLabelAnimation = keyframes`
   0% {
-    transform: translateX(calc(-100% - 1rem));
+    transform: translateX(calc(-100% - 0rem));
   }
 
   100% {
-    transform: translateX(calc(100% + 1rem));
+    transform: translateX(calc(100% + 0rem));
   }
 `;
 
@@ -132,7 +132,10 @@ export const HeadsUpSectionLabelInnerContainer = styled.div`
   justify-content: center;
 
   ${props =>
-    props.animated && `animation-duration: 2s; justify-content: flex-start;`}
+    props.animated &&
+    `animation-duration: 3s;
+    width: min-content;
+    `}
 `;
 
 export const HeadsUpAreaContainer = styled.div`
