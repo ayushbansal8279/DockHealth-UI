@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
+import styled, { keyframes } from 'styled-components';
 
 export const HeadsUpSectionGrid = styled(Grid)`
   padding: 0.625rem 0 0.625rem 0.625rem;
@@ -74,6 +74,7 @@ export const HeadsUpSectionButton = styled.div`
   flex-direction: column;
   justify-content: center;
   margin: 5px;
+  max-width: ${props => `${100 / props.elementsCount ?? 1}%`};
   transition: all 0.25s ease-out;
 
   ${props =>
@@ -93,12 +94,45 @@ export const HeadsUpSectionButtonCount = styled.div`
 
 export const HeadsUpSectionButtonLabel = styled.div`
   color: #281f3e;
+  display: flex;
   font-size: 14px;
+  justify-content: center;
   opacity: 0.5;
+  overflow: hidden;
+  padding: 0 0.5rem;
   pointer-events: none;
   transition: all 0.25s ease-out;
+  white-space: nowrap;
+  width: 100%;
 
   ${props => props.active && 'color: #303538;'}
+`;
+
+export const HeadsUpSectionLabelOuterContainer = styled.div`
+  overflow: hidden;
+  width: 100%;
+`;
+
+const innerLabelAnimation = keyframes`
+  0% {
+    transform: translateX(calc(-100% - 1rem));
+  }
+
+  100% {
+    transform: translateX(calc(100% + 1rem));
+  }
+`;
+
+export const HeadsUpSectionLabelInnerContainer = styled.div`
+  animation-delay: 0s;
+  animation-name: ${innerLabelAnimation};
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  display: flex;
+  justify-content: center;
+
+  ${props =>
+    props.animated && `animation-duration: 2s; justify-content: flex-start;`}
 `;
 
 export const HeadsUpAreaContainer = styled.div`
