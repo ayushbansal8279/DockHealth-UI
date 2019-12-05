@@ -113,19 +113,19 @@ export const HeadsUpSectionLabelOuterContainer = styled.div`
   width: 100%;
 `;
 
-const innerLabelAnimation = keyframes`
+const innerLabelAnimation = props => keyframes`
   0% {
-    transform: translateX(calc(-100% - 0rem));
+    transform: translateX(-${props.scrollWidth ?? 0}px);
   }
 
   100% {
-    transform: translateX(calc(100% + 0rem));
+    transform: translateX(${props.scrollWidth ?? 0}px);
   }
 `;
 
 export const HeadsUpSectionLabelInnerContainer = styled.div`
   animation-delay: 0s;
-  animation-name: ${innerLabelAnimation};
+  animation-name: ${props => innerLabelAnimation(props)};
   animation-iteration-count: infinite;
   animation-timing-function: linear;
   display: flex;
@@ -134,7 +134,6 @@ export const HeadsUpSectionLabelInnerContainer = styled.div`
   ${props =>
     props.animated &&
     `animation-duration: 3s;
-    width: min-content;
     `}
 `;
 

@@ -137,6 +137,7 @@ const renderCurrentTab = ({
               <HeadsUpSectionLabelInnerContainer
                 animated={innerLabelAnimated}
                 ref={innerLabelReference}
+                scrollWidth={innerLabelReference.current?.scrollWidth}
               >
                 {label}
               </HeadsUpSectionLabelInnerContainer>

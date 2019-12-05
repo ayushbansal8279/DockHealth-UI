@@ -3,10 +3,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
+import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
+import any from 'ramda/es/any';
 import equals from 'ramda/es/equals';
 import filter from 'ramda/es/filter';
 import map from 'ramda/es/map';
+import prop from 'ramda/es/prop';
 import reject from 'ramda/es/reject';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -111,6 +114,16 @@ class TaskView extends Component {
   headsUpArea = React.createRef();
 
   filterButton = React.createRef();
+
+  handleSearchDebounced = debounce(value => {
+    const searchTerms = value.toLowerCase().match(/\S+/g) || [];
+
+    this.clearStoredCurrentTask();
+    this.setState({ searchTerms }, () => {
+      this.saveTaskListPreferences();
+    });
+    this.closeTaskDrawer();
+  }, 200);
 
   componentDidMount = () => {
     const { taskList } = this.props;
@@ -398,13 +411,18 @@ class TaskView extends Component {
 
   handleSearch = event => {
     const { value } = event.target;
-    const searchTerms = value.toLowerCase().match(/\S+/g) || [];
+    this.handleSearchDebounced(value);
+  };
 
-    this.clearStoredCurrentTask();
-    this.setState({ searchTerms }, () => {
-      this.saveTaskListPreferences();
-    });
-    this.closeTaskDrawer();
+  searchTaskProperties = ({ description, sourceMessage, comments }) => {
+    const { searchTerms } = this.state;
+
+    const isMatch = text =>
+      searchTerms.every(term => text?.toLowerCase().includes(term));
+
+    const commentsContents = comments.map(prop('comment'));
+
+    return any(isMatch)([description, sourceMessage, ...commentsContents]);
   };
 
   search = tasks => {
@@ -412,11 +430,10 @@ class TaskView extends Component {
       return tasks;
     }
 
-    const { searchTerms } = this.state;
-    const isMatch = text =>
-      searchTerms.every(term => text?.toLowerCase().includes(term));
-
-    return tasks.filter(({ description }) => isMatch(description));
+    return [
+      ...tasks.filter(this.searchTaskProperties),
+      ...tasks.flatMap(prop('subtasks')).filter(this.searchTaskProperties),
+    ];
   };
 
   toggleHUD = () => {

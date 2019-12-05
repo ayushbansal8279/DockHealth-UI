@@ -52,6 +52,7 @@
     "immer": "^4.0.2",
     "jquery": "^3.4.0",
     "linkifyjs": "^2.1.8",
+    "lodash.debounce": "^4.0.8",
     "material-ui-pickers": "^2.2.4",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
