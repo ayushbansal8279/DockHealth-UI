@@ -10,7 +10,7 @@ import useBoolean from '../../hooks/useBoolean';
 import usePatient from '../../hooks/usePatient';
 import BackIcon from '../../img/back.svg';
 import PatientEdit from '../patients/PatientEdit';
-import { PatientsSidebarSection } from '../patients/PatientsSidebar';
+import PatientsSidebarSection from '../patients/PatientsSidebar.Section';
 import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';
 
@@ -73,6 +73,13 @@ const PatientDrawerContainer = styled.div`
   flex: 1.4;
 `;
 
+const selectCurrentTask = ({ dispatch, closeTaskDrawer }) => task => {
+  if (!task) {
+    closeTaskDrawer();
+  }
+  storeAsCurrentTask(task)(dispatch);
+};
+
 const renderPatientSection = ({
   selectedTask,
   patientId,
@@ -80,13 +87,6 @@ const renderPatientSection = ({
   closeTaskDrawer,
   ...otherProps
 }) => ({ listName, taskListId, tasks, completedTasks }) => {
-  const selectCurrentTask = task => {
-    if (!task) {
-      closeTaskDrawer();
-    }
-    storeAsCurrentTask(task)(dispatch);
-  };
-
   return (
     <PatientsSidebarSection heading={listName} key={listName}>
       <PatientsTasklistEditable
@@ -95,8 +95,8 @@ const renderPatientSection = ({
         submitTask={description =>
           saveTask({ description, taskListId, patientId })(dispatch)
         }
-        isAddTaskEnabled={true}
-        selectCurrentTask={selectCurrentTask}
+        isAddTaskEnabled
+        selectCurrentTask={selectCurrentTask({ dispatch, closeTaskDrawer })}
         {...otherProps}
       />
     </PatientsSidebarSection>

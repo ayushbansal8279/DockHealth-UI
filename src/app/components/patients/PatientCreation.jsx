@@ -18,8 +18,8 @@ import {
   PatientsSidebarCloseButton,
   PatientsSidebarContainer,
   PatientsSidebarHeader,
-  PatientsSidebarSection,
-} from './PatientsSidebar';
+} from './PatientsSidebar.Styled';
+import PatientsSidebarSection from './PatientsSidebar.Section';
 
 export const StyledTextField = styled(
   ({ InputProps, InputLabelProps, ...rest }) => (
@@ -120,8 +120,8 @@ export const Save = styled(Button).attrs({
 const BirthdayTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={ref => {
-      inputRef(ref ? ref.inputElement : null);
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
     }}
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
@@ -133,8 +133,8 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
 const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={ref => {
-      inputRef(ref ? ref.inputElement : null);
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
     }}
     mask={[
       /\d/,
@@ -298,6 +298,11 @@ export const PatientsForm = ({
   );
 };
 
+const validateBirthday = dob =>
+  moment(dob, 'MM/DD/YYYY', true).isBefore(moment());
+const validateEmail = email =>
+  /^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(email);
+
 const PatientCreation = () => {
   const dispatch = useDispatch();
   const abort = () => {
@@ -344,17 +349,6 @@ const PatientCreation = () => {
     await dispatch(addPatient(formState));
     setIsSubmitting(false);
   }, [dispatch, formState]);
-
-  const validateBirthday = dob => {
-    const now = moment();
-    const birthday = moment(dob, 'MM/DD/YYYY', true);
-    return birthday.isBefore(now);
-  };
-
-  const validateEmail = email => {
-    const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email);
-    return valid;
-  };
 
   const canSubmit = () => {
     const { firstName, lastName, dob, email } = formState;

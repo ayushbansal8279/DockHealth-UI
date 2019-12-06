@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import { updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
 import PatientNotes from './PatientNotes';
-import { PatientsSidebarSection } from './PatientsSidebar';
+import PatientsSidebarSection from './PatientsSidebar.Section';
 
 const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -116,8 +116,8 @@ const Save = styled(Button).attrs({
 const BirthdayTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={ref => {
-      inputRef(ref ? ref.inputElement : null);
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
     }}
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
@@ -128,8 +128,8 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
 const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
   <MaskedInput
     {...rest}
-    ref={ref => {
-      inputRef(ref ? ref.inputElement : null);
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
     }}
     mask={[
       /\d/,
@@ -168,6 +168,7 @@ export const PatientsForm = ({
   errors,
   hideCollapse,
   isReadOnly,
+  isClean,
   cancel,
 }) => {
   return (
@@ -280,7 +281,7 @@ export const PatientsForm = ({
         >
           {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
           {!isReadOnly && (
-            <Save onClick={onSubmit} disabled={isDisabled}>
+            <Save onClick={onSubmit} disabled={isDisabled || isClean}>
               Save
             </Save>
           )}
@@ -301,6 +302,44 @@ export const PatientsForm = ({
       </PatientsSidebarSection>
     </>
   );
+};
+
+const validateBirthday = dob =>
+  moment(dob, 'MM/DD/YYYY', true).isBefore(moment());
+const validateEmail = email =>
+  /^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(email);
+
+const handleChangeEvent = ({ formState, setFormState }) => event => {
+  const { target } = event;
+  const { name } = target;
+  const value = target.type === 'checkbox' ? target.checked : target.value;
+
+  let updatedFormState = {
+    ...formState,
+    [name]: value,
+  };
+
+  const formatFirstNameState = evolve({
+    firstName: capitalizeWords,
+  });
+  const formatMiddleNameState = evolve({
+    middleName: capitalizeWords,
+  });
+  const formatLastNameState = evolve({
+    lastName: capitalizeWords,
+  });
+
+  if (updatedFormState.firstName) {
+    updatedFormState = formatFirstNameState(updatedFormState);
+  }
+  if (updatedFormState.middleName) {
+    updatedFormState = formatMiddleNameState(updatedFormState);
+  }
+  if (updatedFormState.lastName) {
+    updatedFormState = formatLastNameState(updatedFormState);
+  }
+
+  setFormState(updatedFormState);
 };
 
 const PatientEdit = ({ patient }) => {
@@ -324,39 +363,7 @@ const PatientEdit = ({ patient }) => {
   const isClean = equals(formState, formattedPatient);
 
   const handleInputChange = useCallback(
-    event => {
-      const { target } = event;
-      const { name } = target;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
-
-      var updatedFormState = {
-        ...formState,
-        [name]: value,
-      };
-
-
-      const formatFirstNameState = evolve({
-        firstName: capitalizeWords
-      });
-      const formatMiddleNameState = evolve({
-        middleName: capitalizeWords
-      });
-      const formatLastNameState = evolve({
-        lastName: capitalizeWords
-      });
-
-      if(updatedFormState.firstName){
-        updatedFormState = formatFirstNameState(updatedFormState)
-      }
-      if(updatedFormState.middleName){
-        updatedFormState = formatMiddleNameState(updatedFormState)
-      }
-      if(updatedFormState.lastName){
-        updatedFormState = formatLastNameState(updatedFormState)
-      }
-
-      setFormState(updatedFormState);
-    },
+    handleChangeEvent({ formState, setFormState }),
     [formState],
   );
 
@@ -365,17 +372,6 @@ const PatientEdit = ({ patient }) => {
     await dispatch(updatePatient(formState));
     setIsSubmitting(false);
   }, [dispatch, formState]);
-
-  const validateBirthday = dob => {
-    const now = moment();
-    const birthday = moment(dob, 'MM/DD/YYYY', true);
-    return birthday.isBefore(now);
-  };
-
-  const validateEmail = email => {
-    const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(email);
-    return valid;
-  };
 
   const canSubmit = () => {
     const { firstName, lastName, dob, email } = formState;
@@ -406,7 +402,8 @@ const PatientEdit = ({ patient }) => {
               email: formState.email && !validateEmail(formState.email),
             }
       }
-      isReadOnly={isClean}
+      isReadOnly={false}
+      isClean={isClean}
       cancel={isClean ? undefined : clear}
     />
   );

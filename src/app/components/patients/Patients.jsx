@@ -36,15 +36,17 @@ const PatientsListSpinner = ({ isFetching }) => (
   </FadeContainer>
 );
 
+const compareField = (field, term) =>
+  field && field.toLowerCase().includes(term);
+
+const termMatchesPatient = ({ mrn, lastName, firstName }) => term =>
+  compareField(mrn, term) ||
+  compareField(lastName, term) ||
+  compareField(firstName, term);
+
 const searchPatients = (patients, searchTerm) => {
-  const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
-  const compareField = (field, term) =>
-    field && field.toLowerCase().includes(term);
+  const searchTerms = searchTerm.toLowerCase().match(/\S+/g) || [];
   // eslint-disable-next-line max-len
-  const termMatchesPatient = ({ mrn, lastName, firstName }) => term =>
-    compareField(mrn, term) ||
-    compareField(lastName, term) ||
-    compareField(firstName, term);
   const isMatch = patient => searchTerms.every(termMatchesPatient(patient));
   return patients.filter(isMatch);
 };
@@ -73,8 +75,8 @@ const PatientsLayout = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const handleSearch = useCallback(
-    e => {
-      const { value } = e.target;
+    event => {
+      const { value } = event.target;
       setSearchTerm(value);
     },
     [setSearchTerm],
