@@ -1,6 +1,9 @@
 /* eslint-disable eqeqeq */
 import axios from './axios-heydoc';
 
+const ERROR_RETRIEVING_TASKS_MESSAGE =
+  'Error in retrieving tasks. Please try again.';
+
 /**
  * Get all tasks for a user
  */
@@ -307,14 +310,19 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export const updateDueDate = (taskId, dueDate) =>
-  axios
+export const updateDueDate = (taskId, dueDate) => {
+  return axios
     .put(
-      `task/addOrUpdateDueDate/${taskId}?dueDate=${dueDate.format(
-        'MM/DD/YYYY',
-      )}`,
+      `task/addOrUpdateDueDate/${taskId}`,
+      {},
+      {
+        params: {
+          dueDate: dueDate ? dueDate.format('MM/DD/YYYY') : null,
+        },
+      },
     )
-    .catch(err => err.response.data);
+    .catch(error => error.response.data);
+};
 
 /**
  * Updates task workflow status.
@@ -327,7 +335,7 @@ export const updateWorkflowStatus = (taskId, workflowStatus) =>
     .put(
       `task/updateTaskWorkflowStatus/${taskId}?workflowStatus=${workflowStatus}`,
     )
-    .catch(err => err.response.data);
+    .catch(error => error.response.data);
 
 export function markHighPriority(taskId, userId) {
   return axios
@@ -409,7 +417,7 @@ export function getHighPriorityTasksByTaskList(taskListId) {
     .get(`task/findHighPriorityListTasks/${taskListId}?startPosition=0`)
     .then(response => response.data)
     .catch(error => {
-      toggleAlert('Error in retrieving tasks. Please try again.', 'error');
+      toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
       throw error;
     });
 }
@@ -421,7 +429,7 @@ export function getListTasksByPatient(patientId, status, taskListId) {
     )
     .then(response => response.data)
     .catch(error => {
-      toggleAlert('Error in retrieving tasks. Please try again.', 'error');
+      toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
       throw error;
     });
 }
@@ -434,7 +442,7 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        toggleAlert('Error in retrieving tasks. Please try again.', 'error');
+        toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
         throw error;
       });
   }
@@ -442,7 +450,7 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
     .get(`task/findAllListTasksByPatient/${patientId}?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      toggleAlert('Error in retrieving tasks. Please try again.', 'error');
+      toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
       throw error;
     });
 }

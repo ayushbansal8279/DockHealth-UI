@@ -3,10 +3,10 @@ import { FormContext } from 'react-hook-form';
 
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
 import { getPatientName, noop } from '../../helpers/utilityFunctions';
-import NewTaskDrawerCommentSection from './NewTaskDrawer.commentSection';
+import NewTaskDrawerCommentSection from './NewTaskDrawer.CommentSection';
 import initializeNewTaskDrawerHooks from './NewTaskDrawer.Hooks';
 import onSubmit from './NewTaskDrawer.onSubmit';
-import NewTaskDrawerOtherDataSection from './NewTaskDrawer.otherDataSection';
+import NewTaskDrawerOtherDataSection from './NewTaskDrawer.OtherDataSection';
 import NewTaskDrawerParentInfo from './NewTaskDrawer.ParentInfo';
 import {
   BottomButtomContainer,

@@ -27,7 +27,7 @@ const CommentBubble = styled.div`
 const CommentBubbleText = styled.div`
   min-height: 1em;
   outline: none;
-  word-break: break-all;
+  word-break: break-word;
 `;
 
 const BubbleFinish = styled.img`
@@ -108,10 +108,10 @@ class SingleComment extends Component {
 
   commentBubbleTextRef = React.createRef();
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(previousProps, previousState) {
     const { commentBubbleTextFocused } = this.state;
     if (
-      commentBubbleTextFocused !== prevState.commentBubbleTextFocused &&
+      commentBubbleTextFocused !== previousState.commentBubbleTextFocused &&
       commentBubbleTextFocused
     ) {
       // eslint-disable-next-line no-unused-expressions

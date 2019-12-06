@@ -1,19 +1,11 @@
 import { List, ListItem, Popover } from '@material-ui/core';
 import moment from 'moment';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import styled from 'styled-components';
 
-import useBoolean from '../../hooks/useBoolean';
-import DateTimeSelect from '../common/DateTimeSelect';
-import {
-  getTaskHistory,
-  updateDueDate,
-  moveTask,
-  storeAsCurrentTask,
-} from '../../actions/task-actions';
 import CubesLoader from '../common/CubesLoader';
+import NewTaskDrawerOtherDataDueDate from './NewTaskDrawer.OtherDataDueDate';
+import initializeNewTaskDrawerOtherDataSectionHooks from './NewTaskDrawer.OtherDataSectionHooks';
 
 const OtherDataSectionContainer = styled.div`
   padding: 1rem 1.5rem;
@@ -130,124 +122,34 @@ export default ({
   setAutoSaveVisible,
   isInbox,
 }) => {
-  const taskLists = useSelector(store => store.taskListState.tasklist) || [];
-  const currentUser = useSelector(store => store.userState.userProfile);
-  const todaysMoment = moment().format('MMM D, YYYY @ h:mma');
-
-  const { register, setValue } = useFormContext();
-  const dispatch = useDispatch();
-
-  const [newTaskListName, setNewTaskListName] = useState('');
-  const [newDueDate, setNewDueDate] = useState(
-    new Date(task?.dueDate ? task.dueDate : undefined),
-  );
-  const [
+  const {
+    taskLists,
+    currentUser,
+    todaysMoment,
+    register,
+    setValue,
+    newTaskListName,
+    setNewTaskListName,
     isTaskListPopoverOpen,
     setTaskListPopoverOpen,
     unsetTaskListPopoverOpen,
-  ] = useBoolean(false);
-  const [isHistoryShown, , hideHistory, toggleHistory] = useBoolean(false);
-  const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] = useBoolean(
-    false,
-  );
-  const [history, setHistory] = useState([]);
-  const taskListButtonRef = useRef(null);
-
-  const newDueDateMoment = moment(newDueDate);
-  const taskId = task?.taskId;
-
-  useEffect(() => {
-    setValue('newTaskListId', null);
-    setValue('newTaskDueDate', null);
-    setNewTaskListName('');
-    setHistory([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    setValue(
-      'newTaskDueDate',
-      newDueDateMoment
-        .set({ hour: 0, minute: 0, second: 0 })
-        .format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newDueDate]);
-
-  useEffect(() => {
-    if (isHistoryShown) {
-      if (task) {
-        getTaskHistory(task)(dispatch)
-          .then(historyDetails => {
-            setHistory(historyDetails);
-            unsetHistoryLoading();
-          })
-          .catch(() => {
-            unsetHistoryLoading();
-          });
-      }
-    } else {
-      setHistory([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHistoryShown]);
-
-  useEffect(() => {
-    setHistory([]);
-    hideHistory();
-    unsetHistoryLoading();
-    unsetTaskListPopoverOpen();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskId]);
-
-  const onToggleHistoryButtonClicked = () => {
-    if (!isHistoryShown) {
-      setHistoryLoading();
-    }
-    toggleHistory();
-  };
-
-  const saveDueDate = useCallback(
-    ({ updatedDueDate }) => {
-      updateDueDate(
-        task,
-        moment(updatedDueDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-      )(dispatch)
-        .then(() => {
-          setAutoSaveVisible();
-        })
-        .catch(() => {
-          toggleAlert(
-            'Error updating due date, please try again later',
-            'error',
-          );
-        });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskId],
-  );
-
-  const saveTaskList = useCallback(
-    ({ newTaskList }) => {
-      moveTask(task, newTaskList)(dispatch)
-        .then(() => {
-          toggleAlert(
-            `Task moved successfully to list ${newTaskList.listName}`,
-            'success',
-          );
-          storeAsCurrentTask(null)(dispatch);
-          closeDrawer();
-        })
-        .catch(() => {
-          toggleAlert(
-            `Error moving task to list ${newTaskList.listName}, please try again later`,
-            'error',
-          );
-        });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskId],
-  );
+    isHistoryShown,
+    isHistoryLoading,
+    history,
+    taskListButtonReference,
+    newDueDateMoment,
+    clearDueDate,
+    saveTaskList,
+    saveDueDate,
+    onToggleHistoryButtonClicked,
+    taskId,
+    newDueDate,
+    setNewDueDate,
+  } = initializeNewTaskDrawerOtherDataSectionHooks({
+    task,
+    setAutoSaveVisible,
+    closeDrawer,
+  });
 
   return (
     <OtherDataSectionContainer>
@@ -259,7 +161,7 @@ export default ({
             {task ? (
               <SectionButton
                 clickable
-                ref={taskListButtonRef}
+                ref={taskListButtonReference}
                 onClick={setTaskListPopoverOpen}
               >
                 {isInbox ? 'Inbox' : newTaskListName || taskList?.listName}
@@ -271,7 +173,7 @@ export default ({
             )}
           </SectionButtonContainer>
           <Popover
-            anchorEl={taskListButtonRef.current}
+            anchorEl={taskListButtonReference.current}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'left',
@@ -301,35 +203,16 @@ export default ({
       <SectionRow>
         <input type="hidden" name="newTaskDueDate" ref={register} />
         <SectionLabel>Due date</SectionLabel>
-        <DateTimeSelect
-          value={newDueDate}
-          onChange={updatedDueDate => {
-            setNewDueDate(updatedDueDate);
-            if (taskId) {
-              saveDueDate({ updatedDueDate });
-            }
-          }}
-          label="Set a due date"
-          showTimeSelect={false}
-          anchorOrigin={{
-            vertical: 'center',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'center',
-            horizontal: 'center',
-          }}
-        >
-          {({ open }) => (
-            <SectionButtonContainer>
-              <SectionButton clickable onClick={open}>
-                {newDueDateMoment.isValid()
-                  ? newDueDateMoment.format('MMM. D, YYYY')
-                  : 'Set a due date'}
-              </SectionButton>
-            </SectionButtonContainer>
-          )}
-        </DateTimeSelect>
+        <NewTaskDrawerOtherDataDueDate
+          newDueDate={newDueDate}
+          setNewDueDate={setNewDueDate}
+          saveDueDate={saveDueDate}
+          taskId={taskId}
+          newDueDateMoment={newDueDateMoment}
+          clearDueDate={clearDueDate}
+          SectionButtonContainer={SectionButtonContainer}
+          SectionButton={SectionButton}
+        />
       </SectionRow>
       <SectionRow>
         <SectionLabel>History</SectionLabel>

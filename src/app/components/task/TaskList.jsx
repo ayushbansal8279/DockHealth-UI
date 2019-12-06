@@ -102,12 +102,16 @@ const Heading = ({ onSortingChanged, taskDrawerOpen, sorting }) => (
   </HeadingContainer>
 );
 
-const ListEmptyElement = ({ addingNewTask }) => {
+const ListEmptyElement = ({ addingNewTask, taskDrawerOpen }) => {
   if (addingNewTask) {
     return null;
   }
 
-  return <EmptyListElementContainer>List is empty.</EmptyListElementContainer>;
+  return (
+    <EmptyListElementContainer taskDrawerOpen={taskDrawerOpen}>
+      List is empty.
+    </EmptyListElementContainer>
+  );
 };
 
 const TASK_LIST_SHOW_MORE_STEP = 100;
@@ -180,22 +184,25 @@ const TaskList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showMoreButtonVisible, isShowMoreLocked, taskListShowMoreIndex]);
 
-  const onSortingChanged = useCallback(({ key }) => () => {
-    const [[currentSortingColumn], otherSortingColumns] = partition(
-      propEq('key', key),
-      currentSorting,
-    );
+  const onSortingChanged = useCallback(
+    ({ key }) => () => {
+      const [[currentSortingColumn], otherSortingColumns] = partition(
+        propEq('key', key),
+        currentSorting,
+      );
 
-    const order = currentSortingColumn.order === 'asc' ? 'desc' : 'asc';
+      const order = currentSortingColumn.order === 'asc' ? 'desc' : 'asc';
 
-    setCurrentSorting([
-      ...otherSortingColumns,
-      {
-        ...currentSortingColumn,
-        order,
-      },
-    ]);
-  });
+      setCurrentSorting([
+        ...otherSortingColumns,
+        {
+          ...currentSortingColumn,
+          order,
+        },
+      ]);
+    },
+    [setCurrentSorting, currentSorting],
+  );
 
   const sortingMethods = currentSorting.map(({ order, valueGetter }) =>
     (order === 'asc' ? ascend : descend)(valueGetter),
@@ -215,7 +222,10 @@ const TaskList = ({
       />
       <NewTaskElement addingNewTask={addingNewTask} />
       {tasks.length === 0 ? (
-        <ListEmptyElement addingNewTask={addingNewTask} />
+        <ListEmptyElement
+          addingNewTask={addingNewTask}
+          taskDrawerOpen={taskDrawerOpen}
+        />
       ) : (
         sortedTasksToShow.map(task => (
           <Task

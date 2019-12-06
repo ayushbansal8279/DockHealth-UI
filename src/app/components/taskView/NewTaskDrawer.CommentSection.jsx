@@ -11,10 +11,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
 
-import { addTaskComment } from '../../actions/task-actions';
+import {
+  addTaskComment,
+  updateComment as updateCommentAction,
+} from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
-import renderComment from './NewTaskDrawer.renderComment';
+import renderComment from './NewTaskDrawer.RenderComment';
 import { FormSectionDivider } from './NewTaskDrawer.styled';
 
 const CommentSectionLabel = styled.div`
@@ -119,15 +122,90 @@ const getGroupedComments = ({ comments }) => {
     sortedComments,
   );
 
-  const groupedComments = mapObjIndexed(
+  return mapObjIndexed(
     groupWith(
       (comment1, comment2) =>
         comment1.creator.userId === comment2.creator.userId,
     ),
     datedComments,
   );
+};
 
-  return groupedComments;
+const addTaskPromise = async ({
+  task: newTask,
+  setPublishingComment,
+  clearCommentContent,
+  addComment,
+  unsetPublishingComment,
+  commentContent,
+  dispatch,
+  scrollToBottom,
+}) => {
+  try {
+    setPublishingComment();
+
+    const { data } = await addTaskComment(newTask, {
+      comment: commentContent.trim(),
+    })(dispatch);
+
+    clearCommentContent();
+
+    toggleAlert('Comment added successfully', 'success');
+
+    addComment(data);
+
+    scrollToBottom();
+  } catch {
+    toggleAlert('Error adding comment, please try again later', 'error');
+  } finally {
+    unsetPublishingComment();
+  }
+};
+
+const publishComment = ({
+  commentSectionInputFieldReference,
+  task,
+  setPublishingComment,
+  addComment,
+  clearCommentContent,
+  unsetPublishingComment,
+  dispatch,
+  scrollToBottom,
+  addDeferredCommentToQueue,
+  setAddedComments,
+  currentUserProfile,
+}) => {
+  const commentContent = commentSectionInputFieldReference.current?.textContent;
+
+  if (commentContent?.trim().length === 0) {
+    return;
+  }
+
+  if (task) {
+    addTaskPromise({
+      task,
+      setPublishingComment,
+      clearCommentContent,
+      addComment,
+      unsetPublishingComment,
+      commentContent,
+      dispatch,
+      scrollToBottom,
+    });
+  } else {
+    addDeferredCommentToQueue({
+      promise: addTaskPromise,
+      clearMethod: async () => setAddedComments([]),
+      addComment,
+    });
+    addComment({
+      comment: commentContent.trim(),
+      creator: currentUserProfile,
+      dateCreated: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+    });
+    scrollToBottom();
+    clearCommentContent();
+  }
 };
 
 export default ({ addDeferredCommentToQueue, task }) => {
@@ -135,10 +213,12 @@ export default ({ addDeferredCommentToQueue, task }) => {
   const currentUserId = currentUserProfile?.userId;
 
   const dispatch = useDispatch();
-  const [addingComment, , , toggleAddingComment] = useBoolean(false);
+  const addingCommentsMethods = useBoolean(false);
+  const addingComment = addingCommentsMethods[0];
+  const toggleAddingComment = addingCommentsMethods[3];
   const [addedComments, setAddedComments] = useState([]);
-  const commentSectionInputFieldRef = useRef(null);
-  const simpleBarRef = useRef(null);
+  const commentSectionInputFieldReference = useRef(null);
+  const simpleBarReference = useRef(null);
   const [
     isPublishingComment,
     setPublishingComment,
@@ -146,8 +226,8 @@ export default ({ addDeferredCommentToQueue, task }) => {
   ] = useBoolean(false);
 
   const clearCommentContent = useCallback(() => {
-    if (commentSectionInputFieldRef.current) {
-      commentSectionInputFieldRef.current.textContent = '';
+    if (commentSectionInputFieldReference.current) {
+      commentSectionInputFieldReference.current.textContent = '';
     }
   }, []);
 
@@ -156,7 +236,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
   useEffect(() => {
     if (addingComment) {
       // eslint-disable-next-line no-unused-expressions
-      commentSectionInputFieldRef.current?.focus();
+      commentSectionInputFieldReference.current?.focus();
     } else {
       clearCommentContent();
     }
@@ -168,11 +248,11 @@ export default ({ addDeferredCommentToQueue, task }) => {
   const groupedComments = getGroupedComments({ comments, task });
 
   const scrollToBottom = useCallback(() => {
-    const scrollElement = simpleBarRef.current?.getScrollElement();
+    const scrollElement = simpleBarReference.current?.getScrollElement();
     if (scrollElement) {
       scrollElement.scrollTop = scrollElement.scrollHeight;
     }
-  });
+  }, []);
 
   useEffect(() => {
     setAddedComments([]);
@@ -185,58 +265,33 @@ export default ({ addDeferredCommentToQueue, task }) => {
     [addedComments],
   );
 
-  const publishComment = () => {
-    const commentContent = commentSectionInputFieldRef.current?.textContent;
-
-    if (commentContent?.trim().length === 0) {
-      return;
-    }
-
-    const addTaskPromise = async ({ task: newTask }) => {
-      try {
-        setPublishingComment();
-
-        const { data } = await addTaskComment(newTask, {
-          comment: commentContent.trim(),
-        })(dispatch);
-
-        clearCommentContent();
-
-        toggleAlert('Comment added successfully', 'success');
-
-        addComment(data);
-
-        scrollToBottom();
-      } catch {
-        toggleAlert('Error adding comment, please try again later', 'error');
-      } finally {
-        unsetPublishingComment();
-      }
-    };
-
-    if (task) {
-      addTaskPromise({ task });
-    } else {
-      addDeferredCommentToQueue({
-        promise: addTaskPromise,
-        clearMethod: async () => setAddedComments([]),
-        addComment,
-      });
-      addComment({
-        comment: commentContent.trim(),
-        creator: currentUserProfile,
-        dateCreated: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-      });
-      scrollToBottom();
-      clearCommentContent();
-    }
-  };
-
   const handlePublishComment = event => {
     event.preventDefault();
     event.stopPropagation();
 
-    publishComment();
+    publishComment({
+      commentSectionInputFieldReference,
+      task,
+      setPublishingComment,
+      addComment,
+      clearCommentContent,
+      unsetPublishingComment,
+      dispatch,
+      scrollToBottom,
+      addDeferredCommentToQueue,
+      setAddedComments,
+      currentUserProfile,
+    });
+  };
+
+  const updateComment = commentData => {
+    updateCommentAction(task, commentData)(dispatch)
+      .then(() => {
+        toggleAlert('Comment updated successfully', 'success');
+      })
+      .catch(() => {
+        toggleAlert('Error updating comment, please try again later', 'error');
+      });
   };
 
   return (
@@ -245,7 +300,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
         <ClickAwayListener onClickAway={toggleAddingComment}>
           <CommentSectionInputFieldContainer>
             <CommentSectionInputField
-              ref={commentSectionInputFieldRef}
+              ref={commentSectionInputFieldReference}
               contentEditable
               onKeyPress={event => {
                 if (event.key === 'Enter' && !isPublishingComment) {
@@ -278,9 +333,9 @@ export default ({ addDeferredCommentToQueue, task }) => {
       {!commentsEmpty && (
         <>
           <CommentsContainer>
-            <StyledSimpleBar ref={simpleBarRef} visible>
+            <StyledSimpleBar ref={simpleBarReference} visible>
               {Object.entries(groupedComments).map(
-                renderComment({ currentUserId }),
+                renderComment({ currentUserId, updateComment }),
               )}
             </StyledSimpleBar>
           </CommentsContainer>

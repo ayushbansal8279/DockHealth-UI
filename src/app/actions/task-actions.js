@@ -385,12 +385,12 @@ export const updateTaskDescription = (task, description) => dispatch =>
     });
 
 export const updateDueDate = (task, dueDate) => dispatch =>
-  TaskApi.updateTask(shapeTask({ ...task, dueDate }))
-    .then(response => {
+  TaskApi.updateDueDate(task?.taskId, dueDate)
+    .then(() => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_DUE_DATE,
-        taskId: response.taskId,
-        dueDate: response.dueDate,
+        taskId: task?.taskId,
+        dueDate,
       });
       reloadTaskListStats(dispatch, task);
     })
