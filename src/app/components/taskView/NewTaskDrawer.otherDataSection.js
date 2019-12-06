@@ -194,6 +194,7 @@ export default ({
 
   useEffect(() => {
     setHistory([]);
+    setNewDueDate(new Date(task?.dueDate ? task.dueDate : undefined));
     hideHistory();
     unsetHistoryLoading();
     unsetTaskListPopoverOpen();
