@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 
 import { updateWorkflowStatus } from '../../actions/task-actions';
 import { PriorityDot } from '../common/Priority';
-import NewTaskDrawerForm from './NewTaskDrawer.form';
+import NewTaskDrawerForm from './NewTaskDrawer.Form';
 import renderStatusSelectOption from './NewTaskDrawer.RenderStatusSelect';
 import {
   AutoSaveContainer,

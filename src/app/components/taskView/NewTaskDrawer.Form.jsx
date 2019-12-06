@@ -9,7 +9,7 @@ import useBoolean from '../../hooks/useBoolean';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';
-import NewTaskDrawerAddPatientForm from './NewTaskDrawer.addPatientForm';
+import NewTaskDrawerAddPatientForm from './NewTaskDrawer.AddPatientForm';
 import NewTaskDrawerInviteToListForm from './NewTaskDrawer.inviteToListForm';
 import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
 import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.editTaskComponent';
@@ -19,6 +19,7 @@ import {
   updatePatient,
   assignOrReassignTask,
 } from '../../actions/task-actions';
+import initializeNewTaskDrawerFormSelectMethods from './NewTaskDrawer.FormSelectMethods';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -160,10 +161,6 @@ export default ({
   const [currentMember, setCurrentMember] = useState(defaultValues?.assignedTo);
   const dispatch = useDispatch();
 
-  const { reset, register, setValue } = formMethods;
-
-  const hasTask = Boolean(defaultValues?.taskId);
-
   const [
     assignedToPopoverOpen,
     openAssignedToPopover,
@@ -175,6 +172,27 @@ export default ({
     openPatientPopover,
     closePatientPopover,
   ] = useBoolean(false);
+
+  const { reset, register, setValue } = formMethods;
+
+  const hasTask = Boolean(defaultValues?.taskId);
+
+  const {
+    handleAssignedToSelect,
+    handlePatientSelect,
+  } = initializeNewTaskDrawerFormSelectMethods({
+    setValue,
+    setCurrentMember,
+    closeAssignedToPopover,
+    closePatientPopover,
+    hasTask,
+    assignOrReassignTask,
+    defaultValues,
+    dispatch,
+    setAutoSaveVisible,
+    getPatientName,
+    updatePatient,
+  });
 
   useEffect(
     () => {
@@ -200,44 +218,6 @@ export default ({
       : store.taskListState.tasklistmembers,
   );
   const patients = useSelector(store => store.patientState.allPatients);
-
-  const handleAssignedToSelect = member => async () => {
-    const { userId, userName } = member || {};
-    setValue('assignedToUserId', userId);
-    setValue('assignedToUserName', userName);
-    setCurrentMember(member);
-    closeAssignedToPopover();
-
-    if (hasTask) {
-      try {
-        await assignOrReassignTask(defaultValues, parseInt(userId, 10) || -1)(
-          dispatch,
-        );
-        setAutoSaveVisible();
-      } catch {
-        toggleAlert(
-          'Error updating assignment, please try again later',
-          'error',
-        );
-      }
-    }
-  };
-
-  const handlePatientSelect = patient => async () => {
-    setValue('patient', JSON.stringify(patient));
-    setValue('patientId', patient?.patientId);
-    setValue('patientName', getPatientName(patient));
-    closePatientPopover();
-
-    if (hasTask) {
-      try {
-        await updatePatient(defaultValues, patient)(dispatch);
-        setAutoSaveVisible();
-      } catch {
-        toggleAlert('Error updating patient, please try again later', 'error');
-      }
-    }
-  };
 
   const styledInputProps = {
     fontSize: 20,

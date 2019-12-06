@@ -2,6 +2,7 @@ import head from 'ramda/es/head';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useForm from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMount } from 'react-use';
 
 import { getAllPatients } from '../../actions/patient-actions';
 import {
@@ -43,7 +44,7 @@ export default ({ headsUpAreaRef, statusSelectData }) => {
   // SELECTORS
 
   const userProfile = useSelector(store => store.userState.userProfile);
-
+  const patients = useSelector(store => store.patientState.allPatients);
   const { task, parentTask, subtaskOrder } = useSelector(({ taskState }) => {
     const tasks = [...taskState.tasks, ...taskState.completedTasks];
     const { selectedTask } = taskState;
@@ -126,10 +127,12 @@ export default ({ headsUpAreaRef, statusSelectData }) => {
 
   // #region EFFECTS
 
-  useEffect(() => {
-    getAllPatients()(dispatch);
+  useMount(() => {
+    if (patients?.length === 0) {
+      getAllPatients()(dispatch);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   useEffect(() => {
     if (autoSaveVisible) {

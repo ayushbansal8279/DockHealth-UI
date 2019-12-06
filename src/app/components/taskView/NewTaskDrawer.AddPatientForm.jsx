@@ -126,7 +126,7 @@ const renderFormFieldDefinition = ({ setValue }) => ({
   setValuesFromPopover,
   ...props
 }) => {
-  const inputRef = useRef(null);
+  const inputReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
   const inputPopoverProps = popoverOptions
@@ -150,7 +150,7 @@ const renderFormFieldDefinition = ({ setValue }) => ({
           labelFontSize={14}
           labelInactiveTop={1.75}
           name={key}
-          ref={inputRef}
+          ref={inputReference}
           rightAdornment={
             popoverOptions ? (
               <DropdownIconContainer>
@@ -166,7 +166,7 @@ const renderFormFieldDefinition = ({ setValue }) => ({
       </Grid>
       {popoverOptions && (
         <Popover
-          anchorEl={inputRef.current}
+          anchorEl={inputReference.current}
           anchorOrigin={{
             vertical: 'top',
             horizontal: 'left',
@@ -175,7 +175,7 @@ const renderFormFieldDefinition = ({ setValue }) => ({
           open={isPopoverOpen}
           PaperProps={{
             style: {
-              width: inputRef.current?.offsetWidth,
+              width: inputReference.current?.offsetWidth,
             },
           }}
           transformOrigin={{
@@ -208,14 +208,16 @@ const renderFormFieldDefinition = ({ setValue }) => ({
   );
 };
 
-const onSubmit = ({ dispatch, toggleAddingNewPerson }) => async data => {
-  try {
-    await addPatient(data)(dispatch);
-    toggleAlert('Patient added successfully', 'success');
-    toggleAddingNewPerson();
-  } catch {
-    toggleAlert('Error adding new patient, please try again later', 'error');
-  }
+const onSubmit = ({ dispatch, toggleAddingNewPerson }) => {
+  return async data => {
+    try {
+      await addPatient(data)(dispatch);
+      toggleAlert('Patient added successfully', 'success');
+      toggleAddingNewPerson();
+    } catch {
+      toggleAlert('Error adding new patient, please try again later', 'error');
+    }
+  };
 };
 
 export default ({ toggleAddingNewPerson }) => {
@@ -224,7 +226,7 @@ export default ({ toggleAddingNewPerson }) => {
   });
   const dispatch = useDispatch();
 
-  const formRef = useRef(null);
+  const formReference = useRef(null);
 
   const { handleSubmit, register, setValue } = formMethods;
 
@@ -239,7 +241,7 @@ export default ({ toggleAddingNewPerson }) => {
             event,
           );
         }}
-        ref={formRef}
+        ref={formReference}
       >
         <FormLabel>Patient details</FormLabel>
         <Grid container spacing={8}>
