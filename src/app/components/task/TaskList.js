@@ -101,7 +101,7 @@ const Heading = ({ onSortingChanged, taskDrawerOpen, sorting }) => (
   </HeadingContainer>
 );
 
-const ListEmptyElement = ({ addingNewTask }) => {
+const ListEmptyElement = ({ addingNewTask, taskDrawerOpen }) => {
   if (addingNewTask) {
     return null;
   }
@@ -114,6 +114,7 @@ const ListEmptyElement = ({ addingNewTask }) => {
         height: '32px',
         lineHeight: '32px',
         background: 'white',
+        width: taskDrawerOpen ? 579 : 1050,
       }}
     >
       List is empty.
@@ -226,7 +227,10 @@ const TaskList = ({
       />
       <NewTaskElement addingNewTask={addingNewTask} />
       {tasks.length === 0 ? (
-        <ListEmptyElement addingNewTask={addingNewTask} />
+        <ListEmptyElement
+          addingNewTask={addingNewTask}
+          taskDrawerOpen={taskDrawerOpen}
+        />
       ) : (
         sortedTasksToShow.map(task => (
           <Task
