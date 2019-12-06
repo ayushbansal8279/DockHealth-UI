@@ -1,19 +1,19 @@
 import { List, ListItem, Popover } from '@material-ui/core';
 import moment from 'moment';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import useBoolean from '../../hooks/useBoolean';
-import DateTimeSelect from '../common/DateTimeSelect';
 import {
   getTaskHistory,
-  updateDueDate,
   moveTask,
   storeAsCurrentTask,
+  updateDueDate,
 } from '../../actions/task-actions';
+import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
+import DateTimeSelect from '../common/DateTimeSelect';
 
 const OtherDataSectionContainer = styled.div`
   padding: 1rem 1.5rem;
@@ -59,6 +59,17 @@ const HistoryItemContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
   margin-bottom: 0.5rem;
+`;
+
+const DueDateClearButton = styled.div`
+  align-items: center;
+  color: #e40909;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1rem;
+  margin-left: 0.5ch;
 `;
 
 const renderTaskList = ({
@@ -212,7 +223,9 @@ export default ({
     ({ updatedDueDate }) => {
       updateDueDate(
         task,
-        moment(updatedDueDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+        updatedDueDate
+          ? moment(updatedDueDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+          : null,
       )(dispatch)
         .then(() => {
           setAutoSaveVisible();
@@ -249,6 +262,11 @@ export default ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [taskId],
   );
+
+  const clearDueDate = useCallback(() => {
+    setNewDueDate(null);
+    saveDueDate({ updateDueDate: null });
+  }, [saveDueDate, setNewDueDate]);
 
   return (
     <OtherDataSectionContainer>
@@ -322,13 +340,20 @@ export default ({
           }}
         >
           {({ open }) => (
-            <SectionButtonContainer>
-              <SectionButton clickable onClick={open}>
-                {newDueDateMoment.isValid()
-                  ? newDueDateMoment.format('MMM. D, YYYY')
-                  : 'Set a due date'}
-              </SectionButton>
-            </SectionButtonContainer>
+            <>
+              <SectionButtonContainer>
+                <SectionButton clickable onClick={open}>
+                  {newDueDateMoment.isValid()
+                    ? newDueDateMoment.format('MMM. D, YYYY')
+                    : 'Set a due date'}
+                </SectionButton>
+                {newDueDateMoment.isValid() && (
+                  <DueDateClearButton onClick={clearDueDate}>
+                    ×
+                  </DueDateClearButton>
+                )}
+              </SectionButtonContainer>
+            </>
           )}
         </DateTimeSelect>
       </SectionRow>
