@@ -307,14 +307,19 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export const updateDueDate = (taskId, dueDate) =>
-  axios
+export const updateDueDate = (taskId, dueDate) => {
+  return axios
     .put(
-      `task/addOrUpdateDueDate/${taskId}?dueDate=${dueDate.format(
-        'MM/DD/YYYY',
-      )}`,
+      `task/addOrUpdateDueDate/${taskId}`,
+      {},
+      {
+        params: {
+          dueDate: dueDate ? dueDate.format('MM/DD/YYYY') : null,
+        },
+      },
     )
     .catch(err => err.response.data);
+};
 
 /**
  * Updates task workflow status.

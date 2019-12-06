@@ -221,12 +221,9 @@ export default ({
 
   const saveDueDate = useCallback(
     ({ updatedDueDate }) => {
-      updateDueDate(
-        task,
-        updatedDueDate
-          ? moment(updatedDueDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-          : null,
-      )(dispatch)
+      updateDueDate(task, updatedDueDate ? moment(updatedDueDate) : null)(
+        dispatch,
+      )
         .then(() => {
           setAutoSaveVisible();
         })
