@@ -49,7 +49,7 @@ class LoginFormUsername extends Component {
         const authCode = queryValues.code.replace('#/login', '');
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode)
           .then(() => {
-            window.location.href = '/#/taskList';
+            window.location.href = '/#/tasks';
             this.setState({ showLoginMessage: false });
           })
           .catch(e => {
