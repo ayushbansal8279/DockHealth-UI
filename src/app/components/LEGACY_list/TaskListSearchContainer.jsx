@@ -113,18 +113,18 @@ const filterOptions = [
   },
 ];
 
+const selectCurrentTask = ({ closeTaskDrawer, dispatch }) => task => {
+  if (!task) {
+    closeTaskDrawer();
+  }
+  TaskActions.storeAsCurrentTask(task)(dispatch);
+};
+
 const renderTaskListSection = ({
   dispatch,
   closeTaskDrawer,
   ...otherProps
 }) => ({ listName, taskListId, tasks, completedTasks }) => {
-  const selectCurrentTask = task => {
-    if (!task) {
-      closeTaskDrawer();
-    }
-    TaskActions.storeAsCurrentTask(task)(dispatch);
-  };
-
   return (
     <div key={`taskList_${listName}`}>
       <div>
@@ -137,7 +137,10 @@ const renderTaskListSection = ({
                 TaskActions.saveTask({ description, taskListId })(dispatch)
               }
               isAddTaskEnabled={false}
-              selectCurrentTask={selectCurrentTask}
+              selectCurrentTask={selectCurrentTask({
+                closeTaskDrawer,
+                dispatch,
+              })}
               {...otherProps}
             />
           </TaskListSection>
@@ -211,12 +214,10 @@ const TaskListLayout = ({ searchedTasks, isFetching, slimView }) => {
           <CubesLoader size={40} />
         </CubesLoaderContainer>
       )}
-      {!isFetching && (!lists || lists.size === 0) ? (
-        <div>
-          <p className="light-gray" style={{ fontWeight: 'bold' }}>
-            No matching tasks
-          </p>
-        </div>
+      {!isFetching && (!lists || lists.length === 0) ? (
+        <Grid container justify="center">
+          <b>No matching tasks</b>
+        </Grid>
       ) : (
         <>
           <TaskListContainerWrapper>
@@ -258,8 +259,8 @@ class TaskListSearchContainer extends PureComponent {
   };
 
   switchSlimView = () => {
-    this.setState(prevState => ({
-      slimView: !prevState.slimView,
+    this.setState(previousState => ({
+      slimView: !previousState.slimView,
     }));
   };
 
@@ -274,9 +275,9 @@ class TaskListSearchContainer extends PureComponent {
     onFilter(filterBy, sortBy);
   };
 
-  handleSearch = e => {
-    const { value } = e.target;
-    const searchTerms = value.toLowerCase().match(/[\S]+/g) || [];
+  handleSearch = event => {
+    const { value } = event.target;
+    const searchTerms = value.toLowerCase().match(/\S+/g) || [];
 
     this.setState({ searchTerms });
   };
@@ -289,11 +290,8 @@ class TaskListSearchContainer extends PureComponent {
     const { searchTerms } = this.state;
     const isMatch = text =>
       searchTerms.every(term => text?.toLowerCase().includes(term));
-    const filteredTasks = tasks.filter(({ description }) =>
-      isMatch(description),
-    );
 
-    return filteredTasks;
+    return tasks.filter(({ description }) => isMatch(description));
   };
 
   openFilterPopover = () => {
