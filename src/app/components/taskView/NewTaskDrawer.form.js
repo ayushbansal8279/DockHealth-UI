@@ -281,6 +281,11 @@ export default ({
               labelFontSize={13}
               labelInactiveTop={1.75}
               required
+              // onBlur={event => {
+              //   event.preventDefault();
+              //   event.stopPropagation();
+              //   handleSubmit();
+              // }}  
             />
           )}
         </Grid>

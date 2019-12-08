@@ -572,6 +572,25 @@ export default ({
             </StyledButton>
           </BottomButtomContainer>
         )}
+        {(task ==null || task.taskId == null) && (
+          <BottomButtomContainer>
+            <StyledButton
+              onClick={() => {
+                closeDrawer()
+              }}
+            >
+              Cancel
+            </StyledButton>
+            <StyledVerticalDivider />
+            <StyledButton style={{background: "#007CAB", color: "white"}}
+              onClick={() => {
+                handleSubmit()
+              }}
+            >
+              Save
+            </StyledButton>
+          </BottomButtomContainer>
+        )}
         {/* If you want to add a button to the Add a task sidebar, do so here.  */}
         <SideClickListener onClick={closeDrawer} />
       </StyledForm>

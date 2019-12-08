@@ -336,7 +336,7 @@ export default React.forwardRef(
                 {...inputProps}
                 {...props}
                 onFocus={() => setInputState(FOCUS_CLASS_NAME)}
-                onBlur={() => setInputState('')}
+                onBlur={(e) => props.onBlur?props.onBlur(e):setInputState('')}
               />
               {labelComponent}
             </TextareaWrapper>
