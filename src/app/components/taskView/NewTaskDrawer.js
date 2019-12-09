@@ -582,7 +582,7 @@ export default ({
               Cancel
             </StyledButton>
             <StyledVerticalDivider />
-            <StyledButton style={{background: "#007CAB", color: "white"}}
+            <StyledButton style={{backgroundColor: "#007CAB", color: "white"}}
               onClick={() => {
                 handleSubmit()
               }}
