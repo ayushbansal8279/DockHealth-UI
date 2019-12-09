@@ -18,7 +18,7 @@ import {
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import renderComment from './NewTaskDrawer.RenderComment';
-import { FormSectionDivider } from './NewTaskDrawer.styled';
+import { FormSectionDivider } from './NewTaskDrawer.Styled';
 
 const CommentSectionLabel = styled.div`
   align-items: center;

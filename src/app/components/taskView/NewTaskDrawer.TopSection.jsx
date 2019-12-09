@@ -17,7 +17,7 @@ import {
   FormSectionDivider,
   StatusSelect,
   TopLabel,
-} from './NewTaskDrawer.styled';
+} from './NewTaskDrawer.Styled';
 import PriorityFlag from './PriorityFlag';
 import { CloseTaskButton } from './TaskDrawerButtons';
 import { onTaskPriorityChanged } from '../../helpers/ga-event-helper';

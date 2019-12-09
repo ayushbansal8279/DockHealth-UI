@@ -145,8 +145,17 @@ export const StyledButton = styled(Button)`
     font-size: ${props => (props.variant === 'contained' ? 1 : 0.875)}rem;
     ${props => props.variant === 'contained' && 'font-weight: bold;'}
     height: 2rem;
+    line-height: 1rem;
     margin: 1rem 0.25rem;
     text-transform: none;
+    transition: background-color 0.25s ease-out;
+
+    ${props =>
+      props.variant === 'contained' &&
+      `&:hover {
+      background-color: #009fcd;
+      filter: brightness(1.1);
+    }`}
   }
 `;
 
@@ -193,7 +202,7 @@ export const StyledVerticalDivider = styled.div`
   width: 0.0625rem;
 `;
 
-export const BottomButtomContainer = styled.div`
+export const BottomButtonContainer = styled.div`
   align-items: center;
   display: flex;
   flex-flow: row nowrap;

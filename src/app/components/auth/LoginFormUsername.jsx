@@ -21,9 +21,7 @@ const validate = values => {
 
   if (!values.username) {
     errors.username = 'Please enter an email address';
-  } else if (
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)
-  ) {
+  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
     errors.username = 'Please enter a valid email address';
   }
 
@@ -37,23 +35,18 @@ class LoginFormUsername extends Component {
 
   componentWillMount() {
     if (window.location.href) {
-      const index = window.location.href.indexOf('?');
-      const queryStr = window.location.href.substr(
-        index + 1,
-        window.location.href.length - 1,
-      );
-      const queryValues = queryString.parse(queryStr);
+      const queryValues = queryString.parse(window.location.search);
 
       if (queryValues.code !== undefined) {
         this.setState({ showLoginMessage: true });
         const authCode = queryValues.code.replace('#/login', '');
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode)
           .then(() => {
-            window.location.href = '/#/taskList';
+            window.location.href = '/#/tasks';
             this.setState({ showLoginMessage: false });
           })
-          .catch(e => {
-            toggleAlert(e.message, 'error');
+          .catch(error => {
+            toggleAlert(error.message, 'error');
           });
       }
     }

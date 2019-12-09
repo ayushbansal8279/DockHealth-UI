@@ -10,7 +10,7 @@ import {
   StyledSlimViewSwitch,
   StyledToolbar,
   ToolbarContainer,
-} from '../../views/TaskView.styled';
+} from '../../views/TaskView.Styled';
 import Search from './Search';
 import { AddTaskButton } from './TaskDrawerButtons';
 import TaskListAction from './TaskListAction';

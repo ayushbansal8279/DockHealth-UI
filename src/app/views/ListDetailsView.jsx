@@ -34,14 +34,34 @@ class Home extends PureComponent {
         listName === 'assigned_by_me'
           ? actions.getTasksAssignedByMe
           : actions.getTasksAssignedToMe;
-      taskAction(undefined, sortBy, filterBy, taskStatus).then(() => {
-        if (taskStatus === 'INCOMPLETE') {
-          actions.loadingCompletedTasks();
-          taskAction(undefined, sortBy, filterBy, 'COMPLETE');
-        }
-      });
+
+      taskAction(undefined, sortBy, filterBy, taskStatus)
+        .then(() => {
+          if (taskStatus === 'INCOMPLETE') {
+            actions.loadingCompletedTasks();
+            taskAction(undefined, sortBy, filterBy, 'COMPLETE')
+              .then(noop)
+              .catch(error => {
+                this.handleRetry(error, () => {
+                  taskAction(undefined, sortBy, filterBy, 'COMPLETE');
+                });
+              });
+          }
+        })
+        .catch(error => {
+          this.handleRetry(error, () => {
+            taskAction(undefined, sortBy, filterBy, taskStatus);
+            actions.loadingCompletedTasks();
+            taskAction(undefined, sortBy, filterBy, 'COMPLETE');
+          });
+        });
     } else {
-      taskListActions.getTaskListById(routeParams.taskListId);
+      taskListActions
+        .getTaskListById(routeParams.taskListId)
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error);
+        });
       actions
         .getListTasks(
           routeParams.taskListId,
@@ -51,17 +71,44 @@ class Home extends PureComponent {
         )
         .then(() => {
           actions.loadingCompletedTasks();
-          actions.getListTasks(
-            routeParams.taskListId,
-            undefined,
-            undefined,
-            'COMPLETE',
-          );
+          actions.getListTasks(routeParams.taskListId, undefined, 'COMPLETE');
+        })
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getListTasks(
+              routeParams.taskListId,
+              undefined,
+              undefined,
+              'INCOMPLETE',
+            );
+            actions.loadingCompletedTasks();
+            actions.getListTasks(routeParams.taskListId, undefined, 'COMPLETE');
+          });
         });
       if (routeParams.taskListId) {
-        taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL');
+        taskListActions
+          .getMembersByTaskListId(routeParams.taskListId, 'ALL')
+          .then(noop)
+          .catch(error => {
+            this.handleRetry(error, () => {
+              taskListActions.getMembersByTaskListId(
+                routeParams.taskListId,
+                'ALL',
+              );
+            });
+          });
       }
-      taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId);
+      taskListActions
+        .getOrganizationUsersNotInTaskList(routeParams.taskListId)
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            taskListActions.getOrganizationUsersNotInTaskList(
+              routeParams.taskListId,
+            );
+          });
+        });
     }
   }
 
@@ -133,18 +180,98 @@ class Home extends PureComponent {
   handleFilterChange = (filterBy, sortBy) => {
     const {
       actions,
-      routeParams: { taskListId },
+      routeParams: { listName, taskListId },
     } = this.props;
 
     actions.loading();
-    actions.getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE');
-    actions.getListTasks(taskListId, sortBy, filterBy, 'COMPLETE');
+
+    if (listName === 'assigned_by_me') {
+      actions
+        .getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedByMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'INCOMPLETE',
+            );
+          });
+        });
+      actions
+        .getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedByMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+            );
+          });
+        });
+    } else if (listName === 'assigned_to_me') {
+      actions
+        .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedToMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'INCOMPLETE',
+            );
+          });
+        });
+      actions
+        .getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedToMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+            );
+          });
+        });
+    } else {
+      actions
+        .getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE')
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE');
+          });
+        });
+      actions
+        .getListTasks(taskListId, sortBy, filterBy, 'COMPLETE')
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getListTasks(taskListId, sortBy, filterBy, 'COMPLETE');
+          });
+        });
+    }
+  };
+
+  handleRetry = (error, callback = noop) => {
+    if (error.message === 'Network Error') {
+      userApi
+        .refreshAccessToken(sessionStorage.getItem('username'))
+        .then(callback)
+        .catch(noop);
+    }
   };
 
   handleSearch = () => {};
 
   refreshAccessToken(user) {
-    const systemTimeout = 5 * 60 * 1000;
+    const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
 
     if (
       sessionStorage.refreshAccessTokenTimeoutId != null ||

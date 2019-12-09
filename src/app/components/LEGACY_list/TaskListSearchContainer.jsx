@@ -25,7 +25,7 @@ import {
   StyledSlimViewSwitch,
   StyledToolbar,
   ToolbarContainer,
-} from '../../views/TaskView.styled';
+} from '../../views/TaskView.Styled';
 import CubesLoader from '../common/CubesLoader';
 import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';

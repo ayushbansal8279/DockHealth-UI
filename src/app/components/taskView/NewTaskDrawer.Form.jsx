@@ -29,7 +29,7 @@ const PatientItemContainer = styled.div`
   align-items: center;
   cursor: pointer;
   display: flex;
-  height: 2.3125rem;
+  height: 2.3125rem
   margin-left: 0.1875rem;
   margin-right: 1.75rem;
   padding-left: 0.9375rem;
@@ -261,6 +261,11 @@ export default ({
               labelFontSize={13}
               labelInactiveTop={1.75}
               required
+              // onBlur={event => {
+              //   event.preventDefault();
+              //   event.stopPropagation();
+              //   handleSubmit();
+              // }}
             />
           )}
         </Grid>

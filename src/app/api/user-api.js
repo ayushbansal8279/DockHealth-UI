@@ -537,13 +537,15 @@ export function refreshAccessToken(email) {
         reject(error);
       } else {
         const currentAccessToken = sessionStorage.getItem('accessToken');
-
+        axios.defaults.headers.common.Authorization = `Bearer ${session.accessToken.jwtToken}`;
+        sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
         if (currentAccessToken !== session.accessToken.jwtToken) {
           comp.getUserByEmail(email, cognitoUser);
         }
-        sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
         resolve(session.isValid());
       }
+      sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
+      resolve(session.isValid());
     });
   });
 }

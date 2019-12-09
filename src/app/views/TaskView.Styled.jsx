@@ -245,6 +245,7 @@ export const SideClickListener = styled.div`
 export const CompletedButtonRowContainer = styled.div`
   align-items: center;
   display: flex;
+  flex: 0 1 4rem;
   flex-direction: row wrap;
   justify-content: center;
 `;

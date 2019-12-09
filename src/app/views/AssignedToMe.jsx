@@ -8,14 +8,15 @@ import * as TaskListActions from '../actions/tasklist-actions';
 import { downloadPDF } from '../api/tasklist-api';
 import * as userApi from '../api/user-api';
 import TaskView from './TaskView';
+import { noop } from '../helpers/utilityFunctions';
 
-class AssignedByMe extends PureComponent {
+class AssignedToMe extends PureComponent {
   componentDidMount() {
     const { user, actions } = this.props;
 
     this.refreshAccessToken(user);
     actions.loading();
-    actions.getTasksAssignedByMe(undefined, undefined, undefined, 'INCOMPLETE');
+    actions.getTasksAssignedToMe(undefined, undefined, undefined, 'INCOMPLETE');
   }
 
   componentWillUpdate(nextProps) {
@@ -25,7 +26,7 @@ class AssignedByMe extends PureComponent {
       const { actions } = this.props;
 
       actions.loading();
-      actions.getTasksAssignedByMe(
+      actions.getTasksAssignedToMe(
         undefined,
         undefined,
         undefined,
@@ -38,7 +39,7 @@ class AssignedByMe extends PureComponent {
     const { actions, patientActions } = this.props;
 
     actions.loading();
-    actions.getTasksAssignedByMe(undefined, undefined, undefined, 'INCOMPLETE');
+    actions.getTasksAssignedToMe(undefined, undefined, undefined, 'INCOMPLETE');
     patientActions.getAllPatients();
   };
 
@@ -47,7 +48,7 @@ class AssignedByMe extends PureComponent {
 
     if (!showingCompletedTasks) {
       actions.loadingCompletedTasks();
-      actions.getTasksAssignedByMe(undefined, undefined, undefined, 'COMPLETE');
+      actions.getTasksAssignedToMe(undefined, undefined, undefined, 'COMPLETE');
     } else {
       actions.hideCompletedTasks();
     }
@@ -73,14 +74,14 @@ class AssignedByMe extends PureComponent {
     const { actions } = this.props;
 
     actions.loading();
-    actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE');
-    actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE');
+    actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE');
+    actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE');
   };
 
   handleSearch = () => {};
 
   refreshAccessToken(user) {
-    const systemTimeout = 5 * 60 * 1000;
+    const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
 
     if (
       sessionStorage.refreshAccessTokenTimeoutId != null ||
@@ -93,13 +94,8 @@ class AssignedByMe extends PureComponent {
     const refreshAccessTokenTimeoutId = setTimeout(() => {
       userApi
         .refreshAccessToken(user.username)
-        .then(() => {
-          console.log('refreshed tokens');
-        })
-        .catch(e => {
-          console.log(e);
-        });
-      // set again
+        .then(noop)
+        .catch(noop);
       comp.refreshAccessToken(user);
     }, systemTimeout);
 
@@ -145,7 +141,7 @@ class AssignedByMe extends PureComponent {
       onFilter: this.handleFilterChange,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
-      title: 'Assigned by me',
+      title: 'Assigned to me',
       showToolbar: true,
     };
 
@@ -175,4 +171,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(AssignedByMe);
+)(AssignedToMe);

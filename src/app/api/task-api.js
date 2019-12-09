@@ -12,7 +12,7 @@ export function getTasksForCreator() {
     .get('task/findTasksCreatedByUser')
     .then(response => response.data)
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -31,7 +31,7 @@ export function getListTasksByUser(
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   return axios
@@ -40,7 +40,7 @@ export function getListTasksByUser(
     )
     .then(response => response.data)
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -54,7 +54,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
         )
         .then(response => response.data)
         .catch(error => {
-          return error.response.data;
+          throw error;
         });
     }
     return axios
@@ -63,10 +63,10 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       })
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   if (sortBy != undefined || filterBy != undefined) {
@@ -76,14 +76,14 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   return axios
     .get(`task/findTasksAssignedToUser?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -103,7 +103,7 @@ export function getTasksAssignedToSpecificUser(
         )
         .then(response => response.data)
         .catch(error => {
-          return error.response.data;
+          throw error;
         });
     }
     return axios
@@ -112,10 +112,10 @@ export function getTasksAssignedToSpecificUser(
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       })
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   if (sortBy != undefined || filterBy != undefined) {
@@ -125,7 +125,7 @@ export function getTasksAssignedToSpecificUser(
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   return axios
@@ -134,7 +134,7 @@ export function getTasksAssignedToSpecificUser(
     )
     .then(response => response.data)
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -148,7 +148,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
         )
         .then(response => response.data)
         .catch(error => {
-          return error.response.data;
+          throw error;
         });
     }
     return axios
@@ -157,7 +157,7 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   if (sortBy != undefined || filterBy != undefined) {
@@ -167,14 +167,14 @@ export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   return axios
     .get(`task/findTasksAssignedByUser?status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -186,14 +186,14 @@ export function searchTasks(searchTerm, status, sortBy, filterBy) {
       )
       .then(response => response.data)
       .catch(error => {
-        return error.response.data;
+        throw error;
       });
   }
   return axios
     .get(`task/searchTasks?searchTerm=${searchTerm}&status=${status}`)
     .then(response => response.data)
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -209,7 +209,7 @@ export function addTask(task) {
     })
     .catch(error => {
       toggleAlert('Error in creating task. Please try again.', 'error');
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -224,7 +224,7 @@ export function updateTask(task) {
       return response.data;
     })
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -236,7 +236,7 @@ export function deleteTask(taskId) {
       return response;
     })
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -249,7 +249,7 @@ export function duplicateTask(taskId) {
     })
     .catch(error => {
       toggleAlert('Error in duplicating comment. Please try again.', 'error');
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -265,7 +265,7 @@ export function sortSubTask(taskId, direction) {
         'Error in changing sub task order. Please try again.',
         'error',
       );
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -277,7 +277,7 @@ export function markComplete(task) {
       return response;
     })
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -289,7 +289,7 @@ export function markIncomplete(task) {
       return response;
     })
     .catch(error => {
-      return error.response.data;
+      throw error;
     });
 }
 
@@ -317,7 +317,7 @@ export const updateDueDate = (taskId, dueDate) => {
       {},
       {
         params: {
-          dueDate: dueDate ? dueDate.format('MM/DD/YYYY') : null,
+          dueDate: dueDate ? dueDate.format('MM/DD/YYYY 00:00:00 ZZ') : null,
         },
       },
     )

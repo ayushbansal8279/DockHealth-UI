@@ -9,7 +9,7 @@ import onSubmit from './NewTaskDrawer.onSubmit';
 import NewTaskDrawerOtherDataSection from './NewTaskDrawer.OtherDataSection';
 import NewTaskDrawerParentInfo from './NewTaskDrawer.ParentInfo';
 import {
-  BottomButtomContainer,
+  BottomButtonContainer,
   CondensedFormSection,
   NewTaskDrawerContainer,
   NewTaskDrawerInnerContainer,
@@ -17,7 +17,7 @@ import {
   StyledButton,
   StyledForm,
   StyledVerticalDivider,
-} from './NewTaskDrawer.styled';
+} from './NewTaskDrawer.Styled';
 import NewTaskDrawerTopSection from './NewTaskDrawer.TopSection';
 import { onButtonClicked } from '../../helpers/ga-event-helper';
 
@@ -202,7 +202,7 @@ export default ({
           </CondensedFormSection>
         </NewTaskDrawerInnerContainer>
         {task && task.taskId != null && task.status !== 'COMPLETE' && (
-          <BottomButtomContainer>
+          <BottomButtonContainer>
             <StyledButton
               onClick={onDelete({
                 afterDelete: () => {
@@ -226,9 +226,27 @@ export default ({
             >
               Duplicate
             </StyledButton>
-          </BottomButtomContainer>
+          </BottomButtonContainer>
         )}
-        {/* If you want to add a button to the Add a task sidebar, do so here.  */}
+        {(!task || !task.taskId) && (
+          <BottomButtonContainer>
+            <StyledButton
+              onClick={() => {
+                closeDrawer();
+              }}
+            >
+              Cancel
+            </StyledButton>
+            <StyledButton
+              variant="contained"
+              onClick={() => {
+                handleSubmit();
+              }}
+            >
+              Save
+            </StyledButton>
+          </BottomButtonContainer>
+        )}
         <SideClickListener onClick={closeDrawer} />
       </StyledForm>
     </NewTaskDrawerContainer>

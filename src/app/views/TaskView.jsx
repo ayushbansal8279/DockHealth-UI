@@ -39,7 +39,7 @@ import {
   TaskListContainer,
   TaskViewContainer,
   TaskViewGrid,
-} from './TaskView.styled';
+} from './TaskView.Styled';
 import {
   onFilterChanged,
   onSlimViewChanged,

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import mergeDeepRight from 'ramda/es/mergeDeepRight';
+import React from 'react';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
-import mergeDeepRight from 'ramda/es/mergeDeepRight';
 
-import { mergeRefs } from '../../helpers/utilityFunctions';
+import { mergeRefs as mergeReferences } from '../../helpers/utilityFunctions';
 import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
+import initializeStyledInputHooks from './StyledInput.Hooks';
 
 const EMPTY_CLASS_NAME = 'empty';
 const ERROR_CLASS_NAME = 'error';
@@ -27,7 +27,7 @@ const PHONE_MASK_ARRAY = [
 ];
 
 const BIRTH_DATE_MASK_ARRAY = [
-  /[0-1]/,
+  /[01]/,
   /\d/,
   '/',
   /[0-2]/,
@@ -193,12 +193,12 @@ const TextareaWrapper = styled.div`
 `;
 
 const renderPhoneNumberField = ({ inputProps, props, register }) => (
-  maskedRef,
+  maskedReference,
   otherProps,
 ) => {
   return (
     <StyledInput
-      ref={mergeRefs([maskedRef, register])}
+      ref={mergeReferences([maskedReference, register])}
       {...props}
       {...inputProps}
       {...otherProps}
@@ -231,76 +231,47 @@ export default React.forwardRef(
       autoFocus = false,
       ...props
     },
-    ref,
+    reference,
   ) => {
-    const { errors, watch, register } = useFormContext();
-
-    const error = (errors[name] || {}).message;
-    const currentValue = watch(name);
-    const hasError = Boolean(error);
-
-    const [inputState, setInputState] = useState('');
-
-    let inputClassName = '';
-
-    if (hasError) {
-      inputClassName += ` ${ERROR_CLASS_NAME}`;
-    }
-
-    if (!currentValue || (isPhoneNumber && !matchEmptyNumber(currentValue))) {
-      inputClassName += ` ${EMPTY_CLASS_NAME}`;
-    }
-
-    inputClassName = inputClassName.trim();
-
-    const wrapperClassName = `${inputClassName} ${inputState}`.trim();
-
-    const onTextareaWrapperClicked = event => {
-      if (isTextarea) {
-        const [textarea] = event.target.querySelectorAll('textarea');
-
-        return textarea?.focus();
-      }
-
-      return null;
-    };
-
-    const inputProps = {
-      className: inputClassName,
+    const {
+      onTextareaWrapperClicked,
+      register,
+      error,
+      hasError,
+      setInputState,
+      wrapperClassName,
+      inputProps,
+      InputComponent,
+      labelComponent,
+      inputContainerProps,
+      isMaskedInput,
+      inputMask,
+    } = initializeStyledInputHooks({
       name,
+      ERROR_CLASS_NAME,
+      EMPTY_CLASS_NAME,
+      isPhoneNumber,
+      matchEmptyNumber,
+      isTextarea,
       controlled,
       fontSize,
       labelFontSize,
-      isTextarea,
-      fullWidth: true,
       backgroundColor,
       autoFocus,
-    };
-
-    const InputComponent = isTextarea ? StyledTextarea : StyledInput;
-
-    const labelComponent = (
-      <StyledLabel fontSize={fontSize} labelInactiveTop={labelInactiveTop}>
-        <span className="input-label">{label}</span>
-        {required && <span className="required">*</span>}
-      </StyledLabel>
-    );
-
-    const inputContainerProps = {
+      StyledTextarea,
+      StyledInput,
+      StyledLabel,
+      labelInactiveTop,
+      required,
+      label,
       containerHeight,
       containerMarginTop,
-      hasError,
-      gutterBottom,
       visible,
-    };
-
-    const isMaskedInput = isPhoneNumber || isBirthDate;
-    const inputMask = (() => {
-      if (isPhoneNumber) return PHONE_MASK_ARRAY;
-      if (isBirthDate) return BIRTH_DATE_MASK_ARRAY;
-      return null;
-    })();
-
+      gutterBottom,
+      isBirthDate,
+      PHONE_MASK_ARRAY,
+      BIRTH_DATE_MASK_ARRAY,
+    });
     return (
       <>
         {hasError && <StyledErrorLabel>{error}</StyledErrorLabel>}
@@ -308,12 +279,12 @@ export default React.forwardRef(
           controlled={controlled}
           containerDisabled={containerDisabled}
           isTextarea={isTextarea}
-          onClick={e => {
+          onClick={event => {
             if (!containerDisabled) {
-              onContainerClick(e);
+              onContainerClick(event);
             }
           }}
-          ref={ref}
+          ref={reference}
           backgroundColor={backgroundColor}
           {...inputContainerProps}
         >
@@ -336,7 +307,9 @@ export default React.forwardRef(
                 {...inputProps}
                 {...props}
                 onFocus={() => setInputState(FOCUS_CLASS_NAME)}
-                onBlur={() => setInputState('')}
+                onBlur={event =>
+                  props.onBlur ? props.onBlur(event) : setInputState('')
+                }
               />
               {labelComponent}
             </TextareaWrapper>
