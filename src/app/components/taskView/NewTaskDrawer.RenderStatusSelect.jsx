@@ -4,6 +4,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import React from 'react';
 
 import { PriorityDot } from '../common/Priority';
+import { onTaskStatusChanged } from '../../helpers/ga-event-helper';
 
 export default ({
   closeStatusPopover,
@@ -20,6 +21,7 @@ export default ({
       onClick={() => {
         setStatus(status);
         closeStatusPopover();
+        onTaskStatusChanged(status);
         if (taskId) {
           saveTaskStatus({ newTaskStatus: value });
         }

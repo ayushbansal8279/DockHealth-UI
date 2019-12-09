@@ -2,13 +2,14 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import TaskView from './TaskView';
+import * as PatientActions from '../actions/patient-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
-import * as PatientActions from '../actions/patient-actions';
-import * as userApi from '../api/user-api';
 import { downloadPDF } from '../api/tasklist-api';
+import * as userApi from '../api/user-api';
+import { onButtonClicked } from '../helpers/ga-event-helper';
 import { noop } from '../helpers/utilityFunctions';
+import TaskView from './TaskView';
 
 class Inbox extends PureComponent {
   componentDidMount() {
@@ -53,6 +54,7 @@ class Inbox extends PureComponent {
     } = this.props;
 
     if (taskListId) {
+      onButtonClicked('Print');
       downloadPDF(taskListId);
     }
   };

@@ -1,8 +1,7 @@
 import Grid from '@material-ui/core/Grid';
-import $ from 'jquery';
 import React, { PureComponent } from 'react';
-import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
@@ -15,6 +14,12 @@ import AddListForm from '../components/LEGACY_list/AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import AddTaskListButton from '../components/taskList/AddTaskListButton';
+import {
+  onTaskListDeleted,
+  onTaskListInvitationAccepted,
+  onTaskListInvitationRejected,
+  onTaskListLeft,
+} from '../helpers/ga-event-helper';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -23,12 +28,16 @@ const CubesLoaderContainer = styled.div`
   width: 100%;
 `;
 
-class TaskListView extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.deleteList = this.deleteList.bind(this);
-  }
+const ICONS = {
+  ASSIGN_TO: 'icon-assign-to',
+  CALENDAR: 'icon-calendar',
+  CHECKMARK: 'icon-checkmark',
+  EMAIL: 'icon-email',
+  FLAG: 'icon-flag',
+  LIST: 'icon-list',
+};
 
+class TaskListView extends PureComponent {
   componentDidMount() {
     const { taskListAction, invitationAction } = this.props;
     taskListAction.loading();
@@ -44,12 +53,6 @@ class TaskListView extends PureComponent {
   componentDidUpdate() {
     enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
   }
-
-  submit = form => {
-    const { taskListAction } = this.props;
-    taskListAction.saveTaskList(form);
-    $('.add').click();
-  };
 
   addTaskList = () => {
     const { taskListAction } = this.props;
@@ -67,22 +70,28 @@ class TaskListView extends PureComponent {
 
   deleteList = taskListId => {
     const { taskListAction } = this.props;
-    taskListAction.deleteTaskListById(taskListId);
+    taskListAction.deleteTaskListById(taskListId).then(() => {
+      onTaskListDeleted();
+    });
   };
 
   leaveList = taskListId => {
     const { taskListAction } = this.props;
-    taskListAction.leaveList(taskListId);
+    taskListAction.leaveList(taskListId).then(() => {
+      onTaskListLeft();
+    });
   };
 
   acceptInviteToTaskList = taskList => {
     const { invitationAction } = this.props;
     invitationAction.acceptInviteToTaskList(taskList);
+    onTaskListInvitationAccepted();
   };
 
   rejectInviteToTaskList = taskList => {
     const { invitationAction } = this.props;
     invitationAction.rejectInviteToTaskList(taskList);
+    onTaskListInvitationRejected();
   };
 
   refresh = () => {
@@ -99,7 +108,7 @@ class TaskListView extends PureComponent {
     switch (metricName) {
       case 'Inbox_Count': {
         return {
-          iconName: 'icon-email',
+          iconName: ICONS.EMAIL,
           panelName: 'Inbox',
           listName: 'Inbox',
           filterBy: 'NONE',
@@ -108,7 +117,7 @@ class TaskListView extends PureComponent {
       }
       case 'AssignedToMe_Count': {
         return {
-          iconName: 'icon-list',
+          iconName: ICONS.LIST,
           panelName: 'Assigned to me',
           listName: 'assigned_to_me',
           filterBy: 'NONE',
@@ -117,7 +126,7 @@ class TaskListView extends PureComponent {
       }
       case 'AssignedByMe_Count': {
         return {
-          iconName: 'icon-assign-to',
+          iconName: ICONS.ASSIGN_TO,
           iconColor: 'blue',
           panelName: 'Assigned by me',
           listName: 'assigned_by_me',
@@ -127,7 +136,7 @@ class TaskListView extends PureComponent {
       }
       case 'HighPriority_Count': {
         return {
-          iconName: 'icon-flag',
+          iconName: ICONS.FLAG,
           iconColor: 'orange',
           panelName: 'Flagged',
           listName: 'assigned_to_me',
@@ -137,7 +146,7 @@ class TaskListView extends PureComponent {
       }
       case 'Overdue_Count': {
         return {
-          iconName: 'icon-calendar',
+          iconName: ICONS.CALENDAR,
           iconColor: 'red',
           panelName: 'Overdue',
           listName: 'assigned_to_me',
@@ -147,7 +156,7 @@ class TaskListView extends PureComponent {
       }
       case 'DueToday_Count': {
         return {
-          iconName: 'icon-calendar',
+          iconName: ICONS.CALENDAR,
           iconColor: 'blue',
           panelName: 'Due Today',
           listName: 'assigned_to_me',
@@ -157,7 +166,7 @@ class TaskListView extends PureComponent {
       }
       case 'DueThisWeek_Count': {
         return {
-          iconName: 'icon-calendar',
+          iconName: ICONS.CALENDAR,
           iconColor: 'green',
           panelName: 'Due This Week',
           listName: 'assigned_to_me',
@@ -167,7 +176,7 @@ class TaskListView extends PureComponent {
       }
       case 'CompletedThisWeek_Count': {
         return {
-          iconName: 'icon-checkmark',
+          iconName: ICONS.CHECKMARK,
           iconColor: 'green',
           panelName: 'Completed This Week',
           listName: 'assigned_to_me',
@@ -257,7 +266,7 @@ class TaskListView extends PureComponent {
         >
           <AddTaskListButton onClick={this.addTaskList} />
         </Grid>
-        <AddListForm onSubmit={this.submit} />
+        <AddListForm />
         <Grid container direction="row" justify="center">
           <div className="row collapse">
             {genericLists?.map(this.renderGenericList)}
@@ -288,8 +297,6 @@ class TaskListView extends PureComponent {
               )}
             </div>
           </Grid>
-          {/* </div>
-        </div> */}
         </Grid>
       </div>
     );

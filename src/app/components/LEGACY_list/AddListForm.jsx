@@ -1,14 +1,19 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import $ from 'jquery';
+import prop from 'ramda/es/prop';
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { arrayPush, change, Field, reduxForm, reset } from 'redux-form';
-import prop from 'ramda/es/prop';
 
 import * as PeopleActions from '../../actions/people-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import BasicField from '../common/BasicField';
+import {
+  onTaskListAdded,
+  onTaskListEdited,
+} from '../../helpers/ga-event-helper';
 import BaseComponentWithAutoComplete from '../LEGACY_base/BaseComponentWithAutoComplete';
 import Member from '../members/Member';
 
@@ -114,8 +119,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
   };
 
   onSuggestionSelectedForAdmins = (event, { suggestion }) => {
-    this.setState(prevState => ({
-      selectedAdmins: [suggestion].concat(prevState.selectedAdmins),
+    this.setState(previousState => ({
+      selectedAdmins: [suggestion].concat(previousState.selectedAdmins),
       suggestions: [],
       selectedSuggestionForAdmin: '',
     }));
@@ -123,8 +128,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
   };
 
   onSuggestionSelectedForMembers = (event, { suggestion }) => {
-    this.setState(prevState => ({
-      selectedMembers: [suggestion].concat(prevState.selectedMembers),
+    this.setState(previousState => ({
+      selectedMembers: [suggestion].concat(previousState.selectedMembers),
       suggestions: [],
       selectedSuggestionForMember: '',
     }));
@@ -147,6 +152,11 @@ class AddListForm extends BaseComponentWithAutoComplete {
       .then(() => {
         this.setState({ saveResultMessage: 'List saved successfully!!' });
         this.props.formActions.reset('addListForm');
+        if (taskList.taskListId) {
+          onTaskListEdited();
+        } else {
+          onTaskListAdded();
+        }
         $('.add').click();
       })
       .catch(error => {
@@ -356,7 +366,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
                   id="cancelTaskListButton"
                   type="button"
                   className="button medium"
-                  onClick={e => this.cancelEdit(e)}
+                  onClick={event => this.cancelEdit(event)}
                 >
                   Cancel
                 </button>

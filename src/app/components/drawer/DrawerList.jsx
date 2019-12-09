@@ -144,22 +144,22 @@ const NestedItem = ({
 }) => {
   const active = id === activeId;
 
-  const nestedItemTextRef = useRef(null);
+  const nestedItemTextReference = useRef(null);
 
   const onMouseEnter = () => {
-    if (rolloverPopoverAnchor !== nestedItemTextRef) {
-      const currentElement = nestedItemTextRef.current;
+    if (rolloverPopoverAnchor !== nestedItemTextReference) {
+      const currentElement = nestedItemTextReference.current;
 
       if (currentElement?.scrollWidth > currentElement?.offsetWidth) {
         setRolloverLabel(label);
-        setRolloverPopoverAnchor(nestedItemTextRef);
+        setRolloverPopoverAnchor(nestedItemTextReference);
         openPopover();
       }
     }
   };
 
   const onMouseLeave = () => {
-    if (rolloverPopoverAnchor === nestedItemTextRef) {
+    if (rolloverPopoverAnchor === nestedItemTextReference) {
       setRolloverLabel('');
       setRolloverPopoverAnchor(null);
       closePopover();
@@ -179,7 +179,7 @@ const NestedItem = ({
         onMouseOver={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onFocus={() => {}}
-        ref={nestedItemTextRef}
+        ref={nestedItemTextReference}
       >
         {label}
       </NestedListItemText>

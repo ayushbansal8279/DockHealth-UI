@@ -6,8 +6,9 @@ import * as PatientActions from '../actions/patient-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import * as userApi from '../api/user-api';
-import TaskView from './TaskView';
+import { onButtonClicked } from '../helpers/ga-event-helper';
 import { noop } from '../helpers/utilityFunctions';
+import TaskView from './TaskView';
 
 class Home extends PureComponent {
   componentDidMount() {
@@ -124,6 +125,7 @@ class Home extends PureComponent {
     } = this.props;
 
     if (taskListId) {
+      onButtonClicked('Print');
       window.print();
     }
   };

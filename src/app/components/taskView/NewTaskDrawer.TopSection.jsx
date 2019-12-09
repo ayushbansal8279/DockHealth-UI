@@ -20,6 +20,7 @@ import {
 } from './NewTaskDrawer.styled';
 import PriorityFlag from './PriorityFlag';
 import { CloseTaskButton } from './TaskDrawerButtons';
+import { onTaskPriorityChanged } from '../../helpers/ga-event-helper';
 
 export default ({
   addingTaskOrSubtask,
@@ -101,6 +102,7 @@ export default ({
           onClick={() => {
             const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
             togglePriorityActive();
+            onTaskPriorityChanged(newTaskPriority);
             if (taskId) {
               saveTaskPriority({ newTaskPriority });
             }

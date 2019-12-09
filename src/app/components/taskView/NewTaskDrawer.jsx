@@ -19,6 +19,7 @@ import {
   StyledVerticalDivider,
 } from './NewTaskDrawer.styled';
 import NewTaskDrawerTopSection from './NewTaskDrawer.TopSection';
+import { onButtonClicked } from '../../helpers/ga-event-helper';
 
 const statusSelectData = [
   {
@@ -55,6 +56,7 @@ const onDelete = ({ afterDelete, dispatch, task }) => async event => {
       await deleteTask(task)(dispatch);
       toggleAlert('Task deleted successfully', 'success');
       afterDelete();
+      onButtonClicked('Delete task');
     } catch {
       noop();
     }
@@ -68,6 +70,7 @@ const onDuplicate = ({ afterDuplicate, dispatch, task }) => async event => {
     try {
       const newTask = await duplicateTask(task)(dispatch);
       afterDuplicate({ newTask });
+      onButtonClicked('Duplicate task');
     } catch {
       noop();
     }

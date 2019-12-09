@@ -1,659 +1,621 @@
 import axios from './axios-heydoc';
-import configureStore from '../configureStore'
+import configureStore from '../configureStore';
+import { onLogin, onLogout } from '../helpers/ga-event-helper';
+import { noop } from '../helpers/utilityFunctions';
+
 const store = configureStore();
 
 const {
   CognitoUser,
   CognitoUserPool,
-  CognitoUserAttribute
-} = window.AWSCognito.CognitoIdentityServiceProvider
+  CognitoUserAttribute,
+  CognitoRefreshToken,
+} = window.AWSCognito.CognitoIdentityServiceProvider;
 
-export let resolvedCognitoUser = null
+// eslint-disable-next-line import/no-mutable-exports
+export let resolvedCognitoUser = null;
 
-window.AWSCognito.config.region = process.env.AWS_REGION
-window.AWSCognito.config.userPoolId = process.env.AWS_USERPOOLID
+window.AWSCognito.config.region = process.env.AWS_REGION;
+window.AWSCognito.config.userPoolId = process.env.AWS_USERPOOLID;
 // window.AWSCognito.config.identityPoolId = process.env.AWS_IDENTITYPOOLID
 
 const userPool = new CognitoUserPool({
   UserPoolId: process.env.AWS_USERPOOLID,
-  ClientId: process.env.AWS_CLIENTAPP
-})
+  ClientId: process.env.AWS_CLIENTAPP,
+});
 
 // register a new user
-export function register (userData) {
-  const attributeList = []
-  let {username, password, ...user} = userData
-  if(username){
-    username = username.toLowerCase()
-  }
-  for (let field in user) {
-    attributeList.push(new CognitoUserAttribute({ Name: field, Value: user[field] }))
-  }
-  return new Promise((resolve, reject) => {
-    userPool.signUp(username, password, attributeList, null, (err, result) => {
-      if (err) return reject(err)
-      resolvedCognitoUser = result.user
-      store.dispatch({type: 'user/user', user: resolvedCognitoUser})
-      //enable MFA
-      /*
-      resolvedCognitoUser.enableMFA(function(err, result) {
-        if (err) {
-            //alert(err);
-            return;
-        }
-        console.log('enabled MFA: ' + result);
-      });
-      */
+export function register(userData) {
+  const attributeList = [];
+  const { username: unformattedUsername, password, ...user } = userData;
 
-      resolve(result.user)
-    })
-  })
+  const username = unformattedUsername?.toLowerCase();
+
+  Object.keys(user).forEach(userDataKey => {
+    const userDataValue = user[userDataKey];
+
+    attributeList.push(
+      new CognitoUserAttribute({ Name: userDataKey, Value: userDataValue }),
+    );
+  });
+
+  return new Promise((resolve, reject) => {
+    userPool.signUp(
+      username,
+      password,
+      attributeList,
+      null,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolvedCognitoUser = result.user;
+          store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
+
+          resolve(result.user);
+        }
+      },
+    );
+  });
 }
 
 // confirm user registration
-export function confirmRegistration (userData) {
-  const attributeList = []
-  let {username, confirmationCode} = userData
-  if(username){
-    username = username.toLowerCase()
+export function confirmRegistration(userData) {
+  let { username } = userData;
+  const { confirmationCode } = userData;
+
+  if (username) {
+    username = username.toLowerCase();
   }
-  let cognitoUserData = {
+
+  const cognitoUserData = {
     Username: username,
-    Pool: userPool
+    Pool: userPool,
   };
 
   return new Promise((resolve, reject) => {
-    var cognitoUser = new CognitoUser(cognitoUserData)
-    cognitoUser.confirmRegistration(confirmationCode, true, function (err, result) {
-        if (err) {
-            return reject(err)
-        } else {
-          /*
-            console.log('creating heydoc user');
-            createUser({
-              firstName: "Test",
-              lastName: "Test",
-              email: cognitoUser.username
-            })
-          */
-            resolve(result.user)
-        }
-    })
-  })
+    const cognitoUser = new CognitoUser(cognitoUserData);
+    cognitoUser.confirmRegistration(confirmationCode, true, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result.user);
+      }
+    });
+  });
 }
 
-// resend code
-export function resendConfirmationCode (userData) {
-  const attributeList = []
-  let {username} = userData
-  if(username){
-    username = username.toLowerCase()
+export function resendConfirmationCode(userData) {
+  let { username } = userData;
+  if (username) {
+    username = username.toLowerCase();
   }
-  let cognitoUserData = {
+
+  const cognitoUserData = {
     Username: username,
-    Pool: userPool
+    Pool: userPool,
   };
 
   return new Promise((resolve, reject) => {
-    var cognitoUser = new CognitoUser(cognitoUserData)
-    cognitoUser.resendConfirmationCode(function (err, result) {
-        if (err) {
-            return reject(err)
-        } else {
-            resolvedCognitoUser = result.user
-            //store.dispatch({type: 'user/user', user: resolvedCognitoUser})
-            resolve(resolvedCognitoUser)
-        }
-    })
-  })
+    const cognitoUser = new CognitoUser(cognitoUserData);
+    cognitoUser.resendConfirmationCode((error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolvedCognitoUser = result.user;
+        resolve(resolvedCognitoUser);
+      }
+    });
+  });
 }
 
-// log user out
-export function logout () {
-  return new Promise((resolve, reject) => {
-    var userPoolForAuth = userPool
-    if(window.sessionStorage.getItem("EnterpriseUserFlag") == "true"){
-      // userPoolForAuth = userPoolAlternate
-        window.sessionStorage.removeItem("EnterpriseUserFlag")
-        window.sessionStorage.removeItem("SSO_ACCESSTOKEN")
-        window.sessionStorage.removeItem("SSO_REFRESHTOKEN")
-        window.sessionStorage.removeItem("SSO_USEREMAIL")
-        resolve();
-    }else{
-      let cognitoUser = userPoolForAuth.getCurrentUser();
-      if(cognitoUser != null){
-        cognitoUser.signOut()
-        resolvedCognitoUser = null
-        store.dispatch({type: 'user/user', user: resolvedCognitoUser})
+export function logout() {
+  return new Promise(resolve => {
+    const userPoolForAuth = userPool;
+    if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
+      sessionStorage.removeItem('EnterpriseUserFlag');
+      sessionStorage.removeItem('SSO_ACCESSTOKEN');
+      sessionStorage.removeItem('SSO_REFRESHTOKEN');
+      sessionStorage.removeItem('SSO_USEREMAIL');
+      resolve();
+    } else {
+      const cognitoUser = userPoolForAuth.getCurrentUser();
+      if (cognitoUser != null) {
+        cognitoUser.signOut();
+        resolvedCognitoUser = null;
+        store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
         sessionStorage.removeItem('accessToken');
         sessionStorage.removeItem('userId');
         sessionStorage.removeItem('sessionStartTime');
+        onLogout();
       }
       resolve();
     }
-  })
+  });
 }
 
-// authenticate user, and also ask for MFA or verification code, if needed
-export function login (username, password) {
-  if(username){
-    username = username.toLowerCase()
-  }
-  window.sessionStorage.removeItem("EnterpriseUserFlag")
-  window.sessionStorage.removeItem("SSO_ACCESSTOKEN")
-  window.sessionStorage.removeItem("SSO_REFRESHTOKEN")
-  window.sessionStorage.removeItem("SSO_USEREMAIL")
+export function login(loginUserName, password) {
+  const username = loginUserName?.toLowerCase();
+
+  sessionStorage.removeItem('EnterpriseUserFlag');
+  sessionStorage.removeItem('SSO_ACCESSTOKEN');
+  sessionStorage.removeItem('SSO_REFRESHTOKEN');
+  sessionStorage.removeItem('SSO_USEREMAIL');
   return new Promise((resolve, reject) => {
-    var authenticationData = {
-        Username : username,
-        Password : password,
+    const authenticationData = {
+      Username: username,
+      Password: password,
     };
-    var authenticationDetails = new window.AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
-    var cognitoUserData = {
-        Username : username,
-        Pool : userPool
+    const authenticationDetails = new window.AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(
+      authenticationData,
+    );
+    const cognitoUserData = {
+      Username: username,
+      Pool: userPool,
     };
-    var cognitoUser = new CognitoUser(cognitoUserData)
-    resolvedCognitoUser = cognitoUser
+    const cognitoUser = new CognitoUser(cognitoUserData);
+    resolvedCognitoUser = cognitoUser;
     cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: function (result) {
-        console.log('access token + ' + result.getAccessToken().getJwtToken())
-
-        store.dispatch({type: 'user/user', user: resolvedCognitoUser})
-        resolve(result)
-        /*
-        var logins = {}
-        logins['cognito-idp.' + window.AWSCognito.config.region + '.amazonaws.com/' + userPool.userPoolId] = result.getIdToken().getJwtToken();
-
-        // Add the User's Id Token to the Cognito credentials login map.
-        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: window.AWSCognito.config.identityPoolId,
-            Logins: logins
-        });
-
-        AWS.config.credentials.get(function (err) {
-            if (!err) {
-                var id = AWS.config.credentials.identityId;
-                console.log(AWS.config.credentials)
-            }
-        });
-
-        console.log("set the AWS credentials - " + JSON.stringify(AWS.config.credentials));
-        console.log("set the AWSCognito credentials - " + JSON.stringify(AWSCognito.config.credentials));
-        */
+      onSuccess: result => {
+        store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
+        resolve(result);
       },
 
       onFailure: reject,
 
-      mfaRequired: function(codeDeliveryDetails) {
-          // MFA is required to complete user authentication.
-          // Get the code from user and call
-          console.log("MFA code is needed")
-          resolve(codeDeliveryDetails)
-      }
-    })
-  })
+      mfaRequired: codeDeliveryDetails => {
+        resolve(codeDeliveryDetails);
+      },
+    });
+  });
 }
 
 // confirm user registration
-export function sendMFACode (userData) {
-  const attributeList = []
-  let {username, mfaCode} = userData
-  if(username){
-    username = username.toLowerCase()
+export function sendMFACode(userData) {
+  let { username } = userData;
+  const { mfaCode } = userData;
+
+  if (username) {
+    username = username.toLowerCase();
   }
-  let cognitoUserData = {
-    Username: username,
-    Pool: userPool
-  };
 
   return new Promise((resolve, reject) => {
-    var cognitoUser = resolvedCognitoUser //ensure we use the same cognitoUser object from authenicate call since it needs the session to be initialized
+    const cognitoUser = resolvedCognitoUser;
     cognitoUser.sendMFACode(mfaCode, {
-      onSuccess: function (result, userConfirmationNecessary) {
-        console.log('access token + ' + result.getAccessToken().getJwtToken())
-
-        store.dispatch({type: 'user/user', user: resolvedCognitoUser})
-        resolve(result)
-
+      onSuccess: result => {
+        store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
+        resolve(result);
       },
-      onFailure: reject
-    })
-  })
+      onFailure: reject,
+    });
+  });
 }
 
-//remember the device
-export function rememberDevice () {
-  return new Promise((resolve, reject) => {
-    var cognitoUser = resolvedCognitoUser //ensure we use the same cognitoUser object so the deviceKey is set from the localstorage
+export function rememberDevice() {
+  return new Promise(resolve => {
+    const cognitoUser = resolvedCognitoUser;
     if (cognitoUser != null) {
-            cognitoUser.getSession(function (err, session) {
-                if (err) {
-                    console.log("Couldn't get the session: " + err, err.stack);
-                    callback.isLoggedIn(err, false, cognitoUser);
-                }
-                else {
-                    console.log("Session is " + session.isValid());
-                    cognitoUser.setDeviceStatusRemembered({
-                        onSuccess: function (result) {
-                            console.log('call result: ' + result);
-                            resolve(result)
-                        },
-                        onFailure: function(err) {
-                            //alert(err);
-                        }
-                    })
-                }
-            })
-    }
-  })
-}
-
-
-export function isAuthenticated (callback) {
-  if (callback == null)
-      throw("Callback in isAuthenticated() cannot be null");
-  var userPoolForAuth = userPool
-  if(window.sessionStorage.getItem("EnterpriseUserFlag") == "true"){
-    // userPoolForAuth = userPoolAlternate
-    var userData = {
-      username: window.sessionStorage.getItem("SSO_USEREMAIL")
-    }
-    if(window.sessionStorage.getItem("SSO_ACCESSTOKEN") != undefined){
-      callback.isLoggedIn("", true, userData);
-      return
-    }else{
-      console.log("User is not logged in");
-      callback.isLoggedIn("User is not logged in", false, userData);
-    }
-  }
-  let cognitoUser = userPoolForAuth.getCurrentUser();
-  //console.log('cognitoUser: '+JSON.stringify(cognitoUser))
-  if (cognitoUser != null) {
-      cognitoUser.getSession(function (err, session) {
-          if (err) {
-              console.log("Couldn't get the session: " + err, err.stack);
-              callback.isLoggedIn(err, false, cognitoUser);
-          }
-          else {
-              console.log("Session is " + session.isValid());
-              sessionStorage.setItem('accessToken', cognitoUser.signInUserSession.accessToken.jwtToken);
-              //sessionStorage.setItem('refreshToken', cognitoUser.signInUserSession.refreshToken.token);
-              // NOTE: getSession must be called to authenticate user before calling getUserAttributes
-              cognitoUser.getUserAttributes(function(err, attributes) {
-                  if (err) {
-                      // Handle error
-                  } else {
-                      // Do something with attributes
-                  }
-              });
-
-              callback.isLoggedIn(err, session.isValid(), cognitoUser);
-          }
+      cognitoUser.getSession(error => {
+        if (!error) {
+          cognitoUser.setDeviceStatusRemembered({
+            onSuccess: result => {
+              resolve(result);
+            },
+            onFailure: noop,
+          });
+        }
       });
+    }
+  });
+}
+
+export function isAuthenticated(callback) {
+  if (callback == null) {
+    throw new Error('Callback in isAuthenticated() cannot be null');
+  }
+
+  const userPoolForAuth = userPool;
+
+  if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
+    const userData = {
+      username: sessionStorage.getItem('SSO_USEREMAIL'),
+    };
+
+    if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
+      callback.isLoggedIn('', true, userData);
+      return;
+    }
+
+    callback.isLoggedIn('User is not logged in', false, userData);
+  }
+
+  const cognitoUser = userPoolForAuth.getCurrentUser();
+  if (cognitoUser != null) {
+    cognitoUser.getSession((error, session) => {
+      if (error) {
+        callback.isLoggedIn(error, false, cognitoUser);
+      } else {
+        sessionStorage.setItem(
+          'accessToken',
+          cognitoUser.signInUserSession.accessToken.jwtToken,
+        );
+
+        cognitoUser.getUserAttributes(noop);
+        callback.isLoggedIn(error, session.isValid(), cognitoUser);
+      }
+    });
   } else {
-      console.log("Can't retrieve the current user");
-      callback.isLoggedIn("Can't retrieve the CurrentUser", false, cognitoUser);
+    callback.isLoggedIn("Can't retrieve the CurrentUser", false, cognitoUser);
   }
 }
 
-export function forgotPassword (userData) {
-  const attributeList = []
-  let {username} = userData
-  if(username){
-    username = username.toLowerCase()
+export function forgotPassword(userData) {
+  let { username } = userData;
+
+  if (username) {
+    username = username.toLowerCase();
   }
-  let cognitoUserData = {
+
+  const cognitoUserData = {
     Username: username,
-    Pool: userPool
+    Pool: userPool,
   };
 
   return new Promise((resolve, reject) => {
-    var cognitoUser = new CognitoUser(cognitoUserData)
+    const cognitoUser = new CognitoUser(cognitoUserData);
+
     cognitoUser.forgotPassword({
-      onSuccess: function (result) {
-          resolve(result.user)
-          //callback.cognitoCallback(null, result);
+      onSuccess: result => {
+        resolve(result.user);
       },
-      onFailure: function (err) {
-          console.log(err);
-          return reject(err)
-          //callback.cognitoCallback(err.message, null);
+      onFailure: error => {
+        reject(error);
       },
-      inputVerificationCode: function(data) {
-          console.log('Code sent to: ' + data.CodeDeliveryDetails.Destination);
-          resolve(data)
-          //callback.cognitoCallback(null, null);
-          // console.log('Code sent to: ' + data);
-          // var verificationCode = prompt('Please input verification code ' ,'');
-          // var newPassword = prompt('Enter new password ' ,'');
-          // cognitoUser.confirmPassword(verificationCode, newPassword, this);
-      }
+      inputVerificationCode: data => {
+        resolve(data);
+      },
     });
   });
-
 }
 
-export function resetPassword (userData) {
-  const attributeList = []
-  let {username, verificationCode, password} = userData
-  if(username){
-    username = username.toLowerCase()
+export function resetPassword(userData) {
+  let { username } = userData;
+  const { verificationCode, password } = userData;
+
+  if (username) {
+    username = username.toLowerCase();
   }
-  let cognitoUserData = {
+
+  const cognitoUserData = {
     Username: username,
-    Pool: userPool
+    Pool: userPool,
   };
 
   return new Promise((resolve, reject) => {
-    var cognitoUser = new CognitoUser(cognitoUserData)
+    const cognitoUser = new CognitoUser(cognitoUserData);
+
     cognitoUser.confirmPassword(verificationCode, password, {
-      onSuccess: function (result) {
-          resolve(result)
-          //callback.cognitoCallback(null, result);
+      onSuccess: result => {
+        resolve(result);
       },
-      onFailure: function (err) {
-          console.log(err);
-          return reject(err)
-          //callback.cognitoCallback(err.message, null);
-      }
+      onFailure: error => {
+        reject(error);
+      },
     });
   });
-
 }
 
 export function createUser(user) {
-  return axios.put('user', user)
+  return axios.put('user', user).then(response => {
+    store.dispatch({ type: 'user/userId', userId: response.data.userId });
+    return response;
+  });
+}
+
+export function getUserByEmailAndAccessToken(userEmail, accessToken) {
+  const authString = 'Bearer '.concat(accessToken);
+  axios.defaults.headers.common.Authorization = authString;
+
+  const email = userEmail?.toLowerCase();
+
+  return axios
+    .get(
+      `${
+        process.env.HEYDOC_SERVICES_BASE_URL
+      }user/findUserByEmail?email=${encodeURIComponent(email)}`,
+    )
     .then(response => {
-      store.dispatch({type: 'user/userId', userId: response.data.userId})
-      return response;
+      store.dispatch({ type: 'user/userProfile', userProfile: response.data });
+      sessionStorage.setItem('userId', response.data.userId);
+      sessionStorage.setItem('userProfile', JSON.stringify(response.data));
+      onLogin();
+      return response.data;
     });
 }
 
 export function getUserByEmail(email, cognitoUser) {
-  var accessToken = ""
-  if(cognitoUser.signInUserSession){
+  let accessToken = '';
+
+  if (cognitoUser.signInUserSession) {
     accessToken = cognitoUser.signInUserSession.accessToken.jwtToken;
   }
-  if(window.sessionStorage.getItem("EnterpriseUserFlag") == "true"){
-    accessToken = window.sessionStorage.getItem("SSO_ACCESSTOKEN");
-  }
-  return getUserByEmailAndAccessToken(email, accessToken)
-}
 
-export function getUserByEmailAndAccessToken(email, accessToken) {
-  const authString = 'Bearer '.concat(accessToken);
-  //sets global header for axios
-  axios.defaults.headers.common['Authorization'] = authString
-  // axios.defaults.headers.common['CurrentUserId'] = "1"
-  if(email){
-    email = email.toLowerCase()
+  if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
+    accessToken = sessionStorage.getItem('SSO_ACCESSTOKEN');
   }
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findUserByEmail?email='+encodeURIComponent(email))
-    .then(response => {
-      store.dispatch({type: 'user/userProfile', userProfile: response.data})
-      sessionStorage.setItem('userId', response.data.userId);
-      sessionStorage.setItem('userProfile', JSON.stringify(response.data));
-      return response.data;
-    });
+
+  return getUserByEmailAndAccessToken(email, accessToken);
 }
 
 export function getUserById() {
-  return axios.get('user/' + sessionStorage.userId)
-    .then(response => {
-      store.dispatch({type: 'user/userProfile', userProfile: response.data})
-      //sessionStorage.setItem('userProfile', JSON.stringify(response.data));
-      return response.data;
-    });
+  return axios.get(`user/${sessionStorage.userId}`).then(response => {
+    store.dispatch({ type: 'user/userProfile', userProfile: response.data });
+    return response.data;
+  });
 }
 
 export function updateStoreWithCurrentUser(cognitoUser) {
-  store.dispatch({type: 'user/user', user: cognitoUser})
+  store.dispatch({ type: 'user/user', user: cognitoUser });
 }
 
 export function getUserProfilePic(userId, pictureType) {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture/' + userId + "?UserPictureType=" + pictureType,{responseType: 'arraybuffer'}) // this lets axios know that response type is not JSON but binary data
+  return axios
+    .get(
+      `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userId}?UserPictureType=${pictureType}`,
+      { responseType: 'arraybuffer' },
+    )
     .then(response => {
-      //let binaryImage = btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
-      //let image = "data:image/png;base64," + image
-      let binaryImage = new Buffer(response.data, 'binary').toString('base64'); //base64 encoding of binary image data
-      let image = `data:${response.headers['content-type'].toLowerCase()};base64,${binaryImage}`;
-      store.dispatch({type: 'user/userProfilePic', userProfilePic: image})
+      const binaryImage = Buffer.from(response.data, 'binary').toString(
+        'base64',
+      );
+      const image = `data:${response.headers[
+        'content-type'
+      ].toLowerCase()};base64,${binaryImage}`;
+      store.dispatch({ type: 'user/userProfilePic', userProfilePic: image });
       return image;
     })
-    .catch(response => {
-      console.log("User does not have a profile picture yet")
-      store.dispatch({type: 'user/userProfilePic', userProfilePic: undefined})
-    })
+    .catch(() => {
+      store.dispatch({
+        type: 'user/userProfilePic',
+        userProfilePic: undefined,
+      });
+    });
 }
 
-export function saveUserProfilePic(data, userId, pictureType, userProfile) {
-  //alert(data);
-  return axios.post(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture', data)
+export function saveUserProfilePic(data) {
+  return axios
+    .post(`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture`, data)
     .then(response => {
-      getUserById()
-      return response.data
-    }).catch(error => {
-      throw(error);
+      getUserById();
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
     });
 }
 
 export function updateUser(formProps) {
-  //console.log(formProps)
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user', formProps)
+  return axios
+    .put(`${process.env.HEYDOC_SERVICES_BASE_URL}user`, formProps)
     .then(response => {
-      //store.dispatch({type: 'user/userId', userId: response.data.userId})
-      // updateUserNotoficationPrefs(formProps.emailPref, formProps.pushPref)
-      // .then(response => {
-         return response.data;
-      // })
-    }).catch(error => {
-      throw(error);
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
     });
 }
 
 export function deleteUserProfilePic() {
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/profilePicture')
+  return axios
+    .delete(`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture`)
     .then(response => {
       return response.data;
     });
 }
 
 export function getUserNotoficationPrefs() {
-  return axios.get('user/userNotificationPreferences')
-    .then(response => {
-      store.dispatch({type: 'user/userNotificationPrefs', userNotificationPrefs: response.data})
-      return response.data;
+  return axios.get('user/userNotificationPreferences').then(response => {
+    store.dispatch({
+      type: 'user/userNotificationPrefs',
+      userNotificationPrefs: response.data,
     });
-}
-
-export function updateUserNotoficationPrefs(emailNotification, pushNotification) {
-  if(emailNotification == "" || emailNotification == undefined){
-    emailNotification = false
-  }
-  if(pushNotification == "" || pushNotification == undefined){
-    pushNotification = false
-  }
-  var notificationPrefObj = {email: emailNotification, push: pushNotification};
-  //console.log(notificationPrefObj);
-  return axios.put(process.env.HEYDOC_SERVICES_BASE_URL+'user/userNotificationPreferences', notificationPrefObj)
-    .then(response => {
-      return response.data;
-    }).catch(error => {
-      throw(error);
-    });
-}
-
-
-export function leaveList(taskListId){
-  return axios.delete(process.env.HEYDOC_SERVICES_BASE_URL+'user/userLeavesList/'+taskListId)
-  .then(response => {
-    return response;
-  }).catch(error => {
-    throw(error);
-  });
-}
-
-export function findOrgInviteByEmail(email){
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'user/findOrgInviteByEmail/', email)
-  .then(response => {
     return response.data;
-  }).catch(error => {
-    throw(error);
   });
+}
+
+export function updateUserNotoficationPrefs(
+  emailNotification,
+  pushNotification,
+) {
+  const notificationPreferences = {
+    email: Boolean(emailNotification),
+    push: Boolean(pushNotification),
+  };
+
+  return axios
+    .put(
+      `${process.env.HEYDOC_SERVICES_BASE_URL}user/userNotificationPreferences`,
+      notificationPreferences,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function leaveList(taskListId) {
+  return axios
+    .delete(
+      `${process.env.HEYDOC_SERVICES_BASE_URL}user/userLeavesList/${taskListId}`,
+    )
+    .then(response => response)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function findOrgInviteByEmail(email) {
+  return axios
+    .get(
+      `${process.env.HEYDOC_SERVICES_BASE_URL}user/findOrgInviteByEmail/`,
+      email,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
 }
 
 export function getAllSpecialties() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'reference/specialties')
+  return axios
+    .get(`${process.env.HEYDOC_SERVICES_BASE_URL}reference/specialties`)
     .then(response => {
-      store.dispatch({type: 'reference/allSpecialties', allSpecialties: response.data})
+      store.dispatch({
+        type: 'reference/allSpecialties',
+        allSpecialties: response.data,
+      });
       return response.data;
     });
 }
 
 export function getAllTitles() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'reference/titles')
+  return axios
+    .get(`${process.env.HEYDOC_SERVICES_BASE_URL}reference/titles`)
     .then(response => {
-      store.dispatch({type: 'reference/allTitles', allTitles: response.data})
+      store.dispatch({ type: 'reference/allTitles', allTitles: response.data });
       return response.data;
     });
 }
 
 export function performHealthCheck() {
-  return axios.get(process.env.HEYDOC_SERVICES_BASE_URL+'healthcheck/echo')
-    .then(response => {
-        //console.log("ALL OK")
-    }).catch(error => {
-      //console.log(error) //Network Error
-      //console.log(error.status) //undefined
-      //console.log(error.response) //undefined
-      if(error.response == undefined || error.response == null){// this means network error
-          //console.log("NOT OK")
-          throw error;
+  return axios
+    .get(`${process.env.HEYDOC_SERVICES_BASE_URL}healthcheck/echo`)
+    .then(noop)
+    .catch(error => {
+      if (!error.response) {
+        throw error;
       }
     });
 }
 
 export function refreshAccessToken(email) {
-  if(window.sessionStorage.getItem("EnterpriseUserFlag") == "true"){
+  if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
+    const cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
     return new Promise((resolve, reject) => {
-      try{
-        var refreshToken = window.sessionStorage.getItem("SSO_REFRESHTOKEN")
-        // var authData = "grant_type=refresh_token&refresh_token="+refreshToken+"&client_id="+clientId+"&client_secret="+clientSecret
-        // return axios.post(authUrl+'/token', authData)
-        var authData = "grant_type=refresh_token&refresh_token="+refreshToken
-        return axios.post(cognitoAuthUrl+'/oauth2/token', authData)        
+      try {
+        const refreshToken = sessionStorage.getItem('SSO_REFRESHTOKEN');
+        const authData = `grant_type=refresh_token&refresh_token=${refreshToken}`;
+        return axios
+          .post(`${cognitoAuthUrl}/oauth2/token`, authData)
           .then(response => {
-            console.log(JSON.stringify(response.data))
-            var userRefreshToken = response.data.refresh_token;
-            var userAccessToken = response.data.access_token;
-            var userIDToken = response.data.id_token;
-            console.log('sso access-token: '+userAccessToken)
-            window.sessionStorage.setItem("EnterpriseUserFlag", true)
-            window.sessionStorage.setItem("SSO_ACCESSTOKEN", userAccessToken)
-            window.sessionStorage.setItem("SSO_IDTOKEN", userIDToken)
-            window.sessionStorage.setItem("SSO_REFRESHTOKEN", userRefreshToken)
-            resolve("success")
-        });
-      }catch(err){
-        reject(err)
+            const userRefreshToken = response.data.refresh_token;
+            const userAccessToken = response.data.access_token;
+            const userIDToken = response.data.id_token;
+            sessionStorage.setItem('EnterpriseUserFlag', true);
+            sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
+            sessionStorage.setItem('SSO_IDTOKEN', userIDToken);
+            sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
+            resolve('success');
+          });
+      } catch (error) {
+        reject(error);
+        return Promise.reject(error);
       }
-    })
-  }else{
-    let cognitoUserData = {
-      Username: email,
-      Pool: userPool
-    };
-
-    var comp = this
-
-    return new Promise((resolve, reject) => {
-      var cognitoUser = new CognitoUser(cognitoUserData)
-      cognitoUser.getSession(function (err, session) {
-        if (err) {
-            console.log("Couldn't get the session: " + err, err.stack);
-            reject(err);
-        }
-        else {
-            console.log("Session is " + session.isValid());
-            //console.log("AccessToken: "+session.accessToken.jwtToken);
-            var currentAccessToken = sessionStorage.getItem('accessToken');
-            if(currentAccessToken != session.accessToken.jwtToken){
-              //call an API to use new access token with axios
-              comp.getUserByEmail(email, cognitoUser);
-            }
-            sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
-            resolve(session.isValid())
-        }
-      })
-    })
+    });
   }
+  const cognitoUserData = {
+    Username: email,
+    Pool: userPool,
+  };
+
+  const comp = this;
+
+  return new Promise((resolve, reject) => {
+    const cognitoUser = new CognitoUser(cognitoUserData);
+    cognitoUser.getSession((error, session) => {
+      if (error) {
+        reject(error);
+      } else {
+        const currentAccessToken = sessionStorage.getItem('accessToken');
+
+        if (currentAccessToken !== session.accessToken.jwtToken) {
+          comp.getUserByEmail(email, cognitoUser);
+        }
+        sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
+        resolve(session.isValid());
+      }
+    });
+  });
 }
 
 export function getAccessTokensByAuthCode(authCode) {
-  console.log('getting access token from: '+authCode)
   return new Promise((resolve, reject) => {
-    try{
-      var cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
-      //sets global header for axios
-      // axios.defaults.headers.common['Authorization'] = authString
-      var authData = "grant_type=authorization_code&code="+authCode
-      return axios.post(cognitoAuthUrl+'/oauth2/token', authData)
+    try {
+      const cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
+      const authData = `grant_type=authorization_code&code=${authCode}`;
+
+      return axios
+        .post(`${cognitoAuthUrl}/oauth2/token`, authData)
         .then(response => {
-          console.log(JSON.stringify(response.data))
-          // Authorization: Bearer <access_token>
-          var userRefreshToken = response.data.refresh_token;
-          var userAccessToken = response.data.access_token;
-          console.log('access-token: '+userAccessToken)
-          axios.defaults.headers.common['Authorization'] = 'Bearer '+userAccessToken
-          return axios.get(cognitoAuthUrl+'/oauth2/userInfo')
-            .then(response => {
-              console.log(JSON.stringify(response.data))
-              getUserByEmailAndAccessToken(response.data.email, userAccessToken);
-              window.sessionStorage.setItem("EnterpriseUserFlag", true)
-              var cognitoUserData = {
-                Username : response.data.email,
-                Pool : userPoolAlternate
+          const userRefreshToken = response.data.refresh_token;
+          const userAccessToken = response.data.access_token;
+          axios.defaults.headers.common.Authorization = `Bearer ${userAccessToken}`;
+
+          return axios
+            .get(`${cognitoAuthUrl}/oauth2/userInfo`)
+            .then(cognitoResponse => {
+              getUserByEmailAndAccessToken(
+                cognitoResponse.data.email,
+                userAccessToken,
+              );
+
+              sessionStorage.setItem('EnterpriseUserFlag', true);
+
+              const cognitoUserData = {
+                Username: cognitoResponse.data.email,
+                Pool: userPool,
               };
-              var cognitoUser = new CognitoUser(cognitoUserData)
-              var refreshToken = new CognitoRefreshToken({RefreshToken: userRefreshToken});
-              cognitoUser.refreshSession(refreshToken, (err, result) => {
-                if (err) return reject(err)
-                console.log(result)
-                resolve("success")
-              })
-              //store.dispatch({type: 'user/user', user: response.data})
-          });
-      });
-    }catch(err){
-      reject(err)
+
+              const cognitoUser = new CognitoUser(cognitoUserData);
+              const refreshToken = new CognitoRefreshToken({
+                RefreshToken: userRefreshToken,
+              });
+
+              cognitoUser.refreshSession(refreshToken, error => {
+                if (error) {
+                  reject(error);
+                } else {
+                  resolve('success');
+                }
+              });
+            });
+        });
+    } catch (error) {
+      reject(error);
+      return Promise.reject(error);
     }
-  })
+  });
 }
 
 export function getEnterpriseAccessTokensByAuthCode(authCode) {
-  console.log('getting FHIR access token from: '+authCode)
   return new Promise((resolve, reject) => {
-    try{
-      // var authData = "grant_type=authorization_code&client_id="+clientId+"&client_secret="+clientSecret+"&code="+authCode+"&redirect_uri="+ssoRedirectUrl
-      var authUrl = process.env.HEYDOC_SERVICES_BASE_URL+"oidc";
-      var authData = "grant_type=authorization_code&code="+authCode
-      return axios.post(authUrl+'/token', authData)
-        .then(response => {
-          console.log(JSON.stringify(response.data))
-          var userRefreshToken = response.data.refresh_token;
-          var userAccessToken = response.data.access_token;
-          var email = response.data.profile;
-          console.log('sso access-token: '+userAccessToken)
-          window.sessionStorage.setItem("EnterpriseUserFlag", true)
-          window.sessionStorage.setItem("SSO_ACCESSTOKEN", userAccessToken)
-          window.sessionStorage.setItem("SSO_REFRESHTOKEN", userRefreshToken)
-          window.sessionStorage.setItem("SSO_USEREMAIL", email)
-          resolve("success")
-      });
-    }catch(err){
-      reject(err)
-    }
-  })
-}
+    try {
+      const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authData = `grant_type=authorization_code&code=${authCode}`;
 
+      return axios.post(`${authUrl}/token`, authData).then(response => {
+        const userRefreshToken = response.data.refresh_token;
+        const userAccessToken = response.data.access_token;
+        const email = response.data.profile;
+        sessionStorage.setItem('EnterpriseUserFlag', true);
+        sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
+        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
+        sessionStorage.setItem('SSO_USEREMAIL', email);
+        resolve('success');
+      });
+    } catch (error) {
+      reject(error);
+      return Promise.reject(error);
+    }
+  });
+}

@@ -13,6 +13,7 @@ import NotificationsOnIcon from '../../img/notifications-on.svg';
 import CubesLoader from '../common/CubesLoader';
 import Members from '../members/Members';
 import TaskListAction from './TaskListAction';
+import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -85,7 +86,7 @@ const nbsp = '\u00A0';
 
 const Header = ({
   title,
-  taskCount: propTaskCount = 0,
+  taskCount: propertiesTaskCount = 0,
   isFetching,
   members,
   taskList,
@@ -96,8 +97,10 @@ const Header = ({
 
   const dispatch = useDispatch();
   const toggleNotifications = useCallback(() => {
-    toggleListNotifications(taskListId, !notificationsStatus)(dispatch).then(
+    const newNotificationStatus = !notificationsStatus;
+    toggleListNotifications(taskListId, newNotificationStatus)(dispatch).then(
       () => {
+        onNotificationsToggled(newNotificationStatus);
         resetHeader();
       },
     );
@@ -107,7 +110,7 @@ const Header = ({
     taskListStatsOk: store.taskListState.taskListStatsOk,
   }));
 
-  let taskCount = propTaskCount;
+  let taskCount = propertiesTaskCount;
 
   if (taskListStatsOk) {
     const key = 'Incomplete_TaskList_Count';

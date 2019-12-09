@@ -13,6 +13,7 @@ import { updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
 import PatientNotes from './PatientNotes';
 import PatientsSidebarSection from './PatientsSidebar.Section';
+import { onPatientEdited } from '../../helpers/ga-event-helper';
 
 const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -371,6 +372,7 @@ const PatientEdit = ({ patient }) => {
     setIsSubmitting(true);
     await dispatch(updatePatient(formState));
     setIsSubmitting(false);
+    onPatientEdited();
   }, [dispatch, formState]);
 
   const canSubmit = () => {

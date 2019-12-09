@@ -73,8 +73,7 @@ export const Routes = ({ store }) => {
     // Now you can access the store object here.
     const state = store.getState();
 
-    if (!state.user.isAuthenticated) {
-      // Not authenticated, redirect to login.
+    if (!state.userState.userProfile?.userId) {
       replaceState(
         {
           nextPathname: nextState.location.pathname,
@@ -86,7 +85,7 @@ export const Routes = ({ store }) => {
 
   const dispatch = useDispatch();
 
-  const preselectTask = (prevState, nextState) => {
+  const preselectTask = (previousState, nextState) => {
     const taskId = nextState.location?.state?.taskId;
     if (!taskId) {
       return;

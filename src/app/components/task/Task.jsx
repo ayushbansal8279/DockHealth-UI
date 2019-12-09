@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { sortSubtasks } from '../../actions/task-actions';
+import { onSubtaskOrderChanged } from '../../helpers/ga-event-helper';
 import useConfirmation from '../../hooks/useConfirmation';
 import Flag from '../common/Flag';
 import AddSubtask from './AddSubtask';
@@ -51,6 +52,8 @@ const Task = props => {
     const otherSubtasks = subtasks.filter(
       ({ taskId }) => taskId !== movedSubtask?.taskId,
     );
+
+    onSubtaskOrderChanged();
 
     const newSubtasks = insert(
       event.data.newIndex,

@@ -28,6 +28,7 @@ import {
   TaskListOuterContainer,
   EmptyListElementContainer,
 } from './TaskList.styled';
+import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
 
 const SORTING_KEYS = {
   ASSIGNED_TO: 'ASSIGNED_TO',
@@ -192,6 +193,8 @@ const TaskList = ({
       );
 
       const order = currentSortingColumn.order === 'asc' ? 'desc' : 'asc';
+
+      onTaskSortingChanged(currentSortingColumn.key, order.toUpperCase());
 
       setCurrentSorting([
         ...otherSortingColumns,

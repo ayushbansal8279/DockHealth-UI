@@ -20,6 +20,7 @@ import {
   PatientsSidebarHeader,
 } from './PatientsSidebar.Styled';
 import PatientsSidebarSection from './PatientsSidebar.Section';
+import { onPatientAdded } from '../../helpers/ga-event-helper';
 
 export const StyledTextField = styled(
   ({ InputProps, InputLabelProps, ...rest }) => (
@@ -348,6 +349,7 @@ const PatientCreation = () => {
     setIsSubmitting(true);
     await dispatch(addPatient(formState));
     setIsSubmitting(false);
+    onPatientAdded();
   }, [dispatch, formState]);
 
   const canSubmit = () => {

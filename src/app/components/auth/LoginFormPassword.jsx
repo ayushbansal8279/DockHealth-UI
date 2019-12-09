@@ -18,9 +18,7 @@ const validate = values => {
 
   if (!values.username) {
     errors.username = 'Please enter an email address';
-  } else if (
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}$/i.test(values.username)
-  ) {
+  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
     errors.username = 'Please enter a valid email address';
   }
 

@@ -1,15 +1,19 @@
 import { ButtonBase } from '@material-ui/core';
 import moment from 'moment';
 import * as PropTypes from 'prop-types';
-import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { VariableSizeList } from 'react-window';
 import equals from 'ramda/es/equals';
 import take from 'ramda/es/take';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { VariableSizeList } from 'react-window';
+import styled from 'styled-components';
 
 import { addPatientNote, editPatientNote } from '../../actions/patient-actions';
 import { capitalize } from '../../helpers/capitalize';
+import {
+  onPatientNoteAdded,
+  onPatientNoteEdited,
+} from '../../helpers/ga-event-helper';
 import useBoolean from '../../hooks/useBoolean';
 import EditableDescription from '../common/EditableDescription';
 import { Cancel, Save, StyledTextField } from './PatientCreation';
@@ -55,10 +59,10 @@ const EditablePatientNote = ({ update, note, isOwn, style, onNoteChange }) => {
     note.dateUpdated,
   )}`;
 
-  const containerRef = useRef(null);
+  const containerReference = useRef(null);
 
   const onContainerChange = () => {
-    const children = Array.from(containerRef.current.children);
+    const children = [...containerReference.current.children];
     const childrenHeight = children
       .map(child => child.offsetHeight)
       .reduce((accumulator, childHeight) => accumulator + childHeight, 0);
@@ -66,7 +70,7 @@ const EditablePatientNote = ({ update, note, isOwn, style, onNoteChange }) => {
   };
 
   return (
-    <div ref={containerRef} style={style}>
+    <div ref={containerReference} style={style}>
       <EditableNoteDescription
         placeholder="Enter your note"
         value={note.description || ''}
@@ -80,7 +84,7 @@ const EditablePatientNote = ({ update, note, isOwn, style, onNoteChange }) => {
   );
 };
 
-const CreatorPropType = PropTypes.shape({
+const CreatorPropertyType = PropTypes.shape({
   firstName: PropTypes.string,
   initials: PropTypes.string,
   lastName: PropTypes.string,
@@ -90,15 +94,32 @@ const CreatorPropType = PropTypes.shape({
   userId: PropTypes.number,
   userName: PropTypes.string,
 });
-const NotePropType = PropTypes.shape({
-  creator: CreatorPropType,
+
+const NotePropertyType = PropTypes.shape({
+  creator: CreatorPropertyType,
   dateCreated: PropTypes.string,
   dateUpdated: PropTypes.string,
   description: PropTypes.string,
   patientNoteId: PropTypes.number,
 });
 
-EditablePatientNote.propTypes = { note: NotePropType.isRequired };
+EditablePatientNote.propTypes = { note: NotePropertyType.isRequired };
+
+const onNoteChange = ({
+  index,
+  noteHeightMap,
+  setNoteHeightMap,
+  notesListReference,
+}) => noteHeight => {
+  const previousValues = [...noteHeightMap.entries()];
+  noteHeightMap.set(index, noteHeight);
+  setNoteHeightMap(noteHeightMap);
+  const newValues = [...noteHeightMap.entries()];
+
+  if (!equals(previousValues, newValues)) {
+    notesListReference.current.resetAfterIndex(0);
+  }
+};
 
 const PatientNotes = ({ patientId, notes }) => {
   const [isCreating, startCreating, stopCreating] = useBoolean(false);
@@ -106,14 +127,14 @@ const PatientNotes = ({ patientId, notes }) => {
   const [noteHeightMap, setNoteHeightMap] = useState(new Map());
   const [noteListHeight, setNoteListHeight] = useState(0);
   const dispatch = useDispatch();
-  const notesListRef = useRef(null);
+  const notesListReference = useRef(null);
 
   useEffect(() => {
     setNoteHeightMap(new Map());
   }, [patientId]);
 
-  const handleChange = e => {
-    setNote(capitalize(e.currentTarget.value));
+  const handleChange = event => {
+    setNote(capitalize(event.currentTarget.value));
   };
 
   const handleCancel = useCallback(() => {
@@ -125,6 +146,7 @@ const PatientNotes = ({ patientId, notes }) => {
     dispatch(addPatientNote(patientId, note))
       .then(() => {
         handleCancel();
+        onPatientNoteAdded();
       })
       .catch(() => {
         toggleAlert('Error adding note. Please try again.', 'error');
@@ -133,39 +155,30 @@ const PatientNotes = ({ patientId, notes }) => {
 
   const handleUpdate = (description, patientNoteId) => {
     const modifiedNote = notes.find(n => n.patientNoteId === patientNoteId);
-    dispatch(editPatientNote(patientId, modifiedNote, description)).catch(
-      () => {
+    dispatch(editPatientNote(patientId, modifiedNote, description))
+      .then(() => {
+        onPatientNoteEdited();
+      })
+      .catch(() => {
         toggleAlert('Error updating note. Please try again.', 'error');
-      },
-    );
+      });
   };
 
   const userId = useSelector(state => state.userState.userProfile.userId);
   const isOwn = patientNote => patientNote.creator.userId === userId;
 
-  const onNoteChange = ({ index }) => noteHeight => {
-    const prevValues = Array.from(noteHeightMap.entries());
-    noteHeightMap.set(index, noteHeight);
-    setNoteHeightMap(noteHeightMap);
-    const newValues = Array.from(noteHeightMap.entries());
-
-    if (!equals(prevValues, newValues)) {
-      notesListRef.current.resetAfterIndex(0);
-    }
-  };
-
   useEffect(() => {
-    const listHeight = take(5, Array.from(noteHeightMap.keys()))
+    const listHeight = take(5, [...noteHeightMap.keys()])
       .map(key => noteHeightMap.get(key))
       .reduce((accumulator, currentHeight) => accumulator + currentHeight, 0);
 
     setNoteListHeight(listHeight);
-  });
+  }, [noteHeightMap]);
 
-  const noteHeightMapValues = Array.from(noteHeightMap.values());
+  const noteHeightMapValues = [...noteHeightMap.values()];
 
   useEffect(() => {
-    notesListRef.current.resetAfterIndex(0);
+    notesListReference.current.resetAfterIndex(0);
   }, [noteHeightMapValues]);
 
   const getItemSize = index => noteHeightMap.get(index) || 0;
@@ -178,7 +191,7 @@ const PatientNotes = ({ patientId, notes }) => {
         itemCount={notes.length}
         itemSize={getItemSize}
         width="100%"
-        ref={notesListRef}
+        ref={notesListReference}
       >
         {({ index, style }) => {
           const patientNote = notes[index];
@@ -189,7 +202,12 @@ const PatientNotes = ({ patientId, notes }) => {
               note={patientNote}
               isOwn={isOwn(patientNote)}
               noteIndex={index}
-              onNoteChange={onNoteChange({ index })}
+              onNoteChange={onNoteChange({
+                index,
+                noteHeightMap,
+                setNoteHeightMap,
+                notesListReference,
+              })}
               style={style}
             />
           );
@@ -228,7 +246,7 @@ const PatientNotes = ({ patientId, notes }) => {
   );
 };
 
-PatientNotes.propTypes = { notes: PropTypes.arrayOf(NotePropType) };
+PatientNotes.propTypes = { notes: PropTypes.arrayOf(NotePropertyType) };
 
 PatientNotes.defaultProps = { notes: [] };
 

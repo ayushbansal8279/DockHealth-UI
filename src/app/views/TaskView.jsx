@@ -40,6 +40,12 @@ import {
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.styled';
+import {
+  onFilterChanged,
+  onSlimViewChanged,
+  onButtonClicked,
+  onHeadsUpDisplayToggled,
+} from '../helpers/ga-event-helper';
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
@@ -417,6 +423,8 @@ class TaskView extends Component {
       },
     );
 
+    onFilterChanged(filterBy);
+
     this.clearStoredCurrentTask();
 
     onFilter(filterBy, sortBy);
@@ -450,9 +458,15 @@ class TaskView extends Component {
   };
 
   toggleHUD = () => {
-    this.setState(previousState => ({
-      displayHUD: !previousState.displayHUD,
-    }));
+    this.setState(
+      previousState => ({
+        displayHUD: !previousState.displayHUD,
+      }),
+      () => {
+        const { displayHUD } = this.state;
+        onHeadsUpDisplayToggled(displayHUD);
+      },
+    );
   };
 
   handleClose = () => {
@@ -466,6 +480,8 @@ class TaskView extends Component {
         slimView: !previousState.slimView,
       }),
       () => {
+        const { slimView } = this.state;
+        onSlimViewChanged(slimView);
         this.saveTaskListPreferences();
       },
     );
@@ -474,6 +490,7 @@ class TaskView extends Component {
   onAddTaskButtonClick = () => {
     const { storeAsCurrentTask } = this.props;
 
+    onButtonClicked('Add Task');
     storeAsCurrentTask(null);
     this.openTaskDrawer();
   };
