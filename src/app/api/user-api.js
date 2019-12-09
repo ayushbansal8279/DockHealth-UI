@@ -578,11 +578,13 @@ export function refreshAccessToken(email) {
             console.log("Session is " + session.isValid());
             //console.log("AccessToken: "+session.accessToken.jwtToken);
             var currentAccessToken = sessionStorage.getItem('accessToken');
+            //use new session token
+            axios.defaults.headers.common['Authorization'] = 'Bearer '+session.accessToken.jwtToken
+            sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
             if(currentAccessToken != session.accessToken.jwtToken){
               //call an API to use new access token with axios
               comp.getUserByEmail(email, cognitoUser);
             }
-            sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
             resolve(session.isValid())
         }
       })
