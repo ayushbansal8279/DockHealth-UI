@@ -18,26 +18,22 @@ export function getTasksForCreator() {
 
 export function getListTasksByUser(
   taskListId,
-  status,
+  status = 'COMPLETE',
   sortBy,
   filterBy,
   queryStartPosition = 0,
 ) {
   closeAddForm();
-  if (sortBy == undefined && filterBy == undefined) {
-    return axios
-      .get(
-        `task/findListTasksByUser/${taskListId}?status=${status}&queryStartPosition=${queryStartPosition}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      });
-  }
+
   return axios
-    .get(
-      `task/findListTasksByUser/${taskListId}?status=${status}&queryStartPosition=${queryStartPosition}&sortBy=${sortBy}&filterBy=${filterBy}`,
-    )
+    .get(`task/findListTasksByUser/${taskListId}`, {
+      params: {
+        status,
+        queryStartPosition,
+        sortBy,
+        filterBy,
+      },
+    })
     .then(response => response.data)
     .catch(error => {
       throw error;

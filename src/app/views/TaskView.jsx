@@ -688,7 +688,7 @@ class TaskView extends Component {
       listName,
     };
 
-    if (isInbox && completedTasks.length === 0) {
+    if (isInbox || completedTasks.length === 0) {
       return null;
     }
 
