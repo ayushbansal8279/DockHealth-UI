@@ -66,7 +66,7 @@ class Inbox extends PureComponent {
   };
 
   refreshAccessToken(user) {
-    const systemTimeout = 5 * 60 * 1000;
+    const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
 
     if (
       sessionStorage.refreshAccessTokenTimeoutId != null ||
