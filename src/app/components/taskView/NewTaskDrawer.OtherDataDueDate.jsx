@@ -8,10 +8,16 @@ const DueDateClearButton = styled.div`
   color: #e40909;
   cursor: pointer;
   display: inline-flex;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 1rem;
+  height: 100%;
   line-height: 1rem;
   margin-left: 0.5ch;
+  transition: filter 0.25s ease-out;
+  will-change: filter;
+
+  &:hover {
+    filter: brightness(1.25);
+  }
 `;
 
 export default ({

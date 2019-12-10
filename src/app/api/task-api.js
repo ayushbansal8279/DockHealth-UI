@@ -1,4 +1,5 @@
 /* eslint-disable eqeqeq */
+import { noop } from '../helpers/utilityFunctions';
 import axios from './axios-heydoc';
 
 const ERROR_RETRIEVING_TASKS_MESSAGE =
@@ -490,17 +491,16 @@ export function getTaskHistory(taskId) {
     });
 }
 
-export function addTaskAttachment(taskId, fileData) {
+export function addTaskAttachment(taskId, fileData, additionalConfig = {}) {
   const formData = new FormData();
   formData.append('file', fileData);
-  // var fileDataToPost = {
-  //   file: fileData
-  // }
+
   return axios
     .post(`task/attachment/${taskId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      ...additionalConfig,
     })
     .then(response => {
       toggleAlert('Attachment added successfully!', 'success');
@@ -523,6 +523,21 @@ export function removeTaskAttachment(taskAttachmentId) {
       toggleAlert('Error in removing attachment. Please try again.', 'error');
       throw error;
     });
+}
+
+export function getTaskAttachment(taskAttachmentId) {
+  return axios({
+    url: `task/attachment/download/${taskAttachmentId}`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then(response => {
+      return response;
+    })
+    .catch(noop);
 }
 
 export function getTaskDetails(taskId) {

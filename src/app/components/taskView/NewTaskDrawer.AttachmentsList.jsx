@@ -1,0 +1,172 @@
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useList } from 'react-use';
+
+import {
+  addTaskAttachment,
+  removeTaskAttachment,
+} from '../../actions/task-actions';
+import useBoolean from '../../hooks/useBoolean';
+import AttachmentPreview from './NewTaskDrawer.AttachmentPreview';
+import {
+  AddAttachmentButton,
+  AttachmentFileInput,
+  AttachmentListEntry,
+  AttachmentListEntryLabel,
+  AttachmentListEntryRemove,
+  UploadingFileContainer,
+  UploadingFileCurrentProgress,
+  UploadingFileLabel,
+  UploadingFileProgressBar,
+} from './NewTaskDrawer.AttachmentsList.Styled';
+
+const acceptedFileFormats = [
+  'application/pdf',
+  'audio/mpeg',
+  'audio/wav',
+  'image/jpeg',
+  'image/png',
+  'video/mpeg',
+  'video/mp4',
+].join(', ');
+
+const renderAttachmentListEntry = ({
+  dispatch,
+  filterAddedAttachments,
+  openAttachmentPreview,
+  taskId,
+}) => attachment => {
+  const { attachmentId, fileIdentifier, fileName } = attachment;
+
+  return (
+    <AttachmentListEntry key={fileIdentifier}>
+      <AttachmentListEntryLabel
+        onClick={() => {
+          openAttachmentPreview(attachment);
+        }}
+      >
+        {fileName}
+      </AttachmentListEntryLabel>
+      <AttachmentListEntryRemove
+        onClick={() => {
+          removeTaskAttachment(taskId, attachmentId)(dispatch).then(() => {
+            filterAddedAttachments(
+              ({ attachmentId: existingAttachmentId }) =>
+                attachmentId !== existingAttachmentId,
+            );
+          });
+        }}
+      >
+        &times;
+      </AttachmentListEntryRemove>
+    </AttachmentListEntry>
+  );
+};
+
+export default ({ task }) => {
+  const attachmentFileInputReference = useRef(null);
+  const dispatch = useDispatch();
+  const [
+    addedAttachments,
+    {
+      push: pushAddedAttachment,
+      set: setAddedAttachments,
+      filter: filterAddedAttachments,
+    },
+  ] = useList([]);
+  const [
+    isAttachmentPreviewOpen,
+    showAttachmentPreview,
+    hideAttachmentPreview,
+  ] = useBoolean(false);
+  const [previewedAttachment, setPreviewedAttachment] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [
+    currentlyUploadedAttachment,
+    setCurrentlyUploadedAttachment,
+  ] = useState(null);
+
+  const onAttachmentButtonClicked = useCallback(() => {
+    const fileInputElement = attachmentFileInputReference.current;
+
+    if (fileInputElement) {
+      fileInputElement.dispatchEvent(new MouseEvent('click'));
+    }
+  }, []);
+
+  const openAttachmentPreview = useCallback(
+    attachment => {
+      setPreviewedAttachment(attachment);
+      showAttachmentPreview();
+    },
+    [showAttachmentPreview],
+  );
+
+  const taskId = task?.taskId;
+  const taskAttachments = task?.attachments || [];
+
+  useEffect(() => {
+    if (taskId) {
+      setAddedAttachments(taskAttachments);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setAddedAttachments, taskId]);
+
+  const onAttachmentFileInputChange = useCallback(() => {
+    const fileInputElement = attachmentFileInputReference.current;
+
+    if (fileInputElement && taskId) {
+      const [newAttachment] = fileInputElement.files;
+      setCurrentlyUploadedAttachment(newAttachment);
+      setUploadProgress(0);
+      addTaskAttachment(taskId, newAttachment, {
+        onUploadProgress: ({ loaded, total }) => {
+          setUploadProgress(Math.round((loaded * 100) / total));
+        },
+      })(dispatch)
+        .then(addedAttachment => {
+          pushAddedAttachment(addedAttachment);
+          setCurrentlyUploadedAttachment(null);
+        })
+        .catch(() => {
+          setCurrentlyUploadedAttachment(null);
+        });
+    }
+  }, [pushAddedAttachment, dispatch, taskId]);
+
+  return (
+    <>
+      <AttachmentPreview
+        attachment={previewedAttachment}
+        hideAttachmentPreview={hideAttachmentPreview}
+        isAttachmentPreviewOpen={isAttachmentPreviewOpen}
+      />
+      <AttachmentFileInput
+        ref={attachmentFileInputReference}
+        onChange={onAttachmentFileInputChange}
+        accept={acceptedFileFormats}
+      />
+      <AddAttachmentButton onClick={onAttachmentButtonClicked}>
+        Add an attachment
+      </AddAttachmentButton>
+      {addedAttachments.map(
+        renderAttachmentListEntry({
+          dispatch,
+          filterAddedAttachments,
+          openAttachmentPreview,
+          taskId,
+        }),
+      )}
+      {currentlyUploadedAttachment && (
+        <UploadingFileContainer>
+          <UploadingFileLabel>
+            {currentlyUploadedAttachment.name}
+          </UploadingFileLabel>
+          <UploadingFileProgressBar>
+            <UploadingFileCurrentProgress uploadProgress={uploadProgress} />
+          </UploadingFileProgressBar>
+        </UploadingFileContainer>
+      )}
+    </>
+  );
+};

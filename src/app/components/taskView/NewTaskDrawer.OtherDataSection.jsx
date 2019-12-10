@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import CubesLoader from '../common/CubesLoader';
 import NewTaskDrawerOtherDataDueDate from './NewTaskDrawer.OtherDataDueDate';
 import initializeNewTaskDrawerOtherDataSectionHooks from './NewTaskDrawer.OtherDataSectionHooks';
+import NewTaskDrawerAttachmentsList from './NewTaskDrawer.AttachmentsList';
 
 const OtherDataSectionContainer = styled.div`
   padding: 1rem 1.5rem;
@@ -22,7 +23,6 @@ const SectionRow = styled.div`
 
 const SectionButtonContainer = styled.div`
   flex: 5;
-  //Modified font of the history container.
   font-size: 0.875rem;
 `;
 
@@ -34,8 +34,9 @@ const SectionButton = styled.span`
 
 const SectionLabel = styled.div`
   color: #ababb2;
-  flex: 1;
+  flex: 2;
   font-size: 0.875rem;
+  padding-right: 0.25rem;
 `;
 
 const HistoryLabel = styled(SectionButton)`
@@ -214,6 +215,16 @@ export default ({
           SectionButton={SectionButton}
         />
       </SectionRow>
+      {task && (
+        <SectionRow>
+          <SectionLabel padded>Attachments</SectionLabel>
+          <SectionButtonContainer>
+            <SectionButton>
+              <NewTaskDrawerAttachmentsList task={task} />
+            </SectionButton>
+          </SectionButtonContainer>
+        </SectionRow>
+      )}
       <SectionRow>
         <SectionLabel>History</SectionLabel>
         <SectionButtonContainer>

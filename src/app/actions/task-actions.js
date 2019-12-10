@@ -600,14 +600,19 @@ export function clearCurrentTaskHistory() {
   };
 }
 
-export const addTaskAttachment = (taskId, fileData) => dispatch =>
-  TaskApi.addTaskAttachment(taskId, fileData)
+export const addTaskAttachment = (
+  taskId,
+  fileData,
+  additionalConfig,
+) => dispatch =>
+  TaskApi.addTaskAttachment(taskId, fileData, additionalConfig)
     .then(response => {
       dispatch({
         type: ActionTypes.TASK_ATTACHMENT_ADDED,
         taskId,
         taskAttachment: response.data,
       });
+      return response.data;
     })
     .catch(error => {
       throw error;
