@@ -170,10 +170,10 @@ export default ({ addDeferredCommentToQueue, task }) => {
 
   const groupedComments = getGroupedComments({ comments, task });
 
-  const scrollToBottom = useCallback(() => {
+  const scrollToTop = useCallback(() => {
     const scrollElement = simpleBarRef.current?.getScrollElement();
     if (scrollElement) {
-      scrollElement.scrollTop = scrollElement.scrollHeight;
+      scrollElement.scrollTop = 0;
     }
   });
 
@@ -209,7 +209,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
 
         addComment(data);
 
-        scrollToBottom();
+        scrollToTop();
       } catch {
         toggleAlert('Error adding comment, please try again later', 'error');
       } finally {
@@ -230,7 +230,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
         creator: currentUserProfile,
         dateCreated: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
       });
-      scrollToBottom();
+      scrollToTop();
       clearCommentContent();
     }
   };
