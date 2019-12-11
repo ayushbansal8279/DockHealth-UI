@@ -8,3 +8,7 @@ dist*.zip
 .DS_Store
 **/.DS_Store
 .vscode
+
+/testing/integration/node_modules/
+/testing/integration/tests/output/
+/testing/integration/output/

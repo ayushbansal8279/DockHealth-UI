@@ -14,5 +14,10 @@
   "dependencies": {
     "codeceptjs": "^2.3.6",
     "puppeteer": "^2.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
