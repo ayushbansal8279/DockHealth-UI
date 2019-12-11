@@ -18,7 +18,7 @@ Scenario('Make a task, then click it, than delete it...', (I, tasksPg) => {
 
   I.waitForText('Dummy Task', 3);
 
-  pause();
+  // pause();
 
   I.refreshPage();
 

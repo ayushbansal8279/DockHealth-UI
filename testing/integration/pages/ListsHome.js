@@ -46,7 +46,7 @@ module.exports = {
     I.pressKey(['CommandOrControl', 'A']);
     I.pressKey('Backspace');
     I.fillField(this.fields.listNameFld, listName);
-    pause();
+    // pause();
     I.click(this.fields.saveListBtn);
   },
 
