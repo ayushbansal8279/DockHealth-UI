@@ -139,7 +139,7 @@ const addTaskPromise = async ({
   unsetPublishingComment,
   commentContent,
   dispatch,
-  scrollToBottom,
+  scrollToTop,
 }) => {
   try {
     setPublishingComment();
@@ -154,7 +154,7 @@ const addTaskPromise = async ({
 
     addComment(data);
 
-    scrollToBottom();
+    scrollToTop();
   } catch {
     toggleAlert('Error adding comment, please try again later', 'error');
   } finally {
@@ -170,7 +170,7 @@ const publishComment = ({
   clearCommentContent,
   unsetPublishingComment,
   dispatch,
-  scrollToBottom,
+  scrollToTop,
   addDeferredCommentToQueue,
   setAddedComments,
   currentUserProfile,
@@ -190,7 +190,7 @@ const publishComment = ({
       unsetPublishingComment,
       commentContent,
       dispatch,
-      scrollToBottom,
+      scrollToTop,
     });
   } else {
     addDeferredCommentToQueue({
@@ -203,7 +203,7 @@ const publishComment = ({
       creator: currentUserProfile,
       dateCreated: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
     });
-    scrollToBottom();
+    scrollToTop();
     clearCommentContent();
   }
 };
@@ -247,10 +247,10 @@ export default ({ addDeferredCommentToQueue, task }) => {
 
   const groupedComments = getGroupedComments({ comments, task });
 
-  const scrollToBottom = useCallback(() => {
-    const scrollElement = simpleBarReference.current?.getScrollElement();
+  const scrollToTop = useCallback(() => {
+    const scrollElement = simpleBarRef.current?.getScrollElement();
     if (scrollElement) {
-      scrollElement.scrollTop = scrollElement.scrollHeight;
+      scrollElement.scrollTop = 0;
     }
   }, []);
 
@@ -277,7 +277,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
       clearCommentContent,
       unsetPublishingComment,
       dispatch,
-      scrollToBottom,
+      scrollToTop,
       addDeferredCommentToQueue,
       setAddedComments,
       currentUserProfile,
