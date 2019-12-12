@@ -14,6 +14,7 @@ import { unsetHeader } from './actions/header-actions';
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
 import Patients from './components/patients/Patients';
+import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
 import AssignedByMe from './views/AssignedByMe';
 import AssignedToMe from './views/AssignedToMe';
@@ -51,7 +52,17 @@ import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\//, '');
 
+const withFeatureToggle = store => ({ location }) => {
+  const user = store.getState().userState?.userProfile;
+
+  if (user) {
+    handleFeatureToggle({ location, user });
+  }
+};
+
 export const Routes = ({ store }) => {
+  const checkFeatureToggles = withFeatureToggle(store);
+
   useEffectOnce(() => {
     const firstPathname = transformPathname(
       hashHistory.getCurrentLocation()?.pathname,
@@ -70,7 +81,6 @@ export const Routes = ({ store }) => {
   });
 
   const authRequired = (nextState, replaceState) => {
-    // Now you can access the store object here.
     const state = store.getState();
 
     if (!state.userState.userProfile?.userId) {
@@ -103,44 +113,94 @@ export const Routes = ({ store }) => {
         <Route component={TemplateCore}>
           <IndexRoute component={ListDetailsView} onEnter={authRequired} />
           <IndexRedirect to="/tasks" />
-          <Route path="/patients" component={Patients} />
-          <Route path="/patient/:patientId" component={PatientProfile} />
-          <Route path="/editPatient/:patientId" component={PatientEditView} />
-          <Route path="/activityfeed" component={TaskListActivityFeedView} />
-          <Route path="/taskSearch" component={TaskListSearch} />
+          <Route
+            path="/patients"
+            component={Patients}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/patient/:patientId"
+            component={PatientProfile}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/editPatient/:patientId"
+            component={PatientEditView}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/activityfeed"
+            component={TaskListActivityFeedView}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/taskSearch"
+            component={TaskListSearch}
+            onEnter={checkFeatureToggles}
+          />
           <Route
             path="/assignedToPerson/:personId/:memberName"
             component={PersonTaskList}
+            onEnter={checkFeatureToggles}
           />
-          <Route path="/people" component={PeopleView} />
+          <Route
+            path="/people"
+            component={PeopleView}
+            onEnter={checkFeatureToggles}
+          />
           <Route
             path="/tasks/inbox(/:taskId)"
             component={Inbox}
             onChange={preselectTask}
+            onEnter={checkFeatureToggles}
           />
           {/* DIRTY FIX -> TODO: Update react-router and use sensitive prop */}
           <Route
             path="/tasks/Inbox(/:taskId)"
             component={Inbox}
             onChange={preselectTask}
+            onEnter={checkFeatureToggles}
           />
           <Route path="/tasks">
-            <IndexRoute component={TaskListView} />
-            <Route path="assigned_by_me" component={AssignedByMe} />
-            <Route path="assigned_to_me" component={AssignedToMe} />
+            <IndexRoute
+              component={TaskListView}
+              onEnter={checkFeatureToggles}
+            />
+            <Route
+              path="assigned_by_me"
+              component={AssignedByMe}
+              onEnter={checkFeatureToggles}
+            />
+            <Route
+              path="assigned_to_me"
+              component={AssignedToMe}
+              onEnter={checkFeatureToggles}
+            />
             <Route
               path=":listName/:taskListId(/:taskId)"
               component={ListDetailsView}
               onChange={preselectTask}
-              onEnter={nextState => preselectTask(null, nextState)}
+              onEnter={nextState => {
+                checkFeatureToggles(nextState);
+                preselectTask(null, nextState);
+              }}
             />
             <Route
               path="filtered/:listName/:taskStatus/:filterBy"
               component={ListDetailsView}
+              onEnter={checkFeatureToggles}
             />
           </Route>
-          <Route path="/userprofile" component={UserProfileViewWrapper} />
-          <Route path="/support" component={SupportSectionView} />
+          <Route
+            path="/userprofile"
+            component={UserProfileViewWrapper}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/support"
+            component={SupportSectionView}
+            onEnter={checkFeatureToggles}
+          />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>

@@ -36,14 +36,22 @@ const Name = styled.div`
   text-overflow: ellipsis;
 `;
 
-const ProfileLink = React.forwardRef((props, ref) => (
-  <Link innerRef={ref} to="/userProfile" activeClassName="active" {...props} />
+const ProfileLink = React.forwardRef((props, reference) => (
+  <Link
+    innerRef={reference}
+    to="/userProfile"
+    activeClassName="active"
+    {...props}
+  />
 ));
 
 const DrawerHeader = ({ user }) => {
-  const nameRef = useRef(null);
+  const nameReference = useRef(null);
 
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
+  const userProfileAccess = useSelector(
+    state => state.userState.userProfile?.access,
+  );
 
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
 
@@ -55,8 +63,15 @@ const DrawerHeader = ({ user }) => {
     avatarInitials
   );
 
+  const listItemComponent = userProfileAccess?.userProfileEnabled
+    ? ProfileLink
+    : undefined;
+
   return (
-    <StyledListItem button component={ProfileLink}>
+    <StyledListItem
+      button={Boolean(listItemComponent)}
+      component={listItemComponent}
+    >
       <ListItemIcon
         style={{
           marginLeft: '-2px',
@@ -76,7 +91,7 @@ const DrawerHeader = ({ user }) => {
             display: 'flex',
           }}
         >
-          <Name ref={nameRef}>{fullName}</Name>
+          <Name ref={nameReference}>{fullName}</Name>
         </div>
       </ListItemText>
     </StyledListItem>

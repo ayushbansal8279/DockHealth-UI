@@ -146,6 +146,7 @@ export default ({
     taskId,
     newDueDate,
     setNewDueDate,
+    userProfileAccess,
   } = initializeNewTaskDrawerOtherDataSectionHooks({
     task,
     setAutoSaveVisible,
@@ -215,7 +216,7 @@ export default ({
           SectionButton={SectionButton}
         />
       </SectionRow>
-      {task && (
+      {task && userProfileAccess?.attachmentsEnabled && (
         <SectionRow>
           <SectionLabel padded>Attachments</SectionLabel>
           <SectionButtonContainer>

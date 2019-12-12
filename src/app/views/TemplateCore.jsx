@@ -11,6 +11,7 @@ import * as userApi from '../api/user-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import Drawer from '../components/drawer/Drawer';
 import { unsetHeader } from '../actions/header-actions';
+import handleFeatureToggle from '../helpers/handle-feature-toggle';
 
 const getBrowserInfo = () => {
   const ua = navigator.userAgent;
@@ -100,10 +101,15 @@ class TemplateCore extends PureComponent {
           hashHistory.push('/unEnrolledUser');
         } else if (data.personalOrganization && data.presentHippaAlert) {
           hashHistory.push('/selfEnrolledUser');
-        }
+        } else {
+          if (data.profileThumbnailPictureHash) {
+            userApi.getUserProfilePic(data.userId, 'PROFILE');
+          }
 
-        if (data.profileThumbnailPictureHash) {
-          userApi.getUserProfilePic(data.userId, 'PROFILE');
+          handleFeatureToggle({
+            location: hashHistory.getCurrentLocation(),
+            user: data,
+          });
         }
       } catch {
         hashHistory.push('login');

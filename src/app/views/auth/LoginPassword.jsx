@@ -3,7 +3,7 @@ import { hashHistory } from 'react-router';
 
 import { success } from '../../actions/notification-actions';
 import { mobileAnalyticsClient } from '../../api/analytics-api';
-import * as userApi from '../../api/user-api';
+import { login } from '../../api/user-api';
 import LoginFormPassword from '../../components/auth/LoginFormPassword';
 
 const LoginPassword = () => {
@@ -11,8 +11,7 @@ const LoginPassword = () => {
 
   const onSubmit = useCallback(
     form =>
-      userApi
-        .login(form.username, form.password)
+      login(form.username, form.password)
         .then(data => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             LOGIN_SUCCESS: 'YES',

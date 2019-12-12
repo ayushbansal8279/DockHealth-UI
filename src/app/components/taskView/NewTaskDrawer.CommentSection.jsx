@@ -248,7 +248,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
   const groupedComments = getGroupedComments({ comments, task });
 
   const scrollToTop = useCallback(() => {
-    const scrollElement = simpleBarRef.current?.getScrollElement();
+    const scrollElement = simpleBarReference.current?.getScrollElement();
     if (scrollElement) {
       scrollElement.scrollTop = 0;
     }

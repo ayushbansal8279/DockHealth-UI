@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link, withRouter } from 'react-router';
 
 import useBoolean from '../../hooks/useBoolean';
@@ -193,12 +194,14 @@ const getDrawerItems = ({ lists }) => [
     label: 'Search',
     icon: SearchIcon,
     to: 'taskSearch',
+    userProfileAccessKey: 'searchEnabled',
   },
   {
     id: 'inbox',
     label: 'Inbox',
     icon: InboxIcon,
     to: 'tasks/Inbox',
+    userProfileAccessKey: 'listsEnabled',
   },
   {
     id: 'lists',
@@ -214,30 +217,39 @@ const getDrawerItems = ({ lists }) => [
         to: `tasks/${listName}/${taskListId}`,
       };
     }),
+    userProfileAccessKey: 'listsEnabled',
   },
   {
     id: 'patients',
     label: 'Patients',
     icon: PatientsIcon,
     to: 'patients',
+    userProfileAccessKey: 'patientsEnabled',
   },
   {
     id: 'people',
     label: 'People',
     icon: PeopleIcon,
     to: 'people',
+    userProfileAccessKey: 'peopleEnabled',
   },
   {
     id: 'support',
     label: 'Support',
     icon: SupportIcon,
     to: 'support',
+    userProfileAccessKey: null,
   },
 ];
 
-const renderDrawerItem = drawerListProps => ({ id, ...drawerItemProps }) => (
-  <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />
-);
+const renderDrawerItem = ({ userProfileAccess, ...drawerListProps }) => ({
+  id,
+  userProfileAccessKey,
+  ...drawerItemProps
+}) =>
+  userProfileAccess[userProfileAccessKey] && (
+    <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />
+  );
 
 const DrawerList = ({
   open,
@@ -251,6 +263,10 @@ const DrawerList = ({
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
   const [rolloverLabel, setRolloverLabel] = useState('');
+
+  const userProfileAccess = useSelector(
+    state => state.userState.userProfile?.access,
+  );
 
   const drawerItems = getDrawerItems({ lists });
 
@@ -292,6 +308,7 @@ const DrawerList = ({
             rolloverPopoverAnchor,
             setRolloverLabel,
             setRolloverPopoverAnchor,
+            userProfileAccess,
           }),
         )}
         <StyledSpacer />

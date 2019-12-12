@@ -51,6 +51,7 @@ const statusSelectData = [
 const onDelete = ({ afterDelete, dispatch, task }) => async event => {
   event.preventDefault();
   event.stopPropagation();
+
   if (task) {
     try {
       await deleteTask(task)(dispatch);
@@ -66,6 +67,7 @@ const onDelete = ({ afterDelete, dispatch, task }) => async event => {
 const onDuplicate = ({ afterDuplicate, dispatch, task }) => async event => {
   event.preventDefault();
   event.stopPropagation();
+
   if (task && task.taskId != null) {
     try {
       const newTask = await duplicateTask(task)(dispatch);
@@ -106,6 +108,7 @@ export default ({
     taskId,
     taskContainerReference,
     togglePriorityActive,
+    userProfile,
   } = initializeNewTaskDrawerHooks({ headsUpAreaRef, statusSelectData });
 
   const isSubtask = Boolean(task?.parentTaskId);
@@ -186,10 +189,12 @@ export default ({
             togglePriorityActive={togglePriorityActive}
           />
           <CondensedFormSection container item xs={12}>
-            <NewTaskDrawerCommentSection
-              task={task}
-              addDeferredCommentToQueue={addDeferredCommentToQueue}
-            />
+            {userProfile?.access?.commentsEnabled && (
+              <NewTaskDrawerCommentSection
+                task={task}
+                addDeferredCommentToQueue={addDeferredCommentToQueue}
+              />
+            )}
             <FormContext {...formMethods}>
               <NewTaskDrawerOtherDataSection
                 task={task}
