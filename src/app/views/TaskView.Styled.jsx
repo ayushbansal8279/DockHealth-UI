@@ -195,8 +195,9 @@ const InboxNoMessagesContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
+  max-width: 48rem;
+  min-width: 36.1875rem;
   padding: 2.5rem 6rem;
-  width: 48rem;
 `;
 
 const InboxNoMessagesLabel = styled.div`
