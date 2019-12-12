@@ -6,7 +6,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
-import configureStore from './configureStore';
+import configureStore from './ConfigureStore';
 import { Routes } from './routes';
 import theme from './theme';
 import flags, { FlagsProvider } from './flags';
@@ -48,4 +48,4 @@ const App = () => (
   </MuiThemeProvider>
 );
 
-render(<App />, document.getElementById('app'));
+render(<App />, document.querySelector('#app'));

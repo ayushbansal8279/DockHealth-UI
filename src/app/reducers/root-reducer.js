@@ -10,7 +10,7 @@ import FormReducer from './form-reducer';
 import patient from './patient';
 import HeaderReducer from './header-reducer';
 
-const rootReducer = combineReducers({
+export default combineReducers({
   taskState: TaskReducer,
   patientState: PatientReducer,
   userState: UserReducer,
@@ -23,5 +23,3 @@ const rootReducer = combineReducers({
   patient,
   header: HeaderReducer,
 });
-
-export default rootReducer;

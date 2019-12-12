@@ -1,7 +1,8 @@
-import axios from './axios-heydoc';
-import configureStore from '../configureStore';
+import configureStore from '../ConfigureStore';
 import { onLogin, onLogout } from '../helpers/ga-event-helper';
 import { noop } from '../helpers/utilityFunctions';
+import { dummyAccess } from '../reducers/user-reducer';
+import axios from './axios-heydoc';
 
 const store = configureStore();
 
@@ -329,7 +330,7 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
       sessionStorage.setItem('userId', response.data.userId);
       sessionStorage.setItem('userProfile', JSON.stringify(response.data));
       onLogin();
-      return response.data;
+      return { ...response.data, access: dummyAccess };
     });
 }
 

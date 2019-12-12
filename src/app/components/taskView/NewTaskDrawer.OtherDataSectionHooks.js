@@ -135,6 +135,10 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
     saveDueDate({ updateDueDate: null });
   }, [saveDueDate, setNewDueDate]);
 
+  const userProfileAccess = useSelector(
+    state => state.userState.userProfile?.access,
+  );
+
   return {
     taskLists,
     currentUser,
@@ -163,5 +167,6 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
     taskId,
     newDueDate,
     setNewDueDate,
+    userProfileAccess,
   };
 };

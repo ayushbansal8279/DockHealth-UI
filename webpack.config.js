@@ -29,7 +29,7 @@ exposed.forEach(i => {
 });
 
 const config = {
-  entry: ['@babel/polyfill', `${APP_DIR}/index.js`],
+  entry: ['@babel/polyfill', `${APP_DIR}/index.jsx`],
   devtool: 'inline-cheap-source-map',
   output: {
     path: BUILD_DIR,
@@ -73,6 +73,8 @@ const config = {
   devServer: {
     compress: false,
     disableHostCheck: true,
+    hot: false,
+    liveReload: true,
   },
 };
 
