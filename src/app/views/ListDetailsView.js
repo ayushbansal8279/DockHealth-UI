@@ -61,13 +61,13 @@ class Home extends PureComponent {
         .getListTasks(routeParams.taskListId,undefined,undefined,'INCOMPLETE')
         .then(() => {
           actions.loadingCompletedTasks();
-          actions.getListTasks(routeParams.taskListId,undefined,'COMPLETE');
+          actions.getListTasks(routeParams.taskListId,undefined,undefined,'COMPLETE');
         })
         .then(noop).catch((error) => {
           this.handleRetry(error, () => {
           actions.getListTasks(routeParams.taskListId,undefined,undefined,'INCOMPLETE')
           actions.loadingCompletedTasks();
-          actions.getListTasks(routeParams.taskListId,undefined,'COMPLETE');
+          actions.getListTasks(routeParams.taskListId,undefined,undefined,'COMPLETE');
           })
         });
       if (routeParams.taskListId) {
