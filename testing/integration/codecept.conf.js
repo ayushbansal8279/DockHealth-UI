@@ -14,6 +14,7 @@ exports.config = {
     tskLstPg: './pages/ListsHome.js',
     inboxPg: './pages/Inbox.js',
     tasksPg: './pages/InsideList.js',
+    ptntPg: './pages/Patients.js',
   },
   bootstrap: null,
   mocha: {},

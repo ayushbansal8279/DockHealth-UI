@@ -13,12 +13,21 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(1) > div > div > textarea ',
     },
 
-    // Wrong? firstTsk: {css: "#appHome > main > div > div > div > div:nth-child(3) > div:nth-child(3) > div > div > div:nth-child(1) > div:nth-child(1)  > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3) "},
+    commentShield: {css:
+      '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(1)',
+    },
+
+    commentBox: {css:
+      '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)',
+    },
 
     firstTsk: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3)',
     },
+
+    
+
   },
 
   openTaskSidebar() {
@@ -28,50 +37,39 @@ module.exports = {
 
   postTask(title) {
     I.waitForText('Add a task', 5);
-    this.frustration();
-    // I.fillField(this.fields.tskDescription, title);
-
+    //this.frustration();
+    I.fillField(this.fields.tskDescription, title);
     I.pressKey('Enter');
   },
 
+
+  postComment(comment){
+    I.waitForText('+ add a subtask', 5);
+    I.click(this.fields.commentShield)
+    I.fillField(this.fields.commentBox, comment);
+    I.pressKey('Enter');
+  },
+
+
+
   openEditTaskSidebar(taskIndex) {
-    // I.waitForElement(this.fields.firstTsk, 5);
-    // I.click(this.fields.firstTsk);
+    tskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
     I.waitForElement({
-      css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex +
-        2}) > div > div > div:nth-child(2) > div:nth-child(3)`,
-    }),
-      4;
+      css: tskSidebarLocator,
+    }, 4);
     I.click({
-      css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex +
-        2}) > div > div > div:nth-child(2) > div:nth-child(3)`,
+      css: tskSidebarLocator,
     });
   },
 
   deleteOpenedTask(taskIndex) {
-    I.waitForElement(
-      {
-        css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex +
-          2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1) > span:nth-child(1)`,
-      },
-      4,
-    );
-    I.click({
-      css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex +
-        2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1) > span:nth-child(1)`,
+    deleteBtnLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1) > span:nth-child(1)`;
+    I.waitForElement({css:
+      deleteBtnLocator,
+    },4);
+    I.click({css: 
+      deleteBtnLocator,
     });
   },
-
-  frustration() {
-    I.pressKey('D');
-    I.pressKey('u');
-    I.pressKey('m');
-    I.pressKey('m');
-    I.pressKey('y');
-    I.pressKey('Space');
-    I.pressKey('T');
-    I.pressKey('a');
-    I.pressKey('s');
-    I.pressKey('k');
-  },
+  
 };

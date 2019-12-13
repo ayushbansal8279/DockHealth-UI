@@ -1,10 +1,12 @@
-const { I } = inject();
+const { I, lgnPg } = inject();
 
 module.exports = {
   fields: {
     addListBtn: { css: 'button[type=button]' },
     listNameFld: { name: 'listName' },
     saveListBtn: { id: 'addTaskListButton' },
+    inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
+    patientsTab: {css: 'a[href="#/patients"]'},
   },
 
   // Functions
@@ -62,11 +64,26 @@ module.exports = {
     I.click({ css: 'body > div:nth-child(3) > div > div > span' });
   },
 
-  // Wrong element for this funciton
+  enterInbox(){
+    I.waitForText('Lists', 4);
+    I.click(this.fields.inboxTab);
+  },
+
+  enterPatients(){
+    I.waitForText('Lists', 4);
+    I.click(this.fields.patientsTab);
+  },
+
+  getToList(index){
+    lgnPg.login();
+    this.enterList(index);
+  },
+
   enterList(listIndex) {
     I.waitForText('Lists', 4);
     I.click({
-      css: `.list-wrapper > div > span:nth-child(2) > div:nth-child(${listIndex})`,
+      css: `html > body > #app > #appHome > main > div > div:nth-child(2) > div > div:nth-child(4) > div:nth-child(2) > div > div > span:nth-child(2) > div:nth-child(${listIndex}) > div:nth-child(2) > a > h6 `,
     });
   },
+
 };
