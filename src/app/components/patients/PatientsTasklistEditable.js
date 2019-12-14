@@ -8,6 +8,8 @@ import { markComplete } from '../../actions/task-actions';
 import AddTask from '../task/AddTask';
 import Task from '../task/Task';
 
+const SHOW_MORE_STEP_COUNT = 100;
+
 const PatientsTasklistCount = styled.div`
   font-size: 16px;
   color: #2e3a43;
@@ -53,6 +55,12 @@ const PatientsTasklistEditable = ({
     dispatch(selectPatientTask(task));
   };
 
+  var completedTasksAndSubTasksCount = completedTasks.length
+  completedTasks.map(task => {
+    if(task.subtasks){
+      completedTasksAndSubTasksCount = completedTasksAndSubTasksCount + task.subtasks.length
+    }
+  });
   return (
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
@@ -77,7 +85,7 @@ const PatientsTasklistEditable = ({
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
           {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${
-            completedTasks.length
+            completedTasks.length >= SHOW_MORE_STEP_COUNT ? completedTasksAndSubTasksCount+"+" : completedTasksAndSubTasksCount
           })`}
         </PatientsTasklistShowCompleted>
       )}
