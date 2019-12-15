@@ -310,7 +310,9 @@ class PeopleContainer extends PureComponent {
         }
       });
     }
-    titles = titles.replace('/,s*$/', '');
+    if(titles){
+      titles = titles.replace('/,s*$/', '');
+    }
     return titles;
   }
 
@@ -331,7 +333,9 @@ class PeopleContainer extends PureComponent {
               tmpSubSpecialty = subSpecialty.subSpecialtyName;
             }
           });
-          tmpSubSpecialty = tmpSubSpecialty.replace('/,s*$/', '');
+          if(tmpSubSpecialty){
+            tmpSubSpecialty = tmpSubSpecialty.replace('/,s*$/', '');
+          }
         }
 
         if (tmpSubSpecialty != '') {
@@ -345,7 +349,9 @@ class PeopleContainer extends PureComponent {
         }
       });
     }
-    allSpecialties = allSpecialties.replace('/,s*$/', '');
+    if(allSpecialties){
+      allSpecialties = allSpecialties.replace('/,s*$/', '');
+    }
     return allSpecialties;
   }
 
