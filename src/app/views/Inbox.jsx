@@ -17,7 +17,12 @@ class Inbox extends PureComponent {
 
     this.refreshAccessToken(user);
     actions.loading();
-    actions.getInboxTasks('INCOMPLETE');
+    actions
+      .getInboxTasks('INCOMPLETE', undefined, undefined)
+      .then(() => {
+        actions.getInboxTasks('COMPLETE', undefined, undefined);
+      })
+      .catch(noop);
   }
 
   componentWillUpdate(nextProps) {
@@ -25,7 +30,12 @@ class Inbox extends PureComponent {
 
     if (nextProps.routeParams.listName !== routeParams.listName) {
       actions.loading();
-      actions.getInboxTasks('INCOMPLETE');
+      actions
+        .getInboxTasks('INCOMPLETE', undefined, undefined)
+        .then(() => {
+          actions.getInboxTasks('COMPLETE', undefined, undefined);
+        })
+        .catch(noop);
     }
   }
 
@@ -33,7 +43,12 @@ class Inbox extends PureComponent {
     const { actions, patientActions } = this.props;
 
     actions.loading();
-    actions.getInboxTasks('INCOMPLETE');
+    actions
+      .getInboxTasks('INCOMPLETE', undefined, undefined)
+      .then(() => {
+        actions.getInboxTasks('COMPLETE', undefined, undefined);
+      })
+      .catch(noop);
     patientActions.getAllPatients();
   };
 
@@ -42,7 +57,7 @@ class Inbox extends PureComponent {
 
     if (!showingCompletedTasks) {
       actions.loadingCompletedTasks();
-      actions.getInboxTasks('COMPLETE');
+      actions.getInboxTasks('COMPLETE', undefined, undefined);
     } else {
       actions.hideCompletedTasks();
     }
@@ -63,8 +78,12 @@ class Inbox extends PureComponent {
     const { actions } = this.props;
 
     actions.loading();
-    actions.getInboxTasks('COMPLETE', sortBy, filterBy);
-    actions.getInboxTasks('INCOMPLETE', sortBy, filterBy);
+    actions
+      .getInboxTasks('INCOMPLETE', sortBy, filterBy)
+      .then(() => {
+        actions.getInboxTasks('COMPLETE', sortBy, filterBy);
+      })
+      .catch(noop);
   };
 
   refreshAccessToken(user) {

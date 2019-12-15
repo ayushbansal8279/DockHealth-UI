@@ -251,8 +251,6 @@ class TaskView extends Component {
     actions.loading();
     this.closeAuditHistory();
 
-    actions.getInboxTasks('INCOMPLETE');
-
     patientActions.getAllPatients();
   };
 

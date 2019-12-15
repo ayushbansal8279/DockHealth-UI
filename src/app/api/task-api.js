@@ -463,7 +463,7 @@ export function getInboxTasks(
       params: {
         status,
         queryStartPosition,
-        sortBy: 'TASK_DESCRIPTION',
+        sortBy,
         filterBy,
       },
     })
