@@ -693,11 +693,11 @@ class TaskView extends Component {
     }
 
     const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
-    
-    var completedTasksAndSubTasksCount = completedTasks.length
+
+    let completedTasksAndSubTasksCount = completedTasks.length;
     completedTasks.map(task => {
-      if(task.subtasks){
-        completedTasksAndSubTasksCount = completedTasksAndSubTasksCount + task.subtasks.length
+      if (task.subtasks) {
+        completedTasksAndSubTasksCount += task.subtasks.length;
       }
     });
     return (
@@ -705,7 +705,11 @@ class TaskView extends Component {
         <CompletedButtonRowContainer>
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
           <StyledButton onClick={this.toggleCompletedTasks}>
-            {`${buttonToggleWord} completed tasks (${completedTasks.length >= SHOW_MORE_STEP_COUNT ? completedTasksAndSubTasksCount+"+" : completedTasksAndSubTasksCount})`}
+            {`${buttonToggleWord} completed tasks (${
+              completedTasks.length >= SHOW_MORE_STEP_COUNT
+                ? `${completedTasksAndSubTasksCount}+`
+                : completedTasksAndSubTasksCount
+            })`}
           </StyledButton>
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
         </CompletedButtonRowContainer>
