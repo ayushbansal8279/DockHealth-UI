@@ -6,9 +6,8 @@ import * as PatientActions from '../actions/patient-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import * as userApi from '../api/user-api';
-import { onButtonClicked } from '../helpers/ga-event-helper';
-import { noop } from '../helpers/utilityFunctions';
 import TaskView from './TaskView';
+import { noop } from '../helpers/utilityFunctions';
 
 class Home extends PureComponent {
   componentDidMount() {
@@ -34,81 +33,57 @@ class Home extends PureComponent {
         listName === 'assigned_by_me'
           ? actions.getTasksAssignedByMe
           : actions.getTasksAssignedToMe;
-
-      taskAction(undefined, sortBy, filterBy, taskStatus)
-        .then(() => {
-          if (taskStatus === 'INCOMPLETE') {
-            actions.loadingCompletedTasks();
-            taskAction(undefined, sortBy, filterBy, 'COMPLETE')
-              .then(noop)
-              .catch(error => {
-                this.handleRetry(error, () => {
-                  taskAction(undefined, sortBy, filterBy, 'COMPLETE');
-                });
-              });
-          }
-        })
-        .catch(error => {
-          this.handleRetry(error, () => {
-            taskAction(undefined, sortBy, filterBy, taskStatus);
-            actions.loadingCompletedTasks();
-            taskAction(undefined, sortBy, filterBy, 'COMPLETE');
+      taskAction(undefined, sortBy, filterBy, taskStatus).then(() => {
+        if (taskStatus === 'INCOMPLETE') {
+          actions.loadingCompletedTasks();
+          taskAction(undefined, sortBy, filterBy, 'COMPLETE')
+          .then(noop).catch((error) => {
+            this.handleRetry(error, () => {
+              taskAction(undefined, sortBy, filterBy, 'COMPLETE')
+            })
           });
-        });
+        }
+      }).catch((error) => {
+        this.handleRetry(error, () => {
+          taskAction(undefined, sortBy, filterBy, taskStatus)
+          actions.loadingCompletedTasks();
+          taskAction(undefined, sortBy, filterBy, 'COMPLETE')
+        })
+      });
     } else {
-      taskListActions
-        .getTaskListById(routeParams.taskListId)
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error);
-        });
+      taskListActions.getTaskListById(routeParams.taskListId)
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          taskAction(undefined, sortBy, filterBy, 'COMPLETE')
+        })
+      });
       actions
-        .getListTasks(
-          routeParams.taskListId,
-          undefined,
-          undefined,
-          'INCOMPLETE',
-        )
+        .getListTasks(routeParams.taskListId,undefined,undefined,'INCOMPLETE')
         .then(() => {
           actions.loadingCompletedTasks();
-          actions.getListTasks(routeParams.taskListId, undefined, 'COMPLETE');
+          actions.getListTasks(routeParams.taskListId,undefined,undefined,'COMPLETE');
         })
-        .then(noop)
-        .catch(error => {
+        .then(noop).catch((error) => {
           this.handleRetry(error, () => {
-            actions.getListTasks(
-              routeParams.taskListId,
-              undefined,
-              undefined,
-              'INCOMPLETE',
-            );
-            actions.loadingCompletedTasks();
-            actions.getListTasks(routeParams.taskListId, undefined, 'COMPLETE');
-          });
+          actions.getListTasks(routeParams.taskListId,undefined,undefined,'INCOMPLETE')
+          actions.loadingCompletedTasks();
+          actions.getListTasks(routeParams.taskListId,undefined,undefined,'COMPLETE');
+          })
         });
       if (routeParams.taskListId) {
-        taskListActions
-          .getMembersByTaskListId(routeParams.taskListId, 'ALL')
-          .then(noop)
-          .catch(error => {
-            this.handleRetry(error, () => {
-              taskListActions.getMembersByTaskListId(
-                routeParams.taskListId,
-                'ALL',
-              );
-            });
-          });
-      }
-      taskListActions
-        .getOrganizationUsersNotInTaskList(routeParams.taskListId)
-        .then(noop)
-        .catch(error => {
+        taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL')
+        .then(noop).catch((error) => {
           this.handleRetry(error, () => {
-            taskListActions.getOrganizationUsersNotInTaskList(
-              routeParams.taskListId,
-            );
-          });
+            taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL')
+          })
         });
+      }
+      taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId)
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId)
+        })
+      });
     }
   }
 
@@ -172,7 +147,6 @@ class Home extends PureComponent {
     } = this.props;
 
     if (taskListId) {
-      onButtonClicked('Print');
       window.print();
     }
   };
@@ -186,87 +160,59 @@ class Home extends PureComponent {
     actions.loading();
 
     if (listName === 'assigned_by_me') {
-      actions
-        .getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions
-        .getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          });
-        });
+      actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
+        })
+      });
+      actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          actions.getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
+        })
+      });
     } else if (listName === 'assigned_to_me') {
-      actions
-        .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions
-        .getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          });
-        });
-    } else {
-      actions
-        .getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE');
-          });
-        });
-      actions
-        .getListTasks(taskListId, sortBy, filterBy, 'COMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(taskListId, sortBy, filterBy, 'COMPLETE');
-          });
-        });
+      actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
+        })
+      });
+      actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          actions.getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
+        })
+      });
+    }else{
+      actions.getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE')
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          actions.getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE')
+        })
+      });
+      actions.getListTasks(taskListId, sortBy, filterBy, 'COMPLETE')
+      .then(noop).catch((error) => {
+        this.handleRetry(error, () => {
+          actions.getListTasks(taskListId, sortBy, filterBy, 'COMPLETE')
+        })
+      });
     }
+
   };
 
-  handleRetry = (error, callback = noop) => {
-    if (error.message === 'Network Error') {
-      userApi
+  handleRetry = (error, callback) => {
+      console.log("Ooops "+error)
+      if(error.message == "Network Error"){ //403 error
+        userApi
         .refreshAccessToken(sessionStorage.getItem('username'))
-        .then(callback)
+        .then(data => {
+          callback()
+        })
         .catch(noop);
-    }
-  };
+      }
+  }
 
   handleSearch = () => {};
 
@@ -284,8 +230,12 @@ class Home extends PureComponent {
     const refreshAccessTokenTimeoutId = setTimeout(() => {
       userApi
         .refreshAccessToken(user.username)
-        .then(noop)
-        .catch(noop);
+        .then(data => {
+          console.log("refreshed tokens")
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       comp.refreshAccessToken(user);
     }, systemTimeout);

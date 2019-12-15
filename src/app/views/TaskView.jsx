@@ -50,6 +50,8 @@ import {
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
 
+const SHOW_MORE_STEP_COUNT = 100;
+
 const groupBy = (list, keyGetter) => {
   const checkMap = new Map();
   list.forEach(item => {
@@ -691,13 +693,19 @@ class TaskView extends Component {
     }
 
     const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
-
+    
+    var completedTasksAndSubTasksCount = completedTasks.length
+    completedTasks.map(task => {
+      if(task.subtasks){
+        completedTasksAndSubTasksCount = completedTasksAndSubTasksCount + task.subtasks.length
+      }
+    });
     return (
       <>
         <CompletedButtonRowContainer>
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
           <StyledButton onClick={this.toggleCompletedTasks}>
-            {`${buttonToggleWord} completed tasks (${completedTasks.length})`}
+            {`${buttonToggleWord} completed tasks (${completedTasks.length >= SHOW_MORE_STEP_COUNT ? completedTasksAndSubTasksCount+"+" : completedTasksAndSubTasksCount})`}
           </StyledButton>
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
         </CompletedButtonRowContainer>
