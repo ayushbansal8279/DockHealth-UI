@@ -1,4 +1,5 @@
 import Grid from '@material-ui/core/Grid';
+import queryString from 'query-string';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -19,20 +20,26 @@ const CubesLoaderContainer = styled.div`
 `;
 
 class PeopleView extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchTerm: '',
-    };
-  }
+  state = {
+    searchTerm: '',
+  };
 
   componentDidMount() {
-    const { peopleActions } = this.props;
+    const { location, peopleActions } = this.props;
     peopleActions.loading();
     peopleActions.findAllUsersByOrganizationId();
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'PeopleView',
     });
+
+    const { searchName } = queryString.parse(location.search) || {};
+
+    if (searchName) {
+      this.setState({
+        searchTerm: searchName,
+      });
+      toggleSearch();
+    }
   }
 
   componentDidUpdate() {
@@ -80,6 +87,7 @@ class PeopleView extends PureComponent {
         <Grid
           container
           xs={9}
+          item
           direction="row"
           justify="flex-end"
           wrap="nowrap"
@@ -103,13 +111,6 @@ class PeopleView extends PureComponent {
                 </svg>
               </button>
             </div>
-            {/* <div className="icon-group controls">
-              <span onClick={e => this.refresh()}>
-                <svg className="icon refresh">
-                  <use xlinkHref="#icon-activity" />
-                </svg>
-              </span>
-            </div> */}
           </div>
           {(orgUserRole === 'OWNER' || orgUserRole === 'ADMIN') && (
             <InvitePeopleButton onClick={this.addPerson} />

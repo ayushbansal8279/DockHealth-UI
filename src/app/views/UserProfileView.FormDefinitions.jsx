@@ -70,7 +70,7 @@ export const formFieldDefinitions = [
     label: 'Your Additional Phone Number',
     isPhoneNumber: true,
     defaultValueGetter: ({ workPhoneNumber }) =>
-      (workPhoneNumber?workPhoneNumber.replace(/^\+1/, ''):workPhoneNumber),
+      workPhoneNumber ? workPhoneNumber.replace(/^\+1/, '') : workPhoneNumber,
   },
 ];
 

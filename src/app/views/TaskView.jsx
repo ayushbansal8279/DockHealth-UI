@@ -23,7 +23,7 @@ import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Toolbar from '../components/taskView/Toolbar';
-import { isTaskArchivable } from '../helpers/utilityFunctions';
+import { isTaskArchivable } from '../helpers/utility-functions';
 import FilterIcon from '../img/filter.svg';
 import {
   CompletedButtonRowContainer,
@@ -695,11 +695,10 @@ class TaskView extends Component {
     const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
 
     let completedTasksAndSubTasksCount = completedTasks.length;
-    completedTasks.map(task => {
-      if (task.subtasks) {
-        completedTasksAndSubTasksCount += task.subtasks.length;
-      }
+    completedTasks.forEach(task => {
+      completedTasksAndSubTasksCount += task.subtasks?.length ?? 0;
     });
+
     return (
       <>
         <CompletedButtonRowContainer>
@@ -707,7 +706,7 @@ class TaskView extends Component {
           <StyledButton onClick={this.toggleCompletedTasks}>
             {`${buttonToggleWord} completed tasks (${
               completedTasks.length >= SHOW_MORE_STEP_COUNT
-                ? `${completedTasksAndSubTasksCount}+`
+                ? `${SHOW_MORE_STEP_COUNT}+`
                 : completedTasksAndSubTasksCount
             })`}
           </StyledButton>

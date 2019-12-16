@@ -6,16 +6,25 @@ import Autosuggest from 'react-autosuggest';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { arrayPush, change, Field, reduxForm, reset } from 'redux-form';
+import styled from 'styled-components';
 
 import * as PeopleActions from '../../actions/people-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
-import BasicField from '../common/BasicField';
 import {
   onTaskListAdded,
   onTaskListEdited,
 } from '../../helpers/ga-event-helper';
+import BasicField from '../common/BasicField';
 import BaseComponentWithAutoComplete from '../LEGACY_base/BaseComponentWithAutoComplete';
 import Member from '../members/Member';
+
+const TaskItem = styled.div`
+  background-color: #fff;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 auto;
+  padding: 0.75rem 0.5rem;
+`;
 
 class AddListForm extends BaseComponentWithAutoComplete {
   state = {
@@ -200,9 +209,13 @@ class AddListForm extends BaseComponentWithAutoComplete {
     return (
       <div
         className="add-form-wrapper"
-        style={{ marginTop: '-50px', marginBottom: '20px', width: '80%' }}
+        style={{
+          margin: 0,
+          padding: 0,
+          width: '100%',
+        }}
       >
-        <div className="task-item add-form row expanded">
+        <TaskItem>
           <form
             className="inline-label"
             onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}
@@ -373,7 +386,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
               </div>
             </div>
           </form>
-        </div>
+        </TaskItem>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import * as TaskListApi from '../api/tasklist-api';
 import * as UserApi from '../api/user-api';
-import { noop } from '../helpers/utilityFunctions';
+import { noop } from '../helpers/utility-functions';
 import * as ActionTypes from './action-types';
 
 export function getTaskListForUser() {
@@ -91,8 +91,8 @@ export function invitePersonToTaskList(formProps, taskListId) {
 
   return dispatch =>
     TaskListApi.invitePersonToTaskList(taskListId, personInfo)
-      .then(res => {
-        dispatch({ type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, res });
+      .then(response => {
+        dispatch({ type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, response });
         toggleAlert('Invitation sent!', 'success');
       })
       .catch(noop);
@@ -120,10 +120,10 @@ export const inviteUserToTaskList = (tasklistId, userId) => dispatch =>
 export function inviteMultipleUsersToTaskList(tasklistId, invitedUsers) {
   return dispatch =>
     TaskListApi.inviteMultipleUsersToTaskList(tasklistId, invitedUsers)
-      .then(res => {
+      .then(response => {
         dispatch({
           type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS,
-          res,
+          response,
           invitedUsers,
         });
         toggleAlert('Invitations sent!', 'success');
@@ -153,10 +153,10 @@ export function getNonOrgUsersByTaskList(taskListId) {
 export function changeUserRoleForList(tasklistId, markedUser, role) {
   return dispatch =>
     TaskListApi.changeUserRoleForList(tasklistId, markedUser.userId, role)
-      .then(res => {
+      .then(response => {
         dispatch({
           type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS,
-          res,
+          response,
           markedUser,
           role,
         });
@@ -167,10 +167,10 @@ export function changeUserRoleForList(tasklistId, markedUser, role) {
 export function deleteTaskListById(taskListId) {
   return dispatch =>
     TaskListApi.deleteTaskListById(taskListId)
-      .then(res => {
+      .then(response => {
         dispatch({
           type: ActionTypes.DELETE_TASKLIST_SUCCESS,
-          res,
+          response,
           taskListId,
         });
         toggleAlert('Task List deleted', 'success');
@@ -181,10 +181,10 @@ export function deleteTaskListById(taskListId) {
 export function removeUserFromList(taskListId, removedUser) {
   return dispatch =>
     TaskListApi.removeUserFromList(taskListId, removedUser.userId)
-      .then(res => {
+      .then(response => {
         dispatch({
           type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS,
-          res,
+          response,
           removedUser,
         });
         toggleAlert('User removed successfully', 'success');
@@ -195,8 +195,11 @@ export function removeUserFromList(taskListId, removedUser) {
 export function cancelInviteToTaskList(taskListId, email) {
   return dispatch =>
     TaskListApi.cancelInviteToTaskList(taskListId, email)
-      .then(res => {
-        dispatch({ type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS, res });
+      .then(response => {
+        dispatch({
+          type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS,
+          response,
+        });
       })
       .catch(noop);
 }
@@ -268,10 +271,10 @@ export function isInbox(boolean) {
 export function leaveList(taskListId) {
   return dispatch =>
     UserApi.leaveList(taskListId)
-      .then(res => {
+      .then(response => {
         dispatch({
           type: ActionTypes.DELETE_TASKLIST_SUCCESS,
-          res,
+          response,
           taskListId,
         });
       })
@@ -295,6 +298,7 @@ export function downloadPDF(taskListId) {
     });
 }
 
+// eslint-disable-next-line unicorn/consistent-function-scoping
 export const getTaskListStats = ({ taskListId }) => async dispatch => {
   try {
     const { data } = await TaskListApi.getTaskListStats({ taskListId });
@@ -307,6 +311,7 @@ export const getTaskListStats = ({ taskListId }) => async dispatch => {
   }
 };
 
+// eslint-disable-next-line unicorn/consistent-function-scoping
 export const resetTasklistStats = () => dispatch => {
   dispatch({
     type: ActionTypes.RESET_TASKLIST_STATS,

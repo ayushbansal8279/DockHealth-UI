@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 
-import { noop } from '../../helpers/utilityFunctions';
+import { noop } from '../../helpers/utility-functions';
 
 const Container = styled.div`
   && {
@@ -51,40 +51,32 @@ const Remove = styled(ButtonBase)`
 `;
 
 const Attachment = ({ id, name, size, remove }) => {
-  const handleOpen = useCallback(
-    () => {
-      axios({
-        url: `${
-          process.env.HEYDOC_SERVICES_BASE_URL
-        }task/attachment/download/${id}`,
-        method: 'GET',
-        responseType: 'blob',
-        headers: {
-          Accept: 'application/octet-stream',
-        },
+  const handleOpen = useCallback(() => {
+    axios({
+      url: `${process.env.HEYDOC_SERVICES_BASE_URL}task/attachment/download/${id}`,
+      method: 'GET',
+      responseType: 'blob',
+      headers: {
+        Accept: 'application/octet-stream',
+      },
+    })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', name);
+        document.body.append(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+        return 'success';
       })
-        .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', name);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          window.URL.revokeObjectURL(url);
-          return 'success';
-        })
-        .catch(noop);
-    },
-    [id, name],
-  );
+      .catch(noop);
+  }, [id, name]);
 
-  const handleRemove = useCallback(
-    () => {
-      remove(id);
-    },
-    [id, remove],
-  );
+  const handleRemove = useCallback(() => {
+    remove(id);
+  }, [id, remove]);
 
   return (
     <Container>

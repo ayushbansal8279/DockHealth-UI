@@ -8,7 +8,7 @@ import * as TaskListActions from '../actions/tasklist-actions';
 import { downloadPDF } from '../api/tasklist-api';
 import * as userApi from '../api/user-api';
 import TaskView from './TaskView';
-import { noop } from '../helpers/utilityFunctions';
+import { noop } from '../helpers/utility-functions';
 
 class AssignedByMe extends PureComponent {
   componentDidMount() {

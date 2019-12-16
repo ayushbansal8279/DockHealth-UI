@@ -2,10 +2,11 @@ import React from 'react';
 import { FormContext } from 'react-hook-form';
 
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
-import { getPatientName, noop } from '../../helpers/utilityFunctions';
+import { onButtonClicked } from '../../helpers/ga-event-helper';
+import { getPatientName, noop } from '../../helpers/utility-functions';
 import NewTaskDrawerCommentSection from './NewTaskDrawer.CommentSection';
 import initializeNewTaskDrawerHooks from './NewTaskDrawer.Hooks';
-import onSubmit from './NewTaskDrawer.onSubmit';
+import onSubmit from './NewTaskDrawer.OnSubmit';
 import NewTaskDrawerOtherDataSection from './NewTaskDrawer.OtherDataSection';
 import NewTaskDrawerParentInfo from './NewTaskDrawer.ParentInfo';
 import {
@@ -19,7 +20,6 @@ import {
   StyledVerticalDivider,
 } from './NewTaskDrawer.Styled';
 import NewTaskDrawerTopSection from './NewTaskDrawer.TopSection';
-import { onButtonClicked } from '../../helpers/ga-event-helper';
 
 const statusSelectData = [
   {

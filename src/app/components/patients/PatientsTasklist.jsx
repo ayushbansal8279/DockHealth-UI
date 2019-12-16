@@ -1,10 +1,7 @@
 import { ButtonBase } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { selectPatientTask } from '../../actions/patient';
-import { markComplete } from '../../actions/task-actions';
 import AddTask from '../task/AddTask';
 import Task from '../task/Task';
 
@@ -33,54 +30,25 @@ const PatientsTasklistShowCompleted = styled(ButtonBase)`
   }
 `;
 
-const PatientsTasklistEditable = ({
-  tasks = [],
-  completedTasks = [],
-  selectCurrentTask,
-  submitTask,
-  isAddTaskEnabled,
-  selectedTaskId,
-  ...otherProps
-}) => {
+const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
   const [isShowingCompleted, setShowCompleted] = useState(false);
   const toggleShowCompleted = useCallback(() => {
     setShowCompleted(!isShowingCompleted);
   }, [isShowingCompleted]);
 
-  const dispatch = useDispatch();
-  const mark = listType => (task, status) => {
-    dispatch(markComplete(task, status, listType));
-  };
-  const select = task => {
-    dispatch(selectPatientTask(task));
-  };
-
   let completedTasksAndSubTasksCount = completedTasks.length;
-  completedTasks.map(task => {
-    if (task.subtasks) {
-      completedTasksAndSubTasksCount += task.subtasks.length;
-    }
+  completedTasks.forEach(task => {
+    completedTasksAndSubTasksCount += task.subtasks?.length ?? 0;
   });
+
   return (
     <div>
       <PatientsTasklistCount>{`${tasks.length} tasks`}</PatientsTasklistCount>
-      {isAddTaskEnabled && submitTask && (
-        <AddTask
-          storeAsCurrentTask={selectCurrentTask}
-          submitBound={submitTask}
-          style={{ marginTop: '-11px' }}
-        />
+      {submitTask && (
+        <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
       )}
       {tasks.map(task => (
-        <Task
-          task={task}
-          key={task.taskId}
-          hidePatient
-          markComplete={mark('INCOMPLETE')}
-          storeAsCurrentTask={select}
-          selectedTaskId={selectedTaskId}
-          {...otherProps}
-        />
+        <Task task={task} key={task.taskId} hidePatient hideCheckbox readOnly />
       ))}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
@@ -94,15 +62,7 @@ const PatientsTasklistEditable = ({
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
           {completedTasks.map(task => (
-            <Task
-              task={task}
-              key={task.taskId}
-              hidePatient
-              markComplete={mark('COMPLETE')}
-              storeAsCurrentTask={select}
-              selectedTaskId={selectedTaskId}
-              {...otherProps}
-            />
+            <Task task={task} key={task.taskId} readOnly />
           ))}
         </div>
       )}
@@ -110,4 +70,4 @@ const PatientsTasklistEditable = ({
   );
 };
 
-export default PatientsTasklistEditable;
+export default PatientsTasklist;

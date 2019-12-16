@@ -4,12 +4,12 @@ import { hashHistory } from 'react-router';
 import styled, { keyframes } from 'styled-components';
 
 import { register } from '../../api/user-api';
-import { noop } from '../../helpers/utilityFunctions';
+import { noop } from '../../helpers/utility-functions';
 import UserProfileView from '../UserProfileView';
 import formFieldDefinitions from './Register.FormDefinitions';
 import validationSchema from './Register.ValidationSchema';
 
-const onFormSubmit = () => async data => {
+const onFormSubmit = async data => {
   const {
     firstName,
     lastName,
@@ -103,7 +103,7 @@ export default () => (
         defaultValues={{}}
         formContainerClassName=""
         formFieldDefinitions={formFieldDefinitions}
-        onSubmit={onFormSubmit({})}
+        onSubmit={onFormSubmit}
         validationSchema={validationSchema}
         showSignInLabel
         renderAvatarUploader={false}

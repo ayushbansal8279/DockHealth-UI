@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 export default ({
   createdDateTime,
@@ -8,6 +9,7 @@ export default ({
   comments,
   creator,
   completedBy,
+  isInbox,
 }) => {
   const formattedCreationDate = moment(createdDateTime).format('h:mma');
   const dueDateMoment = moment(dueDate);
@@ -55,6 +57,12 @@ export default ({
     creator?.lastName
   }`;
 
+  const members = useSelector(store =>
+    isInbox
+      ? [store.userState.userProfile]
+      : store.taskListState.tasklistmembers,
+  );
+
   return {
     formattedCreationDate,
     dueDateMoment,
@@ -66,5 +74,6 @@ export default ({
     completedByContent,
     formattedUserName,
     overdue,
+    members,
   };
 };

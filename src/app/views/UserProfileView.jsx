@@ -20,7 +20,7 @@ import {
   StyledRouterLink,
   StyledLinkLabel,
 } from '../components/userProfileView/UserProfileView.Styled';
-import { noop } from '../helpers/utilityFunctions';
+import { noop } from '../helpers/utility-functions';
 
 const renderFormFieldDefinition = ({
   key,

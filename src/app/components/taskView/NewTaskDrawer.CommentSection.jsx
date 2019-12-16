@@ -6,8 +6,7 @@ import mapObjIndexed from 'ramda/es/mapObjIndexed';
 import prop from 'ramda/es/prop';
 import reverse from 'ramda/es/reverse';
 import sortBy from 'ramda/es/sortBy';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
 
@@ -15,10 +14,10 @@ import {
   addTaskComment,
   updateComment as updateCommentAction,
 } from '../../actions/task-actions';
-import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import renderComment from './NewTaskDrawer.RenderComment';
 import { FormSectionDivider } from './NewTaskDrawer.Styled';
+import initializeNewTaskDrawerCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
 
 const CommentSectionLabel = styled.div`
   align-items: center;
@@ -209,61 +208,29 @@ const publishComment = ({
 };
 
 export default ({ addDeferredCommentToQueue, task }) => {
-  const currentUserProfile = useSelector(store => store.userState.userProfile);
-  const currentUserId = currentUserProfile?.userId;
-
-  const dispatch = useDispatch();
-  const addingCommentsMethods = useBoolean(false);
-  const addingComment = addingCommentsMethods[0];
-  const toggleAddingComment = addingCommentsMethods[3];
-  const [addedComments, setAddedComments] = useState([]);
-  const commentSectionInputFieldReference = useRef(null);
-  const simpleBarReference = useRef(null);
-  const [
+  const {
+    currentUserProfile,
+    members,
+    currentUserId,
+    dispatch,
+    addingComment,
+    toggleAddingComment,
+    addedComments,
+    setAddedComments,
+    commentSectionInputFieldReference,
     isPublishingComment,
     setPublishingComment,
     unsetPublishingComment,
-  ] = useBoolean(false);
-
-  const clearCommentContent = useCallback(() => {
-    if (commentSectionInputFieldReference.current) {
-      commentSectionInputFieldReference.current.textContent = '';
-    }
-  }, []);
-
-  const taskId = task?.taskId;
-
-  useEffect(() => {
-    if (addingComment) {
-      // eslint-disable-next-line no-unused-expressions
-      commentSectionInputFieldReference.current?.focus();
-    } else {
-      clearCommentContent();
-    }
-  }, [addingComment, clearCommentContent]);
+    clearCommentContent,
+    scrollToTop,
+    addComment,
+    simpleBarReference,
+  } = initializeNewTaskDrawerCommentSectionHooks({ task });
 
   const comments = (task?.comments ?? []).concat(addedComments);
   const commentsEmpty = comments.length === 0;
 
   const groupedComments = getGroupedComments({ comments, task });
-
-  const scrollToTop = useCallback(() => {
-    const scrollElement = simpleBarReference.current?.getScrollElement();
-    if (scrollElement) {
-      scrollElement.scrollTop = 0;
-    }
-  }, []);
-
-  useEffect(() => {
-    setAddedComments([]);
-  }, [taskId]);
-
-  const addComment = useCallback(
-    data => {
-      setAddedComments([...addedComments, data]);
-    },
-    [addedComments],
-  );
 
   const handlePublishComment = event => {
     event.preventDefault();
@@ -335,7 +302,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
           <CommentsContainer>
             <StyledSimpleBar ref={simpleBarReference} visible>
               {Object.entries(groupedComments).map(
-                renderComment({ currentUserId, updateComment }),
+                renderComment({ currentUserId, updateComment, task, members }),
               )}
             </StyledSimpleBar>
           </CommentsContainer>
