@@ -1,0 +1,38 @@
+version: 0.2
+env:
+  parameter-store:
+    AWS_REGION: /DOCK_WEB/DEV/AWS_REGION
+    AWS_USERPOOLID: /DOCK_WEB/DEV/AWS_USERPOOLID
+    AWS_CLIENTAPP: /DOCK_WEB/DEV/AWS_CLIENTAPP
+    HEYDOC_SERVICES_BASE_URL: /DOCK_WEB/DEV/HEYDOC_SERVICES_BASE_URL
+    SYSTEM_TIMEOUT: /DOCK_WEB/DEV/SYSTEM_TIMEOUT
+    HEALTHCHECK_INTERVAL: /DOCK_WEB/DEV/HEALTHCHECK_INTERVAL
+    AWS_COGNITO_IDENTITYPOOLID: /DOCK_WEB/DEV/AWS_COGNITO_IDENTITYPOOLID
+    AWS_MOBILEANALYTICS_APPID: /DOCK_WEB/DEV/AWS_MOBILEANALYTICS_APPID
+    AWS_MOBILEANALYTICS_APPTITLE: /DOCK_WEB/DEV/AWS_MOBILEANALYTICS_APPTITLE
+    BRANCH_IO_APP_LINK: /DOCK_WEB/DEV/BRANCH_IO_APP_LINK
+    PUSHER_APP_KEY: /DOCK_WEB/DEV/PUSHER_APP_KEY
+    PUSHER_CLUSTER_NAME: /DOCK_WEB/DEV/PUSHER_CLUSTER_NAME
+phases:
+  install:
+    runtime-versions:
+      nodejs: 8
+  pre_build:
+      commands: 
+      - echo Installing source NPM dependencies...
+      - npm install
+  build:
+      commands:
+      - echo Build started on `date`
+      - npm run build
+  post_build:
+      commands:
+      - aws s3 cp --recursive --acl public-read ./dist s3://$DeployBucketName/
+      - aws s3 cp --acl public-read --cache-control='max-age=0, no-cache, no-store, must-revalidate' ./dist/index.html s3://$DeployBucketName/
+      - aws s3 cp --acl public-read --cache-control='max-age=0, no-cache, no-store, must-revalidate' ./dist/*.js s3://$DeployBucketName/
+      - aws cloudfront create-invalidation --distribution-id $CloudFrontDistributionID --paths /index.html /static /assets /*.js
+artifacts:
+  files:
+      - '**/*'
+  base-directory: dist
+ No newline at end of file
