@@ -28,6 +28,22 @@ const CubesLoaderContainer = styled.div`
   width: 100%;
 `;
 
+const BlockItemContainer = styled.div`
+  align-items: center;
+  display: flex;
+  background-color: #fff;
+  border: 0.0625rem solid #e8ebef;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.3rem 0.4rem;
+  position: relative;
+  text-align: center;
+
+  & > * {
+    margin: 0.25rem 0;
+  }
+`;
+
 const ICONS = {
   ASSIGN_TO: 'icon-assign-to',
   CALENDAR: 'icon-calendar',
@@ -218,24 +234,24 @@ class TaskListView extends PureComponent {
 
     return (
       list.metricName.includes('Count') && (
-        <div
-          className="large-3 columns"
+        <Grid
+          item
+          xs={3}
           key={list.metricName}
           onClick={this.onGenericListTileClick({
             listName,
             taskStatus,
             filterBy,
           })}
-          style={{ cursor: 'pointer' }}
         >
-          <div className="text-center block-item" data-equalizer-watch="">
+          <BlockItemContainer>
             <svg className={`icon xlarge icon-header ${iconColor}`}>
               <use xlinkHref={`#${iconName}`} />
             </svg>
             <h6 className="border">{panelName}</h6>
             <h4>{list.metricValue}</h4>
-          </div>
-        </div>
+          </BlockItemContainer>
+        </Grid>
       )
     );
   };
@@ -249,56 +265,52 @@ class TaskListView extends PureComponent {
     } = this.props;
 
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <Grid container direction="column" alignItems="center" spacing={8}>
         <GenericHeader isFetching={false} title="Lists" />
-        <Grid
-          container
-          alignItems="center"
-          justify="flex-end"
-          direction="row"
-          style={{ height: '88px' }}
-        >
+        <Grid container alignItems="center" justify="flex-end" direction="row">
           <AddTaskListButton onClick={this.addTaskList} />
         </Grid>
-        <AddListForm />
-        <Grid container direction="row" justify="center">
-          <div className="row collapse">
-            {genericLists?.map(this.renderGenericList)}
-          </div>
-          <Grid item md={10} sm={12}>
-            <div
-              className="list-wrapper list-wrapper-all-lists"
-              style={{ width: '100%' }}
-            >
-              {isFetching ? (
-                <CubesLoaderContainer>
-                  <CubesLoader size={40} />
-                </CubesLoaderContainer>
-              ) : (
-                <div className="item-list-wrapper list-wrapper-all-lists">
-                  <PendingListsComponent
-                    taskLists={pendingTaskLists}
-                    acceptInviteToTaskList={this.acceptInviteToTaskList}
-                    rejectInviteToTaskList={this.rejectInviteToTaskList}
-                  />
-                  <ListsComponent
-                    taskLists={taskLists}
-                    editForm={this.editTaskList}
-                    deleteList={this.deleteList}
-                    leaveList={this.leaveList}
-                  />
-                </div>
-              )}
-            </div>
+        <Grid container item xs={12} justify="center" spacing={8}>
+          <Grid container item xs={6}>
+            <AddListForm />
           </Grid>
         </Grid>
-      </div>
+        <Grid container item xs={12} justify="center">
+          <Grid
+            container
+            item
+            xs={6}
+            justify="center"
+            direction="row"
+            spacing={8}
+          >
+            {genericLists?.map(this.renderGenericList)}
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} justify="center" spacing={8}>
+          <Grid item xs={6}>
+            {isFetching ? (
+              <CubesLoaderContainer>
+                <CubesLoader size={40} />
+              </CubesLoaderContainer>
+            ) : (
+              <div className="item-list-wrapper list-wrapper-all-lists">
+                <PendingListsComponent
+                  taskLists={pendingTaskLists}
+                  acceptInviteToTaskList={this.acceptInviteToTaskList}
+                  rejectInviteToTaskList={this.rejectInviteToTaskList}
+                />
+                <ListsComponent
+                  taskLists={taskLists}
+                  editForm={this.editTaskList}
+                  deleteList={this.deleteList}
+                  leaveList={this.leaveList}
+                />
+              </div>
+            )}
+          </Grid>
+        </Grid>
+      </Grid>
     );
   }
 }
