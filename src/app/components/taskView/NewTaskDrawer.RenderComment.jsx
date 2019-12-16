@@ -1,8 +1,9 @@
-import Linkify from 'linkifyjs/react';
 import moment from 'moment';
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import ReactHtmlParser from 'react-html-parser';
 
+import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
 import BubbleFinishCurrentUserIcon from '../../img/bubble-finish-current-user.svg';
 import BubbleFinishIcon from '../../img/bubble-finish.svg';
 
@@ -141,7 +142,7 @@ class SingleComment extends Component {
   };
 
   onCommentBubbleBlur = event => {
-    const { comment } = this.props;
+    const { comment, members } = this.props;
     const { newComment: previousNewComment } = this.state;
 
     event.preventDefault();
@@ -155,6 +156,9 @@ class SingleComment extends Component {
       this.setState({
         newComment,
       });
+      this.commentBubbleTextRef.current.innerHTML = mentionifyAndLinkifyTaskText(
+        { members, value: newComment },
+      );
     } else {
       toggleAlert('Empty comment is not allowed, please try again', 'error');
       const oldCommentContent = previousNewComment || comment;
@@ -164,7 +168,7 @@ class SingleComment extends Component {
 
   render() {
     const { commentBubbleTextFocused } = this.state;
-    const { comment, isLastBubble, isCurrentUser } = this.props;
+    const { comment, isLastBubble, isCurrentUser, members } = this.props;
 
     return (
       <CommentBubble>
@@ -183,9 +187,9 @@ class SingleComment extends Component {
             }
           }}
         >
-          <Linkify options={{ target: '_blank', className: 'decorated-link' }}>
-            {comment}
-          </Linkify>
+          {ReactHtmlParser(
+            mentionifyAndLinkifyTaskText({ members, value: comment }),
+          )}
         </CommentBubbleText>
         {isLastBubble && (
           <BubbleFinish
@@ -199,11 +203,12 @@ class SingleComment extends Component {
   }
 }
 
-const renderSingleComment = ({ isCurrentUser, updateComment }) => (
-  { comment, commentId },
-  commentIndex,
-  commentsFromSingleAuthor,
-) => {
+const renderSingleComment = ({
+  isCurrentUser,
+  updateComment,
+  task,
+  members,
+}) => ({ comment, commentId }, commentIndex, commentsFromSingleAuthor) => {
   const isLastBubble = commentsFromSingleAuthor.length - 1 === commentIndex;
 
   const singleCommentProps = {
@@ -212,12 +217,14 @@ const renderSingleComment = ({ isCurrentUser, updateComment }) => (
     updateComment,
     comment,
     commentId,
+    task,
+    members,
   };
 
   return <SingleComment key={commentId} {...singleCommentProps} />;
 };
 
-export default ({ currentUserId, updateComment }) => ([
+export default ({ currentUserId, updateComment, task, members }) => ([
   date,
   commentsArray,
 ]) => {
@@ -250,7 +257,12 @@ export default ({ currentUserId, updateComment }) => ([
                 {`${commentUserName} ${formattedCreatedDate}`.trim()}
               </SmallLabel>
               {commentsFromSingleAuthor.map(
-                renderSingleComment({ isCurrentUser, updateComment }),
+                renderSingleComment({
+                  isCurrentUser,
+                  updateComment,
+                  task,
+                  members,
+                }),
               )}
             </CommentGroupContainer>
             {!isCurrentUser && (

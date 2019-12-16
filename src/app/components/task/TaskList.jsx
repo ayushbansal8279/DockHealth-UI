@@ -10,7 +10,7 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getTaskPage } from '../../actions/task-actions';
-import { getPatientName } from '../../helpers/utilityFunctions';
+import { getPatientName } from '../../helpers/utility-functions';
 import CubesLoader from '../common/CubesLoader';
 import Task from './Task';
 import NewTaskElement from './TaskList.NewTaskElement';

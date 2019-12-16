@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { archiveTask as archiveTaskAction } from '../../actions/task-actions';
-import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utilityFunctions';
+import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import MemberPicker from '../members/MemberPicker';
@@ -70,6 +70,8 @@ const TaskBody = ({
     isNewSubtask,
   } = task;
 
+  const isInbox = !task?.taskList?.taskListId;
+
   const {
     formattedCreationDate,
     formattedDueDate,
@@ -77,6 +79,7 @@ const TaskBody = ({
     completedByContent,
     formattedUserName,
     overdue,
+    members,
   } = getTaskBodyData({
     createdDateTime,
     completedDateTime,
@@ -85,6 +88,7 @@ const TaskBody = ({
     comments,
     creator,
     completedBy,
+    isInbox,
   });
 
   const dispatch = useDispatch();
@@ -92,8 +96,6 @@ const TaskBody = ({
   const taskDescriptionReference = useRef(null);
   const taskInnerDescriptionReference = useRef(null);
   const [isPopoverOpen, setPopoverOpen, unsetPopoverOpen] = useBoolean(false);
-
-  const isInbox = !task?.taskList?.taskListId;
 
   const isTaskArchivable = isTaskArchivableMethod(currentUserProfile, task);
 
@@ -172,6 +174,7 @@ const TaskBody = ({
             formattedUserName={formattedUserName}
             completedByContent={completedByContent}
             countInfoContent={countInfoContent}
+            members={members}
           />
           <TaskBodyRightDataContainer
             taskDrawerOpen={taskDrawerOpen}
