@@ -1,6 +1,6 @@
 import configureStore from '../ConfigureStore';
 import { onLogin, onLogout } from '../helpers/ga-event-helper';
-import { noop } from '../helpers/utilityFunctions';
+import { noop } from '../helpers/utility-functions';
 import { dummyAccess } from '../reducers/user-reducer';
 import axios from './axios-heydoc';
 

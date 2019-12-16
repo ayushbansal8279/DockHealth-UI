@@ -3,7 +3,7 @@ import React from 'react';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 
-import { mergeRefs as mergeReferences } from '../../helpers/utilityFunctions';
+import { mergeRefs as mergeReferences } from '../../helpers/utility-functions';
 import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
 import initializeStyledInputHooks from './StyledInput.Hooks';
 

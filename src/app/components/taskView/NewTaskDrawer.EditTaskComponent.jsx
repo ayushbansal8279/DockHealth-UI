@@ -1,4 +1,5 @@
-import linkifyHtml from 'linkifyjs/html';
+import linkifyElement from 'linkifyjs/element';
+import escape from 'lodash.escape';
 import prop from 'ramda/es/prop';
 import React, { Component, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -6,6 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { markComplete } from '../../actions/task-actions';
+import {
+  formatLinkifyHref,
+  mentionifyDescription,
+} from '../../helpers/utility-functions';
 import TaskCheckbox from '../task/TaskCheckbox';
 
 const EditTaskContainer = styled.div`
@@ -46,34 +51,54 @@ class EditTaskDescription extends Component {
     this.resetTextContent();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(previousProps, previousState) {
     const { componentEditable } = this.state;
     const { selectedTask } = this.props;
 
     if (
-      prevState.componentEditable !== componentEditable &&
+      previousState.componentEditable !== componentEditable &&
       componentEditable
     ) {
       // eslint-disable-next-line no-unused-expressions
       this.componentRef.current?.focus();
     }
 
-    if (prevProps.selectedTask?.taskId !== selectedTask?.taskId) {
+    if (previousProps.selectedTask?.taskId !== selectedTask?.taskId) {
       this.resetTextContent();
     }
   }
+
+  linkifyDescriptionElement = () => {
+    const { members } = this.props;
+
+    this.componentRef.current.innerHTML = mentionifyDescription({
+      members,
+      value: escape(this.componentRef.current.textContent),
+    });
+
+    linkifyElement(this.componentRef.current, {
+      defaultProtocol: 'https',
+      className: 'decorated-link',
+      formatHref: formatLinkifyHref,
+      ignoreTags: ['script', 'style'],
+      events: {
+        click: event => {
+          event.stopPropagation();
+        },
+      },
+    });
+  };
 
   resetTextContent = () => {
     const { selectedTask } = this.props;
     const { componentEditable } = this.state;
     if (componentEditable) {
-      this.componentRef.current.textContent = selectedTask?.description;
+      this.componentRef.current.innerHTML = escape(selectedTask?.description);
     } else {
-      const linkifyDescription = linkifyHtml(selectedTask?.description ?? '', {
-        defaultProtocol: 'https',
-        className: 'decorated-link',
-      });
-      this.componentRef.current.innerHTML = linkifyDescription;
+      this.componentRef.current.innerHTML = escape(
+        selectedTask?.description ?? '',
+      );
+      this.linkifyDescriptionElement();
     }
   };
 
@@ -112,6 +137,7 @@ class EditTaskDescription extends Component {
   handleDescriptionEdit = event => {
     event.preventDefault();
     event.stopPropagation();
+    this.linkifyDescriptionElement();
     this.setDescription();
   };
 
@@ -134,7 +160,12 @@ class EditTaskDescription extends Component {
   }
 }
 
-export default ({ handleSubmit, onMarkComplete, setAutoSaveVisible }) => {
+export default ({
+  handleSubmit,
+  onMarkComplete,
+  setAutoSaveVisible,
+  members,
+}) => {
   const { register, setValue } = useFormContext();
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskId,
@@ -174,8 +205,8 @@ export default ({ handleSubmit, onMarkComplete, setAutoSaveVisible }) => {
         onChange={() => {
           markComplete(selectedTask, status, listName, currentUser)(
             dispatch,
-          ).then((...args) => {
-            onMarkComplete(...args);
+          ).then((...allArguments) => {
+            onMarkComplete(...allArguments);
             setAutoSaveVisible();
           });
         }}
@@ -184,6 +215,7 @@ export default ({ handleSubmit, onMarkComplete, setAutoSaveVisible }) => {
         setDescription={setDescription}
         handleSubmit={handleSubmit}
         selectedTask={selectedTask}
+        members={members}
       />
       <input ref={register} type="hidden" name="descriptionEdit" />
     </EditTaskContainer>

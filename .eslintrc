@@ -52,7 +52,7 @@
           "pascalCase": true,
           "kebabCase": true
         },
-        "ignore": [".config.js(on)?$"]
+        "ignore": [".conf(ig)?.js(on)?$"]
       }
     ],
     "unicorn/prevent-abbreviations": [
@@ -62,6 +62,9 @@
         "replacements": {
           "props": {
             "properties": false
+          },
+          "conf": {
+            "config": false
           }
         }
       }

@@ -4,22 +4,21 @@ import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { getPatientName } from '../../helpers/utilityFunctions';
+import {
+  assignOrReassignTask,
+  updatePatient,
+} from '../../actions/task-actions';
+import { getPatientName } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';
 import NewTaskDrawerAddPatientForm from './NewTaskDrawer.AddPatientForm';
+import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.EditTaskComponent';
+import NewTaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
+import initializeNewTaskDrawerFormSelectMethods from './NewTaskDrawer.FormSelectMethods';
 import NewTaskDrawerInviteToListForm from './NewTaskDrawer.inviteToListForm';
 import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
-import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.editTaskComponent';
-import NewTaskDrawerEmailBodyContainer from './NewTaskDrawer.emailBody';
-
-import {
-  updatePatient,
-  assignOrReassignTask,
-} from '../../actions/task-actions';
-import initializeNewTaskDrawerFormSelectMethods from './NewTaskDrawer.FormSelectMethods';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -242,6 +241,7 @@ export default ({
               handleSubmit={handleSubmit}
               onMarkComplete={onMarkComplete}
               setAutoSaveVisible={setAutoSaveVisible}
+              members={members}
             />
           ) : (
             <StyledInput
@@ -261,11 +261,6 @@ export default ({
               labelFontSize={13}
               labelInactiveTop={1.75}
               required
-              // onBlur={event => {
-              //   event.preventDefault();
-              //   event.stopPropagation();
-              //   handleSubmit();
-              // }}
             />
           )}
         </Grid>
@@ -273,6 +268,8 @@ export default ({
           <Grid item xs={12}>
             <NewTaskDrawerEmailBodyContainer
               emailBody={defaultValues.sourceMessage}
+              task={defaultValues}
+              members={members}
             />
           </Grid>
         )}

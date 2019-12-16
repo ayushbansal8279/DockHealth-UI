@@ -9,16 +9,19 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button',
     },
     // tskDescription: {name: "description"},
-    tskDescription: {css:
+    tskDescription: {
+      css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(1) > div > div > textarea',
     },
 
-    firstTsk: {css:
-      "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3)",
+    firstTsk: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3)',
     },
 
-    tskDelete: {css:
-      "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)",
+    tskDelete: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)',
     },
   },
 
@@ -36,20 +39,22 @@ module.exports = {
     I.pressKey('Enter');
   },
 
-  clickTask(index){
-    index = index + 2
-    const taskTileLocator = '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child('+index+') > div > div > div:nth-child(2) > div:nth-child(3)'
-    I.waitForElement({
-      css: taskTileLocator
-    }, 4);
+  clickTask(index) {
+    index += 2;
+    const taskTileLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(${index}) > div > div > div:nth-child(2) > div:nth-child(3)`;
+    I.waitForElement(
+      {
+        css: taskTileLocator,
+      },
+      4,
+    );
     I.click({
-      css: taskTileLocator
+      css: taskTileLocator,
     });
   },
 
-  destroyPickedTask(){
+  destroyPickedTask() {
     I.waitForElement(this.fields.tskDelete, 4);
     I.click(this.fields.tskDelete, 4);
   },
-
 };

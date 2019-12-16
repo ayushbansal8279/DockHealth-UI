@@ -1,15 +1,16 @@
-import React from 'react';
-import ReactGA from 'react-ga';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
+import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import moment from 'moment';
-import MomentUtils from '@date-io/moment';
+import React from 'react';
+import { render } from 'react-dom';
+import ReactGA from 'react-ga';
+import { Provider } from 'react-redux';
+
 import configureStore from './ConfigureStore';
+import flags, { FlagsProvider } from './flags';
 import { Routes } from './routes';
 import theme from './theme';
-import flags, { FlagsProvider } from './flags';
 
 // change 'a minute' to '1 minute', etc.
 moment.updateLocale('en', {

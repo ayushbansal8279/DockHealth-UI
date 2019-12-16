@@ -1,8 +1,9 @@
-import Linkify from 'linkifyjs/react';
 import React from 'react';
 import styled from 'styled-components';
+import ReactHtmlParser from 'react-html-parser';
 
 import EnvelopeIcon from '../../img/envelope.svg';
+import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
 
 const EmailBodyContainer = styled.div`
   background-color: #f3f5f6;
@@ -18,13 +19,13 @@ const EmailMessageContainer = styled.pre`
   max-height: 15rem;
 `;
 
-export default ({ emailBody }) => (
+export default ({ emailBody, members }) => (
   <EmailBodyContainer>
     <img src={EnvelopeIcon} alt="Email" />
     <EmailMessageContainer>
-      <Linkify options={{ target: '_blank', className: 'decorated-link' }}>
-        {emailBody}
-      </Linkify>
+      {ReactHtmlParser(
+        mentionifyAndLinkifyTaskText({ members, value: emailBody }),
+      )}
     </EmailMessageContainer>
   </EmailBodyContainer>
 );

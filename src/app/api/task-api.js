@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-import { noop } from '../helpers/utilityFunctions';
+import { noop } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
 const ERROR_RETRIEVING_TASKS_MESSAGE =

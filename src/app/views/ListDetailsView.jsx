@@ -1,3 +1,7 @@
+import always from 'ramda/es/always';
+import cond from 'ramda/es/cond';
+import equals from 'ramda/es/equals';
+import T from 'ramda/es/T';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -6,8 +10,8 @@ import * as PatientActions from '../actions/patient-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import * as userApi from '../api/user-api';
+import { noop } from '../helpers/utility-functions';
 import TaskView from './TaskView';
-import { noop } from '../helpers/utilityFunctions';
 
 class Home extends PureComponent {
   componentDidMount() {
@@ -28,74 +32,35 @@ class Home extends PureComponent {
       sortBy = 'CREATED_DT';
     }
 
-    if (listName === 'assigned_by_me' || listName === 'assigned_to_me') {
-      const taskAction =
-        listName === 'assigned_by_me'
-          ? actions.getTasksAssignedByMe
-          : actions.getTasksAssignedToMe;
-      taskAction(undefined, sortBy, filterBy, taskStatus)
-        .then(() => {
-          if (taskStatus === 'INCOMPLETE') {
-            actions.loadingCompletedTasks();
-            taskAction(undefined, sortBy, filterBy, 'COMPLETE')
-              .then(noop)
-              .catch(error => {
-                this.handleRetry(error, () => {
-                  taskAction(undefined, sortBy, filterBy, 'COMPLETE');
-                });
-              });
-          }
-        })
-        .catch(error => {
-          this.handleRetry(error, () => {
-            taskAction(undefined, sortBy, filterBy, taskStatus);
-            actions.loadingCompletedTasks();
-            taskAction(undefined, sortBy, filterBy, 'COMPLETE');
-          });
-        });
-    } else {
+    const taskAction = cond([
+      [equals('assigned_by_me'), always(actions.getTasksAssignedByMe)],
+      [equals('assigned_to_me'), always(actions.getTasksAssignedToMe)],
+      [T, always(actions.getListTasks)],
+    ]);
+
+    const handleRetryTaskAction = error => {
+      this.handleRetry(error, () => {
+        taskAction(undefined, sortBy, filterBy, 'COMPLETE');
+      });
+    };
+
+    const getAllTasks = () => {
+      Promise.all([
+        taskAction()(routeParams.taskListId, sortBy, filterBy, 'INCOMPLETE'),
+        taskAction()(routeParams.taskListId, sortBy, filterBy, 'COMPLETE'),
+      ]).catch(error => {
+        this.handleRetry(error, getAllTasks);
+      });
+    };
+
+    getAllTasks();
+
+    if (listName !== 'assigned_by_me' && listName !== 'assigned_to_me') {
       taskListActions
         .getTaskListById(routeParams.taskListId)
         .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            taskAction(undefined, sortBy, filterBy, 'COMPLETE');
-          });
-        });
-      actions
-        .getListTasks(
-          routeParams.taskListId,
-          undefined,
-          undefined,
-          'INCOMPLETE',
-        )
-        .then(() => {
-          actions.loadingCompletedTasks();
-          actions.getListTasks(
-            routeParams.taskListId,
-            undefined,
-            undefined,
-            'COMPLETE',
-          );
-        })
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(
-              routeParams.taskListId,
-              undefined,
-              undefined,
-              'INCOMPLETE',
-            );
-            actions.loadingCompletedTasks();
-            actions.getListTasks(
-              routeParams.taskListId,
-              undefined,
-              undefined,
-              'COMPLETE',
-            );
-          });
-        });
+        .catch(handleRetryTaskAction);
+
       if (routeParams.taskListId) {
         taskListActions
           .getMembersByTaskListId(routeParams.taskListId, 'ALL')
@@ -109,6 +74,7 @@ class Home extends PureComponent {
             });
           });
       }
+
       taskListActions
         .getOrganizationUsersNotInTaskList(routeParams.taskListId)
         .then(noop)
@@ -269,49 +235,34 @@ class Home extends PureComponent {
   };
 
   handleRetry = (error, callback) => {
-    console.log(`Ooops ${error}`);
-    if (error.message == 'Network Error') {
-      // 403 error
+    if (error.message === 'Network Error') {
       userApi
         .refreshAccessToken(sessionStorage.getItem('username'))
-        .then(data => {
-          callback();
-        })
+        .then(callback)
         .catch(noop);
     }
   };
 
   handleSearch = () => {};
 
-  refreshAccessToken(user) {
+  refreshAccessToken = user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
 
-    if (
-      sessionStorage.refreshAccessTokenTimeoutId != null ||
-      sessionStorage.refreshAccessTokenTimeoutId !== undefined
-    ) {
+    if (sessionStorage.refreshAccessTokenTimeoutId) {
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
       sessionStorage.setItem('refreshAccessTokenTimeoutId', null);
     }
-    const comp = this;
-    const refreshAccessTokenTimeoutId = setTimeout(() => {
-      userApi
-        .refreshAccessToken(user.username)
-        .then(data => {
-          console.log('refreshed tokens');
-        })
-        .catch(error => {
-          console.log(error);
-        });
 
-      comp.refreshAccessToken(user);
+    const refreshAccessTokenTimeoutId = setTimeout(() => {
+      userApi.refreshAccessToken(user.username);
+      this.refreshAccessToken(user);
     }, systemTimeout);
 
     sessionStorage.setItem(
       'refreshAccessTokenTimeoutId',
       refreshAccessTokenTimeoutId,
     );
-  }
+  };
 
   render() {
     const {

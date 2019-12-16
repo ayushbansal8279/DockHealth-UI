@@ -1,12 +1,7 @@
 import moment from 'moment';
 
-import {
-  assignOrReassignTask,
-  moveTask,
-  saveTask,
-  updatePatient,
-} from '../../actions/task-actions';
-import { noop } from '../../helpers/utilityFunctions';
+import { moveTask, saveTask } from '../../actions/task-actions';
+import { noop } from '../../helpers/utility-functions';
 
 export default ({
   dispatch,
@@ -28,7 +23,6 @@ export default ({
     descriptionEdit,
     ...newData
   } = data;
-  let { patient } = data;
 
   const requestData = {
     ...task,
@@ -50,18 +44,7 @@ export default ({
   }
 
   try {
-    patient = JSON.parse(patient);
-  } catch {
-    noop();
-  }
-
-  try {
     const newTask = await saveTask(requestData)(dispatch);
-    // This was commented out to impliment autoassignment of inbox tasks.
-    // await Promise.all([
-    //   assignOrReassignTask(newTask, assignedToUserId || -1)(dispatch),
-    //   updatePatient(newTask, patient)(dispatch),
-    // ]);
 
     if (newTaskListId) {
       await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
