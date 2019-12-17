@@ -115,20 +115,27 @@ const QuickViewIcon = styled.img.attrs({
 
 const NonEmptyListCell = ({ children }) => <td>{children || ' '}</td>;
 
-const capitalize = str =>
-  typeof str === 'string' ? str.charAt(0).toUpperCase() + str.slice(1) : str;
-const formatDateOfBirth = dob => dob && moment(dob).format('MMM. M, YYYY');
+const capitalize = text =>
+  typeof text === 'string'
+    ? text.charAt(0).toUpperCase() + text.slice(1)
+    : text;
+
+const formatDateOfBirth = dob => dob && moment(dob).format('MMM. D, YYYY');
 
 const calculateAgeFromDateOfBirth = dob => {
   if (!dob) {
-    return null;
+    return '';
   }
 
-  const now = moment();
-  const dayAgo = moment().subtract(1, 'day');
-  const clampedDob = moment.min(dayAgo, moment(dob));
-  const diff = now.diff(clampedDob, 'days');
-  return moment.duration(diff, 'days').humanize();
+  const yearsOld = moment().diff(moment(dob), 'years');
+
+  if (yearsOld < 0) {
+    return '';
+  }
+
+  const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
+
+  return `${yearsOld} ${yearsLabel}`;
 };
 
 const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
@@ -149,7 +156,7 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
           <th>DOB</th>
           <th>Age</th>
           {!isCompact && <th>Gender</th>}
-          <th />
+          <th>&nbsp;</th>
         </tr>
       </thead>
       <tbody>
