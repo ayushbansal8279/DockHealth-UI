@@ -4,21 +4,32 @@ const { I, lgnPg, tskLstPg, inboxPg, tasksPg } = inject();
 
 Scenario(
   'Make a task, then click it, post a comment, than delete it...',
-  (I, tasksPg) => {
+  async (I, tasksPg) => {
     tskLstPg.getToList(1);
+
+    // pause();
 
     tasksPg.openTaskSidebar();
 
-    tasksPg.postTask('Dummy Task');
+    tasksPg.postTask('Crummy Task');
 
-    I.waitForText('Dummy Task', 3);
+    I.waitForText('Crummy Task', 3);
 
-    I.refreshPage();
-
+    tasksPg.exitOpenedTask();
+    // console.log();
+    // pause();
     tasksPg.openEditTaskSidebar(1);
 
+    tasksPg.flagOpenedTask();
+    tasksPg.addDueDate(1, 4);
     tasksPg.postComment('LazyBonez');
-    I.refreshPage();
+
+    tasksPg.exitOpenedTask();
+
+    console.log(await tasksPg.grabActiveTsks());
+    console.log(await tasksPg.grabFlaggedTsks());
+    console.log(await tasksPg.grabDueTodayTsks());
+    console.log(await tasksPg.grabOverdueTsks());
     tasksPg.openEditTaskSidebar(1);
     I.waitForText('LazyBonez', 4);
     tasksPg.deleteOpenedTask(1);
