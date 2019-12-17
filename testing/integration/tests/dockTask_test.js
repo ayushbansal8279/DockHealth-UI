@@ -3,7 +3,7 @@ Feature('Task Manipulation');
 const { I, lgnPg, tskLstPg, inboxPg, tasksPg } = inject();
 
 Scenario(
-  'Make a task, then click it, post a comment, than delete it...',
+  'Make a task, flag, assign, add a due date, post a comment, log the heads up readout, than delete it...',
   async (I, tasksPg) => {
     tskLstPg.getToList(1);
 
@@ -21,8 +21,16 @@ Scenario(
     tasksPg.openEditTaskSidebar(1);
 
     tasksPg.flagOpenedTask();
+    tasksPg.assignOpenedTask(1);
     tasksPg.addDueDate(1, 4);
+
+    //Theset two steps slow the whole process down enough to avoid race conditions.
+    tasksPg.exitOpenedTask();
+    tasksPg.openEditTaskSidebar(1);
+    //pause();
     tasksPg.postComment('LazyBonez');
+
+    //pause();
 
     tasksPg.exitOpenedTask();
 
