@@ -96,9 +96,11 @@ export default ({
     headsUpAreaHeight,
     openStatusPopover,
     parentTask,
+    popoversOpen,
     priorityActive,
     saveTaskPriority,
     setAutoSaveVisible,
+    setPopoversOpen,
     setStatus,
     status,
     statusPopoverOpen,
@@ -179,6 +181,7 @@ export default ({
             priorityActive={priorityActive}
             saveTaskPriority={saveTaskPriority}
             setAutoSaveVisible={setAutoSaveVisible}
+            setPopoversOpen={setPopoversOpen}
             setStatus={setStatus}
             status={status}
             statusPopoverOpen={statusPopoverOpen}
@@ -206,54 +209,58 @@ export default ({
             </FormContext>
           </CondensedFormSection>
         </NewTaskDrawerInnerContainer>
-        {task && task.taskId != null && task.status !== 'COMPLETE' && (
-          <BottomButtonContainer>
-            <StyledButton
-              onClick={onDelete({
-                afterDelete: () => {
-                  closeDrawer();
-                },
-                dispatch,
-                task,
-              })}
-            >
-              Delete
-            </StyledButton>
-            <StyledVerticalDivider />
-            <StyledButton
-              onClick={onDuplicate({
-                afterDuplicate: ({ newTask }) => {
-                  storeAsCurrentTask(newTask);
-                },
-                dispatch,
-                task,
-              })}
-            >
-              Duplicate
-            </StyledButton>
-          </BottomButtonContainer>
-        )}
-        {(!task || !task.taskId) && (
-          <BottomButtonContainer>
-            <StyledButton
-              onClick={() => {
-                closeDrawer();
-              }}
-            >
-              Cancel
-            </StyledButton>
-            <StyledButton
-              variant="contained"
-              onClick={() => {
-                handleSubmit();
-              }}
-            >
-              Save
-            </StyledButton>
-          </BottomButtonContainer>
-        )}
-        <SideClickListener onClick={closeDrawer} />
       </StyledForm>
+      {task && task.taskId != null && task.status !== 'COMPLETE' && (
+        <BottomButtonContainer>
+          <StyledButton
+            onClick={onDelete({
+              afterDelete: () => {
+                closeDrawer();
+              },
+              dispatch,
+              task,
+            })}
+          >
+            Delete
+          </StyledButton>
+          <StyledVerticalDivider />
+          <StyledButton
+            onClick={onDuplicate({
+              afterDuplicate: ({ newTask }) => {
+                storeAsCurrentTask(newTask);
+              },
+              dispatch,
+              task,
+            })}
+          >
+            Duplicate
+          </StyledButton>
+        </BottomButtonContainer>
+      )}
+      {(!task || !task.taskId) && (
+        <BottomButtonContainer>
+          <StyledButton
+            onClick={() => {
+              closeDrawer();
+            }}
+          >
+            Cancel
+          </StyledButton>
+          <StyledButton
+            variant="contained"
+            disabled={
+              popoversOpen.assignedToPopoverOpen ||
+              popoversOpen.patientPopoverOpen
+            }
+            onClick={() => {
+              handleSubmit();
+            }}
+          >
+            Save
+          </StyledButton>
+        </BottomButtonContainer>
+      )}
+      <SideClickListener onClick={closeDrawer} />
     </NewTaskDrawerContainer>
   );
 };

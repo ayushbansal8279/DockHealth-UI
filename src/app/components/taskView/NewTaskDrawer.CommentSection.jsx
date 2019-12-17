@@ -38,7 +38,7 @@ const CommentSectionInputField = styled.div`
   height: 100%;
   outline: none;
   padding: 0.5rem 2rem 0.5rem 1.5rem;
-  word-break: break-all;
+  word-break: break-word;
 
   &:empty ::after {
     color: #dedee2;

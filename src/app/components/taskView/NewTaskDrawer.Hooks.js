@@ -10,7 +10,7 @@ import {
   toggleTaskPriority,
 } from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
-import { taskValidationSchema } from './NewTaskDrawer.validationSchema';
+import { taskValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
 export default ({ headsUpAreaRef, statusSelectData }) => {
   // STATE HOOKS
@@ -36,6 +36,7 @@ export default ({ headsUpAreaRef, statusSelectData }) => {
   const formMethods = useForm({
     validationSchema: taskValidationSchema,
   });
+  const [popoversOpen, setPopoversOpen] = useState({});
 
   // REF HOKS
 
@@ -192,12 +193,14 @@ export default ({ headsUpAreaRef, statusSelectData }) => {
     headsUpAreaHeight,
     openStatusPopover,
     parentTask,
+    popoversOpen,
     priorityActive,
     saveTaskPriority,
     setAutoSaveTimeoutId,
     setAutoSaveVisible,
     setDeferredCommentsPromises,
     setHeadsUpAreaHeight,
+    setPopoversOpen,
     setPriorityActive,
     setStatus,
     status,

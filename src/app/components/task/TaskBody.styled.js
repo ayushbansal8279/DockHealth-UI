@@ -86,9 +86,12 @@ export const PatientsTasklistDate = styled.div`
   padding-bottom: 0.1875rem;
 `;
 
-export const AnimatedPatientsTasklistDate = styled(PatientsTasklistDate)`
-  animation: ${patientsTaskListDateAnimation} 3s ease 0s 1 normal forwards;
+export const GreenPatientsTasklistDate = styled(PatientsTasklistDate)`
   color: #20b255;
+`;
+
+export const AnimatedPatientsTasklistDate = styled(GreenPatientsTasklistDate)`
+  animation: ${patientsTaskListDateAnimation} 3s ease 0s 1 normal forwards;
 `;
 
 export const PatientTasklistContainer = styled.div`

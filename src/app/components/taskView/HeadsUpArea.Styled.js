@@ -59,6 +59,7 @@ export const HeadsUpSectionHeaderButton = styled.div`
 
 export const HeadsUpButtonsContainer = styled.div`
   flex: 1;
+  height: 7.9375rem;
   padding: 5px;
   white-space: nowrap;
 `;

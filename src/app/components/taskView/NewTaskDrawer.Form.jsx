@@ -17,8 +17,8 @@ import NewTaskDrawerAddPatientForm from './NewTaskDrawer.AddPatientForm';
 import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.EditTaskComponent';
 import NewTaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
 import initializeNewTaskDrawerFormSelectMethods from './NewTaskDrawer.FormSelectMethods';
-import NewTaskDrawerInviteToListForm from './NewTaskDrawer.inviteToListForm';
-import NewTaskDrawerPersonPicker from './NewTaskDrawer.personPicker';
+import NewTaskDrawerInviteToListForm from './NewTaskDrawer.InviteToListForm';
+import NewTaskDrawerPersonPicker from './NewTaskDrawer.PersonPicker';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -155,6 +155,7 @@ export default ({
   onMarkComplete,
   setAutoSaveVisible,
   isInbox,
+  setPopoversOpen,
 }) => {
   const formMethods = useFormContext();
   const [currentMember, setCurrentMember] = useState(defaultValues?.assignedTo);
@@ -171,6 +172,13 @@ export default ({
     openPatientPopover,
     closePatientPopover,
   ] = useBoolean(false);
+
+  useEffect(() => {
+    setPopoversOpen({
+      assignedToPopoverOpen,
+      patientPopoverOpen,
+    });
+  }, [assignedToPopoverOpen, patientPopoverOpen, setPopoversOpen]);
 
   const { reset, register, setValue } = formMethods;
 
@@ -277,6 +285,7 @@ export default ({
           <Grid item xs={12}>
             {patientPopoverOpen && (
               <NewTaskDrawerPersonPicker
+                showAddNewPersonLabel
                 addNewPersonLabel="+ Add a new patient"
                 addingNewPersonLabel="Add a new patient"
                 closePicker={closePatientPopover}
@@ -291,6 +300,7 @@ export default ({
                 maxPeopleRecordsVisible={7}
                 renderItem={renderPatientItem({ handlePatientSelect })}
                 renderNoItems={renderNoPatientItem({ handlePatientSelect })}
+                handlePersonSelect={handlePatientSelect}
                 personRecordHeightInRem={2.3125}
                 AddingPersonForm={NewTaskDrawerAddPatientForm}
               />
@@ -315,8 +325,6 @@ export default ({
         <Grid item xs={12}>
           {assignedToPopoverOpen && (
             <NewTaskDrawerPersonPicker
-              addNewPersonLabel="+ Invite to list"
-              addingNewPersonLabel="Invite to list"
               closePicker={closeAssignedToPopover}
               items={members}
               itemFilterPropertyKeys={['userName']}
@@ -324,6 +332,7 @@ export default ({
               maxPeopleRecordsVisible={5}
               renderItem={renderAssignedToItem({ handleAssignedToSelect })}
               renderNoItems={renderNoAssignedToItem({ handleAssignedToSelect })}
+              handlePersonSelect={handleAssignedToSelect}
               personRecordHeightInRem={4.0625}
               AddingPersonForm={NewTaskDrawerInviteToListForm}
             />

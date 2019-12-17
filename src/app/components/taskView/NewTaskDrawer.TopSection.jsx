@@ -38,6 +38,7 @@ export default ({
   priorityActive,
   saveTaskPriority,
   setAutoSaveVisible,
+  setPopoversOpen,
   setStatus,
   status,
   statusPopoverOpen,
@@ -158,6 +159,7 @@ export default ({
             handleSubmit={handleSubmit}
             onMarkComplete={onMarkComplete}
             setAutoSaveVisible={setAutoSaveVisible}
+            setPopoversOpen={setPopoversOpen}
             isInbox={isInbox}
           />
         </FormContext>

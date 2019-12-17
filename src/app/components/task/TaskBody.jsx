@@ -80,6 +80,7 @@ const TaskBody = ({
     formattedUserName,
     overdue,
     members,
+    hasNewComment,
   } = getTaskBodyData({
     createdDateTime,
     completedDateTime,
@@ -190,6 +191,8 @@ const TaskBody = ({
             overdue={overdue}
             archiveTask={archiveTask}
             workflowStatus={workflowStatus}
+            hasNewComment={hasNewComment}
+            completedDateTime={completedDateTime}
           />
         </>
       )}

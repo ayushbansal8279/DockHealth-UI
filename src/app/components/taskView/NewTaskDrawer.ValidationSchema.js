@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
-const DATE_MASK = /[0-2]\d\/[0-2]\d\/\d{4}|^$/;
+const DATE_MASK = /(?:0[1-9]|1[0-2])\/(?:0[1-9]|[12]\d|3[01])\/\d{4}|^$/;
 const DATE_MASK_MESSAGE =
   'Birthday has incorrect format (MM/DD/YYYY is required)';
 const PHONE_MASK = /[1-9]\d{2}-\d{3}-\d{4}|^$/;
@@ -16,9 +16,9 @@ export const matchEmptyDate = value =>
 
 export const addPatientValidationSchema = object().shape({
   firstName: string().required(REQUIRED_MESSAGE),
-  middleName: string().required(REQUIRED_MESSAGE),
+  middleName: string().notRequired(),
   lastName: string().required(REQUIRED_MESSAGE),
-  mrn: string().required(REQUIRED_MESSAGE),
+  mrn: string().notRequired(),
   dob: string()
     // eslint-disable-next-line func-names
     .transform(function(value) {

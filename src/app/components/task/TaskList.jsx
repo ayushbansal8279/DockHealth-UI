@@ -3,19 +3,23 @@ import PropTypes from 'prop-types';
 import ascend from 'ramda/es/ascend';
 import descend from 'ramda/es/descend';
 import partition from 'ramda/es/partition';
+import prop from 'ramda/es/prop';
 import propEq from 'ramda/es/propEq';
 import reverse from 'ramda/es/reverse';
 import sortWith from 'ramda/es/sortWith';
+import uniqBy from 'ramda/es/uniqBy';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getTaskPage } from '../../actions/task-actions';
+import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
 import { getPatientName } from '../../helpers/utility-functions';
 import CubesLoader from '../common/CubesLoader';
 import Task from './Task';
 import NewTaskElement from './TaskList.NewTaskElement';
 import OrderIcon from './TaskList.OrderIcon';
 import {
+  EmptyListElementContainer,
   HeadingAssignedToContainer,
   HeadingContainer,
   HeadingDueDateContainer,
@@ -26,9 +30,7 @@ import {
   ShowMoreButtonContainer,
   StyledTableCell,
   TaskListOuterContainer,
-  EmptyListElementContainer,
 } from './TaskList.styled';
-import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
 
 const SORTING_KEYS = {
   ASSIGNED_TO: 'ASSIGNED_TO',
@@ -211,10 +213,10 @@ const TaskList = ({
     (order === 'asc' ? ascend : descend)(valueGetter),
   );
 
-  const sortedTasksToShow = [
+  const sortedTasksToShow = uniqBy(prop('taskId'), [
     ...newlyAddedTasks,
     ...sortWith(reverse(sortingMethods), tasksToShow),
-  ];
+  ]);
 
   return (
     <TaskListOuterContainer>

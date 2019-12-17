@@ -9,7 +9,8 @@ export const NewTaskDrawerContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 5.5rem);
+  min-height: calc(100vh - 5.5rem);
+  height: min-content;
   justify-content: flex-start;
   padding: 0 0.25rem;
   position: sticky;
@@ -162,6 +163,7 @@ export const StyledButton = styled(Button)`
 export const StyledForm = styled.form`
   display: flex;
   flex-flow: column nowrap;
+  height: min-content;
   overflow-y: auto;
 `;
 

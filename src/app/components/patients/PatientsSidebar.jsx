@@ -26,7 +26,22 @@ import {
 } from './PatientsSidebar.Styled';
 import PatientsTasklist from './PatientsTasklist';
 
-const calculateAgeFromDateOfBirth = dob => dob && moment().diff(dob, 'years');
+const calculateAgeFromDateOfBirth = dob => {
+  if (!dob) {
+    return '';
+  }
+
+  const yearsOld = moment().diff(moment(dob), 'years');
+
+  if (yearsOld < 0) {
+    return '';
+  }
+
+  const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
+
+  return `${yearsOld} ${yearsLabel}`;
+};
+
 const formatAge = age => (age === 1 ? '1yr old' : `${age}yrs old`);
 
 const PatientsDetailsSection = ({

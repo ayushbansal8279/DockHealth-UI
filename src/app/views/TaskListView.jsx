@@ -44,6 +44,12 @@ const BlockItemContainer = styled.div`
   }
 `;
 
+const SafariFixGrid = styled(Grid)`
+  && {
+    flex-basis: auto;
+  }
+`;
+
 const ICONS = {
   ASSIGN_TO: 'icon-assign-to',
   CALENDAR: 'icon-calendar',
@@ -267,15 +273,20 @@ class TaskListView extends PureComponent {
     return (
       <Grid container direction="column" alignItems="center" spacing={8}>
         <GenericHeader isFetching={false} title="Lists" />
-        <Grid container alignItems="center" justify="flex-end" direction="row">
+        <SafariFixGrid
+          container
+          alignItems="center"
+          justify="flex-end"
+          direction="row"
+        >
           <AddTaskListButton onClick={this.addTaskList} />
-        </Grid>
-        <Grid container item xs={12} justify="center" spacing={8}>
+        </SafariFixGrid>
+        <SafariFixGrid container item xs={12} justify="center" spacing={8}>
           <Grid container item xs={6}>
             <AddListForm />
           </Grid>
-        </Grid>
-        <Grid container item xs={12} justify="center">
+        </SafariFixGrid>
+        <SafariFixGrid container item xs={12} justify="center">
           <Grid
             container
             item
@@ -286,8 +297,8 @@ class TaskListView extends PureComponent {
           >
             {genericLists?.map(this.renderGenericList)}
           </Grid>
-        </Grid>
-        <Grid container item xs={12} justify="center" spacing={8}>
+        </SafariFixGrid>
+        <SafariFixGrid container item xs={12} justify="center" spacing={8}>
           <Grid item xs={6}>
             {isFetching ? (
               <CubesLoaderContainer>
@@ -309,7 +320,7 @@ class TaskListView extends PureComponent {
               </div>
             )}
           </Grid>
-        </Grid>
+        </SafariFixGrid>
       </Grid>
     );
   }

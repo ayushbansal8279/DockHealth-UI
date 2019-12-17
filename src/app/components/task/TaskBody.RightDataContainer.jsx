@@ -10,12 +10,47 @@ import {
 import {
   AnimatedPatientsTasklistDate,
   ArchiveButton,
+  GreenPatientsTasklistDate,
   PatientsTasklistDate,
   PatientTasklistPatient,
   TaskBodyChevronContainer,
   TaskDateContainer,
   TaskStatusContainer,
 } from './TaskBody.styled';
+
+const DueDateComponent = ({
+  dueDate,
+  formattedDueDate,
+  hasNewComment,
+  completedDateTime,
+  isSubtask,
+  isTaskTimingOut,
+  ...props
+}) => {
+  if (isTaskTimingOut) {
+    return (
+      <AnimatedPatientsTasklistDate {...props}>
+        Nice work!
+      </AnimatedPatientsTasklistDate>
+    );
+  }
+
+  if (hasNewComment && completedDateTime) {
+    return (
+      <GreenPatientsTasklistDate {...props}>
+        New comment
+      </GreenPatientsTasklistDate>
+    );
+  }
+
+  if (dueDate && !isSubtask && !completedDateTime) {
+    return (
+      <PatientsTasklistDate {...props}>{formattedDueDate}</PatientsTasklistDate>
+    );
+  }
+
+  return null;
+};
 
 export default ({
   taskDrawerOpen,
@@ -31,62 +66,63 @@ export default ({
   overdue,
   archiveTask,
   workflowStatus,
-}) => (
-  <>
-    {!taskDrawerOpen && !hidePatient && (
-      <PatientTasklistPatient>
-        {patient && !isSubtask && (
-          <Link
-            to={`/patient/${patient.patientId}`}
-            style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
-          >
-            <div>
-              {`${patient?.lastName}, ${patient?.firstName} ${patient?.mrn ??
-                ''}`.trim()}
-            </div>
-          </Link>
-        )}
-      </PatientTasklistPatient>
-    )}
-    {!taskDrawerOpen && (
-      <TaskDateContainer isTaskArchivable={isTaskArchivable}>
-        {dueDate && !isTaskTimingOut && (
-          <PatientsTasklistDate overdue={overdue}>
-            {formattedDueDate}
-          </PatientsTasklistDate>
-        )}
-        {isTaskTimingOut && (
-          <AnimatedPatientsTasklistDate>
-            Nice work!
-          </AnimatedPatientsTasklistDate>
-        )}
-      </TaskDateContainer>
-    )}
-    {!taskDrawerOpen && (
-      <>
-        <TaskStatusContainer isTaskArchivable={isTaskArchivable}>
-          <PriorityContainer archivable={isTaskArchivable}>
-            {isTaskArchivable ? (
-              <ArchiveButton onClick={archiveTask}>Archive</ArchiveButton>
-            ) : (
-              status !== 'COMPLETE' && (
-                <PriorityDot color={priorityColor(workflowStatus)} />
-              )
-            )}
-          </PriorityContainer>
-        </TaskStatusContainer>
-        {!readOnly && (
-          <TaskBodyChevronContainer isSubtask={isSubtask}>
-            <img
-              style={{
-                height: '10px',
-              }}
-              src={ChevronRightIcon}
-              alt="Chevron icon"
+  hasNewComment,
+  completedDateTime,
+}) => {
+  return (
+    <>
+      {!taskDrawerOpen && !hidePatient && (
+        <PatientTasklistPatient>
+          {patient && !isSubtask && (
+            <Link
+              to={`/patient/${patient.patientId}`}
+              style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
+            >
+              <div>
+                {`${patient?.lastName}, ${patient?.firstName} ${patient?.mrn ??
+                  ''}`.trim()}
+              </div>
+            </Link>
+          )}
+        </PatientTasklistPatient>
+      )}
+      {!taskDrawerOpen && (
+        <>
+          <TaskDateContainer isTaskArchivable={isTaskArchivable}>
+            <DueDateComponent
+              completedDateTime={completedDateTime}
+              dueDate={dueDate}
+              formattedDueDate={formattedDueDate}
+              hasNewComment={hasNewComment}
+              isSubtask={isSubtask}
+              isTaskTimingOut={isTaskTimingOut}
+              overdue={overdue}
             />
-          </TaskBodyChevronContainer>
-        )}
-      </>
-    )}
-  </>
-);
+          </TaskDateContainer>
+          <TaskStatusContainer isTaskArchivable={isTaskArchivable}>
+            <PriorityContainer archivable={isTaskArchivable}>
+              {isTaskArchivable ? (
+                <ArchiveButton onClick={archiveTask}>Archive</ArchiveButton>
+              ) : (
+                status !== 'COMPLETE' && (
+                  <PriorityDot color={priorityColor(workflowStatus)} />
+                )
+              )}
+            </PriorityContainer>
+          </TaskStatusContainer>
+          {!readOnly && (
+            <TaskBodyChevronContainer isSubtask={isSubtask}>
+              <img
+                style={{
+                  height: '10px',
+                }}
+                src={ChevronRightIcon}
+                alt="Chevron icon"
+              />
+            </TaskBodyChevronContainer>
+          )}
+        </>
+      )}
+    </>
+  );
+};
