@@ -49,21 +49,19 @@ export default ({
       </PatientTasklistPatient>
     )}
     {!taskDrawerOpen && (
-      <TaskDateContainer isTaskArchivable={isTaskArchivable}>
-        {dueDate && !isTaskTimingOut && (
-          <PatientsTasklistDate overdue={overdue}>
-            {formattedDueDate}
-          </PatientsTasklistDate>
-        )}
-        {isTaskTimingOut && (
-          <AnimatedPatientsTasklistDate>
-            Nice work!
-          </AnimatedPatientsTasklistDate>
-        )}
-      </TaskDateContainer>
-    )}
-    {!taskDrawerOpen && (
       <>
+        <TaskDateContainer isTaskArchivable={isTaskArchivable}>
+          {dueDate && !isTaskTimingOut && (
+            <PatientsTasklistDate overdue={overdue}>
+              {formattedDueDate}
+            </PatientsTasklistDate>
+          )}
+          {isTaskTimingOut && (
+            <AnimatedPatientsTasklistDate>
+              Nice work!
+            </AnimatedPatientsTasklistDate>
+          )}
+        </TaskDateContainer>
         <TaskStatusContainer isTaskArchivable={isTaskArchivable}>
           <PriorityContainer archivable={isTaskArchivable}>
             {isTaskArchivable ? (

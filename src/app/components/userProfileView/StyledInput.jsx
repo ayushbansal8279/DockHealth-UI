@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { mergeRefs as mergeReferences } from '../../helpers/utility-functions';
 import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
 import initializeStyledInputHooks from './StyledInput.Hooks';
+import StyledInputAutoCorrectedDate from './StyledInput.AutoCorrectedDate';
 
 const EMPTY_CLASS_NAME = 'empty';
 const ERROR_CLASS_NAME = 'error';
@@ -27,10 +28,10 @@ const PHONE_MASK_ARRAY = [
 ];
 
 const BIRTH_DATE_MASK_ARRAY = [
-  /[01]/,
+  /\d/,
   /\d/,
   '/',
-  /[0-2]/,
+  /\d/,
   /\d/,
   '/',
   /\d/,
@@ -246,6 +247,8 @@ export default React.forwardRef(
       inputContainerProps,
       isMaskedInput,
       inputMask,
+      currentValue,
+      inputState,
     } = initializeStyledInputHooks({
       name,
       ERROR_CLASS_NAME,
@@ -293,6 +296,14 @@ export default React.forwardRef(
               <MaskedInput
                 mask={inputMask}
                 render={renderPhoneNumberField({ inputProps, props, register })}
+                pipe={isBirthDate ? StyledInputAutoCorrectedDate() : undefined}
+                guide
+                keepCharPositions={false}
+                showMask={Boolean(currentValue) || Boolean(inputState)}
+                onFocus={() => setInputState(FOCUS_CLASS_NAME)}
+                onBlur={event =>
+                  props.onBlur ? props.onBlur(event) : setInputState('')
+                }
               />
               {labelComponent}
             </TextareaWrapper>

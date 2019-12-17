@@ -1,5 +1,6 @@
 import getProps from 'ramda/es/props';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useToggle } from 'react-use';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
 
@@ -139,7 +140,7 @@ const SimpleBarComponent = ({
 
   return (
     <StyledSimpleBar
-      visible={""+(filteredItems.length > maxPeopleRecordsVisible)}
+      visible={filteredItems.length > maxPeopleRecordsVisible}
       style={{ maxHeight: maxPeopleContainerHeight }}
     >
       {simpleBarItemsVisible && (
@@ -153,8 +154,9 @@ const SimpleBarComponent = ({
 };
 
 export default ({
-  addNewPersonLabel,
-  addingNewPersonLabel,
+  showAddNewPersonLabel = false,
+  addNewPersonLabel = '',
+  addingNewPersonLabel = '',
   closePicker,
   items,
   itemFilterPropertyKeys,
@@ -162,14 +164,13 @@ export default ({
   maxPeopleRecordsVisible,
   renderItem,
   renderNoItems,
+  handlePersonSelect,
   personRecordHeightInRem,
   AddingPersonForm,
 }) => {
-  const [isSearching, , , toggleIsSearching] = useBoolean(false);
+  const [isSearching, toggleIsSearching] = useToggle(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [addingNewPerson, , , toggleAddingNewPerson] = useBoolean(false);
-  //When will the add new user tab show up? Its decided by the question.
-  const isUser = (addNewPersonLabel == "+ Invite to list");
+  const [addingNewPerson, toggleAddingNewPerson] = useToggle(false);
 
   const maxPeopleContainerHeight = `${maxPeopleRecordsVisible *
     personRecordHeightInRem}rem`;
@@ -218,7 +219,11 @@ export default ({
           </PersonPickerTopSectionContainer>
           <PersonPickerDivider />
           <AddingPersonFormContainer>
-            <AddingPersonForm toggleAddingNewPerson={toggleAddingNewPerson} />
+            <AddingPersonForm
+              closePicker={closePicker}
+              handlePersonSelect={handlePersonSelect}
+              toggleAddingNewPerson={toggleAddingNewPerson}
+            />
           </AddingPersonFormContainer>
         </>
       ) : (
@@ -247,7 +252,6 @@ export default ({
               <PersonPickerTopSectionLabel>{label}</PersonPickerTopSectionLabel>
             )}
 
-
             <PersonPickerIconsContainer>
               {!isSearching && (
                 <PersonPickerIconContainer onClick={toggleIsSearching}>
@@ -262,16 +266,13 @@ export default ({
 
           <PersonPickerDivider />
           <SimpleBarComponent {...simpleBarComponentProps} />
-          <PersonPickerDivider />
-          {/* TODOne? Only have the adding new Person button on the patient tab. */}
-            
-          {!isUser ? (
-            <AddNewPersonLabel button onClick={toggleAddingNewPerson}>
-              {addNewPersonLabel}
-            </AddNewPersonLabel>
-          ) : (
-            //console.log("My name is yeff")
+
+          {showAddNewPersonLabel && (
             <>
+              <PersonPickerDivider />
+              <AddNewPersonLabel button onClick={toggleAddingNewPerson}>
+                {addNewPersonLabel}
+              </AddNewPersonLabel>
             </>
           )}
         </>

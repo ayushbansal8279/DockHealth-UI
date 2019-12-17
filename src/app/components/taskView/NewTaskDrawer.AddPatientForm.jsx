@@ -11,7 +11,7 @@ import { addPatient } from '../../actions/patient-actions';
 import useBoolean from '../../hooks/useBoolean';
 import DropdownIcon from '../../img/dropdown-icon.svg';
 import StyledInput from '../userProfileView/StyledInput';
-import { addPatientValidationSchema } from './NewTaskDrawer.validationSchema';
+import { addPatientValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
 const FormLabel = styled.div`
   color: #0ca1c7;
@@ -55,7 +55,6 @@ const formFieldDefinitions = [
   {
     key: 'middleName',
     label: 'Mid. Name',
-    required: true,
     size: 4,
   },
   {
@@ -67,7 +66,6 @@ const formFieldDefinitions = [
   {
     key: 'mrn',
     label: 'MRN',
-    required: true,
   },
   {
     key: 'dob',
@@ -208,19 +206,31 @@ const renderFormFieldDefinition = ({ setValue }) => ({
   );
 };
 
-const onSubmit = ({ dispatch, toggleAddingNewPerson }) => {
+const onSubmit = ({
+  dispatch,
+  closePicker,
+  handlePersonSelect,
+  toggleAddingNewPerson,
+}) => {
   return async data => {
     try {
-      await addPatient(data)(dispatch);
+      const newData = {
+        ...data,
+        dob: data.dob || null,
+      };
+
+      const newPatient = await addPatient(newData)(dispatch);
       toggleAlert('Patient added successfully', 'success');
       toggleAddingNewPerson();
+      handlePersonSelect(newPatient)();
+      closePicker();
     } catch {
       toggleAlert('Error adding new patient, please try again later', 'error');
     }
   };
 };
 
-export default ({ toggleAddingNewPerson }) => {
+export default ({ closePicker, handlePersonSelect, toggleAddingNewPerson }) => {
   const formMethods = useForm({
     validationSchema: addPatientValidationSchema,
   });
@@ -237,9 +247,14 @@ export default ({ toggleAddingNewPerson }) => {
           event.preventDefault();
           event.stopPropagation();
 
-          return handleSubmit(onSubmit({ dispatch, toggleAddingNewPerson }))(
-            event,
-          );
+          return handleSubmit(
+            onSubmit({
+              dispatch,
+              closePicker,
+              handlePersonSelect,
+              toggleAddingNewPerson,
+            }),
+          )(event);
         }}
         ref={formReference}
       >

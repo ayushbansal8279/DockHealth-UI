@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { invitePersonToOrganization } from '../../actions/people-actions';
 import StyledInput from '../userProfileView/StyledInput';
-import { inviteValidationSchema } from './NewTaskDrawer.validationSchema';
+import { inviteValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
 const BottomFormLabel = styled.button`
   align-items: center;
@@ -62,23 +62,27 @@ const renderFormFieldDefinition = ({ key, label, size, ...props }) => {
   );
 };
 
-const onSubmit = ({ dispatch, toggleAddingNewPerson }) => async data => {
-  try {
-    await invitePersonToOrganization(data)(dispatch);
-    toggleAlert('New person invited successfully', 'success');
-    toggleAddingNewPerson();
-  } catch {
-    toggleAlert('Error inviting new person, please try again later', 'error');
-  }
+// eslint-disable-next-line unicorn/consistent-function-scoping
+const onSubmit = ({ dispatch, handlePersonSelect, toggleAddingNewPerson }) => {
+  return async data => {
+    try {
+      await invitePersonToOrganization(data)(dispatch);
+      toggleAlert('New person invited successfully', 'success');
+      toggleAddingNewPerson();
+      handlePersonSelect(data)();
+    } catch {
+      toggleAlert('Error inviting new person, please try again later', 'error');
+    }
+  };
 };
 
-export default ({ toggleAddingNewPerson }) => {
+export default ({ handlePersonSelect, toggleAddingNewPerson }) => {
   const formMethods = useForm({
     validationSchema: inviteValidationSchema,
   });
   const dispatch = useDispatch();
 
-  const formRef = useRef(null);
+  const formReference = useRef(null);
 
   const { handleSubmit } = formMethods;
 
@@ -89,11 +93,11 @@ export default ({ toggleAddingNewPerson }) => {
           event.preventDefault();
           event.stopPropagation();
 
-          return handleSubmit(onSubmit({ dispatch, toggleAddingNewPerson }))(
-            event,
-          );
+          return handleSubmit(
+            onSubmit({ dispatch, handlePersonSelect, toggleAddingNewPerson }),
+          )(event);
         }}
-        ref={formRef}
+        ref={formReference}
       >
         <Grid container spacing={8}>
           {formFieldDefinitions.map(renderFormFieldDefinition)}
