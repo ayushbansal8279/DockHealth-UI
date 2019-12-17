@@ -54,6 +54,11 @@ const HistoryItemContainer = styled.div`
   margin-bottom: 0.5rem;
 `;
 
+const StyledList = styled(List)`
+  max-height: 12.5rem;
+  overflow-y: auto;
+`;
+
 const renderTaskList = ({
   closePopover,
   setNewTaskListName,
@@ -188,7 +193,7 @@ export default ({
               horizontal: 'left',
             }}
           >
-            <List>
+            <StyledList>
               {taskLists.map(
                 renderTaskList({
                   closePopover: unsetTaskListPopoverOpen,
@@ -198,7 +203,7 @@ export default ({
                   taskId,
                 }),
               )}
-            </List>
+            </StyledList>
           </Popover>
         </SectionRow>
       )}
