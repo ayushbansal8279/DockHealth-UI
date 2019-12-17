@@ -1,25 +1,7 @@
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 
-export default ({
-  createdDateTime,
-  completedDateTime,
-  dueDate,
-  subtasks,
-  comments,
-  creator,
-  completedBy,
-  isInbox,
-}) => {
-  const formattedCreationDate = moment(createdDateTime).format('h:mma');
-  const dueDateMoment = moment(dueDate);
-  const formattedDueDate = dueDateMoment.format('ddd, MMM D');
-  const completedDateTimeMoment = moment(completedDateTime);
-  const overdue = dueDateMoment.isBefore(moment().format('YYYY-MM-DD'));
-  const formattedCompletedDateTime = completedDateTimeMoment.isValid()
-    ? completedDateTimeMoment.format('h:mma')
-    : '';
-
+const getCountInfoData = ({ subtasks, comments }) => {
   const subtasksCount = subtasks?.length ?? 0;
   const commentsCount = comments?.length ?? 0;
 
@@ -43,6 +25,32 @@ export default ({
     countInfoContent = ` • ${countInfoContent.trim()}`;
   }
 
+  return {
+    countInfoContent,
+  };
+};
+
+export default ({
+  createdDateTime,
+  completedDateTime,
+  dueDate,
+  subtasks,
+  comments,
+  creator,
+  completedBy,
+  isInbox,
+}) => {
+  const formattedCreationDate = moment(createdDateTime).format('h:mma');
+  const dueDateMoment = moment(dueDate);
+  const formattedDueDate = dueDateMoment.format('ddd, MMM D');
+  const completedDateTimeMoment = moment(completedDateTime);
+  const overdue = dueDateMoment.isBefore(moment().format('YYYY-MM-DD'));
+  const formattedCompletedDateTime = completedDateTimeMoment.isValid()
+    ? completedDateTimeMoment.format('h:mma')
+    : '';
+
+  const { countInfoContent } = getCountInfoData({ subtasks, comments });
+
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
       .trim()
@@ -63,6 +71,14 @@ export default ({
       : store.taskListState.tasklistmembers,
   );
 
+  const currentMoment = moment();
+  const tenMinutesAgoMoment = moment().subtract(10, 'minutes');
+
+  const hasNewComment =
+    comments?.filter(({ dateCreated }) =>
+      moment(dateCreated).isBetween(tenMinutesAgoMoment, currentMoment),
+    ).length > 0 ?? false;
+
   return {
     formattedCreationDate,
     dueDateMoment,
@@ -75,5 +91,6 @@ export default ({
     formattedUserName,
     overdue,
     members,
+    hasNewComment,
   };
 };
