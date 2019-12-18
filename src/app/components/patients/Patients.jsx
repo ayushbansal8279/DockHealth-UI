@@ -9,6 +9,7 @@ import {
   getMyPatientsActive,
   getMyPatientsAll,
   loading,
+  highlightPatient,
 } from '../../actions/patient-actions';
 import PatientsCreation from './PatientCreation';
 import PatientsHeader from './PatientsHeader';
@@ -22,6 +23,10 @@ const FadeContainer = styled.div`
   flex: 1;
   justify-content: center;
   padding-top: 100px;
+`;
+
+const SideClickListener = styled.div`
+  flex: 1;
 `;
 
 const PatientsListSpinner = ({ isFetching }) => (
@@ -97,6 +102,10 @@ const PatientsLayout = () => {
 
   const filteredPatients = searchPatients(patients, searchTerm);
 
+  const deselectPatient = useCallback(() => {
+    dispatch(highlightPatient(null));
+  }, [dispatch]);
+
   return (
     <div>
       <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
@@ -109,9 +118,11 @@ const PatientsLayout = () => {
           <PatientsListSpinner isFetching={isFetching} />
         ) : (
           <Grid
+            container
             md={12}
             lg={highlightedPatient || isCreatingPatient ? 6 : 12}
             item
+            direction="column"
           >
             <PatientsList
               patients={filteredPatients}
@@ -119,16 +130,19 @@ const PatientsLayout = () => {
               isCompact={highlightedPatient !== null || isCreatingPatient}
               highlightedPatient={highlightedPatient}
             />
+            <SideClickListener onClick={deselectPatient} />
           </Grid>
         )}
         {highlightedPatient && (
-          <Grid md={12} lg={6} item>
+          <Grid md={12} lg={6} item container direction="column">
             <PatientsSidebar patient={highlightedPatient} />
+            <SideClickListener onClick={deselectPatient} />
           </Grid>
         )}
         {isCreatingPatient && (
-          <Grid md={12} lg={6} item>
+          <Grid md={12} lg={6} item container direction="column">
             <PatientsCreation />
+            <SideClickListener onClick={deselectPatient} />
           </Grid>
         )}
       </Grid>
