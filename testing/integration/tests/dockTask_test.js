@@ -3,7 +3,7 @@ Feature('Task Manipulation');
 const { I, lgnPg, tskLstPg, inboxPg, tasksPg } = inject();
 
 Scenario(
-  'Make a task, flag, assign, add a due date, post a comment, log the heads up readout, than delete it...',
+  'Make a task, flag, attach a patient, assign to a user, add a due date, post a comment, log the heads up readout, switch to personal hud print and switch back, than delete it...',
   async (I, tasksPg) => {
     tskLstPg.getToList(1);
 
@@ -22,6 +22,11 @@ Scenario(
 
     tasksPg.flagOpenedTask();
     tasksPg.assignOpenedTask(1);
+
+    tasksPg.exitOpenedTask();
+    tasksPg.openEditTaskSidebar(1);
+
+    tasksPg.attachPatient(1);
     tasksPg.addDueDate(1, 4);
 
     //Theset two steps slow the whole process down enough to avoid race conditions.
@@ -34,11 +39,24 @@ Scenario(
 
     tasksPg.exitOpenedTask();
 
+    console.log("All")
     console.log(await tasksPg.grabActiveTsks());
     console.log(await tasksPg.grabFlaggedTsks());
     console.log(await tasksPg.grabDueTodayTsks());
     console.log(await tasksPg.grabOverdueTsks());
+    console.log("For Me");
+
+    tasksPg.clickForMeBtn();
+    console.log(await tasksPg.grabActiveTsks());
+    console.log(await tasksPg.grabFlaggedTsks());
+    console.log(await tasksPg.grabDueTodayTsks());
+    console.log(await tasksPg.grabOverdueTsks());
+    tasksPg.clickAllBtn();
+
+
     tasksPg.openEditTaskSidebar(1);
+    //pause();
+
     I.waitForText('LazyBonez', 4);
     tasksPg.deleteOpenedTask(1);
   },

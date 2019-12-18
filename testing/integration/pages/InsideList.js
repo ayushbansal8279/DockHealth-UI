@@ -8,6 +8,24 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > button > span:nth-child(2)',
     },
 
+    forMeBtn: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)'
+    },
+
+    allBtn: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'
+    },
+
+    firstTsk: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3)',
+    },
+
+
+
+
     tskDescription: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(1) > div > div > textarea ',
@@ -38,11 +56,6 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > svg > path',
     },
 
-    firstTsk: {
-      css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3)',
-    },
-
     assignedShield: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(1)',
@@ -58,9 +71,36 @@ module.exports = {
       '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(1)',
     },
 
+    patientOptionOne: {
+      css:
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)`
+    },
 
+    patientShield: {
+      css:
+        `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2)`
+    },
+
+    setDateBtnWcomments: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(3) > span',
+    },
+    // Comments add two to 4th element from the left. No clue why...
+    setDateBtn: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span',
+    },
+
+    saveDueDate: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)',
+    },
+
+    saveDueDateWcomments: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)',
+    },
     
-
 
 
 
@@ -84,23 +124,10 @@ module.exports = {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(4) > div:nth-child(1)',
     },
-
-
-
-
-
-
-
-    setDateBtnWcomments: {
-      css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(3) > span',
-    },
-    // Comments add two to 4th element from the left. No clue why...
-    setDateBtn: {
-      css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span',
-    },
-
+    
+    
+    
+    
     dec18NumberWcomments: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(4) > div > span',
@@ -116,35 +143,11 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4)  > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(4) > div',
     },
 
-    saveDueDate: {
-      css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)',
-    },
-    // Without comments.
-    saveDueDateWcomments: {
-      css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)',
-    },
   },
 
   openTaskSidebar() {
     I.waitForElement(this.fields.addTskBtn, 5);
     I.click(this.fields.addTskBtn);
-  },
-
-  postTask(title) {
-    I.waitForText('Add a task', 5);
-    // this.frustration();
-    I.fillField(this.fields.tskDescription, title);
-    I.pressKey('Enter');
-  },
-
-  postComment(comment) {
-    I.waitForElement(this.fields.commentShield, 5);
-    I.click(this.fields.commentShield);
-    I.waitForElement(this.fields.commentBox, 5);
-    I.fillField(this.fields.commentBox, comment);
-    I.pressKey('Enter');
   },
 
   exitFreshTask() {
@@ -166,18 +169,48 @@ module.exports = {
     });
   },
 
-  assignOpenedTask(taskIndex) {
-    assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${taskIndex + 1})`;
+  postTask(title) {
+    I.waitForText('Add a task', 5);
+    // this.frustration();
+    I.fillField(this.fields.tskDescription, title);
+    I.pressKey('Enter');
+  },
+
+  postComment(comment) {
+    I.waitForElement(this.fields.commentShield, 5);
+    I.click(this.fields.commentShield);
+    I.waitForElement(this.fields.commentBox, 5);
+    I.fillField(this.fields.commentBox, comment);
+    I.pressKey('Enter');
+  },
+
+  attachPatient(index) {
+    patientLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2)  > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`
+    I.waitForElement(this.fields.patientShield, 4);
+    I.click(this.fields.patientShield);
+    I.waitForElement({css: patientLocator}, 4);
+    I.click({css: patientLocator});
+  },
+
+  assignOpenedTask(index) {
+    assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`;
     I.waitForElement(this.fields.assignedShield, 4);
     I.click(this.fields.assignedShield);
     I.waitForElement({css: assignmentLocator}, 4);
     I.click({css: assignmentLocator});
   },
 
-  deleteOpenedTask(taskIndex) {
-    deleteBtnLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1) > span:nth-child(1)`;
-    I.waitForElement({ css: deleteBtnLocator }, 4);
-    I.click({ css: deleteBtnLocator });
+  addDueDate(week, day) {
+    const dateBtn = {css:
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
+    };
+    I.waitForElement(this.fields.setDateBtn, 4);
+    I.click(this.fields.setDateBtn);
+    // I.click("Set a due date");
+    I.waitForElement(dateBtn, 4);
+    I.click(dateBtn);
+    I.waitForElement(this.fields.saveDueDate);
+    I.click(this.fields.saveDueDate); // This div becomes nth-child(5) if the task has comments.
   },
 
   flagOpenedTask() {
@@ -189,6 +222,27 @@ module.exports = {
     I.waitForElement(this.fields.exitEditTskSidebar, 4);
     I.click(this.fields.exitEditTskSidebar);
   },
+
+  deleteOpenedTask(taskIndex) {
+    deleteBtnLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1) > span:nth-child(1)`;
+    I.waitForElement({ css: deleteBtnLocator }, 4);
+    I.click({ css: deleteBtnLocator });
+  },
+
+
+  clickForMeBtn(){
+    I.waitForElement(this.fields.forMeBtn, 3);
+    I.click(this.fields.forMeBtn);
+  },
+
+  clickAllBtn(){
+    I.waitForElement(this.fields.allBtn, 3);
+    I.click(this.fields.allBtn);
+  },
+
+
+
+
 
   async grabFlaggedTsks() {
     I.waitForElement(this.fields.numberOfFlaggedTsks, 4);
@@ -210,16 +264,4 @@ module.exports = {
     return await I.grabTextFrom(this.fields.numberOfOverdueTsks);
   },
 
-  addDueDate(week, day) {
-    const dateBtn = {css:
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
-    };
-    I.waitForElement(this.fields.setDateBtn, 4);
-    I.click(this.fields.setDateBtn);
-    // I.click("Set a due date");
-    I.waitForElement(dateBtn, 4);
-    I.click(dateBtn);
-    I.waitForElement(this.fields.saveDueDate);
-    I.click(this.fields.saveDueDate); // This div becomes nth-child(5) if the task has comments.
-  },
 };
