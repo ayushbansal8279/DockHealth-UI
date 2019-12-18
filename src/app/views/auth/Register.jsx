@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { hashHistory } from 'react-router';
 import styled, { keyframes } from 'styled-components';
+import Swal from 'sweetalert2';
 
 import { register } from '../../api/user-api';
 import UserProfileView from '../UserProfileView';
@@ -30,11 +31,17 @@ const onFormSubmit = async data => {
     });
 
     hashHistory.push('login');
+
+    Swal.fire({
+      text: 'Check your email inbox for message with further instructions',
+      icon: 'success',
+    });
   } catch (error) {
-    toggleAlert(
-      error?.message ?? 'Could not register user, please try again later',
-      'error',
-    );
+    Swal.fire({
+      title: 'Error',
+      text: error?.message ?? 'Could not register user, please try again later',
+      icon: 'error',
+    });
   }
 };
 
