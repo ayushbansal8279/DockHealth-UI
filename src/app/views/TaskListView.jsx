@@ -283,7 +283,7 @@ class TaskListView extends PureComponent {
         </SafariFixGrid>
         <SafariFixGrid container item xs={12} justify="center" spacing={8}>
           <Grid container item xs={6}>
-            <AddListForm />
+            <AddListForm taskLists={taskLists} />
           </Grid>
         </SafariFixGrid>
         <SafariFixGrid container item xs={12} justify="center">

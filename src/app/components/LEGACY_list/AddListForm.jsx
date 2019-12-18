@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { arrayPush, change, Field, reduxForm, reset } from 'redux-form';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
+import escape from 'lodash.escape';
 
 import * as PeopleActions from '../../actions/people-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
@@ -145,14 +147,30 @@ class AddListForm extends BaseComponentWithAutoComplete {
     $('.addMemberForList').click();
   };
 
-  onSubmit = formProps => {
+  onSubmit = ({ listName, notifications }) => {
     const { selectedAdmins, selectedMembers } = this.state;
-    const { currentList } = this.props;
+    const { currentList, taskLists = [], taskListId } = this.props;
+
+    const taskListNames = taskLists
+      .filter(
+        ({ taskListId: filteredTaskListId }) =>
+          filteredTaskListId !== taskListId,
+      )
+      .map(({ listName: taskListName }) => taskListName.toLowerCase());
+
+    if (taskListNames.includes(listName.toLowerCase())) {
+      Swal.fire({
+        title: 'Error',
+        html: `Task list with name <b>${escape(listName)}</b> already exists`,
+        icon: 'error',
+      });
+      return;
+    }
 
     const taskList = { ...currentList };
-    taskList.taskListId = this.props.taskListId;
-    taskList.listName = formProps.listName;
-    taskList.notifications = formProps.notifications;
+    taskList.taskListId = taskListId;
+    taskList.listName = listName;
+    taskList.notifications = notifications;
     taskList.admins = selectedAdmins.map(prop('userId'));
     taskList.members = selectedMembers.map(prop('userId'));
 
@@ -218,7 +236,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
         <TaskItem>
           <form
             className="inline-label"
-            onSubmit={this.props.handleSubmit(this.onSubmit.bind(this))}
+            onSubmit={this.props.handleSubmit(this.onSubmit)}
           >
             <div className="column large-12 text-center">
               <h5 className="section-title">Add/Edit a list</h5>

@@ -49,7 +49,9 @@ class ListsComponent extends PureComponent {
                 )}
               </div>
               <div className="columns">
-                <Link to={`/tasks/${listName}/${taskListId}`}>
+                <Link
+                  to={`/tasks/${encodeURIComponent(listName)}/${taskListId}`}
+                >
                   <h6 className="">{listName}</h6>
                 </Link>
                 <span className="details">{creator.userName}</span>
