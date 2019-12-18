@@ -4,7 +4,6 @@ import { hashHistory } from 'react-router';
 import styled, { keyframes } from 'styled-components';
 
 import { register } from '../../api/user-api';
-import { noop } from '../../helpers/utility-functions';
 import UserProfileView from '../UserProfileView';
 import formFieldDefinitions from './Register.FormDefinitions';
 import validationSchema from './Register.ValidationSchema';
@@ -31,8 +30,11 @@ const onFormSubmit = async data => {
     });
 
     hashHistory.push('login');
-  } catch {
-    noop();
+  } catch (error) {
+    toggleAlert(
+      error?.message ?? 'Could not register user, please try again later',
+      'error',
+    );
   }
 };
 
