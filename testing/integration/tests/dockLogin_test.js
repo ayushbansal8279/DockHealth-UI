@@ -10,6 +10,6 @@ Scenario('Bad Email', I => {
 });
 
 Scenario('Login', (I, lgnPg) => {
-  lgnPg.login();
+  lgnPg.fullLogin(1);
   I.waitForText('Lists', 5);
 });

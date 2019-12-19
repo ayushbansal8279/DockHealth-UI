@@ -1,8 +1,14 @@
 const { I } = inject();
 
+
 module.exports = {
   fields: {
-    // addTskBtn: {css: 'button[type=button][variant=contained]'},
+    // Immediately Accessible Buttons.
+    logoutBtn: {
+      css:
+        '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a',
+    },
+
     addTskBtn: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > button > span:nth-child(2)',
@@ -18,6 +24,41 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'
     },
 
+    notificationsBtn: {
+      css:
+        '#appHome > main > div > div:nth-child(1) > div > div > div > div > header > div > div:nth-child(2) > button > span:nth-child(1) > span:nth-child(3)'
+    },
+
+    addUserBtn: {
+      css:
+        '#appHome > main > div > div:nth-child(1) > div > div > div > div > header > div > div:nth-child(3) > div > button:nth-child(1) > div'
+    },
+
+
+
+    //Add User dropdown
+    inviteToListBtn: {
+      css:
+        'body > div:nth-child(6) > div:nth-child(2) > button'
+    },
+
+    membershipShield: {
+      css:
+        '#\31 67 > div > button'
+    },
+
+    removeMemberFromList: {
+      css:
+        '#long-menu > div:nth-child(2) > ul > li:nth-child(1)'
+    },
+
+    removeMemberAdminStatus: {
+      css:
+        '#long-menu > div:nth-child(2) > ul > li:nth-child(2)'
+    },
+
+
+
     firstTsk: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3)',
@@ -25,7 +66,7 @@ module.exports = {
 
 
 
-
+    //Task Manipulation addresses.
     tskDescription: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(1) > div > div > textarea ',
@@ -41,12 +82,12 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)',
     },
 
-    exitTskSidebar: {
+    exitFreshSidebar: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2)  > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > button',
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > button',
     },
 
-    exitEditTskSidebar: {
+    exitEditSidebar: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button',
     },
@@ -126,7 +167,8 @@ module.exports = {
     },
     
     
-    
+
+  //Reference Dates.  
     
     dec18NumberWcomments: {
       css:
@@ -137,7 +179,7 @@ module.exports = {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(4) > div',
     },
-    // Comments also change a div:nth-child(3) to nth:child(5)
+
     dec4Btn: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4)  > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(4) > div',
@@ -151,27 +193,26 @@ module.exports = {
   },
 
   exitFreshTask() {
-    I.waitForElement(this.fields.exitTskSidebar, 4);
-    I.click(this.fields.exitTskSidebar);
+    I.waitForElement(this.fields.exitFreshSidebar, 4);
+    I.click(this.fields.exitFreshSidebar);
   },
 
-  openEditTaskSidebar(taskIndex) {
-    tskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex +
-      2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
+  openEditSidebar(taskIndex) {
+    tskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
     I.waitForElement(
       {
-        css: tskSidebarLocator,
+        css: tskSidebarLocator
       },
-      5,
+      7,
     );
     I.click({
-      css: tskSidebarLocator,
+      css: tskSidebarLocator
     });
   },
 
   postTask(title) {
-    I.waitForText('Add a task', 5);
-    // this.frustration();
+    //I.waitForText('Add a task', 5);
+    I.waitForElement(this.fields.tskDescription, 5);
     I.fillField(this.fields.tskDescription, title);
     I.pressKey('Enter');
   },
@@ -192,7 +233,7 @@ module.exports = {
     I.click({css: patientLocator});
   },
 
-  assignOpenedTask(index) {
+  assignTask(index) {
     assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`;
     I.waitForElement(this.fields.assignedShield, 4);
     I.click(this.fields.assignedShield);
@@ -213,54 +254,67 @@ module.exports = {
     I.click(this.fields.saveDueDate); // This div becomes nth-child(5) if the task has comments.
   },
 
-  flagOpenedTask() {
+  flagTask() {
     I.waitForElement(this.fields.flag, 4);
     I.click(this.fields.flag);
   },
 
-  exitOpenedTask() {
-    I.waitForElement(this.fields.exitEditTskSidebar, 4);
-    I.click(this.fields.exitEditTskSidebar);
+  exitTask() {
+    I.waitForElement(this.fields.exitEditSidebar, 4);
+    I.click(this.fields.exitEditSidebar);
   },
 
-  deleteOpenedTask(taskIndex) {
+  deleteTask(taskIndex) {
     deleteBtnLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1) > span:nth-child(1)`;
     I.waitForElement({ css: deleteBtnLocator }, 4);
     I.click({ css: deleteBtnLocator });
   },
 
 
-  clickForMeBtn(){
-    I.waitForElement(this.fields.forMeBtn, 3);
-    I.click(this.fields.forMeBtn);
+  //The HUD is fucky, tell Nitin tommorow. It registers stuff due today as overdue.
+  //It also registers stuff due tommorow as stuff due today, so someone missed a +1 somewhere.
+  //
+  async checkTsksHUD(active, flagged, due, overdue) {
+    if((await this.grabActiveTsks())<active){
+      throw `Active tasks lower than target ${active}`;
+    };
+    if((await this.grabFlaggedTsks())<flagged){
+      throw `Flagged tasks lower than target ${flagged}`;
+    };
+    if((await this.grabDueTodayTsks())<due){
+      throw `Due today tasks lower than target ${due}`;
+    };
+    if((await this.grabOverdueTsks())<overdue){
+      throw `Overdue tasks lower than target ${overdue}`;
+    }; 
   },
 
-  clickAllBtn(){
-    I.waitForElement(this.fields.allBtn, 3);
-    I.click(this.fields.allBtn);
+
+  async checkFlaggedTsks(target) {
+    if(await this.grabFlaggedTsks()<target){
+      throw `Flagged Tasks lower than target ${target}`;
+    } else {
+      //console.log("Yow you passed the flag check!");
+    }
   },
-
-
-
-
 
   async grabFlaggedTsks() {
-    I.waitForElement(this.fields.numberOfFlaggedTsks, 4);
+    I.waitForElement(this.fields.numberOfFlaggedTsks, 9);
     return await I.grabTextFrom(this.fields.numberOfFlaggedTsks);
   },
 
   async grabActiveTsks() {
-    I.waitForElement(this.fields.numberOfActiveTsks, 4);
+    I.waitForElement(this.fields.numberOfActiveTsks, 9);
     return await I.grabTextFrom(this.fields.numberOfActiveTsks);
   },
 
   async grabDueTodayTsks() {
-    I.waitForElement(this.fields.numberOfDueTodayTsks, 4);
+    I.waitForElement(this.fields.numberOfDueTodayTsks, 9);
     return await I.grabTextFrom(this.fields.numberOfDueTodayTsks);
   },
 
   async grabOverdueTsks() {
-    I.waitForElement(this.fields.numberOfOverdueTsks, 4);
+    I.waitForElement(this.fields.numberOfOverdueTsks, 9);
     return await I.grabTextFrom(this.fields.numberOfOverdueTsks);
   },
 
