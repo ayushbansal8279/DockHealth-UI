@@ -36,7 +36,7 @@ class Home extends PureComponent {
       [equals('assigned_by_me'), always(actions.getTasksAssignedByMe)],
       [equals('assigned_to_me'), always(actions.getTasksAssignedToMe)],
       [T, always(actions.getListTasks)],
-    ]);
+    ])(listName);
 
     const handleRetryTaskAction = error => {
       this.handleRetry(error, () => {
@@ -46,8 +46,8 @@ class Home extends PureComponent {
 
     const getAllTasks = () => {
       Promise.all([
-        taskAction()(routeParams.taskListId, sortBy, filterBy, 'INCOMPLETE'),
-        taskAction()(routeParams.taskListId, sortBy, filterBy, 'COMPLETE'),
+        taskAction(routeParams.taskListId, sortBy, filterBy, 'INCOMPLETE'),
+        taskAction(routeParams.taskListId, sortBy, filterBy, 'COMPLETE'),
       ]).catch(error => {
         this.handleRetry(error, getAllTasks);
       });

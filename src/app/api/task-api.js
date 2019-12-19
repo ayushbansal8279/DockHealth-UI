@@ -137,38 +137,17 @@ export function getTasksAssignedToSpecificUser(
 
 export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
   closeAddForm();
-  if (taskListId != undefined) {
-    if (sortBy != undefined || filterBy != undefined) {
-      return axios
-        .get(
-          `task/findTasksAssignedByUser?taskListId=${taskListId}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
-        )
-        .then(response => response.data)
-        .catch(error => {
-          throw error;
-        });
-    }
-    return axios
-      .get(
-        `task/findTasksAssignedByUser?taskListId=${taskListId}&status=${status}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      });
-  }
-  if (sortBy != undefined || filterBy != undefined) {
-    return axios
-      .get(
-        `task/findTasksAssignedByUser?status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
-      )
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      });
-  }
-  return axios
-    .get(`task/findTasksAssignedByUser?status=${status}`)
+
+  return axios({
+    method: 'get',
+    url: `task/findTasksAssignedByUser`,
+    params: {
+      taskListId,
+      status,
+      sortBy,
+      filterBy,
+    },
+  })
     .then(response => response.data)
     .catch(error => {
       throw error;

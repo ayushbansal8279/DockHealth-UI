@@ -39,7 +39,7 @@ const PREVIEW_DISPLAY_TYPES = {
 };
 
 const getMemoTaskAttachment = memoizeWith(identity, attachmentId =>
-  getTaskAttachment(attachmentId),
+  attachmentId ? getTaskAttachment(attachmentId) : Promise.reject(),
 );
 
 export default React.memo(
