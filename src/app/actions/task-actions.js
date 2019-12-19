@@ -227,9 +227,15 @@ export const moveTask = (task, taskList) => dispatch => {
   const updatedTask = {
     ...shapeTask(task),
     refiled: true,
-    taskList: taskList.listName,
+    taskList,
     taskListId: taskList.taskListId,
   };
+
+  if (!task.taskList) {
+    // fix for unmovable inbox tasks
+    updatedTask.assignedTo = null;
+    updatedTask.assignedToId = null;
+  }
 
   return TaskApi.updateTask(updatedTask)
     .then(() => {
