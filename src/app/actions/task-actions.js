@@ -230,12 +230,6 @@ export const moveTask = (task, taskList) => dispatch => {
     taskListId: taskList.taskListId,
   };
 
-  if (!task.taskList) {
-    // fix for unmovable inbox tasks
-    updatedTask.assignedTo = null;
-    updatedTask.assignedToId = null;
-  }
-
   return TaskApi.updateTask(updatedTask)
     .then(() => {
       dispatch({ type: ActionTypes.MOVE_TASK_SUCCESS, task, taskList });
