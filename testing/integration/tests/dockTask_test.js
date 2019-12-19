@@ -15,7 +15,7 @@ Scenario(
     // pause();
     tasksPg.openTaskSidebar();
     tasksPg.postTask('Crummy Task');
-    I.waitForText('Crummy Task', 3);
+    I.waitForText('Crummy Task', 6);
     tasksPg.exitTask();
 
     tasksPg.openEditSidebar(1);
@@ -35,28 +35,26 @@ Scenario(
     //pause();
     tasksPg.exitTask();
 
-    // console.log("All")
-    // console.log(await tasksPg.grabActiveTsks());
-    // console.log(await tasksPg.grabFlaggedTsks());
-    // console.log(await tasksPg.grabDueTodayTsks());
-    // console.log(await tasksPg.grabOverdueTsks());
-    // console.log("For Me");
+    console.log("All")
+    console.log(await tasksPg.grabActiveTsks());
+    console.log(await tasksPg.grabFlaggedTsks());
+    console.log(await tasksPg.grabDueTodayTsks());
+    console.log(await tasksPg.grabOverdueTsks());
+    console.log("For Me");
 
-    // I.click(tasksPg.fields.forMeBtn);
-    // console.log(await tasksPg.grabActiveTsks());
-    // console.log(await tasksPg.grabFlaggedTsks());
-    // console.log(await tasksPg.grabDueTodayTsks());
-    // console.log(await tasksPg.grabOverdueTsks());
-    // I.click(tasksPg.fields.allBtn);
+    I.click(tasksPg.fields.forMeBtn);
+    console.log(await tasksPg.grabActiveTsks());
+    console.log(await tasksPg.grabFlaggedTsks());
+    console.log(await tasksPg.grabDueTodayTsks());
+    console.log(await tasksPg.grabOverdueTsks());
+    I.click(tasksPg.fields.allBtn);
 
 
     tasksPg.openEditSidebar(1);
     //pause();
-
     I.waitForText('LazyBonez', 4);
     tasksPg.deleteTask(1);
-  },
-);
+  });
 
 Scenario('Make a task, and flag it, and clean up.', async (I, tasksPg) => {
   tskLstPg.getToList(1, 1);
@@ -66,9 +64,8 @@ Scenario('Make a task, and flag it, and clean up.', async (I, tasksPg) => {
   tasksPg.flagTask();
   tasksPg.exitTask();
 
-  //pause();
-
   await tasksPg.checkFlaggedTsks(1);
+
   tasksPg.openEditSidebar(1);
   //console.log("Yow");
   tasksPg.deleteTask(1);
@@ -76,9 +73,14 @@ Scenario('Make a task, and flag it, and clean up.', async (I, tasksPg) => {
 
 Scenario('Make a task, give it an assigned date, check date, clean up.', async (I, tasksPg) => {
   tskLstPg.getToList(1, 1);
+
   tasksPg.openTaskSidebar();
+  //pause();
   tasksPg.postTask("Aardvark");
+  // tasksPg.exitTask();
+  // tasksPg.openEditSidebar(1);
   tasksPg.addDueDate(3,5);//Week and day of week...
+  //pause();
   tasksPg.exitTask();
   await tasksPg.checkTsksHUD(1,0,1,0);
   //pause();

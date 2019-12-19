@@ -30,5 +30,6 @@ module.exports = {
     I.waitForElement(this.fields.psswrd, 10);
     I.fillField(this.fields.psswrd, this.fields.pw);
     I.pressKey('Enter');
+    I.wait(2);
   },
 };

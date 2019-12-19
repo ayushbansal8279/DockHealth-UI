@@ -199,15 +199,8 @@ module.exports = {
 
   openEditSidebar(taskIndex) {
     tskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
-    I.waitForElement(
-      {
-        css: tskSidebarLocator
-      },
-      7,
-    );
-    I.click({
-      css: tskSidebarLocator
-    });
+    I.waitForElement({css: tskSidebarLocator}, 10);
+    I.click({css: tskSidebarLocator});
   },
 
   postTask(title) {
@@ -262,6 +255,7 @@ module.exports = {
   exitTask() {
     I.waitForElement(this.fields.exitEditSidebar, 4);
     I.click(this.fields.exitEditSidebar);
+    I.wait(1);
   },
 
   deleteTask(taskIndex) {

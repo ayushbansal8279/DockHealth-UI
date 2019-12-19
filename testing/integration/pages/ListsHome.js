@@ -96,6 +96,7 @@ module.exports = {
     const listPath = {css: `html > body > #app > #appHome > main > div > div:nth-child(2) > div > div:nth-child(4) > div:nth-child(2) > div > div > span:nth-child(2) > div:nth-child(${listIndex}) > div:nth-child(2) > a > h6`};
     I.waitForElement(listPath, 4);
     I.click(listPath);
+    //I.waitForText Of the lists name
   },
 
   enterListsTab(){
