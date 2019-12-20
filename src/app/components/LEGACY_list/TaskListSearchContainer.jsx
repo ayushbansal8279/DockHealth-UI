@@ -14,7 +14,6 @@ import * as TaskListActions from '../../actions/tasklist-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
 import useBoolean from '../../hooks/useBoolean';
 import CollapseIcon from '../../img/collapse.svg';
-import FilterActiveIcon from '../../img/filter-active.svg';
 import FilterIcon from '../../img/filter.svg';
 import TaskView from '../../views/TaskView';
 import {
@@ -22,15 +21,11 @@ import {
   FilterByLabel,
   FilterByLinkLabel,
   FilterByTextContainer,
-  StyledSlimViewSwitch,
-  StyledToolbar,
-  ToolbarContainer,
 } from '../../views/TaskView.Styled';
 import CubesLoader from '../common/CubesLoader';
 import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';
-import Search from '../taskView/Search';
-import TaskListAction from '../taskView/TaskListAction';
+import Toolbar from '../taskView/Toolbar';
 
 const TaskDrawerContainer = styled.div`
   flex: 1.4;
@@ -249,9 +244,12 @@ class TaskListSearchContainer extends PureComponent {
     filterPopoverOpen: false,
     searchTerms: [],
     slimView: false,
+    displayHUD: false,
   };
 
   filterButton = React.createRef();
+
+  headsUpArea = React.createRef();
 
   componentWillUnmount = () => {
     const { taskActions } = this.props;
@@ -313,6 +311,20 @@ class TaskListSearchContainer extends PureComponent {
 
   clearFilter = () => {
     this.onFilterChange({ value: '' })();
+  };
+
+  toggleHUD = () => {
+    const { toggleHUD = () => {} } = this.props;
+
+    this.setState(
+      ({ displayHUD }) => ({
+        displayHUD: !displayHUD,
+      }),
+      () => {
+        const { displayHUD } = this.state;
+        toggleHUD({ displayHUD });
+      },
+    );
   };
 
   renderFilterPopover = () => {
@@ -393,7 +405,14 @@ class TaskListSearchContainer extends PureComponent {
   }
 
   render() {
-    const { tasks, completedTasks, isFetching } = this.props;
+    const {
+      tasks,
+      completedTasks,
+      isFetching,
+      selectedTask,
+      showSortingStats,
+    } = this.props;
+    const { displayHUD } = this.state;
 
     const toolbarContainerVisible = tasks.length > 0;
     const { slimView, filterBy } = this.state;
@@ -407,36 +426,24 @@ class TaskListSearchContainer extends PureComponent {
 
     return (
       <div className="tasks-container-new">
-        <StyledToolbar>
-          <Grid
-            container
-            alignItems="center"
-            justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
-          >
-            {toolbarContainerVisible && (
-              <ToolbarContainer>
-                <StyledSlimViewSwitch
-                  onClick={this.switchSlimView}
-                  slimView={slimView}
-                  variant="contained"
-                />
-                <TaskListAction
-                  alt="Filter"
-                  activeIcon={FilterActiveIcon}
-                  backgroundColor="#fff"
-                  icon={FilterIcon}
-                  active={Boolean(filterBy)}
-                  onClick={filterBy ? this.clearFilter : this.openFilterPopover}
-                  ref={this.filterButton}
-                >
-                  Filter
-                </TaskListAction>
-                <Search onChange={this.handleSearch} />
-              </ToolbarContainer>
-            )}
-          </Grid>
-        </StyledToolbar>
-        <Grid container direction="row" wrap="nowrap">
+        <Toolbar
+          clearFilter={this.clearFilter}
+          displayHUD={displayHUD}
+          filterButton={this.filter}
+          filterBy={filterBy}
+          handleSearch={this.handleSearch}
+          openFilterPopover={this.openFilterPopover}
+          initialSearchValue=""
+          selectedTask={selectedTask}
+          preferencesInitialized
+          showAddTaskButton={false}
+          showSortingStats={showSortingStats}
+          slimView={slimView}
+          switchSlimView={this.switchSlimView}
+          toggleHUD={this.toggleHUD}
+          toolbarContainerVisible={toolbarContainerVisible}
+        />
+        <Grid container direction="column">
           <AnimatePresence>
             {currentFilterDescription && (
               <FilterByTextContainer {...animationProperties}>

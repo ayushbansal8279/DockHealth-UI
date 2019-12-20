@@ -5,13 +5,17 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
+import { setHeader as setHeaderRaw } from '../actions/header-actions';
 import * as PeopleActions from '../actions/people-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
+import SafariFixGrid from '../components/common/SafariFixGrid';
 import InvitePeople from '../components/people/InvitePeople';
-import InvitePeopleButton from '../components/people/InvitePeopleButton';
 import PeopleContainer from '../components/people/PeopleContainer';
+import Search from '../components/taskView/Search';
+import { HeaderLabel, SearchContainer } from './PeopleView.Styled';
+import PeopleContainerSortButton from '../components/people/PeopleContainer.SortButton';
 
 const CubesLoaderContainer = styled.div`
   display: flex;
@@ -24,10 +28,13 @@ class PeopleView extends PureComponent {
     searchTerm: '',
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { location, peopleActions } = this.props;
+
     peopleActions.loading();
-    peopleActions.findAllUsersByOrganizationId();
+    peopleActions.findAllUsersByOrganizationId().then(() => {
+      this.resetHeader();
+    });
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'PeopleView',
     });
@@ -40,96 +47,71 @@ class PeopleView extends PureComponent {
       });
       toggleSearch();
     }
+
+    this.resetHeader();
   }
 
-  componentDidUpdate() {
-    enableFoundationComponent('.item-list-wrapper');
-  }
+  resetHeader = () => {
+    const { peopleList, setHeader } = this.props;
 
-  componentWillUnmount() {
-    closeAddForm();
-  }
-
-  clearSearch = () => {
-    this.setState({ searchTerm: '' });
-    toggleSearch();
+    setHeader({
+      layout: [
+        {
+          key: 'generic-header',
+          component: (
+            <GenericHeader>
+              <Grid
+                container
+                direction="column"
+                alignItems="flex-start"
+                justify="center"
+              >
+                <HeaderLabel>People</HeaderLabel>
+                <HeaderLabel small>
+                  {peopleList?.length ?? 0} people
+                </HeaderLabel>
+              </Grid>
+            </GenericHeader>
+          ),
+        },
+      ],
+    });
   };
 
-  searchUpdated = term => {
-    this.setState({ searchTerm: term.target.value });
-  };
-
-  refresh = () => {
-    const { peopleActions } = this.props;
-    peopleActions.loading();
-    peopleActions.findAllUsersByOrganizationId();
-  };
-
-  addPerson = () => {
-    openAddForm();
-    scrollToTop();
+  handleSearch = event => {
+    this.setState({ searchTerm: event.target.value });
   };
 
   render() {
     const { searchTerm } = this.state;
-    const { currentUserProfile, isFetching } = this.props;
-    const orgUserRole = currentUserProfile?.orgUserRole;
+    const { isFetching, peopleList } = this.props;
 
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <GenericHeader isFetching={false} title="People" />
-        <Grid
-          container
-          xs={9}
-          item
-          direction="row"
-          justify="flex-end"
-          wrap="nowrap"
-          style={{ maxHeight: '80px' }}
-        >
-          <div
-            className="input-group searchbar"
-            style={{ width: '70%', marginTop: '5px', paddingLeft: '0em 10em' }}
-          >
-            <input
-              className="input-field search-field"
-              type="search"
-              placeholder="Search people"
-              onChange={this.searchUpdated}
-              value={searchTerm}
-            />
-            <div className="input-group-button">
-              <button className="button search" type="button">
-                <svg onClick={this.clearSearch} className="icon">
-                  <use xlinkHref="#icon-search" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          {(orgUserRole === 'OWNER' || orgUserRole === 'ADMIN') && (
-            <InvitePeopleButton onClick={this.addPerson} />
-          )}
-        </Grid>
+      <Grid container justify="center">
+        <SafariFixGrid container xs={12} item justify="center">
+          <Grid item xs={9}>
+            <SearchContainer>
+              <PeopleContainerSortButton />
+              <Search onChange={this.handleSearch} />
+            </SearchContainer>
+          </Grid>
+        </SafariFixGrid>
         <InvitePeople />
-        <div
-          className="list-wrapper"
-          style={{ width: '100%', marginTop: '0px' }}
-        >
-          {isFetching ? (
-            <CubesLoaderContainer>
-              <CubesLoader size={40} />
-            </CubesLoaderContainer>
-          ) : (
-            <PeopleContainer searchTerm={searchTerm} />
-          )}
-        </div>
-      </div>
+        <SafariFixGrid container xs={12} item justify="center">
+          <Grid item xs={9}>
+            {isFetching ? (
+              <CubesLoaderContainer>
+                <CubesLoader size={40} />
+              </CubesLoaderContainer>
+            ) : (
+              <PeopleContainer
+                peopleList={peopleList}
+                searchTerm={searchTerm}
+              />
+            )}
+          </Grid>
+        </SafariFixGrid>
+      </Grid>
     );
   }
 }
@@ -137,10 +119,12 @@ class PeopleView extends PureComponent {
 const mapStateToProps = store => ({
   isFetching: store.peopleState.isFetching,
   currentUserProfile: store.userState.userProfile,
+  peopleList: store.peopleState.peoplelist,
 });
 
 const mapDispatchToProps = dispatch => ({
   peopleActions: bindActionCreators(PeopleActions, dispatch),
+  setHeader: setHeaderRaw(dispatch),
 });
 
 export default connect(

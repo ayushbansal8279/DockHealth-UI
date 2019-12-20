@@ -34,11 +34,12 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const Search = ({ onChange, initialValue }) => (
+const Search = ({ className, onChange, initialValue }) => (
   <StyledTextField
     onChange={onChange}
     placeholder="Search"
     variant="outlined"
+    className={className}
     InputProps={{
       startAdornment: (
         <InputAdornment position="start" style={{ pointerEvents: 'none' }}>
@@ -54,6 +55,7 @@ const Search = ({ onChange, initialValue }) => (
     }}
   />
 );
+
 Search.propTypes = {
   onChange: PropTypes.func.isRequired,
 };

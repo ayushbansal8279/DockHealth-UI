@@ -1,7 +1,7 @@
 import { AnimatePresence } from 'framer-motion';
-import React from 'react';
-
+import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
+
 import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
 import EnvelopeIcon from '../../img/envelope.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
@@ -26,6 +26,35 @@ const animationProperties = {
   exit: 'hidden',
   animate: 'visible',
   transition: { ease: 'backInOut', duration: 0.25 },
+};
+
+const AnimatedPatientsTasklistInfo = ({ children }) => {
+  const infoReference = useRef(null);
+  const [animated, setAnimated] = useState(false);
+  const referenceScrollWidth = infoReference.current?.scrollWidth;
+  const referenceOffsetWidth = infoReference.current?.offsetWidth;
+
+  const animationDuration =
+    (referenceScrollWidth - referenceOffsetWidth) / 20 || 0;
+
+  const stopPercentage = (100 * 0.5) / (animationDuration + 1);
+
+  useEffect(() => {
+    setAnimated(referenceScrollWidth > referenceOffsetWidth);
+  }, [referenceOffsetWidth, referenceScrollWidth]);
+
+  return (
+    <PatientsTasklistInfo
+      animated={animated}
+      animationDuration={animationDuration + 1}
+      referenceScrollWidth={referenceScrollWidth}
+      referenceOffsetWidth={referenceOffsetWidth}
+      stopPercentage={stopPercentage}
+      ref={infoReference}
+    >
+      {children}
+    </PatientsTasklistInfo>
+  );
 };
 
 export default ({
@@ -99,21 +128,21 @@ export default ({
           )}
         </PatientsTasklistDescription>
       </TaskDescriptionOuterContainer>
-      <div>
-        <PatientsTasklistInfo>
+      <div style={{ overflow: 'hidden', width: '100%' }}>
+        <AnimatedPatientsTasklistInfo>
           {updated && (
             <img
               src={UpdateIndicatorIcon}
               alt="Updated"
               style={{
-                width: '17px',
-                height: '17px',
-                paddingRight: '2px',
+                height: '1rem',
+                paddingRight: '0.125rem',
+                width: '1rem',
               }}
             />
           )}
-          {`Assigned by ${formattedUserName} at ${formattedCreationDate}${countInfoContent}`}
-        </PatientsTasklistInfo>
+          {`Assigned by ${formattedUserName} ${formattedCreationDate}${countInfoContent}`}
+        </AnimatedPatientsTasklistInfo>
       </div>
       <div>
         <CompletedBy isCompleted={status === 'COMPLETE' && completedByContent}>

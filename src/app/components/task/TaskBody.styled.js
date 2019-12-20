@@ -1,5 +1,5 @@
 import Popover from '@material-ui/core/Popover';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { motion } from 'framer-motion';
 
 export const TaskBodyMainContainer = styled.div`
@@ -48,11 +48,41 @@ export const PatientsTasklistStrikeThrough = styled.div`
   width: ${props => (props.active ? 100 : 0)}%;
 `;
 
+const moveAnimation = ({ stopPercentage, referenceScrollWidth }) => keyframes`
+  0%, ${stopPercentage}% {
+    transform: translateX(0);
+  }
+  
+  ${100 - stopPercentage}%, 100% {
+    transform: translateX(calc(100% - ${referenceScrollWidth}px));
+  }
+`;
+
 export const PatientsTasklistInfo = styled.div`
+  animation-duration: 0s;
+  animation-name: ${props =>
+    css`
+      ${moveAnimation(props)}
+    `};
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
   color: #5e6366;
   font-size: 0.875rem;
   line-height: 1;
   padding-bottom: 0.1875rem;
+  white-space: nowrap;
+
+  ${({ animated, animationDuration }) => {
+    return (
+      animated &&
+      `
+    animation-direction: alternate;
+    animation-duration: ${animationDuration}s;
+    animation-delay: 1s;
+  `
+    );
+  }}
+}
 `;
 
 export const PatientTasklistPatient = styled.div`

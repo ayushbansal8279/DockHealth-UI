@@ -27,6 +27,7 @@ export default ({
   initialSearchValue,
   preferencesInitialized,
   selectedTask,
+  showAddTaskButton = true,
   showSortingStats,
   slimView,
   switchSlimView,
@@ -83,7 +84,7 @@ export default ({
           </TaskListAction>
         </ToolbarContainer>
       )}
-      {(selectedTask || !taskDrawerOpen) && (
+      {(selectedTask || !taskDrawerOpen) && showAddTaskButton && (
         <AddTaskButton onClick={onAddTaskButtonClick} />
       )}
     </Grid>
