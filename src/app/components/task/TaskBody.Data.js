@@ -40,13 +40,15 @@ export default ({
   completedBy,
   isInbox,
 }) => {
-  const formattedCreationDate = moment(createdDateTime).format('h:mma');
+  const formattedCreationDate = moment(createdDateTime).format(
+    '[on] MM/DD/YYYY [@] h:mma',
+  );
   const dueDateMoment = moment(dueDate);
   const formattedDueDate = dueDateMoment.format('ddd, MMM D');
   const completedDateTimeMoment = moment(completedDateTime);
   const overdue = dueDateMoment.isBefore(moment().format('YYYY-MM-DD'));
   const formattedCompletedDateTime = completedDateTimeMoment.isValid()
-    ? completedDateTimeMoment.format('h:mma')
+    ? completedDateTimeMoment.format('[on] MM/DD/YYYY [@] h:mma')
     : '';
 
   const { countInfoContent } = getCountInfoData({ subtasks, comments });
@@ -58,7 +60,7 @@ export default ({
 
   const completedByContent =
     formattedCompletedDateTime &&
-    `Completed by ${completedByName} at ${formattedCompletedDateTime}`;
+    `Completed by ${completedByName} ${formattedCompletedDateTime}`;
 
   const firstLetterName = creator?.firstName?.charAt(0);
   const formattedUserName = `${firstLetterName ? `${firstLetterName}.` : ''} ${
