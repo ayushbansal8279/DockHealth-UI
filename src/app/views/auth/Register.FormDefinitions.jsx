@@ -27,11 +27,13 @@ export default [
     key: 'email',
     label: 'Email',
     type: 'email',
+    required: true,
   },
   {
     key: 'accountPhoneNumber',
     label: 'Your Mobile Phone Number',
     isPhoneNumber: true,
+    required: true,
     PreFieldComponent: () => (
       <PrePasswordLabel>
         A valid mobile phone number is required to send an authentication code
@@ -43,6 +45,7 @@ export default [
     key: 'password',
     label: 'Password',
     type: 'password',
+    required: true,
     PreFieldComponent: () => (
       <PrePasswordLabel>
         8 character minimum and must include at least one number and one capital

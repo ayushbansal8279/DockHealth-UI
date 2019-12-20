@@ -29,7 +29,6 @@ import {
 import CubesLoader from '../common/CubesLoader';
 import PatientsTasklistEditable from '../patients/PatientsTasklistEditable';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';
-import Search from '../taskView/Search';
 import TaskListAction from '../taskView/TaskListAction';
 
 const TaskDrawerContainer = styled.div`
@@ -407,13 +406,13 @@ class TaskListSearchContainer extends PureComponent {
 
     return (
       <div className="tasks-container-new">
-        <StyledToolbar>
-          <Grid
-            container
-            alignItems="center"
-            justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
-          >
-            {toolbarContainerVisible && (
+        {toolbarContainerVisible && (
+          <StyledToolbar>
+            <Grid
+              container
+              alignItems="center"
+              justify={toolbarContainerVisible ? 'space-between' : 'flex-end'}
+            >
               <ToolbarContainer>
                 <StyledSlimViewSwitch
                   onClick={this.switchSlimView}
@@ -431,12 +430,11 @@ class TaskListSearchContainer extends PureComponent {
                 >
                   Filter
                 </TaskListAction>
-                <Search onChange={this.handleSearch} />
               </ToolbarContainer>
-            )}
-          </Grid>
-        </StyledToolbar>
-        <Grid container direction="row" wrap="nowrap">
+            </Grid>
+          </StyledToolbar>
+        )}
+        <Grid container direction="column">
           <AnimatePresence>
             {currentFilterDescription && (
               <FilterByTextContainer {...animationProperties}>

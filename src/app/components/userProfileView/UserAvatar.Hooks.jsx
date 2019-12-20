@@ -9,7 +9,7 @@ import { AvatarImageContainer } from '../common/Avatar.styled';
 import CubesLoader from '../common/CubesLoader';
 import { PaddedButtonLabel } from './UserProfileView.Styled';
 
-const getSmallButtonContent = ({ fileLoaded, fileLoading }) => {
+const getSmallButtonContent = ({ fileLoaded, fileLoading }) => () => {
   if (fileLoading) {
     return <CubesLoader size={20} color="#fff" />;
   }

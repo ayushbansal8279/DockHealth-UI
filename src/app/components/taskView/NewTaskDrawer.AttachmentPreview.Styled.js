@@ -6,13 +6,13 @@ import { Document, Page } from 'react-pdf/dist/entry.webpack';
 export const AttachmentPreviewDialog = withStyles({
   paper: {
     borderRadius: 0,
-    maxHeight: '60.5rem',
     maxWidth: '60.5rem',
     overflowY: 'hidden',
   },
 })(Dialog);
 
 export const AttachmentPreviewContent = styled.div`
+  max-height: 59rem;
   overflow-y: auto;
 `;
 

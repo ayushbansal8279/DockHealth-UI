@@ -122,6 +122,17 @@ export function searchTasks(searchTerm, sortBy, filterBy, status) {
       });
 }
 
+export function clearSearchTasks({ status }) {
+  const action =
+    status === 'INCOMPLETE'
+      ? ActionTypes.GET_TASKS_SUCCESS
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+
+  return dispatch => {
+    dispatch({ type: action, tasks: [] });
+  };
+}
+
 export function loading() {
   return dispatch => {
     dispatch({ type: ActionTypes.REQUEST_TASKS });
@@ -225,9 +236,8 @@ export function saveTask(newTask) {
 
 export const moveTask = (task, taskList) => dispatch => {
   const updatedTask = {
-    ...shapeTask(task),
     refiled: true,
-    taskList: taskList.listName,
+    taskList,
     taskListId: taskList.taskListId,
   };
 
