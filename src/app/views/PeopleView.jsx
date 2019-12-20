@@ -83,7 +83,7 @@ class PeopleView extends PureComponent {
           alignItems: 'center',
         }}
       >
-        <GenericHeader isFetching={false} title="People" />
+        <GenericHeader isFetching={false}>People</GenericHeader>
         <Grid
           container
           xs={9}

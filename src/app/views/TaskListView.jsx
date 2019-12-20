@@ -10,6 +10,7 @@ import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
+import SafariFixGrid from '../components/common/SafariFixGrid';
 import AddListForm from '../components/LEGACY_list/AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
@@ -41,12 +42,6 @@ const BlockItemContainer = styled.div`
 
   & > * {
     margin: 0.25rem 0;
-  }
-`;
-
-const SafariFixGrid = styled(Grid)`
-  && {
-    flex-basis: auto;
   }
 `;
 
@@ -272,7 +267,7 @@ class TaskListView extends PureComponent {
 
     return (
       <Grid container direction="column" alignItems="center" spacing={8}>
-        <GenericHeader isFetching={false} title="Lists" />
+        <GenericHeader isFetching={false}>Lists</GenericHeader>
         <SafariFixGrid
           container
           alignItems="center"

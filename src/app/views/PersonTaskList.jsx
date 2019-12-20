@@ -85,10 +85,9 @@ class TaskListSearch extends PureComponent {
           alignItems: 'center',
         }}
       >
-        <GenericHeader
-          isFetching={false}
-          title={`Tasks Assigned To ${memberName}`}
-        />
+        <GenericHeader isFetching={false}>
+          {`Tasks Assigned To ${memberName}`}
+        </GenericHeader>
         <div className="wrapper-search">
           <TaskListSearchContainer
             searchPerformed={searchPerformed}
