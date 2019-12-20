@@ -193,6 +193,7 @@ const renderChartLabel = ({ currentActiveTab }) => (
     {currentActiveTab}
   </HeadsUpSectionHeaderButton>
 );
+
 export default forwardRef(
   ({ taskList, currentFilter, filterChange }, reference) => {
     const dispatch = useDispatch();
