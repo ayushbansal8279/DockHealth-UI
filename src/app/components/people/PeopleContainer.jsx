@@ -1,3 +1,4 @@
+import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -5,20 +6,18 @@ import { createFilter } from 'react-search-input';
 import { bindActionCreators } from 'redux';
 
 import * as PeopleActions from '../../actions/people-actions';
+import { noop } from '../../helpers/utility-functions';
 import Member from '../members/Member';
 import BooleanModal from '../modals/BooleanModal';
-import { noop } from '../../helpers/utility-functions';
 import PeopleContainerRoleButton from './PeopleContainer.RoleButton';
+import {
+  ListContainer,
+  ListEntryContainer,
+  MemberContainer,
+  PersonStatus,
+} from './PeopleContainer.Styled';
 
 class PeopleContainer extends PureComponent {
-  componentWillUnmount() {
-    const { peoplelist } = this.props;
-    // eslint-disable-next-line no-unused-expressions
-    peoplelist?.forEach(({ userId }) =>
-      removeRevealComponent(`#delete-user-${userId}`),
-    );
-  }
-
   handleClick = ({ onClickAction }) => (...actionArguments) => {
     const { findAllUsersByOrganizationId, loading } = this.props;
 
@@ -33,6 +32,7 @@ class PeopleContainer extends PureComponent {
   addDashes = phoneNumber => {
     if (phoneNumber) {
       const phoneNumberWithoutAreaCode = phoneNumber.replace('+1', '');
+
       return `${phoneNumberWithoutAreaCode.slice(
         0,
         3,
@@ -57,94 +57,89 @@ class PeopleContainer extends PureComponent {
     return <span />;
   };
 
-  renderStatus = person => {
+  getStatus = person => {
     if (!person.userInviteStatus || person.userInviteStatus === 'ACCEPTED') {
       if (person.orgUserRole === 'OWNER') {
-        return <span>Owner</span>;
+        return 'Owner';
       }
 
       if (person.orgUserRole === 'ADMIN') {
-        return <span>Admin</span>;
+        return 'Admin';
       }
     } else if (person.userInviteStatus === 'PENDING') {
-      return <span>Invited</span>;
+      return 'Invited';
     }
 
-    return <span />;
+    return '';
   };
 
-  renderTitles = ({ titles }) =>
-    titles?.map(({ name }) => name).join(', ') ?? '';
+  getTitles = ({ titles }) => titles?.map(({ name }) => name).join(', ') ?? '';
 
-  renderSpecialties = person =>
-    person.specialties?.map(specialty => {
-      const joinedSubspecialtyNames =
-        specialty.subSpecialties
-          ?.map(subspecialty => subspecialty.subSpecialtyName)
-          .join(', ')
-          .trim() ?? '';
+  getSpecialties = person =>
+    person.specialties
+      ?.map(specialty => {
+        const joinedSubspecialtyNames =
+          specialty.subSpecialties
+            ?.map(subspecialty => subspecialty.subSpecialtyName)
+            .join(', ')
+            .trim() ?? '';
 
-      const subspecialties = `(${joinedSubspecialtyNames})`
-        .replace(/^\(\)$/, '')
-        .trim();
+        const subspecialties = `(${joinedSubspecialtyNames})`
+          .replace(/^\(\)$/, '')
+          .trim();
 
-      return `${specialty.name} ${subspecialties}`.trim();
-    }) ?? '';
+        return `${specialty.name} ${subspecialties}`.trim();
+      })
+      .join(', ') ?? '';
 
-  renderList() {
+  renderListEntry = person => {
     const {
       userProfile,
       changeUserRoleForOrg,
       cancelInviteToOrganization,
       resendInviteToOrganization,
       removeUserFromOrganization,
-      peoplelist,
-      searchTerm,
     } = this.props;
 
-    const KEYS_TO_FILTERS = [
-      'userName',
-      'email',
-      'homePhoneNumber',
-      'faxNumber',
-      'workPhoneNumber',
-    ];
+    const personName = `${person.lastName || ''}, ${person.firstName ||
+      ''} ${person.middleName || ''}`
+      .trim()
+      .replace(/^,\s*/, '');
 
-    const filteredPeople =
-      peoplelist?.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) ?? [];
+    const titles = `${this.getTitles(person)} - ${this.getSpecialties(person)}`
+      .trim()
+      .replace(/\s*-\s*/, '');
 
-    return filteredPeople.map(person => {
-      return (
-        <div
-          className="item row expanded"
-          key={`${person.email}_${person.userId}`}
-        >
-          <div className="columns shrink pending">
+    return (
+      <ListEntryContainer key={person.userId + personName}>
+        <Grid direction="row" wrap="nowrap" container spacing={16}>
+          <MemberContainer>
             <Member member={person} />
-          </div>
-          <div className="columns">
-            <span className="item-title">
+          </MemberContainer>
+          <Grid item container alignItems="center">
+            <Grid item xs={12}>
               <Link
-                to={`/assignedToPerson/${person.userId}/${person.firstName} ${person.lastName}`}
+                to={`/assignedToPerson/${person.userId}/${person.userName}`}
               >
-                {`${person.firstName} ${person.lastName}`}
+                {personName}
               </Link>
-            </span>
-            <span className="item-details">{this.renderTitles(person)}</span>
-            <span className="item-details">
-              {this.renderSpecialties(person)}
-            </span>
-            <span className="top-buffer-xsmall item-details">
-              {person.email}
-            </span>
-            <span className="item-details">
-              C: {this.addDashes(person.accountPhoneNumber)} | W:{' '}
-              {this.addDashes(person.workPhoneNumber)}
-            </span>
-            <span className="item-details highlight">
-              {this.renderStatus(person)}
-            </span>
-          </div>
+            </Grid>
+            {titles && (
+              <Grid
+                item
+                container
+                alignItems="center"
+                xs={12}
+                direction="row"
+                wrap="nowrap"
+              >
+                <span>{titles}</span>
+              </Grid>
+            )}
+          </Grid>
+          <Grid item container alignItems="center">
+            <PersonStatus>{this.getStatus(person)}</PersonStatus>
+          </Grid>
 
           <PeopleContainerRoleButton
             person={person}
@@ -163,19 +158,33 @@ class PeopleContainer extends PureComponent {
             handleConfirmationArgs={person.userId}
             confirmBtnTxt="Delete"
           />
-        </div>
-      );
-    });
-  }
+        </Grid>
+      </ListEntryContainer>
+    );
+  };
 
-  render() {
-    return <div className="item-list-wrapper">{this.renderList()}</div>;
-  }
+  render = () => {
+    const { peopleList, searchTerm } = this.props;
+
+    const KEYS_TO_FILTERS = [
+      'userName',
+      'email',
+      'homePhoneNumber',
+      'faxNumber',
+      'workPhoneNumber',
+    ];
+
+    const filteredPeople =
+      peopleList?.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) ?? [];
+
+    return (
+      <ListContainer>{filteredPeople.map(this.renderListEntry)}</ListContainer>
+    );
+  };
 }
 
 function mapStateToProps(state) {
   return {
-    peoplelist: state.peopleState.peoplelist,
     userProfile: state.userState.userProfile,
   };
 }

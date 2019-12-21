@@ -1,4 +1,5 @@
 const { I } = inject();
+var assert = require('assert');
 
 
 module.exports = {
@@ -89,7 +90,7 @@ module.exports = {
 
     exitEditSidebar: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button',
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button > span',
     },
 
     flag: {
@@ -195,6 +196,7 @@ module.exports = {
   exitFreshTask() {
     I.waitForElement(this.fields.exitFreshSidebar, 4);
     I.click(this.fields.exitFreshSidebar);
+    I.wait(2);
   },
 
   openEditSidebar(taskIndex) {
@@ -234,6 +236,7 @@ module.exports = {
     I.click({css: assignmentLocator});
   },
 
+  //TODO Check if the task has a comment on it, and adapt to the different path.
   addDueDate(week, day) {
     const dateBtn = {css:
       `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
@@ -245,6 +248,7 @@ module.exports = {
     I.click(dateBtn);
     I.waitForElement(this.fields.saveDueDate);
     I.click(this.fields.saveDueDate); // This div becomes nth-child(5) if the task has comments.
+    I.wait(2);
   },
 
   flagTask() {
@@ -255,13 +259,14 @@ module.exports = {
   exitTask() {
     I.waitForElement(this.fields.exitEditSidebar, 4);
     I.click(this.fields.exitEditSidebar);
-    I.wait(1);
+    I.wait(2);
   },
 
-  deleteTask(taskIndex) {
-    deleteBtnLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1) > span:nth-child(1)`;
+  async deleteTask(taskIndex) {
+    deleteBtnLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)`;
     I.waitForElement({ css: deleteBtnLocator }, 4);
     I.click({ css: deleteBtnLocator });
+    I.wait(2);
   },
 
 
@@ -269,18 +274,12 @@ module.exports = {
   //It also registers stuff due tommorow as stuff due today, so someone missed a +1 somewhere.
   //
   async checkTsksHUD(active, flagged, due, overdue) {
-    if((await this.grabActiveTsks())<active){
-      throw `Active tasks lower than target ${active}`;
-    };
-    if((await this.grabFlaggedTsks())<flagged){
-      throw `Flagged tasks lower than target ${flagged}`;
-    };
-    if((await this.grabDueTodayTsks())<due){
-      throw `Due today tasks lower than target ${due}`;
-    };
-    if((await this.grabOverdueTsks())<overdue){
-      throw `Overdue tasks lower than target ${overdue}`;
-    }; 
+    //console.log('Oof ' + await this.grabActiveTsks());
+    assert((await this.grabActiveTsks())>=active, `Active tasks lower than target ${active}`);
+    assert((await this.grabFlaggedTsks())>=flagged, `Flagged tasks lower than target ${flagged}`);
+    assert((await this.grabDueTodayTsks())>=due, `Due today tasks lower than target ${due}`);
+    assert((await this.grabOverdueTsks())>=overdue, `Overdue tasks lower than target ${overdue}`);
+    I.wait(2);
   },
 
 

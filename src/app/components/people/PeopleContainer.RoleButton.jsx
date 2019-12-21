@@ -1,11 +1,43 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import withStyles from '@material-ui/core/styles/withStyles';
 import always from 'ramda/es/always';
 import cond from 'ramda/es/cond';
 import isEmpty from 'ramda/es/isEmpty';
 import T from 'ramda/es/T';
-import React from 'react';
+import React, { useRef } from 'react';
+import styled from 'styled-components';
 
-const DELETE_THIS_PERSON_LABEL = 'Delete this person';
+import useBoolean from '../../hooks/useBoolean';
+import AdminIcon from '../../img/admin-icon.svg';
+import CancelInvitationIcon from '../../img/cancel-invitation-icon.svg';
+import DirectoryIcon from '../../img/directory-icon.svg';
+import ResendInvitationIcon from '../../img/resend-invitation-icon.svg';
+import ThreeDotsIcon from '../../img/three-dots.svg';
+
+const DELETE_THIS_PERSON_LABEL = 'Archive this person';
+
+const StyledIconButton = withStyles({
+  label: {
+    height: '1.5rem',
+    width: '1.5rem',
+  },
+})(IconButton);
+
+const EllipsisImage = styled.img.attrs({
+  alt: 'ellipses',
+  src: ThreeDotsIcon,
+})`
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  width: 100%;
+`;
 
 const getListElements = ({
   person,
@@ -15,6 +47,7 @@ const getListElements = ({
   resendInviteToOrganization,
   removeUserFromOrganization,
   handleClick,
+  unsetPopoverOpen,
 }) => {
   const isCurrentUser =
     person.userId === userProfile.userId &&
@@ -34,78 +67,109 @@ const getListElements = ({
     [
       always(isPersonMemberOrUnknown && isPersonPending),
       always([
-        <li
+        <MenuItem
           key="resend-invite"
-          onClick={() => resendInviteToOrganization(person.email)}
+          onClick={() => {
+            resendInviteToOrganization(person.email);
+            unsetPopoverOpen();
+          }}
         >
-          Resend Invite
-        </li>,
-        <li
+          <ListItemIcon>
+            <img alt="Arrow icon" src={ResendInvitationIcon} />
+          </ListItemIcon>
+          <ListItemText>Resend Invitation</ListItemText>
+        </MenuItem>,
+        <MenuItem
           key="cancel-invite"
-          onClick={() =>
+          onClick={() => {
             handleClick({
               onClickAction: cancelInviteToOrganization,
-            })(person.email)
-          }
+            })(person.email);
+            unsetPopoverOpen();
+          }}
         >
-          Cancel Invite
-        </li>,
+          <ListItemIcon>
+            <img alt="Cross icon" src={CancelInvitationIcon} />
+          </ListItemIcon>
+          <ListItemText>Cancel Invitation</ListItemText>
+        </MenuItem>,
       ]),
     ],
     [
       always(isPersonMemberOrUnknown && !isPersonPending),
       always([
-        <li
+        <MenuItem
           key="change-user-role"
-          onClick={() =>
+          onClick={() => {
             handleClick({ onClickAction: changeUserRoleForOrg })(
               person.userId,
               person.orgUserRole === 'MEMBER' ? 'ADMIN' : 'MEMBER',
-            )
-          }
+            );
+            unsetPopoverOpen();
+          }}
         >
-          Make admin
-        </li>,
-        <li
+          <ListItemIcon>
+            <img alt="Admin icon" src={AdminIcon} />
+          </ListItemIcon>
+          <ListItemText>Make admin</ListItemText>
+        </MenuItem>,
+        <MenuItem
           key="remove-user-with-popup"
           data-open={`delete-user-${person.userId}`}
         >
-          {DELETE_THIS_PERSON_LABEL}
-        </li>,
+          <ListItemIcon>
+            <img alt="Directory icon" src={DirectoryIcon} />
+          </ListItemIcon>
+          <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
+        </MenuItem>,
       ]),
     ],
     [
       always(isPersonOwner && !isPersonPending),
       always([
-        <li
+        <MenuItem
           key="remove-user"
-          onClick={() =>
+          onClick={() => {
             this.handleClick({
               onClickAction: removeUserFromOrganization,
-            })(person.userId)
-          }
+            })(person.userId);
+            unsetPopoverOpen();
+          }}
         >
-          {DELETE_THIS_PERSON_LABEL}
-        </li>,
+          <ListItemIcon>
+            <img alt="Directory icon" src={DirectoryIcon} />
+          </ListItemIcon>
+          <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
+        </MenuItem>,
       ]),
     ],
     [
       T,
       always([
-        <li
+        <MenuItem
           key="remove-admin-rights"
-          onClick={() =>
+          onClick={() => {
             this.handleClick({ onClickAction: changeUserRoleForOrg })(
               person.userId,
               person.orgUserRole,
-            )
-          }
+            );
+            unsetPopoverOpen();
+          }}
         >
-          Remove admin rights
-        </li>,
-        <li key="delete-person" data-open={`delete-user-${person.userId}`}>
-          {DELETE_THIS_PERSON_LABEL}
-        </li>,
+          <ListItemIcon>
+            <img alt="Admin icon" src={AdminIcon} />
+          </ListItemIcon>
+          <ListItemText>Remove admin rights</ListItemText>
+        </MenuItem>,
+        <MenuItem
+          key="delete-person"
+          data-open={`delete-user-${person.userId}`}
+        >
+          <ListItemIcon>
+            <img alt="Directory icon" src={DirectoryIcon} />
+          </ListItemIcon>
+          <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
+        </MenuItem>,
       ]),
     ],
   ])();
@@ -114,9 +178,15 @@ const getListElements = ({
     [
       always(isCurrentUser),
       always([
-        <li key="leave-organization" data-open={`delete-user-${person.userId}`}>
-          Leave organization
-        </li>,
+        <MenuItem
+          key="leave-organization"
+          data-open={`delete-user-${person.userId}`}
+        >
+          <ListItemIcon>
+            <img alt="Cross icon" src={CancelInvitationIcon} />
+          </ListItemIcon>
+          <ListItemText>Leave Organization</ListItemText>
+        </MenuItem>,
       ]),
     ],
     [always(isCurrentUserAdminOrOwner), always(listItemsForCurrentAdminUser)],
@@ -125,30 +195,41 @@ const getListElements = ({
 };
 
 export default props => {
+  const buttonReference = useRef(null);
+  const [popoverOpen, setPopoverOpen, unsetPopoverOpen] = useBoolean(false);
   const { person, ...otherProps } = props;
 
-  const listElements = getListElements({ person, ...otherProps });
+  const listElements = getListElements({
+    person,
+    unsetPopoverOpen,
+    ...otherProps,
+  });
 
   if (isEmpty(listElements)) {
     return null;
   }
 
   return (
-    <div className="columns shrink more-options-wrapper more-options-people">
-      <svg
-        className="icon ellipses medium"
-        data-toggle={`person-actions-${person.userId}${person.firstName}${person.lastName}`}
+    <Grid container alignItems="center" justify="flex-end">
+      <StyledIconButton buttonRef={buttonReference} onClick={setPopoverOpen}>
+        <EllipsisImage />
+      </StyledIconButton>
+      <Menu
+        id="simple-menu"
+        anchorEl={buttonReference.current}
+        open={popoverOpen}
+        onClose={unsetPopoverOpen}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
       >
-        <use xlinkHref="#icon-ellipses" />
-      </svg>
-      <div
-        className="small dropdown-pane"
-        id={`person-actions-${person.userId}${person.firstName}${person.lastName}`}
-        data-dropdown
-        data-close-on-click="true"
-      >
-        <ul className="no-bullet">{listElements}</ul>
-      </div>
-    </div>
+        {listElements}
+      </Menu>
+    </Grid>
   );
 };
