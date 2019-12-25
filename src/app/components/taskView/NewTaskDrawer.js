@@ -299,7 +299,7 @@ export default ({
       assignedToUserName: task?.assignedTo
         ? task.assignedTo?.userName?.trim()
         : '',
-      patient: JSON.stringify(task?.patient),
+      patient: task?.patient,
       patientId: task?.patient?.patientId,
       patientName,
     };
