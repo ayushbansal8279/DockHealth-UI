@@ -126,8 +126,7 @@ const DEFAULT_SORTING = [
   })),
 ];
 
-const NO_SORTING = [
-];
+const NO_SORTING = [];
 
 const TaskList = ({
   tasks = [],
@@ -190,9 +189,10 @@ const TaskList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showMoreButtonVisible, isShowMoreLocked, taskListShowMoreIndex]);
 
-  const onSortingChanged = useCallback(({ key }) => () => {
-      var currentSortingColumns = currentSorting;
-      if(currentSortingColumns.length == 0){
+  const onSortingChanged = useCallback(
+    ({ key }) => () => {
+      let currentSortingColumns = currentSorting;
+      if (currentSortingColumns.length == 0) {
         currentSortingColumns = DEFAULT_SORTING;
       }
 

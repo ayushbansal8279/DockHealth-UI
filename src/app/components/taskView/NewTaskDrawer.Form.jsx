@@ -211,16 +211,13 @@ export default ({
     [hasTask],
   );
 
-  useEffect(
-    () => {
-      setValue('patient', JSON.stringify(defaultValues?.patient));
-      setValue('patientId', defaultValues?.patient?.patientId);
-      setValue('patientName', getPatientName(defaultValues?.patient));
-      setValue('assignedToUserId', defaultValues?.assignedToUserId);
-      setValue('assignedToUserName', defaultValues?.assignedToUserName);
-    },
-    [defaultValues?.taskId],
-  );
+  useEffect(() => {
+    setValue('patient', JSON.stringify(defaultValues?.patient));
+    setValue('patientId', defaultValues?.patient?.patientId);
+    setValue('patientName', getPatientName(defaultValues?.patient));
+    setValue('assignedToUserId', defaultValues?.assignedToUserId);
+    setValue('assignedToUserName', defaultValues?.assignedToUserName);
+  }, [defaultValues, setValue]);
 
   useEffect(
     () => {

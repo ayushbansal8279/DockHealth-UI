@@ -15,11 +15,11 @@ const OrderIconImage = styled.img`
 `;
 
 export default ({ sortingKey, sorting }) => {
-  var order = "asc";
-  if(sortingKey && sorting){
+  let order = 'asc';
+  if (sortingKey && sorting) {
     const colAttributes = find(propEq('key', sortingKey), sorting);
     if (colAttributes) {
-      order = colAttributes
+      order = colAttributes;
     }
   }
 
