@@ -213,6 +213,17 @@ export default ({
 
   useEffect(
     () => {
+      setValue('patient', JSON.stringify(defaultValues?.patient));
+      setValue('patientId', defaultValues?.patient?.patientId);
+      setValue('patientName', getPatientName(defaultValues?.patient));
+      setValue('assignedToUserId', defaultValues?.assignedToUserId);
+      setValue('assignedToUserName', defaultValues?.assignedToUserName);
+    },
+    [defaultValues?.taskId],
+  );
+
+  useEffect(
+    () => {
       setCurrentMember(defaultValues?.assignedTo);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

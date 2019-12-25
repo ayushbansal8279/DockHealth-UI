@@ -126,6 +126,9 @@ const DEFAULT_SORTING = [
   })),
 ];
 
+const NO_SORTING = [
+];
+
 const TaskList = ({
   tasks = [],
   taskDrawerOpen,
@@ -151,7 +154,7 @@ const TaskList = ({
 
   const [taskListShowMoreIndex, setTaskListShowMoreIndex] = useState(1);
   const [isShowMoreLocked, setShowMoreLocked] = useState(false);
-  const [currentSorting, setCurrentSorting] = useState(DEFAULT_SORTING);
+  const [currentSorting, setCurrentSorting] = useState(NO_SORTING);
 
   const [newlyAddedTasks, tasksToShow] = partition(
     ({ taskId }) => newlyAddedTaskIds.includes(taskId),
@@ -187,11 +190,15 @@ const TaskList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showMoreButtonVisible, isShowMoreLocked, taskListShowMoreIndex]);
 
-  const onSortingChanged = useCallback(
-    ({ key }) => () => {
+  const onSortingChanged = useCallback(({ key }) => () => {
+      var currentSortingColumns = currentSorting;
+      if(currentSortingColumns.length == 0){
+        currentSortingColumns = DEFAULT_SORTING;
+      }
+
       const [[currentSortingColumn], otherSortingColumns] = partition(
         propEq('key', key),
-        currentSorting,
+        currentSortingColumns,
       );
 
       const order = currentSortingColumn.order === 'asc' ? 'desc' : 'asc';
