@@ -31,9 +31,9 @@ const onFormSubmit = async data => {
     });
 
     hashHistory.push('login');
-
     Swal.fire({
-      text: 'Check your email inbox for message with further instructions',
+      text:
+        'Check your email inbox for message with further instructions to complete account registeration',
       icon: 'success',
     });
   } catch (error) {
