@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { hashHistory } from 'react-router';
 import styled, { keyframes } from 'styled-components';
+import Swal from 'sweetalert2';
 
 import { register } from '../../api/user-api';
 import { noop } from '../../helpers/utilityFunctions';
@@ -30,9 +31,18 @@ const onFormSubmit = () => async data => {
       'custom:title': title,
     });
 
-    hashHistory.push('login');
-  } catch {
-    noop();
+    hashHistory.push('login');    
+    Swal.fire({
+      text: 'Check your email inbox for message with further instructions to complete account registeration',
+      icon: 'success',
+    });
+
+  } catch (error) {
+    Swal.fire({
+      title: 'Error',
+      text: error?.message ?? 'Could not register user, please try again later',
+      icon: 'error',
+    });
   }
 };
 
