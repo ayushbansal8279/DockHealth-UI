@@ -103,6 +103,9 @@ class TaskListView extends PureComponent {
     const { invitationAction } = this.props;
     invitationAction.acceptInviteToTaskList(taskList);
     onTaskListInvitationAccepted();
+    hashHistory.push(
+      `tasks/${encodeURIComponent(taskList.listName)}/${taskList.taskListId}`,
+    );
   };
 
   rejectInviteToTaskList = taskList => {
