@@ -78,7 +78,7 @@ class AddListForm extends BaseComponentWithAutoComplete {
 
   openMemberSelectionList = () => {
     this.setState({
-      showMemberSelectionList: !!this.state.showMemberSelectionList,
+      showMemberSelectionList: !this.state.showMemberSelectionList,
     });
   };
 
