@@ -37,6 +37,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
     selectedSuggestionForAdmin: '',
     selectedSuggestionForMember: '',
     suggestions: [],
+    showAdminSelectionList: false,
+    showMemberSelectionList: false,
   };
 
   componentDidMount() {
@@ -65,7 +67,19 @@ class AddListForm extends BaseComponentWithAutoComplete {
   }
 
   componentDidUpdate() {
-    enableFoundationAccordionComponent('.add-form-wrapper');
+    // enableFoundationAccordionComponent('.add-form-wrapper');
+  }
+
+  openAdminSelectionList = () =>  {
+    this.setState({
+      showAdminSelectionList: !this.state.showAdminSelectionList
+    })
+  }
+
+  openMemberSelectionList = () =>  {
+    this.setState({
+      showMemberSelectionList: !!this.state.showMemberSelectionList
+    })
   }
 
   // TODO Make sure not to suggest added users.
@@ -134,8 +148,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
       selectedAdmins: [suggestion].concat(previousState.selectedAdmins),
       suggestions: [],
       selectedSuggestionForAdmin: '',
+      showAdminSelectionList: false
     }));
-    $('.addAdminForList').click();
   };
 
   onSuggestionSelectedForMembers = (event, { suggestion }) => {
@@ -143,8 +157,8 @@ class AddListForm extends BaseComponentWithAutoComplete {
       selectedMembers: [suggestion].concat(previousState.selectedMembers),
       suggestions: [],
       selectedSuggestionForMember: '',
+      showMemberSelectionList: false
     }));
-    $('.addMemberForList').click();
   };
 
   onSubmit = ({ listName, notifications }) => {
@@ -264,15 +278,11 @@ class AddListForm extends BaseComponentWithAutoComplete {
             </div>
 
             {/* <!-- Admins --> */}
-            <div
-              className="column large-12 input-group no-icon static-label accordion"
-              data-accordion
-              data-allow-all-closed="true"
-            >
-              <div className="input-wrapper accordion-item" data-accordion-item>
-                <div className="accordion-title">
+            <div className="column large-12 no-icon static-label" style={{paddingBottom: "20px"}}>
+              <div className="input-wrapper">
+                <div>
                   <label>Admins</label>
-                  <ul className="menu member-photo-list">
+                  <ul className="menu member-photo-list" onClick={this.openAdminSelectionList}>
                     <li>
                       <span className="add-member circle medium addAdminForList">
                         +
@@ -287,36 +297,34 @@ class AddListForm extends BaseComponentWithAutoComplete {
                     })}
                   </ul>
                 </div>
-                <div className="accordion-content" data-tab-content>
-                  <Autosuggest
-                    suggestions={suggestions}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    onSuggestionSelected={this.onSuggestionSelectedForAdmins}
-                    inputProps={inputPropsForAdmins}
-                    onSuggestionsFetchRequested={
-                      this.onSuggestionsFetchRequested
-                    }
-                    onSuggestionsClearRequested={
-                      this.onSuggestionsClearRequested
-                    }
-                    renderSuggestionsContainer={this.renderSuggestionsContainer}
-                    renderInputComponent={this.renderInputComponent}
-                  />
-                </div>
               </div>
+              {this.state.showAdminSelectionList && 
+              <div>
+                <Autosuggest
+                  suggestions={suggestions}
+                  getSuggestionValue={this.getSuggestionValue}
+                  renderSuggestion={this.renderSuggestion}
+                  onSuggestionSelected={this.onSuggestionSelectedForAdmins}
+                  inputProps={inputPropsForAdmins}
+                  onSuggestionsFetchRequested={
+                    this.onSuggestionsFetchRequested
+                  }
+                  onSuggestionsClearRequested={
+                    this.onSuggestionsClearRequested
+                  }
+                  renderSuggestionsContainer={this.renderSuggestionsContainer}
+                  renderInputComponent={this.renderInputComponent}
+                />
+              </div>
+              }
             </div>
 
             {/* <!--Members --> */}
-            <div
-              className="column large-12 input-group no-icon static-label accordion"
-              data-accordion
-              data-allow-all-closed="true"
-            >
-              <div className="input-wrapper accordion-item" data-accordion-item>
-                <div className="accordion-title">
+            <div className="column large-12 no-icon static-label" style={{paddingBottom: "20px"}}>
+              <div className="input-wrapper">
+                <div>
                   <label>Members</label>
-                  <ul className="menu member-photo-list">
+                  <ul className="menu member-photo-list" onClick={this.openMemberSelectionList}>
                     <li>
                       <span className="add-member circle medium addMemberForList">
                         +
@@ -331,34 +339,30 @@ class AddListForm extends BaseComponentWithAutoComplete {
                     })}
                   </ul>
                 </div>
-                <div className="accordion-content" data-tab-content>
-                  <Autosuggest
-                    suggestions={suggestions}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    onSuggestionSelected={this.onSuggestionSelectedForMembers}
-                    inputProps={inputPropsForMembers}
-                    onSuggestionsFetchRequested={
-                      this.onSuggestionsFetchRequested
-                    }
-                    onSuggestionsClearRequested={
-                      this.onSuggestionsClearRequested
-                    }
-                    renderSuggestionsContainer={this.renderSuggestionsContainer}
-                    renderInputComponent={this.renderInputComponent}
-                  />
-                </div>
               </div>
-            </div>
-
-            <div className="row collapse expanded align-middle">
-              <div className="columns text-center">
-                {this.state.saveResultMessage}
+              {this.state.showMemberSelectionList && 
+              <div>
+                <Autosuggest
+                  suggestions={suggestions}
+                  getSuggestionValue={this.getSuggestionValue}
+                  renderSuggestion={this.renderSuggestion}
+                  onSuggestionSelected={this.onSuggestionSelectedForMembers}
+                  inputProps={inputPropsForMembers}
+                  onSuggestionsFetchRequested={
+                    this.onSuggestionsFetchRequested
+                  }
+                  onSuggestionsClearRequested={
+                    this.onSuggestionsClearRequested
+                  }
+                  renderSuggestionsContainer={this.renderSuggestionsContainer}
+                  renderInputComponent={this.renderInputComponent}
+                />
               </div>
+              }
             </div>
 
             {/* <!-- Do not disturb --> */}
-            <div className="column top-buffer large-12">
+            <div className="column large-12 no-icon static-label" style={{paddingBottom: "20px"}}>
               <div className="row collapse">
                 <div className="column">
                   <span className="item-content">Do not disturb</span>
@@ -401,6 +405,12 @@ class AddListForm extends BaseComponentWithAutoComplete {
                 >
                   Cancel
                 </button>
+              </div>
+            </div>
+
+            <div className="row collapse expanded align-middle">
+              <div className="columns text-center">
+                {this.state.saveResultMessage}
               </div>
             </div>
           </form>

@@ -431,7 +431,7 @@ function enableFoundationAccordionComponent(componentName) {
 	if(accordionPlugins){
 		accordionPlugins.each(function(element) {
 			if(!$(accordionPlugins[element]).data('yeti-box')){
-				$(accordionPlugins[element]).parent().foundation();
+				$(accordionPlugins[element]).foundation();
 			}
 		});
 	}
