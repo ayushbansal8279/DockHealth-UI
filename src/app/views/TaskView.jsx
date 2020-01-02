@@ -15,6 +15,7 @@ import reject from 'ramda/es/reject';
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 
+import styled from 'styled-components';
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
 import { getTaskListStats } from '../actions/tasklist-actions';
@@ -27,7 +28,6 @@ import Toolbar from '../components/taskView/Toolbar';
 import { isTaskArchivable } from '../helpers/utility-functions';
 import CollapseIcon from '../img/collapse.svg';
 import FilterIcon from '../img/filter.svg';
-import styled from 'styled-components';
 
 import {
   CompletedButtonRowContainer,
@@ -69,16 +69,6 @@ const groupBy = (list, keyGetter) => {
   });
   return checkMap;
 };
-
-const TaskDrawerContainer = styled.div`
-  flex: 1.4;
-`;
-
-const CubesLoaderContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`;
 
 export const TaskListContainerWrapper = styled.div`
   flex: 2;
@@ -176,7 +166,10 @@ export const TaskListSection = ({
           {heading}
         </TaskListSectionHeading>
         {!hideCollapse && (
-          <CollapseStyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
+          <CollapseStyledButton
+            isCollapsed={isCollapsed}
+            onClick={toggleIsCollapsed}
+          >
             <img src={CollapseIcon} alt="Collapse Details" />
           </CollapseStyledButton>
         )}
@@ -731,7 +724,9 @@ class TaskView extends Component {
     return [...groupedTasks.keys()].map(groupedListName => (
       <React.Fragment key={groupedListName}>
         <TaskListSection heading={groupedListName} key={groupedListName}>
-          <TasklistCount>{`${groupedTasks.get(groupedListName).length} tasks`}</TasklistCount>
+          <TasklistCount>{`${
+            groupedTasks.get(groupedListName).length
+          } tasks`}</TasklistCount>
           <TaskList
             listTasks={groupedTasks.get(groupedListName)}
             {...tasklistProps}
