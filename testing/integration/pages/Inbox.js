@@ -25,9 +25,25 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)'
     },
 
+    exitFreshTaskButton: {
+      css:
+        "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button"
+    },
+
+    exitMadeTaskButton: {
+      css:
+        "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button"
+    },
+
+    firstList: {css: "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3)  > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > ul > div"},
+    filedInShield: {css: "#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2)  > div:nth-child(2) > div > div > div:nth-child(2)  > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > span"},
+
+    //taskListTab: {css:'#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(4) > a'},
+    taskListTab: {css: 'a[href="#/tasks"]'},
+
     inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
 
-    logoutBtn: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a'}
+    logoutBtn: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a'},
   },
 
   // Functions
@@ -47,6 +63,7 @@ module.exports = {
     I.waitForElement(this.fields.tskDescription, 4);
     I.fillField(this.fields.tskDescription, 'Dummy Task');
     I.pressKey('Enter');
+    I.wait();
   },
 
   clickTask(index) {
@@ -61,15 +78,45 @@ module.exports = {
     I.click({
       css: taskTileLocator,
     });
+    I.wait();
+  },
+
+  setFiledIn() {
+    I.waitForElement(this.fields.filedInShield, 3);
+    I.click(this.fields.filedInShield);
+    I.wait(2);
+    I.waitForElement(this.fields.firstList, 3);
+    I.click(this.fields.firstList);
+    I.wait();
+  },
+
+  exitTask() {
+    I.waitForElement(this.fields.exitMadeTaskButton, 3);
+    I.click(this.fields.exitTaskButton);
+    I.wait();
+  },
+
+  exitFreshTask(){
+    I.waitForElement(this.fields.exitFreshTaskButton, 3);
+    I.click(this.fields.exitFreshTaskButton);
+    I.wait();
   },
 
   clickInboxTab(){
     I.waitForElement(this.fields.inboxTab,4);
     I.click(this.fields.inboxTab);
+    I.wait();
+  },
+
+  clickTaskListTab(){
+    I.waitForElement(this.fields.taskListTab, 3);
+    I.click(this.fields.taskListTab);
+    I.wait(2);
   },
 
   destroyPickedTask() {
     I.waitForElement(this.fields.tskDelete, 5);
     I.click(this.fields.tskDelete);
+    I.wait();
   },
 };

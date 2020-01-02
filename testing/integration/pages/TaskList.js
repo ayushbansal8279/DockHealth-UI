@@ -1,44 +1,61 @@
 const { I } = inject();
 var assert = require('assert');
 
+let container = require('codeceptjs').container;
+// get object with all helpers
+let helpers = container.helpers();
+var puppeteerHelper = helpers['Puppeteer']
 
 module.exports = {
   fields: {
     // Immediately Accessible Buttons.
-    logoutBtn: {
+    logoutButton: {
       css:
         '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a',
     },
 
-    addTskBtn: {
+    addTaskButton: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > button > span:nth-child(2)',
     },
 
-    forMeBtn: {
+    forMeButton: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)'
     },
 
-    allBtn: {
+    allButton: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'
     },
 
-    notificationsBtn: {
+    notificationsButton: {
       css:
         '#appHome > main > div > div:nth-child(1) > div > div > div > div > header > div > div:nth-child(2) > button > span:nth-child(1) > span:nth-child(3)'
     },
 
-    addUserBtn: {
+    addUserButton: {
       css:
         '#appHome > main > div > div:nth-child(1) > div > div > div > div > header > div > div:nth-child(3) > div > button:nth-child(1) > div'
     },
 
+    searchBar: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div > input'
+    },
 
+    taskListContainer: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div > div:nth-child(1)'
+    },
+
+    taskListContainerElements: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div > div:nth-child(1) > div'
+    },
 
     //Add User dropdown
-    inviteToListBtn: {
+    inviteToListButton: {
       css:
         'body > div:nth-child(6) > div:nth-child(2) > button'
     },
@@ -60,15 +77,50 @@ module.exports = {
 
 
 
-    firstTsk: {
+    firstTask: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3)',
     },
 
 
 
+    //Subtask Addresses
+    addASubtaskWOindex: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(${index+3}) > span',
+    },
+
+    subtaskTitle: {
+      css:
+        `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(1) > div > div > textarea`,
+    },
+
+    subtaskAssignedShield: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div:nth-child(1) > input',
+    },
+
+    subtaskAssignedFirstUser: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(1) > span'
+    },
+
+    subtaskSaveButton:{
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(3)'
+    },
+
+    subtaskExitButton: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2)'
+    },
+
+
+
+
+
     //Task Manipulation addresses.
-    tskDescription: {
+    taskDescription: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(1) > div > div > textarea ',
     },
@@ -93,9 +145,19 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button > span',
     },
 
+    exitFlaggedFilterSidebar: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(4) > div > div > div:nth-child(2) > form > div:nth-child(1)> div:nth-child(1) > div:nth-child(2)  > div:nth-child(3) > button'
+    },
+
     flag: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > svg > path',
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > svg > path',
+    },
+
+    unFlag: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(4) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > svg > path'
     },
 
     assignedShield: {
@@ -122,15 +184,22 @@ module.exports = {
       css:
         `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2)`
     },
+      // Comments add two to 4th element from the left. No clue why...
 
-    setDateBtnWcomments: {
+
+    setDateButtonWcomments: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(3) > span',
     },
-    // Comments add two to 4th element from the left. No clue why...
-    setDateBtn: {
+   
+    setDateButton: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span',
+    },
+
+    setDateButtonFlaggedFilter: {
+      css:
+        '#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(4) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span'
     },
 
     saveDueDate: {
@@ -142,27 +211,54 @@ module.exports = {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)',
     },
-    
+  
+
+
+    //Filter locations
+    filtersWrapper:{
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)'
+    },
+
+    activeTasks:{
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(1)'
+    },
+
+    flaggedTasks: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(2)'
+    },
+
+    dueTodayTasks: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(3)'
+    },
+
+    overdueTasks: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(4)'
+    },
 
 
 
 
-    numberOfActiveTsks: {
+    numberOfActiveTasks: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(1) > div:nth-child(1)',
     },
 
-    numberOfFlaggedTsks: {
+    numberOfFlaggedTasks: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(2) > div:nth-child(1)',
     },
 
-    numberOfDueTodayTsks: {
+    numberOfDueTodayTasks: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(3) > div:nth-child(1)',
     },
 
-    numberOfOverdueTsks: {
+    numberOfOverdueTasks: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(2)  > div:nth-child(4) > div:nth-child(1)',
     },
@@ -176,40 +272,38 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(4) > div > span',
     },
 
-    dec18BtnWcomments: {
+    dec18ButtonWcomments: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(4) > div',
     },
 
-    dec4Btn: {
+    dec4Button: {
       css:
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4)  > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(4) > div',
     },
 
   },
 
-  openTaskSidebar() {
-    I.waitForElement(this.fields.addTskBtn, 5);
-    I.click(this.fields.addTskBtn);
+  //Task interaction
+  openNewTaskSidebar() {
+    I.waitForElement(this.fields.addTaskButton, 5);
+    I.click(this.fields.addTaskButton);
+    I.wait();
   },
 
-  exitFreshTask() {
-    I.waitForElement(this.fields.exitFreshSidebar, 4);
-    I.click(this.fields.exitFreshSidebar);
-    I.wait(2);
-  },
-
-  openEditSidebar(taskIndex) {
-    tskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
-    I.waitForElement({css: tskSidebarLocator}, 10);
-    I.click({css: tskSidebarLocator});
+  openEditSidebar(taskIndex, filtered) {//Intended filter is the filter thats selected starting with 1 as all active tasks
+    taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
+    I.waitForElement({css: taskSidebarLocator}, 4);
+    I.click({css: taskSidebarLocator});
+    I.wait();
   },
 
   postTask(title) {
     //I.waitForText('Add a task', 5);
-    I.waitForElement(this.fields.tskDescription, 5);
-    I.fillField(this.fields.tskDescription, title);
+    I.waitForElement(this.fields.taskDescription, 5);
+    I.fillField(this.fields.taskDescription, title);
     I.pressKey('Enter');
+    I.wait(3);
   },
 
   postComment(comment) {
@@ -218,97 +312,220 @@ module.exports = {
     I.waitForElement(this.fields.commentBox, 5);
     I.fillField(this.fields.commentBox, comment);
     I.pressKey('Enter');
+    I.wait();
   },
 
   attachPatient(index) {
-    patientLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2)  > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`
+    patientLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2)  > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index})`
     I.waitForElement(this.fields.patientShield, 4);
+    I.wait();
     I.click(this.fields.patientShield);
     I.waitForElement({css: patientLocator}, 4);
+    I.wait();
     I.click({css: patientLocator});
+    I.wait();
   },
 
-  assignTask(index) {
-    assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`;
-    I.waitForElement(this.fields.assignedShield, 4);
+  assignTask(index) { //TODO this method only works 50% of the time... It misses the assignedShield click
+    //assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`;
+    assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`;
+    I.waitForElement(this.fields.assignedShield, 3);
+    I.wait(2);
+    //pause();
+    I.scrollTo(this.fields.assignedShield);
+    //pause();
+    //I.click(this.fields.assignedShield);
     I.click(this.fields.assignedShield);
     I.waitForElement({css: assignmentLocator}, 4);
+    I.wait();
     I.click({css: assignmentLocator});
+    I.wait(2);
   },
 
-  //TODO Check if the task has a comment on it, and adapt to the different path.
-  addDueDate(week, day) {
-    const dateBtn = {css:
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
+  addDueDate(week, day, intendedFilter) {
+    const dateButton = {css:
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
     };
-    I.waitForElement(this.fields.setDateBtn, 4);
-    I.click(this.fields.setDateBtn);
+    const setDateButton = {css:
+      `#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span`
+    }
+    const saveDueDate={css:
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)`
+    }
+    I.waitForElement(setDateButton, 4);
+    I.click(setDateButton);
     // I.click("Set a due date");
-    I.waitForElement(dateBtn, 4);
-    I.click(dateBtn);
-    I.waitForElement(this.fields.saveDueDate);
-    I.click(this.fields.saveDueDate); // This div becomes nth-child(5) if the task has comments.
-    I.wait(2);
+    I.wait();
+    I.waitForElement(dateButton, 4);
+    I.click(dateButton);
+    I.waitForElement(saveDueDate);
+    I.click(saveDueDate); // This div becomes nth-child(5) if the task has comments.
+    I.wait();
   },
 
   flagTask() {
-    I.waitForElement(this.fields.flag, 4);
+    I.waitForElement(this.fields.flag, 2);
     I.click(this.fields.flag);
-  },
-
-  exitTask() {
-    I.waitForElement(this.fields.exitEditSidebar, 4);
-    I.click(this.fields.exitEditSidebar);
     I.wait(2);
   },
 
-  async deleteTask(taskIndex) {
-    deleteBtnLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)`;
-    I.waitForElement({ css: deleteBtnLocator }, 4);
-    I.click({ css: deleteBtnLocator });
+  unflagTask() {
+    I.waitForElement(this.fields.unFlag, 2);
+    I.click(this.fields.unFlag);
     I.wait(2);
   },
 
+  markTaskComplete(taskIndex, filtered){
+    const checkBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
+    I.waitForElement(checkBox, 2);
+    I.click(checkBox);
+    I.wait();
+  },
 
-  //The HUD is fucky, tell Nitin tommorow. It registers stuff due today as overdue.
-  //It also registers stuff due tommorow as stuff due today, so someone missed a +1 somewhere.
-  //
-  async checkTsksHUD(active, flagged, due, overdue) {
-    //console.log('Oof ' + await this.grabActiveTsks());
-    assert((await this.grabActiveTsks())>=active, `Active tasks lower than target ${active}`);
-    assert((await this.grabFlaggedTsks())>=flagged, `Flagged tasks lower than target ${flagged}`);
-    assert((await this.grabDueTodayTsks())>=due, `Due today tasks lower than target ${due}`);
-    assert((await this.grabOverdueTsks())>=overdue, `Overdue tasks lower than target ${overdue}`);
+  changeAssignedUserNoSidebar(taskIndex, filtered, userIndex){ //Selecting nonsidebar faces is messy.
+    const faceBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(2) > button`}
+    //const userChooser = {css: `body > div:nth-child(7) > div:nth-child(2) > div:nth-child(2) > button:nth-child(${userIndex})`}
+    const userChooser = {id: '-1'}
+    I.waitForElement(faceBox,2);
+    I.click(faceBox);
+    //pause();
+    I.waitForElement(userChooser,2);
+    I.click(userChooser);
+    I.wait();
+  },
+
+  exitTask(filtered) {
+    const exitEditSidebar = {css: 
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div:nth-child(2) > form > div:nth-child(1)> div:nth-child(1) > div:nth-child(2)  > div:nth-child(3) > button`
+    }
+    I.waitForElement(exitEditSidebar, 2);
+    I.click(exitEditSidebar);
     I.wait(2);
   },
 
+  clickForMe(){
+    I.waitForElement(this.fields.forMeButton,2);
+    I.click(this.fields.forMeButton);
+    I.wait();
+  },
 
-  async checkFlaggedTsks(target) {
-    if(await this.grabFlaggedTsks()<target){
+  clickAll(){
+    I.waitForElement(this.fields.allButton,2);
+    I.click(this.fields.allButton);
+    I.wait();
+  },
+
+
+
+  
+  //Subtasks
+  addSubtask(index, title) {
+    addSubtaskLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(${index+3}) > span`;
+    I.waitForElement({css: addSubtaskLocator}, 4);
+    I.click({css: addSubtaskLocator});
+    I.waitForElement(this.fields.subtaskTitle, 4);
+    I.fillField(this.fields.subtaskTitle, title);
+    I.wait();
+  },
+
+  assignSubtaskTo(userIndex){
+    assignedLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${userIndex}) > span`;
+    I.waitForElement(this.fields.subtaskAssignedShield);
+    I.click(this.fields.subtaskAssignedShield);
+    I.waitForElement({css: assignedLocator}, 4);
+    I.click({css: assignedLocator});
+    I.wait();
+  },
+
+  saveSubtask() {
+    I.waitForElement(this.fields.subtaskSaveButton, 3);
+    I.click(this.fields.subtaskSaveButton);
+  },
+
+  exitSubtask() {
+    I.waitForElement(this.fields.subtaskExitButton);
+    I.click(this.fields.subtaskExitButton);
+    I.wait(1);
+  },
+
+
+  //Filterss
+  clickFilter(index){//Index starts at 1 for all tasks
+    I.waitForElement(this.fields.filtersWrapper, 3);
+    const address = `${this.fields.filtersWrapper.css} > div:nth-child(${index})`;
+    I.click(address);
+    I.wait();
+  },
+
+  //Searchbar
+
+  search(input){
+    I.waitForElement(this.fields.searchBar, 3);
+    I.fillField(this.fields.searchBar, input);
+    I.wait(2);
+  },
+
+  //Fancy Stuff
+
+  async grabShownTasks(){
+    I.waitForElement(this.fields.taskListContainer, 3);
+    I.seeNumberOfElements(this.fields.taskListContainerElements, 1);
+    /*
+    const elements = await puppeteerHelper._locate({react: 'TaskContainer'});
+    console.log("elements: "+elements.length)
+    puppeteerHelper._locate({react: 'TaskContainer'}).then((item)=>{
+      console.log(item)
+    })
+    console.log(JSON.stringify(elements))
+    return elements;
+    */
+    return
+  },
+
+  async deleteTask(taskIndex, filtered) { //The path to the delete button is changed if a filter is applied
+    //deleteButtonLocatorV2 = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2 + filtered}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)`;
+    const deleteButtonLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex+2+filtered}) > div > div > div:nth-child(2) > div:nth-child(2) > button:nth-child(1)`;
+    //deleteButtonLocatorFORFIRSTFLAGGEDTSK = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(4) > div > div > div:nth-child(2)  > form > div:nth-child(2) > button:nth-child(1)`;
+    I.waitForElement({ css: deleteButtonLocator }, 4);
+    I.click({ css: deleteButtonLocator });
+    I.wait(2);
+  },
+
+  async checkTasksHUD(active, flagged, due, overdue) {
+    //console.log('Oof ' + await this.grabActiveTasks());
+    assert((await this.grabActiveTasks())>=active, `Active tasks lower than target ${active}`);
+    assert((await this.grabFlaggedTasks())>=flagged, `Flagged tasks lower than target ${flagged}`);
+    assert((await this.grabDueTodayTasks())>=due, `Due today tasks lower than target ${due}`);
+    assert((await this.grabOverdueTasks())>=overdue, `Overdue tasks lower than target ${overdue}`);
+    I.wait(2);
+  },
+
+  async checkFlaggedTasks(target) {
+    if(await this.grabFlaggedTasks()<target){
       throw `Flagged Tasks lower than target ${target}`;
     } else {
       //console.log("Yow you passed the flag check!");
     }
   },
 
-  async grabFlaggedTsks() {
-    I.waitForElement(this.fields.numberOfFlaggedTsks, 9);
-    return await I.grabTextFrom(this.fields.numberOfFlaggedTsks);
+  async grabFlaggedTasks() {
+    I.waitForElement(this.fields.numberOfFlaggedTasks, 9);
+    return await I.grabTextFrom(this.fields.numberOfFlaggedTasks);
   },
 
-  async grabActiveTsks() {
-    I.waitForElement(this.fields.numberOfActiveTsks, 9);
-    return await I.grabTextFrom(this.fields.numberOfActiveTsks);
+  async grabActiveTasks() {
+    I.waitForElement(this.fields.numberOfActiveTasks, 9);
+    return await I.grabTextFrom(this.fields.numberOfActiveTasks);
   },
 
-  async grabDueTodayTsks() {
-    I.waitForElement(this.fields.numberOfDueTodayTsks, 9);
-    return await I.grabTextFrom(this.fields.numberOfDueTodayTsks);
+  async grabDueTodayTasks() {
+    I.waitForElement(this.fields.numberOfDueTodayTasks, 9);
+    return await I.grabTextFrom(this.fields.numberOfDueTodayTasks);
   },
 
-  async grabOverdueTsks() {
-    I.waitForElement(this.fields.numberOfOverdueTsks, 9);
-    return await I.grabTextFrom(this.fields.numberOfOverdueTsks);
+  async grabOverdueTasks() {
+    I.waitForElement(this.fields.numberOfOverdueTasks, 9);
+    return await I.grabTextFrom(this.fields.numberOfOverdueTasks);
   },
 
 };

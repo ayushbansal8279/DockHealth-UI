@@ -11,6 +11,7 @@ module.exports = {
     inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
     patientsTab: { css: 'a[href="#/patients"]' },
     logoutBtn: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a'},
+    firstTaskList: {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(5) > div > div > span:nth-child(2) > div > div:nth-child(2) > a > h6`},
   },
 
   // Functions
@@ -28,6 +29,7 @@ module.exports = {
     // I.click({css: "button[type=button]"});
     I.waitForElement(this.fields.addListBtn, 4);
     I.click(this.fields.addListBtn);
+    I.wait();
   },
 
   createList(title) {
@@ -38,15 +40,13 @@ module.exports = {
     I.waitForElement(this.fields.listNameFld, 4);
     I.fillField(this.fields.listNameFld, title);
     I.click({ css: 'input[id=addTaskListButton]' });
+    I.wait();
   },
 
   openEditListDropdown(listIndex) {
-    I.waitForElement({
-      css: `.list-wrapper > div > span:nth-child(2) > div:nth-child(${listIndex}) > div.more-options-wrapper > svg`,
-    },4);
-    I.click({
-      css: `.list-wrapper > div > span:nth-child(2) > div:nth-child(${listIndex}) > div.more-options-wrapper > svg`,
-    });
+    const listPath = {css: `.list-wrapper > div > span:nth-child(2) > div:nth-child(${listIndex}) > div.more-options-wrapper > svg`}
+    I.waitForElement(listPath, 4);
+    I.click(listPath);
     I.click({
       css: `.list-wrapper > div > span:nth-child(2) > div:nth-child(${listIndex}) > div.more-options-wrapper > div > ul > li:nth-child(1)`,
     });
@@ -77,12 +77,12 @@ module.exports = {
   },
 
   enterInbox() {
-    I.waitForText('Lists', 4);
+    I.waitForText(this.fields.inboxTab, 4);
     I.click(this.fields.inboxTab);
   },
 
   enterPatients() {
-    I.waitForText('Lists', 4);
+    I.waitForText(this.fields.patientsTab, 4);
     I.click(this.fields.patientsTab);
   },
   
@@ -93,10 +93,11 @@ module.exports = {
   },
 
   enterList(listIndex) {
-    const listPath = {css: `html > body > #app > #appHome > main > div > div:nth-child(2) > div > div:nth-child(4) > div:nth-child(2) > div > div > span:nth-child(2) > div:nth-child(${listIndex}) > div:nth-child(2) > a > h6`};
+    //const listPath = {css: `html > body > #app > #appHome > main > div > div:nth-child(2) > div > div:nth-child(4) > div:nth-child(2) > div > div > span:nth-child(2) > div:nth-child(${listIndex}) > div:nth-child(2) > a > h6`};
+    const listPath= {css:`#appHome > main > div > div:nth-child(2) > div > div:nth-child(5) > div > div > span:nth-child(2) > div:nth-child(${listIndex}) > div:nth-child(2) > a > h6`};
     I.waitForElement(listPath, 4);
     I.click(listPath);
-    //I.waitForText Of the lists name
+    I.wait();
   },
 
   enterListsTab(){
