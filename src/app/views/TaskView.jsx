@@ -1,4 +1,5 @@
 import Fade from '@material-ui/core/Fade';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Popover from '@material-ui/core/Popover';
@@ -11,7 +12,7 @@ import filter from 'ramda/es/filter';
 import map from 'ramda/es/map';
 import prop from 'ramda/es/prop';
 import reject from 'ramda/es/reject';
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { setHeader } from '../actions/header-actions';
@@ -24,7 +25,10 @@ import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Toolbar from '../components/taskView/Toolbar';
 import { isTaskArchivable } from '../helpers/utility-functions';
+import CollapseIcon from '../img/collapse.svg';
 import FilterIcon from '../img/filter.svg';
+import styled from 'styled-components';
+
 import {
   CompletedButtonRowContainer,
   FadeContainer,
@@ -66,6 +70,60 @@ const groupBy = (list, keyGetter) => {
   return checkMap;
 };
 
+const TaskDrawerContainer = styled.div`
+  flex: 1.4;
+`;
+
+const CubesLoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
+export const TaskListContainerWrapper = styled.div`
+  flex: 2;
+  padding: 4px;
+`;
+
+export const TaskListHeader = styled.div`
+  display: flex;
+  position: relative;
+  height: 67px;
+  background: #2a4a70;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 15px 13.5px 19px 27px;
+`;
+
+export const TaskListSectionContainer = styled.div`
+  border: solid 2px #ddf2f7;
+  background: #fff;
+  padding: 18px 27px 27px 24px;
+
+  :not(:first-child) {
+    margin-top: 4px;
+  }
+`;
+
+export const TaskListSectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const TaskListSectionHeading = styled.div`
+  font-size: 24px;
+  font-weight: 600;
+  color: #0ca1c7;
+`;
+
+export const TasklistCount = styled.div`
+  font-size: 16px;
+  color: #2e3a43;
+  margin-bottom: 11px;
+`;
+
 const filterOptions = [
   {
     value: 'ASSIGNED_TO_ME',
@@ -98,6 +156,46 @@ const animationProperties = {
   animate: 'visible',
   transition: { ease: 'backInOut', duration: 0.25 },
 };
+
+export const TaskListSection = ({
+  heading,
+  children,
+  hideCollapse = false,
+  style,
+  headingStyle,
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const toggleIsCollapsed = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  return (
+    <TaskListSectionContainer style={style}>
+      <TaskListSectionHeader>
+        <TaskListSectionHeading style={headingStyle}>
+          {heading}
+        </TaskListSectionHeading>
+        {!hideCollapse && (
+          <CollapseStyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
+            <img src={CollapseIcon} alt="Collapse Details" />
+          </CollapseStyledButton>
+        )}
+      </TaskListSectionHeader>
+      {!isCollapsed && children}
+    </TaskListSectionContainer>
+  );
+};
+
+const CollapseStyledButton = styled(({ isCollapsed, ...props }) => (
+  <IconButton {...props} />
+))`
+  && {
+    height: 36px;
+    width: 36px;
+    padding: 0;
+    ${({ isCollapsed }) => isCollapsed && 'transform: rotate(180deg);'}
+  }
+`;
 
 const TASK_VIEW_STORAGE_PREFIX = 'task-view-';
 const TASK_VIEW_STORAGE_CURRENT_VERSION = 1;
@@ -632,11 +730,13 @@ class TaskView extends Component {
 
     return [...groupedTasks.keys()].map(groupedListName => (
       <React.Fragment key={groupedListName}>
-        <h5>{groupedListName}</h5>
-        <TaskList
-          listTasks={groupedTasks.get(groupedListName)}
-          {...tasklistProps}
-        />
+        <TaskListSection heading={groupedListName} key={groupedListName}>
+          <TasklistCount>{`${groupedTasks.get(groupedListName).length} tasks`}</TasklistCount>
+          <TaskList
+            listTasks={groupedTasks.get(groupedListName)}
+            {...tasklistProps}
+          />
+        </TaskListSection>
       </React.Fragment>
     ));
   };
