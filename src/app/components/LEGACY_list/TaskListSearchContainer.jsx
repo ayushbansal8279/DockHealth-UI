@@ -319,7 +319,7 @@ class TaskListSearchContainer extends PureComponent {
 
   //   const { searchTerms } = this.state;
   //   const isMatch = text =>
-  //     searchTerms.every(term => text?.toLowerCase().includes(term));
+  //     (searchTerms && searchTerms.every(term => text?.toLowerCase().includes(term)));
 
   //   return tasks.filter(({ description }) => isMatch(description));
   // };
@@ -456,8 +456,10 @@ class TaskListSearchContainer extends PureComponent {
     //   filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
 
     const searchedTasks = {
-      tasks: this.search(tasks),
-      completedTasks: this.search(completedTasks),
+      // tasks: this.search(tasks),
+      // completedTasks: this.search(completedTasks),
+      tasks,
+      completedTasks,
     };
 
     const taskListProps = {
@@ -504,7 +506,7 @@ class TaskListSearchContainer extends PureComponent {
             )}
           </AnimatePresence> */}
           {tasks && <TaskListLayout {...taskListProps} />}
-          {this.renderFilterPopover()}
+          {/* {this.renderFilterPopover()} */}
         </Grid>
       </div>
     );
