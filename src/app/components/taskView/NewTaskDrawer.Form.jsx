@@ -315,7 +315,6 @@ export default ({
               />
             )}
             <StyledInput
-              {...styledInputProps}
               name="patientName"
               label="Patient Information"
               controlled
@@ -347,7 +346,6 @@ export default ({
             />
           )}
           <StyledInput
-            {...styledInputProps}
             name="assignedToUserName"
             label="Assigned to"
             visible={!assignedToPopoverOpen}

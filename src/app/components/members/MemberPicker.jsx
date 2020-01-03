@@ -49,33 +49,33 @@ class MemberPicker extends React.Component {
     this.setState({ isSearching: !isSearching, searchTerm: '' });
   };
 
-  handleOpen = e => {
-    e.stopPropagation();
+  handleOpen = event => {
+    event.stopPropagation();
     const { members, loadMembers, task } = this.props;
     loadMembers(task.taskList.taskListId, 'ALL');
     if (members == null) {
       return;
     }
-    this.setState({ anchorEl: e.currentTarget });
+    this.setState({ anchorEl: event.currentTarget });
   };
 
   handleClose = () => {
     this.setState({ anchorEl: null, isSearching: false, searchTerm: '' });
   };
 
-  handleSelect = e => {
+  handleSelect = event => {
     const { task, assign } = this.props;
-    const userId = e.currentTarget.id;
+    const userId = event.currentTarget.id;
     assign(task, userId);
     this.handleClose();
   };
 
-  handleSearch = e => {
-    this.setState({ searchTerm: e.target.value });
+  handleSearch = event => {
+    this.setState({ searchTerm: event.target.value });
   };
 
-  captureClicks = e => {
-    e.stopPropagation();
+  captureClicks = event => {
+    event.stopPropagation();
   };
 
   renderHeader = () => {
@@ -100,14 +100,14 @@ class MemberPicker extends React.Component {
   );
 
   render() {
-    const { member: propMember, small, members, disabled } = this.props;
+    const { member: propertyMember, small, members, disabled } = this.props;
     const { anchorEl, isSearching, searchTerm } = this.state;
     const isOpen = Boolean(anchorEl);
 
-    const member = propMember ? { ...propMember } : null;
+    const member = propertyMember ? { ...propertyMember } : null;
 
     // Member search
-    const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
+    const searchTerms = searchTerm.toLowerCase().match(/\S+/g) || [];
     const isMatch = userName =>
       searchTerms.every(term => userName.toLowerCase().includes(term));
 
@@ -129,7 +129,7 @@ class MemberPicker extends React.Component {
     }
 
     return (
-      <React.Fragment>
+      <>
         <MemberAssignment
           onClick={this.handleOpen}
           member={member}
@@ -175,7 +175,7 @@ class MemberPicker extends React.Component {
               ))}
           </List>
         </StyledPopover>
-      </React.Fragment>
+      </>
     );
   }
 }

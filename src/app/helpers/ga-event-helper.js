@@ -43,10 +43,12 @@ export const onButtonClicked = button => {
 };
 
 export const onTaskStatusChanged = status => {
+  const label = typeof status === 'string' ? status : status.label;
+
   ReactGA.event({
     category: 'Task list',
     action: 'Task status changed',
-    label: status,
+    label,
   });
 };
 
