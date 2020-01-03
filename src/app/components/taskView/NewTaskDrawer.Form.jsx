@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDeepCompareEffect } from 'react-use';
 import styled from 'styled-components';
 
 import {
@@ -148,6 +149,12 @@ const renderNoAssignedToItem = ({ handleAssignedToSelect }) => () => {
   );
 };
 
+const RightAdornment = ({ currentMember }) => (
+  <MemberSlotContainer>
+    <MemberSlot member={currentMember} />
+  </MemberSlotContainer>
+);
+
 export default ({
   defaultValues,
   isSubtask,
@@ -173,13 +180,6 @@ export default ({
     closePatientPopover,
   ] = useBoolean(false);
 
-  useEffect(() => {
-    setPopoversOpen({
-      assignedToPopoverOpen,
-      patientPopoverOpen,
-    });
-  }, [assignedToPopoverOpen, patientPopoverOpen, setPopoversOpen]);
-
   const { reset, register, setValue } = formMethods;
 
   const hasTask = Boolean(defaultValues?.taskId);
@@ -201,6 +201,13 @@ export default ({
     updatePatient,
   });
 
+  useEffect(() => {
+    setPopoversOpen({
+      assignedToPopoverOpen,
+      patientPopoverOpen,
+    });
+  }, [assignedToPopoverOpen, patientPopoverOpen, setPopoversOpen]);
+
   useEffect(
     () => {
       reset(defaultValues);
@@ -211,7 +218,7 @@ export default ({
     [hasTask],
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setValue('patient', JSON.stringify(defaultValues?.patient));
     setValue('patientId', defaultValues?.patient?.patientId);
     setValue('patientName', getPatientName(defaultValues?.patient));
@@ -238,12 +245,6 @@ export default ({
     fontSize: 20,
     labelFontSize: 16,
   };
-
-  const rightAdornment = (
-    <MemberSlotContainer>
-      <MemberSlot member={currentMember} />
-    </MemberSlotContainer>
-  );
 
   return (
     <>
@@ -358,7 +359,7 @@ export default ({
             onContainerClick={() => {
               openAssignedToPopover();
             }}
-            rightAdornment={rightAdornment}
+            rightAdornment={<RightAdornment currentMember={currentMember} />}
           />
         </Grid>
       </FormContainer>
