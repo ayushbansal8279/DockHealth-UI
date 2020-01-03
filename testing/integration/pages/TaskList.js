@@ -307,9 +307,11 @@ module.exports = {
     I.wait(3);
   },
 
+  //TODO using postComment screws up the paths, and makes deleting a task impossible.
   postComment(comment) {
     I.waitForElement(this.fields.commentShield, 5);
     I.click(this.fields.commentShield);
+    I.wait();
     I.waitForElement(this.fields.commentBox, 5);
     I.fillField(this.fields.commentBox, comment);
     I.pressKey('Enter');
@@ -462,6 +464,7 @@ module.exports = {
   clickFilter(index){//Index starts at 1 for all tasks
     I.waitForElement(this.fields.filtersWrapper, 3);
     const address = `${this.fields.filtersWrapper.css} > div:nth-child(${index})`;
+    I.wait();
     I.click(address);
     I.wait();
   },

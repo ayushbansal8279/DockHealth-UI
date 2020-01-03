@@ -21,7 +21,10 @@ Scenario('Make a task, fill it out.', async(tasksPg) => {
   // tasksPg.postComment("Bazinger");
   //pause();
   tasksPg.exitTask(0);
-  tasksPg.clickFilter(1);
+  
+  tasksPg.openEditSidebar(1, 0);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 
   // tasksPg.openEditSidebar(1, 0);
   // await tasksPg.deleteTask(1, 0);
@@ -37,6 +40,10 @@ Scenario('Make a task, and flag it, check hud', async (I, tasksPg) => {
   tasksPg.flagTask();
   tasksPg.exitTask(0);
   await tasksPg.checkTasksHUD(1,1,0,0);
+
+  tasksPg.openEditSidebar(1, 0);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 });
   
 Scenario('Make a task, give it an assigned date, check hud.', async (I, tasksPg) => {
@@ -45,6 +52,10 @@ Scenario('Make a task, give it an assigned date, check hud.', async (I, tasksPg)
   tasksPg.addDueDate(1,4,1);//Week and day of week...
   tasksPg.exitTask();
   await tasksPg.checkTasksHUD(1,0,0,1);
+
+  tasksPg.openEditSidebar(1, 0);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 });
 
 Scenario('Testing subtask mechanics', async (I, tasksPg) => {
@@ -58,7 +69,9 @@ Scenario('Testing subtask mechanics', async (I, tasksPg) => {
   //TODO assignSubtaskTo refuses to click the targetted user. The path is valid.
   //pause();
   tasksPg.saveSubtask();
-  tasksPg.postComment("Regular comments work?");
+
+  //TODO Post comment is broken.
+  //tasksPg.postComment("Regular comments work?");
   //tasksPg.exitTask(0);
   tasksPg.exitSubtask();
   //I.waitForText("Bumblefork");
@@ -76,10 +89,11 @@ Scenario('Testing subtask mechanics', async (I, tasksPg) => {
   I.see("HumbleSnork");
 
   tasksPg.openEditSidebar(1, 0);
-  await tasksPg.deleteTask(1);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Make a search', (I, tasksPg) => {
+Scenario('Make a search', async (I, tasksPg) => {
   const searchKeyword = "Gorgo";
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask(searchKeyword);
@@ -111,18 +125,26 @@ Scenario('Make a search', (I, tasksPg) => {
   I.see("Gorgo");
   tasksPg.clickFilter(1);
   //tasksPg.exitTask(1);
+
+  tasksPg.openEditSidebar(1, 0);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Mark a task as complete', (I, tasksPg) => {
+Scenario('Mark a task as complete', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Aardvark");
   tasksPg.exitTask(0);
   tasksPg.markTaskComplete(1);
   tasksPg.search("");
   //pause();
+
+  tasksPg.openEditSidebar(1, 0);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Assign task to user WO sidebar', (I, tasksPg) =>{
+Scenario('Assign task to user WO sidebar', async (I, tasksPg) =>{
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Snuffleuppagus");
   tasksPg.exitTask(0);
@@ -130,7 +152,8 @@ Scenario('Assign task to user WO sidebar', (I, tasksPg) =>{
   tasksPg.openEditSidebar(1, 1);
   //TODO tasksPg.changeAssignedUserNoSidebar(1, 1, 1);
 
-
+  //pause();
+  await tasksPg.deleteTask(1, 1);
 
   //tasksPg.exitTask(0);
   //tasksPg.openEditSidebar(1, 0);
@@ -145,17 +168,22 @@ Scenario('Assign task to user WO sidebar', (I, tasksPg) =>{
   //pause();
 });
 
-Scenario('Assign to patient', (I, tasksPg) => {
+Scenario('Assign to patient', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Pringles");
   tasksPg.attachPatient(2);
   tasksPg.exitTask(0);
   I.wait();
   I.see("null, null 126");
+
+
+  tasksPg.openEditSidebar(1, 0);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 });
 
 
-Scenario('Click Filters', (I, tasksPg) => {
+Scenario('Click Filters', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Gorgo");
   tasksPg.flagTask();
@@ -165,11 +193,16 @@ Scenario('Click Filters', (I, tasksPg) => {
   tasksPg.clickFilter(2);
   I.see("Gorgo");
   tasksPg.clickFilter(1);
+
+
+  tasksPg.openEditSidebar(1, 0);
+  //pause();
+  await tasksPg.deleteTask(1, 0);
 });
 
 
 After(async (tasksPg) =>{
-  tasksPg.openEditSidebar(1, 0);
+  // tasksPg.openEditSidebar(1, 0);
   //pause();
-  await tasksPg.deleteTask(1, 0);
+  // await tasksPg.deleteTask(1, 0);
 });
