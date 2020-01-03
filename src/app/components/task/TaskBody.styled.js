@@ -23,7 +23,7 @@ export const PatientsTasklistDescription = styled.div`
   display: inline-flex;
   font-size: 1rem;
   font-weight: bold;
-  line-height: 1;
+  line-height: 1.25;
   flex: 1;
   max-width: 450px;
   padding-bottom: 0.125rem;
@@ -68,7 +68,7 @@ export const PatientsTasklistInfo = styled.div`
   animation-timing-function: linear;
   color: #5e6366;
   font-size: 0.875rem;
-  line-height: 1;
+  line-height: 1.15;
   padding-bottom: 0.1875rem;
   white-space: nowrap;
 

@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 
 import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
@@ -26,35 +26,6 @@ const animationProperties = {
   exit: 'hidden',
   animate: 'visible',
   transition: { ease: 'backInOut', duration: 0.25 },
-};
-
-const AnimatedPatientsTasklistInfo = ({ children }) => {
-  const infoReference = useRef(null);
-  const [animated, setAnimated] = useState(false);
-  const referenceScrollWidth = infoReference.current?.scrollWidth;
-  const referenceOffsetWidth = infoReference.current?.offsetWidth;
-
-  const animationDuration =
-    (referenceScrollWidth - referenceOffsetWidth) / 20 || 0;
-
-  const stopPercentage = (100 * 0.5) / (animationDuration + 1);
-
-  useEffect(() => {
-    setAnimated(referenceScrollWidth > referenceOffsetWidth);
-  }, [referenceOffsetWidth, referenceScrollWidth]);
-
-  return (
-    <PatientsTasklistInfo
-      animated={animated}
-      animationDuration={animationDuration + 1}
-      referenceScrollWidth={referenceScrollWidth}
-      referenceOffsetWidth={referenceOffsetWidth}
-      stopPercentage={stopPercentage}
-      ref={infoReference}
-    >
-      {children}
-    </PatientsTasklistInfo>
-  );
 };
 
 export default ({
@@ -117,33 +88,36 @@ export default ({
                   value: description || 'Unnamed task',
                 }),
               )}
+              {createdDateTime !== updatedDateTime && (
+                <EditedTaskDescriptionLabel>
+                  (edited)
+                </EditedTaskDescriptionLabel>
+              )}
               <PatientsTasklistStrikeThrough
                 hasDescription={Boolean(description)}
                 active={status === 'COMPLETE'}
               />
             </PatientsTaskListInnerDescription>
           </span>
-          {createdDateTime !== updatedDateTime && (
-            <EditedTaskDescriptionLabel>(edited)</EditedTaskDescriptionLabel>
-          )}
         </PatientsTasklistDescription>
       </TaskDescriptionOuterContainer>
-      <div style={{ overflow: 'hidden', width: '100%' }}>
-        <AnimatedPatientsTasklistInfo>
-          {updated && (
-            <img
-              src={UpdateIndicatorIcon}
-              alt="Updated"
-              style={{
-                height: '1rem',
-                paddingRight: '0.125rem',
-                width: '1rem',
-              }}
-            />
-          )}
-          {`Assigned by ${formattedUserName} ${formattedCreationDate}${countInfoContent}`}
-        </AnimatedPatientsTasklistInfo>
-      </div>
+      <PatientsTasklistInfo>
+        {updated && (
+          <img
+            src={UpdateIndicatorIcon}
+            alt="Updated"
+            style={{
+              height: '1rem',
+              paddingRight: '0.125rem',
+              width: '1rem',
+            }}
+          />
+        )}
+        {`Assigned by ${formattedUserName} ${formattedCreationDate}`}
+      </PatientsTasklistInfo>
+      {countInfoContent && (
+        <PatientsTasklistInfo>{countInfoContent}</PatientsTasklistInfo>
+      )}
       <div>
         <CompletedBy isCompleted={status === 'COMPLETE' && completedByContent}>
           <span>{completedByContent}</span>

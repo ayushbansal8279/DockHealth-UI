@@ -19,15 +19,26 @@ const getCountInfoData = ({ subtasks, comments }) => {
     );
   }
 
-  let countInfoContent = countInfoContentArray.join(' | ');
-
-  if (countInfoContent.trim().length > 0) {
-    countInfoContent = ` • ${countInfoContent.trim()}`;
-  }
+  const countInfoContent = countInfoContentArray.join(' | ').trim();
 
   return {
     countInfoContent,
   };
+};
+
+const formatDateTimeMomentAccordingToCurrentTime = ({
+  currentMoment,
+  comparedMoment,
+}) => {
+  if (comparedMoment.isValid()) {
+    if (currentMoment.isSame(comparedMoment, 'date')) {
+      return comparedMoment.format('[@] h:mma');
+    }
+
+    return comparedMoment.format('[on] MM/DD/YYYY');
+  }
+
+  return '';
 };
 
 export default ({
@@ -40,16 +51,24 @@ export default ({
   completedBy,
   isInbox,
 }) => {
-  const formattedCreationDate = moment(createdDateTime).format(
-    '[on] MM/DD/YYYY [@] h:mma',
-  );
   const dueDateMoment = moment(dueDate);
   const formattedDueDate = dueDateMoment.format('ddd, MMM D');
   const completedDateTimeMoment = moment(completedDateTime);
   const overdue = dueDateMoment.isBefore(moment().format('YYYY-MM-DD'));
-  const formattedCompletedDateTime = completedDateTimeMoment.isValid()
-    ? completedDateTimeMoment.format('[on] MM/DD/YYYY [@] h:mma')
-    : '';
+
+  const currentMoment = moment();
+
+  const formattedCompletedDateTime = formatDateTimeMomentAccordingToCurrentTime(
+    {
+      currentMoment,
+      comparedMoment: completedDateTimeMoment,
+    },
+  );
+
+  const formattedCreationDate = formatDateTimeMomentAccordingToCurrentTime({
+    currentMoment,
+    comparedMoment: moment(createdDateTime),
+  });
 
   const { countInfoContent } = getCountInfoData({ subtasks, comments });
 
@@ -73,7 +92,6 @@ export default ({
       : store.taskListState.tasklistmembers,
   );
 
-  const currentMoment = moment();
   const tenMinutesAgoMoment = moment().subtract(10, 'minutes');
 
   const hasNewComment =
