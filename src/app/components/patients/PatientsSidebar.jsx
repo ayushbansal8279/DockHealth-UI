@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { highlightPatient } from '../../actions/patient-actions';
 import { findUserTasksByPatient } from '../../api/patient-api';
 import { Flag } from '../../flags';
-import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
+import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import PhoneCellIcon from '../../img/phone-cell.svg';
 import PhoneHomeIcon from '../../img/phone-home.svg';
 import PatientEdit from './PatientEdit';

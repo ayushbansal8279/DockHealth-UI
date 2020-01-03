@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import styled from 'styled-components';
 
 import { saveTask, storeAsCurrentTask } from '../../actions/task-actions';
-import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
+import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import useBoolean from '../../hooks/useBoolean';
 import usePatient from '../../hooks/usePatient';
 import BackIcon from '../../img/back.svg';
