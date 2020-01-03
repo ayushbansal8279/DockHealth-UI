@@ -6,10 +6,12 @@ import { Link } from 'react-router';
 import { bindActionCreators } from 'redux';
 
 import { setHeader as setHeaderRaw } from '../actions/header-actions';
+import * as PeopleActions from '../actions/people-actions';
 import * as TaskActions from '../actions/task-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import GenericHeader from '../components/common/GenericHeader';
 import TaskListSearchContainer from '../components/LEGACY_list/TaskListSearchContainer';
+import HeadsUpAreaChart from '../components/taskView/HeadsUpArea.chart';
 import {
   HeadsUpAreaContainer,
   HeadsUpButtonsContainer,
@@ -24,8 +26,9 @@ import {
   HeadsUpSectionLabelOuterContainer,
 } from '../components/taskView/HeadsUpArea.Styled';
 import BackIcon from '../img/back.svg';
+import PersonInfoPanel from './PersonTaskList.PersonInfoPanel';
 import { BackButton } from './PersonTaskList.Styled';
-import HeadsUpAreaChart from '../components/taskView/HeadsUpArea.chart';
+import { noop } from '../helpers/utility-functions';
 
 const tabData = [
   {
@@ -76,106 +79,6 @@ const dummyNewTasksByDate = [
     metricName: 'NewTasks',
     metricValue: 1,
   },
-  {
-    date: '2019-12-02T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 3,
-  },
-  {
-    date: '2019-11-29T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 13,
-  },
-  {
-    date: '2019-11-26T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 2,
-  },
-  {
-    date: '2019-11-22T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 16,
-  },
-  {
-    date: '2019-11-21T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 3,
-  },
-  {
-    date: '2019-11-20T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 4,
-  },
-  {
-    date: '2019-11-19T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 15,
-  },
-  {
-    date: '2019-11-18T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 5,
-  },
-  {
-    date: '2019-11-16T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 5,
-  },
-  {
-    date: '2019-11-15T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 6,
-  },
-  {
-    date: '2019-11-14T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 1,
-  },
-  {
-    date: '2019-11-13T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 1,
-  },
-  {
-    date: '2019-11-08T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 3,
-  },
-  {
-    date: '2019-11-07T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 5,
-  },
-  {
-    date: '2019-11-05T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 1,
-  },
-  {
-    date: '2019-10-31T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 2,
-  },
-  {
-    date: '2019-10-28T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 2,
-  },
-  {
-    date: '2019-10-25T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 7,
-  },
-  {
-    date: '2019-10-24T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 1,
-  },
-  {
-    date: '2019-10-17T00:00:00.000+0000',
-    metricName: 'NewTasks',
-    metricValue: 6,
-  },
 ];
 
 class TaskListSearch extends PureComponent {
@@ -186,10 +89,11 @@ class TaskListSearch extends PureComponent {
 
   tabButtonReferences = times(() => React.createRef(), tabData.length);
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
+      peopleActions,
       taskActions,
-      routeParams: { memberName, personId },
+      routeParams: { email },
       setHeader,
     } = this.props;
 
@@ -197,39 +101,55 @@ class TaskListSearch extends PureComponent {
       PageName: 'PersonTaskList',
     });
 
-    taskActions.loading();
-    taskActions.getTasksAssignedToSpecificUser(
-      personId,
-      undefined,
-      undefined,
-      undefined,
-      'INCOMPLETE',
-    );
-    taskActions.getTasksAssignedToSpecificUser(
-      personId,
-      undefined,
-      undefined,
-      undefined,
-      'COMPLETE',
-    );
+    let personData = {};
 
-    setHeader({
-      layout: [
-        {
-          key: 'generic-header',
-          component: (
-            <GenericHeader isFetching={false}>
-              <Link to="people">
-                <BackButton>
-                  <img src={BackIcon} alt="Go back to people list" />
-                </BackButton>
-              </Link>
-              <span>{memberName}</span>
-            </GenericHeader>
-          ),
-        },
-      ],
-    });
+    try {
+      personData = await peopleActions.getUserByEmail({ email });
+
+      if (parseInt(personData.userId, 10)) {
+        taskActions.loading();
+        taskActions.getTasksAssignedToSpecificUser(
+          personData.userId,
+          undefined,
+          undefined,
+          undefined,
+          'INCOMPLETE',
+        );
+        taskActions.getTasksAssignedToSpecificUser(
+          personData.userId,
+          undefined,
+          undefined,
+          undefined,
+          'COMPLETE',
+        );
+      }
+    } catch {
+      noop();
+    }
+
+    let memberName = '';
+
+    if (personData.firstName || personData.lastName) {
+      memberName = `${personData.firstName} ${personData.lastName}`.trim();
+
+      setHeader({
+        layout: [
+          {
+            key: 'generic-header',
+            component: (
+              <GenericHeader isFetching={false}>
+                <Link to="people">
+                  <BackButton>
+                    <img src={BackIcon} alt="Go back to people list" />
+                  </BackButton>
+                </Link>
+                <span>{memberName}</span>
+              </GenericHeader>
+            ),
+          },
+        ],
+      });
+    }
   }
 
   handleKeyPress = event => {
@@ -328,9 +248,13 @@ class TaskListSearch extends PureComponent {
 
   render() {
     const { searchPerformed, displayHUD } = this.state;
+    const { personData, isFetching } = this.props;
 
     return (
       <Grid direction="column" alignItems="center" container>
+        {personData && !isFetching && (
+          <PersonInfoPanel personData={personData} />
+        )}
         {displayHUD && (
           <HeadsUpAreaContainer>
             <Grid container>
@@ -382,12 +306,14 @@ function mapStateToProps(state) {
   return {
     tasks: state.taskState.tasks,
     isFetching: state.taskState.isFetching,
+    personData: state.peopleState.personData,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     taskActions: bindActionCreators(TaskActions, dispatch),
+    peopleActions: bindActionCreators(PeopleActions, dispatch),
     setHeader: setHeaderRaw(dispatch),
   };
 }

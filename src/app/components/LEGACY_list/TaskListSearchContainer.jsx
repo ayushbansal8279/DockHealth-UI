@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 import * as TaskActions from '../../actions/task-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
-import { groupTasksAndCompletedTasksByList } from '../../helpers/groupTasksByList';
+import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import useBoolean from '../../hooks/useBoolean';
 import CollapseIcon from '../../img/collapse.svg';
 import FilterIcon from '../../img/filter.svg';
@@ -275,7 +275,7 @@ class TaskListSearchContainer extends PureComponent {
 
   handleSearch = event => {
     const { value } = event.target;
-    const searchTerms = value.toLowerCase().match(/\S+/g) || [];
+    const searchTerms = value?.toLowerCase().match(/\S+/g) || [];
 
     this.setState({ searchTerms });
   };

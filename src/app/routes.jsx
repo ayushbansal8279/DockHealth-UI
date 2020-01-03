@@ -139,7 +139,7 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureToggles}
           />
           <Route
-            path="/assignedToPerson/:personId/:memberName"
+            path="/assignedToPerson/:email"
             component={PersonTaskList}
             onEnter={checkFeatureToggles}
           />

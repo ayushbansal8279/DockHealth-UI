@@ -27,17 +27,15 @@ export function invitePersonToOrganization(formProps) {
 
   return dispatch =>
     PeopleApi.invitePersonToOrganization(personInfo)
-      .then(res => {
-        if (res.statusCode === 'FAILURE') {
-          toggleAlert(res.errorMessage, 'error');
+      .then(response => {
+        if (response.statusCode === 'FAILURE') {
+          throw response;
         } else {
-          dispatch({ type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res });
-          toggleAlert('Invitation sent!', 'success');
+          dispatch({ type: ActionTypes.INVITEPERSON_ORG_SUCCESS, response });
         }
-        return res;
+        return response;
       })
       .catch(error => {
-        // console.log(error.message);
         throw error;
       });
 }
@@ -47,12 +45,11 @@ export function resendInviteToOrganization(email) {
 
   return dispatch =>
     PeopleApi.resendInviteToOrganization(personInfo)
-      .then(res => {
-        dispatch({ type: ActionTypes.INVITEPERSON_ORG_SUCCESS, res });
+      .then(response => {
+        dispatch({ type: ActionTypes.INVITEPERSON_ORG_SUCCESS, response });
         toggleAlert('Invitation resent!', 'success');
       })
       .catch(error => {
-        // console.log(error.message);
         throw error;
       });
 }
@@ -60,8 +57,8 @@ export function resendInviteToOrganization(email) {
 export function changeUserRoleForOrg(markedUserId, role) {
   return dispatch =>
     PeopleApi.changeUserRoleForOrg(markedUserId, role)
-      .then(res => {
-        dispatch({ type: ActionTypes.CHANGEUSERROLE_ORG_SUCCESS, res });
+      .then(response => {
+        dispatch({ type: ActionTypes.CHANGEUSERROLE_ORG_SUCCESS, response });
       })
       .catch(error => {
         throw error;
@@ -71,8 +68,11 @@ export function changeUserRoleForOrg(markedUserId, role) {
 export function cancelInviteToOrganization(markedUserEmail) {
   return dispatch =>
     PeopleApi.cancelInviteToOrganization(markedUserEmail)
-      .then(res => {
-        dispatch({ type: ActionTypes.CANCEL_USER_ORG_INVITE_SUCCESS, res });
+      .then(response => {
+        dispatch({
+          type: ActionTypes.CANCEL_USER_ORG_INVITE_SUCCESS,
+          response,
+        });
       })
       .catch(error => {
         throw error;
@@ -82,9 +82,8 @@ export function cancelInviteToOrganization(markedUserEmail) {
 export function removeUserFromOrganization(removedUserId) {
   return dispatch =>
     PeopleApi.removeUserFromOrganization(removedUserId)
-      .then(res => {
-        dispatch({ type: ActionTypes.REMOVE_USER_ORG_SUCCESS, res });
-        toggleAlert('User removed successfully');
+      .then(response => {
+        dispatch({ type: ActionTypes.REMOVE_USER_ORG_SUCCESS, response });
       })
       .catch(error => {
         throw error;
@@ -92,14 +91,21 @@ export function removeUserFromOrganization(removedUserId) {
 }
 
 export function getUserById(userId) {
-  return dispatch =>
-    PeopleApi.getUserById(parseInt(userId, 10))
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.GET_USER_DETAILS_SUCCESS,
+      user: null,
+      userId,
+    });
+
+    return PeopleApi.getUserById(parseInt(userId, 10))
       .then(user => {
         dispatch({ type: ActionTypes.GET_USER_DETAILS_SUCCESS, user, userId });
       })
       .catch(error => {
         throw error;
       });
+  };
 }
 
 export function getUserAvatar(user) {
@@ -107,6 +113,21 @@ export function getUserAvatar(user) {
     PeopleApi.getUserAvatar(user)
       .then(() => {
         dispatch({ type: ActionTypes.GET_USER_AVATAR_SUCCESS, user });
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
+export function getUserByEmail({ email }) {
+  return dispatch =>
+    PeopleApi.getUserByEmail({ email })
+      .then(response => {
+        dispatch({
+          type: ActionTypes.GET_USER_DETAILS_SUCCESS,
+          user: response,
+        });
+        return response;
       })
       .catch(error => {
         throw error;

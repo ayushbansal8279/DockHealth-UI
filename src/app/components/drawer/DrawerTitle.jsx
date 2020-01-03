@@ -13,7 +13,7 @@ const TitleContainer = styled.div`
   transition: top 0.2s ease-out;
   top: ${props => (props.open ? 0 : -88)}px;
   width: calc(100vw - 100%);
-  z-index: 10;
+  z-index: 1;
 `;
 
 const MainGrid = styled(Grid)`
