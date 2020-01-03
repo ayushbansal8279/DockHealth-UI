@@ -107,7 +107,7 @@ module.exports = {
 
     subtaskSaveButton:{
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(3)'
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3)  > div > div > div:nth-child(2) > div:nth-child(4) > button:nth-child(2)'
     },
 
     subtaskExitButton: {
@@ -294,6 +294,7 @@ module.exports = {
   openEditSidebar(taskIndex, filtered) {//Intended filter is the filter thats selected starting with 1 as all active tasks
     taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
     I.waitForElement({css: taskSidebarLocator}, 4);
+    I.scrollTo({css: taskSidebarLocator});
     I.click({css: taskSidebarLocator});
     I.wait();
   },
@@ -375,11 +376,12 @@ module.exports = {
     I.wait(2);
   },
 
-  markTaskComplete(taskIndex, filtered){
-    const checkBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
+  markTaskComplete(taskIndex){
+    //const checkBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
+    const checkBox = {css: `#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1)  > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
     I.waitForElement(checkBox, 2);
     I.click(checkBox);
-    I.wait();
+    I.wait(2);
   },
 
   changeAssignedUserNoSidebar(taskIndex, filtered, userIndex){ //Selecting nonsidebar faces is messy.
@@ -400,7 +402,7 @@ module.exports = {
     }
     I.waitForElement(exitEditSidebar, 2);
     I.click(exitEditSidebar);
-    I.wait(2);
+    I.wait(3);
   },
 
   clickForMe(){
@@ -420,26 +422,33 @@ module.exports = {
   
   //Subtasks
   addSubtask(index, title) {
-    addSubtaskLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(${index+3}) > span`;
+    addSubtaskLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(${index+4}) > span`;
+    //pause();
     I.waitForElement({css: addSubtaskLocator}, 4);
     I.click({css: addSubtaskLocator});
+    //pause();
     I.waitForElement(this.fields.subtaskTitle, 4);
     I.fillField(this.fields.subtaskTitle, title);
     I.wait();
   },
 
   assignSubtaskTo(userIndex){
-    assignedLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${userIndex}) > span`;
+    //TODO this method refuses to click assignedLocator. Explitives
+    assignedLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${userIndex})`;
     I.waitForElement(this.fields.subtaskAssignedShield);
     I.click(this.fields.subtaskAssignedShield);
+    //pause();
+    //I.wait(4);
     I.waitForElement({css: assignedLocator}, 4);
     I.click({css: assignedLocator});
+    //I.click({css: assignedLocator});
     I.wait();
   },
 
   saveSubtask() {
     I.waitForElement(this.fields.subtaskSaveButton, 3);
     I.click(this.fields.subtaskSaveButton);
+    I.wait();
   },
 
   exitSubtask() {
@@ -484,10 +493,14 @@ module.exports = {
 
   async deleteTask(taskIndex, filtered) { //The path to the delete button is changed if a filter is applied
     //deleteButtonLocatorV2 = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex + 2 + filtered}) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)`;
-    const deleteButtonLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex+2+filtered}) > div > div > div:nth-child(2) > div:nth-child(2) > button:nth-child(1)`;
+    const deleteButtonLocator = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${taskIndex+2+filtered}) > div > div > div:nth-child(2) > div:nth-child(2) > button:nth-child(1)`}
     //deleteButtonLocatorFORFIRSTFLAGGEDTSK = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(4) > div > div > div:nth-child(2)  > form > div:nth-child(2) > button:nth-child(1)`;
-    I.waitForElement({ css: deleteButtonLocator }, 4);
-    I.click({ css: deleteButtonLocator });
+    I.wait();
+    I.waitForElement(deleteButtonLocator, 4);
+    //TODO trying to reach the delete button blows up the process...
+    // I.scrollTo(deleteButtonLocator);
+    // I.wait();
+    I.click(deleteButtonLocator);
     I.wait(2);
   },
 
