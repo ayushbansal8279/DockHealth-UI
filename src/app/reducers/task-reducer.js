@@ -38,6 +38,7 @@ import {
   REQUEST_HISTORY,
   REQUEST_TASKS,
   SET_AS_CURRENT_TASK,
+  SET_AS_CURRENT_TASK_WITH_SELECTED_TASK_CHECK,
   TASK_ARCHIVED,
   TASK_ATTACHMENT_ADDED,
   TASK_ATTACHMENT_REMOVED,
@@ -169,6 +170,14 @@ const isSubtask = ({ parentTaskId }) => parentTaskId !== null;
 const isParentOfAddedTask = addedTask => ({ taskId }) =>
   taskId === addedTask.parentTaskId;
 
+const mapTasksSuccess = task => ({
+  ...task,
+  subtasks: task.subtasks?.map(subtask => ({
+    ...subtask,
+    patient: task.patient,
+  })),
+});
+
 const TaskReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TASK_SUCCESS: {
@@ -213,13 +222,7 @@ const TaskReducer = (state = initialState, action) => {
     case GET_TASKS_SUCCESS: {
       let { tasks } = action;
 
-      tasks = tasks.map(task => ({
-        ...task,
-        subtasks: task.subtasks?.map(subtask => ({
-          ...subtask,
-          patient: task.patient,
-        })),
-      }));
+      tasks = tasks.map(mapTasksSuccess);
 
       return { ...state, tasks, isFetching: false };
     }
@@ -227,13 +230,7 @@ const TaskReducer = (state = initialState, action) => {
     case GET_COMPLETED_TASKS_SUCCESS: {
       let { tasks } = action;
 
-      tasks = tasks.map(task => ({
-        ...task,
-        subtasks: task.subtasks?.map(subtask => ({
-          ...subtask,
-          patient: task.patient,
-        })),
-      }));
+      tasks = tasks.map(mapTasksSuccess);
 
       return {
         ...state,
@@ -337,9 +334,9 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTask
-            ? (action.task.parentTaskId
+        tasks: state.tasks.map(task => {
+          if (task.taskId === mainTask) {
+            return action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -351,9 +348,11 @@ const TaskReducer = (state = initialState, action) => {
                       : subtask,
                   ),
                 }
-              : { ...task, description: action.description })
-            : task,
-        ),
+              : { ...task, description: action.description };
+          }
+
+          return task;
+        }),
       };
     }
 
@@ -453,9 +452,9 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTask
-            ? (action.task.parentTaskId
+        tasks: state.tasks.map(task => {
+          if (task.taskId === mainTask) {
+            return action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -464,9 +463,11 @@ const TaskReducer = (state = initialState, action) => {
                       : subtask,
                   ),
                 }
-              : { ...task, priority: action.priority })
-            : task,
-        ),
+              : { ...task, priority: action.priority };
+          }
+
+          return task;
+        }),
       };
     }
 
@@ -475,9 +476,9 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTask
-            ? (action.task.parentTaskId
+        tasks: state.tasks.map(task => {
+          if (task.taskId === mainTask) {
+            return action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -498,9 +499,11 @@ const TaskReducer = (state = initialState, action) => {
                   assignedBy: action.task.assignedBy,
                   assignmentUpdatedDateTime:
                     action.task.assignmentUpdatedDateTime,
-                })
-            : task,
-        ),
+                };
+          }
+
+          return task;
+        }),
       };
     }
 
@@ -593,9 +596,9 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTaskId
-            ? (action.task.parentTaskId
+        tasks: state.tasks.map(task => {
+          if (task.taskId === mainTaskId) {
+            return action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -615,9 +618,11 @@ const TaskReducer = (state = initialState, action) => {
                   comments: task.comments.filter(
                     comment => comment.commentId !== action.comment.commentId,
                   ),
-                })
-            : task,
-        ),
+                };
+          }
+
+          return task;
+        }),
       };
     }
 
@@ -636,9 +641,9 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: state.tasks.map(task =>
-          task.taskId === mainTask
-            ? (action.task.parentTaskId
+        tasks: state.tasks.map(task => {
+          if (task.taskId === mainTask) {
+            return action.task.parentTaskId
               ? {
                   ...task,
                   subtasks: task.subtasks.map(subtask =>
@@ -655,9 +660,11 @@ const TaskReducer = (state = initialState, action) => {
                   ...task,
                   read: action.task.read,
                   updated: action.task.updated,
-                })
-            : task,
-        ),
+                };
+          }
+
+          return task;
+        }),
       };
     }
 
@@ -667,6 +674,17 @@ const TaskReducer = (state = initialState, action) => {
         selectedTask: action.task,
         selectedTaskId: action.task != null ? action.task.taskId : null,
       };
+
+    case SET_AS_CURRENT_TASK_WITH_SELECTED_TASK_CHECK:
+      if (state.selectedTask) {
+        return {
+          ...state,
+          selectedTask: action.task,
+          selectedTaskId: action.task != null ? action.task.taskId : null,
+        };
+      }
+
+      return state;
 
     case GET_TASK_HISTORY_SUCCESS:
       return requestHistorySuccess(state, action);
