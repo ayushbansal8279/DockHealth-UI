@@ -474,25 +474,27 @@ class TaskView extends Component {
       dispatchedSetHeader,
     } = this.props;
 
-    dispatchedSetHeader({
-      backgroundColor: '#fff',
-      layout: [
-        {
-          key: 'header',
-          component: (
-            <Header
-              isFetching={isFetching}
-              title={title}
-              taskCount={tasks.length}
-              members={members}
-              taskList={taskList}
-              resetHeader={this.resetHeader}
-            />
-          ),
-          xs: 12,
-        },
-      ],
-    });
+    if (title) {
+      dispatchedSetHeader({
+        backgroundColor: '#fff',
+        layout: [
+          {
+            key: 'header',
+            component: (
+              <Header
+                isFetching={isFetching}
+                title={title}
+                taskCount={tasks.length}
+                members={members}
+                taskList={taskList}
+                resetHeader={this.resetHeader}
+              />
+            ),
+            xs: 12,
+          },
+        ],
+      });
+    }
   };
 
   clearStoredCurrentTask = () => {
@@ -823,6 +825,7 @@ class TaskView extends Component {
       showSortingStats = true,
       isInbox = false,
       tasks,
+      showAddTaskButton = true,
     } = this.props;
     const {
       initialSearchValue,
@@ -876,6 +879,7 @@ class TaskView extends Component {
               taskDrawerOpen={taskDrawerOpen}
               toggleHUD={this.toggleHUD}
               toolbarContainerVisible={toolbarContainerVisible}
+              showAddTaskButton={showAddTaskButton}
             />
           )}
           <AnimatePresence>
