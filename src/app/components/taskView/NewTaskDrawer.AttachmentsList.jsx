@@ -22,12 +22,20 @@ import {
 
 const acceptedFileFormats = [
   'application/pdf',
-  'audio/mpeg',
-  'audio/wav',
-  'image/jpeg',
-  'image/png',
-  'video/mpeg',
-  'video/mp4',
+  'application/zip',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'audio/*',
+  'image/*',
+  'video/*',
+  'text/html',
+  'text/plain',
+  'text/xml',
+  'text/csv',
 ].join(', ');
 
 const renderAttachmentListEntry = ({

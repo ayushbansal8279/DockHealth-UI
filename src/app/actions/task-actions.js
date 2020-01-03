@@ -478,6 +478,10 @@ export function assignOrReassignTask(task, assignedToUserId) {
           type: ActionTypes.ASSIGN_OR_REASSIGN_TASK_SUCCESS,
           task: assignedTask,
         });
+        dispatch({
+          type: ActionTypes.SET_AS_CURRENT_TASK_WITH_SELECTED_TASK_CHECK,
+          task: assignedTask,
+        });
         reloadTaskListStats(dispatch, assignedTask);
       })
       .catch(error => {

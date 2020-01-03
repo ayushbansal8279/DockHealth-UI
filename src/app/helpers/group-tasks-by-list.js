@@ -1,20 +1,19 @@
-import {
-  groupBy,
-  map,
-  path,
-  pipe,
-  values,
-  keys,
-  head,
-  propOr,
-  concat,
-  uniq,
-  isNil,
-  curry,
-  sortBy,
-  prop,
-  toLower,
-} from 'ramda';
+import concat from 'ramda/es/concat';
+import curry from 'ramda/es/curry';
+import defaultTo from 'ramda/es/defaultTo';
+import groupBy from 'ramda/es/groupBy';
+import head from 'ramda/es/head';
+import isNil from 'ramda/es/isNil';
+import keys from 'ramda/es/keys';
+import map from 'ramda/es/map';
+import path from 'ramda/es/path';
+import pipe from 'ramda/es/pipe';
+import prop from 'ramda/es/prop';
+import propOr from 'ramda/es/propOr';
+import sortBy from 'ramda/es/sortBy';
+import toLower from 'ramda/es/toLower';
+import uniq from 'ramda/es/uniq';
+import values from 'ramda/es/values';
 
 /**
  * @typedef {Object} TaskList
@@ -39,6 +38,7 @@ const safeGroupBy = curry((getKey, list) =>
 const sortByName = sortBy(
   pipe(
     prop('listName'),
+    defaultTo(''),
     toLower,
   ),
 );

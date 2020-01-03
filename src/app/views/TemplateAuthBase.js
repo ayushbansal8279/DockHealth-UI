@@ -26,7 +26,9 @@ const TemplateAuthBase = ({ children }) => (
       </TemplateAuthBaseContainer>
       <ContentContainer>
         <DockLogoContainer>
-          <DockLogo src="assets/img/dock-logo.png" alt="Dock Health" />
+          <a href="/">
+            <DockLogo src="assets/img/dock-logo.png" alt="Dock Health" />
+          </a>
         </DockLogoContainer>
         <MainContentContainer>{children}</MainContentContainer>
       </ContentContainer>

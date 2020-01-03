@@ -9,13 +9,19 @@ import { setHeader as setHeaderRaw } from '../actions/header-actions';
 import * as PeopleActions from '../actions/people-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
-import GenericHeader from '../components/common/GenericHeader';
+import EmptyHeader from '../components/common/EmptyHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import InvitePeople from '../components/people/InvitePeople';
 import PeopleContainer from '../components/people/PeopleContainer';
-import Search from '../components/taskView/Search';
-import { HeaderLabel, SearchContainer } from './PeopleView.Styled';
 import PeopleContainerSortButton from '../components/people/PeopleContainer.SortButton';
+import Search from '../components/taskView/Search';
+import InvitePersonIcon from '../img/invite-person-icon.svg';
+import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
+import {
+  HeaderLabel,
+  InvitePeopleButton,
+  SearchContainer,
+} from './PeopleView.Styled';
 
 const CubesLoaderContainer = styled.div`
   display: flex;
@@ -26,7 +32,10 @@ const CubesLoaderContainer = styled.div`
 class PeopleView extends PureComponent {
   state = {
     searchTerm: '',
+    invitePopoverOpen: false,
   };
+
+  invitePeopleButtonReference = React.createRef();
 
   async componentDidMount() {
     const { location, peopleActions } = this.props;
@@ -51,6 +60,13 @@ class PeopleView extends PureComponent {
     this.resetHeader();
   }
 
+  toggleInvitePopover = ({ newInvitePopoverState } = {}) => {
+    const { invitePopoverOpen } = this.state;
+    this.setState({
+      invitePopoverOpen: newInvitePopoverState || !invitePopoverOpen,
+    });
+  };
+
   resetHeader = () => {
     const { peopleList, setHeader } = this.props;
 
@@ -59,19 +75,41 @@ class PeopleView extends PureComponent {
         {
           key: 'generic-header',
           component: (
-            <GenericHeader>
-              <Grid
-                container
-                direction="column"
-                alignItems="flex-start"
-                justify="center"
-              >
-                <HeaderLabel>People</HeaderLabel>
-                <HeaderLabel small>
-                  {peopleList?.length ?? 0} people
-                </HeaderLabel>
+            <EmptyHeader>
+              <Grid container>
+                <Grid
+                  item
+                  xs={9}
+                  container
+                  direction="column"
+                  alignItems="flex-start"
+                  justify="center"
+                >
+                  <HeaderLabel>People</HeaderLabel>
+                  <HeaderLabel small>
+                    {peopleList?.length ?? 0} people
+                  </HeaderLabel>
+                </Grid>
+                <Grid
+                  item
+                  xs={3}
+                  container
+                  justify="flex-end"
+                  style={{
+                    paddingRight: '8rem',
+                  }}
+                >
+                  <InvitePeopleButton
+                    ref={this.invitePeopleButtonReference}
+                    onClick={() =>
+                      this.toggleInvitePopover({ newInvitePopoverState: true })
+                    }
+                  >
+                    <img alt="+" src={InvitePersonIcon} />
+                  </InvitePeopleButton>
+                </Grid>
               </Grid>
-            </GenericHeader>
+            </EmptyHeader>
           ),
         },
       ],
@@ -83,7 +121,7 @@ class PeopleView extends PureComponent {
   };
 
   render() {
-    const { searchTerm } = this.state;
+    const { searchTerm, invitePopoverOpen } = this.state;
     const { isFetching, peopleList } = this.props;
 
     return (
@@ -111,6 +149,13 @@ class PeopleView extends PureComponent {
             )}
           </Grid>
         </SafariFixGrid>
+        {this.invitePeopleButtonReference.current && (
+          <InvitePeoplePopover
+            anchor={this.invitePeopleButtonReference.current}
+            open={invitePopoverOpen}
+            toggleInvitePopover={this.toggleInvitePopover}
+          />
+        )}
       </Grid>
     );
   }

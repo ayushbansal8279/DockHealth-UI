@@ -108,7 +108,7 @@ class PeopleContainer extends PureComponent {
 
     const titles = `${this.getTitles(person)} - ${this.getSpecialties(person)}`
       .trim()
-      .replace(/\s*-\s*/, '');
+      .replace(/^\s*-|-\s*$/, '');
 
     return (
       <ListEntryContainer key={person.userId + personName}>
@@ -119,7 +119,7 @@ class PeopleContainer extends PureComponent {
           <Grid item container alignItems="center">
             <Grid item xs={12}>
               <Link
-                to={`/assignedToPerson/${person.userId}/${person.userName}`}
+                to={`/assignedToPerson/${encodeURIComponent(person.email)}`}
               >
                 {personName}
               </Link>

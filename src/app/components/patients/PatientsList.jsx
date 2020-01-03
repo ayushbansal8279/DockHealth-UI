@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
+import { createBreakpoint } from 'react-use';
 import styled from 'styled-components';
 
 import { highlightPatient } from '../../actions/patient-actions';
@@ -138,6 +139,21 @@ const calculateAgeFromDateOfBirth = dob => {
   return `${yearsOld} ${yearsLabel}`;
 };
 
+const useBreakpoint = createBreakpoint({ md: 960, lg: 1280 });
+
+const CompactWrapper = ({ children, isCompact }) => {
+  const breakpoint = useBreakpoint();
+
+  switch (breakpoint) {
+    case 'md':
+      return children;
+    case 'lg':
+      return !isCompact && children;
+    default:
+      return null;
+  }
+};
+
 const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
   const dispatch = useDispatch();
   const selectPatient = useCallback(
@@ -153,10 +169,12 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
         <tr>
           <th>Name</th>
           <th>MRN</th>
-          <th>DOB</th>
-          <th>Age</th>
-          {!isCompact && <th>Gender</th>}
-          <th>&nbsp;</th>
+          <CompactWrapper isCompact={isCompact}>
+            <th>DOB</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>&nbsp;</th>
+          </CompactWrapper>
         </tr>
       </thead>
       <tbody>
@@ -184,16 +202,16 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
                 </StyledLink>
               </NonEmptyListCell>
               <NonEmptyListCell>{mrn}</NonEmptyListCell>
-              <NonEmptyListCell>{formatDateOfBirth(dob)}</NonEmptyListCell>
-              <NonEmptyListCell>
-                {calculateAgeFromDateOfBirth(dob)}
-              </NonEmptyListCell>
-              {!isCompact && (
+              <CompactWrapper isCompact={isCompact}>
+                <NonEmptyListCell>{formatDateOfBirth(dob)}</NonEmptyListCell>
+                <NonEmptyListCell>
+                  {calculateAgeFromDateOfBirth(dob)}
+                </NonEmptyListCell>
                 <NonEmptyListCell>{capitalize(gender)}</NonEmptyListCell>
-              )}
-              <QuickViewCell>
-                <QuickViewIcon onClick={selectPatient({ patientId })} />
-              </QuickViewCell>
+                <QuickViewCell>
+                  <QuickViewIcon onClick={selectPatient({ patientId })} />
+                </QuickViewCell>
+              </CompactWrapper>
             </NonEmptyListRow>
           ),
         )}

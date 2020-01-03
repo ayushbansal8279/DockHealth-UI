@@ -112,8 +112,9 @@ const TaskBody = ({
 
   const onTaskDescriptionMouseEnter = useCallback(() => {
     if (
-      taskInnerDescriptionReference.current?.scrollWidth >
-      taskDescriptionReference.current?.offsetWidth
+      Math.floor(
+        taskInnerDescriptionReference.current?.getBoundingClientRect().width,
+      ) > taskDescriptionReference.current?.offsetWidth
     ) {
       setPopoverOpen();
     }
