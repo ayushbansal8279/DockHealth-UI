@@ -245,7 +245,7 @@ const TaskListLayout = ({
         </Grid>
       ) : (
         <>
-          <TaskView {...taskViewProps} />;
+          <TaskView {...taskViewProps} />
           {/* <TaskListContainerWrapper>
             <TaskView {...taskViewProps} />;
             {lists.map(
