@@ -110,19 +110,26 @@ class PeopleContainer extends PureComponent {
       .trim()
       .replace(/^\s*-|-\s*$/, '');
 
+    const personStatus = this.getStatus(person);
+
     return (
       <ListEntryContainer key={person.userId + personName}>
         <Grid direction="row" wrap="nowrap" container spacing={16}>
-          <MemberContainer>
+          <MemberContainer
+            style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
+          >
             <Member member={person} />
           </MemberContainer>
           <Grid item container alignItems="center">
             <Grid item xs={12}>
-              <Link
-                to={`/assignedToPerson/${encodeURIComponent(person.email)}`}
-              >
-                {personName}
-              </Link>
+              {personStatus !== 'Invited' && (
+                <Link
+                  to={`/assignedToPerson/${encodeURIComponent(person.email)}`}
+                >
+                  {personName}
+                </Link>
+              )}
+              {personStatus === 'Invited' && <>{personName}</>}
             </Grid>
             {titles && (
               <Grid
@@ -138,7 +145,7 @@ class PeopleContainer extends PureComponent {
             )}
           </Grid>
           <Grid item container alignItems="center">
-            <PersonStatus>{this.getStatus(person)}</PersonStatus>
+            <PersonStatus>{personStatus}</PersonStatus>
           </Grid>
 
           <PeopleContainerRoleButton
