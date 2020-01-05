@@ -7,7 +7,7 @@ import EnvelopeIcon from '../../img/envelope.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import {
   CompletedBy,
-  EditedTaskDescriptionLabel,
+  // EditedTaskDescriptionLabel,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
   PatientsTaskListInnerDescription,
@@ -38,8 +38,8 @@ export default ({
   description,
   taskInnerDescriptionReference,
   status,
-  createdDateTime,
-  updatedDateTime,
+  // createdDateTime,
+  // updatedDateTime,
   updated,
   formattedCreationDate,
   formattedUserName,
@@ -88,11 +88,11 @@ export default ({
                   value: description || 'Unnamed task',
                 }),
               )}
-              {createdDateTime !== updatedDateTime && (
+              {/* {createdDateTime !== updatedDateTime && (
                 <EditedTaskDescriptionLabel>
                   (edited)
                 </EditedTaskDescriptionLabel>
-              )}
+              )} */}
               <PatientsTasklistStrikeThrough
                 hasDescription={Boolean(description)}
                 active={status === 'COMPLETE'}
