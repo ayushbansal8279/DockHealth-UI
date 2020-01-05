@@ -13,7 +13,7 @@ import EmptyHeader from '../components/common/EmptyHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import InvitePeople from '../components/people/InvitePeople';
 import PeopleContainer from '../components/people/PeopleContainer';
-import PeopleContainerSortButton from '../components/people/PeopleContainer.SortButton';
+// import PeopleContainerSortButton from '../components/people/PeopleContainer.SortButton';
 import Search from '../components/taskView/Search';
 import InvitePersonIcon from '../img/invite-person-icon.svg';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
@@ -129,7 +129,7 @@ class PeopleView extends PureComponent {
         <SafariFixGrid container xs={12} item justify="center">
           <Grid item xs={9}>
             <SearchContainer>
-              <PeopleContainerSortButton />
+              {/* <PeopleContainerSortButton /> */}
               <Search onChange={this.handleSearch} />
             </SearchContainer>
           </Grid>
