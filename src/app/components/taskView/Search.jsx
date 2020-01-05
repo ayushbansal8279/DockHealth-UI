@@ -10,7 +10,7 @@ const StyledTextField = styled(TextField)`
     background-color: #fff;
     border-radius: 0.25rem;
     height: 2rem;
-    width: 26.8125rem;
+    width: 16.8125rem;
 
     & input {
       height: 2rem;
