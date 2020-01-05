@@ -64,7 +64,14 @@ const StyledCompleteButton = withStyles({
   },
 })(Button);
 
-export default ({ isOpen, close, confirm, title, message, confirmButtonTitle }) => (
+export default ({
+  isOpen,
+  close,
+  confirm,
+  title,
+  message,
+  confirmButtonTitle,
+}) => (
   <NoOverflowDialog
     open={isOpen}
     onClose={close}
@@ -76,14 +83,10 @@ export default ({ isOpen, close, confirm, title, message, confirmButtonTitle }) 
     <StyledDialogGrid container spacing={24}>
       <StyledCloseButton onClick={close}>&times;</StyledCloseButton>
       <Grid item xs={12}>
-        <StyledTitle id="alert-dialog-title">
-          {title}
-        </StyledTitle>
+        <StyledTitle id="alert-dialog-title">{title}</StyledTitle>
       </Grid>
       <Grid item xs={12}>
-        <StyledContent>
-          {message}
-        </StyledContent>
+        <StyledContent>{message}</StyledContent>
       </Grid>
       <Grid item xs={12}>
         <StyledContent>Would you like to proceed?</StyledContent>
