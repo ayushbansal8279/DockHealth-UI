@@ -94,4 +94,4 @@ export const mentionifyAndLinkifyTaskText = ({ members, value }) =>
   mentionifyDescription({ members, value: linkifyTaskText({ value }) });
 
 export const formatPhoneNumber = (phoneNumber = '') =>
-  phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+  phoneNumber ? phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') : '';
