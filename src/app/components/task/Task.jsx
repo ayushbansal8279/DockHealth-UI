@@ -2,7 +2,7 @@ import React from 'react';
 
 import Flag from '../common/Flag';
 import AddSubtask from './AddSubtask';
-import ConfirmationDialog from './ConfirmationDialog';
+import CompleteTaskConfirmationDialog from './CompleteTaskConfirmationDialog';
 import initializeTaskHooks from './Task.Hooks';
 import {
   TaskAnimationContainer,
@@ -50,7 +50,7 @@ const Task = props => {
       >
         <TaskContainer isSubtask={isSubtask} hasSubtasks={hasSubtasks}>
           {!isSubtask && (
-            <ConfirmationDialog
+            <CompleteTaskConfirmationDialog
               isOpen={isOpen}
               close={close}
               confirm={confirm}
