@@ -6,6 +6,8 @@ import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
+import ConfirmationDialog from '../components/modals/ConfirmationDialog';
+import useBoolean from '../hooks/useBoolean';
 
 import {
   getUserAvatar,
@@ -108,7 +110,15 @@ const PersonInfoPanel = ({ personData }) => {
   const dispatch = useDispatch();
   const archivePersonButtonReference = useRef(null);
 
+  const [isOpen, open, close] = useBoolean(false);
+
   const onArchivePersonButtonClick = useCallback(() => {
+    open();
+  }, [open]);
+
+  const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+
+  const onConfirmArchivePersonButtonClick = useCallback(() => {
     removeUserFromOrganization(userId)(dispatch)
       .then(() => {
         hashHistory.push('/people');
@@ -125,9 +135,8 @@ const PersonInfoPanel = ({ personData }) => {
         // fix z-index for swal container
         Swal.getContainer().style.zIndex = 10000;
       });
-  }, [dispatch, userId]);
-
-  const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+    close();
+  }, [close, dispatch, userId]);
 
   useMount(() => {
     if (userId) {
@@ -182,6 +191,15 @@ const PersonInfoPanel = ({ personData }) => {
             >
               Archive this person
             </ArchivePersonButton>
+
+            <ConfirmationDialog
+              isOpen={isOpen}
+              close={close}
+              confirm={onConfirmArchivePersonButtonClick}
+              title="Archive person"
+              message="This person will no longer have access to Dock Health. If this user is currently assigned any tasks, those tasks will become unassigned."
+              confirmButtonTitle="Yes, archive person"
+            />
           </Grid>
         </>
       )}

@@ -89,7 +89,6 @@ export const TaskListHeader = styled.div`
 
 export const TaskListSectionContainer = styled.div`
   border: solid 2px #ddf2f7;
-  background: #fff;
   padding: 18px 27px 27px 24px;
 
   :not(:first-child) {

@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as PeopleActions from '../../actions/people-actions';
 import { noop } from '../../helpers/utility-functions';
 import Member from '../members/Member';
-import BooleanModal from '../modals/BooleanModal';
+// import BooleanModal from '../modals/BooleanModal';
 import PeopleContainerRoleButton from './PeopleContainer.RoleButton';
 import {
   ListContainer,
@@ -110,19 +110,26 @@ class PeopleContainer extends PureComponent {
       .trim()
       .replace(/^\s*-|-\s*$/, '');
 
+    const personStatus = this.getStatus(person);
+
     return (
       <ListEntryContainer key={person.userId + personName}>
         <Grid direction="row" wrap="nowrap" container spacing={16}>
-          <MemberContainer>
+          <MemberContainer
+            style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
+          >
             <Member member={person} />
           </MemberContainer>
           <Grid item container alignItems="center">
             <Grid item xs={12}>
-              <Link
-                to={`/assignedToPerson/${encodeURIComponent(person.email)}`}
-              >
-                {personName}
-              </Link>
+              {personStatus !== 'Invited' && (
+                <Link
+                  to={`/assignedToPerson/${encodeURIComponent(person.email)}`}
+                >
+                  {personName}
+                </Link>
+              )}
+              {personStatus === 'Invited' && <>{personName}</>}
             </Grid>
             {titles && (
               <Grid
@@ -138,7 +145,7 @@ class PeopleContainer extends PureComponent {
             )}
           </Grid>
           <Grid item container alignItems="center">
-            <PersonStatus>{this.getStatus(person)}</PersonStatus>
+            <PersonStatus>{personStatus}</PersonStatus>
           </Grid>
 
           <PeopleContainerRoleButton
@@ -151,13 +158,13 @@ class PeopleContainer extends PureComponent {
             handleClick={this.handleClick}
           />
 
-          <BooleanModal
+          {/* <BooleanModal
             uniqueModalId={`delete-user-${person.userId}`}
             message="Are you sure you want to delete this user?"
             handleConfirmation={this.onClickRemoveUser}
             handleConfirmationArgs={person.userId}
             confirmBtnTxt="Delete"
-          />
+          /> */}
         </Grid>
       </ListEntryContainer>
     );

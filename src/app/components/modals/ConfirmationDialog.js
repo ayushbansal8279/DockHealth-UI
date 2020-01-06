@@ -64,7 +64,14 @@ const StyledCompleteButton = withStyles({
   },
 })(Button);
 
-export default ({ isOpen, close, confirm }) => (
+export default ({
+  isOpen,
+  close,
+  confirm,
+  title,
+  message,
+  confirmButtonTitle,
+}) => (
   <NoOverflowDialog
     open={isOpen}
     onClose={close}
@@ -76,23 +83,17 @@ export default ({ isOpen, close, confirm }) => (
     <StyledDialogGrid container spacing={24}>
       <StyledCloseButton onClick={close}>&times;</StyledCloseButton>
       <Grid item xs={12}>
-        <StyledTitle id="alert-dialog-title">
-          A subtask is incomplete
-        </StyledTitle>
+        <StyledTitle id="alert-dialog-title">{title}</StyledTitle>
       </Grid>
       <Grid item xs={12}>
-        <StyledContent>
-          You’re about to complete a primary task which has a subtask that is
-          incomplete. Marking the primary task as complete will also complete
-          all subtasks.
-        </StyledContent>
+        <StyledContent>{message}</StyledContent>
       </Grid>
       <Grid item xs={12}>
         <StyledContent>Would you like to proceed?</StyledContent>
       </Grid>
       <Grid item xs={12} container justify="center">
         <StyledCompleteButton onClick={confirm} variant="contained" autoFocus>
-          Yes, complete all
+          {confirmButtonTitle}
         </StyledCompleteButton>
       </Grid>
     </StyledDialogGrid>
