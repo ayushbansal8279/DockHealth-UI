@@ -3,7 +3,8 @@ exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
-      url: 'https://dockdev-v2.childrensaccelerator.com',
+      url: 'https://dockdev.childrensaccelerator.com',
+      // url: 'https://dockdev-v2.childrensaccelerator.com'
       // url: 'http://localhost:3000/',
       show: true,
     },
@@ -14,12 +15,8 @@ exports.config = {
     tskLstPg: './pages/ListsHome.js',
     inboxPg: './pages/Inbox.js',
     tasksPg: './pages/TaskList.js',
-    ptntPg: './pages/Patients.js',
-    // testData: {
-    //   eml2: 'gbousvaros2015@gmail.com',
-    //   eml: 'george@dock.health',
-    //   pw: '753951Gb!',
-    // },
+    ptntsPg: './pages/Patients.js',
+    onePatientPage: './pages/OnePatient.js',
   },
   bootstrap: null,
   mocha: {},
