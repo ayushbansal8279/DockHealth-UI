@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as PeopleActions from '../../actions/people-actions';
 import { noop } from '../../helpers/utility-functions';
 import Member from '../members/Member';
-import BooleanModal from '../modals/BooleanModal';
+// import BooleanModal from '../modals/BooleanModal';
 import PeopleContainerRoleButton from './PeopleContainer.RoleButton';
 import {
   ListContainer,
@@ -158,13 +158,13 @@ class PeopleContainer extends PureComponent {
             handleClick={this.handleClick}
           />
 
-          <BooleanModal
+          {/* <BooleanModal
             uniqueModalId={`delete-user-${person.userId}`}
             message="Are you sure you want to delete this user?"
             handleConfirmation={this.onClickRemoveUser}
             handleConfirmationArgs={person.userId}
             confirmBtnTxt="Delete"
-          />
+          /> */}
         </Grid>
       </ListEntryContainer>
     );

@@ -16,11 +16,11 @@ import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import AdminIcon from '../../img/admin-icon.svg';
 import CancelInvitationIcon from '../../img/cancel-invitation-icon.svg';
-import DirectoryIcon from '../../img/directory-icon.svg';
+// import DirectoryIcon from '../../img/directory-icon.svg';
 import ResendInvitationIcon from '../../img/resend-invitation-icon.svg';
 import ThreeDotsIcon from '../../img/three-dots.svg';
 
-const DELETE_THIS_PERSON_LABEL = 'Archive this person';
+// const DELETE_THIS_PERSON_LABEL = 'Archive this person';
 
 const StyledIconButton = withStyles({
   label: {
@@ -45,7 +45,7 @@ const getListElements = ({
   changeUserRoleForOrg,
   cancelInviteToOrganization,
   resendInviteToOrganization,
-  removeUserFromOrganization,
+  // removeUserFromOrganization,
   handleClick,
   unsetPopoverOpen,
 }) => {
@@ -113,34 +113,34 @@ const getListElements = ({
           </ListItemIcon>
           <ListItemText>Make admin</ListItemText>
         </MenuItem>,
-        <MenuItem
-          key="remove-user-with-popup"
-          data-open={`delete-user-${person.userId}`}
-        >
-          <ListItemIcon>
-            <img alt="Directory icon" src={DirectoryIcon} />
-          </ListItemIcon>
-          <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
-        </MenuItem>,
+        // <MenuItem
+        //   key="remove-user-with-popup"
+        //   data-open={`delete-user-${person.userId}`}
+        // >
+        //   <ListItemIcon>
+        //     <img alt="Directory icon" src={DirectoryIcon} />
+        //   </ListItemIcon>
+        //   <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
+        // </MenuItem>,
       ]),
     ],
     [
       always(isPersonOwner && !isPersonPending),
       always([
-        <MenuItem
-          key="remove-user"
-          onClick={() => {
-            this.handleClick({
-              onClickAction: removeUserFromOrganization,
-            })(person.userId);
-            unsetPopoverOpen();
-          }}
-        >
-          <ListItemIcon>
-            <img alt="Directory icon" src={DirectoryIcon} />
-          </ListItemIcon>
-          <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
-        </MenuItem>,
+        // <MenuItem
+        //   key="remove-user"
+        //   onClick={() => {
+        //     this.handleClick({
+        //       onClickAction: removeUserFromOrganization,
+        //     })(person.userId);
+        //     unsetPopoverOpen();
+        //   }}
+        // >
+        //   <ListItemIcon>
+        //     <img alt="Directory icon" src={DirectoryIcon} />
+        //   </ListItemIcon>
+        //   <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
+        // </MenuItem>,
       ]),
     ],
     [
@@ -161,15 +161,15 @@ const getListElements = ({
           </ListItemIcon>
           <ListItemText>Remove admin rights</ListItemText>
         </MenuItem>,
-        <MenuItem
-          key="delete-person"
-          data-open={`delete-user-${person.userId}`}
-        >
-          <ListItemIcon>
-            <img alt="Directory icon" src={DirectoryIcon} />
-          </ListItemIcon>
-          <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
-        </MenuItem>,
+        // <MenuItem
+        //   key="delete-person"
+        //   data-open={`delete-user-${person.userId}`}
+        // >
+        //   <ListItemIcon>
+        //     <img alt="Directory icon" src={DirectoryIcon} />
+        //   </ListItemIcon>
+        //   <ListItemText>{DELETE_THIS_PERSON_LABEL}</ListItemText>
+        // </MenuItem>,
       ]),
     ],
   ])();
