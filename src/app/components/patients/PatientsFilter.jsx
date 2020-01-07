@@ -29,18 +29,23 @@ const StyledSelect = styled(MaterialSelect).attrs({
   }
 `;
 
-const PatientsFilter = ({ onChange, value, options, disabled }) => (
+const PatientsFilter = ({
+  onChange,
+  stopPropagation,
+  value,
+  options,
+  disabled,
+}) => (
   <FormControl variant="filled" style={{ minWidth: 186 }}>
     <StyledSelect
       value={value || 'ALL_PATIENTS'}
       disabled={disabled}
+      onClick={stopPropagation}
       onChange={onChange}
       name="filter"
     >
-      {options.map((
-        { value, description }, // eslint-disable-line no-shadow
-      ) => (
-        <MenuItem value={value} key={value}>
+      {options.map(({ value: optionValue, description }) => (
+        <MenuItem value={optionValue} key={optionValue}>
           <div
             style={{
               display: 'flex',

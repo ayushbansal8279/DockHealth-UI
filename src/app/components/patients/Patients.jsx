@@ -78,14 +78,20 @@ const PatientsLayout = () => {
     ({ patientState }) => patientState.isCreatingPatient,
   );
 
+  const deselectPatient = useCallback(() => {
+    dispatch(highlightPatient(null));
+  }, [dispatch]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const handleSearch = useCallback(
     event => {
       const { value } = event.target;
       setSearchTerm(value);
+      deselectPatient();
     },
-    [setSearchTerm],
+    [deselectPatient, setSearchTerm],
   );
+
   const handlePatientFilter = useCallback(
     selectedFilter => {
       // console.log(`selected filter: ${selectedFilter}`);
@@ -102,16 +108,13 @@ const PatientsLayout = () => {
 
   const filteredPatients = searchPatients(patients, searchTerm);
 
-  const deselectPatient = useCallback(() => {
-    dispatch(highlightPatient(null));
-  }, [dispatch]);
-
   return (
     <div>
       <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
       <PatientsToolbar
         handleSearch={handleSearch}
         handlePatientFilter={handlePatientFilter}
+        deselectPatient={deselectPatient}
       />
       <Grid container>
         {isFetching ? (

@@ -14,19 +14,25 @@ const ALL_PATIENTS = 'ALL_PATIENTS';
 const MY_PATIENTS = 'MY_PATIENTS';
 const MY_PATIENTS_WITH_ACTIVE_TASKS = 'MY_PATIENTS_WITH_ACTIVE_TASKS';
 
-const PatientsToolbarFilter = ({ handlePatientFilter }) => {
+const stopPropagation = event => {
+  event.stopPropagation();
+};
+
+const PatientsToolbarFilter = ({ handlePatientFilter, deselectPatient }) => {
   const [filter, setFilter] = useState(MY_PATIENTS);
   const handleFilterChange = useCallback(
-    e => {
-      const { value } = e.target;
+    event => {
+      const { value } = event.target;
       setFilter(value);
       handlePatientFilter(value);
+      deselectPatient();
     },
-    [handlePatientFilter],
+    [deselectPatient, handlePatientFilter],
   );
 
   return (
     <PatientsFilter
+      stopPropagation={stopPropagation}
       onChange={handleFilterChange}
       value={filter}
       options={[
@@ -47,10 +53,21 @@ const PatientsToolbarFilter = ({ handlePatientFilter }) => {
   );
 };
 
-const PatientsToolbar = ({ handleSearch, handlePatientFilter }) => (
-  <PatientsToolbarContainer>
-    <PatientsToolbarFilter handlePatientFilter={handlePatientFilter} />
-    <PatientsSearch onChange={handleSearch} style={{ marginLeft: '46px' }} />
+const PatientsToolbar = ({
+  deselectPatient,
+  handleSearch,
+  handlePatientFilter,
+}) => (
+  <PatientsToolbarContainer onClick={deselectPatient}>
+    <PatientsToolbarFilter
+      handlePatientFilter={handlePatientFilter}
+      deselectPatient={deselectPatient}
+    />
+    <PatientsSearch
+      onChange={handleSearch}
+      stopPropagation={stopPropagation}
+      style={{ marginLeft: '46px' }}
+    />
   </PatientsToolbarContainer>
 );
 

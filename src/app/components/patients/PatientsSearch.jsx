@@ -32,9 +32,10 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const PatientsSearch = ({ onChange, style }) => (
+const PatientsSearch = ({ onChange, stopPropagation, style }) => (
   <StyledTextField
     onChange={onChange}
+    onClick={stopPropagation}
     style={style}
     id="search"
     variant="outlined"
