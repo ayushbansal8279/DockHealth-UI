@@ -49,20 +49,22 @@ const initialState = {
 const DEFAULT_USER_STATUS = 'PENDING';
 const DEFAULT_USER_ROLE = 'MEMBER';
 
+const inviteUserMapper = user => ({
+  ...user,
+  status: DEFAULT_USER_STATUS,
+  taskListUserRole: DEFAULT_USER_ROLE,
+});
+
 const inviteUser = (state, { userId }) => ({
   ...state,
   tasklistmembers: [
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
-      .filter(user => user.userId == userId)
-      .map(user => ({
-        ...user,
-        status: DEFAULT_USER_STATUS,
-        taskListUserRole: DEFAULT_USER_ROLE,
-      })),
+      .filter(user => user.userId === userId)
+      .map(inviteUserMapper),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist.filter(
-    user => user.userId != userId,
+    user => user.userId !== userId,
   ),
 });
 
@@ -71,15 +73,11 @@ const inviteMultipleUsers = (state, { invitedUsers }) => ({
   tasklistmembers: [
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
-      .filter(user => invitedUsers.some(userId => user.userId == userId))
-      .map(user => ({
-        ...user,
-        status: DEFAULT_USER_STATUS,
-        taskListUserRole: DEFAULT_USER_ROLE,
-      })),
+      .filter(user => invitedUsers.some(userId => user.userId === userId))
+      .map(inviteUserMapper),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist.filter(user =>
-    invitedUsers.every(userId => user.userId != userId),
+    invitedUsers.every(userId => user.userId !== userId),
   ),
 });
 
@@ -129,12 +127,12 @@ const TaskListReducer = (state = initialState, action) => {
       };
 
       const currentTaskListMembersDetails = state.allTaskListMembers.filter(
-        details => details.taskListId == action.taskListId,
+        details => details.taskListId === action.taskListId,
       );
 
       if (
         !currentTaskListMembersDetails ||
-        currentTaskListMembersDetails.length == 0
+        currentTaskListMembersDetails.length === 0
       ) {
         return {
           ...state,
@@ -240,7 +238,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         currentList: state.tasklist.find(
-          taskList => taskList.taskListId.toString() == action.taskListId,
+          taskList => taskList.taskListId === action.taskListId,
         ),
       };
 

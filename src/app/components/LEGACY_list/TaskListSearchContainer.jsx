@@ -1,7 +1,7 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-import { useUnmount } from 'react-use';
+import { useMount, useUnmount } from 'react-use';
 import { bindActionCreators } from 'redux';
 
 import * as TaskActions from '../../actions/task-actions';
@@ -61,9 +61,15 @@ const TaskListSearchContainer = ({
   isCompletedTasksFetching,
   taskActions,
   showingCompletedTasks,
+  taskListActions,
 }) => {
+  useMount(() => {
+    taskListActions.getPersonTasklistAccumulatedStats();
+  });
+
   useUnmount(() => {
     taskActions.resetTaskSearch();
+    taskListActions.resetTasklistStats();
   });
 
   const searchedTasks = {
@@ -80,7 +86,7 @@ const TaskListSearchContainer = ({
     showingCompletedTasks,
   };
 
-  return tasks && <TaskListLayout {...taskListProps} />;
+  return !isFetching && tasks && <TaskListLayout {...taskListProps} />;
 };
 
 function mapStateToProps(state) {

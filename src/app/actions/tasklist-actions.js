@@ -2,6 +2,7 @@ import * as TaskListApi from '../api/tasklist-api';
 import * as UserApi from '../api/user-api';
 import { noop } from '../helpers/utility-functions';
 import * as ActionTypes from './action-types';
+import tasklistActionsDummyData from './tasklist-actions.dummy-data';
 
 export function getTaskListForUser() {
   return dispatch => {
@@ -315,5 +316,15 @@ export const getTaskListStats = ({ taskListId }) => async dispatch => {
 export const resetTasklistStats = () => dispatch => {
   dispatch({
     type: ActionTypes.RESET_TASKLIST_STATS,
+  });
+};
+
+// eslint-disable-next-line unicorn/consistent-function-scoping
+export const getPersonTasklistAccumulatedStats = () => dispatch => {
+  // TODO - implement API endpoint for downloading accumulated stats
+
+  dispatch({
+    type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
+    taskListStats: tasklistActionsDummyData,
   });
 };
