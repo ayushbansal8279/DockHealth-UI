@@ -20,8 +20,9 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
 
   const [newTaskListName, setNewTaskListName] = useState('');
   const [newDueDate, setNewDueDate] = useState(
-    moment(task?.dueDate ? task.dueDate : undefined).toDate(),
+    task?.dueDate ? moment(task.dueDate).toDate() : null,
   );
+
   const [
     isTaskListPopoverOpen,
     setTaskListPopoverOpen,
@@ -75,7 +76,7 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
 
   useEffect(() => {
     setHistory([]);
-    setNewDueDate(moment(task?.dueDate ? task.dueDate : undefined).toDate());
+    setNewDueDate(task?.dueDate ? moment(task.dueDate).toDate() : null);
     hideHistory();
     unsetHistoryLoading();
     unsetTaskListPopoverOpen();
