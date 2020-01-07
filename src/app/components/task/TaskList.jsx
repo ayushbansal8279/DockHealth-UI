@@ -1,109 +1,18 @@
-import moment from 'moment';
 import PropTypes from 'prop-types';
-import ascend from 'ramda/es/ascend';
-import descend from 'ramda/es/descend';
-import partition from 'ramda/es/partition';
-import prop from 'ramda/es/prop';
-import propEq from 'ramda/es/propEq';
-import reverse from 'ramda/es/reverse';
-import sortWith from 'ramda/es/sortWith';
-import uniqBy from 'ramda/es/uniqBy';
-import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 
-import { getTaskPage } from '../../actions/task-actions';
-import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
-import { getPatientName } from '../../helpers/utility-functions';
 import CubesLoader from '../common/CubesLoader';
 import Task from './Task';
+import Heading from './TaskList.Heading';
+import initializeTaskListHooks from './TaskList.Hooks';
 import NewTaskElement from './TaskList.NewTaskElement';
-import OrderIcon from './TaskList.OrderIcon';
 import {
   EmptyListElementContainer,
-  HeadingAssignedToContainer,
-  HeadingContainer,
-  HeadingDueDateContainer,
-  HeadingPatientContainer,
-  HeadingStatusContainer,
-  HeadingTaskContainer,
   ShowMoreButton,
   ShowMoreButtonContainer,
   StyledTableCell,
   TaskListOuterContainer,
 } from './TaskList.styled';
-
-const SORTING_KEYS = {
-  ASSIGNED_TO: 'ASSIGNED_TO',
-  TASK: 'TASK',
-  PATIENT: 'PATIENT',
-  DUE_DATE: 'DUE_DATE',
-  STATUS: 'STATUS',
-};
-
-const sortingColumns = [
-  {
-    key: SORTING_KEYS.ASSIGNED_TO,
-    valueGetter: task => task.assignedTo?.userName ?? '',
-  },
-  {
-    key: SORTING_KEYS.TASK,
-    valueGetter: task => task.description,
-  },
-  {
-    key: SORTING_KEYS.PATIENT,
-    valueGetter: task => getPatientName(task.patient),
-  },
-  {
-    key: SORTING_KEYS.DUE_DATE,
-    valueGetter: task => moment(task.dueDate ?? '').format('YYYY-MM-DD'),
-  },
-  {
-    key: SORTING_KEYS.STATUS,
-    valueGetter: task => task.workflowStatus ?? '',
-  },
-];
-
-const Heading = ({ onSortingChanged, taskDrawerOpen, sorting }) => (
-  <HeadingContainer>
-    <HeadingAssignedToContainer
-      onClick={onSortingChanged({ key: SORTING_KEYS.ASSIGNED_TO })}
-    >
-      <span>ASSIGNED</span>
-      <OrderIcon sortingKey={SORTING_KEYS.ASSIGNED_TO} sorting={sorting} />
-    </HeadingAssignedToContainer>
-    <HeadingTaskContainer
-      onClick={onSortingChanged({ key: SORTING_KEYS.TASK })}
-    >
-      <span>TASK</span>
-      <OrderIcon sortingKey={SORTING_KEYS.TASK} sorting={sorting} />
-    </HeadingTaskContainer>
-    {!taskDrawerOpen && (
-      <HeadingPatientContainer
-        onClick={onSortingChanged({ key: SORTING_KEYS.PATIENT })}
-      >
-        <span>PATIENT</span>
-        <OrderIcon sortingKey={SORTING_KEYS.PATIENT} sorting={sorting} />
-      </HeadingPatientContainer>
-    )}
-    {!taskDrawerOpen && (
-      <HeadingDueDateContainer
-        style={{ cursor: 'pointer', width: '180px' }}
-        onClick={onSortingChanged({ key: SORTING_KEYS.DUE_DATE })}
-      >
-        <span>DUE</span>
-        <OrderIcon sortingKey={SORTING_KEYS.DUE_DATE} sorting={sorting} />
-      </HeadingDueDateContainer>
-    )}
-    {!taskDrawerOpen && (
-      <HeadingStatusContainer
-        onClick={onSortingChanged({ key: SORTING_KEYS.STATUS })}
-      >
-        <span>STATUS</span>
-        <OrderIcon sortingKey={SORTING_KEYS.STATUS} sorting={sorting} />
-      </HeadingStatusContainer>
-    )}
-  </HeadingContainer>
-);
 
 const ListEmptyElement = ({ addingNewTask, taskDrawerOpen }) => {
   if (addingNewTask) {
@@ -117,17 +26,6 @@ const ListEmptyElement = ({ addingNewTask, taskDrawerOpen }) => {
   );
 };
 
-const TASK_LIST_SHOW_MORE_STEP = 100;
-
-const DEFAULT_SORTING = [
-  ...sortingColumns.map(sortingColumn => ({
-    ...sortingColumn,
-    order: 'asc',
-  })),
-];
-
-const NO_SORTING = [];
-
 const TaskList = ({
   tasks = [],
   taskDrawerOpen,
@@ -139,91 +37,24 @@ const TaskList = ({
   listName,
   ...otherTaskListProps
 }) => {
-  const addingNewTask = useSelector(store => store.taskState.addingNewTask);
-  const newlyAddedTaskIds = useSelector(
-    store => store.taskState.newlyAddedTaskIds,
-  );
-
-  const dispatch = useDispatch();
-
-  if (otherTaskListProps.listTasks) {
-    // eslint-disable-next-line no-param-reassign
-    tasks = otherTaskListProps.listTasks;
-  }
-
-  const [taskListShowMoreIndex, setTaskListShowMoreIndex] = useState(1);
-  const [isShowMoreLocked, setShowMoreLocked] = useState(false);
-  const [currentSorting, setCurrentSorting] = useState(NO_SORTING);
-
-  const [newlyAddedTasks, tasksToShow] = partition(
-    ({ taskId }) => newlyAddedTaskIds.includes(taskId),
+  const {
+    addingNewTask,
+    showMoreButtonVisible,
+    incrementTaskListShowMoreIndex,
+    onSortingChanged,
+    sortedTasksToShow,
+    currentSorting,
+    isShowMoreLocked,
+  } = initializeTaskListHooks({
+    otherTaskListProps,
     tasks,
-  );
-
-  const showMoreButtonVisible =
-    taskListShowMoreIndex * TASK_LIST_SHOW_MORE_STEP < tasks.length &&
-    (taskListId || isInbox);
-
-  const incrementTaskListShowMoreIndex = useCallback(() => {
-    if (showMoreButtonVisible && !isShowMoreLocked) {
-      setShowMoreLocked(true);
-      getTaskPage({
-        taskListId,
-        status,
-        filterBy,
-        sortBy: 'TASK_DESCRIPTION',
-        queryStartPosition: taskListShowMoreIndex * TASK_LIST_SHOW_MORE_STEP,
-        search,
-        isInbox,
-        isAssignedByMeList: listName === 'assigned_by_me',
-        isAssignedToMeList: listName === 'assigned_to_me',
-      })(dispatch)
-        .then(() => {
-          setTaskListShowMoreIndex(taskListShowMoreIndex + 1);
-          setShowMoreLocked(false);
-        })
-        .catch(() => {
-          setShowMoreLocked(false);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showMoreButtonVisible, isShowMoreLocked, taskListShowMoreIndex]);
-
-  const onSortingChanged = useCallback(
-    ({ key }) => () => {
-      let currentSortingColumns = currentSorting;
-      if (currentSortingColumns.length == 0) {
-        currentSortingColumns = DEFAULT_SORTING;
-      }
-
-      const [[currentSortingColumn], otherSortingColumns] = partition(
-        propEq('key', key),
-        currentSortingColumns,
-      );
-
-      const order = currentSortingColumn.order === 'asc' ? 'desc' : 'asc';
-
-      onTaskSortingChanged(currentSortingColumn.key, order.toUpperCase());
-
-      setCurrentSorting([
-        ...otherSortingColumns,
-        {
-          ...currentSortingColumn,
-          order,
-        },
-      ]);
-    },
-    [setCurrentSorting, currentSorting],
-  );
-
-  const sortingMethods = currentSorting.map(({ order, valueGetter }) =>
-    (order === 'asc' ? ascend : descend)(valueGetter),
-  );
-
-  const sortedTasksToShow = uniqBy(prop('taskId'), [
-    ...newlyAddedTasks,
-    ...sortWith(reverse(sortingMethods), tasksToShow),
-  ]);
+    taskListId,
+    isInbox,
+    status,
+    filterBy,
+    search,
+    listName,
+  });
 
   return (
     <TaskListOuterContainer>

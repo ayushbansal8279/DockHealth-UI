@@ -1,4 +1,5 @@
 import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -12,23 +13,30 @@ import filter from 'ramda/es/filter';
 import map from 'ramda/es/map';
 import prop from 'ramda/es/prop';
 import reject from 'ramda/es/reject';
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { useToggle } from 'react-use';
 import styled from 'styled-components';
+
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
 import { getTaskListStats } from '../actions/tasklist-actions';
 import CubesLoader from '../components/common/CubesLoader';
+import AddTask from '../components/task/AddTask';
 import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Toolbar from '../components/taskView/Toolbar';
+import {
+  onButtonClicked,
+  onFilterChanged,
+  onHeadsUpDisplayToggled,
+  onSlimViewChanged,
+} from '../helpers/ga-event-helper';
 import { isTaskArchivable } from '../helpers/utility-functions';
-import CollapseIcon from '../img/collapse.svg';
+import ChevronSmallIcon from '../img/chevron-small.svg';
 import FilterIcon from '../img/filter.svg';
-
 import {
   CompletedButtonRowContainer,
   FadeContainer,
@@ -44,12 +52,6 @@ import {
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
-import {
-  onFilterChanged,
-  onSlimViewChanged,
-  onButtonClicked,
-  onHeadsUpDisplayToggled,
-} from '../helpers/ga-event-helper';
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
@@ -58,6 +60,7 @@ const SHOW_MORE_STEP_COUNT = 100;
 
 const groupBy = (list, keyGetter) => {
   const checkMap = new Map();
+
   list.forEach(item => {
     const key = keyGetter(item);
     const collection = checkMap.get(key);
@@ -67,6 +70,7 @@ const groupBy = (list, keyGetter) => {
       collection.push(item);
     }
   });
+
   return checkMap;
 };
 
@@ -82,35 +86,32 @@ export const TaskListHeader = styled.div`
   background: #2a4a70;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
   color: #fff;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: bold;
   padding: 15px 13.5px 19px 27px;
 `;
 
 export const TaskListSectionContainer = styled.div`
-  border: solid 2px #ddf2f7;
-  padding: 18px 27px 27px 24px;
-
-  :not(:first-child) {
-    margin-top: 4px;
-  }
+  margin-bottom: 0.25rem;
 `;
 
-export const TaskListSectionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
+export const TaskListSectionHeader = styled(Grid)`
+  background-color: #fff;
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0.75rem;
 `;
 
 export const TaskListSectionHeading = styled.div`
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #0ca1c7;
 `;
 
 export const TasklistCount = styled.div`
-  font-size: 16px;
   color: #2e3a43;
-  margin-bottom: 11px;
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 0.5rem;
 `;
 
 const filterOptions = [
@@ -150,28 +151,34 @@ export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
-  style,
-  headingStyle,
+  taskListId,
+  storeAsCurrentTask,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const toggleIsCollapsed = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const [isCollapsed, toggleIsCollapsed] = useToggle(false);
 
   return (
-    <TaskListSectionContainer style={style}>
+    <TaskListSectionContainer>
       <TaskListSectionHeader>
-        <TaskListSectionHeading style={headingStyle}>
+        <Grid item container xs={12} justify="space-between">
           {heading}
-        </TaskListSectionHeading>
-        {!hideCollapse && (
-          <CollapseStyledButton
-            isCollapsed={isCollapsed}
-            onClick={toggleIsCollapsed}
-          >
-            <img src={CollapseIcon} alt="Collapse Details" />
-          </CollapseStyledButton>
-        )}
+          {!hideCollapse && (
+            <CollapseStyledButton
+              isCollapsed={isCollapsed}
+              onClick={toggleIsCollapsed}
+            >
+              <img src={ChevronSmallIcon} alt="Collapse Details" />
+            </CollapseStyledButton>
+          )}
+        </Grid>
+        <Grid item container xs={12}>
+          <AddTask
+            taskListId={taskListId}
+            style={{
+              width: '100%',
+            }}
+            storeAsCurrentTask={storeAsCurrentTask}
+          />
+        </Grid>
       </TaskListSectionHeader>
       {!isCollapsed && children}
     </TaskListSectionContainer>
@@ -722,19 +729,40 @@ class TaskView extends Component {
       return <TaskList {...tasklistProps} />;
     }
 
-    return [...groupedTasks.keys()].map(groupedListName => (
-      <React.Fragment key={groupedListName}>
-        <TaskListSection heading={groupedListName} key={groupedListName}>
-          <TasklistCount>{`${
-            groupedTasks.get(groupedListName).length
-          } tasks`}</TasklistCount>
-          <TaskList
-            listTasks={groupedTasks.get(groupedListName)}
-            {...tasklistProps}
-          />
-        </TaskListSection>
-      </React.Fragment>
-    ));
+    return [...groupedTasks.keys()].map(groupedListName => {
+      const tasksCount = groupedTasks.get(groupedListName).length;
+      const tasksCountContent = `${tasksCount} ${
+        tasksCount === 1 ? 'task' : 'tasks'
+      }`;
+
+      const heading = (
+        <div>
+          <TaskListSectionHeading>
+            {groupedListName || 'Inbox'}
+          </TaskListSectionHeading>
+          <TasklistCount>{tasksCountContent}</TasklistCount>
+        </div>
+      );
+
+      const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
+        ?.taskListId;
+
+      return (
+        <React.Fragment key={groupedListName}>
+          <TaskListSection
+            taskListId={currentTaskListId}
+            storeAsCurrentTask={storeAsCurrentTask}
+            heading={heading}
+            key={groupedListName}
+          >
+            <TaskList
+              listTasks={groupedTasks.get(groupedListName)}
+              {...tasklistProps}
+            />
+          </TaskListSection>
+        </React.Fragment>
+      );
+    });
   };
 
   renderCompleted = () => {

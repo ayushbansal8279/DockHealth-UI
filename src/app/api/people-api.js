@@ -102,8 +102,13 @@ export function getUserAvatar(user) {
 }
 
 export function getUserByEmail({ email }) {
-  return axios
-    .get(`user/findUserByEmail?email=${email}`)
+  return axios({
+    method: 'get',
+    url: 'user/findUserByEmail',
+    params: {
+      email,
+    },
+  })
     .then(response => response.data)
     .catch(error => {
       throw error;

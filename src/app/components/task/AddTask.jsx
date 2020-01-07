@@ -90,20 +90,25 @@ const AddTask = ({ storeAsCurrentTask, submit, submitBound, style }) => {
 
   const onSubmit = submitBound ?? submit;
 
-  const handleChange = useCallback(e => {
-    setDraft(e.target.value);
-  });
+  const handleChange = useCallback(
+    event => {
+      setDraft(event.target.value);
+    },
+    [setDraft],
+  );
 
   const onFocus = useCallback(() => {
     storeAsCurrentTask(null);
-  });
+  }, [storeAsCurrentTask]);
 
   const handleSubmit = useCallback(
-    e => {
-      e.preventDefault();
+    event => {
+      event.preventDefault();
+
       if (draft === '') {
         return;
       }
+
       onSubmit(draft);
       setDraft('');
     },
