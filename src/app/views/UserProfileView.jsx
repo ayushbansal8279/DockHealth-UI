@@ -74,8 +74,6 @@ const UserProfileView = ({
   validationSchema,
 }) => {
   const formMethods = useForm({
-    reValidateMode: 'onChange',
-    mode: 'onChange',
     defaultValues,
     validationSchema,
   });

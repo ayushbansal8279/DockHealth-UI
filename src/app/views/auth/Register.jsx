@@ -103,7 +103,7 @@ export default () => (
           <RegisterBottomLabel>
             Dock Health is a simple, HIPAA compliant platform for managing
             clinical tasks as a team. Our mission is to offer a better way
-            <strong> to-do </strong>
+            <strong> to‑do </strong>
             healthcare.
           </RegisterBottomLabel>
         </Grid>

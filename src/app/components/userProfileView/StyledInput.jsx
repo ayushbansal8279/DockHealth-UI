@@ -197,12 +197,33 @@ const renderPhoneNumberField = ({ inputProps, props, register }) => (
   maskedReference,
   otherProps,
 ) => {
+  const styledInputProps = { ...props, ...inputProps, ...otherProps };
+
+  const onKeyDown = event => {
+    if (event.key.length === 1 && !/\d/.test(event.key)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    return styledInputProps?.onKeyDown?.(event);
+  };
+
+  const onBlur = event => {
+    const { target } = event;
+
+    if (target.value.replace(/_|-/g, '').length === 0) {
+      target.value = '';
+    }
+
+    return styledInputProps?.onBlur?.(event);
+  };
+
   return (
     <StyledInput
       ref={mergeReferences([maskedReference, register])}
-      {...props}
-      {...inputProps}
-      {...otherProps}
+      {...styledInputProps}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
     />
   );
 };
