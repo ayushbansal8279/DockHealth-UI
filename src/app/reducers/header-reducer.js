@@ -1,3 +1,4 @@
+import omit from 'ramda/es/omit';
 import { SET_HEADER, UNSET_HEADER, HIDE_HEADER } from '../actions/action-types';
 
 const initialState = {
@@ -11,7 +12,7 @@ const reducer = (state = initialState, { type, ...payload }) => {
     case SET_HEADER:
       return { ...state, show: true, ...(payload?.headerData ?? {}) };
     case UNSET_HEADER:
-      return { ...initialState };
+      return { ...state, ...omit(['show'], payload?.headerData ?? {}) };
     case HIDE_HEADER:
       return { ...state, show: false };
     default:

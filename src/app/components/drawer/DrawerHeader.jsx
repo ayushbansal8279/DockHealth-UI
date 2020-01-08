@@ -1,11 +1,12 @@
-import ListItem from '@material-ui/core/es/ListItem/ListItem';
+import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router';
+import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
 
+import useBoolean from '../../hooks/useBoolean';
 import Avatar from '../common/Avatar';
 import { AvatarImageContainer } from '../common/Avatar.styled';
 
@@ -15,16 +16,40 @@ const StyledListItem = styled(ListItem)`
     height: 88px;
     min-height: 88px;
     :focus {
-      background: #007cab;
+      background-color: #007cab;
     }
     :hover {
-      background: #007cab;
+      background-color: #007cab;
     }
   }
   &&.active {
-    background: #007cab;
+    background-color: #007cab;
     :hover {
-      background: #007cab;
+      background-color: #007cab;
+    }
+  }
+`;
+
+const DropdownListItem = styled(StyledListItem)`
+  && {
+    color: #fff;
+    height: 2.6875rem;
+    margin: 1.3125rem 0;
+    min-height: 2.6875rem;
+    transition: all 0.25s ease-out;
+
+    :first-child {
+      margin-top: 0.3125rem;
+    }
+
+    :hover {
+      background-color: #3496bc;
+    }
+  }
+  &&.active {
+    background-color: #1a89b3;
+    :hover {
+      background-color: #3496bc;
     }
   }
 `;
@@ -36,22 +61,50 @@ const Name = styled.div`
   text-overflow: ellipsis;
 `;
 
-const ProfileLink = React.forwardRef((props, reference) => (
-  <Link
-    innerRef={reference}
-    to="/userProfile"
-    activeClassName="active"
-    {...props}
-  />
-));
+const StyledDropdown = styled.div`
+  background-color: #007cab;
+  height: ${props => (props.open ? 16 : 0)}rem;
+  overflow: hidden;
+  transition: height 0.25s ease-out;
+  width: 100%;
+`;
+
+const ProfileLink = React.forwardRef((props, reference) => {
+  const linkActive = hashHistory.getCurrentLocation().pathname === props.link;
+
+  return (
+    <Link
+      innerRef={reference}
+      to={props.link}
+      activeClassName="active"
+      className={linkActive ? 'active' : ''}
+      style={{
+        color: '#fff',
+      }}
+      {...props}
+      onClick={event => {
+        if (linkActive) {
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          // eslint-disable-next-line no-unused-expressions
+          props?.onClick(event);
+        }
+      }}
+    />
+  );
+});
 
 const DrawerHeader = ({ user }) => {
   const nameReference = useRef(null);
+  const buttonReference = useRef(null);
 
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
   const userProfileAccess = useSelector(
     state => state.userState.userProfile?.access,
   );
+
+  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
 
@@ -63,38 +116,63 @@ const DrawerHeader = ({ user }) => {
     avatarInitials
   );
 
-  const listItemComponent = userProfileAccess?.userProfileEnabled
-    ? ProfileLink
-    : undefined;
+  const userProfileEnabled = userProfileAccess?.userProfileEnabled;
+  const linkComponent = userProfileEnabled ? ProfileLink : undefined;
 
   return (
-    <StyledListItem
-      button={Boolean(listItemComponent)}
-      component={listItemComponent}
-    >
-      <ListItemIcon
-        style={{
-          marginLeft: '-2px',
-        }}
+    <>
+      <StyledListItem
+        onMouseEnter={userProfileEnabled && openPopover}
+        onMouseLeave={closePopover}
+        innerRef={buttonReference}
       >
-        <Avatar withCursor size={55}>
-          {avatarContent}
-        </Avatar>
-      </ListItemIcon>
-      <ListItemText
-        style={{
-          padding: 0,
-        }}
-      >
-        <div
+        <ListItemIcon
           style={{
-            display: 'flex',
+            marginLeft: '-2px',
           }}
         >
-          <Name ref={nameReference}>{fullName}</Name>
-        </div>
-      </ListItemText>
-    </StyledListItem>
+          <Avatar withCursor size={55}>
+            {avatarContent}
+          </Avatar>
+        </ListItemIcon>
+        <ListItemText
+          style={{
+            padding: 0,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+            }}
+          >
+            <Name ref={nameReference}>{fullName}</Name>
+          </div>
+        </ListItemText>
+      </StyledListItem>
+      <StyledDropdown
+        open={isPopoverOpen}
+        onMouseEnter={userProfileEnabled && openPopover}
+        onMouseLeave={closePopover}
+      >
+        <DropdownListItem
+          button
+          onClick={closePopover}
+          component={linkComponent}
+          link="/userProfile"
+        >
+          Profile & Settings
+        </DropdownListItem>
+        <DropdownListItem button onClick={closePopover}>
+          Subscription & Users
+        </DropdownListItem>
+        <DropdownListItem button onClick={closePopover}>
+          Billing & Invoices
+        </DropdownListItem>
+        <DropdownListItem button onClick={closePopover}>
+          Documents & Agreements
+        </DropdownListItem>
+      </StyledDropdown>
+    </>
   );
 };
 
