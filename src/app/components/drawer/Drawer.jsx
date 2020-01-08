@@ -32,17 +32,29 @@ const ContentContainer = styled.div`
   ${({ open }) =>
     open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
   ${({ open }) => (open ? 'margin-left: 260px;' : 'margin-left: 85px;')}
-  margin-top: ${props => (props.topPadded ? 88 : 0)}px;
+  margin-top: ${({ topPadded, trialBannerVisible }) => {
+    let topMargin = 0;
+
+    if (topPadded) {
+      topMargin += 88;
+
+      if (trialBannerVisible) {
+        topMargin += 46;
+      }
+    }
+
+    return topMargin;
+  }}px;
   transition: width .2s ease-out, margin .2s ease-out;
 `;
 
 const Drawer = ({ header, user, lists, children }) => {
   const [isOpen, open, close] = useBoolean(false);
+  const [trialBannerVisible] = useBoolean(true);
 
   const intercomUser = {
     email: user.email,
     name: `${user.firstName} ${user.lastName}`,
-    // custom_launcher_selector: '.navsupport',
   };
 
   return (
@@ -55,10 +67,14 @@ const Drawer = ({ header, user, lists, children }) => {
           user={user}
           lists={lists}
         />
-        <DrawerTitle header={header} />
+        <DrawerTitle header={header} trialBannerVisible={trialBannerVisible} />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </StyledDrawer>
-      <ContentContainer topPadded={header.show} open={isOpen}>
+      <ContentContainer
+        topPadded={header.show}
+        trialBannerVisible={trialBannerVisible}
+        open={isOpen}
+      >
         {children}
       </ContentContainer>
     </div>
