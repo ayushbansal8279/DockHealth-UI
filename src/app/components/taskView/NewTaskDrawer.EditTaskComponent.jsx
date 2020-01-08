@@ -1,5 +1,6 @@
 import linkifyElement from 'linkifyjs/element';
 import escape from 'lodash.escape';
+import moment from 'moment';
 import prop from 'ramda/es/prop';
 import React, { Component, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -37,6 +38,19 @@ const EditTaskDescriptionElement = styled.div`
     `
   background-color: #f3f5f6;
   border: 1px solid #dedee2;
+  `}
+
+  ${props =>
+    props.edited &&
+    `
+  &::after {
+    content: '(edited)';
+    color: #aaa9b0;
+    font-size: 0.875rem;
+    font-weight: normal;
+    padding-bottom: 0.25rem;
+    margin-left: 0.25rem;
+  }
   `}
 `;
 
@@ -144,9 +158,16 @@ class EditTaskDescription extends Component {
   render() {
     const { componentEditable } = this.state;
 
+    const {
+      selectedTask: { createdDateTime, updatedDateTime },
+    } = this.props;
+
+    const edited = moment(updatedDateTime).isAfter(moment(createdDateTime));
+
     return (
       <EditTaskDescriptionElement
         ref={this.componentRef}
+        edited={edited}
         contentEditable={componentEditable}
         onBlur={this.handleDescriptionEdit}
         onKeyPress={event => {
