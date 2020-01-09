@@ -43,8 +43,17 @@ module.exports = {
 
     inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
 
+    patientTab: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(5) > a'},
+
     logoutBtn: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a'},
+
+    patientShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(2) > div > div'},
+    patientSelector: {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(1)`},//Change out the last div:nth-child number
+
+    assignedToShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(3) > div > div:nth-child(1)'},//Change the x in assignedToUnassign's last div:nth-child(x), to whichever user you want to assign.
+    assignedToUnassigned: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(1)'},
   },
+
 
   // Functions
 
@@ -57,12 +66,23 @@ module.exports = {
   openAddTaskDropdown() {
     I.waitForElement(this.fields.addTskBtn, 4);
     I.click(this.fields.addTskBtn);
+    I.wait();
   },
 
-  postDummyTask() {
+  postNamedTask(name) {
     I.waitForElement(this.fields.tskDescription, 4);
-    I.fillField(this.fields.tskDescription, 'Dummy Task');
+    I.fillField(this.fields.tskDescription, name);
     I.pressKey('Enter');
+    I.wait();
+  },
+
+  assignPatient(index){
+    const path = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`;
+    I.waitForElement(this.fields.patientShield,5);
+    I.click(this.fields.patientShield);
+    I.wait();
+    I.waitForElement(path, 2);
+    I.click(path);
     I.wait();
   },
 
@@ -90,7 +110,7 @@ module.exports = {
     I.wait();
   },
 
-  exitTask() {
+  exitMadeTask() {
     I.waitForElement(this.fields.exitMadeTaskButton, 3);
     I.click(this.fields.exitTaskButton);
     I.wait();
@@ -112,6 +132,12 @@ module.exports = {
     I.waitForElement(this.fields.taskListTab, 3);
     I.click(this.fields.taskListTab);
     I.wait(2);
+  },
+
+  clickPatientTab(){
+    I.waitForElement(this.fields.patientTab);
+    I.click(this.fields.patientTab);
+    I.wait();
   },
 
   destroyPickedTask() {

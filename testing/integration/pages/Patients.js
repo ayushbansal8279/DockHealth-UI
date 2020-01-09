@@ -80,7 +80,7 @@ module.exports = {
   },
   //Set Filter command
   setFilterTo(index){
-    I.waitForElement(this.fields.filterShield, 3);
+    I.waitForElement(this.fields.filterShield, 7);
     I.click(this.fields.filterShield);
     I.wait();
     const path = {css: `#menu-filter > div:nth-child(2) > ul > li:nth-child(${index})`};
@@ -211,9 +211,9 @@ module.exports = {
   //Manipulating edit sidebar
   openEditPatientSidebar(index){
     const path = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > table > tbody > tr:nth-child(${index}) > td:nth-child(6)`;
-    I.waitForElement({css: path});
+    I.waitForElement({css: path}, 5);
     I.click({css: path});
-    I.wait();
+    I.wait(3);
   },
 
   editSavePatient(){
@@ -237,30 +237,35 @@ module.exports = {
 
   editFirstName(name){
     I.waitForElement(this.fields.editFirstNameBox);
+    I.clearField(this.fields.editFirstNameBox);
     I.fillField(this.fields.editFirstNameBox, name);
     I.wait();
   },
 
   editMiddleName(name){
     I.waitForElement(this.fields.editMiddleNameBox);
+    I.clearField(this.fields.editMiddleNameBox);
     I.fillField(this.fields.editMiddleNameBox, name);
     I.wait();
   },
 
   editLastName(name){
     I.waitForElement(this.fields.editLastNameBox);
+    I.clearField(this.fields.editLastNameBox);
     I.fillField(this.fields.editLastNameBox, name);
     I.wait();
   },
   
   editMRN(mrn){
     I.waitForElement(this.fields.editmrnBox);
+    I.clearField(this.fields.editmrnBox);
     I.fillField(this.fields.editmrnBox, mrn);
     I.wait();
   },
 
   editBirthday(code){
     I.waitForElement(this.fields.editBirthdayBox);
+    I.clearField(this.fields.birthdayBox);
     I.fillField(this.fields.editBirthdayBox, code);
     I.wait();
   },
@@ -284,18 +289,21 @@ module.exports = {
   
   editHomePhone(code){
     I.waitForElement(this.fields.editHomePhoneBox);
+    I.clearField(this.fields.editHomePhoneBox);
     I.fillField(this.fields.editHomePhoneBox, code);
     I.wait();
   },
 
   editMobilePhone(code){
     I.waitForElement(this.fields.editMobilePhoneBox);
+    I.clearField(this.fields.editMobilePhoneBox);
     I.fillField(this.fields.editMobilePhoneBox, code);
     I.wait();
   },
 
   editEmail(code){
     I.waitForElement(this.fields.editEmailBox);
+    I.clearField(this.fields.editEmailBox);
     I.fillField(this.fields.editEmailBox, code);
     I.wait();
   },
