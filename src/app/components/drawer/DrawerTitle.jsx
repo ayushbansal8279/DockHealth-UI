@@ -79,7 +79,7 @@ export default ({ header, trialBannerVisible }) => {
           alignItems="center"
         >
           <span>Your 30 day free trial will expire in 10 days.</span>
-          <TrialBannerLink to="">Learn more</TrialBannerLink>
+          <TrialBannerLink to="/subscriptions">Learn more</TrialBannerLink>
         </TrialBanner>
       )}
     </TitleContainer>

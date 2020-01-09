@@ -69,7 +69,7 @@ const StyledDropdown = styled.div`
   width: 100%;
 `;
 
-const ProfileLink = React.forwardRef((props, reference) => {
+const StyledLink = React.forwardRef((props, reference) => {
   const linkActive = hashHistory.getCurrentLocation().pathname === props.link;
 
   return (
@@ -117,7 +117,7 @@ const DrawerHeader = ({ user }) => {
   );
 
   const userProfileEnabled = userProfileAccess?.userProfileEnabled;
-  const linkComponent = userProfileEnabled ? ProfileLink : undefined;
+  const linkComponent = userProfileEnabled ? StyledLink : undefined;
 
   return (
     <>
@@ -162,7 +162,12 @@ const DrawerHeader = ({ user }) => {
         >
           Profile & Settings
         </DropdownListItem>
-        <DropdownListItem button onClick={closePopover}>
+        <DropdownListItem
+          button
+          onClick={closePopover}
+          component={linkComponent}
+          link="/subscriptions"
+        >
           Subscription & Users
         </DropdownListItem>
         <DropdownListItem button onClick={closePopover}>
