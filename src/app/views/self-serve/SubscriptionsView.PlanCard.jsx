@@ -104,7 +104,7 @@ const CardHeaderTick = styled.div`
 
 const CardContent = styled(SafariFixGrid)`
   && {
-    padding: 0.75rem 0rem;
+    padding: 0.25rem 0rem;
   }
 `;
 

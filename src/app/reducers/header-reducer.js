@@ -8,11 +8,20 @@ const initialState = {
 };
 
 const reducer = (state = initialState, { type, ...payload }) => {
+  const headerData = payload?.headerData ?? {};
+
   switch (type) {
     case SET_HEADER:
-      return { ...state, show: true, ...(payload?.headerData ?? {}) };
+      return {
+        ...initialState,
+        show: true,
+        ...headerData,
+      };
     case UNSET_HEADER:
-      return { ...state, ...omit(['show'], payload?.headerData ?? {}) };
+      return {
+        ...state,
+        ...omit(['show'], headerData),
+      };
     case HIDE_HEADER:
       return { ...state, show: false };
     default:

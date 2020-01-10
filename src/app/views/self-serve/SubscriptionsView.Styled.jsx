@@ -1,6 +1,9 @@
+import React from 'react';
 import styled from 'styled-components';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import Grid from '@material-ui/core/Grid';
 import { motion } from 'framer-motion';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -52,6 +55,7 @@ export const Title = styled(H1)`
 
 export const SubscriptionsViewContainer = styled(Grid)`
   && {
+    background-color: #fff;
     padding: 2.625rem 4.625rem;
   }
 `;
@@ -116,8 +120,8 @@ export const FeatureListHeader = styled(FeatureHeaderElement)`
 
 export const FeatureListContentHeader = styled(FeatureHeaderElement)`
   cursor: pointer;
-  height: 5.75rem;
-  min-height: 5.75rem;
+  height: 5.25rem;
+  min-height: 5.25rem;
 `;
 
 export const FeatureListChevronContainer = styled.img`
@@ -143,3 +147,54 @@ export const FeatureRow = styled.div`
     background-color: #1a2d56;
   }
 `;
+
+export const BillingContainer = styled.div`
+  align-items: center;
+  background-color: #efeff0;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding: 0.5rem 1.25rem;
+  width: 100%;
+`;
+
+export const BillingLabel = styled.span`
+  color: #2e3a43;
+  font-size: 1.125rem;
+`;
+
+export const BillingPrice = styled.span`
+  color: #2e3a43;
+  font-size: 2.25rem;
+  font-weight: bold;
+`;
+
+export const BottomButtonContainer = styled(Grid)`
+  margin-top: 1rem;
+`;
+
+export const StyledButton = withStyles({
+  root: {
+    borderRadius: '0.25rem',
+    fontSize: '0.875rem',
+    height: '2.5rem',
+    marginLeft: '0.5rem',
+    padding: '0 1.5rem',
+  },
+  text: {
+    color: '#000',
+  },
+  contained: {
+    backgroundColor: '#fdb42b',
+    color: '#565b5f',
+  },
+})(({ classes, variant, ...props }) => {
+  const variantClassName = classes[variant] || '';
+  const rootClassName = classes.root || '';
+
+  const className = `${rootClassName} ${variantClassName}`.trim();
+
+  return <ButtonBase className={className} {...props} />;
+});
+
+export const FeatureRowsContainer = styled(motion.div)``;

@@ -1,3 +1,4 @@
+import { equals, pick } from 'ramda';
 import React from 'react';
 import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
@@ -76,8 +77,22 @@ export const Routes = ({ store }) => {
       }
     });
 
+    const removeHistoryLeavingListener = hashHistory.listenBefore(
+      (event, hook) => {
+        const locationPicker = pick(['hash', 'pathname', 'query', 'search']);
+
+        hook(
+          !equals(
+            locationPicker(event),
+            locationPicker(hashHistory.getCurrentLocation()),
+          ),
+        );
+      },
+    );
+
     return () => {
       removeHistoryListener();
+      removeHistoryLeavingListener();
     };
   });
 
@@ -104,9 +119,9 @@ export const Routes = ({ store }) => {
     dispatch(storeAsCurrentTask(taskId));
   };
 
-  const onRouterUpdate = () => {
+  function onRouterUpdate() {
     unsetHeader(dispatch)();
-  };
+  }
 
   return (
     <Router history={hashHistory} onUpdate={onRouterUpdate}>

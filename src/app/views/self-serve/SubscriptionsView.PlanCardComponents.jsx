@@ -62,13 +62,13 @@ const CardFeatureRow = styled.div`
   justify-content: center;
   width: 100%;
 
-  &:nth-child(odd) {
+  &:nth-child(even) {
     background-color: #ededf0;
   }
 `;
 
 export const CardContactUsHeader = () => (
-  <ContentHeaderGrid item xs={12} container justify="center">
+  <ContentHeaderGrid item xs={12} container justify="center" wrap="nowrap">
     <H2>Contact Us</H2>
   </ContentHeaderGrid>
 );
@@ -107,7 +107,7 @@ export const CardStandardHeader = ({
   monthlyPrice,
 }) => {
   return (
-    <ContentHeaderGrid container direction="column">
+    <ContentHeaderGrid container direction="column" wrap="nowrap">
       <SafariFixGrid
         item
         xs={12}

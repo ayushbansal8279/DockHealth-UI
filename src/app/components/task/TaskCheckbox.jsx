@@ -24,25 +24,25 @@ const CheckboxContainer = styled.div`
     width: 30px;
 
     &:hover {
-      background-color: #20b255;
+      background-color: ${props => props.color};
       border: 1px solid #aab8c3;
     }
 
     ${props =>
       props.checked &&
       `
-      background-color: #20b255;
+      background-color: ${props.color};
       border: 0;
     `}
   }
 `;
 
-const CheckboxOutLines = ({ className }) => (
+const CheckboxOutLines = ({ className, color }) => (
   <svg
     height={LINE_HEIGHT}
     width={CHECKBOX_SIZE}
     viewBox={`0 0 ${CHECKBOX_SIZE} ${LINE_HEIGHT}`}
-    stroke="#20b255"
+    stroke={color}
     strokeWidth="1.5"
     className={className}
   >
@@ -87,7 +87,7 @@ const outLinesStyle = `
 `;
 
 const StyledOutLinesBase = styled(CheckboxOutLines)`
-  animation: ${dashAnimation} 0.3s ease-out forwards;
+  animation: ${dashAnimation} 0.3s ease-out forwards 0s 1;
   ${outLinesStyle}
 `;
 
@@ -112,12 +112,12 @@ const StyledOutlinesRight = styled(StyledOutLinesBase)`
   transform: rotate(90deg);
 `;
 
-const CheckboxOutLine = ({ className }) => (
+const CheckboxOutLine = ({ className, color }) => (
   <svg
     height={LINE_HEIGHT}
     width="2"
     viewBox={`0 0 2 ${LINE_HEIGHT}`}
-    stroke="#20b255"
+    stroke={color}
     strokeWidth="1.5"
     className={className}
   >
@@ -170,6 +170,7 @@ const TaskCheckbox = ({
   onClick = () => {},
   disabled,
   className,
+  color = '#20b255',
 }) => {
   const [outlinesShown, showOutlines, hideOutlines] = useBoolean(false);
 
@@ -179,13 +180,13 @@ const TaskCheckbox = ({
     setTimeout(() => {
       hideOutlines();
     }, 500);
-  });
+  }, [hideOutlines, showOutlines]);
 
   return (
     <CheckboxContainer
-      onClick={e => {
+      onClick={event => {
         if (!outlinesShown && !disabled) {
-          onClick(e);
+          onClick(event);
           onChange({ target: { checked: !checked } });
           triggerOutlinesAnimation();
         }
@@ -193,23 +194,25 @@ const TaskCheckbox = ({
       disabled={disabled}
       checked={checked}
       className={className}
+      color={color}
     >
       <span>
         <StyledCheckIcon checked={checked} />
       </span>
       {outlinesShown && (
         <>
-          <StyledOutLinesTop />
-          <StyledOutlinesBottom />
-          <StyledOutlinesLeft />
-          <StyledOutlinesRight />
-          <StyledOutLineTopRight />
-          <StyledOutLineBottomRight />
-          <StyledOutLineTopLeft />
-          <StyledOutLineBottomLeft />
+          <StyledOutLinesTop color={color} />
+          <StyledOutlinesBottom color={color} />
+          <StyledOutlinesLeft color={color} />
+          <StyledOutlinesRight color={color} />
+          <StyledOutLineTopRight color={color} />
+          <StyledOutLineBottomRight color={color} />
+          <StyledOutLineTopLeft color={color} />
+          <StyledOutLineBottomLeft color={color} />
         </>
       )}
     </CheckboxContainer>
   );
 };
+
 export default TaskCheckbox;

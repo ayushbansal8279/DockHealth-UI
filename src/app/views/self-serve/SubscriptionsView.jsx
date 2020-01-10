@@ -1,12 +1,14 @@
 import Grid from '@material-ui/core/Grid';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { times } from 'ramda';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
 
 import { setHeader } from '../../actions/header-actions';
 import FeatureListChevronIcon from '../../img/feature-list-chevron.svg';
+import InvitationPanel from './SubscriptionsView.InvitationPanel';
+import SubscriptionsViewMembersTable from './SubscriptionsView.MembersTable';
 import SubscriptionsViewPlanCard, {
   CARD_TYPES,
 } from './SubscriptionsView.PlanCard';
@@ -14,19 +16,27 @@ import {
   AnnualToggleContainer,
   AnnualToggleLabel,
   AnnualToggleSwitch,
+  BillingContainer,
+  BillingLabel,
+  BillingPrice,
+  BottomButtonContainer,
   FeatureListChevronContainer,
   FeatureListContainer,
   FeatureListContentHeader,
   FeatureListHeader,
   FeatureRow,
+  FeatureRowsContainer,
   H1,
   H2,
   H4,
   H4Animated,
+  StyledButton,
   SubscriptionCardGrid,
   SubscriptionsViewContainer,
   Title,
 } from './SubscriptionsView.Styled';
+
+const PRICE_ROUNDING_MODIFIER = 100;
 
 const subscriptionPlanData = [
   {
@@ -238,11 +248,15 @@ const animationProperties = ({ featureListExpanded, height }) => ({
   transition: { ease: 'easeInOut', duration: 0.25 },
 });
 
-const renderSubscriptionFeature = ({ featureRowReferences }) => (
-  { key, label },
-  index,
-) => (
-  <FeatureRow key={key} ref={featureRowReferences[index]}>
+const renderSubscriptionFeature = ({
+  featureListExpanded,
+  featureRowReferences,
+}) => ({ key, label }, index) => (
+  <FeatureRow
+    key={key}
+    open={featureListExpanded}
+    ref={featureRowReferences[index]}
+  >
     <H4>{label}</H4>
   </FeatureRow>
 );
@@ -252,6 +266,7 @@ export default () => {
   const [annualPayment, toggleAnnualPayment] = useToggle(true);
   const [featureListExpanded, toggleFeatureListExpanded] = useToggle(false);
   const [chosenPlan, setChosenPlan] = useState('');
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const featureRowReferences = times(
     () => useRef(null),
     subscriptionFeatures.length,
@@ -279,6 +294,22 @@ export default () => {
       accumulator + reference.current?.offsetHeight ?? 0,
     0,
   );
+
+  const getTotalPrice = useCallback(() => {
+    const chosenPlanData = subscriptionPlanData.find(
+      ({ key }) => key === chosenPlan,
+    );
+
+    const price = annualPayment
+      ? chosenPlanData?.annualMonthlyPrice
+      : chosenPlanData?.monthlyPrice;
+
+    return (
+      Math.floor(
+        PRICE_ROUNDING_MODIFIER * selectedUsers.length * (price ?? 0),
+      ) / PRICE_ROUNDING_MODIFIER
+    );
+  }, [annualPayment, chosenPlan, selectedUsers.length]);
 
   return (
     <SubscriptionsViewContainer container>
@@ -344,16 +375,20 @@ export default () => {
               )}
             </AnimatePresence>
           </FeatureListContentHeader>
-          <motion.div
+          <FeatureRowsContainer
             {...animationProperties({
               featureListExpanded,
               height: featureListHeight,
             })}
+            open={featureListExpanded}
           >
             {subscriptionFeatures.map(
-              renderSubscriptionFeature({ featureRowReferences }),
+              renderSubscriptionFeature({
+                featureListExpanded,
+                featureRowReferences,
+              }),
             )}
-          </motion.div>
+          </FeatureRowsContainer>
         </FeatureListContainer>
         {subscriptionPlanData.map(
           renderPlanCard({
@@ -365,6 +400,23 @@ export default () => {
           }),
         )}
       </SubscriptionCardGrid>
+      <SubscriptionsViewMembersTable
+        selectedUsers={selectedUsers}
+        setSelectedUsers={setSelectedUsers}
+      />
+      <InvitationPanel />
+      <BillingContainer>
+        <BillingLabel>Billed monthly on first day of each month</BillingLabel>
+        <BillingPrice>${getTotalPrice()}</BillingPrice>
+      </BillingContainer>
+      <BottomButtonContainer container justify="flex-end">
+        <StyledButton type="button" variant="text">
+          Cancel
+        </StyledButton>
+        <StyledButton type="submit" variant="contained">
+          Buy this plan
+        </StyledButton>
+      </BottomButtonContainer>
     </SubscriptionsViewContainer>
   );
 };
