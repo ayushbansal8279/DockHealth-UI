@@ -59,7 +59,7 @@ const getListElements = ({
       person.userInviteStatus !== 'PENDING');
 
   const isPersonMemberOrUnknown =
-    !person.orgUserRole == null || person.orgUserRole === 'MEMBER';
+    person.orgUserRole == null || person.orgUserRole === 'MEMBER';
   const isPersonPending = person.userInviteStatus === 'PENDING';
   const isPersonOwner = person.orgUserRole === 'OWNER';
 
