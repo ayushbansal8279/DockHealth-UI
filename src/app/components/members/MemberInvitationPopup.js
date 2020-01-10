@@ -94,7 +94,8 @@ const MemberInvitationPopup = ({ members, taskList, back, close, invite }) => {
   const filteredListings =
     searchTerms.length === 0 ? members : members.filter(isMatch);
 
-  const sortedListings = filteredListings.sort(orderListings);
+  // const sortedListings = filteredListings.sort(orderListings);
+  const sortedListings = filteredListings;
 
   return (
     <React.Fragment>
