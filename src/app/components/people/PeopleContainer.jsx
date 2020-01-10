@@ -101,8 +101,8 @@ class PeopleContainer extends PureComponent {
       removeUserFromOrganization,
     } = this.props;
 
-    const personName = `${person.lastName || ''}, ${person.firstName ||
-      ''} ${person.middleName || ''}`
+    const personName = `${person.firstName || ''} ${person.middleName ||
+      ''} ${person.lastName || ''}`
       .trim()
       .replace(/^,\s*/, '');
 
