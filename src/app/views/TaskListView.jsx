@@ -247,6 +247,7 @@ class TaskListView extends PureComponent {
             taskStatus,
             filterBy,
           })}
+          style={{ cursor: 'pointer' }}
         >
           <BlockItemContainer>
             <svg className={`icon xlarge icon-header ${iconColor}`}>
@@ -288,7 +289,7 @@ class TaskListView extends PureComponent {
           <Grid
             container
             item
-            xs={6}
+            xs={9}
             justify="center"
             direction="row"
             spacing={8}
@@ -297,7 +298,7 @@ class TaskListView extends PureComponent {
           </Grid>
         </SafariFixGrid>
         <SafariFixGrid container item xs={12} justify="center" spacing={8}>
-          <Grid item xs={6}>
+          <Grid item xs={9}>
             {isFetching ? (
               <CubesLoaderContainer>
                 <CubesLoader size={40} />
