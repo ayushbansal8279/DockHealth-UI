@@ -5,6 +5,7 @@ import ReactHtmlParser from 'react-html-parser';
 
 import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
 import EnvelopeIcon from '../../img/envelope.svg';
+import AttachmentIcon from '../../img/clip.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import {
   CompletedBy,
@@ -64,6 +65,15 @@ export default ({
           <img
             src={EnvelopeIcon}
             alt="Email"
+            style={{
+              paddingRight: '5px',
+            }}
+          />
+        )}
+        {task.attachments && task.attachments.length > 0 && (
+          <img
+            src={AttachmentIcon}
+            alt="Attachments"
             style={{
               paddingRight: '5px',
             }}
