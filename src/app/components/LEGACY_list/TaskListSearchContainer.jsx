@@ -42,6 +42,7 @@ const TaskListLayout = ({
       taskActions.toggleTaskPriority(task, userId, priority),
     showToolbar: true,
     showAddTaskButton: false,
+    isMultiList: true,
   };
 
   return !isFetching && (!lists || lists.length === 0) ? (

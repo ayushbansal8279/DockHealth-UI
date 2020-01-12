@@ -92,7 +92,7 @@ export const TaskListHeader = styled.div`
 `;
 
 export const TaskListSectionContainer = styled.div`
-  margin-bottom: 0.25rem;
+  margin-bottom: 1.5rem;
 `;
 
 export const TaskListSectionHeader = styled(Grid)`
@@ -151,7 +151,7 @@ export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
-  taskListId,
+  taskListId = 0,
   storeAsCurrentTask,
 }) => {
   const [isCollapsed, toggleIsCollapsed] = useToggle(false);
@@ -170,15 +170,17 @@ export const TaskListSection = ({
             </CollapseStyledButton>
           )}
         </Grid>
-        <Grid item container xs={12}>
-          <AddTask
-            taskListId={taskListId}
-            style={{
-              width: '100%',
-            }}
-            storeAsCurrentTask={storeAsCurrentTask}
-          />
-        </Grid>
+        {!isCollapsed && (
+          <Grid item container xs={12}>
+            <AddTask
+              taskListId={taskListId}
+              style={{
+                width: '100%',
+              }}
+              storeAsCurrentTask={storeAsCurrentTask}
+            />
+          </Grid>
+        )}
       </TaskListSectionHeader>
       {!isCollapsed && children}
     </TaskListSectionContainer>
@@ -474,6 +476,7 @@ class TaskView extends Component {
     const {
       tasks,
       isFetching,
+      isMultiList,
       title,
       members,
       taskList,
@@ -494,6 +497,7 @@ class TaskView extends Component {
                 members={members}
                 taskList={taskList}
                 resetHeader={this.resetHeader}
+                isMultiList={isMultiList}
               />
             ),
             xs: 12,
@@ -693,14 +697,23 @@ class TaskView extends Component {
     const tasks = [...incompleteTasks, ...archivableTasks].map(
       this.mapInboxTasks({ isInbox }),
     );
+    const allTasks = [...incompleteTasks, ...completedTasks];
 
-    const groupedTasks = groupBy(tasks, task =>
+    const groupedTasks = groupBy(allTasks, task =>
       task.taskList ? task.taskList.listName : '',
     );
     const tasklistCount = [...groupedTasks.keys()].length;
+    const listNames = [...groupedTasks.keys()].sort((a, b) =>
+      a.localeCompare(b),
+    );
+
+    const groupedCompletedTasks = groupBy(completedTasks, task =>
+      task.taskList ? task.taskList.listName : '',
+    );
 
     const tasklistProps = {
       tasks: this.search(tasks),
+      completedTasks: this.search(tasks),
       markComplete: (task, status) => {
         markComplete(task, status, 'INCOMPLETE', currentUser).then(
           this.onMarkComplete,
@@ -726,10 +739,17 @@ class TaskView extends Component {
     }
 
     if (tasks.length === 0 || (!isMultiList && tasklistCount <= 1) || isInbox) {
-      return <TaskList {...tasklistProps} />;
+      return (
+        <>
+          <TaskList {...tasklistProps} />
+          {completedTasks &&
+            completedTasks.length > 0 &&
+            this.renderCompleted({ listCompletedTasks: completedTasks })}
+        </>
+      );
     }
 
-    return [...groupedTasks.keys()].map(groupedListName => {
+    return listNames.map(groupedListName => {
       const tasksCount = groupedTasks.get(groupedListName).length;
       const tasksCountContent = `${tasksCount} ${
         tasksCount === 1 ? 'task' : 'tasks'
@@ -747,6 +767,8 @@ class TaskView extends Component {
       const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
         ?.taskListId;
 
+      const completedTasksForList = groupedCompletedTasks.get(groupedListName);
+
       return (
         <React.Fragment key={groupedListName}>
           <TaskListSection
@@ -759,15 +781,20 @@ class TaskView extends Component {
               listTasks={groupedTasks.get(groupedListName)}
               {...tasklistProps}
             />
+            {completedTasksForList &&
+              completedTasksForList.length > 0 &&
+              this.renderCompleted({
+                listCompletedTasks: completedTasksForList,
+              })}
           </TaskListSection>
         </React.Fragment>
       );
     });
   };
 
-  renderCompleted = () => {
+  renderCompleted = ({ listCompletedTasks: completedOrArchivedTasks }) => {
     const {
-      completedTasks: completedOrArchivedTasks,
+      // completedTasks: completedOrArchivedTasks,
       markComplete,
       selectedTaskId,
       storeAsCurrentTask,
@@ -785,13 +812,13 @@ class TaskView extends Component {
       filterBy,
     } = this.state;
 
-    const completedTasks = reject(
+    const listCompletedTasks = reject(
       isTaskArchivable(currentUser),
       completedOrArchivedTasks,
     ).map(this.mapInboxTasks({ isInbox }));
 
     const tasklistProps = {
-      tasks: this.search(completedTasks),
+      tasks: this.search(listCompletedTasks),
       markComplete: (task, status) => {
         markComplete(task, status, 'COMPLETE', currentUser).then(
           this.onMarkComplete,
@@ -812,14 +839,14 @@ class TaskView extends Component {
       listName,
     };
 
-    if (completedTasks.length === 0) {
+    if (listCompletedTasks.length === 0) {
       return null;
     }
 
     const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
 
-    let completedTasksAndSubTasksCount = completedTasks.length;
-    completedTasks.forEach(task => {
+    let completedTasksAndSubTasksCount = listCompletedTasks.length;
+    listCompletedTasks.forEach(task => {
       completedTasksAndSubTasksCount += task.subtasks?.length ?? 0;
     });
 
@@ -829,7 +856,7 @@ class TaskView extends Component {
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
           <StyledButton onClick={this.toggleCompletedTasks}>
             {`${buttonToggleWord} completed tasks (${
-              completedTasks.length >= SHOW_MORE_STEP_COUNT
+              listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
                 ? `${SHOW_MORE_STEP_COUNT}+`
                 : completedTasksAndSubTasksCount
             })`}
@@ -849,8 +876,8 @@ class TaskView extends Component {
       showToolbar,
       selectedTask,
       markComplete,
-      showSortingStats = true,
       isInbox = false,
+      isMultiList,
       tasks,
       showAddTaskButton = true,
     } = this.props;
@@ -868,6 +895,8 @@ class TaskView extends Component {
 
     const toolbarContainerVisible =
       (isInbox && (tasks.length > 0 || isFetching)) || !isInbox;
+
+    const showSortingStats = isMultiList !== true;
 
     return (
       <div
@@ -939,7 +968,6 @@ class TaskView extends Component {
                 <div style={{ display: 'flex' }}>
                   <TaskListContainer>
                     {this.renderTasklists()}
-                    {this.renderCompleted()}
                     <SideClickListener onClick={this.closeTaskDrawer} />
                   </TaskListContainer>
                   {taskDrawerOpen && (

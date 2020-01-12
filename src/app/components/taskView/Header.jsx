@@ -88,6 +88,7 @@ const Header = ({
   title,
   taskCount: propertiesTaskCount = 0,
   isFetching,
+  isMultiList,
   members,
   taskList,
   resetHeader = () => {},
@@ -153,7 +154,9 @@ const Header = ({
               )}
             </div>
             <div style={{ flex: 0.35 }}>
-              {members && <Members members={members} taskList={taskList} />}
+              {members && !isMultiList && (
+                <Members members={members} taskList={taskList} />
+              )}
             </div>
           </>
         )}
@@ -175,10 +178,12 @@ Header.propTypes = {
     }),
   ),
   isFetching: PropTypes.bool,
+  isMultiList: PropTypes.bool,
 };
 
 Header.defaultProps = {
   isFetching: false,
+  isMultiList: false,
   members: null,
 };
 
