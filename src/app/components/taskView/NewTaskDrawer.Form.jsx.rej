@@ -1,0 +1,7 @@
+diff a/src/app/components/taskView/NewTaskDrawer.Form.jsx b/src/app/components/taskView/NewTaskDrawer.Form.jsx	(rejected hunks)
+@@ -334 +334 @@ export default ({
+-        {isSpecificPatient && ( 
++        {isSpecificPatient && (
+@@ -341 +341 @@ export default ({
+-              containerDisabled={true}
++              containerDisabled
