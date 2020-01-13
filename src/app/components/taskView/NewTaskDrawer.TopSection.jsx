@@ -31,6 +31,7 @@ export default ({
   handleSubmit,
   isInbox,
   isSubtask,
+  isSpecificPatient,
   formMethods,
   parentTask,
   onMarkComplete,
@@ -161,6 +162,7 @@ export default ({
             setAutoSaveVisible={setAutoSaveVisible}
             setPopoversOpen={setPopoversOpen}
             isInbox={isInbox}
+            isSpecificPatient={isSpecificPatient}
           />
         </FormContext>
       </Grid>

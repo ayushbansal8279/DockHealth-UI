@@ -162,6 +162,7 @@ export default ({
   onMarkComplete,
   setAutoSaveVisible,
   isInbox,
+  isSpecificPatient,
   setPopoversOpen,
 }) => {
   const formMethods = useFormContext();
@@ -290,7 +291,7 @@ export default ({
             />
           </Grid>
         )}
-        {!isSubtask && (
+        {!isSubtask && !isSpecificPatient && (
           <Grid item xs={12}>
             {patientPopoverOpen && (
               <NewTaskDrawerPersonPicker
@@ -327,6 +328,20 @@ export default ({
               onContainerClick={() => {
                 openPatientPopover();
               }}
+            />
+          </Grid>
+        )}
+        {isSpecificPatient && (
+          <Grid item xs={12}>
+            <StyledInput
+              name="patientName"
+              label="Patient Information"
+              controlled
+              fullWidth
+              containerDisabled
+              fontSize={16}
+              labelFontSize={13}
+              containerHeight={4.375}
             />
           </Grid>
         )}

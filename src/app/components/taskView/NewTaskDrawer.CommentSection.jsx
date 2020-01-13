@@ -300,7 +300,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
       {!commentsEmpty && (
         <>
           <CommentsContainer>
-            <StyledSimpleBar ref={simpleBarReference} visible>
+            <StyledSimpleBar ref={simpleBarReference} visible="true">
               {Object.entries(groupedComments).map(
                 renderComment({ currentUserId, updateComment, task, members }),
               )}

@@ -246,7 +246,7 @@ export const SideClickListener = styled.div`
 export const CompletedButtonRowContainer = styled.div`
   align-items: center;
   display: flex;
-  height: 100px;
+  height: 70px;
   flex-direction: row wrap;
   justify-content: center;
 `;

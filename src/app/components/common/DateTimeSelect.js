@@ -239,7 +239,7 @@ const DateTimeSelect = ({
                   )}
                   <ButtonContainer centered={!showTimeSelect}>
                     <StyledButton onClick={close}>Cancel</StyledButton>
-                    <StyledButton bold onClick={handleAccept}>
+                    <StyledButton bold="true" onClick={handleAccept}>
                       Set
                     </StyledButton>
                   </ButtonContainer>
@@ -255,8 +255,8 @@ const DateTimeSelect = ({
 
 DateTimeSelect.propTypes = {
   children: PropTypes.func,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
-    .isRequired,
+  // value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
+  //   .isRequired,
   onChange: PropTypes.func.isRequired,
 };
 

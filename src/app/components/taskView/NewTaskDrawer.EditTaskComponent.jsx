@@ -1,7 +1,5 @@
 import linkifyElement from 'linkifyjs/element';
 import escape from 'lodash.escape';
-import moment from 'moment';
-import prop from 'ramda/es/prop';
 import React, { Component, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -158,11 +156,12 @@ class EditTaskDescription extends Component {
   render() {
     const { componentEditable } = this.state;
 
-    const {
-      selectedTask: { createdDateTime, updatedDateTime },
-    } = this.props;
+    const edited = false;
 
-    const edited = moment(updatedDateTime).isAfter(moment(createdDateTime));
+    // const { selectedTask } = this.props;
+    // if(selectedTask){
+    //   edited = moment(selectedTask.updatedDateTime).isAfter(moment(selectedTask.createdDateTime));
+    // }
 
     return (
       <EditTaskDescriptionElement
@@ -188,19 +187,19 @@ export default ({
   members,
 }) => {
   const { register, setValue } = useFormContext();
-  const selectedTaskId = useSelector(
-    store => store.taskState.selectedTask?.taskId,
-  );
+  const selectedTask = useSelector(store => store.taskState.selectedTask);
+  const selectedTaskId = selectedTask?.taskId;
+
   const incompleteTasks = useSelector(store => store.taskState.tasks);
-  const completeTasks = useSelector(store => store.taskState.completedTasks);
+  // const completeTasks = useSelector(store => store.taskState.completedTasks);
   const currentUser = useSelector(store => store.userState.userProfile);
   const dispatch = useDispatch();
 
-  const allMainTasks = [...incompleteTasks, ...completeTasks];
-  const allSubtasks = allMainTasks.flatMap(prop('subtasks'));
-  const allTasks = [...allMainTasks, ...allSubtasks];
+  // const allMainTasks = [...incompleteTasks, ...completeTasks];
+  // const allSubtasks = allMainTasks.flatMap(prop('subtasks'));
+  // const allTasks = [...allMainTasks, ...allSubtasks];
 
-  const selectedTask = allTasks.find(({ taskId }) => taskId === selectedTaskId);
+  // const selectedTask = allTasks.find(({ taskId }) => taskId === selectedTaskId);
 
   const { status } = selectedTask || {};
 

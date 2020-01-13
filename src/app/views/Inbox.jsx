@@ -152,6 +152,7 @@ class Inbox extends PureComponent {
       showToolbar: true,
       showSortingStats: false,
       isInbox: true,
+      isSpecificPatient: false,
       taskListId: 0,
     };
 
