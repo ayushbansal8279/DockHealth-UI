@@ -1,0 +1,65 @@
+const { I } = inject();
+
+module.exports = {
+
+  fields:{
+    inboxAddTaskField:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
+    inboxAddTaskButton:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4) > button'},
+  
+    editBarExitButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button'},
+
+    //xthTaskPath: #appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(1+${xth*2})
+    editBarTaskName: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(1) > div > div:nth-child(2)',
+
+    editBarPatientInformation: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div',
+    //editBarPatientInfoX: #appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(X)
+  
+    editBarPersonShield: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(1)',
+    //editBarUnassignedPerson: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div',
+  },
+
+  addTask(taskName){
+    I.waitForElement(this.fields.inboxAddTaskField, 5);
+    I.fillField(this.fields.inboxAddTaskField, taskName);
+    I.wait(3);
+    I.waitForElement(this.fields.inboxAddTaskButton, 5);
+    I.scrollTo(this.fields.inboxAddTaskButton);
+    I.wait();
+    I.click(this.fields.inboxAddTaskButton);
+    I.wait(3);
+  },
+
+  clickTask(number){
+    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(number*2)}) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3)`};
+    I.waitForElement(path, 5);
+    I.click(path);
+    I.wait();
+  },
+
+  exitEditTaskBar(){
+    I.waitForElement(this.fields.editBarExitButton, 4);
+    I.click(path);
+    I.wait();
+  },
+
+  editTaskName(name){
+    I.waitForElement(this.fields.editBarTaskName, 5);
+    I.clearField(this.fields.editBarTaskName);
+    I.wait();
+    I.fillField(this.fields.editBarTaskName, name);
+    I.pressKey('Enter');
+    I.wait();
+  },
+
+  editTaskPatient(index){
+    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`}
+    I.waitForElement(this.fields.editBarPatientInformation, 5);
+    I.click(this.fields.editBarPatientInformation);
+    I.waitForElement(path, 4);
+    I.click(path);
+    I.wait();
+  },
+
+  
+  // insert your locators and methods here
+}

@@ -37,6 +37,9 @@ module.exports = {
     addTaskButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(2) > form > div > div > input'},
     saveTaskButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(2) > form > div > div > div:nth-child(4) > button'},
 
+    addTaskInboxButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
+    addTaskInboxSaveButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4) > button'},
+
     firstTaskCheckbox: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(1) > div'},
   },
   
@@ -76,6 +79,7 @@ module.exports = {
   editMiddleName(name){
     I.waitForElement(this.fields.middleNameBox);
     I.clearField(this.fields.middleNameBox);
+    I.wait();
     I.fillField(this.fields.middleNameBox, name);
     I.wait();
   },
@@ -134,7 +138,7 @@ module.exports = {
   },
 
   editEmail(code){
-    I.waitForElement(this.fields.emailBox);
+    I.waitForElement(this.fields.emailBox, 4);
     I.clearField(this.fields.emailBox);
     I.fillField(this.fields.emailBox, code);
     I.wait();
@@ -148,10 +152,11 @@ module.exports = {
 
   //Task methods
   addPatientTask(taskName){
-    I.waitForElement(this.fields.addTaskButton, 4);
-    I.fillField(this.fields.addTaskButton, taskName);
-    I.waitForElement(this.fields.saveTaskButton, 2);
-    I.click(this.fields.saveTaskButton);
+    pause();
+    I.waitForElement(this.fields.addTaskInboxButton, 4);
+    I.fillField(this.fields.addTaskInboxButton, taskName);
+    I.waitForElement(this.fields.addTaskInboxSaveButton, 2);
+    I.click(this.fields.addTaskInboxSaveButton);
     I.wait(1);
   },
 

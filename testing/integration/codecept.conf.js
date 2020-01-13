@@ -17,6 +17,8 @@ exports.config = {
     tasksPg: './pages/TaskList.js',
     ptntsPg: './pages/Patients.js',
     onePatientPage: './pages/OnePatient.js',
+    peoplePage: './pages/People.js',
+    singlePersonPage: './pages/SinglePerson.js',
   },
   bootstrap: null,
   mocha: {},

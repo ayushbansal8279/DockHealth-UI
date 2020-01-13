@@ -27,7 +27,7 @@ module.exports = {
 
     mrnBox: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > input'},
 
-    birthdayBox: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input'},
+    birthdayBox: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div > input'},
 
     genderShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(5) > div:nth-child(2)'},
     genderFemale: {css: '#menu-gender > div:nth-child(2) > ul > li:nth-child(1)'},
@@ -116,6 +116,7 @@ module.exports = {
     this.fillMiddleName(middleName);
     this.fillLastName(lastName);
     this.fillMRN(MRN);
+    //pause();
     this.fillBirthday(birthday);
     this.fillGender(gender);
     this.fillHomePhone(homePhone);
@@ -201,9 +202,9 @@ module.exports = {
   //opening patient page 
   openPatientPage(index){
     const path = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > table > tbody > tr:nth-child(${index}) > td:nth-child(1) > a`;
-    I.waitForElement({css: path});
+    I.waitForElement({css: path}, 5);
     I.click({css: path});
-    I.wait();
+    I.wait(3);
   },
 
 
@@ -227,6 +228,7 @@ module.exports = {
     this.editMiddleName(middleName);
     this.editLastName(lastName);
     this.editMRN(MRN);
+    //pause();
     this.editBirthday(birthday);
     this.editGender(gender);
     this.editHomePhone(homePhone);
@@ -265,7 +267,7 @@ module.exports = {
 
   editBirthday(code){
     I.waitForElement(this.fields.editBirthdayBox);
-    I.clearField(this.fields.birthdayBox);
+    I.clearField(this.fields.editBirthdayBox);
     I.fillField(this.fields.editBirthdayBox, code);
     I.wait();
   },

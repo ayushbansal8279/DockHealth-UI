@@ -6,12 +6,12 @@ module.exports = {
     // addTskBtn: {css: "button[variant=contained]"},
     addTskBtn: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button',
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > button',
     },
     // tskDescription: {name: "description"},
     tskDescription: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(1) > div > div > textarea',
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(1) > div > div > textarea',
     },
 
     firstTsk: {
@@ -25,9 +25,14 @@ module.exports = {
         '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(2) > button:nth-child(1)'
     },
 
-    exitFreshTaskButton: {
+    exitUnmadeTaskButton: {
       css:
-        "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button"
+        "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > button"
+    },
+
+    exitNewTaskButton: {
+      css:
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button',
     },
 
     exitMadeTaskButton: {
@@ -35,8 +40,8 @@ module.exports = {
         "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button"
     },
 
-    firstList: {css: "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3)  > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > ul > div"},
-    filedInShield: {css: "#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2)  > div:nth-child(2) > div > div > div:nth-child(2)  > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > span"},
+    //firstList: {css: "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > ul > div"},
+    filedInShield: {css: "#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > span"},
 
     //taskListTab: {css:'#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(4) > a'},
     taskListTab: {css: 'a[href="#/tasks"]'},
@@ -44,6 +49,8 @@ module.exports = {
     inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
 
     patientTab: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(5) > a'},
+
+    userTab: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(6) > a'},
 
     logoutBtn: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a'},
 
@@ -60,65 +67,68 @@ module.exports = {
   logout(){
     I.waitForElement(this.fields.logoutBtn, 4);
     I.click(this.fields.logoutBtn);
+    I.wait(2);
   },
 
   // TODO in custom_steps turn this into a universal open dropdown.
   openAddTaskDropdown() {
     I.waitForElement(this.fields.addTskBtn, 4);
     I.click(this.fields.addTskBtn);
-    I.wait();
+    I.wait(2);
   },
 
   postNamedTask(name) {
     I.waitForElement(this.fields.tskDescription, 4);
     I.fillField(this.fields.tskDescription, name);
     I.pressKey('Enter');
-    I.wait();
+    I.wait(2);
   },
 
   assignPatient(index){
     const path = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`;
     I.waitForElement(this.fields.patientShield,5);
     I.click(this.fields.patientShield);
-    I.wait();
+    I.wait(2);
     I.waitForElement(path, 2);
     I.click(path);
-    I.wait();
+    I.wait(2);
   },
 
   clickTask(index) {
     index += 2;
     const taskTileLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(${index}) > div > div > div:nth-child(2) > div:nth-child(3)`;
     I.waitForElement(
-      {
-        css: taskTileLocator,
-      },
-      4,
-    );
-    I.click({
-      css: taskTileLocator,
-    });
+      {css: taskTileLocator},4);
+    I.click(
+      {css: taskTileLocator});
     I.wait();
   },
 
-  setFiledIn() {
+  setFiledIn(index) {
     I.waitForElement(this.fields.filedInShield, 3);
     I.click(this.fields.filedInShield);
     I.wait(2);
-    I.waitForElement(this.fields.firstList, 3);
-    I.click(this.fields.firstList);
-    I.wait();
+    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > ul > div:nth-child(${index})`};
+    I.waitForElement(path, 3);
+    I.click(path);
+    I.wait(2);
   },
 
   exitMadeTask() {
     I.waitForElement(this.fields.exitMadeTaskButton, 3);
     I.click(this.fields.exitTaskButton);
-    I.wait();
+    I.wait(2);
+  },
+
+  exitNewTask(){
+    I.waitForElement(this.fields.exitNewTaskButton, 3);
+    I.click(this.fields.exitNewTaskButton);
+    I.wait(2);
   },
 
   exitFreshTask(){
-    I.waitForElement(this.fields.exitFreshTaskButton, 3);
-    I.click(this.fields.exitFreshTaskButton);
+    I.waitForElement(this.fields.exitUnmadeTaskButton, 3);
+    I.click(this.fields.exitUnmadeTaskButton);
     I.wait();
   },
 
@@ -137,12 +147,18 @@ module.exports = {
   clickPatientTab(){
     I.waitForElement(this.fields.patientTab);
     I.click(this.fields.patientTab);
-    I.wait();
+    I.wait(2);
+  },
+
+  clickPeopleTab(){
+    I.waitForElement(this.fields.userTab, 4);
+    I.click(this.fields.userTab);
+    I.wait(2);
   },
 
   destroyPickedTask() {
     I.waitForElement(this.fields.tskDelete, 5);
     I.click(this.fields.tskDelete);
-    I.wait();
+    I.wait(2);
   },
 };

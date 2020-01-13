@@ -14,6 +14,7 @@ Scenario('Edit a patient with the sidebar.', (I, lgnPg, tskLstPg, ptntsPg) => {
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
     ptntsPg.makeSearch('first');
+    //pause();
     ptntsPg.openEditPatientSidebar(1);
     //pause();
     ptntsPg.refillPatient('blursedName', 'widdleName', 'grassName', '69', "12/12/1212", 'bongos', '0000000000', '0000000000', 'fleemail@florp.lol');
