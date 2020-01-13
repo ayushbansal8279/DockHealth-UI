@@ -181,7 +181,7 @@ export const PatientsForm = ({
         <div
           style={{
             columnCount: 2,
-            columnWidth: '500px',
+            columnWidth: '450px',
             paddingTop: '14px',
           }}
         >
