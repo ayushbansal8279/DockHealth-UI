@@ -700,9 +700,8 @@ class TaskView extends Component {
     const tasks = [...incompleteTasks, ...archivableTasks].map(
       this.mapInboxTasks({ isInbox }),
     );
-    const allTasks = [...incompleteTasks, ...completedTasks];
 
-    const groupedTasks = groupBy(allTasks, task =>
+    const groupedTasks = groupBy([...incompleteTasks, ...completedTasks], task =>
       task.taskList ? task.taskList.listName : '',
     );
     const tasklistCount = [...groupedTasks.keys()].length;
@@ -710,6 +709,9 @@ class TaskView extends Component {
       a.localeCompare(b),
     );
 
+    const groupedInCompletedTasks = groupBy(tasks, task =>
+      task.taskList ? task.taskList.listName : '',
+    );
     const groupedCompletedTasks = groupBy(completedTasks, task =>
       task.taskList ? task.taskList.listName : '',
     );
@@ -741,7 +743,7 @@ class TaskView extends Component {
       return <InboxNoMessagesAvailable />;
     }
 
-    if (tasks.length === 0 || (!isMultiList && tasklistCount <= 1) || isInbox) {
+    if ((!isMultiList && tasklistCount <= 1) || isInbox) {
       return (
         <>
           <TaskList {...tasklistProps} />
@@ -767,10 +769,10 @@ class TaskView extends Component {
         </div>
       );
 
+      const completedTasksForList = groupedCompletedTasks.get(groupedListName);
+
       const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
         ?.taskListId;
-
-      const completedTasksForList = groupedCompletedTasks.get(groupedListName);
 
       return (
         <React.Fragment key={groupedListName}>
@@ -781,10 +783,7 @@ class TaskView extends Component {
             heading={heading}
             key={groupedListName}
           >
-            <TaskList
-              listTasks={groupedTasks.get(groupedListName)}
-              {...tasklistProps}
-            />
+            <TaskList listTasks={groupedInCompletedTasks.get(groupedListName)} {...tasklistProps} />
             {completedTasksForList &&
               completedTasksForList.length > 0 &&
               this.renderCompleted({
