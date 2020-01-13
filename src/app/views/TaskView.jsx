@@ -152,6 +152,7 @@ export const TaskListSection = ({
   children,
   hideCollapse = false,
   taskListId = 0,
+  patientId = 0,
   storeAsCurrentTask,
 }) => {
   const [isCollapsed, toggleIsCollapsed] = useToggle(false);
@@ -174,6 +175,7 @@ export const TaskListSection = ({
           <Grid item container xs={12}>
             <AddTask
               taskListId={taskListId}
+              patientId={patientId}
               style={{
                 width: '100%',
               }}
@@ -683,6 +685,7 @@ class TaskView extends Component {
       markAsUnread,
       selectedTaskId,
       currentUser,
+      currentPatientId,
       isInbox,
       isMultiList,
       taskListId,
@@ -773,6 +776,7 @@ class TaskView extends Component {
         <React.Fragment key={groupedListName}>
           <TaskListSection
             taskListId={currentTaskListId}
+            patientId={currentPatientId}
             storeAsCurrentTask={storeAsCurrentTask}
             heading={heading}
             key={groupedListName}
@@ -877,6 +881,7 @@ class TaskView extends Component {
       selectedTask,
       markComplete,
       isInbox = false,
+      isSpecificPatient = false,
       isMultiList,
       tasks,
       showAddTaskButton = true,
@@ -978,6 +983,7 @@ class TaskView extends Component {
                       markComplete={markComplete}
                       onMarkComplete={this.onMarkComplete}
                       isInbox={isInbox}
+                      isSpecificPatient={isSpecificPatient}
                     />
                   )}
                 </div>
@@ -1000,6 +1006,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = store => ({
   selectedTask: store.taskState.selectedTask,
   currentUser: store.userState.userProfile,
+  currentPatientId: store.patient?.details?.patientId,
 });
 
 export default connect(

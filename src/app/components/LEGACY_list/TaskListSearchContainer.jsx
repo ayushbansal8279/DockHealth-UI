@@ -43,6 +43,7 @@ const TaskListLayout = ({
     showToolbar: true,
     showAddTaskButton: false,
     isMultiList: true,
+    isSpecificPatient: false,
   };
 
   return !isFetching && (!lists || lists.length === 0) ? (

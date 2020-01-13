@@ -150,9 +150,13 @@ AddTask.propTypes = {
   submit: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = (dispatch, { taskListId }) => ({
+const mapDispatchToProps = (dispatch, { taskListId, patientId }) => ({
   submit: description => {
-    saveTask({ description, taskListId })(dispatch);
+    if (patientId && patientId > 0) {
+      saveTask({ description, taskListId, patientId })(dispatch);
+    } else {
+      saveTask({ description, taskListId })(dispatch);
+    }
   },
 });
 

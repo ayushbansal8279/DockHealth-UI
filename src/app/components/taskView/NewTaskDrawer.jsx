@@ -85,6 +85,7 @@ export default ({
   taskList,
   onMarkComplete,
   isInbox,
+  isSpecificPatient,
 }) => {
   const {
     addDeferredCommentToQueue,
@@ -174,6 +175,7 @@ export default ({
             handleSubmit={handleSubmit}
             isInbox={isInbox}
             isSubtask={isSubtask}
+            isSpecificPatient={isSpecificPatient}
             formMethods={formMethods}
             parentTask={parentTask}
             onMarkComplete={onMarkComplete}

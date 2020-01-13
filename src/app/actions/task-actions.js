@@ -588,7 +588,6 @@ export function storeAllTasks(tasks, completedTasks) {
     }
   };
 }
-
 export const prepareSubtask = parentTaskId => dispatch => {
   const subtaskShape = {
     taskId: null,
