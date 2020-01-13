@@ -701,8 +701,9 @@ class TaskView extends Component {
       this.mapInboxTasks({ isInbox }),
     );
 
-    const groupedTasks = groupBy([...incompleteTasks, ...completedTasks], task =>
-      task.taskList ? task.taskList.listName : '',
+    const groupedTasks = groupBy(
+      [...incompleteTasks, ...completedTasks],
+      task => (task.taskList ? task.taskList.listName : ''),
     );
     const tasklistCount = [...groupedTasks.keys()].length;
     const listNames = [...groupedTasks.keys()].sort((a, b) =>
@@ -783,7 +784,10 @@ class TaskView extends Component {
             heading={heading}
             key={groupedListName}
           >
-            <TaskList listTasks={groupedInCompletedTasks.get(groupedListName)} {...tasklistProps} />
+            <TaskList
+              listTasks={groupedInCompletedTasks.get(groupedListName)}
+              {...tasklistProps}
+            />
             {completedTasksForList &&
               completedTasksForList.length > 0 &&
               this.renderCompleted({
