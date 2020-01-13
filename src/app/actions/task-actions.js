@@ -575,6 +575,20 @@ export function storeAsCurrentTask(task) {
   };
 }
 
+export function storeAllTasks(tasks, completedTasks) {
+  return dispatch => {
+    if (tasks && tasks.length > 0) {
+      dispatch({ type: ActionTypes.GET_TASKS_SUCCESS, tasks });
+    }
+    if (completedTasks && completedTasks.length > 0) {
+      dispatch({
+        type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS,
+        tasks: completedTasks,
+      });
+    }
+  };
+}
+
 export const prepareSubtask = parentTaskId => dispatch => {
   const subtaskShape = {
     taskId: null,
