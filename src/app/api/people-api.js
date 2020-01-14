@@ -46,7 +46,9 @@ export function changeUserRoleForOrg(markedUserId, role) {
     .then(response => {
       return response.data;
     })
-    .catch(error => error.response.data);
+    .catch(error => {
+      throw error.response.data;
+    });
 }
 
 export function cancelInviteToOrganization(markedUserEmail) {

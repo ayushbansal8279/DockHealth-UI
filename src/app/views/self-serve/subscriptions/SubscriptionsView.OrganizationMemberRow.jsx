@@ -10,6 +10,7 @@ import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
 import CubesLoader from '../../../components/common/CubesLoader';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import useBoolean from '../../../hooks/useBoolean';
+import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -18,18 +19,33 @@ const CubesLoaderContainer = styled.div`
   width: 100%;
 `;
 
-const getUserTypeLabel = ({ orgUserRole }) => {
-  switch (orgUserRole) {
-    case 'MEMBER':
-      return 'Team Member';
-    case 'ADMIN':
-      return 'Administrator';
-    case 'OWNER':
-      return 'Owner';
-    default:
-      return '';
-  }
-};
+const USER_TYPES = new Proxy(
+  {
+    MEMBER: {
+      label: 'Team Member',
+      selectable: true,
+      changeable: true,
+    },
+    ADMIN: {
+      label: 'Administrator',
+      selectable: true,
+      changeable: true,
+    },
+    OWNER: {
+      label: 'Owner',
+      selectable: false,
+      changeable: false,
+    },
+    DEFAULT: {
+      label: 'Not set',
+      selectable: false,
+      changeable: true,
+    },
+  },
+  {
+    get: (object, path) => object[path.toUpperCase()] || object.DEFAULT,
+  },
+);
 
 const OrganizationMemberRow = ({
   firstName,
@@ -43,6 +59,8 @@ const OrganizationMemberRow = ({
 }) => {
   const [isFetching, setIsFetching, unsetIsFetching] = useBoolean(false);
   const [userAvatar, setUserAvatar] = useState(null);
+
+  const userType = USER_TYPES[orgUserRole];
 
   const setAvatarAsInitials = useCallback(() => {
     const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`
@@ -96,7 +114,13 @@ const OrganizationMemberRow = ({
           {email && <a href={`mailto:${email}`}>{email}</a>}
         </Grid>
       </td>
-      <td>{getUserTypeLabel({ orgUserRole })}</td>
+      <td>
+        <MemberTypeLabel
+          userId={userId}
+          userType={userType}
+          userTypes={USER_TYPES}
+        />
+      </td>
       <td>{moment().format('LL')}</td>
       <td>$19 / month</td>
     </tr>
