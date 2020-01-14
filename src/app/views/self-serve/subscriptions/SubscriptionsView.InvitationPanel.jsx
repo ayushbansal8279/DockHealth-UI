@@ -6,9 +6,9 @@ import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { object, string } from 'yup';
 
-import { invitePersonToOrganization } from '../../actions/people-actions';
-import { noop } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
+import { invitePersonToOrganization } from '../../../actions/people-actions';
+import { noop } from '../../../helpers/utility-functions';
+import useBoolean from '../../../hooks/useBoolean';
 import {
   AddMoreUsersLabel,
   CloseButtonContainer,

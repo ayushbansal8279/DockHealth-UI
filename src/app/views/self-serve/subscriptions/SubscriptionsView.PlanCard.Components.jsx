@@ -4,10 +4,18 @@ import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
-import SafariFixGrid from '../../components/common/SafariFixGrid';
-import SubscriptionPlanExtendedIcon from '../../img/subscription-plan-extended.svg';
-import SubscriptionPlanStandardIcon from '../../img/subscription-plan-standard.svg';
-import { H2, H3BoldWhite, H4, H5, H5Bold } from './SubscriptionsView.Styled';
+import SafariFixGrid from '../../../components/common/SafariFixGrid';
+import SubscriptionPlanExtendedIcon from '../../../img/subscription-plan-extended.svg';
+import SubscriptionPlanStandardIcon from '../../../img/subscription-plan-standard.svg';
+import {
+  BigPriceLabel,
+  H2,
+  H3BoldWhite,
+  H4,
+  H5,
+  H5Bold,
+  PriceLabel,
+} from './SubscriptionsView.Styled';
 
 const MONTHS_IN_YEAR = 12;
 const PRICE_ROUNDING_MODIFIER = 100;
@@ -25,17 +33,6 @@ const ContentFooterGrid = styled(SafariFixGrid)`
     height: 8.375rem;
     min-height: 8.375rem;
   }
-`;
-
-const PriceLabel = styled.span`
-  font-size: 1.5rem;
-  font-weight: 300;
-  margin-left: 0.25rem;
-`;
-
-const BigPriceLabel = styled.span`
-  font-size: 2.25rem;
-  letter-spacing: -0.125rem;
 `;
 
 const PlanButton = styled.button`

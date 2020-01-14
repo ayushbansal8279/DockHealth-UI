@@ -13,15 +13,15 @@ import {
 import React from 'react';
 import styled from 'styled-components';
 
-import SafariFixGrid from '../../components/common/SafariFixGrid';
-import SubscriptionPlanTick from '../../img/subscription-plan-tick.svg';
+import SafariFixGrid from '../../../components/common/SafariFixGrid';
+import SubscriptionPlanTick from '../../../img/subscription-plan-tick.svg';
 import {
   CardContactUsFooter,
   CardContactUsHeader,
   CardContentFeatures,
   CardStandardFooter,
   CardStandardHeader,
-} from './SubscriptionsView.PlanCardComponents';
+} from './SubscriptionsView.PlanCard.Components';
 import { H2, H4 } from './SubscriptionsView.Styled';
 
 export const CARD_TYPES = {

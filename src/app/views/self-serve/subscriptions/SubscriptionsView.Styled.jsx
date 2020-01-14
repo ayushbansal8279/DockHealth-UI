@@ -10,19 +10,35 @@ export const H1 = styled.h1`
   margin: 0.25rem 0;
 `;
 
+export const H1Bold = styled(H1)`
+  font-weight: 600;
+`;
+
 export const H2 = styled.h2`
   font-size: 1.5rem;
   margin: 0.2rem 0;
 `;
 
-export const H3 = styled.div`
+export const H3 = styled.h3`
   font-size: 1rem;
   margin: 0.15rem 0;
+`;
+
+export const H3Marginless = styled(H3)`
+  margin: 0;
 `;
 
 export const H3BoldWhite = styled(H3)`
   color: #fff;
   font-weight: bold;
+`;
+
+export const H3Thin = styled(H3)`
+  font-weight: 300;
+`;
+
+export const H3ThinMarginless = styled(H3Thin)`
+  margin: 0;
 `;
 
 export const H4 = styled.h4`
@@ -57,94 +73,6 @@ export const SubscriptionsViewContainer = styled(Grid)`
   && {
     background-color: #fff;
     padding: 2.625rem 4.625rem;
-  }
-`;
-
-export const AnnualToggleContainer = styled(Grid)`
-  && {
-    background-color: #dedee2;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    height: 2.5rem;
-    margin-top: 0.375rem;
-    position: relative;
-  }
-`;
-
-export const AnnualToggleLabel = styled(H4)`
-  transition: all 0.25s ease;
-  z-index: 2;
-  ${props =>
-    props.active
-      ? 'color: #fff; font-weight: bold;'
-      : 'color: #011845; font-weight: 600;'}
-`;
-
-export const AnnualToggleSwitch = styled.div`
-  background: #074a86;
-  box-shadow: 0px 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
-  border-radius: 0.25rem;
-  height: 100%;
-  left: ${props => (props.active ? 50 : 0)}%;
-  position: absolute;
-  transition: all 0.25s ease;
-  width: 50%;
-  z-index: 1;
-`;
-
-export const SubscriptionCardGrid = styled(Grid)`
-  && {
-    margin-top: 2rem;
-  }
-`;
-
-export const FeatureListContainer = styled(Grid).attrs({
-  item: true,
-  xs: 3,
-})`
-  background-color: #011845;
-  color: #fff;
-`;
-
-const FeatureHeaderElement = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  padding: 0 1rem;
-`;
-
-export const FeatureListHeader = styled(FeatureHeaderElement)`
-  height: 4.8125rem;
-  min-height: 4.8125rem;
-`;
-
-export const FeatureListContentHeader = styled(FeatureHeaderElement)`
-  cursor: pointer;
-  height: 5.25rem;
-  min-height: 5.25rem;
-`;
-
-export const FeatureListChevronContainer = styled.img`
-  align-items: center;
-  display: inline-flex;
-  justify-content: center;
-  margin-left: 1.5rem;
-  transition: all 0.25s ease-out;
-  transform: rotate(${props => (props.rotated ? 180 : 0)}deg);
-`;
-
-export const FeatureRow = styled.div`
-  align-items: center;
-  box-sizing: border-box;
-  display: flex;
-  min-height: 2rem;
-  padding: 0.125rem;
-  padding-left: 1.6875rem;
-  padding-right: 1.25rem;
-  width: 100%;
-
-  &:nth-child(even) {
-    background-color: #1a2d56;
   }
 `;
 
@@ -197,4 +125,13 @@ export const StyledButton = withStyles({
   return <ButtonBase className={className} {...props} />;
 });
 
-export const FeatureRowsContainer = styled(motion.div)``;
+export const PriceLabel = styled.span`
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-left: 0.25rem;
+`;
+
+export const BigPriceLabel = styled.span`
+  font-size: 2.25rem;
+  letter-spacing: -0.125rem;
+`;

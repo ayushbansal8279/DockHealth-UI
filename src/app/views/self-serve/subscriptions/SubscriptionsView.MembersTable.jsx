@@ -9,8 +9,8 @@ import { useMount } from 'react-use';
 import {
   findAllUsersByOrganizationId,
   loading,
-} from '../../actions/people-actions';
-import CubesLoader from '../../components/common/CubesLoader';
+} from '../../../actions/people-actions';
+import CubesLoader from '../../../components/common/CubesLoader';
 import {
   MembersTableContainer,
   MemberTable,

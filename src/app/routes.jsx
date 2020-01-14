@@ -41,7 +41,7 @@ import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
 import PersonTaskList from './views/PersonTaskList';
-import SubscriptionsView from './views/self-serve/SubscriptionsView';
+import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
 import SupportSectionView from './views/SupportSectionView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import TaskListSearch from './views/TaskListSearch';

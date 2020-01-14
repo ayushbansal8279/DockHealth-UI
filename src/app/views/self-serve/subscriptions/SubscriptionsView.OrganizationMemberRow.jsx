@@ -4,12 +4,12 @@ import React, { useCallback, useState } from 'react';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 
-import { getUserAvatar } from '../../api/people-api';
-import Avatar from '../../components/common/Avatar';
-import { AvatarImageContainer } from '../../components/common/Avatar.styled';
-import CubesLoader from '../../components/common/CubesLoader';
-import TaskCheckbox from '../../components/task/TaskCheckbox';
-import useBoolean from '../../hooks/useBoolean';
+import { getUserAvatar } from '../../../api/people-api';
+import Avatar from '../../../components/common/Avatar';
+import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
+import CubesLoader from '../../../components/common/CubesLoader';
+import TaskCheckbox from '../../../components/task/TaskCheckbox';
+import useBoolean from '../../../hooks/useBoolean';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
