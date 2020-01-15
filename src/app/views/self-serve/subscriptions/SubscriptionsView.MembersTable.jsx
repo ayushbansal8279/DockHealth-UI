@@ -4,7 +4,7 @@ import find from 'ramda/es/find';
 import uniq from 'ramda/es/uniq';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMount } from 'react-use';
+import { createBreakpoint, useMount } from 'react-use';
 
 import {
   findAllUsersByOrganizationId,
@@ -21,6 +21,7 @@ import { H2, H3 } from './SubscriptionsView.Styled';
 const renderOrganizationMemberRow = ({
   toggleSelectedUser,
   isUserSelected,
+  isSmallScreen,
 }) => props => {
   const { firstName, lastName, userId } = props;
   const key = `${firstName}${lastName}${userId}`;
@@ -30,10 +31,13 @@ const renderOrganizationMemberRow = ({
       key={key}
       toggleSelectedUser={toggleSelectedUser}
       isUserSelected={isUserSelected}
+      isSmallScreen={isSmallScreen}
       {...props}
     />
   );
 };
+
+const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
 const SubscriptionsViewMembersTable = ({ selectedUsers, setSelectedUsers }) => {
   const dispatch = useDispatch();
@@ -41,6 +45,9 @@ const SubscriptionsViewMembersTable = ({ selectedUsers, setSelectedUsers }) => {
     isFetching: store.peopleState.isFetching,
     organizationMembers: store.peopleState.peoplelist,
   }));
+
+  const currentBreakPoint = useBreakpoint();
+  const isSmallScreen = currentBreakPoint === 'sm';
 
   useMount(() => {
     loading()(dispatch);
@@ -82,21 +89,24 @@ const SubscriptionsViewMembersTable = ({ selectedUsers, setSelectedUsers }) => {
             purchase your subscription for users at anytime
           </H3>
           <MemberTable>
-            <thead>
-              <tr>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
-                <th>Name</th>
-                <th>User Type</th>
-                <th>Joined</th>
-                <th>Subscription</th>
-              </tr>
-            </thead>
+            {!isSmallScreen && (
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
+                  <th>Name</th>
+                  <th>User Type</th>
+                  <th>Joined</th>
+                  <th>Subscription</th>
+                </tr>
+              </thead>
+            )}
             <tbody>
               {organizationMembers.map(
                 renderOrganizationMemberRow({
                   toggleSelectedUser,
                   isUserSelected,
+                  isSmallScreen,
                 }),
               )}
             </tbody>

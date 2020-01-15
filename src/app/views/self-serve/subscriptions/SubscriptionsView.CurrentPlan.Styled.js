@@ -8,7 +8,7 @@ export const PlanContainer = styled.div`
   border: 1px solid #ededf0;
   border-radius: 0.25rem;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   padding: 1.375rem;
   width: 100%;
 `;
@@ -21,51 +21,6 @@ export const PlanNameLabel = styled(H2)`
   line-height: 3.0625rem;
   height: 3.0625rem;
   min-height: 3.0625rem;
-`;
-
-export const PlanColumnContainer = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-`;
-
-export const PlanColumnExpandedContainer = styled(PlanColumnContainer)`
-  flex: 1;
-`;
-
-const PlanColumnLabel = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.5rem;
-`;
-
-export const PlanColumnTopLabel = styled(PlanColumnLabel)`
-  border-bottom: 1px solid #dedee2;
-  height: 5.75rem;
-`;
-
-export const PlanColumnTopExpandedLabel = styled(PlanColumnTopLabel)`
-  align-items: flex-start;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-`;
-
-export const PlanColumnBottomLabel = styled(PlanColumnLabel)`
-  align-items: center;
-  height: 4rem;
-`;
-
-export const PlanColumnBottomExpandedLabel = styled(PlanColumnBottomLabel)`
-  align-items: flex-start;
-  flex-flow: column nowrap;
-  justify-content: center;
-`;
-
-export const PlanColumnTopLabelFlexEnd = styled(PlanColumnTopLabel)`
-  align-items: flex-end;
-`;
-
-export const PlanColumnBottomLabelFlexStart = styled(PlanColumnBottomLabel)`
-  align-items: flex-start;
 `;
 
 export const PlanColumnLink = styled(Link)`

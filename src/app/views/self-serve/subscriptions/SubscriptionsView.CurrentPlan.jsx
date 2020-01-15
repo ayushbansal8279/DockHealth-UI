@@ -1,17 +1,11 @@
+import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 import React from 'react';
 
 import {
-  PlanColumnBottomExpandedLabel,
-  PlanColumnBottomLabel,
-  PlanColumnBottomLabelFlexStart,
-  PlanColumnContainer,
-  PlanColumnExpandedContainer,
-  PlanColumnTopExpandedLabel,
-  PlanColumnTopLabel,
-  PlanColumnTopLabelFlexEnd,
+  PlanColumnLink,
   PlanContainer,
   PlanNameLabel,
-  PlanColumnLink,
 } from './SubscriptionsView.CurrentPlan.Styled';
 import {
   BigPriceLabel,
@@ -21,38 +15,73 @@ import {
   PriceLabel,
 } from './SubscriptionsView.Styled';
 
+const PLAN_NAME = 'Standard';
+const PLAN_MONTHLY_PRICE = 19;
+const PLAN_TOTAL_PRICE = 57;
+const NEXT_PAYMENT_DATE = '01/01/2020';
+
+const AlignedColumnLink = ({ children }) => (
+  <>
+    <Hidden mdUp>
+      <Grid item xs={3} container justify="flex-end" alignItems="flex-end">
+        {children}
+      </Grid>
+    </Hidden>
+    <Hidden smDown>
+      <Grid item xs={2} container justify="flex-end" alignItems="flex-start">
+        {children}
+      </Grid>
+    </Hidden>
+  </>
+);
+
 const CurrentPlan = () => {
   return (
     <PlanContainer>
-      <PlanColumnContainer>
-        <PlanColumnTopLabel>
-          <PlanNameLabel>Standard</PlanNameLabel>
-        </PlanColumnTopLabel>
-        <PlanColumnBottomLabel>
-          <H1Bold>$57</H1Bold>
-        </PlanColumnBottomLabel>
-      </PlanColumnContainer>
-      <PlanColumnExpandedContainer>
-        <PlanColumnTopExpandedLabel>
+      {/* First row */}
+      <Grid container>
+        <Grid item sm={12} md={2}>
+          <PlanNameLabel>{PLAN_NAME}</PlanNameLabel>
+        </Grid>
+        <Grid item sm={9} md={8}>
           <div>
-            <BigPriceLabel>$19</BigPriceLabel>
+            <BigPriceLabel>{PLAN_MONTHLY_PRICE}</BigPriceLabel>
             <PriceLabel>/user</PriceLabel>
           </div>
-          <H3ThinMarginless>Monthly subscription</H3ThinMarginless>
-        </PlanColumnTopExpandedLabel>
-        <PlanColumnBottomExpandedLabel>
-          <H3Marginless>Your next payment</H3Marginless>
-          <H3ThinMarginless>charged on 01/01/2020</H3ThinMarginless>
-        </PlanColumnBottomExpandedLabel>
-      </PlanColumnExpandedContainer>
-      <PlanColumnContainer>
-        <PlanColumnTopLabelFlexEnd>
+          <div>
+            <H3ThinMarginless>Monthly subscription</H3ThinMarginless>
+          </div>
+        </Grid>
+        <Grid
+          item
+          sm={3}
+          md={2}
+          container
+          justify="flex-end"
+          alignItems="flex-end"
+        >
           <PlanColumnLink to="">Change plans</PlanColumnLink>
-        </PlanColumnTopLabelFlexEnd>
-        <PlanColumnBottomLabelFlexStart>
+        </Grid>
+      </Grid>
+      {/* Divider */}
+      <Grid container>
+        <Grid item xs={12}>
+          <hr />
+        </Grid>
+      </Grid>
+      {/* Second row */}
+      <Grid container>
+        <Grid item sm={12} md={2}>
+          <H1Bold>{PLAN_TOTAL_PRICE}</H1Bold>
+        </Grid>
+        <Grid item sm={9} md={8} container direction="column" justify="center">
+          <H3Marginless>Your next payment</H3Marginless>
+          <H3ThinMarginless>charged on {NEXT_PAYMENT_DATE}</H3ThinMarginless>
+        </Grid>
+        <AlignedColumnLink>
           <PlanColumnLink to="">View billings</PlanColumnLink>
-        </PlanColumnBottomLabelFlexStart>
-      </PlanColumnContainer>
+        </AlignedColumnLink>
+      </Grid>
     </PlanContainer>
   );
 };

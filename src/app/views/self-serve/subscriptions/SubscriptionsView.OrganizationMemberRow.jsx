@@ -1,7 +1,8 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-import React, { useCallback, useState } from 'react';
-import { useMount } from 'react-use';
+import memoizeWith from 'ramda/es/memoizeWith';
+import React from 'react';
+import { useAsync } from 'react-use';
 import styled from 'styled-components';
 
 import { getUserAvatar } from '../../../api/people-api';
@@ -9,7 +10,7 @@ import Avatar from '../../../components/common/Avatar';
 import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
 import CubesLoader from '../../../components/common/CubesLoader';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
-import useBoolean from '../../../hooks/useBoolean';
+import { noop } from '../../../helpers/utility-functions';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
 const CubesLoaderContainer = styled.div`
@@ -17,6 +18,12 @@ const CubesLoaderContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+`;
+
+const SmallScreenGrid = styled(Grid)`
+  && {
+    padding: 1rem;
+  }
 `;
 
 const USER_TYPES = new Proxy(
@@ -47,6 +54,57 @@ const USER_TYPES = new Proxy(
   },
 );
 
+const getUserInitials = ({ firstName, lastName }) =>
+  `${firstName.charAt(0)}${lastName.charAt(0)}`.trim().toUpperCase();
+
+const getAvatarContent = memoizeWith(
+  propsObject => Object.values(propsObject).join('-'),
+  ({ userId, profileThumbnailPictureHash }) => {
+    if (profileThumbnailPictureHash) {
+      return getUserAvatar({ userId });
+    }
+
+    return Promise.resolve(null);
+  },
+);
+
+const MemberAvatar = ({
+  firstName,
+  lastName,
+  userId,
+  profileThumbnailPictureHash,
+}) => {
+  const { loading, value: avatarContent } = useAsync(async () => {
+    let downloadedAvatarContent = null;
+
+    try {
+      downloadedAvatarContent = await getAvatarContent({
+        userId,
+        profileThumbnailPictureHash,
+      });
+    } catch {
+      noop();
+    }
+
+    return downloadedAvatarContent ? (
+      <AvatarImageContainer
+        src={downloadedAvatarContent}
+        alt="User profile picture"
+      />
+    ) : (
+      getUserInitials({ firstName, lastName })
+    );
+  }, [userId, profileThumbnailPictureHash]);
+
+  return loading ? (
+    <CubesLoaderContainer>
+      <CubesLoader size={40} />
+    </CubesLoaderContainer>
+  ) : (
+    <Avatar size={55}>{avatarContent}</Avatar>
+  );
+};
+
 const OrganizationMemberRow = ({
   firstName,
   lastName,
@@ -56,39 +114,55 @@ const OrganizationMemberRow = ({
   userId,
   isUserSelected,
   toggleSelectedUser,
+  isSmallScreen,
 }) => {
-  const [isFetching, setIsFetching, unsetIsFetching] = useBoolean(false);
-  const [userAvatar, setUserAvatar] = useState(null);
-
   const userType = USER_TYPES[orgUserRole];
 
-  const setAvatarAsInitials = useCallback(() => {
-    const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`
-      .trim()
-      .toUpperCase();
-
-    unsetIsFetching();
-    setUserAvatar(initials);
-  }, [firstName, lastName, unsetIsFetching]);
-
-  useMount(() => {
-    if (profileThumbnailPictureHash) {
-      setIsFetching();
-
-      getUserAvatar({ userId })
-        .then(response => {
-          setUserAvatar(
-            <AvatarImageContainer src={response} alt="User profile picture" />,
-          );
-          unsetIsFetching();
-        })
-        .catch(() => {
-          setAvatarAsInitials();
-        });
-    } else {
-      setAvatarAsInitials();
-    }
-  });
+  if (isSmallScreen) {
+    return (
+      <tr>
+        <td>
+          <SmallScreenGrid container wrap="nowrap" spacing={16}>
+            <Grid item xs={1}>
+              <TaskCheckbox
+                checked={isUserSelected({ userId, email })}
+                onChange={toggleSelectedUser({ userId, email })}
+                color="#074A86"
+              />
+            </Grid>
+            <Grid
+              item
+              xs={11}
+              container
+              justify="space-between"
+              alignItems="flex-end"
+              wrap="nowrap"
+            >
+              <Grid
+                item
+                xs
+                container
+                direction="column"
+                alignItems="flex-start"
+              >
+                <b>{`${firstName} ${lastName}`.trim()}</b>
+                {email && <a href={`mailto:${email}`}>{email}</a>}
+                <MemberTypeLabel
+                  userId={userId}
+                  userType={userType}
+                  userTypes={USER_TYPES}
+                />
+                <div>{moment().format('LL')}</div>
+              </Grid>
+              <Grid item xs container alignItems="flex-end" justify="flex-end">
+                <div>$19 / month</div>
+              </Grid>
+            </Grid>
+          </SmallScreenGrid>
+        </td>
+      </tr>
+    );
+  }
 
   return (
     <tr>
@@ -100,13 +174,12 @@ const OrganizationMemberRow = ({
         />
       </td>
       <td>
-        {isFetching ? (
-          <CubesLoaderContainer>
-            <CubesLoader size={40} />
-          </CubesLoaderContainer>
-        ) : (
-          <Avatar size={55}>{userAvatar}</Avatar>
-        )}
+        <MemberAvatar
+          firstName={firstName}
+          lastName={lastName}
+          userId={userId}
+          profileThumbnailPictureHash={profileThumbnailPictureHash}
+        />
       </td>
       <td>
         <Grid container direction="column" justify="center">
