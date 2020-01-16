@@ -3,13 +3,14 @@ const { I } = inject();
 module.exports = {
 
   fields:{
-    inboxAddTaskField:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
-    inboxAddTaskButton:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4) > button'},
-  
+    inboxAddTaskField:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
+    inboxAddTaskButton:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4) > button'},
+
+
     editBarExitButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button'},
 
     //xthTaskPath: #appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(1+${xth*2})
-    editBarTaskName: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(1) > div > div:nth-child(2)',
+    editBarTaskName: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(1) > div > div:nth-child(2)',
 
     editBarPatientInformation: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div',
     //editBarPatientInfoX: #appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(X)
@@ -30,7 +31,8 @@ module.exports = {
   },
 
   clickTask(number){
-    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(number*2)}) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3)`};
+    //The path to an individual task in the inbox list is changing between tests. Its the first div with an nth:child
+    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(2*number)}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div > span > span`};
     I.waitForElement(path, 5);
     I.click(path);
     I.wait();
@@ -44,11 +46,13 @@ module.exports = {
 
   editTaskName(name){
     I.waitForElement(this.fields.editBarTaskName, 5);
-    I.clearField(this.fields.editBarTaskName);
+    I.click(this.fields.editBarTaskName);
+    I.wait();
+    I.clearField(this.fields.editBarTaskName); //This line never fires.
     I.wait();
     I.fillField(this.fields.editBarTaskName, name);
-    I.pressKey('Enter');
     I.wait();
+    I.pressKey('Enter');
   },
 
   editTaskPatient(index){
