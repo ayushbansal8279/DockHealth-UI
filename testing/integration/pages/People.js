@@ -14,6 +14,9 @@ module.exports = {
 
     numberOfPeopleText: {css: '#appHome > main > div > div:nth-child(1) > div > div > div > div > div > div > div:nth-child(1) > div:nth-child(2)'},
 
+    pathToFirstPersonsSidebarShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div:nth-child(4) > button'},
+    
+    changeAdminButton: {css: '#simple-menu > div:nth-child(2) > ul > li'},
     //XthPerson:{css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(${Xth}) > div > div:nth-child(2) > div > a`}
   },
 
@@ -59,6 +62,15 @@ module.exports = {
     I.waitForElement(this.fields.searchBar, 5);
     I.fillField(this.fields.searchBar, searchTerm);
     I.wait(3);
+  },
+
+  switchAdminStatus(index){
+    const pathToShield = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(${index}) > div > div:nth-child(4) > button`}
+    I.waitForElement(pathToShield, 3);
+    I.click(pathToShield);
+    I.waitForElement(this.fields.changeAdminButton, 2);
+    I.click(this.fields.changeAdminButton);
+    I.wait();
   },
 
   
