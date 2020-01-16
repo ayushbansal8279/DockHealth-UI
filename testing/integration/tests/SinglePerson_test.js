@@ -10,7 +10,7 @@ Scenario('add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     peoplePage.clickPerson(1);
     I.wait(3);
     singlePersonPage.addTask('lets build lego sets');
-    I.wait(5);
+    I.wait(2);
     I.see('lets build lego sets');
 });
 

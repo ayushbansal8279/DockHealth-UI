@@ -38,7 +38,7 @@ Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
 
 Scenario('Check that the dropdown filter works', async (I, lgnPg, tskLstPg, ptntsPg) =>{
     const targetNumber = 1; //Change this to compare against a different number of patients
-    pause();
+    //pause();
     lgnPg.fullLogin(2);
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(3); //Decide which filter you want to check.
