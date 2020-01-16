@@ -63,6 +63,14 @@ const getListElements = ({
   const isPersonPending = person.userInviteStatus === 'PENDING';
   const isPersonOwner = person.orgUserRole === 'OWNER';
 
+  const changeRoleHandler = () => {
+    handleClick({ onClickAction: changeUserRoleForOrg })(
+      person.userId,
+      person.orgUserRole === 'MEMBER' ? 'ADMIN' : 'MEMBER',
+    );
+    unsetPopoverOpen();
+  };
+
   const listItemsForCurrentAdminUser = cond([
     [
       always(isPersonMemberOrUnknown && isPersonPending),
@@ -98,16 +106,7 @@ const getListElements = ({
     [
       always(isPersonMemberOrUnknown && !isPersonPending),
       always([
-        <MenuItem
-          key="change-user-role"
-          onClick={() => {
-            handleClick({ onClickAction: changeUserRoleForOrg })(
-              person.userId,
-              person.orgUserRole === 'MEMBER' ? 'ADMIN' : 'MEMBER',
-            );
-            unsetPopoverOpen();
-          }}
-        >
+        <MenuItem key="change-user-role" onClick={changeRoleHandler}>
           <ListItemIcon>
             <img alt="Admin icon" src={AdminIcon} />
           </ListItemIcon>
@@ -146,16 +145,7 @@ const getListElements = ({
     [
       T,
       always([
-        <MenuItem
-          key="remove-admin-rights"
-          onClick={() => {
-            this.handleClick({ onClickAction: changeUserRoleForOrg })(
-              person.userId,
-              person.orgUserRole,
-            );
-            unsetPopoverOpen();
-          }}
-        >
+        <MenuItem key="remove-admin-rights" onClick={changeRoleHandler}>
           <ListItemIcon>
             <img alt="Admin icon" src={AdminIcon} />
           </ListItemIcon>
