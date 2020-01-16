@@ -178,7 +178,12 @@ const DrawerHeader = ({ user }) => {
         >
           Billing & Invoices
         </DropdownListItem>
-        <DropdownListItem button onClick={closePopover}>
+        <DropdownListItem
+          button
+          onClick={closePopover}
+          component={linkComponent}
+          link="/documents"
+        >
           Documents & Agreements
         </DropdownListItem>
       </StyledDropdown>
