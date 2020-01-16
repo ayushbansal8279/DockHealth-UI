@@ -6,8 +6,8 @@ Scenario('Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatientPa
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
     ptntsPg.makeSearch('first');
+    //pause();
     ptntsPg.openPatientPage(1);
-    
     onePatientPage.editFirstName('Worst');
     onePatientPage.editMiddleName('Blank');
     onePatientPage.editLastName('Somethin');
@@ -22,7 +22,8 @@ Scenario('Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatientPa
     I.wait(3);
     I.see('Worst');
     I.wait();
-    onePatientPage.refillPatient('-', 'Blank', 'oof', '1234', '02/22/1982', 'male', '1-111-111-1111', '1-111-111-1111', 'doink@boink.com', 'dadsf');
+    //I.pause();
+    onePatientPage.refillPatient('-', 'Blank', 'oof', '1234', '02/22/1982', 'female', '1-111-111-1111', '1-111-111-1111', 'doink@boink.com', 'dadsf');
     I.wait();
     onePatientPage.exitPatientPage();
 });
@@ -44,13 +45,16 @@ Scenario('Add a task to patient, from the inbox!', (I, lgnPg, tskLstPg, ptntsPg,
     lgnPg.fullLogin(1);
     tskLstPg.enterInbox();
     inboxPg.openAddTaskDropdown();
-    inboxPg.assignPatient(3);
+    //pause();
+    inboxPg.assignPatient(4);
     inboxPg.postNamedTask('star wars sux');
     inboxPg.clickPatientTab();
     I.wait(2);
     ptntsPg.setFilterTo(1);
-    I.wait(5);
+    I.wait(2);
     //pause();
+    ptntsPg.makeSearch('A');
+    I.wait();
     ptntsPg.openPatientPage(2);
     
     //onePatientPage.clickTaskCheckBox(1);
