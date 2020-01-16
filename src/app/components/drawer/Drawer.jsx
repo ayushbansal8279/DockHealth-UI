@@ -1,9 +1,9 @@
+import MaterialDrawer from '@material-ui/core/Drawer';
+import { path } from 'ramda';
 import React from 'react';
 import Intercom from 'react-intercom';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { path } from 'ramda';
-import MaterialDrawer from '@material-ui/core/Drawer';
 
 import useBoolean from '../../hooks/useBoolean';
 import DrawerList from './DrawerList';
@@ -45,6 +45,7 @@ const ContentContainer = styled.div`
 
     return topMargin;
   }}px;
+  position: relative;
   transition: width .2s ease-out, margin .2s ease-out;
 `;
 

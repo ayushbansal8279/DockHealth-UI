@@ -41,6 +41,7 @@ import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
 import PersonTaskList from './views/PersonTaskList';
+import BillingsView from './views/self-serve/billings/BillingsView';
 import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
 import SupportSectionView from './views/SupportSectionView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
@@ -220,6 +221,11 @@ export const Routes = ({ store }) => {
           <Route
             path="subscriptions"
             component={SubscriptionsView}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="billings"
+            component={BillingsView}
             onEnter={checkFeatureToggles}
           />
         </Route>

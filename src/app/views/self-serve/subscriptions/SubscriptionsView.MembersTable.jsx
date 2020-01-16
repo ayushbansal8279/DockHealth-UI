@@ -23,8 +23,8 @@ const renderOrganizationMemberRow = ({
   isUserSelected,
   isSmallScreen,
 }) => props => {
-  const { firstName, lastName, userId } = props;
-  const key = `${firstName}${lastName}${userId}`;
+  const { firstName, lastName, email, userId } = props;
+  const key = `${firstName}${lastName}${userId}${email}`;
 
   return (
     <OrganizationMemberRow

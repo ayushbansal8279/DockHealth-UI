@@ -6,6 +6,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
+import { StripeProvider } from 'react-stripe-elements';
 
 import configureStore from './ConfigureStore';
 import flags, { FlagsProvider } from './flags';
@@ -34,7 +35,7 @@ moment.updateLocale('en', {
 const store = configureStore();
 
 ReactGA.initialize('TRACKING_CODE_HERE', {
-  debug: true,
+  debug: false,
 });
 
 const App = () => (
@@ -42,7 +43,9 @@ const App = () => (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <FlagsProvider flags={flags}>
         <Provider store={store}>
-          <Routes store={store} />
+          <StripeProvider apiKey="pk_test_1234">
+            <Routes store={store} />
+          </StripeProvider>
         </Provider>
       </FlagsProvider>
     </MuiPickersUtilsProvider>
