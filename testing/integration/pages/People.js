@@ -4,10 +4,10 @@ module.exports = {
   fields: {
     addPersonButton: {css: '#appHome > main > div > div:nth-child(1) > div > div > div > div > div > div > div:nth-child(2) > button'},
     //addPersonFirstNameBox: {css: 'body > div.jss271 > div:nth-child(2) > div > form > div:nth-child(1) > div:nth-child(1) > div > input'},
-    addPersonFirstNameBox: {css: 'body > div:nth-child(15) > div:nth-child(2) > div > form > div:nth-child(1) > div:nth-child(1) > div > input'},
-    addPersonLastNameBox:{css: 'body > div:nth-child(15) > div:nth-child(2) > div > form > div:nth-child(1) > div:nth-child(2) > div > input'},
-    addPersonEmailBox:{css: 'body > div:nth-child(15) > div:nth-child(2) > div > form > div:nth-child(1) > div:nth-child(3) > div > input'},
-    addPersonSendInvite:{css: 'body > div:nth-child(15) > div:nth-child(2) > div > form > div:nth-child(2) > div > button:nth-child(2)'},
+    addPersonFirstNameBox: {css: 'div.jss166.jss176.jss167.jss270 > div > form > div:nth-child(1) > div:nth-child(1) > div > input'},
+    addPersonLastNameBox:{css: 'div.jss166.jss176.jss167.jss270 > div > form > div:nth-child(1) > div:nth-child(2) > div > input'},
+    addPersonEmailBox:{css: 'div.jss166.jss176.jss167.jss270 > div > form > div:nth-child(1) > div:nth-child(3) > div > input'},
+    addPersonSendInvite:{css: 'div.jss166.jss176.jss167.jss270 > div > form > div:nth-child(2) > div > button:nth-child(2)'},
 
 
     searchBar: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(1) > div > div > div > div > input'},

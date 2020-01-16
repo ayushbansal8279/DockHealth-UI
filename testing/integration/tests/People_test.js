@@ -16,7 +16,8 @@ Scenario('Make a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
     peoplePage.disarmNavigationSidebar();
     peoplePage.clickAddPersonButton();
     I.wait(3);
-    peoplePage.fillInvite('Dingbat', 'Douglas', 'george+a2@dock.health')
+    //pause();
+    peoplePage.fillInvite('Dingbat', 'Douglas', 'george+a3@dock.health')
     peoplePage.sendInvite();
     //I.amOnPage('https://mail.google.com/mail/u/0/#inbox');
 
