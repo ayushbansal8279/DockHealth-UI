@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 export const OnboardingBackground = styled.div`
   background-color: #fff;
-  height: 100%;
+  min-height: 100%;
   width: 100%;
 `;
 
@@ -112,10 +112,18 @@ export const OnboardingH1 = styled.h1`
   margin: 0.25rem 0;
 `;
 
+export const OnboardingH1Bold = styled(OnboardingH1)`
+  font-weight: bold;
+`;
+
 export const OnboardingH2 = styled.h2`
   color: #2e3a43;
   font-size: 1.3125rem;
   margin: 0.15rem 0;
+`;
+
+export const OnboardingH2Bold = styled(OnboardingH2)`
+  font-weight: bold;
 `;
 
 export const OnboardingH3 = styled.h3`
@@ -177,6 +185,26 @@ export const OnboardingSpacing4 = styled(OnboardingSpacing)`
   height: 2rem;
 `;
 
+const OnboardingHorizontalSpacing = styled.div`
+  height: 100%;
+`;
+
+export const OnboardingHorizontalSpacing1 = styled(OnboardingHorizontalSpacing)`
+  width: 0.25rem;
+`;
+
+export const OnboardingHorizontalSpacing2 = styled(OnboardingHorizontalSpacing)`
+  width: 0.5rem;
+`;
+
+export const OnboardingHorizontalSpacing3 = styled(OnboardingHorizontalSpacing)`
+  width: 1rem;
+`;
+
+export const OnboardingHorizontalSpacing4 = styled(OnboardingHorizontalSpacing)`
+  width: 2rem;
+`;
+
 export const OnboardingFormControl = withStyles({
   root: {
     backgroundColor: '#f3f5f6',
@@ -235,11 +263,15 @@ export const OnboardingButton = withStyles({
     borderRadius: '0.25rem',
     height: '3rem',
     padding: '0.5rem 1.5rem',
+    transition: 'all 0.25s ease-out',
   },
   contained: {
     backgroundColor: '#fdb42b',
     color: '#565b5f',
     minWidth: '15rem',
+  },
+  containedDisabled: {
+    backgroundColor: '#c8c8ce',
   },
   outlined: {
     color: '#303538',
@@ -247,8 +279,10 @@ export const OnboardingButton = withStyles({
   outlinedLink: {
     color: '#0ca1c7',
   },
-})(({ classes, variant, ...props }) => {
-  const className = `${classes.root} ${classes[variant]}`.trim();
+})(({ classes, variant, disabled, ...props }) => {
+  const className = `${classes.root} ${classes[variant]} ${
+    disabled ? classes[`${variant}Disabled`] ?? '' : ''
+  }`.trim();
 
   return <ButtonBase className={className} {...props} />;
 });

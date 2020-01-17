@@ -54,6 +54,7 @@ import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
+import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\//, '');
@@ -242,6 +243,7 @@ export const Routes = ({ store }) => {
             component={OnboardingCreateAccountView}
             path="/onboarding/create-account"
           />
+          <Route component={OnboardingEulaView} path="/onboarding/eula" />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>

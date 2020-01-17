@@ -1,4 +1,5 @@
-import { Dialog, DialogContent } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import useForm from 'react-hook-form';
@@ -17,7 +18,7 @@ import {
   OnboardingButton,
   OnboardingFieldsRequiredLabel,
   OnboardingFormControl,
-  OnboardingH1,
+  OnboardingH1Bold,
   OnboardingH2,
   OnboardingH3,
   OnboardingH4Error,
@@ -130,7 +131,7 @@ const OnboardingCreateAccountView = () => {
 
   return (
     <div>
-      <OnboardingH1>Welcome, to your free 30 day trial</OnboardingH1>
+      <OnboardingH1Bold>Welcome, to your free 30 day trial</OnboardingH1Bold>
       <OnboardingH2>
         Dock Health is a simple, HIPAA compliant platform for managing clinical
         tasks as a team. Our mission is to offer a better way <b>to-do</b>{' '}
