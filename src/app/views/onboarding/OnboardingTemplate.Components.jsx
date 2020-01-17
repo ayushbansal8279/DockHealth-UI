@@ -132,6 +132,10 @@ export const OnboardingH3 = styled.h3`
   margin: 0.05rem 0;
 `;
 
+export const OnboardingH3Bold = styled(OnboardingH3)`
+  font-weight: bold;
+`;
+
 export const OnboardingH4 = styled.h4`
   color: #2e3a43;
   font-size: 0.75rem;
@@ -270,7 +274,14 @@ export const OnboardingButton = withStyles({
     color: '#565b5f',
     minWidth: '15rem',
   },
+  containedAutoWidth: {
+    backgroundColor: '#fdb42b',
+    color: '#565b5f',
+  },
   containedDisabled: {
+    backgroundColor: '#c8c8ce',
+  },
+  containedAutoWidthDisabled: {
     backgroundColor: '#c8c8ce',
   },
   outlined: {
@@ -284,7 +295,7 @@ export const OnboardingButton = withStyles({
     disabled ? classes[`${variant}Disabled`] ?? '' : ''
   }`.trim();
 
-  return <ButtonBase className={className} {...props} />;
+  return <ButtonBase disabled={disabled} className={className} {...props} />;
 });
 
 export const OnboardingAdditionalFormControlText = styled.div`

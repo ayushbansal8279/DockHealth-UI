@@ -1,6 +1,7 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { useMount, useScroll, useToggle } from 'react-use';
 
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
@@ -46,6 +47,8 @@ const OnboardingEulaView = () => {
     setOnboardingCurrentStep({ currentStep: 2 })(dispatch);
   });
 
+  const continueButtonDisabled = !isEulaRead || !isEulaAccepted;
+
   return (
     <div>
       <OnboardingH1>Welcome to Dock Health</OnboardingH1>
@@ -88,8 +91,11 @@ const OnboardingEulaView = () => {
         </OnboardingH3>
         <OnboardingHorizontalSpacing3 />
         <OnboardingButton
-          disabled={!isEulaRead || !isEulaAccepted}
+          disabled={continueButtonDisabled}
           variant="contained"
+          onClick={() => {
+            hashHistory.push('/onboarding/baa-overview');
+          }}
         >
           Continue
         </OnboardingButton>
