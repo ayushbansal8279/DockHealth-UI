@@ -1,6 +1,7 @@
 import { func } from 'prop-types';
 import equals from 'ramda/es/equals';
 import find from 'ramda/es/find';
+import isEmpty from 'ramda/es/isEmpty';
 import uniq from 'ramda/es/uniq';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,13 +16,17 @@ import {
   MembersTableContainer,
   MemberTable,
 } from './SubscriptionsView.MembersTable.Styled';
-import OrganizationMemberRow from './SubscriptionsView.OrganizationMemberRow';
+import OrganizationMemberRow, {
+  EmptyOrganizationMemberRow,
+} from './SubscriptionsView.OrganizationMemberRow';
 import { H2, H3 } from './SubscriptionsView.Styled';
 
 const renderOrganizationMemberRow = ({
   toggleSelectedUser,
   isUserSelected,
   isSmallScreen,
+  showJoined,
+  showSubscription,
 }) => props => {
   const { firstName, lastName, email, userId } = props;
   const key = `${firstName}${lastName}${userId}${email}`;
@@ -32,6 +37,8 @@ const renderOrganizationMemberRow = ({
       toggleSelectedUser={toggleSelectedUser}
       isUserSelected={isUserSelected}
       isSmallScreen={isSmallScreen}
+      showJoined={showJoined}
+      showSubscription={showSubscription}
       {...props}
     />
   );
@@ -39,7 +46,13 @@ const renderOrganizationMemberRow = ({
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
-const SubscriptionsViewMembersTable = ({ selectedUsers, setSelectedUsers }) => {
+const SubscriptionsViewMembersTable = ({
+  selectedUsers,
+  setSelectedUsers,
+  showJoined = true,
+  showSubscription = true,
+  fetchAllUsers = true,
+}) => {
   const dispatch = useDispatch();
   const { isFetching, organizationMembers } = useSelector(store => ({
     isFetching: store.peopleState.isFetching,
@@ -50,8 +63,10 @@ const SubscriptionsViewMembersTable = ({ selectedUsers, setSelectedUsers }) => {
   const isSmallScreen = currentBreakPoint === 'sm';
 
   useMount(() => {
-    loading()(dispatch);
-    findAllUsersByOrganizationId()(dispatch);
+    if (fetchAllUsers) {
+      loading()(dispatch);
+      findAllUsersByOrganizationId()(dispatch);
+    }
   });
 
   const toggleSelectedUser = useCallback(
@@ -96,18 +111,24 @@ const SubscriptionsViewMembersTable = ({ selectedUsers, setSelectedUsers }) => {
                   <th>&nbsp;</th>
                   <th>Name</th>
                   <th>User Type</th>
-                  <th>Joined</th>
-                  <th>Subscription</th>
+                  {showJoined && <th>Joined</th>}
+                  {showSubscription && <th>Subscription</th>}
                 </tr>
               </thead>
             )}
             <tbody>
-              {organizationMembers.map(
-                renderOrganizationMemberRow({
-                  toggleSelectedUser,
-                  isUserSelected,
-                  isSmallScreen,
-                }),
+              {isEmpty(organizationMembers) ? (
+                <EmptyOrganizationMemberRow />
+              ) : (
+                organizationMembers.map(
+                  renderOrganizationMemberRow({
+                    toggleSelectedUser,
+                    isUserSelected,
+                    isSmallScreen,
+                    showJoined,
+                    showSubscription,
+                  }),
+                )
               )}
             </tbody>
           </MemberTable>

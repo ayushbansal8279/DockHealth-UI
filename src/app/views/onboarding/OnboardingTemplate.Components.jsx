@@ -91,7 +91,7 @@ export const OnboardingProgressDot = styled.div`
 `;
 
 export const OnboardingProgressLabel = styled.div`
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   left: 50%;
   opacity: ${props => (props.active ? 1 : 0)};
   position: absolute;
@@ -99,6 +99,7 @@ export const OnboardingProgressLabel = styled.div`
   transform: translateX(-50%);
   transition: all 0.25s ease-out;
   user-select: none;
+  white-space: nowrap;
 `;
 
 export const OnboardingMainContainer = styled.main`
@@ -359,3 +360,9 @@ export const OnboardingInput = ({
     </>
   );
 };
+
+export const OnboardingDivider = styled.div`
+  background-color: #dedee2;
+  height: 0.0625rem;
+  width: 100%;
+`;

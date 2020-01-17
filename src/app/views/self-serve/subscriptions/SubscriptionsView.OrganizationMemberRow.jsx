@@ -105,6 +105,16 @@ const MemberAvatar = ({
   );
 };
 
+export const EmptyOrganizationMemberRow = () => (
+  <tr>
+    <td colSpan={6}>
+      <Grid alignItems="center" justify="center">
+        No members added
+      </Grid>
+    </td>
+  </tr>
+);
+
 const OrganizationMemberRow = ({
   firstName,
   lastName,
@@ -115,6 +125,8 @@ const OrganizationMemberRow = ({
   isUserSelected,
   toggleSelectedUser,
   isSmallScreen,
+  showJoined,
+  showSubscription,
 }) => {
   const userType = USER_TYPES[orgUserRole];
 
@@ -152,11 +164,19 @@ const OrganizationMemberRow = ({
                   userType={userType}
                   userTypes={USER_TYPES}
                 />
-                <div>{moment().format('LL')}</div>
+                {showJoined && <div>Joined {moment().format('LL')}</div>}
               </Grid>
-              <Grid item xs container alignItems="flex-end" justify="flex-end">
-                <div>$19 / month</div>
-              </Grid>
+              {showSubscription && (
+                <Grid
+                  item
+                  xs
+                  container
+                  alignItems="flex-end"
+                  justify="flex-end"
+                >
+                  <div>$19 / month</div>
+                </Grid>
+              )}
             </Grid>
           </SmallScreenGrid>
         </td>
@@ -194,8 +214,8 @@ const OrganizationMemberRow = ({
           userTypes={USER_TYPES}
         />
       </td>
-      <td>{moment().format('LL')}</td>
-      <td>$19 / month</td>
+      {showJoined && <td>{moment().format('LL')}</td>}
+      {showSubscription && <td>$19 / month</td>}
     </tr>
   );
 };
