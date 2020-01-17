@@ -18,5 +18,6 @@ Scenario('Make a task, assign it to dummy list, and then search dummy list', (I,
   //pause();
   tskLstPg.enterList(1);
   tasksPg.search("Dummy Task");
+  I.wait(3);
   I.see("Dummy Task");  
 });

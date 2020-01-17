@@ -36,13 +36,16 @@ Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
     //ptntsPg.refillPatient('-name', '-a', '', '9001', "12/12/1212", 'female', '0000000000', '0000000000', 'fleemail@florp.lol');
 });
 
+//TODO Make the filters check how many patients you have under MY PATIENTS, and compare it to the ALL PATIENTS filter.
 Scenario('Check that the dropdown filter works', async (I, lgnPg, tskLstPg, ptntsPg) =>{
-    const targetNumber = 1; //Change this to compare against a different number of patients
-    //pause();
     lgnPg.fullLogin(2);
     tskLstPg.enterPatients();
-    ptntsPg.setFilterTo(3); //Decide which filter you want to check.
     I.wait();
-    const nmbr = parseInt(await ptntsPg.grabNumberOfPatients());
-    assert(nmbr>=targetNumber, `Number of patients ${nmbr} is less than ${targetNumber}`);
+    const targetNumber = parseInt(await ptntsPg.grabNumberOfPatients());
+    ptntsPg.setFilterTo(1); //Decide which filter you want to check.
+    I.wait();
+    const nmbr = parseInt(await ptntsPg.grabNumberOfPatients()); //Change this to compare against a different number of patients
+    I.wait();
+    //pause();
+    assert(nmbr>=targetNumber, `Failed! # of MY patients: ${nmbr} should be less than (or equal to) the # of ALL patients: ${targetNumber}`);
 });

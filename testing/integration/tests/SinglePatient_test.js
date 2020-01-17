@@ -61,6 +61,4 @@ Scenario('Add a task to patient, from the inbox!', (I, lgnPg, tskLstPg, ptntsPg,
     I.scrollPageToBottom();
     I.wait(3);
     I.see('star wars sux');
-    
-    
 });

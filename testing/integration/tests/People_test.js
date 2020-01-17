@@ -1,7 +1,7 @@
 
 Feature('People list test');
 
-Scenario('Try to make a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('Try to invite a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(3);
     tskLstPg.enterPeople(); 
     peoplePage.disarmNavigationSidebar();
@@ -11,7 +11,7 @@ Scenario('Try to make a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) =>
     I.see('Because you are not an administrator');
 });
 
-Scenario('Make a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('Invite a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -24,7 +24,7 @@ Scenario('Make a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
 
 }); 
 
-Scenario('Enter user check name', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('Enter user details, check name', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
