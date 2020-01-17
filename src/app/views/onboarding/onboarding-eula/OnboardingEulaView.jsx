@@ -20,12 +20,12 @@ import {
   OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
+import EULA from './OnboardingEulaView.Eula';
 import {
   EulaContainer,
   OnboardAcceptingGrid,
   OnboardAcceptingLabel,
 } from './OnboardingEulaView.Styled';
-import EULA from './OnboardingView.Eula';
 
 const OnboardingEulaView = () => {
   const dispatch = useDispatch();

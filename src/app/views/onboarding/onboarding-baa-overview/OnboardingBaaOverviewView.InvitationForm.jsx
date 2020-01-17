@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import useForm from 'react-hook-form';
+import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { object, string } from 'yup';
@@ -9,12 +9,9 @@ import { invitePersonToOrganization } from '../../../actions/people-actions';
 import {
   MobileInputComponent,
   OnboardingButton,
-  OnboardingFormControl,
   OnboardingH1,
-  OnboardingH4Error,
   OnboardingHorizontalSpacing3,
-  OnboardingInputBase,
-  OnboardingInputLabel,
+  OnboardingInput,
   OnboardingSpacing3,
 } from '../OnboardingTemplate.Components';
 
@@ -70,85 +67,67 @@ const onInvitationSubmit = ({ dispatch }) => async ({
 };
 
 const InvitationForm = ({ hideInvitationForm }) => {
-  const { errors, handleSubmit, register } = useForm({
+  const formMethods = useForm({
     validationSchema,
     revalidationMode: 'onChange',
   });
   const dispatch = useDispatch();
 
   return (
-    <form onSubmit={handleSubmit(onInvitationSubmit({ dispatch }))}>
-      <OnboardingH1>
-        Invite the authorized signer of your organization
-      </OnboardingH1>
-      <OnboardingSpacing3 />
-      <Grid container spacing={16}>
-        <Grid item sm={12} md={6}>
-          <OnboardingFormControl fullWidth>
-            <OnboardingInputLabel>First Name</OnboardingInputLabel>
-            <OnboardingInputBase
+    <form onSubmit={formMethods.handleSubmit(onInvitationSubmit({ dispatch }))}>
+      <FormContext {...formMethods}>
+        <OnboardingH1>
+          Invite the authorized signer of your organization
+        </OnboardingH1>
+        <OnboardingSpacing3 />
+        <Grid container spacing={16}>
+          <Grid item sm={12} md={6}>
+            <OnboardingInput
+              label="First Name"
               name="firstName"
               placeholder="Enter invited person's first name here"
-              inputRef={register}
-              error={Boolean(errors.firstName?.message)}
+              required
             />
-          </OnboardingFormControl>
-          <OnboardingH4Error>{errors.firstName?.message}</OnboardingH4Error>
-        </Grid>
-        <Grid item sm={12} md={6}>
-          <OnboardingFormControl fullWidth>
-            <OnboardingInputLabel>Last Name</OnboardingInputLabel>
-            <OnboardingInputBase
+          </Grid>
+          <Grid item sm={12} md={6}>
+            <OnboardingInput
+              label="Last Name"
               name="lastName"
               placeholder="Enter invited person's last name here"
-              inputRef={register}
-              error={Boolean(errors.lastName?.message)}
+              required
             />
-          </OnboardingFormControl>
-          <OnboardingH4Error>{errors.lastName?.message}</OnboardingH4Error>
-        </Grid>
-        <Grid item sm={12} md={6}>
-          <OnboardingFormControl fullWidth>
-            <OnboardingInputLabel>Email</OnboardingInputLabel>
-            <OnboardingInputBase
+          </Grid>
+          <Grid item sm={12} md={6}>
+            <OnboardingInput
+              label="Email"
               name="email"
               placeholder="Enter invited person's email here"
-              inputRef={register}
-              error={Boolean(errors.email?.message)}
+              required
             />
-          </OnboardingFormControl>
-          <OnboardingH4Error>{errors.email?.message}</OnboardingH4Error>
-        </Grid>
-        <Grid item sm={12} md={6}>
-          <OnboardingFormControl fullWidth>
-            <OnboardingInputLabel>
-              Their Mobile Phone Number
-            </OnboardingInputLabel>
-            <OnboardingInputBase
+          </Grid>
+          <Grid item sm={12} md={6}>
+            <OnboardingInput
+              label="Their Mobile Phone Number"
               name="mobilePhoneNumber"
               placeholder="Enter invited person's mobile phone number"
-              inputRef={register}
-              error={Boolean(errors.mobilePhoneNumber?.message)}
-              inputComponent={MobileInputComponent}
+              CustomComponent={MobileInputComponent}
+              required
             />
-          </OnboardingFormControl>
-          <OnboardingH4Error>
-            {errors.mobilePhoneNumber?.message}
-          </OnboardingH4Error>
+          </Grid>
+          <Grid item sm={12}>
+            <OnboardingSpacing3 />
+          </Grid>
+          <Grid item sm={12} container justify="flex-end">
+            <OnboardingButton variant="outlined" onClick={hideInvitationForm}>
+              Cancel
+            </OnboardingButton>
+            <OnboardingHorizontalSpacing3 />
+            <OnboardingButton variant="contained" type="submit">
+              Send invite
+            </OnboardingButton>
+          </Grid>
         </Grid>
-        <Grid item sm={12}>
-          <OnboardingSpacing3 />
-        </Grid>
-        <Grid item sm={12} container justify="flex-end">
-          <OnboardingButton variant="outlined" onClick={hideInvitationForm}>
-            Cancel
-          </OnboardingButton>
-          <OnboardingHorizontalSpacing3 />
-          <OnboardingButton variant="contained" type="submit">
-            Send invite
-          </OnboardingButton>
-        </Grid>
-      </Grid>
+      </FormContext>
     </form>
   );
 };

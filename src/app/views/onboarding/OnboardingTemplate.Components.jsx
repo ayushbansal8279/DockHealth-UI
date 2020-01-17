@@ -6,6 +6,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
 import MaskedInput from 'react-text-mask';
+import { useFormContext } from 'react-hook-form';
 
 export const OnboardingBackground = styled.div`
   background-color: #fff;
@@ -191,7 +192,7 @@ export const OnboardingSpacing4 = styled(OnboardingSpacing)`
 `;
 
 const OnboardingHorizontalSpacing = styled.div`
-  height: 100%;
+  height: auto;
 `;
 
 export const OnboardingHorizontalSpacing1 = styled(OnboardingHorizontalSpacing)`
@@ -213,7 +214,7 @@ export const OnboardingHorizontalSpacing4 = styled(OnboardingHorizontalSpacing)`
 export const OnboardingFormControl = withStyles({
   root: {
     backgroundColor: '#f3f5f6',
-    height: '3rem',
+    height: '4rem',
     marginBottom: '0.5rem',
   },
 })(FormControl);
@@ -223,8 +224,8 @@ export const OnboardingInputLabel = withStyles({
     color: '#2e3a43',
     pointerEvents: 'none',
     top: '50%',
-    transform: 'translate(0.5rem, -50%) scale(1)',
-    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
+    transform: 'translate(1.5rem, -50%) scale(1)',
+    transition: 'all 200ms ease',
     zIndex: 2,
   },
   required: {
@@ -235,9 +236,9 @@ export const OnboardingInputLabel = withStyles({
   shrink: {
     color: '#ababb2',
     top: '5%',
-    transform: 'translate(0.5rem, 0) scale(0.75)',
+    transform: 'translate(1.5rem, 0) scale(0.65)',
     transformOrigin: 'center left',
-    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
+    transition: 'all 200ms ease',
   },
   focused: {
     color: '#ababb2 !important',
@@ -254,7 +255,7 @@ export const OnboardingInputBase = withStyles({
     boxShadow: 'none',
     fontFamily: '"Open Sans", sans-serif',
     paddingBottom: 0,
-    padding: '0.6rem 0.5rem',
+    padding: '0.6rem 1.5rem',
     '&:focus': {
       backgroundColor: '#f3f5f6',
       border: 0,
@@ -266,7 +267,7 @@ export const OnboardingInputBase = withStyles({
 export const OnboardingButton = withStyles({
   root: {
     borderRadius: '0.25rem',
-    height: '3rem',
+    height: '4rem',
     padding: '0.5rem 1.5rem',
     transition: 'all 0.25s ease-out',
   },
@@ -329,3 +330,32 @@ export const MobileInputComponent = ({ inputRef, ...otherProps }) => (
     guide
   />
 );
+
+export const OnboardingInput = ({
+  label,
+  name,
+  placeholder,
+  CustomComponent = undefined,
+  required = false,
+  InputBaseProps = {},
+}) => {
+  const { register, errors } = useFormContext();
+  const error = errors?.[name]?.message;
+
+  return (
+    <>
+      <OnboardingFormControl fullWidth>
+        <OnboardingInputLabel required={required}>{label}</OnboardingInputLabel>
+        <OnboardingInputBase
+          name={name}
+          placeholder={placeholder}
+          inputRef={register}
+          error={Boolean(error)}
+          inputComponent={CustomComponent}
+          {...InputBaseProps}
+        />
+      </OnboardingFormControl>
+      <OnboardingH4Error>{error}</OnboardingH4Error>
+    </>
+  );
+};

@@ -37,7 +37,10 @@ import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
 import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetailsView';
+import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
+import OnboardingBaaSigningView from './views/onboarding/onboarding-baa-signing/OnboardingBaaSigningView';
 import OnboardingCreateAccountView from './views/onboarding/onboarding-create-account/OnboardingCreateAccountView';
+import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
@@ -54,8 +57,6 @@ import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
-import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
-import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\//, '');
@@ -248,6 +249,10 @@ export const Routes = ({ store }) => {
           <Route
             component={OnboardingBaaOverviewView}
             path="/onboarding/baa-overview"
+          />
+          <Route
+            component={OnboardingBaaSigningView}
+            path="/onboarding/baa-signing"
           />
         </Route>
         <Route component={TemplateAuth}>

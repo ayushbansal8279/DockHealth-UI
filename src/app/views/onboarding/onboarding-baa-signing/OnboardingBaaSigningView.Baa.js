@@ -1,0 +1,14 @@
+const BAA = `Effective Date: January 1, 2020
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sapien magna, maximus nec felis eget, suscipit pretium lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed egestas cursus enim a feugiat. Nulla eu augue eget nisl lacinia dapibus consectetur quis eros. Duis sed urna vel leo posuere bibendum. Vestibulum sit amet odio sed sem finibus volutpat sit amet non quam. Aenean sit amet volutpat ligula. Phasellus id orci id ligula consectetur rutrum in rhoncus tellus.
+
+Vestibulum quam eros, viverra a interdum id, porta eu justo. Integer orci elit, ultrices sed ex id, vulputate pretium quam. Mauris consectetur cursus sem, placerat fermentum urna facilisis id. Ut at neque odio. Nunc elementum augue ut dui ultrices facilisis. Ut hendrerit ullamcorper nibh, sit amet rhoncus justo fringilla a. Phasellus nec metus lobortis, posuere mi nec, fermentum urna. Quisque aliquam, lorem in volutpat tristique, eros eros sodales quam, quis consectetur orci orci vitae nunc. Aliquam mattis augue in leo commodo scelerisque.
+
+Maecenas rutrum tristique nunc, eu elementum est egestas non. Phasellus consequat ullamcorper tellus, at egestas eros lobortis finibus. Donec ut aliquam mi, id aliquam purus. Donec tortor elit, ultricies et fringilla eget, pharetra a magna. Nullam eget ultrices ligula. Nulla ut orci sit amet magna tristique dictum ac nec mauris. Aliquam nec lectus volutpat, rhoncus nunc eu, euismod ante. Nunc fermentum urna quis quam feugiat, nec tempor nibh fringilla. Curabitur non metus placerat ante condimentum suscipit.
+
+Quisque tincidunt elementum leo quis mattis. Proin rutrum tempus vestibulum. Suspendisse euismod vulputate quam. Praesent pretium eget enim sit amet pulvinar. In eget ligula non nunc convallis rhoncus sed id odio. Proin vel tincidunt eros. Sed placerat non risus eu feugiat. Etiam non urna id ligula condimentum vulputate.
+
+Fusce dignissim tempor arcu nec placerat. Vestibulum ut pulvinar felis. Sed nunc urna, tempus ornare nibh vel, vestibulum dapibus odio. Ut nulla nibh, dignissim vitae consectetur fermentum, feugiat ut lacus. Vestibulum ultricies rhoncus diam, quis maximus dolor finibus et. Aliquam in orci eget magna consectetur rhoncus ac nec est. Phasellus tincidunt, neque rutrum laoreet luctus, eros enim euismod nunc, eu pellentesque quam est ac purus. Praesent vestibulum turpis ante, eget egestas ex ullamcorper eu. Aenean vestibulum mattis risus, efficitur accumsan sem volutpat sed. Vivamus dui enim, semper eu eros eget, pharetra malesuada sem. Mauris pharetra feugiat suscipit. Integer et ipsum mauris. Pellentesque convallis mi vel nisl iaculis, eget pretium neque fermentum. Sed fringilla neque magna, sit amet gravida erat elementum vitae. Nulla ex nisl, tempus et molestie vel, ultrices fringilla tellus. Proin iaculis eros rhoncus, finibus orci ut, vestibulum augue. 
+`;
+
+export default BAA;

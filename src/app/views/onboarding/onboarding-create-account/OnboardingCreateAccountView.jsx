@@ -2,7 +2,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import useForm from 'react-hook-form';
+import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import { useMount, useToggle } from 'react-use';
@@ -17,14 +17,11 @@ import {
   OnboardingAdditionalFormControlText,
   OnboardingButton,
   OnboardingFieldsRequiredLabel,
-  OnboardingFormControl,
   OnboardingH1Bold,
   OnboardingH2,
   OnboardingH3,
-  OnboardingH4Error,
   OnboardingH4Toggle,
-  OnboardingInputBase,
-  OnboardingInputLabel,
+  OnboardingInput,
   OnboardingSpacing2,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
@@ -88,10 +85,12 @@ const onSubmit = ({ showDialog }) => async ({
 
 const OnboardingCreateAccountView = () => {
   const dispatch = useDispatch();
-  const { errors, handleSubmit, register, watch } = useForm({
+  const formMethods = useForm({
     validationSchema,
     reValidateMode: 'onChange',
   });
+
+  const { handleSubmit, watch } = formMethods;
 
   const email = watch('email');
 
@@ -118,125 +117,100 @@ const OnboardingCreateAccountView = () => {
       </OnboardingFieldsRequiredLabel>
       <OnboardingSpacing2 />
       <form onSubmit={handleSubmit(onSubmit({ showDialog }))}>
-        <Grid container spacing={8}>
-          <Grid item sm={12} md={6}>
-            <OnboardingFormControl fullWidth>
-              <OnboardingInputLabel>First Name</OnboardingInputLabel>
-              <OnboardingInputBase
+        <FormContext {...formMethods}>
+          <Grid container spacing={8}>
+            <Grid item sm={12} md={6}>
+              <OnboardingInput
+                label="First Name"
                 name="firstName"
                 placeholder="Enter your first name here"
-                inputRef={register}
-                error={Boolean(errors.firstName?.message)}
               />
-            </OnboardingFormControl>
-            <OnboardingH4Error>{errors.firstName?.message}</OnboardingH4Error>
-          </Grid>
-          <Grid item sm={12} md={6}>
-            <OnboardingFormControl fullWidth>
-              <OnboardingInputLabel>Last Name</OnboardingInputLabel>
-              <OnboardingInputBase
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <OnboardingInput
+                label="Last Name"
                 name="lastName"
                 placeholder="Enter your last name here"
-                inputRef={register}
-                error={Boolean(errors.lastName?.message)}
               />
-            </OnboardingFormControl>
-            <OnboardingH4Error>{errors.lastName?.message}</OnboardingH4Error>
-          </Grid>
-          <Grid item sm={12}>
-            <OnboardingFormControl fullWidth>
-              <OnboardingInputLabel>Email</OnboardingInputLabel>
-              <OnboardingInputBase
+            </Grid>
+            <Grid item sm={12}>
+              <OnboardingInput
+                label="Email"
                 name="email"
                 placeholder="Enter your email here"
-                inputRef={register}
-                error={Boolean(errors.email?.message)}
               />
-            </OnboardingFormControl>
-            <OnboardingH4Error>{errors.email?.message}</OnboardingH4Error>
-          </Grid>
-          <Grid item sm={12} md={6}>
-            <OnboardingFormControl fullWidth>
-              <OnboardingInputLabel>Password</OnboardingInputLabel>
-              <OnboardingInputBase
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <OnboardingInput
+                label="Password"
                 name="password"
-                type={isPasswordShown ? 'text' : 'password'}
                 placeholder="Enter your password here"
-                inputRef={register}
-                error={Boolean(errors.password?.message)}
-                endAdornment={
-                  <OnboardingH4Toggle onClick={togglePasswordShown}>
-                    {isPasswordShown ? 'Hide' : 'Show'}
-                  </OnboardingH4Toggle>
-                }
+                InputBaseProps={{
+                  type: isPasswordShown ? 'text' : 'password',
+                  endAdornment: (
+                    <OnboardingH4Toggle onClick={togglePasswordShown}>
+                      {isPasswordShown ? 'Hide' : 'Show'}
+                    </OnboardingH4Toggle>
+                  ),
+                }}
               />
-            </OnboardingFormControl>
-            <OnboardingH4Error>{errors.password?.message}</OnboardingH4Error>
-            <OnboardingAdditionalFormControlText>
-              <OnboardingH3>
-                <b>Secure password requirements</b>
-              </OnboardingH3>
-              <OnboardingH3>- 8 characters minimum</OnboardingH3>
-              <OnboardingH3>- include at least one number</OnboardingH3>
-              <OnboardingH3>
-                - include at least one uppercase letter
-              </OnboardingH3>
-              <OnboardingH3>
-                - include at least one lowercase letter
-              </OnboardingH3>
-            </OnboardingAdditionalFormControlText>
-          </Grid>
-          <Grid item sm={12} md={6}>
-            <OnboardingFormControl fullWidth>
-              <OnboardingInputLabel>
-                Your Mobile Phone Number
-              </OnboardingInputLabel>
-              <OnboardingInputBase
+              <OnboardingAdditionalFormControlText>
+                <OnboardingH3>
+                  <b>Secure password requirements</b>
+                </OnboardingH3>
+                <OnboardingH3>- 8 characters minimum</OnboardingH3>
+                <OnboardingH3>- include at least one number</OnboardingH3>
+                <OnboardingH3>
+                  - include at least one uppercase letter
+                </OnboardingH3>
+                <OnboardingH3>
+                  - include at least one lowercase letter
+                </OnboardingH3>
+              </OnboardingAdditionalFormControlText>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <OnboardingInput
+                label="Your Mobile Phone Number"
                 name="mobilePhoneNumber"
                 placeholder="Enter your mobile phone number here"
-                inputRef={register}
-                error={Boolean(errors.mobilePhoneNumber?.message)}
-                inputComponent={MobileInputComponent}
+                CustomComponent={MobileInputComponent}
               />
-            </OnboardingFormControl>
-            <OnboardingH4Error>
-              {errors.mobilePhoneNumber?.message}
-            </OnboardingH4Error>
-            <OnboardingAdditionalFormControlText>
-              <OnboardingH3>
-                This must be a mobile phone number as we are required to send a
-                secondary authentication code for HIPAA compliance
-              </OnboardingH3>
-            </OnboardingAdditionalFormControlText>
-          </Grid>
-          <Grid item sm={12} container justify="flex-end">
-            <OnboardingSpacing4 />
-            <OnboardingButton type="submit" variant="contained">
-              <OnboardingH2>Continue</OnboardingH2>
-            </OnboardingButton>
-            <OnboardingSpacing4 />
-            <OnboardingH2>
-              <span>I already have an account. </span>
-              <Link to="/login">Sign in</Link>
-            </OnboardingH2>
-          </Grid>
-        </Grid>
-        <Dialog open={isDialogShown}>
-          <DialogContent>
-            <OnboardingH2>
-              We just sent an email to {email} please go to your email and click
-              on the link so that we can confirm your email address.
-            </OnboardingH2>
-            <Grid container justify="space-around">
-              <OnboardingButton variant="outlinedLink">
-                Resend email
-              </OnboardingButton>
-              <OnboardingButton onClick={hideDialog} variant="outlinedLink">
-                Change email address
-              </OnboardingButton>
+              <OnboardingAdditionalFormControlText>
+                <OnboardingH3>
+                  This must be a mobile phone number as we are required to send
+                  a secondary authentication code for HIPAA compliance
+                </OnboardingH3>
+              </OnboardingAdditionalFormControlText>
             </Grid>
-          </DialogContent>
-        </Dialog>
+            <Grid item sm={12} container justify="flex-end">
+              <OnboardingSpacing4 />
+              <OnboardingButton type="submit" variant="contained">
+                <OnboardingH2>Continue</OnboardingH2>
+              </OnboardingButton>
+              <OnboardingSpacing4 />
+              <OnboardingH2>
+                <span>I already have an account. </span>
+                <Link to="/login">Sign in</Link>
+              </OnboardingH2>
+            </Grid>
+          </Grid>
+          <Dialog open={isDialogShown}>
+            <DialogContent>
+              <OnboardingH2>
+                We just sent an email to {email} please go to your email and
+                click on the link so that we can confirm your email address.
+              </OnboardingH2>
+              <Grid container justify="space-around">
+                <OnboardingButton variant="outlinedLink">
+                  Resend email
+                </OnboardingButton>
+                <OnboardingButton onClick={hideDialog} variant="outlinedLink">
+                  Change email address
+                </OnboardingButton>
+              </Grid>
+            </DialogContent>
+          </Dialog>
+        </FormContext>
       </form>
     </div>
   );
