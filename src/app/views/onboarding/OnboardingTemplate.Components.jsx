@@ -5,6 +5,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
+import MaskedInput from 'react-text-mask';
 
 export const OnboardingBackground = styled.div`
   background-color: #fff;
@@ -301,3 +302,30 @@ export const OnboardingButton = withStyles({
 export const OnboardingAdditionalFormControlText = styled.div`
   padding: 0.5rem 1.5rem;
 `;
+
+export const MobileInputComponent = ({ inputRef, ...otherProps }) => (
+  <MaskedInput
+    {...otherProps}
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
+    }}
+    mask={[
+      '(',
+      /[1-9]/,
+      /\d/,
+      /\d/,
+      ')',
+      ' ',
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      /\d/,
+      /\d/,
+    ]}
+    showMask
+    guide
+  />
+);

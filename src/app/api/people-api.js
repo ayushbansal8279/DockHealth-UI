@@ -25,7 +25,9 @@ export function invitePersonToOrganization(person) {
     .then(response => {
       return response.data;
     })
-    .catch(error => error.response.data);
+    .catch(error => {
+      throw error?.response?.data ?? error;
+    });
 }
 
 export function resendInviteToOrganization(person) {

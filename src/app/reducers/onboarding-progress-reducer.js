@@ -7,7 +7,7 @@ import ONBOARDING_STEPS from '../views/onboarding/OnboardingTemplate.OnboardingS
 
 const initialState = {
   currentStep: 1,
-  progress: 0.1,
+  progress: 0.5 / ONBOARDING_STEPS.length,
   totalSteps: ONBOARDING_STEPS.length,
 };
 

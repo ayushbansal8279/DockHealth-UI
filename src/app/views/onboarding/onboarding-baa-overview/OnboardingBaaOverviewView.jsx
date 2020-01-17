@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import useBoolean from '../../../hooks/useBoolean';
 import {
   OnboardingButton,
   OnboardingH2,
@@ -14,12 +15,19 @@ import {
   OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
+import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
 const OnboardingBaaOverviewView = () => {
   const dispatch = useDispatch();
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 3 })(dispatch);
   });
+
+  const [
+    isInvitationFormShown,
+    showInvitationForm,
+    hideInvitationForm,
+  ] = useBoolean(false);
 
   return (
     <div>
@@ -55,15 +63,23 @@ const OnboardingBaaOverviewView = () => {
       <OnboardingSpacing4 />
       <OnboardingH3Bold>Are you an authorized signer?</OnboardingH3Bold>
       <OnboardingSpacing4 />
-      <Grid container>
-        <OnboardingButton variant="containedAutoWidth">
-          <OnboardingH2>No</OnboardingH2>
-        </OnboardingButton>
-        <OnboardingHorizontalSpacing3 />
-        <OnboardingButton variant="containedAutoWidth">
-          <OnboardingH2>Yes</OnboardingH2>
-        </OnboardingButton>
-      </Grid>
+      {!isInvitationFormShown && (
+        <Grid container>
+          <OnboardingButton
+            onClick={showInvitationForm}
+            variant="containedAutoWidth"
+          >
+            <OnboardingH2>No</OnboardingH2>
+          </OnboardingButton>
+          <OnboardingHorizontalSpacing3 />
+          <OnboardingButton variant="containedAutoWidth">
+            <OnboardingH2>Yes</OnboardingH2>
+          </OnboardingButton>
+        </Grid>
+      )}
+      {isInvitationFormShown && (
+        <InvitationForm hideInvitationForm={hideInvitationForm} />
+      )}
     </div>
   );
 };

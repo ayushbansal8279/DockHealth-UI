@@ -5,7 +5,6 @@ import React from 'react';
 import useForm from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
-import MaskedInput from 'react-text-mask';
 import { useMount, useToggle } from 'react-use';
 import Swal from 'sweetalert2';
 import { object, string } from 'yup';
@@ -14,6 +13,7 @@ import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-a
 import { register as registerAction } from '../../../api/user-api';
 import useBoolean from '../../../hooks/useBoolean';
 import {
+  MobileInputComponent,
   OnboardingAdditionalFormControlText,
   OnboardingButton,
   OnboardingFieldsRequiredLabel,
@@ -85,33 +85,6 @@ const onSubmit = ({ showDialog }) => async ({
     Swal.getContainer().style.zIndex = 10000;
   }
 };
-
-const MobileInputComponent = ({ inputRef, ...otherProps }) => (
-  <MaskedInput
-    {...otherProps}
-    ref={reference => {
-      inputRef(reference ? reference.inputElement : null);
-    }}
-    mask={[
-      '(',
-      /[1-9]/,
-      /\d/,
-      /\d/,
-      ')',
-      ' ',
-      /\d/,
-      /\d/,
-      /\d/,
-      '-',
-      /\d/,
-      /\d/,
-      /\d/,
-      /\d/,
-    ]}
-    showMask
-    guide
-  />
-);
 
 const OnboardingCreateAccountView = () => {
   const dispatch = useDispatch();
