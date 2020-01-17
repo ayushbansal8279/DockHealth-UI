@@ -2,11 +2,12 @@
 Feature('People list test');
 
 Scenario('Try to make a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) => {
-    lgnPg.fullLogin(1);
+    lgnPg.fullLogin(3);
     tskLstPg.enterPeople(); 
     peoplePage.disarmNavigationSidebar();
+    I.wait();
     peoplePage.clickAddPersonButton();
-    I.wait(2);
+    I.wait(3);
     I.see('Because you are not an administrator');
 });
 
@@ -16,7 +17,8 @@ Scenario('Make a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
     peoplePage.disarmNavigationSidebar();
     peoplePage.clickAddPersonButton();
     I.wait(3);
-    peoplePage.fillInvite('Dingbat', 'Douglas', 'george+a2@dock.health')
+    //pause();
+    peoplePage.fillInvite('Hapless', 'Harry', 'george+a4@dock.health')
     peoplePage.sendInvite();
     //I.amOnPage('https://mail.google.com/mail/u/0/#inbox');
 
@@ -42,3 +44,17 @@ Scenario('Search for a user', (I, lgnPg, tskLstPg, peoplePage) => {
     I.see('Dig Dug');
 });
 
+Scenario('Give Bart admin, then take it away.', (I, lgnPg, tskLstPg, peoplePage) => {
+    lgnPg.fullLogin(2);
+    I.wait();
+    tskLstPg.enterPeople();
+    I.wait();
+    peoplePage.disarmNavigationSidebar();
+    I.wait();
+    peoplePage.makeSearch("Bart");
+    I.wait();
+    peoplePage.switchAdminStatus(1);
+    I.wait(2);
+    I.see('Admin');
+    peoplePage.switchAdminStatus(1);
+});

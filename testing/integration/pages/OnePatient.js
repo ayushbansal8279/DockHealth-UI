@@ -40,7 +40,7 @@ module.exports = {
     addTaskInboxButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
     addTaskInboxSaveButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4) > button'},
 
-    firstTaskCheckbox: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(1) > div'},
+    firstTaskCheckbox: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(1) > div'},
   },
   
   exitPatientPage(){
@@ -109,29 +109,30 @@ module.exports = {
   editGender(gender){
     I.waitForElement(this.fields.genderShield, 3);
     I.click(this.fields.genderShield);
-    I.wait();
+    I.wait(3);
+    //pause();
     if(gender.toUpperCase()=='MALE'){
-      I.waitForElement(this.fields.genderMale);
+      I.waitForElement(this.fields.genderMale, 4);
       I.click(this.fields.genderMale);
-    } if(gender.toUpperCase()=='FEMALE'){
-      I.waitForElement(this.fields.genderFemale);
+    }else if(gender.toUpperCase()=='FEMALE'){
+      I.waitForElement(this.fields.genderFemale, 4);
       I.click(this.fields.genderFemale);
     } else {
-      I.waitForElement(this.fields.genderOther);
+      I.waitForElement(this.fields.genderOther, 4);
       I.click(this.fields.genderOther);
     }
     I.wait();
   },
   
   editHomePhone(code){
-    I.waitForElement(this.fields.homePhoneBox);
+    I.waitForElement(this.fields.homePhoneBox, 4);
     I.clearField(this.fields.homePhoneBox);
     I.fillField(this.fields.homePhoneBox, code);
     I.wait();
   },
 
   editMobilePhone(code){
-    I.waitForElement(this.fields.mobilePhoneBox);
+    I.waitForElement(this.fields.mobilePhoneBox, 4);
     I.clearField(this.fields.mobilePhoneBox);
     I.fillField(this.fields.mobilePhoneBox, code);
     I.wait();
@@ -152,7 +153,7 @@ module.exports = {
 
   //Task methods
   addPatientTask(taskName){
-    pause();
+    //pause();
     I.waitForElement(this.fields.addTaskInboxButton, 4);
     I.fillField(this.fields.addTaskInboxButton, taskName);
     I.waitForElement(this.fields.addTaskInboxSaveButton, 2);
@@ -161,7 +162,7 @@ module.exports = {
   },
 
   clickTaskCheckbox(taskNumber){
-    const path = `#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(${taskNumber*3}) > div > div > div:nth-child(2) > div:nth-child(1) > div`;
+    const path = `#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(taskNumber*2)}) > div > div > div:nth-child(2) > div:nth-child(1) > div`;
     I.waitForElement({css: path}, 3);
     I.click(path);
     I.wait(2);

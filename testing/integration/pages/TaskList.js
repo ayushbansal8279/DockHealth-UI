@@ -292,7 +292,9 @@ module.exports = {
   },
 
   openEditSidebar(taskIndex, filtered) {//Intended filter is the filter thats selected starting with 1 as all active tasks
-    taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
+    //pause();
+    taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex+2}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div > span > span`;
+    //taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
     I.waitForElement({css: taskSidebarLocator}, 4);
     I.scrollTo({css: taskSidebarLocator});
     I.click({css: taskSidebarLocator});
@@ -347,15 +349,20 @@ module.exports = {
 
   addDueDate(week, day, intendedFilter) {
     const dateButton = {css:
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
     };
     const setDateButton = {css:
-      `#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span`
-    }
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span`
+      //`#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span`
+    };
+    //#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span
     const saveDueDate={css:
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)`
-    }
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)`
+    };
+    I.wait(2);
+    //pause();
     I.waitForElement(setDateButton, 4);
+    //pause();
     I.click(setDateButton);
     // I.click("Set a due date");
     I.wait();
@@ -363,7 +370,7 @@ module.exports = {
     I.click(dateButton);
     I.waitForElement(saveDueDate);
     I.click(saveDueDate); // This div becomes nth-child(5) if the task has comments.
-    I.wait();
+    I.wait(3);
   },
 
   flagTask() {
@@ -379,7 +386,7 @@ module.exports = {
   },
 
   markTaskComplete(taskIndex){
-    //const checkBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
+    //const Box = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
     const checkBox = {css: `#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1)  > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
     I.waitForElement(checkBox, 2);
     I.click(checkBox);
@@ -395,7 +402,7 @@ module.exports = {
     //pause();
     I.waitForElement(userChooser,2);
     I.click(userChooser);
-    I.wait();
+    I.wait(3);
   },
 
   exitTask(filtered) {

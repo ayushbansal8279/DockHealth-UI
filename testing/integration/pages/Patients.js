@@ -8,6 +8,8 @@ var puppeteerHelper = helpers['Puppeteer']
 
 module.exports = {
   fields: {
+    numberOfPatients: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(1) > div > span:nth-child(2)'},
+
     //Immediately accessible Buttons
     addPatientButton: {css:'#appHome > main > div > div:nth-child(2) > div > div:nth-child(1) > button'},
 
@@ -44,7 +46,7 @@ module.exports = {
 
     saveButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > button'},
 
-    exitPatientButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3)  > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > button'},
+    exitPatientButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > button'},
 
     //Editting patient number 1 Addresses
     patientDetailsWrapper: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1)'},
@@ -89,6 +91,11 @@ module.exports = {
     I.wait();
   },
 
+  async grabNumberOfPatients(){
+    I.waitForElement(this.fields.numberOfPatients, 5);
+    return await I.grabTextFrom(this.fields.numberOfPatients);
+  },
+
 
   //Patient creation features
   openNewPatientSidebar(){
@@ -99,7 +106,7 @@ module.exports = {
 
   closeNewPatientSidebar(){
     I.waitForElement(this.fields.exitPatientButton, 3);
-    I.click(this.fields.closeNewPatientSidebar);
+    I.click(this.fields.exitPatientButton);
     I.wait();
   },
 
@@ -123,10 +130,12 @@ module.exports = {
     this.fillMobilePhone(mobilePhone);
     this.fillEmail(email);
     this.savePatient();
+    I.wait(2);
   },
 
   savePatient(){
-    I.waitForElement(this.fields.saveButton, 3);
+    I.waitForElement(this.fields.saveButton, 4);
+    I.scrollTo(this.fields.saveButton);
     I.click(this.fields.saveButton);
     I.wait();
   },
@@ -217,12 +226,6 @@ module.exports = {
     I.wait(3);
   },
 
-  editSavePatient(){
-    I.waitForElement(this.fields.editSaveButton, 2);
-    I.click(this.fields.editSaveButton);
-    I.wait();
-  },
-
   refillPatient(firstName, middleName, lastName, MRN, birthday, gender, homePhone, mobilePhone, email){
     this.editFirstName(firstName);
     this.editMiddleName(middleName);
@@ -235,6 +238,13 @@ module.exports = {
     this.editMobilePhone(mobilePhone);
     this.editEmail(email);
     this.editSavePatient();
+    I.wait(2);
+  },
+
+  editSavePatient(){
+    I.waitForElement(this.fields.editSaveButton, 2);
+    I.click(this.fields.editSaveButton);
+    I.wait();
   },
 
   editFirstName(name){

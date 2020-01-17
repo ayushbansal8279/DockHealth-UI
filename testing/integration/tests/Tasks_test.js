@@ -15,7 +15,7 @@ Scenario('Make a task, fill it out.', async(tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Chummy Chimp");
   tasksPg.flagTask();
-  tasksPg.addDueDate(1,4,1);
+  tasksPg.addDueDate(1,4,0);
   tasksPg.assignTask(2);
   tasksPg.attachPatient(2);
   // tasksPg.postComment("Bazinger");
@@ -49,8 +49,8 @@ Scenario('Make a task, and flag it, check hud', async (I, tasksPg) => {
 Scenario('Make a task, give it an assigned date, check hud.', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Aardvark");
-  tasksPg.addDueDate(1,4,1);//Week and day of week...
-  tasksPg.exitTask();
+  tasksPg.addDueDate(1,4,0);//Week and day of week...
+  tasksPg.exitTask(0);
   await tasksPg.checkTasksHUD(1,0,0,1);
 
   tasksPg.openEditSidebar(1, 0);
@@ -149,11 +149,11 @@ Scenario('Assign task to user WO sidebar', async (I, tasksPg) =>{
   tasksPg.postTask("Snuffleuppagus");
   tasksPg.exitTask(0);
   tasksPg.search("Snuffleuppagus");
-  tasksPg.openEditSidebar(1, 1);
+  tasksPg.openEditSidebar(1, 0);
   //TODO tasksPg.changeAssignedUserNoSidebar(1, 1, 1);
 
   //pause();
-  await tasksPg.deleteTask(1, 1);
+  await tasksPg.deleteTask(1, 0);
 
   //tasksPg.exitTask(0);
   //tasksPg.openEditSidebar(1, 0);
@@ -173,8 +173,9 @@ Scenario('Assign to patient', async (I, tasksPg) => {
   tasksPg.postTask("Pringles");
   tasksPg.attachPatient(2);
   tasksPg.exitTask(0);
-  I.wait();
-  I.see("null, null 126");
+  I.wait(10);
+  pause();
+  I.see("1234");
 
 
   tasksPg.openEditSidebar(1, 0);
