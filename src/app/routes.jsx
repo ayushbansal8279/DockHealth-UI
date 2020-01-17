@@ -37,6 +37,8 @@ import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
 import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetailsView';
+import OnboardingCreateAccountView from './views/onboarding/onboarding-create-account/OnboardingCreateAccountView';
+import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
@@ -233,6 +235,12 @@ export const Routes = ({ store }) => {
             path="documents"
             component={DocumentsView}
             onEnter={checkFeatureToggles}
+          />
+        </Route>
+        <Route component={OnboardingTemplate}>
+          <Route
+            component={OnboardingCreateAccountView}
+            path="/onboarding/create-account"
           />
         </Route>
         <Route component={TemplateAuth}>

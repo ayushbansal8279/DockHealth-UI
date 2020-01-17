@@ -9,6 +9,7 @@ import PeopleReducer from './people-reducer';
 import FormReducer from './form-reducer';
 import patient from './patient';
 import HeaderReducer from './header-reducer';
+import OnboardingProgressReducer from './onboarding-progress-reducer';
 
 export default combineReducers({
   taskState: TaskReducer,
@@ -22,4 +23,5 @@ export default combineReducers({
   // Redesign clean-up
   patient,
   header: HeaderReducer,
+  onboardingProgress: OnboardingProgressReducer,
 });

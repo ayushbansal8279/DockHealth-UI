@@ -1,0 +1,258 @@
+import ButtonBase from '@material-ui/core/ButtonBase';
+import FormControl from '@material-ui/core/FormControl';
+import InputBase from '@material-ui/core/InputBase';
+import InputLabel from '@material-ui/core/InputLabel';
+import withStyles from '@material-ui/core/styles/withStyles';
+import React from 'react';
+import styled from 'styled-components';
+
+export const OnboardingBackground = styled.div`
+  background-color: #fff;
+  height: 100%;
+  width: 100%;
+`;
+
+export const OnboardingNavbar = styled.nav`
+  align-items: center;
+  box-shadow: 0.125rem 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+  border-top: 0.5rem solid #074a86;
+  display: flex;
+  height: 5.75rem;
+  justify-content: space-between;
+  padding: 1rem 2.375rem;
+  width: 100%;
+`;
+
+export const OnboardingLogo = styled.img`
+  height: 100%;
+  object-fit: contain;
+`;
+
+export const OnboardingProgressBar = styled.div`
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: space-around;
+  position: relative;
+  width: 20rem;
+`;
+
+export const OnboardingProgressTrack = styled.div`
+  background-color: #f3f5f6;
+  border-radius: 0.125rem;
+  height: 0.25rem;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  z-index: 1;
+`;
+
+export const OnboardingProgressTrackActive = styled.div`
+  background-color: #fdb42b;
+  height: 100%;
+  transition: all 0.25s ease-out;
+  width: ${props => (props.width ?? 0) * 100}%;
+`;
+
+export const OnboardingProgressDotContainer = styled.div`
+  background-color: #fff;
+  border-radius: 0.625rem;
+  height: 1.25rem;
+  padding: 0.125rem;
+  position: relative;
+  width: 1.25rem;
+  z-index: 2;
+`;
+
+export const OnboardingProgressDot = styled.div`
+  background-color: #fff;
+  border: 0.125rem solid #ededf0;
+  border-radius: 50%;
+  height: 100%;
+  transition: all 0.25s ease-out;
+  width: 100%;
+
+  ${props =>
+    props.active &&
+    `
+    background-color: #fdb42b;
+    border: 0.125rem solid #fdb42b;
+  `}
+  ${props =>
+    props.current &&
+    `
+    border: 0.125rem solid #fdb42b;
+  `}
+`;
+
+export const OnboardingProgressLabel = styled.div`
+  font-size: 0.75rem;
+  left: 50%;
+  opacity: ${props => (props.active ? 1 : 0)};
+  position: absolute;
+  top: 1.5rem;
+  transform: translateX(-50%);
+  transition: all 0.25s ease-out;
+  user-select: none;
+`;
+
+export const OnboardingMainContainer = styled.main`
+  box-sizing: content-box;
+  margin: 0 auto;
+  max-width: 946px;
+  padding: 3.25rem;
+`;
+
+export const OnboardingH1 = styled.h1`
+  color: #2e3a43;
+  font-size: 2.125rem;
+  margin: 0.25rem 0;
+`;
+
+export const OnboardingH2 = styled.h2`
+  color: #2e3a43;
+  font-size: 1.3125rem;
+  margin: 0.15rem 0;
+`;
+
+export const OnboardingH3 = styled.h3`
+  color: #2e3a43;
+  font-size: 1rem;
+  margin: 0.05rem 0;
+`;
+
+export const OnboardingH4 = styled.h4`
+  color: #2e3a43;
+  font-size: 0.75rem;
+  margin: 0.0125rem 0;
+`;
+
+export const OnboardingH4Error = styled(OnboardingH4)`
+  color: #e40909;
+  user-select: none;
+`;
+
+export const OnboardingH4Toggle = styled(OnboardingH4)`
+  color: #ababb2;
+  cursor: pointer;
+  padding-right: 0.75rem;
+  user-select: none;
+`;
+
+export const OnboardingFieldsRequiredLabel = styled(OnboardingH3)`
+  padding-left: 1rem;
+  position: relative;
+
+  &::before {
+    color: #d9036b;
+    content: '*';
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 1rem;
+  }
+`;
+
+const OnboardingSpacing = styled.div`
+  width: 100%;
+`;
+
+export const OnboardingSpacing1 = styled(OnboardingSpacing)`
+  height: 0.25rem;
+`;
+
+export const OnboardingSpacing2 = styled(OnboardingSpacing)`
+  height: 0.5rem;
+`;
+
+export const OnboardingSpacing3 = styled(OnboardingSpacing)`
+  height: 1rem;
+`;
+
+export const OnboardingSpacing4 = styled(OnboardingSpacing)`
+  height: 2rem;
+`;
+
+export const OnboardingFormControl = withStyles({
+  root: {
+    backgroundColor: '#f3f5f6',
+    height: '3rem',
+    marginBottom: '0.5rem',
+  },
+})(FormControl);
+
+export const OnboardingInputLabel = withStyles({
+  root: {
+    color: '#2e3a43',
+    pointerEvents: 'none',
+    top: '50%',
+    transform: 'translate(0.5rem, -50%) scale(1)',
+    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
+    zIndex: 2,
+  },
+  required: {
+    '& > span': {
+      color: '#f00',
+    },
+  },
+  shrink: {
+    color: '#ababb2',
+    top: '5%',
+    transform: 'translate(0.5rem, 0) scale(0.75)',
+    transformOrigin: 'center left',
+    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
+  },
+  focused: {
+    color: '#ababb2 !important',
+  },
+})(InputLabel);
+
+export const OnboardingInputBase = withStyles({
+  root: {
+    height: '100%',
+    zIndex: 1,
+  },
+  input: {
+    borderRadius: '0.25rem',
+    boxShadow: 'none',
+    fontFamily: '"Open Sans", sans-serif',
+    paddingBottom: 0,
+    padding: '0.6rem 0.5rem',
+    '&:focus': {
+      backgroundColor: '#f3f5f6',
+      border: 0,
+      boxShadow: 'none',
+    },
+  },
+})(InputBase);
+
+export const OnboardingButton = withStyles({
+  root: {
+    borderRadius: '0.25rem',
+    height: '3rem',
+    padding: '0.5rem 1.5rem',
+  },
+  contained: {
+    backgroundColor: '#fdb42b',
+    color: '#565b5f',
+    minWidth: '15rem',
+  },
+  outlined: {
+    color: '#303538',
+  },
+  outlinedLink: {
+    color: '#0ca1c7',
+  },
+})(({ classes, variant, ...props }) => {
+  const className = `${classes.root} ${classes[variant]}`.trim();
+
+  return <ButtonBase className={className} {...props} />;
+});
+
+export const OnboardingAdditionalFormControlText = styled.div`
+  padding: 0.5rem 1.5rem;
+`;
