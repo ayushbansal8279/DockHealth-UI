@@ -3,7 +3,8 @@ exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
-      url: 'https://dockdev.childrensaccelerator.com',
+      url: 'https://docktest.childrensaccelerator.com',
+      // url: 'https://dockdev.childrensaccelerator.com',
       // url: 'https://dockdev-v2.childrensaccelerator.com'
       // url: 'http://localhost:3000/',
       show: true,

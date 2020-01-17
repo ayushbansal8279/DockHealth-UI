@@ -23,7 +23,7 @@ module.exports = {
   disarmNavigationSidebar(){
     I.waitForElement(this.fields.searchBar, 5);
     I.click(this.fields.searchBar);
-    I.wait(3);
+    I.wait();
   },
 
   clickAddPersonButton(){
@@ -32,7 +32,7 @@ module.exports = {
     I.scrollTo(this.fields.addPersonButton);
     I.wait();
     I.click(this.fields.addPersonButton);
-    I.wait(2);
+    I.wait();
   },
 
   fillInvite(first, last, email){
@@ -42,26 +42,26 @@ module.exports = {
     I.fillField(this.fields.addPersonLastNameBox, last);
     I.wait();
     I.fillField(this.fields.addPersonEmailBox, email);
-    I.wait(2);
+    I.wait();
   },
 
   sendInvite(){
     I.waitForElement(this.fields.addPersonSendInvite, 5);
     I.click(this.fields.addPersonSendInvite);
-    I.wait(3);
+    I.wait();
   },
 
   clickPerson(index){
     const path = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(${index}) > div > div:nth-child(2) > div > a`
     I.waitForElement({css: path}, 3);
     I.click({css: path});
-    I.wait(3);
+    I.wait();
   },
 
   makeSearch(searchTerm){
     I.waitForElement(this.fields.searchBar, 5);
     I.fillField(this.fields.searchBar, searchTerm);
-    I.wait(3);
+    I.wait();
   },
 
   switchAdminStatus(index){

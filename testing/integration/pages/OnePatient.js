@@ -52,25 +52,24 @@ module.exports = {
   //Patient editing methods
 
   
-
   refillPatient(firstName, middleName, lastName, MRN, birthday, gender, homePhone, mobilePhone, email){
     this.editFirstName(firstName);
     this.editMiddleName(middleName);
     this.editLastName(lastName);
     this.editMRN(MRN);
-    I.wait(2);
+    I.wait();
     this.editBirthday(birthday);
     this.editGender(gender);
     this.editHomePhone(homePhone);
     this.editMobilePhone(mobilePhone);
     this.editEmail(email);
     this.editSavePatient();
-    I.wait(2);
+    I.wait();
   },
 
   editFirstName(name){
     I.waitForElement(this.fields.firstNameBox);
-    I.wait(3);
+    I.wait();
     I.clearField(this.fields.firstNameBox);
     I.fillField(this.fields.firstNameBox, name);
     I.wait();
@@ -109,7 +108,7 @@ module.exports = {
   editGender(gender){
     I.waitForElement(this.fields.genderShield, 3);
     I.click(this.fields.genderShield);
-    I.wait(3);
+    I.wait();
     //pause();
     if(gender.toUpperCase()=='MALE'){
       I.waitForElement(this.fields.genderMale, 4);
@@ -158,13 +157,13 @@ module.exports = {
     I.fillField(this.fields.addTaskInboxButton, taskName);
     I.waitForElement(this.fields.addTaskInboxSaveButton, 2);
     I.click(this.fields.addTaskInboxSaveButton);
-    I.wait(1);
+    I.wait();
   },
 
   clickTaskCheckbox(taskNumber){
     const path = `#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(taskNumber*2)}) > div > div > div:nth-child(2) > div:nth-child(1) > div`;
     I.waitForElement({css: path}, 3);
     I.click(path);
-    I.wait(2);
+    I.wait();
   },
 }

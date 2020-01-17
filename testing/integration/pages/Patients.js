@@ -126,6 +126,7 @@ module.exports = {
     //pause();
     this.fillBirthday(birthday);
     this.fillGender(gender);
+    I.wait();
     this.fillHomePhone(homePhone);
     this.fillMobilePhone(mobilePhone);
     this.fillEmail(email);
@@ -175,13 +176,13 @@ module.exports = {
     I.click(this.fields.genderShield);
     I.wait();
     if(gender.toUpperCase()=='MALE'){
-      I.waitForElement(this.fields.genderMale);
+      I.waitForElement(this.fields.genderMale, 2);
       I.click(this.fields.genderMale);
-    } if(gender.toUpperCase()=='FEMALE'){
-      I.waitForElement(this.fields.genderFemale);
+    }else if(gender.toUpperCase()=='FEMALE'){
+      I.waitForElement(this.fields.genderFemale, 2);
       I.click(this.fields.genderFemale);
     } else {
-      I.waitForElement(this.fields.genderOther);
+      I.waitForElement(this.fields.genderOther, 2);
       I.click(this.fields.genderOther);
     }
     I.wait();

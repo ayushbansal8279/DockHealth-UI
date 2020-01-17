@@ -22,12 +22,12 @@ module.exports = {
   addTask(taskName){
     I.waitForElement(this.fields.inboxAddTaskField, 5);
     I.fillField(this.fields.inboxAddTaskField, taskName);
-    I.wait(3);
+    I.wait(2);
     I.waitForElement(this.fields.inboxAddTaskButton, 5);
     I.scrollTo(this.fields.inboxAddTaskButton);
     I.wait();
     I.click(this.fields.inboxAddTaskButton);
-    I.wait(3);
+    I.wait(2);
   },
 
   clickTask(number){

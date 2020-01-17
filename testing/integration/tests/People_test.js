@@ -7,7 +7,7 @@ Scenario('Try to make a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) =>
     peoplePage.disarmNavigationSidebar();
     I.wait();
     peoplePage.clickAddPersonButton();
-    I.wait(3);
+    I.wait();
     I.see('Because you are not an administrator');
 });
 

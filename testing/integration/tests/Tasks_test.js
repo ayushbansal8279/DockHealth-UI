@@ -22,7 +22,7 @@ Scenario('Make a task, fill it out.', async(tasksPg) => {
   //pause();
   tasksPg.exitTask(0);
   
-  tasksPg.openEditSidebar(1, 0);
+  tasksPg.openEditSidebar(1, 0, 0);
   //pause();
   await tasksPg.deleteTask(1, 0);
 
@@ -41,7 +41,7 @@ Scenario('Make a task, and flag it, check hud', async (I, tasksPg) => {
   tasksPg.exitTask(0);
   await tasksPg.checkTasksHUD(1,1,0,0);
 
-  tasksPg.openEditSidebar(1, 0);
+  tasksPg.openEditSidebar(1, 0, 0);
   //pause();
   await tasksPg.deleteTask(1, 0);
 });
@@ -53,7 +53,7 @@ Scenario('Make a task, give it an assigned date, check hud.', async (I, tasksPg)
   tasksPg.exitTask(0);
   await tasksPg.checkTasksHUD(1,0,0,1);
 
-  tasksPg.openEditSidebar(1, 0);
+  tasksPg.openEditSidebar(1, 0, 0);
   //pause();
   await tasksPg.deleteTask(1, 0);
 });
@@ -82,13 +82,15 @@ Scenario('Testing subtask mechanics', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Fimblewimble");
   tasksPg.exitTask(0);
-  tasksPg.openEditSidebar(1, 0);
+  I.wait(3);
+  tasksPg.openEditSidebar(1, 0, 0);
   tasksPg.addSubtask(1, "HumbleSnork");
   tasksPg.saveSubtask();
   tasksPg.exitSubtask();
   I.see("HumbleSnork");
-
-  tasksPg.openEditSidebar(1, 0);
+  I.wait(3);
+  //pause();
+  tasksPg.openEditSidebar(1, 0, 1);
   //pause();
   await tasksPg.deleteTask(1, 0);
 });
@@ -98,6 +100,8 @@ Scenario('Make a search', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask(searchKeyword);
   tasksPg.exitTask(0);
+
+  //TODO Make this its own method.
   //Mindlessly create [noise] tasks
   const noise = 0;
   for(var i = 0; i < noise; i++) {
@@ -106,17 +110,21 @@ Scenario('Make a search', async (I, tasksPg) => {
     tasksPg.postTask(noiseText);
     tasksPg.exitTask(0);
   }
+
+
+
   tasksPg.search(searchKeyword);
   I.see("Gorgo");
-  I.wait(1);
-  tasksPg.openEditSidebar(1, 0);
+  I.wait(4);
+  tasksPg.openEditSidebar(1, 0, 0);
   tasksPg.flagTask();
   //pause();
   tasksPg.exitTask(0);
   tasksPg.search("");
   tasksPg.clickFilter(2);
   //pause();
-  tasksPg.openEditSidebar(1, 1);
+  I.wait(3);
+  tasksPg.openEditSidebar(1, 1, 1);
   tasksPg.unflagTask();
   // pause();
   // tasksPg.addDueDate(1,4,2);
@@ -125,8 +133,8 @@ Scenario('Make a search', async (I, tasksPg) => {
   I.see("Gorgo");
   tasksPg.clickFilter(1);
   //tasksPg.exitTask(1);
-
-  tasksPg.openEditSidebar(1, 0);
+  I.wait(3);
+  tasksPg.openEditSidebar(1, 0, 1);
   //pause();
   await tasksPg.deleteTask(1, 0);
 });
@@ -139,7 +147,7 @@ Scenario('Mark a task as complete', async (I, tasksPg) => {
   tasksPg.search("");
   //pause();
 
-  tasksPg.openEditSidebar(1, 0);
+  tasksPg.openEditSidebar(1, 0, 0);
   //pause();
   await tasksPg.deleteTask(1, 0);
 });
@@ -149,7 +157,7 @@ Scenario('Assign task to user WO sidebar', async (I, tasksPg) =>{
   tasksPg.postTask("Snuffleuppagus");
   tasksPg.exitTask(0);
   tasksPg.search("Snuffleuppagus");
-  tasksPg.openEditSidebar(1, 0);
+  tasksPg.openEditSidebar(1, 0, 0);
   //TODO tasksPg.changeAssignedUserNoSidebar(1, 1, 1);
 
   //pause();
@@ -173,12 +181,12 @@ Scenario('Assign to patient', async (I, tasksPg) => {
   tasksPg.postTask("Pringles");
   tasksPg.attachPatient(2);
   tasksPg.exitTask(0);
-  I.wait(10);
-  pause();
+  I.wait(4);
+  //pause();
   I.see("1234");
 
 
-  tasksPg.openEditSidebar(1, 0);
+  tasksPg.openEditSidebar(1, 0, 0);
   //pause();
   await tasksPg.deleteTask(1, 0);
 });
@@ -196,7 +204,7 @@ Scenario('Click Filters', async (I, tasksPg) => {
   tasksPg.clickFilter(1);
 
 
-  tasksPg.openEditSidebar(1, 0);
+  tasksPg.openEditSidebar(1, 0, 0);
   //pause();
   await tasksPg.deleteTask(1, 0);
 });

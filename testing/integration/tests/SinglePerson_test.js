@@ -23,7 +23,7 @@ Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPa
     peoplePage.makeSearch('George');
     I.wait(2);
     peoplePage.clickPerson(1);
-    I.wait(3);
+    I.wait(2);
     singlePersonPage.clickTask(1);
     singlePersonPage.editTaskName("Gazoolgo");
     I.wait(2);
