@@ -291,11 +291,11 @@ module.exports = {
     I.wait();
   },
 
-  openEditSidebar(taskIndex, filtered) {//Intended filter is the filter thats selected starting with 1 as all active tasks
+  //This path fails to select certain tasks. 
+  openEditSidebar(taskIndex, filtered, brokenGarbage) {//Intended filter is the filter thats selected starting with 1 as all active tasks
     //pause();
-    taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex+2}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div > span > span`;
-    //taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
-    I.waitForElement({css: taskSidebarLocator}, 4);
+    taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex+2}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(${2-brokenGarbage}) > div > span > span`;
+    I.waitForElement({css: taskSidebarLocator}, 11);
     I.scrollTo({css: taskSidebarLocator});
     I.click({css: taskSidebarLocator});
     I.wait();
@@ -306,7 +306,7 @@ module.exports = {
     I.waitForElement(this.fields.taskDescription, 5);
     I.fillField(this.fields.taskDescription, title);
     I.pressKey('Enter');
-    I.wait(3);
+    I.wait(2);
   },
 
   //TODO using postComment screws up the paths, and makes deleting a task impossible.
@@ -335,7 +335,7 @@ module.exports = {
     //assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`;
     assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`;
     I.waitForElement(this.fields.assignedShield, 3);
-    I.wait(2);
+    I.wait();
     //pause();
     I.scrollTo(this.fields.assignedShield);
     //pause();
@@ -344,7 +344,7 @@ module.exports = {
     I.waitForElement({css: assignmentLocator}, 4);
     I.wait();
     I.click({css: assignmentLocator});
-    I.wait(2);
+    I.wait();
   },
 
   addDueDate(week, day, intendedFilter) {
@@ -370,7 +370,7 @@ module.exports = {
     I.click(dateButton);
     I.waitForElement(saveDueDate);
     I.click(saveDueDate); // This div becomes nth-child(5) if the task has comments.
-    I.wait(3);
+    I.wait(2);
   },
 
   flagTask() {
@@ -402,7 +402,7 @@ module.exports = {
     //pause();
     I.waitForElement(userChooser,2);
     I.click(userChooser);
-    I.wait(3);
+    I.wait(2);
   },
 
   exitTask(filtered) {
@@ -411,7 +411,7 @@ module.exports = {
     }
     I.waitForElement(exitEditSidebar, 2);
     I.click(exitEditSidebar);
-    I.wait(3);
+    I.wait(4);
   },
 
   clickForMe(){
@@ -481,7 +481,7 @@ module.exports = {
   search(input){
     I.waitForElement(this.fields.searchBar, 3);
     I.fillField(this.fields.searchBar, input);
-    I.wait(2);
+    I.wait(1);
   },
 
   //Fancy Stuff

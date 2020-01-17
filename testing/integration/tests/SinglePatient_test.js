@@ -13,7 +13,7 @@ Scenario('Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatientPa
     onePatientPage.editLastName('Somethin');
     onePatientPage.editMRN('32');
     onePatientPage.editBirthday('01/23/1945');
-    onePatientPage.editGender('male');
+    onePatientPage.editGender('female');
     onePatientPage.editHomePhone('1-111-123-1234');
     onePatientPage.editMobilePhone('1-111-123-1234');
     onePatientPage.editEmail("doink@boink.com");
@@ -23,7 +23,7 @@ Scenario('Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatientPa
     I.see('Worst');
     I.wait();
     //I.pause();
-    onePatientPage.refillPatient('-', 'Blank', 'oof', '1234', '02/22/1982', 'female', '1-111-111-1111', '1-111-111-1111', 'doink@boink.com', 'dadsf');
+    onePatientPage.refillPatient('-', 'Blank', 'oof', '1234', '02/22/1982', 'other', '1-111-111-1111', '1-111-111-1111', 'doink@boink.com', 'dadsf');
     I.wait();
     onePatientPage.exitPatientPage();
 });

@@ -8,7 +8,7 @@ Scenario('Make a patient', (I, lgnPg, tskLstPg, ptntsPg) => {
     //pause();
     ptntsPg.openNewPatientSidebar();
     //You can automatically generate whichever patient you'd like right here!
-    ptntsPg.fillPatient('First', 'Middle', 'Last', 'MRN', '01/02/2003', 'female', '1234567890', '0987654321', 'email@buttz.com');
+    ptntsPg.fillPatient('First', 'Middle', 'Last', 'MRN', '01/02/2003', 'male', '1234567890', '0987654321', 'email@buttz.com');
     //pause();
     ptntsPg.closeNewPatientSidebar();
     I.wait();
@@ -32,8 +32,8 @@ Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
     ptntsPg.makeSearch('blursedName');
-    ptntsPg.openEditPatientSidebar(1);
-    ptntsPg.refillPatient('-name', '-a', '', '9001', "12/12/1212", 'bongos', '0000000000', '0000000000', 'fleemail@florp.lol');
+    //ptntsPg.openEditPatientSidebar(1);
+    //ptntsPg.refillPatient('-name', '-a', '', '9001', "12/12/1212", 'female', '0000000000', '0000000000', 'fleemail@florp.lol');
 });
 
 Scenario('Check that the dropdown filter works', async (I, lgnPg, tskLstPg, ptntsPg) =>{
