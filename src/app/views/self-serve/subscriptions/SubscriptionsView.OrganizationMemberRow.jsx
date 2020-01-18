@@ -4,7 +4,6 @@ import memoizeWith from 'ramda/es/memoizeWith';
 import React from 'react';
 import { useAsync } from 'react-use';
 import styled from 'styled-components';
-
 import { getUserAvatar } from '../../../api/people-api';
 import Avatar from '../../../components/common/Avatar';
 import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
@@ -65,7 +64,7 @@ const getAvatarContent = memoizeWith(
   },
 );
 
-const MemberAvatar = ({
+export const MemberAvatar = ({
   firstName,
   lastName,
   userId,
@@ -124,8 +123,25 @@ const OrganizationMemberRow = ({
   isSmallScreen,
   showJoined,
   showSubscription,
+  openDialog,
+  setRemovedUserData,
 }) => {
   const userType = USER_TYPES[orgUserRole];
+
+  const checkboxElement = (
+    <TaskCheckbox
+      checked={isUserSelected({ userId, email })}
+      onChange={event => {
+        if (event.target.checked) {
+          toggleSelectedUser({ userId, email })(event);
+        } else {
+          setRemovedUserData({ userId, email, orgUserRole });
+          openDialog();
+        }
+      }}
+      color="#074A86"
+    />
+  );
 
   if (isSmallScreen) {
     return (
@@ -133,11 +149,7 @@ const OrganizationMemberRow = ({
         <td>
           <SmallScreenGrid container wrap="nowrap" spacing={16}>
             <Grid item xs={1}>
-              <TaskCheckbox
-                checked={isUserSelected({ userId, email })}
-                onChange={toggleSelectedUser({ userId, email })}
-                color="#074A86"
-              />
+              {checkboxElement}
             </Grid>
             <Grid
               item
@@ -183,13 +195,7 @@ const OrganizationMemberRow = ({
 
   return (
     <tr>
-      <td>
-        <TaskCheckbox
-          checked={isUserSelected({ userId, email })}
-          onChange={toggleSelectedUser({ userId, email })}
-          color="#074A86"
-        />
-      </td>
+      <td>{checkboxElement}</td>
       <td>
         <MemberAvatar
           firstName={firstName}

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
+import styled from 'styled-components';
 import { H3 } from './SubscriptionsView.Styled';
 
 export const MembersTableContainer = styled.div`
