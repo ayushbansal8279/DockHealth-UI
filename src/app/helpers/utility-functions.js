@@ -2,6 +2,7 @@ import curry from 'ramda/es/curry';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
 import linkifyString from 'linkifyjs/string';
+import Swal from 'sweetalert2';
 
 export const noop = () => {};
 
@@ -95,3 +96,23 @@ export const mentionifyAndLinkifyTaskText = ({ members, value }) =>
 
 export const formatPhoneNumber = (phoneNumber = '') =>
   phoneNumber ? phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') : '';
+
+export const showToast = ({
+  status: icon,
+  text = '',
+  title,
+  ...otherOptions
+}) => {
+  Swal.fire({
+    icon,
+    title,
+    text,
+    toast: true,
+    position: 'top-end',
+    timer: 3000,
+    timerProgressBar: true,
+    ...otherOptions,
+  });
+  // fix z-index for drawer container
+  Swal.getContainer().style.zIndex = 10000;
+};

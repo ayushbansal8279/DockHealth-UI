@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
+import { hashHistory } from 'react-router';
 
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import useBoolean from '../../../hooks/useBoolean';
@@ -16,6 +17,10 @@ import {
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
+
+const goToBaaSigning = () => {
+  hashHistory.push('/onboarding/baa-signing');
+};
 
 const OnboardingBaaOverviewView = () => {
   const dispatch = useDispatch();
@@ -72,7 +77,10 @@ const OnboardingBaaOverviewView = () => {
             <OnboardingH2>No</OnboardingH2>
           </OnboardingButton>
           <OnboardingHorizontalSpacing3 />
-          <OnboardingButton variant="containedAutoWidth">
+          <OnboardingButton
+            onClick={goToBaaSigning}
+            variant="containedAutoWidth"
+          >
             <OnboardingH2>Yes</OnboardingH2>
           </OnboardingButton>
         </Grid>

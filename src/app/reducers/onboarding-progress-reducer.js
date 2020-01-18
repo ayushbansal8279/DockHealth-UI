@@ -1,3 +1,4 @@
+import clamp from 'ramda/es/clamp';
 import {
   SET_ONBOARDING_PROGRESS,
   SET_ONBOARDING_STEP,
@@ -12,7 +13,7 @@ const initialState = {
 };
 
 const calculateProgressFromCurrentStep = ({ currentStep, totalSteps }) =>
-  initialState.progress + (currentStep - 1) / totalSteps;
+  clamp(0, 1, initialState.progress + (currentStep - 1) / totalSteps);
 
 const reducer = (state = initialState, { type, ...payload }) => {
   // eslint-disable-next-line sonarjs/no-small-switch

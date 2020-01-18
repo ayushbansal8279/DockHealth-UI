@@ -38,7 +38,7 @@ const OnboardingEulaView = () => {
   const offsetHeight = eulaContainerReference.current?.offsetHeight;
 
   useEffect(() => {
-    if (!isEulaRead && scrollY > offsetHeight - scrollHeight) {
+    if (!isEulaRead && scrollY > scrollHeight - offsetHeight) {
       setEulaRead();
     }
   }, [isEulaRead, offsetHeight, scrollHeight, scrollY, setEulaRead]);

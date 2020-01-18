@@ -71,7 +71,9 @@ const UserProfileView = ({
   renderAvatarUploader = true,
   saveButtonProps = {},
   showSignInLabel = false,
+  showPrivacyPolicyLink = true,
   validationSchema,
+  CustomFooter = undefined,
 }) => {
   const formMethods = useForm({
     defaultValues,
@@ -95,7 +97,7 @@ const UserProfileView = ({
         onSubmit={handleSubmit(isSubmitting ? noop : onSubmit)}
       >
         <Grid container justify="center">
-          <UserProfileViewGrid item sm={12} md={6} container>
+          <UserProfileViewGrid item sm={12} container>
             {renderAvatarUploader && (
               <UserAvatarGrid
                 alignItems="center"
@@ -119,24 +121,30 @@ const UserProfileView = ({
                 </List>
               </Grid>
             )}
-            <Grid item container xs={12} justify="flex-end">
-              <Grid item sm={12} md={6}>
-                <SubmitButton disabled={isSubmitting} {...otherSaveButtonProps}>
-                  {isSubmitting ? (
-                    <CubesLoader size={24} color="#fff" />
-                  ) : (
-                    saveButtonLabel
-                  )}
-                </SubmitButton>
+            {CustomFooter ?? (
+              <Grid item container xs={12} justify="flex-end">
+                <Grid item sm={12} md={6}>
+                  <SubmitButton
+                    disabled={isSubmitting}
+                    {...otherSaveButtonProps}
+                  >
+                    {isSubmitting ? (
+                      <CubesLoader size={24} color="#fff" />
+                    ) : (
+                      saveButtonLabel
+                    )}
+                  </SubmitButton>
+                </Grid>
               </Grid>
-            </Grid>
+            )}
             <Grid item container xs={12} justify="flex-end">
-              {showSignInLabel ? (
+              {showSignInLabel && (
                 <>
                   <StyledLinkLabel>I already have an account.</StyledLinkLabel>
                   <StyledRouterLink to="/login">Sign in</StyledRouterLink>
                 </>
-              ) : (
+              )}
+              {!showSignInLabel && showPrivacyPolicyLink && (
                 <PlainLink
                   topPadded
                   href="https://www.dock.health/privacy"

@@ -1,12 +1,12 @@
 import Grid from '@material-ui/core/Grid';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useMount } from 'react-use';
-import { object, string } from 'yup';
 import { hashHistory } from 'react-router';
-
+import { useMount, useScroll } from 'react-use';
+import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import useBoolean from '../../../hooks/useBoolean';
 import PdfIcon from '../../../img/pdf-icon.svg';
 import {
   OnboardingButton,
@@ -20,6 +20,7 @@ import {
 } from '../OnboardingTemplate.Components';
 import BAA from './OnboardingBaaSigningView.Baa';
 import {
+  BaaAcceptingLabel,
   BaaContainer,
   LegalEntityExamplesLabel,
 } from './OnboardingBaaSigningView.Styled';
@@ -47,6 +48,19 @@ const OnboardingBaaSigningView = () => {
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 3 })(dispatch);
   });
+
+  const baaContainerReference = useRef(null);
+  const { y: scrollY } = useScroll(baaContainerReference);
+  const [isBaaRead, setBaaRead] = useBoolean(false);
+
+  const scrollHeight = baaContainerReference.current?.scrollHeight;
+  const offsetHeight = baaContainerReference.current?.offsetHeight;
+
+  useEffect(() => {
+    if (!isBaaRead && scrollY > scrollHeight - offsetHeight) {
+      setBaaRead();
+    }
+  }, [isBaaRead, offsetHeight, scrollHeight, scrollY, setBaaRead]);
 
   return (
     <form onSubmit={formMethods.handleSubmit(onSubmit())}>
@@ -94,7 +108,7 @@ const OnboardingBaaSigningView = () => {
           </OnboardingButton>
         </Grid>
         <OnboardingSpacing2 />
-        <BaaContainer>{BAA}</BaaContainer>
+        <BaaContainer ref={baaContainerReference}>{BAA}</BaaContainer>
         <OnboardingSpacing4 />
         <OnboardingInput
           label="Signature"
@@ -104,10 +118,18 @@ const OnboardingBaaSigningView = () => {
         />
         <OnboardingSpacing4 />
         <Grid container justify="flex-end">
-          <OnboardingButton type="submit" variant="containedAutoWidth">
+          <OnboardingButton
+            type="submit"
+            variant="containedAutoWidth"
+            disabled={!isBaaRead}
+          >
             <OnboardingH2>Agree & continue</OnboardingH2>
           </OnboardingButton>
         </Grid>
+        <BaaAcceptingLabel>
+          You must scroll to the bottom of the agreement in order to move
+          forward.
+        </BaaAcceptingLabel>
       </FormContext>
     </form>
   );

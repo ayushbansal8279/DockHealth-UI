@@ -24,8 +24,9 @@ const CheckboxContainer = styled.div`
     width: 30px;
 
     &:hover {
-      background-color: ${props => props.color};
+      background-color: ${props => (props.disabled ? '#fff' : props.color)};
       border: 1px solid #aab8c3;
+      ${props => props.disabled && 'cursor: not-allowed;'}
     }
 
     ${props =>

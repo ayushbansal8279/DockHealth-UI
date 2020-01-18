@@ -4,9 +4,9 @@ import InputBase from '@material-ui/core/InputBase';
 import InputLabel from '@material-ui/core/InputLabel';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
-import styled from 'styled-components';
-import MaskedInput from 'react-text-mask';
 import { useFormContext } from 'react-hook-form';
+import MaskedInput from 'react-text-mask';
+import styled from 'styled-components';
 
 export const OnboardingBackground = styled.div`
   background-color: #fff;

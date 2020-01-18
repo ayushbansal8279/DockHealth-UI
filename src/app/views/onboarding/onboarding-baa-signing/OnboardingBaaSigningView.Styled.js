@@ -13,3 +13,7 @@ export const BaaContainer = styled.pre`
   max-height: 25rem;
   padding: 1rem 2rem;
 `;
+
+export const BaaAcceptingLabel = styled(OnboardingH3)`
+  color: #ababb2;
+`;
