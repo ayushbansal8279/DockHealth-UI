@@ -1,9 +1,12 @@
+import pathEq from 'ramda/es/pathEq';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import Swal from 'sweetalert2';
-import pathEq from 'ramda/es/pathEq';
-
-import { changeUserRoleForOrg } from '../../../actions/people-actions';
+import {
+  cancelInviteToOrganization,
+  changeUserRoleForOrg,
+  resendInviteToOrganization,
+} from '../../../actions/people-actions';
+import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   MemberTypeLabelButton,
@@ -27,31 +30,21 @@ const renderUserTypesOptions = ({
         onClick={() => {
           changeUserRole({ userId, role })
             .then(() => {
-              Swal.fire({
-                icon: 'success',
-                position: 'top-right',
-                toast: true,
-                timer: 3000,
-                timerProgressBar: true,
+              showToast({
+                status: 'success',
                 title: `User's role changed successfully`,
               });
-
-              // fix z-index for drawer container
-              Swal.getContainer().style.zIndex = 10000;
 
               closePopover();
             })
             .catch(error => {
-              Swal.fire({
-                icon: 'error',
+              showAlert({
+                status: 'error',
                 title: 'Error',
                 text:
                   error.errorMessage ??
                   `User's role could not be changed, please try again later`,
               });
-
-              // fix z-index for drawer container
-              Swal.getContainer().style.zIndex = 10000;
 
               closePopover();
             });
@@ -62,9 +55,76 @@ const renderUserTypesOptions = ({
     ));
 };
 
+const renderInvitations = ({
+  email,
+  closePopover,
+  resendInvite,
+  cancelInvite,
+}) => {
+  return (
+    <>
+      <StyledListItem
+        button
+        onClick={() => {
+          resendInvite({ email })
+            .then(() => {
+              showToast({
+                status: 'success',
+                title: 'Invitation resent successfully',
+              });
+
+              closePopover();
+            })
+            .catch(error => {
+              showAlert({
+                status: 'error',
+                title: 'Error',
+                text:
+                  error.errorMessage ??
+                  'Invitation could not be resent, please try again later',
+              });
+
+              closePopover();
+            });
+        }}
+      >
+        <H4>Resend invitation</H4>
+      </StyledListItem>
+      <StyledListItem
+        button
+        onClick={() => {
+          cancelInvite({ email })
+            .then(() => {
+              showToast({
+                status: 'success',
+                title: 'Invitation cancelled successfully',
+              });
+
+              closePopover();
+            })
+            .catch(error => {
+              showAlert({
+                status: 'error',
+                title: 'Error',
+                text:
+                  error.errorMessage ??
+                  'Invitation could not be cancelled, please try again later',
+              });
+
+              closePopover();
+            });
+        }}
+      >
+        <H4>Cancel invitation</H4>
+      </StyledListItem>
+    </>
+  );
+};
+
 const MemberTypeLabel = ({
+  email,
   userId,
-  userType: { label, changeable },
+  userType: { label, changeable, invitationModifiable },
   userTypes,
 }) => {
   const labelReference = useRef(null);
@@ -78,16 +138,42 @@ const MemberTypeLabel = ({
     [dispatch],
   );
 
+  const resendInvite = useCallback(
+    ({ email: userEmail }) => resendInviteToOrganization(userEmail)(dispatch),
+    [dispatch],
+  );
+
+  const cancelInvite = useCallback(
+    ({ email: userEmail }) => cancelInviteToOrganization(userEmail)(dispatch),
+    [dispatch],
+  );
+
+  const renderOptionsMethod = (() => {
+    if (userId === Number(sessionStorage.userId)) {
+      return null;
+    }
+
+    if (changeable) {
+      return renderUserTypesOptions;
+    }
+
+    if (invitationModifiable) {
+      return renderInvitations;
+    }
+
+    return null;
+  })();
+
   return (
     <>
       <MemberTypeLabelButton
         ref={labelReference}
-        clickable={changeable}
-        onClick={changeable ? openPopover : undefined}
+        clickable={Boolean(renderOptionsMethod)}
+        onClick={renderOptionsMethod ? openPopover : undefined}
       >
         {label}
       </MemberTypeLabelButton>
-      {changeable && (
+      {renderOptionsMethod && (
         <StyledPopover
           anchorEl={labelReference.current}
           anchorOrigin={{
@@ -101,11 +187,14 @@ const MemberTypeLabel = ({
           onClose={closePopover}
           open={isPopoverOpen}
         >
-          {renderUserTypesOptions({
+          {renderOptionsMethod({
             userId,
             userTypes,
             closePopover,
             changeUserRole,
+            email,
+            resendInvite,
+            cancelInvite,
           })}
         </StyledPopover>
       )}

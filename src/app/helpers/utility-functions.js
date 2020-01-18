@@ -111,6 +111,23 @@ export const showToast = ({
     position: 'top-end',
     timer: 3000,
     timerProgressBar: true,
+    showConfirmButton: false,
+    ...otherOptions,
+  });
+  // fix z-index for drawer container
+  Swal.getContainer().style.zIndex = 10000;
+};
+
+export const showAlert = ({
+  status: icon,
+  text = '',
+  title,
+  ...otherOptions
+}) => {
+  Swal.fire({
+    icon,
+    title,
+    text,
     ...otherOptions,
   });
   // fix z-index for drawer container

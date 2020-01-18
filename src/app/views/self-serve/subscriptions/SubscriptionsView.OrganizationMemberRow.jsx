@@ -40,13 +40,10 @@ const USER_TYPES = new Proxy(
     },
     OWNER: {
       label: 'Owner',
-      selectable: false,
-      changeable: false,
     },
     DEFAULT: {
       label: 'Not set',
-      selectable: false,
-      changeable: true,
+      invitationModifiable: true,
     },
   },
   {
@@ -209,6 +206,7 @@ const OrganizationMemberRow = ({
       </td>
       <td>
         <MemberTypeLabel
+          email={email}
           userId={userId}
           userType={userType}
           userTypes={USER_TYPES}

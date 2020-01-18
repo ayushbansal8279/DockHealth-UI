@@ -6,7 +6,6 @@ import uniq from 'ramda/es/uniq';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useMount } from 'react-use';
-
 import {
   findAllUsersByOrganizationId,
   loading,
@@ -19,7 +18,7 @@ import {
 import OrganizationMemberRow, {
   EmptyOrganizationMemberRow,
 } from './SubscriptionsView.OrganizationMemberRow';
-import { H2, H3 } from './SubscriptionsView.Styled';
+import { H2 } from './SubscriptionsView.Styled';
 
 const renderOrganizationMemberRow = ({
   toggleSelectedUser,
@@ -98,11 +97,6 @@ const SubscriptionsViewMembersTable = ({
       ) : (
         <>
           <H2>Users</H2>
-          <H3>
-            There are {organizationMembers?.length ?? 0} users in your
-            organization. Invite and confirm the number of users you’d like to
-            purchase your subscription for users at anytime
-          </H3>
           <MemberTable isSmallScreen={isSmallScreen}>
             {!isSmallScreen && (
               <thead>
