@@ -103,7 +103,7 @@ const SubscriptionsViewMembersTable = ({
             organization. Invite and confirm the number of users you’d like to
             purchase your subscription for users at anytime
           </H3>
-          <MemberTable>
+          <MemberTable isSmallScreen={isSmallScreen}>
             {!isSmallScreen && (
               <thead>
                 <tr>

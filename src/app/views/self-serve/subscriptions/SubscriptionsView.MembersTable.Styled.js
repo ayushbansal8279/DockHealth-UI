@@ -48,9 +48,11 @@ export const MemberTable = styled.table`
         background: #fafafb;
       }
 
-      & tr td:nth-child(-n + 2) {
+      ${props =>
+        !props.isSmallScreen &&
+        `& tr td:nth-child(-n + 2) {
         text-align: center;
-      }
+      }`}
 
       & td {
         color: #303538;
