@@ -717,6 +717,8 @@ class TaskView extends Component {
       task.taskList ? task.taskList.listName : '',
     );
 
+    this.resetHeader();
+
     const tasklistProps = {
       tasks: this.search(tasks),
       completedTasks: this.search(tasks),
@@ -745,18 +747,44 @@ class TaskView extends Component {
     }
 
     if ((!isMultiList && tasklistCount <= 1) || isInbox) {
-      return (
-        <>
-          <TaskList {...tasklistProps} />
-          {completedTasks &&
-            completedTasks.length > 0 &&
-            this.renderCompleted({ listCompletedTasks: completedTasks })}
-        </>
-      );
+      return this.renderSingleTaskList({ tasklistProps, completedTasks });
     }
+    return this.renderMultipleTaskList({
+      listNames,
+      groupedTasks,
+      groupedInCompletedTasks,
+      groupedCompletedTasks,
+      currentPatientId,
+      storeAsCurrentTask,
+      tasklistProps,
+    });
+  };
 
+  renderSingleTaskList = ({ tasklistProps, completedTasks }) => {
+    return (
+      <>
+        <TaskList {...tasklistProps} />
+        {completedTasks &&
+          completedTasks.length > 0 &&
+          this.renderCompleted({ listCompletedTasks: completedTasks })}
+      </>
+    );
+  };
+
+  renderMultipleTaskList = ({
+    listNames,
+    groupedTasks,
+    groupedInCompletedTasks,
+    groupedCompletedTasks,
+    currentPatientId,
+    storeAsCurrentTask,
+    tasklistProps,
+  }) => {
     return listNames.map(groupedListName => {
-      const tasksCount = groupedTasks.get(groupedListName).length;
+      const tasksCount =
+        groupedInCompletedTasks && groupedInCompletedTasks.get(groupedListName)
+          ? groupedInCompletedTasks.get(groupedListName).length
+          : 0;
       const tasksCountContent = `${tasksCount} ${
         tasksCount === 1 ? 'task' : 'tasks'
       }`;
