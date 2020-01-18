@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import Grid from '@material-ui/core/Grid';
+import { H3 } from './SubscriptionsView.Styled';
 
 export const MembersTableContainer = styled.div`
   margin-top: 1rem;
@@ -60,4 +62,48 @@ export const MemberTable = styled.table`
       }
     }
   }
+`;
+
+export const HeaderCaptionGrid = styled(Grid)`
+  height: 2.25rem;
+  min-height: 2.25rem;
+`;
+
+export const SubscriptionStatusSwitchLabel = styled(H3)`
+  cursor: pointer;
+  margin-left: 1rem;
+  ${props => props.selected && 'font-weight: bold; text-decoration: underline;'}
+`;
+
+export const SwitcherContainer = styled.div`
+  align-items: center;
+  background-color: #f8f8f9;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  height: 3.75rem;
+  justify-content: space-between;
+  margin: 0 0.125rem 1rem;
+  padding-left: 1rem;
+  padding-right: 0;
+  width: 100%;
+`;
+
+export const SwitcherChevronContainer = styled.div`
+  align-items: center;
+  background-color: #dedee2;
+  border-radius: 0.25rem;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  margin-left: 1rem;
+  width: 2.5rem;
+`;
+
+export const SwitcherChevronImage = styled.img`
+  height: 1rem;
+  object-fit: contain;
+  width: 1rem;
+  transform: rotate(${props => (props.rotated ? 180 : 0)}deg);
+  transition: all 0.25s ease-out;
 `;

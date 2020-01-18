@@ -105,7 +105,7 @@ const MemberAvatar = ({
 export const EmptyOrganizationMemberRow = () => (
   <tr>
     <td colSpan={6}>
-      <Grid alignItems="center" justify="center">
+      <Grid container alignItems="center" justify="center">
         No members added
       </Grid>
     </td>
