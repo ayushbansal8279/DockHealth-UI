@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 
 import { getAllPatients } from '../../actions/patient-actions';
+import { getMembersByTaskListId } from '../../actions/tasklist-actions';
 import {
   storeAsCurrentTask as storeAsCurrentTaskAction,
   toggleTaskPriority,
@@ -12,7 +13,7 @@ import {
 import useBoolean from '../../hooks/useBoolean';
 import { taskValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
-export default ({ headsUpAreaRef, statusSelectData }) => {
+export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
   // STATE HOOKS
 
   const [
@@ -127,10 +128,12 @@ export default ({ headsUpAreaRef, statusSelectData }) => {
   // #endregion
 
   // #region EFFECTS
-
   useMount(() => {
     if (patients?.length === 0) {
       getAllPatients()(dispatch);
+    }
+    if (isMultiList && task?.taskList) {
+      getMembersByTaskListId(task?.taskList?.taskListId, 'ALL')(dispatch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   });

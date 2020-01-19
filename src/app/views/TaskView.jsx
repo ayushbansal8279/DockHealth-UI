@@ -1021,6 +1021,7 @@ class TaskView extends Component {
                       onMarkComplete={this.onMarkComplete}
                       isInbox={isInbox}
                       isSpecificPatient={isSpecificPatient}
+                      isMultiList={isMultiList}
                     />
                   )}
                 </div>
