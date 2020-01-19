@@ -238,7 +238,8 @@ class TaskView extends Component {
     const { taskList } = this.props;
 
     const taskListId = taskList?.taskListId;
-    const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
+    // const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
+    const localStorageKey = TASK_VIEW_STORAGE_PREFIX + taskListId;
 
     let taskListPreferences = {};
 
@@ -678,8 +679,8 @@ class TaskView extends Component {
 
   renderTasklists = () => {
     const {
-      tasks: incompleteTasks,
-      completedTasks,
+      tasks: allIncompleteTasks,
+      completedTasks: allCompletedTasks,
       markComplete,
       storeAsCurrentTask,
       markAsUnread,
@@ -692,6 +693,9 @@ class TaskView extends Component {
       listName,
     } = this.props;
     const { filterBy, slimView, taskDrawerOpen, taskTimeouts } = this.state;
+
+    const incompleteTasks = this.search(allIncompleteTasks);
+    const completedTasks = this.search(allCompletedTasks);
 
     const archivableTasks = completedTasks.filter(
       isTaskArchivable(currentUser),
@@ -720,8 +724,8 @@ class TaskView extends Component {
     this.resetHeader();
 
     const tasklistProps = {
-      tasks: this.search(tasks),
-      completedTasks: this.search(tasks),
+      tasks,
+      completedTasks: tasks,
       markComplete: (task, status) => {
         markComplete(task, status, 'INCOMPLETE', currentUser).then(
           this.onMarkComplete,
@@ -789,6 +793,11 @@ class TaskView extends Component {
         tasksCount === 1 ? 'task' : 'tasks'
       }`;
 
+      const incompleteTasksForList = groupedInCompletedTasks.get(
+        groupedListName,
+      );
+      const completedTasksForList = groupedCompletedTasks.get(groupedListName);
+
       const heading = (
         <div>
           <TaskListSectionHeading>
@@ -797,8 +806,6 @@ class TaskView extends Component {
           <TasklistCount>{tasksCountContent}</TasklistCount>
         </div>
       );
-
-      const completedTasksForList = groupedCompletedTasks.get(groupedListName);
 
       const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
         ?.taskListId;
@@ -812,10 +819,9 @@ class TaskView extends Component {
             heading={heading}
             key={groupedListName}
           >
-            <TaskList
-              listTasks={groupedInCompletedTasks.get(groupedListName)}
-              {...tasklistProps}
-            />
+            {incompleteTasksForList && incompleteTasksForList.length > 0 && (
+              <TaskList listTasks={incompleteTasksForList} {...tasklistProps} />
+            )}
             {completedTasksForList &&
               completedTasksForList.length > 0 &&
               this.renderCompleted({
