@@ -486,7 +486,11 @@ export function addTaskAttachment(taskId, fileData, additionalConfig = {}) {
       return response;
     })
     .catch(error => {
-      toggleAlert('Error in saving attachment. Please try again.', 'error');
+      if (error.response && error.response.status === 413) {
+        toggleAlert('File exceeded the allowed size of 100 MB', 'error');
+      } else {
+        toggleAlert('Error in saving attachment. Please try again.', 'error');
+      }
       throw error;
     });
 }
