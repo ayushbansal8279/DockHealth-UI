@@ -116,9 +116,10 @@ const renderCurrentTab = ({
         taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
           ?.metricValue ?? 0;
 
-      const innerLabelAnimated =
-        innerLabelReference.current?.scrollWidth >
-        innerLabelReference.current?.offsetWidth;
+      // const innerLabelAnimated =
+      //   innerLabelReference.current?.scrollWidth >
+      //   innerLabelReference.current?.offsetWidth;
+      const innerLabelAnimated = false;
 
       return (
         <HeadsUpSectionButton

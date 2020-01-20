@@ -103,8 +103,13 @@ export const HeadsUpSectionButtonLabel = styled.div`
   padding: 0 0.5rem;
   pointer-events: none;
   transition: all 0.25s ease-out;
-  white-space: nowrap;
+  white-space: normal;
   width: 100%;
+  text-align: center;
+  height: 32px;
+  margin-top: -10px;
+  align-items: flex-end;
+  line-height: 1.2;
 
   ${props => props.active && 'color: #303538;'}
 `;
@@ -125,10 +130,10 @@ const innerLabelAnimation = props => keyframes`
 `;
 
 export const HeadsUpSectionLabelInnerContainer = styled.div`
-  animation-delay: 0s;
-  animation-name: ${props => innerLabelAnimation(props)};
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  // animation-delay: 0s;
+  // animation-name: ${props => innerLabelAnimation(props)};
+  // animation-iteration-count: infinite;
+  // animation-timing-function: linear;
   display: flex;
   justify-content: center;
 
