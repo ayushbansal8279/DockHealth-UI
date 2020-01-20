@@ -2,7 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { H4 } from './SubscriptionsView.Styled';
+import { H4 } from '../subscriptions/SubscriptionsView.Styled';
 
 export const AnnualToggleContainer = styled(Grid)`
   && {
@@ -42,12 +42,11 @@ export const SubscriptionCardGrid = styled(Grid)`
   }
 `;
 
-export const FeatureListContainer = styled(Grid).attrs({
-  item: true,
-  xs: 3,
-})`
+export const FeatureListInnerContainer = styled.div`
   background-color: #011845;
   color: #fff;
+  flex: 1;
+  flex-basis: 100%;
 `;
 
 const FeatureHeaderElement = styled.div`

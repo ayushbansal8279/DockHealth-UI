@@ -60,7 +60,9 @@ const CurrentPlan = () => {
           justify="flex-end"
           alignItems="flex-end"
         >
-          <PlanColumnLink to="">Change plans</PlanColumnLink>
+          <PlanColumnLink to="/subscriptions-plans">
+            Change plans
+          </PlanColumnLink>
         </Grid>
       </Grid>
       {/* Divider */}
@@ -79,7 +81,7 @@ const CurrentPlan = () => {
           <H3ThinMarginless>charged on {NEXT_PAYMENT_DATE}</H3ThinMarginless>
         </Grid>
         <AlignedColumnLink>
-          <PlanColumnLink to="">View billings</PlanColumnLink>
+          <PlanColumnLink to="/billings">View billings</PlanColumnLink>
         </AlignedColumnLink>
       </Grid>
     </PlanContainer>

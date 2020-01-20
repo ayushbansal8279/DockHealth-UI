@@ -1,4 +1,4 @@
-import { CARD_TYPES } from './SubscriptionsView.PlanCard';
+import { CARD_TYPES } from './SubscriptionsPlansView.PlanCard';
 
 export const subscriptionPlanData = [
   {

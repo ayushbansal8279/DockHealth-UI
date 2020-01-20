@@ -1,26 +1,26 @@
+import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
-import { AnimatePresence } from 'framer-motion';
+import Hidden from '@material-ui/core/Hidden';
 import React from 'react';
-
 import FeatureListChevronIcon from '../../../img/feature-list-chevron.svg';
-import SubscriptionsViewPlanCard from './SubscriptionsView.PlanCard';
+import { H1, H2, H4 } from '../subscriptions/SubscriptionsView.Styled';
+import SubscriptionsViewPlanCard from './SubscriptionsPlansView.PlanCard';
 import {
   AnnualToggleContainer,
   AnnualToggleLabel,
   AnnualToggleSwitch,
   FeatureListChevronContainer,
-  FeatureListContainer,
   FeatureListContentHeader,
   FeatureListHeader,
+  FeatureListInnerContainer,
   FeatureRow,
   FeatureRowsContainer,
   SubscriptionCardGrid,
-} from './SubscriptionsView.PlanCardsContainer.Styled';
+} from './SubscriptionsPlansView.PlanCardsContainer.Styled';
 import {
   subscriptionFeatures,
   subscriptionPlanData,
-} from './SubscriptionsView.PlanData';
-import { H1, H2, H4, H4Animated } from './SubscriptionsView.Styled';
+} from './SubscriptionsPlansView.PlanData';
 
 const renderPlanCard = ({
   annualPayment,
@@ -45,20 +45,6 @@ const renderPlanCard = ({
   );
 };
 
-const animationProperties = ({ featureListExpanded, height }) => ({
-  variants: {
-    hidden: { height: 0, opacity: 0 },
-    visible: {
-      height,
-      opacity: 1,
-    },
-  },
-  animate: featureListExpanded ? 'visible' : 'hidden',
-  initial: 'hidden',
-  exit: 'hidden',
-  transition: { ease: 'easeInOut', duration: 0.25 },
-});
-
 const renderSubscriptionFeature = ({
   featureListExpanded,
   featureRowReferences,
@@ -81,19 +67,20 @@ const PlanCardsContainer = ({
   chosenPlan,
   toggleAnnualPayment,
 }) => {
-  const featureListHeight = featureRowReferences.reduce(
-    (accumulator, reference) =>
-      accumulator + reference.current?.offsetHeight ?? 0,
-    0,
-  );
-
   return (
-    <>
+    <Grid container>
       <Grid item md={9} sm={12}>
         <H1>Select the plan that’s right for you</H1>
         <H2>Get the features your team needs to succeed</H2>
       </Grid>
-      <Grid item md={3} sm={12} container justify="center" alignItems="center">
+      <Grid
+        item
+        md={3}
+        sm={12}
+        container
+        justify="flex-start"
+        alignItems="center"
+      >
         <Grid item md={12} sm={6} container justify="center">
           <H4>Save 25% by paying annually</H4>
           <AnnualToggleContainer
@@ -116,56 +103,41 @@ const PlanCardsContainer = ({
           </AnnualToggleContainer>
         </Grid>
       </Grid>
-      <SubscriptionCardGrid
-        item
-        xs={12}
-        container
-        direction="row"
-        wrap="nowrap"
-      >
-        <FeatureListContainer>
-          <FeatureListHeader>
-            <H2>Features</H2>
-          </FeatureListHeader>
-          <FeatureListContentHeader onClick={toggleFeatureListExpanded}>
-            <H4>
-              <span>{`${
-                featureListExpanded ? 'Hide' : 'Show'
-              } all features`}</span>
-              <FeatureListChevronContainer
-                alt="chevron icon"
-                src={FeatureListChevronIcon}
-                rotated={!featureListExpanded}
-              />
-            </H4>
-            <AnimatePresence>
-              {featureListExpanded && (
-                <H4Animated
-                  {...animationProperties({
-                    featureListExpanded,
-                    height: '0.875rem',
-                  })}
-                >
-                  iPhone App & Web
-                </H4Animated>
-              )}
-            </AnimatePresence>
-          </FeatureListContentHeader>
-          <FeatureRowsContainer
-            {...animationProperties({
-              featureListExpanded,
-              height: featureListHeight,
-            })}
-            open={featureListExpanded}
-          >
-            {subscriptionFeatures.map(
-              renderSubscriptionFeature({
-                featureListExpanded,
-                featureRowReferences,
-              }),
-            )}
-          </FeatureRowsContainer>
-        </FeatureListContainer>
+      <SubscriptionCardGrid item xs={12} container direction="row" spacing={8}>
+        <Hidden mdDown>
+          <Grid item xs={3} container direction="column">
+            <FeatureListInnerContainer>
+              <FeatureListHeader>
+                <H2>Features</H2>
+              </FeatureListHeader>
+              <FeatureListContentHeader onClick={toggleFeatureListExpanded}>
+                <H4>
+                  <span>{`${
+                    featureListExpanded ? 'Hide' : 'Show'
+                  } all features`}</span>
+                  <FeatureListChevronContainer
+                    alt="chevron icon"
+                    src={FeatureListChevronIcon}
+                    rotated={!featureListExpanded}
+                  />
+                </H4>
+                <Collapse in={featureListExpanded}>
+                  <H4>iPhone App & Web</H4>
+                </Collapse>
+              </FeatureListContentHeader>
+              <FeatureRowsContainer>
+                <Collapse in={featureListExpanded}>
+                  {subscriptionFeatures.map(
+                    renderSubscriptionFeature({
+                      featureListExpanded,
+                      featureRowReferences,
+                    }),
+                  )}
+                </Collapse>
+              </FeatureRowsContainer>
+            </FeatureListInnerContainer>
+          </Grid>
+        </Hidden>
         {subscriptionPlanData.map(
           renderPlanCard({
             annualPayment,
@@ -177,7 +149,7 @@ const PlanCardsContainer = ({
           }),
         )}
       </SubscriptionCardGrid>
-    </>
+    </Grid>
   );
 };
 
