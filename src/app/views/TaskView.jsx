@@ -750,7 +750,8 @@ class TaskView extends Component {
       return <InboxNoMessagesAvailable />;
     }
 
-    if ((!isMultiList && tasklistCount <= 1) || isInbox) {
+    console.log(`tasklist count: ${tasklistCount}`);
+    if (!isMultiList || isInbox) {
       return this.renderSingleTaskList({ tasklistProps, completedTasks });
     }
     return this.renderMultipleTaskList({
