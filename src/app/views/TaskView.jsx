@@ -939,7 +939,7 @@ class TaskView extends Component {
     const toolbarContainerVisible =
       (isInbox && (tasks.length > 0 || isFetching)) || !isInbox;
 
-    const showSortingStats = isMultiList !== true;
+    const showSortingStats = isMultiList !== true && isInbox !== true;
 
     return (
       <div
