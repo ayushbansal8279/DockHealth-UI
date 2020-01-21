@@ -8,7 +8,7 @@ exports.config = {
       // url: 'https://dockdev-v2.childrensaccelerator.com'
       // url: 'http://localhost:3000/',
       show: true,
-      windowSize: '1440x1000',
+      windowSize: '800x600',
       waitForNavigation: ['networkidle2', 'domcontentloaded'],
       waitForAction: 1000,
       chrome: {

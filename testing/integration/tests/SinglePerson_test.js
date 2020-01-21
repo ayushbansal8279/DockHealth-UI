@@ -29,3 +29,48 @@ Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPa
     I.wait(2);
     I.see('Gazoolgo');
 });
+
+Scenario('Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+    lgnPg.fullLogin(2);
+    tskLstPg.enterPeople();
+    peoplePage.disarmNavigationSidebar();
+    peoplePage.makeSearch('Big');
+    I.wait(2);
+    peoplePage.clickPerson(1);
+    I.wait(2);
+    singlePersonPage.clickArchivePerson();
+    I.wait();
+    pause();
+    I.see('This person will no longer have access to Dock Health.');
+});
+
+Scenario('Test the task filters.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+    lgnPg.fullLogin(1);
+    tskLstPg.enterPeople();
+    peoplePage.disarmNavigationSidebar();
+    peoplePage.makeSearch('Halfling');
+    I.wait(2);
+    peoplePage.clickPerson(1);
+    I.wait(2);
+    //TODO Wait until this feature works.
+    //TODO make sure this test tests the number of tasks in a list also.
+});
+
+Scenario('Test full view, slim view.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+    lgnPg.fullLogin(1);
+    tskLstPg.enterPeople();
+    peoplePage.disarmNavigationSidebar();
+    peoplePage.makeSearch('Halfling');
+    I.wait(2);
+    peoplePage.clickPerson(1);
+    I.wait(2);
+    I.see('MPAL-SU RECON');
+    I.see('This task has a lot of subtasks');
+    singlePersonPage.clickSlimView();
+    I.wait();
+    I.see('This task has a lot of subtasks');
+    I.dontSee('MPAL-SU RECON');
+    singlePersonPage.clickFullView();
+    I.wait();
+    I.see('MPAL-SU RECON');
+});
