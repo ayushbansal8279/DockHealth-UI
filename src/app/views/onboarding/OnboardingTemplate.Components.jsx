@@ -272,6 +272,10 @@ export const OnboardingButton = withStyles({
     padding: '0.5rem 1.5rem',
     transition: 'all 0.25s ease-out',
   },
+  small: {
+    height: '2.5rem',
+    padding: '0.5rem 0.75rem',
+  },
   contained: {
     backgroundColor: '#fdb42b',
     color: '#565b5f',
@@ -281,10 +285,17 @@ export const OnboardingButton = withStyles({
     backgroundColor: '#fdb42b',
     color: '#565b5f',
   },
+  containedInverted: {
+    backgroundColor: '#074A86',
+    color: '#fff',
+  },
   containedDisabled: {
     backgroundColor: '#c8c8ce',
   },
   containedAutoWidthDisabled: {
+    backgroundColor: '#c8c8ce',
+  },
+  containedInvertedDisabled: {
     backgroundColor: '#c8c8ce',
   },
   outlined: {
@@ -293,10 +304,9 @@ export const OnboardingButton = withStyles({
   outlinedLink: {
     color: '#0ca1c7',
   },
-})(({ classes, variant, disabled, ...props }) => {
-  const className = `${classes.root} ${classes[variant]} ${
-    disabled ? classes[`${variant}Disabled`] ?? '' : ''
-  }`.trim();
+})(({ classes, variant, size, disabled, ...props }) => {
+  const className = `${classes.root} ${classes[variant]} ${classes[size] ??
+    ''} ${disabled ? classes[`${variant}Disabled`] ?? '' : ''}`.trim();
 
   return <ButtonBase disabled={disabled} className={className} {...props} />;
 });

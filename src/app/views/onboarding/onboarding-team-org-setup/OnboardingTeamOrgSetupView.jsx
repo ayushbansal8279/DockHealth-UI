@@ -1,10 +1,11 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
-import { useMount } from 'react-use';
+import { useMount, useToggle } from 'react-use';
 
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 import InvitationPanel from '../../self-serve/subscriptions/SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from '../../self-serve/subscriptions/SubscriptionsView.MembersTable';
 import {
@@ -20,6 +21,37 @@ const goToProfile = () => {
   hashHistory.push('/onboarding/profile');
 };
 
+const InvitePeopleButton = () => {
+  const invitePeopleButtonReference = useRef(null);
+  const [isPopoverOpen, togglePopoverOpen] = useToggle(false);
+
+  const toggleInvitePopover = useCallback(
+    ({ newInvitePopoverState } = {}) => {
+      togglePopoverOpen(newInvitePopoverState ?? !isPopoverOpen);
+    },
+    [isPopoverOpen, togglePopoverOpen],
+  );
+
+  return (
+    <>
+      <OnboardingButton
+        variant="containedInverted"
+        size="small"
+        onClick={() => togglePopoverOpen(true)}
+      >
+        <div ref={invitePeopleButtonReference}>
+          + Add more users to my organization
+        </div>
+      </OnboardingButton>
+      <InvitePeoplePopover
+        open={isPopoverOpen}
+        toggleInvitePopover={toggleInvitePopover}
+        anchor={invitePeopleButtonReference.current}
+      />
+    </>
+  );
+};
+
 const OnboardingTeamOrgSetupView = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const dispatch = useDispatch();
@@ -32,6 +64,7 @@ const OnboardingTeamOrgSetupView = () => {
     <div>
       <Grid container justify="space-between">
         <OnboardingH1>Invite your team</OnboardingH1>
+        <InvitePeopleButton />
       </Grid>
       <SubscriptionsViewMembersTable
         selectedUsers={selectedUsers}
@@ -40,6 +73,7 @@ const OnboardingTeamOrgSetupView = () => {
         showSubscription={false}
         fetchAllUsers={false}
         showTableHeader={false}
+        HeaderAdornment={InvitePeopleButton}
       />
       <InvitationPanel />
       <OnboardingSpacing2 />

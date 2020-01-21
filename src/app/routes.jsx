@@ -93,10 +93,12 @@ export const Routes = ({ store }) => {
         const locationPicker = pick(['hash', 'pathname', 'query', 'search']);
 
         hook(
-          !equals(
-            locationPicker(event),
-            locationPicker(hashHistory.getCurrentLocation()),
-          ),
+          (event.action === 'PUSH' &&
+            !equals(
+              locationPicker(event),
+              locationPicker(hashHistory.getCurrentLocation()),
+            )) ||
+            event.action === 'POP',
         );
       },
     );

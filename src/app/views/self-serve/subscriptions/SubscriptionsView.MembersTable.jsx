@@ -12,22 +12,23 @@ import uniq from 'ramda/es/uniq';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useMount, useSetState } from 'react-use';
+
 import {
   findAllUsersByOrganizationId,
   loading,
 } from '../../../actions/people-actions';
 import CubesLoader from '../../../components/common/CubesLoader';
+import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
 import {
   MembersTableContainer,
   MemberTable,
 } from './SubscriptionsView.MembersTable.Styled';
-import OrganizationMemberRow, {
-  EmptyOrganizationMemberRow,
-} from './SubscriptionsView.OrganizationMemberRow';
 import SubscriptionStatusSwitcher, {
   USER_SUBSCRIPTION_STATUS,
 } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
-import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
+import OrganizationMemberRow, {
+  EmptyOrganizationMemberRow,
+} from './SubscriptionsView.OrganizationMemberRow';
 
 const renderOrganizationMemberRow = ({
   toggleSelectedUser,

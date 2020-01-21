@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import useForm from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import Swal from 'sweetalert2';
 
 import { invitePersonToOrganization } from '../actions/people-actions';
+import { showAlert, showToast } from '../helpers/utility-functions';
 import {
   InvitePeoplePopoverContainer,
   InvitePeoplePopoverSection,
@@ -31,29 +31,20 @@ const onSubmit = ({ closePopover, dispatch }) => ({
   })(dispatch)
     .then(() => {
       closePopover();
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
+      showToast({
+        status: 'success',
         title: 'Invitation sent successfully',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        toast: true,
       });
-      // fix z-index for drawer container
-      Swal.getContainer().style.zIndex = 10000;
     })
     .catch(error => {
       closePopover();
-      Swal.fire({
-        icon: 'error',
+      showAlert({
+        status: 'error',
         title: 'Error',
         text:
           error.errorMessage ??
           'Invitation could not be sent, please try again later',
       });
-      // fix z-index for drawer container
-      Swal.getContainer().style.zIndex = 10000;
     });
 };
 
@@ -157,6 +148,8 @@ const InvitePeoplePopover = ({ anchor, open, toggleInvitePopover }) => {
 
 InvitePeoplePopover.propTypes = {
   anchor: PropTypes.instanceOf(Element).isRequired,
+  open: PropTypes.bool.isRequired,
+  toggleInvitePopover: PropTypes.func.isRequired,
 };
 
 export default InvitePeoplePopover;
