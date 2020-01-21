@@ -41,7 +41,7 @@ const USER_TYPES = new Proxy(
       label: 'Owner',
     },
     DEFAULT: {
-      label: 'Not set',
+      label: 'Invited',
       invitationModifiable: true,
     },
   },

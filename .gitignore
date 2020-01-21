@@ -8,7 +8,9 @@ dist*.zip
 .DS_Store
 **/.DS_Store
 .vscode
+.tern-port
+.log
 
 /testing/integration/node_modules/
 /testing/integration/tests/output/
-/testing/integration/output/
+/testing/integration/output/.log

@@ -39,6 +39,7 @@ const OnboardingTeamOrgSetupView = () => {
         showJoined={false}
         showSubscription={false}
         fetchAllUsers={false}
+        showTableHeader={false}
       />
       <InvitationPanel />
       <OnboardingSpacing2 />

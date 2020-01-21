@@ -86,6 +86,7 @@ const SubscriptionsViewMembersTable = ({
   showJoined = true,
   showSubscription = true,
   fetchAllUsers = true,
+  showTableHeader = true,
 }) => {
   const dispatch = useDispatch();
   const { isFetching, organizationMembers } = useSelector(store => ({
@@ -181,11 +182,13 @@ const SubscriptionsViewMembersTable = ({
         <CubesLoader size={40} />
       ) : (
         <>
-          <SubscriptionStatusSwitcher
-            isSmallScreen={isSmallScreen}
-            userSubscriptionStatus={userSubscriptionStatus}
-            setUserSubscriptionStatus={setUserSubscriptionStatus}
-          />
+          {showTableHeader && (
+            <SubscriptionStatusSwitcher
+              isSmallScreen={isSmallScreen}
+              userSubscriptionStatus={userSubscriptionStatus}
+              setUserSubscriptionStatus={setUserSubscriptionStatus}
+            />
+          )}
           <MemberTable isSmallScreen={isSmallScreen}>
             {!isSmallScreen && (
               <thead>

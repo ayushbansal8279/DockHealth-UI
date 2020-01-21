@@ -66,24 +66,26 @@ const OnboardingBaaOverviewView = () => {
         rights.
       </OnboardingH3>
       <OnboardingSpacing4 />
-      <OnboardingH3Bold>Are you an authorized signer?</OnboardingH3Bold>
-      <OnboardingSpacing4 />
       {!isInvitationFormShown && (
-        <Grid container>
-          <OnboardingButton
-            onClick={showInvitationForm}
-            variant="containedAutoWidth"
-          >
-            <OnboardingH2>No</OnboardingH2>
-          </OnboardingButton>
-          <OnboardingHorizontalSpacing3 />
-          <OnboardingButton
-            onClick={goToBaaSigning}
-            variant="containedAutoWidth"
-          >
-            <OnboardingH2>Yes</OnboardingH2>
-          </OnboardingButton>
-        </Grid>
+        <>
+          <OnboardingH3Bold>Are you an authorized signer?</OnboardingH3Bold>
+          <OnboardingSpacing4 />
+          <Grid container>
+            <OnboardingButton
+              onClick={showInvitationForm}
+              variant="containedAutoWidth"
+            >
+              <OnboardingH2>No</OnboardingH2>
+            </OnboardingButton>
+            <OnboardingHorizontalSpacing3 />
+            <OnboardingButton
+              onClick={goToBaaSigning}
+              variant="containedAutoWidth"
+            >
+              <OnboardingH2>Yes</OnboardingH2>
+            </OnboardingButton>
+          </Grid>
+        </>
       )}
       {isInvitationFormShown && (
         <InvitationForm hideInvitationForm={hideInvitationForm} />
