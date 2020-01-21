@@ -237,6 +237,7 @@ export function saveTask(newTask) {
 export const moveTask = (task, taskList) => dispatch => {
   const updatedTask = {
     refiled: true,
+    ...shapeTask(task),
     taskList,
     taskListId: taskList.taskListId,
   };
