@@ -6,7 +6,7 @@ const firstTaskPatient = {css: `#appHome > main > div > div:nth-child(2) > div >
 
 const assignedToEmblem = {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2)'};
 
-Scenario('Make a task, attach it to a dummy list, and then search the dummy list', async (I, inboxPg, tskLstPg, tasksPg) => {
+Scenario('Make a task, attach it to a dummy list, and then search the dummy list. self cleaning.', async (I, inboxPg, tskLstPg, tasksPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   //pause();
@@ -30,7 +30,7 @@ Scenario('Make a task, attach it to a dummy list, and then search the dummy list
 
 
 
-Scenario('Make a task, assign it to yourself, unassign it. SELF CLEAN', (I, inboxPg, tskLstPg) => {
+Scenario('Make a task, assign it to yourself, unassign it. self cleaning', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   //pause();
@@ -55,7 +55,7 @@ Scenario('Make a task, assign it to yourself, unassign it. SELF CLEAN', (I, inbo
   inboxPg.deleteTask();
 });
 
-Scenario('Make a task, assign it to a patient, make sure the initials stay.', (I, inboxPg, tskLstPg) => {
+Scenario('Make a task, assign it to a patient, make sure the initials stay. self cleaning', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();
@@ -111,7 +111,7 @@ Scenario('Search a task', (I, inboxPg, tskLstPg) => {
 });
 
 //This test needs to be calibrated every month or so. Change the due date.
-Scenario('Make a task, add a due date, make sure its OVERDUE.', (I, inboxPg, tskLstPg) => {
+Scenario('Make a task, add a due date, make sure its OVERDUE. self cleaning', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();
