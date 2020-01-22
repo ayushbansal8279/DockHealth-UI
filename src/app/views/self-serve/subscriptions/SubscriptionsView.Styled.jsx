@@ -108,6 +108,7 @@ export const StyledButton = withStyles({
     height: '2.5rem',
     marginLeft: '0.5rem',
     padding: '0 1.5rem',
+    transition: 'all 0.25s ease-out',
   },
   text: {
     color: '#000',
@@ -116,13 +117,19 @@ export const StyledButton = withStyles({
     backgroundColor: '#fdb42b',
     color: '#565b5f',
   },
-})(({ classes, variant, ...props }) => {
-  const variantClassName = classes[variant] || '';
+  containedDisabled: {
+    backgroundColor: '#ababb2',
+  },
+})(({ classes, variant, disabled, ...props }) => {
   const rootClassName = classes.root || '';
+  const variantClassName = classes[variant] || '';
+  const variantDisabledClassName = disabled
+    ? `${classes[`${variant}Disabled`] ?? ''}`
+    : '';
 
-  const className = `${rootClassName} ${variantClassName}`.trim();
+  const className = `${rootClassName} ${variantClassName} ${variantDisabledClassName}`.trim();
 
-  return <ButtonBase className={className} {...props} />;
+  return <ButtonBase className={className} disabled={disabled} {...props} />;
 });
 
 export const PriceLabel = styled.span`

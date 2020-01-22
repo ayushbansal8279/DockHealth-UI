@@ -36,3 +36,10 @@ export const PlanColumnLink = styled(Link)`
     filter: brightness(1.35);
   }
 `;
+
+export const CurrentPlanDivider = styled.div`
+  background-color: #c8c8ce;
+  height: 0.0625rem;
+  margin: 1.25rem 0;
+  width: 100%;
+`;

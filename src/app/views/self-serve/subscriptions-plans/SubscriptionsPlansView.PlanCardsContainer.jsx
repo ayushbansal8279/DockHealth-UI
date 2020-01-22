@@ -29,14 +29,17 @@ const renderPlanCard = ({
   featureListExpanded,
   featureRowReferences,
 }) => ({ key, ...props }) => {
-  const chosen = chosenPlan === key;
+  const chosen = chosenPlan?.key === key;
+  const newChosenPlan = subscriptionPlanData.find(
+    ({ key: planKey }) => key === planKey,
+  );
 
   return (
     <SubscriptionsViewPlanCard
       key={key}
       annualPayment={annualPayment}
       chosen={chosen}
-      onClick={() => setChosenPlan(key)}
+      onClick={() => setChosenPlan(newChosenPlan)}
       featureListExpanded={featureListExpanded}
       featureRowReferences={featureRowReferences}
       subscriptionFeatures={subscriptionFeatures}

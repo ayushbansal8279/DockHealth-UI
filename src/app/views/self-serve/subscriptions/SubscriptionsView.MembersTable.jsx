@@ -1,23 +1,9 @@
 import { func } from 'prop-types';
-import equals from 'ramda/es/equals';
-import filter from 'ramda/es/filter';
-import find from 'ramda/es/find';
-import includes from 'ramda/es/includes';
-import isEmpty from 'ramda/es/isEmpty';
-import isNil from 'ramda/es/isNil';
-import pick from 'ramda/es/pick';
-import propSatisfies from 'ramda/es/propSatisfies';
-import reject from 'ramda/es/reject';
-import uniq from 'ramda/es/uniq';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createBreakpoint, useMount, useSetState } from 'react-use';
+import { filter, includes, isEmpty, reject } from 'ramda';
+import React from 'react';
 
-import {
-  findAllUsersByOrganizationId,
-  loading,
-} from '../../../actions/people-actions';
 import CubesLoader from '../../../components/common/CubesLoader';
+import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
 import {
   MembersTableContainer,
@@ -57,8 +43,6 @@ const renderOrganizationMemberRow = ({
   );
 };
 
-const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
-
 const getFilteredOrganizationMembers = ({
   organizationMembers,
   selectedUsers,
@@ -89,86 +73,23 @@ const SubscriptionsViewMembersTable = ({
   fetchAllUsers = true,
   showTableHeader = true,
 }) => {
-  const dispatch = useDispatch();
-  const { isFetching, organizationMembers } = useSelector(store => ({
-    isFetching: store.peopleState.isFetching,
-    organizationMembers: store.peopleState.peoplelist,
-  }));
-  const [userSubscriptionStatus, setUserSubscriptionStatus] = useState(
-    USER_SUBSCRIPTION_STATUS.ALL,
-  );
-  const currentBreakPoint = useBreakpoint();
-  const [removeDialogState, setRemoveDialogState] = useSetState({
-    open: false,
-    userId: null,
-    email: null,
-    orgUserRole: null,
+  const {
+    currentBreakPoint,
+    organizationMembers,
+    userSubscriptionStatus,
+    isFetching,
+    setUserSubscriptionStatus,
+    toggleSelectedUser,
+    isUserSelected,
+    closeDialog,
+    removeDialogState,
+    openDialog,
+    setRemovedUserData,
+  } = initializeMembersTableHooks({
+    setSelectedUsers,
+    selectedUsers,
+    fetchAllUsers,
   });
-
-  const openDialog = useCallback(() => {
-    setRemoveDialogState({
-      open: true,
-    });
-  }, [setRemoveDialogState]);
-
-  const closeDialog = useCallback(() => {
-    setRemoveDialogState({
-      open: false,
-    });
-  }, [setRemoveDialogState]);
-
-  const setRemovedUserData = useCallback(
-    ({ userId, email, orgUserRole }) => {
-      setRemoveDialogState({
-        userId,
-        email,
-        orgUserRole,
-      });
-    },
-    [setRemoveDialogState],
-  );
-
-  useMount(() => {
-    if (fetchAllUsers) {
-      loading()(dispatch);
-      findAllUsersByOrganizationId()(dispatch);
-    }
-  });
-
-  useEffect(() => {
-    const memberUsersProperties = organizationMembers.map(
-      pick(['userId', 'email']),
-    );
-
-    const existingUsersProperties = reject(
-      propSatisfies(isNil, 'userId'),
-      memberUsersProperties,
-    );
-
-    setSelectedUsers(existingUsersProperties);
-  }, [organizationMembers, setSelectedUsers]);
-
-  const toggleSelectedUser = useCallback(
-    toggledUser => event => {
-      const { checked } = event.target;
-
-      if (checked) {
-        setSelectedUsers(uniq([...selectedUsers, toggledUser]));
-      } else {
-        setSelectedUsers(
-          selectedUsers.filter(
-            selectedUser => !equals(selectedUser, toggledUser),
-          ),
-        );
-      }
-    },
-    [selectedUsers, setSelectedUsers],
-  );
-
-  const isUserSelected = useCallback(
-    selectedUser => find(equals(selectedUser), selectedUsers),
-    [selectedUsers],
-  );
 
   const isSmallScreen = currentBreakPoint === 'sm';
   const fileteredOrganizationMembers = getFilteredOrganizationMembers({

@@ -4,6 +4,7 @@ import memoizeWith from 'ramda/es/memoizeWith';
 import React from 'react';
 import { useAsync } from 'react-use';
 import styled from 'styled-components';
+
 import { getUserAvatar } from '../../../api/people-api';
 import Avatar from '../../../components/common/Avatar';
 import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
@@ -11,6 +12,7 @@ import CubesLoader from '../../../components/common/CubesLoader';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import { noop } from '../../../helpers/utility-functions';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
+import { getSubscriptionPlanName } from './SubscriptionsView.Utilities';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -118,6 +120,8 @@ const OrganizationMemberRow = ({
   orgUserRole,
   profileThumbnailPictureHash,
   userId,
+  registrationDate,
+  subscription,
   isUserSelected,
   toggleSelectedUser,
   isSmallScreen,
@@ -142,6 +146,13 @@ const OrganizationMemberRow = ({
       color="#074A86"
     />
   );
+
+  const registrationMoment = moment(registrationDate);
+  const formattedRegistrationDate = registrationMoment.isValid()
+    ? registrationMoment.format('LL')
+    : '';
+
+  const subscriptionPlanName = getSubscriptionPlanName({ subscription });
 
   if (isSmallScreen) {
     return (
@@ -173,7 +184,7 @@ const OrganizationMemberRow = ({
                   userType={userType}
                   userTypes={USER_TYPES}
                 />
-                {showJoined && <div>Joined {moment().format('LL')}</div>}
+                {showJoined && <div>Joined {formattedRegistrationDate}</div>}
               </Grid>
               {showSubscription && (
                 <Grid
@@ -183,7 +194,7 @@ const OrganizationMemberRow = ({
                   alignItems="flex-end"
                   justify="flex-end"
                 >
-                  <div>$19 / month</div>
+                  <div>{subscriptionPlanName}</div>
                 </Grid>
               )}
             </Grid>
@@ -218,8 +229,8 @@ const OrganizationMemberRow = ({
           userTypes={USER_TYPES}
         />
       </td>
-      {showJoined && <td>{moment().format('LL')}</td>}
-      {showSubscription && <td>$19 / month</td>}
+      {showJoined && <td>{formattedRegistrationDate}</td>}
+      {showSubscription && <td>{subscriptionPlanName}</td>}
     </tr>
   );
 };

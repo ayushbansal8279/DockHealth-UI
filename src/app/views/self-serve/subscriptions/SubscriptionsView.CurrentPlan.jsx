@@ -2,7 +2,9 @@ import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import React from 'react';
 
+import CubesLoader from '../../../components/common/CubesLoader';
 import {
+  CurrentPlanDivider,
   PlanColumnLink,
   PlanContainer,
   PlanNameLabel,
@@ -14,11 +16,6 @@ import {
   H3ThinMarginless,
   PriceLabel,
 } from './SubscriptionsView.Styled';
-
-const PLAN_NAME = 'Standard';
-const PLAN_MONTHLY_PRICE = 19;
-const PLAN_TOTAL_PRICE = 57;
-const NEXT_PAYMENT_DATE = '01/01/2020';
 
 const AlignedColumnLink = ({ children }) => (
   <>
@@ -35,56 +32,87 @@ const AlignedColumnLink = ({ children }) => (
   </>
 );
 
-const CurrentPlan = () => {
+const AsyncElement = ({ ErrorElement = null, error, children, fetching }) => {
+  if (fetching) {
+    return <CubesLoader size={48} />;
+  }
+
+  if (error) {
+    return <ErrorElement />;
+  }
+
+  return children;
+};
+
+const CurrentPlan = ({
+  organizationRequestError,
+  isOrganizationFetching,
+  subscriptionPlanData,
+}) => {
+  const {
+    planName,
+    planPricePerUser,
+    planSubscriptionPeriod,
+    planTotalPayment,
+    planNextPaymentDate,
+  } = subscriptionPlanData || {};
+
   return (
-    <PlanContainer>
-      {/* First row */}
-      <Grid container>
-        <Grid item sm={12} md={2}>
-          <PlanNameLabel>{PLAN_NAME}</PlanNameLabel>
+    <AsyncElement
+      error={organizationRequestError}
+      fetching={isOrganizationFetching}
+    >
+      <PlanContainer>
+        <Grid container spacing={16}>
+          <Grid item sm={12} md={3} container justify="flex-end">
+            <PlanNameLabel>{planName}</PlanNameLabel>
+          </Grid>
+          <Grid item sm={9} md={7}>
+            <div>
+              <BigPriceLabel>{planPricePerUser}</BigPriceLabel>
+              <PriceLabel>/user</PriceLabel>
+            </div>
+            <div>
+              <H3ThinMarginless>{planSubscriptionPeriod}</H3ThinMarginless>
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={3}
+            md={2}
+            container
+            justify="flex-end"
+            alignItems="flex-end"
+          >
+            <PlanColumnLink to="/subscriptions-plans">
+              Change plans
+            </PlanColumnLink>
+          </Grid>
         </Grid>
-        <Grid item sm={9} md={8}>
-          <div>
-            <BigPriceLabel>{PLAN_MONTHLY_PRICE}</BigPriceLabel>
-            <PriceLabel>/user</PriceLabel>
-          </div>
-          <div>
-            <H3ThinMarginless>Monthly subscription</H3ThinMarginless>
-          </div>
+        <CurrentPlanDivider />
+        <Grid container spacing={16}>
+          <Grid item sm={12} md={3} container justify="flex-end">
+            <H1Bold>{planTotalPayment}</H1Bold>
+          </Grid>
+          <Grid
+            item
+            sm={9}
+            md={7}
+            container
+            direction="column"
+            justify="center"
+          >
+            <H3Marginless>Your next payment</H3Marginless>
+            <H3ThinMarginless>
+              charged on {planNextPaymentDate}
+            </H3ThinMarginless>
+          </Grid>
+          <AlignedColumnLink>
+            <PlanColumnLink to="/billings">View billings</PlanColumnLink>
+          </AlignedColumnLink>
         </Grid>
-        <Grid
-          item
-          sm={3}
-          md={2}
-          container
-          justify="flex-end"
-          alignItems="flex-end"
-        >
-          <PlanColumnLink to="/subscriptions-plans">
-            Change plans
-          </PlanColumnLink>
-        </Grid>
-      </Grid>
-      {/* Divider */}
-      <Grid container>
-        <Grid item xs={12}>
-          <hr />
-        </Grid>
-      </Grid>
-      {/* Second row */}
-      <Grid container>
-        <Grid item sm={12} md={2}>
-          <H1Bold>{PLAN_TOTAL_PRICE}</H1Bold>
-        </Grid>
-        <Grid item sm={9} md={8} container direction="column" justify="center">
-          <H3Marginless>Your next payment</H3Marginless>
-          <H3ThinMarginless>charged on {NEXT_PAYMENT_DATE}</H3ThinMarginless>
-        </Grid>
-        <AlignedColumnLink>
-          <PlanColumnLink to="/billings">View billings</PlanColumnLink>
-        </AlignedColumnLink>
-      </Grid>
-    </PlanContainer>
+      </PlanContainer>
+    </AsyncElement>
   );
 };
 

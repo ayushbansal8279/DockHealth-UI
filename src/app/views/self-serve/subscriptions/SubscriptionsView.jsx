@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
+
 import { setHeader } from '../../../actions/header-actions';
+import { getOrganizationById } from '../../../actions/organization-actions';
 import CurrentPlan from './SubscriptionsView.CurrentPlan';
 import InvitationPanel from './SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from './SubscriptionsView.MembersTable';
@@ -9,15 +11,24 @@ import {
   BillingContainer,
   BillingLabel,
   BillingPrice,
-  BottomButtonContainer,
-  StyledButton,
   SubscriptionsViewContainer,
   Title,
 } from './SubscriptionsView.Styled';
+import { getSubscriptionPlanData } from './SubscriptionsView.Utilities';
 
 export default () => {
   const dispatch = useDispatch();
   const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const {
+    organization,
+    organizationId,
+    isFetching: isOrganizationFetching,
+    requestError: organizationRequestError,
+  } = useSelector(store => ({
+    ...store.organizationState,
+    organizationId: store.userState?.userProfile?.organizationId,
+  }));
 
   useMount(() => {
     setHeader(dispatch)({
@@ -34,28 +45,31 @@ export default () => {
         },
       ],
     });
+
+    getOrganizationById({ organizationId })(dispatch);
+  });
+
+  const subscriptionPlanData = getSubscriptionPlanData({
+    organization,
+    selectedUsers,
   });
 
   return (
     <SubscriptionsViewContainer container>
-      <CurrentPlan />
+      <CurrentPlan
+        isOrganizationFetching={isOrganizationFetching}
+        organizationRequestError={organizationRequestError}
+        subscriptionPlanData={subscriptionPlanData}
+      />
       <SubscriptionsViewMembersTable
         selectedUsers={selectedUsers}
         setSelectedUsers={setSelectedUsers}
       />
       <InvitationPanel />
       <BillingContainer>
-        <BillingLabel>Billed monthly on first day of each month</BillingLabel>
-        <BillingPrice>$0</BillingPrice>
+        <BillingLabel>{subscriptionPlanData.planBillingPeriod}</BillingLabel>
+        <BillingPrice>{subscriptionPlanData.planTotalPayment}</BillingPrice>
       </BillingContainer>
-      <BottomButtonContainer container justify="flex-end">
-        <StyledButton type="button" variant="text">
-          Cancel
-        </StyledButton>
-        <StyledButton type="submit" variant="contained">
-          Buy this plan
-        </StyledButton>
-      </BottomButtonContainer>
     </SubscriptionsViewContainer>
   );
 };

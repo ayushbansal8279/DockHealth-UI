@@ -1,4 +1,3 @@
-import { Sortable } from '@shopify/draggable';
 import insert from 'ramda/es/insert';
 import pick from 'ramda/es/pick';
 import { useEffect, useRef, useState } from 'react';
@@ -8,7 +7,7 @@ import { sortSubtasks } from '../../actions/task-actions';
 import { onSubtaskOrderChanged } from '../../helpers/ga-event-helper';
 import useConfirmation from '../../hooks/useConfirmation';
 
-export default ({ props, DRAGGABLE_ITEM_CLASS }) => {
+export default ({ props }) => {
   const {
     task,
     isSubtask,
@@ -53,6 +52,10 @@ export default ({ props, DRAGGABLE_ITEM_CLASS }) => {
     sortSubtasks({ task, subtasks: newSubtasks }, dispatch);
   };
 
+  // temporarily disabled subtasks reordering
+  // due to subtask completing status issue
+
+  /**
   useEffect(() => {
     if (hasSubtasks) {
       const newSortable = new Sortable(sortableContainer.current, {
@@ -72,6 +75,7 @@ export default ({ props, DRAGGABLE_ITEM_CLASS }) => {
     sortable?.on('sortable:stop', onSortableStop);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortable]);
+  */
 
   const isSelfOrSubtaskActive =
     selectedTaskId === task.taskId ||
