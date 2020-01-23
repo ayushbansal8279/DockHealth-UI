@@ -16,6 +16,11 @@ module.exports = {
     
     searchBar:{css:'#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div > div > div > div > input'},
 
+
+    inboxNumOfTasks:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(2)'},
+
+
+
     //Editing Tasks
     editBarExitButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > button'},
 
@@ -27,7 +32,28 @@ module.exports = {
   
     editBarPersonShield: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(1)',
     //editBarUnassignedPerson: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div',
-   },
+  },
+
+  pickFilter(index, stupidbullshit){//0 Resets the filter. stupidbullshit is an unknown variable for now.
+    I.waitForElement(this.fields.filterShield, 3);
+    I.click(this.fields.filterShield);
+    I.wait();
+    if(index<1){
+      //Empty if blocks arent very ca$h money of me.
+    } else {
+      const path = {css: `body > div:nth-child(${stupidbullshit}) > div:nth-child(2) > ul > div:nth-child(${index})`};
+      I.waitForElement(path, 3);
+      I.click(path);
+      I.wait();
+    }
+  },
+
+  grabNumberOfTasks(){
+    I.waitForElement(this.fields.inboxNumOfTasks, 4);
+    var numba = I.grabTextFrom(this.fields.inboxNumOfTasks);
+    return parseInt(numba);
+  },
+  //NEW MEMES
 
   clickArchivePerson(){
     I.waitForElement(this.fields.archiveThisPersonButton, 4);

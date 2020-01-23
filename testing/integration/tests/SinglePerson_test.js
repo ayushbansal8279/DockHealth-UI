@@ -38,6 +38,8 @@ Scenario('Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPag
     I.wait(2);
     peoplePage.clickPerson(1);
     I.wait(2);
+
+
     singlePersonPage.clickArchivePerson();
     I.wait();
     pause();
@@ -49,9 +51,19 @@ Scenario('Test the task filters.', (I, lgnPg, tskLstPg, peoplePage, singlePerson
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
     peoplePage.makeSearch('Halfling');
-    I.wait(2);
+    I.wait();
     peoplePage.clickPerson(1);
     I.wait(2);
+    //TODO This crap.
+    const targetNumber = parseInt(await ptntsPg.grabNumberOfPatients());
+    singlePersonPage.pickFilter(3, 7);
+    I.wait();
+    I.see('This IS a flagged task.');
+    I.dontSee('This is not a flagged task');
+    I.wait(2);
+    const nmbr = parseInt(await ptntsPg.grabNumberOfPatients());
+    I.wait();
+    assert(nmbr>=targetNumber, `Failed! # of flagged tasks: ${nmbr} should be less than the # of ALL tasks: ${targetNumber}`);
     //TODO Wait until this feature works.
     //TODO make sure this test tests the number of tasks in a list also.
 });
