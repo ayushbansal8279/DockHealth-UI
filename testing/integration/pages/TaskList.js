@@ -396,7 +396,7 @@ module.exports = {
   changeAssignedUserNoSidebar(taskIndex, filtered, userIndex){ //Selecting nonsidebar faces is messy.
     const faceBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(2) > button`}
     //const userChooser = {css: `body > div:nth-child(7) > div:nth-child(2) > div:nth-child(2) > button:nth-child(${userIndex})`}
-    const userChooser = {id: '-1'}
+    const userChooser = {id: '-1'};
     I.waitForElement(faceBox,2);
     I.click(faceBox);
     //pause();
@@ -407,8 +407,7 @@ module.exports = {
 
   exitTask(filtered) {
     const exitEditSidebar = {css: 
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div:nth-child(2) > form > div:nth-child(1)> div:nth-child(1) > div:nth-child(2)  > div:nth-child(3) > button`
-    }
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div:nth-child(2) > form > div:nth-child(1)> div:nth-child(1) > div:nth-child(2)  > div:nth-child(3) > button`};
     I.waitForElement(exitEditSidebar, 2);
     I.click(exitEditSidebar);
     I.wait(4);

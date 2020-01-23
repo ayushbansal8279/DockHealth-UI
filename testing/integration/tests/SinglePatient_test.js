@@ -28,17 +28,53 @@ Scenario('Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatientPa
     onePatientPage.exitPatientPage();
 });
 
-Scenario('Add a task to patient', (I, lgnPg, tskLstPg, ptntsPg, onePatientPage) => {
+Scenario('Add a task to patient Big Bubba, complete the task.', (I, lgnPg, tskLstPg, ptntsPg, inboxPg, onePatientPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
-    I.wait();
-    ptntsPg.makeSearch('-');
+    I.wait(2);
+    ptntsPg.makeSearch('Big');
+    I.wait(2);
     ptntsPg.openPatientPage(1);
-
+    I.wait(2);
+    //pause();
     onePatientPage.addPatientTask('This is a task I added on the patient page.');
-    I.wait(3);
-    onePatientPage.clickTaskCheckbox(1);
+    I.wait();
+    I.see('This is a task I added on the patient page.');
+    onePatientPage.enterInboxPage();
+    I.wait();
+    inboxPg.makeSearch('This is a task I added on the patient page.');
+    I.wait(2);
+    I.see('This is a task I added on the patient page.');
+    //pause();
+    inboxPg.clickTaskCheckbox(1);
+    I.wait();
+    inboxPg.clickPatientTab();
+    I.wait(5);
+    //pause();
+    ptntsPg.makeSearch('Big');
+    I.wait(2);
+    //pause();
+    ptntsPg.openPatientPage(1);
+    I.wait(2);
+    I.dontSee('This is a task I added on the patient page.');
+    onePatientPage.clickShowCompletedTasks();
+    I.wait(2);
+    I.see('This is a task I added on the patient page.');
+ 
+
+    // This stuff is useful.
+
+    // I.openNewTab('/');
+    // I.wait(10);
+    // lgnPg.Login(1);
+    // tskLstPg.enterInbox();
+    // inboxPg.makeSearch('This is a task I added on the patient page.');
+    // I.wait();
+    // I.see('This is a task I added on the patient page.');
+    // inboxPg.clickTaskCheckbox();
+    // I.wait();
+    // I.closeCurrentTab();
 });
 
 Scenario('Add a task to patient, from the inbox!', (I, lgnPg, tskLstPg, ptntsPg, inboxPg, onePatientPage) => {

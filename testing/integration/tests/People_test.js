@@ -1,5 +1,5 @@
 
-Feature('People list test');
+Feature('People list tests');
 
 Scenario('Try to invite a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(3);
@@ -18,7 +18,7 @@ Scenario('Invite a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
     peoplePage.clickAddPersonButton();
     I.wait(3);
     //pause();
-    peoplePage.fillInvite('Wild', 'William', 'george+a5@dock.health')
+    peoplePage.fillInvite('Gorgeous', 'Greg', 'george+a7@dock.health');
     peoplePage.sendInvite();
     //I.amOnPage('https://mail.google.com/mail/u/0/#inbox');
 
@@ -58,6 +58,7 @@ Scenario('Give Bart admin, then take it away.', (I, lgnPg, tskLstPg, peoplePage)
     I.wait(2);
     I.see('Admin');
     peoplePage.switchAdminStatus(1);
-    pause();
+    //pause();
+    //It's broke
     I.dontSee('Admin')
 });

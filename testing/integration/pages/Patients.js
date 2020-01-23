@@ -76,7 +76,7 @@ module.exports = {
 
   //Non patient creation features
   makeSearch(keyword){
-    I.waitForElement(this.fields.searchBar);
+    I.waitForElement(this.fields.searchBar, 4);
     I.fillField(this.fields.searchBar, keyword);
     I.wait(2);
   },

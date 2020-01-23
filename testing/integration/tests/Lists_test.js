@@ -2,7 +2,7 @@ Feature('Lists');
 
 const { I, lgnPg, tskLstPg, inboxPg, taskPg } = inject();
 
-Scenario('List create, edit and destroy', (I, lgnPg, tskLstPg) => {
+Scenario('List create, edit and destroy. self cleaning', (I, lgnPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   // pause();
   tskLstPg.openAddListDropdown();

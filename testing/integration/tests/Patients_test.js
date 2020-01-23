@@ -1,5 +1,5 @@
 
-Feature('The Patient Page');
+Feature('The list of all patients');
 var assert = require('assert');
 
 Scenario('Make a patient', (I, lgnPg, tskLstPg, ptntsPg) => {
@@ -24,7 +24,9 @@ Scenario('Edit a patient using the sidebar.', (I, lgnPg, tskLstPg, ptntsPg) => {
     //pause();
     ptntsPg.openEditPatientSidebar(1);
     //pause();
-    ptntsPg.refillPatient('blursedName', 'widdleName', 'grassName', '69', "12/12/1212", 'bongos', '0000000000', '0000000000', 'fleemail@florp.lol');
+    ptntsPg.refillPatient('blursedName', 'widdleName', 'grassName', '66', "12/12/1212", 'bongos', '0000000000', '0000000000', 'fleemail@florp.lol');
+    I.wait(2);
+    I.see('66');
 });
 
 Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
@@ -32,6 +34,8 @@ Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
     ptntsPg.makeSearch('blursedName');
+    //pause();
+    I.see('GrassName,');
     //ptntsPg.openEditPatientSidebar(1);
     //ptntsPg.refillPatient('-name', '-a', '', '9001', "12/12/1212", 'female', '0000000000', '0000000000', 'fleemail@florp.lol');
 });

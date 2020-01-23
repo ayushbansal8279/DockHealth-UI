@@ -37,16 +37,39 @@ module.exports = {
     addTaskButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(2) > form > div > div > input'},
     saveTaskButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(2) > form > div > div > div:nth-child(4) > button'},
 
+    //addTaskInboxButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
     addTaskInboxButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
     addTaskInboxSaveButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4) > button'},
 
     firstTaskCheckbox: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(1) > div'},
+
+    inboxAddress: { css: 'a[href="#/tasks/Inbox"]' },
+
+    showCompletedTasksButton: {css: '#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(3) > button'},
   },
   
   exitPatientPage(){
     I.waitForElement(this.fields.exitPatientPageButton, 2);
     I.click(this.fields.exitPatientPageButton);
     I.wait();
+  },
+
+  enterInboxPage(){
+    I.waitForElement(this.fields.inboxAddress, 3);
+    I.click(this.fields.inboxAddress);
+    I.wait(2);
+  },
+
+  enterPatientPage(){
+    I.waitForElement(this.fields.inboxAddress, 3);
+    I.click(this.fields.inboxAddress);
+    I.wait(2);
+  },
+
+  clickShowCompletedTasks(){
+    I.waitForElement(this.fields.showCompletedTasksButton, 4);
+    I.click(this.fields.showCompletedTasksButton);
+    I.wait(2);
   },
 
   //Patient editing methods
@@ -153,9 +176,9 @@ module.exports = {
   //Task methods
   addPatientTask(taskName){
     //pause();
-    I.waitForElement(this.fields.addTaskInboxButton, 4);
+    I.waitForElement(this.fields.addTaskInboxButton, 7);
     I.fillField(this.fields.addTaskInboxButton, taskName);
-    I.waitForElement(this.fields.addTaskInboxSaveButton, 2);
+    I.waitForElement(this.fields.addTaskInboxSaveButton, 7);
     I.click(this.fields.addTaskInboxSaveButton);
     I.wait();
   },
@@ -163,7 +186,7 @@ module.exports = {
   clickTaskCheckbox(taskNumber){
     const path = `#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(taskNumber*2)}) > div > div > div:nth-child(2) > div:nth-child(1) > div`;
     I.waitForElement({css: path}, 3);
-    I.click(path);
+    I.click({css: path});
     I.wait();
   },
 }

@@ -14,6 +14,7 @@ Scenario('Make a task, attach it to a dummy list, and then search the dummy list
   //pause();
   inboxPg.postNamedTask("Dummy Task");
   //pause();
+  I.wait();
   inboxPg.setFiledIn(1);
   I.wait();
   inboxPg.clickTaskListTab();
@@ -60,17 +61,12 @@ Scenario('Make a task, assign it to a patient, make sure the initials stay. self
   tskLstPg.enterInbox();
   I.wait();
   inboxPg.openAddTaskDropdown();
-  //pause();
+  I.wait();
   inboxPg.postNamedTask("This should have a patient attached");
-
-
   //These lines get the test to pass when assigning patients is broken.
-  // I.wait();
-  // inboxPg.assignUser(1);
-  // I.wait();
-
-
-
+  I.wait();
+  inboxPg.assignUser(2);
+  I.wait();
   //pause();
   inboxPg.assignPatient(2);
   inboxPg.exitMadeTask();
@@ -80,6 +76,7 @@ Scenario('Make a task, assign it to a patient, make sure the initials stay. self
   //pause();
   within(firstTaskPath, () =>{
     I.see('1234');
+    I.see('GH');
   });
   inboxPg.clickTask(1);
   I.wait();

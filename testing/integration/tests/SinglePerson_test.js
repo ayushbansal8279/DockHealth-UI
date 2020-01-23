@@ -7,13 +7,12 @@ Scenario('add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     peoplePage.disarmNavigationSidebar();
     peoplePage.makeSearch('George');
     I.wait(2);
-    peoplePage.clickPerson(1);
+    peoplePage.clickPerson(4);
     I.wait(3);
     singlePersonPage.addTask('lets build lego sets');
     I.wait(2);
     I.see('lets build lego sets');
 });
-
 
 //TODO The path required for clickTask(x) is always changing. Plus I need to find how to pick which list im choosing from.
 Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
@@ -22,7 +21,7 @@ Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPa
     peoplePage.disarmNavigationSidebar();
     peoplePage.makeSearch('George');
     I.wait(2);
-    peoplePage.clickPerson(1);
+    peoplePage.clickPerson(4);
     I.wait(2);
     singlePersonPage.clickTask(1);
     singlePersonPage.editTaskName("Gazoolgo");
@@ -42,11 +41,11 @@ Scenario('Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPag
 
     singlePersonPage.clickArchivePerson();
     I.wait();
-    pause();
     I.see('This person will no longer have access to Dock Health.');
 });
 
-Scenario('Test the task filters.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+
+Scenario('Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -55,18 +54,24 @@ Scenario('Test the task filters.', (I, lgnPg, tskLstPg, peoplePage, singlePerson
     peoplePage.clickPerson(1);
     I.wait(2);
     //TODO This crap.
-    const targetNumber = parseInt(await ptntsPg.grabNumberOfPatients());
-    singlePersonPage.pickFilter(3, 7);
+
+    const targetNumber = parseInt(await singlePersonPage.grabNumberOfTasks());
+    
     I.wait();
+    singlePersonPage.pickFilter(3, 11);
+    I.wait(3);
     I.see('This IS a flagged task.');
     I.dontSee('This is not a flagged task');
     I.wait(2);
-    const nmbr = parseInt(await ptntsPg.grabNumberOfPatients());
+
+    const nmbr = parseInt(await singlePersonPage.grabNumberOfTasks());
+
     I.wait();
     assert(nmbr>=targetNumber, `Failed! # of flagged tasks: ${nmbr} should be less than the # of ALL tasks: ${targetNumber}`);
     //TODO Wait until this feature works.
     //TODO make sure this test tests the number of tasks in a list also.
 });
+
 
 Scenario('Test full view, slim view.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);

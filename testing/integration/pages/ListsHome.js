@@ -40,7 +40,7 @@ module.exports = {
     I.waitForElement(listPathContextMenu, 4);
     I.click(listPathContextMenu);
     I.wait(1);
-    return listPathContextMenu
+    return listPathContextMenu;
   },
 
   openEditListDropdown(listIndex) {
@@ -62,7 +62,7 @@ module.exports = {
   },
 
   destroyList(listIndex) {
-    const listPathContextMenu = this.openListDropdown(listIndex)
+    const listPathContextMenu = this.openListDropdown(listIndex);
     within(listPathContextMenu, async () => {
       let popupId = await I.grabAttributeFrom({css: 'li:nth-child(2) > div '}, 'data-open');
       I.wait(1);

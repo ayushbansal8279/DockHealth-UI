@@ -34,15 +34,16 @@ module.exports = {
     //editBarUnassignedPerson: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div',
   },
 
-  pickFilter(index, stupidbullshit){//0 Resets the filter. stupidbullshit is an unknown variable for now.
+  pickFilter(index, stupidbullcrap){//0 Resets the filter. stupidbullcrap is an unknown variable for now.
     I.waitForElement(this.fields.filterShield, 3);
     I.click(this.fields.filterShield);
     I.wait();
     if(index<1){
+      console.log("Flameo Hotmin");
       //Empty if blocks arent very ca$h money of me.
     } else {
-      const path = {css: `body > div:nth-child(${stupidbullshit}) > div:nth-child(2) > ul > div:nth-child(${index})`};
-      I.waitForElement(path, 3);
+      const path = {css: `body > div:nth-child(${stupidbullcrap}) > div:nth-child(2) > ul > div:nth-child(${index})`};
+      I.waitForElement(path, 9);
       I.click(path);
       I.wait();
     }
@@ -111,7 +112,7 @@ module.exports = {
   },
 
   editTaskPatient(index){
-    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`}
+    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`};
     I.waitForElement(this.fields.editBarPatientInformation, 5);
     I.click(this.fields.editBarPatientInformation);
     I.waitForElement(path, 4);

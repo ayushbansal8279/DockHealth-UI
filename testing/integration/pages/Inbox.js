@@ -44,6 +44,8 @@ module.exports = {
 
     logoutBtn: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(9) > a'},
 
+    //patientShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div > div > span'},
+    //patientShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(2) > div > div > div > span'},
     patientShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div > div > span'},
     patientSelector: {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(1)`},//Change out the last div:nth-child number
 
@@ -64,6 +66,8 @@ module.exports = {
     
     filterShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > div > button:nth-child(2)'},
     filterOptionOne: {css: 'body > div.jss2100 > div:nth-child(2) > ul > div:nth-child(1)'},
+
+    firstTaskCheckbox:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(1) > div > span > svg'},
   },
 
   addDueDate(week, day) {
@@ -119,6 +123,13 @@ module.exports = {
   openAddTaskDropdown() {
     I.waitForElement(this.fields.addTskBtn, 14);
     I.click(this.fields.addTskBtn);
+    I.wait(2);
+  },
+
+  clickTaskCheckbox(index) {
+    const checkBoxLocator = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(${1+(2*index)}) > div > div > div:nth-child(2) > div:nth-child(1) > div > span > svg`};
+    I.waitForElement(checkBoxLocator, 4);
+    I.click(checkBoxLocator);
     I.wait(2);
   },
 

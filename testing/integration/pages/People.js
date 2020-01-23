@@ -12,12 +12,16 @@ module.exports = {
 
     searchBar: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(1) > div > div > div > div > input'},
 
-    numberOfPeopleText: {css: '#appHome > main > div > div:nth-child(1) > div > div > div > div > div > div > div:nth-child(1) > div:nth-child(2)'},
+    numberOfPeople: {css: '#appHome > main > div > div:nth-child(1) > div > div > div > div > div > div > div:nth-child(1) > div:nth-child(2)'},
 
     pathToFirstPersonsSidebarShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div:nth-child(4) > button'},
     
     changeAdminButton: {css: '#simple-menu > div:nth-child(2) > ul > li'},
     //XthPerson:{css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div:nth-child(${Xth}) > div > div:nth-child(2) > div > a`}
+  },
+  async grabNumberOfPeople(){
+    I.waitForElement(this.fields.numberOfPeople, 5);
+    return await I.grabTextFrom(this.fields.numberOfPeople);
   },
 
   disarmNavigationSidebar(){
