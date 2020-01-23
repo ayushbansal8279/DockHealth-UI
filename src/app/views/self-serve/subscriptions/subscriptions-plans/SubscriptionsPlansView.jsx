@@ -1,31 +1,28 @@
 import { times } from 'ramda';
 import React, { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useMount, useToggle } from 'react-use';
-
-import { setHeader } from '../../../actions/header-actions';
+import { useToggle } from 'react-use';
+import { selectSubscriptionPlan } from '../../../../api/organization-api';
 import {
   BottomButtonContainer,
   StyledButton,
-} from '../subscriptions/SubscriptionsView.Styled';
+} from '../SubscriptionsView.Styled';
 import PlanCardsContainer from './SubscriptionsPlansView.PlanCardsContainer';
 import { subscriptionFeatures } from './SubscriptionsPlansView.PlanData';
-import {
-  SubscriptionsPlansViewContainer,
-  Title,
-  H2,
-} from './SubscriptionsPlansView.Styled';
-import { selectSubscriptionPlan } from '../../../actions/organization-actions';
+import { H2 } from './SubscriptionsPlansView.Styled';
 
-const onSubscriptionPlanChosen = ({ chosenPlan, dispatch }) => () => {
+const onSubscriptionPlanChosen = ({ chosenPlan, organizationId }) => () => {
   const { planType } = chosenPlan || {};
 
   if (planType) {
-    selectSubscriptionPlan({ planType })(dispatch);
+    selectSubscriptionPlan({ organizationId, planType });
   }
 };
 
-const SubscriptionsPlansView = () => {
+const SubscriptionsPlansView = ({
+  organizationId,
+  hideSubscriptionPlans,
+  isCancelVisible,
+}) => {
   const [annualPayment, toggleAnnualPayment] = useToggle(true);
   const [featureListExpanded, toggleFeatureListExpanded] = useToggle(false);
   const [chosenPlan, setChosenPlan] = useState(null);
@@ -34,27 +31,9 @@ const SubscriptionsPlansView = () => {
     () => useRef(null),
     subscriptionFeatures.length,
   );
-  const dispatch = useDispatch();
-
-  useMount(() => {
-    setHeader(dispatch)({
-      backgroundColor: '#007cab',
-      layout: [
-        {
-          key: 'title',
-          component: (
-            <div>
-              <Title>Subscription & Users</Title>
-            </div>
-          ),
-          alignItems: 'center',
-        },
-      ],
-    });
-  });
 
   return (
-    <SubscriptionsPlansViewContainer>
+    <>
       <PlanCardsContainer
         toggleAnnualPayment={toggleAnnualPayment}
         toggleFeatureListExpanded={toggleFeatureListExpanded}
@@ -65,19 +44,24 @@ const SubscriptionsPlansView = () => {
         chosenPlan={chosenPlan}
       />
       <BottomButtonContainer container justify="flex-end">
+        {isCancelVisible && (
+          <StyledButton variant="outlined" onClick={hideSubscriptionPlans}>
+            <H2>Cancel</H2>
+          </StyledButton>
+        )}
         <StyledButton
           disabled={!chosenPlan}
           variant="contained"
           onClick={onSubscriptionPlanChosen({
             annualPayment,
             chosenPlan,
-            dispatch,
+            organizationId,
           })}
         >
           <H2>Buy this plan</H2>
         </StyledButton>
       </BottomButtonContainer>
-    </SubscriptionsPlansViewContainer>
+    </>
   );
 };
 

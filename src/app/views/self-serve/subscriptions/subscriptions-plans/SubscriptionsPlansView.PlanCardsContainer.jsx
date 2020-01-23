@@ -2,8 +2,8 @@ import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import React from 'react';
-import FeatureListChevronIcon from '../../../img/feature-list-chevron.svg';
-import { H1, H2, H4 } from '../subscriptions/SubscriptionsView.Styled';
+import FeatureListChevronIcon from '../../../../img/feature-list-chevron.svg';
+import { H1, H2, H4 } from '../SubscriptionsView.Styled';
 import SubscriptionsViewPlanCard from './SubscriptionsPlansView.PlanCard';
 import {
   AnnualToggleContainer,

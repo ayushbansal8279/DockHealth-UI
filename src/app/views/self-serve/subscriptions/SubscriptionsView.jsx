@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-
 import { setHeader } from '../../../actions/header-actions';
 import { getOrganizationById } from '../../../actions/organization-actions';
+import useBoolean from '../../../hooks/useBoolean';
 import CurrentPlan from './SubscriptionsView.CurrentPlan';
 import InvitationPanel from './SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from './SubscriptionsView.MembersTable';
@@ -15,10 +15,16 @@ import {
   Title,
 } from './SubscriptionsView.Styled';
 import { getSubscriptionPlanData } from './SubscriptionsView.Utilities';
+import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
 
 export default () => {
   const dispatch = useDispatch();
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [
+    subscriptionPlansVisible,
+    showSubscriptionPlans,
+    hideSubscriptionPlans,
+  ] = useBoolean(false);
 
   const {
     organization,
@@ -56,11 +62,20 @@ export default () => {
 
   return (
     <SubscriptionsViewContainer container>
-      <CurrentPlan
-        isOrganizationFetching={isOrganizationFetching}
-        organizationRequestError={organizationRequestError}
-        subscriptionPlanData={subscriptionPlanData}
-      />
+      {subscriptionPlansVisible || subscriptionPlanData.planIsTrial ? (
+        <SubscriptionsPlansView
+          hideSubscriptionPlans={hideSubscriptionPlans}
+          organizationId={organizationId}
+          isCancelVisible={!subscriptionPlanData.planIsTrial}
+        />
+      ) : (
+        <CurrentPlan
+          isOrganizationFetching={isOrganizationFetching}
+          organizationRequestError={organizationRequestError}
+          subscriptionPlanData={subscriptionPlanData}
+          showSubscriptionPlans={showSubscriptionPlans}
+        />
+      )}
       <SubscriptionsViewMembersTable
         selectedUsers={selectedUsers}
         setSelectedUsers={setSelectedUsers}

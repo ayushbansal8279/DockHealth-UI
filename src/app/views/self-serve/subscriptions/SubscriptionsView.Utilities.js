@@ -5,21 +5,30 @@ export const SUBSCRIPTION_PERIOD = {
   ANNUAL: 'ANNUAL',
 };
 
+export const SUBSCRIPTION_PLANS = {
+  PLAN_30_DAY_TRIAL: 'PLAN_30_DAY_TRIAL',
+  PLAN_60_DAY_TRIAL: 'PLAN_60_DAY_TRIAL',
+  PLAN_90_DAY_TRIAL: 'PLAN_90_DAY_TRIAL',
+  PLAN_STANDARD: 'PLAN_STANDARD',
+  PLAN_PREMIUM: 'PLAN_PREMIUM',
+  PLAN_ENTERPRISE: 'PLAN_ENTERPRISE',
+};
+
 export const getSubscriptionPlanName = ({ subscription }) => {
   const { subscriptionPlan } = subscription || {};
 
   switch (subscriptionPlan) {
-    case 'PLAN_30_DAY_TRIAL':
+    case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
       return 'Free 30 day trial';
-    case 'PLAN_60_DAY_TRIAL':
+    case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
       return 'Free 60 day trial';
-    case 'PLAN_90_DAY_TRIAL':
+    case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
       return 'Free 90 day trial';
-    case 'PLAN_STANDARD':
+    case SUBSCRIPTION_PLANS.PLAN_STANDARD:
       return 'Standard';
-    case 'PLAN_PREMIUM':
+    case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
       return 'Premium';
-    case 'PLAN_ENTERPRISE':
+    case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
       return 'Enterprise';
     default:
       return '';
@@ -31,14 +40,14 @@ export const getSubscriptionPlanPrice = ({ subscription }) => {
     subscription || {};
 
   switch (subscriptionPlan) {
-    case 'PLAN_30_DAY_TRIAL':
-    case 'PLAN_60_DAY_TRIAL':
-    case 'PLAN_90_DAY_TRIAL':
-    case 'PLAN_STANDARD':
+    case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
+    case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
+    case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
+    case SUBSCRIPTION_PLANS.PLAN_STANDARD:
       return subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY ? 19 : 171;
-    case 'PLAN_PREMIUM':
+    case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
       return subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY ? 24 : 216;
-    case 'PLAN_ENTERPRISE':
+    case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
       return subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY ? 30 : 270;
     default:
       return 0;
@@ -69,7 +78,54 @@ export const getSubscriptionPlanBillingPeriod = ({ subscription }) => {
   return `Billed ${subscriptionPeriodLabel} on first day of each ${billingPeriodLabel}`;
 };
 
+export const getSubscriptionIsTrial = ({ subscription }) => {
+  const { subscriptionPlan } = subscription || {};
+
+  return [
+    SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL,
+    SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL,
+    SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL,
+  ].includes(subscriptionPlan);
+};
+
+export const getSubscriptionNextPaymentLabel = ({ subscription }) => {
+  const planIsTrial = getSubscriptionIsTrial({ subscription });
+
+  return planIsTrial ? 'Your trial period' : 'Your next payment';
+};
+
 const currentMoment = moment();
+
+export const getSubscriptionNextPaymentDate = ({ subscription }) => {
+  const planIsTrial = getSubscriptionIsTrial({ subscription });
+
+  const {
+    createdDateTime,
+    subscriptionPeriod = SUBSCRIPTION_PERIOD.MONTHLY,
+    trialEndDate,
+  } = subscription || {};
+  const planIsMonthly = subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY;
+
+  let outputMoment = moment()
+    .set('month', currentMoment.month())
+    .set('year', currentMoment.year())
+    .add(1, planIsMonthly ? 'month' : 'year');
+
+  const momentFormat = planIsTrial ? '[ends on] L' : '[charged on] L';
+
+  if (trialEndDate && planIsTrial) {
+    outputMoment = moment(trialEndDate);
+  }
+
+  if (createdDateTime && !planIsTrial) {
+    outputMoment = moment(createdDateTime).add(
+      1,
+      planIsMonthly ? 'month' : 'year',
+    );
+  }
+
+  return outputMoment.format(momentFormat);
+};
 
 export const getSubscriptionPlanData = ({ organization, selectedUsers }) => {
   const { subscriptionDetails: subscription } = organization || {};
@@ -80,11 +136,11 @@ export const getSubscriptionPlanData = ({ organization, selectedUsers }) => {
     subscription,
   });
   const planBillingPeriod = getSubscriptionPlanBillingPeriod({ subscription });
-  const planNextPaymentDate = moment(subscription?.createdDateTime ?? undefined)
-    .set('month', currentMoment.month())
-    .set('year', currentMoment.year())
-    .add(1, 'month')
-    .format('L');
+  const planIsTrial = getSubscriptionIsTrial({ subscription });
+  const planNextPaymentLabel = getSubscriptionNextPaymentLabel({
+    subscription,
+  });
+  const planNextPaymentDate = getSubscriptionNextPaymentDate({ subscription });
 
   return {
     planName,
@@ -94,6 +150,8 @@ export const getSubscriptionPlanData = ({ organization, selectedUsers }) => {
     }),
     planSubscriptionPeriod,
     planBillingPeriod,
+    planNextPaymentLabel,
     planNextPaymentDate,
+    planIsTrial,
   };
 };

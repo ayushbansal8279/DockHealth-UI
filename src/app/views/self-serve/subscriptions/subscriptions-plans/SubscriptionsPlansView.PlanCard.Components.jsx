@@ -7,9 +7,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useMount, useWindowSize, useCss } from 'react-use';
 import styled from 'styled-components';
-import SafariFixGrid from '../../../components/common/SafariFixGrid';
-import SubscriptionPlanExtendedIcon from '../../../img/subscription-plan-extended.svg';
-import SubscriptionPlanStandardIcon from '../../../img/subscription-plan-standard.svg';
+import SafariFixGrid from '../../../../components/common/SafariFixGrid';
+import SubscriptionPlanExtendedIcon from '../../../../img/subscription-plan-extended.svg';
+import SubscriptionPlanStandardIcon from '../../../../img/subscription-plan-standard.svg';
 import {
   BigPriceLabel,
   H2,
@@ -18,7 +18,7 @@ import {
   H5,
   H5Bold,
   PriceLabel,
-} from '../subscriptions/SubscriptionsView.Styled';
+} from '../SubscriptionsView.Styled';
 
 const MONTHS_IN_YEAR = 12;
 const PRICE_ROUNDING_MODIFIER = 100;

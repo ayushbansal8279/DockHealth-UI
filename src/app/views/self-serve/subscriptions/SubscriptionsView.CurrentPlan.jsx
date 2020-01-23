@@ -48,12 +48,14 @@ const CurrentPlan = ({
   organizationRequestError,
   isOrganizationFetching,
   subscriptionPlanData,
+  showSubscriptionPlans,
 }) => {
   const {
     planName,
     planPricePerUser,
     planSubscriptionPeriod,
     planTotalPayment,
+    planNextPaymentLabel,
     planNextPaymentDate,
   } = subscriptionPlanData || {};
 
@@ -84,7 +86,7 @@ const CurrentPlan = ({
             justify="flex-end"
             alignItems="flex-end"
           >
-            <PlanColumnLink to="/subscriptions-plans">
+            <PlanColumnLink to="" onClick={showSubscriptionPlans}>
               Change plans
             </PlanColumnLink>
           </Grid>
@@ -102,10 +104,8 @@ const CurrentPlan = ({
             direction="column"
             justify="center"
           >
-            <H3Marginless>Your next payment</H3Marginless>
-            <H3ThinMarginless>
-              charged on {planNextPaymentDate}
-            </H3ThinMarginless>
+            <H3Marginless>{planNextPaymentLabel}</H3Marginless>
+            <H3ThinMarginless>{planNextPaymentDate}</H3ThinMarginless>
           </Grid>
           <AlignedColumnLink>
             <PlanColumnLink to="/billings">View billings</PlanColumnLink>

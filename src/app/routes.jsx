@@ -60,7 +60,6 @@ import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
 import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
 import OnboardingProfileView from './views/onboarding/onboarding-profile/OnboardingProfileView';
 import OnboardingFinishedView from './views/onboarding/onboarding-finished/OnboardingFinishedView';
-import SubscriptionsPlansView from './views/self-serve/subscriptions-plans/SubscriptionsPlansView';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\//, '');
@@ -233,11 +232,6 @@ export const Routes = ({ store }) => {
           <Route
             path="subscriptions"
             component={SubscriptionsView}
-            onEnter={checkFeatureToggles}
-          />
-          <Route
-            path="subscriptions-plans"
-            component={SubscriptionsPlansView}
             onEnter={checkFeatureToggles}
           />
           <Route

@@ -14,10 +14,10 @@ import {
 import React from 'react';
 import { createBreakpoint, useToggle } from 'react-use';
 import styled from 'styled-components';
-import SafariFixGrid from '../../../components/common/SafariFixGrid';
-import CollapseInteractive from '../../../img/collapse-interactive';
-import SubscriptionPlanTick from '../../../img/subscription-plan-tick.svg';
-import { H2, H4, H5 } from '../subscriptions/SubscriptionsView.Styled';
+import SafariFixGrid from '../../../../components/common/SafariFixGrid';
+import CollapseInteractive from '../../../../img/collapse-interactive';
+import SubscriptionPlanTick from '../../../../img/subscription-plan-tick.svg';
+import { H2, H4, H5 } from '../SubscriptionsView.Styled';
 import {
   CardContactUsFooter,
   CardContactUsHeader,

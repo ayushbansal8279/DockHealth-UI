@@ -1,17 +1,20 @@
 import axios from './axios-heydoc';
 
 export const get = ({ organizationId }) =>
-  axios
-    .get(`/organization/${organizationId}`)
-    .then(
-      response => response.data || throw new Error('Organization not found'),
-    );
+  axios.get(`/organization/${organizationId}`).then(response => {
+    if (response.data) {
+      return response.data;
+    }
 
-export const selectSubscriptionPlan = ({ planType: role }) =>
+    throw new Error('Organization not found');
+  });
+
+export const selectSubscriptionPlan = ({ organizationId, planType: role }) =>
   axios({
-    method: 'get',
+    method: 'put',
     url: '/organization/selectSubscriptionPlan',
     params: {
+      organizationId,
       role,
     },
   }).then(response => response.data);
