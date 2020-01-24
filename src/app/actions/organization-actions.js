@@ -6,6 +6,9 @@ import {
   REQUEST_SELECT_SUBSCRIPTION_PLAN,
   SELECT_SUBSCRIPTION_PLAN_FAILURE,
   SELECT_SUBSCRIPTION_PLAN_SUCCESS,
+  REQUEST_GET_BILLING_ESTIMATE,
+  GET_BILLING_ESTIMATE_FAILURE,
+  GET_BILLING_ESTIMATE_SUCCESS,
 } from './action-types';
 
 export const getOrganizationById = ({ organizationId }) => dispatch => {
@@ -43,6 +46,26 @@ export const selectSubscriptionPlan = ({ subscriptionPlan }) => dispatch => {
     .catch(error => {
       dispatch({
         type: SELECT_SUBSCRIPTION_PLAN_FAILURE,
+        error,
+      });
+    });
+};
+
+export const getBillingEstimate = ({ organizationId }) => dispatch => {
+  dispatch({
+    type: REQUEST_GET_BILLING_ESTIMATE,
+  });
+
+  OrganizationApi.getBillingEstimate({ organizationId })
+    .then(data => {
+      dispatch({
+        type: GET_BILLING_ESTIMATE_SUCCESS,
+        payload: data,
+      });
+    })
+    .catch(error => {
+      dispatch({
+        type: GET_BILLING_ESTIMATE_FAILURE,
         error,
       });
     });

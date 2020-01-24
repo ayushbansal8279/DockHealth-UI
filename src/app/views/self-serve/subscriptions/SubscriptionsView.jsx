@@ -15,6 +15,7 @@ import {
   Title,
 } from './SubscriptionsView.Styled';
 import { getSubscriptionPlanData } from './SubscriptionsView.Utilities';
+import { getBillingEstimate } from '../../../actions/organization-actions';
 
 export default () => {
   const dispatch = useDispatch();
@@ -26,10 +27,13 @@ export default () => {
   ] = useBoolean(false);
 
   const {
+    billingData,
     organization,
     organizationId,
     isFetching: isOrganizationFetching,
     requestError: organizationRequestError,
+    isFetchingBilling,
+    requestErrorBilling,
   } = useSelector(store => ({
     ...store.organizationState,
     organizationId: store.userState?.userProfile?.organizationId,
@@ -50,11 +54,13 @@ export default () => {
         },
       ],
     });
+
+    getBillingEstimate({ organizationId })(dispatch);
   });
 
   const subscriptionPlanData = getSubscriptionPlanData({
     organization,
-    selectedUsers,
+    billingData,
   });
 
   return (
@@ -67,8 +73,10 @@ export default () => {
         />
       ) : (
         <CurrentPlan
-          isOrganizationFetching={isOrganizationFetching}
-          organizationRequestError={organizationRequestError}
+          isOrganizationFetching={isOrganizationFetching && isFetchingBilling}
+          organizationRequestError={
+            organizationRequestError || requestErrorBilling
+          }
           subscriptionPlanData={subscriptionPlanData}
           showSubscriptionPlans={showSubscriptionPlans}
         />

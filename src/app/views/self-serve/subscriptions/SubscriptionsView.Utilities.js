@@ -107,44 +107,36 @@ export const getSubscriptionNextPaymentLabel = ({ subscription }) => {
   return planIsTrial ? 'Your trial period' : 'Your next payment';
 };
 
-const currentMoment = moment();
-
-export const getSubscriptionNextPaymentDate = ({ subscription }) => {
+export const getSubscriptionNextPaymentDate = ({
+  subscription,
+  billingData,
+}) => {
   const planIsTrial = getSubscriptionIsTrial({ subscription });
 
-  const {
-    createdDateTime,
-    billingFrequency = BILLING_FREQUENCY.MONTHLY,
-    trialEndDate,
-  } = subscription || {};
-  const planIsMonthly = billingFrequency === BILLING_FREQUENCY.MONTHLY;
+  const { trialEndDate } = subscription || {};
 
-  let outputMoment = moment()
-    .set('month', currentMoment.month())
-    .set('year', currentMoment.year())
-    .add(1, planIsMonthly ? 'month' : 'year');
+  const { nextBillingDate } = billingData || {};
 
   const momentFormat = planIsTrial ? '[ends on] L' : '[charged on] L';
+
+  let outputMoment;
 
   if (trialEndDate && planIsTrial) {
     outputMoment = moment(trialEndDate);
   }
 
-  if (createdDateTime && !planIsTrial) {
-    outputMoment = moment(createdDateTime).add(
-      1,
-      planIsMonthly ? 'month' : 'year',
-    );
+  if (nextBillingDate && !planIsTrial) {
+    outputMoment = moment(nextBillingDate);
   }
 
-  return outputMoment.format(momentFormat);
+  return outputMoment?.format(momentFormat) ?? '';
 };
 
-export const getSubscriptionPlanData = ({ organization, selectedUsers }) => {
+export const getSubscriptionPlanData = ({ organization, billingData }) => {
   const { subscriptionDetails: subscription } = organization || {};
+  const { monthlyPerUserCost, monthlyEstimate } = billingData || {};
 
   const planName = getSubscriptionPlanName({ subscription });
-  const planPricePerUser = getSubscriptionPlanPrice({ subscription });
   const planSubscriptionPeriod = getSubscriptionPlanPeriodName({
     subscription,
   });
@@ -153,13 +145,16 @@ export const getSubscriptionPlanData = ({ organization, selectedUsers }) => {
   const planNextPaymentLabel = getSubscriptionNextPaymentLabel({
     subscription,
   });
-  const planNextPaymentDate = getSubscriptionNextPaymentDate({ subscription });
+  const planNextPaymentDate = getSubscriptionNextPaymentDate({
+    subscription,
+    billingData,
+  });
 
   return {
     planName,
-    planPricePerUser: priceFormatter({ price: planPricePerUser }),
+    planPricePerUser: priceFormatter({ price: monthlyPerUserCost }),
     planTotalPayment: priceFormatter({
-      price: planPricePerUser * selectedUsers.length,
+      price: monthlyEstimate,
     }),
     planSubscriptionPeriod,
     planBillingPeriod,
