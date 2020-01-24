@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const SUBSCRIPTION_PERIOD = {
+export const BILLING_FREQUENCY = {
   MONTHLY: 'MONTHLY',
   ANNUAL: 'ANNUAL',
 };
@@ -35,8 +35,23 @@ export const getSubscriptionPlanName = ({ subscription }) => {
   }
 };
 
+export const getSubscriptionPlanTrialLabel = ({ subscription }) => {
+  const { subscriptionPlan } = subscription || {};
+
+  switch (subscriptionPlan) {
+    case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
+      return '30 day';
+    case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
+      return '60 day';
+    case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
+      return '90 day';
+    default:
+      return '';
+  }
+};
+
 export const getSubscriptionPlanPrice = ({ subscription }) => {
-  const { subscriptionPlan, subscriptionPeriod = SUBSCRIPTION_PERIOD.MONTHLY } =
+  const { subscriptionPlan, billingFrequency = BILLING_FREQUENCY.MONTHLY } =
     subscription || {};
 
   switch (subscriptionPlan) {
@@ -44,11 +59,11 @@ export const getSubscriptionPlanPrice = ({ subscription }) => {
     case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
     case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
     case SUBSCRIPTION_PLANS.PLAN_STANDARD:
-      return subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY ? 19 : 171;
+      return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 19 : 171;
     case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
-      return subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY ? 24 : 216;
+      return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 24 : 216;
     case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
-      return subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY ? 30 : 270;
+      return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 30 : 270;
     default:
       return 0;
   }
@@ -58,24 +73,22 @@ export const priceFormatter = ({ price }) =>
   `$${(Number(price) || 0).toFixed(2)}`;
 
 export const getSubscriptionPlanPeriodName = ({ subscription }) => {
-  const { subscriptionPeriod = SUBSCRIPTION_PERIOD.MONTHLY } =
-    subscription || {};
+  const { billingFrequency = BILLING_FREQUENCY.MONTHLY } = subscription || {};
 
-  return subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY
+  return billingFrequency === BILLING_FREQUENCY.MONTHLY
     ? 'Monthly subscription'
     : 'Annual subscription';
 };
 
 export const getSubscriptionPlanBillingPeriod = ({ subscription }) => {
-  const { subscriptionPeriod = SUBSCRIPTION_PERIOD.MONTHLY } =
-    subscription || {};
+  const { billingFrequency = BILLING_FREQUENCY.MONTHLY } = subscription || {};
 
-  const { subscriptionPeriodLabel, billingPeriodLabel } =
-    subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY
-      ? { subscriptionPeriodLabel: 'monthly', billingPeriodLabel: 'month' }
-      : { subscriptionPeriodLabel: 'annually', billingPeriodLabel: 'year' };
+  const { billingFrequencyLabel, billingPeriodLabel } =
+    billingFrequency === BILLING_FREQUENCY.MONTHLY
+      ? { billingFrequencyLabel: 'monthly', billingPeriodLabel: 'month' }
+      : { billingFrequencyLabel: 'annually', billingPeriodLabel: 'year' };
 
-  return `Billed ${subscriptionPeriodLabel} on first day of each ${billingPeriodLabel}`;
+  return `Billed ${billingFrequencyLabel} on first day of each ${billingPeriodLabel}`;
 };
 
 export const getSubscriptionIsTrial = ({ subscription }) => {
@@ -101,10 +114,10 @@ export const getSubscriptionNextPaymentDate = ({ subscription }) => {
 
   const {
     createdDateTime,
-    subscriptionPeriod = SUBSCRIPTION_PERIOD.MONTHLY,
+    billingFrequency = BILLING_FREQUENCY.MONTHLY,
     trialEndDate,
   } = subscription || {};
-  const planIsMonthly = subscriptionPeriod === SUBSCRIPTION_PERIOD.MONTHLY;
+  const planIsMonthly = billingFrequency === BILLING_FREQUENCY.MONTHLY;
 
   let outputMoment = moment()
     .set('month', currentMoment.month())

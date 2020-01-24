@@ -9,12 +9,21 @@ import {
 import PlanCardsContainer from './SubscriptionsPlansView.PlanCardsContainer';
 import { subscriptionFeatures } from './SubscriptionsPlansView.PlanData';
 import { H2 } from './SubscriptionsPlansView.Styled';
+import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 
-const onSubscriptionPlanChosen = ({ chosenPlan, organizationId }) => () => {
-  const { planType } = chosenPlan || {};
+const onSubscriptionPlanChosen = ({
+  chosenPlan,
+  organizationId,
+  billingFrequency,
+}) => () => {
+  const { subscriptionPlan } = chosenPlan || {};
 
-  if (planType) {
-    selectSubscriptionPlan({ organizationId, planType });
+  if (subscriptionPlan) {
+    selectSubscriptionPlan({
+      organizationId,
+      subscriptionPlan,
+      billingFrequency,
+    });
   }
 };
 
@@ -54,6 +63,9 @@ const SubscriptionsPlansView = ({
           variant="contained"
           onClick={onSubscriptionPlanChosen({
             annualPayment,
+            billingFrequency: annualPayment
+              ? BILLING_FREQUENCY.ANNUAL
+              : BILLING_FREQUENCY.MONTHLY,
             chosenPlan,
             organizationId,
           })}

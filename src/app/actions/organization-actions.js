@@ -28,12 +28,12 @@ export const getOrganizationById = ({ organizationId }) => dispatch => {
     });
 };
 
-export const selectSubscriptionPlan = ({ planType }) => dispatch => {
+export const selectSubscriptionPlan = ({ subscriptionPlan }) => dispatch => {
   dispatch({
     type: REQUEST_SELECT_SUBSCRIPTION_PLAN,
   });
 
-  OrganizationApi.selectSubscriptionPlan({ planType })
+  OrganizationApi.selectSubscriptionPlan({ subscriptionPlan })
     .then(data => {
       dispatch({
         type: SELECT_SUBSCRIPTION_PLAN_SUCCESS,

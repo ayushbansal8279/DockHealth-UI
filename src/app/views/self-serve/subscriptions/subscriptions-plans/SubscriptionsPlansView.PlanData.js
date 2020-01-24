@@ -8,7 +8,7 @@ export const subscriptionPlanData = [
     annualMonthlyPrice: 14.25,
     monthlyPrice: 19,
     cardType: CARD_TYPES.STANDARD,
-    planType: 'PLAN_STANDARD',
+    subscriptionPlan: 'PLAN_STANDARD',
   },
   {
     key: 'premium',
@@ -18,14 +18,14 @@ export const subscriptionPlanData = [
     monthlyPrice: 24,
     cardType: CARD_TYPES.PREMIUM,
     recommended: true,
-    planType: 'PLAN_PREMIUM',
+    subscriptionPlan: 'PLAN_PREMIUM',
   },
   {
     key: 'enterprise',
     planLabel: 'Enterprise',
     inactiveBackgroundColor: '#DEDEE2',
     cardType: CARD_TYPES.ENTERPRISE,
-    planType: 'PLAN_ENTERPRISE',
+    subscriptionPlan: 'PLAN_ENTERPRISE',
   },
 ];
 

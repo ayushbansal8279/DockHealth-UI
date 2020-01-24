@@ -27,7 +27,8 @@ const LoginPassword = () => {
             success('Logged in.');
           }
         })
-        .catch(() => {
+        .catch(error => {
+          alert(JSON.stringify(error, null, 2));
           setCustomError('Incorrect email or password. Please try again.');
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             LOGIN_SUCCESS: 'NO',

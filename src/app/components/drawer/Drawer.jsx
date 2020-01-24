@@ -1,11 +1,17 @@
 import MaterialDrawer from '@material-ui/core/Drawer';
+import moment from 'moment';
 import { path } from 'ramda';
 import React from 'react';
 import Intercom from 'react-intercom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useMount } from 'react-use';
 import styled from 'styled-components';
-
+import { getOrganizationById } from '../../actions/organization-actions';
 import useBoolean from '../../hooks/useBoolean';
+import {
+  getSubscriptionIsTrial,
+  getSubscriptionPlanTrialLabel,
+} from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import DrawerList from './DrawerList';
 import DrawerTitle from './DrawerTitle';
 
@@ -51,12 +57,43 @@ const ContentContainer = styled.div`
 
 const Drawer = ({ header, user, lists, children }) => {
   const [isOpen, open, close] = useBoolean(false);
-  const [trialBannerVisible] = useBoolean(true);
 
   const intercomUser = {
     email: user.email,
     name: `${user.firstName} ${user.lastName}`,
   };
+
+  const dispatch = useDispatch();
+
+  const { organization, organizationId } = useSelector(store => ({
+    ...store.organizationState,
+    organizationId: store.userState?.userProfile?.organizationId,
+  }));
+
+  const trialBannerVisible = getSubscriptionIsTrial({
+    subscription: organization?.subscriptionDetails,
+  });
+
+  const subscriptionPlanTrialLabel = getSubscriptionPlanTrialLabel({
+    subscription: organization?.subscriptionDetails,
+  });
+
+  const trialEndMoment = moment(
+    organization?.subscriptionDetails?.trialEndDate,
+  );
+
+  const trialEndDayDifference = trialEndMoment.isValid()
+    ? trialEndMoment.diff(moment(), 'day')
+    : null;
+
+  const trialEndDateLabel =
+    trialEndDayDifference > 0 ? `in ${trialEndDayDifference} days` : 'soon';
+
+  const trialEndLabel = `Your ${subscriptionPlanTrialLabel} free trial will expire ${trialEndDateLabel}.`;
+
+  useMount(() => {
+    getOrganizationById({ organizationId })(dispatch);
+  });
 
   return (
     <div style={{ display: 'flex', height: '100%' }}>
@@ -68,7 +105,11 @@ const Drawer = ({ header, user, lists, children }) => {
           user={user}
           lists={lists}
         />
-        <DrawerTitle header={header} trialBannerVisible={trialBannerVisible} />
+        <DrawerTitle
+          header={header}
+          trialBannerVisible={trialBannerVisible}
+          trialEndLabel={trialEndLabel}
+        />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </StyledDrawer>
       <ContentContainer

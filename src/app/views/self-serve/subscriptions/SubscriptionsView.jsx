@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
-import { getOrganizationById } from '../../../actions/organization-actions';
 import useBoolean from '../../../hooks/useBoolean';
+import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
 import CurrentPlan from './SubscriptionsView.CurrentPlan';
 import InvitationPanel from './SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from './SubscriptionsView.MembersTable';
@@ -15,7 +15,6 @@ import {
   Title,
 } from './SubscriptionsView.Styled';
 import { getSubscriptionPlanData } from './SubscriptionsView.Utilities';
-import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
 
 export default () => {
   const dispatch = useDispatch();
@@ -51,8 +50,6 @@ export default () => {
         },
       ],
     });
-
-    getOrganizationById({ organizationId })(dispatch);
   });
 
   const subscriptionPlanData = getSubscriptionPlanData({

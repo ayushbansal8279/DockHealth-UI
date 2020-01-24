@@ -1,7 +1,7 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import styled from 'styled-components';
 import { Link } from 'react-router';
+import styled from 'styled-components';
 
 const TitleContainer = styled.div`
   align-items: center;
@@ -58,7 +58,7 @@ const renderLayoutColumn = ({ key, component, ...otherProps }) => (
   </MainGrid>
 );
 
-export default ({ header, trialBannerVisible }) => {
+export default ({ header, trialBannerVisible, trialEndLabel }) => {
   const { show, backgroundColor, layout } = header;
 
   return (
@@ -78,7 +78,7 @@ export default ({ header, trialBannerVisible }) => {
           justify="center"
           alignItems="center"
         >
-          <span>Your 30 day free trial will expire in 10 days.</span>
+          <span>{trialEndLabel}</span>
           <TrialBannerLink to="/subscriptions">Learn more</TrialBannerLink>
         </TrialBanner>
       )}

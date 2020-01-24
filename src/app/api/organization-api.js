@@ -9,12 +9,17 @@ export const get = ({ organizationId }) =>
     throw new Error('Organization not found');
   });
 
-export const selectSubscriptionPlan = ({ organizationId, planType: role }) =>
+export const selectSubscriptionPlan = ({
+  organizationId,
+  subscriptionPlan,
+  billingFrequency,
+}) =>
   axios({
     method: 'put',
     url: '/organization/selectSubscriptionPlan',
     params: {
       organizationId,
-      role,
+      subscriptionPlan,
+      billingFrequency,
     },
   }).then(response => response.data);
