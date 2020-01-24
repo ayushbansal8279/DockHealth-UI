@@ -4,7 +4,14 @@ module.exports = {
   fields: {
     addListBtn: { css: 'button[type=button]' },
     listNameFld: {css: 'input[name="listName"]'},
-    saveListBtn: {id: '#addTaskListButton'},
+    adminShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div > form > div:nth-child(5) > div > div > ul'},
+    addAdminSearchBar: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div > form > div:nth-child(5) > div:nth-child(2) > div > div:nth-child(1) > div > input'},
+    addAdminFirstResult: {css: '#react-autowhatever-1--item-0'},
+    saveListBtn: {css: 'input[id="addTaskListButton"]'},
+    
+
+
+
     listsTab: { css: 'a[href="#/tasks"]' },
     inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
     patientsTab: { css: 'a[href="#/patients"]' },
@@ -25,14 +32,28 @@ module.exports = {
     I.wait();
   },
 
+  addAdmin(name) {
+    I.waitForElement(this.fields.adminShield, 3);
+    I.click(this.fields.adminShield);
+    I.waitForElement(this.fields.addAdminSearchBar, 5);
+    I.fillField(this.fields.addAdminSearchBar, name);
+    I.wait();
+    I.click(this.fields.addAdminFirstResult);
+    I.wait();
+  },
+
   createList(title) {
     I.waitForElement(this.fields.listNameFld, 4);
     I.fillField(this.fields.listNameFld, title);
-    I.click({ css: 'input[id=addTaskListButton]' });
+    I.waitForElement(this.fields.saveListBtn);
+    I.click(this.fields.saveListBtn);
     I.wait();
+
+    /*
     I.refreshPage();
     const listPathContextMenu = {css: `.item-list-wrapper div.item:nth-child(1) .more-options-wrapper`};
     I.waitForElement(listPathContextMenu, 4);
+    */
   },
 
   openListDropdown(listIndex) {

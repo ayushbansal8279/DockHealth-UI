@@ -15,6 +15,17 @@ exports.config = {
         args: ['--no-sandbox', '--window-size=1440,1200'],
       },
     },
+    /*
+    WebDriver: {
+      url: 'https://docktest.childrensaccelerator.com',
+      show: true,
+      browser: 'safari',
+      //host: '127.0.0.1',
+      //port: 4444,
+      //restart: false,
+      windowSize: '800x600',
+    },
+    */
   },
   include: {
     I: './steps_file.js',

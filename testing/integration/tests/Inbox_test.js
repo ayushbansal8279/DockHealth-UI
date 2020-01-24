@@ -123,11 +123,11 @@ Scenario('Make a task, add a due date, make sure its OVERDUE. self cleaning', (I
   inboxPg.addDueDate(3,1);
   inboxPg.exitMadeTask();
   //pause();
-  inboxPg.pickFilter(4, 11);
+  inboxPg.pickFilter(4, 10);
   I.wait();
   I.see("This is a late task.");
   I.dontSee('Test against this task. Dork.');
-  inboxPg.pickFilter(0, 11);
+  inboxPg.pickFilter(0, 10);
   I.wait();
   I.see('Test against this task. Dork.');
   inboxPg.makeSearch('This is a late task.');
@@ -141,12 +141,12 @@ Scenario('Check flagged filter', (I, inboxPg, tskLstPg) => {
   tskLstPg.enterInbox();
   I.wait();
   //pause();
-  inboxPg.pickFilter(3, 11);
+  inboxPg.pickFilter(3, 10);
   I.wait();
   I.dontSee('This is not a flagged task.');
   I.see('This IS a flagged task.');
   I.wait();
-  inboxPg.pickFilter(0, 11);
+  inboxPg.pickFilter(0, 10);
   I.see('This is not a flagged task.');
   I.see('This IS a flagged task.');
 });
