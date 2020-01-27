@@ -14,8 +14,9 @@ export const FadeContainer = styled.div`
 
 export const TaskListContainer = styled.div`
   display: flex;
-  flex: 2;
+  flex: 1;
   flex-flow: column wrap;
+  min-width: 569px;
 `;
 
 export const StyledButton = styled(ButtonBase)`
