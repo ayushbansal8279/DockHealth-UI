@@ -13,6 +13,9 @@ import * as userApi from '../api/user-api';
 import { noop } from '../helpers/utility-functions';
 import TaskView from './TaskView';
 
+const ASSIGNED_BY_ME = 'assigned_by_me';
+const ASSIGNED_TO_ME = 'assigned_to_me';
+
 class Home extends PureComponent {
   componentDidMount() {
     const { user, routeParams, actions, taskListActions } = this.props;
@@ -33,8 +36,8 @@ class Home extends PureComponent {
     }
 
     const taskAction = cond([
-      [equals('assigned_by_me'), always(actions.getTasksAssignedByMe)],
-      [equals('assigned_to_me'), always(actions.getTasksAssignedToMe)],
+      [equals(ASSIGNED_BY_ME), always(actions.getTasksAssignedByMe)],
+      [equals(ASSIGNED_TO_ME), always(actions.getTasksAssignedToMe)],
       [T, always(actions.getListTasks)],
     ])(listName);
 
@@ -55,7 +58,7 @@ class Home extends PureComponent {
 
     getAllTasks();
 
-    if (listName !== 'assigned_by_me' && listName !== 'assigned_to_me') {
+    if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
       taskListActions
         .getTaskListById(routeParams.taskListId)
         .then(noop)
@@ -160,7 +163,7 @@ class Home extends PureComponent {
 
     actions.loading();
 
-    if (listName === 'assigned_by_me') {
+    if (listName === ASSIGNED_BY_ME) {
       actions
         .getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
         .then(noop)
@@ -187,7 +190,7 @@ class Home extends PureComponent {
             );
           });
         });
-    } else if (listName === 'assigned_to_me') {
+    } else if (listName === ASSIGNED_TO_ME) {
       actions
         .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
         .then(noop)
@@ -293,10 +296,10 @@ class Home extends PureComponent {
     let isMultiList = false;
     let title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
 
-    if (listName === 'assigned_by_me') {
+    if (listName === ASSIGNED_BY_ME) {
       title = 'Assigned by me';
       isMultiList = true;
-    } else if (listName === 'assigned_to_me') {
+    } else if (listName === ASSIGNED_TO_ME) {
       title = 'Assigned to me';
       isMultiList = true;
     }

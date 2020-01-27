@@ -1,4 +1,5 @@
 import Grid from '@material-ui/core/Grid';
+import Collapse from '@material-ui/core/Collapse';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -11,7 +12,7 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
-import AddListForm from '../components/LEGACY_list/AddListForm';
+import AddListForm from './TaskListView.AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import AddTaskListButton from '../components/taskList/AddTaskListButton';
@@ -45,6 +46,10 @@ const BlockItemContainer = styled.div`
   }
 `;
 
+const StyledCollapse = styled(Collapse)`
+  width: 100%;
+`;
+
 const ICONS = {
   ASSIGN_TO: 'icon-assign-to',
   CALENDAR: 'icon-calendar',
@@ -55,6 +60,10 @@ const ICONS = {
 };
 
 class TaskListView extends PureComponent {
+  state = {
+    listFormOpen: false,
+  };
+
   componentDidMount() {
     const { taskListAction, invitationAction } = this.props;
     taskListAction.loading();
@@ -71,17 +80,23 @@ class TaskListView extends PureComponent {
     enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
   }
 
+  setListFormOpen = listFormOpen => {
+    this.setState({
+      listFormOpen,
+    });
+  };
+
   addTaskList = () => {
     const { taskListAction } = this.props;
     taskListAction.setTaskListAsCurrentList(null);
-    openAddForm();
+    this.setListFormOpen(true);
     scrollToTop();
   };
 
   editTaskList = taskList => {
     const { taskListAction } = this.props;
     taskListAction.setTaskListAsCurrentList(taskList);
-    toggleTaskForm();
+    this.setListFormOpen(true);
     scrollToTop();
   };
 
@@ -269,20 +284,26 @@ class TaskListView extends PureComponent {
       genericLists,
     } = this.props;
 
+    const { listFormOpen } = this.state;
+
     return (
       <Grid container direction="column" alignItems="center" spacing={8}>
         <GenericHeader isFetching={false}>Lists</GenericHeader>
-        <SafariFixGrid
-          container
-          alignItems="center"
-          justify="flex-end"
-          direction="row"
-        >
-          <AddTaskListButton onClick={this.addTaskList} />
-        </SafariFixGrid>
-        <SafariFixGrid container item xs={12} justify="center" spacing={8}>
-          <Grid container item xs={6}>
-            <AddListForm taskLists={taskLists} />
+        <StyledCollapse in={!listFormOpen} timeout={150}>
+          <SafariFixGrid
+            container
+            alignItems="center"
+            justify="flex-end"
+            direction="row"
+          >
+            <AddTaskListButton onClick={this.addTaskList} />
+          </SafariFixGrid>
+        </StyledCollapse>
+        <SafariFixGrid container item xs={12} justify="center">
+          <Grid container item xs={9}>
+            <StyledCollapse in={listFormOpen} timeout={150}>
+              <AddListForm setListFormOpen={this.setListFormOpen} />
+            </StyledCollapse>
           </Grid>
         </SafariFixGrid>
         <SafariFixGrid container item xs={12} justify="center">

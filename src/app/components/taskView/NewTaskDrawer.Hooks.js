@@ -1,6 +1,6 @@
 import head from 'ramda/es/head';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import useForm from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 
