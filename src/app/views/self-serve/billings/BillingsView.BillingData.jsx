@@ -23,6 +23,7 @@ import {
   BillingRadio,
 } from './BillingsView.BillingData.Components';
 import { H2 } from './BillingsView.Styled';
+import { saveBillingDetails } from '../../../api/organization-api';
 
 const PAYMENT_METHODS = {
   CREDIT: 'CREDIT',
@@ -43,8 +44,29 @@ const billingElementStyling = {
  * @param unsetUpdatingBilling - method to finish updating billing
  */
 const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
-  alert(JSON.stringify(data, null, 2));
-  console.log(stripe);
+  // alert(JSON.stringify(data, null, 2));
+  // console.log(stripe);
+
+  stripe.createToken({ name: 'cardNumber' }).then(token => {
+    // console.log(token);
+    saveBillingDetails({
+      data,
+      token,
+    });
+  });
+
+  // stripe.createToken(cardNumber, cardExpiry, cardCvc).then((token) => {
+  //   console.log(token)
+  // });
+
+  // let response = await fetch("/charge", {
+  //   method: "POST",
+  //   headers: {"Content-Type": "text/plain"},
+  //   body: token.id
+  // });
+
+  // if (response.ok) console.log("Purchase Complete!")
+
   unsetUpdatingBilling();
 };
 
@@ -227,6 +249,7 @@ const CreditPaymentForm = ({
       )}
       <Grid item sm={12} md={isUpdatingBilling ? 12 : 6}>
         <BillingElement
+          id="card-number"
           Component={CardNumberElement}
           label="Card number"
           placeholder="1234 1234 1234 1234"
@@ -246,6 +269,7 @@ const CreditPaymentForm = ({
       </Grid>
       <Grid item sm={12} md={6}>
         <BillingElement
+          id="card-expiry"
           Component={CardExpiryElement}
           label="Expiration date"
           placeholder="MM/YY"
@@ -254,6 +278,7 @@ const CreditPaymentForm = ({
       </Grid>
       <Grid item sm={12} md={6}>
         <BillingElement
+          id="card-cvc"
           Component={CardCVCElement}
           label="CVC"
           placeholder="CVC Code"

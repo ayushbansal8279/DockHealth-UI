@@ -9,6 +9,9 @@ import {
   REQUEST_GET_BILLING_ESTIMATE,
   GET_BILLING_ESTIMATE_FAILURE,
   GET_BILLING_ESTIMATE_SUCCESS,
+  REQUEST_SAVE_BILLING_DETAILS,
+  SAVE_BILLING_DETAILS_SUCCESS,
+  SAVE_BILLING_DETAILS_FAILURE,
 } from './action-types';
 
 export const getOrganizationById = ({ organizationId }) => dispatch => {
@@ -46,6 +49,26 @@ export const selectSubscriptionPlan = ({ subscriptionPlan }) => dispatch => {
     .catch(error => {
       dispatch({
         type: SELECT_SUBSCRIPTION_PLAN_FAILURE,
+        error,
+      });
+    });
+};
+
+export const saveBillingDetails = (billingData, cardToken) => dispatch => {
+  dispatch({
+    type: REQUEST_SAVE_BILLING_DETAILS,
+  });
+
+  OrganizationApi.saveBillingDetails({ billingData, cardToken })
+    .then(data => {
+      dispatch({
+        type: SAVE_BILLING_DETAILS_SUCCESS,
+        payload: data,
+      });
+    })
+    .catch(error => {
+      dispatch({
+        type: SAVE_BILLING_DETAILS_FAILURE,
         error,
       });
     });

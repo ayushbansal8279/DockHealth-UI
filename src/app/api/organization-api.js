@@ -17,10 +17,25 @@ export const selectSubscriptionPlan = ({
   axios({
     method: 'put',
     url: '/organization/selectSubscriptionPlan',
-    params: {
+    data: {
       organizationId,
       subscriptionPlan,
       billingFrequency,
+    },
+  }).then(response => response.data);
+
+export const saveBillingDetails = ({ data, token }) =>
+  axios({
+    method: 'put',
+    url: '/organization/saveBillingDetails',
+    data: {
+      billingName: data.name,
+      billingEmail: data.email,
+      billingAddressLine1: data.address,
+      billingAddressCity: data.city,
+      billingAddressState: data.state,
+      billingAddressPostalCode: data.zip,
+      cardTokenIdentifier: token.token.id,
     },
   }).then(response => response.data);
 

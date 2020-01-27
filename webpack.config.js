@@ -22,6 +22,8 @@ const exposed = [
   'BRANCH_IO_APP_LINK',
   'PUSHER_APP_KEY',
   'PUSHER_CLUSTER_NAME',
+  'SUBSCRIPTION_TOKEN_API_KEY',
+  'GA_TRACKING_CODE',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {

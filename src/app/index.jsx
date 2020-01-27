@@ -34,7 +34,10 @@ moment.updateLocale('en', {
 
 const store = configureStore();
 
-ReactGA.initialize('TRACKING_CODE_HERE', {
+const { SUBSCRIPTION_TOKEN_API_KEY } = process.env;
+const { GA_TRACKING_CODE } = process.env;
+
+ReactGA.initialize(GA_TRACKING_CODE, {
   debug: false,
 });
 
@@ -43,7 +46,7 @@ const App = () => (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <FlagsProvider flags={flags}>
         <Provider store={store}>
-          <StripeProvider apiKey="pk_test_1234">
+          <StripeProvider apiKey={SUBSCRIPTION_TOKEN_API_KEY}>
             <Routes store={store} />
           </StripeProvider>
         </Provider>

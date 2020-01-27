@@ -8,6 +8,9 @@ import {
   GET_BILLING_ESTIMATE_FAILURE,
   REQUEST_GET_BILLING_ESTIMATE,
   GET_BILLING_ESTIMATE_SUCCESS,
+  REQUEST_SAVE_BILLING_DETAILS,
+  SAVE_BILLING_DETAILS_SUCCESS,
+  SAVE_BILLING_DETAILS_FAILURE,
 } from '../actions/action-types';
 
 const initialState = {
@@ -22,6 +25,7 @@ const initialState = {
 const reducer = (state = initialState, { type, payload, error }) => {
   switch (type) {
     case REQUEST_SELECT_SUBSCRIPTION_PLAN:
+    case REQUEST_SAVE_BILLING_DETAILS:
     case REQUEST_GET_ORGANIZATION: {
       return {
         ...state,
@@ -47,7 +51,8 @@ const reducer = (state = initialState, { type, payload, error }) => {
       };
     }
 
-    case SELECT_SUBSCRIPTION_PLAN_SUCCESS: {
+    case SELECT_SUBSCRIPTION_PLAN_SUCCESS:
+    case SAVE_BILLING_DETAILS_SUCCESS: {
       return {
         ...state,
         isFetching: false,
@@ -65,6 +70,7 @@ const reducer = (state = initialState, { type, payload, error }) => {
     }
 
     case SELECT_SUBSCRIPTION_PLAN_FAILURE:
+    case SAVE_BILLING_DETAILS_FAILURE:
     case GET_ORGANIZATION_FAILURE: {
       return {
         ...state,
