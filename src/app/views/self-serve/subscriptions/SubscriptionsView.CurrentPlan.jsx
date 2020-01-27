@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import CubesLoader from '../../../components/common/CubesLoader';
 import {
@@ -32,7 +32,12 @@ const AlignedColumnLink = ({ children }) => (
   </>
 );
 
-const AsyncElement = ({ ErrorElement = null, error, children, fetching }) => {
+const AsyncElement = ({
+  ErrorElement = Fragment,
+  error,
+  children,
+  fetching,
+}) => {
   if (fetching) {
     return <CubesLoader size={48} />;
   }

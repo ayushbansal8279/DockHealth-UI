@@ -34,19 +34,22 @@ moment.updateLocale('en', {
 
 const store = configureStore();
 
-const { SUBSCRIPTION_TOKEN_API_KEY } = process.env;
-const { GA_TRACKING_CODE } = process.env;
+const { GA_TRACKING_CODE, SUBSCRIPTION_TOKEN_API_KEY } = process.env;
 
 ReactGA.initialize(GA_TRACKING_CODE, {
   debug: false,
 });
+
+const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
+  ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
+  : { stripe: null };
 
 const App = () => (
   <MuiThemeProvider theme={theme}>
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <FlagsProvider flags={flags}>
         <Provider store={store}>
-          <StripeProvider apiKey={SUBSCRIPTION_TOKEN_API_KEY}>
+          <StripeProvider {...stripeProps}>
             <Routes store={store} />
           </StripeProvider>
         </Provider>
