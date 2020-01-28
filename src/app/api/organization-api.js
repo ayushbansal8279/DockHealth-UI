@@ -44,3 +44,9 @@ export const getBillingEstimate = ({ organizationId }) =>
     method: 'get',
     url: `/organization/getBillingEstimate/${organizationId}`,
   }).then(response => response.data);
+
+export const getBillingDetails = ({ organizationId }) =>
+  axios({
+    method: 'get',
+    url: `/organization/getBillingDetails/${organizationId}`,
+  }).then(response => response.data);

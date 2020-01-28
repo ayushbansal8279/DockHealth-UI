@@ -1,34 +1,35 @@
-import MenuItem from '@material-ui/core/MenuItem';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Select from '@material-ui/core/Select';
+import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import useForm from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import {
   CardCVCElement,
   CardExpiryElement,
   CardNumberElement,
   injectStripe,
 } from 'react-stripe-elements';
-import { useToggle } from 'react-use';
-
-import useForm from 'react-hook-form';
+import { useEffectOnce, useToggle } from 'react-use';
+import { object, string } from 'yup';
+import { saveBillingDetails } from '../../../api/organization-api';
+import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
+  BillingButton,
   BillingElementContainer,
   StyledFormControl,
+  StyledFormHelperText,
   StyledInputBase,
   StyledInputLabel,
-  BillingButton,
-  BillingControlLabel,
-  BillingRadio,
 } from './BillingsView.BillingData.Components';
 import { H2 } from './BillingsView.Styled';
-import { saveBillingDetails } from '../../../api/organization-api';
 
 const PAYMENT_METHODS = {
   CREDIT: 'CREDIT',
   ACH: 'ACH',
 };
+
+const REQUIRED_MESSAGE = 'This field is required.';
 
 const billingElementStyling = {
   base: {
@@ -37,37 +38,96 @@ const billingElementStyling = {
   },
 };
 
+const formFields = [
+  {
+    key: 'nameOnCard',
+    defaultValue: '',
+    validation: string().required(REQUIRED_MESSAGE),
+  },
+  {
+    key: 'name',
+    defaultValue: '',
+    validation: string().required(REQUIRED_MESSAGE),
+  },
+  {
+    key: 'cardExpiration',
+    defaultValue: '',
+  },
+  {
+    key: 'cardNumber',
+    defaultValue: '',
+  },
+  {
+    key: 'cardCvc',
+    defaultValue: '',
+  },
+  {
+    key: 'email',
+    defaultValue: '',
+    validation: string().required(REQUIRED_MESSAGE),
+  },
+  {
+    key: 'city',
+    defaultValue: '',
+    validation: string().required(REQUIRED_MESSAGE),
+  },
+  {
+    key: 'address',
+    defaultValue: '',
+    validation: string().required(REQUIRED_MESSAGE),
+  },
+  {
+    key: 'zip',
+    defaultValue: '',
+    validation: string().required(REQUIRED_MESSAGE),
+  },
+  {
+    key: 'state',
+    defaultValue: '',
+    validation: string().required(REQUIRED_MESSAGE),
+  },
+];
+
+const validationSchema = object().shape(
+  Object.fromEntries(
+    formFields
+      .map(({ key, validation }) => (validation ? [key, validation] : null))
+      .filter(Boolean),
+  ),
+);
+
 /**
- * @todo Add save billing information + Stripe handling
- *
  * @param stripe - Stripe instance
  * @param unsetUpdatingBilling - method to finish updating billing
  */
 const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
-  // alert(JSON.stringify(data, null, 2));
-  // console.log(stripe);
+  stripe
+    .createToken({ name: 'cardNumber' })
+    .then(token => {
+      if (token.error) {
+        throw token.error;
+      }
 
-  stripe.createToken({ name: 'cardNumber' }).then(token => {
-    // console.log(token);
-    saveBillingDetails({
-      data,
-      token,
+      saveBillingDetails({
+        data,
+        token,
+      }).then(() => {
+        unsetUpdatingBilling();
+        showToast({
+          status: 'success',
+          title: 'Billing information updated successfully!',
+        });
+      });
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.message ??
+          'Could not update billing information, please try again later',
+      });
     });
-  });
-
-  // stripe.createToken(cardNumber, cardExpiry, cardCvc).then((token) => {
-  //   console.log(token)
-  // });
-
-  // let response = await fetch("/charge", {
-  //   method: "POST",
-  //   headers: {"Content-Type": "text/plain"},
-  //   body: token.id
-  // });
-
-  // if (response.ok) console.log("Purchase Complete!")
-
-  unsetUpdatingBilling();
 };
 
 const BillingElement = ({
@@ -76,27 +136,41 @@ const BillingElement = ({
   label,
   placeholder,
   alwaysShrink,
+  isUpdatingBilling,
+  inputProps = {},
 }) => {
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const [isEmpty, setEmpty] = useToggle(true);
   const [componentReference, setComponentReference] = useState(null);
 
+  if (isUpdatingBilling) {
+    return (
+      <StyledFormControl fullWidth onClick={() => componentReference?.focus()}>
+        <StyledInputLabel
+          shrink={isFocused || !isEmpty || alwaysShrink}
+          required
+        >
+          {label}
+        </StyledInputLabel>
+        <BillingElementContainer>
+          <Component
+            onChange={({ empty }) => setEmpty(empty)}
+            placeholder={isFocused ? placeholder : ''}
+            onFocus={setFocused}
+            onBlur={unsetFocused}
+            style={billingElementStyling}
+            onReady={reference => setComponentReference(reference)}
+            disabled={disabled}
+          />
+        </BillingElementContainer>
+      </StyledFormControl>
+    );
+  }
+
   return (
-    <StyledFormControl fullWidth onClick={() => componentReference?.focus()}>
-      <StyledInputLabel shrink={isFocused || !isEmpty || alwaysShrink} required>
-        {label}
-      </StyledInputLabel>
-      <BillingElementContainer>
-        <Component
-          onChange={({ empty }) => setEmpty(empty)}
-          placeholder={isFocused ? placeholder : ''}
-          onFocus={setFocused}
-          onBlur={unsetFocused}
-          style={billingElementStyling}
-          onReady={reference => setComponentReference(reference)}
-          disabled={disabled}
-        />
-      </BillingElementContainer>
+    <StyledFormControl fullWidth>
+      <StyledInputLabel required>{label}</StyledInputLabel>
+      <StyledInputBase {...inputProps} placeholder={placeholder} disabled />
     </StyledFormControl>
   );
 };
@@ -121,55 +195,40 @@ const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
     </Grid>
   );
 
-const BillingRadioGroup = ({
-  isUpdatingBilling,
-  setSelectedPaymentMethod,
-  register,
-}) => (
-  <Grid item md={6}>
-    <RadioGroup name="paymentMethod" row defaultValue={PAYMENT_METHODS.CREDIT}>
-      <BillingControlLabel
-        value={PAYMENT_METHODS.CREDIT}
-        control={
-          <BillingRadio
-            color="default"
-            disabled={!isUpdatingBilling}
-            onClick={() => setSelectedPaymentMethod(PAYMENT_METHODS.CREDIT)}
-            inputRef={register}
-          />
-        }
-        label="Credit Card / ATM Card"
-        labelPlacement="right"
-      />
-      <BillingControlLabel
-        value={PAYMENT_METHODS.ACH}
-        control={
-          <BillingRadio
-            color="default"
-            disabled
-            onClick={() => setSelectedPaymentMethod(PAYMENT_METHODS.ACH)}
-            inputRef={register}
-          />
-        }
-        label="ACH"
-        labelPlacement="right"
-      />
-    </RadioGroup>
-  </Grid>
-);
-
 const PaymentInformationLabel = () => (
   <Grid item xs={12}>
     <H2>Payment information</H2>
   </Grid>
 );
 
+const getInputPropsMethod = ({ setValue, values, errors }) => ({ name }) => ({
+  onChange: event => setValue(name, event.target.value),
+  name,
+  value: values[name],
+  error: Boolean(errors[name]),
+});
+
+const StyledFormInput = ({ name, label, error, getInputProps, ...props }) => (
+  <>
+    <StyledFormControl fullWidth error={error}>
+      <StyledInputLabel required>{label}</StyledInputLabel>
+      <StyledInputBase {...getInputProps({ name })} {...props} />
+    </StyledFormControl>
+    <Collapse in={error}>
+      <StyledFormHelperText>{error}</StyledFormHelperText>
+    </Collapse>
+  </>
+);
+
 const CreditPaymentForm = ({
   isUpdatingBilling,
   unsetUpdatingBilling,
-  setSelectedPaymentMethod,
-  register,
+  setValue,
+  values,
+  errors,
 }) => {
+  const getInputProps = getInputPropsMethod({ setValue, values, errors });
+
   return (
     <>
       {isUpdatingBilling && (
@@ -177,72 +236,59 @@ const CreditPaymentForm = ({
           <Grid item sm={12}>
             <H2>Billing information</H2>
           </Grid>
-          <Grid item sm={12} container justify="space-between">
-            <BillingRadioGroup
-              isUpdatingBilling={isUpdatingBilling}
-              setSelectedPaymentMethod={setSelectedPaymentMethod}
-              register={register}
+          <Grid item sm={12}>
+            <StyledFormInput
+              name="name"
+              placeholder="Name"
+              label="Name"
+              error={errors.name}
+              getInputProps={getInputProps}
             />
           </Grid>
           <Grid item sm={12}>
-            <StyledFormControl fullWidth>
-              <StyledInputLabel required>Name</StyledInputLabel>
-              <StyledInputBase
-                inputRef={register}
-                name="name"
-                placeholder="Name"
-              />
-            </StyledFormControl>
+            <StyledFormInput
+              name="email"
+              placeholder="Email"
+              label="Email"
+              error={errors.email}
+              getInputProps={getInputProps}
+            />
           </Grid>
           <Grid item sm={12}>
-            <StyledFormControl fullWidth>
-              <StyledInputLabel required>Email</StyledInputLabel>
-              <StyledInputBase
-                inputRef={register}
-                name="email"
-                placeholder="Email"
-              />
-            </StyledFormControl>
+            <StyledFormInput
+              name="address"
+              placeholder="Address"
+              label="Address"
+              error={errors.address}
+              getInputProps={getInputProps}
+            />
           </Grid>
           <Grid item sm={12}>
-            <StyledFormControl fullWidth>
-              <StyledInputLabel required>Address</StyledInputLabel>
-              <StyledInputBase
-                inputRef={register}
-                name="address"
-                placeholder="Address"
-              />
-            </StyledFormControl>
-          </Grid>
-          <Grid item sm={12}>
-            <StyledFormControl fullWidth>
-              <StyledInputLabel required>City</StyledInputLabel>
-              <StyledInputBase
-                inputRef={register}
-                name="city"
-                placeholder="city"
-              />
-            </StyledFormControl>
+            <StyledFormInput
+              name="city"
+              placeholder="City"
+              label="City"
+              error={errors.city}
+              getInputProps={getInputProps}
+            />
           </Grid>
           <Grid item sm={12} md={6}>
-            <StyledFormControl fullWidth>
-              <StyledInputLabel required>State</StyledInputLabel>
-              <StyledInputBase
-                inputRef={register}
-                name="state"
-                placeholder="State"
-              />
-            </StyledFormControl>
+            <StyledFormInput
+              name="state"
+              placeholder="State"
+              label="State"
+              error={errors.state}
+              getInputProps={getInputProps}
+            />
           </Grid>
           <Grid item sm={12} md={6}>
-            <StyledFormControl fullWidth>
-              <StyledInputLabel required>Zip</StyledInputLabel>
-              <StyledInputBase
-                inputRef={register}
-                name="zip"
-                placeholder="Zip"
-              />
-            </StyledFormControl>
+            <StyledFormInput
+              name="zip"
+              placeholder="Zip"
+              label="Zip"
+              error={errors.zip}
+              getInputProps={getInputProps}
+            />
           </Grid>
           <PaymentInformationLabel />
         </>
@@ -253,19 +299,19 @@ const CreditPaymentForm = ({
           Component={CardNumberElement}
           label="Card number"
           placeholder="1234 1234 1234 1234"
-          disabled={!isUpdatingBilling}
+          isUpdatingBilling={isUpdatingBilling}
+          inputProps={getInputProps({ name: 'cardNumber' })}
         />
       </Grid>
       <Grid item sm={12} md={isUpdatingBilling ? 12 : 6}>
-        <StyledFormControl fullWidth>
-          <StyledInputLabel required>Name on card</StyledInputLabel>
-          <StyledInputBase
-            name="nameOnCard"
-            inputRef={register}
-            placeholder="Name"
-            disabled={!isUpdatingBilling}
-          />
-        </StyledFormControl>
+        <StyledFormInput
+          name="nameOnCard"
+          placeholder="Name"
+          label="Name on card"
+          error={errors.nameOnCard}
+          getInputProps={getInputProps}
+          disabled={!isUpdatingBilling}
+        />
       </Grid>
       <Grid item sm={12} md={6}>
         <BillingElement
@@ -274,6 +320,8 @@ const CreditPaymentForm = ({
           label="Expiration date"
           placeholder="MM/YY"
           disabled={!isUpdatingBilling}
+          isUpdatingBilling={isUpdatingBilling}
+          inputProps={getInputProps({ name: 'cardExpiration' })}
         />
       </Grid>
       <Grid item sm={12} md={6}>
@@ -283,69 +331,9 @@ const CreditPaymentForm = ({
           label="CVC"
           placeholder="CVC Code"
           disabled={!isUpdatingBilling}
+          isUpdatingBilling={isUpdatingBilling}
+          inputProps={getInputProps({ name: 'cardCvc' })}
         />
-      </Grid>
-      <SaveBillingElement
-        isUpdatingBilling={isUpdatingBilling}
-        unsetUpdatingBilling={unsetUpdatingBilling}
-      />
-    </>
-  );
-};
-
-/**
- * @deprecated
- */
-const ACHPaymentForm = ({ isUpdatingBilling, unsetUpdatingBilling }) => {
-  const [accountType, setAccountType] = useState('');
-
-  return (
-    <>
-      <Grid item sm={12} md={6}>
-        <StyledFormControl fullWidth>
-          <StyledInputLabel required>Routing number</StyledInputLabel>
-          <StyledInputBase name="routingNumber" placeholder="000000000" />
-        </StyledFormControl>
-      </Grid>
-      <Grid item sm={12} md={6}>
-        <StyledFormControl fullWidth>
-          <StyledInputLabel required>Bank account number</StyledInputLabel>
-          <StyledInputBase
-            name="bankAccountNumber"
-            placeholder="000000000000"
-          />
-        </StyledFormControl>
-      </Grid>
-      <Grid item sm={12} md={6}>
-        <StyledFormControl fullWidth>
-          <StyledInputLabel shrink required>
-            Account type
-          </StyledInputLabel>
-          <Select
-            value={accountType}
-            onChange={event => setAccountType(event.target.value)}
-            placeholder="Select account type"
-            input={<StyledInputBase name="accountType" />}
-          >
-            <MenuItem value="current">Current</MenuItem>
-            <MenuItem value="checking">Checking</MenuItem>
-          </Select>
-        </StyledFormControl>
-      </Grid>
-      <Grid item sm={12} md={6}>
-        <StyledFormControl fullWidth>
-          <StyledInputLabel required>Bank name</StyledInputLabel>
-          <StyledInputBase name="bankName" placeholder="Bank name here" />
-        </StyledFormControl>
-      </Grid>
-      <Grid item sm={12} md={6}>
-        <StyledFormControl fullWidth>
-          <StyledInputLabel required>Account holder name</StyledInputLabel>
-          <StyledInputBase
-            name="accountHolderName"
-            placeholder="Account name here"
-          />
-        </StyledFormControl>
       </Grid>
       <SaveBillingElement
         isUpdatingBilling={isUpdatingBilling}
@@ -356,9 +344,7 @@ const ACHPaymentForm = ({ isUpdatingBilling, unsetUpdatingBilling }) => {
 };
 
 const BillingData = ({ stripe }) => {
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
-    PAYMENT_METHODS.CREDIT,
-  );
+  const [selectedPaymentMethod] = useState(PAYMENT_METHODS.CREDIT);
 
   const [
     isUpdatingBilling,
@@ -366,7 +352,78 @@ const BillingData = ({ stripe }) => {
     unsetUpdatingBilling,
   ] = useBoolean(false);
 
-  const { handleSubmit, register } = useForm();
+  const { billingDetails, userProfile } = useSelector(store => ({
+    billingDetails: store.organizationState.billingDetails,
+    userProfile: store.userState.userProfile,
+  }));
+
+  const {
+    handleSubmit,
+    errors,
+    register,
+    setValue,
+    watch,
+    unregister,
+    clearError,
+  } = useForm({
+    validationSchema,
+  });
+
+  useEffectOnce(() => {
+    formFields.forEach(({ key }) => {
+      register({ name: key });
+    });
+
+    return () => {
+      formFields.forEach(({ key }) => {
+        unregister(key);
+      });
+    };
+  });
+
+  useEffect(() => {
+    const {
+      billingAddressCity,
+      billingAddressLine1,
+      billingAddressPostalCode,
+      billingAddressState,
+      billingEmail,
+      billingName,
+      cardExpiration,
+      cardLastFour,
+    } = billingDetails || {};
+
+    const currentUserName = `${userProfile.firstName} ${userProfile.lastName}`.trim();
+
+    setValue('name', billingName ?? currentUserName);
+    setValue('nameOnCard', billingName);
+    setValue('cardExpiration', cardExpiration ?? '**/**');
+    setValue(
+      'cardNumber',
+      `${'*'.repeat(4)} ${'*'.repeat(4)} ${'*'.repeat(4)} ${cardLastFour ??
+        '*'.repeat(4)}`,
+    );
+    setValue('cardCvc', '***');
+    setValue('email', billingEmail ?? userProfile.email);
+    setValue('city', billingAddressCity);
+    setValue('address', billingAddressLine1);
+    setValue('zip', billingAddressPostalCode);
+    setValue('state', billingAddressState);
+
+    clearError();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [billingDetails, isUpdatingBilling]);
+
+  const values = Object.fromEntries(
+    formFields.map(({ key, defaultValue }) => [
+      key,
+      watch(key) ?? defaultValue,
+    ]),
+  );
+
+  const errorsValues = Object.fromEntries(
+    formFields.map(({ key }) => [key, errors?.[key]?.message ?? '']),
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit({ stripe, unsetUpdatingBilling }))}>
@@ -375,11 +432,7 @@ const BillingData = ({ stripe }) => {
           <Grid item sm={12}>
             <PaymentInformationLabel />
           </Grid>
-          <BillingRadioGroup
-            isUpdatingBilling={isUpdatingBilling}
-            setSelectedPaymentMethod={setSelectedPaymentMethod}
-          />
-          <Grid item md={6} sm={12} container justify="flex-end">
+          <Grid item sm={12} container justify="flex-end">
             <BillingButton onClick={setUpdatingBilling} variant="outlined">
               Update billing information
             </BillingButton>
@@ -391,14 +444,9 @@ const BillingData = ({ stripe }) => {
           <CreditPaymentForm
             isUpdatingBilling={isUpdatingBilling}
             unsetUpdatingBilling={unsetUpdatingBilling}
-            setSelectedPaymentMethod={selectedPaymentMethod}
-            register={register}
-          />
-        )}
-        {selectedPaymentMethod === PAYMENT_METHODS.ACH && (
-          <ACHPaymentForm
-            isUpdatingBilling={isUpdatingBilling}
-            unsetUpdatingBilling={unsetUpdatingBilling}
+            setValue={setValue}
+            values={values}
+            errors={errorsValues}
           />
         )}
       </Grid>

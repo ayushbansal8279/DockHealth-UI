@@ -11,15 +11,21 @@ import {
   REQUEST_SAVE_BILLING_DETAILS,
   SAVE_BILLING_DETAILS_SUCCESS,
   SAVE_BILLING_DETAILS_FAILURE,
+  REQUEST_GET_BILLING_DETAILS,
+  GET_BILLING_DETAILS_SUCCESS,
+  GET_BILLING_DETAILS_FAILURE,
 } from '../actions/action-types';
 
 const initialState = {
   organization: null,
   billingData: null,
+  billingDetails: null,
   isFetching: false,
   isFetchingBilling: false,
+  isFetchingBillingDetails: false,
   requestError: null,
   requestErrorBilling: null,
+  requestErrorBillingDetais: null,
 };
 
 const reducer = (state = initialState, { type, payload, error }) => {
@@ -39,6 +45,14 @@ const reducer = (state = initialState, { type, payload, error }) => {
         ...state,
         isFetchingBilling: true,
         requestErrorBilling: null,
+      };
+    }
+
+    case REQUEST_GET_BILLING_DETAILS: {
+      return {
+        ...state,
+        isFetchingBillingDetails: true,
+        requestErrorBillingDetails: null,
       };
     }
 
@@ -69,6 +83,15 @@ const reducer = (state = initialState, { type, payload, error }) => {
       };
     }
 
+    case GET_BILLING_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        billingDetails: payload,
+        isFetchingBillingDetails: false,
+        requestErrorBillingDetails: null,
+      };
+    }
+
     case SELECT_SUBSCRIPTION_PLAN_FAILURE:
     case SAVE_BILLING_DETAILS_FAILURE:
     case GET_ORGANIZATION_FAILURE: {
@@ -86,6 +109,28 @@ const reducer = (state = initialState, { type, payload, error }) => {
         billingData: null,
         isFetchingBilling: false,
         requestErrorBilling: error,
+      };
+    }
+
+    case GET_BILLING_DETAILS_FAILURE: {
+      return {
+        ...state,
+        billingDetails: null,
+        // dummy billing details
+        //
+        // billingDetails: {
+        //   billingAddressCity: 'Example City',
+        //   billingAddressLine1: 'Example Address 1',
+        //   billingAddressPostalCode: '12345',
+        //   billingAddressState: 'Example',
+        //   billingEmail: 'example@user.com',
+        //   billingName: 'Example User',
+        //   cardExpiration: '**/**',
+        //   cardLastFour: '4242',
+        //   cardTokenIdentifier: '123',
+        // },
+        isFetchingBillingDetails: false,
+        requestErrorBillingDetails: error,
       };
     }
 

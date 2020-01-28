@@ -1,15 +1,17 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-
 import { setHeader } from '../../../actions/header-actions';
+import { getBillingDetails } from '../../../actions/organization-actions';
 import BillingData from './BillingsView.BillingData';
-import { BillingsViewContainer, Title } from './BillingsView.Styled';
 import InvoicesList from './BillingsView.InvoicesList';
+import { BillingsViewContainer, Title } from './BillingsView.Styled';
 
 const BillingsView = () => {
   const dispatch = useDispatch();
+
+  const { organizationId } = useSelector(store => store.userState.userProfile);
 
   useMount(() => {
     setHeader(dispatch)({
@@ -26,6 +28,8 @@ const BillingsView = () => {
         },
       ],
     });
+
+    getBillingDetails({ organizationId })(dispatch);
   });
 
   return (
@@ -45,5 +49,4 @@ const BillingsView = () => {
     </BillingsViewContainer>
   );
 };
-
 export default BillingsView;

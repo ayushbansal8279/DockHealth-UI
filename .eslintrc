@@ -6,10 +6,6 @@
     "es6": true,
     "jest/globals": true
   },
-  "ecmaFeatures": {
-    "modules": true,
-    "jsx": true
-  },
   "extends": [
     "airbnb",
     "airbnb/hooks",

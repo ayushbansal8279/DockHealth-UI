@@ -1,12 +1,11 @@
+import ButtonBase from '@material-ui/core/ButtonBase';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import InputBase from '@material-ui/core/InputBase';
 import InputLabel from '@material-ui/core/InputLabel';
-import Radio from '@material-ui/core/Radio';
 import withStyles from '@material-ui/core/styles/withStyles';
-import styled from 'styled-components';
-import { ButtonBase } from '@material-ui/core';
 import React from 'react';
+import styled from 'styled-components';
 
 export const StyledFormControl = withStyles({
   root: {
@@ -43,8 +42,13 @@ export const StyledInputLabel = withStyles({
 
 export const StyledInputBase = withStyles({
   root: {
+    border: '0.0625rem solid #e4090900',
     height: '100%',
+    transition: 'all 0.2s ease-out',
     zIndex: 1,
+  },
+  error: {
+    border: '0.0625rem solid #e40909',
   },
   input: {
     borderRadius: '0.25rem',
@@ -107,19 +111,9 @@ export const BillingButton = withStyles({
   return <ButtonBase className={className} {...props} />;
 });
 
-export const BillingControlLabel = withStyles({
-  label: {
-    color: '#000',
-    fontSize: '1rem',
-    opacity: 1,
+export const StyledFormHelperText = withStyles({
+  root: {
+    color: '#e40909',
+    fontSize: '0.75rem',
   },
-})(FormControlLabel);
-
-export const BillingRadio = withStyles({
-  checked: {
-    color: '#125375',
-  },
-  disabled: {
-    color: '#12537560',
-  },
-})(Radio);
+})(FormHelperText);

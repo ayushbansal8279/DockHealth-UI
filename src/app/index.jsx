@@ -42,7 +42,7 @@ ReactGA.initialize(GA_TRACKING_CODE, {
 
 const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
   ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
-  : { stripe: null };
+  : { apiKey: 'NON_EXISTENT_API_KEY' };
 
 const App = () => (
   <MuiThemeProvider theme={theme}>
