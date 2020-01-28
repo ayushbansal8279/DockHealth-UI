@@ -6,6 +6,7 @@ Scenario('List create, edit and destroy. self cleaning', (I, lgnPg, tskLstPg) =>
   lgnPg.fullLogin(1);
   // pause();
   tskLstPg.openAddListDropdown();
+  //pause();
   tskLstPg.createList('Crummy List');
   //tskLstPg.enterListsTab();
   //tskLstPg.logout();

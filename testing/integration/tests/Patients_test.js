@@ -16,7 +16,8 @@ Scenario('Make a patient', (I, lgnPg, tskLstPg, ptntsPg) => {
     I.see("Last");
 });
 
-Scenario('Edit a patient using the sidebar.', (I, lgnPg, tskLstPg, ptntsPg) => {
+//TODO Broken in Webdriver due to REFILL PATIENT LINE
+Scenario('Edit a patient using the sidebar.', (I, lgnPg, tskLstPg, ptntsPg) => { //TODO Clearfield/Fillfield are broken NOT THE TEST
     lgnPg.fullLogin(2);
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
@@ -35,7 +36,7 @@ Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
     ptntsPg.setFilterTo(1);
     ptntsPg.makeSearch('blursedName');
     //pause();
-    I.see('GrassName,');
+    I.see('GrassName,'); 
     //ptntsPg.openEditPatientSidebar(1);
     //ptntsPg.refillPatient('-name', '-a', '', '9001', "12/12/1212", 'female', '0000000000', '0000000000', 'fleemail@florp.lol');
 });

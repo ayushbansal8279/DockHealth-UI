@@ -7,7 +7,7 @@ module.exports = {
     adminShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div > form > div:nth-child(5) > div > div > ul'},
     addAdminSearchBar: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div > form > div:nth-child(5) > div:nth-child(2) > div > div:nth-child(1) > div > input'},
     addAdminFirstResult: {css: '#react-autowhatever-1--item-0'},
-    saveListBtn: {css: 'input[id="addTaskListButton"]'},
+    saveListBtn: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div > div > form > div:nth-child(13) > button:nth-child(2)'},
     
 
 
@@ -45,6 +45,7 @@ module.exports = {
   createList(title) {
     I.waitForElement(this.fields.listNameFld, 4);
     I.fillField(this.fields.listNameFld, title);
+    //pause();
     I.waitForElement(this.fields.saveListBtn);
     I.click(this.fields.saveListBtn);
     I.wait();
@@ -82,6 +83,7 @@ module.exports = {
     I.wait(2);
   },
 
+  //Something still not
   destroyList(listIndex) {
     const listPathContextMenu = this.openListDropdown(listIndex);
     within(listPathContextMenu, async () => {
@@ -89,7 +91,7 @@ module.exports = {
       I.wait(1);
       I.click({css: 'li:nth-child(2)'});
       const deleteBtnInPopup = `#${popupId} > div > span.confirm`
-      I.waitForElement(deleteBtnInPopup);
+      I.waitForElement(deleteBtnInPopup, 5);
       var buttonLabel = await I.executeScript(function(el) {
         $(el).click();
         return $(el).text();

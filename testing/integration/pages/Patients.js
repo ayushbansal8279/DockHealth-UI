@@ -238,6 +238,7 @@ module.exports = {
     this.editHomePhone(homePhone);
     this.editMobilePhone(mobilePhone);
     this.editEmail(email);
+    //pause();
     this.editSavePatient();
     I.wait(2);
   },
@@ -316,7 +317,8 @@ module.exports = {
 
   editEmail(code){
     I.waitForElement(this.fields.editEmailBox);
-    I.clearField(this.fields.editEmailBox);
+    I.wait();
+    //I.clearField(this.fields.editEmailBox);
     I.fillField(this.fields.editEmailBox, code);
     I.wait();
   },

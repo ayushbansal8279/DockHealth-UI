@@ -3,10 +3,13 @@ Feature('Login');
 const { I, lgnPg, tskLstPg, inboxPg, taskPg } = inject();
 
 Scenario('Bad Email', I => {
-  I.amOnPage('https://dockdev-v2.childrensaccelerator.com/');
+  I.amOnPage('https://docktest.childrensaccelerator.com');
+  I.wait();
   I.fillField('username', 'Infinite Dab Emote');
+  //pause();
+  I.wait();
   I.pressKey('Tab');
-  I.waitForText('Please enter a valid email address');
+  I.see('Please enter a valid email address');
 });
 
 Scenario('Login', (I, lgnPg) => {
