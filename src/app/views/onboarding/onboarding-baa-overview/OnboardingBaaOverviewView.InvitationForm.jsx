@@ -3,12 +3,12 @@ import React from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
+import { hashHistory } from 'react-router';
 import { invitePersonToOrganization } from '../../../actions/people-actions';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import {
   MobileInputComponent,
   OnboardingButton,
-  OnboardingH1,
   OnboardingH2,
   OnboardingH2Bold,
   OnboardingHorizontalSpacing3,
@@ -30,6 +30,10 @@ const validationSchema = object().shape({
     .matches(/\d{10}/, 'This field should have a valid phone number'),
 });
 
+const goToBaaSigning = () => {
+  hashHistory.push('/onboarding/baa-signing');
+};
+
 // eslint-disable-next-line unicorn/consistent-function-scoping
 const onInvitationSubmit = ({ dispatch }) => async ({
   firstName,
@@ -49,6 +53,8 @@ const onInvitationSubmit = ({ dispatch }) => async ({
       icon: 'success',
       title: 'User invited successfully',
     });
+
+    goToBaaSigning();
   } catch (error) {
     showAlert({
       icon: 'error',
@@ -69,9 +75,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
   return (
     <form onSubmit={formMethods.handleSubmit(onInvitationSubmit({ dispatch }))}>
       <FormContext {...formMethods}>
-        <OnboardingH1>
+        <OnboardingH2>
           Invite the authorized signer of your organization
-        </OnboardingH1>
+        </OnboardingH2>
         <OnboardingSpacing3 />
         <Grid container spacing={16}>
           <Grid item sm={12} md={6}>
@@ -111,10 +117,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
             <OnboardingSpacing3 />
           </Grid>
           <Grid item sm={12} container justify="flex-end">
-            <OnboardingButton
-              variant="outlinedLink"
-              onClick={hideInvitationForm}
-            >
+            <OnboardingButton variant="outlined" onClick={hideInvitationForm}>
               <OnboardingH2>Cancel</OnboardingH2>
             </OnboardingButton>
             <OnboardingHorizontalSpacing3 />

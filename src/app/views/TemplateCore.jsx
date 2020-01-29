@@ -65,7 +65,7 @@ class TemplateCore extends PureComponent {
   async componentDidMount() {
     const { taskListActions } = this.props;
 
-    await userApi.isAuthenticated(this);
+    await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
 
     taskListActions.getTaskListForUser();
   }
@@ -76,7 +76,7 @@ class TemplateCore extends PureComponent {
     });
   };
 
-  async isLoggedIn(message, isLoggedIn, cognitoUser) {
+  isLoggedIn = async (isLoggedIn, cognitoUser) => {
     const { user } = this.props;
     if (!isLoggedIn) {
       hashHistory.push('login');
@@ -117,7 +117,7 @@ class TemplateCore extends PureComponent {
         this.unlockLoading();
       }
     }
-  }
+  };
 
   render() {
     const { dispatchedUnsetHeader, children } = this.props;

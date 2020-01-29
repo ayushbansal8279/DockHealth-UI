@@ -10,7 +10,6 @@ import {
   Router,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
-
 import { unsetHeader } from './actions/header-actions';
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
@@ -41,6 +40,9 @@ import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overvie
 import OnboardingBaaSigningView from './views/onboarding/onboarding-baa-signing/OnboardingBaaSigningView';
 import OnboardingCreateAccountView from './views/onboarding/onboarding-create-account/OnboardingCreateAccountView';
 import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
+import OnboardingFinishedView from './views/onboarding/onboarding-finished/OnboardingFinishedView';
+import OnboardingProfileView from './views/onboarding/onboarding-profile/OnboardingProfileView';
+import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
@@ -57,9 +59,6 @@ import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
-import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
-import OnboardingProfileView from './views/onboarding/onboarding-profile/OnboardingProfileView';
-import OnboardingFinishedView from './views/onboarding/onboarding-finished/OnboardingFinishedView';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\//, '');
@@ -97,7 +96,8 @@ export const Routes = ({ store }) => {
               locationPicker(event),
               locationPicker(hashHistory.getCurrentLocation()),
             )) ||
-            event.action === 'POP',
+            event.action === 'POP' ||
+            event.action === 'REPLACE',
         );
       },
     );
@@ -245,29 +245,18 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureToggles}
           />
         </Route>
-        <Route component={OnboardingTemplate}>
+        <Route path="/onboarding" component={OnboardingTemplate}>
+          <IndexRedirect to="/onboarding/create-account" />
           <Route
             component={OnboardingCreateAccountView}
-            path="/onboarding/create-account"
+            path="create-account"
           />
-          <Route component={OnboardingEulaView} path="/onboarding/eula" />
-          <Route
-            component={OnboardingBaaOverviewView}
-            path="/onboarding/baa-overview"
-          />
-          <Route
-            component={OnboardingBaaSigningView}
-            path="/onboarding/baa-signing"
-          />
-          <Route
-            component={OnboardingTeamOrgSetupView}
-            path="/onboarding/team-org-setup"
-          />
-          <Route component={OnboardingProfileView} path="/onboarding/profile" />
-          <Route
-            component={OnboardingFinishedView}
-            path="/onboarding/finished"
-          />
+          <Route component={OnboardingEulaView} path="eula" />
+          <Route component={OnboardingBaaOverviewView} path="baa-overview" />
+          <Route component={OnboardingBaaSigningView} path="baa-signing" />
+          <Route component={OnboardingTeamOrgSetupView} path="team-org-setup" />
+          <Route component={OnboardingProfileView} path="profile" />
+          <Route component={OnboardingFinishedView} path="finished" />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>

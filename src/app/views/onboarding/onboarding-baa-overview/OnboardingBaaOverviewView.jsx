@@ -15,15 +15,12 @@ import {
   OnboardingSpacing2,
   OnboardingSpacing3,
   OnboardingSpacing4,
+  OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
 const goToBaaSigning = () => {
   hashHistory.push('/onboarding/baa-signing');
-};
-
-const goToOrgTeamSetup = () => {
-  hashHistory.push('/onboarding/team-org-setup');
 };
 
 const OnboardingBaaOverviewView = () => {
@@ -42,10 +39,10 @@ const OnboardingBaaOverviewView = () => {
     <div>
       <OnboardingH1Bold>THAT WAS EASY</OnboardingH1Bold>
       <OnboardingSpacing3 />
-      <OnboardingH3>Next, the BAA...</OnboardingH3>
+      <OnboardingH3>Next, the Business Associate Agreement...</OnboardingH3>
       <OnboardingSpacing4 />
       <OnboardingH3Bold>
-        What is a Business Associate Agreement (BAA)
+        What is a Business Associate Agreement (BAA)?
       </OnboardingH3Bold>
       <OnboardingSpacing2 />
       <OnboardingH3>
@@ -73,7 +70,7 @@ const OnboardingBaaOverviewView = () => {
       {!isInvitationFormShown && (
         <>
           <OnboardingH3Bold>Are you an authorized signer?</OnboardingH3Bold>
-          <OnboardingSpacing4 />
+          <OnboardingSpacing5 />
           <Grid container>
             <OnboardingButton
               onClick={showInvitationForm}
@@ -92,15 +89,6 @@ const OnboardingBaaOverviewView = () => {
             </OnboardingButton>
           </Grid>
           <OnboardingSpacing4 />
-          <Grid container>
-            <OnboardingButton
-              onClick={goToOrgTeamSetup}
-              variant="outlinedError"
-              size="narrow"
-            >
-              <OnboardingH2Bold>Skip</OnboardingH2Bold>
-            </OnboardingButton>
-          </Grid>
         </>
       )}
       {isInvitationFormShown && (

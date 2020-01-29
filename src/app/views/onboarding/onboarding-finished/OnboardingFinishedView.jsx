@@ -12,7 +12,7 @@ import {
 } from '../OnboardingTemplate.Components';
 
 const goToMainPage = () => {
-  hashHistory.push('/');
+  hashHistory.push('/tasks');
 };
 
 const OnboardingFinishedView = () => {

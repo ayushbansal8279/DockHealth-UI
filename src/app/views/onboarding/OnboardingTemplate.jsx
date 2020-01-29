@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
-import ONBOARDING_STEPS from './OnboardingTemplate.OnboardingSteps';
+import { hashHistory } from 'react-router';
+import { isAuthenticated } from '../../api/user-api';
 import {
   OnboardingBackground,
   OnboardingLogo,
@@ -14,6 +14,7 @@ import {
   OnboardingProgressTrack,
   OnboardingProgressTrackActive,
 } from './OnboardingTemplate.Components';
+import ONBOARDING_STEPS from './OnboardingTemplate.OnboardingSteps';
 
 const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
   const active = index < currentStep;
@@ -29,10 +30,29 @@ const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
   );
 };
 
+const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
+const EULA_PATH = '/onboarding/eula';
+
+const isLoggedIn = loggedIn => {
+  const { pathname } = hashHistory.getCurrentLocation();
+
+  if (!loggedIn && pathname !== CREATE_ACCOUNT_PATH) {
+    hashHistory.replace(CREATE_ACCOUNT_PATH);
+  }
+
+  if (loggedIn && pathname === CREATE_ACCOUNT_PATH) {
+    hashHistory.replace(EULA_PATH);
+  }
+};
+
 const OnboardingTemplate = ({ children }) => {
   const { currentStep, progress } = useSelector(
     store => store.onboardingProgress,
   );
+
+  useEffect(() => {
+    isAuthenticated({ isLoggedIn });
+  }, [children]);
 
   return (
     <OnboardingBackground>

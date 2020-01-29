@@ -10,6 +10,7 @@ import useBoolean from '../../../hooks/useBoolean';
 import PdfIcon from '../../../img/pdf-icon.svg';
 import {
   OnboardingButton,
+  OnboardingH1Bold,
   OnboardingH2,
   OnboardingH2Bold,
   OnboardingInput,
@@ -17,7 +18,6 @@ import {
   OnboardingSpacing2,
   OnboardingSpacing3,
   OnboardingSpacing4,
-  OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 import BAA from './OnboardingBaaSigningView.Baa';
 import {
@@ -65,10 +65,9 @@ const OnboardingBaaSigningView = () => {
   return (
     <form onSubmit={formMethods.handleSubmit(onSubmit())}>
       <FormContext {...formMethods}>
-        <OnboardingH2>
-          Last but not least, tell us about yourself...
-        </OnboardingH2>
-        <OnboardingSpacing5 />
+        <OnboardingH1Bold>LAST BUT NOT LEAST,</OnboardingH1Bold>
+        <OnboardingH1Bold>TELL US ABOUT YOURSELF...</OnboardingH1Bold>
+        <OnboardingSpacing4 />
         <OnboardingH2Bold>Legal entity name</OnboardingH2Bold>
         <OnboardingSpacing2 />
         <OnboardingInput

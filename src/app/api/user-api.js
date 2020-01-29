@@ -210,8 +210,8 @@ export function rememberDevice() {
   });
 }
 
-export function isAuthenticated(callback) {
-  if (callback == null) {
+export function isAuthenticated({ isLoggedIn }) {
+  if (!isLoggedIn) {
     throw new Error('Callback in isAuthenticated() cannot be null');
   }
 
@@ -223,18 +223,18 @@ export function isAuthenticated(callback) {
     };
 
     if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
-      callback.isLoggedIn('', true, userData);
+      isLoggedIn(true, userData);
       return;
     }
 
-    callback.isLoggedIn('User is not logged in', false, userData);
+    isLoggedIn(false, userData);
   }
 
   const cognitoUser = userPoolForAuth.getCurrentUser();
   if (cognitoUser != null) {
     cognitoUser.getSession((error, session) => {
       if (error) {
-        callback.isLoggedIn(error, false, cognitoUser);
+        isLoggedIn(false, cognitoUser);
       } else {
         sessionStorage.setItem(
           'accessToken',
@@ -242,11 +242,11 @@ export function isAuthenticated(callback) {
         );
 
         cognitoUser.getUserAttributes(noop);
-        callback.isLoggedIn(error, session.isValid(), cognitoUser);
+        isLoggedIn(session.isValid(), cognitoUser);
       }
     });
   } else {
-    callback.isLoggedIn("Can't retrieve the CurrentUser", false, cognitoUser);
+    isLoggedIn(false, cognitoUser);
   }
 }
 

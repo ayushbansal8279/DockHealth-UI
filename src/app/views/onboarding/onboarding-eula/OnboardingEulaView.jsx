@@ -51,6 +51,7 @@ const OnboardingEulaView = () => {
   return (
     <div>
       <OnboardingH1Bold>JUST A FEW STEPS</OnboardingH1Bold>
+      <OnboardingSpacing2 />
       <OnboardingH3>
         Protecting patient data and compliance with HIPAA is essential to our
         work and yours. We would love to setup you and your team to be HIPAA
@@ -60,7 +61,7 @@ const OnboardingEulaView = () => {
       <OnboardingH3>First, the End User License Agreement...</OnboardingH3>
       <OnboardingSpacing4 />
       <OnboardingH2Bold>
-        What is a End User License Agreement (EULA)
+        What is an End User License Agreement (EULA)
       </OnboardingH2Bold>
       <OnboardingSpacing1 />
       <OnboardingH3>

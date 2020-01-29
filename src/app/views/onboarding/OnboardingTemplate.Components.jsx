@@ -113,7 +113,7 @@ export const OnboardingMainContainer = styled.main`
 `;
 
 export const OnboardingH1 = styled.h1`
-  font-size: 2.125rem;
+  font-size: 2.25rem;
   margin: 0.25rem 0;
 `;
 
@@ -146,7 +146,7 @@ export const OnboardingH4 = styled.h4`
 
 export const OnboardingH4Error = styled(OnboardingH4)`
   color: #e40909;
-  margin: 0;
+  margin: 0.5rem 0 0;
   user-select: none;
 `;
 
@@ -220,7 +220,6 @@ export const OnboardingFormControl = withStyles({
   root: {
     backgroundColor: '#f3f5f6',
     height: '4rem',
-    marginBottom: '0.5rem',
   },
 })(FormControl);
 
