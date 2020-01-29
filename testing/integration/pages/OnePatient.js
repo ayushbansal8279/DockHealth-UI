@@ -1,7 +1,12 @@
 const { I } = inject();
 
+
+
+
+
 module.exports = {
   // insert your locators and methods here
+ 
   fields: {
     //leave Patient
     exitPatientPageButton: {css:
@@ -92,15 +97,15 @@ module.exports = {
 
   editFirstName(name){
     I.waitForElement(this.fields.firstNameBox);
+    this.clearBox(this.fields.firstNameBox);
     I.wait();
-    I.clearField(this.fields.firstNameBox);
     I.fillField(this.fields.firstNameBox, name);
     I.wait();
   },
 
   editMiddleName(name){
     I.waitForElement(this.fields.middleNameBox);
-    I.clearField(this.fields.middleNameBox);
+    this.clearBox(this.fields.middleNameBox);
     I.wait();
     I.fillField(this.fields.middleNameBox, name);
     I.wait();
@@ -108,21 +113,23 @@ module.exports = {
 
   editLastName(name){
     I.waitForElement(this.fields.lastNameBox);
-    I.clearField(this.fields.lastNameBox);
+    this.clearBox(this.fields.lastNameBox);
+    I.wait();
     I.fillField(this.fields.lastNameBox, name);
     I.wait();
   },
   
   editMRN(mrn){
     I.waitForElement(this.fields.mrnBox);
-    I.clearField(this.fields.mrnBox);
+    this.clearBox(this.fields.mrnBox);
+    I.wait();
     I.fillField(this.fields.mrnBox, mrn);
     I.wait();
   },
 
   editBirthday(code){
     I.waitForElement(this.fields.birthdayBox);
-    I.clearField(this.fields.birthdayBox);
+    this.clearBox(this.fields.birthdayBox);
     I.wait();
     I.fillField(this.fields.birthdayBox, code);
     I.wait();
@@ -147,22 +154,28 @@ module.exports = {
   },
   
   editHomePhone(code){
+    //pause();
     I.waitForElement(this.fields.homePhoneBox, 4);
-    I.clearField(this.fields.homePhoneBox);
+    I.scrollPageToTop();
+    I.wait(3);
+    this.clearBox(this.fields.homePhoneBox);
+    I.wait();
     I.fillField(this.fields.homePhoneBox, code);
     I.wait();
   },
 
   editMobilePhone(code){
     I.waitForElement(this.fields.mobilePhoneBox, 4);
-    I.clearField(this.fields.mobilePhoneBox);
+    this.clearBox(this.fields.mobilePhoneBox);
+    I.wait();
     I.fillField(this.fields.mobilePhoneBox, code);
     I.wait();
   },
 
   editEmail(code){
     I.waitForElement(this.fields.emailBox, 4);
-    I.clearField(this.fields.emailBox);
+    this.clearBox(this.fields.emailBox);
+    I.wait();
     I.fillField(this.fields.emailBox, code);
     I.wait();
   },
@@ -184,9 +197,46 @@ module.exports = {
   },
 
   clickTaskCheckbox(taskNumber){
-    const path = `#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(taskNumber*2)}) > div > div > div:nth-child(2) > div:nth-child(1) > div`;
+    const path = `#appHome > main > div > div:nth-child(2) > div > div > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(taskNumber*2)}) > div > div > div:nth-child(2) > div:nth-child(1) > div > span > svg`;
     I.waitForElement({css: path}, 3);
-    I.click({css: path});
+    //pause();
+    I.moveCursorTo({css: path});
+    I.wait();
+    I.doubleClick({css: path});
     I.wait();
   },
+
+
+  clearBox(path){
+    I.waitForElement(path, 5);
+
+    //pause();
+    I.click(path);
+    //I.pressKey(['CommandOrControl', 'A', 'Backspace']);
+    //I.pressKey(['CommandOrControl', 'A']);
+    //I.pressKeyDown(['CommandOrControl', 'A']);
+    //I.pressKeyUp(['CommandOrControl', 'A']);
+    for(n = 0; n<100; n++){
+      I.pressKey('Backspace');
+    }
+    
+
+
+
+
+    // I.doubleClick(path);
+    // I.wait();
+    // //I.pressKey(['CommandOrControl', 'A']);
+    // I.pressKeyDown('CommandOrControl');
+    // I.pressKey('A');
+    // I.pressKeyUp('CommandOrControl');
+    // I.wait();
+    // I.pressKey('Backspace');
+    // //I.clearField(path);
+
+
+    I.wait();
+  },
+
+
 }
