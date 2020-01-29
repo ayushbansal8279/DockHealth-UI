@@ -1,4 +1,6 @@
 import ButtonBase from '@material-ui/core/ButtonBase';
+import Collapse from '@material-ui/core/Collapse';
+import Dialog from '@material-ui/core/Dialog';
 import FormControl from '@material-ui/core/FormControl';
 import InputBase from '@material-ui/core/InputBase';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -7,6 +9,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
+import { Link } from 'react-router';
 
 export const OnboardingBackground = styled.div`
   background-color: #fff;
@@ -110,7 +113,6 @@ export const OnboardingMainContainer = styled.main`
 `;
 
 export const OnboardingH1 = styled.h1`
-  color: #2e3a43;
   font-size: 2.125rem;
   margin: 0.25rem 0;
 `;
@@ -120,7 +122,6 @@ export const OnboardingH1Bold = styled(OnboardingH1)`
 `;
 
 export const OnboardingH2 = styled.h2`
-  color: #2e3a43;
   font-size: 1.3125rem;
   margin: 0.15rem 0;
 `;
@@ -130,7 +131,6 @@ export const OnboardingH2Bold = styled(OnboardingH2)`
 `;
 
 export const OnboardingH3 = styled.h3`
-  color: #2e3a43;
   font-size: 1rem;
   margin: 0.05rem 0;
 `;
@@ -140,13 +140,13 @@ export const OnboardingH3Bold = styled(OnboardingH3)`
 `;
 
 export const OnboardingH4 = styled.h4`
-  color: #2e3a43;
   font-size: 0.75rem;
   margin: 0.0125rem 0;
 `;
 
 export const OnboardingH4Error = styled(OnboardingH4)`
   color: #e40909;
+  margin: 0;
   user-select: none;
 `;
 
@@ -190,6 +190,10 @@ export const OnboardingSpacing3 = styled(OnboardingSpacing)`
 
 export const OnboardingSpacing4 = styled(OnboardingSpacing)`
   height: 2rem;
+`;
+
+export const OnboardingSpacing5 = styled(OnboardingSpacing)`
+  height: 4rem;
 `;
 
 const OnboardingHorizontalSpacing = styled.div`
@@ -248,8 +252,13 @@ export const OnboardingInputLabel = withStyles({
 
 export const OnboardingInputBase = withStyles({
   root: {
+    border: '0.0625rem solid #e4090900',
     height: '100%',
+    transition: 'all 0.2s ease-out',
     zIndex: 1,
+  },
+  error: {
+    border: '0.0625rem solid #e40909',
   },
   input: {
     borderRadius: '0.25rem',
@@ -267,39 +276,50 @@ export const OnboardingInputBase = withStyles({
 
 export const OnboardingButton = withStyles({
   root: {
-    borderRadius: '0.25rem',
     height: '4rem',
     padding: '0.5rem 1.5rem',
     transition: 'all 0.25s ease-out',
+    whiteSpace: 'nowrap',
   },
   small: {
-    height: '2.5rem',
-    padding: '0.5rem 0.75rem',
+    '&&': {
+      height: '2.5rem',
+      padding: '0.5rem 0.75rem',
+    },
+  },
+  narrow: {
+    '&&': {
+      minWidth: '12rem',
+    },
   },
   contained: {
-    backgroundColor: '#fdb42b',
-    color: '#565b5f',
-    minWidth: '15rem',
+    backgroundColor: '#125375',
+    color: '#fff',
+    minWidth: '20rem',
   },
   containedAutoWidth: {
-    backgroundColor: '#fdb42b',
-    color: '#565b5f',
+    backgroundColor: '#125375',
+    color: '#fff',
+    fontWeight: 'bold',
   },
   containedInverted: {
     backgroundColor: '#074A86',
     color: '#fff',
   },
   containedDisabled: {
-    backgroundColor: '#c8c8ce',
+    color: '#ffffff80',
   },
   containedAutoWidthDisabled: {
-    backgroundColor: '#c8c8ce',
+    color: '#ffffff80',
   },
   containedInvertedDisabled: {
     backgroundColor: '#c8c8ce',
   },
   outlined: {
     color: '#303538',
+  },
+  outlinedError: {
+    color: '#e40909',
   },
   outlinedLink: {
     color: '#0ca1c7',
@@ -337,7 +357,6 @@ export const MobileInputComponent = ({ inputRef, ...otherProps }) => (
       /\d/,
       /\d/,
     ]}
-    showMask
     guide
   />
 );
@@ -366,13 +385,43 @@ export const OnboardingInput = ({
           {...InputBaseProps}
         />
       </OnboardingFormControl>
-      <OnboardingH4Error>{error}</OnboardingH4Error>
+      <Collapse in={error} timeout={150}>
+        <OnboardingH4Error>{error}</OnboardingH4Error>
+      </Collapse>
     </>
   );
 };
+
+export const OnboardingDialog = withStyles({
+  paper: {
+    padding: '1.5rem 2rem',
+  },
+})(Dialog);
 
 export const OnboardingDivider = styled.div`
   background-color: #dedee2;
   height: 0.0625rem;
   width: 100%;
+`;
+
+export const OnboardingAnchor = styled.a`
+  color: #007cab;
+  filter: brightness(1);
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: #007cab;
+    filter: brightness(1.35);
+  }
+`;
+
+export const OnboardingLink = styled(Link)`
+  color: #007cab;
+  filter: brightness(1);
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: #007cab;
+    filter: brightness(1.35);
+  }
 `;

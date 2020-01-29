@@ -5,11 +5,12 @@ import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import * as userApi from '../../../api/user-api';
-import { showToast } from '../../../helpers/utility-functions';
+import { showAlert, showToast } from '../../../helpers/utility-functions';
 import UserProfileView from '../../UserProfileView';
 import {
   OnboardingButton,
   OnboardingH2,
+  OnboardingH2Bold,
   OnboardingHorizontalSpacing3,
 } from '../OnboardingTemplate.Components';
 import {
@@ -78,8 +79,8 @@ const onFormSubmit = ({
 
     goToOnboardingFinished();
   } catch {
-    showToast({
-      title: 'Error updating profile, please try again late',
+    showAlert({
+      title: 'Error updating profile, please try again later',
       status: 'error',
     });
   }
@@ -130,8 +131,8 @@ const OnboardingProfileView = () => {
               <OnboardingH2>Skip</OnboardingH2>
             </OnboardingButton>
             <OnboardingHorizontalSpacing3 />
-            <OnboardingButton type="submit" variant="containedAutoWidth">
-              <OnboardingH2>Save & Complete</OnboardingH2>
+            <OnboardingButton type="submit" variant="contained">
+              <OnboardingH2Bold>Save & Complete</OnboardingH2Bold>
             </OnboardingButton>
           </Grid>
         }

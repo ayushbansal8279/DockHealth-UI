@@ -1,14 +1,14 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useMount } from 'react-use';
 import { hashHistory } from 'react-router';
-
+import { useMount } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   OnboardingButton,
-  OnboardingH2,
+  OnboardingH1Bold,
+  OnboardingH2Bold,
   OnboardingH3,
   OnboardingH3Bold,
   OnboardingHorizontalSpacing3,
@@ -20,6 +20,10 @@ import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
 const goToBaaSigning = () => {
   hashHistory.push('/onboarding/baa-signing');
+};
+
+const goToOrgTeamSetup = () => {
+  hashHistory.push('/onboarding/team-org-setup');
 };
 
 const OnboardingBaaOverviewView = () => {
@@ -36,12 +40,12 @@ const OnboardingBaaOverviewView = () => {
 
   return (
     <div>
-      <OnboardingH3>Great! That was easy.</OnboardingH3>
+      <OnboardingH1Bold>THAT WAS EASY</OnboardingH1Bold>
       <OnboardingSpacing3 />
       <OnboardingH3>Next, the BAA...</OnboardingH3>
       <OnboardingSpacing4 />
       <OnboardingH3Bold>
-        What is a Business Associate Agreement (BAA)?
+        What is a Business Associate Agreement (BAA)
       </OnboardingH3Bold>
       <OnboardingSpacing2 />
       <OnboardingH3>
@@ -49,7 +53,7 @@ const OnboardingBaaOverviewView = () => {
         legally binding contract between Dock Health and your organization to
         securely and safely manage Protected Health Information (PHI).
       </OnboardingH3>
-      <OnboardingSpacing2 />
+      <OnboardingSpacing4 />
       <OnboardingH3>
         With this in place, it is safe to use the Dock Health platform for
         patient information provided you and your organization appropriately
@@ -73,16 +77,28 @@ const OnboardingBaaOverviewView = () => {
           <Grid container>
             <OnboardingButton
               onClick={showInvitationForm}
-              variant="containedAutoWidth"
+              variant="contained"
+              size="narrow"
             >
-              <OnboardingH2>No</OnboardingH2>
+              <OnboardingH2Bold>No</OnboardingH2Bold>
             </OnboardingButton>
             <OnboardingHorizontalSpacing3 />
             <OnboardingButton
               onClick={goToBaaSigning}
-              variant="containedAutoWidth"
+              variant="contained"
+              size="narrow"
             >
-              <OnboardingH2>Yes</OnboardingH2>
+              <OnboardingH2Bold>Yes</OnboardingH2Bold>
+            </OnboardingButton>
+          </Grid>
+          <OnboardingSpacing4 />
+          <Grid container>
+            <OnboardingButton
+              onClick={goToOrgTeamSetup}
+              variant="outlinedError"
+              size="narrow"
+            >
+              <OnboardingH2Bold>Skip</OnboardingH2Bold>
             </OnboardingButton>
           </Grid>
         </>

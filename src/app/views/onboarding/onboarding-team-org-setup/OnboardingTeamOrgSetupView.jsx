@@ -1,9 +1,10 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useRef, useState } from 'react';
+import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useToggle } from 'react-use';
-
+import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 import InvitationPanel from '../../self-serve/subscriptions/SubscriptionsView.InvitationPanel';
@@ -11,15 +12,28 @@ import SubscriptionsViewMembersTable from '../../self-serve/subscriptions/Subscr
 import {
   OnboardingButton,
   OnboardingDivider,
-  OnboardingH1,
-  OnboardingH2,
+  OnboardingH2Bold,
+  OnboardingH3,
+  OnboardingInput,
+  OnboardingSpacing1,
   OnboardingSpacing2,
   OnboardingSpacing4,
+  OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 
 const goToProfile = () => {
   hashHistory.push('/onboarding/profile');
 };
+
+const onSubmit = () => {
+  goToProfile();
+};
+
+const REQUIRED_MESSAGE = 'This field is required';
+
+const validationSchema = object().shape({
+  organizationName: string().required(REQUIRED_MESSAGE),
+});
 
 const InvitePeopleButton = () => {
   const invitePeopleButtonReference = useRef(null);
@@ -35,7 +49,7 @@ const InvitePeopleButton = () => {
   return (
     <>
       <OnboardingButton
-        variant="containedInverted"
+        variant="contained"
         size="small"
         onClick={() => togglePopoverOpen(true)}
       >
@@ -60,31 +74,55 @@ const OnboardingTeamOrgSetupView = () => {
     setOnboardingCurrentStep({ currentStep: 4 })(dispatch);
   });
 
+  const formMethods = useForm({
+    validationSchema,
+    revalidationMode: 'onChange',
+  });
+
   return (
-    <div>
-      <Grid container justify="space-between">
-        <OnboardingH1>Invite your team</OnboardingH1>
-        <InvitePeopleButton />
-      </Grid>
-      <SubscriptionsViewMembersTable
-        selectedUsers={selectedUsers}
-        setSelectedUsers={setSelectedUsers}
-        showJoined={false}
-        showSubscription={false}
-        fetchAllUsers={false}
-        showTableHeader={false}
-        HeaderAdornment={InvitePeopleButton}
-      />
-      <InvitationPanel />
-      <OnboardingSpacing2 />
-      <OnboardingDivider />
-      <OnboardingSpacing4 />
-      <Grid container justify="flex-end">
-        <OnboardingButton variant="contained" onClick={goToProfile}>
-          <OnboardingH2>Invite team & Set Up Org</OnboardingH2>
-        </OnboardingButton>
-      </Grid>
-    </div>
+    <form onSubmit={formMethods.handleSubmit(onSubmit)}>
+      <FormContext {...formMethods}>
+        <OnboardingH2Bold>Organization</OnboardingH2Bold>
+        <OnboardingSpacing2 />
+        <OnboardingInput
+          label="What's the name of your organization?"
+          name="organizationName"
+          placeholder="Enter signing organization name here"
+          required
+        />
+        <OnboardingSpacing1 />
+        <OnboardingH3>
+          You’re welcome to provide an organizational name that is different
+          from your formal legal name. This is what you would call your group or
+          practice.
+        </OnboardingH3>
+        <OnboardingSpacing5 />
+        <Grid container justify="space-between">
+          <OnboardingH2Bold>Invite your team</OnboardingH2Bold>
+          <InvitePeopleButton />
+        </Grid>
+        <SubscriptionsViewMembersTable
+          selectedUsers={selectedUsers}
+          setSelectedUsers={setSelectedUsers}
+          showJoined={false}
+          showSubscription={false}
+          fetchAllUsers={false}
+          showTableHeader={false}
+          HeaderAdornment={InvitePeopleButton}
+        />
+        <Grid container>
+          <InvitationPanel />
+        </Grid>
+        <OnboardingSpacing2 />
+        <OnboardingDivider />
+        <OnboardingSpacing4 />
+        <Grid container justify="flex-end">
+          <OnboardingButton variant="contained" type="submit">
+            <OnboardingH2Bold>Invite team</OnboardingH2Bold>
+          </OnboardingButton>
+        </Grid>
+      </FormContext>
+    </form>
   );
 };
 

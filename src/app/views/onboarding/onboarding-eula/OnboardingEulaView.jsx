@@ -3,21 +3,20 @@ import React, { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useScroll, useToggle } from 'react-use';
-
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import useBoolean from '../../../hooks/useBoolean';
 import PdfIcon from '../../../img/pdf-icon.svg';
 import {
+  OnboardingAnchor,
   OnboardingButton,
-  OnboardingH1,
-  OnboardingH2,
+  OnboardingH1Bold,
   OnboardingH2Bold,
   OnboardingH3,
   OnboardingHorizontalSpacing3,
+  OnboardingHorizontalSpacing4,
   OnboardingSpacing1,
   OnboardingSpacing2,
-  OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
 import EULA from './OnboardingEulaView.Eula';
@@ -51,18 +50,19 @@ const OnboardingEulaView = () => {
 
   return (
     <div>
-      <OnboardingH1>Welcome to Dock Health</OnboardingH1>
+      <OnboardingH1Bold>JUST A FEW STEPS</OnboardingH1Bold>
       <OnboardingH3>
         Protecting patient data and compliance with HIPAA is essential to our
         work and yours. We would love to setup you and your team to be HIPAA
-        complaint which requires signing a few quick documents.
+        compliant which requires signing a few quick documents.
       </OnboardingH3>
-      <OnboardingSpacing3 />
-      <OnboardingH2>First, the End User License Agreement...</OnboardingH2>
-      <OnboardingSpacing3 />
+      <OnboardingSpacing4 />
+      <OnboardingH3>First, the End User License Agreement...</OnboardingH3>
+      <OnboardingSpacing4 />
       <OnboardingH2Bold>
-        What is a End User License Agreement (EULA)?
+        What is a End User License Agreement (EULA)
       </OnboardingH2Bold>
+      <OnboardingSpacing1 />
       <OnboardingH3>
         This document outlines the terms users must agree to in order to use the
         Dock Health platform. Please review carefully.
@@ -77,27 +77,39 @@ const OnboardingEulaView = () => {
       <OnboardingSpacing2 />
       <EulaContainer ref={eulaContainerReference}>{EULA}</EulaContainer>
       <OnboardingSpacing4 />
-      <OnboardAcceptingGrid container justify="flex-end" alignItems="center">
-        <TaskCheckbox
-          checked={isEulaAccepted}
-          onChange={toggleEulaAccepted}
-          disabled={!isEulaRead}
-        />
-        <OnboardingHorizontalSpacing3 />
-        <OnboardingH3>
-          <span>I agree to the End User License Agreement and </span>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a>Privacy Policy</a>
-        </OnboardingH3>
-        <OnboardingHorizontalSpacing3 />
+      <OnboardAcceptingGrid
+        container
+        justify="space-between"
+        alignItems="center"
+        wrap="nowrap"
+      >
+        <Grid container direction="row" wrap="nowrap">
+          <OnboardingHorizontalSpacing4 />
+          <TaskCheckbox
+            checked={isEulaAccepted}
+            onChange={toggleEulaAccepted}
+            disabled={!isEulaRead}
+            color="#125375"
+          />
+          <OnboardingHorizontalSpacing3 />
+          <OnboardingH3>
+            <span>I agree to the End User License Agreement and </span>
+            <OnboardingAnchor
+              href="https://www.dock.health/privacypolicy"
+              target="_blank"
+            >
+              Privacy Policy
+            </OnboardingAnchor>
+          </OnboardingH3>
+        </Grid>
         <OnboardingButton
           disabled={continueButtonDisabled}
-          variant="contained"
+          variant="containedAutoWidth"
           onClick={() => {
             hashHistory.push('/onboarding/baa-overview');
           }}
         >
-          Continue
+          <OnboardingH2Bold>Agree & Continue</OnboardingH2Bold>
         </OnboardingButton>
       </OnboardAcceptingGrid>
       <OnboardAcceptingGrid container justify="flex-end" alignItems="center">

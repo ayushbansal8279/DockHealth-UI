@@ -1,28 +1,29 @@
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router';
 import { useMount, useToggle } from 'react-use';
-import Swal from 'sweetalert2';
 import { object, string } from 'yup';
-
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import { register as registerAction } from '../../../api/user-api';
+import { showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   MobileInputComponent,
   OnboardingAdditionalFormControlText,
   OnboardingButton,
+  OnboardingDialog,
+  OnboardingDivider,
   OnboardingFieldsRequiredLabel,
-  OnboardingH1Bold,
+  OnboardingH1,
   OnboardingH2,
+  OnboardingH2Bold,
   OnboardingH3,
   OnboardingH4Toggle,
   OnboardingInput,
+  OnboardingLink,
   OnboardingSpacing2,
+  OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
 
@@ -72,14 +73,12 @@ const onSubmit = ({ showDialog }) => async ({
 
     showDialog();
   } catch (error) {
-    Swal.fire({
+    showAlert({
       icon: 'error',
       title: 'Error',
       text:
         error?.message ?? 'Could not create account, please try again later',
     });
-    // fix z-index for drawer container
-    Swal.getContainer().style.zIndex = 10000;
   }
 };
 
@@ -103,15 +102,10 @@ const OnboardingCreateAccountView = () => {
 
   return (
     <div>
-      <OnboardingH1Bold>Welcome, to your free 30 day trial</OnboardingH1Bold>
-      <OnboardingH2>
-        Dock Health is a simple, HIPAA compliant platform for managing clinical
-        tasks as a team. Our mission is to offer a better way <b>to-do</b>{' '}
-        healthcare.
-      </OnboardingH2>
-      <OnboardingSpacing4 />
+      <OnboardingH1>Start your free 30 day trial </OnboardingH1>
+      <OnboardingSpacing3 />
       <OnboardingH2>Please create an account</OnboardingH2>
-      <OnboardingSpacing2 />
+      <OnboardingSpacing3 />
       <OnboardingFieldsRequiredLabel>
         All fields required
       </OnboardingFieldsRequiredLabel>
@@ -185,31 +179,34 @@ const OnboardingCreateAccountView = () => {
             <Grid item sm={12} container justify="flex-end">
               <OnboardingSpacing4 />
               <OnboardingButton type="submit" variant="contained">
-                <OnboardingH2>Continue</OnboardingH2>
+                <OnboardingH2Bold>Continue</OnboardingH2Bold>
               </OnboardingButton>
               <OnboardingSpacing4 />
               <OnboardingH2>
                 <span>I already have an account. </span>
-                <Link to="/login">Sign in</Link>
+                <OnboardingLink to="/login">Sign in</OnboardingLink>
               </OnboardingH2>
             </Grid>
           </Grid>
-          <Dialog open={isDialogShown}>
-            <DialogContent>
-              <OnboardingH2>
-                We just sent an email to {email} please go to your email and
-                click on the link so that we can confirm your email address.
-              </OnboardingH2>
-              <Grid container justify="space-around">
-                <OnboardingButton variant="outlinedLink">
-                  Resend email
-                </OnboardingButton>
-                <OnboardingButton onClick={hideDialog} variant="outlinedLink">
-                  Change email address
-                </OnboardingButton>
-              </Grid>
-            </DialogContent>
-          </Dialog>
+          <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
+            <OnboardingH2>Confirm your email </OnboardingH2>
+            <OnboardingSpacing2 />
+            <OnboardingDivider />
+            <OnboardingSpacing2 />
+            <OnboardingH2>
+              We just sent an email to {email} please go to your email and click
+              on the link so that we can confirm your email address.
+            </OnboardingH2>
+            <OnboardingSpacing4 />
+            <Grid container justify="space-between" wrap="nowrap">
+              <OnboardingButton variant="containedAutoWidth">
+                <OnboardingH2Bold>Resend email</OnboardingH2Bold>
+              </OnboardingButton>
+              <OnboardingButton onClick={hideDialog} variant="contained">
+                <OnboardingH2Bold>Change email address</OnboardingH2Bold>
+              </OnboardingButton>
+            </Grid>
+          </OnboardingDialog>
         </FormContext>
       </form>
     </div>

@@ -19,8 +19,9 @@ const CheckboxContainer = styled.div`
     display: inline-flex;
     height: 30px;
     justify-content: center;
+    opacity: ${props => (props.disabled ? 0.5 : 1)};
     position: relative;
-    transition: border 0.2s ease-out, background-color 0.2s ease-out;
+    transition: all 0.2s ease-out;
     width: 30px;
 
     &:hover {

@@ -7,6 +7,7 @@ import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-a
 import {
   OnboardingButton,
   OnboardingH2,
+  OnboardingH2Bold,
   OnboardingSpacing3,
 } from '../OnboardingTemplate.Components';
 
@@ -31,7 +32,7 @@ const OnboardingFinishedView = () => {
       <OnboardingSpacing3 />
       <Grid container justify="flex-end">
         <OnboardingButton variant="contained" onClick={goToMainPage}>
-          <OnboardingH2>Start using Dock</OnboardingH2>
+          <OnboardingH2Bold>Start using Dock</OnboardingH2Bold>
         </OnboardingButton>
       </Grid>
     </div>

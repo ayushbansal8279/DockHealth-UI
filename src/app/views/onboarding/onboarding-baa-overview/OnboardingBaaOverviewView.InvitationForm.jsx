@@ -2,14 +2,15 @@ import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import Swal from 'sweetalert2';
 import { object, string } from 'yup';
-
 import { invitePersonToOrganization } from '../../../actions/people-actions';
+import { showAlert, showToast } from '../../../helpers/utility-functions';
 import {
   MobileInputComponent,
   OnboardingButton,
   OnboardingH1,
+  OnboardingH2,
+  OnboardingH2Bold,
   OnboardingHorizontalSpacing3,
   OnboardingInput,
   OnboardingSpacing3,
@@ -44,25 +45,17 @@ const onInvitationSubmit = ({ dispatch }) => async ({
       mobilePhoneNumber: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
     })(dispatch);
 
-    Swal.fire({
+    showToast({
       icon: 'success',
       title: 'User invited successfully',
-      toast: true,
-      timer: 3000,
-      timerProgressBar: true,
-      position: 'top-end',
     });
-    // fix z-index for drawer container
-    Swal.getContainer().style.zIndex = 10000;
   } catch (error) {
-    Swal.fire({
+    showAlert({
       icon: 'error',
       title: 'Error',
       text:
         error?.message ?? 'Could not create account, please try again later',
     });
-    // fix z-index for drawer container
-    Swal.getContainer().style.zIndex = 10000;
   }
 };
 
@@ -118,12 +111,15 @@ const InvitationForm = ({ hideInvitationForm }) => {
             <OnboardingSpacing3 />
           </Grid>
           <Grid item sm={12} container justify="flex-end">
-            <OnboardingButton variant="outlined" onClick={hideInvitationForm}>
-              Cancel
+            <OnboardingButton
+              variant="outlinedLink"
+              onClick={hideInvitationForm}
+            >
+              <OnboardingH2>Cancel</OnboardingH2>
             </OnboardingButton>
             <OnboardingHorizontalSpacing3 />
             <OnboardingButton variant="contained" type="submit">
-              Send invite
+              <OnboardingH2Bold>Send invite</OnboardingH2Bold>
             </OnboardingButton>
           </Grid>
         </Grid>

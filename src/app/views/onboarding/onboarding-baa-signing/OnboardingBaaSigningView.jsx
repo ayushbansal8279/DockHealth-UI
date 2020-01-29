@@ -12,11 +12,12 @@ import {
   OnboardingButton,
   OnboardingH2,
   OnboardingH2Bold,
-  OnboardingH3,
   OnboardingInput,
   OnboardingSpacing1,
   OnboardingSpacing2,
+  OnboardingSpacing3,
   OnboardingSpacing4,
+  OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 import BAA from './OnboardingBaaSigningView.Baa';
 import {
@@ -29,7 +30,6 @@ const REQUIRED_MESSAGE = 'This field is required';
 
 const validationSchema = object().shape({
   legalEntityName: string().required(REQUIRED_MESSAGE),
-  organizationName: string().required(REQUIRED_MESSAGE),
   signature: string().required(REQUIRED_MESSAGE),
 });
 
@@ -68,7 +68,7 @@ const OnboardingBaaSigningView = () => {
         <OnboardingH2>
           Last but not least, tell us about yourself...
         </OnboardingH2>
-        <OnboardingSpacing4 />
+        <OnboardingSpacing5 />
         <OnboardingH2Bold>Legal entity name</OnboardingH2Bold>
         <OnboardingSpacing2 />
         <OnboardingInput
@@ -82,21 +82,6 @@ const OnboardingBaaSigningView = () => {
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porta sem
           nec.
         </LegalEntityExamplesLabel>
-        <OnboardingSpacing4 />
-        <OnboardingH2Bold>Organization</OnboardingH2Bold>
-        <OnboardingSpacing2 />
-        <OnboardingInput
-          label="What's the name of your organization?"
-          name="organizationName"
-          placeholder="Enter signing organization name here"
-          required
-        />
-        <OnboardingSpacing1 />
-        <OnboardingH3>
-          You’re welcome to provide an organizational name that is different
-          from your formal legal name. This is what you would call your group or
-          practice.
-        </OnboardingH3>
         <OnboardingSpacing4 />
         <OnboardingH2>
           This is a legal agreement between you and Dock Health
@@ -117,19 +102,20 @@ const OnboardingBaaSigningView = () => {
           required
         />
         <OnboardingSpacing4 />
-        <Grid container justify="flex-end">
+        <Grid container alignItems="flex-end" direction="column">
           <OnboardingButton
             type="submit"
-            variant="containedAutoWidth"
+            variant="contained"
             disabled={!isBaaRead}
           >
-            <OnboardingH2>Agree & continue</OnboardingH2>
+            <OnboardingH2Bold>Agree & continue</OnboardingH2Bold>
           </OnboardingButton>
+          <OnboardingSpacing3 />
+          <BaaAcceptingLabel>
+            You must scroll to the bottom of the agreement in order to move
+            forward.
+          </BaaAcceptingLabel>
         </Grid>
-        <BaaAcceptingLabel>
-          You must scroll to the bottom of the agreement in order to move
-          forward.
-        </BaaAcceptingLabel>
       </FormContext>
     </form>
   );
