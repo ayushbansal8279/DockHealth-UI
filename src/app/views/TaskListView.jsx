@@ -21,6 +21,7 @@ import {
   onTaskListInvitationRejected,
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
+import { setHeader } from '../actions/header-actions';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -65,11 +66,29 @@ class TaskListView extends PureComponent {
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'Lists',
     });
+
+    this.resetHeader();
   }
 
-  componentDidUpdate() {
-    enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
+  componentDidUpdate({ isFetching: previousIsFetching }) {
+    const { isFetching } = this.props;
+
+    if (isFetching !== previousIsFetching) {
+      this.resetHeader();
+    }
   }
+
+  resetHeader = () => {
+    const { setHeaderBound, isFetching } = this.props;
+    setHeaderBound({
+      layout: [
+        {
+          key: `header${isFetching ? '-fetching' : ''}`,
+          component: <GenericHeader isFetching={false}>Lists</GenericHeader>,
+        },
+      ],
+    });
+  };
 
   addTaskList = () => {
     const { taskListAction } = this.props;
@@ -270,7 +289,6 @@ class TaskListView extends PureComponent {
 
     return (
       <Grid container direction="column" alignItems="center" spacing={8}>
-        <GenericHeader isFetching={false}>Lists</GenericHeader>
         <SafariFixGrid
           container
           alignItems="center"
@@ -337,6 +355,7 @@ function mapDispatchToProps(dispatch) {
   return {
     taskListAction: bindActionCreators(TaskListActions, dispatch),
     invitationAction: bindActionCreators(InvitationActions, dispatch),
+    setHeaderBound: setHeader(dispatch),
   };
 }
 
