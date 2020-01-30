@@ -95,6 +95,10 @@ module.exports = {
 
   pickFilter(index, stupidbullshit){//0 Resets the filter. stupidbullshit is an unknown variable for now.
     I.waitForElement(this.fields.filterShield, 3);
+    I.scrollTo(this.fields.filterShield);
+    I.scrollPageToTop();
+    I.wait(4);
+    //pause();
     I.click(this.fields.filterShield);
     I.wait();
     if(index<1){
@@ -150,6 +154,10 @@ module.exports = {
 
   deleteTask(){
     I.waitForElement(this.fields.tskDelete, 3);
+    I.scrollPageToBottom();
+    I.wait();
+    I.scrollTo(this.fields.tskDelete);
+    I.wait(3);
     I.click(this.fields.tskDelete);
     I.wait();
   },
@@ -210,8 +218,11 @@ module.exports = {
 
   clickShowCompletedTasks(){
     I.waitForElement(this.fields.showCompletedTasksButton, 4);
+    I.scrollPageToBottom();
+    I.wait(3);
+    //pause();
     I.click(this.fields.showCompletedTasksButton);
-    I.wait();
+    I.wait(2);
   },  
 
 

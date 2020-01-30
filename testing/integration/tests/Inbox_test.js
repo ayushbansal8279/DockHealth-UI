@@ -46,12 +46,10 @@ Scenario('Make a task, assign it to yourself, unassign it. self cleaning', (I, i
   inboxPg.assignUser(1);
   I.wait();
   inboxPg.exitMadeTask();
-  I.wait();
-  //pause();
+  I.wait(3);
   inboxPg.clickTask(1);
   I.waitForElement(assignedToEmblem, 10);
   within(assignedToEmblem, ()=>{
-    //pause();
     I.dontSee('GH');
   });
   //pause();
@@ -92,7 +90,7 @@ Scenario('Check completed tasks', (I, inboxPg, tskLstPg) => {
   I.dontSee('Super Salmon Big ol Blast attack');
   I.wait();
   inboxPg.clickShowCompletedTasks();
-  I.wait();
+  I.wait(3);
   //pause();
   I.see('Super Salmon Big ol Blast attack');
 });

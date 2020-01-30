@@ -515,7 +515,7 @@ module.exports = {
     I.wait();
     I.waitForElement(deleteButtonLocator, 4);
     //TODO trying to reach the delete button blows up the process...
-    // I.scrollTo(deleteButtonLocator);
+    I.scrollTo(deleteButtonLocator);
     // I.wait();
     I.wait(4);
     I.click(deleteButtonLocator);
