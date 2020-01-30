@@ -69,6 +69,7 @@ export default () => {
         <SubscriptionsPlansView
           hideSubscriptionPlans={hideSubscriptionPlans}
           organizationId={organizationId}
+          organization={organization}
           isCancelVisible={!subscriptionPlanData.planIsTrial}
         />
       ) : (

@@ -1,5 +1,5 @@
 import { times } from 'ramda';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useToggle } from 'react-use';
 import { selectSubscriptionPlan } from '../../../../api/organization-api';
 import {
@@ -7,7 +7,10 @@ import {
   StyledButton,
 } from '../SubscriptionsView.Styled';
 import PlanCardsContainer from './SubscriptionsPlansView.PlanCardsContainer';
-import { subscriptionFeatures } from './SubscriptionsPlansView.PlanData';
+import {
+  subscriptionFeatures,
+  subscriptionPlanData,
+} from './SubscriptionsPlansView.PlanData';
 import { H2 } from './SubscriptionsPlansView.Styled';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 
@@ -29,6 +32,7 @@ const onSubscriptionPlanChosen = ({
 
 const SubscriptionsPlansView = ({
   organizationId,
+  organization,
   hideSubscriptionPlans,
   isCancelVisible,
 }) => {
@@ -40,6 +44,24 @@ const SubscriptionsPlansView = ({
     () => useRef(null),
     subscriptionFeatures.length,
   );
+
+  useEffect(() => {
+    if (organization) {
+      const { subscriptionDetails } = organization;
+
+      toggleAnnualPayment(
+        subscriptionDetails.billingFrequency === BILLING_FREQUENCY.ANNUAL,
+      );
+
+      const newChosenPlan =
+        subscriptionPlanData.find(
+          ({ subscriptionPlan }) =>
+            subscriptionPlan === subscriptionDetails.subscriptionPlan,
+        ) ?? null;
+
+      setChosenPlan(newChosenPlan);
+    }
+  }, [organization, toggleAnnualPayment]);
 
   return (
     <>
