@@ -182,6 +182,7 @@ Scenario('Click Filters. self clean', async (I, tasksPg) => {
   tasksPg.postTask("Gorgo");
   tasksPg.flagTask();
   tasksPg.exitTask(0);
+  
   //pause();
   //TODO tasksPg.grabShownTasks();
   tasksPg.clickFilter(2);

@@ -97,7 +97,7 @@ module.exports = {
 
     subtaskAssignedShield: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div:nth-child(1) > input',
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div:nth-child(1)', //> input
     },
 
     subtaskAssignedFirstUser: {
@@ -296,7 +296,8 @@ module.exports = {
     //pause();
     taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex+2}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(${2-brokenGarbage}) > div > span > span`;
     I.waitForElement({css: taskSidebarLocator}, 11);
-    I.scrollTo({css: taskSidebarLocator});
+    I.scrollPageToTop(); //({css: taskSidebarLocator});
+    I.wait(2);
     I.click({css: taskSidebarLocator});
     I.wait();
   },
@@ -438,12 +439,17 @@ module.exports = {
     I.waitForElement(this.fields.subtaskTitle, 4);
     I.fillField(this.fields.subtaskTitle, title);
     I.wait();
+    //this.saveSubtask();
   },
 
   assignSubtaskTo(userIndex){
     //TODO this method refuses to click assignedLocator. Explitives
     assignedLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${userIndex})`;
+    
+    I.scrollPageToTop();
     I.waitForElement(this.fields.subtaskAssignedShield);
+    I.wait();
+    //pause();
     I.click(this.fields.subtaskAssignedShield);
     //pause();
     //I.wait(4);
@@ -468,11 +474,13 @@ module.exports = {
 
   //Filterss
   clickFilter(index){//Index starts at 1 for all tasks
+    //pause();
+
     I.waitForElement(this.fields.filtersWrapper, 3);
     const address = `${this.fields.filtersWrapper.css} > div:nth-child(${index})`;
     I.wait();
     I.click(address);
-    I.wait();
+    I.wait(3);
   },
 
   //Searchbar
@@ -509,6 +517,7 @@ module.exports = {
     //TODO trying to reach the delete button blows up the process...
     // I.scrollTo(deleteButtonLocator);
     // I.wait();
+    I.wait(4);
     I.click(deleteButtonLocator);
     I.wait(2);
   },
