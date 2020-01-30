@@ -12,9 +12,10 @@ Scenario('add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     singlePersonPage.addTask('lets build lego sets');
     I.wait(2);
     I.see('lets build lego sets');
+    
 });
 
-//TODO The path required for clickTask(x) is always changing. Plus I need to find how to pick which list im choosing from.
+//TODO The path required for clickTask(x, y) is always changing. Plus I need to find how to pick which list im choosing from.
 Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
@@ -23,7 +24,7 @@ Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPa
     I.wait(2);
     peoplePage.clickPerson(4);
     I.wait(2);
-    singlePersonPage.clickTask(1);
+    singlePersonPage.clickTask(1, 2);
     singlePersonPage.editTaskName("Gazoolgo");
     I.wait(2);
     I.see('Gazoolgo');
@@ -44,29 +45,32 @@ Scenario('Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPag
     I.see('This person will no longer have access to Dock Health.');
 });
 
-
+//This test fails because the filter doesnt work for users.
 Scenario('Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
     peoplePage.makeSearch('Halfling');
-    I.wait();
+    I.wait(2);
     peoplePage.clickPerson(1);
     I.wait(2);
     //TODO This crap.
 
     const targetNumber = parseInt(await singlePersonPage.grabNumberOfTasks());
     
-    I.wait();
+    I.wait(2);
     singlePersonPage.pickFilter(3, 11);
-    I.wait(3);
+    I.wait(4);
+
+    //pause();
+    
     I.see('This IS a flagged task.');
     I.dontSee('This is not a flagged task');
     I.wait(2);
 
     const nmbr = parseInt(await singlePersonPage.grabNumberOfTasks());
 
-    I.wait();
+    I.wait(2);
     assert(nmbr>=targetNumber, `Failed! # of flagged tasks: ${nmbr} should be less than the # of ALL tasks: ${targetNumber}`);
     //TODO Wait until this feature works.
     //TODO make sure this test tests the number of tasks in a list also.
@@ -76,6 +80,7 @@ Scenario('Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, single
 Scenario('Test full view, slim view.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
+    I.wait(2);
     peoplePage.disarmNavigationSidebar();
     peoplePage.makeSearch('Halfling');
     I.wait(2);

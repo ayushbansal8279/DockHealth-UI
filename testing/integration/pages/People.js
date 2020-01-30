@@ -25,6 +25,8 @@ module.exports = {
   },
 
   disarmNavigationSidebar(){
+    I.scrollPageToTop();
+    I.wait(3);
     I.waitForElement(this.fields.searchBar, 5);
     I.click(this.fields.searchBar);
     I.wait();

@@ -4,7 +4,7 @@ module.exports = {
 
   fields:{
     inboxAddTaskField:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > input'},
-    inboxAddTaskButton:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4) > button'},
+    inboxAddTaskButton:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div > form > div > div > div:nth-child(4)'}, // > button
 
     archiveThisPersonButton:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(3) > button'},
     exitArchivePopup:{css: 'body > div.jss271.jss620  > div:nth-child(2) > div > div > button'},
@@ -47,6 +47,7 @@ module.exports = {
       I.click(path);
       I.wait();
     }
+    //pause();
   },
 
   grabNumberOfTasks(){
@@ -57,6 +58,7 @@ module.exports = {
   //NEW MEMES
 
   clickArchivePerson(){
+    //pause();
     I.waitForElement(this.fields.archiveThisPersonButton, 4);
     I.click(this.fields.archiveThisPersonButton);
     I.wait(2);
@@ -79,17 +81,22 @@ module.exports = {
     I.waitForElement(this.fields.inboxAddTaskField, 5);
     I.fillField(this.fields.inboxAddTaskField, taskName);
     I.wait(2);
+    //pause();
     I.waitForElement(this.fields.inboxAddTaskButton, 5);
-    I.scrollTo(this.fields.inboxAddTaskButton);
+    //I.scrollTo(this.fields.inboxAddTaskButton);
+    I.scrollPageToTop();
     I.wait();
     I.click(this.fields.inboxAddTaskButton);
     I.wait(2);
   },
 
-  clickTask(number){
+  clickTask(number, somebullcrap){ //This Path keeps changing.
     //The path to an individual task in the inbox list is changing between tests. Its the first div with an nth:child
-    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(2*number)}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div > span > span`};
-    I.waitForElement(path, 5);
+    //const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(2*number)}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div > span > span`};
+    //const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(2*number)}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div > span > span`};
+    const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div:nth-child(2) > div:nth-child(${1+(2*number)}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(${somebullcrap}) > div > span > span`};
+    //pause();
+    I.waitForElement(path, 7);
     I.click(path);
     I.wait();
   },
@@ -102,6 +109,9 @@ module.exports = {
 
   editTaskName(name){
     I.waitForElement(this.fields.editBarTaskName, 5);
+    // I.click(this.fields.editBarTaskName);
+    // I.wait();
+    //pause();
     I.click(this.fields.editBarTaskName);
     I.wait();
     I.clearField(this.fields.editBarTaskName); //This line never fires.
