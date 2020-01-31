@@ -16,6 +16,11 @@ import {
 } from './SubscriptionsView.Styled';
 import { getSubscriptionPlanData } from './SubscriptionsView.Utilities';
 import { getBillingEstimate } from '../../../actions/organization-actions';
+import {
+  loading,
+  findAllUsersByOrganizationId,
+} from '../../../actions/people-actions';
+import * as userApi from '../../../api/user-api';
 
 export default () => {
   const dispatch = useDispatch();
@@ -56,6 +61,15 @@ export default () => {
     });
 
     getBillingEstimate({ organizationId })(dispatch);
+
+    userApi.isAuthenticated({
+      isLoggedIn: loggedIn => {
+        if (loggedIn) {
+          loading()(dispatch);
+          findAllUsersByOrganizationId()(dispatch);
+        }
+      },
+    });
   });
 
   const subscriptionPlanData = getSubscriptionPlanData({
