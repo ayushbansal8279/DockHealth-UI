@@ -39,6 +39,9 @@ export const NextButton = withStyles({
     backgroundColor: '#007cab',
     color: '#fff',
     cursor: 'pointer',
+    '&:hover, &:active, &:focus, &:focus-within': {
+      color: '#f3f5f6',
+    },
   },
   inactive: {
     backgroundColor: '#125375',

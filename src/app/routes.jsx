@@ -26,6 +26,7 @@ import EmailSent from './views/auth/EmailSent';
 import ForgotPassword from './views/auth/ForgotPassword';
 import LoginPassword from './views/auth/LoginPassword';
 import LoginUser from './views/auth/LoginUser';
+import LoginWelcome from './views/auth/LoginWelcome';
 import Logout from './views/auth/Logout';
 import Register from './views/auth/Register';
 import ResendCode from './views/auth/ResendCode';
@@ -282,6 +283,7 @@ export const Routes = ({ store }) => {
             />
             <Route path="/login" component={LoginUser} />
             <Route path="/loginUser" component={LoginPassword} />
+            <Route path="/welcome" component={LoginWelcome} />
             <Route path="/logout" component={Logout} />
             <Route path="/resendCode" component={ResendCode} />
             <Route path="/forgotPassword" component={ForgotPassword} />
