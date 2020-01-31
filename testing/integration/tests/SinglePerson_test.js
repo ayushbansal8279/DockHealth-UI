@@ -59,7 +59,7 @@ Scenario('4 - Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, si
     const targetNumber = parseInt(await singlePersonPage.grabNumberOfTasks());
     
     I.wait(2);
-    singlePersonPage.pickFilter(3, 12);
+    singlePersonPage.pickFilter(3, 13);
     I.wait(4);
 
     //pause();
