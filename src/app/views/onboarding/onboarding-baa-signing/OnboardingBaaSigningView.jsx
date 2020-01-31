@@ -1,5 +1,5 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -31,6 +31,7 @@ const REQUIRED_MESSAGE = 'This field is required';
 const validationSchema = object().shape({
   legalEntityName: string().required(REQUIRED_MESSAGE),
   signature: string().required(REQUIRED_MESSAGE),
+  signatureId: string().required(REQUIRED_MESSAGE),
 });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -47,7 +48,24 @@ const OnboardingBaaSigningView = () => {
 
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 3 })(dispatch);
+
+    // eslint-disable-next-line no-unused-expressions
+    window?.HelloSign.init('HELLOSIGN_ID');
   });
+
+  const openHelloSign = useCallback(() => {
+    // eslint-disable-next-line no-unused-expressions
+    window?.HelloSign.open({
+      url: 'SIGNING_URL',
+      allowCancel: true,
+      messageListener: eventData => {
+        if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
+          formMethods.setValue('signatureId', eventData.signature_id);
+          formMethods.setValue('signature', 'SIGNED');
+        }
+      },
+    });
+  }, [formMethods]);
 
   const baaContainerReference = useRef(null);
   const { y: scrollY } = useScroll(baaContainerReference);
@@ -65,6 +83,7 @@ const OnboardingBaaSigningView = () => {
   return (
     <form onSubmit={formMethods.handleSubmit(onSubmit())}>
       <FormContext {...formMethods}>
+        <input type="hidden" name="signatureId" />
         <OnboardingH1Bold>LAST BUT NOT LEAST,</OnboardingH1Bold>
         <OnboardingH1Bold>TELL US ABOUT YOURSELF...</OnboardingH1Bold>
         <OnboardingSpacing4 />
@@ -99,6 +118,10 @@ const OnboardingBaaSigningView = () => {
           name="signature"
           placeholder="Signature"
           required
+          InputBaseProps={{
+            disabled: true,
+            onClick: openHelloSign,
+          }}
         />
         <OnboardingSpacing4 />
         <Grid container alignItems="flex-end" direction="column">

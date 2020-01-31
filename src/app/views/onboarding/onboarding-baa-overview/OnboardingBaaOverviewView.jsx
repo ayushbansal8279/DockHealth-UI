@@ -23,6 +23,10 @@ const goToBaaSigning = () => {
   hashHistory.push('/onboarding/baa-signing');
 };
 
+const goToTeamOrgSetup = () => {
+  hashHistory.push('/onboarding/team-org-setup');
+};
+
 const OnboardingBaaOverviewView = () => {
   const dispatch = useDispatch();
   useMount(() => {
@@ -88,7 +92,16 @@ const OnboardingBaaOverviewView = () => {
               <OnboardingH2Bold>Yes</OnboardingH2Bold>
             </OnboardingButton>
           </Grid>
-          <OnboardingSpacing4 />
+          <OnboardingSpacing3 />
+          <Grid container>
+            <OnboardingButton
+              onClick={goToTeamOrgSetup}
+              variant="outlinedError"
+              size="narrow"
+            >
+              <OnboardingH2Bold>Skip</OnboardingH2Bold>
+            </OnboardingButton>
+          </Grid>
         </>
       )}
       {isInvitationFormShown && (

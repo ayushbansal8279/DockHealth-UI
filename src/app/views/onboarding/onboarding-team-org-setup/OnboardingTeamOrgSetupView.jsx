@@ -106,7 +106,7 @@ const OnboardingTeamOrgSetupView = () => {
           setSelectedUsers={setSelectedUsers}
           showJoined={false}
           showSubscription={false}
-          fetchAllUsers={false}
+          fetchAllUsers
           showTableHeader={false}
           HeaderAdornment={InvitePeopleButton}
         />

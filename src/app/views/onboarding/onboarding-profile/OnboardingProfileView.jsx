@@ -91,21 +91,6 @@ const OnboardingProfileView = () => {
 
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 5 })(dispatch);
-
-    userApi.isAuthenticated({
-      isLoggedIn: (_, user) => {
-        userApi.updateStoreWithCurrentUser(user);
-
-        userApi.getUserByEmail(user.username, user).then(data => {
-          if (data.profileThumbnailPictureHash) {
-            userApi.getUserProfilePic(data.userId, 'PROFILE');
-          }
-
-          userApi.getAllSpecialties();
-          userApi.getAllTitles();
-        });
-      },
-    });
   });
 
   const otherEntries = useSelector(store => {

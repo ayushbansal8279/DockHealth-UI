@@ -270,6 +270,10 @@ export const OnboardingInputBase = withStyles({
       border: 0,
       boxShadow: 'none',
     },
+    '&[readonly], &[disabled]': {
+      backgroundColor: '#f3f5f6',
+      cursor: 'pointer',
+    },
   },
 })(InputBase);
 

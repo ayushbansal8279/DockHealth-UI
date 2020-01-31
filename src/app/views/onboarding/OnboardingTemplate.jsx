@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
-import { isAuthenticated } from '../../api/user-api';
+import {
+  findAllUsersByOrganizationId,
+  loading,
+} from '../../actions/people-actions';
+import * as userApi from '../../api/user-api';
 import {
   OnboardingBackground,
   OnboardingLogo,
@@ -32,8 +36,9 @@ const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
+const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
 
-const isLoggedIn = loggedIn => {
+const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   const { pathname } = hashHistory.getCurrentLocation();
 
   if (!loggedIn && pathname !== CREATE_ACCOUNT_PATH) {
@@ -43,6 +48,22 @@ const isLoggedIn = loggedIn => {
   if (loggedIn && pathname === CREATE_ACCOUNT_PATH) {
     hashHistory.replace(EULA_PATH);
   }
+
+  if (loggedIn && pathname === TEAM_ORG_SETUP_PATH) {
+    userApi.updateStoreWithCurrentUser(user);
+
+    userApi.getUserByEmail(user.username, user).then(data => {
+      if (data.profileThumbnailPictureHash) {
+        userApi.getUserProfilePic(data.userId, 'PROFILE');
+      }
+
+      loading()(dispatch);
+      findAllUsersByOrganizationId()(dispatch);
+
+      userApi.getAllSpecialties();
+      userApi.getAllTitles();
+    });
+  }
 };
 
 const OnboardingTemplate = ({ children }) => {
@@ -50,9 +71,13 @@ const OnboardingTemplate = ({ children }) => {
     store => store.onboardingProgress,
   );
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    isAuthenticated({ isLoggedIn });
-  }, [children]);
+    userApi.isAuthenticated({
+      isLoggedIn: isLoggedIn({ dispatch }),
+    });
+  }, [children, dispatch]);
 
   return (
     <OnboardingBackground>
