@@ -1,32 +1,49 @@
 import { times } from 'ramda';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { useToggle } from 'react-use';
+import { setPaymentNewPlan } from '../../../../actions/organization-actions';
 import { selectSubscriptionPlan } from '../../../../api/organization-api';
 import {
   BottomButtonContainer,
   StyledButton,
 } from '../SubscriptionsView.Styled';
+import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 import PlanCardsContainer from './SubscriptionsPlansView.PlanCardsContainer';
 import {
   subscriptionFeatures,
   subscriptionPlanData,
+  SUBSCRIPTION_PLAN_KEYS,
 } from './SubscriptionsPlansView.PlanData';
-import { H2 } from './SubscriptionsPlansView.Styled';
-import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
+
+const goToSubscriptionPayment = () => {
+  hashHistory.push('/subscription-payment');
+};
 
 const onSubscriptionPlanChosen = ({
+  annualPayment,
   chosenPlan,
   organizationId,
   billingFrequency,
+  dispatch,
 }) => () => {
   const { subscriptionPlan } = chosenPlan || {};
 
   if (subscriptionPlan) {
-    selectSubscriptionPlan({
-      organizationId,
-      subscriptionPlan,
-      billingFrequency,
-    });
+    const newPlan = {
+      ...chosenPlan,
+      annualPayment,
+      selectSubscriptionPlan: () =>
+        selectSubscriptionPlan({
+          organizationId,
+          subscriptionPlan,
+          billingFrequency,
+        }),
+    };
+
+    setPaymentNewPlan({ newPlan })(dispatch);
+    goToSubscriptionPayment();
   }
 };
 
@@ -39,6 +56,10 @@ const SubscriptionsPlansView = ({
   const [annualPayment, toggleAnnualPayment] = useToggle(true);
   const [featureListExpanded, toggleFeatureListExpanded] = useToggle(false);
   const [chosenPlan, setChosenPlan] = useState(null);
+  const [currentPlan, setCurrentPlan] = useState(null);
+
+  const dispatch = useDispatch();
+
   const featureRowReferences = times(
     // eslint-disable-next-line react-hooks/rules-of-hooks
     () => useRef(null),
@@ -53,15 +74,21 @@ const SubscriptionsPlansView = ({
         subscriptionDetails.billingFrequency === BILLING_FREQUENCY.ANNUAL,
       );
 
-      const newChosenPlan =
+      const newCurrentPlan =
         subscriptionPlanData.find(
           ({ subscriptionPlan }) =>
             subscriptionPlan === subscriptionDetails.subscriptionPlan,
         ) ?? null;
 
-      setChosenPlan(newChosenPlan);
+      setCurrentPlan(newCurrentPlan);
+      setChosenPlan(newCurrentPlan);
     }
   }, [organization, toggleAnnualPayment]);
+
+  const buyButtonDisabled =
+    !chosenPlan ||
+    chosenPlan?.key === SUBSCRIPTION_PLAN_KEYS.ENTERPRISE ||
+    chosenPlan?.key === currentPlan?.key;
 
   return (
     <>
@@ -77,11 +104,11 @@ const SubscriptionsPlansView = ({
       <BottomButtonContainer container justify="flex-end">
         {isCancelVisible && (
           <StyledButton variant="outlined" onClick={hideSubscriptionPlans}>
-            <H2>Cancel</H2>
+            Cancel
           </StyledButton>
         )}
         <StyledButton
-          disabled={!chosenPlan}
+          disabled={buyButtonDisabled}
           variant="contained"
           onClick={onSubscriptionPlanChosen({
             annualPayment,
@@ -90,9 +117,10 @@ const SubscriptionsPlansView = ({
               : BILLING_FREQUENCY.MONTHLY,
             chosenPlan,
             organizationId,
+            dispatch,
           })}
         >
-          <H2>Buy this plan</H2>
+          Buy this plan
         </StyledButton>
       </BottomButtonContainer>
     </>

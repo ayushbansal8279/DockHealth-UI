@@ -1,8 +1,14 @@
 import { CARD_TYPES } from './SubscriptionsPlansView.PlanCard';
 
+export const SUBSCRIPTION_PLAN_KEYS = {
+  STANDARD: 'standard',
+  PREMIUM: 'premium',
+  ENTERPRISE: 'enterprise',
+};
+
 export const subscriptionPlanData = [
   {
-    key: 'standard',
+    key: SUBSCRIPTION_PLAN_KEYS.STANDARD,
     planLabel: 'Standard',
     inactiveBackgroundColor: '#DEDEE2',
     annualMonthlyPrice: 14.25,
@@ -11,7 +17,7 @@ export const subscriptionPlanData = [
     subscriptionPlan: 'PLAN_STANDARD',
   },
   {
-    key: 'premium',
+    key: SUBSCRIPTION_PLAN_KEYS.PREMIUM,
     planLabel: 'Premium',
     inactiveBackgroundColor: '#C8C8CE',
     annualMonthlyPrice: 18,
@@ -21,7 +27,7 @@ export const subscriptionPlanData = [
     subscriptionPlan: 'PLAN_PREMIUM',
   },
   {
-    key: 'enterprise',
+    key: SUBSCRIPTION_PLAN_KEYS.ENTERPRISE,
     planLabel: 'Enterprise',
     inactiveBackgroundColor: '#DEDEE2',
     cardType: CARD_TYPES.ENTERPRISE,

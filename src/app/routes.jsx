@@ -50,6 +50,8 @@ import PeopleView from './views/PeopleView';
 import PersonTaskList from './views/PersonTaskList';
 import BillingsView from './views/self-serve/billings/BillingsView';
 import DocumentsView from './views/self-serve/documents/DocumentsView';
+import SubscriptionPaymentFinishedView from './views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
+import SubscriptionPaymentView from './views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
 import SupportSectionView from './views/SupportSectionView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
@@ -123,7 +125,7 @@ export const Routes = ({ store }) => {
 
   const dispatch = useDispatch();
 
-  const preselectTask = (previousState, nextState) => {
+  const preselectTask = (_, nextState) => {
     const taskId = nextState.location?.state?.taskId;
     if (!taskId) {
       return;
@@ -131,9 +133,9 @@ export const Routes = ({ store }) => {
     dispatch(storeAsCurrentTask(taskId));
   };
 
-  function onRouterUpdate() {
+  const onRouterUpdate = () => {
     unsetHeader(dispatch)();
-  }
+  };
 
   return (
     <Router history={hashHistory} onUpdate={onRouterUpdate}>
@@ -242,6 +244,16 @@ export const Routes = ({ store }) => {
           <Route
             path="documents"
             component={DocumentsView}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="subscription-payment"
+            component={SubscriptionPaymentView}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="subscription-payment-finished"
+            component={SubscriptionPaymentFinishedView}
             onEnter={checkFeatureToggles}
           />
         </Route>

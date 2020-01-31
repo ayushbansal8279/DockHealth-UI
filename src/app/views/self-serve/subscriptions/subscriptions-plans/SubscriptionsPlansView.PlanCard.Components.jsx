@@ -4,7 +4,7 @@ import Hidden from '@material-ui/core/Hidden';
 import isEmpty from 'ramda/es/isEmpty';
 import times from 'ramda/es/times';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import { IntercomAPI } from 'react-intercom';
 import { useMount, useWindowSize, useCss } from 'react-use';
 import styled from 'styled-components';
 import SafariFixGrid from '../../../../components/common/SafariFixGrid';
@@ -96,6 +96,15 @@ const IncludedFeatureHeader = styled(IncludedFeatureRow)`
   font-weight: 600;
 `;
 
+const ChatNowLabel = styled.div`
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    color: #0ca1c7;
+  }
+`;
+
 export const CardContactUsHeader = ({ breakpoint }) => {
   const isSmallScreen = breakpoint === 'md';
 
@@ -169,8 +178,13 @@ export const CardContactUsFooter = ({ breakpoint }) => {
         justify={isSmallScreen ? FLEX_POSITION.END : FLEX_POSITION.CENTER}
       >
         <H4>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <Link to="">Chat Now</Link>
+          <div
+            onClick={() => {
+              IntercomAPI('show');
+            }}
+          >
+            <ChatNowLabel>Chat Now</ChatNowLabel>
+          </div>
         </H4>
       </SafariFixGrid>
     </ContentFooterGrid>

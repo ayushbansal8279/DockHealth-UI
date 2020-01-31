@@ -104,8 +104,8 @@ export const BottomButtonContainer = styled(Grid)`
 export const StyledButton = withStyles({
   root: {
     borderRadius: '0.25rem',
-    fontSize: '0.875rem',
-    height: '2.5rem',
+    fontSize: '1.125rem',
+    height: '3rem',
     marginLeft: '0.5rem',
     padding: '0 1.5rem',
     transition: 'all 0.25s ease-out',
@@ -114,8 +114,8 @@ export const StyledButton = withStyles({
     color: '#000',
   },
   contained: {
-    backgroundColor: '#fdb42b',
-    color: '#565b5f',
+    backgroundColor: '#074a86',
+    color: '#fff',
   },
   containedDisabled: {
     backgroundColor: '#ababb2',

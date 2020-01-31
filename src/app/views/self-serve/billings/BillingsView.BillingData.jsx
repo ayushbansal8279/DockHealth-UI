@@ -11,8 +11,6 @@ import {
 } from 'react-stripe-elements';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
-import { saveBillingDetails } from '../../../api/organization-api';
-import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   BillingButton,
@@ -96,40 +94,6 @@ const validationSchema = object().shape(
   ),
 );
 
-/**
- * @param stripe - Stripe instance
- * @param unsetUpdatingBilling - method to finish updating billing
- */
-const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
-  stripe
-    .createToken({ name: 'cardNumber' })
-    .then(token => {
-      if (token.error) {
-        throw token.error;
-      }
-
-      saveBillingDetails({
-        data,
-        token,
-      }).then(() => {
-        unsetUpdatingBilling();
-        showToast({
-          status: 'success',
-          title: 'Billing information updated successfully!',
-        });
-      });
-    })
-    .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text:
-          error?.message ??
-          'Could not update billing information, please try again later',
-      });
-    });
-};
-
 const BillingElement = ({
   Component,
   disabled,
@@ -175,26 +139,6 @@ const BillingElement = ({
   );
 };
 
-const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
-  isUpdatingBilling && (
-    <Grid item sm={12} container justify="flex-end">
-      <Grid item sm={6} md={2}>
-        <BillingButton
-          fullWidth
-          onClick={unsetUpdatingBilling}
-          variant="outlinedHigh"
-        >
-          Cancel
-        </BillingButton>
-      </Grid>
-      <Grid item sm={6} md={4}>
-        <BillingButton fullWidth type="submit" variant="contained">
-          Save billing information
-        </BillingButton>
-      </Grid>
-    </Grid>
-  );
-
 const PaymentInformationLabel = () => (
   <Grid item xs={12}>
     <H2>Payment information</H2>
@@ -226,6 +170,7 @@ const CreditPaymentForm = ({
   setValue,
   values,
   errors,
+  SaveBillingElement,
 }) => {
   const getInputProps = getInputPropsMethod({ setValue, values, errors });
 
@@ -343,14 +288,15 @@ const CreditPaymentForm = ({
   );
 };
 
-const BillingData = ({ stripe }) => {
+const BillingData = ({
+  stripe,
+  isUpdatingBilling,
+  setUpdatingBilling,
+  unsetUpdatingBilling,
+  onSubmit,
+  SaveBillingElement,
+}) => {
   const [selectedPaymentMethod] = useState(PAYMENT_METHODS.CREDIT);
-
-  const [
-    isUpdatingBilling,
-    setUpdatingBilling,
-    unsetUpdatingBilling,
-  ] = useBoolean(false);
 
   const { billingDetails, userProfile } = useSelector(store => ({
     billingDetails: store.organizationState.billingDetails,
@@ -447,6 +393,7 @@ const BillingData = ({ stripe }) => {
             setValue={setValue}
             values={values}
             errors={errorsValues}
+            SaveBillingElement={SaveBillingElement}
           />
         )}
       </Grid>

@@ -14,6 +14,7 @@ import {
   REQUEST_GET_BILLING_DETAILS,
   GET_BILLING_DETAILS_SUCCESS,
   GET_BILLING_DETAILS_FAILURE,
+  SET_NEW_PAYMENT_PLAN,
 } from '../actions/action-types';
 
 const initialState = {
@@ -26,6 +27,7 @@ const initialState = {
   requestError: null,
   requestErrorBilling: null,
   requestErrorBillingDetais: null,
+  newPaymentPlan: null,
 };
 
 const reducer = (state = initialState, { type, payload, error }) => {
@@ -116,21 +118,15 @@ const reducer = (state = initialState, { type, payload, error }) => {
       return {
         ...state,
         billingDetails: null,
-        // dummy billing details
-        //
-        // billingDetails: {
-        //   billingAddressCity: 'Example City',
-        //   billingAddressLine1: 'Example Address 1',
-        //   billingAddressPostalCode: '12345',
-        //   billingAddressState: 'Example',
-        //   billingEmail: 'example@user.com',
-        //   billingName: 'Example User',
-        //   cardExpiration: '**/**',
-        //   cardLastFour: '4242',
-        //   cardTokenIdentifier: '123',
-        // },
         isFetchingBillingDetails: false,
         requestErrorBillingDetails: error,
+      };
+    }
+
+    case SET_NEW_PAYMENT_PLAN: {
+      return {
+        ...state,
+        newPaymentPlan: payload,
       };
     }
 

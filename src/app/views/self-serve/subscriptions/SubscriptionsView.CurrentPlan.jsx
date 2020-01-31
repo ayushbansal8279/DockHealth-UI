@@ -83,18 +83,20 @@ const CurrentPlan = ({
               <H3ThinMarginless>{planSubscriptionPeriod}</H3ThinMarginless>
             </div>
           </Grid>
-          <Grid
-            item
-            sm={3}
-            md={2}
-            container
-            justify="flex-end"
-            alignItems="flex-end"
-          >
-            <PlanColumnLink to="" onClick={showSubscriptionPlans}>
-              Change plans
-            </PlanColumnLink>
-          </Grid>
+          {showSubscriptionPlans && (
+            <Grid
+              item
+              sm={3}
+              md={2}
+              container
+              justify="flex-end"
+              alignItems="flex-end"
+            >
+              <PlanColumnLink to="" onClick={showSubscriptionPlans}>
+                Change plans
+              </PlanColumnLink>
+            </Grid>
+          )}
         </Grid>
         <CurrentPlanDivider />
         <Grid container spacing={16}>
@@ -112,9 +114,11 @@ const CurrentPlan = ({
             <H3Marginless>{planNextPaymentLabel}</H3Marginless>
             <H3ThinMarginless>{planNextPaymentDate}</H3ThinMarginless>
           </Grid>
-          <AlignedColumnLink>
-            <PlanColumnLink to="/billings">View billings</PlanColumnLink>
-          </AlignedColumnLink>
+          {showSubscriptionPlans && (
+            <AlignedColumnLink>
+              <PlanColumnLink to="/billings">View billings</PlanColumnLink>
+            </AlignedColumnLink>
+          )}
         </Grid>
       </PlanContainer>
     </AsyncElement>

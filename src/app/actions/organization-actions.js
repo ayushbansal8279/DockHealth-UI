@@ -15,6 +15,7 @@ import {
   SAVE_BILLING_DETAILS_SUCCESS,
   SELECT_SUBSCRIPTION_PLAN_FAILURE,
   SELECT_SUBSCRIPTION_PLAN_SUCCESS,
+  SET_NEW_PAYMENT_PLAN,
 } from './action-types';
 
 export const getOrganizationById = ({ organizationId }) => dispatch => {
@@ -115,4 +116,11 @@ export const getBillingDetails = ({ organizationId }) => dispatch => {
         error,
       });
     });
+};
+
+export const setPaymentNewPlan = ({ newPlan }) => dispatch => {
+  dispatch({
+    type: SET_NEW_PAYMENT_PLAN,
+    payload: newPlan,
+  });
 };
