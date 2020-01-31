@@ -106,6 +106,9 @@ module.exports = {
 
   closeNewPatientSidebar(){
     I.waitForElement(this.fields.exitPatientButton, 3);
+    I.scrollTo(this.fields.exitPatientButton);
+    I.scrollPageToTop();
+    I.wait(2);
     I.click(this.fields.exitPatientButton);
     I.wait();
   },
@@ -245,41 +248,45 @@ module.exports = {
 
   editSavePatient(){
     I.waitForElement(this.fields.editSaveButton, 2);
+    I.scrollTo(this.fields.editSaveButton);
+    I.scrollPageToBottom();
+    I.wait(2);
+    //pause();
     I.click(this.fields.editSaveButton);
     I.wait();
   },
 
   editFirstName(name){
     I.waitForElement(this.fields.editFirstNameBox);
-    I.clearField(this.fields.editFirstNameBox);
+    this.clearBox(this.fields.editFirstNameBox);
     I.fillField(this.fields.editFirstNameBox, name);
     I.wait();
   },
 
   editMiddleName(name){
     I.waitForElement(this.fields.editMiddleNameBox);
-    I.clearField(this.fields.editMiddleNameBox);
+    this.clearBox(this.fields.editMiddleNameBox);
     I.fillField(this.fields.editMiddleNameBox, name);
     I.wait();
   },
 
   editLastName(name){
     I.waitForElement(this.fields.editLastNameBox);
-    I.clearField(this.fields.editLastNameBox);
+    this.clearBox(this.fields.editLastNameBox);
     I.fillField(this.fields.editLastNameBox, name);
     I.wait();
   },
   
   editMRN(mrn){
     I.waitForElement(this.fields.editmrnBox);
-    I.clearField(this.fields.editmrnBox);
+    this.clearBox(this.fields.editmrnBox);
     I.fillField(this.fields.editmrnBox, mrn);
     I.wait();
   },
 
   editBirthday(code){
     I.waitForElement(this.fields.editBirthdayBox);
-    I.clearField(this.fields.editBirthdayBox);
+    this.clearBox(this.fields.editBirthdayBox);
     I.fillField(this.fields.editBirthdayBox, code);
     I.wait();
   },
@@ -303,14 +310,17 @@ module.exports = {
   
   editHomePhone(code){
     I.waitForElement(this.fields.editHomePhoneBox);
-    I.clearField(this.fields.editHomePhoneBox);
+    I.scrollTo(this.fields.editHomePhoneBox);
+    I.scrollPageToTop();
+    I.wait(3);
+    this.clearBox(this.fields.editHomePhoneBox);
     I.fillField(this.fields.editHomePhoneBox, code);
     I.wait();
   },
 
   editMobilePhone(code){
     I.waitForElement(this.fields.editMobilePhoneBox);
-    I.clearField(this.fields.editMobilePhoneBox);
+    this.clearBox(this.fields.editMobilePhoneBox);
     I.fillField(this.fields.editMobilePhoneBox, code);
     I.wait();
   },
@@ -318,8 +328,17 @@ module.exports = {
   editEmail(code){
     I.waitForElement(this.fields.editEmailBox);
     I.wait();
-    //I.clearField(this.fields.editEmailBox);
+    this.clearBox(this.fields.editEmailBox);
     I.fillField(this.fields.editEmailBox, code);
+    I.wait();
+  },
+
+  clearBox(path){
+    I.waitForElement(path, 5);
+    I.click(path);
+    for(n = 0; n<100; n++){
+      I.pressKey('Backspace');
+    }
     I.wait();
   },
 

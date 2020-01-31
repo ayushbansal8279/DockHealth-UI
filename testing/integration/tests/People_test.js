@@ -1,7 +1,7 @@
 
 Feature('People list tests');
 
-Scenario('Try to invite a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('1 - Try to invite a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(3);
     tskLstPg.enterPeople(); 
     peoplePage.disarmNavigationSidebar();
@@ -12,7 +12,7 @@ Scenario('Try to invite a user, get shut out', (I, lgnPg, tskLstPg, peoplePage) 
     I.see('Because you are not an administrator');
 });
 
-Scenario('Invite a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('2 - Invite a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -25,7 +25,7 @@ Scenario('Invite a user succesfully', (I, lgnPg, tskLstPg, peoplePage) => {
 
 }); 
 
-Scenario('Enter user details, check name', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('3 - Enter user details, check name', (I, lgnPg, tskLstPg, peoplePage) => {
     const name = 'Aleksander Krawiel'//The person in the 4th slot goes here.
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
@@ -35,7 +35,7 @@ Scenario('Enter user details, check name', (I, lgnPg, tskLstPg, peoplePage) => {
     I.see(name);
 });
 
-Scenario('Search for a user', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('4 - Search for a user', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -50,7 +50,7 @@ Scenario('Search for a user', (I, lgnPg, tskLstPg, peoplePage) => {
 
 
 //Broken due to Un-Admin not being finished.
-Scenario('Give Bart admin, then take it away.', (I, lgnPg, tskLstPg, peoplePage) => {
+Scenario('5 - Give Bart admin, then take it away.', (I, lgnPg, tskLstPg, peoplePage) => {
     lgnPg.fullLogin(2);
     I.wait();
     tskLstPg.enterPeople();

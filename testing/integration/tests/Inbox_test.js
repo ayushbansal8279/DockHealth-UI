@@ -6,7 +6,7 @@ const firstTaskPatient = {css: `#appHome > main > div > div:nth-child(2) > div >
 
 const assignedToEmblem = {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div > div:nth-child(2)'};
 
-Scenario('Make a task, attach it to a dummy list, and then search the dummy list. self cleaning.', async (I, inboxPg, tskLstPg, tasksPg) => {
+Scenario('INBOX101: Make a task, attach it to a dummy list, and then search the dummy list. self cleaning.', async (I, inboxPg, tskLstPg, tasksPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   //pause();
@@ -31,7 +31,7 @@ Scenario('Make a task, attach it to a dummy list, and then search the dummy list
 
 
 
-Scenario('Make a task, assign it to yourself, unassign it. self cleaning', (I, inboxPg, tskLstPg) => {
+Scenario('INBOX102: Make a task, assign it to yourself, unassign it. self cleaning', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   //pause();
@@ -56,7 +56,7 @@ Scenario('Make a task, assign it to yourself, unassign it. self cleaning', (I, i
   inboxPg.deleteTask();
 });
 
-Scenario('Make a task, assign it to a patient, make sure the initials stay. self cleaning', (I, inboxPg, tskLstPg) => {
+Scenario('INBOX103: - Make a task, assign it to a patient, make sure the initials stay. self cleaning', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();
@@ -83,7 +83,7 @@ Scenario('Make a task, assign it to a patient, make sure the initials stay. self
 });
 
 
-Scenario('Check completed tasks', (I, inboxPg, tskLstPg) => {
+Scenario('4 - Check completed tasks', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(2);
   tskLstPg.enterInbox();
   I.wait();
@@ -95,7 +95,7 @@ Scenario('Check completed tasks', (I, inboxPg, tskLstPg) => {
   I.see('Super Salmon Big ol Blast attack');
 });
 
-Scenario('Search a task', (I, inboxPg, tskLstPg) => {
+Scenario('5 - Search a task', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();
@@ -107,7 +107,7 @@ Scenario('Search a task', (I, inboxPg, tskLstPg) => {
 });
 
 //This test needs to be calibrated every month or so. Change the due date.
-Scenario('Make a task, add a due date, make sure its OVERDUE. self cleaning', (I, inboxPg, tskLstPg) => {
+Scenario('6 - Make a task, add a due date, make sure its OVERDUE. self cleaning', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();
@@ -136,7 +136,7 @@ Scenario('Make a task, add a due date, make sure its OVERDUE. self cleaning', (I
   inboxPg.deleteTask();
 });
 
-Scenario('Check flagged filter', (I, inboxPg, tskLstPg) => {
+Scenario('7 - Check flagged filter', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();

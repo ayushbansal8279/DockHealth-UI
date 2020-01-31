@@ -2,7 +2,7 @@
 Feature('The list of all patients');
 var assert = require('assert');
 
-Scenario('Make a patient', (I, lgnPg, tskLstPg, ptntsPg) => {
+Scenario('1 - Make a patient', (I, lgnPg, tskLstPg, ptntsPg) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPatients();
     //pause();
@@ -17,7 +17,7 @@ Scenario('Make a patient', (I, lgnPg, tskLstPg, ptntsPg) => {
 });
 
 //TODO Broken in Webdriver due to REFILL PATIENT LINE
-Scenario('Edit a patient using the sidebar.', (I, lgnPg, tskLstPg, ptntsPg) => { //TODO Clearfield/Fillfield are broken NOT THE TEST
+Scenario('2 - Edit a patient using the sidebar.', (I, lgnPg, tskLstPg, ptntsPg) => { //TODO Clearfield/Fillfield are broken NOT THE TEST
     lgnPg.fullLogin(2);
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
@@ -30,7 +30,7 @@ Scenario('Edit a patient using the sidebar.', (I, lgnPg, tskLstPg, ptntsPg) => {
     I.see('66');
 });
 
-Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
+Scenario('3 - Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
     lgnPg.fullLogin(2);
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
@@ -42,7 +42,7 @@ Scenario('Search a patient', (I, lgnPg, tskLstPg, ptntsPg) =>{
 });
 
 //TODO Make the filters check how many patients you have under MY PATIENTS, and compare it to the ALL PATIENTS filter.
-Scenario('Check that the dropdown filter works', async (I, lgnPg, tskLstPg, ptntsPg) =>{
+Scenario('4 - Check that the dropdown filter works', async (I, lgnPg, tskLstPg, ptntsPg) =>{
     lgnPg.fullLogin(2);
     tskLstPg.enterPatients();
     I.wait();

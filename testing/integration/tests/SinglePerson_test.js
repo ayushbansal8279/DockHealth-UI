@@ -1,7 +1,7 @@
 
 Feature('Single Persons Details');
 
-Scenario('add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('1 - add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -16,7 +16,7 @@ Scenario('add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
 });
 
 //TODO The path required for clickTask(x, y) is always changing. Plus I need to find how to pick which list im choosing from.
-Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('2 - open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -30,7 +30,7 @@ Scenario('open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPa
     I.see('Gazoolgo');
 });
 
-Scenario('Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('3 - Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -46,7 +46,7 @@ Scenario('Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPag
 });
 
 //This test fails because the filter doesnt work for users.
-Scenario('Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('4 - Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -59,7 +59,7 @@ Scenario('Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, single
     const targetNumber = parseInt(await singlePersonPage.grabNumberOfTasks());
     
     I.wait(2);
-    singlePersonPage.pickFilter(3, 11);
+    singlePersonPage.pickFilter(3, 12);
     I.wait(4);
 
     //pause();
@@ -77,7 +77,7 @@ Scenario('Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, single
 });
 
 
-Scenario('Test full view, slim view.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('5 - Test full view, slim view.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
     I.wait(2);

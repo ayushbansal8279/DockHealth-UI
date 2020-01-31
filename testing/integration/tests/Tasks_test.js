@@ -11,7 +11,7 @@ Before((tskLstPg)=> {
     tskLstPg.getToList(1, 1);
 });
 
-Scenario('Make a task, fill it out. Self clean', async(tasksPg) => {
+Scenario('1 - Make a task, fill it out. Self clean', async(tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Chummy Chimp");
   tasksPg.flagTask();
@@ -34,7 +34,7 @@ Scenario('Make a task, fill it out. Self clean', async(tasksPg) => {
   //Is it not a css element?
 });
   
-Scenario('Make a task, and flag it, check hud. Self clean', async (I, tasksPg) => {
+Scenario('2 - Make a task, and flag it, check hud. Self clean', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Bimbleton");
   tasksPg.flagTask();
@@ -46,7 +46,7 @@ Scenario('Make a task, and flag it, check hud. Self clean', async (I, tasksPg) =
   await tasksPg.deleteTask(1, 0);
 });
   
-Scenario('Make a task, give it an assigned date, check hud. Self clean', async (I, tasksPg) => {
+Scenario('3 - Make a task, give it an assigned date, check hud. Self clean', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Aardvark");
   tasksPg.addDueDate(1,4,0);//Week and day of week...
@@ -58,7 +58,7 @@ Scenario('Make a task, give it an assigned date, check hud. Self clean', async (
   await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Testing subtask mechanics. Self clean', async (I, tasksPg) => {
+Scenario('4 - Testing subtask mechanics. Self clean', async (I, tasksPg) => {
   //pause();
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Dumbledork");
@@ -95,7 +95,7 @@ Scenario('Testing subtask mechanics. Self clean', async (I, tasksPg) => {
   await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Make a search. Self clean.', async (I, tasksPg) => {
+Scenario('5 - Make a search. Self clean.', async (I, tasksPg) => {
   const searchKeyword = "Gorgo";
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask(searchKeyword);
@@ -139,7 +139,7 @@ Scenario('Make a search. Self clean.', async (I, tasksPg) => {
   await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Mark a task as complete. Self clean', async (I, tasksPg) => {
+Scenario('6 - Mark a task as complete. Self clean', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Aardvark");
   tasksPg.exitTask(0);
@@ -152,7 +152,7 @@ Scenario('Mark a task as complete. Self clean', async (I, tasksPg) => {
   await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Assign task to user WO sidebar. Self clean', async (I, tasksPg) =>{
+Scenario('7 - Assign task to user WO sidebar. Self clean', async (I, tasksPg) =>{
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Snuffleuppagus");
   tasksPg.exitTask(0);
@@ -161,7 +161,7 @@ Scenario('Assign task to user WO sidebar. Self clean', async (I, tasksPg) =>{
   await tasksPg.deleteTask(1, 0);
 });
 
-Scenario('Assign to patient. Self clean', async (I, tasksPg) => {
+Scenario('8 - Assign to patient. Self clean', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Pringles");
   tasksPg.attachPatient(2);
@@ -177,7 +177,7 @@ Scenario('Assign to patient. Self clean', async (I, tasksPg) => {
 });
 
 
-Scenario('Click Filters. self clean', async (I, tasksPg) => {
+Scenario('9 - Click Filters. self clean', async (I, tasksPg) => {
   tasksPg.openNewTaskSidebar();
   tasksPg.postTask("Gorgo");
   tasksPg.flagTask();

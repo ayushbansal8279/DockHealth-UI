@@ -93,7 +93,7 @@ module.exports = {
     I.wait();
   },
 
-  pickFilter(index, stupidbullshit){//0 Resets the filter. stupidbullshit is an unknown variable for now.
+  pickFilter(index, stupidbullcrap){//0 Resets the filter. stupidbullcrap is an unknown variable for now.
     I.waitForElement(this.fields.filterShield, 3);
     I.scrollTo(this.fields.filterShield);
     I.scrollPageToTop();
@@ -104,7 +104,7 @@ module.exports = {
     if(index<1){
       //Empty if blocks arent very ca$h money of me.
     } else {
-      const path = {css: `body > div:nth-child(${stupidbullshit}) > div:nth-child(2) > ul > div:nth-child(${index})`};
+      const path = {css: `body > div:nth-child(${stupidbullcrap}) > div:nth-child(2) > ul > div:nth-child(${index})`};
       //pause();
       I.waitForElement(path, 7);
       I.click(path);

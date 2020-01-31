@@ -43,7 +43,8 @@ module.exports = {
       //Empty if blocks arent very ca$h money of me.
     } else {
       const path = {css: `body > div:nth-child(${stupidbullcrap}) > div:nth-child(2) > ul > div:nth-child(${index})`};
-      I.waitForElement(path, 9);
+      //pause();
+      I.waitForElement(path, 5);
       I.click(path);
       I.wait();
     }
