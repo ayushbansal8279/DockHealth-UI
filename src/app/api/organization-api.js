@@ -50,3 +50,12 @@ export const getBillingDetails = ({ organizationId }) =>
     method: 'get',
     url: `/organization/getBillingDetails/${organizationId}`,
   }).then(response => response.data);
+
+export const updateLegalEntityName = ({ legalEntityName }) =>
+  axios({
+    method: 'put',
+    url: '/organization/updateOrganizationLegalEntityName',
+    data: {
+      organizationLegalEntityName: legalEntityName,
+    },
+  }).then(response => response.data);

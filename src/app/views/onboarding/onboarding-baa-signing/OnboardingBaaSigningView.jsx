@@ -1,42 +1,46 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import useForm, { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { useMount, useScroll } from 'react-use';
+import { useMount } from 'react-use';
 import { object, string } from 'yup';
+import { hashHistory } from 'react-router';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
-import useBoolean from '../../../hooks/useBoolean';
-import PdfIcon from '../../../img/pdf-icon.svg';
 import {
   OnboardingButton,
   OnboardingH1Bold,
-  OnboardingH2,
   OnboardingH2Bold,
   OnboardingInput,
   OnboardingSpacing1,
   OnboardingSpacing2,
-  OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
-import BAA from './OnboardingBaaSigningView.Baa';
-import {
-  BaaAcceptingLabel,
-  BaaContainer,
-  LegalEntityExamplesLabel,
-} from './OnboardingBaaSigningView.Styled';
+import { LegalEntityExamplesLabel } from './OnboardingBaaSigningView.Styled';
+import { updateLegalEntityName } from '../../../api/organization-api';
+import { showAlert } from '../../../helpers/utility-functions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
 const validationSchema = object().shape({
   legalEntityName: string().required(REQUIRED_MESSAGE),
-  signature: string().required(REQUIRED_MESSAGE),
   signatureId: string().required(REQUIRED_MESSAGE),
 });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = () => () => {
-  hashHistory.push('/onboarding/team-org-setup');
+const onSubmit = ({ legalEntityName }) => {
+  updateLegalEntityName({ legalEntityName })
+    .then(() => {
+      hashHistory.push('/onboarding/team-org-setup');
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.message ??
+          'Error updating legal entity name, please try again later',
+      });
+    });
 };
 
 const OnboardingBaaSigningView = () => {
@@ -44,6 +48,9 @@ const OnboardingBaaSigningView = () => {
     validationSchema,
     revalidationMode: 'onChange',
   });
+
+  const formReference = useRef(null);
+
   const dispatch = useDispatch();
 
   useMount(() => {
@@ -61,27 +68,17 @@ const OnboardingBaaSigningView = () => {
       messageListener: eventData => {
         if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
           formMethods.setValue('signatureId', eventData.signature_id);
-          formMethods.setValue('signature', 'SIGNED');
+          // eslint-disable-next-line no-unused-expressions
+          formReference.current?.dispatchEvent(new Event('submit'));
         }
       },
     });
-  }, [formMethods]);
+  }, [formMethods, formReference]);
 
-  const baaContainerReference = useRef(null);
-  const { y: scrollY } = useScroll(baaContainerReference);
-  const [isBaaRead, setBaaRead] = useBoolean(false);
-
-  const scrollHeight = baaContainerReference.current?.scrollHeight;
-  const offsetHeight = baaContainerReference.current?.offsetHeight;
-
-  useEffect(() => {
-    if (!isBaaRead && scrollY > scrollHeight - offsetHeight) {
-      setBaaRead();
-    }
-  }, [isBaaRead, offsetHeight, scrollHeight, scrollY, setBaaRead]);
+  const hasLegalEntityName = Boolean(formMethods.watch('legalEntityName'));
 
   return (
-    <form onSubmit={formMethods.handleSubmit(onSubmit())}>
+    <form onSubmit={formMethods.handleSubmit(onSubmit)} ref={formReference}>
       <FormContext {...formMethods}>
         <input type="hidden" name="signatureId" />
         <OnboardingH1Bold>LAST BUT NOT LEAST,</OnboardingH1Bold>
@@ -90,7 +87,7 @@ const OnboardingBaaSigningView = () => {
         <OnboardingH2Bold>Legal entity name</OnboardingH2Bold>
         <OnboardingSpacing2 />
         <OnboardingInput
-          label="Legal entity name"
+          label="Legal Entity"
           name="legalEntityName"
           placeholder="Enter signing legal entity name here"
           required
@@ -101,42 +98,15 @@ const OnboardingBaaSigningView = () => {
           nec.
         </LegalEntityExamplesLabel>
         <OnboardingSpacing4 />
-        <OnboardingH2>
-          This is a legal agreement between you and Dock Health
-        </OnboardingH2>
-        <Grid container alignItems="center">
-          <img alt="PDF icon" src={PdfIcon} />
-          <OnboardingButton variant="outlinedLink">
-            Open as a PDF
-          </OnboardingButton>
-        </Grid>
-        <OnboardingSpacing2 />
-        <BaaContainer ref={baaContainerReference}>{BAA}</BaaContainer>
-        <OnboardingSpacing4 />
-        <OnboardingInput
-          label="Signature"
-          name="signature"
-          placeholder="Signature"
-          required
-          InputBaseProps={{
-            disabled: true,
-            onClick: openHelloSign,
-          }}
-        />
-        <OnboardingSpacing4 />
         <Grid container alignItems="flex-end" direction="column">
           <OnboardingButton
-            type="submit"
+            type="button"
             variant="contained"
-            disabled={!isBaaRead}
+            onClick={openHelloSign}
+            disabled={!hasLegalEntityName}
           >
-            <OnboardingH2Bold>Agree & continue</OnboardingH2Bold>
+            <OnboardingH2Bold>Read and sign BAA</OnboardingH2Bold>
           </OnboardingButton>
-          <OnboardingSpacing3 />
-          <BaaAcceptingLabel>
-            You must scroll to the bottom of the agreement in order to move
-            forward.
-          </BaaAcceptingLabel>
         </Grid>
       </FormContext>
     </form>
