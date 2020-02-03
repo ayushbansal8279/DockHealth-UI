@@ -120,14 +120,19 @@ export const StyledButton = withStyles({
   containedDisabled: {
     backgroundColor: '#ababb2',
   },
-})(({ classes, variant, disabled, ...props }) => {
+  fullWidth: {
+    marginLeft: 0,
+    width: '100%',
+  },
+})(({ classes, variant, fullWidth, disabled, ...props }) => {
   const rootClassName = classes.root || '';
   const variantClassName = classes[variant] || '';
   const variantDisabledClassName = disabled
     ? `${classes[`${variant}Disabled`] ?? ''}`
     : '';
+  const fullWidthClassName = fullWidth ? classes.fullWidth : '';
 
-  const className = `${rootClassName} ${variantClassName} ${variantDisabledClassName}`.trim();
+  const className = `${rootClassName} ${variantClassName} ${variantDisabledClassName} ${fullWidthClassName}`.trim();
 
   return <ButtonBase className={className} disabled={disabled} {...props} />;
 });

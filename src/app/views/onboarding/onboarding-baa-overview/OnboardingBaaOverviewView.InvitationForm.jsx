@@ -44,7 +44,6 @@ const onInvitationSubmit = () => async ({
   try {
     inviteAuthorizedSigner({ email, firstName, lastName, mobilePhoneNumber })
       .then(data => {
-        // console.log(data);
         if (data.statusCode === 'SUCCESS') {
           showToast({
             icon: 'success',

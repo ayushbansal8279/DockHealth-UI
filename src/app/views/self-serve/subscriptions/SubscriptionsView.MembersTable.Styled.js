@@ -11,6 +11,7 @@ export const MemberTable = styled.table`
   && {
     border: 0;
     border-spacing: 0;
+    margin-top: 0.75rem;
 
     & th,
     & td {
@@ -67,11 +68,15 @@ export const MemberTable = styled.table`
 export const HeaderCaptionGrid = styled(Grid)`
   height: 2.25rem;
   min-height: 2.25rem;
+
+  & > :first-child {
+    margin-right: 1.5rem;
+  }
 `;
 
 export const SubscriptionStatusSwitchLabel = styled(H3)`
   cursor: pointer;
-  margin-left: 1rem;
+  margin-left: 2rem;
   ${props => props.selected && 'font-weight: bold; text-decoration: underline;'}
 `;
 
@@ -83,7 +88,7 @@ export const SwitcherContainer = styled.div`
   display: flex;
   height: 3.75rem;
   justify-content: space-between;
-  margin: 0 0.125rem 1rem;
+  margin-bottom: 1rem;
   padding-left: 1rem;
   padding-right: 0;
   width: 100%;

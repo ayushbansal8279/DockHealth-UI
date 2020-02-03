@@ -1,9 +1,10 @@
+import Grid from '@material-ui/core/Grid';
 import { func } from 'prop-types';
 import { filter, includes, isEmpty, reject } from 'ramda';
 import React from 'react';
-
 import CubesLoader from '../../../components/common/CubesLoader';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
+import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
 import {
   MembersTableContainer,
@@ -105,11 +106,18 @@ const SubscriptionsViewMembersTable = ({
       ) : (
         <>
           {showTableHeader && (
-            <SubscriptionStatusSwitcher
-              isSmallScreen={isSmallScreen}
-              userSubscriptionStatus={userSubscriptionStatus}
-              setUserSubscriptionStatus={setUserSubscriptionStatus}
-            />
+            <Grid container justify="space-between" alignItems="center">
+              <Grid item sm={12} md={6}>
+                <SubscriptionStatusSwitcher
+                  isSmallScreen={isSmallScreen}
+                  userSubscriptionStatus={userSubscriptionStatus}
+                  setUserSubscriptionStatus={setUserSubscriptionStatus}
+                />
+              </Grid>
+              <Grid item sm={12} md={6} container justify="flex-end">
+                <InviteButton fullWidth={isSmallScreen} />
+              </Grid>
+            </Grid>
           )}
           <MemberTable isSmallScreen={isSmallScreen}>
             {!isSmallScreen && (
