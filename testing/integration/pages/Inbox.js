@@ -6,7 +6,8 @@ module.exports = {
     // addTskBtn: {css: "button[variant=contained]"},
     addTskBtn: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button',
+        // '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button',
+        'button[data-name="addTaskButton"]',
     },
     // tskDescription: {name: "description"},
     tskDescription: {
@@ -128,7 +129,7 @@ module.exports = {
   // TODO in custom_steps turn this into a universal open dropdown.
   openAddTaskDropdown() {
     I.waitForElement(this.fields.addTskBtn, 14);
-    I.click(this.fields.addTskBtn);
+    I.dockClick(this.fields.addTskBtn);
     I.wait(2);
   },
 

@@ -43,7 +43,7 @@ export const AddTaskButton = ({ onClick }) => {
   }, []);
 
   return (
-    <AddTaskButtonBase padded onClick={onClick} variant="contained">
+    <AddTaskButtonBase padded onClick={onClick} variant="contained" data-name="addTaskButton">
       <AddTaskButtonImage src={AddTaskCrossIcon} />
       <AddTaskButtonLabel width={addTaskLabelWidth} ref={addTaskLabel}>
         Add a task

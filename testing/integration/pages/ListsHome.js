@@ -13,8 +13,8 @@ module.exports = {
 
 
     listsTab: { css: 'a[href="#/tasks"]' },
-    inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
-    //inboxTab: { css: "svg.icon-header:nth-child(1)"},
+    // inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
+    inboxTab: { css: "svg.icon-header:nth-child(1)"},
     patientsTab: { css: 'a[href="#/patients"]' },
     peopleTab: {css: 'a[href="#/people"]'},
     logoutBtn: {css: 'a[href="#/logout"]'},
