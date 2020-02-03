@@ -29,8 +29,8 @@ const validationSchema = object().shape({
     .matches(/\d{10}/, 'This field should have a valid phone number'),
 });
 
-const goToBaaSigning = () => {
-  hashHistory.push('/onboarding/baa-signing');
+const goToTeamOrgSetup = () => {
+  hashHistory.push('/onboarding/team-org-setup');
 };
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -50,7 +50,7 @@ const onInvitationSubmit = () => async ({
             icon: 'success',
             title: 'Authorized signer invited successfully',
           });
-          goToBaaSigning();
+          goToTeamOrgSetup();
         } else {
           showAlert({
             status: 'error',
