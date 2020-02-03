@@ -92,30 +92,33 @@ class TemplateCore extends PureComponent {
       });
 
       try {
-        const data = await userApi.getUserByEmail(
-          cognitoUser.username,
-          cognitoUser,
-        );
-
-        if (!data.organizationId || data.organizationId === '') {
-          hashHistory.push('/unEnrolledUser');
-        } else if (data.personalOrganization && data.presentHippaAlert) {
-          hashHistory.push('/selfEnrolledUser');
-        } else {
-          if (data.profileThumbnailPictureHash) {
-            userApi.getUserProfilePic(data.userId, 'PROFILE');
-          }
-
-          handleFeatureToggle({
-            location: hashHistory.getCurrentLocation(),
-            user: data,
-          });
-        }
+        await this.checkUserData({ user: cognitoUser });
       } catch {
         hashHistory.push('login');
       } finally {
         this.unlockLoading();
       }
+    }
+  };
+
+  checkUserData = async ({ user }) => {
+    const data = await userApi.getUserByEmail(user.username, user);
+
+    if (!data.organizationId || data.organizationId === '') {
+      hashHistory.push('/unEnrolledUser');
+    } else if (data.personalOrganization && data.presentHippaAlert) {
+      hashHistory.push('/selfEnrolledUser');
+    } else if (!data.eulaAcknowledged) {
+      hashHistory.push('/onboarding/eula');
+    } else {
+      if (data.profileThumbnailPictureHash) {
+        userApi.getUserProfilePic(data.userId, 'PROFILE');
+      }
+
+      handleFeatureToggle({
+        location: hashHistory.getCurrentLocation(),
+        user: data,
+      });
     }
   };
 

@@ -117,5 +117,5 @@ export const downloadSignedDocument = () =>
       Accept: 'application/octet-stream',
     },
   }).then(response => {
-    return response;
+    return response.data;
   });

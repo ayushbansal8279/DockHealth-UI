@@ -1,24 +1,32 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useMount } from 'react-use';
-
+import { useMount, useUnmount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
+import { downloadSignedDocument } from '../../../api/organization-api';
 import {
-  DocumentDescription,
+  DocumentContainer,
   DocumentLink,
   DocumentsViewContainer,
-  DocumentContainer,
   H2,
   H3,
   Title,
 } from './DocumentsView.Styled';
 
-const OPEN_AS_PDF_LABEL = 'Open as a PDF';
+const downloadLink = ({ url }) => {
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'baa.pdf');
+  document.body.append(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
 const DocumentsView = () => {
   const dispatch = useDispatch();
+
+  const [baaObjectUrl, setBaaObjectUrl] = useState(null);
 
   useMount(() => {
     setHeader(dispatch)({
@@ -37,50 +45,64 @@ const DocumentsView = () => {
     });
   });
 
+  useUnmount(() => {
+    if (baaObjectUrl) {
+      URL.revokeObjectURL(baaObjectUrl);
+    }
+  });
+
+  const onBaaDownloadClick = useCallback(() => {
+    if (baaObjectUrl) {
+      downloadLink({ url: baaObjectUrl });
+      return;
+    }
+
+    downloadSignedDocument().then(documentBlob => {
+      const newBaaObjectUrl = URL.createObjectURL(documentBlob);
+      setBaaObjectUrl(newBaaObjectUrl);
+      downloadLink({ url: newBaaObjectUrl });
+    });
+  }, [baaObjectUrl]);
+
   const dummySignedDate = moment().format('ll');
 
   return (
     <DocumentsViewContainer direction="column" wrap="nowrap">
       <DocumentContainer item xs={12} container>
         <Grid item sm={12} md={9}>
-          <DocumentDescription>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-            eget enim eu augue ullamcorper dignissim. Etiam turpis lorem,
-            pellentesque nec nunc ac, aliquet dapibus tortor.
-          </DocumentDescription>
-          <H2>BAA</H2>
+          <H2>Business Associate Agreement (BAA)</H2>
         </Grid>
         <Grid item sm={12} md={3} container direction="column" justify="center">
-          <DocumentLink>{OPEN_AS_PDF_LABEL}</DocumentLink>
+          <DocumentLink onClick={onBaaDownloadClick}>Download PDF</DocumentLink>
           <H3>Signed on {dummySignedDate}</H3>
         </Grid>
       </DocumentContainer>
       <DocumentContainer item xs={12} container>
         <Grid item sm={12} md={9}>
-          <DocumentDescription>
-            Vivamus vehicula rhoncus ultrices. Suspendisse laoreet orci nec sem
-            suscipit iaculis. Morbi ligula ipsum, tincidunt quis felis id,
-            tempor congue ipsum.
-          </DocumentDescription>
-          <H2>End User License Agreement</H2>
+          <H2>End User License Agreement (EULA)</H2>
         </Grid>
         <Grid item sm={12} md={3} container direction="column" justify="center">
-          <DocumentLink>{OPEN_AS_PDF_LABEL}</DocumentLink>
-          <H3>Signed on {dummySignedDate}</H3>
+          <DocumentLink
+            href="https://www.dock.health/end-user-license-agreement"
+            target="_blank"
+          >
+            Read EULA
+          </DocumentLink>
+          <H3>Agreed to on {dummySignedDate}</H3>
         </Grid>
       </DocumentContainer>
       <DocumentContainer item xs={12} container>
         <Grid item sm={12} md={9}>
-          <DocumentDescription>
-            Pellentesque id venenatis metus. Morbi eget orci magna. Suspendisse
-            potenti. Aliquam eros dolor, pellentesque vel rutrum quis, cursus
-            finibus ligula.
-          </DocumentDescription>
           <H2>Privacy Policy</H2>
         </Grid>
         <Grid item sm={12} md={3} container direction="column" justify="center">
-          <DocumentLink>{OPEN_AS_PDF_LABEL}</DocumentLink>
-          <H3>Signed on {dummySignedDate}</H3>
+          <DocumentLink
+            href="https://www.dock.health/privacypolicy"
+            target="_blank"
+          >
+            Read Privacy Policy
+          </DocumentLink>
+          <H3>Agreed to on {dummySignedDate}</H3>
         </Grid>
       </DocumentContainer>
     </DocumentsViewContainer>
