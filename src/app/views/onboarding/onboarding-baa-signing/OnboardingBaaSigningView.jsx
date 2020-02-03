@@ -16,32 +16,19 @@ import {
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
 import { LegalEntityExamplesLabel } from './OnboardingBaaSigningView.Styled';
-import { updateLegalEntityName } from '../../../api/organization-api';
+import {
+  signOrganizationBAADocument,
+  storeSignatureResult,
+} from '../../../api/organization-api';
 import { showAlert } from '../../../helpers/utility-functions';
 
 const REQUIRED_MESSAGE = 'This field is required';
+const { HELLOSIGN_CLIENT_ID } = process.env;
 
 const validationSchema = object().shape({
   legalEntityName: string().required(REQUIRED_MESSAGE),
   signatureId: string().required(REQUIRED_MESSAGE),
 });
-
-// eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ legalEntityName }) => {
-  updateLegalEntityName({ legalEntityName })
-    .then(() => {
-      hashHistory.push('/onboarding/team-org-setup');
-    })
-    .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text:
-          error?.message ??
-          'Error updating legal entity name, please try again later',
-      });
-    });
-};
 
 const OnboardingBaaSigningView = () => {
   const formMethods = useForm({
@@ -57,28 +44,68 @@ const OnboardingBaaSigningView = () => {
     setOnboardingCurrentStep({ currentStep: 3 })(dispatch);
 
     // eslint-disable-next-line no-unused-expressions
-    window?.HelloSign.init('HELLOSIGN_ID');
+    window?.HelloSign.init(HELLOSIGN_CLIENT_ID);
   });
 
-  const openHelloSign = useCallback(() => {
-    // eslint-disable-next-line no-unused-expressions
-    window?.HelloSign.open({
-      url: 'SIGNING_URL',
-      allowCancel: true,
-      messageListener: eventData => {
-        if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-          formMethods.setValue('signatureId', eventData.signature_id);
-          // eslint-disable-next-line no-unused-expressions
-          formReference.current?.dispatchEvent(new Event('submit'));
+  const openHelloSign = useCallback(
+    signingUrl => {
+      // eslint-disable-next-line no-unused-expressions
+      window?.HelloSign.open({
+        url: signingUrl,
+        allowCancel: true,
+        skipDomainVerification: true,
+        messageListener: eventData => {
+          // console.log(eventData);
+          storeSignatureResult({
+            signatureIdentifier: eventData.signature_id,
+            signatureResult: eventData.event,
+          });
+          if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
+            // save
+            // event: "signature_request_signed"
+            formMethods.setValue('signatureId', eventData.signature_id);
+            // eslint-disable-next-line no-unused-expressions
+            // formReference.current?.dispatchEvent(new Event('submit'));
+          }
+          hashHistory.push('/onboarding/team-org-setup');
+        },
+      });
+    },
+    [formMethods],
+  );
+
+  const clickReadAndSign = useCallback(() => {
+    // formReference.current?.dispatchEvent(new Event('submit'));
+    const values = formMethods.getValues();
+    // console.log(values);
+    const errorMessage = 'Error getting BAA document to sign, please try later';
+    const { legalEntityName } = values;
+    signOrganizationBAADocument({ legalEntityName })
+      .then(data => {
+        // console.log(data);
+        if (data.statusCode === 'SUCCESS') {
+          openHelloSign(data.statusMessage);
+        } else {
+          showAlert({
+            status: 'error',
+            title: 'Error',
+            text: errorMessage,
+          });
         }
-      },
-    });
-  }, [formMethods, formReference]);
+      })
+      .catch(error => {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: error?.message ?? errorMessage,
+        });
+      });
+  }, [formMethods, openHelloSign]);
 
   const hasLegalEntityName = Boolean(formMethods.watch('legalEntityName'));
 
   return (
-    <form onSubmit={formMethods.handleSubmit(onSubmit)} ref={formReference}>
+    <form ref={formReference}>
       <FormContext {...formMethods}>
         <input type="hidden" name="signatureId" />
         <OnboardingH1Bold>LAST BUT NOT LEAST,</OnboardingH1Bold>
@@ -102,7 +129,7 @@ const OnboardingBaaSigningView = () => {
           <OnboardingButton
             type="button"
             variant="contained"
-            onClick={openHelloSign}
+            onClick={clickReadAndSign}
             disabled={!hasLegalEntityName}
           >
             <OnboardingH2Bold>Read and sign BAA</OnboardingH2Bold>

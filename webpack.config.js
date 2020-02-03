@@ -24,6 +24,7 @@ const exposed = [
   'PUSHER_CLUSTER_NAME',
   'SUBSCRIPTION_TOKEN_API_KEY',
   'GA_TRACKING_CODE',
+  'HELLOSIGN_CLIENT_ID',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {

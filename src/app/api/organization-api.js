@@ -59,3 +59,54 @@ export const updateLegalEntityName = ({ legalEntityName }) =>
       organizationLegalEntityName: legalEntityName,
     },
   }).then(response => response.data);
+
+export const signOrganizationBAADocument = ({ legalEntityName }) =>
+  axios({
+    method: 'put',
+    url: '/organization/signOrganizationBAADocument',
+    data: {
+      organizationLegalEntityName: legalEntityName,
+    },
+  }).then(response => response.data);
+
+export const storeSignatureResult = ({
+  signatureIdentifier,
+  signatureResult,
+}) =>
+  axios({
+    method: 'put',
+    url: '/organization/storeSignatureResult',
+    data: {
+      signatureIdentifier,
+      signatureResult,
+    },
+  }).then(response => response.data);
+
+export const inviteAuthorizedSigner = ({
+  firstName,
+  lastName,
+  email,
+  phoneNumber,
+}) =>
+  axios({
+    method: 'put',
+    url: '/organization/inviteAuthorizedSigner',
+    data: {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    },
+  }).then(response => response.data);
+
+export const downloadSignedDocument = () =>
+  axios({
+    url: `/organization/downloadSignedDocument`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  }).then(response => {
+    return response;
+  });

@@ -82,7 +82,12 @@ const OnboardingTemplate = ({ children }) => {
   return (
     <OnboardingBackground>
       <OnboardingNavbar>
-        <OnboardingLogo alt="Dock Health logo" src="assets/img/dock-logo.png" />
+        <a href="/">
+          <OnboardingLogo
+            alt="Dock Health logo"
+            src="assets/img/dock-logo.png"
+          />
+        </a>
         <OnboardingProgressBar>
           <OnboardingProgressTrack>
             <OnboardingProgressTrackActive width={progress} />

@@ -1,10 +1,9 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import useForm, { FormContext } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
 import { hashHistory } from 'react-router';
-import { invitePersonToOrganization } from '../../../actions/people-actions';
+import { inviteAuthorizedSigner } from '../../../api/organization-api';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import {
   MobileInputComponent,
@@ -35,32 +34,43 @@ const goToBaaSigning = () => {
 };
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onInvitationSubmit = ({ dispatch }) => async ({
+const onInvitationSubmit = () => async ({
   firstName,
   lastName,
   mobilePhoneNumber,
   email,
 }) => {
+  const errorMessage = 'Error sending invitation, please try again later';
   try {
-    await invitePersonToOrganization({
-      email,
-      firstName,
-      lastName,
-      mobilePhoneNumber: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
-    })(dispatch);
-
-    showToast({
-      icon: 'success',
-      title: 'User invited successfully',
-    });
-
-    goToBaaSigning();
+    inviteAuthorizedSigner({ email, firstName, lastName, mobilePhoneNumber })
+      .then(data => {
+        // console.log(data);
+        if (data.statusCode === 'SUCCESS') {
+          showToast({
+            icon: 'success',
+            title: 'Authorized signer invited successfully',
+          });
+          goToBaaSigning();
+        } else {
+          showAlert({
+            status: 'error',
+            title: 'Error',
+            text: errorMessage,
+          });
+        }
+      })
+      .catch(error => {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: error?.message ?? errorMessage,
+        });
+      });
   } catch (error) {
     showAlert({
       icon: 'error',
       title: 'Error',
-      text:
-        error?.message ?? 'Could not create account, please try again later',
+      text: error?.message ?? errorMessage,
     });
   }
 };
@@ -70,10 +80,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
     validationSchema,
     revalidationMode: 'onChange',
   });
-  const dispatch = useDispatch();
 
   return (
-    <form onSubmit={formMethods.handleSubmit(onInvitationSubmit({ dispatch }))}>
+    <form onSubmit={formMethods.handleSubmit(onInvitationSubmit())}>
       <FormContext {...formMethods}>
         <OnboardingH2>
           Invite the authorized signer of your organization
