@@ -124,6 +124,27 @@ export const Routes = ({ store }) => {
     }
   };
 
+  const adminRequired = (nextState, replaceState) => {
+    const state = store.getState();
+
+    const orgUserRole = state.userState.userProfile?.orgUserRole;
+
+    // TODO download user profile data once and before <Routes /> render
+    if (orgUserRole && !['ADMIN', 'OWNER'].includes(orgUserRole)) {
+      replaceState(
+        {
+          nextPathname: nextState.location.pathname,
+        },
+        '/',
+      );
+    }
+  };
+
+  const checkFeatureTogglesAdmin = (nextState, replaceState) => {
+    checkFeatureToggles(nextState);
+    adminRequired(nextState, replaceState);
+  };
+
   const dispatch = useDispatch();
 
   const preselectTask = (_, nextState) => {
@@ -233,29 +254,29 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureToggles}
           />
           <Route
-            path="subscriptions"
+            path="/subscriptions"
             component={SubscriptionsView}
-            onEnter={checkFeatureToggles}
+            onEnter={checkFeatureTogglesAdmin}
           />
           <Route
-            path="billings"
+            path="/billings"
             component={BillingsView}
-            onEnter={checkFeatureToggles}
+            onEnter={checkFeatureTogglesAdmin}
           />
           <Route
-            path="documents"
+            path="/documents"
             component={DocumentsView}
-            onEnter={checkFeatureToggles}
+            onEnter={checkFeatureTogglesAdmin}
           />
           <Route
-            path="subscription-payment"
+            path="/subscription-payment"
             component={SubscriptionPaymentView}
-            onEnter={checkFeatureToggles}
+            onEnter={checkFeatureTogglesAdmin}
           />
           <Route
-            path="subscription-payment-finished"
+            path="/subscription-payment-finished"
             component={SubscriptionPaymentFinishedView}
-            onEnter={checkFeatureToggles}
+            onEnter={checkFeatureTogglesAdmin}
           />
         </Route>
         <Route path="/onboarding" component={OnboardingTemplate}>
@@ -264,12 +285,36 @@ export const Routes = ({ store }) => {
             component={OnboardingCreateAccountView}
             path="create-account"
           />
-          <Route component={OnboardingEulaView} path="eula" />
-          <Route component={OnboardingBaaOverviewView} path="baa-overview" />
-          <Route component={OnboardingBaaSigningView} path="baa-signing" />
-          <Route component={OnboardingTeamOrgSetupView} path="team-org-setup" />
-          <Route component={OnboardingProfileView} path="profile" />
-          <Route component={OnboardingFinishedView} path="finished" />
+          <Route
+            component={OnboardingEulaView}
+            path="eula"
+            onEnter={authRequired}
+          />
+          <Route
+            component={OnboardingBaaOverviewView}
+            path="baa-overview"
+            onEnter={authRequired}
+          />
+          <Route
+            component={OnboardingBaaSigningView}
+            path="baa-signing"
+            onEnter={authRequired}
+          />
+          <Route
+            component={OnboardingTeamOrgSetupView}
+            path="team-org-setup"
+            onEnter={authRequired}
+          />
+          <Route
+            component={OnboardingProfileView}
+            path="profile"
+            onEnter={authRequired}
+          />
+          <Route
+            component={OnboardingFinishedView}
+            path="finished"
+            onEnter={authRequired}
+          />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>

@@ -100,9 +100,11 @@ const DrawerHeader = ({ user }) => {
   const buttonReference = useRef(null);
 
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
-  const userProfileAccess = useSelector(
-    state => state.userState.userProfile?.access,
+  const { access: userProfileAccess, orgUserRole } = useSelector(
+    state => state.userState.userProfile || {},
   );
+
+  const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
 
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
@@ -162,30 +164,34 @@ const DrawerHeader = ({ user }) => {
         >
           Profile & Settings
         </DropdownListItem>
-        <DropdownListItem
-          button
-          onClick={closePopover}
-          component={linkComponent}
-          link="/subscriptions"
-        >
-          Subscription & Users
-        </DropdownListItem>
-        <DropdownListItem
-          button
-          onClick={closePopover}
-          component={linkComponent}
-          link="/billings"
-        >
-          Billing & Invoices
-        </DropdownListItem>
-        <DropdownListItem
-          button
-          onClick={closePopover}
-          component={linkComponent}
-          link="/documents"
-        >
-          Documents & Agreements
-        </DropdownListItem>
+        {isUserAdmin && (
+          <>
+            <DropdownListItem
+              button
+              onClick={closePopover}
+              component={linkComponent}
+              link="/subscriptions"
+            >
+              Subscription & Users
+            </DropdownListItem>
+            <DropdownListItem
+              button
+              onClick={closePopover}
+              component={linkComponent}
+              link="/billings"
+            >
+              Billing & Invoices
+            </DropdownListItem>
+            <DropdownListItem
+              button
+              onClick={closePopover}
+              component={linkComponent}
+              link="/documents"
+            >
+              Documents & Agreements
+            </DropdownListItem>
+          </>
+        )}
       </StyledDropdown>
     </>
   );
