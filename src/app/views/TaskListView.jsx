@@ -36,12 +36,18 @@ const BlockItemContainer = styled.div`
   background-color: #fff;
   border: 0.0625rem solid #e8ebef;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  min-height: 9rem;
   padding: 0.3rem 0.4rem;
   position: relative;
   text-align: center;
 
-  & > * {
+  && > * {
+    padding: 0;
+    margin: 0;
+  }
+
+  && > *:nth-child(odd) {
     margin: 0.25rem 0;
   }
 `;
