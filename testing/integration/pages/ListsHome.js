@@ -2,7 +2,9 @@ const { I, lgnPg } = inject();
 
 module.exports = {
   fields: {
-    addListBtn: { css: 'button[type=button]' },
+    //addListBtn: { css: 'button[type=button]' },
+    //addListBtn:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div > div > div > div > button'}, ON CHROME?
+    addListBtn:{css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button'},
     listNameFld: {css: 'input[name="listName"]'},
     adminShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div > form > div:nth-child(5) > div > div > ul'},
     addAdminSearchBar: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > div > div > form > div:nth-child(5) > div:nth-child(2) > div > div:nth-child(1) > div > input'},
@@ -13,8 +15,9 @@ module.exports = {
 
 
     listsTab: { css: 'a[href="#/tasks"]' },
-    inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
-    //inboxTab: { css: "svg.icon-header:nth-child(1)"},
+    //inboxTab: { css: 'a[href="#/tasks/Inbox"]' },
+    //inboxTab: {css: '#appHome > main > div > div:nth-child(1) > div > ul > div:nth-child(3) > a'},
+    inboxTab: { css: "#appHome > main > div > div:nth-child(2) > div > div:nth-child(4) > div > div:nth-child(1)"},
     patientsTab: { css: 'a[href="#/patients"]' },
     peopleTab: {css: 'a[href="#/people"]'},
     logoutBtn: {css: 'a[href="#/logout"]'},
@@ -28,6 +31,7 @@ module.exports = {
   },
 
   openAddListDropdown() {
+    pause();
     I.waitForElement(this.fields.addListBtn, 4);
     I.click(this.fields.addListBtn);
     I.wait();
@@ -104,9 +108,12 @@ module.exports = {
   },
 
   enterInbox() {
+    //pause();
     I.waitForElement(this.fields.inboxTab, 4);
     I.click(this.fields.inboxTab);
-    I.wait(2);
+    //I.wait();
+    //I.click(this.fields.inboxTab);
+    I.wait();
   },
 
   enterPatients() {
