@@ -206,6 +206,7 @@ export const StyledSpacer = styled.div`
 export const NestedListContainer = styled.div`
   && {
     display: ${props => (props.active ? 'flex' : 'none')};
+    overflow-y: auto;
 
     & + ${StyledRouterLinkContainer} > a {
       margin-top: 0;

@@ -5,7 +5,6 @@ import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
-
 import useBoolean from '../../hooks/useBoolean';
 import Avatar from '../common/Avatar';
 import { AvatarImageContainer } from '../common/Avatar.styled';
@@ -64,6 +63,7 @@ const Name = styled.div`
 const StyledDropdown = styled.div`
   background-color: #007cab;
   height: ${props => (props.open ? 16 : 0)}rem;
+  min-height: ${props => (props.open ? 16 : 0)}rem;
   overflow: hidden;
   transition: height 0.25s ease-out;
   width: 100%;
@@ -155,6 +155,7 @@ const DrawerHeader = ({ user }) => {
         open={isPopoverOpen}
         onMouseEnter={userProfileEnabled && openPopover}
         onMouseLeave={closePopover}
+        timeout={250}
       >
         <DropdownListItem
           button
