@@ -78,7 +78,7 @@ module.exports = {
     const saveDueDate={css:
       `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)`
     };
-    I.wait();
+    I.wait(3);
     //pause();
     I.waitForElement(this.fields.setADueDateShield, 4);
     //pause();
@@ -97,10 +97,10 @@ module.exports = {
     I.waitForElement(this.fields.filterShield, 3);
     I.scrollTo(this.fields.filterShield);
     I.scrollPageToTop();
-    I.wait(4);
+    I.wait(3);
     //pause();
     I.click(this.fields.filterShield);
-    I.wait();
+    I.wait(3);
     if(index<1){
       //Empty if blocks arent very ca$h money of me.
     } else {
@@ -195,10 +195,11 @@ module.exports = {
   setFiledIn(index) {
     I.waitForElement(this.fields.filedInShield, 3);
     I.click(this.fields.filedInShield);
-    I.wait(2);
+    I.wait(4);
     //const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > ul > div:nth-child(${index})`};
     const path = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > ul > div:nth-child(${index})`};
-    I.waitForElement(path, 3);
+    //pause();
+    I.waitForElement(path, 7);
     I.click(path);
     I.wait(2);
   },

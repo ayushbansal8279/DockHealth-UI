@@ -9,23 +9,22 @@ const assignedToEmblem = {css: '#appHome > main > div > div:nth-child(2) > div >
 Scenario('INBOX101: Make a task, attach it to a dummy list, and then search the dummy list. self cleaning.', async (I, inboxPg, tskLstPg, tasksPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
-  //pause();
+  I.wait(2);
   inboxPg.openAddTaskDropdown();
-  //pause();
+  I.wait(2);
   inboxPg.postNamedTask("Dummy Task");
-  //pause();
-  I.wait();
+  I.wait(2);
   inboxPg.setFiledIn(1);
-  I.wait();
+  I.wait(2);
   inboxPg.clickTaskListTab();
-  I.wait();
+  I.wait(2);
   tskLstPg.enterList(1);
-  I.wait();
+  I.wait(2);
   tasksPg.search("Dummy Task");
-  I.wait();
+  I.wait(2);
   I.see("Dummy Task");  
   tasksPg.openEditSidebar(1, 0, 0);
-  I.wait();
+  I.wait(2);
   await tasksPg.deleteTask(1, 0);
 });
 
@@ -83,7 +82,7 @@ Scenario('INBOX103: - Make a task, assign it to a patient, make sure the initial
 });
 
 
-Scenario('4 - Check completed tasks', (I, inboxPg, tskLstPg) => {
+Scenario('INBOX104 - Check completed tasks', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(2);
   tskLstPg.enterInbox();
   I.wait();
@@ -95,7 +94,7 @@ Scenario('4 - Check completed tasks', (I, inboxPg, tskLstPg) => {
   I.see('Super Salmon Big ol Blast attack');
 });
 
-Scenario('5 - Search a task', (I, inboxPg, tskLstPg) => {
+Scenario('INBOX105 - Search a task', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();
@@ -106,28 +105,23 @@ Scenario('5 - Search a task', (I, inboxPg, tskLstPg) => {
   });
 });
 
-//This test needs to be calibrated every month or so. Change the due date.
-Scenario('6 - Make a task, add a due date, make sure its OVERDUE. self cleaning', (I, inboxPg, tskLstPg) => {
+//This test needs to be calibrated every month. Change the due date.
+Scenario('INBOX106 - Make a task, add a due date, make sure its OVERDUE. self cleaning', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
   I.wait();
   inboxPg.openAddTaskDropdown();
   inboxPg.postNamedTask("This is a late task.");
-
-  //These lines get the test to pass when assigning patients is broken.
-  // I.wait();
-  // inboxPg.assignUser(1);
-  // I.wait();
-  //pause();
-  inboxPg.addDueDate(3,1);
+  inboxPg.addDueDate(2,1);
   inboxPg.exitMadeTask();
+  I.wait(4);
+  inboxPg.pickFilter(4, 14);
+  I.wait(7);
   //pause();
-  inboxPg.pickFilter(4, 13);
-  I.wait(3);
-  //pause();
+  //I.saveScreenshot('OVERDUEtest.png');
   I.see("This is a late task.");
   I.dontSee('Test against this task. Dork.');
-  inboxPg.pickFilter(0, 13);
+  inboxPg.pickFilter(0, 14);
   I.wait(3);
   I.see('Test against this task. Dork.');
   inboxPg.makeSearch('This is a late task.');
@@ -136,16 +130,17 @@ Scenario('6 - Make a task, add a due date, make sure its OVERDUE. self cleaning'
   inboxPg.deleteTask();
 });
 
-Scenario('7 - Check flagged filter', (I, inboxPg, tskLstPg) => {
+Scenario('INBOX107 - Check flagged filter', (I, inboxPg, tskLstPg) => {
   lgnPg.fullLogin(1);
   tskLstPg.enterInbox();
-  I.wait();
-  //pause();
-  inboxPg.pickFilter(3, 13);
   I.wait(3);
+  //pause();
+  inboxPg.pickFilter(3, 14);
+  I.wait(5);
+  //pause();
   I.dontSee('This is not a flagged task.');
   I.see('This IS a flagged task.');
-  inboxPg.pickFilter(0, 13);
+  inboxPg.pickFilter(0, 14);
   I.wait(3);
   I.see('This is not a flagged task.');
   I.see('This IS a flagged task.');

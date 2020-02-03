@@ -1,7 +1,7 @@
 
 Feature('Single Persons Details');
 
-Scenario('1 - add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('PERSON101 - add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -16,7 +16,7 @@ Scenario('1 - add a task', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) =>
 });
 
 //TODO The path required for clickTask(x, y) is always changing. Plus I need to find how to pick which list im choosing from.
-Scenario('2 - open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('PERSON102 - open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -30,7 +30,7 @@ Scenario('2 - open a task, edit it', (I, lgnPg, tskLstPg, peoplePage, singlePers
     I.see('Gazoolgo');
 });
 
-Scenario('3 - Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('PERSON103 - Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(2);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
@@ -46,21 +46,17 @@ Scenario('3 - Check archive popup', (I, lgnPg, tskLstPg, peoplePage, singlePerso
 });
 
 //This test fails because the filter doesnt work for users.
-Scenario('4 - Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('PERSON104 - Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
     peoplePage.disarmNavigationSidebar();
     peoplePage.makeSearch('Halfling');
     I.wait(2);
     peoplePage.clickPerson(1);
-    I.wait(2);
-    //TODO This crap.
-
-    const targetNumber = parseInt(await singlePersonPage.grabNumberOfTasks());
-    
-    I.wait(2);
-    singlePersonPage.pickFilter(3, 13);
     I.wait(4);
+    const targetNumber = parseInt(await singlePersonPage.grabNumberOfTasks());
+    singlePersonPage.pickFilter(3, 11);
+    I.wait(3);
 
     //pause();
     
@@ -77,7 +73,7 @@ Scenario('4 - Test the task filters.', async (I, lgnPg, tskLstPg, peoplePage, si
 });
 
 
-Scenario('5 - Test full view, slim view.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
+Scenario('PERSON105 - Test full view, slim view.', (I, lgnPg, tskLstPg, peoplePage, singlePersonPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPeople();
     I.wait(2);

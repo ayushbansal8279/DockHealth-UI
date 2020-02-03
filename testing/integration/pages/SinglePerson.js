@@ -37,18 +37,16 @@ module.exports = {
   pickFilter(index, stupidbullcrap){//0 Resets the filter. stupidbullcrap is an unknown variable for now.
     I.waitForElement(this.fields.filterShield, 3);
     I.click(this.fields.filterShield);
-    I.wait();
+    I.wait(3);
     if(index<1){
       console.log("Flameo Hotmin");
       //Empty if blocks arent very ca$h money of me.
     } else {
       const path = {css: `body > div:nth-child(${stupidbullcrap}) > div:nth-child(2) > ul > div:nth-child(${index})`};
-      //pause();
       I.waitForElement(path, 5);
       I.click(path);
-      I.wait();
+      I.wait(2);
     }
-    //pause();
   },
 
   grabNumberOfTasks(){

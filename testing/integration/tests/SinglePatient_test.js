@@ -1,7 +1,7 @@
 
 Feature('Patient details page');
 
-Scenario('1 - Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatientPage) => {
+Scenario('PATIENT101 - Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatientPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPatients();
 
@@ -39,7 +39,7 @@ Scenario('1 - Testing the editing suite', (I, lgnPg, tskLstPg, ptntsPg, onePatie
     onePatientPage.exitPatientPage();
 });
 
-Scenario('2 - Add a task to patient Big Bubba, complete the task.', (I, lgnPg, tskLstPg, ptntsPg, inboxPg, onePatientPage) => {
+Scenario('PATIENT102 - Add a task to patient Big Bubba, complete the task.', (I, lgnPg, tskLstPg, ptntsPg, inboxPg, onePatientPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterPatients();
     ptntsPg.setFilterTo(1);
@@ -88,7 +88,7 @@ Scenario('2 - Add a task to patient Big Bubba, complete the task.', (I, lgnPg, t
     // I.closeCurrentTab();
 });
 
-Scenario('3 - Add a task to patient, from the inbox! cleanup broken', (I, lgnPg, tskLstPg, ptntsPg, inboxPg, onePatientPage) => {
+Scenario('PATIENT103 - Add a task to patient, from the inbox! Click task cleanup broken', (I, lgnPg, tskLstPg, ptntsPg, inboxPg, onePatientPage) => {
     lgnPg.fullLogin(1);
     tskLstPg.enterInbox();
     inboxPg.openAddTaskDropdown();

@@ -2,7 +2,7 @@ Feature('Login');
 
 const { I, lgnPg, tskLstPg, inboxPg, taskPg } = inject();
 
-Scenario('1 - Bad Email', I => {
+Scenario('LOGIN101 - Bad Email', I => {
   I.amOnPage('https://docktest.childrensaccelerator.com');
   I.wait();
   I.fillField('username', 'Infinite');
@@ -15,7 +15,7 @@ Scenario('1 - Bad Email', I => {
   I.see('Please enter a valid email address');
 });
 
-Scenario('2 - Login', (I, lgnPg) => {
+Scenario('LOGIN102 - Login', (I, lgnPg) => {
   lgnPg.fullLogin(1);
   I.waitForText('Lists', 5);
 });

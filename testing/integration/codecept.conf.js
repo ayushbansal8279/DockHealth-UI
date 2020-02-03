@@ -57,7 +57,7 @@ exports.config = {
     inboxPg: './pages/Inbox.js',
     tasksPg: './pages/TaskList.js',
     ptntsPg: './pages/Patients.js',
-    onePatientPage: './pages/OnePatient.js',
+    onePatientPage: './pages/SinglePatient.js',
     peoplePage: './pages/People.js',
     singlePersonPage: './pages/SinglePerson.js',
   },
