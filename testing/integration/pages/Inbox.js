@@ -6,7 +6,7 @@ module.exports = {
     // addTskBtn: {css: "button[variant=contained]"},
     addTskBtn: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div > button',
+        '#appHome > main > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > button',
     },
     // tskDescription: {name: "description"},
     tskDescription: {
@@ -127,9 +127,13 @@ module.exports = {
 
   // TODO in custom_steps turn this into a universal open dropdown.
   openAddTaskDropdown() {
-    I.waitForElement(this.fields.addTskBtn, 14);
-    I.click(this.fields.addTskBtn);
+    I.waitForElement(this.fields.addTskBtn, 7);
+    // I.scrollTo(this.fields.addTskBtn);
+    // I.scrollPageToTop();
     I.wait(2);
+    //pause();
+    I.click(this.fields.addTskBtn);
+    I.wait(1);
   },
 
   clickTaskCheckbox(index) {
@@ -163,7 +167,7 @@ module.exports = {
   },
 
   postNamedTask(name) {
-    I.waitForElement(this.fields.tskDescription, 43);
+    I.waitForElement(this.fields.tskDescription, 4);
     I.fillField(this.fields.tskDescription, name);
     I.wait();
     I.pressKey('Enter');
