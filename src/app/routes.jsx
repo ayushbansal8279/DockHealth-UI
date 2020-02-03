@@ -285,36 +285,12 @@ export const Routes = ({ store }) => {
             component={OnboardingCreateAccountView}
             path="create-account"
           />
-          <Route
-            component={OnboardingEulaView}
-            path="eula"
-            onEnter={authRequired}
-          />
-          <Route
-            component={OnboardingBaaOverviewView}
-            path="baa-overview"
-            onEnter={authRequired}
-          />
-          <Route
-            component={OnboardingBaaSigningView}
-            path="baa-signing"
-            onEnter={authRequired}
-          />
-          <Route
-            component={OnboardingTeamOrgSetupView}
-            path="team-org-setup"
-            onEnter={authRequired}
-          />
-          <Route
-            component={OnboardingProfileView}
-            path="profile"
-            onEnter={authRequired}
-          />
-          <Route
-            component={OnboardingFinishedView}
-            path="finished"
-            onEnter={authRequired}
-          />
+          <Route component={OnboardingEulaView} path="eula" />
+          <Route component={OnboardingBaaOverviewView} path="baa-overview" />
+          <Route component={OnboardingBaaSigningView} path="baa-signing" />
+          <Route component={OnboardingTeamOrgSetupView} path="team-org-setup" />
+          <Route component={OnboardingProfileView} path="profile" />
+          <Route component={OnboardingFinishedView} path="finished" />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>

@@ -8,6 +8,7 @@ import useBoolean from '../../../hooks/useBoolean';
 import {
   OnboardingButton,
   OnboardingH1Bold,
+  OnboardingH2,
   OnboardingH2Bold,
   OnboardingH3,
   OnboardingH3Bold,
@@ -94,12 +95,8 @@ const OnboardingBaaOverviewView = () => {
           </Grid>
           <OnboardingSpacing3 />
           <Grid container>
-            <OnboardingButton
-              onClick={goToTeamOrgSetup}
-              variant="outlinedError"
-              size="narrow"
-            >
-              <OnboardingH2Bold>Skip</OnboardingH2Bold>
+            <OnboardingButton onClick={goToTeamOrgSetup} variant="outlinedSkip">
+              <OnboardingH2>Skip for now</OnboardingH2>
             </OnboardingButton>
           </Grid>
         </>

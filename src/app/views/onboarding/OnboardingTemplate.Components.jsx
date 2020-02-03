@@ -327,6 +327,10 @@ export const OnboardingButton = withStyles({
   outlinedLink: {
     color: '#0ca1c7',
   },
+  outlinedSkip: {
+    color: '#0ca1c7',
+    padding: '0.5rem 0.25rem',
+  },
 })(({ classes, variant, size, disabled, ...props }) => {
   const className = `${classes.root} ${classes[variant]} ${classes[size] ??
     ''} ${disabled ? classes[`${variant}Disabled`] ?? '' : ''}`.trim();
