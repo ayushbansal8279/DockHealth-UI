@@ -60,6 +60,15 @@ export const updateLegalEntityName = ({ legalEntityName }) =>
     },
   }).then(response => response.data);
 
+export const updateOrganizationName = ({ organizationName }) =>
+  axios({
+    method: 'put',
+    url: '/organization/updateOrganizationName',
+    data: {
+      organizationName,
+    },
+  }).then(response => response.data);
+
 export const signOrganizationBAADocument = ({ legalEntityName }) =>
   axios({
     method: 'put',

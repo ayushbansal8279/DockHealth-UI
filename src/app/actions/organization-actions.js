@@ -16,6 +16,7 @@ import {
   SELECT_SUBSCRIPTION_PLAN_FAILURE,
   SELECT_SUBSCRIPTION_PLAN_SUCCESS,
   SET_NEW_PAYMENT_PLAN,
+  UPDATE_ORGANIZATION,
 } from './action-types';
 
 export const getOrganizationById = ({ organizationId }) => dispatch => {
@@ -124,3 +125,13 @@ export const setPaymentNewPlan = ({ newPlan }) => dispatch => {
     payload: newPlan,
   });
 };
+
+export const updateOrganizationName = ({ organizationName }) => dispatch =>
+  OrganizationApi.updateOrganizationName({ organizationName }).then(() => {
+    dispatch({
+      type: UPDATE_ORGANIZATION,
+      payload: {
+        organizationName,
+      },
+    });
+  });

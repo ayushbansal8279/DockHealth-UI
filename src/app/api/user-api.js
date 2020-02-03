@@ -622,3 +622,10 @@ export function getEnterpriseAccessTokensByAuthCode(authCode) {
     }
   });
 }
+
+export function acknowledgeEula() {
+  return axios({
+    method: 'put',
+    url: '/user/acknowledgeEULA',
+  }).then(({ data }) => data);
+}

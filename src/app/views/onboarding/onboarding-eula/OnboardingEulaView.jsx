@@ -1,9 +1,10 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useScroll, useToggle } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import { acknowledgeEula } from '../../../actions/user-actions';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import useBoolean from '../../../hooks/useBoolean';
 import PdfIcon from '../../../img/pdf-icon.svg';
@@ -47,6 +48,12 @@ const OnboardingEulaView = () => {
   });
 
   const continueButtonDisabled = !isEulaRead || !isEulaAccepted;
+
+  const onAgreeClick = useCallback(() => {
+    acknowledgeEula()(dispatch).then(() => {
+      hashHistory.push('/onboarding/baa-overview');
+    });
+  }, [dispatch]);
 
   return (
     <div>
@@ -106,9 +113,7 @@ const OnboardingEulaView = () => {
         <OnboardingButton
           disabled={continueButtonDisabled}
           variant="containedAutoWidth"
-          onClick={() => {
-            hashHistory.push('/onboarding/baa-overview');
-          }}
+          onClick={onAgreeClick}
         >
           <OnboardingH2Bold>Agree & Continue</OnboardingH2Bold>
         </OnboardingButton>

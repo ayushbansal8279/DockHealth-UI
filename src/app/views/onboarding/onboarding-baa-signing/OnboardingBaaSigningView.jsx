@@ -55,18 +55,15 @@ const OnboardingBaaSigningView = () => {
         allowCancel: true,
         skipDomainVerification: true,
         messageListener: eventData => {
-          // console.log(eventData);
           storeSignatureResult({
             signatureIdentifier: eventData.signature_id,
             signatureResult: eventData.event,
           });
+
           if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-            // save
-            // event: "signature_request_signed"
             formMethods.setValue('signatureId', eventData.signature_id);
-            // eslint-disable-next-line no-unused-expressions
-            // formReference.current?.dispatchEvent(new Event('submit'));
           }
+
           hashHistory.push('/onboarding/team-org-setup');
         },
       });
@@ -75,21 +72,20 @@ const OnboardingBaaSigningView = () => {
   );
 
   const clickReadAndSign = useCallback(() => {
-    // formReference.current?.dispatchEvent(new Event('submit'));
-    const values = formMethods.getValues();
-    // console.log(values);
-    const errorMessage = 'Error getting BAA document to sign, please try later';
-    const { legalEntityName } = values;
+    const { legalEntityName } = formMethods.getValues();
+
+    const defaultErrorMessage =
+      'Error getting BAA document to sign, please try later';
+
     signOrganizationBAADocument({ legalEntityName })
       .then(data => {
-        // console.log(data);
         if (data.statusCode === 'SUCCESS') {
           openHelloSign(data.statusMessage);
         } else {
           showAlert({
             status: 'error',
             title: 'Error',
-            text: errorMessage,
+            text: defaultErrorMessage,
           });
         }
       })
@@ -97,7 +93,7 @@ const OnboardingBaaSigningView = () => {
         showAlert({
           status: 'error',
           title: 'Error',
-          text: error?.message ?? errorMessage,
+          text: error?.message ?? defaultErrorMessage,
         });
       });
   }, [formMethods, openHelloSign]);

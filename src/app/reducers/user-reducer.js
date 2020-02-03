@@ -1,3 +1,5 @@
+import { USER_ACKNOWLEDGED_EULA } from '../actions/action-types';
+
 const initialState = {
   user: false,
   userProfile: '',
@@ -50,6 +52,12 @@ const UserReducer = (state = initialState, action) => {
     case 'reference/allTitles': {
       const { allTitles } = action;
       return { ...state, allTitles };
+    }
+
+    case USER_ACKNOWLEDGED_EULA: {
+      return {
+        ...state,
+      };
     }
 
     default:

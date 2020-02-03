@@ -20,13 +20,16 @@ import {
   OnboardingSpacing4,
   OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
+import { updateOrganizationName } from '../../../actions/organization-actions';
 
 const goToProfile = () => {
   hashHistory.push('/onboarding/profile');
 };
 
-const onSubmit = () => {
-  goToProfile();
+const onSubmit = ({ dispatch }) => ({ organizationName }) => {
+  updateOrganizationName({ organizationName })(dispatch).then(() => {
+    goToProfile();
+  });
 };
 
 const REQUIRED_MESSAGE = 'This field is required';
@@ -80,7 +83,7 @@ const OnboardingTeamOrgSetupView = () => {
   });
 
   return (
-    <form onSubmit={formMethods.handleSubmit(onSubmit)}>
+    <form onSubmit={formMethods.handleSubmit(onSubmit({ dispatch }))}>
       <FormContext {...formMethods}>
         <OnboardingH2Bold>Organization</OnboardingH2Bold>
         <OnboardingSpacing2 />

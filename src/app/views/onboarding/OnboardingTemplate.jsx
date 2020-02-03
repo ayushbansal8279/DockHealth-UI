@@ -36,6 +36,7 @@ const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
+const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
 const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
 
 const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
@@ -49,10 +50,9 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
     hashHistory.replace(EULA_PATH);
   }
 
-  if (loggedIn && pathname === TEAM_ORG_SETUP_PATH) {
-    userApi.updateStoreWithCurrentUser(user);
-
-    userApi.getUserByEmail(user.username, user).then(data => {
+  userApi.updateStoreWithCurrentUser(user);
+  userApi.getUserByEmail(user.username, user).then(data => {
+    if (loggedIn && pathname === TEAM_ORG_SETUP_PATH) {
       if (data.profileThumbnailPictureHash) {
         userApi.getUserProfilePic(data.userId, 'PROFILE');
       }
@@ -62,8 +62,12 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
 
       userApi.getAllSpecialties();
       userApi.getAllTitles();
-    });
-  }
+    }
+
+    if (loggedIn && pathname === EULA_PATH && data.eulaAcknowledged) {
+      hashHistory.replace(BAA_OVERVIEW_PATH);
+    }
+  });
 };
 
 const OnboardingTemplate = ({ children }) => {
