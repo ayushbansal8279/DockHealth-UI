@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
+import { updateOrganizationName } from '../actions/organization-actions';
 import * as userApi from '../api/user-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import {
@@ -24,11 +25,11 @@ const Title = styled.div`
   padding-left: 2rem;
 `;
 
-const onFormSubmit = ({
-  otherSpecialty,
-  otherSubspecialty,
-  otherTitle,
-}) => async data => {
+const onFormSubmit = (
+  { otherSpecialty, otherSubspecialty, otherTitle },
+  userProfile,
+  dispatch,
+) => async data => {
   const {
     emailNotificationsEnabled,
     pushNotificationsEnabled,
@@ -67,6 +68,16 @@ const onFormSubmit = ({
 
     await userApi.updateUser(requestData);
 
+    if (
+      requestData.organizationName &&
+      requestData.organizationName !== userProfile.organizationName
+    ) {
+      const { organizationName } = requestData;
+      updateOrganizationName({ organizationName })(dispatch).then(() => {
+        // console.log('Organization Name updated');
+      });
+    }
+
     await userApi.updateUserNotoficationPrefs(
       emailNotificationsEnabled,
       pushNotificationsEnabled,
@@ -77,9 +88,29 @@ const onFormSubmit = ({
     userApi.getUserById();
     userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
     userApi.getUserNotoficationPrefs();
-  } catch {
+  } catch (error) {
+    // console.log(error);
     toggleAlert('Error updating profile', 'error');
   }
+};
+
+const checkOrganizationNameForEditable = (
+  allFormFieldDefinitions,
+  userProfile,
+) => {
+  allFormFieldDefinitions
+    .filter(({ readOnly = true }) => readOnly)
+    .forEach(fieldDef => {
+      const fieldDefToUpdate = fieldDef;
+      if (
+        fieldDefToUpdate.key === 'organizationName' &&
+        (userProfile.orgUserRole === 'ADMIN' ||
+          userProfile.orgUserRole === 'OWNER') &&
+        fieldDefToUpdate !== undefined
+      ) {
+        fieldDefToUpdate.readOnly = false;
+      }
+    });
 };
 
 const UserProfileViewWrapper = () => {
@@ -163,6 +194,8 @@ const UserProfileViewWrapper = () => {
         formContainerClassName: 'invisible',
       };
 
+  checkOrganizationNameForEditable(formFieldDefinitions, userProfile);
+
   const defaultValues = Object.fromEntries(
     [...formFieldDefinitions, ...formSwitchDefinitions].map(
       ({
@@ -198,7 +231,7 @@ const UserProfileViewWrapper = () => {
           formContainerClassName={formContainerClassName}
           formFieldDefinitions={formFieldDefinitions}
           formSwitchDefinitions={formSwitchDefinitions}
-          onSubmit={onFormSubmit({ ...otherEntries })}
+          onSubmit={onFormSubmit({ ...otherEntries }, userProfile, dispatch)}
           validationSchema={validationSchema}
         />
       )}
