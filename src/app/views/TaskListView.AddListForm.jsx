@@ -90,7 +90,7 @@ const renderPickerOption = ({ closePicker, addPerson }) => member => {
   );
 };
 
-const AddListForm = ({ setListFormOpen }) => {
+const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
   const {
     formLabelContent,
     handleSubmit,
@@ -238,9 +238,14 @@ const AddListForm = ({ setListFormOpen }) => {
         />
       </Grid>
       <Grid container justify="flex-end">
-        <StyledButton variant="outlined" onClick={() => setListFormOpen(false)}>
-          Cancel
-        </StyledButton>
+        {cancelButtonShown && (
+          <StyledButton
+            variant="outlined"
+            onClick={() => setListFormOpen(false)}
+          >
+            Cancel
+          </StyledButton>
+        )}
         <StyledButton variant="contained" type="submit">
           Save
         </StyledButton>

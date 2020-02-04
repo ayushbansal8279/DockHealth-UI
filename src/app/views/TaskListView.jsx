@@ -56,6 +56,13 @@ const StyledCollapse = styled(Collapse)`
   width: 100%;
 `;
 
+const TaskListViewWrapper = styled.div`
+  max-width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  width: 100%;
+`;
+
 const ICONS = {
   ASSIGN_TO: 'icon-assign-to',
   CALENDAR: 'icon-calendar',
@@ -292,62 +299,71 @@ class TaskListView extends PureComponent {
 
     const { listFormOpen } = this.state;
 
+    const taskListsEmpty = taskLists?.length === 0;
+
+    const taskListFormOpen = taskListsEmpty || listFormOpen;
+
     return (
-      <Grid container direction="column" alignItems="center" spacing={8}>
-        <GenericHeader isFetching={false}>Lists</GenericHeader>
-        <StyledCollapse in={!listFormOpen} timeout={150}>
-          <SafariFixGrid
-            container
-            alignItems="center"
-            justify="flex-end"
-            direction="row"
-          >
-            <AddTaskListButton onClick={this.addTaskList} />
+      <TaskListViewWrapper>
+        <Grid container direction="column" alignItems="center" spacing={8}>
+          <GenericHeader isFetching={false}>Lists</GenericHeader>
+          <StyledCollapse in={!taskListFormOpen} timeout={250}>
+            <SafariFixGrid
+              container
+              alignItems="center"
+              justify="flex-end"
+              direction="row"
+            >
+              <AddTaskListButton onClick={this.addTaskList} />
+            </SafariFixGrid>
+          </StyledCollapse>
+          <SafariFixGrid container item xs={12} justify="center">
+            <Grid container item xs={9}>
+              <StyledCollapse in={taskListFormOpen} timeout={250}>
+                <AddListForm
+                  setListFormOpen={this.setListFormOpen}
+                  cancelButtonShown={!taskListsEmpty}
+                />
+              </StyledCollapse>
+            </Grid>
           </SafariFixGrid>
-        </StyledCollapse>
-        <SafariFixGrid container item xs={12} justify="center">
-          <Grid container item xs={9}>
-            <StyledCollapse in={listFormOpen} timeout={150}>
-              <AddListForm setListFormOpen={this.setListFormOpen} />
-            </StyledCollapse>
-          </Grid>
-        </SafariFixGrid>
-        <SafariFixGrid container item xs={12} justify="center">
-          <Grid
-            container
-            item
-            xs={9}
-            justify="center"
-            direction="row"
-            spacing={8}
-          >
-            {genericLists?.map(this.renderGenericList)}
-          </Grid>
-        </SafariFixGrid>
-        <SafariFixGrid container item xs={12} justify="center" spacing={8}>
-          <Grid item xs={9}>
-            {isFetching ? (
-              <CubesLoaderContainer>
-                <CubesLoader size={40} />
-              </CubesLoaderContainer>
-            ) : (
-              <div className="item-list-wrapper list-wrapper-all-lists">
-                <PendingListsComponent
-                  taskLists={pendingTaskLists}
-                  acceptInviteToTaskList={this.acceptInviteToTaskList}
-                  rejectInviteToTaskList={this.rejectInviteToTaskList}
-                />
-                <ListsComponent
-                  taskLists={taskLists}
-                  editForm={this.editTaskList}
-                  deleteList={this.deleteList}
-                  leaveList={this.leaveList}
-                />
-              </div>
-            )}
-          </Grid>
-        </SafariFixGrid>
-      </Grid>
+          <SafariFixGrid container item xs={12} justify="center">
+            <Grid
+              container
+              item
+              xs={9}
+              justify="center"
+              direction="row"
+              spacing={8}
+            >
+              {genericLists?.map(this.renderGenericList)}
+            </Grid>
+          </SafariFixGrid>
+          <SafariFixGrid container item xs={12} justify="center" spacing={8}>
+            <Grid item xs={9}>
+              {isFetching ? (
+                <CubesLoaderContainer>
+                  <CubesLoader size={40} />
+                </CubesLoaderContainer>
+              ) : (
+                <div className="item-list-wrapper list-wrapper-all-lists">
+                  <PendingListsComponent
+                    taskLists={pendingTaskLists}
+                    acceptInviteToTaskList={this.acceptInviteToTaskList}
+                    rejectInviteToTaskList={this.rejectInviteToTaskList}
+                  />
+                  <ListsComponent
+                    taskLists={taskLists}
+                    editForm={this.editTaskList}
+                    deleteList={this.deleteList}
+                    leaveList={this.leaveList}
+                  />
+                </div>
+              )}
+            </Grid>
+          </SafariFixGrid>
+        </Grid>
+      </TaskListViewWrapper>
     );
   }
 }
