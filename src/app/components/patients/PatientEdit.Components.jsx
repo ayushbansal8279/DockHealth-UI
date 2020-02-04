@@ -1,0 +1,227 @@
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import InputBase from '@material-ui/core/InputBase';
+import InputLabel from '@material-ui/core/InputLabel';
+import withStyles from '@material-ui/core/styles/withStyles';
+import React from 'react';
+import MaskedInput from 'react-text-mask';
+import styled from 'styled-components';
+import Select from '@material-ui/core/Select';
+import { Collapse } from '@material-ui/core';
+
+export const StyledFormControl = withStyles({
+  root: {
+    backgroundColor: '#f3f5f6',
+    border: '0.0625rem solid #e4090900',
+    height: '3.5rem',
+    margin: '0.125rem 0',
+    transition: 'all 0.25s ease-out',
+  },
+  error: {
+    border: '0.0625rem solid #e40909',
+  },
+})(({ error, classes, ...props }) => {
+  const className = `${classes.root} ${error ? classes.error : ''}`.trim();
+
+  return <FormControl className={className} error={error} {...props} />;
+});
+
+export const StyledSelectComponent = withStyles({
+  select: {
+    alignItems: 'center',
+    boxSizing: 'border-box',
+    display: 'inline-flex',
+    width: '100%',
+  },
+})(Select);
+
+export const StyledInputLabel = withStyles({
+  root: {
+    color: '#2e3a43',
+    top: '50%',
+    transform: 'translate(1rem, -50%) scale(1)',
+    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
+  },
+  required: {
+    '& > span': {
+      color: '#f00',
+    },
+  },
+  shrink: {
+    color: '#2e3a43',
+    top: '0%',
+    transform: 'translate(1rem, 0.5rem) scale(0.75)',
+    transformOrigin: 'center left',
+    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
+  },
+  focused: {
+    color: '#2e3a43 !important',
+  },
+})(InputLabel);
+
+export const StyledInputBase = withStyles({
+  root: {
+    height: '3.5rem',
+    margin: 'auto 0',
+  },
+  input: {
+    backgroundColor: 'transparent',
+    border: 0,
+    borderRadius: '0.25rem',
+    boxShadow: 'none',
+    height: '3.5rem',
+    paddingBottom: 0,
+    padding: '0.5rem 1rem',
+    '&:focus': {
+      backgroundColor: 'transparent',
+      border: 0,
+      boxShadow: 'none',
+    },
+    '&[disabled]': {
+      backgroundColor: 'transparent',
+      cursor: 'default',
+    },
+  },
+  error: {
+    color: '#e40909',
+  },
+})(InputBase);
+
+export const Cancel = styled(Button)`
+  && {
+    display: flex;
+    width: 108px;
+    height: 38px;
+    border-radius: 0;
+    font-size: 16px;
+    margin-right: 4px;
+    margin-top: 18px;
+  }
+`;
+
+export const Save = styled(Button).attrs({
+  variant: 'contained',
+  color: 'secondary',
+})`
+  && {
+    display: flex;
+    width: 163px;
+    height: 38px;
+    border-radius: 0;
+    background: #da0d71;
+    box-shadow: none;
+    margin-top: 18px;
+    font-size: 16px;
+  }
+`;
+
+const StyledCollapse = styled(Collapse)`
+  && {
+    width: 100%;
+  }
+`;
+
+const ErrorLabel = styled.div`
+  color: #e40909;
+  font-size: 0.75rem;
+`;
+
+export const BirthdayTextMask = ({ inputRef, ...rest }) => (
+  <MaskedInput
+    {...rest}
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
+    }}
+    mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
+    placeholderChar={'\u2000'}
+    keepCharPositions
+  />
+);
+
+export const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
+  <MaskedInput
+    {...rest}
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
+    }}
+    mask={[
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      /\d/,
+      '-',
+      /\d/,
+      /\d/,
+      /\d/,
+      /\d/,
+    ]}
+    placeholderChar={'\u2000'}
+    keepCharPositions
+  />
+);
+
+export const StyledTextField = ({
+  name,
+  label,
+  error,
+  required = false,
+  value,
+  onChange,
+  InputProps,
+  children,
+}) => {
+  const hasError = Boolean(error);
+
+  return (
+    <>
+      <StyledFormControl fullWidth required={required} error={hasError}>
+        <StyledInputLabel>{label}</StyledInputLabel>
+        <StyledInputBase
+          name={name}
+          value={value}
+          onChange={onChange}
+          error={hasError}
+          {...InputProps}
+        >
+          {children}
+        </StyledInputBase>
+      </StyledFormControl>
+      <StyledCollapse in={hasError} timeout={150}>
+        <ErrorLabel>{error}</ErrorLabel>
+      </StyledCollapse>
+    </>
+  );
+};
+
+export const StyledSelect = ({
+  name,
+  label,
+  error,
+  required = false,
+  value,
+  onChange,
+  children,
+}) => {
+  const hasError = Boolean(error);
+
+  return (
+    <>
+      <StyledFormControl fullWidth required={required} error={hasError}>
+        <StyledInputLabel>{label}</StyledInputLabel>
+        <StyledSelectComponent
+          value={value}
+          onChange={onChange}
+          input={<StyledInputBase name={name} error={hasError} />}
+        >
+          {children}
+        </StyledSelectComponent>
+      </StyledFormControl>
+      <StyledCollapse in={hasError} timeout={150}>
+        <ErrorLabel>{error}</ErrorLabel>
+      </StyledCollapse>
+    </>
+  );
+};
