@@ -12,20 +12,22 @@ import TimeSelect from './TimeSelect';
 
 const StyledPopover = styled(Popover).attrs({ classes: { paper: 'paper' } })`
   && .paper {
+    border-radius: 0;
     overflow: hidden;
   }
 `;
 
 const Header = styled.div`
-  flex-shrink: 0;
-  flex-grow: 0;
-  padding: 0 10px;
-  display: flex;
   align-items: center;
   background: ${({ isOverdue }) => (isOverdue ? '#d9036b' : '#2a4a70')};
-  height: 73px;
-  width: 329px;
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
+  height: 3rem;
   justify-content: space-between;
+  min-width: 18.75rem;
+  padding: 0 0.375rem;
+  width: 18.75rem;
 `;
 
 const HeaderClose = styled.div`
@@ -78,14 +80,14 @@ DatePickerHeader.defaultProps = {
 };
 
 const DatePickerBody = styled.div`
-  padding: 0 8px 10px 8px;
+  padding: 0.125rem;
 `;
 
 const FooterContainer = styled.div`
-  padding: 5px 10px 0 10px;
-  flex-direction: row;
-  display: flex;
   align-items: center;
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 0.5rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -138,8 +140,9 @@ const DayButton = styled.div`
 `;
 
 const DayButtonLabel = styled.div`
-  bottom: 0.1875rem;
-  font-size: 0.375rem;
+  bottom: 3px;
+  font-size: 7px;
+  font-weight: 300;
   position: absolute;
   text-align: center;
   width: 100%;
@@ -164,9 +167,9 @@ const DateTimeSelect = ({
 }) => {
   const [anchor, setAnchor] = useState(null);
 
-  const open = useCallback(e => setAnchor(e.currentTarget));
+  const open = useCallback(event => setAnchor(event.currentTarget), []);
 
-  const close = useCallback(() => setAnchor(null));
+  const close = useCallback(() => setAnchor(null), []);
 
   const dateYesterday = moment();
   dateYesterday.subtract(1, 'days');
@@ -255,8 +258,6 @@ const DateTimeSelect = ({
 
 DateTimeSelect.propTypes = {
   children: PropTypes.func,
-  // value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
-  //   .isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
