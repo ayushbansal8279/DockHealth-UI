@@ -29,6 +29,12 @@ const SideClickListener = styled.div`
   flex: 1;
 `;
 
+const SidebarInnerContainer = styled.div`
+  max-width: 100%;
+  position: sticky;
+  top: 0;
+`;
+
 const PatientsListSpinner = ({ isFetching }) => (
   <FadeContainer>
     <Fade
@@ -51,7 +57,6 @@ const termMatchesPatient = ({ mrn, lastName, firstName }) => term =>
 
 const searchPatients = (patients, searchTerm) => {
   const searchTerms = searchTerm.toLowerCase().match(/\S+/g) || [];
-  // eslint-disable-next-line max-len
   const isMatch = patient => searchTerms.every(termMatchesPatient(patient));
   return patients.filter(isMatch);
 };
@@ -94,7 +99,6 @@ const PatientsLayout = () => {
 
   const handlePatientFilter = useCallback(
     selectedFilter => {
-      // console.log(`selected filter: ${selectedFilter}`);
       if (selectedFilter === 'MY_PATIENTS') {
         getMyPatientsAll()(dispatch);
       } else if (selectedFilter === 'MY_PATIENTS_WITH_ACTIVE_TASKS') {
@@ -122,8 +126,7 @@ const PatientsLayout = () => {
         ) : (
           <Grid
             container
-            md={12}
-            lg={highlightedPatient || isCreatingPatient ? 6 : 12}
+            sm={highlightedPatient || isCreatingPatient ? 6 : 12}
             item
             direction="column"
           >
@@ -137,15 +140,19 @@ const PatientsLayout = () => {
           </Grid>
         )}
         {highlightedPatient && (
-          <Grid md={12} lg={6} item container direction="column">
-            <PatientsSidebar patient={highlightedPatient} />
-            <SideClickListener onClick={deselectPatient} />
+          <Grid sm={6} item container direction="column">
+            <SidebarInnerContainer>
+              <PatientsSidebar patient={highlightedPatient} />
+              <SideClickListener onClick={deselectPatient} />
+            </SidebarInnerContainer>
           </Grid>
         )}
         {isCreatingPatient && (
-          <Grid md={12} lg={6} item container direction="column">
-            <PatientsCreation />
-            <SideClickListener onClick={deselectPatient} />
+          <Grid sm={6} item container direction="column">
+            <SidebarInnerContainer>
+              <PatientsCreation />
+              <SideClickListener onClick={deselectPatient} />
+            </SidebarInnerContainer>
           </Grid>
         )}
       </Grid>

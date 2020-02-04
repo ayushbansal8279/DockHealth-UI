@@ -131,6 +131,9 @@ module.exports = {
     I.waitForElement(this.fields.addTskBtn, 14);
     I.dockClick(this.fields.addTskBtn);
     I.wait(2);
+    //pause();
+    I.click(this.fields.addTskBtn);
+    I.wait(1);
   },
 
   clickTaskCheckbox(index) {
@@ -164,7 +167,7 @@ module.exports = {
   },
 
   postNamedTask(name) {
-    I.waitForElement(this.fields.tskDescription, 43);
+    I.waitForElement(this.fields.tskDescription, 4);
     I.fillField(this.fields.tskDescription, name);
     I.wait();
     I.pressKey('Enter');

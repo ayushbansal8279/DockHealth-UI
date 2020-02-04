@@ -30,19 +30,19 @@ exports.config = {
 
     WebDriver: {
       url: 'https://docktest.childrensaccelerator.com',
-      //show: true,
-      show: false,
-      browser: 'chrome',
-      //browser: 'safari',
+      show: true,
+      //show: false,
+      //browser: 'chrome',
+      browser: 'safari',
       //browser: 'firefox,'
       host: '127.0.0.1',
       port: 4444,
-      //windowSize: '1200x1000',
+      windowSize: '1600x1200',
       restart: false,
       desiredCapabilities: {
         chromeOptions: {
-          //args: [ "--disable-gpu", "--no-sandbox", 'window-size=1440,1200'] // "--window-size=1200,1000", "--headless",
-          args: ["--disable-gpu", "--no-sandbox", "--headless", 'window-size=1440,1200']
+          //args: [ "--disable-gpu", "--no-sandbox", 'window-size=1600x1200'] // "--window-size=1200,1000", "--headless",
+          //args: ["--disable-gpu", "--no-sandbox", "--headless", 'window-size=16001200']
           //args: ["--disable-gpu", "--no-sandbox", "--headless"]
         }
       }

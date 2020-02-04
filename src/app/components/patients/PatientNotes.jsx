@@ -3,18 +3,13 @@ import moment from 'moment';
 import * as PropTypes from 'prop-types';
 import equals from 'ramda/es/equals';
 import take from 'ramda/es/take';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
-
-import { addPatientNote, editPatientNote } from '../../actions/patient-actions';
+import { editPatientNote } from '../../actions/patient-actions';
 import { capitalize } from '../../helpers/capitalize';
-import {
-  onPatientNoteAdded,
-  onPatientNoteEdited,
-} from '../../helpers/ga-event-helper';
-import useBoolean from '../../hooks/useBoolean';
+import { onPatientNoteEdited } from '../../helpers/ga-event-helper';
 import EditableDescription from '../common/EditableDescription';
 import { Cancel, Save, StyledTextField } from './PatientCreation';
 
@@ -121,9 +116,16 @@ const onNoteChange = ({
   }
 };
 
-const PatientNotes = ({ patientId, notes }) => {
-  const [isCreating, startCreating, stopCreating] = useBoolean(false);
-  const [note, setNote] = useState('');
+const PatientNotes = ({
+  patientId,
+  notes,
+  note,
+  setNote,
+  isCreating,
+  handleCancel,
+  handleSubmit,
+  startCreating,
+}) => {
   const [noteHeightMap, setNoteHeightMap] = useState(new Map());
   const [noteListHeight, setNoteListHeight] = useState(0);
   const dispatch = useDispatch();
@@ -135,22 +137,6 @@ const PatientNotes = ({ patientId, notes }) => {
 
   const handleChange = event => {
     setNote(capitalize(event.currentTarget.value));
-  };
-
-  const handleCancel = useCallback(() => {
-    setNote('');
-    stopCreating();
-  }, [stopCreating]);
-
-  const handleSubmit = () => {
-    dispatch(addPatientNote(patientId, note))
-      .then(() => {
-        handleCancel();
-        onPatientNoteAdded();
-      })
-      .catch(() => {
-        toggleAlert('Error adding note. Please try again.', 'error');
-      });
   };
 
   const handleUpdate = (description, patientNoteId) => {

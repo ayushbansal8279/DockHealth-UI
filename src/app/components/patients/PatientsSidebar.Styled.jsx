@@ -19,6 +19,12 @@ export const PatientsSidebarHeader = styled.div`
   padding: 15px 13.5px 19px 27px;
 `;
 
+export const PatientsSidebarName = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 export const PatientsSidebarSectionContainer = styled.div`
   border: solid 2px #ddf2f7;
   background: #fff;
@@ -112,14 +118,16 @@ export const PatientsSidebarContactCategory = styled.div`
 
 export const PatientsSidebarCloseButton = styled(ButtonBase)`
   && {
-    margin-left: auto;
-    width: 36px;
-    height: 36px;
     background: #ababb2;
     border-radius: 50%;
     color: #fff;
+    font-size: 1.125rem;
     font-weight: bold;
-    font-size: 18px;
+    height: 2.25rem;
+    margin-left: auto;
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+    width: 2.25rem;
   }
 `;
 

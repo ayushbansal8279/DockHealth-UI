@@ -8,12 +8,16 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
-
-import { updatePatient } from '../../actions/patient-actions';
+import { addPatientNote, updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
+import {
+  onPatientEdited,
+  onPatientNoteAdded,
+} from '../../helpers/ga-event-helper';
+import { noop } from '../../helpers/utility-functions';
+import useBoolean from '../../hooks/useBoolean';
 import PatientNotes from './PatientNotes';
 import PatientsSidebarSection from './PatientsSidebar.Section';
-import { onPatientEdited } from '../../helpers/ga-event-helper';
 
 const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
   <TextField
@@ -172,106 +176,132 @@ export const PatientsForm = ({
   isClean,
   cancel,
 }) => {
+  const [isCreating, startCreating, stopCreating] = useBoolean(false);
+  const [note, setNote] = useState('');
+
+  const dispatch = useDispatch();
+
+  const handleCancel = useCallback(() => {
+    setNote('');
+    stopCreating();
+  }, [stopCreating]);
+
+  const handleNewNoteSubmit = useCallback(() => {
+    addPatientNote(patientId, note)(dispatch)
+      .then(newNote => {
+        handleCancel();
+        onPatientNoteAdded();
+        return newNote;
+      })
+      .catch(() => {
+        toggleAlert('Error adding note. Please try again.', 'error');
+      });
+  }, [dispatch, handleCancel, note, patientId]);
+
+  const handleSaveAndClose = useCallback(() => {
+    onSubmit()
+      .then(() => {
+        handleNewNoteSubmit();
+      })
+      .catch(noop);
+  }, [handleNewNoteSubmit, onSubmit]);
+
+  useEffect(() => {
+    handleCancel();
+  }, [handleCancel, patientId]);
+
   return (
     <>
       <PatientsSidebarSection
         heading="Patient Details"
         hideCollapse={hideCollapse}
       >
-        <div
-          style={{
-            columnCount: 2,
-            columnWidth: '450px',
-            paddingTop: '14px',
-          }}
-        >
-          <div>
-            <Grid container wrap="nowrap">
-              <Grid item xs={4}>
-                <StyledTextField
-                  name="firstName"
-                  value={firstName || ''}
-                  onChange={onChange}
-                  required={!isReadOnly}
-                  label="First Name"
-                />
-              </Grid>
-              <Grid item xs={4} style={{ margin: '0 4px' }}>
-                <StyledTextField
-                  name="middleName"
-                  value={middleName || ''}
-                  onChange={onChange}
-                  label="Middle Name"
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <StyledTextField
-                  name="lastName"
-                  value={lastName || ''}
-                  onChange={onChange}
-                  required={!isReadOnly}
-                  label="Last Name"
-                />
-              </Grid>
+        <div>
+          <Grid container wrap="nowrap">
+            <Grid item xs={4}>
+              <StyledTextField
+                name="firstName"
+                value={firstName || ''}
+                onChange={onChange}
+                required={!isReadOnly}
+                label="First Name"
+              />
             </Grid>
-            <StyledTextField
-              name="mrn"
-              value={mrn || ''}
-              onChange={onChange}
-              label="MRN"
-            />
-            <StyledTextField
-              name="dob"
-              value={dob || ''}
-              onChange={onChange}
-              label="Birthday"
-              error={Boolean(errors?.dob)}
-              InputProps={{
-                inputComponent: isReadOnly ? undefined : BirthdayTextMask,
-              }}
-            />
-            <StyledTextField
-              name="gender"
-              value={gender || ''}
-              onChange={onChange}
-              label="Gender"
-              select
-            >
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="male">Male</MenuItem>
-              <MenuItem value="other">Other</MenuItem>
-            </StyledTextField>
-          </div>
-          <div>
-            <StyledTextField
-              name="phoneHome"
-              value={phoneHome || ''}
-              onChange={onChange}
-              label="Home Phone"
-              type="tel"
-              InputProps={{
-                inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
-              }}
-            />
-            <StyledTextField
-              name="phoneMobile"
-              value={phoneMobile || ''}
-              onChange={onChange}
-              label="Mobile Phone"
-              type="tel"
-              InputProps={{
-                inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
-              }}
-            />
-            <StyledTextField
-              name="email"
-              value={email || ''}
-              onChange={onChange}
-              label="Email"
-              error={Boolean(errors?.email)}
-              type="email"
-            />
-          </div>
+            <Grid item xs={4} style={{ margin: '0 4px' }}>
+              <StyledTextField
+                name="middleName"
+                value={middleName || ''}
+                onChange={onChange}
+                label="Middle Name"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <StyledTextField
+                name="lastName"
+                value={lastName || ''}
+                onChange={onChange}
+                required={!isReadOnly}
+                label="Last Name"
+              />
+            </Grid>
+          </Grid>
+          <StyledTextField
+            name="mrn"
+            value={mrn || ''}
+            onChange={onChange}
+            label="MRN"
+          />
+          <StyledTextField
+            name="dob"
+            value={dob || ''}
+            onChange={onChange}
+            label="Birthday"
+            error={Boolean(errors?.dob)}
+            InputProps={{
+              inputComponent: isReadOnly ? undefined : BirthdayTextMask,
+            }}
+          />
+          <StyledTextField
+            name="gender"
+            value={gender || ''}
+            onChange={onChange}
+            label="Gender"
+            select
+          >
+            <MenuItem value="female">Female</MenuItem>
+            <MenuItem value="male">Male</MenuItem>
+            <MenuItem value="other">Other</MenuItem>
+          </StyledTextField>
+        </div>
+        <div>
+          <StyledTextField
+            name="phoneHome"
+            value={phoneHome || ''}
+            onChange={onChange}
+            label="Home Phone"
+            type="tel"
+            InputProps={{
+              inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+            }}
+          />
+          <StyledTextField
+            name="phoneMobile"
+            value={phoneMobile || ''}
+            onChange={onChange}
+            label="Mobile Phone"
+            type="tel"
+            InputProps={{
+              inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+            }}
+          />
+          <StyledTextField
+            name="email"
+            value={email || ''}
+            onChange={onChange}
+            label="Email"
+            error={Boolean(errors?.email)}
+            type="email"
+          />
         </div>
         <div
           style={{
@@ -282,7 +312,7 @@ export const PatientsForm = ({
         >
           {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
           {!isReadOnly && (
-            <Save onClick={onSubmit} disabled={isDisabled || isClean}>
+            <Save onClick={handleSaveAndClose} disabled={isDisabled || isClean}>
               Save
             </Save>
           )}
@@ -299,7 +329,16 @@ export const PatientsForm = ({
           lineHeigth: '16px',
         }}
       >
-        <PatientNotes notes={allNotes} patientId={patientId} />
+        <PatientNotes
+          notes={allNotes}
+          patientId={patientId}
+          note={note}
+          setNote={setNote}
+          isCreating={isCreating}
+          handleCancel={handleCancel}
+          handleSubmit={handleNewNoteSubmit}
+          startCreating={startCreating}
+        />
       </PatientsSidebarSection>
     </>
   );
@@ -307,6 +346,7 @@ export const PatientsForm = ({
 
 const validateBirthday = dob =>
   moment(dob, 'MM/DD/YYYY', true).isBefore(moment());
+
 const validateEmail = email =>
   /^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(email);
 
@@ -368,11 +408,17 @@ const PatientEdit = ({ patient }) => {
     [formState],
   );
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(() => {
     setIsSubmitting(true);
-    await dispatch(updatePatient(formState));
-    setIsSubmitting(false);
-    onPatientEdited();
+
+    return updatePatient(formState)(dispatch)
+      .then(() => {
+        setIsSubmitting(false);
+        onPatientEdited();
+      })
+      .catch(() => {
+        setIsSubmitting(false);
+      });
   }, [dispatch, formState]);
 
   const canSubmit = () => {
