@@ -33,6 +33,9 @@ const DocumentsView = () => {
       userProfile: store.userState.userProfile,
     };
   });
+  const { organization } = useSelector(store => ({
+    ...store.organizationState,
+  }));
 
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(userProfile.orgUserRole);
 
@@ -72,10 +75,15 @@ const DocumentsView = () => {
     });
   }, [baaObjectUrl]);
 
-  const dummySignedDate = moment().format('ll');
-  const eulaAckDate = userProfile.eulaAcknowledgedDateTime
-    ? moment(userProfile.eulaAcknowledgedDateTime).format('ll')
-    : '';
+  const baaSignedDate =
+    organization && organization.baaSignatureDateTime
+      ? moment(organization.baaSignatureDateTime).format('ll')
+      : '';
+
+  const eulaAckDate =
+    userProfile && userProfile.eulaAcknowledgedDateTime
+      ? moment(userProfile.eulaAcknowledgedDateTime).format('ll')
+      : '';
 
   return (
     <DocumentsViewContainer>
@@ -95,7 +103,7 @@ const DocumentsView = () => {
             <DocumentLink onClick={onBaaDownloadClick}>
               Download PDF
             </DocumentLink>
-            <H3>Signed on {dummySignedDate}</H3>
+            <H3>Signed on {baaSignedDate}</H3>
           </Grid>
         </DocumentContainer>
       )}
