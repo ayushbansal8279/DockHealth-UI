@@ -1,7 +1,7 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useUnmount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
 import { downloadSignedDocument } from '../../../api/organization-api';
@@ -27,6 +27,14 @@ const DocumentsView = () => {
   const dispatch = useDispatch();
 
   const [baaObjectUrl, setBaaObjectUrl] = useState(null);
+
+  const { userProfile } = useSelector(store => {
+    return {
+      userProfile: store.userState.userProfile,
+    };
+  });
+
+  const isUserAdmin = ['ADMIN', 'OWNER'].includes(userProfile.orgUserRole);
 
   useMount(() => {
     setHeader(dispatch)({
@@ -65,44 +73,58 @@ const DocumentsView = () => {
   }, [baaObjectUrl]);
 
   const dummySignedDate = moment().format('ll');
+  const eulaAckDate = userProfile.eulaAcknowledgedDateTime
+    ? moment(userProfile.eulaAcknowledgedDateTime).format('ll')
+    : '';
 
   return (
-    <DocumentsViewContainer direction="column" wrap="nowrap">
+    <DocumentsViewContainer>
+      {isUserAdmin && (
+        <DocumentContainer item xs={12} container>
+          <Grid item sm={12} md={6}>
+            <H2>Business Associate Agreement (BAA)</H2>
+          </Grid>
+          <Grid
+            item
+            sm={12}
+            md={6}
+            container
+            direction="column"
+            justify="center"
+          >
+            <DocumentLink onClick={onBaaDownloadClick}>
+              Download PDF
+            </DocumentLink>
+            <H3>Signed on {dummySignedDate}</H3>
+          </Grid>
+        </DocumentContainer>
+      )}
       <DocumentContainer item xs={12} container>
-        <Grid item sm={12} md={9}>
-          <H2>Business Associate Agreement (BAA)</H2>
-        </Grid>
-        <Grid item sm={12} md={3} container direction="column" justify="center">
-          <DocumentLink onClick={onBaaDownloadClick}>Download PDF</DocumentLink>
-          <H3>Signed on {dummySignedDate}</H3>
-        </Grid>
-      </DocumentContainer>
-      <DocumentContainer item xs={12} container>
-        <Grid item sm={12} md={9}>
+        <Grid item sm={12} md={6}>
           <H2>End User License Agreement (EULA)</H2>
         </Grid>
-        <Grid item sm={12} md={3} container direction="column" justify="center">
+        <Grid item sm={12} md={6} container direction="column" justify="center">
           <DocumentLink
             href="https://www.dock.health/end-user-license-agreement"
             target="_blank"
           >
             Read EULA
           </DocumentLink>
-          <H3>Agreed to on {dummySignedDate}</H3>
+          {eulaAckDate && <H3>Agreed to on {eulaAckDate}</H3>}
         </Grid>
       </DocumentContainer>
       <DocumentContainer item xs={12} container>
-        <Grid item sm={12} md={9}>
+        <Grid item sm={12} md={6}>
           <H2>Privacy Policy</H2>
         </Grid>
-        <Grid item sm={12} md={3} container direction="column" justify="center">
+        <Grid item sm={12} md={6} container direction="column" justify="center">
           <DocumentLink
             href="https://www.dock.health/privacypolicy"
             target="_blank"
           >
             Read Privacy Policy
           </DocumentLink>
-          <H3>Agreed to on {dummySignedDate}</H3>
+          {eulaAckDate && <H3>Agreed to on {eulaAckDate}</H3>}
         </Grid>
       </DocumentContainer>
     </DocumentsViewContainer>

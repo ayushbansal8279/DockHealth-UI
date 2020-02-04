@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useScroll, useToggle } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
@@ -37,6 +37,12 @@ const OnboardingEulaView = () => {
   const scrollHeight = eulaContainerReference.current?.scrollHeight;
   const offsetHeight = eulaContainerReference.current?.offsetHeight;
 
+  const { userProfile } = useSelector(store => {
+    return {
+      userProfile: store.userState.userProfile,
+    };
+  });
+
   useEffect(() => {
     if (!isEulaRead && scrollY > scrollHeight - offsetHeight) {
       setEulaRead();
@@ -51,9 +57,16 @@ const OnboardingEulaView = () => {
 
   const onAgreeClick = useCallback(() => {
     acknowledgeEula()(dispatch).then(() => {
-      hashHistory.push('/onboarding/baa-overview');
+      if (
+        userProfile.orgUserRole === 'ADMIN' ||
+        userProfile.orgUserRole === 'OWNER'
+      ) {
+        hashHistory.push('/onboarding/baa-overview');
+      } else {
+        hashHistory.push('/tasks');
+      }
     });
-  }, [dispatch]);
+  }, [dispatch, userProfile.orgUserRole]);
 
   return (
     <div>

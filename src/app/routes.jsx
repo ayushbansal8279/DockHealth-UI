@@ -266,7 +266,7 @@ export const Routes = ({ store }) => {
           <Route
             path="/documents"
             component={DocumentsView}
-            onEnter={checkFeatureTogglesAdmin}
+            onEnter={checkFeatureToggles}
           />
           <Route
             path="/subscription-payment"

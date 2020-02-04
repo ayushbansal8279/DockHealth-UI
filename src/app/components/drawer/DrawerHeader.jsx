@@ -69,6 +69,15 @@ const StyledDropdown = styled.div`
   width: 100%;
 `;
 
+const StyledDropdownSmaller = styled.div`
+  background-color: #007cab;
+  height: ${props => (props.open ? 8 : 0)}rem;
+  min-height: ${props => (props.open ? 8 : 0)}rem;
+  overflow: hidden;
+  transition: height 0.25s ease-out;
+  width: 100%;
+`;
+
 const StyledLink = React.forwardRef((props, reference) => {
   const linkActive = hashHistory.getCurrentLocation().pathname === props.link;
 
@@ -151,49 +160,72 @@ const DrawerHeader = ({ user }) => {
           </div>
         </ListItemText>
       </StyledListItem>
-      <StyledDropdown
-        open={isPopoverOpen}
-        onMouseEnter={userProfileEnabled && openPopover}
-        onMouseLeave={closePopover}
-        timeout={250}
-      >
-        <DropdownListItem
-          button
-          onClick={closePopover}
-          component={linkComponent}
-          link="/userProfile"
+      {isUserAdmin && (
+        <StyledDropdown
+          open={isPopoverOpen}
+          onMouseEnter={userProfileEnabled && openPopover}
+          onMouseLeave={closePopover}
+          timeout={250}
         >
-          Profile & Settings
-        </DropdownListItem>
-        {isUserAdmin && (
-          <>
-            <DropdownListItem
-              button
-              onClick={closePopover}
-              component={linkComponent}
-              link="/subscriptions"
-            >
-              Subscription & Users
-            </DropdownListItem>
-            <DropdownListItem
-              button
-              onClick={closePopover}
-              component={linkComponent}
-              link="/billings"
-            >
-              Billing & Invoices
-            </DropdownListItem>
-            <DropdownListItem
-              button
-              onClick={closePopover}
-              component={linkComponent}
-              link="/documents"
-            >
-              Documents & Agreements
-            </DropdownListItem>
-          </>
-        )}
-      </StyledDropdown>
+          <DropdownListItem
+            button
+            onClick={closePopover}
+            component={linkComponent}
+            link="/userProfile"
+          >
+            Profile & Settings
+          </DropdownListItem>
+          <DropdownListItem
+            button
+            onClick={closePopover}
+            component={linkComponent}
+            link="/subscriptions"
+          >
+            Subscription & Users
+          </DropdownListItem>
+          <DropdownListItem
+            button
+            onClick={closePopover}
+            component={linkComponent}
+            link="/billings"
+          >
+            Billing & Invoices
+          </DropdownListItem>
+          <DropdownListItem
+            button
+            onClick={closePopover}
+            component={linkComponent}
+            link="/documents"
+          >
+            Documents & Agreements
+          </DropdownListItem>
+        </StyledDropdown>
+      )}
+      {!isUserAdmin && (
+        <StyledDropdownSmaller
+          open={isPopoverOpen}
+          onMouseEnter={userProfileEnabled && openPopover}
+          onMouseLeave={closePopover}
+          timeout={250}
+        >
+          <DropdownListItem
+            button
+            onClick={closePopover}
+            component={linkComponent}
+            link="/userProfile"
+          >
+            Profile & Settings
+          </DropdownListItem>
+          <DropdownListItem
+            button
+            onClick={closePopover}
+            component={linkComponent}
+            link="/documents"
+          >
+            Documents & Agreements
+          </DropdownListItem>
+        </StyledDropdownSmaller>
+      )}
     </>
   );
 };
