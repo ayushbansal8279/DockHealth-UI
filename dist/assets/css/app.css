@@ -3525,13 +3525,14 @@ html.is-reveal-open body {
 .reveal-overlay {
   position: fixed;
   top: 0;
-  right: 0;
-  bottom: 0;
+  height: 100%;
   left: 0;
-  z-index: 1005;
+  z-index: 10000;
   display: none;
   background-color: rgba(46, 58, 67, 0.8);
-  overflow-y: scroll; }
+  overflow-y: auto; 
+  width: 100%;
+}
 
 .reveal {
   z-index: 1006;
@@ -5346,7 +5347,7 @@ header {
 .reveal .scroll-wrapper {
   background: #fafafa;
   max-height: 300px;
-  overflow: scroll; }
+  overflow: auto; }
 
 .slim.accordion-item .task-item {
   padding: .5rem 0; }
