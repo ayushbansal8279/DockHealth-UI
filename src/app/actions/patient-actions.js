@@ -147,6 +147,7 @@ export const addPatientNote = (patientId, description) => async dispatch => {
       patientId,
       note,
     });
+    return note;
   } catch (error) {
     dispatch({
       type: ADD_PATIENT_NOTE_ERROR,

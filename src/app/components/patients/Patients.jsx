@@ -30,6 +30,7 @@ const SideClickListener = styled.div`
 `;
 
 const SidebarInnerContainer = styled.div`
+  max-width: 100%;
   position: sticky;
   top: 0;
 `;
@@ -125,8 +126,7 @@ const PatientsLayout = () => {
         ) : (
           <Grid
             container
-            md={12}
-            lg={highlightedPatient || isCreatingPatient ? 6 : 12}
+            sm={highlightedPatient || isCreatingPatient ? 6 : 12}
             item
             direction="column"
           >
@@ -140,7 +140,7 @@ const PatientsLayout = () => {
           </Grid>
         )}
         {highlightedPatient && (
-          <Grid md={12} lg={6} item container direction="column">
+          <Grid sm={6} item container direction="column">
             <SidebarInnerContainer>
               <PatientsSidebar patient={highlightedPatient} />
               <SideClickListener onClick={deselectPatient} />
@@ -148,7 +148,7 @@ const PatientsLayout = () => {
           </Grid>
         )}
         {isCreatingPatient && (
-          <Grid md={12} lg={6} item container direction="column">
+          <Grid sm={6} item container direction="column">
             <SidebarInnerContainer>
               <PatientsCreation />
               <SideClickListener onClick={deselectPatient} />

@@ -2,9 +2,8 @@ import moment from 'moment';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
-import { createBreakpoint, useMount } from 'react-use';
+import { useMount } from 'react-use';
 import styled from 'styled-components';
-
 import { highlightPatient } from '../../actions/patient-actions';
 import PatientsDetailsIcon from '../../img/details.svg';
 import PatientsEmptyIcon from '../../img/patients-empty.svg';
@@ -125,7 +124,7 @@ const capitalize = text =>
     ? text.charAt(0).toUpperCase() + text.slice(1)
     : text;
 
-const formatDateOfBirth = dob => dob && moment(dob).format('MMM. D, YYYY');
+const formatDateOfBirth = dob => dob && moment(dob).format('MMM D, YYYY');
 
 const calculateAgeFromDateOfBirth = dob => {
   if (!dob) {
@@ -141,21 +140,6 @@ const calculateAgeFromDateOfBirth = dob => {
   const yearsLabel = yearsOld === 1 ? 'yr' : 'yrs';
 
   return `${yearsOld} ${yearsLabel}`;
-};
-
-const useBreakpoint = createBreakpoint({ md: 960, lg: 1280 });
-
-const CompactWrapper = ({ children, isCompact }) => {
-  const breakpoint = useBreakpoint();
-
-  switch (breakpoint) {
-    case 'md':
-      return children;
-    case 'lg':
-      return !isCompact && children;
-    default:
-      return null;
-  }
 };
 
 const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
@@ -176,12 +160,14 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
       <ListHeader isCompact={isCompact}>
         <div>Name</div>
         <div>MRN</div>
-        <CompactWrapper isCompact={isCompact}>
-          <div>DOB</div>
-          <div>Age</div>
-          <div>Gender</div>
-          <div>&nbsp;</div>
-        </CompactWrapper>
+        {!isCompact && (
+          <>
+            <div>DOB</div>
+            <div>Age</div>
+            <div>Gender</div>
+            <div>&nbsp;</div>
+          </>
+        )}
       </ListHeader>
       {patients.map(
         ({ patientId, mrn, lastName, firstName, middleName, dob, gender }) => (
@@ -200,14 +186,16 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
               </StyledLink>
             </div>
             <div>{mrn}</div>
-            <CompactWrapper isCompact={isCompact}>
-              <div>{formatDateOfBirth(dob)}</div>
-              <div>{calculateAgeFromDateOfBirth(dob)}</div>
-              <div>{capitalize(gender)}</div>
-              <QuickViewCell>
-                <QuickViewIcon onClick={selectPatient({ patientId })} />
-              </QuickViewCell>
-            </CompactWrapper>
+            {!isCompact && (
+              <>
+                <div>{formatDateOfBirth(dob)}</div>
+                <div>{calculateAgeFromDateOfBirth(dob)}</div>
+                <div>{capitalize(gender)}</div>
+                <QuickViewCell>
+                  <QuickViewIcon onClick={selectPatient({ patientId })} />
+                </QuickViewCell>
+              </>
+            )}
           </ListRow>
         ),
       )}
