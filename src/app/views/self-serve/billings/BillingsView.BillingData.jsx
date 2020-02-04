@@ -152,10 +152,17 @@ const getInputPropsMethod = ({ setValue, values, errors }) => ({ name }) => ({
   error: Boolean(errors[name]),
 });
 
-const StyledFormInput = ({ name, label, error, getInputProps, ...props }) => (
+const StyledFormInput = ({
+  name,
+  label,
+  error,
+  required,
+  getInputProps,
+  ...props
+}) => (
   <>
     <StyledFormControl fullWidth error={error}>
-      <StyledInputLabel required>{label}</StyledInputLabel>
+      <StyledInputLabel required={required}>{label}</StyledInputLabel>
       <StyledInputBase {...getInputProps({ name })} {...props} />
     </StyledFormControl>
     <Collapse in={error}>
@@ -187,6 +194,7 @@ const CreditPaymentForm = ({
               placeholder="Name"
               label="Name"
               error={errors.name}
+              required
               getInputProps={getInputProps}
             />
           </Grid>
@@ -196,6 +204,7 @@ const CreditPaymentForm = ({
               placeholder="Email"
               label="Email"
               error={errors.email}
+              required
               getInputProps={getInputProps}
             />
           </Grid>
@@ -205,6 +214,7 @@ const CreditPaymentForm = ({
               placeholder="Address"
               label="Address"
               error={errors.address}
+              required
               getInputProps={getInputProps}
             />
           </Grid>
@@ -214,6 +224,7 @@ const CreditPaymentForm = ({
               placeholder="City"
               label="City"
               error={errors.city}
+              required
               getInputProps={getInputProps}
             />
           </Grid>
@@ -223,6 +234,7 @@ const CreditPaymentForm = ({
               placeholder="State"
               label="State"
               error={errors.state}
+              required
               getInputProps={getInputProps}
             />
           </Grid>
@@ -232,6 +244,7 @@ const CreditPaymentForm = ({
               placeholder="Zip"
               label="Zip"
               error={errors.zip}
+              required
               getInputProps={getInputProps}
             />
           </Grid>
@@ -245,6 +258,7 @@ const CreditPaymentForm = ({
           label="Card number"
           placeholder="1234 1234 1234 1234"
           isUpdatingBilling={isUpdatingBilling}
+          required
           inputProps={getInputProps({ name: 'cardNumber' })}
         />
       </Grid>
@@ -266,6 +280,7 @@ const CreditPaymentForm = ({
           placeholder="MM/YY"
           disabled={!isUpdatingBilling}
           isUpdatingBilling={isUpdatingBilling}
+          required
           inputProps={getInputProps({ name: 'cardExpiration' })}
         />
       </Grid>
@@ -277,6 +292,7 @@ const CreditPaymentForm = ({
           placeholder="CVC Code"
           disabled={!isUpdatingBilling}
           isUpdatingBilling={isUpdatingBilling}
+          required
           inputProps={getInputProps({ name: 'cardCvc' })}
         />
       </Grid>

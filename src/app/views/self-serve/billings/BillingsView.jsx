@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Elements, injectStripe } from 'react-stripe-elements';
+import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { Grid } from '@material-ui/core';
 import { setHeader } from '../../../actions/header-actions';
@@ -86,7 +86,7 @@ const BillingsView = () => {
           key: 'title',
           component: (
             <div>
-              <Title>Billings & Invoices</Title>
+              <Title>Billing & Invoices</Title>
             </div>
           ),
           alignItems: 'center',
@@ -121,4 +121,4 @@ const BillingsView = () => {
   );
 };
 
-export default injectStripe(BillingsView);
+export default BillingsView;
