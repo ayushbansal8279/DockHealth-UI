@@ -2,7 +2,6 @@ import moment from 'moment';
 import curry from 'ramda/es/curry';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-
 import { highlightPatient } from '../../actions/patient-actions';
 import { findUserTasksByPatient } from '../../api/patient-api';
 import { Flag } from '../../flags';
@@ -19,6 +18,7 @@ import {
   PatientsSidebarContainer,
   PatientsSidebarField,
   PatientsSidebarHeader,
+  PatientsSidebarName,
   PatientsSidebarNoteDescription,
   PatientsSidebarSubsection,
   PatientsSidebarSubsectionHeading,
@@ -203,10 +203,13 @@ const PatientsSidebar = ({ patient }) => {
 
   const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
+  const patientName = `${firstName || ''} ${lastName || ''} ${mrn ||
+    ''}`.trim();
+
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
-        <div>{`${firstName || ''} ${lastName || ''} ${mrn || ''}`}</div>
+        <PatientsSidebarName>{patientName}</PatientsSidebarName>
         <PatientsSidebarCloseButton onClick={deselectPatient}>
           ✕
         </PatientsSidebarCloseButton>

@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
-import { createBreakpoint } from 'react-use';
+import { createBreakpoint, useMount } from 'react-use';
 import styled from 'styled-components';
 
 import { highlightPatient } from '../../actions/patient-actions';
@@ -17,15 +17,10 @@ const EmptyListContainer = styled.div`
 `;
 
 const EmptyListIcon = styled.div`
-  //background: #000;
   display: inline-block;
   margin-bottom: 21px;
   height: 71px;
   width: 47px;
-`;
-
-const NonEmptyListRow = styled.tr`
-  ${({ isHighlighted }) => isHighlighted && '&&& { background: #a6dcea; }'}
 `;
 
 const EmptyList = () => (
@@ -52,57 +47,68 @@ const EmptyFilteredList = () => (
   </EmptyListContainer>
 );
 
-const NonEmptyListTable = styled.table`
-  border-spacing: 0 4px;
+const NonEmptyListTable = styled.div`
   color: #303538;
-  white-space: nowrap;
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-row-gap: 0.25rem;
+  grid-template-columns: 1fr;
+`;
 
-  thead {
-    background: #fff;
-    font-size: 14px;
-    line-height: 15px;
+const ListRow = styled.div`
+  background: ${props => (props.isHighlighted ? '#a6dcea' : '#fff')};
+  cursor: pointer;
+  grid-template-columns: ${props =>
+    props.isCompact ? '0.75fr 0.25fr' : '0.5fr 0.15fr 0.15fr 0.1fr 0.1fr 4rem'};
+  display: grid;
+  font-size: 1rem;
+  height: 4rem;
 
-    th:last-child {
-      width: 100%;
+  & > * {
+    align-items: center;
+    display: flex;
+    padding-left: 1.75rem;
+    overflow: hidden;
+
+    &:first-child {
+      padding-left: 2.75rem;
+    }
+
+    &:last-child {
+      padding: 0 1rem;
     }
   }
+`;
 
-  tbody {
-    line-height: 49px;
-    font-weight: 600;
-
-    tr {
-      cursor: pointer;
-    }
-
-    tr:nth-child(even) {
-      background: none;
-    }
-  }
-
-  th,
-  td {
-    padding-left: 28px;
-    :first-of-type {
-      padding-left: 43px;
-    }
-  }
-
-  td {
-    font-size: 16px;
-  }
+const ListHeader = styled(ListRow)`
+  cursor: default;
+  font-size: 0.875rem;
+  font-weight: 600;
+  height: 2rem;
+  text-transform: uppercase;
 `;
 
 const StyledLink = styled(Link)`
   color: #0ca1c7;
+  filter: brightness(1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.25s ease-out;
+  white-space: nowrap;
+
+  &:hover {
+    color: #0ca1c7;
+    filter: brightness(1.35);
+  }
 `;
 
-const QuickViewCell = styled.td`
-  text-align: right;
-  font-size: 16px;
-  font-weight: 600;
+const QuickViewCell = styled.div`
+  align-items: center;
   color: #0ca1c7;
-  padding-right: 27px;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 600;
+  justify-content: center;
 `;
 
 const QuickViewIcon = styled.img.attrs({
@@ -113,8 +119,6 @@ const QuickViewIcon = styled.img.attrs({
   height: 21px;
   max-width: none;
 `;
-
-const NonEmptyListCell = ({ children }) => <td>{children || ' '}</td>;
 
 const capitalize = text =>
   typeof text === 'string'
@@ -163,59 +167,50 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
     [dispatch],
   );
 
+  useMount(() => {
+    selectPatient({ patientId: null });
+  });
+
   return (
-    <NonEmptyListTable>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>MRN</th>
-          <CompactWrapper isCompact={isCompact}>
-            <th>DOB</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>&nbsp;</th>
-          </CompactWrapper>
-        </tr>
-      </thead>
-      <tbody>
-        {patients.map(
-          ({
-            patientId,
-            mrn,
-            lastName,
-            firstName,
-            middleName,
-            dob,
-            gender,
-          }) => (
-            <NonEmptyListRow
-              key={patientId}
-              isHighlighted={
-                highlightedPatient && patientId === highlightedPatient.patientId
-              }
-              onClick={selectPatient({ patientId })}
-            >
-              <NonEmptyListCell>
-                <StyledLink to={`/patient/${patientId}`}>
-                  {`${capitalize(lastName) || '—'}, ${capitalize(firstName) ||
-                    '—'} ${capitalize(middleName) || ''}`}
-                </StyledLink>
-              </NonEmptyListCell>
-              <NonEmptyListCell>{mrn}</NonEmptyListCell>
-              <CompactWrapper isCompact={isCompact}>
-                <NonEmptyListCell>{formatDateOfBirth(dob)}</NonEmptyListCell>
-                <NonEmptyListCell>
-                  {calculateAgeFromDateOfBirth(dob)}
-                </NonEmptyListCell>
-                <NonEmptyListCell>{capitalize(gender)}</NonEmptyListCell>
-                <QuickViewCell>
-                  <QuickViewIcon onClick={selectPatient({ patientId })} />
-                </QuickViewCell>
-              </CompactWrapper>
-            </NonEmptyListRow>
-          ),
-        )}
-      </tbody>
+    <NonEmptyListTable listLength={patients?.length ?? 0}>
+      <ListHeader isCompact={isCompact}>
+        <div>Name</div>
+        <div>MRN</div>
+        <CompactWrapper isCompact={isCompact}>
+          <div>DOB</div>
+          <div>Age</div>
+          <div>Gender</div>
+          <div>&nbsp;</div>
+        </CompactWrapper>
+      </ListHeader>
+      {patients.map(
+        ({ patientId, mrn, lastName, firstName, middleName, dob, gender }) => (
+          <ListRow
+            key={patientId}
+            isHighlighted={
+              highlightedPatient && patientId === highlightedPatient.patientId
+            }
+            isCompact={isCompact}
+            onClick={selectPatient({ patientId })}
+          >
+            <div>
+              <StyledLink to={`/patient/${patientId}`}>
+                {`${capitalize(lastName) || '—'}, ${capitalize(firstName) ||
+                  '—'} ${capitalize(middleName) || ''}`}
+              </StyledLink>
+            </div>
+            <div>{mrn}</div>
+            <CompactWrapper isCompact={isCompact}>
+              <div>{formatDateOfBirth(dob)}</div>
+              <div>{calculateAgeFromDateOfBirth(dob)}</div>
+              <div>{capitalize(gender)}</div>
+              <QuickViewCell>
+                <QuickViewIcon onClick={selectPatient({ patientId })} />
+              </QuickViewCell>
+            </CompactWrapper>
+          </ListRow>
+        ),
+      )}
     </NonEmptyListTable>
   );
 };
@@ -229,6 +224,7 @@ const PatientsList = ({
   if (patients.length === 0) {
     return isFiltered ? <EmptyFilteredList /> : <EmptyList />;
   }
+
   return (
     <NonEmptyList
       patients={patients}
