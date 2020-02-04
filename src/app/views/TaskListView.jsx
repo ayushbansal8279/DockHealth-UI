@@ -116,6 +116,7 @@ class TaskListView extends PureComponent {
   deleteList = taskListId => {
     const { taskListAction } = this.props;
     taskListAction.deleteTaskListById(taskListId).then(() => {
+      taskListAction.getGenericListCounts();
       onTaskListDeleted();
     });
   };
