@@ -1,13 +1,9 @@
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
 import { equals, evolve } from 'ramda';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import MaskedInput from 'react-text-mask';
-import styled from 'styled-components';
 import { addPatientNote, updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
 import {
@@ -16,144 +12,18 @@ import {
 } from '../../helpers/ga-event-helper';
 import { noop } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
+import {
+  BirthdayTextMask,
+  Cancel,
+  PhoneNumberTextMask,
+  Save,
+  StyledSelect,
+  StyledTextField,
+} from './PatientEdit.Components';
 import PatientNotes from './PatientNotes';
 import PatientsSidebarSection from './PatientsSidebar.Section';
 
-const StyledTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
-  <TextField
-    {...rest}
-    variant="filled"
-    margin="dense"
-    fullWidth
-    autoComplete="no"
-    InputProps={{
-      ...InputProps,
-      disableUnderline: true,
-      spellCheck: false,
-      classes: {
-        root: 'root',
-        disabled: 'disabled',
-      },
-    }}
-    InputLabelProps={{
-      ...InputLabelProps,
-      FormLabelClasses: {
-        asterisk: 'asterisk',
-        error: 'error',
-      },
-      classes: { shrink: 'shrink' },
-    }}
-  />
-))`
-  && {
-    margin-top: 4px;
-    margin-bottom: 0;
-
-    input,
-    textarea {
-      height: inherit;
-      box-shadow: none;
-      color: #2e3a43;
-      :focus {
-        border: none;
-        background: none;
-      }
-      :disabled {
-        background: none;
-        cursor: default;
-      }
-    }
-
-    .root {
-      background-color: rgba(243, 245, 246, 0.5);
-    }
-
-    .disabled {
-      color: #2e3a43;
-    }
-
-    .asterisk {
-      color: #da0d71;
-    }
-
-    .shrink {
-      color: #ababb2;
-    }
-
-    .error {
-      background: none;
-    }
-
-    label {
-      color: #2e3a43;
-    }
-  }
-`;
-
-const Cancel = styled(Button)`
-  && {
-    display: flex;
-    width: 108px;
-    height: 38px;
-    border-radius: 0;
-    font-size: 16px;
-    margin-right: 4px;
-    margin-top: 18px;
-  }
-`;
-
-const Save = styled(Button).attrs({
-  variant: 'contained',
-  color: 'secondary',
-})`
-  && {
-    display: flex;
-    width: 163px;
-    height: 38px;
-    border-radius: 0;
-    background: #da0d71;
-    box-shadow: none;
-    margin-top: 18px;
-    font-size: 16px;
-  }
-`;
-
-const BirthdayTextMask = ({ inputRef, ...rest }) => (
-  <MaskedInput
-    {...rest}
-    ref={reference => {
-      inputRef(reference ? reference.inputElement : null);
-    }}
-    mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
-    placeholderChar={'\u2000'}
-    keepCharPositions
-  />
-);
-
-const PhoneNumberTextMask = ({ inputRef, ...rest }) => (
-  <MaskedInput
-    {...rest}
-    ref={reference => {
-      inputRef(reference ? reference.inputElement : null);
-    }}
-    mask={[
-      /\d/,
-      /\d/,
-      /\d/,
-      '-',
-      /\d/,
-      /\d/,
-      /\d/,
-      '-',
-      /\d/,
-      /\d/,
-      /\d/,
-      /\d/,
-    ]}
-    placeholderChar={'\u2000'}
-    keepCharPositions
-  />
-);
+const DATE_FORMAT = 'MM/DD/YYYY';
 
 export const PatientsForm = ({
   patientId,
@@ -210,6 +80,18 @@ export const PatientsForm = ({
     handleCancel();
   }, [handleCancel, patientId]);
 
+  const {
+    BirthdayInputComponent,
+    GenderInputComponent,
+    PhoneNumberComponent,
+  } = isReadOnly
+    ? {}
+    : {
+        BirthdayInputComponent: BirthdayTextMask,
+        GenderInputComponent: 'select',
+        PhoneNumberComponent: PhoneNumberTextMask,
+      };
+
   return (
     <>
       <PatientsSidebarSection
@@ -225,6 +107,7 @@ export const PatientsForm = ({
                 onChange={onChange}
                 required={!isReadOnly}
                 label="First Name"
+                error={errors?.firstName}
               />
             </Grid>
             <Grid item xs={4} style={{ margin: '0 4px' }}>
@@ -242,6 +125,7 @@ export const PatientsForm = ({
                 onChange={onChange}
                 required={!isReadOnly}
                 label="Last Name"
+                error={errors?.lastName}
               />
             </Grid>
           </Grid>
@@ -256,22 +140,24 @@ export const PatientsForm = ({
             value={dob || ''}
             onChange={onChange}
             label="Birthday"
-            error={Boolean(errors?.dob)}
+            error={errors?.dob}
             InputProps={{
-              inputComponent: isReadOnly ? undefined : BirthdayTextMask,
+              inputComponent: BirthdayInputComponent,
             }}
           />
-          <StyledTextField
+          <StyledSelect
             name="gender"
             value={gender || ''}
             onChange={onChange}
             label="Gender"
-            select
+            InputProps={{
+              inputComponent: GenderInputComponent,
+            }}
           >
             <MenuItem value="female">Female</MenuItem>
             <MenuItem value="male">Male</MenuItem>
             <MenuItem value="other">Other</MenuItem>
-          </StyledTextField>
+          </StyledSelect>
         </div>
         <div>
           <StyledTextField
@@ -281,7 +167,7 @@ export const PatientsForm = ({
             label="Home Phone"
             type="tel"
             InputProps={{
-              inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+              inputComponent: PhoneNumberComponent,
             }}
           />
           <StyledTextField
@@ -291,7 +177,7 @@ export const PatientsForm = ({
             label="Mobile Phone"
             type="tel"
             InputProps={{
-              inputComponent: isReadOnly ? undefined : PhoneNumberTextMask,
+              inputComponent: PhoneNumberComponent,
             }}
           />
           <StyledTextField
@@ -299,7 +185,7 @@ export const PatientsForm = ({
             value={email || ''}
             onChange={onChange}
             label="Email"
-            error={Boolean(errors?.email)}
+            error={errors?.email}
             type="email"
           />
         </div>
@@ -345,7 +231,7 @@ export const PatientsForm = ({
 };
 
 const validateBirthday = dob =>
-  moment(dob, 'MM/DD/YYYY', true).isBefore(moment());
+  moment(dob, DATE_FORMAT, true).isBefore(moment());
 
 const validateEmail = email =>
   /^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(email);
@@ -387,7 +273,7 @@ const PatientEdit = ({ patient }) => {
   const formattedPatient = useMemo(
     () => ({
       ...patient,
-      dob: patient.dob && moment(patient.dob).format('MM/DD/YYYY'),
+      dob: patient.dob && moment(patient.dob).format(DATE_FORMAT),
     }),
     [patient],
   );
@@ -421,35 +307,41 @@ const PatientEdit = ({ patient }) => {
       });
   }, [dispatch, formState]);
 
-  const canSubmit = () => {
-    const { firstName, lastName, dob, email } = formState;
-    return (
-      firstName &&
-      firstName !== '' &&
-      (lastName && lastName !== '') &&
-      (!dob || dob === '' || validateBirthday(dob)) &&
-      (!email || email === '' || validateEmail(email))
-    );
-  };
-
   const clear = () => {
     setFormState(formattedPatient);
   };
+
+  const errors = {
+    dob: (() => {
+      if (
+        formState.dob &&
+        !moment(formState.dob, DATE_FORMAT, true).isValid()
+      ) {
+        return 'Birthday is invalid';
+      }
+
+      if (formState.dob && !validateBirthday(formState.dob)) {
+        return 'Birthday should not be set in the future';
+      }
+
+      return false;
+    })(),
+    email:
+      Boolean(formState.email && !validateEmail(formState.email)) &&
+      'Email is invalid',
+    firstName: !formState.firstName && 'First name is required',
+    lastName: !formState.lastName && 'Last name is required',
+  };
+
+  const hasErrors = Object.values(errors).some(Boolean);
 
   return (
     <PatientsForm
       {...formState}
       onChange={handleInputChange}
-      onSubmit={handleSubmit}
-      isDisabled={!canSubmit() || isSubmitting}
-      errors={
-        isClean
-          ? {}
-          : {
-              dob: formState.dob && !validateBirthday(formState.dob),
-              email: formState.email && !validateEmail(formState.email),
-            }
-      }
+      onSubmit={hasErrors ? undefined : handleSubmit}
+      isDisabled={isSubmitting}
+      errors={errors}
       isReadOnly={false}
       isClean={isClean}
       cancel={isClean ? undefined : clear}
