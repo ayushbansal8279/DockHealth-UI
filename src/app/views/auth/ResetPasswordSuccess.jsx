@@ -6,22 +6,25 @@ import {
   NextButton,
   TitleTypography,
 } from '../../components/auth/AuthComponents.styled';
+import SafariFixGrid from '../../components/common/SafariFixGrid';
 
 const redirectToLogin = () => {
   hashHistory.push('login');
 };
 
 export default () => (
-  <Grid container>
-    <TitleTypography variant="h2" style={{ marginTop: '6em' }}>
-      Your password is reset
-    </TitleTypography>
-    <Grid item sm={12} md={9}>
+  <Grid container direction="column">
+    <SafariFixGrid item sm={12} md={9}>
+      <TitleTypography variant="h2" style={{ marginTop: '6em' }}>
+        Your password is reset
+      </TitleTypography>
+    </SafariFixGrid>
+    <SafariFixGrid item sm={12} md={9}>
       <TitleTypography variant="h4">
         Nice work, you’re back in action!
       </TitleTypography>
-    </Grid>
-    <Grid item sm={12} md={6}>
+    </SafariFixGrid>
+    <SafariFixGrid item sm={12} md={6}>
       <NextButton
         active
         id="loginButton"
@@ -34,6 +37,6 @@ export default () => (
       >
         Sign In
       </NextButton>
-    </Grid>
+    </SafariFixGrid>
   </Grid>
 );
