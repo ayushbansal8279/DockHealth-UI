@@ -219,7 +219,8 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
         <div>
           <SectionTypography>Emails and Push Notifications</SectionTypography>
           <SectionSubtypography>
-            Notify me via email or push notifications to mobile phone when there is a new activity.
+            Notify me via email or push notifications to mobile phone when there
+            is a new activity.
           </SectionSubtypography>
         </div>
         <StyledSwitchUnbound

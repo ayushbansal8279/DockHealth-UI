@@ -271,11 +271,15 @@ class TaskListView extends PureComponent {
           item
           xs={3}
           key={list.metricName}
-          onClick={list.metricValue>0?this.onGenericListTileClick({
-            listName,
-            taskStatus,
-            filterBy,
-          }):""}
+          onClick={
+            list.metricValue > 0
+              ? this.onGenericListTileClick({
+                  listName,
+                  taskStatus,
+                  filterBy,
+                })
+              : ''
+          }
           style={{ cursor: 'pointer' }}
         >
           <BlockItemContainer>
@@ -320,8 +324,14 @@ class TaskListView extends PureComponent {
           </StyledCollapse>
           <SafariFixGrid container item xs={12} justify="center">
             <Grid container item xs={9}>
-              <StyledCollapse in={taskListFormOpen} timeout={250} 
-                style={{paddingTop: (taskListFormOpen?"40px":"0px"), paddingBottom: (taskListFormOpen?"40px":"0px")}}>
+              <StyledCollapse
+                in={taskListFormOpen}
+                timeout={250}
+                style={{
+                  paddingTop: taskListFormOpen ? '40px' : '0px',
+                  paddingBottom: taskListFormOpen ? '40px' : '0px',
+                }}
+              >
                 <AddListForm
                   setListFormOpen={this.setListFormOpen}
                   cancelButtonShown={!taskListsEmpty}

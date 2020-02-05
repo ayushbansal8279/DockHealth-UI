@@ -46,7 +46,7 @@ export function saveTaskList(formProps) {
   return dispatch =>
     TaskListApi.addTaskList(formProps)
       .then(tasklist => {
-        tasklist.role = 'OWNER'; //set the default role for now
+        tasklist.role = 'OWNER'; // set the default role for now
         dispatch({ type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist });
         toggleAlert('Task List created successfully!', 'success');
       })
