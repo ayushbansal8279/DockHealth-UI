@@ -20,6 +20,7 @@ import {
   onTaskListInvitationRejected,
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
+import { setHeader } from '../actions/header-actions';
 import AddListForm from './TaskListView.AddListForm';
 import {
   FormDoubleSpacing,
@@ -102,6 +103,18 @@ class TaskListView extends PureComponent {
     }
   }
 
+  resetHeader = () => {
+    const { setHeaderBound, isFetching } = this.props;
+    setHeaderBound({
+      layout: [
+        {
+          key: `header${isFetching ? '-fetching' : ''}`,
+          component: <GenericHeader isFetching={false}>Lists</GenericHeader>,
+        },
+      ],
+    });
+  };
+  
   setListFormOpen = listFormOpen => {
     this.setState({
       listFormOpen,
@@ -320,7 +333,6 @@ class TaskListView extends PureComponent {
     return (
       <TaskListViewWrapper>
         <Grid container direction="column" alignItems="center" spacing={8}>
-          <GenericHeader isFetching={false}>Lists</GenericHeader>
           <FormDoubleSpacing />
           <StyledCollapse in={!taskListFormOpen} timeout={250}>
             <SafariFixGrid
