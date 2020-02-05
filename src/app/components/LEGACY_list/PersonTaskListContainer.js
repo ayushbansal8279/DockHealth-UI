@@ -128,7 +128,7 @@ class PersonTaskListContainer extends PureComponent {
             {tasks && tasks.length > 0 ? (
               this.renderList(taskListId, taskStatus, tasks, null)
             ) : (
-              <p className="light-gray">No matching tasks</p>
+              <p className="light-gray"></p>
             )}
           </div>
         </li>

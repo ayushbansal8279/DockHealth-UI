@@ -125,7 +125,7 @@ const PatientProfileLayout = ({ patientId }) => {
 
           {!isLoading && (!lists || lists.length === 0) ? (
             <Grid container justify="center">
-              <b>No matching tasks</b>
+              <b></b>
             </Grid>
           ) : (
             <TaskView {...taskViewProps} />
