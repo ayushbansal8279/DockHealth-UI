@@ -1,14 +1,15 @@
-import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useState, useEffect, useCallback, useRef } from 'react';
-import useBoolean from '../../hooks/useBoolean';
+import { useDispatch, useSelector } from 'react-redux';
+import { useMount } from 'react-use';
 import {
   getTaskHistory,
   moveTask,
   storeAsCurrentTask,
   updateDueDate,
 } from '../../actions/task-actions';
+import useBoolean from '../../hooks/useBoolean';
 
 export default ({ task, setAutoSaveVisible, closeDrawer }) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];
@@ -19,9 +20,7 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
   const dispatch = useDispatch();
 
   const [newTaskListName, setNewTaskListName] = useState('');
-  const [newDueDate, setNewDueDate] = useState(
-    task?.dueDate ? moment(task.dueDate).toDate() : null,
-  );
+  const [newDueDate, setNewDueDate] = useState(task?.dueDate ?? null);
 
   const [
     isTaskListPopoverOpen,
@@ -38,13 +37,13 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
   const newDueDateMoment = moment(newDueDate);
   const taskId = task?.taskId;
 
-  useEffect(() => {
+  useMount(() => {
     setValue('newTaskListId', null);
     setValue('newTaskDueDate', null);
     setNewTaskListName('');
     setHistory([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   useEffect(() => {
     setValue(
