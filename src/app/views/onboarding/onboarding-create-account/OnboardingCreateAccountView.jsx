@@ -3,6 +3,7 @@ import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
+import { hashHistory } from 'react-router';
 import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import { register as registerAction } from '../../../api/user-api';
@@ -80,6 +81,10 @@ const onSubmit = ({ showDialog }) => async ({
         error?.message ?? 'Could not create account, please try again later',
     });
   }
+};
+
+const continueDialog = () => {
+  hashHistory.replace('/login');
 };
 
 const OnboardingCreateAccountView = () => {
@@ -199,8 +204,11 @@ const OnboardingCreateAccountView = () => {
             </OnboardingH2>
             <OnboardingSpacing4 />
             <Grid container justify="space-between" wrap="nowrap">
-              <OnboardingButton variant="containedAutoWidth">
-                <OnboardingH2Bold>Resend email</OnboardingH2Bold>
+              <OnboardingButton
+                onClick={continueDialog}
+                variant="containedAutoWidth"
+              >
+                <OnboardingH2Bold>Continue</OnboardingH2Bold>
               </OnboardingButton>
               <OnboardingButton onClick={hideDialog} variant="contained">
                 <OnboardingH2Bold>Change email address</OnboardingH2Bold>

@@ -95,7 +95,7 @@ class LoginFormUsername extends Component {
             <BottomGridContainer>
               <StyledLabel bold>Don’t have an account yet?</StyledLabel>
               <StyledLabel>
-                <Link to="/register">Create account</Link>
+                <Link to="/onboarding/create-account">Create account</Link>
               </StyledLabel>
             </BottomGridContainer>
           </>

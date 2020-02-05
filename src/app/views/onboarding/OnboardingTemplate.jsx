@@ -42,6 +42,10 @@ const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
 const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   const { pathname } = hashHistory.getCurrentLocation();
 
+  if (!user) {
+    return;
+  }
+
   if (!loggedIn && pathname !== CREATE_ACCOUNT_PATH) {
     hashHistory.replace(CREATE_ACCOUNT_PATH);
   }
