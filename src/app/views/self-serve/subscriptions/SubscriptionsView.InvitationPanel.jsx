@@ -1,11 +1,10 @@
 import Grid from '@material-ui/core/Grid';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import useForm from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { object, string } from 'yup';
-
 import { invitePersonToOrganization } from '../../../actions/people-actions';
 import { noop } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';

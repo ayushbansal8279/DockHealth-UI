@@ -1,11 +1,16 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useRef } from 'react';
-import useForm, { FormContext } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import { hashHistory } from 'react-router';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import {
+  signOrganizationBAADocument,
+  storeSignatureResult,
+} from '../../../api/organization-api';
+import { showAlert } from '../../../helpers/utility-functions';
 import {
   OnboardingButton,
   OnboardingH1Bold,
@@ -16,11 +21,6 @@ import {
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
 import { LegalEntityExamplesLabel } from './OnboardingBaaSigningView.Styled';
-import {
-  signOrganizationBAADocument,
-  storeSignatureResult,
-} from '../../../api/organization-api';
-import { showAlert } from '../../../helpers/utility-functions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 const { HELLOSIGN_CLIENT_ID } = process.env;

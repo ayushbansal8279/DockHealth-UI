@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 import { object, string } from 'yup';
 import { hashHistory } from 'react-router';
 import { inviteAuthorizedSigner } from '../../../api/organization-api';
