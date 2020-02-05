@@ -50,18 +50,16 @@ export default ({
     }}
   >
     {({ open }) => (
-      <>
-        <SectionButtonContainer>
-          <SectionButton clickable onClick={open}>
-            {newDueDateMoment.isValid()
-              ? newDueDateMoment.format('MMM. D, YYYY')
-              : 'Set a due date'}
-          </SectionButton>
-          {newDueDateMoment.isValid() && (
-            <DueDateClearButton onClick={clearDueDate}>×</DueDateClearButton>
-          )}
-        </SectionButtonContainer>
-      </>
+      <SectionButtonContainer>
+        <SectionButton clickable onClick={open}>
+          {newDueDateMoment.isValid()
+            ? newDueDateMoment.format('MMM. D, YYYY')
+            : 'Set a due date'}
+        </SectionButton>
+        {newDueDateMoment.isValid() && (
+          <DueDateClearButton onClick={clearDueDate}>×</DueDateClearButton>
+        )}
+      </SectionButtonContainer>
     )}
   </DateTimeSelect>
 );

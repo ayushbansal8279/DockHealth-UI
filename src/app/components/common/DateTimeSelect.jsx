@@ -6,7 +6,6 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-
 import CalendarIcon from '../../img/calendar.svg';
 import TimeSelect from './TimeSelect';
 
@@ -146,8 +145,6 @@ const DayButtonLabel = styled.div`
   position: absolute;
   text-align: center;
   width: 100%;
-
-  ${props => props.selected && 'color: #fff;'}
 `;
 
 const DateTimeSelect = ({
@@ -166,8 +163,15 @@ const DateTimeSelect = ({
   },
 }) => {
   const [anchor, setAnchor] = useState(null);
+  const [hasDateSelected, setHasDateSelected] = useState(false);
 
-  const open = useCallback(event => setAnchor(event.currentTarget), []);
+  const open = useCallback(
+    event => {
+      setAnchor(event.currentTarget);
+      setHasDateSelected(Boolean(value));
+    },
+    [value],
+  );
 
   const close = useCallback(() => setAnchor(null), []);
 
@@ -188,7 +192,7 @@ const DateTimeSelect = ({
         disablePortal
       >
         <BasePicker
-          value={value ? moment(value) : moment().startOf('day')}
+          value={moment(value)}
           onChange={date => {
             onChange(date);
             close();
@@ -221,16 +225,15 @@ const DateTimeSelect = ({
 
                     return (
                       <DayButton
-                        current={current}
-                        selected={selected}
+                        current={!hasDateSelected && current}
+                        selected={hasDateSelected && selected}
                         notShown={hidden}
                         pastDay={shownMoment.isBefore(todayMoment)}
+                        onClick={() => setHasDateSelected(true)}
                       >
                         <span>{day}</span>
-                        {current && (
-                          <DayButtonLabel selected={selected}>
-                            Today
-                          </DayButtonLabel>
+                        {current && !hasDateSelected && (
+                          <DayButtonLabel>Today</DayButtonLabel>
                         )}
                       </DayButton>
                     );
@@ -242,7 +245,11 @@ const DateTimeSelect = ({
                   )}
                   <ButtonContainer centered={!showTimeSelect}>
                     <StyledButton onClick={close}>Cancel</StyledButton>
-                    <StyledButton bold="true" onClick={handleAccept}>
+                    <StyledButton
+                      bold="true"
+                      onClick={handleAccept}
+                      disabled={!hasDateSelected}
+                    >
                       Set
                     </StyledButton>
                   </ButtonContainer>
