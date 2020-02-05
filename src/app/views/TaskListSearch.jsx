@@ -77,6 +77,7 @@ class TaskListSearch extends PureComponent {
     this.setState(
       {
         searchTerm: event?.target?.value ?? '',
+        searchPerformed: true,
       },
       () => {
         const { searchTerm } = this.state;

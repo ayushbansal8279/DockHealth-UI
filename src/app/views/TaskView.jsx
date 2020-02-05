@@ -476,9 +476,10 @@ class TaskView extends Component {
     }
   };
 
-  resetHeader = () => {
+  resetHeader = tasksCount => {
     const {
       tasks,
+      completedTasks,
       isFetching,
       isMultiList,
       title,
@@ -487,6 +488,11 @@ class TaskView extends Component {
       dispatchedSetHeader,
     } = this.props;
 
+    const allTasks = [...tasks, ...completedTasks];
+    let allTasksCount = tasksCount;
+    if (!tasksCount) {
+      allTasksCount = allTasks.length;
+    }
     if (title) {
       dispatchedSetHeader({
         backgroundColor: '#fff',
@@ -497,7 +503,7 @@ class TaskView extends Component {
               <Header
                 isFetching={isFetching}
                 title={title}
-                taskCount={tasks.length}
+                taskCount={allTasksCount}
                 members={members}
                 taskList={taskList}
                 resetHeader={this.resetHeader}
@@ -710,7 +716,7 @@ class TaskView extends Component {
       [...incompleteTasks, ...completedTasks],
       task => (task.taskList ? task.taskList.listName : ''),
     );
-    const tasklistCount = [...groupedTasks.keys()].length;
+    // const tasklistCount = [...groupedTasks.keys()].length;
     const listNames = [...groupedTasks.keys()].sort((a, b) =>
       a.localeCompare(b),
     );
@@ -722,7 +728,13 @@ class TaskView extends Component {
       task.taskList ? task.taskList.listName : '',
     );
 
-    this.resetHeader();
+    const allTasksAndSubTasksCount =
+      groupedTasks && groupedTasks.length > 0
+        ? groupedTasks.map(group => {
+            return group.length;
+          })
+        : 0;
+    this.resetHeader(allTasksAndSubTasksCount);
 
     const tasklistProps = {
       tasks,
@@ -751,7 +763,7 @@ class TaskView extends Component {
       return <InboxNoMessagesAvailable />;
     }
 
-    console.log(`tasklist count: ${tasklistCount}`);
+    // console.log(`tasklist count: ${tasklistCount}`);
     if (!isMultiList || isInbox) {
       return this.renderSingleTaskList({ tasklistProps, completedTasks });
     }
@@ -787,9 +799,13 @@ class TaskView extends Component {
     tasklistProps,
   }) => {
     return listNames.map(groupedListName => {
+      // const tasksCount =
+      //   groupedInCompletedTasks && groupedInCompletedTasks.get(groupedListName)
+      //     ? groupedInCompletedTasks.get(groupedListName).length
+      //     : 0;
       const tasksCount =
-        groupedInCompletedTasks && groupedInCompletedTasks.get(groupedListName)
-          ? groupedInCompletedTasks.get(groupedListName).length
+        groupedTasks && groupedTasks.get(groupedListName)
+          ? groupedTasks.get(groupedListName).length
           : 0;
       const tasksCountContent = `${tasksCount} ${
         tasksCount === 1 ? 'task' : 'tasks'
@@ -851,6 +867,7 @@ class TaskView extends Component {
       isInbox,
       taskListId,
       listName,
+      globalSearch,
     } = this.props;
     const {
       slimView,
@@ -891,7 +908,12 @@ class TaskView extends Component {
       return null;
     }
 
-    const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
+    let showCompletedTasksFlag = completedTasksShown;
+    if (globalSearch) {
+      showCompletedTasksFlag = true;
+    }
+
+    const buttonToggleWord = showCompletedTasksFlag ? 'Hide' : 'Show';
 
     let completedTasksAndSubTasksCount = listCompletedTasks.length;
     listCompletedTasks.forEach(task => {
@@ -900,18 +922,20 @@ class TaskView extends Component {
 
     return (
       <>
-        <CompletedButtonRowContainer>
-          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-          <StyledButton onClick={this.toggleCompletedTasks}>
-            {`${buttonToggleWord} completed tasks (${
-              listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
-                ? `${SHOW_MORE_STEP_COUNT}+`
-                : completedTasksAndSubTasksCount
-            })`}
-          </StyledButton>
-          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-        </CompletedButtonRowContainer>
-        {completedTasksShown && <TaskList {...tasklistProps} />}
+        {!globalSearch && (
+          <CompletedButtonRowContainer>
+            <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+            <StyledButton onClick={this.toggleCompletedTasks}>
+              {`${buttonToggleWord} completed tasks (${
+                listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
+                  ? `${SHOW_MORE_STEP_COUNT}+`
+                  : completedTasksAndSubTasksCount
+              })`}
+            </StyledButton>
+            <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+          </CompletedButtonRowContainer>
+        )}
+        {showCompletedTasksFlag && <TaskList {...tasklistProps} />}
       </>
     );
   };
