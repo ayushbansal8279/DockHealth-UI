@@ -4,7 +4,10 @@ import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { Grid } from '@material-ui/core';
 import { setHeader } from '../../../actions/header-actions';
-import { getBillingDetails } from '../../../actions/organization-actions';
+import {
+  getBillingDetails,
+  getInvoiceDetails,
+} from '../../../actions/organization-actions';
 import { saveBillingDetails } from '../../../api/organization-api';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
@@ -95,6 +98,7 @@ const BillingsView = () => {
     });
 
     getBillingDetails({ organizationId })(dispatch);
+    getInvoiceDetails({ organizationId })(dispatch);
   });
 
   return (

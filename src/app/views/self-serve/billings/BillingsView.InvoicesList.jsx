@@ -1,13 +1,15 @@
-import faker from 'faker/locale/en_US';
+// import faker from 'faker/locale/en_US';
 import moment from 'moment';
-import ascend from 'ramda/es/ascend';
-import descend from 'ramda/es/descend';
+// import ascend from 'ramda/es/ascend';
+// import descend from 'ramda/es/descend';
 import head from 'ramda/es/head';
-import prop from 'ramda/es/prop';
-import sort from 'ramda/es/sort';
-import times from 'ramda/es/times';
+// import prop from 'ramda/es/prop';
+// import sort from 'ramda/es/sort';
+// import times from 'ramda/es/times';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import styled from 'styled-components';
 import SortingIcon from '../../../img/sorting-icon.svg';
 import {
   InvoiceColumn,
@@ -18,42 +20,67 @@ import {
   SortingIconImage,
 } from './BillingsView.InvoicesList.Styled';
 
+export const InvoiceDetailsLink = styled.a`
+  color: #007cab;
+  cursor: pointer;
+  filter: brightness(1);
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: #007cab;
+    filter: brightness(1.35);
+  }
+`;
+
 const columnDefinitions = [
   {
-    sortingKey: 'date',
+    sortingKey: 'chargeDate',
     label: 'Date',
   },
   {
-    sortingKey: 'description',
-    label: 'Description',
+    sortingKey: 'invoiceNumber',
+    label: 'Invoice Number',
   },
   {
-    sortingKey: 'id',
-    label: 'ID',
+    sortingKey: 'receiptNumber',
+    label: 'Receipt Number',
   },
   {
-    sortingKey: 'amount',
+    sortingKey: 'chargeAmount',
     label: 'Amount',
   },
 ];
 
-const dummyInvoicesData = times(
-  () => ({
-    date: moment(faker.date.recent(180)).format('YYYY-MM-DD'),
-    description: faker.lorem.words(faker.random.number({ min: 3, max: 5 })),
-    id: faker.random.uuid(),
-    amount: faker.finance.amount(10, 1000, 2, '$'),
-  }),
-  faker.random.number({ min: 5, max: 15 }),
-);
+// const dummyInvoicesData = times(
+//   () => ({
+//     date: moment(faker.date.recent(180)).format('YYYY-MM-DD'),
+//     description: faker.lorem.words(faker.random.number({ min: 3, max: 5 })),
+//     id: faker.random.uuid(),
+//     amount: faker.finance.amount(10, 1000, 2, '$'),
+//   }),
+//   faker.random.number({ min: 5, max: 15 }),
+// );
 
-const renderInvoiceRow = ({ date, description, id, amount }) => {
+const renderInvoiceRow = ({
+  chargeDate,
+  invoiceNumber,
+  receiptNumber,
+  chargeAmount,
+  currency,
+  invoicePDFUrl,
+}) => {
   return (
-    <tr key={id}>
-      <td>{moment(date).format('L')}</td>
-      <td>{description}</td>
-      <td>{id}</td>
-      <td>{amount}</td>
+    <tr key={invoiceNumber}>
+      <td>{moment(chargeDate).format('L')}</td>
+      <td>
+        <InvoiceDetailsLink href={invoicePDFUrl}>
+          {invoiceNumber}
+        </InvoiceDetailsLink>
+      </td>
+      <td>{receiptNumber}</td>
+      <td>
+        {chargeAmount} {currency.toUpperCase()}
+      </td>
     </tr>
   );
 };
@@ -106,11 +133,17 @@ const InvoicesList = () => {
     }
   };
 
-  const invoiceOrderMethod = currentSorting.order === 'asc' ? ascend : descend;
-  const sortedInvoicesData = sort(
-    invoiceOrderMethod(prop(currentSorting.sortingKey)),
-    dummyInvoicesData,
-  );
+  const { invoiceDetails } = useSelector(store => ({
+    invoiceDetails: store.organizationState.invoiceDetails,
+  }));
+
+  // const invoiceOrderMethod = currentSorting.order === 'asc' ? ascend : descend;
+  // const sortedInvoicesData = sort(
+  //   invoiceOrderMethod(prop(currentSorting.sortingKey)),
+  //   invoiceDetails,
+  // );
+
+  const sortedInvoicesData = invoiceDetails || [];
 
   return (
     <InvoicesListContainer>

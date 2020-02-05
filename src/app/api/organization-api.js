@@ -39,16 +39,22 @@ export const saveBillingDetails = ({ data, token }) =>
     },
   }).then(response => response.data);
 
-export const getBillingEstimate = ({ organizationId }) =>
+export const getBillingEstimate = () =>
   axios({
     method: 'get',
-    url: `/organization/getBillingEstimate/${organizationId}`,
+    url: `/organization/getBillingEstimate`,
   }).then(response => response.data);
 
-export const getBillingDetails = ({ organizationId }) =>
+export const getBillingDetails = () =>
   axios({
     method: 'get',
-    url: `/organization/getBillingDetails/${organizationId}`,
+    url: `/organization/getBillingDetails`,
+  }).then(response => response.data);
+
+export const getInvoiceDetails = () =>
+  axios({
+    method: 'get',
+    url: `/organization/getInvoiceDetails`,
   }).then(response => response.data);
 
 export const updateLegalEntityName = ({ legalEntityName }) =>

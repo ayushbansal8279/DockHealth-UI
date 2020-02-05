@@ -4,10 +4,13 @@ import {
   GET_BILLING_DETAILS_SUCCESS,
   GET_BILLING_ESTIMATE_FAILURE,
   GET_BILLING_ESTIMATE_SUCCESS,
+  GET_INVOICE_DETAILS_FAILURE,
+  GET_INVOICE_DETAILS_SUCCESS,
   GET_ORGANIZATION_FAILURE,
   GET_ORGANIZATION_SUCCESS,
   REQUEST_GET_BILLING_DETAILS,
   REQUEST_GET_BILLING_ESTIMATE,
+  REQUEST_GET_INVOICE_DETAILS,
   REQUEST_GET_ORGANIZATION,
   REQUEST_SAVE_BILLING_DETAILS,
   REQUEST_SELECT_SUBSCRIPTION_PLAN,
@@ -23,12 +26,15 @@ const initialState = {
   organization: null,
   billingData: null,
   billingDetails: null,
+  invoiceDetails: null,
   isFetching: false,
   isFetchingBilling: false,
   isFetchingBillingDetails: false,
+  isFetchingInvoiceDetails: false,
   requestError: null,
   requestErrorBilling: null,
-  requestErrorBillingDetais: null,
+  requestErrorBillingDetails: null,
+  requestErrorInvoiceDetails: null,
   newPaymentPlan: null,
 };
 
@@ -57,6 +63,14 @@ const reducer = (state = initialState, { type, payload, error }) => {
         ...state,
         isFetchingBillingDetails: true,
         requestErrorBillingDetails: null,
+      };
+    }
+
+    case REQUEST_GET_INVOICE_DETAILS: {
+      return {
+        ...state,
+        isFetchingInvoiceDetails: true,
+        requestErrorInvoiceDetails: null,
       };
     }
 
@@ -96,6 +110,15 @@ const reducer = (state = initialState, { type, payload, error }) => {
       };
     }
 
+    case GET_INVOICE_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        invoiceDetails: payload,
+        isFetchingInvoiceDetails: false,
+        requestErrorInvoiceDetails: null,
+      };
+    }
+
     case SELECT_SUBSCRIPTION_PLAN_FAILURE:
     case SAVE_BILLING_DETAILS_FAILURE:
     case GET_ORGANIZATION_FAILURE: {
@@ -122,6 +145,15 @@ const reducer = (state = initialState, { type, payload, error }) => {
         billingDetails: null,
         isFetchingBillingDetails: false,
         requestErrorBillingDetails: error,
+      };
+    }
+
+    case GET_INVOICE_DETAILS_FAILURE: {
+      return {
+        ...state,
+        invoiceDetails: null,
+        isFetchingInvoiceDetails: false,
+        requestErrorInvoiceDetails: error,
       };
     }
 

@@ -4,10 +4,13 @@ import {
   GET_BILLING_DETAILS_SUCCESS,
   GET_BILLING_ESTIMATE_FAILURE,
   GET_BILLING_ESTIMATE_SUCCESS,
+  GET_INVOICE_DETAILS_FAILURE,
+  GET_INVOICE_DETAILS_SUCCESS,
   GET_ORGANIZATION_FAILURE,
   GET_ORGANIZATION_SUCCESS,
   REQUEST_GET_BILLING_DETAILS,
   REQUEST_GET_BILLING_ESTIMATE,
+  REQUEST_GET_INVOICE_DETAILS,
   REQUEST_GET_ORGANIZATION,
   REQUEST_SAVE_BILLING_DETAILS,
   REQUEST_SELECT_SUBSCRIPTION_PLAN,
@@ -114,6 +117,26 @@ export const getBillingDetails = ({ organizationId }) => dispatch => {
     .catch(error => {
       dispatch({
         type: GET_BILLING_DETAILS_FAILURE,
+        error,
+      });
+    });
+};
+
+export const getInvoiceDetails = ({ organizationId }) => dispatch => {
+  dispatch({
+    type: REQUEST_GET_INVOICE_DETAILS,
+  });
+
+  OrganizationApi.getInvoiceDetails({ organizationId })
+    .then(data => {
+      dispatch({
+        type: GET_INVOICE_DETAILS_SUCCESS,
+        payload: data,
+      });
+    })
+    .catch(error => {
+      dispatch({
+        type: GET_INVOICE_DETAILS_FAILURE,
         error,
       });
     });
