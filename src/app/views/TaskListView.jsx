@@ -1,18 +1,16 @@
-import Grid from '@material-ui/core/Grid';
 import Collapse from '@material-ui/core/Collapse';
+import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
-import AddListForm from './TaskListView.AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import AddTaskListButton from '../components/taskList/AddTaskListButton';
@@ -22,6 +20,11 @@ import {
   onTaskListInvitationRejected,
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
+import AddListForm from './TaskListView.AddListForm';
+import {
+  FormDoubleSpacing,
+  FormSpacing,
+} from './TaskListView.AddListForm.Components';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -302,12 +305,13 @@ class TaskListView extends PureComponent {
 
     const taskListsEmpty = taskLists?.length === 0;
 
-    const taskListFormOpen = taskListsEmpty || listFormOpen;
+    const taskListFormOpen = !isFetching && (taskListsEmpty || listFormOpen);
 
     return (
       <TaskListViewWrapper>
         <Grid container direction="column" alignItems="center" spacing={8}>
           <GenericHeader isFetching={false}>Lists</GenericHeader>
+          <FormDoubleSpacing />
           <StyledCollapse in={!taskListFormOpen} timeout={250}>
             <SafariFixGrid
               container
@@ -328,6 +332,7 @@ class TaskListView extends PureComponent {
               </StyledCollapse>
             </Grid>
           </SafariFixGrid>
+          <FormSpacing />
           <SafariFixGrid container item xs={12} justify="center">
             <Grid
               container
@@ -340,6 +345,7 @@ class TaskListView extends PureComponent {
               {genericLists?.map(this.renderGenericList)}
             </Grid>
           </SafariFixGrid>
+          <FormSpacing />
           <SafariFixGrid container item xs={12} justify="center" spacing={8}>
             <Grid item xs={9}>
               {isFetching ? (
@@ -363,6 +369,7 @@ class TaskListView extends PureComponent {
               )}
             </Grid>
           </SafariFixGrid>
+          <FormSpacing />
         </Grid>
       </TaskListViewWrapper>
     );
