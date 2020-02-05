@@ -17,7 +17,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { useToggle } from 'react-use';
 import styled from 'styled-components';
-
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
 import { getTaskListStats } from '../actions/tasklist-actions';
@@ -709,7 +708,7 @@ class TaskView extends Component {
       [...incompleteTasks, ...completedTasks],
       task => (task.taskList ? task.taskList.listName : ''),
     );
-    const tasklistCount = [...groupedTasks.keys()].length;
+
     const listNames = [...groupedTasks.keys()].sort((a, b) =>
       a.localeCompare(b),
     );
@@ -750,7 +749,6 @@ class TaskView extends Component {
       return <InboxNoMessagesAvailable />;
     }
 
-    console.log(`tasklist count: ${tasklistCount}`);
     if (!isMultiList || isInbox) {
       return this.renderSingleTaskList({ tasklistProps, completedTasks });
     }
