@@ -7,25 +7,15 @@ import * as userApi from '../../api/user-api';
 import ResetPasswordForm from '../../components/auth/ResetPasswordForm';
 
 export default class ResetPassword extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-  componentWillMount() {
-  }
-
   onSubmit = form => {
-    var {
+    let {
       location: {
         query: { uname, code },
       },
     } = this.props;
 
-    if(form.code){
-      code = form.code
-    }
-    if(window.sessionStorage.getItem('username')){
-      uname = window.sessionStorage.getItem('username')
-    }
+    code ||= form.code;
+    uname ||= window.sessionStorage.getItem('username');
 
     return userApi
       .resetPassword({
@@ -40,26 +30,31 @@ export default class ResetPassword extends PureComponent {
         success('Reset password. Please login');
         hashHistory.push('resetPasswordSuccess');
       })
-      .catch(e => {
+      .catch(error_ => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           RESET_PASSWORD_SUCCESS: 'NO',
         });
-        const msg = e.message || 'An error occurred.';
+        const message = error_.message || 'An error occurred.';
 
-        error(msg);
+        error(message);
       });
   };
 
-  render(){
-    var authTokenReceived = false
-    const uname = this.props.location.query.uname;
-    const code = this.props.location.query.code;
-    console.log(`uname: ${uname} code:${code}`);
-    if (uname && code) {
-      authTokenReceived = true
-    }
+  render() {
+    const {
+      location: {
+        query: { code, uname },
+      },
+    } = this.props;
+
+    const authTokenReceived = Boolean(code && uname);
+
     return (
-      <ResetPasswordForm type="Confirm" onSubmit={this.onSubmit} authTokenReceived={authTokenReceived}/>
-    )
-  };
+      <ResetPasswordForm
+        type="Confirm"
+        onSubmit={this.onSubmit}
+        authTokenReceived={authTokenReceived}
+      />
+    );
+  }
 }

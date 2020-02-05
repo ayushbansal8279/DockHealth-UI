@@ -25,6 +25,7 @@ export const FormContainer = styled.form`
 
 export const FormLabel = styled.h1`
   font-size: 1.25rem;
+  margin: 0;
 `;
 
 export const FormDivider = styled.hr`
@@ -175,3 +176,23 @@ export const StyledButton = withStyles({
 
   return <ButtonBase className={className} disabled={disabled} {...props} />;
 });
+
+export const CloseButton = withStyles({
+  root: {
+    backgroundColor: '#d9036b',
+    borderRadius: '1.25rem',
+    color: '#fff',
+    fontSize: '2rem',
+    height: '2.5rem',
+    width: '2.5rem',
+  },
+})(ButtonBase);
+
+export const FormSpacing = styled.div`
+  height: 2rem;
+  width: 100%;
+`;
+
+export const FormDoubleSpacing = styled(FormSpacing)`
+  height: 3rem;
+`;

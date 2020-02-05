@@ -11,8 +11,6 @@ import {
 } from './Task.styled';
 import TaskBody from './TaskBody';
 
-const DRAGGABLE_ITEM_CLASS = 'draggable-item';
-
 const Task = props => {
   const {
     task,
@@ -25,7 +23,6 @@ const Task = props => {
     taskList,
     isNewSubtask,
     animationContainer,
-    sortableContainer,
     hasSubtasks,
     renderedSubtasks,
     isOpen,
@@ -33,7 +30,7 @@ const Task = props => {
     handleStatusChange,
     confirm,
     isSelfOrSubtaskActive,
-  } = initializeTaskHooks({ props, DRAGGABLE_ITEM_CLASS });
+  } = initializeTaskHooks({ props });
 
   if (isSubtask && subtaskIndex == null) {
     return null;
@@ -46,7 +43,6 @@ const Task = props => {
         isSubtask={isSubtask}
         drawerOpen={taskDrawerOpen}
         ref={animationContainer}
-        className={DRAGGABLE_ITEM_CLASS}
       >
         <TaskContainer isSubtask={isSubtask} hasSubtasks={hasSubtasks}>
           {!isSubtask && (
@@ -62,7 +58,7 @@ const Task = props => {
           </TaskSelectionContainer>
         </TaskContainer>
       </TaskAnimationContainer>
-      <div ref={sortableContainer}>
+      <div>
         {(!slimView || (slimView && isSelfOrSubtaskActive)) &&
           renderedSubtasks.map((subtask, index) => (
             <Task

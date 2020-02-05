@@ -18,7 +18,6 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { useToggle } from 'react-use';
 import styled from 'styled-components';
-
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
 import { getTaskListStats } from '../actions/tasklist-actions';

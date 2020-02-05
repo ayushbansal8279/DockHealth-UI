@@ -25,6 +25,7 @@ import {
   StyledListItem,
   StyledList,
   StyledButton,
+  CloseButton,
 } from './TaskListView.AddListForm.Components';
 
 const onSubmit = ({ dispatch, setListFormOpen, taskListId = null }) => data => {
@@ -32,6 +33,7 @@ const onSubmit = ({ dispatch, setListFormOpen, taskListId = null }) => data => {
 
   saveTaskList(taskList)(dispatch)
     .then(() => {
+      toggleAlert('Task list saved successfully!', 'success');
       setListFormOpen(false);
     })
     .catch(error => {
@@ -112,7 +114,14 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
         onSubmit({ dispatch, setListFormOpen, taskListId }),
       )}
     >
-      <FormLabel>{formLabelContent}</FormLabel>
+      <Grid container justify="space-between" alignItems="center">
+        <FormLabel>{formLabelContent}</FormLabel>
+        {cancelButtonShown && (
+          <CloseButton onClick={() => setListFormOpen(false)}>
+            &times;
+          </CloseButton>
+        )}
+      </Grid>
       <FormDivider />
       <StyledFormControl fullWidth>
         <StyledInputLabel>List name</StyledInputLabel>
