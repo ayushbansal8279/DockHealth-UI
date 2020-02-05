@@ -32,16 +32,6 @@ const onSubmit = ({ dispatch, setListFormOpen, taskListId = null }) => data => {
 
   saveTaskList(taskList)(dispatch)
     .then(() => {
-      Swal.fire({
-        icon: 'success',
-        toast: true,
-        position: 'top-end',
-        title: 'Task list saved successfully!',
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-      Swal.getContainer().style.zIndex = 10000;
       setListFormOpen(false);
     })
     .catch(error => {
@@ -227,9 +217,9 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
       <FormDivider />
       <Grid container alignItems="center" justify="space-between">
         <div>
-          <SectionTypography>Emails</SectionTypography>
+          <SectionTypography>Emails and Push Notifications</SectionTypography>
           <SectionSubtypography>
-            Notify me via email when there is a new activity.
+            Notify me via email or push notifications to mobile phone when there is a new activity.
           </SectionSubtypography>
         </div>
         <StyledSwitchUnbound
