@@ -2,7 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import React from 'react';
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 
 import CubesLoader from '../components/common/CubesLoader';
 import StyledInput from '../components/userProfileView/StyledInput';

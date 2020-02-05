@@ -8,6 +8,8 @@ var puppeteerHelper = helpers['Puppeteer']
 
 module.exports = {
   fields: {
+    numberOfPatients: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(1) > div > span:nth-child(2)'},
+
     //Immediately accessible Buttons
     addPatientButton: {css:'#appHome > main > div > div:nth-child(2) > div > div:nth-child(1) > button'},
 
@@ -27,7 +29,7 @@ module.exports = {
 
     mrnBox: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > input'},
 
-    birthdayBox: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input'},
+    birthdayBox: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div > input'},
 
     genderShield: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(5) > div:nth-child(2)'},
     genderFemale: {css: '#menu-gender > div:nth-child(2) > ul > li:nth-child(1)'},
@@ -44,7 +46,7 @@ module.exports = {
 
     saveButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > button'},
 
-    exitPatientButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3)  > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > button'},
+    exitPatientButton: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > button'},
 
     //Editting patient number 1 Addresses
     patientDetailsWrapper: {css: '#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1)'},
@@ -74,19 +76,24 @@ module.exports = {
 
   //Non patient creation features
   makeSearch(keyword){
-    I.waitForElement(this.fields.searchBar);
+    I.waitForElement(this.fields.searchBar, 4);
     I.fillField(this.fields.searchBar, keyword);
     I.wait(2);
   },
   //Set Filter command
   setFilterTo(index){
-    I.waitForElement(this.fields.filterShield, 3);
+    I.waitForElement(this.fields.filterShield, 7);
     I.click(this.fields.filterShield);
     I.wait();
     const path = {css: `#menu-filter > div:nth-child(2) > ul > li:nth-child(${index})`};
     I.waitForElement(path, 2);
     I.click(path);
     I.wait();
+  },
+
+  async grabNumberOfPatients(){
+    I.waitForElement(this.fields.numberOfPatients, 5);
+    return await I.grabTextFrom(this.fields.numberOfPatients);
   },
 
 
@@ -99,7 +106,10 @@ module.exports = {
 
   closeNewPatientSidebar(){
     I.waitForElement(this.fields.exitPatientButton, 3);
-    I.click(this.fields.closeNewPatientSidebar);
+    I.scrollTo(this.fields.exitPatientButton);
+    I.scrollPageToTop();
+    I.wait(2);
+    I.click(this.fields.exitPatientButton);
     I.wait();
   },
 
@@ -116,16 +126,20 @@ module.exports = {
     this.fillMiddleName(middleName);
     this.fillLastName(lastName);
     this.fillMRN(MRN);
+    //pause();
     this.fillBirthday(birthday);
     this.fillGender(gender);
+    I.wait();
     this.fillHomePhone(homePhone);
     this.fillMobilePhone(mobilePhone);
     this.fillEmail(email);
     this.savePatient();
+    I.wait(2);
   },
 
   savePatient(){
-    I.waitForElement(this.fields.saveButton, 3);
+    I.waitForElement(this.fields.saveButton, 4);
+    I.scrollTo(this.fields.saveButton);
     I.click(this.fields.saveButton);
     I.wait();
   },
@@ -165,13 +179,13 @@ module.exports = {
     I.click(this.fields.genderShield);
     I.wait();
     if(gender.toUpperCase()=='MALE'){
-      I.waitForElement(this.fields.genderMale);
+      I.waitForElement(this.fields.genderMale, 2);
       I.click(this.fields.genderMale);
-    } if(gender.toUpperCase()=='FEMALE'){
-      I.waitForElement(this.fields.genderFemale);
+    }else if(gender.toUpperCase()=='FEMALE'){
+      I.waitForElement(this.fields.genderFemale, 2);
       I.click(this.fields.genderFemale);
     } else {
-      I.waitForElement(this.fields.genderOther);
+      I.waitForElement(this.fields.genderOther, 2);
       I.click(this.fields.genderOther);
     }
     I.wait();
@@ -201,9 +215,9 @@ module.exports = {
   //opening patient page 
   openPatientPage(index){
     const path = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > table > tbody > tr:nth-child(${index}) > td:nth-child(1) > a`;
-    I.waitForElement({css: path});
+    I.waitForElement({css: path}, 5);
     I.click({css: path});
-    I.wait();
+    I.wait(3);
   },
 
 
@@ -211,15 +225,9 @@ module.exports = {
   //Manipulating edit sidebar
   openEditPatientSidebar(index){
     const path = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(3) > div > table > tbody > tr:nth-child(${index}) > td:nth-child(6)`;
-    I.waitForElement({css: path});
+    I.waitForElement({css: path}, 5);
     I.click({css: path});
-    I.wait();
-  },
-
-  editSavePatient(){
-    I.waitForElement(this.fields.editSaveButton, 2);
-    I.click(this.fields.editSaveButton);
-    I.wait();
+    I.wait(3);
   },
 
   refillPatient(firstName, middleName, lastName, MRN, birthday, gender, homePhone, mobilePhone, email){
@@ -227,40 +235,58 @@ module.exports = {
     this.editMiddleName(middleName);
     this.editLastName(lastName);
     this.editMRN(MRN);
+    //pause();
     this.editBirthday(birthday);
     this.editGender(gender);
     this.editHomePhone(homePhone);
     this.editMobilePhone(mobilePhone);
     this.editEmail(email);
+    //pause();
     this.editSavePatient();
+    I.wait(2);
+  },
+
+  editSavePatient(){
+    I.waitForElement(this.fields.editSaveButton, 2);
+    I.scrollTo(this.fields.editSaveButton);
+    I.scrollPageToBottom();
+    I.wait(2);
+    //pause();
+    I.click(this.fields.editSaveButton);
+    I.wait();
   },
 
   editFirstName(name){
     I.waitForElement(this.fields.editFirstNameBox);
+    this.clearBox(this.fields.editFirstNameBox);
     I.fillField(this.fields.editFirstNameBox, name);
     I.wait();
   },
 
   editMiddleName(name){
     I.waitForElement(this.fields.editMiddleNameBox);
+    this.clearBox(this.fields.editMiddleNameBox);
     I.fillField(this.fields.editMiddleNameBox, name);
     I.wait();
   },
 
   editLastName(name){
     I.waitForElement(this.fields.editLastNameBox);
+    this.clearBox(this.fields.editLastNameBox);
     I.fillField(this.fields.editLastNameBox, name);
     I.wait();
   },
   
   editMRN(mrn){
     I.waitForElement(this.fields.editmrnBox);
+    this.clearBox(this.fields.editmrnBox);
     I.fillField(this.fields.editmrnBox, mrn);
     I.wait();
   },
 
   editBirthday(code){
     I.waitForElement(this.fields.editBirthdayBox);
+    this.clearBox(this.fields.editBirthdayBox);
     I.fillField(this.fields.editBirthdayBox, code);
     I.wait();
   },
@@ -284,19 +310,35 @@ module.exports = {
   
   editHomePhone(code){
     I.waitForElement(this.fields.editHomePhoneBox);
+    I.scrollTo(this.fields.editHomePhoneBox);
+    I.scrollPageToTop();
+    I.wait(3);
+    this.clearBox(this.fields.editHomePhoneBox);
     I.fillField(this.fields.editHomePhoneBox, code);
     I.wait();
   },
 
   editMobilePhone(code){
     I.waitForElement(this.fields.editMobilePhoneBox);
+    this.clearBox(this.fields.editMobilePhoneBox);
     I.fillField(this.fields.editMobilePhoneBox, code);
     I.wait();
   },
 
   editEmail(code){
     I.waitForElement(this.fields.editEmailBox);
+    I.wait();
+    this.clearBox(this.fields.editEmailBox);
     I.fillField(this.fields.editEmailBox, code);
+    I.wait();
+  },
+
+  clearBox(path){
+    I.waitForElement(path, 5);
+    I.click(path);
+    for(n = 0; n<100; n++){
+      I.pressKey('Backspace');
+    }
     I.wait();
   },
 

@@ -212,7 +212,7 @@ const TaskBody = ({
       >
         <RolloverNestedListItemText>
           {description ?? 'Unnamed task'}
-          {createdDateTime !== updatedDateTime && ' (edited)'}
+          {/* {createdDateTime !== updatedDateTime && ' (edited)'} */}
         </RolloverNestedListItemText>
       </RolloverPopover>
     </TaskBodyMainContainer>

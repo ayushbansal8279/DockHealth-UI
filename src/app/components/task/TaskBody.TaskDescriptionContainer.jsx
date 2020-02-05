@@ -1,14 +1,15 @@
 import { AnimatePresence } from 'framer-motion';
-import moment from 'moment';
+// import moment from 'moment';
 import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 
 import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
 import EnvelopeIcon from '../../img/envelope.svg';
+import AttachmentIcon from '../../img/clip.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import {
   CompletedBy,
-  EditedTaskDescriptionLabel,
+  // EditedTaskDescriptionLabel,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
   PatientsTaskListInnerDescription,
@@ -39,8 +40,8 @@ export default ({
   description,
   taskInnerDescriptionReference,
   status,
-  createdDateTime,
-  updatedDateTime,
+  // createdDateTime,
+  // updatedDateTime,
   updated,
   formattedCreationDate,
   formattedUserName,
@@ -48,7 +49,7 @@ export default ({
   countInfoContent,
   members,
 }) => {
-  const edited = moment(updatedDateTime).isAfter(moment(createdDateTime));
+  // const edited = moment(updatedDateTime).isAfter(moment(createdDateTime));
 
   return (
     <PatientTasklistContainer isSubtask={isSubtask}>
@@ -64,6 +65,15 @@ export default ({
           <img
             src={EnvelopeIcon}
             alt="Email"
+            style={{
+              paddingRight: '5px',
+            }}
+          />
+        )}
+        {task.attachments && task.attachments.length > 0 && (
+          <img
+            src={AttachmentIcon}
+            alt="Attachments"
             style={{
               paddingRight: '5px',
             }}
@@ -91,11 +101,11 @@ export default ({
                   value: description || 'Unnamed task',
                 }),
               )}
-              {edited && (
+              {/* {edited && (
                 <EditedTaskDescriptionLabel>
                   (edited)
                 </EditedTaskDescriptionLabel>
-              )}
+              )} */}
               <PatientsTasklistStrikeThrough
                 hasDescription={Boolean(description)}
                 active={status === 'COMPLETE'}

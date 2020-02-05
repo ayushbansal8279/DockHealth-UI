@@ -44,13 +44,12 @@ const AddTaskListButtonImage = styled.img`
 `;
 
 const AddTaskListButtonLabel = styled.span`
-  font-size: 20px;
+  font-size: 1.25rem;
   overflow: hidden;
   text-overflow: clip;
   transition: all 0.25s ease-out;
   white-space: nowrap;
-  ${props =>
-    props.width && `width: ${props.addingNew ? 0 : props.width}px`};
+  ${props => props.width && `width: ${props.addingNew ? 0 : props.width}px`};
 `;
 
 export default ({ addingNew, onClick }) => {
@@ -64,16 +63,13 @@ export default ({ addingNew, onClick }) => {
   return (
     <AddTaskListButtonContainer addingNew={addingNew}>
       <AddTaskListButton onClick={onClick} variant="contained">
-        <AddTaskListButtonImage
-          addingNew={addingNew}
-          src={AddTaskCrossIcon}
-        />
+        <AddTaskListButtonImage addingNew={addingNew} src={AddTaskCrossIcon} />
         <AddTaskListButtonLabel
           addingNew={addingNew}
           width={addTaskLabelWidth}
           ref={addTaskLabel}
         >
-          Add a list
+          &nbsp;Add a list&nbsp;
         </AddTaskListButtonLabel>
       </AddTaskListButton>
     </AddTaskListButtonContainer>

@@ -1,17 +1,16 @@
+import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
-import AddListForm from '../components/LEGACY_list/AddListForm';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import AddTaskListButton from '../components/taskList/AddTaskListButton';
@@ -21,7 +20,11 @@ import {
   onTaskListInvitationRejected,
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
-import { setHeader } from '../actions/header-actions';
+import AddListForm from './TaskListView.AddListForm';
+import {
+  FormDoubleSpacing,
+  FormSpacing,
+} from './TaskListView.AddListForm.Components';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -36,14 +39,31 @@ const BlockItemContainer = styled.div`
   background-color: #fff;
   border: 0.0625rem solid #e8ebef;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  min-height: 9rem;
   padding: 0.3rem 0.4rem;
   position: relative;
   text-align: center;
 
-  & > * {
+  && > * {
+    padding: 0;
+    margin: 0;
+  }
+
+  && > *:nth-child(odd) {
     margin: 0.25rem 0;
   }
+`;
+
+const StyledCollapse = styled(Collapse)`
+  width: 100%;
+`;
+
+const TaskListViewWrapper = styled.div`
+  max-width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  width: 100%;
 `;
 
 const ICONS = {
@@ -56,6 +76,10 @@ const ICONS = {
 };
 
 class TaskListView extends PureComponent {
+  state = {
+    listFormOpen: false,
+  };
+
   componentDidMount() {
     const { taskListAction, invitationAction } = this.props;
     taskListAction.loading();
@@ -78,35 +102,30 @@ class TaskListView extends PureComponent {
     }
   }
 
-  resetHeader = () => {
-    const { setHeaderBound, isFetching } = this.props;
-    setHeaderBound({
-      layout: [
-        {
-          key: `header${isFetching ? '-fetching' : ''}`,
-          component: <GenericHeader isFetching={false}>Lists</GenericHeader>,
-        },
-      ],
+  setListFormOpen = listFormOpen => {
+    this.setState({
+      listFormOpen,
     });
   };
 
   addTaskList = () => {
     const { taskListAction } = this.props;
     taskListAction.setTaskListAsCurrentList(null);
-    openAddForm();
+    this.setListFormOpen(true);
     scrollToTop();
   };
 
   editTaskList = taskList => {
     const { taskListAction } = this.props;
     taskListAction.setTaskListAsCurrentList(taskList);
-    toggleTaskForm();
+    this.setListFormOpen(true);
     scrollToTop();
   };
 
   deleteList = taskListId => {
     const { taskListAction } = this.props;
     taskListAction.deleteTaskListById(taskListId).then(() => {
+      taskListAction.getGenericListCounts();
       onTaskListDeleted();
     });
   };
@@ -261,11 +280,16 @@ class TaskListView extends PureComponent {
           item
           xs={3}
           key={list.metricName}
-          onClick={this.onGenericListTileClick({
-            listName,
-            taskStatus,
-            filterBy,
-          })}
+          onClick={
+            list.metricValue > 0
+              ? this.onGenericListTileClick({
+                  listName,
+                  taskStatus,
+                  filterBy,
+                })
+              : ''
+          }
+          style={{ cursor: 'pointer' }}
         >
           <BlockItemContainer>
             <svg className={`icon xlarge icon-header ${iconColor}`}>
@@ -287,57 +311,84 @@ class TaskListView extends PureComponent {
       genericLists,
     } = this.props;
 
+    const { listFormOpen } = this.state;
+
+    const taskListsEmpty = taskLists?.length === 0;
+
+    const taskListFormOpen = !isFetching && (taskListsEmpty || listFormOpen);
+
     return (
-      <Grid container direction="column" alignItems="center" spacing={8}>
-        <SafariFixGrid
-          container
-          alignItems="center"
-          justify="flex-end"
-          direction="row"
-        >
-          <AddTaskListButton onClick={this.addTaskList} />
-        </SafariFixGrid>
-        <SafariFixGrid container item xs={12} justify="center" spacing={8}>
-          <Grid container item xs={6}>
-            <AddListForm taskLists={taskLists} />
-          </Grid>
-        </SafariFixGrid>
-        <SafariFixGrid container item xs={12} justify="center">
-          <Grid
-            container
-            item
-            xs={6}
-            justify="center"
-            direction="row"
-            spacing={8}
-          >
-            {genericLists?.map(this.renderGenericList)}
-          </Grid>
-        </SafariFixGrid>
-        <SafariFixGrid container item xs={12} justify="center" spacing={8}>
-          <Grid item xs={6}>
-            {isFetching ? (
-              <CubesLoaderContainer>
-                <CubesLoader size={40} />
-              </CubesLoaderContainer>
-            ) : (
-              <div className="item-list-wrapper list-wrapper-all-lists">
-                <PendingListsComponent
-                  taskLists={pendingTaskLists}
-                  acceptInviteToTaskList={this.acceptInviteToTaskList}
-                  rejectInviteToTaskList={this.rejectInviteToTaskList}
+      <TaskListViewWrapper>
+        <Grid container direction="column" alignItems="center" spacing={8}>
+          <GenericHeader isFetching={false}>Lists</GenericHeader>
+          <FormDoubleSpacing />
+          <StyledCollapse in={!taskListFormOpen} timeout={250}>
+            <SafariFixGrid
+              container
+              alignItems="center"
+              justify="flex-end"
+              direction="row"
+            >
+              <AddTaskListButton onClick={this.addTaskList} />
+            </SafariFixGrid>
+          </StyledCollapse>
+          <SafariFixGrid container item xs={12} justify="center">
+            <Grid container item xs={9}>
+              <StyledCollapse
+                in={taskListFormOpen}
+                timeout={250}
+                style={{
+                  paddingTop: taskListFormOpen ? '40px' : '0px',
+                  paddingBottom: taskListFormOpen ? '40px' : '0px',
+                }}
+              >
+                <AddListForm
+                  setListFormOpen={this.setListFormOpen}
+                  cancelButtonShown={!taskListsEmpty}
                 />
-                <ListsComponent
-                  taskLists={taskLists}
-                  editForm={this.editTaskList}
-                  deleteList={this.deleteList}
-                  leaveList={this.leaveList}
-                />
-              </div>
-            )}
-          </Grid>
-        </SafariFixGrid>
-      </Grid>
+              </StyledCollapse>
+            </Grid>
+          </SafariFixGrid>
+          <FormSpacing />
+          <SafariFixGrid container item xs={12} justify="center">
+            <Grid
+              container
+              item
+              xs={9}
+              justify="center"
+              direction="row"
+              spacing={8}
+            >
+              {genericLists?.map(this.renderGenericList)}
+            </Grid>
+          </SafariFixGrid>
+          <FormSpacing />
+          <SafariFixGrid container item xs={12} justify="center" spacing={8}>
+            <Grid item xs={9}>
+              {isFetching ? (
+                <CubesLoaderContainer>
+                  <CubesLoader size={40} />
+                </CubesLoaderContainer>
+              ) : (
+                <div className="item-list-wrapper list-wrapper-all-lists">
+                  <PendingListsComponent
+                    taskLists={pendingTaskLists}
+                    acceptInviteToTaskList={this.acceptInviteToTaskList}
+                    rejectInviteToTaskList={this.rejectInviteToTaskList}
+                  />
+                  <ListsComponent
+                    taskLists={taskLists}
+                    editForm={this.editTaskList}
+                    deleteList={this.deleteList}
+                    leaveList={this.leaveList}
+                  />
+                </div>
+              )}
+            </Grid>
+          </SafariFixGrid>
+          <FormSpacing />
+        </Grid>
+      </TaskListViewWrapper>
     );
   }
 }

@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useRef } from 'react';
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 

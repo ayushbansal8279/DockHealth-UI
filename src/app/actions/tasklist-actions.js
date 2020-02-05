@@ -37,16 +37,23 @@ export function saveTaskList(formProps) {
           });
           toggleAlert('Task List updated successfully!', 'success');
         })
-        .catch(noop);
+        .catch(error => {
+          toggleAlert('Error in saving Task List details', 'error');
+          throw error;
+        });
   }
 
   return dispatch =>
     TaskListApi.addTaskList(formProps)
       .then(tasklist => {
+        tasklist.role = 'OWNER'; // set the default role for now
         dispatch({ type: ActionTypes.ADD_TASKLIST_SUCCESS, tasklist });
         toggleAlert('Task List created successfully!', 'success');
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in creating Task List details', 'error');
+        throw error;
+      });
 }
 
 export function getTaskListById(taskListId) {
@@ -96,7 +103,10 @@ export function invitePersonToTaskList(formProps, taskListId) {
         dispatch({ type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, response });
         toggleAlert('Invitation sent!', 'success');
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in sending invitation', 'error');
+        throw error;
+      });
 }
 
 export function getOrganizationUsersNotInTaskList(tasklistId) {
@@ -129,7 +139,10 @@ export function inviteMultipleUsersToTaskList(tasklistId, invitedUsers) {
         });
         toggleAlert('Invitations sent!', 'success');
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in sending invitation', 'error');
+        throw error;
+      });
 }
 
 export function getNonOrgUsersByTaskList(taskListId) {
@@ -162,7 +175,10 @@ export function changeUserRoleForList(tasklistId, markedUser, role) {
           role,
         });
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in updating user role', 'error');
+        throw error;
+      });
 }
 
 export function deleteTaskListById(taskListId) {
@@ -176,7 +192,10 @@ export function deleteTaskListById(taskListId) {
         });
         toggleAlert('Task List deleted', 'success');
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in deleting Task List', 'error');
+        throw error;
+      });
 }
 
 export function removeUserFromList(taskListId, removedUser) {
@@ -190,7 +209,10 @@ export function removeUserFromList(taskListId, removedUser) {
         });
         toggleAlert('User removed successfully', 'success');
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in removing User from Task List', 'error');
+        throw error;
+      });
 }
 
 export function cancelInviteToTaskList(taskListId, email) {
@@ -202,7 +224,10 @@ export function cancelInviteToTaskList(taskListId, email) {
           response,
         });
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in canceling invitation', 'error');
+        throw error;
+      });
 }
 
 export function findAuditsByTaskList(taskListId, queryStartPosition) {
@@ -248,7 +273,10 @@ export function toggleListNotifications(taskListId, receiveNotifications) {
           receiveNotifications,
         });
       })
-      .catch(noop);
+      .catch(error => {
+        toggleAlert('Error in toggling notification for Task List', 'error');
+        throw error;
+      });
 }
 
 export function storeAsCurrentList(taskListId) {

@@ -266,7 +266,9 @@ export default ({ currentUserId, updateComment, task, members }) => ([
               )}
             </CommentGroupContainer>
             {!isCurrentUser && (
-              <InitialsRelativeContainer>
+              <InitialsRelativeContainer
+                key={`other-${commentUserId}-${firstCommentId}`}
+              >
                 <InitialsContainer>{commentUserInitials}</InitialsContainer>
               </InitialsRelativeContainer>
             )}

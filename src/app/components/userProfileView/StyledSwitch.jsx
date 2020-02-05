@@ -30,3 +30,5 @@ export default ({ name }) => {
     <StyledSwitch defaultChecked={checked} name={name} inputRef={register} />
   );
 };
+
+export const StyledSwitchUnbound = StyledSwitch;

@@ -15,9 +15,9 @@ import prop from 'ramda/es/prop';
 import reject from 'ramda/es/reject';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { useToggle } from 'react-use';
 import styled from 'styled-components';
-
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
 import { getTaskListStats } from '../actions/tasklist-actions';
@@ -92,7 +92,7 @@ export const TaskListHeader = styled.div`
 `;
 
 export const TaskListSectionContainer = styled.div`
-  margin-bottom: 0.25rem;
+  margin-bottom: 1.5rem;
 `;
 
 export const TaskListSectionHeader = styled(Grid)`
@@ -151,7 +151,8 @@ export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
-  taskListId,
+  taskListId = 0,
+  patientId = 0,
   storeAsCurrentTask,
 }) => {
   const [isCollapsed, toggleIsCollapsed] = useToggle(false);
@@ -170,15 +171,18 @@ export const TaskListSection = ({
             </CollapseStyledButton>
           )}
         </Grid>
-        <Grid item container xs={12}>
-          <AddTask
-            taskListId={taskListId}
-            style={{
-              width: '100%',
-            }}
-            storeAsCurrentTask={storeAsCurrentTask}
-          />
-        </Grid>
+        {!isCollapsed && (
+          <Grid item container xs={12}>
+            <AddTask
+              taskListId={taskListId}
+              patientId={patientId}
+              style={{
+                width: '100%',
+              }}
+              storeAsCurrentTask={storeAsCurrentTask}
+            />
+          </Grid>
+        )}
       </TaskListSectionHeader>
       {!isCollapsed && children}
     </TaskListSectionContainer>
@@ -234,7 +238,8 @@ class TaskView extends Component {
     const { taskList } = this.props;
 
     const taskListId = taskList?.taskListId;
-    const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
+    // const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
+    const localStorageKey = TASK_VIEW_STORAGE_PREFIX + taskListId;
 
     let taskListPreferences = {};
 
@@ -470,16 +475,23 @@ class TaskView extends Component {
     }
   };
 
-  resetHeader = () => {
+  resetHeader = tasksCount => {
     const {
       tasks,
+      completedTasks,
       isFetching,
+      isMultiList,
       title,
       members,
       taskList,
       dispatchedSetHeader,
     } = this.props;
 
+    const allTasks = [...tasks, ...completedTasks];
+    let allTasksCount = tasksCount;
+    if (!tasksCount) {
+      allTasksCount = allTasks.length;
+    }
     if (title) {
       dispatchedSetHeader({
         backgroundColor: '#fff',
@@ -490,10 +502,11 @@ class TaskView extends Component {
               <Header
                 isFetching={isFetching}
                 title={title}
-                taskCount={tasks.length}
+                taskCount={allTasksCount}
                 members={members}
                 taskList={taskList}
                 resetHeader={this.resetHeader}
+                isMultiList={isMultiList}
               />
             ),
             xs: 12,
@@ -672,19 +685,23 @@ class TaskView extends Component {
 
   renderTasklists = () => {
     const {
-      tasks: incompleteTasks,
-      completedTasks,
+      tasks: allIncompleteTasks,
+      completedTasks: allCompletedTasks,
       markComplete,
       storeAsCurrentTask,
       markAsUnread,
       selectedTaskId,
       currentUser,
+      currentPatientId,
       isInbox,
       isMultiList,
       taskListId,
       listName,
     } = this.props;
     const { filterBy, slimView, taskDrawerOpen, taskTimeouts } = this.state;
+
+    const incompleteTasks = this.search(allIncompleteTasks);
+    const completedTasks = this.search(allCompletedTasks);
 
     const archivableTasks = completedTasks.filter(
       isTaskArchivable(currentUser),
@@ -694,13 +711,33 @@ class TaskView extends Component {
       this.mapInboxTasks({ isInbox }),
     );
 
-    const groupedTasks = groupBy(tasks, task =>
+    const groupedTasks = groupBy(
+      [...incompleteTasks, ...completedTasks],
+      task => (task.taskList ? task.taskList.listName : ''),
+    );
+    // const tasklistCount = [...groupedTasks.keys()].length;
+    const listNames = [...groupedTasks.keys()].sort((a, b) =>
+      a.localeCompare(b),
+    );
+
+    const groupedInCompletedTasks = groupBy(tasks, task =>
       task.taskList ? task.taskList.listName : '',
     );
-    const tasklistCount = [...groupedTasks.keys()].length;
+    const groupedCompletedTasks = groupBy(completedTasks, task =>
+      task.taskList ? task.taskList.listName : '',
+    );
+
+    const allTasksAndSubTasksCount =
+      groupedTasks && groupedTasks.length > 0
+        ? groupedTasks.map(group => {
+            return group.length;
+          })
+        : 0;
+    this.resetHeader(allTasksAndSubTasksCount);
 
     const tasklistProps = {
-      tasks: this.search(tasks),
+      tasks,
+      completedTasks: tasks,
       markComplete: (task, status) => {
         markComplete(task, status, 'INCOMPLETE', currentUser).then(
           this.onMarkComplete,
@@ -725,49 +762,102 @@ class TaskView extends Component {
       return <InboxNoMessagesAvailable />;
     }
 
-    if (tasks.length === 0 || (!isMultiList && tasklistCount <= 1) || isInbox) {
-      return <TaskList {...tasklistProps} />;
+    // console.log(`tasklist count: ${tasklistCount}`);
+    if (!isMultiList || isInbox) {
+      return this.renderSingleTaskList({ tasklistProps, completedTasks });
     }
+    return this.renderMultipleTaskList({
+      listNames,
+      groupedTasks,
+      groupedInCompletedTasks,
+      groupedCompletedTasks,
+      currentPatientId,
+      storeAsCurrentTask,
+      tasklistProps,
+    });
+  };
 
-    return [...groupedTasks.keys()].map(groupedListName => {
-      const tasksCount = groupedTasks.get(groupedListName).length;
+  renderSingleTaskList = ({ tasklistProps, completedTasks }) => {
+    return (
+      <>
+        <TaskList {...tasklistProps} />
+        {completedTasks &&
+          completedTasks.length > 0 &&
+          this.renderCompleted({ listCompletedTasks: completedTasks })}
+      </>
+    );
+  };
+
+  renderMultipleTaskList = ({
+    listNames,
+    groupedTasks,
+    groupedInCompletedTasks,
+    groupedCompletedTasks,
+    currentPatientId,
+    storeAsCurrentTask,
+    tasklistProps,
+  }) => {
+    return listNames.map(groupedListName => {
+      // const tasksCount =
+      //   groupedInCompletedTasks && groupedInCompletedTasks.get(groupedListName)
+      //     ? groupedInCompletedTasks.get(groupedListName).length
+      //     : 0;
+      const tasksCount =
+        groupedTasks && groupedTasks.get(groupedListName)
+          ? groupedTasks.get(groupedListName).length
+          : 0;
       const tasksCountContent = `${tasksCount} ${
         tasksCount === 1 ? 'task' : 'tasks'
       }`;
 
+      const incompleteTasksForList = groupedInCompletedTasks.get(
+        groupedListName,
+      );
+      const completedTasksForList = groupedCompletedTasks.get(groupedListName);
+
+      const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
+        ?.taskListId;
+
       const heading = (
         <div>
           <TaskListSectionHeading>
-            {groupedListName || 'Inbox'}
+            {groupedListName && (
+              <Link to={`tasks/${groupedListName}/${currentTaskListId}`}>
+                {groupedListName}
+              </Link>
+            )}
+            {!groupedListName && <Link to="tasks/Inbox">Inbox</Link>}
           </TaskListSectionHeading>
           <TasklistCount>{tasksCountContent}</TasklistCount>
         </div>
       );
 
-      const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
-        ?.taskListId;
-
       return (
         <React.Fragment key={groupedListName}>
           <TaskListSection
             taskListId={currentTaskListId}
+            patientId={currentPatientId}
             storeAsCurrentTask={storeAsCurrentTask}
             heading={heading}
             key={groupedListName}
           >
-            <TaskList
-              listTasks={groupedTasks.get(groupedListName)}
-              {...tasklistProps}
-            />
+            {incompleteTasksForList && incompleteTasksForList.length > 0 && (
+              <TaskList listTasks={incompleteTasksForList} {...tasklistProps} />
+            )}
+            {completedTasksForList &&
+              completedTasksForList.length > 0 &&
+              this.renderCompleted({
+                listCompletedTasks: completedTasksForList,
+              })}
           </TaskListSection>
         </React.Fragment>
       );
     });
   };
 
-  renderCompleted = () => {
+  renderCompleted = ({ listCompletedTasks: completedOrArchivedTasks }) => {
     const {
-      completedTasks: completedOrArchivedTasks,
+      // completedTasks: completedOrArchivedTasks,
       markComplete,
       selectedTaskId,
       storeAsCurrentTask,
@@ -776,6 +866,7 @@ class TaskView extends Component {
       isInbox,
       taskListId,
       listName,
+      globalSearch,
     } = this.props;
     const {
       slimView,
@@ -785,13 +876,13 @@ class TaskView extends Component {
       filterBy,
     } = this.state;
 
-    const completedTasks = reject(
+    const listCompletedTasks = reject(
       isTaskArchivable(currentUser),
       completedOrArchivedTasks,
     ).map(this.mapInboxTasks({ isInbox }));
 
     const tasklistProps = {
-      tasks: this.search(completedTasks),
+      tasks: this.search(listCompletedTasks),
       markComplete: (task, status) => {
         markComplete(task, status, 'COMPLETE', currentUser).then(
           this.onMarkComplete,
@@ -812,31 +903,38 @@ class TaskView extends Component {
       listName,
     };
 
-    if (completedTasks.length === 0) {
+    if (listCompletedTasks.length === 0) {
       return null;
     }
 
-    const buttonToggleWord = completedTasksShown ? 'Hide' : 'Show';
+    let showCompletedTasksFlag = completedTasksShown;
+    if (globalSearch) {
+      showCompletedTasksFlag = true;
+    }
 
-    let completedTasksAndSubTasksCount = completedTasks.length;
-    completedTasks.forEach(task => {
+    const buttonToggleWord = showCompletedTasksFlag ? 'Hide' : 'Show';
+
+    let completedTasksAndSubTasksCount = listCompletedTasks.length;
+    listCompletedTasks.forEach(task => {
       completedTasksAndSubTasksCount += task.subtasks?.length ?? 0;
     });
 
     return (
       <>
-        <CompletedButtonRowContainer>
-          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-          <StyledButton onClick={this.toggleCompletedTasks}>
-            {`${buttonToggleWord} completed tasks (${
-              completedTasks.length >= SHOW_MORE_STEP_COUNT
-                ? `${SHOW_MORE_STEP_COUNT}+`
-                : completedTasksAndSubTasksCount
-            })`}
-          </StyledButton>
-          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-        </CompletedButtonRowContainer>
-        {completedTasksShown && <TaskList {...tasklistProps} />}
+        {!globalSearch && (
+          <CompletedButtonRowContainer>
+            <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+            <StyledButton onClick={this.toggleCompletedTasks}>
+              {`${buttonToggleWord} completed tasks (${
+                listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
+                  ? `${SHOW_MORE_STEP_COUNT}+`
+                  : completedTasksAndSubTasksCount
+              })`}
+            </StyledButton>
+            <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+          </CompletedButtonRowContainer>
+        )}
+        {showCompletedTasksFlag && <TaskList {...tasklistProps} />}
       </>
     );
   };
@@ -849,8 +947,9 @@ class TaskView extends Component {
       showToolbar,
       selectedTask,
       markComplete,
-      showSortingStats = true,
       isInbox = false,
+      isSpecificPatient = false,
+      isMultiList,
       tasks,
       showAddTaskButton = true,
     } = this.props;
@@ -868,6 +967,8 @@ class TaskView extends Component {
 
     const toolbarContainerVisible =
       (isInbox && (tasks.length > 0 || isFetching)) || !isInbox;
+
+    const showSortingStats = isMultiList !== true && isInbox !== true;
 
     return (
       <div
@@ -939,7 +1040,6 @@ class TaskView extends Component {
                 <div style={{ display: 'flex' }}>
                   <TaskListContainer>
                     {this.renderTasklists()}
-                    {this.renderCompleted()}
                     <SideClickListener onClick={this.closeTaskDrawer} />
                   </TaskListContainer>
                   {taskDrawerOpen && (
@@ -950,6 +1050,8 @@ class TaskView extends Component {
                       markComplete={markComplete}
                       onMarkComplete={this.onMarkComplete}
                       isInbox={isInbox}
+                      isSpecificPatient={isSpecificPatient}
+                      isMultiList={isMultiList}
                     />
                   )}
                 </div>
@@ -972,6 +1074,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = store => ({
   selectedTask: store.taskState.selectedTask,
   currentUser: store.userState.userProfile,
+  currentPatientId: store.patient?.details?.patientId,
 });
 
 export default connect(

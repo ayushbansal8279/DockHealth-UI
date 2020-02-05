@@ -85,6 +85,8 @@ export default ({
   taskList,
   onMarkComplete,
   isInbox,
+  isSpecificPatient,
+  isMultiList,
 }) => {
   const {
     addDeferredCommentToQueue,
@@ -111,7 +113,11 @@ export default ({
     taskContainerReference,
     togglePriorityActive,
     userProfile,
-  } = initializeNewTaskDrawerHooks({ headsUpAreaRef, statusSelectData });
+  } = initializeNewTaskDrawerHooks({
+    headsUpAreaRef,
+    statusSelectData,
+    isMultiList,
+  });
 
   const isSubtask = Boolean(task?.parentTaskId);
 
@@ -174,6 +180,7 @@ export default ({
             handleSubmit={handleSubmit}
             isInbox={isInbox}
             isSubtask={isSubtask}
+            isSpecificPatient={isSpecificPatient}
             formMethods={formMethods}
             parentTask={parentTask}
             onMarkComplete={onMarkComplete}

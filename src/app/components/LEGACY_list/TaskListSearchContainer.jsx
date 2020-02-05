@@ -8,6 +8,7 @@ import * as TaskActions from '../../actions/task-actions';
 import * as TaskListActions from '../../actions/tasklist-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import TaskView from '../../views/TaskView';
+import CubesLoader from '../common/CubesLoader';
 
 const TaskListLayout = ({
   searchedTasks,
@@ -16,6 +17,7 @@ const TaskListLayout = ({
   userId,
   taskActions,
   showingCompletedTasks,
+  searchPerformed,
 }) => {
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskId,
@@ -42,15 +44,21 @@ const TaskListLayout = ({
       taskActions.toggleTaskPriority(task, userId, priority),
     showToolbar: true,
     showAddTaskButton: false,
+    isMultiList: true,
+    isSpecificPatient: false,
+    globalSearch: true,
   };
 
-  return !isFetching && (!lists || lists.length === 0) ? (
-    <Grid container justify="center">
-      <b>No matching tasks</b>
-    </Grid>
-  ) : (
-    <TaskView {...taskViewProps} />
-  );
+  if (searchPerformed) {
+    return !isFetching && (!lists || lists.length === 0) ? (
+      <Grid container justify="center">
+        <b>No matching tasks</b>
+      </Grid>
+    ) : (
+      <TaskView {...taskViewProps} />
+    );
+  }
+  return '';
 };
 
 const TaskListSearchContainer = ({
@@ -62,6 +70,7 @@ const TaskListSearchContainer = ({
   taskActions,
   showingCompletedTasks,
   taskListActions,
+  searchPerformed,
 }) => {
   useMount(() => {
     taskListActions.getPersonTasklistAccumulatedStats();
@@ -84,7 +93,12 @@ const TaskListSearchContainer = ({
     userId,
     taskActions,
     showingCompletedTasks,
+    searchPerformed,
   };
+
+  if (isFetching) {
+    return <CubesLoader size={40} />;
+  }
 
   return !isFetching && tasks && <TaskListLayout {...taskListProps} />;
 };

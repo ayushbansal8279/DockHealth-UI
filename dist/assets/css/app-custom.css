@@ -146,7 +146,7 @@ input:checked ~ .switch-paddle:after {
 
 .reveal .scroll-wrapper,
 .reveal {
-  overflow: scroll;
+  overflow: auto;
 }
 
 #eac-container-add-member-to-list ul {

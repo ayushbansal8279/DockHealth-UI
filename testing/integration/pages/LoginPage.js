@@ -9,6 +9,7 @@ module.exports = {
 
     eml2: 'gbousvaros2015@gmail.com',
     eml: 'george@dock.health',
+    eml3: 'george+1@dock.health',
     pw: '753951Gb!',
   },
 
@@ -23,9 +24,11 @@ module.exports = {
     I.waitForElement(this.fields.usrnm, 10);
     if(user==1){
       I.fillField(this.fields.usrnm, this.fields.eml);
-    } if (user==2){
+    }else if (user==2){
       I.fillField(this.fields.usrnm, this.fields.eml2);
-    }
+    }else if (user==3){
+      I.fillField(this.fields.usrnm, this.fields.eml3);
+    };
     I.pressKey('Enter');
     I.waitForElement(this.fields.psswrd, 10);
     I.fillField(this.fields.psswrd, this.fields.pw);

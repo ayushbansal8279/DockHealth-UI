@@ -126,7 +126,6 @@ const BirthdayTextMask = ({ inputRef, ...rest }) => (
     }}
     mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
     placeholderChar={'\u2000'}
-    // guide={false}
     keepCharPositions
   />
 );
@@ -182,7 +181,7 @@ export const PatientsForm = ({
         hideCollapse={hideCollapse}
       >
         <Grid container style={{ marginTop: '18px' }} wrap="nowrap">
-          <Grid item xs={5}>
+          <Grid item xs={4}>
             <StyledTextField
               name="firstName"
               value={firstName || ''}
@@ -191,7 +190,7 @@ export const PatientsForm = ({
               label="First Name"
             />
           </Grid>
-          <Grid item xs={2} style={{ margin: '0 4px' }}>
+          <Grid item xs={4} style={{ margin: '0 4px' }}>
             <StyledTextField
               name="middleName"
               value={middleName || ''}
@@ -199,7 +198,7 @@ export const PatientsForm = ({
               label="Middle Name"
             />
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={4}>
             <StyledTextField
               name="lastName"
               value={lastName || ''}

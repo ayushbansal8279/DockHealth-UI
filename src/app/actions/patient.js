@@ -4,7 +4,7 @@ import {
   FETCH_PATIENT_ERROR,
   FETCH_PATIENT_SUCCESS,
 } from './action-types';
-import { storeAsCurrentTask } from './task-actions';
+import { storeAsCurrentTask, storeAllTasks } from './task-actions';
 import { getMembersByTaskListId } from './tasklist-actions';
 
 export const fetchPatient = patientId => async dispatch => {
@@ -26,6 +26,8 @@ export const fetchPatient = patientId => async dispatch => {
       tasks,
       completedTasks,
     });
+
+    dispatch(storeAllTasks(tasks, completedTasks));
   } catch (error) {
     dispatch({ type: FETCH_PATIENT_ERROR, error });
   }

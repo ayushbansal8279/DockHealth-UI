@@ -97,7 +97,7 @@ module.exports = {
 
     subtaskAssignedShield: {
       css:
-        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div:nth-child(1) > input',
+        '#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div > div:nth-child(1)', //> input
     },
 
     subtaskAssignedFirstUser: {
@@ -291,10 +291,13 @@ module.exports = {
     I.wait();
   },
 
-  openEditSidebar(taskIndex, filtered) {//Intended filter is the filter thats selected starting with 1 as all active tasks
-    taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(3)`;
-    I.waitForElement({css: taskSidebarLocator}, 4);
-    I.scrollTo({css: taskSidebarLocator});
+  //This path fails to select certain tasks. 
+  openEditSidebar(taskIndex, filtered, brokenGarbage) {//Intended filter is the filter thats selected starting with 1 as all active tasks
+    //pause();
+    taskSidebarLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex+2}) > div > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(${2-brokenGarbage}) > div > span > span`;
+    I.waitForElement({css: taskSidebarLocator}, 11);
+    I.scrollPageToTop(); //({css: taskSidebarLocator});
+    I.wait(2);
     I.click({css: taskSidebarLocator});
     I.wait();
   },
@@ -304,7 +307,7 @@ module.exports = {
     I.waitForElement(this.fields.taskDescription, 5);
     I.fillField(this.fields.taskDescription, title);
     I.pressKey('Enter');
-    I.wait(3);
+    I.wait(2);
   },
 
   //TODO using postComment screws up the paths, and makes deleting a task impossible.
@@ -333,7 +336,7 @@ module.exports = {
     //assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2)  > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div > div > div > div:nth-child(${index + 1})`;
     assignmentLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${index})`;
     I.waitForElement(this.fields.assignedShield, 3);
-    I.wait(2);
+    I.wait();
     //pause();
     I.scrollTo(this.fields.assignedShield);
     //pause();
@@ -342,20 +345,25 @@ module.exports = {
     I.waitForElement({css: assignmentLocator}, 4);
     I.wait();
     I.click({css: assignmentLocator});
-    I.wait(2);
+    I.wait();
   },
 
   addDueDate(week, day, intendedFilter) {
     const dateButton = {css:
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1)  > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(${week}) > div:nth-child(${day}) > div`,
     };
     const setDateButton = {css:
-      `#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span`
-    }
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span`
+      //`#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span`
+    };
+    //#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > span
     const saveDueDate={css:
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${2+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)`
-    }
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+intendedFilter}) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > button:nth-child(2)`
+    };
+    I.wait(2);
+    //pause();
     I.waitForElement(setDateButton, 4);
+    //pause();
     I.click(setDateButton);
     // I.click("Set a due date");
     I.wait();
@@ -363,7 +371,7 @@ module.exports = {
     I.click(dateButton);
     I.waitForElement(saveDueDate);
     I.click(saveDueDate); // This div becomes nth-child(5) if the task has comments.
-    I.wait();
+    I.wait(2);
   },
 
   flagTask() {
@@ -379,7 +387,7 @@ module.exports = {
   },
 
   markTaskComplete(taskIndex){
-    //const checkBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
+    //const Box = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
     const checkBox = {css: `#appHome > main > div > div:nth-child(2)  > div > div:nth-child(2) > div:nth-child(3) > div > div > div > div:nth-child(1)  > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(1) > div`}
     I.waitForElement(checkBox, 2);
     I.click(checkBox);
@@ -389,22 +397,21 @@ module.exports = {
   changeAssignedUserNoSidebar(taskIndex, filtered, userIndex){ //Selecting nonsidebar faces is messy.
     const faceBox = {css: `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3 + filtered}) > div > div > div > div:nth-child(1) > div:nth-child(${taskIndex + 2}) > div > div > div:nth-child(2) > div:nth-child(2) > button`}
     //const userChooser = {css: `body > div:nth-child(7) > div:nth-child(2) > div:nth-child(2) > button:nth-child(${userIndex})`}
-    const userChooser = {id: '-1'}
+    const userChooser = {id: '-1'};
     I.waitForElement(faceBox,2);
     I.click(faceBox);
     //pause();
     I.waitForElement(userChooser,2);
     I.click(userChooser);
-    I.wait();
+    I.wait(2);
   },
 
   exitTask(filtered) {
     const exitEditSidebar = {css: 
-      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div:nth-child(2) > form > div:nth-child(1)> div:nth-child(1) > div:nth-child(2)  > div:nth-child(3) > button`
-    }
+      `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(${3+filtered}) > div > div > div:nth-child(2) > form > div:nth-child(1)> div:nth-child(1) > div:nth-child(2)  > div:nth-child(3) > button`};
     I.waitForElement(exitEditSidebar, 2);
     I.click(exitEditSidebar);
-    I.wait(3);
+    I.wait(4);
   },
 
   clickForMe(){
@@ -432,12 +439,17 @@ module.exports = {
     I.waitForElement(this.fields.subtaskTitle, 4);
     I.fillField(this.fields.subtaskTitle, title);
     I.wait();
+    //this.saveSubtask();
   },
 
   assignSubtaskTo(userIndex){
     //TODO this method refuses to click assignedLocator. Explitives
     assignedLocator = `#appHome > main > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(2) > form > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div.simplebar-wrapper > div.simplebar-mask > div > div > div > div:nth-child(${userIndex})`;
+    
+    I.scrollPageToTop();
     I.waitForElement(this.fields.subtaskAssignedShield);
+    I.wait();
+    //pause();
     I.click(this.fields.subtaskAssignedShield);
     //pause();
     //I.wait(4);
@@ -462,11 +474,13 @@ module.exports = {
 
   //Filterss
   clickFilter(index){//Index starts at 1 for all tasks
+    //pause();
+
     I.waitForElement(this.fields.filtersWrapper, 3);
     const address = `${this.fields.filtersWrapper.css} > div:nth-child(${index})`;
     I.wait();
     I.click(address);
-    I.wait();
+    I.wait(3);
   },
 
   //Searchbar
@@ -474,7 +488,7 @@ module.exports = {
   search(input){
     I.waitForElement(this.fields.searchBar, 3);
     I.fillField(this.fields.searchBar, input);
-    I.wait(2);
+    I.wait(1);
   },
 
   //Fancy Stuff
@@ -501,8 +515,9 @@ module.exports = {
     I.wait();
     I.waitForElement(deleteButtonLocator, 4);
     //TODO trying to reach the delete button blows up the process...
-    // I.scrollTo(deleteButtonLocator);
+    I.scrollTo(deleteButtonLocator);
     // I.wait();
+    I.wait(4);
     I.click(deleteButtonLocator);
     I.wait(2);
   },
