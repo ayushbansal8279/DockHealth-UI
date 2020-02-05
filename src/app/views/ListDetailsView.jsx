@@ -286,7 +286,7 @@ class Home extends PureComponent {
         addTaskComment,
       },
       tasklists,
-      routeParams: { listName, taskListId },
+      routeParams: { listName, taskListId, filterBy },
     } = this.props;
 
     const loadedTasklist = tasklists.find(
@@ -296,11 +296,26 @@ class Home extends PureComponent {
     let isMultiList = false;
     let title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
 
+    let filterByDescription = '';
+    if (filterBy === 'FLAGGED') {
+      filterByDescription = 'Flagged';
+    } else if (filterBy === 'OVERDUE') {
+      filterByDescription = 'Overdue';
+    } else if (filterBy === 'DUE_TODAY') {
+      filterByDescription = 'Due Today';
+    } else if (filterBy === 'DUE_THIS_WEEK') {
+      filterByDescription = 'Due This Week';
+    }
+
     if (listName === ASSIGNED_BY_ME) {
-      title = 'Assigned by me';
+      title = `Assigned by me${
+        filterByDescription !== '' ? ` (${filterByDescription})` : ''
+      }`;
       isMultiList = true;
     } else if (listName === ASSIGNED_TO_ME) {
-      title = 'Assigned to me';
+      title = `Assigned to me${
+        filterByDescription !== '' ? ` (${filterByDescription})` : ''
+      }`;
       isMultiList = true;
     }
 
