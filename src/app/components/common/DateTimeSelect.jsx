@@ -229,7 +229,9 @@ const DateTimeSelect = ({
                         selected={hasDateSelected && selected}
                         notShown={hidden}
                         pastDay={shownMoment.isBefore(todayMoment)}
-                        onClick={() => setHasDateSelected(true)}
+                        onMouseUp={() => {
+                          setHasDateSelected(true);
+                        }}
                       >
                         <span>{day}</span>
                         {current && !hasDateSelected && (
