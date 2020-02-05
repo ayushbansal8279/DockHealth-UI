@@ -5,6 +5,7 @@ import { error, success } from '../../actions/notification-actions';
 import { mobileAnalyticsClient } from '../../api/analytics-api';
 import * as userApi from '../../api/user-api';
 import ConfirmUserAccountForm from '../../components/auth/ConfirmUserAccountForm';
+import { showAlert } from '../../helpers/utility-functions';
 
 export default class ConfirmRegistration extends PureComponent {
   constructor(props) {
@@ -13,8 +14,8 @@ export default class ConfirmRegistration extends PureComponent {
   }
 
   componentWillMount() {
-    const uname = this.props.location.query.uname;
-    const code = this.props.location.query.code;
+    const { uname } = this.props.location.query;
+    const { code } = this.props.location.query;
     console.log(`uname: ${uname} code:${code}`);
     if (uname && code) {
       return userApi
@@ -32,23 +33,30 @@ export default class ConfirmRegistration extends PureComponent {
           window.location.href = process.env.BRANCH_IO_APP_LINK;
           // hashHistory.push('confirmRegistrationSuccess')
         })
-        .catch(e => {
+        .catch(error_ => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             CONFIRM_REGISTRATION_SUCCESS: 'NO',
           });
-          const msg = e.message || 'An error occurred.';
+          const message = error_.message || 'An error occurred.';
           if (
-            msg == 'User cannot confirm because user status is not UNCONFIRMED.'
+            message ==
+            'User cannot confirm because user status is not UNCONFIRMED.'
           ) {
             window.location.href = process.env.BRANCH_IO_APP_LINK;
             return;
           }
           const field = false;
           if (!field) {
-            error(msg);
+            showAlert({
+              icon: 'error',
+              title: 'Error',
+              text: 'User account not confirmed. Please try again',
+            });
+            hashHistory.push('login');
           }
         });
     }
+    hashHistory.push('login');
   }
 
   onSubmit(form) {
@@ -61,17 +69,18 @@ export default class ConfirmRegistration extends PureComponent {
         success('Registration confirmed. Please Login');
         hashHistory.push('login');
       })
-      .catch(e => {
-        const msg = e.message || 'An error occurred.';
+      .catch(error_ => {
+        const message = error_.message || 'An error occurred.';
         if (
-          msg == 'User cannot confirm because user status is not UNCONFIRMED.'
+          message ==
+          'User cannot confirm because user status is not UNCONFIRMED.'
         ) {
           window.location.href = process.env.BRANCH_IO_APP_LINK;
           return;
         }
         const field = false;
         if (!field) {
-          error(msg);
+          error(message);
         }
       });
   }
@@ -84,7 +93,7 @@ export default class ConfirmRegistration extends PureComponent {
             <h5>Confirm registration</h5>
           </div>
         </div>
-        <ConfirmUserAccountForm type="Confirm" onSubmit={this.onSubmit} />
+        {/* <ConfirmUserAccountForm type="Confirm" onSubmit={this.onSubmit} /> */}
       </div>
     );
   }
