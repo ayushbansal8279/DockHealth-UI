@@ -15,6 +15,7 @@ import prop from 'ramda/es/prop';
 import reject from 'ramda/es/reject';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { useToggle } from 'react-use';
 import styled from 'styled-components';
 
@@ -799,17 +800,22 @@ class TaskView extends Component {
       );
       const completedTasksForList = groupedCompletedTasks.get(groupedListName);
 
+      const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
+        ?.taskListId;
+
       const heading = (
         <div>
           <TaskListSectionHeading>
-            {groupedListName || 'Inbox'}
+            {groupedListName && (
+              <Link to={`tasks/${groupedListName}/${currentTaskListId}`}>
+                {groupedListName}
+              </Link>
+            )}
+            {!groupedListName && <Link to="tasks/Inbox">Inbox</Link>}
           </TaskListSectionHeading>
           <TasklistCount>{tasksCountContent}</TasklistCount>
         </div>
       );
-
-      const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
-        ?.taskListId;
 
       return (
         <React.Fragment key={groupedListName}>
