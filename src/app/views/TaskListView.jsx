@@ -114,7 +114,7 @@ class TaskListView extends PureComponent {
       ],
     });
   };
-  
+
   setListFormOpen = listFormOpen => {
     this.setState({
       listFormOpen,
@@ -269,12 +269,19 @@ class TaskListView extends PureComponent {
     });
   };
 
-  onGenericListTileClick = ({ listName, taskStatus, filterBy }) => () => {
-    this.onSelectHUD(
-      listName === 'Inbox'
-        ? 'tasks/Inbox'
-        : `tasks/filtered/${listName}/${taskStatus}/${filterBy}`,
-    );
+  onGenericListTileClick = ({
+    listName,
+    taskStatus,
+    filterBy,
+    metricValue,
+  }) => () => {
+    if (metricValue > 0) {
+      this.onSelectHUD(
+        listName === 'Inbox'
+          ? 'tasks/Inbox'
+          : `tasks/filtered/${listName}/${taskStatus}/${filterBy}`,
+      );
+    }
   };
 
   renderGenericList = list => {
@@ -287,21 +294,20 @@ class TaskListView extends PureComponent {
       taskStatus,
     } = this.getGenericListMetricData(list.metricName);
 
+    const { metricValue } = list;
+
     return (
       list.metricName.includes('Count') && (
         <Grid
           item
           xs={3}
           key={list.metricName}
-          onClick={
-            list.metricValue > 0
-              ? this.onGenericListTileClick({
-                  listName,
-                  taskStatus,
-                  filterBy,
-                })
-              : ''
-          }
+          onClick={this.onGenericListTileClick({
+            listName,
+            taskStatus,
+            filterBy,
+            metricValue,
+          })}
           style={{ cursor: 'pointer' }}
         >
           <BlockItemContainer>
