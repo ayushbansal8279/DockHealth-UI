@@ -1,13 +1,14 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import { useForm, FormContext } from 'react-hook-form';
-import { object, string } from 'yup';
+import { FormContext, useForm } from 'react-hook-form';
 import { hashHistory } from 'react-router';
+import { object, string } from 'yup';
 import { inviteAuthorizedSigner } from '../../../api/organization-api';
-import { showAlert, showToast } from '../../../helpers/utility-functions';
+import { showAlert } from '../../../helpers/utility-functions';
 import {
   MobileInputComponent,
   OnboardingButton,
+  OnboardingDivider,
   OnboardingH2,
   OnboardingH2Bold,
   OnboardingHorizontalSpacing3,
@@ -29,8 +30,8 @@ const validationSchema = object().shape({
     .matches(/\d{10}/, 'This field should have a valid phone number'),
 });
 
-const goToTeamOrgSetup = () => {
-  hashHistory.push('/onboarding/team-org-setup');
+const goToBaaInvitationSent = () => {
+  hashHistory.push('/onboarding/baa-invitation-sent');
 };
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -45,11 +46,7 @@ const onInvitationSubmit = () => async ({
     inviteAuthorizedSigner({ email, firstName, lastName, mobilePhoneNumber })
       .then(data => {
         if (data.statusCode === 'SUCCESS') {
-          showToast({
-            icon: 'success',
-            title: 'Authorized signer invited successfully',
-          });
-          goToTeamOrgSetup();
+          goToBaaInvitationSent();
         } else {
           showAlert({
             status: 'error',
@@ -83,9 +80,15 @@ const InvitationForm = ({ hideInvitationForm }) => {
   return (
     <form onSubmit={formMethods.handleSubmit(onInvitationSubmit())}>
       <FormContext {...formMethods}>
-        <OnboardingH2>
-          Invite the authorized signer of your organization
-        </OnboardingH2>
+        <OnboardingDivider />
+        <Grid container alignItems="center" justify="space-between">
+          <OnboardingH2>
+            Invite the authorized signer of your organization
+          </OnboardingH2>
+          <OnboardingButton variant="outlined" onClick={hideInvitationForm}>
+            <OnboardingH2>&times;</OnboardingH2>
+          </OnboardingButton>
+        </Grid>
         <OnboardingSpacing3 />
         <Grid container spacing={16}>
           <Grid item sm={12} md={6}>
@@ -106,7 +109,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
           </Grid>
           <Grid item sm={12} md={6}>
             <OnboardingInput
-              label="Email"
+              label="His/Her Email"
               name="email"
               placeholder="Enter invited person's email here"
               required
@@ -114,7 +117,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
           </Grid>
           <Grid item sm={12} md={6}>
             <OnboardingInput
-              label="Their Mobile Phone Number"
+              label="His/Her Mobile Phone Number"
               name="mobilePhoneNumber"
               placeholder="Enter invited person's mobile phone number"
               CustomComponent={MobileInputComponent}

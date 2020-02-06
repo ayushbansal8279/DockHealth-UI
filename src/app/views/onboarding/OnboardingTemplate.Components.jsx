@@ -331,9 +331,14 @@ export const OnboardingButton = withStyles({
     color: '#0ca1c7',
     padding: '0.5rem 0.25rem',
   },
-})(({ classes, variant, size, disabled, ...props }) => {
+  fullWidth: {
+    width: '100%',
+  },
+})(({ classes, variant, size, fullWidth, disabled, ...props }) => {
   const className = `${classes.root} ${classes[variant]} ${classes[size] ??
-    ''} ${disabled ? classes[`${variant}Disabled`] ?? '' : ''}`.trim();
+    ''} ${disabled ? classes[`${variant}Disabled`] ?? '' : ''} ${
+    fullWidth ? classes.fullWidth : ''
+  }`.trim();
 
   return <ButtonBase disabled={disabled} className={className} {...props} />;
 });
