@@ -106,7 +106,7 @@ const StyledLink = React.forwardRef((props, reference) => {
 
 const DrawerHeader = ({ user }) => {
   const nameReference = useRef(null);
-  const buttonReference = useRef(null);
+  // const buttonReference = useRef(null);
 
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
   const { access: userProfileAccess, orgUserRole } = useSelector(
@@ -135,7 +135,7 @@ const DrawerHeader = ({ user }) => {
       <StyledListItem
         onMouseEnter={userProfileEnabled && openPopover}
         onMouseLeave={closePopover}
-        innerRef={buttonReference}
+        // innerRef={buttonReference}
       >
         <ListItemIcon
           style={{

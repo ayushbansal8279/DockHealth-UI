@@ -101,6 +101,8 @@ class TaskListView extends PureComponent {
     if (isFetching !== previousIsFetching) {
       this.resetHeader();
     }
+    // needed for contextual menu
+    enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
   }
 
   resetHeader = () => {
