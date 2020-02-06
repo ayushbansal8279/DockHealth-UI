@@ -68,6 +68,7 @@ const TaskBody = ({
     completedDt: completedDateTime,
     completedBy,
     isNewSubtask,
+    edited,
   } = task;
 
   const isInbox = !task?.taskList?.taskListId;
@@ -177,6 +178,7 @@ const TaskBody = ({
             completedByContent={completedByContent}
             countInfoContent={countInfoContent}
             members={members}
+            edited={edited}
           />
           <TaskBodyRightDataContainer
             taskDrawerOpen={taskDrawerOpen}
@@ -212,7 +214,7 @@ const TaskBody = ({
       >
         <RolloverNestedListItemText>
           {description ?? 'Unnamed task'}
-          {/* {createdDateTime !== updatedDateTime && ' (edited)'} */}
+          {edited && ' (edited)'}
         </RolloverNestedListItemText>
       </RolloverPopover>
     </TaskBodyMainContainer>

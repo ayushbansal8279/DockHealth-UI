@@ -9,7 +9,7 @@ import AttachmentIcon from '../../img/clip.svg';
 import UpdateIndicatorIcon from '../../img/update-indicator.svg';
 import {
   CompletedBy,
-  // EditedTaskDescriptionLabel,
+  EditedTaskDescriptionLabel,
   PatientsTasklistDescription,
   PatientsTasklistInfo,
   PatientsTaskListInnerDescription,
@@ -48,9 +48,8 @@ export default ({
   completedByContent,
   countInfoContent,
   members,
+  edited,
 }) => {
-  // const edited = moment(updatedDateTime).isAfter(moment(createdDateTime));
-
   return (
     <PatientTasklistContainer isSubtask={isSubtask}>
       <AnimatePresence>
@@ -101,11 +100,11 @@ export default ({
                   value: description || 'Unnamed task',
                 }),
               )}
-              {/* {edited && (
+              {edited && (
                 <EditedTaskDescriptionLabel>
                   (edited)
                 </EditedTaskDescriptionLabel>
-              )} */}
+              )}
               <PatientsTasklistStrikeThrough
                 hasDescription={Boolean(description)}
                 active={status === 'COMPLETE'}

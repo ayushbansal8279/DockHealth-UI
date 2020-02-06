@@ -156,12 +156,11 @@ class EditTaskDescription extends Component {
   render() {
     const { componentEditable } = this.state;
 
-    const edited = false;
-
-    // const { selectedTask } = this.props;
-    // if(selectedTask){
-    //   edited = moment(selectedTask.updatedDateTime).isAfter(moment(selectedTask.createdDateTime));
-    // }
+    let edited = false;
+    const { selectedTask } = this.props;
+    if (selectedTask) {
+      edited = selectedTask.edited;
+    }
 
     return (
       <EditTaskDescriptionElement

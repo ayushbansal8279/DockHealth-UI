@@ -158,6 +158,7 @@ export default ({
     <NewTaskDrawerContainer
       headsUpAreaHeight={headsUpAreaHeight}
       ref={taskContainerReference}
+      data-name="TaskDrawerContainer"
     >
       {parentTask && (
         <NewTaskDrawerParentInfo
