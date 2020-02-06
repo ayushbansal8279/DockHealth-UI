@@ -54,7 +54,13 @@ const InvitePeopleForm = ({
   dispatch,
   register,
 }) => (
-  <form onSubmit={handleSubmit(onSubmit({ closePopover, dispatch }))}>
+  <form
+    onSubmit={event => {
+      event.stopPropagation();
+      event.preventDefault();
+      handleSubmit(onSubmit({ closePopover, dispatch }))(event);
+    }}
+  >
     <InvitePeoplePopoverSection>
       <StyledFormControl fullWidth>
         <StyledInputLabel required>First Name</StyledInputLabel>

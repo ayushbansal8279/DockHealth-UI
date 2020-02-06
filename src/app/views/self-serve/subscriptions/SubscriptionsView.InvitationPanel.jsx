@@ -106,9 +106,11 @@ const InvitationPanel = () => {
         {isInvitationPanelOpen && (
           <motion.form
             {...animationProperties}
-            onSubmit={handleSubmit(
-              onSubmit({ closeInvitationPanel, dispatch }),
-            )}
+            onSubmit={event => {
+              event.preventDefault();
+              event.stopPropagation();
+              handleSubmit(onSubmit({ closeInvitationPanel, dispatch }))(event);
+            }}
           >
             <Grid container spacing={16}>
               <Grid item xs={3}>

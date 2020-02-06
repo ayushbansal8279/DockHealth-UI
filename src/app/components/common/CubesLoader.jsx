@@ -33,6 +33,7 @@ const animation3 = keyframes`
 
 const CubeContainer = styled.div`
   animation: ${props => props.animation} 0.5s ease-out 0s infinite;
+  box-sizing: border-box;
   height: 50%;
   padding: 10%;
   position: absolute;
