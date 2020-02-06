@@ -37,8 +37,8 @@ import UnEnrolledUser from './views/auth/UnEnrolledUser';
 import ErrorPage from './views/ErrorPage';
 import Inbox from './views/Inbox';
 import ListDetailsView from './views/ListDetailsView';
+import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
-import OnboardingBaaSigningView from './views/onboarding/onboarding-baa-signing/OnboardingBaaSigningView';
 import OnboardingCreateAccountView from './views/onboarding/onboarding-create-account/OnboardingCreateAccountView';
 import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
 import OnboardingFinishedView from './views/onboarding/onboarding-finished/OnboardingFinishedView';
@@ -287,7 +287,10 @@ export const Routes = ({ store }) => {
           />
           <Route component={OnboardingEulaView} path="eula" />
           <Route component={OnboardingBaaOverviewView} path="baa-overview" />
-          <Route component={OnboardingBaaSigningView} path="baa-signing" />
+          <Route
+            component={OnboardingBaaInvitationSentView}
+            path="baa-invitation-sent"
+          />
           <Route component={OnboardingTeamOrgSetupView} path="team-org-setup" />
           <Route component={OnboardingProfileView} path="profile" />
           <Route component={OnboardingFinishedView} path="finished" />

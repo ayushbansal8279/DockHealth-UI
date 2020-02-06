@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffectOnce } from 'react-use';
@@ -27,6 +27,8 @@ const initializeAddListFormHooks = () => {
   );
 
   const taskListId = currentList?.taskListId;
+
+  const [searchValue, setSearchValue] = useState('');
 
   const setDefaultFormValues = useCallback(() => {
     setValue('listName', currentList?.listName ?? '');
@@ -61,6 +63,12 @@ const initializeAddListFormHooks = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskListId]);
 
+  useEffect(() => {
+    if (adminsPickerOpen || membersPickerOpen) {
+      setSearchValue('');
+    }
+  }, [adminsPickerOpen, membersPickerOpen]);
+
   const listNameValue = watch('listName') ?? '';
   const adminsValue = watch('admins') ?? [];
   const membersValue = watch('members') ?? [];
@@ -68,18 +76,23 @@ const initializeAddListFormHooks = () => {
 
   const formLabelContent = taskListId ? 'Edit a list' : 'Add a list';
 
-  const filteredPeople = (people ?? []).filter(({ userId }) => {
-    if (
-      userId == null ||
-      userId === listOwner.userId ||
-      membersValue.includes(userId) ||
-      adminsValue.includes(userId)
-    ) {
-      return false;
-    }
-
-    return true;
-  });
+  const filteredPeople = (people ?? [])
+    .filter(
+      ({ userId }) =>
+        userId != null &&
+        userId !== listOwner.userId &&
+        !membersValue.includes(userId) &&
+        !adminsValue.includes(userId),
+    )
+    .filter(({ firstName = '', middleName = '', lastName = '' }) => {
+      return [
+        firstName.toLowerCase(),
+        middleName.toLowerCase(),
+        lastName.toLowerCase(),
+      ]
+        .map(value => value.includes(searchValue.toLowerCase()))
+        .some(Boolean);
+    });
 
   const addAdmin = useCallback(
     ({ userId }) => {
@@ -132,6 +145,8 @@ const initializeAddListFormHooks = () => {
     people,
     taskListId,
     dispatch,
+    searchValue,
+    setSearchValue,
   };
 };
 

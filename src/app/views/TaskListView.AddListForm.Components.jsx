@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
+import SearchIconImage from '../img/search-dark.svg';
 
 export const FormContainer = styled.form`
   align-items: flex-start;
@@ -50,6 +51,7 @@ export const StyledInputLabel = withStyles({
     top: '50%',
     transform: 'translate(1rem, -50%) scale(1)',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
+    width: '50%',
   },
   required: {
     '& > span': {
@@ -122,6 +124,11 @@ export const EmptyMember = styled(ButtonBase)`
   }
 `;
 
+export const EmptyMemberIcon = styled.div`
+  transform: rotate(${props => (props.rotated ? -45 : 0)}deg);
+  transition: all 0.25s ease-out;
+`;
+
 export const InputFieldSpacer = styled.div`
   min-height: 1rem;
   height: 1rem;
@@ -137,6 +144,7 @@ export const StyledCollapse = styled(Collapse)`
 
 export const StyledListItem = styled(ListItem)`
   && {
+    background-color: #f3f5f6;
     height: 4rem;
     width: 100%;
   }
@@ -195,4 +203,35 @@ export const FormSpacing = styled.div`
 
 export const FormDoubleSpacing = styled(FormSpacing)`
   height: 3rem;
+`;
+
+export const SearchFieldContainer = styled.div`
+  height: 2.5rem;
+  position: relative;
+  width: 100%;
+`;
+
+export const SearchField = styled.input`
+  background-color: #fff;
+  border: 0;
+  color: #000;
+  height: 100%;
+  padding: 0.5rem;
+  padding-left: 2rem;
+  outline: none;
+  width: 100%;
+`;
+
+export const SearchFieldIcon = styled.img.attrs({
+  alt: 'Search icon',
+  src: SearchIconImage,
+})`
+  height: 100%;
+  left: 0.5rem;
+  object-fit: contain;
+  object-position: center;
+  position: absolute;
+  top: 0;
+  width: 1rem;
+  z-index: 1;
 `;

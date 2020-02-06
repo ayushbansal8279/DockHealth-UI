@@ -1,32 +1,36 @@
 import Grid from '@material-ui/core/Grid';
+import { isEmpty } from 'ramda';
 import React from 'react';
-import Swal from 'sweetalert2';
+import { saveTaskList } from '../actions/tasklist-actions';
 import Member from '../components/members/Member';
 import { StyledSwitchUnbound } from '../components/userProfileView/StyledSwitch';
 import {
-  SectionTypography,
   SectionSubtypography,
+  SectionTypography,
 } from '../components/userProfileView/UserProfileView.Styled';
-import initializeAddListFormHooks from './TaskListView.AddListForm.Hooks';
-import { saveTaskList } from '../actions/tasklist-actions';
-
+import { showAlert } from '../helpers/utility-functions';
 import {
+  CloseButton,
+  EmptyMember,
+  EmptyMemberIcon,
   FormContainer,
-  FormLabel,
   FormDivider,
-  StyledFormControl,
-  StyledInputLabel,
-  StyledInputBase,
+  FormLabel,
+  InputFieldSpacer,
   MemberContainer,
   MembersContainer,
-  EmptyMember,
-  InputFieldSpacer,
-  StyledCollapse,
-  StyledListItem,
-  StyledList,
+  SearchField,
+  SearchFieldContainer,
+  SearchFieldIcon,
   StyledButton,
-  CloseButton,
+  StyledCollapse,
+  StyledFormControl,
+  StyledInputBase,
+  StyledInputLabel,
+  StyledList,
+  StyledListItem,
 } from './TaskListView.AddListForm.Components';
+import initializeAddListFormHooks from './TaskListView.AddListForm.Hooks';
 
 const onSubmit = ({ dispatch, setListFormOpen, taskListId = null }) => data => {
   const taskList = { ...data, taskListId };
@@ -37,13 +41,12 @@ const onSubmit = ({ dispatch, setListFormOpen, taskListId = null }) => data => {
       setListFormOpen(false);
     })
     .catch(error => {
-      Swal.fire({
-        icon: 'error',
+      showAlert({
+        status: 'error',
         title: 'Error',
         text:
           error?.message ?? 'Failed to save task list, please try again later',
       });
-      Swal.getContainer().style.zIndex = 10000;
     });
 };
 
@@ -82,6 +85,14 @@ const renderPickerOption = ({ closePicker, addPerson }) => member => {
   );
 };
 
+const NoMembersElement = () => (
+  <StyledListItem>
+    <Grid container justify="center">
+      No people found
+    </Grid>
+  </StyledListItem>
+);
+
 const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
   const {
     formLabelContent,
@@ -106,6 +117,8 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
     people,
     taskListId,
     dispatch,
+    searchValue,
+    setSearchValue,
   } = initializeAddListFormHooks();
 
   return (
@@ -146,7 +159,21 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
         />
       </StyledFormControl>
       <StyledFormControl fullWidth>
-        <StyledInputLabel>Admins</StyledInputLabel>
+        <StyledInputLabel shrink={false}>
+          {adminsPickerOpen ? (
+            <SearchFieldContainer>
+              <SearchField
+                autoFocus
+                placeholder="Search"
+                value={searchValue}
+                onChange={event => setSearchValue(event.target.value)}
+              />
+              <SearchFieldIcon />
+            </SearchFieldContainer>
+          ) : (
+            'Admins'
+          )}
+        </StyledInputLabel>
         <StyledInputBase
           name="admins"
           disabled
@@ -163,7 +190,9 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
                     closeMembersPicker();
                   }}
                 >
-                  +
+                  <EmptyMemberIcon rotated={adminsPickerOpen}>
+                    +
+                  </EmptyMemberIcon>
                 </EmptyMember>
               </MemberContainer>
               {adminsValue?.map(
@@ -175,16 +204,34 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
       </StyledFormControl>
       <StyledCollapse timeout={150} in={adminsPickerOpen}>
         <StyledList>
-          {filteredPeople.map(
-            renderPickerOption({
-              closePicker: closeAdminsPicker,
-              addPerson: addAdmin,
-            }),
+          {isEmpty(filteredPeople) ? (
+            <NoMembersElement />
+          ) : (
+            filteredPeople.map(
+              renderPickerOption({
+                closePicker: closeAdminsPicker,
+                addPerson: addAdmin,
+              }),
+            )
           )}
         </StyledList>
       </StyledCollapse>
       <StyledFormControl fullWidth>
-        <StyledInputLabel>Members</StyledInputLabel>
+        <StyledInputLabel>
+          {membersPickerOpen ? (
+            <SearchFieldContainer>
+              <SearchField
+                autoFocus
+                placeholder="Search"
+                value={searchValue}
+                onChange={event => setSearchValue(event.target.value)}
+              />
+              <SearchFieldIcon />
+            </SearchFieldContainer>
+          ) : (
+            'Members'
+          )}
+        </StyledInputLabel>
         <StyledInputBase
           name="members"
           disabled
@@ -201,7 +248,9 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
                     closeAdminsPicker();
                   }}
                 >
-                  +
+                  <EmptyMemberIcon rotated={membersPickerOpen}>
+                    +
+                  </EmptyMemberIcon>
                 </EmptyMember>
               </MemberContainer>
               {membersValue?.map(
@@ -213,11 +262,15 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
       </StyledFormControl>
       <StyledCollapse timeout={150} in={membersPickerOpen}>
         <StyledList>
-          {filteredPeople.map(
-            renderPickerOption({
-              closePicker: closeMembersPicker,
-              addPerson: addMember,
-            }),
+          {isEmpty(filteredPeople) ? (
+            <NoMembersElement />
+          ) : (
+            filteredPeople.map(
+              renderPickerOption({
+                closePicker: closeMembersPicker,
+                addPerson: addMember,
+              }),
+            )
           )}
         </StyledList>
       </StyledCollapse>
