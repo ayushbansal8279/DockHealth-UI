@@ -47,7 +47,7 @@ export const AddTaskButton = ({ onClick }) => {
       padded
       onClick={onClick}
       variant="contained"
-      data-name="addTaskButton"
+      data-name="AddTaskButton"
     >
       <AddTaskButtonImage src={AddTaskCrossIcon} />
       <AddTaskButtonLabel width={addTaskLabelWidth} ref={addTaskLabel}>
