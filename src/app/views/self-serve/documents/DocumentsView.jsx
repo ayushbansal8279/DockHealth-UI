@@ -94,14 +94,14 @@ const DocumentsView = () => {
       </DocumentContainer>
       <DocumentContainer item xs={12} container>
         <Grid item sm={12} md={9}>
-          <H2>Privacy Policy</H2>
+          <H2>Privacy Statement</H2>
         </Grid>
         <Grid item sm={12} md={3} container direction="column" justify="center">
           <DocumentLink
             href="https://www.dock.health/privacypolicy"
             target="_blank"
           >
-            Read Privacy Policy
+            Read Privacy Statement
           </DocumentLink>
           {eulaAckDate && <H3>Agreed to on {eulaAckDate}</H3>}
         </Grid>
