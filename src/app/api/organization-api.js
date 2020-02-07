@@ -9,21 +9,6 @@ export const get = ({ organizationId }) =>
     throw new Error('Organization not found');
   });
 
-export const selectSubscriptionPlan = ({
-  organizationId,
-  subscriptionPlan,
-  billingFrequency,
-}) =>
-  axios({
-    method: 'put',
-    url: '/organization/selectSubscriptionPlan',
-    data: {
-      organizationId,
-      subscriptionPlan,
-      billingFrequency,
-    },
-  }).then(response => response.data);
-
 export const saveBillingDetails = ({ data, token }) =>
   axios({
     method: 'put',
@@ -35,6 +20,10 @@ export const saveBillingDetails = ({ data, token }) =>
       billingAddressCity: data.city,
       billingAddressState: data.state,
       billingAddressPostalCode: data.zip,
+      subscriptionDetails: {
+        subscriptionPlan: data.subscriptionDetails?.subscriptionPlan,
+        billingFrequency: data.subscriptionDetails?.billingFrequency,
+      },
       cardTokenIdentifier: token.token.id,
     },
   }).then(response => response.data);

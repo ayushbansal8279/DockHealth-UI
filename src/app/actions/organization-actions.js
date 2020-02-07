@@ -13,11 +13,8 @@ import {
   REQUEST_GET_INVOICE_DETAILS,
   REQUEST_GET_ORGANIZATION,
   REQUEST_SAVE_BILLING_DETAILS,
-  REQUEST_SELECT_SUBSCRIPTION_PLAN,
   SAVE_BILLING_DETAILS_FAILURE,
   SAVE_BILLING_DETAILS_SUCCESS,
-  SELECT_SUBSCRIPTION_PLAN_FAILURE,
-  SELECT_SUBSCRIPTION_PLAN_SUCCESS,
   SET_NEW_PAYMENT_PLAN,
   UPDATE_ORGANIZATION,
 } from './action-types';
@@ -37,26 +34,6 @@ export const getOrganizationById = ({ organizationId }) => dispatch => {
     .catch(error => {
       dispatch({
         type: GET_ORGANIZATION_FAILURE,
-        error,
-      });
-    });
-};
-
-export const selectSubscriptionPlan = ({ subscriptionPlan }) => dispatch => {
-  dispatch({
-    type: REQUEST_SELECT_SUBSCRIPTION_PLAN,
-  });
-
-  OrganizationApi.selectSubscriptionPlan({ subscriptionPlan })
-    .then(data => {
-      dispatch({
-        type: SELECT_SUBSCRIPTION_PLAN_SUCCESS,
-        payload: data,
-      });
-    })
-    .catch(error => {
-      dispatch({
-        type: SELECT_SUBSCRIPTION_PLAN_FAILURE,
         error,
       });
     });

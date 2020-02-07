@@ -13,11 +13,8 @@ import {
   REQUEST_GET_INVOICE_DETAILS,
   REQUEST_GET_ORGANIZATION,
   REQUEST_SAVE_BILLING_DETAILS,
-  REQUEST_SELECT_SUBSCRIPTION_PLAN,
   SAVE_BILLING_DETAILS_FAILURE,
   SAVE_BILLING_DETAILS_SUCCESS,
-  SELECT_SUBSCRIPTION_PLAN_FAILURE,
-  SELECT_SUBSCRIPTION_PLAN_SUCCESS,
   SET_NEW_PAYMENT_PLAN,
   UPDATE_ORGANIZATION,
 } from '../actions/action-types';
@@ -40,7 +37,6 @@ const initialState = {
 
 const reducer = (state = initialState, { type, payload, error }) => {
   switch (type) {
-    case REQUEST_SELECT_SUBSCRIPTION_PLAN:
     case REQUEST_SAVE_BILLING_DETAILS:
     case REQUEST_GET_ORGANIZATION: {
       return {
@@ -83,7 +79,6 @@ const reducer = (state = initialState, { type, payload, error }) => {
       };
     }
 
-    case SELECT_SUBSCRIPTION_PLAN_SUCCESS:
     case SAVE_BILLING_DETAILS_SUCCESS: {
       return {
         ...state,
@@ -119,7 +114,6 @@ const reducer = (state = initialState, { type, payload, error }) => {
       };
     }
 
-    case SELECT_SUBSCRIPTION_PLAN_FAILURE:
     case SAVE_BILLING_DETAILS_FAILURE:
     case GET_ORGANIZATION_FAILURE: {
       return {

@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useToggle } from 'react-use';
 import { setPaymentNewPlan } from '../../../../actions/organization-actions';
-import { selectSubscriptionPlan } from '../../../../api/organization-api';
 import {
   BottomButtonContainer,
   StyledButton,
@@ -24,8 +23,6 @@ const goToSubscriptionPayment = () => {
 const onSubscriptionPlanChosen = ({
   annualPayment,
   chosenPlan,
-  organizationId,
-  billingFrequency,
   dispatch,
 }) => () => {
   const { subscriptionPlan } = chosenPlan || {};
@@ -34,12 +31,6 @@ const onSubscriptionPlanChosen = ({
     const newPlan = {
       ...chosenPlan,
       annualPayment,
-      selectSubscriptionPlan: () =>
-        selectSubscriptionPlan({
-          organizationId,
-          subscriptionPlan,
-          billingFrequency,
-        }),
     };
 
     setPaymentNewPlan({ newPlan })(dispatch);

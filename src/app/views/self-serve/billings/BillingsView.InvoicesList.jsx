@@ -20,7 +20,7 @@ import {
   SortingIconImage,
 } from './BillingsView.InvoicesList.Styled';
 
-export const InvoiceDetailsLink = styled.a`
+export const ChargeDetailsLink = styled.a`
   color: #007cab;
   cursor: pointer;
   filter: brightness(1);
@@ -68,18 +68,23 @@ const renderInvoiceRow = ({
   chargeAmount,
   currency,
   invoicePDFUrl,
+  receiptUrl,
 }) => {
   return (
     <tr key={invoiceNumber}>
       <td>{moment(chargeDate).format('L')}</td>
       <td>
-        <InvoiceDetailsLink href={invoicePDFUrl}>
+        <ChargeDetailsLink href={invoicePDFUrl}>
           {invoiceNumber}
-        </InvoiceDetailsLink>
+        </ChargeDetailsLink>
       </td>
-      <td>{receiptNumber}</td>
       <td>
-        {chargeAmount} {currency.toUpperCase()}
+        <ChargeDetailsLink href={receiptUrl} target="_blank">
+          {receiptNumber}
+        </ChargeDetailsLink>
+      </td>
+      <td>
+        ${chargeAmount} {currency.toUpperCase()}
       </td>
     </tr>
   );

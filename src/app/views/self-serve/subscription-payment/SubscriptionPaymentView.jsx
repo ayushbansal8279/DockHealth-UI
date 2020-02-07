@@ -51,19 +51,24 @@ const goToSubscriptions = () => {
  * @param stripe - Stripe instance
  */
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ selectSubscriptionPlan }) => ({ stripe }) => data => {
+const onSubmit = ({ subscriptionPlan, billingFrequency }) => ({
+  stripe,
+}) => data => {
   stripe
     .createToken({ name: 'cardNumber' })
     .then(token => {
       if (token.error) {
         throw token.error;
       }
-
+      const billingData = data;
+      billingData.subscriptionDetails = {
+        subscriptionPlan,
+        billingFrequency,
+      };
       saveBillingDetails({
-        data,
+        billingData,
         token,
       }).then(() => {
-        selectSubscriptionPlan();
         finishSubscriptionPayment();
       });
     })
@@ -126,19 +131,17 @@ const SubscriptionPaymentView = () => {
     getBillingEstimate({ organizationId })(dispatch);
   });
 
-  const {
-    annualMonthlyPrice,
-    subscriptionPlan,
-    annualPayment,
-    monthlyPrice,
-    selectSubscriptionPlan,
-  } = newPaymentPlan || {};
+  const { annualMonthlyPrice, subscriptionPlan, annualPayment, monthlyPrice } =
+    newPaymentPlan || {};
 
   const { activeUserCount } = billingData || {};
 
   const totalPerUserCost = annualPayment
     ? annualMonthlyPrice * MONTHS_IN_YEAR
     : monthlyPrice;
+  const billingFrequency = annualPayment
+    ? BILLING_FREQUENCY.ANNUAL
+    : BILLING_FREQUENCY.MONTHLY;
 
   const {
     planName,
@@ -149,9 +152,7 @@ const SubscriptionPaymentView = () => {
     organization: {
       subscriptionDetails: {
         subscriptionPlan,
-        billingFrequency: annualPayment
-          ? BILLING_FREQUENCY.ANNUAL
-          : BILLING_FREQUENCY.MONTHLY,
+        billingFrequency,
       },
     },
     billingData: {
@@ -210,7 +211,7 @@ const SubscriptionPaymentView = () => {
               isUpdatingBilling
               setUpdatingBilling={noop}
               unsetUpdatingBilling={noop}
-              onSubmit={onSubmit({ selectSubscriptionPlan })}
+              onSubmit={onSubmit({ subscriptionPlan, billingFrequency })}
               SaveBillingElement={getSaveBillingElement({
                 onCancelClick,
                 newPaymentPlan,
