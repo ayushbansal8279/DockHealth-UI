@@ -152,7 +152,7 @@ const SubscriptionPaymentView = () => {
     billingData: {
       monthlyPerUserCost: totalPerUserCost,
       monthlyEstimate: currentUsersCount * totalPerUserCost,
-      annualEstimate: currentUsersCount * totalPerUserCost,
+      annualEstimate: currentUsersCount * totalPerUserCost * 12,
     },
   });
 
