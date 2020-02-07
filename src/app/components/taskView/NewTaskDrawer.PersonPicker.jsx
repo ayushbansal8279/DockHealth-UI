@@ -1,6 +1,6 @@
 import getProps from 'ramda/es/props';
 import React, { useEffect, useState } from 'react';
-import { useToggle } from 'react-use';
+import { useToggle, useMount } from 'react-use';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
 
@@ -181,13 +181,13 @@ export default ({
     setSearchTerm('');
   };
 
+  useMount(() => {
+    toggleIsSearching(true);
+  });
+
   const onClosePicker = () => {
-    if (isSearching) {
-      toggleIsSearching();
-      clearSearchTerm();
-    } else {
-      closePicker();
-    }
+    clearSearchTerm();
+    closePicker();
   };
 
   const onSearchChange = event => {
