@@ -83,3 +83,15 @@ export const SortingIconImage = styled.img`
   transition: all 0.25s ease-out;
   width: 100%;
 `;
+
+export const ChargeDetailsLink = styled.div`
+  color: #007cab;
+  cursor: pointer;
+  filter: brightness(1);
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: #007cab;
+    filter: brightness(1.35);
+  }
+`;
