@@ -17,7 +17,7 @@ const SubscriptionsPlansView = ({
 }) => {
   const [featureListExpanded, toggleFeatureListExpanded] = useToggle(false);
   const [chosenSubscriptionPlan, setChosenSubscriptionPlan] = useState(
-    chosenPlan.subscriptionPlan,
+    chosenPlan?.subscriptionPlan,
   );
   const [chosenBillingFrequency, setChosenBillingFrequency] = useState(
     billingFrequency,
