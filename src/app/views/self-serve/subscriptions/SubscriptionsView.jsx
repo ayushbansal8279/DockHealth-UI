@@ -91,9 +91,8 @@ export default () => {
   }));
 
   const recalculateEstimate = useCallback(
-    (subscriptionPlan, billingFrequency) => {
-      getBillingEstimate({ subscriptionPlan, billingFrequency })(dispatch);
-    },
+    (subscriptionPlan, billingFrequency) =>
+      getBillingEstimate({ subscriptionPlan, billingFrequency })(dispatch),
     [dispatch],
   );
 
@@ -201,6 +200,7 @@ export default () => {
         selectedUsers={selectedUsers}
         setSelectedUsers={setSelectedUsers}
         getAllUsers={getAllUsers}
+        chosenSubscriptionPlan={chosenPlan}
       />
       <InvitationPanel getAllUsers={getAllUsers} />
       <BillingContainer>

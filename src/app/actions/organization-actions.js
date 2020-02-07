@@ -63,12 +63,12 @@ export const saveBillingDetails = (billingData, cardToken) => dispatch => {
 export const getBillingEstimate = ({
   subscriptionPlan,
   billingFrequency,
-}) => dispatch => {
+} = {}) => dispatch => {
   dispatch({
     type: REQUEST_GET_BILLING_ESTIMATE,
   });
 
-  OrganizationApi.getBillingEstimate({
+  return OrganizationApi.getBillingEstimate({
     subscriptionPlan,
     billingFrequency,
   })
@@ -86,12 +86,13 @@ export const getBillingEstimate = ({
     });
 };
 
+// eslint-disable-next-line unicorn/consistent-function-scoping
 export const getBillingDetails = () => dispatch => {
   dispatch({
     type: REQUEST_GET_BILLING_DETAILS,
   });
 
-  OrganizationApi.getBillingDetails()
+  return OrganizationApi.getBillingDetails()
     .then(data => {
       dispatch({
         type: GET_BILLING_DETAILS_SUCCESS,

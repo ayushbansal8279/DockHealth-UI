@@ -31,10 +31,11 @@ export const saveBillingDetails = ({ billingData, token }) =>
 export const getBillingEstimate = ({ subscriptionPlan, billingFrequency }) =>
   axios({
     method: 'get',
-    url:
-      subscriptionPlan && billingFrequency
-        ? `/organization/getBillingEstimate?selectedSubscriptionPlan=${subscriptionPlan}&selectedBillingFrequency=${billingFrequency}`
-        : `/organization/getBillingEstimate`,
+    url: '/organization/getBillingEstimate',
+    params: {
+      selectedSubscriptionPlan: subscriptionPlan,
+      selectedBillingFrequency: billingFrequency,
+    },
   }).then(response => response.data);
 
 export const getBillingDetails = () =>

@@ -33,8 +33,6 @@ import {
   SubscriptionPaymentViewContainer,
 } from './SubscriptionPaymentView.Components';
 
-const MONTHS_IN_YEAR = 12;
-
 const finishSubscriptionPayment = () => {
   hashHistory.replace('/subscription-payment-finished');
 };
@@ -132,9 +130,7 @@ const SubscriptionPaymentView = () => {
   const { annualMonthlyPrice, subscriptionPlan, annualPayment, monthlyPrice } =
     newPaymentPlan || {};
 
-  const totalPerUserCost = annualPayment
-    ? annualMonthlyPrice * MONTHS_IN_YEAR
-    : monthlyPrice;
+  const totalPerUserCost = annualPayment ? annualMonthlyPrice : monthlyPrice;
   const billingFrequency = annualPayment
     ? BILLING_FREQUENCY.ANNUAL
     : BILLING_FREQUENCY.MONTHLY;

@@ -121,7 +121,6 @@ const OrganizationMemberRow = ({
   profileThumbnailPictureHash,
   userId,
   registrationDate,
-  subscription,
   isUserSelected,
   toggleSelectedUser,
   isSmallScreen,
@@ -129,6 +128,7 @@ const OrganizationMemberRow = ({
   showSubscription,
   openDialog,
   setRemovedUserData,
+  chosenSubscriptionPlan,
 }) => {
   const userType = USER_TYPES[orgUserRole];
 
@@ -152,7 +152,9 @@ const OrganizationMemberRow = ({
     ? registrationMoment.format('LL')
     : '';
 
-  const subscriptionPlanName = getSubscriptionPlanName({ subscription });
+  const subscriptionPlanName = getSubscriptionPlanName({
+    subscription: chosenSubscriptionPlan,
+  });
 
   if (isSmallScreen) {
     return (

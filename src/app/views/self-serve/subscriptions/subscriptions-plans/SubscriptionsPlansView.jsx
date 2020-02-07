@@ -1,5 +1,5 @@
 import { times } from 'ramda';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 // import { useSelector } from 'react-redux';
 import { useToggle, useUnmount } from 'react-use';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
@@ -12,13 +12,16 @@ const SubscriptionsPlansView = ({
   currentPlan,
   annualPayment,
   toggleAnnualPayment: toggleAnnualPaymentRaw,
-  billingFrequency,
   recalculateEstimate,
+  billingFrequency,
 }) => {
   const [featureListExpanded, toggleFeatureListExpanded] = useToggle(false);
-
-  // const billingDetails =
-  //   useSelector(store => store.organizationState.billingDetails) || {};
+  const [chosenSubscriptionPlan, setChosenSubscriptionPlan] = useState(
+    chosenPlan.subscriptionPlan,
+  );
+  const [chosenBillingFrequency, setChosenBillingFrequency] = useState(
+    billingFrequency,
+  );
 
   const featureRowReferences = times(
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -26,20 +29,27 @@ const SubscriptionsPlansView = ({
     subscriptionFeatures.length,
   );
 
-  const { subscriptionPlan: defaultSubscriptionPlan } = chosenPlan || {};
-
-  const changeSubscriptionPlan = useCallback(
-    ({ subscriptionPlan, billingFrequency }) => {
-      recalculateEstimate(subscriptionPlan, billingFrequency);
-    },
-    [recalculateEstimate],
-  );
-
   const newBillingFrequency = annualPayment
     ? BILLING_FREQUENCY.MONTHLY
     : BILLING_FREQUENCY.ANNUAL;
 
+  const changeSubscriptionPlan = useCallback(
+    ({ subscriptionPlan, billingFrequency: changedBillingFrequency }) => {
+      if (subscriptionPlan) {
+        setChosenSubscriptionPlan(subscriptionPlan);
+      }
+
+      return recalculateEstimate(
+        subscriptionPlan ?? chosenSubscriptionPlan,
+        changedBillingFrequency ?? chosenBillingFrequency,
+      );
+    },
+    [chosenBillingFrequency, chosenSubscriptionPlan, recalculateEstimate],
+  );
+
   const toggleAnnualPayment = useCallback(() => {
+    setChosenBillingFrequency(newBillingFrequency);
+
     changeSubscriptionPlan({ billingFrequency: newBillingFrequency }).then(
       () => {
         toggleAnnualPaymentRaw();
@@ -49,6 +59,7 @@ const SubscriptionsPlansView = ({
 
   useUnmount(() => {
     setChosenPlan(currentPlan);
+    recalculateEstimate();
   });
 
   return (
@@ -60,7 +71,6 @@ const SubscriptionsPlansView = ({
       annualPayment={annualPayment}
       setChosenPlan={setChosenPlan}
       chosenPlan={chosenPlan}
-      chosenBillingFrequency={newBillingFrequency}
       changeSubscriptionPlan={changeSubscriptionPlan}
     />
   );

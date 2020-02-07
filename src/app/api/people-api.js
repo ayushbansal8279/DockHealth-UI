@@ -25,7 +25,7 @@ export function findAllUsers() {
       const allUsers = [
         ...responseActive.data.map(({ subscription, ...otherData }) => ({
           ...otherData,
-          subscription: subscription ?? { planName: 'standard' },
+          subscription: subscription ?? { subscriptionPlanName: 'Standard' },
         })),
         ...responseInactive.data.map(({ subscription, ...otherData }) => ({
           ...otherData,
