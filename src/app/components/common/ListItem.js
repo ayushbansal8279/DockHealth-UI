@@ -35,12 +35,13 @@ const Item = styled.div`
   font-size: 12px;
 `;
 
-const ListItem = ({ children, selected, onClick, id }) => (
+const ListItem = ({ children, selected, onClick, id, style}) => (
   <ItemContainer
     selected={selected}
     onClick={onClick}
     id={id}
     as={onClick ? undefined : 'div'}
+    style={style}
   >
     <Item>{children}</Item>
   </ItemContainer>

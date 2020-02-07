@@ -118,6 +118,7 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
               key={m.userId}
               selected={member && m.userId === member.userId}
               id={m.userId}
+              style={{opacity: (m.userStatus==='INVITED'?"0.5":"1.0")}}
             >
               <MemberSlot member={m} />
               <MemberName>{m.userName}</MemberName>

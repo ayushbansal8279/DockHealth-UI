@@ -47,6 +47,12 @@ const InvitePickerFooter = ({ onClick }) => (
   </Footer>
 );
 
+const InviteMessageFooter = () => (
+  <Footer>
+    <span>Don't see who you are looking for? Ask your organization's admin to invite other people before adding them to the list.</span>
+  </Footer>
+);
+
 const InvitePicker = ({ children: Component, taskList, members }) => {
   const [isInviting, setIsInviting] = useState(false);
   const openInvitation = useCallback(() => {
@@ -93,6 +99,7 @@ const InvitePicker = ({ children: Component, taskList, members }) => {
           />
         )}
         {!isInviting && <InvitePickerFooter onClick={openInvitation} />}
+        {isInviting && <InviteMessageFooter onClick={openInvitation} />}
       </StyledPopover>
     </React.Fragment>
   );
