@@ -100,7 +100,7 @@ const getSaveBillingElement = ({ onCancelClick }) => () => (
 const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
 
-  const { billingData, organizationId, newPaymentPlan } = useSelector(
+  const { organizationId, newPaymentPlan, currentUsers } = useSelector(
     store => ({
       ...store.organizationState,
       organizationId: store.userState?.userProfile?.organizationId,
@@ -113,7 +113,7 @@ const SubscriptionPaymentView = () => {
   }, [dispatch]);
 
   useMount(() => {
-    if (!newPaymentPlan) {
+    if (!newPaymentPlan || !currentUsers) {
       goToSubscriptions();
     }
 
@@ -134,14 +134,14 @@ const SubscriptionPaymentView = () => {
   const { annualMonthlyPrice, subscriptionPlan, annualPayment, monthlyPrice } =
     newPaymentPlan || {};
 
-  const { activeUserCount } = billingData || {};
-
   const totalPerUserCost = annualPayment
     ? annualMonthlyPrice * MONTHS_IN_YEAR
     : monthlyPrice;
   const billingFrequency = annualPayment
     ? BILLING_FREQUENCY.ANNUAL
     : BILLING_FREQUENCY.MONTHLY;
+
+  const currentUsersCount = currentUsers?.length ?? 0;
 
   const {
     planName,
@@ -157,7 +157,7 @@ const SubscriptionPaymentView = () => {
     },
     billingData: {
       monthlyPerUserCost: totalPerUserCost,
-      monthlyEstimate: activeUserCount * totalPerUserCost,
+      monthlyEstimate: currentUsersCount * totalPerUserCost,
     },
   });
 
@@ -182,7 +182,7 @@ const SubscriptionPaymentView = () => {
               <PriceLabel>per user</PriceLabel>
             </Grid>
             <Grid container alignItems="center" justify="flex-end">
-              <BigPriceLabel>{activeUserCount}</BigPriceLabel>
+              <BigPriceLabel>{currentUsersCount}</BigPriceLabel>
             </Grid>
             <Grid container alignItems="center">
               <PriceLabel>users</PriceLabel>

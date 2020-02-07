@@ -69,9 +69,9 @@ const getFilteredOrganizationMembers = ({
 const SubscriptionsViewMembersTable = ({
   selectedUsers,
   setSelectedUsers,
+  getAllUsers = () => {},
   showJoined = true,
   showSubscription = true,
-  fetchAllUsers = true,
   showTableHeader = true,
 }) => {
   const {
@@ -89,7 +89,7 @@ const SubscriptionsViewMembersTable = ({
   } = initializeMembersTableHooks({
     setSelectedUsers,
     selectedUsers,
-    fetchAllUsers,
+    getAllUsers,
   });
 
   const isSmallScreen = currentBreakPoint === 'sm';
@@ -115,7 +115,10 @@ const SubscriptionsViewMembersTable = ({
                 />
               </Grid>
               <Grid item sm={12} md={6} container justify="flex-end">
-                <InviteButton fullWidth={isSmallScreen} />
+                <InviteButton
+                  getAllUsers={getAllUsers}
+                  fullWidth={isSmallScreen}
+                />
               </Grid>
             </Grid>
           )}

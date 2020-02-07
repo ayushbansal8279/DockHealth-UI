@@ -1,13 +1,41 @@
+import { uniqBy, prop } from 'ramda';
 import axios from './axios-heydoc';
 
 export function findAllUsersByOrganizationId() {
-  // loading()
   return axios
     .get('user/findAllUsersByOrganizationId')
     .then(response => {
       return response.data;
     })
     .catch(error => error.response.data);
+}
+
+export function findAllUsers() {
+  return Promise.all([
+    axios({
+      method: 'get',
+      url: '/user/findAllUsersByOrganizationId',
+    }),
+    axios({
+      method: 'get',
+      url: '/user/findAllInActiveUsersByOrganizationId',
+    }),
+  ])
+    .then(([responseActive, responseInactive]) => {
+      const allUsers = [
+        ...responseActive.data.map(({ subscription, ...otherData }) => ({
+          ...otherData,
+          subscription: subscription ?? { planName: 'standard' },
+        })),
+        ...responseInactive.data.map(({ subscription, ...otherData }) => ({
+          ...otherData,
+          subscription: null,
+        })),
+      ];
+
+      return uniqBy(prop('email'), allUsers);
+    })
+    .catch(error => error?.response?.data ?? error?.message);
 }
 
 export function getUserById(userId) {

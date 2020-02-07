@@ -28,6 +28,7 @@ const renderPlanCard = ({
   chosenPlan,
   featureListExpanded,
   featureRowReferences,
+  changeSubscriptionPlan,
 }) => ({ key, ...props }) => {
   const chosen = chosenPlan?.key === key;
   const newChosenPlan = subscriptionPlanData.find(
@@ -39,7 +40,12 @@ const renderPlanCard = ({
       key={key}
       annualPayment={annualPayment}
       chosen={chosen}
-      onClick={() => setChosenPlan(newChosenPlan)}
+      onClick={() => {
+        setChosenPlan(newChosenPlan);
+        changeSubscriptionPlan({
+          subscriptionPlan: newChosenPlan.subscriptionPlan,
+        });
+      }}
       featureListExpanded={featureListExpanded}
       featureRowReferences={featureRowReferences}
       subscriptionFeatures={subscriptionFeatures}
@@ -69,6 +75,7 @@ const PlanCardsContainer = ({
   setChosenPlan,
   chosenPlan,
   toggleAnnualPayment,
+  changeSubscriptionPlan,
 }) => {
   return (
     <Grid container>
@@ -149,6 +156,7 @@ const PlanCardsContainer = ({
             featureListExpanded,
             featureRowReferences,
             subscriptionFeatures,
+            changeSubscriptionPlan,
           }),
         )}
       </SubscriptionCardGrid>

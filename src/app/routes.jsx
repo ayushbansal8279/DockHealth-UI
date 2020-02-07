@@ -259,7 +259,7 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureTogglesAdmin}
           />
           <Route
-            path="/billings"
+            path="/billing"
             component={BillingsView}
             onEnter={checkFeatureTogglesAdmin}
           />

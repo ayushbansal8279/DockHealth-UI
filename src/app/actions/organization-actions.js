@@ -15,6 +15,7 @@ import {
   REQUEST_SAVE_BILLING_DETAILS,
   SAVE_BILLING_DETAILS_FAILURE,
   SAVE_BILLING_DETAILS_SUCCESS,
+  SELECT_USERS_FOR_PLAN,
   SET_NEW_PAYMENT_PLAN,
   UPDATE_ORGANIZATION,
 } from './action-types';
@@ -44,7 +45,7 @@ export const saveBillingDetails = (billingData, cardToken) => dispatch => {
     type: REQUEST_SAVE_BILLING_DETAILS,
   });
 
-  OrganizationApi.saveBillingDetails({ billingData, cardToken })
+  return OrganizationApi.saveBillingDetails({ billingData, cardToken })
     .then(data => {
       dispatch({
         type: SAVE_BILLING_DETAILS_SUCCESS,
@@ -134,4 +135,10 @@ export const updateOrganizationName = ({ organizationName }) => dispatch =>
         organizationName,
       },
     });
+  });
+
+export const selectUsersForPlan = ({ users }) => dispatch =>
+  dispatch({
+    type: SELECT_USERS_FOR_PLAN,
+    payload: users,
   });

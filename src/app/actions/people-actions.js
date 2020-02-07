@@ -12,6 +12,13 @@ export function findAllUsersByOrganizationId() {
       });
 }
 
+export function findAllUsers() {
+  return dispatch =>
+    PeopleApi.findAllUsers().then(peoplelist => {
+      dispatch({ type: ActionTypes.GET_PEOPLE_SUCCESS, peoplelist });
+    });
+}
+
 export function loading() {
   return dispatch => {
     dispatch({ type: ActionTypes.REQUEST_PEOPLE });

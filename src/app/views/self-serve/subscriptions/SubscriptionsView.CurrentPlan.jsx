@@ -57,11 +57,11 @@ const CurrentPlan = ({
 }) => {
   const {
     planName,
-    planPricePerUser,
     planSubscriptionPeriod,
-    planTotalPayment,
     planNextPaymentLabel,
     planNextPaymentDate,
+    planPricePerUser,
+    planTotalPayment,
   } = subscriptionPlanData || {};
 
   return (
@@ -116,7 +116,9 @@ const CurrentPlan = ({
           </Grid>
           {showSubscriptionPlans && (
             <AlignedColumnLink>
-              <PlanColumnLink to="/billings">View billings</PlanColumnLink>
+              <PlanColumnLink to="/billing">
+                View billing & invoices
+              </PlanColumnLink>
             </AlignedColumnLink>
           )}
         </Grid>

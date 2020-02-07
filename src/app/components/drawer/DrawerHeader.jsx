@@ -187,7 +187,7 @@ const DrawerHeader = ({ user }) => {
             button
             onClick={closePopover}
             component={linkComponent}
-            link="/billings"
+            link="/billing"
           >
             Billing & Invoices
           </DropdownListItem>

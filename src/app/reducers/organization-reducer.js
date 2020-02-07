@@ -17,6 +17,7 @@ import {
   SAVE_BILLING_DETAILS_SUCCESS,
   SET_NEW_PAYMENT_PLAN,
   UPDATE_ORGANIZATION,
+  SELECT_USERS_FOR_PLAN,
 } from '../actions/action-types';
 
 const initialState = {
@@ -33,6 +34,7 @@ const initialState = {
   requestErrorBillingDetails: null,
   requestErrorInvoiceDetails: null,
   newPaymentPlan: null,
+  currentUsers: null,
 };
 
 const reducer = (state = initialState, { type, payload, error }) => {
@@ -162,6 +164,13 @@ const reducer = (state = initialState, { type, payload, error }) => {
       return {
         ...state,
         organization: mergeDeepRight(state.organization, payload),
+      };
+    }
+
+    case SELECT_USERS_FOR_PLAN: {
+      return {
+        ...state,
+        currentUsers: payload,
       };
     }
 

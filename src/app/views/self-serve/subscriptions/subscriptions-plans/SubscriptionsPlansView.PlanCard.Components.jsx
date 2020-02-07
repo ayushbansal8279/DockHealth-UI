@@ -276,7 +276,7 @@ export const CardStandardFooter = ({
       <SafariFixGrid item lg={12} md={6} sm={6} container justify="center">
         <PlanButton chosen={chosen}>
           <H3BoldWhite>
-            {chosen ? 'Plan Selected' : 'Buy This Plan'}
+            {chosen ? 'Plan Selected' : 'Select This Plan'}
           </H3BoldWhite>
         </PlanButton>
       </SafariFixGrid>

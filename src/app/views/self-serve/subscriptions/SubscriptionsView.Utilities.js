@@ -80,15 +80,8 @@ export const getSubscriptionPlanPeriodName = ({ subscription }) => {
     : 'Annual subscription';
 };
 
-export const getSubscriptionPlanBillingPeriod = ({ subscription }) => {
-  const { billingFrequency = BILLING_FREQUENCY.MONTHLY } = subscription || {};
-
-  const { billingFrequencyLabel, billingPeriodLabel } =
-    billingFrequency === BILLING_FREQUENCY.MONTHLY
-      ? { billingFrequencyLabel: 'monthly', billingPeriodLabel: 'month' }
-      : { billingFrequencyLabel: 'annually', billingPeriodLabel: 'year' };
-
-  return `Billed ${billingFrequencyLabel} on first day of each ${billingPeriodLabel}`;
+export const getSubscriptionPlanBillingPeriod = () => {
+  return 'Your next projected payment';
 };
 
 export const getSubscriptionIsTrial = ({ subscription }) => {
@@ -140,7 +133,7 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
   const planSubscriptionPeriod = getSubscriptionPlanPeriodName({
     subscription,
   });
-  const planBillingPeriod = getSubscriptionPlanBillingPeriod({ subscription });
+  const planBillingPeriod = getSubscriptionPlanBillingPeriod();
   const planIsTrial = getSubscriptionIsTrial({ subscription });
   const planNextPaymentLabel = getSubscriptionNextPaymentLabel({
     subscription,

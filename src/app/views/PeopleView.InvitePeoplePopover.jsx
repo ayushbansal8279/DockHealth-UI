@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { invitePersonToOrganization } from '../actions/people-actions';
-import { showAlert, showToast } from '../helpers/utility-functions';
+import { showAlert } from '../helpers/utility-functions';
 import {
   InvitePeoplePopoverContainer,
   InvitePeoplePopoverSection,
@@ -19,7 +18,7 @@ import {
   StyledInputLabel,
 } from './PeopleView.Styled';
 
-const onSubmit = ({ closePopover, dispatch }) => ({
+const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   email,
   first_name: firstName,
   last_name: lastName,
@@ -31,10 +30,8 @@ const onSubmit = ({ closePopover, dispatch }) => ({
   })(dispatch)
     .then(() => {
       closePopover();
-      showToast({
-        status: 'success',
-        title: 'Invitation sent successfully',
-      });
+      toggleAlert('Invitation sent successfully', 'success');
+      getAllUsers();
     })
     .catch(error => {
       closePopover();
@@ -53,12 +50,13 @@ const InvitePeopleForm = ({
   closePopover,
   dispatch,
   register,
+  getAllUsers,
 }) => (
   <form
     onSubmit={event => {
       event.stopPropagation();
       event.preventDefault();
-      handleSubmit(onSubmit({ closePopover, dispatch }))(event);
+      handleSubmit(onSubmit({ closePopover, dispatch, getAllUsers }))(event);
     }}
   >
     <InvitePeoplePopoverSection>
@@ -88,7 +86,12 @@ const InvitePeopleForm = ({
   </form>
 );
 
-const InvitePeoplePopover = ({ anchor, open, toggleInvitePopover }) => {
+const InvitePeoplePopover = ({
+  anchor,
+  open,
+  toggleInvitePopover,
+  getAllUsers = () => {},
+}) => {
   const { handleSubmit, register } = useForm();
   const dispatch = useDispatch();
   const orgUserRole = useSelector(
@@ -138,6 +141,7 @@ const InvitePeoplePopover = ({ anchor, open, toggleInvitePopover }) => {
             dispatch={dispatch}
             handleSubmit={handleSubmit}
             register={register}
+            getAllUsers={getAllUsers}
           />
         )}
         {!isOwnerOrAdmin && (

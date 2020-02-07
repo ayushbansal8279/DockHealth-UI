@@ -29,7 +29,7 @@ const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
       }
 
       saveBillingDetails({
-        data,
+        billingData: data,
         token,
       }).then(() => {
         unsetUpdatingBilling();

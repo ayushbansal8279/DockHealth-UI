@@ -3,13 +3,21 @@ import equals from 'ramda/es/equals';
 import find from 'ramda/es/find';
 import uniq from 'ramda/es/uniq';
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useSetState } from 'react-use';
+import {
+  removeUserFromOrganization,
+  cancelInviteToOrganization,
+} from '../../../actions/people-actions';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
-const initializeMembersTableHooks = ({ setSelectedUsers, selectedUsers }) => {
+const initializeMembersTableHooks = ({
+  getAllUsers,
+  setSelectedUsers,
+  selectedUsers,
+}) => {
   const { isFetching, organizationMembers } = useSelector(store => ({
     isFetching: store.peopleState.isFetching,
     organizationMembers: store.peopleState.peoplelist,
@@ -18,6 +26,7 @@ const initializeMembersTableHooks = ({ setSelectedUsers, selectedUsers }) => {
     USER_SUBSCRIPTION_STATUS.ALL,
   );
   const currentBreakPoint = useBreakpoint();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setSelectedUsers(
@@ -35,15 +44,27 @@ const initializeMembersTableHooks = ({ setSelectedUsers, selectedUsers }) => {
 
       if (checked) {
         setSelectedUsers(uniq([...selectedUsers, toggledUser]));
+
+        // TODO add user reactivation action here
       } else {
         setSelectedUsers(
           selectedUsers.filter(
             selectedUser => !equals(selectedUser, toggledUser),
           ),
         );
+
+        if (toggledUser.userId) {
+          removeUserFromOrganization(toggledUser.userId)(dispatch).then(() => {
+            getAllUsers();
+          });
+        } else {
+          cancelInviteToOrganization(toggledUser.email)(dispatch).then(() => {
+            getAllUsers();
+          });
+        }
       }
     },
-    [selectedUsers, setSelectedUsers],
+    [dispatch, getAllUsers, selectedUsers, setSelectedUsers],
   );
 
   const isUserSelected = useCallback(

@@ -3,7 +3,7 @@ import { useToggle } from 'react-use';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 import { StyledButton } from './SubscriptionsView.Styled';
 
-const InviteButton = ({ fullWidth }) => {
+const InviteButton = ({ fullWidth, getAllUsers }) => {
   const invitePeopleButtonReference = useRef(null);
   const [isPopoverOpen, togglePopoverOpen] = useToggle(false);
 
@@ -27,6 +27,7 @@ const InviteButton = ({ fullWidth }) => {
         open={isPopoverOpen}
         toggleInvitePopover={toggleInvitePopover}
         anchor={invitePeopleButtonReference.current}
+        getAllUsers={getAllUsers}
       />
     </>
   );

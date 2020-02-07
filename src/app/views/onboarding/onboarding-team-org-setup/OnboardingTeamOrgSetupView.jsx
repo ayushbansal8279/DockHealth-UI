@@ -10,6 +10,7 @@ import { updateOrganizationName } from '../../../actions/organization-actions';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 import InvitationPanel from '../../self-serve/subscriptions/SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from '../../self-serve/subscriptions/SubscriptionsView.MembersTable';
+import * as userApi from '../../../api/user-api';
 import {
   OnboardingButton,
   OnboardingDivider,
@@ -21,6 +22,7 @@ import {
   OnboardingSpacing4,
   OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
+import { findAllUsers, loading } from '../../../actions/people-actions';
 
 const goToProfile = () => {
   hashHistory.push('/onboarding/profile');
@@ -38,7 +40,7 @@ const validationSchema = object().shape({
   organizationName: string().required(REQUIRED_MESSAGE),
 });
 
-const InvitePeopleButton = () => {
+const InvitePeopleButton = ({ getAllUsers }) => {
   const invitePeopleButtonReference = useRef(null);
   const [isPopoverOpen, togglePopoverOpen] = useToggle(false);
 
@@ -64,6 +66,7 @@ const InvitePeopleButton = () => {
         open={isPopoverOpen}
         toggleInvitePopover={toggleInvitePopover}
         anchor={invitePeopleButtonReference.current}
+        getAllUsers={getAllUsers}
       />
     </>
   );
@@ -73,8 +76,20 @@ const OnboardingTeamOrgSetupView = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const dispatch = useDispatch();
 
+  const getAllUsers = useCallback(() => {
+    userApi.isAuthenticated({
+      isLoggedIn: loggedIn => {
+        if (loggedIn) {
+          loading()(dispatch);
+          findAllUsers()(dispatch);
+        }
+      },
+    });
+  }, [dispatch]);
+
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 4 })(dispatch);
+    getAllUsers();
   });
 
   const formMethods = useForm({
@@ -102,15 +117,15 @@ const OnboardingTeamOrgSetupView = () => {
         <OnboardingSpacing5 />
         <Grid container justify="space-between">
           <OnboardingH2Bold>Invite your team</OnboardingH2Bold>
-          <InvitePeopleButton />
+          <InvitePeopleButton getAllUsers={getAllUsers} />
         </Grid>
         <SubscriptionsViewMembersTable
           selectedUsers={selectedUsers}
           setSelectedUsers={setSelectedUsers}
           showJoined={false}
           showSubscription={false}
-          fetchAllUsers
           showTableHeader={false}
+          getAllUsers={getAllUsers}
           HeaderAdornment={InvitePeopleButton}
         />
         <Grid container>
