@@ -1,9 +1,13 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
+import {
+  getBillingDetails,
+  getBillingEstimate,
+} from '../../../actions/organization-actions';
 import {
   BillingButton,
   H2,
@@ -29,6 +33,10 @@ const SaveBillingElement = () => (
 const SubscriptionPaymentFinishedView = () => {
   const dispatch = useDispatch();
 
+  const organizationId = useSelector(
+    store => store.userState?.userProfile?.organizationId,
+  );
+
   useMount(() => {
     setHeader(dispatch)({
       backgroundColor: '#007cab',
@@ -40,6 +48,9 @@ const SubscriptionPaymentFinishedView = () => {
         },
       ],
     });
+
+    getBillingDetails({ organizationId })(dispatch);
+    getBillingEstimate({ organizationId })(dispatch);
   });
 
   return (
