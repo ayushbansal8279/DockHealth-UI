@@ -120,7 +120,7 @@ const BillingsView = () => {
           SaveBillingElement={SaveBillingElement}
         />
       </Elements>
-      <InvoicesList />
+      {/* <InvoicesList /> */}
     </BillingsViewContainer>
   );
 };
