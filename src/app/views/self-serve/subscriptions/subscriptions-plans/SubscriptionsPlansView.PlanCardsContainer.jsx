@@ -43,7 +43,7 @@ const renderPlanCard = ({
       onClick={() => {
         setChosenPlan(newChosenPlan);
         changeSubscriptionPlan({
-          subscriptionPlan: newChosenPlan.subscriptionPlan,
+          subscriptionPlan: newChosenPlan?.subscriptionPlan,
         });
       }}
       featureListExpanded={featureListExpanded}

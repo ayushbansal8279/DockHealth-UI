@@ -153,7 +153,7 @@ export default () => {
       const newCurrentPlan =
         subscriptionGlobalPlanData.find(
           ({ subscriptionPlan }) =>
-            subscriptionPlan === subscriptionDetails.subscriptionPlan,
+            subscriptionPlan === subscriptionDetails?.subscriptionPlan,
         ) ?? null;
 
       setCurrentPlan(newCurrentPlan);
