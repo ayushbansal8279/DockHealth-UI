@@ -1,10 +1,11 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMount, useUnmount } from 'react-use';
+import { useMount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
-import { downloadSignedDocument } from '../../../api/organization-api';
+import useBoolean from '../../../hooks/useBoolean';
+import BaaPreview from './DocumentsView.BaaPreview';
 import {
   DocumentContainer,
   DocumentLink,
@@ -14,19 +15,8 @@ import {
   Title,
 } from './DocumentsView.Styled';
 
-const downloadLink = ({ url }) => {
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', 'baa.pdf');
-  document.body.append(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
 const DocumentsView = () => {
   const dispatch = useDispatch();
-
-  const [baaObjectUrl, setBaaObjectUrl] = useState(null);
 
   const { userProfile } = useSelector(store => {
     return {
@@ -36,6 +26,8 @@ const DocumentsView = () => {
   const { organization } = useSelector(store => ({
     ...store.organizationState,
   }));
+
+  const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
 
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(userProfile.orgUserRole);
 
@@ -56,25 +48,6 @@ const DocumentsView = () => {
     });
   });
 
-  useUnmount(() => {
-    if (baaObjectUrl) {
-      URL.revokeObjectURL(baaObjectUrl);
-    }
-  });
-
-  const onBaaDownloadClick = useCallback(() => {
-    if (baaObjectUrl) {
-      downloadLink({ url: baaObjectUrl });
-      return;
-    }
-
-    downloadSignedDocument().then(documentBlob => {
-      const newBaaObjectUrl = URL.createObjectURL(documentBlob);
-      setBaaObjectUrl(newBaaObjectUrl);
-      downloadLink({ url: newBaaObjectUrl });
-    });
-  }, [baaObjectUrl]);
-
   const baaSignedDate =
     organization && organization.baaSignatureDateTime
       ? moment(organization.baaSignatureDateTime).format('ll')
@@ -89,29 +62,27 @@ const DocumentsView = () => {
     <DocumentsViewContainer>
       {isUserAdmin && (
         <DocumentContainer item xs={12} container>
-          <Grid item sm={12} md={6}>
+          <Grid item sm={12} md={9}>
             <H2>Business Associate Agreement (BAA)</H2>
           </Grid>
           <Grid
             item
             sm={12}
-            md={6}
+            md={3}
             container
             direction="column"
             justify="center"
           >
-            <DocumentLink onClick={onBaaDownloadClick}>
-              Download PDF
-            </DocumentLink>
+            <DocumentLink onClick={openPreview}>Read BAA</DocumentLink>
             <H3>Signed on {baaSignedDate}</H3>
           </Grid>
         </DocumentContainer>
       )}
       <DocumentContainer item xs={12} container>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={9}>
           <H2>End User License Agreement (EULA)</H2>
         </Grid>
-        <Grid item sm={12} md={6} container direction="column" justify="center">
+        <Grid item sm={12} md={3} container direction="column" justify="center">
           <DocumentLink
             href="https://www.dock.health/end-user-license-agreement"
             target="_blank"
@@ -122,10 +93,10 @@ const DocumentsView = () => {
         </Grid>
       </DocumentContainer>
       <DocumentContainer item xs={12} container>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={9}>
           <H2>Privacy Policy</H2>
         </Grid>
-        <Grid item sm={12} md={6} container direction="column" justify="center">
+        <Grid item sm={12} md={3} container direction="column" justify="center">
           <DocumentLink
             href="https://www.dock.health/privacypolicy"
             target="_blank"
@@ -135,6 +106,7 @@ const DocumentsView = () => {
           {eulaAckDate && <H3>Agreed to on {eulaAckDate}</H3>}
         </Grid>
       </DocumentContainer>
+      <BaaPreview isPreviewOpen={isPreviewOpen} hidePreview={hidePreview} />
     </DocumentsViewContainer>
   );
 };

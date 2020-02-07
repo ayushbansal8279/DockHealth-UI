@@ -1,17 +1,19 @@
-// import faker from 'faker/locale/en_US';
+import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
+import { isEmpty, head } from 'ramda';
 // import ascend from 'ramda/es/ascend';
 // import descend from 'ramda/es/descend';
-import head from 'ramda/es/head';
 // import prop from 'ramda/es/prop';
 // import sort from 'ramda/es/sort';
 // import times from 'ramda/es/times';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-
-import styled from 'styled-components';
+import { useSetState } from 'react-use';
+import useBoolean from '../../../hooks/useBoolean';
 import SortingIcon from '../../../img/sorting-icon.svg';
+import InvoicePreview from './BillingsView.InvoicePreview';
 import {
+  ChargeDetailsLink,
   InvoiceColumn,
   InvoiceColumnInnerContainer,
   InvoicesListContainer,
@@ -19,18 +21,6 @@ import {
   SortingIconContainer,
   SortingIconImage,
 } from './BillingsView.InvoicesList.Styled';
-
-export const ChargeDetailsLink = styled.a`
-  color: #007cab;
-  cursor: pointer;
-  filter: brightness(1);
-  transition: all 0.25s ease-out;
-
-  &:hover {
-    color: #007cab;
-    filter: brightness(1.35);
-  }
-`;
 
 const columnDefinitions = [
   {
@@ -51,17 +41,7 @@ const columnDefinitions = [
   },
 ];
 
-// const dummyInvoicesData = times(
-//   () => ({
-//     date: moment(faker.date.recent(180)).format('YYYY-MM-DD'),
-//     description: faker.lorem.words(faker.random.number({ min: 3, max: 5 })),
-//     id: faker.random.uuid(),
-//     amount: faker.finance.amount(10, 1000, 2, '$'),
-//   }),
-//   faker.random.number({ min: 5, max: 15 }),
-// );
-
-const renderInvoiceRow = ({
+const renderInvoiceRow = ({ openPdfPreview }) => ({
   chargeDate,
   invoiceNumber,
   receiptNumber,
@@ -74,12 +54,24 @@ const renderInvoiceRow = ({
     <tr key={invoiceNumber}>
       <td>{moment(chargeDate).format('L')}</td>
       <td>
-        <ChargeDetailsLink href={invoicePDFUrl}>
+        <ChargeDetailsLink
+          onClick={openPdfPreview({
+            url: invoicePDFUrl,
+            label: 'Invoice',
+            numberLabel: invoiceNumber,
+          })}
+        >
           {invoiceNumber}
         </ChargeDetailsLink>
       </td>
       <td>
-        <ChargeDetailsLink href={receiptUrl} target="_blank">
+        <ChargeDetailsLink
+          onClick={openPdfPreview({
+            url: receiptUrl,
+            label: 'Receipt',
+            numberLabel: receiptNumber,
+          })}
+        >
           {receiptNumber}
         </ChargeDetailsLink>
       </td>
@@ -119,6 +111,26 @@ const defaultSorting = { ...head(columnDefinitions), order: 'desc' };
 
 const InvoicesList = () => {
   const [currentSorting, setCurrentSorting] = useState(defaultSorting);
+  const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
+
+  const [previewState, setPreviewState] = useSetState({
+    url: null,
+    label: null,
+    numberLabel: null,
+  });
+
+  const openPdfPreview = useCallback(
+    ({ url, label, numberLabel }) => {
+      setPreviewState({
+        url,
+        label,
+        numberLabel,
+      });
+
+      openPreview();
+    },
+    [openPreview, setPreviewState],
+  );
 
   const setCurrentSortingWithKey = ({ newSortingKey }) => {
     const newSorting = columnDefinitions.find(
@@ -163,8 +175,25 @@ const InvoicesList = () => {
             )}
           </tr>
         </thead>
-        <tbody>{sortedInvoicesData.map(renderInvoiceRow)}</tbody>
+        <tbody>
+          {isEmpty(sortedInvoicesData) ? (
+            <tr>
+              <td colSpan={columnDefinitions.length}>
+                <Grid container justify="center" alignItems="center">
+                  No invoices found
+                </Grid>
+              </td>
+            </tr>
+          ) : (
+            sortedInvoicesData.map(renderInvoiceRow({ openPdfPreview }))
+          )}
+        </tbody>
       </InvoicesTable>
+      <InvoicePreview
+        isPreviewOpen={isPreviewOpen}
+        hidePreview={hidePreview}
+        {...previewState}
+      />
     </InvoicesListContainer>
   );
 };
