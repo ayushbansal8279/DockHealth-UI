@@ -9,7 +9,7 @@ import * as PeopleActions from '../../actions/people-actions';
 import { noop } from '../../helpers/utility-functions';
 import Member from '../members/Member';
 // import BooleanModal from '../modals/BooleanModal';
-import PeopleContainerRoleButton from './PeopleContainer.RoleButton';
+// import PeopleContainerRoleButton from './PeopleContainer.RoleButton';
 import {
   ListContainer,
   ListEntryContainer,
@@ -93,13 +93,13 @@ class PeopleContainer extends PureComponent {
       .join(', ') ?? '';
 
   renderListEntry = person => {
-    const {
-      userProfile,
-      changeUserRoleForOrg,
-      cancelInviteToOrganization,
-      resendInviteToOrganization,
-      removeUserFromOrganization,
-    } = this.props;
+    // const {
+    //   userProfile,
+    //   changeUserRoleForOrg,
+    //   cancelInviteToOrganization,
+    //   resendInviteToOrganization,
+    //   removeUserFromOrganization,
+    // } = this.props;
 
     const personName = `${person.firstName || ''} ${person.middleName ||
       ''} ${person.lastName || ''}`
@@ -148,7 +148,7 @@ class PeopleContainer extends PureComponent {
             <PersonStatus>{personStatus}</PersonStatus>
           </Grid>
 
-          <PeopleContainerRoleButton
+          {/* <PeopleContainerRoleButton
             person={person}
             userProfile={userProfile}
             changeUserRoleForOrg={changeUserRoleForOrg}
@@ -156,7 +156,7 @@ class PeopleContainer extends PureComponent {
             resendInviteToOrganization={resendInviteToOrganization}
             removeUserFromOrganization={removeUserFromOrganization}
             handleClick={this.handleClick}
-          />
+          /> */}
 
           {/* <BooleanModal
             uniqueModalId={`delete-user-${person.userId}`}

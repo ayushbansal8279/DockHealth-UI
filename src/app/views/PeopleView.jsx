@@ -15,11 +15,11 @@ import InvitePeople from '../components/people/InvitePeople';
 import PeopleContainer from '../components/people/PeopleContainer';
 // import PeopleContainerSortButton from '../components/people/PeopleContainer.SortButton';
 import Search from '../components/taskView/Search';
-import InvitePersonIcon from '../img/invite-person-icon.svg';
+// import InvitePersonIcon from '../img/invite-person-icon.svg';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
 import {
   HeaderLabel,
-  InvitePeopleButton,
+  // InvitePeopleButton,
   SearchContainer,
 } from './PeopleView.Styled';
 
@@ -99,14 +99,14 @@ class PeopleView extends PureComponent {
                     paddingRight: '8rem',
                   }}
                 >
-                  <InvitePeopleButton
+                  {/* <InvitePeopleButton
                     ref={this.invitePeopleButtonReference}
                     onClick={() =>
                       this.toggleInvitePopover({ newInvitePopoverState: true })
                     }
                   >
                     <img alt="+" src={InvitePersonIcon} />
-                  </InvitePeopleButton>
+                  </InvitePeopleButton> */}
                 </Grid>
               </Grid>
             </EmptyHeader>
