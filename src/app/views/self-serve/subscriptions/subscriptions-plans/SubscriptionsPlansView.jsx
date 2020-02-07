@@ -1,8 +1,7 @@
 import { times } from 'ramda';
 import React, { useCallback, useRef } from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { useToggle, useUnmount } from 'react-use';
-import { saveBillingDetails } from '../../../../api/organization-api';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 import PlanCardsContainer from './SubscriptionsPlansView.PlanCardsContainer';
 import { subscriptionFeatures } from './SubscriptionsPlansView.PlanData';
@@ -13,13 +12,13 @@ const SubscriptionsPlansView = ({
   currentPlan,
   annualPayment,
   toggleAnnualPayment: toggleAnnualPaymentRaw,
-  billingFrequency: defaultBillingFrequency,
+  billingFrequency,
   recalculateEstimate,
 }) => {
   const [featureListExpanded, toggleFeatureListExpanded] = useToggle(false);
 
-  const billingDetails =
-    useSelector(store => store.organizationState.billingDetails) || {};
+  // const billingDetails =
+  //   useSelector(store => store.organizationState.billingDetails) || {};
 
   const featureRowReferences = times(
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -31,47 +30,22 @@ const SubscriptionsPlansView = ({
 
   const changeSubscriptionPlan = useCallback(
     ({ subscriptionPlan, billingFrequency }) => {
-      return saveBillingDetails({
-        billingData: {
-          name: billingDetails.billingName,
-          email: billingDetails.billingEmail,
-          address: billingDetails.billingAddressLine1,
-          city: billingDetails.billingAddressCity,
-          state: billingDetails.billingAddressState,
-          zip: billingDetails.billingAddressPostalCode,
-          subscriptionDetails: {
-            subscriptionPlan: subscriptionPlan ?? defaultSubscriptionPlan,
-            billingFrequency: billingFrequency ?? defaultBillingFrequency,
-          },
-        },
-        token: {
-          token: {
-            id: billingDetails?.cardTokenIdentifier,
-          },
-        },
-      }).then(() => {
-        recalculateEstimate();
-      });
+      recalculateEstimate(subscriptionPlan, billingFrequency);
     },
-    [
-      billingDetails,
-      defaultBillingFrequency,
-      defaultSubscriptionPlan,
-      recalculateEstimate,
-    ],
+    [recalculateEstimate],
   );
 
-  const toggleAnnualPayment = useCallback(() => {
-    const newBillingFrequency = annualPayment
-      ? BILLING_FREQUENCY.MONTHLY
-      : BILLING_FREQUENCY.ANNUAL;
+  const newBillingFrequency = annualPayment
+    ? BILLING_FREQUENCY.MONTHLY
+    : BILLING_FREQUENCY.ANNUAL;
 
+  const toggleAnnualPayment = useCallback(() => {
     changeSubscriptionPlan({ billingFrequency: newBillingFrequency }).then(
       () => {
         toggleAnnualPaymentRaw();
       },
     );
-  }, [annualPayment, changeSubscriptionPlan, toggleAnnualPaymentRaw]);
+  }, [changeSubscriptionPlan, newBillingFrequency, toggleAnnualPaymentRaw]);
 
   useUnmount(() => {
     setChosenPlan(currentPlan);
@@ -86,6 +60,7 @@ const SubscriptionsPlansView = ({
       annualPayment={annualPayment}
       setChosenPlan={setChosenPlan}
       chosenPlan={chosenPlan}
+      chosenBillingFrequency={newBillingFrequency}
       changeSubscriptionPlan={changeSubscriptionPlan}
     />
   );

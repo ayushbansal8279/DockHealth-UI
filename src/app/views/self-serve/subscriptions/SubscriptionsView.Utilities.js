@@ -127,7 +127,8 @@ export const getSubscriptionNextPaymentDate = ({
 
 export const getSubscriptionPlanData = ({ organization, billingData }) => {
   const { subscriptionDetails: subscription } = organization || {};
-  const { monthlyPerUserCost, monthlyEstimate } = billingData || {};
+  const { monthlyPerUserCost, monthlyEstimate, annualEstimate } =
+    billingData || {};
 
   const planName = getSubscriptionPlanName({ subscription });
   const planSubscriptionPeriod = getSubscriptionPlanPeriodName({
@@ -147,7 +148,7 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
     planName,
     planPricePerUser: priceFormatter({ price: monthlyPerUserCost }),
     planTotalPayment: priceFormatter({
-      price: monthlyEstimate,
+      price: annualEstimate !== 0 ? annualEstimate : monthlyEstimate,
     }),
     planSubscriptionPeriod,
     planBillingPeriod,

@@ -30,7 +30,7 @@ const OnboardingFinishedView = () => {
     setOnboardingCurrentStep({ currentStep: 6 })(dispatch);
 
     getBillingDetails({ organizationId })(dispatch);
-    getBillingEstimate({ organizationId })(dispatch);
+    getBillingEstimate()(dispatch);
   });
 
   return (

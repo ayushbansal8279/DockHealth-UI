@@ -60,12 +60,18 @@ export const saveBillingDetails = (billingData, cardToken) => dispatch => {
     });
 };
 
-export const getBillingEstimate = ({ organizationId }) => dispatch => {
+export const getBillingEstimate = ({
+  subscriptionPlan,
+  billingFrequency,
+}) => dispatch => {
   dispatch({
     type: REQUEST_GET_BILLING_ESTIMATE,
   });
 
-  OrganizationApi.getBillingEstimate({ organizationId })
+  OrganizationApi.getBillingEstimate({
+    subscriptionPlan,
+    billingFrequency,
+  })
     .then(data => {
       dispatch({
         type: GET_BILLING_ESTIMATE_SUCCESS,
@@ -80,12 +86,12 @@ export const getBillingEstimate = ({ organizationId }) => dispatch => {
     });
 };
 
-export const getBillingDetails = ({ organizationId }) => dispatch => {
+export const getBillingDetails = () => dispatch => {
   dispatch({
     type: REQUEST_GET_BILLING_DETAILS,
   });
 
-  OrganizationApi.getBillingDetails({ organizationId })
+  OrganizationApi.getBillingDetails()
     .then(data => {
       dispatch({
         type: GET_BILLING_DETAILS_SUCCESS,

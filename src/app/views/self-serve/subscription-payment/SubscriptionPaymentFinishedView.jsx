@@ -50,7 +50,7 @@ const SubscriptionPaymentFinishedView = () => {
     });
 
     getBillingDetails({ organizationId })(dispatch);
-    getBillingEstimate({ organizationId })(dispatch);
+    getBillingEstimate()(dispatch);
   });
 
   return (

@@ -100,12 +100,10 @@ const getSaveBillingElement = ({ onCancelClick }) => () => (
 const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
 
-  const { organizationId, newPaymentPlan, currentUsers } = useSelector(
-    store => ({
-      ...store.organizationState,
-      organizationId: store.userState?.userProfile?.organizationId,
-    }),
-  );
+  const { newPaymentPlan, currentUsers } = useSelector(store => ({
+    ...store.organizationState,
+    organizationId: store.userState?.userProfile?.organizationId,
+  }));
 
   const onCancelClick = useCallback(() => {
     cancelSubscriptionPayment();
@@ -128,7 +126,7 @@ const SubscriptionPaymentView = () => {
       ],
     });
 
-    getBillingEstimate({ organizationId })(dispatch);
+    getBillingEstimate()(dispatch);
   });
 
   const { annualMonthlyPrice, subscriptionPlan, annualPayment, monthlyPrice } =
@@ -158,6 +156,7 @@ const SubscriptionPaymentView = () => {
     billingData: {
       monthlyPerUserCost: totalPerUserCost,
       monthlyEstimate: currentUsersCount * totalPerUserCost,
+      annualEstimate: currentUsersCount * totalPerUserCost * 12,
     },
   });
 

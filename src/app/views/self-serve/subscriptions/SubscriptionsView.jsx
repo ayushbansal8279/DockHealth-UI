@@ -90,9 +90,12 @@ export default () => {
     organizationId: store.userState?.userProfile?.organizationId,
   }));
 
-  const recalculateEstimate = useCallback(() => {
-    getBillingEstimate({ organizationId })(dispatch);
-  }, [dispatch, organizationId]);
+  const recalculateEstimate = useCallback(
+    (subscriptionPlan, billingFrequency) => {
+      getBillingEstimate({ subscriptionPlan, billingFrequency })(dispatch);
+    },
+    [dispatch],
+  );
 
   const getAllUsers = useCallback(() => {
     userApi.isAuthenticated({

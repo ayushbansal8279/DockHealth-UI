@@ -26,6 +26,7 @@ const renderPlanCard = ({
   annualPayment,
   setChosenPlan,
   chosenPlan,
+  chosenBillingFrequency,
   featureListExpanded,
   featureRowReferences,
   changeSubscriptionPlan,
@@ -44,6 +45,7 @@ const renderPlanCard = ({
         setChosenPlan(newChosenPlan);
         changeSubscriptionPlan({
           subscriptionPlan: newChosenPlan.subscriptionPlan,
+          billingFrequency: chosenBillingFrequency,
         });
       }}
       featureListExpanded={featureListExpanded}
@@ -74,6 +76,7 @@ const PlanCardsContainer = ({
   annualPayment,
   setChosenPlan,
   chosenPlan,
+  chosenBillingFrequency,
   toggleAnnualPayment,
   changeSubscriptionPlan,
 }) => {
@@ -153,6 +156,7 @@ const PlanCardsContainer = ({
             annualPayment,
             setChosenPlan,
             chosenPlan,
+            chosenBillingFrequency,
             featureListExpanded,
             featureRowReferences,
             subscriptionFeatures,
