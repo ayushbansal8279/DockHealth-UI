@@ -1,4 +1,3 @@
-// import faker from 'faker/locale/en_US';
 import moment from 'moment';
 // import ascend from 'ramda/es/ascend';
 // import descend from 'ramda/es/descend';
@@ -10,6 +9,8 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
+import { isEmpty } from 'ramda';
+import Grid from '@material-ui/core/Grid';
 import SortingIcon from '../../../img/sorting-icon.svg';
 import {
   InvoiceColumn,
@@ -50,16 +51,6 @@ const columnDefinitions = [
     label: 'Amount',
   },
 ];
-
-// const dummyInvoicesData = times(
-//   () => ({
-//     date: moment(faker.date.recent(180)).format('YYYY-MM-DD'),
-//     description: faker.lorem.words(faker.random.number({ min: 3, max: 5 })),
-//     id: faker.random.uuid(),
-//     amount: faker.finance.amount(10, 1000, 2, '$'),
-//   }),
-//   faker.random.number({ min: 5, max: 15 }),
-// );
 
 const renderInvoiceRow = ({
   chargeDate,
@@ -163,7 +154,19 @@ const InvoicesList = () => {
             )}
           </tr>
         </thead>
-        <tbody>{sortedInvoicesData.map(renderInvoiceRow)}</tbody>
+        <tbody>
+          {isEmpty(sortedInvoicesData) ? (
+            <tr>
+              <td colSpan={columnDefinitions.length}>
+                <Grid container justify="center" alignItems="center">
+                  No invoices found
+                </Grid>
+              </td>
+            </tr>
+          ) : (
+            sortedInvoicesData.map(renderInvoiceRow)
+          )}
+        </tbody>
       </InvoicesTable>
     </InvoicesListContainer>
   );
