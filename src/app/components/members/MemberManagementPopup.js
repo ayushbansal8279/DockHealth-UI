@@ -62,13 +62,10 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
   });
 
   const [isSearching, setIsSearching] = useState(false);
-  const toggleSearch = useCallback(
-    () => {
-      setIsSearching(!isSearching);
-      setSearchTerm('');
-    },
-    [isSearching],
-  );
+  const toggleSearch = useCallback(() => {
+    setIsSearching(!isSearching);
+    setSearchTerm('');
+  }, [isSearching]);
 
   const handleClose = useCallback(() => {
     setIsSearching(false);
@@ -78,15 +75,14 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
 
   // member search
   const matchListing = (term, { userName }) => {
-    const userNameMatches = userName && userName.toLowerCase().includes(term);
-    return userNameMatches;
+    return userName && userName.toLowerCase().includes(term);
   };
 
   const orderListings = (p1, p2) =>
     p1.lastName ? p1.lastName.localeCompare(p2.lastName) : -1;
 
   // Search
-  const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
+  const searchTerms = searchTerm.toLowerCase().match(/\S+/g) || [];
   const isMatch = listing =>
     searchTerms.every(term => matchListing(term, listing));
 
@@ -97,7 +93,7 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
     filteredListings && filteredListings.sort(orderListings);
 
   return (
-    <React.Fragment>
+    <>
       {isSearching ? (
         <SearchHeader handleSearch={search} handleSearchToggle={toggleSearch} />
       ) : (
@@ -118,7 +114,7 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
               key={m.userId}
               selected={member && m.userId === member.userId}
               id={m.userId}
-              style={{opacity: (m.userStatus==='INVITED'?"0.5":"1.0")}}
+              style={{ opacity: m.userStatus === 'INVITED' ? '0.5' : '1.0' }}
             >
               <MemberSlot member={m} />
               <MemberName>{m.userName}</MemberName>
@@ -133,7 +129,7 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
             </ListItem>
           ))}
       </List>
-    </React.Fragment>
+    </>
   );
 };
 
@@ -161,9 +157,7 @@ const mapStateToProps = store => ({
   members: store.taskListState.tasklistmembers,
 });
 
-const mapDispatchToProps = (dispatch, { taskList }) => ({
-  
-});
+const mapDispatchToProps = (dispatch, { taskList }) => ({});
 
 export default connect(
   mapStateToProps,

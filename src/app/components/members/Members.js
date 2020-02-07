@@ -56,7 +56,10 @@ const Members = ({ members, taskList }) => {
         <Member
           onClick={() => {}}
           member={member}
-          style={{ marginRight: '-8px', opacity: (member.userStatus==='INVITED'?"0.7":"1.0") }}
+          style={{
+            marginRight: '-8px',
+            opacity: member.userStatus === 'INVITED' ? '0.7' : '1.0',
+          }}
           key={`member${member.userId}`}
         />
       ))}

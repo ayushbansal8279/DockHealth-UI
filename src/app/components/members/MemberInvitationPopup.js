@@ -112,7 +112,13 @@ const MemberInvitationPopup = ({ members, taskList, back, close, invite }) => {
           <NoResults>No matching results.</NoResults>
         )}
         {sortedListings.map(m => (
-          <ListItem member={m} key={m.userId} onClick={select} id={m.userId} style={{opacity: (m.userStatus==='INVITED'?"0.5":"1.0")}}>
+          <ListItem
+            member={m}
+            key={m.userId}
+            onClick={select}
+            id={m.userId}
+            style={{ opacity: m.userStatus === 'INVITED' ? '0.5' : '1.0' }}
+          >
             <MemberSlot member={m} />
             <MemberName>{m.userName}</MemberName>
           </ListItem>

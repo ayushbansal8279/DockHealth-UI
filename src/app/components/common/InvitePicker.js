@@ -49,7 +49,10 @@ const InvitePickerFooter = ({ onClick }) => (
 
 const InviteMessageFooter = () => (
   <Footer>
-    <span>Don't see who you are looking for? Ask your organization's admin to invite other people before adding them to the list.</span>
+    <span>
+      Don't see who you are looking for? Ask your organization's admin to invite
+      other people before adding them to the list.
+    </span>
   </Footer>
 );
 
@@ -77,7 +80,7 @@ const InvitePicker = ({ children: Component, taskList, members }) => {
   });
 
   return (
-    <React.Fragment>
+    <>
       <Component open={open} />
       <StyledPopover
         onClick={captureClicks}
@@ -101,7 +104,7 @@ const InvitePicker = ({ children: Component, taskList, members }) => {
         {!isInviting && <InvitePickerFooter onClick={openInvitation} />}
         {isInviting && <InviteMessageFooter onClick={openInvitation} />}
       </StyledPopover>
-    </React.Fragment>
+    </>
   );
 };
 
@@ -117,7 +120,7 @@ InvitePicker.propTypes = {
   members: PropTypes.arrayOf(memberShape),
   taskList: PropTypes.shape({
     listName: PropTypes.string,
-  })
+  }),
   // .isRequired,
 };
 

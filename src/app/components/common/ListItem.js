@@ -35,7 +35,7 @@ const Item = styled.div`
   font-size: 12px;
 `;
 
-const ListItem = ({ children, selected, onClick, id, style}) => (
+const ListItem = ({ children, selected, onClick, id, style }) => (
   <ItemContainer
     selected={selected}
     onClick={onClick}
