@@ -136,7 +136,7 @@ const OnboardingTeamOrgSetupView = () => {
         <OnboardingSpacing4 />
         <Grid container justify="flex-end">
           <OnboardingButton variant="contained" type="submit">
-            <OnboardingH2Bold>Invite team</OnboardingH2Bold>
+            <OnboardingH2Bold>Continue</OnboardingH2Bold>
           </OnboardingButton>
         </Grid>
       </FormContext>

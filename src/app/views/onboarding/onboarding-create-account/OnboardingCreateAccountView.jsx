@@ -3,11 +3,14 @@ import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
-import { hashHistory } from 'react-router';
+// import { hashHistory } from 'react-router';
 import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
-import { register as registerAction } from '../../../api/user-api';
-import { showAlert } from '../../../helpers/utility-functions';
+import {
+  register as registerAction,
+  resendConfirmationCode,
+} from '../../../api/user-api';
+import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   MobileInputComponent,
@@ -83,8 +86,23 @@ const onSubmit = ({ showDialog }) => async ({
   }
 };
 
-const continueDialog = () => {
-  hashHistory.replace('/login');
+const resendEmail = async email => {
+  try {
+    await resendConfirmationCode({
+      username: email,
+    });
+    showToast({
+      status: 'success',
+      title: `Account confirmation email resent`,
+    });
+  } catch (error) {
+    showAlert({
+      icon: 'error',
+      title: 'Error',
+      text: error?.message ?? 'Could not resend email, please try again later',
+    });
+  }
+  // hashHistory.replace('/login');
 };
 
 const OnboardingCreateAccountView = () => {
@@ -199,16 +217,16 @@ const OnboardingCreateAccountView = () => {
             <OnboardingDivider />
             <OnboardingSpacing2 />
             <OnboardingH2>
-              We just sent an email to {email} please go to your email and click
-              on the link so that we can confirm your email address.
+              We just sent an email to {email}. Please go to your email and
+              click on the link so that we can confirm your email address.
             </OnboardingH2>
             <OnboardingSpacing4 />
             <Grid container justify="space-between" wrap="nowrap">
               <OnboardingButton
-                onClick={continueDialog}
+                onClick={() => resendEmail(email)}
                 variant="containedAutoWidth"
               >
-                <OnboardingH2Bold>Continue</OnboardingH2Bold>
+                <OnboardingH2Bold>Resend email</OnboardingH2Bold>
               </OnboardingButton>
               <OnboardingButton onClick={hideDialog} variant="contained">
                 <OnboardingH2Bold>Change email address</OnboardingH2Bold>
