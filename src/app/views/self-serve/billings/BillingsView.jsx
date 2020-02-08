@@ -12,7 +12,7 @@ import { saveBillingDetails } from '../../../api/organization-api';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import BillingData from './BillingsView.BillingData';
-import InvoicesList from './BillingsView.InvoicesList';
+// import InvoicesList from './BillingsView.InvoicesList';
 import { BillingsViewContainer, Title } from './BillingsView.Styled';
 import { BillingButton } from './BillingsView.BillingData.Components';
 
@@ -31,13 +31,23 @@ const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
       saveBillingDetails({
         billingData: data,
         token,
-      }).then(() => {
-        unsetUpdatingBilling();
-        showToast({
-          status: 'success',
-          title: 'Billing information updated successfully!',
+      })
+        .then(() => {
+          unsetUpdatingBilling();
+          showToast({
+            status: 'success',
+            title: 'Billing information updated successfully!',
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          showAlert({
+            status: 'error',
+            title: 'Error',
+            text:
+              'Could not update billing information, please try again later',
+          });
         });
-      });
     })
     .catch(error => {
       showAlert({

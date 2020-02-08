@@ -198,7 +198,7 @@ const SubscriptionsViewPlanCard = ({
 
   return (
     <Grid onClick={onClick} item sm={12} md={12} lg={3}>
-      <CardInnerContainer chosen={chosen}>
+      <CardInnerContainer chosen={chosen ? 'true' : 'false'}>
         <CardHeader
           chosen={chosen}
           inactiveBackgroundColor={inactiveBackgroundColor}

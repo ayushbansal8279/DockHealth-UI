@@ -66,9 +66,19 @@ const onSubmit = ({ subscriptionPlan, billingFrequency }) => ({
       saveBillingDetails({
         billingData,
         token,
-      }).then(() => {
-        finishSubscriptionPayment();
-      });
+      })
+        .then(() => {
+          finishSubscriptionPayment();
+        })
+        .catch(error => {
+          console.log(error);
+          showAlert({
+            status: 'error',
+            title: 'Error',
+            text:
+              'Could not update subscription details, please try again later',
+          });
+        });
     })
     .catch(error => {
       showAlert({
@@ -76,7 +86,7 @@ const onSubmit = ({ subscriptionPlan, billingFrequency }) => ({
         title: 'Error',
         text:
           error?.message ??
-          'Could not update billing information, please try again later',
+          'Could not update subscription details, please try again later',
       });
     });
 };

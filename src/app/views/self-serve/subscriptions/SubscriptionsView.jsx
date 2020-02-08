@@ -67,7 +67,7 @@ export default () => {
 
   const [chosenPlan, setChosenPlan] = useState(null);
   const [currentPlan, setCurrentPlan] = useState(null);
-  const [annualPayment, toggleAnnualPayment] = useToggle(true);
+  const [annualPayment, toggleAnnualPayment] = useToggle(false);
 
   const setSelectedUsers = useCallback(
     users => {

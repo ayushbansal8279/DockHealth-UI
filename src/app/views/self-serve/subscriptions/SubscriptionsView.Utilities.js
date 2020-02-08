@@ -50,31 +50,31 @@ export const getSubscriptionPlanTrialLabel = ({ subscription }) => {
   }
 };
 
-export const getSubscriptionPlanPrice = ({ subscription }) => {
-  const { subscriptionPlan, billingFrequency = BILLING_FREQUENCY.MONTHLY } =
-    subscription || {};
+// export const getSubscriptionPlanPrice = ({ subscription }) => {
+//   const { subscriptionPlan, billingFrequency = BILLING_FREQUENCY.MONTHLY } =
+//     subscription || {};
 
-  switch (subscriptionPlan) {
-    case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
-    case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
-    case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
-    case SUBSCRIPTION_PLANS.PLAN_STANDARD:
-      return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 19 : 171;
-    case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
-      return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 24 : 216;
-    case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
-      return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 30 : 270;
-    default:
-      return 0;
-  }
-};
+//   switch (subscriptionPlan) {
+//     case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
+//     case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
+//     case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
+//     case SUBSCRIPTION_PLANS.PLAN_STANDARD:
+//       return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 19 : 171;
+//     case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
+//       return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 24 : 216;
+//     case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
+//       return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 30 : 270;
+//     default:
+//       return 0;
+//   }
+// };
 
 export const priceFormatter = ({ price }) =>
   `$${(Number(price) || 0).toFixed(2)}`;
 
-export const getSubscriptionPlanPeriodName = ({ subscription }) => {
-  const { billingFrequency = BILLING_FREQUENCY.MONTHLY } = subscription || {};
-
+export const getSubscriptionPlanPeriodName = ({
+  billingFrequency = BILLING_FREQUENCY.MONTHLY,
+}) => {
   return billingFrequency === BILLING_FREQUENCY.MONTHLY
     ? 'Monthly subscription'
     : 'Annual subscription';
@@ -132,7 +132,7 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
 
   const planName = getSubscriptionPlanName({ subscription });
   const planSubscriptionPeriod = getSubscriptionPlanPeriodName({
-    subscription,
+    billingFrequency: billingData?.subscriptionDetails?.billingFrequency,
   });
   const planBillingPeriod = getSubscriptionPlanBillingPeriod();
   const planIsTrial = getSubscriptionIsTrial({ subscription });
@@ -149,7 +149,8 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
     planPricePerUser: priceFormatter({ price: monthlyPerUserCost }),
     planTotalPayment: priceFormatter({
       price:
-        subscription?.billingFrequency === BILLING_FREQUENCY.ANNUAL
+        billingData?.subscriptionDetails?.billingFrequency ===
+        BILLING_FREQUENCY.ANNUAL
           ? annualEstimate
           : monthlyEstimate,
     }),
