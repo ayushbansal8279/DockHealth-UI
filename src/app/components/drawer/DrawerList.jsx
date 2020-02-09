@@ -214,7 +214,7 @@ const getDrawerItems = ({ lists }) => [
       return {
         id,
         label: listName,
-        to: `tasks/${listName}/${taskListId}`,
+        to: `tasks/${taskListId}`,
       };
     }),
     userProfileAccessKey: 'listsEnabled',

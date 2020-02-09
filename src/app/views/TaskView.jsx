@@ -822,9 +822,7 @@ class TaskView extends Component {
         <div>
           <TaskListSectionHeading>
             {groupedListName && (
-              <Link to={`tasks/${groupedListName}/${currentTaskListId}`}>
-                {groupedListName}
-              </Link>
+              <Link to={`tasks/${currentTaskListId}`}>{groupedListName}</Link>
             )}
             {!groupedListName && <Link to="tasks/Inbox">Inbox</Link>}
           </TaskListSectionHeading>

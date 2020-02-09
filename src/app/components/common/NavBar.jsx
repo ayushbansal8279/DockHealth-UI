@@ -23,9 +23,7 @@ const LinksAuth = ({ user, userProfilePicThumb }) => (
       {userProfilePicThumb ? (
         <img
           className="medium member-photo circle"
-          src={`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${
-            user.userId
-          }/${userProfilePicThumb}`}
+          src={`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${user.userId}/${userProfilePicThumb}`}
           alt={`${user.firstName} ${user.lastName}`}
         />
       ) : (
@@ -103,7 +101,7 @@ const NavBar = ({ isList, taskLists, userProfile }) => {
               taskLists.length > 0 &&
               taskLists.map(taskList => (
                 <NavLink
-                  to={`/tasks/${taskList.listName}/${taskList.taskListId}`}
+                  to={`/tasks/${taskList.taskListId}`}
                   activeClassName="active"
                   title={taskList.listName}
                   key={taskList.taskListId}
