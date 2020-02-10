@@ -20,8 +20,8 @@ import {
 } from './OnboardingProfileView.FormDefinitions';
 import validationSchema from './OnboardingProfileView.ValidationSchema';
 
-const goToOnboardingFinished = () => {
-  hashHistory.push('/onboarding/finished');
+const goToMainPage = () => {
+  hashHistory.push('/');
 };
 
 const onFormSubmit = ({
@@ -78,7 +78,7 @@ const onFormSubmit = ({
     userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     userApi.getUserNotoficationPrefs();
 
-    goToOnboardingFinished();
+    goToMainPage();
   } catch {
     showAlert({
       title: 'Error updating profile, please try again later',
@@ -130,10 +130,7 @@ const OnboardingProfileView = () => {
           <>
             <OnboardingSpacing5 />
             <Grid container justify="flex-end">
-              <OnboardingButton
-                onClick={goToOnboardingFinished}
-                variant="outlined"
-              >
+              <OnboardingButton onClick={goToMainPage} variant="outlined">
                 <OnboardingH2>Skip</OnboardingH2>
               </OnboardingButton>
               <OnboardingHorizontalSpacing3 />

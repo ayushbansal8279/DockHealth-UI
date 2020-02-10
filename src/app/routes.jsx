@@ -41,7 +41,6 @@ import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-i
 import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
 import OnboardingCreateAccountView from './views/onboarding/onboarding-create-account/OnboardingCreateAccountView';
 import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
-import OnboardingFinishedView from './views/onboarding/onboarding-finished/OnboardingFinishedView';
 import OnboardingProfileView from './views/onboarding/onboarding-profile/OnboardingProfileView';
 import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
@@ -293,7 +292,6 @@ export const Routes = ({ store }) => {
           />
           <Route component={OnboardingTeamOrgSetupView} path="team-org-setup" />
           <Route component={OnboardingProfileView} path="profile" />
-          <Route component={OnboardingFinishedView} path="finished" />
         </Route>
         <Route component={TemplateAuth}>
           <Route component={TemplateAuthBase}>
