@@ -115,7 +115,10 @@ const OnboardingProfileView = () => {
   return (
     <div>
       <UserProfileView
-        defaultValues={{}}
+        defaultValues={{
+          emailNotificationsEnabled: true,
+          pushNotificationsEnabled: true,
+        }}
         formContainerClassName=""
         formFieldDefinitions={formFieldDefinitions}
         formSwitchDefinitions={formSwitchDefinitions}
