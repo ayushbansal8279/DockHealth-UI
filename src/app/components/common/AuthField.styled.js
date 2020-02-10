@@ -46,7 +46,11 @@ export const StyledInput = styled.input`
     box-shadow: none;
   }
 
-  &:focus ~ ${StyledLabel}, &:not([value='']) ~ ${StyledLabel} {
+  &:focus
+    ~ ${StyledLabel},
+    &:not(${({ placeholder }) =>
+        placeholder ? ':placeholder-shown' : '[value=""]'})
+    ~ ${StyledLabel} {
     top: 25%;
   }
 

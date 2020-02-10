@@ -279,6 +279,7 @@ export const OnboardingInputBase = withStyles({
 
 export const OnboardingButton = withStyles({
   root: {
+    borderRadius: '0.25rem',
     height: '4rem',
     padding: '0.5rem 1.5rem',
     transition: 'all 0.25s ease-out',
@@ -296,12 +297,12 @@ export const OnboardingButton = withStyles({
     },
   },
   contained: {
-    backgroundColor: '#125375',
+    backgroundColor: '#007cab',
     color: '#fff',
     minWidth: '20rem',
   },
   containedAutoWidth: {
-    backgroundColor: '#125375',
+    backgroundColor: '#007cab',
     color: '#fff',
     fontWeight: 'bold',
   },

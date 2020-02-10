@@ -88,6 +88,7 @@ export const ContentContainer = styled.div`
   height: 100%;
   max-width: 50%;
   padding: 2rem;
+  padding-top: 6rem;
 `;
 
 export const TemplateAuthBaseContainer = styled.div`

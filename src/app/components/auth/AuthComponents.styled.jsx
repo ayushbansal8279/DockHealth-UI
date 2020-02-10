@@ -28,7 +28,6 @@ NextButtonComponent.propTypes = {
 export const NextButton = withStyles({
   root: {
     borderRadius: 4,
-    fontFamily: '"Open Sans", sans-serif',
     fontSize: '1.1em',
     fontWeight: 'bold',
     marginTop: '1.5rem',
@@ -90,4 +89,28 @@ export const HeightDependentGrid = styled.div`
   flex-direction: column;
   flex-basis: ${props => (100 * props.size) / 12}%;
   max-width: ${props => (100 * props.size) / 12}%;
+`;
+
+const Spacing = styled.div`
+  width: 100%;
+`;
+
+export const Spacing1 = styled(Spacing)`
+  height: 0.25rem;
+`;
+
+export const Spacing2 = styled(Spacing)`
+  height: 0.5rem;
+`;
+
+export const Spacing3 = styled(Spacing)`
+  height: 1rem;
+`;
+
+export const Spacing4 = styled(Spacing)`
+  height: 2rem;
+`;
+
+export const Spacing5 = styled(Spacing)`
+  height: 4rem;
 `;

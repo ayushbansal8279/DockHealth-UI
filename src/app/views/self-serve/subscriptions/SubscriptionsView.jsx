@@ -87,7 +87,8 @@ export default () => {
     requestErrorBilling,
   } = useSelector(store => ({
     ...store.organizationState,
-    organizationIdentifier: store.userState?.userProfile?.organizationIdentifier,
+    organizationIdentifier:
+      store.userState?.userProfile?.organizationIdentifier,
   }));
 
   const recalculateEstimate = useCallback(

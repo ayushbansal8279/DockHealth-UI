@@ -1,10 +1,11 @@
 import queryString from 'query-string';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { FormContext, useForm } from 'react-hook-form';
 import { Link } from 'react-router';
-import { Field, reduxForm } from 'redux-form';
-
+import { useMount } from 'react-use';
+import { object, string } from 'yup';
 import * as UserApi from '../../api/user-api';
-import AuthField from '../common/AuthField';
+import AuthFieldHooks from '../common/AuthFieldHooks';
 import CubesLoader from '../common/CubesLoader';
 import {
   BottomGridContainer,
@@ -16,48 +17,45 @@ import {
   TitleTypography,
 } from './AuthComponents.styled';
 
-const validate = values => {
-  const errors = {};
+const validationSchema = object().shape({
+  username: string()
+    .required('Please enter an email address')
+    .email('Please enter a valid email address'),
+});
 
-  if (!values.username) {
-    errors.username = 'Please enter an email address';
-  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
-    errors.username = 'Please enter a valid email address';
-  }
+const LoginFormUsername = ({ onSubmit }) => {
+  const [showLoginMessage, setShowLoginMessage] = useState(false);
 
-  return errors;
-};
+  const formMethods = useForm({
+    validationSchema,
+  });
 
-class LoginFormUsername extends Component {
-  state = {
-    showLoginMessage: false,
-  };
+  const { handleSubmit } = formMethods;
 
-  componentWillMount() {
+  useMount(() => {
     if (window.location.href) {
       const queryValues = queryString.parse(window.location.search);
 
       if (queryValues.code !== undefined) {
-        this.setState({ showLoginMessage: true });
+        setShowLoginMessage(true);
+
         const authCode = queryValues.code.replace('#/login', '');
+
         UserApi.getEnterpriseAccessTokensByAuthCode(authCode)
           .then(() => {
             window.location.href = '/#/tasks';
-            this.setState({ showLoginMessage: false });
+            setShowLoginMessage(false);
           })
           .catch(error => {
             toggleAlert(error.message, 'error');
           });
       }
     }
-  }
+  });
 
-  render() {
-    const { handleSubmit, invalid } = this.props;
-    const { showLoginMessage } = this.state;
-
-    return (
-      <StyledForm onSubmit={handleSubmit}>
+  return (
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <FormContext {...formMethods}>
         {!showLoginMessage && (
           <>
             <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
@@ -69,10 +67,9 @@ class LoginFormUsername extends Component {
 
             <FieldItemContainer>
               <HeightDependentGrid size={9}>
-                <Field
+                <AuthFieldHooks
                   name="username"
                   type="text"
-                  component={AuthField}
                   label="Email"
                   autoFocus
                 />
@@ -82,7 +79,7 @@ class LoginFormUsername extends Component {
             <div>
               <HeightDependentGrid size={6}>
                 <NextButton
-                  active={!invalid}
+                  active
                   id="loginButton"
                   type="submit"
                   variant="contained"
@@ -108,12 +105,9 @@ class LoginFormUsername extends Component {
             <CubesLoader size={40} />
           </div>
         )}
-      </StyledForm>
-    );
-  }
-}
+      </FormContext>
+    </StyledForm>
+  );
+};
 
-export default reduxForm({
-  form: 'LoginFormUsername',
-  validate,
-})(LoginFormUsername);
+export default LoginFormUsername;

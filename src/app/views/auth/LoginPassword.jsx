@@ -1,16 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { hashHistory } from 'react-router';
-
 import { success } from '../../actions/notification-actions';
 import { mobileAnalyticsClient } from '../../api/analytics-api';
 import { login } from '../../api/user-api';
 import LoginFormPassword from '../../components/auth/LoginFormPassword';
 
 const LoginPassword = () => {
-  const [customError, setCustomError] = useState('');
-
   const onSubmit = useCallback(
-    form =>
+    ({ setError }) => form =>
       login(form.username, form.password)
         .then(data => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
@@ -28,8 +25,11 @@ const LoginPassword = () => {
           }
         })
         .catch(error => {
-          alert(JSON.stringify(error, null, 2));
-          setCustomError('Incorrect email or password. Please try again.');
+          setError(
+            'password',
+            'invalid',
+            error?.message ?? 'Incorrect email or password. Please try again.',
+          );
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             LOGIN_SUCCESS: 'NO',
           });
@@ -43,8 +43,6 @@ const LoginPassword = () => {
         username: window.sessionStorage.getItem('username'),
       }}
       onSubmit={onSubmit}
-      customError={customError}
-      setCustomError={setCustomError}
     />
   );
 };

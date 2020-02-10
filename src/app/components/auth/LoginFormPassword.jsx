@@ -1,47 +1,40 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
+import { FormContext, useForm } from 'react-hook-form';
 import { Link } from 'react-router';
-import { Field, reduxForm } from 'redux-form';
-
-import AuthField from '../common/AuthField';
+import { useMount } from 'react-use';
+import { object, string } from 'yup';
+import AuthFieldHooks from '../common/AuthFieldHooks';
 import {
   BottomGridContainer,
   FieldItemContainer,
+  HeightDependentGrid,
   NextButton,
   StyledForm,
   StyledLabel,
   TitleTypography,
-  HeightDependentGrid,
 } from './AuthComponents.styled';
 
-const validate = values => {
-  const errors = {};
+const validationSchema = object().shape({
+  username: string()
+    .required('Please enter an email address')
+    .email('Please enter a valid email address'),
+  password: string().required('Please enter a password'),
+});
 
-  if (!values.username) {
-    errors.username = 'Please enter an email address';
-  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
-    errors.username = 'Please enter a valid email address';
-  }
+const LoginFormPassword = ({ onSubmit }) => {
+  const formMethods = useForm({
+    validationSchema,
+  });
 
-  if (!values.password) {
-    errors.password = 'Please enter a password';
-  }
+  const { handleSubmit, setError, setValue } = formMethods;
 
-  return errors;
-};
+  useMount(() => {
+    setValue('username', sessionStorage.getItem('username') ?? '');
+  });
 
-class LoginFormPassword extends PureComponent {
-  passwordInput = React.createRef();
-
-  componentDidMount = () => {
-    // eslint-disable-next-line no-unused-expressions
-    this.passwordInput.current?.focus();
-  };
-
-  render() {
-    const { customError, setCustomError, handleSubmit, invalid } = this.props;
-
-    return (
-      <StyledForm onSubmit={handleSubmit}>
+  return (
+    <StyledForm onSubmit={handleSubmit(onSubmit({ setError }))}>
+      <FormContext {...formMethods}>
         <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
           Welcome to Dock Health
         </TitleTypography>
@@ -51,22 +44,14 @@ class LoginFormPassword extends PureComponent {
 
         <FieldItemContainer>
           <HeightDependentGrid size={9}>
-            <Field
-              name="username"
-              type="text"
-              component={AuthField}
-              label="Email"
-            />
+            <AuthFieldHooks name="username" type="text" label="Email" />
           </HeightDependentGrid>
           <HeightDependentGrid size={9}>
-            <Field
+            <AuthFieldHooks
               name="password"
               type="password"
-              component={AuthField}
               label="Password"
               autoFocus
-              customError={customError}
-              setCustomError={setCustomError}
             />
           </HeightDependentGrid>
         </FieldItemContainer>
@@ -74,7 +59,7 @@ class LoginFormPassword extends PureComponent {
         <div>
           <HeightDependentGrid size={6}>
             <NextButton
-              active={!invalid}
+              active
               id="loginButton"
               type="submit"
               variant="contained"
@@ -90,12 +75,9 @@ class LoginFormPassword extends PureComponent {
             <Link to="/forgotPassword">Forgot password?</Link>
           </StyledLabel>
         </BottomGridContainer>
-      </StyledForm>
-    );
-  }
-}
+      </FormContext>
+    </StyledForm>
+  );
+};
 
-export default reduxForm({
-  form: 'LoginFormPassword',
-  validate,
-})(LoginFormPassword);
+export default LoginFormPassword;
