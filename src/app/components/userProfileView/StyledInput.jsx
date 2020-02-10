@@ -13,10 +13,12 @@ const ERROR_CLASS_NAME = 'error';
 const FOCUS_CLASS_NAME = 'focus';
 
 const PHONE_MASK_ARRAY = [
+  '(',
   /[1-9]/,
   /\d/,
   /\d/,
-  '-',
+  ')',
+  ' ',
   /\d/,
   /\d/,
   /\d/,
@@ -268,8 +270,6 @@ export default React.forwardRef(
       inputContainerProps,
       isMaskedInput,
       inputMask,
-      currentValue,
-      inputState,
     } = initializeStyledInputHooks({
       name,
       ERROR_CLASS_NAME,
@@ -318,9 +318,8 @@ export default React.forwardRef(
                 mask={inputMask}
                 render={renderPhoneNumberField({ inputProps, props, register })}
                 pipe={isBirthDate ? StyledInputAutoCorrectedDate() : undefined}
-                guide
                 keepCharPositions={false}
-                showMask={Boolean(currentValue) || Boolean(inputState)}
+                guide
                 onFocus={() => setInputState(FOCUS_CLASS_NAME)}
                 onBlur={event =>
                   props.onBlur ? props.onBlur(event) : setInputState('')

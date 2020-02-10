@@ -73,9 +73,7 @@ const onFormSubmit = (
       requestData.organizationName !== userProfile.organizationName
     ) {
       const { organizationName } = requestData;
-      updateOrganizationName({ organizationName })(dispatch).then(() => {
-        // console.log('Organization Name updated');
-      });
+      updateOrganizationName({ organizationName })(dispatch);
     }
 
     await userApi.updateUserNotoficationPrefs(
@@ -89,7 +87,6 @@ const onFormSubmit = (
     userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     userApi.getUserNotoficationPrefs();
   } catch (error) {
-    // console.log(error);
     toggleAlert('Error updating profile', 'error');
   }
 };
