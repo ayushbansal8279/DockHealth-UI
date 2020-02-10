@@ -157,7 +157,7 @@ class MemberPicker extends React.Component {
             <ListItem
               selected={member == null}
               onClick={this.handleSelect}
-              // id={UNASSIGNED_MEMBER_ID}
+              id={UNASSIGNED_MEMBER_ID}
             >
               <MemberSlot />
               <MemberName>Unassigned</MemberName>
@@ -171,7 +171,7 @@ class MemberPicker extends React.Component {
                     member && m.userIdentifier === member.userIdentifier
                   }
                   onClick={this.handleSelect}
-                  // id={m.userIdentifier}
+                  id={m.userIdentifier}
                 >
                   <MemberSlot member={m} />
                   <MemberName>{m.userName}</MemberName>

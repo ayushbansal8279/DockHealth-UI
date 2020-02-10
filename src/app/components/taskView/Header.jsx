@@ -167,7 +167,7 @@ const Header = ({
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
-  taskCount: PropTypes.string.isRequired,
+  taskCount: PropTypes.number.isRequired,
   members: PropTypes.arrayOf(
     PropTypes.shape({
       userIdentifier: PropTypes.string,
