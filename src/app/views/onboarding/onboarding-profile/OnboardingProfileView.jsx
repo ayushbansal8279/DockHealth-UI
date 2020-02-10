@@ -12,6 +12,7 @@ import {
   OnboardingH2,
   OnboardingH2Bold,
   OnboardingHorizontalSpacing3,
+  OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 import {
   formFieldDefinitions,
@@ -123,18 +124,21 @@ const OnboardingProfileView = () => {
         renderAvatarUploader
         showPrivacyPolicyLink={false}
         CustomFooter={
-          <Grid container justify="flex-end">
-            <OnboardingButton
-              onClick={goToOnboardingFinished}
-              variant="outlined"
-            >
-              <OnboardingH2>Skip</OnboardingH2>
-            </OnboardingButton>
-            <OnboardingHorizontalSpacing3 />
-            <OnboardingButton type="submit" variant="contained">
-              <OnboardingH2Bold>Save & Complete</OnboardingH2Bold>
-            </OnboardingButton>
-          </Grid>
+          <>
+            <OnboardingSpacing5 />
+            <Grid container justify="flex-end">
+              <OnboardingButton
+                onClick={goToOnboardingFinished}
+                variant="outlined"
+              >
+                <OnboardingH2>Skip</OnboardingH2>
+              </OnboardingButton>
+              <OnboardingHorizontalSpacing3 />
+              <OnboardingButton type="submit" variant="contained">
+                <OnboardingH2Bold>Save & Complete</OnboardingH2Bold>
+              </OnboardingButton>
+            </Grid>
+          </>
         }
       />
     </div>
