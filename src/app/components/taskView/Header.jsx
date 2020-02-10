@@ -99,12 +99,12 @@ const Header = ({
   const dispatch = useDispatch();
   const toggleNotifications = useCallback(() => {
     const newNotificationStatus = !notificationsStatus;
-    toggleListNotifications(taskListIdentifier, newNotificationStatus)(dispatch).then(
-      () => {
-        onNotificationsToggled(newNotificationStatus);
-        resetHeader();
-      },
-    );
+    toggleListNotifications(taskListIdentifier, newNotificationStatus)(
+      dispatch,
+    ).then(() => {
+      onNotificationsToggled(newNotificationStatus);
+      resetHeader();
+    });
   }, [dispatch, notificationsStatus, resetHeader, taskListIdentifier]);
   const { taskListStats, taskListStatsOk } = useSelector(store => ({
     taskListStats: store.taskListState.taskListStats,

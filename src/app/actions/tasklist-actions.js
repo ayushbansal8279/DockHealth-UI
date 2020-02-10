@@ -26,7 +26,10 @@ export function setTaskListAsCurrentList(currentList) {
 }
 
 export function saveTaskList(formProps) {
-  if (formProps.taskListIdentifier != null && formProps.taskListIdentifier > 0) {
+  if (
+    formProps.taskListIdentifier != null &&
+    formProps.taskListIdentifier > 0
+  ) {
     return dispatch =>
       TaskListApi.updateTaskList(formProps)
         .then(updatedTasklist => {
@@ -120,16 +123,28 @@ export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
       .catch(noop);
 }
 
-export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) => dispatch =>
+export const inviteUserToTaskList = (
+  taskListIdentifier,
+  userIdentifier,
+) => dispatch =>
   TaskListApi.inviteUserToTaskList(taskListIdentifier, userIdentifier)
     .then(() => {
-      dispatch({ type: ActionTypes.INVITE_USER_TO_TASKLIST_SUCCESS, userIdentifier });
+      dispatch({
+        type: ActionTypes.INVITE_USER_TO_TASKLIST_SUCCESS,
+        userIdentifier,
+      });
     })
     .catch(noop);
 
-export function inviteMultipleUsersToTaskList(taskListIdentifier, invitedUsersIdentifier) {
+export function inviteMultipleUsersToTaskList(
+  taskListIdentifier,
+  invitedUsersIdentifier,
+) {
   return dispatch =>
-    TaskListApi.inviteMultipleUsersToTaskList(taskListIdentifier, invitedUsersIdentifier)
+    TaskListApi.inviteMultipleUsersToTaskList(
+      taskListIdentifier,
+      invitedUsersIdentifier,
+    )
       .then(response => {
         dispatch({
           type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS,
@@ -165,7 +180,11 @@ export function getNonOrgUsersByTaskList(taskListIdentifier) {
  */
 export function changeUserRoleForList(taskListIdentifier, markedUser, role) {
   return dispatch =>
-    TaskListApi.changeUserRoleForList(taskListIdentifier, markedUser.userIdentifier, role)
+    TaskListApi.changeUserRoleForList(
+      taskListIdentifier,
+      markedUser.userIdentifier,
+      role,
+    )
       .then(response => {
         dispatch({
           type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS,
@@ -199,7 +218,10 @@ export function deleteTaskListById(taskListIdentifier) {
 
 export function removeUserFromList(taskListIdentifier, removedUser) {
   return dispatch =>
-    TaskListApi.removeUserFromList(taskListIdentifier, removedUser.userIdentifier)
+    TaskListApi.removeUserFromList(
+      taskListIdentifier,
+      removedUser.userIdentifier,
+    )
       .then(response => {
         dispatch({
           type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS,
@@ -262,9 +284,15 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
       .catch(noop);
 }
 
-export function toggleListNotifications(taskListIdentifier, receiveNotifications) {
+export function toggleListNotifications(
+  taskListIdentifier,
+  receiveNotifications,
+) {
   return dispatch =>
-    TaskListApi.toggleListNotifications(taskListIdentifier, receiveNotifications)
+    TaskListApi.toggleListNotifications(
+      taskListIdentifier,
+      receiveNotifications,
+    )
       .then(() => {
         dispatch({
           type: ActionTypes.TOGGLE_LIST_NOTIFICATIONS_SUCCESS,

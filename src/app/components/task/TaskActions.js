@@ -71,10 +71,12 @@ TaskActions.propTypes = {
 
 const mapDispatchToProps = (dispatch, { task }) => ({
   remove: () =>
-    deleteTask({ taskIdentifier: task.taskIdentifier, parentTaskIdentifier: task.parentTaskIdentifier })(
-      dispatch,
-    ),
-  duplicate: () => duplicateTask({ taskIdentifier: task.taskIdentifier })(dispatch),
+    deleteTask({
+      taskIdentifier: task.taskIdentifier,
+      parentTaskIdentifier: task.parentTaskIdentifier,
+    })(dispatch),
+  duplicate: () =>
+    duplicateTask({ taskIdentifier: task.taskIdentifier })(dispatch),
 });
 
 const ConnectedTaskActions = connect(

@@ -155,8 +155,10 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = (dispatch, { taskList }) => ({
   invite: userIdentifier => {
-    inviteMultipleUsersToTaskList(taskList.taskListIdentifier, [userIdentifier])(dispatch).then(
-      () => getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')(dispatch),
+    inviteMultipleUsersToTaskList(taskList.taskListIdentifier, [
+      userIdentifier,
+    ])(dispatch).then(() =>
+      getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')(dispatch),
     );
   },
 });

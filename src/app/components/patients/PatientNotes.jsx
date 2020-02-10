@@ -140,7 +140,9 @@ const PatientNotes = ({
   };
 
   const handleUpdate = (description, patientNoteIdentifier) => {
-    const modifiedNote = notes.find(n => n.patientNoteIdentifier === patientNoteIdentifier);
+    const modifiedNote = notes.find(
+      n => n.patientNoteIdentifier === patientNoteIdentifier,
+    );
     dispatch(editPatientNote(patientIdentifier, modifiedNote, description))
       .then(() => {
         onPatientNoteEdited();
@@ -150,8 +152,11 @@ const PatientNotes = ({
       });
   };
 
-  const userIdentifier = useSelector(state => state.userState.userProfile.userIdentifier);
-  const isOwn = patientNote => patientNote.creator.userIdentifier === userIdentifier;
+  const userIdentifier = useSelector(
+    state => state.userState.userProfile.userIdentifier,
+  );
+  const isOwn = patientNote =>
+    patientNote.creator.userIdentifier === userIdentifier;
 
   useEffect(() => {
     const listHeight = take(5, [...noteHeightMap.keys()])

@@ -66,21 +66,30 @@ class Comments extends React.PureComponent {
                   isOwn={isUser(creator)}
                   key={creator.userIdentifier}
                 >
-                  {comments.map(({ comment, commentIdentifier, dateCreated, dateUpdated }) => (
-                    <Comment isOwn={isUser(creator)} key={commentIdentifier}>
-                      {/* {comment} */}
-                      <EditableDescription
-                        placeholder="Enter your comment"
-                        name={commentIdentifier}
-                        value={comment}
-                        onChange={this.handleCommentEdition}
-                        disabled={disabled || !isUser(creator)}
-                      />
-                      {dateCreated!=dateUpdated
-                      && <div style={{color:"#ff8317"}}><small>(edited)</small></div>
-                      }
-                    </Comment>
-                  ))}
+                  {comments.map(
+                    ({
+                      comment,
+                      commentIdentifier,
+                      dateCreated,
+                      dateUpdated,
+                    }) => (
+                      <Comment isOwn={isUser(creator)} key={commentIdentifier}>
+                        {/* {comment} */}
+                        <EditableDescription
+                          placeholder="Enter your comment"
+                          name={commentIdentifier}
+                          value={comment}
+                          onChange={this.handleCommentEdition}
+                          disabled={disabled || !isUser(creator)}
+                        />
+                        {dateCreated != dateUpdated && (
+                          <div style={{ color: '#ff8317' }}>
+                            <small>(edited)</small>
+                          </div>
+                        )}
+                      </Comment>
+                    ),
+                  )}
                 </Creator>
               ))}
             </Day>

@@ -410,7 +410,10 @@ class TaskView extends Component {
 
     if (!timeoutFired) {
       const taskTimeoutId = setTimeout(() => {
-        if (selectedTask?.taskIdentifier === task?.taskIdentifier && !task?.parentTaskIdentifier) {
+        if (
+          selectedTask?.taskIdentifier === task?.taskIdentifier &&
+          !task?.parentTaskIdentifier
+        ) {
           storeAsCurrentTask(null);
           this.closeTaskDrawer();
         }
@@ -486,11 +489,11 @@ class TaskView extends Component {
       taskList,
       dispatchedSetHeader,
     } = this.props;
-    
-    var allTasks = []
-    if(tasks!=null && completedTasks!=null){
+
+    let allTasks = [];
+    if (tasks != null && completedTasks != null) {
       allTasks = [...tasks, ...completedTasks];
-    }    
+    }
     let allTasksCount = tasksCount;
     if (!tasksCount) {
       allTasksCount = allTasks.length;

@@ -22,31 +22,24 @@ export const ManageButton = ({
   const [anchor, setAnchor] = useState(null);
   const isOpen = Boolean(anchor);
 
-  const close = () => {
+  const close = useCallback(() => {
     setAnchor(null);
-  };
+  });
 
   const handleClick = e => {
     setAnchor(e.currentTarget);
   };
 
-  const handleRemove = useCallback(
-    () => {
-      remove();
-      close();
-    },
-    [close, remove],
-  );
+  const handleRemove = useCallback(() => {
+    remove();
+    close();
+  }, [close, remove]);
 
-  const handleChangeRole = useCallback(
-    () => {
-      const newRole =
-        taskListUserRole === MEMBER_ROLE ? ADMIN_ROLE : MEMBER_ROLE;
-      changeRole(newRole);
-      close();
-    },
-    [changeRole, close, taskListUserRole],
-  );
+  const handleChangeRole = useCallback(() => {
+    const newRole = taskListUserRole === MEMBER_ROLE ? ADMIN_ROLE : MEMBER_ROLE;
+    changeRole(newRole);
+    close();
+  }, [changeRole, close, taskListUserRole]);
 
   return (
     <>
@@ -78,15 +71,21 @@ ManageButton.propTypes = {
   }).isRequired,
 };
 
-const mapDispatchToProps = (dispatch, { taskListIdentifier, member: { userIdentifier } }) => ({
+const mapDispatchToProps = (
+  dispatch,
+  { taskListIdentifier, member: { userIdentifier } },
+) => ({
   remove: () => {
-    removeUserFromList(taskListIdentifier, { userIdentifier })(dispatch).then(() => 
-      getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch)
+    removeUserFromList(taskListIdentifier, { userIdentifier })(dispatch).then(
+      () =>
+        getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch),
     );
   },
   changeRole: role => {
-    changeUserRoleForList(taskListIdentifier, { userIdentifier }, role)(dispatch).then(() => 
-      getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch)
+    changeUserRoleForList(taskListIdentifier, { userIdentifier }, role)(
+      dispatch,
+    ).then(() =>
+      getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch),
     );
   },
 });

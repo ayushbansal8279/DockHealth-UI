@@ -122,7 +122,9 @@ class MemberPicker extends React.Component {
       filteredMembers.sort((a, b) => a.lastName.localeCompare(b.lastName));
 
     const currentUserMembers =
-      members && member && members.filter(m => m.userIdentifier === member.userIdentifier);
+      members &&
+      member &&
+      members.filter(m => m.userIdentifier === member.userIdentifier);
 
     if (currentUserMembers && currentUserMembers.length > 0) {
       member.bubbleColor = currentUserMembers[0].bubbleColor;
@@ -165,7 +167,9 @@ class MemberPicker extends React.Component {
                 <ListItem
                   member={m}
                   key={m.userIdentifier}
-                  selected={member && m.userIdentifier === member.userIdentifier}
+                  selected={
+                    member && m.userIdentifier === member.userIdentifier
+                  }
                   onClick={this.handleSelect}
                   // id={m.userIdentifier}
                 >

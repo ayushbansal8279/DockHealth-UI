@@ -46,13 +46,10 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
   });
 
   const [isSearching, setIsSearching] = useState(false);
-  const toggleSearch = useCallback(
-    () => {
-      setIsSearching(!isSearching);
-      setSearchTerm('');
-    },
-    [isSearching],
-  );
+  const toggleSearch = useCallback(() => {
+    setIsSearching(!isSearching);
+    setSearchTerm('');
+  }, [isSearching]);
 
   const [anchor, setAnchor] = useState(null);
   const open = useCallback(e => {
@@ -90,7 +87,7 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
     p1.lastName ? p1.lastName.localeCompare(p2.lastName) : -1;
 
   // Search
-  const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
+  const searchTerms = searchTerm.toLowerCase().match(/\S+/g) || [];
   const isMatch = listing =>
     searchTerms.every(term => matchListing(term, listing));
 
@@ -102,7 +99,7 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
     filteredListings && filteredListings.sort(orderListings);
 
   return (
-    <React.Fragment>
+    <>
       <Component open={open} />
       <StyledPopover open={Boolean(anchor)} anchorEl={anchor} onClose={close}>
         {isSearching ? (
@@ -122,7 +119,9 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
               <ListItem
                 member={m}
                 key={m.patientIdentifier}
-                selected={patient && m.patientIdentifier === patient.patientIdentifier}
+                selected={
+                  patient && m.patientIdentifier === patient.patientIdentifier
+                }
                 onClick={select}
                 id={m.patientIdentifier}
               >
@@ -131,7 +130,7 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
             ))}
         </List>
       </StyledPopover>
-    </React.Fragment>
+    </>
   );
 };
 

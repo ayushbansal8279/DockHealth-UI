@@ -47,25 +47,25 @@ const StyledContainer = styled.div`
 `;
 
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
-  `${
-    process.env.HEYDOC_SERVICES_BASE_URL
-  }user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
+  `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
 
 const Member = ({ onClick, member, children, className, style, color }) => {
   const alt = member && `${member.firstName} ${member.lastName}`;
-  const src =
+  const source =
     member && member.profileThumbnailPictureHash && getThumbnailUrl(member);
-  const memberColor = member && (src ? undefined : member.bubbleColor || '#00a73c');
+  const memberColor =
+    member && (source ? undefined : member.bubbleColor || '#00a73c');
 
   const avatarProps = {
     alt,
-    src,
+    src: source,
     color: color || memberColor,
   };
 
   const avatar = (
     <StyledAvatar {...avatarProps} className={className}>
-      {children || (member && !member.profileThumbnailPictureHash && member.initials)}
+      {children ||
+        (member && !member.profileThumbnailPictureHash && member.initials)}
     </StyledAvatar>
   );
 

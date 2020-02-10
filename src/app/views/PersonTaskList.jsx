@@ -292,7 +292,7 @@ class TaskListSearch extends PureComponent {
           </HeadsUpAreaContainer>
         )}
         <TaskListSearchContainer
-          searchPerformed={true}
+          searchPerformed
           onFilter={this.handleFilterChange}
           showSortingStats
           toggleHUD={this.toggleHUD}

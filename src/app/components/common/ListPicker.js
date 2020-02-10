@@ -130,7 +130,7 @@ class ListPicker extends React.Component {
     const isOpen = Boolean(anchorEl);
 
     // Item search
-    const searchTerms = searchTerm.toLowerCase().match(/[\S]+/g) || [];
+    const searchTerms = searchTerm.toLowerCase().match(/\S+/g) || [];
     const isMatch = name =>
       searchTerms.every(term => name.toLowerCase().includes(term));
 
@@ -175,7 +175,9 @@ class ListPicker extends React.Component {
               sortedItems.map(i => (
                 <ListItem
                   key={i.taskListIdentifier}
-                  selected={item && i.taskListIdentifier === item.taskListIdentifier}
+                  selected={
+                    item && i.taskListIdentifier === item.taskListIdentifier
+                  }
                   onClick={this.openConfirmation}
                   id={i.taskListIdentifier}
                 >
