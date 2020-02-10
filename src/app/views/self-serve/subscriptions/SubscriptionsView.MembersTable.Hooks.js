@@ -54,9 +54,11 @@ const initializeMembersTableHooks = ({
         );
 
         if (toggledUser.userIdentifier) {
-          removeUserFromOrganization(toggledUser.userIdentifier)(dispatch).then(() => {
-            getAllUsers();
-          });
+          removeUserFromOrganization(toggledUser.userIdentifier)(dispatch).then(
+            () => {
+              getAllUsers();
+            },
+          );
         } else {
           cancelInviteToOrganization(toggledUser.email)(dispatch).then(() => {
             getAllUsers();

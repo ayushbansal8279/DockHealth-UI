@@ -1,6 +1,14 @@
 import Grid from '@material-ui/core/Grid';
 import { func } from 'prop-types';
-import { filter, includes, isEmpty, reject } from 'ramda';
+import {
+  filter,
+  includes,
+  isEmpty,
+  reject,
+  ascend,
+  prop,
+  sortWith,
+} from 'ramda';
 import React from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
@@ -46,25 +54,53 @@ const renderOrganizationMemberRow = ({
   );
 };
 
+const roleSortWages = new Proxy(
+  {
+    owner: 1,
+    admin: 2,
+    member: 3,
+    none: 4,
+  },
+  {
+    get: (target, path = '') => target[path.toLowerCase()] ?? target.none,
+  },
+);
+
+const roleSortMethod = (person1, person2) =>
+  roleSortWages[(person1?.orgUserRole)] - roleSortWages[(person2?.orgUserRole)];
+const lastNameSortMethod = ascend(prop('lastName'));
+const firstNameSortMethod = ascend(prop('firstName'));
+
+const combinedMemberSortMethod = sortWith([
+  roleSortMethod,
+  lastNameSortMethod,
+  firstNameSortMethod,
+]);
+
 const getFilteredOrganizationMembers = ({
   organizationMembers,
   selectedUsers,
   userSubscriptionStatus,
 }) => {
+  const sortedOrganizationMembers =
+    organizationMembers |> combinedMemberSortMethod;
+
   switch (userSubscriptionStatus) {
     case USER_SUBSCRIPTION_STATUS.SUBSCRIBED:
       return filter(
-        ({ userIdentifier, email }) => includes({ userIdentifier, email }, selectedUsers),
-        organizationMembers,
+        ({ userIdentifier, email }) =>
+          includes({ userIdentifier, email }, selectedUsers),
+        sortedOrganizationMembers,
       );
 
     case USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED:
       return reject(
-        ({ userIdentifier, email }) => includes({ userIdentifier, email }, selectedUsers),
-        organizationMembers,
+        ({ userIdentifier, email }) =>
+          includes({ userIdentifier, email }, selectedUsers),
+        sortedOrganizationMembers,
       );
     default:
-      return organizationMembers;
+      return sortedOrganizationMembers;
   }
 };
 
