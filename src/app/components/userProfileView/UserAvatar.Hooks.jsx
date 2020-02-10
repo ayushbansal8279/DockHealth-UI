@@ -67,7 +67,7 @@ export default () => {
       fileReader.onloadend = async () => {
         try {
           await userApi.saveUserProfilePic(fileReader.result);
-          await userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+          await userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
           setFileLoaded();
         } catch {
           noop();
@@ -94,7 +94,7 @@ export default () => {
         openPopover();
         userApi.deleteUserProfilePic().then(async () => {
           try {
-            await userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+            await userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
             unsetPopoverOpen();
             unsetFileLoaded();
           } catch {

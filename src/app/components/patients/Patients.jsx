@@ -76,7 +76,7 @@ const PatientsLayout = () => {
       return null;
     }
     return patientState.allPatients.find(
-      ({ patientId }) => patientId === +highlightedPatientId,
+      ({ patientIdentifier }) => patientIdentifier === +highlightedPatientId,
     );
   });
   const isCreatingPatient = useSelector(

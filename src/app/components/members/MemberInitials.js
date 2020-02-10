@@ -7,14 +7,14 @@ class MemberInitials extends React.Component {
   shouldComponentUpdate(nextProps) {
     const { member } = this.props;
 
-    return !member || member.userId !== nextProps.member.userId;
+    return !member || member.userIdentifier !== nextProps.member.userIdentifier;
   }
 
   componentWillUnmount() {
     const { member } = this.props;
 
     const element = member
-      ? $(`#tooltip-member-${member.userId}`)
+      ? $(`#tooltip-member-${member.userIdentifier}`)
       : $('#tooltip-member-unassigned');
 
     if (element.data('yeti-box')) {
@@ -33,21 +33,21 @@ class MemberInitials extends React.Component {
       <span>
         {member?.profileThumbnailPictureHash ? (
           <img
-            id={`tooltip-member-${member?.userId}`}
+            id={`tooltip-member-${member?.userIdentifier}`}
             className={`medium member-photo circle ${extraClass ?? ''}`}
             data-tooltip
             title={member?.userName ?? 'unassigned'}
             src={
-              member?.userId ??
+              member?.userIdentifier ??
               `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${
-                member?.userId
+                member?.userIdentifier
               }/${member.profileThumbnailPictureHash}`
             }
             alt={`${member.firstName} ${member.lastName}`}
           />
         ) : (
           <span
-            id={`tooltip-member-${member?.userId ?? 'unassigned'}`}
+            id={`tooltip-member-${member?.userIdentifier ?? 'unassigned'}`}
             className={`medium member-initials circle ${extraClass ?? ''}`}
             data-tooltip
             title={member?.userName ?? 'unassigned'}

@@ -60,7 +60,7 @@ const Members = ({ members, taskList }) => {
             marginRight: '-8px',
             opacity: member.userStatus === 'INVITED' ? '0.7' : '1.0',
           }}
-          key={`member${member.userId}`}
+          key={`member${member.userIdentifier}`}
         />
       ))}
     </StyledContainer>
@@ -70,7 +70,7 @@ const Members = ({ members, taskList }) => {
 Members.propTypes = {
   members: PropTypes.arrayOf(
     PropTypes.shape({
-      userId: PropTypes.number,
+      userIdentifier: PropTypes.number,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       initials: PropTypes.string,

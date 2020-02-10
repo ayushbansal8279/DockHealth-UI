@@ -35,7 +35,7 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
   const taskListButtonReference = useRef(null);
 
   const newDueDateMoment = moment(newDueDate);
-  const taskId = task?.taskId;
+  const taskIdentifier = task?.taskIdentifier;
 
   useMount(() => {
     setValue('newTaskListId', null);
@@ -80,7 +80,7 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
     unsetHistoryLoading();
     unsetTaskListPopoverOpen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskId]);
+  }, [taskIdentifier]);
 
   const onToggleHistoryButtonClicked = useCallback(() => {
     if (!isHistoryShown) {
@@ -105,7 +105,7 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskId],
+    [taskIdentifier],
   );
 
   const saveTaskList = useCallback(
@@ -127,7 +127,7 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskId],
+    [taskIdentifier],
   );
 
   const clearDueDate = useCallback(() => {
@@ -164,7 +164,7 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
     saveTaskList,
     saveDueDate,
     onToggleHistoryButtonClicked,
-    taskId,
+    taskIdentifier,
     newDueDate,
     setNewDueDate,
     userProfileAccess,

@@ -110,7 +110,7 @@ const StyledSimpleBar = styled(SimpleBar)`
 `;
 
 const getGroupedComments = ({ comments }) => {
-  const commentsSortedById = sortBy(prop('commentId'), comments);
+  const commentsSortedById = sortBy(prop('commentIdentifier'), comments);
 
   const sortedComments = reverse(
     sortBy(comment => moment(comment.dateCreated).unix(), commentsSortedById),
@@ -124,7 +124,7 @@ const getGroupedComments = ({ comments }) => {
   return mapObjIndexed(
     groupWith(
       (comment1, comment2) =>
-        comment1.creator.userId === comment2.creator.userId,
+        comment1.creator.userIdentifier === comment2.creator.userIdentifier,
     ),
     datedComments,
   );

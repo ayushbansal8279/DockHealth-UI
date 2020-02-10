@@ -59,16 +59,16 @@ const PatientProfileHeader = ({ patient }) => (
   </PatientProfileHeaderContainer>
 );
 
-const PatientProfileLayout = ({ patientId }) => {
+const PatientProfileLayout = ({ patientIdentifier }) => {
   const dispatch = useDispatch();
-  const { details, tasks, completedTasks, isLoading } = usePatient(patientId);
+  const { details, tasks, completedTasks, isLoading } = usePatient(patientIdentifier);
   const lists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
   const selectedTask = useSelector(store => store.taskState.selectedTask);
 
-  const selectedTaskId = selectedTask ? selectedTask?.taskId : undefined;
+  const selectedTaskId = selectedTask ? selectedTask?.taskIdentifier : undefined;
 
-  const userId = useSelector(store => store.userState.userProfile?.userId);
+  const userIdentifier = useSelector(store => store.userState.userProfile?.userIdentifier);
 
   const isCompletedTasksFetching = useSelector(
     store => store.taskState.isCompletedTasksFetching,
@@ -84,7 +84,7 @@ const PatientProfileLayout = ({ patientId }) => {
   };
 
   const taskViewProps = {
-    userId,
+    userIdentifier,
     tasks: searchedTasks.tasks,
     completedTasks: searchedTasks.completedTasks,
     isFetching: isLoading,
@@ -96,7 +96,7 @@ const PatientProfileLayout = ({ patientId }) => {
     markAsUnread,
     addTaskComment,
     toggleTaskPriority: (task, priority) =>
-      toggleTaskPriority(task, userId, priority),
+      toggleTaskPriority(task, userIdentifier, priority),
     showToolbar: true,
     showAddTaskButton: false,
     isMultiList: true,
@@ -140,7 +140,7 @@ const PatientProfile = ({ routeParams }) => (
   <div className="off-canvas-content" data-off-canvas-content>
     <div className="row expanded collapse" style={{ minHeight: '100%' }}>
       <div className="columns" style={{ background: '#f5f8fa' }}>
-        <PatientProfileLayout patientId={routeParams.patientId} />
+        <PatientProfileLayout patientIdentifier={routeParams.patientIdentifier} />
       </div>
     </div>
   </div>

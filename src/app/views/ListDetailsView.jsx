@@ -49,8 +49,8 @@ class Home extends PureComponent {
 
     const getAllTasks = () => {
       Promise.all([
-        taskAction(routeParams.taskListId, sortBy, filterBy, 'INCOMPLETE'),
-        taskAction(routeParams.taskListId, sortBy, filterBy, 'COMPLETE'),
+        taskAction(routeParams.taskListIdentifier, sortBy, filterBy, 'INCOMPLETE'),
+        taskAction(routeParams.taskListIdentifier, sortBy, filterBy, 'COMPLETE'),
       ]).catch(error => {
         this.handleRetry(error, getAllTasks);
       });
@@ -60,18 +60,18 @@ class Home extends PureComponent {
 
     if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
       taskListActions
-        .getTaskListById(routeParams.taskListId)
+        .getTaskListById(routeParams.taskListIdentifier)
         .then(noop)
         .catch(handleRetryTaskAction);
 
-      if (routeParams.taskListId) {
+      if (routeParams.taskListIdentifier) {
         taskListActions
-          .getMembersByTaskListId(routeParams.taskListId, 'ALL')
+          .getMembersByTaskListId(routeParams.taskListIdentifier, 'ALL')
           .then(noop)
           .catch(error => {
             this.handleRetry(error, () => {
               taskListActions.getMembersByTaskListId(
-                routeParams.taskListId,
+                routeParams.taskListIdentifier,
                 'ALL',
               );
             });
@@ -79,12 +79,12 @@ class Home extends PureComponent {
       }
 
       taskListActions
-        .getOrganizationUsersNotInTaskList(routeParams.taskListId)
+        .getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier)
         .then(noop)
         .catch(error => {
           this.handleRetry(error, () => {
             taskListActions.getOrganizationUsersNotInTaskList(
-              routeParams.taskListId,
+              routeParams.taskListIdentifier,
             );
           });
         });
@@ -99,22 +99,22 @@ class Home extends PureComponent {
       const { listName } = nextProps.routeParams;
 
       actions.loading();
-      if (listName != null && nextProps.routeParams.taskListId != null) {
-        taskListActions.getTaskListById(nextProps.routeParams.taskListId);
+      if (listName != null && nextProps.routeParams.taskListIdentifier != null) {
+        taskListActions.getTaskListById(nextProps.routeParams.taskListIdentifier);
         actions.getListTasks(
-          nextProps.routeParams.taskListId,
+          nextProps.routeParams.taskListIdentifier,
           undefined,
           undefined,
           'INCOMPLETE',
         );
-        if (nextProps.routeParams.taskListId) {
+        if (nextProps.routeParams.taskListIdentifier) {
           taskListActions.getMembersByTaskListId(
-            nextProps.routeParams.taskListId,
+            nextProps.routeParams.taskListIdentifier,
             'ALL',
           );
         }
         taskListActions.getOrganizationUsersNotInTaskList(
-          nextProps.routeParams.taskListId,
+          nextProps.routeParams.taskListIdentifier,
         );
 
         // Start with no selected tasks
@@ -133,24 +133,24 @@ class Home extends PureComponent {
 
     actions.loading();
     actions.getListTasks(
-      routeParams.taskListId,
+      routeParams.taskListIdentifier,
       undefined,
       undefined,
       'INCOMPLETE',
     );
-    if (routeParams.taskListId) {
-      taskListActions.getMembersByTaskListId(routeParams.taskListId, 'ALL');
+    if (routeParams.taskListIdentifier) {
+      taskListActions.getMembersByTaskListId(routeParams.taskListIdentifier, 'ALL');
     }
-    taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListId);
+    taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier);
     patientActions.getAllPatients();
   };
 
   downloadPDF = () => {
     const {
-      routeParams: { taskListId },
+      routeParams: { taskListIdentifier },
     } = this.props;
 
-    if (taskListId) {
+    if (taskListIdentifier) {
       window.print();
     }
   };
@@ -158,7 +158,7 @@ class Home extends PureComponent {
   handleFilterChange = (filterBy, sortBy) => {
     const {
       actions,
-      routeParams: { listName, taskListId },
+      routeParams: { listName, taskListIdentifier },
     } = this.props;
 
     actions.loading();
@@ -219,19 +219,19 @@ class Home extends PureComponent {
         });
     } else {
       actions
-        .getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE')
+        .getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE')
         .then(noop)
         .catch(error => {
           this.handleRetry(error, () => {
-            actions.getListTasks(taskListId, sortBy, filterBy, 'INCOMPLETE');
+            actions.getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE');
           });
         });
       actions
-        .getListTasks(taskListId, sortBy, filterBy, 'COMPLETE')
+        .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE')
         .then(noop)
         .catch(error => {
           this.handleRetry(error, () => {
-            actions.getListTasks(taskListId, sortBy, filterBy, 'COMPLETE');
+            actions.getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE');
           });
         });
     }
@@ -269,7 +269,7 @@ class Home extends PureComponent {
 
   render() {
     const {
-      userId,
+      userIdentifier,
       members,
       tasks,
       completedTasks,
@@ -286,11 +286,11 @@ class Home extends PureComponent {
         addTaskComment,
       },
       tasklists,
-      routeParams: { listName, taskListId, filterBy },
+      routeParams: { listName, taskListIdentifier, filterBy },
     } = this.props;
 
     const loadedTasklist = tasklists.find(
-      t => `${t.taskListId}` === taskListId,
+      t => `${t.taskListIdentifier}` === taskListIdentifier,
     );
 
     let isMultiList = false;
@@ -320,7 +320,7 @@ class Home extends PureComponent {
     }
 
     const taskViewProps = {
-      userId,
+      userIdentifier,
       members,
       tasks,
       completedTasks,
@@ -334,7 +334,7 @@ class Home extends PureComponent {
       refreshTask,
       addTaskComment,
       toggleTaskPriority: (task, priority) =>
-        toggleTaskPriority(task, userId, priority),
+        toggleTaskPriority(task, userIdentifier, priority),
       onFilter: this.handleFilterChange,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
@@ -342,7 +342,7 @@ class Home extends PureComponent {
       showToolbar: true,
       taskList: loadedTasklist || undefined,
       isMultiList,
-      taskListId,
+      taskListIdentifier,
       listName,
     };
 
@@ -359,7 +359,7 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   showingCompletedTasks: store.taskState.showingCompletedTasks,
   user: store.userState.user,
-  userId: store.userState.userProfile.userId,
+  userIdentifier: store.userState.userProfile.userIdentifier,
   selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
 });

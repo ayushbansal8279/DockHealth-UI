@@ -114,16 +114,16 @@ class ListOfTasks extends Component {
     closeAddForm();
     if (this.props.tasks) {
       this.props.tasks.map((task, index) => {
-        removeRevealComponent(`#edit-assign-to-${task.taskId}`);
-        removeRevealComponent(`#delete-task-${task.taskId}`);
-        removeRevealComponent(`#complete-task-${task.taskId}`);
-        // removeRevealComponent("#refile-task-" + task.taskId)
+        removeRevealComponent(`#edit-assign-to-${task.taskIdentifier}`);
+        removeRevealComponent(`#delete-task-${task.taskIdentifier}`);
+        removeRevealComponent(`#complete-task-${task.taskIdentifier}`);
+        // removeRevealComponent("#refile-task-" + task.taskIdentifier)
         if (task.subtasks) {
           task.subtasks.map((subtask, index) => {
-            removeRevealComponent(`#edit-assign-to-${subtask.taskId}`);
-            removeRevealComponent(`#delete-task-${subtask.taskId}`);
-            removeRevealComponent(`#complete-task-${subtask.taskId}`);
-            // removeRevealComponent("#refile-task-" + subtask.taskId)
+            removeRevealComponent(`#edit-assign-to-${subtask.taskIdentifier}`);
+            removeRevealComponent(`#delete-task-${subtask.taskIdentifier}`);
+            removeRevealComponent(`#complete-task-${subtask.taskIdentifier}`);
+            // removeRevealComponent("#refile-task-" + subtask.taskIdentifier)
           });
         }
       });
@@ -159,23 +159,23 @@ class ListOfTasks extends Component {
   }
 
   handleSubTaskChange(event) {
-    // this.setState({comment: event.target.value, parentTaskId: event.target.parentTaskId});
+    // this.setState({comment: event.target.value, parentTaskIdentifier: event.target.parentTaskIdentifier});
   }
 
-  handleTaskCommentUpdate(taskId, commentDescription) {
-    this.setState({ taskId, comment: commentDescription });
+  handleTaskCommentUpdate(taskIdentifier, commentDescription) {
+    this.setState({ taskIdentifier, comment: commentDescription });
   }
 
-  handleUpdateTaskDescription(taskId, userId, description) {
+  handleUpdateTaskDescription(taskIdentifier, userIdentifier, description) {
     // this.setState({description: event.target.value})
-    this.props.updateTaskDescription(taskId, userId, description);
+    this.props.updateTaskDescription(taskIdentifier, userIdentifier, description);
   }
 
   handleSubmit() {
     if (this.state.comment != '') {
-      this.props.addTaskComment(this.state.taskId, {
+      this.props.addTaskComment(this.state.taskIdentifier, {
         comment: this.state.comment,
-        creator: { userId: 1 },
+        creator: { userIdentifier: 1 },
       });
       this.setState({ comment: '' });
     }
@@ -188,7 +188,7 @@ class ListOfTasks extends Component {
         if (subtask.status == 'INCOMPLETE') {
           // alert('Incomplete Subtask')
           allSubTasksComplete = false;
-          $(`#open-complete-task-confirmation-${task.taskId}`).trigger('click');
+          $(`#open-complete-task-confirmation-${task.taskIdentifier}`).trigger('click');
         }
       });
       if (allSubTasksComplete) {
@@ -208,16 +208,16 @@ class ListOfTasks extends Component {
     this.props.deleteTask(task);
   }
 
-  handleToggleTaskPriority(task, userId, priority) {
-    this.props.toggleTaskPriority(task, userId, priority);
+  handleToggleTaskPriority(task, userIdentifier, priority) {
+    this.props.toggleTaskPriority(task, userIdentifier, priority);
   }
 
-  handleAddMemberToTask(memberId, member, taskId) {
-    this.props.assignOrReassignTask(taskId, '1', memberId, member);
+  handleAddMemberToTask(memberId, member, taskIdentifier) {
+    this.props.assignOrReassignTask(taskIdentifier, '1', memberId, member);
   }
 
-  addPatientToTaskCallback(patientId, taskId) {
-    this.props.addPatientToTask(patientId, taskId);
+  addPatientToTaskCallback(patientIdentifier, taskIdentifier) {
+    this.props.addPatientToTask(patientIdentifier, taskIdentifier);
   }
 
   markAsUnread(task, flagUnread) {
@@ -226,34 +226,34 @@ class ListOfTasks extends Component {
 
   showHistory(task) {
     // set current task and get audit
-    this.props.taskAction.storeAsCurrentTask(task.taskId);
+    this.props.taskAction.storeAsCurrentTask(task.taskIdentifier);
     // .then((resp) => {
     this.props.taskAction.getTaskHistory(task);
     // })
-    closeDropdown(`#task-edit-${task.taskId}`);
+    closeDropdown(`#task-edit-${task.taskIdentifier}`);
   }
 
   deleteTask = task => {
-    console.log(task.taskId);
+    console.log(task.taskIdentifier);
   };
 
   duplicateTask = task => {
     this.props.taskAction.duplicateTask(task);
-    console.log(task.taskId);
+    console.log(task.taskIdentifier);
   };
 
   moveSubTaskUp = task => {
     this.props.taskAction.sortSubTask(task, 'up');
-    console.log(task.taskId);
+    console.log(task.taskIdentifier);
   };
 
   moveSubTaskDown = task => {
     this.props.taskAction.sortSubTask(task, 'down');
-    console.log(task.taskId);
+    console.log(task.taskIdentifier);
   };
 
-  assignOrReassignTask = (task, assignedToUserId, member) => {
-    this.props.taskAction.assignOrReassignTask(task, assignedToUserId, member);
+  assignOrReassignTask = (task, assignedToUserIdentifier, member) => {
+    this.props.taskAction.assignOrReassignTask(task, assignedToUserIdentifier, member);
   };
 
   handleToggleForEditTask = task => {
@@ -303,8 +303,8 @@ class ListOfTasks extends Component {
       this.props.formActions.change('addSubtaskForm', 'patient', patientName);
       this.props.formActions.change(
         'addSubtaskForm',
-        'patientId',
-        patient.patientId,
+        'patientIdentifier',
+        patient.patientIdentifier,
       );
     }
     // this.props.formActions.reset('addSubtaskForm')
@@ -315,13 +315,13 @@ class ListOfTasks extends Component {
   };
 
   updateComment = (task, comment) => {
-    comment.comment = $(`#comment-${comment.commentId}`).val();
+    comment.comment = $(`#comment-${comment.commentIdentifier}`).val();
     this.props.taskAction.updateComment(task, comment);
   };
 
-  handleViewMoreComments = taskId => {
+  handleViewMoreComments = taskIdentifier => {
     const taskIds = this.state.viewMoreComments;
-    taskIds.push(taskId);
+    taskIds.push(taskIdentifier);
     this.setState({ viewMoreComments: taskIds });
   };
 
@@ -332,27 +332,27 @@ class ListOfTasks extends Component {
     });
   };
 
-  openAssignmentModal = taskId => {
-    openPopup(`#edit-assign-to-${taskId}`);
+  openAssignmentModal = taskIdentifier => {
+    openPopup(`#edit-assign-to-${taskIdentifier}`);
   };
 
-  openCompleteConfirmationModal = taskId => {
-    openPopup(`#complete-task-${taskId}`);
+  openCompleteConfirmationModal = taskIdentifier => {
+    openPopup(`#complete-task-${taskIdentifier}`);
   };
 
-  openDeleteConfirmationModal = taskId => {
-    openPopup(`#delete-task-${taskId}`);
+  openDeleteConfirmationModal = taskIdentifier => {
+    openPopup(`#delete-task-${taskIdentifier}`);
   };
 
-  openTaskContextMenu = taskId => {
-    openDropdown(`#task-edit-${taskId}`);
+  openTaskContextMenu = taskIdentifier => {
+    openDropdown(`#task-edit-${taskIdentifier}`);
   };
 
   renderCommentSection(task, comment, index) {
     return (
       <div
         className="row expanded collapse comment-wrapper"
-        key={`comment${comment.commentId}_${index}`}
+        key={`comment${comment.commentIdentifier}_${index}`}
       >
         <div className="columns shrink">
           {/* <img className="memberphoto small float-left" src="assets/img/memberphoto.png" alt="name of user"/> */}
@@ -364,7 +364,7 @@ class ListOfTasks extends Component {
           <div className="row align-justify collapse">
             <div className="column">
               <div className="row expanded">
-                {comment.creator.userId === this.props.userProfile.userId ? (
+                {comment.creator.userIdentifier === this.props.userProfile.userIdentifier ? (
                   <span
                     className="comment comment-details"
                     data-editable-comment
@@ -397,7 +397,7 @@ class ListOfTasks extends Component {
                 <textarea
                   rows="5"
                   className="comment add-comment"
-                  id={`comment-${comment.commentId}`}
+                  id={`comment-${comment.commentIdentifier}`}
                   type="text"
                 />
               </div>
@@ -480,8 +480,8 @@ class ListOfTasks extends Component {
               }
               return (
                 <div
-                  key={`task${task.taskId}`}
-                  id={`task${task.taskId}`}
+                  key={`task${task.taskIdentifier}`}
+                  id={`task${task.taskIdentifier}`}
                   className={`task-item has-subtasks ${task.refiled &&
                     'refiled'}`}
                 >
@@ -509,7 +509,7 @@ class ListOfTasks extends Component {
               /* GENERATE TASK START */
             }
             const generateTask = (task, index, type) => (
-              <span key={`task${task.taskId}`}>
+              <span key={`task${task.taskIdentifier}`}>
                 {/* MAIN TASK START */}
                 <div
                   className={`row expanded ${
@@ -530,11 +530,11 @@ class ListOfTasks extends Component {
                       )}
                     </div>
                     {/* Triggers confirmation modal to pop up if task has subtasks */}
-                    {/* <span id="complete-task" data-open={"complete-task-"+task.taskId} className="hide">Complete</span> */}
+                    {/* <span id="complete-task" data-open={"complete-task-"+task.taskIdentifier} className="hide">Complete</span> */}
                     <span
-                      id={`open-complete-task-confirmation-${task.taskId}`}
+                      id={`open-complete-task-confirmation-${task.taskIdentifier}`}
                       onClick={e =>
-                        this.openCompleteConfirmationModal(task.taskId)
+                        this.openCompleteConfirmationModal(task.taskIdentifier)
                       }
                       className="hide"
                     >
@@ -546,11 +546,11 @@ class ListOfTasks extends Component {
                       <span className="subtask-number">{`${index + 1}.`}</span>
                     </div>
                   )}
-                  {/* <div className="columns shrink" data-open={"edit-assign-to-"+task.taskId}> */}
+                  {/* <div className="columns shrink" data-open={"edit-assign-to-"+task.taskIdentifier}> */}
                   {task.status == 'INCOMPLETE' ? (
                     <div
                       className="columns shrink"
-                      onClick={e => this.openAssignmentModal(task.taskId)}
+                      onClick={e => this.openAssignmentModal(task.taskIdentifier)}
                     >
                       {task.assignedTo ? (
                         <MemberInitials member={task.assignedTo} />
@@ -612,7 +612,7 @@ class ListOfTasks extends Component {
                       {type != 'subtask' && (
                         <span className="task-patient text-em">
                           {task.patient ? (
-                            <Link to={`/patient/${task.patient.patientId}`}>
+                            <Link to={`/patient/${task.patient.patientIdentifier}`}>
                               {`${task.patient.firstName} ${
                                 task.patient.lastName
                               }
@@ -693,7 +693,7 @@ class ListOfTasks extends Component {
                       {task.comments ? (
                         task.comments.map((comment, index) => {
                           if (
-                            this.state.viewMoreComments.indexOf(task.taskId) ==
+                            this.state.viewMoreComments.indexOf(task.taskIdentifier) ==
                             -1
                           ) {
                             if (index == 3) {
@@ -701,12 +701,12 @@ class ListOfTasks extends Component {
                                 <div
                                   className="more-comments"
                                   key={`comment_more_${
-                                    comment.commentId
+                                    comment.commentIdentifier
                                   }_${index}`}
                                 >
                                   <a
                                     onClick={e =>
-                                      this.handleViewMoreComments(task.taskId)
+                                      this.handleViewMoreComments(task.taskIdentifier)
                                     }
                                   >
                                     View More Comments
@@ -718,7 +718,7 @@ class ListOfTasks extends Component {
                               return (
                                 <span
                                   key={`comment_more_${
-                                    comment.commentId
+                                    comment.commentIdentifier
                                   }_${index}`}
                                 />
                               );
@@ -770,17 +770,17 @@ class ListOfTasks extends Component {
                   </div>
 
                   <div className="columns shrink more-options-wrapper">
-                    {/* <svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskId}><use xlinkHref="#icon-ellipses"></use></svg> */}
+                    {/* <svg className="icon ellipses medium" data-toggle={"task-edit-" + task.taskIdentifier}><use xlinkHref="#icon-ellipses"></use></svg> */}
                     <svg
                       className="icon ellipses medium"
-                      data-toggle={`task-edit-${task.taskId}`}
-                      onClick={e => this.openTaskContextMenu(task.taskId)}
+                      data-toggle={`task-edit-${task.taskIdentifier}`}
+                      onClick={e => this.openTaskContextMenu(task.taskIdentifier)}
                     >
                       <use xlinkHref="#icon-ellipses" />
                     </svg>
                     <div
                       className="small dropdown-pane"
-                      id={`task-edit-${task.taskId}`}
+                      id={`task-edit-${task.taskIdentifier}`}
                       data-dropdown
                       data-close-on-click="true"
                     >
@@ -810,13 +810,13 @@ class ListOfTasks extends Component {
                             Add subtask
                           </li>
                         )}
-                        {/* <li data-open={"delete-task-"+task.taskId}>Delete task</li> */}
+                        {/* <li data-open={"delete-task-"+task.taskIdentifier}>Delete task</li> */}
                         {task.status == 'INCOMPLETE' &&
-                          task.creator.userId ==
-                            this.props.userProfile.userId && (
+                          task.creator.userIdentifier ==
+                            this.props.userProfile.userIdentifier && (
                             <li
                               onClick={e =>
-                                this.openDeleteConfirmationModal(task.taskId)
+                                this.openDeleteConfirmationModal(task.taskIdentifier)
                               }
                             >
                               Delete task
@@ -852,12 +852,12 @@ class ListOfTasks extends Component {
                 {task.subtasks &&
                   task.subtasks.map((subtask, index) => {
                     return (
-                      <span key={`subtask${subtask.taskId}`}>
+                      <span key={`subtask${subtask.taskIdentifier}`}>
                         {generateTask(subtask, index, 'subtask')}
                         <BooleanModal
                           message="Are you sure you want to delete this task?"
                           confirmBtnTxt="Delete"
-                          uniqueModalId={`delete-task-${subtask.taskId}`}
+                          uniqueModalId={`delete-task-${subtask.taskIdentifier}`}
                           handleConfirmationArgs={subtask}
                           handleConfirmation={this.handleDeleteTask}
                         />
@@ -865,7 +865,7 @@ class ListOfTasks extends Component {
                           <div>
                             <AssignToModal
                               members={members}
-                              taskListId={subtask.taskList.taskListId}
+                              taskListIdentifier={subtask.taskList.taskListIdentifier}
                               task={subtask}
                               assignOrReassignTask={this.assignOrReassignTask}
                             />
@@ -884,7 +884,7 @@ class ListOfTasks extends Component {
               if (index == this.state.viewMoreTasksIndex) {
                 return (
                   <div
-                    key={`listTask${task.taskId}_${index}`}
+                    key={`listTask${task.taskIdentifier}_${index}`}
                     className="more-tasks"
                   >
                     <a onClick={e => this.handleViewMoreTasks()}>
@@ -899,22 +899,22 @@ class ListOfTasks extends Component {
             }
             return (
               <span
-                key={`listTask${task.taskId}_${index}`}
-                id={`listTask${task.taskId}`}
+                key={`listTask${task.taskIdentifier}_${index}`}
+                id={`listTask${task.taskIdentifier}`}
               >
                 {listTasks()}
                 <div className="task-popups">
                   <BooleanModal
                     message="Are you sure you want to delete this task?"
                     confirmBtnTxt="Delete"
-                    uniqueModalId={`delete-task-${task.taskId}`}
+                    uniqueModalId={`delete-task-${task.taskIdentifier}`}
                     handleConfirmationArgs={task}
                     handleConfirmation={this.handleDeleteTask}
                   />
                   <BooleanModal
                     message="You are about to complete a task with open subtasks. Completing the task will also complete the subtasks. Would you like to proceed?"
                     confirmBtnTxt="Yes"
-                    uniqueModalId={`complete-task-${task.taskId}`}
+                    uniqueModalId={`complete-task-${task.taskIdentifier}`}
                     handleConfirmationArgs={task}
                     handleConfirmation={this.confirmCompleteTask}
                   />
@@ -922,7 +922,7 @@ class ListOfTasks extends Component {
                     <div>
                       <AssignToModal
                         members={members}
-                        taskListId={task.taskList.taskListId}
+                        taskListIdentifier={task.taskList.taskListIdentifier}
                         task={task}
                         assignOrReassignTask={this.assignOrReassignTask}
                       />

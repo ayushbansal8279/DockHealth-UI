@@ -24,7 +24,7 @@ describe('generateFormat', () => {
 
 describe('History', () => {
   const baseProps = {
-    taskId: 0,
+    taskIdentifier: 0,
     fetchHistory: jest.fn(),
     clearHistory: jest.fn(),
     isLoading: false,
@@ -54,13 +54,13 @@ describe('History', () => {
         auditId: 0,
         auditEventTypeDescription: 'Description',
         createdDateTime: '2019-02-20T15:08:09.000+0000',
-        user: { userId: 0, userName: 'John Smith' },
+        user: { userIdentifier: 0, userName: 'John Smith' },
       },
       {
         auditId: 1,
         auditEventTypeDescription: 'Another description',
         createdDateTime: '2019-01-20T15:08:09.000+0000',
-        user: { userId: 1, userName: 'Jane Doe' },
+        user: { userIdentifier: 1, userName: 'Jane Doe' },
       },
       ],
     };
@@ -75,13 +75,13 @@ describe('History', () => {
         auditId: 0,
         auditEventTypeDescription: 'Description',
         createdDateTime: '2019-02-20T15:08:09.000+0000',
-        user: { userId: 0, userName: 'John Smith' },
+        user: { userIdentifier: 0, userName: 'John Smith' },
       },
       {
         auditId: 1,
         auditEventTypeDescription: 'Another description',
         createdDateTime: '2019-01-20T15:08:09.000+0000',
-        user: { userId: 1, userName: 'Jane Doe' },
+        user: { userIdentifier: 1, userName: 'Jane Doe' },
       },
       ],
     };

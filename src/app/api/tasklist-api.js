@@ -33,9 +33,9 @@ export function addTaskList(tasklist) {
     });
 }
 
-export function getTaskListById(taskListId) {
+export function getTaskListById(taskListIdentifier) {
   return axios
-    .get(`list/${taskListId}`)
+    .get(`list/${taskListIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -44,7 +44,7 @@ export function getTaskListById(taskListId) {
 }
 
 export function updateTaskList(taskList) {
-  // userId - make sure authorized user can only update the task list
+  // userIdentifier - make sure authorized user can only update the task list
   return axios
     .put('list/', taskList)
     .then(response => {
@@ -57,9 +57,9 @@ export function updateTaskList(taskList) {
     });
 }
 
-export function getMembersByTaskListId(taskListId, memberStatus) {
+export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
   return axios
-    .get(`user/listAllUsersByTaskListId/${taskListId}?status=${memberStatus}`)
+    .get(`user/listAllUsersByTaskListId/${taskListIdentifier}?status=${memberStatus}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -67,9 +67,9 @@ export function getMembersByTaskListId(taskListId, memberStatus) {
     });
 }
 
-export function invitePersonToTaskList(tasklistId, personInfo) {
+export function invitePersonToTaskList(taskListIdentifier, personInfo) {
   return axios
-    .put(`list/invitePersonToTaskList/${tasklistId}`, personInfo)
+    .put(`list/invitePersonToTaskList/${taskListIdentifier}`, personInfo)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -77,9 +77,9 @@ export function invitePersonToTaskList(tasklistId, personInfo) {
     });
 }
 
-export function getOrganizationUsersNotInTaskList(tasklistId) {
+export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
   return axios
-    .get(`user/findOrganizationUsersNotInTaskList/${tasklistId}`)
+    .get(`user/findOrganizationUsersNotInTaskList/${taskListIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -87,18 +87,18 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
     });
 }
 
-export const inviteUserToTaskList = (tasklistId, userId) =>
+export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) =>
   axios
-    .put(`/user/inviteUserToTaskList/${tasklistId}/user/${userId}`)
+    .put(`/user/inviteUserToTaskList/${taskListIdentifier}/user/${userIdentifier}`)
     .then(response => response.data)
     .catch(error => error.response.data);
 
-export function inviteMultipleUsersToTaskList(tasklistId, invitedUsers) {
+export function inviteMultipleUsersToTaskList(taskListIdentifier, invitedUsersIdentifier) {
   const multiUserInvitation = {};
-  multiUserInvitation.invitedUsers = invitedUsers;
+  multiUserInvitation.invitedUsersIdentifier = invitedUsersIdentifier;
   return axios
     .put(
-      `user/inviteMultipleUsersToTaskList/${tasklistId}`,
+      `user/inviteMultipleUsersToTaskList/${taskListIdentifier}`,
       multiUserInvitation,
     )
     .then(response => response.data)
@@ -108,9 +108,9 @@ export function inviteMultipleUsersToTaskList(tasklistId, invitedUsers) {
     });
 }
 
-export function getNonOrgUsersByTaskList(taskListId) {
+export function getNonOrgUsersByTaskList(taskListIdentifier) {
   return axios
-    .get(`user/findNonOrgUsersByTaskList/${taskListId}`)
+    .get(`user/findNonOrgUsersByTaskList/${taskListIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -118,10 +118,10 @@ export function getNonOrgUsersByTaskList(taskListId) {
     });
 }
 
-export function changeUserRoleForList(tasklistId, markedUserId, role) {
+export function changeUserRoleForList(taskListIdentifier, markedUserIdentifier, role) {
   return axios
     .put(
-      `list/changeUserRoleForList/${tasklistId}?markedUserId=${markedUserId}&role=${role}`,
+      `list/changeUserRoleForList/${taskListIdentifier}?markedUserId=${markedUserIdentifier}&role=${role}`,
     )
     .then(response => response.data)
     .catch(error => {
@@ -130,9 +130,9 @@ export function changeUserRoleForList(tasklistId, markedUserId, role) {
     });
 }
 
-export function deleteTaskListById(taskListId) {
+export function deleteTaskListById(taskListIdentifier) {
   return axios
-    .delete(`list/deleteTaskListById/${taskListId}`)
+    .delete(`list/deleteTaskListById/${taskListIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -140,10 +140,10 @@ export function deleteTaskListById(taskListId) {
     });
 }
 
-export function removeUserFromList(taskListId, removedUserId) {
+export function removeUserFromList(taskListIdentifier, removedUserIdentifier) {
   return axios
     .delete(
-      `user/removeUserFromTaskList/${taskListId}?removedUserId=${removedUserId}`,
+      `user/removeUserFromTaskList/${taskListIdentifier}?removedUserId=${removedUserIdentifier}`,
     )
     .then(response => response.data)
     .catch(error => {
@@ -152,10 +152,10 @@ export function removeUserFromList(taskListId, removedUserId) {
     });
 }
 
-export function cancelInviteToTaskList(taskListId, email) {
+export function cancelInviteToTaskList(taskListIdentifier, email) {
   return axios
     .put(
-      `list/cancelInviteToTaskList/${taskListId}?markedUserEmail=${encodeURIComponent(
+      `list/cancelInviteToTaskList/${taskListIdentifier}?markedUserEmail=${encodeURIComponent(
         email,
       )}`,
     )
@@ -166,10 +166,10 @@ export function cancelInviteToTaskList(taskListId, email) {
     });
 }
 
-export function findAuditsByTaskList(taskListId, queryStartPosition) {
+export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
   return axios
     .get(
-      `audit/findAuditsByTaskList/${taskListId}?queryStartPosition=${queryStartPosition}`,
+      `audit/findAuditsByTaskList/${taskListIdentifier}?queryStartPosition=${queryStartPosition}`,
     )
     .then(response => response.data)
     .catch(error => {
@@ -204,10 +204,10 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
     });
 }
 
-export function toggleListNotifications(taskListId, receiveNotifications) {
+export function toggleListNotifications(taskListIdentifier, receiveNotifications) {
   return axios
     .put(
-      `list/toggleUserNotificationsForTaskList/${taskListId}?notifications=${receiveNotifications}`,
+      `list/toggleUserNotificationsForTaskList/${taskListIdentifier}?notifications=${receiveNotifications}`,
     )
     .then(response => response)
     .catch(error => {
@@ -226,9 +226,9 @@ export function findGenericListCountsForUser() {
     });
 }
 
-export function downloadPDF(taskListId) {
+export function downloadPDF(taskListIdentifier) {
   return axios({
-    url: `list/downloadPDFForTasksInList?taskListId=${taskListId}`,
+    url: `list/downloadPDFForTasksInList?taskListId=${taskListIdentifier}`,
     method: 'GET',
     responseType: 'blob', // important
   })
@@ -247,9 +247,9 @@ export function downloadPDF(taskListId) {
     });
 }
 
-export const getTaskListStats = async ({ taskListId }) => {
+export const getTaskListStats = async ({ taskListIdentifier }) => {
   try {
-    const response = await axios.get(`list/getTaskListStats/${taskListId}`);
+    const response = await axios.get(`list/getTaskListStats/${taskListIdentifier}`);
 
     return response;
   } catch (error) {

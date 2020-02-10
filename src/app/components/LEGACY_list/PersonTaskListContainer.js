@@ -32,7 +32,7 @@ class PersonTaskListContainer extends PureComponent {
     }
   };
 
-  handleClick = (e, taskListId) => {
+  handleClick = (e, taskListIdentifier) => {
     e.preventDefault();
   };
 
@@ -82,12 +82,12 @@ class PersonTaskListContainer extends PureComponent {
   }
 
   // Lists Activity for a TaskList
-  renderList(taskListId, taskStatus, tasks, members) {
+  renderList(taskListIdentifier, taskStatus, tasks, members) {
     return (
       <div className="list-wrapper list-wrapper-task-search">
         <div className="task-item-wrapper">
           <ListOfTasksContainer
-            taskListId={taskListId}
+            taskListIdentifier={taskListIdentifier}
             status={taskStatus}
             members={members}
             filteredTasks={tasks}
@@ -109,9 +109,9 @@ class PersonTaskListContainer extends PureComponent {
     }
     return Array.from(groupedTasks.keys()).map(listName => {
       const tasks = groupedTasks.get(listName);
-      let taskListId = 0;
+      let taskListIdentifier = 0;
       if (tasks) {
-        taskListId = tasks[0].taskList.taskListId;
+        taskListIdentifier = tasks[0].taskList.taskListIdentifier;
       }
       return (
         <li className="accordion-item" key={`taskList_${listName}`}>
@@ -126,7 +126,7 @@ class PersonTaskListContainer extends PureComponent {
           </span>
           <div>
             {tasks && tasks.length > 0 ? (
-              this.renderList(taskListId, taskStatus, tasks, null)
+              this.renderList(taskListIdentifier, taskStatus, tasks, null)
             ) : (
               <p className="light-gray"></p>
             )}

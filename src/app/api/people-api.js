@@ -38,9 +38,9 @@ export function findAllUsers() {
     .catch(error => error?.response?.data ?? error?.message);
 }
 
-export function getUserById(userId) {
+export function getUserById(userIdentifier) {
   return axios
-    .get(`user/${userId}`)
+    .get(`user/${userIdentifier}`)
     .then(response => {
       return response.data;
     })
@@ -67,11 +67,11 @@ export function resendInviteToOrganization(person) {
     .catch(error => error.response.data);
 }
 
-export function changeUserRoleForOrg(markedUserId, role) {
+export function changeUserRoleForOrg(markedUserIdentifier, role) {
   return axios
     .put(
       `${'organization/changeUserRoleForOrg/' +
-        '?markedUserId='}${markedUserId}&role=${role}`,
+        '?markedUserId='}${markedUserIdentifier}&role=${role}`,
     )
     .then(response => {
       return response.data;
@@ -93,11 +93,11 @@ export function cancelInviteToOrganization(markedUserEmail) {
     .catch(error => error.response.data);
 }
 
-export function removeUserFromOrganization(removedUserId) {
+export function removeUserFromOrganization(removedUserIdentifier) {
   return axios
     .delete(
       `${'user/removeUserFromOrganization' +
-        '?removedUserId='}${removedUserId}`,
+        '?removedUserId='}${removedUserIdentifier}`,
     )
     .then(response => {
       return response.data;
@@ -108,7 +108,7 @@ export function removeUserFromOrganization(removedUserId) {
 }
 
 // export function getUserAvatar(user) {
-//   return axios.get('user/profilePicture/'+user.userId+'?UserPictureType=PROFILE', {responseType: 'arraybuffer'})
+//   return axios.get('user/profilePicture/'+user.userIdentifier+'?UserPictureType=PROFILE', {responseType: 'arraybuffer'})
 //     .then(response => {
 //       let binaryImage = new Buffer(response.data, 'binary').toString('base64'); //base64 encoding of binary image data
 //       let image = `data:${response.headers['content-type'].toLowerCase()};base64,${binaryImage}`;
@@ -119,7 +119,7 @@ export function removeUserFromOrganization(removedUserId) {
 
 export function getUserAvatar(user) {
   return axios
-    .get(`user/profilePicture/${user.userId}?UserPictureType=PROFILE`, {
+    .get(`user/profilePicture/${user.userIdentifier}?UserPictureType=PROFILE`, {
       responseType: 'arraybuffer',
     }) // this lets axios know that response type is not JSON but binary data
     .then(response => {

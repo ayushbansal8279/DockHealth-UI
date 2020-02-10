@@ -69,7 +69,7 @@ const EditablePatientNote = ({ update, note, isOwn, style, onNoteChange }) => {
       <EditableNoteDescription
         placeholder="Enter your note"
         value={note.description || ''}
-        name={note.patientNoteId}
+        name={note.patientNoteIdentifier}
         onChange={update}
         disabled={!isOwn}
         onNoteChange={onContainerChange}
@@ -86,7 +86,7 @@ const CreatorPropertyType = PropTypes.shape({
   profileThumbnailPictureHash: PropTypes.string,
   specialtyList: PropTypes.string,
   titleList: PropTypes.string,
-  userId: PropTypes.number,
+  userIdentifier: PropTypes.number,
   userName: PropTypes.string,
 });
 
@@ -95,7 +95,7 @@ const NotePropertyType = PropTypes.shape({
   dateCreated: PropTypes.string,
   dateUpdated: PropTypes.string,
   description: PropTypes.string,
-  patientNoteId: PropTypes.number,
+  patientNoteIdentifier: PropTypes.number,
 });
 
 EditablePatientNote.propTypes = { note: NotePropertyType.isRequired };
@@ -117,7 +117,7 @@ const onNoteChange = ({
 };
 
 const PatientNotes = ({
-  patientId,
+  patientIdentifier,
   notes,
   note,
   setNote,
@@ -133,15 +133,15 @@ const PatientNotes = ({
 
   useEffect(() => {
     setNoteHeightMap(new Map());
-  }, [patientId]);
+  }, [patientIdentifier]);
 
   const handleChange = event => {
     setNote(capitalize(event.currentTarget.value));
   };
 
-  const handleUpdate = (description, patientNoteId) => {
-    const modifiedNote = notes.find(n => n.patientNoteId === patientNoteId);
-    dispatch(editPatientNote(patientId, modifiedNote, description))
+  const handleUpdate = (description, patientNoteIdentifier) => {
+    const modifiedNote = notes.find(n => n.patientNoteIdentifier === patientNoteIdentifier);
+    dispatch(editPatientNote(patientIdentifier, modifiedNote, description))
       .then(() => {
         onPatientNoteEdited();
       })
@@ -150,8 +150,8 @@ const PatientNotes = ({
       });
   };
 
-  const userId = useSelector(state => state.userState.userProfile.userId);
-  const isOwn = patientNote => patientNote.creator.userId === userId;
+  const userIdentifier = useSelector(state => state.userState.userProfile.userIdentifier);
+  const isOwn = patientNote => patientNote.creator.userIdentifier === userIdentifier;
 
   useEffect(() => {
     const listHeight = take(5, [...noteHeightMap.keys()])

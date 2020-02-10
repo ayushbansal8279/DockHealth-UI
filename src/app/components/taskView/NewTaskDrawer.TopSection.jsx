@@ -46,7 +46,7 @@ export default ({
   statusSelectData,
   storeAsCurrentTask,
   task,
-  taskId,
+  taskIdentifier,
   togglePriorityActive,
 }) => {
   const statusSelectReference = useRef(null);
@@ -62,7 +62,7 @@ export default ({
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskId],
+    [taskIdentifier],
   );
 
   return (
@@ -105,7 +105,7 @@ export default ({
             const newTaskPriority = priorityActive ? 'HIGH' : 'LOW';
             togglePriorityActive();
             onTaskPriorityChanged(newTaskPriority);
-            if (taskId) {
+            if (taskIdentifier) {
               saveTaskPriority({ newTaskPriority });
             }
           }}
@@ -146,7 +146,7 @@ export default ({
                 closeStatusPopover,
                 setStatus,
                 saveTaskStatus,
-                taskId,
+                taskIdentifier,
               }),
             )}
           </List>

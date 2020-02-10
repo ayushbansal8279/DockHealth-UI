@@ -20,12 +20,12 @@ import {
   UPDATE_ORGANIZATION,
 } from './action-types';
 
-export const getOrganizationById = ({ organizationId }) => dispatch => {
+export const getOrganizationById = ({ organizationIdentifier }) => dispatch => {
   dispatch({
     type: REQUEST_GET_ORGANIZATION,
   });
 
-  OrganizationApi.get({ organizationId })
+  OrganizationApi.get({ organizationIdentifier })
     .then(data => {
       dispatch({
         type: GET_ORGANIZATION_SUCCESS,
@@ -107,12 +107,12 @@ export const getBillingDetails = () => dispatch => {
     });
 };
 
-export const getInvoiceDetails = ({ organizationId }) => dispatch => {
+export const getInvoiceDetails = ({ organizationIdentifier }) => dispatch => {
   dispatch({
     type: REQUEST_GET_INVOICE_DETAILS,
   });
 
-  OrganizationApi.getInvoiceDetails({ organizationId })
+  OrganizationApi.getInvoiceDetails({ organizationIdentifier })
     .then(data => {
       dispatch({
         type: GET_INVOICE_DETAILS_SUCCESS,

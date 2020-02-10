@@ -29,7 +29,7 @@ const ListEmptyElement = ({ addingNewTask, taskDrawerOpen }) => {
 const TaskList = ({
   tasks = [],
   taskDrawerOpen,
-  taskListId,
+  taskListIdentifier,
   status,
   search,
   filterBy,
@@ -48,7 +48,7 @@ const TaskList = ({
   } = initializeTaskListHooks({
     otherTaskListProps,
     tasks,
-    taskListId,
+    taskListIdentifier,
     isInbox,
     status,
     filterBy,
@@ -74,9 +74,9 @@ const TaskList = ({
           <Task
             {...{
               task,
-              isSubtask: task.parentTaskId !== null,
+              isSubtask: task.parentTaskIdentifier !== null,
               taskDrawerOpen,
-              key: task.taskId,
+              key: task.taskIdentifier,
               ...otherTaskListProps,
             }}
           />
@@ -101,7 +101,7 @@ const TaskList = ({
 TaskList.propTypes = {
   tasks: PropTypes.arrayOf(
     PropTypes.shape({
-      taskId: PropTypes.number,
+      taskIdentifier: PropTypes.number,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       dueDate: PropTypes.string,

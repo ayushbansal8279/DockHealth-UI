@@ -113,7 +113,7 @@ class PeopleContainer extends PureComponent {
     const personStatus = this.getStatus(person);
 
     return (
-      <ListEntryContainer key={person.userId + personName}>
+      <ListEntryContainer key={person.userIdentifier + personName}>
         <Grid direction="row" wrap="nowrap" container spacing={16}>
           <MemberContainer
             style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
@@ -159,10 +159,10 @@ class PeopleContainer extends PureComponent {
           /> */}
 
           {/* <BooleanModal
-            uniqueModalId={`delete-user-${person.userId}`}
+            uniqueModalId={`delete-user-${person.userIdentifier}`}
             message="Are you sure you want to delete this user?"
             handleConfirmation={this.onClickRemoveUser}
-            handleConfirmationArgs={person.userId}
+            handleConfirmationArgs={person.userIdentifier}
             confirmBtnTxt="Delete"
           /> */}
         </Grid>

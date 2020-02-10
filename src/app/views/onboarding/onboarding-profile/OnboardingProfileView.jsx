@@ -74,7 +74,7 @@ const onFormSubmit = ({
     showToast({ title: 'Profile updated successfully!', status: 'success' });
 
     userApi.getUserById();
-    userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+    userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     userApi.getUserNotoficationPrefs();
 
     goToOnboardingFinished();

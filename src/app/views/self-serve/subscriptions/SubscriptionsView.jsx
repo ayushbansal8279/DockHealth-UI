@@ -80,14 +80,14 @@ export default () => {
   const {
     billingData,
     organization,
-    organizationId,
+    organizationIdentifier,
     isFetching: isOrganizationFetching,
     requestError: organizationRequestError,
     isFetchingBilling,
     requestErrorBilling,
   } = useSelector(store => ({
     ...store.organizationState,
-    organizationId: store.userState?.userProfile?.organizationId,
+    organizationIdentifier: store.userState?.userProfile?.organizationIdentifier,
   }));
 
   const recalculateEstimate = useCallback(
@@ -127,7 +127,7 @@ export default () => {
       ],
     });
 
-    getBillingDetails({ organizationId })(dispatch);
+    getBillingDetails({ organizationIdentifier })(dispatch);
 
     recalculateEstimate();
 
@@ -182,7 +182,7 @@ export default () => {
           setCurrentPlan={setCurrentPlan}
           annualPayment={annualPayment}
           toggleAnnualPayment={toggleAnnualPayment}
-          organizationId={organizationId}
+          organizationIdentifier={organizationIdentifier}
           billingFrequency={billingFrequency}
           recalculateEstimate={recalculateEstimate}
         />
@@ -220,7 +220,7 @@ export default () => {
                 annualPayment,
                 billingFrequency,
                 chosenPlan,
-                organizationId,
+                organizationIdentifier,
                 dispatch,
               })}
             >

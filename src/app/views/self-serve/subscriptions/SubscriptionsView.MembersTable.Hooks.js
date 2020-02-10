@@ -31,8 +31,8 @@ const initializeMembersTableHooks = ({
   useEffect(() => {
     setSelectedUsers(
       organizationMembers
-        .map(({ userId, email, subscription }) =>
-          subscription ? { userId, email } : null,
+        .map(({ userIdentifier, email, subscription }) =>
+          subscription ? { userIdentifier, email } : null,
         )
         .filter(Boolean),
     );
@@ -53,8 +53,8 @@ const initializeMembersTableHooks = ({
           ),
         );
 
-        if (toggledUser.userId) {
-          removeUserFromOrganization(toggledUser.userId)(dispatch).then(() => {
+        if (toggledUser.userIdentifier) {
+          removeUserFromOrganization(toggledUser.userIdentifier)(dispatch).then(() => {
             getAllUsers();
           });
         } else {
@@ -74,7 +74,7 @@ const initializeMembersTableHooks = ({
 
   const [removeDialogState, setRemoveDialogState] = useSetState({
     open: false,
-    userId: null,
+    userIdentifier: null,
     email: null,
     orgUserRole: null,
   });
@@ -92,9 +92,9 @@ const initializeMembersTableHooks = ({
   }, [setRemoveDialogState]);
 
   const setRemovedUserData = useCallback(
-    ({ userId, email, orgUserRole }) => {
+    ({ userIdentifier, email, orgUserRole }) => {
       setRemoveDialogState({
-        userId,
+        userIdentifier,
         email,
         orgUserRole,
       });

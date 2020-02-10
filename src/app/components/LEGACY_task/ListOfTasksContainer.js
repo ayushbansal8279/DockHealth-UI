@@ -16,10 +16,10 @@ class ListOfTasksContainer extends PureComponent {
     });
     if (
       (!this.props.members || this.props.members.length == 0) &&
-      this.props.taskListId
+      this.props.taskListIdentifier
     ) {
       this.props.taskListActions.getMembersByTaskListId(
-        this.props.taskListId,
+        this.props.taskListIdentifier,
         'ALL',
       );
     }
@@ -60,7 +60,7 @@ const mapStateToProps = function(store, props) {
   // var listMembers = store.taskListState.tasklistmembers
   let listMembers = [];
   const currentTaskListMembersDetails = store.taskListState.allTaskListMembers.filter(
-    details => details.taskListId == props.taskListId,
+    details => details.taskListIdentifier == props.taskListIdentifier,
   );
   if (
     currentTaskListMembersDetails &&

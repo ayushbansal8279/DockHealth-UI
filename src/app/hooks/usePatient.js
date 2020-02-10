@@ -2,13 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchPatient } from '../actions/patient';
 
-const usePatient = (patientId) => {
+const usePatient = (patientIdentifier) => {
   const dispatch = useDispatch();
   useEffect(
     () => {
-      dispatch(fetchPatient(patientId));
+      dispatch(fetchPatient(patientIdentifier));
     },
-    [dispatch, patientId],
+    [dispatch, patientIdentifier],
   );
 
   const {
@@ -17,11 +17,11 @@ const usePatient = (patientId) => {
     state => state.patient,
   );
 
-  const taskId = selectedTaskId != null && selectedTaskId;
+  const taskIdentifier = selectedTaskId != null && selectedTaskId;
   const unfinishedTasks = tasks?.flatMap(task => [task, ...task.subtasks]) || [];
   const finishedTasks = completedTasks?.flatMap(task => [task, ...task.subtasks]) || [];
   const allTasks = [...unfinishedTasks, ...finishedTasks];
-  const selectedTask = allTasks.find(t => t.taskId === taskId);
+  const selectedTask = allTasks.find(t => t.taskIdentifier === taskIdentifier);
 
   return {
     details,

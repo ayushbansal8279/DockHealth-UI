@@ -16,7 +16,7 @@ const mockStore = configureStore([thunk]);
 
 describe('fetchPatient', () => {
   it('should fetch patient', async () => {
-    const details = { patientId: 0 };
+    const details = { patientIdentifier: 0 };
     PatientApi.getPatientById.mockReturnValue(Promise.resolve(details));
 
     const store = mockStore({

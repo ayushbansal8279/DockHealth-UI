@@ -78,15 +78,15 @@ ManageButton.propTypes = {
   }).isRequired,
 };
 
-const mapDispatchToProps = (dispatch, { taskListId, member: { userId } }) => ({
+const mapDispatchToProps = (dispatch, { taskListIdentifier, member: { userIdentifier } }) => ({
   remove: () => {
-    removeUserFromList(taskListId, { userId })(dispatch).then(() => 
-      getOrganizationUsersNotInTaskList(taskListId, 'ALL')(dispatch)
+    removeUserFromList(taskListIdentifier, { userIdentifier })(dispatch).then(() => 
+      getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch)
     );
   },
   changeRole: role => {
-    changeUserRoleForList(taskListId, { userId }, role)(dispatch).then(() => 
-      getOrganizationUsersNotInTaskList(taskListId, 'ALL')(dispatch)
+    changeUserRoleForList(taskListIdentifier, { userIdentifier }, role)(dispatch).then(() => 
+      getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch)
     );
   },
 });
@@ -97,9 +97,9 @@ const ConnectedManageButton = connect(
 )(ManageButton);
 
 ConnectedManageButton.propTypes = {
-  taskListId: PropTypes.number.isRequired,
+  taskListIdentifier: PropTypes.number.isRequired,
   member: PropTypes.shape({
-    userId: PropTypes.number,
+    userIdentifier: PropTypes.number,
     taskListUserRole: PropTypes.string,
   }).isRequired,
 };

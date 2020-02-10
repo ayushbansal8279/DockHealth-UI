@@ -48,7 +48,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
         <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
       )}
       {tasks.map(task => (
-        <Task task={task} key={task.taskId} hidePatient hideCheckbox readOnly />
+        <Task task={task} key={task.taskIdentifier} hidePatient hideCheckbox readOnly />
       ))}
       {completedTasks.length > 0 && (
         <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
@@ -62,7 +62,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
           {completedTasks.map(task => (
-            <Task task={task} key={task.taskId} readOnly />
+            <Task task={task} key={task.taskIdentifier} readOnly />
           ))}
         </div>
       )}

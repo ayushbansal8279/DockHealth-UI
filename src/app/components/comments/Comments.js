@@ -23,12 +23,12 @@ const CommentStream = styled.div`
 class Comments extends React.PureComponent {
   handleCommentEdition = (value, name) => {
     const { task, updateComment: editComment } = this.props;
-    const comment = { commentId: name, comment: value };
+    const comment = { commentIdentifier: name, comment: value };
     editComment(task, comment);
   };
 
   render() {
-    const { userId, comments, submit, disabled } = this.props;
+    const { userIdentifier, comments, submit, disabled } = this.props;
 
     /* eslint-disable max-len */
     const sameDay = (comment1, comment2) =>
@@ -37,7 +37,7 @@ class Comments extends React.PureComponent {
       comment1.creator.userName === comment2.creator.userName;
     /* eslint-enable max-len */
 
-    const isUser = creator => creator.userId === userId;
+    const isUser = creator => creator.userIdentifier === userIdentifier;
 
     const parsedComments = comments.map(comment => ({
       ...comment,
@@ -64,14 +64,14 @@ class Comments extends React.PureComponent {
                 <Creator
                   {...creator}
                   isOwn={isUser(creator)}
-                  key={creator.userId}
+                  key={creator.userIdentifier}
                 >
-                  {comments.map(({ comment, commentId, dateCreated, dateUpdated }) => (
-                    <Comment isOwn={isUser(creator)} key={commentId}>
+                  {comments.map(({ comment, commentIdentifier, dateCreated, dateUpdated }) => (
+                    <Comment isOwn={isUser(creator)} key={commentIdentifier}>
                       {/* {comment} */}
                       <EditableDescription
                         placeholder="Enter your comment"
-                        name={commentId}
+                        name={commentIdentifier}
                         value={comment}
                         onChange={this.handleCommentEdition}
                         disabled={disabled || !isUser(creator)}
@@ -96,18 +96,18 @@ Comments.propTypes = {
   submit: PropTypes.func.isRequired,
   comments: PropTypes.arrayOf(
     PropTypes.shape({
-      commentId: PropTypes.number,
+      commentIdentifier: PropTypes.number,
       comment: PropTypes.string,
       dateCreated: PropTypes.string,
       creator: PropTypes.shape({
-        userId: PropTypes.number,
+        userIdentifier: PropTypes.number,
         userName: PropTypes.string,
         initials: PropTypes.string,
         profileThumbnailPictureHash: PropTypes.string,
       }),
     }),
   ).isRequired,
-  userId: PropTypes.number.isRequired,
+  userIdentifier: PropTypes.number.isRequired,
 };
 
 Comments.defaultProps = {

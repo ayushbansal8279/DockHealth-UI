@@ -216,16 +216,16 @@ export default forwardRef(
       }
     };
 
-    const taskListId = taskList?.taskListId;
+    const taskListIdentifier = taskList?.taskListIdentifier;
 
     useEffect(
       () => {
-        if (taskListId) {
-          getTaskListStats({ taskListId })(dispatch);
+        if (taskListIdentifier) {
+          getTaskListStats({ taskListIdentifier })(dispatch);
         }
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [taskListId],
+      [taskListIdentifier],
     );
 
     useEffect(() => {

@@ -137,17 +137,17 @@ class TaskListView extends PureComponent {
     scrollToTop();
   };
 
-  deleteList = taskListId => {
+  deleteList = taskListIdentifier => {
     const { taskListAction } = this.props;
-    taskListAction.deleteTaskListById(taskListId).then(() => {
+    taskListAction.deleteTaskListById(taskListIdentifier).then(() => {
       taskListAction.getGenericListCounts();
       onTaskListDeleted();
     });
   };
 
-  leaveList = taskListId => {
+  leaveList = taskListIdentifier => {
     const { taskListAction } = this.props;
-    taskListAction.leaveList(taskListId).then(() => {
+    taskListAction.leaveList(taskListIdentifier).then(() => {
       onTaskListLeft();
     });
   };
@@ -156,7 +156,7 @@ class TaskListView extends PureComponent {
     const { invitationAction } = this.props;
     invitationAction.acceptInviteToTaskList(taskList);
     onTaskListInvitationAccepted();
-    hashHistory.push(`tasks/${taskList.taskListId}`);
+    hashHistory.push(`tasks/${taskList.taskListIdentifier}`);
   };
 
   rejectInviteToTaskList = taskList => {

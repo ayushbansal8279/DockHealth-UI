@@ -50,7 +50,7 @@ const getListElements = ({
   unsetPopoverOpen,
 }) => {
   const isCurrentUser =
-    person.userId === userProfile.userId &&
+    person.userIdentifier === userProfile.userIdentifier &&
     person.userInviteStatus !== 'PENDING';
 
   const isCurrentUserAdminOrOwner =
@@ -65,7 +65,7 @@ const getListElements = ({
 
   const changeRoleHandler = () => {
     handleClick({ onClickAction: changeUserRoleForOrg })(
-      person.userId,
+      person.userIdentifier,
       person.orgUserRole === 'MEMBER' ? 'ADMIN' : 'MEMBER',
     );
     unsetPopoverOpen();
@@ -114,7 +114,7 @@ const getListElements = ({
         </MenuItem>,
         // <MenuItem
         //   key="remove-user-with-popup"
-        //   data-open={`delete-user-${person.userId}`}
+        //   data-open={`delete-user-${person.userIdentifier}`}
         // >
         //   <ListItemIcon>
         //     <img alt="Directory icon" src={DirectoryIcon} />
@@ -131,7 +131,7 @@ const getListElements = ({
         //   onClick={() => {
         //     this.handleClick({
         //       onClickAction: removeUserFromOrganization,
-        //     })(person.userId);
+        //     })(person.userIdentifier);
         //     unsetPopoverOpen();
         //   }}
         // >
@@ -153,7 +153,7 @@ const getListElements = ({
         </MenuItem>,
         // <MenuItem
         //   key="delete-person"
-        //   data-open={`delete-user-${person.userId}`}
+        //   data-open={`delete-user-${person.userIdentifier}`}
         // >
         //   <ListItemIcon>
         //     <img alt="Directory icon" src={DirectoryIcon} />
@@ -170,7 +170,7 @@ const getListElements = ({
       always([
         <MenuItem
           key="leave-organization"
-          data-open={`delete-user-${person.userId}`}
+          data-open={`delete-user-${person.userIdentifier}`}
         >
           <ListItemIcon>
             <img alt="Cross icon" src={CancelInvitationIcon} />

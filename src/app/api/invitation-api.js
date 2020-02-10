@@ -10,8 +10,8 @@ export function findInvitationsByUserId() {
     });
 }
 
-export function acceptInviteToTaskList(tasklistId) {
-  return axios.put('list/acceptInviteToTaskList/' + tasklistId)
+export function acceptInviteToTaskList(taskListIdentifier) {
+  return axios.put('list/acceptInviteToTaskList/' + taskListIdentifier)
     .then(response => {
       return response.data;
     }).catch(function (error){
@@ -20,8 +20,8 @@ export function acceptInviteToTaskList(tasklistId) {
     });
 }
 
-export function rejectInviteToTaskList(tasklistId) {
-  return axios.put('list/rejectInviteToTaskList/' + tasklistId)
+export function rejectInviteToTaskList(taskListIdentifier) {
+  return axios.put('list/rejectInviteToTaskList/' + taskListIdentifier)
     .then(response => {
       return response.data;
     }).catch(function (error){

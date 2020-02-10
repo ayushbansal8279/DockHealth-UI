@@ -47,7 +47,7 @@ class SortFilterTasks extends PureComponent {
 
   toggleListNotifications = () => {
     this.props.taskListActions.toggleListNotifications(
-      this.props.taskListId,
+      this.props.taskListIdentifier,
       !this.props.taskList.notifications,
     );
   };

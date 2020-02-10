@@ -15,8 +15,8 @@ class AddSubtaskForm extends Component {
       description: '',
       assignedTo: '',
       patient: '',
-      patientId: '',
-      assignedToId: '',
+      patientIdentifier: '',
+      assignedToIdentifier: '',
       priorityFlag: undefined,
       subtask: undefined,
     };
@@ -69,21 +69,21 @@ class AddSubtaskForm extends Component {
     $('.subtask-wrapper').slideToggle(300);
     $('.main-task-wrapper').slideToggle(300);
     console.log(this.state);
-    // var patientId = $('#add-patient-subtask-id').val()
-    // this.setState({patientId:patientId})
+    // var patientIdentifier = $('#add-patient-subtask-id').val()
+    // this.setState({patientIdentifier:patientIdentifier})
     const subtask = this.state;
     subtask.description = $('#description-subtask').val();
     if (subtask.patient != '') {
-      subtask.patientId = $('#add-patient-subtask-id').val();
+      subtask.patientIdentifier = $('#add-patient-subtask-id').val();
       subtask.patient = $('#add-patient-subtask').val();
     } else {
-      subtask.patientId = null;
+      subtask.patientIdentifier = null;
     }
     if ($('#assign-subtask-to').val() != null) {
-      subtask.assignedToId = $('#assign-subtask-to-id').val();
+      subtask.assignedToIdentifier = $('#assign-subtask-to-id').val();
       subtask.assignedTo = $('#assign-subtask-to').val();
     } else {
-      subtask.assignedToId = '';
+      subtask.assignedToIdentifier = '';
     }
 
     if ($('#subtask-due-date').val() != '') {
@@ -215,8 +215,8 @@ class AddSubtaskForm extends Component {
             priority={this.state.priorityFlag}
           />
           <Field
-            id="taskId"
-            name="taskId"
+            id="taskIdentifier"
+            name="taskIdentifier"
             className="input-group-field"
             component="input"
             type="hidden"
@@ -233,7 +233,7 @@ class AddSubtaskForm extends Component {
 
           {/* ADD PATIENT */}
           {/* <Field onChange={(e) => this.handlePatientChange(e)} id="add-patient-subtask" name='patient' type='text' component={BasicField} label='Add Patient' xlinkHref="#icon-patient" extraClassName="add-patient-subtask"/> */}
-          {/* <Field id="add-patient-subtask-id" name="patientId" className="input-group-field" component="input" type="hidden"/> */}
+          {/* <Field id="add-patient-subtask-id" name="patientIdentifier" className="input-group-field" component="input" type="hidden"/> */}
 
           {/* ADD PATIENT */}
           {/* <div className="column large-12 input-group">
@@ -259,7 +259,7 @@ class AddSubtaskForm extends Component {
               />
               <Field
                 id="assign-subtask-to-id"
-                name="assignedToId"
+                name="assignedToIdentifier"
                 className="input-group-field"
                 component="input"
                 type="hidden"

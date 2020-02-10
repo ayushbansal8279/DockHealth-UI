@@ -20,7 +20,7 @@ import {
 export default ({
   otherTaskListProps,
   tasks: propsTasks,
-  taskListId,
+  taskListIdentifier,
   isInbox,
   status,
   filterBy,
@@ -41,19 +41,19 @@ export default ({
   const [currentSorting, setCurrentSorting] = useState(NO_SORTING);
 
   const [newlyAddedTasks, tasksToShow] = partition(
-    ({ taskId }) => newlyAddedTaskIds.includes(taskId),
+    ({ taskIdentifier }) => newlyAddedTaskIds.includes(taskIdentifier),
     tasks,
   );
 
   const showMoreButtonVisible =
     taskListShowMoreIndex * TASK_LIST_SHOW_MORE_STEP < tasks.length &&
-    (taskListId || isInbox);
+    (taskListIdentifier || isInbox);
 
   const incrementTaskListShowMoreIndex = useCallback(() => {
     if (showMoreButtonVisible && !isShowMoreLocked) {
       setShowMoreLocked(true);
       getTaskPage({
-        taskListId,
+        taskListIdentifier,
         status,
         filterBy,
         sortBy: 'TASK_DESCRIPTION',
@@ -105,7 +105,7 @@ export default ({
     (order === 'asc' ? ascend : descend)(valueGetter),
   );
 
-  const sortedTasksToShow = uniqBy(prop('taskId'), [
+  const sortedTasksToShow = uniqBy(prop('taskIdentifier'), [
     ...newlyAddedTasks,
     ...sortWith(reverse(sortingMethods), tasksToShow),
   ]);

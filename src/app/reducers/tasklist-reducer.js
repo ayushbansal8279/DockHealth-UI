@@ -55,29 +55,29 @@ const inviteUserMapper = user => ({
   taskListUserRole: DEFAULT_USER_ROLE,
 });
 
-const inviteUser = (state, { userId }) => ({
+const inviteUser = (state, { userIdentifier }) => ({
   ...state,
   tasklistmembers: [
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
-      .filter(user => user.userId === userId)
+      .filter(user => user.userIdentifier === userIdentifier)
       .map(inviteUserMapper),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist.filter(
-    user => user.userId !== userId,
+    user => user.userIdentifier !== userIdentifier,
   ),
 });
 
-const inviteMultipleUsers = (state, { invitedUsers }) => ({
+const inviteMultipleUsers = (state, { invitedUsersIdentifier }) => ({
   ...state,
   tasklistmembers: [
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
-      .filter(user => invitedUsers.some(userId => user.userId === userId))
+      .filter(user => invitedUsersIdentifier.some(userIdentifier => user.userIdentifier === userIdentifier))
       .map(inviteUserMapper),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist.filter(user =>
-    invitedUsers.every(userId => user.userId !== userId),
+    invitedUsersIdentifier.every(userIdentifier => user.userIdentifier !== userIdentifier),
   ),
 });
 
@@ -119,15 +119,15 @@ const TaskListReducer = (state = initialState, action) => {
       };
 
     case GET_TASKLISTMEMBERS_SUCCESS: {
-      const { taskListId, tasklistmembers } = action;
+      const { taskListIdentifier, tasklistmembers } = action;
 
       const listMembersDetails = {
-        taskListId,
+        taskListIdentifier,
         tasklistmembers,
       };
 
       const currentTaskListMembersDetails = state.allTaskListMembers.filter(
-        details => details.taskListId === action.taskListId,
+        details => details.taskListIdentifier === action.taskListIdentifier,
       );
 
       if (
@@ -147,7 +147,7 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         tasklistmembers,
         allTaskListMembers: state.allTaskListMembers.map(listMembers =>
-          listMembers.taskListId === action.taskListId
+          listMembers.taskListIdentifier === action.taskListIdentifier
             ? { ...listMembers, listMembersDetails }
             : listMembers,
         ),
@@ -191,11 +191,11 @@ const TaskListReducer = (state = initialState, action) => {
       };
 
     case TOGGLE_LIST_NOTIFICATIONS_SUCCESS: {
-      const { taskListId, receiveNotifications } = action;
+      const { taskListIdentifier, receiveNotifications } = action;
 
       const updateTasklist = map(
         when(
-          propEq('taskListId', taskListId),
+          propEq('taskListIdentifier', taskListIdentifier),
           set(lensProp('notifications'), receiveNotifications),
         ),
       );
@@ -217,7 +217,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklist: state.tasklist.map(taskList =>
-          taskList.taskListId === action.updatedTasklist.taskListId
+          taskList.taskListIdentifier === action.updatedTasklist.taskListIdentifier
             ? {
                 ...taskList,
                 ...pickBy(value => !isNil(value), action.updatedTasklist),
@@ -230,7 +230,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklist: state.tasklist.filter(
-          taskList => taskList.taskListId !== action.taskListId,
+          taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
         ),
       };
 
@@ -238,7 +238,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         currentList: state.tasklist.find(
-          taskList => taskList.taskListId === action.taskListId,
+          taskList => taskList.taskListIdentifier === action.taskListIdentifier,
         ),
       };
 
@@ -252,7 +252,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.filter(
-          member => member.userId !== action.removedUser.userId,
+          member => member.userIdentifier !== action.removedUser.userIdentifier,
         ),
       };
 
@@ -260,7 +260,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.map(member =>
-          member.userId === action.markedUser.userId
+          member.userIdentifier === action.markedUser.userIdentifier
             ? { ...member, taskListUserRole: action.role }
             : member,
         ),

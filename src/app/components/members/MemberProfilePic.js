@@ -5,8 +5,8 @@ import * as UserActions from '../../actions/people-actions';
 
 class MemberProfilePic extends PureComponent {
   componentDidMount() {
-    const { userActions, userId } = this.props;
-    userActions.getUserById(userId);
+    const { userActions, userIdentifier } = this.props;
+    userActions.getUserById(userIdentifier);
   }
 
   render() {

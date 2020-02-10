@@ -114,9 +114,9 @@ const MemberInvitationPopup = ({ members, taskList, back, close, invite }) => {
         {sortedListings.map(m => (
           <ListItem
             member={m}
-            key={m.userId}
+            key={m.userIdentifier}
             onClick={select}
-            id={m.userId}
+            id={m.userIdentifier}
             style={{ opacity: m.userStatus === 'INVITED' ? '0.5' : '1.0' }}
           >
             <MemberSlot member={m} />
@@ -140,7 +140,7 @@ MemberInvitationPopup.propTypes = {
   invite: PropTypes.func.isRequired,
   taskList: PropTypes.shape({
     listName: PropTypes.string,
-    taskListId: PropTypes.number,
+    taskListIdentifier: PropTypes.number,
   }).isRequired,
 };
 
@@ -154,9 +154,9 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = (dispatch, { taskList }) => ({
-  invite: userId => {
-    inviteMultipleUsersToTaskList(taskList.taskListId, [userId])(dispatch).then(
-      () => getMembersByTaskListId(taskList.taskListId, 'ALL')(dispatch),
+  invite: userIdentifier => {
+    inviteMultipleUsersToTaskList(taskList.taskListIdentifier, [userIdentifier])(dispatch).then(
+      () => getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')(dispatch),
     );
   },
 });

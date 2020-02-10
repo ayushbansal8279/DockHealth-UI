@@ -32,19 +32,19 @@ class ListMembers extends BaseComponentWithAutoComplete {
       inviteUsers.push(selectedUserId);
       this.props.taskListActions
         .inviteMultipleUsersToTaskList(
-          this.props.currentList.taskListId,
+          this.props.currentList.taskListIdentifier,
           inviteUsers,
         )
         .then(res => {
           this.props.formActions.reset('ListMembersAddForm');
           // this.setState({inviteUserResult: 'Invitation sent successfully!!'}); //this will cause render to be called
-          if (this.props.currentList.taskListId) {
+          if (this.props.currentList.taskListIdentifier) {
             this.props.taskListActions.getMembersByTaskListId(
-              this.props.currentList.taskListId,
+              this.props.currentList.taskListIdentifier,
               'ALL',
             );
           }
-          closePopup(`#list-members-${this.props.currentList.taskListId}`);
+          closePopup(`#list-members-${this.props.currentList.taskListIdentifier}`);
         })
         .catch(error => {
           this.setState({
@@ -69,7 +69,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
     console.log(`ListMembers componentWillUpdate: ${nextProps}`);
     enableAutoCompleteForListMembers(
       nextProps.orgusersnotintasklist,
-      nextProps.currentList.taskListId,
+      nextProps.currentList.taskListIdentifier,
       process.env.HEYDOC_SERVICES_BASE_URL,
     );
   }
@@ -79,12 +79,12 @@ class ListMembers extends BaseComponentWithAutoComplete {
       (nextProps.currentList && !this.props.currentList) ||
       (nextProps.currentList &&
         this.props.currentList &&
-        nextProps.currentList.taskListId != this.props.currentList.taskListId)
+        nextProps.currentList.taskListIdentifier != this.props.currentList.taskListIdentifier)
     ) {
-      this.setState({ curTaskListId: nextProps.currentList.taskListId });
+      this.setState({ curTaskListId: nextProps.currentList.taskListIdentifier });
       console.log(
         `in componentWillReceiveProps -- curTaskListId: ${
-          nextProps.currentList.taskListId
+          nextProps.currentList.taskListIdentifier
         }`,
       );
     }
@@ -98,7 +98,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
   // shouldComponentUpdate(nextProps, nextState) {
   // 	if(!this.props.currentList
   // 		|| !this.props.members
-  // 		|| (nextProps.currentList && this.props.currentList.taskListId != nextProps.currentList.taskListId)
+  // 		|| (nextProps.currentList && this.props.currentList.taskListIdentifier != nextProps.currentList.taskListIdentifier)
   // 		|| (nextProps.members && this.props.members.length != nextProps.members.length)){
   // 		return true
   // 	}
@@ -107,9 +107,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
   deleteMember = member => {
     this.props.taskListActions
-      .removeUserFromList(this.props.currentList.taskListId, member)
+      .removeUserFromList(this.props.currentList.taskListIdentifier, member)
       .then(res => {
-        closePopup(`#list-members-${this.props.currentList.taskListId}`);
+        closePopup(`#list-members-${this.props.currentList.taskListIdentifier}`);
       })
       .catch(error => {
         this.setState({
@@ -122,9 +122,9 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
   changeUserRole = (member, role) => {
     this.props.taskListActions
-      .changeUserRoleForList(this.props.currentList.taskListId, member, role)
+      .changeUserRoleForList(this.props.currentList.taskListIdentifier, member, role)
       .then(res => {
-        closePopup(`#list-members-${this.props.currentList.taskListId}`);
+        closePopup(`#list-members-${this.props.currentList.taskListIdentifier}`);
       })
       .catch(error => {
         this.setState({
@@ -160,7 +160,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
         className="reveal list-members"
         id={`list-members-${
           this.props.currentList != null
-            ? this.props.currentList.taskListId
+            ? this.props.currentList.taskListIdentifier
             : ''
         }`}
         data-reveal=""
@@ -177,7 +177,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
             this.props.members.map(member => {
               return (
                 <div
-                  key={`listmember_${member.userId}`}
+                  key={`listmember_${member.userIdentifier}`}
                   className="row condense expanded border-bottom align-middle"
                 >
                   <div className="columns shrink">
@@ -201,14 +201,14 @@ class ListMembers extends BaseComponentWithAutoComplete {
                         <svg
                           className="icon ellipses medium"
                           data-toggle={`more-options-list01-member-id-${
-                            member.userId
+                            member.userIdentifier
                           }`}
                         >
                           <use xlinkHref="#icon-ellipses" />
                         </svg>
                         <div
                           className="small dropdown-pane"
-                          id={`more-options-list01-member-id-${member.userId}`}
+                          id={`more-options-list01-member-id-${member.userIdentifier}`}
                           data-dropdown
                           data-close-on-click="true"
                         >
@@ -278,7 +278,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
             {/* <Field id="add-member-to-list" name='assignedTo' type='text' component="input" placeholder='Add a new member' className="assign-to"/> */}
             <Field
               id="add-member-to-list-id"
-              name="assignedToId"
+              name="assignedToIdentifier"
               className="input-group-field"
               component="input"
               type="hidden"

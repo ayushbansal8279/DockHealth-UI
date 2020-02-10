@@ -145,14 +145,14 @@ const calculateAgeFromDateOfBirth = dob => {
 const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
   const dispatch = useDispatch();
   const selectPatient = useCallback(
-    ({ patientId }) => () => {
-      dispatch(highlightPatient(patientId));
+    ({ patientIdentifier }) => () => {
+      dispatch(highlightPatient(patientIdentifier));
     },
     [dispatch],
   );
 
   useMount(() => {
-    selectPatient({ patientId: null });
+    selectPatient({ patientIdentifier: null });
   });
 
   return (
@@ -170,17 +170,17 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
         )}
       </ListHeader>
       {patients.map(
-        ({ patientId, mrn, lastName, firstName, middleName, dob, gender }) => (
+        ({ patientIdentifier, mrn, lastName, firstName, middleName, dob, gender }) => (
           <ListRow
-            key={patientId}
+            key={patientIdentifier}
             isHighlighted={
-              highlightedPatient && patientId === highlightedPatient.patientId
+              highlightedPatient && patientIdentifier === highlightedPatient.patientIdentifier
             }
             isCompact={isCompact}
-            onClick={selectPatient({ patientId })}
+            onClick={selectPatient({ patientIdentifier })}
           >
             <div>
-              <StyledLink to={`/patient/${patientId}`}>
+              <StyledLink to={`/patient/${patientIdentifier}`}>
                 {`${capitalize(lastName) || '—'}, ${capitalize(firstName) ||
                   '—'} ${capitalize(middleName) || ''}`}
               </StyledLink>
@@ -192,7 +192,7 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
                 <div>{calculateAgeFromDateOfBirth(dob)}</div>
                 <div>{capitalize(gender)}</div>
                 <QuickViewCell>
-                  <QuickViewIcon onClick={selectPatient({ patientId })} />
+                  <QuickViewIcon onClick={selectPatient({ patientIdentifier })} />
                 </QuickViewCell>
               </>
             )}

@@ -101,8 +101,8 @@ class AddTaskForm extends PureComponent {
       this.props.formActions.change('addSubtaskForm', 'patient', patientName);
       this.props.formActions.change(
         'addSubtaskForm',
-        'patientId',
-        currTask.patient.patientId,
+        'patientIdentifier',
+        currTask.patient.patientIdentifier,
       );
     }
   };
@@ -183,8 +183,8 @@ class AddTaskForm extends PureComponent {
             autoComplete="off"
           />
           <Field
-            id="taskId"
-            name="taskId"
+            id="taskIdentifier"
+            name="taskIdentifier"
             className="input-group-field"
             component="input"
             type="hidden"
@@ -208,7 +208,7 @@ class AddTaskForm extends PureComponent {
 
           {/* ADD PATIENT */}
           {(!this.props.currentTask ||
-            !this.props.currentTask.parentTaskId) && (
+            !this.props.currentTask.parentTaskIdentifier) && (
             <Field
               onChange={() => this.props.isSubtask(false)}
               id="add-patient"
@@ -221,10 +221,10 @@ class AddTaskForm extends PureComponent {
             />
           )}
           {(!this.props.currentTask ||
-            !this.props.currentTask.parentTaskId) && (
+            !this.props.currentTask.parentTaskIdentifier) && (
             <Field
               id="add-patient-id"
-              name="patientId"
+              name="patientIdentifier"
               className="input-group-field"
               component="input"
               type="hidden"
@@ -277,18 +277,18 @@ class AddTaskForm extends PureComponent {
                 {this.props.taskLists &&
                   this.props.taskLists.length > 0 &&
                   this.props.taskLists.map(taskList => (
-                    <div key={taskList.taskListId}>
+                    <div key={taskList.taskListIdentifier}>
                       <Field
-                        id={`radio${taskList.taskListId}`}
+                        id={`radio${taskList.taskListIdentifier}`}
                         className="input-group-field"
-                        name="taskListId"
-                        value={taskList.taskListId.toString()}
+                        name="taskListIdentifier"
+                        value={taskList.taskListIdentifier.toString()}
                         title={taskList.listName}
                         component="input"
                         type="radio"
                         onClick={e => this.handleTaskListSelection(e, taskList)}
                       />
-                      <label htmlFor={`radio${taskList.taskListId}`}>
+                      <label htmlFor={`radio${taskList.taskListIdentifier}`}>
                         {taskList.listName}
                       </label>
                       <br />
@@ -313,7 +313,7 @@ class AddTaskForm extends PureComponent {
               />
               <Field
                 id="assign-task-to-id"
-                name="assignedToId"
+                name="assignedToIdentifier"
                 className="input-group-field"
                 component="input"
                 type="hidden"
@@ -363,7 +363,7 @@ class AddTaskForm extends PureComponent {
           <FieldArray name="subtasks" component={renderSubtaskField} />
 
           <div className="row expanded">
-            {!this.props.currentTask || !this.props.currentTask.parentTaskId ? (
+            {!this.props.currentTask || !this.props.currentTask.parentTaskIdentifier ? (
               <div
                 onClick={() => this.resetSubtaskForm(this.props.currentTask)}
                 className="columns highlight center-content-vertical toggle-add-subtask link"
@@ -423,16 +423,16 @@ const mapStateToProps = store => {
   const initialTaskFormValues = {};
   if (store.taskListState.currentList) {
     initialTaskFormValues.taskList = store.taskListState.currentList.listName;
-    initialTaskFormValues.taskListId =
-      store.taskListState.currentList.taskListId;
+    initialTaskFormValues.taskListIdentifier =
+      store.taskListState.currentList.taskListIdentifier;
   }
   if (store.taskState.task) {
     const editTask = store.taskState.task;
     initialTaskFormValues.description = editTask.description;
-    initialTaskFormValues.taskId = editTask.taskId;
+    initialTaskFormValues.taskIdentifier = editTask.taskIdentifier;
     if (editTask.patient) {
       initialTaskFormValues.patient = `${editTask.patient.firstName} ${editTask.patient.lastName}`;
-      initialTaskFormValues.patientId = editTask.patient.patientId;
+      initialTaskFormValues.patientIdentifier = editTask.patient.patientIdentifier;
     }
     if (editTask.dueDate) {
       initialTaskFormValues.dueDate = new Date(editTask.dueDate);
@@ -444,7 +444,7 @@ const mapStateToProps = store => {
     }
     if (editTask.assignedTo) {
       initialTaskFormValues.assignedTo = `${editTask.assignedTo.firstName} ${editTask.assignedTo.lastName}`;
-      initialTaskFormValues.assignedToId = editTask.assignedTo.userId;
+      initialTaskFormValues.assignedToIdentifier = editTask.assignedTo.userIdentifier;
     }
     if (editTask.taskList) {
       initialTaskFormValues.taskList = editTask.taskList.listName;
@@ -468,7 +468,7 @@ const mapStateToProps = store => {
   }
   return {
     initialValues: initialTaskFormValues,
-    taskListSelection: selector(store, 'taskListId'),
+    taskListSelection: selector(store, 'taskListIdentifier'),
     currentTask: store.taskState.task,
     currentSubtasks: selector(store, 'subtasks'),
     priorityFlag: selector(store, 'priorityFlag'),

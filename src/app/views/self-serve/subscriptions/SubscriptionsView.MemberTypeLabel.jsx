@@ -18,7 +18,7 @@ import { H4 } from './SubscriptionsView.Styled';
 
 const renderUserTypesOptions = ({
   changeUserRole,
-  userId,
+  userIdentifier,
   userTypes,
   closePopover,
 }) => {
@@ -29,7 +29,7 @@ const renderUserTypesOptions = ({
         key={role}
         button
         onClick={() => {
-          changeUserRole({ userId, role })
+          changeUserRole({ userIdentifier, role })
             .then(() => {
               showToast({
                 status: 'success',
@@ -124,7 +124,7 @@ const renderInvitations = ({
 
 const MemberTypeLabel = ({
   email,
-  userId,
+  userIdentifier,
   userType: { label, changeable, invitationModifiable },
   userTypes,
 }) => {
@@ -134,8 +134,8 @@ const MemberTypeLabel = ({
   const dispatch = useDispatch();
 
   const changeUserRole = useCallback(
-    ({ userId: markedUserId, role }) =>
-      changeUserRoleForOrg(markedUserId, role)(dispatch),
+    ({ userIdentifier: markedUserIdentifier, role }) =>
+      changeUserRoleForOrg(markedUserIdentifier, role)(dispatch),
     [dispatch],
   );
 
@@ -150,7 +150,7 @@ const MemberTypeLabel = ({
   );
 
   const renderOptionsMethod = (() => {
-    if (userId === Number(sessionStorage.userId)) {
+    if (userIdentifier === Number(sessionStorage.userIdentifier)) {
       return null;
     }
 
@@ -158,7 +158,7 @@ const MemberTypeLabel = ({
       return renderUserTypesOptions;
     }
 
-    if (invitationModifiable && isNil(userId)) {
+    if (invitationModifiable && isNil(userIdentifier)) {
       return renderInvitations;
     }
 
@@ -189,7 +189,7 @@ const MemberTypeLabel = ({
           open={isPopoverOpen}
         >
           {renderOptionsMethod({
-            userId,
+            userIdentifier,
             userTypes,
             closePopover,
             changeUserRole,

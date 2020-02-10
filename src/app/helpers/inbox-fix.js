@@ -10,7 +10,7 @@ import {
 } from 'ramda';
 
 const fromInbox = propSatisfies(isNil, 'taskList');
-const inbox = { listName: 'Inbox', taskListId: 0 };
+const inbox = { listName: 'Inbox', taskListIdentifier: 0 };
 
 /**
  *  Makes task with no taskList field

@@ -7,9 +7,9 @@ import { mobileAnalyticsClient } from '../../api/analytics-api';
 
 class TaskListUsers extends PureComponent {
   componentDidMount() {
-    // this.props.getMembersByTaskListId(taskListId, memberStatus)
-    if (this.props.taskListId) {
-      this.props.getMembersByTaskListId(this.props.taskListId, 'ALL');
+    // this.props.getMembersByTaskListId(taskListIdentifier, memberStatus)
+    if (this.props.taskListIdentifier) {
+      this.props.getMembersByTaskListId(this.props.taskListIdentifier, 'ALL');
     }
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'TaskListUsers',
@@ -17,8 +17,8 @@ class TaskListUsers extends PureComponent {
   }
 
   componentWillUpdate(nextProps) {
-    if (nextProps.taskListId && nextProps.taskListId != this.props.taskListId) {
-      this.props.getMembersByTaskListId(nextProps.taskListId, 'ALL');
+    if (nextProps.taskListIdentifier && nextProps.taskListIdentifier != this.props.taskListIdentifier) {
+      this.props.getMembersByTaskListId(nextProps.taskListIdentifier, 'ALL');
     }
   }
 
@@ -29,7 +29,7 @@ class TaskListUsers extends PureComponent {
         {this.props.members &&
           this.props.members.map(member => {
             return (
-              <div className="avatar" key={member.userId}>
+              <div className="avatar" key={member.userIdentifier}>
                 <div
                   className="users"
                   title={`${member.firstName} ${member.lastName}`}

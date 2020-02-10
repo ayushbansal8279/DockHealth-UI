@@ -75,7 +75,7 @@ export default ({
         <PatientTasklistPatient>
           {patient && !isSubtask && (
             <Link
-              to={`/patient/${patient.patientId}`}
+              to={`/patient/${patient.patientIdentifier}`}
               style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
             >
               <div>

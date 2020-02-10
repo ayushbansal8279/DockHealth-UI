@@ -16,19 +16,19 @@ describe('addPatientToTask', () => {
     const expectedActions = [
       {
         type: ADD_PATIENT_TO_TASK_SUCCESS,
-        taskId: 0,
-        patient: { patientId: 3 },
+        taskIdentifier: 0,
+        patient: { patientIdentifier: 3 },
       },
     ];
 
     const store = mockStore({
       taskState: {
-        tasks: [{ taskId: 0, patient: null }],
+        tasks: [{ taskIdentifier: 0, patient: null }],
       },
     });
 
     PatientApi.addPatientToTask.mockReturnValue(
-      Promise.resolve({ patientId: 3 }),
+      Promise.resolve({ patientIdentifier: 3 }),
     );
 
     await store.dispatch(addPatientToTask(3, 0));

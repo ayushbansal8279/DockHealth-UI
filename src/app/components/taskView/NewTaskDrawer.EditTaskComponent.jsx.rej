@@ -1,0 +1,7 @@
+diff a/src/app/components/taskView/NewTaskDrawer.EditTaskComponent.jsx b/src/app/components/taskView/NewTaskDrawer.EditTaskComponent.jsx	(rejected hunks)
+@@ -159 +159 @@ class EditTaskDescription extends Component {
+-    var edited = false;
++    let edited = false;
+@@ -161 +161 @@ class EditTaskDescription extends Component {
+-    if(selectedTask){
++    if (selectedTask) {

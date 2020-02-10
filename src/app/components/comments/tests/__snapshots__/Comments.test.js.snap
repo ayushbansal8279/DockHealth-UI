@@ -15,7 +15,7 @@ exports[`Comments should render correctly 1`] = `
         initials="JS"
         isOwn={false}
         key="142"
-        userId={142}
+        userIdentifier={142}
         userName="John Smith"
       >
         <Comment

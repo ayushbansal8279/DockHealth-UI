@@ -80,7 +80,7 @@ class ListPicker extends React.Component {
     const { items, assign } = this.props;
 
     const { itemId } = this.state;
-    const newItem = items.find(i => `${i.taskListId}` === itemId);
+    const newItem = items.find(i => `${i.taskListIdentifier}` === itemId);
 
     assign(newItem);
     this.handleClose();
@@ -148,7 +148,7 @@ class ListPicker extends React.Component {
       <>
         <ToggleButton
           onClick={this.handleOpen}
-          disabled={disabled || task.parentTaskId}
+          disabled={disabled || task.parentTaskIdentifier}
         >
           {item.listName}
         </ToggleButton>
@@ -174,10 +174,10 @@ class ListPicker extends React.Component {
             {sortedItems &&
               sortedItems.map(i => (
                 <ListItem
-                  key={i.taskListId}
-                  selected={item && i.taskListId === item.taskListId}
+                  key={i.taskListIdentifier}
+                  selected={item && i.taskListIdentifier === item.taskListIdentifier}
                   onClick={this.openConfirmation}
-                  id={i.taskListId}
+                  id={i.taskListIdentifier}
                 >
                   {`${i.listName} (${i.creator.userName})`}
                 </ListItem>
@@ -215,7 +215,7 @@ class ListPicker extends React.Component {
 }
 
 const itemShape = PropTypes.shape({
-  taskListId: PropTypes.number,
+  taskListIdentifier: PropTypes.number,
   listName: PropTypes.string,
   creator: PropTypes.shape({
     userName: PropTypes.string,
@@ -228,7 +228,7 @@ ListPicker.propTypes = {
   items: PropTypes.arrayOf(itemShape),
   assign: PropTypes.func.isRequired,
   task: PropTypes.shape({
-    parentTaskId: PropTypes.number,
+    parentTaskIdentifier: PropTypes.number,
   }).isRequired,
 };
 

@@ -32,8 +32,8 @@ import {
 } from './TaskListView.AddListForm.Components';
 import initializeAddListFormHooks from './TaskListView.AddListForm.Hooks';
 
-const onSubmit = ({ dispatch, setListFormOpen, taskListId = null }) => data => {
-  const taskList = { ...data, taskListId };
+const onSubmit = ({ dispatch, setListFormOpen, taskListIdentifier = null }) => data => {
+  const taskList = { ...data, taskListIdentifier };
 
   saveTaskList(taskList)(dispatch)
     .then(() => {
@@ -54,15 +54,15 @@ const renderMember = ({ people, removePerson }) => memberId => {
   return (
     <MemberContainer key={memberId}>
       <Member
-        onClick={() => removePerson({ userId: memberId })}
-        member={people.find(({ userId }) => userId === memberId)}
+        onClick={() => removePerson({ userIdentifier: memberId })}
+        member={people.find(({ userIdentifier }) => userIdentifier === memberId)}
       />
     </MemberContainer>
   );
 };
 
 const renderPickerOption = ({ closePicker, addPerson }) => member => {
-  const { firstName, lastName, userId } = member;
+  const { firstName, lastName, userIdentifier } = member;
 
   const userName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
 
@@ -70,10 +70,10 @@ const renderPickerOption = ({ closePicker, addPerson }) => member => {
     <StyledListItem
       button
       onClick={() => {
-        addPerson({ userId });
+        addPerson({ userIdentifier });
         closePicker();
       }}
-      key={userId}
+      key={userIdentifier}
     >
       <Grid container alignItems="center" justify="space-between">
         <div>{userName}</div>
@@ -115,7 +115,7 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
     removeMember,
     notificationsValue,
     people,
-    taskListId,
+    taskListIdentifier,
     dispatch,
     searchValue,
     setSearchValue,
@@ -124,7 +124,7 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
   return (
     <FormContainer
       onSubmit={handleSubmit(
-        onSubmit({ dispatch, setListFormOpen, taskListId }),
+        onSubmit({ dispatch, setListFormOpen, taskListIdentifier }),
       )}
     >
       <Grid container justify="space-between" alignItems="center">
@@ -233,7 +233,7 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
           )}
         </StyledInputLabel>
         <StyledInputBase
-          name="members"
+          name="memberIdentifiers"
           disabled
           endAdornment={
             <MembersContainer>

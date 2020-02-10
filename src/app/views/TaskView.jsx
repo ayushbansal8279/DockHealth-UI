@@ -151,8 +151,8 @@ export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
-  taskListId = 0,
-  patientId = 0,
+  taskListIdentifier = 0,
+  patientIdentifier = 0,
   storeAsCurrentTask,
 }) => {
   const [isCollapsed, toggleIsCollapsed] = useToggle(false);
@@ -174,8 +174,8 @@ export const TaskListSection = ({
         {!isCollapsed && (
           <Grid item container xs={12}>
             <AddTask
-              taskListId={taskListId}
-              patientId={patientId}
+              taskListIdentifier={taskListIdentifier}
+              patientIdentifier={patientIdentifier}
               style={{
                 width: '100%',
               }}
@@ -237,9 +237,9 @@ class TaskView extends Component {
   componentDidMount = () => {
     const { taskList } = this.props;
 
-    const taskListId = taskList?.taskListId;
-    // const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
-    const localStorageKey = TASK_VIEW_STORAGE_PREFIX + taskListId;
+    const taskListIdentifier = taskList?.taskListIdentifier;
+    // const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListIdentifier}`;
+    const localStorageKey = TASK_VIEW_STORAGE_PREFIX + taskListIdentifier;
 
     let taskListPreferences = {};
 
@@ -281,7 +281,7 @@ class TaskView extends Component {
       (!taskList && nextProps && nextProps.taskList) ||
       (nextProps &&
         nextProps.taskList &&
-        taskList.taskListId !== nextProps.taskList.taskListId)
+        taskList.taskListIdentifier !== nextProps.taskList.taskListIdentifier)
     ) {
       this.listenForRealTimeEvents(nextProps.taskList);
     }
@@ -303,10 +303,10 @@ class TaskView extends Component {
   saveTaskListPreferences = () => {
     const { taskList } = this.props;
 
-    const taskListId = taskList?.taskListId;
+    const taskListIdentifier = taskList?.taskListIdentifier;
 
-    if (taskListId) {
-      const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListId}`;
+    if (taskListIdentifier) {
+      const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListIdentifier}`;
       const { slimView, filterBy, displayHUD, searchTerms } = this.state;
 
       localStorage.setItem(
@@ -333,7 +333,7 @@ class TaskView extends Component {
       cluster: APP_CLUSTER,
     });
 
-    const currentTaskListId = taskList.taskListId;
+    const currentTaskListId = taskList.taskListIdentifier;
     const channelName = `dock-task-channel-${currentTaskListId}`;
 
     const channel = socket.subscribe(channelName);
@@ -396,8 +396,8 @@ class TaskView extends Component {
     const timeoutFired =
       Object.values(taskTimeouts)
         .flat()
-        .map(({ taskTimeoutId: oldTaskTimeoutId, taskId }) => {
-          if (taskId === task?.taskId) {
+        .map(({ taskTimeoutId: oldTaskTimeoutId, taskIdentifier }) => {
+          if (taskIdentifier === task?.taskIdentifier) {
             clearTimeout(oldTaskTimeoutId);
             this.clearTaskTimeouts(oldTaskTimeoutId);
 
@@ -410,7 +410,7 @@ class TaskView extends Component {
 
     if (!timeoutFired) {
       const taskTimeoutId = setTimeout(() => {
-        if (selectedTask?.taskId === task?.taskId && !task?.parentTaskId) {
+        if (selectedTask?.taskIdentifier === task?.taskIdentifier && !task?.parentTaskIdentifier) {
           storeAsCurrentTask(null);
           this.closeTaskDrawer();
         }
@@ -431,7 +431,7 @@ class TaskView extends Component {
               ...previousTaskTimeouts,
               {
                 taskTimeoutId,
-                taskId: task?.taskId,
+                taskIdentifier: task?.taskIdentifier,
               },
             ],
           },
@@ -671,7 +671,7 @@ class TaskView extends Component {
   };
 
   mapInboxTasks = ({ isInbox }) => task => {
-    const mappedTaskListId = task?.taskList?.taskListId;
+    const mappedTaskListId = task?.taskList?.taskListIdentifier;
 
     if (isInbox && mappedTaskListId === 0) {
       return {
@@ -695,7 +695,7 @@ class TaskView extends Component {
       currentPatientId,
       isInbox,
       isMultiList,
-      taskListId,
+      taskListIdentifier,
       listName,
     } = this.props;
     const { filterBy, slimView, taskDrawerOpen, taskTimeouts } = this.state;
@@ -750,7 +750,7 @@ class TaskView extends Component {
       openTaskDrawer: this.openTaskDrawer,
       taskDrawerOpen,
       taskTimeouts: Object.values(taskTimeouts).flat(),
-      taskListId,
+      taskListIdentifier,
       status: 'INCOMPLETE',
       search: this.search,
       filterBy,
@@ -816,7 +816,7 @@ class TaskView extends Component {
       const completedTasksForList = groupedCompletedTasks.get(groupedListName);
 
       const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
-        ?.taskListId;
+        ?.taskListIdentifier;
 
       const heading = (
         <div>
@@ -833,8 +833,8 @@ class TaskView extends Component {
       return (
         <React.Fragment key={groupedListName}>
           <TaskListSection
-            taskListId={currentTaskListId}
-            patientId={currentPatientId}
+            taskListIdentifier={currentTaskListId}
+            patientIdentifier={currentPatientId}
             storeAsCurrentTask={storeAsCurrentTask}
             heading={heading}
             key={groupedListName}
@@ -862,7 +862,7 @@ class TaskView extends Component {
       markAsUnread,
       currentUser,
       isInbox,
-      taskListId,
+      taskListIdentifier,
       listName,
       globalSearch,
     } = this.props;
@@ -893,7 +893,7 @@ class TaskView extends Component {
       openTaskDrawer: this.openTaskDrawer,
       taskDrawerOpen,
       taskTimeouts: Object.values(taskTimeouts).flat(),
-      taskListId,
+      taskListIdentifier,
       status: 'COMPLETE',
       search: this.search,
       filterBy,
@@ -1072,7 +1072,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = store => ({
   selectedTask: store.taskState.selectedTask,
   currentUser: store.userState.userProfile,
-  currentPatientId: store.patient?.details?.patientId,
+  currentPatientId: store.patient?.details?.patientIdentifier,
 });
 
 export default connect(

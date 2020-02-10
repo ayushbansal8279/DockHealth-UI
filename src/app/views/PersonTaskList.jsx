@@ -106,17 +106,17 @@ class TaskListSearch extends PureComponent {
     try {
       personData = await peopleActions.getUserByEmail({ email });
 
-      if (parseInt(personData.userId, 10)) {
+      if (parseInt(personData.userIdentifier, 10)) {
         taskActions.loading();
         taskActions.getTasksAssignedToSpecificUser(
-          personData.userId,
+          personData.userIdentifier,
           undefined,
           undefined,
           undefined,
           'INCOMPLETE',
         );
         taskActions.getTasksAssignedToSpecificUser(
-          personData.userId,
+          personData.userIdentifier,
           undefined,
           undefined,
           undefined,

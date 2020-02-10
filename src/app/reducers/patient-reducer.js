@@ -63,7 +63,7 @@ const PatientReducer = (state = initialState, action) => {
         ...state,
         allPatients: [...state.allPatients, patient],
         isCreatingPatient: false,
-        highlightedPatientId: patient.patientId,
+        highlightedPatientId: patient.patientIdentifier,
       };
     }
 
@@ -76,17 +76,17 @@ const PatientReducer = (state = initialState, action) => {
     }
 
     case HIGHLIGHT_PATIENT: {
-      const { patientId } = action;
+      const { patientIdentifier } = action;
       const { isCreatingPatient } = state;
 
-      if (isNil(patientId) && isCreatingPatient) {
+      if (isNil(patientIdentifier) && isCreatingPatient) {
         return state;
       }
 
       return {
         ...state,
         isCreatingPatient: false,
-        highlightedPatientId: patientId,
+        highlightedPatientId: patientIdentifier,
       };
     }
 
@@ -119,7 +119,7 @@ const PatientReducer = (state = initialState, action) => {
       return {
         ...state,
         allPatients: state.allPatients.map(existingPatient =>
-          existingPatient.patientId === patient.patientId
+          existingPatient.patientIdentifier === patient.patientIdentifier
             ? patient
             : existingPatient,
         ),
@@ -162,11 +162,11 @@ const PatientReducer = (state = initialState, action) => {
     }
 
     case ADD_PATIENT_NOTE: {
-      const { patientId, note } = action;
+      const { patientIdentifier, note } = action;
 
       const addNoteToPatient = map(
         when(
-          propEq('patientId', patientId),
+          propEq('patientIdentifier', patientIdentifier),
           over(lensProp('allNotes'), append(note)),
         ),
       );
@@ -176,20 +176,20 @@ const PatientReducer = (state = initialState, action) => {
 
     case UPDATE_PATIENT_NOTE: {
       const {
-        patientId,
-        note: { patientNoteId, description },
+        patientIdentifier,
+        note: { patientNoteIdentifier, description },
       } = action;
 
       const updateNote = map(
         when(
-          propEq('patientNoteId', patientNoteId),
+          propEq('patientNoteIdentifier', patientNoteIdentifier),
           set(lensProp('description'), description),
         ),
       );
 
       const updateNoteInPatient = map(
         when(
-          propEq('patientId', patientId),
+          propEq('patientIdentifier', patientIdentifier),
           over(lensProp('allNotes'), updateNote),
         ),
       );
@@ -199,15 +199,15 @@ const PatientReducer = (state = initialState, action) => {
 
     case DELETE_PATIENT_NOTE: {
       const {
-        patientId,
-        note: { patientNoteId },
+        patientIdentifier,
+        note: { patientNoteIdentifier },
       } = action;
 
-      const removeNote = reject(propEq('patientNoteId', patientNoteId));
+      const removeNote = reject(propEq('patientNoteIdentifier', patientNoteIdentifier));
 
       const removeNoteFromPatient = map(
         when(
-          propEq('patientId', patientId),
+          propEq('patientIdentifier', patientIdentifier),
           over(lensProp('allNotes'), removeNote),
         ),
       );

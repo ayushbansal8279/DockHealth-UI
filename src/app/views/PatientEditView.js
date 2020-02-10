@@ -9,7 +9,7 @@ import FormPatient from '../components/patient/FormPatient';
 class PatientEditView extends PureComponent {
   componentDidMount() {
     const { params, actions } = this.props;
-    actions.getPatientById(params.patientId);
+    actions.getPatientById(params.patientIdentifier);
 
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'PatientEdit',
@@ -41,7 +41,7 @@ class PatientEditView extends PureComponent {
             <div>
               <div className="task-item row expanded">
                 <div className="large-12 columns">
-                  <FormPatient patientId={this.props.params.patientId} />
+                  <FormPatient patientIdentifier={this.props.params.patientIdentifier} />
                 </div>
               </div>
             </div>

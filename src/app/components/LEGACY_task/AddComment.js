@@ -62,7 +62,7 @@ class AddComment extends PureComponent {
   shouldComponentUpdate(nextProps, nextState) {
     if (
       !this.props.task ||
-      (nextProps.task && this.props.task.taskId != nextProps.task.taskId) ||
+      (nextProps.task && this.props.task.taskIdentifier != nextProps.task.taskIdentifier) ||
       this.state.value != nextState.value ||
       this.state.addComment != nextState.addComment
     ) {
@@ -76,7 +76,7 @@ class AddComment extends PureComponent {
   }
 
   onSubmit(formProps) {
-    const commentField = `comment${this.props.task.taskId}`;
+    const commentField = `comment${this.props.task.taskIdentifier}`;
     const commentFieldVal = formProps[commentField];
     const comment = { comment: commentFieldVal };
 
@@ -119,7 +119,7 @@ class AddComment extends PureComponent {
           >
             <Field
               className="add-comment comment"
-              name={`comment${this.props.task.taskId}`}
+              name={`comment${this.props.task.taskIdentifier}`}
               component="textarea"
               value={this.state.value}
             />
@@ -146,7 +146,7 @@ return (
     <div className="columns">
       {this.state.addComment ?
         <form className="inline-label" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-          <span id={"comment-form-"+this.props.task.taskId}>
+          <span id={"comment-form-"+this.props.task.taskIdentifier}>
             <Field name="comment" type="text" component="input" value={this.state.value} placeholder='Type your comment here...' className="comment"/>
             <button type="submit" className="button primary small">Post</button>
           </span>

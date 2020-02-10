@@ -150,12 +150,12 @@ AddTask.propTypes = {
   submit: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = (dispatch, { taskListId, patientId }) => ({
+const mapDispatchToProps = (dispatch, { taskListIdentifier, patientIdentifier }) => ({
   submit: description => {
-    if (patientId && patientId > 0) {
-      saveTask({ description, taskListId, patientId })(dispatch);
+    if (patientIdentifier && patientIdentifier > 0) {
+      saveTask({ description, taskListIdentifier, patientIdentifier })(dispatch);
     } else {
-      saveTask({ description, taskListId })(dispatch);
+      saveTask({ description, taskListIdentifier })(dispatch);
     }
   },
 });
@@ -166,7 +166,7 @@ const ConnectedAddTask = connect(
 )(AddTask);
 
 ConnectedAddTask.propTypes = {
-  taskListId: PropTypes.number.isRequired,
+  taskListIdentifier: PropTypes.number.isRequired,
 };
 
 export default ConnectedAddTask;

@@ -65,12 +65,12 @@ class Inbox extends PureComponent {
 
   downloadPDF = () => {
     const {
-      routeParams: { taskListId },
+      routeParams: { taskListIdentifier },
     } = this.props;
 
-    if (taskListId) {
+    if (taskListIdentifier) {
       onButtonClicked('Print');
-      downloadPDF(taskListId);
+      downloadPDF(taskListIdentifier);
     }
   };
 
@@ -114,7 +114,7 @@ class Inbox extends PureComponent {
 
   render() {
     const {
-      userId,
+      userIdentifier,
       tasks,
       completedTasks,
       isFetching,
@@ -131,7 +131,7 @@ class Inbox extends PureComponent {
     } = this.props;
 
     const taskViewProps = {
-      userId,
+      userIdentifier,
       tasks,
       completedTasks,
       isFetching,
@@ -143,7 +143,7 @@ class Inbox extends PureComponent {
       markAsUnread,
       addTaskComment,
       toggleTaskPriority: (task, priority) =>
-        toggleTaskPriority(task, userId, priority),
+        toggleTaskPriority(task, userIdentifier, priority),
       pullCompletedTasks: this.pullCompletedTasks,
       onFilter: this.filter,
       refresh: this.refresh,
@@ -153,7 +153,7 @@ class Inbox extends PureComponent {
       showSortingStats: false,
       isInbox: true,
       isSpecificPatient: false,
-      taskListId: 0,
+      taskListIdentifier: 0,
     };
 
     return <TaskView {...taskViewProps} />;
@@ -168,7 +168,7 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   showingCompletedTasks: store.taskState.showingCompletedTasks,
   user: store.userState.user,
-  userId: store.userState.userProfile.userId,
+  userIdentifier: store.userState.userProfile.userIdentifier,
   selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
 });

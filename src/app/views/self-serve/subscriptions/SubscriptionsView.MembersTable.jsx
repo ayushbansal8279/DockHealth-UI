@@ -27,8 +27,8 @@ const renderOrganizationMemberRow = ({
   setRemovedUserData,
   chosenSubscriptionPlan,
 }) => props => {
-  const { firstName, lastName, email, userId } = props;
-  const key = `${firstName}${lastName}${userId}${email}`;
+  const { firstName, lastName, email, userIdentifier } = props;
+  const key = `${firstName}${lastName}${userIdentifier}${email}`;
 
   return (
     <OrganizationMemberRow
@@ -54,13 +54,13 @@ const getFilteredOrganizationMembers = ({
   switch (userSubscriptionStatus) {
     case USER_SUBSCRIPTION_STATUS.SUBSCRIBED:
       return filter(
-        ({ userId, email }) => includes({ userId, email }, selectedUsers),
+        ({ userIdentifier, email }) => includes({ userIdentifier, email }, selectedUsers),
         organizationMembers,
       );
 
     case USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED:
       return reject(
-        ({ userId, email }) => includes({ userId, email }, selectedUsers),
+        ({ userIdentifier, email }) => includes({ userIdentifier, email }, selectedUsers),
         organizationMembers,
       );
     default:

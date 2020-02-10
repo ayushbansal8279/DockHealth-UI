@@ -14,7 +14,7 @@ export default ({ props }) => {
     subtaskIndex,
     taskDrawerOpen,
   } = props;
-  const { subtasks, priority, taskList, isNewSubtask, parentTaskId } = task;
+  const { subtasks, priority, taskList, isNewSubtask, parentTaskIdentifier } = task;
 
   const {
     addingNewSubtask,
@@ -28,12 +28,12 @@ export default ({ props }) => {
   const animationContainer = useRef(null);
   const dispatch = useDispatch();
 
-  const hasSubtasks = subtasks?.length > 0 && !parentTaskId;
+  const hasSubtasks = subtasks?.length > 0 && !parentTaskIdentifier;
 
   const isSelfOrSubtaskActive =
-    selectedTaskId === task.taskId ||
+    selectedTaskId === task.taskIdentifier ||
     Boolean(
-      !isSubtask && subtasks.find(({ taskId }) => taskId === selectedTaskId),
+      !isSubtask && subtasks.find(({ taskIdentifier }) => taskIdentifier === selectedTaskId),
     );
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default ({ props }) => {
     () => {
       if (
         slimView &&
-        subtasks.find(({ taskId }) => taskId === selectedTaskId) &&
+        subtasks.find(({ taskIdentifier }) => taskIdentifier === selectedTaskId) &&
         !isSelfOrSubtaskActive
       ) {
         storeAsCurrentTask(null);
@@ -58,7 +58,7 @@ export default ({ props }) => {
   );
 
   const renderedSubtasks =
-    addingNewSubtask && addingNewSubtaskParentId === task?.taskId
+    addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
       ? [...subtasks, subtaskShape]
       : subtasks;
 
@@ -81,7 +81,7 @@ export default ({ props }) => {
     priority,
     taskList,
     isNewSubtask,
-    parentTaskId,
+    parentTaskIdentifier,
     addingNewSubtask,
     addingNewSubtaskParentId,
     subtaskShape,

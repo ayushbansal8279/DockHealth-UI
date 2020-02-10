@@ -18,7 +18,7 @@ export function getTasksForCreator() {
 }
 
 export function getListTasksByUser(
-  taskListId,
+  taskListIdentifier,
   status = 'COMPLETE',
   sortBy,
   filterBy,
@@ -27,7 +27,7 @@ export function getListTasksByUser(
   closeAddForm();
 
   return axios
-    .get(`task/findListTasksByUser/${taskListId}`, {
+    .get(`task/findListTasksByUser/${taskListIdentifier}`, {
       params: {
         status,
         queryStartPosition,
@@ -41,13 +41,13 @@ export function getListTasksByUser(
     });
 }
 
-export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
+export function getTasksAssignedToMe(taskListIdentifier, status, sortBy, filterBy) {
   closeAddForm();
-  if (taskListId != undefined) {
+  if (taskListIdentifier != undefined) {
     if (sortBy != undefined || filterBy != undefined) {
       return axios
         .get(
-          `task/findTasksAssignedToUser?taskListId=${taskListId}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
+          `task/findTasksAssignedToUser?taskListId=${taskListIdentifier}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
         )
         .then(response => response.data)
         .catch(error => {
@@ -56,7 +56,7 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
     }
     return axios
       .get(
-        `task/findTasksAssignedToUser?taskListId=${taskListId}&status=${status}`,
+        `task/findTasksAssignedToUser?taskListId=${taskListIdentifier}&status=${status}`,
       )
       .then(response => response.data)
       .catch(error => {
@@ -85,18 +85,18 @@ export function getTasksAssignedToMe(taskListId, status, sortBy, filterBy) {
 }
 
 export function getTasksAssignedToSpecificUser(
-  userId,
-  taskListId,
+  userIdentifier,
+  taskListIdentifier,
   status,
   sortBy,
   filterBy,
 ) {
   closeAddForm();
-  if (taskListId != undefined) {
+  if (taskListIdentifier != undefined) {
     if (sortBy != undefined || filterBy != undefined) {
       return axios
         .get(
-          `task/findTasksAssignedToSpecificUser?userId=${userId}&taskListId=${taskListId}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
+          `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&taskListId=${taskListIdentifier}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
         )
         .then(response => response.data)
         .catch(error => {
@@ -105,7 +105,7 @@ export function getTasksAssignedToSpecificUser(
     }
     return axios
       .get(
-        `task/findTasksAssignedToSpecificUser?userId=${userId}&taskListId=${taskListId}&status=${status}`,
+        `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&taskListId=${taskListIdentifier}&status=${status}`,
       )
       .then(response => response.data)
       .catch(error => {
@@ -118,7 +118,7 @@ export function getTasksAssignedToSpecificUser(
   if (sortBy != undefined || filterBy != undefined) {
     return axios
       .get(
-        `task/findTasksAssignedToSpecificUser?userId=${userId}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
+        `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
       )
       .then(response => response.data)
       .catch(error => {
@@ -127,7 +127,7 @@ export function getTasksAssignedToSpecificUser(
   }
   return axios
     .get(
-      `task/findTasksAssignedToSpecificUser?userId=${userId}&status=${status}`,
+      `task/findTasksAssignedToSpecificUser?userId=${userIdentifier}&status=${status}`,
     )
     .then(response => response.data)
     .catch(error => {
@@ -135,14 +135,14 @@ export function getTasksAssignedToSpecificUser(
     });
 }
 
-export function getTasksAssignedByMe(taskListId, status, sortBy, filterBy) {
+export function getTasksAssignedByMe(taskListIdentifier, status, sortBy, filterBy) {
   closeAddForm();
 
   return axios({
     method: 'get',
     url: `task/findTasksAssignedByUser`,
     params: {
-      taskListId,
+      taskListIdentifier,
       status,
       sortBy,
       filterBy,
@@ -177,7 +177,7 @@ export function addTask(task) {
   return axios
     .post('task', {
       ...task,
-      createdByUserId: sessionStorage.userId,
+      createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
       toggleAlert('Task created successfully!', 'success');
@@ -191,9 +191,9 @@ export function addTask(task) {
 
 export function updateTask(task) {
   return axios
-    .put(`task/${task.taskId}`, {
+    .put(`task/${task.taskIdentifier}`, {
       ...task,
-      createdByUserId: sessionStorage.userId,
+      createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
       toggleAlert('Task updated successfully!', 'success');
@@ -204,9 +204,9 @@ export function updateTask(task) {
     });
 }
 
-export function deleteTask(taskId) {
+export function deleteTask(taskIdentifier) {
   return axios
-    .delete(`task/deleteTaskById/${taskId}`)
+    .delete(`task/deleteTaskById/${taskIdentifier}`)
     .then(response => {
       toggleAlert('Task deleted', 'success');
       return response;
@@ -216,9 +216,9 @@ export function deleteTask(taskId) {
     });
 }
 
-export function duplicateTask(taskId) {
+export function duplicateTask(taskIdentifier) {
   return axios
-    .put(`task/duplicateTask/${taskId}`)
+    .put(`task/duplicateTask/${taskIdentifier}`)
     .then(response => {
       toggleAlert('Task duplicated', 'success');
       return response.data;
@@ -229,9 +229,9 @@ export function duplicateTask(taskId) {
     });
 }
 
-export function sortSubTask(taskId, direction) {
+export function sortSubTask(taskIdentifier, direction) {
   return axios
-    .put(`task/sortSubTask/${taskId}/${direction}`)
+    .put(`task/sortSubTask/${taskIdentifier}/${direction}`)
     .then(response => {
       toggleAlert('Sub Task order changed', 'success');
       return response.data;
@@ -247,7 +247,7 @@ export function sortSubTask(taskId, direction) {
 
 export function markComplete(task) {
   return axios
-    .put(`task/updateTaskStatus/${task.taskId}?status=COMPLETE`)
+    .put(`task/updateTaskStatus/${task.taskIdentifier}?status=COMPLETE`)
     .then(response => {
       toggleAlert('Task completed. Great job!', 'success');
       return response;
@@ -259,7 +259,7 @@ export function markComplete(task) {
 
 export function markIncomplete(task) {
   return axios
-    .put(`task/updateTaskStatus/${task.taskId}?status=INCOMPLETE`)
+    .put(`task/updateTaskStatus/${task.taskIdentifier}?status=INCOMPLETE`)
     .then(response => {
       toggleAlert('You have re-activated a task.', 'success');
       return response;
@@ -271,10 +271,10 @@ export function markIncomplete(task) {
 
 export function updateTaskDescription(task, description) {
   return axios
-    .put(`task/${task.taskId}`, {
+    .put(`task/${task.taskIdentifier}`, {
       // Fix overwriting other fields with null...
       ...task,
-      patientId: task?.patient?.patientId,
+      patientIdentifier: task?.patient?.patientIdentifier,
       description,
     })
     .then(response => {
@@ -286,10 +286,10 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export const updateDueDate = (taskId, dueDate) => {
+export const updateDueDate = (taskIdentifier, dueDate) => {
   return axios
     .put(
-      `task/addOrUpdateDueDate/${taskId}`,
+      `task/addOrUpdateDueDate/${taskIdentifier}`,
       {},
       {
         params: {
@@ -302,20 +302,20 @@ export const updateDueDate = (taskId, dueDate) => {
 
 /**
  * Updates task workflow status.
- * @param {number} taskId
+ * @param {number} taskIdentifier
  * @param {('BLOCKED'|'ON_HOLD'|'IN_PROGRESS')} workflowStatus
  * @returns {Promise}
  */
-export const updateWorkflowStatus = (taskId, workflowStatus) =>
+export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
   axios
     .put(
-      `task/updateTaskWorkflowStatus/${taskId}?workflowStatus=${workflowStatus}`,
+      `task/updateTaskWorkflowStatus/${taskIdentifier}?workflowStatus=${workflowStatus}`,
     )
     .catch(error => error.response.data);
 
-export function markHighPriority(taskId, userId) {
+export function markHighPriority(taskIdentifier, userIdentifier) {
   return axios
-    .put(`task/changePriority/${taskId}?userId=${userId}&priorityLevel=HIGH`)
+    .put(`task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=HIGH`)
     .then(response => {
       return response;
     })
@@ -324,9 +324,9 @@ export function markHighPriority(taskId, userId) {
     });
 }
 
-export function markLowPriority(taskId, userId) {
+export function markLowPriority(taskIdentifier, userIdentifier) {
   return axios
-    .put(`task/changePriority/${taskId}?userId=${userId}&priorityLevel=LOW`)
+    .put(`task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=LOW`)
     .then(response => {
       return response;
     })
@@ -335,11 +335,11 @@ export function markLowPriority(taskId, userId) {
     });
 }
 
-export function assignOrReassignTask(task, assignedToUserId) {
-  const { taskId } = task;
+export function assignOrReassignTask(task, assignedToUserIdentifier) {
+  const { taskIdentifier } = task;
   return axios
     .put(
-      `task/addOrUpdateTaskAssignment/${taskId}?assignedToUserId=${assignedToUserId}`,
+      `task/addOrUpdateTaskAssignment/${taskIdentifier}?assignedToUserId=${assignedToUserIdentifier}`,
     )
     .then(response => {
       toggleAlert('Task assigned successfully', 'success');
@@ -351,9 +351,9 @@ export function assignOrReassignTask(task, assignedToUserId) {
     });
 }
 
-export function addComment(taskId, taskComment) {
+export function addComment(taskIdentifier, taskComment) {
   return axios
-    .post(`task/comment/${taskId}`, taskComment)
+    .post(`task/comment/${taskIdentifier}`, taskComment)
     .then(response => {
       return response;
     })
@@ -362,9 +362,9 @@ export function addComment(taskId, taskComment) {
     });
 }
 
-export function deleteComment(commentId) {
+export function deleteComment(commentIdentifier) {
   return axios
-    .delete(`task/comment/deleteCommentById/${commentId}`)
+    .delete(`task/comment/deleteCommentById/${commentIdentifier}`)
     .then(response => {
       toggleAlert('Comment deleted', 'success');
       return response;
@@ -388,9 +388,9 @@ export function updateComment(comment) {
     });
 }
 
-export function getHighPriorityTasksByTaskList(taskListId) {
+export function getHighPriorityTasksByTaskList(taskListIdentifier) {
   return axios
-    .get(`task/findHighPriorityListTasks/${taskListId}?startPosition=0`)
+    .get(`task/findHighPriorityListTasks/${taskListIdentifier}?startPosition=0`)
     .then(response => response.data)
     .catch(error => {
       toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
@@ -398,10 +398,10 @@ export function getHighPriorityTasksByTaskList(taskListId) {
     });
 }
 
-export function getListTasksByPatient(patientId, status, taskListId) {
+export function getListTasksByPatient(patientIdentifier, status, taskListIdentifier) {
   return axios
     .get(
-      `task/findListTasksByPatient/${patientId}/taskList/${taskListId}?status=${status}`,
+      `task/findListTasksByPatient/${patientIdentifier}/taskList/${taskListIdentifier}?status=${status}`,
     )
     .then(response => response.data)
     .catch(error => {
@@ -410,11 +410,11 @@ export function getListTasksByPatient(patientId, status, taskListId) {
     });
 }
 
-export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
+export function getAllTasksByPatient(patientIdentifier, status, sortBy, filterBy) {
   if (sortBy != undefined || filterBy != undefined) {
     return axios
       .get(
-        `task/findAllListTasksByPatient/${patientId}?status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
+        `task/findAllListTasksByPatient/${patientIdentifier}?status=${status}&sortBy=${sortBy}&filterBy=${filterBy}`,
       )
       .then(response => response.data)
       .catch(error => {
@@ -423,7 +423,7 @@ export function getAllTasksByPatient(patientId, status, sortBy, filterBy) {
       });
   }
   return axios
-    .get(`task/findAllListTasksByPatient/${patientId}?status=${status}`)
+    .get(`task/findAllListTasksByPatient/${patientIdentifier}?status=${status}`)
     .then(response => response.data)
     .catch(error => {
       toggleAlert(ERROR_RETRIEVING_TASKS_MESSAGE, 'error');
@@ -452,30 +452,30 @@ export function getInboxTasks(
     });
 }
 
-export function flagUnread(taskId, unread) {
+export function flagUnread(taskIdentifier, unread) {
   return axios
-    .put(`task/flagUserTaskAsUnread/${taskId}?flagUnread=${unread}`)
+    .put(`task/flagUserTaskAsUnread/${taskIdentifier}?flagUnread=${unread}`)
     .then(response => response.data)
     .catch(error => {
       throw error;
     });
 }
 
-export function getTaskHistory(taskId) {
+export function getTaskHistory(taskIdentifier) {
   return axios
-    .get(`audit/findAuditsByTask/${taskId}`)
+    .get(`audit/findAuditsByTask/${taskIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       throw error;
     });
 }
 
-export function addTaskAttachment(taskId, fileData, additionalConfig = {}) {
+export function addTaskAttachment(taskIdentifier, fileData, additionalConfig = {}) {
   const formData = new FormData();
   formData.append('file', fileData);
 
   return axios
-    .post(`task/attachment/${taskId}`, formData, {
+    .post(`task/attachment/${taskIdentifier}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -523,17 +523,17 @@ export function getTaskAttachment(taskAttachmentId) {
     .catch(noop);
 }
 
-export function getTaskDetails(taskId) {
+export function getTaskDetails(taskIdentifier) {
   return axios
-    .get(`task/${taskId}`)
+    .get(`task/${taskIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       throw error;
     });
 }
-export function flagArchivedForUser(taskId, flagArchived) {
+export function flagArchivedForUser(taskIdentifier, flagArchived) {
   return axios
-    .put(`task/flagUserTaskAsArchived/${taskId}?flagArchived=${flagArchived}`)
+    .put(`task/flagUserTaskAsArchived/${taskIdentifier}?flagArchived=${flagArchived}`)
     .then(response => response.data)
     .catch(error => {
       throw error;

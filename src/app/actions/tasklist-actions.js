@@ -2,7 +2,6 @@ import * as TaskListApi from '../api/tasklist-api';
 import * as UserApi from '../api/user-api';
 import { noop } from '../helpers/utility-functions';
 import * as ActionTypes from './action-types';
-import tasklistActionsDummyData from './tasklist-actions.dummy-data';
 
 export function getTaskListForUser() {
   return dispatch => {
@@ -27,7 +26,7 @@ export function setTaskListAsCurrentList(currentList) {
 }
 
 export function saveTaskList(formProps) {
-  if (formProps.taskListId != null && formProps.taskListId > 0) {
+  if (formProps.taskListIdentifier != null && formProps.taskListIdentifier > 0) {
     return dispatch =>
       TaskListApi.updateTaskList(formProps)
         .then(updatedTasklist => {
@@ -56,31 +55,31 @@ export function saveTaskList(formProps) {
       });
 }
 
-export function getTaskListById(taskListId) {
+export function getTaskListById(taskListIdentifier) {
   return dispatch =>
-    TaskListApi.getTaskListById(taskListId)
+    TaskListApi.getTaskListById(taskListIdentifier)
       .then(currentList => {
         dispatch({ type: ActionTypes.SET_CURRENT_LIST, currentList });
       })
       .catch(noop);
 }
 
-export function getMembersByTaskListId(taskListId, memberStatus) {
+export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
   return dispatch =>
-    TaskListApi.getMembersByTaskListId(taskListId, memberStatus)
+    TaskListApi.getMembersByTaskListId(taskListIdentifier, memberStatus)
       .then(tasklistmembers => {
         dispatch({
           type: ActionTypes.GET_TASKLISTMEMBERS_SUCCESS,
-          taskListId,
+          taskListIdentifier,
           tasklistmembers,
         });
       })
       .catch(noop);
 }
 
-export function getActiveMembersByTaskListId(taskListId) {
+export function getActiveMembersByTaskListId(taskListIdentifier) {
   return dispatch =>
-    TaskListApi.getMembersByTaskListId(taskListId, 'ACTIVE')
+    TaskListApi.getMembersByTaskListId(taskListIdentifier, 'ACTIVE')
       .then(tasklistactivemembers => {
         dispatch({
           type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS,
@@ -90,7 +89,7 @@ export function getActiveMembersByTaskListId(taskListId) {
       .catch(noop);
 }
 
-export function invitePersonToTaskList(formProps, taskListId) {
+export function invitePersonToTaskList(formProps, taskListIdentifier) {
   const personInfo = {
     email: formProps.email,
     firstName: formProps.firstName,
@@ -98,7 +97,7 @@ export function invitePersonToTaskList(formProps, taskListId) {
   };
 
   return dispatch =>
-    TaskListApi.invitePersonToTaskList(taskListId, personInfo)
+    TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo)
       .then(response => {
         dispatch({ type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, response });
         toggleAlert('Invitation sent!', 'success');
@@ -109,9 +108,9 @@ export function invitePersonToTaskList(formProps, taskListId) {
       });
 }
 
-export function getOrganizationUsersNotInTaskList(tasklistId) {
+export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
   return dispatch =>
-    TaskListApi.getOrganizationUsersNotInTaskList(tasklistId)
+    TaskListApi.getOrganizationUsersNotInTaskList(taskListIdentifier)
       .then(users => {
         dispatch({
           type: ActionTypes.GET_ORGUSERSNOTINTASKLIST_SUCCESS,
@@ -121,21 +120,21 @@ export function getOrganizationUsersNotInTaskList(tasklistId) {
       .catch(noop);
 }
 
-export const inviteUserToTaskList = (tasklistId, userId) => dispatch =>
-  TaskListApi.inviteUserToTaskList(tasklistId, userId)
+export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) => dispatch =>
+  TaskListApi.inviteUserToTaskList(taskListIdentifier, userIdentifier)
     .then(() => {
-      dispatch({ type: ActionTypes.INVITE_USER_TO_TASKLIST_SUCCESS, userId });
+      dispatch({ type: ActionTypes.INVITE_USER_TO_TASKLIST_SUCCESS, userIdentifier });
     })
     .catch(noop);
 
-export function inviteMultipleUsersToTaskList(tasklistId, invitedUsers) {
+export function inviteMultipleUsersToTaskList(taskListIdentifier, invitedUsersIdentifier) {
   return dispatch =>
-    TaskListApi.inviteMultipleUsersToTaskList(tasklistId, invitedUsers)
+    TaskListApi.inviteMultipleUsersToTaskList(taskListIdentifier, invitedUsersIdentifier)
       .then(response => {
         dispatch({
           type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS,
           response,
-          invitedUsers,
+          invitedUsersIdentifier,
         });
         toggleAlert('Invitations sent!', 'success');
       })
@@ -145,9 +144,9 @@ export function inviteMultipleUsersToTaskList(tasklistId, invitedUsers) {
       });
 }
 
-export function getNonOrgUsersByTaskList(taskListId) {
+export function getNonOrgUsersByTaskList(taskListIdentifier) {
   return dispatch =>
-    TaskListApi.getNonOrgUsersByTaskList(taskListId)
+    TaskListApi.getNonOrgUsersByTaskList(taskListIdentifier)
       .then(users => {
         dispatch({
           type: ActionTypes.GET_NONORGUSERSINTASKLIST_SUCCESS,
@@ -159,14 +158,14 @@ export function getNonOrgUsersByTaskList(taskListId) {
 
 /**
  * Updates user's role in a list.
- * @param {number} tasklistId
- * @param {{userId: number}} markedUser
+ * @param {number} taskListIdentifier
+ * @param {{userIdentifier: number}} markedUser
  * @param {('OWNER'|'ADMIN'|'MEMBER')} role
  * @returns {Promise}
  */
-export function changeUserRoleForList(tasklistId, markedUser, role) {
+export function changeUserRoleForList(taskListIdentifier, markedUser, role) {
   return dispatch =>
-    TaskListApi.changeUserRoleForList(tasklistId, markedUser.userId, role)
+    TaskListApi.changeUserRoleForList(taskListIdentifier, markedUser.userIdentifier, role)
       .then(response => {
         dispatch({
           type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS,
@@ -181,14 +180,14 @@ export function changeUserRoleForList(tasklistId, markedUser, role) {
       });
 }
 
-export function deleteTaskListById(taskListId) {
+export function deleteTaskListById(taskListIdentifier) {
   return dispatch =>
-    TaskListApi.deleteTaskListById(taskListId)
+    TaskListApi.deleteTaskListById(taskListIdentifier)
       .then(response => {
         dispatch({
           type: ActionTypes.DELETE_TASKLIST_SUCCESS,
           response,
-          taskListId,
+          taskListIdentifier,
         });
         toggleAlert('Task List deleted', 'success');
       })
@@ -198,9 +197,9 @@ export function deleteTaskListById(taskListId) {
       });
 }
 
-export function removeUserFromList(taskListId, removedUser) {
+export function removeUserFromList(taskListIdentifier, removedUser) {
   return dispatch =>
-    TaskListApi.removeUserFromList(taskListId, removedUser.userId)
+    TaskListApi.removeUserFromList(taskListIdentifier, removedUser.userIdentifier)
       .then(response => {
         dispatch({
           type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS,
@@ -215,9 +214,9 @@ export function removeUserFromList(taskListId, removedUser) {
       });
 }
 
-export function cancelInviteToTaskList(taskListId, email) {
+export function cancelInviteToTaskList(taskListIdentifier, email) {
   return dispatch =>
-    TaskListApi.cancelInviteToTaskList(taskListId, email)
+    TaskListApi.cancelInviteToTaskList(taskListIdentifier, email)
       .then(response => {
         dispatch({
           type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS,
@@ -230,9 +229,9 @@ export function cancelInviteToTaskList(taskListId, email) {
       });
 }
 
-export function findAuditsByTaskList(taskListId, queryStartPosition) {
+export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
   return dispatch =>
-    TaskListApi.findAuditsByTaskList(taskListId, queryStartPosition)
+    TaskListApi.findAuditsByTaskList(taskListIdentifier, queryStartPosition)
       .then(audits => {
         dispatch({ type: ActionTypes.GET_AUDITS_BY_TASKLIST_SUCCESS, audits });
       })
@@ -263,13 +262,13 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
       .catch(noop);
 }
 
-export function toggleListNotifications(taskListId, receiveNotifications) {
+export function toggleListNotifications(taskListIdentifier, receiveNotifications) {
   return dispatch =>
-    TaskListApi.toggleListNotifications(taskListId, receiveNotifications)
+    TaskListApi.toggleListNotifications(taskListIdentifier, receiveNotifications)
       .then(() => {
         dispatch({
           type: ActionTypes.TOGGLE_LIST_NOTIFICATIONS_SUCCESS,
-          taskListId,
+          taskListIdentifier,
           receiveNotifications,
         });
       })
@@ -279,9 +278,9 @@ export function toggleListNotifications(taskListId, receiveNotifications) {
       });
 }
 
-export function storeAsCurrentList(taskListId) {
+export function storeAsCurrentList(taskListIdentifier) {
   return dispatch => {
-    dispatch({ type: ActionTypes.SET_AS_CURRENT_LIST, taskListId });
+    dispatch({ type: ActionTypes.SET_AS_CURRENT_LIST, taskListIdentifier });
   };
 }
 
@@ -297,14 +296,14 @@ export function isInbox(boolean) {
   };
 }
 
-export function leaveList(taskListId) {
+export function leaveList(taskListIdentifier) {
   return dispatch =>
-    UserApi.leaveList(taskListId)
+    UserApi.leaveList(taskListIdentifier)
       .then(response => {
         dispatch({
           type: ActionTypes.DELETE_TASKLIST_SUCCESS,
           response,
-          taskListId,
+          taskListIdentifier,
         });
       })
       .catch(noop);
@@ -319,8 +318,8 @@ export function getGenericListCounts() {
       .catch(noop);
 }
 
-export function downloadPDF(taskListId) {
-  return TaskListApi.downloadPDF(taskListId)
+export function downloadPDF(taskListIdentifier) {
+  return TaskListApi.downloadPDF(taskListIdentifier)
     .then(() => 'success')
     .catch(error => {
       throw error;
@@ -328,9 +327,9 @@ export function downloadPDF(taskListId) {
 }
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-export const getTaskListStats = ({ taskListId }) => async dispatch => {
+export const getTaskListStats = ({ taskListIdentifier }) => async dispatch => {
   try {
-    const { data } = await TaskListApi.getTaskListStats({ taskListId });
+    const { data } = await TaskListApi.getTaskListStats({ taskListIdentifier });
     dispatch({
       type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
       taskListStats: data,

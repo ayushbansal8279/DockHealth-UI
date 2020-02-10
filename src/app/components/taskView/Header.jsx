@@ -93,19 +93,19 @@ const Header = ({
   taskList,
   resetHeader = () => {},
 }) => {
-  const taskListId = taskList?.taskListId;
+  const taskListIdentifier = taskList?.taskListIdentifier;
   const notificationsStatus = taskList?.notifications;
 
   const dispatch = useDispatch();
   const toggleNotifications = useCallback(() => {
     const newNotificationStatus = !notificationsStatus;
-    toggleListNotifications(taskListId, newNotificationStatus)(dispatch).then(
+    toggleListNotifications(taskListIdentifier, newNotificationStatus)(dispatch).then(
       () => {
         onNotificationsToggled(newNotificationStatus);
         resetHeader();
       },
     );
-  }, [dispatch, notificationsStatus, resetHeader, taskListId]);
+  }, [dispatch, notificationsStatus, resetHeader, taskListIdentifier]);
   const { taskListStats, taskListStatsOk } = useSelector(store => ({
     taskListStats: store.taskListState.taskListStats,
     taskListStatsOk: store.taskListState.taskListStatsOk,
@@ -170,7 +170,7 @@ Header.propTypes = {
   taskCount: PropTypes.number.isRequired,
   members: PropTypes.arrayOf(
     PropTypes.shape({
-      userId: PropTypes.number,
+      userIdentifier: PropTypes.number,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       profileThumbnailPictureHash: PropTypes.string,

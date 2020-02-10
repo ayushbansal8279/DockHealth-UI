@@ -30,8 +30,8 @@ class FormPatient extends PureComponent {
 
   componentDidMount() {
     // console.log("FormPatient componentDidMount")
-    if (this.props.patientId) {
-      // this.props.actions.getPatientById(this.props.patientId);
+    if (this.props.patientIdentifier) {
+      // this.props.actions.getPatientById(this.props.patientIdentifier);
     }
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'FormPatient',
@@ -73,7 +73,7 @@ class FormPatient extends PureComponent {
     if (dobStr && dobStr != '') {
       formProps.dob = dobStr;
     }
-    if (this.props.patientId) {
+    if (this.props.patientIdentifier) {
       this.props.actions
         .updatePatient(formProps)
         .then(res => {
@@ -92,7 +92,7 @@ class FormPatient extends PureComponent {
           toggleAlert('Patient created succesfully!', 'success');
           const currentProps = this.props;
           const patientName = `${res.firstName} ${formProps.lastName}`;
-          const patientId = res.patientId;
+          const patientIdentifier = res.patientIdentifier;
           if (!this.props.modalForm) {
             closeAddForm();
           } else {
@@ -104,11 +104,11 @@ class FormPatient extends PureComponent {
             );
             this.props.formActions.change(
               'addTaskForm',
-              'patientId',
-              patientId,
+              'patientIdentifier',
+              patientIdentifier,
             );
             $('#add-patient').val(patientName);
-            $('#add-patient-id').val(patientId);
+            $('#add-patient-id').val(patientIdentifier);
           }
         })
         .catch(e => {
@@ -117,13 +117,13 @@ class FormPatient extends PureComponent {
         });
     }
 
-    hashHistory.push(`/patient/${this.props.patient.patientId}`);
+    hashHistory.push(`/patient/${this.props.patient.patientIdentifier}`);
     scrollToTop();
   }
 
   cancelEdit = event => {
-    if (this.props.patient && this.props.patient.patientId) {
-      hashHistory.push(`/patient/${this.props.patient.patientId}`);
+    if (this.props.patient && this.props.patient.patientIdentifier) {
+      hashHistory.push(`/patient/${this.props.patient.patientIdentifier}`);
       scrollToTop();
     } else {
       toggleTaskForm();
@@ -149,7 +149,7 @@ class FormPatient extends PureComponent {
         onSubmit={handleSubmit(this.onSubmit)}
         autoComplete="off"
       >
-        <Field name="patientId" type="hidden" component={BasicField} />
+        <Field name="patientIdentifier" type="hidden" component={BasicField} />
         <Field
           name="mrn"
           type="text"
@@ -344,7 +344,7 @@ const mapStateToProps = function(state) {
     patientInfo = state.patientState.selectedPatient;
   }
   if (patientInfo) {
-    patientInitialValues.patientId = patientInfo.patientId;
+    patientInitialValues.patientIdentifier = patientInfo.patientIdentifier;
     patientInitialValues.firstName = patientInfo.firstName;
     patientInitialValues.lastName = patientInfo.lastName;
     patientInitialValues.mrn = patientInfo.mrn;
@@ -356,8 +356,8 @@ const mapStateToProps = function(state) {
     patientInitialValues.notes = patientInfo.notes;
   }
   const formValues = getFormValues('FormPatient')(state) || {};
-  // console.log("in mapStateToProps: "+patientInitialValues.patientId)
-  // console.log("in mapStateToProps formValues: "+formValues.patientId)
+  // console.log("in mapStateToProps: "+patientInitialValues.patientIdentifier)
+  // console.log("in mapStateToProps formValues: "+formValues.patientIdentifier)
   // console.log(patientInitialValues)
 
   return {

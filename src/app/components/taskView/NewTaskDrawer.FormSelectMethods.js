@@ -13,15 +13,15 @@ export default ({
 }) => {
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleAssignedToSelect = member => async () => {
-    const { userId, userName } = member || {};
-    setValue('assignedToUserId', userId);
+    const { userIdentifier, userName } = member || {};
+    setValue('assignedToUserIdentifier', userIdentifier);
     setValue('assignedToUserName', userName);
     setCurrentMember(member);
     closeAssignedToPopover();
 
     if (hasTask) {
       try {
-        await assignOrReassignTask(defaultValues, parseInt(userId, 10) || -1)(
+        await assignOrReassignTask(defaultValues, userIdentifier || -1)(
           dispatch,
         );
         setAutoSaveVisible();
@@ -37,7 +37,7 @@ export default ({
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handlePatientSelect = patient => async () => {
     setValue('patient', JSON.stringify(patient));
-    setValue('patientId', patient?.patientId);
+    setValue('patientIdentifier', patient?.patientIdentifier);
     setValue('patientName', getPatientName(patient));
     closePatientPopover();
 

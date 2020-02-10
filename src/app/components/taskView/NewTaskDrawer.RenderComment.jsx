@@ -133,11 +133,11 @@ class SingleComment extends Component {
   };
 
   saveComment = () => {
-    const { updateComment, commentId } = this.props;
+    const { updateComment, commentIdentifier } = this.props;
 
     updateComment({
       comment: this.commentBubbleTextRef.current?.textContent,
-      commentId,
+      commentIdentifier,
     });
   };
 
@@ -208,7 +208,7 @@ const renderSingleComment = ({
   updateComment,
   task,
   members,
-}) => ({ comment, commentId }, commentIndex, commentsFromSingleAuthor) => {
+}) => ({ comment, commentIdentifier }, commentIndex, commentsFromSingleAuthor) => {
   const isLastBubble = commentsFromSingleAuthor.length - 1 === commentIndex;
 
   const singleCommentProps = {
@@ -216,12 +216,12 @@ const renderSingleComment = ({
     isCurrentUser,
     updateComment,
     comment,
-    commentId,
+    commentIdentifier,
     task,
     members,
   };
 
-  return <SingleComment key={commentId} {...singleCommentProps} />;
+  return <SingleComment key={commentIdentifier} {...singleCommentProps} />;
 };
 
 export default ({ currentUserId, updateComment, task, members }) => ([
@@ -234,11 +234,11 @@ export default ({ currentUserId, updateComment, task, members }) => ([
       {commentsArray.map(commentsFromSingleAuthor => {
         const {
           initials: commentUserInitials,
-          userId: commentUserId,
+          userIdentifier: commentUserId,
           userName: commentUserName,
         } = commentsFromSingleAuthor?.[0]?.creator || {};
 
-        const { commentId: firstCommentId, dateCreated: firstCommentDate } =
+        const { commentIdentifier: firstCommentId, dateCreated: firstCommentDate } =
           commentsFromSingleAuthor?.[0] || {};
 
         const formattedCreatedDate = firstCommentDate

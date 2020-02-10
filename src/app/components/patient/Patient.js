@@ -25,7 +25,7 @@ const Patient = ({ patient, isCompact, style, padded }) => (
 
 Patient.propTypes = {
   patient: PropTypes.shape({
-    patientId: PropTypes.number,
+    patientIdentifier: PropTypes.number,
     lastName: PropTypes.string,
     firstName: PropTypes.string,
     mrn: PropTypes.string,

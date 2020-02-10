@@ -15,8 +15,8 @@ import {
 } from './PatientsSidebar.Styled';
 import PatientsTasklist from './PatientsTasklist';
 
-const renderTaskList = ({ listName, tasks, completedTasks, taskListId }) => (
-  <PatientsSidebarSection key={taskListId} heading={listName}>
+const renderTaskList = ({ listName, tasks, completedTasks, taskListIdentifier }) => (
+  <PatientsSidebarSection key={taskListIdentifier} heading={listName}>
     <PatientsTasklist tasks={tasks} completedTasks={completedTasks} />
   </PatientsSidebarSection>
 );
@@ -33,7 +33,7 @@ const PatientsSidebar = ({ patient }) => {
     phoneMobile,
     email,
     notes,
-    patientId,
+    patientIdentifier,
     allNotes,
   } = patient;
   const dispatch = useDispatch();
@@ -47,13 +47,13 @@ const PatientsSidebar = ({ patient }) => {
   const [completedTasks, setCompletedTasks] = useState([]);
 
   useEffect(() => {
-    findUserTasksByPatient(patientId, 'INCOMPLETE').then(result => {
+    findUserTasksByPatient(patientIdentifier, 'INCOMPLETE').then(result => {
       setTasks(result);
     });
-    findUserTasksByPatient(patientId, 'COMPLETE').then(result => {
+    findUserTasksByPatient(patientIdentifier, 'COMPLETE').then(result => {
       setCompletedTasks(result);
     });
-  }, [patientId]);
+  }, [patientIdentifier]);
 
   const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
@@ -72,7 +72,7 @@ const PatientsSidebar = ({ patient }) => {
         <PatientEdit
           patient={{
             allNotes,
-            patientId,
+            patientIdentifier,
             mrn,
             firstName,
             middleName,

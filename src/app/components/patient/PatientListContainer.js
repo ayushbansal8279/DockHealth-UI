@@ -16,8 +16,8 @@ class PatientListContainer extends PureComponent {
     });
   }
 
-  deletePatient = patientId => {
-    this.props.actions.deletePatient(patientId);
+  deletePatient = patientIdentifier => {
+    this.props.actions.deletePatient(patientIdentifier);
   };
 
   render() {

@@ -14,13 +14,13 @@ const TaskListLayout = ({
   searchedTasks,
   isFetching,
   isCompletedTasksFetching,
-  userId,
+  userIdentifier,
   taskActions,
   showingCompletedTasks,
   searchPerformed,
 }) => {
   const selectedTaskId = useSelector(
-    store => store.taskState.selectedTask?.taskId,
+    store => store.taskState.selectedTask?.taskIdentifier,
   );
 
   const lists = groupTasksAndCompletedTasksByList(
@@ -29,7 +29,7 @@ const TaskListLayout = ({
   );
 
   const taskViewProps = {
-    userId,
+    userIdentifier,
     tasks: searchedTasks.tasks,
     completedTasks: searchedTasks.completedTasks,
     isFetching,
@@ -41,7 +41,7 @@ const TaskListLayout = ({
     markAsUnread: taskActions.markAsUnread,
     addTaskComment: taskActions.addTaskComment,
     toggleTaskPriority: (task, priority) =>
-      taskActions.toggleTaskPriority(task, userId, priority),
+      taskActions.toggleTaskPriority(task, userIdentifier, priority),
     showToolbar: true,
     showAddTaskButton: false,
     isMultiList: true,
@@ -62,7 +62,7 @@ const TaskListLayout = ({
 };
 
 const TaskListSearchContainer = ({
-  userId,
+  userIdentifier,
   tasks,
   completedTasks,
   isFetching,
@@ -90,7 +90,7 @@ const TaskListSearchContainer = ({
     searchedTasks,
     isFetching,
     isCompletedTasksFetching,
-    userId,
+    userIdentifier,
     taskActions,
     showingCompletedTasks,
     searchPerformed,
@@ -112,7 +112,7 @@ function mapStateToProps(state) {
     isCompletedTasksFetching: state.taskState.isCompletedTasksFetching,
     showingCompletedTasks: state.taskState.showingCompletedTasks,
     user: state.userState.user,
-    userId: state.userState.userProfile.userId,
+    userIdentifier: state.userState.userProfile.userIdentifier,
     selectedTaskId: state.taskState.selectedTaskId,
     selectedTask: state.taskState.selectedTask,
     currentTaskHistory: state.taskState.currentTaskHistory,

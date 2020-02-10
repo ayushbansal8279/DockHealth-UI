@@ -33,8 +33,8 @@ const SaveBillingElement = () => (
 const SubscriptionPaymentFinishedView = () => {
   const dispatch = useDispatch();
 
-  const organizationId = useSelector(
-    store => store.userState?.userProfile?.organizationId,
+  const organizationIdentifier = useSelector(
+    store => store.userState?.userProfile?.organizationIdentifier,
   );
 
   useMount(() => {
@@ -49,7 +49,7 @@ const SubscriptionPaymentFinishedView = () => {
       ],
     });
 
-    getBillingDetails({ organizationId })(dispatch);
+    getBillingDetails({ organizationIdentifier })(dispatch);
     getBillingEstimate()(dispatch);
   });
 

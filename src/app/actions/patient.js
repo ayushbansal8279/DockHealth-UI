@@ -7,12 +7,12 @@ import {
 import { storeAsCurrentTask, storeAllTasks } from './task-actions';
 import { getMembersByTaskListId } from './tasklist-actions';
 
-export const fetchPatient = patientId => async dispatch => {
+export const fetchPatient = patientIdentifier => async dispatch => {
   dispatch({ type: FETCH_PATIENT });
   try {
-    const fetchDetails = getPatientById(patientId);
-    const fetchTasks = findUserTasksByPatient(patientId, 'INCOMPLETE');
-    const fetchCompletedTasks = findUserTasksByPatient(patientId, 'COMPLETE');
+    const fetchDetails = getPatientById(patientIdentifier);
+    const fetchTasks = findUserTasksByPatient(patientIdentifier, 'INCOMPLETE');
+    const fetchCompletedTasks = findUserTasksByPatient(patientIdentifier, 'COMPLETE');
 
     const [details, tasks, completedTasks] = await Promise.all([
       fetchDetails,
@@ -34,9 +34,9 @@ export const fetchPatient = patientId => async dispatch => {
 };
 
 export const selectPatientTask = task => async dispatch => {
-  const taskListId = task?.taskList?.taskListId;
-  if (taskListId) {
-    dispatch(getMembersByTaskListId(taskListId, 'ALL'));
+  const taskListIdentifier = task?.taskList?.taskListIdentifier;
+  if (taskListIdentifier) {
+    dispatch(getMembersByTaskListId(taskListIdentifier, 'ALL'));
   }
   dispatch(storeAsCurrentTask(task));
 };

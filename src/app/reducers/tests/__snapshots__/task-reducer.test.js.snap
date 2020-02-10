@@ -4,7 +4,7 @@ exports[`task-reducer should handle UPDATE_TASK_DUE_DATE 1`] = `
 Array [
   Object {
     "dueDate": "2019-03-27T03:00:00.000Z",
-    "taskId": 0,
+    "taskIdentifier": 0,
   },
 ]
 `;
@@ -13,10 +13,10 @@ exports[`task-reducer should handle UPDATE_TASK_PATIENT 1`] = `
 Array [
   Object {
     "patient": Object {
-      "patientId": 1,
+      "patientIdentifier": 1,
     },
     "subtasks": Array [],
-    "taskId": 0,
+    "taskIdentifier": 0,
   },
 ]
 `;

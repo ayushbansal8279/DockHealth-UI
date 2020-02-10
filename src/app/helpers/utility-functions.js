@@ -31,7 +31,7 @@ export const mergeRefs = refs => value => {
 
 export const isTaskArchivable = curry(
   (currentUserProfile, task) =>
-    task?.status === 'COMPLETE' && !task?.parentTaskId && !task?.archivedByUser,
+    task?.status === 'COMPLETE' && !task?.parentTaskIdentifier && !task?.archivedByUser,
 );
 
 export const formatLinkifyHref = (href, type) => {
@@ -56,12 +56,12 @@ const getDescriptionMentionRegex = name =>
 export const mentionifyDescription = ({ members, value }) => {
   let newValue = value;
 
-  members.forEach(({ userId, firstName, lastName, userName }) => {
+  members.forEach(({ userIdentifier, firstName, lastName, userName }) => {
     const sanitizedFirstName = escape(firstName);
     const sanitizedLastName = escape(lastName);
     const sanitizedUserName = escape(userName);
 
-    const mentionNameReplacer = `$1<a class="decorated-link" href="#/assignedToPerson/${userId}/${sanitizedUserName}">$2</a>`;
+    const mentionNameReplacer = `$1<a class="decorated-link" href="#/assignedToPerson/${userIdentifier}/${sanitizedUserName}">$2</a>`;
 
     newValue = newValue
       .replace(

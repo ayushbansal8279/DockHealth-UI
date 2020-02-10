@@ -17,7 +17,7 @@ class AddTask extends Component {
     super(props);
     this.container = container;
     this.state = {
-      assignedToId: '',
+      assignedToIdentifier: '',
       subtasks: [],
       currentSubtaskIndex: '',
       currentSubtask: undefined,
@@ -63,7 +63,7 @@ class AddTask extends Component {
   };
 
   handleAddMemberToTask(memberId) {
-    this.state.assignedToId = memberId;
+    this.state.assignedToIdentifier = memberId;
   }
 
   submit = form => {
@@ -74,14 +74,14 @@ class AddTask extends Component {
     const payload = { ...form };
 
     if (form.patient !== '') {
-      payload.patientId = $('#add-patient-id').val();
+      payload.patientIdentifier = $('#add-patient-id').val();
     } else {
-      payload.patientId = null;
+      payload.patientIdentifier = null;
     }
     if ($('#assign-task-to').val() !== '') {
-      payload.assignedToId = $('#assign-task-to-id').val();
+      payload.assignedToIdentifier = $('#assign-task-to-id').val();
     } else {
-      payload.assignedToId = '';
+      payload.assignedToIdentifier = '';
     }
     if ($('#due-date').val() !== '') {
       payload.dueDate = unformatDateAndTime($('#due-date').val());
@@ -135,12 +135,12 @@ class AddTask extends Component {
     if (index !== '') {
       this.props.formActions.change('addTaskForm', `subtasks[${index}]`, {
         ...subtaskValues,
-        taskId: this.props.currentSubtasks[index].taskId,
+        taskIdentifier: this.props.currentSubtasks[index].taskIdentifier,
       });
     } else {
       this.props.formActions.arrayPush('addTaskForm', 'subtasks', {
         ...subtaskValues,
-        taskId: '',
+        taskIdentifier: '',
       });
     }
   };
@@ -162,8 +162,8 @@ class AddTask extends Component {
                 taskLists={this.props.taskLists}
                 task={this.props.task}
                 title={this.props.title}
-                taskListId={this.props.taskListId}
-                initialValues={`taskListId:${this.props.taskListId}`}
+                taskListIdentifier={this.props.taskListIdentifier}
+                initialValues={`taskListIdentifier:${this.props.taskListIdentifier}`}
                 subtasks={this.state.subtasks}
                 addSubtaskToState={this.addSubtaskToState}
                 setSubtasks={this.setSubtasks}

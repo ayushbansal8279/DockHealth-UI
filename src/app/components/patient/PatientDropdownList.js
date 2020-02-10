@@ -6,8 +6,8 @@ class PatientDropdownList extends PureComponent {
     this.addPatientToTask = this.addPatientToTask.bind(this);
   }
 
-  addPatientToTask(patientId) {
-    this.props.addPatientToTaskCallback(patientId, this.props.taskId);
+  addPatientToTask(patientIdentifier) {
+    this.props.addPatientToTaskCallback(patientIdentifier, this.props.taskIdentifier);
     // alert('clicked');
   }
 
@@ -19,8 +19,8 @@ class PatientDropdownList extends PureComponent {
             this.props.patients.map(patient => {
               return (
                 <li
-                  onClick={e => this.addPatientToTask(patient.patientId)}
-                  key={patient.patientId}
+                  onClick={e => this.addPatientToTask(patient.patientIdentifier)}
+                  key={patient.patientIdentifier}
                 >
                   {patient.firstName}
                   &nbsp;

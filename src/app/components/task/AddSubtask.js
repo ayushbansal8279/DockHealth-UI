@@ -24,7 +24,7 @@ export const AddSubtaskContainer = styled.div`
   }
 `;
 
-const AddSubtask = ({ padded, taskId }) => {
+const AddSubtask = ({ padded, taskIdentifier }) => {
   const dispatch = useDispatch();
   const addingNewSubtask = useSelector(
     state => state.taskState.addingNewSubtask,
@@ -37,7 +37,7 @@ const AddSubtask = ({ padded, taskId }) => {
           event.preventDefault();
           event.stopPropagation();
           if (!addingNewSubtask) {
-            prepareSubtask(taskId)(dispatch);
+            prepareSubtask(taskIdentifier)(dispatch);
           }
         }}
       >

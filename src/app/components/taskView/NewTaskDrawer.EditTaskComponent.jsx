@@ -75,7 +75,7 @@ class EditTaskDescription extends Component {
       this.componentRef.current?.focus();
     }
 
-    if (previousProps.selectedTask?.taskId !== selectedTask?.taskId) {
+    if (previousProps.selectedTask?.taskIdentifier !== selectedTask?.taskIdentifier) {
       this.resetTextContent();
     }
   }
@@ -187,7 +187,7 @@ export default ({
 }) => {
   const { register, setValue } = useFormContext();
   const selectedTask = useSelector(store => store.taskState.selectedTask);
-  const selectedTaskId = selectedTask?.taskId;
+  const selectedTaskId = selectedTask?.taskIdentifier;
 
   const incompleteTasks = useSelector(store => store.taskState.tasks);
   // const completeTasks = useSelector(store => store.taskState.completedTasks);
@@ -198,14 +198,14 @@ export default ({
   // const allSubtasks = allMainTasks.flatMap(prop('subtasks'));
   // const allTasks = [...allMainTasks, ...allSubtasks];
 
-  // const selectedTask = allTasks.find(({ taskId }) => taskId === selectedTaskId);
+  // const selectedTask = allTasks.find(({ taskIdentifier }) => taskIdentifier === selectedTaskId);
 
   const { status } = selectedTask || {};
 
   const listName = incompleteTasks?.find(
-    ({ taskId, subtasks }) =>
-      taskId === selectedTaskId ||
-      subtasks?.find(({ taskId: subtaskId }) => subtaskId === selectedTaskId),
+    ({ taskIdentifier, subtasks }) =>
+      taskIdentifier === selectedTaskId ||
+      subtasks?.find(({ taskIdentifier: subtaskId }) => subtaskId === selectedTaskId),
   )
     ? 'INCOMPLETE'
     : 'COMPLETE';

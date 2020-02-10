@@ -22,14 +22,14 @@ const goToMainPage = () => {
 const OnboardingFinishedView = () => {
   const dispatch = useDispatch();
 
-  const organizationId = useSelector(
-    store => store.userState?.userProfile?.organizationId,
+  const organizationIdentifier = useSelector(
+    store => store.userState?.userProfile?.organizationIdentifier,
   );
 
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 6 })(dispatch);
 
-    getBillingDetails({ organizationId })(dispatch);
+    getBillingDetails({ organizationIdentifier })(dispatch);
     getBillingEstimate()(dispatch);
   });
 

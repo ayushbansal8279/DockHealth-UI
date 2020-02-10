@@ -21,22 +21,22 @@ class TaskFiltersContainer extends PureComponent {
 
   getTasksAssignedToUserByTaskListId() {
     this.props.taskActions.getTasksAssignedToUserByTaskListId(
-      this.props.taskListId,
+      this.props.taskListIdentifier,
     );
   }
 
   getTasksAssignedByMe() {
-    this.props.taskActions.getTasksAssignedByMe(this.props.taskListId);
+    this.props.taskActions.getTasksAssignedByMe(this.props.taskListIdentifier);
   }
 
   getHighPriorityTasks() {
     this.props.taskActions.getHighPriorityTasksByTaskList(
-      this.props.taskListId,
+      this.props.taskListIdentifier,
     );
   }
 
   getListTasksByUser(status) {
-    this.props.taskActions.getListTasks(this.props.taskListId, status);
+    this.props.taskActions.getListTasks(this.props.taskListIdentifier, status);
   }
 
   render() {
@@ -168,7 +168,7 @@ class TaskFiltersContainer extends PureComponent {
     // alert('componentDidMount');
     enableTaskListComponents();
 
-    // console.log("TaskList is: " + this.props.taskListId);
+    // console.log("TaskList is: " + this.props.taskListIdentifier);
     // console.log("listoftasks didmount")
   }
 

@@ -65,9 +65,9 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const dispatch = useDispatch();
 
-  const { organization, organizationId } = useSelector(store => ({
+  const { organization, organizationIdentifier } = useSelector(store => ({
     ...store.organizationState,
-    organizationId: store.userState?.userProfile?.organizationId,
+    organizationIdentifier: store.userState?.userProfile?.organizationIdentifier,
   }));
 
   const trialBannerVisible = getSubscriptionIsTrial({
@@ -92,7 +92,7 @@ const Drawer = ({ header, user, lists, children }) => {
   const trialEndLabel = `Your ${subscriptionPlanTrialLabel} free trial will expire ${trialEndDateLabel}.`;
 
   useMount(() => {
-    getOrganizationById({ organizationId })(dispatch);
+    getOrganizationById({ organizationIdentifier })(dispatch);
   });
 
   return (

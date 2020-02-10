@@ -113,7 +113,7 @@ const renderPatientItem = ({ handlePatientSelect }) => patient => {
 
   return (
     <PatientItemContainer
-      key={patient?.patientId}
+      key={patient?.patientIdentifier}
       onClick={handlePatientSelect(patient)}
     >
       <div>{patient?.mrn || ''}</div>
@@ -131,7 +131,7 @@ const renderNoPatientItem = ({ handlePatientSelect }) => () => (
 const renderAssignedToItem = ({ handleAssignedToSelect }) => member => {
   return (
     <AssignedToItemContainer
-      key={member?.userId}
+      key={member?.userIdentifier}
       onClick={handleAssignedToSelect(member)}
     >
       <MemberSlot member={member} />
@@ -183,7 +183,7 @@ export default ({
 
   const { reset, register, setValue } = formMethods;
 
-  const hasTask = Boolean(defaultValues?.taskId);
+  const hasTask = Boolean(defaultValues?.taskIdentifier);
 
   const {
     handleAssignedToSelect,
@@ -221,9 +221,9 @@ export default ({
 
   useDeepCompareEffect(() => {
     setValue('patient', JSON.stringify(defaultValues?.patient));
-    setValue('patientId', defaultValues?.patient?.patientId);
+    setValue('patientIdentifier', defaultValues?.patient?.patientIdentifier);
     setValue('patientName', getPatientName(defaultValues?.patient));
-    setValue('assignedToUserId', defaultValues?.assignedToUserId);
+    setValue('assignedToUserIdentifier', defaultValues?.assignedToUserIdentifier);
     setValue('assignedToUserName', defaultValues?.assignedToUserName);
   }, [defaultValues, setValue]);
 
@@ -232,7 +232,7 @@ export default ({
       setCurrentMember(defaultValues?.assignedTo);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [defaultValues?.assignedToUserId],
+    [defaultValues?.assignedToUserIdentifier],
   );
 
   const members = useSelector(store =>
@@ -249,9 +249,9 @@ export default ({
 
   return (
     <>
-      <input ref={register} type="hidden" name="assignedToUserId" />
+      <input ref={register} type="hidden" name="assignedToUserIdentifier" />
       <input ref={register} type="hidden" name="patient" />
-      <input ref={register} type="hidden" name="patientId" />
+      <input ref={register} type="hidden" name="patientIdentifier" />
       <FormContainer container spacing={8}>
         <Grid item xs={12}>
           {hasTask ? (

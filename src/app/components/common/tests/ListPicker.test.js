@@ -22,10 +22,10 @@ describe('ListPicker', () => {
   it('should render popover after click', () => {
     const props = {
       assign: jest.fn(),
-      item: { taskListId: 0, listName: 'List #1', creator: { userName: 'JS' } },
+      item: { taskListIdentifier: 0, listName: 'List #1', creator: { userName: 'JS' } },
       items: [
-        { taskListId: 0, listName: 'List #1', creator: { userName: 'JS' } },
-        { taskListId: 1, listName: 'List #2', creator: { userName: 'JS' } },
+        { taskListIdentifier: 0, listName: 'List #1', creator: { userName: 'JS' } },
+        { taskListIdentifier: 1, listName: 'List #2', creator: { userName: 'JS' } },
       ],
       task: {},
     };
@@ -40,10 +40,10 @@ describe('ListPicker', () => {
   it('should show confirmation after clicking on an item', () => {
     const props = {
       assign: jest.fn(),
-      item: { taskListId: 0, listName: 'List #1', creator: { userName: 'JS' } },
+      item: { taskListIdentifier: 0, listName: 'List #1', creator: { userName: 'JS' } },
       items: [
-        { taskListId: 0, listName: 'List #1', creator: { userName: 'JS' } },
-        { taskListId: 1, listName: 'List #2', creator: { userName: 'JS' } },
+        { taskListIdentifier: 0, listName: 'List #1', creator: { userName: 'JS' } },
+        { taskListIdentifier: 1, listName: 'List #2', creator: { userName: 'JS' } },
       ],
       task: {},
     };
@@ -58,10 +58,10 @@ describe('ListPicker', () => {
   it('should assign after confirmation', () => {
     const props = {
       assign: jest.fn(),
-      item: { taskListId: 0, listName: 'List #1', creator: { userName: 'JS' } },
+      item: { taskListIdentifier: 0, listName: 'List #1', creator: { userName: 'JS' } },
       items: [
-        { taskListId: 0, listName: 'List #1', creator: { userName: 'JS' } },
-        { taskListId: 1, listName: 'List #2', creator: { userName: 'JS' } },
+        { taskListIdentifier: 0, listName: 'List #1', creator: { userName: 'JS' } },
+        { taskListIdentifier: 1, listName: 'List #2', creator: { userName: 'JS' } },
       ],
       task: {},
     };

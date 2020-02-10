@@ -55,9 +55,9 @@ describe('task-reducer', () => {
   });
 
   it('should handle UPDATE_TASK_DUE_DATE', () => {
-    const action = { type: UPDATE_TASK_DUE_DATE, taskId: 0, dueDate: '2019-03-27T03:00:00.000Z' };
+    const action = { type: UPDATE_TASK_DUE_DATE, taskIdentifier: 0, dueDate: '2019-03-27T03:00:00.000Z' };
     const initialState = {
-      tasks: [{ taskId: 0, dueDate: '' }],
+      tasks: [{ taskIdentifier: 0, dueDate: '' }],
     };
     const state = reducer(initialState, action);
 
@@ -66,9 +66,9 @@ describe('task-reducer', () => {
   });
 
   it('should handle UPDATE_TASK_REMINDER', () => {
-    const action = { type: UPDATE_TASK_REMINDER, taskId: 0, reminderDt: '2019-03-27T03:00:00.000Z' };
+    const action = { type: UPDATE_TASK_REMINDER, taskIdentifier: 0, reminderDt: '2019-03-27T03:00:00.000Z' };
     const initialState = {
-      tasks: [{ taskId: 0, reminderDt: '' }],
+      tasks: [{ taskIdentifier: 0, reminderDt: '' }],
     };
     const state = reducer(initialState, action);
 
@@ -76,9 +76,9 @@ describe('task-reducer', () => {
   });
 
   it('should handle UPDATE_TASK_PATIENT', () => {
-    const action = { type: UPDATE_TASK_PATIENT, parentTaskId: 0, patient: { patientId: 1 } };
+    const action = { type: UPDATE_TASK_PATIENT, parentTaskIdentifier: 0, patient: { patientIdentifier: 1 } };
     const initialState = {
-      tasks: [{ taskId: 0, patient: null, subtasks: [] }],
+      tasks: [{ taskIdentifier: 0, patient: null, subtasks: [] }],
     };
     const state = reducer(initialState, action);
 

@@ -54,7 +54,7 @@ const isLoggedIn = (loggedIn, user) => {
   userApi.getUserByEmail(user.username, user).then(data => {
     if (loggedIn && pathname === TEAM_ORG_SETUP_PATH) {
       if (data.profileThumbnailPictureHash) {
-        userApi.getUserProfilePic(data.userId, 'PROFILE');
+        userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
       }
       userApi.getAllSpecialties();
       userApi.getAllTitles();

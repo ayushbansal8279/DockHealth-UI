@@ -48,7 +48,7 @@ export function invitePersonToOrganization(formProps) {
 }
 
 export function resendInviteToOrganization(email) {
-  const personInfo = { email, organizationId: '1' };
+  const personInfo = { email, organizationIdentifier: '1' };
 
   return dispatch =>
     PeopleApi.resendInviteToOrganization(personInfo)
@@ -61,9 +61,9 @@ export function resendInviteToOrganization(email) {
       });
 }
 
-export function changeUserRoleForOrg(markedUserId, role) {
+export function changeUserRoleForOrg(markedUserIdentifier, role) {
   return dispatch =>
-    PeopleApi.changeUserRoleForOrg(markedUserId, role)
+    PeopleApi.changeUserRoleForOrg(markedUserIdentifier, role)
       .then(response => {
         dispatch({ type: ActionTypes.CHANGEUSERROLE_ORG_SUCCESS, response });
       })
@@ -86,9 +86,9 @@ export function cancelInviteToOrganization(markedUserEmail) {
       });
 }
 
-export function removeUserFromOrganization(removedUserId) {
+export function removeUserFromOrganization(removedUserIdentifier) {
   return dispatch =>
-    PeopleApi.removeUserFromOrganization(removedUserId)
+    PeopleApi.removeUserFromOrganization(removedUserIdentifier)
       .then(response => {
         dispatch({ type: ActionTypes.REMOVE_USER_ORG_SUCCESS, response });
       })
@@ -97,17 +97,17 @@ export function removeUserFromOrganization(removedUserId) {
       });
 }
 
-export function getUserById(userId) {
+export function getUserById(userIdentifier) {
   return dispatch => {
     dispatch({
       type: ActionTypes.GET_USER_DETAILS_SUCCESS,
       user: null,
-      userId,
+      userIdentifier,
     });
 
-    return PeopleApi.getUserById(parseInt(userId, 10))
+    return PeopleApi.getUserById(parseInt(userIdentifier, 10))
       .then(user => {
-        dispatch({ type: ActionTypes.GET_USER_DETAILS_SUCCESS, user, userId });
+        dispatch({ type: ActionTypes.GET_USER_DETAILS_SUCCESS, user, userIdentifier });
       })
       .catch(error => {
         throw error;

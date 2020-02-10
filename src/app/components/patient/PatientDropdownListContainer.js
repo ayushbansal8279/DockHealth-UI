@@ -23,7 +23,7 @@ class PatientDropdownListContainer extends PureComponent {
       <PatientDropdownList
         patients={this.props.patients}
         addPatientToTaskCallback={this.props.addPatientToTaskCallback}
-        taskId={this.props.taskId}
+        taskIdentifier={this.props.taskIdentifier}
       />
     );
   }

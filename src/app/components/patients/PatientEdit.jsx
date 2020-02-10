@@ -26,7 +26,7 @@ import PatientsSidebarSection from './PatientsSidebar.Section';
 const DATE_FORMAT = 'MM/DD/YYYY';
 
 export const PatientsForm = ({
-  patientId,
+  patientIdentifier,
   mrn,
   firstName,
   middleName,
@@ -57,7 +57,7 @@ export const PatientsForm = ({
   }, [stopCreating]);
 
   const handleNewNoteSubmit = useCallback(() => {
-    addPatientNote(patientId, note)(dispatch)
+    addPatientNote(patientIdentifier, note)(dispatch)
       .then(newNote => {
         handleCancel();
         onPatientNoteAdded();
@@ -66,7 +66,7 @@ export const PatientsForm = ({
       .catch(() => {
         toggleAlert('Error adding note. Please try again.', 'error');
       });
-  }, [dispatch, handleCancel, note, patientId]);
+  }, [dispatch, handleCancel, note, patientIdentifier]);
 
   const handleSaveAndClose = useCallback(() => {
     onSubmit()
@@ -78,7 +78,7 @@ export const PatientsForm = ({
 
   useEffect(() => {
     handleCancel();
-  }, [handleCancel, patientId]);
+  }, [handleCancel, patientIdentifier]);
 
   const {
     BirthdayInputComponent,
@@ -217,7 +217,7 @@ export const PatientsForm = ({
       >
         <PatientNotes
           notes={allNotes}
-          patientId={patientId}
+          patientIdentifier={patientIdentifier}
           note={note}
           setNote={setNote}
           isCreating={isCreating}

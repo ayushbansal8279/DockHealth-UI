@@ -62,11 +62,11 @@ class AssignedByMe extends PureComponent {
 
   downloadPDF = () => {
     const {
-      routeParams: { taskListId },
+      routeParams: { taskListIdentifier },
     } = this.props;
 
-    if (taskListId) {
-      downloadPDF(taskListId);
+    if (taskListIdentifier) {
+      downloadPDF(taskListIdentifier);
     }
   };
 
@@ -107,7 +107,7 @@ class AssignedByMe extends PureComponent {
 
   render() {
     const {
-      userId,
+      userIdentifier,
       tasks,
       completedTasks,
       isFetching,
@@ -124,7 +124,7 @@ class AssignedByMe extends PureComponent {
     } = this.props;
 
     const taskViewProps = {
-      userId,
+      userIdentifier,
       tasks,
       completedTasks,
       isFetching,
@@ -136,7 +136,7 @@ class AssignedByMe extends PureComponent {
       markAsUnread,
       addTaskComment,
       toggleTaskPriority: (task, priority) =>
-        toggleTaskPriority(task, userId, priority),
+        toggleTaskPriority(task, userIdentifier, priority),
       pullCompletedTasks: this.pullCompletedTasks,
       onFilter: this.handleFilterChange,
       refresh: this.refresh,
@@ -157,7 +157,7 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   showingCompletedTasks: store.taskState.showingCompletedTasks,
   user: store.userState.user,
-  userId: store.userState.userProfile.userId,
+  userIdentifier: store.userState.userProfile.userIdentifier,
   selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
 });

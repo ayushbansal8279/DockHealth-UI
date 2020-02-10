@@ -17,7 +17,7 @@ import values from 'ramda/es/values';
 
 /**
  * @typedef {Object} TaskList
- * @property {Number} taskListId
+ * @property {Number} taskListIdentifier
  * @property {String} listName
  */
 
@@ -47,7 +47,7 @@ const sortByName = sortBy(
  * @type {function(Task[])}
  */
 export const groupTasksByList = pipe(
-  safeGroupBy(path(['taskList', 'taskListId'])),
+  safeGroupBy(path(['taskList', 'taskListIdentifier'])),
   map(tasks => ({ ...getTaskListFromTasks(tasks), tasks })),
   values,
 );

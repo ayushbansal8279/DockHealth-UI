@@ -7,7 +7,7 @@ jest.mock('../../../api/user-api', () => ({}));
 
 describe('TaskDetails', () => {
   const mockTask = {
-    taskId: 0,
+    taskIdentifier: 0,
     dueDate: '',
     description: 'Just do it.',
     status: 'INCOMPLETE',
@@ -33,7 +33,7 @@ describe('TaskDetails', () => {
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
       selectedTask: mockTask,
-      userId: 142,
+      userIdentifier: 142,
     };
     const wrapper = shallow(<TaskDetails {...props} />);
     expect(wrapper).toMatchSnapshot();
@@ -45,7 +45,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: { ...mockTask, status: 'INCOMPLETE' },
     };
     const wrapper = shallow(<TaskDetails {...props} />);
@@ -58,7 +58,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: { ...mockTask, status: 'COMPLETE' },
     };
     const wrapper = shallow(<TaskDetails {...props} />);
@@ -71,7 +71,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: { ...mockTask, priority: 'LOW' },
     };
     const wrapper = shallow(<TaskDetails {...props} />);
@@ -84,7 +84,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: { ...mockTask, priority: 'HIGH' },
     };
     const wrapper = shallow(<TaskDetails {...props} />);
@@ -97,7 +97,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: { ...mockTask, priority: 'LOW' },
     };
     const wrapper = shallow(<TaskDetails {...props} />);
@@ -115,7 +115,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: {
         ...mockTask,
         patient: {
@@ -135,7 +135,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: { ...mockTask, subtasks: [{ id: 0 }, { id: 1 }] },
     };
     const wrapper = shallow(<TaskDetails {...props} />);
@@ -148,7 +148,7 @@ describe('TaskDetails', () => {
       close: jest.fn(),
       toggleTaskPriority: jest.fn(),
       addTaskComment: jest.fn(),
-      userId: 142,
+      userIdentifier: 142,
       selectedTask: mockTask,
     };
     const wrapper = shallow(<TaskDetails {...props} />);

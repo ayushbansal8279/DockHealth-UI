@@ -147,12 +147,12 @@ export const onPatientNoteEdited = () => {
 
 export const onLogin = () => {
   ReactGA.set({
-    userId: Number(sessionStorage.userId),
+    userIdentifier: Number(sessionStorage.userIdentifier),
   });
 };
 
 export const onLogout = () => {
   ReactGA.set({
-    userId: null,
+    userIdentifier: null,
   });
 };

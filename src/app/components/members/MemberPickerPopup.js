@@ -114,10 +114,10 @@ const MemberPickerPopup = ({ member, members, assign, task, close }) => {
           sortedListings.map(m => (
             <ListItem
               member={m}
-              key={m.userId}
-              selected={member && m.userId === member.userId}
+              key={m.userIdentifier}
+              selected={member && m.userIdentifier === member.userIdentifier}
               onClick={select}
-              id={m.userId}
+              id={m.userIdentifier}
             >
               <MemberSlot member={m} />
               <MemberName>{m.userName}</MemberName>

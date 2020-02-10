@@ -126,7 +126,7 @@ export function logout() {
         resolvedCognitoUser = null;
         store.dispatch({ type: 'user/user', user: resolvedCognitoUser });
         sessionStorage.removeItem('accessToken');
-        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('userIdentifier');
         sessionStorage.removeItem('sessionStartTime');
         onLogout();
       }
@@ -308,7 +308,7 @@ export function resetPassword(userData) {
 
 export function createUser(user) {
   return axios.put('user', user).then(response => {
-    store.dispatch({ type: 'user/userId', userId: response.data.userId });
+    store.dispatch({ type: 'user/userIdentifier', userIdentifier: response.data.userIdentifier });
     return response;
   });
 }
@@ -327,7 +327,7 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
     )
     .then(response => {
       store.dispatch({ type: 'user/userProfile', userProfile: response.data });
-      sessionStorage.setItem('userId', response.data.userId);
+      sessionStorage.setItem('userIdentifier', response.data.userIdentifier);
       sessionStorage.setItem('userProfile', JSON.stringify(response.data));
       onLogin();
       return { ...response.data, access: dummyAccess };
@@ -349,7 +349,7 @@ export function getUserByEmail(email, cognitoUser) {
 }
 
 export function getUserById() {
-  return axios.get(`user/${sessionStorage.userId}`).then(response => {
+  return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
     store.dispatch({ type: 'user/userProfile', userProfile: response.data });
     return response.data;
   });
@@ -359,10 +359,10 @@ export function updateStoreWithCurrentUser(cognitoUser) {
   store.dispatch({ type: 'user/user', user: cognitoUser });
 }
 
-export function getUserProfilePic(userId, pictureType) {
+export function getUserProfilePic(userIdentifier, pictureType) {
   return axios
     .get(
-      `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userId}?UserPictureType=${pictureType}`,
+      `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}?UserPictureType=${pictureType}`,
       { responseType: 'arraybuffer' },
     )
     .then(response => {
@@ -444,10 +444,10 @@ export function updateUserNotoficationPrefs(
     });
 }
 
-export function leaveList(taskListId) {
+export function leaveList(taskListIdentifier) {
   return axios
     .delete(
-      `${process.env.HEYDOC_SERVICES_BASE_URL}user/userLeavesList/${taskListId}`,
+      `${process.env.HEYDOC_SERVICES_BASE_URL}user/userLeavesList/${taskListIdentifier}`,
     )
     .then(response => response)
     .catch(error => {

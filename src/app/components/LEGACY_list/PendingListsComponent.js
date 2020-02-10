@@ -6,7 +6,7 @@ class PendingListsComponent extends PureComponent {
   componentWillUnmount() {
     if (this.props.taskLists) {
       this.props.taskLists.map((taskList, index) => {
-        removeRevealComponent(`#leave-task-${taskList.taskListId}`);
+        removeRevealComponent(`#leave-task-${taskList.taskListIdentifier}`);
       });
     }
   }
@@ -32,7 +32,7 @@ class PendingListsComponent extends PureComponent {
           taskLists.map(taskList => {
             return (
               <div
-                key={`pendingTaskList${taskList.taskListId}`}
+                key={`pendingTaskList${taskList.taskListIdentifier}`}
                 className="item row expanded align-middle"
               >
                 <div className="columns shrink">
@@ -80,19 +80,19 @@ class PendingListsComponent extends PureComponent {
                 <div className="columns shrink more-options-wrapper">
                   <svg
                     className="icon ellipses medium"
-                    data-toggle={`more-options-task-id-${taskList.taskListId}`}
+                    data-toggle={`more-options-task-id-${taskList.taskListIdentifier}`}
                   >
                     <use xlinkHref="#icon-ellipses" />
                   </svg>
                   <div
                     className="small dropdown-pane"
-                    id={`more-options-task-id-${taskList.taskListId}`}
+                    id={`more-options-task-id-${taskList.taskListIdentifier}`}
                     data-dropdown
                     data-close-on-click="true"
                   >
                     <ul className="no-bullet">
                       <li>
-                        <div data-open={`leave-list-${taskList.taskListId}`}>
+                        <div data-open={`leave-list-${taskList.taskListIdentifier}`}>
                           Leave list
                         </div>
                       </li>
@@ -100,7 +100,7 @@ class PendingListsComponent extends PureComponent {
                   </div>
                 </div>
                 <BooleanModal
-                  uniqueModalId={`leave-list-${taskList.taskListId}`}
+                  uniqueModalId={`leave-list-${taskList.taskListIdentifier}`}
                   message={`Are you sure you want to leave '${
                     taskList.listName
                   }'?`}

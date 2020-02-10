@@ -38,8 +38,8 @@ const PREVIEW_DISPLAY_TYPES = {
   UNSUPPORTED: 'UNSUPPORTED',
 };
 
-const getMemoTaskAttachment = memoizeWith(identity, attachmentId =>
-  attachmentId ? getTaskAttachment(attachmentId) : Promise.reject(),
+const getMemoTaskAttachment = memoizeWith(identity, attachmentIdentifier =>
+  attachmentIdentifier ? getTaskAttachment(attachmentIdentifier) : Promise.reject(),
 );
 
 export default React.memo(
@@ -51,7 +51,7 @@ export default React.memo(
     }, []);
 
     const {
-      attachmentId,
+      attachmentIdentifier,
       contentType: attachmentContentType,
       dateCreated,
       fileName,
@@ -60,7 +60,7 @@ export default React.memo(
     const data = useAsync(async () => {
       try {
         const rawBase64Data = await new Promise((resolve, reject) =>
-          getMemoTaskAttachment(attachmentId)
+          getMemoTaskAttachment(attachmentIdentifier)
             .then(({ data: blobResponseData }) => {
               const reader = new FileReader();
               reader.onloadend = () => {
@@ -75,7 +75,7 @@ export default React.memo(
       } catch {
         return null;
       }
-    }, [attachmentId]);
+    }, [attachmentIdentifier]);
 
     const displayType = cond([
       [startsWith('audio/'), always(PREVIEW_DISPLAY_TYPES.AUDIO)],

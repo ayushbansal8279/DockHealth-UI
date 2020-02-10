@@ -110,7 +110,7 @@ const SubscriptionPaymentView = () => {
 
   const { newPaymentPlan, currentUsers } = useSelector(store => ({
     ...store.organizationState,
-    organizationId: store.userState?.userProfile?.organizationId,
+    organizationIdentifier: store.userState?.userProfile?.organizationIdentifier,
   }));
 
   const onCancelClick = useCallback(() => {

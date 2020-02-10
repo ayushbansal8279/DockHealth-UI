@@ -6,14 +6,14 @@ describe('Comments', () => {
   it('should render correctly', () => {
     const props = {
       submit: jest.fn(),
-      userId: 0,
+      userIdentifier: 0,
       comments: [
         {
-          commentId: 0,
+          commentIdentifier: 0,
           comment: 'Lipsum',
           dateCreated: '20120620',
           creator: {
-            userId: 142,
+            userIdentifier: 142,
             userName: 'John Smith',
             initials: 'JS',
           },

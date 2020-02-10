@@ -25,7 +25,7 @@ class AssignToModal extends React.Component {
 
     return (
       !task ||
-      (nextProps.task && task.taskId !== nextProps.task.taskId) ||
+      (nextProps.task && task.taskIdentifier !== nextProps.task.taskIdentifier) ||
       (nextProps.task && task.assignedTo !== nextProps.task.assignedTo) ||
       (nextState.members && members.length !== nextState.members.length)
     );
@@ -35,16 +35,16 @@ class AssignToModal extends React.Component {
     const { assignOrReassignTask, task } = this.props;
 
     if (member) {
-      assignOrReassignTask(task, member.userId, member);
+      assignOrReassignTask(task, member.userIdentifier, member);
     }
   };
 
-  renderMember = ({ taskListId }) => member => {
+  renderMember = ({ taskListIdentifier }) => member => {
     return (
       <div
         data-close=""
         onClick={this.handleMemberAssignment({ member })}
-        key={`assign_${taskListId}_${member.userId}`}
+        key={`assign_${taskListIdentifier}_${member.userIdentifier}`}
         className="row condense expanded border-bottom align-middle"
       >
         <div className="columns shrink">
@@ -62,17 +62,17 @@ class AssignToModal extends React.Component {
   };
 
   render() {
-    const { assignOrReassignTask, members = [], task, taskListId } = this.props;
+    const { assignOrReassignTask, members = [], task, taskListIdentifier } = this.props;
 
     return (
       <div
         className="reveal"
-        id={`edit-assign-to-${task.taskId}`}
+        id={`edit-assign-to-${task.taskIdentifier}`}
         data-reveal=""
       >
         <h5 className="margin-bottom text-center">Assign to</h5>
         <div className="scroll-wrapper">
-          {members.map(this.renderMember({ taskListId }))}
+          {members.map(this.renderMember({ taskListIdentifier }))}
           <button
             className="close-button"
             data-close=""

@@ -24,7 +24,7 @@ export default ({
   newDueDate,
   setNewDueDate,
   saveDueDate,
-  taskId,
+  taskIdentifier,
   newDueDateMoment,
   clearDueDate,
   SectionButtonContainer,
@@ -34,7 +34,7 @@ export default ({
     value={newDueDate}
     onChange={updatedDueDate => {
       setNewDueDate(updatedDueDate);
-      if (taskId) {
+      if (taskIdentifier) {
         saveDueDate({ updatedDueDate });
       }
     }}

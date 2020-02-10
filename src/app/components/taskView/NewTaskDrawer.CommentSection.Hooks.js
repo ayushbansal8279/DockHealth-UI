@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import useBoolean from '../../hooks/useBoolean';
 
 export default ({ task }) => {
-  const taskId = task?.taskId;
+  const taskIdentifier = task?.taskIdentifier;
 
   const currentUserProfile = useSelector(store => store.userState.userProfile);
   const members = useSelector(store =>
-    !task?.taskList?.taskListId
+    !task?.taskList?.taskListIdentifier
       ? [store.userState.userProfile]
       : store.taskListState.tasklistmembers,
   );
-  const currentUserId = currentUserProfile?.userId;
+  const currentUserId = currentUserProfile?.userIdentifier;
 
   const dispatch = useDispatch();
   const addingCommentsMethods = useBoolean(false);
@@ -50,7 +50,7 @@ export default ({ task }) => {
 
   useEffect(() => {
     setAddedComments([]);
-  }, [taskId]);
+  }, [taskIdentifier]);
 
   const addComment = useCallback(
     data => {

@@ -26,15 +26,15 @@ const initializeAddListFormHooks = () => {
     false,
   );
 
-  const taskListId = currentList?.taskListId;
+  const taskListIdentifier = currentList?.taskListIdentifier;
 
   const [searchValue, setSearchValue] = useState('');
 
   const setDefaultFormValues = useCallback(() => {
     setValue('listName', currentList?.listName ?? '');
     setValue('owner', listOwner);
-    setValue('admins', currentList?.admins ?? []);
-    setValue('members', currentList?.members ?? []);
+    setValue('admins', currentList?.adminIdentifiers ?? []);
+    setValue('memberIdentifiers', currentList?.memberIdentifiers ?? []);
     setValue('notifications', currentList?.notifications ?? true);
   }, [currentList, listOwner, setValue]);
 
@@ -44,7 +44,7 @@ const initializeAddListFormHooks = () => {
     register({ name: 'listName' });
     register({ name: 'owner' });
     register({ name: 'admins' });
-    register({ name: 'members' });
+    register({ name: 'memberIdentifiers' });
     register({ name: 'notifications' });
 
     setDefaultFormValues();
@@ -53,7 +53,7 @@ const initializeAddListFormHooks = () => {
       unregister('listName');
       unregister('owner');
       unregister('admins');
-      unregister('members');
+      unregister('memberIdentifiers');
       unregister('notifications');
     };
   });
@@ -61,7 +61,7 @@ const initializeAddListFormHooks = () => {
   useEffect(() => {
     setDefaultFormValues();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskListId]);
+  }, [taskListIdentifier]);
 
   useEffect(() => {
     if (adminsPickerOpen || membersPickerOpen) {
@@ -71,18 +71,18 @@ const initializeAddListFormHooks = () => {
 
   const listNameValue = watch('listName') ?? '';
   const adminsValue = watch('admins') ?? [];
-  const membersValue = watch('members') ?? [];
+  const membersValue = watch('memberIdentifiers') ?? [];
   const notificationsValue = watch('notifications') ?? true;
 
-  const formLabelContent = taskListId ? 'Edit a list' : 'Add a list';
+  const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
 
   const filteredPeople = (people ?? [])
     .filter(
-      ({ userId }) =>
-        userId != null &&
-        userId !== listOwner.userId &&
-        !membersValue.includes(userId) &&
-        !adminsValue.includes(userId),
+      ({ userIdentifier }) =>
+        userIdentifier != null &&
+        userIdentifier !== listOwner.userIdentifier &&
+        !membersValue.includes(userIdentifier) &&
+        !adminsValue.includes(userIdentifier),
     )
     .filter(({ firstName = '', middleName = '', lastName = '' }) => {
       return [
@@ -95,29 +95,29 @@ const initializeAddListFormHooks = () => {
     });
 
   const addAdmin = useCallback(
-    ({ userId }) => {
-      setValue('admins', [...adminsValue, userId]);
+    ({ userIdentifier }) => {
+      setValue('admins', [...adminsValue, userIdentifier]);
     },
     [adminsValue, setValue],
   );
 
   const addMember = useCallback(
-    ({ userId }) => {
-      setValue('members', [...membersValue, userId]);
+    ({ userIdentifier }) => {
+      setValue('memberIdentifiers', [...membersValue, userIdentifier]);
     },
     [membersValue, setValue],
   );
 
   const removeAdmin = useCallback(
-    ({ userId }) => {
-      setValue('admins', adminsValue.filter(adminId => adminId !== userId));
+    ({ userIdentifier }) => {
+      setValue('admins', adminsValue.filter(adminId => adminId !== userIdentifier));
     },
     [adminsValue, setValue],
   );
 
   const removeMember = useCallback(
-    ({ userId }) => {
-      setValue('members', membersValue.filter(memberId => memberId !== userId));
+    ({ userIdentifier }) => {
+      setValue('memberIdentifiers', membersValue.filter(memberId => memberId !== userIdentifier));
     },
     [membersValue, setValue],
   );
@@ -143,7 +143,7 @@ const initializeAddListFormHooks = () => {
     removeMember,
     notificationsValue,
     people,
-    taskListId,
+    taskListIdentifier,
     dispatch,
     searchValue,
     setSearchValue,

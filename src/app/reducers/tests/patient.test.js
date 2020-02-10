@@ -25,7 +25,7 @@ describe('patient reducer', () => {
     expect(state).toEqual(expected);
   });
   it('should handle FETCH_PATIENT_SUCCESS', () => {
-    const details = { patientId: 0 };
+    const details = { patientIdentifier: 0 };
     const action = { type: FETCH_PATIENT_SUCCESS, details };
     const state = reducer(undefined, action);
     const expected = { details, isLoading: false, error: null };

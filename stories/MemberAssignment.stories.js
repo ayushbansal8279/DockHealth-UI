@@ -5,7 +5,7 @@ import MemberAssignment from '../src/app/components/home/MemberAssignment';
 // import { action } from '@storybook/addon-actions';
 
 const member = {
-  userId: 125,
+  userIdentifier: 125,
   firstName: 'Micheal',
   lastName: 'Docktor',
   initials: 'MD',

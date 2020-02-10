@@ -41,7 +41,7 @@ const PatientAssignment = ({
 }) => {
   useEffect(fetch, []);
 
-  const { parentTaskId } = task;
+  const { parentTaskIdentifier } = task;
 
   const patientComponent = ({ padded }) =>
     patient ? (
@@ -50,7 +50,7 @@ const PatientAssignment = ({
       <StyledText padded={padded}>None</StyledText>
     );
 
-  if (disabled || parentTaskId) {
+  if (disabled || parentTaskIdentifier) {
     return patientComponent({ padded: true });
   }
 
@@ -66,7 +66,7 @@ const PatientAssignment = ({
 };
 
 const patientShape = PropTypes.shape({
-  patientId: PropTypes.number,
+  patientIdentifier: PropTypes.number,
   lastName: PropTypes.string,
   firstName: PropTypes.string,
   mrn: PropTypes.string,
@@ -89,8 +89,8 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = (dispatch, { task }) => ({
-  update: patientId => {
-    updatePatient(task, { patientId })(dispatch);
+  update: patientIdentifier => {
+    updatePatient(task, { patientIdentifier })(dispatch);
   },
   fetch: () => {
     getAllPatients()(dispatch);

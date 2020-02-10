@@ -52,7 +52,7 @@ const Task = props => {
               confirm={confirm}
             />
           )}
-          <TaskSelectionContainer isSelected={selectedTaskId === task.taskId}>
+          <TaskSelectionContainer isSelected={selectedTaskId === task.taskIdentifier}>
             <Flag priority={priority} />
             <TaskBody {...props} handleStatusChange={handleStatusChange} />
           </TaskSelectionContainer>
@@ -62,7 +62,7 @@ const Task = props => {
         {(!slimView || (slimView && isSelfOrSubtaskActive)) &&
           renderedSubtasks.map((subtask, index) => (
             <Task
-              key={subtask.taskId}
+              key={subtask.taskIdentifier}
               {...props}
               task={{
                 ...subtask,
@@ -76,7 +76,7 @@ const Task = props => {
           ))}
       </div>
       {!isSubtask && isSelfOrSubtaskActive && task.status !== 'COMPLETE' && (
-        <AddSubtask padded taskId={task.taskId} />
+        <AddSubtask padded taskIdentifier={task.taskIdentifier} />
       )}
     </>
   );

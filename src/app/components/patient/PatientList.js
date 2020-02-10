@@ -20,7 +20,7 @@ const PatientList = ({ patients }) => {
       </div>
       {(patients || []).map(patient => {
         return (
-          <Link to={`/patient/${patient.patientId}`} key={patient.patientId}>
+          <Link to={`/patient/${patient.patientIdentifier}`} key={patient.patientIdentifier}>
             <div className="item row expanded align-middle">
               <div className="columns small-3 large-2">
                 <span className="highlight">{patient.mrn}</span>

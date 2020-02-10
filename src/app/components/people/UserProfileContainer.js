@@ -45,7 +45,7 @@ class UserProfileContainer extends Component {
       }
     });
     if (this.props.userProfile.profileThumbnailPictureHash) {
-      userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+      userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     }
     userApi.getUserNotoficationPrefs();
     userApi.getAllSpecialties();
@@ -98,7 +98,7 @@ class UserProfileContainer extends Component {
       userApi
         .saveUserProfilePic(
           reader.result,
-          sessionStorage.userId,
+          sessionStorage.userIdentifier,
           'PROFILE',
           this.props.userProfile,
         )
@@ -186,7 +186,7 @@ class UserProfileContainer extends Component {
               updateProfileResult: 'User Profile updated successfully!!!',
             });
             userApi.getUserById();
-            userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+            userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
             userApi.getUserNotoficationPrefs();
           });
       })
@@ -202,7 +202,7 @@ class UserProfileContainer extends Component {
         this.setState({
           updateProfileResult: 'User profile picture removed successfully!!',
         });
-        userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+        userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
       })
       .catch(error => {
         this.setState({ updateProfileResult: error.message });
@@ -423,7 +423,7 @@ class UserProfileContainer extends Component {
                     className="member-photo circle xlarge"
                     src={`${
                       process.env.HEYDOC_SERVICES_BASE_URL
-                    }user/profilePicture/${this.props.userProfile.userId}/${
+                    }user/profilePicture/${this.props.userProfile.userIdentifier}/${
                       this.props.userProfile.profilePictureHash
                     }`}
                     alt={`${this.props.userProfile.firstName} ${

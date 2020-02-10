@@ -114,7 +114,7 @@ export const Routes = ({ store }) => {
   const authRequired = (nextState, replaceState) => {
     const state = store.getState();
 
-    if (!state.userState.userProfile?.userId) {
+    if (!state.userState.userProfile?.userIdentifier) {
       replaceState(
         {
           nextPathname: nextState.location.pathname,
@@ -148,11 +148,11 @@ export const Routes = ({ store }) => {
   const dispatch = useDispatch();
 
   const preselectTask = (_, nextState) => {
-    const taskId = nextState.location?.state?.taskId;
-    if (!taskId) {
+    const taskIdentifier = nextState.location?.state?.taskIdentifier;
+    if (!taskIdentifier) {
       return;
     }
-    dispatch(storeAsCurrentTask(taskId));
+    dispatch(storeAsCurrentTask(taskIdentifier));
   };
 
   const onRouterUpdate = () => {
@@ -171,12 +171,12 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureToggles}
           />
           <Route
-            path="/patient/:patientId"
+            path="/patient/:patientIdentifier"
             component={PatientProfile}
             onEnter={checkFeatureToggles}
           />
           <Route
-            path="/editPatient/:patientId"
+            path="/editPatient/:patientIdentifier"
             component={PatientEditView}
             onEnter={checkFeatureToggles}
           />
@@ -201,14 +201,14 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureToggles}
           />
           <Route
-            path="/tasks/inbox(/:taskId)"
+            path="/tasks/inbox(/:taskIdentifier)"
             component={Inbox}
             onChange={preselectTask}
             onEnter={checkFeatureToggles}
           />
           {/* DIRTY FIX -> TODO: Update react-router and use sensitive prop */}
           <Route
-            path="/tasks/Inbox(/:taskId)"
+            path="/tasks/Inbox(/:taskIdentifier)"
             component={Inbox}
             onChange={preselectTask}
             onEnter={checkFeatureToggles}
@@ -229,7 +229,7 @@ export const Routes = ({ store }) => {
               onEnter={checkFeatureToggles}
             />
             <Route
-              path=":taskListId(/:taskId)"
+              path=":taskListIdentifier(/:taskIdentifier)"
               component={ListDetailsView}
               onChange={preselectTask}
               onEnter={nextState => {

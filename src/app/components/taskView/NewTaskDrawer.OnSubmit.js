@@ -14,8 +14,8 @@ export default ({
   setAutoSaveVisible,
 }) => async data => {
   const {
-    assignedToUserId,
-    patientId,
+    assignedToUserIdentifier,
+    patientIdentifier,
     patient: unusedPatient,
     newTaskListId,
     newTaskDueDate,
@@ -30,9 +30,9 @@ export default ({
     description: descriptionEdit || description,
     workflowStatus: status.value,
     priority: priorityActive ? 'HIGH' : 'LOW',
-    assignedToId: assignedToUserId,
-    patientId,
-    taskListId: taskList?.taskListId,
+    assignedToIdentifier: assignedToUserIdentifier,
+    patientIdentifier,
+    taskListIdentifier: taskList?.taskListIdentifier,
   };
 
   if (!requestData.description || requestData.description === '') {
@@ -47,14 +47,14 @@ export default ({
     const newTask = await saveTask(requestData)(dispatch);
 
     if (newTaskListId) {
-      await moveTask(newTask, { taskListId: newTaskListId })(dispatch);
+      await moveTask(newTask, { taskListIdentifier: newTaskListId })(dispatch);
     }
 
-    if (!requestData.taskId) {
+    if (!requestData.taskIdentifier) {
       storeAsCurrentTask({
         ...newTask,
         ...requestData,
-        taskId: newTask.taskId || requestData.taskId,
+        taskIdentifier: newTask.taskIdentifier || requestData.taskIdentifier,
       });
     }
 

@@ -66,8 +66,8 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
   });
 
   const select = useCallback(e => {
-    const patientId = e.currentTarget.id;
-    assign(patientId);
+    const patientIdentifier = e.currentTarget.id;
+    assign(patientIdentifier);
     close();
   });
 
@@ -121,10 +121,10 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
             sortedListings.map(m => (
               <ListItem
                 member={m}
-                key={m.patientId}
-                selected={patient && m.patientId === patient.patientId}
+                key={m.patientIdentifier}
+                selected={patient && m.patientIdentifier === patient.patientIdentifier}
                 onClick={select}
-                id={m.patientId}
+                id={m.patientIdentifier}
               >
                 <MemberName>{`${m.firstName} ${m.lastName}`}</MemberName>
               </ListItem>
@@ -136,7 +136,7 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
 };
 
 const patientShape = PropTypes.shape({
-  patientId: PropTypes.number,
+  patientIdentifier: PropTypes.number,
   lastName: PropTypes.string,
   firstName: PropTypes.string,
   mrn: PropTypes.string,

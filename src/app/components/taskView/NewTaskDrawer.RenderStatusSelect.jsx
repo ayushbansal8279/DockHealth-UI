@@ -10,7 +10,7 @@ export default ({
   closeStatusPopover,
   setStatus,
   saveTaskStatus,
-  taskId,
+  taskIdentifier,
 }) => status => {
   const { key, label, color, value } = status;
 
@@ -22,7 +22,7 @@ export default ({
         setStatus(status);
         closeStatusPopover();
         onTaskStatusChanged(status);
-        if (taskId) {
+        if (taskIdentifier) {
           saveTaskStatus({ newTaskStatus: value });
         }
       }}

@@ -34,18 +34,18 @@ const initialState = {
 
 const updateDetails = patient =>
   when(
-    pathEq(['details', 'patientId'], patient.patientId),
+    pathEq(['details', 'patientIdentifier'], patient.patientIdentifier),
     set(lensProp('details'), patient),
   );
 
-const updateNote = (patientId, patientNoteId, description) =>
+const updateNote = (patientIdentifier, patientNoteIdentifier, description) =>
   when(
-    pathEq(['details', 'patientId'], patientId),
+    pathEq(['details', 'patientIdentifier'], patientIdentifier),
     over(
       lensPath(['details', 'allNotes']),
       map(
         when(
-          propEq('patientNoteId', patientNoteId),
+          propEq('patientNoteIdentifier', patientNoteIdentifier),
           set(lensProp('description'), description),
         ),
       ),
@@ -55,7 +55,7 @@ const updateNote = (patientId, patientNoteId, description) =>
 const moveTask = (task, taskList) =>
   map(
     when(
-      propEq('taskId', task.parentTaskId || task.taskId),
+      propEq('taskIdentifier', task.parentTaskIdentifier || task.taskIdentifier),
       evolve({
         taskList: always(taskList),
         subtasks: map(set(lensProp('taskList'), taskList)),
@@ -109,10 +109,10 @@ const reducer = (state = initialState, action) => {
 
     case UPDATE_PATIENT_NOTE: {
       const {
-        patientId,
-        note: { patientNoteId, description },
+        patientIdentifier,
+        note: { patientNoteIdentifier, description },
       } = action;
-      return updateNote(patientId, patientNoteId, description)(state);
+      return updateNote(patientIdentifier, patientNoteIdentifier, description)(state);
     }
 
     case MOVE_TASK_SUCCESS: {

@@ -111,9 +111,9 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
           sortedListings.map(m => (
             <ListItem
               member={m}
-              key={m.userId}
-              selected={member && m.userId === member.userId}
-              id={m.userId}
+              key={m.userIdentifier}
+              selected={member && m.userIdentifier === member.userIdentifier}
+              id={m.userIdentifier}
               style={{ opacity: m.userStatus === 'INVITED' ? '0.5' : '1.0' }}
             >
               <MemberSlot member={m} />
@@ -123,7 +123,7 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
               )}
               <MemberRole>{m.taskListUserRole}</MemberRole>
               <MemberManagementOptions
-                taskListId={taskList.taskListId}
+                taskListIdentifier={taskList.taskListIdentifier}
                 member={m}
               />
             </ListItem>

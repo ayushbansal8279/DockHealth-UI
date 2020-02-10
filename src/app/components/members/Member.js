@@ -46,10 +46,10 @@ const StyledContainer = styled.div`
   display: inline-flex;
 `;
 
-const getThumbnailUrl = ({ userId, profileThumbnailPictureHash }) =>
+const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${
     process.env.HEYDOC_SERVICES_BASE_URL
-  }user/profilePicture/${userId}/${profileThumbnailPictureHash}`;
+  }user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
 
 const Member = ({ onClick, member, children, className, style, color }) => {
   const alt = member && `${member.firstName} ${member.lastName}`;
@@ -87,7 +87,7 @@ const Member = ({ onClick, member, children, className, style, color }) => {
 Member.propTypes = {
   onClick: PropTypes.func,
   member: PropTypes.shape({
-    userId: PropTypes.number,
+    userIdentifier: PropTypes.number,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     initials: PropTypes.string,

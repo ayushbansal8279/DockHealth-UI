@@ -20,9 +20,9 @@ class TaskListActivityFeedContainer extends PureComponent {
     enableFoundationAccordionComponent('.wrapper');
   }
 
-  handleClick = (e, taskListId) => {
+  handleClick = (e, taskListIdentifier) => {
     e.preventDefault();
-    toggleDropDown(`activityList${taskListId}`);
+    toggleDropDown(`activityList${taskListIdentifier}`);
   };
 
   renderList = auditlist =>
@@ -54,7 +54,7 @@ class TaskListActivityFeedContainer extends PureComponent {
         <li
           className="slim accordion-item"
           data-accordion-item
-          key={`taskList${auditsandtasklist.taskListId}`}
+          key={`taskList${auditsandtasklist.taskListIdentifier}`}
         >
           <a
             onClick={e => this.preventRedirect(e)}

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useList } from 'react-use';
 
 import {
@@ -42,9 +42,9 @@ const renderAttachmentListEntry = ({
   dispatch,
   filterAddedAttachments,
   openAttachmentPreview,
-  taskId,
+  taskIdentifier,
 }) => attachment => {
-  const { attachmentId, fileIdentifier, fileName } = attachment;
+  const { attachmentIdentifier, fileIdentifier, fileName } = attachment;
 
   return (
     <AttachmentListEntry key={fileIdentifier}>
@@ -57,10 +57,10 @@ const renderAttachmentListEntry = ({
       </AttachmentListEntryLabel>
       <AttachmentListEntryRemove
         onClick={() => {
-          removeTaskAttachment(taskId, attachmentId)(dispatch).then(() => {
+          removeTaskAttachment(taskIdentifier, attachmentIdentifier)(dispatch).then(() => {
             filterAddedAttachments(
-              ({ attachmentId: existingAttachmentId }) =>
-                attachmentId !== existingAttachmentId,
+              ({ attachmentIdentifier: existingAttachmentId }) =>
+                attachmentIdentifier !== existingAttachmentId,
             );
           });
         }}
@@ -71,7 +71,11 @@ const renderAttachmentListEntry = ({
   );
 };
 
-export default ({ task }) => {
+const getCurrentTask = () => {
+  return useSelector(store => store.taskState.task);
+}
+
+export default ({ task, handleSubmit }) => {
   const attachmentFileInputReference = useRef(null);
   const dispatch = useDispatch();
   const [
@@ -95,6 +99,9 @@ export default ({ task }) => {
   ] = useState(null);
 
   const onAttachmentButtonClicked = useCallback(() => {
+    //save the task
+    handleSubmit();
+
     const fileInputElement = attachmentFileInputReference.current;
 
     if (fileInputElement) {
@@ -110,24 +117,29 @@ export default ({ task }) => {
     [showAttachmentPreview],
   );
 
-  const taskId = task?.taskId;
+  //const currTask = useSelector(store => store.taskState.task);
+  // const taskIdentifier = currTask?.taskIdentifier;
+  // const taskAttachments = currTask?.attachments || [];
+  
+  const taskIdentifier = task?.taskIdentifier;
   const taskAttachments = task?.attachments || [];
+  
 
   useEffect(() => {
-    if (taskId) {
+    if (taskIdentifier) {
       setAddedAttachments(taskAttachments);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setAddedAttachments, taskId]);
+  }, [setAddedAttachments, taskIdentifier]);
 
   const onAttachmentFileInputChange = useCallback(() => {
     const fileInputElement = attachmentFileInputReference.current;
 
-    if (fileInputElement && taskId) {
+    if (fileInputElement) {
       const [newAttachment] = fileInputElement.files;
       setCurrentlyUploadedAttachment(newAttachment);
       setUploadProgress(0);
-      addTaskAttachment(taskId, newAttachment, {
+      addTaskAttachment(taskIdentifier, newAttachment, {
         onUploadProgress: ({ loaded, total }) => {
           setUploadProgress(Math.round((loaded * 100) / total));
         },
@@ -140,7 +152,7 @@ export default ({ task }) => {
           setCurrentlyUploadedAttachment(null);
         });
     }
-  }, [pushAddedAttachment, dispatch, taskId]);
+  }, [pushAddedAttachment, dispatch, taskIdentifier]);
 
   return (
     <>
@@ -162,7 +174,7 @@ export default ({ task }) => {
           dispatch,
           filterAddedAttachments,
           openAttachmentPreview,
-          taskId,
+          taskIdentifier,
         }),
       )}
       {currentlyUploadedAttachment && (

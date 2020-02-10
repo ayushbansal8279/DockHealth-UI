@@ -64,18 +64,18 @@ const renderTaskList = ({
   setNewTaskListName,
   setValue,
   saveTaskList,
-  taskId,
+  taskIdentifier,
 }) => taskList => {
-  const { taskListId, listName } = taskList;
+  const { taskListIdentifier, listName } = taskList;
 
   return (
     <ListItem
-      key={taskListId}
+      key={taskListIdentifier}
       onClick={() => {
-        setValue('newTaskListId', taskListId);
+        setValue('newTaskListId', taskListIdentifier);
         setNewTaskListName(listName);
         closePopover();
-        if (taskId) {
+        if (taskIdentifier) {
           saveTaskList({ newTaskList: taskList });
         }
       }}
@@ -127,6 +127,7 @@ export default ({
   closeDrawer,
   setAutoSaveVisible,
   isInbox,
+  handleSubmit,
 }) => {
   const {
     taskLists,
@@ -148,7 +149,7 @@ export default ({
     saveTaskList,
     saveDueDate,
     onToggleHistoryButtonClicked,
-    taskId,
+    taskIdentifier,
     newDueDate,
     setNewDueDate,
     userProfileAccess,
@@ -160,7 +161,7 @@ export default ({
 
   return (
     <OtherDataSectionContainer>
-      {!task?.parentTaskId && (
+      {!task?.parentTaskIdentifier && (
         <SectionRow>
           <input type="hidden" name="newTaskListId" ref={register} />
           <SectionLabel>Filed In</SectionLabel>
@@ -200,7 +201,7 @@ export default ({
                   setNewTaskListName,
                   setValue,
                   saveTaskList,
-                  taskId,
+                  taskIdentifier,
                 }),
               )}
             </StyledList>
@@ -214,19 +215,19 @@ export default ({
           newDueDate={newDueDate}
           setNewDueDate={setNewDueDate}
           saveDueDate={saveDueDate}
-          taskId={taskId}
+          taskIdentifier={taskIdentifier}
           newDueDateMoment={newDueDateMoment}
           clearDueDate={clearDueDate}
           SectionButtonContainer={SectionButtonContainer}
           SectionButton={SectionButton}
         />
       </SectionRow>
-      {task && userProfileAccess?.attachmentsEnabled && (
+      {userProfileAccess?.attachmentsEnabled && (
         <SectionRow>
           <SectionLabel padded>Attachments</SectionLabel>
           <SectionButtonContainer>
             <SectionButton>
-              <NewTaskDrawerAttachmentsList task={task} />
+              <NewTaskDrawerAttachmentsList task={task} handleSubmit={handleSubmit}/>
             </SectionButton>
           </SectionButtonContainer>
         </SectionRow>
@@ -234,7 +235,7 @@ export default ({
       <SectionRow>
         <SectionLabel>History</SectionLabel>
         <SectionButtonContainer>
-          {task?.taskId ? (
+          {task?.taskIdentifier ? (
             <SectionButton
               clickable
               color="#0ca1c7"

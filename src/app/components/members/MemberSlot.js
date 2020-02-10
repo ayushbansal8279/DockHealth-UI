@@ -34,7 +34,7 @@ const MemberSlot = ({ member, onClick, small }) =>
 MemberSlot.propTypes = {
   onClick: PropTypes.func,
   member: PropTypes.shape({
-    userId: PropTypes.number,
+    userIdentifier: PropTypes.number,
     profileThumbnailPictureHash: PropTypes.string,
     initials: PropTypes.string,
     firstName: PropTypes.string,

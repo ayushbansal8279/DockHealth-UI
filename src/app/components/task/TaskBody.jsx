@@ -71,7 +71,7 @@ const TaskBody = ({
     edited,
   } = task;
 
-  const isInbox = !task?.taskList?.taskListId;
+  const isInbox = !task?.taskList?.taskListIdentifier;
 
   const {
     formattedCreationDate,
@@ -103,7 +103,7 @@ const TaskBody = ({
 
   const isTaskTimingOut =
     status === 'COMPLETE' &&
-    Boolean(taskTimeouts?.find(({ taskId }) => taskId === task?.taskId));
+    Boolean(taskTimeouts?.find(({ taskIdentifier }) => taskIdentifier === task?.taskIdentifier));
 
   const archiveTask = event => {
     event.preventDefault();

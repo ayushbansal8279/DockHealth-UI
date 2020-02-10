@@ -52,7 +52,7 @@ class MemberPicker extends React.Component {
   handleOpen = event => {
     event.stopPropagation();
     const { members, loadMembers, task } = this.props;
-    loadMembers(task.taskList.taskListId, 'ALL');
+    loadMembers(task.taskList.taskListIdentifier, 'ALL');
     if (members == null) {
       return;
     }
@@ -65,8 +65,8 @@ class MemberPicker extends React.Component {
 
   handleSelect = event => {
     const { task, assign } = this.props;
-    const userId = event.currentTarget.id;
-    assign(task, userId);
+    const userIdentifier = event.currentTarget.id;
+    assign(task, userIdentifier);
     this.handleClose();
   };
 
@@ -122,7 +122,7 @@ class MemberPicker extends React.Component {
       filteredMembers.sort((a, b) => a.lastName.localeCompare(b.lastName));
 
     const currentUserMembers =
-      members && member && members.filter(m => m.userId === member.userId);
+      members && member && members.filter(m => m.userIdentifier === member.userIdentifier);
 
     if (currentUserMembers && currentUserMembers.length > 0) {
       member.bubbleColor = currentUserMembers[0].bubbleColor;
@@ -164,10 +164,10 @@ class MemberPicker extends React.Component {
               sortedMembers.map(m => (
                 <ListItem
                   member={m}
-                  key={m.userId}
-                  selected={member && m.userId === member.userId}
+                  key={m.userIdentifier}
+                  selected={member && m.userIdentifier === member.userIdentifier}
                   onClick={this.handleSelect}
-                  id={m.userId}
+                  id={m.userIdentifier}
                 >
                   <MemberSlot member={m} />
                   <MemberName>{m.userName}</MemberName>
@@ -181,7 +181,7 @@ class MemberPicker extends React.Component {
 }
 
 const memberShape = PropTypes.shape({
-  userId: PropTypes.number,
+  userIdentifier: PropTypes.number,
   profileThumbnailPictureHash: PropTypes.string,
   initials: PropTypes.string,
   firstName: PropTypes.string,

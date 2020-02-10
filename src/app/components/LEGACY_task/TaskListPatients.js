@@ -14,12 +14,12 @@ class TaskListPatients extends PureComponent {
     this.findTasksByPatient = this.findTasksByPatient.bind(this);
   }
 
-  findTasksByPatient(patientId, taskListId) {
-    this.props.taskActions.getListTasksByPatient(patientId, taskListId);
+  findTasksByPatient(patientIdentifier, taskListIdentifier) {
+    this.props.taskActions.getListTasksByPatient(patientIdentifier, taskListIdentifier);
   }
 
   componentDidMount() {
-    this.props.actions.getPatientsByTaskList(this.props.taskListId);
+    this.props.actions.getPatientsByTaskList(this.props.taskListIdentifier);
     // triggers action to get data and update store in reducer > allPatients
     // this.props.actions.getAllPatients()
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
@@ -28,13 +28,13 @@ class TaskListPatients extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.taskListId != this.props.taskListId) {
-      this.props.actions.getPatientsByTaskList(nextProps.taskListId);
+    if (nextProps.taskListIdentifier != this.props.taskListIdentifier) {
+      this.props.actions.getPatientsByTaskList(nextProps.taskListIdentifier);
     }
   }
 
   // componentWillUpdate(nextProps, nextState){
-  // 	this.props.actions.getPatientsByTaskList(this.props.taskListId)
+  // 	this.props.actions.getPatientsByTaskList(this.props.taskListIdentifier)
   // }
 
   render() {
@@ -48,11 +48,11 @@ class TaskListPatients extends PureComponent {
                 <li
                   onClick={e =>
                     this.findTasksByPatient(
-                      patient.patientId,
-                      this.props.taskListId,
+                      patient.patientIdentifier,
+                      this.props.taskListIdentifier,
                     )
                   }
-                  key={patient.patientId}
+                  key={patient.patientIdentifier}
                 >
                   <strong>
                     {patient.firstName} {patient.lastName} {patient.mrn}

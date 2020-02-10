@@ -34,8 +34,8 @@ const Attachments = ({
   );
 
   const handleRemove = useCallback(
-    attachmentId => {
-      onRemoveAttachment(attachmentId);
+    attachmentIdentifier => {
+      onRemoveAttachment(attachmentIdentifier);
     },
     [onRemoveAttachment],
   );
@@ -75,8 +75,8 @@ const Attachments = ({
           <Attachment
             {...attachment}
             remove={handleRemove}
-            key={attachment.attachmentId}
-            id={attachment.attachmentId}
+            key={attachment.attachmentIdentifier}
+            id={attachment.attachmentIdentifier}
             name={attachment.fileName}
             size={attachment.fileSize}
           />
@@ -87,7 +87,7 @@ const Attachments = ({
 };
 
 Attachments.propTypes = {
-  taskId: PropTypes.number.isRequired,
+  taskIdentifier: PropTypes.number.isRequired,
   attachments: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,

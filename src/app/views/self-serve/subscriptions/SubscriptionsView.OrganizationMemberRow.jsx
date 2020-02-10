@@ -57,9 +57,9 @@ const getUserInitials = ({ firstName, lastName }) =>
 
 const getAvatarContent = memoizeWith(
   propsObject => Object.values(propsObject).join('-'),
-  ({ userId, profileThumbnailPictureHash }) => {
+  ({ userIdentifier, profileThumbnailPictureHash }) => {
     if (profileThumbnailPictureHash) {
-      return getUserAvatar({ userId });
+      return getUserAvatar({ userIdentifier });
     }
 
     return Promise.resolve(null);
@@ -69,7 +69,7 @@ const getAvatarContent = memoizeWith(
 export const MemberAvatar = ({
   firstName,
   lastName,
-  userId,
+  userIdentifier,
   profileThumbnailPictureHash,
 }) => {
   const { loading, value: avatarContent } = useAsync(async () => {
@@ -77,7 +77,7 @@ export const MemberAvatar = ({
 
     try {
       downloadedAvatarContent = await getAvatarContent({
-        userId,
+        userIdentifier,
         profileThumbnailPictureHash,
       });
     } catch {
@@ -92,7 +92,7 @@ export const MemberAvatar = ({
     ) : (
       getUserInitials({ firstName, lastName })
     );
-  }, [userId, profileThumbnailPictureHash]);
+  }, [userIdentifier, profileThumbnailPictureHash]);
 
   return loading ? (
     <CubesLoaderContainer>
@@ -119,7 +119,7 @@ const OrganizationMemberRow = ({
   email,
   orgUserRole,
   profileThumbnailPictureHash,
-  userId,
+  userIdentifier,
   registrationDate,
   isUserSelected,
   toggleSelectedUser,
@@ -134,12 +134,12 @@ const OrganizationMemberRow = ({
 
   const checkboxElement = (
     <TaskCheckbox
-      checked={isUserSelected({ userId, email })}
+      checked={isUserSelected({ userIdentifier, email })}
       onChange={event => {
         if (event.target.checked) {
-          toggleSelectedUser({ userId, email })(event);
+          toggleSelectedUser({ userIdentifier, email })(event);
         } else {
-          setRemovedUserData({ userId, email, orgUserRole });
+          setRemovedUserData({ userIdentifier, email, orgUserRole });
           openDialog();
         }
       }}
@@ -182,7 +182,7 @@ const OrganizationMemberRow = ({
                 <b>{`${firstName} ${lastName}`.trim()}</b>
                 {email && <a href={`mailto:${email}`}>{email}</a>}
                 <MemberTypeLabel
-                  userId={userId}
+                  userIdentifier={userIdentifier}
                   userType={userType}
                   userTypes={USER_TYPES}
                 />
@@ -213,7 +213,7 @@ const OrganizationMemberRow = ({
         <MemberAvatar
           firstName={firstName}
           lastName={lastName}
-          userId={userId}
+          userIdentifier={userIdentifier}
           profileThumbnailPictureHash={profileThumbnailPictureHash}
         />
       </td>
@@ -226,7 +226,7 @@ const OrganizationMemberRow = ({
       <td>
         <MemberTypeLabel
           email={email}
-          userId={userId}
+          userIdentifier={userIdentifier}
           userType={userType}
           userTypes={USER_TYPES}
         />

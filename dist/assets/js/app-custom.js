@@ -141,7 +141,7 @@ function enableAutoCompleteForPatients(lookupData) {
 			onSelectItemEvent: function() {
 				var selItemData = $("#add-patient").getSelectedItemData();
 				$("#add-patient").val(selItemData.firstName + " " + selItemData.lastName);
-				$("#add-patient-id").val(selItemData.patientId);
+				$("#add-patient-id").val(selItemData.patientIdentifier);
 			},
 			match: {enabled: true}
 		},
@@ -175,7 +175,7 @@ function enableAutoCompleteForSubtaskPatients(lookupData) {
 			onSelectItemEvent: function() {
 				var selItemData = $("#add-patient-subtask").getSelectedItemData();
 				$("#add-patient-subtask").val(selItemData.firstName + " " + selItemData.lastName);
-				$("#add-patient-subtask-id").val(selItemData.patientId);
+				$("#add-patient-subtask-id").val(selItemData.patientIdentifier);
 			},
 			match: {enabled: true}
 		},
@@ -199,7 +199,7 @@ function enableAutoCompleteForAssignedTo(lookupData) {
 			onSelectItemEvent: function() {
 				var selItemData = $("#assign-task-to").getSelectedItemData();
 				$("#assign-task-to").val(selItemData.firstName + " " + selItemData.lastName);
-				$("#assign-task-to-id").val(selItemData.userId);
+				$("#assign-task-to-id").val(selItemData.userIdentifier);
 			},
 			match: {enabled: true}
 		},
@@ -228,7 +228,7 @@ function enableAutoCompleteForSubtaskAssignedTo(lookupData) {
 			onSelectItemEvent: function() {
 				var selItemData = $("#assign-subtask-to").getSelectedItemData();
 				$("#assign-subtask-to").val(selItemData.firstName + " " + selItemData.lastName);
-				$("#assign-subtask-to-id").val(selItemData.userId);
+				$("#assign-subtask-to-id").val(selItemData.userIdentifier);
 			},
 			match: {enabled: true}
 		},
@@ -249,9 +249,9 @@ function enableAutoCompleteForSubtaskAssignedTo(lookupData) {
 
 var originalHeightListMembers = 0;
 
-function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
+function enableAutoCompleteForListMembers(lookupData, taskListIdentifier, url) {
 
-	// var originalHeight = $("#list-members-"+taskListId).css("height");
+	// var originalHeight = $("#list-members-"+taskListIdentifier).css("height");
 	// if(originalHeight){
 	// 	originalHeight = originalHeight.replace(/px/g, "");
 	// 	originalHeightListMembers = parseInt(originalHeight);
@@ -264,7 +264,7 @@ function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 		}
 	}
 
-	$("#list-members-"+taskListId).on('open.zf.reveal', function() {
+	$("#list-members-"+taskListIdentifier).on('open.zf.reveal', function() {
 		//console.log('list members popup opened')
 		var originalHeight = $(this).find(".scroll-wrapper").css("height").replace(/px/g, "")
 		var newHeight = parseInt(originalHeight) + 200 + 150
@@ -287,7 +287,7 @@ function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 			onSelectItemEvent: function() {
 				var selItemData = $("#add-member-to-list").getSelectedItemData();
 				$("#add-member-to-list").val(selItemData.firstName + " " + selItemData.lastName);
-				$("#add-member-to-list-id").val(selItemData.userId);
+				$("#add-member-to-list-id").val(selItemData.userIdentifier);
 			},
 			onShowListEvent: function() {
 				////var newHeight = originalHeightListMembers + 150;
@@ -303,7 +303,7 @@ function enableAutoCompleteForListMembers(lookupData, taskListId, url) {
 		},
 		template: { type: "custom",
 			method: function(value, user) {
-				var imageurl = url + "user/profilePicture/" + user.userId + "/" + user.profileThumbnailPictureHash;
+				var imageurl = url + "user/profilePicture/" + user.userIdentifier + "/" + user.profileThumbnailPictureHash;
 				// debugger;
 				var avatar;
 				if(user.profileThumbnailPictureHash){

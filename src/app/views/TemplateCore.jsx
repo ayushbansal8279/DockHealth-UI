@@ -104,7 +104,7 @@ class TemplateCore extends PureComponent {
   checkUserData = async ({ user }) => {
     const data = await userApi.getUserByEmail(user.username, user);
 
-    if (!data.organizationId || data.organizationId === '') {
+    if (!data.organizationIdentifier || data.organizationIdentifier === '') {
       hashHistory.push('/unEnrolledUser');
     } else if (data.personalOrganization && data.presentHippaAlert) {
       hashHistory.push('/selfEnrolledUser');
@@ -112,7 +112,7 @@ class TemplateCore extends PureComponent {
       hashHistory.push('/onboarding/eula');
     } else {
       if (data.profileThumbnailPictureHash) {
-        userApi.getUserProfilePic(data.userId, 'PROFILE');
+        userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
       }
 
       handleFeatureToggle({

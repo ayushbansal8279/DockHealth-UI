@@ -83,7 +83,7 @@ const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
 const BillingsView = () => {
   const dispatch = useDispatch();
 
-  const { organizationId } = useSelector(store => store.userState.userProfile);
+  const { organizationIdentifier } = useSelector(store => store.userState.userProfile);
 
   const [
     isUpdatingBilling,
@@ -107,8 +107,8 @@ const BillingsView = () => {
       ],
     });
 
-    getBillingDetails({ organizationId })(dispatch);
-    getInvoiceDetails({ organizationId })(dispatch);
+    getBillingDetails({ organizationIdentifier })(dispatch);
+    getInvoiceDetails({ organizationIdentifier })(dispatch);
   });
 
   return (

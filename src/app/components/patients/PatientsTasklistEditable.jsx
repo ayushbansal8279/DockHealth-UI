@@ -75,7 +75,7 @@ const PatientsTasklistEditable = ({
       {tasks.map(task => (
         <Task
           task={task}
-          key={task.taskId}
+          key={task.taskIdentifier}
           hidePatient
           markComplete={markAsComplete({ dispatch, listType: 'INCOMPLETE' })}
           storeAsCurrentTask={selectCurrentPatientTask({ dispatch })}
@@ -97,7 +97,7 @@ const PatientsTasklistEditable = ({
           {completedTasks.map(task => (
             <Task
               task={task}
-              key={task.taskId}
+              key={task.taskIdentifier}
               hidePatient
               markComplete={markAsComplete({ dispatch, listType: 'COMPLETE' })}
               storeAsCurrentTask={selectCurrentPatientTask({ dispatch })}

@@ -83,10 +83,10 @@ const MemberAvatarContainer = styled.div`
 const toggleAndClose = ({
   toggleSelectedUser,
   closeDialog,
-  userId,
+  userIdentifier,
   email,
 }) => () => {
-  toggleSelectedUser({ userId, email })({
+  toggleSelectedUser({ userIdentifier, email })({
     target: { checked: false },
   });
   closeDialog();
@@ -94,7 +94,7 @@ const toggleAndClose = ({
 
 const RemoveNormalUserContent = ({
   closeDialog,
-  userId,
+  userIdentifier,
   email,
   toggleSelectedUser,
 }) => (
@@ -114,7 +114,7 @@ const RemoveNormalUserContent = ({
         onClick={toggleAndClose({
           toggleSelectedUser,
           closeDialog,
-          userId,
+          userIdentifier,
           email,
         })}
       >
@@ -129,14 +129,14 @@ const RemoveAdminUserContent = ({
   toggleSelectedUser,
   email,
   organizationMembers,
-  userId,
+  userIdentifier,
   newAdmin,
   setNewAdmin,
   changeAdmin,
 }) => {
   const filteredOrganizationMembers = organizationMembers.filter(
-    ({ userId: memberId, orgUserRole }) =>
-      memberId !== userId &&
+    ({ userIdentifier: memberId, orgUserRole }) =>
+      memberId !== userIdentifier &&
       memberId &&
       orgUserRole !== 'ADMIN' &&
       orgUserRole !== 'OWNER',
@@ -150,14 +150,14 @@ const RemoveAdminUserContent = ({
       </div>
       <PeopleContainer>
         {filteredOrganizationMembers.map(member => {
-          const memberKey = member.userId ?? member.email;
+          const memberKey = member.userIdentifier ?? member.email;
 
           return (
             <PersonRow
               key={memberKey}
               onClick={() => setNewAdmin(member)}
               selected={
-                member.userId === newAdmin?.userId ||
+                member.userIdentifier === newAdmin?.userIdentifier ||
                 member.email === newAdmin?.email
               }
             >
@@ -182,7 +182,7 @@ const RemoveAdminUserContent = ({
                 toggleAndClose({
                   toggleSelectedUser,
                   closeDialog,
-                  userId,
+                  userIdentifier,
                   email,
                 }),
               )
@@ -209,7 +209,7 @@ const RemoveAdminUserContent = ({
 const RemoveModal = ({
   closeDialog,
   open,
-  userId,
+  userIdentifier,
   email,
   toggleSelectedUser,
   organizationMembers,
@@ -218,7 +218,7 @@ const RemoveModal = ({
   const [newAdmin, setNewAdmin] = useState(null);
   const dispatch = useDispatch();
 
-  const newAdminUserId = newAdmin?.userId;
+  const newAdminUserId = newAdmin?.userIdentifier;
 
   const changeAdmin = useCallback(
     () => changeUserRoleForOrg(newAdminUserId, 'ADMIN')(dispatch),
@@ -247,7 +247,7 @@ const RemoveModal = ({
       <RemoveModalDivider />
       <DialogContentComponent
         closeDialog={closeDialog}
-        userId={userId}
+        userIdentifier={userIdentifier}
         email={email}
         toggleSelectedUser={toggleSelectedUser}
         organizationMembers={organizationMembers}

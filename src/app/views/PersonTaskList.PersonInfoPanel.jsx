@@ -90,7 +90,7 @@ const PersonInfoPanel = ({ personData }) => {
     firstName,
     lastName,
     specialtyList,
-    userId,
+    userIdentifier,
     workPhoneNumber,
   } = personData || {};
 
@@ -119,7 +119,7 @@ const PersonInfoPanel = ({ personData }) => {
   const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
   const onConfirmArchivePersonButtonClick = useCallback(() => {
-    removeUserFromOrganization(userId)(dispatch)
+    removeUserFromOrganization(userIdentifier)(dispatch)
       .then(() => {
         hashHistory.push('/people');
       })
@@ -136,10 +136,10 @@ const PersonInfoPanel = ({ personData }) => {
         Swal.getContainer().style.zIndex = 10000;
       });
     close();
-  }, [close, dispatch, userId]);
+  }, [close, dispatch, userIdentifier]);
 
   useMount(() => {
-    if (userId) {
+    if (userIdentifier) {
       getUserAvatar(personData)(dispatch)
         .then(image => {
           if (image) {
@@ -181,7 +181,7 @@ const PersonInfoPanel = ({ personData }) => {
           </Grid>
         </Grid>
       </Grid>
-      {isAdminOrOwner && userId && (
+      {isAdminOrOwner && userIdentifier && (
         <>
           <hr />
           <Grid container item xs={12} justify="center">

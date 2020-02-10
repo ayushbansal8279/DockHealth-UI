@@ -86,7 +86,7 @@ const onFormSubmit = (
     toggleAlert('Profile updated successfully!', 'success');
 
     userApi.getUserById();
-    userApi.getUserProfilePic(sessionStorage.userId, 'PROFILE');
+    userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     userApi.getUserNotoficationPrefs();
   } catch (error) {
     // console.log(error);

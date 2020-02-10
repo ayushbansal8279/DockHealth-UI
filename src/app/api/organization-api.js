@@ -1,7 +1,7 @@
 import axios from './axios-heydoc';
 
-export const get = ({ organizationId }) =>
-  axios.get(`/organization/${organizationId}`).then(response => {
+export const get = ({ organizationIdentifier }) =>
+  axios.get(`/organization/${organizationIdentifier}`).then(response => {
     if (response.data) {
       return response.data;
     }

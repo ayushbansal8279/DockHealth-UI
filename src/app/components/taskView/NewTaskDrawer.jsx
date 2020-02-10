@@ -68,7 +68,7 @@ const onDuplicate = ({ afterDuplicate, dispatch, task }) => async event => {
   event.preventDefault();
   event.stopPropagation();
 
-  if (task && task.taskId != null) {
+  if (task && task.taskIdentifier != null) {
     try {
       const newTask = await duplicateTask(task)(dispatch);
       afterDuplicate({ newTask });
@@ -109,7 +109,7 @@ export default ({
     storeAsCurrentTask,
     subtaskOrder,
     task,
-    taskId,
+    taskIdentifier,
     taskContainerReference,
     togglePriorityActive,
     userProfile,
@@ -119,7 +119,7 @@ export default ({
     isMultiList,
   });
 
-  const isSubtask = Boolean(task?.parentTaskId);
+  const isSubtask = Boolean(task?.parentTaskIdentifier);
 
   let defaultValues = {};
 
@@ -128,12 +128,12 @@ export default ({
 
     defaultValues = {
       ...task,
-      assignedToUserId: task?.assignedTo?.userId,
+      assignedToUserIdentifier: task?.assignedTo?.userIdentifier,
       assignedToUserName: task?.assignedTo
         ? task.assignedTo?.userName?.trim()
         : '',
       patient: task?.patient,
-      patientId: task?.patient?.patientId,
+      patientIdentifier: task?.patient?.patientIdentifier,
       patientName,
     };
   }
@@ -152,7 +152,7 @@ export default ({
     }),
   );
 
-  const addingTaskOrSubtask = !task || (task && !task.taskId);
+  const addingTaskOrSubtask = !task || (task && !task.taskIdentifier);
 
   return (
     <NewTaskDrawerContainer
@@ -196,7 +196,7 @@ export default ({
             statusSelectData={statusSelectData}
             storeAsCurrentTask={storeAsCurrentTask}
             task={task}
-            taskId={taskId}
+            taskIdentifier={taskIdentifier}
             togglePriorityActive={togglePriorityActive}
           />
           <CondensedFormSection container item xs={12}>
@@ -213,12 +213,13 @@ export default ({
                 closeDrawer={closeDrawer}
                 setAutoSaveVisible={setAutoSaveVisible}
                 isInbox={isInbox}
+                handleSubmit={handleSubmit}
               />
             </FormContext>
           </CondensedFormSection>
         </NewTaskDrawerInnerContainer>
       </StyledForm>
-      {task && task.taskId != null && task.status !== 'COMPLETE' && (
+      {task && task.taskIdentifier != null && task.status !== 'COMPLETE' && (
         <BottomButtonContainer>
           <StyledButton
             onClick={onDelete({
@@ -245,7 +246,7 @@ export default ({
           </StyledButton>
         </BottomButtonContainer>
       )}
-      {(!task || !task.taskId) && (
+      {(!task || !task.taskIdentifier) && (
         <BottomButtonContainer>
           <StyledButton
             onClick={() => {

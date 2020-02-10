@@ -67,17 +67,17 @@ class TaskDetails extends React.PureComponent {
       const fileData = files[0];
       const { selectedTask } = this.props;
       // eslint-disable-next-line react/destructuring-assignment
-      this.props.addTaskAttachment(selectedTask.taskId, fileData);
+      this.props.addTaskAttachment(selectedTask.taskIdentifier, fileData);
     }
   };
 
-  handleRemoveAttachment = attachmentId => {
-    if (attachmentId && attachmentId > 0) {
+  handleRemoveAttachment = attachmentIdentifier => {
+    if (attachmentIdentifier && attachmentIdentifier > 0) {
       const {
         removeTaskAttachment: removeAttachment,
         selectedTask,
       } = this.props;
-      removeAttachment(selectedTask.taskId, attachmentId);
+      removeAttachment(selectedTask.taskIdentifier, attachmentIdentifier);
     }
   };
 
@@ -116,7 +116,7 @@ class TaskDetails extends React.PureComponent {
   render() {
     const {
       selectedTask,
-      userId,
+      userIdentifier,
       addTaskComment,
       stickyStyle,
       confirmation,
@@ -132,8 +132,8 @@ class TaskDetails extends React.PureComponent {
     const { description, patient, subtasks, status, comments } = selectedTask;
 
     const isCompleted = status === 'COMPLETE';
-    const isInbox = !selectedTask?.taskList?.taskListId;
-    const isSubtask = selectedTask.parentTaskId !== null;
+    const isInbox = !selectedTask?.taskList?.taskListIdentifier;
+    const isSubtask = selectedTask.parentTaskIdentifier !== null;
 
     return (
       <DetailsContainer>
@@ -198,7 +198,7 @@ class TaskDetails extends React.PureComponent {
                   {!isSubtask &&
                     (subtasks && subtasks.length === 0 ? (
                       <AddSubtask
-                        taskId={selectedTask.taskId}
+                        taskIdentifier={selectedTask.taskIdentifier}
                         disabled={isCompleted}
                       />
                     ) : (
@@ -216,7 +216,7 @@ class TaskDetails extends React.PureComponent {
               <Comments
                 task={selectedTask}
                 comments={comments}
-                userId={userId}
+                userIdentifier={userIdentifier}
                 submit={addTaskComment}
                 disabled={isCompleted}
               />
@@ -272,7 +272,7 @@ class TaskDetails extends React.PureComponent {
                 </StyledLabel>
                 <StyledDescription>
                   <Attachments
-                    task={selectedTask.taskId}
+                    task={selectedTask.taskIdentifier}
                     attachments={selectedTask.attachments}
                     onAddAttachment={this.handleAddAttachment}
                     onRemoveAttachment={this.handleRemoveAttachment}
@@ -287,7 +287,7 @@ class TaskDetails extends React.PureComponent {
                   <strong>History</strong>
                 </StyledLabel>
                 <StyledDescription>
-                  <History taskId={selectedTask.taskId} />
+                  <History taskIdentifier={selectedTask.taskIdentifier} />
                 </StyledDescription>
               </tr>
             </table>
@@ -306,7 +306,7 @@ TaskDetails.propTypes = {
   close: PropTypes.func.isRequired,
   toggleTaskPriority: PropTypes.func.isRequired,
   selectedTask: PropTypes.shape({
-    taskId: PropTypes.number,
+    taskIdentifier: PropTypes.number,
     dueDate: PropTypes.string,
     description: PropTypes.string,
     status: PropTypes.oneOf(['INCOMPLETE', 'COMPLETE']),

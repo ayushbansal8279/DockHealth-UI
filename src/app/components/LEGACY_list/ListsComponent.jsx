@@ -6,9 +6,9 @@ import BooleanModal from '../modals/BooleanModal';
 class ListsComponent extends PureComponent {
   componentWillUnmount() {
     const { taskLists = [] } = this.props;
-    taskLists.forEach(({ taskListId }) => {
-      removeRevealComponent(`#delete-task-${taskListId}`);
-      removeRevealComponent(`#leave-task-${taskListId}`);
+    taskLists.forEach(({ taskListIdentifier }) => {
+      removeRevealComponent(`#delete-task-${taskListIdentifier}`);
+      removeRevealComponent(`#leave-task-${taskListIdentifier}`);
     });
   }
 
@@ -22,7 +22,7 @@ class ListsComponent extends PureComponent {
             numberOfHighPriorityTasks,
             numberOfTasks,
             numberOfUnreadTasks,
-            taskListId,
+            taskListIdentifier,
             creator,
             role,
             listName,
@@ -32,7 +32,7 @@ class ListsComponent extends PureComponent {
 
           return (
             <div
-              key={`taskList${taskListId}`}
+              key={`taskList${taskListIdentifier}`}
               className="item row expanded align-middle"
             >
               <div className="columns shrink">
@@ -49,7 +49,7 @@ class ListsComponent extends PureComponent {
                 )}
               </div>
               <div className="columns">
-                <Link to={`/tasks/${taskListId}`}>
+                <Link to={`/tasks/${taskListIdentifier}`}>
                   <h6 className="">{listName}</h6>
                 </Link>
                 <span className="details">{creator.userName}</span>
@@ -78,13 +78,13 @@ class ListsComponent extends PureComponent {
               <div className="columns shrink more-options-wrapper">
                 <svg
                   className="icon ellipses medium"
-                  data-toggle={`more-options-task-id-${taskListId}`}
+                  data-toggle={`more-options-task-id-${taskListIdentifier}`}
                 >
                   <use xlinkHref="#icon-ellipses" />
                 </svg>
                 <div
                   className="small dropdown-pane"
-                  id={`more-options-task-id-${taskListId}`}
+                  id={`more-options-task-id-${taskListIdentifier}`}
                   data-dropdown
                   data-close-on-click="true"
                 >
@@ -95,14 +95,14 @@ class ListsComponent extends PureComponent {
                           <div onClick={() => editForm(taskList)}>Edit</div>
                         </li>
                         <li>
-                          <div data-open={`delete-list-${taskListId}`}>
+                          <div data-open={`delete-list-${taskListIdentifier}`}>
                             Delete list
                           </div>
                         </li>
                       </>
                     ) : (
                       <li>
-                        <div data-open={`leave-list-${taskListId}`}>
+                        <div data-open={`leave-list-${taskListIdentifier}`}>
                           Leave list
                         </div>
                       </li>
@@ -111,17 +111,17 @@ class ListsComponent extends PureComponent {
                 </div>
               </div>
               <BooleanModal
-                uniqueModalId={`delete-list-${taskListId}`}
+                uniqueModalId={`delete-list-${taskListIdentifier}`}
                 message={`Are you sure you want to delete '${listName}'?`}
                 handleConfirmation={deleteList}
-                handleConfirmationArgs={taskListId}
+                handleConfirmationArgs={taskListIdentifier}
                 confirmBtnTxt="Delete"
               />
               <BooleanModal
-                uniqueModalId={`leave-list-${taskListId}`}
+                uniqueModalId={`leave-list-${taskListIdentifier}`}
                 message={`Are you sure you want to leave '${listName}'?`}
                 handleConfirmation={leaveList}
-                handleConfirmationArgs={taskListId}
+                handleConfirmationArgs={taskListIdentifier}
                 confirmBtnTxt="Leave"
               />
             </div>

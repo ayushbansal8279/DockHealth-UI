@@ -31,9 +31,9 @@ export function getMyPatientsActive() {
     });
 }
 
-export function getPatientsByTaskList(taskListId) {
+export function getPatientsByTaskList(taskListIdentifier) {
   return axios
-    .get(`patient/getPatientsByTaskList/${taskListId}`)
+    .get(`patient/getPatientsByTaskList/${taskListIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -41,9 +41,9 @@ export function getPatientsByTaskList(taskListId) {
     });
 }
 
-export function getPatientById(patientId) {
+export function getPatientById(patientIdentifier) {
   return axios
-    .get(`patient/${patientId}`)
+    .get(`patient/${patientIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -51,9 +51,9 @@ export function getPatientById(patientId) {
     });
 }
 
-export function removePatient(patientId) {
+export function removePatient(patientIdentifier) {
   return axios
-    .delete(`patient/${patientId}`)
+    .delete(`patient/${patientIdentifier}`)
     .then(response => response)
     .catch(error => {
       console.log(error);
@@ -89,9 +89,9 @@ export function updatePatient(patient) {
     });
 }
 
-export function addPatientToTask(patientId, taskId) {
+export function addPatientToTask(patientIdentifier, taskIdentifier) {
   return axios
-    .put(`patient/addPatientToTaskById/${taskId}?patientId=${patientId}`)
+    .put(`patient/addPatientToTaskById/${taskIdentifier}?patientId=${patientIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -110,9 +110,9 @@ export function lookupEMRPatients(searchToken) {
 }
 
 // This api call 'patient/deletePatient/' does not exist yet
-export function deletePatient(patientId) {
+export function deletePatient(patientIdentifier) {
   return axios
-    .get(`patient/deletePatient/${patientId}`)
+    .get(`patient/deletePatient/${patientIdentifier}`)
     .then(response => response)
     .catch(error => {
       console.log(error);
@@ -121,13 +121,13 @@ export function deletePatient(patientId) {
 
 /**
  * Find Tasks that are related to a Patient for the Inbox and Lists that User is part of
- * @param {number} patientId
+ * @param {number} patientIdentifier
  * @param {('COMPLETE'|'INCOMPLETE')} status
  * @returns {Promise}
  */
-export const findUserTasksByPatient = (patientId, status) =>
+export const findUserTasksByPatient = (patientIdentifier, status) =>
   axios
-    .get(`/task/findUserTasksByPatient/${patientId}?status=${status}`)
+    .get(`/task/findUserTasksByPatient/${patientIdentifier}?status=${status}`)
     .then(response => {
       return fixList(response.data);
     })
@@ -136,9 +136,9 @@ export const findUserTasksByPatient = (patientId, status) =>
       throw error.response.data;
     });
 
-export const createPatientNote = (patientId, note) =>
+export const createPatientNote = (patientIdentifier, note) =>
   axios
-    .post(`/patient/note/${patientId}`, note)
+    .post(`/patient/note/${patientIdentifier}`, note)
     .then(response => response.data)
     .catch(error => {
       throw error.response.data;
@@ -152,9 +152,9 @@ export const updatePatientNote = note =>
       throw error.response.data;
     });
 
-export const deletePatientNote = patientNoteId =>
+export const deletePatientNote = patientNoteIdentifier =>
   axios
-    .delete(`/patient/note/deletePatientNoteById/${patientNoteId}`)
+    .delete(`/patient/note/deletePatientNoteById/${patientNoteIdentifier}`)
     .then(response => response.data)
     .catch(error => {
       throw error.response.data;

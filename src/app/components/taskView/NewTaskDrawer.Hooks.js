@@ -51,8 +51,8 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
     const tasks = [...taskState.tasks, ...taskState.completedTasks];
     const { selectedTask } = taskState;
 
-    const isSubtask = Boolean(selectedTask?.parentTaskId);
-    const taskId = selectedTask?.taskId;
+    const isSubtask = Boolean(selectedTask?.parentTaskIdentifier);
+    const taskIdentifier = selectedTask?.taskIdentifier;
 
     if (!isSubtask) {
       return {
@@ -63,10 +63,10 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
     }
 
     const foundParentTask = tasks.find(
-      ({ taskId: storeTaskId }) => selectedTask.parentTaskId === storeTaskId,
+      ({ taskIdentifier: storeTaskId }) => selectedTask.parentTaskIdentifier === storeTaskId,
     );
     const foundSubtaskOrder = foundParentTask?.subtasks.findIndex(
-      ({ taskId: subtaskId }) => subtaskId === taskId,
+      ({ taskIdentifier: subtaskId }) => subtaskId === taskIdentifier,
     );
 
     return {
@@ -79,10 +79,10 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
   // #region CALLBACKS
 
   const dispatch = useDispatch();
-  const taskId = task?.taskId;
+  const taskIdentifier = task?.taskIdentifier;
   const taskWorkflowStatus = task?.workflowStatus;
   const taskPriority = task?.priority;
-  const userId = userProfile?.userId;
+  const userIdentifier = userProfile?.userIdentifier;
 
   const storeAsCurrentTask = useCallback(
     newTask => storeAsCurrentTaskAction(newTask)(dispatch),
@@ -91,7 +91,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
 
   const saveTaskPriority = useCallback(
     ({ newTaskPriority }) => {
-      toggleTaskPriority(task, parseInt(userId, 10) || -1, newTaskPriority)(
+      toggleTaskPriority(task, parseInt(userIdentifier, 10) || -1, newTaskPriority)(
         dispatch,
       )
         .then(() => {
@@ -105,7 +105,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskId, userId],
+    [taskIdentifier, userIdentifier],
   );
 
   const addDeferredCommentToQueue = useCallback(
@@ -133,7 +133,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
       getAllPatients()(dispatch);
     }
     if (isMultiList && task?.taskList) {
-      getMembersByTaskListId(task?.taskList?.taskListId, 'ALL')(dispatch);
+      getMembersByTaskListId(task?.taskList?.taskListIdentifier, 'ALL')(dispatch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   });
@@ -159,7 +159,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
       unsetPriorityActive();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskPriority, taskId]);
+  }, [taskPriority, taskIdentifier]);
 
   useEffect(() => {
     const newWorkflowStatus =
@@ -167,7 +167,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
       head(statusSelectData);
 
     setStatus(newWorkflowStatus);
-  }, [taskWorkflowStatus, taskId, statusSelectData]);
+  }, [taskWorkflowStatus, taskIdentifier, statusSelectData]);
 
   useEffect(
     () => {
@@ -181,7 +181,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
     setDeferredCommentsPromises([]);
     clearAutoSaveTimeout();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskId]);
+  }, [taskIdentifier]);
 
   // #endregion
 
@@ -211,7 +211,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
     storeAsCurrentTask,
     subtaskOrder,
     task,
-    taskId,
+    taskIdentifier,
     taskContainerReference,
     togglePriorityActive,
     unsetAutoSaveVisible,
