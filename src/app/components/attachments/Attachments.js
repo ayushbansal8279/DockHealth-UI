@@ -87,10 +87,10 @@ const Attachments = ({
 };
 
 Attachments.propTypes = {
-  taskIdentifier: PropTypes.number.isRequired,
+  taskIdentifier: PropTypes.string.isRequired,
   attachments: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number,
+      id: PropTypes.string,
       name: PropTypes.string,
       size: PropTypes.number,
     }),

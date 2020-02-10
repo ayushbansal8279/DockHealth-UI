@@ -87,7 +87,7 @@ const Member = ({ onClick, member, children, className, style, color }) => {
 Member.propTypes = {
   onClick: PropTypes.func,
   member: PropTypes.shape({
-    userIdentifier: PropTypes.number,
+    userIdentifier: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     initials: PropTypes.string,

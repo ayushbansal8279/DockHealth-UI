@@ -136,7 +136,7 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
 };
 
 const patientShape = PropTypes.shape({
-  patientIdentifier: PropTypes.number,
+  patientIdentifier: PropTypes.string,
   lastName: PropTypes.string,
   firstName: PropTypes.string,
   mrn: PropTypes.string,

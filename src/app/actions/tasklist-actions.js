@@ -352,6 +352,5 @@ export const getPersonTasklistAccumulatedStats = () => dispatch => {
 
   dispatch({
     type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
-    taskListStats: tasklistActionsDummyData,
   });
 };

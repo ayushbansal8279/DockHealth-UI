@@ -306,7 +306,7 @@ TaskDetails.propTypes = {
   close: PropTypes.func.isRequired,
   toggleTaskPriority: PropTypes.func.isRequired,
   selectedTask: PropTypes.shape({
-    taskIdentifier: PropTypes.number,
+    taskIdentifier: PropTypes.string,
     dueDate: PropTypes.string,
     description: PropTypes.string,
     status: PropTypes.oneOf(['INCOMPLETE', 'COMPLETE']),

@@ -90,7 +90,7 @@ const Attachment = ({ id, name, size, remove }) => {
 };
 
 Attachment.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   remove: PropTypes.func.isRequired,

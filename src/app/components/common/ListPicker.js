@@ -215,7 +215,7 @@ class ListPicker extends React.Component {
 }
 
 const itemShape = PropTypes.shape({
-  taskListIdentifier: PropTypes.number,
+  taskListIdentifier: PropTypes.string,
   listName: PropTypes.string,
   creator: PropTypes.shape({
     userName: PropTypes.string,
@@ -228,7 +228,7 @@ ListPicker.propTypes = {
   items: PropTypes.arrayOf(itemShape),
   assign: PropTypes.func.isRequired,
   task: PropTypes.shape({
-    parentTaskIdentifier: PropTypes.number,
+    parentTaskIdentifier: PropTypes.string,
   }).isRequired,
 };
 

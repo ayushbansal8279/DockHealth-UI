@@ -109,7 +109,7 @@ const InvitePicker = ({ children: Component, taskList, members }) => {
 };
 
 const memberShape = PropTypes.shape({
-  memberId: PropTypes.number,
+  memberId: PropTypes.string,
   lastName: PropTypes.string,
   firstName: PropTypes.string,
   mrn: PropTypes.string,

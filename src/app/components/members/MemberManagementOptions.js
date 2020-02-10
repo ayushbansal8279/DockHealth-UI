@@ -97,9 +97,9 @@ const ConnectedManageButton = connect(
 )(ManageButton);
 
 ConnectedManageButton.propTypes = {
-  taskListIdentifier: PropTypes.number.isRequired,
+  taskListIdentifier: PropTypes.string.isRequired,
   member: PropTypes.shape({
-    userIdentifier: PropTypes.number,
+    userIdentifier: PropTypes.string,
     taskListUserRole: PropTypes.string,
   }).isRequired,
 };

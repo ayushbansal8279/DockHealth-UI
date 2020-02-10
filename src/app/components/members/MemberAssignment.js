@@ -25,7 +25,7 @@ MemberAssignment.propTypes = {
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
   member: PropTypes.shape({
-    userIdentifier: PropTypes.number,
+    userIdentifier: PropTypes.string,
     profileThumbnailPictureHash: PropTypes.string,
     initials: PropTypes.string,
     firstName: PropTypes.string,

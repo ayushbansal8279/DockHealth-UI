@@ -86,7 +86,7 @@ const CreatorPropertyType = PropTypes.shape({
   profileThumbnailPictureHash: PropTypes.string,
   specialtyList: PropTypes.string,
   titleList: PropTypes.string,
-  userIdentifier: PropTypes.number,
+  userIdentifier: PropTypes.string,
   userName: PropTypes.string,
 });
 
@@ -95,7 +95,7 @@ const NotePropertyType = PropTypes.shape({
   dateCreated: PropTypes.string,
   dateUpdated: PropTypes.string,
   description: PropTypes.string,
-  patientNoteIdentifier: PropTypes.number,
+  patientNoteIdentifier: PropTypes.string,
 });
 
 EditablePatientNote.propTypes = { note: NotePropertyType.isRequired };

@@ -134,7 +134,7 @@ const MemberManagementPopup = ({ member, members, taskList, close }) => {
 };
 
 const memberShape = PropTypes.shape({
-  memberId: PropTypes.number,
+  memberId: PropTypes.string,
   lastName: PropTypes.string,
   firstName: PropTypes.string,
   mrn: PropTypes.string,

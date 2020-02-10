@@ -167,10 +167,10 @@ const Header = ({
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
-  taskCount: PropTypes.number.isRequired,
+  taskCount: PropTypes.string.isRequired,
   members: PropTypes.arrayOf(
     PropTypes.shape({
-      userIdentifier: PropTypes.number,
+      userIdentifier: PropTypes.string,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       profileThumbnailPictureHash: PropTypes.string,

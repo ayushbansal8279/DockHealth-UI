@@ -101,7 +101,7 @@ const TaskList = ({
 TaskList.propTypes = {
   tasks: PropTypes.arrayOf(
     PropTypes.shape({
-      taskIdentifier: PropTypes.number,
+      taskIdentifier: PropTypes.string,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       dueDate: PropTypes.string,

@@ -166,7 +166,7 @@ const ConnectedAddTask = connect(
 )(AddTask);
 
 ConnectedAddTask.propTypes = {
-  taskListIdentifier: PropTypes.number.isRequired,
+  taskListIdentifier: PropTypes.string.isRequired,
 };
 
 export default ConnectedAddTask;

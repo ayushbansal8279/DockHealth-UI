@@ -70,7 +70,7 @@ const Members = ({ members, taskList }) => {
 Members.propTypes = {
   members: PropTypes.arrayOf(
     PropTypes.shape({
-      userIdentifier: PropTypes.number,
+      userIdentifier: PropTypes.string,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       initials: PropTypes.string,

@@ -96,18 +96,18 @@ Comments.propTypes = {
   submit: PropTypes.func.isRequired,
   comments: PropTypes.arrayOf(
     PropTypes.shape({
-      commentIdentifier: PropTypes.number,
+      commentIdentifier: PropTypes.string,
       comment: PropTypes.string,
       dateCreated: PropTypes.string,
       creator: PropTypes.shape({
-        userIdentifier: PropTypes.number,
+        userIdentifier: PropTypes.string,
         userName: PropTypes.string,
         initials: PropTypes.string,
         profileThumbnailPictureHash: PropTypes.string,
       }),
     }),
   ).isRequired,
-  userIdentifier: PropTypes.number.isRequired,
+  userIdentifier: PropTypes.string.isRequired,
 };
 
 Comments.defaultProps = {

@@ -84,7 +84,7 @@ const ConnectedTaskActions = connect(
 
 ConnectedTaskActions.propTypes = {
   task: PropTypes.shape({
-    taskIdentifier: PropTypes.number.isRequired,
+    taskIdentifier: PropTypes.string.isRequired,
   }),
 };
 

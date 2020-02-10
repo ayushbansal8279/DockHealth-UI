@@ -486,8 +486,11 @@ class TaskView extends Component {
       taskList,
       dispatchedSetHeader,
     } = this.props;
-
-    const allTasks = [...tasks, ...completedTasks];
+    
+    var allTasks = []
+    if(tasks!=null && completedTasks!=null){
+      allTasks = [...tasks, ...completedTasks];
+    }    
     let allTasksCount = tasksCount;
     if (!tasksCount) {
       allTasksCount = allTasks.length;

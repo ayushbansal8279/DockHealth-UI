@@ -129,7 +129,7 @@ const MemberInvitationPopup = ({ members, taskList, back, close, invite }) => {
 };
 
 const memberShape = PropTypes.shape({
-  memberId: PropTypes.number,
+  memberId: PropTypes.string,
   lastName: PropTypes.string,
   firstName: PropTypes.string,
   mrn: PropTypes.string,
@@ -140,7 +140,7 @@ MemberInvitationPopup.propTypes = {
   invite: PropTypes.func.isRequired,
   taskList: PropTypes.shape({
     listName: PropTypes.string,
-    taskListIdentifier: PropTypes.number,
+    taskListIdentifier: PropTypes.string,
   }).isRequired,
 };
 
