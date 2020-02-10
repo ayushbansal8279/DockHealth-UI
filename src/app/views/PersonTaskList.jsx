@@ -161,10 +161,11 @@ class TaskListSearch extends PureComponent {
     }
   };
 
-  handleFilterChange = (filterBy, sortBy) => {
+  handleFilterChange = async (filterBy, sortBy) => {
     const {
       taskActions,
-      routeParams: { personId },
+      peopleActions,
+      routeParams: { email },
     } = this.props;
 
     this.setState({
@@ -172,20 +173,29 @@ class TaskListSearch extends PureComponent {
     });
 
     taskActions.loading();
+
+    let personData = {};
+
+    // try {
+    personData = await peopleActions.getUserByEmail({ email });
+
     taskActions.getTasksAssignedToSpecificUser(
-      personId,
+      personData.userIdentifier,
       undefined,
       sortBy,
       filterBy,
       'INCOMPLETE',
     );
     taskActions.getTasksAssignedToSpecificUser(
-      personId,
+      personData.userIdentifier,
       undefined,
       sortBy,
       filterBy,
       'COMPLETE',
     );
+    // } catch {
+    //   noop();
+    // }
   };
 
   toggleHUD = () => {
@@ -247,7 +257,7 @@ class TaskListSearch extends PureComponent {
   };
 
   render() {
-    const { searchPerformed, displayHUD } = this.state;
+    const { displayHUD } = this.state;
     const { personData, isFetching } = this.props;
 
     return (

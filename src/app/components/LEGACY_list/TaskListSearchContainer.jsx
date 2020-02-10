@@ -18,6 +18,7 @@ const TaskListLayout = ({
   taskActions,
   showingCompletedTasks,
   searchPerformed,
+  onFilter,
 }) => {
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskIdentifier,
@@ -47,10 +48,12 @@ const TaskListLayout = ({
     isMultiList: true,
     isSpecificPatient: false,
     globalSearch: true,
+    onFilter,
   };
 
   if (searchPerformed) {
-    return !isFetching && (!lists || lists.length === 0) ? (
+    // return !isFetching && (!lists || lists.length === 0) ? (
+    return !isFetching && !lists ? (
       <Grid container justify="center">
         <b>No matching tasks</b>
       </Grid>
@@ -71,6 +74,7 @@ const TaskListSearchContainer = ({
   showingCompletedTasks,
   taskListActions,
   searchPerformed,
+  onFilter,
 }) => {
   useMount(() => {
     taskListActions.getPersonTasklistAccumulatedStats();
@@ -94,6 +98,7 @@ const TaskListSearchContainer = ({
     taskActions,
     showingCompletedTasks,
     searchPerformed,
+    onFilter,
   };
 
   if (isFetching) {
