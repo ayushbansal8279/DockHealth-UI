@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { object, string } from 'yup';
 import { invitePersonToOrganization } from '../actions/people-actions';
 import { showAlert } from '../helpers/utility-functions';
 import {
@@ -11,11 +12,13 @@ import {
   InvitePeoplePopoverSection,
   InvitePopoverCloseButton,
   InvitePopoverDivider,
+  PopoverErrorLabel,
   PopoverSectionButton,
   PopoverSectionButtonContainer,
   StyledFormControl,
   StyledInputBase,
   StyledInputLabel,
+  PopoverErrorCollapse,
 } from './PeopleView.Styled';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
@@ -51,40 +54,92 @@ const InvitePeopleForm = ({
   dispatch,
   register,
   getAllUsers,
-}) => (
-  <form
-    onSubmit={event => {
-      event.stopPropagation();
-      event.preventDefault();
-      handleSubmit(onSubmit({ closePopover, dispatch, getAllUsers }))(event);
-    }}
-  >
-    <InvitePeoplePopoverSection>
-      <StyledFormControl fullWidth>
-        <StyledInputLabel required>First Name</StyledInputLabel>
-        <StyledInputBase name="first_name" inputRef={register} />
-      </StyledFormControl>
-      <StyledFormControl fullWidth>
-        <StyledInputLabel required>Last Name</StyledInputLabel>
-        <StyledInputBase name="last_name" inputRef={register} />
-      </StyledFormControl>
-      <StyledFormControl fullWidth>
-        <StyledInputLabel required>Email</StyledInputLabel>
-        <StyledInputBase name="email" inputRef={register} />
-      </StyledFormControl>
-    </InvitePeoplePopoverSection>
-    <InvitePeoplePopoverSection>
-      <PopoverSectionButtonContainer>
-        <PopoverSectionButton onClick={closePopover}>
-          Cancel
-        </PopoverSectionButton>
-        <PopoverSectionButton bold type="submit">
-          Send invite
-        </PopoverSectionButton>
-      </PopoverSectionButtonContainer>
-    </InvitePeoplePopoverSection>
-  </form>
-);
+  errors,
+}) => {
+  // eslint-disable-next-line camelcase
+  const firstNameError = errors?.first_name?.message;
+  // eslint-disable-next-line camelcase
+  const lastNameError = errors?.last_name?.message;
+  const emailError = errors?.email?.message;
+
+  const hasFirstNameError = Boolean(firstNameError);
+  const hasLastNameError = Boolean(lastNameError);
+  const hasEmailError = Boolean(emailError);
+
+  return (
+    <form
+      onSubmit={event => {
+        event.stopPropagation();
+        event.preventDefault();
+        handleSubmit(onSubmit({ closePopover, dispatch, getAllUsers }))(event);
+      }}
+    >
+      <InvitePeoplePopoverSection>
+        <StyledFormControl margin="dense" fullWidth error={hasFirstNameError}>
+          <StyledInputLabel required>First Name</StyledInputLabel>
+          <StyledInputBase
+            error={hasFirstNameError}
+            name="first_name"
+            inputRef={register}
+            autoFocus
+          />
+        </StyledFormControl>
+        <PopoverErrorCollapse in={hasFirstNameError}>
+          <PopoverErrorLabel>{firstNameError}</PopoverErrorLabel>
+        </PopoverErrorCollapse>
+        <StyledFormControl margin="dense" fullWidth>
+          <StyledInputLabel required>Last Name</StyledInputLabel>
+          <StyledInputBase
+            error={hasLastNameError}
+            name="last_name"
+            inputRef={register}
+          />
+        </StyledFormControl>
+        <PopoverErrorCollapse in={hasLastNameError}>
+          <PopoverErrorLabel>{lastNameError}</PopoverErrorLabel>
+        </PopoverErrorCollapse>
+        <StyledFormControl margin="dense" fullWidth>
+          <StyledInputLabel required>Email</StyledInputLabel>
+          <StyledInputBase
+            error={hasEmailError}
+            name="email"
+            inputRef={register}
+          />
+        </StyledFormControl>
+        <PopoverErrorCollapse in={hasEmailError}>
+          <PopoverErrorLabel>{emailError}</PopoverErrorLabel>
+        </PopoverErrorCollapse>
+      </InvitePeoplePopoverSection>
+      <InvitePeoplePopoverSection>
+        <PopoverSectionButtonContainer>
+          <PopoverSectionButton
+            onClick={closePopover}
+            type="button"
+            onKeyUp={event => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+          >
+            Cancel
+          </PopoverSectionButton>
+          <PopoverSectionButton bold type="submit">
+            Send invite
+          </PopoverSectionButton>
+        </PopoverSectionButtonContainer>
+      </InvitePeoplePopoverSection>
+    </form>
+  );
+};
+
+const REQUIRED_MESSAGE = 'This field is required';
+
+const validationSchema = object().shape({
+  first_name: string().required(REQUIRED_MESSAGE),
+  last_name: string().required(REQUIRED_MESSAGE),
+  email: string()
+    .required(REQUIRED_MESSAGE)
+    .email('This field requires valid email address'),
+});
 
 const InvitePeoplePopover = ({
   anchor,
@@ -92,7 +147,9 @@ const InvitePeoplePopover = ({
   toggleInvitePopover,
   getAllUsers = () => {},
 }) => {
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, register, errors } = useForm({
+    validationSchema,
+  });
   const dispatch = useDispatch();
   const orgUserRole = useSelector(
     store => store.userState.userProfile?.orgUserRole,
@@ -142,6 +199,7 @@ const InvitePeoplePopover = ({
             handleSubmit={handleSubmit}
             register={register}
             getAllUsers={getAllUsers}
+            errors={errors}
           />
         )}
         {!isOwnerOrAdmin && (
