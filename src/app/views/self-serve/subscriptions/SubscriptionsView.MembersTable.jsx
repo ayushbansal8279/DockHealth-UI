@@ -82,8 +82,9 @@ const getFilteredOrganizationMembers = ({
   selectedUsers,
   userSubscriptionStatus,
 }) => {
-  const sortedOrganizationMembers =
-    organizationMembers |> combinedMemberSortMethod;
+  const sortedOrganizationMembers = combinedMemberSortMethod(
+    organizationMembers,
+  );
 
   switch (userSubscriptionStatus) {
     case USER_SUBSCRIPTION_STATUS.SUBSCRIBED:

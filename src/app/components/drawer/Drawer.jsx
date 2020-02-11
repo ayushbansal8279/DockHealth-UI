@@ -67,23 +67,24 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const { organization, organizationIdentifier } = useSelector(store => ({
     ...store.organizationState,
-    organizationIdentifier: store.userState?.userProfile?.organizationIdentifier,
+    organizationIdentifier:
+      store.userState?.userProfile?.organizationIdentifier,
   }));
 
+  const subscription = organization?.subscriptionDetails;
+
   const trialBannerVisible = getSubscriptionIsTrial({
-    subscription: organization?.subscriptionDetails,
+    subscription,
   });
 
   const subscriptionPlanTrialLabel = getSubscriptionPlanTrialLabel({
-    subscription: organization?.subscriptionDetails,
+    subscription,
   });
 
-  const trialEndMoment = moment(
-    organization?.subscriptionDetails?.trialEndDate,
-  );
+  const trialEndMoment = moment(subscription?.trialEndDate ?? null);
 
   const trialEndDayDifference = trialEndMoment.isValid()
-    ? trialEndMoment.diff(moment(), 'day')
+    ? Math.abs(trialEndMoment.diff(moment(), 'day'))
     : null;
 
   const trialEndDateLabel =
