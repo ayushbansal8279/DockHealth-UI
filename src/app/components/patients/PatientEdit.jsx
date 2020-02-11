@@ -61,6 +61,7 @@ export const PatientsForm = ({
       .then(newNote => {
         handleCancel();
         onPatientNoteAdded();
+        toggleAlert('Note added successfully', 'success');
         return newNote;
       })
       .catch(() => {

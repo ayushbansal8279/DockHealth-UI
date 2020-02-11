@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import Collapse from '@material-ui/core/Collapse';
 import CollapseIcon from '../../img/collapse.svg';
 import {
   PatientsSidebarSectionContainer,
@@ -6,6 +8,12 @@ import {
   PatientsSidebarSectionHeading,
   StyledButton,
 } from './PatientsSidebar.Styled';
+
+const StyledCollapse = styled(Collapse)`
+  && {
+    width: 100%;
+  }
+`;
 
 export default ({
   heading,
@@ -31,7 +39,7 @@ export default ({
           </StyledButton>
         )}
       </PatientsSidebarSectionHeader>
-      {!isCollapsed && children}
+      <StyledCollapse in={!isCollapsed}>{children}</StyledCollapse>
     </PatientsSidebarSectionContainer>
   );
 };

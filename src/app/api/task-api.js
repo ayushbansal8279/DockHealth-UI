@@ -41,7 +41,12 @@ export function getListTasksByUser(
     });
 }
 
-export function getTasksAssignedToMe(taskListIdentifier, status, sortBy, filterBy) {
+export function getTasksAssignedToMe(
+  taskListIdentifier,
+  status,
+  sortBy,
+  filterBy,
+) {
   closeAddForm();
   if (taskListIdentifier != undefined) {
     if (sortBy != undefined || filterBy != undefined) {
@@ -135,7 +140,12 @@ export function getTasksAssignedToSpecificUser(
     });
 }
 
-export function getTasksAssignedByMe(taskListIdentifier, status, sortBy, filterBy) {
+export function getTasksAssignedByMe(
+  taskListIdentifier,
+  status,
+  sortBy,
+  filterBy,
+) {
   closeAddForm();
 
   return axios({
@@ -315,7 +325,9 @@ export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
 
 export function markHighPriority(taskIdentifier, userIdentifier) {
   return axios
-    .put(`task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=HIGH`)
+    .put(
+      `task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=HIGH`,
+    )
     .then(response => {
       return response;
     })
@@ -326,7 +338,9 @@ export function markHighPriority(taskIdentifier, userIdentifier) {
 
 export function markLowPriority(taskIdentifier, userIdentifier) {
   return axios
-    .put(`task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=LOW`)
+    .put(
+      `task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=LOW`,
+    )
     .then(response => {
       return response;
     })
@@ -398,7 +412,11 @@ export function getHighPriorityTasksByTaskList(taskListIdentifier) {
     });
 }
 
-export function getListTasksByPatient(patientIdentifier, status, taskListIdentifier) {
+export function getListTasksByPatient(
+  patientIdentifier,
+  status,
+  taskListIdentifier,
+) {
   return axios
     .get(
       `task/findListTasksByPatient/${patientIdentifier}/taskList/${taskListIdentifier}?status=${status}`,
@@ -410,7 +428,12 @@ export function getListTasksByPatient(patientIdentifier, status, taskListIdentif
     });
 }
 
-export function getAllTasksByPatient(patientIdentifier, status, sortBy, filterBy) {
+export function getAllTasksByPatient(
+  patientIdentifier,
+  status,
+  sortBy,
+  filterBy,
+) {
   if (sortBy != undefined || filterBy != undefined) {
     return axios
       .get(
@@ -470,7 +493,11 @@ export function getTaskHistory(taskIdentifier) {
     });
 }
 
-export function addTaskAttachment(taskIdentifier, fileData, additionalConfig = {}) {
+export function addTaskAttachment(
+  taskIdentifier,
+  fileData,
+  additionalConfig = {},
+) {
   const formData = new FormData();
   formData.append('file', fileData);
 
@@ -533,7 +560,9 @@ export function getTaskDetails(taskIdentifier) {
 }
 export function flagArchivedForUser(taskIdentifier, flagArchived) {
   return axios
-    .put(`task/flagUserTaskAsArchived/${taskIdentifier}?flagArchived=${flagArchived}`)
+    .put(
+      `task/flagUserTaskAsArchived/${taskIdentifier}?flagArchived=${flagArchived}`,
+    )
     .then(response => response.data)
     .catch(error => {
       throw error;

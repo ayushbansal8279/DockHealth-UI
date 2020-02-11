@@ -17,6 +17,7 @@ import usePatient from '../../hooks/usePatient';
 import BackIcon from '../../img/back.svg';
 import PatientEdit from '../patients/PatientEdit';
 import TaskView from '../../views/TaskView';
+import SafariFixGrid from '../common/SafariFixGrid';
 
 const PatientProfileHeaderContainer = styled.div`
   display: flex;
@@ -61,14 +62,20 @@ const PatientProfileHeader = ({ patient }) => (
 
 const PatientProfileLayout = ({ patientIdentifier }) => {
   const dispatch = useDispatch();
-  const { details, tasks, completedTasks, isLoading } = usePatient(patientIdentifier);
+  const { details, tasks, completedTasks, isLoading } = usePatient(
+    patientIdentifier,
+  );
   const lists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
   const selectedTask = useSelector(store => store.taskState.selectedTask);
 
-  const selectedTaskId = selectedTask ? selectedTask?.taskIdentifier : undefined;
+  const selectedTaskId = selectedTask
+    ? selectedTask?.taskIdentifier
+    : undefined;
 
-  const userIdentifier = useSelector(store => store.userState.userProfile?.userIdentifier);
+  const userIdentifier = useSelector(
+    store => store.userState.userProfile?.userIdentifier,
+  );
 
   const isCompletedTasksFetching = useSelector(
     store => store.taskState.isCompletedTasksFetching,
@@ -113,7 +120,7 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
           alignItems="center"
           direction="column"
         >
-          <Grid
+          <SafariFixGrid
             container
             item
             direction="column"
@@ -121,11 +128,11 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
             xs={9}
           >
             <PatientEdit patient={details} />
-          </Grid>
+          </SafariFixGrid>
 
           {!isLoading && (!lists || lists.length === 0) ? (
             <Grid container justify="center">
-              <b></b>
+              <b />
             </Grid>
           ) : (
             <TaskView {...taskViewProps} />
@@ -140,7 +147,9 @@ const PatientProfile = ({ routeParams }) => (
   <div className="off-canvas-content" data-off-canvas-content>
     <div className="row expanded collapse" style={{ minHeight: '100%' }}>
       <div className="columns" style={{ background: '#f5f8fa' }}>
-        <PatientProfileLayout patientIdentifier={routeParams.patientIdentifier} />
+        <PatientProfileLayout
+          patientIdentifier={routeParams.patientIdentifier}
+        />
       </div>
     </div>
   </div>

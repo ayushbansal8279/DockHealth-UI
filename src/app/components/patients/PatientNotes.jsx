@@ -1,11 +1,8 @@
 import { ButtonBase } from '@material-ui/core';
 import moment from 'moment';
 import * as PropTypes from 'prop-types';
-import equals from 'ramda/es/equals';
-import take from 'ramda/es/take';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { VariableSizeList } from 'react-window';
 import styled from 'styled-components';
 import { editPatientNote } from '../../actions/patient-actions';
 import { capitalize } from '../../helpers/capitalize';
@@ -45,37 +42,31 @@ const AddNote = styled(ButtonBase).attrs(() => ({
   }
 `;
 
+const NotesContainer = styled.div`
+  max-height: 14rem;
+  overflow-y: auto;
+`;
+
 const getCreatorName = creator => `${creator.firstName} ${creator.lastName}`;
 
 const formatDate = date => moment(date).format('dddd, MMMM Do');
 
-const EditablePatientNote = ({ update, note, isOwn, style, onNoteChange }) => {
+const EditablePatientNote = ({ update, note, isOwn }) => {
   const noteInfo = `${getCreatorName(note.creator)} | ${formatDate(
     note.dateUpdated,
   )}`;
 
-  const containerReference = useRef(null);
-
-  const onContainerChange = () => {
-    const children = [...containerReference.current.children];
-    const childrenHeight = children
-      .map(child => child.offsetHeight)
-      .reduce((accumulator, childHeight) => accumulator + childHeight, 0);
-    onNoteChange(childrenHeight);
-  };
-
   return (
-    <div ref={containerReference} style={style}>
+    <>
       <EditableNoteDescription
         placeholder="Enter your note"
         value={note.description || ''}
         name={note.patientNoteIdentifier}
         onChange={update}
         disabled={!isOwn}
-        onNoteChange={onContainerChange}
       />
       <NoteInfo>{noteInfo}</NoteInfo>
-    </div>
+    </>
   );
 };
 
@@ -100,22 +91,6 @@ const NotePropertyType = PropTypes.shape({
 
 EditablePatientNote.propTypes = { note: NotePropertyType.isRequired };
 
-const onNoteChange = ({
-  index,
-  noteHeightMap,
-  setNoteHeightMap,
-  notesListReference,
-}) => noteHeight => {
-  const previousValues = [...noteHeightMap.entries()];
-  noteHeightMap.set(index, noteHeight);
-  setNoteHeightMap(noteHeightMap);
-  const newValues = [...noteHeightMap.entries()];
-
-  if (!equals(previousValues, newValues)) {
-    notesListReference.current.resetAfterIndex(0);
-  }
-};
-
 const PatientNotes = ({
   patientIdentifier,
   notes,
@@ -126,14 +101,7 @@ const PatientNotes = ({
   handleSubmit,
   startCreating,
 }) => {
-  const [noteHeightMap, setNoteHeightMap] = useState(new Map());
-  const [noteListHeight, setNoteListHeight] = useState(0);
   const dispatch = useDispatch();
-  const notesListReference = useRef(null);
-
-  useEffect(() => {
-    setNoteHeightMap(new Map());
-  }, [patientIdentifier]);
 
   const handleChange = event => {
     setNote(capitalize(event.currentTarget.value));
@@ -143,9 +111,11 @@ const PatientNotes = ({
     const modifiedNote = notes.find(
       n => n.patientNoteIdentifier === patientNoteIdentifier,
     );
+
     dispatch(editPatientNote(patientIdentifier, modifiedNote, description))
       .then(() => {
         onPatientNoteEdited();
+        toggleAlert('Note updated successfully', 'success');
       })
       .catch(() => {
         toggleAlert('Error updating note. Please try again.', 'error');
@@ -158,52 +128,17 @@ const PatientNotes = ({
   const isOwn = patientNote =>
     patientNote.creator.userIdentifier === userIdentifier;
 
-  useEffect(() => {
-    const listHeight = take(5, [...noteHeightMap.keys()])
-      .map(key => noteHeightMap.get(key))
-      .reduce((accumulator, currentHeight) => accumulator + currentHeight, 0);
-
-    setNoteListHeight(listHeight);
-  }, [noteHeightMap]);
-
-  const noteHeightMapValues = [...noteHeightMap.values()];
-
-  useEffect(() => {
-    notesListReference.current.resetAfterIndex(0);
-  }, [noteHeightMapValues]);
-
-  const getItemSize = index => noteHeightMap.get(index) || 0;
-
   return (
     <div style={{ padding: '0 12px' }}>
-      <VariableSizeList
-        height={noteListHeight}
-        layout="vertical"
-        itemCount={notes.length}
-        itemSize={getItemSize}
-        width="100%"
-        ref={notesListReference}
-      >
-        {({ index, style }) => {
-          const patientNote = notes[index];
-
-          return (
-            <EditablePatientNote
-              update={handleUpdate}
-              note={patientNote}
-              isOwn={isOwn(patientNote)}
-              noteIndex={index}
-              onNoteChange={onNoteChange({
-                index,
-                noteHeightMap,
-                setNoteHeightMap,
-                notesListReference,
-              })}
-              style={style}
-            />
-          );
-        }}
-      </VariableSizeList>
+      <NotesContainer>
+        {notes.map(patientNote => (
+          <EditablePatientNote
+            update={handleUpdate}
+            note={patientNote}
+            isOwn={isOwn(patientNote)}
+          />
+        ))}
+      </NotesContainer>
       {isCreating ? (
         <div style={{ marginTop: '15px' }}>
           <NoteTextField
