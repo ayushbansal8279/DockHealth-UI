@@ -69,12 +69,16 @@ export const StyledInputBase = withStyles({
 
 export const BillingElementContainer = styled.div`
   align-items: center;
+  border-color: ${props => (props.error ? '#e40909' : '#e4090900')};
+  border-style: solid;
+  border-width: 0.0625rem;
   display: flex;
   cursor: text;
   height: 4rem;
+  justify-content: flex-start;
   padding: 0.5rem 1rem;
   padding-bottom: 0;
-  justify-content: flex-start;
+  transition: all 0.25s ease-out;
   width: 100%;
 
   > * {

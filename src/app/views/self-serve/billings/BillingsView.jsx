@@ -1,20 +1,20 @@
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-import { Grid } from '@material-ui/core';
 import { setHeader } from '../../../actions/header-actions';
 import {
   getBillingDetails,
   getInvoiceDetails,
 } from '../../../actions/organization-actions';
 import { saveBillingDetails } from '../../../api/organization-api';
-import { showAlert, showToast } from '../../../helpers/utility-functions';
+import { showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import BillingData from './BillingsView.BillingData';
+import { BillingButton } from './BillingsView.BillingData.Components';
 // import InvoicesList from './BillingsView.InvoicesList';
 import { BillingsViewContainer, Title } from './BillingsView.Styled';
-import { BillingButton } from './BillingsView.BillingData.Components';
 
 /**
  * @param stripe - Stripe instance
@@ -34,13 +34,9 @@ const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
       })
         .then(() => {
           unsetUpdatingBilling();
-          showToast({
-            status: 'success',
-            title: 'Billing information updated successfully!',
-          });
+          toggleAlert('Billing information updated successfully!', 'success');
         })
-        .catch(error => {
-          console.log(error);
+        .catch(() => {
           showAlert({
             status: 'error',
             title: 'Error',
@@ -83,7 +79,9 @@ const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
 const BillingsView = () => {
   const dispatch = useDispatch();
 
-  const { organizationIdentifier } = useSelector(store => store.userState.userProfile);
+  const { organizationIdentifier } = useSelector(
+    store => store.userState.userProfile,
+  );
 
   const [
     isUpdatingBilling,

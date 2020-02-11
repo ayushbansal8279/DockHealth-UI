@@ -62,7 +62,9 @@ const formFields = [
   {
     key: 'email',
     defaultValue: '',
-    validation: string().required(REQUIRED_MESSAGE),
+    validation: string()
+      .required(REQUIRED_MESSAGE)
+      .email('This field requires valid email address'),
   },
   {
     key: 'city',
@@ -107,27 +109,41 @@ const BillingElement = ({
   const [isEmpty, setEmpty] = useToggle(true);
   const [componentReference, setComponentReference] = useState(null);
 
+  const [fieldError, setFieldError] = useState(null);
+
   if (isUpdatingBilling) {
     return (
-      <StyledFormControl fullWidth onClick={() => componentReference?.focus()}>
-        <StyledInputLabel
-          shrink={isFocused || !isEmpty || alwaysShrink}
-          required
+      <>
+        <StyledFormControl
+          fullWidth
+          onClick={() => componentReference?.focus()}
+          error={Boolean(fieldError)}
         >
-          {label}
-        </StyledInputLabel>
-        <BillingElementContainer>
-          <Component
-            onChange={({ empty }) => setEmpty(empty)}
-            placeholder={isFocused ? placeholder : ''}
-            onFocus={setFocused}
-            onBlur={unsetFocused}
-            style={billingElementStyling}
-            onReady={reference => setComponentReference(reference)}
-            disabled={disabled}
-          />
-        </BillingElementContainer>
-      </StyledFormControl>
+          <StyledInputLabel
+            shrink={isFocused || !isEmpty || alwaysShrink}
+            required
+          >
+            {label}
+          </StyledInputLabel>
+          <BillingElementContainer error={Boolean(fieldError)}>
+            <Component
+              onChange={({ empty, error }) => {
+                setFieldError(error?.message ?? null);
+                setEmpty(empty);
+              }}
+              placeholder={isFocused ? placeholder : undefined}
+              onFocus={setFocused}
+              onBlur={unsetFocused}
+              style={billingElementStyling}
+              onReady={reference => setComponentReference(reference)}
+              disabled={disabled}
+            />
+          </BillingElementContainer>
+        </StyledFormControl>
+        <Collapse in={Boolean(fieldError)}>
+          <StyledFormHelperText>{fieldError}</StyledFormHelperText>
+        </Collapse>
+      </>
     );
   }
 
@@ -161,11 +177,11 @@ const StyledFormInput = ({
   ...props
 }) => (
   <>
-    <StyledFormControl fullWidth error={error}>
+    <StyledFormControl fullWidth error={Boolean(error)}>
       <StyledInputLabel required={required}>{label}</StyledInputLabel>
       <StyledInputBase {...getInputProps({ name })} {...props} />
     </StyledFormControl>
-    <Collapse in={error}>
+    <Collapse in={Boolean(error)}>
       <StyledFormHelperText>{error}</StyledFormHelperText>
     </Collapse>
   </>
