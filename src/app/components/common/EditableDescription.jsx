@@ -47,8 +47,6 @@ const StyledEditIconContainer = styled.div`
     height: 22px;
     margin-left: 8px;
     object-fit: contain;
-    opacity: 0;
-    transition: opacity 0.1s linear;
     vertical-align: bottom;
     width: 18px;
 
@@ -59,6 +57,12 @@ const StyledEditIconContainer = styled.div`
   }
 `;
 
+const EditedLabel = styled.span`
+  color: #ababb2;
+  margin-left: 0.375rem;
+  font-size: 0.875rem;
+`;
+
 const StyledNote = styled.div`
   display: inline-block;
   position: relative;
@@ -67,7 +71,6 @@ const StyledNote = styled.div`
 
   &&:hover ${StyledEditIconContainer} {
     cursor: pointer;
-    opacity: 1;
   }
 `;
 
@@ -119,6 +122,7 @@ const EditableDescription = ({
   placeholder,
   strikethrough = false,
   onNoteChange = () => {},
+  edited = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const startEditing = useCallback(() => {
@@ -139,16 +143,16 @@ const EditableDescription = ({
   }, [draft, isEditing, onNoteChange]);
 
   const handleChange = useCallback(
-    e => {
-      const { value: updatedDraft } = e.target;
+    event => {
+      const { value: updatedDraft } = event.target;
       setDraft(capitalize(updatedDraft));
     },
     [setDraft],
   );
 
   const handleSubmit = useCallback(
-    e => {
-      e.preventDefault();
+    event => {
+      event.preventDefault();
       stopEditing();
       if (draft === value) {
         return;
@@ -169,7 +173,8 @@ const EditableDescription = ({
     return (
       <NoteComponent>
         <NoteValueContainer>
-          {noteValue}
+          <span>{noteValue}</span>
+          {edited && <EditedLabel>(edited)</EditedLabel>}
           <StyledNoteStrikethrough
             hasValue={Boolean(value)}
             active={strikethrough}

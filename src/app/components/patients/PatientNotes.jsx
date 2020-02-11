@@ -51,6 +51,9 @@ const getCreatorName = creator => `${creator.firstName} ${creator.lastName}`;
 
 const formatDate = date => moment(date).format('dddd, MMMM Do');
 
+const isNoteEdited = ({ dateCreated, dateUpdated }) =>
+  dateCreated !== dateUpdated;
+
 const EditablePatientNote = ({ update, note, isOwn }) => {
   const noteInfo = `${getCreatorName(note.creator)} | ${formatDate(
     note.dateUpdated,
@@ -64,6 +67,7 @@ const EditablePatientNote = ({ update, note, isOwn }) => {
         name={note.patientNoteIdentifier}
         onChange={update}
         disabled={!isOwn}
+        edited={isNoteEdited(note)}
       />
       <NoteInfo>{noteInfo}</NoteInfo>
     </>
@@ -125,6 +129,7 @@ const PatientNotes = ({
   const userIdentifier = useSelector(
     state => state.userState.userProfile.userIdentifier,
   );
+
   const isOwn = patientNote =>
     patientNote.creator.userIdentifier === userIdentifier;
 
