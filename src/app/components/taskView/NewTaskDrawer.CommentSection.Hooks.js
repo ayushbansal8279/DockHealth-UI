@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useToggle } from 'react-use';
 import useBoolean from '../../hooks/useBoolean';
 
 export default ({ task }) => {
@@ -14,9 +15,7 @@ export default ({ task }) => {
   const currentUserId = currentUserProfile?.userIdentifier;
 
   const dispatch = useDispatch();
-  const addingCommentsMethods = useBoolean(false);
-  const addingComment = addingCommentsMethods[0];
-  const toggleAddingComment = addingCommentsMethods[3];
+  const [addingComment, toggleAddingComment] = useToggle(false);
   const [addedComments, setAddedComments] = useState([]);
   const commentSectionInputFieldReference = useRef(null);
   const simpleBarReference = useRef(null);
@@ -64,7 +63,6 @@ export default ({ task }) => {
     members,
     currentUserId,
     dispatch,
-    addingCommentsMethods,
     addingComment,
     toggleAddingComment,
     addedComments,

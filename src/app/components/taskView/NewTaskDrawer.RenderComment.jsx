@@ -109,7 +109,7 @@ class SingleComment extends Component {
 
   commentBubbleTextRef = React.createRef();
 
-  componentDidUpdate(previousProps, previousState) {
+  componentDidUpdate(_previousProps, previousState) {
     const { commentBubbleTextFocused } = this.state;
     if (
       commentBubbleTextFocused !== previousState.commentBubbleTextFocused &&
@@ -208,7 +208,11 @@ const renderSingleComment = ({
   updateComment,
   task,
   members,
-}) => ({ comment, commentIdentifier }, commentIndex, commentsFromSingleAuthor) => {
+}) => (
+  { comment, commentIdentifier },
+  commentIndex,
+  commentsFromSingleAuthor,
+) => {
   const isLastBubble = commentsFromSingleAuthor.length - 1 === commentIndex;
 
   const singleCommentProps = {
@@ -238,8 +242,10 @@ export default ({ currentUserId, updateComment, task, members }) => ([
           userName: commentUserName,
         } = commentsFromSingleAuthor?.[0]?.creator || {};
 
-        const { commentIdentifier: firstCommentId, dateCreated: firstCommentDate } =
-          commentsFromSingleAuthor?.[0] || {};
+        const {
+          commentIdentifier: firstCommentId,
+          dateCreated: firstCommentDate,
+        } = commentsFromSingleAuthor?.[0] || {};
 
         const formattedCreatedDate = firstCommentDate
           ? moment(firstCommentDate).format('h:mm a')
