@@ -62,18 +62,19 @@ const addTaskPromise = async ({
   try {
     setPublishingComment();
 
-    const { data } = await addTaskComment(newTask, {
-      comment: commentContent.trim(),
-    })(dispatch);
+    if (commentContent?.trim().length > 0) {
+      const { data } = await addTaskComment(newTask, {
+        comment: commentContent?.trim(),
+      })(dispatch);
 
-    clearCommentContent();
+      toggleAlert('Comment added successfully', 'success');
 
-    toggleAlert('Comment added successfully', 'success');
-
-    addComment(data);
+      addComment(data);
+      clearCommentContent();
+    }
 
     scrollToTop();
-  } catch {
+  } catch (error) {
     toggleAlert('Error adding comment, please try again later', 'error');
   } finally {
     unsetPublishingComment();
