@@ -39,7 +39,7 @@ const CardInnerContainer = styled(Grid)`
     border-radius: 0.25rem;
     box-shadow: ${props =>
       props.chosen ? '0 0.25rem 0.25rem rgba(0, 0, 0, 0.25)' : 'none'};
-    cursor: pointer;
+    cursor: ${props => (props.selectable ? 'pointer' : 'default')};
     min-height: 16.25rem;
     transition: all 0.25s ease-out;
   }
@@ -174,6 +174,7 @@ const SubscriptionsViewPlanCard = ({
   featureRowReferences,
   subscriptionFeatures,
   recommended,
+  selectable,
 }) => {
   const {
     ContentHeader,
@@ -198,7 +199,7 @@ const SubscriptionsViewPlanCard = ({
 
   return (
     <Grid onClick={onClick} item sm={12} md={12} lg={3}>
-      <CardInnerContainer chosen={chosen ? 'true' : 'false'}>
+      <CardInnerContainer selectable={selectable} chosen={chosen}>
         <CardHeader
           chosen={chosen}
           inactiveBackgroundColor={inactiveBackgroundColor}

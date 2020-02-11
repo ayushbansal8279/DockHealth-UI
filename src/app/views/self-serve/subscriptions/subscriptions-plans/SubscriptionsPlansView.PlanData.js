@@ -32,6 +32,7 @@ export const subscriptionPlanData = [
     inactiveBackgroundColor: '#DEDEE2',
     cardType: CARD_TYPES.ENTERPRISE,
     subscriptionPlan: 'PLAN_ENTERPRISE',
+    selectable: false,
   },
 ];
 
