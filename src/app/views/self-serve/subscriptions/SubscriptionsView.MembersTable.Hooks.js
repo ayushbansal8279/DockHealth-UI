@@ -2,14 +2,13 @@
 import equals from 'ramda/es/equals';
 import find from 'ramda/es/find';
 import uniq from 'ramda/es/uniq';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useSetState } from 'react-use';
 import {
-  removeUserFromOrganization,
   cancelInviteToOrganization,
+  removeUserFromOrganization,
 } from '../../../actions/people-actions';
-import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
@@ -22,9 +21,6 @@ const initializeMembersTableHooks = ({
     isFetching: store.peopleState.isFetching,
     organizationMembers: store.peopleState.peoplelist,
   }));
-  const [userSubscriptionStatus, setUserSubscriptionStatus] = useState(
-    USER_SUBSCRIPTION_STATUS.ALL,
-  );
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();
 
@@ -107,9 +103,7 @@ const initializeMembersTableHooks = ({
   return {
     currentBreakPoint,
     organizationMembers,
-    userSubscriptionStatus,
     isFetching,
-    setUserSubscriptionStatus,
     toggleSelectedUser,
     isUserSelected,
     closeDialog,

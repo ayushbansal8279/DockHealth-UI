@@ -113,13 +113,13 @@ const SubscriptionsViewMembersTable = ({
   showSubscription = true,
   showTableHeader = true,
   chosenSubscriptionPlan,
+  userSubscriptionStatus = USER_SUBSCRIPTION_STATUS.ALL,
+  setUserSubscriptionStatus = () => {},
 }) => {
   const {
     currentBreakPoint,
     organizationMembers,
-    userSubscriptionStatus,
     isFetching,
-    setUserSubscriptionStatus,
     toggleSelectedUser,
     isUserSelected,
     closeDialog,
@@ -133,7 +133,7 @@ const SubscriptionsViewMembersTable = ({
   });
 
   const isSmallScreen = currentBreakPoint === 'sm';
-  const fileteredOrganizationMembers = getFilteredOrganizationMembers({
+  const filteredOrganizationMembers = getFilteredOrganizationMembers({
     organizationMembers,
     selectedUsers,
     userSubscriptionStatus,
@@ -176,10 +176,10 @@ const SubscriptionsViewMembersTable = ({
               </thead>
             )}
             <tbody>
-              {isEmpty(organizationMembers) ? (
+              {isEmpty(filteredOrganizationMembers) ? (
                 <EmptyOrganizationMemberRow />
               ) : (
-                fileteredOrganizationMembers.map(
+                filteredOrganizationMembers.map(
                   renderOrganizationMemberRow({
                     toggleSelectedUser,
                     isUserSelected,

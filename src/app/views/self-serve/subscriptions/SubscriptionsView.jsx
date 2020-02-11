@@ -33,6 +33,7 @@ import {
   BILLING_FREQUENCY,
   getSubscriptionPlanData,
 } from './SubscriptionsView.Utilities';
+import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 
 const goToSubscriptionPayment = () => {
   hashHistory.push('/subscription-payment');
@@ -143,6 +144,10 @@ export default () => {
     selectedUsers,
   });
 
+  const [userSubscriptionStatus, setUserSubscriptionStatus] = useState(
+    USER_SUBSCRIPTION_STATUS.ALL,
+  );
+
   useEffect(() => {
     if (organization) {
       const { subscriptionDetails } = organization;
@@ -202,12 +207,16 @@ export default () => {
         setSelectedUsers={setSelectedUsers}
         getAllUsers={getAllUsers}
         chosenSubscriptionPlan={chosenPlan}
+        userSubscriptionStatus={userSubscriptionStatus}
+        setUserSubscriptionStatus={setUserSubscriptionStatus}
       />
       <InvitationPanel getAllUsers={getAllUsers} />
-      <BillingContainer>
-        <BillingLabel>{subscriptionPlanData.planBillingPeriod}</BillingLabel>
-        <BillingPrice>{subscriptionPlanData.planTotalPayment}</BillingPrice>
-      </BillingContainer>
+      {userSubscriptionStatus !== USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED && (
+        <BillingContainer>
+          <BillingLabel>{subscriptionPlanData.planBillingPeriod}</BillingLabel>
+          <BillingPrice>{subscriptionPlanData.planTotalPayment}</BillingPrice>
+        </BillingContainer>
+      )}
       <BottomButtonContainer container justify="flex-end">
         {plansViewVisible && (
           <>
