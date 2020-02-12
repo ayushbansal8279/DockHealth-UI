@@ -232,18 +232,22 @@ export default ({
           >
             Delete
           </StyledButton>
-          <StyledVerticalDivider />
-          <StyledButton
-            onClick={onDuplicate({
-              afterDuplicate: ({ newTask }) => {
-                storeAsCurrentTask(newTask);
-              },
-              dispatch,
-              task,
-            })}
-          >
-            Duplicate
-          </StyledButton>
+          {!parentTask && (
+            <>
+              <StyledVerticalDivider />
+              <StyledButton
+                onClick={onDuplicate({
+                  afterDuplicate: ({ newTask }) => {
+                    storeAsCurrentTask(newTask);
+                  },
+                  dispatch,
+                  task,
+                })}
+              >
+                Duplicate
+              </StyledButton>
+            </>
+          )}
         </BottomButtonContainer>
       )}
       {(!task || !task.taskIdentifier) && (
