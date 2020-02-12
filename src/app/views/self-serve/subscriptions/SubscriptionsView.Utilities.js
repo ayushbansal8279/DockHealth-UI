@@ -69,8 +69,14 @@ export const getSubscriptionPlanTrialLabel = ({ subscription }) => {
 //   }
 // };
 
-export const priceFormatter = ({ price }) =>
-  `$${(Number(price) || 0).toFixed(2)}`;
+export const priceFormatter = ({ price }) => {
+  const priceAmount = `${(Number(price) || 0).toFixed(2)}`;
+  const formattedPrice = `${priceAmount}`.replace(
+    /(\d)(?=(\d{3})+(?!\d))/g,
+    '$1,',
+  );
+  return `$${formattedPrice}`;
+};
 
 export const getSubscriptionPlanPeriodName = ({
   billingFrequency = BILLING_FREQUENCY.MONTHLY,
