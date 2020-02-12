@@ -71,12 +71,13 @@ const PatientsLayout = () => {
   const isFetching = useSelector(({ patientState }) => patientState.isFetching);
   const patients = useSelector(({ patientState }) => patientState.allPatients);
   const highlightedPatient = useSelector(({ patientState }) => {
-    const { highlightedPatientId } = patientState;
-    if (highlightedPatientId === null) {
+    const { highlightedPatientIdentifier } = patientState;
+    if (highlightedPatientIdentifier === null) {
       return null;
     }
     return patientState.allPatients.find(
-      ({ patientIdentifier }) => patientIdentifier === +highlightedPatientId,
+      ({ patientIdentifier }) =>
+        patientIdentifier === highlightedPatientIdentifier,
     );
   });
   const isCreatingPatient = useSelector(

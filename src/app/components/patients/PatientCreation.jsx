@@ -30,6 +30,7 @@ export const StyledTextField = styled(
       margin="dense"
       fullWidth
       spellCheck={false}
+      autoComplete="off"
       InputProps={{
         ...InputProps,
         spellCheck: false,

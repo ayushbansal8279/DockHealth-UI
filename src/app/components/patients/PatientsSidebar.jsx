@@ -15,7 +15,12 @@ import {
 } from './PatientsSidebar.Styled';
 import PatientsTasklist from './PatientsTasklist';
 
-const renderTaskList = ({ listName, tasks, completedTasks, taskListIdentifier }) => (
+const renderTaskList = ({
+  listName,
+  tasks,
+  completedTasks,
+  taskListIdentifier,
+}) => (
   <PatientsSidebarSection key={taskListIdentifier} heading={listName}>
     <PatientsTasklist tasks={tasks} completedTasks={completedTasks} />
   </PatientsSidebarSection>

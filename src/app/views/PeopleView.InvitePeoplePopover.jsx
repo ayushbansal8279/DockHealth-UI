@@ -82,6 +82,7 @@ const InvitePeopleForm = ({
             name="first_name"
             inputRef={register}
             autoFocus
+            autoComplete="off"
           />
         </StyledFormControl>
         <PopoverErrorCollapse in={hasFirstNameError}>
@@ -93,6 +94,7 @@ const InvitePeopleForm = ({
             error={hasLastNameError}
             name="last_name"
             inputRef={register}
+            autoComplete="off"
           />
         </StyledFormControl>
         <PopoverErrorCollapse in={hasLastNameError}>
@@ -104,6 +106,7 @@ const InvitePeopleForm = ({
             error={hasEmailError}
             name="email"
             inputRef={register}
+            autoComplete="off"
           />
         </StyledFormControl>
         <PopoverErrorCollapse in={hasEmailError}>

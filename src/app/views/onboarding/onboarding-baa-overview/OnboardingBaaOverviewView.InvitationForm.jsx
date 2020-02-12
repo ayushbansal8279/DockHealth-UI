@@ -97,6 +97,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
               name="firstName"
               placeholder="Enter invited person's first name here"
               required
+              InputBaseProps={{
+                autoComplete: 'off',
+              }}
             />
           </Grid>
           <Grid item sm={12} md={6}>
@@ -105,6 +108,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
               name="lastName"
               placeholder="Enter invited person's last name here"
               required
+              InputBaseProps={{
+                autoComplete: 'off',
+              }}
             />
           </Grid>
           <Grid item sm={12} md={6}>
@@ -113,6 +119,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
               name="email"
               placeholder="Enter invited person's email here"
               required
+              InputBaseProps={{
+                autoComplete: 'off',
+              }}
             />
           </Grid>
           <Grid item sm={12} md={6}>
@@ -122,6 +131,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
               placeholder="Enter invited person's mobile phone number"
               CustomComponent={MobileInputComponent}
               required
+              InputBaseProps={{
+                autoComplete: 'off',
+              }}
             />
           </Grid>
           <Grid item sm={12}>
