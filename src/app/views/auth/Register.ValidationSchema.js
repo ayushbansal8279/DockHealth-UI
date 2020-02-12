@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';
-const PHONE_MASK = /[1-9]\d{2}-\d{3}-\d{4}|^$/;
+const PHONE_MASK = /\([1-9]\d{2}\) \d{3}-\d{4}|^$/;
 export const PHONE_MASK_ARRAY = [
   /[1-9]/,
   /\d/,
@@ -17,7 +17,7 @@ export const PHONE_MASK_ARRAY = [
   /\d/,
 ];
 const MASK_MESSAGE =
-  'Phone number has incorrect format (NNN-NNN-NNNN is required)';
+  'Phone number has incorrect format (NNN) NNN-NNNN is required)';
 const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_MIN_LENGTH_MESSAGE =
   'Password has to include at least 8 characters';

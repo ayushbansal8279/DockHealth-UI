@@ -4,9 +4,9 @@ const REQUIRED_MESSAGE = 'This field is required';
 const DATE_MASK = /(?:0[1-9]|1[0-2])\/(?:0[1-9]|[12]\d|3[01])\/\d{4}|^$/;
 const DATE_MASK_MESSAGE =
   'Birthday has incorrect format (MM/DD/YYYY is required)';
-const PHONE_MASK = /[1-9]\d{2}-\d{3}-\d{4}|^$/;
+const PHONE_MASK = /\([1-9]\d{2}\) \d{3}-\d{4}|^$/;
 const PHONE_MASK_MESSAGE =
-  'Phone number has incorrect format (NNN-NNN-NNNN is required)';
+  'Phone number has incorrect format (NNN) NNN-NNNN is required)';
 
 export const matchEmptyNumber = value =>
   value.replace(/_/g, '').replace(/^-+$/, '');
