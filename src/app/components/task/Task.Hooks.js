@@ -14,7 +14,13 @@ export default ({ props }) => {
     subtaskIndex,
     taskDrawerOpen,
   } = props;
-  const { subtasks, priority, taskList, isNewSubtask, parentTaskIdentifier } = task;
+  const {
+    subtasks,
+    priority,
+    taskList,
+    isNewSubtask,
+    parentTaskIdentifier,
+  } = task;
 
   const {
     addingNewSubtask,
@@ -33,7 +39,10 @@ export default ({ props }) => {
   const isSelfOrSubtaskActive =
     selectedTaskId === task.taskIdentifier ||
     Boolean(
-      !isSubtask && subtasks.find(({ taskIdentifier }) => taskIdentifier === selectedTaskId),
+      !isSubtask &&
+        subtasks.find(
+          ({ taskIdentifier }) => taskIdentifier === selectedTaskId,
+        ),
     );
 
   useEffect(() => {
@@ -47,7 +56,9 @@ export default ({ props }) => {
     () => {
       if (
         slimView &&
-        subtasks.find(({ taskIdentifier }) => taskIdentifier === selectedTaskId) &&
+        subtasks.find(
+          ({ taskIdentifier }) => taskIdentifier === selectedTaskId,
+        ) &&
         !isSelfOrSubtaskActive
       ) {
         storeAsCurrentTask(null);
