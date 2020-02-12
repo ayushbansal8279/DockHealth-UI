@@ -235,11 +235,14 @@ class TaskView extends Component {
   }, 200);
 
   componentDidMount = () => {
-    const { taskList } = this.props;
+    const { taskList, currentUser } = this.props;
 
     const taskListIdentifier = taskList?.taskListIdentifier;
     // const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListIdentifier}`;
-    const localStorageKey = TASK_VIEW_STORAGE_PREFIX + taskListIdentifier;
+    let localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}_${currentUser.userIdentifier}`;
+    if (taskListIdentifier) {
+      localStorageKey = TASK_VIEW_STORAGE_PREFIX + taskListIdentifier;
+    }
 
     let taskListPreferences = {};
 
@@ -301,12 +304,14 @@ class TaskView extends Component {
   };
 
   saveTaskListPreferences = () => {
-    const { taskList } = this.props;
+    const { taskList, currentUser } = this.props;
 
     const taskListIdentifier = taskList?.taskListIdentifier;
-
+    let localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}_${currentUser.userIdentifier}`;
     if (taskListIdentifier) {
-      const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListIdentifier}`;
+      localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListIdentifier}`;
+    }
+    if (taskListIdentifier) {
       const { slimView, filterBy, displayHUD, searchTerms } = this.state;
 
       localStorage.setItem(
