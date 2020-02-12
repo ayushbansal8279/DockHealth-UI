@@ -54,7 +54,7 @@ const formFieldDefinitions = [
   },
   {
     key: 'middleName',
-    label: 'Mid. Name',
+    label: 'Middle Name',
     size: 4,
   },
   {
