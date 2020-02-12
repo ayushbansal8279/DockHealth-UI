@@ -57,12 +57,6 @@ const StyledEditIconContainer = styled.div`
   }
 `;
 
-const EditedLabel = styled.span`
-  color: #ababb2;
-  margin-left: 0.375rem;
-  font-size: 0.875rem;
-`;
-
 const StyledNote = styled.div`
   display: inline-block;
   position: relative;
@@ -78,11 +72,16 @@ const StyledPlaceholderNote = styled(StyledNote)`
   color: #ababb2;
 `;
 
-const NoteValueContainer = styled.div`
-  display: inline-block;
-  position: relative;
+const NoteValueContainer = styled.span`
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
+`;
+
+const EditedLabel = styled.span`
+  color: #ababb2;
+  font-size: 0.875rem;
+  margin-left: 0.375rem;
+  white-space: nowrap;
 `;
 
 const StyledNoteStrikethrough = styled.div`
@@ -172,14 +171,14 @@ const EditableDescription = ({
 
     return (
       <NoteComponent>
-        <NoteValueContainer>
-          <span>{noteValue}</span>
+        <div>
+          <NoteValueContainer>{noteValue}</NoteValueContainer>
           {edited && <EditedLabel>(edited)</EditedLabel>}
           <StyledNoteStrikethrough
             hasValue={Boolean(value)}
             active={strikethrough}
           />
-        </NoteValueContainer>
+        </div>
         {!isEditing && !disabled && (
           <StyledEditIconContainer onClick={startEditing}>
             <img src={EditIcon} alt="Edit icon" />
