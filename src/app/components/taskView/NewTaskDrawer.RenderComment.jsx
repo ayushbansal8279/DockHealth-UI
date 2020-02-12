@@ -168,7 +168,14 @@ class SingleComment extends Component {
 
   render() {
     const { commentBubbleTextFocused } = this.state;
-    const { comment, isLastBubble, isCurrentUser, members } = this.props;
+    const {
+      comment,
+      isLastBubble,
+      isCurrentUser,
+      members,
+      dateCreated,
+      dateUpdated,
+    } = this.props;
 
     return (
       <CommentBubble>
@@ -191,6 +198,11 @@ class SingleComment extends Component {
             mentionifyAndLinkifyTaskText({ members, value: comment }),
           )}
         </CommentBubbleText>
+        {dateCreated !== dateUpdated && (
+          <div style={{ color: '#ff8317' }}>
+            <small>(edited)</small>
+          </div>
+        )}
         {isLastBubble && (
           <BubbleFinish
             isCurrentUser={isCurrentUser}
@@ -209,7 +221,7 @@ const renderSingleComment = ({
   task,
   members,
 }) => (
-  { comment, commentIdentifier },
+  { comment, commentIdentifier, dateCreated, dateUpdated },
   commentIndex,
   commentsFromSingleAuthor,
 ) => {
@@ -221,6 +233,8 @@ const renderSingleComment = ({
     updateComment,
     comment,
     commentIdentifier,
+    dateCreated,
+    dateUpdated,
     task,
     members,
   };
