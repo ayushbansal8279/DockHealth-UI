@@ -184,6 +184,7 @@ export const StyledTextField = ({
           value={value}
           onChange={onChange}
           error={hasError}
+          autoComplete="off"
           {...InputProps}
         >
           {children}
@@ -215,6 +216,7 @@ export const StyledSelect = ({
           value={value}
           onChange={onChange}
           input={<StyledInputBase name={name} error={hasError} />}
+          autoComplete={false}
         >
           {children}
         </StyledSelectComponent>

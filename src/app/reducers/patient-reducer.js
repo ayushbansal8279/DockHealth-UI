@@ -32,7 +32,7 @@ import {
 
 const initialState = {
   allPatients: [],
-  highlightedPatientId: null,
+  highlightedPatientIdentifier: null,
   listPatients: [],
   selectedPatient: null,
   emrPatients: [],
@@ -46,7 +46,7 @@ const PatientReducer = (state = initialState, action) => {
       return {
         ...state,
         isCreatingPatient: true,
-        highlightedPatientId: null,
+        highlightedPatientIdentifier: null,
       };
     }
 
@@ -63,7 +63,7 @@ const PatientReducer = (state = initialState, action) => {
         ...state,
         allPatients: [...state.allPatients, patient],
         isCreatingPatient: false,
-        highlightedPatientId: patient.patientIdentifier,
+        highlightedPatientIdentifier: patient.patientIdentifier,
       };
     }
 
@@ -86,7 +86,7 @@ const PatientReducer = (state = initialState, action) => {
       return {
         ...state,
         isCreatingPatient: false,
-        highlightedPatientId: patientIdentifier,
+        highlightedPatientIdentifier: patientIdentifier,
       };
     }
 
@@ -135,13 +135,10 @@ const PatientReducer = (state = initialState, action) => {
     }
 
     case REQUEST_EMR_PATIENTS:
-      return Object.assign({}, state, {
-        emrPatients: [],
-        isFetching: true,
-      });
+      return { ...state, emrPatients: [], isFetching: true };
 
     case CLEAR_EMR_PATIENTS:
-      return Object.assign({}, state, { emrPatients: [] });
+      return { ...state, emrPatients: [] };
 
     case GET_EMR_PATIENTS_SUCCESS: {
       const { patients } = action;
@@ -203,7 +200,9 @@ const PatientReducer = (state = initialState, action) => {
         note: { patientNoteIdentifier },
       } = action;
 
-      const removeNote = reject(propEq('patientNoteIdentifier', patientNoteIdentifier));
+      const removeNote = reject(
+        propEq('patientNoteIdentifier', patientNoteIdentifier),
+      );
 
       const removeNoteFromPatient = map(
         when(

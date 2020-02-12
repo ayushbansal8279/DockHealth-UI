@@ -170,11 +170,20 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
         )}
       </ListHeader>
       {patients.map(
-        ({ patientIdentifier, mrn, lastName, firstName, middleName, dob, gender }) => (
+        ({
+          patientIdentifier,
+          mrn,
+          lastName,
+          firstName,
+          middleName,
+          dob,
+          gender,
+        }) => (
           <ListRow
             key={patientIdentifier}
             isHighlighted={
-              highlightedPatient && patientIdentifier === highlightedPatient.patientIdentifier
+              highlightedPatient &&
+              patientIdentifier === highlightedPatient.patientIdentifier
             }
             isCompact={isCompact}
             onClick={selectPatient({ patientIdentifier })}
@@ -192,7 +201,9 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
                 <div>{calculateAgeFromDateOfBirth(dob)}</div>
                 <div>{capitalize(gender)}</div>
                 <QuickViewCell>
-                  <QuickViewIcon onClick={selectPatient({ patientIdentifier })} />
+                  <QuickViewIcon
+                    onClick={selectPatient({ patientIdentifier })}
+                  />
                 </QuickViewCell>
               </>
             )}

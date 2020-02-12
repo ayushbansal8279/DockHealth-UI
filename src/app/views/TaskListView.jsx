@@ -1,11 +1,12 @@
 import Collapse from '@material-ui/core/Collapse';
+import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Fade } from '@material-ui/core';
+import { setHeader } from '../actions/header-actions';
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
@@ -21,7 +22,6 @@ import {
   onTaskListInvitationRejected,
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
-import { setHeader } from '../actions/header-actions';
 import AddListForm from './TaskListView.AddListForm';
 import {
   FormDoubleSpacing,
