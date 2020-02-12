@@ -33,9 +33,12 @@ const StyledToolbar = styled(Toolbar)`
 
 const StyledTitle = styled(Typography)`
   && {
+    color: #303538;
     font-size: 36px;
     line-height: 49px;
-    color: #303538;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 
@@ -48,24 +51,26 @@ const StyledSubtitle = styled(Typography)`
   }
 `;
 
-const NotificationToggle = ({ value }) => {
-  return (
-    <span
-      style={{
-        width: '34px',
-        height: '31px',
-        background: value ? '#007CAB' : '#303538',
-        borderRadius: '4px',
-        color: 'white',
-        marginLeft: '10px',
-        paddingTop: '3px',
-      }}
-    >
-      {value ? 'on' : 'off'}
-    </span>
-  );
-};
+const HeaderTitleContainer = styled.div`
+  flex: 0.35;
+  overflow: hidden;
+`;
 
+const NotificationToggle = ({ value }) => (
+  <span
+    style={{
+      width: '34px',
+      height: '31px',
+      background: value ? '#007CAB' : '#303538',
+      borderRadius: '4px',
+      color: 'white',
+      marginLeft: '10px',
+      paddingTop: '3px',
+    }}
+  >
+    {value ? 'on' : 'off'}
+  </span>
+);
 const Notifications = ({ value, onClick }) => {
   const notificationProps = {
     icon: value ? NotificationsOnIcon : NotificationsOffIcon,
@@ -129,14 +134,14 @@ const Header = ({
           </Grid>
         ) : (
           <>
-            <div style={{ flex: 0.35 }}>
+            <HeaderTitleContainer>
               <StyledTitle variant="h5">{title}</StyledTitle>
               <StyledSubtitle variant="subtitle1">
                 {isFetching
                   ? nbsp
                   : `${taskCount} task${taskCount > 1 ? 's' : ''}`}
               </StyledSubtitle>
-            </div>
+            </HeaderTitleContainer>
             <div
               style={{
                 flex: 0.3,

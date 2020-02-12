@@ -48,6 +48,7 @@ const TaskListLayout = ({
     isMultiList: true,
     isSpecificPatient: false,
     globalSearch: true,
+    showListHeadings: false,
     onFilter,
   };
 

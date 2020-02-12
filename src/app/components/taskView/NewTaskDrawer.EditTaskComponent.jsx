@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { prop } from 'ramda';
 import { markComplete } from '../../actions/task-actions';
 import {
   formatLinkifyHref,
@@ -75,7 +76,10 @@ class EditTaskDescription extends Component {
       this.componentRef.current?.focus();
     }
 
-    if (previousProps.selectedTask?.taskIdentifier !== selectedTask?.taskIdentifier) {
+    if (
+      previousProps.selectedTask?.taskIdentifier !==
+      selectedTask?.taskIdentifier
+    ) {
       this.resetTextContent();
     }
   }
@@ -187,25 +191,29 @@ export default ({
 }) => {
   const { register, setValue } = useFormContext();
   const selectedTask = useSelector(store => store.taskState.selectedTask);
-  const selectedTaskId = selectedTask?.taskIdentifier;
 
   const incompleteTasks = useSelector(store => store.taskState.tasks);
-  // const completeTasks = useSelector(store => store.taskState.completedTasks);
+  const completeTasks = useSelector(store => store.taskState.completedTasks);
   const currentUser = useSelector(store => store.userState.userProfile);
   const dispatch = useDispatch();
 
-  // const allMainTasks = [...incompleteTasks, ...completeTasks];
-  // const allSubtasks = allMainTasks.flatMap(prop('subtasks'));
-  // const allTasks = [...allMainTasks, ...allSubtasks];
+  const allMainTasks = [...incompleteTasks, ...completeTasks];
+  const allSubtasks = allMainTasks.flatMap(prop('subtasks'));
+  const allTasks = [...allMainTasks, ...allSubtasks];
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
-  // const selectedTask = allTasks.find(({ taskIdentifier }) => taskIdentifier === selectedTaskId);
+  const currentTaskData = allTasks.find(
+    ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
+  );
 
-  const { status } = selectedTask || {};
+  const { status } = currentTaskData || {};
 
   const listName = incompleteTasks?.find(
     ({ taskIdentifier, subtasks }) =>
-      taskIdentifier === selectedTaskId ||
-      subtasks?.find(({ taskIdentifier: subtaskId }) => subtaskId === selectedTaskId),
+      taskIdentifier === selectedTaskIdentifier ||
+      subtasks?.find(
+        ({ taskIdentifier: subtaskId }) => subtaskId === selectedTaskIdentifier,
+      ),
   )
     ? 'INCOMPLETE'
     : 'COMPLETE';
@@ -222,9 +230,12 @@ export default ({
       <TaskCheckbox
         checked={status === 'COMPLETE'}
         onChange={() => {
-          markComplete(selectedTask, status, listName, currentUser)(
-            dispatch,
-          ).then((...allArguments) => {
+          markComplete(
+            currentTaskData ?? selectedTask,
+            status,
+            listName,
+            currentUser,
+          )(dispatch).then((...allArguments) => {
             onMarkComplete(...allArguments);
             setAutoSaveVisible();
           });

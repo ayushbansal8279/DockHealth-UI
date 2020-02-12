@@ -708,6 +708,7 @@ class TaskView extends Component {
       isMultiList,
       taskListIdentifier,
       listName,
+      showListHeadings = true,
     } = this.props;
     const { filterBy, slimView, taskDrawerOpen, taskTimeouts } = this.state;
 
@@ -767,6 +768,7 @@ class TaskView extends Component {
       filterBy,
       isInbox,
       listName,
+      showListHeadings,
     };
 
     if (isInbox && tasks.length === 0) {
@@ -789,9 +791,11 @@ class TaskView extends Component {
   };
 
   renderSingleTaskList = ({ tasklistProps, completedTasks }) => {
+    const { showListHeadings = true } = this.props;
+
     return (
       <>
-        <TaskList {...tasklistProps} />
+        <TaskList showListHeadings={showListHeadings} {...tasklistProps} />
         {completedTasks &&
           completedTasks.length > 0 &&
           this.renderCompleted({ listCompletedTasks: completedTasks })}
@@ -808,15 +812,10 @@ class TaskView extends Component {
     storeAsCurrentTask,
     tasklistProps,
   }) => {
+    const { showListHeadings = true } = this.props;
+
     return listNames.map(groupedListName => {
-      // const tasksCount =
-      //   groupedInCompletedTasks && groupedInCompletedTasks.get(groupedListName)
-      //     ? groupedInCompletedTasks.get(groupedListName).length
-      //     : 0;
-      const tasksCount =
-        groupedTasks && groupedTasks.get(groupedListName)
-          ? groupedTasks.get(groupedListName).length
-          : 0;
+      const tasksCount = groupedTasks?.get(groupedListName)?.length ?? 0;
       const tasksCountContent = `${tasksCount} ${
         tasksCount === 1 ? 'task' : 'tasks'
       }`;
@@ -851,7 +850,11 @@ class TaskView extends Component {
             key={groupedListName}
           >
             {incompleteTasksForList && incompleteTasksForList.length > 0 && (
-              <TaskList listTasks={incompleteTasksForList} {...tasklistProps} />
+              <TaskList
+                listTasks={incompleteTasksForList}
+                showListHeadings={showListHeadings}
+                {...tasklistProps}
+              />
             )}
             {completedTasksForList &&
               completedTasksForList.length > 0 &&
@@ -876,6 +879,7 @@ class TaskView extends Component {
       taskListIdentifier,
       listName,
       globalSearch,
+      showListHeadings = true,
     } = this.props;
     const {
       slimView,
@@ -910,6 +914,7 @@ class TaskView extends Component {
       filterBy,
       isInbox,
       listName,
+      showListHeadings,
     };
 
     if (listCompletedTasks.length === 0) {

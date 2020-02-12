@@ -118,7 +118,7 @@ const publishComment = ({
       addComment,
     });
     addComment({
-      comment: commentContent.trim(),
+      comment: commentContent?.trim(),
       creator: currentUserProfile,
       dateCreated: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
     });
