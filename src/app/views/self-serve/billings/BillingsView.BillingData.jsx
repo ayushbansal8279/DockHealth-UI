@@ -281,6 +281,7 @@ const CreditPaymentForm = ({
           placeholder="1234 1234 1234 1234"
           isUpdatingBilling={isUpdatingBilling}
           required
+          alwaysShrink
           inputProps={getInputProps({ name: 'cardNumber' })}
         />
       </Grid>
@@ -304,6 +305,7 @@ const CreditPaymentForm = ({
           disabled={!isUpdatingBilling}
           isUpdatingBilling={isUpdatingBilling}
           required
+          alwaysShrink
           inputProps={getInputProps({ name: 'cardExpiration' })}
         />
       </Grid>
@@ -316,6 +318,7 @@ const CreditPaymentForm = ({
           disabled={!isUpdatingBilling}
           isUpdatingBilling={isUpdatingBilling}
           required
+          alwaysShrink
           inputProps={getInputProps({ name: 'cardCvc' })}
         />
       </Grid>
