@@ -35,6 +35,7 @@ const TaskList = ({
   filterBy,
   isInbox,
   listName,
+  showListHeadings,
   ...otherTaskListProps
 }) => {
   const {
@@ -58,11 +59,13 @@ const TaskList = ({
 
   return (
     <TaskListOuterContainer>
-      <Heading
-        taskDrawerOpen={taskDrawerOpen}
-        onSortingChanged={onSortingChanged}
-        sorting={currentSorting}
-      />
+      {showListHeadings && (
+        <Heading
+          taskDrawerOpen={taskDrawerOpen}
+          onSortingChanged={onSortingChanged}
+          sorting={currentSorting}
+        />
+      )}
       <NewTaskElement addingNewTask={addingNewTask} />
       {tasks.length === 0 ? (
         <ListEmptyElement
