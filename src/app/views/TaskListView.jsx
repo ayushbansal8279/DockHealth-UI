@@ -334,7 +334,8 @@ class TaskListView extends PureComponent {
 
     const taskListsEmpty = taskLists?.length === 0;
 
-    const taskListFormOpen = !isFetching && (taskListsEmpty || listFormOpen);
+    // const taskListFormOpen = !isFetching && (taskListsEmpty || listFormOpen);
+    const taskListFormOpen = !isFetching && listFormOpen;
 
     return (
       <TaskListViewWrapper>
