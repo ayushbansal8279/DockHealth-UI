@@ -1,5 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
+import AvatarEdit from 'react-avatar-edit';
 
 import Avatar from '../common/Avatar';
 import initializeUserAvatarHooks from './UserAvatar.Hooks';
@@ -30,6 +31,10 @@ export default () => {
     handleFileChanged,
     removeProfilePicture,
     getSmallButtonContent,
+    getSmallButtonOnClick,
+    fileUploaded,
+    unsetFileUploaded,
+    handleFileCropped,
   } = initializeUserAvatarHooks();
 
   const popoverLabelContent = userProfilePic ? (
@@ -80,21 +85,25 @@ export default () => {
       >
         <UploadImagePopoverGrid container justify="center" spacing={32}>
           <Grid container item xs={12} alignItems="center" direction="column">
-            {fileLoaded ? (
-              <UploadImagePopoverLabel>
-                That&apos;s a keeper!
-              </UploadImagePopoverLabel>
-            ) : (
-              popoverLabelContent
-            )}
+            {popoverLabelContent}
           </Grid>
           <Grid container item xs={12} justify="center">
-            <Avatar>{avatarContent}</Avatar>
+            {fileLoaded ? (
+              <AvatarEdit
+                src={fileLoaded}
+                width={200}
+                height={200}
+                shadingColor="#125375"
+                onCrop={handleFileCropped}
+              />
+            ) : (
+              <Avatar>{avatarContent}</Avatar>
+            )}
           </Grid>
           <Grid container item xs={12} justify="center">
             <SmallButton
               disabled={fileLoading}
-              onClick={fileLoaded ? unsetPopoverOpen : activateFileInput}
+              onClick={getSmallButtonOnClick()}
             >
               {getSmallButtonContent()}
               <input
@@ -106,7 +115,7 @@ export default () => {
             </SmallButton>
           </Grid>
           <Grid container item xs={12} spacing={8}>
-            {fileLoaded && (
+            {fileUploaded && (
               <Grid container item xs={12} justify="center">
                 <PlainLink
                   disabled={fileLoading}
@@ -117,7 +126,8 @@ export default () => {
                     if (!fileLoading) {
                       activateFileInput();
                       openPopover();
-                      setFileLoaded();
+                      setFileLoaded(null);
+                      unsetFileUploaded();
                     }
                   }}
                 >
