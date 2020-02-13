@@ -82,6 +82,7 @@ export default ({
           ref={taskDescriptionReference}
           onMouseEnter={onTaskDescriptionMouseEnter}
           onMouseLeave={onTaskDescriptionMouseLeave}
+          isSubtask={isSubtask}
         >
           <span
             style={{

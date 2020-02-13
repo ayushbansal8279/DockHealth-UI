@@ -25,7 +25,7 @@ export const PatientsTasklistDescription = styled.div`
   font-weight: bold;
   line-height: 1.25;
   flex: 1;
-  max-width: 450px;
+  max-width: ${props => (props.isSubtask ? 400 : 440)}px;
   padding-bottom: 0.125rem;
   overflow: hidden;
   position: relative;
