@@ -40,6 +40,12 @@ const PeopleReducer = (state = initialState, action) => {
         personData: action.user,
       };
 
+    case types.GET_USER_DETAILS_FAILURE:
+      return {
+        ...state,
+        personData: null,
+      };
+
     default:
       return state;
   }

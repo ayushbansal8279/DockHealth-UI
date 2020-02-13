@@ -107,7 +107,11 @@ export function getUserById(userIdentifier) {
 
     return PeopleApi.getUserById(parseInt(userIdentifier, 10))
       .then(user => {
-        dispatch({ type: ActionTypes.GET_USER_DETAILS_SUCCESS, user, userIdentifier });
+        dispatch({
+          type: ActionTypes.GET_USER_DETAILS_SUCCESS,
+          user,
+          userIdentifier,
+        });
       })
       .catch(error => {
         throw error;
@@ -137,6 +141,9 @@ export function getUserByEmail({ email }) {
         return response;
       })
       .catch(error => {
+        dispatch({
+          type: ActionTypes.GET_USER_DETAILS_FAILURE,
+        });
         throw error;
       });
 }

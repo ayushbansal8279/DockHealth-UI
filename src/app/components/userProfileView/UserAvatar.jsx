@@ -95,6 +95,7 @@ export default () => {
                 height={200}
                 shadingColor="#125375"
                 onCrop={handleFileCropped}
+                onClose={() => setFileLoaded(null)}
               />
             ) : (
               <Avatar>{avatarContent}</Avatar>

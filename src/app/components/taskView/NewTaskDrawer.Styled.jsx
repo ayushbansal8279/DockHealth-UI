@@ -9,8 +9,12 @@ export const NewTaskDrawerContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 5.5rem);
-  height: min-content;
+  ${props =>
+    !props.compact &&
+    `
+    min-height: calc(100vh - 5.5rem);
+    height: min-content;
+  `}
   justify-content: flex-start;
   padding: 0 0.25rem;
   position: sticky;

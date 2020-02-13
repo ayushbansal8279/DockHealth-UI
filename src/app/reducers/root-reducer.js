@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-
 import FormReducer from './form-reducer';
 import HeaderReducer from './header-reducer';
 import InvitationReducer from './invitation-reducer';
@@ -9,6 +8,7 @@ import OrganizationReducer from './organization-reducer';
 import patient from './patient';
 import PatientReducer from './patient-reducer';
 import PeopleReducer from './people-reducer';
+import TaskDrawerReducer from './task-drawer-reducer';
 import TaskReducer from './task-reducer';
 import TaskListReducer from './tasklist-reducer';
 import UserReducer from './user-reducer';
@@ -26,4 +26,5 @@ export default combineReducers({
   header: HeaderReducer,
   onboardingProgress: OnboardingProgressReducer,
   organizationState: OrganizationReducer,
+  taskDrawerState: TaskDrawerReducer,
 });

@@ -1,7 +1,8 @@
+import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import CubesLoader from '../common/CubesLoader';
+import NewTaskDrawer from '../taskView/NewTaskDrawer';
 import Task from './Task';
 import Heading from './TaskList.Heading';
 import initializeTaskListHooks from './TaskList.Hooks';
@@ -36,6 +37,8 @@ const TaskList = ({
   isInbox,
   listName,
   showListHeadings,
+  isMultiList,
+  taskDrawerProps = {},
   ...otherTaskListProps
 }) => {
   const {
@@ -57,47 +60,64 @@ const TaskList = ({
     listName,
   });
 
+  const isCurrentListSelected = Boolean(
+    isMultiList &&
+      otherTaskListProps.listTasks
+        .map(({ taskIdentifier }) => taskIdentifier)
+        .includes(otherTaskListProps.selectedTaskId),
+  );
+
   return (
-    <TaskListOuterContainer>
-      {showListHeadings && (
-        <Heading
-          taskDrawerOpen={taskDrawerOpen}
-          onSortingChanged={onSortingChanged}
-          sorting={currentSorting}
-        />
-      )}
-      <NewTaskElement addingNewTask={addingNewTask} />
-      {tasks.length === 0 ? (
-        <ListEmptyElement
-          addingNewTask={addingNewTask}
-          taskDrawerOpen={taskDrawerOpen}
-        />
-      ) : (
-        sortedTasksToShow.map(task => (
-          <Task
-            {...{
-              task,
-              isSubtask: task.parentTaskIdentifier !== null,
-              taskDrawerOpen,
-              key: task.taskIdentifier,
-              ...otherTaskListProps,
-            }}
+    <Grid container direction="row" wrap="nowrap">
+      <TaskListOuterContainer>
+        {showListHeadings && (
+          <Heading
+            taskDrawerOpen={taskDrawerOpen}
+            onSortingChanged={onSortingChanged}
+            sorting={currentSorting}
           />
-        ))
+        )}
+        <NewTaskElement addingNewTask={addingNewTask} />
+        {tasks.length === 0 ? (
+          <ListEmptyElement
+            addingNewTask={addingNewTask}
+            taskDrawerOpen={taskDrawerOpen}
+          />
+        ) : (
+          sortedTasksToShow.map(task => (
+            <Task
+              {...{
+                task,
+                isSubtask: task.parentTaskIdentifier !== null,
+                taskDrawerOpen,
+                key: task.taskIdentifier,
+                ...otherTaskListProps,
+              }}
+            />
+          ))
+        )}
+        <ShowMoreButtonContainer active={showMoreButtonVisible}>
+          <ShowMoreButton
+            onClick={incrementTaskListShowMoreIndex}
+            active={showMoreButtonVisible}
+          >
+            {isShowMoreLocked ? (
+              <CubesLoader size={24} color="#fff" />
+            ) : (
+              'Show more'
+            )}
+          </ShowMoreButton>
+        </ShowMoreButtonContainer>
+      </TaskListOuterContainer>
+      {taskDrawerOpen && isCurrentListSelected && (
+        <NewTaskDrawer
+          isInbox={isInbox}
+          isMultiList
+          compact
+          {...taskDrawerProps}
+        />
       )}
-      <ShowMoreButtonContainer active={showMoreButtonVisible}>
-        <ShowMoreButton
-          onClick={incrementTaskListShowMoreIndex}
-          active={showMoreButtonVisible}
-        >
-          {isShowMoreLocked ? (
-            <CubesLoader size={24} color="#fff" />
-          ) : (
-            'Show more'
-          )}
-        </ShowMoreButton>
-      </ShowMoreButtonContainer>
-    </TaskListOuterContainer>
+    </Grid>
   );
 };
 

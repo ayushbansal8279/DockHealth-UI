@@ -87,6 +87,7 @@ export default ({
   isInbox,
   isSpecificPatient,
   isMultiList,
+  compact = false,
 }) => {
   const {
     addDeferredCommentToQueue,
@@ -158,6 +159,7 @@ export default ({
     <NewTaskDrawerContainer
       headsUpAreaHeight={headsUpAreaHeight}
       ref={taskContainerReference}
+      compact={compact}
       data-name="TaskDrawerContainer"
     >
       {parentTask && (
@@ -273,7 +275,7 @@ export default ({
           </StyledButton>
         </BottomButtonContainer>
       )}
-      <SideClickListener onClick={closeDrawer} />
+      {!compact && <SideClickListener onClick={closeDrawer} />}
     </NewTaskDrawerContainer>
   );
 };

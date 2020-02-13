@@ -17,9 +17,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { useToggle } from 'react-use';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { setHeader } from '../actions/header-actions';
 import { moveTaskBetweenLists } from '../actions/task-actions';
+import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import { getTaskListStats } from '../actions/tasklist-actions';
 import CubesLoader from '../components/common/CubesLoader';
 import AddTask from '../components/task/AddTask';
@@ -211,7 +213,6 @@ class TaskView extends Component {
     searchTerms: [],
     slimView: false,
     initialSearchValue: null,
-    taskDrawerOpen: false,
     displayHUD: true,
     taskTimeouts: {
       complete: [],
@@ -275,6 +276,7 @@ class TaskView extends Component {
 
     this.resetHeader();
     this.listenForRealTimeEvents(taskList);
+    this.closeTaskDrawer();
   };
 
   componentWillUpdate(nextProps) {
@@ -449,9 +451,8 @@ class TaskView extends Component {
   };
 
   openTaskDrawer = () => {
-    this.setState({
-      taskDrawerOpen: true,
-    });
+    const { taskDrawerActions } = this.props;
+    taskDrawerActions.openDrawer();
   };
 
   toggleCompletedTasks = () => {
@@ -461,26 +462,9 @@ class TaskView extends Component {
   };
 
   closeTaskDrawer = () => {
-    const { storeAsCurrentTask } = this.props;
-
-    this.setState(
-      {
-        taskDrawerOpen: false,
-      },
-      () => {
-        storeAsCurrentTask(null);
-      },
-    );
-  };
-
-  toggleTaskDrawer = () => {
-    const { taskDrawerOpen } = this.state;
-
-    if (taskDrawerOpen) {
-      this.closeTaskDrawer();
-    } else {
-      this.openTaskDrawer();
-    }
+    const { storeAsCurrentTask, taskDrawerActions } = this.props;
+    taskDrawerActions.closeDrawer();
+    storeAsCurrentTask(null);
   };
 
   resetHeader = tasksCount => {
@@ -710,7 +694,8 @@ class TaskView extends Component {
       listName,
       showListHeadings = true,
     } = this.props;
-    const { filterBy, slimView, taskDrawerOpen, taskTimeouts } = this.state;
+    const { filterBy, slimView, taskTimeouts } = this.state;
+    const { taskDrawerOpen } = this.props;
 
     const incompleteTasks = this.search(allIncompleteTasks);
     const completedTasks = this.search(allCompletedTasks);
@@ -725,26 +710,30 @@ class TaskView extends Component {
 
     const groupedTasks = groupBy(
       [...incompleteTasks, ...completedTasks],
-      task => (task.taskList ? task.taskList.listName : ''),
+      task => task?.taskList?.listName ?? '',
     );
-    // const tasklistCount = [...groupedTasks.keys()].length;
+
     const listNames = [...groupedTasks.keys()].sort((a, b) =>
       a.localeCompare(b),
     );
 
-    const groupedInCompletedTasks = groupBy(tasks, task =>
-      task.taskList ? task.taskList.listName : '',
+    const groupedInCompletedTasks = groupBy(
+      tasks,
+      task => task?.taskList?.listName ?? '',
     );
-    const groupedCompletedTasks = groupBy(completedTasks, task =>
-      task.taskList ? task.taskList.listName : '',
+
+    const groupedCompletedTasks = groupBy(
+      completedTasks,
+      task => task?.taskList?.listName ?? '',
     );
 
     const allTasksAndSubTasksCount =
-      groupedTasks && groupedTasks.length > 0
+      groupedTasks?.length > 0
         ? groupedTasks.map(group => {
             return group.length;
           })
         : 0;
+
     this.resetHeader(allTasksAndSubTasksCount);
 
     const tasklistProps = {
@@ -775,10 +764,10 @@ class TaskView extends Component {
       return <InboxNoMessagesAvailable />;
     }
 
-    // console.log(`tasklist count: ${tasklistCount}`);
     if (!isMultiList || isInbox) {
       return this.renderSingleTaskList({ tasklistProps, completedTasks });
     }
+
     return this.renderMultipleTaskList({
       listNames,
       groupedTasks,
@@ -812,7 +801,12 @@ class TaskView extends Component {
     storeAsCurrentTask,
     tasklistProps,
   }) => {
-    const { showListHeadings = true } = this.props;
+    const {
+      showListHeadings = true,
+      isMultiList,
+      markComplete,
+      isSpecificPatient,
+    } = this.props;
 
     return listNames.map(groupedListName => {
       const tasksCount = groupedTasks?.get(groupedListName)?.length ?? 0;
@@ -825,8 +819,8 @@ class TaskView extends Component {
       );
       const completedTasksForList = groupedCompletedTasks.get(groupedListName);
 
-      const currentTaskListId = groupedTasks.get(groupedListName)[0]?.taskList
-        ?.taskListIdentifier;
+      const currentTaskList = groupedTasks.get(groupedListName)[0]?.taskList;
+      const currentTaskListId = currentTaskList?.taskListIdentifier;
 
       const heading = (
         <div>
@@ -849,15 +843,22 @@ class TaskView extends Component {
             heading={heading}
             key={groupedListName}
           >
-            {incompleteTasksForList && incompleteTasksForList.length > 0 && (
+            {incompleteTasksForList?.length > 0 && (
               <TaskList
                 listTasks={incompleteTasksForList}
                 showListHeadings={showListHeadings}
+                isMultiList={isMultiList}
+                taskDrawerProps={{
+                  taskList: currentTaskList,
+                  closeDrawer: this.closeTaskDrawer,
+                  markComplete,
+                  onMarkComplete: this.onMarkComplete,
+                  isSpecificPatient,
+                }}
                 {...tasklistProps}
               />
             )}
-            {completedTasksForList &&
-              completedTasksForList.length > 0 &&
+            {completedTasksForList?.length > 0 &&
               this.renderCompleted({
                 listCompletedTasks: completedTasksForList,
               })}
@@ -869,7 +870,6 @@ class TaskView extends Component {
 
   renderCompleted = ({ listCompletedTasks: completedOrArchivedTasks }) => {
     const {
-      // completedTasks: completedOrArchivedTasks,
       markComplete,
       selectedTaskId,
       storeAsCurrentTask,
@@ -879,12 +879,14 @@ class TaskView extends Component {
       taskListIdentifier,
       listName,
       globalSearch,
+      taskDrawerOpen,
       showListHeadings = true,
+      isMultiList,
+      isSpecificPatient,
     } = this.props;
     const {
       slimView,
       completedTasksShown,
-      taskDrawerOpen,
       taskTimeouts,
       filterBy,
     } = this.state;
@@ -915,6 +917,8 @@ class TaskView extends Component {
       isInbox,
       listName,
       showListHeadings,
+      listTasks: listCompletedTasks,
+      isMultiList,
     };
 
     if (listCompletedTasks.length === 0) {
@@ -948,7 +952,18 @@ class TaskView extends Component {
             <SideClickListener heightMax onClick={this.closeTaskDrawer} />
           </CompletedButtonRowContainer>
         )}
-        {showCompletedTasksFlag && <TaskList {...tasklistProps} />}
+        {showCompletedTasksFlag && (
+          <TaskList
+            isMultiList={isMultiList}
+            taskDrawerProps={{
+              closeDrawer: this.closeTaskDrawer,
+              markComplete,
+              onMarkComplete: this.onMarkComplete,
+              isSpecificPatient,
+            }}
+            {...tasklistProps}
+          />
+        )}
       </>
     );
   };
@@ -965,12 +980,12 @@ class TaskView extends Component {
       isSpecificPatient = false,
       isMultiList,
       tasks,
+      taskDrawerOpen,
       showAddTaskButton = true,
     } = this.props;
     const {
       initialSearchValue,
       slimView,
-      taskDrawerOpen,
       displayHUD,
       filterBy,
       preferencesInitialized,
@@ -1056,7 +1071,7 @@ class TaskView extends Component {
                     {this.renderTasklists()}
                     <SideClickListener onClick={this.closeTaskDrawer} />
                   </TaskListContainer>
-                  {taskDrawerOpen && (
+                  {taskDrawerOpen && !isMultiList && (
                     <NewTaskDrawer
                       headsUpAreaRef={this.headsUpArea.current}
                       closeDrawer={this.closeTaskDrawer}
@@ -1065,7 +1080,7 @@ class TaskView extends Component {
                       onMarkComplete={this.onMarkComplete}
                       isInbox={isInbox}
                       isSpecificPatient={isSpecificPatient}
-                      isMultiList={isMultiList}
+                      isMultiList={false}
                     />
                   )}
                 </div>
@@ -1083,12 +1098,14 @@ class TaskView extends Component {
 const mapDispatchToProps = dispatch => ({
   dispatchedSetHeader: setHeader(dispatch),
   dispatchedMoveTaskBetweenLists: task => moveTaskBetweenLists(task)(dispatch),
+  taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
 });
 
 const mapStateToProps = store => ({
   selectedTask: store.taskState.selectedTask,
   currentUser: store.userState.userProfile,
   currentPatientId: store.patient?.details?.patientIdentifier,
+  taskDrawerOpen: store.taskDrawerState?.open,
 });
 
 export default connect(

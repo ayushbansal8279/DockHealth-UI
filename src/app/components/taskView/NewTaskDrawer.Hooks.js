@@ -63,7 +63,8 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
     }
 
     const foundParentTask = tasks.find(
-      ({ taskIdentifier: storeTaskId }) => selectedTask.parentTaskIdentifier === storeTaskId,
+      ({ taskIdentifier: storeTaskId }) =>
+        selectedTask.parentTaskIdentifier === storeTaskId,
     );
     const foundSubtaskOrder = foundParentTask?.subtasks.findIndex(
       ({ taskIdentifier: subtaskId }) => subtaskId === taskIdentifier,
@@ -91,9 +92,11 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
 
   const saveTaskPriority = useCallback(
     ({ newTaskPriority }) => {
-      toggleTaskPriority(task, parseInt(userIdentifier, 10) || -1, newTaskPriority)(
-        dispatch,
-      )
+      toggleTaskPriority(
+        task,
+        parseInt(userIdentifier, 10) || -1,
+        newTaskPriority,
+      )(dispatch)
         .then(() => {
           setAutoSaveVisible();
         })
@@ -133,7 +136,9 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
       getAllPatients()(dispatch);
     }
     if (isMultiList && task?.taskList) {
-      getMembersByTaskListId(task?.taskList?.taskListIdentifier, 'ALL')(dispatch);
+      getMembersByTaskListId(task?.taskList?.taskListIdentifier, 'ALL')(
+        dispatch,
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   });
