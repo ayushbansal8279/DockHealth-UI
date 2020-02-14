@@ -153,8 +153,8 @@ export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
-  taskListIdentifier = 0,
-  patientIdentifier = 0,
+  taskListIdentifier,
+  patientIdentifier,
   storeAsCurrentTask,
 }) => {
   const [isCollapsed, toggleIsCollapsed] = useToggle(false);
@@ -940,19 +940,17 @@ class TaskView extends Component {
 
     return (
       <>
-        {!globalSearch && (
-          <CompletedButtonRowContainer>
-            <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-            <StyledButton onClick={this.toggleCompletedTasks}>
-              {`${buttonToggleWord} completed tasks (${
-                listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
-                  ? `${SHOW_MORE_STEP_COUNT}+`
-                  : completedTasksAndSubTasksCount
-              })`}
-            </StyledButton>
-            <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-          </CompletedButtonRowContainer>
-        )}
+        <CompletedButtonRowContainer>
+          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+          <StyledButton onClick={this.toggleCompletedTasks}>
+            {`${buttonToggleWord} completed tasks (${
+              listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
+                ? `${SHOW_MORE_STEP_COUNT}+`
+                : completedTasksAndSubTasksCount
+            })`}
+          </StyledButton>
+          <SideClickListener heightMax onClick={this.closeTaskDrawer} />
+        </CompletedButtonRowContainer>
         {showCompletedTasksFlag && (
           <TaskList
             isMultiList={isMultiList}
@@ -983,6 +981,7 @@ class TaskView extends Component {
       tasks,
       taskDrawerOpen,
       showAddTaskButton = true,
+      globalSearch,
     } = this.props;
     const {
       initialSearchValue,
@@ -1018,7 +1017,7 @@ class TaskView extends Component {
               currentFilter={filterBy}
             />
           )}
-          {showToolbar && (
+          {showToolbar && !globalSearch && (
             <Toolbar
               clearFilter={this.clearFilter}
               displayHUD={displayHUD}
