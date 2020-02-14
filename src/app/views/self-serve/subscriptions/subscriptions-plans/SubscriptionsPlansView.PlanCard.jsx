@@ -175,6 +175,7 @@ const SubscriptionsViewPlanCard = ({
   subscriptionFeatures,
   recommended,
   selectable,
+  subscriptionPlanData,
 }) => {
   const {
     ContentHeader,
@@ -185,7 +186,7 @@ const SubscriptionsViewPlanCard = ({
   const breakpoint = useBreakpoint();
 
   const [localFeatureListExpanded, toggleLocalFeatureListExpanded] = useToggle(
-    false,
+    subscriptionPlanData?.planIsTrial ?? false,
   );
 
   const isSmallScreen = breakpoint === 'md';
@@ -240,6 +241,7 @@ const SubscriptionsViewPlanCard = ({
               subscriptionFeatures={subscriptionFeatures}
               recommended={recommended}
               breakpoint={breakpoint}
+              subscriptionPlanData={subscriptionPlanData}
             />
           )}
           {ContentFeatures && (
@@ -254,6 +256,7 @@ const SubscriptionsViewPlanCard = ({
               subscriptionFeatures={subscriptionFeatures}
               recommended={recommended}
               breakpoint={breakpoint}
+              subscriptionPlanData={subscriptionPlanData}
             />
           )}
           {ContentFooter && (
@@ -268,6 +271,7 @@ const SubscriptionsViewPlanCard = ({
               subscriptionFeatures={subscriptionFeatures}
               recommended={recommended}
               breakpoint={breakpoint}
+              subscriptionPlanData={subscriptionPlanData}
             />
           )}
         </CardContent>

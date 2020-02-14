@@ -191,6 +191,7 @@ export default () => {
           organizationIdentifier={organizationIdentifier}
           billingFrequency={billingFrequency}
           recalculateEstimate={recalculateEstimate}
+          subscriptionPlanData={subscriptionPlanData}
         />
       ) : (
         <CurrentPlan
