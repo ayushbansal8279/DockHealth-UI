@@ -1,6 +1,5 @@
 import moment from 'moment';
 import curry from 'ramda/es/curry';
-
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
@@ -46,7 +45,12 @@ export function getListTasks(taskListIdentifier, sortBy, filterBy, status) {
       });
 }
 
-export function getTasksAssignedToMe(taskListIdentifier, sortBy, filterBy, status) {
+export function getTasksAssignedToMe(
+  taskListIdentifier,
+  sortBy,
+  filterBy,
+  status,
+) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
@@ -90,7 +94,12 @@ export function getTasksAssignedToSpecificUser(
       });
 }
 
-export function getTasksAssignedByMe(taskListIdentifier, sortBy, filterBy, status) {
+export function getTasksAssignedByMe(
+  taskListIdentifier,
+  sortBy,
+  filterBy,
+  status,
+) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
@@ -208,7 +217,10 @@ export function saveTask(newTask) {
         if (!task.taskList) {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
-            task: { ...task, taskList: { listName: 'Inbox', taskListIdentifier: 0 } },
+            task: {
+              ...task,
+              taskList: { listName: 'Inbox', taskListIdentifier: 0 },
+            },
           });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
@@ -412,7 +424,8 @@ export const updatePatient = (task, patient) => dispatch =>
     .then(response => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_PATIENT,
-        parentTaskIdentifier: response.parentTaskIdentifier || response.taskIdentifier,
+        parentTaskIdentifier:
+          response.parentTaskIdentifier || response.taskIdentifier,
         patient: response.patient,
       });
     })
@@ -492,23 +505,34 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
 
 export function getListTasksByPatient(patientIdentifier, taskListIdentifier) {
   return dispatch =>
-    TaskApi.getListTasksByPatient(patientIdentifier, 'INCOMPLETE', taskListIdentifier)
+    TaskApi.getListTasksByPatient(
+      patientIdentifier,
+      'INCOMPLETE',
+      taskListIdentifier,
+    )
       .then(tasks => {
         dispatch({ type: ActionTypes.GET_TASKS_SUCCESS, tasks });
-        TaskApi.getListTasksByPatient(patientIdentifier, 'COMPLETE', taskListIdentifier).then(
-          patientsTasks => {
-            dispatch({
-              type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS,
-              tasks: patientsTasks,
-            });
-          },
-        );
+        TaskApi.getListTasksByPatient(
+          patientIdentifier,
+          'COMPLETE',
+          taskListIdentifier,
+        ).then(patientsTasks => {
+          dispatch({
+            type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS,
+            tasks: patientsTasks,
+          });
+        });
       })
       .catch(error => {
         throw error;
       });
 }
-export function getAllTasksByPatient(patientIdentifier, sortBy, filterBy, status) {
+export function getAllTasksByPatient(
+  patientIdentifier,
+  sortBy,
+  filterBy,
+  status,
+) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
@@ -646,7 +670,10 @@ export const addTaskAttachment = (
       throw error;
     });
 
-export const removeTaskAttachment = (taskIdentifier, taskAttachmentId) => dispatch =>
+export const removeTaskAttachment = (
+  taskIdentifier,
+  taskAttachmentId,
+) => dispatch =>
   TaskApi.removeTaskAttachment(taskAttachmentId)
     .then(() => {
       dispatch({
@@ -702,10 +729,20 @@ const getTaskPagePromise = ({
   }
 
   if (isAssignedByMeList) {
-    return TaskApi.getTasksAssignedByMe(taskListIdentifier, status, sortBy, filterBy);
+    return TaskApi.getTasksAssignedByMe(
+      taskListIdentifier,
+      status,
+      sortBy,
+      filterBy,
+    );
   }
   if (isAssignedToMeList) {
-    return TaskApi.getTasksAssignedToMe(taskListIdentifier, status, sortBy, filterBy);
+    return TaskApi.getTasksAssignedToMe(
+      taskListIdentifier,
+      status,
+      sortBy,
+      filterBy,
+    );
   }
 
   return TaskApi.getListTasksByUser(

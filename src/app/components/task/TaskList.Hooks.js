@@ -34,6 +34,11 @@ export default ({
     store => store.taskState.newlyAddedTaskIds,
   );
 
+  const { addingNewSubtask, addingNewSubtaskParentId } = useSelector(store => ({
+    addingNewSubtask: store.taskState.addingNewSubtask,
+    addingNewSubtaskParentId: store.taskState.addingNewSubtaskParentId,
+  }));
+
   const dispatch = useDispatch();
 
   const [taskListShowMoreIndex, setTaskListShowMoreIndex] = useState(1);
@@ -122,5 +127,7 @@ export default ({
     sortedTasksToShow,
     currentSorting,
     isShowMoreLocked,
+    addingNewSubtask,
+    addingNewSubtaskParentId,
   };
 };

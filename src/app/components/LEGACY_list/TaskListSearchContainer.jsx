@@ -1,11 +1,9 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-import { useMount, useUnmount } from 'react-use';
+import { useUnmount } from 'react-use';
 import { bindActionCreators } from 'redux';
-
 import * as TaskActions from '../../actions/task-actions';
-import * as TaskListActions from '../../actions/tasklist-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import TaskView from '../../views/TaskView';
 import CubesLoader from '../common/CubesLoader';
@@ -53,7 +51,6 @@ const TaskListLayout = ({
   };
 
   if (searchPerformed) {
-    // return !isFetching && (!lists || lists.length === 0) ? (
     return !isFetching && !lists ? (
       <Grid container justify="center">
         <b>No matching tasks</b>
@@ -73,17 +70,11 @@ const TaskListSearchContainer = ({
   isCompletedTasksFetching,
   taskActions,
   showingCompletedTasks,
-  taskListActions,
   searchPerformed,
   onFilter,
 }) => {
-  useMount(() => {
-    taskListActions.getPersonTasklistAccumulatedStats();
-  });
-
   useUnmount(() => {
     taskActions.resetTaskSearch();
-    taskListActions.resetTasklistStats();
   });
 
   const searchedTasks = {
@@ -127,7 +118,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    taskListActions: bindActionCreators(TaskListActions, dispatch),
     taskActions: bindActionCreators(TaskActions, dispatch),
   };
 }

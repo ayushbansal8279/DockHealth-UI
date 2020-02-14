@@ -50,25 +50,6 @@ export const getSubscriptionPlanTrialLabel = ({ subscription }) => {
   }
 };
 
-// export const getSubscriptionPlanPrice = ({ subscription }) => {
-//   const { subscriptionPlan, billingFrequency = BILLING_FREQUENCY.MONTHLY } =
-//     subscription || {};
-
-//   switch (subscriptionPlan) {
-//     case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
-//     case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
-//     case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
-//     case SUBSCRIPTION_PLANS.PLAN_STANDARD:
-//       return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 19 : 171;
-//     case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
-//       return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 24 : 216;
-//     case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
-//       return billingFrequency === BILLING_FREQUENCY.MONTHLY ? 30 : 270;
-//     default:
-//       return 0;
-//   }
-// };
-
 export const priceFormatter = ({ price }) => {
   const priceAmount = `${(Number(price) || 0).toFixed(2)}`;
   const formattedPrice = `${priceAmount}`.replace(
@@ -86,9 +67,8 @@ export const getSubscriptionPlanPeriodName = ({
     : 'Annual subscription';
 };
 
-export const getSubscriptionPlanBillingPeriod = () => {
-  return 'Your next projected payment';
-};
+export const getSubscriptionPlanBillingPeriod = () =>
+  'Your next projected payment';
 
 export const getSubscriptionIsTrial = ({ subscription }) => {
   const { subscriptionPlan } = subscription || {};

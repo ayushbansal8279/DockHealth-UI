@@ -52,7 +52,9 @@ const Task = props => {
               confirm={confirm}
             />
           )}
-          <TaskSelectionContainer isSelected={selectedTaskId === task.taskIdentifier}>
+          <TaskSelectionContainer
+            isSelected={selectedTaskId === task.taskIdentifier}
+          >
             <Flag priority={priority} />
             <TaskBody {...props} handleStatusChange={handleStatusChange} />
           </TaskSelectionContainer>

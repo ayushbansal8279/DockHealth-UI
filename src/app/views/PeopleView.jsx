@@ -4,7 +4,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
 import { setHeader as setHeaderRaw } from '../actions/header-actions';
 import * as PeopleActions from '../actions/people-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
@@ -13,15 +12,9 @@ import EmptyHeader from '../components/common/EmptyHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import InvitePeople from '../components/people/InvitePeople';
 import PeopleContainer from '../components/people/PeopleContainer';
-// import PeopleContainerSortButton from '../components/people/PeopleContainer.SortButton';
 import Search from '../components/taskView/Search';
-// import InvitePersonIcon from '../img/invite-person-icon.svg';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
-import {
-  HeaderLabel,
-  // InvitePeopleButton,
-  SearchContainer,
-} from './PeopleView.Styled';
+import { HeaderLabel, SearchContainer } from './PeopleView.Styled';
 
 const CubesLoaderContainer = styled.div`
   display: flex;
@@ -76,38 +69,16 @@ class PeopleView extends PureComponent {
           key: 'generic-header',
           component: (
             <EmptyHeader>
-              <Grid container>
-                <Grid
-                  item
-                  xs={9}
-                  container
-                  direction="column"
-                  alignItems="flex-start"
-                  justify="center"
-                >
-                  <HeaderLabel>People</HeaderLabel>
-                  <HeaderLabel small>
-                    {peopleList?.length ?? 0} people
-                  </HeaderLabel>
-                </Grid>
-                <Grid
-                  item
-                  xs={3}
-                  container
-                  justify="flex-end"
-                  style={{
-                    paddingRight: '8rem',
-                  }}
-                >
-                  {/* <InvitePeopleButton
-                    ref={this.invitePeopleButtonReference}
-                    onClick={() =>
-                      this.toggleInvitePopover({ newInvitePopoverState: true })
-                    }
-                  >
-                    <img alt="+" src={InvitePersonIcon} />
-                  </InvitePeopleButton> */}
-                </Grid>
+              <Grid
+                container
+                direction="column"
+                alignItems="flex-start"
+                justify="center"
+              >
+                <HeaderLabel>People</HeaderLabel>
+                <HeaderLabel small>
+                  {peopleList?.length ?? 0} people
+                </HeaderLabel>
               </Grid>
             </EmptyHeader>
           ),
@@ -129,8 +100,7 @@ class PeopleView extends PureComponent {
         <SafariFixGrid container xs={12} item justify="center">
           <Grid item xs={9}>
             <SearchContainer>
-              {/* <PeopleContainerSortButton /> */}
-              <Search onChange={this.handleSearch} />
+              <Search autoFocus onChange={this.handleSearch} />
             </SearchContainer>
           </Grid>
         </SafariFixGrid>

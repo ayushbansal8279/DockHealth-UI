@@ -7,6 +7,7 @@ import { setHeader } from '../../../actions/header-actions';
 import {
   getBillingDetails,
   getBillingEstimate,
+  getOrganizationById,
 } from '../../../actions/organization-actions';
 import {
   BillingButton,
@@ -49,6 +50,7 @@ const SubscriptionPaymentFinishedView = () => {
       ],
     });
 
+    getOrganizationById({ organizationIdentifier })(dispatch);
     getBillingDetails({ organizationIdentifier })(dispatch);
     getBillingEstimate()(dispatch);
   });

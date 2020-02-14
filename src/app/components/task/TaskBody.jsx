@@ -103,7 +103,11 @@ const TaskBody = ({
 
   const isTaskTimingOut =
     status === 'COMPLETE' &&
-    Boolean(taskTimeouts?.find(({ taskIdentifier }) => taskIdentifier === task?.taskIdentifier));
+    Boolean(
+      taskTimeouts?.find(
+        ({ taskIdentifier }) => taskIdentifier === task?.taskIdentifier,
+      ),
+    );
 
   const archiveTask = event => {
     event.preventDefault();

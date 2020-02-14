@@ -10,7 +10,9 @@ import {
   setPaymentNewPlan,
 } from '../../../actions/organization-actions';
 import { saveBillingDetails } from '../../../api/organization-api';
+import CubesLoader from '../../../components/common/CubesLoader';
 import { noop, showAlert } from '../../../helpers/utility-functions';
+import useBoolean from '../../../hooks/useBoolean';
 import BillingsViewBillingData from '../billings/BillingsView.BillingData';
 import { PlanNameLabel } from '../subscriptions/SubscriptionsView.CurrentPlan.Styled';
 import {
@@ -48,10 +50,15 @@ const goToSubscriptions = () => {
 /**
  * @param stripe - Stripe instance
  */
-// eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ subscriptionPlan, billingFrequency }) => ({
-  stripe,
-}) => data => {
+const onSubmit = ({
+  subscriptionPlan,
+  billingFrequency,
+  setProcessingPayment,
+  unsetProcessingPayment,
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+}) => ({ stripe }) => data => {
+  setProcessingPayment();
+
   stripe
     .createToken({ name: 'cardNumber' })
     .then(token => {
@@ -69,15 +76,18 @@ const onSubmit = ({ subscriptionPlan, billingFrequency }) => ({
       })
         .then(() => {
           finishSubscriptionPayment();
+
+          unsetProcessingPayment();
         })
-        .catch(error => {
-          console.log(error);
+        .catch(() => {
           showAlert({
             status: 'error',
             title: 'Error',
             text:
               'Could not update subscription details, please try again later',
           });
+
+          unsetProcessingPayment();
         });
     })
     .catch(error => {
@@ -88,18 +98,28 @@ const onSubmit = ({ subscriptionPlan, billingFrequency }) => ({
           error?.message ??
           'Could not update subscription details, please try again later',
       });
+
+      unsetProcessingPayment();
     });
 };
 
-const getSaveBillingElement = ({ onCancelClick }) => () => (
+const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
   <>
     <Spacing2 />
     <Grid item sm={12} container justify="flex-end">
-      <BillingButton onClick={onCancelClick} variant="outlined">
+      <BillingButton
+        onClick={onCancelClick}
+        variant="outlined"
+        disabled={processingPayment}
+      >
         Cancel
       </BillingButton>
-      <BillingButton type="submit" variant="contained">
-        Buy now
+      <BillingButton
+        type="submit"
+        variant="contained"
+        disabled={processingPayment}
+      >
+        {processingPayment ? <CubesLoader color="#fff" size={32} /> : 'Buy now'}
       </BillingButton>
     </Grid>
   </>
@@ -110,13 +130,20 @@ const SubscriptionPaymentView = () => {
 
   const { newPaymentPlan, currentUsers } = useSelector(store => ({
     ...store.organizationState,
-    organizationIdentifier: store.userState?.userProfile?.organizationIdentifier,
+    organizationIdentifier:
+      store.userState?.userProfile?.organizationIdentifier,
   }));
 
   const onCancelClick = useCallback(() => {
     cancelSubscriptionPayment();
     setPaymentNewPlan({ newPlan: null })(dispatch);
   }, [dispatch]);
+
+  const [
+    processingPayment,
+    setProcessingPayment,
+    unsetProcessingPayment,
+  ] = useBoolean(false);
 
   useMount(() => {
     if (!newPaymentPlan || !currentUsers) {
@@ -216,10 +243,17 @@ const SubscriptionPaymentView = () => {
               isUpdatingBilling
               setUpdatingBilling={noop}
               unsetUpdatingBilling={noop}
-              onSubmit={onSubmit({ subscriptionPlan, billingFrequency })}
+              onSubmit={onSubmit({
+                subscriptionPlan,
+                billingFrequency,
+                processingPayment,
+                setProcessingPayment,
+                unsetProcessingPayment,
+              })}
               SaveBillingElement={getSaveBillingElement({
                 onCancelClick,
                 newPaymentPlan,
+                processingPayment,
               })}
             />
           </Elements>

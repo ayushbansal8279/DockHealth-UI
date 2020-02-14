@@ -1,6 +1,5 @@
 import { times } from 'ramda';
 import React, { useCallback, useRef, useState } from 'react';
-// import { useSelector } from 'react-redux';
 import { useToggle, useUnmount } from 'react-use';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 import PlanCardsContainer from './SubscriptionsPlansView.PlanCardsContainer';
@@ -14,8 +13,12 @@ const SubscriptionsPlansView = ({
   toggleAnnualPayment: toggleAnnualPaymentRaw,
   recalculateEstimate,
   billingFrequency,
+  subscriptionPlanData,
 }) => {
-  const [featureListExpanded, toggleFeatureListExpanded] = useToggle(false);
+  const [featureListExpanded, toggleFeatureListExpanded] = useToggle(
+    subscriptionPlanData?.planIsTrial ?? false,
+  );
+
   const [chosenSubscriptionPlan, setChosenSubscriptionPlan] = useState(
     chosenPlan?.subscriptionPlan,
   );
@@ -72,6 +75,7 @@ const SubscriptionsPlansView = ({
       setChosenPlan={setChosenPlan}
       chosenPlan={chosenPlan}
       changeSubscriptionPlan={changeSubscriptionPlan}
+      subscriptionPlanData={subscriptionPlanData}
     />
   );
 };

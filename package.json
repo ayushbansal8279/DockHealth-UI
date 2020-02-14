@@ -8,7 +8,7 @@
     "test": "jest",
     "dev": "webpack -d --watch",
     "build": "webpack -p",
-    "start": "webpack-dev-server --mode development --content-base dist --hot --inline --host 0.0.0.0 --port 3000",
+    "start": "webpack-dev-server --mode development --content-base dist --inline --host 0.0.0.0 --port 3000",
     "server:prod": "http-server dist -p 3000 -c-1 --cors",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
@@ -48,6 +48,7 @@
     "ramda": "^0.26.1",
     "react": "^16.8.4",
     "react-autosuggest": "^9.4.2",
+    "react-avatar-edit": "^0.8.3",
     "react-datepicker": "^2.0.0",
     "react-dom": "^16.8.4",
     "react-dropzone": "^10.0.4",

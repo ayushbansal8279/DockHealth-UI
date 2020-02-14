@@ -308,7 +308,10 @@ export function resetPassword(userData) {
 
 export function createUser(user) {
   return axios.put('user', user).then(response => {
-    store.dispatch({ type: 'user/userIdentifier', userIdentifier: response.data.userIdentifier });
+    store.dispatch({
+      type: 'user/userIdentifier',
+      userIdentifier: response.data.userIdentifier,
+    });
     return response;
   });
 }

@@ -7,9 +7,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { Link } from 'react-router';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
-import { Link } from 'react-router';
 
 export const OnboardingBackground = styled.div`
   background-color: #fff;
@@ -378,6 +378,7 @@ export const OnboardingInput = ({
   label,
   name,
   placeholder,
+  inputContainerReference = undefined,
   CustomComponent = undefined,
   required = false,
   InputBaseProps = {},
@@ -386,7 +387,7 @@ export const OnboardingInput = ({
   const error = errors?.[name]?.message;
 
   return (
-    <>
+    <div ref={inputContainerReference}>
       <OnboardingFormControl fullWidth>
         <OnboardingInputLabel required={required}>{label}</OnboardingInputLabel>
         <OnboardingInputBase
@@ -401,7 +402,7 @@ export const OnboardingInput = ({
       <Collapse in={error} timeout={150}>
         <OnboardingH4Error>{error}</OnboardingH4Error>
       </Collapse>
-    </>
+    </div>
   );
 };
 

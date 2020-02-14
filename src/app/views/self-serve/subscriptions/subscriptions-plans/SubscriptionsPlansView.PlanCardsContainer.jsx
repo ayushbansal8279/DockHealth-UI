@@ -29,6 +29,7 @@ const renderPlanCard = ({
   featureListExpanded,
   featureRowReferences,
   changeSubscriptionPlan,
+  subscriptionPlanData: currentSubscriptionPlanData,
 }) => ({ key, selectable = true, ...props }) => {
   const chosen = chosenPlan?.key === key;
   const newChosenPlan = subscriptionPlanData.find(
@@ -54,6 +55,7 @@ const renderPlanCard = ({
       featureRowReferences={featureRowReferences}
       subscriptionFeatures={subscriptionFeatures}
       selectable={selectable}
+      subscriptionPlanData={currentSubscriptionPlanData}
       {...props}
     />
   );
@@ -81,6 +83,7 @@ const PlanCardsContainer = ({
   chosenPlan,
   toggleAnnualPayment,
   changeSubscriptionPlan,
+  subscriptionPlanData: currentSubscriptionPlanData,
 }) => {
   return (
     <Grid container>
@@ -162,6 +165,7 @@ const PlanCardsContainer = ({
             featureRowReferences,
             subscriptionFeatures,
             changeSubscriptionPlan,
+            subscriptionPlanData: currentSubscriptionPlanData,
           }),
         )}
       </SubscriptionCardGrid>

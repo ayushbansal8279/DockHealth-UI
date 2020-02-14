@@ -34,7 +34,7 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const Search = ({ className, onChange, initialValue }) => (
+const Search = ({ className, onChange, initialValue, autoFocus }) => (
   <StyledTextField
     onChange={onChange}
     placeholder="Search"
@@ -52,6 +52,7 @@ const Search = ({ className, onChange, initialValue }) => (
       'aria-label': 'Search',
       type: 'search',
       defaultValue: initialValue,
+      autoFocus,
     }}
   />
 );

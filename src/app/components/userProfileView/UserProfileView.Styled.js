@@ -38,6 +38,7 @@ export const SmallButton = styled(Button)`
     color: white;
     cursor: pointer;
     display: flex;
+    filter: brightness(1);
     font-size: 20px;
     font-weight: bold;
     height: 55px;
