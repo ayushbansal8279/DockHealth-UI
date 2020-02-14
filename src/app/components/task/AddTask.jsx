@@ -155,7 +155,7 @@ const mapDispatchToProps = (
   { taskListIdentifier, patientIdentifier },
 ) => ({
   submit: description => {
-    if (patientIdentifier && patientIdentifier != "") {
+    if (patientIdentifier && patientIdentifier != '') {
       saveTask({ description, taskListIdentifier, patientIdentifier })(
         dispatch,
       );
