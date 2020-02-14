@@ -177,6 +177,10 @@ export default () => {
     ? BILLING_FREQUENCY.ANNUAL
     : BILLING_FREQUENCY.MONTHLY;
 
+  const billingVisible =
+    userSubscriptionStatus !== USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED &&
+    chosenPlan;
+
   return (
     <SubscriptionsViewContainer container>
       {plansViewVisible ? (
@@ -212,7 +216,7 @@ export default () => {
         setUserSubscriptionStatus={setUserSubscriptionStatus}
       />
       <InvitationPanel getAllUsers={getAllUsers} />
-      {userSubscriptionStatus !== USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED && (
+      {billingVisible && (
         <BillingContainer>
           <BillingLabel>{subscriptionPlanData.planBillingPeriod}</BillingLabel>
           <BillingPrice>{subscriptionPlanData.planTotalPayment}</BillingPrice>
