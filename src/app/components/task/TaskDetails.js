@@ -72,7 +72,7 @@ class TaskDetails extends React.PureComponent {
   };
 
   handleRemoveAttachment = attachmentIdentifier => {
-    if (attachmentIdentifier && attachmentIdentifier > 0) {
+    if (attachmentIdentifier && attachmentIdentifier != "") {
       const {
         removeTaskAttachment: removeAttachment,
         selectedTask,

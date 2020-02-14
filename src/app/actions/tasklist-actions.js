@@ -28,7 +28,7 @@ export function setTaskListAsCurrentList(currentList) {
 export function saveTaskList(formProps) {
   if (
     formProps.taskListIdentifier != null &&
-    formProps.taskListIdentifier > 0
+    formProps.taskListIdentifier != ""
   ) {
     return dispatch =>
       TaskListApi.updateTaskList(formProps)
