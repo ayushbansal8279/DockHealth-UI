@@ -31,7 +31,9 @@ export const mergeRefs = refs => value => {
 
 export const isTaskArchivable = curry(
   (currentUserProfile, task) =>
-    task?.status === 'COMPLETE' && !task?.parentTaskIdentifier && !task?.archivedByUser,
+    task?.status === 'COMPLETE' &&
+    !task?.parentTaskIdentifier &&
+    !task?.archivedByUser,
 );
 
 export const formatLinkifyHref = (href, type) => {
@@ -95,7 +97,11 @@ export const mentionifyAndLinkifyTaskText = ({ members, value }) =>
   mentionifyDescription({ members, value: linkifyTaskText({ value }) });
 
 export const formatPhoneNumber = (phoneNumber = '') =>
-  phoneNumber ? phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') : '';
+  phoneNumber
+    ? phoneNumber
+        .replace(/^\+1/, '')
+        .replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
+    : '';
 
 export const showToast = ({
   status: icon,
