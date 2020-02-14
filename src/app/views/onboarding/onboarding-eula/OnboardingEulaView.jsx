@@ -62,7 +62,7 @@ const OnboardingEulaView = () => {
       <OnboardingSpacing2 />
       <OnboardingH3>
         Protecting patient data and compliance with HIPAA is essential to our
-        work and yours. We would love to setup you and your team to be HIPAA
+        work and yours. We would love to set you and your team up to be HIPAA
         compliant which requires signing a few quick documents.
       </OnboardingH3>
       <OnboardingSpacing4 />
