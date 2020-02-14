@@ -44,6 +44,7 @@ import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEul
 import OnboardingProfileView from './views/onboarding/onboarding-profile/OnboardingProfileView';
 import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
+import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/OnboardingBaaCheckView';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
@@ -286,6 +287,7 @@ export const Routes = ({ store }) => {
           />
           <Route component={OnboardingEulaView} path="eula" />
           <Route component={OnboardingBaaOverviewView} path="baa-overview" />
+          <Route component={OnboardingBaaCheckView} path="baa-check" />
           <Route
             component={OnboardingBaaInvitationSentView}
             path="baa-invitation-sent"

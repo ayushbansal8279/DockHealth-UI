@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import * as userApi from '../api/user-api';
+import * as organizationApi from '../api/organization-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import Drawer from '../components/drawer/Drawer';
 import { unsetHeader } from '../actions/header-actions';
@@ -93,7 +94,8 @@ class TemplateCore extends PureComponent {
 
       try {
         await this.checkUserData({ user: cognitoUser });
-      } catch {
+      } catch (error) {
+        // console.log(error);
         hashHistory.push('login');
       } finally {
         this.unlockLoading();
@@ -103,13 +105,20 @@ class TemplateCore extends PureComponent {
 
   checkUserData = async ({ user }) => {
     const data = await userApi.getUserByEmail(user.username, user);
-
+    let orgData = null;
+    if (data && data.organizationIdentifier) {
+      orgData = await organizationApi.get({
+        organizationIdentifier: data.organizationIdentifier,
+      });
+    }
     if (!data.organizationIdentifier || data.organizationIdentifier === '') {
       hashHistory.push('/unEnrolledUser');
     } else if (data.personalOrganization && data.presentHippaAlert) {
       hashHistory.push('/selfEnrolledUser');
     } else if (!data.eulaAcknowledged) {
       hashHistory.push('/onboarding/eula');
+    } else if (orgData && !orgData.baaSigned) {
+      hashHistory.push('/onboarding/baa-check');
     } else {
       if (data.profileThumbnailPictureHash) {
         userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
