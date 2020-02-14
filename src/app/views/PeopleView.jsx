@@ -100,7 +100,7 @@ class PeopleView extends PureComponent {
         <SafariFixGrid container xs={12} item justify="center">
           <Grid item xs={9}>
             <SearchContainer>
-              <Search onChange={this.handleSearch} />
+              <Search autoFocus onChange={this.handleSearch} />
             </SearchContainer>
           </Grid>
         </SafariFixGrid>

@@ -834,6 +834,11 @@ class TaskView extends Component {
         </div>
       );
 
+      const joinedListTasks = [
+        ...(incompleteTasksForList ?? []),
+        ...(completedTasksForList ?? []),
+      ];
+
       return (
         <React.Fragment key={groupedListName}>
           <TaskListSection
@@ -843,9 +848,9 @@ class TaskView extends Component {
             heading={heading}
             key={groupedListName}
           >
-            {incompleteTasksForList?.length > 0 && (
+            {joinedListTasks.length > 0 && (
               <TaskList
-                listTasks={incompleteTasksForList}
+                listTasks={joinedListTasks}
                 showListHeadings={showListHeadings}
                 isMultiList={isMultiList}
                 taskDrawerProps={{
@@ -858,10 +863,6 @@ class TaskView extends Component {
                 {...tasklistProps}
               />
             )}
-            {completedTasksForList?.length > 0 &&
-              this.renderCompleted({
-                listCompletedTasks: completedTasksForList,
-              })}
           </TaskListSection>
         </React.Fragment>
       );
