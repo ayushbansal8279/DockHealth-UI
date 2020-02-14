@@ -49,6 +49,8 @@ const TaskList = ({
     sortedTasksToShow,
     currentSorting,
     isShowMoreLocked,
+    addingNewSubtask,
+    addingNewSubtaskParentId,
   } = initializeTaskListHooks({
     otherTaskListProps,
     tasks,
@@ -62,9 +64,13 @@ const TaskList = ({
 
   const isCurrentListSelected = Boolean(
     isMultiList &&
-      otherTaskListProps.listTasks
-        .map(({ taskIdentifier }) => taskIdentifier)
-        .includes(otherTaskListProps.selectedTaskId),
+      ((addingNewSubtask &&
+        otherTaskListProps.listTasks
+          .map(({ parentTaskIdentifier }) => parentTaskIdentifier)
+          .includes(addingNewSubtaskParentId)) ||
+        otherTaskListProps.listTasks
+          .map(({ taskIdentifier }) => taskIdentifier)
+          .includes(otherTaskListProps.selectedTaskId)),
   );
 
   return (
