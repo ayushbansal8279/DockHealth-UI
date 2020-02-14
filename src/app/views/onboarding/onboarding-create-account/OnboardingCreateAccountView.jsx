@@ -1,5 +1,5 @@
 import Grid from '@material-ui/core/Grid';
-import React from 'react';
+import React, { useRef } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
@@ -112,6 +112,8 @@ const OnboardingCreateAccountView = () => {
     reValidateMode: 'onChange',
   });
 
+  const emailInputReference = useRef(null);
+
   const { handleSubmit, watch } = formMethods;
 
   const email = watch('email');
@@ -164,6 +166,7 @@ const OnboardingCreateAccountView = () => {
                 InputBaseProps={{
                   autoComplete: 'off',
                 }}
+                inputContainerReference={emailInputReference}
               />
             </Grid>
             <Grid item sm={12} md={6}>
@@ -241,7 +244,18 @@ const OnboardingCreateAccountView = () => {
               >
                 <OnboardingH2Bold>Resend email</OnboardingH2Bold>
               </OnboardingButton>
-              <OnboardingButton onClick={hideDialog} variant="contained">
+              <OnboardingButton
+                onClick={() => {
+                  hideDialog();
+                  setImmediate(() => {
+                    // eslint-disable-next-line no-unused-expressions
+                    emailInputReference.current
+                      ?.querySelector('input')
+                      .select();
+                  });
+                }}
+                variant="contained"
+              >
                 <OnboardingH2Bold>Change email address</OnboardingH2Bold>
               </OnboardingButton>
             </Grid>
