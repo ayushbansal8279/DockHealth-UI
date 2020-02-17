@@ -9,7 +9,7 @@ const getScaledSize = ({ normalSize, propSize }) =>
 export const AvatarContainer = styled.div`
   align-items: center;
   background-color: #fff;
-  border: 2px solid #007cab;
+  border: 2px solid ${props => props.color ?? '#007cab'};
   border-radius: 50%;
   ${props => props.withShadow && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)'};
   cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
@@ -23,7 +23,7 @@ export const AvatarContainer = styled.div`
 
 export const InnerAvatarContainer = styled.div`
   align-items: center;
-  background-color: #007cab;
+  background-color: ${props => props.color ?? '#007cab'};
   border-radius: 50%;
   color: #fff;
   display: flex;

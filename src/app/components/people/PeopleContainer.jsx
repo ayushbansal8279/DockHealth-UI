@@ -4,12 +4,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { createFilter } from 'react-search-input';
 import { bindActionCreators } from 'redux';
-
 import * as PeopleActions from '../../actions/people-actions';
 import { noop } from '../../helpers/utility-functions';
 import Member from '../members/Member';
-// import BooleanModal from '../modals/BooleanModal';
-// import PeopleContainerRoleButton from './PeopleContainer.RoleButton';
 import {
   ListContainer,
   ListEntryContainer,
@@ -33,13 +30,10 @@ class PeopleContainer extends PureComponent {
     if (phoneNumber) {
       const phoneNumberWithoutAreaCode = phoneNumber.replace('+1', '');
 
-      return `${phoneNumberWithoutAreaCode.slice(
-        0,
-        3,
-      )}-${phoneNumberWithoutAreaCode.slice(
-        3,
-        6,
-      )}-${phoneNumberWithoutAreaCode.slice(6, 15)}`;
+      return phoneNumberWithoutAreaCode.replace(
+        /^(\d{3})(\d{3})(\d{4})$/,
+        '($1) $2-$3',
+      );
     }
 
     return phoneNumber;
@@ -93,14 +87,6 @@ class PeopleContainer extends PureComponent {
       .join(', ') ?? '';
 
   renderListEntry = person => {
-    // const {
-    //   userProfile,
-    //   changeUserRoleForOrg,
-    //   cancelInviteToOrganization,
-    //   resendInviteToOrganization,
-    //   removeUserFromOrganization,
-    // } = this.props;
-
     const personName = `${person.firstName || ''} ${person.middleName ||
       ''} ${person.lastName || ''}`
       .trim()
@@ -118,7 +104,7 @@ class PeopleContainer extends PureComponent {
           <MemberContainer
             style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
           >
-            <Member member={person} />
+            <Member color="#ababb2" member={person} />
           </MemberContainer>
           <Grid item container alignItems="center">
             <Grid item xs={12}>
@@ -147,24 +133,6 @@ class PeopleContainer extends PureComponent {
           <Grid item container alignItems="center">
             <PersonStatus>{personStatus}</PersonStatus>
           </Grid>
-
-          {/* <PeopleContainerRoleButton
-            person={person}
-            userProfile={userProfile}
-            changeUserRoleForOrg={changeUserRoleForOrg}
-            cancelInviteToOrganization={cancelInviteToOrganization}
-            resendInviteToOrganization={resendInviteToOrganization}
-            removeUserFromOrganization={removeUserFromOrganization}
-            handleClick={this.handleClick}
-          /> */}
-
-          {/* <BooleanModal
-            uniqueModalId={`delete-user-${person.userIdentifier}`}
-            message="Are you sure you want to delete this user?"
-            handleConfirmation={this.onClickRemoveUser}
-            handleConfirmationArgs={person.userIdentifier}
-            confirmBtnTxt="Delete"
-          /> */}
         </Grid>
       </ListEntryContainer>
     );

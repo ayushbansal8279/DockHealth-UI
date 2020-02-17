@@ -5,16 +5,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
-import Swal from 'sweetalert2';
-import ConfirmationDialog from '../components/modals/ConfirmationDialog';
-import useBoolean from '../hooks/useBoolean';
-
 import {
   getUserAvatar,
   removeUserFromOrganization,
 } from '../actions/people-actions';
 import Avatar from '../components/common/Avatar';
-import { formatPhoneNumber, noop } from '../helpers/utility-functions';
+import ConfirmationDialog from '../components/modals/ConfirmationDialog';
+import {
+  formatPhoneNumber,
+  noop,
+  showAlert,
+} from '../helpers/utility-functions';
+import useBoolean from '../hooks/useBoolean';
 
 const NOT_AVAILABLE = 'N/A';
 
@@ -124,16 +126,13 @@ const PersonInfoPanel = ({ personData }) => {
         hashHistory.push('/people');
       })
       .catch(error => {
-        Swal.fire({
-          icon: 'error',
+        showAlert({
+          status: 'error',
           title: 'Error',
           text:
             error?.errorMessage ??
             'Could not archive this person, please try again later',
         });
-
-        // fix z-index for swal container
-        Swal.getContainer().style.zIndex = 10000;
       });
     close();
   }, [close, dispatch, userIdentifier]);
@@ -155,12 +154,12 @@ const PersonInfoPanel = ({ personData }) => {
       <Grid container alignItems="center">
         <PersonNameContainer>
           <PersonAvatarContainer>
-            <Avatar size={102}>{avatarContent}</Avatar>
+            <Avatar color="#ababb2" size={102}>
+              {avatarContent}
+            </Avatar>
           </PersonAvatarContainer>
           <PersonTitlesContainer>
-            <BoldLabel>
-              {lastName}, {firstName}
-            </BoldLabel>
+            <BoldLabel>{`${firstName} ${lastName}`}</BoldLabel>
             <GreyLabel>{specialtyList}</GreyLabel>
           </PersonTitlesContainer>
         </PersonNameContainer>

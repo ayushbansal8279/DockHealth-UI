@@ -15,6 +15,7 @@ export default ({
   withCameraIcon,
   withCursor,
   withShadow,
+  color = '#007cab',
 }) => (
   <AvatarContainer
     onClick={onClick}
@@ -22,8 +23,11 @@ export default ({
     size={size}
     withCursor={withCursor}
     withShadow={withShadow}
+    color={color}
   >
-    <InnerAvatarContainer size={size}>{children}</InnerAvatarContainer>
+    <InnerAvatarContainer color={color} size={size}>
+      {children}
+    </InnerAvatarContainer>
     {withCameraIcon && (
       <CameraContainer size={size}>
         <img src={CameraIcon} alt="Camera icon" />
