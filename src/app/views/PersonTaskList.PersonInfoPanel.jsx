@@ -22,7 +22,7 @@ const NOT_AVAILABLE = 'N/A';
 
 const InfoPanelContainer = styled.div`
   background-color: #fff;
-  margin-top: 0.25rem;
+  margin: 0.5rem 0;
   max-width: 1050px;
   padding: 1rem;
   width: 100%;
