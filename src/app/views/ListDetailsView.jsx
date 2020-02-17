@@ -2,7 +2,7 @@ import always from 'ramda/es/always';
 import cond from 'ramda/es/cond';
 import equals from 'ramda/es/equals';
 import T from 'ramda/es/T';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -16,7 +16,11 @@ import TaskView from './TaskView';
 const ASSIGNED_BY_ME = 'assigned_by_me';
 const ASSIGNED_TO_ME = 'assigned_to_me';
 
-class Home extends PureComponent {
+class Home extends Component {
+  state = {
+    preSelectedTask: null,
+  };
+
   componentDidMount() {
     const { user, routeParams, actions, taskListActions } = this.props;
 
@@ -49,11 +53,59 @@ class Home extends PureComponent {
 
     const getAllTasks = () => {
       Promise.all([
-        taskAction(routeParams.taskListIdentifier, sortBy, filterBy, 'INCOMPLETE'),
-        taskAction(routeParams.taskListIdentifier, sortBy, filterBy, 'COMPLETE'),
-      ]).catch(error => {
-        this.handleRetry(error, getAllTasks);
-      });
+        taskAction(
+          routeParams.taskListIdentifier,
+          sortBy,
+          filterBy,
+          'INCOMPLETE',
+        ),
+        taskAction(
+          routeParams.taskListIdentifier,
+          sortBy,
+          filterBy,
+          'COMPLETE',
+        ),
+      ])
+        .then(() => {
+          const {
+            tasks,
+            completedTasks,
+            routeParams: { taskIdentifier: preSelectedTaskIdentifier },
+          } = this.props;
+
+          const incompleteTasksWithSubtasks = [
+            ...tasks,
+            ...tasks.flatMap(({ subtasks }) => subtasks ?? []),
+          ];
+
+          const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
+            ({ taskIdentifier }) =>
+              preSelectedTaskIdentifier === taskIdentifier,
+          );
+
+          if (incompletePreselectedTask) {
+            this.setState({
+              preSelectedTask: incompletePreselectedTask,
+            });
+          } else {
+            const completeTasksWithSubtasks = [
+              ...completedTasks,
+              ...completedTasks.flatMap(({ subtasks }) => subtasks ?? []),
+            ];
+
+            const completePreselectedTask = completeTasksWithSubtasks.find(
+              ({ taskIdentifier }) =>
+                preSelectedTaskIdentifier === taskIdentifier,
+            );
+
+            this.setState({
+              preSelectedTask: completePreselectedTask ?? null,
+            });
+          }
+        })
+        .catch(error => {
+          this.handleRetry(error, getAllTasks);
+        });
     };
 
     getAllTasks();
@@ -99,8 +151,14 @@ class Home extends PureComponent {
       const { listName } = nextProps.routeParams;
 
       actions.loading();
-      if (listName != null && nextProps.routeParams.taskListIdentifier != null) {
-        taskListActions.getTaskListById(nextProps.routeParams.taskListIdentifier);
+
+      if (
+        listName != null &&
+        nextProps.routeParams.taskListIdentifier != null
+      ) {
+        taskListActions.getTaskListById(
+          nextProps.routeParams.taskListIdentifier,
+        );
         actions.getListTasks(
           nextProps.routeParams.taskListIdentifier,
           undefined,
@@ -138,10 +196,17 @@ class Home extends PureComponent {
       undefined,
       'INCOMPLETE',
     );
+
     if (routeParams.taskListIdentifier) {
-      taskListActions.getMembersByTaskListId(routeParams.taskListIdentifier, 'ALL');
+      taskListActions.getMembersByTaskListId(
+        routeParams.taskListIdentifier,
+        'ALL',
+      );
     }
-    taskListActions.getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier);
+
+    taskListActions.getOrganizationUsersNotInTaskList(
+      routeParams.taskListIdentifier,
+    );
     patientActions.getAllPatients();
   };
 
@@ -223,7 +288,12 @@ class Home extends PureComponent {
         .then(noop)
         .catch(error => {
           this.handleRetry(error, () => {
-            actions.getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE');
+            actions.getListTasks(
+              taskListIdentifier,
+              sortBy,
+              filterBy,
+              'INCOMPLETE',
+            );
           });
         });
       actions
@@ -231,7 +301,12 @@ class Home extends PureComponent {
         .then(noop)
         .catch(error => {
           this.handleRetry(error, () => {
-            actions.getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE');
+            actions.getListTasks(
+              taskListIdentifier,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+            );
           });
         });
     }
@@ -289,6 +364,8 @@ class Home extends PureComponent {
       routeParams: { listName, taskListIdentifier, filterBy },
     } = this.props;
 
+    const { preSelectedTask } = this.state;
+
     const loadedTasklist = tasklists.find(
       t => `${t.taskListIdentifier}` === taskListIdentifier,
     );
@@ -344,6 +421,7 @@ class Home extends PureComponent {
       isMultiList,
       taskListIdentifier,
       listName,
+      preSelectedTask,
     };
 
     return <TaskView {...taskViewProps} />;

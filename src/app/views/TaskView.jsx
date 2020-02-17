@@ -239,7 +239,7 @@ class TaskView extends Component {
     const { taskList, currentUser } = this.props;
 
     const taskListIdentifier = taskList?.taskListIdentifier;
-    // const localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}${taskListIdentifier}`;
+
     let localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}_${currentUser.userIdentifier}`;
     if (taskListIdentifier) {
       localStorageKey = TASK_VIEW_STORAGE_PREFIX + taskListIdentifier;
@@ -292,16 +292,50 @@ class TaskView extends Component {
     }
   }
 
+  handlePreSelectionCompletedTask = task => {
+    if (task?.status?.toUpperCase() === 'COMPLETE') {
+      this.toggleCompletedTasks();
+    }
+  };
+
   componentDidUpdate = ({
     isFetching: previousIsFetching,
     members: previousMembers,
+    preSelectedTask: previousPreSelectedTask,
   }) => {
-    const { isFetching, members } = this.props;
+    const {
+      isFetching,
+      members,
+      preSelectedTask,
+      storeAsCurrentTask,
+      tasks,
+    } = this.props;
+
     if (
       previousIsFetching !== isFetching ||
       !equals(members, previousMembers)
     ) {
       this.resetHeader();
+    }
+
+    if (
+      preSelectedTask !== previousPreSelectedTask &&
+      !previousPreSelectedTask
+    ) {
+      if (preSelectedTask.parentTaskIdentifier) {
+        const parentTask =
+          tasks.find(
+            ({ taskIdentifier }) =>
+              taskIdentifier === preSelectedTask.parentTaskIdentifier,
+          ) ?? null;
+
+        this.handlePreSelectionCompletedTask(parentTask);
+      } else {
+        this.handlePreSelectionCompletedTask(preSelectedTask);
+      }
+
+      this.openTaskDrawer();
+      storeAsCurrentTask(preSelectedTask);
     }
   };
 
