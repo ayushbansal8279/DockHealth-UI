@@ -1,7 +1,9 @@
 import moment from 'moment';
-
-import { moveTask, saveTask } from '../../actions/task-actions';
-import { noop } from '../../helpers/utility-functions';
+import {
+  addTaskAttachment,
+  moveTask,
+  saveTask,
+} from '../../actions/task-actions';
 
 export default ({
   dispatch,
@@ -12,6 +14,7 @@ export default ({
   storeAsCurrentTask,
   deferredCommentsPromises,
   setAutoSaveVisible,
+  newTaskAttachments,
 }) => async data => {
   const {
     assignedToUserIdentifier,
@@ -50,14 +53,6 @@ export default ({
       await moveTask(newTask, { taskListIdentifier: newTaskListId })(dispatch);
     }
 
-    if (!requestData.taskIdentifier) {
-      storeAsCurrentTask({
-        ...newTask,
-        ...requestData,
-        taskIdentifier: newTask.taskIdentifier || requestData.taskIdentifier,
-      });
-    }
-
     let commentPromise = Promise.resolve();
 
     deferredCommentsPromises.forEach(deferredCommentPromise => {
@@ -66,11 +61,38 @@ export default ({
       );
     });
 
+    await commentPromise;
+
+    let attachmentPromise = Promise.resolve();
+    const addedAttachments = [];
+
+    newTaskAttachments.forEach(newTaskAttachment => {
+      attachmentPromise = attachmentPromise.then(async () => {
+        const addedAttachment = await addTaskAttachment(
+          newTask.taskIdentifier || requestData.taskIdentifier,
+          newTaskAttachment,
+          {},
+        )(dispatch);
+
+        addedAttachments.push(addedAttachment);
+      });
+    });
+
+    await attachmentPromise;
+
     setAutoSaveVisible();
+
+    if (!requestData.taskIdentifier) {
+      storeAsCurrentTask({
+        ...newTask,
+        ...requestData,
+        taskIdentifier: newTask.taskIdentifier || requestData.taskIdentifier,
+        attachments: [...newTask.attachments, ...addedAttachments],
+      });
+    }
 
     return true;
   } catch {
-    noop();
     return false;
   }
 };

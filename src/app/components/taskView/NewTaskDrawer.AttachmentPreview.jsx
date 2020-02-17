@@ -39,12 +39,60 @@ const PREVIEW_DISPLAY_TYPES = {
 };
 
 const getMemoTaskAttachment = memoizeWith(identity, attachmentIdentifier =>
-  attachmentIdentifier ? getTaskAttachment(attachmentIdentifier) : Promise.reject(),
+  attachmentIdentifier
+    ? getTaskAttachment(attachmentIdentifier)
+    : Promise.reject(),
 );
 
+const handleBase64Read = ({
+  attachment,
+  attachmentIdentifier,
+  setFileMimeType,
+  addingTaskOrSubtask,
+  attachmentContentType,
+}) => async () => {
+  setFileMimeType('');
+
+  const fileDataPromise = addingTaskOrSubtask
+    ? Promise.resolve({ data: attachment })
+    : getMemoTaskAttachment(attachmentIdentifier);
+
+  try {
+    const rawBase64Data = await fileDataPromise.then(
+      ({ data: responseData }) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+
+          reader.onloadend = () => {
+            setFileMimeType(
+              attachmentContentType ??
+                reader.result.replace(/^data:([^;]+);.+$/, '$1'),
+            );
+
+            resolve(reader.result);
+          };
+
+          reader.addEventListener('error', reject);
+
+          reader.readAsDataURL(responseData);
+        }),
+    );
+
+    return rawBase64Data.replace(/^data:[^;]*;base64,/, '');
+  } catch {
+    return null;
+  }
+};
+
 export default React.memo(
-  ({ attachment, hideAttachmentPreview, isAttachmentPreviewOpen }) => {
+  ({
+    attachment,
+    hideAttachmentPreview,
+    isAttachmentPreviewOpen,
+    addingTaskOrSubtask,
+  }) => {
     const [numberOfPdfPages, setNumberOfPdfPages] = useState(0);
+    const [fileMimeType, setFileMimeType] = useState('');
 
     const onPdfLoadSuccess = useCallback(({ numPages }) => {
       setNumberOfPdfPages(numPages);
@@ -52,30 +100,22 @@ export default React.memo(
 
     const {
       attachmentIdentifier,
-      contentType: attachmentContentType,
       dateCreated,
       fileName,
+      name,
+      contentType: attachmentContentType,
     } = attachment || {};
 
-    const data = useAsync(async () => {
-      try {
-        const rawBase64Data = await new Promise((resolve, reject) =>
-          getMemoTaskAttachment(attachmentIdentifier)
-            .then(({ data: blobResponseData }) => {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                resolve(reader.result);
-              };
-              reader.readAsDataURL(blobResponseData);
-            })
-            .catch(reject),
-        );
-
-        return rawBase64Data.replace(/^data:[^:]*;base64,/, '');
-      } catch {
-        return null;
-      }
-    }, [attachmentIdentifier]);
+    const data = useAsync(
+      handleBase64Read({
+        addingTaskOrSubtask,
+        attachmentContentType,
+        setFileMimeType,
+        attachment,
+        attachmentIdentifier,
+      }),
+      [attachmentIdentifier ?? name],
+    );
 
     const displayType = cond([
       [startsWith('audio/'), always(PREVIEW_DISPLAY_TYPES.AUDIO)],
@@ -83,11 +123,11 @@ export default React.memo(
       [startsWith('video/'), always(PREVIEW_DISPLAY_TYPES.VIDEO)],
       [equals('application/pdf'), always(PREVIEW_DISPLAY_TYPES.PDF)],
       [T, always(PREVIEW_DISPLAY_TYPES.UNSUPPORTED)],
-    ])(attachmentContentType || '');
+    ])(fileMimeType || '');
 
     const fileSource =
       data.value && !data.loading
-        ? `data:${attachmentContentType};base64, ${data.value}`
+        ? `data:${fileMimeType};base64, ${data.value}`
         : null;
 
     const formattedDateCreated = dateCreated
@@ -106,7 +146,7 @@ export default React.memo(
             alignItems="flex-start"
           >
             <AttachmentPreviewHeaderLabel>
-              {fileName}
+              {fileName ?? name}
             </AttachmentPreviewHeaderLabel>
             <AttachmentPreviewHeaderSmallLabel>
               {formattedDateCreated}
@@ -118,7 +158,7 @@ export default React.memo(
             alignItems="center"
           >
             <AttachmentPreviewHeaderAnchor
-              download={fileName}
+              download={fileName ?? name}
               href={fileSource}
             >
               <AttachmentPreviewHeaderIconContainer>

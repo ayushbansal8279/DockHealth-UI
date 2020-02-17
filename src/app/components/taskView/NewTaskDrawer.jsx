@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormContext } from 'react-hook-form';
 
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
@@ -139,6 +139,8 @@ export default ({
     };
   }
 
+  const [newTaskAttachments, setNewTaskAttachments] = useState([]);
+
   const handleSubmit = formMethods.handleSubmit(
     onSubmit({
       closeDrawer,
@@ -150,6 +152,7 @@ export default ({
       storeAsCurrentTask,
       deferredCommentsPromises,
       setAutoSaveVisible,
+      newTaskAttachments,
     }),
   );
 
@@ -216,6 +219,9 @@ export default ({
                 setAutoSaveVisible={setAutoSaveVisible}
                 isInbox={isInbox}
                 handleSubmit={handleSubmit}
+                addingTaskOrSubtask={addingTaskOrSubtask}
+                setNewTaskAttachments={setNewTaskAttachments}
+                newTaskAttachments={newTaskAttachments}
               />
             </FormContext>
           </CondensedFormSection>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useList } from 'react-use';
 
 import {
@@ -39,12 +39,15 @@ const acceptedFileFormats = [
 ].join(', ');
 
 const renderAttachmentListEntry = ({
+  addingTaskOrSubtask,
   dispatch,
   filterAddedAttachments,
   openAttachmentPreview,
   taskIdentifier,
+  newTaskAttachments,
+  setNewTaskAttachments,
 }) => attachment => {
-  const { attachmentIdentifier, fileIdentifier, fileName } = attachment;
+  const { attachmentIdentifier, fileIdentifier, fileName, name } = attachment;
 
   return (
     <AttachmentListEntry key={fileIdentifier}>
@@ -53,16 +56,29 @@ const renderAttachmentListEntry = ({
           openAttachmentPreview(attachment);
         }}
       >
-        {fileName}
+        {fileName ?? name}
       </AttachmentListEntryLabel>
       <AttachmentListEntryRemove
         onClick={() => {
-          removeTaskAttachment(taskIdentifier, attachmentIdentifier)(dispatch).then(() => {
-            filterAddedAttachments(
-              ({ attachmentIdentifier: existingAttachmentId }) =>
-                attachmentIdentifier !== existingAttachmentId,
+          if (addingTaskOrSubtask) {
+            setNewTaskAttachments(
+              newTaskAttachments.filter(
+                existingAttachment => attachment !== existingAttachment,
+              ),
             );
-          });
+            filterAddedAttachments(
+              existingAttachment => attachment !== existingAttachment,
+            );
+          } else {
+            removeTaskAttachment(taskIdentifier, attachmentIdentifier)(
+              dispatch,
+            ).then(() => {
+              filterAddedAttachments(
+                ({ attachmentIdentifier: existingAttachmentId }) =>
+                  attachmentIdentifier !== existingAttachmentId,
+              );
+            });
+          }
         }}
       >
         &times;
@@ -71,11 +87,13 @@ const renderAttachmentListEntry = ({
   );
 };
 
-const getCurrentTask = () => {
-  return useSelector(store => store.taskState.task);
-}
-
-export default ({ task, handleSubmit }) => {
+export default ({
+  task,
+  handleSubmit,
+  addingTaskOrSubtask,
+  newTaskAttachments,
+  setNewTaskAttachments,
+}) => {
   const attachmentFileInputReference = useRef(null);
   const dispatch = useDispatch();
   const [
@@ -99,7 +117,6 @@ export default ({ task, handleSubmit }) => {
   ] = useState(null);
 
   const onAttachmentButtonClicked = useCallback(() => {
-    //save the task
     handleSubmit();
 
     const fileInputElement = attachmentFileInputReference.current;
@@ -107,7 +124,7 @@ export default ({ task, handleSubmit }) => {
     if (fileInputElement) {
       fileInputElement.dispatchEvent(new MouseEvent('click'));
     }
-  }, []);
+  }, [handleSubmit]);
 
   const openAttachmentPreview = useCallback(
     attachment => {
@@ -117,18 +134,12 @@ export default ({ task, handleSubmit }) => {
     [showAttachmentPreview],
   );
 
-  //const currTask = useSelector(store => store.taskState.task);
-  // const taskIdentifier = currTask?.taskIdentifier;
-  // const taskAttachments = currTask?.attachments || [];
-  
   const taskIdentifier = task?.taskIdentifier;
   const taskAttachments = task?.attachments || [];
-  
 
   useEffect(() => {
-    if (taskIdentifier) {
-      setAddedAttachments(taskAttachments);
-    }
+    setAddedAttachments(taskAttachments);
+    setNewTaskAttachments([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setAddedAttachments, taskIdentifier]);
 
@@ -137,22 +148,35 @@ export default ({ task, handleSubmit }) => {
 
     if (fileInputElement) {
       const [newAttachment] = fileInputElement.files;
-      setCurrentlyUploadedAttachment(newAttachment);
-      setUploadProgress(0);
-      addTaskAttachment(taskIdentifier, newAttachment, {
-        onUploadProgress: ({ loaded, total }) => {
-          setUploadProgress(Math.round((loaded * 100) / total));
-        },
-      })(dispatch)
-        .then(addedAttachment => {
-          pushAddedAttachment(addedAttachment);
-          setCurrentlyUploadedAttachment(null);
-        })
-        .catch(() => {
-          setCurrentlyUploadedAttachment(null);
-        });
+
+      if (addingTaskOrSubtask) {
+        pushAddedAttachment(newAttachment);
+        setNewTaskAttachments([...newTaskAttachments, newAttachment]);
+      } else {
+        setCurrentlyUploadedAttachment(newAttachment);
+        setUploadProgress(0);
+        addTaskAttachment(taskIdentifier, newAttachment, {
+          onUploadProgress: ({ loaded, total }) => {
+            setUploadProgress(Math.round((loaded * 100) / total));
+          },
+        })(dispatch)
+          .then(addedAttachment => {
+            pushAddedAttachment(addedAttachment);
+            setCurrentlyUploadedAttachment(null);
+          })
+          .catch(() => {
+            setCurrentlyUploadedAttachment(null);
+          });
+      }
     }
-  }, [pushAddedAttachment, dispatch, taskIdentifier]);
+  }, [
+    addingTaskOrSubtask,
+    pushAddedAttachment,
+    setNewTaskAttachments,
+    newTaskAttachments,
+    taskIdentifier,
+    dispatch,
+  ]);
 
   return (
     <>
@@ -160,6 +184,7 @@ export default ({ task, handleSubmit }) => {
         attachment={previewedAttachment}
         hideAttachmentPreview={hideAttachmentPreview}
         isAttachmentPreviewOpen={isAttachmentPreviewOpen}
+        addingTaskOrSubtask={addingTaskOrSubtask}
       />
       <AttachmentFileInput
         ref={attachmentFileInputReference}
@@ -171,10 +196,13 @@ export default ({ task, handleSubmit }) => {
       </AddAttachmentButton>
       {addedAttachments.map(
         renderAttachmentListEntry({
+          addingTaskOrSubtask,
           dispatch,
           filterAddedAttachments,
           openAttachmentPreview,
           taskIdentifier,
+          newTaskAttachments,
+          setNewTaskAttachments,
         }),
       )}
       {currentlyUploadedAttachment && (

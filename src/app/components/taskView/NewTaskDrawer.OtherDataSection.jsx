@@ -128,6 +128,9 @@ export default ({
   setAutoSaveVisible,
   isInbox,
   handleSubmit,
+  addingTaskOrSubtask,
+  newTaskAttachments,
+  setNewTaskAttachments,
 }) => {
   const {
     taskLists,
@@ -227,7 +230,13 @@ export default ({
           <SectionLabel padded>Attachments</SectionLabel>
           <SectionButtonContainer>
             <SectionButton>
-              <NewTaskDrawerAttachmentsList task={task} handleSubmit={handleSubmit}/>
+              <NewTaskDrawerAttachmentsList
+                task={task}
+                handleSubmit={handleSubmit}
+                addingTaskOrSubtask={addingTaskOrSubtask}
+                newTaskAttachments={newTaskAttachments}
+                setNewTaskAttachments={setNewTaskAttachments}
+              />
             </SectionButton>
           </SectionButtonContainer>
         </SectionRow>
