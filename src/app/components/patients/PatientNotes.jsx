@@ -141,6 +141,7 @@ const PatientNotes = ({
             update={handleUpdate}
             note={patientNote}
             isOwn={isOwn(patientNote)}
+            key={patientNote.patientNoteIdentifier}
           />
         ))}
       </NotesContainer>
