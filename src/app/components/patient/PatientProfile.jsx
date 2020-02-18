@@ -97,7 +97,8 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
     isFetching: isLoading,
     isCompletedTasksFetching,
     showingCompletedTasks,
-    markComplete,
+    markComplete: (task, status, listName, currentUser) =>
+      dispatch(markComplete(task, status, listName, currentUser)),
     selectedTaskId,
     storeAsCurrentTask: task => dispatch(storeAsCurrentTask(task)),
     markAsUnread,
