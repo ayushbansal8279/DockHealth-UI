@@ -1,5 +1,5 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
@@ -58,7 +58,7 @@ const validationSchema = object().shape({
 });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ showDialog }) => async ({
+const onSubmit = ({ showDialog, setDialogTitle, setDialogMessage }) => async ({
   email,
   password,
   mobilePhoneNumber,
@@ -74,9 +74,20 @@ const onSubmit = ({ showDialog }) => async ({
       family_name: lastName,
       given_name: firstName,
     });
-
+    setDialogTitle(`Confirm your email`);
+    setDialogMessage(
+      `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
+    );
     showDialog();
   } catch (error) {
+    if (error?.code === 'UsernameExistsException') {
+      setDialogTitle(`User Exists`);
+      setDialogMessage(
+        `User with ${email} already exists. Please go to your email and click on the link so that we can confirm your email address.`,
+      );
+      showDialog();
+      return;
+    }
     showAlert({
       icon: 'error',
       title: 'Error',
@@ -120,6 +131,8 @@ const OnboardingCreateAccountView = () => {
 
   const [isPasswordShown, togglePasswordShown] = useToggle(false);
   const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogMessage, setDialogMessage] = useState('');
 
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 1 })(dispatch);
@@ -135,7 +148,11 @@ const OnboardingCreateAccountView = () => {
         All fields required
       </OnboardingFieldsRequiredLabel>
       <OnboardingSpacing2 />
-      <form onSubmit={handleSubmit(onSubmit({ showDialog }))}>
+      <form
+        onSubmit={handleSubmit(
+          onSubmit({ showDialog, setDialogTitle, setDialogMessage }),
+        )}
+      >
         <FormContext {...formMethods}>
           <Grid container spacing={8}>
             <Grid item sm={12} md={6}>
@@ -228,14 +245,11 @@ const OnboardingCreateAccountView = () => {
             </Grid>
           </Grid>
           <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-            <OnboardingH2>Confirm your email </OnboardingH2>
+            <OnboardingH2>{dialogTitle}</OnboardingH2>
             <OnboardingSpacing2 />
             <OnboardingDivider />
             <OnboardingSpacing2 />
-            <OnboardingH2>
-              We just sent an email to {email}. Please go to your email and
-              click on the link so that we can confirm your email address.
-            </OnboardingH2>
+            <OnboardingH2>{dialogMessage}</OnboardingH2>
             <OnboardingSpacing4 />
             <Grid container justify="space-between" wrap="nowrap">
               <OnboardingButton
