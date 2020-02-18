@@ -36,7 +36,7 @@ export const subscriptionFeatures = [
   },
   {
     key: 'add-subtasks',
-    label: 'Add subtasks',
+    label: 'Add Subtasks',
     subscriptionTypes: [CARD_TYPES.STANDARD, CARD_TYPES.ENTERPRISE],
     subscriptionTypeExtendedIn: null,
   },
@@ -90,13 +90,7 @@ export const subscriptionFeatures = [
   },
   {
     key: 'attachments',
-    label: 'Add attachments',
-    subscriptionTypes: [CARD_TYPES.STANDARD, CARD_TYPES.ENTERPRISE],
-    subscriptionTypeExtendedIn: null,
-  },
-  {
-    key: 'tags',
-    label: 'Customizable tags',
+    label: 'Add Attachments',
     subscriptionTypes: [CARD_TYPES.STANDARD, CARD_TYPES.ENTERPRISE],
     subscriptionTypeExtendedIn: null,
   },
@@ -139,12 +133,6 @@ export const subscriptionFeatures = [
   {
     key: 'single-sign-on',
     label: 'Single sign-on',
-    subscriptionTypes: [CARD_TYPES.ENTERPRISE],
-    subscriptionTypeExtendedIn: CARD_TYPES.ENTERPRISE,
-  },
-  {
-    key: 'automations-workflows',
-    label: 'Event/order driven automations & workflows',
     subscriptionTypes: [CARD_TYPES.ENTERPRISE],
     subscriptionTypeExtendedIn: CARD_TYPES.ENTERPRISE,
   },
