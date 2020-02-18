@@ -123,10 +123,12 @@ export const CardContactUsHeader = ({ breakpoint }) => {
       sm={6}
       container
       className={orderClassName}
-      justify={isSmallScreen ? FLEX_POSITION.START : FLEX_POSITION.CENTER}
+      direction="column"
+      alignItems={isSmallScreen ? FLEX_POSITION.START : FLEX_POSITION.CENTER}
       wrap="nowrap"
     >
       <H2>Contact Us</H2>
+      <H4>(857) 302-0441</H4>
     </ContentHeaderGrid>
   );
 };

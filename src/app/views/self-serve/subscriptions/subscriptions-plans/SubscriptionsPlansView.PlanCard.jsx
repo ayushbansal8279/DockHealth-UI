@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import SafariFixGrid from '../../../../components/common/SafariFixGrid';
 import CollapseInteractive from '../../../../img/collapse-interactive';
 import SubscriptionPlanTick from '../../../../img/subscription-plan-tick.svg';
-import { H2, H4, H5 } from '../SubscriptionsView.Styled';
+import { H4, H5 } from '../SubscriptionsView.Styled';
 import {
   CardContactUsFooter,
   CardContactUsHeader,
@@ -25,7 +25,7 @@ import {
   CardStandardFooter,
   CardStandardHeader,
 } from './SubscriptionsPlansView.PlanCard.Components';
-import { H3 } from './SubscriptionsPlansView.Styled';
+import { H3, PlanLabel } from './SubscriptionsPlansView.Styled';
 
 export const CARD_TYPES = {
   STANDARD: Symbol('STANDARD'),
@@ -57,7 +57,8 @@ const CardHeader = styled.div`
     inactiveBackgroundColor,
     activeBackgroundColor,
   }) => (chosen ? activeBackgroundColor : inactiveBackgroundColor)};
-  border-radius: 0.25rem 0.25rem 0 0;
+  border-radius: ${props =>
+    props.isFreeTrialLabelShown ? 0 : '0.25rem 0.25rem 0 0'};
   border-style: solid;
   border-width: 0.0625rem;
   color: ${({ chosen, inactiveColor, activeColor }) =>
@@ -95,6 +96,22 @@ const RecommendedLabel = styled.div`
   top: -0.0625rem;
   width: calc(100% + 0.125rem);
   z-index: 1;
+`;
+
+const FreeTrialPlanLabel = styled.div`
+  align-items: center;
+  background-color: #011845;
+  border: 0.0625rem solid #011845;
+  border-radius: 0.25rem 0.25rem 0 0;
+  color: #fff;
+  display: flex;
+  font-size: 0.875rem;
+  height: 1.375rem;
+  justify-content: center;
+  left: -0.0625rem;
+  position: absolute;
+  right: -0.0625rem;
+  top: -1.375rem;
 `;
 
 const CardHeaderTick = styled.div`
@@ -174,6 +191,7 @@ const SubscriptionsViewPlanCard = ({
   featureRowReferences,
   subscriptionFeatures,
   recommended,
+  isFreeTrialPlan,
   selectable,
   subscriptionPlanData,
 }) => {
@@ -189,6 +207,10 @@ const SubscriptionsViewPlanCard = ({
     subscriptionPlanData?.planIsTrial ?? false,
   );
 
+  const isFreeTrialLabelShown = Boolean(
+    isFreeTrialPlan && subscriptionPlanData?.planIsTrial,
+  );
+
   const isSmallScreen = breakpoint === 'md';
 
   const currentFeatureListExpanded = isSmallScreen
@@ -196,10 +218,10 @@ const SubscriptionsViewPlanCard = ({
     : featureListExpanded;
 
   const RecommendedLabelComponent = isSmallScreen ? H5 : H4;
-  const LabelComponent = isSmallScreen ? H3 : H2;
+  const LabelComponent = isSmallScreen ? H3 : PlanLabel;
 
   return (
-    <Grid onClick={onClick} item sm={12} md={12} lg={3}>
+    <Grid onClick={onClick} item sm={12} md={12} lg>
       <CardInnerContainer selectable={selectable} chosen={chosen}>
         <CardHeader
           chosen={chosen}
@@ -211,11 +233,17 @@ const SubscriptionsViewPlanCard = ({
           onClick={isSmallScreen ? toggleLocalFeatureListExpanded : undefined}
           isSmallScreen={isSmallScreen}
           isRecommended={recommended}
+          isFreeTrialLabelShown={isFreeTrialLabelShown}
         >
           {recommended && (
             <RecommendedLabel isSmallScreen={isSmallScreen}>
               <RecommendedLabelComponent>recommended</RecommendedLabelComponent>
             </RecommendedLabel>
+          )}
+          {isFreeTrialLabelShown && (
+            <FreeTrialPlanLabel isSmallScreen={isSmallScreen}>
+              FREE 30 DAY TRIAL
+            </FreeTrialPlanLabel>
           )}
           <CardHeaderTick isSmallScreen={isSmallScreen} chosen={chosen}>
             <img alt="tick" src={SubscriptionPlanTick} />

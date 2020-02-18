@@ -34,3 +34,8 @@ export const Title = styled(H1)`
   color: #fff;
   padding-left: 2rem;
 `;
+
+export const PlanLabel = styled.h1`
+  font-size: 1.875rem;
+  margin: 0;
+`;
