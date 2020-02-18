@@ -196,7 +196,11 @@ const OrganizationMemberRow = ({
                   alignItems="flex-end"
                   justify="flex-end"
                 >
-                  <div>{subscriptionPlanName}</div>
+                  <div>
+                    {subscriptionPlanName && subscriptionPlanName != ''
+                      ? subscriptionPlanName
+                      : 'Free 30 day trial'}
+                  </div>
                 </Grid>
               )}
             </Grid>
@@ -232,7 +236,13 @@ const OrganizationMemberRow = ({
         />
       </td>
       {showJoined && <td>{formattedRegistrationDate}</td>}
-      {showSubscription && <td>{subscriptionPlanName}</td>}
+      {showSubscription && (
+        <td>
+          {subscriptionPlanName && subscriptionPlanName != ''
+            ? subscriptionPlanName
+            : 'Free 30 day trial'}
+        </td>
+      )}
     </tr>
   );
 };

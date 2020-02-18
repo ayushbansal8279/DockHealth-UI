@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
@@ -40,6 +40,13 @@ const OnboardingBaaCheckView = () => {
     // eslint-disable-next-line no-unused-expressions
     window?.HelloSign.init(HELLOSIGN_CLIENT_ID);
   });
+
+  const { userProfile } = useSelector(store => {
+    return {
+      userProfile: store.userState.userProfile,
+    };
+  });
+  const isUserAdmin = ['ADMIN', 'OWNER'].includes(userProfile.orgUserRole);
 
   const openHelloSign = useCallback(signingUrl => {
     // eslint-disable-next-line no-unused-expressions
@@ -87,9 +94,15 @@ const OnboardingBaaCheckView = () => {
 
   return (
     <div>
-      <OnboardingH1Bold>BAA needed</OnboardingH1Bold>
+      <OnboardingH1Bold>Thank You!</OnboardingH1Bold>
       <OnboardingSpacing3 />
-      <OnboardingH3>The Business Associate Agreement</OnboardingH3>
+      <OnboardingH3>
+        In order to be HIPAA compliant and rock your world, we will first need
+        the Business Associate Agreement (BAA) signed. Once an authorized signer
+        in your organization has signed the BAA, you're off to the races. Feel
+        free to keep bothering them, we're sure they're busy trying to figure
+        out how to get organized without us ;)
+      </OnboardingH3>
       <OnboardingSpacing4 />
       {/* <OnboardingH3Bold>
         What is a Business Associate Agreement (BAA)?
@@ -118,30 +131,35 @@ const OnboardingBaaCheckView = () => {
         HIPAA.
       </OnboardingH3> */}
       <OnboardingSpacing5 />
-      {!isInvitationFormShown && (
+      {isUserAdmin && (
         <>
-          <Grid container justify="flex-end">
-            <OnboardingButton
-              type="button"
-              variant="contained"
-              onClick={clickReadAndSign}
-            >
-              <OnboardingH2Bold>Read and sign BAA</OnboardingH2Bold>
-            </OnboardingButton>
-          </Grid>
-          <Grid container justify="flex-end">
-            <OnboardingButton
-              onClick={showInvitationForm}
-              variant="outlinedSkip"
-              size="narrow"
-            >
-              <OnboardingH3>Or share BAA with authorized signer</OnboardingH3>
-            </OnboardingButton>
-          </Grid>
+          {!isInvitationFormShown && (
+            <>
+              <Grid container justify="flex-start">
+                <OnboardingButton
+                  onClick={showInvitationForm}
+                  variant="outlinedSkip"
+                  size="narrow"
+                >
+                  <OnboardingH3>
+                    Send BAA to another authorized signer
+                  </OnboardingH3>
+                </OnboardingButton>
+              </Grid>
+              <Grid container justify="flex-start">
+                <OnboardingButton
+                  onClick={clickReadAndSign}
+                  variant="outlinedSkip"
+                >
+                  <OnboardingH3>I can sign BAA</OnboardingH3>
+                </OnboardingButton>
+              </Grid>
+            </>
+          )}
+          {isInvitationFormShown && (
+            <InvitationForm hideInvitationForm={hideInvitationForm} />
+          )}
         </>
-      )}
-      {isInvitationFormShown && (
-        <InvitationForm hideInvitationForm={hideInvitationForm} />
       )}
     </div>
   );
