@@ -199,7 +199,7 @@ class SingleComment extends Component {
           )}
         </CommentBubbleText>
         {dateCreated !== dateUpdated && (
-          <div style={{ color: '#ff8317' }}>
+          <div style={{ color: '#aaa9b0' }}>
             <small>(edited)</small>
           </div>
         )}
