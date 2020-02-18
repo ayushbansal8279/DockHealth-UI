@@ -62,10 +62,14 @@ const addTaskPromise = async ({
   try {
     setPublishingComment();
 
+    let data;
+
     if (commentContent?.trim().length > 0) {
-      const { data } = await addTaskComment(newTask, {
+      const commentResponse = await addTaskComment(newTask, {
         comment: commentContent?.trim(),
       })(dispatch);
+
+      data = commentResponse.data;
 
       toggleAlert('Comment added successfully', 'success');
 
@@ -74,10 +78,13 @@ const addTaskPromise = async ({
     }
 
     scrollToTop();
-  } catch (error) {
-    toggleAlert('Error adding comment, please try again later', 'error');
-  } finally {
     unsetPublishingComment();
+
+    return data;
+  } catch (error) {
+    unsetPublishingComment();
+    toggleAlert('Error adding comment, please try again later', 'error');
+    return null;
   }
 };
 
@@ -113,7 +120,18 @@ const publishComment = ({
     });
   } else {
     addDeferredCommentToQueue({
-      promise: addTaskPromise,
+      promise: ({ ...promiseArguments }) =>
+        addTaskPromise({
+          task,
+          setPublishingComment,
+          clearCommentContent,
+          addComment,
+          unsetPublishingComment,
+          commentContent,
+          dispatch,
+          scrollToTop,
+          ...promiseArguments,
+        }),
       clearMethod: async () => setAddedComments([]),
       addComment,
     });

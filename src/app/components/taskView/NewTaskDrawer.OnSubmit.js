@@ -54,11 +54,18 @@ export default ({
     }
 
     let commentPromise = Promise.resolve();
+    const addedComments = [];
 
     deferredCommentsPromises.forEach(deferredCommentPromise => {
-      commentPromise = commentPromise.then(async () =>
-        deferredCommentPromise({ task: { ...newTask, ...requestData } }),
-      );
+      commentPromise = commentPromise.then(async () => {
+        const comment = await deferredCommentPromise({
+          task: { ...newTask, ...requestData },
+        });
+
+        if (comment) {
+          addedComments.push(comment);
+        }
+      });
     });
 
     await commentPromise;
@@ -88,6 +95,7 @@ export default ({
         ...requestData,
         taskIdentifier: newTask.taskIdentifier || requestData.taskIdentifier,
         attachments: [...newTask.attachments, ...addedAttachments],
+        comments: [...newTask.comments, ...addedComments],
       });
     }
 
