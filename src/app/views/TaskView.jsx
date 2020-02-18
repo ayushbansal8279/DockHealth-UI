@@ -49,6 +49,7 @@ import {
   InboxNoMessagesAvailable,
   SideClickListener,
   StyledButton,
+  StyledButtonLabel,
   TableWrapper,
   TaskListContainer,
   TaskViewContainer,
@@ -592,10 +593,14 @@ class TaskView extends Component {
       return tasks;
     }
 
-    return [
+    const matchedTasks = [
       ...tasks.filter(this.searchTaskProperties),
       ...tasks.flatMap(prop('subtasks')).filter(this.searchTaskProperties),
     ];
+
+    return matchedTasks.filter(
+      ({ parentTaskIdentifier }) => parentTaskIdentifier == null,
+    );
   };
 
   toggleHUD = () => {
@@ -868,10 +873,10 @@ class TaskView extends Component {
         </div>
       );
 
-      const joinedListTasks = [
-        ...(incompleteTasksForList ?? []),
-        ...(completedTasksForList ?? []),
-      ];
+      // const joinedListTasks = [
+      //   ...(incompleteTasksForList ?? []),
+      //   ...(completedTasksForList ?? []),
+      // ];
 
       return (
         <React.Fragment key={groupedListName}>
@@ -882,9 +887,9 @@ class TaskView extends Component {
             heading={heading}
             key={groupedListName}
           >
-            {joinedListTasks.length > 0 && (
+            {incompleteTasksForList && incompleteTasksForList.length > 0 && (
               <TaskList
-                listTasks={joinedListTasks}
+                listTasks={incompleteTasksForList}
                 showListHeadings={showListHeadings}
                 isMultiList={isMultiList}
                 taskDrawerProps={{
@@ -897,6 +902,11 @@ class TaskView extends Component {
                 {...tasklistProps}
               />
             )}
+            {completedTasksForList &&
+              completedTasksForList.length > 0 &&
+              this.renderCompleted({
+                listCompletedTasks: completedTasksForList,
+              })}
           </TaskListSection>
         </React.Fragment>
       );
@@ -976,13 +986,24 @@ class TaskView extends Component {
       <>
         <CompletedButtonRowContainer>
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-          <StyledButton onClick={this.toggleCompletedTasks}>
-            {`${buttonToggleWord} completed tasks (${
-              listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
-                ? `${SHOW_MORE_STEP_COUNT}+`
-                : completedTasksAndSubTasksCount
-            })`}
-          </StyledButton>
+          {!isMultiList && (
+            <StyledButton onClick={this.toggleCompletedTasks}>
+              {`${buttonToggleWord} completed tasks (${
+                listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
+                  ? `${SHOW_MORE_STEP_COUNT}+`
+                  : completedTasksAndSubTasksCount
+              })`}
+            </StyledButton>
+          )}
+          {isMultiList && (
+            <StyledButtonLabel>
+              {`Completed tasks (${
+                listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
+                  ? `${SHOW_MORE_STEP_COUNT}+`
+                  : completedTasksAndSubTasksCount
+              })`}
+            </StyledButtonLabel>
+          )}
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
         </CompletedButtonRowContainer>
         {showCompletedTasksFlag && (
@@ -1142,7 +1163,4 @@ const mapStateToProps = store => ({
   taskDrawerOpen: store.taskDrawerState?.open,
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TaskView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

@@ -31,6 +31,18 @@ export const StyledButton = styled(ButtonBase)`
     color: #fff;
   }
 `;
+export const StyledButtonLabel = styled.div`
+  && {
+    display: flex;
+    margin: 2rem auto;
+    background: #0ca1c7;
+    border-radius: 1rem;
+    height: 2rem;
+    padding: 0.25rem 2.25rem;
+    font-size: 0.875rem;
+    color: #fff;
+  }
+`;
 
 export const TaskViewGrid = styled(Grid)`
   && {
