@@ -1,6 +1,6 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { setPaymentNewPlan } from '../../../actions/organization-actions';
 import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
 import { SUBSCRIPTION_PLAN_KEYS } from './subscriptions-plans/SubscriptionsPlansView.PlanData';
@@ -16,6 +16,7 @@ import {
   BottomButtonContainer,
   StyledButton,
   SubscriptionsViewContainer,
+  SubscriptionsViewOuterContainer,
 } from './SubscriptionsView.Styled';
 import {
   BILLING_FREQUENCY,
@@ -98,7 +99,7 @@ export default () => {
     outerContainerReference.current?.clientHeight > window.innerHeight;
 
   return (
-    <div ref={outerContainerReference}>
+    <SubscriptionsViewOuterContainer ref={outerContainerReference}>
       <SubscriptionsViewContainer container>
         {plansViewVisible ? (
           <SubscriptionsPlansView
@@ -166,6 +167,6 @@ export default () => {
           )}
         </BottomButtonContainer>
       </SubscriptionsViewContainer>
-    </div>
+    </SubscriptionsViewOuterContainer>
   );
 };

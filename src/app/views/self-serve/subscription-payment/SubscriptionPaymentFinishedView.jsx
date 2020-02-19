@@ -14,6 +14,7 @@ import {
   H2,
   Spacing2,
   SubscriptionPaymentViewContainer,
+  SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
 const goToMainPage = () => {
@@ -56,16 +57,18 @@ const SubscriptionPaymentFinishedView = () => {
   });
 
   return (
-    <SubscriptionPaymentViewContainer>
-      <Grid container spacing={32}>
-        <Grid item sm={12}>
-          <H2>Your purchase is complete</H2>
+    <SubscriptionPaymentViewOuterContainer>
+      <SubscriptionPaymentViewContainer>
+        <Grid container spacing={32}>
+          <Grid item sm={12}>
+            <H2>Your purchase is complete</H2>
+          </Grid>
+          <Grid item sm={12} container justify="flex-end">
+            <SaveBillingElement />
+          </Grid>
         </Grid>
-        <Grid item sm={12} container justify="flex-end">
-          <SaveBillingElement />
-        </Grid>
-      </Grid>
-    </SubscriptionPaymentViewContainer>
+      </SubscriptionPaymentViewContainer>
+    </SubscriptionPaymentViewOuterContainer>
   );
 };
 

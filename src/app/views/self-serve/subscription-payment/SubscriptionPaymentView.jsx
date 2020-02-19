@@ -33,6 +33,7 @@ import {
   PricingItemVerticallyExpanded,
   Spacing2,
   SubscriptionPaymentViewContainer,
+  SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
 const finishSubscriptionPayment = () => {
@@ -194,72 +195,74 @@ const SubscriptionPaymentView = () => {
   });
 
   return (
-    <SubscriptionPaymentViewContainer>
-      <Grid container spacing={32}>
-        <Grid item sm={12}>
-          <H2>Please enter your payment information</H2>
-        </Grid>
-        <Grid item sm={12}>
-          <PricingGridContainer>
-            <PricingItemVerticallyExpanded>
-              <Grid container alignItems="flex-end" direction="column">
-                <PlanNameLabel>{planName}</PlanNameLabel>
-                <H3ThinMarginless>{planSubscriptionPeriod}</H3ThinMarginless>
+    <SubscriptionPaymentViewOuterContainer>
+      <SubscriptionPaymentViewContainer>
+        <Grid container spacing={32}>
+          <Grid item sm={12}>
+            <H2>Please enter your payment information</H2>
+          </Grid>
+          <Grid item sm={12}>
+            <PricingGridContainer>
+              <PricingItemVerticallyExpanded>
+                <Grid container alignItems="flex-end" direction="column">
+                  <PlanNameLabel>{planName}</PlanNameLabel>
+                  <H3ThinMarginless>{planSubscriptionPeriod}</H3ThinMarginless>
+                </Grid>
+              </PricingItemVerticallyExpanded>
+              <Grid container alignItems="center" justify="flex-end">
+                <BigPriceLabel>{planPricePerUser}</BigPriceLabel>
               </Grid>
-            </PricingItemVerticallyExpanded>
-            <Grid container alignItems="center" justify="flex-end">
-              <BigPriceLabel>{planPricePerUser}</BigPriceLabel>
-            </Grid>
-            <Grid container alignItems="center">
-              <PriceLabel>per user</PriceLabel>
-            </Grid>
-            <Grid container alignItems="center" justify="flex-end">
-              <BigPriceLabel>{currentUsersCount}</BigPriceLabel>
-            </Grid>
-            <Grid container alignItems="center">
-              <PriceLabel>users</PriceLabel>
-            </Grid>
-            <PricingItemDivider />
-            <div />
-            <Grid container alignItems="center" justify="flex-end">
-              <H1Bold>{planTotalPayment}</H1Bold>
-            </Grid>
-            <Grid container alignItems="center">
-              <PriceLabel>charged today</PriceLabel>
-            </Grid>
-          </PricingGridContainer>
+              <Grid container alignItems="center">
+                <PriceLabel>per user</PriceLabel>
+              </Grid>
+              <Grid container alignItems="center" justify="flex-end">
+                <BigPriceLabel>{currentUsersCount}</BigPriceLabel>
+              </Grid>
+              <Grid container alignItems="center">
+                <PriceLabel>users</PriceLabel>
+              </Grid>
+              <PricingItemDivider />
+              <div />
+              <Grid container alignItems="center" justify="flex-end">
+                <H1Bold>{planTotalPayment}</H1Bold>
+              </Grid>
+              <Grid container alignItems="center">
+                <PriceLabel>charged today</PriceLabel>
+              </Grid>
+            </PricingGridContainer>
+          </Grid>
+          <Grid item sm={12}>
+            <Elements
+              locale="en-US"
+              fonts={[
+                {
+                  cssSrc:
+                    'https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
+                },
+              ]}
+            >
+              <BillingsViewBillingData
+                isUpdatingBilling
+                setUpdatingBilling={noop}
+                unsetUpdatingBilling={noop}
+                onSubmit={onSubmit({
+                  subscriptionPlan,
+                  billingFrequency,
+                  processingPayment,
+                  setProcessingPayment,
+                  unsetProcessingPayment,
+                })}
+                SaveBillingElement={getSaveBillingElement({
+                  onCancelClick,
+                  newPaymentPlan,
+                  processingPayment,
+                })}
+              />
+            </Elements>
+          </Grid>
         </Grid>
-        <Grid item sm={12}>
-          <Elements
-            locale="en-US"
-            fonts={[
-              {
-                cssSrc:
-                  'https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
-              },
-            ]}
-          >
-            <BillingsViewBillingData
-              isUpdatingBilling
-              setUpdatingBilling={noop}
-              unsetUpdatingBilling={noop}
-              onSubmit={onSubmit({
-                subscriptionPlan,
-                billingFrequency,
-                processingPayment,
-                setProcessingPayment,
-                unsetProcessingPayment,
-              })}
-              SaveBillingElement={getSaveBillingElement({
-                onCancelClick,
-                newPaymentPlan,
-                processingPayment,
-              })}
-            />
-          </Elements>
-        </Grid>
-      </Grid>
-    </SubscriptionPaymentViewContainer>
+      </SubscriptionPaymentViewContainer>
+    </SubscriptionPaymentViewOuterContainer>
   );
 };
 

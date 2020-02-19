@@ -49,14 +49,22 @@ export const Spacing2 = styled(Spacing)`
   height: 2rem;
 `;
 
-export const SubscriptionPaymentViewContainer = styled.div`
+export const SubscriptionPaymentViewOuterContainer = styled.div`
   background-color: #fff;
+  display: flex;
+  justify-content: center;
   left: 0;
   min-height: 100%;
-  padding: 3rem 12rem;
   position: absolute;
   top: 0;
   width: 100%;
+`;
+
+export const SubscriptionPaymentViewContainer = styled.div`
+  background-color: #fff;
+  max-width: 1200px;
+  padding: 3rem;
+  width: 1200px;
 `;
 
 export const BillingButton = withStyles({
