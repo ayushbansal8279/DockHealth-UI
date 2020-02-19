@@ -206,6 +206,36 @@ const RemoveAdminUserContent = ({
   );
 };
 
+const RemoveUnavailableContent = ({ closeDialog }) => (
+  <>
+    <div>Cannot remove the only remaining user from subscription</div>
+    <Grid container justify="center">
+      <RemoveModalButton variant="contained" onClick={closeDialog}>
+        OK
+      </RemoveModalButton>
+    </Grid>
+  </>
+);
+
+const getDialogContentComponent = ({
+  adminCount,
+  orgUserRole,
+  hasOneUserRemaining,
+}) => {
+  if (hasOneUserRemaining) {
+    return RemoveUnavailableContent;
+  }
+
+  if (
+    adminCount === 1 &&
+    (orgUserRole === 'ADMIN' || orgUserRole === 'OWNER')
+  ) {
+    return RemoveAdminUserContent;
+  }
+
+  return RemoveNormalUserContent;
+};
+
 const RemoveModal = ({
   closeDialog,
   open,
@@ -236,15 +266,22 @@ const RemoveModal = ({
       memberUserRole === 'ADMIN' || memberUserRole === 'OWNER',
   ).length;
 
-  const DialogContentComponent =
-    adminCount === 1 && (orgUserRole === 'ADMIN' || orgUserRole === 'OWNER')
-      ? RemoveAdminUserContent
-      : RemoveNormalUserContent;
+  const hasOneUserRemaining = organizationMembers.length === 1;
+
+  const DialogContentComponent = getDialogContentComponent({
+    adminCount,
+    orgUserRole,
+    hasOneUserRemaining,
+  });
 
   return (
     <GrayDialog open={open} fullWidth maxWidth="sm">
-      <div>Remove user from subscription</div>
-      <RemoveModalDivider />
+      {!hasOneUserRemaining && (
+        <>
+          <div>Remove user from subscription</div>
+          <RemoveModalDivider />
+        </>
+      )}
       <DialogContentComponent
         closeDialog={closeDialog}
         userIdentifier={userIdentifier}
