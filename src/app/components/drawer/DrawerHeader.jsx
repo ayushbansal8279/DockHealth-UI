@@ -1,7 +1,7 @@
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
@@ -62,19 +62,10 @@ const Name = styled.div`
 
 const StyledDropdown = styled.div`
   background-color: #007cab;
-  height: ${props => (props.open ? 16 : 0)}rem;
-  min-height: ${props => (props.open ? 16 : 0)}rem;
+  height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
+  min-height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   overflow: hidden;
-  transition: height 0.25s ease-out;
-  width: 100%;
-`;
-
-const StyledDropdownSmaller = styled.div`
-  background-color: #007cab;
-  height: ${props => (props.open ? 8 : 0)}rem;
-  min-height: ${props => (props.open ? 8 : 0)}rem;
-  overflow: hidden;
-  transition: height 0.25s ease-out;
+  transition: all 0.25s ease-out;
   width: 100%;
 `;
 
@@ -104,9 +95,8 @@ const StyledLink = React.forwardRef((props, reference) => {
   );
 });
 
-const DrawerHeader = ({ user }) => {
+const DrawerHeader = ({ setActiveId, user }) => {
   const nameReference = useRef(null);
-  // const buttonReference = useRef(null);
 
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
   const { access: userProfileAccess, orgUserRole } = useSelector(
@@ -127,6 +117,11 @@ const DrawerHeader = ({ user }) => {
     avatarInitials
   );
 
+  const onLinkClicked = useCallback(() => {
+    closePopover();
+    setActiveId('');
+  }, [closePopover, setActiveId]);
+
   const userProfileEnabled = userProfileAccess?.userProfileEnabled;
   const linkComponent = userProfileEnabled ? StyledLink : undefined;
 
@@ -135,7 +130,6 @@ const DrawerHeader = ({ user }) => {
       <StyledListItem
         onMouseEnter={userProfileEnabled && openPopover}
         onMouseLeave={closePopover}
-        // innerRef={buttonReference}
       >
         <ListItemIcon
           style={{
@@ -166,65 +160,45 @@ const DrawerHeader = ({ user }) => {
           onMouseEnter={userProfileEnabled && openPopover}
           onMouseLeave={closePopover}
           timeout={250}
+          dropdownHeight={isUserAdmin ? 16 : 8}
         >
           <DropdownListItem
             button
-            onClick={closePopover}
+            onClick={onLinkClicked}
             component={linkComponent}
             link="/userProfile"
           >
             Profile & Settings
           </DropdownListItem>
+          {isUserAdmin && (
+            <>
+              <DropdownListItem
+                button
+                onClick={onLinkClicked}
+                component={linkComponent}
+                link="/subscriptions"
+              >
+                Subscription & Users
+              </DropdownListItem>
+              <DropdownListItem
+                button
+                onClick={onLinkClicked}
+                component={linkComponent}
+                link="/billing"
+              >
+                Billing & Invoices
+              </DropdownListItem>
+            </>
+          )}
           <DropdownListItem
             button
-            onClick={closePopover}
-            component={linkComponent}
-            link="/subscriptions"
-          >
-            Subscription & Users
-          </DropdownListItem>
-          <DropdownListItem
-            button
-            onClick={closePopover}
-            component={linkComponent}
-            link="/billing"
-          >
-            Billing & Invoices
-          </DropdownListItem>
-          <DropdownListItem
-            button
-            onClick={closePopover}
+            onClick={onLinkClicked}
             component={linkComponent}
             link="/documents"
           >
             Documents & Agreements
           </DropdownListItem>
         </StyledDropdown>
-      )}
-      {!isUserAdmin && (
-        <StyledDropdownSmaller
-          open={isPopoverOpen}
-          onMouseEnter={userProfileEnabled && openPopover}
-          onMouseLeave={closePopover}
-          timeout={250}
-        >
-          <DropdownListItem
-            button
-            onClick={closePopover}
-            component={linkComponent}
-            link="/userProfile"
-          >
-            Profile & Settings
-          </DropdownListItem>
-          <DropdownListItem
-            button
-            onClick={closePopover}
-            component={linkComponent}
-            link="/documents"
-          >
-            Documents & Agreements
-          </DropdownListItem>
-        </StyledDropdownSmaller>
       )}
     </>
   );

@@ -1,7 +1,7 @@
 import MaterialDrawer from '@material-ui/core/Drawer';
 import moment from 'moment';
 import { path } from 'ramda';
-import React from 'react';
+import React, { useState } from 'react';
 import Intercom from 'react-intercom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -60,6 +60,7 @@ const ContentContainer = styled.div`
 
 const Drawer = ({ header, user, lists, children }) => {
   const [isOpen, open, close] = useBoolean(false);
+  const [activeId, setActiveId] = useState('');
 
   const intercomUser = {
     email: user.email,
@@ -108,6 +109,8 @@ const Drawer = ({ header, user, lists, children }) => {
     <div style={{ display: 'flex', height: '100%' }}>
       <StyledDrawer open={isOpen}>
         <DrawerList
+          activeId={activeId}
+          setActiveId={setActiveId}
           onMouseEnter={open}
           onMouseLeave={close}
           open={isOpen}

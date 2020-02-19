@@ -252,6 +252,8 @@ const renderDrawerItem = ({ userProfileAccess, ...drawerListProps }) => ({
   );
 
 const DrawerList = ({
+  activeId,
+  setActiveId,
   open,
   user,
   lists,
@@ -259,7 +261,6 @@ const DrawerList = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
-  const [activeId, setActiveId] = useState('');
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
   const [rolloverLabel, setRolloverLabel] = useState('');
@@ -297,7 +298,7 @@ const DrawerList = ({
   return (
     <>
       <StyledList onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <DrawerHeader user={user} />
+        <DrawerHeader setActiveId={setActiveId} user={user} />
         {drawerItems.map(
           renderDrawerItem({
             activeId,
