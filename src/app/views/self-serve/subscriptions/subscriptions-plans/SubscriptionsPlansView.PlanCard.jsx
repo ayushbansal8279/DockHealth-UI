@@ -16,7 +16,6 @@ import { createBreakpoint, useToggle } from 'react-use';
 import styled from 'styled-components';
 import SafariFixGrid from '../../../../components/common/SafariFixGrid';
 import CollapseInteractive from '../../../../img/collapse-interactive';
-import SubscriptionPlanTick from '../../../../img/subscription-plan-tick.svg';
 import { H4, H5 } from '../SubscriptionsView.Styled';
 import {
   CardContactUsFooter,
@@ -111,28 +110,6 @@ const FreeTrialPlanLabel = styled.div`
   position: absolute;
   right: -0.0625rem;
   top: -1.375rem;
-`;
-
-const CardHeaderTick = styled.div`
-  align-items: center;
-  background-color: #074a86;
-  border: ${props => (props.isSmallScreen ? 0.125 : 0.1875)}rem solid #fff;
-  border-radius: 50%;
-  display: flex;
-  height: ${props => (props.isSmallScreen ? 1.5 : 2.125)}rem;
-  justify-content: center;
-  ${props => (props.isSmallScreen ? 'right: 2.25rem' : 'left: 50%')};
-  position: absolute;
-  ${props => (props.isSmallScreen ? 'bottom: 0.125rem' : 'top: -1.0625rem')};
-  transform: translateX(-50%) scale(${props => (props.chosen ? 1 : 0)});
-  transition: all 0.25s ease-out;
-  width: ${props => (props.isSmallScreen ? 1.5 : 2.125)}rem;
-  z-index: 2;
-
-  > img {
-    height: 75%;
-    width: 75%;
-  }
 `;
 
 const RotatableCollapse = styled(CollapseInteractive)`
@@ -244,9 +221,6 @@ const SubscriptionsViewPlanCard = ({
               FREE 30 DAY TRIAL *
             </FreeTrialPlanLabel>
           )}
-          <CardHeaderTick isSmallScreen={isSmallScreen} chosen={chosen}>
-            <img alt="tick" src={SubscriptionPlanTick} />
-          </CardHeaderTick>
           <LabelComponent>{planLabel}</LabelComponent>
           <Hidden lgUp>
             <RotatableCollapse

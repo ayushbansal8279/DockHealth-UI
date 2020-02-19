@@ -145,11 +145,16 @@ export default () => {
           </BillingContainer>
         )}
         <BottomButtonContainer container justify="flex-end">
-          {plansViewVisible && (
+          {plansViewVisible && chosenPlan && (
             <>
-              <StyledButton variant="outlined" onClick={hideSubscriptionPlans}>
-                Cancel
-              </StyledButton>
+              {!subscriptionPlanData?.planIsTrial && (
+                <StyledButton
+                  variant="outlined"
+                  onClick={hideSubscriptionPlans}
+                >
+                  Cancel
+                </StyledButton>
+              )}
               <StyledButton
                 disabled={buyButtonDisabled}
                 variant="contained"
