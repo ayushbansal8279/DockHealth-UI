@@ -4,6 +4,7 @@ import { useToggle, useUnmount } from 'react-use';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 import PlanCardsContainer from './SubscriptionsPlansView.PlanCardsContainer';
 import { subscriptionFeatures } from './SubscriptionsPlansView.PlanData';
+import { TermsLabel } from './SubscriptionsPlansView.Styled';
 
 const SubscriptionsPlansView = ({
   chosenPlan,
@@ -66,17 +67,27 @@ const SubscriptionsPlansView = ({
   });
 
   return (
-    <PlanCardsContainer
-      toggleAnnualPayment={toggleAnnualPayment}
-      toggleFeatureListExpanded={toggleFeatureListExpanded}
-      featureListExpanded={featureListExpanded}
-      featureRowReferences={featureRowReferences}
-      annualPayment={annualPayment}
-      setChosenPlan={setChosenPlan}
-      chosenPlan={chosenPlan}
-      changeSubscriptionPlan={changeSubscriptionPlan}
-      subscriptionPlanData={subscriptionPlanData}
-    />
+    <>
+      <PlanCardsContainer
+        toggleAnnualPayment={toggleAnnualPayment}
+        toggleFeatureListExpanded={toggleFeatureListExpanded}
+        featureListExpanded={featureListExpanded}
+        featureRowReferences={featureRowReferences}
+        annualPayment={annualPayment}
+        setChosenPlan={setChosenPlan}
+        chosenPlan={chosenPlan}
+        changeSubscriptionPlan={changeSubscriptionPlan}
+        subscriptionPlanData={subscriptionPlanData}
+      />
+      <TermsLabel>
+        * Subscribers and their Organization will receive a temporary license
+        for full access to Dock for 30 days. There is no limit to the number of
+        users in the Organization. At any time during the 30-day trial,
+        subscribers can choose to extend the license by agreeing to the Terms
+        and Conditions and providing payment. If Subscribers choose to not
+        extend the license, the Service will terminate after 30 days.
+      </TermsLabel>
+    </>
   );
 };
 

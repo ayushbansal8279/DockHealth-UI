@@ -39,3 +39,9 @@ export const PlanLabel = styled.h1`
   font-size: 1.875rem;
   margin: 0;
 `;
+
+export const TermsLabel = styled.p`
+  font-size: 0.6875rem;
+  margin: 1rem 0 3rem;
+  padding: 0 0.5rem;
+`;
