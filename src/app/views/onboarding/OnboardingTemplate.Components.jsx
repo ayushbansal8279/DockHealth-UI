@@ -196,6 +196,10 @@ export const OnboardingSpacing5 = styled(OnboardingSpacing)`
   height: 4rem;
 `;
 
+export const OnboardingSpacing6 = styled(OnboardingSpacing)`
+  height: 8rem;
+`;
+
 const OnboardingHorizontalSpacing = styled.div`
   height: auto;
 `;
@@ -306,18 +310,11 @@ export const OnboardingButton = withStyles({
     color: '#fff',
     fontWeight: 'bold',
   },
-  containedInverted: {
-    backgroundColor: '#074A86',
-    color: '#fff',
-  },
   containedDisabled: {
-    color: '#ffffff80',
+    backgroundColor: '#c1ccda',
   },
   containedAutoWidthDisabled: {
-    color: '#ffffff80',
-  },
-  containedInvertedDisabled: {
-    backgroundColor: '#c8c8ce',
+    backgroundColor: '#c1ccda',
   },
   outlined: {
     color: '#303538',

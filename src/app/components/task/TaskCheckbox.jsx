@@ -161,10 +161,11 @@ const StyledOutLineBottomLeft = styled(StyledOutLineBase)`
 const StyledCheckIcon = styled(CheckIcon)`
   && {
     stroke-dasharray: 32px;
-    stroke-dashoffset: 32px;
+    stroke-dashoffset: 40px;
     transition: all 0.3s ease-out;
 
-    ${props => props.checked && `stroke-dashoffset: 0px;`}
+    ${props =>
+      props.checked && `stroke-dasharray: 30px; stroke-dashoffset: 0px;`}
   }
 `;
 

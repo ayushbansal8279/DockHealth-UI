@@ -1,6 +1,5 @@
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback } from 'react';
-import parseHtml from 'react-html-parser';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useToggle } from 'react-use';
@@ -10,26 +9,18 @@ import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import {
   OnboardingAnchor,
   OnboardingButton,
-  OnboardingH1Bold,
+  OnboardingH2,
   OnboardingH2Bold,
   OnboardingH3,
   OnboardingHorizontalSpacing3,
   OnboardingSpacing2,
-  OnboardingSpacing4,
+  OnboardingSpacing5,
+  OnboardingSpacing6,
 } from '../OnboardingTemplate.Components';
-import EULA from './OnboardingEulaView.Eula';
-import {
-  EulaContainer,
-  OnboardAcceptingGrid,
-} from './OnboardingEulaView.Styled';
 
 const OnboardingEulaView = () => {
   const dispatch = useDispatch();
   const [isEulaAccepted, toggleEulaAccepted] = useToggle(false);
-  const [
-    isPrivacyStatementAccepted,
-    togglePrivacyStatementAccepted,
-  ] = useToggle(false);
 
   const { userProfile } = useSelector(store => {
     return {
@@ -41,7 +32,7 @@ const OnboardingEulaView = () => {
     setOnboardingCurrentStep({ currentStep: 2 })(dispatch);
   });
 
-  const continueButtonDisabled = !isPrivacyStatementAccepted || !isEulaAccepted;
+  const continueButtonDisabled = !isEulaAccepted;
 
   const onAgreeClick = useCallback(() => {
     acknowledgeEula()(dispatch).then(() => {
@@ -58,18 +49,18 @@ const OnboardingEulaView = () => {
 
   return (
     <div>
-      <OnboardingH1Bold>JUST A FEW STEPS</OnboardingH1Bold>
+      <OnboardingH2>
+        Creating a great relationship with our customer, protecting patient data
+        and compliance with HIPAA is essential to our work and yours.
+      </OnboardingH2>
       <OnboardingSpacing2 />
       <OnboardingH3>
-        Protecting patient data and compliance with HIPAA is essential to our
-        work and yours. We would love to set you and your team up to be HIPAA
-        compliant which requires signing a few quick documents.
+        We would love to set up and your team up to be HIPAA complaint which
+        requires signing a few quick documents.
       </OnboardingH3>
-      <OnboardingSpacing4 />
-      <EulaContainer>{parseHtml(EULA)}</EulaContainer>
-      <OnboardingSpacing4 />
-      <OnboardAcceptingGrid container justify="flex-end">
-        <Grid item sm={5} container wrap="nowrap">
+      <OnboardingSpacing5 />
+      <Grid container>
+        <Grid item sm={12} container wrap="nowrap">
           <TaskCheckbox
             checked={isEulaAccepted}
             onChange={toggleEulaAccepted}
@@ -77,47 +68,36 @@ const OnboardingEulaView = () => {
           />
           <OnboardingHorizontalSpacing3 />
           <OnboardingH3>
-            <span>I agree to the </span>
+            <span>I have read and agree to the </span>
             <OnboardingAnchor
-              href="https://www.dock.health/privacypolicy"
+              href="https://www.dock.health/end-user-license-agreement"
               target="_blank"
             >
               End User License Agreement
             </OnboardingAnchor>
-          </OnboardingH3>
-        </Grid>
-      </OnboardAcceptingGrid>
-      <OnboardAcceptingGrid container justify="flex-end">
-        <Grid item sm={5} container wrap="nowrap">
-          <TaskCheckbox
-            checked={isPrivacyStatementAccepted}
-            onChange={togglePrivacyStatementAccepted}
-            color="#125375"
-          />
-          <OnboardingHorizontalSpacing3 />
-          <OnboardingH3>
-            <span>I agree to the </span>
+            <span> and </span>
             <OnboardingAnchor
-              href="https://www.dock.health/end-user-license-agreement"
+              href="https://www.dock.health/privacypolicy"
               target="_blank"
             >
               Privacy Statement
             </OnboardingAnchor>
           </OnboardingH3>
         </Grid>
-      </OnboardAcceptingGrid>
-      <OnboardAcceptingGrid container justify="flex-end">
-        <Grid item sm={4}>
-          <OnboardingButton
-            disabled={continueButtonDisabled}
-            variant="containedAutoWidth"
-            onClick={onAgreeClick}
-            fullWidth
-          >
-            <OnboardingH2Bold>Agree & Continue</OnboardingH2Bold>
-          </OnboardingButton>
+        <OnboardingSpacing6 />
+        <Grid item sm={12} container justify="flex-end">
+          <Grid item sm={4}>
+            <OnboardingButton
+              disabled={continueButtonDisabled}
+              variant="containedAutoWidth"
+              onClick={onAgreeClick}
+              fullWidth
+            >
+              <OnboardingH2Bold>Agree & Continue</OnboardingH2Bold>
+            </OnboardingButton>
+          </Grid>
         </Grid>
-      </OnboardAcceptingGrid>
+      </Grid>
     </div>
   );
 };
