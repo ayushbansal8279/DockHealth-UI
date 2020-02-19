@@ -98,6 +98,36 @@ export default () => {
   const invitationPanelVisible =
     outerContainerReference.current?.clientHeight > window.innerHeight;
 
+  const {
+    annualMonthlyPrice: chosenAnnualMonthlyPrice,
+    subscriptionPlan: chosenSubscriptionPlan,
+    monthlyPrice: chosenMonthlyPrice,
+  } = chosenPlan || {};
+
+  const chosenTotalPerUserCost = annualPayment
+    ? chosenAnnualMonthlyPrice
+    : chosenMonthlyPrice;
+
+  const currentUsersCount = selectedUsers?.length ?? 0;
+
+  const chosenSubscriptionPlanData = getSubscriptionPlanData({
+    organization: {
+      subscriptionDetails: {
+        subscriptionPlan: chosenSubscriptionPlan,
+        billingFrequency,
+      },
+    },
+    billingData: {
+      monthlyPerUserCost: chosenTotalPerUserCost,
+      monthlyEstimate: currentUsersCount * chosenTotalPerUserCost,
+      annualEstimate: currentUsersCount * chosenTotalPerUserCost * 12,
+    },
+  });
+
+  const memberTableSubscriptionData = chosenPlan
+    ? chosenSubscriptionPlanData
+    : subscriptionPlanData;
+
   return (
     <SubscriptionsViewOuterContainer ref={outerContainerReference}>
       <SubscriptionsViewContainer container>
@@ -132,6 +162,7 @@ export default () => {
           chosenSubscriptionPlan={chosenPlan}
           userSubscriptionStatus={userSubscriptionStatus}
           setUserSubscriptionStatus={setUserSubscriptionStatus}
+          subscriptionPlanData={memberTableSubscriptionData}
         />
         {invitationPanelVisible && (
           <InvitationPanel getAllUsers={getAllUsers} />

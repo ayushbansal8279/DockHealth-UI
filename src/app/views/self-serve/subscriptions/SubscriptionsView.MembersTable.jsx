@@ -34,6 +34,7 @@ const renderOrganizationMemberRow = ({
   openDialog,
   setRemovedUserData,
   chosenSubscriptionPlan,
+  subscriptionPlanData,
 }) => props => {
   const { firstName, lastName, email, userIdentifier } = props;
   const key = `${firstName}${lastName}${userIdentifier}${email}`;
@@ -49,6 +50,7 @@ const renderOrganizationMemberRow = ({
       openDialog={openDialog}
       setRemovedUserData={setRemovedUserData}
       chosenSubscriptionPlan={chosenSubscriptionPlan}
+      subscriptionPlanData={subscriptionPlanData}
       {...props}
     />
   );
@@ -115,6 +117,7 @@ const SubscriptionsViewMembersTable = ({
   chosenSubscriptionPlan,
   userSubscriptionStatus = USER_SUBSCRIPTION_STATUS.ALL,
   setUserSubscriptionStatus = () => {},
+  subscriptionPlanData,
 }) => {
   const {
     currentBreakPoint,
@@ -189,6 +192,7 @@ const SubscriptionsViewMembersTable = ({
                     selectedUsers,
                     openDialog,
                     setRemovedUserData,
+                    subscriptionPlanData,
                     chosenSubscriptionPlan,
                   }),
                 )
