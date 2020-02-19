@@ -1,9 +1,10 @@
 import Grid from '@material-ui/core/Grid';
+import { parse } from 'query-string';
 import React, { useRef, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { useMount, useToggle } from 'react-use';
-// import { hashHistory } from 'react-router';
 import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import {
@@ -104,7 +105,7 @@ const resendEmail = async email => {
     });
     showToast({
       status: 'success',
-      title: `Account confirmation email resent`,
+      title: 'Account confirmation email resent',
     });
   } catch (error) {
     showAlert({
@@ -113,7 +114,6 @@ const resendEmail = async email => {
       text: error?.message ?? 'Could not resend email, please try again later',
     });
   }
-  // hashHistory.replace('/login');
 };
 
 const OnboardingCreateAccountView = () => {
@@ -138,11 +138,25 @@ const OnboardingCreateAccountView = () => {
     setOnboardingCurrentStep({ currentStep: 1 })(dispatch);
   });
 
+  const hasTrialReferral = Boolean(
+    parse(hashHistory.getCurrentLocation()?.search)?.trial,
+  );
+
+  const CreateAccountLabelComponent = hasTrialReferral
+    ? OnboardingH2
+    : OnboardingH1;
+
   return (
     <div>
-      <OnboardingH1>Start your free 30 day trial </OnboardingH1>
-      <OnboardingSpacing3 />
-      <OnboardingH2>Please create an account</OnboardingH2>
+      {hasTrialReferral && (
+        <>
+          <OnboardingH1>Start your free 30 day trial </OnboardingH1>
+          <OnboardingSpacing3 />
+        </>
+      )}
+      <CreateAccountLabelComponent>
+        Please create an account
+      </CreateAccountLabelComponent>
       <OnboardingSpacing3 />
       <OnboardingFieldsRequiredLabel>
         All fields required
