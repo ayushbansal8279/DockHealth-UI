@@ -9,11 +9,13 @@ import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import {
   OnboardingAnchor,
   OnboardingButton,
+  OnboardingH1Bold,
   OnboardingH2,
   OnboardingH2Bold,
   OnboardingH3,
   OnboardingHorizontalSpacing3,
   OnboardingSpacing2,
+  OnboardingSpacing3,
   OnboardingSpacing5,
   OnboardingSpacing6,
 } from '../OnboardingTemplate.Components';
@@ -49,6 +51,8 @@ const OnboardingEulaView = () => {
 
   return (
     <div>
+      <OnboardingH1Bold>LET&apos;S GET STARTED</OnboardingH1Bold>
+      <OnboardingSpacing3 />
       <OnboardingH2>
         Creating a great relationship with our customer, protecting patient data
         and compliance with HIPAA is essential to our work and yours.
