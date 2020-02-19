@@ -55,7 +55,7 @@ const PlanButton = styled.button`
   justify-content: center;
   margin: 0.5rem 0;
   transition: all 0.25s ease-out;
-  width: 100%;
+  min-width: 10rem;
 `;
 
 const CardFeatureRowContainer = styled.div`
@@ -275,7 +275,14 @@ export const CardStandardFooter = ({
       justify="center"
       alignItems={isSmallScreen ? FLEX_POSITION.END : FLEX_POSITION.CENTER}
     >
-      <SafariFixGrid item lg={12} md={6} sm={6} container justify="center">
+      <SafariFixGrid
+        item
+        lg={12}
+        md={6}
+        sm={6}
+        container
+        justify={isSmallScreen ? FLEX_POSITION.END : FLEX_POSITION.CENTER}
+      >
         <PlanButton chosen={chosen}>
           <H3BoldWhite>
             {chosen ? 'Plan Selected' : 'Select This Plan'}
