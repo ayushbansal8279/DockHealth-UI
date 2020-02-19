@@ -100,10 +100,9 @@ const RecommendedLabel = styled.div`
 
 const FreeTrialPlanLabel = styled.div`
   align-items: center;
-  background-color: #011845;
-  border: 0.0625rem solid #011845;
+  background-color: #feb52b;
   border-radius: 0.25rem 0.25rem 0 0;
-  color: #fff;
+  color: #3d4858;
   display: flex;
   font-size: 0.875rem;
   height: 1.375rem;
@@ -242,7 +241,7 @@ const SubscriptionsViewPlanCard = ({
           )}
           {isFreeTrialLabelShown && (
             <FreeTrialPlanLabel isSmallScreen={isSmallScreen}>
-              FREE 30 DAY TRIAL
+              FREE 30 DAY TRIAL *
             </FreeTrialPlanLabel>
           )}
           <CardHeaderTick isSmallScreen={isSmallScreen} chosen={chosen}>
