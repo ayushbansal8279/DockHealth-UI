@@ -7,12 +7,7 @@ import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
-import any from 'ramda/es/any';
-import equals from 'ramda/es/equals';
-import filter from 'ramda/es/filter';
-import map from 'ramda/es/map';
-import prop from 'ramda/es/prop';
-import reject from 'ramda/es/reject';
+import { any, equals, filter, isEmpty, map, prop, reject } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -52,6 +47,10 @@ import {
   StyledButtonLabel,
   TableWrapper,
   TaskListContainer,
+  TasklistCount,
+  TaskListSectionContainer,
+  TaskListSectionHeader,
+  TaskListSectionHeading,
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
@@ -76,46 +75,6 @@ const groupBy = (list, keyGetter) => {
 
   return checkMap;
 };
-
-export const TaskListContainerWrapper = styled.div`
-  flex: 2;
-  padding: 4px;
-`;
-
-export const TaskListHeader = styled.div`
-  display: flex;
-  position: relative;
-  height: 67px;
-  background: #2a4a70;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  padding: 15px 13.5px 19px 27px;
-`;
-
-export const TaskListSectionContainer = styled.div`
-  margin-bottom: 1.5rem;
-`;
-
-export const TaskListSectionHeader = styled(Grid)`
-  background-color: #fff;
-  margin-bottom: 0.25rem;
-  padding: 0.25rem 0.75rem;
-`;
-
-export const TaskListSectionHeading = styled.div`
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #0ca1c7;
-`;
-
-export const TasklistCount = styled.div`
-  color: #2e3a43;
-  font-size: 16px;
-  font-weight: normal;
-  margin-bottom: 0.5rem;
-`;
 
 const filterOptions = [
   {
@@ -732,9 +691,9 @@ class TaskView extends Component {
       taskListIdentifier,
       listName,
       showListHeadings = true,
+      taskDrawerOpen,
     } = this.props;
     const { filterBy, slimView, taskTimeouts } = this.state;
-    const { taskDrawerOpen } = this.props;
 
     const incompleteTasks = this.search(allIncompleteTasks);
     const completedTasks = this.search(allCompletedTasks);
@@ -799,7 +758,14 @@ class TaskView extends Component {
       showListHeadings,
     };
 
-    if (isInbox && tasks.length === 0) {
+    const { searchTerms, filterBy: stateFilterBy } = this.state;
+
+    if (
+      isInbox &&
+      isEmpty(tasks) &&
+      isEmpty(searchTerms) &&
+      isEmpty(stateFilterBy)
+    ) {
       return <InboxNoMessagesAvailable />;
     }
 
@@ -1049,8 +1015,14 @@ class TaskView extends Component {
     const currentFilterDescription =
       filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
 
+    const hasTasks = !isEmpty(tasks);
+    const hasNoTasksAfterFilterApplication =
+      isEmpty(tasks) && !isEmpty(filterBy);
+
     const toolbarContainerVisible =
-      (isInbox && (tasks.length > 0 || isFetching)) || !isInbox;
+      (isInbox &&
+        (hasTasks || hasNoTasksAfterFilterApplication || isFetching)) ||
+      !isInbox;
 
     const showSortingStats = isMultiList !== true && isInbox !== true;
 
@@ -1163,4 +1135,7 @@ const mapStateToProps = store => ({
   taskDrawerOpen: store.taskDrawerState?.open,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TaskView);

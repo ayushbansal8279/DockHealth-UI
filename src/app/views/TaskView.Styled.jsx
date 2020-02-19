@@ -263,3 +263,43 @@ export const CompletedButtonRowContainer = styled.div`
   flex-direction: row wrap;
   justify-content: center;
 `;
+
+export const TaskListContainerWrapper = styled.div`
+  flex: 2;
+  padding: 4px;
+`;
+
+export const TaskListHeader = styled.div`
+  display: flex;
+  position: relative;
+  height: 67px;
+  background: #2a4a70;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 15px 13.5px 19px 27px;
+`;
+
+export const TaskListSectionContainer = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+export const TaskListSectionHeader = styled(Grid)`
+  background-color: #fff;
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0.75rem;
+`;
+
+export const TaskListSectionHeading = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0ca1c7;
+`;
+
+export const TasklistCount = styled.div`
+  color: #2e3a43;
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 0.5rem;
+`;
