@@ -15,6 +15,9 @@ import {
 import DrawerList from './DrawerList';
 import DrawerTitle from './DrawerTitle';
 
+const MINIMAL_TRIAL_USAGE_PERIOD = 2;
+const TRIAL_USAGE_PERIOD = 30;
+
 const StyledDrawer = styled(MaterialDrawer).attrs({
   variant: 'permanent',
   classes: {
@@ -73,7 +76,7 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const subscription = organization?.subscriptionDetails;
 
-  const trialBannerVisible = getSubscriptionIsTrial({
+  const isSubscriptionTrial = getSubscriptionIsTrial({
     subscription,
   });
 
@@ -85,12 +88,17 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const trialEndDayDifference = trialEndMoment.isValid()
     ? Math.abs(trialEndMoment.diff(moment(), 'day'))
-    : null;
+    : 0;
 
   const trialEndDateLabel =
     trialEndDayDifference > 0 ? `in ${trialEndDayDifference} days` : 'soon';
 
   const trialEndLabel = `Your ${subscriptionPlanTrialLabel} free trial will expire ${trialEndDateLabel}.`;
+
+  const hasMinialUsagePeriodPassed =
+    trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
+
+  const trialBannerVisible = isSubscriptionTrial && hasMinialUsagePeriodPassed;
 
   useMount(() => {
     getOrganizationById({ organizationIdentifier })(dispatch);
