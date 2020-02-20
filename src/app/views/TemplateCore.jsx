@@ -107,9 +107,7 @@ class TemplateCore extends PureComponent {
     const data = await userApi.getUserByEmail(user.username, user);
     let orgData = null;
     if (data && data.organizationIdentifier) {
-      orgData = await organizationApi.get({
-        organizationIdentifier: data.organizationIdentifier,
-      });
+      orgData = await organizationApi.checkBAASignedStatus();
     }
     if (!data.organizationIdentifier || data.organizationIdentifier === '') {
       hashHistory.push('/unEnrolledUser');
@@ -174,7 +172,4 @@ const mapDispatchToProps = dispatch => ({
   dispatchedUnsetHeader: unsetHeader(dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TemplateCore);
+export default connect(mapStateToProps, mapDispatchToProps)(TemplateCore);

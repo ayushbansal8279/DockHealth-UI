@@ -118,3 +118,12 @@ export const downloadSignedDocument = () =>
   }).then(response => {
     return response.data;
   });
+
+export const checkBAASignedStatus = () =>
+  axios.get(`/organization/checkBAASignedStatus`).then(response => {
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error('Unable to check BAA signature status');
+  });
