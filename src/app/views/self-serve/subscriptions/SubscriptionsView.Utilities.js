@@ -25,7 +25,7 @@ export const getSubscriptionPlanName = ({ subscription }) => {
     case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
       return 'Free 90 day trial';
     case SUBSCRIPTION_PLANS.PLAN_STANDARD:
-      return 'Standard';
+      return 'Dock';
     case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
       return 'Premium';
     case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
