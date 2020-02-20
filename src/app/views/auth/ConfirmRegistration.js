@@ -90,7 +90,7 @@ export default class ConfirmRegistration extends PureComponent {
       <div className="columns large-12">
         <div className="row expanded text-left">
           <div className="columns large-12 top-buffer">
-            <h5>Confirm registration</h5>
+            <h5>Confirming your account</h5>
           </div>
         </div>
         {/* <ConfirmUserAccountForm type="Confirm" onSubmit={this.onSubmit} /> */}
