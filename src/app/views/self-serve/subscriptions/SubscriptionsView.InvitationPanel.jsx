@@ -108,7 +108,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     error={firstNameError}
                     name="firstName"
                     inputRef={register}
-                    autoComplete="off"
+                    autoComplete="none"
                   />
                 </StyledFormControl>
               </Grid>
@@ -120,7 +120,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     error={lastNameError}
                     name="lastName"
                     inputRef={register}
-                    autoComplete="off"
+                    autoComplete="none"
                   />
                 </StyledFormControl>
               </Grid>
@@ -132,7 +132,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     error={emailError}
                     name="email"
                     inputRef={register}
-                    autoComplete="off"
+                    autoComplete="none"
                   />
                 </StyledFormControl>
               </Grid>

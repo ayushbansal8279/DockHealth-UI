@@ -175,7 +175,7 @@ const OnboardingCreateAccountView = () => {
                 name="firstName"
                 placeholder="Enter your first name here"
                 InputBaseProps={{
-                  autoComplete: 'off',
+                  autoComplete: 'none',
                 }}
               />
             </Grid>
@@ -185,7 +185,7 @@ const OnboardingCreateAccountView = () => {
                 name="lastName"
                 placeholder="Enter your last name here"
                 InputBaseProps={{
-                  autoComplete: 'off',
+                  autoComplete: 'none',
                 }}
               />
             </Grid>
@@ -195,7 +195,7 @@ const OnboardingCreateAccountView = () => {
                 name="email"
                 placeholder="Enter your email here"
                 InputBaseProps={{
-                  autoComplete: 'off',
+                  autoComplete: 'none',
                 }}
                 inputContainerReference={emailInputReference}
               />
@@ -212,7 +212,7 @@ const OnboardingCreateAccountView = () => {
                       {isPasswordShown ? 'Hide' : 'Show'}
                     </OnboardingH4Toggle>
                   ),
-                  autoComplete: 'off',
+                  autoComplete: 'none',
                 }}
               />
               <OnboardingAdditionalFormControlText>
@@ -236,7 +236,7 @@ const OnboardingCreateAccountView = () => {
                 placeholder="Enter your mobile phone number here"
                 CustomComponent={MobileInputComponent}
                 InputBaseProps={{
-                  autoComplete: 'off',
+                  autoComplete: 'none',
                 }}
               />
               <OnboardingAdditionalFormControlText>

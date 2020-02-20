@@ -95,14 +95,14 @@ class AddTaskForm extends PureComponent {
     );
   };
 
-  resetSubtaskForm = currTask => {
-    if (currTask && currTask.patient) {
-      const patientName = `${currTask.patient.firstName} ${currTask.patient.lastName}`;
+  resetSubtaskForm = currentTask => {
+    if (currentTask && currentTask.patient) {
+      const patientName = `${currentTask.patient.firstName} ${currentTask.patient.lastName}`;
       this.props.formActions.change('addSubtaskForm', 'patient', patientName);
       this.props.formActions.change(
         'addSubtaskForm',
         'patientIdentifier',
-        currTask.patient.patientIdentifier,
+        currentTask.patient.patientIdentifier,
       );
     }
   };
@@ -159,7 +159,7 @@ class AddTaskForm extends PureComponent {
       <form
         className="inline-label"
         onSubmit={this.props.handleSubmit}
-        autoComplete="off"
+        autoComplete="none"
       >
         <div className="main-task-wrapper">
           <div className="column large-12 text-center">
@@ -180,7 +180,7 @@ class AddTaskForm extends PureComponent {
             component={BasicFieldTaskDescription}
             callback={this.changeTaskPriority}
             priority={this.state.priorityFlag}
-            autoComplete="off"
+            autoComplete="none"
           />
           <Field
             id="taskIdentifier"
@@ -253,7 +253,7 @@ class AddTaskForm extends PureComponent {
                 component="input"
                 type="text"
                 data-toggle="add-task-file-in-options"
-                autoComplete="off"
+                autoComplete="none"
               />
               <label>File in</label>
             </div>
@@ -363,7 +363,8 @@ class AddTaskForm extends PureComponent {
           <FieldArray name="subtasks" component={renderSubtaskField} />
 
           <div className="row expanded">
-            {!this.props.currentTask || !this.props.currentTask.parentTaskIdentifier ? (
+            {!this.props.currentTask ||
+            !this.props.currentTask.parentTaskIdentifier ? (
               <div
                 onClick={() => this.resetSubtaskForm(this.props.currentTask)}
                 className="columns highlight center-content-vertical toggle-add-subtask link"
@@ -432,7 +433,8 @@ const mapStateToProps = store => {
     initialTaskFormValues.taskIdentifier = editTask.taskIdentifier;
     if (editTask.patient) {
       initialTaskFormValues.patient = `${editTask.patient.firstName} ${editTask.patient.lastName}`;
-      initialTaskFormValues.patientIdentifier = editTask.patient.patientIdentifier;
+      initialTaskFormValues.patientIdentifier =
+        editTask.patient.patientIdentifier;
     }
     if (editTask.dueDate) {
       initialTaskFormValues.dueDate = new Date(editTask.dueDate);
@@ -444,7 +446,8 @@ const mapStateToProps = store => {
     }
     if (editTask.assignedTo) {
       initialTaskFormValues.assignedTo = `${editTask.assignedTo.firstName} ${editTask.assignedTo.lastName}`;
-      initialTaskFormValues.assignedToIdentifier = editTask.assignedTo.userIdentifier;
+      initialTaskFormValues.assignedToIdentifier =
+        editTask.assignedTo.userIdentifier;
     }
     if (editTask.taskList) {
       initialTaskFormValues.taskList = editTask.taskList.listName;
@@ -490,7 +493,4 @@ const mapDispatchToProps = dispatch => ({
   ),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddTaskFormWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(AddTaskFormWrapper);

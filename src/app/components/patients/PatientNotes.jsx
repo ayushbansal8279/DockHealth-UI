@@ -155,7 +155,7 @@ const PatientNotes = ({
             hiddenLabel
             style={{ padding: 0 }}
             autoFocus
-            autoComplete="off"
+            autoComplete="none"
           />
           <div
             style={{

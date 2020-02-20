@@ -46,7 +46,7 @@ class FormPatient extends PureComponent {
     // console.log('FormPatient componentWillReceiveProps: '+nextProps);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(previousProps, previousState) {
     // console.log('FormPatient componentDidUpdate: ')
   }
 
@@ -57,10 +57,10 @@ class FormPatient extends PureComponent {
   // }
 
   onSubmit(formProps) {
-    let dobStr = $('.dobpickdate').val(); // form props is not picking up dob date value hence need to set it manually
+    let dobString = $('.dobpickdate').val(); // form props is not picking up dob date value hence need to set it manually
 
-    if (dobStr) {
-      dobStr = dobStr.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/, function(
+    if (dobString) {
+      dobString = dobString.replace(/(\d{4})-(\d{1,2})-(\d{1,2})/, function(
         match,
         y,
         m,
@@ -70,8 +70,8 @@ class FormPatient extends PureComponent {
       });
     }
 
-    if (dobStr && dobStr != '') {
-      formProps.dob = dobStr;
+    if (dobString && dobString != '') {
+      formProps.dob = dobString;
     }
     if (this.props.patientIdentifier) {
       this.props.actions
@@ -80,9 +80,9 @@ class FormPatient extends PureComponent {
           // this.setState({saveMessage: 'Patient updated succesfully'})
           closeAddForm();
         })
-        .catch(e => {
+        .catch(error => {
           // this.setState({saveMessage: e.message})
-          toggleAlert(e.message, 'error');
+          toggleAlert(error.message, 'error');
         });
     } else {
       this.props.actions
@@ -92,7 +92,7 @@ class FormPatient extends PureComponent {
           toggleAlert('Patient created succesfully!', 'success');
           const currentProps = this.props;
           const patientName = `${res.firstName} ${formProps.lastName}`;
-          const patientIdentifier = res.patientIdentifier;
+          const { patientIdentifier } = res;
           if (!this.props.modalForm) {
             closeAddForm();
           } else {
@@ -111,9 +111,9 @@ class FormPatient extends PureComponent {
             $('#add-patient-id').val(patientIdentifier);
           }
         })
-        .catch(e => {
+        .catch(error => {
           // this.setState({saveMessage: e.message})
-          toggleAlert(e.message, 'error');
+          toggleAlert(error.message, 'error');
         });
     }
 
@@ -142,12 +142,12 @@ class FormPatient extends PureComponent {
     // console.log(this.props.formValues)
     // console.log(this.props.allFormValues)
 
-    const handleSubmit = this.props.handleSubmit; // injected by reduxform
+    const { handleSubmit } = this.props; // injected by reduxform
     return (
       <form
         className="inline-label top-buffer"
         onSubmit={handleSubmit(this.onSubmit)}
-        autoComplete="off"
+        autoComplete="none"
       >
         <Field name="patientIdentifier" type="hidden" component={BasicField} />
         <Field
@@ -156,7 +156,7 @@ class FormPatient extends PureComponent {
           component={BasicField}
           label="MRN (required)"
           placeholder="required"
-          autoComplete="off"
+          autoComplete="none"
         />
         <Field
           name="firstName"
@@ -164,7 +164,7 @@ class FormPatient extends PureComponent {
           component={BasicField}
           label="First name (required)"
           placeholder="required"
-          autoComplete="off"
+          autoComplete="none"
         />
         <Field
           name="lastName"
@@ -172,7 +172,7 @@ class FormPatient extends PureComponent {
           component={BasicField}
           label="Last name (required)"
           placeholder="required"
-          autoComplete="off"
+          autoComplete="none"
         />
 
         {/* <div className="column large-12 input-group no-icon">
@@ -239,7 +239,7 @@ class FormPatient extends PureComponent {
           component={BasicField}
           label="Home phone"
           placeholder="required"
-          autoComplete="off"
+          autoComplete="none"
         />
         <Field
           name="phoneMobile"
@@ -247,7 +247,7 @@ class FormPatient extends PureComponent {
           component={BasicField}
           label="Mobile"
           placeholder="required"
-          autoComplete="off"
+          autoComplete="none"
         />
         <Field
           name="email"
@@ -255,7 +255,7 @@ class FormPatient extends PureComponent {
           component={BasicField}
           label="Email"
           placeholder="required"
-          autoComplete="off"
+          autoComplete="none"
         />
 
         <div className="column large-12 input-group no-icon">
@@ -269,7 +269,7 @@ class FormPatient extends PureComponent {
               name="notes"
               component="textarea"
               className="input-group-field"
-              autoComplete="off"
+              autoComplete="none"
             />
             <label>Notes</label>
           </div>
