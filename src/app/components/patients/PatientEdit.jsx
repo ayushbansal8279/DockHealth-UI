@@ -2,8 +2,9 @@ import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment';
 import { equals, evolve } from 'ramda';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useDeepCompareEffect } from 'react-use';
 import { addPatientNote, updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
 import {
@@ -271,20 +272,17 @@ const handleChangeEvent = ({ formState, setFormState }) => event => {
 };
 
 const PatientEdit = ({ patient }) => {
-  const formattedPatient = useMemo(
-    () => ({
-      ...patient,
-      dob: patient.dob && moment(patient.dob).format(DATE_FORMAT),
-    }),
-    [patient],
-  );
+  const formattedPatient = {
+    ...patient,
+    dob: patient.dob && moment(patient.dob).format(DATE_FORMAT),
+  };
 
   const dispatch = useDispatch();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formState, setFormState] = useState(formattedPatient);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setFormState(formattedPatient);
   }, [formattedPatient]);
 

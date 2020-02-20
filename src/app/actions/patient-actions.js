@@ -45,7 +45,9 @@ export const getPatientsByTaskList = taskListIdentifier => async dispatch => {
 };
 
 export const getPatientById = patientIdentifier => async dispatch => {
-  const patient = patientIdentifier ? await PatientApi.getPatientById(patientIdentifier) : null;
+  const patient = patientIdentifier
+    ? await PatientApi.getPatientById(patientIdentifier)
+    : null;
   dispatch({
     type: GET_PATIENT_SUCCESS,
     patient,
@@ -110,8 +112,14 @@ export const updatePatient = newPatient => async dispatch => {
   });
 };
 
-export const addPatientToTask = (patientIdentifier, taskIdentifier) => async dispatch => {
-  const patient = await PatientApi.addPatientToTask(patientIdentifier, taskIdentifier);
+export const addPatientToTask = (
+  patientIdentifier,
+  taskIdentifier,
+) => async dispatch => {
+  const patient = await PatientApi.addPatientToTask(
+    patientIdentifier,
+    taskIdentifier,
+  );
   dispatch({
     type: ADD_PATIENT_TO_TASK_SUCCESS,
     patient,
@@ -139,9 +147,14 @@ export const deletePatient = patientIdentifier => async () => {
   await PatientApi.deletePatient(patientIdentifier);
 };
 
-export const addPatientNote = (patientIdentifier, description) => async dispatch => {
+export const addPatientNote = (
+  patientIdentifier,
+  description,
+) => async dispatch => {
   try {
-    const note = await PatientApi.createPatientNote(patientIdentifier, { description });
+    const note = await PatientApi.createPatientNote(patientIdentifier, {
+      description,
+    });
     dispatch({
       type: ADD_PATIENT_NOTE,
       patientIdentifier,
@@ -172,6 +185,7 @@ export const editPatientNote = (
       patientIdentifier,
       note: updatedNote,
     });
+    return updatedNote;
   } catch (error) {
     dispatch({
       type: UPDATE_PATIENT_NOTE_ERROR,
@@ -180,7 +194,10 @@ export const editPatientNote = (
   }
 };
 
-export const deletePatientNote = (patientIdentifier, note) => async dispatch => {
+export const deletePatientNote = (
+  patientIdentifier,
+  note,
+) => async dispatch => {
   try {
     await PatientApi.deletePatientNote(note.patientNoteIdentifier);
     dispatch({

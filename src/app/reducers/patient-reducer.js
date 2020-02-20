@@ -6,10 +6,8 @@ import {
   over,
   propEq,
   reject,
-  set,
   when,
 } from 'ramda';
-
 import {
   ABORT_PATIENT_CREATION,
   ADD_PATIENT_ERROR,
@@ -20,8 +18,8 @@ import {
   DELETE_PATIENT_NOTE,
   GET_EMR_PATIENTS_SUCCESS,
   GET_LIST_PATIENTS_SUCCESS,
-  GET_PATIENT_SUCCESS,
   GET_PATIENTS_SUCCESS,
+  GET_PATIENT_SUCCESS,
   HIGHLIGHT_PATIENT,
   REQUEST_EMR_PATIENTS,
   REQUEST_PATIENTS,
@@ -172,26 +170,20 @@ const PatientReducer = (state = initialState, action) => {
     }
 
     case UPDATE_PATIENT_NOTE: {
-      const {
-        patientIdentifier,
-        note: { patientNoteIdentifier, description },
-      } = action;
+      const { note } = action;
 
-      const updateNote = map(
-        when(
-          propEq('patientNoteIdentifier', patientNoteIdentifier),
-          set(lensProp('description'), description),
+      const { patientNoteIdentifier } = note;
+
+      const newAllPatients = state.allPatients.map(patient => ({
+        ...patient,
+        allNotes: patient.allNotes.map(oldNote =>
+          oldNote.patientNoteIdentifier === patientNoteIdentifier
+            ? note
+            : oldNote,
         ),
-      );
+      }));
 
-      const updateNoteInPatient = map(
-        when(
-          propEq('patientIdentifier', patientIdentifier),
-          over(lensProp('allNotes'), updateNote),
-        ),
-      );
-
-      return { ...state, allPatients: updateNoteInPatient(state.allPatients) };
+      return { ...state, allPatients: newAllPatients };
     }
 
     case DELETE_PATIENT_NOTE: {

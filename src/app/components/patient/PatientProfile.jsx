@@ -1,23 +1,25 @@
-import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import React from 'react';
-import { Link } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router';
+import { useMount } from 'react-use';
 import styled from 'styled-components';
-
+import { fetchPatient } from '../../actions/patient';
 import {
-  storeAsCurrentTask,
+  addTaskComment,
   markAsUnread,
   markComplete,
-  addTaskComment,
+  storeAsCurrentTask,
   toggleTaskPriority,
 } from '../../actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
-import usePatient from '../../hooks/usePatient';
+import usePatient from '../../hooks/use-patient';
 import BackIcon from '../../img/back.svg';
-import PatientEdit from '../patients/PatientEdit';
 import TaskView from '../../views/TaskView';
 import SafariFixGrid from '../common/SafariFixGrid';
+import PatientEdit from '../patients/PatientEdit';
+import CubesLoader from '../common/CubesLoader';
 
 const PatientProfileHeaderContainer = styled.div`
   display: flex;
@@ -62,9 +64,12 @@ const PatientProfileHeader = ({ patient }) => (
 
 const PatientProfileLayout = ({ patientIdentifier }) => {
   const dispatch = useDispatch();
-  const { details, tasks, completedTasks, isLoading } = usePatient(
-    patientIdentifier,
-  );
+
+  useMount(() => {
+    fetchPatient(patientIdentifier)(dispatch);
+  });
+
+  const { details, tasks, completedTasks, isLoading } = usePatient();
   const lists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
   const selectedTask = useSelector(store => store.taskState.selectedTask);
@@ -114,31 +119,39 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
   return (
     <>
       <PatientProfileHeader patient={details} />
-      {details && (
-        <Grid
-          container
-          justifyify="center"
-          alignItems="center"
-          direction="column"
-        >
-          <SafariFixGrid
-            container
-            item
-            direction="column"
-            style={{ maxWidth: '1050px' }}
-            xs={9}
-          >
-            <PatientEdit patient={details} />
-          </SafariFixGrid>
-
-          {!isLoading && (!lists || lists.length === 0) ? (
-            <Grid container justify="center">
-              <b />
-            </Grid>
-          ) : (
-            <TaskView {...taskViewProps} />
-          )}
+      {isLoading ? (
+        <Grid container justify="center">
+          <CubesLoader size={64} />
         </Grid>
+      ) : (
+        <>
+          {details && (
+            <Grid
+              container
+              justifyify="center"
+              alignItems="center"
+              direction="column"
+            >
+              <SafariFixGrid
+                container
+                item
+                direction="column"
+                style={{ maxWidth: '1050px' }}
+                xs={9}
+              >
+                <PatientEdit patient={details} />
+              </SafariFixGrid>
+
+              {!isLoading && (!lists || lists.length === 0) ? (
+                <Grid container justify="center">
+                  <b />
+                </Grid>
+              ) : (
+                <TaskView {...taskViewProps} />
+              )}
+            </Grid>
+          )}
+        </>
       )}
     </>
   );
