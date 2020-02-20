@@ -13,6 +13,12 @@ import flags, { FlagsProvider } from './flags';
 import { Routes } from './routes';
 import theme from './theme';
 
+if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line global-require
+  const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  whyDidYouRender(React);
+}
+
 // change 'a minute' to '1 minute', etc.
 moment.updateLocale('en', {
   relativeTime: {

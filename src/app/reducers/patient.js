@@ -2,16 +2,13 @@ import produce from 'immer';
 import {
   always,
   evolve,
-  lensPath,
   lensProp,
   map,
-  over,
   pathEq,
   propEq,
   set,
   when,
 } from 'ramda';
-
 import {
   ADD_PATIENT_NOTE,
   CLEAR_PATIENT,
@@ -38,24 +35,13 @@ const updateDetails = patient =>
     set(lensProp('details'), patient),
   );
 
-const updateNote = (patientIdentifier, patientNoteIdentifier, description) =>
-  when(
-    pathEq(['details', 'patientIdentifier'], patientIdentifier),
-    over(
-      lensPath(['details', 'allNotes']),
-      map(
-        when(
-          propEq('patientNoteIdentifier', patientNoteIdentifier),
-          set(lensProp('description'), description),
-        ),
-      ),
-    ),
-  );
-
 const moveTask = (task, taskList) =>
   map(
     when(
-      propEq('taskIdentifier', task.parentTaskIdentifier || task.taskIdentifier),
+      propEq(
+        'taskIdentifier',
+        task.parentTaskIdentifier || task.taskIdentifier,
+      ),
       evolve({
         taskList: always(taskList),
         subtasks: map(set(lensProp('taskList'), taskList)),
@@ -108,11 +94,22 @@ const reducer = (state = initialState, action) => {
     }
 
     case UPDATE_PATIENT_NOTE: {
-      const {
-        patientIdentifier,
-        note: { patientNoteIdentifier, description },
-      } = action;
-      return updateNote(patientIdentifier, patientNoteIdentifier, description)(state);
+      const { note } = action;
+
+      const { patientNoteIdentifier } = note;
+
+      const oldAllNotes = state.details?.allNotes ?? [];
+
+      const allNotes = oldAllNotes.map(oldNote =>
+        oldNote.patientNoteIdentifier === patientNoteIdentifier
+          ? note
+          : oldNote,
+      );
+
+      return produce(state, draftState => {
+        // eslint-disable-next-line no-param-reassign
+        draftState.details.allNotes = allNotes;
+      });
     }
 
     case MOVE_TASK_SUCCESS: {
