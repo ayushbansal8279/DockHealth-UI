@@ -97,6 +97,7 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
 
   const taskViewProps = {
     userIdentifier,
+    listTasks: [...(tasks ?? []), ...(completedTasks ?? [])],
     tasks: searchedTasks.tasks,
     completedTasks: searchedTasks.completedTasks,
     isFetching: isLoading,

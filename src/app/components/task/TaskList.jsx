@@ -166,7 +166,7 @@ const TaskList = ({
           />
         )}
         <NewTaskElement addingNewTask={addingNewTask} />
-        {tasks.length === 0 ? (
+        {(listTasks ?? tasks ?? []).length === 0 ? (
           <ListEmptyElement
             addingNewTask={addingNewTask}
             taskDrawerOpen={taskDrawerOpen}
