@@ -58,7 +58,12 @@ const renderLayoutColumn = ({ key, component, ...otherProps }) => (
   </MainGrid>
 );
 
-export default ({ header, trialBannerVisible, trialEndLabel }) => {
+export default ({
+  header,
+  trialBannerVisible,
+  trialEndLabel,
+  hasMinialTrailUsagePeriodPassed,
+}) => {
   const { show, backgroundColor, layout } = header;
 
   return (
@@ -79,7 +84,9 @@ export default ({ header, trialBannerVisible, trialEndLabel }) => {
           alignItems="center"
         >
           <span>{trialEndLabel}</span>
-          <TrialBannerLink to="/subscriptions">Learn more</TrialBannerLink>
+          <TrialBannerLink to="/subscriptions">
+            {hasMinialTrailUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
+          </TrialBannerLink>
         </TrialBanner>
       )}
     </TitleContainer>

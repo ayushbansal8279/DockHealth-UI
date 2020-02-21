@@ -15,7 +15,7 @@ import {
 import DrawerList from './DrawerList';
 import DrawerTitle from './DrawerTitle';
 
-const MINIMAL_TRIAL_USAGE_PERIOD = 2;
+const MINIMAL_TRIAL_USAGE_PERIOD = 20;
 const TRIAL_USAGE_PERIOD = 30;
 
 const StyledDrawer = styled(MaterialDrawer).attrs({
@@ -91,15 +91,17 @@ const Drawer = ({ header, user, lists, children }) => {
     ? Math.abs(trialEndMoment.diff(moment(), 'day'))
     : 0;
 
-  const trialEndDateLabel =
-    trialEndDayDifference > 0 ? `in ${trialEndDayDifference} days` : 'soon';
+  // const trialEndDateLabel =
+  //   trialEndDayDifference > 0 ? `in ${trialEndDayDifference} days` : 'soon';
 
-  const trialEndLabel = `Your ${subscriptionPlanTrialLabel} free trial will expire ${trialEndDateLabel}.`;
+  const trialEndLabel = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
+
+  const trialEndCloserLabel = `${trialEndLabel}You will lose access to the product at the end of your trail.`;
 
   const hasMinialUsagePeriodPassed =
     trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
 
-  const trialBannerVisible = isSubscriptionTrial && hasMinialUsagePeriodPassed;
+  const trialBannerVisible = isSubscriptionTrial;
 
   useMount(() => {
     getOrganizationById({ organizationIdentifier })(dispatch);
@@ -120,7 +122,10 @@ const Drawer = ({ header, user, lists, children }) => {
         <DrawerTitle
           header={header}
           trialBannerVisible={trialBannerVisible}
-          trialEndLabel={trialEndLabel}
+          trialEndLabel={
+            hasMinialUsagePeriodPassed ? trialEndCloserLabel : trialEndLabel
+          }
+          hasMinialTrialUsagePeriodPassed={hasMinialUsagePeriodPassed}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </StyledDrawer>
