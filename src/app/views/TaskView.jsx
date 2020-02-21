@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -43,7 +44,6 @@ import {
   FilterByTextContainer,
   InboxNoMessagesAvailable,
   SideClickListener,
-  StyledButton,
   StyledButtonLabel,
   TableWrapper,
   TaskListContainer,
@@ -954,13 +954,17 @@ class TaskView extends Component {
         <CompletedButtonRowContainer>
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
           {!isMultiList && (
-            <StyledButton onClick={this.toggleCompletedTasks}>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={this.toggleCompletedTasks}
+            >
               {`${buttonToggleWord} completed tasks (${
                 listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
                   ? `${SHOW_MORE_STEP_COUNT}+`
                   : completedTasksAndSubTasksCount
               })`}
-            </StyledButton>
+            </Button>
           )}
           {isMultiList && (
             <StyledButtonLabel>

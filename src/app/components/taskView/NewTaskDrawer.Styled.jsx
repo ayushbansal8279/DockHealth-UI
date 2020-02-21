@@ -214,6 +214,10 @@ export const BottomButtonContainer = styled.div`
   flex-flow: row nowrap;
   justify-content: center;
   width: 100%;
+
+  && > * {
+    margin: 0.5rem;
+  }
 `;
 
 export const SideClickListener = styled.div`

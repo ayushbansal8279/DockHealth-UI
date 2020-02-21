@@ -1,4 +1,5 @@
-import { Grid } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';
@@ -12,7 +13,6 @@ import { saveBillingDetails } from '../../../api/organization-api';
 import { showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import BillingData from './BillingsView.BillingData';
-import { BillingButton } from './BillingsView.BillingData.Components';
 // import InvoicesList from './BillingsView.InvoicesList';
 import { BillingsViewContainer, Title } from './BillingsView.Styled';
 
@@ -59,19 +59,15 @@ const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
 const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
   isUpdatingBilling && (
     <Grid item sm={12} container justify="flex-end">
-      <Grid item sm={6} md={2}>
-        <BillingButton
-          fullWidth
-          onClick={unsetUpdatingBilling}
-          variant="outlinedHigh"
-        >
+      <Grid item sm={6} md={3}>
+        <Button fullWidth onClick={unsetUpdatingBilling} variant="text">
           Cancel
-        </BillingButton>
+        </Button>
       </Grid>
       <Grid item sm={6} md={4}>
-        <BillingButton fullWidth type="submit" variant="contained">
+        <Button fullWidth type="submit" variant="contained">
           Save billing information
-        </BillingButton>
+        </Button>
       </Grid>
     </Grid>
   );

@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,10 +12,8 @@ import UserAvatar from '../components/userProfileView/UserAvatar';
 import {
   FormContainer,
   FormSwitchListItem,
-  PlainLink,
   SectionSubtypography,
   SectionTypography,
-  SubmitButton,
   UserAvatarGrid,
   UserProfileViewGrid,
   StyledRouterLink,
@@ -71,7 +70,6 @@ const UserProfileView = ({
   renderAvatarUploader = true,
   saveButtonProps = {},
   showSignInLabel = false,
-  showPrivacyPolicyLink = true,
   validationSchema,
   CustomFooter = undefined,
 }) => {
@@ -124,7 +122,9 @@ const UserProfileView = ({
             {CustomFooter ?? (
               <Grid item container xs={12} justify="flex-end">
                 <Grid item sm={12} md={6}>
-                  <SubmitButton
+                  <Button
+                    variant="contained"
+                    fullWidth
                     disabled={isSubmitting}
                     {...otherSaveButtonProps}
                   >
@@ -133,7 +133,7 @@ const UserProfileView = ({
                     ) : (
                       saveButtonLabel
                     )}
-                  </SubmitButton>
+                  </Button>
                 </Grid>
               </Grid>
             )}
@@ -143,15 +143,6 @@ const UserProfileView = ({
                   <StyledLinkLabel>I already have an account.</StyledLinkLabel>
                   <StyledRouterLink to="/login">Sign in</StyledRouterLink>
                 </>
-              )}
-              {!showSignInLabel && showPrivacyPolicyLink && (
-                <PlainLink
-                  topPadded
-                  href="https://www.dock.health/privacy"
-                  target="_blank"
-                >
-                  Privacy Policy
-                </PlainLink>
               )}
             </Grid>
           </UserProfileViewGrid>

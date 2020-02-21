@@ -1,8 +1,7 @@
-import { ButtonBase } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-
 import { selectPatientTask } from '../../actions/patient';
 import { markComplete } from '../../actions/task-actions';
 import AddTask from '../task/AddTask';
@@ -14,23 +13,6 @@ const PatientsTasklistCount = styled.div`
   font-size: 16px;
   color: #2e3a43;
   margin-bottom: 11px;
-`;
-
-const PatientsTasklistShowCompleted = styled(ButtonBase)`
-  && {
-    display: block;
-    width: 344px;
-    height: 37px;
-    border-radius: 57.4px;
-    background-color: #0ca1c7;
-
-    font-size: 16px;
-    color: #ffffff;
-
-    text-align: center;
-    margin: 36px auto 0 auto;
-    line-height: 36px;
-  }
 `;
 
 const markAsComplete = ({ dispatch, listType }) => (task, status) => {
@@ -84,13 +66,13 @@ const PatientsTasklistEditable = ({
         />
       ))}
       {completedTasks.length > 0 && (
-        <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
+        <Button variant="contained" size="small" onClick={toggleShowCompleted}>
           {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${
             completedTasks.length >= SHOW_MORE_STEP_COUNT
               ? `${SHOW_MORE_STEP_COUNT}+`
               : completedTasksAndSubTasksCount
           })`}
-        </PatientsTasklistShowCompleted>
+        </Button>
       )}
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>

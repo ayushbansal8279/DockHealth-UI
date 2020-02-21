@@ -91,7 +91,10 @@ export const SubscriptionsViewContainer = styled(Grid)`
 export const BillingContainer = styled.div`
   align-items: center;
   background-color: #efeff0;
+  flex-basis: auto;
   display: flex;
+  height: 4.375rem;
+  max-height: 4.375rem;
   justify-content: space-between;
   margin-top: 1rem;
   padding: 0.5rem 1.25rem;

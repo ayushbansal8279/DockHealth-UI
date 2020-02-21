@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import PropTypes from 'prop-types';
@@ -12,13 +13,11 @@ import {
   InvitePeoplePopoverSection,
   InvitePopoverCloseButton,
   InvitePopoverDivider,
+  PopoverErrorCollapse,
   PopoverErrorLabel,
-  PopoverSectionButton,
-  PopoverSectionButtonContainer,
   StyledFormControl,
   StyledInputBase,
   StyledInputLabel,
-  PopoverErrorCollapse,
 } from './PeopleView.Styled';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
@@ -114,21 +113,23 @@ const InvitePeopleForm = ({
         </PopoverErrorCollapse>
       </InvitePeoplePopoverSection>
       <InvitePeoplePopoverSection>
-        <PopoverSectionButtonContainer>
-          <PopoverSectionButton
+        <Grid container justify="center">
+          <Button
             onClick={closePopover}
             type="button"
+            variant="text"
+            size="small"
             onKeyUp={event => {
               event.preventDefault();
               event.stopPropagation();
             }}
           >
             Cancel
-          </PopoverSectionButton>
-          <PopoverSectionButton bold type="submit">
-            Send invite
-          </PopoverSectionButton>
-        </PopoverSectionButtonContainer>
+          </Button>
+          <Button size="small" variant="text" bold type="submit">
+            <b>Send invite</b>
+          </Button>
+        </Grid>
       </InvitePeoplePopoverSection>
     </form>
   );

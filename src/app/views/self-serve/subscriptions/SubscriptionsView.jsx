@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -14,7 +15,6 @@ import {
   BillingLabel,
   BillingPrice,
   BottomButtonContainer,
-  StyledButton,
   SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
 } from './SubscriptionsView.Styled';
@@ -179,14 +179,11 @@ export default () => {
           {plansViewVisible && chosenPlan && (
             <>
               {!subscriptionPlanData?.planIsTrial && (
-                <StyledButton
-                  variant="outlined"
-                  onClick={hideSubscriptionPlans}
-                >
+                <Button variant="text" onClick={hideSubscriptionPlans}>
                   Cancel
-                </StyledButton>
+                </Button>
               )}
-              <StyledButton
+              <Button
                 disabled={buyButtonDisabled}
                 variant="contained"
                 onClick={onSubscriptionPlanChosen({
@@ -198,7 +195,7 @@ export default () => {
                 })}
               >
                 Buy this plan
-              </StyledButton>
+              </Button>
             </>
           )}
         </BottomButtonContainer>

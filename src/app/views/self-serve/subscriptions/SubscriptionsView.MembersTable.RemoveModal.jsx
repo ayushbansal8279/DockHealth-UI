@@ -1,4 +1,4 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
+import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
@@ -16,33 +16,6 @@ const GrayDialog = withStyles({
     padding: '1.5rem',
   },
 })(Dialog);
-
-const RemoveModalButton = withStyles({
-  root: {
-    borderRadius: '0.25rem',
-    height: '2rem',
-    margin: '0.5rem',
-    padding: '0.5rem 1.5rem',
-    transition: 'all 0.25s ease-out',
-  },
-  contained: {
-    backgroundColor: '#007cab',
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  containedDisabled: {
-    backgroundColor: '#ababb2',
-  },
-  outlined: {
-    color: '#009fcd',
-  },
-})(({ classes, variant, disabled, ...props }) => {
-  const className = `${classes.root} ${classes[variant]} ${
-    disabled ? classes[`${variant}Disabled`] ?? '' : ''
-  }`.trim();
-
-  return <ButtonBase disabled={disabled} className={className} {...props} />;
-});
 
 const RemoveModalDivider = withStyles({
   root: {
@@ -106,10 +79,11 @@ const RemoveNormalUserContent = ({
       unassigned
     </div>
     <Grid container justify="center">
-      <RemoveModalButton variant="outlined" onClick={closeDialog}>
+      <Button size="small" variant="text" onClick={closeDialog}>
         No, cancel
-      </RemoveModalButton>
-      <RemoveModalButton
+      </Button>
+      <Button
+        size="small"
         variant="contained"
         onClick={toggleAndClose({
           toggleSelectedUser,
@@ -119,7 +93,7 @@ const RemoveNormalUserContent = ({
         })}
       >
         Yes, remove
-      </RemoveModalButton>
+      </Button>
     </Grid>
   </>
 );
@@ -170,10 +144,11 @@ const RemoveAdminUserContent = ({
         })}
       </PeopleContainer>
       <Grid container justify="flex-end">
-        <RemoveModalButton variant="outlined" onClick={closeDialog}>
+        <Button size="small" variant="text" onClick={closeDialog}>
           Cancel
-        </RemoveModalButton>
-        <RemoveModalButton
+        </Button>
+        <Button
+          size="small"
           variant="contained"
           disabled={!newAdmin}
           onClick={() => {
@@ -200,7 +175,7 @@ const RemoveAdminUserContent = ({
           }}
         >
           Assign admin
-        </RemoveModalButton>
+        </Button>
       </Grid>
     </>
   );
@@ -210,9 +185,9 @@ const RemoveUnavailableContent = ({ closeDialog }) => (
   <>
     <div>Cannot remove the only remaining user from subscription</div>
     <Grid container justify="center">
-      <RemoveModalButton variant="contained" onClick={closeDialog}>
+      <Button size="small" variant="contained" onClick={closeDialog}>
         OK
-      </RemoveModalButton>
+      </Button>
     </Grid>
   </>
 );

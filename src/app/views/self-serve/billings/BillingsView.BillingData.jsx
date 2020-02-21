@@ -1,5 +1,6 @@
 import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -13,7 +14,6 @@ import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import useBoolean from '../../../hooks/useBoolean';
 import {
-  BillingButton,
   BillingElementContainer,
   StyledFormControl,
   StyledFormHelperText,
@@ -434,9 +434,9 @@ const BillingData = ({
             <PaymentInformationLabel />
           </Grid>
           <Grid item sm={12} container justify="flex-end">
-            <BillingButton onClick={setUpdatingBilling} variant="outlined">
+            <Button size="small" onClick={setUpdatingBilling} variant="text">
               Update billing information
-            </BillingButton>
+            </Button>
           </Grid>
         </Grid>
       )}

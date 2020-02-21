@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
@@ -5,7 +6,7 @@ import isEmpty from 'ramda/es/isEmpty';
 import times from 'ramda/es/times';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IntercomAPI } from 'react-intercom';
-import { useMount, useWindowSize, useCss } from 'react-use';
+import { useCss, useMount, useWindowSize } from 'react-use';
 import styled from 'styled-components';
 import SafariFixGrid from '../../../../components/common/SafariFixGrid';
 import SubscriptionPlanExtendedIcon from '../../../../img/subscription-plan-extended.svg';
@@ -13,7 +14,6 @@ import SubscriptionPlanStandardIcon from '../../../../img/subscription-plan-stan
 import {
   BigPriceLabel,
   H2,
-  H3BoldWhite,
   H4,
   H5,
   H5Bold,
@@ -43,19 +43,6 @@ const ContentFooterGrid = styled(SafariFixGrid)`
     height: 8.375rem;
     min-height: 8.375rem;
   }
-`;
-
-const PlanButton = styled.button`
-  align-items: center;
-  background-color: ${props => (props.chosen ? '#074a86' : '#ababb2')};
-  border-radius: 0.25rem;
-  cursor: pointer;
-  display: flex;
-  min-height: 2.5rem;
-  justify-content: center;
-  margin: 0.5rem 0;
-  transition: all 0.25s ease-out;
-  min-width: 10rem;
 `;
 
 const CardFeatureRowContainer = styled.div`
@@ -283,11 +270,9 @@ export const CardStandardFooter = ({
         container
         justify={isSmallScreen ? FLEX_POSITION.END : FLEX_POSITION.CENTER}
       >
-        <PlanButton chosen={chosen}>
-          <H3BoldWhite>
-            {chosen ? 'Plan Selected' : 'Select This Plan'}
-          </H3BoldWhite>
-        </PlanButton>
+        <Button variant="contained" size="small" disabled={!chosen}>
+          {chosen ? 'Plan Selected' : 'Select This Plan'}
+        </Button>
       </SafariFixGrid>
       <SafariFixGrid
         item

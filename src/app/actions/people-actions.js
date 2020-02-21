@@ -133,8 +133,9 @@ export function getUserById(userIdentifier) {
 export function getUserAvatar(user) {
   return dispatch =>
     PeopleApi.getUserAvatar(user)
-      .then(() => {
+      .then(image => {
         dispatch({ type: ActionTypes.GET_USER_AVATAR_SUCCESS, user });
+        return image;
       })
       .catch(error => {
         throw error;
