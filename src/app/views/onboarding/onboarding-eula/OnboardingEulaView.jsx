@@ -54,13 +54,13 @@ const OnboardingEulaView = () => {
       <OnboardingH1Bold>LET&apos;S GET STARTED</OnboardingH1Bold>
       <OnboardingSpacing3 />
       <OnboardingH2>
-        Creating a great relationship with our customer, protecting patient data
-        and compliance with HIPAA is essential to our work and yours.
+        Creating a great relationship with our customers, protecting patient
+        data and compliance with HIPAA is essential to our work and yours.
       </OnboardingH2>
       <OnboardingSpacing2 />
       <OnboardingH3>
-        We would love to set up and your team up to be HIPAA complaint which
-        requires signing a few quick documents.
+        We would love to set up you and your team up to be HIPAA complaint which
+        will require you reviewing and signing a few documents.
       </OnboardingH3>
       <OnboardingSpacing5 />
       <Grid container>

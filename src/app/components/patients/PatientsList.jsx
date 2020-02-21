@@ -25,13 +25,25 @@ const EmptyListIcon = styled.div`
 const EmptyList = () => (
   <EmptyListContainer>
     <EmptyListIcon />
-    <p>
-      <strong>There have been no patients added.</strong>
-    </p>
-    <p>
-      You can add patients using the button on the top-right. You can also
-      contact us if you wish to view patients from LDAP or EMR.
-    </p>
+    <div>
+      <p>
+        <strong>
+          There are currently no patient profiles in you organization.
+        </strong>
+      </p>
+      <p>
+        You can add a patient profile by clicking on the + button on the top
+        right of the page. If you would like to add patients in bulk or connect
+        to your electronic health record, please contact us at &nbsp;
+        <a
+          href="mailto:support@dock.health?Subject=Dock%20Support"
+          target="_top"
+          style={{ color: '#007cab' }}
+        >
+          support@dock.health
+        </a>
+      </p>
+    </div>
   </EmptyListContainer>
 );
 
