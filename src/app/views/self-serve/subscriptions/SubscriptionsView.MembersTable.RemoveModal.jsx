@@ -108,13 +108,14 @@ const RemoveAdminUserContent = ({
   setNewAdmin,
   changeAdmin,
 }) => {
-  const filteredOrganizationMembers = organizationMembers.filter(
-    ({ userIdentifier: memberId, orgUserRole }) =>
-      memberId !== userIdentifier &&
-      memberId &&
-      orgUserRole !== 'ADMIN' &&
-      orgUserRole !== 'OWNER',
-  );
+  const filteredOrganizationMembers =
+    organizationMembers?.filter(
+      ({ userIdentifier: memberId, orgUserRole }) =>
+        memberId !== userIdentifier &&
+        memberId &&
+        orgUserRole !== 'ADMIN' &&
+        orgUserRole !== 'OWNER',
+    ) ?? [];
 
   return (
     <>
@@ -236,10 +237,11 @@ const RemoveModal = ({
     }
   }, [open]);
 
-  const adminCount = organizationMembers.filter(
-    ({ orgUserRole: memberUserRole }) =>
-      memberUserRole === 'ADMIN' || memberUserRole === 'OWNER',
-  ).length;
+  const adminCount =
+    organizationMembers?.filter(
+      ({ orgUserRole: memberUserRole }) =>
+        memberUserRole === 'ADMIN' || memberUserRole === 'OWNER',
+    )?.length ?? 0;
 
   const hasOneUserRemaining = organizationMembers.length === 1;
 

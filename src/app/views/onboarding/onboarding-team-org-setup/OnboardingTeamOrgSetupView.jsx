@@ -59,7 +59,7 @@ const InvitePeopleButton = ({ getAllUsers }) => {
         onClick={() => togglePopoverOpen(true)}
       >
         <div ref={invitePeopleButtonReference}>
-          + Add more users to my organization
+          <b>+ Add more users to my organization</b>
         </div>
       </OnboardingButton>
       <InvitePeoplePopover
@@ -78,10 +78,18 @@ const OnboardingTeamOrgSetupView = () => {
 
   const getAllUsers = useCallback(() => {
     userApi.isAuthenticated({
-      isLoggedIn: loggedIn => {
+      isLoggedIn: (loggedIn, user) => {
         if (loggedIn) {
-          loading()(dispatch);
-          findAllUsers()(dispatch);
+          userApi.getUserByEmail(user.username, user).then(data => {
+            if (data.profileThumbnailPictureHash) {
+              userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
+            }
+            userApi.getAllSpecialties();
+            userApi.getAllTitles();
+
+            loading()(dispatch);
+            findAllUsers()(dispatch);
+          });
         }
       },
     });

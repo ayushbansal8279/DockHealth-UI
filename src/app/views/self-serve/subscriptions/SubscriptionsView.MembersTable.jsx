@@ -85,7 +85,7 @@ const getFilteredOrganizationMembers = ({
   userSubscriptionStatus,
 }) => {
   const sortedOrganizationMembers = combinedMemberSortMethod(
-    organizationMembers,
+    organizationMembers ?? [],
   );
 
   switch (userSubscriptionStatus) {

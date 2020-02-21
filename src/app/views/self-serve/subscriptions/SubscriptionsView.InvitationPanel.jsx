@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
@@ -9,6 +8,7 @@ import { invitePersonToOrganization } from '../../../actions/people-actions';
 import { noop, showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
+  AddMoreUsersLabel,
   CloseButtonContainer,
   InputErrorLabel,
   InvitationPanelContainer,
@@ -77,9 +77,9 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
   return (
     <InvitationPanelContainer open={isInvitationPanelOpen}>
       <InvitationPanelHeader>
-        <Button variant="contained" onClick={openInvitationPanel}>
+        <AddMoreUsersLabel onClick={openInvitationPanel}>
           + Add more users to my organization
-        </Button>
+        </AddMoreUsersLabel>
         <CloseButtonContainer
           open={isInvitationPanelOpen}
           onClick={isInvitationPanelOpen ? closeInvitationPanel : noop}

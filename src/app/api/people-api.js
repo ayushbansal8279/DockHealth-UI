@@ -35,7 +35,9 @@ export function findAllUsers() {
 
       return uniqBy(prop('email'), allUsers);
     })
-    .catch(error => error?.response?.data ?? error?.message);
+    .catch(error => {
+      throw new Error(error?.response?.data ?? error?.message);
+    });
 }
 
 export function getUserById(userIdentifier) {

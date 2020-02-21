@@ -20,7 +20,7 @@ const initializeMembersTableHooks = ({
 }) => {
   const { isFetching, organizationMembers } = useSelector(store => ({
     isFetching: store.peopleState.isFetching,
-    organizationMembers: store.peopleState.peoplelist,
+    organizationMembers: store.peopleState.peoplelist ?? [],
   }));
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();

@@ -26,6 +26,10 @@ export const OnboardingNavbar = styled.nav`
   justify-content: space-between;
   padding: 1rem 2.375rem;
   width: 100%;
+
+  > a {
+    height: 100%;
+  }
 `;
 
 export const OnboardingLogo = styled.img`
