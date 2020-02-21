@@ -40,12 +40,16 @@ const formFields = [
   {
     key: 'nameOnCard',
     defaultValue: '',
-    validation: string().required(REQUIRED_MESSAGE),
+    validation: string()
+      .required(REQUIRED_MESSAGE)
+      .typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'name',
     defaultValue: '',
-    validation: string().required(REQUIRED_MESSAGE),
+    validation: string()
+      .required(REQUIRED_MESSAGE)
+      .typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'cardExpiration',
@@ -64,27 +68,36 @@ const formFields = [
     defaultValue: '',
     validation: string()
       .required(REQUIRED_MESSAGE)
+      .typeError(REQUIRED_MESSAGE)
       .email('This field requires valid email address'),
   },
   {
     key: 'city',
     defaultValue: '',
-    validation: string().required(REQUIRED_MESSAGE),
+    validation: string()
+      .required(REQUIRED_MESSAGE)
+      .typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'address',
     defaultValue: '',
-    validation: string().required(REQUIRED_MESSAGE),
+    validation: string()
+      .required(REQUIRED_MESSAGE)
+      .typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'zip',
     defaultValue: '',
-    validation: string().required(REQUIRED_MESSAGE),
+    validation: string()
+      .required(REQUIRED_MESSAGE)
+      .typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'state',
     defaultValue: '',
-    validation: string().required(REQUIRED_MESSAGE),
+    validation: string()
+      .required(REQUIRED_MESSAGE)
+      .typeError(REQUIRED_MESSAGE),
   },
 ];
 

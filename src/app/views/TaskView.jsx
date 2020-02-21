@@ -7,7 +7,7 @@ import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
-import { any, equals, filter, isEmpty, map, prop, reject } from 'ramda';
+import { any, equals, filter, isEmpty, map, prop, reject, uniqBy } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -839,10 +839,10 @@ class TaskView extends Component {
         </div>
       );
 
-      // const joinedListTasks = [
-      //   ...(incompleteTasksForList ?? []),
-      //   ...(completedTasksForList ?? []),
-      // ];
+      const joinedListTasks = uniqBy(prop('taskIdentifier'), [
+        ...(incompleteTasksForList ?? []),
+        ...(completedTasksForList ?? []),
+      ]);
 
       return (
         <React.Fragment key={groupedListName}>
@@ -853,26 +853,19 @@ class TaskView extends Component {
             heading={heading}
             key={groupedListName}
           >
-            {incompleteTasksForList && incompleteTasksForList.length > 0 && (
-              <TaskList
-                listTasks={incompleteTasksForList}
-                showListHeadings={showListHeadings}
-                isMultiList={isMultiList}
-                taskDrawerProps={{
-                  taskList: currentTaskList,
-                  closeDrawer: this.closeTaskDrawer,
-                  markComplete,
-                  onMarkComplete: this.onMarkComplete,
-                  isSpecificPatient,
-                }}
-                {...tasklistProps}
-              />
-            )}
-            {completedTasksForList &&
-              completedTasksForList.length > 0 &&
-              this.renderCompleted({
-                listCompletedTasks: completedTasksForList,
-              })}
+            <TaskList
+              listTasks={joinedListTasks}
+              showListHeadings={showListHeadings}
+              isMultiList={isMultiList}
+              taskDrawerProps={{
+                taskList: currentTaskList,
+                closeDrawer: this.closeTaskDrawer,
+                markComplete,
+                onMarkComplete: this.onMarkComplete,
+                isSpecificPatient,
+              }}
+              {...tasklistProps}
+            />
           </TaskListSection>
         </React.Fragment>
       );
