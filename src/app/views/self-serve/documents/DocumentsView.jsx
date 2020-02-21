@@ -1,5 +1,3 @@
-import Grid from '@material-ui/core/Grid';
-import moment from 'moment';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -7,11 +5,8 @@ import { setHeader } from '../../../actions/header-actions';
 import useBoolean from '../../../hooks/useBoolean';
 import BaaPreview from './DocumentsView.BaaPreview';
 import {
-  DocumentContainer,
   DocumentLink,
   DocumentsViewContainer,
-  H2,
-  H3,
   Title,
 } from './DocumentsView.Styled';
 
@@ -23,9 +18,6 @@ const DocumentsView = () => {
       userProfile: store.userState.userProfile,
     };
   });
-  const { organization } = useSelector(store => ({
-    ...store.organizationState,
-  }));
 
   const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
 
@@ -48,64 +40,27 @@ const DocumentsView = () => {
     });
   });
 
-  const baaSignedDate =
-    organization && organization.baaSignatureDateTime
-      ? moment(organization.baaSignatureDateTime).format('ll')
-      : '';
-
-  const eulaAckDate =
-    userProfile && userProfile.eulaAcknowledgedDateTime
-      ? moment(userProfile.eulaAcknowledgedDateTime).format('ll')
-      : '';
-
   return (
-    <DocumentsViewContainer>
-      {isUserAdmin && (
-        <DocumentContainer item xs={12} container>
-          <Grid item sm={12} md={9}>
-            <H2>Business Associate Agreement (BAA)</H2>
-          </Grid>
-          <Grid
-            item
-            sm={12}
-            md={3}
-            container
-            direction="column"
-            justify="center"
-          >
-            <DocumentLink onClick={openPreview}>Read BAA</DocumentLink>
-            <H3>Signed on {baaSignedDate}</H3>
-          </Grid>
-        </DocumentContainer>
-      )}
-      <DocumentContainer item xs={12} container>
-        <Grid item sm={12} md={9}>
-          <H2>End User License Agreement (EULA)</H2>
-        </Grid>
-        <Grid item sm={12} md={3} container direction="column" justify="center">
-          <DocumentLink
-            href="https://www.dock.health/end-user-license-agreement"
-            target="_blank"
-          >
-            Read EULA
-          </DocumentLink>
-          {eulaAckDate && <H3>Agreed to on {eulaAckDate}</H3>}
-        </Grid>
-      </DocumentContainer>
-      <DocumentContainer item xs={12} container>
-        <Grid item sm={12} md={9}>
-          <H2>Privacy Statement</H2>
-        </Grid>
-        <Grid item sm={12} md={3} container direction="column" justify="center">
-          <DocumentLink
-            href="https://www.dock.health/privacypolicy"
-            target="_blank"
-          >
-            Read Privacy Statement
-          </DocumentLink>
-          {eulaAckDate && <H3>Agreed to on {eulaAckDate}</H3>}
-        </Grid>
-      </DocumentContainer>
+    <DocumentsViewContainer container direction="column">
+      {isUserAdmin && <DocumentLink onClick={openPreview}>BAA</DocumentLink>}
+      <DocumentLink
+        href="https://www.dock.health/end-user-license-agreement"
+        target="_blank"
+      >
+        EULA
+      </DocumentLink>
+      <DocumentLink
+        href="https://www.dock.health/privacypolicy"
+        target="_blank"
+      >
+        Privacy Statement
+      </DocumentLink>
+      <DocumentLink
+        href="https://www.dock.health/terms-conditions"
+        target="_blank"
+      >
+        Terms of Service
+      </DocumentLink>
       <BaaPreview isPreviewOpen={isPreviewOpen} hidePreview={hidePreview} />
     </DocumentsViewContainer>
   );

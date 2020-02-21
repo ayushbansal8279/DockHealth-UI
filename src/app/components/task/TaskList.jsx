@@ -49,6 +49,7 @@ const renderTasks = ({
   otherTaskListProps,
   areCompleteTasksShown,
   toggleCompletedTasksShown,
+  globalSearch,
 }) => {
   const renderTaskBound = renderTask({ taskDrawerOpen, otherTaskListProps });
 
@@ -65,18 +66,20 @@ const renderTasks = ({
         </Grid>
         {!isEmpty(completeTasks) && (
           <>
-            <Grid item xs={12} container justify="center">
-              <Button
-                type="button"
-                onClick={toggleCompletedTasksShown}
-                color="primary"
-                variant="contained"
-              >
-                {`${
-                  areCompleteTasksShown ? 'Hide' : 'Show'
-                } completed tasks (${completeTasks?.length ?? 0})`}
-              </Button>
-            </Grid>
+            {!globalSearch && (
+              <Grid item xs={12} container justify="center">
+                <Button
+                  type="button"
+                  onClick={toggleCompletedTasksShown}
+                  color="primary"
+                  variant="contained"
+                >
+                  {`${
+                    areCompleteTasksShown ? 'Hide' : 'Show'
+                  } completed tasks (${completeTasks?.length ?? 0})`}
+                </Button>
+              </Grid>
+            )}
             {areCompleteTasksShown && (
               <Grid item xs={12}>
                 {completeTasks.map(renderTaskBound)}
@@ -103,6 +106,7 @@ const TaskList = ({
   showListHeadings,
   isMultiList,
   taskDrawerProps = {},
+  globalSearch,
   ...otherTaskListProps
 }) => {
   const {
@@ -179,6 +183,7 @@ const TaskList = ({
             otherTaskListProps,
             areCompleteTasksShown,
             toggleCompletedTasksShown,
+            globalSearch,
           })
         )}
         <ShowMoreButtonContainer active={showMoreButtonVisible}>

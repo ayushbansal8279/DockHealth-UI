@@ -692,6 +692,7 @@ class TaskView extends Component {
       listName,
       showListHeadings = true,
       taskDrawerOpen,
+      globalSearch,
     } = this.props;
     const { filterBy, slimView, taskTimeouts } = this.state;
 
@@ -756,6 +757,7 @@ class TaskView extends Component {
       isInbox,
       listName,
       showListHeadings,
+      globalSearch,
     };
 
     const { searchTerms, filterBy: stateFilterBy } = this.state;
@@ -811,6 +813,7 @@ class TaskView extends Component {
       isMultiList,
       markComplete,
       isSpecificPatient,
+      globalSearch,
     } = this.props;
 
     return listNames.map(groupedListName => {
@@ -860,6 +863,7 @@ class TaskView extends Component {
               listTasks={joinedListTasks}
               showListHeadings={showListHeadings}
               isMultiList={isMultiList}
+              globalSearch={globalSearch}
               taskDrawerProps={{
                 taskList: currentTaskList,
                 closeDrawer: this.closeTaskDrawer,
@@ -926,6 +930,7 @@ class TaskView extends Component {
       showListHeadings,
       listTasks: listCompletedTasks,
       isMultiList,
+      globalSearch,
     };
 
     if (listCompletedTasks.length === 0) {

@@ -54,9 +54,10 @@ export const DocumentDescription = styled(H3)`
 `;
 
 export const DocumentLink = styled.a`
-  color: #007cab;
-  font-size: 1rem;
+  color: #00a2e5;
+  font-size: 1.125rem;
   filter: brightness(1);
+  margin: 0.375rem 0;
   transition: all 0.25s ease-out;
 
   &:hover {
