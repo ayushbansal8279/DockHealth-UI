@@ -137,7 +137,7 @@ const OnboardingTeamOrgSetupView = () => {
           HeaderAdornment={InvitePeopleButton}
         />
         <Grid container>
-          <InvitationPanel />
+          <InvitationPanel getAllUsers={getAllUsers} />
         </Grid>
         <OnboardingSpacing2 />
         <OnboardingDivider />
