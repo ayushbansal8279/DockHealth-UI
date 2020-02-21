@@ -814,7 +814,10 @@ class TaskView extends Component {
     } = this.props;
 
     return listNames.map(groupedListName => {
-      const tasksCount = groupedTasks?.get(groupedListName)?.length ?? 0;
+      const tasksCount =
+        groupedTasks
+          ?.get(groupedListName)
+          ?.filter(({ status }) => status === 'INCOMPLETE')?.length ?? 0;
       const tasksCountContent = `${tasksCount} ${
         tasksCount === 1 ? 'task' : 'tasks'
       }`;
