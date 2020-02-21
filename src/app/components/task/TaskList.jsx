@@ -1,6 +1,9 @@
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useToggle } from 'react-use';
+import { isEmpty, partition } from 'ramda';
+import Button from '@material-ui/core/Button';
 import CubesLoader from '../common/CubesLoader';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';
 import Task from './Task';
@@ -25,6 +28,67 @@ const ListEmptyElement = ({ addingNewTask, taskDrawerOpen }) => {
       List is empty.
     </EmptyListElementContainer>
   );
+};
+
+const renderTask = ({ taskDrawerOpen, otherTaskListProps }) => task => (
+  <Task
+    {...{
+      task,
+      isSubtask: task.parentTaskIdentifier !== null,
+      taskDrawerOpen,
+      key: task.taskIdentifier,
+      ...otherTaskListProps,
+    }}
+  />
+);
+
+const renderTasks = ({
+  isMultiList,
+  sortedTasksToShow,
+  taskDrawerOpen,
+  otherTaskListProps,
+  areCompleteTasksShown,
+  toggleCompletedTasksShown,
+}) => {
+  const renderTaskBound = renderTask({ taskDrawerOpen, otherTaskListProps });
+
+  if (isMultiList) {
+    const [incompleteTasks, completeTasks] = partition(
+      ({ status }) => status === 'INCOMPLETE',
+      sortedTasksToShow,
+    );
+
+    return (
+      <Grid container spacing={8}>
+        <Grid item xs={12}>
+          {incompleteTasks.map(renderTaskBound)}
+        </Grid>
+        {!isEmpty(completeTasks) && (
+          <>
+            <Grid item xs={12} container justify="center">
+              <Button
+                type="button"
+                onClick={toggleCompletedTasksShown}
+                color="primary"
+                variant="contained"
+              >
+                {`${
+                  areCompleteTasksShown ? 'Hide' : 'Show'
+                } completed tasks (${completeTasks?.length ?? 0})`}
+              </Button>
+            </Grid>
+            {areCompleteTasksShown && (
+              <Grid item xs={12}>
+                {completeTasks.map(renderTaskBound)}
+              </Grid>
+            )}
+          </>
+        )}
+      </Grid>
+    );
+  }
+
+  return sortedTasksToShow.map(renderTaskBound);
 };
 
 const TaskList = ({
@@ -62,16 +126,34 @@ const TaskList = ({
     listName,
   });
 
-  const isCurrentListSelected = Boolean(
-    isMultiList &&
-      ((addingNewSubtask &&
-        otherTaskListProps.listTasks
-          .map(({ parentTaskIdentifier }) => parentTaskIdentifier)
-          .includes(addingNewSubtaskParentId)) ||
-        otherTaskListProps.listTasks
-          .map(({ taskIdentifier }) => taskIdentifier)
-          .includes(otherTaskListProps.selectedTaskId)),
+  const [areCompleteTasksShown, toggleCompletedTasksShown] = useToggle(false);
+
+  const { selectedTaskId, listTasks } = otherTaskListProps || {};
+
+  const otherTaskListSubtasks = (listTasks ?? []).flatMap(
+    ({ subtasks }) => subtasks,
   );
+
+  const otherTaskListSubtasksIdentifiers = otherTaskListSubtasks.map(
+    ({ taskIdentifier }) => taskIdentifier,
+  );
+
+  const otherTaskListSubtasksParentIdentifiers = otherTaskListSubtasks.map(
+    ({ parentTaskIdentifier }) => parentTaskIdentifier,
+  );
+
+  const otherTaskListIdentifiers = (listTasks ?? []).map(
+    ({ taskIdentifier }) => taskIdentifier,
+  );
+
+  const isCurrentListSelected =
+    (isMultiList &&
+      Boolean(otherTaskListSubtasksIdentifiers.includes(selectedTaskId))) ||
+    otherTaskListIdentifiers.includes(selectedTaskId) ||
+    (addingNewSubtask &&
+      otherTaskListSubtasksParentIdentifiers.includes(
+        addingNewSubtaskParentId,
+      ));
 
   return (
     <Grid container direction="row" wrap="nowrap">
@@ -90,17 +172,14 @@ const TaskList = ({
             taskDrawerOpen={taskDrawerOpen}
           />
         ) : (
-          sortedTasksToShow.map(task => (
-            <Task
-              {...{
-                task,
-                isSubtask: task.parentTaskIdentifier !== null,
-                taskDrawerOpen,
-                key: task.taskIdentifier,
-                ...otherTaskListProps,
-              }}
-            />
-          ))
+          renderTasks({
+            taskDrawerOpen,
+            isMultiList,
+            sortedTasksToShow,
+            otherTaskListProps,
+            areCompleteTasksShown,
+            toggleCompletedTasksShown,
+          })
         )}
         <ShowMoreButtonContainer active={showMoreButtonVisible}>
           <ShowMoreButton
