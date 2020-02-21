@@ -126,7 +126,7 @@ const TaskList = ({
     listName,
   });
 
-  const [areCompleteTasksShown, toggleCompletedTasksShown] = useToggle(false);
+  const [areCompleteTasksShown, toggleCompletedTasksShown] = useToggle(true);
 
   const { selectedTaskId, listTasks } = otherTaskListProps || {};
 
