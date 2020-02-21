@@ -45,6 +45,7 @@ import OnboardingProfileView from './views/onboarding/onboarding-profile/Onboard
 import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/OnboardingBaaCheckView';
+import OnboardingTrialCheckView from './views/onboarding/onboarding-trial-check/OnboardingTrialCheckView';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
@@ -61,6 +62,7 @@ import TaskListView from './views/TaskListView';
 import TemplateAuth from './views/TemplateAuth';
 import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
+import TemplateCoreSubscriptionPlan from './views/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
 
 const transformPathname = pathname =>
@@ -166,6 +168,43 @@ export const Routes = ({ store }) => {
           <IndexRoute component={ListDetailsView} onEnter={authRequired} />
           <IndexRedirect to="/tasks" />
           <Route
+            path="/userprofile"
+            component={UserProfileViewWrapper}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/support"
+            component={SupportSectionView}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/subscriptions"
+            component={SubscriptionsView}
+            onEnter={checkFeatureTogglesAdmin}
+          />
+          <Route
+            path="/billing"
+            component={BillingsView}
+            onEnter={checkFeatureTogglesAdmin}
+          />
+          <Route
+            path="/documents"
+            component={DocumentsView}
+            onEnter={checkFeatureToggles}
+          />
+          <Route
+            path="/subscription-payment"
+            component={SubscriptionPaymentView}
+            onEnter={checkFeatureTogglesAdmin}
+          />
+          <Route
+            path="/subscription-payment-finished"
+            component={SubscriptionPaymentFinishedView}
+            onEnter={checkFeatureTogglesAdmin}
+          />
+        </Route>
+        <Route component={TemplateCoreSubscriptionPlan}>
+          <Route
             path="/patients"
             component={Patients}
             onEnter={checkFeatureToggles}
@@ -243,41 +282,6 @@ export const Routes = ({ store }) => {
               onEnter={checkFeatureToggles}
             />
           </Route>
-          <Route
-            path="/userprofile"
-            component={UserProfileViewWrapper}
-            onEnter={checkFeatureToggles}
-          />
-          <Route
-            path="/support"
-            component={SupportSectionView}
-            onEnter={checkFeatureToggles}
-          />
-          <Route
-            path="/subscriptions"
-            component={SubscriptionsView}
-            onEnter={checkFeatureTogglesAdmin}
-          />
-          <Route
-            path="/billing"
-            component={BillingsView}
-            onEnter={checkFeatureTogglesAdmin}
-          />
-          <Route
-            path="/documents"
-            component={DocumentsView}
-            onEnter={checkFeatureToggles}
-          />
-          <Route
-            path="/subscription-payment"
-            component={SubscriptionPaymentView}
-            onEnter={checkFeatureTogglesAdmin}
-          />
-          <Route
-            path="/subscription-payment-finished"
-            component={SubscriptionPaymentFinishedView}
-            onEnter={checkFeatureTogglesAdmin}
-          />
         </Route>
         <Route path="/onboarding" component={OnboardingTemplate}>
           <IndexRedirect to="/onboarding/create-account" />
@@ -288,6 +292,7 @@ export const Routes = ({ store }) => {
           <Route component={OnboardingEulaView} path="eula" />
           <Route component={OnboardingBaaOverviewView} path="baa-overview" />
           <Route component={OnboardingBaaCheckView} path="baa-check" />
+          <Route component={OnboardingTrialCheckView} path="trial-check" />
           <Route
             component={OnboardingBaaInvitationSentView}
             path="baa-invitation-sent"

@@ -15,7 +15,7 @@ import { unsetHeader } from '../actions/header-actions';
 import handleFeatureToggle from '../helpers/handle-feature-toggle';
 import { getBrowserInfo } from './TemplateCore.Utilities';
 
-class TemplateCore extends PureComponent {
+class TemplateCoreSubscriptionPlan extends PureComponent {
   state = {
     loading: true,
     locationPathname: null,
@@ -89,6 +89,13 @@ class TemplateCore extends PureComponent {
       hashHistory.push('/onboarding/eula');
     } else if (orgData && !orgData.baaSigned) {
       hashHistory.push('/onboarding/baa-check');
+    } else if (
+      orgData &&
+      orgData.subscriptionDetails &&
+      orgData.subscriptionDetails.trialEnded === true
+    ) {
+      // } else if (orgData && orgData.subscriptionDetails && orgData.subscriptionDetails.subscriptionPlan == "PLAN_30_DAY_TRIAL") {
+      hashHistory.push('/onboarding/trial-check');
     } else {
       if (data.profileThumbnailPictureHash) {
         userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
@@ -131,7 +138,7 @@ class TemplateCore extends PureComponent {
   }
 }
 
-TemplateCore.propTypes = {
+TemplateCoreSubscriptionPlan.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
@@ -147,4 +154,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(TemplateCore);
+)(TemplateCoreSubscriptionPlan);
