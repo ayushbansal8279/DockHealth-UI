@@ -115,6 +115,7 @@ const OrganizationMemberRow = ({
   firstName,
   lastName,
   email,
+  userStatus,
   orgUserRole,
   profileThumbnailPictureHash,
   userIdentifier,
@@ -128,7 +129,9 @@ const OrganizationMemberRow = ({
   setRemovedUserData,
   subscriptionPlanData,
 }) => {
-  const userType = USER_TYPES[orgUserRole];
+  const derivedOrgUserRole =
+    userStatus === 'ACTIVE' || userStatus === 'ACTIVE' ? orgUserRole : '';
+  const userType = USER_TYPES[derivedOrgUserRole];
 
   const checkboxElement = (
     <TaskCheckbox
@@ -150,11 +153,18 @@ const OrganizationMemberRow = ({
     ? registrationMoment.format('LL')
     : '';
 
-  const { planPricePerUser, planIsTrial } = subscriptionPlanData || {};
+  const {
+    billingFrequency,
+    planPricePerUser,
+    planAnnualPricePerUser,
+    planIsTrial,
+  } = subscriptionPlanData || {};
 
   const trialPlanPricePerUser = planIsTrial
     ? 'Free 30 day trial'
-    : `${planPricePerUser}/month`;
+    : billingFrequency === 'MONTHLY'
+    ? `${planPricePerUser}/month`
+    : `${planAnnualPricePerUser}/year`;
 
   if (isSmallScreen) {
     return (

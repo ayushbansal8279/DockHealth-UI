@@ -97,6 +97,17 @@ export function removeUserFromOrganization(removedUserIdentifier) {
       });
 }
 
+export function addUserToOrganization(addedUserIdentifier) {
+  return dispatch =>
+    PeopleApi.addUserToOrganization(addedUserIdentifier)
+      .then(response => {
+        dispatch({ type: ActionTypes.ADD_USER_ORG_SUCCESS, response });
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
 export function getUserById(userIdentifier) {
   return dispatch => {
     dispatch({

@@ -1,4 +1,3 @@
-import isNil from 'ramda/es/isNil';
 import pathEq from 'ramda/es/pathEq';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
@@ -154,12 +153,12 @@ const MemberTypeLabel = ({
       return null;
     }
 
-    if (changeable) {
-      return renderUserTypesOptions;
+    if (invitationModifiable) {
+      return renderInvitations;
     }
 
-    if (invitationModifiable && isNil(userIdentifier)) {
-      return renderInvitations;
+    if (changeable) {
+      return renderUserTypesOptions;
     }
 
     return null;

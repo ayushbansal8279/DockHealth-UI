@@ -8,6 +8,7 @@ import { createBreakpoint, useSetState } from 'react-use';
 import {
   cancelInviteToOrganization,
   removeUserFromOrganization,
+  addUserToOrganization,
 } from '../../../actions/people-actions';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
@@ -42,6 +43,9 @@ const initializeMembersTableHooks = ({
         setSelectedUsers(uniq([...selectedUsers, toggledUser]));
 
         // TODO add user reactivation action here
+        addUserToOrganization(toggledUser.userIdentifier)(dispatch).then(() => {
+          getAllUsers();
+        });
       } else {
         setSelectedUsers(
           selectedUsers.filter(

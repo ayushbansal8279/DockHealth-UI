@@ -138,7 +138,9 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
 
   return {
     planName,
+    billingFrequency: subscription?.billingFrequency,
     planPricePerUser: priceFormatter({ price: monthlyPerUserCost }),
+    planAnnualPricePerUser: priceFormatter({ price: monthlyPerUserCost * 12 }),
     planTotalPayment: priceFormatter({
       price:
         billingData?.subscriptionDetails?.billingFrequency ===

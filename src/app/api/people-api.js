@@ -107,6 +107,17 @@ export function removeUserFromOrganization(removedUserIdentifier) {
     });
 }
 
+export function addUserToOrganization(addedUserIdentifier) {
+  return axios
+    .put(`${'user/addUserToOrganization?addedUserId='}${addedUserIdentifier}`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error.response.data;
+    });
+}
+
 // export function getUserAvatar(user) {
 //   return axios.get('user/profilePicture/'+user.userIdentifier+'?UserPictureType=PROFILE', {responseType: 'arraybuffer'})
 //     .then(response => {
