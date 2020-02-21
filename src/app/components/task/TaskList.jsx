@@ -1,9 +1,10 @@
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import React from 'react';
-import { useToggle } from 'react-use';
 import { isEmpty, partition } from 'ramda';
-import Button from '@material-ui/core/Button';
+import React from 'react';
+import { hashHistory } from 'react-router';
+import { useToggle } from 'react-use';
 import CubesLoader from '../common/CubesLoader';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';
 import Task from './Task';
@@ -69,9 +70,9 @@ const renderTasks = ({
             {!globalSearch && (
               <Grid item xs={12} container justify="center">
                 <Button
+                  size="small"
                   type="button"
                   onClick={toggleCompletedTasksShown}
-                  color="primary"
                   variant="contained"
                 >
                   {`${
@@ -106,7 +107,6 @@ const TaskList = ({
   showListHeadings,
   isMultiList,
   taskDrawerProps = {},
-  globalSearch,
   ...otherTaskListProps
 }) => {
   const {
@@ -158,6 +158,10 @@ const TaskList = ({
       otherTaskListSubtasksParentIdentifiers.includes(
         addingNewSubtaskParentId,
       ));
+
+  const globalSearch =
+    hashHistory.getCurrentLocation()?.pathname?.startsWith('/taskSearch') ??
+    false;
 
   return (
     <Grid container direction="row" wrap="nowrap">

@@ -1,6 +1,6 @@
+import Button from '@material-ui/core/Button';
 import React, { useState } from 'react';
 import { FormContext } from 'react-hook-form';
-
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
 import { onButtonClicked } from '../../helpers/ga-event-helper';
 import { getPatientName, noop } from '../../helpers/utility-functions';
@@ -15,7 +15,6 @@ import {
   NewTaskDrawerContainer,
   NewTaskDrawerInnerContainer,
   SideClickListener,
-  StyledButton,
   StyledForm,
   StyledVerticalDivider,
 } from './NewTaskDrawer.Styled';
@@ -229,7 +228,9 @@ export default ({
       </StyledForm>
       {task && task.taskIdentifier != null && task.status !== 'COMPLETE' && (
         <BottomButtonContainer>
-          <StyledButton
+          <Button
+            size="small"
+            variant="text"
             onClick={onDelete({
               afterDelete: () => {
                 closeDrawer();
@@ -239,11 +240,13 @@ export default ({
             })}
           >
             Delete
-          </StyledButton>
+          </Button>
           {!parentTask && (
             <>
               <StyledVerticalDivider />
-              <StyledButton
+              <Button
+                size="small"
+                variant="text"
                 onClick={onDuplicate({
                   afterDuplicate: ({ newTask }) => {
                     storeAsCurrentTask(newTask);
@@ -253,22 +256,25 @@ export default ({
                 })}
               >
                 Duplicate
-              </StyledButton>
+              </Button>
             </>
           )}
         </BottomButtonContainer>
       )}
       {(!task || !task.taskIdentifier) && (
         <BottomButtonContainer>
-          <StyledButton
+          <Button
+            size="small"
+            variant="text"
             onClick={() => {
               closeDrawer();
             }}
           >
             Cancel
-          </StyledButton>
-          <StyledButton
+          </Button>
+          <Button
             variant="contained"
+            size="small"
             disabled={
               popoversOpen.assignedToPopoverOpen ||
               popoversOpen.patientPopoverOpen
@@ -278,7 +284,7 @@ export default ({
             }}
           >
             Save
-          </StyledButton>
+          </Button>
         </BottomButtonContainer>
       )}
       {!compact && <SideClickListener onClick={closeDrawer} />}

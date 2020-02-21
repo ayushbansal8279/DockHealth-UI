@@ -62,16 +62,7 @@ export default ({ inviteNew, onClick }) => {
   return (
     <InvitePeopleButtonContainer inviteNew={inviteNew}>
       <InvitePeopleButton onClick={onClick} variant="contained">
-        {/* <svg
-          id="icon-add-person"
-          className="add icon add-other"
-        >
-          <use xlinkHref="#icon-add-person" />
-        </svg> */}
-        <InvitePeopleButtonImage
-          inviteNew={inviteNew}
-          src={AddCrossIcon}
-        />
+        <InvitePeopleButtonImage inviteNew={inviteNew} src={AddCrossIcon} />
         <InvitePeopleButtonLabel
           inviteNew={inviteNew}
           width={invitePeopleLabelWidth}

@@ -1,7 +1,7 @@
 import React, { useRef, useCallback } from 'react';
 import { useToggle } from 'react-use';
+import Button from '@material-ui/core/Button';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
-import { StyledButton } from './SubscriptionsView.Styled';
 
 const InviteButton = ({ fullWidth, getAllUsers }) => {
   const invitePeopleButtonReference = useRef(null);
@@ -16,13 +16,13 @@ const InviteButton = ({ fullWidth, getAllUsers }) => {
 
   return (
     <>
-      <StyledButton
+      <Button
         fullWidth={fullWidth}
         variant="contained"
         onClick={() => togglePopoverOpen(true)}
       >
         <div ref={invitePeopleButtonReference}>+ Add user to organization</div>
-      </StyledButton>
+      </Button>
       <InvitePeoplePopover
         open={isPopoverOpen}
         toggleInvitePopover={toggleInvitePopover}

@@ -1,7 +1,7 @@
-import { ButtonBase } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-
 import AddTask from '../task/AddTask';
 import Task from '../task/Task';
 
@@ -11,23 +11,6 @@ const PatientsTasklistCount = styled.div`
   font-size: 16px;
   color: #2e3a43;
   margin-bottom: 11px;
-`;
-
-const PatientsTasklistShowCompleted = styled(ButtonBase)`
-  && {
-    display: block;
-    width: 344px;
-    height: 37px;
-    border-radius: 57.4px;
-    background-color: #0ca1c7;
-
-    font-size: 16px;
-    color: #ffffff;
-
-    text-align: center;
-    margin: 36px auto 0 auto;
-    line-height: 36px;
-  }
 `;
 
 const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
@@ -48,17 +31,29 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
         <AddTask submit={submitTask} style={{ marginTop: '-11px' }} />
       )}
       {tasks.map(task => (
-        <Task task={task} key={task.taskIdentifier} hidePatient hideCheckbox readOnly />
+        <Task
+          task={task}
+          key={task.taskIdentifier}
+          hidePatient
+          hideCheckbox
+          readOnly
+        />
       ))}
-      {completedTasks.length > 0 && (
-        <PatientsTasklistShowCompleted onClick={toggleShowCompleted}>
-          {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${
-            completedTasks.length >= SHOW_MORE_STEP_COUNT
-              ? `${completedTasksAndSubTasksCount}+`
-              : completedTasksAndSubTasksCount
-          })`}
-        </PatientsTasklistShowCompleted>
-      )}
+      <Grid container justify="center">
+        {completedTasks.length > 0 && (
+          <Button
+            size="small"
+            variant="contained"
+            onClick={toggleShowCompleted}
+          >
+            {`${isShowingCompleted ? 'Hide' : 'Show'} completed tasks (${
+              completedTasks.length >= SHOW_MORE_STEP_COUNT
+                ? `${completedTasksAndSubTasksCount}+`
+                : completedTasksAndSubTasksCount
+            })`}
+          </Button>
+        )}
+      </Grid>
       {isShowingCompleted && (
         <div style={{ marginTop: '22px' }}>
           {completedTasks.map(task => (

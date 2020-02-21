@@ -33,6 +33,37 @@ const theme = createMuiTheme({
         fontWeight: 'bold',
       },
     },
+    MuiButton: {
+      text: {
+        color: '#007cab',
+        fontSize: '1.5rem',
+        minHeight: '3.625rem',
+        minWidth: '16.5625rem',
+        textTransform: 'none',
+      },
+      contained: {
+        backgroundColor: '#007cab',
+        borderRadius: '0.25rem',
+        color: '#fff',
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        minHeight: '3.625rem',
+        minWidth: '16.5625rem',
+        textTransform: 'none',
+        transition: 'all 0.25s ease-out',
+        '&$disabled': {
+          backgroundColor: '#125375',
+          color: '#ffffff80',
+        },
+        '&:hover': {
+          backgroundColor: '#0ca1c7',
+        },
+      },
+      sizeSmall: {
+        fontSize: '1rem',
+        minHeight: '2.5rem',
+      },
+    },
   },
 });
 

@@ -53,14 +53,19 @@ const Back = () => (
   </Link>
 );
 
-const PatientProfileHeader = ({ patient }) => (
-  <PatientProfileHeaderContainer>
-    <Back />
-    {patient && (
-      <Heading>{`${patient.firstName} ${patient.lastName} ${patient.mrn}`}</Heading>
-    )}
-  </PatientProfileHeaderContainer>
-);
+const PatientProfileHeader = ({ patient }) => {
+  const patientName = `${patient.firstName ?? ''} ${patient.lastName ??
+    ''} ${patient.mrn ?? ''}`.trim();
+
+  return (
+    patientName && (
+      <PatientProfileHeaderContainer>
+        <Back />
+        <Heading>{patientName}</Heading>
+      </PatientProfileHeaderContainer>
+    )
+  );
+};
 
 const PatientProfileLayout = ({ patientIdentifier }) => {
   const dispatch = useDispatch();

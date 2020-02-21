@@ -1,6 +1,5 @@
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -44,26 +43,6 @@ const StyledCloseButton = styled.button`
   }
 `;
 
-const StyledCompleteButton = withStyles({
-  root: {
-    backgroundColor: '#007cab',
-    borderRadius: 4,
-    boxShadow: 'none',
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    textTransform: 'none',
-    height: 50,
-    marginTop: 8,
-    padding: '6px 24px',
-    transition: 'filter 0.15s linear',
-    '&:hover': {
-      backgroundColor: '#007cab',
-      filter: 'brightness(1.25)',
-    },
-  },
-})(Button);
-
 export default ({
   isOpen,
   close,
@@ -92,9 +71,9 @@ export default ({
         <StyledContent>Would you like to proceed?</StyledContent>
       </Grid>
       <Grid item xs={12} container justify="center">
-        <StyledCompleteButton onClick={confirm} variant="contained" autoFocus>
+        <Button onClick={confirm} variant="contained">
           {confirmButtonTitle}
-        </StyledCompleteButton>
+        </Button>
       </Grid>
     </StyledDialogGrid>
   </NoOverflowDialog>

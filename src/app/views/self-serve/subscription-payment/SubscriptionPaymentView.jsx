@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,7 +28,6 @@ import {
 } from '../subscriptions/SubscriptionsView.Utilities';
 import {
   Anchor,
-  BillingButton,
   H2,
   H3,
   PricingGridContainer,
@@ -119,20 +119,16 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
       </H3>
     </Grid>
     <Grid item sm={12} container justify="flex-end">
-      <BillingButton
+      <Button
         onClick={onCancelClick}
-        variant="outlined"
+        variant="text"
         disabled={processingPayment}
       >
         Cancel
-      </BillingButton>
-      <BillingButton
-        type="submit"
-        variant="contained"
-        disabled={processingPayment}
-      >
+      </Button>
+      <Button type="submit" variant="contained" disabled={processingPayment}>
         {processingPayment ? <CubesLoader color="#fff" size={32} /> : 'Buy now'}
-      </BillingButton>
+      </Button>
     </Grid>
   </>
 );

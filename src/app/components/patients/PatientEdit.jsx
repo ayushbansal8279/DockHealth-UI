@@ -5,6 +5,7 @@ import { equals, evolve } from 'ramda';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useDeepCompareEffect } from 'react-use';
+import Button from '@material-ui/core/Button';
 import { addPatientNote, updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
 import {
@@ -17,7 +18,6 @@ import {
   BirthdayTextMask,
   Cancel,
   PhoneNumberTextMask,
-  Save,
   StyledSelect,
   StyledTextField,
 } from './PatientEdit.Components';
@@ -196,13 +196,18 @@ export const PatientsForm = ({
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'flex-end',
+            margin: '0.5rem 0',
           }}
         >
           {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
           {!isReadOnly && (
-            <Save onClick={handleSaveAndClose} disabled={isDisabled || isClean}>
+            <Button
+              variant="contained"
+              onClick={handleSaveAndClose}
+              disabled={isDisabled || isClean}
+            >
               Save
-            </Save>
+            </Button>
           )}
         </div>
       </PatientsSidebarSection>

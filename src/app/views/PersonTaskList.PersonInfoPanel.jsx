@@ -190,7 +190,6 @@ const PersonInfoPanel = ({ personData }) => {
             >
               Archive this person
             </ArchivePersonButton>
-
             <ConfirmationDialog
               isOpen={isOpen}
               close={close}
