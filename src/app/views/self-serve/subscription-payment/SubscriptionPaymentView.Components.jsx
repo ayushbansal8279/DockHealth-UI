@@ -109,3 +109,14 @@ export const PricingItemVerticallyExpanded = styled.div`
   grid-row-start: 1;
   grid-row-end: 3;
 `;
+
+export const Anchor = styled.a`
+  color: #007cab;
+  filter: brightness(1);
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: #007cab;
+    filter: brightness(1.35);
+  }
+`;

@@ -26,8 +26,10 @@ import {
   getSubscriptionPlanData,
 } from '../subscriptions/SubscriptionsView.Utilities';
 import {
+  Anchor,
   BillingButton,
   H2,
+  H3,
   PricingGridContainer,
   PricingItemDivider,
   PricingItemVerticallyExpanded,
@@ -107,6 +109,15 @@ const onSubmit = ({
 const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
   <>
     <Spacing2 />
+
+    <Grid item sm={12} container wrap="nowrap" justify="flex-end">
+      <H3>
+        <span>By selecting Buy Now I agree to the </span>
+        <Anchor href="https://www.dock.health/terms-conditions" target="_blank">
+          Terms and Conditions
+        </Anchor>
+      </H3>
+    </Grid>
     <Grid item sm={12} container justify="flex-end">
       <BillingButton
         onClick={onCancelClick}
