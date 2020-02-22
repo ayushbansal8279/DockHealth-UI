@@ -154,52 +154,50 @@ const DrawerHeader = ({ setActiveId, user }) => {
           </div>
         </ListItemText>
       </StyledListItem>
-      {isUserAdmin && (
-        <StyledDropdown
-          open={isPopoverOpen}
-          onMouseEnter={userProfileEnabled && openPopover}
-          onMouseLeave={closePopover}
-          timeout={250}
-          dropdownHeight={isUserAdmin ? 16 : 8}
+      <StyledDropdown
+        open={isPopoverOpen}
+        onMouseEnter={userProfileEnabled && openPopover}
+        onMouseLeave={closePopover}
+        timeout={250}
+        dropdownHeight={isUserAdmin ? 16 : 8}
+      >
+        <DropdownListItem
+          button
+          onClick={onLinkClicked}
+          component={linkComponent}
+          link="/userProfile"
         >
-          <DropdownListItem
-            button
-            onClick={onLinkClicked}
-            component={linkComponent}
-            link="/userProfile"
-          >
-            Profile & Settings
-          </DropdownListItem>
-          {isUserAdmin && (
-            <>
-              <DropdownListItem
-                button
-                onClick={onLinkClicked}
-                component={linkComponent}
-                link="/subscriptions"
-              >
-                Subscription & Users
-              </DropdownListItem>
-              <DropdownListItem
-                button
-                onClick={onLinkClicked}
-                component={linkComponent}
-                link="/billing"
-              >
-                Billing & Invoices
-              </DropdownListItem>
-            </>
-          )}
-          <DropdownListItem
-            button
-            onClick={onLinkClicked}
-            component={linkComponent}
-            link="/documents"
-          >
-            Documents & Agreements
-          </DropdownListItem>
-        </StyledDropdown>
-      )}
+          Profile & Settings
+        </DropdownListItem>
+        {isUserAdmin && (
+          <>
+            <DropdownListItem
+              button
+              onClick={onLinkClicked}
+              component={linkComponent}
+              link="/subscriptions"
+            >
+              Subscription & Users
+            </DropdownListItem>
+            <DropdownListItem
+              button
+              onClick={onLinkClicked}
+              component={linkComponent}
+              link="/billing"
+            >
+              Billing & Invoices
+            </DropdownListItem>
+          </>
+        )}
+        <DropdownListItem
+          button
+          onClick={onLinkClicked}
+          component={linkComponent}
+          link="/documents"
+        >
+          Documents & Agreements
+        </DropdownListItem>
+      </StyledDropdown>
     </>
   );
 };
