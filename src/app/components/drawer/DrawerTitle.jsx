@@ -62,7 +62,7 @@ export default ({
   header,
   trialBannerVisible,
   trialEndLabel,
-  hasMinialTrailUsagePeriodPassed,
+  hasMinialTrialUsagePeriodPassed,
 }) => {
   const { show, backgroundColor, layout } = header;
 
@@ -85,7 +85,7 @@ export default ({
         >
           <span>{trialEndLabel}</span>
           <TrialBannerLink to="/subscriptions">
-            {hasMinialTrailUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
+            {hasMinialTrialUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
           </TrialBannerLink>
         </TrialBanner>
       )}
