@@ -131,7 +131,10 @@ const OrganizationMemberRow = ({
   subscriptionPlanData,
 }) => {
   const derivedOrgUserRole =
-    (userStatus === 'ACTIVE' || userStatus === 'INACTIVE') && eulaAcknowledged == true ? orgUserRole : '';
+    (userStatus === 'ACTIVE' || userStatus === 'INACTIVE') &&
+    eulaAcknowledged == true
+      ? orgUserRole
+      : '';
   const userType = USER_TYPES[derivedOrgUserRole];
 
   const checkboxElement = (
