@@ -74,6 +74,7 @@ const InvitePeopleButton = ({ getAllUsers }) => {
 
 const OnboardingTeamOrgSetupView = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const outerContainerReference = useRef(null);
   const dispatch = useDispatch();
 
   const getAllUsers = useCallback(() => {
@@ -105,8 +106,14 @@ const OnboardingTeamOrgSetupView = () => {
     revalidationMode: 'onChange',
   });
 
+  const invitationPanelVisible =
+    outerContainerReference.current?.clientHeight > window.innerHeight;
+
   return (
-    <form onSubmit={formMethods.handleSubmit(onSubmit({ dispatch }))}>
+    <form
+      onSubmit={formMethods.handleSubmit(onSubmit({ dispatch }))}
+      ref={outerContainerReference}
+    >
       <FormContext {...formMethods}>
         <OnboardingH2Bold>Organization</OnboardingH2Bold>
         <OnboardingSpacing2 />
@@ -137,7 +144,9 @@ const OnboardingTeamOrgSetupView = () => {
           HeaderAdornment={InvitePeopleButton}
         />
         <Grid container>
-          <InvitationPanel getAllUsers={getAllUsers} />
+          {invitationPanelVisible && (
+            <InvitationPanel getAllUsers={getAllUsers} />
+          )}
         </Grid>
         <OnboardingSpacing2 />
         <OnboardingDivider />

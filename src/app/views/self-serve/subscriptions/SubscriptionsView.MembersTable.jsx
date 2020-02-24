@@ -8,6 +8,7 @@ import {
   ascend,
   prop,
   sortWith,
+  take,
 } from 'ramda';
 import React from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
@@ -136,11 +137,14 @@ const SubscriptionsViewMembersTable = ({
   });
 
   const isSmallScreen = currentBreakPoint === 'sm';
-  const filteredOrganizationMembers = getFilteredOrganizationMembers({
-    organizationMembers,
-    selectedUsers,
-    userSubscriptionStatus,
-  });
+  const filteredOrganizationMembers = take(
+    15,
+    getFilteredOrganizationMembers({
+      organizationMembers,
+      selectedUsers,
+      userSubscriptionStatus,
+    }),
+  );
 
   return (
     <MembersTableContainer>
