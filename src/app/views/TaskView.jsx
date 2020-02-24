@@ -792,8 +792,7 @@ class TaskView extends Component {
     return (
       <>
         <TaskList showListHeadings={showListHeadings} {...tasklistProps} />
-        {completedTasks &&
-          completedTasks.length > 0 &&
+        {completedTasks?.length > 0 &&
           this.renderCompleted({ listCompletedTasks: completedTasks })}
       </>
     );
@@ -817,10 +816,18 @@ class TaskView extends Component {
     } = this.props;
 
     return listNames.map(groupedListName => {
-      const tasksCount =
+      const incompleteTasks =
         groupedTasks
           ?.get(groupedListName)
-          ?.filter(({ status }) => status === 'INCOMPLETE')?.length ?? 0;
+          ?.filter(({ status }) => status === 'INCOMPLETE') ?? [];
+
+      const tasksCount = uniqBy(prop('taskIdentifier'), [
+        ...incompleteTasks,
+        ...incompleteTasks
+          ?.flatMap(({ subtasks }) => subtasks)
+          ?.filter(Boolean),
+      ]).length;
+
       const tasksCountContent = `${tasksCount} ${
         tasksCount === 1 ? 'task' : 'tasks'
       }`;

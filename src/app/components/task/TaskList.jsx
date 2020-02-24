@@ -60,6 +60,11 @@ const renderTasks = ({
       sortedTasksToShow,
     );
 
+    const completeTasksCount = [
+      ...completeTasks,
+      ...completeTasks.flatMap(({ subtasks }) => subtasks).filter(Boolean),
+    ].length;
+
     return (
       <Grid container spacing={8}>
         <Grid item xs={12}>
@@ -77,7 +82,7 @@ const renderTasks = ({
                 >
                   {`${
                     areCompleteTasksShown ? 'Hide' : 'Show'
-                  } completed tasks (${completeTasks?.length ?? 0})`}
+                  } completed tasks (${completeTasksCount})`}
                 </Button>
               </Grid>
             )}
