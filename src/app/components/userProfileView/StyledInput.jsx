@@ -223,6 +223,7 @@ const renderPhoneNumberField = ({ inputProps, props, register }) => (
   return (
     <StyledInput
       ref={mergeReferences([maskedReference, register])}
+      autoComplete="none"
       {...styledInputProps}
       onKeyDown={onKeyDown}
       onBlur={onBlur}
@@ -315,6 +316,7 @@ export default React.forwardRef(
           {isMaskedInput ? (
             <TextareaWrapper>
               <MaskedInput
+                autoComplete="none"
                 mask={inputMask}
                 render={renderPhoneNumberField({ inputProps, props, register })}
                 pipe={isBirthDate ? StyledInputAutoCorrectedDate() : undefined}
@@ -335,6 +337,7 @@ export default React.forwardRef(
             >
               <InputComponent
                 ref={register}
+                autoComplete="none"
                 {...inputProps}
                 {...props}
                 onFocus={() => setInputState(FOCUS_CLASS_NAME)}
