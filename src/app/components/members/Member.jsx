@@ -51,8 +51,7 @@ const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
 
 const Member = ({ onClick, member, children, className, style, color }) => {
   const alt = member && `${member.firstName} ${member.lastName}`;
-  const source =
-    member && member.profileThumbnailPictureHash && getThumbnailUrl(member);
+  const source = member?.profileThumbnailPictureHash && getThumbnailUrl(member);
   const memberColor =
     member && (source ? undefined : member.bubbleColor || '#00a73c');
 

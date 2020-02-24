@@ -117,6 +117,7 @@ export default ({
     headsUpAreaRef,
     statusSelectData,
     isMultiList,
+    isInbox,
   });
 
   const isSubtask = Boolean(task?.parentTaskIdentifier);

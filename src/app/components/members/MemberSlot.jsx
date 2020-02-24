@@ -9,7 +9,7 @@ const AssignedMember = styled(Member)`
     margin: 0 auto;
     width: 41px;
     height: 41px;
-    font-size: 12px;
+    font-size: 1rem;
   }
 `;
 

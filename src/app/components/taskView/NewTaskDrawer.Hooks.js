@@ -13,7 +13,7 @@ import {
 import useBoolean from '../../hooks/useBoolean';
 import { taskValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
-export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
+export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
   // STATE HOOKS
 
   const [
@@ -47,35 +47,57 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList }) => {
 
   const userProfile = useSelector(store => store.userState.userProfile);
   const patients = useSelector(store => store.patientState.allPatients);
-  const { task, parentTask, subtaskOrder } = useSelector(({ taskState }) => {
-    const tasks = [...taskState.tasks, ...taskState.completedTasks];
-    const { selectedTask } = taskState;
+  const { task, parentTask, subtaskOrder } = useSelector(
+    ({ taskState, taskListState, userState }) => {
+      const tasks = [...taskState.tasks, ...taskState.completedTasks];
+      const { selectedTask } = taskState;
 
-    const isSubtask = Boolean(selectedTask?.parentTaskIdentifier);
-    const taskIdentifier = selectedTask?.taskIdentifier;
+      const isSubtask = Boolean(selectedTask?.parentTaskIdentifier);
+      const taskIdentifier = selectedTask?.taskIdentifier;
 
-    if (!isSubtask) {
-      return {
-        parentTask: null,
-        subtaskOrder: null,
-        task: selectedTask,
+      const taskListMembers = isInbox
+        ? [userState.userProfile]
+        : taskListState.tasklistmembers;
+
+      const assignedTo = taskListMembers.find(
+        ({ userIdentifier }) =>
+          userIdentifier === selectedTask?.assignedTo?.userIdentifier,
+      );
+
+      const selectedTaskWithAssignee = {
+        ...selectedTask,
+        assignedTo:
+          selectedTask.assignedTo || assignedTo
+            ? {
+                ...(selectedTask.assignedTo ?? {}),
+                ...(assignedTo ?? {}),
+              }
+            : null,
       };
-    }
 
-    const foundParentTask = tasks.find(
-      ({ taskIdentifier: storeTaskId }) =>
-        selectedTask.parentTaskIdentifier === storeTaskId,
-    );
-    const foundSubtaskOrder = foundParentTask?.subtasks.findIndex(
-      ({ taskIdentifier: subtaskId }) => subtaskId === taskIdentifier,
-    );
+      if (!isSubtask) {
+        return {
+          parentTask: null,
+          subtaskOrder: null,
+          task: selectedTaskWithAssignee,
+        };
+      }
 
-    return {
-      task: selectedTask,
-      parentTask: foundParentTask,
-      subtaskOrder: foundSubtaskOrder >= 0 ? foundSubtaskOrder + 1 : 0,
-    };
-  });
+      const foundParentTask = tasks.find(
+        ({ taskIdentifier: storeTaskId }) =>
+          selectedTask.parentTaskIdentifier === storeTaskId,
+      );
+      const foundSubtaskOrder = foundParentTask?.subtasks.findIndex(
+        ({ taskIdentifier: subtaskId }) => subtaskId === taskIdentifier,
+      );
+
+      return {
+        task: selectedTaskWithAssignee,
+        parentTask: foundParentTask,
+        subtaskOrder: foundSubtaskOrder >= 0 ? foundSubtaskOrder + 1 : 0,
+      };
+    },
+  );
 
   // #region CALLBACKS
 
