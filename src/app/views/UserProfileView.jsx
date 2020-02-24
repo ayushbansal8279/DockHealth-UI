@@ -3,23 +3,31 @@ import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import React from 'react';
-import { useForm, FormContext } from 'react-hook-form';
-
+import { FormContext, useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import CubesLoader from '../components/common/CubesLoader';
-import StyledInput from '../components/userProfileView/StyledInput';
 import StyledSwitch from '../components/userProfileView/StyledSwitch';
+import {
+  UniversalMobileInputComponent,
+  UniversalStyledInput,
+} from '../components/userProfileView/UniversalStyledInput';
 import UserAvatar from '../components/userProfileView/UserAvatar';
 import {
   FormContainer,
   FormSwitchListItem,
   SectionSubtypography,
   SectionTypography,
+  StyledLinkLabel,
+  StyledRouterLink,
   UserAvatarGrid,
   UserProfileViewGrid,
-  StyledRouterLink,
-  StyledLinkLabel,
 } from '../components/userProfileView/UserProfileView.Styled';
-import { noop } from '../helpers/utility-functions';
+
+const StyledInput = styled(UniversalStyledInput)`
+  && {
+    margin-bottom: 0.75rem;
+  }
+`;
 
 const renderFormFieldDefinition = ({
   key,
@@ -38,11 +46,9 @@ const renderFormFieldDefinition = ({
       label={label}
       required={required}
       readOnly={readOnly}
-      isPhoneNumber={isPhoneNumber}
-      fontSize={16}
-      backgroundColor="#f3f5f6"
-      gutterBottom
-      containerMarginTop={0}
+      CustomComponent={
+        isPhoneNumber ? UniversalMobileInputComponent : undefined
+      }
     />
   </Grid>
 );
@@ -76,6 +82,7 @@ const UserProfileView = ({
   const formMethods = useForm({
     defaultValues,
     validationSchema,
+    reValidateMode: 'onSubmit',
   });
 
   const {
@@ -92,7 +99,7 @@ const UserProfileView = ({
     <FormContext {...formMethods}>
       <FormContainer
         className={formContainerClassName}
-        onSubmit={handleSubmit(isSubmitting ? noop : onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <Grid container justify="center">
           <UserProfileViewGrid item sm={12} container>
@@ -125,6 +132,7 @@ const UserProfileView = ({
                   <Button
                     variant="contained"
                     fullWidth
+                    type="submit"
                     disabled={isSubmitting}
                     {...otherSaveButtonProps}
                   >
