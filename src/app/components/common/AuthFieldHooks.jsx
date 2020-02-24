@@ -10,9 +10,10 @@ import {
   StyledPasswordSwitch,
 } from './AuthField.styled';
 
-const onCrossIconClick = ({ onChange, hasError }) => () => {
+const onCrossIconClick = ({ clearError, hasError, name, setValue }) => () => {
   if (hasError) {
-    onChange('');
+    clearError(name);
+    setValue(name, '');
   }
 };
 
@@ -24,7 +25,7 @@ const AuthFieldHooks = ({
   onChange,
   ...props
 }) => {
-  const { errors, register } = useFormContext();
+  const { errors, register, clearError, setValue } = useFormContext();
   const error = errors?.[name]?.message;
 
   const [passwordShown, togglePasswordShown] = useToggle(false);
@@ -55,7 +56,9 @@ const AuthFieldHooks = ({
           placeholder=" "
           {...props}
         />
-        <StyledInputIcon onClick={onCrossIconClick({ onChange, hasError })} />
+        <StyledInputIcon
+          onClick={onCrossIconClick({ clearError, hasError, name, setValue })}
+        />
         {isPassword && (
           <StyledPasswordSwitch onClick={togglePasswordShown}>
             {passwordShown ? 'Hide' : 'Show'}
