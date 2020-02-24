@@ -703,12 +703,14 @@ class TaskView extends Component {
       isTaskArchivable(currentUser),
     );
 
+    const allJoinedTasks = [...incompleteTasks, ...completedTasks];
+
     const tasks = [...incompleteTasks, ...archivableTasks].map(
       this.mapInboxTasks({ isInbox }),
     );
 
     const groupedTasks = groupBy(
-      [...incompleteTasks, ...completedTasks],
+      allJoinedTasks,
       task => task?.taskList?.listName ?? '',
     );
 
@@ -764,7 +766,7 @@ class TaskView extends Component {
 
     if (
       isInbox &&
-      isEmpty(tasks) &&
+      isEmpty(allJoinedTasks) &&
       isEmpty(searchTerms) &&
       isEmpty(stateFilterBy)
     ) {
