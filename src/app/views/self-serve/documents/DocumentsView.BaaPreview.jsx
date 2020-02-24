@@ -1,7 +1,9 @@
+import Grid from '@material-ui/core/Grid';
 import { identity, memoizeWith, range } from 'ramda';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 import { downloadSignedDocument } from '../../../api/organization-api';
+import CubesLoader from '../../../components/common/CubesLoader';
 import {
   AttachmentPreviewContent,
   AttachmentPreviewDialog,
@@ -20,6 +22,10 @@ const memoizedDownloadSignedDocument = memoizeWith(identity, () =>
   downloadSignedDocument(),
 );
 
+const downloadError = new Error(
+  'Could not download the document, please try again later',
+);
+
 const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
   const [numberOfPdfPages, setNumberOfPdfPages] = useState(0);
 
@@ -28,23 +34,23 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
   }, []);
 
   const data = useAsync(async () => {
-    try {
-      const rawBase64Data = await new Promise((resolve, reject) =>
-        memoizedDownloadSignedDocument()
-          .then(documentBlob => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              resolve(reader.result);
-            };
+    const rawBase64Data = await new Promise((resolve, reject) =>
+      memoizedDownloadSignedDocument()
+        .then(documentBlob => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result);
+          };
+          if (documentBlob.size === 0) {
+            reject(downloadError);
+          } else {
             reader.readAsDataURL(documentBlob);
-          })
-          .catch(reject),
-      );
+          }
+        })
+        .catch(() => reject(downloadError)),
+    );
 
-      return rawBase64Data.replace(/^data:[^:]*;base64,/, '');
-    } catch {
-      return null;
-    }
+    return rawBase64Data.replace(/^data:[^:]*;base64,/, '');
   }, []);
 
   const fileSource =
@@ -54,7 +60,7 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
 
   return (
     <AttachmentPreviewDialog
-      open={isPreviewOpen && !data.loading}
+      open={isPreviewOpen}
       onClose={hidePreview}
       fullWidth
     >
@@ -74,6 +80,7 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
         >
           <AttachmentPreviewHeaderAnchor
             download="Business-Associate-Agreement.pdf"
+            disabled={data.error || data.loading}
             href={fileSource}
           >
             <AttachmentPreviewHeaderIconContainer>
@@ -91,11 +98,23 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
         </AttachmentPreviewHeaderSection>
       </AttachmentPreviewHeader>
       <AttachmentPreviewContent>
-        <StyledPdfDocument file={fileSource} onLoadSuccess={onPdfLoadSuccess}>
-          {range(0, numberOfPdfPages).map(pageIndex => (
-            <StyledPdfPage key={pageIndex} pageNumber={pageIndex + 1} />
-          ))}
-        </StyledPdfDocument>
+        {data.loading && (
+          <Grid container justify="center" alignItems="center">
+            <CubesLoader size={48} />
+          </Grid>
+        )}
+        {!data.loading && !data.error && (
+          <StyledPdfDocument file={fileSource} onLoadSuccess={onPdfLoadSuccess}>
+            {range(0, numberOfPdfPages).map(pageIndex => (
+              <StyledPdfPage key={pageIndex} pageNumber={pageIndex + 1} />
+            ))}
+          </StyledPdfDocument>
+        )}
+        {data.error && (
+          <Grid container justify="center" alignItems="center">
+            {data.error?.message}
+          </Grid>
+        )}
       </AttachmentPreviewContent>
     </AttachmentPreviewDialog>
   );

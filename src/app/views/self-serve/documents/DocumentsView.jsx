@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
@@ -20,6 +20,7 @@ const DocumentsView = () => {
   });
 
   const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
+  const [isPreviewReady, setPreviewReady] = useBoolean(false);
 
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(userProfile.orgUserRole);
 
@@ -40,9 +41,16 @@ const DocumentsView = () => {
     });
   });
 
+  const onBaaLabelClick = useCallback(() => {
+    setPreviewReady();
+    openPreview();
+  }, [openPreview, setPreviewReady]);
+
   return (
     <DocumentsViewContainer container direction="column">
-      {isUserAdmin && <DocumentLink onClick={openPreview}>BAA</DocumentLink>}
+      {isUserAdmin && (
+        <DocumentLink onClick={onBaaLabelClick}>BAA</DocumentLink>
+      )}
       <DocumentLink
         href="https://www.dock.health/end-user-license-agreement"
         target="_blank"
@@ -61,7 +69,9 @@ const DocumentsView = () => {
       >
         Terms of Service
       </DocumentLink>
-      <BaaPreview isPreviewOpen={isPreviewOpen} hidePreview={hidePreview} />
+      {isPreviewReady && (
+        <BaaPreview isPreviewOpen={isPreviewOpen} hidePreview={hidePreview} />
+      )}
     </DocumentsViewContainer>
   );
 };

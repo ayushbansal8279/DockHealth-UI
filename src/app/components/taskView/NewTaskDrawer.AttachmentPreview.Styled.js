@@ -13,7 +13,12 @@ export const AttachmentPreviewDialog = withStyles({
 
 export const AttachmentPreviewContent = styled.div`
   max-height: 59rem;
+  min-height: 6rem;
   overflow-y: auto;
+
+  && > * {
+    min-height: 6rem;
+  }
 `;
 
 export const AttachmentPreviewFlexContainer = styled.div`
@@ -46,13 +51,15 @@ export const AttachmentPreviewHeaderAnchor = styled.a`
   align-items: center;
   display: flex;
   cursor: pointer;
+  filter: brightness(1);
   justify-content: center;
   transition: filter 0.25s ease-out;
   will-change: filter;
 
-  &:hover {
-    filter: brightness(0.8);
-  }
+  ${props =>
+    props.disabled
+      ? 'cursor: not-allowed;'
+      : '&:hover { filter: brightness(0.8); }'}
 `;
 
 export const AttachmentPreviewHeaderLabel = styled.div`
