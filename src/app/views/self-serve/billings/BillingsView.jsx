@@ -13,7 +13,7 @@ import { saveBillingDetails } from '../../../api/organization-api';
 import { showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import BillingData from './BillingsView.BillingData';
-// import InvoicesList from './BillingsView.InvoicesList';
+import InvoicesList from './BillingsView.InvoicesList';
 import { BillingsViewContainer, Title } from './BillingsView.Styled';
 
 /**
@@ -124,7 +124,7 @@ const BillingsView = () => {
           SaveBillingElement={SaveBillingElement}
         />
       </Elements>
-      {/* <InvoicesList /> */}
+      <InvoicesList />
     </BillingsViewContainer>
   );
 };

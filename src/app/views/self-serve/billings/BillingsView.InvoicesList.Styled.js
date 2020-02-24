@@ -84,7 +84,7 @@ export const SortingIconImage = styled.img`
   width: 100%;
 `;
 
-export const ChargeDetailsLink = styled.div`
+export const ChargeDetailsLink = styled.a`
   color: #007cab;
   cursor: pointer;
   filter: brightness(1);

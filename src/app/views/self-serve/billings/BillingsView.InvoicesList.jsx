@@ -1,17 +1,14 @@
 import Grid from '@material-ui/core/Grid';
 import moment from 'moment';
-import { isEmpty, head } from 'ramda';
-// import ascend from 'ramda/es/ascend';
-// import descend from 'ramda/es/descend';
-// import prop from 'ramda/es/prop';
-// import sort from 'ramda/es/sort';
-// import times from 'ramda/es/times';
-import React, { useCallback, useState } from 'react';
+import { head, isEmpty } from 'ramda';
+import ascend from 'ramda/es/ascend';
+import descend from 'ramda/es/descend';
+import prop from 'ramda/es/prop';
+import sort from 'ramda/es/sort';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useSetState } from 'react-use';
-import useBoolean from '../../../hooks/useBoolean';
+import CubesLoader from '../../../components/common/CubesLoader';
 import SortingIcon from '../../../img/sorting-icon.svg';
-import InvoicePreview from './BillingsView.InvoicePreview';
 import {
   ChargeDetailsLink,
   InvoiceColumn,
@@ -41,7 +38,7 @@ const columnDefinitions = [
   },
 ];
 
-const renderInvoiceRow = ({ openPdfPreview }) => ({
+const renderInvoiceRow = ({
   chargeDate,
   invoiceNumber,
   receiptNumber,
@@ -54,26 +51,30 @@ const renderInvoiceRow = ({ openPdfPreview }) => ({
     <tr key={invoiceNumber}>
       <td>{moment(chargeDate).format('L')}</td>
       <td>
-        <ChargeDetailsLink
-          onClick={openPdfPreview({
-            url: invoicePDFUrl,
-            label: 'Invoice',
-            numberLabel: invoiceNumber,
-          })}
-        >
-          {invoiceNumber}
-        </ChargeDetailsLink>
+        {invoicePDFUrl ? (
+          <ChargeDetailsLink
+            href={invoicePDFUrl}
+            target="_blank"
+            title="Download invoice"
+          >
+            {invoiceNumber ?? 'Invoice'}
+          </ChargeDetailsLink>
+        ) : (
+          'N/A'
+        )}
       </td>
       <td>
-        <ChargeDetailsLink
-          onClick={openPdfPreview({
-            url: receiptUrl,
-            label: 'Receipt',
-            numberLabel: receiptNumber,
-          })}
-        >
-          {receiptNumber}
-        </ChargeDetailsLink>
+        {receiptUrl ? (
+          <ChargeDetailsLink
+            href={receiptUrl}
+            target="_blank"
+            title="Preview receipt"
+          >
+            {receiptNumber ?? 'Receipt'}
+          </ChargeDetailsLink>
+        ) : (
+          'N/A'
+        )}
       </td>
       <td>
         ${chargeAmount} {currency.toUpperCase()}
@@ -109,91 +110,74 @@ const renderColumn = ({ currentSorting, setCurrentSorting }) => ({
 
 const defaultSorting = { ...head(columnDefinitions), order: 'desc' };
 
-const InvoicesList = () => {
-  const [currentSorting, setCurrentSorting] = useState(defaultSorting);
-  const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
-
-  const [previewState, setPreviewState] = useSetState({
-    url: null,
-    label: null,
-    numberLabel: null,
-  });
-
-  const openPdfPreview = useCallback(
-    ({ url, label, numberLabel }) => {
-      setPreviewState({
-        url,
-        label,
-        numberLabel,
-      });
-
-      openPreview();
-    },
-    [openPreview, setPreviewState],
+const setCurrentSortingWithKey = ({ currentSorting, setCurrentSorting }) => ({
+  newSortingKey,
+}) => {
+  const newSorting = columnDefinitions.find(
+    ({ sortingKey }) => newSortingKey === sortingKey,
   );
 
-  const setCurrentSortingWithKey = ({ newSortingKey }) => {
-    const newSorting = columnDefinitions.find(
-      ({ sortingKey }) => newSortingKey === sortingKey,
-    );
-
-    if (newSorting) {
-      if (newSorting.sortingKey === currentSorting.sortingKey) {
-        newSorting.order = currentSorting.order === 'desc' ? 'asc' : 'desc';
-      } else {
-        newSorting.order = 'desc';
-      }
-
-      setCurrentSorting({ ...newSorting });
+  if (newSorting) {
+    if (newSorting.sortingKey === currentSorting.sortingKey) {
+      newSorting.order = currentSorting.order === 'desc' ? 'asc' : 'desc';
     } else {
-      setCurrentSorting({ ...defaultSorting });
+      newSorting.order = 'desc';
     }
-  };
+
+    setCurrentSorting({ ...newSorting });
+  } else {
+    setCurrentSorting({ ...defaultSorting });
+  }
+};
+
+const InvoicesList = () => {
+  const [currentSorting, setCurrentSorting] = useState(defaultSorting);
 
   const { invoiceDetails } = useSelector(store => ({
     invoiceDetails: store.organizationState.invoiceDetails,
   }));
 
-  // const invoiceOrderMethod = currentSorting.order === 'asc' ? ascend : descend;
-  // const sortedInvoicesData = sort(
-  //   invoiceOrderMethod(prop(currentSorting.sortingKey)),
-  //   invoiceDetails,
-  // );
-
-  const sortedInvoicesData = invoiceDetails || [];
+  const invoiceOrderMethod = currentSorting.order === 'asc' ? ascend : descend;
+  const sortedInvoicesData = invoiceDetails
+    ? sort(invoiceOrderMethod(prop(currentSorting.sortingKey)), invoiceDetails)
+    : [];
 
   return (
     <InvoicesListContainer>
-      <InvoicesTable>
-        <thead>
-          <tr>
-            {columnDefinitions.map(
-              renderColumn({
-                currentSorting,
-                setCurrentSorting: setCurrentSortingWithKey,
-              }),
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {isEmpty(sortedInvoicesData) ? (
+      {invoiceDetails ? (
+        <InvoicesTable>
+          <thead>
             <tr>
-              <td colSpan={columnDefinitions.length}>
-                <Grid container justify="center" alignItems="center">
-                  No invoices found
-                </Grid>
-              </td>
+              {columnDefinitions.map(
+                renderColumn({
+                  currentSorting,
+                  setCurrentSorting: setCurrentSortingWithKey({
+                    setCurrentSorting,
+                    currentSorting,
+                  }),
+                }),
+              )}
             </tr>
-          ) : (
-            sortedInvoicesData.map(renderInvoiceRow({ openPdfPreview }))
-          )}
-        </tbody>
-      </InvoicesTable>
-      <InvoicePreview
-        isPreviewOpen={isPreviewOpen}
-        hidePreview={hidePreview}
-        {...previewState}
-      />
+          </thead>
+          <tbody>
+            {isEmpty(sortedInvoicesData) ? (
+              <tr>
+                <td colSpan={columnDefinitions.length}>
+                  <Grid container justify="center" alignItems="center">
+                    No invoices found
+                  </Grid>
+                </td>
+              </tr>
+            ) : (
+              sortedInvoicesData.map(renderInvoiceRow)
+            )}
+          </tbody>
+        </InvoicesTable>
+      ) : (
+        <Grid container justify="center">
+          <CubesLoader size={48} />
+        </Grid>
+      )}
     </InvoicesListContainer>
   );
 };
