@@ -154,7 +154,7 @@ export const StyledList = styled(List)`
   && {
     margin: 0;
     max-height: 12rem;
-    overflow: auto;
+    overflow-y: scroll;
     padding: 0;
     width: 100%;
   }
