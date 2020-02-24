@@ -116,7 +116,7 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
     addTaskComment,
     toggleTaskPriority: (task, priority) =>
       toggleTaskPriority(task, userIdentifier, priority),
-    showToolbar: true,
+    showToolbar: false,
     showAddTaskButton: false,
     isMultiList: true,
     isSpecificPatient: true,
@@ -134,7 +134,7 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
           {details && (
             <Grid
               container
-              justifyify="center"
+              justify="center"
               alignItems="center"
               direction="column"
             >
@@ -142,7 +142,7 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
                 container
                 item
                 direction="column"
-                style={{ maxWidth: '1050px' }}
+                style={{ marginBottom: '1rem', maxWidth: '1050px' }}
                 xs={9}
               >
                 <PatientEdit patient={details} />

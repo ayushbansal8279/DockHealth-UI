@@ -816,6 +816,7 @@ class TaskView extends Component {
       isSpecificPatient,
       globalSearch,
     } = this.props;
+    const { filterBy } = this.state;
 
     return listNames.map(groupedListName => {
       const incompleteTasks =
@@ -873,6 +874,7 @@ class TaskView extends Component {
               showListHeadings={showListHeadings}
               isMultiList={isMultiList}
               globalSearch={globalSearch}
+              filterBy={filterBy}
               taskDrawerProps={{
                 taskList: currentTaskList,
                 closeDrawer: this.closeTaskDrawer,
@@ -1038,7 +1040,7 @@ class TaskView extends Component {
         (hasTasks || hasNoTasksAfterFilterApplication || isFetching)) ||
       !isInbox;
 
-    const showSortingStats = isMultiList !== true && isInbox !== true;
+    const showSortingStats = !isMultiList && !isInbox;
 
     return (
       <div

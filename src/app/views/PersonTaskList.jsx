@@ -17,12 +17,12 @@ import { BackButton } from './PersonTaskList.Styled';
 class TaskListSearch extends PureComponent {
   state = {
     fetching: true,
+    personData: {},
   };
 
   async componentDidMount() {
     const {
       peopleActions,
-      taskActions,
       routeParams: { email },
       setHeader,
     } = this.props;
@@ -36,23 +36,16 @@ class TaskListSearch extends PureComponent {
     try {
       personData = await peopleActions.getUserByEmail({ email });
 
-      if (parseInt(personData.userIdentifier, 10)) {
-        taskActions.loading();
-        taskActions.getTasksAssignedToSpecificUser(
-          personData.userIdentifier,
-          undefined,
-          undefined,
-          undefined,
-          'INCOMPLETE',
-        );
-        taskActions.getTasksAssignedToSpecificUser(
-          personData.userIdentifier,
-          undefined,
-          undefined,
-          undefined,
-          'COMPLETE',
-        );
-      }
+      this.setState(
+        {
+          personData,
+        },
+        () => {
+          if (parseInt(personData.userIdentifier, 10)) {
+            this.handleFilterChange(undefined, undefined);
+          }
+        },
+      );
     } catch {
       noop();
     }
@@ -87,6 +80,27 @@ class TaskListSearch extends PureComponent {
       hashHistory.push('people');
     }
   }
+
+  handleFilterChange = (filterBy, sortBy) => {
+    const { taskActions } = this.props;
+    const { personData } = this.state;
+
+    taskActions.loading();
+    taskActions.getTasksAssignedToSpecificUser(
+      personData.userIdentifier,
+      undefined,
+      sortBy,
+      filterBy,
+      'INCOMPLETE',
+    );
+    taskActions.getTasksAssignedToSpecificUser(
+      personData.userIdentifier,
+      undefined,
+      sortBy,
+      filterBy,
+      'COMPLETE',
+    );
+  };
 
   render() {
     const { personData } = this.props;

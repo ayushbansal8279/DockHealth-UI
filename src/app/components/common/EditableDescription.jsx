@@ -178,12 +178,12 @@ const EditableDescription = ({
             hasValue={Boolean(value)}
             active={strikethrough}
           />
+          {!isEditing && !disabled && (
+            <StyledEditIconContainer onClick={startEditing}>
+              <img src={EditIcon} alt="Edit icon" />
+            </StyledEditIconContainer>
+          )}
         </div>
-        {!isEditing && !disabled && (
-          <StyledEditIconContainer onClick={startEditing}>
-            <img src={EditIcon} alt="Edit icon" />
-          </StyledEditIconContainer>
-        )}
       </NoteComponent>
     );
   }

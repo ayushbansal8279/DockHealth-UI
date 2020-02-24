@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import * as TaskActions from '../../actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import TaskView from '../../views/TaskView';
-import CubesLoader from '../common/CubesLoader';
 
 const TaskListLayout = ({
   searchedTasks,
@@ -17,6 +16,7 @@ const TaskListLayout = ({
   showingCompletedTasks,
   searchPerformed,
   onFilter,
+  globalSearch = false,
 }) => {
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskIdentifier,
@@ -45,9 +45,9 @@ const TaskListLayout = ({
     showAddTaskButton: false,
     isMultiList: true,
     isSpecificPatient: false,
-    globalSearch: true,
     showListHeadings: false,
     onFilter,
+    globalSearch,
   };
 
   if (searchPerformed) {
@@ -72,6 +72,7 @@ const TaskListSearchContainer = ({
   showingCompletedTasks,
   searchPerformed,
   onFilter,
+  globalSearch = false,
 }) => {
   useUnmount(() => {
     taskActions.resetTaskSearch();
@@ -91,13 +92,10 @@ const TaskListSearchContainer = ({
     showingCompletedTasks,
     searchPerformed,
     onFilter,
+    globalSearch,
   };
 
-  if (isFetching) {
-    return <CubesLoader size={40} />;
-  }
-
-  return !isFetching && tasks && <TaskListLayout {...taskListProps} />;
+  return <TaskListLayout {...taskListProps} />;
 };
 
 function mapStateToProps(state) {

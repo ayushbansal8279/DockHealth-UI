@@ -111,6 +111,7 @@ class TaskListSearch extends PureComponent {
           <TaskListSearchContainer
             searchPerformed={searchPerformed}
             onFilter={this.handleFilterChange}
+            globalSearch
           />
         </SafariFixGrid>
       </Grid>
