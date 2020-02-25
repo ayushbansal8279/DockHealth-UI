@@ -46,7 +46,6 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
   // SELECTORS
 
   const userProfile = useSelector(store => store.userState.userProfile);
-  const patients = useSelector(store => store.patientState.allPatients);
   const { task, parentTask, subtaskOrder } = useSelector(
     ({ taskState, taskListState, userState }) => {
       const tasks = [...taskState.tasks, ...taskState.completedTasks];
@@ -154,9 +153,8 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
 
   // #region EFFECTS
   useMount(() => {
-    if (patients?.length === 0) {
-      getAllPatients()(dispatch);
-    }
+    getAllPatients()(dispatch);
+
     if (isMultiList && task?.taskList) {
       getMembersByTaskListId(task?.taskList?.taskListIdentifier, 'ALL')(
         dispatch,
