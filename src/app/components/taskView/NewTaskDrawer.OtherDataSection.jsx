@@ -156,6 +156,7 @@ export default ({
     newDueDate,
     setNewDueDate,
     userProfileAccess,
+    isOverdue,
   } = initializeNewTaskDrawerOtherDataSectionHooks({
     task,
     setAutoSaveVisible,
@@ -223,6 +224,7 @@ export default ({
           clearDueDate={clearDueDate}
           SectionButtonContainer={SectionButtonContainer}
           SectionButton={SectionButton}
+          isOverdue={isOverdue}
         />
       </SectionRow>
       {userProfileAccess?.attachmentsEnabled && (

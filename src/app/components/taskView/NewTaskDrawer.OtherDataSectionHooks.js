@@ -42,7 +42,6 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
     setValue('newTaskDueDate', null);
     setNewTaskListName('');
     setHistory([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   });
 
   useEffect(() => {
@@ -139,6 +138,12 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
     state => state.userState.userProfile?.access,
   );
 
+  const isOverdue =
+    newDueDateMoment.isValid() &&
+    moment()
+      .set({ hour: 0, minute: 0, second: 0 })
+      .isAfter(newDueDateMoment);
+
   return {
     taskLists,
     currentUser,
@@ -168,5 +173,6 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
     newDueDate,
     setNewDueDate,
     userProfileAccess,
+    isOverdue,
   };
 };
