@@ -10,6 +10,7 @@ import React from 'react';
 import { useUnmount } from 'react-use';
 import {
   addTaskComment,
+  deleteComment as deleteCommentAction,
   updateComment as updateCommentAction,
 } from '../../actions/task-actions';
 import CubesLoader from '../common/CubesLoader';
@@ -53,7 +54,6 @@ const addTaskPromise = async ({
   task: newTask,
   setPublishingComment,
   clearCommentContent,
-  addComment,
   unsetPublishingComment,
   commentContent,
   dispatch,
@@ -73,7 +73,6 @@ const addTaskPromise = async ({
 
       toggleAlert('Comment added successfully', 'success');
 
-      addComment(data);
       clearCommentContent();
     }
 
@@ -212,6 +211,9 @@ export default ({ addDeferredCommentToQueue, task }) => {
       });
   };
 
+  const deleteComment = (taskToRemove, comment) =>
+    deleteCommentAction(taskToRemove, comment)(dispatch);
+
   return (
     <>
       {addingComment ? (
@@ -253,7 +255,13 @@ export default ({ addDeferredCommentToQueue, task }) => {
           <CommentsContainer>
             <StyledSimpleBar ref={simpleBarReference} visible="true">
               {Object.entries(groupedComments).map(
-                renderComment({ currentUserId, updateComment, task, members }),
+                renderComment({
+                  currentUserId,
+                  updateComment,
+                  deleteComment,
+                  task,
+                  members,
+                }),
               )}
             </StyledSimpleBar>
           </CommentsContainer>

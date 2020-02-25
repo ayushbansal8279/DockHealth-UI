@@ -1,20 +1,30 @@
 import moment from 'moment';
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import ReactHtmlParser from 'react-html-parser';
-
+import styled from 'styled-components';
 import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
-import BubbleFinishCurrentUserIcon from '../../img/bubble-finish-current-user.svg';
-import BubbleFinishIcon from '../../img/bubble-finish.svg';
+import BubbleFinishIcon from '../../img/bubble-finish';
+import RemoveCommentIcon from '../../img/remove-comment-icon.svg';
 
 const CommentBubble = styled.div`
-  background-color: #ededf0;
+  ${props => {
+    const strokeColor = props.isCurrentUser ? '#d4f3ff' : '#ededf0';
+    const fillColor = props.isEditing ? '#fff' : strokeColor;
+
+    return `
+      background-color: ${fillColor};
+      box-shadow: 0 0 0 0.125rem ${strokeColor} inset;
+    `;
+  }};
   border-radius: 0.25rem;
   cursor: text;
   flex: 1;
+  float: left;
   font-size: 0.75rem;
   padding: 0.5rem 0.75rem;
   position: relative;
+  transition: all 0.25s ease-out;
+  width: 13rem;
 
   &:not(:first-child) {
     margin-top: 0.25rem;
@@ -22,6 +32,17 @@ const CommentBubble = styled.div`
 
   &:last-child {
     margin-bottom: 0.125rem;
+  }
+
+  &:hover {
+    background-color: #fff;
+    box-shadow: 0 0 0 0.125rem
+      ${props => (props.isCurrentUser ? '#d4f3ff' : '#ededf0')} inset;
+  }
+
+  &:hover svg {
+    fill: #fff;
+    stroke: ${props => (props.isCurrentUser ? '#d4f3ff' : '#ededf0')};
   }
 `;
 
@@ -31,16 +52,37 @@ const CommentBubbleText = styled.div`
   word-break: break-word;
 `;
 
-const BubbleFinish = styled.img`
-  bottom: -2.1758px;
+const BubbleFinish = styled.div`
+  bottom: -1px;
   pointer-events: none;
   position: absolute;
   user-select: none;
 
   ${props =>
-    props.isCurrentUser
-      ? 'right: -3.649px; transform: scaleX(-1);'
-      : 'left: -3.649px;'}
+    props.isCurrentUser ? 'right: -3px; transform: scaleX(-1);' : 'left: -3px;'}
+
+  & svg {
+    transition: all 0.25s ease-out;
+    ${props => {
+      const strokeColor = props.isCurrentUser ? '#d4f3ff' : '#ededf0';
+      const fillColor = props.isEditing ? '#fff' : strokeColor;
+
+      return `fill: ${fillColor}; stroke: ${strokeColor};`;
+    }}
+  }
+`;
+
+const RemoveCommentButton = styled.img`
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  float: right;
+  height: 1rem;
+  margin-left: 0.25rem;
+  margin-top: 0.0625rem;
+  justify-content: center;
+  transition: all 0.25s ease-out;
+  width: 1rem;
 `;
 
 const CommentsDateContainer = styled.div`
@@ -70,10 +112,6 @@ const CommentGroupContainer = styled.div`
     props.isCurrentUser &&
     `
     align-self: flex-end;
-
-    ${CommentBubble} {
-      background-color: #d4f3ff;
-    }
   `}
 `;
 
@@ -166,6 +204,16 @@ class SingleComment extends Component {
     }
   };
 
+  onRemoveButtonClick = event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const { commentIdentifier, task, deleteComment } = this.props;
+
+    deleteComment(task, {
+      commentIdentifier,
+    });
+  };
+
   render() {
     const { commentBubbleTextFocused } = this.state;
     const {
@@ -178,10 +226,18 @@ class SingleComment extends Component {
     } = this.props;
 
     return (
-      <CommentBubble>
+      <CommentBubble
+        isEditing={commentBubbleTextFocused}
+        isCurrentUser={isCurrentUser}
+      >
+        <RemoveCommentButton
+          alt="Remove comment"
+          src={RemoveCommentIcon}
+          onClick={this.onRemoveButtonClick}
+        />
         <CommentBubbleText
           ref={this.commentBubbleTextRef}
-          onDoubleClick={
+          onClick={
             commentBubbleTextFocused
               ? undefined
               : this.setCommentBubbleTextFocused
@@ -205,10 +261,11 @@ class SingleComment extends Component {
         )}
         {isLastBubble && (
           <BubbleFinish
+            isEditing={commentBubbleTextFocused}
             isCurrentUser={isCurrentUser}
-            src={isCurrentUser ? BubbleFinishCurrentUserIcon : BubbleFinishIcon}
-            alt="bubble"
-          />
+          >
+            <BubbleFinishIcon />
+          </BubbleFinish>
         )}
       </CommentBubble>
     );
@@ -220,6 +277,7 @@ const renderSingleComment = ({
   updateComment,
   task,
   members,
+  deleteComment,
 }) => (
   { comment, commentIdentifier, dateCreated, dateUpdated },
   commentIndex,
@@ -237,15 +295,19 @@ const renderSingleComment = ({
     dateUpdated,
     task,
     members,
+    deleteComment,
   };
 
   return <SingleComment key={commentIdentifier} {...singleCommentProps} />;
 };
 
-export default ({ currentUserId, updateComment, task, members }) => ([
-  date,
-  commentsArray,
-]) => {
+export default ({
+  currentUserId,
+  updateComment,
+  deleteComment,
+  task,
+  members,
+}) => ([date, commentsArray]) => {
   return (
     <CommentsDateContainer key={date}>
       <SmallLabel>{moment(date).format('dddd, MMMM Do')}</SmallLabel>
@@ -282,6 +344,7 @@ export default ({ currentUserId, updateComment, task, members }) => ([
                   updateComment,
                   task,
                   members,
+                  deleteComment,
                 }),
               )}
             </CommentGroupContainer>
