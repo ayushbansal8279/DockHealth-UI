@@ -67,9 +67,9 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
       const selectedTaskWithAssignee = {
         ...selectedTask,
         assignedTo:
-          selectedTask.assignedTo || assignedTo
+          selectedTask?.assignedTo || assignedTo
             ? {
-                ...(selectedTask.assignedTo ?? {}),
+                ...(selectedTask?.assignedTo ?? {}),
                 ...(assignedTo ?? {}),
               }
             : null,

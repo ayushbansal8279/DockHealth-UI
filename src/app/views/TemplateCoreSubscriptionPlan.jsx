@@ -14,6 +14,7 @@ import Drawer from '../components/drawer/Drawer';
 import { unsetHeader } from '../actions/header-actions';
 import handleFeatureToggle from '../helpers/handle-feature-toggle';
 import { getBrowserInfo } from './TemplateCore.Utilities';
+import { setCurrentPageAfterLogin } from '../helpers/utility-functions';
 
 class TemplateCoreSubscriptionPlan extends PureComponent {
   state = {
@@ -52,7 +53,9 @@ class TemplateCoreSubscriptionPlan extends PureComponent {
 
   isLoggedIn = async (isLoggedIn, cognitoUser) => {
     const { user } = this.props;
+
     if (!isLoggedIn) {
+      setCurrentPageAfterLogin();
       hashHistory.push('login');
     } else {
       if (!user) {
@@ -68,7 +71,7 @@ class TemplateCoreSubscriptionPlan extends PureComponent {
       try {
         await this.checkUserData({ user: cognitoUser });
       } catch (error) {
-        // console.log(error);
+        setCurrentPageAfterLogin();
         hashHistory.push('login');
       } finally {
         this.unlockLoading();

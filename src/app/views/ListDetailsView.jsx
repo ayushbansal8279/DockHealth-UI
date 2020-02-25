@@ -5,7 +5,7 @@ import T from 'ramda/es/T';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
+import * as InvitationActions from '../actions/invitation-actions';
 import * as PatientActions from '../actions/patient-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
@@ -21,8 +21,24 @@ class Home extends Component {
     preSelectedTask: null,
   };
 
-  componentDidMount() {
-    const { user, routeParams, actions, taskListActions } = this.props;
+  async componentDidMount() {
+    const {
+      user,
+      routeParams,
+      actions,
+      taskListActions,
+      invitationActions,
+    } = this.props;
+
+    await invitationActions.findPendingTaskListsForUser();
+
+    const { pendingTasklists } = this.props;
+
+    await Promise.all(
+      pendingTasklists.map(tasklist =>
+        invitationActions.acceptInviteToTaskList(tasklist),
+      ),
+    );
 
     this.refreshAccessToken(user);
     actions.loading();
@@ -45,101 +61,72 @@ class Home extends Component {
       [T, always(actions.getListTasks)],
     ])(listName);
 
-    const handleRetryTaskAction = error => {
-      this.handleRetry(error, () => {
-        taskAction(undefined, sortBy, filterBy, 'COMPLETE');
-      });
-    };
-
-    const getAllTasks = () => {
-      Promise.all([
+    const getAllTasks = async () => {
+      await Promise.all([
         taskAction(
           routeParams.taskListIdentifier,
           sortBy,
           filterBy,
           'INCOMPLETE',
         ),
+
         taskAction(
           routeParams.taskListIdentifier,
           sortBy,
           filterBy,
           'COMPLETE',
         ),
-      ])
-        .then(() => {
-          const {
-            tasks,
-            completedTasks,
-            routeParams: { taskIdentifier: preSelectedTaskIdentifier },
-          } = this.props;
+      ]);
 
-          const incompleteTasksWithSubtasks = [
-            ...tasks,
-            ...tasks.flatMap(({ subtasks }) => subtasks ?? []),
-          ];
+      const {
+        tasks,
+        completedTasks,
+        routeParams: { taskIdentifier: preSelectedTaskIdentifier },
+      } = this.props;
 
-          const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
-            ({ taskIdentifier }) =>
-              preSelectedTaskIdentifier === taskIdentifier,
-          );
+      const incompleteTasksWithSubtasks = [
+        ...tasks,
+        ...tasks.flatMap(({ subtasks }) => subtasks ?? []),
+      ];
 
-          if (incompletePreselectedTask) {
-            this.setState({
-              preSelectedTask: incompletePreselectedTask,
-            });
-          } else {
-            const completeTasksWithSubtasks = [
-              ...completedTasks,
-              ...completedTasks.flatMap(({ subtasks }) => subtasks ?? []),
-            ];
+      const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
+        ({ taskIdentifier }) => preSelectedTaskIdentifier === taskIdentifier,
+      );
 
-            const completePreselectedTask = completeTasksWithSubtasks.find(
-              ({ taskIdentifier }) =>
-                preSelectedTaskIdentifier === taskIdentifier,
-            );
-
-            this.setState({
-              preSelectedTask: completePreselectedTask ?? null,
-            });
-          }
-        })
-        .catch(error => {
-          this.handleRetry(error, getAllTasks);
+      if (incompletePreselectedTask) {
+        this.setState({
+          preSelectedTask: incompletePreselectedTask,
         });
+      } else {
+        const completeTasksWithSubtasks = [
+          ...completedTasks,
+          ...completedTasks.flatMap(({ subtasks }) => subtasks ?? []),
+        ];
+
+        const completePreselectedTask = completeTasksWithSubtasks.find(
+          ({ taskIdentifier }) => preSelectedTaskIdentifier === taskIdentifier,
+        );
+
+        this.setState({
+          preSelectedTask: completePreselectedTask ?? null,
+        });
+      }
     };
 
-    getAllTasks();
-
     if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
-      taskListActions
-        .getTaskListById(routeParams.taskListIdentifier)
-        .then(noop)
-        .catch(handleRetryTaskAction);
+      getAllTasks().then(() => {
+        taskListActions.getTaskListById(routeParams.taskListIdentifier);
 
-      if (routeParams.taskListIdentifier) {
+        if (routeParams.taskListIdentifier) {
+          taskListActions
+            .getMembersByTaskListId(routeParams.taskListIdentifier, 'ALL')
+            .then(noop);
+        }
+
         taskListActions
-          .getMembersByTaskListId(routeParams.taskListIdentifier, 'ALL')
-          .then(noop)
-          .catch(error => {
-            this.handleRetry(error, () => {
-              taskListActions.getMembersByTaskListId(
-                routeParams.taskListIdentifier,
-                'ALL',
-              );
-            });
-          });
-      }
-
-      taskListActions
-        .getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier)
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            taskListActions.getOrganizationUsersNotInTaskList(
-              routeParams.taskListIdentifier,
-            );
-          });
-        });
+          .getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier)
+          .then(noop);
+      });
     }
   }
 
@@ -231,93 +218,24 @@ class Home extends Component {
     if (listName === ASSIGNED_BY_ME) {
       actions
         .getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
+        .then(noop);
       actions
         .getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          });
-        });
+        .then(noop);
     } else if (listName === ASSIGNED_TO_ME) {
       actions
         .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
+        .then(noop);
       actions
         .getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          });
-        });
+        .then(noop);
     } else {
       actions
         .getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
+        .then(noop);
       actions
         .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-            );
-          });
-        });
-    }
-  };
-
-  handleRetry = (error, callback) => {
-    if (error.message === 'Network Error') {
-      userApi
-        .refreshAccessToken(sessionStorage.getItem('username'))
-        .then(callback)
-        .catch(noop);
+        .then(noop);
     }
   };
 
@@ -361,13 +279,16 @@ class Home extends Component {
         addTaskComment,
       },
       tasklists,
+      pendingTasklists,
       routeParams: { listName, taskListIdentifier, filterBy },
     } = this.props;
 
     const { preSelectedTask } = this.state;
 
-    const loadedTasklist = tasklists.find(
-      t => `${t.taskListIdentifier}` === taskListIdentifier,
+    const allTaskLists = [...pendingTasklists, ...tasklists];
+
+    const loadedTasklist = allTaskLists.find(
+      t => t.taskListIdentifier === taskListIdentifier,
     );
 
     let isMultiList = false;
@@ -430,6 +351,7 @@ class Home extends Component {
 
 const mapStateToProps = store => ({
   tasklists: store.taskListState.tasklist,
+  pendingTasklists: store.invitationState.pendingTasklists,
   members: store.taskListState.tasklistmembers,
   tasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
@@ -446,6 +368,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
+  invitationActions: bindActionCreators(InvitationActions, dispatch),
 });
 
 export default connect(

@@ -23,6 +23,7 @@ export function getTasksForCreator(userIdentifier) {
     TaskApi.getTasksForCreator(userIdentifier)
       .then(tasks => {
         dispatch(getTasksForCreatorSuccess(tasks));
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -39,6 +40,7 @@ export function getListTasks(taskListIdentifier, sortBy, filterBy, status) {
     TaskApi.getListTasksByUser(taskListIdentifier, status, sortBy, filterBy)
       .then(tasks => {
         dispatch({ type: action, tasks });
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -60,6 +62,7 @@ export function getTasksAssignedToMe(
     TaskApi.getTasksAssignedToMe(taskListIdentifier, status, sortBy, filterBy)
       .then(tasks => {
         dispatch({ type: action, tasks });
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -88,6 +91,7 @@ export function getTasksAssignedToSpecificUser(
     )
       .then(tasks => {
         dispatch({ type: action, tasks });
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -109,6 +113,7 @@ export function getTasksAssignedByMe(
     TaskApi.getTasksAssignedByMe(taskListIdentifier, status, sortBy, filterBy)
       .then(tasks => {
         dispatch({ type: action, tasks });
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -125,6 +130,7 @@ export function searchTasks(searchTerm, sortBy, filterBy, status) {
     TaskApi.searchTasks(searchTerm, status, sortBy, filterBy)
       .then(tasks => {
         dispatch({ type: action, tasks });
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -139,6 +145,7 @@ export function clearSearchTasks({ status }) {
 
   return dispatch => {
     dispatch({ type: action, tasks: [] });
+    return [];
   };
 }
 
@@ -170,6 +177,7 @@ export function getHighPriorityTasksByTaskList(taskListIdentifier) {
     TaskApi.getHighPriorityTasksByTaskList(taskListIdentifier)
       .then(tasks => {
         dispatch({ type: ActionTypes.GET_TASKS_SUCCESS, tasks });
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -293,6 +301,10 @@ export function deleteComment(task, comment) {
           task,
           comment,
         });
+        return {
+          task,
+          comment,
+        };
       })
       .catch(error => {
         throw error;
@@ -308,6 +320,10 @@ export function updateComment(task, comment) {
           task,
           comment: data,
         });
+        return {
+          task,
+          comment,
+        };
       })
       .catch(error => {
         throw error;
@@ -320,6 +336,7 @@ export function deleteTask(task) {
       .then(() => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
         reloadTaskListStats(dispatch, task);
+        return task;
       })
       .catch(error => {
         throw error;
@@ -344,6 +361,7 @@ export function sortSubTask(task, direction) {
     TaskApi.sortSubTask(task.taskIdentifier, direction)
       .then(() => {
         dispatch({ type: ActionTypes.ORDER_SUB_TASK_SUCCESS, task });
+        return task;
       })
       .catch(error => {
         throw error;
@@ -477,6 +495,7 @@ export function toggleTaskPriority(task, userIdentifier, priority) {
           priority: newPriority,
         });
         reloadTaskListStats(dispatch, task);
+        return task;
       })
       .catch(error => {
         throw error;
@@ -497,6 +516,7 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
           task: assignedTask,
         });
         reloadTaskListStats(dispatch, assignedTask);
+        return assignedTask;
       })
       .catch(error => {
         throw error;
@@ -521,6 +541,7 @@ export function getListTasksByPatient(patientIdentifier, taskListIdentifier) {
             type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS,
             tasks: patientsTasks,
           });
+          return patientsTasks;
         });
       })
       .catch(error => {
@@ -542,6 +563,7 @@ export function getAllTasksByPatient(
     TaskApi.getAllTasksByPatient(patientIdentifier, status, sortBy, filterBy)
       .then(tasks => {
         dispatch({ type: action, tasks });
+        return tasks;
       })
       .catch(error => {
         throw error;
@@ -564,6 +586,7 @@ export function getInboxTasks(status, sortBy, filterBy) {
           subtasks: task.subtasks.map(subtask => ({ ...subtask, taskList })),
         }));
         dispatch({ type: action, tasks: tasksWithFixedTaskList });
+        return tasksWithFixedTaskList;
       })
       .catch(error => {
         throw error;
@@ -579,6 +602,7 @@ export function markAsUnread(currentTask, flagUnread) {
           task,
           flagUnread,
         });
+        return task;
       })
       .catch(error => {
         throw error;
@@ -604,13 +628,16 @@ export function storeAllTasks(tasks, completedTasks) {
   return dispatch => {
     if (tasks && tasks.length > 0) {
       dispatch({ type: ActionTypes.GET_TASKS_SUCCESS, tasks });
+      return tasks;
     }
     if (completedTasks && completedTasks.length > 0) {
       dispatch({
         type: ActionTypes.GET_COMPLETED_TASKS_SUCCESS,
         tasks: completedTasks,
       });
+      return completedTasks;
     }
+    return [];
   };
 }
 export const prepareSubtask = parentTaskIdentifier => dispatch => {

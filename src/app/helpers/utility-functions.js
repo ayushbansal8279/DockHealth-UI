@@ -1,7 +1,8 @@
-import curry from 'ramda/es/curry';
+import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
-import linkifyString from 'linkifyjs/string';
+import curry from 'ramda/es/curry';
+import { hashHistory } from 'react-router';
 import Swal from 'sweetalert2';
 
 export const noop = () => {};
@@ -138,4 +139,12 @@ export const showAlert = ({
   });
   // fix z-index for drawer container
   Swal.getContainer().style.zIndex = 10000;
+};
+
+export const setCurrentPageAfterLogin = () => {
+  const currentPathname = hashHistory.getCurrentLocation().pathname;
+
+  sessionStorage.setItem('next-page', currentPathname);
+
+  hashHistory.push('/login');
 };

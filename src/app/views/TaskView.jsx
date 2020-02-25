@@ -270,14 +270,12 @@ class TaskView extends Component {
       storeAsCurrentTask,
       tasks,
     } = this.props;
-
     if (
       previousIsFetching !== isFetching ||
       !equals(members, previousMembers)
     ) {
       this.resetHeader();
     }
-
     if (
       preSelectedTask !== previousPreSelectedTask &&
       !previousPreSelectedTask
@@ -288,12 +286,10 @@ class TaskView extends Component {
             ({ taskIdentifier }) =>
               taskIdentifier === preSelectedTask.parentTaskIdentifier,
           ) ?? null;
-
         this.handlePreSelectionCompletedTask(parentTask);
       } else {
         this.handlePreSelectionCompletedTask(preSelectedTask);
       }
-
       this.openTaskDrawer();
       storeAsCurrentTask(preSelectedTask);
     }
@@ -477,10 +473,12 @@ class TaskView extends Component {
     if (tasks != null && completedTasks != null) {
       allTasks = [...tasks, ...completedTasks];
     }
+
     let allTasksCount = tasksCount;
     if (!tasksCount) {
       allTasksCount = allTasks.length;
     }
+
     if (title) {
       dispatchedSetHeader({
         backgroundColor: '#fff',

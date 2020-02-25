@@ -1,8 +1,10 @@
 import axios from './axios-heydoc';
 
 export function getTaskListForUser() {
-  return axios
-    .get('list/findTaskListsByUserId')
+  return axios({
+    url: 'list/findTaskListsByUserId',
+    method: 'get',
+  })
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -59,7 +61,9 @@ export function updateTaskList(taskList) {
 
 export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
   return axios
-    .get(`user/listAllUsersByTaskListId/${taskListIdentifier}?status=${memberStatus}`)
+    .get(
+      `user/listAllUsersByTaskListId/${taskListIdentifier}?status=${memberStatus}`,
+    )
     .then(response => response.data)
     .catch(error => {
       console.log(error);
@@ -89,13 +93,20 @@ export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
 
 export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) =>
   axios
-    .put(`/user/inviteUserToTaskList/${taskListIdentifier}/user/${userIdentifier}`)
+    .put(
+      `/user/inviteUserToTaskList/${taskListIdentifier}/user/${userIdentifier}`,
+    )
     .then(response => response.data)
     .catch(error => error.response.data);
 
-export function inviteMultipleUsersToTaskList(taskListIdentifier, invitedUsersIdentifier) {
-  const multiUserInvitation = {};
-  multiUserInvitation.invitedUsersIdentifier = invitedUsersIdentifier;
+export function inviteMultipleUsersToTaskList(
+  taskListIdentifier,
+  invitedUsersIdentifier,
+) {
+  const multiUserInvitation = {
+    invitedUsersIdentifier,
+  };
+
   return axios
     .put(
       `user/inviteMultipleUsersToTaskList/${taskListIdentifier}`,
@@ -118,7 +129,11 @@ export function getNonOrgUsersByTaskList(taskListIdentifier) {
     });
 }
 
-export function changeUserRoleForList(taskListIdentifier, markedUserIdentifier, role) {
+export function changeUserRoleForList(
+  taskListIdentifier,
+  markedUserIdentifier,
+  role,
+) {
   return axios
     .put(
       `list/changeUserRoleForList/${taskListIdentifier}?markedUserId=${markedUserIdentifier}&role=${role}`,
@@ -204,7 +219,10 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
     });
 }
 
-export function toggleListNotifications(taskListIdentifier, receiveNotifications) {
+export function toggleListNotifications(
+  taskListIdentifier,
+  receiveNotifications,
+) {
   return axios
     .put(
       `list/toggleUserNotificationsForTaskList/${taskListIdentifier}?notifications=${receiveNotifications}`,
@@ -237,7 +255,7 @@ export function downloadPDF(taskListIdentifier) {
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'DOCK_ActionGrid.pdf');
-      document.body.appendChild(link);
+      document.body.append(link);
       link.click();
       return 'success';
     })
@@ -249,9 +267,7 @@ export function downloadPDF(taskListIdentifier) {
 
 export const getTaskListStats = async ({ taskListIdentifier }) => {
   try {
-    const response = await axios.get(`list/getTaskListStats/${taskListIdentifier}`);
-
-    return response;
+    return await axios.get(`list/getTaskListStats/${taskListIdentifier}`);
   } catch (error) {
     console.log(error);
     throw error.response.data;
