@@ -59,6 +59,17 @@ const theme = createMuiTheme({
           backgroundColor: '#0ca1c7',
         },
       },
+      containedPrimary: {
+        backgroundColor: '#d9036b',
+        fontSize: '1.5rem',
+        '&$disabled': {
+          backgroundColor: '#a70252',
+          color: '#ffffffc0',
+        },
+        '&:hover': {
+          backgroundColor: '#fc1384',
+        },
+      },
       sizeSmall: {
         fontSize: '1rem',
         minHeight: '2.5rem',

@@ -87,16 +87,15 @@ export const StyledInputBase = withStyles({
   },
 })(InputBase);
 
-export const Cancel = styled(Button)`
-  && {
-    display: flex;
-    width: 108px;
-    height: 38px;
-    border-radius: 0;
-    font-size: 16px;
-    margin-right: 4px;
-    margin-top: 18px;
-  }
+export const PanelActionContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 0.5rem 0;
+`;
+
+export const ButtonPaddingContainer = styled.div`
+  margin-right: 0.5rem;
 `;
 
 export const Save = styled(Button).attrs({
