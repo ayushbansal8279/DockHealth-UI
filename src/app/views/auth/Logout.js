@@ -25,8 +25,8 @@ export default class Logout extends PureComponent {
 
         this.redirectToLogin();
       })
-      .catch(e => {
-        error(e && e.message ? e.message : 'Could not logout.');
+      .catch(error_ => {
+        error(error_ && error_.message ? error_.message : 'Could not logout.');
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'NO',
         });
@@ -45,14 +45,14 @@ export default class Logout extends PureComponent {
       const timeDifference = sessionEndTime - sessionStorage.sessionStartTime;
       const differenceDate = new Date(timeDifference);
       return `${differenceDate.getUTCHours()}:${differenceDate.getUTCMinutes()}:${differenceDate.getUTCSeconds()}`;
-    } catch (e) {
+    } catch (error_) {
       return null;
     }
   };
 
   redirectToLogin = () => {
     // hashHistory.push('login');
-    window.sessionStorage.removeItem("confirmStatus");
+    window.sessionStorage.removeItem('confirmStatus');
     window.location.href = '/';
   };
 

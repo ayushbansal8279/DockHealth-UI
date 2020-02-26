@@ -53,12 +53,12 @@ const LoginFormUsername = ({ onSubmit }) => {
     }
   });
 
-  var stoopid = (window.sessionStorage.getItem("confirmStatus") ?? '')
-  var dialogue;
-  if (stoopid){
+  const stoopid = window.sessionStorage.getItem('confirmStatus') ?? '';
+  let dialogue;
+  if (stoopid) {
     dialogue = 'Congratulations on confirming your account!';
-  } else { 
-    dialogue = "Welcome to Dock Health";
+  } else {
+    dialogue = 'Welcome to Dock Health';
   }
 
   return (

@@ -61,7 +61,6 @@ export default class ConfirmRegistration extends PureComponent {
   }
 
   onSubmit(form) {
-  
     return userApi
       .confirmRegistration({
         username: form.username,
@@ -88,7 +87,7 @@ export default class ConfirmRegistration extends PureComponent {
   }
 
   render() {
-    window.sessionStorage.setItem("confirmStatus", true);
+    window.sessionStorage.setItem('confirmStatus', true);
     return (
       <div className="columns large-12">
         <div className="row expanded text-left">

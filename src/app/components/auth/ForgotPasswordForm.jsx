@@ -26,7 +26,7 @@ const ForgotPasswordForm = ({ onSubmit }) => {
   const { handleSubmit, setValue } = formMethods;
 
   useMount(() => {
-    setValue('username', sessionStorage.getItem('username') ?? '');//TODO Figure out how to use SessionStorage like this.
+    setValue('username', sessionStorage.getItem('username') ?? ''); // TODO Figure out how to use SessionStorage like this.
   });
 
   return (

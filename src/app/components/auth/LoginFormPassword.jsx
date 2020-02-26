@@ -29,15 +29,14 @@ const LoginFormPassword = ({ onSubmit }) => {
   const { handleSubmit, setError, setValue } = formMethods;
 
   useMount(() => {
-    setValue('username', sessionStorage.getItem('username') ?? '');//TODO Figure out how to use SessionStorage like this.
+    setValue('username', sessionStorage.getItem('username') ?? ''); // TODO Figure out how to use SessionStorage like this.
   });
 
-
-  var dialogue;
-  if ((window.sessionStorage.getItem("confirmStatus") ?? '')){
+  let dialogue;
+  if (window.sessionStorage.getItem('confirmStatus') ?? '') {
     dialogue = 'Congratulations on confirming your account!';
-  } else { 
-    dialogue = "Welcome to Dock Health"
+  } else {
+    dialogue = 'Welcome to Dock Health';
   }
 
   return (
