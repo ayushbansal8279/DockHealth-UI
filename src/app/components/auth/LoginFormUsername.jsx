@@ -53,18 +53,25 @@ const LoginFormUsername = ({ onSubmit }) => {
     }
   });
 
+  var stoopid = (window.sessionStorage.getItem("confirmStatus") ?? '')
+  var dialogue;
+  if (stoopid){
+    dialogue = 'Congratulations on confirming your account!';
+  } else { 
+    dialogue = "Welcome to Dock Health";
+  }
+
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
       <FormContext {...formMethods}>
         {!showLoginMessage && (
           <>
             <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
-              Welcome to Dock Health
+              {dialogue}
             </TitleTypography>
             <TitleTypography variant="h4">
               Please sign in to your account
             </TitleTypography>
-
             <FieldItemContainer>
               <HeightDependentGrid size={9}>
                 <AuthFieldHooks

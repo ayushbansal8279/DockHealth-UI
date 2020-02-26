@@ -29,14 +29,22 @@ const LoginFormPassword = ({ onSubmit }) => {
   const { handleSubmit, setError, setValue } = formMethods;
 
   useMount(() => {
-    setValue('username', sessionStorage.getItem('username') ?? '');
+    setValue('username', sessionStorage.getItem('username') ?? '');//TODO Figure out how to use SessionStorage like this.
   });
+
+
+  var dialogue;
+  if ((window.sessionStorage.getItem("confirmStatus") ?? '')){
+    dialogue = 'Congratulations on confirming your account!';
+  } else { 
+    dialogue = "Welcome to Dock Health"
+  }
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit({ setError }))}>
       <FormContext {...formMethods}>
         <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
-          Welcome to Dock Health
+          {dialogue}
         </TitleTypography>
         <TitleTypography variant="h4">
           Please sign in to your account

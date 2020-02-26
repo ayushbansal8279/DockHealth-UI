@@ -1,5 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
+import { useMount } from 'react-use';
 
 import { object, string } from 'yup';
 import { FormContext, useForm } from 'react-hook-form';
@@ -22,7 +23,11 @@ const ForgotPasswordForm = ({ onSubmit }) => {
     validationSchema,
   });
 
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, setValue } = formMethods;
+
+  useMount(() => {
+    setValue('username', sessionStorage.getItem('username') ?? '');//TODO Figure out how to use SessionStorage like this.
+  });
 
   return (
     <form className="inline-label top-buffer" onSubmit={handleSubmit(onSubmit)}>

@@ -52,6 +52,7 @@ export default class Logout extends PureComponent {
 
   redirectToLogin = () => {
     // hashHistory.push('login');
+    window.sessionStorage.removeItem("confirmStatus");
     window.location.href = '/';
   };
 

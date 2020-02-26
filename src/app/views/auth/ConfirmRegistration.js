@@ -27,6 +27,7 @@ export default class ConfirmRegistration extends PureComponent {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             CONFIRM_REGISTRATION_SUCCESS: 'YES',
           });
+
           success('Registration confirmed. Please Login');
           // alert('Registration confirmed. Please Login')
           // hashHistory.push('login')
@@ -60,6 +61,7 @@ export default class ConfirmRegistration extends PureComponent {
   }
 
   onSubmit(form) {
+  
     return userApi
       .confirmRegistration({
         username: form.username,
@@ -86,11 +88,12 @@ export default class ConfirmRegistration extends PureComponent {
   }
 
   render() {
+    window.sessionStorage.setItem("confirmStatus", true);
     return (
       <div className="columns large-12">
         <div className="row expanded text-left">
           <div className="columns large-12 top-buffer">
-            <h5>Confirming your account</h5>
+            <h5>Confirming your account.</h5>
           </div>
         </div>
         {/* <ConfirmUserAccountForm type="Confirm" onSubmit={this.onSubmit} /> */}
