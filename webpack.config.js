@@ -25,6 +25,7 @@ const exposed = [
   'SUBSCRIPTION_TOKEN_API_KEY',
   'GA_TRACKING_CODE',
   'HELLOSIGN_CLIENT_ID',
+  'HELLOSIGN_DOMAIN_VERIFICATION_ENABLED',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {
