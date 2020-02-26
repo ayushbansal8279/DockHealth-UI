@@ -462,8 +462,8 @@ class ListOfTasks extends Component {
               <br />
               <span>
                 From your WORK email inbox forward an email to:{' '}
-                <a href="mailto:dock@childrens.harvard.edu">
-                  dock@childrens.harvard.edu
+                <a href="mailto:task@dockhealth.email">
+                  task@dockhealth.email
                 </a>
               </span>
               <br />
