@@ -96,7 +96,7 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const trialEndLabel = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
 
-  const trialEndCloserLabel = `${trialEndLabel} You will lose access to the product at the end of your trail.`;
+  const trialEndCloserLabel = `${trialEndLabel} You will lose access to the product at the end of your trial.`;
 
   const hasMinialUsagePeriodPassed =
     trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
