@@ -88,7 +88,7 @@ const Drawer = ({ header, user, lists, children }) => {
   const trialEndMoment = moment(subscription?.trialEndDate ?? null);
 
   const trialEndDayDifference = trialEndMoment.isValid()
-    ? Math.abs(trialEndMoment.diff(moment(), 'day'))
+    ? trialEndMoment.diff(moment(), 'day')
     : 0;
 
   // const trialEndDateLabel =
@@ -96,7 +96,9 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const trialEndLabel = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
 
-  const trialEndCloserLabel = `${trialEndLabel} You will lose access to the product at the end of your trial.`;
+  const trialEndCloserLabel = `${trialEndLabel} You will lose access at the end of your trial.`;
+
+  const trialEndedLabel = `You free ${subscriptionPlanTrialLabel} trial has expired!`;
 
   const hasMinialUsagePeriodPassed =
     trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
@@ -123,7 +125,11 @@ const Drawer = ({ header, user, lists, children }) => {
           header={header}
           trialBannerVisible={trialBannerVisible}
           trialEndLabel={
-            hasMinialUsagePeriodPassed ? trialEndCloserLabel : trialEndLabel
+            hasMinialUsagePeriodPassed
+              ? trialEndDayDifference < 0
+                ? trialEndedLabel
+                : trialEndCloserLabel
+              : trialEndLabel
           }
           hasMinialTrialUsagePeriodPassed={hasMinialUsagePeriodPassed}
         />
