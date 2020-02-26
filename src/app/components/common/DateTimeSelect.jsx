@@ -91,11 +91,8 @@ const FooterContainer = styled.div`
 
 const StyledButton = styled(Button)`
   && {
-    color: #007cab;
     margin-left: 4px;
     text-transform: none;
-
-    ${props => props.bold && 'font-weight: 600;'}
   }
 `;
 
@@ -246,9 +243,12 @@ const DateTimeSelect = ({
                     <TimeSelect value={date} onChange={handleChange} />
                   )}
                   <ButtonContainer centered={!showTimeSelect}>
-                    <StyledButton onClick={close}>Cancel</StyledButton>
+                    <StyledButton size="small" variant="text" onClick={close}>
+                      Cancel
+                    </StyledButton>
                     <StyledButton
-                      bold="true"
+                      size="small"
+                      variant="text"
                       onClick={handleAccept}
                       disabled={!hasDateSelected}
                     >

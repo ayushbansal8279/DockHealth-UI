@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment';
@@ -5,7 +6,6 @@ import { equals, evolve } from 'ramda';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useDeepCompareEffect } from 'react-use';
-import Button from '@material-ui/core/Button';
 import { addPatientNote, updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
 import {
@@ -16,10 +16,11 @@ import { noop } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
 import {
   BirthdayTextMask,
-  Cancel,
+  PanelActionContainer,
   PhoneNumberTextMask,
   StyledSelect,
   StyledTextField,
+  ButtonPaddingContainer,
 } from './PatientEdit.Components';
 import PatientNotes from './PatientNotes';
 import PatientsSidebarSection from './PatientsSidebar.Section';
@@ -191,25 +192,26 @@ export const PatientsForm = ({
             type="email"
           />
         </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-            margin: '0.5rem 0',
-          }}
-        >
-          {cancel && <Cancel onClick={cancel}>Cancel</Cancel>}
+        <PanelActionContainer>
+          {cancel && (
+            <ButtonPaddingContainer>
+              <Button variant="text" size="small" onClick={cancel}>
+                Cancel
+              </Button>
+            </ButtonPaddingContainer>
+          )}
           {!isReadOnly && (
             <Button
               variant="contained"
+              color="primary"
+              size="small"
               onClick={handleSaveAndClose}
               disabled={isDisabled || isClean}
             >
               Save
             </Button>
           )}
-        </div>
+        </PanelActionContainer>
       </PatientsSidebarSection>
       <PatientsSidebarSection
         heading="Notes"

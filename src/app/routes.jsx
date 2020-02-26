@@ -71,7 +71,7 @@ const transformPathname = pathname =>
 const withFeatureToggle = store => ({ location }) => {
   const user = store.getState().userState?.userProfile;
 
-  if (user) {
+  if (user?.userIdentifier) {
     handleFeatureToggle({ location, user });
   }
 };
@@ -80,6 +80,8 @@ export const Routes = ({ store }) => {
   const checkFeatureToggles = withFeatureToggle(store);
 
   useEffectOnce(() => {
+    sessionStorage.setItem('next-page', '');
+
     const firstPathname = transformPathname(
       hashHistory.getCurrentLocation()?.pathname,
     );
@@ -112,19 +114,6 @@ export const Routes = ({ store }) => {
       removeHistoryLeavingListener();
     };
   });
-
-  const authRequired = (nextState, replaceState) => {
-    const state = store.getState();
-
-    if (!state.userState.userProfile?.userIdentifier) {
-      replaceState(
-        {
-          nextPathname: nextState.location.pathname,
-        },
-        '/login',
-      );
-    }
-  };
 
   const adminRequired = (nextState, replaceState) => {
     const state = store.getState();
@@ -165,7 +154,10 @@ export const Routes = ({ store }) => {
     <Router history={hashHistory} onUpdate={onRouterUpdate}>
       <Route path="/" component={App}>
         <Route component={TemplateCore}>
-          <IndexRoute component={ListDetailsView} onEnter={authRequired} />
+          <IndexRoute
+            component={ListDetailsView}
+            onEnter={checkFeatureToggles}
+          />
           <IndexRedirect to="/tasks" />
           <Route
             path="/userprofile"

@@ -208,7 +208,7 @@ const TaskList = ({
           </ShowMoreButton>
         </ShowMoreButtonContainer>
       </TaskListOuterContainer>
-      {taskDrawerOpen && isCurrentListSelected && (
+      {taskDrawerOpen && isMultiList && isCurrentListSelected && (
         <NewTaskDrawer
           isInbox={isInbox}
           isMultiList

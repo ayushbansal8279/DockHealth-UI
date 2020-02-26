@@ -20,7 +20,12 @@ const LoginPassword = () => {
           } else {
             sessionStorage.setItem('sessionStartTime', new Date().getTime());
 
-            hashHistory.push('/');
+            const nextPathname = sessionStorage.getItem('next-page') || '/';
+
+            hashHistory.push(nextPathname);
+
+            sessionStorage.setItem('next-page', '');
+
             success('Logged in.');
           }
         })

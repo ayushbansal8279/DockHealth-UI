@@ -29,6 +29,7 @@ export default ({
   clearDueDate,
   SectionButtonContainer,
   SectionButton,
+  isOverdue,
 }) => (
   <DateTimeSelect
     value={newDueDate}
@@ -51,7 +52,11 @@ export default ({
   >
     {({ open }) => (
       <SectionButtonContainer>
-        <SectionButton clickable onClick={open}>
+        <SectionButton
+          color={isOverdue ? '#e40909' : undefined}
+          clickable
+          onClick={open}
+        >
           {newDueDateMoment.isValid()
             ? newDueDateMoment.format('MMM. D, YYYY')
             : 'Set a due date'}

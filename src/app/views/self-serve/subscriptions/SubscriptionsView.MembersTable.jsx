@@ -1,14 +1,13 @@
 import Grid from '@material-ui/core/Grid';
 import { func } from 'prop-types';
 import {
+  ascend,
   filter,
   includes,
   isEmpty,
-  reject,
-  ascend,
   prop,
+  reject,
   sortWith,
-  take,
 } from 'ramda';
 import React from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
@@ -137,14 +136,11 @@ const SubscriptionsViewMembersTable = ({
   });
 
   const isSmallScreen = currentBreakPoint === 'sm';
-  const filteredOrganizationMembers = take(
-    15,
-    getFilteredOrganizationMembers({
-      organizationMembers,
-      selectedUsers,
-      userSubscriptionStatus,
-    }),
-  );
+  const filteredOrganizationMembers = getFilteredOrganizationMembers({
+    organizationMembers,
+    selectedUsers,
+    userSubscriptionStatus,
+  });
 
   return (
     <MembersTableContainer>
