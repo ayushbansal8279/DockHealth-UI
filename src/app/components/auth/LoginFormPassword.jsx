@@ -34,7 +34,7 @@ const LoginFormPassword = ({ onSubmit }) => {
 
   let dialogue;
   if (window.sessionStorage.getItem('confirmStatus') ?? '') {
-    dialogue = 'Congratulations on confirming your account!';
+    dialogue = 'Your email is confirmed.';
   } else {
     dialogue = 'Welcome to Dock Health';
   }

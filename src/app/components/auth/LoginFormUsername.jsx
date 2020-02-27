@@ -56,7 +56,7 @@ const LoginFormUsername = ({ onSubmit }) => {
   const stoopid = window.sessionStorage.getItem('confirmStatus') ?? '';
   let dialogue;
   if (stoopid) {
-    dialogue = 'Congratulations on confirming your account!';
+    dialogue = 'Your email is confirmed.';
   } else {
     dialogue = 'Welcome to Dock Health';
   }
