@@ -63,8 +63,8 @@ export const SlantedBackgroundRectangleContainer = styled.div`
 
 export const DockLogoContainer = styled.div`
   && {
-    height: 100px;
-    max-height: 100px;
+    height: 120px;
+    max-height: 120px;
   }
 `;
 
