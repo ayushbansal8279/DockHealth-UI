@@ -145,6 +145,24 @@ export function getUserAvatar(user) {
     })
     .catch(error => error.response.data);
 }
+export function getUserAvatarBuffer(user) {
+  return axios
+    .get(`user/profilePicture/${user.userIdentifier}?UserPictureType=PROFILE`, {
+      responseType: 'arraybuffer',
+    })
+    .then(response => {
+      const dataBuffer = Buffer.from(response.data);
+
+      return {
+        data: dataBuffer,
+        // initial 2 bytes of data indicates image format -> backend returns invalid content type
+        // FF D8 - JPEG
+        // eslint-disable-next-line unicorn/number-literal-case
+        format: dataBuffer.readUInt16BE(0) === 0xffd8 ? 'jpg' : 'png',
+      };
+    })
+    .catch(error => error.response.data);
+}
 
 export function getUserByEmail({ email }) {
   return axios({

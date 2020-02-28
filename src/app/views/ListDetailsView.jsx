@@ -1,7 +1,4 @@
-import always from 'ramda/es/always';
-import cond from 'ramda/es/cond';
-import equals from 'ramda/es/equals';
-import T from 'ramda/es/T';
+import { always, cond, equals, T } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -69,7 +66,6 @@ class Home extends Component {
           filterBy,
           'INCOMPLETE',
         ),
-
         taskAction(
           routeParams.taskListIdentifier,
           sortBy,
@@ -114,7 +110,7 @@ class Home extends Component {
     };
 
     if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
-      getAllTasks().then(() => {
+      await getAllTasks().then(async () => {
         taskListActions.getTaskListById(routeParams.taskListIdentifier);
 
         if (routeParams.taskListIdentifier) {
@@ -279,6 +275,7 @@ class Home extends Component {
         addTaskComment,
       },
       tasklists,
+      taskListMembers,
       pendingTasklists,
       routeParams: { listName, taskListIdentifier, filterBy },
     } = this.props;
@@ -343,6 +340,7 @@ class Home extends Component {
       taskListIdentifier,
       listName,
       preSelectedTask,
+      taskListMembers,
     };
 
     return <TaskView {...taskViewProps} />;
@@ -362,6 +360,7 @@ const mapStateToProps = store => ({
   userIdentifier: store.userState.userProfile.userIdentifier,
   selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
+  taskListMembers: store.taskListState.tasklistmembers,
 });
 
 const mapDispatchToProps = dispatch => ({

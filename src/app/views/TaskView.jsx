@@ -185,6 +185,8 @@ class TaskView extends Component {
 
   filterButton = React.createRef();
 
+  taskListContainerReference = React.createRef();
+
   handleSearchDebounced = debounce(value => {
     const searchTerms = value.toLowerCase().match(/\S+/g) || [];
 
@@ -270,12 +272,14 @@ class TaskView extends Component {
       storeAsCurrentTask,
       tasks,
     } = this.props;
+
     if (
       previousIsFetching !== isFetching ||
       !equals(members, previousMembers)
     ) {
       this.resetHeader();
     }
+
     if (
       preSelectedTask !== previousPreSelectedTask &&
       !previousPreSelectedTask
@@ -1013,10 +1017,12 @@ class TaskView extends Component {
       isInbox = false,
       isSpecificPatient = false,
       isMultiList,
-      tasks,
       taskDrawerOpen,
       showAddTaskButton = true,
       globalSearch,
+      tasks,
+      completedTasks,
+      taskListMembers,
     } = this.props;
     const {
       initialSearchValue,
@@ -1078,6 +1084,12 @@ class TaskView extends Component {
               toggleHUD={this.toggleHUD}
               toolbarContainerVisible={toolbarContainerVisible}
               showAddTaskButton={showAddTaskButton}
+              taskListContainerReference={this.taskListContainerReference}
+              printData={{
+                tasks,
+                completedTasks,
+                taskListMembers,
+              }}
             />
           )}
           <AnimatePresence>
@@ -1108,10 +1120,12 @@ class TaskView extends Component {
                 </FadeContainer>
               ) : (
                 <div style={{ display: 'flex' }}>
-                  <TaskListContainer>
-                    {this.renderTasklists()}
-                    <SideClickListener onClick={this.closeTaskDrawer} />
-                  </TaskListContainer>
+                  <div ref={this.taskListContainerReference}>
+                    <TaskListContainer>
+                      {this.renderTasklists()}
+                      <SideClickListener onClick={this.closeTaskDrawer} />
+                    </TaskListContainer>
+                  </div>
                   {taskDrawerOpen && !isMultiList && (
                     <NewTaskDrawer
                       headsUpAreaRef={this.headsUpArea.current}

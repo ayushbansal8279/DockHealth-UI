@@ -14,11 +14,18 @@ import {
 import Search from './Search';
 import { AddTaskButton } from './TaskDrawerButtons';
 import TaskListAction from './TaskListAction';
+import { printTaskPdf } from '../task-pdf/TaskPdfDocument';
+
+const onPrintClick = ({ tasks, completedTasks, taskListMembers }) => () => {
+  return printTaskPdf({
+    tasks: [...tasks, ...completedTasks],
+    taskListMembers,
+  });
+};
 
 export default ({
   clearFilter,
   displayHUD,
-  downloadPDF,
   filterButton,
   filterBy,
   handleSearch,
@@ -34,6 +41,7 @@ export default ({
   taskDrawerOpen,
   toggleHUD,
   toolbarContainerVisible,
+  printData: { tasks = [], completedTasks = [], taskListMembers = [] },
 }) => (
   <StyledToolbar>
     <Grid
@@ -78,7 +86,7 @@ export default ({
             alt="Print"
             backgroundColor="#fff"
             icon={PrintIcon}
-            onClick={downloadPDF}
+            onClick={onPrintClick({ tasks, completedTasks, taskListMembers })}
           >
             Print
           </TaskListAction>

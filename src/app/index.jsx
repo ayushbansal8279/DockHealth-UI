@@ -1,5 +1,6 @@
 import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import { Font } from '@react-pdf/renderer';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import moment from 'moment';
 import React from 'react';
@@ -7,11 +8,12 @@ import { render } from 'react-dom';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
 import { StripeProvider } from 'react-stripe-elements';
-
 import configureStore from './ConfigureStore';
 import flags, { FlagsProvider } from './flags';
 import { Routes } from './routes';
 import theme from './theme';
+import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
+import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
 
 if (process.env.NODE_ENV === 'development') {
   // eslint-disable-next-line global-require
@@ -50,18 +52,34 @@ const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
   ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
   : { apiKey: 'NON_EXISTENT_API_KEY' };
 
-const App = () => (
-  <MuiThemeProvider theme={theme}>
-    <MuiPickersUtilsProvider utils={MomentUtils}>
-      <FlagsProvider flags={flags}>
-        <Provider store={store}>
-          <StripeProvider {...stripeProps}>
-            <Routes store={store} />
-          </StripeProvider>
-        </Provider>
-      </FlagsProvider>
-    </MuiPickersUtilsProvider>
-  </MuiThemeProvider>
-);
+const App = () => {
+  Font.register({
+    family: 'Open Sans',
+    fonts: [
+      {
+        src: OpenSansRegularFontSource,
+        fontWeight: 'normal',
+      },
+      {
+        src: OpenSansBoldFontSource,
+        fontWeight: 'bold',
+      },
+    ],
+  });
+
+  return (
+    <MuiThemeProvider theme={theme}>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <FlagsProvider flags={flags}>
+          <Provider store={store}>
+            <StripeProvider {...stripeProps}>
+              <Routes store={store} />
+            </StripeProvider>
+          </Provider>
+        </FlagsProvider>
+      </MuiPickersUtilsProvider>
+    </MuiThemeProvider>
+  );
+};
 
 render(<App />, document.querySelector('#app'));

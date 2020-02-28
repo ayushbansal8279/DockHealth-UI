@@ -8,7 +8,6 @@ import sortWith from 'ramda/es/sortWith';
 import uniqBy from 'ramda/es/uniqBy';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { getTaskPage } from '../../actions/task-actions';
 import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
 import {

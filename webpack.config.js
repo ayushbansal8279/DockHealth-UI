@@ -51,7 +51,7 @@ const config = {
         loader: 'style-loader!css-loader',
       },
       {
-        test: /\.svg$/,
+        test: /\.(png|svg|ttf)$/,
         loader: 'file-loader',
       },
     ],
@@ -71,7 +71,7 @@ const config = {
     }),
   ],
   resolve: {
-    extensions: ['.js', '.json', '.jsx', '.png', '.svg'],
+    extensions: ['.js', '.json', '.jsx', '.png', '.svg', '.ttf'],
   },
   devServer: {
     compress: false,

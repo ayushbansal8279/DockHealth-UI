@@ -169,54 +169,56 @@ const TaskList = ({
     false;
 
   return (
-    <Grid container direction="row" wrap="nowrap">
-      <TaskListOuterContainer>
-        {showListHeadings && (
-          <Heading
-            taskDrawerOpen={taskDrawerOpen}
-            onSortingChanged={onSortingChanged}
-            sorting={currentSorting}
+    <>
+      <Grid container direction="row" wrap="nowrap">
+        <TaskListOuterContainer>
+          {showListHeadings && (
+            <Heading
+              taskDrawerOpen={taskDrawerOpen}
+              onSortingChanged={onSortingChanged}
+              sorting={currentSorting}
+            />
+          )}
+          <NewTaskElement addingNewTask={addingNewTask} />
+          {(listTasks ?? tasks ?? []).length === 0 ? (
+            <ListEmptyElement
+              addingNewTask={addingNewTask}
+              taskDrawerOpen={taskDrawerOpen}
+            />
+          ) : (
+            renderTasks({
+              taskDrawerOpen,
+              isMultiList,
+              sortedTasksToShow,
+              otherTaskListProps,
+              areCompleteTasksShown,
+              toggleCompletedTasksShown,
+              globalSearch,
+            })
+          )}
+          <ShowMoreButtonContainer active={showMoreButtonVisible}>
+            <ShowMoreButton
+              onClick={incrementTaskListShowMoreIndex}
+              active={showMoreButtonVisible}
+            >
+              {isShowMoreLocked ? (
+                <CubesLoader size={24} color="#fff" />
+              ) : (
+                'Show more'
+              )}
+            </ShowMoreButton>
+          </ShowMoreButtonContainer>
+        </TaskListOuterContainer>
+        {taskDrawerOpen && isMultiList && isCurrentListSelected && (
+          <NewTaskDrawer
+            isInbox={isInbox}
+            isMultiList
+            compact
+            {...taskDrawerProps}
           />
         )}
-        <NewTaskElement addingNewTask={addingNewTask} />
-        {(listTasks ?? tasks ?? []).length === 0 ? (
-          <ListEmptyElement
-            addingNewTask={addingNewTask}
-            taskDrawerOpen={taskDrawerOpen}
-          />
-        ) : (
-          renderTasks({
-            taskDrawerOpen,
-            isMultiList,
-            sortedTasksToShow,
-            otherTaskListProps,
-            areCompleteTasksShown,
-            toggleCompletedTasksShown,
-            globalSearch,
-          })
-        )}
-        <ShowMoreButtonContainer active={showMoreButtonVisible}>
-          <ShowMoreButton
-            onClick={incrementTaskListShowMoreIndex}
-            active={showMoreButtonVisible}
-          >
-            {isShowMoreLocked ? (
-              <CubesLoader size={24} color="#fff" />
-            ) : (
-              'Show more'
-            )}
-          </ShowMoreButton>
-        </ShowMoreButtonContainer>
-      </TaskListOuterContainer>
-      {taskDrawerOpen && isMultiList && isCurrentListSelected && (
-        <NewTaskDrawer
-          isInbox={isInbox}
-          isMultiList
-          compact
-          {...taskDrawerProps}
-        />
-      )}
-    </Grid>
+      </Grid>
+    </>
   );
 };
 
