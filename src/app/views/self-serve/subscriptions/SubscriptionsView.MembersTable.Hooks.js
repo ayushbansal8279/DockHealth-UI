@@ -4,7 +4,7 @@ import find from 'ramda/es/find';
 import uniq from 'ramda/es/uniq';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createBreakpoint, useSetState } from 'react-use';
+import { createBreakpoint, useSetState, useToggle } from 'react-use';
 import {
   cancelInviteToOrganization,
   removeUserFromOrganization,
@@ -25,7 +25,36 @@ const initializeMembersTableHooks = ({
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();
 
-  const [currentSearch, setCurrentSearch] = useState('');
+  const [currentSearch, setCurrentSearchRaw] = useState('');
+  const [isAllUsersSelected, toggleAllUsersSelectedRaw] = useToggle(false);
+
+  const toggleAllUsersSelected = useCallback(
+    event => {
+      const newAllUsersSelected = event.target.checked;
+
+      if (newAllUsersSelected) {
+        setSelectedUsers(
+          organizationMembers.map(({ userIdentifier, email }) => ({
+            userIdentifier,
+            email,
+          })),
+        );
+      } else {
+        setSelectedUsers([]);
+      }
+
+      toggleAllUsersSelectedRaw(newAllUsersSelected);
+    },
+    [organizationMembers, setSelectedUsers, toggleAllUsersSelectedRaw],
+  );
+
+  const setCurrentSearch = useCallback(
+    search => {
+      setCurrentSearchRaw(search);
+      toggleAllUsersSelectedRaw(false);
+    },
+    [toggleAllUsersSelectedRaw],
+  );
 
   useEffect(() => {
     setSelectedUsers(
@@ -118,6 +147,8 @@ const initializeMembersTableHooks = ({
     setRemovedUserData,
     currentSearch,
     setCurrentSearch,
+    isAllUsersSelected,
+    toggleAllUsersSelected,
   };
 };
 

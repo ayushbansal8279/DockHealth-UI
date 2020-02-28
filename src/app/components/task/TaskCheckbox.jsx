@@ -4,9 +4,10 @@ import styled, { keyframes } from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import CheckIcon from '../../img/checkbox-check';
 
-const LINE_HEIGHT = 4;
-const LINE_OFFSET = 5;
-const CHECKBOX_SIZE = 30;
+const getCheckboxSizeVariables = size => ({
+  lineHeight: size / 7.5,
+  lineOffset: size / 6,
+});
 
 const CheckboxContainer = styled.div`
   && {
@@ -17,14 +18,14 @@ const CheckboxContainer = styled.div`
     box-shadow: 0px 2px 4px #ccd6dd;
     cursor: pointer;
     display: inline-flex;
-    height: 30px;
+    height: ${props => props.size}px;
     justify-content: center;
-    min-height: 30px;
-    min-width: 30px;
+    min-height: ${props => props.size}px;
+    min-width: ${props => props.size}px;
     opacity: ${props => (props.disabled ? 0.5 : 1)};
     position: relative;
     transition: all 0.2s ease-out;
-    width: 30px;
+    width: ${props => props.size}px;
 
     &:hover {
       background-color: ${props => (props.disabled ? '#fff' : props.color)};
@@ -41,91 +42,77 @@ const CheckboxContainer = styled.div`
   }
 `;
 
-const CheckboxOutLines = ({ className, color }) => (
+const CheckboxOutLines = ({ className, color, lineHeight, size }) => (
   <svg
-    height={LINE_HEIGHT}
-    width={CHECKBOX_SIZE}
-    viewBox={`0 0 ${CHECKBOX_SIZE} ${LINE_HEIGHT}`}
+    height={lineHeight}
+    width={size}
+    viewBox={`0 0 ${size} ${lineHeight}`}
     stroke={color}
     strokeWidth="1.5"
     className={className}
   >
-    <path
-      d={`M ${(CHECKBOX_SIZE * 1) / 6} ${LINE_HEIGHT} L ${(CHECKBOX_SIZE * 1) /
-        6} 0`}
-    />
-    <path
-      d={`M ${(CHECKBOX_SIZE * 2) / 6} ${LINE_HEIGHT} L ${(CHECKBOX_SIZE * 2) /
-        6} 0`}
-    />
-    <path
-      d={`M ${(CHECKBOX_SIZE * 3) / 6} ${LINE_HEIGHT} L ${(CHECKBOX_SIZE * 3) /
-        6} 0`}
-    />
-    <path
-      d={`M ${(CHECKBOX_SIZE * 4) / 6} ${LINE_HEIGHT} L ${(CHECKBOX_SIZE * 4) /
-        6} 0`}
-    />
-    <path
-      d={`M ${(CHECKBOX_SIZE * 5) / 6} ${LINE_HEIGHT} L ${(CHECKBOX_SIZE * 5) /
-        6} 0`}
-    />
+    <path d={`M ${(size * 1) / 6} ${lineHeight} L ${(size * 1) / 6} 0`} />
+    <path d={`M ${(size * 2) / 6} ${lineHeight} L ${(size * 2) / 6} 0`} />
+    <path d={`M ${(size * 3) / 6} ${lineHeight} L ${(size * 3) / 6} 0`} />
+    <path d={`M ${(size * 4) / 6} ${lineHeight} L ${(size * 4) / 6} 0`} />
+    <path d={`M ${(size * 5) / 6} ${lineHeight} L ${(size * 5) / 6} 0`} />
   </svg>
 );
 
-const dashAnimation = keyframes`
+const dashAnimation = lineHeight => keyframes`
   from {
-    stroke-dashoffset: ${LINE_HEIGHT};
+    stroke-dashoffset: ${lineHeight};
   }
   to {
-    stroke-dashoffset: -${LINE_HEIGHT};
+    stroke-dashoffset: -${lineHeight};
   }
 `;
 
-const outLinesStyle = `
+const outLinesStyle = lineHeight => `
   && {
     position: absolute;
-    stroke-dasharray: ${LINE_HEIGHT};
-    stroke-dashoffset: ${LINE_HEIGHT};
+    stroke-dasharray: ${lineHeight};
+    stroke-dashoffset: ${lineHeight};
   }
 `;
 
 const StyledOutLinesBase = styled(CheckboxOutLines)`
-  animation: ${dashAnimation} 0.3s ease-out forwards 0s 1;
-  ${outLinesStyle}
+  animation: ${props => dashAnimation(props.lineHeight)} 0.3s ease-out forwards
+    0s 1;
+  ${props => outLinesStyle(props.lineHeight)}
 `;
 
 const StyledOutLinesTop = styled(StyledOutLinesBase)`
-  top: -${LINE_OFFSET + LINE_HEIGHT}px;
+  top: -${({ lineOffset, lineHeight }) => lineOffset + lineHeight}px;
 `;
 
 const StyledOutlinesBottom = styled(StyledOutLinesBase)`
-  bottom: -${LINE_OFFSET + LINE_HEIGHT}px;
+  bottom: -${({ lineOffset, lineHeight }) => lineOffset + lineHeight}px;
   transform: rotate(180deg);
 `;
 
 const StyledOutlinesLeft = styled(StyledOutLinesBase)`
-  left: -${CHECKBOX_SIZE / 2 + LINE_OFFSET + LINE_HEIGHT / 2}px;
-  top: ${CHECKBOX_SIZE / 2 - LINE_HEIGHT}px;
+  left: -${({ size, lineOffset, lineHeight }) => size / 2 + lineOffset + lineHeight / 2}px;
+  top: ${({ size, lineHeight }) => size / 2 - lineHeight}px;
   transform: rotate(270deg);
 `;
 
 const StyledOutlinesRight = styled(StyledOutLinesBase)`
-  right: -${CHECKBOX_SIZE / 2 + LINE_OFFSET + LINE_HEIGHT / 2}px;
-  top: ${CHECKBOX_SIZE / 2 - LINE_HEIGHT}px;
+  right: -${({ size, lineOffset, lineHeight }) => size / 2 + lineOffset + lineHeight / 2}px;
+  top: ${({ size, lineHeight }) => size / 2 - lineHeight}px;
   transform: rotate(90deg);
 `;
 
-const CheckboxOutLine = ({ className, color }) => (
+const CheckboxOutLine = ({ className, color, lineHeight }) => (
   <svg
-    height={LINE_HEIGHT}
+    height={lineHeight}
     width="2"
-    viewBox={`0 0 2 ${LINE_HEIGHT}`}
+    viewBox={`0 0 2 ${lineHeight}`}
     stroke={color}
     strokeWidth="1.5"
     className={className}
   >
-    <path d={`M 1 ${LINE_HEIGHT} L 1 0`} />
+    <path d={`M 1 ${lineHeight} L 1 0`} />
   </svg>
 );
 
@@ -135,33 +122,33 @@ const StyledOutLineBase = styled(CheckboxOutLine)`
 `;
 
 const StyledOutLineTopRight = styled(StyledOutLineBase)`
-  right: -6px;
-  top: -6px;
+  right: -${props => props.lineOffset}px;
+  top: -${props => props.lineOffset}px;
   transform: rotate(45deg);
 `;
 
 const StyledOutLineBottomRight = styled(StyledOutLineBase)`
-  right: -6px;
-  bottom: -6px;
+  right: -${props => props.lineOffset}px;
+  bottom: -${props => props.lineOffset}px;
   transform: rotate(135deg);
 `;
 
 const StyledOutLineTopLeft = styled(StyledOutLineBase)`
-  left: -6px;
-  top: -6px;
+  left: -${props => props.lineOffset}px;
+  top: -${props => props.lineOffset}px;
   transform: rotate(-45deg);
 `;
 
 const StyledOutLineBottomLeft = styled(StyledOutLineBase)`
-  left: -6px;
-  bottom: -6px;
+  left: -${props => props.lineOffset}px;
+  bottom: -${props => props.lineOffset}px;
   transform: rotate(-135deg);
 `;
 
-const StyledCheckIcon = styled(CheckIcon)`
+const StyledCheckIcon = styled(({ size }) => <CheckIcon size={size} />)`
   && {
-    stroke-dasharray: 30px;
-    stroke-dashoffset: 30px;
+    stroke-dasharray: ${props => props.size}px;
+    stroke-dashoffset: ${props => props.size}px;
     transition: all 0.3s ease-out;
 
     ${props => props.checked && `stroke-dashoffset: 0px;`}
@@ -175,6 +162,7 @@ const TaskCheckbox = ({
   disabled,
   className,
   color = '#20b255',
+  size = 30,
 }) => {
   const [outlinesShown, showOutlines, hideOutlines] = useBoolean(false);
 
@@ -185,6 +173,14 @@ const TaskCheckbox = ({
       hideOutlines();
     }, 500);
   }, [hideOutlines, showOutlines]);
+
+  const { lineHeight, lineOffset } = getCheckboxSizeVariables(size);
+
+  const checkboxSizeVariables = {
+    lineHeight,
+    lineOffset,
+    size,
+  };
 
   return (
     <CheckboxContainer
@@ -199,20 +195,21 @@ const TaskCheckbox = ({
       checked={checked}
       className={className}
       color={color}
+      {...checkboxSizeVariables}
     >
       <span>
-        <StyledCheckIcon checked={checked} />
+        <StyledCheckIcon {...checkboxSizeVariables} checked={checked} />
       </span>
       {outlinesShown && (
         <>
-          <StyledOutLinesTop color={color} />
-          <StyledOutlinesBottom color={color} />
-          <StyledOutlinesLeft color={color} />
-          <StyledOutlinesRight color={color} />
-          <StyledOutLineTopRight color={color} />
-          <StyledOutLineBottomRight color={color} />
-          <StyledOutLineTopLeft color={color} />
-          <StyledOutLineBottomLeft color={color} />
+          <StyledOutLinesTop {...checkboxSizeVariables} color={color} />
+          <StyledOutlinesBottom {...checkboxSizeVariables} color={color} />
+          <StyledOutlinesLeft {...checkboxSizeVariables} color={color} />
+          <StyledOutlinesRight {...checkboxSizeVariables} color={color} />
+          <StyledOutLineTopRight {...checkboxSizeVariables} color={color} />
+          <StyledOutLineBottomRight {...checkboxSizeVariables} color={color} />
+          <StyledOutLineTopLeft {...checkboxSizeVariables} color={color} />
+          <StyledOutLineBottomLeft {...checkboxSizeVariables} color={color} />
         </>
       )}
     </CheckboxContainer>

@@ -25,6 +25,7 @@ import SubscriptionStatusSwitcher, {
 import OrganizationMemberRow, {
   EmptyOrganizationMemberRow,
 } from './SubscriptionsView.OrganizationMemberRow';
+import TaskCheckbox from '../../../components/task/TaskCheckbox';
 
 const renderOrganizationMemberRow = ({
   toggleSelectedUser,
@@ -151,6 +152,8 @@ const SubscriptionsViewMembersTable = ({
     setRemovedUserData,
     currentSearch,
     setCurrentSearch,
+    toggleAllUsersSelected,
+    isAllUsersSelected,
   } = initializeMembersTableHooks({
     setSelectedUsers,
     selectedUsers,
@@ -205,7 +208,16 @@ const SubscriptionsViewMembersTable = ({
             {!isSmallScreen && (
               <thead>
                 <tr>
-                  <th>&nbsp;</th>
+                  <th>
+                    <Grid container justify="center">
+                      <TaskCheckbox
+                        onChange={toggleAllUsersSelected}
+                        checked={isAllUsersSelected}
+                        size={22}
+                        color="#074A86"
+                      />
+                    </Grid>
+                  </th>
                   <th>&nbsp;</th>
                   <th>Name</th>
                   <th>User Type</th>
