@@ -19,9 +19,12 @@ const InviteButton = ({ fullWidth, getAllUsers }) => {
       <Button
         fullWidth={fullWidth}
         variant="contained"
+        size="small"
         onClick={() => togglePopoverOpen(true)}
       >
-        <div ref={invitePeopleButtonReference}>+ Add user to organization</div>
+        <div style={{ whiteSpace: 'nowrap' }} ref={invitePeopleButtonReference}>
+          + Add user to organization
+        </div>
       </Button>
       <InvitePeoplePopover
         open={isPopoverOpen}

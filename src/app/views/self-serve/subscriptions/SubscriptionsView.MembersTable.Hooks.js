@@ -2,7 +2,7 @@
 import equals from 'ramda/es/equals';
 import find from 'ramda/es/find';
 import uniq from 'ramda/es/uniq';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useSetState } from 'react-use';
 import {
@@ -24,6 +24,8 @@ const initializeMembersTableHooks = ({
   }));
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();
+
+  const [currentSearch, setCurrentSearch] = useState('');
 
   useEffect(() => {
     setSelectedUsers(
@@ -114,6 +116,8 @@ const initializeMembersTableHooks = ({
     removeDialogState,
     openDialog,
     setRemovedUserData,
+    currentSearch,
+    setCurrentSearch,
   };
 };
 

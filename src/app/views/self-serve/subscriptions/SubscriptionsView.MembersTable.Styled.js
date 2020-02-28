@@ -1,6 +1,7 @@
 import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
 import { H3 } from './SubscriptionsView.Styled';
+import Search from '../../../components/taskView/Search';
 
 export const MembersTableContainer = styled.div`
   margin-top: 1rem;
@@ -111,4 +112,12 @@ export const SwitcherChevronImage = styled.img`
   width: 1rem;
   transform: rotate(${props => (props.rotated ? 180 : 0)}deg);
   transition: all 0.25s ease-out;
+`;
+
+export const MembersTableSearch = styled(Search)`
+  && {
+    border: 0.0625rem solid #d3dae1;
+    margin-right: 0.5rem;
+    width: 12rem;
+  }
 `;

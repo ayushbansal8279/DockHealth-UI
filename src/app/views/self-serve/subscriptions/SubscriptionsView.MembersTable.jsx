@@ -16,6 +16,7 @@ import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
 import {
   MembersTableContainer,
+  MembersTableSearch,
   MemberTable,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
@@ -83,28 +84,47 @@ const getFilteredOrganizationMembers = ({
   organizationMembers,
   selectedUsers,
   userSubscriptionStatus,
+  currentSearch,
 }) => {
   const sortedOrganizationMembers = combinedMemberSortMethod(
     organizationMembers ?? [],
   );
 
+  let filteredOrganizationMembers;
+
   switch (userSubscriptionStatus) {
     case USER_SUBSCRIPTION_STATUS.SUBSCRIBED:
-      return filter(
+      filteredOrganizationMembers = filter(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
         sortedOrganizationMembers,
       );
-
+      break;
     case USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED:
-      return reject(
+      filteredOrganizationMembers = reject(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
         sortedOrganizationMembers,
       );
+      break;
     default:
-      return sortedOrganizationMembers;
+      filteredOrganizationMembers = organizationMembers;
+      break;
   }
+
+  return currentSearch
+    ? filteredOrganizationMembers.filter(memberData => {
+        const { firstName, lastName, email } = new Proxy(memberData || {}, {
+          get(target, path) {
+            return target[path]?.toLowerCase() ?? '';
+          },
+        });
+
+        return [firstName, lastName, email].some(value =>
+          value.includes(currentSearch.toLowerCase()),
+        );
+      })
+    : filteredOrganizationMembers;
 };
 
 const SubscriptionsViewMembersTable = ({
@@ -129,6 +149,8 @@ const SubscriptionsViewMembersTable = ({
     removeDialogState,
     openDialog,
     setRemovedUserData,
+    currentSearch,
+    setCurrentSearch,
   } = initializeMembersTableHooks({
     setSelectedUsers,
     selectedUsers,
@@ -140,6 +162,7 @@ const SubscriptionsViewMembersTable = ({
     organizationMembers,
     selectedUsers,
     userSubscriptionStatus,
+    currentSearch,
   });
 
   return (
@@ -157,7 +180,20 @@ const SubscriptionsViewMembersTable = ({
                   setUserSubscriptionStatus={setUserSubscriptionStatus}
                 />
               </Grid>
-              <Grid item sm={12} md={6} container justify="flex-end">
+              <Grid
+                item
+                sm={12}
+                md={6}
+                container
+                alignItems="center"
+                justify="flex-end"
+                wrap="nowrap"
+              >
+                <MembersTableSearch
+                  onChange={event =>
+                    setCurrentSearch(event?.target?.value ?? '')
+                  }
+                />
                 <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
