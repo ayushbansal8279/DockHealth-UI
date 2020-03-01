@@ -5,6 +5,7 @@ import {
   cancelInviteToOrganization,
   changeUserRoleForOrg,
   resendInviteToOrganization,
+  findAllUsers,
 } from '../../../actions/people-actions';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
@@ -20,6 +21,7 @@ const renderUserTypesOptions = ({
   userIdentifier,
   userTypes,
   closePopover,
+  reloadUsers,
 }) => {
   return Object.entries(userTypes)
     .filter(pathEq(['1', 'selectable'], true))
@@ -34,7 +36,7 @@ const renderUserTypesOptions = ({
                 status: 'success',
                 title: `User's role changed successfully`,
               });
-
+              reloadUsers();
               closePopover();
             })
             .catch(error => {
@@ -148,8 +150,10 @@ const MemberTypeLabel = ({
     [dispatch],
   );
 
+  const reloadUsers = useCallback(() => findAllUsers()(dispatch), [dispatch]);
+
   const renderOptionsMethod = (() => {
-    if (userIdentifier === Number(sessionStorage.userIdentifier)) {
+    if (userIdentifier === sessionStorage.userIdentifier) {
       return null;
     }
 
@@ -195,6 +199,7 @@ const MemberTypeLabel = ({
             email,
             resendInvite,
             cancelInvite,
+            reloadUsers,
           })}
         </StyledPopover>
       )}
