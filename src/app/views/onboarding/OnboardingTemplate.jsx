@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hashHistory } from 'react-router';
-import * as userApi from '../../api/user-api';
 import {
   OnboardingBackground,
   OnboardingLogo,
@@ -15,6 +13,8 @@ import {
   OnboardingProgressTrackActive,
 } from './OnboardingTemplate.Components';
 import ONBOARDING_STEPS from './OnboardingTemplate.OnboardingSteps';
+
+import { checkUserAuthentication } from '../TemplateCore.Utilities';
 
 const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
   const active = index < currentStep;
@@ -30,41 +30,6 @@ const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
   );
 };
 
-const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
-const EULA_PATH = '/onboarding/eula';
-const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
-const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
-
-const isLoggedIn = (loggedIn, user) => {
-  const { pathname } = hashHistory.getCurrentLocation();
-
-  if (!user) {
-    return;
-  }
-
-  if (!loggedIn && pathname !== CREATE_ACCOUNT_PATH) {
-    hashHistory.replace(CREATE_ACCOUNT_PATH);
-  }
-
-  if (loggedIn && pathname === CREATE_ACCOUNT_PATH) {
-    hashHistory.replace(EULA_PATH);
-  }
-
-  userApi.updateStoreWithCurrentUser(user);
-
-  if (loggedIn && pathname !== TEAM_ORG_SETUP_PATH) {
-    userApi.getUserByEmail(user.username, user).then(data => {
-      if (data.profileThumbnailPictureHash) {
-        userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
-      }
-
-      if (loggedIn && pathname === EULA_PATH && data.eulaAcknowledged) {
-        hashHistory.replace(BAA_OVERVIEW_PATH);
-      }
-    });
-  }
-};
-
 const OnboardingTemplate = ({ children }) => {
   const { currentStep, progress } = useSelector(
     store => store.onboardingProgress,
@@ -73,9 +38,7 @@ const OnboardingTemplate = ({ children }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    userApi.isAuthenticated({
-      isLoggedIn,
-    });
+    checkUserAuthentication();
   }, [children, dispatch]);
 
   return (
