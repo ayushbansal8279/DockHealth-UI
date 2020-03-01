@@ -695,6 +695,7 @@ export const refreshTask = selectedTask => dispatch =>
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task,
       });
+      reloadTaskListStats(dispatch, selectedTask);
     })
     .catch(error => {
       throw error;
