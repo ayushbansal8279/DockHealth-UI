@@ -334,23 +334,30 @@ class TaskView extends Component {
     // const currentTaskListId = taskList.taskListIdentifier;
     const currentUserIdentifier = currentUser.userIdentifier;
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
-    console.log('subscribing to channel')
+    console.log('subscribing to channel');
     const channel = socket.subscribe(channelName);
-    console.log('subscribed to channel')
+    console.log('subscribed to channel');
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
     channel.bind('task-update', data => {
       // Since the app is going to be realtime, we don't want the same item to
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
-      console.log('received event')
-      console.log(data)
-      if(data.eventType){
-        if(data.eventType.startsWith("CREATE_TASK")
-          || data.eventType.startsWith("DUPLICATE_TASK")){
+      console.log('received event');
+      console.log(data);
+      if (data.eventType) {
+        if (
+          data.eventType.startsWith('CREATE_TASK') ||
+          data.eventType.startsWith('DUPLICATE_TASK')
+        ) {
           // this.refresh();
-          if(data.task.taskList){
-            taskActions.getListTasks(data.task.taskList.taskListIdentifier, null, null, "INCOMPLETE");
+          if (data.task.taskList) {
+            taskActions.getListTasks(
+              data.task.taskList.taskListIdentifier,
+              null,
+              null,
+              'INCOMPLETE',
+            );
           }
           return;
         }
