@@ -136,11 +136,13 @@ const Header = ({
           <>
             <HeaderTitleContainer>
               <StyledTitle variant="h5">{title}</StyledTitle>
-              <StyledSubtitle variant="subtitle1">
-                {isFetching
-                  ? nbsp
-                  : `${taskCount} task${taskCount > 1 ? 's' : ''}`}
-              </StyledSubtitle>
+              {!isMultiList && (
+                <StyledSubtitle variant="subtitle1">
+                  {isFetching
+                    ? nbsp
+                    : `${taskCount} task${taskCount > 1 ? 's' : ''}`}
+                </StyledSubtitle>
+              )}
             </HeaderTitleContainer>
             <div
               style={{
