@@ -23,10 +23,7 @@ import {
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
 import AddListForm from './TaskListView.AddListForm';
-import {
-  FormDoubleSpacing,
-  FormSpacing,
-} from './TaskListView.AddListForm.Components';
+import { FormSpacing } from './TaskListView.AddListForm.Components';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -42,7 +39,7 @@ const BlockItemContainer = styled.div`
   border: 0.0625rem solid #e8ebef;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 9rem;
+  min-height: 6rem;
   padding: 0.3rem 0.4rem;
   position: relative;
   text-align: center;
@@ -347,7 +344,7 @@ class TaskListView extends PureComponent {
         {hasStartedFetching && (
           <Fade in>
             <Grid container direction="column" alignItems="center" spacing={8}>
-              <FormDoubleSpacing />
+              {/* <FormSpacing /> */}
               <StyledCollapse in={!taskListFormOpen} timeout={250}>
                 <SafariFixGrid
                   container
@@ -375,7 +372,7 @@ class TaskListView extends PureComponent {
                   </StyledCollapse>
                 </Grid>
               </SafariFixGrid>
-              <FormSpacing />
+              {/* <FormSpacing /> */}
               <SafariFixGrid container item xs={12} justify="center">
                 <Grid
                   container
