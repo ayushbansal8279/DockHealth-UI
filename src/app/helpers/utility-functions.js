@@ -33,7 +33,9 @@ export const isTaskArchivable = curry(
   (currentUserProfile, task) =>
     task?.status === 'COMPLETE' &&
     !task?.parentTaskIdentifier &&
-    !task?.archivedByUser,
+    !task?.archivedByUser &&
+    (task?.creator?.userIdentifier === currentUserProfile?.userIdentifier
+      || task?.assignedBy?.userIdentifier === currentUserProfile?.userIdentifier),
 );
 
 export const formatLinkifyHref = (href, type) => {
