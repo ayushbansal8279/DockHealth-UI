@@ -86,7 +86,7 @@ const renderTasks = ({
                 </Button>
               </Grid>
             )}
-            {areCompleteTasksShown && (
+            {(areCompleteTasksShown || globalSearch) && (
               <Grid item xs={12}>
                 {completeTasks.map(renderTaskBound)}
               </Grid>
@@ -135,7 +135,7 @@ const TaskList = ({
     listName,
   });
 
-  const [areCompleteTasksShown, toggleCompletedTasksShown] = useToggle(true);
+  const [areCompleteTasksShown, toggleCompletedTasksShown] = useToggle(false);
 
   const { selectedTaskId, listTasks } = otherTaskListProps || {};
 
