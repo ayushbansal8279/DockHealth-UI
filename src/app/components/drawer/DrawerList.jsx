@@ -246,10 +246,11 @@ const renderDrawerItem = ({ userProfileAccess, ...drawerListProps }) => ({
   id,
   userProfileAccessKey,
   ...drawerItemProps
-}) =>
-  userProfileAccess[userProfileAccessKey] && (
-    <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />
-  );
+}) => (
+  // userProfileAccess[userProfileAccessKey] && (
+  <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />
+);
+// );
 
 const DrawerList = ({
   activeId,
