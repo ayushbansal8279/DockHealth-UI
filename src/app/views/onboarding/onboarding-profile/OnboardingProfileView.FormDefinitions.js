@@ -35,7 +35,7 @@ export const formSwitchDefinitions = [
     key: 'emailNotificationsEnabled',
     label: 'Emails',
     sublabels: ['Notify me via email when there is a new activity.'],
-    defaultValue: false,
+    defaultValue: true,
   },
   {
     key: 'pushNotificationsEnabled',
@@ -44,6 +44,6 @@ export const formSwitchDefinitions = [
       'Notify me via push notification when there is new activity.',
       '*Mobile app required.',
     ],
-    defaultValue: false,
+    defaultValue: true,
   },
 ];
