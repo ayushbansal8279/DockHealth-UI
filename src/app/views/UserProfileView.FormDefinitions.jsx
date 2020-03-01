@@ -63,7 +63,9 @@ export const formFieldDefinitions = [
       </PrePasswordLabel>
     ),
     defaultValueGetter: ({ accountPhoneNumber }) =>
-      accountPhoneNumber.replace(/^\+1/, ''),
+      accountPhoneNumber
+        ? accountPhoneNumber.replace(/^\+1/, '')
+        : accountPhoneNumber,
   },
   {
     key: 'workPhoneNumber',

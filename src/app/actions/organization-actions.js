@@ -21,6 +21,9 @@ import {
 } from './action-types';
 
 export const getOrganizationById = ({ organizationIdentifier }) => dispatch => {
+  if (!organizationIdentifier) {
+    return;
+  }
   dispatch({
     type: REQUEST_GET_ORGANIZATION,
   });

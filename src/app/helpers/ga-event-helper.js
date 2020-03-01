@@ -147,7 +147,7 @@ export const onPatientNoteEdited = () => {
 
 export const onLogin = () => {
   ReactGA.set({
-    userIdentifier: Number(sessionStorage.userIdentifier),
+    userIdentifier: sessionStorage.userIdentifier,
   });
 };
 
