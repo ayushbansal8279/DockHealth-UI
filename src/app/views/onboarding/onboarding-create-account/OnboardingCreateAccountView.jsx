@@ -11,7 +11,11 @@ import {
   register as registerAction,
   resendConfirmationCode,
 } from '../../../api/user-api';
-import { showAlert, showToast } from '../../../helpers/utility-functions';
+import {
+  showAlert,
+  showToast,
+  useSmallScreen,
+} from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   MobileInputComponent,
@@ -31,7 +35,6 @@ import {
   OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
-import { useSmallScreen } from '../OnboardingTemplate.Utilities';
 
 const REQUIRED_MESSAGE = 'This field is required';
 

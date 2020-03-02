@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSmallScreen } from '../../helpers/utility-functions';
+import { checkUserAuthentication } from '../TemplateCore.Utilities';
 import {
   OnboardingBackground,
   OnboardingLogo,
@@ -13,9 +15,6 @@ import {
   OnboardingProgressTrackActive,
 } from './OnboardingTemplate.Components';
 import ONBOARDING_STEPS from './OnboardingTemplate.OnboardingSteps';
-
-import { checkUserAuthentication } from '../TemplateCore.Utilities';
-import { useSmallScreen } from './OnboardingTemplate.Utilities';
 
 const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
   const active = index < currentStep;
