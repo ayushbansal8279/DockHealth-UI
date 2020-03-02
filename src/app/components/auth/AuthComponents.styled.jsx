@@ -6,12 +6,23 @@ import { bool } from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-export const TitleTypography = styled(Typography)`
-  && {
-    color: #2e3a43;
-    width: 100%;
-  }
-`;
+const TypographyCustomComponent = ({ classes, isSmallScreen, ...props }) => {
+  const className = `${classes.root} ${
+    isSmallScreen ? classes.smallScreen : ''
+  }`.trim();
+
+  return <Typography className={className} {...props} />;
+};
+
+export const TitleTypography = withStyles({
+  root: {
+    color: '#2e3a43',
+    width: '100%',
+  },
+  smallScreen: {
+    fontSize: '2.25rem',
+  },
+})(TypographyCustomComponent);
 
 const NextButtonComponent = ({ active, classes, ...props }) => {
   const className = `${active ? classes.active : classes.inactive} ${
@@ -50,7 +61,7 @@ export const NextButton = withStyles({
 
 export const StyledLabel = styled.div`
   font-family: 'Open Sans', sans-serif;
-  font-size: 1rem;
+  font-size: ${props => props.remFontSize || 1}rem;
   font-weight: ${props => (props.bold ? 600 : 'normal')};
 
   & > a {

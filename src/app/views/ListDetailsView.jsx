@@ -45,12 +45,6 @@ class Home extends Component {
       [T, always(actions.getListTasks)],
     ])(listName);
 
-    const handleRetryTaskAction = error => {
-      this.handleRetry(error, () => {
-        // taskAction(undefined, sortBy, filterBy, 'COMPLETE');
-      });
-    };
-
     const getAllTasks = () => {
       Promise.all([
         taskAction(
@@ -114,7 +108,7 @@ class Home extends Component {
       taskListActions
         .getTaskListById(routeParams.taskListIdentifier)
         .then(noop)
-        .catch(handleRetryTaskAction);
+        .catch(error => this.handleRetry(error, noop));
 
       if (routeParams.taskListIdentifier) {
         taskListActions

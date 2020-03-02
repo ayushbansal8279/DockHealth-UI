@@ -1,10 +1,11 @@
+import Hidden from '@material-ui/core/Hidden';
 import { node } from 'prop-types';
 import React from 'react';
 import { withRouter } from 'react-router';
-
 import {
   BackgroundContainer,
   BackgroundModalContainer,
+  BackgroundRectangleContainer,
   ContentContainer,
   DockLogo,
   DockLogoContainer,
@@ -21,9 +22,14 @@ const TemplateAuthBase = ({ children }) => (
         width: '100vw',
       }}
     >
-      <TemplateAuthBaseContainer>
-        <SlantedBackgroundRectangleContainer />
-      </TemplateAuthBaseContainer>
+      <Hidden smDown>
+        <TemplateAuthBaseContainer>
+          <SlantedBackgroundRectangleContainer />
+        </TemplateAuthBaseContainer>
+      </Hidden>
+      <Hidden mdUp>
+        <BackgroundRectangleContainer />
+      </Hidden>
       <ContentContainer>
         <DockLogoContainer>
           <a href="/">
