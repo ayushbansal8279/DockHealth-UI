@@ -139,6 +139,11 @@ const OnboardingCreateAccountView = () => {
 
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 1 })(dispatch);
+    setDialogTitle(`Confirm your email`);
+    setDialogMessage(
+      `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
+    );
+    showDialog();
   });
 
   const hasTrialReferral = Boolean(
@@ -148,7 +153,6 @@ const OnboardingCreateAccountView = () => {
   const CreateAccountLabelComponent = hasTrialReferral
     ? OnboardingH2
     : OnboardingH1;
-
   return (
     <div>
       {hasTrialReferral && (
@@ -282,20 +286,35 @@ const OnboardingCreateAccountView = () => {
               </OnboardingH2>
             </Grid>
           </Grid>
-          <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-            <OnboardingH2>{dialogTitle}</OnboardingH2>
-            <OnboardingSpacing2 />
-            <OnboardingDivider />
-            <OnboardingSpacing2 />
+          <OnboardingDialog
+            isSmallScreen={isSmallScreen}
+            open={isDialogShown}
+            fullWidth
+            maxWidth="sm"
+          >
+            {!isSmallScreen && (
+              <>
+                <OnboardingH2>{dialogTitle}</OnboardingH2>
+                <OnboardingSpacing2 />
+                <OnboardingDivider />
+                <OnboardingSpacing2 />
+              </>
+            )}
             <OnboardingH2>{dialogMessage}</OnboardingH2>
             <OnboardingSpacing4 />
-            <Grid container justify="space-between" wrap="nowrap">
+            <Grid
+              container
+              direction={isSmallScreen ? 'column' : 'row'}
+              justify="space-between"
+              wrap="nowrap"
+            >
               <OnboardingButton
                 onClick={() => resendEmail(email)}
                 variant="containedAutoWidth"
               >
                 <OnboardingH2Bold>Resend email</OnboardingH2Bold>
               </OnboardingButton>
+              {isSmallScreen && <OnboardingSpacing2 />}
               <OnboardingButton
                 onClick={() => {
                   hideDialog();
@@ -306,9 +325,9 @@ const OnboardingCreateAccountView = () => {
                       .select();
                   });
                 }}
-                variant="contained"
+                variant={isSmallScreen ? 'containedAutoWidth' : 'contained'}
               >
-                <OnboardingH2Bold>Change email address</OnboardingH2Bold>
+                <OnboardingH2Bold>Change email</OnboardingH2Bold>
               </OnboardingButton>
             </Grid>
           </OnboardingDialog>
