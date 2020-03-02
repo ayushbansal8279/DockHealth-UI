@@ -409,11 +409,33 @@ export const OnboardingInput = ({
   );
 };
 
+const OnboardingDialogComponent = ({
+  classes,
+  isSmallScreen,
+  PaperProps,
+  ...props
+}) => {
+  const paperClassName = isSmallScreen ? classes.smallPaper : classes.paper;
+
+  return (
+    <Dialog
+      PaperProps={{
+        ...(PaperProps ?? {}),
+        className: paperClassName,
+      }}
+      {...props}
+    />
+  );
+};
+
 export const OnboardingDialog = withStyles({
   paper: {
     padding: '1.5rem 2rem',
   },
-})(Dialog);
+  smallPaper: {
+    padding: '1rem',
+  },
+})(OnboardingDialogComponent);
 
 export const OnboardingDivider = styled.div`
   background-color: #dedee2;
