@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { hashHistory } from 'react-router';
 
-import { error, success } from '../../actions/notification-actions';
+import { success } from '../../actions/notification-actions';
 import { mobileAnalyticsClient } from '../../api/analytics-api';
 import * as userApi from '../../api/user-api';
 import ResetPasswordForm from '../../components/auth/ResetPasswordForm';
+import { showAlert } from '../../helpers/utility-functions';
 
 export default class ResetPassword extends PureComponent {
   onSubmit = form => {
@@ -30,13 +31,18 @@ export default class ResetPassword extends PureComponent {
         success('Reset password. Please login');
         hashHistory.push('resetPasswordSuccess');
       })
-      .catch(error_ => {
+      .catch(error => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           RESET_PASSWORD_SUCCESS: 'NO',
         });
-        const message = error_.message || 'An error occurred.';
+        const message = error.message || 'An error occurred.';
 
-        error(message);
+        // error(message);
+        showAlert({
+          icon: 'error',
+          title: 'Error',
+          text: message,
+        });
       });
   };
 
