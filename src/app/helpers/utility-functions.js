@@ -4,6 +4,7 @@ import escapeRegExp from 'lodash.escaperegexp';
 import curry from 'ramda/es/curry';
 import { hashHistory } from 'react-router';
 import Swal from 'sweetalert2';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 export const noop = () => {};
 
@@ -35,8 +36,8 @@ export const isTaskArchivable = curry(
     task?.status === 'COMPLETE' &&
     !task?.parentTaskIdentifier &&
     !task?.archivedByUser &&
-    (task?.creator?.userIdentifier === currentUserProfile?.userIdentifier
-      || task?.assignedBy?.userIdentifier === currentUserProfile?.userIdentifier),
+    (task?.creator?.userIdentifier === currentUserProfile?.userIdentifier ||
+      task?.assignedBy?.userIdentifier === currentUserProfile?.userIdentifier),
 );
 
 export const formatLinkifyHref = (href, type) => {
@@ -150,3 +151,5 @@ export const setCurrentPageAfterLogin = () => {
 
   hashHistory.push('/login');
 };
+
+export const useSmallScreen = () => useMediaQuery('(max-width: 960px)');

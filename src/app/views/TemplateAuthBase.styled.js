@@ -89,6 +89,8 @@ export const ContentContainer = styled.div`
   padding: 1rem;
 
   @media only screen and (min-width: 960px) {
+    flex-basis: 50%;
+    max-width: 50%;
     padding: 2rem;
     padding-top: 6rem;
   }

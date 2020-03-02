@@ -3,6 +3,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
+import { useSmallScreen } from '../../helpers/utility-functions';
 import AuthFieldHooks from '../common/AuthFieldHooks';
 import {
   BottomGridContainer,
@@ -32,28 +33,31 @@ const LoginFormPassword = ({ onSubmit }) => {
     setValue('username', sessionStorage.getItem('username') ?? ''); // TODO Figure out how to use SessionStorage like this.
   });
 
-  let dialogue;
-  if (window.sessionStorage.getItem('confirmStatus') ?? '') {
-    dialogue = 'Your email is confirmed.';
-  } else {
-    dialogue = 'Welcome to Dock Health';
-  }
+  const isSmallScreen = useSmallScreen();
+
+  const titleContent = window.sessionStorage.getItem('confirmStatus')
+    ? 'Your email is confirmed'
+    : 'Welcome to Dock Health';
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit({ setError }))}>
       <FormContext {...formMethods}>
-        <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
-          {dialogue}
+        <TitleTypography
+          variant="h2"
+          style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+          isSmallScreen={isSmallScreen}
+        >
+          {titleContent}
         </TitleTypography>
         <TitleTypography variant="h4">
           Please sign in to your account
         </TitleTypography>
 
         <FieldItemContainer>
-          <HeightDependentGrid size={9}>
+          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
             <AuthFieldHooks name="username" type="text" label="Email" />
           </HeightDependentGrid>
-          <HeightDependentGrid size={9}>
+          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
             <AuthFieldHooks
               name="password"
               type="password"
@@ -64,7 +68,7 @@ const LoginFormPassword = ({ onSubmit }) => {
         </FieldItemContainer>
 
         <div>
-          <HeightDependentGrid size={6}>
+          <HeightDependentGrid size={isSmallScreen ? 12 : 6}>
             <NextButton
               active
               id="loginButton"

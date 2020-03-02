@@ -16,6 +16,7 @@ import {
   StyledLabel,
   TitleTypography,
 } from './AuthComponents.styled';
+import { useSmallScreen } from '../../helpers/utility-functions';
 
 const validationSchema = object().shape({
   username: string()
@@ -53,27 +54,29 @@ const LoginFormUsername = ({ onSubmit }) => {
     }
   });
 
-  const stoopid = window.sessionStorage.getItem('confirmStatus') ?? '';
-  let dialogue;
-  if (stoopid) {
-    dialogue = 'Your email is confirmed.';
-  } else {
-    dialogue = 'Welcome to Dock Health';
-  }
+  const isSmallScreen = useSmallScreen();
+
+  const titleContent = window.sessionStorage.getItem('confirmStatus')
+    ? 'Your email is confirmed'
+    : 'Welcome to Dock Health';
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
       <FormContext {...formMethods}>
         {!showLoginMessage && (
           <>
-            <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
-              {dialogue}
+            <TitleTypography
+              variant="h2"
+              isSmallScreen={isSmallScreen}
+              style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+            >
+              {titleContent}
             </TitleTypography>
             <TitleTypography variant="h4">
               Please sign in to your account
             </TitleTypography>
             <FieldItemContainer>
-              <HeightDependentGrid size={9}>
+              <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
                 <AuthFieldHooks
                   name="username"
                   type="text"
@@ -84,7 +87,7 @@ const LoginFormUsername = ({ onSubmit }) => {
             </FieldItemContainer>
 
             <div>
-              <HeightDependentGrid size={6}>
+              <HeightDependentGrid size={isSmallScreen ? 12 : 6}>
                 <NextButton
                   active
                   id="loginButton"
@@ -106,7 +109,10 @@ const LoginFormUsername = ({ onSubmit }) => {
         )}
         {showLoginMessage && (
           <div>
-            <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+            <TitleTypography
+              variant="h2"
+              style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+            >
               Signing you in...
             </TitleTypography>
             <CubesLoader size={40} />
