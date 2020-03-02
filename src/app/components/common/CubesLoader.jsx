@@ -32,7 +32,8 @@ const animation3 = keyframes`
 `;
 
 const CubeContainer = styled.div`
-  animation: ${props => props.animation} 0.5s ease-out 0s infinite;
+  animation: ${props => props.animation} 0.5s
+    cubic-bezier(0.755, 0.05, 0.855, 0.06) 0s infinite;
   box-sizing: border-box;
   height: 50%;
   padding: 10%;

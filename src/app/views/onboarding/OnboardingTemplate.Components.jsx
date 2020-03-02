@@ -464,3 +464,11 @@ export const OnboardingLink = styled(Link)`
     filter: brightness(1.35);
   }
 `;
+
+export const OnboardingSmallScreenLogo = styled.img.attrs({
+  src: '/assets/img/dock-logo.svg',
+  alt: 'Dock Health',
+})`
+  height: 7.25rem;
+  min-height: 7.25rem;
+`;

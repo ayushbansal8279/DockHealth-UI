@@ -8,8 +8,6 @@ const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
 const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
 const BAA_CHECK_PATH = '/onboarding/baa-check';
-// const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
-// const USER_PROFILE_PATH = '/userProfile';
 const HOME_PATH = '/tasks';
 
 export const getBrowserInfo = () => {
@@ -40,47 +38,51 @@ export const getBrowserInfo = () => {
   };
 };
 
+const handleHomeRedirection = ({ data, orgData, isEulaPath, isBaaPath }) => {
+  if (data?.profileThumbnailPictureHash) {
+    userApi.getUserProfilePic(data?.userIdentifier, 'PROFILE');
+  }
+
+  handleFeatureToggle({
+    location: hashHistory.getCurrentLocation(),
+    user: data,
+  });
+
+  if (
+    (data.eulaAcknowledged && isEulaPath) ||
+    (orgData?.baaSigned && isBaaPath)
+  ) {
+    hashHistory.replace(HOME_PATH);
+  }
+};
+
 const checkUserAccountState = async ({ user, pathname }) => {
   const data = await userApi.getUserByEmail(user.username, user);
+
+  const isBaaPath =
+    pathname === BAA_CHECK_PATH || pathname === BAA_OVERVIEW_PATH;
+
   let orgData = null;
-  if (data && data.organizationIdentifier) {
+
+  if (data?.organizationIdentifier) {
     orgData = await organizationApi.checkBAASignedStatus();
   }
-  // console.log(orgData);
-  if (!data.organizationIdentifier || data.organizationIdentifier === '') {
+
+  if (data?.organizationIdentifier === '') {
     hashHistory.push('/unEnrolledUser');
-  } else if (!data.eulaAcknowledged) {
+  } else if (!data?.eulaAcknowledged) {
     if (pathname !== EULA_PATH) {
       hashHistory.replace(EULA_PATH);
     }
-  } else if (orgData && !orgData.baaSigned) {
-    if (!(pathname === BAA_CHECK_PATH || pathname === BAA_OVERVIEW_PATH)) {
-      hashHistory.replace(BAA_CHECK_PATH);
-    }
-
-    // } else if (!data.titleList || data.titleList === "") {
-    //   if(pathname !== USER_PROFILE_PATH ){
-    //     hashHistory.replace(USER_PROFILE_PATH);
-    //   }
-    //   return
+  } else if (!orgData?.baaSigned && !isBaaPath) {
+    hashHistory.replace(BAA_CHECK_PATH);
   } else {
-    if (data.profileThumbnailPictureHash) {
-      userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
-    }
-    handleFeatureToggle({
-      location: hashHistory.getCurrentLocation(),
-      user: data,
+    handleHomeRedirection({
+      data,
+      orgData,
+      isEulaPath: pathname === EULA_PATH,
+      isBaaPath,
     });
-
-    if (data.eulaAcknowledged && pathname === EULA_PATH) {
-      hashHistory.replace(HOME_PATH);
-    } else if (
-      orgData &&
-      orgData.baaSigned &&
-      (pathname === BAA_OVERVIEW_PATH || pathname === BAA_CHECK_PATH)
-    ) {
-      hashHistory.replace(HOME_PATH);
-    }
   }
 };
 
@@ -107,7 +109,6 @@ const isLoggedIn = (loggedIn, user) => {
   try {
     checkUserAccountState({ user, pathname });
   } catch (error) {
-    // console.log(error);
     hashHistory.push('login');
   }
 };
