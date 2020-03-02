@@ -25,6 +25,7 @@ import {
   EDIT_TASK,
   FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS,
   GET_COMPLETED_TASKS_SUCCESS,
+  GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE,
   GET_TASK_HISTORY_ERROR,
   GET_TASK_HISTORY_SUCCESS,
   GET_TASKS_SUCCESS,
@@ -73,7 +74,8 @@ const initialState = {
   addingNewTask: false,
 };
 
-const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) => parentTaskIdentifier || taskIdentifier;
+const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
+  parentTaskIdentifier || taskIdentifier;
 
 const updateTaskOrSubtask = (tasks, taskIdentifier, update) => {
   return tasks.map(t =>
@@ -107,13 +109,21 @@ const clearHistory = state => ({ ...state, currentTaskHistory: null });
 
 const updateDueDate = (state, { taskIdentifier, dueDate }) => {
   const updateStatus = t => ({ ...t, dueDate });
-  const updatedTasks = updateTaskOrSubtask(state.tasks, taskIdentifier, updateStatus);
+  const updatedTasks = updateTaskOrSubtask(
+    state.tasks,
+    taskIdentifier,
+    updateStatus,
+  );
   return { ...state, tasks: updatedTasks };
 };
 
 const updateWorkflowStatus = (state, { taskIdentifier, workflowStatus }) => {
   const updateStatus = t => ({ ...t, workflowStatus });
-  const updatedTasks = updateTaskOrSubtask(state.tasks, taskIdentifier, updateStatus);
+  const updatedTasks = updateTaskOrSubtask(
+    state.tasks,
+    taskIdentifier,
+    updateStatus,
+  );
   return { ...state, tasks: updatedTasks };
 };
 
@@ -132,7 +142,11 @@ const updatePatient = (state, { parentTaskIdentifier, patient }) => ({
 
 const updateReminder = (state, { taskIdentifier, reminderDt }) => {
   const updateStatus = t => ({ ...t, reminderDt });
-  const updatedTasks = updateTaskOrSubtask(state.tasks, taskIdentifier, updateStatus);
+  const updatedTasks = updateTaskOrSubtask(
+    state.tasks,
+    taskIdentifier,
+    updateStatus,
+  );
   return { ...state, tasks: updatedTasks };
 };
 
@@ -149,14 +163,20 @@ const updateMainTask = taskData =>
 const updateSubTask = (taskData, subtask) =>
   evolve({
     subtasks: map(
-      when(propEq('taskIdentifier', subtask.taskIdentifier), mergeDeepLeft(taskData)),
+      when(
+        propEq('taskIdentifier', subtask.taskIdentifier),
+        mergeDeepLeft(taskData),
+      ),
     ),
   });
 
 const updateTask = uncurryN(3, taskData => task =>
   map(
     when(
-      propEq('taskIdentifier', task.parentTaskIdentifier || task.taskIdentifier),
+      propEq(
+        'taskIdentifier',
+        task.parentTaskIdentifier || task.taskIdentifier,
+      ),
       ifElse(
         propEq('taskIdentifier', task.taskIdentifier),
         updateMainTask(taskData),
@@ -241,6 +261,20 @@ const TaskReducer = (state = initialState, action) => {
       };
     }
 
+    case GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE: {
+      let { tasks } = action;
+
+      tasks = tasks.map(mapTasksSuccess);
+
+      return {
+        ...state,
+        completedTasks: state.completedTasks.concat(tasks),
+        isCompletedTasksFetching: false,
+        showingCompletedTasks: true,
+        isFetching: false,
+      };
+    }
+
     case REQUEST_TASKS:
       return {
         ...state,
@@ -313,7 +347,8 @@ const TaskReducer = (state = initialState, action) => {
               ? {
                   ...task,
                   subtasks: task.subtasks.filter(
-                    ({ taskIdentifier }) => taskIdentifier !== action.task.taskIdentifier,
+                    ({ taskIdentifier }) =>
+                      taskIdentifier !== action.task.taskIdentifier,
                   ),
                 }
               : task,
@@ -374,7 +409,9 @@ const TaskReducer = (state = initialState, action) => {
       if (!isSubtask(task)) {
         return {
           ...state,
-          tasks: state.tasks.filter(t => t.taskIdentifier !== task.taskIdentifier),
+          tasks: state.tasks.filter(
+            t => t.taskIdentifier !== task.taskIdentifier,
+          ),
         };
       }
 
@@ -403,7 +440,9 @@ const TaskReducer = (state = initialState, action) => {
       const { tasks, completedTasks } =
         task.status === 'COMPLETE'
           ? {
-              tasks: state.tasks.filter(({ taskIdentifier }) => taskIdentifier !== task.taskIdentifier),
+              tasks: state.tasks.filter(
+                ({ taskIdentifier }) => taskIdentifier !== task.taskIdentifier,
+              ),
               completedTasks: [task, ...state.completedTasks],
             }
           : {
@@ -558,7 +597,10 @@ const TaskReducer = (state = initialState, action) => {
                 subtasks: task.subtasks.map(subtask => ({
                   ...subtask,
                   comments: subtask.comments.map(comment => {
-                    if (comment.commentIdentifier === action.comment.commentIdentifier) {
+                    if (
+                      comment.commentIdentifier ===
+                      action.comment.commentIdentifier
+                    ) {
                       return {
                         ...comment,
                         ...action.comment,
@@ -607,7 +649,8 @@ const TaskReducer = (state = initialState, action) => {
                           ...subtask,
                           comments: subtask.comments.filter(
                             comment =>
-                              comment.commentIdentifier !== action.comment.commentIdentifier,
+                              comment.commentIdentifier !==
+                              action.comment.commentIdentifier,
                           ),
                         }
                       : subtask,
@@ -616,7 +659,9 @@ const TaskReducer = (state = initialState, action) => {
               : {
                   ...task,
                   comments: task.comments.filter(
-                    comment => comment.commentIdentifier !== action.comment.commentIdentifier,
+                    comment =>
+                      comment.commentIdentifier !==
+                      action.comment.commentIdentifier,
                   ),
                 };
           }
@@ -680,7 +725,8 @@ const TaskReducer = (state = initialState, action) => {
         return {
           ...state,
           selectedTask: action.task,
-          selectedTaskId: action.task != null ? action.task.taskIdentifier : null,
+          selectedTaskId:
+            action.task != null ? action.task.taskIdentifier : null,
         };
       }
 
@@ -699,7 +745,9 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         tasks: state.tasks.map(task =>
-          task.taskIdentifier === action.task.taskIdentifier ? action.task : task,
+          task.taskIdentifier === action.task.taskIdentifier
+            ? action.task
+            : task,
         ),
       };
 

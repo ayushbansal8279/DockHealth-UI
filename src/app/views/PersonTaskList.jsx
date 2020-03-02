@@ -86,6 +86,8 @@ class TaskListSearch extends PureComponent {
     const { personData } = this.state;
 
     taskActions.loading();
+    taskActions.hideCompletedTasks();
+
     taskActions.getTasksAssignedToSpecificUser(
       personData.userIdentifier,
       undefined,
@@ -93,12 +95,32 @@ class TaskListSearch extends PureComponent {
       filterBy,
       'INCOMPLETE',
     );
+    // taskActions.getTasksAssignedToSpecificUser(
+    //   personData.userIdentifier,
+    //   undefined,
+    //   sortBy,
+    //   filterBy,
+    //   'COMPLETE',
+    // );
+  };
+
+  handleCompletedTasksRequest = (
+    selectedTaskListIdentifier,
+    filterBy,
+    sortBy,
+  ) => {
+    const { taskActions } = this.props;
+    const { personData } = this.state;
+
+    // taskActions.loadingCompletedTasks();
+
     taskActions.getTasksAssignedToSpecificUser(
       personData.userIdentifier,
-      undefined,
+      selectedTaskListIdentifier,
       sortBy,
       filterBy,
       'COMPLETE',
+      true,
     );
   };
 
@@ -114,6 +136,7 @@ class TaskListSearch extends PureComponent {
             <TaskListSearchContainer
               searchPerformed
               onFilter={this.handleFilterChange}
+              onCompletedTasksRequest={this.handleCompletedTasksRequest}
               showSortingStats
             />
           </>

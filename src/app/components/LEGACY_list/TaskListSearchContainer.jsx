@@ -16,6 +16,7 @@ const TaskListLayout = ({
   showingCompletedTasks,
   searchPerformed,
   onFilter,
+  onCompletedTasksRequest,
   globalSearch = false,
 }) => {
   const selectedTaskId = useSelector(
@@ -47,6 +48,7 @@ const TaskListLayout = ({
     isSpecificPatient: false,
     showListHeadings: false,
     onFilter,
+    onCompletedTasksRequest,
     globalSearch,
   };
 

@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import { isEmpty, partition } from 'ramda';
+import { partition } from 'ramda';
 import React from 'react';
 import { hashHistory } from 'react-router';
 import { useToggle } from 'react-use';
@@ -50,6 +50,7 @@ const renderTasks = ({
   otherTaskListProps,
   areCompleteTasksShown,
   toggleCompletedTasksShown,
+  getCompletedTasks,
   globalSearch,
 }) => {
   const renderTaskBound = renderTask({ taskDrawerOpen, otherTaskListProps });
@@ -70,29 +71,33 @@ const renderTasks = ({
         <Grid item xs={12}>
           {incompleteTasks.map(renderTaskBound)}
         </Grid>
-        {!isEmpty(completeTasks) && (
-          <>
-            {!globalSearch && (
-              <Grid item xs={12} container justify="center">
-                <Button
-                  size="small"
-                  type="button"
-                  onClick={toggleCompletedTasksShown}
-                  variant="contained"
-                >
-                  {`${
-                    areCompleteTasksShown ? 'Hide' : 'Show'
-                  } completed tasks (${completeTasksCount})`}
-                </Button>
-              </Grid>
-            )}
-            {(areCompleteTasksShown || globalSearch) && (
-              <Grid item xs={12}>
-                {completeTasks.map(renderTaskBound)}
-              </Grid>
-            )}
-          </>
-        )}
+        {/* {!isEmpty(completeTasks) && ( */}
+        <>
+          {!globalSearch && (
+            <Grid item xs={12} container justify="center">
+              <Button
+                size="small"
+                type="button"
+                onClick={
+                  completeTasks.length > 0
+                    ? toggleCompletedTasksShown
+                    : getCompletedTasks
+                }
+                variant="contained"
+              >
+                {`${areCompleteTasksShown ? 'Hide' : 'Show'} completed tasks${
+                  areCompleteTasksShown ? ` (${completeTasksCount})` : ``
+                }`}
+              </Button>
+            </Grid>
+          )}
+          {(areCompleteTasksShown || globalSearch) && (
+            <Grid item xs={12}>
+              {completeTasks.map(renderTaskBound)}
+            </Grid>
+          )}
+        </>
+        {/* )} */}
       </Grid>
     );
   }
@@ -107,6 +112,7 @@ const TaskList = ({
   status,
   search,
   filterBy,
+  onCompletedTasksRequest,
   isInbox,
   listName,
   showListHeadings,
@@ -168,6 +174,19 @@ const TaskList = ({
     hashHistory.getCurrentLocation()?.pathname?.startsWith('/taskSearch') ??
     false;
 
+  const getCompletedTasks = () => {
+    if (!areCompleteTasksShown) {
+      onCompletedTasksRequest(
+        taskListIdentifier !== undefined
+          ? taskListIdentifier
+          : taskDrawerProps.taskList.taskListIdentifier,
+        filterBy,
+        '',
+      );
+    }
+    toggleCompletedTasksShown();
+  };
+
   return (
     <Grid container direction="row" wrap="nowrap">
       <TaskListOuterContainer>
@@ -192,6 +211,7 @@ const TaskList = ({
             otherTaskListProps,
             areCompleteTasksShown,
             toggleCompletedTasksShown,
+            getCompletedTasks,
             globalSearch,
           })
         )}

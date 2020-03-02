@@ -12,6 +12,7 @@ import {
   markComplete,
   storeAsCurrentTask,
   toggleTaskPriority,
+  getListTasksByPatientAndStatus,
 } from '../../actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import usePatient from '../../hooks/use-patient';
@@ -100,6 +101,19 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
     completedTasks,
   };
 
+  const handleCompletedTasksRequest = (
+    selectedTaskListIdentifier,
+  ) => {
+    dispatch(
+      getListTasksByPatientAndStatus(
+        patientIdentifier,
+        selectedTaskListIdentifier,
+        'COMPLETE',
+        true,
+      ),
+    );
+  };
+
   const taskViewProps = {
     userIdentifier,
     listTasks: [...(tasks ?? []), ...(completedTasks ?? [])],
@@ -120,6 +134,7 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
     showAddTaskButton: false,
     isMultiList: true,
     isSpecificPatient: true,
+    onCompletedTasksRequest: handleCompletedTasksRequest,
   };
 
   return (

@@ -8,7 +8,16 @@ import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
-import { any, equals, filter, isEmpty, map, prop, reject, uniqBy } from 'ramda';
+import {
+  any,
+  equals,
+  filter,
+  isEmpty,
+  map,
+  prop,
+  reject,
+  uniqBy,
+} from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -113,7 +122,7 @@ export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
-  taskListIdentifier,
+  taskListIdentifier = '',
   patientIdentifier,
   storeAsCurrentTask,
 }) => {
@@ -336,7 +345,7 @@ class TaskView extends Component {
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
     console.log('subscribing to channel');
     const channel = socket.subscribe(channelName);
-    console.log('subscribed to channel');
+    // console.log('subscribed to channel');
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
     channel.bind('task-update', data => {
@@ -344,7 +353,7 @@ class TaskView extends Component {
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
       console.log('received event');
-      console.log(data);
+      // console.log(data);
       if (data.eventType) {
         if (
           data.eventType.startsWith('CREATE_TASK') ||
@@ -810,8 +819,10 @@ class TaskView extends Component {
     return (
       <>
         <TaskList showListHeadings={showListHeadings} {...tasklistProps} />
-        {completedTasks?.length > 0 &&
-          this.renderCompleted({ listCompletedTasks: completedTasks })}
+        {/* {completedTasks?.length > 0 &&
+          this.renderCompleted({ listCompletedTasks: completedTasks })
+        } */}
+        {this.renderCompleted({ listCompletedTasks: completedTasks })}
       </>
     );
   };
@@ -831,6 +842,7 @@ class TaskView extends Component {
       markComplete,
       isSpecificPatient,
       globalSearch,
+      onCompletedTasksRequest,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -891,6 +903,8 @@ class TaskView extends Component {
               isMultiList={isMultiList}
               globalSearch={globalSearch}
               filterBy={filterBy}
+              onCompletedTasksRequest={onCompletedTasksRequest}
+              taskListIdentifier={currentTaskListId}
               taskDrawerProps={{
                 taskList: currentTaskList,
                 closeDrawer: this.closeTaskDrawer,
@@ -921,6 +935,7 @@ class TaskView extends Component {
       showListHeadings = true,
       isMultiList,
       isSpecificPatient,
+      onCompletedTasksRequest,
     } = this.props;
     const {
       slimView,
@@ -960,9 +975,14 @@ class TaskView extends Component {
       globalSearch,
     };
 
-    if (listCompletedTasks.length === 0) {
-      return null;
-    }
+    const getCompletedTasks = () => {
+      onCompletedTasksRequest(taskListIdentifier, filterBy, '');
+      this.toggleCompletedTasks();
+    };
+
+    // if (listCompletedTasks.length === 0) {
+    //   return null;
+    // }
 
     let showCompletedTasksFlag = completedTasksShown;
     if (globalSearch) {
@@ -984,13 +1004,22 @@ class TaskView extends Component {
             <Button
               size="small"
               variant="contained"
-              onClick={this.toggleCompletedTasks}
+              onClick={
+                listCompletedTasks.length > 0
+                  ? this.toggleCompletedTasks
+                  : getCompletedTasks
+              }
             >
-              {`${buttonToggleWord} completed tasks (${
-                listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
-                  ? `${SHOW_MORE_STEP_COUNT}+`
-                  : completedTasksAndSubTasksCount
-              })`}
+              {`${buttonToggleWord} completed tasks${
+                listCompletedTasks.length > 0
+                  ? ` (${
+                      listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
+                        ? `${SHOW_MORE_STEP_COUNT}+`
+                        : completedTasksAndSubTasksCount
+                    })`
+                  : ``
+              }
+              `}
             </Button>
           )}
           {isMultiList && (
