@@ -31,6 +31,7 @@ import {
   OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
+import { useSmallScreen } from '../OnboardingTemplate.Utilities';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -123,6 +124,8 @@ const OnboardingCreateAccountView = () => {
     reValidateMode: 'onChange',
   });
 
+  const isSmallScreen = useSmallScreen();
+
   const emailInputReference = useRef(null);
 
   const { handleSubmit, watch } = formMethods;
@@ -169,7 +172,7 @@ const OnboardingCreateAccountView = () => {
       >
         <FormContext {...formMethods}>
           <Grid container spacing={8}>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <OnboardingInput
                 label="First Name"
                 name="firstName"
@@ -179,7 +182,7 @@ const OnboardingCreateAccountView = () => {
                 }}
               />
             </Grid>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <OnboardingInput
                 label="Last Name"
                 name="lastName"
@@ -189,7 +192,7 @@ const OnboardingCreateAccountView = () => {
                 }}
               />
             </Grid>
-            <Grid item sm={12}>
+            <Grid item xs={12} sm={12}>
               <OnboardingInput
                 label="Email"
                 name="email"
@@ -200,7 +203,12 @@ const OnboardingCreateAccountView = () => {
                 inputContainerReference={emailInputReference}
               />
             </Grid>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={12} md={6}>
+              {isSmallScreen && (
+                <OnboardingAdditionalFormControlText thin isSmallScreen>
+                  Eight characters • One capital letter • One number
+                </OnboardingAdditionalFormControlText>
+              )}
               <OnboardingInput
                 label="Password"
                 name="password"
@@ -215,21 +223,29 @@ const OnboardingCreateAccountView = () => {
                   autoComplete: 'none',
                 }}
               />
-              <OnboardingAdditionalFormControlText>
-                <OnboardingH3>
-                  <b>Secure password requirements</b>
-                </OnboardingH3>
-                <OnboardingH3>- 8 characters minimum</OnboardingH3>
-                <OnboardingH3>- include at least one number</OnboardingH3>
-                <OnboardingH3>
-                  - include at least one uppercase letter
-                </OnboardingH3>
-                <OnboardingH3>
-                  - include at least one lowercase letter
-                </OnboardingH3>
-              </OnboardingAdditionalFormControlText>
+              {!isSmallScreen && (
+                <OnboardingAdditionalFormControlText>
+                  <OnboardingH3>
+                    <b>Secure password requirements</b>
+                  </OnboardingH3>
+                  <OnboardingH3>- 8 characters minimum</OnboardingH3>
+                  <OnboardingH3>- include at least one number</OnboardingH3>
+                  <OnboardingH3>
+                    - include at least one uppercase letter
+                  </OnboardingH3>
+                  <OnboardingH3>
+                    - include at least one lowercase letter
+                  </OnboardingH3>
+                </OnboardingAdditionalFormControlText>
+              )}
             </Grid>
             <Grid item sm={12} md={6}>
+              {isSmallScreen && (
+                <OnboardingAdditionalFormControlText thin isSmallScreen>
+                  Mobile phone number for secondary authentication code and
+                  HIPPA compliance
+                </OnboardingAdditionalFormControlText>
+              )}
               <OnboardingInput
                 label="Your Mobile Phone Number"
                 name="mobilePhoneNumber"
@@ -239,19 +255,27 @@ const OnboardingCreateAccountView = () => {
                   autoComplete: 'none',
                 }}
               />
-              <OnboardingAdditionalFormControlText>
-                <OnboardingH3>
-                  This must be a mobile phone number as we are required to send
-                  a secondary authentication code for HIPAA compliance
-                </OnboardingH3>
-              </OnboardingAdditionalFormControlText>
+              {!isSmallScreen && (
+                <OnboardingAdditionalFormControlText>
+                  <OnboardingH3>
+                    This must be a mobile phone number as we are required to
+                    send a secondary authentication code for HIPAA compliance
+                  </OnboardingH3>
+                </OnboardingAdditionalFormControlText>
+              )}
             </Grid>
-            <Grid item sm={12} container justify="flex-end">
-              <OnboardingSpacing4 />
-              <OnboardingButton type="submit" variant="contained">
+            {isSmallScreen ? <OnboardingSpacing2 /> : <OnboardingSpacing4 />}
+            <Grid item xs={12} container justify="flex-end">
+              <OnboardingButton
+                type="submit"
+                variant={isSmallScreen ? 'containedAutoWidth' : 'contained'}
+                fullWidth={isSmallScreen}
+              >
                 <OnboardingH2Bold>Continue</OnboardingH2Bold>
               </OnboardingButton>
-              <OnboardingSpacing4 />
+            </Grid>
+            {isSmallScreen ? <OnboardingSpacing2 /> : <OnboardingSpacing4 />}
+            <Grid item xs={12} container justify="flex-end">
               <OnboardingH2>
                 <span>I already have an account. </span>
                 <OnboardingLink to="/login">Sign in</OnboardingLink>

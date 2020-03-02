@@ -17,7 +17,7 @@ const LoginWelcome = () => {
 
   return (
     <Grid container direction="column">
-      <Grid item sm={12} md={6}>
+      <Grid item xs={12} sm={12} md={6}>
         <TitleTypography
           variant="h2"
           isSmallScreen={isSmallScreen}

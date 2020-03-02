@@ -15,6 +15,7 @@ import {
 import ONBOARDING_STEPS from './OnboardingTemplate.OnboardingSteps';
 
 import { checkUserAuthentication } from '../TemplateCore.Utilities';
+import { useSmallScreen } from './OnboardingTemplate.Utilities';
 
 const renderProgressDotContainer = ({ currentStep }) => ({ label, index }) => {
   const active = index < currentStep;
@@ -35,6 +36,8 @@ const OnboardingTemplate = ({ children }) => {
     store => store.onboardingProgress,
   );
 
+  const isSmallScreen = useSmallScreen();
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -43,21 +46,25 @@ const OnboardingTemplate = ({ children }) => {
 
   return (
     <OnboardingBackground>
-      <OnboardingNavbar>
-        <a href="/">
-          <OnboardingLogo
-            alt="Dock Health logo"
-            src="assets/img/dock-logo.svg"
-          />
-        </a>
-        <OnboardingProgressBar>
-          <OnboardingProgressTrack>
-            <OnboardingProgressTrackActive width={progress} />
-          </OnboardingProgressTrack>
-          {ONBOARDING_STEPS.map(renderProgressDotContainer({ currentStep }))}
-        </OnboardingProgressBar>
-      </OnboardingNavbar>
-      <OnboardingMainContainer>{children}</OnboardingMainContainer>
+      {!isSmallScreen && (
+        <OnboardingNavbar>
+          <a href="/">
+            <OnboardingLogo
+              alt="Dock Health logo"
+              src="assets/img/dock-logo.svg"
+            />
+          </a>
+          <OnboardingProgressBar>
+            <OnboardingProgressTrack>
+              <OnboardingProgressTrackActive width={progress} />
+            </OnboardingProgressTrack>
+            {ONBOARDING_STEPS.map(renderProgressDotContainer({ currentStep }))}
+          </OnboardingProgressBar>
+        </OnboardingNavbar>
+      )}
+      <OnboardingMainContainer isSmallScreen={isSmallScreen}>
+        {children}
+      </OnboardingMainContainer>
     </OnboardingBackground>
   );
 };
