@@ -6,12 +6,13 @@ import {
   signOrganizationBAADocument,
   storeSignatureResult,
 } from '../../../api/organization-api';
-import { showAlert } from '../../../helpers/utility-functions';
+import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   OnboardingButton,
   OnboardingH2Bold,
   OnboardingH3,
+  OnboardingSpacing2,
 } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
@@ -19,6 +20,48 @@ const {
   HELLOSIGN_CLIENT_ID,
   HELLOSIGN_DOMAIN_VERIFICATION_ENABLED,
 } = process.env;
+
+const getPanelDetails = ({
+  mainDisplayOption,
+  isSmallScreen,
+  clickReadAndSign,
+  showInvitationForm,
+}) =>
+  mainDisplayOption
+    ? {
+        justify: isSmallScreen ? 'center' : 'flex-end',
+        topButtonProps: {
+          variant: 'contained',
+          onClick: clickReadAndSign,
+          fullWidth: isSmallScreen,
+          children: <OnboardingH2Bold>Read and sign BAA</OnboardingH2Bold>,
+        },
+        bottomButtonProps: {
+          variant: 'outlinedSkip',
+          onClick: showInvitationForm,
+          fullWidth: isSmallScreen,
+          children: (
+            <OnboardingH3>Or share BAA with authorized signer</OnboardingH3>
+          ),
+        },
+      }
+    : {
+        justify: isSmallScreen ? 'center' : 'flex-start',
+        topButtonProps: {
+          variant: 'outlinedSkip',
+          onClick: showInvitationForm,
+          fullWidth: isSmallScreen,
+          children: (
+            <OnboardingH3>Send BAA to another authorized signer</OnboardingH3>
+          ),
+        },
+        bottomButtonProps: {
+          variant: 'outlinedSkip',
+          onClick: clickReadAndSign,
+          fullWidth: isSmallScreen,
+          children: <OnboardingH3>I can sign BAA</OnboardingH3>,
+        },
+      };
 
 const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   const [
@@ -84,57 +127,29 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
       });
   }, [openHelloSign]);
 
+  const isSmallScreen = useSmallScreen();
+
+  const panelDetails = getPanelDetails({
+    mainDisplayOption,
+    isSmallScreen,
+    clickReadAndSign,
+    showInvitationForm,
+  });
+
   return (
     <div>
       {!isInvitationFormShown && (
         <>
-          {mainDisplayOption && (
-            <>
-              <Grid container justify="flex-end">
-                <OnboardingButton
-                  type="button"
-                  variant="contained"
-                  onClick={clickReadAndSign}
-                >
-                  <OnboardingH2Bold>Read and sign BAA</OnboardingH2Bold>
-                </OnboardingButton>
-              </Grid>
-              <Grid container justify="flex-end">
-                <OnboardingButton
-                  onClick={showInvitationForm}
-                  variant="outlinedSkip"
-                  size="narrow"
-                >
-                  <OnboardingH3>
-                    Or share BAA with authorized signer
-                  </OnboardingH3>
-                </OnboardingButton>
-              </Grid>
-            </>
-          )}
-          {!mainDisplayOption && (
-            <>
-              <Grid container justify="flex-start">
-                <OnboardingButton
-                  onClick={showInvitationForm}
-                  variant="outlinedSkip"
-                  size="narrow"
-                >
-                  <OnboardingH3>
-                    Send BAA to another authorized signer
-                  </OnboardingH3>
-                </OnboardingButton>
-              </Grid>
-              <Grid container justify="flex-start">
-                <OnboardingButton
-                  onClick={clickReadAndSign}
-                  variant="outlinedSkip"
-                >
-                  <OnboardingH3>I can sign BAA</OnboardingH3>
-                </OnboardingButton>
-              </Grid>
-            </>
-          )}
+          <Grid container justify={panelDetails.justify}>
+            <OnboardingButton type="button" {...panelDetails.topButtonProps} />
+          </Grid>
+          <OnboardingSpacing2 />
+          <Grid container justify={panelDetails.justify}>
+            <OnboardingButton
+              type="button"
+              {...panelDetails.bottomButtonProps}
+            />
+          </Grid>
         </>
       )}
       {isInvitationFormShown && (

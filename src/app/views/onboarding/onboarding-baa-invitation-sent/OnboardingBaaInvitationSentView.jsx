@@ -3,21 +3,21 @@ import { useDispatch } from 'react-redux';
 // import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import { useSmallScreen } from '../../../helpers/utility-functions';
+import OnboardingBaaSigning from '../onboarding-baa-overview/OnboardingBaaSigning';
 import {
   OnboardingH2Bold,
-  OnboardingH3Bold,
   OnboardingH3,
+  OnboardingH3Bold,
+  OnboardingSmallScreenLogo,
   OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
-import OnboardingBaaSigning from '../onboarding-baa-overview/OnboardingBaaSigning';
-
-// const goToMainPage = () => {
-//   hashHistory.push('/');
-// };
 
 const OnboardingBaaInvitationSentView = () => {
   const dispatch = useDispatch();
+
+  const isSmallScreen = useSmallScreen();
 
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 3 })(dispatch);
@@ -25,6 +25,7 @@ const OnboardingBaaInvitationSentView = () => {
 
   return (
     <>
+      {isSmallScreen && <OnboardingSmallScreenLogo />}
       <OnboardingH2Bold>
         Thank you, we sent an email to the authorized signer.
       </OnboardingH2Bold>
