@@ -113,7 +113,7 @@ export const OnboardingMainContainer = styled.main`
   box-sizing: content-box;
   margin: 0 auto;
   max-width: 946px;
-  padding: 3.25rem;
+  padding: ${props => (props.isSmallScreen ? 0.5 : 3.25)}rem;
 `;
 
 export const OnboardingH1 = styled.h1`
@@ -346,7 +346,9 @@ export const OnboardingButton = withStyles({
 });
 
 export const OnboardingAdditionalFormControlText = styled.div`
-  padding: 0.5rem 1.5rem;
+  padding: ${props => (props.isSmallScreen ? '0.5rem' : '0.5rem 1.5rem')};
+  ${props => props.isSmallScreen && 'font-size: 0.875rem;'}
+  ${props => props.thin && 'font-weight: 300;'}
 `;
 
 export const MobileInputComponent = ({ inputRef, ...otherProps }) => (
