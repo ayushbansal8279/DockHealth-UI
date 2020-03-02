@@ -3,11 +3,13 @@ import * as userApi from '../api/user-api';
 import * as organizationApi from '../api/organization-api';
 import handleFeatureToggle from '../helpers/handle-feature-toggle';
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import { useMobile } from '../helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
 const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
 const BAA_CHECK_PATH = '/onboarding/baa-check';
+const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
 const HOME_PATH = '/tasks';
 
 export const getBrowserInfo = () => {
@@ -38,6 +40,12 @@ export const getBrowserInfo = () => {
   };
 };
 
+const handleMobileRedirection = ({ data, orgData }) => {
+  if (data?.eulaAcknowledged && orgData?.baaSigned) {
+    hashHistory.replace(TEAM_ORG_SETUP_PATH);
+  }
+};
+
 const handleHomeRedirection = ({ data, orgData, isEulaPath, isBaaPath }) => {
   if (data?.profileThumbnailPictureHash) {
     userApi.getUserProfilePic(data?.userIdentifier, 'PROFILE');
@@ -59,6 +67,9 @@ const handleHomeRedirection = ({ data, orgData, isEulaPath, isBaaPath }) => {
 const checkUserAccountState = async ({ user, pathname }) => {
   const data = await userApi.getUserByEmail(user.username, user);
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const isMobile = useMobile();
+
   const isBaaPath =
     pathname === BAA_CHECK_PATH || pathname === BAA_OVERVIEW_PATH;
 
@@ -76,12 +87,18 @@ const checkUserAccountState = async ({ user, pathname }) => {
     }
   } else if (!orgData?.baaSigned && !isBaaPath) {
     hashHistory.replace(BAA_CHECK_PATH);
+  } else if (isMobile) {
+    handleMobileRedirection({
+      data,
+      orgData,
+    });
   } else {
     handleHomeRedirection({
       data,
       orgData,
       isEulaPath: pathname === EULA_PATH,
       isBaaPath,
+      isMobile,
     });
   }
 };
