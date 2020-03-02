@@ -30,6 +30,7 @@ export const BackgroundModalContainer = styled(Grid)`
 `;
 
 export const BackgroundRectangleContainer = styled.div`
+  background-color: #fff;
   display: flex;
   height: 100%;
   left: 0;
@@ -38,15 +39,6 @@ export const BackgroundRectangleContainer = styled.div`
   top: 0;
   width: 100%;
   z-index: -1;
-
-  & img {
-    height: 100%;
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
-    object-position: left center;
-    width: 100%;
-  }
 `;
 
 export const SlantedBackgroundRectangleContainer = styled.div`
@@ -63,8 +55,15 @@ export const SlantedBackgroundRectangleContainer = styled.div`
 
 export const DockLogoContainer = styled.div`
   && {
-    height: 120px;
-    max-height: 120px;
+    height: 72px;
+    max-height: 72px;
+  }
+
+  @media only screen and (min-width: 960px) {
+    && {
+      height: 120px;
+      max-height: 120px;
+    }
   }
 `;
 
@@ -82,13 +81,17 @@ export const DockLogo = styled.img`
 export const ContentContainer = styled.div`
   box-sizing: border-box;
   display: flex;
-  flex-basis: 50%;
+  flex-basis: 100%;
   flex-flow: column nowrap;
   flex-grow: 0;
   height: 100%;
-  max-width: 50%;
-  padding: 2rem;
-  padding-top: 6rem;
+  max-width: 100%;
+  padding: 1rem;
+
+  @media only screen and (min-width: 960px) {
+    padding: 2rem;
+    padding-top: 6rem;
+  }
 `;
 
 export const TemplateAuthBaseContainer = styled.div`

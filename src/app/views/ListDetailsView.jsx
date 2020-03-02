@@ -86,16 +86,6 @@ class Home extends Component {
       ];
 
       const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
-        ({ taskIdentifier }) =>
-          preSelectedTaskIdentifier === taskIdentifier,
-      );
-
-      const incompleteTasksWithSubtasks = [
-        ...tasks,
-        ...tasks.flatMap(({ subtasks }) => subtasks ?? []),
-      ];
-
-      const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
         ({ taskIdentifier }) => preSelectedTaskIdentifier === taskIdentifier,
       );
 
