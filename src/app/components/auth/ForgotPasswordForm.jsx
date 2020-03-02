@@ -1,16 +1,15 @@
 import Grid from '@material-ui/core/Grid';
 import React from 'react';
-import { useMount } from 'react-use';
-
-import { object, string } from 'yup';
 import { FormContext, useForm } from 'react-hook-form';
+import { useMount } from 'react-use';
+import { object, string } from 'yup';
+import { useSmallScreen } from '../../helpers/utility-functions';
+import AuthFieldHooks from '../common/AuthFieldHooks';
 import {
   HeightDependentGrid,
   NextButton,
   TitleTypography,
 } from './AuthComponents.styled';
-import AuthFieldHooks from '../common/AuthFieldHooks';
-import { useSmallScreen } from '../../helpers/utility-functions';
 
 const validationSchema = object().shape({
   username: string()
