@@ -25,6 +25,7 @@ import {
   EDIT_TASK,
   FLAG_TASK_AS_READ_OR_UNREAD_SUCCESS,
   GET_COMPLETED_TASKS_SUCCESS,
+  GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE,
   GET_TASK_HISTORY_ERROR,
   GET_TASK_HISTORY_SUCCESS,
   GET_TASKS_SUCCESS,
@@ -254,6 +255,20 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         completedTasks: tasks,
+        isCompletedTasksFetching: false,
+        showingCompletedTasks: true,
+        isFetching: false,
+      };
+    }
+
+    case GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE: {
+      let { tasks } = action;
+
+      tasks = tasks.map(mapTasksSuccess);
+
+      return {
+        ...state,
+        completedTasks: state.completedTasks.concat(tasks),
         isCompletedTasksFetching: false,
         showingCompletedTasks: true,
         isFetching: false,
@@ -679,7 +694,36 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         selectedTask: newSelectedTask,
         selectedTaskId: newSelectedTask.taskIdentifier,
-        tasks: newTasks,
+        tasks: state.tasks.map(task => {
+          if (task.taskIdentifier === mainTaskId) {
+            return action.task.parentTaskIdentifier
+              ? {
+                  ...task,
+                  subtasks: task.subtasks.map(subtask =>
+                    subtask === action.task
+                      ? {
+                          ...subtask,
+                          comments: subtask.comments.filter(
+                            comment =>
+                              comment.commentIdentifier !==
+                              action.comment.commentIdentifier,
+                          ),
+                        }
+                      : subtask,
+                  ),
+                }
+              : {
+                  ...task,
+                  comments: task.comments.filter(
+                    comment =>
+                      comment.commentIdentifier !==
+                      action.comment.commentIdentifier,
+                  ),
+                };
+          }
+
+          return task;
+        }),
       };
     }
 

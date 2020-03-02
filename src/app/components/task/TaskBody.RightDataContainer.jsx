@@ -43,7 +43,7 @@ const DueDateComponent = ({
     );
   }
 
-  if (dueDate && !isSubtask && !completedDateTime) {
+  if (dueDate && !completedDateTime) {
     return (
       <PatientsTasklistDate {...props}>{formattedDueDate}</PatientsTasklistDate>
     );

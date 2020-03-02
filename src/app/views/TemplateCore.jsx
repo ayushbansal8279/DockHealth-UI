@@ -1,20 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { bindActionCreators } from 'redux';
 
 import * as TaskListActions from '../actions/tasklist-actions';
-import { mobileAnalyticsClient } from '../api/analytics-api';
-import * as userApi from '../api/user-api';
-import * as organizationApi from '../api/organization-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import Drawer from '../components/drawer/Drawer';
 import { unsetHeader } from '../actions/header-actions';
-import handleFeatureToggle from '../helpers/handle-feature-toggle';
-import { getBrowserInfo } from './TemplateCore.Utilities';
-import { setCurrentPageAfterLogin } from '../helpers/utility-functions';
+import { checkUserAuthentication } from './TemplateCore.Utilities';
 
 class TemplateCore extends PureComponent {
   state = {
@@ -40,8 +34,9 @@ class TemplateCore extends PureComponent {
   async componentDidMount() {
     const { taskListActions } = this.props;
 
-    await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
-
+    // await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
+    await checkUserAuthentication();
+    this.unlockLoading();
     taskListActions.getTaskListForUser();
   }
 
@@ -49,59 +44,6 @@ class TemplateCore extends PureComponent {
     this.setState({
       loading: false,
     });
-  };
-
-  isLoggedIn = async (isLoggedIn, cognitoUser) => {
-    const { user } = this.props;
-
-    if (!isLoggedIn) {
-      setCurrentPageAfterLogin();
-      hashHistory.push('login');
-    } else {
-      if (!user) {
-        userApi.updateStoreWithCurrentUser(cognitoUser);
-      }
-
-      const browser = getBrowserInfo();
-      mobileAnalyticsClient.recordEvent('BROWSER_INFO', {
-        Name: browser.name,
-        Version: browser.version,
-      });
-
-      try {
-        await this.checkUserData({ user: cognitoUser });
-      } catch (error) {
-        setCurrentPageAfterLogin();
-        hashHistory.push('login');
-      } finally {
-        this.unlockLoading();
-      }
-    }
-  };
-
-  checkUserData = async ({ user }) => {
-    const data = await userApi.getUserByEmail(user.username, user);
-    let orgData = null;
-    if (data && data.organizationIdentifier) {
-      orgData = await organizationApi.checkBAASignedStatus();
-    }
-    // console.log(orgData);
-    if (!data.organizationIdentifier || data.organizationIdentifier === '') {
-      hashHistory.push('/unEnrolledUser');
-    } else if (!data.eulaAcknowledged) {
-      hashHistory.push('/onboarding/eula');
-    } else if (orgData && !orgData.baaSigned) {
-      hashHistory.push('/onboarding/baa-check');
-    } else {
-      if (data.profileThumbnailPictureHash) {
-        userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
-      }
-
-      handleFeatureToggle({
-        location: hashHistory.getCurrentLocation(),
-        user: data,
-      });
-    }
   };
 
   render() {

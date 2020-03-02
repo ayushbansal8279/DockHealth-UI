@@ -30,11 +30,19 @@ export function getTasksForCreator(userIdentifier) {
       });
 }
 
-export function getListTasks(taskListIdentifier, sortBy, filterBy, status) {
+export function getListTasks(
+  taskListIdentifier,
+  sortBy,
+  filterBy,
+  status,
+  cumulativeFlag,
+) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+      : (cumulativeFlag
+      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
 
   return dispatch =>
     TaskApi.getListTasksByUser(taskListIdentifier, status, sortBy, filterBy)
@@ -52,11 +60,14 @@ export function getTasksAssignedToMe(
   sortBy,
   filterBy,
   status,
+  cumulativeFlag,
 ) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+      : (cumulativeFlag
+      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
 
   return dispatch =>
     TaskApi.getTasksAssignedToMe(taskListIdentifier, status, sortBy, filterBy)
@@ -75,11 +86,14 @@ export function getTasksAssignedToSpecificUser(
   sortBy,
   filterBy,
   status,
+  cumulativeFlag,
 ) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+      : (cumulativeFlag
+      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
 
   return dispatch =>
     TaskApi.getTasksAssignedToSpecificUser(
@@ -103,11 +117,14 @@ export function getTasksAssignedByMe(
   sortBy,
   filterBy,
   status,
+  cumulativeFlag,
 ) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+      : (cumulativeFlag
+      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
 
   return dispatch =>
     TaskApi.getTasksAssignedByMe(taskListIdentifier, status, sortBy, filterBy)
@@ -548,6 +565,30 @@ export function getListTasksByPatient(patientIdentifier, taskListIdentifier) {
         throw error;
       });
 }
+
+export function getListTasksByPatientAndStatus(
+  patientIdentifier,
+  taskListIdentifier,
+  status,
+  cumulativeFlag,
+) {
+  const action =
+    status === 'INCOMPLETE'
+      ? ActionTypes.GET_TASKS_SUCCESS
+      : (cumulativeFlag
+      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
+
+  return dispatch =>
+    TaskApi.getListTasksByPatient(patientIdentifier, status, taskListIdentifier)
+      .then(tasks => {
+        dispatch({ type: action, tasks });
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
 export function getAllTasksByPatient(
   patientIdentifier,
   sortBy,
@@ -570,11 +611,13 @@ export function getAllTasksByPatient(
       });
 }
 
-export function getInboxTasks(status, sortBy, filterBy) {
+export function getInboxTasks(status, sortBy, filterBy, cumulativeFlag) {
   const action =
     status === 'INCOMPLETE'
       ? ActionTypes.GET_TASKS_SUCCESS
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+      : (cumulativeFlag
+      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
 
   return dispatch =>
     TaskApi.getInboxTasks(status, sortBy, filterBy)
@@ -722,6 +765,7 @@ export const refreshTask = selectedTask => dispatch =>
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task,
       });
+      reloadTaskListStats(dispatch, selectedTask);
     })
     .catch(error => {
       throw error;

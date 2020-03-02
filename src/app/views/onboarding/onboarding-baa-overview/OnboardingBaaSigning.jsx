@@ -15,7 +15,10 @@ import {
 } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
-const { HELLOSIGN_CLIENT_ID } = process.env;
+const {
+  HELLOSIGN_CLIENT_ID,
+  HELLOSIGN_DOMAIN_VERIFICATION_ENABLED,
+} = process.env;
 
 const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   const [
@@ -30,11 +33,19 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   });
 
   const openHelloSign = useCallback(signingUrl => {
+    let skipDomainVerification = true;
+    if (
+      HELLOSIGN_DOMAIN_VERIFICATION_ENABLED &&
+      HELLOSIGN_DOMAIN_VERIFICATION_ENABLED === 'true'
+    ) {
+      skipDomainVerification = false;
+    }
+
     // eslint-disable-next-line no-unused-expressions
     window?.HelloSign.open({
       url: signingUrl,
       allowCancel: true,
-      skipDomainVerification: true,
+      skipDomainVerification,
       messageListener: eventData => {
         storeSignatureResult({
           signatureIdentifier: eventData.signature_id,

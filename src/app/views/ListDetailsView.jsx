@@ -66,12 +66,12 @@ class Home extends Component {
           filterBy,
           'INCOMPLETE',
         ),
-        taskAction(
-          routeParams.taskListIdentifier,
-          sortBy,
-          filterBy,
-          'COMPLETE',
-        ),
+        // taskAction(
+        //   routeParams.taskListIdentifier,
+        //   sortBy,
+        //   filterBy,
+        //   'COMPLETE',
+        // ),
       ]);
 
       const {
@@ -79,6 +79,16 @@ class Home extends Component {
         completedTasks,
         routeParams: { taskIdentifier: preSelectedTaskIdentifier },
       } = this.props;
+
+      const incompleteTasksWithSubtasks = [
+        ...tasks,
+        ...tasks.flatMap(({ subtasks }) => subtasks ?? []),
+      ];
+
+      const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
+        ({ taskIdentifier }) =>
+          preSelectedTaskIdentifier === taskIdentifier,
+      );
 
       const incompleteTasksWithSubtasks = [
         ...tasks,
@@ -210,28 +220,168 @@ class Home extends Component {
     } = this.props;
 
     actions.loading();
+    // actions.hideCompletedTasks();
 
     if (listName === ASSIGNED_BY_ME) {
       actions
         .getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop);
-      actions
-        .getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
-        .then(noop);
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedByMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'INCOMPLETE',
+            );
+          });
+        });
+      // actions
+      //   .getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
+      //   .then(noop)
+      //   .catch(error => {
+      //     this.handleRetry(error, () => {
+      //       actions.getTasksAssignedByMe(
+      //         undefined,
+      //         sortBy,
+      //         filterBy,
+      //         'COMPLETE',
+      //       );
+      //     });
+      //   });
     } else if (listName === ASSIGNED_TO_ME) {
       actions
         .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop);
-      actions
-        .getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
-        .then(noop);
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedToMe(
+              undefined,
+              sortBy,
+              filterBy,
+              'INCOMPLETE',
+            );
+          });
+        });
+      // actions
+      //   .getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
+      //   .then(noop)
+      //   .catch(error => {
+      //     this.handleRetry(error, () => {
+      //       actions.getTasksAssignedToMe(
+      //         undefined,
+      //         sortBy,
+      //         filterBy,
+      //         'COMPLETE',
+      //       );
+      //     });
+      //   });
     } else {
       actions
         .getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop);
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getListTasks(
+              taskListIdentifier,
+              sortBy,
+              filterBy,
+              'INCOMPLETE',
+            );
+          });
+        });
+      // actions
+      //   .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE')
+      //   .then(noop)
+      //   .catch(error => {
+      //     this.handleRetry(error, () => {
+      //       actions.getListTasks(
+      //         taskListIdentifier,
+      //         sortBy,
+      //         filterBy,
+      //         'COMPLETE',
+      //       );
+      //     });
+      //   });
+    }
+  };
+
+  handleCompletedTasksRequest = (
+    selectedTaskListIdentifier,
+    filterBy,
+    sortBy,
+  ) => {
+    const {
+      actions,
+      routeParams: { listName, taskListIdentifier },
+    } = this.props;
+
+    if (listName === ASSIGNED_BY_ME) {
       actions
-        .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE')
-        .then(noop);
+        .getTasksAssignedByMe(
+          selectedTaskListIdentifier,
+          sortBy,
+          filterBy,
+          'COMPLETE',
+          true,
+        )
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedByMe(
+              selectedTaskListIdentifier,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+              true,
+            );
+          });
+        });
+    } else if (listName === ASSIGNED_TO_ME) {
+      actions
+        .getTasksAssignedToMe(
+          selectedTaskListIdentifier,
+          sortBy,
+          filterBy,
+          'COMPLETE',
+          true,
+        )
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getTasksAssignedToMe(
+              selectedTaskListIdentifier,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+              true,
+            );
+          });
+        });
+    } else {
+      actions
+        .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE', true)
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getListTasks(
+              taskListIdentifier,
+              sortBy,
+              filterBy,
+              'COMPLETE',
+              true,
+            );
+          });
+        });
+    }
+  };
+
+  handleRetry = (error, callback) => {
+    if (error.message === 'Network Error') {
+      userApi
+        .refreshAccessToken(sessionStorage.getItem('username'))
+        .then(callback)
+        .catch(noop);
     }
   };
 
@@ -331,6 +481,7 @@ class Home extends Component {
       toggleTaskPriority: (task, priority) =>
         toggleTaskPriority(task, userIdentifier, priority),
       onFilter: this.handleFilterChange,
+      onCompletedTasksRequest: this.handleCompletedTasksRequest,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
       title,

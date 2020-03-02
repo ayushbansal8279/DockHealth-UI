@@ -24,7 +24,9 @@ const onFormSubmit = async data => {
       username: email,
       password,
       email,
-      phone_number: `+1${accountPhoneNumber.replace(/\D/g, '')}`,
+      phone_number: accountPhoneNumber
+        ? `+1${accountPhoneNumber.replace(/\D/g, '')}`
+        : '',
       family_name: lastName,
       given_name: firstName,
       'custom:title': title,
