@@ -1,7 +1,9 @@
-import curry from 'ramda/es/curry';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
-import linkifyString from 'linkifyjs/string';
+import curry from 'ramda/es/curry';
+import { hashHistory } from 'react-router';
 import Swal from 'sweetalert2';
 
 export const noop = () => {};
@@ -34,8 +36,8 @@ export const isTaskArchivable = curry(
     task?.status === 'COMPLETE' &&
     !task?.parentTaskIdentifier &&
     !task?.archivedByUser &&
-    (task?.creator?.userIdentifier === currentUserProfile?.userIdentifier
-      || task?.assignedBy?.userIdentifier === currentUserProfile?.userIdentifier),
+    (task?.creator?.userIdentifier === currentUserProfile?.userIdentifier ||
+      task?.assignedBy?.userIdentifier === currentUserProfile?.userIdentifier),
 );
 
 export const formatLinkifyHref = (href, type) => {
@@ -141,3 +143,13 @@ export const showAlert = ({
   // fix z-index for drawer container
   Swal.getContainer().style.zIndex = 10000;
 };
+
+export const setCurrentPageAfterLogin = () => {
+  const currentPathname = hashHistory.getCurrentLocation().pathname;
+
+  sessionStorage.setItem('next-page', currentPathname);
+
+  hashHistory.push('/login');
+};
+
+export const useSmallScreen = () => useMediaQuery('(max-width: 960px)');

@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import * as UserApi from '../../api/user-api';
+import { useSmallScreen } from '../../helpers/utility-functions';
 import AuthFieldHooks from '../common/AuthFieldHooks';
 import CubesLoader from '../common/CubesLoader';
 import {
@@ -53,20 +54,30 @@ const LoginFormUsername = ({ onSubmit }) => {
     }
   });
 
+  const isSmallScreen = useSmallScreen();
+
+  const titleContent = window.sessionStorage.getItem('confirmStatus')
+    ? 'Your email is confirmed'
+    : 'Welcome to Dock Health';
+
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
       <FormContext {...formMethods}>
         {!showLoginMessage && (
           <>
-            <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
-              Welcome to Dock Health
+            <TitleTypography
+              variant="h2"
+              isSmallScreen={isSmallScreen}
+              style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+            >
+              {titleContent}
             </TitleTypography>
             <TitleTypography variant="h4">
               Please sign in to your account
             </TitleTypography>
 
             <FieldItemContainer>
-              <HeightDependentGrid size={9}>
+              <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
                 <AuthFieldHooks
                   name="username"
                   type="text"
@@ -77,7 +88,7 @@ const LoginFormUsername = ({ onSubmit }) => {
             </FieldItemContainer>
 
             <div>
-              <HeightDependentGrid size={6}>
+              <HeightDependentGrid size={isSmallScreen ? 12 : 6}>
                 <NextButton
                   active
                   id="loginButton"
@@ -99,7 +110,10 @@ const LoginFormUsername = ({ onSubmit }) => {
         )}
         {showLoginMessage && (
           <div>
-            <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+            <TitleTypography
+              variant="h2"
+              style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+            >
               Signing you in...
             </TitleTypography>
             <CubesLoader size={40} />

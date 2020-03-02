@@ -1,5 +1,4 @@
 import Grid from '@material-ui/core/Grid';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 import React from 'react';
 import { Link } from 'react-router';
 import {
@@ -11,9 +10,10 @@ import {
   StyledLabel,
   TitleTypography,
 } from '../../components/auth/AuthComponents.styled';
+import { useSmallScreen } from '../../helpers/utility-functions';
 
 const LoginWelcome = () => {
-  const isSmallScreen = useMediaQuery('(max-width: 960px)');
+  const isSmallScreen = useSmallScreen();
 
   return (
     <Grid container direction="column">
