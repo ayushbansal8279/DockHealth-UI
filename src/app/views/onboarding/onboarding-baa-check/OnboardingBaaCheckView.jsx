@@ -2,14 +2,15 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import { useSmallScreen } from '../../../helpers/utility-functions';
+import OnboardingBaaSigning from '../onboarding-baa-overview/OnboardingBaaSigning';
 import {
   OnboardingH2Bold,
   OnboardingH3,
+  OnboardingSmallScreenLogo,
   OnboardingSpacing3,
   OnboardingSpacing4,
-  OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
-import OnboardingBaaSigning from '../onboarding-baa-overview/OnboardingBaaSigning';
 
 const OnboardingBaaCheckView = () => {
   const dispatch = useDispatch();
@@ -18,8 +19,11 @@ const OnboardingBaaCheckView = () => {
     setOnboardingCurrentStep({ currentStep: 3 })(dispatch);
   });
 
+  const isSmallScreen = useSmallScreen();
+
   return (
     <div>
+      {isSmallScreen && <OnboardingSmallScreenLogo />}
       <OnboardingH2Bold>
         Thank You! We need the Business Associate Agreement (BAA) signed before
         using Dock.
@@ -33,7 +37,6 @@ const OnboardingBaaCheckView = () => {
         trying to figure out how to get organized without us ;)
       </OnboardingH3>
       <OnboardingSpacing4 />
-      <OnboardingSpacing5 />
       <OnboardingBaaSigning />
     </div>
   );

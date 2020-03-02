@@ -10,8 +10,10 @@ import {
   OnboardingSpacing3,
   OnboardingSpacing4,
   OnboardingSpacing5,
+  OnboardingSmallScreenLogo,
 } from '../OnboardingTemplate.Components';
 import OnboardingBaaSigning from './OnboardingBaaSigning';
+import { useSmallScreen } from '../../../helpers/utility-functions';
 
 const OnboardingBaaOverviewView = () => {
   const dispatch = useDispatch();
@@ -20,8 +22,11 @@ const OnboardingBaaOverviewView = () => {
     setOnboardingCurrentStep({ currentStep: 3 })(dispatch);
   });
 
+  const isSmallScreen = useSmallScreen();
+
   return (
     <div>
+      {isSmallScreen && <OnboardingSmallScreenLogo />}
       <OnboardingH1Bold>THAT WAS EASY</OnboardingH1Bold>
       <OnboardingSpacing3 />
       <OnboardingH3>Next, the Business Associate Agreement</OnboardingH3>

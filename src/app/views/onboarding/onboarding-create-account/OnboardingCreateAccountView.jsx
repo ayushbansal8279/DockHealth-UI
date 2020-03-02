@@ -139,11 +139,6 @@ const OnboardingCreateAccountView = () => {
 
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 1 })(dispatch);
-    setDialogTitle(`Confirm your email`);
-    setDialogMessage(
-      `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
-    );
-    showDialog();
   });
 
   const hasTrialReferral = Boolean(
