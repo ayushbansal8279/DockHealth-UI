@@ -112,8 +112,6 @@ class TaskListSearch extends PureComponent {
     const { taskActions } = this.props;
     const { personData } = this.state;
 
-    // taskActions.loadingCompletedTasks();
-
     taskActions.getTasksAssignedToSpecificUser(
       personData.userIdentifier,
       selectedTaskListIdentifier,

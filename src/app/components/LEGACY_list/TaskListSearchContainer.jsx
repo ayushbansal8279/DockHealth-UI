@@ -74,6 +74,7 @@ const TaskListSearchContainer = ({
   showingCompletedTasks,
   searchPerformed,
   onFilter,
+  onCompletedTasksRequest,
   globalSearch = false,
 }) => {
   useUnmount(() => {
@@ -94,6 +95,7 @@ const TaskListSearchContainer = ({
     showingCompletedTasks,
     searchPerformed,
     onFilter,
+    onCompletedTasksRequest,
     globalSearch,
   };
 

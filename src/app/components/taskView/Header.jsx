@@ -42,14 +42,14 @@ const StyledTitle = styled(Typography)`
   }
 `;
 
-const StyledSubtitle = styled(Typography)`
-  && {
-    font-size: 16px;
-    line-height: 26px;
-    color: #2e3a43;
-    margin-left: 2px; /* visually align with StyledTitle */
-  }
-`;
+// const StyledSubtitle = styled(Typography)`
+//   && {
+//     font-size: 16px;
+//     line-height: 26px;
+//     color: #2e3a43;
+//     margin-left: 2px; /* visually align with StyledTitle */
+//   }
+// `;
 
 const HeaderTitleContainer = styled.div`
   flex: 0.35;
@@ -87,7 +87,7 @@ const Notifications = ({ value, onClick }) => {
   );
 };
 
-const nbsp = '\u00A0';
+// const nbsp = '\u00A0';
 
 const Header = ({
   title,
@@ -136,13 +136,13 @@ const Header = ({
           <>
             <HeaderTitleContainer>
               <StyledTitle variant="h5">{title}</StyledTitle>
-              {!isMultiList && (
+              {/* {!isMultiList && (
                 <StyledSubtitle variant="subtitle1">
                   {isFetching
                     ? nbsp
                     : `${taskCount} task${taskCount > 1 ? 's' : ''}`}
                 </StyledSubtitle>
-              )}
+              )} */}
             </HeaderTitleContainer>
             <div
               style={{

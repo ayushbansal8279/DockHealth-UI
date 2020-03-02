@@ -8,7 +8,7 @@ import { NextButton, TitleTypography } from './AuthComponents.styled';
 const MIN_PASSWORD_LENGTH = 8;
 
 const validationSchema = object().shape({
-  code: string().required('Authorization code is required'),
+  // code: string().required('Authorization code is required'),
   password: string()
     .required('Password is required')
     .min(
