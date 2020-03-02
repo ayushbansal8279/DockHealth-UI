@@ -153,3 +153,8 @@ export const setCurrentPageAfterLogin = () => {
 };
 
 export const useSmallScreen = () => useMediaQuery('(max-width: 960px)');
+
+export const useMobile = () =>
+  navigator?.userAgent?.toLowerCase()?.includes?.('mobi') ?? false;
+
+export const useIOS = () => /ipad|iphone|ipod/i.test(navigator.userAgent);
