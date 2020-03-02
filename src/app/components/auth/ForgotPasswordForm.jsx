@@ -9,6 +9,7 @@ import {
   TitleTypography,
 } from './AuthComponents.styled';
 import AuthFieldHooks from '../common/AuthFieldHooks';
+import { useSmallScreen } from '../../helpers/utility-functions';
 
 const validationSchema = object().shape({
   username: string()
@@ -24,20 +25,26 @@ const ForgotPasswordForm = ({ onSubmit }) => {
 
   const { handleSubmit } = formMethods;
 
+  const isSmallScreen = useSmallScreen();
+
   return (
-    <form className="inline-label top-buffer" onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FormContext {...formMethods}>
         <Grid container>
-          <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+          <TitleTypography
+            variant="h2"
+            style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+            isSmallScreen={isSmallScreen}
+          >
             Forgot your password?
           </TitleTypography>
-          <HeightDependentGrid size={9}>
+          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
             <TitleTypography variant="h4">
               Don’t worry, it happens to the best of us. Enter the email
               associated with your account.
             </TitleTypography>
           </HeightDependentGrid>
-          <HeightDependentGrid size={9}>
+          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
             <AuthFieldHooks
               name="username"
               type="text"
@@ -45,7 +52,7 @@ const ForgotPasswordForm = ({ onSubmit }) => {
               autoFocus
             />
           </HeightDependentGrid>
-          <HeightDependentGrid size={9}>
+          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
             <NextButton
               active
               id="loginButton"
@@ -53,7 +60,7 @@ const ForgotPasswordForm = ({ onSubmit }) => {
               variant="contained"
               color="primary"
               style={{
-                marginTop: '3rem',
+                marginTop: isSmallScreen ? '1em' : '3em',
               }}
             >
               Send me a recovery code
