@@ -29,8 +29,8 @@ export default class ConfirmRegistration extends PureComponent {
           });
           success('Registration confirmed. Please Login');
           // alert('Registration confirmed. Please Login')
-          // hashHistory.push('login')
-          window.location.href = process.env.BRANCH_IO_APP_LINK;
+          hashHistory.push('login');
+          // window.location.href = process.env.BRANCH_IO_APP_LINK;
           // hashHistory.push('confirmRegistrationSuccess')
         })
         .catch(error_ => {
@@ -42,7 +42,8 @@ export default class ConfirmRegistration extends PureComponent {
             message ==
             'User cannot confirm because user status is not UNCONFIRMED.'
           ) {
-            window.location.href = process.env.BRANCH_IO_APP_LINK;
+            hashHistory.push('login');
+            // window.location.href = process.env.BRANCH_IO_APP_LINK;
             return;
           }
           const field = false;
