@@ -76,7 +76,7 @@ const initializeAddListFormHooks = () => {
 
   const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
 
-  const filteredPeople = (people ?? [])
+  const filteredPeople = (people && people.length > 0 ? people : [])
     .filter(
       ({ userIdentifier }) =>
         userIdentifier != null &&
