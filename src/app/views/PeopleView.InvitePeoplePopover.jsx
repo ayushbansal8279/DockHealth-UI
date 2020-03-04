@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from '../actions/people-actions';
 import { showAlert } from '../helpers/utility-functions';
@@ -81,7 +82,7 @@ const InvitePeopleForm = ({
             name="first_name"
             inputRef={register}
             autoFocus
-            autoComplete="none"
+            autoComplete={uuid()}
           />
         </StyledFormControl>
         <PopoverErrorCollapse in={hasFirstNameError}>
@@ -93,7 +94,7 @@ const InvitePeopleForm = ({
             error={hasLastNameError}
             name="last_name"
             inputRef={register}
-            autoComplete="none"
+            autoComplete={uuid()}
           />
         </StyledFormControl>
         <PopoverErrorCollapse in={hasLastNameError}>
@@ -105,7 +106,7 @@ const InvitePeopleForm = ({
             error={hasEmailError}
             name="email"
             inputRef={register}
-            autoComplete="none"
+            autoComplete={uuid()}
           />
         </StyledFormControl>
         <PopoverErrorCollapse in={hasEmailError}>

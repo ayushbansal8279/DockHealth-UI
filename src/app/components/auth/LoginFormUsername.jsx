@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import * as UserApi from '../../api/user-api';
+import { useSmallScreen } from '../../helpers/utility-functions';
 import AuthFieldHooks from '../common/AuthFieldHooks';
 import CubesLoader from '../common/CubesLoader';
 import {
@@ -16,7 +17,6 @@ import {
   StyledLabel,
   TitleTypography,
 } from './AuthComponents.styled';
-import { useSmallScreen } from '../../helpers/utility-functions';
 
 const validationSchema = object().shape({
   username: string()

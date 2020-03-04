@@ -1,13 +1,14 @@
+import { Collapse } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputBase from '@material-ui/core/InputBase';
 import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
-import Select from '@material-ui/core/Select';
-import { Collapse } from '@material-ui/core';
+import { v4 as uuid } from 'uuid';
 
 export const StyledFormControl = withStyles({
   root: {
@@ -183,7 +184,7 @@ export const StyledTextField = ({
           value={value}
           onChange={onChange}
           error={hasError}
-          autoComplete="none"
+          autoComplete={uuid()}
           {...InputProps}
         >
           {children}
@@ -215,7 +216,7 @@ export const StyledSelect = ({
           value={value}
           onChange={onChange}
           input={<StyledInputBase name={name} error={hasError} />}
-          autoComplete="none"
+          autoComplete={uuid()}
         >
           {children}
         </StyledSelectComponent>

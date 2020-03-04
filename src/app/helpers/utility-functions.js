@@ -1,10 +1,10 @@
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
 import curry from 'ramda/es/curry';
 import { hashHistory } from 'react-router';
 import Swal from 'sweetalert2';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 export const noop = () => {};
 

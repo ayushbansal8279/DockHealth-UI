@@ -5,13 +5,18 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useToggle } from 'react-use';
+import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import {
   register as registerAction,
   resendConfirmationCode,
 } from '../../../api/user-api';
-import { showAlert, showToast } from '../../../helpers/utility-functions';
+import {
+  showAlert,
+  showToast,
+  useSmallScreen,
+} from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import {
   MobileInputComponent,
@@ -31,7 +36,6 @@ import {
   OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../OnboardingTemplate.Components';
-import { useSmallScreen } from '../OnboardingTemplate.Utilities';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -177,7 +181,7 @@ const OnboardingCreateAccountView = () => {
                 name="firstName"
                 placeholder="Enter your first name here"
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
             </Grid>
@@ -187,7 +191,7 @@ const OnboardingCreateAccountView = () => {
                 name="lastName"
                 placeholder="Enter your last name here"
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
             </Grid>
@@ -197,7 +201,7 @@ const OnboardingCreateAccountView = () => {
                 name="email"
                 placeholder="Enter your email here"
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
                 inputContainerReference={emailInputReference}
               />
@@ -219,7 +223,7 @@ const OnboardingCreateAccountView = () => {
                       {isPasswordShown ? 'Hide' : 'Show'}
                     </OnboardingH4Toggle>
                   ),
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
               {!isSmallScreen && (
@@ -251,7 +255,7 @@ const OnboardingCreateAccountView = () => {
                 placeholder="Enter your mobile phone number here"
                 CustomComponent={MobileInputComponent}
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
               {!isSmallScreen && (

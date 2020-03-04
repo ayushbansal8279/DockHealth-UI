@@ -4,6 +4,7 @@ import * as PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { v4 as uuid } from 'uuid';
 import { editPatientNote } from '../../actions/patient-actions';
 import { capitalize } from '../../helpers/capitalize';
 import { onPatientNoteEdited } from '../../helpers/ga-event-helper';
@@ -155,7 +156,7 @@ const PatientNotes = ({
             hiddenLabel
             style={{ padding: 0 }}
             autoFocus
-            autoComplete="none"
+            autoComplete={uuid()}
           />
           <div
             style={{

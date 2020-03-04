@@ -34,7 +34,6 @@
     "faker": "^4.1.0",
     "flag": "^4.2.1",
     "framer-motion": "^1.6.15",
-    "hellosign-embedded": "^2.6.0",
     "immer": "^4.0.2",
     "jquery": "^3.4.0",
     "linkifyjs": "^2.1.8",
@@ -84,6 +83,7 @@
     "superagent": "^3.8.3",
     "sweetalert2": "^9.5.3",
     "un": "0.0.0",
+    "uuid": "^7.0.1",
     "yup": "^0.27.0"
   },
   "devDependencies": {
