@@ -4,7 +4,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import styled from 'styled-components';
 import {
   getUserAvatar,
   removeUserFromOrganization,
@@ -17,73 +16,20 @@ import {
   showAlert,
 } from '../helpers/utility-functions';
 import useBoolean from '../hooks/useBoolean';
+import {
+  ArchivePersonButton,
+  BoldLabel,
+  GreyLabel,
+  InfoPanelContainer,
+  Label,
+  PersonAvatarContainer,
+  PersonImage,
+  PersonInitialsContainer,
+  PersonNameContainer,
+  PersonTitlesContainer,
+} from './PersonTaskList.PersonInfoPanel.Styled';
 
 const NOT_AVAILABLE = 'N/A';
-
-const InfoPanelContainer = styled.div`
-  background-color: #fff;
-  margin: 0.5rem 0;
-  max-width: 1050px;
-  padding: 1rem;
-  width: 100%;
-`;
-
-const PersonNameContainer = styled(Grid).attrs({
-  container: true,
-  direction: 'row',
-  item: true,
-  md: 5,
-  sm: 12,
-  wrap: 'nowrap',
-})`
-  padding: 1.375rem;
-`;
-
-const PersonInitialsContainer = styled.span`
-  color: #fff;
-  font-size: 1.875rem;
-  font-weight: bold;
-`;
-
-const PersonTitlesContainer = styled(Grid).attrs({
-  container: true,
-  direction: 'column',
-  justify: 'center',
-})`
-  padding-left: 1.375rem;
-`;
-
-const Label = styled.span`
-  font-size: 1rem;
-  display: block;
-  line-height: 1.2;
-  margin: 0.125rem 0;
-`;
-
-const GreyLabel = styled(Label)`
-  color: #ababb2;
-`;
-
-const BoldLabel = styled(Label)`
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.4;
-`;
-
-const PersonAvatarContainer = styled.div`
-  min-width: 102px;
-  width: 102px;
-`;
-
-const ArchivePersonButton = styled.button`
-  color: #0ca1c7;
-  cursor: pointer;
-  transition: all 0.25s ease;
-
-  &:hover {
-    filter: brightness(1.25);
-  }
-`;
 
 const PersonInfoPanel = ({ personData }) => {
   const {
@@ -141,8 +87,8 @@ const PersonInfoPanel = ({ personData }) => {
     if (userIdentifier) {
       getUserAvatar(personData)(dispatch)
         .then(image => {
-          if (image) {
-            setAvatarContent(<img alt="avatar" src={image} />);
+          if (image?.byteLength !== 0) {
+            setAvatarContent(<PersonImage alt="avatar" src={image} />);
           }
         })
         .catch(noop);
