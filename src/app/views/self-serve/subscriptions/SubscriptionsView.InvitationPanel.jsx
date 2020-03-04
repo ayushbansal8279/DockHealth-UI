@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from '../../../actions/people-actions';
 import { noop, showAlert } from '../../../helpers/utility-functions';
@@ -108,7 +109,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     error={firstNameError}
                     name="firstName"
                     inputRef={register}
-                    autoComplete="none"
+                    autoComplete={uuid()}
                   />
                 </StyledFormControl>
               </Grid>
@@ -120,7 +121,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     error={lastNameError}
                     name="lastName"
                     inputRef={register}
-                    autoComplete="none"
+                    autoComplete={uuid()}
                   />
                 </StyledFormControl>
               </Grid>
@@ -132,7 +133,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                     error={emailError}
                     name="email"
                     inputRef={register}
-                    autoComplete="none"
+                    autoComplete={uuid()}
                   />
                 </StyledFormControl>
               </Grid>

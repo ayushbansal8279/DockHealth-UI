@@ -8,19 +8,19 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
-
+import { v4 as uuid } from 'uuid';
 import {
   abortPatientCreation,
   addPatient,
 } from '../../actions/patient-actions';
 import { capitalize, capitalizeWords } from '../../helpers/capitalize';
+import { onPatientAdded } from '../../helpers/ga-event-helper';
+import PatientsSidebarSection from './PatientsSidebar.Section';
 import {
   PatientsSidebarCloseButton,
   PatientsSidebarContainer,
   PatientsSidebarHeader,
 } from './PatientsSidebar.Styled';
-import PatientsSidebarSection from './PatientsSidebar.Section';
-import { onPatientAdded } from '../../helpers/ga-event-helper';
 
 export const StyledTextField = styled(
   ({ InputProps, InputLabelProps, ...rest }) => (
@@ -30,7 +30,7 @@ export const StyledTextField = styled(
       margin="dense"
       fullWidth
       spellCheck={false}
-      autoComplete="none"
+      autoComplete={uuid()}
       InputProps={{
         ...InputProps,
         spellCheck: false,

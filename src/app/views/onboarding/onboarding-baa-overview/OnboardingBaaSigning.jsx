@@ -76,13 +76,8 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   });
 
   const openHelloSign = useCallback(signingUrl => {
-    let skipDomainVerification = true;
-    if (
-      HELLOSIGN_DOMAIN_VERIFICATION_ENABLED &&
-      HELLOSIGN_DOMAIN_VERIFICATION_ENABLED === 'true'
-    ) {
-      skipDomainVerification = false;
-    }
+    const skipDomainVerification =
+      HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
 
     // eslint-disable-next-line no-unused-expressions
     window?.HelloSign.open({

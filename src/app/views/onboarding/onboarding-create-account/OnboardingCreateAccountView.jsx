@@ -5,6 +5,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useToggle } from 'react-use';
+import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import {
@@ -180,7 +181,7 @@ const OnboardingCreateAccountView = () => {
                 name="firstName"
                 placeholder="Enter your first name here"
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
             </Grid>
@@ -190,7 +191,7 @@ const OnboardingCreateAccountView = () => {
                 name="lastName"
                 placeholder="Enter your last name here"
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
             </Grid>
@@ -200,7 +201,7 @@ const OnboardingCreateAccountView = () => {
                 name="email"
                 placeholder="Enter your email here"
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
                 inputContainerReference={emailInputReference}
               />
@@ -222,7 +223,7 @@ const OnboardingCreateAccountView = () => {
                       {isPasswordShown ? 'Hide' : 'Show'}
                     </OnboardingH4Toggle>
                   ),
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
               {!isSmallScreen && (
@@ -254,7 +255,7 @@ const OnboardingCreateAccountView = () => {
                 placeholder="Enter your mobile phone number here"
                 CustomComponent={MobileInputComponent}
                 InputBaseProps={{
-                  autoComplete: 'none',
+                  autoComplete: uuid(),
                 }}
               />
               {!isSmallScreen && (

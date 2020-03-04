@@ -2,6 +2,7 @@ import mergeDeepRight from 'ramda/es/mergeDeepRight';
 import React from 'react';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
+import { v4 as uuid } from 'uuid';
 
 import { mergeRefs as mergeReferences } from '../../helpers/utility-functions';
 import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
@@ -223,7 +224,7 @@ const renderPhoneNumberField = ({ inputProps, props, register }) => (
   return (
     <StyledInput
       ref={mergeReferences([maskedReference, register])}
-      autoComplete="none"
+      autoComplete={uuid()}
       {...styledInputProps}
       onKeyDown={onKeyDown}
       onBlur={onBlur}
@@ -316,7 +317,7 @@ export default React.forwardRef(
           {isMaskedInput ? (
             <TextareaWrapper>
               <MaskedInput
-                autoComplete="none"
+                autoComplete={uuid()}
                 mask={inputMask}
                 render={renderPhoneNumberField({ inputProps, props, register })}
                 pipe={isBirthDate ? StyledInputAutoCorrectedDate() : undefined}
@@ -337,7 +338,7 @@ export default React.forwardRef(
             >
               <InputComponent
                 ref={register}
-                autoComplete="none"
+                autoComplete={uuid()}
                 {...inputProps}
                 {...props}
                 onFocus={() => setInputState(FOCUS_CLASS_NAME)}

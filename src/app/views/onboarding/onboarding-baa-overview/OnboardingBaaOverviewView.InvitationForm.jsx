@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { hashHistory } from 'react-router';
+import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { inviteAuthorizedSigner } from '../../../api/organization-api';
 import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
@@ -102,7 +103,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
               placeholder="Enter invited person's first name here"
               required
               InputBaseProps={{
-                autoComplete: 'none',
+                autoComplete: uuid(),
               }}
             />
           </Grid>
@@ -113,7 +114,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
               placeholder="Enter invited person's last name here"
               required
               InputBaseProps={{
-                autoComplete: 'none',
+                autoComplete: uuid(),
               }}
             />
           </Grid>
@@ -124,7 +125,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
               placeholder="Enter invited person's email here"
               required
               InputBaseProps={{
-                autoComplete: 'none',
+                autoComplete: uuid(),
               }}
             />
           </Grid>
@@ -136,7 +137,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
               CustomComponent={MobileInputComponent}
               required
               InputBaseProps={{
-                autoComplete: 'none',
+                autoComplete: uuid(),
               }}
             />
           </Grid>
