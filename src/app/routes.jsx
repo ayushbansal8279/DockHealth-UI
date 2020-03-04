@@ -10,7 +10,6 @@ import {
   Router,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
-import { unsetHeader } from './actions/header-actions';
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
 import Patients from './components/patients/Patients';
@@ -146,12 +145,8 @@ export const Routes = ({ store }) => {
     dispatch(storeAsCurrentTask(taskIdentifier));
   };
 
-  const onRouterUpdate = () => {
-    unsetHeader(dispatch)();
-  };
-
   return (
-    <Router history={hashHistory} onUpdate={onRouterUpdate}>
+    <Router history={hashHistory} onUpdate={() => {}}>
       <Route path="/" component={App}>
         <Route component={TemplateCore}>
           <IndexRoute

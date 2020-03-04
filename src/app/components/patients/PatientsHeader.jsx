@@ -4,10 +4,12 @@ import styled from 'styled-components';
 import PatientsAdd from './PatientsAdd';
 
 const PatientsHeaderContainer = styled.div`
-  display: flex;
   background: #fff;
+  display: flex;
   height: 88px;
+  justify-content: space-between;
   padding: 14px 40px 0 22px;
+  width: 100%;
 `;
 
 const PatientsHeaderLeftSide = styled.div`

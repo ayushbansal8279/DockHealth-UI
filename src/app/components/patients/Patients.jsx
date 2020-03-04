@@ -17,6 +17,7 @@ import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
 import PatientsToolbar from './PatientsToolbar';
 import CubesLoader from '../common/CubesLoader';
+import { setHeader } from '../../actions/header-actions';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -80,9 +81,28 @@ const PatientsLayout = () => {
         patientIdentifier === highlightedPatientIdentifier,
     );
   });
+
   const isCreatingPatient = useSelector(
     ({ patientState }) => patientState.isCreatingPatient,
   );
+
+  const patientCount = patients?.length ?? 0;
+
+  useEffect(() => {
+    setHeader(dispatch)({
+      layout: [
+        {
+          key: 'patients-header',
+          component: (
+            <PatientsHeader
+              patientCount={patientCount}
+              isFetching={isFetching}
+            />
+          ),
+        },
+      ],
+    });
+  }, [patientCount, isFetching, dispatch]);
 
   const deselectPatient = useCallback(() => {
     dispatch(highlightPatient(null));
@@ -115,7 +135,6 @@ const PatientsLayout = () => {
 
   return (
     <div>
-      <PatientsHeader patientCount={patients.length} isFetching={isFetching} />
       <PatientsToolbar
         handleSearch={handleSearch}
         handlePatientFilter={handlePatientFilter}
