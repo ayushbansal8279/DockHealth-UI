@@ -1,8 +1,8 @@
 import { hashHistory } from 'react-router';
-import * as userApi from '../api/user-api';
-import * as organizationApi from '../api/organization-api';
-import handleFeatureToggle from '../helpers/handle-feature-toggle';
+import { checkBAASignedStatus } from '../actions/organization-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import * as userApi from '../api/user-api';
+import handleFeatureToggle from '../helpers/handle-feature-toggle';
 import { useMobile } from '../helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
@@ -46,7 +46,12 @@ const handleMobileRedirection = ({ data, orgData }) => {
   }
 };
 
-const handleHomeRedirection = ({ data, orgData, isEulaPath, isBaaPath }) => {
+const handleHomeRedirection = async ({
+  data,
+  orgData,
+  isEulaPath,
+  isBaaPath,
+}) => {
   if (data?.profileThumbnailPictureHash) {
     userApi.getUserProfilePic(data?.userIdentifier, 'PROFILE');
   }
@@ -64,7 +69,7 @@ const handleHomeRedirection = ({ data, orgData, isEulaPath, isBaaPath }) => {
   }
 };
 
-const checkUserAccountState = async ({ user, pathname }) => {
+const checkUserAccountState = async ({ dispatch, user, pathname }) => {
   const data = await userApi.getUserByEmail(user.username, user);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -76,7 +81,7 @@ const checkUserAccountState = async ({ user, pathname }) => {
   let orgData = null;
 
   if (data?.organizationIdentifier) {
-    orgData = await organizationApi.checkBAASignedStatus();
+    orgData = await checkBAASignedStatus()(dispatch);
   }
 
   if (data?.organizationIdentifier === '') {
@@ -99,11 +104,12 @@ const checkUserAccountState = async ({ user, pathname }) => {
       isEulaPath: pathname === EULA_PATH,
       isBaaPath,
       isMobile,
+      dispatch,
     });
   }
 };
 
-const isLoggedIn = (loggedIn, user) => {
+const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   const { pathname } = hashHistory.getCurrentLocation();
 
   if (!loggedIn && pathname === CREATE_ACCOUNT_PATH) {
@@ -124,14 +130,14 @@ const isLoggedIn = (loggedIn, user) => {
   userApi.updateStoreWithCurrentUser(user);
 
   try {
-    checkUserAccountState({ user, pathname });
+    checkUserAccountState({ user, pathname, dispatch });
   } catch (error) {
     hashHistory.push('login');
   }
 };
 
-export const checkUserAuthentication = async () => {
+export const checkUserAuthentication = async ({ dispatch }) => {
   await userApi.isAuthenticated({
-    isLoggedIn,
+    isLoggedIn: isLoggedIn({ dispatch }),
   });
 };

@@ -91,17 +91,24 @@ const Drawer = ({ header, user, lists, children }) => {
     ? trialEndMoment.diff(moment(), 'day')
     : 0;
 
-  // const trialEndDateLabel =
-  //   trialEndDayDifference > 0 ? `in ${trialEndDayDifference} days` : 'soon';
-
-  const trialEndLabel = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
-
-  const trialEndCloserLabel = `${trialEndLabel} You will lose access at the end of your trial.`;
-
-  const trialEndedLabel = `You free ${subscriptionPlanTrialLabel} trial has expired!`;
-
-  const hasMinialUsagePeriodPassed =
+  const hasMinimalUsagePeriodPassed =
     trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
+
+  const trialLabelMinimalPeriodNotPassed = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
+
+  const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed} You will lose access at the end of your trial.`;
+
+  const trialLabelEnded = `You free ${subscriptionPlanTrialLabel} trial has expired!`;
+
+  const trialEndLabel = (() => {
+    if (hasMinimalUsagePeriodPassed) {
+      return trialEndDayDifference < 0
+        ? trialLabelEnded
+        : trialLabelMinimalPeriodPassed;
+    }
+
+    return trialLabelMinimalPeriodNotPassed;
+  })();
 
   const trialBannerVisible = isSubscriptionTrial;
 
@@ -124,14 +131,8 @@ const Drawer = ({ header, user, lists, children }) => {
         <DrawerTitle
           header={header}
           trialBannerVisible={trialBannerVisible}
-          trialEndLabel={
-            hasMinialUsagePeriodPassed
-              ? trialEndDayDifference < 0
-                ? trialEndedLabel
-                : trialEndCloserLabel
-              : trialEndLabel
-          }
-          hasMinialTrialUsagePeriodPassed={hasMinialUsagePeriodPassed}
+          trialEndLabel={trialEndLabel}
+          hasMinimalTrialUsagePeriodPassed={hasMinimalUsagePeriodPassed}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </StyledDrawer>

@@ -32,10 +32,10 @@ class TemplateCoreSubscriptionPlan extends PureComponent {
   }
 
   async componentDidMount() {
-    const { taskListActions } = this.props;
+    const { taskListActions, dispatch } = this.props;
 
     // await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
-    await checkUserAuthentication();
+    await checkUserAuthentication({ dispatch });
     this.unlockLoading();
     taskListActions.getTaskListForUser();
   }
@@ -87,6 +87,7 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch => ({
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   dispatchedUnsetHeader: unsetHeader(dispatch),
+  dispatch,
 });
 
 export default connect(

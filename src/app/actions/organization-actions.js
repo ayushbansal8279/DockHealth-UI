@@ -20,27 +20,36 @@ import {
   UPDATE_ORGANIZATION,
 } from './action-types';
 
-export const getOrganizationById = ({ organizationIdentifier }) => dispatch => {
-  if (!organizationIdentifier) {
-    return;
-  }
-  dispatch({
-    type: REQUEST_GET_ORGANIZATION,
-  });
-
-  OrganizationApi.get({ organizationIdentifier })
+const handleOrganizationResponse = ({ fetchMethod, dispatch }) =>
+  fetchMethod()
     .then(data => {
       dispatch({
         type: GET_ORGANIZATION_SUCCESS,
         payload: data,
       });
+      return data;
     })
     .catch(error => {
       dispatch({
         type: GET_ORGANIZATION_FAILURE,
         error,
       });
+      throw error;
     });
+
+export const getOrganizationById = ({ organizationIdentifier }) => dispatch => {
+  if (!organizationIdentifier) {
+    return Promise.reject(new Error('No organization identifier provided'));
+  }
+
+  dispatch({
+    type: REQUEST_GET_ORGANIZATION,
+  });
+
+  return handleOrganizationResponse({
+    fetchMethod: () => OrganizationApi.get({ organizationIdentifier }),
+    dispatch,
+  });
 };
 
 export const saveBillingDetails = (billingData, cardToken) => dispatch => {
@@ -152,3 +161,15 @@ export const selectUsersForPlan = ({ users }) => dispatch =>
     type: SELECT_USERS_FOR_PLAN,
     payload: users,
   });
+
+// eslint-disable-next-line unicorn/consistent-function-scoping
+export const checkBAASignedStatus = () => dispatch => {
+  dispatch({
+    type: REQUEST_GET_ORGANIZATION,
+  });
+
+  return handleOrganizationResponse({
+    fetchMethod: () => OrganizationApi.checkBAASignedStatus(),
+    dispatch,
+  });
+};

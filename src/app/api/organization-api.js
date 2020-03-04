@@ -1,3 +1,4 @@
+import { memoizeWith, identity } from 'ramda';
 import axios from './axios-heydoc';
 
 export const get = ({ organizationIdentifier }) =>
@@ -119,11 +120,12 @@ export const downloadSignedDocument = () =>
     return response.data;
   });
 
-export const checkBAASignedStatus = () =>
+export const checkBAASignedStatus = memoizeWith(identity, () =>
   axios.get(`/organization/checkBAASignedStatus`).then(response => {
     if (response.data) {
       return response.data;
     }
 
     throw new Error('Unable to check BAA signature status');
-  });
+  }),
+);

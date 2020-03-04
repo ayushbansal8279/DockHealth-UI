@@ -40,7 +40,7 @@ const OnboardingTemplate = ({ children }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    checkUserAuthentication();
+    checkUserAuthentication({ dispatch });
   }, [children, dispatch]);
 
   return (
