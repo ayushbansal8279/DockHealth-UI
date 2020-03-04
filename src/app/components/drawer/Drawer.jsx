@@ -96,9 +96,9 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const trialEndLabel = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
 
-  const trialEndCloserLabel = `${trialEndLabel} You will lose access at the end of your trial.`;
+  const trialEndingLabel = `${trialEndLabel} You will lose access at the end of your trial.`;
 
-  const trialEndedLabel = `You free ${subscriptionPlanTrialLabel} trial has expired!`;
+  const trialEndedLabel = `Your free ${subscriptionPlanTrialLabel} trial has expired!`;
 
   const hasMinialUsagePeriodPassed =
     trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
@@ -108,6 +108,9 @@ const Drawer = ({ header, user, lists, children }) => {
   useMount(() => {
     getOrganizationById({ organizationIdentifier })(dispatch);
   });
+
+  const trialEndingOrEndedMessage =
+    trialEndDayDifference < 0 ? trialEndedLabel : trialEndingLabel;
 
   return (
     <div style={{ display: 'flex', height: '100%' }}>
@@ -126,9 +129,7 @@ const Drawer = ({ header, user, lists, children }) => {
           trialBannerVisible={trialBannerVisible}
           trialEndLabel={
             hasMinialUsagePeriodPassed
-              ? trialEndDayDifference < 0
-                ? trialEndedLabel
-                : trialEndCloserLabel
+              ? trialEndingOrEndedMessage
               : trialEndLabel
           }
           hasMinialTrialUsagePeriodPassed={hasMinialUsagePeriodPassed}
