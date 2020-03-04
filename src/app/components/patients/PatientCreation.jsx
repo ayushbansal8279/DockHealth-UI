@@ -21,6 +21,7 @@ import {
   PatientsSidebarContainer,
   PatientsSidebarHeader,
 } from './PatientsSidebar.Styled';
+import { showAlert } from '../../helpers/utility-functions';
 
 export const StyledTextField = styled(
   ({ InputProps, InputLabelProps, ...rest }) => (
@@ -347,7 +348,17 @@ const PatientCreation = () => {
 
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
-    await dispatch(addPatient(formState));
+    await dispatch(addPatient(formState)).catch(error => {
+      console.log(error);
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: error?.message ?? 'Error in adding patient',
+        showConfirmButton: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+    });
     setIsSubmitting(false);
     onPatientAdded();
   }, [dispatch, formState]);
