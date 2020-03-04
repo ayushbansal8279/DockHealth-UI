@@ -14,6 +14,7 @@ import { Routes } from './routes';
 import theme from './theme';
 import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
 import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
+import ErrorBoundary from './ErrorBoundary';
 
 if (process.env.NODE_ENV === 'development') {
   // eslint-disable-next-line global-require
@@ -73,7 +74,9 @@ const App = () => {
         <FlagsProvider flags={flags}>
           <Provider store={store}>
             <StripeProvider {...stripeProps}>
-              <Routes store={store} />
+              <ErrorBoundary>
+                <Routes store={store} />
+              </ErrorBoundary>
             </StripeProvider>
           </Provider>
         </FlagsProvider>
