@@ -427,7 +427,11 @@ const BillingData = ({
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit({ stripe, unsetUpdatingBilling }))}>
+    <form
+      onSubmit={handleSubmit(onSubmit({ stripe, unsetUpdatingBilling }))}
+      autoComplete="off"
+      autoCorrect="off"
+    >
       {!isUpdatingBilling && (
         <Grid container spacing={16} justify="space-between">
           <Grid item sm={12}>

@@ -72,6 +72,8 @@ const InvitePeopleForm = ({
         event.preventDefault();
         handleSubmit(onSubmit({ closePopover, dispatch, getAllUsers }))(event);
       }}
+      autoComplete="off"
+      autoCorrect="off"
     >
       <InvitePeoplePopoverSection>
         <StyledFormControl margin="dense" fullWidth error={hasFirstNameError}>

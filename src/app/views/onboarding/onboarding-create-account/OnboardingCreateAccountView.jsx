@@ -171,6 +171,8 @@ const OnboardingCreateAccountView = () => {
         onSubmit={handleSubmit(
           onSubmit({ showDialog, setDialogTitle, setDialogMessage }),
         )}
+        autoComplete="off"
+        autoCorrect="off"
       >
         <FormContext {...formMethods}>
           <Grid container spacing={8}>
