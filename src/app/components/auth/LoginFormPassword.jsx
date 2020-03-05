@@ -44,7 +44,7 @@ const LoginFormPassword = ({ onSubmit }) => {
       <FormContext {...formMethods}>
         <TitleTypography
           variant="h2"
-          style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+          style={{ marginTop: isSmallScreen ? '.5em' : '1em' }}
           isSmallScreen={isSmallScreen}
         >
           {titleContent}
