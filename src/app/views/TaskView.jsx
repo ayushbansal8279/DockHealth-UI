@@ -8,16 +8,7 @@ import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
-import {
-  any,
-  equals,
-  filter,
-  isEmpty,
-  map,
-  prop,
-  reject,
-  uniqBy,
-} from 'ramda';
+import { any, equals, filter, isEmpty, map, prop, reject, uniqBy } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -26,7 +17,6 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { setHeader } from '../actions/header-actions';
 import * as TaskActions from '../actions/task-actions';
-import { moveTaskBetweenLists } from '../actions/task-actions';
 import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import CubesLoader from '../components/common/CubesLoader';
 import AddTask from '../components/task/AddTask';
@@ -340,36 +330,26 @@ class TaskView extends Component {
       cluster: APP_CLUSTER,
     });
 
-    // const currentTaskListId = taskList.taskListIdentifier;
     const currentUserIdentifier = currentUser.userIdentifier;
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
-    console.log('subscribing to channel');
     const channel = socket.subscribe(channelName);
-    // console.log('subscribed to channel');
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
     channel.bind('task-update', data => {
       // Since the app is going to be realtime, we don't want the same item to
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
-      console.log('received event');
-      // console.log(data);
-      if (data.eventType) {
-        if (
-          data.eventType.startsWith('CREATE_TASK') ||
-          data.eventType.startsWith('DUPLICATE_TASK')
-        ) {
-          // this.refresh();
-          if (data.task.taskList) {
-            taskActions.getListTasks(
-              data.task.taskList.taskListIdentifier,
-              null,
-              null,
-              'INCOMPLETE',
-            );
-          }
-          return;
-        }
+      if (
+        (data.eventType?.startsWith('CREATE_TASK') ||
+          data.eventType?.startsWith('DUPLICATE_TASK')) &&
+        data.task?.taskList
+      ) {
+        taskActions.getListTasks(
+          data.task.taskList.taskListIdentifier,
+          null,
+          null,
+          'INCOMPLETE',
+        );
       }
       refreshTask(data.task);
     });
@@ -408,11 +388,7 @@ class TaskView extends Component {
   };
 
   addTaskMoveTimeout = task => {
-    const {
-      dispatchedMoveTaskBetweenLists,
-      selectedTask,
-      storeAsCurrentTask,
-    } = this.props;
+    const { taskActions, selectedTask, storeAsCurrentTask } = this.props;
 
     const { taskTimeouts } = this.state;
 
@@ -444,7 +420,7 @@ class TaskView extends Component {
           this.closeTaskDrawer();
         }
 
-        dispatchedMoveTaskBetweenLists(task);
+        taskActions.MoveTaskBetweenLists(task);
 
         this.clearTaskTimeouts(taskTimeoutId);
       }, 3000);
@@ -821,9 +797,6 @@ class TaskView extends Component {
     return (
       <>
         <TaskList showListHeadings={showListHeadings} {...tasklistProps} />
-        {/* {completedTasks?.length > 0 &&
-          this.renderCompleted({ listCompletedTasks: completedTasks })
-        } */}
         {this.renderCompleted({ listCompletedTasks: completedTasks })}
       </>
     );
@@ -858,7 +831,8 @@ class TaskView extends Component {
         ...incompleteTasks,
         ...incompleteTasks
           ?.flatMap(({ subtasks }) => subtasks)
-          ?.filter(Boolean),
+          ?.filter(Boolean)
+          ?.filter(({ status }) => status !== 'COMPLETE'),
       ]).length;
 
       const tasksCountContent = `${tasksCount} ${
@@ -891,33 +865,31 @@ class TaskView extends Component {
       ]);
 
       return (
-        <React.Fragment key={groupedListName}>
-          <TaskListSection
+        <TaskListSection
+          taskListIdentifier={currentTaskListId}
+          patientIdentifier={currentPatientId}
+          storeAsCurrentTask={storeAsCurrentTask}
+          heading={heading}
+          key={groupedListName}
+        >
+          <TaskList
+            listTasks={joinedListTasks}
+            showListHeadings={showListHeadings}
+            isMultiList={isMultiList}
+            globalSearch={globalSearch}
+            filterBy={filterBy}
+            onCompletedTasksRequest={onCompletedTasksRequest}
             taskListIdentifier={currentTaskListId}
-            patientIdentifier={currentPatientId}
-            storeAsCurrentTask={storeAsCurrentTask}
-            heading={heading}
-            key={groupedListName}
-          >
-            <TaskList
-              listTasks={joinedListTasks}
-              showListHeadings={showListHeadings}
-              isMultiList={isMultiList}
-              globalSearch={globalSearch}
-              filterBy={filterBy}
-              onCompletedTasksRequest={onCompletedTasksRequest}
-              taskListIdentifier={currentTaskListId}
-              taskDrawerProps={{
-                taskList: currentTaskList,
-                closeDrawer: this.closeTaskDrawer,
-                markComplete,
-                onMarkComplete: this.onMarkComplete,
-                isSpecificPatient,
-              }}
-              {...tasklistProps}
-            />
-          </TaskListSection>
-        </React.Fragment>
+            taskDrawerProps={{
+              taskList: currentTaskList,
+              closeDrawer: this.closeTaskDrawer,
+              markComplete,
+              onMarkComplete: this.onMarkComplete,
+              isSpecificPatient,
+            }}
+            {...tasklistProps}
+          />
+        </TaskListSection>
       );
     });
   };
@@ -982,21 +954,14 @@ class TaskView extends Component {
       this.toggleCompletedTasks();
     };
 
-    // if (listCompletedTasks.length === 0) {
-    //   return null;
-    // }
-
-    let showCompletedTasksFlag = completedTasksShown;
-    if (globalSearch) {
-      showCompletedTasksFlag = true;
-    }
+    const showCompletedTasksFlag = globalSearch ? true : completedTasksShown;
 
     const buttonToggleWord = showCompletedTasksFlag ? 'Hide' : 'Show';
 
-    let completedTasksAndSubTasksCount = listCompletedTasks.length;
-    listCompletedTasks.forEach(task => {
-      completedTasksAndSubTasksCount += task.subtasks?.length ?? 0;
-    });
+    const completedTasksAndSubTasksCount = [
+      ...listCompletedTasks,
+      ...listCompletedTasks.flatMap(task => task?.subtasks ?? null),
+    ].filter(Boolean).length;
 
     return (
       <>
@@ -1165,7 +1130,10 @@ class TaskView extends Component {
                 </FadeContainer>
               ) : (
                 <div style={{ display: 'flex' }}>
-                  <div ref={this.taskListContainerReference}>
+                  <div
+                    ref={this.taskListContainerReference}
+                    style={{ width: '100%' }}
+                  >
                     <TaskListContainer>
                       {this.renderTasklists()}
                       <SideClickListener onClick={this.closeTaskDrawer} />
@@ -1197,7 +1165,6 @@ class TaskView extends Component {
 
 const mapDispatchToProps = dispatch => ({
   dispatchedSetHeader: setHeader(dispatch),
-  dispatchedMoveTaskBetweenLists: task => moveTaskBetweenLists(task)(dispatch),
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
 });
