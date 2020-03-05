@@ -1,16 +1,15 @@
-import Grid from '@material-ui/core/Grid';
 import isNil from 'ramda/es/isNil';
-import React, { PureComponent } from 'react';
+import { PureComponent } from 'react';
 import { hashHistory } from 'react-router';
-
 import { error } from '../../actions/notification-actions';
 import { mobileAnalyticsClient } from '../../api/analytics-api';
 import * as userApi from '../../api/user-api';
-import { TitleTypography } from '../../components/auth/AuthComponents.styled';
 
 export default class Logout extends PureComponent {
   componentDidMount = () => {
     const durationOfTimeSpentOnApp = this.getDurationOfTimeSpentOnApp();
+
+    this.redirectToLogin();
 
     return userApi
       .logout()
@@ -18,20 +17,15 @@ export default class Logout extends PureComponent {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'YES',
         });
-        // console.log(data);
         mobileAnalyticsClient.recordEvent('DURATION_INAPP', {
           TIME_DURATION: durationOfTimeSpentOnApp,
         });
-
-        this.redirectToLogin();
       })
       .catch(error_ => {
         error(error_ && error_.message ? error_.message : 'Could not logout.');
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           LOGOUT_SUCCESS: 'NO',
         });
-
-        this.redirectToLogin();
       });
   };
 
@@ -51,16 +45,11 @@ export default class Logout extends PureComponent {
   };
 
   redirectToLogin = () => {
-    // hashHistory.push('login');
+    hashHistory.replace('login');
     window.sessionStorage.removeItem('confirmStatus');
-    window.location.href = '/';
   };
 
-  render = () => (
-    <Grid container>
-      <TitleTypography variant="h2" style={{ marginTop: '6em' }}>
-        You have been logged out
-      </TitleTypography>
-    </Grid>
-  );
+  render() {
+    return null;
+  }
 }
