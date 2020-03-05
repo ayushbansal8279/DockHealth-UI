@@ -95,13 +95,13 @@ class TaskListSearch extends PureComponent {
       filterBy,
       'INCOMPLETE',
     );
-    taskActions.getTasksAssignedToSpecificUser(
-      personData.userIdentifier,
-      undefined,
-      sortBy,
-      filterBy,
-      'COMPLETE',
-    );
+    // taskActions.getTasksAssignedToSpecificUser(
+    //   personData.userIdentifier,
+    //   undefined,
+    //   sortBy,
+    //   filterBy,
+    //   'COMPLETE',
+    // );
   };
 
   handleCompletedTasksRequest = (

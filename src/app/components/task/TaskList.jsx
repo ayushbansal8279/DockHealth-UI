@@ -91,9 +91,9 @@ const renderTasks = ({
               }
               variant="contained"
             >
-              {`${
-                areCompleteTasksShown ? 'Hide' : 'Show'
-              } completed tasks (${completeTasksCount})`}
+              {`${areCompleteTasksShown ? 'Hide' : 'Show'} completed tasks${
+                completeTasksCount > 0 ? ` (${completeTasksCount})` : ''
+              }`}
             </Button>
           </Grid>
         )}
@@ -172,6 +172,18 @@ const TaskList = ({
     hashHistory.getCurrentLocation()?.pathname?.startsWith('/taskSearch') ??
     false;
 
+  const getCompletedTasks = () => {
+    if (!areCompleteTasksShown) {
+      onCompletedTasksRequest(
+        taskListIdentifier ?? taskDrawerProps.taskList.taskListIdentifier,
+        filterBy,
+        '',
+      );
+    }
+
+    toggleCompletedTasksShown();
+  };
+
   return (
     <Grid container direction="row" wrap="nowrap">
       <TaskListOuterContainer>
@@ -197,6 +209,7 @@ const TaskList = ({
             areCompleteTasksShown,
             toggleCompletedTasksShown,
             globalSearch,
+            getCompletedTasks,
           })
         )}
         <ShowMoreButtonContainer active={showMoreButtonVisible}>
