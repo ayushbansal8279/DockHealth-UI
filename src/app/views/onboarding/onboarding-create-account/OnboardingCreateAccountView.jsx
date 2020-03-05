@@ -171,7 +171,7 @@ const OnboardingCreateAccountView = () => {
         onSubmit={handleSubmit(
           onSubmit({ showDialog, setDialogTitle, setDialogMessage }),
         )}
-        autoComplete="off"
+        autoComplete="none"
         autoCorrect="off"
       >
         <FormContext {...formMethods}>
@@ -250,6 +250,19 @@ const OnboardingCreateAccountView = () => {
                   HIPPA compliance
                 </OnboardingAdditionalFormControlText>
               )}
+              {/* {isSmallScreen && 
+                <OnboardingInput
+                  label="Your Mobile Phone Number"
+                  name="mobilePhoneNumber"
+                  placeholder="Enter your mobile phone number here"
+                  CustomComponent={MobileInputComponent}
+                  InputBaseProps={{
+                    autoComplete: 'none',
+                  }}
+                  shrink={true}
+                />
+              } */}
+              {/* {!isSmallScreen &&  */}
               <OnboardingInput
                 label="Your Mobile Phone Number"
                 name="mobilePhoneNumber"
@@ -258,6 +271,13 @@ const OnboardingCreateAccountView = () => {
                 InputBaseProps={{
                   autoComplete: 'none',
                 }}
+              />
+              {/* } */}
+              <input
+                type="text"
+                name="dummy"
+                autoComplete="off"
+                style={{ display: 'none' }}
               />
               {!isSmallScreen && (
                 <OnboardingAdditionalFormControlText>
