@@ -218,7 +218,7 @@ const OnboardingCreateAccountView = () => {
                   autoComplete: uuid(),
                   disabled: hasPrefilledUsername,
                 }}
-                shrink={hasPrefilledUsername}
+                shrink={hasPrefilledUsername || undefined}
                 inputContainerReference={emailInputReference}
               />
             </Grid>

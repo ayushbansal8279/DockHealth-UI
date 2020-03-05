@@ -53,6 +53,21 @@ const USER_TYPES = new Proxy(
 const getUserInitials = ({ firstName, lastName }) =>
   `${firstName.charAt(0)}${lastName.charAt(0)}`.trim().toUpperCase();
 
+const getTrialPlanPricePerUser = ({
+  planIsTrial,
+  billingFrequency,
+  planPricePerUser,
+  planAnnualPricePerUser,
+}) => {
+  if (planIsTrial) {
+    return 'Free 30 day trial';
+  }
+
+  return billingFrequency === 'MONTHLY'
+    ? `${planPricePerUser}/month`
+    : `${planAnnualPricePerUser}/year`;
+};
+
 const getAvatarContent = memoizeWith(
   propsObject => Object.values(propsObject).join('-'),
   ({ userIdentifier, profileThumbnailPictureHash }) => {
@@ -131,10 +146,10 @@ const OrganizationMemberRow = ({
   subscriptionPlanData,
 }) => {
   const derivedOrgUserRole =
-    (userStatus === 'ACTIVE' || userStatus === 'INACTIVE') &&
-    eulaAcknowledged == true
+    ['ACTIVE', 'INACTIVE'].includes(userStatus) && eulaAcknowledged
       ? orgUserRole
       : '';
+
   const userType = USER_TYPES[derivedOrgUserRole];
 
   const checkboxElement = (
@@ -164,11 +179,12 @@ const OrganizationMemberRow = ({
     planIsTrial,
   } = subscriptionPlanData || {};
 
-  const trialPlanPricePerUser = planIsTrial
-    ? 'Free 30 day trial'
-    : billingFrequency === 'MONTHLY'
-    ? `${planPricePerUser}/month`
-    : `${planAnnualPricePerUser}/year`;
+  const trialPlanPricePerUser = getTrialPlanPricePerUser({
+    planIsTrial,
+    billingFrequency,
+    planPricePerUser,
+    planAnnualPricePerUser,
+  });
 
   if (isSmallScreen) {
     return (

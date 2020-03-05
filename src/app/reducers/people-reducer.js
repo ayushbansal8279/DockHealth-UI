@@ -11,7 +11,7 @@ const PeopleReducer = (state = initialState, action) => {
     case types.GET_PEOPLE_SUCCESS:
       return {
         ...state,
-        peoplelist: action.peoplelist,
+        peoplelist: action.peoplelist ?? state.peoplelist,
         isFetching: false,
       };
 
