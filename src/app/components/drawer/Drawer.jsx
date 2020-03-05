@@ -116,9 +116,6 @@ const Drawer = ({ header, user, lists, children }) => {
     getOrganizationById({ organizationIdentifier })(dispatch);
   });
 
-  const trialEndingOrEndedMessage =
-    trialEndDayDifference < 0 ? trialEndedLabel : trialEndingLabel;
-
   return (
     <div style={{ display: 'flex', height: '100%' }}>
       <StyledDrawer open={isOpen}>

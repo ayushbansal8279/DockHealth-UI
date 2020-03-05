@@ -336,7 +336,6 @@ class TaskListView extends PureComponent {
 
     const taskListsEmpty = taskLists?.length === 0;
 
-    // const taskListFormOpen = !isFetching && (taskListsEmpty || listFormOpen);
     const taskListFormOpen = !isFetching && listFormOpen;
 
     return (
@@ -344,7 +343,6 @@ class TaskListView extends PureComponent {
         {hasStartedFetching && (
           <Fade in>
             <Grid container direction="column" alignItems="center" spacing={8}>
-              {/* <FormSpacing /> */}
               <StyledCollapse in={!taskListFormOpen} timeout={250}>
                 <SafariFixGrid
                   container
@@ -372,7 +370,6 @@ class TaskListView extends PureComponent {
                   </StyledCollapse>
                 </Grid>
               </SafariFixGrid>
-              {/* <FormSpacing /> */}
               <SafariFixGrid container item xs={12} justify="center">
                 <Grid
                   container
