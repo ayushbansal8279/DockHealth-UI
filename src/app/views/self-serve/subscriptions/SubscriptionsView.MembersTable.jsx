@@ -9,7 +9,7 @@ import {
   reject,
   sortWith,
 } from 'ramda';
-import React from 'react';
+import React, { useEffect } from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
@@ -26,6 +26,8 @@ import OrganizationMemberRow, {
   EmptyOrganizationMemberRow,
 } from './SubscriptionsView.OrganizationMemberRow';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
+
+const MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT = 10;
 
 const renderOrganizationMemberRow = ({
   toggleSelectedUser,
@@ -139,6 +141,7 @@ const SubscriptionsViewMembersTable = ({
   userSubscriptionStatus = USER_SUBSCRIPTION_STATUS.ALL,
   setUserSubscriptionStatus = () => {},
   subscriptionPlanData,
+  toggleInvitationPanelVisibility,
 }) => {
   const {
     currentBreakPoint,
@@ -167,6 +170,15 @@ const SubscriptionsViewMembersTable = ({
     userSubscriptionStatus,
     currentSearch,
   });
+
+  const filteredOrganizationMembersCount = filteredOrganizationMembers.length;
+
+  useEffect(() => {
+    toggleInvitationPanelVisibility(
+      filteredOrganizationMembersCount >=
+        MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT,
+    );
+  }, [filteredOrganizationMembersCount, toggleInvitationPanelVisibility]);
 
   return (
     <MembersTableContainer>
