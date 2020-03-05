@@ -21,7 +21,7 @@ const LoginWelcome = () => {
         <TitleTypography
           variant="h2"
           isSmallScreen={isSmallScreen}
-          style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+          style={{ marginTop: isSmallScreen ? '.5em' : '1em' }}
         >
           Welcome to Dock Health
         </TitleTypography>

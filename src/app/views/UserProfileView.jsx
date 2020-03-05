@@ -100,6 +100,8 @@ const UserProfileView = ({
       <FormContainer
         className={formContainerClassName}
         onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        autoCorrect="off"
       >
         <Grid container justify="center">
           <UserProfileViewGrid item sm={12} container>

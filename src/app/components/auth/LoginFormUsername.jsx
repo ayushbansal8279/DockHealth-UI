@@ -68,7 +68,7 @@ const LoginFormUsername = ({ onSubmit }) => {
             <TitleTypography
               variant="h2"
               isSmallScreen={isSmallScreen}
-              style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+              style={{ marginTop: isSmallScreen ? '.5em' : '1em' }}
             >
               {titleContent}
             </TitleTypography>

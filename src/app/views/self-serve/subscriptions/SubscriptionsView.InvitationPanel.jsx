@@ -99,6 +99,8 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
                 onSubmit({ closeInvitationPanel, dispatch, getAllUsers }),
               )(event);
             }}
+            autoComplete="off"
+            autoCorrect="off"
           >
             <Grid container spacing={16}>
               <Grid item xs={3}>

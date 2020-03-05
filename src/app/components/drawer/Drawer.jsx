@@ -98,7 +98,7 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed} You will lose access at the end of your trial.`;
 
-  const trialLabelEnded = `You free ${subscriptionPlanTrialLabel} trial has expired!`;
+  const trialLabelEnded = `Your free ${subscriptionPlanTrialLabel} trial has expired!`;
 
   const trialEndLabel = (() => {
     if (hasMinimalUsagePeriodPassed) {
@@ -115,6 +115,9 @@ const Drawer = ({ header, user, lists, children }) => {
   useMount(() => {
     getOrganizationById({ organizationIdentifier })(dispatch);
   });
+
+  const trialEndingOrEndedMessage =
+    trialEndDayDifference < 0 ? trialEndedLabel : trialEndingLabel;
 
   return (
     <div style={{ display: 'flex', height: '100%' }}>

@@ -76,7 +76,7 @@ const initializeAddListFormHooks = () => {
 
   const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
 
-  const filteredPeople = (people ?? [])
+  const filteredPeople = (people && people.length > 0 ? people : [])
     .filter(
       ({ userIdentifier }) =>
         userIdentifier != null &&
@@ -110,14 +110,20 @@ const initializeAddListFormHooks = () => {
 
   const removeAdmin = useCallback(
     ({ userIdentifier }) => {
-      setValue('admins', adminsValue.filter(adminId => adminId !== userIdentifier));
+      setValue(
+        'admins',
+        adminsValue.filter(adminId => adminId !== userIdentifier),
+      );
     },
     [adminsValue, setValue],
   );
 
   const removeMember = useCallback(
     ({ userIdentifier }) => {
-      setValue('memberIdentifiers', membersValue.filter(memberId => memberId !== userIdentifier));
+      setValue(
+        'memberIdentifiers',
+        membersValue.filter(memberId => memberId !== userIdentifier),
+      );
     },
     [membersValue, setValue],
   );

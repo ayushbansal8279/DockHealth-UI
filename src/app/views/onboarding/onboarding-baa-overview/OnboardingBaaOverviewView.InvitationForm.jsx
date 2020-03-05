@@ -81,7 +81,11 @@ const InvitationForm = ({ hideInvitationForm }) => {
   const isSmallScreen = useSmallScreen();
 
   return (
-    <form onSubmit={formMethods.handleSubmit(onInvitationSubmit())}>
+    <form
+      onSubmit={formMethods.handleSubmit(onInvitationSubmit())}
+      autoComplete="off"
+      autoCorrect="off"
+    >
       <FormContext {...formMethods}>
         {!isSmallScreen && <OnboardingDivider />}
         <Grid container alignItems="center" justify="space-between">

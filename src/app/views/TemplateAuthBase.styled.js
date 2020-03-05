@@ -55,14 +55,14 @@ export const SlantedBackgroundRectangleContainer = styled.div`
 
 export const DockLogoContainer = styled.div`
   && {
-    height: 72px;
-    max-height: 72px;
+    height: 108px;
+    max-height: 108px;
   }
 
   @media only screen and (min-width: 960px) {
     && {
-      height: 120px;
-      max-height: 120px;
+      height: 180px;
+      max-height: 180px;
     }
   }
 `;
@@ -92,7 +92,7 @@ export const ContentContainer = styled.div`
     flex-basis: 50%;
     max-width: 50%;
     padding: 2rem;
-    padding-top: 6rem;
+    padding-top: 3rem;
   }
 `;
 

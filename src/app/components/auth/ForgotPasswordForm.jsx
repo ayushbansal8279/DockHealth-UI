@@ -37,7 +37,7 @@ const ForgotPasswordForm = ({ onSubmit }) => {
         <Grid container>
           <TitleTypography
             variant="h2"
-            style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
+            style={{ marginTop: isSmallScreen ? '.5em' : '1em' }}
             isSmallScreen={isSmallScreen}
           >
             Forgot your password?
