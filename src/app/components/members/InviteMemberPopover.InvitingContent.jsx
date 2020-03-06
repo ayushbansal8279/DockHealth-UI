@@ -81,6 +81,8 @@ const InvitingContent = ({ unsetInviting, taskList }) => {
             taskListIdentifier: taskList.taskListIdentifier,
           }),
         )}
+        autoComplete="off"
+        autoCorrect="off"
       >
         <FormContext {...formMethods}>
           <FormSection>

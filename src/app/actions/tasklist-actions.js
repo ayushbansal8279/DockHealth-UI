@@ -134,7 +134,15 @@ export const inviteUserToTaskList = (
         userIdentifier,
       });
     })
-    .catch(noop);
+    .catch(error => {
+      toggleAlert(
+        error?.errorMessage ??
+          error?.message ??
+          'Error inviting user to task list',
+        'error',
+      );
+      throw error;
+    });
 
 export function inviteMultipleUsersToTaskList(
   taskListIdentifier,
@@ -243,7 +251,9 @@ export function cancelInviteToTaskList(taskListIdentifier, email) {
         dispatch({
           type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS,
           response,
+          removedUserEmail: email,
         });
+        toggleAlert('Invitation canceled successfully', 'success');
       })
       .catch(error => {
         toggleAlert('Error in canceling invitation', 'error');

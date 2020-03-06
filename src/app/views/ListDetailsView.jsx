@@ -422,7 +422,7 @@ class Home extends Component {
 
     const { preSelectedTask } = this.state;
 
-    const allTaskLists = [...pendingTasklists, ...tasklists];
+    const allTaskLists = [...(pendingTasklists ?? []), ...(tasklists ?? [])];
 
     const loadedTasklist = allTaskLists.find(
       t => t.taskListIdentifier === taskListIdentifier,
