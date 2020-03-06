@@ -127,19 +127,17 @@ class TaskListSearch extends PureComponent {
     const { fetching } = this.state;
 
     return (
-      <Grid direction="column" alignItems="center" container>
-        {!fetching && (
-          <>
-            {personData && <PersonInfoPanel personData={personData} />}
-            <TaskListSearchContainer
-              searchPerformed
-              onFilter={this.handleFilterChange}
-              onCompletedTasksRequest={this.handleCompletedTasksRequest}
-              showSortingStats
-            />
-          </>
-        )}
-      </Grid>
+      !fetching && (
+        <Grid direction="column" alignItems="center" container>
+          {personData && <PersonInfoPanel personData={personData} />}
+          <TaskListSearchContainer
+            searchPerformed
+            onFilter={this.handleFilterChange}
+            onCompletedTasksRequest={this.handleCompletedTasksRequest}
+            showSortingStats
+          />
+        </Grid>
+      )
     );
   }
 }

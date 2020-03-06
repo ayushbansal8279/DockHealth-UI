@@ -52,6 +52,14 @@ const onSubmit = ({ closeInvitationPanel, dispatch, getAllUsers }) => data => {
     });
 };
 
+const validationSchema = object().shape({
+  firstName: string().required(REQUIRED_MESSAGE),
+  lastName: string().required(REQUIRED_MESSAGE),
+  email: string()
+    .required(REQUIRED_MESSAGE)
+    .email('Invalid email format'),
+});
+
 const InvitationPanel = ({ getAllUsers = () => {} }) => {
   const dispatch = useDispatch();
 
@@ -62,13 +70,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
   ] = useBoolean(false);
 
   const { handleSubmit, errors, register } = useForm({
-    validationSchema: object().shape({
-      firstName: string().required(REQUIRED_MESSAGE),
-      lastName: string().required(REQUIRED_MESSAGE),
-      email: string()
-        .required(REQUIRED_MESSAGE)
-        .email('Invalid email format'),
-    }),
+    validationSchema,
   });
 
   const firstNameError = errors?.firstName?.message;

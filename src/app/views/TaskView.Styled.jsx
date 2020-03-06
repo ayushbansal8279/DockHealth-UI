@@ -239,9 +239,7 @@ export const InboxNoMessagesAvailable = () => (
         <InboxNoMessagesLabel>
           To forward an email into Dock and automatically create a task, simply
           forward an email to
-          <a href="mailto:task@dockhealth.email">
-            task@dockhealth.email
-          </a>
+          <a href="mailto:task@dockhealth.email">task@dockhealth.email</a>
         </InboxNoMessagesLabel>
         <InboxNoMessagesLabel>
           We’ll drop it into your inbox here on Dock for you.

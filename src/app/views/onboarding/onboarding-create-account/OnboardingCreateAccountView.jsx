@@ -1,6 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import { parse } from 'query-string';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -121,6 +121,10 @@ const resendEmail = async email => {
   }
 };
 
+const getCreateAccountLabelComponent = hasTrialReferral =>
+  hasTrialReferral ? OnboardingH2 : OnboardingH1;
+
+/* eslint sonarjs/cognitive-complexity: ["error", 20] */
 const OnboardingCreateAccountView = () => {
   const dispatch = useDispatch();
   const formMethods = useForm({
@@ -132,7 +136,7 @@ const OnboardingCreateAccountView = () => {
 
   const emailInputReference = useRef(null);
 
-  const { handleSubmit, watch } = formMethods;
+  const { handleSubmit, setValue, watch } = formMethods;
 
   const email = watch('email');
 
@@ -141,17 +145,25 @@ const OnboardingCreateAccountView = () => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
 
+  const locationParameters = parse(hashHistory.getCurrentLocation()?.search);
+
+  const hasTrialReferral = Boolean(locationParameters.trial);
+
+  const prefilledUsername = locationParameters.uname;
+  const hasPrefilledUsername = Boolean(prefilledUsername);
+
   useMount(() => {
     setOnboardingCurrentStep({ currentStep: 1 })(dispatch);
   });
 
-  const hasTrialReferral = Boolean(
-    parse(hashHistory.getCurrentLocation()?.search)?.trial,
+  useEffect(() => {
+    setValue('email', prefilledUsername ?? '');
+  }, [prefilledUsername, setValue]);
+
+  const CreateAccountLabelComponent = getCreateAccountLabelComponent(
+    hasTrialReferral,
   );
 
-  const CreateAccountLabelComponent = hasTrialReferral
-    ? OnboardingH2
-    : OnboardingH1;
   return (
     <div>
       {hasTrialReferral && (
@@ -204,7 +216,9 @@ const OnboardingCreateAccountView = () => {
                 placeholder="Enter your email here"
                 InputBaseProps={{
                   autoComplete: uuid(),
+                  disabled: hasPrefilledUsername,
                 }}
+                shrink={hasPrefilledUsername || undefined}
                 inputContainerReference={emailInputReference}
               />
             </Grid>
@@ -251,29 +265,16 @@ const OnboardingCreateAccountView = () => {
                   HIPPA compliance
                 </OnboardingAdditionalFormControlText>
               )}
-              {isSmallScreen && (
-                <OnboardingInput
-                  label="Your Mobile Phone Number"
-                  name="mobilePhoneNumber"
-                  placeholder="Enter your mobile phone number here"
-                  CustomComponent={MobileInputComponent}
-                  InputBaseProps={{
-                    autoComplete: 'none',
-                  }}
-                  shrink
-                />
-              )}
-              {!isSmallScreen && (
-                <OnboardingInput
-                  label="Your Mobile Phone Number"
-                  name="mobilePhoneNumber"
-                  placeholder="Enter your mobile phone number here"
-                  CustomComponent={MobileInputComponent}
-                  InputBaseProps={{
-                    autoComplete: 'none',
-                  }}
-                />
-              )}
+              <OnboardingInput
+                label="Your Mobile Phone Number"
+                name="mobilePhoneNumber"
+                placeholder="Enter your mobile phone number here"
+                CustomComponent={MobileInputComponent}
+                InputBaseProps={{
+                  autoComplete: 'none',
+                }}
+                shrink={isSmallScreen || undefined}
+              />
               <input
                 type="text"
                 name="dummy"

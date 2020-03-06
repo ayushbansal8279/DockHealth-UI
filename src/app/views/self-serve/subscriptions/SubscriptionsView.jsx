@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { setPaymentNewPlan } from '../../../actions/organization-actions';
@@ -95,8 +95,9 @@ export default () => {
     userSubscriptionStatus !== USER_SUBSCRIPTION_STATUS.UNSUBSCRIBED &&
     chosenPlan;
 
-  const invitationPanelVisible =
-    outerContainerReference.current?.clientHeight > window.innerHeight;
+  const [invitationPanelVisible, toggleInvitationPanelVisibility] = useState(
+    false,
+  );
 
   const {
     annualMonthlyPrice: chosenAnnualMonthlyPrice,
@@ -163,6 +164,7 @@ export default () => {
           userSubscriptionStatus={userSubscriptionStatus}
           setUserSubscriptionStatus={setUserSubscriptionStatus}
           subscriptionPlanData={memberTableSubscriptionData}
+          toggleInvitationPanelVisibility={toggleInvitationPanelVisibility}
         />
         {invitationPanelVisible && (
           <InvitationPanel getAllUsers={getAllUsers} />

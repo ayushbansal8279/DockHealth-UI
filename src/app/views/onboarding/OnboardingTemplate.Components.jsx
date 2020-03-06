@@ -384,7 +384,7 @@ export const OnboardingInput = ({
   inputContainerReference = undefined,
   CustomComponent = undefined,
   required = false,
-  shrink = false,
+  shrink,
   InputBaseProps = {},
 }) => {
   const { register, errors } = useFormContext();
@@ -393,16 +393,12 @@ export const OnboardingInput = ({
   return (
     <div ref={inputContainerReference}>
       <OnboardingFormControl fullWidth>
-        {shrink && (
-          <OnboardingInputLabel required={required} shrink>
-            {label}
-          </OnboardingInputLabel>
-        )}
-        {!shrink && (
-          <OnboardingInputLabel required={required}>
-            {label}
-          </OnboardingInputLabel>
-        )}
+        <OnboardingInputLabel
+          required={required}
+          shrink={typeof shrink === 'boolean' ? shrink : undefined}
+        >
+          {label}
+        </OnboardingInputLabel>
         <OnboardingInputBase
           name={name}
           placeholder={placeholder}

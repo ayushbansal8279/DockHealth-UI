@@ -3,6 +3,7 @@ import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useUnmount } from 'react-use';
 import { bindActionCreators } from 'redux';
+import { memoizeWith } from 'ramda';
 import * as TaskActions from '../../actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import TaskView from '../../views/TaskView';
@@ -48,7 +49,10 @@ const TaskListLayout = ({
     isSpecificPatient: false,
     showListHeadings: false,
     onFilter,
-    onCompletedTasksRequest,
+    onCompletedTasksRequest: memoizeWith(
+      (...arguments_) => arguments_.join('-'),
+      onCompletedTasksRequest,
+    ),
     globalSearch,
   };
 

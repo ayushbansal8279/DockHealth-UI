@@ -32,7 +32,11 @@ import {
 } from './TaskListView.AddListForm.Components';
 import initializeAddListFormHooks from './TaskListView.AddListForm.Hooks';
 
-const onSubmit = ({ dispatch, setListFormOpen, taskListIdentifier = null }) => data => {
+const onSubmit = ({
+  dispatch,
+  setListFormOpen,
+  taskListIdentifier = null,
+}) => data => {
   const taskList = { ...data, taskListIdentifier };
 
   saveTaskList(taskList)(dispatch)
@@ -55,7 +59,9 @@ const renderMember = ({ people, removePerson }) => memberId => {
     <MemberContainer key={memberId}>
       <Member
         onClick={() => removePerson({ userIdentifier: memberId })}
-        member={people.find(({ userIdentifier }) => userIdentifier === memberId)}
+        member={people.find(
+          ({ userIdentifier }) => userIdentifier === memberId,
+        )}
       />
     </MemberContainer>
   );
@@ -121,6 +127,11 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
     setSearchValue,
   } = initializeAddListFormHooks();
 
+  const adminsWithOwner = [
+    ...(adminsValue || []),
+    listOwner?.userIdentifier,
+  ].filter(Boolean);
+
   return (
     <FormContainer
       onSubmit={handleSubmit(
@@ -142,20 +153,6 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
           onChange={event => setValue('listName', event.target.value)}
           value={listNameValue}
           name="listName"
-        />
-      </StyledFormControl>
-      <StyledFormControl fullWidth>
-        <StyledInputLabel>Owner</StyledInputLabel>
-        <StyledInputBase
-          name="owner"
-          disabled
-          endAdornment={
-            <MembersContainer>
-              <MemberContainer>
-                <Member member={listOwner} />
-              </MemberContainer>
-            </MembersContainer>
-          }
         />
       </StyledFormControl>
       <StyledFormControl fullWidth>
@@ -195,7 +192,7 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
                   </EmptyMemberIcon>
                 </EmptyMember>
               </MemberContainer>
-              {adminsValue?.map(
+              {adminsWithOwner?.map(
                 renderMember({ people, removePerson: removeAdmin }),
               )}
             </MembersContainer>

@@ -106,8 +106,9 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
     revalidationMode: 'onChange',
   });
 
-  const invitationPanelVisible =
-    outerContainerReference.current?.clientHeight > window.innerHeight;
+  const [invitationPanelVisible, toggleInvitationPanelVisible] = useState(
+    false,
+  );
 
   return (
     <form
@@ -141,6 +142,7 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
           showSubscription={false}
           showTableHeader={false}
           getAllUsers={getAllUsers}
+          toggleInvitationPanelVisibility={toggleInvitationPanelVisible}
           HeaderAdornment={InvitePeopleButton}
         />
         <Grid container>
