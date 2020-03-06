@@ -208,7 +208,7 @@ const getDrawerItems = ({ lists }) => [
     label: 'Lists',
     icon: ListsIcon,
     to: 'tasks',
-    childItems: lists.map(({ listName, taskListIdentifier }) => {
+    childItems: lists?.map(({ listName, taskListIdentifier }) => {
       const id = `${NESTED_LIST_PREFIX}-lists-${taskListIdentifier}`;
 
       return {

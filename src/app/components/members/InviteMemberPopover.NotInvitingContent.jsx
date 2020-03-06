@@ -76,7 +76,7 @@ const getMemberItemPopoverData = ({
             taskListIdentifier,
             member,
             isUserListMember ? 'ADMIN' : 'MEMBER',
-          );
+          )(dispatch);
 
           closeItemPopover();
         },
