@@ -471,6 +471,7 @@ class TaskView extends Component {
       isMultiList,
       title,
       members,
+      membersNotInTaskList,
       taskList,
       dispatchedSetHeader,
     } = this.props;
@@ -497,6 +498,7 @@ class TaskView extends Component {
                 title={title}
                 taskCount={allTasksCount}
                 members={members}
+                membersNotInTaskList={membersNotInTaskList}
                 taskList={taskList}
                 resetHeader={this.resetHeader}
                 isMultiList={isMultiList}

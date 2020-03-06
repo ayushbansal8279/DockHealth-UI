@@ -3,7 +3,9 @@ import ListItem from '@material-ui/core/ListItem';
 import Popover from '@material-ui/core/Popover';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import React, { useRef } from 'react';
+import SearchIcon from '@material-ui/icons/Search';
+import { isEmpty } from 'ramda';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   cancelInviteToTaskList,
@@ -15,12 +17,16 @@ import {
 import useBoolean from '../../hooks/useBoolean';
 import TickIcon from '../../img/tick-icon.svg';
 import {
+  HeaderSearch,
+  HeaderSearchButton,
+  HeaderSearchContainer,
   InviteLink,
   MemberItem,
   MemberName,
   MemberRole,
   MembersContainer,
   MoreIconButton,
+  NoMembersElement,
   NotSignedUpLabel,
   PopoverBottomSection,
   PopoverDivider,
@@ -42,6 +48,21 @@ const getFormattedMemberRole = memberRole => {
   }
 };
 
+const inviteUserMethod = ({
+  closeItemPopover,
+  dispatch,
+  isSignedUp,
+  member,
+  taskListIdentifier,
+}) => () => {
+  if (isSignedUp) {
+    inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(dispatch);
+  } else {
+    invitePersonToTaskList(member, taskListIdentifier)(dispatch);
+  }
+  closeItemPopover();
+};
+
 const getMemberItemPopoverData = ({
   dispatch,
   invitationPending,
@@ -50,45 +71,64 @@ const getMemberItemPopoverData = ({
   member,
   taskListIdentifier,
   closeItemPopover,
-}) =>
-  invitationPending
-    ? {
-        topButtonOnClick: () => {
-          if (isSignedUp) {
-            inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(
-              dispatch,
-            );
-          } else {
-            invitePersonToTaskList(member, taskListIdentifier)(dispatch);
-          }
-          closeItemPopover();
-        },
-        topButtonLabel: 'Resend invitation',
-        bottomButtonOnClick: () => {
-          cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
-          closeItemPopover();
-        },
-        bottomButtonLabel: 'Cancel invitation',
-      }
-    : {
-        topButtonOnClick: () => {
-          changeUserRoleForList(
-            taskListIdentifier,
-            member,
-            isUserListMember ? 'ADMIN' : 'MEMBER',
-          )(dispatch);
+  notInTaskList,
+}) => {
+  if (notInTaskList) {
+    return {
+      topButtonOnClick: inviteUserMethod({
+        closeItemPopover,
+        dispatch,
+        isSignedUp,
+        member,
+        taskListIdentifier,
+      }),
+      topButtonLabel: 'Invite to list',
+    };
+  }
 
-          closeItemPopover();
-        },
-        topButtonLabel: `Make ${isUserListMember ? 'an admin' : 'a member'}`,
-        bottomButtonOnClick: () => {
-          removeUserFromList(taskListIdentifier, member)(dispatch);
-          closeItemPopover();
-        },
-        bottomButtonLabel: 'Remove from list',
-      };
+  if (invitationPending) {
+    return {
+      topButtonOnClick: inviteUserMethod({
+        closeItemPopover,
+        dispatch,
+        isSignedUp,
+        member,
+        taskListIdentifier,
+      }),
+      topButtonLabel: 'Resend invitation',
+      bottomButtonOnClick: () => {
+        cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
+        closeItemPopover();
+      },
+      bottomButtonLabel: 'Cancel invitation',
+    };
+  }
 
-const MemberItemElement = ({ member, currentUser, taskList }) => {
+  return {
+    topButtonOnClick: () => {
+      changeUserRoleForList(
+        taskListIdentifier,
+        member,
+        isUserListMember ? 'ADMIN' : 'MEMBER',
+      )(dispatch);
+
+      closeItemPopover();
+    },
+    topButtonLabel: isUserListMember ? 'Make an admin' : 'Remove as admin',
+    bottomButtonOnClick: () => {
+      removeUserFromList(taskListIdentifier, member)(dispatch);
+      closeItemPopover();
+    },
+    bottomButtonLabel: 'Remove from list',
+  };
+};
+
+const MemberItemElement = ({
+  member,
+  currentUser,
+  taskList,
+  notInTaskList,
+}) => {
   const moreIconButtonReference = useRef(null);
   const dispatch = useDispatch();
   const invitationPending = member.status === 'PENDING';
@@ -109,6 +149,18 @@ const MemberItemElement = ({ member, currentUser, taskList }) => {
 
   const isUserListMember = member?.taskListUserRole === 'MEMBER';
 
+  const memberSubLabel = (() => {
+    if (!isSignedUp) {
+      return 'Has not signed up';
+    }
+
+    if (invitationPending) {
+      return 'Invitation pending';
+    }
+
+    return '';
+  })();
+
   const {
     topButtonOnClick,
     topButtonLabel,
@@ -122,17 +174,22 @@ const MemberItemElement = ({ member, currentUser, taskList }) => {
     member,
     taskListIdentifier,
     closeItemPopover,
+    notInTaskList,
   });
+
+  const hasUserAcceptedInvitation = isSignedUp && !invitationPending;
 
   return (
     <MemberItem>
-      <TickIconContainer isSignedUp={isSignedUp}>
-        {!invitationPending && <TickIconImage alt="tick" src={TickIcon} />}
+      <TickIconContainer transparent={!hasUserAcceptedInvitation}>
+        {!notInTaskList && <TickIconImage alt="tick" src={TickIcon} />}
       </TickIconContainer>
-      <StyledMember isSignedUp={isSignedUp} member={member} />
-      <MemberName isSignedUp={isSignedUp}>
+      <StyledMember transparent={!hasUserAcceptedInvitation} member={member} />
+      <MemberName transparent={!hasUserAcceptedInvitation}>
         <span>{memberName}</span>
-        {!isSignedUp && <NotSignedUpLabel>Has not signed up</NotSignedUpLabel>}
+        {memberSubLabel && (
+          <NotSignedUpLabel>{memberSubLabel}</NotSignedUpLabel>
+        )}
       </MemberName>
       <MemberRole>{!invitationPending && memberRole}</MemberRole>
       {currentUser?.userIdentifier !== member?.userIdentifier && (
@@ -156,59 +213,123 @@ const MemberItemElement = ({ member, currentUser, taskList }) => {
         }}
       >
         <List>
-          <ListItem button onClick={topButtonOnClick}>
-            {topButtonLabel}
-          </ListItem>
-          <ListItem button onClick={bottomButtonOnClick}>
-            {bottomButtonLabel}
-          </ListItem>
+          {topButtonOnClick && topButtonLabel && (
+            <ListItem button onClick={topButtonOnClick}>
+              {topButtonLabel}
+            </ListItem>
+          )}
+          {bottomButtonLabel && bottomButtonOnClick && (
+            <ListItem button onClick={bottomButtonOnClick}>
+              {bottomButtonLabel}
+            </ListItem>
+          )}
         </List>
       </Popover>
     </MemberItem>
   );
 };
 
+const renderMemberItemElement = ({
+  currentUser,
+  taskList,
+  notInTaskList = false,
+}) => member => (
+  <MemberItemElement
+    key={member?.userIdentifier ?? member?.email}
+    member={member}
+    currentUser={currentUser}
+    taskList={taskList}
+    notInTaskList={notInTaskList}
+  />
+);
+
+const memberFilterIteratee = ({ searchTerm }) => ({ firstName, lastName }) =>
+  searchTerm
+    ? firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lastName.toLowerCase().includes(searchTerm.toLowerCase())
+    : true;
+
 const NotInvitingContent = ({
   closeMemberPopover,
   members,
+  membersNotInTaskList,
   setInviting,
   isAdmin,
   currentUser,
   taskList,
-}) => (
-  <>
-    <PopoverHeader>
-      <PopoverHeaderCloseButton onClick={closeMemberPopover}>
-        <CloseIcon />
-      </PopoverHeaderCloseButton>
-      <span>Add to list</span>
-    </PopoverHeader>
-    <MembersContainer>
-      {members.map(member => (
-        <MemberItemElement
-          key={member?.userIdentifier ?? member?.email}
-          member={member}
-          currentUser={currentUser}
-          taskList={taskList}
-        />
-      ))}
-    </MembersContainer>
-    <PopoverDivider />
-    <PopoverBottomSection>
-      <div>
-        <span>Don&apos;t see who you&apos;re looking for?&nbsp;</span>
-        {isAdmin ? (
-          <InviteLink onClick={setInviting}>
-            Invite them to this list.
-          </InviteLink>
+}) => {
+  const [isSearching, setSearching, resetSearching] = useBoolean(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    setSearchTerm('');
+  }, [isSearching]);
+
+  const filteredMembers = members.filter(memberFilterIteratee({ searchTerm }));
+  const filteredMembersNotInTaskList = membersNotInTaskList.filter(
+    memberFilterIteratee({ searchTerm }),
+  );
+
+  return (
+    <>
+      <PopoverHeader>
+        {isSearching ? (
+          <HeaderSearchContainer>
+            <HeaderSearch
+              autoFocus
+              onChange={event => setSearchTerm(event.target.value)}
+              value={searchTerm}
+              endAdornment={
+                <HeaderSearchButton onClick={resetSearching}>
+                  <CloseIcon />
+                </HeaderSearchButton>
+              }
+            />
+          </HeaderSearchContainer>
         ) : (
-          <span>
-            Ask an organizational admin to invite people to this list.
-          </span>
+          <>
+            <PopoverHeaderCloseButton onClick={closeMemberPopover}>
+              <CloseIcon />
+            </PopoverHeaderCloseButton>
+            <span>Add to list</span>
+            <PopoverHeaderCloseButton onClick={setSearching}>
+              <SearchIcon />
+            </PopoverHeaderCloseButton>
+          </>
         )}
-      </div>
-    </PopoverBottomSection>
-  </>
-);
+      </PopoverHeader>
+      <MembersContainer>
+        {filteredMembers.map(
+          renderMemberItemElement({ currentUser, taskList }),
+        )}
+        {filteredMembersNotInTaskList.map(
+          renderMemberItemElement({
+            currentUser,
+            taskList,
+            notInTaskList: true,
+          }),
+        )}
+        {isEmpty(filteredMembers) && isEmpty(filteredMembersNotInTaskList) && (
+          <NoMembersElement />
+        )}
+      </MembersContainer>
+      <PopoverDivider />
+      <PopoverBottomSection>
+        <div>
+          <span>Don&apos;t see who you&apos;re looking for?&nbsp;</span>
+          {isAdmin ? (
+            <InviteLink onClick={setInviting}>
+              Invite them to this list.
+            </InviteLink>
+          ) : (
+            <span>
+              Ask an organizational admin to invite people to this list.
+            </span>
+          )}
+        </div>
+      </PopoverBottomSection>
+    </>
+  );
+};
 
 export default NotInvitingContent;

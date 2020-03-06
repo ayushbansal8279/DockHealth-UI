@@ -3,8 +3,9 @@ import Popover from '@material-ui/core/Popover';
 import withStyles from '@material-ui/core/styles/withStyles';
 import styled from 'styled-components';
 import Member from './Member';
+import Search from '../taskView/Search';
 
-const NOT_SIGNED_UP_OPACITY = 'opacity: 0.6;';
+const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';
 
 export const AddMemberButton = withStyles({
   root: {
@@ -30,8 +31,11 @@ export const PopoverHeader = styled.div`
   align-items: center;
   background-color: #2a4a70;
   color: #fff;
+  display: grid;
   font-weight: 700;
-  display: flex;
+  grid-template-columns: 1.625rem 1fr 1.625rem;
+  grid-column-gap: 0.375rem;
+  min-height: 4rem;
   padding: 1rem;
   width: 100%;
 `;
@@ -42,7 +46,30 @@ export const PopoverHeaderCloseButton = withStyles({
     fontSize: '1.5rem',
     height: '1.5rem',
     lineHeight: 1,
-    marginRight: '0.375rem',
+    padding: 0,
+    width: '1.5rem',
+  },
+})(IconButton);
+
+export const HeaderSearchContainer = styled.div`
+  grid-column-start: span 3;
+`;
+
+export const HeaderSearch = styled(Search)`
+  && {
+    font-weight: normal;
+    width: 100%;
+
+    > div {
+      padding-right: 0.5rem;
+    }
+  }
+`;
+
+export const HeaderSearchButton = withStyles({
+  root: {
+    height: '1.5rem',
+    lineHeight: 1,
     padding: 0,
     width: '1.5rem',
   },
@@ -66,9 +93,19 @@ export const MemberItem = styled.div`
   padding: 0 0.5rem;
 `;
 
+export const NoMembersElement = styled.div.attrs({
+  children: 'No members found.',
+})`
+  align-items: center;
+  display: flex;
+  height: 4rem;
+  justify-content: center;
+  width: 100%;
+`;
+
 export const TickIconContainer = styled.div`
   height: 100%;
-  ${props => !props.isSignedUp && NOT_SIGNED_UP_OPACITY}
+  ${props => props.transparent && NOT_SIGNED_UP_OPACITY}
 `;
 
 export const TickIconImage = styled.img`
@@ -79,14 +116,14 @@ export const TickIconImage = styled.img`
 
 export const StyledMember = styled(Member)`
   && {
-    ${props => !props.isSignedUp && NOT_SIGNED_UP_OPACITY}
+    ${props => props.transparent && NOT_SIGNED_UP_OPACITY}
   }
 `;
 
 export const MemberName = styled.div`
   color: #2e3a43;
   font-size: 1rem;
-  ${props => !props.isSignedUp && NOT_SIGNED_UP_OPACITY}
+  ${props => props.transparent && NOT_SIGNED_UP_OPACITY}
   position: relative;
 `;
 

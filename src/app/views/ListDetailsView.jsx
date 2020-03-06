@@ -226,19 +226,6 @@ class Home extends Component {
             );
           });
         });
-      // actions
-      //   .getTasksAssignedByMe(undefined, sortBy, filterBy, 'COMPLETE')
-      //   .then(noop)
-      //   .catch(error => {
-      //     this.handleRetry(error, () => {
-      //       actions.getTasksAssignedByMe(
-      //         undefined,
-      //         sortBy,
-      //         filterBy,
-      //         'COMPLETE',
-      //       );
-      //     });
-      //   });
     } else if (listName === ASSIGNED_TO_ME) {
       actions
         .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
@@ -253,19 +240,6 @@ class Home extends Component {
             );
           });
         });
-      // actions
-      //   .getTasksAssignedToMe(undefined, sortBy, filterBy, 'COMPLETE')
-      //   .then(noop)
-      //   .catch(error => {
-      //     this.handleRetry(error, () => {
-      //       actions.getTasksAssignedToMe(
-      //         undefined,
-      //         sortBy,
-      //         filterBy,
-      //         'COMPLETE',
-      //       );
-      //     });
-      //   });
     } else {
       actions
         .getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE')
@@ -280,19 +254,6 @@ class Home extends Component {
             );
           });
         });
-      // actions
-      //   .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE')
-      //   .then(noop)
-      //   .catch(error => {
-      //     this.handleRetry(error, () => {
-      //       actions.getListTasks(
-      //         taskListIdentifier,
-      //         sortBy,
-      //         filterBy,
-      //         'COMPLETE',
-      //       );
-      //     });
-      //   });
     }
   };
 
@@ -417,6 +378,7 @@ class Home extends Component {
       tasklists,
       taskListMembers,
       pendingTasklists,
+      membersNotInTaskList,
       routeParams: { listName, taskListIdentifier, filterBy },
     } = this.props;
 
@@ -482,6 +444,7 @@ class Home extends Component {
       listName,
       preSelectedTask,
       taskListMembers,
+      membersNotInTaskList,
     };
 
     return <TaskView {...taskViewProps} />;
@@ -492,6 +455,7 @@ const mapStateToProps = store => ({
   tasklists: store.taskListState.tasklist,
   pendingTasklists: store.invitationState.pendingTasklists,
   members: store.taskListState.tasklistmembers,
+  membersNotInTaskList: store.taskListState.orgusersnotintasklist,
   tasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
   isFetching: store.taskState.isFetching,

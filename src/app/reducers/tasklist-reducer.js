@@ -1,4 +1,17 @@
-import { lensProp, map, propEq, set, when, pickBy, isNil } from 'ramda';
+import {
+  lensProp,
+  map,
+  propEq,
+  set,
+  when,
+  pickBy,
+  isNil,
+  partition,
+  sortBy,
+  prop,
+  pipe,
+  toLower,
+} from 'ramda';
 
 import {
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,
@@ -265,9 +278,28 @@ const TaskListReducer = (state = initialState, action) => {
       };
 
     case CANCEL_TASKLIST_INVITE_SUCCESS: {
+      const [
+        [memberWithCanceledInvitation],
+        remainingTaskListMembers,
+      ] = partition(
+        member => member.email === action.removedUserEmail,
+        state.tasklistmembers,
+      );
+
+      if (memberWithCanceledInvitation) {
+        memberWithCanceledInvitation.taskListUserRole = null;
+        memberWithCanceledInvitation.status = null;
+      }
+
       return {
-        tasklistmembers: state.tasklistmembers.filter(
-          member => member.email !== action.removedUserEmail,
+        ...state,
+        tasklistmembers: remainingTaskListMembers,
+        orgusersnotintasklist: sortBy(
+          pipe(
+            prop('firstName'),
+            toLower,
+          ),
+          [...state.orgusersnotintasklist, memberWithCanceledInvitation],
         ),
       };
     }

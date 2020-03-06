@@ -8,7 +8,7 @@ import {
   AddMemberPopover,
 } from './InviteMemberPopover.Styled';
 
-const InviteMemberPopover = ({ taskList, members }) => {
+const InviteMemberPopover = ({ taskList, members, membersNotInTaskList }) => {
   const addMemberButtonReference = useRef(null);
 
   const [isInviting, setInviting, unsetInviting] = useBoolean(false);
@@ -48,6 +48,7 @@ const InviteMemberPopover = ({ taskList, members }) => {
           <NotInvitingContent
             closeMemberPopover={closeMemberPopover}
             members={members}
+            membersNotInTaskList={membersNotInTaskList}
             setInviting={setInviting}
             isAdmin={isAdmin}
             currentUser={currentUser}

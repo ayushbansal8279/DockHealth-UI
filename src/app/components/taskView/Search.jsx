@@ -34,7 +34,13 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const Search = ({ className, onChange, initialValue, autoFocus }) => (
+const Search = ({
+  className,
+  onChange,
+  initialValue,
+  autoFocus,
+  ...otherInputProps
+}) => (
   <StyledTextField
     onChange={onChange}
     placeholder="Search"
@@ -53,6 +59,7 @@ const Search = ({ className, onChange, initialValue, autoFocus }) => (
       type: 'search',
       defaultValue: initialValue,
       autoFocus,
+      ...otherInputProps,
     }}
   />
 );

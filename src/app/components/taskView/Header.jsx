@@ -4,16 +4,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-
 import { toggleListNotifications } from '../../actions/tasklist-actions';
+import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 import NotificationsOffIcon from '../../img/notifications-off.svg';
 import NotificationsOnIcon from '../../img/notifications-on.svg';
 import CubesLoader from '../common/CubesLoader';
 import Members from '../members/Members';
 import TaskListAction from './TaskListAction';
-import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -41,15 +40,6 @@ const StyledTitle = styled(Typography)`
     white-space: nowrap;
   }
 `;
-
-// const StyledSubtitle = styled(Typography)`
-//   && {
-//     font-size: 16px;
-//     line-height: 26px;
-//     color: #2e3a43;
-//     margin-left: 2px; /* visually align with StyledTitle */
-//   }
-// `;
 
 const HeaderTitleContainer = styled.div`
   flex: 0.35;
@@ -87,14 +77,12 @@ const Notifications = ({ value, onClick }) => {
   );
 };
 
-// const nbsp = '\u00A0';
-
 const Header = ({
   title,
-  taskCount: propertiesTaskCount = 0,
   isFetching,
   isMultiList,
   members,
+  membersNotInTaskList,
   taskList,
   resetHeader = () => {},
 }) => {
@@ -111,19 +99,6 @@ const Header = ({
       resetHeader();
     });
   }, [dispatch, notificationsStatus, resetHeader, taskListIdentifier]);
-  const { taskListStats, taskListStatsOk } = useSelector(store => ({
-    taskListStats: store.taskListState.taskListStats,
-    taskListStatsOk: store.taskListState.taskListStatsOk,
-  }));
-
-  let taskCount = propertiesTaskCount;
-
-  if (taskListStatsOk) {
-    const key = 'Incomplete_TaskList_Count';
-    taskCount =
-      taskListStats?.stats?.find?.(({ metricName }) => metricName === key)
-        ?.metricValue ?? 0;
-  }
 
   return (
     <StyledAppBar position="sticky" color="default" elevation={0}>
@@ -136,13 +111,6 @@ const Header = ({
           <>
             <HeaderTitleContainer>
               <StyledTitle variant="h5">{title}</StyledTitle>
-              {/* {!isMultiList && (
-                <StyledSubtitle variant="subtitle1">
-                  {isFetching
-                    ? nbsp
-                    : `${taskCount} task${taskCount > 1 ? 's' : ''}`}
-                </StyledSubtitle>
-              )} */}
             </HeaderTitleContainer>
             <div
               style={{
@@ -162,7 +130,11 @@ const Header = ({
             </div>
             <div style={{ flex: 0.35 }}>
               {members && !isMultiList && (
-                <Members members={members} taskList={taskList} />
+                <Members
+                  members={members}
+                  membersNotInTaskList={membersNotInTaskList}
+                  taskList={taskList}
+                />
               )}
             </div>
           </>
@@ -174,7 +146,6 @@ const Header = ({
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
-  taskCount: PropTypes.number.isRequired,
   members: PropTypes.arrayOf(
     PropTypes.shape({
       userIdentifier: PropTypes.string,

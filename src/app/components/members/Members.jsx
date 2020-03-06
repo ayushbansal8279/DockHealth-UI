@@ -9,12 +9,16 @@ const StyledContainer = styled.div`
   flex-direction: row-reverse;
 `;
 
-const Members = ({ members, taskList }) => {
+const Members = ({ members, membersNotInTaskList, taskList }) => {
   const visibleMembers = members.slice(0, 5);
 
   return (
     <StyledContainer>
-      <InviteMemberPopover taskList={taskList} members={members} />
+      <InviteMemberPopover
+        taskList={taskList}
+        members={members}
+        membersNotInTaskList={membersNotInTaskList}
+      />
       {visibleMembers.map(member => (
         <Member
           onClick={() => {}}
@@ -40,10 +44,20 @@ Members.propTypes = {
       profileThumbnailPictureHash: PropTypes.string,
     }),
   ),
+  membersNotInTaskList: PropTypes.arrayOf(
+    PropTypes.shape({
+      userIdentifier: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      initials: PropTypes.string,
+      profileThumbnailPictureHash: PropTypes.string,
+    }),
+  ),
 };
 
 Members.defaultProps = {
   members: [],
+  membersNotInTaskList: [],
 };
 
 export default Members;
