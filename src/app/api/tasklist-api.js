@@ -97,7 +97,9 @@ export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) =>
       `/user/inviteUserToTaskList/${taskListIdentifier}/user/${userIdentifier}`,
     )
     .then(response => response.data)
-    .catch(error => error.response.data);
+    .catch(error => {
+      throw error.response.data;
+    });
 
 export function inviteMultipleUsersToTaskList(
   taskListIdentifier,

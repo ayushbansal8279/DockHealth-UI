@@ -26,6 +26,7 @@ import {
   SET_GENERIC_LIST_COUNTS,
   TOGGLE_LIST_NOTIFICATIONS_SUCCESS,
   UPDATE_TASKLIST_SUCCESS,
+  CANCEL_TASKLIST_INVITE_SUCCESS,
 } from '../actions/action-types';
 
 const initialState = {
@@ -73,11 +74,17 @@ const inviteMultipleUsers = (state, { invitedUsersIdentifier }) => ({
   tasklistmembers: [
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
-      .filter(user => invitedUsersIdentifier.some(userIdentifier => user.userIdentifier === userIdentifier))
+      .filter(user =>
+        invitedUsersIdentifier.some(
+          userIdentifier => user.userIdentifier === userIdentifier,
+        ),
+      )
       .map(inviteUserMapper),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist.filter(user =>
-    invitedUsersIdentifier.every(userIdentifier => user.userIdentifier !== userIdentifier),
+    invitedUsersIdentifier.every(
+      userIdentifier => user.userIdentifier !== userIdentifier,
+    ),
   ),
 });
 
@@ -217,7 +224,8 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklist: state.tasklist.map(taskList =>
-          taskList.taskListIdentifier === action.updatedTasklist.taskListIdentifier
+          taskList.taskListIdentifier ===
+          action.updatedTasklist.taskListIdentifier
             ? {
                 ...taskList,
                 ...pickBy(value => !isNil(value), action.updatedTasklist),
@@ -255,6 +263,14 @@ const TaskListReducer = (state = initialState, action) => {
           member => member.userIdentifier !== action.removedUser.userIdentifier,
         ),
       };
+
+    case CANCEL_TASKLIST_INVITE_SUCCESS: {
+      return {
+        tasklistmembers: state.tasklistmembers.filter(
+          member => member.email !== action.removedUserEmail,
+        ),
+      };
+    }
 
     case CHANGEUSERROLE_TASKLIST_SUCCESS:
       return {

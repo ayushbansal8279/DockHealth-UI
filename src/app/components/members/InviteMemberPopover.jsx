@@ -50,6 +50,8 @@ const InviteMemberPopover = ({ taskList, members }) => {
             members={members}
             setInviting={setInviting}
             isAdmin={isAdmin}
+            currentUser={currentUser}
+            taskList={taskList}
           />
         )}
       </AddMemberPopover>

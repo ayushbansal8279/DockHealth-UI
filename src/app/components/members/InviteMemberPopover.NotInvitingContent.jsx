@@ -1,6 +1,18 @@
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Popover from '@material-ui/core/Popover';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import React from 'react';
+import React, { useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  cancelInviteToTaskList,
+  changeUserRoleForList,
+  invitePersonToTaskList,
+  inviteUserToTaskList,
+  removeUserFromList,
+} from '../../actions/tasklist-actions';
+import useBoolean from '../../hooks/useBoolean';
 import TickIcon from '../../img/tick-icon.svg';
 import {
   InviteLink,
@@ -30,8 +42,60 @@ const getFormattedMemberRole = memberRole => {
   }
 };
 
-const renderMemberItem = member => {
+const getMemberItemPopoverData = ({
+  dispatch,
+  invitationPending,
+  isSignedUp,
+  isUserListMember,
+  member,
+  taskListIdentifier,
+  closeItemPopover,
+}) =>
+  invitationPending
+    ? {
+        topButtonOnClick: () => {
+          if (isSignedUp) {
+            inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(
+              dispatch,
+            );
+          } else {
+            invitePersonToTaskList(member, taskListIdentifier)(dispatch);
+          }
+          closeItemPopover();
+        },
+        topButtonLabel: 'Resend invitation',
+        bottomButtonOnClick: () => {
+          cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
+          closeItemPopover();
+        },
+        bottomButtonLabel: 'Cancel invitation',
+      }
+    : {
+        topButtonOnClick: () => {
+          changeUserRoleForList(
+            taskListIdentifier,
+            member,
+            isUserListMember ? 'ADMIN' : 'MEMBER',
+          );
+
+          closeItemPopover();
+        },
+        topButtonLabel: `Make ${isUserListMember ? 'an admin' : 'a member'}`,
+        bottomButtonOnClick: () => {
+          removeUserFromList(taskListIdentifier, member)(dispatch);
+          closeItemPopover();
+        },
+        bottomButtonLabel: 'Remove from list',
+      };
+
+const MemberItemElement = ({ member, currentUser, taskList }) => {
+  const moreIconButtonReference = useRef(null);
+  const dispatch = useDispatch();
   const invitationPending = member.status === 'PENDING';
+
+  const [isItemPopoverOpen, openItemPopover, closeItemPopover] = useBoolean(
+    false,
+  );
 
   const memberName =
     `${member?.firstName ?? ''} ${member?.lastName ?? ''}`.trim() ||
@@ -39,10 +103,29 @@ const renderMemberItem = member => {
 
   const memberRole = getFormattedMemberRole(member?.taskListUserRole);
 
-  const isSignedUp = Boolean(member.userIdentifier);
+  const isSignedUp = Boolean(member?.userIdentifier);
+
+  const taskListIdentifier = taskList?.taskListIdentifier;
+
+  const isUserListMember = member?.role === 'MEMBER';
+
+  const {
+    topButtonOnClick,
+    topButtonLabel,
+    bottomButtonOnClick,
+    bottomButtonLabel,
+  } = getMemberItemPopoverData({
+    dispatch,
+    invitationPending,
+    isSignedUp,
+    isUserListMember,
+    member,
+    taskListIdentifier,
+    closeItemPopover,
+  });
 
   return (
-    <MemberItem key={member.userIdentifier}>
+    <MemberItem>
       <TickIconContainer isSignedUp={isSignedUp}>
         {!invitationPending && <TickIconImage alt="tick" src={TickIcon} />}
       </TickIconContainer>
@@ -52,9 +135,35 @@ const renderMemberItem = member => {
         {!isSignedUp && <NotSignedUpLabel>Has not signed up</NotSignedUpLabel>}
       </MemberName>
       <MemberRole>{!invitationPending && memberRole}</MemberRole>
-      <MoreIconButton>
-        <MoreIcon />
-      </MoreIconButton>
+      {currentUser?.userIdentifier !== member?.userIdentifier && (
+        <div ref={moreIconButtonReference}>
+          <MoreIconButton onClick={openItemPopover}>
+            <MoreIcon />
+          </MoreIconButton>
+        </div>
+      )}
+      <Popover
+        anchorEl={moreIconButtonReference.current}
+        open={isItemPopoverOpen}
+        onClose={closeItemPopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <List>
+          <ListItem button onClick={topButtonOnClick}>
+            {topButtonLabel}
+          </ListItem>
+          <ListItem button onClick={bottomButtonOnClick}>
+            {bottomButtonLabel}
+          </ListItem>
+        </List>
+      </Popover>
     </MemberItem>
   );
 };
@@ -64,6 +173,8 @@ const NotInvitingContent = ({
   members,
   setInviting,
   isAdmin,
+  currentUser,
+  taskList,
 }) => (
   <>
     <PopoverHeader>
@@ -72,7 +183,16 @@ const NotInvitingContent = ({
       </PopoverHeaderCloseButton>
       <span>Add to list</span>
     </PopoverHeader>
-    <MembersContainer>{members.map(renderMemberItem)}</MembersContainer>
+    <MembersContainer>
+      {members.map(member => (
+        <MemberItemElement
+          key={member?.userIdentifier ?? member?.email}
+          member={member}
+          currentUser={currentUser}
+          taskList={taskList}
+        />
+      ))}
+    </MembersContainer>
     <PopoverDivider />
     <PopoverBottomSection>
       <div>
