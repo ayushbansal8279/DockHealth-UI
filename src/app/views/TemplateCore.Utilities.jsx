@@ -3,7 +3,10 @@ import { checkBAASignedStatus } from '../actions/organization-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import * as userApi from '../api/user-api';
 import handleFeatureToggle from '../helpers/handle-feature-toggle';
-import { useMobile } from '../helpers/utility-functions';
+import {
+  useMobile,
+  setCurrentPageAfterLogin,
+} from '../helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
@@ -117,6 +120,7 @@ const isLoggedIn = ({ dispatch }) => (loggedIn, user) => {
   }
 
   if (!loggedIn || !user) {
+    setCurrentPageAfterLogin();
     hashHistory.push('login');
     return;
   }
