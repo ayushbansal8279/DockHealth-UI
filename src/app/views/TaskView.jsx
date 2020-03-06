@@ -351,7 +351,8 @@ class TaskView extends Component {
           'INCOMPLETE',
         );
       }
-      refreshTask(data.task);
+      // eslint-disable-next-line no-unused-expressions
+      refreshTask?.(data.task);
     });
   };
 
@@ -420,7 +421,7 @@ class TaskView extends Component {
           this.closeTaskDrawer();
         }
 
-        taskActions.MoveTaskBetweenLists(task);
+        taskActions.moveTaskBetweenLists(task);
 
         this.clearTaskTimeouts(taskTimeoutId);
       }, 3000);

@@ -79,24 +79,22 @@ const renderTasks = ({
             incompleteTasks.map(renderTaskBound)
           )}
         </Grid>
-        {!isEmpty(completeTasks) && (
-          <Grid item xs={12} container justify="center">
-            <Button
-              size="small"
-              type="button"
-              onClick={
-                completeTasks.length > 0
-                  ? toggleCompletedTasksShown
-                  : getCompletedTasks
-              }
-              variant="contained"
-            >
-              {`${areCompleteTasksShown ? 'Hide' : 'Show'} completed tasks${
-                completeTasksCount > 0 ? ` (${completeTasksCount})` : ''
-              }`}
-            </Button>
-          </Grid>
-        )}
+        <Grid item xs={12} container justify="center">
+          <Button
+            size="small"
+            type="button"
+            onClick={
+              areCompleteTasksShown
+                ? toggleCompletedTasksShown
+                : getCompletedTasks
+            }
+            variant="contained"
+          >
+            {`${areCompleteTasksShown ? 'Hide' : 'Show'} completed tasks${
+              completeTasksCount > 0 ? ` (${completeTasksCount})` : ''
+            }`}
+          </Button>
+        </Grid>
         {(areCompleteTasksShown || globalSearch) && (
           <Grid item xs={12}>
             {completeTasks.map(renderTaskBound)}
