@@ -107,7 +107,7 @@ const MemberItemElement = ({ member, currentUser, taskList }) => {
 
   const taskListIdentifier = taskList?.taskListIdentifier;
 
-  const isUserListMember = member?.role === 'MEMBER';
+  const isUserListMember = member?.taskListUserRole === 'MEMBER';
 
   const {
     topButtonOnClick,
