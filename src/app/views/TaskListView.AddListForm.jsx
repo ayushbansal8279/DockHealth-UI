@@ -172,7 +172,7 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
           )}
         </StyledInputLabel>
         <StyledInputBase
-          name="admins"
+          name="adminIdentifiers"
           disabled
           endAdornment={
             <MembersContainer>

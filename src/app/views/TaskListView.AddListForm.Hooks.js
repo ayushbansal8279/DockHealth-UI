@@ -33,7 +33,7 @@ const initializeAddListFormHooks = () => {
   const setDefaultFormValues = useCallback(() => {
     setValue('listName', currentList?.listName ?? '');
     setValue('owner', listOwner);
-    setValue('admins', currentList?.adminIdentifiers ?? []);
+    setValue('adminIdentifiers', currentList?.adminIdentifiers ?? []);
     setValue('memberIdentifiers', currentList?.memberIdentifiers ?? []);
     setValue('notifications', currentList?.notifications ?? true);
   }, [currentList, listOwner, setValue]);
@@ -43,7 +43,7 @@ const initializeAddListFormHooks = () => {
 
     register({ name: 'listName' });
     register({ name: 'owner' });
-    register({ name: 'admins' });
+    register({ name: 'adminIdentifiers' });
     register({ name: 'memberIdentifiers' });
     register({ name: 'notifications' });
 
@@ -52,7 +52,7 @@ const initializeAddListFormHooks = () => {
     return () => {
       unregister('listName');
       unregister('owner');
-      unregister('admins');
+      unregister('adminIdentifiers');
       unregister('memberIdentifiers');
       unregister('notifications');
     };
@@ -70,7 +70,7 @@ const initializeAddListFormHooks = () => {
   }, [adminsPickerOpen, membersPickerOpen]);
 
   const listNameValue = watch('listName') ?? '';
-  const adminsValue = watch('admins') ?? [];
+  const adminsValue = watch('adminIdentifiers') ?? [];
   const membersValue = watch('memberIdentifiers') ?? [];
   const notificationsValue = watch('notifications') ?? true;
 
@@ -96,7 +96,7 @@ const initializeAddListFormHooks = () => {
 
   const addAdmin = useCallback(
     ({ userIdentifier }) => {
-      setValue('admins', [...adminsValue, userIdentifier]);
+      setValue('adminIdentifiers', [...adminsValue, userIdentifier]);
     },
     [adminsValue, setValue],
   );
@@ -111,7 +111,7 @@ const initializeAddListFormHooks = () => {
   const removeAdmin = useCallback(
     ({ userIdentifier }) => {
       setValue(
-        'admins',
+        'adminIdentifiers',
         adminsValue.filter(adminId => adminId !== userIdentifier),
       );
     },
