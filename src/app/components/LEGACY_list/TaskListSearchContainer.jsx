@@ -49,10 +49,12 @@ const TaskListLayout = ({
     isSpecificPatient: false,
     showListHeadings: false,
     onFilter,
-    onCompletedTasksRequest: memoizeWith(
-      (...arguments_) => arguments_.join('-'),
-      onCompletedTasksRequest,
-    ),
+    onCompletedTasksRequest: onCompletedTasksRequest
+      ? memoizeWith(
+          (...arguments_) => arguments_.join('-'),
+          onCompletedTasksRequest,
+        )
+      : onCompletedTasksRequest,
     globalSearch,
   };
 
