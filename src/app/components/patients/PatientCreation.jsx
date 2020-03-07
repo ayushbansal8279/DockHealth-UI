@@ -106,14 +106,13 @@ export const Cancel = styled(Button)`
 
 export const Save = styled(Button).attrs({
   variant: 'contained',
-  color: 'secondary',
 })`
   && {
     display: flex;
     width: 163px;
     height: 38px;
     border-radius: 0;
-    background: #da0d71;
+    background: #125375;
     box-shadow: none;
     margin-top: 18px;
     font-size: 16px;
@@ -349,7 +348,6 @@ const PatientCreation = () => {
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     await dispatch(addPatient(formState)).catch(error => {
-      console.log(error);
       showAlert({
         status: 'error',
         title: 'Potential Duplicate Patient',

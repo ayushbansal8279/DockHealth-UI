@@ -99,16 +99,28 @@ export const ButtonPaddingContainer = styled.div`
   margin-right: 0.5rem;
 `;
 
+export const Cancel = styled(Button)`
+  && {
+    display: flex;
+    width: 108px;
+    height: 38px;
+    border-radius: 0;
+    font-size: 16px;
+    margin-right: 4px;
+    margin-top: 18px;
+    color: #125375;
+  }
+`;
+
 export const Save = styled(Button).attrs({
   variant: 'contained',
-  color: 'secondary',
 })`
   && {
     display: flex;
     width: 163px;
     height: 38px;
     border-radius: 0;
-    background: #da0d71;
+    background: #125375;
     box-shadow: none;
     margin-top: 18px;
     font-size: 16px;

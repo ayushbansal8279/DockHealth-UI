@@ -1,4 +1,3 @@
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment';
@@ -20,7 +19,8 @@ import {
   PhoneNumberTextMask,
   StyledSelect,
   StyledTextField,
-  ButtonPaddingContainer,
+  Cancel,
+  Save,
 } from './PatientEdit.Components';
 import PatientNotes from './PatientNotes';
 import PatientsSidebarSection from './PatientsSidebar.Section';
@@ -194,22 +194,18 @@ export const PatientsForm = ({
         </div>
         <PanelActionContainer>
           {cancel && (
-            <ButtonPaddingContainer>
-              <Button variant="text" size="small" onClick={cancel}>
-                Cancel
-              </Button>
-            </ButtonPaddingContainer>
+            <Cancel size="small" onClick={cancel}>
+              Cancel
+            </Cancel>
           )}
           {!isReadOnly && (
-            <Button
-              variant="contained"
-              color="primary"
+            <Save
               size="small"
               onClick={handleSaveAndClose}
               disabled={isDisabled || isClean}
             >
               Save
-            </Button>
+            </Save>
           )}
         </PanelActionContainer>
       </PatientsSidebarSection>
