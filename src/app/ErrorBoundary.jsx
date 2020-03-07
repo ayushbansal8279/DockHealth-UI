@@ -16,12 +16,17 @@ class ErrorBoundary extends Component {
     showAlert({
       status: 'error',
       title: 'Error',
-      text:
+      text: "We are sorry, we have run into an error. " + 
         error?.message ??
         'Could not complete your request, please try again later',
-      showConfirmButton: false,
+      showConfirmButton: true,
+      confirmButtonText: "Go to Lists",
       allowOutsideClick: false,
       allowEscapeKey: false,
+      confirmationCallback: () => {
+        window.location.href = '/#/tasks';
+        window.location.reload();
+      }
     });
   }
 

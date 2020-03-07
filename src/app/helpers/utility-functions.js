@@ -132,6 +132,7 @@ export const showAlert = ({
   status: icon,
   text = '',
   title,
+  confirmationCallback,
   ...otherOptions
 }) => {
   Swal.fire({
@@ -139,6 +140,12 @@ export const showAlert = ({
     title,
     text,
     ...otherOptions,
+  }).then((result) => {
+    if (result.value) {
+      if(confirmationCallback){
+        confirmationCallback();
+      }
+    }
   });
   // fix z-index for drawer container
   Swal.getContainer().style.zIndex = 10000;
