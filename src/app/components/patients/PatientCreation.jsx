@@ -352,8 +352,9 @@ const PatientCreation = () => {
       console.log(error);
       showAlert({
         status: 'error',
-        title: 'Duplicate Patient Warning',
-        text: error?.message ?? 'This patient exists already!',
+        title: 'Potential Duplicate Patient',
+        text:
+          error?.message ?? 'A patient with this name and MRN already exists!',
         showConfirmButton: true,
         allowOutsideClick: false,
         allowEscapeKey: false,
