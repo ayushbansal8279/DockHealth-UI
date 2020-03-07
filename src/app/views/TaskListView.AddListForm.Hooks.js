@@ -76,16 +76,7 @@ const initializeAddListFormHooks = () => {
 
   const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
 
-  const filterByName = ({ firstName = '', middleName = '', lastName = '' }) => {
-    return [
-      firstName.toLowerCase(),
-      middleName.toLowerCase(),
-      lastName.toLowerCase(),
-    ]
-      .map(value => value.includes(searchValue.toLowerCase()))
-      .some(Boolean);
-  }
-
+  //check for people length other with results in error
   const filteredPeople = (people && people.length > 0 ? people : [])
     .filter(
       ({ userIdentifier }) =>
@@ -94,7 +85,15 @@ const initializeAddListFormHooks = () => {
         !membersValue.includes(userIdentifier) &&
         !adminsValue.includes(userIdentifier),
     )
-    .filter(filterByName);
+    .filter(({ firstName = '', middleName = '', lastName = '' }) => {
+      return [
+        firstName.toLowerCase(),
+        middleName.toLowerCase(),
+        lastName.toLowerCase(),
+      ]
+        .map(value => value.includes(searchValue.toLowerCase()))
+        .some(Boolean);
+    });
 
   const addAdmin = useCallback(
     ({ userIdentifier }) => {
