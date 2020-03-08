@@ -113,7 +113,9 @@ const Drawer = ({ header, user, lists, children }) => {
   const trialBannerVisible = isSubscriptionTrial;
 
   useMount(() => {
-    getOrganizationById({ organizationIdentifier })(dispatch);
+    if (organizationIdentifier) {
+      getOrganizationById({ organizationIdentifier })(dispatch);
+    }
   });
 
   return (

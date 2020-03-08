@@ -217,7 +217,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
   return (
     <>
       {addingComment ? (
-        <ClickAwayListener>
+        <ClickAwayListener onClickAway={() => {}}>
           <CommentSectionInputFieldContainer>
             <CommentSectionInputField
               ref={commentSectionInputFieldReference}
