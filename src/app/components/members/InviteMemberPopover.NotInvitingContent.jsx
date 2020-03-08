@@ -12,7 +12,7 @@ import {
   changeUserRoleForList,
   invitePersonToTaskList,
   inviteUserToTaskList,
-  removeUserFromList,
+  removeUserFromTaskList,
 } from '../../actions/tasklist-actions';
 import useBoolean from '../../hooks/useBoolean';
 import TickIcon from '../../img/tick-icon.svg';
@@ -116,7 +116,7 @@ const getMemberItemPopoverData = ({
     },
     topButtonLabel: isUserListMember ? 'Make an admin' : 'Remove as admin',
     bottomButtonOnClick: () => {
-      removeUserFromList(taskListIdentifier, member)(dispatch);
+      removeUserFromTaskList(taskListIdentifier, member)(dispatch);
       closeItemPopover();
     },
     bottomButtonLabel: 'Remove from list',
@@ -143,7 +143,7 @@ const MemberItemElement = ({
 
   const memberRole = getFormattedMemberRole(member?.taskListUserRole);
 
-  const isSignedUp = Boolean(member?.userIdentifier);
+  const isSignedUp = member.userStatus !== 'INVITED' && Boolean(member?.userIdentifier);
 
   const taskListIdentifier = taskList?.taskListIdentifier;
 
@@ -191,7 +191,7 @@ const MemberItemElement = ({
           <NotSignedUpLabel>{memberSubLabel}</NotSignedUpLabel>
         )}
       </MemberName>
-      <MemberRole>{!invitationPending && memberRole}</MemberRole>
+      <MemberRole>{!invitationPending && !notInTaskList && memberRole}</MemberRole>
       {currentUser?.userIdentifier !== member?.userIdentifier && (
         <div ref={moreIconButtonReference}>
           <MoreIconButton onClick={openItemPopover}>

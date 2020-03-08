@@ -157,7 +157,7 @@ export function deleteTaskListById(taskListIdentifier) {
     });
 }
 
-export function removeUserFromList(taskListIdentifier, removedUserIdentifier) {
+export function removeUserFromTaskList(taskListIdentifier, removedUserIdentifier) {
   return axios
     .delete(
       `user/removeUserFromTaskList/${taskListIdentifier}?removedUserId=${removedUserIdentifier}`,

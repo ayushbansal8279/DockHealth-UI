@@ -107,7 +107,7 @@ class ListMembers extends BaseComponentWithAutoComplete {
 
   deleteMember = member => {
     this.props.taskListActions
-      .removeUserFromList(this.props.currentList.taskListIdentifier, member)
+      .removeUserFromTaskList(this.props.currentList.taskListIdentifier, member)
       .then(res => {
         closePopup(`#list-members-${this.props.currentList.taskListIdentifier}`);
       })

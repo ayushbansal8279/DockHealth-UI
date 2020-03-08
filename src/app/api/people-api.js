@@ -145,6 +145,7 @@ export function getUserAvatar(user) {
     })
     .catch(error => error.response.data);
 }
+
 export function getUserAvatarBuffer(user) {
   return axios
     .get(`user/profilePicture/${user.userIdentifier}?UserPictureType=PROFILE`, {

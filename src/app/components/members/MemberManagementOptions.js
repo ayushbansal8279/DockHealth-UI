@@ -6,7 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
-  removeUserFromList,
+  removeUserFromTaskList,
   changeUserRoleForList,
   getOrganizationUsersNotInTaskList,
 } from '../../actions/tasklist-actions';
@@ -76,7 +76,7 @@ const mapDispatchToProps = (
   { taskListIdentifier, member: { userIdentifier } },
 ) => ({
   remove: () => {
-    removeUserFromList(taskListIdentifier, { userIdentifier })(dispatch).then(
+    removeUserFromTaskList(taskListIdentifier, { userIdentifier })(dispatch).then(
       () =>
         getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch),
     );

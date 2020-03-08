@@ -29,6 +29,7 @@ import {
   GET_TASKLISTACTIVEMEMBERS_SUCCESS,
   GET_TASKLISTMEMBERS_SUCCESS,
   INVITE_USER_TO_TASKLIST_SUCCESS,
+  INVITE_PERSON_TASKLIST_SUCCESS,
   INVITEMULUSERS_TASKLIST_SUCCESS,
   IS_LIST,
   REMOVEUSER_TASKLIST_SUCCESS,
@@ -108,6 +109,12 @@ const TaskListReducer = (state = initialState, action) => {
 
     case INVITEMULUSERS_TASKLIST_SUCCESS:
       return inviteMultipleUsers(state, action);
+
+    case INVITE_PERSON_TASKLIST_SUCCESS:
+      return {
+        ...state,
+        orgusersnotintasklist: [...state.orgusersnotintasklist, action.addedUser],
+      };
 
     case ADD_TASKLIST_SUCCESS:
       return {
@@ -275,6 +282,7 @@ const TaskListReducer = (state = initialState, action) => {
         tasklistmembers: state.tasklistmembers.filter(
           member => member.userIdentifier !== action.removedUser.userIdentifier,
         ),
+        orgusersnotintasklist: [...state.orgusersnotintasklist, action.removedUser],
       };
 
     case CANCEL_TASKLIST_INVITE_SUCCESS: {

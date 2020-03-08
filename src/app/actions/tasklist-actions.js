@@ -102,7 +102,7 @@ export function invitePersonToTaskList(formProps, taskListIdentifier) {
   return dispatch =>
     TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo)
       .then(response => {
-        dispatch({ type: ActionTypes.INVITEPERSON_TASKLIST_SUCCESS, response });
+        dispatch({ type: ActionTypes.INVITE_PERSON_TASKLIST_SUCCESS, addedUser: response });
         toggleAlert('Invitation sent!', 'success');
       })
       .catch(error => {
@@ -224,9 +224,9 @@ export function deleteTaskListById(taskListIdentifier) {
       });
 }
 
-export function removeUserFromList(taskListIdentifier, removedUser) {
+export function removeUserFromTaskList(taskListIdentifier, removedUser) {
   return dispatch =>
-    TaskListApi.removeUserFromList(
+    TaskListApi.removeUserFromTaskList(
       taskListIdentifier,
       removedUser.userIdentifier,
     )
