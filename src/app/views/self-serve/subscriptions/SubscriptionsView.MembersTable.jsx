@@ -222,12 +222,12 @@ const SubscriptionsViewMembersTable = ({
                 <tr>
                   <th>
                     <Grid container justify="center">
-                      <TaskCheckbox
+                      {/* <TaskCheckbox
                         onChange={toggleAllUsersSelected}
                         checked={isAllUsersSelected}
                         size={22}
                         color="#074A86"
-                      />
+                      /> */}
                     </Grid>
                   </th>
                   <th>&nbsp;</th>
