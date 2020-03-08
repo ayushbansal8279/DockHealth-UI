@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { bindActionCreators } from 'redux';
@@ -37,7 +38,10 @@ class TemplateCore extends PureComponent {
     // await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
     await checkUserAuthentication({ dispatch });
     this.unlockLoading();
-    taskListActions.getTaskListForUser();
+    taskListActions.getTaskListForUser().catch(error => {
+      console.log(error);
+      hashHistory.push('login');
+    });
   }
 
   unlockLoading = () => {
