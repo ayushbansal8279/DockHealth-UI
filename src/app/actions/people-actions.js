@@ -110,21 +110,19 @@ export function addUserToOrganization(addedUserIdentifier) {
 
 export function getUserById(userIdentifier) {
   return dispatch => {
-    dispatch({
-      type: ActionTypes.GET_USER_DETAILS_SUCCESS,
-      user: null,
-      userIdentifier,
-    });
-
-    return PeopleApi.getUserById(parseInt(userIdentifier, 10))
+    return PeopleApi.getUserById(userIdentifier)
       .then(user => {
         dispatch({
           type: ActionTypes.GET_USER_DETAILS_SUCCESS,
           user,
           userIdentifier,
         });
+        return user;
       })
       .catch(error => {
+        dispatch({
+          type: ActionTypes.GET_USER_DETAILS_FAILURE,
+        });
         throw error;
       });
   };

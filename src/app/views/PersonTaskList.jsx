@@ -14,7 +14,7 @@ import BackIcon from '../img/back.svg';
 import PersonInfoPanel from './PersonTaskList.PersonInfoPanel';
 import { BackButton } from './PersonTaskList.Styled';
 
-class TaskListSearch extends PureComponent {
+class PersonTaskList extends PureComponent {
   state = {
     fetching: true,
     personData: {},
@@ -23,7 +23,7 @@ class TaskListSearch extends PureComponent {
   async componentDidMount() {
     const {
       peopleActions,
-      routeParams: { email },
+      routeParams: { userIdentifier },
       setHeader,
     } = this.props;
 
@@ -34,14 +34,14 @@ class TaskListSearch extends PureComponent {
     let personData = {};
 
     try {
-      personData = await peopleActions.getUserByEmail({ email });
+      personData = await peopleActions.getUserById(userIdentifier);
 
       this.setState(
         {
           personData,
         },
         () => {
-          if (parseInt(personData.userIdentifier, 10)) {
+          if (personData.userIdentifier) {
             this.handleFilterChange(undefined, undefined);
           }
         },
@@ -161,4 +161,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(TaskListSearch);
+)(PersonTaskList);

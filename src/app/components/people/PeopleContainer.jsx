@@ -52,15 +52,17 @@ class PeopleContainer extends PureComponent {
   };
 
   getStatus = person => {
-    if (!person.userInviteStatus || person.userInviteStatus === 'ACCEPTED') {
+    if (person.userStatus === 'ACTIVE' && (!person.userInviteStatus || person.userInviteStatus === 'ACCEPTED')) {
       if (person.orgUserRole === 'OWNER') {
         return 'Owner';
       }
-
       if (person.orgUserRole === 'ADMIN') {
         return 'Admin';
       }
-    } else if (person.userInviteStatus === 'PENDING') {
+      if (person.orgUserRole === 'MEMBER') {
+        return 'Member';
+      }
+    } else if (person.userStatus === 'INVITED' || person.userInviteStatus === 'PENDING') {
       return 'Invited';
     }
 
@@ -104,18 +106,22 @@ class PeopleContainer extends PureComponent {
           <MemberContainer
             style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
           >
-            <Member color="#ababb2" member={person} />
+            <Link
+              to={`/assignedToPerson/${encodeURIComponent(person.userIdentifier)}`}
+            >
+              <Member color="#ababb2" member={person} />
+            </Link>
           </MemberContainer>
           <Grid item container alignItems="center">
-            <Grid item xs={12}>
-              {personStatus !== 'Invited' && (
+            <Grid item xs={12} style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}>
+              {/* {personStatus !== 'Invited' && ( */}
                 <Link
-                  to={`/assignedToPerson/${encodeURIComponent(person.email)}`}
+                  to={`/assignedToPerson/${encodeURIComponent(person.userIdentifier)}`}
                 >
                   {personName}
                 </Link>
-              )}
-              {personStatus === 'Invited' && <>{personName}</>}
+              {/* )} */}
+              {/* {personStatus === 'Invited' && <>{personName}</>} */}
             </Grid>
             {titles && (
               <Grid
@@ -130,7 +136,7 @@ class PeopleContainer extends PureComponent {
               </Grid>
             )}
           </Grid>
-          <Grid item container alignItems="center">
+          <Grid item container alignItems="center" style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}>
             <PersonStatus>{personStatus}</PersonStatus>
           </Grid>
         </Grid>

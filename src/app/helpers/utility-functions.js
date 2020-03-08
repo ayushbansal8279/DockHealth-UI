@@ -67,7 +67,7 @@ export const mentionifyDescription = ({ members, value }) => {
     const sanitizedLastName = escape(lastName);
     const sanitizedUserName = escape(userName);
 
-    const mentionNameReplacer = `$1<a class="decorated-link" href="#/assignedToPerson/${userIdentifier}/${sanitizedUserName}">$2</a>`;
+    const mentionNameReplacer = `$1<a class="decorated-link" href="#/assignedToPerson/${userIdentifier}">$2</a>`;
 
     newValue = newValue
       .replace(
