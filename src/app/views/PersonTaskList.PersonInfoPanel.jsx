@@ -84,7 +84,7 @@ const PersonInfoPanel = ({ personData }) => {
   }, [close, dispatch, userIdentifier]);
 
   useMount(() => {
-    if (userIdentifier) {
+    if (userIdentifier && personData.profileThumbnailPictureHash) {
       getUserAvatar(personData)(dispatch)
         .then(image => {
           if (image?.byteLength !== 0) {
