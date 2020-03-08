@@ -46,7 +46,7 @@ const store = configureStore();
 const { GA_TRACKING_CODE, SUBSCRIPTION_TOKEN_API_KEY } = process.env;
 
 ReactGA.initialize(GA_TRACKING_CODE, {
-  debug: true,
+  debug: false,
 });
 
 const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
