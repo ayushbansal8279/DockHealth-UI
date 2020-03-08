@@ -89,7 +89,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
           signatureIdentifier: eventData.signature_id,
           signatureResult: eventData.event,
         });
-        window?.HelloSign.close()
+        window?.HelloSign.close();
         if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
           // hashHistory.replace('/onboarding/team-org-setup');
           window.location.href = '/#/onboarding/team-org-setup';
