@@ -26,7 +26,7 @@ const StyledToolbar = styled(Toolbar)`
 
 const StyledTitle = styled(Typography)`
   && {
-    font-size: 36px;
+    font-size: 22px;
     line-height: 49px;
     color: #303538;
   }

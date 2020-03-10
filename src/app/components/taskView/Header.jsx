@@ -33,7 +33,7 @@ const StyledToolbar = styled(Toolbar)`
 const StyledTitle = styled(Typography)`
   && {
     color: #303538;
-    font-size: 36px;
+    font-size: 22px;
     line-height: 49px;
     overflow: hidden;
     text-overflow: ellipsis;
