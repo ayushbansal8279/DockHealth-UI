@@ -8,7 +8,17 @@ import Popover from '@material-ui/core/Popover';
 import { AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
-import { any, equals, filter, isEmpty, map, prop, reject, uniqBy } from 'ramda';
+import {
+  any,
+  equals,
+  filter,
+  isEmpty,
+  map,
+  omit,
+  prop,
+  reject,
+  uniqBy,
+} from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -154,8 +164,8 @@ export const TaskListSection = ({
   );
 };
 
-const CollapseStyledButton = styled(({ isCollapsed, ...props }) => (
-  <IconButton {...props} />
+const CollapseStyledButton = styled(props => (
+  <IconButton {...omit(['isCollapsed'], props)} />
 ))`
   && {
     height: 36px;
@@ -501,6 +511,7 @@ class TaskView extends Component {
       completedTasks,
       isFetching,
       isMultiList,
+      hasTitle = true,
       title,
       members,
       membersNotInTaskList,
@@ -533,6 +544,7 @@ class TaskView extends Component {
                 taskList={taskList}
                 resetHeader={this.resetHeader}
                 isMultiList={isMultiList}
+                hasTitle={hasTitle}
               />
             ),
             xs: 12,

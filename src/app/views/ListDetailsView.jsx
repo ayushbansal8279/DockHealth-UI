@@ -391,7 +391,9 @@ class Home extends Component {
     );
 
     let isMultiList = false;
-    let title = loadedTasklist ? loadedTasklist.listName : 'Loading...';
+    let title = loadedTasklist?.listName ?? 'Loading...';
+
+    const hasTitle = Boolean(loadedTasklist?.listName);
 
     let filterByDescription = '';
     if (filterBy === 'FLAGGED') {
@@ -436,6 +438,7 @@ class Home extends Component {
       onCompletedTasksRequest: this.handleCompletedTasksRequest,
       refresh: this.refresh,
       downloadPDF: this.downloadPDF,
+      hasTitle,
       title,
       showToolbar: true,
       taskList: loadedTasklist || undefined,

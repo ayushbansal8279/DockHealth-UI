@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "node": true,
@@ -13,9 +13,19 @@
     "plugin:sonarjs/recommended",
     "prettier",
     "prettier/react",
-    "prettier/standard"
+    "prettier/standard",
+    "prettier/@typescript-eslint",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": ["jest", "react", "react-hooks", "unicorn", "prettier"],
+  "plugins": [
+    "@typescript-eslint",
+    "jest",
+    "react",
+    "react-hooks",
+    "unicorn",
+    "prettier"
+  ],
   "globals": {
     "closeAddForm": true,
     "closeDropdown": true,
@@ -68,6 +78,10 @@
           }
         }
       }
-    ]
+    ],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-unused-vars": "off"
   }
 }

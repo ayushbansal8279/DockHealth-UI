@@ -11,8 +11,13 @@
     "strict": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true
   },
-  "include": ["src/app"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
+    "src/app/**/*.js",
+    "src/app/**/*.jsx"
+  ]
 }

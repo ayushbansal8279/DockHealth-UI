@@ -144,8 +144,6 @@ const UserProfileViewWrapper = () => {
                 <Typography variant="h4">Profile & Settings</Typography>
               </GenericHeader>
             ),
-            xs: 6,
-            alignItems: 'center',
           },
         ],
       });

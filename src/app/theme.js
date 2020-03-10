@@ -28,6 +28,13 @@ const theme = createMuiTheme({
       fontWeight: 'bold',
     },
   },
+  props: {
+    MuiPopover: {
+      PaperProps: {
+        square: true,
+      },
+    },
+  },
   overrides: {
     MuiListItem: {
       root: {
@@ -45,6 +52,13 @@ const theme = createMuiTheme({
     MuiPickersDay: {
       isSelected: {
         fontWeight: 'bold',
+      },
+    },
+    MuiPopover: {
+      paper: {
+        border: '0.0625rem solid #c1ccda',
+        margin: 0,
+        padding: 0,
       },
     },
     MuiButton: {
