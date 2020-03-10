@@ -32,6 +32,7 @@ const initializeAddListFormHooks = () => {
 
   const setDefaultFormValues = useCallback(() => {
     setValue('listName', currentList?.listName ?? '');
+    setValue('listDescription', currentList?.listDescription ?? '');
     setValue('owner', listOwner);
     setValue('adminIdentifiers', currentList?.adminIdentifiers ?? []);
     setValue('memberIdentifiers', currentList?.memberIdentifiers ?? []);
@@ -42,6 +43,7 @@ const initializeAddListFormHooks = () => {
     findAllUsersByOrganizationId()(dispatch);
 
     register({ name: 'listName' });
+    register({ name: 'listDescription' });
     register({ name: 'owner' });
     register({ name: 'adminIdentifiers' });
     register({ name: 'memberIdentifiers' });
@@ -51,6 +53,7 @@ const initializeAddListFormHooks = () => {
 
     return () => {
       unregister('listName');
+      unregister('listDescription');
       unregister('owner');
       unregister('adminIdentifiers');
       unregister('memberIdentifiers');
@@ -70,6 +73,7 @@ const initializeAddListFormHooks = () => {
   }, [adminsPickerOpen, membersPickerOpen]);
 
   const listNameValue = watch('listName') ?? '';
+  const listDescriptionValue = watch('listDescription') ?? '';
   const adminsValue = watch('adminIdentifiers') ?? [];
   const membersValue = watch('memberIdentifiers') ?? [];
   const notificationsValue = watch('notifications') ?? true;
@@ -141,6 +145,7 @@ const initializeAddListFormHooks = () => {
     openMembersPicker,
     closeMembersPicker,
     listNameValue,
+    listDescriptionValue,
     adminsValue,
     membersValue,
     filteredPeople,

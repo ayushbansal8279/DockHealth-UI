@@ -26,6 +26,7 @@ class ListsComponent extends PureComponent {
             creator,
             role,
             listName,
+            listDescription,
           } = taskList;
 
           const isOwnerOrAdmin = role === 'ADMIN' || role === 'OWNER';
@@ -50,8 +51,11 @@ class ListsComponent extends PureComponent {
               </div>
               <div className="columns">
                 <Link to={`/tasks/${taskListIdentifier}`}>
-                  <h6 className="">{listName}</h6>
+                  <h6 className="" style={{ fontWeight: 'bold' }}>
+                    {listName}
+                  </h6>
                 </Link>
+                <h7 className="">{listDescription}</h7>
                 <span className="details">{creator.userName}</span>
               </div>
               {numberOfHighPriorityTasks > 0 && (

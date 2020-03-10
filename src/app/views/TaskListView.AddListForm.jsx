@@ -112,6 +112,7 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
     openMembersPicker,
     closeMembersPicker,
     listNameValue,
+    listDescriptionValue,
     adminsValue,
     membersValue,
     filteredPeople,
@@ -153,6 +154,14 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
           onChange={event => setValue('listName', event.target.value)}
           value={listNameValue}
           name="listName"
+        />
+      </StyledFormControl>
+      <StyledFormControl fullWidth>
+        <StyledInputLabel>Description</StyledInputLabel>
+        <StyledInputBase
+          onChange={event => setValue('listDescription', event.target.value)}
+          value={listDescriptionValue}
+          name="listDescription"
         />
       </StyledFormControl>
       <StyledFormControl fullWidth>
