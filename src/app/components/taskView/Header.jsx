@@ -1,6 +1,3 @@
-import AppBar from '@material-ui/core/AppBar';
-import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
@@ -10,29 +7,12 @@ import { toggleListNotifications } from '../../actions/tasklist-actions';
 import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 import NotificationsOffIcon from '../../img/notifications-off.svg';
 import NotificationsOnIcon from '../../img/notifications-on.svg';
-import CubesLoader from '../common/CubesLoader';
+import GenericHeader from '../common/GenericHeader';
 import Members from '../members/Members';
 import TaskListAction from './TaskListAction';
 
-const StyledAppBar = styled(AppBar)`
-  && {
-    background: #fff;
-    border-bottom: 1px solid #e4e4e4;
-    box-sizing: content-box;
-    height: 100%;
-  }
-`;
-
-const StyledToolbar = styled(Toolbar)`
-  && {
-    padding: 5px 38px 8px 48px;
-    height: 100%;
-  }
-`;
-
 const StyledTitle = styled(Typography)`
   && {
-    color: #303538;
     font-size: 36px;
     line-height: 49px;
     overflow: hidden;
@@ -101,46 +81,36 @@ const Header = ({
   }, [dispatch, notificationsStatus, resetHeader, taskListIdentifier]);
 
   return (
-    <StyledAppBar position="sticky" color="default" elevation={0}>
-      <StyledToolbar>
-        {isFetching ? (
-          <Grid container alignItems="center">
-            <CubesLoader size={32} />
-          </Grid>
-        ) : (
-          <>
-            <HeaderTitleContainer>
-              <StyledTitle variant="h5">{title}</StyledTitle>
-            </HeaderTitleContainer>
-            <div
-              style={{
-                flex: 0.3,
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              {taskList && (
-                <Notifications
-                  onClick={() => {
-                    toggleNotifications();
-                  }}
-                  value={notificationsStatus}
-                />
-              )}
-            </div>
-            <div style={{ flex: 0.35 }}>
-              {members && !isMultiList && (
-                <Members
-                  members={members}
-                  membersNotInTaskList={membersNotInTaskList}
-                  taskList={taskList}
-                />
-              )}
-            </div>
-          </>
+    <GenericHeader isFetching={isFetching}>
+      <HeaderTitleContainer>
+        <StyledTitle variant="h5">{title}</StyledTitle>
+      </HeaderTitleContainer>
+      <div
+        style={{
+          flex: 0.3,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        {taskList && (
+          <Notifications
+            onClick={() => {
+              toggleNotifications();
+            }}
+            value={notificationsStatus}
+          />
         )}
-      </StyledToolbar>
-    </StyledAppBar>
+      </div>
+      <div style={{ flex: 0.35, paddingRight: '1rem' }}>
+        {members && !isMultiList && (
+          <Members
+            members={members}
+            membersNotInTaskList={membersNotInTaskList}
+            taskList={taskList}
+          />
+        )}
+      </div>
+    </GenericHeader>
   );
 };
 

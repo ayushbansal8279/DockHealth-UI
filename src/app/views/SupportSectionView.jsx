@@ -1,3 +1,4 @@
+import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
@@ -12,7 +13,11 @@ const SupportSectionView = () => {
       layout: [
         {
           key: 'generic-header',
-          component: <GenericHeader isFetching={false}>Support</GenericHeader>,
+          component: (
+            <GenericHeader>
+              <Typography variant="h4">Support</Typography>
+            </GenericHeader>
+          ),
         },
       ],
     });

@@ -121,7 +121,7 @@ const PlanCardsContainer = ({
           </AnnualToggleContainer>
         </Grid>
       </Grid>
-      <SubscriptionCardGrid item xs={12} container direction="row" spacing={8}>
+      <SubscriptionCardGrid item xs={12} container direction="row" spacing={1}>
         <Hidden mdDown>
           <Grid item xs={3} container direction="column">
             <FeatureListInnerContainer>

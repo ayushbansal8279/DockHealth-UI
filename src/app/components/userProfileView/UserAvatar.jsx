@@ -83,7 +83,7 @@ export default () => {
           square: true,
         }}
       >
-        <UploadImagePopoverGrid container justify="center" spacing={32}>
+        <UploadImagePopoverGrid container justify="center" spacing={4}>
           <Grid container item xs={12} alignItems="center" direction="column">
             {popoverLabelContent}
           </Grid>
@@ -115,7 +115,7 @@ export default () => {
               />
             </SmallButton>
           </Grid>
-          <Grid container item xs={12} spacing={8}>
+          <Grid container item xs={12} spacing={1}>
             {fileUploaded && (
               <Grid container item xs={12} justify="center">
                 <PlainLink

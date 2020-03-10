@@ -3,21 +3,20 @@ import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
+import { setHeader } from '../../actions/header-actions';
 import {
   getAllPatients,
   getMyPatientsActive,
   getMyPatientsAll,
-  loading,
   highlightPatient,
+  loading,
 } from '../../actions/patient-actions';
+import CubesLoader from '../common/CubesLoader';
+import GenericSublabeledHeader from '../common/GenericSublabeledHeader';
 import PatientsCreation from './PatientCreation';
-import PatientsHeader from './PatientsHeader';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
 import PatientsToolbar from './PatientsToolbar';
-import CubesLoader from '../common/CubesLoader';
-import { setHeader } from '../../actions/header-actions';
 
 const FadeContainer = styled.div`
   display: flex;
@@ -94,8 +93,9 @@ const PatientsLayout = () => {
         {
           key: 'patients-header',
           component: (
-            <PatientsHeader
-              patientCount={patientCount}
+            <GenericSublabeledHeader
+              label="Patients"
+              sublabel={`${patientCount} patients`}
               isFetching={isFetching}
             />
           ),

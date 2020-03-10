@@ -1,9 +1,9 @@
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import debounce from 'lodash.debounce';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import { setHeader as setHeaderRaw } from '../actions/header-actions';
 import * as TaskActions from '../actions/task-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
@@ -41,11 +41,14 @@ class TaskListSearch extends PureComponent {
     const { setHeader } = this.props;
 
     setHeader({
-      backgroundColor: '#fff',
       layout: [
         {
           key: 'generic-header',
-          component: <GenericHeader isFetching={false}>Search</GenericHeader>,
+          component: (
+            <GenericHeader>
+              <Typography variant="h4">Search</Typography>
+            </GenericHeader>
+          ),
         },
       ],
     });

@@ -1,18 +1,18 @@
+import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, withRouter } from 'react-router';
-
 import useBoolean from '../../hooks/useBoolean';
-import InboxIcon from '../../img/drawer/inbox';
-import ListsIcon from '../../img/drawer/lists';
-import LogoutIcon from '../../img/drawer/logout';
-import PatientsIcon from '../../img/drawer/patients';
-import PeopleIcon from '../../img/drawer/people';
-import SearchIcon from '../../img/drawer/search';
-import SupportIcon from '../../img/drawer/support';
+import InboxIcon from '../../img/drawer/InboxIcon';
+import ListsIcon from '../../img/drawer/ListsIcon';
+import LogoutIcon from '../../img/drawer/LogoutIcon';
+import PatientsIcon from '../../img/drawer/PatientsIcon';
+import PeopleIcon from '../../img/drawer/PeopleIcon';
+import SearchIcon from '../../img/drawer/SearchIcon';
+import SupportIcon from '../../img/drawer/SupportIcon';
 import DrawerHeader from './DrawerHeader';
 import {
-  BackgroundListItem,
+  ListDivider,
   NestedList,
   NestedListContainer,
   NestedListItem,
@@ -24,39 +24,21 @@ import {
   StyledListItemIcon,
   StyledListItemText,
   StyledRouterLinkContainer,
-  StyledSpacer,
 } from './DrawerList.styled';
 
 const NESTED_LIST_PREFIX = 'nested';
 
-const RouterLink = ({
-  active,
-  highlighted,
-  nested = false,
-  withBackground = false,
-  ...props
-}) => {
+const RouterLink = ({ active, highlighted, nested = false, ...props }) => {
   const { to } = props;
 
-  let className = '';
-
-  if (active) {
-    className += ' active';
-  }
-
-  if (highlighted) {
-    className += ' highlighted';
-  }
-  if (to === 'support') {
-    className += ' navsupport';
-  }
+  const className = clsx(
+    active && 'active',
+    highlighted && 'highlighted',
+    to === 'support' && 'navsupport',
+  );
 
   return (
-    <StyledRouterLinkContainer
-      nested={nested}
-      className={className.trim()}
-      withBackground={withBackground}
-    >
+    <StyledRouterLinkContainer nested={nested} className={className}>
       <Link {...props} />
     </StyledRouterLinkContainer>
   );
@@ -71,7 +53,6 @@ const Item = ({
   open,
   setActiveId,
   to,
-  withBackground = false,
   closePopover,
   openPopover,
   rolloverPopoverAnchor,
@@ -83,10 +64,8 @@ const Item = ({
   const nestedActive = activeId.startsWith(`${NESTED_LIST_PREFIX}-${id}`);
   const childOrSelfActive = active || nestedActive;
 
-  const ItemComponent = withBackground ? BackgroundListItem : StyledListItem;
-
   const item = (
-    <ItemComponent
+    <StyledListItem
       button
       component={RouterLink}
       to={to}
@@ -94,14 +73,13 @@ const Item = ({
       highlighted={active || nestedActive}
       onClick={() => setActiveId(id)}
       open={open}
-      withBackground={withBackground}
       {...otherProps}
     >
       <StyledListItemIcon>
         <Icon />
       </StyledListItemIcon>
       {open && <StyledListItemText primary={label} />}
-    </ItemComponent>
+    </StyledListItem>
   );
 
   return (
@@ -228,7 +206,7 @@ const getDrawerItems = ({ lists }) => [
   },
   {
     id: 'people',
-    label: 'People',
+    label: 'Providers',
     icon: PeopleIcon,
     to: 'people',
     userProfileAccessKey: 'peopleEnabled',
@@ -313,7 +291,7 @@ const DrawerList = ({
             userProfileAccess,
           }),
         )}
-        <StyledSpacer />
+        <ListDivider />
         <Item
           id="logout"
           label="Logout"
@@ -322,7 +300,6 @@ const DrawerList = ({
           activeId={activeId}
           open={open}
           setActiveId={setActiveId}
-          withBackground
         />
       </StyledList>
       <RolloverPopover

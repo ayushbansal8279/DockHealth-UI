@@ -99,7 +99,7 @@ export default ({ handlePersonSelect, toggleAddingNewPerson }) => {
         }}
         ref={formReference}
       >
-        <Grid container spacing={8}>
+        <Grid container spacing={1}>
           {formFieldDefinitions.map(renderFormFieldDefinition)}
           <Grid item container xs={12} justify="center">
             <Grid item xs={3}>

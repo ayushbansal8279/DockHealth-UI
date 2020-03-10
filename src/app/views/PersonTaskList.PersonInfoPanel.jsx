@@ -109,7 +109,7 @@ const PersonInfoPanel = ({ personData }) => {
             <GreyLabel>{specialtyList}</GreyLabel>
           </PersonTitlesContainer>
         </PersonNameContainer>
-        <Grid container item sm={12} md={7} alignItems="center" spacing={16}>
+        <Grid container item sm={12} md={7} alignItems="center" spacing={2}>
           <Grid container item sm={12} md={5} direction="column">
             <GreyLabel>Mobile</GreyLabel>
             <Label>

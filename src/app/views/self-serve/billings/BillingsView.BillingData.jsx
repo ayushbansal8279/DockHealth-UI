@@ -434,7 +434,7 @@ const BillingData = ({
       autoCorrect="off"
     >
       {!isUpdatingBilling && (
-        <Grid container spacing={16} justify="space-between">
+        <Grid container spacing={2} justify="space-between">
           <Grid item sm={12}>
             <PaymentInformationLabel />
           </Grid>
@@ -445,7 +445,7 @@ const BillingData = ({
           </Grid>
         </Grid>
       )}
-      <Grid container spacing={16}>
+      <Grid container spacing={2}>
         {selectedPaymentMethod === PAYMENT_METHODS.CREDIT && (
           <CreditPaymentForm
             isUpdatingBilling={isUpdatingBilling}

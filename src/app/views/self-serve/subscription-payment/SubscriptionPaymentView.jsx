@@ -12,6 +12,7 @@ import {
 } from '../../../actions/organization-actions';
 import { saveBillingDetails } from '../../../api/organization-api';
 import CubesLoader from '../../../components/common/CubesLoader';
+import GenericHeader from '../../../components/common/GenericHeader';
 import { noop, showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import BillingsViewBillingData from '../billings/BillingsView.BillingData';
@@ -159,11 +160,10 @@ const SubscriptionPaymentView = () => {
     }
 
     setHeader(dispatch)({
-      backgroundColor: '#007cab',
       layout: [
         {
           key: 'title',
-          component: <div />,
+          component: <GenericHeader />,
           alignItems: 'center',
         },
       ],
@@ -204,7 +204,7 @@ const SubscriptionPaymentView = () => {
   return (
     <SubscriptionPaymentViewOuterContainer>
       <SubscriptionPaymentViewContainer>
-        <Grid container spacing={32}>
+        <Grid container spacing={4}>
           <Grid item sm={12}>
             <H2>Please enter your payment information</H2>
           </Grid>

@@ -259,7 +259,7 @@ export default ({ closePicker, handlePersonSelect, toggleAddingNewPerson }) => {
         ref={formReference}
       >
         <FormLabel>Patient details</FormLabel>
-        <Grid container spacing={8}>
+        <Grid container spacing={1}>
           <input type="hidden" name="gender" ref={register} />
           {formFieldDefinitions.map(renderFormFieldDefinition({ setValue }))}
           <Grid item container xs={12} justify="center">

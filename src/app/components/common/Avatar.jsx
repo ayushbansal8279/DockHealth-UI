@@ -1,5 +1,4 @@
 import React from 'react';
-
 import CameraIcon from '../../img/camera.svg';
 import {
   AvatarContainer,
@@ -15,7 +14,7 @@ export default ({
   withCameraIcon,
   withCursor,
   withShadow,
-  color = '#007cab',
+  color = '#3d4858',
 }) => (
   <AvatarContainer
     onClick={onClick}

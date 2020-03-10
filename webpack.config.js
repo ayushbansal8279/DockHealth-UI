@@ -42,7 +42,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(j|t)sx?$/,
         include: APP_DIR,
         exclude: /node_modules/,
         loader: ['babel-loader'],
@@ -72,7 +72,7 @@ const config = {
     }),
   ],
   resolve: {
-    extensions: ['.js', '.json', '.jsx', '.png', '.svg', '.ttf'],
+    extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.png', '.svg', '.ttf'],
   },
   devServer: {
     compress: false,

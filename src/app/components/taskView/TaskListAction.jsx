@@ -13,6 +13,7 @@ const StyledButton = styled(({ active, backgroundColor, ...props }) => (
     color: ${props => (props.active ? '#fff' : '#303538')};
     height: 2rem;
     min-height: 2rem;
+    min-width: unset;
     font-size: 0.875rem;
     font-weight: normal;
     padding: 0 0.5rem;

@@ -23,17 +23,13 @@ export const StyledList = styled(List).attrs({
   }
 `;
 
-export const NestedList = styled(StyledList).attrs({
-  component: 'div',
-})`
+export const NestedList = styled(StyledList)`
   && {
     height: unset;
     min-height: unset;
     overflow-y: auto;
     padding-bottom: 0;
-
-    ${({ highlighted }) =>
-      highlighted ? 'background: rgba(255,255,255,0.1);' : ''}
+    width: 100%;
   }
 `;
 
@@ -41,13 +37,14 @@ export const StyledListItemText = styled(ListItemText).attrs({
   disableTypography: true,
 })`
   && {
-    color: #5ccced;
+    color: #c1ccda;
     font-size: 16px;
     line-height: 29px;
     font-weight: normal;
     overflow: hidden;
     padding: 0;
     text-overflow: ellipsis;
+    text-transform: uppercase;
     transition: all 0.25s ease;
   }
 `;
@@ -74,31 +71,27 @@ export const RolloverPopover = styled(Popover)`
 `;
 
 export const NestedListItemText = styled.li`
-  color: #fff;
+  color: #c1ccda;
   font-size: 14px;
   font-weight: normal;
   line-height: 29px;
-  margin-left: 2.5rem;
+  margin-left: 0.75rem;
   overflow: hidden;
   padding-left: 0.5rem;
   text-overflow: ellipsis;
+  text-transform: uppercase;
   white-space: nowrap;
 `;
 
 export const NestedListItem = styled(ListItem)`
   && {
-    padding-top: 8px;
-    padding-bottom: 8px;
+    color: #8492a4;
+    padding-bottom: 0;
+    padding-top: 0;
     position: relative;
-  }
-  &&.active {
-    background: rgba(255, 255, 255, 0.1);
   }
   &&:hover {
     background-color: transparent;
-    ${StyledListItemText} {
-      color: #fff;
-    }
   }
 `;
 
@@ -109,53 +102,33 @@ export const StyledListItemIcon = styled(ListItemIcon)`
     width: 29px;
     height: 29px;
     justify-content: center;
-    margin-right: 9px;
     transition: all 0.25s ease;
-
-    & svg {
-      transition: all 0.25s ease;
-    }
   }
 `;
 
 export const StyledListItem = styled(ListItem)`
   && {
-    padding: 6px 16px 6px 27px;
+    color: #8492a4;
+    padding: 6px 16px;
   }
 
   &&:hover {
     background-color: transparent;
-    ${StyledListItemIcon} {
-      & svg.stroke-only {
-        stroke: #fff;
-      }
-      & svg:not(.stroke-only) {
-        fill: #fff;
-      }
-    }
-    ${StyledListItemText} {
-      color: #fff;
-    }
   }
 `;
 
 export const StyledRouterLinkContainer = styled.div`
   display: flex;
-  height: ${props => (props.withBackground ? 2.625 : 2.3125)}rem;
-  min-height: ${props => (props.withBackground ? 2.625 : 2.3125)}rem;
-  ${props => props.withBackground && 'margin: 24px 0;'}
-
-  ${props =>
-    !props.nested &&
-    !props.withBackground &&
-    'margin-top: 1.5rem;'}
+  height: 2.125rem;
+  ${props => !props.nested && 'margin-top: 1rem;'}
+  min-height: 2.125rem;
 
   &&.active {
     ${StyledListItem} {
-      background: rgba(255, 255, 255, 0.1);
+      background: #8492a4;
     }
     ${NestedListItem} {
-      background: rgba(255, 255, 255, 0.1);
+      background: #8492a4;
     }
   }
 
@@ -168,48 +141,26 @@ export const StyledRouterLinkContainer = styled.div`
         fill: #fff;
       }
     }
-    ${StyledListItemText} {
-      color: #fff;
-    }
-  }
-`;
-
-export const BackgroundListItem = styled(ListItem)`
-  && {
-    box-sizing: border-box;
-    color: #fff;
-    height: 2.625rem;
-    margin: 0 12px;
-    min-height: 2.625rem;
-    padding: 12px 16px;
-    ${props =>
-      props.open &&
-      `
-      background-color: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-    `}
-    ${StyledListItemText} {
-      color: #fff;
-    }
-  }
-`;
-
-export const StyledSpacer = styled.div`
-  && {
-    flex: 1;
   }
 `;
 
 export const NestedListContainer = styled.div`
   && {
     display: ${props => (props.active ? 'flex' : 'none')};
+    margin-to: 0.5rem;
     overflow-y: auto;
 
     & + ${StyledRouterLinkContainer} > a {
       margin-top: 0;
     }
   }
+`;
+
+export const ListDivider = styled.div`
+  background-color: #8492a4;
+  box-sizing: border-box;
+  height: 0.0625rem;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  width: calc(100% - 3rem);
 `;

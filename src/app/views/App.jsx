@@ -13,9 +13,7 @@ import * as userApi from '../api/user-api';
 import Notification from '../components/common/Notification';
 
 const AppContainer = styled.div`
-  &&& * {
-    font-family: 'Open Sans', sans-serif;
-  }
+  font-family: 'Roboto', sans-serif;
 `;
 
 const MainContainer = styled.main`
@@ -86,8 +84,8 @@ class App extends PureComponent {
       <AppContainer id="appHome">
         <div className="new-task" />
         <IdleTimer
-          ref={ref => {
-            this.idleTimer = ref;
+          ref={reference => {
+            this.idleTimer = reference;
           }}
           element={document}
           onActive={this.onActive}

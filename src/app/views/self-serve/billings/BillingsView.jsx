@@ -1,5 +1,6 @@
-import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';
@@ -10,11 +11,12 @@ import {
   getInvoiceDetails,
 } from '../../../actions/organization-actions';
 import { saveBillingDetails } from '../../../api/organization-api';
+import GenericHeader from '../../../components/common/GenericHeader';
 import { showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import BillingData from './BillingsView.BillingData';
 import InvoicesList from './BillingsView.InvoicesList';
-import { BillingsViewContainer, Title } from './BillingsView.Styled';
+import { BillingsViewContainer } from './BillingsView.Styled';
 
 /**
  * @param stripe - Stripe instance
@@ -87,14 +89,13 @@ const BillingsView = () => {
 
   useMount(() => {
     setHeader(dispatch)({
-      backgroundColor: '#007cab',
       layout: [
         {
           key: 'title',
           component: (
-            <div>
-              <Title>Billing & Invoices</Title>
-            </div>
+            <GenericHeader>
+              <Typography variant="h4">Billing & Invoices</Typography>
+            </GenericHeader>
           ),
           alignItems: 'center',
         },

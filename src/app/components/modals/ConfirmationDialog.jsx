@@ -59,7 +59,7 @@ export default ({
     maxWidth="sm"
     fullWidth
   >
-    <StyledDialogGrid container spacing={24}>
+    <StyledDialogGrid container spacing={3}>
       <StyledCloseButton onClick={close}>&times;</StyledCloseButton>
       <Grid item xs={12}>
         <StyledTitle id="alert-dialog-title">{title}</StyledTitle>

@@ -1,4 +1,4 @@
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
@@ -140,11 +140,9 @@ export const showAlert = ({
     title,
     text,
     ...otherOptions,
-  }).then((result) => {
-    if (result.value) {
-      if(confirmationCallback){
-        confirmationCallback();
-      }
+  }).then(({ value }) => {
+    if (value && confirmationCallback) {
+      confirmationCallback();
     }
   });
   // fix z-index for drawer container

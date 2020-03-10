@@ -35,13 +35,11 @@ export const StyledTextField = styled(
       InputProps={{
         ...InputProps,
         spellCheck: false,
-        disableUnderline: true,
         classes: { root: 'root', disabled: 'disabled' },
       }}
       InputLabelProps={{
         ...InputLabelProps,
-        FormLabelClasses: { asterisk: 'asterisk', error: 'error' },
-        classes: { shrink: 'shrink' },
+        classes: { shrink: 'shrink', asterisk: 'asterisk', error: 'error' },
       }}
     />
   ),

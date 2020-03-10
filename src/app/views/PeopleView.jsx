@@ -8,13 +8,13 @@ import { setHeader as setHeaderRaw } from '../actions/header-actions';
 import * as PeopleActions from '../actions/people-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
-import EmptyHeader from '../components/common/EmptyHeader';
+import GenericSublabeledHeader from '../components/common/GenericSublabeledHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import InvitePeople from '../components/people/InvitePeople';
 import PeopleContainer from '../components/people/PeopleContainer';
 import Search from '../components/taskView/Search';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
-import { HeaderLabel, SearchContainer } from './PeopleView.Styled';
+import { SearchContainer } from './PeopleView.Styled';
 
 const CubesLoaderContainer = styled.div`
   display: flex;
@@ -66,21 +66,12 @@ class PeopleView extends PureComponent {
     setHeader({
       layout: [
         {
-          key: 'generic-header',
+          key: 'people-header',
           component: (
-            <EmptyHeader>
-              <Grid
-                container
-                direction="column"
-                alignItems="flex-start"
-                justify="center"
-              >
-                <HeaderLabel>People</HeaderLabel>
-                <HeaderLabel small>
-                  {peopleList?.length ?? 0} people
-                </HeaderLabel>
-              </Grid>
-            </EmptyHeader>
+            <GenericSublabeledHeader
+              label="Providers"
+              sublabel={`${peopleList?.length ?? 0} people`}
+            />
           ),
         },
       ],

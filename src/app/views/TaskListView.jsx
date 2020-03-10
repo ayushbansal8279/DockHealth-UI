@@ -1,6 +1,8 @@
 import Collapse from '@material-ui/core/Collapse';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -112,8 +114,12 @@ class TaskListView extends PureComponent {
     setHeaderBound({
       layout: [
         {
-          key: `header${isFetching ? '-fetching' : ''}`,
-          component: <GenericHeader isFetching={false}>Lists</GenericHeader>,
+          key: clsx('header', isFetching && 'fetching'),
+          component: (
+            <GenericHeader>
+              <Typography variant="h4">Lists</Typography>
+            </GenericHeader>
+          ),
         },
       ],
     });
@@ -342,7 +348,7 @@ class TaskListView extends PureComponent {
       <TaskListViewWrapper>
         {hasStartedFetching && (
           <Fade in>
-            <Grid container direction="column" alignItems="center" spacing={8}>
+            <Grid container direction="column" alignItems="center" spacing={1}>
               <StyledCollapse in={!taskListFormOpen} timeout={250}>
                 <SafariFixGrid
                   container
@@ -377,7 +383,7 @@ class TaskListView extends PureComponent {
                   xs={9}
                   justify="center"
                   direction="row"
-                  spacing={8}
+                  spacing={1}
                 >
                   {genericLists?.map(this.renderGenericList)}
                 </Grid>
@@ -388,7 +394,7 @@ class TaskListView extends PureComponent {
                 item
                 xs={12}
                 justify="center"
-                spacing={8}
+                spacing={1}
               >
                 <Grid item xs={9}>
                   {isFetching ? (

@@ -9,6 +9,7 @@ import {
   getBillingEstimate,
   getOrganizationById,
 } from '../../../actions/organization-actions';
+import GenericHeader from '../../../components/common/GenericHeader';
 import {
   BillingButton,
   H2,
@@ -41,11 +42,10 @@ const SubscriptionPaymentFinishedView = () => {
 
   useMount(() => {
     setHeader(dispatch)({
-      backgroundColor: '#007cab',
       layout: [
         {
           key: 'title',
-          component: <div />,
+          component: <GenericHeader />,
           alignItems: 'center',
         },
       ],
@@ -59,7 +59,7 @@ const SubscriptionPaymentFinishedView = () => {
   return (
     <SubscriptionPaymentViewOuterContainer>
       <SubscriptionPaymentViewContainer>
-        <Grid container spacing={32}>
+        <Grid container spacing={4}>
           <Grid item sm={12}>
             <H2>Your purchase is complete</H2>
           </Grid>

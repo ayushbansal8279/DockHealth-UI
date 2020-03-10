@@ -27,6 +27,7 @@ export const InnerAvatarContainer = styled.div`
   border-radius: 50%;
   color: #fff;
   display: flex;
+  font-family: 'Montserrat', sans-serif;
   font-size: ${({ size }) =>
     getScaledSize({ normalSize: 2, propSize: size })}rem;
   font-weight: bold;
@@ -35,6 +36,7 @@ export const InnerAvatarContainer = styled.div`
   height: 100%;
   object-fit: cover;
   overflow: hidden;
+  text-transform: lowercase;
   width: 100%;
 `;
 

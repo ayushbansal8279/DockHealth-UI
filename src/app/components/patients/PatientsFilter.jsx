@@ -7,7 +7,6 @@ import styled from 'styled-components';
 
 const StyledSelect = styled(MaterialSelect).attrs({
   classes: { selectMenu: 'selectMenu', root: 'selectRoot', select: 'select' },
-  disableUnderline: true,
 })`
   && {
     width: 266px;
@@ -15,8 +14,8 @@ const StyledSelect = styled(MaterialSelect).attrs({
     background: #fff;
     box-shadow: 0 0 2px 0 rgba(46, 58, 67, 0.4);
     color: #303538;
+    padding: 0;
     font-size: 16px;
-    line-height: 24px;
   }
 
   & .selectMenu {
@@ -39,6 +38,7 @@ const PatientsFilter = ({
   <FormControl variant="filled" style={{ minWidth: 186 }}>
     <StyledSelect
       value={value || 'ALL_PATIENTS'}
+      variant="outlined"
       disabled={disabled}
       onClick={stopPropagation}
       onChange={onChange}
@@ -46,15 +46,7 @@ const PatientsFilter = ({
     >
       {options.map(({ value: optionValue, description }) => (
         <MenuItem value={optionValue} key={optionValue}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'row',
-            }}
-          >
-            <div style={{ flex: 1, marginLeft: 5 }}>{description}</div>
-          </div>
+          {description}
         </MenuItem>
       ))}
     </StyledSelect>

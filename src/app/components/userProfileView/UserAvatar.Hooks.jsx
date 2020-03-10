@@ -72,7 +72,7 @@ export default () => {
   const avatarInitials = userProfile
     ? `${userProfile.firstName[0]}${userProfile.lastName[0]}`
         .trim()
-        .toUpperCase()
+        .toLowerCase()
     : '';
 
   const avatarContent = userProfilePic ? (

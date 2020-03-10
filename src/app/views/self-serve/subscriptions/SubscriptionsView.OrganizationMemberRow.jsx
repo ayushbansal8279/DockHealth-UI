@@ -190,7 +190,7 @@ const OrganizationMemberRow = ({
     return (
       <tr>
         <td>
-          <SmallScreenGrid container wrap="nowrap" spacing={16}>
+          <SmallScreenGrid container wrap="nowrap" spacing={2}>
             <Grid item xs={1}>
               {checkboxElement}
             </Grid>

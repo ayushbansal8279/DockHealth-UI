@@ -2,16 +2,30 @@ import { createMuiTheme } from '@material-ui/core';
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: ['"Open Sans"', 'sans-serif'].join(','),
+    fontFamily: ['"Roboto"', 'sans-serif'].join(','),
+    h1: {
+      fontSize: '250%',
+      fontWeight: 'bold',
+    },
     h2: {
+      fontSize: '200%',
+      fontWeight: 'bold',
+    },
+    h3: {
       fontSize: '150%',
       fontWeight: 'bold',
-      marginBottom: '0.5em',
     },
     h4: {
       fontSize: '100%',
-      fontWeight: 'normal',
-      lineHeight: '1.25',
+      fontWeight: 'bold',
+    },
+    subtitle1: {
+      fontSize: '100%',
+      fontWeight: 'bold',
+    },
+    subtitle2: {
+      fontSize: '100%',
+      fontWeight: 'bold',
     },
   },
   overrides: {
@@ -38,7 +52,6 @@ const theme = createMuiTheme({
         color: '#007cab',
         fontSize: '1.5rem',
         minHeight: '3.625rem',
-        minWidth: '16.5625rem',
         textTransform: 'none',
       },
       contained: {

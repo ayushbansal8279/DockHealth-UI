@@ -1,14 +1,12 @@
+import Typography from '@material-ui/core/Typography';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
+import GenericHeader from '../../../components/common/GenericHeader';
 import useBoolean from '../../../hooks/useBoolean';
 import BaaPreview from './DocumentsView.BaaPreview';
-import {
-  DocumentLink,
-  DocumentsViewContainer,
-  Title,
-} from './DocumentsView.Styled';
+import { DocumentLink, DocumentsViewContainer } from './DocumentsView.Styled';
 
 const DocumentsView = () => {
   const dispatch = useDispatch();
@@ -26,14 +24,13 @@ const DocumentsView = () => {
 
   useMount(() => {
     setHeader(dispatch)({
-      backgroundColor: '#007cab',
       layout: [
         {
           key: 'title',
           component: (
-            <div>
-              <Title>Documents & Agreements</Title>
-            </div>
+            <GenericHeader>
+              <Typography variant="h4">Documents & Agreements</Typography>
+            </GenericHeader>
           ),
           alignItems: 'center',
         },

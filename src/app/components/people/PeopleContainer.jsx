@@ -52,7 +52,10 @@ class PeopleContainer extends PureComponent {
   };
 
   getStatus = person => {
-    if (person.userStatus === 'ACTIVE' && (!person.userInviteStatus || person.userInviteStatus === 'ACCEPTED')) {
+    if (
+      person.userStatus === 'ACTIVE' &&
+      (!person.userInviteStatus || person.userInviteStatus === 'ACCEPTED')
+    ) {
       if (person.orgUserRole === 'OWNER') {
         return 'Owner';
       }
@@ -62,7 +65,10 @@ class PeopleContainer extends PureComponent {
       if (person.orgUserRole === 'MEMBER') {
         return 'Member';
       }
-    } else if (person.userStatus === 'INVITED' || person.userInviteStatus === 'PENDING') {
+    } else if (
+      person.userStatus === 'INVITED' ||
+      person.userInviteStatus === 'PENDING'
+    ) {
       return 'Invited';
     }
 
@@ -102,24 +108,32 @@ class PeopleContainer extends PureComponent {
 
     return (
       <ListEntryContainer key={person.userIdentifier + personName}>
-        <Grid direction="row" wrap="nowrap" container spacing={16}>
+        <Grid direction="row" wrap="nowrap" container spacing={2}>
           <MemberContainer
             style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
           >
             <Link
-              to={`/assignedToPerson/${encodeURIComponent(person.userIdentifier)}`}
+              to={`/assignedToPerson/${encodeURIComponent(
+                person.userIdentifier,
+              )}`}
             >
               <Member color="#ababb2" member={person} />
             </Link>
           </MemberContainer>
           <Grid item container alignItems="center">
-            <Grid item xs={12} style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}>
+            <Grid
+              item
+              xs={12}
+              style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
+            >
               {/* {personStatus !== 'Invited' && ( */}
-                <Link
-                  to={`/assignedToPerson/${encodeURIComponent(person.userIdentifier)}`}
-                >
-                  {personName}
-                </Link>
+              <Link
+                to={`/assignedToPerson/${encodeURIComponent(
+                  person.userIdentifier,
+                )}`}
+              >
+                {personName}
+              </Link>
               {/* )} */}
               {/* {personStatus === 'Invited' && <>{personName}</>} */}
             </Grid>
@@ -136,7 +150,12 @@ class PeopleContainer extends PureComponent {
               </Grid>
             )}
           </Grid>
-          <Grid item container alignItems="center" style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}>
+          <Grid
+            item
+            container
+            alignItems="center"
+            style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
+          >
             <PersonStatus>{personStatus}</PersonStatus>
           </Grid>
         </Grid>

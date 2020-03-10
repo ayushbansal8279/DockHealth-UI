@@ -1,9 +1,13 @@
+import { Grid } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
 import MaterialDrawer from '@material-ui/core/Drawer';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import clsx from 'clsx';
 import moment from 'moment';
-import { path } from 'ramda';
 import React, { useState } from 'react';
 import Intercom from 'react-intercom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { getOrganizationById } from '../../actions/organization-actions';
@@ -13,54 +17,100 @@ import {
   getSubscriptionPlanTrialLabel,
 } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import DrawerList from './DrawerList';
-import DrawerTitle from './DrawerTitle';
 
 const MINIMAL_TRIAL_USAGE_PERIOD = 20;
 const TRIAL_USAGE_PERIOD = 30;
 
-const StyledDrawer = styled(MaterialDrawer).attrs({
-  variant: 'permanent',
-  classes: {
-    paper: 'paper',
+const useDrawerClasses = makeStyles({
+  appBar: {
+    backgroundColor: '#3d4858',
+    color: '#fff',
+    fontSize: '2.25rem',
+    height: ({ trialBannerVisible }) =>
+      trialBannerVisible ? '8.375rem' : '5.5rem',
+    marginLeft: 85,
+    paddingBottom: ({ trialBannerVisible }) =>
+      trialBannerVisible ? '2.875rem' : 0,
+    paddingLeft: '1.25rem',
+    position: 'relative',
+    transition: 'all 0.2s ease-out, height 0s, padding-bottom 0s',
+    width: 'calc(100% - 85px)',
   },
-})`
-  && {
-    flex-shrink: 0;
-    white-space: nowrap;
-    .paper {
-      background: #2a4a70;
-      border: 0;
-      overflow: initial;
-      width: ${({ open }) => (open ? 260 : 85)}px;
-      transition: width 0.2s ease-out;
-    }
-  }
-`;
+  appBarOpen: {
+    marginLeft: 260,
+    width: 'calc(100% - 260px)',
+  },
+  appBarBorder: {
+    backgroundColor: '#c1ccda',
+    height: '0.25rem',
+    left: 0,
+    position: 'absolute',
+    top: '5.25rem',
+    width: '100%',
+    zIndex: 1,
+  },
+  drawer: {
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+  drawerPaper: {
+    background: '#3d4858',
+    border: 0,
+    overflow: 'initial',
+    width: ({ isOpen }) => (isOpen ? 260 : 85),
+    transition: 'width 0.2s ease-out',
+  },
+});
 
 const ContentContainer = styled.div`
   ${({ open }) =>
     open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
-  ${({ open }) => (open ? 'margin-left: 260px;' : 'margin-left: 85px;')}
-  margin-top: ${({ topPadded, trialBannerVisible }) => {
-    let topMargin = 0;
-
-    if (topPadded) {
-      topMargin += 88;
-
-      if (trialBannerVisible) {
-        topMargin += 46;
-      }
-    }
-
-    return topMargin;
-  }}px;
+  ${({ open }) =>
+    open ? 'margin-left: 260px;' : 'margin-left: 85px;'}
+  overflow-y: auto;
   position: relative;
-  transition: width .2s ease-out, margin .2s ease-out;
+  transition: width 0.2s ease-out, margin 0.2s ease-out;
 `;
 
-const Drawer = ({ header, user, lists, children }) => {
+const TrialBanner = styled(Grid)`
+  background-color: #2a4a70;
+  bottom: 0;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  left: 0;
+  height: 2.875rem;
+  right: 0;
+  position: absolute;
+  z-index: 1;
+`;
+
+const TrialBannerLink = styled(Link)`
+  color: #fff;
+  margin-left: 0.25rem;
+  text-decoration: underline;
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: #eee;
+  }
+`;
+
+const renderHeaderColumn = ({ key, component, ...otherProps }) => (
+  <Grid item container key={key} {...otherProps}>
+    {component}
+  </Grid>
+);
+
+const Drawer = ({ children }) => {
   const [isOpen, open, close] = useBoolean(false);
   const [activeId, setActiveId] = useState('');
+
+  const { user, lists, header } = useSelector(store => ({
+    user: store.userState.userProfile,
+    lists: store.taskListState.tasklist,
+    header: store.header,
+  }));
 
   const intercomUser = {
     email: user.email,
@@ -112,6 +162,12 @@ const Drawer = ({ header, user, lists, children }) => {
 
   const trialBannerVisible = isSubscriptionTrial;
 
+  const drawerClasses = useDrawerClasses({
+    header,
+    isOpen,
+    trialBannerVisible,
+  });
+
   useMount(() => {
     if (organizationIdentifier) {
       getOrganizationById({ organizationIdentifier })(dispatch);
@@ -119,8 +175,48 @@ const Drawer = ({ header, user, lists, children }) => {
   });
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
-      <StyledDrawer open={isOpen}>
+    <div
+      style={{
+        display: 'flex',
+        height: '100%',
+        flexFlow: 'column nowrap',
+        overflow: 'hidden',
+      }}
+    >
+      <AppBar
+        className={clsx(
+          drawerClasses.appBar,
+          isOpen && drawerClasses.appBarOpen,
+        )}
+        position="fixed"
+      >
+        <div className={drawerClasses.appBarBorder} />
+        <Grid container item xs={12}>
+          {header?.layout?.map(renderHeaderColumn)}
+        </Grid>
+        {trialBannerVisible && (
+          <TrialBanner
+            item
+            xs={12}
+            container
+            justify="center"
+            alignItems="center"
+          >
+            <span>{trialEndLabel}</span>
+            <TrialBannerLink to="/subscriptions">
+              {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
+            </TrialBannerLink>
+          </TrialBanner>
+        )}
+      </AppBar>
+      <MaterialDrawer
+        classes={{
+          root: drawerClasses.drawer,
+          paper: drawerClasses.drawerPaper,
+        }}
+        variant="permanent"
+        anchor="left"
+      >
         <DrawerList
           activeId={activeId}
           setActiveId={setActiveId}
@@ -130,37 +226,11 @@ const Drawer = ({ header, user, lists, children }) => {
           user={user}
           lists={lists}
         />
-        <DrawerTitle
-          header={header}
-          trialBannerVisible={trialBannerVisible}
-          trialEndLabel={trialEndLabel}
-          hasMinimalTrialUsagePeriodPassed={hasMinimalUsagePeriodPassed}
-        />
         <Intercom appID="q7dotpic" {...intercomUser} />
-      </StyledDrawer>
-      <ContentContainer
-        topPadded={header.show}
-        trialBannerVisible={trialBannerVisible}
-        open={isOpen}
-      >
-        {children}
-      </ContentContainer>
+      </MaterialDrawer>
+      <ContentContainer open={isOpen}>{children}</ContentContainer>
     </div>
   );
 };
 
-const ConnectedDrawer = ({ children, ...props }) => {
-  const selectors = {
-    user: useSelector(path(['userState', 'userProfile'])),
-    lists: useSelector(path(['taskListState', 'tasklist'])),
-    header: useSelector(path(['header'])),
-  };
-
-  return (
-    <Drawer {...props} {...selectors}>
-      {children}
-    </Drawer>
-  );
-};
-
-export default ConnectedDrawer;
+export default Drawer;

@@ -188,7 +188,7 @@ const OnboardingCreateAccountView = () => {
         autoCorrect="off"
       >
         <FormContext {...formMethods}>
-          <Grid container spacing={8}>
+          <Grid container spacing={1}>
             <Grid item xs={12} sm={12} md={6}>
               <OnboardingInput
                 label="First Name"

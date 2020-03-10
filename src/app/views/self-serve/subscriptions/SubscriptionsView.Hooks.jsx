@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import Typography from '@material-ui/core/Typography';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
@@ -10,10 +11,10 @@ import {
 } from '../../../actions/organization-actions';
 import { findAllUsers, loading } from '../../../actions/people-actions';
 import * as userApi from '../../../api/user-api';
+import GenericHeader from '../../../components/common/GenericHeader';
 import useBoolean from '../../../hooks/useBoolean';
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './subscriptions-plans/SubscriptionsPlansView.PlanData';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
-import { Title } from './SubscriptionsView.Styled';
 import { BILLING_FREQUENCY } from './SubscriptionsView.Utilities';
 
 const initializeSubscriptionsViewHooks = () => {
@@ -76,14 +77,13 @@ const initializeSubscriptionsViewHooks = () => {
     selectUsersForPlan({ users: null })(dispatch);
 
     setHeader(dispatch)({
-      backgroundColor: '#007cab',
       layout: [
         {
           key: 'title',
           component: (
-            <div>
-              <Title>Subscription & Users</Title>
-            </div>
+            <GenericHeader>
+              <Typography variant="h4">Subscription & Users</Typography>
+            </GenericHeader>
           ),
           alignItems: 'center',
         },

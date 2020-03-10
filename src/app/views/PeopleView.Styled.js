@@ -6,12 +6,6 @@ import InputBase from '@material-ui/core/InputBase';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
-export const HeaderLabel = styled.div`
-  font-size: ${props => (props.small ? 1 : 2.25)}rem;
-  line-height: 1.1;
-  margin: 0;
-`;
-
 export const SearchContainer = styled.div`
   margin: 2rem 0;
 

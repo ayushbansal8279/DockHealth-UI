@@ -1,29 +1,18 @@
+import Typography from '@material-ui/core/Typography';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-
 import { setHeader } from '../actions/header-actions';
 import { updateOrganizationName } from '../actions/organization-actions';
 import * as userApi from '../api/user-api';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
-import {
-  LogoutButtonContainer,
-  LogoutHeaderButton,
-  ViewContainer,
-} from '../components/userProfileView/UserProfileView.Styled';
-import LogoutIcon from '../img/drawer/logout';
+import GenericHeader from '../components/common/GenericHeader';
+import { ViewContainer } from '../components/userProfileView/UserProfileView.Styled';
 import UserProfileView from './UserProfileView';
 import {
   formFieldDefinitions,
   formSwitchDefinitions,
 } from './UserProfileView.FormDefinitions';
 import validationSchema from './UserProfileView.ValidationSchema';
-
-const Title = styled.div`
-  color: #fff;
-  font-size: 32px;
-  padding-left: 2rem;
-`;
 
 const onFormSubmit = (
   { otherSpecialty, otherSubspecialty, otherTitle },
@@ -147,32 +136,16 @@ const UserProfileViewWrapper = () => {
       userApi.getAllTitles();
 
       setHeader(dispatch)({
-        backgroundColor: '#007cab',
         layout: [
           {
             key: 'title',
             component: (
-              <div>
-                <Title>Profile & Settings</Title>
-              </div>
+              <GenericHeader>
+                <Typography variant="h4">Profile & Settings</Typography>
+              </GenericHeader>
             ),
             xs: 6,
             alignItems: 'center',
-          },
-          {
-            key: 'logout',
-            component: (
-              <LogoutButtonContainer>
-                <LogoutHeaderButton to="logout">
-                  <LogoutIcon />
-                  <span>Logout</span>
-                </LogoutHeaderButton>
-              </LogoutButtonContainer>
-            ),
-            alignItems: 'center',
-            justify: 'flex-end',
-            sm: 6,
-            md: 3,
           },
         ],
       });

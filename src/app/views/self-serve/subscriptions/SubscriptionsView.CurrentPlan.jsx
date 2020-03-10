@@ -70,7 +70,7 @@ const CurrentPlan = ({
       fetching={isOrganizationFetching}
     >
       <PlanContainer>
-        <Grid container spacing={16}>
+        <Grid container spacing={2}>
           <Grid item sm={12} md={3} container justify="flex-end">
             <PlanNameLabel>{planName}</PlanNameLabel>
           </Grid>
@@ -99,7 +99,7 @@ const CurrentPlan = ({
           )}
         </Grid>
         <CurrentPlanDivider />
-        <Grid container spacing={16}>
+        <Grid container spacing={2}>
           <Grid item sm={12} md={3} container justify="flex-end">
             <H1Bold>{planTotalPayment}</H1Bold>
           </Grid>

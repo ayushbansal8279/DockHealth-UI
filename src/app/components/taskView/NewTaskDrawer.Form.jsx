@@ -255,7 +255,7 @@ export default ({
       <input ref={register} type="hidden" name="assignedToUserIdentifier" />
       <input ref={register} type="hidden" name="patient" />
       <input ref={register} type="hidden" name="patientIdentifier" />
-      <FormContainer container spacing={8}>
+      <FormContainer container spacing={1}>
         <Grid item xs={12}>
           {hasTask ? (
             <NewTaskDrawerEditTaskComponent

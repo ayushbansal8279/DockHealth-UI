@@ -104,7 +104,7 @@ const InvitationPanel = ({ getAllUsers = () => {} }) => {
             autoComplete="off"
             autoCorrect="off"
           >
-            <Grid container spacing={16}>
+            <Grid container spacing={2}>
               <Grid item xs={3}>
                 <InputErrorLabel>{firstNameError}</InputErrorLabel>
                 <StyledFormControl error={firstNameError} fullWidth>

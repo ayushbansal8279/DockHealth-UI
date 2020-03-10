@@ -1,7 +1,6 @@
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
@@ -11,57 +10,59 @@ import { AvatarImageContainer } from '../common/Avatar.styled';
 
 const StyledListItem = styled(ListItem)`
   && {
-    background: #007cab;
+    background: #3d4858;
     height: 88px;
     min-height: 88px;
     :focus {
-      background-color: #007cab;
+      background-color: #3d4858;
     }
     :hover {
-      background-color: #007cab;
+      background-color: #3d4858;
     }
   }
   &&.active {
-    background-color: #007cab;
+    background-color: #3d4858;
     :hover {
-      background-color: #007cab;
+      background-color: #3d4858;
     }
   }
 `;
 
 const DropdownListItem = styled(StyledListItem)`
   && {
-    color: #fff;
-    height: 2.6875rem;
-    margin: 1.3125rem 0;
-    min-height: 2.6875rem;
+    color: #c1ccda;
+    height: 2.125rem;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    min-height: 2.125rem;
+    text-transform: uppercase;
     transition: all 0.25s ease-out;
 
     :first-child {
-      margin-top: 0.3125rem;
+      margin-top: 0.25rem;
     }
 
     :hover {
-      background-color: #3496bc;
+      background-color: #8492a4;
     }
   }
   &&.active {
-    background-color: #1a89b3;
+    background-color: #8492a4;
     :hover {
-      background-color: #3496bc;
+      background-color: #8492a4;
     }
   }
 `;
 
-const Name = styled.div`
-  color: #fff;
-  font-size: 21px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+const DropdownBorder = styled.div`
+  background-color: #c1ccda;
+  height: 0.25rem;
+  transform: translateY(-100%);
+  width: 100%;
 `;
 
 const StyledDropdown = styled.div`
-  background-color: #007cab;
+  background-color: #3d4858;
   height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   min-height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   overflow: hidden;
@@ -79,7 +80,7 @@ const StyledLink = React.forwardRef((props, reference) => {
       activeClassName="active"
       className={linkActive ? 'active' : ''}
       style={{
-        color: '#fff',
+        color: '#c1ccda',
       }}
       {...props}
       onClick={event => {
@@ -96,8 +97,6 @@ const StyledLink = React.forwardRef((props, reference) => {
 });
 
 const DrawerHeader = ({ setActiveId, user }) => {
-  const nameReference = useRef(null);
-
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
   const { access: userProfileAccess, orgUserRole } = useSelector(
     state => state.userState.userProfile || {},
@@ -106,8 +105,6 @@ const DrawerHeader = ({ setActiveId, user }) => {
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
 
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
-
-  const fullName = user ? `${user.firstName} ${user.lastName}` : '';
 
   const avatarInitials = user?.initials ?? '';
 
@@ -125,6 +122,8 @@ const DrawerHeader = ({ setActiveId, user }) => {
   const userProfileEnabled = userProfileAccess?.userProfileEnabled;
   const linkComponent = userProfileEnabled ? StyledLink : undefined;
 
+  const dropdownHeight = (isUserAdmin ? 4 : 2) * 2.625 + 0.5;
+
   return (
     <>
       <StyledListItem
@@ -140,26 +139,13 @@ const DrawerHeader = ({ setActiveId, user }) => {
             {avatarContent}
           </Avatar>
         </ListItemIcon>
-        <ListItemText
-          style={{
-            padding: 0,
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-            }}
-          >
-            <Name ref={nameReference}>{fullName}</Name>
-          </div>
-        </ListItemText>
       </StyledListItem>
       <StyledDropdown
         open={isPopoverOpen}
         onMouseEnter={userProfileEnabled && openPopover}
         onMouseLeave={closePopover}
         timeout={250}
-        dropdownHeight={isUserAdmin ? 16 : 8}
+        dropdownHeight={dropdownHeight}
       >
         <DropdownListItem
           button
@@ -198,6 +184,7 @@ const DrawerHeader = ({ setActiveId, user }) => {
           Documents & Agreements
         </DropdownListItem>
       </StyledDropdown>
+      <DropdownBorder />
     </>
   );
 };
