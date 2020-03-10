@@ -13,7 +13,7 @@ const SupportViewContainer = withStyles({
   container: {
     maxWidth: 1150,
     margin: '0 auto',
-    padding: '2rem 0',
+    padding: '2rem 1rem',
   },
 })(Grid);
 
