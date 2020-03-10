@@ -5,11 +5,19 @@ import Typography from '@material-ui/core/Typography';
 import { bool } from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
-const TypographyCustomComponent = ({ classes, isSmallScreen, ...props }) => {
-  const className = `${classes.root} ${
-    isSmallScreen ? classes.smallScreen : ''
-  }`.trim();
+const TypographyCustomComponent = ({
+  classes,
+  variant,
+  isSmallScreen,
+  ...props
+}) => {
+  const className = clsx(
+    classes.root,
+    isSmallScreen && classes.smallScreen,
+    classes[variant],
+  );
 
   return <Typography className={className} {...props} />;
 };
@@ -21,6 +29,16 @@ export const TitleTypography = withStyles({
   },
   smallScreen: {
     fontSize: '2.25rem',
+  },
+  h2: {
+    fontSize: '150%',
+    fontWeight: 'bold',
+    marginBottom: '0.5em',
+  },
+  h4: {
+    fontSize: '100%',
+    fontWeight: 'normal',
+    lineHeight: '1.25',
   },
 })(TypographyCustomComponent);
 
