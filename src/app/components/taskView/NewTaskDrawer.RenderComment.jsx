@@ -24,7 +24,7 @@ const CommentBubble = styled.div`
   padding: 0.5rem 0.75rem;
   position: relative;
   transition: all 0.25s ease-out;
-  width: 13rem;
+  width: 20rem;
 
   &:not(:first-child) {
     margin-top: 0.25rem;
@@ -98,7 +98,7 @@ const CommentsDateContainer = styled.div`
 
 const CommentGroupContainer = styled.div`
   padding: 0 2rem;
-  width: 70%;
+  width: 95%;
 
   &:not(:first-of-type) {
     margin-top: 1rem;
