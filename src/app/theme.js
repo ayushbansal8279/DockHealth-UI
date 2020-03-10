@@ -3,15 +3,17 @@ import { createMuiTheme } from '@material-ui/core';
 const theme = createMuiTheme({
   typography: {
     fontFamily: ['"Open Sans"', 'sans-serif'].join(','),
+    h1: {
+      fontSize: '250%',
+    },
     h2: {
+      fontSize: '200%',
+    },
+    h3: {
       fontSize: '150%',
-      fontWeight: 'bold',
-      marginBottom: '0.5em',
     },
     h4: {
       fontSize: '100%',
-      fontWeight: 'normal',
-      lineHeight: '1.25',
     },
   },
   overrides: {
