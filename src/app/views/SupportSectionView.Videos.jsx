@@ -9,8 +9,8 @@ import useBoolean from '../hooks/useBoolean';
 
 const SupportVideosContainer = styled.div`
   display: grid;
-  grid-gap: 3rem 1rem;
-  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 2rem 1rem;
+  grid-template-columns: repeat(2, 1fr);
   width: 100%;
 `;
 
@@ -80,24 +80,16 @@ const SupportVideo = styled.iframe`
 
 const videos = [
   {
-    title: 'Test 1',
-    url: 'https://www.youtube.com/embed/LXb3EKWsInQ',
+    title: 'Creating Tasks in Dock Health (Triage Line Example)',
+    url: 'https://www.youtube.com/embed/gNzPoCI3Dvw',
   },
   {
-    title: 'Test 2',
-    url: 'https://www.youtube.com/embed/vQVwkyn3-F8',
+    title: 'Emailing a Task to Dock Health',
+    url: 'https://www.youtube.com/embed/gBOn7cIgOUc',
   },
   {
-    title: 'Test 3',
-    url: 'https://www.youtube.com/embed/mHUOCxVT5ro',
-  },
-  {
-    title: 'Test 4',
-    url: 'https://www.youtube.com/embed/N1-Jmq7BLFE',
-  },
-  {
-    title: 'Test 5',
-    url: 'https://www.youtube.com/embed/hVvEISFw9w0',
+    title: 'Adding Patients to Your Organization in Dock',
+    url: 'https://www.youtube.com/embed/OZslD1Q1fcA',
   },
 ];
 
