@@ -60,7 +60,8 @@ const getTrialPlanPricePerUser = ({
   planAnnualPricePerUser,
 }) => {
   if (planIsTrial) {
-    return 'Free 30 day trial';
+    // return 'Free 30 day trial';
+    return '';
   }
 
   return billingFrequency === 'MONTHLY'
