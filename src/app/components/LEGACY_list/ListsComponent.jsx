@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router';
-
 import BooleanModal from '../modals/BooleanModal';
 
 class ListsComponent extends PureComponent {
@@ -13,7 +12,13 @@ class ListsComponent extends PureComponent {
   }
 
   render() {
-    const { deleteList, editForm, leaveList, taskLists } = this.props;
+    const {
+      deleteList,
+      editForm,
+      leaveList,
+      taskLists,
+      currentUser,
+    } = this.props;
 
     return (
       <span>
@@ -27,9 +32,17 @@ class ListsComponent extends PureComponent {
             role,
             listName,
             listDescription,
+            adminIdentifiers,
           } = taskList;
 
-          const isOwnerOrAdmin = role === 'ADMIN' || role === 'OWNER';
+          let isOwnerOrAdmin = role === 'ADMIN' || role === 'OWNER';
+          // double check against admins list
+          if (
+            role === 'MEMBER' &&
+            adminIdentifiers.includes(currentUser.userIdentifier)
+          ) {
+            isOwnerOrAdmin = true;
+          }
 
           return (
             <div
