@@ -91,6 +91,14 @@ const videos = [
     title: 'Adding Patients to Your Organization in Dock',
     url: 'https://www.youtube.com/embed/OZslD1Q1fcA',
   },
+  {
+    title: 'Creating a List on Dock',
+    url: 'https://www.youtube.com/embed/rN7jFwhVM5M',
+  },
+  {
+    title: 'Accessing CDC & WHO COVID-19 Print Materials on Dock',
+    url: 'https://www.youtube.com/embed/-jVBB937yWk',
+  },
 ];
 
 const SupportSectionViewVideos = () => (
