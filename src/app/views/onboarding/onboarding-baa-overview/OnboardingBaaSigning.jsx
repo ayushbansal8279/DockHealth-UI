@@ -88,13 +88,14 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
         storeSignatureResult({
           signatureIdentifier: eventData.signature_id,
           signatureResult: eventData.event,
+        }).then(data => {
+          window?.HelloSign.close();
+          if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
+            // hashHistory.replace('/onboarding/team-org-setup');
+            window.location.href = '/#/onboarding/team-org-setup';
+            window.location.reload();
+          }
         });
-        window?.HelloSign.close();
-        if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-          // hashHistory.replace('/onboarding/team-org-setup');
-          window.location.href = '/#/onboarding/team-org-setup';
-          window.location.reload();
-        }
       },
     });
   }, []);
