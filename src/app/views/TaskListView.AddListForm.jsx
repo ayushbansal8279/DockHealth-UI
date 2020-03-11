@@ -59,9 +59,11 @@ const renderMember = ({ people, removePerson }) => memberId => {
     <MemberContainer key={memberId}>
       <Member
         onClick={() => removePerson({ userIdentifier: memberId })}
-        member={people.find(
-          ({ userIdentifier }) => userIdentifier === memberId,
-        )}
+        member={
+          people !== undefined && Array.isArray(people)
+            ? people.find(({ userIdentifier }) => userIdentifier === memberId)
+            : undefined
+        }
       />
     </MemberContainer>
   );

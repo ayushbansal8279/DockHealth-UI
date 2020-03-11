@@ -82,9 +82,8 @@ const initializeAddListFormHooks = () => {
 
   // check for people length other with results in error
   const filteredPeople =
-    !people || people.length == 0
-      ? []
-      : people
+    people !== undefined && Array.isArray(people)
+      ? people
           .filter(
             ({ userIdentifier }) =>
               userIdentifier != null &&
@@ -100,7 +99,8 @@ const initializeAddListFormHooks = () => {
             ]
               .map(value => value.includes(searchValue.toLowerCase()))
               .some(Boolean);
-          });
+          })
+      : [];
 
   const addAdmin = useCallback(
     ({ userIdentifier }) => {
