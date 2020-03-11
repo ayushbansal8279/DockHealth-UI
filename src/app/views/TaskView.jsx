@@ -53,6 +53,7 @@ import {
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
+import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
@@ -333,18 +334,18 @@ class TaskView extends Component {
     const currentUserIdentifier = currentUser.userIdentifier;
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
 
-    var channel = pusher.channel(channelName);
-    if(!channel){
+    let channel = pusher.channel(channelName);
+    if (!channel) {
       channel = pusher.subscribe(channelName);
-      console.log('subscribed to channel')
+      console.log('subscribed to channel');
     }
     channel.bind('pusher:subscription_succeeded', function() {
-      console.log('subscription_succeeded')
+      console.log('subscription_succeeded');
     });
     channel.bind('pusher:subscription_error', function(status) {
-      console.log('subscription_error',status)
+      console.log('subscription_error', status);
     });
-    console.log(channel)
+    console.log(channel);
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
 
@@ -352,10 +353,12 @@ class TaskView extends Component {
       // Since the app is going to be realtime, we don't want the same item to
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
-      console.log(data)
+      console.log(data);
       const currentTaskListIdentifier = taskList?.taskListIdentifier;
-      if(data.task?.taskList 
-        && data.task?.taskList.taskListIdentifier === currentTaskListIdentifier){
+      if (
+        data.task?.taskList &&
+        data.task?.taskList.taskListIdentifier === currentTaskListIdentifier
+      ) {
         if (
           (data.eventType?.startsWith('CREATE_TASK') ||
             data.eventType?.startsWith('DUPLICATE_TASK')) &&
@@ -392,18 +395,17 @@ class TaskView extends Component {
         clearTimeout(taskTimeoutId);
       });
 
-    console.log('unsubscribing from channel')
+    console.log('unsubscribing from channel');
     const { currentUser } = this.props;
     const currentUserIdentifier = currentUser?.userIdentifier;
-    if(currentUserIdentifier){
+    if (currentUserIdentifier) {
       const channelName = `dock-user-channel-${currentUserIdentifier}`;
-      var channel = pusher.channel(channelName);
-      if(channel){
+      let channel = pusher.channel(channelName);
+      if (channel) {
         channel = pusher.unsubscribe(channelName);
-        console.log('unsubscribed from channel')
+        console.log('unsubscribed from channel');
       }
     }
-  
   };
 
   clearTaskTimeouts = (taskTimeoutId, callback = () => {}) => {
@@ -1067,6 +1069,7 @@ class TaskView extends Component {
       tasks,
       completedTasks,
       taskListMembers,
+      subscription,
     } = this.props;
     const {
       initialSearchValue,
@@ -1089,6 +1092,10 @@ class TaskView extends Component {
       !isInbox;
 
     const showSortingStats = !isMultiList && !isInbox;
+
+    const isSubscriptionTrial = getSubscriptionIsTrial({
+      subscription,
+    });
 
     return (
       <div
@@ -1168,7 +1175,9 @@ class TaskView extends Component {
                     ref={this.taskListContainerReference}
                     style={{ width: '100%' }}
                   >
-                    <TaskListContainer>
+                    <TaskListContainer
+                      isSubscriptionTrial={isSubscriptionTrial}
+                    >
                       {this.renderTasklists()}
                       <SideClickListener onClick={this.closeTaskDrawer} />
                     </TaskListContainer>
@@ -1208,6 +1217,7 @@ const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   currentPatientId: store.patient?.details?.patientIdentifier,
   taskDrawerOpen: store.taskDrawerState?.open,
+  subscription: store.organizationState?.organization?.subscriptionDetails,
 });
 
 export default connect(

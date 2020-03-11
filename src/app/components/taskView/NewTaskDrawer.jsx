@@ -4,6 +4,7 @@ import { FormContext } from 'react-hook-form';
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
 import { onButtonClicked } from '../../helpers/ga-event-helper';
 import { getPatientName, noop } from '../../helpers/utility-functions';
+import { getSubscriptionIsTrial } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import NewTaskDrawerCommentSection from './NewTaskDrawer.CommentSection';
 import initializeNewTaskDrawerHooks from './NewTaskDrawer.Hooks';
 import onSubmit from './NewTaskDrawer.OnSubmit';
@@ -107,6 +108,7 @@ export default ({
     status,
     statusPopoverOpen,
     storeAsCurrentTask,
+    subscription,
     subtaskOrder,
     task,
     taskIdentifier,
@@ -118,6 +120,10 @@ export default ({
     statusSelectData,
     isMultiList,
     isInbox,
+  });
+
+  const isSubscriptionTrial = getSubscriptionIsTrial({
+    subscription,
   });
 
   const isSubtask = Boolean(task?.parentTaskIdentifier);
@@ -164,6 +170,7 @@ export default ({
       ref={taskContainerReference}
       compact={compact}
       data-name="TaskDrawerContainer"
+      isSubscriptionTrial={isSubscriptionTrial}
     >
       {parentTask && (
         <NewTaskDrawerParentInfo

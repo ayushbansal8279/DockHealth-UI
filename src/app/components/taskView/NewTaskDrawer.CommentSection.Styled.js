@@ -38,7 +38,7 @@ export const CommentsContainer = styled.div`
   align-content: flex-start;
   display: flex;
   flex-flow: column wrap;
-  padding: 1.25rem 2.5rem;
+  padding: 1.25rem 2rem;
   width: 100%;
 `;
 

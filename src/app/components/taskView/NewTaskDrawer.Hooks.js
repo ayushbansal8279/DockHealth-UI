@@ -46,8 +46,8 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
   // SELECTORS
 
   const userProfile = useSelector(store => store.userState.userProfile);
-  const { task, parentTask, subtaskOrder } = useSelector(
-    ({ taskState, taskListState, userState }) => {
+  const { task, parentTask, subtaskOrder, subscription } = useSelector(
+    ({ taskState, taskListState, userState, organizationState }) => {
       const tasks = [...taskState.tasks, ...taskState.completedTasks];
       const { selectedTask } = taskState;
 
@@ -79,6 +79,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
           parentTask: null,
           subtaskOrder: null,
           task: selectedTaskWithAssignee,
+          subscription: organizationState?.organization?.subscriptionDetails,
         };
       }
 
@@ -94,6 +95,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
         task: selectedTaskWithAssignee,
         parentTask: foundParentTask,
         subtaskOrder: foundSubtaskOrder >= 0 ? foundSubtaskOrder + 1 : 0,
+        subscription: organizationState?.organization?.subscriptionDetails,
       };
     },
   );
@@ -234,6 +236,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
     status,
     statusPopoverOpen,
     storeAsCurrentTask,
+    subscription,
     subtaskOrder,
     task,
     taskIdentifier,
