@@ -66,6 +66,7 @@ const ContentContainer = styled.div`
     open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
   ${({ open }) =>
     open ? 'margin-left: 260px;' : 'margin-left: 85px;'}
+  height: 100%;
   overflow-y: auto;
   position: relative;
   transition: width 0.2s ease-out, margin 0.2s ease-out;
