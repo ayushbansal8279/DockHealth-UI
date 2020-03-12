@@ -1,5 +1,5 @@
 import Grid from '@material-ui/core/Grid';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 export const HeadsUpSectionGrid = styled(Grid)`
   padding: 0.625rem 0 0.625rem 0.625rem;
@@ -10,7 +10,6 @@ export const HeadsUpSectionGrid = styled(Grid)`
 `;
 
 export const HeadsUpSectionContainer = styled.div`
-  background-color: #fff;
   border-radius: 4px;
   display: flex;
   flex: 1;
@@ -35,83 +34,73 @@ export const HeadsUpSectionDivider = styled.div`
 `;
 
 export const HeadsUpSectionHeaderButton = styled.div`
-  color: rgba(40, 31, 62, 0.5);
+  color: ${props => (props.active ? '#00A2E5' : '#3D4858')};
   cursor: pointer;
-  font-size: 16px;
+  font-size: 0.875rem;
   font-weight: normal;
-  margin-left: 30px;
-  padding: 4px;
+  margin: 0 1rem;
+  padding: 0.25rem;
   position: relative;
-  text-transform: none;
-
-  &::after {
-    background-color: #125375;
-    bottom: 0;
-    border-radius: 2px;
-    content: '';
-    height: ${props => (props.active ? 2 : 0)}px;
-    left: 0;
-    position: absolute;
-    transition: all 0.1s linear;
-    width: 100%;
-  }
+  transition: all 0.25s ease-out;
 `;
 
 export const HeadsUpButtonsContainer = styled.div`
+  align-items: center;
+  display: grid;
   flex: 1;
+  grid-template-columns: repeat(${props => props.elementsCount ?? 1}, 1fr);
+  grid-gap: 1rem;
   height: 7.9375rem;
-  padding: 5px;
+  padding: 1rem;
   white-space: nowrap;
 `;
 
 export const HeadsUpSectionButton = styled.div`
   align-items: center;
-  background-color: #ededf0;
-  border-radius: 4px;
+  background-color: #ffffff80;
+  border: 0.0625rem solid #e5e9f280;
+  border-radius: 0.25rem;
   box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
+  flex: 1;
   flex-direction: column;
-  height: calc(100% - 10px);
   justify-content: center;
-  margin: 5px;
   transition: all 0.25s ease-out;
-  width: ${props => `calc(${100 / props.elementsCount ?? 1}% - 10px)`};
 
   ${props =>
-    props.active &&
-    'background-color: #cce5ee; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);'}
+    props.active && 'background-color: #fff; border: 0.125rem solid #00a2e5;'}
 `;
 
 export const HeadsUpSectionButtonCount = styled.div`
-  color: #2e3a43;
-  font-size: 48px;
-  font-weight: 800;
+  color: ${props => (props.active ? '#00a2e5' : '#3d4858')};
+  font-size: 3rem;
+  font-weight: 900;
   pointer-events: none;
   transition: all 0.25s ease-out;
-
-  ${props => props.active && 'color: #303538;'}
 `;
 
 export const HeadsUpSectionButtonLabel = styled.div`
-  color: #281f3e;
+  align-items: center;
+  color: ${props => (props.active ? '#00a2e5' : '#8492a4')};
   display: flex;
-  font-size: 14px;
+  font-size: 0.875rem;
+  height: 2rem;
   justify-content: center;
-  opacity: 0.5;
+  line-height: 1.2;
+  margin-top: -10px;
   overflow: hidden;
   padding: 0 0.5rem;
   pointer-events: none;
+  text-align: center;
+  text-transform: uppercase;
   transition: all 0.25s ease-out;
   white-space: normal;
   width: 100%;
-  text-align: center;
-  height: 32px;
-  margin-top: -10px;
-  align-items: flex-end;
-  line-height: 1.2;
+`;
 
-  ${props => props.active && 'color: #303538;'}
+export const HeadsUpChartContainer = styled(HeadsUpButtonsContainer)`
+  padding: 0;
 `;
 
 export const HeadsUpSectionLabelOuterContainer = styled.div`
@@ -119,21 +108,7 @@ export const HeadsUpSectionLabelOuterContainer = styled.div`
   width: 100%;
 `;
 
-const innerLabelAnimation = props => keyframes`
-  0% {
-    transform: translateX(-${props.scrollWidth ?? 0}px);
-  }
-
-  100% {
-    transform: translateX(${props.scrollWidth ?? 0}px);
-  }
-`;
-
 export const HeadsUpSectionLabelInnerContainer = styled.div`
-  // animation-delay: 0s;
-  // animation-name: ${props => innerLabelAnimation(props)};
-  // animation-iteration-count: infinite;
-  // animation-timing-function: linear;
   display: flex;
   justify-content: center;
 

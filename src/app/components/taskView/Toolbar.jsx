@@ -222,9 +222,7 @@ export default ({
       />
       <Popover
         open={
-          taskDrawerOpen &&
-          !selectedTask?.taskListIdentifier &&
-          !addingNewSubtask
+          taskDrawerOpen && !selectedTask?.taskIdentifier && !addingNewSubtask
         }
         anchorEl={addTaskButtonReference.current}
         anchorOrigin={{

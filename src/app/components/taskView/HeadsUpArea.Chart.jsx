@@ -20,42 +20,42 @@ const ChartContainer = styled.div`
   position: relative;
 `;
 
+const getSpecificDayListTrends = trends => {
+  if (!trends) {
+    return trends;
+  }
+
+  const taskListTrendsSpecificDays = [];
+
+  range(0, 7).forEach(dayIndex => {
+    const dateValue = moment()
+      .subtract(dayIndex, 'days')
+      .format('YYYY-MM-DDT00:00:00.000+0000');
+
+    const exisitingElt = find(propEq('date', dateValue), trends);
+    if (!exisitingElt) {
+      taskListTrendsSpecificDays.push({ date: dateValue, metricValue: 0 });
+    } else {
+      taskListTrendsSpecificDays.push(exisitingElt);
+    }
+  });
+
+  return taskListTrendsSpecificDays;
+};
+
+const getChartDataFromTrends = trends => {
+  const specificDaysListTrends = getSpecificDayListTrends(trends);
+  const slicedTrendsArray = specificDaysListTrends?.slice(0, 7) ?? [];
+  const labels = map(prop('date'), slicedTrendsArray);
+  const data = map(prop('metricValue'), slicedTrendsArray);
+
+  return { data, labels };
+};
+
 export default ({ taskListTrends, currentTab }) => {
-  const chartRef = useRef(null);
+  const chartReference = useRef(null);
   const [chart, setChart] = useState(null);
   const [tabName, setTabName] = useState(null);
-
-  const getSpecificDayListTrends = trends => {
-    if (!trends) {
-      return trends;
-    }
-
-    const taskListTrendsSpecificDays = [];
-
-    range(0, 7).forEach(dayIndex => {
-      const dateVal = moment()
-        .subtract(dayIndex, 'days')
-        .format('YYYY-MM-DDT00:00:00.000+0000');
-
-      const exisitingElt = find(propEq('date', dateVal), trends);
-      if (!exisitingElt) {
-        taskListTrendsSpecificDays.push({ date: dateVal, metricValue: 0 });
-      } else {
-        taskListTrendsSpecificDays.push(exisitingElt);
-      }
-    });
-
-    return taskListTrendsSpecificDays;
-  };
-
-  const getChartDataFromTrends = trends => {
-    const specificDaysListTrends = getSpecificDayListTrends(trends);
-    const slicedTrendsArray = specificDaysListTrends?.slice(0, 7) ?? [];
-    const labels = map(prop('date'), slicedTrendsArray);
-    const data = map(prop('metricValue'), slicedTrendsArray);
-
-    return { data, labels };
-  };
 
   useEffect(() => {
     if (chart && currentTab !== tabName) {
@@ -70,12 +70,12 @@ export default ({ taskListTrends, currentTab }) => {
 
   useEffect(
     () => {
-      if (chartRef.current && !chart && currentTab !== tabName) {
+      if (chartReference.current && !chart && currentTab !== tabName) {
         const { data, labels } = getChartDataFromTrends(taskListTrends);
         setTabName(currentTab);
 
         setChart(
-          new Chart(chartRef.current, {
+          new Chart(chartReference.current, {
             options: {
               legend: false,
               maintainAspectRatio: false,
@@ -86,7 +86,7 @@ export default ({ taskListTrends, currentTab }) => {
                     ticks: {
                       precision: 0,
                       padding: 8,
-                      fontFamily: '"Open Sans", sans-serif',
+                      fontFamily: '"Roboto", sans-serif',
                     },
                     type: 'time',
                     time: {
@@ -141,13 +141,13 @@ export default ({ taskListTrends, currentTab }) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [chartRef.current],
+    [chartReference.current],
   );
 
   return (
     <ChartOuterContainer>
       <ChartContainer>
-        <canvas ref={chartRef} />
+        <canvas ref={chartReference} />
       </ChartContainer>
     </ChartOuterContainer>
   );
