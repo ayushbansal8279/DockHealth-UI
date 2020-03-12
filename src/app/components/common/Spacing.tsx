@@ -36,18 +36,18 @@ const spacingMapValues = new Proxy(
 );
 
 interface SpacingProps {
-  horizontal: keyof typeof spacingMapValues;
-  vertical: keyof typeof spacingMapValues;
+  horizontal?: keyof typeof spacingMapValues;
+  vertical?: keyof typeof spacingMapValues;
 }
 
 const useSpacingClasses = makeStyles({
   horizontal: {
-    width: ({ horizontal }: SpacingProps) => spacingMapValues[horizontal],
+    width: ({ horizontal }: SpacingProps) => spacingMapValues[horizontal || 1],
     height: '100%',
   },
   vertical: {
     width: '100%',
-    height: ({ vertical }: SpacingProps) => spacingMapValues[vertical],
+    height: ({ vertical }: SpacingProps) => spacingMapValues[vertical || 1],
   },
 });
 

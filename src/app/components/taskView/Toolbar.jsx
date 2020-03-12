@@ -1,4 +1,4 @@
-import { Button, Fade } from '@material-ui/core';
+import { Button, Popover } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
 import React, { useCallback, useRef } from 'react';
@@ -7,34 +7,19 @@ import { toggleListNotifications } from '../../actions/tasklist-actions';
 import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 import { showAlert } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
-import NotificationsCheck from '../../img/toolbar-notifications-check';
-import AdornedButton from '../common/AdornedButton.tsx';
+import AdornedButton from '../common/AdornedButton';
 import Avatar from '../common/Avatar';
-import ListPopover from '../common/ListPopover.tsx';
-import RotatableChevron from '../common/RotatableChevron.tsx';
-import Spacing from '../common/Spacing.tsx';
+import RotatableChevron from '../common/RotatableChevron';
+import Spacing from '../common/Spacing';
 import InviteMemberPopover from '../members/InviteMemberPopover';
-import { printTaskPdf } from '../task-pdf/TaskPdfDocument';
+import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
+import MorePopover from './Toolbar.MorePopover';
 import {
   SlimViewToggle,
   ToolbarContainer,
   ToolbarLabel,
-} from './Toolbar.Styled.tsx';
-
-const onPrintClick = ({
-  closeMorePopover,
-  tasks,
-  completedTasks,
-  taskListMembers,
-}) => () => {
-  closeMorePopover();
-
-  return printTaskPdf({
-    tasks: [...tasks, ...completedTasks],
-    taskListMembers,
-  });
-};
+} from './Toolbar.Styled';
 
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
@@ -54,43 +39,22 @@ const renderMemberAvatar = member => {
   );
 };
 
-export default ({
-  filterButton,
-  handleSearch,
-  onAddTaskButtonClick,
-  openFilterPopover,
-  initialSearchValue,
-  preferencesInitialized,
-  selectedTask,
-  showAddTaskButton = true,
-  slimView,
-  switchSlimView,
-  taskDrawerOpen,
-  filterPopoverOpen,
-  taskList,
-  members,
-  membersNotInTaskList,
-  clearFilter,
-  currentFilterDescription,
-  printData: { tasks = [], completedTasks = [], taskListMembers = [] },
-}) => {
-  const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
-    false,
-  );
-
-  const notificationsEnabled = taskList?.notifications;
-  const taskListIdentifier = taskList?.taskListIdentifier;
-  const dispatch = useDispatch();
-
-  const toggleNotifications = useCallback(async () => {
+const useToggleNotifications = ({
+  notificationsEnabled,
+  closeMorePopover,
+  taskListIdentifier,
+  dispatch,
+}) =>
+  useCallback(async () => {
     const newNotificationStatus = !notificationsEnabled;
 
     closeMorePopover();
 
     try {
-      await toggleListNotifications(taskListIdentifier, newNotificationStatus)(
-        dispatch,
-      );
+      await toggleListNotifications(
+        taskListIdentifier,
+        newNotificationStatus,
+      )(dispatch);
       onNotificationsToggled(newNotificationStatus);
       toggleAlert(
         `Notifications are now ${
@@ -108,39 +72,49 @@ export default ({
     }
   }, [closeMorePopover, dispatch, notificationsEnabled, taskListIdentifier]);
 
+export default ({
+  addingNewSubtask,
+  filterButton,
+  handleSearch,
+  onAddTaskButtonClick,
+  openFilterPopover,
+  initialSearchValue,
+  preferencesInitialized,
+  selectedTask,
+  showAddTaskButton = true,
+  slimView,
+  switchSlimView,
+  taskDrawerOpen,
+  filterPopoverOpen,
+  taskList,
+  members,
+  membersNotInTaskList,
+  clearFilter,
+  currentFilterDescription,
+  isInbox,
+  closeDrawer,
+  markComplete,
+  onMarkComplete,
+  isSpecificPatient,
+  printData: { tasks = [], completedTasks = [], taskListMembers = [] },
+}) => {
+  const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
+    false,
+  );
+
+  const notificationsEnabled = taskList?.notifications;
+  const taskListIdentifier = taskList?.taskListIdentifier;
+  const dispatch = useDispatch();
+
+  const toggleNotifications = useToggleNotifications({
+    notificationsEnabled,
+    closeMorePopover,
+    taskListIdentifier,
+    dispatch,
+  });
+
   const moreButtonReference = useRef(null);
-
-  const moreButtonElement = {
-    key: 'filter',
-    label: (
-      <Button variant="text" onClick={closeMorePopover} size="small">
-        <ToolbarLabel variant="body1" component="span">
-          MORE
-        </ToolbarLabel>
-        <Spacing horizontal={3} />
-        <RotatableChevron rotated={isMorePopoverOpen} />
-      </Button>
-    ),
-    disableHover: true,
-    button: false,
-    style: {
-      padding: '0.25rem 1.375rem',
-    },
-  };
-
-  const dividerElement = {
-    key: 'divider',
-    label: '',
-    button: false,
-    style: {
-      borderBottom: '0.0625rem solid #e5e9f2',
-      margin: '0.25rem 0',
-      padding: 0,
-    },
-  };
-
-  const { left: filterButtonX = 0, top: filterButtonY = 0 } =
-    moreButtonReference.current?.getBoundingClientRect() || {};
+  const addTaskButtonReference = useRef(null);
 
   return (
     <ToolbarContainer>
@@ -198,96 +172,90 @@ export default ({
           {preferencesInitialized && (
             <Search initialValue={initialSearchValue} onChange={handleSearch} />
           )}
-          <Spacing horizontal={3} />
-          <Button
-            variant="text"
-            ref={moreButtonReference}
-            onClick={openMorePopover}
-            size="small"
-          >
-            <ToolbarLabel variant="body1" component="span">
-              MORE
-            </ToolbarLabel>
-            <Spacing horizontal={3} />
-            <RotatableChevron rotated={filterPopoverOpen} />
-          </Button>
-          {members?.map(renderMemberAvatar)}
-          <Spacing horizontal={3} />
-          <InviteMemberPopover
-            size={40}
-            members={members}
-            membersNotInTaskList={membersNotInTaskList}
-            taskList={taskList}
-          />
-          {(selectedTask || !taskDrawerOpen) && showAddTaskButton && (
+          {!isInbox && (
             <>
-              <Spacing horizontal={5} />
+              <Spacing horizontal={3} />
+              <Button
+                variant="text"
+                ref={moreButtonReference}
+                onClick={openMorePopover}
+                size="small"
+              >
+                <ToolbarLabel variant="body1" component="span">
+                  MORE
+                </ToolbarLabel>
+                <Spacing horizontal={3} />
+                <RotatableChevron rotated={filterPopoverOpen} />
+              </Button>
+              {members?.map(renderMemberAvatar)}
+              <Spacing horizontal={3} />
+              <InviteMemberPopover
+                size={40}
+                members={members}
+                membersNotInTaskList={membersNotInTaskList}
+                taskList={taskList}
+              />
+            </>
+          )}
+          {showAddTaskButton && <Spacing horizontal={5} />}
+          <div ref={addTaskButtonReference}>
+            {showAddTaskButton && (
               <AdornedButton
                 adornment={<AddIcon />}
                 onClick={onAddTaskButtonClick}
               >
                 ADD A TASK
               </AdornedButton>
-            </>
-          )}
+            )}
+          </div>
         </Grid>
       </div>
-      <ListPopover
-        anchorReference="anchorPosition"
-        anchorPosition={{
-          left: filterButtonX - 23,
-          top: filterButtonY - 5.5,
-        }}
+      <MorePopover
+        moreButtonReference={moreButtonReference}
+        closeMorePopover={closeMorePopover}
+        isMorePopoverOpen={isMorePopoverOpen}
+        tasks={tasks}
+        completedTasks={completedTasks}
+        taskListMembers={taskListMembers}
+        notificationsEnabled={notificationsEnabled}
+        toggleNotifications={toggleNotifications}
+      />
+      <Popover
+        open={
+          taskDrawerOpen &&
+          !selectedTask?.taskListIdentifier &&
+          !addingNewSubtask
+        }
+        anchorEl={addTaskButtonReference.current}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
+          vertical: 'bottom',
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'left',
+          horizontal: 'right',
         }}
-        open={isMorePopoverOpen}
-        onClose={closeMorePopover}
-        TransitionComponent={Fade}
-        items={[
-          moreButtonElement,
-          dividerElement,
-          {
-            key: 'print',
-            label: 'Print',
-            onClick: onPrintClick({
-              closeMorePopover,
-              tasks,
-              completedTasks,
-              taskListMembers,
-            }),
-          },
-          {
-            key: 'notifications',
-            label: (
-              <Grid
-                container
-                justify="space-between"
-                alignItems="center"
-                wrap="nowrap"
-              >
-                <div>Notifications</div>
-                <Grid
-                  container
-                  wrap="nowrap"
-                  alignItems="center"
-                  justify="flex-end"
-                >
-                  <NotificationsCheck />
-                  <Spacing horizontal={2} />
-                  <span>{notificationsEnabled ? 'On' : 'Off'}</span>
-                </Grid>
-              </Grid>
-            ),
-            onClick: toggleNotifications,
-          },
-        ]}
-      />
+      >
+        <div
+          style={{
+            maxWidth: '40vw',
+            maxHeight: '75vh',
+            overflowX: 'hidden',
+            overflowY: 'auto',
+          }}
+        >
+          <NewTaskDrawer
+            taskList={taskList}
+            isInbox={isInbox}
+            closeDrawer={closeDrawer}
+            markComplete={markComplete}
+            onMarkComplete={onMarkComplete}
+            isSpecificPatient={isSpecificPatient}
+            isMultiList={false}
+            compact
+          />
+        </div>
+      </Popover>
     </ToolbarContainer>
   );
 };

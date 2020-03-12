@@ -6,6 +6,13 @@
     "es6": true,
     "jest/globals": true
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   "extends": [
     "airbnb",
     "airbnb/hooks",

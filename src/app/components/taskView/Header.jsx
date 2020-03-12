@@ -5,9 +5,9 @@ import { hashHistory } from 'react-router';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import GenericHeader from '../common/GenericHeader';
-import ListPopover from '../common/ListPopover.tsx';
-import RotatableChevron from '../common/RotatableChevron.tsx';
-import Spacing from '../common/Spacing.tsx';
+import ListPopover from '../common/ListPopover';
+import RotatableChevron from '../common/RotatableChevron';
+import Spacing from '../common/Spacing';
 
 const StyledTitle = styled(Typography)`
   && {

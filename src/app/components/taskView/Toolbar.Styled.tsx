@@ -49,5 +49,6 @@ export const SlimViewToggle = ({ slimView, ...props }: SlimViewToggleProps) => (
 export const ToolbarLabel = withStyles({
   root: {
     color: '#00A2E5',
+    display: 'inline-block',
   },
 })(Typography);

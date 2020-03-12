@@ -1,16 +1,10 @@
-import {
-  ListItem,
-  ListItemProps,
-  makeStyles,
-  Popover,
-  PopoverProps,
-} from '@material-ui/core';
+import { ListItem, makeStyles, Popover, PopoverProps } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 
-interface PopoverListItem extends ListItemProps<'div'> {
+interface PopoverListItem {
   active?: boolean;
-  button?: true;
+  button?: boolean;
   key: string;
   label: React.ReactNode;
   onClick?: (event: React.SyntheticEvent) => void;
@@ -57,11 +51,14 @@ const renderItem = ({
   key,
   label,
   onClick,
+  button = true,
   ...otherProps
 }: PopoverListItem) => {
   return (
     <ListItem
-      button
+      // explicit cast here is a workaround for ListItem typing issue
+      // check https://github.com/mui-org/material-ui/issues/14971
+      button={button as true}
       className={clsx(listItemClasses.root, active && listItemClasses.active)}
       onClick={onClick}
       key={key}

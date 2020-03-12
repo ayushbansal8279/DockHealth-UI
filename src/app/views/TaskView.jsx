@@ -25,16 +25,16 @@ import { setHeader } from '../actions/header-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import CubesLoader from '../components/common/CubesLoader';
-import ListPopover from '../components/common/ListPopover.tsx';
-import RotatableChevron from '../components/common/RotatableChevron.tsx';
-import Spacing from '../components/common/Spacing.tsx';
+import ListPopover from '../components/common/ListPopover';
+import RotatableChevron from '../components/common/RotatableChevron';
+import Spacing from '../components/common/Spacing';
 import AddTask from '../components/task/AddTask';
 import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Toolbar from '../components/taskView/Toolbar';
-import { ToolbarLabel } from '../components/taskView/Toolbar.Styled.tsx';
+import { ToolbarLabel } from '../components/taskView/Toolbar.Styled';
 import {
   onButtonClicked,
   onFilterChanged,
@@ -1109,6 +1109,7 @@ class TaskView extends Component {
       taskListMembers,
       members,
       membersNotInTaskList,
+      addingNewSubtask,
     } = this.props;
     const {
       initialSearchValue,
@@ -1130,6 +1131,9 @@ class TaskView extends Component {
 
     const currentFilterDescription =
       filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
+
+    const mainTaskDrawerOpen =
+      taskDrawerOpen && (selectedTask?.taskIdentifier || addingNewSubtask);
 
     return (
       <div
@@ -1163,6 +1167,12 @@ class TaskView extends Component {
               members={members}
               membersNotInTaskList={membersNotInTaskList}
               currentFilterDescription={currentFilterDescription}
+              isInbox={isInbox}
+              addingNewSubtask={addingNewSubtask}
+              closeDrawer={this.closeTaskDrawer}
+              markComplete={markComplete}
+              onMarkComplete={this.onMarkComplete}
+              isSpecificPatient={isSpecificPatient}
               printData={{
                 tasks,
                 completedTasks,
@@ -1182,7 +1192,7 @@ class TaskView extends Component {
             />
           )}
           <TaskViewGrid container wrap="nowrap">
-            <TableWrapper taskDrawerOpen={taskDrawerOpen}>
+            <TableWrapper taskDrawerOpen={mainTaskDrawerOpen}>
               {isFetching ? (
                 <FadeContainer>
                   <Fade
@@ -1204,7 +1214,7 @@ class TaskView extends Component {
                       <SideClickListener onClick={this.closeTaskDrawer} />
                     </TaskListContainer>
                   </div>
-                  {taskDrawerOpen && !isMultiList && (
+                  {mainTaskDrawerOpen && !isMultiList && (
                     <NewTaskDrawer
                       headsUpAreaRef={this.headsUpArea.current}
                       closeDrawer={this.closeTaskDrawer}
@@ -1239,9 +1249,8 @@ const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   currentPatientId: store.patient?.details?.patientIdentifier,
   taskDrawerOpen: store.taskDrawerState?.open,
+  addingNewTask: store.taskState.addingNewTask,
+  addingNewSubtask: store.taskState.addingNewSubtask,
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TaskView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskView);
