@@ -79,13 +79,19 @@ const SubscriptionsPlansView = ({
         changeSubscriptionPlan={changeSubscriptionPlan}
         subscriptionPlanData={subscriptionPlanData}
       />
-      <TermsLabel>
-        * Subscribers and their Organization will receive a temporary license
-        for full access to Dock for 30 days. There is no limit to the number of
-        users in the Organization. At any time during the 30-day trial,
-        subscribers can choose to extend the license by agreeing to the Terms
-        and Conditions and providing payment. If Subscribers choose to not
-        extend the license, the Service will terminate after 30 days.
+      <TermsLabel style={{ fontWeight: 'bold', marginBottom: 0 }}>
+        * How long is this free?
+      </TermsLabel>
+      <TermsLabel style={{ marginTop: 0 }}>
+        Before our decision to focus on the COVID-19 response, Dock Health
+        offered a 30-day free trial and a subscription model of $20/user/month.
+        In light of the urgent need to take care of providers, help them get
+        organized and provide them the most relevant information easily, we have
+        decided to make it free as long as it can be helpful during this public
+        health crisis. We are clinicians and we are optimists. We know this will
+        get hard, but we also know we will overcome this. When the dust settles,
+        we will be clear and give folks lots of time to prepare if a paid
+        subscription is the right choice for you down the road.
       </TermsLabel>
     </>
   );

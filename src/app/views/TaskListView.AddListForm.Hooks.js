@@ -32,6 +32,7 @@ const initializeAddListFormHooks = () => {
 
   const setDefaultFormValues = useCallback(() => {
     setValue('listName', currentList?.listName ?? '');
+    setValue('listDescription', currentList?.listDescription ?? '');
     setValue('owner', listOwner);
     setValue('adminIdentifiers', currentList?.adminIdentifiers ?? []);
     setValue('memberIdentifiers', currentList?.memberIdentifiers ?? []);
@@ -42,6 +43,7 @@ const initializeAddListFormHooks = () => {
     findAllUsersByOrganizationId()(dispatch);
 
     register({ name: 'listName' });
+    register({ name: 'listDescription' });
     register({ name: 'owner' });
     register({ name: 'adminIdentifiers' });
     register({ name: 'memberIdentifiers' });
@@ -51,6 +53,7 @@ const initializeAddListFormHooks = () => {
 
     return () => {
       unregister('listName');
+      unregister('listDescription');
       unregister('owner');
       unregister('adminIdentifiers');
       unregister('memberIdentifiers');
@@ -70,30 +73,34 @@ const initializeAddListFormHooks = () => {
   }, [adminsPickerOpen, membersPickerOpen]);
 
   const listNameValue = watch('listName') ?? '';
+  const listDescriptionValue = watch('listDescription') ?? '';
   const adminsValue = watch('adminIdentifiers') ?? [];
   const membersValue = watch('memberIdentifiers') ?? [];
   const notificationsValue = watch('notifications') ?? true;
 
   const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
 
-  //check for people length other with results in error
-  const filteredPeople = (people && people.length > 0 ? people : [])
-    .filter(
-      ({ userIdentifier }) =>
-        userIdentifier != null &&
-        userIdentifier !== listOwner.userIdentifier &&
-        !membersValue.includes(userIdentifier) &&
-        !adminsValue.includes(userIdentifier),
-    )
-    .filter(({ firstName = '', middleName = '', lastName = '' }) => {
-      return [
-        firstName.toLowerCase(),
-        middleName.toLowerCase(),
-        lastName.toLowerCase(),
-      ]
-        .map(value => value.includes(searchValue.toLowerCase()))
-        .some(Boolean);
-    });
+  // check for people length other with results in error
+  const filteredPeople =
+    people !== undefined && Array.isArray(people)
+      ? people
+          .filter(
+            ({ userIdentifier }) =>
+              userIdentifier != null &&
+              userIdentifier !== listOwner.userIdentifier &&
+              !membersValue.includes(userIdentifier) &&
+              !adminsValue.includes(userIdentifier),
+          )
+          .filter(({ firstName = '', middleName = '', lastName = '' }) => {
+            return [
+              firstName.toLowerCase(),
+              middleName.toLowerCase(),
+              lastName.toLowerCase(),
+            ]
+              .map(value => value.includes(searchValue.toLowerCase()))
+              .some(Boolean);
+          })
+      : [];
 
   const addAdmin = useCallback(
     ({ userIdentifier }) => {
@@ -141,6 +148,7 @@ const initializeAddListFormHooks = () => {
     openMembersPicker,
     closeMembersPicker,
     listNameValue,
+    listDescriptionValue,
     adminsValue,
     membersValue,
     filteredPeople,

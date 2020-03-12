@@ -58,6 +58,7 @@ import {
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
+import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
@@ -331,9 +332,15 @@ class TaskView extends Component {
     let channel = pusher.channel(channelName);
     if (!channel) {
       channel = pusher.subscribe(channelName);
+      console.log('subscribed to channel');
     }
-    channel.bind('pusher:subscription_succeeded');
-    channel.bind('pusher:subscription_error');
+    channel.bind('pusher:subscription_succeeded', function() {
+      console.log('subscription_succeeded');
+    });
+    channel.bind('pusher:subscription_error', function(status) {
+      console.log('subscription_error', status);
+    });
+    console.log(channel);
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
 
@@ -341,6 +348,7 @@ class TaskView extends Component {
       // Since the app is going to be realtime, we don't want the same item to
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
+      console.log(data);
       const currentTaskListIdentifier = taskList?.taskListIdentifier;
       if (
         data.task?.taskList &&
@@ -382,6 +390,7 @@ class TaskView extends Component {
         clearTimeout(taskTimeoutId);
       });
 
+    console.log('unsubscribing from channel');
     const { currentUser } = this.props;
     const currentUserIdentifier = currentUser?.userIdentifier;
     if (currentUserIdentifier) {
@@ -389,6 +398,7 @@ class TaskView extends Component {
       let channel = pusher.channel(channelName);
       if (channel) {
         channel = pusher.unsubscribe(channelName);
+        console.log('unsubscribed from channel');
       }
     }
   };
@@ -1111,6 +1121,7 @@ class TaskView extends Component {
       members,
       membersNotInTaskList,
       addingNewSubtask,
+      subscription,
     } = this.props;
     const {
       initialSearchValue,
@@ -1135,6 +1146,10 @@ class TaskView extends Component {
 
     const mainTaskDrawerOpen =
       taskDrawerOpen && (selectedTask?.taskIdentifier || addingNewSubtask);
+
+    const isSubscriptionTrial = getSubscriptionIsTrial({
+      subscription,
+    });
 
     return (
       <div
@@ -1213,7 +1228,9 @@ class TaskView extends Component {
                     ref={this.taskListContainerReference}
                     style={{ width: '100%' }}
                   >
-                    <TaskListContainer>
+                    <TaskListContainer
+                      isSubscriptionTrial={isSubscriptionTrial}
+                    >
                       {this.renderTasklists()}
                       <SideClickListener onClick={this.closeTaskDrawer} />
                     </TaskListContainer>
@@ -1255,6 +1272,7 @@ const mapStateToProps = store => ({
   taskDrawerOpen: store.taskDrawerState?.open,
   addingNewTask: store.taskState.addingNewTask,
   addingNewSubtask: store.taskState.addingNewSubtask,
+  subscription: store.organizationState?.organization?.subscriptionDetails,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

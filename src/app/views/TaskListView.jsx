@@ -336,6 +336,7 @@ class TaskListView extends PureComponent {
       pendingTaskLists,
       taskLists,
       genericLists,
+      currentUser,
     } = this.props;
 
     const { listFormOpen, hasStartedFetching } = this.state;
@@ -410,6 +411,7 @@ class TaskListView extends PureComponent {
                       />
                       <ListsComponent
                         taskLists={taskLists}
+                        currentUser={currentUser}
                         editForm={this.editTaskList}
                         deleteList={this.deleteList}
                         leaveList={this.leaveList}
@@ -433,6 +435,7 @@ function mapStateToProps(state) {
     pendingTaskLists: state.invitationState.pendingTasklists,
     genericLists: state.taskListState.genericLists,
     isFetching: state.taskListState.isFetching,
+    currentUser: state.userState.userProfile,
   };
 }
 

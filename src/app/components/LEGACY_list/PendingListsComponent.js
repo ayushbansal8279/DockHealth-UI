@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import BooleanModal from '../modals/BooleanModal';
 
 class PendingListsComponent extends PureComponent {
-
   componentWillUnmount() {
     if (this.props.taskLists) {
       this.props.taskLists.map((taskList, index) => {
@@ -11,12 +10,12 @@ class PendingListsComponent extends PureComponent {
     }
   }
 
-  acceptInvitationToTaskList = (taskList) => {
-    this.props.acceptInviteToTaskList(taskList)
-  }
+  acceptInvitationToTaskList = taskList => {
+    this.props.acceptInviteToTaskList(taskList);
+  };
 
   render() {
-    const taskLists = this.props.taskLists;
+    const { taskLists } = this.props;
     return (
       <span>
         {taskLists.length > 0 && (
@@ -42,11 +41,10 @@ class PendingListsComponent extends PureComponent {
                   <div className="row collapse">
                     <div className="new-list">New</div>
                   </div>
-                  <a
-                    onClick={e => this.acceptInvitationToTaskList(taskList)}
-                  >
+                  <a onClick={e => this.acceptInvitationToTaskList(taskList)}>
                     <h6>{taskList.listName}</h6>
                   </a>
+                  <h7 className="">{taskList.listDescription}</h7>
                   <span className="details">{taskList.creator.userName}</span>
 
                   {/* <span className="item-details highlight">Invited</span> */}
@@ -59,9 +57,7 @@ class PendingListsComponent extends PureComponent {
                       aria-haspopup="true"
                       data-disable-hover="false"
                       tabIndex="2"
-                      title={`${
-                        taskList.numberOfHighPriorityTasks
-                      } high priority tasks`}
+                      title={`${taskList.numberOfHighPriorityTasks} high priority tasks`}
                     >
                       <svg className="icon medium flag">
                         <use xlinkHref="#icon-flag" />
@@ -92,7 +88,9 @@ class PendingListsComponent extends PureComponent {
                   >
                     <ul className="no-bullet">
                       <li>
-                        <div data-open={`leave-list-${taskList.taskListIdentifier}`}>
+                        <div
+                          data-open={`leave-list-${taskList.taskListIdentifier}`}
+                        >
                           Leave list
                         </div>
                       </li>
@@ -101,9 +99,7 @@ class PendingListsComponent extends PureComponent {
                 </div>
                 <BooleanModal
                   uniqueModalId={`leave-list-${taskList.taskListIdentifier}`}
-                  message={`Are you sure you want to leave '${
-                    taskList.listName
-                  }'?`}
+                  message={`Are you sure you want to leave '${taskList.listName}'?`}
                   handleConfirmation={this.props.rejectInviteToTaskList}
                   handleConfirmationArgs={taskList}
                   confirmBtnTxt="Leave"

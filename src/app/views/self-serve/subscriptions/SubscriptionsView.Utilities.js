@@ -19,7 +19,8 @@ export const getSubscriptionPlanName = ({ subscription }) => {
 
   switch (subscriptionPlan) {
     case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
-      return 'Free 30 day trial';
+      // return 'Free 30 day trial';
+      return 'Free to use for COVID19 response';
     case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
       return 'Free 60 day trial';
     case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:

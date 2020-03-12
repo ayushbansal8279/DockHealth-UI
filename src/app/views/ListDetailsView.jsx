@@ -109,6 +109,8 @@ class Home extends Component {
       }
     };
 
+    getAllTasks();
+
     if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
       await getAllTasks().then(async () => {
         taskListActions.getTaskListById(routeParams.taskListIdentifier);

@@ -6,6 +6,8 @@ import mapObjIndexed from 'ramda/es/mapObjIndexed';
 import prop from 'ramda/es/prop';
 import reverse from 'ramda/es/reverse';
 import sortBy from 'ramda/es/sortBy';
+import ascend from 'ramda/es/ascend';
+import descend from 'ramda/es/descend';
 import React from 'react';
 import { useUnmount } from 'react-use';
 import {
@@ -30,12 +32,15 @@ import { FormSectionDivider } from './NewTaskDrawer.Styled';
 import { noop } from '../../helpers/utility-functions';
 
 const getGroupedComments = ({ comments }) => {
-  const commentsSortedById = sortBy(prop('commentIdentifier'), comments);
+  // const commentsSortedById = sortBy(prop('commentIdentifier'), comments);
+  // const sortedComments = reverse(
+  //   sortBy(comment => moment(comment.dateCreated).unix(), commentsSortedById),
+  // );
+  
+  const sortedCommentsByIndex = sortBy(ascend(prop('sortIndex')), comments);
 
-  const sortedComments = reverse(
-    sortBy(comment => moment(comment.dateCreated).unix(), commentsSortedById),
-  );
-
+  const sortedComments = sortBy(descend(comment => moment(comment.dateCreated).unix()), sortedCommentsByIndex);
+  
   const datedComments = groupBy(
     comment => moment(comment.dateCreated).format('YYYY-MM-DD'),
     sortedComments,

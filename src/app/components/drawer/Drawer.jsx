@@ -143,24 +143,28 @@ const Drawer = ({ children }) => {
     ? trialEndMoment.diff(moment(), 'day')
     : 0;
 
-  const hasMinimalUsagePeriodPassed =
-    trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
+  // const hasMinimalUsagePeriodPassed =
+  //   trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
 
-  const trialLabelMinimalPeriodNotPassed = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
+  // const trialLabelMinimalPeriodNotPassed = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
 
-  const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed} You will lose access at the end of your trial.`;
+  // const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed} You will lose access at the end of your trial.`;
 
-  const trialLabelEnded = `Your free ${subscriptionPlanTrialLabel} trial has expired!`;
+  // const trialLabelEnded = `Your free ${subscriptionPlanTrialLabel} trial has expired!`;
 
-  const trialEndLabel = (() => {
-    if (hasMinimalUsagePeriodPassed) {
-      return trialEndDayDifference < 0
-        ? trialLabelEnded
-        : trialLabelMinimalPeriodPassed;
-    }
+  // const trialEndLabel = (() => {
+  //   if (hasMinimalUsagePeriodPassed) {
+  //     return trialEndDayDifference < 0
+  //       ? trialLabelEnded
+  //       : trialLabelMinimalPeriodPassed;
+  //   }
 
-    return trialLabelMinimalPeriodNotPassed;
-  })();
+  //   return trialLabelMinimalPeriodNotPassed;
+  // })();
+
+  const hasMinimalUsagePeriodPassed = false;
+  const trialEndLabel =
+    'In Response to COVID-19, Dock Health is Offering its Platform for Free.';
 
   const trialBannerVisible = isSubscriptionTrial;
 

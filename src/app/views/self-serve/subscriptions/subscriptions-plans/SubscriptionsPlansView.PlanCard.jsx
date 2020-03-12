@@ -217,8 +217,11 @@ const SubscriptionsViewPlanCard = ({
             </RecommendedLabel>
           )}
           {isFreeTrialLabelShown && (
+            // <FreeTrialPlanLabel isSmallScreen={isSmallScreen}>
+            //   FREE 30 DAY TRIAL *
+            // </FreeTrialPlanLabel>
             <FreeTrialPlanLabel isSmallScreen={isSmallScreen}>
-              FREE 30 DAY TRIAL *
+              FREE FOR COVID-19 RESPONSE *
             </FreeTrialPlanLabel>
           )}
           <LabelComponent>{planLabel}</LabelComponent>
