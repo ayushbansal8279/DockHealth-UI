@@ -1,24 +1,27 @@
+import { makeStyles } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import Popover from '@material-ui/core/Popover';
 import withStyles from '@material-ui/core/styles/withStyles';
 import styled from 'styled-components';
-import Member from './Member';
 import Search from '../taskView/Search';
+import Member from './Member';
 
 const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';
 
-export const AddMemberButton = withStyles({
+export const useAddMemberButtonStyles = makeStyles({
   root: {
-    border: '0.684px dashed #0ca1c7',
-    fontSize: '2.5rem',
-    fontWeight: '300',
-    height: 54,
-    minHeight: 54,
-    minWidth: 54,
+    border: '0.125rem dashed #00a2e5',
+    color: '#fdad00',
+    fontSize: ({ size }) => (size * 30) / 54,
+    fontWeight: '500',
+    height: ({ size }) => size,
+    lineHeight: 1,
+    minHeight: ({ size }) => size,
+    minWidth: ({ size }) => size,
     padding: 0,
-    width: 54,
+    width: ({ size }) => size,
   },
-})(IconButton);
+});
 
 export const AddMemberPopover = withStyles({
   paper: {

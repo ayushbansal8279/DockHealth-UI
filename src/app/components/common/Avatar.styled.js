@@ -14,6 +14,8 @@ export const AvatarContainer = styled.div`
   ${props => props.withShadow && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)'};
   cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
   display: inline-flex;
+  min-height: ${props => props.size ?? 110}px;
+  min-width: ${props => props.size ?? 110}px;
   height: ${props => props.size ?? 110}px;
   padding: ${({ size }) => getScaledSize({ normalSize: 6, propSize: size })}px;
   justify-content: center;
@@ -29,7 +31,7 @@ export const InnerAvatarContainer = styled.div`
   display: flex;
   font-family: 'Montserrat', sans-serif;
   font-size: ${({ size }) =>
-    getScaledSize({ normalSize: 2, propSize: size })}rem;
+    getScaledSize({ normalSize: 40, propSize: size })}px;
   font-weight: bold;
   justify-content: center;
   line-height: 1;

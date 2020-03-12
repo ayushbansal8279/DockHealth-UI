@@ -31,6 +31,7 @@ const theme = createMuiTheme({
   props: {
     MuiPopover: {
       PaperProps: {
+        elevation: 0,
         square: true,
       },
     },

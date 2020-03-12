@@ -1,19 +1,13 @@
 import { Grid, Typography } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import React, { useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
-import { toggleListNotifications } from '../../actions/tasklist-actions';
-import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 import useBoolean from '../../hooks/useBoolean';
-import ListSwitchChevron from '../../img/list-switch-chevron.svg';
-import NotificationsOffIcon from '../../img/notifications-off.svg';
-import NotificationsOnIcon from '../../img/notifications-on.svg';
 import GenericHeader from '../common/GenericHeader';
 import ListPopover from '../common/ListPopover.tsx';
-import Members from '../members/Members';
-import TaskListAction from './TaskListAction';
+import RotatableChevron from '../common/RotatableChevron.tsx';
+import Spacing from '../common/Spacing.tsx';
 
 const StyledTitle = styled(Typography)`
   && {
@@ -37,47 +31,6 @@ const HeaderTitleContainer = styled.div`
   overflow: hidden;
 `;
 
-const ListSwitchContainer = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  transition: all 0.25s ease-out;
-  transform: scaleY(${props => (props.rotated ? -1 : 1)});
-  width: 2rem;
-`;
-
-const NotificationToggle = ({ value }) => (
-  <span
-    style={{
-      width: '34px',
-      height: '31px',
-      background: value ? '#007CAB' : '#303538',
-      borderRadius: '4px',
-      color: 'white',
-      marginLeft: '10px',
-      paddingTop: '3px',
-    }}
-  >
-    {value ? 'on' : 'off'}
-  </span>
-);
-
-const Notifications = ({ value, onClick }) => {
-  const notificationProps = {
-    icon: value ? NotificationsOnIcon : NotificationsOffIcon,
-    alt: value ? 'Disable notifications' : 'Enable notifications',
-    // children: `Notifications: ${value ? 'on' : 'off'}`,
-    onClick,
-  };
-
-  return (
-    <TaskListAction {...notificationProps} style={{ paddingRight: '0px' }}>
-      <span> Notifications: </span>
-      <NotificationToggle value={value} />
-    </TaskListAction>
-  );
-};
-
 const transformTaskList = ({ closeListPopover, taskList }) => ({
   listName,
   taskListIdentifier,
@@ -91,18 +44,8 @@ const transformTaskList = ({ closeListPopover, taskList }) => ({
   },
 });
 
-const Header = ({
-  hasTitle,
-  title,
-  isFetching,
-  isMultiList,
-  members,
-  membersNotInTaskList,
-  taskList,
-  resetHeader = () => {},
-}) => {
+const Header = ({ hasTitle, title, isFetching, taskList }) => {
   const taskListIdentifier = taskList?.taskListIdentifier;
-  const notificationsStatus = taskList?.notifications;
 
   const listPopoverReference = useRef(null);
 
@@ -111,17 +54,6 @@ const Header = ({
   );
 
   const taskLists = useSelector(store => store.taskListState.tasklist ?? []);
-
-  const dispatch = useDispatch();
-  const toggleNotifications = useCallback(() => {
-    const newNotificationStatus = !notificationsStatus;
-    toggleListNotifications(taskListIdentifier, newNotificationStatus)(
-      dispatch,
-    ).then(() => {
-      onNotificationsToggled(newNotificationStatus);
-      resetHeader();
-    });
-  }, [dispatch, notificationsStatus, resetHeader, taskListIdentifier]);
 
   const listPopoverItems = [
     ...taskLists.map(transformTaskList({ closeListPopover, taskList })),
@@ -142,37 +74,11 @@ const Header = ({
         <StyledTitle onClick={openListPopover} variant="h5" component="div">
           <Grid container alignItems="center">
             <div>{title}</div>
-            <ListSwitchContainer rotated={isListPopoverOpen}>
-              <img src={ListSwitchChevron} alt="List switch" />
-            </ListSwitchContainer>
+            <Spacing horizontal={3} />
+            <RotatableChevron rotated={isListPopoverOpen} />
           </Grid>
         </StyledTitle>
       </HeaderTitleContainer>
-      <div
-        style={{
-          flex: 0.3,
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        {taskList && (
-          <Notifications
-            onClick={() => {
-              toggleNotifications();
-            }}
-            value={notificationsStatus}
-          />
-        )}
-      </div>
-      <div style={{ flex: 0.35, paddingRight: '1rem' }}>
-        {members && !isMultiList && (
-          <Members
-            members={members}
-            membersNotInTaskList={membersNotInTaskList}
-            taskList={taskList}
-          />
-        )}
-      </div>
       <ListPopover
         anchorEl={listPopoverReference.current}
         open={isListPopoverOpen}
@@ -181,27 +87,6 @@ const Header = ({
       />
     </GenericHeader>
   );
-};
-
-Header.propTypes = {
-  title: PropTypes.string.isRequired,
-  members: PropTypes.arrayOf(
-    PropTypes.shape({
-      userIdentifier: PropTypes.string,
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      profileThumbnailPictureHash: PropTypes.string,
-      initials: PropTypes.string,
-    }),
-  ),
-  isFetching: PropTypes.bool,
-  isMultiList: PropTypes.bool,
-};
-
-Header.defaultProps = {
-  isFetching: false,
-  isMultiList: false,
-  members: null,
 };
 
 export default Header;

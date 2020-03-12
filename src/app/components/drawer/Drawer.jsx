@@ -26,14 +26,13 @@ const useDrawerClasses = makeStyles({
     backgroundColor: '#3d4858',
     color: '#fff',
     fontSize: '2.25rem',
-    height: ({ trialBannerVisible }) =>
-      trialBannerVisible ? '8.375rem' : '5.5rem',
+    height: '5.5rem',
     marginLeft: 85,
-    paddingBottom: ({ trialBannerVisible }) =>
+    marginBottom: ({ trialBannerVisible }) =>
       trialBannerVisible ? '2.875rem' : 0,
     paddingLeft: '1.25rem',
     position: 'relative',
-    transition: 'all 0.2s ease-out, height 0s, padding-bottom 0s',
+    transition: 'all 0.2s ease-out',
     width: 'calc(100% - 85px)',
   },
   appBarOpen: {
@@ -74,15 +73,17 @@ const ContentContainer = styled.div`
 
 const TrialBanner = styled(Grid)`
   background-color: #2a4a70;
-  bottom: 0;
+  top: 100%;
   color: #fff;
   font-size: 1rem;
   font-weight: bold;
   left: 0;
-  height: 2.875rem;
+  height: ${props => (props.trialBannerVisible ? '2.875rem' : 0)};
+  overflow: hidden;
   right: 0;
   position: absolute;
   z-index: 1;
+  transition: all 0.2s ease-out;
 `;
 
 const TrialBannerLink = styled(Link)`
@@ -194,20 +195,19 @@ const Drawer = ({ children }) => {
         <Grid container item xs={12}>
           {header?.layout?.map(renderHeaderColumn)}
         </Grid>
-        {trialBannerVisible && (
-          <TrialBanner
-            item
-            xs={12}
-            container
-            justify="center"
-            alignItems="center"
-          >
-            <span>{trialEndLabel}</span>
-            <TrialBannerLink to="/subscriptions">
-              {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
-            </TrialBannerLink>
-          </TrialBanner>
-        )}
+        <TrialBanner
+          item
+          xs={12}
+          container
+          justify="center"
+          alignItems="center"
+          trialBannerVisible={trialBannerVisible}
+        >
+          <span>{trialEndLabel}</span>
+          <TrialBannerLink to="/subscriptions">
+            {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
+          </TrialBannerLink>
+        </TrialBanner>
       </AppBar>
       <MaterialDrawer
         classes={{

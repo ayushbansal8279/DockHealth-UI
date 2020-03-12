@@ -1,15 +1,23 @@
+import { IconButton } from '@material-ui/core';
+import clsx from 'clsx';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useBoolean from '../../hooks/useBoolean';
 import InvitingContent from './InviteMemberPopover.InvitingContent';
 import NotInvitingContent from './InviteMemberPopover.NotInvitingContent';
 import {
-  AddMemberButton,
   AddMemberPopover,
+  useAddMemberButtonStyles,
 } from './InviteMemberPopover.Styled';
 
-const InviteMemberPopover = ({ taskList, members, membersNotInTaskList }) => {
+const InviteMemberPopover = ({
+  size = 54,
+  taskList,
+  members,
+  membersNotInTaskList,
+}) => {
   const addMemberButtonReference = useRef(null);
+  const addMemberButtonStyles = useAddMemberButtonStyles({ size });
 
   const [isInviting, setInviting, unsetInviting] = useBoolean(false);
 
@@ -26,7 +34,12 @@ const InviteMemberPopover = ({ taskList, members, membersNotInTaskList }) => {
   return (
     <>
       <div ref={addMemberButtonReference}>
-        <AddMemberButton onClick={openMemberPopover}>+</AddMemberButton>
+        <IconButton
+          className={clsx(addMemberButtonStyles.root)}
+          onClick={openMemberPopover}
+        >
+          +
+        </IconButton>
       </div>
       <AddMemberPopover
         anchorEl={addMemberButtonReference.current}

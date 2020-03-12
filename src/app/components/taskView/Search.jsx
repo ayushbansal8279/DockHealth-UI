@@ -1,19 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
 import SearchHeadsupIcon from '../../img/search-headsup.svg';
 
 const StyledTextField = styled(TextField)`
   && {
     background-color: #fff;
     border-radius: 0.25rem;
-    height: 2rem;
-    width: 16.8125rem;
+    color: #00a2e5;
+    height: 2.5rem;
+
+    & .MuiInputBase-root {
+      border: 0.0625rem solid #e5e9f200;
+      border-radius: 0;
+      height: 100%;
+      transition: all 0.25s ease-in-out;
+      width: 6.75rem;
+    }
+
+    & .MuiInputBase-root.Mui-focused {
+      border: 0.0625rem solid #e5e9f2;
+      width: 16.8125rem;
+    }
 
     & input {
-      height: 2rem;
+      caret-color: #00a2e5;
+      color: #8492a4;
+      height: 100%;
       border: none;
       box-shadow: none;
       background: none;
@@ -22,8 +38,10 @@ const StyledTextField = styled(TextField)`
       font-size: 0.875rem;
 
       &::placeholder {
-        color: #2e3a43;
-        opacity: 1;
+        color: #00a2e5;
+        font-size: 1rem;
+        opacity: 0.8;
+        text-transform: uppercase;
       }
     }
 
@@ -33,6 +51,16 @@ const StyledTextField = styled(TextField)`
     }
   }
 `;
+
+const StyledAdornment = withStyles({
+  root: {
+    height: '1.125rem',
+    minHeight: '1.125rem',
+    minWidth: '1.125rem',
+    pointerEvents: 'none',
+    width: '1.125rem',
+  },
+})(InputAdornment);
 
 const Search = ({
   className,
@@ -48,9 +76,9 @@ const Search = ({
     className={className}
     InputProps={{
       startAdornment: (
-        <InputAdornment position="start" style={{ pointerEvents: 'none' }}>
+        <StyledAdornment position="start">
           <img src={SearchHeadsupIcon} alt="Search icon" />
-        </InputAdornment>
+        </StyledAdornment>
       ),
       style: {
         paddingLeft: '0.5rem',

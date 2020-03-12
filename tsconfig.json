@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
-    "incremental": true,
     "target": "es2015",
     "module": "commonjs",
     "jsx": "react",
     "sourceMap": true,
-    "composite": true,
     "removeComments": true,
     "noEmit": true,
     "strict": true,
@@ -18,6 +16,8 @@
     "src/app/**/*.ts",
     "src/app/**/*.tsx",
     "src/app/**/*.js",
-    "src/app/**/*.jsx"
+    "src/app/**/*.jsx",
+    "src/app/**/*.png",
+    "src/app/**/*.svg"
   ]
 }

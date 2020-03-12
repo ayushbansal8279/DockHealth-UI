@@ -2,10 +2,6 @@ import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Popover from '@material-ui/core/Popover';
-import { AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
 import {
@@ -29,12 +25,16 @@ import { setHeader } from '../actions/header-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import CubesLoader from '../components/common/CubesLoader';
+import ListPopover from '../components/common/ListPopover.tsx';
+import RotatableChevron from '../components/common/RotatableChevron.tsx';
+import Spacing from '../components/common/Spacing.tsx';
 import AddTask from '../components/task/AddTask';
 import TaskList from '../components/task/TaskList';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
 import Toolbar from '../components/taskView/Toolbar';
+import { ToolbarLabel } from '../components/taskView/Toolbar.Styled.tsx';
 import {
   onButtonClicked,
   onFilterChanged,
@@ -43,14 +43,9 @@ import {
 } from '../helpers/ga-event-helper';
 import { isTaskArchivable } from '../helpers/utility-functions';
 import ChevronSmallIcon from '../img/chevron-small.svg';
-import FilterIcon from '../img/filter.svg';
 import {
   CompletedButtonRowContainer,
   FadeContainer,
-  FilterByBoldLabel,
-  FilterByLabel,
-  FilterByLinkLabel,
-  FilterByTextContainer,
   InboxNoMessagesAvailable,
   SideClickListener,
   StyledButtonLabel,
@@ -110,17 +105,6 @@ const filterOptions = [
     description: 'Due Next Week',
   },
 ];
-
-const animationProperties = {
-  variants: {
-    hidden: { height: 0, opacity: 0 },
-    visible: { height: '2.5rem', opacity: 1 },
-  },
-  initial: 'hidden',
-  exit: 'hidden',
-  animate: 'visible',
-  transition: { ease: 'backInOut', duration: 0.25 },
-};
 
 export const TaskListSection = ({
   heading,
@@ -347,14 +331,9 @@ class TaskView extends Component {
     let channel = pusher.channel(channelName);
     if (!channel) {
       channel = pusher.subscribe(channelName);
-      console.log('subscribed to channel');
     }
-    channel.bind('pusher:subscription_succeeded', () => {
-      console.log('subscription_succeeded');
-    });
-    channel.bind('pusher:subscription_error', status => {
-      console.log('subscription_error', status);
-    });
+    channel.bind('pusher:subscription_succeeded');
+    channel.bind('pusher:subscription_error');
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
 
@@ -362,7 +341,6 @@ class TaskView extends Component {
       // Since the app is going to be realtime, we don't want the same item to
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
-      console.log(data);
       const currentTaskListIdentifier = taskList?.taskListIdentifier;
       if (
         data.task?.taskList &&
@@ -404,7 +382,6 @@ class TaskView extends Component {
         clearTimeout(taskTimeoutId);
       });
 
-    console.log('unsubscribing from channel');
     const { currentUser } = this.props;
     const currentUserIdentifier = currentUser?.userIdentifier;
     if (currentUserIdentifier) {
@@ -412,7 +389,6 @@ class TaskView extends Component {
       let channel = pusher.channel(channelName);
       if (channel) {
         channel = pusher.unsubscribe(channelName);
-        console.log('unsubscribed from channel');
       }
     }
   };
@@ -510,11 +486,8 @@ class TaskView extends Component {
       tasks,
       completedTasks,
       isFetching,
-      isMultiList,
       hasTitle = true,
       title,
-      members,
-      membersNotInTaskList,
       taskList,
       dispatchedSetHeader,
     } = this.props;
@@ -539,11 +512,8 @@ class TaskView extends Component {
                 isFetching={isFetching}
                 title={title}
                 taskCount={allTasksCount}
-                members={members}
-                membersNotInTaskList={membersNotInTaskList}
                 taskList={taskList}
                 resetHeader={this.resetHeader}
-                isMultiList={isMultiList}
                 hasTitle={hasTitle}
               />
             ),
@@ -671,12 +641,80 @@ class TaskView extends Component {
   };
 
   renderFilterPopover = () => {
-    const { filterPopoverOpen } = this.state;
+    const { filterPopoverOpen, filterBy } = this.state;
+
+    const mappedFilterOptions = filterOptions.map(({ value, description }) => ({
+      key: value,
+      label: `${description} (#)`,
+      onClick: this.onFilterChange({ value }),
+    }));
+
+    const currentFilterDescription =
+      filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
+
+    const filterButton = {
+      key: 'filter',
+      label: (
+        <>
+          <Button variant="text" onClick={this.closeFilterPopover} size="small">
+            <ToolbarLabel variant="body1" component="span">
+              FILTER
+            </ToolbarLabel>
+            <Spacing horizontal={3} />
+            <RotatableChevron rotated={filterPopoverOpen} />
+          </Button>
+          {currentFilterDescription && (
+            <>
+              <Spacing horizontal={3} />
+              <ToolbarLabel
+                variant="body1"
+                component="span"
+                style={{ color: '#8492a4' }}
+              >
+                {currentFilterDescription}
+              </ToolbarLabel>
+              <Spacing horizontal={3} />
+              <ToolbarLabel
+                variant="body1"
+                component="span"
+                onClick={this.clearFilter}
+                style={{ cursor: 'pointer' }}
+              >
+                Clear
+              </ToolbarLabel>
+            </>
+          )}
+        </>
+      ),
+      disableHover: true,
+      button: false,
+      style: {
+        padding: '0.25rem 1.375rem',
+      },
+    };
+
+    const divider = {
+      key: 'divider',
+      label: '',
+      button: false,
+      style: {
+        borderBottom: '0.0625rem solid #e5e9f2',
+        margin: '0.25rem 0',
+        padding: 0,
+      },
+    };
+
+    const { left: filterButtonX = 0, top: filterButtonY = 0 } =
+      this.filterButton.current?.getBoundingClientRect() || {};
 
     return (
-      <Popover
+      <ListPopover
         open={filterPopoverOpen}
-        anchorEl={this.filterButton?.current}
+        anchorReference="anchorPosition"
+        anchorPosition={{
+          left: filterButtonX - 23,
+          top: filterButtonY - 5.5,
+        }}
         onClose={this.closeFilterPopover}
         anchorOrigin={{
           horizontal: 'left',
@@ -686,19 +724,9 @@ class TaskView extends Component {
           horizontal: 'left',
           vertical: 'top',
         }}
-      >
-        <List>
-          {filterOptions.map(({ value, description }) => (
-            <ListItem
-              key={value}
-              button
-              onClick={this.onFilterChange({ value })}
-            >
-              {description}
-            </ListItem>
-          ))}
-        </List>
-      </Popover>
+        TransitionComponent={Fade}
+        items={[filterButton, divider, ...mappedFilterOptions]}
+      />
     );
   };
 
@@ -1079,6 +1107,8 @@ class TaskView extends Component {
       tasks,
       completedTasks,
       taskListMembers,
+      members,
+      membersNotInTaskList,
     } = this.props;
     const {
       initialSearchValue,
@@ -1086,10 +1116,8 @@ class TaskView extends Component {
       displayHUD,
       filterBy,
       preferencesInitialized,
+      filterPopoverOpen,
     } = this.state;
-
-    const currentFilterDescription =
-      filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
 
     const hasTasks = !isEmpty(tasks);
     const hasNoTasksAfterFilterApplication =
@@ -1100,30 +1128,21 @@ class TaskView extends Component {
         (hasTasks || hasNoTasksAfterFilterApplication || isFetching)) ||
       !isInbox;
 
-    const showSortingStats = !isMultiList && !isInbox;
+    const currentFilterDescription =
+      filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
 
     return (
       <div
         style={{
           display: 'flex',
-          flexFlow: 'row nowrap',
-          justifyContent: 'center',
+          flexFlow: 'column nowrap',
+          alignItems: 'center',
         }}
       >
-        <SideClickListener onClick={this.closeTaskDrawer} />
-        <TaskViewContainer>
-          {showSortingStats && displayHUD && (
-            <HeadsUpArea
-              ref={this.headsUpArea}
-              taskList={taskList}
-              filterChange={this.handleFilterChange}
-              currentFilter={filterBy}
-            />
-          )}
+        <Grid container justify="center" item xs={12}>
           {showToolbar && !globalSearch && (
             <Toolbar
               clearFilter={this.clearFilter}
-              displayHUD={displayHUD}
               downloadPDF={downloadPDF}
               filterButton={this.filterButton}
               filterBy={filterBy}
@@ -1133,14 +1152,17 @@ class TaskView extends Component {
               preferencesInitialized={preferencesInitialized}
               initialSearchValue={initialSearchValue}
               selectedTask={selectedTask}
-              showSortingStats={showSortingStats}
               slimView={slimView}
               switchSlimView={this.switchSlimView}
               taskDrawerOpen={taskDrawerOpen}
-              toggleHUD={this.toggleHUD}
               toolbarContainerVisible={toolbarContainerVisible}
               showAddTaskButton={showAddTaskButton}
               taskListContainerReference={this.taskListContainerReference}
+              filterPopoverOpen={filterPopoverOpen}
+              taskList={taskList}
+              members={members}
+              membersNotInTaskList={membersNotInTaskList}
+              currentFilterDescription={currentFilterDescription}
               printData={{
                 tasks,
                 completedTasks,
@@ -1148,20 +1170,17 @@ class TaskView extends Component {
               }}
             />
           )}
-          <AnimatePresence>
-            {currentFilterDescription && (
-              <FilterByTextContainer {...animationProperties}>
-                <img src={FilterIcon} alt="Filter icon" />
-                <FilterByLabel>Filter:</FilterByLabel>
-                <FilterByBoldLabel>
-                  {currentFilterDescription}
-                </FilterByBoldLabel>
-                <FilterByLinkLabel onClick={this.clearFilter}>
-                  clear filter
-                </FilterByLinkLabel>
-              </FilterByTextContainer>
-            )}
-          </AnimatePresence>
+        </Grid>
+        <SideClickListener onClick={this.closeTaskDrawer} />
+        <TaskViewContainer>
+          {displayHUD && (
+            <HeadsUpArea
+              ref={this.headsUpArea}
+              taskList={taskList}
+              filterChange={this.handleFilterChange}
+              currentFilter={filterBy}
+            />
+          )}
           <TaskViewGrid container wrap="nowrap">
             <TableWrapper taskDrawerOpen={taskDrawerOpen}>
               {isFetching ? (
