@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import SearchPersonSvg from '../img/search-person-icon.svg';
-import Search from '../components/taskView/Search';
 
 export const SearchPersonIcon = styled.img.attrs({
   alt: 'Search list person icon',
@@ -15,13 +14,7 @@ export const SearchPersonIcon = styled.img.attrs({
 
 export const SearchFieldContainer = styled.div`
   margin: 1rem;
-  max-width: 43.5rem;
+  max-width: 48rem;
   position: relative;
   width: 100%;
-`;
-
-export const StyledSearch = styled(Search)`
-  && {
-    width: 100%;
-  }
 `;

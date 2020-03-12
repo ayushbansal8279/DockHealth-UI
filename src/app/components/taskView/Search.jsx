@@ -12,18 +12,19 @@ const StyledTextField = styled(TextField)`
     border-radius: 0.25rem;
     color: #00a2e5;
     height: 2.5rem;
+    ${props => props.fullWidth && 'width: 100%;'}
 
     & .MuiInputBase-root {
       border: 0.0625rem solid #e5e9f200;
       border-radius: 0;
       height: 100%;
       transition: all 0.25s ease-in-out;
-      width: 6.75rem;
+      width: ${props => (props.fullWidth ? '100%' : '6.75rem')};
     }
 
     & .MuiInputBase-root.Mui-focused {
       border: 0.0625rem solid #e5e9f2;
-      width: 16.8125rem;
+      width: ${props => (props.fullWidth ? '100%' : '16.8125rem')};
     }
 
     & input {
@@ -67,6 +68,7 @@ const Search = ({
   onChange,
   initialValue,
   autoFocus,
+  fullWidth,
   ...otherInputProps
 }) => (
   <StyledTextField
@@ -74,6 +76,7 @@ const Search = ({
     placeholder="Search"
     variant="outlined"
     className={className}
+    fullWidth={fullWidth}
     InputProps={{
       startAdornment: (
         <StyledAdornment position="start">

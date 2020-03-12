@@ -1098,6 +1098,7 @@ class TaskView extends Component {
       showToolbar,
       selectedTask,
       markComplete,
+      isSearching = false,
       isInbox = false,
       isSpecificPatient = false,
       isMultiList,
@@ -1193,12 +1194,15 @@ class TaskView extends Component {
           )}
           <TaskViewGrid container wrap="nowrap">
             <TableWrapper taskDrawerOpen={mainTaskDrawerOpen}>
-              {isFetching ? (
+              {isFetching || isSearching ? (
                 <FadeContainer>
                   <Fade
-                    in={isFetching}
+                    in={isFetching || isSearching}
                     unmountOnExit
-                    style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
+                    style={{
+                      transitionDelay:
+                        isFetching || isSearching ? '800ms' : '0ms',
+                    }}
                   >
                     <CubesLoader size={40} />
                   </Fade>

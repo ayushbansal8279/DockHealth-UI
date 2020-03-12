@@ -1,9 +1,9 @@
 import Grid from '@material-ui/core/Grid';
+import { isEmpty, memoizeWith } from 'ramda';
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useUnmount } from 'react-use';
 import { bindActionCreators } from 'redux';
-import { memoizeWith } from 'ramda';
 import * as TaskActions from '../../actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import TaskView from '../../views/TaskView';
@@ -18,6 +18,7 @@ const TaskListLayout = ({
   searchPerformed,
   onFilter,
   onCompletedTasksRequest,
+  isSearching = false,
   globalSearch = false,
 }) => {
   const selectedTaskId = useSelector(
@@ -45,6 +46,7 @@ const TaskListLayout = ({
       taskActions.toggleTaskPriority(task, userIdentifier, priority),
     showToolbar: true,
     showAddTaskButton: false,
+    isSearching,
     isMultiList: true,
     isSpecificPatient: false,
     showListHeadings: false,
@@ -59,7 +61,7 @@ const TaskListLayout = ({
   };
 
   if (searchPerformed) {
-    return !isFetching && !lists ? (
+    return !isFetching && !isSearching && isEmpty(lists) ? (
       <Grid container justify="center">
         <b>No matching tasks</b>
       </Grid>
@@ -82,6 +84,7 @@ const TaskListSearchContainer = ({
   onFilter,
   onCompletedTasksRequest,
   globalSearch = false,
+  isSearching = false,
 }) => {
   useUnmount(() => {
     taskActions.resetTaskSearch();
@@ -95,6 +98,7 @@ const TaskListSearchContainer = ({
   const taskListProps = {
     searchedTasks,
     isFetching,
+    isSearching,
     isCompletedTasksFetching,
     userIdentifier,
     taskActions,

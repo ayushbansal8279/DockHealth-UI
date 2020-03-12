@@ -10,14 +10,15 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import GenericHeader from '../components/common/GenericHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import TaskListSearchContainer from '../components/LEGACY_list/TaskListSearchContainer';
-import {
-  SearchFieldContainer,
-  SearchPersonIcon,
-  StyledSearch,
-} from './TaskListSearch.Styled';
+import TaskCheckbox from '../components/task/TaskCheckbox';
+import Search from '../components/taskView/Search';
+import { SearchFieldContainer } from './TaskListSearch.Styled';
+import Spacing from '../components/common/Spacing';
 
 class TaskListSearch extends PureComponent {
   state = {
+    isSearching: false,
+    searchCompletedTasks: false,
     searchTerm: '',
     searchPerformed: false,
   };
@@ -43,7 +44,7 @@ class TaskListSearch extends PureComponent {
     setHeader({
       layout: [
         {
-          key: 'generic-header',
+          key: 'search-header',
           component: (
             <GenericHeader>
               <Typography variant="h4">Search</Typography>
@@ -54,9 +55,29 @@ class TaskListSearch extends PureComponent {
     });
   };
 
-  searchTasks = () => {
-    this.getListTasks({ status: 'INCOMPLETE' });
-    this.getListTasks({ status: 'COMPLETE' });
+  setSearchCompletedTasks = (newValue, callback = () => {}) => {
+    this.setState(
+      {
+        searchCompletedTasks: newValue,
+        isSearching: true,
+      },
+      callback,
+    );
+  };
+
+  searchTasks = async () => {
+    const { searchCompletedTasks } = this.state;
+
+    await Promise.all([
+      this.getListTasks({ status: 'INCOMPLETE' }),
+      searchCompletedTasks
+        ? this.getListTasks({ status: 'COMPLETE' })
+        : Promise.resolve(),
+    ]);
+
+    this.setState({
+      isSearching: false,
+    });
   };
 
   getListTasks = ({
@@ -67,7 +88,7 @@ class TaskListSearch extends PureComponent {
     const { taskActions } = this.props;
     const { searchTerm } = this.state;
     taskActions.loading();
-    taskActions.searchTasks(searchTerm, sortBy, filterBy, status);
+    return taskActions.searchTasks(searchTerm, sortBy, filterBy, status);
   };
 
   handleAddTask = () => {
@@ -80,43 +101,83 @@ class TaskListSearch extends PureComponent {
     this.setState(
       {
         searchTerm: event?.target?.value ?? '',
-        searchPerformed: true,
+        searchPerformed: Boolean(event?.target?.value),
       },
       () => {
         const { searchTerm } = this.state;
         const { taskActions } = this.props;
 
         if (searchTerm) {
-          this.debouncedSearchTasks();
+          this.setState(
+            {
+              isSearching: true,
+            },
+            () => {
+              this.debouncedSearchTasks();
+            },
+          );
         } else {
-          this.debouncedSearchTasks.cancel();
-          taskActions.clearSearchTasks({ status: 'COMPLETE' });
-          taskActions.clearSearchTasks({ status: 'INCOMPLETE' });
+          this.setState(
+            {
+              isSearching: false,
+            },
+            () => {
+              this.debouncedSearchTasks.cancel();
+              taskActions.clearSearchTasks({ status: 'COMPLETE' });
+              taskActions.clearSearchTasks({ status: 'INCOMPLETE' });
+            },
+          );
         }
       },
     );
   };
 
   render() {
-    const { searchPerformed } = this.state;
+    const { isSearching, searchPerformed, searchCompletedTasks } = this.state;
 
     return (
       <Grid container direction="column" alignItems="center">
-        <SafariFixGrid item xs={12} container justify="center">
-          <SearchPersonIcon />
-        </SafariFixGrid>
-        <SafariFixGrid item xs={12} container justify="center">
-          <SearchFieldContainer>
-            <StyledSearch onChange={this.handleSearch} />
-          </SearchFieldContainer>
-        </SafariFixGrid>
+        <Spacing vertical={6} />
+        <SearchFieldContainer>
+          <SafariFixGrid item xs={12} container justify="center" spacing={2}>
+            <Grid item xs={12} sm={12} md={8} container alignItems="center">
+              <Search fullWidth onChange={this.handleSearch} />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={4}
+              container
+              alignItems="center"
+              wrap="nowrap"
+            >
+              <TaskCheckbox
+                size={22}
+                onChange={event => {
+                  this.setSearchCompletedTasks(
+                    event.target.checked,
+                    this.searchTasks,
+                  );
+                }}
+                checked={searchCompletedTasks}
+              />
+              <Spacing horizontal={3} />
+              <Typography variant="body1" color="textSecondary">
+                Search completed tasks
+              </Typography>
+            </Grid>
+          </SafariFixGrid>
+        </SearchFieldContainer>
         <SafariFixGrid item xs={12} container justify="center">
           <TaskListSearchContainer
             searchPerformed={searchPerformed}
             onFilter={this.handleFilterChange}
+            isSearching={isSearching}
             globalSearch
           />
         </SafariFixGrid>
+        <Spacing vertical={6} />
       </Grid>
     );
   }
@@ -136,7 +197,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TaskListSearch);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListSearch);
