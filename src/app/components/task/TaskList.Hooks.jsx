@@ -8,6 +8,8 @@ import sortWith from 'ramda/es/sortWith';
 import uniqBy from 'ramda/es/uniqBy';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useToggle } from 'react-use';
+import { hashHistory } from 'react-router';
 import { getTaskPage } from '../../actions/task-actions';
 import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
 import {
@@ -25,6 +27,9 @@ export default ({
   filterBy,
   search,
   listName,
+  isMultiList,
+  taskDrawerProps,
+  onCompletedTasksRequest,
 }) => {
   const tasks = otherTaskListProps.listTasks ?? propsTasks;
 
@@ -114,6 +119,45 @@ export default ({
     ...sortWith(reverse(sortingMethods), tasksToShow),
   ]);
 
+  const [areCompleteTasksShown, toggleCompletedTasksShown] = useToggle(false);
+
+  const { selectedTaskId, listTasks } = otherTaskListProps || {};
+
+  const otherTaskListSubtasks = (listTasks ?? []).flatMap(
+    ({ subtasks }) => subtasks,
+  );
+
+  const otherTaskListSubtasksIdentifiers = otherTaskListSubtasks.map(
+    ({ taskIdentifier }) => taskIdentifier,
+  );
+
+  const otherTaskListIdentifiers = (listTasks ?? []).map(
+    ({ taskIdentifier }) => taskIdentifier,
+  );
+
+  const isCurrentListSelected =
+    (isMultiList &&
+      Boolean(otherTaskListSubtasksIdentifiers.includes(selectedTaskId))) ||
+    otherTaskListIdentifiers.includes(selectedTaskId) ||
+    (addingNewSubtask &&
+      otherTaskListIdentifiers.includes(addingNewSubtaskParentId));
+
+  const globalSearch =
+    hashHistory.getCurrentLocation()?.pathname?.startsWith('/taskSearch') ??
+    false;
+
+  const getCompletedTasks = () => {
+    if (!areCompleteTasksShown) {
+      onCompletedTasksRequest(
+        taskListIdentifier ?? taskDrawerProps.taskList.taskListIdentifier,
+        filterBy,
+        '',
+      );
+    }
+
+    toggleCompletedTasksShown();
+  };
+
   return {
     addingNewTask,
     newlyAddedTaskIds,
@@ -128,5 +172,11 @@ export default ({
     isShowMoreLocked,
     addingNewSubtask,
     addingNewSubtaskParentId,
+    isCurrentListSelected,
+    globalSearch,
+    getCompletedTasks,
+    listTasks,
+    areCompleteTasksShown,
+    toggleCompletedTasksShown,
   };
 };

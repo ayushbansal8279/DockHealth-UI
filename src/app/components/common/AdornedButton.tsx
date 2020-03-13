@@ -38,14 +38,13 @@ interface AdornedButtonProps extends ButtonBaseProps {
 const AdornedButton = ({
   adornment,
   children,
-  className,
   ...otherProps
 }: AdornedButtonProps) => {
   const adornedButtonClasses = useAdornedButtonClasses();
 
   return (
     <ButtonBase
-      className={clsx(adornedButtonClasses.root, className)}
+      className={clsx(adornedButtonClasses.root, otherProps?.className)}
       {...otherProps}
     >
       {adornment && (

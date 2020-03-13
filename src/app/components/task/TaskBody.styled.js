@@ -25,7 +25,19 @@ export const PatientsTasklistDescription = styled.div`
   font-weight: bold;
   line-height: 1.25;
   flex: 1;
-  max-width: ${props => (props.isSubtask ? 400 : 440)}px;
+  max-width: ${props => {
+    let width = 27.5;
+
+    if (props.isSubtask) {
+      width -= 2.375;
+    }
+
+    if (props.paneled) {
+      width -= 2;
+    }
+
+    return width;
+  }}rem;
   padding-bottom: 0.125rem;
   overflow: hidden;
   position: relative;
@@ -132,8 +144,19 @@ export const PatientTasklistContainer = styled.div`
   margin-right: 0.625rem;
   padding: 0.25rem 0;
   position: relative;
-  min-width: ${props => (props.isSubtask ? 25.125 : 27.5)}rem;
-  width: ${props => (props.isSubtask ? 25.125 : 27.5)}rem;
+  ${props => {
+    let width = 27.5;
+
+    if (props.isSubtask) {
+      width -= 2.375;
+    }
+
+    if (props.paneled) {
+      width -= 2;
+    }
+
+    return `min-width: ${width}rem; width: ${width}rem;`;
+  }}
 `;
 
 export const CompletedBy = styled.div`

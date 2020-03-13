@@ -381,7 +381,7 @@ class Home extends Component {
       taskListMembers,
       pendingTasklists,
       membersNotInTaskList,
-      routeParams: { listName, taskListIdentifier, filterBy },
+      routeParams: { listName, taskListIdentifier },
     } = this.props;
 
     const { preSelectedTask } = this.state;
@@ -397,28 +397,15 @@ class Home extends Component {
 
     const hasTitle = Boolean(loadedTasklist?.listName);
 
-    let filterByDescription = '';
-    if (filterBy === 'FLAGGED') {
-      filterByDescription = 'Flagged';
-    } else if (filterBy === 'OVERDUE') {
-      filterByDescription = 'Overdue';
-    } else if (filterBy === 'DUE_TODAY') {
-      filterByDescription = 'Due Today';
-    } else if (filterBy === 'DUE_THIS_WEEK') {
-      filterByDescription = 'Due This Week';
-    }
-
     if (listName === ASSIGNED_BY_ME) {
-      title = `Assigned by me${
-        filterByDescription !== '' ? ` (${filterByDescription})` : ''
-      }`;
+      title = 'Assigned by me';
       isMultiList = true;
     } else if (listName === ASSIGNED_TO_ME) {
-      title = `Assigned to me${
-        filterByDescription !== '' ? ` (${filterByDescription})` : ''
-      }`;
+      title = 'Assigned to me';
       isMultiList = true;
     }
+
+    const isSpecialList = [ASSIGNED_BY_ME, ASSIGNED_TO_ME].includes(listName);
 
     const taskViewProps = {
       userIdentifier,
@@ -442,6 +429,7 @@ class Home extends Component {
       downloadPDF: this.downloadPDF,
       hasTitle,
       title,
+      isSpecialList,
       showToolbar: true,
       taskList: loadedTasklist || undefined,
       isMultiList,
@@ -480,7 +468,4 @@ const mapDispatchToProps = dispatch => ({
   invitationActions: bindActionCreators(InvitationActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

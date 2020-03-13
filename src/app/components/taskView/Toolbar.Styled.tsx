@@ -4,17 +4,6 @@ import { withStyles } from '@material-ui/styles';
 import React from 'react';
 import styled from 'styled-components';
 
-export const ToolbarContainer = styled.div`
-  align-items: center;
-  background-color: #fff;
-  border-bottom: 0.0625rem solid #e5e9f2;
-  display: flex;
-  height: 5.75rem;
-  justify-content: space-between;
-  padding: 0 2rem;
-  width: 100%;
-`;
-
 const StyledSwitchContainer = withStyles({
   root: {
     border: '0.125rem solid #fdad00',

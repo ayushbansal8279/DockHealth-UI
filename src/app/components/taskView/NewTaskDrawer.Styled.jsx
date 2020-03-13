@@ -19,7 +19,7 @@ export const NewTaskDrawerContainer = styled.div`
   padding: 0 0.25rem;
   position: sticky;
   transition: all 0.25s ease-out;
-  top: ${props => (props.isSubscriptionTrial ? 9 : 6.25)}rem;
+  top: 0;
 `;
 
 export const ParentInfoContainer = styled.div`

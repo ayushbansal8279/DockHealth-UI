@@ -15,8 +15,6 @@ import PatientProfile from './components/patient/PatientProfile';
 import Patients from './components/patients/Patients';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
-import AssignedByMe from './views/AssignedByMe';
-import AssignedToMe from './views/AssignedToMe';
 import ChangePassword from './views/auth/ChangePassword';
 import ConfirmMFACode from './views/auth/ConfirmMFACode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
@@ -242,16 +240,6 @@ export const Routes = ({ store }) => {
           <Route path="/tasks">
             <IndexRoute
               component={TaskListView}
-              onEnter={checkFeatureToggles}
-            />
-            <Route
-              path="assigned_by_me"
-              component={AssignedByMe}
-              onEnter={checkFeatureToggles}
-            />
-            <Route
-              path="assigned_to_me"
-              component={AssignedToMe}
               onEnter={checkFeatureToggles}
             />
             <Route

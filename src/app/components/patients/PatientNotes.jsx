@@ -1,4 +1,4 @@
-import { ButtonBase } from '@material-ui/core';
+import { Button, Grid, ThemeProvider, Typography } from '@material-ui/core';
 import moment from 'moment';
 import * as PropTypes from 'prop-types';
 import React from 'react';
@@ -8,8 +8,10 @@ import { v4 as uuid } from 'uuid';
 import { editPatientNote } from '../../actions/patient-actions';
 import { capitalize } from '../../helpers/capitalize';
 import { onPatientNoteEdited } from '../../helpers/ga-event-helper';
+import { themeMontserratNormal } from '../../theme-montserrat';
 import EditableDescription from '../common/EditableDescription';
-import { Cancel, Save, StyledTextField } from './PatientCreation';
+import Spacing from '../common/Spacing';
+import { StyledTextField } from './PatientCreation';
 
 const NoteTextField = styled(StyledTextField)`
   && {
@@ -30,18 +32,13 @@ const NoteInfo = styled.div`
   color: #ababb2;
 `;
 
-const AddNote = styled(ButtonBase).attrs(() => ({
-  children: '+ Add a note',
-}))`
-  && {
-    font-size: 14px;
-    color: #13a7d1;
-    padding: 8px;
-    margin-left: -8px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
-`;
+const AddNote = props => (
+  <Button variant="text" size="small" {...props}>
+    <ThemeProvider theme={themeMontserratNormal}>
+      <Typography variant="h4">+ Add a note</Typography>
+    </ThemeProvider>
+  </Button>
+);
 
 const NotesContainer = styled.div`
   max-height: 14rem;
@@ -135,19 +132,26 @@ const PatientNotes = ({
     patientNote.creator.userIdentifier === userIdentifier;
 
   return (
-    <div style={{ padding: '0 12px' }}>
+    <div>
       <NotesContainer>
-        {notes.map(patientNote => (
-          <EditablePatientNote
-            update={handleUpdate}
-            note={patientNote}
-            isOwn={isOwn(patientNote)}
-            key={patientNote.patientNoteIdentifier}
-          />
-        ))}
+        {notes?.length > 0 ? (
+          notes.map(patientNote => (
+            <EditablePatientNote
+              update={handleUpdate}
+              note={patientNote}
+              isOwn={isOwn(patientNote)}
+              key={patientNote.patientNoteIdentifier}
+            />
+          ))
+        ) : (
+          <Typography variant="body1">
+            No notes available for this patient
+          </Typography>
+        )}
       </NotesContainer>
       {isCreating ? (
-        <div style={{ marginTop: '15px' }}>
+        <>
+          <Spacing vertical={4} />
           <NoteTextField
             value={note}
             onChange={handleChange}
@@ -158,23 +162,22 @@ const PatientNotes = ({
             autoFocus
             autoComplete={uuid()}
           />
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              marginBottom: '16px',
-            }}
-          >
-            <Cancel onClick={handleCancel}>Cancel</Cancel>
-            <Save onClick={handleSubmit}>Add note</Save>
-          </div>
-        </div>
+          <Spacing vertical={4} />
+          <Grid container justify="flex-end">
+            <Button variant="text" size="small" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Spacing horizontal={3} />
+            <Button variant="contained" size="small" onClick={handleSubmit}>
+              Add note
+            </Button>
+          </Grid>
+        </>
       ) : (
-        <AddNote
-          onClick={startCreating}
-          style={{ marginTop: '18px', marginBottom: '18px' }}
-        />
+        <>
+          <Spacing vertical={4} />
+          <AddNote onClick={startCreating} />
+        </>
       )}
     </div>
   );

@@ -58,6 +58,7 @@ const handleHomeRedirection = async ({
   if (data?.profileThumbnailPictureHash) {
     userApi.getUserProfilePic(data?.userIdentifier, 'PROFILE');
   }
+  userApi.getUserNotoficationPrefs();
 
   handleFeatureToggle({
     location: hashHistory.getCurrentLocation(),

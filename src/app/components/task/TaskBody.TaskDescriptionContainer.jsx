@@ -49,9 +49,10 @@ export default ({
   countInfoContent,
   members,
   edited,
+  paneled,
 }) => {
   return (
-    <PatientTasklistContainer isSubtask={isSubtask}>
+    <PatientTasklistContainer isSubtask={isSubtask} paneled={paneled}>
       <AnimatePresence>
         {!read && (
           <PatientsTasklistNew {...animationProperties}>
@@ -82,6 +83,7 @@ export default ({
           ref={taskDescriptionReference}
           onMouseEnter={onTaskDescriptionMouseEnter}
           onMouseLeave={onTaskDescriptionMouseLeave}
+          paneled={paneled}
           isSubtask={isSubtask}
         >
           <span

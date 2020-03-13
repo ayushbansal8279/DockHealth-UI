@@ -9,8 +9,7 @@ import PatientsDetailsIcon from '../../img/details.svg';
 import PatientsEmptyIcon from '../../img/patients-empty.svg';
 
 const EmptyListContainer = styled.div`
-  background: #fff;
-  padding: 41px 24px 50px 24px;
+  padding: 2rem;
   text-align: center;
   flex: 1;
 `;
@@ -24,17 +23,16 @@ const EmptyListIcon = styled.div`
 
 const EmptyList = () => (
   <EmptyListContainer>
-    <EmptyListIcon />
     <div>
       <p>
         <strong>
           There are currently no patient profiles in you organization.
         </strong>
       </p>
-      <p>
-        You can add a patient profile by clicking on the + button on the top
-        right of the page. If you would like to add patients in bulk or connect
-        to your electronic health record, please contact us at &nbsp;
+      <div>
+        You can add a patient profile by clicking <b>ADD A PATIENT</b> button on
+        the top right of the page. If you would like to add patients in bulk or
+        connect to your electronic health record, please contact us at&nbsp;
         <a
           href="mailto:support@dock.health?Subject=Dock%20Support"
           target="_top"
@@ -42,7 +40,7 @@ const EmptyList = () => (
         >
           support@dock.health
         </a>
-      </p>
+      </div>
     </div>
   </EmptyListContainer>
 );
@@ -64,6 +62,8 @@ const NonEmptyListTable = styled.div`
   grid-auto-rows: min-content;
   grid-row-gap: 0.25rem;
   grid-template-columns: 1fr;
+  margin: 2rem;
+  ${props => props.highlightedPatient && 'margin-right: 0.25rem;'}
 `;
 
 const ListRow = styled.div`
@@ -168,7 +168,10 @@ const NonEmptyList = ({ patients, isCompact, highlightedPatient }) => {
   });
 
   return (
-    <NonEmptyListTable listLength={patients?.length ?? 0}>
+    <NonEmptyListTable
+      listLength={patients?.length ?? 0}
+      highlightedPatient={highlightedPatient}
+    >
       <ListHeader isCompact={isCompact}>
         <div>Name</div>
         <div>MRN</div>

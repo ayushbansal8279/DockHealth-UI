@@ -2,13 +2,13 @@ import { ListItem, makeStyles, Popover, PopoverProps } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 
-interface PopoverListItem {
+type PopoverListItem = {
   active?: boolean;
   button?: boolean;
   key: string;
   label: React.ReactNode;
   onClick?: (event: React.SyntheticEvent) => void;
-}
+} | null;
 
 interface ListPopoverProps extends Omit<PopoverProps, 'children'> {
   items: Array<PopoverListItem>;
@@ -46,14 +46,20 @@ const renderItem = ({
   listItemClasses,
 }: {
   listItemClasses: Record<'root' | 'active', string>;
-}) => ({
-  active = false,
-  key,
-  label,
-  onClick,
-  button = true,
-  ...otherProps
-}: PopoverListItem) => {
+}) => (popoverItem: PopoverListItem) => {
+  if (!popoverItem) {
+    return null;
+  }
+
+  const {
+    active = false,
+    key,
+    label,
+    onClick,
+    button = true,
+    ...otherProps
+  } = popoverItem;
+
   return (
     <ListItem
       // explicit cast here is a workaround for ListItem typing issue

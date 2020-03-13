@@ -63,6 +63,13 @@ export const StyledTextField = styled(
       }
     }
 
+    & .MuiFilledInput-underline {
+      &::after,
+      &::before {
+        border: 0 !important;
+      }
+    }
+
     .root {
       background-color: rgba(243, 245, 246, 0.5);
     }

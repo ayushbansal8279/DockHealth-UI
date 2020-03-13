@@ -1,13 +1,17 @@
+import { Grid } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-
+import { beginPatientCreation } from '../../actions/patient-actions';
+import AdornedButton from '../common/AdornedButton';
+import PageContentHeader from '../common/PageContentHeader';
+import Search from '../taskView/Search';
 import PatientsFilter from './PatientsFilter';
-import PatientsSearch from './PatientsSearch';
 
-const PatientsToolbarContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 41px 0 32px 43px;
+const PatientSearchContainer = styled.div`
+  margin-left: 2.5rem;
+  width: 16rem;
 `;
 
 const ALL_PATIENTS = 'ALL_PATIENTS';
@@ -57,18 +61,29 @@ const PatientsToolbar = ({
   deselectPatient,
   handleSearch,
   handlePatientFilter,
-}) => (
-  <PatientsToolbarContainer onClick={deselectPatient}>
-    <PatientsToolbarFilter
-      handlePatientFilter={handlePatientFilter}
-      deselectPatient={deselectPatient}
-    />
-    <PatientsSearch
-      onChange={handleSearch}
-      stopPropagation={stopPropagation}
-      style={{ marginLeft: '46px' }}
-    />
-  </PatientsToolbarContainer>
-);
+}) => {
+  const dispatch = useDispatch();
+
+  const onAddPatientClick = useCallback(() => {
+    dispatch(beginPatientCreation());
+  }, [dispatch]);
+
+  return (
+    <PageContentHeader onClick={deselectPatient}>
+      <Grid container alignItems="center" wrap="nowrap">
+        <PatientsToolbarFilter
+          handlePatientFilter={handlePatientFilter}
+          deselectPatient={deselectPatient}
+        />
+        <PatientSearchContainer>
+          <Search variant="outlined" fullWidth onChange={handleSearch} />
+        </PatientSearchContainer>
+      </Grid>
+      <AdornedButton adornment={<AddIcon />} onClick={onAddPatientClick}>
+        ADD A PATIENT
+      </AdornedButton>
+    </PageContentHeader>
+  );
+};
 
 export default PatientsToolbar;

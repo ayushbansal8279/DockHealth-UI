@@ -1,10 +1,9 @@
 import { Grid, ThemeProvider } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { mergeDeepRight } from 'ramda';
 import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import themeMontserrat from '../../theme-montserrat';
+import { themeMontserratNormal } from '../../theme-montserrat';
 import CubesLoader from './CubesLoader';
 
 const GenericHeaderContainer = styled.div`
@@ -16,8 +15,8 @@ const GenericHeaderContainer = styled.div`
   width: 100%;
 `;
 
-const GenericHeader = ({ children, isFetching }) => (
-  <ThemeProvider theme={theme => mergeDeepRight(theme, themeMontserrat)}>
+const GenericHeader = ({ children, isFetching = false }) => (
+  <ThemeProvider theme={themeMontserratNormal}>
     <GenericHeaderContainer>
       <Grid container alignItems="center">
         {isFetching ? <CubesLoader size={32} color="#fff" /> : children}

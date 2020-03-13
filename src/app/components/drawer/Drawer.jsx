@@ -3,7 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import MaterialDrawer from '@material-ui/core/Drawer';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import clsx from 'clsx';
-import moment from 'moment';
+// import moment from 'moment';
 import React, { useState } from 'react';
 import Intercom from 'react-intercom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,12 +14,12 @@ import { getOrganizationById } from '../../actions/organization-actions';
 import useBoolean from '../../hooks/useBoolean';
 import {
   getSubscriptionIsTrial,
-  getSubscriptionPlanTrialLabel,
+  // getSubscriptionPlanTrialLabel,
 } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import DrawerList from './DrawerList';
 
-const MINIMAL_TRIAL_USAGE_PERIOD = 20;
-const TRIAL_USAGE_PERIOD = 30;
+// const MINIMAL_TRIAL_USAGE_PERIOD = 20;
+// const TRIAL_USAGE_PERIOD = 30;
 
 const useDrawerClasses = makeStyles({
   appBar: {
@@ -133,15 +133,15 @@ const Drawer = ({ children }) => {
     subscription,
   });
 
-  const subscriptionPlanTrialLabel = getSubscriptionPlanTrialLabel({
-    subscription,
-  });
+  // const subscriptionPlanTrialLabel = getSubscriptionPlanTrialLabel({
+  //   subscription,
+  // });
 
-  const trialEndMoment = moment(subscription?.trialEndDate ?? null);
+  // const trialEndMoment = moment(subscription?.trialEndDate ?? null);
 
-  const trialEndDayDifference = trialEndMoment.isValid()
-    ? trialEndMoment.diff(moment(), 'day')
-    : 0;
+  // const trialEndDayDifference = trialEndMoment.isValid()
+  //   ? trialEndMoment.diff(moment(), 'day')
+  //   : 0;
 
   // const hasMinimalUsagePeriodPassed =
   //   trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;

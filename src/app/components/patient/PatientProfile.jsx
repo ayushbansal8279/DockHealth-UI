@@ -1,50 +1,54 @@
+import { ThemeProvider, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/styles';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
+import { setHeader } from '../../actions/header-actions';
 import { fetchPatient } from '../../actions/patient';
 import {
   addTaskComment,
+  getListTasksByPatientAndStatus,
   markAsUnread,
   markComplete,
   storeAsCurrentTask,
   toggleTaskPriority,
-  getListTasksByPatientAndStatus,
 } from '../../actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import usePatient from '../../hooks/use-patient';
 import BackIcon from '../../img/back.svg';
+import themeMontserrat from '../../theme-montserrat';
 import TaskView from '../../views/TaskView';
+import CubesLoader from '../common/CubesLoader';
+import GenericHeader from '../common/GenericHeader';
 import SafariFixGrid from '../common/SafariFixGrid';
 import PatientEdit from '../patients/PatientEdit';
-import CubesLoader from '../common/CubesLoader';
 
 const PatientProfileHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background: #fff;
   height: 88px;
-  padding: 14px 40px 0 22px;
+  padding: 1rem;
 `;
 
 const BackButton = styled(IconButton)`
   && {
-    height: 36px;
-    width: 36px;
+    height: 2.25rem;
+    margin-right: 0.5rem;
+    width: 2.25rem;
     padding: 0;
   }
 `;
 
-const Heading = styled.div`
-  margin-left: 18px;
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 41px;
-`;
+const HeadingTypography = withStyles({
+  root: {
+    fontWeight: 'normal',
+  },
+})(Typography);
 
 const Back = () => (
   <Link to="patients">
@@ -60,16 +64,35 @@ const PatientProfileHeader = ({ patient }) => {
 
   return (
     patientName && (
-      <PatientProfileHeaderContainer>
-        <Back />
-        <Heading>{patientName}</Heading>
-      </PatientProfileHeaderContainer>
+      <ThemeProvider theme={themeMontserrat}>
+        <PatientProfileHeaderContainer>
+          <Back />
+          <HeadingTypography variant="h2">{patientName}</HeadingTypography>
+        </PatientProfileHeaderContainer>
+      </ThemeProvider>
     )
   );
 };
 
-const PatientProfileLayout = ({ patientIdentifier }) => {
+const PatientProfile = ({ routeParams }) => {
   const dispatch = useDispatch();
+
+  useMount(() => {
+    setHeader(dispatch)({
+      layout: [
+        {
+          key: 'patient-header',
+          component: (
+            <GenericHeader>
+              <Typography variant="h4">Patient</Typography>
+            </GenericHeader>
+          ),
+        },
+      ],
+    });
+  });
+
+  const patientIdentifier = routeParams?.patientIdentifier;
 
   useMount(() => {
     fetchPatient(patientIdentifier)(dispatch);
@@ -101,9 +124,7 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
     completedTasks,
   };
 
-  const handleCompletedTasksRequest = (
-    selectedTaskListIdentifier,
-  ) => {
+  const handleCompletedTasksRequest = selectedTaskListIdentifier => {
     dispatch(
       getListTasksByPatientAndStatus(
         patientIdentifier,
@@ -133,7 +154,9 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
     showToolbar: false,
     showAddTaskButton: false,
     isMultiList: true,
+    headsUpAreaVisible: false,
     isSpecificPatient: true,
+    paneled: true,
     onCompletedTasksRequest: handleCompletedTasksRequest,
   };
 
@@ -177,17 +200,5 @@ const PatientProfileLayout = ({ patientIdentifier }) => {
     </>
   );
 };
-
-const PatientProfile = ({ routeParams }) => (
-  <div className="off-canvas-content" data-off-canvas-content>
-    <div className="row expanded collapse" style={{ minHeight: '100%' }}>
-      <div className="columns" style={{ background: '#f5f8fa' }}>
-        <PatientProfileLayout
-          patientIdentifier={routeParams.patientIdentifier}
-        />
-      </div>
-    </div>
-  </div>
-);
 
 export default PatientProfile;

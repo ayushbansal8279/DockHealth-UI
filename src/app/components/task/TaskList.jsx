@@ -1,117 +1,26 @@
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/styles';
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { isEmpty, partition } from 'ramda';
 import React from 'react';
-import { hashHistory } from 'react-router';
-import { useToggle } from 'react-use';
 import CubesLoader from '../common/CubesLoader';
 import NewTaskDrawer from '../taskView/NewTaskDrawer';
-import Task from './Task';
 import Heading from './TaskList.Heading';
 import initializeTaskListHooks from './TaskList.Hooks';
 import NewTaskElement from './TaskList.NewTaskElement';
+import { ListEmptyElement, renderTasks } from './TaskList.RenderTasks';
 import {
-  EmptyListElementContainer,
   ShowMoreButton,
   ShowMoreButtonContainer,
   StyledTableCell,
   TaskListOuterContainer,
 } from './TaskList.styled';
 
-const ListEmptyElement = ({
-  addingNewTask,
-  taskDrawerOpen,
-  globalSearch,
-  label = 'List is empty.',
-}) => {
-  if (addingNewTask || globalSearch) {
-    return null;
-  }
-
-  return (
-    <EmptyListElementContainer taskDrawerOpen={taskDrawerOpen}>
-      {label}
-    </EmptyListElementContainer>
-  );
-};
-
-const renderTask = ({ taskDrawerOpen, otherTaskListProps }) => task => (
-  <Task
-    {...{
-      task,
-      isSubtask: task.parentTaskIdentifier !== null,
-      taskDrawerOpen,
-      key: task.taskIdentifier,
-      ...otherTaskListProps,
-    }}
-  />
-);
-
-const renderTasks = ({
-  isMultiList,
-  sortedTasksToShow,
-  taskDrawerOpen,
-  otherTaskListProps,
-  areCompleteTasksShown,
-  toggleCompletedTasksShown,
-  getCompletedTasks,
-  globalSearch,
-}) => {
-  const renderTaskBound = renderTask({ taskDrawerOpen, otherTaskListProps });
-
-  if (isMultiList) {
-    const [incompleteTasks, completeTasks] = partition(
-      ({ status }) => status === 'INCOMPLETE',
-      sortedTasksToShow,
-    );
-
-    const completeTasksCount = [
-      ...completeTasks,
-      ...completeTasks.flatMap(task => task?.subtasks ?? null).filter(Boolean),
-    ].length;
-
-    return (
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          {isEmpty(incompleteTasks) ? (
-            <ListEmptyElement
-              label="No incomplete tasks remaining."
-              globalSearch={globalSearch}
-            />
-          ) : (
-            incompleteTasks.map(renderTaskBound)
-          )}
-        </Grid>
-        {!globalSearch && (
-          <Grid item xs={12} container justify="center">
-            <Button
-              size="small"
-              type="button"
-              onClick={
-                areCompleteTasksShown
-                  ? toggleCompletedTasksShown
-                  : getCompletedTasks
-              }
-              variant="contained"
-            >
-              {`${areCompleteTasksShown ? 'Hide' : 'Show'} completed tasks${
-                completeTasksCount > 0 ? ` (${completeTasksCount})` : ''
-              }`}
-            </Button>
-          </Grid>
-        )}
-        {(areCompleteTasksShown || globalSearch) && (
-          <Grid item xs={12}>
-            {completeTasks.map(renderTaskBound)}
-          </Grid>
-        )}
-      </Grid>
-    );
-  }
-
-  return sortedTasksToShow.map(renderTaskBound);
-};
+const useTaskListClasses = makeStyles({
+  paneled: {
+    padding: '0 0.75rem 0.75rem',
+  },
+});
 
 const TaskList = ({
   tasks = [],
@@ -126,6 +35,7 @@ const TaskList = ({
   showListHeadings,
   isMultiList,
   taskDrawerProps = {},
+  paneled = false,
   ...otherTaskListProps
 }) => {
   const {
@@ -136,8 +46,12 @@ const TaskList = ({
     sortedTasksToShow,
     currentSorting,
     isShowMoreLocked,
-    addingNewSubtask,
-    addingNewSubtaskParentId,
+    listTasks,
+    areCompleteTasksShown,
+    toggleCompletedTasksShown,
+    globalSearch,
+    getCompletedTasks,
+    isCurrentListSelected,
   } = initializeTaskListHooks({
     otherTaskListProps,
     tasks,
@@ -147,49 +61,20 @@ const TaskList = ({
     filterBy,
     search,
     listName,
+    isMultiList,
+    taskDrawerProps,
+    onCompletedTasksRequest,
   });
 
-  const [areCompleteTasksShown, toggleCompletedTasksShown] = useToggle(false);
-
-  const { selectedTaskId, listTasks } = otherTaskListProps || {};
-
-  const otherTaskListSubtasks = (listTasks ?? []).flatMap(
-    ({ subtasks }) => subtasks,
-  );
-
-  const otherTaskListSubtasksIdentifiers = otherTaskListSubtasks.map(
-    ({ taskIdentifier }) => taskIdentifier,
-  );
-
-  const otherTaskListIdentifiers = (listTasks ?? []).map(
-    ({ taskIdentifier }) => taskIdentifier,
-  );
-
-  const isCurrentListSelected =
-    (isMultiList &&
-      Boolean(otherTaskListSubtasksIdentifiers.includes(selectedTaskId))) ||
-    otherTaskListIdentifiers.includes(selectedTaskId) ||
-    (addingNewSubtask &&
-      otherTaskListIdentifiers.includes(addingNewSubtaskParentId));
-
-  const globalSearch =
-    hashHistory.getCurrentLocation()?.pathname?.startsWith('/taskSearch') ??
-    false;
-
-  const getCompletedTasks = () => {
-    if (!areCompleteTasksShown) {
-      onCompletedTasksRequest(
-        taskListIdentifier ?? taskDrawerProps.taskList.taskListIdentifier,
-        filterBy,
-        '',
-      );
-    }
-
-    toggleCompletedTasksShown();
-  };
+  const taskListClasses = useTaskListClasses();
 
   return (
-    <Grid container direction="row" wrap="nowrap">
+    <Grid
+      container
+      direction="row"
+      wrap="nowrap"
+      className={clsx(paneled && taskListClasses.paneled)}
+    >
       <TaskListOuterContainer>
         {showListHeadings && (
           <Heading
@@ -214,6 +99,7 @@ const TaskList = ({
             toggleCompletedTasksShown,
             globalSearch,
             getCompletedTasks,
+            paneled,
           })
         )}
         <ShowMoreButtonContainer active={showMoreButtonVisible}>

@@ -1,7 +1,10 @@
+import { Typography, Collapse } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import { makeStyles, ThemeProvider } from '@material-ui/styles';
+import clsx from 'clsx';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
 import {
@@ -25,6 +28,7 @@ import { setHeader } from '../actions/header-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import CubesLoader from '../components/common/CubesLoader';
+import GenericHeader from '../components/common/GenericHeader';
 import ListPopover from '../components/common/ListPopover';
 import RotatableChevron from '../components/common/RotatableChevron';
 import Spacing from '../components/common/Spacing';
@@ -43,6 +47,8 @@ import {
 } from '../helpers/ga-event-helper';
 import { isTaskArchivable } from '../helpers/utility-functions';
 import ChevronSmallIcon from '../img/chevron-small.svg';
+import { themeMontserrat600 } from '../theme-montserrat';
+import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   CompletedButtonRowContainer,
   FadeContainer,
@@ -54,11 +60,9 @@ import {
   TasklistCount,
   TaskListSectionContainer,
   TaskListSectionHeader,
-  TaskListSectionHeading,
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
-import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
@@ -107,18 +111,32 @@ const filterOptions = [
   },
 ];
 
+const useTaskListClasses = makeStyles({
+  paneled: {
+    backgroundColor: '#fff',
+    border: '0.125rem solid #ddf2f7',
+    padding: '0.125rem',
+    width: '100%',
+  },
+});
+
 export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
   taskListIdentifier = '',
   patientIdentifier,
+  paneled,
   storeAsCurrentTask,
 }) => {
   const [isCollapsed, toggleIsCollapsed] = useToggle(false);
 
+  const taskListClasses = useTaskListClasses();
+
   return (
-    <TaskListSectionContainer>
+    <TaskListSectionContainer
+      className={clsx(paneled && taskListClasses.paneled)}
+    >
       <TaskListSectionHeader>
         <Grid item container xs={12} justify="space-between">
           {heading}
@@ -131,7 +149,7 @@ export const TaskListSection = ({
             </CollapseStyledButton>
           )}
         </Grid>
-        {!isCollapsed && (
+        <Collapse in={!isCollapsed}>
           <Grid item container xs={12}>
             <AddTask
               taskListIdentifier={taskListIdentifier}
@@ -142,9 +160,9 @@ export const TaskListSection = ({
               storeAsCurrentTask={storeAsCurrentTask}
             />
           </Grid>
-        )}
+        </Collapse>
       </TaskListSectionHeader>
-      {!isCollapsed && children}
+      <Collapse in={!isCollapsed}>{children}</Collapse>
     </TaskListSectionContainer>
   );
 };
@@ -500,33 +518,33 @@ class TaskView extends Component {
       title,
       taskList,
       dispatchedSetHeader,
+      isSpecialList,
     } = this.props;
 
-    let allTasks = [];
-    if (tasks != null && completedTasks != null) {
-      allTasks = [...tasks, ...completedTasks];
-    }
+    const allTasks = [...(tasks ?? []), ...(completedTasks ?? [])];
+    const allTasksCount = tasksCount ?? allTasks.length;
 
-    let allTasksCount = tasksCount;
-    if (!tasksCount) {
-      allTasksCount = allTasks.length;
-    }
+    const headerComponent = isSpecialList ? (
+      <GenericHeader>
+        <Typography variant="h4">{title}</Typography>
+      </GenericHeader>
+    ) : (
+      <Header
+        isFetching={isFetching}
+        title={title}
+        taskCount={allTasksCount}
+        taskList={taskList}
+        resetHeader={this.resetHeader}
+        hasTitle={hasTitle}
+      />
+    );
 
     if (title) {
       dispatchedSetHeader({
         layout: [
           {
             key: 'header',
-            component: (
-              <Header
-                isFetching={isFetching}
-                title={title}
-                taskCount={allTasksCount}
-                taskList={taskList}
-                resetHeader={this.resetHeader}
-                hasTitle={hasTitle}
-              />
-            ),
+            component: headerComponent,
             xs: 12,
           },
         ],
@@ -780,6 +798,7 @@ class TaskView extends Component {
       showListHeadings = true,
       taskDrawerOpen,
       globalSearch,
+      paneled = false,
     } = this.props;
     const { filterBy, slimView, taskTimeouts } = this.state;
 
@@ -847,6 +866,7 @@ class TaskView extends Component {
       listName,
       showListHeadings,
       globalSearch,
+      paneled,
     };
 
     const { searchTerms, filterBy: stateFilterBy } = this.state;
@@ -902,6 +922,7 @@ class TaskView extends Component {
       isSpecificPatient,
       globalSearch,
       onCompletedTasksRequest,
+      paneled,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -933,12 +954,14 @@ class TaskView extends Component {
 
       const heading = (
         <div>
-          <TaskListSectionHeading>
-            {groupedListName && (
-              <Link to={`tasks/${currentTaskListId}`}>{groupedListName}</Link>
-            )}
-            {!groupedListName && <Link to="tasks/Inbox">Inbox</Link>}
-          </TaskListSectionHeading>
+          <ThemeProvider theme={themeMontserrat600}>
+            <Typography variant="h3" color="primary">
+              {groupedListName && (
+                <Link to={`tasks/${currentTaskListId}`}>{groupedListName}</Link>
+              )}
+              {!groupedListName && <Link to="tasks/Inbox">Inbox</Link>}
+            </Typography>
+          </ThemeProvider>
           <TasklistCount>{tasksCountContent}</TasklistCount>
         </div>
       );
@@ -954,6 +977,7 @@ class TaskView extends Component {
           patientIdentifier={currentPatientId}
           storeAsCurrentTask={storeAsCurrentTask}
           heading={heading}
+          paneled={paneled}
           key={groupedListName}
         >
           <TaskList
@@ -1122,6 +1146,8 @@ class TaskView extends Component {
       membersNotInTaskList,
       addingNewSubtask,
       subscription,
+      isSpecialList,
+      headsUpAreaVisible = true,
     } = this.props;
     const {
       initialSearchValue,
@@ -1189,6 +1215,7 @@ class TaskView extends Component {
               markComplete={markComplete}
               onMarkComplete={this.onMarkComplete}
               isSpecificPatient={isSpecificPatient}
+              isSpecialList={isSpecialList}
               printData={{
                 tasks,
                 completedTasks,
@@ -1199,7 +1226,7 @@ class TaskView extends Component {
         </Grid>
         <SideClickListener onClick={this.closeTaskDrawer} />
         <TaskViewContainer>
-          {displayHUD && (
+          {displayHUD && headsUpAreaVisible && (
             <HeadsUpArea
               ref={this.headsUpArea}
               taskList={taskList}

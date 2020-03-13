@@ -193,12 +193,6 @@ export const TaskListSectionHeader = styled(Grid)`
   padding: 0.25rem 0.75rem;
 `;
 
-export const TaskListSectionHeading = styled.div`
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #0ca1c7;
-`;
-
 export const TasklistCount = styled.div`
   color: #2e3a43;
   font-size: 16px;
