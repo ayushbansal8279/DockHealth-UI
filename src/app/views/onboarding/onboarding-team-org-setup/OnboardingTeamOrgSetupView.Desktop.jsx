@@ -85,8 +85,9 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
             if (data.profileThumbnailPictureHash) {
               userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
             }
-            userApi.getAllSpecialties();
-            userApi.getAllTitles();
+            userApi.getUserNotoficationPrefs();
+            // userApi.getAllSpecialties();
+            // userApi.getAllTitles();
 
             loading()(dispatch);
             findAllUsers()(dispatch);

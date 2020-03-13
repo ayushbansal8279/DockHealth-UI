@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMount } from 'react-use';
 import styled from 'styled-components';
 
 import { setHeader } from '../actions/header-actions';
@@ -26,7 +27,7 @@ const Title = styled.div`
 `;
 
 const onFormSubmit = (
-  { otherSpecialty, otherSubspecialty, otherTitle },
+  // { otherSpecialty, otherSubspecialty, otherTitle },
   userProfile,
   dispatch,
 ) => async data => {
@@ -49,20 +50,20 @@ const onFormSubmit = (
     requestData.specialties = [
       {
         name: requestData.specialty,
-        specialtyId: otherSpecialty.specialtyId,
-        subSpecialties: [
-          {
-            subSpecialtyId: otherSubspecialty.subSpecialtyId,
-            subSpecialtyName: requestData.subspecialty,
-          },
-        ],
+        // specialtyId: otherSpecialty.specialtyId,
+        // subSpecialties: [
+        //   {
+        //     subSpecialtyId: otherSubspecialty.subSpecialtyId,
+        //     subSpecialtyName: requestData.subspecialty,
+        //   },
+        // ],
       },
     ];
 
     requestData.titles = [
       {
         name: requestData.title,
-        titleId: otherTitle.titleId,
+        // titleId: otherTitle.titleId,
       },
     ];
 
@@ -87,6 +88,7 @@ const onFormSubmit = (
     userApi.getUserProfilePic(sessionStorage.userIdentifier, 'PROFILE');
     userApi.getUserNotoficationPrefs();
   } catch (error) {
+    console.log(error);
     toggleAlert('Error updating profile', 'error');
   }
 };
@@ -140,11 +142,15 @@ const UserProfileViewWrapper = () => {
     };
   });
 
+  useMount(() => {
+    userApi.getUserNotoficationPrefs();
+  });
+
   useEffect(
     () => {
       userApi.getUserNotoficationPrefs();
-      userApi.getAllSpecialties();
-      userApi.getAllTitles();
+      // userApi.getAllSpecialties();
+      // userApi.getAllTitles();
 
       setHeader(dispatch)({
         backgroundColor: '#007cab',
