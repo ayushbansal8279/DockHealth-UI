@@ -15,8 +15,8 @@ export default class ResetPassword extends PureComponent {
       },
     } = this.props;
 
-    code ||= form.code;
-    uname ||= window.sessionStorage.getItem('username');
+    code = code ?? form.code;
+    uname = uname ?? window.sessionStorage.getItem('username');
 
     return userApi
       .resetPassword({
@@ -37,7 +37,6 @@ export default class ResetPassword extends PureComponent {
         });
         const message = error.message || 'An error occurred.';
 
-        // error(message);
         showAlert({
           icon: 'error',
           title: 'Error',
