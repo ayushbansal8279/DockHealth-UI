@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core';
+import { RotatableChevronWithSpacing } from './components/common/RotatableChevron';
 
 const theme = createMuiTheme({
   palette: {
@@ -40,6 +41,9 @@ const theme = createMuiTheme({
         square: true,
       },
     },
+    MuiSelect: {
+      IconComponent: RotatableChevronWithSpacing,
+    },
   },
   overrides: {
     MuiListItem: {
@@ -65,6 +69,26 @@ const theme = createMuiTheme({
         border: '0.0625rem solid #c1ccda',
         margin: 0,
         padding: 0,
+      },
+    },
+    MuiSelect: {
+      outlined: {
+        borderRadius: 0,
+        height: '2.5rem',
+      },
+      select: {
+        '&:focus': {
+          backgroundColor: 'transparent',
+        },
+      },
+      selectMenu: {
+        alignItems: 'center',
+        color: '#00a2e5',
+        display: 'flex',
+        fontSize: '1rem',
+        height: '2.5rem',
+        padding: '0 1rem',
+        textTransform: 'uppercase',
       },
     },
     MuiButton: {

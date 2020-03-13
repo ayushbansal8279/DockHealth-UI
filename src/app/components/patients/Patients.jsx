@@ -47,8 +47,7 @@ const PatientsListSpinner = ({ isFetching }) => (
   </FadeContainer>
 );
 
-const compareField = (field, term) =>
-  field && field.toLowerCase().includes(term);
+const compareField = (field, term) => field?.toLowerCase().includes(term);
 
 const termMatchesPatient = ({ mrn, lastName, firstName }) => term =>
   compareField(mrn, term) ||

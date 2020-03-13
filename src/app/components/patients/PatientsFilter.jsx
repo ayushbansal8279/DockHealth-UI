@@ -1,30 +1,13 @@
-import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-import MaterialSelect from '@material-ui/core/Select';
+import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-const StyledSelect = styled(MaterialSelect).attrs({
-  classes: { selectMenu: 'selectMenu', root: 'selectRoot', select: 'select' },
-})`
-  && {
-    width: 266px;
-    height: 36px;
-    background: #fff;
-    box-shadow: 0 0 2px 0 rgba(46, 58, 67, 0.4);
-    color: #303538;
-    padding: 0;
-    font-size: 16px;
-  }
-
-  & .selectMenu {
-    padding-left: 16px;
-  }
-
-  &&,
-  & .selectMenu:focus {
-    border-radius: 3px;
+const StyledSelect = styled(Select)`
+  && fieldset {
+    border: 0.0625rem solid #e5e9f2 !important;
+    border-radius: 0 !important;
   }
 `;
 
@@ -35,22 +18,20 @@ const PatientsFilter = ({
   options,
   disabled,
 }) => (
-  <FormControl variant="filled" style={{ minWidth: 186 }}>
-    <StyledSelect
-      value={value || 'ALL_PATIENTS'}
-      variant="outlined"
-      disabled={disabled}
-      onClick={stopPropagation}
-      onChange={onChange}
-      name="filter"
-    >
-      {options.map(({ value: optionValue, description }) => (
-        <MenuItem value={optionValue} key={optionValue}>
-          {description}
-        </MenuItem>
-      ))}
-    </StyledSelect>
-  </FormControl>
+  <StyledSelect
+    value={value || 'ALL_PATIENTS'}
+    variant="outlined"
+    disabled={disabled}
+    onClick={stopPropagation}
+    onChange={onChange}
+    name="filter"
+  >
+    {options.map(({ value: optionValue, description }) => (
+      <MenuItem value={optionValue} key={optionValue}>
+        {description}
+      </MenuItem>
+    ))}
+  </StyledSelect>
 );
 
 PatientsFilter.propTypes = {

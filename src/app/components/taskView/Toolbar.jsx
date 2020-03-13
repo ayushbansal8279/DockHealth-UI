@@ -9,17 +9,14 @@ import { showAlert } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
 import AdornedButton from '../common/AdornedButton';
 import Avatar from '../common/Avatar';
+import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
 import InviteMemberPopover from '../members/InviteMemberPopover';
 import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
 import MorePopover from './Toolbar.MorePopover';
-import {
-  SlimViewToggle,
-  ToolbarContainer,
-  ToolbarLabel,
-} from './Toolbar.Styled';
+import { SlimViewToggle, ToolbarLabel } from './Toolbar.Styled';
 
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
@@ -118,7 +115,7 @@ export default ({
   const addTaskButtonReference = useRef(null);
 
   return (
-    <ToolbarContainer>
+    <PageContentHeader>
       <div>
         <Grid container alignItems="center" direction="row" wrap="nowrap">
           <SlimViewToggle
@@ -260,6 +257,6 @@ export default ({
           />
         </div>
       </Popover>
-    </ToolbarContainer>
+    </PageContentHeader>
   );
 };
