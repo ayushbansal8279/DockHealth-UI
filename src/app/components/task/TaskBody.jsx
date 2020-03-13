@@ -48,6 +48,7 @@ const TaskBody = ({
   taskDrawerOpen,
   hidePatient,
   hideCheckbox,
+  paneled,
   readOnly,
   taskTimeouts,
 }) => {
@@ -183,6 +184,7 @@ const TaskBody = ({
             countInfoContent={countInfoContent}
             members={members}
             edited={edited}
+            paneled={paneled}
           />
           <TaskBodyRightDataContainer
             taskDrawerOpen={taskDrawerOpen}

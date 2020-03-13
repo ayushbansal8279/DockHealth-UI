@@ -1,3 +1,4 @@
+import { Divider, ThemeProvider, Typography, Button } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment';
@@ -13,17 +14,17 @@ import {
 } from '../../helpers/ga-event-helper';
 import { noop } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
+import themeMontserrat from '../../theme-montserrat';
 import {
   BirthdayTextMask,
   PanelActionContainer,
   PhoneNumberTextMask,
   StyledSelect,
   StyledTextField,
-  Cancel,
-  Save,
 } from './PatientEdit.Components';
 import PatientNotes from './PatientNotes';
 import PatientsSidebarSection from './PatientsSidebar.Section';
+import Spacing from '../common/Spacing';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
 
@@ -59,7 +60,10 @@ export const PatientsForm = ({
   }, [stopCreating]);
 
   const handleNewNoteSubmit = useCallback(() => {
-    addPatientNote(patientIdentifier, note)(dispatch)
+    addPatientNote(
+      patientIdentifier,
+      note,
+    )(dispatch)
       .then(newNote => {
         handleCancel();
         onPatientNoteAdded();
@@ -194,32 +198,33 @@ export const PatientsForm = ({
         </div>
         <PanelActionContainer>
           {cancel && (
-            <Cancel size="small" onClick={cancel}>
+            <Button variant="text" size="small" onClick={cancel}>
               Cancel
-            </Cancel>
+            </Button>
           )}
           {!isReadOnly && (
-            <Save
-              size="small"
-              onClick={handleSaveAndClose}
-              disabled={isDisabled || isClean}
-            >
-              Save
-            </Save>
+            <>
+              <Spacing horizontal={3} />
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleSaveAndClose}
+                disabled={isDisabled || isClean}
+              >
+                Save
+              </Button>
+            </>
           )}
         </PanelActionContainer>
-      </PatientsSidebarSection>
-      <PatientsSidebarSection
-        heading="Notes"
-        style={{
-          marginTop: 0,
-          borderTop: 'none',
-        }}
-        headingStyle={{
-          fontSize: '16px',
-          lineHeigth: '16px',
-        }}
-      >
+        <Spacing vertical={4} />
+        <Divider />
+        <Spacing vertical={4} />
+        <ThemeProvider theme={themeMontserrat}>
+          <Typography color="primary" variant="h4">
+            Notes
+          </Typography>
+        </ThemeProvider>
+        <Spacing vertical={4} />
         <PatientNotes
           notes={allNotes}
           patientIdentifier={patientIdentifier}

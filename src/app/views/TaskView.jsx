@@ -1,8 +1,10 @@
-import { Typography } from '@material-ui/core';
+import { Typography, Collapse } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
+import { makeStyles, ThemeProvider } from '@material-ui/styles';
+import clsx from 'clsx';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';
 import {
@@ -45,6 +47,7 @@ import {
 } from '../helpers/ga-event-helper';
 import { isTaskArchivable } from '../helpers/utility-functions';
 import ChevronSmallIcon from '../img/chevron-small.svg';
+import { themeMontserrat600 } from '../theme-montserrat';
 import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   CompletedButtonRowContainer,
@@ -57,7 +60,6 @@ import {
   TasklistCount,
   TaskListSectionContainer,
   TaskListSectionHeader,
-  TaskListSectionHeading,
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
@@ -109,18 +111,32 @@ const filterOptions = [
   },
 ];
 
+const useTaskListClasses = makeStyles({
+  paneled: {
+    backgroundColor: '#fff',
+    border: '0.125rem solid #ddf2f7',
+    padding: '0.125rem',
+    width: '100%',
+  },
+});
+
 export const TaskListSection = ({
   heading,
   children,
   hideCollapse = false,
   taskListIdentifier = '',
   patientIdentifier,
+  paneled,
   storeAsCurrentTask,
 }) => {
   const [isCollapsed, toggleIsCollapsed] = useToggle(false);
 
+  const taskListClasses = useTaskListClasses();
+
   return (
-    <TaskListSectionContainer>
+    <TaskListSectionContainer
+      className={clsx(paneled && taskListClasses.paneled)}
+    >
       <TaskListSectionHeader>
         <Grid item container xs={12} justify="space-between">
           {heading}
@@ -133,7 +149,7 @@ export const TaskListSection = ({
             </CollapseStyledButton>
           )}
         </Grid>
-        {!isCollapsed && (
+        <Collapse in={!isCollapsed}>
           <Grid item container xs={12}>
             <AddTask
               taskListIdentifier={taskListIdentifier}
@@ -144,9 +160,9 @@ export const TaskListSection = ({
               storeAsCurrentTask={storeAsCurrentTask}
             />
           </Grid>
-        )}
+        </Collapse>
       </TaskListSectionHeader>
-      {!isCollapsed && children}
+      <Collapse in={!isCollapsed}>{children}</Collapse>
     </TaskListSectionContainer>
   );
 };
@@ -782,6 +798,7 @@ class TaskView extends Component {
       showListHeadings = true,
       taskDrawerOpen,
       globalSearch,
+      paneled = false,
     } = this.props;
     const { filterBy, slimView, taskTimeouts } = this.state;
 
@@ -849,6 +866,7 @@ class TaskView extends Component {
       listName,
       showListHeadings,
       globalSearch,
+      paneled,
     };
 
     const { searchTerms, filterBy: stateFilterBy } = this.state;
@@ -904,6 +922,7 @@ class TaskView extends Component {
       isSpecificPatient,
       globalSearch,
       onCompletedTasksRequest,
+      paneled,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -935,12 +954,14 @@ class TaskView extends Component {
 
       const heading = (
         <div>
-          <TaskListSectionHeading>
-            {groupedListName && (
-              <Link to={`tasks/${currentTaskListId}`}>{groupedListName}</Link>
-            )}
-            {!groupedListName && <Link to="tasks/Inbox">Inbox</Link>}
-          </TaskListSectionHeading>
+          <ThemeProvider theme={themeMontserrat600}>
+            <Typography variant="h3" color="primary">
+              {groupedListName && (
+                <Link to={`tasks/${currentTaskListId}`}>{groupedListName}</Link>
+              )}
+              {!groupedListName && <Link to="tasks/Inbox">Inbox</Link>}
+            </Typography>
+          </ThemeProvider>
           <TasklistCount>{tasksCountContent}</TasklistCount>
         </div>
       );
@@ -956,6 +977,7 @@ class TaskView extends Component {
           patientIdentifier={currentPatientId}
           storeAsCurrentTask={storeAsCurrentTask}
           heading={heading}
+          paneled={paneled}
           key={groupedListName}
         >
           <TaskList
@@ -1125,6 +1147,7 @@ class TaskView extends Component {
       addingNewSubtask,
       subscription,
       isSpecialList,
+      headsUpAreaVisible = true,
     } = this.props;
     const {
       initialSearchValue,
@@ -1203,7 +1226,7 @@ class TaskView extends Component {
         </Grid>
         <SideClickListener onClick={this.closeTaskDrawer} />
         <TaskViewContainer>
-          {displayHUD && (
+          {displayHUD && headsUpAreaVisible && (
             <HeadsUpArea
               ref={this.headsUpArea}
               taskList={taskList}

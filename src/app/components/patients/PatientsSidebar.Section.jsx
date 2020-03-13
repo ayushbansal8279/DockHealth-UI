@@ -1,11 +1,12 @@
+import { ThemeProvider, Typography } from '@material-ui/core';
+import Collapse from '@material-ui/core/Collapse';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Collapse from '@material-ui/core/Collapse';
 import CollapseIcon from '../../img/collapse.svg';
+import themeMontserrat from '../../theme-montserrat';
 import {
   PatientsSidebarSectionContainer,
   PatientsSidebarSectionHeader,
-  PatientsSidebarSectionHeading,
   StyledButton,
 } from './PatientsSidebar.Styled';
 
@@ -17,10 +18,10 @@ const StyledCollapse = styled(Collapse)`
 
 export default ({
   heading,
+  headingVariant,
   children,
   hideCollapse = false,
   style,
-  headingStyle,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleIsCollapsed = () => {
@@ -30,9 +31,11 @@ export default ({
   return (
     <PatientsSidebarSectionContainer style={style}>
       <PatientsSidebarSectionHeader>
-        <PatientsSidebarSectionHeading style={headingStyle}>
-          {heading}
-        </PatientsSidebarSectionHeading>
+        <ThemeProvider theme={themeMontserrat}>
+          <Typography color="primary" variant={headingVariant ?? 'h3'}>
+            {heading}
+          </Typography>
+        </ThemeProvider>
         {!hideCollapse && (
           <StyledButton isCollapsed={isCollapsed} onClick={toggleIsCollapsed}>
             <img src={CollapseIcon} alt="Collapse Details" />

@@ -87,5 +87,5 @@ export const EmptyListElementContainer = styled.div`
   height: 2rem;
   margin-top: 0.25rem;
   justify-content: center;
-  width: ${props => (props.taskDrawerOpen ? 579 : 1050)}px;
+  width: 100%;
 `;

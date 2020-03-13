@@ -1,5 +1,4 @@
 import { Collapse } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputBase from '@material-ui/core/InputBase';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -97,34 +96,6 @@ export const PanelActionContainer = styled.div`
 
 export const ButtonPaddingContainer = styled.div`
   margin-right: 0.5rem;
-`;
-
-export const Cancel = styled(Button)`
-  && {
-    display: flex;
-    width: 108px;
-    height: 38px;
-    border-radius: 0;
-    font-size: 16px;
-    margin-right: 4px;
-    margin-top: 18px;
-    color: #125375;
-  }
-`;
-
-export const Save = styled(Button).attrs({
-  variant: 'contained',
-})`
-  && {
-    display: flex;
-    width: 163px;
-    height: 38px;
-    border-radius: 0;
-    background: #125375;
-    box-shadow: none;
-    margin-top: 18px;
-    font-size: 16px;
-  }
 `;
 
 const StyledCollapse = styled(Collapse)`
