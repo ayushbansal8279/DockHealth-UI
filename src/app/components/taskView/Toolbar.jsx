@@ -94,6 +94,7 @@ export default ({
   onMarkComplete,
   isSpecificPatient,
   isSpecialList,
+  isMultiList,
   printData: { tasks = [], completedTasks = [], taskListMembers = [] },
 }) => {
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
@@ -185,8 +186,8 @@ export default ({
                 <Spacing horizontal={3} />
                 <RotatableChevron rotated={filterPopoverOpen} />
               </Button>
-              {members?.map(renderMemberAvatar)}
-              {!isSpecialList && (
+              {!isMultiList && members?.map(renderMemberAvatar)}
+              {!isMultiList && !isSpecialList && (
                 <>
                   <Spacing horizontal={3} />
                   <InviteMemberPopover
@@ -201,7 +202,7 @@ export default ({
           )}
           {showAddTaskButton && <Spacing horizontal={5} />}
           <div ref={addTaskButtonReference}>
-            {showAddTaskButton && (
+            {!isMultiList && showAddTaskButton && (
               <AdornedButton
                 adornment={<AddIcon />}
                 onClick={onAddTaskButtonClick}

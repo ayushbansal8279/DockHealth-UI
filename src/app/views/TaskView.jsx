@@ -1224,6 +1224,7 @@ class TaskView extends Component {
               onMarkComplete={this.onMarkComplete}
               isSpecificPatient={isSpecificPatient}
               isSpecialList={isSpecialList}
+              isMultiList={isMultiList}
               printData={{
                 tasks,
                 completedTasks,
