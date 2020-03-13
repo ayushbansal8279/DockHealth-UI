@@ -22,7 +22,12 @@ const validationSchema = object().shape({
   password: string().required('Please enter a password'),
 });
 
-const LoginFormPassword = ({ onSubmit }) => {
+const LoginFormPassword = ({
+  onSubmit,
+  onResendCode,
+  onChange,
+  unconfirmedUserFlag,
+}) => {
   const formMethods = useForm({
     validationSchema,
   });
@@ -30,7 +35,7 @@ const LoginFormPassword = ({ onSubmit }) => {
   const { handleSubmit, setError, setValue } = formMethods;
 
   useMount(() => {
-    setValue('username', sessionStorage.getItem('username') ?? ''); // TODO Figure out how to use SessionStorage like this.
+    setValue('username', sessionStorage.getItem('username') ?? '');
   });
 
   const isSmallScreen = useSmallScreen();
@@ -39,8 +44,16 @@ const LoginFormPassword = ({ onSubmit }) => {
     ? 'Your email is confirmed'
     : 'Welcome to Dock Health';
 
+  const buttonColSize = unconfirmedUserFlag ? 9 : 6;
+
   return (
-    <StyledForm onSubmit={handleSubmit(onSubmit({ setError }))}>
+    <StyledForm
+      onSubmit={handleSubmit(
+        unconfirmedUserFlag
+          ? onResendCode({ setError })
+          : onSubmit({ setError }),
+      )}
+    >
       <FormContext {...formMethods}>
         <TitleTypography
           variant="h2"
@@ -55,7 +68,12 @@ const LoginFormPassword = ({ onSubmit }) => {
 
         <FieldItemContainer>
           <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
-            <AuthFieldHooks name="username" type="text" label="Email" />
+            <AuthFieldHooks
+              name="username"
+              type="text"
+              label="Email"
+              onChange={onChange}
+            />
           </HeightDependentGrid>
           <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
             <AuthFieldHooks
@@ -63,12 +81,13 @@ const LoginFormPassword = ({ onSubmit }) => {
               type="password"
               label="Password"
               autoFocus
+              onChange={onChange}
             />
           </HeightDependentGrid>
         </FieldItemContainer>
 
         <div>
-          <HeightDependentGrid size={isSmallScreen ? 12 : 6}>
+          <HeightDependentGrid size={isSmallScreen ? 12 : buttonColSize}>
             <NextButton
               active
               id="loginButton"
@@ -76,7 +95,9 @@ const LoginFormPassword = ({ onSubmit }) => {
               variant="contained"
               color="primary"
             >
-              Next
+              {unconfirmedUserFlag === true
+                ? 'Resend confirmation Email'
+                : 'Next'}
             </NextButton>
           </HeightDependentGrid>
         </div>
