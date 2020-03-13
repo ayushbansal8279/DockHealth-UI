@@ -10,7 +10,7 @@ import useBoolean from '../hooks/useBoolean';
 const SupportVideosContainer = styled.div`
   display: grid;
   grid-gap: 2rem 1rem;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   width: 100%;
 `;
 
@@ -54,7 +54,7 @@ const SupportVideoContainer = ({ title, url }) => {
       <SupportVideo
         title={title}
         width="560"
-        height="315"
+        height="205"
         src={url}
         frameBorder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -98,6 +98,10 @@ const videos = [
   {
     title: 'Accessing CDC & WHO COVID-19 Print Materials on Dock',
     url: 'https://www.youtube.com/embed/-jVBB937yWk',
+  },
+  {
+    title: 'Creating a Template on Dock',
+    url: 'https://www.youtube.com/embed/oRKS4m4P9PI',
   },
 ];
 
