@@ -350,15 +350,15 @@ class TaskView extends Component {
     let channel = pusher.channel(channelName);
     if (!channel) {
       channel = pusher.subscribe(channelName);
-      console.log('subscribed to channel');
+      // console.log('subscribed to channel');
     }
-    channel.bind('pusher:subscription_succeeded', function() {
-      console.log('subscription_succeeded');
-    });
-    channel.bind('pusher:subscription_error', function(status) {
-      console.log('subscription_error', status);
-    });
-    console.log(channel);
+    // channel.bind('pusher:subscription_succeeded', function() {
+    //   console.log('subscription_succeeded');
+    // });
+    // channel.bind('pusher:subscription_error', function(status) {
+    //   console.log('subscription_error', status);
+    // });
+    // console.log(channel);
     // Listen to the channel for new entries.
     // The server publishes to this channel whenever a entry is updated
 
@@ -366,7 +366,7 @@ class TaskView extends Component {
       // Since the app is going to be realtime, we don't want the same item to
       // be shown twice. Device A publishes an entry, all other devices including itself
       // receives the entry, so act like a basic filter
-      console.log(data);
+      // console.log(data);
       const currentTaskListIdentifier = taskList?.taskListIdentifier;
       if (
         data.task?.taskList &&
@@ -408,7 +408,7 @@ class TaskView extends Component {
         clearTimeout(taskTimeoutId);
       });
 
-    console.log('unsubscribing from channel');
+    // console.log('unsubscribing from channel');
     const { currentUser } = this.props;
     const currentUserIdentifier = currentUser?.userIdentifier;
     if (currentUserIdentifier) {
@@ -416,7 +416,7 @@ class TaskView extends Component {
       let channel = pusher.channel(channelName);
       if (channel) {
         channel = pusher.unsubscribe(channelName);
-        console.log('unsubscribed from channel');
+        // console.log('unsubscribed from channel');
       }
     }
   };
@@ -897,11 +897,19 @@ class TaskView extends Component {
 
   renderSingleTaskList = ({ tasklistProps, completedTasks }) => {
     const { showListHeadings = true } = this.props;
+    const { filterBy } = this.state;
+
+    const isCompletedThisWeekFilter =
+      filterBy === 'ASSIGNED_TO_ME_COMPLETED_THIS_WEEK' ||
+      filterBy === 'COMPLETED_THIS_WEEK';
+    const showCompletedTasksButton =
+      isEmpty(filterBy) || !isCompletedThisWeekFilter;
 
     return (
       <>
         <TaskList showListHeadings={showListHeadings} {...tasklistProps} />
-        {this.renderCompleted({ listCompletedTasks: completedTasks })}
+        {showCompletedTasksButton &&
+          this.renderCompleted({ listCompletedTasks: completedTasks })}
       </>
     );
   };
