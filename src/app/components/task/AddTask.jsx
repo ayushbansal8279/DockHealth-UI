@@ -1,13 +1,12 @@
-import React, { useState, useCallback } from 'react';
+import TextField from '@material-ui/core/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
+import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import AddIcon from '@material-ui/icons/Add';
-import Toolbar from '@material-ui/core/Toolbar';
 import { saveTask } from '../../actions/task-actions';
+import AdornedButton from '../common/AdornedButton';
 
 const StyledToolbar = styled(Toolbar).attrs({
   disableGutters: true,
@@ -19,24 +18,27 @@ const StyledForm = styled.form`
 
 const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   && {
-    background: #e6ecf0;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-    height: 40px;
+    background: #f3f5f6;
+    border-radius: 0.25rem;
+    height: 3.125rem;
     width: 100%;
   }
 
+  && > div {
+    padding-right: 0.1875rem;
+  }
+
   && input {
-    height: 100%;
+    color: #8492a4;
+    height: 3.125rem;
     border: none;
     box-shadow: none;
     background: none;
-    font-size: 14px;
-    color: #303538;
-    padding: 0;
+    font-size: 1.25rem;
+    padding: 0 1rem;
 
     ::placeholder {
-      color: #303538;
+      color: #8492a4;
       opacity: 1;
     }
 
@@ -48,40 +50,6 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   && fieldset {
     border: none;
     top: 0;
-  }
-`;
-
-const StyledAdornment = styled(InputAdornment)`
-  && {
-    flex-shrink: 0;
-    border-radius: 1px;
-    height: 100%;
-    max-height: 100%;
-    width: 40px;
-    justify-content: center;
-  }
-`;
-
-const StyledAddIcon = styled(AddIcon)`
-  && {
-    color: #d9036b;
-    width: 40px;
-    height: 40px;
-    padding: 5px;
-  }
-`;
-
-const StyledAddIconRight = styled(StyledAddIcon)`
-  && {
-    color: #fff;
-    background: #d9036b;
-  }
-`;
-
-const StyledButton = styled(ButtonBase)`
-  && {
-    width: 100%;
-    height: 100%;
   }
 `;
 
@@ -124,21 +92,12 @@ const AddTask = ({ storeAsCurrentTask, submit, submitBound, style }) => {
           value={draft}
           placeholder="Add a task"
           InputProps={{
-            startAdornment: (
-              <StyledAdornment disablePointerEvents>
-                <StyledAddIcon />
-              </StyledAdornment>
-            ),
             endAdornment: (
-              <StyledAdornment>
-                <StyledButton onClick={handleSubmit}>
-                  <StyledAddIconRight />
-                </StyledButton>
-              </StyledAdornment>
+              <AdornedButton onClick={handleSubmit} adornment={<AddIcon />}>
+                ADD A TASK
+              </AdornedButton>
             ),
-            style: {
-              padding: 0,
-            },
+            style: {},
           }}
         />
       </StyledForm>
@@ -155,7 +114,7 @@ const mapDispatchToProps = (
   { taskListIdentifier, patientIdentifier },
 ) => ({
   submit: description => {
-    if (patientIdentifier && patientIdentifier != '') {
+    if (patientIdentifier !== '') {
       saveTask({ description, taskListIdentifier, patientIdentifier })(
         dispatch,
       );
@@ -165,10 +124,7 @@ const mapDispatchToProps = (
   },
 });
 
-const ConnectedAddTask = connect(
-  undefined,
-  mapDispatchToProps,
-)(AddTask);
+const ConnectedAddTask = connect(undefined, mapDispatchToProps)(AddTask);
 
 ConnectedAddTask.propTypes = {
   taskListIdentifier: PropTypes.string.isRequired,
