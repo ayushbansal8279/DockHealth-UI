@@ -1,3 +1,4 @@
+import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
@@ -25,6 +26,7 @@ import { setHeader } from '../actions/header-actions';
 import * as TaskActions from '../actions/task-actions';
 import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import CubesLoader from '../components/common/CubesLoader';
+import GenericHeader from '../components/common/GenericHeader';
 import ListPopover from '../components/common/ListPopover';
 import RotatableChevron from '../components/common/RotatableChevron';
 import Spacing from '../components/common/Spacing';
@@ -43,6 +45,7 @@ import {
 } from '../helpers/ga-event-helper';
 import { isTaskArchivable } from '../helpers/utility-functions';
 import ChevronSmallIcon from '../img/chevron-small.svg';
+import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   CompletedButtonRowContainer,
   FadeContainer,
@@ -58,7 +61,6 @@ import {
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
-import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
@@ -500,33 +502,33 @@ class TaskView extends Component {
       title,
       taskList,
       dispatchedSetHeader,
+      isSpecialList,
     } = this.props;
 
-    let allTasks = [];
-    if (tasks != null && completedTasks != null) {
-      allTasks = [...tasks, ...completedTasks];
-    }
+    const allTasks = [...(tasks ?? []), ...(completedTasks ?? [])];
+    const allTasksCount = tasksCount ?? allTasks.length;
 
-    let allTasksCount = tasksCount;
-    if (!tasksCount) {
-      allTasksCount = allTasks.length;
-    }
+    const headerComponent = isSpecialList ? (
+      <GenericHeader>
+        <Typography variant="h4">{title}</Typography>
+      </GenericHeader>
+    ) : (
+      <Header
+        isFetching={isFetching}
+        title={title}
+        taskCount={allTasksCount}
+        taskList={taskList}
+        resetHeader={this.resetHeader}
+        hasTitle={hasTitle}
+      />
+    );
 
     if (title) {
       dispatchedSetHeader({
         layout: [
           {
             key: 'header',
-            component: (
-              <Header
-                isFetching={isFetching}
-                title={title}
-                taskCount={allTasksCount}
-                taskList={taskList}
-                resetHeader={this.resetHeader}
-                hasTitle={hasTitle}
-              />
-            ),
+            component: headerComponent,
             xs: 12,
           },
         ],
@@ -1122,6 +1124,7 @@ class TaskView extends Component {
       membersNotInTaskList,
       addingNewSubtask,
       subscription,
+      isSpecialList,
     } = this.props;
     const {
       initialSearchValue,
@@ -1189,6 +1192,7 @@ class TaskView extends Component {
               markComplete={markComplete}
               onMarkComplete={this.onMarkComplete}
               isSpecificPatient={isSpecificPatient}
+              isSpecialList={isSpecialList}
               printData={{
                 tasks,
                 completedTasks,

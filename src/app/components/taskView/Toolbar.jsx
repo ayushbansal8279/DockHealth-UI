@@ -96,6 +96,7 @@ export default ({
   markComplete,
   onMarkComplete,
   isSpecificPatient,
+  isSpecialList,
   printData: { tasks = [], completedTasks = [], taskListMembers = [] },
 }) => {
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
@@ -188,13 +189,17 @@ export default ({
                 <RotatableChevron rotated={filterPopoverOpen} />
               </Button>
               {members?.map(renderMemberAvatar)}
-              <Spacing horizontal={3} />
-              <InviteMemberPopover
-                size={40}
-                members={members}
-                membersNotInTaskList={membersNotInTaskList}
-                taskList={taskList}
-              />
+              {!isSpecialList && (
+                <>
+                  <Spacing horizontal={3} />
+                  <InviteMemberPopover
+                    size={40}
+                    members={members}
+                    membersNotInTaskList={membersNotInTaskList}
+                    taskList={taskList}
+                  />
+                </>
+              )}
             </>
           )}
           {showAddTaskButton && <Spacing horizontal={5} />}
@@ -219,6 +224,7 @@ export default ({
         taskListMembers={taskListMembers}
         notificationsEnabled={notificationsEnabled}
         toggleNotifications={toggleNotifications}
+        isSpecialList={isSpecialList}
       />
       <Popover
         open={

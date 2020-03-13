@@ -16,7 +16,7 @@ const GenericHeaderContainer = styled.div`
   width: 100%;
 `;
 
-const GenericHeader = ({ children, isFetching }) => (
+const GenericHeader = ({ children, isFetching = false }) => (
   <ThemeProvider theme={theme => mergeDeepRight(theme, themeMontserrat)}>
     <GenericHeaderContainer>
       <Grid container alignItems="center">

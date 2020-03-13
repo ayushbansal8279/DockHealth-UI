@@ -20,6 +20,7 @@ interface MorePopoverProps extends OnPrintClickProps {
   isMorePopoverOpen: boolean;
   notificationsEnabled: boolean;
   toggleNotifications: () => void;
+  isSpecialList?: boolean;
 }
 
 const onPrintClick = ({
@@ -45,6 +46,7 @@ const MorePopover = ({
   taskListMembers,
   notificationsEnabled,
   toggleNotifications,
+  isSpecialList,
 }: MorePopoverProps) => {
   const { left: filterButtonX = 0, top: filterButtonY = 0 } =
     moreButtonReference?.current?.getBoundingClientRect() || {};
@@ -75,38 +77,23 @@ const MorePopover = ({
       padding: 0,
     },
   };
-  return (
-    <ListPopover
-      anchorReference="anchorPosition"
-      anchorPosition={{
-        left: filterButtonX - 23,
-        top: filterButtonY - 5.5,
-      }}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      open={isMorePopoverOpen}
-      onClose={closeMorePopover}
-      TransitionComponent={Fade}
-      items={[
-        moreButtonElement,
-        dividerElement,
-        {
-          key: 'print',
-          label: 'Print',
-          onClick: onPrintClick({
-            closeMorePopover,
-            tasks,
-            completedTasks,
-            taskListMembers,
-          }),
-        },
-        {
+
+  const popoverItems = [
+    moreButtonElement,
+    dividerElement,
+    {
+      key: 'print',
+      label: 'Print',
+      onClick: onPrintClick({
+        closeMorePopover,
+        tasks,
+        completedTasks,
+        taskListMembers,
+      }),
+    },
+    isSpecialList
+      ? null
+      : {
           key: 'notifications',
           label: (
             <Grid
@@ -130,7 +117,27 @@ const MorePopover = ({
           ),
           onClick: toggleNotifications,
         },
-      ]}
+  ];
+
+  return (
+    <ListPopover
+      anchorReference="anchorPosition"
+      anchorPosition={{
+        left: filterButtonX - 23,
+        top: filterButtonY - 5.5,
+      }}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'left',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'left',
+      }}
+      open={isMorePopoverOpen}
+      onClose={closeMorePopover}
+      TransitionComponent={Fade}
+      items={popoverItems}
     />
   );
 };
