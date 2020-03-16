@@ -1,31 +1,37 @@
 import axios from './axios-heydoc';
 
 export function findInvitationsByUserId() {
-  return axios.get('user/findInvitationsByUserId')
+  return axios
+    .get('user/findInvitationsByUserId')
     .then(response => {
       return response.data;
-    }).catch(function (error){
+    })
+    .catch(function(error) {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
 export function acceptInviteToTaskList(taskListIdentifier) {
-  return axios.put('list/acceptInviteToTaskList/' + taskListIdentifier)
+  return axios
+    .put(`list/acceptInviteToTaskList/${taskListIdentifier}`)
     .then(response => {
       return response.data;
-    }).catch(function (error){
+    })
+    .catch(function(error) {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
 export function rejectInviteToTaskList(taskListIdentifier) {
-  return axios.put('list/rejectInviteToTaskList/' + taskListIdentifier)
+  return axios
+    .put(`list/rejectInviteToTaskList/${taskListIdentifier}`)
     .then(response => {
       return response.data;
-    }).catch(function (error){
+    })
+    .catch(function(error) {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }

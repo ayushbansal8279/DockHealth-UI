@@ -7,7 +7,7 @@ export function findAllUsersByOrganizationId() {
     .then(response => {
       return response.data;
     })
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 }
 
 export function findAllUsers() {
@@ -27,7 +27,7 @@ export function findAllUsers() {
           ...otherData,
           subscription: subscription ?? { subscriptionPlanName: 'Standard' },
         })),
-        ...responseInactive.data.map(({ subscription, ...otherData }) => ({
+        ...responseInactive.data.map(({ ...otherData }) => ({
           ...otherData,
           subscription: null,
         })),
@@ -46,7 +46,7 @@ export function getUserById(userIdentifier) {
     .then(response => {
       return response.data;
     })
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 }
 
 export function invitePersonToOrganization(person) {
@@ -56,7 +56,7 @@ export function invitePersonToOrganization(person) {
       return response.data;
     })
     .catch(error => {
-      throw error?.response?.data ?? error;
+      throw new Error(error?.response?.data) ?? error;
     });
 }
 
@@ -66,7 +66,7 @@ export function resendInviteToOrganization(person) {
     .then(response => {
       return response.data;
     })
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 }
 
 export function changeUserRoleForOrg(markedUserIdentifier, role) {
@@ -79,7 +79,7 @@ export function changeUserRoleForOrg(markedUserIdentifier, role) {
       return response.data;
     })
     .catch(error => {
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -92,7 +92,7 @@ export function cancelInviteToOrganization(markedUserEmail) {
     .then(response => {
       return response.data;
     })
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 }
 
 export function removeUserFromOrganization(removedUserIdentifier) {
@@ -105,7 +105,7 @@ export function removeUserFromOrganization(removedUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -116,7 +116,7 @@ export function addUserToOrganization(addedUserIdentifier) {
       return response.data;
     })
     .catch(error => {
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -143,7 +143,7 @@ export function getUserAvatar(user) {
         'content-type'
       ].toLowerCase()};base64,${binaryImage}`;
     })
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 }
 
 export function getUserAvatarBuffer(user) {
@@ -162,7 +162,7 @@ export function getUserAvatarBuffer(user) {
         format: dataBuffer.readUInt16BE(0) === 0xffd8 ? 'jpg' : 'png',
       };
     })
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 }
 
 export function getUserByEmail({ email }) {

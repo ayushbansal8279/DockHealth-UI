@@ -292,7 +292,7 @@ export function updateTaskDescription(task, description) {
       return response.data;
     })
     .catch(error => {
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -307,7 +307,7 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
         },
       },
     )
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 };
 
 /**
@@ -321,7 +321,7 @@ export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
     .put(
       `task/updateTaskWorkflowStatus/${taskIdentifier}?workflowStatus=${workflowStatus}`,
     )
-    .catch(error => error.response.data);
+    .catch(error => error?.response?.data);
 
 export function markHighPriority(taskIdentifier, userIdentifier) {
   return axios

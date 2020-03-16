@@ -2,7 +2,6 @@ import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import { setHeader } from '../../actions/header-actions';
 import {
   getAllPatients,
@@ -17,23 +16,13 @@ import PatientsCreation from './PatientCreation';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
 import PatientsToolbar from './PatientsToolbar';
-
-const FadeContainer = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  padding-top: 100px;
-`;
-
-const SideClickListener = styled.div`
-  flex: 1;
-`;
-
-const SidebarInnerContainer = styled.div`
-  max-width: 100%;
-  position: sticky;
-  top: 0;
-`;
+import {
+  FadeContainer,
+  PatientsListContainer,
+  PatientsViewContainer,
+  SidebarInnerContainer,
+  SideClickListener,
+} from './PatientsView.Styled';
 
 const PatientsListSpinner = ({ isFetching }) => (
   <FadeContainer>
@@ -126,50 +115,49 @@ const PatientsView = () => {
 
   const filteredPatients = searchPatients(patients, searchTerm);
 
+  const isCompact = highlightedPatient || isCreatingPatient;
+
   return (
-    <div>
+    <PatientsViewContainer>
       <PatientsToolbar
         handleSearch={handleSearch}
         handlePatientFilter={handlePatientFilter}
         deselectPatient={deselectPatient}
       />
-      <Grid container>
-        {isFetching ? (
-          <PatientsListSpinner isFetching={isFetching} />
-        ) : (
-          <Grid
-            container
-            sm={highlightedPatient || isCreatingPatient ? 6 : 12}
-            item
-            direction="column"
-          >
-            <PatientsList
-              patients={filteredPatients}
-              isFiltered={searchTerm !== ''}
-              isCompact={highlightedPatient !== null || isCreatingPatient}
-              highlightedPatient={highlightedPatient}
-            />
-            <SideClickListener onClick={deselectPatient} />
-          </Grid>
-        )}
-        {highlightedPatient && (
-          <Grid sm={6} item container direction="column">
-            <SidebarInnerContainer>
-              <PatientsSidebar patient={highlightedPatient} />
+      <PatientsListContainer>
+        <Grid container>
+          {isFetching ? (
+            <PatientsListSpinner isFetching={isFetching} />
+          ) : (
+            <Grid container sm={isCompact ? 6 : 12} item direction="column">
+              <PatientsList
+                patients={filteredPatients}
+                isFiltered={searchTerm !== ''}
+                isCompact={isCompact}
+                highlightedPatient={highlightedPatient}
+              />
               <SideClickListener onClick={deselectPatient} />
-            </SidebarInnerContainer>
-          </Grid>
-        )}
-        {isCreatingPatient && (
-          <Grid sm={6} item container direction="column">
-            <SidebarInnerContainer>
-              <PatientsCreation />
-              <SideClickListener onClick={deselectPatient} />
-            </SidebarInnerContainer>
-          </Grid>
-        )}
-      </Grid>
-    </div>
+            </Grid>
+          )}
+          {highlightedPatient && (
+            <Grid sm={6} item container direction="column">
+              <SidebarInnerContainer>
+                <PatientsSidebar patient={highlightedPatient} />
+                <SideClickListener onClick={deselectPatient} />
+              </SidebarInnerContainer>
+            </Grid>
+          )}
+          {isCreatingPatient && (
+            <Grid sm={6} item container direction="column">
+              <SidebarInnerContainer>
+                <PatientsCreation />
+                <SideClickListener onClick={deselectPatient} />
+              </SidebarInnerContainer>
+            </Grid>
+          )}
+        </Grid>
+      </PatientsListContainer>
+    </PatientsViewContainer>
   );
 };
 
