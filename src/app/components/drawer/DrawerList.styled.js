@@ -117,11 +117,19 @@ export const StyledListItem = styled(ListItem)`
   }
 `;
 
+export const StandardListContainer = styled.div`
+  padding-top: ${props => (props.trialBannerVisible ? 2.875 : 1)}rem;
+  transition: all 0.2s ease-out;
+`;
+
 export const StyledRouterLinkContainer = styled.div`
   display: flex;
   height: 2.125rem;
-  ${props => !props.nested && 'margin-top: 1rem;'}
   min-height: 2.125rem;
+
+  &:not(:first-child) {
+    ${props => !props.nested && 'margin-top: 1rem;'}
+  }
 
   &&.active {
     ${StyledListItem} {
