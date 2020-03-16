@@ -1,4 +1,4 @@
-import { Grid, ThemeProvider } from '@material-ui/core';
+import { Grid, ThemeProvider, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
@@ -15,18 +15,34 @@ const GenericHeaderContainer = styled.div`
   width: 100%;
 `;
 
-const GenericHeader = ({ children, isFetching = false }) => (
-  <ThemeProvider theme={themeMontserratNormal}>
-    <GenericHeaderContainer>
-      <Grid container alignItems="center">
-        {isFetching ? <CubesLoader size={32} color="#fff" /> : children}
-      </Grid>
-      <Link to="/">
-        <img src="/assets/img/dock-logo-mini.svg" alt="Dock Health" />
-      </Link>
-    </GenericHeaderContainer>
-  </ThemeProvider>
+const DefaultHeaderTypographyComponent = props => (
+  <Typography variant="h4" {...props} />
 );
+
+const GenericHeader = ({
+  children,
+  isFetching = false,
+  useTypography = true,
+}) => {
+  const ChildrenWrapperComponent = useTypography
+    ? DefaultHeaderTypographyComponent
+    : React.Fragment;
+
+  return (
+    <ThemeProvider theme={themeMontserratNormal}>
+      <GenericHeaderContainer>
+        <Grid container alignItems="center">
+          <ChildrenWrapperComponent>
+            {isFetching ? <CubesLoader size={32} color="#fff" /> : children}
+          </ChildrenWrapperComponent>
+        </Grid>
+        <Link to="/">
+          <img src="/assets/img/dock-logo-mini.svg" alt="Dock Health" />
+        </Link>
+      </GenericHeaderContainer>
+    </ThemeProvider>
+  );
+};
 
 GenericHeader.propTypes = {
   children: PropTypes.node,

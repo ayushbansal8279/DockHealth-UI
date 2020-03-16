@@ -12,7 +12,7 @@ import {
   loading,
 } from '../../actions/patient-actions';
 import CubesLoader from '../common/CubesLoader';
-import GenericSublabeledHeader from '../common/GenericSublabeledHeader';
+import GenericHeader from '../common/GenericHeader';
 import PatientsCreation from './PatientCreation';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
@@ -91,13 +91,7 @@ const PatientsLayout = () => {
       layout: [
         {
           key: 'patients-header',
-          component: (
-            <GenericSublabeledHeader
-              label="Patients"
-              sublabel={`${patientCount} patients`}
-              isFetching={isFetching}
-            />
-          ),
+          component: <GenericHeader>Patients</GenericHeader>,
         },
       ],
     });

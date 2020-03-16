@@ -8,6 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 export const SearchContainer = styled.div`
   margin: 2rem 0;
+  width: 18rem;
 
   & > *:not(:last-child) {
     margin-right: 1rem;

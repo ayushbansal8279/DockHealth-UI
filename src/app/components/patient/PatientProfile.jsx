@@ -82,11 +82,7 @@ const PatientProfile = ({ routeParams }) => {
       layout: [
         {
           key: 'patient-header',
-          component: (
-            <GenericHeader>
-              <Typography variant="h4">Patient</Typography>
-            </GenericHeader>
-          ),
+          component: <GenericHeader>Patient</GenericHeader>,
         },
       ],
     });

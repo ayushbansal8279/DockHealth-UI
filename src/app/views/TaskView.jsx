@@ -525,9 +525,7 @@ class TaskView extends Component {
     const allTasksCount = tasksCount ?? allTasks.length;
 
     const headerComponent = isSpecialList ? (
-      <GenericHeader>
-        <Typography variant="h4">{title}</Typography>
-      </GenericHeader>
+      <GenericHeader>{title}</GenericHeader>
     ) : (
       <Header
         isFetching={isFetching}

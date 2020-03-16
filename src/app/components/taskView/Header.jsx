@@ -69,7 +69,7 @@ const Header = ({ hasTitle, title, isFetching, taskList }) => {
   ];
 
   return (
-    <GenericHeader isFetching={isFetching || !hasTitle}>
+    <GenericHeader isFetching={isFetching || !hasTitle} useTypography={false}>
       <HeaderTitleContainer ref={listPopoverReference}>
         <StyledTitle onClick={openListPopover} variant="h5" component="div">
           <Grid container alignItems="center">

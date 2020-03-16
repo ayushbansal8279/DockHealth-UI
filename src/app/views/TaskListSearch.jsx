@@ -45,11 +45,7 @@ class TaskListSearch extends PureComponent {
       layout: [
         {
           key: 'search-header',
-          component: (
-            <GenericHeader>
-              <Typography variant="h4">Search</Typography>
-            </GenericHeader>
-          ),
+          component: <GenericHeader>Search</GenericHeader>,
         },
       ],
     });

@@ -12,7 +12,7 @@ import {
 import { useEffectOnce } from 'react-use';
 import { storeAsCurrentTask } from './actions/task-actions';
 import PatientProfile from './components/patient/PatientProfile';
-import Patients from './components/patients/Patients';
+import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
 import ChangePassword from './views/auth/ChangePassword';
@@ -191,7 +191,7 @@ export const Routes = ({ store }) => {
         <Route component={TemplateCoreSubscriptionPlan}>
           <Route
             path="/patients"
-            component={Patients}
+            component={PatientsView}
             onEnter={checkFeatureToggles}
           />
           <Route

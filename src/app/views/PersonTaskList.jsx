@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import { bindActionCreators } from 'redux';
-import Typography from '@material-ui/core/Typography';
 import { setHeader as setHeaderRaw } from '../actions/header-actions';
 import * as PeopleActions from '../actions/people-actions';
 import * as TaskActions from '../actions/task-actions';
@@ -67,7 +66,7 @@ class PersonTaskList extends PureComponent {
                     <img src={BackIcon} alt="Go back to people list" />
                   </BackButton>
                 </Link>
-                <Typography variant="h4">{memberName}</Typography>
+                {memberName}
               </GenericHeader>
             ),
           },
@@ -159,7 +158,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PersonTaskList);
+export default connect(mapStateToProps, mapDispatchToProps)(PersonTaskList);
