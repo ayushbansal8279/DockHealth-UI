@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid';
 
 export const StyledFormControl = withStyles({
   root: {
-    backgroundColor: '#f3f5f6',
+    backgroundColor: 'rgba(243, 245, 246, 0.5)',
     border: '0.0625rem solid #e4090900',
     height: '3.5rem',
     margin: '0.125rem 0',
@@ -39,7 +39,7 @@ export const StyledInputLabel = withStyles({
   root: {
     color: '#2e3a43',
     top: '50%',
-    transform: 'translate(1rem, -50%) scale(1)',
+    transform: 'translate(0.5rem, -50%) scale(1)',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
   required: {
@@ -50,7 +50,7 @@ export const StyledInputLabel = withStyles({
   shrink: {
     color: '#2e3a43',
     top: '0%',
-    transform: 'translate(1rem, 0.5rem) scale(0.75)',
+    transform: 'translate(0.5rem, 0.25rem) scale(0.75)',
     transformOrigin: 'center left',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
@@ -71,7 +71,7 @@ export const StyledInputBase = withStyles({
     boxShadow: 'none',
     height: '3.5rem',
     paddingBottom: 0,
-    padding: '0.5rem 1rem',
+    padding: '0.25rem 0.5rem',
     '&:focus': {
       backgroundColor: 'transparent',
       border: 0,

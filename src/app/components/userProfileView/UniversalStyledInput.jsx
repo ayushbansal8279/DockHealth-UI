@@ -75,6 +75,7 @@ export const UniversalInputBase = withStyles({
     },
   },
 })(InputBase);
+
 export const UniversalMobileInputComponent = ({ inputRef, ...otherProps }) => (
   <MaskedInput
     {...otherProps}

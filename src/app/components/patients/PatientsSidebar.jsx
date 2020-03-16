@@ -89,6 +89,7 @@ const PatientsSidebar = ({ patient }) => {
             email,
             notes,
           }}
+          compact
         />
         <Flag name={['features', 'showTasksInPatientDrawer']}>
           {taskLists.map(renderTaskList)}

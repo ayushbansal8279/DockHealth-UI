@@ -74,7 +74,7 @@ const PatientProfileHeader = ({ patient }) => {
   );
 };
 
-const PatientProfile = ({ routeParams }) => {
+const PatientDetailsView = ({ routeParams }) => {
   const dispatch = useDispatch();
 
   useMount(() => {
@@ -182,11 +182,7 @@ const PatientProfile = ({ routeParams }) => {
                 <PatientEdit patient={details} />
               </SafariFixGrid>
 
-              {!isLoading && (!lists || lists.length === 0) ? (
-                <Grid container justify="center">
-                  <b />
-                </Grid>
-              ) : (
+              {!isLoading && (!lists || lists.length === 0) ? null : (
                 <TaskView {...taskViewProps} />
               )}
             </Grid>
@@ -197,4 +193,4 @@ const PatientProfile = ({ routeParams }) => {
   );
 };
 
-export default PatientProfile;
+export default PatientDetailsView;

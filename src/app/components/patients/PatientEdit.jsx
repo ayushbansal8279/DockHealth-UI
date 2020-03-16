@@ -1,244 +1,14 @@
-import { Divider, ThemeProvider, Typography, Button } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment';
 import { equals, evolve } from 'ramda';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useDeepCompareEffect } from 'react-use';
-import { addPatientNote, updatePatient } from '../../actions/patient-actions';
+import { updatePatient } from '../../actions/patient-actions';
 import { capitalizeWords } from '../../helpers/capitalize';
-import {
-  onPatientEdited,
-  onPatientNoteAdded,
-} from '../../helpers/ga-event-helper';
-import { noop } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
-import themeMontserrat from '../../theme-montserrat';
-import {
-  BirthdayTextMask,
-  PanelActionContainer,
-  PhoneNumberTextMask,
-  StyledSelect,
-  StyledTextField,
-} from './PatientEdit.Components';
-import PatientNotes from './PatientNotes';
-import PatientsSidebarSection from './PatientsSidebar.Section';
-import Spacing from '../common/Spacing';
+import { onPatientEdited } from '../../helpers/ga-event-helper';
+import PatientsForm from './PatientsForm';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
-
-export const PatientsForm = ({
-  patientIdentifier,
-  mrn,
-  firstName,
-  middleName,
-  lastName,
-  dob,
-  gender,
-  phoneHome,
-  phoneMobile,
-  email,
-  allNotes,
-  onChange,
-  onSubmit,
-  isDisabled,
-  errors,
-  hideCollapse,
-  isReadOnly,
-  isClean,
-  cancel,
-}) => {
-  const [isCreating, startCreating, stopCreating] = useBoolean(false);
-  const [note, setNote] = useState('');
-
-  const dispatch = useDispatch();
-
-  const handleCancel = useCallback(() => {
-    setNote('');
-    stopCreating();
-  }, [stopCreating]);
-
-  const handleNewNoteSubmit = useCallback(() => {
-    addPatientNote(
-      patientIdentifier,
-      note,
-    )(dispatch)
-      .then(newNote => {
-        handleCancel();
-        onPatientNoteAdded();
-        toggleAlert('Note added successfully', 'success');
-        return newNote;
-      })
-      .catch(() => {
-        toggleAlert('Error adding note. Please try again.', 'error');
-      });
-  }, [dispatch, handleCancel, note, patientIdentifier]);
-
-  const handleSaveAndClose = useCallback(() => {
-    onSubmit()
-      .then(() => {
-        handleNewNoteSubmit();
-      })
-      .catch(noop);
-  }, [handleNewNoteSubmit, onSubmit]);
-
-  useEffect(() => {
-    handleCancel();
-  }, [handleCancel, patientIdentifier]);
-
-  const {
-    BirthdayInputComponent,
-    GenderInputComponent,
-    PhoneNumberComponent,
-  } = isReadOnly
-    ? {}
-    : {
-        BirthdayInputComponent: BirthdayTextMask,
-        GenderInputComponent: 'select',
-        PhoneNumberComponent: PhoneNumberTextMask,
-      };
-
-  return (
-    <>
-      <PatientsSidebarSection
-        heading="Patient Details"
-        hideCollapse={hideCollapse}
-      >
-        <div>
-          <Grid container wrap="nowrap">
-            <Grid item xs={4}>
-              <StyledTextField
-                name="firstName"
-                value={firstName || ''}
-                onChange={onChange}
-                required={!isReadOnly}
-                label="First Name"
-                error={errors?.firstName}
-              />
-            </Grid>
-            <Grid item xs={4} style={{ margin: '0 4px' }}>
-              <StyledTextField
-                name="middleName"
-                value={middleName || ''}
-                onChange={onChange}
-                label="Middle Name"
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <StyledTextField
-                name="lastName"
-                value={lastName || ''}
-                onChange={onChange}
-                required={!isReadOnly}
-                label="Last Name"
-                error={errors?.lastName}
-              />
-            </Grid>
-          </Grid>
-          <StyledTextField
-            name="mrn"
-            value={mrn || ''}
-            onChange={onChange}
-            label="MRN"
-          />
-          <StyledTextField
-            name="dob"
-            value={dob || ''}
-            onChange={onChange}
-            label="Birthday"
-            error={errors?.dob}
-            InputProps={{
-              inputComponent: BirthdayInputComponent,
-            }}
-          />
-          <StyledSelect
-            name="gender"
-            value={gender || ''}
-            onChange={onChange}
-            label="Gender"
-            InputProps={{
-              inputComponent: GenderInputComponent,
-            }}
-          >
-            <MenuItem value="female">Female</MenuItem>
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="other">Other</MenuItem>
-          </StyledSelect>
-        </div>
-        <div>
-          <StyledTextField
-            name="phoneHome"
-            value={phoneHome || ''}
-            onChange={onChange}
-            label="Home Phone"
-            type="tel"
-            InputProps={{
-              inputComponent: PhoneNumberComponent,
-            }}
-          />
-          <StyledTextField
-            name="phoneMobile"
-            value={phoneMobile || ''}
-            onChange={onChange}
-            label="Mobile Phone"
-            type="tel"
-            InputProps={{
-              inputComponent: PhoneNumberComponent,
-            }}
-          />
-          <StyledTextField
-            name="email"
-            value={email || ''}
-            onChange={onChange}
-            label="Email"
-            error={errors?.email}
-            type="email"
-          />
-        </div>
-        <PanelActionContainer>
-          {cancel && (
-            <Button variant="text" size="small" onClick={cancel}>
-              Cancel
-            </Button>
-          )}
-          {!isReadOnly && (
-            <>
-              <Spacing horizontal={3} />
-              <Button
-                variant="contained"
-                size="small"
-                onClick={handleSaveAndClose}
-                disabled={isDisabled || isClean}
-              >
-                Save
-              </Button>
-            </>
-          )}
-        </PanelActionContainer>
-        <Spacing vertical={4} />
-        <Divider />
-        <Spacing vertical={4} />
-        <ThemeProvider theme={themeMontserrat}>
-          <Typography color="primary" variant="h4">
-            Notes
-          </Typography>
-        </ThemeProvider>
-        <Spacing vertical={4} />
-        <PatientNotes
-          notes={allNotes}
-          patientIdentifier={patientIdentifier}
-          note={note}
-          setNote={setNote}
-          isCreating={isCreating}
-          handleCancel={handleCancel}
-          handleSubmit={handleNewNoteSubmit}
-          startCreating={startCreating}
-        />
-      </PatientsSidebarSection>
-    </>
-  );
-};
 
 const validateBirthday = dob =>
   moment(dob, DATE_FORMAT, true).isBefore(moment());
@@ -279,7 +49,7 @@ const handleChangeEvent = ({ formState, setFormState }) => event => {
   setFormState(updatedFormState);
 };
 
-const PatientEdit = ({ patient }) => {
+const PatientEdit = ({ compact = false, patient }) => {
   const formattedPatient = {
     ...patient,
     dob: patient.dob && moment(patient.dob).format(DATE_FORMAT),
@@ -352,6 +122,7 @@ const PatientEdit = ({ patient }) => {
       isReadOnly={false}
       isClean={isClean}
       cancel={isClean ? undefined : clear}
+      compact={compact}
     />
   );
 };

@@ -11,7 +11,7 @@ import {
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import { storeAsCurrentTask } from './actions/task-actions';
-import PatientProfile from './components/patient/PatientProfile';
+import PatientDetailsView from './components/patient/PatientDetailsView';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
@@ -196,7 +196,7 @@ export const Routes = ({ store }) => {
           />
           <Route
             path="/patient/:patientIdentifier"
-            component={PatientProfile}
+            component={PatientDetailsView}
             onEnter={checkFeatureToggles}
           />
           <Route

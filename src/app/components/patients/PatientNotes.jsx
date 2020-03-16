@@ -1,4 +1,10 @@
-import { Button, Grid, ThemeProvider, Typography } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  ThemeProvider,
+  Typography,
+  TextField,
+} from '@material-ui/core';
 import moment from 'moment';
 import * as PropTypes from 'prop-types';
 import React from 'react';
@@ -11,12 +17,76 @@ import { onPatientNoteEdited } from '../../helpers/ga-event-helper';
 import { themeMontserratNormal } from '../../theme-montserrat';
 import EditableDescription from '../common/EditableDescription';
 import Spacing from '../common/Spacing';
-import { StyledTextField } from './PatientCreation';
 
-const NoteTextField = styled(StyledTextField)`
+const NoteTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
+  <TextField
+    {...rest}
+    variant="filled"
+    margin="dense"
+    fullWidth
+    spellCheck={false}
+    autoComplete={uuid()}
+    InputProps={{
+      ...InputProps,
+      spellCheck: false,
+      classes: { root: 'root', disabled: 'disabled' },
+    }}
+    InputLabelProps={{
+      ...InputLabelProps,
+      classes: { shrink: 'shrink', asterisk: 'asterisk', error: 'error' },
+    }}
+  />
+))`
   && {
+    margin-top: 4px;
+    margin-bottom: 0;
+
+    input,
+    textarea {
+      height: inherit;
+      box-shadow: none;
+      color: #2e3a43;
+      :focus {
+        border: none;
+        background: none;
+      }
+      :disabled {
+        background: none;
+        cursor: default;
+      }
+    }
+
+    & .MuiFilledInput-underline {
+      &::after,
+      &::before {
+        border: 0 !important;
+      }
+    }
+
     .root {
+      background-color: rgba(243, 245, 246, 0.5);
       padding: 12px;
+    }
+
+    .disabled {
+      color: #2e3a43;
+    }
+
+    .asterisk {
+      color: #da0d71;
+    }
+
+    .shrink {
+      color: #ababb2;
+    }
+
+    .error {
+      color: #da0d71;
+      background: none;
+    }
+
+    label {
+      color: #2e3a43;
     }
   }
 `;

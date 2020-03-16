@@ -60,7 +60,7 @@ const searchPatients = (patients, searchTerm) => {
   return patients.filter(isMatch);
 };
 
-const PatientsLayout = () => {
+const PatientsView = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loading());
@@ -173,4 +173,4 @@ const PatientsLayout = () => {
   );
 };
 
-export default PatientsLayout;
+export default PatientsView;
