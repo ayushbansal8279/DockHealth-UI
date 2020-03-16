@@ -136,14 +136,14 @@ class TaskListSearch extends PureComponent {
         <Spacing vertical={6} />
         <SearchFieldContainer>
           <SafariFixGrid item xs={12} container justify="center" spacing={2}>
-            <Grid item xs={12} sm={12} md={8} container alignItems="center">
+            <Grid item xs={12} sm={12} md={6} container alignItems="center">
               <Search fullWidth onChange={this.handleSearch} />
             </Grid>
             <Grid
               item
               xs={12}
               sm={12}
-              md={4}
+              md={6}
               container
               alignItems="center"
               wrap="nowrap"

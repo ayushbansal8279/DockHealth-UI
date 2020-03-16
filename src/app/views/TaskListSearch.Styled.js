@@ -14,7 +14,7 @@ export const SearchPersonIcon = styled.img.attrs({
 
 export const SearchFieldContainer = styled.div`
   margin: 1rem;
-  max-width: 48rem;
+  max-width: 1050px;
   position: relative;
   width: 100%;
 `;
