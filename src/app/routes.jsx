@@ -46,7 +46,7 @@ import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
-import PersonTaskList from './views/PersonTaskList';
+import PersonDetailsView from './views/PersonDetailsView';
 import BillingsView from './views/self-serve/billings/BillingsView';
 import DocumentsView from './views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from './views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
@@ -216,7 +216,7 @@ export const Routes = ({ store }) => {
           />
           <Route
             path="/assignedToPerson/:userIdentifier"
-            component={PersonTaskList}
+            component={PersonDetailsView}
             onEnter={checkFeatureToggles}
           />
           <Route

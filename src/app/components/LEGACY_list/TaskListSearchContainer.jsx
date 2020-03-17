@@ -20,6 +20,8 @@ const TaskListLayout = ({
   onCompletedTasksRequest,
   isSearching = false,
   globalSearch = false,
+  showToolbar = true,
+  paneled = false,
 }) => {
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskIdentifier,
@@ -44,12 +46,13 @@ const TaskListLayout = ({
     addTaskComment: taskActions.addTaskComment,
     toggleTaskPriority: (task, priority) =>
       taskActions.toggleTaskPriority(task, userIdentifier, priority),
-    showToolbar: true,
+    showToolbar,
     showAddTaskButton: false,
     isSearching,
     isMultiList: true,
     isSpecificPatient: false,
     showListHeadings: false,
+    paneled,
     onFilter,
     onCompletedTasksRequest: onCompletedTasksRequest
       ? memoizeWith(
@@ -85,6 +88,8 @@ const TaskListSearchContainer = ({
   onCompletedTasksRequest,
   globalSearch = false,
   isSearching = false,
+  showToolbar = true,
+  paneled = false,
 }) => {
   useUnmount(() => {
     taskActions.resetTaskSearch();
@@ -107,6 +112,8 @@ const TaskListSearchContainer = ({
     onFilter,
     onCompletedTasksRequest,
     globalSearch,
+    showToolbar,
+    paneled,
   };
 
   return <TaskListLayout {...taskListProps} />;

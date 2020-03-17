@@ -1,3 +1,4 @@
+import { ThemeProvider, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
@@ -11,10 +12,14 @@ import GenericHeader from '../components/common/GenericHeader';
 import TaskListSearchContainer from '../components/LEGACY_list/TaskListSearchContainer';
 import { noop } from '../helpers/utility-functions';
 import BackIcon from '../img/back.svg';
-import PersonInfoPanel from './PersonTaskList.PersonInfoPanel';
-import { BackButton } from './PersonTaskList.Styled';
+import { themeMontserratNormal } from '../theme-montserrat';
+import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
+import {
+  BackButton,
+  PersonDetailsViewHeader,
+} from './PersonDetailsView.Styled';
 
-class PersonTaskList extends PureComponent {
+class PersonDetailsView extends PureComponent {
   state = {
     fetching: true,
     personData: {},
@@ -26,6 +31,15 @@ class PersonTaskList extends PureComponent {
       routeParams: { userIdentifier },
       setHeader,
     } = this.props;
+
+    setHeader({
+      layout: [
+        {
+          key: 'generic-header',
+          component: <GenericHeader>Provider</GenericHeader>,
+        },
+      ],
+    });
 
     mobileAnalyticsClient.recordEvent('VIEW_ACCESS', {
       PageName: 'PersonTaskList',
@@ -50,29 +64,7 @@ class PersonTaskList extends PureComponent {
       noop();
     }
 
-    let memberName = '';
-
     if (personData.firstName || personData.lastName) {
-      memberName = `${personData.firstName} ${personData.lastName}`.trim();
-
-      setHeader({
-        layout: [
-          {
-            key: 'generic-header',
-            component: (
-              <GenericHeader>
-                <Link to="people">
-                  <BackButton>
-                    <img src={BackIcon} alt="Go back to people list" />
-                  </BackButton>
-                </Link>
-                {memberName}
-              </GenericHeader>
-            ),
-          },
-        ],
-      });
-
       this.setState({
         fetching: false,
       });
@@ -95,13 +87,6 @@ class PersonTaskList extends PureComponent {
       filterBy,
       'INCOMPLETE',
     );
-    // taskActions.getTasksAssignedToSpecificUser(
-    //   personData.userIdentifier,
-    //   undefined,
-    //   sortBy,
-    //   filterBy,
-    //   'COMPLETE',
-    // );
   };
 
   handleCompletedTasksRequest = (
@@ -126,17 +111,35 @@ class PersonTaskList extends PureComponent {
     const { personData } = this.props;
     const { fetching } = this.state;
 
+    const memberName = `${personData?.firstName ?? ''} ${personData?.lastName ??
+      ''}`.trim();
+
     return (
       !fetching && (
-        <Grid direction="column" alignItems="center" container>
-          {personData && <PersonInfoPanel personData={personData} />}
-          <TaskListSearchContainer
-            searchPerformed
-            onFilter={this.handleFilterChange}
-            onCompletedTasksRequest={this.handleCompletedTasksRequest}
-            showSortingStats
-          />
-        </Grid>
+        <>
+          <PersonDetailsViewHeader>
+            <ThemeProvider theme={themeMontserratNormal}>
+              <Typography variant="h2">
+                <Link to="people">
+                  <BackButton>
+                    <img src={BackIcon} alt="Go back to people list" />
+                  </BackButton>
+                </Link>
+                {memberName}
+              </Typography>
+            </ThemeProvider>
+          </PersonDetailsViewHeader>
+          <Grid direction="column" alignItems="center" container>
+            {personData && <PersonInfoPanel personData={personData} />}
+            <TaskListSearchContainer
+              searchPerformed
+              onFilter={this.handleFilterChange}
+              onCompletedTasksRequest={this.handleCompletedTasksRequest}
+              showToolbar={false}
+              paneled
+            />
+          </Grid>
+        </>
       )
     );
   }
@@ -158,4 +161,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PersonTaskList);
+export default connect(mapStateToProps, mapDispatchToProps)(PersonDetailsView);
