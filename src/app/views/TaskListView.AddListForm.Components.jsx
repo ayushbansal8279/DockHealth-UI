@@ -154,9 +154,23 @@ export const StyledList = styled(List)`
   && {
     margin: 0;
     max-height: 12rem;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 0;
     width: 100%;
+
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      background-color: #cecece;
+      padding: 1px;
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
   }
 `;
 
