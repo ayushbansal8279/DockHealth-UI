@@ -52,7 +52,7 @@ import DocumentsView from './views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from './views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
 import SubscriptionPaymentView from './views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
-import SupportSectionView from './views/SupportSectionView';
+import SupportView from './views/SupportView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import TaskListSearch from './views/TaskListSearch';
 import TaskListView from './views/TaskListView';
@@ -159,7 +159,7 @@ export const Routes = ({ store }) => {
           />
           <Route
             path="/support"
-            component={SupportSectionView}
+            component={SupportView}
             onEnter={checkFeatureToggles}
           />
           <Route
