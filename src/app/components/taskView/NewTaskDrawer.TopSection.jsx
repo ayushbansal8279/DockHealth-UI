@@ -26,6 +26,7 @@ export default ({
   addingTaskOrSubtask,
   autoSaveVisible,
   defaultValues,
+  borderless,
   closeDrawer,
   closeStatusPopover,
   handleSubmit,
@@ -53,7 +54,10 @@ export default ({
   const dispatch = useDispatch();
   const saveTaskStatus = useCallback(
     ({ newTaskStatus }) => {
-      updateWorkflowStatus(task, newTaskStatus)(dispatch)
+      updateWorkflowStatus(
+        task,
+        newTaskStatus,
+      )(dispatch)
         .then(() => {
           setAutoSaveVisible();
         })
@@ -67,6 +71,7 @@ export default ({
 
   return (
     <FormSection
+      borderless={borderless}
       topBorderActive={!addingTaskOrSubtask && !parentTask && autoSaveVisible}
       container
       item

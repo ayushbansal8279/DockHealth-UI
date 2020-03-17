@@ -12,7 +12,6 @@ import {
 } from '../../actions/patient-actions';
 import CubesLoader from '../common/CubesLoader';
 import GenericHeader from '../common/GenericHeader';
-import PatientsCreation from './PatientCreation';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
 import PatientsToolbar from './PatientsToolbar';
@@ -139,18 +138,12 @@ const PatientsView = () => {
               <SideClickListener onClick={deselectPatient} />
             </Grid>
           )}
-          {highlightedPatient && (
+          {(highlightedPatient || isCreatingPatient) && (
             <Grid sm={6} item container direction="column">
               <SidebarInnerContainer>
-                <PatientsSidebar patient={highlightedPatient} />
-                <SideClickListener onClick={deselectPatient} />
-              </SidebarInnerContainer>
-            </Grid>
-          )}
-          {isCreatingPatient && (
-            <Grid sm={6} item container direction="column">
-              <SidebarInnerContainer>
-                <PatientsCreation />
+                <PatientsSidebar
+                  patient={isCreatingPatient ? null : highlightedPatient}
+                />
                 <SideClickListener onClick={deselectPatient} />
               </SidebarInnerContainer>
             </Grid>

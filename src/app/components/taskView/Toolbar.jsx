@@ -76,6 +76,7 @@ export default ({
   onAddTaskButtonClick,
   openFilterPopover,
   initialSearchValue,
+  searchValue,
   preferencesInitialized,
   selectedTask,
   showAddTaskButton = true,
@@ -168,7 +169,11 @@ export default ({
           justify="flex-end"
         >
           {preferencesInitialized && (
-            <Search initialValue={initialSearchValue} onChange={handleSearch} />
+            <Search
+              initialValue={initialSearchValue}
+              value={searchValue}
+              onChange={handleSearch}
+            />
           )}
           {!isInbox && (
             <>
@@ -185,9 +190,9 @@ export default ({
                 <Spacing horizontal={3} />
                 <RotatableChevron rotated={filterPopoverOpen} />
               </Button>
-              {members?.map(renderMemberAvatar)}
               {!isSpecialList && (
                 <>
+                  {members?.map(renderMemberAvatar)}
                   <Spacing horizontal={3} />
                   <InviteMemberPopover
                     size={40}
@@ -254,6 +259,7 @@ export default ({
             isSpecificPatient={isSpecificPatient}
             isMultiList={false}
             compact
+            borderless
           />
         </div>
       </Popover>

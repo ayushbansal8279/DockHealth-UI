@@ -46,13 +46,13 @@ import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
 import PeopleView from './views/PeopleView';
-import PersonTaskList from './views/PersonTaskList';
+import PersonDetailsView from './views/PersonDetailsView';
 import BillingsView from './views/self-serve/billings/BillingsView';
 import DocumentsView from './views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from './views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
 import SubscriptionPaymentView from './views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
-import SupportSectionView from './views/SupportSectionView';
+import SupportView from './views/SupportView';
 import TaskListActivityFeedView from './views/TaskListActivityFeedView';
 import TaskListSearch from './views/TaskListSearch';
 import TaskListView from './views/TaskListView';
@@ -159,7 +159,7 @@ export const Routes = ({ store }) => {
           />
           <Route
             path="/support"
-            component={SupportSectionView}
+            component={SupportView}
             onEnter={checkFeatureToggles}
           />
           <Route
@@ -216,7 +216,7 @@ export const Routes = ({ store }) => {
           />
           <Route
             path="/assignedToPerson/:userIdentifier"
-            component={PersonTaskList}
+            component={PersonDetailsView}
             onEnter={checkFeatureToggles}
           />
           <Route

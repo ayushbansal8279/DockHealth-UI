@@ -6,9 +6,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useSetState, useToggle } from 'react-use';
 import {
+  addUserToOrganization,
   cancelInviteToOrganization,
   removeUserFromOrganization,
-  addUserToOrganization,
 } from '../../../actions/people-actions';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
@@ -27,6 +27,10 @@ const initializeMembersTableHooks = ({
 
   const [currentSearch, setCurrentSearchRaw] = useState('');
   const [isAllUsersSelected, toggleAllUsersSelectedRaw] = useToggle(false);
+
+  const [currentSortingProperty, setCurrentSortingProperty] = useState('');
+
+  const [currentSortingOrder, setCurrentSortingOrder] = useState('asc');
 
   const toggleAllUsersSelected = useCallback(
     event => {
@@ -135,6 +139,19 @@ const initializeMembersTableHooks = ({
     [setRemoveDialogState],
   );
 
+  const setSortingProperty = useCallback(
+    sortingProperty => {
+      if (currentSortingProperty === sortingProperty) {
+        setCurrentSortingOrder(currentSortingOrder === 'asc' ? 'desc' : 'asc');
+      } else {
+        setCurrentSortingOrder('asc');
+      }
+
+      setCurrentSortingProperty(sortingProperty);
+    },
+    [currentSortingOrder, currentSortingProperty],
+  );
+
   return {
     currentBreakPoint,
     organizationMembers,
@@ -149,6 +166,11 @@ const initializeMembersTableHooks = ({
     setCurrentSearch,
     isAllUsersSelected,
     toggleAllUsersSelected,
+    currentSortingProperty,
+    currentSortingOrder,
+    setCurrentSortingProperty,
+    setCurrentSortingOrder,
+    setSortingProperty,
   };
 };
 

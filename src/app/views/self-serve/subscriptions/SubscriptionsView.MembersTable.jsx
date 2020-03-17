@@ -2,21 +2,28 @@ import Grid from '@material-ui/core/Grid';
 import { func } from 'prop-types';
 import {
   ascend,
+  descend,
   filter,
   includes,
   isEmpty,
-  prop,
   reject,
   sortWith,
+  identity,
 } from 'ramda';
 import React, { useEffect } from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
+import Spacing from '../../../components/common/Spacing';
+import Search from '../../../components/taskView/Search';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
+import SortingColumn, {
+  SORTING_PROPERTIES,
+  SORTING_PROPERTIES_PREDICATES,
+} from './SubscriptionsView.MembersTable.SortingColumn';
 import {
   MembersTableContainer,
-  MembersTableSearch,
+  MembersTableSearchContainer,
   MemberTable,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
@@ -25,7 +32,6 @@ import SubscriptionStatusSwitcher, {
 import OrganizationMemberRow, {
   EmptyOrganizationMemberRow,
 } from './SubscriptionsView.OrganizationMemberRow';
-import TaskCheckbox from '../../../components/task/TaskCheckbox';
 
 const MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT = 10;
 
@@ -60,36 +66,20 @@ const renderOrganizationMemberRow = ({
   );
 };
 
-const roleSortWages = new Proxy(
-  {
-    owner: 1,
-    admin: 2,
-    member: 3,
-    none: 4,
-  },
-  {
-    get: (target, path = '') => target[path.toLowerCase()] ?? target.none,
-  },
-);
-
-const roleSortMethod = (person1, person2) =>
-  roleSortWages[(person1?.orgUserRole)] - roleSortWages[(person2?.orgUserRole)];
-const lastNameSortMethod = ascend(prop('lastName'));
-const firstNameSortMethod = ascend(prop('firstName'));
-
-const combinedMemberSortMethod = sortWith([
-  roleSortMethod,
-  lastNameSortMethod,
-  firstNameSortMethod,
-]);
-
 const getFilteredOrganizationMembers = ({
   organizationMembers,
   selectedUsers,
   userSubscriptionStatus,
   currentSearch,
+  currentSortingOrder,
+  currentSortingProperty,
 }) => {
-  const sortedOrganizationMembers = combinedMemberSortMethod(
+  const sortingMethod = currentSortingOrder === 'asc' ? ascend : descend;
+  const sortingPredicate =
+    SORTING_PROPERTIES_PREDICATES[currentSortingProperty] ?? identity;
+
+  const sortedOrganizationMembers = sortWith(
+    [sortingMethod(sortingPredicate)],
     organizationMembers ?? [],
   );
 
@@ -111,7 +101,7 @@ const getFilteredOrganizationMembers = ({
       );
       break;
     default:
-      filteredOrganizationMembers = organizationMembers;
+      filteredOrganizationMembers = sortedOrganizationMembers;
       break;
   }
 
@@ -155,8 +145,9 @@ const SubscriptionsViewMembersTable = ({
     setRemovedUserData,
     currentSearch,
     setCurrentSearch,
-    toggleAllUsersSelected,
-    isAllUsersSelected,
+    currentSortingProperty,
+    currentSortingOrder,
+    setSortingProperty,
   } = initializeMembersTableHooks({
     setSelectedUsers,
     selectedUsers,
@@ -169,6 +160,8 @@ const SubscriptionsViewMembersTable = ({
     selectedUsers,
     userSubscriptionStatus,
     currentSearch,
+    currentSortingOrder,
+    currentSortingProperty,
   });
 
   const filteredOrganizationMembersCount = filteredOrganizationMembers.length;
@@ -204,11 +197,16 @@ const SubscriptionsViewMembersTable = ({
                 justify="flex-end"
                 wrap="nowrap"
               >
-                <MembersTableSearch
-                  onChange={event =>
-                    setCurrentSearch(event?.target?.value ?? '')
-                  }
-                />
+                <MembersTableSearchContainer>
+                  <Search
+                    fullWidth
+                    onChange={event =>
+                      setCurrentSearch(event?.target?.value ?? '')
+                    }
+                    value={currentSearch}
+                  />
+                </MembersTableSearchContainer>
+                <Spacing horizontal={3} />
                 <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
@@ -220,20 +218,40 @@ const SubscriptionsViewMembersTable = ({
             {!isSmallScreen && (
               <thead>
                 <tr>
-                  <th>
-                    <Grid container justify="center">
-                      {/* <TaskCheckbox
-                        onChange={toggleAllUsersSelected}
-                        checked={isAllUsersSelected}
-                        size={22}
-                        color="#074A86"
-                      /> */}
-                    </Grid>
-                  </th>
                   <th>&nbsp;</th>
-                  <th>Name</th>
-                  <th>User Type</th>
-                  {showJoined && <th>Joined</th>}
+                  <th>&nbsp;</th>
+                  <th>
+                    <SortingColumn
+                      currentSortingOrder={currentSortingOrder}
+                      currentSortingProperty={currentSortingProperty}
+                      sortingProperty={SORTING_PROPERTIES.NAME}
+                      setSortingProperty={setSortingProperty}
+                    >
+                      Name
+                    </SortingColumn>
+                  </th>
+                  <th>
+                    <SortingColumn
+                      currentSortingOrder={currentSortingOrder}
+                      currentSortingProperty={currentSortingProperty}
+                      sortingProperty={SORTING_PROPERTIES.USER_TYPE}
+                      setSortingProperty={setSortingProperty}
+                    >
+                      User Type
+                    </SortingColumn>
+                  </th>
+                  {showJoined && (
+                    <th>
+                      <SortingColumn
+                        currentSortingOrder={currentSortingOrder}
+                        currentSortingProperty={currentSortingProperty}
+                        sortingProperty={SORTING_PROPERTIES.JOINED}
+                        setSortingProperty={setSortingProperty}
+                      >
+                        Joined
+                      </SortingColumn>
+                    </th>
+                  )}
                   {showSubscription && <th>Subscription</th>}
                 </tr>
               </thead>

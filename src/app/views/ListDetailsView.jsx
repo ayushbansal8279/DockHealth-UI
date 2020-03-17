@@ -66,12 +66,6 @@ class Home extends Component {
           filterBy,
           'INCOMPLETE',
         ),
-        // taskAction(
-        //   routeParams.taskListIdentifier,
-        //   sortBy,
-        //   filterBy,
-        //   'COMPLETE',
-        // ),
       ]);
 
       const {
@@ -212,7 +206,6 @@ class Home extends Component {
     } = this.props;
 
     actions.loading();
-    // actions.hideCompletedTasks();
 
     if (listName === ASSIGNED_BY_ME) {
       actions

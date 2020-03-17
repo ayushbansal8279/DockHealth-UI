@@ -1,129 +1,114 @@
 import moment from 'moment';
-import { equals, evolve } from 'ramda';
-import React, { useCallback, useState } from 'react';
+import { identity } from 'ramda';
+import React, { useCallback } from 'react';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useDeepCompareEffect } from 'react-use';
-import { updatePatient } from '../../actions/patient-actions';
-import { capitalizeWords } from '../../helpers/capitalize';
+import { mixed, object, string } from 'yup';
+import { addPatient, updatePatient } from '../../actions/patient-actions';
 import { onPatientEdited } from '../../helpers/ga-event-helper';
+import { showAlert } from '../../helpers/utility-functions';
 import PatientsForm from './PatientsForm';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
 
-const validateBirthday = dob =>
-  moment(dob, DATE_FORMAT, true).isBefore(moment());
+const REQUIRED_MESSAGE = 'This field is required';
 
-const validateEmail = email =>
-  /^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(email);
+const validationObjectShape = {
+  firstName: string().required(REQUIRED_MESSAGE),
+  middleName: string(),
+  lastName: string().required(REQUIRED_MESSAGE),
+  mrn: string(),
+  gender: string().nullable(),
+  dob: mixed()
+    .nullable()
+    .transform(newValue => {
+      const dobMoment = moment(newValue, DATE_FORMAT);
 
-const handleChangeEvent = ({ formState, setFormState }) => event => {
-  const { target } = event;
-  const { name } = target;
-  const value = target.type === 'checkbox' ? target.checked : target.value;
+      if (!newValue) {
+        return null;
+      }
 
-  let updatedFormState = {
-    ...formState,
-    [name]: value,
-  };
+      if (dobMoment.isValid()) {
+        return newValue;
+      }
 
-  const formatFirstNameState = evolve({
-    firstName: capitalizeWords,
-  });
-  const formatMiddleNameState = evolve({
-    middleName: capitalizeWords,
-  });
-  const formatLastNameState = evolve({
-    lastName: capitalizeWords,
-  });
+      return new Error();
+    })
+    .test(
+      'validDate',
+      `This field requires date in ${DATE_FORMAT} format`,
+      function validDate(value) {
+        if (value instanceof Error) {
+          this.createError();
+          return false;
+        }
 
-  if (updatedFormState.firstName) {
-    updatedFormState = formatFirstNameState(updatedFormState);
-  }
-  if (updatedFormState.middleName) {
-    updatedFormState = formatMiddleNameState(updatedFormState);
-  }
-  if (updatedFormState.lastName) {
-    updatedFormState = formatLastNameState(updatedFormState);
-  }
-
-  setFormState(updatedFormState);
+        return true;
+      },
+    ),
+  email: string()
+    .nullable()
+    .transform(value => (!value ? null : value))
+    .email('This field requires a valid email address'),
+  phoneHome: string(),
+  phoneMobile: string(),
 };
 
+const validationSchema = object().shape(validationObjectShape);
+
 const PatientEdit = ({ compact = false, patient }) => {
-  const formattedPatient = {
-    ...patient,
-    dob: patient.dob && moment(patient.dob).format(DATE_FORMAT),
-  };
+  const formMethods = useForm({
+    reValidateMode: 'onSubmit',
+    validationSchema,
+  });
 
   const dispatch = useDispatch();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formState, setFormState] = useState(formattedPatient);
+  const onSubmit = useCallback(
+    data => {
+      const patientAction = patient
+        ? updatePatient({ ...patient, ...data })
+        : addPatient(data);
 
-  useDeepCompareEffect(() => {
-    setFormState(formattedPatient);
-  }, [formattedPatient]);
-
-  const isClean = equals(formState, formattedPatient);
-
-  const handleInputChange = useCallback(
-    handleChangeEvent({ formState, setFormState }),
-    [formState],
+      patientAction(dispatch)
+        .then(() => {
+          onPatientEdited();
+        })
+        .catch(error => {
+          if (!patient) {
+            showAlert({
+              status: 'error',
+              title: 'Potential Duplicate Patient',
+              text:
+                error?.message ??
+                'A patient with this name and MRN already exists!',
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+            });
+          }
+        });
+    },
+    [dispatch, patient],
   );
 
-  const handleSubmit = useCallback(() => {
-    setIsSubmitting(true);
+  useDeepCompareEffect(() => {
+    Object.keys(validationObjectShape).forEach(key => {
+      let formatFunction = identity;
 
-    return updatePatient(formState)(dispatch)
-      .then(() => {
-        setIsSubmitting(false);
-        onPatientEdited();
-      })
-      .catch(() => {
-        setIsSubmitting(false);
-      });
-  }, [dispatch, formState]);
+      if (key === 'dob')
+        formatFunction = value =>
+          value ? moment(value).format('MM/DD/YYYY') : value;
 
-  const clear = () => {
-    setFormState(formattedPatient);
-  };
-
-  const errors = {
-    dob: (() => {
-      if (
-        formState.dob &&
-        !moment(formState.dob, DATE_FORMAT, true).isValid()
-      ) {
-        return 'Birthday is invalid';
-      }
-
-      if (formState.dob && !validateBirthday(formState.dob)) {
-        return 'Birthday should not be set in the future';
-      }
-
-      return false;
-    })(),
-    email:
-      Boolean(formState.email && !validateEmail(formState.email)) &&
-      'Email is invalid',
-    firstName: !formState.firstName && 'First name is required',
-    lastName: !formState.lastName && 'Last name is required',
-  };
-
-  const hasErrors = Object.values(errors).some(Boolean);
+      formMethods.setValue(key, formatFunction(patient?.[key] ?? null));
+    });
+  }, [patient]);
 
   return (
-    <PatientsForm
-      {...formState}
-      onChange={handleInputChange}
-      onSubmit={hasErrors ? undefined : handleSubmit}
-      isDisabled={isSubmitting}
-      errors={errors}
-      isReadOnly={false}
-      isClean={isClean}
-      cancel={isClean ? undefined : clear}
-      compact={compact}
-    />
+    <FormContext {...formMethods}>
+      <PatientsForm onSubmit={onSubmit} compact={compact} patient={patient} />
+    </FormContext>
   );
 };
 
