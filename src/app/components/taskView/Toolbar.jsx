@@ -190,9 +190,9 @@ export default ({
                 <Spacing horizontal={3} />
                 <RotatableChevron rotated={filterPopoverOpen} />
               </Button>
-              {members?.map(renderMemberAvatar)}
               {!isSpecialList && (
                 <>
+                  {members?.map(renderMemberAvatar)}
                   <Spacing horizontal={3} />
                   <InviteMemberPopover
                     size={40}
