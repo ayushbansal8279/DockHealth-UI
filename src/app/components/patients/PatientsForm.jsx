@@ -2,49 +2,35 @@ import { Button, Divider, ThemeProvider, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { addPatientNote } from '../../actions/patient-actions';
 import { onPatientNoteAdded } from '../../helpers/ga-event-helper';
-import { noop } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
 import themeMontserrat from '../../theme-montserrat';
 import Spacing from '../common/Spacing';
 import {
-  BirthdayTextMask,
-  PanelActionContainer,
-  PhoneNumberTextMask,
-  StyledSelect,
-  StyledTextField,
-} from './PatientEdit.Components';
+  UniversalBirthdayInputComponent,
+  UniversalMobileInputComponent,
+} from '../userProfileView/UniversalStyledInput';
 import PatientNotes from './PatientNotes';
+import {
+  PanelActionContainer,
+  PatientInput,
+  SingleFormPanelContainer,
+  SmallPatientInput,
+} from './PatientsForm.Styled';
 import PatientsSidebarSection from './PatientsSidebar.Section';
 
-const PatientsForm = ({
-  patientIdentifier,
-  mrn,
-  firstName,
-  middleName,
-  lastName,
-  dob,
-  gender,
-  phoneHome,
-  phoneMobile,
-  email,
-  allNotes,
-  onChange,
-  onSubmit,
-  isDisabled,
-  errors,
-  hideCollapse,
-  isReadOnly,
-  isClean,
-  cancel,
-  compact = false,
-}) => {
+const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
   const [isCreating, startCreating, stopCreating] = useBoolean(false);
   const [note, setNote] = useState('');
 
   const dispatch = useDispatch();
+
+  const { handleSubmit, watch } = useFormContext();
+
+  const patientIdentifier = watch('patientIdentifier');
 
   const handleCancel = useCallback(() => {
     setNote('');
@@ -67,158 +53,74 @@ const PatientsForm = ({
       });
   }, [dispatch, handleCancel, note, patientIdentifier]);
 
-  const handleSaveAndClose = useCallback(() => {
-    onSubmit()
-      .then(() => {
-        handleNewNoteSubmit();
-      })
-      .catch(noop);
-  }, [handleNewNoteSubmit, onSubmit]);
-
   useEffect(() => {
     handleCancel();
   }, [handleCancel, patientIdentifier]);
 
-  const {
-    BirthdayInputComponent,
-    GenderInputComponent,
-    PhoneNumberComponent,
-  } = isReadOnly
-    ? {}
-    : {
-        BirthdayInputComponent: BirthdayTextMask,
-        GenderInputComponent: 'select',
-        PhoneNumberComponent: PhoneNumberTextMask,
-      };
-
-  const { spacing, gridSize } = compact
+  const { spacing, gridSize, NameInput } = compact
     ? {
-        spacing: 0,
+        spacing: 1,
         gridSize: 12,
+        NameInput: PatientInput,
       }
     : {
         spacing: 2,
         gridSize: 6,
+        NameInput: SmallPatientInput,
       };
 
   return (
-    <>
-      <PatientsSidebarSection
-        heading="Patient Details"
-        hideCollapse={hideCollapse}
-      >
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <PatientsSidebarSection heading="Patient Details">
         <Grid container spacing={spacing}>
-          <Grid item xs={gridSize} container direction="column">
-            <Grid container wrap="nowrap">
-              <Grid item xs={4}>
-                <StyledTextField
-                  name="firstName"
-                  value={firstName || ''}
-                  onChange={onChange}
-                  required={!isReadOnly}
-                  label="First Name"
-                  error={errors?.firstName}
-                />
-              </Grid>
-              <Grid item xs={4} style={{ margin: '0 4px' }}>
-                <StyledTextField
-                  name="middleName"
-                  value={middleName || ''}
-                  onChange={onChange}
-                  label="Middle Name"
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <StyledTextField
-                  name="lastName"
-                  value={lastName || ''}
-                  onChange={onChange}
-                  required={!isReadOnly}
-                  label="Last Name"
-                  error={errors?.lastName}
-                />
-              </Grid>
-            </Grid>
-            <StyledTextField
-              name="mrn"
-              value={mrn || ''}
-              onChange={onChange}
-              label="MRN"
-            />
-            <StyledSelect
-              name="gender"
-              value={gender || ''}
-              onChange={onChange}
-              label="Gender"
-              InputProps={{
-                inputComponent: GenderInputComponent,
-              }}
-            >
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="male">Male</MenuItem>
-              <MenuItem value="other">Other</MenuItem>
-            </StyledSelect>
-            <StyledTextField
-              name="dob"
-              value={dob || ''}
-              onChange={onChange}
-              label="Birthday"
-              error={errors?.dob}
-              InputProps={{
-                inputComponent: BirthdayInputComponent,
-              }}
-            />
+          <Grid item xs={gridSize}>
+            <SingleFormPanelContainer>
+              <NameInput name="firstName" required label="First Name" />
+              <NameInput name="middleName" label="Middle Name" />
+              <NameInput name="lastName" required label="Last Name" />
+              <PatientInput name="mrn" label="MRN" />
+              <PatientInput
+                name="gender"
+                label="Gender"
+                CustomComponent="select"
+              >
+                <MenuItem value="female">Female</MenuItem>
+                <MenuItem value="male">Male</MenuItem>
+                <MenuItem value="other">Other</MenuItem>
+              </PatientInput>
+              <PatientInput
+                name="dob"
+                label="Birthday"
+                CustomComponent={UniversalBirthdayInputComponent}
+              />
+            </SingleFormPanelContainer>
           </Grid>
-          <Grid item xs={gridSize} container direction="column">
-            <StyledTextField
-              name="email"
-              value={email || ''}
-              onChange={onChange}
-              label="Email"
-              error={errors?.email}
-              type="email"
-            />
-            <StyledTextField
-              name="phoneHome"
-              value={phoneHome || ''}
-              onChange={onChange}
-              label="Home Phone"
-              type="tel"
-              InputProps={{
-                inputComponent: PhoneNumberComponent,
-              }}
-            />
-            <StyledTextField
-              name="phoneMobile"
-              value={phoneMobile || ''}
-              onChange={onChange}
-              label="Cell Phone"
-              type="tel"
-              InputProps={{
-                inputComponent: PhoneNumberComponent,
-              }}
-            />
+          <Grid item xs={gridSize}>
+            <SingleFormPanelContainer>
+              <PatientInput name="email" label="Email" />
+              <PatientInput
+                name="phoneHome"
+                label="Home Phone"
+                type="tel"
+                CustomComponent={UniversalMobileInputComponent}
+              />
+              <PatientInput
+                name="phoneMobile"
+                label="Cell Phone"
+                type="tel"
+                CustomComponent={UniversalMobileInputComponent}
+              />
+            </SingleFormPanelContainer>
           </Grid>
         </Grid>
         <PanelActionContainer>
-          {cancel && (
-            <Button variant="text" size="small" onClick={cancel}>
-              Cancel
-            </Button>
-          )}
-          {!isReadOnly && (
-            <>
-              <Spacing horizontal={3} />
-              <Button
-                variant="contained"
-                size="small"
-                onClick={handleSaveAndClose}
-                disabled={isDisabled || isClean}
-              >
-                Save
-              </Button>
-            </>
-          )}
+          <Button variant="text" size="small" onClick={resetPatient}>
+            Cancel
+          </Button>
+          <Spacing horizontal={3} />
+          <Button variant="contained" size="small" type="submit">
+            Save
+          </Button>
         </PanelActionContainer>
         <Spacing vertical={4} />
         <Divider />
@@ -230,7 +132,7 @@ const PatientsForm = ({
         </ThemeProvider>
         <Spacing vertical={4} />
         <PatientNotes
-          notes={allNotes}
+          notes={patient?.allNotes ?? []}
           patientIdentifier={patientIdentifier}
           note={note}
           setNote={setNote}
@@ -240,7 +142,7 @@ const PatientsForm = ({
           startCreating={startCreating}
         />
       </PatientsSidebarSection>
-    </>
+    </form>
   );
 };
 

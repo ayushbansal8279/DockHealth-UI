@@ -102,6 +102,20 @@ export const UniversalMobileInputComponent = ({ inputRef, ...otherProps }) => (
   />
 );
 
+export const UniversalBirthdayInputComponent = ({
+  inputRef,
+  ...otherProps
+}) => (
+  <MaskedInput
+    {...otherProps}
+    ref={reference => {
+      inputRef(reference ? reference.inputElement : null);
+    }}
+    mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
+    guide
+  />
+);
+
 export const UniversalStyledInput = ({
   label,
   name,
@@ -112,7 +126,7 @@ export const UniversalStyledInput = ({
   className = '',
   ...InputBaseProps
 }) => {
-  const { register, errors } = useFormContext();
+  const { register, errors, clearError } = useFormContext();
   const error = errors?.[name]?.message;
 
   return (
@@ -125,6 +139,7 @@ export const UniversalStyledInput = ({
           inputRef={register}
           error={Boolean(error)}
           inputComponent={CustomComponent}
+          onKeyUp={() => clearError(name)}
           {...InputBaseProps}
         />
       </UniversalFormControl>

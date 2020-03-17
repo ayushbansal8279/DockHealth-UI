@@ -35,6 +35,7 @@ const StyledTextField = styled(TextField)`
         ${props => (props.variant === 'outlined' ? '#e5e9f2' : '#e5e9f200')};
       border-radius: 0;
       height: 100%;
+      padding: 0 0.25rem 0 0.5rem;
       transition: all 0.25s ease-in-out;
       width: ${props => (props.fullWidth ? '100%' : '8.25rem')};
 
@@ -56,9 +57,8 @@ const StyledTextField = styled(TextField)`
       border: none;
       box-shadow: none;
       background: none;
-      padding: 0.5rem;
-      padding-left: 0;
       font-size: 0.875rem;
+      padding: 0;
 
       &::placeholder {
         color: #00a2e5;
@@ -125,9 +125,6 @@ const Search = ({
             </ClearButton>
           </StyledAdornment>
         ),
-        style: {
-          paddingLeft: '0.5rem',
-        },
         'aria-label': 'Search',
         type: 'search',
         defaultValue: initialValue,

@@ -87,13 +87,6 @@ export const StyledInputBase = withStyles({
   },
 })(InputBase);
 
-export const PanelActionContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin: 0.5rem 0;
-`;
-
 export const ButtonPaddingContainer = styled.div`
   margin-right: 0.5rem;
 `;
