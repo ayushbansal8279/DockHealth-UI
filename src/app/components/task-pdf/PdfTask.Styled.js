@@ -107,7 +107,12 @@ export const AvatarInitials = styled.Text`
   font-weight: bold;
 `;
 
-export const AvatarImage = styled.Image``;
+export const AvatarImage = styled.Image`
+  border-radius: 23pt;
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+`;
 
 export const StyledProfileIcon = styled.Image`
   height: 13pt;
