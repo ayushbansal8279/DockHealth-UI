@@ -259,6 +259,7 @@ export default ({
             isSpecificPatient={isSpecificPatient}
             isMultiList={false}
             compact
+            borderless
           />
         </div>
       </Popover>

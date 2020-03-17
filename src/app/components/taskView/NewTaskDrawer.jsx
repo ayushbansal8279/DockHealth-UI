@@ -88,6 +88,7 @@ export default ({
   isSpecificPatient,
   isMultiList,
   compact = false,
+  borderless = false,
 }) => {
   const {
     addDeferredCommentToQueue,
@@ -210,8 +211,9 @@ export default ({
             task={task}
             taskIdentifier={taskIdentifier}
             togglePriorityActive={togglePriorityActive}
+            borderless={borderless}
           />
-          <CondensedFormSection container item xs={12}>
+          <CondensedFormSection borderless={borderless} container item xs={12}>
             {userProfile?.access?.commentsEnabled && (
               <NewTaskDrawerCommentSection
                 task={task}
