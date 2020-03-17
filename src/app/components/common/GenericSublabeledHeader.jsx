@@ -10,7 +10,7 @@ const HeaderLabel = styled.div`
 `;
 
 const GenericSublabeledHeader = ({ label, sublabel, isFetching }) => (
-  <GenericHeader isFetching={isFetching}>
+  <GenericHeader isFetching={isFetching} useTypography={false}>
     <Grid container justify="center" direction="column">
       <HeaderLabel>{label}</HeaderLabel>
       <HeaderLabel small>{sublabel}</HeaderLabel>

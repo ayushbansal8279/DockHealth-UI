@@ -27,7 +27,7 @@ import {
   PersonInitialsContainer,
   PersonNameContainer,
   PersonTitlesContainer,
-} from './PersonTaskList.PersonInfoPanel.Styled';
+} from './PersonDetailsView.PersonInfoPanel.Styled';
 
 const NOT_AVAILABLE = 'N/A';
 

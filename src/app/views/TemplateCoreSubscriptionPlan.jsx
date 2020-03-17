@@ -1,13 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { bindActionCreators } from 'redux';
-
 import * as TaskListActions from '../actions/tasklist-actions';
 import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import Drawer from '../components/drawer/Drawer';
-import { unsetHeader } from '../actions/header-actions';
 import { checkUserAuthentication } from './TemplateCore.Utilities';
 
 class TemplateCoreSubscriptionPlan extends PureComponent {
@@ -47,32 +44,14 @@ class TemplateCoreSubscriptionPlan extends PureComponent {
   };
 
   render() {
-    const { dispatchedUnsetHeader, children } = this.props;
+    const { children } = this.props;
     const { loading, locationPathname } = this.state;
 
     if (loading) {
       return <CubesLoaderOverlay withBackground />;
     }
 
-    return (
-      <Drawer locationPathname={locationPathname}>
-        <SwitchTransition>
-          <CSSTransition
-            key={locationPathname}
-            timeout={{
-              exit: 250,
-              appear: 250,
-            }}
-            onExiting={() => {
-              dispatchedUnsetHeader();
-            }}
-            classNames="fade"
-          >
-            {children}
-          </CSSTransition>
-        </SwitchTransition>
-      </Drawer>
-    );
+    return <Drawer locationPathname={locationPathname}>{children}</Drawer>;
   }
 }
 
@@ -86,7 +65,6 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   taskListActions: bindActionCreators(TaskListActions, dispatch),
-  dispatchedUnsetHeader: unsetHeader(dispatch),
   dispatch,
 });
 

@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 export const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
@@ -96,11 +97,15 @@ const FormSectionElement = ({
   classes,
   className,
   topBorderActive,
+  borderless,
   ...props
 }) => {
-  const newClassName = `${classes.root} ${
-    topBorderActive ? classes.topBorderActive : ''
-  } ${className ?? ''}`.trim();
+  const newClassName = clsx(
+    className,
+    classes.root,
+    topBorderActive && classes.topBorderActive,
+    borderless && classes.borderless,
+  );
 
   return <FormSectionNoBorder className={newClassName} {...props} />;
 };
@@ -113,6 +118,9 @@ const formSectionStyles = {
   },
   topBorderActive: {
     borderTopColor: '#d9036b',
+  },
+  borderless: {
+    borderWidth: 0,
   },
 };
 

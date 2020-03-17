@@ -7,7 +7,7 @@ export function getAllPatients() {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -17,7 +17,7 @@ export function getMyPatientsAll() {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -27,7 +27,7 @@ export function getMyPatientsActive() {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -37,7 +37,7 @@ export function getPatientsByTaskList(taskListIdentifier) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -47,7 +47,7 @@ export function getPatientById(patientIdentifier) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -57,7 +57,7 @@ export function removePatient(patientIdentifier) {
     .then(response => response)
     .catch(error => {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -71,7 +71,7 @@ export function addPatient(patient) {
     .catch(error => {
       console.log(error);
       toggleAlert('Error in adding patient. Please try again.', 'error');
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -85,17 +85,19 @@ export function updatePatient(patient) {
     .catch(error => {
       console.log(error);
       toggleAlert('Error in updating patient. Please try again.', 'error');
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
 export function addPatientToTask(patientIdentifier, taskIdentifier) {
   return axios
-    .put(`patient/addPatientToTaskById/${taskIdentifier}?patientId=${patientIdentifier}`)
+    .put(
+      `patient/addPatientToTaskById/${taskIdentifier}?patientId=${patientIdentifier}`,
+    )
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -105,7 +107,7 @@ export function lookupEMRPatients(searchToken) {
     .then(response => response.data)
     .catch(error => {
       console.log(error);
-      return error.response.data;
+      throw new Error(error?.response?.data);
     });
 }
 
@@ -133,7 +135,7 @@ export const findUserTasksByPatient = (patientIdentifier, status) =>
     })
     .catch(error => {
       console.error(error);
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 
 export const createPatientNote = (patientIdentifier, note) =>
@@ -141,7 +143,7 @@ export const createPatientNote = (patientIdentifier, note) =>
     .post(`/patient/note/${patientIdentifier}`, note)
     .then(response => response.data)
     .catch(error => {
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 
 export const updatePatientNote = note =>
@@ -149,7 +151,7 @@ export const updatePatientNote = note =>
     .put('/patient/note', note)
     .then(response => response.data)
     .catch(error => {
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });
 
 export const deletePatientNote = patientNoteIdentifier =>
@@ -157,5 +159,5 @@ export const deletePatientNote = patientNoteIdentifier =>
     .delete(`/patient/note/deletePatientNoteById/${patientNoteIdentifier}`)
     .then(response => response.data)
     .catch(error => {
-      throw error.response.data;
+      throw new Error(error?.response?.data);
     });

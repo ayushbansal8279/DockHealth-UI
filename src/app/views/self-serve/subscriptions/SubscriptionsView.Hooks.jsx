@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import Typography from '@material-ui/core/Typography';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
@@ -80,11 +79,7 @@ const initializeSubscriptionsViewHooks = () => {
       layout: [
         {
           key: 'title',
-          component: (
-            <GenericHeader>
-              <Typography variant="h4">Subscription & Users</Typography>
-            </GenericHeader>
-          ),
+          component: <GenericHeader>Subscription & Users</GenericHeader>,
           alignItems: 'center',
         },
       ],

@@ -1,7 +1,6 @@
 import Collapse from '@material-ui/core/Collapse';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
@@ -115,11 +114,7 @@ class TaskListView extends PureComponent {
       layout: [
         {
           key: clsx('header', isFetching && 'fetching'),
-          component: (
-            <GenericHeader>
-              <Typography variant="h4">Lists</Typography>
-            </GenericHeader>
-          ),
+          component: <GenericHeader>Lists</GenericHeader>,
         },
       ],
     });
@@ -447,7 +442,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TaskListView);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListView);

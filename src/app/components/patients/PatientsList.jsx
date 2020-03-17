@@ -96,7 +96,10 @@ const ListHeader = styled(ListRow)`
   font-size: 0.875rem;
   font-weight: 600;
   height: 2rem;
+  position: sticky;
   text-transform: uppercase;
+  top: 0;
+  z-index: 1;
 `;
 
 const StyledLink = styled(Link)`

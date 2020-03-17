@@ -1,102 +1,26 @@
-import { Grid } from '@material-ui/core';
+import { Grid, ThemeProvider, Typography } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import MaterialDrawer from '@material-ui/core/Drawer';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import clsx from 'clsx';
 // import moment from 'moment';
 import React, { useState } from 'react';
 import Intercom from 'react-intercom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router';
 import { useMount } from 'react-use';
-import styled from 'styled-components';
 import { getOrganizationById } from '../../actions/organization-actions';
 import useBoolean from '../../hooks/useBoolean';
+import { themeMontserrat600 } from '../../theme-montserrat';
+import { getSubscriptionIsTrial } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
-  getSubscriptionIsTrial,
-  // getSubscriptionPlanTrialLabel,
-} from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+  ContentContainer,
+  TrialBanner,
+  TrialBannerLink,
+  useDrawerClasses,
+} from './Drawer.Styled';
 import DrawerList from './DrawerList';
 
 // const MINIMAL_TRIAL_USAGE_PERIOD = 20;
 // const TRIAL_USAGE_PERIOD = 30;
-
-const useDrawerClasses = makeStyles({
-  appBar: {
-    backgroundColor: '#3d4858',
-    color: '#fff',
-    fontSize: '2.25rem',
-    height: '5.5rem',
-    marginLeft: 85,
-    marginBottom: ({ trialBannerVisible }) =>
-      trialBannerVisible ? '2.875rem' : 0,
-    paddingLeft: '1.25rem',
-    position: 'relative',
-    transition: 'all 0.2s ease-out',
-    width: 'calc(100% - 85px)',
-  },
-  appBarOpen: {
-    marginLeft: 260,
-    width: 'calc(100% - 260px)',
-  },
-  appBarBorder: {
-    backgroundColor: '#c1ccda',
-    height: '0.25rem',
-    left: 0,
-    position: 'absolute',
-    top: '5.25rem',
-    width: '100%',
-    zIndex: 1,
-  },
-  drawer: {
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-  },
-  drawerPaper: {
-    background: '#3d4858',
-    border: 0,
-    overflow: 'initial',
-    width: ({ isOpen }) => (isOpen ? 260 : 85),
-    transition: 'width 0.2s ease-out',
-  },
-});
-
-const ContentContainer = styled.div`
-  ${({ open }) =>
-    open ? 'width: calc(100% - 260px);' : 'width: calc(100% - 85px);'}
-  ${({ open }) =>
-    open ? 'margin-left: 260px;' : 'margin-left: 85px;'}
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-  transition: width 0.2s ease-out, margin 0.2s ease-out;
-`;
-
-const TrialBanner = styled(Grid)`
-  background-color: #2a4a70;
-  top: 100%;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
-  left: 0;
-  height: ${props => (props.trialBannerVisible ? '2.875rem' : 0)};
-  overflow: hidden;
-  right: 0;
-  position: absolute;
-  z-index: 1;
-  transition: all 0.2s ease-out;
-`;
-
-const TrialBannerLink = styled(Link)`
-  color: #fff;
-  margin-left: 0.25rem;
-  text-decoration: underline;
-  transition: all 0.25s ease-out;
-
-  &:hover {
-    color: #eee;
-  }
-`;
 
 const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   <Grid item container key={key} {...otherProps}>
@@ -208,10 +132,14 @@ const Drawer = ({ children }) => {
           alignItems="center"
           trialBannerVisible={trialBannerVisible}
         >
-          <span>{trialEndLabel}</span>
-          <TrialBannerLink to="/subscriptions">
-            {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
-          </TrialBannerLink>
+          <ThemeProvider theme={themeMontserrat600}>
+            <Typography variant="h4">
+              <span>{trialEndLabel}</span>
+              <TrialBannerLink to="/subscriptions">
+                {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
+              </TrialBannerLink>
+            </Typography>
+          </ThemeProvider>
         </TrialBanner>
       </AppBar>
       <MaterialDrawer
@@ -230,6 +158,7 @@ const Drawer = ({ children }) => {
           open={isOpen}
           user={user}
           lists={lists}
+          trialBannerVisible={trialBannerVisible}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>

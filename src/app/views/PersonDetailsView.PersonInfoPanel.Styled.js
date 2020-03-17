@@ -3,7 +3,8 @@ import Grid from '@material-ui/core/Grid';
 
 export const InfoPanelContainer = styled.div`
   background-color: #fff;
-  margin: 0.5rem 0;
+  border: 0.125rem solid #ddf2f7;
+  margin: 0 0 1.5rem;
   max-width: 1050px;
   padding: 1rem;
   width: 100%;

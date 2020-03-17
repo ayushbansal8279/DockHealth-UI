@@ -3,27 +3,36 @@ import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
+import { Link } from 'react-router';
 import { useSmallScreen } from '../../helpers/utility-functions';
 import AuthFieldHooks from '../common/AuthFieldHooks';
 import {
   HeightDependentGrid,
   NextButton,
   TitleTypography,
+  BottomGridContainer,
+  StyledLabel,
 } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
     .required('Please enter an email address')
     .email('Please enter a valid email address'),
+  // .confirmed('That email address has not been confirmed'),
 });
 
-const ForgotPasswordForm = ({ onSubmit }) => {
+const ForgotPasswordForm = ({
+  onSubmit,
+  onResendCode,
+  onChange,
+  unconfirmedUserFlag,
+}) => {
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
     validationSchema,
   });
 
-  const { handleSubmit, setValue } = formMethods;
+  const { handleSubmit, setValue, setError } = formMethods;
 
   useMount(() => {
     setValue('username', sessionStorage.getItem('username') ?? ''); // TODO Figure out how to use SessionStorage like this.
@@ -32,7 +41,13 @@ const ForgotPasswordForm = ({ onSubmit }) => {
   const isSmallScreen = useSmallScreen();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(
+        unconfirmedUserFlag
+          ? onResendCode({ setError })
+          : onSubmit({ setError }),
+      )}
+    >
       <FormContext {...formMethods}>
         <Grid container>
           <TitleTypography
@@ -67,11 +82,19 @@ const ForgotPasswordForm = ({ onSubmit }) => {
                 marginTop: isSmallScreen ? '1em' : '3em',
               }}
             >
-              Send me a recovery code
+              {unconfirmedUserFlag === true
+                ? 'Resend confirmation Email'
+                : 'Send me a recovery code'}
             </NextButton>
           </HeightDependentGrid>
         </Grid>
       </FormContext>
+      <BottomGridContainer style={{ marginTop: '100px' }}>
+        <StyledLabel bold>Want to change your email?</StyledLabel>
+        <StyledLabel>
+          <Link to="/onboarding/create-account">Recreate account</Link>
+        </StyledLabel>
+      </BottomGridContainer>
     </form>
   );
 };

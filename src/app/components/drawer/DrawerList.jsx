@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Link, withRouter } from 'react-router';
 import useBoolean from '../../hooks/useBoolean';
 import InboxIcon from '../../img/drawer/InboxIcon';
@@ -24,6 +23,7 @@ import {
   StyledListItemIcon,
   StyledListItemText,
   StyledRouterLinkContainer,
+  StandardListContainer,
 } from './DrawerList.styled';
 
 const NESTED_LIST_PREFIX = 'nested';
@@ -172,14 +172,12 @@ const getDrawerItems = ({ lists }) => [
     label: 'Search',
     icon: SearchIcon,
     to: 'taskSearch',
-    userProfileAccessKey: 'searchEnabled',
   },
   {
     id: 'inbox',
     label: 'Inbox',
     icon: InboxIcon,
     to: 'tasks/Inbox',
-    userProfileAccessKey: 'listsEnabled',
   },
   {
     id: 'lists',
@@ -195,40 +193,31 @@ const getDrawerItems = ({ lists }) => [
         to: `tasks/${taskListIdentifier}`,
       };
     }),
-    userProfileAccessKey: 'listsEnabled',
   },
   {
     id: 'patients',
     label: 'Patients',
     icon: PatientsIcon,
     to: 'patients',
-    userProfileAccessKey: 'patientsEnabled',
   },
   {
     id: 'people',
     label: 'Providers',
     icon: PeopleIcon,
     to: 'people',
-    userProfileAccessKey: 'peopleEnabled',
   },
   {
     id: 'support',
     label: 'Support',
     icon: SupportIcon,
     to: 'support',
-    userProfileAccessKey: null,
   },
 ];
 
-const renderDrawerItem = ({ userProfileAccess, ...drawerListProps }) => ({
+const renderDrawerItem = ({ ...drawerListProps }) => ({
   id,
-  userProfileAccessKey,
   ...drawerItemProps
-}) => (
-  // userProfileAccess[userProfileAccessKey] && (
-  <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />
-);
-// );
+}) => <Item key={id} id={id} {...drawerItemProps} {...drawerListProps} />;
 
 const DrawerList = ({
   activeId,
@@ -239,14 +228,11 @@ const DrawerList = ({
   location,
   onMouseEnter,
   onMouseLeave,
+  trialBannerVisible,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
   const [rolloverLabel, setRolloverLabel] = useState('');
-
-  const userProfileAccess = useSelector(
-    state => state.userState.userProfile?.access,
-  );
 
   const drawerItems = getDrawerItems({ lists });
 
@@ -278,19 +264,20 @@ const DrawerList = ({
     <>
       <StyledList onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
         <DrawerHeader setActiveId={setActiveId} user={user} />
-        {drawerItems.map(
-          renderDrawerItem({
-            activeId,
-            open,
-            setActiveId,
-            closePopover,
-            openPopover,
-            rolloverPopoverAnchor,
-            setRolloverLabel,
-            setRolloverPopoverAnchor,
-            userProfileAccess,
-          }),
-        )}
+        <StandardListContainer trialBannerVisible={trialBannerVisible}>
+          {drawerItems.map(
+            renderDrawerItem({
+              activeId,
+              open,
+              setActiveId,
+              closePopover,
+              openPopover,
+              rolloverPopoverAnchor,
+              setRolloverLabel,
+              setRolloverPopoverAnchor,
+            }),
+          )}
+        </StandardListContainer>
         <ListDivider />
         <Item
           id="logout"

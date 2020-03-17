@@ -7,6 +7,24 @@ import { useEffectOnce } from 'react-use';
 import { findAllUsersByOrganizationId } from '../actions/people-actions';
 import useBoolean from '../hooks/useBoolean';
 
+const filterPeopleBasedOnIdentifier = ({
+  listOwner,
+  membersValue,
+  adminsValue,
+}) => ({ userIdentifier }) =>
+  userIdentifier != null &&
+  userIdentifier !== listOwner.userIdentifier &&
+  !membersValue.includes(userIdentifier) &&
+  !adminsValue.includes(userIdentifier);
+
+const getFormWatchedValues = ({ watch }) => ({
+  listNameValue: watch('listName') ?? '',
+  listDescriptionValue: watch('listDescription') ?? '',
+  adminsValue: watch('adminIdentifiers') ?? [],
+  membersValue: watch('memberIdentifiers') ?? [],
+  notificationsValue: watch('notifications') ?? true,
+});
+
 const initializeAddListFormHooks = () => {
   const dispatch = useDispatch();
   const { register, unregister, handleSubmit, setValue, watch } = useForm({});
@@ -72,35 +90,33 @@ const initializeAddListFormHooks = () => {
     }
   }, [adminsPickerOpen, membersPickerOpen]);
 
-  const listNameValue = watch('listName') ?? '';
-  const listDescriptionValue = watch('listDescription') ?? '';
-  const adminsValue = watch('adminIdentifiers') ?? [];
-  const membersValue = watch('memberIdentifiers') ?? [];
-  const notificationsValue = watch('notifications') ?? true;
+  const {
+    listNameValue,
+    listDescriptionValue,
+    adminsValue,
+    membersValue,
+    notificationsValue,
+  } = getFormWatchedValues({ watch });
 
   const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
 
-  // check for people length other with results in error
-  const filteredPeople =
-    people !== undefined && Array.isArray(people)
-      ? people
-          .filter(
-            ({ userIdentifier }) =>
-              userIdentifier != null &&
-              userIdentifier !== listOwner.userIdentifier &&
-              !membersValue.includes(userIdentifier) &&
-              !adminsValue.includes(userIdentifier),
-          )
-          .filter(({ firstName = '', middleName = '', lastName = '' }) => {
-            return [
-              firstName.toLowerCase(),
-              middleName.toLowerCase(),
-              lastName.toLowerCase(),
-            ]
-              .map(value => value.includes(searchValue.toLowerCase()))
-              .some(Boolean);
-          })
-      : [];
+  const filteredPeople = (people ?? [])
+    .filter(
+      filterPeopleBasedOnIdentifier({
+        listOwner,
+        membersValue,
+        adminsValue,
+      }),
+    )
+    .filter(({ firstName = '', middleName = '', lastName = '' }) =>
+      [
+        firstName.toLowerCase(),
+        middleName.toLowerCase(),
+        lastName.toLowerCase(),
+      ]
+        .map(value => value.includes(searchValue.toLowerCase()))
+        .some(Boolean),
+    );
 
   const addAdmin = useCallback(
     ({ userIdentifier }) => {

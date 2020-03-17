@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import Highlighter from 'react-highlight-words';
+import styled from 'styled-components';
 import Spacing from '../components/common/Spacing';
 import Search from '../components/taskView/Search';
 
@@ -50,6 +51,14 @@ const faqArticles = [
   },
 ];
 
+const SupportViewLink = styled.a`
+  color: #007cab;
+`;
+
+const SupportSearchContainer = styled.div`
+  width: 14rem;
+`;
+
 const FaqQuestion = ({ content, title, searchTerm }) => (
   <>
     <Spacing vertical={5} />
@@ -94,15 +103,41 @@ const SupportSectionViewFaq = () => {
 
   return (
     <>
-      <Grid container alignItems="center" justify="space-between" item xs={12}>
-        <Typography variant="h2">
-          <b>FAQs</b>
-        </Typography>
+      <Grid
+        container
+        alignItems="center"
+        justify="space-between"
+        wrap="nowrap"
+        item
+        xs={12}
+      >
+        <Grid container alignItems="center">
+          <Typography variant="h2">
+            <b>FAQs</b>
+          </Typography>
+          <Spacing horizontal={4} />
+          <SupportSearchContainer>
+            <Search
+              fullWidth
+              onChange={event => setSearchTerm(event?.target?.value ?? '')}
+              value={searchTerm}
+            />
+          </SupportSearchContainer>
+        </Grid>
         <div>
-          <Search
-            onChange={event => setSearchTerm(event?.target?.value ?? '')}
-            value={searchTerm}
-          />
+          <Grid container direction="row" wrap="nowrap">
+            <Typography variant="body1">
+              <SupportViewLink href="mailto:support@dock.health?Subject=Dock%20Support">
+                support@dock.health
+              </SupportViewLink>
+            </Typography>
+            <Spacing horizontal={4} />
+            <Typography variant="body1">
+              <SupportViewLink href="tel:857-302-0441">
+                857-302-0441
+              </SupportViewLink>
+            </Typography>
+          </Grid>
         </div>
       </Grid>
       <Grid item xs={12}>

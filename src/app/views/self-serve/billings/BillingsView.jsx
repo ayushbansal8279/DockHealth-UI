@@ -1,6 +1,5 @@
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';
@@ -92,11 +91,7 @@ const BillingsView = () => {
       layout: [
         {
           key: 'title',
-          component: (
-            <GenericHeader>
-              <Typography variant="h4">Billing & Invoices</Typography>
-            </GenericHeader>
-          ),
+          component: <GenericHeader>Billing & Invoices</GenericHeader>,
           alignItems: 'center',
         },
       ],

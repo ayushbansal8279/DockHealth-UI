@@ -8,7 +8,7 @@ import { setHeader as setHeaderRaw } from '../actions/header-actions';
 import * as PeopleActions from '../actions/people-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import CubesLoader from '../components/common/CubesLoader';
-import GenericSublabeledHeader from '../components/common/GenericSublabeledHeader';
+import GenericHeader from '../components/common/GenericHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import InvitePeople from '../components/people/InvitePeople';
 import PeopleContainer from '../components/people/PeopleContainer';
@@ -61,18 +61,13 @@ class PeopleView extends PureComponent {
   };
 
   resetHeader = () => {
-    const { peopleList, setHeader } = this.props;
+    const { setHeader } = this.props;
 
     setHeader({
       layout: [
         {
           key: 'people-header',
-          component: (
-            <GenericSublabeledHeader
-              label="Providers"
-              sublabel={`${peopleList?.length ?? 0} people`}
-            />
-          ),
+          component: <GenericHeader>Providers</GenericHeader>,
         },
       ],
     });
@@ -91,7 +86,12 @@ class PeopleView extends PureComponent {
         <SafariFixGrid container xs={12} item justify="center">
           <Grid item xs={9}>
             <SearchContainer>
-              <Search autoFocus onChange={this.handleSearch} />
+              <Search
+                autoFocus
+                fullWidth
+                variant="outlined"
+                onChange={this.handleSearch}
+              />
             </SearchContainer>
           </Grid>
         </SafariFixGrid>
@@ -133,7 +133,4 @@ const mapDispatchToProps = dispatch => ({
   setHeader: setHeaderRaw(dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PeopleView);
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleView);

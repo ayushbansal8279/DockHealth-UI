@@ -6,6 +6,7 @@ const PageContentHeader = styled.div`
   border-bottom: 0.0625rem solid #e5e9f2;
   display: flex;
   height: 5.75rem;
+  min-height: 5.75rem;
   justify-content: space-between;
   padding: 0 2rem;
   width: 100%;

@@ -1,4 +1,3 @@
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
@@ -7,8 +6,8 @@ import { useMount } from 'react-use';
 import { setHeader } from '../actions/header-actions';
 import GenericHeader from '../components/common/GenericHeader';
 import Spacing from '../components/common/Spacing';
-import SupportSectionViewFaq from './SupportSectionView.Faq';
-import SupportSectionViewVideos from './SupportSectionView.Videos';
+import SupportSectionViewFaq from './SupportView.Faq';
+import SupportSectionViewVideos from './SupportView.Videos';
 
 const SupportViewContainer = withStyles({
   container: {
@@ -26,11 +25,7 @@ const SupportSectionView = () => {
       layout: [
         {
           key: 'generic-header',
-          component: (
-            <GenericHeader>
-              <Typography variant="h4">Support</Typography>
-            </GenericHeader>
-          ),
+          component: <GenericHeader>Support</GenericHeader>,
         },
       ],
     });

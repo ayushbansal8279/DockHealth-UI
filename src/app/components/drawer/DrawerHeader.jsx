@@ -57,6 +57,7 @@ const DropdownListItem = styled(StyledListItem)`
 const DropdownBorder = styled.div`
   background-color: #c1ccda;
   height: 0.25rem;
+  margin-bottom: -0.25rem;
   transform: translateY(-100%);
   width: 100%;
 `;

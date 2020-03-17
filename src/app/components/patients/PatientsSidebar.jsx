@@ -1,4 +1,3 @@
-import curry from 'ramda/es/curry';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { highlightPatient } from '../../actions/patient-actions';
@@ -27,69 +26,43 @@ const renderTaskList = ({
 );
 
 const PatientsSidebar = ({ patient }) => {
-  const {
-    mrn,
-    firstName,
-    middleName,
-    lastName,
-    dob,
-    gender,
-    phoneHome,
-    phoneMobile,
-    email,
-    notes,
-    patientIdentifier,
-    allNotes,
-  } = patient;
+  const { mrn, firstName, lastName, patientIdentifier } = patient ?? {};
+
   const dispatch = useDispatch();
   const deselectPatient = useCallback(() => {
     dispatch(highlightPatient(null));
   }, [dispatch]);
 
-  useEffect(() => curry(deselectPatient), [deselectPatient]);
-
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
 
   useEffect(() => {
-    findUserTasksByPatient(patientIdentifier, 'INCOMPLETE').then(result => {
-      setTasks(result);
-    });
-    findUserTasksByPatient(patientIdentifier, 'COMPLETE').then(result => {
-      setCompletedTasks(result);
-    });
+    if (patientIdentifier) {
+      findUserTasksByPatient(patientIdentifier, 'INCOMPLETE').then(result => {
+        setTasks(result);
+      });
+      findUserTasksByPatient(patientIdentifier, 'COMPLETE').then(result => {
+        setCompletedTasks(result);
+      });
+    }
   }, [patientIdentifier]);
 
   const taskLists = groupTasksAndCompletedTasksByList(tasks, completedTasks);
 
-  const patientName = `${firstName || ''} ${lastName || ''} ${mrn ||
-    ''}`.trim();
+  const patientHeaderLabel = patient
+    ? `${firstName || ''} ${lastName || ''} ${mrn || ''}`.trim()
+    : 'Add a patient';
 
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
-        <PatientsSidebarName>{patientName}</PatientsSidebarName>
+        <PatientsSidebarName>{patientHeaderLabel}</PatientsSidebarName>
         <PatientsSidebarCloseButton onClick={deselectPatient}>
           ✕
         </PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
       <div>
-        <PatientEdit
-          patient={{
-            allNotes,
-            patientIdentifier,
-            mrn,
-            firstName,
-            middleName,
-            lastName,
-            dob,
-            gender,
-            phoneHome,
-            phoneMobile,
-            email,
-            notes,
-          }}
-        />
+        <PatientEdit patient={patient} compact />
         <Flag name={['features', 'showTasksInPatientDrawer']}>
           {taskLists.map(renderTaskList)}
         </Flag>

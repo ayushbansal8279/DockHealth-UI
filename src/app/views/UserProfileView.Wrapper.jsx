@@ -1,9 +1,6 @@
-import Typography from '@material-ui/core/Typography';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import styled from 'styled-components';
-
 import { setHeader } from '../actions/header-actions';
 import { updateOrganizationName } from '../actions/organization-actions';
 import * as userApi from '../api/user-api';
@@ -17,11 +14,7 @@ import {
 } from './UserProfileView.FormDefinitions';
 import validationSchema from './UserProfileView.ValidationSchema';
 
-const onFormSubmit = (
-  // { otherSpecialty, otherSubspecialty, otherTitle },
-  userProfile,
-  dispatch,
-) => async data => {
+const onFormSubmit = ({ userProfile, dispatch }) => async data => {
   const {
     emailNotificationsEnabled,
     pushNotificationsEnabled,
@@ -106,30 +99,13 @@ const checkOrganizationNameForEditable = (
 const UserProfileViewWrapper = () => {
   const dispatch = useDispatch();
 
-  const {
-    userProfile,
-    userNotificationPreferences,
-    ...otherEntries
-  } = useSelector(store => {
-    const otherSpecialty = store.userState.allSpecialties?.find(
-      ({ name }) => name === 'Other',
-    );
-    const otherSubspecialty = otherSpecialty?.subSpecialties?.find(
-      ({ subSpecialtyName }) => subSpecialtyName === 'Other',
-    );
-    const otherTitle = store.userState.allTitles?.find(
-      ({ name }) => name === 'Other',
-    );
-
+  const { userProfile, userNotificationPreferences } = useSelector(store => {
     return {
       userProfile: store.userState.userProfile,
       userNotificationPreferences: {
         emailNotificationsEnabled: store.userState.userNotificationPrefs.email,
         pushNotificationsEnabled: store.userState.userNotificationPrefs.push,
       },
-      otherSpecialty,
-      otherSubspecialty,
-      otherTitle,
     };
   });
 
@@ -147,11 +123,7 @@ const UserProfileViewWrapper = () => {
         layout: [
           {
             key: 'title',
-            component: (
-              <GenericHeader>
-                <Typography variant="h4">Profile & Settings</Typography>
-              </GenericHeader>
-            ),
+            component: <GenericHeader>Profile & Settings</GenericHeader>,
           },
         ],
       });
@@ -207,7 +179,7 @@ const UserProfileViewWrapper = () => {
           formContainerClassName={formContainerClassName}
           formFieldDefinitions={formFieldDefinitions}
           formSwitchDefinitions={formSwitchDefinitions}
-          onSubmit={onFormSubmit({ ...otherEntries }, userProfile, dispatch)}
+          onSubmit={onFormSubmit({ userProfile, dispatch })}
           validationSchema={validationSchema}
         />
       )}

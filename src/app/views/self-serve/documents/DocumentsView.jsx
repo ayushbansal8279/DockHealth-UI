@@ -1,4 +1,3 @@
-import Typography from '@material-ui/core/Typography';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -27,11 +26,7 @@ const DocumentsView = () => {
       layout: [
         {
           key: 'title',
-          component: (
-            <GenericHeader>
-              <Typography variant="h4">Documents & Agreements</Typography>
-            </GenericHeader>
-          ),
+          component: <GenericHeader>Documents & Agreements</GenericHeader>,
           alignItems: 'center',
         },
       ],
