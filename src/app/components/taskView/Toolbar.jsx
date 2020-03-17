@@ -76,6 +76,7 @@ export default ({
   onAddTaskButtonClick,
   openFilterPopover,
   initialSearchValue,
+  searchValue,
   preferencesInitialized,
   selectedTask,
   showAddTaskButton = true,
@@ -168,7 +169,11 @@ export default ({
           justify="flex-end"
         >
           {preferencesInitialized && (
-            <Search initialValue={initialSearchValue} onChange={handleSearch} />
+            <Search
+              initialValue={initialSearchValue}
+              value={searchValue}
+              onChange={handleSearch}
+            />
           )}
           {!isInbox && (
             <>

@@ -186,6 +186,7 @@ class TaskView extends Component {
     filterBy: '',
     filterPopoverOpen: false,
     completedTasksShown: false,
+    rawSearchTerm: '',
     searchTerms: [],
     slimView: false,
     initialSearchValue: null,
@@ -578,6 +579,9 @@ class TaskView extends Component {
 
   handleSearch = event => {
     const { value } = event.target;
+    this.setState({
+      rawSearchTerm: value,
+    });
     this.handleSearchDebounced(value);
   };
 
@@ -1148,6 +1152,7 @@ class TaskView extends Component {
       headsUpAreaVisible = true,
     } = this.props;
     const {
+      rawSearchTerm,
       initialSearchValue,
       slimView,
       displayHUD,
@@ -1194,6 +1199,7 @@ class TaskView extends Component {
               onAddTaskButtonClick={this.onAddTaskButtonClick}
               openFilterPopover={this.openFilterPopover}
               preferencesInitialized={preferencesInitialized}
+              searchValue={rawSearchTerm}
               initialSearchValue={initialSearchValue}
               selectedTask={selectedTask}
               slimView={slimView}

@@ -2,9 +2,25 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
+import SearchClearIcon from '../../img/search-clear.svg';
 import SearchHeadsupIcon from '../../img/search-headsup.svg';
+
+const ClearButton = styled.div`
+  align-items: center;
+  display: inline-flex;
+  cursor: pointer;
+
+  > img {
+    height: 15px;
+    max-height: 15px;
+    max-width: 15px;
+    min-height: 15px;
+    min-width: 15px;
+    width: 15px;
+  }
+`;
 
 const StyledTextField = styled(TextField)`
   && {
@@ -20,7 +36,7 @@ const StyledTextField = styled(TextField)`
       border-radius: 0;
       height: 100%;
       transition: all 0.25s ease-in-out;
-      width: ${props => (props.fullWidth ? '100%' : '6.75rem')};
+      width: ${props => (props.fullWidth ? '100%' : '8.25rem')};
 
       &::after,
       &::before {
@@ -64,8 +80,10 @@ const StyledAdornment = withStyles({
     height: '1.125rem',
     minHeight: '1.125rem',
     minWidth: '1.125rem',
-    pointerEvents: 'none',
     width: '1.125rem',
+  },
+  positionEnd: {
+    margin: '0 0.25rem',
   },
 })(InputAdornment);
 
@@ -77,30 +95,48 @@ const Search = ({
   autoFocus,
   fullWidth,
   ...otherInputProps
-}) => (
-  <StyledTextField
-    onChange={onChange}
-    placeholder="Search"
-    className={className}
-    fullWidth={fullWidth}
-    variant={variant}
-    InputProps={{
-      startAdornment: (
-        <StyledAdornment position="start">
-          <img src={SearchHeadsupIcon} alt="Search icon" />
-        </StyledAdornment>
-      ),
-      style: {
-        paddingLeft: '0.5rem',
-      },
-      'aria-label': 'Search',
-      type: 'search',
-      defaultValue: initialValue,
-      autoFocus,
-      ...otherInputProps,
-    }}
-  />
-);
+}) => {
+  const onClearClick = useCallback(
+    event => {
+      event.preventDefault();
+      event.stopPropagation();
+      onChange({ target: { value: '' } });
+    },
+    [onChange],
+  );
+
+  return (
+    <StyledTextField
+      onChange={onChange}
+      placeholder="Search"
+      className={className}
+      fullWidth={fullWidth}
+      variant={variant}
+      InputProps={{
+        startAdornment: (
+          <StyledAdornment position="start" disablePointerEvents>
+            <img src={SearchHeadsupIcon} alt="Search icon" />
+          </StyledAdornment>
+        ),
+        endAdornment: (
+          <StyledAdornment position="end" disablePointerEvents={false}>
+            <ClearButton onClick={onClearClick}>
+              <img alt="clear" src={SearchClearIcon} />
+            </ClearButton>
+          </StyledAdornment>
+        ),
+        style: {
+          paddingLeft: '0.5rem',
+        },
+        'aria-label': 'Search',
+        type: 'search',
+        defaultValue: initialValue,
+        autoFocus,
+        ...otherInputProps,
+      }}
+    />
+  );
+};
 
 Search.propTypes = {
   onChange: PropTypes.func.isRequired,

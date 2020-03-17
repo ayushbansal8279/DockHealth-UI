@@ -129,7 +129,12 @@ class TaskListSearch extends PureComponent {
   };
 
   render() {
-    const { isSearching, searchPerformed, searchCompletedTasks } = this.state;
+    const {
+      isSearching,
+      searchPerformed,
+      searchTerm,
+      searchCompletedTasks,
+    } = this.state;
 
     return (
       <Grid container direction="column" alignItems="center">
@@ -137,7 +142,11 @@ class TaskListSearch extends PureComponent {
         <SearchFieldContainer>
           <SafariFixGrid item xs={12} container justify="center" spacing={2}>
             <Grid item xs={12} sm={12} md={6} container alignItems="center">
-              <Search fullWidth onChange={this.handleSearch} />
+              <Search
+                fullWidth
+                onChange={this.handleSearch}
+                value={searchTerm}
+              />
             </Grid>
             <Grid
               item
