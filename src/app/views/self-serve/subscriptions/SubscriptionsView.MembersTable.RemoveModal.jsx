@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { changeUserRoleForOrg } from '../../../actions/people-actions';
+import Spacing from '../../../components/common/Spacing';
 import { showAlert } from '../../../helpers/utility-functions';
 import { MemberAvatar } from './SubscriptionsView.OrganizationMemberRow';
 
@@ -82,6 +83,7 @@ const RemoveNormalUserContent = ({
       <Button size="small" variant="text" onClick={closeDialog}>
         No, cancel
       </Button>
+      <Spacing horizontal={3} />
       <Button
         size="small"
         variant="contained"
@@ -144,10 +146,11 @@ const RemoveAdminUserContent = ({
           );
         })}
       </PeopleContainer>
-      <Grid container justify="flex-end">
+      <Grid container justify="center">
         <Button size="small" variant="text" onClick={closeDialog}>
           Cancel
         </Button>
+        <Spacing horizontal={3} />
         <Button
           size="small"
           variant="contained"
@@ -202,10 +205,7 @@ const getDialogContentComponent = ({
     return RemoveUnavailableContent;
   }
 
-  if (
-    adminCount === 1 &&
-    (orgUserRole === 'ADMIN' || orgUserRole === 'OWNER')
-  ) {
+  if (adminCount <= 1 && (orgUserRole === 'ADMIN' || orgUserRole === 'OWNER')) {
     return RemoveAdminUserContent;
   }
 

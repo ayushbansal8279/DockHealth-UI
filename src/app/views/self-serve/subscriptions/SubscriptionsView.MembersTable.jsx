@@ -11,12 +11,13 @@ import {
 } from 'ramda';
 import React, { useEffect } from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
+import Search from '../../../components/taskView/Search';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
 import {
   MembersTableContainer,
-  MembersTableSearch,
+  MembersTableSearchContainer,
   MemberTable,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
@@ -25,7 +26,7 @@ import SubscriptionStatusSwitcher, {
 import OrganizationMemberRow, {
   EmptyOrganizationMemberRow,
 } from './SubscriptionsView.OrganizationMemberRow';
-import TaskCheckbox from '../../../components/task/TaskCheckbox';
+import Spacing from '../../../components/common/Spacing';
 
 const MINIMAL_INVITATION_PANEL_VISIBILITY_MEMBERS_COUNT = 10;
 
@@ -73,7 +74,7 @@ const roleSortWages = new Proxy(
 );
 
 const roleSortMethod = (person1, person2) =>
-  roleSortWages[(person1?.orgUserRole)] - roleSortWages[(person2?.orgUserRole)];
+  roleSortWages[person1?.orgUserRole] - roleSortWages[person2?.orgUserRole];
 const lastNameSortMethod = ascend(prop('lastName'));
 const firstNameSortMethod = ascend(prop('firstName'));
 
@@ -155,8 +156,6 @@ const SubscriptionsViewMembersTable = ({
     setRemovedUserData,
     currentSearch,
     setCurrentSearch,
-    toggleAllUsersSelected,
-    isAllUsersSelected,
   } = initializeMembersTableHooks({
     setSelectedUsers,
     selectedUsers,
@@ -204,11 +203,16 @@ const SubscriptionsViewMembersTable = ({
                 justify="flex-end"
                 wrap="nowrap"
               >
-                <MembersTableSearch
-                  onChange={event =>
-                    setCurrentSearch(event?.target?.value ?? '')
-                  }
-                />
+                <MembersTableSearchContainer>
+                  <Search
+                    fullWidth
+                    onChange={event =>
+                      setCurrentSearch(event?.target?.value ?? '')
+                    }
+                    value={currentSearch}
+                  />
+                </MembersTableSearchContainer>
+                <Spacing horizontal={3} />
                 <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
@@ -220,16 +224,7 @@ const SubscriptionsViewMembersTable = ({
             {!isSmallScreen && (
               <thead>
                 <tr>
-                  <th>
-                    <Grid container justify="center">
-                      {/* <TaskCheckbox
-                        onChange={toggleAllUsersSelected}
-                        checked={isAllUsersSelected}
-                        size={22}
-                        color="#074A86"
-                      /> */}
-                    </Grid>
-                  </th>
+                  <th>&nbsp;</th>
                   <th>&nbsp;</th>
                   <th>Name</th>
                   <th>User Type</th>
