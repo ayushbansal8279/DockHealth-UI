@@ -17,8 +17,6 @@ export const TaskListContainer = styled.div`
   flex: 1;
   flex-flow: column wrap;
   min-width: 569px;
-  position: sticky;
-  top: ${props => (props.isSubscriptionTrial ? 9 : 6.25)}rem;
 `;
 
 export const StyledButton = styled(ButtonBase)`
