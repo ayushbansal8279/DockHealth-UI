@@ -125,16 +125,15 @@ class Home extends Component {
   componentWillUpdate(nextProps) {
     const { routeParams } = this.props;
 
-    if (nextProps.routeParams.listName !== routeParams.listName) {
+    if (
+      nextProps.routeParams.taskListIdentifier !==
+      routeParams.taskListIdentifier
+    ) {
       const { actions, taskListActions } = this.props;
-      const { listName } = nextProps.routeParams;
 
       actions.loading();
 
-      if (
-        listName != null &&
-        nextProps.routeParams.taskListIdentifier != null
-      ) {
+      if (nextProps.routeParams.taskListIdentifier != null) {
         taskListActions.getTaskListById(
           nextProps.routeParams.taskListIdentifier,
         );
