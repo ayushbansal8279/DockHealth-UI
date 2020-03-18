@@ -1,12 +1,13 @@
-import Button from '@material-ui/core/Button';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+  Button,
+  ButtonBase,
+  DialogActions,
+  DialogTitle,
+} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
 import { deleteTask, duplicateTask } from '../../actions/task-actions';
 import useDialog from '../../hooks/useDialog';
 import NoOverflowDialog from '../common/NoOverflowDialog';

@@ -1,7 +1,6 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
+import { ButtonBase } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
 import AddTaskCrossIcon from '../../img/add-task-cross.svg';
 
 const AddTaskListButtonContainer = styled.div`

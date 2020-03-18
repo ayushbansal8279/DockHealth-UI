@@ -1,7 +1,7 @@
+import { Switch } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import Switch from '@material-ui/core/Switch';
-import withStyles from '@material-ui/core/styles/withStyles';
 
 const StyledSwitch = withStyles({
   icon: {

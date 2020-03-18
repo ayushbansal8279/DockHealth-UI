@@ -1,5 +1,5 @@
-import { ThemeProvider, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Grid, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory, Link } from 'react-router';

@@ -8,7 +8,7 @@ import {
   TaskAnimationContainer,
   TaskContainer,
   TaskSelectionContainer,
-} from './Task.styled';
+} from './Task.Styled';
 import TaskBody from './TaskBody';
 
 const Task = props => {

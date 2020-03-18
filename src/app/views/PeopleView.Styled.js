@@ -1,10 +1,12 @@
+import {
+  Collapse,
+  FormControl,
+  InputBase,
+  InputLabel,
+  TextField,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import Collapse from '@material-ui/core/Collapse';
-import withStyles from '@material-ui/core/styles/withStyles';
-import InputBase from '@material-ui/core/InputBase';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 
 export const SearchContainer = styled.div`
   margin: 2rem 0;

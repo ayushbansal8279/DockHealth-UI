@@ -1,9 +1,8 @@
-import getProps from 'ramda/es/props';
+import { props as getProps } from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { useToggle, useMount } from 'react-use';
+import { useMount, useToggle } from 'react-use';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
-
 import useBoolean from '../../hooks/useBoolean';
 import PersonPickerCrossIcon from '../../img/person-picker-cross.svg';
 import SearchHeadsupIcon from '../../img/search-headsup.svg';

@@ -1,4 +1,4 @@
-import Hidden from '@material-ui/core/Hidden';
+import { Hidden } from '@material-ui/core';
 import { node } from 'prop-types';
 import React from 'react';
 import { withRouter } from 'react-router';

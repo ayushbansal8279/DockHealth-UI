@@ -1,4 +1,5 @@
-import { Grid, ThemeProvider, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';

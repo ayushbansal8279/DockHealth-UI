@@ -1,7 +1,4 @@
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import { Button, Grid, List, ListItem } from '@material-ui/core';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import styled from 'styled-components';
@@ -69,7 +66,6 @@ const renderFormSwitchDefinition = ({ key, label, sublabels }) => (
 
 const UserProfileView = ({
   defaultValues,
-  formContainerClassName,
   formFieldDefinitions,
   formSwitchDefinitions,
   onSubmit,
@@ -98,7 +94,6 @@ const UserProfileView = ({
   return (
     <FormContext {...formMethods}>
       <FormContainer
-        className={formContainerClassName}
         onSubmit={handleSubmit(onSubmit)}
         autoComplete="off"
         autoCorrect="off"

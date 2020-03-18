@@ -1,5 +1,5 @@
-import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
+import { Grid } from '@material-ui/core';
 
 export const HeadsUpSectionGrid = styled(Grid)`
   padding: 0.625rem 0 0.625rem 0.625rem;

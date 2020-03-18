@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
@@ -88,12 +88,11 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
         storeSignatureResult({
           signatureIdentifier: eventData.signature_id,
           signatureResult: eventData.event,
-        }).then(data => {
-          window?.HelloSign.close();
+        }).then(() => {
           if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-            // hashHistory.replace('/onboarding/team-org-setup');
-            window.location.href = '/#/onboarding/team-org-setup';
-            window.location.reload();
+            // eslint-disable-next-line no-unused-expressions
+            window?.HelloSign.close();
+            hashHistory.replace('/onboarding/team-org-setup');
           }
         });
       },

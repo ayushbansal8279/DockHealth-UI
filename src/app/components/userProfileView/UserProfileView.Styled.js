@@ -1,16 +1,9 @@
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import ListItem from '@material-ui/core/ListItem';
-import Popover from '@material-ui/core/Popover';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { Button, Grid, ListItem, Popover } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
-export const FormContainer = styled.form`
-  &.invisible {
-    display: none;
-  }
-`;
+export const FormContainer = styled.form``;
 
 export const ViewContainer = styled.div`
   background-color: #fff;

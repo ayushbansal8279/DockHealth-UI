@@ -1,11 +1,12 @@
-import React from 'react';
+import {
+  FormControl,
+  MenuItem,
+  Select as MaterialSelect,
+} from '@material-ui/core';
+import { ArrowDropDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
-import FormControl from '@material-ui/core/FormControl';
-import MaterialSelect from '@material-ui/core/Select';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import MenuItem from '@material-ui/core/MenuItem';
-
 import Priority from './Priority';
 
 const StyledSelect = styled(MaterialSelect).attrs({
@@ -21,14 +22,15 @@ const StyledSelect = styled(MaterialSelect).attrs({
   }
 
   & .selectRoot {
-      height: 28px;
+    height: 28px;
   }
 
-   & .selectMenu {
+  & .selectMenu {
     padding-left: 19px;
   }
 
-  &&, & .selectMenu:focus {
+  &&,
+  & .selectMenu:focus {
     border-radius: 57px;
   }
 `;
@@ -53,11 +55,21 @@ const StatusSelect = ({ onChange, value, options, disabled }) => (
       name="status"
       IconComponent={StyledDropDownIcon}
     >
-      {options.map(({ value, description }) => ( // eslint-disable-line no-shadow
+      {options.map((
+        { value, description }, // eslint-disable-line no-shadow
+      ) => (
         <MenuItem value={value} key={value}>
-          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}
+          >
             <Priority priority={value} />
-            <div style={{ flex: 1, marginLeft: 5 }}>{value === '' ? <em>{description}</em> : description}</div>
+            <div style={{ flex: 1, marginLeft: 5 }}>
+              {value === '' ? <em>{description}</em> : description}
+            </div>
           </div>
         </MenuItem>
       ))}
@@ -69,10 +81,12 @@ StatusSelect.propTypes = {
   disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string,
-    description: PropTypes.string,
-  })).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string,
+      description: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 StatusSelect.defaultProps = {

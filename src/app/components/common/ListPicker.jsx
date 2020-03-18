@@ -1,15 +1,16 @@
-import Button from '@material-ui/core/Button';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Popover from '@material-ui/core/Popover';
+import {
+  Button,
+  ButtonBase,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Popover,
+} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
 import { moveTask } from '../../actions/task-actions';
 import ListItem from './ListItem';
 import NoOverflowDialog from './NoOverflowDialog';
@@ -50,7 +51,7 @@ const ToggleButton = styled(ButtonBase)`
   }
 `;
 
-class ListPicker extends React.Component {
+export class ListPicker extends React.Component {
   state = {
     anchorEl: null,
     isSearching: false,
@@ -63,13 +64,13 @@ class ListPicker extends React.Component {
     this.setState({ isSearching: !isSearching, searchTerm: '' });
   };
 
-  handleOpen = e => {
-    e.stopPropagation();
+  handleOpen = event => {
+    event.stopPropagation();
     const { items } = this.props;
     if (items == null) {
       return;
     }
-    this.setState({ anchorEl: e.currentTarget });
+    this.setState({ anchorEl: event.currentTarget });
   };
 
   handleClose = () => {
@@ -86,16 +87,16 @@ class ListPicker extends React.Component {
     this.handleClose();
   };
 
-  handleSearch = e => {
-    this.setState({ searchTerm: e.target.value });
+  handleSearch = event => {
+    this.setState({ searchTerm: event.target.value });
   };
 
-  captureClicks = e => {
-    e.stopPropagation();
+  captureClicks = event => {
+    event.stopPropagation();
   };
 
-  openConfirmation = e => {
-    this.setState({ isConfirmation: true, itemId: e.currentTarget.id });
+  openConfirmation = event => {
+    this.setState({ isConfirmation: true, itemId: event.currentTarget.id });
   };
 
   closeConfirmation = () => {
@@ -249,7 +250,4 @@ const mapDispatchToProps = (dispatch, { task }) => ({
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ListPicker);
+export default connect(mapStateToProps, mapDispatchToProps)(ListPicker);

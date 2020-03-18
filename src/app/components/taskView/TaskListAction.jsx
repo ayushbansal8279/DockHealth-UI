@@ -1,9 +1,10 @@
+import { Button } from '@material-ui/core';
+import { omit } from 'ramda';
 import React from 'react';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
 
-const StyledButton = styled(({ active, backgroundColor, ...props }) => (
-  <Button {...props} />
+const StyledButton = styled(props => (
+  <Button {...omit(['active', 'backgroundColor'], props)} />
 ))`
   && {
     border-radius: 0.25rem;

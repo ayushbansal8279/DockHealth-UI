@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import { ButtonBase } from '@material-ui/core';
 
 const ItemContainer = styled(ButtonBase)`
   && {
@@ -9,9 +9,8 @@ const ItemContainer = styled(ButtonBase)`
     height: 56px;
     width: 100%;
     padding: 0 8px;
-    ${({ selected }) => selected && 'background: #a6dcea;'}
-
-    :hover, :focus {
+    ${({ selected }) => selected && 'background: #a6dcea;'} :hover,
+    :focus {
       ${({ selected }) => !selected && 'background: rgba(0, 0, 0, 0.08);'}
     }
   }

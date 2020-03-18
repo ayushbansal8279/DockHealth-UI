@@ -1,7 +1,7 @@
+import { IconButton } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import IconButton from '@material-ui/core/IconButton';
 
 const Flag = styled.div`
   width: 18px;

@@ -1,12 +1,12 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
+import { ButtonBase } from '@material-ui/core';
+import { omit } from 'ramda';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
 import AddTaskCrossIcon from '../../img/add-task-cross.svg';
 
-const AddTaskButtonBase = styled(
-  ({ padded, paddedSmall, circle, ...props }) => <ButtonBase {...props} />,
-)`
+const AddTaskButtonBase = styled(props => (
+  <ButtonBase {...omit(['padded', 'paddedSmall', 'circle'], props)} />
+))`
   && {
     align-items: center;
     background-color: #d9036b;

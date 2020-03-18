@@ -32,6 +32,7 @@ class Notification extends React.Component {
         <div className="message-body">
           {message}
           {stay ?? (
+            // eslint-disable-next-line jsx-a11y/control-has-associated-label
             <button
               style={{ marginLeft: 5 }}
               onClick={this.onClose}
@@ -56,7 +57,4 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(NotificationActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Notification);
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);

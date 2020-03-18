@@ -1,18 +1,15 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import withStyles from '@material-ui/core/styles/withStyles';
-import always from 'ramda/es/always';
-import cond from 'ramda/es/cond';
-import isEmpty from 'ramda/es/isEmpty';
-import T from 'ramda/es/T';
+import {
+  Grid,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { always, cond, isEmpty, T } from 'ramda';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-
 import useBoolean from '../../hooks/useBoolean';
 import AdminIcon from '../../img/admin-icon.svg';
 import CancelInvitationIcon from '../../img/cancel-invitation-icon.svg';

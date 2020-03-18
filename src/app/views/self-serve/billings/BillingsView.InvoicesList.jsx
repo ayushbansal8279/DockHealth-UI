@@ -1,10 +1,6 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import moment from 'moment';
-import { head, isEmpty } from 'ramda';
-import ascend from 'ramda/es/ascend';
-import descend from 'ramda/es/descend';
-import prop from 'ramda/es/prop';
-import sort from 'ramda/es/sort';
+import { ascend, descend, head, isEmpty, prop, sort } from 'ramda';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import CubesLoader from '../../../components/common/CubesLoader';

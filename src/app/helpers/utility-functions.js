@@ -1,8 +1,8 @@
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useMediaQuery } from '@material-ui/core';
 import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
-import curry from 'ramda/es/curry';
+import { curry } from 'ramda';
 import { hashHistory } from 'react-router';
 import Swal from 'sweetalert2';
 

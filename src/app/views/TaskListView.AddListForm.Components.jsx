@@ -1,11 +1,13 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import Collapse from '@material-ui/core/Collapse';
-import FormControl from '@material-ui/core/FormControl';
-import InputBase from '@material-ui/core/InputBase';
-import InputLabel from '@material-ui/core/InputLabel';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import withStyles from '@material-ui/core/styles/withStyles';
+import {
+  ButtonBase,
+  Collapse,
+  FormControl,
+  InputBase,
+  InputLabel,
+  List,
+  ListItem,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
 import SearchIconImage from '../img/search-dark.svg';

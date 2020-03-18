@@ -1,5 +1,5 @@
 import moment from 'moment';
-import curry from 'ramda/es/curry';
+import { curry } from 'ramda';
 import * as TaskApi from '../api/task-api';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
@@ -12,6 +12,16 @@ const shapeTask = task => {
     assignedToIdentifier: assignedTo ? assignedTo.userIdentifier : null,
     patientIdentifier: patient ? patient.patientIdentifier : null,
   };
+};
+
+const getListAction = ({ status, cumulativeFlag }) => {
+  if (status === 'INCOMPLETE') {
+    return ActionTypes.GET_TASKS_SUCCESS;
+  }
+
+  return cumulativeFlag
+    ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
+    : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 };
 
 function getTasksForCreatorSuccess(tasks) {
@@ -37,12 +47,7 @@ export function getListTasks(
   status,
   cumulativeFlag,
 ) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : (cumulativeFlag
-      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
+  const action = getListAction({ status, cumulativeFlag });
 
   return dispatch =>
     TaskApi.getListTasksByUser(taskListIdentifier, status, sortBy, filterBy)
@@ -62,12 +67,7 @@ export function getTasksAssignedToMe(
   status,
   cumulativeFlag,
 ) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : (cumulativeFlag
-      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
+  const action = getListAction({ status, cumulativeFlag });
 
   return dispatch =>
     TaskApi.getTasksAssignedToMe(taskListIdentifier, status, sortBy, filterBy)
@@ -88,12 +88,7 @@ export function getTasksAssignedToSpecificUser(
   status,
   cumulativeFlag,
 ) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : (cumulativeFlag
-      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
+  const action = getListAction({ status, cumulativeFlag });
 
   return dispatch =>
     TaskApi.getTasksAssignedToSpecificUser(
@@ -119,12 +114,7 @@ export function getTasksAssignedByMe(
   status,
   cumulativeFlag,
 ) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : (cumulativeFlag
-      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
+  const action = getListAction({ status, cumulativeFlag });
 
   return dispatch =>
     TaskApi.getTasksAssignedByMe(taskListIdentifier, status, sortBy, filterBy)
@@ -572,12 +562,7 @@ export function getListTasksByPatientAndStatus(
   status,
   cumulativeFlag,
 ) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : (cumulativeFlag
-      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
+  const action = getListAction({ status, cumulativeFlag });
 
   return dispatch =>
     TaskApi.getListTasksByPatient(patientIdentifier, status, taskListIdentifier)
@@ -612,12 +597,7 @@ export function getAllTasksByPatient(
 }
 
 export function getInboxTasks(status, sortBy, filterBy, cumulativeFlag) {
-  const action =
-    status === 'INCOMPLETE'
-      ? ActionTypes.GET_TASKS_SUCCESS
-      : (cumulativeFlag
-      ? ActionTypes.GET_COMPLETED_TASKS_SUCCESS_CUMULATIVE
-      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS);
+  const action = getListAction({ status, cumulativeFlag });
 
   return dispatch =>
     TaskApi.getInboxTasks(status, sortBy, filterBy)

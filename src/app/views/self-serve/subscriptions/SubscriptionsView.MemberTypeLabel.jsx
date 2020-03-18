@@ -1,11 +1,11 @@
-import pathEq from 'ramda/es/pathEq';
+import { pathEq } from 'ramda';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   cancelInviteToOrganization,
   changeUserRoleForOrg,
-  resendInviteToOrganization,
   findAllUsers,
+  resendInviteToOrganization,
 } from '../../../actions/people-actions';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';

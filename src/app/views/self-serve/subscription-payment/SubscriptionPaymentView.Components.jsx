@@ -1,7 +1,8 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import styled from 'styled-components';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { ButtonBase } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import React from 'react';
+import styled from 'styled-components';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -81,8 +82,15 @@ export const BillingButton = withStyles({
   outlined: {
     color: '#074a86',
   },
+  fullWidth: {
+    width: '100%',
+  },
 })(({ classes, variant, fullWidth, ...props }) => {
-  const className = `${classes.root} ${classes[variant]}`.trim();
+  const className = clsx(
+    classes.root,
+    classes[variant],
+    fullWidth && classes.fullWidth,
+  );
 
   return <ButtonBase className={className} {...props} />;
 });

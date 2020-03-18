@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import { identity, memoizeWith, range } from 'ramda';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';

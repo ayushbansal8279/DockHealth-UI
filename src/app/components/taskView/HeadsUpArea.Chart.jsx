@@ -1,10 +1,6 @@
 import Chart from 'chart.js';
 import moment from 'moment';
-import find from 'ramda/es/find';
-import map from 'ramda/es/map';
-import prop from 'ramda/es/prop';
-import propEq from 'ramda/es/propEq';
-import range from 'ramda/es/range';
+import { find, map, prop, propEq, range } from 'ramda';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 

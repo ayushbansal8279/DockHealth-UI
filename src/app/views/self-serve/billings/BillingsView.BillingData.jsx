@@ -1,6 +1,4 @@
-import Button from '@material-ui/core/Button';
-import Collapse from '@material-ui/core/Collapse';
-import Grid from '@material-ui/core/Grid';
+import { Button, Collapse, Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';

@@ -1,6 +1,4 @@
-import Grid from '@material-ui/core/Grid';
-import MenuItem from '@material-ui/core/MenuItem';
-import Popover from '@material-ui/core/Popover';
+import { Grid, MenuItem, Popover } from '@material-ui/core';
 import React, { useRef } from 'react';
 import useBoolean from '../../../hooks/useBoolean';
 import ChevronIcon from '../../../img/collapse.svg';

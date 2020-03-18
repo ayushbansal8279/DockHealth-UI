@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useForm } from 'react-hook-form';

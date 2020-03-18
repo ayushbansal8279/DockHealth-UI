@@ -1,9 +1,5 @@
-import Button from '@material-ui/core/Button';
-import Collapse from '@material-ui/core/Collapse';
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
-import isEmpty from 'ramda/es/isEmpty';
-import times from 'ramda/es/times';
+import { Button, Collapse, Grid, Hidden } from '@material-ui/core';
+import { isEmpty, times } from 'ramda';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IntercomAPI } from 'react-intercom';
 import { useCss, useMount, useWindowSize } from 'react-use';

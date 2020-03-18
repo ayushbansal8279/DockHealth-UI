@@ -1,6 +1,6 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import moment from 'moment';
-import memoizeWith from 'ramda/es/memoizeWith';
+import { memoizeWith } from 'ramda';
 import React from 'react';
 import { useAsync } from 'react-use';
 import styled from 'styled-components';

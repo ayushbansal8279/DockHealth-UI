@@ -1,12 +1,8 @@
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Popover from '@material-ui/core/Popover';
+import { Grid, List, ListItem, Popover } from '@material-ui/core';
 import React, { useRef } from 'react';
-import { useForm, FormContext } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-
 import { addPatient } from '../../actions/patient-actions';
 import useBoolean from '../../hooks/useBoolean';
 import DropdownIcon from '../../img/dropdown-icon.svg';

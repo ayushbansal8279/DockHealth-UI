@@ -1,9 +1,9 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-
+import { ButtonBase } from '@material-ui/core';
 import { beginPatientCreation } from '../../actions/patient-actions';
+
 import AddPatientIcon from '../../img/patients-add.svg';
 
 const StyledButtonBase = styled(ButtonBase)`

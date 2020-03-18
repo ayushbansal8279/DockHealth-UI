@@ -1,9 +1,11 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputBase from '@material-ui/core/InputBase';
-import InputLabel from '@material-ui/core/InputLabel';
-import withStyles from '@material-ui/core/styles/withStyles';
+import {
+  ButtonBase,
+  FormControl,
+  FormHelperText,
+  InputBase,
+  InputLabel,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
 

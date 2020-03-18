@@ -1,7 +1,5 @@
-import { ThemeProvider, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/styles';
+import { Grid, IconButton, Typography } from '@material-ui/core';
+import { ThemeProvider, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';

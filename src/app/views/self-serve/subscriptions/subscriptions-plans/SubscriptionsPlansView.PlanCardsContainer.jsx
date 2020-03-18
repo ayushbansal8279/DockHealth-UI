@@ -1,6 +1,4 @@
-import Collapse from '@material-ui/core/Collapse';
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
+import { Collapse, Grid, Hidden } from '@material-ui/core';
 import React from 'react';
 import FeatureListChevronIcon from '../../../../img/feature-list-chevron.svg';
 import { H1, H2, H4 } from '../SubscriptionsView.Styled';

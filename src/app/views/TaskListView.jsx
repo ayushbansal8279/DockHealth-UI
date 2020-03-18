@@ -1,6 +1,4 @@
-import Collapse from '@material-ui/core/Collapse';
-import Fade from '@material-ui/core/Fade';
-import Grid from '@material-ui/core/Grid';
+import { Collapse, Fade, Grid } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';

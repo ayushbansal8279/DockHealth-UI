@@ -1,15 +1,14 @@
-import head from 'ramda/es/head';
+import { head } from 'ramda';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-
 import { getAllPatients } from '../../actions/patient-actions';
-import { getMembersByTaskListId } from '../../actions/tasklist-actions';
 import {
   storeAsCurrentTask as storeAsCurrentTaskAction,
   toggleTaskPriority,
 } from '../../actions/task-actions';
+import { getMembersByTaskListId } from '../../actions/tasklist-actions';
 import useBoolean from '../../hooks/useBoolean';
 import { taskValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
@@ -158,9 +157,10 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
     getAllPatients()(dispatch);
 
     if (isMultiList && task?.taskList) {
-      getMembersByTaskListId(task?.taskList?.taskListIdentifier, 'ALL')(
-        dispatch,
-      );
+      getMembersByTaskListId(
+        task?.taskList?.taskListIdentifier,
+        'ALL',
+      )(dispatch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   });

@@ -1,7 +1,7 @@
-import makeStyles from '@material-ui/styles/makeStyles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import React from 'react';
 import { prop } from 'ramda';
+import React from 'react';
 
 const spacingMapValues = new Proxy(
   {

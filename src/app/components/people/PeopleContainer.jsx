@@ -1,9 +1,9 @@
-import Grid from '@material-ui/core/Grid';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { createFilter } from 'react-search-input';
 import { bindActionCreators } from 'redux';
+import { Grid } from '@material-ui/core';
 import * as PeopleActions from '../../actions/people-actions';
 import { noop } from '../../helpers/utility-functions';
 import Member from '../members/Member';
@@ -193,7 +193,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(PeopleActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PeopleContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleContainer);

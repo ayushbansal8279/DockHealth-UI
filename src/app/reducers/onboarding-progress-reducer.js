@@ -1,4 +1,4 @@
-import clamp from 'ramda/es/clamp';
+import { clamp } from 'ramda';
 import {
   SET_ONBOARDING_PROGRESS,
   SET_ONBOARDING_STEP,

@@ -1,8 +1,0 @@
-diff a/src/app/components/task/AddTask.jsx b/src/app/components/task/AddTask.jsx	(rejected hunks)
-@@ -155,3 +155,3 @@ const mapDispatchToProps = (dispatch, { taskListIdentifier, patientIdentifier }) => ({
--    if(patientIdentifier && patientIdentifier>0){
--      saveTask({ description, taskListIdentifier, patientIdentifier })(dispatch)
--    }else{
-+    if (patientIdentifier && patientIdentifier > 0) {
-+      saveTask({ description, taskListIdentifier, patientIdentifier })(dispatch);
-+    } else {

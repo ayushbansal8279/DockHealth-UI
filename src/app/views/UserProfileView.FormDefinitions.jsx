@@ -1,4 +1,4 @@
-import head from 'ramda/es/head';
+import { head } from 'ramda';
 import React from 'react';
 import styled from 'styled-components';
 

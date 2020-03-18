@@ -1,6 +1,5 @@
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Popover from '@material-ui/core/Popover';
+/* eslint-disable @typescript-eslint/camelcase */
+import { Button, Grid, Popover } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';

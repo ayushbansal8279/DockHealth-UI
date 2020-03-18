@@ -1,7 +1,7 @@
-import Dialog from '@material-ui/core/Dialog';
-import withStyles from '@material-ui/core/styles/withStyles';
-import styled from 'styled-components';
+import { Dialog } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
+import styled from 'styled-components';
 
 export const AttachmentPreviewDialog = withStyles({
   paper: {

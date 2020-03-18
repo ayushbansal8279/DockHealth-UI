@@ -1,7 +1,8 @@
 import styled from 'styled-components';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import IconButton from '@material-ui/core/IconButton';
 import React from 'react';
+
+import { ButtonBase, IconButton } from '@material-ui/core';
+import { omit } from 'ramda';
 
 export const PatientsSidebarContainer = styled.div`
   padding: 4px;
@@ -131,8 +132,8 @@ export const PatientsSidebarCloseButton = styled(ButtonBase)`
   }
 `;
 
-export const StyledButton = styled(({ isCollapsed, ...props }) => (
-  <IconButton {...props} />
+export const StyledButton = styled(props => (
+  <IconButton {...omit(['isCollapsed'], props)} />
 ))`
   && {
     height: 36px;

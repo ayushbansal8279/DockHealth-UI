@@ -1,6 +1,4 @@
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Popover from '@material-ui/core/Popover';
+import { Button, IconButton, Popover } from '@material-ui/core';
 import { BasePicker, Calendar } from 'material-ui-pickers';
 import moment from 'moment';
 import PropTypes from 'prop-types';

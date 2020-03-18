@@ -1,5 +1,4 @@
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';

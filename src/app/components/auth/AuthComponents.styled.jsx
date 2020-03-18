@@ -1,11 +1,9 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import Grid from '@material-ui/core/Grid';
-import withStyles from '@material-ui/core/styles/withStyles';
-import Typography from '@material-ui/core/Typography';
+import { ButtonBase, Grid, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import { bool } from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import clsx from 'clsx';
 
 const TypographyCustomComponent = ({
   classes,

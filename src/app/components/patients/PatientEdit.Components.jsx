@@ -1,9 +1,11 @@
-import { Collapse } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
-import InputBase from '@material-ui/core/InputBase';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import withStyles from '@material-ui/core/styles/withStyles';
+import {
+  Collapse,
+  FormControl,
+  InputBase,
+  InputLabel,
+  Select,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';

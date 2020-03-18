@@ -1,5 +1,5 @@
-import { ThemeProvider, Typography } from '@material-ui/core';
-import Collapse from '@material-ui/core/Collapse';
+import { Collapse, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CollapseIcon from '../../img/collapse.svg';

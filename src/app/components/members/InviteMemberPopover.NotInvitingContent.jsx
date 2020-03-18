@@ -1,9 +1,9 @@
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Popover from '@material-ui/core/Popover';
-import CloseIcon from '@material-ui/icons/Close';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import SearchIcon from '@material-ui/icons/Search';
+import { List, ListItem, Popover } from '@material-ui/core';
+import {
+  Close as CloseIcon,
+  MoreVert as MoreIcon,
+  Search as SearchIcon,
+} from '@material-ui/icons';
 import { isEmpty } from 'ramda';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -143,7 +143,8 @@ const MemberItemElement = ({
 
   const memberRole = getFormattedMemberRole(member?.taskListUserRole);
 
-  const isSignedUp = member.userStatus !== 'INVITED' && Boolean(member?.userIdentifier);
+  const isSignedUp =
+    member.userStatus !== 'INVITED' && Boolean(member?.userIdentifier);
 
   const taskListIdentifier = taskList?.taskListIdentifier;
 
@@ -191,7 +192,9 @@ const MemberItemElement = ({
           <NotSignedUpLabel>{memberSubLabel}</NotSignedUpLabel>
         )}
       </MemberName>
-      <MemberRole>{!invitationPending && !notInTaskList && memberRole}</MemberRole>
+      <MemberRole>
+        {!invitationPending && !notInTaskList && memberRole}
+      </MemberRole>
       {currentUser?.userIdentifier !== member?.userIdentifier && (
         <div ref={moreIconButtonReference}>
           <MoreIconButton onClick={openItemPopover}>

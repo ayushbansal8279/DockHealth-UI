@@ -1,6 +1,10 @@
-import { IconButton, IconButtonProps, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/styles';
+import {
+  Grid,
+  IconButton,
+  IconButtonProps,
+  Typography,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
 

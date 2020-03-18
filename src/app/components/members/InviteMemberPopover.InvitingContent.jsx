@@ -1,12 +1,12 @@
-import Button from '@material-ui/core/Button';
-import BackIcon from '@material-ui/icons/ArrowBack';
+import { Button } from '@material-ui/core';
+import { ArrowBack as BackIcon } from '@material-ui/icons';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
 import {
-  invitePersonToTaskList,
   getMembersByTaskListId,
+  invitePersonToTaskList,
 } from '../../actions/tasklist-actions';
 import { showAlert } from '../../helpers/utility-functions';
 import { UniversalStyledInput } from '../userProfileView/UniversalStyledInput';

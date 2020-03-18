@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 

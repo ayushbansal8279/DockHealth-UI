@@ -1,7 +1,6 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Link } from 'react-router';
 import AuthField from '../common/AuthField';
 import { NextButton, TitleTypography } from './AuthComponents.styled';
 
@@ -14,7 +13,7 @@ const validate = values => {
 };
 
 const ConfirmMFACodeForm = props => {
-  const { handleSubmit, invalid, pristine, submitting, customError, setCustomError } = props;
+  const { handleSubmit, invalid, customError, setCustomError } = props;
 
   return (
     <form className="inline-label top-buffer" onSubmit={handleSubmit}>
@@ -23,7 +22,8 @@ const ConfirmMFACodeForm = props => {
       </TitleTypography>
       <Grid item sm={12} md={9}>
         <TitleTypography variant="h4">
-        Enter the six digit authentication code that was sent to your cell phone
+          Enter the six digit authentication code that was sent to your cell
+          phone
         </TitleTypography>
       </Grid>
       <Grid item sm={12} md={9}>

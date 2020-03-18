@@ -1,5 +1,4 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import Grid from '@material-ui/core/Grid';
+import { ButtonBase, Grid } from '@material-ui/core';
 import { motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';

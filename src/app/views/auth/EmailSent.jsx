@@ -1,6 +1,5 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React from 'react';
-
 import { TitleTypography } from '../../components/auth/AuthComponents.styled';
 
 export default () => (

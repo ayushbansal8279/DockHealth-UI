@@ -1,6 +1,5 @@
-import { Button, Popover } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import AddIcon from '@material-ui/icons/Add';
+import { Button, Grid, Popover } from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleListNotifications } from '../../actions/tasklist-actions';

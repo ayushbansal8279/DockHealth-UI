@@ -1,10 +1,8 @@
-import React from 'react';
+import { ButtonBase, InputAdornment, TextField } from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import AddIcon from '@material-ui/icons/Add';
-import ButtonBase from '@material-ui/core/ButtonBase';
 
 const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   && {
@@ -28,7 +26,7 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
     font-size: 14px;
     color: #2e3a43;
   }
-  
+
   && fieldset {
     border: none;
     top: 0;
@@ -56,22 +54,25 @@ const StyledButton = styled(ButtonBase)`
 class SubmitComment extends React.Component {
   state = {
     draft: '',
-  }
+  };
 
-  handleChange = (e) => {
-    const { value: draft } = e.target;
+  handleChange = event => {
+    const { value: draft } = event.target;
     this.setState({ draft });
-  }
+  };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
+  handleSubmit = event => {
+    event.preventDefault();
+
     const { submit } = this.props;
     const { draft } = this.state;
-    if (draft === '') { return; }
+    if (draft === '') {
+      return;
+    }
 
     submit(draft);
     this.setState({ draft: '' });
-  }
+  };
 
   render() {
     const { disabled } = this.props;
@@ -97,7 +98,7 @@ class SubmitComment extends React.Component {
             },
           }}
         >
-      + Add Comment
+          + Add Comment
         </StyledTextField>
       </form>
     );

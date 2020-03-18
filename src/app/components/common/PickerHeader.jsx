@@ -1,8 +1,8 @@
-import React from 'react';
+import { IconButton } from '@material-ui/core';
+import { ArrowBack as BackIcon } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
-import IconButton from '@material-ui/core/IconButton';
-import BackIcon from '@material-ui/icons/ArrowBack';
 import ItemAssignment from '../../img/folder.svg';
 import Search from '../../img/search.svg';
 

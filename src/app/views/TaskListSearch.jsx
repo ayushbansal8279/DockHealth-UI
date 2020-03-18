@@ -1,5 +1,4 @@
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { Grid, Typography } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
@@ -9,11 +8,11 @@ import * as TaskActions from '../actions/task-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import GenericHeader from '../components/common/GenericHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
+import Spacing from '../components/common/Spacing';
 import TaskListSearchContainer from '../components/LEGACY_list/TaskListSearchContainer';
 import TaskCheckbox from '../components/task/TaskCheckbox';
 import Search from '../components/taskView/Search';
 import { SearchFieldContainer } from './TaskListSearch.Styled';
-import Spacing from '../components/common/Spacing';
 
 class TaskListSearch extends PureComponent {
   state = {

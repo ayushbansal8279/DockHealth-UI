@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import queryString from 'query-string';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';

@@ -1,9 +1,8 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
+import { ButtonBase } from '@material-ui/core';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-
 import { noop } from '../../helpers/utility-functions';
 
 const Container = styled.div`

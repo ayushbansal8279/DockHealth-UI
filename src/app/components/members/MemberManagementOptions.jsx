@@ -1,14 +1,12 @@
-import React, { useState, useCallback } from 'react';
+import { IconButton, Menu, MenuItem } from '@material-ui/core';
+import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
-  removeUserFromTaskList,
   changeUserRoleForList,
   getOrganizationUsersNotInTaskList,
+  removeUserFromTaskList,
 } from '../../actions/tasklist-actions';
 
 const MEMBER_ROLE = 'MEMBER';
@@ -24,10 +22,10 @@ export const ManageButton = ({
 
   const close = useCallback(() => {
     setAnchor(null);
-  });
+  }, []);
 
-  const handleClick = e => {
-    setAnchor(e.currentTarget);
+  const handleClick = event => {
+    setAnchor(event.currentTarget);
   };
 
   const handleRemove = useCallback(() => {
@@ -76,15 +74,18 @@ const mapDispatchToProps = (
   { taskListIdentifier, member: { userIdentifier } },
 ) => ({
   remove: () => {
-    removeUserFromTaskList(taskListIdentifier, { userIdentifier })(dispatch).then(
-      () =>
-        getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch),
+    removeUserFromTaskList(taskListIdentifier, { userIdentifier })(
+      dispatch,
+    ).then(() =>
+      getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch),
     );
   },
   changeRole: role => {
-    changeUserRoleForList(taskListIdentifier, { userIdentifier }, role)(
-      dispatch,
-    ).then(() =>
+    changeUserRoleForList(
+      taskListIdentifier,
+      { userIdentifier },
+      role,
+    )(dispatch).then(() =>
       getOrganizationUsersNotInTaskList(taskListIdentifier, 'ALL')(dispatch),
     );
   },

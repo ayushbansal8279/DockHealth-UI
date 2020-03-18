@@ -1,5 +1,5 @@
+import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import Grid from '@material-ui/core/Grid';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;

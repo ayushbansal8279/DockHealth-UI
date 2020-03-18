@@ -1,8 +1,6 @@
-import find from 'ramda/es/find';
-import propEq from 'ramda/es/propEq';
+import { find, propEq } from 'ramda';
 import React from 'react';
 import styled from 'styled-components';
-
 import SortingIcon from '../../img/sorting-icon.svg';
 
 const OrderIconContainer = styled.span`

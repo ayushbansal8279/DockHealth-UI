@@ -16,7 +16,7 @@ import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
 import ChangePassword from './views/auth/ChangePassword';
-import ConfirmMFACode from './views/auth/ConfirmMFACode';
+import ConfirmMFACode from './views/auth/ConfirmMfaCode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
 import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess';
 import EmailSent from './views/auth/EmailSent';
@@ -25,7 +25,6 @@ import LoginPassword from './views/auth/LoginPassword';
 import LoginUser from './views/auth/LoginUser';
 import LoginWelcome from './views/auth/LoginWelcome';
 import Logout from './views/auth/Logout';
-import Register from './views/auth/Register';
 import ResendCode from './views/auth/ResendCode';
 import ResetPassword from './views/auth/ResetPassword';
 import ResetPasswordSuccess from './views/auth/ResetPasswordSuccess';
@@ -303,7 +302,6 @@ export const Routes = ({ store }) => {
               component={ResetPasswordSuccess}
             />
           </Route>
-          <Route path="/register" component={Register} />
         </Route>
         <Route path="/selfEnrolledUser" component={SelfEnrolledUser} />
       </Route>

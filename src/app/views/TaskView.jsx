@@ -1,9 +1,12 @@
-import { Typography, Collapse } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Fade from '@material-ui/core/Fade';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import { makeStyles, ThemeProvider } from '@material-ui/styles';
+import {
+  Button,
+  Collapse,
+  Fade,
+  Grid,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import debounce from 'lodash.debounce';
 import Pusher from 'pusher-js';

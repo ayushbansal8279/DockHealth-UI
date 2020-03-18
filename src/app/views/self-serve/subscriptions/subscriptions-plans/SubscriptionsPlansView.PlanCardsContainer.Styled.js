@@ -1,7 +1,6 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-
 import { H4 } from '../SubscriptionsView.Styled';
 
 export const AnnualToggleContainer = styled(Grid)`

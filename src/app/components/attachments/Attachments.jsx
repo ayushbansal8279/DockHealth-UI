@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
+import { ButtonBase } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import styled from 'styled-components';
 import Attachment from './Attachment';
 
 const Container = styled.div`

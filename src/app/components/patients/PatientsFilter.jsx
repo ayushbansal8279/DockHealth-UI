@@ -1,8 +1,8 @@
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
+
+import { MenuItem, Select } from '@material-ui/core';
 
 const StyledSelect = styled(Select)`
   && fieldset {

@@ -1,6 +1,5 @@
-import ListItem from '@material-ui/core/ListItem';
-import Popover from '@material-ui/core/Popover';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { ListItem, Popover } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 
 export const MemberTypeLabelButton = styled.span`

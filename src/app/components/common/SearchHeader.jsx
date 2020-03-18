@@ -1,10 +1,8 @@
-import React from 'react';
+import { IconButton, InputAdornment, TextField } from '@material-ui/core';
+import { ArrowBack as BackIcon } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import BackIcon from '@material-ui/icons/ArrowBack';
 import SearchDark from '../../img/search-dark.svg';
 
 const SearchTextField = styled(TextField)`
@@ -27,7 +25,7 @@ const SearchTextField = styled(TextField)`
     background: none;
     padding: 16px 14px;
   }
-  
+
   && fieldset {
     border: none;
     top: 0;
@@ -44,7 +42,6 @@ const Header = styled.div`
   width: 494px;
   height: 73px;
 `;
-
 
 const SearchHeader = ({ handleSearch, handleSearchToggle }) => (
   <Header>

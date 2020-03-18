@@ -1,8 +1,7 @@
-import TextField from '@material-ui/core/TextField';
+import { TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-
 import { capitalize } from '../../helpers/capitalize';
 import EditIcon from '../../img/edit.svg';
 

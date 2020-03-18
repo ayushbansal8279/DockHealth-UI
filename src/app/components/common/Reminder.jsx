@@ -1,8 +1,8 @@
-import React from 'react';
+import { ButtonBase } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import { updateReminder } from '../../actions/task-actions';
 import DateTimeSelect from './DateTimeSelect';
 import DueDate from './DueDate';
@@ -50,7 +50,4 @@ const mapDispatchToProps = (dispatch, { task }) => ({
   },
 });
 
-export default connect(
-  undefined,
-  mapDispatchToProps,
-)(Reminder);
+export default connect(undefined, mapDispatchToProps)(Reminder);

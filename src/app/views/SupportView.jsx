@@ -1,5 +1,5 @@
-import Grid from '@material-ui/core/Grid';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { Grid } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';

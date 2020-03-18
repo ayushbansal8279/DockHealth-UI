@@ -1,15 +1,17 @@
-import ascend from 'ramda/es/ascend';
-import descend from 'ramda/es/descend';
-import partition from 'ramda/es/partition';
-import prop from 'ramda/es/prop';
-import propEq from 'ramda/es/propEq';
-import reverse from 'ramda/es/reverse';
-import sortWith from 'ramda/es/sortWith';
-import uniqBy from 'ramda/es/uniqBy';
+import {
+  ascend,
+  descend,
+  partition,
+  prop,
+  propEq,
+  reverse,
+  sortWith,
+  uniqBy,
+} from 'ramda';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useToggle } from 'react-use';
 import { hashHistory } from 'react-router';
+import { useToggle } from 'react-use';
 import { getTaskPage } from '../../actions/task-actions';
 import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
 import {

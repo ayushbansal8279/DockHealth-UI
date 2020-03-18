@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const dotenv = require('dotenv');
 
 const BUILD_DIR = path.resolve(__dirname, 'dist');
@@ -32,54 +35,91 @@ exposed.forEach(i => {
   exposedEnvironment[i] = JSON.stringify(process.env[i]);
 });
 
-const config = {
-  entry: ['@babel/polyfill', `${APP_DIR}/index.jsx`],
-  devtool: 'inline-cheap-source-map',
-  output: {
-    path: BUILD_DIR,
-    filename: 'bundle.js',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(j|t)sx?$/,
-        include: APP_DIR,
-        exclude: /node_modules/,
-        loader: ['babel-loader'],
+const config = (environment, options) => {
+  const isDevelopment = options.mode === 'development';
+
+  return {
+    entry: ['@babel/polyfill', `${APP_DIR}/index.jsx`],
+    devtool: isDevelopment ? 'inline-cheap-source-map' : false,
+    output: {
+      path: BUILD_DIR,
+      filename: 'bundle.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(j|t)sx?$/,
+          include: APP_DIR,
+          exclude: /node_modules/,
+          loader: ['babel-loader'],
+        },
+        {
+          test: /\.css$/,
+          loader: 'style-loader!css-loader',
+        },
+        {
+          test: /\.(png|svg|ttf)$/,
+          loader: 'file-loader',
+        },
+      ],
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': exposedEnvironment,
+      }),
+      new HtmlWebpackPlugin({
+        template: `${__dirname}/src/index.html`,
+        filename: 'index.html',
+        inject: 'body',
+        hash: true,
+      }),
+      new MomentLocalesPlugin(),
+      isDevelopment &&
+        new BundleAnalyzerPlugin({
+          openAnalyzer: false,
+        }),
+    ].filter(Boolean),
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[/\\]node_modules[/\\](@react-pdf|yoga-layout-prebuilt|pdfjs-dist|react-pdf)[/\\]/,
+            name: 'pdf',
+            chunks: 'all',
+          },
+        },
       },
-      {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader',
+      minimize: !isDevelopment,
+    },
+    resolve: {
+      extensions: [
+        '.js',
+        '.json',
+        '.jsx',
+        '.ts',
+        '.tsx',
+        '.png',
+        '.svg',
+        '.ttf',
+      ],
+      alias: {
+        'chart.js': path.resolve(
+          __dirname,
+          'node_modules',
+          'chart.js',
+          'dist',
+          'Chart.min.js',
+        ),
       },
-      {
-        test: /\.(png|svg|ttf)$/,
-        loader: 'file-loader',
-      },
-    ],
-  },
-  plugins: [
-    new webpack.LoaderOptionsPlugin({
-      debug: true,
-    }),
-    new webpack.DefinePlugin({
-      'process.env': exposedEnvironment,
-    }),
-    new HtmlWebpackPlugin({
-      template: `${__dirname}/src/index.html`,
-      filename: 'index.html',
-      inject: 'body',
-      hash: true,
-    }),
-  ],
-  resolve: {
-    extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.png', '.svg', '.ttf'],
-  },
-  devServer: {
-    compress: false,
-    disableHostCheck: true,
-    hot: false,
-    liveReload: true,
-  },
+    },
+    devServer: {
+      compress: false,
+      disableHostCheck: true,
+      hot: false,
+      liveReload: true,
+    },
+  };
 };
 
 module.exports = config;

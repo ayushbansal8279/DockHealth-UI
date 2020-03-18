@@ -1,6 +1,5 @@
-import TextField from '@material-ui/core/TextField';
-import Toolbar from '@material-ui/core/Toolbar';
-import AddIcon from '@material-ui/icons/Add';
+import { TextField, Toolbar } from '@material-ui/core';
+import { Add as AddIcon } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';

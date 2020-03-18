@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React, { useCallback, useRef, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -7,10 +7,11 @@ import { useMount, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import { updateOrganizationName } from '../../../actions/organization-actions';
+import { findAllUsers, loading } from '../../../actions/people-actions';
+import * as userApi from '../../../api/user-api';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 import InvitationPanel from '../../self-serve/subscriptions/SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from '../../self-serve/subscriptions/SubscriptionsView.MembersTable';
-import * as userApi from '../../../api/user-api';
 import {
   OnboardingButton,
   OnboardingDivider,
@@ -22,7 +23,6 @@ import {
   OnboardingSpacing4,
   OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
-import { findAllUsers, loading } from '../../../actions/people-actions';
 
 const goToProfile = () => {
   hashHistory.push('/onboarding/profile');

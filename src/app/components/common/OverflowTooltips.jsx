@@ -1,9 +1,9 @@
-import Popover from '@material-ui/core/Popover';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { Popover } from '@material-ui/core';
 
-const checkOverflow = el => el.offsetWidth < el.scrollWidth;
+const checkOverflow = element => element.offsetWidth < element.scrollWidth;
 
 const StyledPopover = styled(props => (
   <Popover {...props} classes={{ paper: 'paper' }} />
@@ -27,9 +27,9 @@ class OverflowTooltips extends Component {
     tooltip: '',
   };
 
-  handleOpen = e => {
+  handleOpen = event => {
     const { anchorEl } = this.state;
-    const node = e.target;
+    const node = event.target;
 
     if (anchorEl === node) {
       return;
@@ -42,7 +42,7 @@ class OverflowTooltips extends Component {
 
     // if anchor is not first set to null, the popover doesn't update its position
     this.setState({ anchorEl: null, tooltip: '' }, () => {
-      this.setState({ anchorEl: node, tooltip: node.innerText });
+      this.setState({ anchorEl: node, tooltip: node.textContent });
     });
   };
 

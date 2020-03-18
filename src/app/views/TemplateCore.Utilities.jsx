@@ -4,8 +4,8 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import * as userApi from '../api/user-api';
 import handleFeatureToggle from '../helpers/handle-feature-toggle';
 import {
-  useMobile,
   setCurrentPageAfterLogin,
+  useMobile,
 } from '../helpers/utility-functions';
 
 const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
@@ -87,6 +87,16 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
   if (data?.organizationIdentifier) {
     orgData = await checkBAASignedStatus()(dispatch);
   }
+
+  // handleHomeRedirection({
+  //   data,
+  //   orgData,
+  //   isEulaPath: pathname === EULA_PATH,
+  //   isBaaPath,
+  //   isMobile,
+  //   dispatch,
+  // });
+  // return;
 
   if (data?.organizationIdentifier === '') {
     hashHistory.push('/unEnrolledUser');

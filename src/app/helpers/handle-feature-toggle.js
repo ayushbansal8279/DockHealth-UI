@@ -1,6 +1,5 @@
+import { any, identity } from 'ramda';
 import { hashHistory } from 'react-router';
-import any from 'ramda/es/any';
-import identity from 'ramda/es/identity';
 
 export default ({ location, user }) => {
   const { pathname } = location;

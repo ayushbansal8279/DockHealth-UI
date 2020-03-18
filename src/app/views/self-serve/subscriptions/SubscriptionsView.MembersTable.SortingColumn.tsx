@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 import { RotatableChevronWithSpacing } from '../../../components/common/RotatableChevron';

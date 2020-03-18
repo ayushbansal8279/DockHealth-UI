@@ -24,6 +24,7 @@ const BasicFieldTaskDescription = ({
           'has-value'}`}
       >
         <input {...input} id={id} className="input-group-field " type="text" />
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>Task</label>
       </div>
       <span onClick={() => callback()} className="input-group-label">

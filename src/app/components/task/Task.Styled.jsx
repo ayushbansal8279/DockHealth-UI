@@ -1,5 +1,5 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { ButtonBase } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
 

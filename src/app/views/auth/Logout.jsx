@@ -1,4 +1,4 @@
-import isNil from 'ramda/es/isNil';
+import { isNil } from 'ramda';
 import { PureComponent } from 'react';
 import { hashHistory } from 'react-router';
 import { error } from '../../actions/notification-actions';

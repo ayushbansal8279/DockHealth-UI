@@ -1,10 +1,9 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDeepCompareEffect } from 'react-use';
 import styled from 'styled-components';
-
 import {
   assignOrReassignTask,
   updatePatient,

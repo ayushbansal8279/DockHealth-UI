@@ -1,7 +1,6 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
+import { ButtonBase } from '@material-ui/core';
 import AddCrossIcon from '../../img/add-task-cross.svg';
 
 const InvitePeopleButtonContainer = styled.div`

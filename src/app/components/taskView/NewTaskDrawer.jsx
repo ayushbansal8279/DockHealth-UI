@@ -1,4 +1,4 @@
-import Button from '@material-ui/core/Button';
+import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import { FormContext } from 'react-hook-form';
 import { deleteTask, duplicateTask } from '../../actions/task-actions';

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import { ButtonBase } from '@material-ui/core';
 import { getAllPatients } from '../../actions/patient-actions';
 import { updatePatient } from '../../actions/task-actions';
 import Patient from './Patient';
@@ -97,7 +97,4 @@ const mapDispatchToProps = (dispatch, { task }) => ({
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PatientAssignment);
+export default connect(mapStateToProps, mapDispatchToProps)(PatientAssignment);

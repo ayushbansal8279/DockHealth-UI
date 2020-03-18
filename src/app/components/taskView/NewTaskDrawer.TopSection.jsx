@@ -1,11 +1,9 @@
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import Popover from '@material-ui/core/Popover';
+import { Grid, List, Popover } from '@material-ui/core';
 import React, { useCallback, useRef } from 'react';
 import { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-
 import { updateWorkflowStatus } from '../../actions/task-actions';
+import { onTaskPriorityChanged } from '../../helpers/ga-event-helper';
 import { PriorityDot } from '../common/Priority';
 import NewTaskDrawerForm from './NewTaskDrawer.Form';
 import renderStatusSelectOption from './NewTaskDrawer.RenderStatusSelect';
@@ -20,7 +18,6 @@ import {
 } from './NewTaskDrawer.Styled';
 import PriorityFlag from './PriorityFlag';
 import { CloseTaskButton } from './TaskDrawerButtons';
-import { onTaskPriorityChanged } from '../../helpers/ga-event-helper';
 
 export default ({
   addingTaskOrSubtask,

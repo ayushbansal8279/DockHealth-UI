@@ -1,8 +1,7 @@
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 import React from 'react';
 import styled from 'styled-components';
 
+import { Button, Grid } from '@material-ui/core';
 import NoOverflowDialog from '../common/NoOverflowDialog';
 
 const StyledDialogGrid = styled(Grid)`

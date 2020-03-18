@@ -1,14 +1,14 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import { func } from 'prop-types';
 import {
   ascend,
   descend,
   filter,
+  identity,
   includes,
   isEmpty,
   reject,
   sortWith,
-  identity,
 } from 'ramda';
 import React, { useEffect } from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';

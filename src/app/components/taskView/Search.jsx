@@ -1,6 +1,5 @@
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
-import { withStyles } from '@material-ui/styles';
+import { InputAdornment, TextField } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';

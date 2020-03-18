@@ -1,9 +1,8 @@
-import Avatar from '@material-ui/core/Avatar';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import Tooltip from '@material-ui/core/Tooltip';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
+
+import { Avatar, ButtonBase, Tooltip } from '@material-ui/core';
 
 export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
   && {

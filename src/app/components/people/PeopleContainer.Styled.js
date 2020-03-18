@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 
 export const ListContainer = styled.div`
   background-color: #fff;

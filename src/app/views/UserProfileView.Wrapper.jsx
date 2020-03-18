@@ -132,16 +132,6 @@ const UserProfileViewWrapper = () => {
     [],
   );
 
-  const { loaderContainerClassName, formContainerClassName } = userProfile
-    ? {
-        loaderContainerClassName: 'animated fadeOut',
-        formContainerClassName: 'animated fadeIn',
-      }
-    : {
-        loaderContainerClassName: '',
-        formContainerClassName: 'invisible',
-      };
-
   checkOrganizationNameForEditable(formFieldDefinitions, userProfile);
 
   const defaultValues = Object.fromEntries(
@@ -172,11 +162,10 @@ const UserProfileViewWrapper = () => {
 
   return (
     <ViewContainer>
-      <CubesLoaderOverlay className={loaderContainerClassName} />
+      <CubesLoaderOverlay />
       {userProfile && userNotificationPreferences && (
         <UserProfileView
           defaultValues={defaultValues}
-          formContainerClassName={formContainerClassName}
           formFieldDefinitions={formFieldDefinitions}
           formSwitchDefinitions={formSwitchDefinitions}
           onSubmit={onFormSubmit({ userProfile, dispatch })}

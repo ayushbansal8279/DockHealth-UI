@@ -1,9 +1,8 @@
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
+import { ListItem, ListItemIcon } from '@material-ui/core';
 import useBoolean from '../../hooks/useBoolean';
 import Avatar from '../common/Avatar';
 import { AvatarImageContainer } from '../common/Avatar.styled';

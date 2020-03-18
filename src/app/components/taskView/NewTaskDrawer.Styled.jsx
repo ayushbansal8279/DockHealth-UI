@@ -1,9 +1,8 @@
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { Button, Grid } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import React from 'react';
 import styled from 'styled-components';
-import clsx from 'clsx';
 
 export const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;

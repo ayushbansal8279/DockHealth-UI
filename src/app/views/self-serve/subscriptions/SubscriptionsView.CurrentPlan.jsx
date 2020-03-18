@@ -1,7 +1,5 @@
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
+import { Grid, Hidden } from '@material-ui/core';
 import React, { Fragment } from 'react';
-
 import CubesLoader from '../../../components/common/CubesLoader';
 import {
   CurrentPlanDivider,

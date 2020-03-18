@@ -1,30 +1,28 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
+import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import { Link } from 'react-router';
 import { useSmallScreen } from '../../helpers/utility-functions';
 import AuthFieldHooks from '../common/AuthFieldHooks';
 import {
+  BottomGridContainer,
   HeightDependentGrid,
   NextButton,
-  TitleTypography,
-  BottomGridContainer,
   StyledLabel,
+  TitleTypography,
 } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
     .required('Please enter an email address')
     .email('Please enter a valid email address'),
-  // .confirmed('That email address has not been confirmed'),
 });
 
 const ForgotPasswordForm = ({
   onSubmit,
   onResendCode,
-  onChange,
   unconfirmedUserFlag,
 }) => {
   const formMethods = useForm({
@@ -35,7 +33,7 @@ const ForgotPasswordForm = ({
   const { handleSubmit, setValue, setError } = formMethods;
 
   useMount(() => {
-    setValue('username', sessionStorage.getItem('username') ?? ''); // TODO Figure out how to use SessionStorage like this.
+    setValue('username', sessionStorage.getItem('username') ?? '');
   });
 
   const isSmallScreen = useSmallScreen();

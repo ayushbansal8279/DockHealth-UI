@@ -1,5 +1,5 @@
-import omit from 'ramda/es/omit';
-import { SET_HEADER, UNSET_HEADER, HIDE_HEADER } from '../actions/action-types';
+import { omit } from 'ramda';
+import { HIDE_HEADER, SET_HEADER, UNSET_HEADER } from '../actions/action-types';
 
 const initialState = {
   show: false,

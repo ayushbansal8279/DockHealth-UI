@@ -1,6 +1,6 @@
-import React, { useRef, useCallback } from 'react';
+import { Button } from '@material-ui/core';
+import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
-import Button from '@material-ui/core/Button';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 
 const InviteButton = ({ fullWidth, getAllUsers }) => {

@@ -1,12 +1,11 @@
-import { Button, Fade } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Button, Fade, Grid } from '@material-ui/core';
 import React from 'react';
 import NotificationsCheck from '../../img/toolbar-notifications-check';
 import ListPopover from '../common/ListPopover';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
-import { printTaskPdf } from '../task-pdf/TaskPdfDocument';
 import { ToolbarLabel } from './Toolbar.Styled';
+import { printTaskPdf } from '../task-pdf/TaskPdfDocument';
 
 interface OnPrintClickProps {
   tasks: Array<object>;

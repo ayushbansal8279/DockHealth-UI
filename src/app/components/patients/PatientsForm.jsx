@@ -1,6 +1,5 @@
-import { Button, Divider, ThemeProvider, Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Button, Divider, Grid, MenuItem, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';

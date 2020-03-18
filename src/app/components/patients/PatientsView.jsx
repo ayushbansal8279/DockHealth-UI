@@ -1,7 +1,6 @@
-import Fade from '@material-ui/core/Fade';
-import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Fade, Grid } from '@material-ui/core';
 import { setHeader } from '../../actions/header-actions';
 import {
   getAllPatients,

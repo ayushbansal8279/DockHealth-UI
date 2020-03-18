@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
 
 export const BackgroundContainer = styled.div`

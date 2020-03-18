@@ -1,15 +1,16 @@
 import moment from 'moment';
-import always from 'ramda/es/always';
-import cond from 'ramda/es/cond';
-import equals from 'ramda/es/equals';
-import identity from 'ramda/es/identity';
-import memoizeWith from 'ramda/es/memoizeWith';
-import range from 'ramda/es/range';
-import startsWith from 'ramda/es/startsWith';
-import T from 'ramda/es/T';
+import {
+  always,
+  cond,
+  equals,
+  identity,
+  memoizeWith,
+  range,
+  startsWith,
+  T,
+} from 'ramda';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
-
 import { getTaskAttachment } from '../../api/task-api';
 import DownloadIcon from '../../img/download.svg';
 import {

@@ -1,13 +1,12 @@
-import mergeDeepRight from 'ramda/es/mergeDeepRight';
+import { mergeDeepRight } from 'ramda';
 import React from 'react';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
-
 import { mergeRefs as mergeReferences } from '../../helpers/utility-functions';
 import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
-import initializeStyledInputHooks from './StyledInput.Hooks';
 import StyledInputAutoCorrectedDate from './StyledInput.AutoCorrectedDate';
+import initializeStyledInputHooks from './StyledInput.Hooks';
 
 const EMPTY_CLASS_NAME = 'empty';
 const ERROR_CLASS_NAME = 'error';
@@ -251,7 +250,6 @@ export default React.forwardRef(
       visible = true,
       containerHeight,
       containerMarginTop,
-      containerMarginTopOnError,
       labelInactiveTop,
       rightAdornment,
       autoFocus = false,

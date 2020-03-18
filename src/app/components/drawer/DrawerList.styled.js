@@ -1,9 +1,12 @@
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Popover from '@material-ui/core/Popover';
 import styled from 'styled-components';
+
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Popover,
+} from '@material-ui/core';
 
 export const StyledList = styled(List).attrs({
   paper: 'paper',

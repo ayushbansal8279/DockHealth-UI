@@ -1,13 +1,14 @@
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import { ClickAwayListener } from '@material-ui/core';
 import moment from 'moment';
-import groupBy from 'ramda/es/groupBy';
-import groupWith from 'ramda/es/groupWith';
-import mapObjIndexed from 'ramda/es/mapObjIndexed';
-import prop from 'ramda/es/prop';
-import reverse from 'ramda/es/reverse';
-import sortBy from 'ramda/es/sortBy';
-import ascend from 'ramda/es/ascend';
-import descend from 'ramda/es/descend';
+import {
+  ascend,
+  descend,
+  groupBy,
+  groupWith,
+  mapObjIndexed,
+  prop,
+  sortBy,
+} from 'ramda';
 import React from 'react';
 import { useUnmount } from 'react-use';
 import {
@@ -15,6 +16,7 @@ import {
   deleteComment as deleteCommentAction,
   updateComment as updateCommentAction,
 } from '../../actions/task-actions';
+import { noop } from '../../helpers/utility-functions';
 import CubesLoader from '../common/CubesLoader';
 import initializeNewTaskDrawerCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
 import {
@@ -29,18 +31,20 @@ import {
 } from './NewTaskDrawer.CommentSection.Styled';
 import renderComment from './NewTaskDrawer.RenderComment';
 import { FormSectionDivider } from './NewTaskDrawer.Styled';
-import { noop } from '../../helpers/utility-functions';
 
 const getGroupedComments = ({ comments }) => {
   // const commentsSortedById = sortBy(prop('commentIdentifier'), comments);
   // const sortedComments = reverse(
   //   sortBy(comment => moment(comment.dateCreated).unix(), commentsSortedById),
   // );
-  
+
   const sortedCommentsByIndex = sortBy(ascend(prop('sortIndex')), comments);
 
-  const sortedComments = sortBy(descend(comment => moment(comment.dateCreated).unix()), sortedCommentsByIndex);
-  
+  const sortedComments = sortBy(
+    descend(comment => moment(comment.dateCreated).unix()),
+    sortedCommentsByIndex,
+  );
+
   const datedComments = groupBy(
     comment => moment(comment.dateCreated).format('YYYY-MM-DD'),
     sortedComments,
@@ -207,7 +211,10 @@ export default ({ addDeferredCommentToQueue, task }) => {
   });
 
   const updateComment = commentData => {
-    updateCommentAction(task, commentData)(dispatch)
+    updateCommentAction(
+      task,
+      commentData,
+    )(dispatch)
       .then(() => {
         toggleAlert('Comment updated successfully', 'success');
       })

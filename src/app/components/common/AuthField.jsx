@@ -1,13 +1,12 @@
 import React, { useRef } from 'react';
-
-import useBoolean from '../../hooks/useBoolean';
+import { useToggle } from 'react-use';
 import {
-  StyledInputContainer,
   StyledErrorLabel,
   StyledInput,
+  StyledInputContainer,
   StyledInputIcon,
-  StyledPasswordSwitch,
   StyledLabel,
+  StyledPasswordSwitch,
 } from './AuthField.styled';
 
 const onCrossIconClick = ({ onChange, hasError }) => () => {
@@ -26,8 +25,8 @@ const AuthField = ({
   customError = '',
   setCustomError = () => {},
 }) => {
-  const inputRef = useRef(null);
-  const [passwordShown, , , togglePasswordShown] = useBoolean(false);
+  const inputReference = useRef(null);
+  const [passwordShown, togglePasswordShown] = useToggle(false);
 
   const errorValue = customError || error;
 
@@ -42,8 +41,8 @@ const AuthField = ({
 
   const { onChange: oldOnChange, ...otherInput } = input;
 
-  const onChange = e => {
-    oldOnChange(e);
+  const onChange = event => {
+    oldOnChange(event);
     setCustomError('');
   };
 
@@ -55,7 +54,7 @@ const AuthField = ({
         className={inputClassName.trim()}
       >
         <StyledInput
-          ref={inputRef}
+          ref={inputReference}
           type={inputType}
           autoFocus={autoFocus}
           {...otherInput}

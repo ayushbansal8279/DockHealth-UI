@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
 import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { Font } from '@react-pdf/renderer';
@@ -9,15 +11,14 @@ import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
 import { StripeProvider } from 'react-stripe-elements';
 import configureStore from './ConfigureStore';
+import ErrorBoundary from './ErrorBoundary';
 import flags, { FlagsProvider } from './flags';
+import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
+import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
 import { Routes } from './routes';
 import theme from './theme';
-import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
-import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
-import ErrorBoundary from './ErrorBoundary';
 
 if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-next-line global-require
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
   whyDidYouRender(React);
 }

@@ -1,10 +1,5 @@
-import {
-  Button,
-  Grid,
-  ThemeProvider,
-  Typography,
-  TextField,
-} from '@material-ui/core';
+import { Button, Grid, TextField, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 import moment from 'moment';
 import * as PropTypes from 'prop-types';
 import React from 'react';

@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+import { Add as AddIcon } from '@material-ui/icons';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';

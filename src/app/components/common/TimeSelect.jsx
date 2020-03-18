@@ -1,10 +1,9 @@
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
+
+import { FormControl, MenuItem, Select } from '@material-ui/core';
 
 const StyledSelect = styled(Select).attrs({
   classes: {
@@ -40,7 +39,7 @@ const StyledSelect = styled(Select).attrs({
   }
 `;
 
-const halfHourIntervals = [...Array(96).keys()].map(i =>
+const halfHourIntervals = [...new Array(96).keys()].map(i =>
   moment()
     .startOf('day')
     .add(15 * i, 'minutes'),
@@ -59,10 +58,13 @@ const setTime = (time, date) =>
   });
 
 const TimeSelect = ({ value, onChange }) => {
-  const handleChange = useCallback(e => {
-    const time = e.target.value;
-    onChange(setTime(time, value));
-  });
+  const handleChange = useCallback(
+    event => {
+      const time = event.target.value;
+      onChange(setTime(time, value));
+    },
+    [onChange, value],
+  );
 
   const selectedOption = halfHourIntervals.find(isSameTime(value));
   const time = selectedOption || halfHourIntervals[0];

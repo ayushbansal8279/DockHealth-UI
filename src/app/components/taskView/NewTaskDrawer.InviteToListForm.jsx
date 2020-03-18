@@ -1,9 +1,8 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React, { useRef } from 'react';
-import { useForm, FormContext } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-
 import { invitePersonToOrganization } from '../../actions/people-actions';
 import StyledInput from '../userProfileView/StyledInput';
 import { inviteValidationSchema } from './NewTaskDrawer.ValidationSchema';

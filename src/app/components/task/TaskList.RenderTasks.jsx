@@ -1,6 +1,4 @@
-import { Collapse } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+import { Collapse, Button, Grid } from '@material-ui/core';
 import { isEmpty, partition } from 'ramda';
 import React from 'react';
 import Task from './Task';

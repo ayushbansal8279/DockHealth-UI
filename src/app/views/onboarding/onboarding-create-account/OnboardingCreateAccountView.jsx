@@ -1,6 +1,7 @@
-import Grid from '@material-ui/core/Grid';
+/* eslint-disable @typescript-eslint/camelcase */
+import { Grid } from '@material-ui/core';
 import { parse } from 'query-string';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';

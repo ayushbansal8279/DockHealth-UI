@@ -1,4 +1,4 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import { isEmpty } from 'ramda';
 import React from 'react';
 import { saveTaskList } from '../actions/tasklist-actions';

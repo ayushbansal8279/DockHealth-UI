@@ -1,7 +1,6 @@
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { hashHistory } from 'react-router';
-
 import {
   NextButton,
   TitleTypography,

@@ -1,5 +1,5 @@
-import Dialog from '@material-ui/core/Dialog';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { Dialog } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 
 export default withStyles({
   paper: {

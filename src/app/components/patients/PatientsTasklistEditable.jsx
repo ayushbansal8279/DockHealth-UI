@@ -1,7 +1,7 @@
-import Button from '@material-ui/core/Button';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { Button } from '@material-ui/core';
 import { selectPatientTask } from '../../actions/patient';
 import { markComplete } from '../../actions/task-actions';
 import AddTask from '../task/AddTask';

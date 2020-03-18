@@ -1,7 +1,6 @@
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { Button, Grid } from '@material-ui/core';
 import AddTask from '../task/AddTask';
 import Task from '../task/Task';
 

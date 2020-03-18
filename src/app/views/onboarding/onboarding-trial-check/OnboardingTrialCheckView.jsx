@@ -1,16 +1,16 @@
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useMount } from 'react-use';
 import { hashHistory } from 'react-router';
-import Grid from '@material-ui/core/Grid';
+import { useMount } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
 import {
+  OnboardingButton,
   OnboardingH2Bold,
   OnboardingH3,
   OnboardingSpacing3,
   OnboardingSpacing4,
   OnboardingSpacing5,
-  OnboardingButton,
 } from '../OnboardingTemplate.Components';
 
 const subscribeNow = () => {

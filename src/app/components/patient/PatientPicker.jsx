@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import { Popover } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import Popover from '@material-ui/core/Popover';
-import SearchHeader from '../common/SearchHeader';
-import PickerHeader from '../common/PickerHeader';
 import ListItem from '../common/ListItem';
+import PickerHeader from '../common/PickerHeader';
+import SearchHeader from '../common/SearchHeader';
 
 const StyledPopover = styled(Popover).attrs({
   classes: { paper: 'paper' },
@@ -29,6 +29,17 @@ const MemberName = styled.span`
   margin-left: 20px;
 `;
 
+const matchListing = (term, { firstName, lastName, mrn }) => {
+  const firstNameMatches = firstName && firstName.toLowerCase().includes(term);
+  const lastNameMatches = lastName && lastName.toLowerCase().includes(term);
+  const mrnMatches = mrn && mrn.toLowerCase().includes(term);
+
+  return firstNameMatches || lastNameMatches || mrnMatches;
+};
+
+const orderListings = (p1, p2) =>
+  p1.lastName ? p1.lastName.localeCompare(p2.lastName) : -1;
+
 const PatientPickerHeader = ({ close, toggleSearch }) => (
   <PickerHeader
     handleClose={close}
@@ -41,9 +52,9 @@ const PatientPickerHeader = ({ close, toggleSearch }) => (
 
 const PatientPicker = ({ patient, patients, assign, children: Component }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const search = useCallback(e => {
-    setSearchTerm(e.target.value);
-  });
+  const search = useCallback(event => {
+    setSearchTerm(event.target.value);
+  }, []);
 
   const [isSearching, setIsSearching] = useState(false);
   const toggleSearch = useCallback(() => {
@@ -52,39 +63,31 @@ const PatientPicker = ({ patient, patients, assign, children: Component }) => {
   }, [isSearching]);
 
   const [anchor, setAnchor] = useState(null);
-  const open = useCallback(e => {
-    e.stopPropagation();
-    setAnchor(e.currentTarget);
-  });
+  const open = useCallback(event => {
+    event.stopPropagation();
+    setAnchor(event.currentTarget);
+  }, []);
   const close = useCallback(() => {
     setAnchor(null);
     setIsSearching(false);
     setSearchTerm('');
-  });
+  }, []);
 
-  const select = useCallback(e => {
-    const patientIdentifier = e.currentTarget.id;
-    assign(patientIdentifier);
-    close();
-  });
+  const select = useCallback(
+    event => {
+      const patientIdentifier = event.currentTarget.id;
+      assign(patientIdentifier);
+      close();
+    },
+    [assign, close],
+  );
 
   const deselect = useCallback(() => {
     assign(null);
     close();
-  });
+  }, [assign, close]);
 
   // Patient search
-  const matchListing = (term, { firstName, lastName, mrn }) => {
-    const firstNameMatches =
-      firstName && firstName.toLowerCase().includes(term);
-    const lastNameMatches = lastName && lastName.toLowerCase().includes(term);
-    const mrnMatches = mrn && mrn.toLowerCase().includes(term);
-
-    return firstNameMatches || lastNameMatches || mrnMatches;
-  };
-
-  const orderListings = (p1, p2) =>
-    p1.lastName ? p1.lastName.localeCompare(p2.lastName) : -1;
 
   // Search
   const searchTerms = searchTerm.toLowerCase().match(/\S+/g) || [];

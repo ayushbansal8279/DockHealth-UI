@@ -1,6 +1,6 @@
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import Grid from '@material-ui/core/Grid';
 import GenericHeader from './GenericHeader';
 
 const HeaderLabel = styled.div`

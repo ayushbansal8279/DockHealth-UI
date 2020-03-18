@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
 import themeCommonOverrides from './theme-components';
 
 const themeMontserratFactory = ({ fontWeight }) =>

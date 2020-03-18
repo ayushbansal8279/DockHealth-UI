@@ -1,10 +1,12 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import Collapse from '@material-ui/core/Collapse';
-import Dialog from '@material-ui/core/Dialog';
-import FormControl from '@material-ui/core/FormControl';
-import InputBase from '@material-ui/core/InputBase';
-import InputLabel from '@material-ui/core/InputLabel';
-import withStyles from '@material-ui/core/styles/withStyles';
+import {
+  ButtonBase,
+  Collapse,
+  Dialog,
+  FormControl,
+  InputBase,
+  InputLabel,
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Link } from 'react-router';

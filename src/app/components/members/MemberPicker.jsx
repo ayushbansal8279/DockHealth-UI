@@ -1,10 +1,10 @@
-import Popover from '@material-ui/core/Popover';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
+import { Popover } from '@material-ui/core';
 import { assignOrReassignTask } from '../../actions/task-actions';
+
 import { getMembersByTaskListId } from '../../actions/tasklist-actions';
 import ListItem from '../common/ListItem';
 import PickerHeader from '../common/PickerHeader';
@@ -213,7 +213,4 @@ const mapDispatchToProps = {
   loadMembers: getMembersByTaskListId,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MemberPicker);
+export default connect(mapStateToProps, mapDispatchToProps)(MemberPicker);

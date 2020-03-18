@@ -1,10 +1,12 @@
-import React, { useCallback } from 'react';
+import {
+  FormControl,
+  MenuItem,
+  Select as MaterialSelect,
+} from '@material-ui/core';
+import { ArrowDropDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import FormControl from '@material-ui/core/FormControl';
-import MaterialSelect from '@material-ui/core/Select';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
-import MenuItem from '@material-ui/core/MenuItem';
 
 const StyledSelect = styled(MaterialSelect)`
   && {
@@ -45,8 +47,8 @@ const StyledDropDownIcon = styled(ArrowDropDown)`
 
 const Select = ({ updateFilter, value, options }) => {
   const handleChange = useCallback(
-    e => {
-      const selected = e.target.value;
+    event => {
+      const selected = event.target.value;
       updateFilter(selected === value ? '' : selected);
     },
     [updateFilter, value],

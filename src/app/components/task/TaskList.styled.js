@@ -1,5 +1,5 @@
-import TableCell from '@material-ui/core/TableCell';
 import styled from 'styled-components';
+import { TableCell } from '@material-ui/core';
 
 export const TaskListOuterContainer = styled.div`
   width: 100%;

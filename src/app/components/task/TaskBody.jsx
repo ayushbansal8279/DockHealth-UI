@@ -6,7 +6,7 @@ import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utilit
 import useBoolean from '../../hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import MemberPicker from '../members/MemberPicker';
-import { SubtaskLoadingContainer, SubtaskOrderContainer } from './Task.styled';
+import { SubtaskLoadingContainer, SubtaskOrderContainer } from './Task.Styled';
 import TaskBodyCheckboxContainer from './TaskBody.CheckboxContainer';
 import TaskBodyRightDataContainer from './TaskBody.RightDataContainer';
 import {

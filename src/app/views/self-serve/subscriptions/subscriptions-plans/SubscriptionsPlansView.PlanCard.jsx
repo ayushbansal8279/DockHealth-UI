@@ -1,5 +1,4 @@
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
+import { Grid, Hidden } from '@material-ui/core';
 import {
   arrayOf,
   bool,
