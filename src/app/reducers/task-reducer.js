@@ -906,11 +906,16 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case TASK_NEW_PAGE_DOWNLOADED: {
-      const { tasks: actionTasks } = action;
+      const { tasks: actionTasks, status } = action;
+
+      const stateTasksKey = status === 'COMPLETE' ? 'completedTasks' : 'tasks';
 
       return {
         ...state,
-        tasks: [...(state.tasks || []), ...(actionTasks || [])],
+        [stateTasksKey]: [
+          ...(state[stateTasksKey] || []),
+          ...(actionTasks || []),
+        ],
       };
     }
 
