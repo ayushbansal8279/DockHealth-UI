@@ -11,6 +11,11 @@ const themeCommonOverrides = () => ({
     MuiSelect: {
       IconComponent: RotatableChevronWithSpacing,
     },
+    MuiMenu: {
+      PaperProps: {
+        square: true,
+      },
+    },
   },
   overrides: {
     MuiListItem: {
@@ -66,6 +71,49 @@ const themeCommonOverrides = () => ({
     MuiTypography: {
       gutterBottom: {
         marginBottom: '0.5rem',
+      },
+    },
+    MuiList: {
+      padding: 0,
+    },
+    MuiMenu: {
+      paper: {
+        border: '0.0625rem solid #c1ccda',
+        borderRadius: 0,
+        boxShadow: 'none',
+      },
+      list: {
+        padding: 0,
+      },
+    },
+    MuiMenuItem: {
+      root: {
+        backgroundColor: '#fff',
+        filter: 'brightness(1)',
+        fontSize: '1rem',
+        padding: '0.125rem 1rem',
+        textTransform: 'uppercase',
+        transition: 'all 0.25s ease-out',
+        '&:hover': {
+          backgroundColor: '#fff',
+          color: '#0ca1c7',
+          filter: 'brightness(1.05)',
+        },
+        '&:active, &:focus': {
+          backgroundColor: '#fff',
+        },
+        '&$selected': {
+          backgroundColor: '#fff',
+          color: '#0ca1c7',
+          '&:hover': {
+            backgroundColor: '#fff',
+            color: '#0ca1c7',
+            filter: 'brightness(1.05)',
+          },
+          '&:active, &:focus': {
+            backgroundColor: '#fff',
+          },
+        },
       },
     },
     MuiButton: {
