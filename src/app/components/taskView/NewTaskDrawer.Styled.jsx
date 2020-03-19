@@ -4,6 +4,18 @@ import clsx from 'clsx';
 import React from 'react';
 import styled from 'styled-components';
 
+export const OuterDrawerContainer = styled.div`
+  height: ${props => props.height}px;
+  overflow-y: auto;
+  position: sticky;
+  scrollbar-color: transparent transparent;
+  top: 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
 export const NewTaskDrawerContainer = styled.div`
   align-items: flex-start;
   box-sizing: border-box;
@@ -12,14 +24,11 @@ export const NewTaskDrawerContainer = styled.div`
   ${props =>
     !props.compact &&
     `
-    min-height: calc(100vh - 5.5rem);
     height: min-content;
   `}
   justify-content: flex-start;
   padding: 0 0.25rem;
-  position: sticky;
   transition: all 0.25s ease-out;
-  top: 0;
 `;
 
 export const ParentInfoContainer = styled.div`

@@ -15,6 +15,7 @@ import {
   CondensedFormSection,
   NewTaskDrawerContainer,
   NewTaskDrawerInnerContainer,
+  OuterDrawerContainer,
   SideClickListener,
   StyledForm,
   StyledVerticalDivider,
@@ -146,6 +147,8 @@ export default ({
     };
   }
 
+  const contentContainerElement = document.querySelector('#content-container');
+
   const [newTaskAttachments, setNewTaskAttachments] = useState([]);
 
   const handleSubmit = formMethods.handleSubmit(
@@ -166,138 +169,150 @@ export default ({
   const addingTaskOrSubtask = !task || (task && !task.taskIdentifier);
 
   return (
-    <NewTaskDrawerContainer
-      headsUpAreaHeight={headsUpAreaHeight}
-      ref={taskContainerReference}
-      compact={compact}
-      data-name="TaskDrawerContainer"
-      isSubscriptionTrial={isSubscriptionTrial}
-    >
-      {parentTask && (
-        <NewTaskDrawerParentInfo
-          addingTaskOrSubtask={addingTaskOrSubtask}
-          autoSaveVisible={autoSaveVisible}
-          closeDrawer={closeDrawer}
-          parentTask={parentTask}
-          storeAsCurrentTask={storeAsCurrentTask}
-          subtaskOrder={subtaskOrder}
-        />
+    <OuterDrawerContainer
+      height={Math.min(
+        taskContainerReference.current?.clientHeight,
+        contentContainerElement?.clientHeight,
       )}
-      <StyledForm onSubmit={handleSubmit}>
-        <NewTaskDrawerInnerContainer>
-          <NewTaskDrawerTopSection
+    >
+      <NewTaskDrawerContainer
+        headsUpAreaHeight={headsUpAreaHeight}
+        ref={taskContainerReference}
+        compact={compact}
+        data-name="TaskDrawerContainer"
+        isSubscriptionTrial={isSubscriptionTrial}
+      >
+        {parentTask && (
+          <NewTaskDrawerParentInfo
             addingTaskOrSubtask={addingTaskOrSubtask}
             autoSaveVisible={autoSaveVisible}
-            defaultValues={defaultValues}
             closeDrawer={closeDrawer}
-            closeStatusPopover={closeStatusPopover}
-            handleSubmit={handleSubmit}
-            isInbox={isInbox}
-            isSubtask={isSubtask}
-            isSpecificPatient={isSpecificPatient}
-            formMethods={formMethods}
             parentTask={parentTask}
-            onMarkComplete={onMarkComplete}
-            openStatusPopover={openStatusPopover}
-            priorityActive={priorityActive}
-            saveTaskPriority={saveTaskPriority}
-            setAutoSaveVisible={setAutoSaveVisible}
-            setPopoversOpen={setPopoversOpen}
-            setStatus={setStatus}
-            status={status}
-            statusPopoverOpen={statusPopoverOpen}
-            statusSelectData={statusSelectData}
             storeAsCurrentTask={storeAsCurrentTask}
-            task={task}
-            taskIdentifier={taskIdentifier}
-            togglePriorityActive={togglePriorityActive}
-            borderless={borderless}
+            subtaskOrder={subtaskOrder}
           />
-          <CondensedFormSection borderless={borderless} container item xs={12}>
-            {userProfile?.access?.commentsEnabled && (
-              <NewTaskDrawerCommentSection
-                task={task}
-                addDeferredCommentToQueue={addDeferredCommentToQueue}
-              />
+        )}
+        <StyledForm onSubmit={handleSubmit}>
+          <NewTaskDrawerInnerContainer>
+            <NewTaskDrawerTopSection
+              addingTaskOrSubtask={addingTaskOrSubtask}
+              autoSaveVisible={autoSaveVisible}
+              defaultValues={defaultValues}
+              closeDrawer={closeDrawer}
+              closeStatusPopover={closeStatusPopover}
+              handleSubmit={handleSubmit}
+              isInbox={isInbox}
+              isSubtask={isSubtask}
+              isSpecificPatient={isSpecificPatient}
+              formMethods={formMethods}
+              parentTask={parentTask}
+              onMarkComplete={onMarkComplete}
+              openStatusPopover={openStatusPopover}
+              priorityActive={priorityActive}
+              saveTaskPriority={saveTaskPriority}
+              setAutoSaveVisible={setAutoSaveVisible}
+              setPopoversOpen={setPopoversOpen}
+              setStatus={setStatus}
+              status={status}
+              statusPopoverOpen={statusPopoverOpen}
+              statusSelectData={statusSelectData}
+              storeAsCurrentTask={storeAsCurrentTask}
+              task={task}
+              taskIdentifier={taskIdentifier}
+              togglePriorityActive={togglePriorityActive}
+              borderless={borderless}
+            />
+            <CondensedFormSection
+              borderless={borderless}
+              container
+              item
+              xs={12}
+            >
+              {userProfile?.access?.commentsEnabled && (
+                <NewTaskDrawerCommentSection
+                  task={task}
+                  addDeferredCommentToQueue={addDeferredCommentToQueue}
+                />
+              )}
+              <FormContext {...formMethods}>
+                <NewTaskDrawerOtherDataSection
+                  task={task}
+                  taskList={taskList}
+                  closeDrawer={closeDrawer}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                  isInbox={isInbox}
+                  handleSubmit={handleSubmit}
+                  addingTaskOrSubtask={addingTaskOrSubtask}
+                  setNewTaskAttachments={setNewTaskAttachments}
+                  newTaskAttachments={newTaskAttachments}
+                />
+              </FormContext>
+            </CondensedFormSection>
+          </NewTaskDrawerInnerContainer>
+        </StyledForm>
+        {task && task.taskIdentifier != null && task.status !== 'COMPLETE' && (
+          <BottomButtonContainer>
+            <Button
+              size="small"
+              variant="text"
+              onClick={onDelete({
+                afterDelete: () => {
+                  closeDrawer();
+                },
+                dispatch,
+                task,
+              })}
+            >
+              Delete
+            </Button>
+            {!parentTask && (
+              <>
+                <StyledVerticalDivider />
+                <Button
+                  size="small"
+                  variant="text"
+                  onClick={onDuplicate({
+                    afterDuplicate: ({ newTask }) => {
+                      storeAsCurrentTask(newTask);
+                    },
+                    dispatch,
+                    task,
+                  })}
+                >
+                  Duplicate
+                </Button>
+              </>
             )}
-            <FormContext {...formMethods}>
-              <NewTaskDrawerOtherDataSection
-                task={task}
-                taskList={taskList}
-                closeDrawer={closeDrawer}
-                setAutoSaveVisible={setAutoSaveVisible}
-                isInbox={isInbox}
-                handleSubmit={handleSubmit}
-                addingTaskOrSubtask={addingTaskOrSubtask}
-                setNewTaskAttachments={setNewTaskAttachments}
-                newTaskAttachments={newTaskAttachments}
-              />
-            </FormContext>
-          </CondensedFormSection>
-        </NewTaskDrawerInnerContainer>
-      </StyledForm>
-      {task && task.taskIdentifier != null && task.status !== 'COMPLETE' && (
-        <BottomButtonContainer>
-          <Button
-            size="small"
-            variant="text"
-            onClick={onDelete({
-              afterDelete: () => {
+          </BottomButtonContainer>
+        )}
+        {(!task || !task.taskIdentifier) && (
+          <BottomButtonContainer>
+            <Button
+              size="small"
+              variant="text"
+              onClick={() => {
                 closeDrawer();
-              },
-              dispatch,
-              task,
-            })}
-          >
-            Delete
-          </Button>
-          {!parentTask && (
-            <>
-              <StyledVerticalDivider />
-              <Button
-                size="small"
-                variant="text"
-                onClick={onDuplicate({
-                  afterDuplicate: ({ newTask }) => {
-                    storeAsCurrentTask(newTask);
-                  },
-                  dispatch,
-                  task,
-                })}
-              >
-                Duplicate
-              </Button>
-            </>
-          )}
-        </BottomButtonContainer>
-      )}
-      {(!task || !task.taskIdentifier) && (
-        <BottomButtonContainer>
-          <Button
-            size="small"
-            variant="text"
-            onClick={() => {
-              closeDrawer();
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            disabled={
-              popoversOpen.assignedToPopoverOpen ||
-              popoversOpen.patientPopoverOpen
-            }
-            onClick={() => {
-              handleSubmit();
-            }}
-          >
-            Save
-          </Button>
-        </BottomButtonContainer>
-      )}
-      {!compact && <SideClickListener onClick={closeDrawer} />}
-    </NewTaskDrawerContainer>
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              disabled={
+                popoversOpen.assignedToPopoverOpen ||
+                popoversOpen.patientPopoverOpen
+              }
+              onClick={() => {
+                handleSubmit();
+              }}
+            >
+              Save
+            </Button>
+          </BottomButtonContainer>
+        )}
+        {!compact && <SideClickListener onClick={closeDrawer} />}
+      </NewTaskDrawerContainer>
+    </OuterDrawerContainer>
   );
 };

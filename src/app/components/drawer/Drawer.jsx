@@ -166,7 +166,9 @@ const Drawer = ({ children }) => {
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>
-      <ContentContainer open={isOpen}>{children}</ContentContainer>
+      <ContentContainer id="content-container" open={isOpen}>
+        {children}
+      </ContentContainer>
     </div>
   );
 };
