@@ -1,8 +1,6 @@
 import { ButtonBase, Grid } from '@material-ui/core';
 import { motion } from 'framer-motion';
-import React from 'react';
 import styled from 'styled-components';
-import InboxNoMessagesIcon from '../img/inbox-no-messages-icon.svg';
 
 export const FadeContainer = styled.div`
   display: flex;
@@ -96,59 +94,6 @@ export const FilterByLinkLabel = styled(FilterByLabel)`
     filter: brightness(1.25);
   }
 `;
-
-const InboxNoMessagesOuterContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const InboxNoMessagesContainer = styled.div`
-  align-items: center;
-  background-color: #fff;
-  box-sizing: border-box;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  max-width: 48rem;
-  min-width: 36.1875rem;
-  padding: 2.5rem 6rem;
-`;
-
-const InboxNoMessagesLabel = styled.div`
-  font-size: 1rem;
-  padding-top: 1.5rem;
-  text-align: center;
-
-  > a {
-    font-weight: 600;
-    margin-left: 0.5ch;
-  }
-`;
-
-const InboxNoMessagesBoldLabel = styled(InboxNoMessagesLabel)`
-  font-size: 1.5rem;
-`;
-
-export const InboxNoMessagesAvailable = () => (
-  <InboxNoMessagesOuterContainer>
-    <InboxNoMessagesContainer>
-      <img src={InboxNoMessagesIcon} alt="Mailbox" />
-      <InboxNoMessagesBoldLabel>Your inbox is empty</InboxNoMessagesBoldLabel>
-      <InboxNoMessagesLabel>
-        Your inbox is a place you can forward emails that you want to turn into
-        tasks here on Dock.
-        <InboxNoMessagesLabel>
-          To forward an email into Dock and automatically create a task, simply
-          forward an email to
-          <a href="mailto:task@dockhealth.email">task@dockhealth.email</a>
-        </InboxNoMessagesLabel>
-        <InboxNoMessagesLabel>
-          We’ll drop it into your inbox here on Dock for you.
-        </InboxNoMessagesLabel>
-      </InboxNoMessagesLabel>
-    </InboxNoMessagesContainer>
-  </InboxNoMessagesOuterContainer>
-);
 
 export const SideClickListener = styled.div`
   flex: 1;

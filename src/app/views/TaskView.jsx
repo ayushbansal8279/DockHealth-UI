@@ -53,9 +53,12 @@ import ChevronSmallIcon from '../img/chevron-small.svg';
 import { themeMontserrat600 } from '../theme-montserrat';
 import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
+  InboxHelpPanel,
+  InboxNoMessagesAvailable,
+} from './TaskView.InboxElements';
+import {
   CompletedButtonRowContainer,
   FadeContainer,
-  InboxNoMessagesAvailable,
   SideClickListener,
   StyledButtonLabel,
   TableWrapper,
@@ -786,6 +789,21 @@ class TaskView extends Component {
     return task;
   };
 
+  getToolbarContainerVisible = () => {
+    const { isFetching, isInbox = false, tasks } = this.props;
+    const { filterBy } = this.state;
+
+    const hasTasks = !isEmpty(tasks);
+    const hasNoTasksAfterFilterApplication =
+      isEmpty(tasks) && !isEmpty(filterBy);
+
+    return (
+      (isInbox &&
+        (hasTasks || hasNoTasksAfterFilterApplication || isFetching)) ||
+      !isInbox
+    );
+  };
+
   renderTasklists = () => {
     const {
       tasks: allIncompleteTasks,
@@ -1172,14 +1190,7 @@ class TaskView extends Component {
       filterPopoverOpen,
     } = this.state;
 
-    const hasTasks = !isEmpty(tasks);
-    const hasNoTasksAfterFilterApplication =
-      isEmpty(tasks) && !isEmpty(filterBy);
-
-    const toolbarContainerVisible =
-      (isInbox &&
-        (hasTasks || hasNoTasksAfterFilterApplication || isFetching)) ||
-      !isInbox;
+    const toolbarContainerVisible = this.getToolbarContainerVisible();
 
     const currentFilterDescription =
       filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
@@ -1240,6 +1251,12 @@ class TaskView extends Component {
             />
           )}
         </Grid>
+        {isInbox && (
+          <Grid item xs={12} container>
+            <InboxHelpPanel />
+            <Spacing vertical={3} />
+          </Grid>
+        )}
         <SideClickListener onClick={this.closeTaskDrawer} />
         <TaskViewContainer>
           {displayHUD && headsUpAreaVisible && (

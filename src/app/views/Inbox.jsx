@@ -86,7 +86,7 @@ class Inbox extends PureComponent {
       .catch(noop);
   };
 
-  refreshAccessToken(user) {
+  refreshAccessToken = user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
 
     if (
@@ -96,21 +96,21 @@ class Inbox extends PureComponent {
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
       sessionStorage.setItem('refreshAccessTokenTimeoutId', null);
     }
-    const comp = this;
+
     const refreshAccessTokenTimeoutId = setTimeout(() => {
       userApi
         .refreshAccessToken(user.username)
         .then(noop)
         .catch(noop);
 
-      comp.refreshAccessToken(user);
+      this.refreshAccessToken(user);
     }, systemTimeout);
 
     sessionStorage.setItem(
       'refreshAccessTokenTimeoutId',
       refreshAccessTokenTimeoutId,
     );
-  }
+  };
 
   render() {
     const {
@@ -179,7 +179,4 @@ const mapDispatchToProps = dispatch => ({
   patientActions: bindActionCreators(PatientActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Inbox);
+export default connect(mapStateToProps, mapDispatchToProps)(Inbox);
