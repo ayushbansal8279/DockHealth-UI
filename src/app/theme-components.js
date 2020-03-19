@@ -52,6 +52,9 @@ const themeCommonOverrides = () => ({
       outlined: {
         borderRadius: 0,
         height: '2.5rem',
+        '&$selectMenu': {
+          color: '#00a2e5',
+        },
       },
       select: {
         '&:focus': {
@@ -60,7 +63,6 @@ const themeCommonOverrides = () => ({
       },
       selectMenu: {
         alignItems: 'center',
-        color: '#00a2e5',
         display: 'flex',
         fontSize: '1rem',
         height: '2.5rem',

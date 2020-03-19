@@ -1,4 +1,11 @@
-import { Button, Divider, Grid, MenuItem, Typography } from '@material-ui/core';
+import {
+  Button,
+  Divider,
+  Grid,
+  MenuItem,
+  Typography,
+  Select,
+} from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -78,18 +85,18 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
               <NameInput name="middleName" label="Middle Name" />
               <NameInput name="lastName" required label="Last Name" />
               <PatientInput name="mrn" label="MRN" />
-              <PatientInput
-                name="gender"
-                label="Gender"
-                CustomComponent="select"
+              <Select
+                variant="standard"
+                input={<PatientInput name="gender" label="Gender" />}
               >
                 <MenuItem value="female">Female</MenuItem>
                 <MenuItem value="male">Male</MenuItem>
                 <MenuItem value="other">Other</MenuItem>
-              </PatientInput>
+              </Select>
               <PatientInput
                 name="dob"
                 label="Birthday"
+                placeholder="MM/DD/YYYY"
                 CustomComponent={UniversalBirthdayInputComponent}
               />
             </SingleFormPanelContainer>
