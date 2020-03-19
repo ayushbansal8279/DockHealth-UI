@@ -63,6 +63,11 @@ const themeCommonOverrides = () => ({
         textTransform: 'uppercase',
       },
     },
+    MuiTypography: {
+      gutterBottom: {
+        marginBottom: '0.5rem',
+      },
+    },
     MuiButton: {
       text: {
         color: '#007cab',

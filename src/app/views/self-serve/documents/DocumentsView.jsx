@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
 import GenericHeader from '../../../components/common/GenericHeader';
+import Spacing from '../../../components/common/Spacing';
 import useBoolean from '../../../hooks/useBoolean';
+import PdfPage from '../../../img/pdf-page.png';
+import { MontserratTypography } from '../../../theme-montserrat';
 import BaaPreview from './DocumentsView.BaaPreview';
 import { DocumentLink, DocumentsViewContainer } from './DocumentsView.Styled';
 
@@ -41,26 +44,46 @@ const DocumentsView = () => {
   return (
     <DocumentsViewContainer container direction="column">
       {isUserAdmin && (
-        <DocumentLink onClick={onBaaLabelClick}>BAA</DocumentLink>
+        <>
+          <div>
+            <img alt="page" src={PdfPage} />
+          </div>
+          <Spacing vertical={4} />
+          <MontserratTypography weight="normal" variant="h4">
+            <div>Business Associate Agreement (BAA)</div>
+            <Spacing vertical={2} />
+            <DocumentLink onClick={onBaaLabelClick}>Download</DocumentLink>
+          </MontserratTypography>
+          <Spacing vertical={5} />
+        </>
       )}
-      <DocumentLink
-        href="https://www.dock.health/end-user-license-agreement"
-        target="_blank"
-      >
-        EULA
-      </DocumentLink>
-      <DocumentLink
-        href="https://www.dock.health/privacypolicy"
-        target="_blank"
-      >
-        Privacy Statement
-      </DocumentLink>
-      <DocumentLink
-        href="https://www.dock.health/terms-conditions"
-        target="_blank"
-      >
-        Terms of Service
-      </DocumentLink>
+      <MontserratTypography weight="bold" variant="h3" gutterBottom>
+        Links to Dock policies
+      </MontserratTypography>
+      <MontserratTypography weight="normal" variant="h4" gutterBottom>
+        <DocumentLink
+          href="https://www.dock.health/end-user-license-agreement"
+          target="_blank"
+        >
+          End User License Agreement
+        </DocumentLink>
+      </MontserratTypography>
+      <MontserratTypography weight="normal" variant="h4" gutterBottom>
+        <DocumentLink
+          href="https://www.dock.health/privacypolicy"
+          target="_blank"
+        >
+          Privacy Statement
+        </DocumentLink>
+      </MontserratTypography>
+      <MontserratTypography weight="normal" variant="h4" gutterBottom>
+        <DocumentLink
+          href="https://www.dock.health/terms-conditions"
+          target="_blank"
+        >
+          Terms of Service
+        </DocumentLink>
+      </MontserratTypography>
       {isPreviewReady && (
         <BaaPreview isPreviewOpen={isPreviewOpen} hidePreview={hidePreview} />
       )}

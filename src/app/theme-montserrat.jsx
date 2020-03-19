@@ -1,4 +1,6 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import React from 'react';
 import themeCommonOverrides from './theme-components';
 
 const themeMontserratFactory = ({ fontWeight }) =>
@@ -54,5 +56,25 @@ export const themeMontserrat500 = themeMontserratFactory({
 export const themeMontserrat600 = themeMontserratFactory({
   fontWeight: '600',
 });
+
+const themeProxy = new Proxy(
+  {
+    bold: themeMontserrat,
+    normal: themeMontserratNormal,
+    '500': themeMontserrat500,
+    '600': themeMontserrat600,
+  },
+  {
+    get(proxy, path) {
+      return proxy[path] ?? proxy.normal;
+    },
+  },
+);
+
+export const MontserratTypography = ({ weight, ...props }) => (
+  <ThemeProvider theme={themeProxy[weight]}>
+    <Typography {...props} />
+  </ThemeProvider>
+);
 
 export default themeMontserrat;
