@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Comment should render correctly 1`] = `
-<CommentBackground
-  isOwn={false}
->
-  Lorem ipsum dolor...
-</CommentBackground>
-`;

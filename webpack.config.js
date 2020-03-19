@@ -4,6 +4,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
 const dotenv = require('dotenv');
 
 const BUILD_DIR = path.resolve(__dirname, 'dist');
@@ -74,6 +75,7 @@ const config = (environment, options) => {
         hash: true,
       }),
       new MomentLocalesPlugin(),
+      isDevelopment && new UnusedFilesWebpackPlugin(),
       isDevelopment &&
         new BundleAnalyzerPlugin({
           openAnalyzer: false,
