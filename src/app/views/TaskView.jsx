@@ -218,7 +218,7 @@ class TaskView extends Component {
       this.saveTaskListPreferences();
     });
     this.closeTaskDrawer();
-  }, 200);
+  }, 300);
 
   componentDidMount = () => {
     const { taskList, currentUser } = this.props;
@@ -591,7 +591,13 @@ class TaskView extends Component {
     this.handleSearchDebounced(value);
   };
 
-  searchTaskProperties = ({ description, sourceMessage, comments }) => {
+  searchTaskProperties = ({
+    description,
+    sourceMessage,
+    comments,
+    subtasks,
+    parentTaskIdentifier,
+  }) => {
     const { searchTerms } = this.state;
 
     const isMatch = text =>
@@ -599,7 +605,20 @@ class TaskView extends Component {
 
     const commentsContents = comments.map(prop('comment'));
 
-    return any(isMatch)([description, sourceMessage, ...commentsContents]);
+    const isTaskMatched = any(isMatch)([
+      description,
+      sourceMessage,
+      ...commentsContents,
+    ]);
+
+    if (isTaskMatched) {
+      return isTaskMatched;
+    }
+
+    return (
+      !parentTaskIdentifier &&
+      (subtasks ?? []).map(this.searchTaskProperties).some(Boolean)
+    );
   };
 
   search = tasks => {
@@ -607,14 +626,7 @@ class TaskView extends Component {
       return tasks;
     }
 
-    const matchedTasks = [
-      ...tasks.filter(this.searchTaskProperties),
-      ...tasks.flatMap(prop('subtasks')).filter(this.searchTaskProperties),
-    ];
-
-    return matchedTasks.filter(
-      ({ parentTaskIdentifier }) => parentTaskIdentifier == null,
-    );
+    return tasks.filter(this.searchTaskProperties);
   };
 
   toggleHUD = () => {
