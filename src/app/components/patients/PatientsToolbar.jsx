@@ -2,8 +2,9 @@ import { Grid } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useMount } from 'react-use';
 import styled from 'styled-components';
-import { beginPatientCreation } from '../../actions/patient-actions';
+import { beginPatientCreation, loading } from '../../actions/patient-actions';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import Search from '../taskView/Search';
@@ -23,16 +24,22 @@ const stopPropagation = event => {
 };
 
 const PatientsToolbarFilter = ({ handlePatientFilter, deselectPatient }) => {
-  const [filter, setFilter] = useState(MY_PATIENTS);
+  const [filter, setFilter] = useState(ALL_PATIENTS);
+  const dispatch = useDispatch();
   const handleFilterChange = useCallback(
     event => {
       const { value } = event.target;
+      dispatch(loading());
       setFilter(value);
       handlePatientFilter(value);
       deselectPatient();
     },
-    [deselectPatient, handlePatientFilter],
+    [deselectPatient, dispatch, handlePatientFilter],
   );
+
+  useMount(() => {
+    handleFilterChange({ target: { value: filter } });
+  });
 
   return (
     <PatientsFilter

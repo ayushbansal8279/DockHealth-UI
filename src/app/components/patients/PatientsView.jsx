@@ -1,13 +1,12 @@
+import { Fade, Grid } from '@material-ui/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Fade, Grid } from '@material-ui/core';
 import { setHeader } from '../../actions/header-actions';
 import {
   getAllPatients,
   getMyPatientsActive,
   getMyPatientsAll,
   highlightPatient,
-  loading,
 } from '../../actions/patient-actions';
 import CubesLoader from '../common/CubesLoader';
 import GenericHeader from '../common/GenericHeader';
@@ -49,10 +48,6 @@ const searchPatients = (patients, searchTerm) => {
 
 const PatientsView = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(loading());
-    getMyPatientsAll()(dispatch);
-  }, [dispatch]);
 
   const isFetching = useSelector(({ patientState }) => patientState.isFetching);
   const patients = useSelector(({ patientState }) => patientState.allPatients);
