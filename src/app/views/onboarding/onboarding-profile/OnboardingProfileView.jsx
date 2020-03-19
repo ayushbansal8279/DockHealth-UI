@@ -53,10 +53,12 @@ const onFormSubmit = ({
     requestData.specialties = [
       {
         name: requestData.specialty,
-        specialtyId: otherSpecialty.specialtyId,
+        specialtyId: otherSpecialty ? otherSpecialty.specialtyId : undefined,
         subSpecialties: [
           {
-            subSpecialtyId: otherSubspecialty.subSpecialtyId,
+            subSpecialtyId: otherSpecialty
+              ? otherSubspecialty.subSpecialtyId
+              : undefined,
             subSpecialtyName: requestData.subspecialty,
           },
         ],
@@ -66,7 +68,7 @@ const onFormSubmit = ({
     requestData.titles = [
       {
         name: requestData.title,
-        titleId: otherTitle.titleId,
+        titleId: otherTitle ? otherTitle.titleId : undefined,
       },
     ];
 
@@ -84,7 +86,8 @@ const onFormSubmit = ({
     userApi.getUserNotoficationPrefs();
 
     goToMainPage();
-  } catch {
+  } catch (error) {
+    console.log(error);
     showAlert({
       title: 'Error updating profile, please try again later',
       status: 'error',
