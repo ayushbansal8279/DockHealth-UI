@@ -4,7 +4,7 @@ import {
   MoreVert as MoreIcon,
   Search as SearchIcon,
 } from '@material-ui/icons';
-import { isEmpty } from 'ramda';
+import { isEmpty, prop } from 'ramda';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
@@ -269,9 +269,15 @@ const NotInvitingContent = ({
   }, [isSearching]);
 
   const filteredMembers = members.filter(memberFilterIteratee({ searchTerm }));
-  const filteredMembersNotInTaskList = membersNotInTaskList.filter(
-    memberFilterIteratee({ searchTerm }),
+  const filteredMembersIdentifiers = filteredMembers.map(
+    prop('userIdentifier'),
   );
+  const filteredMembersNotInTaskList = membersNotInTaskList
+    .filter(memberFilterIteratee({ searchTerm }))
+    .filter(
+      ({ userIdentifier }) =>
+        !filteredMembersIdentifiers.includes(userIdentifier),
+    );
 
   return (
     <>
