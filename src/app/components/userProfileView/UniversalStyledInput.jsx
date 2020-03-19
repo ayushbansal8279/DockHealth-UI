@@ -5,6 +5,7 @@ import {
   InputLabel,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import MaskedInput from 'react-text-mask';
@@ -22,7 +23,16 @@ export const UniversalFormControl = withStyles({
     backgroundColor: '#f3f5f6',
     height: '4rem',
   },
-})(FormControl);
+  whiteBackground: {
+    backgroundColor: '#fff',
+  },
+})(({ classes, whiteBackground, ...props }) => {
+  const className = clsx(
+    classes.root,
+    whiteBackground && classes.whiteBackground,
+  );
+  return <FormControl className={className} {...props} />;
+});
 
 export const UniversalInputLabel = withStyles({
   root: {
@@ -67,12 +77,12 @@ export const UniversalInputBase = withStyles({
     paddingBottom: 0,
     padding: '0.6rem 1.5rem',
     '&:focus': {
-      backgroundColor: '#f3f5f6',
+      backgroundColor: '#f3f5f600',
       border: 0,
       boxShadow: 'none',
     },
     '&[readonly], &[disabled]': {
-      backgroundColor: '#f3f5f6',
+      backgroundColor: '#f3f5f600',
       cursor: 'pointer',
     },
   },
@@ -126,6 +136,7 @@ export const UniversalStyledInput = ({
   CustomComponent = undefined,
   required = false,
   className = '',
+  whiteBackground = false,
   ...InputBaseProps
 }) => {
   const { register, errors, clearError } = useFormContext();
@@ -133,7 +144,7 @@ export const UniversalStyledInput = ({
 
   return (
     <div ref={inputContainerReference} className={className}>
-      <UniversalFormControl fullWidth>
+      <UniversalFormControl whiteBackground={whiteBackground} fullWidth>
         <UniversalInputLabel required={required}>{label}</UniversalInputLabel>
         <UniversalInputBase
           name={name}

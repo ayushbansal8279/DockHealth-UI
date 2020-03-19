@@ -1,6 +1,7 @@
-import { Button } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
+import AdornedButton from '../../../components/common/AdornedButton';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 
 const InviteButton = ({ fullWidth, getAllUsers }) => {
@@ -16,16 +17,14 @@ const InviteButton = ({ fullWidth, getAllUsers }) => {
 
   return (
     <>
-      <Button
+      <AdornedButton
         fullWidth={fullWidth}
-        variant="contained"
-        size="small"
+        adornment={<Add />}
         onClick={() => togglePopoverOpen(true)}
+        innerRef={invitePeopleButtonReference}
       >
-        <div style={{ whiteSpace: 'nowrap' }} ref={invitePeopleButtonReference}>
-          + Add user to organization
-        </div>
-      </Button>
+        ADD A USER
+      </AdornedButton>
       <InvitePeoplePopover
         open={isPopoverOpen}
         toggleInvitePopover={toggleInvitePopover}

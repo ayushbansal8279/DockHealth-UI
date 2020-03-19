@@ -1,34 +1,18 @@
-import { Grid, Hidden } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
+import Spacing from '../../../components/common/Spacing';
 import {
-  CurrentPlanDivider,
+  themeMontserrat500,
+  themeMontserrat600,
+  themeMontserratNormal,
+} from '../../../theme-montserrat';
+import {
   PlanColumnLink,
   PlanContainer,
-  PlanNameLabel,
+  SwitchBillingLink,
 } from './SubscriptionsView.CurrentPlan.Styled';
-import {
-  BigPriceLabel,
-  H1Bold,
-  H3Marginless,
-  H3ThinMarginless,
-  PriceLabel,
-} from './SubscriptionsView.Styled';
-
-const AlignedColumnLink = ({ children }) => (
-  <>
-    <Hidden mdUp>
-      <Grid item xs={3} container justify="flex-end" alignItems="flex-end">
-        {children}
-      </Grid>
-    </Hidden>
-    <Hidden smDown>
-      <Grid item xs={2} container justify="flex-end" alignItems="flex-start">
-        {children}
-      </Grid>
-    </Hidden>
-  </>
-);
 
 const AsyncElement = ({
   ErrorElement = Fragment,
@@ -60,65 +44,57 @@ const CurrentPlan = ({
     planNextPaymentDate,
     planPricePerUser,
     planTotalPayment,
+    planIsTrial,
+    billingFrequency,
+    planIsMonthly,
+    planActiveUserCount,
   } = subscriptionPlanData || {};
 
   return (
     <AsyncElement
       error={organizationRequestError}
-      fetching={isOrganizationFetching}
+      fetching={isOrganizationFetching || !planName}
     >
       <PlanContainer>
-        <Grid container spacing={2}>
-          <Grid item sm={12} md={3} container justify="flex-end">
-            <PlanNameLabel>{planName}</PlanNameLabel>
-          </Grid>
-          <Grid item sm={9} md={7}>
-            <div>
-              <BigPriceLabel>{planPricePerUser}</BigPriceLabel>
-              <PriceLabel>/user</PriceLabel>
-            </div>
-            <div>
-              <H3ThinMarginless>{planSubscriptionPeriod}</H3ThinMarginless>
-            </div>
-          </Grid>
-          {showSubscriptionPlans && (
-            <Grid
-              item
-              sm={3}
-              md={2}
-              container
-              justify="flex-end"
-              alignItems="flex-end"
-            >
-              <PlanColumnLink to="" onClick={showSubscriptionPlans}>
-                Change plans
-              </PlanColumnLink>
-            </Grid>
+        <Grid container direction="column">
+          <ThemeProvider theme={themeMontserrat500}>
+            <Typography variant="h4">Your plan</Typography>
+          </ThemeProvider>
+          <ThemeProvider theme={themeMontserrat600}>
+            <Typography variant="h3">
+              <span>{planName}</span>
+              {!planIsTrial && <span> - {planPricePerUser}/user</span>}
+            </Typography>
+          </ThemeProvider>
+          {billingFrequency && (
+            <ThemeProvider theme={themeMontserratNormal}>
+              <Typography variant="h4">
+                <span>{planSubscriptionPeriod}</span>
+                {planIsMonthly && (
+                  <>
+                    <Spacing horizontal={4} />
+                    <SwitchBillingLink onClick={showSubscriptionPlans}>
+                      Switch to annual, save 25%
+                    </SwitchBillingLink>
+                  </>
+                )}
+              </Typography>
+            </ThemeProvider>
           )}
         </Grid>
-        <CurrentPlanDivider />
-        <Grid container spacing={2}>
-          <Grid item sm={12} md={3} container justify="flex-end">
-            <H1Bold>{planTotalPayment}</H1Bold>
-          </Grid>
-          <Grid
-            item
-            sm={9}
-            md={7}
-            container
-            direction="column"
-            justify="center"
-          >
-            <H3Marginless>{planNextPaymentLabel}</H3Marginless>
-            <H3ThinMarginless>{planNextPaymentDate}</H3ThinMarginless>
-          </Grid>
-          {showSubscriptionPlans && (
-            <AlignedColumnLink>
-              <PlanColumnLink to="/billing">
-                View billing & invoices
-              </PlanColumnLink>
-            </AlignedColumnLink>
-          )}
+        <Grid container direction="column" justify="flex-end">
+          <ThemeProvider theme={themeMontserratNormal}>
+            <Typography variant="h5">
+              {planNextPaymentLabel} {planNextPaymentDate}
+            </Typography>
+            <Typography variant="h5">
+              <span>{planTotalPayment} </span>
+              {Boolean(planActiveUserCount) && (
+                <span>({planActiveUserCount} users) </span>
+              )}
+              <PlanColumnLink to="/billing">View billing</PlanColumnLink>
+            </Typography>
+          </ThemeProvider>
         </Grid>
       </PlanContainer>
     </AsyncElement>

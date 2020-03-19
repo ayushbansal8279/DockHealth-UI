@@ -41,6 +41,9 @@ interface SpacingProps {
 }
 
 const useSpacingClasses = makeStyles({
+  root: {
+    display: 'inline-block',
+  },
   horizontal: {
     width: ({ horizontal }: SpacingProps) => spacingMapValues[horizontal || 1],
     height: '100%',
@@ -55,6 +58,7 @@ const Spacing = React.memo(({ horizontal, vertical }: SpacingProps) => {
   const spacingClasses = useSpacingClasses({ horizontal, vertical });
 
   const className = clsx(
+    spacingClasses.root,
     horizontal && spacingClasses.horizontal,
     vertical && spacingClasses.vertical,
   );

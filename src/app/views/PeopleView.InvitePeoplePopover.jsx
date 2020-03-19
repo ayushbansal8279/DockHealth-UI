@@ -2,23 +2,20 @@
 import { Button, Grid, Popover } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from '../actions/people-actions';
+import { UniversalStyledInput } from '../components/userProfileView/UniversalStyledInput';
 import { showAlert } from '../helpers/utility-functions';
 import {
   InvitePeoplePopoverContainer,
   InvitePeoplePopoverSection,
   InvitePopoverCloseButton,
   InvitePopoverDivider,
-  PopoverErrorCollapse,
-  PopoverErrorLabel,
-  StyledFormControl,
-  StyledInputBase,
-  StyledInputLabel,
 } from './PeopleView.Styled';
+import Spacing from '../components/common/Spacing';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   email,
@@ -51,20 +48,8 @@ const InvitePeopleForm = ({
   handleSubmit,
   closePopover,
   dispatch,
-  register,
   getAllUsers,
-  errors,
 }) => {
-  // eslint-disable-next-line camelcase
-  const firstNameError = errors?.first_name?.message;
-  // eslint-disable-next-line camelcase
-  const lastNameError = errors?.last_name?.message;
-  const emailError = errors?.email?.message;
-
-  const hasFirstNameError = Boolean(firstNameError);
-  const hasLastNameError = Boolean(lastNameError);
-  const hasEmailError = Boolean(emailError);
-
   return (
     <form
       onSubmit={event => {
@@ -76,43 +61,27 @@ const InvitePeopleForm = ({
       autoCorrect="off"
     >
       <InvitePeoplePopoverSection>
-        <StyledFormControl margin="dense" fullWidth error={hasFirstNameError}>
-          <StyledInputLabel required>First Name</StyledInputLabel>
-          <StyledInputBase
-            error={hasFirstNameError}
-            name="first_name"
-            inputRef={register}
-            autoFocus
-            autoComplete={uuid()}
-          />
-        </StyledFormControl>
-        <PopoverErrorCollapse in={hasFirstNameError}>
-          <PopoverErrorLabel>{firstNameError}</PopoverErrorLabel>
-        </PopoverErrorCollapse>
-        <StyledFormControl margin="dense" fullWidth>
-          <StyledInputLabel required>Last Name</StyledInputLabel>
-          <StyledInputBase
-            error={hasLastNameError}
-            name="last_name"
-            inputRef={register}
-            autoComplete={uuid()}
-          />
-        </StyledFormControl>
-        <PopoverErrorCollapse in={hasLastNameError}>
-          <PopoverErrorLabel>{lastNameError}</PopoverErrorLabel>
-        </PopoverErrorCollapse>
-        <StyledFormControl margin="dense" fullWidth>
-          <StyledInputLabel required>Email</StyledInputLabel>
-          <StyledInputBase
-            error={hasEmailError}
-            name="email"
-            inputRef={register}
-            autoComplete={uuid()}
-          />
-        </StyledFormControl>
-        <PopoverErrorCollapse in={hasEmailError}>
-          <PopoverErrorLabel>{emailError}</PopoverErrorLabel>
-        </PopoverErrorCollapse>
+        <UniversalStyledInput
+          label="First Name"
+          name="first_name"
+          autoFocus
+          autoComplete={uuid()}
+          whiteBackground
+        />
+        <Spacing vertical={3} />
+        <UniversalStyledInput
+          label="Last Name"
+          name="last_name"
+          autoComplete={uuid()}
+          whiteBackground
+        />
+        <Spacing vertical={3} />
+        <UniversalStyledInput
+          label="Email"
+          name="email"
+          autoComplete={uuid()}
+          whiteBackground
+        />
       </InvitePeoplePopoverSection>
       <InvitePeoplePopoverSection>
         <Grid container justify="center">
@@ -153,9 +122,11 @@ const InvitePeoplePopover = ({
   toggleInvitePopover,
   getAllUsers = () => {},
 }) => {
-  const { handleSubmit, register, errors } = useForm({
+  const formMethods = useForm({
     validationSchema,
+    reValidateMode: 'onSubmit',
   });
+  const { handleSubmit } = formMethods;
   const dispatch = useDispatch();
   const orgUserRole = useSelector(
     store => store.userState.userProfile?.orgUserRole,
@@ -199,14 +170,14 @@ const InvitePeoplePopover = ({
         </InvitePeoplePopoverSection>
         <InvitePopoverDivider />
         {isOwnerOrAdmin && (
-          <InvitePeopleForm
-            closePopover={closePopover}
-            dispatch={dispatch}
-            handleSubmit={handleSubmit}
-            register={register}
-            getAllUsers={getAllUsers}
-            errors={errors}
-          />
+          <FormContext {...formMethods}>
+            <InvitePeopleForm
+              closePopover={closePopover}
+              dispatch={dispatch}
+              handleSubmit={handleSubmit}
+              getAllUsers={getAllUsers}
+            />
+          </FormContext>
         )}
         {!isOwnerOrAdmin && (
           <InvitePeoplePopoverSection>

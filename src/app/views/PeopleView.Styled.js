@@ -1,10 +1,4 @@
-import {
-  Collapse,
-  FormControl,
-  InputBase,
-  InputLabel,
-  TextField,
-} from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 
@@ -58,64 +52,6 @@ export const StyledTextField = withStyles({
   },
 })(TextField);
 
-export const StyledFormControl = withStyles({
-  root: {
-    marginBottom: '0.5rem',
-  },
-  marginDense: {
-    margin: 0,
-  },
-})(FormControl);
-
-export const StyledInputLabel = withStyles({
-  root: {
-    color: '#2e3a43',
-    top: '50%',
-    transform: 'translate(0.5rem, -50%) scale(1)',
-    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
-  },
-  required: {
-    '& > span': {
-      color: '#e40909',
-    },
-  },
-  error: {
-    color: '#e40909',
-  },
-  shrink: {
-    color: '#2e3a43',
-    top: '0%',
-    transform: 'translate(0.5rem, 0) scale(0.75)',
-    transformOrigin: 'center left',
-    transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
-  },
-  focused: {
-    color: '#2e3a43 !important',
-  },
-})(InputLabel);
-
-export const StyledInputBase = withStyles({
-  root: {
-    border: '0.0625rem solid #e4090900',
-    borderRadius: '0.25rem',
-    transition: 'all 0.2s ease-out',
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderRadius: '0.25rem',
-    paddingBottom: 0,
-    padding: '0.6rem 0.5rem',
-    '&:focus': {
-      backgroundColor: '#fff',
-      border: 0,
-      boxShadow: 'none',
-    },
-  },
-  error: {
-    border: '0.0625rem solid #e40909',
-  },
-})(InputBase);
-
 export const PopoverSectionButtonContainer = styled.div`
   align-items: center;
   display: flex;
@@ -136,14 +72,3 @@ export const PopoverSectionButton = styled.button`
   margin: 0;
   width: 8.75rem;
 `;
-
-export const PopoverErrorLabel = styled.div`
-  color: #e40909;
-  font-size: 0.75rem;
-`;
-
-export const PopoverErrorCollapse = withStyles({
-  container: {
-    marginBottom: '0.25rem',
-  },
-})(Collapse);

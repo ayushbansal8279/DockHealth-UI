@@ -88,6 +88,8 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
     orgData = await checkBAASignedStatus()(dispatch);
   }
 
+  // uncomment the paragraph below if you have problems with signing BAA
+
   // handleHomeRedirection({
   //   data,
   //   orgData,

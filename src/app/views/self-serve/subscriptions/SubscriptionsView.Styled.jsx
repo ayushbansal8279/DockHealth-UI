@@ -79,12 +79,10 @@ export const SubscriptionsViewOuterContainer = styled.div`
   width: 100%;
 `;
 
-export const SubscriptionsViewContainer = styled(Grid)`
-  && {
-    background-color: #fff;
-    padding: 3rem 2rem;
-    max-width: 1200px;
-  }
+export const SubscriptionsViewContainer = styled.div`
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  width: 1200px;
 `;
 
 export const BillingContainer = styled.div`

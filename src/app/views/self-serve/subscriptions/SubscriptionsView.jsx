@@ -81,8 +81,9 @@ export default () => {
     annualPayment,
     selectedUsers,
   });
-  const plansViewVisible =
-    subscriptionPlansVisible || subscriptionPlanData.planIsTrial;
+  const plansViewVisible = subscriptionPlansVisible;
+  // false;
+  // subscriptionPlansVisible || subscriptionPlanData.planIsTrial;
 
   const buyButtonDisabled =
     !chosenPlan || chosenPlan?.key === SUBSCRIPTION_PLAN_KEYS.ENTERPRISE;
@@ -131,7 +132,7 @@ export default () => {
 
   return (
     <SubscriptionsViewOuterContainer ref={outerContainerReference}>
-      <SubscriptionsViewContainer container>
+      <SubscriptionsViewContainer>
         {plansViewVisible ? (
           <SubscriptionsPlansView
             organization={organization}

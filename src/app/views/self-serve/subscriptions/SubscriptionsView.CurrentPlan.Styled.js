@@ -1,15 +1,15 @@
 import { Link } from 'react-router';
 import styled from 'styled-components';
-
 import { H2 } from './SubscriptionsView.Styled';
 
 export const PlanContainer = styled.div`
-  background-color: #f8f8f9;
-  border: 1px solid #ededf0;
-  border-radius: 0.25rem;
-  display: flex;
-  flex-flow: column nowrap;
-  padding: 1.375rem;
+  background-color: #f9fafc;
+  display: grid;
+  font-size: 1rem;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr auto;
+  height: min-content;
+  padding: 1.5rem;
   width: 100%;
 `;
 
@@ -27,7 +27,6 @@ export const PlanColumnLink = styled(Link)`
   color: #007cab;
   cursor: pointer;
   filter: brightness(1);
-  font-size: 0.875rem;
   text-decoration: none;
   transition: all 0.25s ease-out;
 
@@ -37,9 +36,15 @@ export const PlanColumnLink = styled(Link)`
   }
 `;
 
-export const CurrentPlanDivider = styled.div`
-  background-color: #c8c8ce;
-  height: 0.0625rem;
-  margin: 1.25rem 0;
-  width: 100%;
+export const SwitchBillingLink = styled.span`
+  color: #007cab;
+  cursor: pointer;
+  filter: brightness(1);
+  text-decoration: underline;
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: #007cab;
+    filter: brightness(1.35);
+  }
 `;

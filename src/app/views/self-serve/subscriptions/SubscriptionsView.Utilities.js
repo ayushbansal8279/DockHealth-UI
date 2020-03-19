@@ -64,8 +64,8 @@ export const getSubscriptionPlanPeriodName = ({
   billingFrequency = BILLING_FREQUENCY.MONTHLY,
 }) => {
   return billingFrequency === BILLING_FREQUENCY.MONTHLY
-    ? 'Monthly subscription'
-    : 'Annual subscription';
+    ? 'Monthly Billing'
+    : 'Annual Billing';
 };
 
 export const getSubscriptionPlanBillingPeriod = ({
@@ -140,6 +140,7 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
   return {
     planName,
     billingFrequency: subscription?.billingFrequency,
+    planIsMonthly: subscription?.billingFrequency === BILLING_FREQUENCY.MONTHLY,
     planPricePerUser: priceFormatter({ price: monthlyPerUserCost }),
     planAnnualPricePerUser: priceFormatter({ price: monthlyPerUserCost * 12 }),
     planTotalPayment: priceFormatter({
@@ -154,5 +155,6 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
     planNextPaymentLabel,
     planNextPaymentDate,
     planIsTrial,
+    planActiveUserCount: billingData?.activeUserCount ?? 0,
   };
 };
