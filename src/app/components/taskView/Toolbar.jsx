@@ -14,6 +14,7 @@ import Spacing from '../common/Spacing';
 import InviteMemberPopover from '../members/InviteMemberPopover';
 import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
+import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
 import { SlimViewToggle, ToolbarLabel } from './Toolbar.Styled';
 
@@ -70,10 +71,8 @@ const useToggleNotifications = ({
 
 export default ({
   addingNewSubtask,
-  filterButton,
   handleSearch,
   onAddTaskButtonClick,
-  openFilterPopover,
   initialSearchValue,
   searchValue,
   preferencesInitialized,
@@ -82,24 +81,32 @@ export default ({
   slimView,
   switchSlimView,
   taskDrawerOpen,
-  filterPopoverOpen,
   taskList,
   members,
   membersNotInTaskList,
   clearFilter,
-  currentFilterDescription,
   isInbox,
+  filterBy,
   closeDrawer,
   markComplete,
   onMarkComplete,
   isSpecificPatient,
   isSpecialList,
   isMultiList,
+  onFilterChange,
   printData: { tasks = [], completedTasks = [], taskListMembers = [] },
 }) => {
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
     false,
   );
+  const [
+    isFilterPopoverOpen,
+    openFilterPopover,
+    closeFilterPopover,
+  ] = useBoolean(false);
+
+  const currentFilterDescription =
+    filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
 
   const notificationsEnabled = taskList?.notifications;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -114,6 +121,7 @@ export default ({
 
   const moreButtonReference = useRef(null);
   const addTaskButtonReference = useRef(null);
+  const filterButtonReference = useRef(null);
 
   return (
     <PageContentHeader>
@@ -128,14 +136,14 @@ export default ({
           <Button
             variant="text"
             onClick={openFilterPopover}
-            ref={filterButton}
+            ref={filterButtonReference}
             size="small"
           >
             <ToolbarLabel variant="body1" component="span">
               FILTER
             </ToolbarLabel>
             <Spacing horizontal={3} />
-            <RotatableChevron rotated={filterPopoverOpen} />
+            <RotatableChevron rotated={isFilterPopoverOpen} />
           </Button>
           {currentFilterDescription && (
             <>
@@ -188,7 +196,7 @@ export default ({
                   MORE
                 </ToolbarLabel>
                 <Spacing horizontal={3} />
-                <RotatableChevron rotated={filterPopoverOpen} />
+                <RotatableChevron rotated={isMorePopoverOpen} />
               </Button>
               {!isSpecialList && (
                 <>
@@ -227,6 +235,14 @@ export default ({
         notificationsEnabled={notificationsEnabled}
         toggleNotifications={toggleNotifications}
         isSpecialList={isSpecialList}
+      />
+      <FilterPopover
+        isFilterPopoverOpen={isFilterPopoverOpen}
+        closeFilterPopover={closeFilterPopover}
+        filterBy={filterBy}
+        onFilterChange={onFilterChange}
+        clearFilter={clearFilter}
+        filterButtonReference={filterButtonReference}
       />
       <Popover
         open={
