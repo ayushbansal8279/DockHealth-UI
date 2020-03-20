@@ -199,7 +199,7 @@ export default ({
                 size="small"
               >
                 <ToolbarLabel variant="body1" component="span">
-                  MORE
+                  ACTIONS
                 </ToolbarLabel>
                 <Spacing horizontal={3} />
                 <RotatableChevron rotated={isMorePopoverOpen} />

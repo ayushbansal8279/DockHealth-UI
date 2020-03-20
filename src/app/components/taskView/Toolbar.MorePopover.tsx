@@ -54,7 +54,7 @@ const MorePopover = ({
     key: 'filter',
     label: (
       <Button variant="text" onClick={closeMorePopover} size="small">
-        <ToolbarLabel variant="body1">MORE</ToolbarLabel>
+        <ToolbarLabel variant="body1">ACTIONS</ToolbarLabel>
         <Spacing horizontal={3} />
         <RotatableChevron rotated={isMorePopoverOpen} />
       </Button>
