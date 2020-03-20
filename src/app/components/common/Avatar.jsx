@@ -15,6 +15,7 @@ export default ({
   withCursor,
   withShadow,
   color = '#3d4858',
+  padded = true,
 }) => (
   <AvatarContainer
     onClick={onClick}
@@ -24,7 +25,7 @@ export default ({
     withShadow={withShadow}
     color={color}
   >
-    <InnerAvatarContainer color={color} size={size}>
+    <InnerAvatarContainer color={color} size={size} padded={padded}>
       {children}
     </InnerAvatarContainer>
     {withCameraIcon && (

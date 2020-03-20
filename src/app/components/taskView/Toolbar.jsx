@@ -16,7 +16,11 @@ import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
-import { SlimViewToggle, ToolbarLabel } from './Toolbar.Styled';
+import {
+  SlimViewToggle,
+  ToolbarLabel,
+  ToolbarAvatarContainer,
+} from './Toolbar.Styled';
 
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
@@ -31,7 +35,9 @@ const renderMemberAvatar = member => {
   return (
     <React.Fragment key={member?.userIdentifier ?? member?.email}>
       <Spacing horizontal={3} />
-      <Avatar size={40}>{avatarContent}</Avatar>
+      <Avatar padded={false} size={40}>
+        <ToolbarAvatarContainer>{avatarContent}</ToolbarAvatarContainer>
+      </Avatar>
     </React.Fragment>
   );
 };

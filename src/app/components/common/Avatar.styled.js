@@ -17,7 +17,8 @@ export const AvatarContainer = styled.div`
   min-height: ${props => props.size ?? 110}px;
   min-width: ${props => props.size ?? 110}px;
   height: ${props => props.size ?? 110}px;
-  padding: ${({ size }) => getScaledSize({ normalSize: 6, propSize: size })}px;
+  padding: ${({ padded, size }) =>
+    padded ? getScaledSize({ normalSize: 6, propSize: size }) : 0}px;
   justify-content: center;
   position: relative;
   width: ${props => props.size ?? 110}px;

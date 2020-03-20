@@ -45,3 +45,9 @@ export const ToolbarLabel = withStyles({
     display: 'inline-block',
   },
 })(Typography);
+
+export const ToolbarAvatarContainer = styled.div`
+  border: 0.125rem solid #fff;
+  height: 100%;
+  width: 100%;
+`;
