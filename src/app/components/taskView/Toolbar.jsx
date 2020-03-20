@@ -1,5 +1,5 @@
 import { Button, Grid, Popover, Tooltip } from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
+import { Add, Close } from '@material-ui/icons';
 import { splitAt } from 'ramda';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
@@ -148,6 +148,9 @@ export default ({
   const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
 
+  const isMainTaskDrawerOpen =
+    taskDrawerOpen && !selectedTask?.taskIdentifier && !addingNewSubtask;
+
   return (
     <PageContentHeader>
       <div>
@@ -255,7 +258,7 @@ export default ({
           <div ref={addTaskButtonReference}>
             {!isMultiList && showAddTaskButton && (
               <AdornedButton
-                adornment={<AddIcon />}
+                adornment={isMainTaskDrawerOpen ? <Close /> : <Add />}
                 onClick={onAddTaskButtonClick}
               >
                 ADD A TASK
@@ -284,9 +287,8 @@ export default ({
         filterButtonReference={filterButtonReference}
       />
       <Popover
-        open={
-          taskDrawerOpen && !selectedTask?.taskIdentifier && !addingNewSubtask
-        }
+        open={isMainTaskDrawerOpen}
+        onClose={closeDrawer}
         anchorEl={addTaskButtonReference.current}
         anchorOrigin={{
           vertical: 'bottom',
