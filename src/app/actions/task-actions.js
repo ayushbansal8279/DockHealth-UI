@@ -830,6 +830,7 @@ export const getTaskPage = ({
       dispatch({
         type: ActionTypes.TASK_NEW_PAGE_DOWNLOADED,
         tasks: search(tasks),
+        status,
         taskListIdentifier,
         queryStartPosition,
       });

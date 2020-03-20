@@ -139,7 +139,7 @@ export default ({
 
   const isCurrentListSelected =
     (isMultiList &&
-      Boolean(otherTaskListSubtasksIdentifiers.includes(selectedTaskId))) ||
+      otherTaskListSubtasksIdentifiers.includes(selectedTaskId)) ||
     otherTaskListIdentifiers.includes(selectedTaskId) ||
     (addingNewSubtask &&
       otherTaskListIdentifiers.includes(addingNewSubtaskParentId));
