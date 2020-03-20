@@ -1,5 +1,6 @@
 import { InputAdornment, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
@@ -36,7 +37,7 @@ const StyledTextField = styled(TextField)`
       height: 100%;
       padding: 0 0.25rem 0 0.5rem;
       transition: all 0.25s ease-in-out;
-      width: ${props => (props.fullWidth ? '100%' : '8.25rem')};
+      width: ${props => (props.fullWidth ? '100%' : '8.75rem')};
 
       &::after,
       &::before {
@@ -84,7 +85,23 @@ const StyledAdornment = withStyles({
   positionEnd: {
     margin: '0 0.25rem',
   },
-})(InputAdornment);
+  visible: {
+    visibility: 'initial',
+  },
+  invisible: {
+    visibility: 'hidden',
+  },
+})(({ position, visible = true, classes, ...props }) => {
+  const className = clsx(
+    classes.root,
+    position === 'end' && classes.positionEnd,
+    visible ? classes.visible : classes.invisible,
+  );
+
+  return (
+    <InputAdornment className={className} position={position} {...props} />
+  );
+});
 
 const Search = ({
   className,
@@ -93,6 +110,7 @@ const Search = ({
   variant,
   autoFocus,
   fullWidth,
+  value,
   ...otherInputProps
 }) => {
   const onClearClick = useCallback(
@@ -118,7 +136,11 @@ const Search = ({
           </StyledAdornment>
         ),
         endAdornment: (
-          <StyledAdornment position="end" disablePointerEvents={false}>
+          <StyledAdornment
+            position="end"
+            disablePointerEvents={false}
+            visible={Boolean(value)}
+          >
             <ClearButton onClick={onClearClick}>
               <img alt="clear" src={SearchClearIcon} />
             </ClearButton>
@@ -128,6 +150,7 @@ const Search = ({
         type: 'search',
         defaultValue: initialValue,
         autoFocus,
+        value,
         ...otherInputProps,
       }}
     />
