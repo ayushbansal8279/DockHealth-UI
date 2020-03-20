@@ -51,3 +51,20 @@ export const ToolbarAvatarContainer = styled.div`
   height: 100%;
   width: 100%;
 `;
+
+export const MoreMembersButtonContainer = styled.div`
+  align-items: center;
+  border: 0.125rem solid #00a2e5;
+  border-radius: 2.5rem;
+  color: #00a2e5;
+  display: flex;
+  font-size: 0.875rem;
+  font-weight: 300;
+  height: 2.5rem;
+  justify-content: center;
+  line-height: 1;
+  min-height: 2.5rem;
+  min-width: 2.5rem;
+  padding: 0;
+  width: 2.5rem;
+`;

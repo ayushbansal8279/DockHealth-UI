@@ -1,5 +1,6 @@
-import { Button, Grid, Popover } from '@material-ui/core';
+import { Button, Grid, Popover, Tooltip } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
+import { splitAt } from 'ramda';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleListNotifications } from '../../actions/tasklist-actions';
@@ -17,9 +18,10 @@ import Search from './Search';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
 import {
+  MoreMembersButtonContainer,
   SlimViewToggle,
-  ToolbarLabel,
   ToolbarAvatarContainer,
+  ToolbarLabel,
 } from './Toolbar.Styled';
 
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
@@ -75,6 +77,21 @@ const useToggleNotifications = ({
     }
   }, [closeMorePopover, dispatch, notificationsEnabled, taskListIdentifier]);
 
+const getMembersNames = ({ members }) =>
+  members?.map(member => {
+    if (!member) {
+      return null;
+    }
+
+    const { firstName, lastName, userIdentifier } = member;
+
+    return (
+      <div key={userIdentifier}>
+        {`${firstName ?? ''} ${lastName ?? ''}`.trim()}
+      </div>
+    );
+  });
+
 export default ({
   addingNewSubtask,
   handleSearch,
@@ -124,10 +141,12 @@ export default ({
     taskListIdentifier,
     dispatch,
   });
-
   const moreButtonReference = useRef(null);
   const addTaskButtonReference = useRef(null);
   const filterButtonReference = useRef(null);
+
+  const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
+  const hiddenMembersCount = hiddenMembers?.length;
 
   return (
     <PageContentHeader>
@@ -206,7 +225,21 @@ export default ({
               </Button>
               {!isSpecialList && (
                 <>
-                  {members?.map(renderMemberAvatar)}
+                  {shownMembers?.map(renderMemberAvatar)}
+                  {hiddenMembersCount > 0 && (
+                    <>
+                      <Spacing horizontal={3} />
+                      <Tooltip
+                        interactive
+                        placement="bottom"
+                        title={getMembersNames({ members: hiddenMembers })}
+                      >
+                        <MoreMembersButtonContainer>
+                          +{hiddenMembersCount}
+                        </MoreMembersButtonContainer>
+                      </Tooltip>
+                    </>
+                  )}
                   <Spacing horizontal={3} />
                   <InviteMemberPopover
                     size={40}
