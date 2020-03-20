@@ -150,14 +150,6 @@ export const StatusSelect = styled.div`
   }
 `;
 
-export const CloseTaskButtonContainer = styled.div`
-  align-items: center;
-  display: flex;
-  height: 3rem;
-  justify-content: center;
-  padding-right: 0.5rem;
-`;
-
 export const StyledButton = styled(Button)`
   && {
     ${props => props.variant === 'contained' && 'background-color: #007cab;'}

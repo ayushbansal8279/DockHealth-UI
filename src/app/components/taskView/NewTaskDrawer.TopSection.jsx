@@ -1,4 +1,5 @@
-import { Grid, List, Popover } from '@material-ui/core';
+import { Grid, IconButton, List, Popover } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 import React, { useCallback, useRef } from 'react';
 import { FormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -10,14 +11,12 @@ import renderStatusSelectOption from './NewTaskDrawer.RenderStatusSelect';
 import {
   AutoSaveContainer,
   AutoSaveLabel,
-  CloseTaskButtonContainer,
   FormSection,
   FormSectionDivider,
   StatusSelect,
   TopLabel,
 } from './NewTaskDrawer.Styled';
 import PriorityFlag from './PriorityFlag';
-import { CloseTaskButton } from './TaskDrawerButtons';
 
 export default ({
   addingTaskOrSubtask,
@@ -83,14 +82,16 @@ export default ({
           justify="space-between"
         >
           <TopLabel>Add a task</TopLabel>
-          <CloseTaskButtonContainer>
-            <CloseTaskButton
-              onClick={() => {
-                closeDrawer();
-                storeAsCurrentTask(null);
-              }}
-            />
-          </CloseTaskButtonContainer>
+          <IconButton
+            onClick={() => {
+              closeDrawer();
+              storeAsCurrentTask(null);
+            }}
+            color="primary"
+            size="small"
+          >
+            <Close />
+          </IconButton>
         </Grid>
       )}
       <FormSectionDivider shown={!task} active={autoSaveVisible}>
@@ -118,15 +119,16 @@ export default ({
           <span>{status.label}</span>
         </StatusSelect>
         {task && !parentTask && (
-          <CloseTaskButtonContainer>
-            <CloseTaskButton
-              onClick={() => {
-                closeDrawer();
-                storeAsCurrentTask(null);
-              }}
-              paddedSmall
-            />
-          </CloseTaskButtonContainer>
+          <IconButton
+            onClick={() => {
+              closeDrawer();
+              storeAsCurrentTask(null);
+            }}
+            size="small"
+            color="primary"
+          >
+            <Close />
+          </IconButton>
         )}
         <Popover
           anchorEl={statusSelectReference?.current}
