@@ -107,24 +107,31 @@ const videos = [
 const SupportSectionViewVideos = () => (
   <>
     <Grid container alignItems="center" justify="space-between" item xs={12}>
-      <Typography variant="h2">
-        <b>HOW TO VIDEOS</b>
-      </Typography>
-      <div>
-        <Grid container direction="row">
-          <Typography variant="body1">
-            <SupportViewLink href="mailto:support@dock.health?Subject=Dock%20Support">
-              support@dock.health
-            </SupportViewLink>
-          </Typography>
-          <Spacing horizontal={4} />
-          <Typography variant="body1">
-            <SupportViewLink href="tel:857-302-0441">
-              857-302-0441
-            </SupportViewLink>
-          </Typography>
-        </Grid>
-      </div>
+      <Grid item xs={6} container justify="flex-start">
+        <Typography variant="h2">
+          <b>HOW TO VIDEOS</b>
+        </Typography>
+      </Grid>
+      <Grid
+        item
+        xs={6}
+        container
+        justify="flex-end"
+        direction="row"
+        wrap="nowrap"
+      >
+        <Typography variant="body1">
+          <SupportViewLink href="mailto:support@dock.health?Subject=Dock%20Support">
+            support@dock.health
+          </SupportViewLink>
+        </Typography>
+        <Spacing horizontal={4} />
+        <Typography variant="body1">
+          <SupportViewLink href="tel:857-302-0441">
+            857-302-0441
+          </SupportViewLink>
+        </Typography>
+      </Grid>
     </Grid>
     <Grid item xs={12}>
       <Spacing vertical={4} />

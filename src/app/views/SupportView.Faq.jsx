@@ -110,7 +110,7 @@ const SupportSectionViewFaq = () => {
         item
         xs={12}
       >
-        <Grid container alignItems="center">
+        <Grid item xs={6} container alignItems="center" justify="flex-start">
           <Typography variant="h2">
             <b>FAQs</b>
           </Typography>
@@ -123,21 +123,26 @@ const SupportSectionViewFaq = () => {
             />
           </SupportSearchContainer>
         </Grid>
-        <div>
-          <Grid container direction="row" wrap="nowrap">
-            <Typography variant="body1">
-              <SupportViewLink href="mailto:support@dock.health?Subject=Dock%20Support">
-                support@dock.health
-              </SupportViewLink>
-            </Typography>
-            <Spacing horizontal={4} />
-            <Typography variant="body1">
-              <SupportViewLink href="tel:857-302-0441">
-                857-302-0441
-              </SupportViewLink>
-            </Typography>
-          </Grid>
-        </div>
+        <Grid
+          item
+          xs={6}
+          container
+          justify="flex-end"
+          direction="row"
+          wrap="nowrap"
+        >
+          <Typography variant="body1">
+            <SupportViewLink href="mailto:support@dock.health?Subject=Dock%20Support">
+              support@dock.health
+            </SupportViewLink>
+          </Typography>
+          <Spacing horizontal={4} />
+          <Typography variant="body1">
+            <SupportViewLink href="tel:857-302-0441">
+              857-302-0441
+            </SupportViewLink>
+          </Typography>
+        </Grid>
       </Grid>
       <Grid item xs={12}>
         <Spacing vertical={4} />
