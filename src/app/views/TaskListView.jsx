@@ -1,4 +1,5 @@
 import { Collapse, Fade, Grid } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
@@ -9,12 +10,12 @@ import { setHeader } from '../actions/header-actions';
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
+import AdornedButton from '../components/common/AdornedButton';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
-import AddTaskListButton from '../components/taskList/AddTaskListButton';
 import {
   onTaskListDeleted,
   onTaskListInvitationAccepted,
@@ -61,6 +62,13 @@ const TaskListViewWrapper = styled.div`
   max-width: 100%;
   min-height: 100%;
   overflow: hidden;
+  width: 100%;
+`;
+
+const AddListButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.5rem;
   width: 100%;
 `;
 
@@ -344,14 +352,11 @@ class TaskListView extends PureComponent {
           <Fade in>
             <Grid container direction="column" alignItems="center" spacing={1}>
               <StyledCollapse in={!taskListFormOpen} timeout={250}>
-                <SafariFixGrid
-                  container
-                  alignItems="center"
-                  justify="flex-end"
-                  direction="row"
-                >
-                  <AddTaskListButton onClick={this.addTaskList} />
-                </SafariFixGrid>
+                <AddListButtonContainer>
+                  <AdornedButton adornment={<Add />} onClick={this.addTaskList}>
+                    ADD A LIST
+                  </AdornedButton>
+                </AddListButtonContainer>
               </StyledCollapse>
               <SafariFixGrid container item xs={12} justify="center">
                 <Grid container item xs={9}>
