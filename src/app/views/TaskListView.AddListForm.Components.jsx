@@ -201,17 +201,6 @@ export const StyledButton = withStyles({
   return <ButtonBase className={className} disabled={disabled} {...props} />;
 });
 
-export const CloseButton = withStyles({
-  root: {
-    backgroundColor: '#d9036b',
-    borderRadius: '1.25rem',
-    color: '#fff',
-    fontSize: '2rem',
-    height: '2.5rem',
-    width: '2.5rem',
-  },
-})(ButtonBase);
-
 export const FormSpacing = styled.div`
   height: 2rem;
   width: 100%;

@@ -1,4 +1,5 @@
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 import { isEmpty } from 'ramda';
 import React from 'react';
 import { saveTaskList } from '../actions/tasklist-actions';
@@ -10,7 +11,6 @@ import {
 } from '../components/userProfileView/UserProfileView.Styled';
 import { showAlert } from '../helpers/utility-functions';
 import {
-  CloseButton,
   EmptyMember,
   EmptyMemberIcon,
   FormContainer,
@@ -144,9 +144,9 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
       <Grid container justify="space-between" alignItems="center">
         <FormLabel>{formLabelContent}</FormLabel>
         {cancelButtonShown && (
-          <CloseButton onClick={() => setListFormOpen(false)}>
-            &times;
-          </CloseButton>
+          <IconButton color="primary" onClick={() => setListFormOpen(false)}>
+            <Close />
+          </IconButton>
         )}
       </Grid>
       <FormDivider />
