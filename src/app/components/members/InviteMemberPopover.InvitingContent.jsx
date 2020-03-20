@@ -9,6 +9,7 @@ import {
   invitePersonToTaskList,
 } from '../../actions/tasklist-actions';
 import { showAlert } from '../../helpers/utility-functions';
+import { MontserratTypography } from '../../theme-montserrat';
 import { UniversalStyledInput } from '../userProfileView/UniversalStyledInput';
 import {
   FormSection,
@@ -71,7 +72,9 @@ const InvitingContent = ({ unsetInviting, taskList }) => {
         <PopoverHeaderCloseButton onClick={unsetInviting}>
           <BackIcon />
         </PopoverHeaderCloseButton>
-        <span>Invite a person</span>
+        <MontserratTypography variant="h4" weight="600">
+          Invite a person
+        </MontserratTypography>
       </PopoverHeader>
       <form
         onSubmit={formMethods.handleSubmit(

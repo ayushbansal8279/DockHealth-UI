@@ -36,6 +36,7 @@ import {
   TickIconContainer,
   TickIconImage,
 } from './InviteMemberPopover.Styled';
+import { MontserratTypography } from '../../theme-montserrat';
 
 const getFormattedMemberRole = memberRole => {
   switch (memberRole) {
@@ -300,7 +301,9 @@ const NotInvitingContent = ({
             <PopoverHeaderCloseButton onClick={closeMemberPopover}>
               <CloseIcon />
             </PopoverHeaderCloseButton>
-            <span>Add to list</span>
+            <MontserratTypography variant="h4" weight="600">
+              Add to list
+            </MontserratTypography>
             <PopoverHeaderCloseButton onClick={setSearching}>
               <SearchIcon />
             </PopoverHeaderCloseButton>

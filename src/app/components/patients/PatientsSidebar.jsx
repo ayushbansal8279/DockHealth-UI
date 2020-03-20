@@ -1,3 +1,4 @@
+import { Close } from '@material-ui/icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { highlightPatient } from '../../actions/patient-actions';
@@ -56,9 +57,11 @@ const PatientsSidebar = ({ patient }) => {
   return (
     <PatientsSidebarContainer>
       <PatientsSidebarHeader>
-        <PatientsSidebarName>{patientHeaderLabel}</PatientsSidebarName>
-        <PatientsSidebarCloseButton onClick={deselectPatient}>
-          ✕
+        <PatientsSidebarName variant="h4" weight="500">
+          {patientHeaderLabel}
+        </PatientsSidebarName>
+        <PatientsSidebarCloseButton size="small" onClick={deselectPatient}>
+          <Close />
         </PatientsSidebarCloseButton>
       </PatientsSidebarHeader>
       <div>

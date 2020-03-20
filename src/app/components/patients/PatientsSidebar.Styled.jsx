@@ -1,35 +1,38 @@
-import styled from 'styled-components';
-import React from 'react';
-
-import { ButtonBase, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { omit } from 'ramda';
+import React from 'react';
+import styled from 'styled-components';
+import { MontserratTypography } from '../../theme-montserrat';
 
 export const PatientsSidebarContainer = styled.div`
   padding: 4px;
 `;
 
 export const PatientsSidebarHeader = styled.div`
+  align-items: center;
   display: flex;
   position: relative;
   height: 67px;
-  background: #2a4a70;
+  background: #3d4858;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
   color: #fff;
   font-size: 24px;
   font-weight: 600;
-  padding: 15px 13.5px 19px 27px;
+  padding: 0.25rem 1.5rem;
 `;
 
-export const PatientsSidebarName = styled.div`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+export const PatientsSidebarName = styled(MontserratTypography)`
+  && {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 export const PatientsSidebarSectionContainer = styled.div`
   border: solid 2px #ddf2f7;
   background: #fff;
-  padding: 18px 27px 27px 24px;
+  padding: 1.5rem;
 
   :not(:first-child) {
     margin-top: 4px;
@@ -117,18 +120,11 @@ export const PatientsSidebarContactCategory = styled.div`
   color: rgba(0, 0, 0, 0.54);
 `;
 
-export const PatientsSidebarCloseButton = styled(ButtonBase)`
+export const PatientsSidebarCloseButton = styled(IconButton)`
   && {
-    background: #ababb2;
-    border-radius: 50%;
     color: #fff;
     font-size: 1.125rem;
-    font-weight: bold;
-    height: 2.25rem;
     margin-left: auto;
-    min-height: 2.25rem;
-    min-width: 2.25rem;
-    width: 2.25rem;
   }
 `;
 

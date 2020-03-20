@@ -30,7 +30,7 @@ export const AddMemberPopover = withStyles({
 
 export const PopoverHeader = styled.div`
   align-items: center;
-  background-color: #2a4a70;
+  background-color: #3d4858;
   color: #fff;
   display: grid;
   font-weight: 700;
