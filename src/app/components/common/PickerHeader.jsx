@@ -14,12 +14,12 @@ const StyledBackIcon = styled(BackIcon)`
 `;
 
 const Header = styled.div`
+  align-items: center;
+  background: #3d4858;
+  display: flex;
   flex-shrink: 0;
   flex-grow: 0;
   padding: 0 10px;
-  display: flex;
-  align-items: center;
-  background: #2a4a70;
   width: 494px;
   height: 73px;
 `;

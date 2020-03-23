@@ -38,7 +38,7 @@ const Header = styled.div`
   padding: 0 10px;
   display: flex;
   align-items: center;
-  background: #2a4a70;
+  background: #3d4858;
   width: 494px;
   height: 73px;
 `;
