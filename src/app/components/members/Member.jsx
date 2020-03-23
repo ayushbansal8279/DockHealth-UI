@@ -22,6 +22,7 @@ export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
     border-radius: 50%;
     box-sizing: border-box;
     object-fit: contain;
+    object-position: center;
   }
 
   :before {
