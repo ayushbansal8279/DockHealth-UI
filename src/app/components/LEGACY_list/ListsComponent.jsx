@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router';
 import BooleanModal from '../modals/BooleanModal';
 
 class ListsComponent extends PureComponent {
@@ -18,6 +17,7 @@ class ListsComponent extends PureComponent {
       leaveList,
       taskLists,
       currentUser,
+      onClick,
     } = this.props;
 
     return (
@@ -63,11 +63,13 @@ class ListsComponent extends PureComponent {
                 )}
               </div>
               <div className="columns">
-                <Link to={`/tasks/${taskListIdentifier}`}>
-                  <h6 className="" style={{ fontWeight: 'bold' }}>
-                    {listName}
-                  </h6>
-                </Link>
+                <button
+                  type="button"
+                  onClick={() => onClick(taskListIdentifier)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <h6 style={{ fontWeight: 'bold' }}>{listName}</h6>
+                </button>
                 <h7 className="">{listDescription}</h7>
                 <span className="details">{creator.userName}</span>
               </div>

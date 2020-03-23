@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { setHeader } from '../actions/header-actions';
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskListActions from '../actions/tasklist-actions';
+import * as TaskActions from '../actions/task-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import AdornedButton from '../components/common/AdornedButton';
 import CubesLoader from '../components/common/CubesLoader';
@@ -162,9 +163,10 @@ class TaskListView extends PureComponent {
   };
 
   acceptInviteToTaskList = taskList => {
-    const { invitationAction } = this.props;
+    const { invitationAction, taskActions } = this.props;
     invitationAction.acceptInviteToTaskList(taskList);
     onTaskListInvitationAccepted();
+    taskActions.resetTaskSearch();
     hashHistory.push(`tasks/${taskList.taskListIdentifier}`);
   };
 
@@ -285,12 +287,20 @@ class TaskListView extends PureComponent {
     metricValue,
   }) => () => {
     if (metricValue > 0) {
+      const { taskActions } = this.props;
+      taskActions.resetTaskSearch();
       this.onSelectHUD(
         listName === 'Inbox'
           ? 'tasks/Inbox'
           : `tasks/filtered/${listName}/${taskStatus}/${filterBy}`,
       );
     }
+  };
+
+  onClick = taskListIdentifier => {
+    const { taskActions } = this.props;
+    taskActions.resetTaskSearch();
+    hashHistory.push(`/tasks/${taskListIdentifier}`);
   };
 
   renderGenericList = list => {
@@ -413,6 +423,7 @@ class TaskListView extends PureComponent {
                         editForm={this.editTaskList}
                         deleteList={this.deleteList}
                         leaveList={this.leaveList}
+                        onClick={this.onClick}
                       />
                     </div>
                   )}
@@ -439,6 +450,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    taskActions: bindActionCreators(TaskActions, dispatch),
     taskListAction: bindActionCreators(TaskListActions, dispatch),
     invitationAction: bindActionCreators(InvitationActions, dispatch),
     setHeaderBound: setHeader(dispatch),
