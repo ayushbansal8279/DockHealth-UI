@@ -4,7 +4,6 @@ import { useMount } from 'react-use';
 import { setHeader } from '../actions/header-actions';
 import { updateOrganizationName } from '../actions/organization-actions';
 import * as userApi from '../api/user-api';
-import CubesLoaderOverlay from '../components/common/CubesLoaderOverlay';
 import GenericHeader from '../components/common/GenericHeader';
 import { ViewContainer } from '../components/userProfileView/UserProfileView.Styled';
 import UserProfileView from './UserProfileView';
@@ -162,7 +161,6 @@ const UserProfileViewWrapper = () => {
 
   return (
     <ViewContainer>
-      <CubesLoaderOverlay />
       {userProfile && userNotificationPreferences && (
         <UserProfileView
           defaultValues={defaultValues}

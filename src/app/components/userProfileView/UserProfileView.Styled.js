@@ -7,7 +7,7 @@ export const FormContainer = styled.form``;
 
 export const ViewContainer = styled.div`
   background-color: #fff;
-  padding: 100px 0;
+  padding: 40px 0;
   position: relative;
 `;
 
