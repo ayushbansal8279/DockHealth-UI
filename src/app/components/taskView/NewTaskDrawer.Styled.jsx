@@ -9,6 +9,7 @@ export const OuterDrawerContainer = styled.div`
   overflow-y: auto;
   position: sticky;
   scrollbar-color: transparent transparent;
+  scrollbar-width: none;
   top: 0;
 
   &::-webkit-scrollbar {

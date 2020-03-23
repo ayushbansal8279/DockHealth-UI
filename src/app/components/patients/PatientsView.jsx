@@ -1,5 +1,5 @@
 import { Fade, Grid } from '@material-ui/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHeader } from '../../actions/header-actions';
 import {
@@ -48,6 +48,8 @@ const searchPatients = (patients, searchTerm) => {
 
 const PatientsView = () => {
   const dispatch = useDispatch();
+
+  const patientsListContainerReference = useRef(null);
 
   const isFetching = useSelector(({ patientState }) => patientState.isFetching);
   const patients = useSelector(({ patientState }) => patientState.allPatients);
@@ -106,9 +108,23 @@ const PatientsView = () => {
     [dispatch],
   );
 
-  const filteredPatients = searchPatients(patients, searchTerm);
+  const foundPatients = searchPatients(patients, searchTerm);
+  const filteredPatients = [
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+    ...foundPatients,
+  ];
 
   const isCompact = highlightedPatient || isCreatingPatient;
+
+  console.info(patientsListContainerReference.current);
 
   return (
     <PatientsViewContainer>
@@ -117,7 +133,7 @@ const PatientsView = () => {
         handlePatientFilter={handlePatientFilter}
         deselectPatient={deselectPatient}
       />
-      <PatientsListContainer>
+      <PatientsListContainer ref={patientsListContainerReference}>
         <Grid container>
           {isFetching ? (
             <PatientsListSpinner isFetching={isFetching} />
@@ -134,7 +150,9 @@ const PatientsView = () => {
           )}
           {(highlightedPatient || isCreatingPatient) && (
             <Grid sm={6} item container direction="column">
-              <SidebarInnerContainer>
+              <SidebarInnerContainer
+                height={patientsListContainerReference.current?.clientHeight}
+              >
                 <PatientsSidebar
                   patient={isCreatingPatient ? null : highlightedPatient}
                 />
