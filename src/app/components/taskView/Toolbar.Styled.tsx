@@ -47,8 +47,12 @@ export const ToolbarLabel = withStyles({
 })(Typography);
 
 export const ToolbarAvatarContainer = styled.div`
+  align-items: center;
   border: 0.125rem solid #fff;
+  border-radius: 100%;
+  display: flex;
   height: 100%;
+  justify-content: center;
   width: 100%;
 `;
 
