@@ -1,8 +1,8 @@
+import { Avatar, ButtonBase, Tooltip } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-
-import { Avatar, ButtonBase, Tooltip } from '@material-ui/core';
+import { MontserratTypography } from '../../theme-montserrat';
 
 export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
   && {
@@ -53,8 +53,7 @@ const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
 const Member = ({ onClick, member, children, className, style, color }) => {
   const alt = member && `${member.firstName} ${member.lastName}`;
   const source = member?.profileThumbnailPictureHash && getThumbnailUrl(member);
-  const memberColor =
-    member && (source ? undefined : member.bubbleColor || '#00a73c');
+  const memberColor = member?.bubbleColor || '#00a73c';
 
   const avatarProps = {
     alt,
@@ -65,7 +64,11 @@ const Member = ({ onClick, member, children, className, style, color }) => {
   const avatar = (
     <StyledAvatar {...avatarProps} className={className}>
       {children ||
-        (member && !member.profileThumbnailPictureHash && member.initials)}
+        (member && !member.profileThumbnailPictureHash && (
+          <MontserratTypography variant="h4" weight="bold">
+            {member.initials?.toLowerCase()}
+          </MontserratTypography>
+        ))}
     </StyledAvatar>
   );
 
