@@ -25,6 +25,7 @@ import {
 } from '../helpers/ga-event-helper';
 import AddListForm from './TaskListView.AddListForm';
 import { FormSpacing } from './TaskListView.AddListForm.Components';
+import pusherInstance from '../helpers/pusher-instance';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -86,10 +87,11 @@ class TaskListView extends PureComponent {
   state = {
     listFormOpen: false,
     hasStartedFetching: false,
+    channelName: null,
   };
 
   componentDidMount() {
-    const { taskListAction, invitationAction } = this.props;
+    const { taskListAction, invitationAction, currentUser } = this.props;
     taskListAction.loading();
     invitationAction.findPendingTaskListsForUser();
     taskListAction.getGenericListCounts();
@@ -103,6 +105,23 @@ class TaskListView extends PureComponent {
       hasStartedFetching: true,
     });
     this.resetHeader();
+
+    const currentUserIdentifier = currentUser.userIdentifier;
+    const channelName = `dock-user-channel-${currentUserIdentifier}`;
+
+    let channel = pusherInstance.channel(channelName);
+    if (!channel) {
+      channel = pusherInstance.subscribe(channelName);
+    }
+
+    this.setState({
+      channelName,
+    });
+
+    channel.bind('task-update', () => {
+      taskListAction.getGenericListCounts();
+      taskListAction.getTaskListForUser();
+    });
   }
 
   componentDidUpdate({ isFetching: previousIsFetching }) {
@@ -113,6 +132,15 @@ class TaskListView extends PureComponent {
     }
     // needed for contextual menu
     enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
+  }
+
+  componentWillUnmount() {
+    const { channelName } = this.state;
+
+    let channel = pusherInstance.channel(channelName);
+    if (channel) {
+      channel = pusherInstance.unsubscribe(channelName);
+    }
   }
 
   resetHeader = () => {
