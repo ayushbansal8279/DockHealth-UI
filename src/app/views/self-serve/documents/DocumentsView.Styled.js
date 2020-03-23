@@ -63,3 +63,7 @@ export const DocumentLink = styled.a`
     filter: brightness(1.35);
   }
 `;
+
+export const DocumentImage = styled.img`
+  cursor: default;
+`;

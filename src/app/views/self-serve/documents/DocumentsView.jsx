@@ -8,7 +8,11 @@ import useBoolean from '../../../hooks/useBoolean';
 import PdfPage from '../../../img/pdf-page.png';
 import { MontserratTypography } from '../../../theme-montserrat';
 import BaaPreview from './DocumentsView.BaaPreview';
-import { DocumentLink, DocumentsViewContainer } from './DocumentsView.Styled';
+import {
+  DocumentImage,
+  DocumentLink,
+  DocumentsViewContainer,
+} from './DocumentsView.Styled';
 
 const DocumentsView = () => {
   const dispatch = useDispatch();
@@ -46,7 +50,7 @@ const DocumentsView = () => {
       {isUserAdmin && (
         <>
           <div>
-            <img alt="page" src={PdfPage} />
+            <DocumentImage alt="page" src={PdfPage} />
           </div>
           <Spacing vertical={4} />
           <MontserratTypography weight="normal" variant="h4">
