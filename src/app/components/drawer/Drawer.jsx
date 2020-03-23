@@ -90,6 +90,7 @@ const Drawer = ({ children }) => {
   //   return trialLabelMinimalPeriodNotPassed;
   // })();
 
+  const showBannerMessageLink = false;
   const hasMinimalUsagePeriodPassed = false;
   const trialEndLabel =
     'In Response to COVID-19, Dock Health is Offering its Platform for Free.';
@@ -139,9 +140,11 @@ const Drawer = ({ children }) => {
           <ThemeProvider theme={themeMontserrat600}>
             <Typography variant="h4">
               <span>{trialEndLabel}</span>
-              <TrialBannerLink to="/subscriptions">
-                {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
-              </TrialBannerLink>
+              {showBannerMessageLink && (
+                <TrialBannerLink to="/subscriptions">
+                  {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
+                </TrialBannerLink>
+              )}
             </Typography>
           </ThemeProvider>
         </TrialBanner>
