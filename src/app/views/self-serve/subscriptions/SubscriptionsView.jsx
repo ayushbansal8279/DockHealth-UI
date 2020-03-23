@@ -81,9 +81,8 @@ export default () => {
     annualPayment,
     selectedUsers,
   });
-  const plansViewVisible = subscriptionPlansVisible;
-  // false;
-  // subscriptionPlansVisible || subscriptionPlanData.planIsTrial;
+  const plansViewVisible =
+    subscriptionPlansVisible || subscriptionPlanData.planIsTrial;
 
   const buyButtonDisabled =
     !chosenPlan || chosenPlan?.key === SUBSCRIPTION_PLAN_KEYS.ENTERPRISE;
