@@ -36,7 +36,7 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
 
   const { handleSubmit } = useFormContext();
 
-  const { patientIdentifier } = patient;
+  const patientIdentifier = patient ? patient.patientIdentifier : undefined;
 
   const handleCancel = useCallback(() => {
     setNote('');
