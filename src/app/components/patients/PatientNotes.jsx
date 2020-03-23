@@ -127,7 +127,7 @@ const EditablePatientNote = ({ update, note, isOwn }) => {
       <EditableNoteDescription
         placeholder="Enter your note"
         value={note.description || ''}
-        name={note.patientNoteIdentifier}
+        identifier={note.patientNoteIdentifier}
         onChange={update}
         disabled={!isOwn}
         edited={isNoteEdited(note)}

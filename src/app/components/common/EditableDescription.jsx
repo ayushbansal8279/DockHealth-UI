@@ -116,7 +116,7 @@ const EditableDescription = ({
   value,
   onChange,
   disabled,
-  name,
+  identifier,
   placeholder,
   strikethrough = false,
   onNoteChange = () => {},
@@ -155,9 +155,9 @@ const EditableDescription = ({
       if (draft === value) {
         return;
       }
-      onChange(draft, name);
+      onChange(draft, identifier);
     },
-    [onChange, stopEditing, draft, value, name],
+    [onChange, stopEditing, draft, value, identifier],
   );
 
   if (!isEditing || disabled) {

@@ -34,9 +34,9 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
 
   const dispatch = useDispatch();
 
-  const { handleSubmit, watch } = useFormContext();
+  const { handleSubmit } = useFormContext();
 
-  const patientIdentifier = watch('patientIdentifier');
+  const { patientIdentifier } = patient;
 
   const handleCancel = useCallback(() => {
     setNote('');
