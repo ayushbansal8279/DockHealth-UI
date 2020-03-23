@@ -108,23 +108,9 @@ const PatientsView = () => {
     [dispatch],
   );
 
-  const foundPatients = searchPatients(patients, searchTerm);
-  const filteredPatients = [
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-    ...foundPatients,
-  ];
+  const filteredPatients = searchPatients(patients, searchTerm);
 
   const isCompact = highlightedPatient || isCreatingPatient;
-
-  console.info(patientsListContainerReference.current);
 
   return (
     <PatientsViewContainer>
