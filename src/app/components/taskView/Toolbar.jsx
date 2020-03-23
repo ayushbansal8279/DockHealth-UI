@@ -27,17 +27,24 @@ import {
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
 
-const renderMemberAvatar = member => {
+const renderMemberAvatar = ({ taskListMembers }) => member => {
   const avatarContent = member?.profileThumbnailPictureHash ? (
     <img src={getThumbnailUrl(member)} alt={member?.initials} />
   ) : (
     member?.initials
   );
 
+  const taskListMember =
+    taskListMembers?.find(
+      ({ userIdentifier }) => member?.userIdentifier === userIdentifier,
+    ) || {};
+
+  const bubbleColor = taskListMember?.bubbleColor || '#00a73c';
+
   return (
     <React.Fragment key={member?.userIdentifier ?? member?.email}>
       <Spacing horizontal={3} />
-      <Avatar padded={false} size={40}>
+      <Avatar padded={false} size={40} color={bubbleColor}>
         <ToolbarAvatarContainer>{avatarContent}</ToolbarAvatarContainer>
       </Avatar>
     </React.Fragment>
@@ -228,7 +235,7 @@ export default ({
               </Button>
               {!isSpecialList && (
                 <>
-                  {shownMembers?.map(renderMemberAvatar)}
+                  {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
                   {hiddenMembersCount > 0 && (
                     <>
                       <Spacing horizontal={3} />
