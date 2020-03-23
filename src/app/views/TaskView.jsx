@@ -35,6 +35,7 @@ import GenericHeader from '../components/common/GenericHeader';
 import Spacing from '../components/common/Spacing';
 import AddTask from '../components/task/AddTask';
 import TaskList from '../components/task/TaskList';
+import { TASK_LIST_SHOW_MORE_STEP } from '../components/task/TaskList.Data';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
 import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
@@ -69,8 +70,6 @@ import {
 
 const APP_KEY = process.env.PUSHER_APP_KEY;
 const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
-
-const SHOW_MORE_STEP_COUNT = 100;
 
 const pusher = new Pusher(APP_KEY, {
   cluster: APP_CLUSTER,
@@ -1000,8 +999,8 @@ class TaskView extends Component {
               {`${buttonToggleWord} completed tasks${
                 listCompletedTasks.length > 0
                   ? ` (${
-                      listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
-                        ? `${SHOW_MORE_STEP_COUNT}+`
+                      listCompletedTasks.length >= TASK_LIST_SHOW_MORE_STEP
+                        ? `${TASK_LIST_SHOW_MORE_STEP}+`
                         : completedTasksAndSubTasksCount
                     })`
                   : ``
@@ -1012,8 +1011,8 @@ class TaskView extends Component {
           {isMultiList && (
             <StyledButtonLabel>
               {`Completed tasks (${
-                listCompletedTasks.length >= SHOW_MORE_STEP_COUNT
-                  ? `${SHOW_MORE_STEP_COUNT}+`
+                listCompletedTasks.length >= TASK_LIST_SHOW_MORE_STEP
+                  ? `${TASK_LIST_SHOW_MORE_STEP}+`
                   : completedTasksAndSubTasksCount
               })`}
             </StyledButtonLabel>

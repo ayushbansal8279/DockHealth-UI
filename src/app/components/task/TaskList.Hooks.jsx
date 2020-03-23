@@ -57,7 +57,7 @@ export default ({
   );
 
   const showMoreButtonVisible =
-    taskListShowMoreIndex * TASK_LIST_SHOW_MORE_STEP < tasks.length &&
+    taskListShowMoreIndex * TASK_LIST_SHOW_MORE_STEP <= tasks.length &&
     (taskListIdentifier || isInbox);
 
   const incrementTaskListShowMoreIndex = useCallback(() => {
