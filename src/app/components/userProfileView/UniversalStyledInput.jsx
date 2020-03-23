@@ -10,6 +10,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
+import useBoolean from '../../hooks/useBoolean';
 
 export const ErrorLabel = styled.h4`
   color: #e40909;
@@ -139,13 +140,21 @@ export const UniversalStyledInput = ({
   whiteBackground = false,
   ...InputBaseProps
 }) => {
-  const { register, errors, clearError } = useFormContext();
+  const { register, errors, clearError, watch } = useFormContext();
   const error = errors?.[name]?.message;
+
+  const [focused, setFocused, unsetFocused] = useBoolean(false);
+
+  const value = watch(name);
+
+  const shrink = Boolean(focused || value || placeholder);
 
   return (
     <div ref={inputContainerReference} className={className}>
       <UniversalFormControl whiteBackground={whiteBackground} fullWidth>
-        <UniversalInputLabel required={required}>{label}</UniversalInputLabel>
+        <UniversalInputLabel required={required} shrink={shrink}>
+          {label}
+        </UniversalInputLabel>
         <UniversalInputBase
           name={name}
           placeholder={placeholder}
@@ -153,6 +162,8 @@ export const UniversalStyledInput = ({
           error={Boolean(error)}
           inputComponent={CustomComponent}
           onKeyUp={() => clearError(name)}
+          onFocus={setFocused}
+          onBlur={unsetFocused}
           {...InputBaseProps}
         />
       </UniversalFormControl>
