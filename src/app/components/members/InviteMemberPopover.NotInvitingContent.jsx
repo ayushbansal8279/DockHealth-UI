@@ -287,6 +287,7 @@ const NotInvitingContent = ({
           <HeaderSearchContainer>
             <HeaderSearch
               autoFocus
+              fullWidth
               onChange={event => setSearchTerm(event.target.value)}
               value={searchTerm}
               endAdornment={
