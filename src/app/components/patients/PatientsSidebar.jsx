@@ -1,7 +1,10 @@
 import { Close } from '@material-ui/icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { highlightPatient } from '../../actions/patient-actions';
+import {
+  highlightPatient,
+  abortPatientCreation,
+} from '../../actions/patient-actions';
 import { findUserTasksByPatient } from '../../api/patient-api';
 import { Flag } from '../../flags';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
@@ -32,6 +35,7 @@ const PatientsSidebar = ({ patient }) => {
   const dispatch = useDispatch();
   const deselectPatient = useCallback(() => {
     dispatch(highlightPatient(null));
+    dispatch(abortPatientCreation());
   }, [dispatch]);
 
   const [tasks, setTasks] = useState([]);
