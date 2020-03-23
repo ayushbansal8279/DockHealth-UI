@@ -70,7 +70,9 @@ class ListsComponent extends PureComponent {
                 >
                   <h6 style={{ fontWeight: 'bold' }}>{listName}</h6>
                 </button>
-                <h7 className="">{listDescription}</h7>
+                <div>
+                  <h7 className="">{listDescription}</h7>
+                </div>
                 <span className="details">{creator.userName}</span>
               </div>
               {numberOfHighPriorityTasks > 0 && (

@@ -44,7 +44,9 @@ class PendingListsComponent extends PureComponent {
                   <a onClick={e => this.acceptInvitationToTaskList(taskList)}>
                     <h6>{taskList.listName}</h6>
                   </a>
-                  <h7 className="">{taskList.listDescription}</h7>
+                  <div>
+                    <h7 className="">{taskList.listDescription}</h7>
+                  </div>
                   <span className="details">{taskList.creator.userName}</span>
 
                   {/* <span className="item-details highlight">Invited</span> */}
