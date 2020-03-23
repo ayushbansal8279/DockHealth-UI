@@ -89,10 +89,11 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
           signatureIdentifier: eventData.signature_id,
           signatureResult: eventData.event,
         }).then(() => {
+          window?.HelloSign.close();
           if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
-            // eslint-disable-next-line no-unused-expressions
-            window?.HelloSign.close();
-            hashHistory.replace('/onboarding/team-org-setup');
+            // hashHistory.replace('/onboarding/team-org-setup');
+            window.location.href = '/#/onboarding/team-org-setup';
+            window.location.reload();
           }
         });
       },
