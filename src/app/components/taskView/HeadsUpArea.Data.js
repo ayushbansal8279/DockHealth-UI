@@ -33,12 +33,12 @@ export const taskListStatsElements = [
     tab: taskListStatsTabs.me,
     filter: 'ASSIGNED_TO_ME_OVERDUE',
   },
-  {
-    key: 'Completed_AssignToMe_Count',
-    label: 'Completed this week',
-    tab: taskListStatsTabs.me,
-    filter: 'ASSIGNED_TO_ME_COMPLETED_THIS_WEEK',
-  },
+  // {
+  //   key: 'Completed_AssignToMe_Count',
+  //   label: 'Completed this week',
+  //   tab: taskListStatsTabs.me,
+  //   filter: 'ASSIGNED_TO_ME_COMPLETED_THIS_WEEK',
+  // },
   {
     key: 'Incomplete_TaskList_Count',
     label: 'All active tasks',
