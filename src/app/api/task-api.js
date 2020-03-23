@@ -31,8 +31,8 @@ export function getListTasksByUser(
       params: {
         status,
         queryStartPosition,
-        sortBy,
-        filterBy,
+        sortBy: sortBy || undefined,
+        filterBy: filterBy || undefined,
       },
     })
     .then(response => response.data)
