@@ -135,7 +135,7 @@ export const showAlert = ({
   confirmationCallback,
   ...otherOptions
 }) => {
-  Swal.fire({
+  const swalPromise = Swal.fire({
     icon,
     title,
     text,
@@ -147,6 +147,8 @@ export const showAlert = ({
   });
   // fix z-index for drawer container
   Swal.getContainer().style.zIndex = 10000;
+
+  return swalPromise;
 };
 
 export const setCurrentPageAfterLogin = () => {
