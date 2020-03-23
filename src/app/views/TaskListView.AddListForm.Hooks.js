@@ -100,25 +100,26 @@ const initializeAddListFormHooks = () => {
 
   const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
 
-  const filteredPeople = Array.isArray(people)
-    ? people
-        .filter(
-          filterPeopleBasedOnIdentifier({
-            listOwner,
-            membersValue,
-            adminsValue,
-          }),
-        )
-        .filter(({ firstName = '', middleName = '', lastName = '' }) =>
-          [
-            firstName.toLowerCase(),
-            middleName.toLowerCase(),
-            lastName.toLowerCase(),
-          ]
-            .map(value => value.includes(searchValue.toLowerCase()))
-            .some(Boolean),
-        )
-    : [];
+  const filteredPeople =
+    people !== undefined && Array.isArray(people)
+      ? people
+          .filter(
+            filterPeopleBasedOnIdentifier({
+              listOwner,
+              membersValue,
+              adminsValue,
+            }),
+          )
+          .filter(({ firstName = '', middleName = '', lastName = '' }) =>
+            [
+              firstName.toLowerCase(),
+              middleName.toLowerCase(),
+              lastName.toLowerCase(),
+            ]
+              .map(value => value.includes(searchValue.toLowerCase()))
+              .some(Boolean),
+          )
+      : [];
 
   const addAdmin = useCallback(
     ({ userIdentifier }) => {
