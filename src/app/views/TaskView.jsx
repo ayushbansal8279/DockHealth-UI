@@ -9,7 +9,6 @@ import {
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import debounce from 'lodash.debounce';
-import Pusher from 'pusher-js';
 import {
   any,
   equals,
@@ -67,13 +66,7 @@ import {
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
-
-const APP_KEY = process.env.PUSHER_APP_KEY;
-const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
-
-const pusher = new Pusher(APP_KEY, {
-  cluster: APP_CLUSTER,
-});
+import pusherInstance from '../helpers/pusher-instance';
 
 const groupBy = (list, keyGetter) => {
   const checkMap = new Map();
@@ -325,9 +318,9 @@ class TaskView extends Component {
     const currentUserIdentifier = currentUser.userIdentifier;
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
 
-    let channel = pusher.channel(channelName);
+    let channel = pusherInstance.channel(channelName);
     if (!channel) {
-      channel = pusher.subscribe(channelName);
+      channel = pusherInstance.subscribe(channelName);
       // console.log('subscribed to channel');
     }
     // channel.bind('pusher:subscription_succeeded', function() {
@@ -391,9 +384,9 @@ class TaskView extends Component {
     const currentUserIdentifier = currentUser?.userIdentifier;
     if (currentUserIdentifier) {
       const channelName = `dock-user-channel-${currentUserIdentifier}`;
-      let channel = pusher.channel(channelName);
+      let channel = pusherInstance.channel(channelName);
       if (channel) {
-        channel = pusher.unsubscribe(channelName);
+        channel = pusherInstance.unsubscribe(channelName);
         // console.log('unsubscribed from channel');
       }
     }
