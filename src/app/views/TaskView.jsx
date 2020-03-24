@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import produce from 'immer';
 import debounce from 'lodash.debounce';
 import {
   any,
@@ -45,6 +46,7 @@ import {
   onHeadsUpDisplayToggled,
   onSlimViewChanged,
 } from '../helpers/ga-event-helper';
+import pusherInstance from '../helpers/pusher-instance';
 import { isTaskArchivable } from '../helpers/utility-functions';
 import ChevronSmallIcon from '../img/chevron-small.svg';
 import { themeMontserrat600 } from '../theme-montserrat';
@@ -66,7 +68,6 @@ import {
   TaskViewContainer,
   TaskViewGrid,
 } from './TaskView.Styled';
-import pusherInstance from '../helpers/pusher-instance';
 
 const groupBy = (list, keyGetter) => {
   const checkMap = new Map();
@@ -677,6 +678,23 @@ class TaskView extends Component {
     );
   };
 
+  unifyInboxTaskFormat = task =>
+    produce(task, draftTask => {
+      if (draftTask.taskList) {
+        // eslint-disable-next-line no-param-reassign
+        draftTask.taskList.listName =
+          draftTask.taskList.listName === 'Inbox'
+            ? ''
+            : draftTask.taskList.listName;
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        draftTask.taskList = {
+          taskListIdentifier: 0,
+          listName: '',
+        };
+      }
+    });
+
   renderTasklists = () => {
     const {
       tasks: allIncompleteTasks,
@@ -698,8 +716,12 @@ class TaskView extends Component {
     } = this.props;
     const { filterBy, slimView, taskTimeouts } = this.state;
 
-    const incompleteTasks = this.search(allIncompleteTasks);
-    const completedTasks = this.search(allCompletedTasks);
+    const incompleteTasks = this.search(allIncompleteTasks).map(
+      this.unifyInboxTaskFormat,
+    );
+    const completedTasks = this.search(allCompletedTasks).map(
+      this.unifyInboxTaskFormat,
+    );
 
     const archivableTasks = completedTasks.filter(
       isTaskArchivable(currentUser),
