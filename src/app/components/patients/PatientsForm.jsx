@@ -31,12 +31,19 @@ import PatientsSidebarSection from './PatientsSidebar.Section';
 const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
   const [isCreating, startCreating, stopCreating] = useBoolean(false);
   const [note, setNote] = useState('');
+  const [
+    isGenderSelectOpen,
+    setGenderSelectOpen,
+    unsetGenderSelectOpen,
+  ] = useBoolean(false);
 
   const dispatch = useDispatch();
 
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, watch, setValue } = useFormContext();
 
-  const patientIdentifier = patient ? patient.patientIdentifier : undefined;
+  const genderValue = watch('gender') ?? '';
+
+  const patientIdentifier = patient?.patientIdentifier;
 
   const handleCancel = useCallback(() => {
     setNote('');
@@ -86,8 +93,18 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
               <NameInput name="lastName" required label="Last Name" />
               <PatientInput name="mrn" label="MRN" />
               <Select
+                onOpen={setGenderSelectOpen}
+                onClose={unsetGenderSelectOpen}
+                onChange={event => setValue('gender', event?.target?.value)}
                 variant="standard"
-                input={<PatientInput name="gender" label="Gender" />}
+                value={genderValue}
+                input={
+                  <PatientInput
+                    customShrinkCondition={isGenderSelectOpen || genderValue}
+                    name="gender"
+                    label="Gender"
+                  />
+                }
               >
                 <MenuItem value="female">Female</MenuItem>
                 <MenuItem value="male">Male</MenuItem>

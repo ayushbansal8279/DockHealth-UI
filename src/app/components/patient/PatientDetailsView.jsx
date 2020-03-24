@@ -118,16 +118,13 @@ const PatientDetailsView = ({ routeParams }) => {
     completedTasks,
   };
 
-  const handleCompletedTasksRequest = selectedTaskListIdentifier => {
-    dispatch(
-      getListTasksByPatientAndStatus(
-        patientIdentifier,
-        selectedTaskListIdentifier,
-        'COMPLETE',
-        true,
-      ),
-    );
-  };
+  const handleCompletedTasksRequest = selectedTaskListIdentifier =>
+    getListTasksByPatientAndStatus(
+      patientIdentifier,
+      selectedTaskListIdentifier,
+      'COMPLETE',
+      true,
+    )(dispatch);
 
   const taskViewProps = {
     userIdentifier,
