@@ -138,6 +138,7 @@ export const UniversalStyledInput = ({
   required = false,
   className = '',
   whiteBackground = false,
+  customShrinkCondition = undefined,
   ...InputBaseProps
 }) => {
   const { register, errors, clearError, watch } = useFormContext();
@@ -147,7 +148,10 @@ export const UniversalStyledInput = ({
 
   const value = watch(name);
 
-  const shrink = Boolean(focused || value || placeholder);
+  const shrink =
+    typeof customShrinkCondition === 'undefined'
+      ? Boolean(focused || value || placeholder)
+      : Boolean(customShrinkCondition);
 
   return (
     <div ref={inputContainerReference} className={className}>

@@ -3,7 +3,7 @@ import { identity } from 'ramda';
 import React, { useCallback } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useDeepCompareEffect } from 'react-use';
+import { useDeepCompareEffect, useEffectOnce } from 'react-use';
 import { mixed, object, string } from 'yup';
 import { addPatient, updatePatient } from '../../actions/patient-actions';
 import { onPatientEdited } from '../../helpers/ga-event-helper';
@@ -61,6 +61,13 @@ const PatientEdit = ({ compact = false, patient }) => {
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
     validationSchema,
+  });
+
+  useEffectOnce(() => {
+    formMethods.register({ name: 'gender' });
+    return () => {
+      formMethods.unregister({ name: 'gender' });
+    };
   });
 
   const dispatch = useDispatch();
