@@ -113,7 +113,7 @@ export const showToast = ({
   title,
   ...otherOptions
 }) => {
-  Swal.fire({
+  const swalPromise = Swal.fire({
     icon,
     title,
     text,
@@ -126,6 +126,8 @@ export const showToast = ({
   });
   // fix z-index for drawer container
   Swal.getContainer().style.zIndex = 10000;
+
+  return swalPromise;
 };
 
 export const showAlert = ({
