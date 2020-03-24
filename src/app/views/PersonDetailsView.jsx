@@ -97,7 +97,7 @@ class PersonDetailsView extends PureComponent {
     const { taskActions } = this.props;
     const { personData } = this.state;
 
-    taskActions.getTasksAssignedToSpecificUser(
+    return taskActions.getTasksAssignedToSpecificUser(
       personData.userIdentifier,
       selectedTaskListIdentifier,
       sortBy,

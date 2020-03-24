@@ -1,6 +1,9 @@
-import { Collapse, Button, Grid } from '@material-ui/core';
+import { Button, Collapse, Grid } from '@material-ui/core';
 import { isEmpty, partition } from 'ramda';
-import React from 'react';
+import React, { useCallback } from 'react';
+import useBoolean from '../../hooks/useBoolean';
+import CubesLoader from '../common/CubesLoader';
+import Spacing from '../common/Spacing';
 import Task from './Task';
 import { EmptyListElementContainer } from './TaskList.styled';
 
@@ -38,6 +41,42 @@ export const renderTask = ({
   />
 );
 
+const getCompletedTasksLabel = ({
+  isFetching,
+  areCompleteTasksShown,
+  hasFetched,
+  completeTasksCount,
+}) => {
+  if (isFetching) {
+    return (
+      <>
+        <Spacing horizontal={3} />
+        <CubesLoader color="#fff" size={24} />
+      </>
+    );
+  }
+
+  if (
+    areCompleteTasksShown &&
+    hasFetched &&
+    !isFetching &&
+    completeTasksCount === 0
+  ) {
+    return 'No completed tasks';
+  }
+
+  const buttonPrefixLabel = `${
+    areCompleteTasksShown ? 'Hide' : 'Show'
+  } completed tasks`;
+
+  return (
+    <>
+      {buttonPrefixLabel}
+      {completeTasksCount > 0 ? ` (${completeTasksCount})` : ''}
+    </>
+  );
+};
+
 export const renderTasks = ({
   isMultiList,
   sortedTasksToShow,
@@ -56,6 +95,16 @@ export const renderTasks = ({
   });
 
   if (isMultiList) {
+    /* eslint-disable react-hooks/rules-of-hooks */
+    const [isFetching, setFetching, unsetFetching] = useBoolean(false);
+    const [hasFetched, setHasFetched] = useBoolean(false);
+
+    const onFetchingCompleted = useCallback(() => {
+      unsetFetching();
+      setHasFetched();
+    }, [setHasFetched, unsetFetching]);
+    /* eslint-enable react-hooks/rules-of-hooks */
+
     const [incompleteTasks, completeTasks] = partition(
       ({ status }) => status === 'INCOMPLETE',
       sortedTasksToShow,
@@ -65,6 +114,13 @@ export const renderTasks = ({
       ...completeTasks,
       ...completeTasks.flatMap(task => task?.subtasks ?? null).filter(Boolean),
     ].length;
+
+    const completedTasksLabel = getCompletedTasksLabel({
+      isFetching,
+      areCompleteTasksShown,
+      hasFetched,
+      completeTasksCount,
+    });
 
     return (
       <Grid container spacing={1}>
@@ -86,13 +142,16 @@ export const renderTasks = ({
               onClick={
                 areCompleteTasksShown
                   ? toggleCompletedTasksShown
-                  : getCompletedTasks
+                  : () => {
+                      setFetching();
+                      getCompletedTasks()
+                        .then(onFetchingCompleted)
+                        .catch(onFetchingCompleted);
+                    }
               }
               variant="contained"
             >
-              {`${areCompleteTasksShown ? 'Hide' : 'Show'} completed tasks${
-                completeTasksCount > 0 ? ` (${completeTasksCount})` : ''
-              }`}
+              {completedTasksLabel}
             </Button>
           </Grid>
         )}

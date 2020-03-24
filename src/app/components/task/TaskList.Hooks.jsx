@@ -12,7 +12,7 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useToggle } from 'react-use';
-import { getTaskPage } from '../../actions/task-actions';
+import { getTaskPage, getInboxTasks } from '../../actions/task-actions';
 import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
 import {
   DEFAULT_SORTING,
@@ -150,15 +150,22 @@ export default ({
     false;
 
   const getCompletedTasks = () => {
+    let outputPromise = Promise.resolve();
+
     if (!areCompleteTasksShown) {
-      onCompletedTasksRequest(
-        taskListIdentifier ?? taskDrawerProps.taskList.taskListIdentifier,
-        filterBy,
-        '',
-      );
+      const listIdentifier =
+        taskListIdentifier ?? taskDrawerProps?.taskList?.taskListIdentifier;
+
+      if (listIdentifier) {
+        outputPromise = onCompletedTasksRequest(listIdentifier, filterBy, '');
+      } else {
+        outputPromise = getInboxTasks('COMPLETE', '', filterBy)(dispatch);
+      }
     }
 
     toggleCompletedTasksShown();
+
+    return outputPromise;
   };
 
   return {

@@ -262,7 +262,7 @@ class Home extends Component {
     } = this.props;
 
     if (listName === ASSIGNED_BY_ME) {
-      actions
+      return actions
         .getTasksAssignedByMe(
           selectedTaskListIdentifier,
           sortBy,
@@ -282,8 +282,10 @@ class Home extends Component {
             );
           });
         });
-    } else if (listName === ASSIGNED_TO_ME) {
-      actions
+    }
+
+    if (listName === ASSIGNED_TO_ME) {
+      return actions
         .getTasksAssignedToMe(
           selectedTaskListIdentifier,
           sortBy,
@@ -303,22 +305,22 @@ class Home extends Component {
             );
           });
         });
-    } else {
-      actions
-        .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE', true)
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-              true,
-            );
-          });
-        });
     }
+
+    return actions
+      .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE', true)
+      .then(noop)
+      .catch(error => {
+        this.handleRetry(error, () => {
+          actions.getListTasks(
+            taskListIdentifier,
+            sortBy,
+            filterBy,
+            'COMPLETE',
+            true,
+          );
+        });
+      });
   };
 
   handleRetry = (error, callback) => {
