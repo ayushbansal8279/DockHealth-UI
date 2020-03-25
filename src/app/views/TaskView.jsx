@@ -1128,62 +1128,64 @@ class TaskView extends Component {
             <Spacing vertical={3} />
           </Grid>
         )}
-        <SideClickListener onClick={this.closeTaskDrawer} />
-        <TaskViewContainer>
-          {displayHUD && headsUpAreaVisible && (
-            <HeadsUpArea
-              ref={this.headsUpArea}
-              taskList={taskList}
-              filterChange={this.handleFilterChange}
-              currentFilter={filterBy}
-            />
-          )}
-          <TaskViewGrid container wrap="nowrap">
-            <TableWrapper taskDrawerOpen={mainTaskDrawerOpen}>
-              {isFetching || isSearching ? (
-                <FadeContainer>
-                  <Fade
-                    in={isFetching || isSearching}
-                    unmountOnExit
-                    style={{
-                      transitionDelay:
-                        isFetching || isSearching ? '800ms' : '0ms',
-                    }}
-                  >
-                    <CubesLoader size={40} />
-                  </Fade>
-                </FadeContainer>
-              ) : (
-                <div style={{ display: 'flex' }}>
-                  <div
-                    ref={this.taskListContainerReference}
-                    style={{ width: '100%' }}
-                  >
-                    <TaskListContainer
-                      isSubscriptionTrial={isSubscriptionTrial}
+        <Grid container direction="row">
+          <SideClickListener onClick={this.closeTaskDrawer} />
+          <TaskViewContainer>
+            {displayHUD && headsUpAreaVisible && (
+              <HeadsUpArea
+                ref={this.headsUpArea}
+                taskList={taskList}
+                filterChange={this.handleFilterChange}
+                currentFilter={filterBy}
+              />
+            )}
+            <TaskViewGrid container wrap="nowrap">
+              <TableWrapper taskDrawerOpen={mainTaskDrawerOpen}>
+                {isFetching || isSearching ? (
+                  <FadeContainer>
+                    <Fade
+                      in={isFetching || isSearching}
+                      unmountOnExit
+                      style={{
+                        transitionDelay:
+                          isFetching || isSearching ? '800ms' : '0ms',
+                      }}
                     >
-                      {this.renderTasklists()}
-                      <SideClickListener onClick={this.closeTaskDrawer} />
-                    </TaskListContainer>
+                      <CubesLoader size={40} />
+                    </Fade>
+                  </FadeContainer>
+                ) : (
+                  <div style={{ display: 'flex' }}>
+                    <div
+                      ref={this.taskListContainerReference}
+                      style={{ width: '100%' }}
+                    >
+                      <TaskListContainer
+                        isSubscriptionTrial={isSubscriptionTrial}
+                      >
+                        {this.renderTasklists()}
+                        <SideClickListener onClick={this.closeTaskDrawer} />
+                      </TaskListContainer>
+                    </div>
+                    {mainTaskDrawerOpen && !isMultiList && (
+                      <NewTaskDrawer
+                        headsUpAreaRef={this.headsUpArea.current}
+                        closeDrawer={this.closeTaskDrawer}
+                        taskList={taskList}
+                        markComplete={markComplete}
+                        onMarkComplete={this.onMarkComplete}
+                        isInbox={isInbox}
+                        isSpecificPatient={isSpecificPatient}
+                        isMultiList={false}
+                      />
+                    )}
                   </div>
-                  {mainTaskDrawerOpen && !isMultiList && (
-                    <NewTaskDrawer
-                      headsUpAreaRef={this.headsUpArea.current}
-                      closeDrawer={this.closeTaskDrawer}
-                      taskList={taskList}
-                      markComplete={markComplete}
-                      onMarkComplete={this.onMarkComplete}
-                      isInbox={isInbox}
-                      isSpecificPatient={isSpecificPatient}
-                      isMultiList={false}
-                    />
-                  )}
-                </div>
-              )}
-            </TableWrapper>
-          </TaskViewGrid>
-        </TaskViewContainer>
-        <SideClickListener onClick={this.closeTaskDrawer} />
+                )}
+              </TableWrapper>
+            </TaskViewGrid>
+          </TaskViewContainer>
+          <SideClickListener onClick={this.closeTaskDrawer} />
+        </Grid>
       </div>
     );
   }
