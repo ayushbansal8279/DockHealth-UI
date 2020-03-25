@@ -31,6 +31,7 @@ const EditTaskDescriptionElement = styled.div`
   outline: none;
   padding: 0.1875rem 0.5rem 0.5rem;
   transition: all 0.25s ease-out;
+  word-break: break-word;
 
   ${props =>
     props.contentEditable &&

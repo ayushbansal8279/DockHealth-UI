@@ -22,6 +22,9 @@ const TaskListLayout = ({
   globalSearch = false,
   showToolbar = true,
   paneled = false,
+  showFilterStats = true,
+  showNotifications = true,
+  showMembers = true,
 }) => {
   const selectedTaskId = useSelector(
     store => store.taskState.selectedTask?.taskIdentifier,
@@ -61,10 +64,13 @@ const TaskListLayout = ({
         )
       : onCompletedTasksRequest,
     globalSearch,
+    showFilterStats,
+    showNotifications,
+    showMembers,
   };
 
   if (searchPerformed) {
-    return !isFetching && !isSearching && isEmpty(lists) ? (
+    return globalSearch && !isFetching && !isSearching && isEmpty(lists) ? (
       <Grid container justify="center">
         <b>No matching tasks</b>
       </Grid>
@@ -90,6 +96,9 @@ const TaskListSearchContainer = ({
   isSearching = false,
   showToolbar = true,
   paneled = false,
+  showFilterStats = true,
+  showNotifications = true,
+  showMembers = true,
 }) => {
   useUnmount(() => {
     taskActions.resetTaskSearch();
@@ -114,6 +123,9 @@ const TaskListSearchContainer = ({
     globalSearch,
     showToolbar,
     paneled,
+    showFilterStats,
+    showNotifications,
+    showMembers,
   };
 
   return <TaskListLayout {...taskListProps} />;

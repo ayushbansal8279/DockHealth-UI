@@ -124,6 +124,10 @@ export default ({
   isSpecialList,
   isMultiList,
   onFilterChange,
+  paneled = false,
+  showFilterStats = true,
+  showNotifications = true,
+  showMembers = true,
   printData: { tasks = [], completedTasks = [], taskListMembers = [] },
 }) => {
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
@@ -159,7 +163,7 @@ export default ({
     taskDrawerOpen && !selectedTask?.taskIdentifier && !addingNewSubtask;
 
   return (
-    <PageContentHeader>
+    <PageContentHeader paneled={paneled}>
       <div>
         <Grid container alignItems="center" direction="row" wrap="nowrap">
           <SlimViewToggle
@@ -233,7 +237,7 @@ export default ({
                 <Spacing horizontal={3} />
                 <RotatableChevron rotated={isMorePopoverOpen} />
               </Button>
-              {!isSpecialList && (
+              {!isSpecialList && showMembers && (
                 <>
                   {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
                   {hiddenMembersCount > 0 && (
@@ -284,6 +288,7 @@ export default ({
         notificationsEnabled={notificationsEnabled}
         toggleNotifications={toggleNotifications}
         isSpecialList={isSpecialList}
+        showNotifications={showNotifications}
       />
       <FilterPopover
         isFilterPopoverOpen={isFilterPopoverOpen}
@@ -292,6 +297,7 @@ export default ({
         onFilterChange={onFilterChange}
         clearFilter={clearFilter}
         filterButtonReference={filterButtonReference}
+        showFilterStats={showFilterStats}
       />
       <Popover
         open={isMainTaskDrawerOpen}

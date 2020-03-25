@@ -20,6 +20,7 @@ interface MorePopoverProps extends OnPrintClickProps {
   notificationsEnabled: boolean;
   toggleNotifications: () => void;
   isSpecialList?: boolean;
+  showNotifications?: boolean;
 }
 
 const onPrintClick = ({
@@ -46,6 +47,7 @@ const MorePopover = ({
   notificationsEnabled,
   toggleNotifications,
   isSpecialList,
+  showNotifications,
 }: MorePopoverProps) => {
   const { left: filterButtonX = 0, top: filterButtonY = 0 } =
     moreButtonReference?.current?.getBoundingClientRect() || {};
@@ -90,7 +92,7 @@ const MorePopover = ({
         taskListMembers,
       }),
     },
-    isSpecialList
+    isSpecialList || !showNotifications
       ? null
       : {
           key: 'notifications',
