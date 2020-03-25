@@ -18,6 +18,8 @@ import {
   BackButton,
   PersonDetailsViewHeader,
 } from './PersonDetailsView.Styled';
+import { SideClickListener } from '../components/patients/PatientsView.Styled';
+import { closeDrawer } from '../actions/task-drawer-actions';
 
 class PersonDetailsView extends PureComponent {
   state = {
@@ -107,6 +109,13 @@ class PersonDetailsView extends PureComponent {
     );
   };
 
+  onSideClick = () => {
+    const { clearTask, closeTaskDrawer } = this.props;
+
+    closeTaskDrawer();
+    clearTask();
+  };
+
   render() {
     const { personData } = this.props;
     const { fetching } = this.state;
@@ -129,15 +138,21 @@ class PersonDetailsView extends PureComponent {
               </Typography>
             </ThemeProvider>
           </PersonDetailsViewHeader>
-          <Grid direction="column" alignItems="center" container>
-            {personData && <PersonInfoPanel personData={personData} />}
-            <TaskListSearchContainer
-              searchPerformed
-              onFilter={this.handleFilterChange}
-              onCompletedTasksRequest={this.handleCompletedTasksRequest}
-              showToolbar={false}
-              paneled
-            />
+          <Grid direction="row" container>
+            <SideClickListener onClick={this.onSideClick} />
+            <div>
+              <Grid direction="column" alignItems="center" container>
+                {personData && <PersonInfoPanel personData={personData} />}
+                <TaskListSearchContainer
+                  searchPerformed
+                  onFilter={this.handleFilterChange}
+                  onCompletedTasksRequest={this.handleCompletedTasksRequest}
+                  showToolbar={false}
+                  paneled
+                />
+              </Grid>
+            </div>
+            <SideClickListener onClick={this.onSideClick} />
           </Grid>
         </>
       )
@@ -158,6 +173,8 @@ function mapDispatchToProps(dispatch) {
     taskActions: bindActionCreators(TaskActions, dispatch),
     peopleActions: bindActionCreators(PeopleActions, dispatch),
     setHeader: setHeaderRaw(dispatch),
+    closeTaskDrawer: () => closeDrawer()(dispatch),
+    clearTask: () => TaskActions.storeAsCurrentTask(null)(dispatch),
   };
 }
 
