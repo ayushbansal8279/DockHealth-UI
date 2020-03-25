@@ -140,18 +140,19 @@ class PersonDetailsView extends PureComponent {
           </PersonDetailsViewHeader>
           <Grid direction="row" container>
             <SideClickListener onClick={this.onSideClick} />
-            <div>
-              <Grid direction="column" alignItems="center" container>
-                {personData && <PersonInfoPanel personData={personData} />}
-                <TaskListSearchContainer
-                  searchPerformed
-                  onFilter={this.handleFilterChange}
-                  onCompletedTasksRequest={this.handleCompletedTasksRequest}
-                  showToolbar={false}
-                  paneled
-                />
-              </Grid>
-            </div>
+            <Grid direction="column" alignItems="center" container>
+              {personData && <PersonInfoPanel personData={personData} />}
+              <TaskListSearchContainer
+                searchPerformed
+                onFilter={this.handleFilterChange}
+                onCompletedTasksRequest={this.handleCompletedTasksRequest}
+                showToolbar
+                showFilterStats={false}
+                showNotifications={false}
+                showMembers={false}
+                paneled
+              />
+            </Grid>
             <SideClickListener onClick={this.onSideClick} />
           </Grid>
         </>

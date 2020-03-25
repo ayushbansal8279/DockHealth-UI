@@ -1055,7 +1055,11 @@ class TaskView extends Component {
       addingNewSubtask,
       subscription,
       isSpecialList,
+      paneled = false,
       headsUpAreaVisible = true,
+      showFilterStats = true,
+      showNotifications = true,
+      showMembers = true,
     } = this.props;
     const {
       rawSearchTerm,
@@ -1114,6 +1118,10 @@ class TaskView extends Component {
               isSpecialList={isSpecialList}
               isMultiList={isMultiList}
               onFilterChange={this.onFilterChange}
+              showFilterStats={showFilterStats}
+              showNotifications={showNotifications}
+              showMembers={showMembers}
+              paneled={paneled}
               printData={{
                 tasks,
                 completedTasks,

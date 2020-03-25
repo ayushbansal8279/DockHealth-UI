@@ -48,6 +48,7 @@ const FilterPopover = ({
   onFilterChange,
   clearFilter,
   filterButtonReference,
+  showFilterStats,
 }) => {
   const currentFilterDescription =
     filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
@@ -60,9 +61,13 @@ const FilterPopover = ({
         taskListStats?.stats?.find(({ metricName }) => metricName === statsKey)
           ?.metricValue ?? '?';
 
+      const optionLabel = showFilterStats
+        ? `${description} (${filterTaskCount})`
+        : description;
+
       return {
         key: value,
-        label: `${description} (${filterTaskCount})`,
+        label: optionLabel,
         onClick: () => {
           onFilterChange({ value })();
           closeFilterPopover();
