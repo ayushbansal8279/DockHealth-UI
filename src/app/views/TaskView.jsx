@@ -228,7 +228,7 @@ class TaskView extends Component {
   };
 
   componentWillUpdate(nextProps) {
-    const { taskList, currentUser } = this.props;
+    const { taskList, currentUser, taskDrawerOpen } = this.props;
 
     if (
       (!taskList && nextProps && nextProps.taskList) ||
@@ -237,6 +237,10 @@ class TaskView extends Component {
         taskList.taskListIdentifier !== nextProps.taskList.taskListIdentifier)
     ) {
       this.listenForRealTimeEvents(nextProps.taskList, currentUser);
+
+      if (taskDrawerOpen) {
+        this.closeTaskDrawer();
+      }
     }
   }
 
