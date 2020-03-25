@@ -1,6 +1,6 @@
 import { Grid, IconButton, Typography } from '@material-ui/core';
 import { ThemeProvider, withStyles } from '@material-ui/core/styles';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import { useMount } from 'react-use';
@@ -15,6 +15,7 @@ import {
   storeAsCurrentTask,
   toggleTaskPriority,
 } from '../../actions/task-actions';
+import { closeDrawer } from '../../actions/task-drawer-actions';
 import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import usePatient from '../../hooks/use-patient';
 import BackIcon from '../../img/back.svg';
@@ -24,6 +25,7 @@ import CubesLoader from '../common/CubesLoader';
 import GenericHeader from '../common/GenericHeader';
 import SafariFixGrid from '../common/SafariFixGrid';
 import PatientEdit from '../patients/PatientEdit';
+import { SideClickListener } from '../patients/PatientsView.Styled';
 
 const PatientProfileHeaderContainer = styled.div`
   display: flex;
@@ -154,6 +156,11 @@ const PatientDetailsView = ({ routeParams }) => {
     onCompletedTasksRequest: handleCompletedTasksRequest,
   };
 
+  const onSideClick = useCallback(() => {
+    closeDrawer()(dispatch);
+    storeAsCurrentTask(null)(dispatch);
+  }, [dispatch]);
+
   return (
     <>
       <PatientProfileHeader patient={details} />
@@ -164,25 +171,31 @@ const PatientDetailsView = ({ routeParams }) => {
       ) : (
         <>
           {details && (
-            <Grid
-              container
-              justify="center"
-              alignItems="center"
-              direction="column"
-            >
-              <SafariFixGrid
-                container
+            <Grid direction="row" wrap="nowrap" container>
+              <SideClickListener onClick={onSideClick} />
+              <Grid
                 item
+                container
+                justify="center"
+                alignItems="center"
                 direction="column"
-                style={{ marginBottom: '1rem', maxWidth: '1050px' }}
-                xs={9}
+                style={{ width: 'unset' }}
               >
-                <PatientEdit patient={details} />
-              </SafariFixGrid>
+                <SafariFixGrid
+                  container
+                  item
+                  direction="column"
+                  style={{ marginBottom: '1rem', maxWidth: '1050px' }}
+                  xs={9}
+                >
+                  <PatientEdit patient={details} />
+                </SafariFixGrid>
 
-              {!isLoading && (!lists || lists.length === 0) ? null : (
-                <TaskView {...taskViewProps} />
-              )}
+                {!isLoading && (!lists || lists.length === 0) ? null : (
+                  <TaskView {...taskViewProps} />
+                )}
+              </Grid>
+              <SideClickListener onClick={onSideClick} />
             </Grid>
           )}
         </>
