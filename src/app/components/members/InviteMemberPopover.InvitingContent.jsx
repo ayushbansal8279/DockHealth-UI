@@ -10,7 +10,7 @@ import {
 } from '../../actions/tasklist-actions';
 import { showAlert } from '../../helpers/utility-functions';
 import { MontserratTypography } from '../../theme-montserrat';
-import { UniversalStyledInput } from '../userProfileView/UniversalStyledInput';
+import { UniversalInput } from '../userProfileView/UniversalInput';
 import {
   FormSection,
   PopoverBottomSection,
@@ -89,13 +89,9 @@ const InvitingContent = ({ unsetInviting, taskList }) => {
       >
         <FormContext {...formMethods}>
           <FormSection>
-            <UniversalStyledInput
-              label="First Name"
-              name="firstName"
-              required
-            />
-            <UniversalStyledInput label="Last Name" name="lastName" required />
-            <UniversalStyledInput label="Email" name="email" required />
+            <UniversalInput label="First Name" name="firstName" required />
+            <UniversalInput label="Last Name" name="lastName" required />
+            <UniversalInput label="Email" name="email" required />
           </FormSection>
           <PopoverDivider />
           <PopoverBottomSection>

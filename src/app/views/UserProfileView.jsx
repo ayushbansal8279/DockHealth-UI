@@ -6,8 +6,8 @@ import CubesLoader from '../components/common/CubesLoader';
 import StyledSwitch from '../components/userProfileView/StyledSwitch';
 import {
   UniversalMobileInputComponent,
-  UniversalStyledInput,
-} from '../components/userProfileView/UniversalStyledInput';
+  UniversalInput,
+} from '../components/userProfileView/UniversalInput';
 import UserAvatar from '../components/userProfileView/UserAvatar';
 import {
   FormContainer,
@@ -20,7 +20,7 @@ import {
   UserProfileViewGrid,
 } from '../components/userProfileView/UserProfileView.Styled';
 
-const StyledInput = styled(UniversalStyledInput)`
+const StyledInput = styled(UniversalInput)`
   && {
     margin-bottom: 0.75rem;
   }

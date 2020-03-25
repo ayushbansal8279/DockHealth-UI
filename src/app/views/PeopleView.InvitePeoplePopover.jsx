@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from '../actions/people-actions';
-import { UniversalStyledInput } from '../components/userProfileView/UniversalStyledInput';
+import { UniversalInput } from '../components/userProfileView/UniversalInput';
 import { showAlert } from '../helpers/utility-functions';
 import {
   InvitePeoplePopoverContainer,
@@ -61,7 +61,7 @@ const InvitePeopleForm = ({
       autoCorrect="off"
     >
       <InvitePeoplePopoverSection>
-        <UniversalStyledInput
+        <UniversalInput
           label="First Name"
           name="first_name"
           autoFocus
@@ -69,14 +69,14 @@ const InvitePeopleForm = ({
           whiteBackground
         />
         <Spacing vertical={3} />
-        <UniversalStyledInput
+        <UniversalInput
           label="Last Name"
           name="last_name"
           autoComplete={uuid()}
           whiteBackground
         />
         <Spacing vertical={3} />
-        <UniversalStyledInput
+        <UniversalInput
           label="Email"
           name="email"
           autoComplete={uuid()}

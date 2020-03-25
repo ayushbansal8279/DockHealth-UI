@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { UniversalStyledInput } from '../userProfileView/UniversalStyledInput';
+import { UniversalInput } from '../userProfileView/UniversalInput';
 
 export const PanelActionContainer = styled.div`
   display: flex;
@@ -15,9 +15,9 @@ export const SingleFormPanelContainer = styled.div`
   grid-gap: 0.5rem;
 `;
 
-export const SmallPatientInput = styled(UniversalStyledInput)``;
+export const SmallPatientInput = styled(UniversalInput)``;
 
-export const PatientInput = styled(UniversalStyledInput)`
+export const PatientInput = styled(UniversalInput)`
   && {
     grid-column-end: span 3;
   }
