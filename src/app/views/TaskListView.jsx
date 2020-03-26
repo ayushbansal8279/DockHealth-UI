@@ -8,8 +8,8 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { setHeader } from '../actions/header-actions';
 import * as InvitationActions from '../actions/invitation-actions';
-import * as TaskListActions from '../actions/tasklist-actions';
 import * as TaskActions from '../actions/task-actions';
+import * as TaskListActions from '../actions/tasklist-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import AdornedButton from '../components/common/AdornedButton';
 import CubesLoader from '../components/common/CubesLoader';
@@ -23,9 +23,9 @@ import {
   onTaskListInvitationRejected,
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
+import pusherInstance from '../helpers/pusher-instance';
 import AddListForm from './TaskListView.AddListForm';
 import { FormSpacing } from './TaskListView.AddListForm.Components';
-import pusherInstance from '../helpers/pusher-instance';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
