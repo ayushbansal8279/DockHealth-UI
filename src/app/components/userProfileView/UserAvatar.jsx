@@ -51,7 +51,7 @@ export default () => {
     <>
       <OuterAvatarContainer>
         <Avatar
-          avatarRef={avatarReference}
+          ref={avatarReference}
           onClick={openPopover}
           withCameraIcon
           withCursor

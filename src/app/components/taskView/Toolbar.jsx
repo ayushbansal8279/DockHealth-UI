@@ -12,6 +12,7 @@ import Avatar from '../common/Avatar';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
+import UniversalTooltip from '../common/UniversalTooltip';
 import InviteMemberPopover from '../members/InviteMemberPopover';
 import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
@@ -27,7 +28,11 @@ import {
 const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
   `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
 
-const renderMemberAvatar = ({ taskListMembers }) => member => {
+const MemberAvatar = ({ member, taskListMembers }) => {
+  const [isTooltipShown, showTooltip, hideTooltip] = useBoolean(false);
+
+  const avatarReference = useRef(null);
+
   const avatarContent = member?.profileThumbnailPictureHash ? (
     <img src={getThumbnailUrl(member)} alt={member?.initials} />
   ) : (
@@ -41,14 +46,35 @@ const renderMemberAvatar = ({ taskListMembers }) => member => {
 
   const bubbleColor = taskListMember?.bubbleColor || '#00a73c';
 
+  const memberName = `${taskListMember?.firstName ??
+    ''} ${taskListMember?.lastName ?? ''}`.trim();
+
   return (
-    <React.Fragment key={member?.userIdentifier ?? member?.email}>
+    <div key={member?.userIdentifier ?? member?.email}>
       <Spacing horizontal={3} />
-      <Avatar padded={false} size={40} color={bubbleColor}>
+      <UniversalTooltip
+        open={isTooltipShown}
+        anchorEl={avatarReference.current}
+        placement="bottom"
+      >
+        {memberName}
+      </UniversalTooltip>
+      <Avatar
+        padded={false}
+        size={40}
+        color={bubbleColor}
+        onMouseEnter={showTooltip}
+        onMouseLeave={hideTooltip}
+        ref={avatarReference}
+      >
         <ToolbarAvatarContainer>{avatarContent}</ToolbarAvatarContainer>
       </Avatar>
-    </React.Fragment>
+    </div>
   );
+};
+
+const renderMemberAvatar = ({ taskListMembers }) => member => {
+  return <MemberAvatar member={member} taskListMembers={taskListMembers} />;
 };
 
 const useToggleNotifications = ({
