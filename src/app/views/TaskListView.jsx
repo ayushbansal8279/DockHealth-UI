@@ -15,7 +15,9 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import AdornedButton from '../components/common/AdornedButton';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
+import PageContentHeader from '../components/common/PageContentHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
+import Spacing from '../components/common/Spacing';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import {
@@ -25,6 +27,8 @@ import {
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
 import pusherInstance from '../helpers/pusher-instance';
+import Lightbulb from '../img/lightbulb-grey.svg';
+import { RobotoTypography } from '../theme';
 import { MontserratTypography } from '../theme-montserrat';
 import AddListForm from './TaskListView.AddListForm';
 import { FormSpacing } from './TaskListView.AddListForm.Components';
@@ -67,13 +71,6 @@ const TaskListViewWrapper = styled.div`
   max-width: 100%;
   min-height: 100%;
   overflow: hidden;
-  width: 100%;
-`;
-
-const AddListButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  padding: 1.5rem;
   width: 100%;
 `;
 
@@ -422,13 +419,16 @@ class TaskListView extends PureComponent {
       <TaskListViewWrapper>
         {hasStartedFetching && !isFetching && (
           <Grid container direction="column" alignItems="center" spacing={1}>
-            <StyledCollapse in={!taskListFormOpen} timeout={250}>
-              <AddListButtonContainer>
-                <AdornedButton adornment={<Add />} onClick={this.addTaskList}>
-                  ADD A LIST
-                </AdornedButton>
-              </AddListButtonContainer>
-            </StyledCollapse>
+            <PageContentHeader>
+              <Button variant="text" color="inherit" size="small">
+                <img alt="lightbulb" src={Lightbulb} />
+                <Spacing horizontal={2} />
+                <RobotoTypography weight="normal">TIPS</RobotoTypography>
+              </Button>
+              <AdornedButton adornment={<Add />} onClick={this.addTaskList}>
+                ADD A LIST
+              </AdornedButton>
+            </PageContentHeader>
             <SafariFixGrid container item xs={12} justify="center">
               <Grid container item xs={9}>
                 <StyledCollapse
@@ -448,13 +448,18 @@ class TaskListView extends PureComponent {
             </SafariFixGrid>
             {anyTaskListExists ? (
               <>
-                <TopMessageContainer>
-                  <MontserratTypography variant="h3">
-                    In response to COVID-19, we&apos;ve taken the essential CDC
-                    protocols and turned them into actionable team task lists.
-                    Feel free to add your own and remove these as needed.
-                  </MontserratTypography>
-                </TopMessageContainer>
+                <SafariFixGrid container item xs={12} justify="center">
+                  <Grid container item xs={9} justify="center" direction="row">
+                    <TopMessageContainer>
+                      <MontserratTypography variant="h3">
+                        In response to COVID-19, we&apos;ve taken the essential
+                        CDC protocols and turned them into actionable team task
+                        lists. Feel free to add your own and remove these as
+                        needed.
+                      </MontserratTypography>
+                    </TopMessageContainer>
+                  </Grid>
+                </SafariFixGrid>
                 <SafariFixGrid container item xs={12} justify="center">
                   <Grid
                     container

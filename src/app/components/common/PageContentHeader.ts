@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const PageContentHeader = styled.div<{ paneled?: boolean }>`
   align-items: center;
   background-color: #fff;
+  color: #8492a4;
   ${props =>
     props.paneled
       ? 'border: 0.125rem solid #ddf2f7; margin-bottom: 1.5rem;'
