@@ -1,8 +1,10 @@
-import { Avatar, ButtonBase, Tooltip } from '@material-ui/core';
+import { Avatar, ButtonBase } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+import useBoolean from '../../hooks/useBoolean';
 import { MontserratTypography } from '../../theme-montserrat';
+import UniversalTooltip from '../common/UniversalTooltip';
 
 export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
   && {
@@ -55,6 +57,13 @@ const Member = ({ onClick, member, children, className, style, color }) => {
   const source = member?.profileThumbnailPictureHash && getThumbnailUrl(member);
   const memberColor = member?.bubbleColor || '#00a73c';
 
+  const avatarContainerReference = useRef(null);
+  const [
+    isAvatarTooltipOpen,
+    showAvatarTooltip,
+    hideAvatarTooltip,
+  ] = useBoolean(false);
+
   const avatarProps = {
     alt,
     src: source,
@@ -81,7 +90,24 @@ const Member = ({ onClick, member, children, className, style, color }) => {
   );
 
   if (avatarProps.alt) {
-    return <Tooltip title={avatarProps.alt}>{containedAvatar}</Tooltip>;
+    return (
+      <>
+        <div
+          ref={avatarContainerReference}
+          onMouseEnter={showAvatarTooltip}
+          onMouseLeave={hideAvatarTooltip}
+        >
+          {containedAvatar}
+        </div>
+        <UniversalTooltip
+          open={isAvatarTooltipOpen}
+          placement="bottom"
+          anchorEl={avatarContainerReference.current}
+        >
+          {avatarProps.alt}
+        </UniversalTooltip>
+      </>
+    );
   }
 
   return containedAvatar;
