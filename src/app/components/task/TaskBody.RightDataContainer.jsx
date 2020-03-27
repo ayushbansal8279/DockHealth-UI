@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router';
 
 import ChevronRightIcon from '../../img/chevron-right.svg';
@@ -17,13 +17,14 @@ import {
   TaskDateContainer,
   TaskStatusContainer,
 } from './TaskBody.styled';
+import useBoolean from '../../hooks/useBoolean';
+import UniversalTooltip from '../common/UniversalTooltip';
 
 const DueDateComponent = ({
   dueDate,
   formattedDueDate,
   hasNewComment,
   completedDateTime,
-  isSubtask,
   isTaskTimingOut,
   ...props
 }) => {
@@ -52,6 +53,19 @@ const DueDateComponent = ({
   return null;
 };
 
+const getWorkflowStatusName = workflowStatus => {
+  switch (workflowStatus) {
+    case 'IN_PROGRESS':
+      return 'In Progress';
+    case 'PLANNED':
+      return 'Planned';
+    case 'ON_HOLD':
+      return 'On Hold';
+    default:
+      return 'No Status';
+  }
+};
+
 export default ({
   taskDrawerOpen,
   hidePatient,
@@ -69,6 +83,13 @@ export default ({
   hasNewComment,
   completedDateTime,
 }) => {
+  const [
+    isStatusTooltipOpen,
+    showStatusTooltip,
+    hideStatusTooltip,
+  ] = useBoolean(false);
+  const statusReference = useRef(null);
+
   return (
     <>
       {!taskDrawerOpen && !hidePatient && (
@@ -105,7 +126,21 @@ export default ({
                 <ArchiveButton onClick={archiveTask}>Archive</ArchiveButton>
               ) : (
                 status !== 'COMPLETE' && (
-                  <PriorityDot color={priorityColor(workflowStatus)} />
+                  <>
+                    <PriorityDot
+                      ref={statusReference}
+                      onMouseEnter={showStatusTooltip}
+                      onMouseLeave={hideStatusTooltip}
+                      color={priorityColor(workflowStatus)}
+                    />
+                    <UniversalTooltip
+                      open={isStatusTooltipOpen}
+                      anchorEl={statusReference.current}
+                      placement="bottom"
+                    >
+                      {getWorkflowStatusName(workflowStatus)}
+                    </UniversalTooltip>
+                  </>
                 )
               )}
             </PriorityContainer>
