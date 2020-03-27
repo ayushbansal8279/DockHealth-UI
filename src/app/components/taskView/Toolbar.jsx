@@ -1,4 +1,4 @@
-import { Button, Grid, Popover, Tooltip } from '@material-ui/core';
+import { Button, Grid, Popover } from '@material-ui/core';
 import { Add, Close } from '@material-ui/icons';
 import { splitAt } from 'ramda';
 import React, { useCallback, useRef } from 'react';
@@ -181,6 +181,13 @@ export default ({
   const moreButtonReference = useRef(null);
   const addTaskButtonReference = useRef(null);
   const filterButtonReference = useRef(null);
+  const moreMembersButtonReference = useRef(null);
+
+  const [
+    isShowMoreMembersTooltipOpen,
+    showMoreMembersTooltip,
+    hideMoreMembersTooltip,
+  ] = useBoolean(false);
 
   const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
@@ -269,15 +276,20 @@ export default ({
                   {hiddenMembersCount > 0 && (
                     <>
                       <Spacing horizontal={3} />
-                      <Tooltip
-                        interactive
+                      <UniversalTooltip
                         placement="bottom"
-                        title={getMembersNames({ members: hiddenMembers })}
+                        open={isShowMoreMembersTooltipOpen}
+                        anchorEl={moreMembersButtonReference.current}
                       >
-                        <MoreMembersButtonContainer>
-                          +{hiddenMembersCount}
-                        </MoreMembersButtonContainer>
-                      </Tooltip>
+                        {getMembersNames({ members: hiddenMembers })}
+                      </UniversalTooltip>
+                      <MoreMembersButtonContainer
+                        onMouseEnter={showMoreMembersTooltip}
+                        onMouseLeave={hideMoreMembersTooltip}
+                        ref={moreMembersButtonReference}
+                      >
+                        +{hiddenMembersCount}
+                      </MoreMembersButtonContainer>
                     </>
                   )}
                   <Spacing horizontal={3} />
