@@ -34,6 +34,14 @@ const themeFactory = ({ fontWeight }) =>
         fontSize: '100%',
         fontWeight,
       },
+      h5: {
+        fontSize: '75%',
+        fontWeight,
+      },
+      h6: {
+        fontSize: '50%',
+        fontWeight,
+      },
       subtitle1: {
         fontSize: '100%',
         fontWeight,

@@ -18,6 +18,7 @@ import GenericHeader from '../components/common/GenericHeader';
 import PageContentHeader from '../components/common/PageContentHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import Spacing from '../components/common/Spacing';
+import TipsContentHeader from '../components/common/TipsContentHeader';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
 import {
@@ -28,10 +29,15 @@ import {
 } from '../helpers/ga-event-helper';
 import pusherInstance from '../helpers/pusher-instance';
 import Lightbulb from '../img/lightbulb-grey.svg';
+import TaskListTip1 from '../img/tips/task-list/task-list-1.png';
+import TaskListTip2 from '../img/tips/task-list/task-list-2.png';
+import TaskListTip3 from '../img/tips/task-list/task-list-3.png';
 import { RobotoTypography } from '../theme';
 import { MontserratTypography } from '../theme-montserrat';
 import AddListForm from './TaskListView.AddListForm';
 import { FormSpacing } from './TaskListView.AddListForm.Components';
+
+const STORAGE_TASK_LIST_TIPS_OPEN = 'STORAGE_TASK_LIST_TIPS_OPEN';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -117,7 +123,10 @@ class TaskListView extends PureComponent {
     listFormOpen: false,
     hasStartedFetching: false,
     channelName: null,
+    tipsOpen: localStorage.getItem(STORAGE_TASK_LIST_TIPS_OPEN) || 'true',
   };
+
+  tipsButtonReference = React.createRef(null);
 
   componentDidMount() {
     const { taskListAction, invitationAction, currentUser } = this.props;
@@ -153,14 +162,22 @@ class TaskListView extends PureComponent {
     });
   }
 
-  componentDidUpdate({ isFetching: previousIsFetching }) {
+  componentDidUpdate(
+    { isFetching: previousIsFetching },
+    { tipsOpen: previousTipsOpen },
+  ) {
     const { isFetching } = this.props;
+    const { tipsOpen } = this.state;
 
     if (isFetching !== previousIsFetching) {
       this.resetHeader();
     }
     // needed for contextual menu
     enableFoundationForMultipleComponents('.item-list-wrapper', '.row');
+
+    if (tipsOpen !== previousTipsOpen) {
+      localStorage.setItem(STORAGE_TASK_LIST_TIPS_OPEN, tipsOpen);
+    }
   }
 
   componentWillUnmount() {
@@ -171,6 +188,12 @@ class TaskListView extends PureComponent {
       channel = pusherInstance.unsubscribe(channelName);
     }
   }
+
+  toggleTips = () => {
+    this.setState(({ tipsOpen: previousTipsOpen }) => ({
+      tipsOpen: previousTipsOpen === 'true' ? 'false' : 'true',
+    }));
+  };
 
   resetHeader = () => {
     const { setHeaderBound, isFetching } = this.props;
@@ -407,7 +430,7 @@ class TaskListView extends PureComponent {
       currentUser,
     } = this.props;
 
-    const { listFormOpen, hasStartedFetching } = this.state;
+    const { listFormOpen, hasStartedFetching, tipsOpen } = this.state;
 
     const taskListsEmpty = taskLists?.length === 0;
 
@@ -420,7 +443,13 @@ class TaskListView extends PureComponent {
         {hasStartedFetching && !isFetching && (
           <Grid container direction="column" alignItems="center" spacing={1}>
             <PageContentHeader>
-              <Button variant="text" color="inherit" size="small">
+              <Button
+                variant="text"
+                color="inherit"
+                size="small"
+                onClick={this.toggleTips}
+                innerRef={this.tipsButtonReference}
+              >
                 <img alt="lightbulb" src={Lightbulb} />
                 <Spacing horizontal={2} />
                 <RobotoTypography weight="normal">TIPS</RobotoTypography>
@@ -429,6 +458,18 @@ class TaskListView extends PureComponent {
                 ADD A LIST
               </AdornedButton>
             </PageContentHeader>
+            <StyledCollapse in={tipsOpen === 'true'} timeout={250}>
+              <TipsContentHeader
+                closeHeader={this.toggleTips}
+                arrowAnchorElement={this.tipsButtonReference.current}
+              >
+                {[
+                  <img key="step 1" alt="step 1" src={TaskListTip1} />,
+                  <img key="step 2" alt="step 2" src={TaskListTip2} />,
+                  <img key="step 3" alt="step 3" src={TaskListTip3} />,
+                ]}
+              </TipsContentHeader>
+            </StyledCollapse>
             <SafariFixGrid container item xs={12} justify="center">
               <Grid container item xs={9}>
                 <StyledCollapse
