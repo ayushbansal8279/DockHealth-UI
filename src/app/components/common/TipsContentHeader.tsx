@@ -63,12 +63,14 @@ interface TipsContentHeaderProps {
   arrowAnchorElement?: HTMLElement;
   children?: Array<React.ReactNode>;
   closeHeader?: () => void;
+  onTakeTourClick?: () => void;
 }
 
 const TipsContentHeader = ({
   arrowAnchorElement,
   children,
   closeHeader,
+  onTakeTourClick,
 }: TipsContentHeaderProps) => {
   const gridColumns = Array.isArray(children) ? children.length : 1;
 
@@ -102,7 +104,7 @@ const TipsContentHeader = ({
         </IconButton>
       </HeaderTop>
       <HeaderContent gridColumns={gridColumns}>{children}</HeaderContent>
-      <HeaderBottom>
+      <HeaderBottom onClick={() => onTakeTourClick?.()}>
         <MontserratTypography weight="bold" variant="h5">
           Take the tour
         </MontserratTypography>

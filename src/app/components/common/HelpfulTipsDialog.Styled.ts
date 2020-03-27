@@ -7,8 +7,10 @@ export const DialogComponent = withStyles({
     background: 'linear-gradient(180deg, #01A1E4 0%, #0171AD 100%)',
     border: 0,
     borderRadius: '0.75rem',
+    maxWidth: '45rem',
     overflowY: 'hidden',
     paddingBottom: '0.375rem',
+    width: '45rem',
   },
 })(Dialog);
 

@@ -32,10 +32,14 @@ import Lightbulb from '../img/lightbulb-grey.svg';
 import TaskListTip1 from '../img/tips/task-list/task-list-1.png';
 import TaskListTip2 from '../img/tips/task-list/task-list-2.png';
 import TaskListTip3 from '../img/tips/task-list/task-list-3.png';
+import TaskListTour1 from '../img/tour/task-list/task-list-1.png';
+import TaskListTour2 from '../img/tour/task-list/task-list-2.png';
+import TaskListTour3 from '../img/tour/task-list/task-list-3.png';
 import { RobotoTypography } from '../theme';
 import { MontserratTypography } from '../theme-montserrat';
 import AddListForm from './TaskListView.AddListForm';
 import { FormSpacing } from './TaskListView.AddListForm.Components';
+import HelpfulTipsDialog from '../components/common/HelpfulTipsDialog';
 
 const STORAGE_TASK_LIST_TIPS_OPEN = 'STORAGE_TASK_LIST_TIPS_OPEN';
 
@@ -118,12 +122,20 @@ const ICONS = {
   LIST: 'icon-list',
 };
 
+const getTourStep = contentImage => ({
+  content: <img alt="step 1" src={contentImage} />,
+  title: 'A QUICK TOUR OF THE LISTS PAGE',
+  description:
+    'The list page is your central station for getting to the lists that organize tasks. You can create new lists or get invited to lists that other people in your organization have created.',
+});
+
 class TaskListView extends PureComponent {
   state = {
     listFormOpen: false,
     hasStartedFetching: false,
     channelName: null,
     tipsOpen: localStorage.getItem(STORAGE_TASK_LIST_TIPS_OPEN) || 'true',
+    tipsModalOpen: false,
   };
 
   tipsButtonReference = React.createRef(null);
@@ -193,6 +205,18 @@ class TaskListView extends PureComponent {
     this.setState(({ tipsOpen: previousTipsOpen }) => ({
       tipsOpen: previousTipsOpen === 'true' ? 'false' : 'true',
     }));
+  };
+
+  showTipsModal = () => {
+    this.setState({
+      tipsModalOpen: true,
+    });
+  };
+
+  hideTipsModal = () => {
+    this.setState({
+      tipsModalOpen: false,
+    });
   };
 
   resetHeader = () => {
@@ -430,7 +454,12 @@ class TaskListView extends PureComponent {
       currentUser,
     } = this.props;
 
-    const { listFormOpen, hasStartedFetching, tipsOpen } = this.state;
+    const {
+      listFormOpen,
+      hasStartedFetching,
+      tipsOpen,
+      tipsModalOpen,
+    } = this.state;
 
     const taskListsEmpty = taskLists?.length === 0;
 
@@ -462,6 +491,7 @@ class TaskListView extends PureComponent {
               <TipsContentHeader
                 closeHeader={this.toggleTips}
                 arrowAnchorElement={this.tipsButtonReference.current}
+                onTakeTourClick={this.showTipsModal}
               >
                 {[
                   <img key="step 1" alt="step 1" src={TaskListTip1} />,
@@ -470,6 +500,16 @@ class TaskListView extends PureComponent {
                 ]}
               </TipsContentHeader>
             </StyledCollapse>
+            <HelpfulTipsDialog
+              open={tipsModalOpen}
+              closeDialog={this.hideTipsModal}
+            >
+              {[
+                getTourStep(TaskListTour1),
+                getTourStep(TaskListTour2),
+                getTourStep(TaskListTour3),
+              ]}
+            </HelpfulTipsDialog>
             <SafariFixGrid container item xs={12} justify="center">
               <Grid container item xs={9}>
                 <StyledCollapse

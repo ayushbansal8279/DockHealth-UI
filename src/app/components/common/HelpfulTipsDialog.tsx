@@ -73,7 +73,7 @@ const HelpfulTipsDialog = ({
   }
 
   return (
-    <DialogComponent open={open} maxWidth="sm" fullWidth>
+    <DialogComponent open={open} fullWidth>
       <HeaderContainer>
         <IconButton size="small" disabled>
           <img alt="Lightbulb" src={Lightbulb} />
