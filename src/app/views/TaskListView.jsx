@@ -1,6 +1,7 @@
-import { Collapse, Grid } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import { Button, Collapse, Grid } from '@material-ui/core';
+import { Add, List } from '@material-ui/icons';
 import clsx from 'clsx';
+import { isEmpty } from 'ramda';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -62,6 +63,7 @@ const StyledCollapse = styled(Collapse)`
 `;
 
 const TaskListViewWrapper = styled.div`
+  display: flex;
   max-width: 100%;
   min-height: 100%;
   overflow: hidden;
@@ -78,6 +80,30 @@ const AddListButtonContainer = styled.div`
 const TopMessageContainer = styled.div`
   padding: 0.25rem 2rem;
   text-align: center;
+`;
+
+const NoListsAvailableContainer = styled.div`
+  align-content: center;
+  align-items: center;
+  display: grid;
+  flex: 0.5;
+  grid-gap: 1.25rem;
+  grid-template-columns: auto;
+  justify-content: center;
+  justify-items: center;
+`;
+
+const NoListsIconContainer = styled.div`
+  align-items: center;
+  border: 0.125rem solid #c1ccda;
+  border-radius: 4rem;
+  color: #ef8a23;
+  display: flex;
+  height: 4rem;
+  justify-content: center;
+  min-height: 4rem;
+  min-width: 4rem;
+  width: 4rem;
 `;
 
 const ICONS = {
@@ -390,9 +416,11 @@ class TaskListView extends PureComponent {
 
     const taskListFormOpen = !isFetching && listFormOpen;
 
+    const anyTaskListExists = !isEmpty(pendingTaskLists) || !isEmpty(taskLists);
+
     return (
       <TaskListViewWrapper>
-        {hasStartedFetching && (
+        {hasStartedFetching && !isFetching && (
           <Grid container direction="column" alignItems="center" spacing={1}>
             <StyledCollapse in={!taskListFormOpen} timeout={250}>
               <AddListButtonContainer>
@@ -401,13 +429,6 @@ class TaskListView extends PureComponent {
                 </AdornedButton>
               </AddListButtonContainer>
             </StyledCollapse>
-            <TopMessageContainer>
-              <MontserratTypography variant="h3">
-                In response to COVID-19, we&apos;ve taken the essential CDC
-                protocols and turned them into actionable team task lists. Feel
-                free to add your own and remove these as needed.
-              </MontserratTypography>
-            </TopMessageContainer>
             <SafariFixGrid container item xs={12} justify="center">
               <Grid container item xs={9}>
                 <StyledCollapse
@@ -425,45 +446,82 @@ class TaskListView extends PureComponent {
                 </StyledCollapse>
               </Grid>
             </SafariFixGrid>
-            <SafariFixGrid container item xs={12} justify="center">
-              <Grid
-                container
-                item
-                xs={9}
-                justify="center"
-                direction="row"
-                spacing={1}
-              >
-                {genericLists?.map(this.renderGenericList)}
-              </Grid>
-            </SafariFixGrid>
-            <FormSpacing />
-            <SafariFixGrid container item xs={12} justify="center" spacing={1}>
-              <Grid item xs={9}>
-                {isFetching ? (
-                  <CubesLoaderContainer>
-                    <CubesLoader size={40} />
-                  </CubesLoaderContainer>
-                ) : (
-                  <div className="item-list-wrapper list-wrapper-all-lists">
-                    <PendingListsComponent
-                      taskLists={pendingTaskLists}
-                      acceptInviteToTaskList={this.acceptInviteToTaskList}
-                      rejectInviteToTaskList={this.rejectInviteToTaskList}
-                    />
-                    <ListsComponent
-                      taskLists={taskLists}
-                      currentUser={currentUser}
-                      editForm={this.editTaskList}
-                      deleteList={this.deleteList}
-                      leaveList={this.leaveList}
-                      onClick={this.onClick}
-                    />
-                  </div>
-                )}
-              </Grid>
-            </SafariFixGrid>
-            <FormSpacing />
+            {anyTaskListExists ? (
+              <>
+                <TopMessageContainer>
+                  <MontserratTypography variant="h3">
+                    In response to COVID-19, we&apos;ve taken the essential CDC
+                    protocols and turned them into actionable team task lists.
+                    Feel free to add your own and remove these as needed.
+                  </MontserratTypography>
+                </TopMessageContainer>
+                <SafariFixGrid container item xs={12} justify="center">
+                  <Grid
+                    container
+                    item
+                    xs={9}
+                    justify="center"
+                    direction="row"
+                    spacing={1}
+                  >
+                    {genericLists?.map(this.renderGenericList)}
+                  </Grid>
+                </SafariFixGrid>
+                <FormSpacing />
+                <SafariFixGrid
+                  container
+                  item
+                  xs={12}
+                  justify="center"
+                  spacing={1}
+                >
+                  <Grid item xs={9}>
+                    {isFetching ? (
+                      <CubesLoaderContainer>
+                        <CubesLoader size={40} />
+                      </CubesLoaderContainer>
+                    ) : (
+                      <div className="item-list-wrapper list-wrapper-all-lists">
+                        <PendingListsComponent
+                          taskLists={pendingTaskLists}
+                          acceptInviteToTaskList={this.acceptInviteToTaskList}
+                          rejectInviteToTaskList={this.rejectInviteToTaskList}
+                        />
+                        <ListsComponent
+                          taskLists={taskLists}
+                          currentUser={currentUser}
+                          editForm={this.editTaskList}
+                          deleteList={this.deleteList}
+                          leaveList={this.leaveList}
+                          onClick={this.onClick}
+                        />
+                      </div>
+                    )}
+                  </Grid>
+                </SafariFixGrid>
+                <FormSpacing />
+              </>
+            ) : (
+              <StyledCollapse in={!taskListFormOpen} timeout={250}>
+                <NoListsAvailableContainer>
+                  <NoListsIconContainer>
+                    <List color="inherit" fontSize="large" />
+                  </NoListsIconContainer>
+                  <MontserratTypography variant="h4" weight="500">
+                    GET STARTED BY
+                  </MontserratTypography>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={this.addTaskList}
+                  >
+                    <MontserratTypography variant="h5" weight="bold">
+                      ADDING A LIST
+                    </MontserratTypography>
+                  </Button>
+                </NoListsAvailableContainer>
+              </StyledCollapse>
+            )}
           </Grid>
         )}
       </TaskListViewWrapper>
