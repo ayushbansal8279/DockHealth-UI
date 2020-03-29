@@ -15,6 +15,10 @@ axiosInstance.interceptors.response.use(identity, error => {
     localStorage.setItem(NETWORK_ERROR, 'true');
     window.location.reload();
   } else {
+    // donot show the error for login
+    if (window.location.hash && window.location.hash.includes('/login')) {
+      return;
+    }
     showToast({
       status: 'error',
       title: 'Connection error',
