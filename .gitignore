@@ -3,6 +3,11 @@
 /dist/bower_components/
 /dist/main.*
 /dist/manifest.*
+/dist/*.js
+/dist/*.png
+/dist/*.svg
+/dist/*.ttf
+/dist/index.html
 dist*.zip
 /backup/**
 .DS_Store
