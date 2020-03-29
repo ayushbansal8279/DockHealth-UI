@@ -147,7 +147,7 @@ export const InboxHelpPanel = () => {
           Add a flag to make this task a high priority
         </SpecialLabelHelpPanel>
         <SpecialLabelHelpPanel label="!Date">
-          Add a due date to a task (e.g. 12/28/20)
+          Add a due date to a task using format !MM-DD-YYYY (e.g. 12-28-2020)
         </SpecialLabelHelpPanel>
         <SpecialLabelHelpPanel label="@FirstLast">
           Assign the task to a user within a list (user must be a member of this
