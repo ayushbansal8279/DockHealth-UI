@@ -41,6 +41,7 @@ const OnboardingEulaView = () => {
 
   const onAgreeClick = useCallback(() => {
     acknowledgeEula()(dispatch).then(() => {
+      localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
       if (
         userProfile.orgUserRole === 'ADMIN' ||
         userProfile.orgUserRole === 'OWNER'
