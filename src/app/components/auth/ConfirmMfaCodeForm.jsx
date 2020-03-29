@@ -34,10 +34,10 @@ const ConfirmMFACodeForm = props => {
       </Grid>
 
       <BottomGridContainer>
-        <StyledLabel // Link to create account
+        {/* <StyledLabel // Link to create account
         >
           <Link to="/changePhoneNumber">Change cell number</Link>
-        </StyledLabel>
+        </StyledLabel> */}
       </BottomGridContainer>
 
       <Grid item sm={12} md={9}>
