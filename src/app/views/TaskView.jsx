@@ -33,6 +33,7 @@ import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
 import Spacing from '../components/common/Spacing';
+import SafariFixGrid from '../components/common/SafariFixGrid';
 import AddTask from '../components/task/AddTask';
 import TaskList from '../components/task/TaskList';
 import { TASK_LIST_SHOW_MORE_STEP } from '../components/task/TaskList.Data';
@@ -1109,7 +1110,7 @@ class TaskView extends Component {
           alignItems: 'center',
         }}
       >
-        <Grid container justify="center" item xs={12}>
+        <SafariFixGrid container item xs={12} justify="center">
           {showToolbar && !globalSearch && (
             <Toolbar
               clearFilter={this.clearFilter}
@@ -1151,12 +1152,12 @@ class TaskView extends Component {
               }}
             />
           )}
-        </Grid>
+        </SafariFixGrid>
         {isInbox && (
-          <Grid item xs={12} container>
+          <SafariFixGrid container item xs={12} justify="center">
             <InboxHelpPanel />
             <Spacing vertical={3} />
-          </Grid>
+          </SafariFixGrid>
         )}
         <Grid container direction="row">
           <SideClickListener onClick={this.closeTaskDrawer} />
