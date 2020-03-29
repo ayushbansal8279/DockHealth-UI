@@ -480,6 +480,10 @@ class TaskListView extends PureComponent {
       localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
     }
 
+    const hasCovidList = Boolean(
+      taskLists && taskLists.find(({ listName }) => listName.includes('COVID')),
+    );
+
     return (
       <TaskListViewWrapper>
         {hasStartedFetching && !isFetching && (
@@ -557,14 +561,16 @@ class TaskListView extends PureComponent {
                 <FormSpacing />
                 <SafariFixGrid container item xs={12} justify="center">
                   <Grid container item xs={9} justify="center" direction="row">
-                    <TopMessageContainer>
-                      <MontserratTypography variant="h3">
-                        In response to COVID-19, we&apos;ve taken the essential
-                        CDC protocols and turned them into actionable team task
-                        lists. Feel free to add your own and remove these as
-                        needed.
-                      </MontserratTypography>
-                    </TopMessageContainer>
+                    {hasCovidList && (
+                      <TopMessageContainer>
+                        <MontserratTypography variant="h3">
+                          In response to COVID-19, we&apos;ve taken the
+                          essential CDC protocols and turned them into
+                          actionable team task lists. Feel free to add your own
+                          and remove these as needed.
+                        </MontserratTypography>
+                      </TopMessageContainer>
+                    )}
                   </Grid>
                 </SafariFixGrid>
                 <SafariFixGrid
