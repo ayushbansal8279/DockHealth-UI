@@ -50,8 +50,12 @@ const MemberAvatar = ({ member, taskListMembers }) => {
     ''} ${taskListMember?.lastName ?? ''}`.trim();
 
   return (
-    <div key={member?.userIdentifier ?? member?.email}>
-      <Spacing horizontal={3} />
+    <div
+      key={member?.userIdentifier ?? member?.email}
+      className="avatarWrapper"
+      style={{ width: '42px', height: '42px' }}
+    >
+      {/* <Spacing horizontal={3} /> */}
       <UniversalTooltip
         open={isTooltipShown}
         anchorEl={avatarReference.current}
@@ -275,7 +279,7 @@ export default ({
                   {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
                   {hiddenMembersCount > 0 && (
                     <>
-                      <Spacing horizontal={3} />
+                      <Spacing horizontal={1} />
                       <UniversalTooltip
                         placement="bottom"
                         open={isShowMoreMembersTooltipOpen}
@@ -292,7 +296,7 @@ export default ({
                       </MoreMembersButtonContainer>
                     </>
                   )}
-                  <Spacing horizontal={3} />
+                  <Spacing horizontal={2} />
                   <InviteMemberPopover
                     size={40}
                     members={members}
