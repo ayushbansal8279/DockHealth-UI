@@ -66,7 +66,7 @@ class ListsComponent extends PureComponent {
                 <button
                   type="button"
                   onClick={() => onClick(taskListIdentifier)}
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: 'pointer', textAlign: 'left' }}
                 >
                   <h6 style={{ fontWeight: 'bold' }}>{listName}</h6>
                 </button>
