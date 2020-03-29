@@ -42,6 +42,7 @@ import { FormSpacing } from './TaskListView.AddListForm.Components';
 import HelpfulTipsDialog from '../components/common/HelpfulTipsDialog';
 
 const STORAGE_TASK_LIST_TIPS_OPEN = 'STORAGE_TASK_LIST_TIPS_OPEN';
+const STORAGE_NEW_USER_FIRST_TIME = 'STORAGE_NEW_USER_FIRST_TIME';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -134,7 +135,7 @@ class TaskListView extends PureComponent {
     listFormOpen: false,
     hasStartedFetching: false,
     channelName: null,
-    tipsOpen: localStorage.getItem(STORAGE_TASK_LIST_TIPS_OPEN) || 'true',
+    tipsOpen: localStorage.getItem(STORAGE_TASK_LIST_TIPS_OPEN) || true,
     tipsModalOpen: false,
   };
 
@@ -172,6 +173,10 @@ class TaskListView extends PureComponent {
       taskListAction.getGenericListCounts();
       taskListAction.getTaskListForUser();
     });
+    channel.bind('tasklist-update', () => {
+      taskListAction.getGenericListCounts();
+      taskListAction.getTaskListForUser();
+    });
   }
 
   componentDidUpdate(
@@ -203,7 +208,7 @@ class TaskListView extends PureComponent {
 
   toggleTips = () => {
     this.setState(({ tipsOpen: previousTipsOpen }) => ({
-      tipsOpen: previousTipsOpen === 'true' ? 'false' : 'true',
+      tipsOpen: previousTipsOpen === true ? false : true,
     }));
   };
 
@@ -467,6 +472,14 @@ class TaskListView extends PureComponent {
 
     const anyTaskListExists = !isEmpty(pendingTaskLists) || !isEmpty(taskLists);
 
+    var displayTips = tipsOpen;
+    var displayTourModal = tipsModalOpen;
+    if(localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === true){
+      displayTips = true;
+      displayTourModal = true;
+      localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
+    }
+
     return (
       <TaskListViewWrapper>
         {hasStartedFetching && !isFetching && (
@@ -487,7 +500,7 @@ class TaskListView extends PureComponent {
                 ADD A LIST
               </AdornedButton>
             </PageContentHeader>
-            <StyledCollapse in={tipsOpen === 'true'} timeout={250}>
+            <StyledCollapse in={displayTips === true} timeout={250}>
               <TipsContentHeader
                 closeHeader={this.toggleTips}
                 arrowAnchorElement={this.tipsButtonReference.current}
@@ -501,7 +514,7 @@ class TaskListView extends PureComponent {
               </TipsContentHeader>
             </StyledCollapse>
             <HelpfulTipsDialog
-              open={tipsModalOpen}
+              open={displayTourModal}
               closeDialog={this.hideTipsModal}
             >
               {[
@@ -530,18 +543,6 @@ class TaskListView extends PureComponent {
             {anyTaskListExists ? (
               <>
                 <SafariFixGrid container item xs={12} justify="center">
-                  <Grid container item xs={9} justify="center" direction="row">
-                    <TopMessageContainer>
-                      <MontserratTypography variant="h3">
-                        In response to COVID-19, we&apos;ve taken the essential
-                        CDC protocols and turned them into actionable team task
-                        lists. Feel free to add your own and remove these as
-                        needed.
-                      </MontserratTypography>
-                    </TopMessageContainer>
-                  </Grid>
-                </SafariFixGrid>
-                <SafariFixGrid container item xs={12} justify="center">
                   <Grid
                     container
                     item
@@ -554,6 +555,18 @@ class TaskListView extends PureComponent {
                   </Grid>
                 </SafariFixGrid>
                 <FormSpacing />
+                <SafariFixGrid container item xs={12} justify="center">
+                  <Grid container item xs={9} justify="center" direction="row">
+                    <TopMessageContainer>
+                      <MontserratTypography variant="h3">
+                        In response to COVID-19, we&apos;ve taken the essential
+                        CDC protocols and turned them into actionable team task
+                        lists. Feel free to add your own and remove these as
+                        needed.
+                      </MontserratTypography>
+                    </TopMessageContainer>
+                  </Grid>
+                </SafariFixGrid>
                 <SafariFixGrid
                   container
                   item
