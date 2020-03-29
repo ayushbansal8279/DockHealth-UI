@@ -20,6 +20,7 @@ const HeaderTop = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  height: 20px;
 `;
 
 const HeaderContent = styled.div<{ gridColumns: number }>`
@@ -105,7 +106,7 @@ const TipsContentHeader = ({
       </HeaderTop>
       <HeaderContent gridColumns={gridColumns}>{children}</HeaderContent>
       <HeaderBottom onClick={() => onTakeTourClick?.()}>
-        <MontserratTypography weight="bold" variant="h5">
+        <MontserratTypography weight="bold" variant="h4">
           Take the tour
         </MontserratTypography>
       </HeaderBottom>

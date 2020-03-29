@@ -36,7 +36,6 @@ export const TitleContainer = styled.div`
 
 export const ChildrenContainer = styled.div`
   border-radius: 0.75rem;
-  overflow: hidden;
   padding: 0.25rem;
   width: 100%;
 
