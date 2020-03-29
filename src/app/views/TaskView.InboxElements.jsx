@@ -55,7 +55,7 @@ export const InboxNoMessagesAvailable = () => (
 );
 
 const InboxHelpPanelContainer = styled.div`
-  background-color: #fff;
+  background-color: #c1ccda;
   border: 1px solid #e5e9f2;
   margin: 0.5rem;
   padding: 1rem;
@@ -110,7 +110,7 @@ const SpecialLabelHelpPanel = ({ label, children }) => (
       <b>{label}</b>
     </InboxHelpPanelLabel>
     <Spacing vertical={2} />
-    <MontserratTypography variant="h5" color="secondary">
+    <MontserratTypography variant="h4" style={{ color: '#000000' }}>
       {children}
     </MontserratTypography>
   </SpecialLabelPanelContainer>
@@ -123,18 +123,22 @@ export const InboxHelpPanel = () => {
     <InboxHelpPanelContainer>
       <InboxHelpTopContainer>
         <MontserratTypography variant="h4">
-          FORWARD EMAILS TO DOCK BY FORWARDING TO: <b>Task@DockHealth.email.</b>
+          Turn an email into a task on Dock by forwarding to:{' '}
+          <b>Task@DockHealth.email.</b>
         </MontserratTypography>
-        <Button variant="text" size="small" onClick={togglePanel}>
+        <Button
+          variant="text"
+          size="small"
+          onClick={togglePanel}
+          style={{ color: '#ffffff' }}
+        >
           <CloseButtonContainer>
-            <MontserratTypography variant="h4" color="primary">
-              Close
-            </MontserratTypography>
+            <MontserratTypography variant="h4">Close</MontserratTypography>
             <Spacing horizontal={3} />
-            <Close color="primary" />
+            <Close />
           </CloseButtonContainer>
         </Button>
-        <MontserratTypography variant="h4" color="secondary">
+        <MontserratTypography variant="h4" style={{ color: '#ffffff' }}>
           Add any or all special characters into the subject line of the email
         </MontserratTypography>
       </InboxHelpTopContainer>
@@ -158,13 +162,16 @@ export const InboxHelpPanel = () => {
   ) : (
     <InboxHiddenPanelOuterContainer>
       <InboxHiddenPanelContainer>
-        <Button variant="text" size="small" onClick={togglePanel}>
+        <Button
+          variant="text"
+          size="small"
+          onClick={togglePanel}
+          style={{ color: '#ffffff' }}
+        >
           <CloseButtonContainer>
-            <MontserratTypography variant="h4" color="primary">
-              Open
-            </MontserratTypography>
+            <MontserratTypography variant="h4">Open Tips</MontserratTypography>
             <Spacing horizontal={3} />
-            <Add color="primary" />
+            <Add />
           </CloseButtonContainer>
         </Button>
       </InboxHiddenPanelContainer>
