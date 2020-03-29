@@ -135,7 +135,7 @@ class TaskListView extends PureComponent {
     listFormOpen: false,
     hasStartedFetching: false,
     channelName: null,
-    tipsOpen: localStorage.getItem(STORAGE_TASK_LIST_TIPS_OPEN) || true,
+    tipsOpen: localStorage.getItem(STORAGE_TASK_LIST_TIPS_OPEN) || 'true',
     tipsModalOpen: false,
   };
 
@@ -208,7 +208,7 @@ class TaskListView extends PureComponent {
 
   toggleTips = () => {
     this.setState(({ tipsOpen: previousTipsOpen }) => ({
-      tipsOpen: previousTipsOpen !== true,
+      tipsOpen: previousTipsOpen !== 'true',
     }));
   };
 
@@ -472,9 +472,9 @@ class TaskListView extends PureComponent {
 
     const anyTaskListExists = !isEmpty(pendingTaskLists) || !isEmpty(taskLists);
 
-    let displayTips = tipsOpen;
+    let displayTips = tipsOpen === 'true';
     let displayTourModal = tipsModalOpen;
-    if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === true) {
+    if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === 'true') {
       displayTips = true;
       displayTourModal = true;
       localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
