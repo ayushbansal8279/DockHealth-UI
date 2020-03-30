@@ -26,6 +26,23 @@ const RotatableChevronContainer = styled.div`
   width: 2rem;
 `;
 
+const HeaderChevronContainer = styled(RotatableChevronContainer)`
+  height: 0.75rem;
+  min-height: 0.75rem;
+  min-width: 3rem;
+  width: 3rem;
+
+  & ${ListSwitchContainer} {
+    height: 100%;
+    width: 100%;
+
+    & img {
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+`;
+
 const RotatableChevron = ({ rotated }: RotatableChevronProps) => (
   <ListSwitchContainer rotated={rotated}>
     <img src={ListSwitchChevron} alt="List switch" />
@@ -38,6 +55,14 @@ export const RotatableChevronWithSpacing = ({
   <RotatableChevronContainer>
     <RotatableChevron rotated={rotated} />
   </RotatableChevronContainer>
+);
+
+export const RotatableHeaderChevron = React.forwardRef(
+  ({ rotated }: RotatableChevronProps, reference) => (
+    <HeaderChevronContainer ref={reference}>
+      <RotatableChevron rotated={rotated} />
+    </HeaderChevronContainer>
+  ),
 );
 
 export default RotatableChevron;

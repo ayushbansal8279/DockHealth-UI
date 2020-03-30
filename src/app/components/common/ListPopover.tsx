@@ -13,7 +13,18 @@ type PopoverListItem = {
 
 interface ListPopoverProps extends Omit<PopoverProps, 'children'> {
   items: Array<PopoverListItem>;
+  maxItems?: number;
 }
+
+const usePopoverClasses = makeStyles({
+  root: {
+    maxHeight: ({ maxItems }: ListPopoverProps) =>
+      maxItems ? `${maxItems * 2}rem` : undefined,
+    minHeight: '2rem',
+    overflowY: ({ maxItems }: ListPopoverProps) =>
+      maxItems ? 'auto' : undefined,
+  },
+});
 
 const useListItemClasses = makeStyles({
   root: {
@@ -40,6 +51,11 @@ const useListItemClasses = makeStyles({
   },
   active: {
     color: '#00a2e5',
+  },
+  labelContainer: {
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   },
 });
 
@@ -71,16 +87,26 @@ const renderItem = ({
       key={key}
       {...otherProps}
     >
-      {label}
+      <div className={clsx(listItemClasses.labelContainer)}>{label}</div>
     </ListItem>
   );
 };
 
-const ListPopover = ({ items, ...props }: ListPopoverProps) => {
+const ListPopover = ({ items, maxItems, ...props }: ListPopoverProps) => {
   const listItemClasses = useListItemClasses();
+  const popoverClasses = usePopoverClasses({ maxItems });
 
   return (
-    <Popover {...props}>{items.map(renderItem({ listItemClasses }))}</Popover>
+    <Popover
+      PaperProps={{
+        className: clsx(popoverClasses.root),
+        elevation: 0,
+        square: true,
+      }}
+      {...props}
+    >
+      {items.map(renderItem({ listItemClasses }))}
+    </Popover>
   );
 };
 
