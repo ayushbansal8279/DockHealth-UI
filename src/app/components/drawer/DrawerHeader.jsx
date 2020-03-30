@@ -9,20 +9,20 @@ import { AvatarImageContainer } from '../common/Avatar.styled';
 
 const StyledListItem = styled(ListItem)`
   && {
-    background: #3d4858;
-    height: 88px;
-    min-height: 88px;
+    background: #213a56;
+    height: 5rem;
+    min-height: 5rem;
     :focus {
-      background-color: #3d4858;
+      background-color: #213a56;
     }
     :hover {
-      background-color: #3d4858;
+      background-color: #213a56;
     }
   }
   &&.active {
-    background-color: #3d4858;
+    background-color: #213a56;
     :hover {
-      background-color: #3d4858;
+      background-color: #213a56;
     }
   }
 `;
@@ -62,7 +62,7 @@ const DropdownBorder = styled.div`
 `;
 
 const StyledDropdown = styled.div`
-  background-color: #3d4858;
+  background-color: #213a56;
   height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   min-height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   overflow: hidden;

@@ -100,7 +100,7 @@ const FreeTrialPlanLabel = styled.div`
   align-items: center;
   background-color: #feb52b;
   border-radius: 0.25rem 0.25rem 0 0;
-  color: #3d4858;
+  color: #213a56;
   display: flex;
   font-size: 0.875rem;
   height: 1.375rem;

@@ -27,6 +27,13 @@ export const AvatarContainer = styled.div`
 export const InnerAvatarContainer = styled.div`
   align-items: center;
   background-color: ${props => props.color ?? '#007cab'};
+  border: ${props =>
+    props.padded
+      ? `${getScaledSize({
+          normalSize: 6,
+          propSize: props.size,
+        })}px solid #ffffff`
+      : 0};
   border-radius: 50%;
   color: #fff;
   display: flex;

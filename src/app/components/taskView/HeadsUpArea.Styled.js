@@ -34,7 +34,7 @@ export const HeadsUpSectionDivider = styled.div`
 `;
 
 export const HeadsUpSectionHeaderButton = styled.div`
-  color: ${props => (props.active ? '#00A2E5' : '#3D4858')};
+  color: ${props => (props.active ? '#00A2E5' : '#213a56')};
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: normal;
@@ -73,7 +73,7 @@ export const HeadsUpSectionButton = styled.div`
 `;
 
 export const HeadsUpSectionButtonCount = styled.div`
-  color: ${props => (props.active ? '#00a2e5' : '#3d4858')};
+  color: ${props => (props.active ? '#00a2e5' : '#213a56')};
   font-size: 3rem;
   font-weight: 900;
   pointer-events: none;

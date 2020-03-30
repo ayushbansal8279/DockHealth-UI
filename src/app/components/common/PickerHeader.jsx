@@ -15,7 +15,7 @@ const StyledBackIcon = styled(BackIcon)`
 
 const Header = styled.div`
   align-items: center;
-  background: #3d4858;
+  background: #213a56;
   display: flex;
   flex-shrink: 0;
   flex-grow: 0;

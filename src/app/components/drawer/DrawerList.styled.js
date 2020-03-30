@@ -102,11 +102,31 @@ export const StyledListItemIcon = styled(ListItemIcon)`
   && {
     align-items: center;
     display: flex;
-    width: 29px;
     height: 29px;
     justify-content: center;
+    position: relative;
     transition: all 0.25s ease;
+    width: 29px;
+
+    & svg {
+      fill: ${props => (props.active ? '#ec4f3e' : '#c1ccda')};
+    }
   }
+`;
+
+export const ActiveIconRim = styled.div`
+  border: 0.125rem solid #c1ccda;
+  border-radius: 2.25rem;
+  height: 2.25rem;
+  left: 50%;
+  min-height: 2.25rem;
+  min-width: 2.25rem;
+  opacity: ${props => (props.active ? 1 : 0)};
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: all 0.25s ease;
+  top: 50%;
+  width: 2.25rem;
 `;
 
 export const StyledListItem = styled(ListItem)`
@@ -135,22 +155,8 @@ export const StyledRouterLinkContainer = styled.div`
   }
 
   &&.active {
-    ${StyledListItem} {
-      background: #8492a4;
-    }
     ${NestedListItem} {
       background: #8492a4;
-    }
-  }
-
-  &&.highlighted {
-    ${StyledListItemIcon} {
-      & svg.stroke-only {
-        stroke: #fff;
-      }
-      & svg:not(.stroke-only) {
-        fill: #fff;
-      }
     }
   }
 `;
@@ -158,7 +164,7 @@ export const StyledRouterLinkContainer = styled.div`
 export const NestedListContainer = styled.div`
   && {
     display: ${props => (props.active ? 'flex' : 'none')};
-    margin-to: 0.5rem;
+    margin-top: 0.5rem;
     overflow-y: auto;
 
     & + ${StyledRouterLinkContainer} > a {

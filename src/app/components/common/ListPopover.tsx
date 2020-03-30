@@ -1,6 +1,7 @@
 import { ListItem, Popover, PopoverProps } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import { omit } from 'ramda';
 import React from 'react';
 
 type PopoverListItem = {
@@ -62,7 +63,7 @@ const useListItemClasses = makeStyles({
 const renderItem = ({
   listItemClasses,
 }: {
-  listItemClasses: Record<'root' | 'active', string>;
+  listItemClasses: Record<'root' | 'active' | 'labelContainer', string>;
 }) => (popoverItem: PopoverListItem) => {
   if (!popoverItem) {
     return null;
@@ -92,9 +93,10 @@ const renderItem = ({
   );
 };
 
-const ListPopover = ({ items, maxItems, ...props }: ListPopoverProps) => {
+const ListPopover = (allProps: ListPopoverProps) => {
+  const { items, ...props } = allProps;
   const listItemClasses = useListItemClasses();
-  const popoverClasses = usePopoverClasses({ maxItems });
+  const popoverClasses = usePopoverClasses(allProps);
 
   return (
     <Popover
@@ -103,7 +105,7 @@ const ListPopover = ({ items, maxItems, ...props }: ListPopoverProps) => {
         elevation: 0,
         square: true,
       }}
-      {...props}
+      {...omit(['maxItems'], props)}
     >
       {items.map(renderItem({ listItemClasses }))}
     </Popover>

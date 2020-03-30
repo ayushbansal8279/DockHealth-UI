@@ -13,7 +13,7 @@ export const PatientsSidebarHeader = styled.div`
   display: flex;
   position: relative;
   height: 67px;
-  background: #3d4858;
+  background: #213a56;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
   color: #fff;
   font-size: 24px;

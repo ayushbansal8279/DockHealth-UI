@@ -5,14 +5,14 @@ import styled from 'styled-components';
 
 export const useDrawerClasses = makeStyles({
   appBar: {
-    backgroundColor: '#3d4858',
+    backgroundColor: '#213a56',
     color: '#fff',
     fontSize: '2.25rem',
-    height: '5.5rem',
+    height: '5rem',
     marginLeft: 85,
     marginBottom: ({ trialBannerVisible }) =>
       trialBannerVisible ? '2.875rem' : 0,
-    paddingLeft: '1.25rem',
+    padding: '0.75rem 1.25rem 1rem',
     position: 'relative',
     transition: 'all 0.2s ease-out',
     width: 'calc(100% - 85px)',
@@ -26,7 +26,7 @@ export const useDrawerClasses = makeStyles({
     height: '0.25rem',
     left: 0,
     position: 'absolute',
-    top: '5.25rem',
+    top: '4.75rem',
     width: '100%',
     zIndex: 1,
   },
@@ -35,7 +35,7 @@ export const useDrawerClasses = makeStyles({
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
-    background: '#3d4858',
+    background: '#213a56',
     border: 0,
     overflow: 'initial',
     width: ({ isOpen }) => (isOpen ? 260 : 85),
@@ -55,7 +55,7 @@ export const ContentContainer = styled.div`
 `;
 
 export const TrialBanner = styled(Grid)`
-  background-color: #3d4858;
+  background-color: #213a56;
   color: #feb52b;
   font-size: 1rem;
   left: 0;

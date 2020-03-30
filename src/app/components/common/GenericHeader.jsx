@@ -4,16 +4,25 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
+import DockHeaderLogo from '../../img/dock-header-logo.svg';
 import { themeMontserratNormal } from '../../theme-montserrat';
 import CubesLoader from './CubesLoader';
 
 const GenericHeaderContainer = styled.div`
   align-items: center;
   display: grid;
-  grid-template-columns: 1fr 4rem;
+  grid-template-columns: 1fr auto;
   grid-gap: 1rem;
   padding-right: 0.5rem;
   width: 100%;
+`;
+
+const DockHeaderImage = styled.img.attrs({
+  alt: 'Dock Health',
+  src: DockHeaderLogo,
+})`
+  height: 100%;
+  object-fit: contain;
 `;
 
 const DefaultHeaderTypographyComponent = props => (
@@ -38,7 +47,7 @@ const GenericHeader = ({
           </ChildrenWrapperComponent>
         </Grid>
         <Link to="/">
-          <img src="/assets/img/dock-logo-mini.svg" alt="Dock Health" />
+          <DockHeaderImage />
         </Link>
       </GenericHeaderContainer>
     </ThemeProvider>

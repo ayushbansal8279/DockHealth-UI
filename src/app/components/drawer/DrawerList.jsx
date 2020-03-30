@@ -11,6 +11,7 @@ import SearchIcon from '../../img/drawer/SearchIcon';
 import SupportIcon from '../../img/drawer/SupportIcon';
 import DrawerHeader from './DrawerHeader';
 import {
+  ActiveIconRim,
   ListDivider,
   NestedList,
   NestedListContainer,
@@ -18,12 +19,12 @@ import {
   NestedListItemText,
   RolloverNestedListItemText,
   RolloverPopover,
+  StandardListContainer,
   StyledList,
   StyledListItem,
   StyledListItemIcon,
   StyledListItemText,
   StyledRouterLinkContainer,
-  StandardListContainer,
 } from './DrawerList.styled';
 
 const NESTED_LIST_PREFIX = 'nested';
@@ -75,8 +76,9 @@ const Item = ({
       open={open}
       {...otherProps}
     >
-      <StyledListItemIcon>
-        <Icon />
+      <StyledListItemIcon active={childOrSelfActive}>
+        <Icon color="inherit" />
+        <ActiveIconRim active={childOrSelfActive} />
       </StyledListItemIcon>
       {open && <StyledListItemText primary={label} />}
     </StyledListItem>

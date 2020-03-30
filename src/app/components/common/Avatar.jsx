@@ -16,7 +16,7 @@ export default React.forwardRef(
       withCameraIcon,
       withCursor,
       withShadow,
-      color = '#3d4858',
+      color = '#213a56',
       padded = true,
       ...props
     },
