@@ -209,7 +209,10 @@ class TaskListView extends PureComponent {
 
   toggleTips = () => {
     this.setState(({ tipsOpen: previousTipsOpen }) => ({
-      tipsOpen: previousTipsOpen !== 'true',
+      tipsOpen:
+        previousTipsOpen === 'true' || previousTipsOpen === true
+          ? 'false'
+          : 'true',
     }));
   };
 
@@ -479,6 +482,7 @@ class TaskListView extends PureComponent {
     if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === 'true') {
       displayTips = true;
       displayTourModal = true;
+      this.toggleTips();
       this.showTipsModal();
     }
 
