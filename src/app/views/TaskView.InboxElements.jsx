@@ -1,9 +1,7 @@
-import { Button } from '@material-ui/core';
-import { Add, Close } from '@material-ui/icons';
 import React from 'react';
-import { useToggle } from 'react-use';
 import styled from 'styled-components';
 import Spacing from '../components/common/Spacing';
+import TipsContentHeader from '../components/common/TipsContentHeader';
 import InboxNoMessagesIcon from '../img/inbox-no-messages-icon.svg';
 import { MontserratTypography } from '../theme-montserrat';
 
@@ -54,20 +52,6 @@ export const InboxNoMessagesAvailable = () => (
   </InboxNoMessagesOuterContainer>
 );
 
-const InboxHelpPanelContainer = styled.div`
-  background-color: #c1ccda;
-  border: 1px solid #e5e9f2;
-  margin: 0.5rem;
-  padding: 1rem;
-  width: 100%;
-`;
-
-const InboxHelpTopContainer = styled.div`
-  display: grid;
-  grid-gap: 0.5rem;
-  grid-template-columns: 1fr auto;
-`;
-
 const InboxHelpBottomContainer = styled.div`
   display: grid;
   grid-gap: 0.5rem;
@@ -87,21 +71,8 @@ const InboxHelpPanelLabel = styled(MontserratTypography)`
   }
 `;
 
-const CloseButtonContainer = styled.div`
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-flow: row nowrap;
-`;
-
-const InboxHiddenPanelOuterContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-`;
-
-const InboxHiddenPanelContainer = styled(InboxHelpPanelContainer)`
-  width: auto;
+const HeaderContainer = styled.div`
+  color: #000000;
 `;
 
 const SpecialLabelHelpPanel = ({ label, children }) => (
@@ -116,65 +87,38 @@ const SpecialLabelHelpPanel = ({ label, children }) => (
   </SpecialLabelPanelContainer>
 );
 
-export const InboxHelpPanel = () => {
-  const [isPanelOpen, togglePanel] = useToggle(true);
-
-  return isPanelOpen ? (
-    <InboxHelpPanelContainer>
-      <InboxHelpTopContainer>
-        <MontserratTypography variant="h4">
+export const InboxHelpPanel = ({ arrowAnchorElement, closeInboxHelpPanel }) => (
+  <TipsContentHeader
+    label={
+      <HeaderContainer>
+        <MontserratTypography color="inherit" variant="h4">
           Turn an email into a task on Dock by forwarding to:{' '}
           <b>Task@DockHealth.email.</b>
         </MontserratTypography>
-        <Button
-          variant="text"
-          size="small"
-          onClick={togglePanel}
-          style={{ color: '#ffffff' }}
-        >
-          <CloseButtonContainer>
-            <MontserratTypography variant="h4">Close</MontserratTypography>
-            <Spacing horizontal={3} />
-            <Close />
-          </CloseButtonContainer>
-        </Button>
-        <MontserratTypography variant="h4" style={{ color: '#ffffff' }}>
-          Add any or all special characters into the subject line of the email
-        </MontserratTypography>
-      </InboxHelpTopContainer>
-      <Spacing vertical={4} />
-      <InboxHelpBottomContainer>
-        <SpecialLabelHelpPanel label="#ListName">
-          Add the list name after # and send it directly to that list
-        </SpecialLabelHelpPanel>
-        <SpecialLabelHelpPanel label="*High">
-          Add a flag to make this task a high priority
-        </SpecialLabelHelpPanel>
-        <SpecialLabelHelpPanel label="!Date">
-          Add a due date to a task using format !MM-DD-YYYY (e.g. 12-28-2020)
-        </SpecialLabelHelpPanel>
-        <SpecialLabelHelpPanel label="@FirstLast">
-          Assign the task to a user within a list (user must be a member of this
-          list, e.g. @ElonMusk)
-        </SpecialLabelHelpPanel>
-      </InboxHelpBottomContainer>
-    </InboxHelpPanelContainer>
-  ) : (
-    <InboxHiddenPanelOuterContainer>
-      <InboxHiddenPanelContainer>
-        <Button
-          variant="text"
-          size="small"
-          onClick={togglePanel}
-          style={{ color: '#ffffff' }}
-        >
-          <CloseButtonContainer>
-            <MontserratTypography variant="h4">Open Tips</MontserratTypography>
-            <Spacing horizontal={3} />
-            <Add />
-          </CloseButtonContainer>
-        </Button>
-      </InboxHiddenPanelContainer>
-    </InboxHiddenPanelOuterContainer>
-  );
-};
+      </HeaderContainer>
+    }
+    arrowAnchorElement={arrowAnchorElement?.current}
+    closeHeader={closeInboxHelpPanel}
+  >
+    <Spacing vertical={1} />
+    <MontserratTypography variant="h4" style={{ color: '#ffffff' }}>
+      Add any or all special characters into the subject line of the email
+    </MontserratTypography>
+    <Spacing vertical={2} />
+    <InboxHelpBottomContainer>
+      <SpecialLabelHelpPanel label="#ListName">
+        Add the list name after # and send it directly to that list
+      </SpecialLabelHelpPanel>
+      <SpecialLabelHelpPanel label="*High">
+        Add a flag to make this task a high priority
+      </SpecialLabelHelpPanel>
+      <SpecialLabelHelpPanel label="!Date">
+        Add a due date to a task using format !MM-DD-YYYY (e.g. 12-28-2020)
+      </SpecialLabelHelpPanel>
+      <SpecialLabelHelpPanel label="@FirstLast">
+        Assign the task to a user within a list (user must be a member of this
+        list, e.g. @ElonMusk)
+      </SpecialLabelHelpPanel>
+    </InboxHelpBottomContainer>
+  </TipsContentHeader>
+);

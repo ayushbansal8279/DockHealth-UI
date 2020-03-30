@@ -32,8 +32,8 @@ import * as TaskActions from '../actions/task-actions';
 import * as TaskDrawerActions from '../actions/task-drawer-actions';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
-import Spacing from '../components/common/Spacing';
 import SafariFixGrid from '../components/common/SafariFixGrid';
+import Spacing from '../components/common/Spacing';
 import AddTask from '../components/task/AddTask';
 import TaskList from '../components/task/TaskList';
 import { TASK_LIST_SHOW_MORE_STEP } from '../components/task/TaskList.Data';
@@ -52,6 +52,7 @@ import { isTaskArchivable } from '../helpers/utility-functions';
 import ChevronSmallIcon from '../img/chevron-small.svg';
 import { themeMontserrat600 } from '../theme-montserrat';
 import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
+import { StyledCollapse } from './TaskListView.Styled';
 import {
   InboxHelpPanel,
   InboxNoMessagesAvailable,
@@ -155,6 +156,7 @@ const CollapseStyledButton = styled(props => (
 
 const TASK_VIEW_STORAGE_PREFIX = 'task-view-';
 const TASK_VIEW_STORAGE_CURRENT_VERSION = 1;
+const SHOW_INBOX_TIPS = 'SHOW_INBOX_TIPS';
 
 class TaskView extends Component {
   state = {
@@ -170,11 +172,14 @@ class TaskView extends Component {
       incomplete: [],
     },
     preferencesInitialized: false,
+    isInboxHelpPanelOpen: localStorage.getItem(SHOW_INBOX_TIPS) || 'true',
   };
 
   headsUpArea = React.createRef();
 
   taskListContainerReference = React.createRef();
+
+  tipsButtonReference = React.createRef();
 
   handleSearchDebounced = debounce(value => {
     const searchTerms = value.toLowerCase().match(/\S+/g) || [];
@@ -289,6 +294,40 @@ class TaskView extends Component {
       this.openTaskDrawer();
       storeAsCurrentTask(preSelectedTask);
     }
+  };
+
+  openInboxHelpPanel = () => {
+    this.setState(
+      {
+        isInboxHelpPanelOpen: 'true',
+      },
+      this.handleStorageInboxTips,
+    );
+  };
+
+  closeInboxHelpPanel = () => {
+    this.setState(
+      {
+        isInboxHelpPanelOpen: 'false',
+      },
+      this.handleStorageInboxTips,
+    );
+  };
+
+  toggleInboxHelpPanel = () => {
+    this.setState(
+      previousState => ({
+        isInboxHelpPanelOpen:
+          previousState.isInboxHelpPanelOpen === 'true' ? 'false' : 'true',
+      }),
+      this.handleStorageInboxTips,
+    );
+  };
+
+  handleStorageInboxTips = () => {
+    const { isInboxHelpPanelOpen } = this.state;
+
+    localStorage.setItem(SHOW_INBOX_TIPS, isInboxHelpPanelOpen);
   };
 
   saveTaskListPreferences = () => {
@@ -1091,6 +1130,7 @@ class TaskView extends Component {
       displayHUD,
       filterBy,
       preferencesInitialized,
+      isInboxHelpPanelOpen,
     } = this.state;
 
     const toolbarContainerVisible = this.getToolbarContainerVisible();
@@ -1145,6 +1185,9 @@ class TaskView extends Component {
               showNotifications={showNotifications}
               showMembers={showMembers}
               paneled={paneled}
+              showTipsButton={isInbox}
+              toggleTips={this.toggleInboxHelpPanel}
+              tipsButtonReference={this.tipsButtonReference}
               printData={{
                 tasks,
                 completedTasks,
@@ -1154,10 +1197,17 @@ class TaskView extends Component {
           )}
         </SafariFixGrid>
         {isInbox && (
-          <SafariFixGrid container item xs={12} justify="center">
-            <InboxHelpPanel />
-            <Spacing vertical={3} />
-          </SafariFixGrid>
+          <>
+            <StyledCollapse in={isInboxHelpPanelOpen === 'true'} timeout={250}>
+              <SafariFixGrid container item xs={12} justify="center">
+                <InboxHelpPanel
+                  arrowAnchorElement={this.tipsButtonReference}
+                  closeInboxHelpPanel={this.closeInboxHelpPanel}
+                />
+              </SafariFixGrid>
+            </StyledCollapse>
+            <Spacing vertical={4} />
+          </>
         )}
         <Grid container direction="row">
           <SideClickListener onClick={this.closeTaskDrawer} />

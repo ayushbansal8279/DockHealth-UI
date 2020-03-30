@@ -7,12 +7,14 @@ import { toggleListNotifications } from '../../actions/tasklist-actions';
 import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 import { showAlert } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
+import { RobotoTypography } from '../../theme';
 import AdornedButton from '../common/AdornedButton';
 import Avatar from '../common/Avatar';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
 import UniversalTooltip from '../common/UniversalTooltip';
+import Lightbulb from '../../img/lightbulb-grey.svg';
 import InviteMemberPopover from '../members/InviteMemberPopover';
 import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
@@ -158,6 +160,9 @@ export default ({
   showFilterStats = true,
   showNotifications = true,
   showMembers = true,
+  showTipsButton = false,
+  tipsButtonReference = null,
+  toggleTips,
   printData: { tasks = [], completedTasks = [], taskListMembers = [] },
 }) => {
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
@@ -241,6 +246,19 @@ export default ({
                 Clear
               </ToolbarLabel>
             </>
+          )}
+          {showTipsButton && (
+            <Button
+              variant="text"
+              color="inherit"
+              size="small"
+              onClick={toggleTips}
+              innerRef={tipsButtonReference}
+            >
+              <img alt="lightbulb" src={Lightbulb} />
+              <Spacing horizontal={2} />
+              <RobotoTypography weight="normal">TIPS</RobotoTypography>
+            </Button>
           )}
         </Grid>
       </div>
