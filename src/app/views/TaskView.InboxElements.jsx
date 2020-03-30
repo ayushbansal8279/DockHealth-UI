@@ -2,53 +2,47 @@ import React from 'react';
 import styled from 'styled-components';
 import Spacing from '../components/common/Spacing';
 import TipsContentHeader from '../components/common/TipsContentHeader';
-import InboxNoMessagesIcon from '../img/inbox-no-messages-icon.svg';
+import InboxNoMessagesIcon from '../img/envelope-new.svg';
 import { MontserratTypography } from '../theme-montserrat';
 
 const InboxNoMessagesOuterContainer = styled.div`
+  align-items: center;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
 `;
 
 const InboxNoMessagesContainer = styled.div`
   align-items: center;
+  border: 0.3125rem solid #c1ccda;
+  border-radius: 6.375rem;
   box-sizing: border-box;
   display: flex;
-  flex-flow: column wrap;
   justify-content: center;
-  line-height: 1.5;
-  min-width: 48rem;
+  height: 6.375rem;
+  min-height: 6.375rem;
+  min-width: 6.375rem;
   padding: 2rem;
   text-align: center;
-  width: 48rem;
+  width: 6.375rem;
+
+  > img {
+    cursor: default;
+    height: 2.75rem;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    width: 2.75rem;
+  }
 `;
 
 export const InboxNoMessagesAvailable = () => (
   <InboxNoMessagesOuterContainer>
     <InboxNoMessagesContainer>
       <img src={InboxNoMessagesIcon} alt="Mailbox" />
-      <Spacing vertical={4} />
-      <MontserratTypography variant="h3" gutterBottom>
-        YOUR INBOX IS EMPTY
-      </MontserratTypography>
-      <Spacing vertical={4} />
-      <MontserratTypography variant="h4">
-        <div>
-          You can forward an email to Dock and we’ll turn that email into a
-          task.
-        </div>
-        <Spacing vertical={4} />
-        <div>
-          To forward an email into Dock and automatically create a task, simply
-          forward an email to{' '}
-          <a href="mailto:task@dockhealth.email">
-            <b>Task@DockHealth.email</b>
-          </a>
-          {'. '}
-          We’ll drop it into your inbox here on Dock for you.
-        </div>
-      </MontserratTypography>
     </InboxNoMessagesContainer>
+    <Spacing vertical={4} />
+    <MontserratTypography variant="h3" gutterBottom>
+      YOUR INBOX IS EMPTY
+    </MontserratTypography>
   </InboxNoMessagesOuterContainer>
 );
 
