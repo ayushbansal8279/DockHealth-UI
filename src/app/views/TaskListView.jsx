@@ -123,11 +123,12 @@ const ICONS = {
   LIST: 'icon-list',
 };
 
-const getTourStep = contentImage => ({
+const getTourStep = (contentImage, displayDescription) => ({
   content: <img alt="step 1" src={contentImage} />,
   title: 'A QUICK TOUR OF THE LISTS PAGE',
-  description:
-    'The list page is your central station for getting to the lists that organize tasks. You can create new lists or get invited to lists that other people in your organization have created.',
+  description: displayDescription
+    ? 'The list page is your central station for getting to the lists that organize tasks. You can create new lists or get invited to lists that other people in your organization have created.'
+    : '',
 });
 
 class TaskListView extends PureComponent {
@@ -222,6 +223,7 @@ class TaskListView extends PureComponent {
     this.setState({
       tipsModalOpen: false,
     });
+    localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
   };
 
   resetHeader = () => {
@@ -477,7 +479,7 @@ class TaskListView extends PureComponent {
     if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === 'true') {
       displayTips = true;
       displayTourModal = true;
-      localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
+      this.showTipsModal();
     }
 
     const hasCovidList = Boolean(
@@ -522,9 +524,9 @@ class TaskListView extends PureComponent {
               closeDialog={this.hideTipsModal}
             >
               {[
-                getTourStep(TaskListTour1),
-                getTourStep(TaskListTour2),
-                getTourStep(TaskListTour3),
+                getTourStep(TaskListTour1, true),
+                getTourStep(TaskListTour2, false),
+                getTourStep(TaskListTour3, false),
               ]}
             </HelpfulTipsDialog>
             <SafariFixGrid container item xs={12} justify="center">
