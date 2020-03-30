@@ -10,6 +10,7 @@ const EmailBodyContainer = styled.div`
   margin-top: 0.5rem;
   padding: 1rem;
   width: 100%;
+  word-break: break-word;
 `;
 
 const EmailMessageContainer = styled.pre`
