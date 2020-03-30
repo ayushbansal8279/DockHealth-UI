@@ -1,4 +1,4 @@
-import { Button, Collapse, Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { Add, List } from '@material-ui/icons';
 import clsx from 'clsx';
 import { isEmpty } from 'ramda';
@@ -6,7 +6,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
 import { setHeader } from '../actions/header-actions';
 import * as InvitationActions from '../actions/invitation-actions';
 import * as TaskActions from '../actions/task-actions';
@@ -15,6 +14,7 @@ import { mobileAnalyticsClient } from '../api/analytics-api';
 import AdornedButton from '../components/common/AdornedButton';
 import CubesLoader from '../components/common/CubesLoader';
 import GenericHeader from '../components/common/GenericHeader';
+import HelpfulTipsDialog from '../components/common/HelpfulTipsDialog';
 import PageContentHeader from '../components/common/PageContentHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import Spacing from '../components/common/Spacing';
@@ -39,80 +39,19 @@ import { RobotoTypography } from '../theme';
 import { MontserratTypography } from '../theme-montserrat';
 import AddListForm from './TaskListView.AddListForm';
 import { FormSpacing } from './TaskListView.AddListForm.Components';
-import HelpfulTipsDialog from '../components/common/HelpfulTipsDialog';
+import {
+  BlockItemContainer,
+  CubesLoaderContainer,
+  NoListsAvailableContainer,
+  NoListsIconContainer,
+  StyledCollapse,
+  TaskListTipsContainer,
+  TaskListViewWrapper,
+  TopMessageContainer,
+} from './TaskListView.Styled';
 
 const STORAGE_TASK_LIST_TIPS_OPEN = 'STORAGE_TASK_LIST_TIPS_OPEN';
 const STORAGE_NEW_USER_FIRST_TIME = 'STORAGE_NEW_USER_FIRST_TIME';
-
-const CubesLoaderContainer = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`;
-
-const BlockItemContainer = styled.div`
-  align-items: center;
-  display: flex;
-  background-color: #fff;
-  border: 0.0625rem solid #e8ebef;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 6rem;
-  padding: 0.3rem 0.4rem;
-  position: relative;
-  text-align: center;
-
-  && > * {
-    padding: 0;
-    margin: 0;
-  }
-
-  && > *:nth-child(odd) {
-    margin: 0.25rem 0;
-  }
-`;
-
-const StyledCollapse = styled(Collapse)`
-  width: 100%;
-`;
-
-const TaskListViewWrapper = styled.div`
-  display: flex;
-  max-width: 100%;
-  min-height: 100%;
-  overflow: hidden;
-  width: 100%;
-`;
-
-const TopMessageContainer = styled.div`
-  padding: 0.25rem 2rem;
-  text-align: center;
-`;
-
-const NoListsAvailableContainer = styled.div`
-  align-content: center;
-  align-items: center;
-  display: grid;
-  flex: 0.5;
-  grid-gap: 1.25rem;
-  grid-template-columns: auto;
-  justify-content: center;
-  justify-items: center;
-`;
-
-const NoListsIconContainer = styled.div`
-  align-items: center;
-  border: 0.125rem solid #c1ccda;
-  border-radius: 4rem;
-  color: #ef8a23;
-  display: flex;
-  height: 4rem;
-  justify-content: center;
-  min-height: 4rem;
-  min-width: 4rem;
-  width: 4rem;
-`;
 
 const ICONS = {
   ASSIGN_TO: 'icon-assign-to',
@@ -157,6 +96,11 @@ class TaskListView extends PureComponent {
       hasStartedFetching: true,
     });
     this.resetHeader();
+
+    if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === 'true') {
+      this.toggleTips();
+      this.showTipsModal();
+    }
 
     const currentUserIdentifier = currentUser.userIdentifier;
     const channelName = `dock-user-channel-${currentUserIdentifier}`;
@@ -471,23 +415,14 @@ class TaskListView extends PureComponent {
       tipsModalOpen,
     } = this.state;
 
-    const taskListsEmpty = taskLists?.length === 0;
+    const taskListsEmpty = isEmpty(taskLists);
 
     const taskListFormOpen = !isFetching && listFormOpen;
 
-    const anyTaskListExists = !isEmpty(pendingTaskLists) || !isEmpty(taskLists);
-
-    let displayTips = tipsOpen === 'true';
-    let displayTourModal = tipsModalOpen;
-    if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === 'true') {
-      displayTips = true;
-      displayTourModal = true;
-      this.toggleTips();
-      this.showTipsModal();
-    }
+    const anyTaskListExists = !isEmpty(pendingTaskLists) || !taskListsEmpty;
 
     const hasCovidList = Boolean(
-      taskLists && taskLists.find(({ listName }) => listName.includes('COVID')),
+      taskLists?.find(({ listName }) => listName.includes('COVID')),
     );
 
     return (
@@ -510,21 +445,21 @@ class TaskListView extends PureComponent {
                 ADD A LIST
               </AdornedButton>
             </PageContentHeader>
-            <StyledCollapse in={displayTips === true} timeout={250}>
+            <StyledCollapse in={tipsOpen} timeout={250}>
               <TipsContentHeader
                 closeHeader={this.toggleTips}
                 arrowAnchorElement={this.tipsButtonReference.current}
                 onTakeTourClick={this.showTipsModal}
               >
-                {[
-                  <img key="step 1" alt="step 1" src={TaskListTip1} />,
-                  <img key="step 2" alt="step 2" src={TaskListTip2} />,
-                  <img key="step 3" alt="step 3" src={TaskListTip3} />,
-                ]}
+                <TaskListTipsContainer>
+                  <img alt="step 1" src={TaskListTip1} />
+                  <img alt="step 2" src={TaskListTip2} />
+                  <img alt="step 3" src={TaskListTip3} />
+                </TaskListTipsContainer>
               </TipsContentHeader>
             </StyledCollapse>
             <HelpfulTipsDialog
-              open={displayTourModal}
+              open={tipsModalOpen}
               closeDialog={this.hideTipsModal}
             >
               {[

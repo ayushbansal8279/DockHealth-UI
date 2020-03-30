@@ -10,34 +10,24 @@ const HeaderContainer = styled.div`
   background-color: #c1ccda;
   display: flex;
   flex-direction: column;
-  padding: 0.25rem;
+  padding: 0.5rem 1rem;
   position: relative;
   width: 100%;
 `;
 
 const HeaderTop = styled.div`
+  align-items: center;
   color: #ffffff;
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  height: 20px;
-`;
-
-const HeaderContent = styled.div<{ gridColumns: number }>`
   display: grid;
   grid-gap: 0.5rem;
-  grid-template-columns: repeat(${props => props.gridColumns}, 1fr);
-  padding: 0.25rem 2rem;
+  grid-template-columns: 1fr auto;
+  height: 2rem;
   width: 100%;
+`;
 
-  > * {
-    background-color: #ffffff;
-    cursor: default;
-    justify-self: center;
-    max-height: 5rem;
-    object-fit: contain;
-    width: 100%;
-  }
+const HeaderContent = styled.div`
+  padding: 0.25rem 0;
+  width: 100%;
 `;
 
 const HeaderBottom = styled.div`
@@ -62,19 +52,21 @@ const HeaderArrow = styled.div<{ left: number }>`
 
 interface TipsContentHeaderProps {
   arrowAnchorElement?: HTMLElement;
-  children?: Array<React.ReactNode>;
+  children?: React.ReactNode;
   closeHeader?: () => void;
+  label?: React.ReactNode;
   onTakeTourClick?: () => void;
+  showTakeTour?: boolean;
 }
 
 const TipsContentHeader = ({
   arrowAnchorElement,
   children,
   closeHeader,
+  label,
   onTakeTourClick,
+  showTakeTour = true,
 }: TipsContentHeaderProps) => {
-  const gridColumns = Array.isArray(children) ? children.length : 1;
-
   const [isArrowShown, showArrow, hideArrow] = useBoolean(false);
   const [arrowPosition, setArrowPosition] = useState(0);
 
@@ -96,6 +88,7 @@ const TipsContentHeader = ({
     <HeaderContainer>
       {isArrowShown && <HeaderArrow left={arrowPosition} />}
       <HeaderTop>
+        <div>{label}</div>
         <IconButton
           size="small"
           color="inherit"
@@ -104,12 +97,14 @@ const TipsContentHeader = ({
           <Close />
         </IconButton>
       </HeaderTop>
-      <HeaderContent gridColumns={gridColumns}>{children}</HeaderContent>
-      <HeaderBottom onClick={() => onTakeTourClick?.()}>
-        <MontserratTypography weight="bold" variant="h4">
-          Take the tour
-        </MontserratTypography>
-      </HeaderBottom>
+      <HeaderContent>{children}</HeaderContent>
+      {showTakeTour && onTakeTourClick && (
+        <HeaderBottom onClick={onTakeTourClick}>
+          <MontserratTypography weight="bold" variant="h4">
+            Take the tour
+          </MontserratTypography>
+        </HeaderBottom>
+      )}
     </HeaderContainer>
   );
 };
