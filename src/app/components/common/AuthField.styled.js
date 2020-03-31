@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+import palette from '../../palette';
 
 export const StyledLabel = styled.div`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   left: 1rem;
   font-size: 14px;
   font-family: 'Open Sans', sans-serif;
@@ -28,7 +29,7 @@ export const StyledInputIcon = styled.div`
 `;
 
 export const StyledInput = styled.input`
-  color: #000;
+  color: ${palette.black};
   background-color: transparent;
   box-shadow: none;
   font-size: 14px;
@@ -63,11 +64,11 @@ export const StyledInput = styled.input`
     border: 1.5px solid transparent;
 
     &:focus {
-      border: 1.5px solid #dedee2;
+      border: 1.5px solid ${palette.unknownGrey6};
     }
 
     &.error {
-      border: 1.5px solid #e40909;
+      border: 1.5px solid ${palette.error};
     }
 
     &:-webkit-autofill,
@@ -75,13 +76,13 @@ export const StyledInput = styled.input`
     &:-webkit-autofill:hover,
     &:-webkit-autofill:focus {
       transition: all 0.25s ease-out, -webkit-box-shadow 0s;
-      -webkit-box-shadow: 0 0 0 40px rgba(243, 245, 246) inset !important;
+      -webkit-box-shadow: 0 0 0 40px ${palette.lightGrey} inset !important;
     }
   }
 `;
 
 export const StyledInputContainer = styled.div`
-  background-color: #f3f5f6;
+  background-color: ${palette.lightGrey};
   border-radius: 0;
   box-sizing: border-box;
   position: relative;
@@ -96,7 +97,7 @@ export const StyledInputContainer = styled.div`
 `;
 
 export const StyledErrorLabel = styled.div`
-  color: #e40909;
+  color: ${palette.error};
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   margin-top: 0.5rem;
@@ -104,7 +105,7 @@ export const StyledErrorLabel = styled.div`
 
 export const StyledPasswordSwitch = styled.div`
   bottom: 1rem;
-  color: rgba(48, 53, 56, 0.8);
+  color: ${palette.unknownGrey1};
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 300;

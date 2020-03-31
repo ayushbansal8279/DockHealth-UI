@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { getPatientName } from '../../helpers/utility-functions';
-import { priorityColor } from '../common/Priority';
+import { getPriorityColor } from '../../palette';
 
 const getDueDateData = ({ dueDate }) => {
   const dueDateMoment = moment(dueDate ?? null);
@@ -78,7 +78,7 @@ const getPdfTaskData = props => {
 
   const { dueDateLabel, isOverdue } = getDueDateData({ dueDate });
 
-  const currentPriorityColor = priorityColor(workflowStatus ?? '');
+  const currentPriorityColor = getPriorityColor(workflowStatus ?? '');
 
   return {
     isSubtask,

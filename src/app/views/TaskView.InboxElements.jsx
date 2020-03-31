@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Spacing from '../components/common/Spacing';
+import palette from '../palette';
 import TipsContentHeader from '../components/common/TipsContentHeader';
 import InboxNoMessagesIcon from '../img/envelope-new.svg';
 import { MontserratTypography } from '../theme-montserrat';
@@ -13,7 +14,7 @@ const InboxNoMessagesOuterContainer = styled.div`
 
 const InboxNoMessagesContainer = styled.div`
   align-items: center;
-  border: 0.3125rem solid #c1ccda;
+  border: 0.3125rem solid ${palette.coolGrey2};
   border-radius: 6.375rem;
   box-sizing: border-box;
   display: flex;
@@ -53,7 +54,7 @@ const InboxHelpBottomContainer = styled.div`
 `;
 
 const SpecialLabelPanelContainer = styled.div`
-  background-color: #f9fafc;
+  background-color: ${palette.coolGrey4};
   min-height: 4.5rem;
   padding: 0.5rem 1.5rem;
   width: 100%;
@@ -61,12 +62,12 @@ const SpecialLabelPanelContainer = styled.div`
 
 const InboxHelpPanelLabel = styled(MontserratTypography)`
   && {
-    color: #074a86;
+    color: ${palette.darkBlue};
   }
 `;
 
 const HeaderContainer = styled.div`
-  color: #000000;
+  color: ${palette.black};
 `;
 
 const SpecialLabelHelpPanel = ({ label, children }) => (
@@ -75,7 +76,7 @@ const SpecialLabelHelpPanel = ({ label, children }) => (
       <b>{label}</b>
     </InboxHelpPanelLabel>
     <Spacing vertical={2} />
-    <MontserratTypography variant="h4" style={{ color: '#000000' }}>
+    <MontserratTypography variant="h4" style={{ color: palette.black }}>
       {children}
     </MontserratTypography>
   </SpecialLabelPanelContainer>
@@ -95,7 +96,7 @@ export const InboxHelpPanel = ({ arrowAnchorElement, closeInboxHelpPanel }) => (
     closeHeader={closeInboxHelpPanel}
   >
     <Spacing vertical={1} />
-    <MontserratTypography variant="h4" style={{ color: '#ffffff' }}>
+    <MontserratTypography variant="h4" style={{ color: palette.white }}>
       Add any or all special characters into the subject line of the email
     </MontserratTypography>
     <Spacing vertical={2} />

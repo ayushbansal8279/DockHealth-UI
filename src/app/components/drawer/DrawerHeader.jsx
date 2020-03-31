@@ -1,35 +1,36 @@
+import { ListItem, ListItemIcon } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
-import { ListItem, ListItemIcon } from '@material-ui/core';
 import useBoolean from '../../hooks/useBoolean';
+import palette from '../../palette';
 import Avatar from '../common/Avatar';
 import { AvatarImageContainer } from '../common/Avatar.styled';
 
 const StyledListItem = styled(ListItem)`
   && {
-    background: #213a56;
+    background-color: ${palette.midnightBlue};
     height: 5rem;
     min-height: 5rem;
     :focus {
-      background-color: #213a56;
+      background-color: ${palette.midnightBlue};
     }
     :hover {
-      background-color: #213a56;
+      background-color: ${palette.midnightBlue};
     }
   }
   &&.active {
-    background-color: #213a56;
+    background-color: ${palette.midnightBlue};
     :hover {
-      background-color: #213a56;
+      background-color: ${palette.midnightBlue};
     }
   }
 `;
 
 const DropdownListItem = styled(StyledListItem)`
   && {
-    color: #c1ccda;
+    color: ${palette.coolGrey2};
     height: 2.125rem;
     margin: 0;
     margin-bottom: 0.5rem;
@@ -42,19 +43,19 @@ const DropdownListItem = styled(StyledListItem)`
     }
 
     :hover {
-      background-color: #8492a4;
+      background-color: ${palette.coolGrey1};
     }
   }
   &&.active {
-    background-color: #8492a4;
+    background-color: ${palette.coolGrey1};
     :hover {
-      background-color: #8492a4;
+      background-color: ${palette.coolGrey1};
     }
   }
 `;
 
 const DropdownBorder = styled.div`
-  background-color: #c1ccda;
+  background-color: ${palette.coolGrey2};
   height: 0.25rem;
   margin-bottom: -0.25rem;
   transform: translateY(-100%);
@@ -62,7 +63,7 @@ const DropdownBorder = styled.div`
 `;
 
 const StyledDropdown = styled.div`
-  background-color: #213a56;
+  background-color: ${palette.midnightBlue};
   height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   min-height: ${props => (props.open ? props.dropdownHeight : 0)}rem;
   overflow: hidden;
@@ -80,7 +81,7 @@ const StyledLink = React.forwardRef((props, reference) => {
       activeClassName="active"
       className={linkActive ? 'active' : ''}
       style={{
-        color: '#c1ccda',
+        color: palette.coolGrey2,
       }}
       {...props}
       onClick={event => {

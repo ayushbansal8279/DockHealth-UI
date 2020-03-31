@@ -15,6 +15,7 @@ import { createBreakpoint, useToggle } from 'react-use';
 import styled from 'styled-components';
 import SafariFixGrid from '../../../../components/common/SafariFixGrid';
 import CollapseInteractive from '../../../../img/collapse-interactive';
+import palette, { opacify } from '../../../../palette';
 import { H4, H5 } from '../SubscriptionsView.Styled';
 import {
   CardContactUsFooter,
@@ -33,10 +34,12 @@ export const CARD_TYPES = {
 
 const CardInnerContainer = styled(Grid)`
   && {
-    border: 0.0625rem solid #ededf0;
+    border: 0.0625rem solid ${palette.unknownGrey4};
     border-radius: 0.25rem;
     box-shadow: ${props =>
-      props.chosen ? '0 0.25rem 0.25rem rgba(0, 0, 0, 0.25)' : 'none'};
+      props.chosen
+        ? `0 0.25rem 0.25rem ${opacify(palette.black, 0.25)}`
+        : 'none'};
     cursor: ${props => (props.selectable ? 'pointer' : 'default')};
     min-height: 16.25rem;
     transition: all 0.25s ease-out;
@@ -82,9 +85,9 @@ const CardHeader = styled.div`
 
 const RecommendedLabel = styled.div`
   align-items: center;
-  background-color: #fdb42b;
+  background-color: ${palette.orangeJulius};
   border-radius: 0.25rem 0.25rem 0 0;
-  color: #fff;
+  color: ${palette.white};
   display: flex;
   height: ${props => (props.isSmallScreen ? 1 : 1.375)}rem;
   justify-content: center;
@@ -98,9 +101,9 @@ const RecommendedLabel = styled.div`
 
 const FreeTrialPlanLabel = styled.div`
   align-items: center;
-  background-color: #feb52b;
+  background-color: ${palette.accentYellow};
   border-radius: 0.25rem 0.25rem 0 0;
-  color: #213a56;
+  color: ${palette.mediumGrey};
   display: flex;
   font-size: 0.875rem;
   height: 1.375rem;
@@ -227,7 +230,7 @@ const SubscriptionsViewPlanCard = ({
           <Hidden lgUp>
             <RotatableCollapse
               rotated={localFeatureListExpanded}
-              color={chosen ? '#fff' : ''}
+              color={chosen ? palette.white : ''}
             />
           </Hidden>
         </CardHeader>
@@ -309,9 +312,9 @@ SubscriptionsViewPlanCard.propTypes = {
 };
 
 SubscriptionsViewPlanCard.defaultProps = {
-  inactiveColor: '#303538',
-  activeColor: '#fff',
-  activeBackgroundColor: '#074A86',
+  inactiveColor: palette.unknownGrey1,
+  activeColor: palette.white,
+  activeBackgroundColor: palette.darkBlue,
   onClick: () => {},
   annualMonthlyPrice: 0,
   monthlyPrice: 0,

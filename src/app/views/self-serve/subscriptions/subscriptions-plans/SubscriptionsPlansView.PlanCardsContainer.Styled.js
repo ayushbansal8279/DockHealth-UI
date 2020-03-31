@@ -1,11 +1,12 @@
 import { Grid } from '@material-ui/core';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
+import palette, { opacify } from '../../../../palette';
 import { H4 } from '../SubscriptionsView.Styled';
 
 export const AnnualToggleContainer = styled(Grid)`
   && {
-    background-color: #dedee2;
+    background-color: ${palette.unknownGrey6};
     border-radius: 0.25rem;
     cursor: pointer;
     height: 2.5rem;
@@ -19,13 +20,13 @@ export const AnnualToggleLabel = styled(H4)`
   z-index: 2;
   ${props =>
     props.active
-      ? 'color: #fff; font-weight: bold;'
-      : 'color: #011845; font-weight: 600;'}
+      ? `color: ${palette.white}; font-weight: bold;`
+      : `color: ${palette.featureBlue1}; font-weight: 600;`}
 `;
 
 export const AnnualToggleSwitch = styled.div`
-  background: #074a86;
-  box-shadow: 0px 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
+  background: ${palette.darkBlue};
+  box-shadow: 0px 0.25rem 0.25rem ${opacify(palette.black, 0.25)};
   border-radius: 0.25rem;
   height: 100%;
   left: ${props => (props.active ? 50 : 0)}%;
@@ -42,8 +43,8 @@ export const SubscriptionCardGrid = styled(Grid)`
 `;
 
 export const FeatureListInnerContainer = styled.div`
-  background-color: #011845;
-  color: #fff;
+  background-color: ${palette.featureBlue1};
+  color: ${palette.white};
   flex: 1;
   flex-basis: auto;
 `;
@@ -86,7 +87,7 @@ export const FeatureRow = styled.div`
   width: 100%;
 
   &:nth-child(even) {
-    background-color: #1a2d56;
+    background-color: ${palette.featureBlue2};
   }
 `;
 

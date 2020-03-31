@@ -1,6 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import AvatarEdit from 'react-avatar-edit';
+import palette from '../../palette';
 import Avatar from '../common/Avatar';
 import initializeUserAvatarHooks from './UserAvatar.Hooks';
 import {
@@ -92,7 +93,7 @@ export default () => {
                 src={fileLoaded}
                 width={200}
                 height={200}
-                shadingColor="#125375"
+                shadingColor={palette.darkGreyBlue}
                 onCrop={handleFileCropped}
                 onClose={() => setFileLoaded(null)}
               />

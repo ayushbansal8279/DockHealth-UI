@@ -8,11 +8,15 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
+import palette, { opacify } from '../../../palette';
 
 export const InvitationPanelContainer = styled.div`
-  background-color: ${props => (props.open ? '#fff' : '#fff0')};
+  background-color: ${props =>
+    props.open ? palette.white : opacify(palette.white, 0)};
   box-shadow: ${props =>
-    props.open ? '0px 0.25rem 0.25rem rgba(0, 0, 0, 0.25)' : 'none'};
+    props.open
+      ? `0px 0.25rem 0.25rem ${opacify(palette.black, 0.25)}`
+      : 'none'};
   margin-top: 1rem;
   padding: 1rem 1.25rem;
   transition: all 0.25s ease-out;
@@ -31,7 +35,7 @@ export const InvitationPanelHeader = styled.div`
 export const AddMoreUsersLabel = styled.div`
   align-items: center;
   display: flex;
-  color: #074a86;
+  color: ${palette.darkBlue};
   cursor: pointer;
   font-size: 1rem;
   padding: 0.375rem 0.625rem;
@@ -44,7 +48,7 @@ export const AddMoreUsersLabel = styled.div`
 
 export const CloseButtonContainer = styled.div`
   align-items: center;
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   cursor: ${props => (props.open ? 'pointer' : 'default')};
   display: flex;
   font-size: 1.5rem;
@@ -56,7 +60,7 @@ export const CloseButtonContainer = styled.div`
 `;
 
 export const InputErrorLabel = styled.div`
-  color: #e40909;
+  color: ${palette.error};
   font-size: 0.75rem;
   height: 1rem;
   margin-bottom: 0.1875rem;
@@ -72,25 +76,25 @@ export const StyledFormControl = withStyles({
 
 export const StyledInputLabel = withStyles({
   root: {
-    color: '#2e3a43',
+    color: palette.greyBlue,
     top: '50%',
     transform: 'translate(0.5rem, -50%) scale(1)',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
   required: {
     '& > span': {
-      color: '#f00',
+      color: palette.error,
     },
   },
   shrink: {
-    color: '#2e3a43',
+    color: palette.greyBlue,
     top: '0%',
     transform: 'translate(0.5rem, 0) scale(0.75)',
     transformOrigin: 'center left',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
   focused: {
-    color: '#2e3a43 !important',
+    color: `${palette.greyBlue} !important`,
   },
 })(InputLabel);
 
@@ -99,7 +103,7 @@ export const StyledInputBase = withStyles({
     height: '2.625rem',
   },
   input: {
-    backgroundColor: '#f3f5f6',
+    backgroundColor: palette.lightGrey,
     borderRadius: '0.25rem',
     boxShadow: 'none',
     boxSizing: 'border-box',
@@ -107,14 +111,14 @@ export const StyledInputBase = withStyles({
     padding: '0.6rem 0.5rem',
     height: '100%',
     '&:focus': {
-      backgroundColor: '#f3f5f6',
+      backgroundColor: palette.lightGrey,
       border: 0,
       boxShadow: 'none',
     },
   },
   error: {
     borderRadius: '0.25rem',
-    border: '0.0625rem solid #e40909',
+    border: `0.0625rem solid ${palette.error}`,
   },
 })(InputBase);
 
@@ -127,11 +131,11 @@ export const StyledButton = withStyles({
     width: '9.5rem',
   },
   text: {
-    color: '#074a86',
+    color: palette.darkBlue,
   },
   contained: {
-    backgroundColor: '#074a86',
-    color: '#fff',
+    backgroundColor: palette.darkBlue,
+    color: palette.white,
   },
 })(({ classes, variant, ...props }) => {
   const variantClassName = classes[variant] || '';

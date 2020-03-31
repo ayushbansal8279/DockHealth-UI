@@ -1,6 +1,7 @@
+import { Button, Grid } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Grid } from '@material-ui/core';
+import palette from '../../palette';
 import AddTask from '../task/AddTask';
 import Task from '../task/Task';
 
@@ -8,7 +9,7 @@ const SHOW_MORE_STEP_COUNT = 100;
 
 const PatientsTasklistCount = styled.div`
   font-size: 16px;
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   margin-bottom: 11px;
 `;
 

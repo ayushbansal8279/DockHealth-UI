@@ -2,9 +2,10 @@ import { ButtonBase } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
+import palette from '../../palette';
 
 export const TaskAnimationContainer = styled.div`
-  ${props => props.isSubtask && 'background-color: #fff;'}
+  ${props => props.isSubtask && `background-color: ${palette.white};`}
   height: ${props => (props.isNewSubtask ? 0 : 'auto')};
   ${props => !props.drawerOpen && 'max-width: 1050px;'}
   overflow: hidden;
@@ -13,7 +14,7 @@ export const TaskAnimationContainer = styled.div`
 
 export const TaskContainer = styled.div`
   box-sizing: border-box;
-  background-color: #fff;
+  background-color: ${palette.white};
   height: min-content;
   margin-left: 0;
   margin-right: 0;
@@ -26,7 +27,7 @@ export const TaskContainer = styled.div`
     margin: 3px 4px 3px 15px;
 
     > div {
-      border: 1px solid #ededf0;
+      border: 1px solid ${palette.unknownGrey4};
     }
   `}
 `;
@@ -50,11 +51,11 @@ const collapsibleButtonStyles = {
     borderColor: 'transparent',
     fontSize: '16px',
     lineHeight: '38px',
-    color: '#2e3a43',
+    color: palette.greyBlue,
     paddingLeft: '15px',
   },
   collapsed: {
-    borderColor: '#f5f8fa',
+    borderColor: palette.coolGrey4,
   },
 };
 
@@ -64,7 +65,7 @@ export const SubtasksContainer = withStyles(collapsibleButtonStyles)(
 
 export const TaskSelectionContainer = styled.div`
   align-items: center;
-  background-color: ${props => props.isSelected && '#ddf2f7'};
+  background-color: ${props => props.isSelected && palette.unknownGrey2};
   box-sizing: border-box;
   display: flex;
   flex-flow: row nowrap;
@@ -75,7 +76,7 @@ export const TaskSelectionContainer = styled.div`
 
 export const SubtaskOrderContainer = styled.div`
   align-items: center;
-  color: #303538;
+  color: ${palette.unknownGrey1};
   cursor: pointer;
   display: flex;
   font-size: 1rem;

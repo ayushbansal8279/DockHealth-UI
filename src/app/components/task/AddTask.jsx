@@ -5,6 +5,7 @@ import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { saveTask } from '../../actions/task-actions';
+import palette from '../../palette';
 import AdornedButton from '../common/AdornedButton';
 
 const StyledToolbar = styled(Toolbar).attrs({
@@ -17,7 +18,7 @@ const StyledForm = styled.form`
 
 const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   && {
-    background: #f3f5f6;
+    background: ${palette.lightGrey};
     border-radius: 0.25rem;
     height: 3.125rem;
     width: 100%;
@@ -28,7 +29,7 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
   }
 
   && input {
-    color: #8492a4;
+    color: ${palette.coolGrey1};
     height: 3.125rem;
     border: none;
     box-shadow: none;
@@ -37,7 +38,7 @@ const StyledTextField = styled(TextField).attrs({ variant: 'outlined' })`
     padding: 0 1rem;
 
     ::placeholder {
-      color: #8492a4;
+      color: ${palette.coolGrey1};
       opacity: 1;
     }
 

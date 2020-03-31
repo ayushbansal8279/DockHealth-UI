@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import CubesLoader from '../components/common/CubesLoader';
 import StyledSwitch from '../components/userProfileView/StyledSwitch';
 import {
-  UniversalMobileInputComponent,
   UniversalInput,
+  UniversalMobileInputComponent,
 } from '../components/userProfileView/UniversalInput';
 import UserAvatar from '../components/userProfileView/UserAvatar';
 import {
@@ -19,6 +19,7 @@ import {
   UserAvatarGrid,
   UserProfileViewGrid,
 } from '../components/userProfileView/UserProfileView.Styled';
+import palette from '../palette';
 
 const StyledInput = styled(UniversalInput)`
   && {
@@ -134,7 +135,7 @@ const UserProfileView = ({
                     {...otherSaveButtonProps}
                   >
                     {isSubmitting ? (
-                      <CubesLoader size={24} color="#fff" />
+                      <CubesLoader size={24} color={palette.white} />
                     ) : (
                       saveButtonLabel
                     )}

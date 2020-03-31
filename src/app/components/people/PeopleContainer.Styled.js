@@ -1,8 +1,9 @@
-import styled from 'styled-components';
 import { Grid } from '@material-ui/core';
+import styled from 'styled-components';
+import palette from '../../palette';
 
 export const ListContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   padding: 1rem;
 `;
 
@@ -15,12 +16,12 @@ export const ListEntryContainer = styled.div`
   padding: 1rem 0.5rem;
 
   &:not(:last-child) {
-    border-bottom: 1px solid #dedee2;
+    border-bottom: 1px solid ${palette.unknownGrey6};
   }
 `;
 
 export const PersonStatus = styled.div`
-  color: #007cab;
+  color: ${palette.cyanBlue};
   margin-bottom: 1.5rem;
 `;
 

@@ -1,9 +1,9 @@
+import { FormControl, MenuItem, Select } from '@material-ui/core';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-
-import { FormControl, MenuItem, Select } from '@material-ui/core';
+import palette from '../../palette';
 
 const StyledSelect = styled(Select).attrs({
   classes: {
@@ -21,7 +21,7 @@ const StyledSelect = styled(Select).attrs({
 })`
   && {
     height: 28px;
-    color: #14171a;
+    color: ${palette.darkGrey};
     font-size: 14px;
   }
 

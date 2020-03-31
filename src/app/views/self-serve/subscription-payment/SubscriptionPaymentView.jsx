@@ -14,6 +14,7 @@ import CubesLoader from '../../../components/common/CubesLoader';
 import GenericHeader from '../../../components/common/GenericHeader';
 import { noop, showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
+import palette from '../../../palette';
 import BillingsViewBillingData from '../billings/BillingsView.BillingData';
 import { PlanNameLabel } from '../subscriptions/SubscriptionsView.CurrentPlan.Styled';
 import {
@@ -127,7 +128,11 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
         Cancel
       </Button>
       <Button type="submit" variant="contained" disabled={processingPayment}>
-        {processingPayment ? <CubesLoader color="#fff" size={32} /> : 'Buy now'}
+        {processingPayment ? (
+          <CubesLoader color={palette.white} size={32} />
+        ) : (
+          'Buy now'
+        )}
       </Button>
     </Grid>
   </>

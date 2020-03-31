@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import palette, { opacify } from '../../palette';
 
 export const AddAttachmentButton = styled.button.attrs({ type: 'button' })`
   background-color: transparent;
   border-width: 0;
   border-radius: 0.25rem;
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   cursor: pointer;
   margin: 0 -0.25rem;
   padding: 0.1875rem;
@@ -12,7 +13,7 @@ export const AddAttachmentButton = styled.button.attrs({ type: 'button' })`
   will-change: background-color;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${opacify(palette.black, 0.05)};
   }
 `;
 
@@ -34,7 +35,7 @@ export const AttachmentListEntryRemove = styled.button.attrs({
   align-items: center;
   background-color: transparent;
   border-width: 0;
-  color: #e40909;
+  color: ${palette.error};
   cursor: pointer;
   display: flex;
   font-size: 1rem;
@@ -66,7 +67,7 @@ export const AttachmentListEntryLabel = styled.button.attrs({
 })`
   background-color: transparent;
   border-width: 0;
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   cursor: pointer;
   display: flex;
   transition: filter 0.25s ease-out;
@@ -94,14 +95,14 @@ export const UploadingFileLabel = styled.div`
 `;
 
 export const UploadingFileProgressBar = styled.div`
-  background-color: #ededf0;
+  background-color: ${palette.unknownGrey4};
   flex: 1;
   position: relative;
   height: 0.6875rem;
 `;
 
 export const UploadingFileCurrentProgress = styled.div`
-  background-color: #0ca1c7;
+  background-color: ${palette.lighterCyanBlue};
   left: 0;
   height: 100%;
   position: absolute;

@@ -4,6 +4,7 @@ import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import { mergeRefs as mergeReferences } from '../../helpers/utility-functions';
+import palette, { opacify } from '../../palette';
 import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
 import StyledInputAutoCorrectedDate from './StyledInput.AutoCorrectedDate';
 import initializeStyledInputHooks from './StyledInput.Hooks';
@@ -56,12 +57,12 @@ const StyledLabel = styled.div`
     z-index: 1;
 
     & > .input-label {
-      color: #000000;
+      color: ${palette.black};
       transition: color 0.2s ease-out;
     }
 
     & > .required {
-      color: #e40909;
+      color: ${palette.error};
       padding-left: 4px;
       transition: color 0.2s ease-out;
     }
@@ -70,7 +71,7 @@ const StyledLabel = styled.div`
 
 const StyledInputContainer = styled.div`
   && {
-    background-color: ${props => props.backgroundColor ?? '#f3f5f6'};
+    background-color: ${props => props.backgroundColor ?? palette.lightGrey};
     border-radius: 0;
     box-sizing: border-box;
     height: ${props =>
@@ -100,7 +101,7 @@ const StyledInputContainer = styled.div`
 
 const StyledErrorLabel = styled.div`
   && {
-    color: #e40909;
+    color: ${palette.error};
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     margin-bottom: 0.125rem;
@@ -114,7 +115,7 @@ const inputStyle = styleExtension => props =>
         backgroundColor: 'transparent',
         border: '1.5px solid transparent',
         boxShadow: 'none',
-        color: '#000',
+        color: palette.black,
         fontSize: `${props.fontSize ?? 14}px`,
         fontWeight: 'normal',
         height: '100%',
@@ -133,22 +134,22 @@ const inputStyle = styleExtension => props =>
           top: '1rem',
 
           '& > .input-label': {
-            color: '#ababb2',
+            color: palette.unknownGrey5,
           },
         },
 
         '&:focus': {
-          border: '1.5px solid #dedee2',
+          border: `1.5px solid ${palette.unknownGrey6}`,
         },
 
         [`&.${ERROR_CLASS_NAME}`]: {
-          border: '1.5px solid #e40909',
+          border: `1.5px solid ${palette.error}`,
         },
 
         [`&:-webkit-autofill, &:-webkit-autofill:active, &:-webkit-autofill:hover, &:-webkit-autofill:focus`]: {
           transition: 'all 0.25s ease-out, -webkit-box-shadow 0s',
           '-webkit-box-shadow': `0 0 0 40px ${props.backgroundColor ??
-            'rgba(243, 245, 246, 0)'} inset !important`,
+            opacify(palette.lightGrey, 0)} inset !important`,
         },
       },
     },
@@ -186,11 +187,11 @@ const TextareaWrapper = styled.div`
     padding: 2rem 1rem 1rem 1rem;
 
     &.${FOCUS_CLASS_NAME} {
-      border: 1.5px solid #dedee2;
+      border: 1.5px solid ${palette.unknownGrey6};
     }
 
     &.${ERROR_CLASS_NAME} {
-      border: 1.5px solid #e40909;
+      border: 1.5px solid ${palette.error};
     }
   `}
 `;

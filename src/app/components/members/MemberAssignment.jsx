@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Member from './Member';
 import ProfileIcon from '../../img/profile.svg';
+import palette from '../../palette';
 
 const MemberAssignment = ({ member, onClick, disabled, large }) =>
   member ? (
@@ -15,7 +16,7 @@ const MemberAssignment = ({ member, onClick, disabled, large }) =>
       onClick={disabled ? undefined : onClick}
       alt="Unassigned"
       large={large}
-      color="#DEDEE2"
+      color={palette.unknownGrey6}
     >
       <img src={ProfileIcon} alt="Unassigned" style={{ marginBottom: '3px' }} />
     </Member>

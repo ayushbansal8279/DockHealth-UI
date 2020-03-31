@@ -2,6 +2,7 @@ import { Dialog } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
 import styled from 'styled-components';
+import palette from '../../palette';
 
 export const AttachmentPreviewDialog = withStyles({
   paper: {
@@ -29,7 +30,7 @@ export const AttachmentPreviewFlexContainer = styled.div`
 
 export const AttachmentPreviewHeader = styled.div`
   align-items: center;
-  background-color: #2a4a70;
+  background-color: ${palette.veryDarkBlue};
   display: flex;
   flex-flow: row nowrap;
   height: 5rem;
@@ -63,7 +64,7 @@ export const AttachmentPreviewHeaderAnchor = styled.a`
 `;
 
 export const AttachmentPreviewHeaderLabel = styled.div`
-  color: #fff;
+  color: ${palette.white};
   font-size: ${props => (props.big ? 2 : 1)}rem;
   max-width: 100%;
   overflow: hidden;
@@ -89,7 +90,7 @@ export const AttachmentPreviewHeaderIconContainer = styled.div`
 export const AttachmentPreviewHeaderSmallLabel = styled(
   AttachmentPreviewHeaderLabel,
 )`
-  color: #dedee2;
+  color: ${palette.unknownGrey6};
   font-size: 0.875rem;
 `;
 
@@ -107,7 +108,7 @@ export const AttachmentPreviewAudio = styled.audio`
 
 export const StyledPdfDocument = styled(Document)`
   align-items: center;
-  background-color: #ababb2;
+  background-color: ${palette.unknownGrey5};
   display: flex;
   flex-flow: column nowrap;
 `;

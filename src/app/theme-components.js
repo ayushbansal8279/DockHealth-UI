@@ -1,4 +1,5 @@
 import { RotatableChevronWithSpacing } from './components/common/RotatableChevron';
+import palette from './palette';
 
 const themeCommonOverrides = () => ({
   props: {
@@ -21,13 +22,13 @@ const themeCommonOverrides = () => ({
     MuiListItem: {
       root: {
         '&$selected': {
-          backgroundColor: '#a6dcea',
+          backgroundColor: palette.softCyan,
         },
         '&$selected:hover': {
-          backgroundColor: '#a6dcea',
+          backgroundColor: palette.softCyan,
         },
         '&$selected:focus': {
-          backgroundColor: '#a6dcea',
+          backgroundColor: palette.softCyan,
         },
       },
     },
@@ -43,7 +44,7 @@ const themeCommonOverrides = () => ({
     },
     MuiPopover: {
       paper: {
-        border: '0.0625rem solid #c1ccda',
+        border: `0.0625rem solid ${palette.coolGrey2}`,
         margin: 0,
         padding: 0,
       },
@@ -53,7 +54,7 @@ const themeCommonOverrides = () => ({
         borderRadius: 0,
         height: '2.5rem',
         '&$selectMenu': {
-          color: '#00a2e5',
+          color: palette.brightBlue,
         },
       },
       select: {
@@ -80,7 +81,7 @@ const themeCommonOverrides = () => ({
     },
     MuiMenu: {
       paper: {
-        border: '0.0625rem solid #c1ccda',
+        border: `0.0625rem solid ${palette.coolGrey2}`,
         borderRadius: 0,
         boxShadow: 'none',
       },
@@ -90,45 +91,46 @@ const themeCommonOverrides = () => ({
     },
     MuiMenuItem: {
       root: {
-        backgroundColor: '#fff',
+        backgroundColor: palette.white,
         filter: 'brightness(1)',
         fontSize: '1rem',
         padding: '0.125rem 1rem',
         textTransform: 'uppercase',
         transition: 'all 0.25s ease-out',
         '&:hover': {
-          backgroundColor: '#fff',
-          color: '#0ca1c7',
+          backgroundColor: palette.white,
+          color: palette.lighterCyanBlue,
           filter: 'brightness(1.05)',
         },
         '&:active, &:focus': {
-          backgroundColor: '#fff',
+          backgroundColor: palette.white,
         },
         '&$selected': {
-          backgroundColor: '#fff',
-          color: '#0ca1c7',
+          backgroundColor: palette.white,
+          color: palette.lighterCyanBlue,
           '&:hover': {
-            backgroundColor: '#fff',
-            color: '#0ca1c7',
+            backgroundColor: palette.white,
+            color: palette.lightCyanBlue,
             filter: 'brightness(1.05)',
           },
           '&:active, &:focus': {
-            backgroundColor: '#fff',
+            backgroundColor: palette.white,
           },
         },
       },
     },
     MuiButton: {
       text: {
-        color: '#007cab',
+        color: palette.cyanBlue,
         fontSize: '1.5rem',
         minHeight: '3.625rem',
         textTransform: 'none',
       },
       contained: {
-        backgroundColor: '#007cab',
+        backgroundColor: palette.cyanBlue,
         borderRadius: '0.25rem',
-        color: '#fff',
+        color: palette.white,
+        filter: 'brightness(1)',
         fontSize: '1.5rem',
         fontWeight: 'bold',
         minHeight: '3.625rem',
@@ -136,22 +138,29 @@ const themeCommonOverrides = () => ({
         textTransform: 'none',
         transition: 'all 0.25s ease-out',
         '&$disabled': {
-          backgroundColor: '#125375',
-          color: '#ffffff80',
+          backgroundColor: palette.cyanBlue,
+          color: palette.white,
+          filter: 'brightness(0.8)',
         },
         '&:hover': {
-          backgroundColor: '#0ca1c7',
+          backgroundColor: palette.cyanBlue,
+          color: palette.white,
+          filter: 'brightness(1.2)',
         },
       },
       containedPrimary: {
-        backgroundColor: '#d9036b',
+        backgroundColor: palette.vividPink,
+        color: palette.white,
         fontSize: '1.5rem',
         '&$disabled': {
-          backgroundColor: '#a70252',
-          color: '#ffffffc0',
+          backgroundColor: palette.vividPink,
+          color: palette.white,
+          filter: 'brightness(0.8)',
         },
         '&:hover': {
-          backgroundColor: '#fc1384',
+          backgroundColor: palette.vividPink,
+          color: palette.white,
+          filter: 'brightness(1.2)',
         },
       },
       sizeSmall: {

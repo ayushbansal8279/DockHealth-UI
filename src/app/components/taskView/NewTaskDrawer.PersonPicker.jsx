@@ -6,9 +6,10 @@ import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import PersonPickerCrossIcon from '../../img/person-picker-cross.svg';
 import SearchHeadsupIcon from '../../img/search-headsup.svg';
+import palette from '../../palette';
 
 const PersonPickerContainer = styled.div`
-  background-color: #f3f5f6;
+  background-color: ${palette.lightGrey};
   margin-top: 0.5rem;
   width: 100%;
 `;
@@ -31,13 +32,13 @@ const PersonPickerIconsContainer = styled.div`
 `;
 
 const PersonPickerTopSectionLabel = styled.div`
-  color: #303538;
+  color: ${palette.unknownGrey1};
   font-size: 1rem;
 `;
 
 const PersonPickerDivider = styled.div`
   height: 1px;
-  background-color: #dedee2;
+  background-color: ${palette.unknownGrey6};
 `;
 
 const PersonPickerIconContainer = styled.div`
@@ -74,7 +75,7 @@ const PersonPickerSearchFieldContainer = styled.div`
 `;
 
 const PersonPickerSearchField = styled.input`
-  background-color: #fff;
+  background-color: ${palette.white};
   border: none;
   box-shadow: none;
   font-size: 0.875rem;
@@ -85,14 +86,14 @@ const PersonPickerSearchField = styled.input`
   width: 100%;
 
   &::placeholder {
-    color: #dedee2;
+    color: ${palette.unknownGrey6};
   }
 `;
 
 const StyledSimpleBar = styled(SimpleBar)`
   & .simplebar-scrollbar::before,
   & .simplebar-scrollbar.simplebar-visible::before {
-    background-color: #c8c8ce;
+    background-color: ${palette.coolGrey2};
     opacity: ${props => (props.visible ? 1 : 0)};
   }
 
@@ -105,7 +106,7 @@ const StyledSimpleBar = styled(SimpleBar)`
 
 const AddNewPersonLabel = styled.div`
   align-items: center;
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   cursor: pointer;
   display: flex;
   font-size: 0.875rem;

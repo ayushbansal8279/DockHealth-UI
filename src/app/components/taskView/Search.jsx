@@ -6,6 +6,7 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import SearchClearIcon from '../../img/search-clear.svg';
 import SearchHeadsupIcon from '../../img/search-headsup.svg';
+import palette, { opacify } from '../../palette';
 
 const ClearButton = styled.div`
   align-items: center;
@@ -24,15 +25,18 @@ const ClearButton = styled.div`
 
 const StyledTextField = styled(TextField)`
   && {
-    background-color: #fff;
+    background-color: ${palette.white};
     border-radius: 0.25rem;
-    color: #00a2e5;
+    color: ${palette.brightBlue};
     height: 2.5rem;
     ${props => props.fullWidth && 'width: 100%;'}
 
     & .MuiInputBase-root {
       border: 0.0625rem solid
-        ${props => (props.variant === 'outlined' ? '#e5e9f2' : '#e5e9f200')};
+        ${props =>
+          props.variant === 'outlined'
+            ? palette.coolGrey3
+            : opacify(palette.coolGrey3, 0)};
       border-radius: 0;
       height: 100%;
       padding: 0 0.25rem 0 0.5rem;
@@ -46,13 +50,13 @@ const StyledTextField = styled(TextField)`
     }
 
     & .MuiInputBase-root.Mui-focused {
-      border: 0.0625rem solid #e5e9f2;
+      border: 0.0625rem solid ${palette.coolGrey3};
       width: ${props => (props.fullWidth ? '100%' : '16.8125rem')};
     }
 
     & input {
-      caret-color: #00a2e5;
-      color: #8492a4;
+      caret-color: ${palette.brightBlue};
+      color: ${palette.coolGrey1};
       height: 100%;
       border: none;
       box-shadow: none;
@@ -61,7 +65,7 @@ const StyledTextField = styled(TextField)`
       padding: 0;
 
       &::placeholder {
-        color: #00a2e5;
+        color: ${palette.brightBlue};
         font-size: 1rem;
         opacity: 0.8;
         text-transform: uppercase;

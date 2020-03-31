@@ -15,6 +15,7 @@ import {
   StyledTableCell,
   TaskListOuterContainer,
 } from './TaskList.styled';
+import palette from '../../palette';
 
 const useTaskListClasses = makeStyles({
   paneled: {
@@ -110,7 +111,7 @@ const TaskList = ({
             active={showMoreButtonVisible}
           >
             {isShowMoreLocked ? (
-              <CubesLoader size={24} color="#fff" />
+              <CubesLoader size={24} color={palette.white} />
             ) : (
               'Show more'
             )}

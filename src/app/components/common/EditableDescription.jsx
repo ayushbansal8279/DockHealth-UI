@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { capitalize } from '../../helpers/capitalize';
 import EditIcon from '../../img/edit.svg';
+import palette from '../../palette';
 
 const StyledTextField = styled(TextField).attrs({
   variant: 'outlined',
@@ -22,10 +23,10 @@ const StyledTextField = styled(TextField).attrs({
 
   && textarea {
     font-size: inherit;
-    color: #303538;
+    color: ${palette.unknownGrey1};
     border: 0;
     box-shadow: none;
-    background: rgb(244, 244, 246);
+    background: ${palette.coolGrey4};
     border-radius: 4px;
     margin: 0;
     padding: 8px;
@@ -42,7 +43,7 @@ const StyledEditIconContainer = styled.div`
   && {
     align-items: center;
     display: inline-flex;
-    fill: #000;
+    fill: ${palette.black};
     height: 22px;
     margin-left: 8px;
     object-fit: contain;
@@ -68,7 +69,7 @@ const StyledNote = styled.div`
 `;
 
 const StyledPlaceholderNote = styled(StyledNote)`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
 `;
 
 const NoteValueContainer = styled.span`
@@ -77,14 +78,15 @@ const NoteValueContainer = styled.span`
 `;
 
 const EditedLabel = styled.span`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   font-size: 0.875rem;
   margin-left: 0.375rem;
   white-space: nowrap;
 `;
 
 const StyledNoteStrikethrough = styled.div`
-  background-color: ${props => (props.hasValue ? '#303538' : '#ababb2')};
+  background-color: ${props =>
+    props.hasValue ? palette.unknownGrey1 : palette.unknownGrey5};
   left: 0;
   height: 1px;
   position: absolute;

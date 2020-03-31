@@ -21,31 +21,32 @@ import {
   StyledVerticalDivider,
 } from './NewTaskDrawer.Styled';
 import NewTaskDrawerTopSection from './NewTaskDrawer.TopSection';
+import { getPriorityColor } from '../../palette';
 
 const statusSelectData = [
   {
     key: 'no-status',
     value: null,
     label: 'No Status',
-    color: '#808080',
+    color: getPriorityColor(null),
   },
   {
     key: 'in-progress',
     value: 'IN_PROGRESS',
     label: 'In Progress',
-    color: '#00a73c',
+    color: getPriorityColor('IN_PROGRESS'),
   },
   {
     key: 'planned',
     value: 'PLANNED',
     label: 'Planned',
-    color: '#f6b039',
+    color: getPriorityColor('PLANNED'),
   },
   {
     key: 'on-hold',
     value: 'ON_HOLD',
     label: 'On Hold',
-    color: '#dc143c',
+    color: getPriorityColor('ON_HOLD'),
   },
 ];
 

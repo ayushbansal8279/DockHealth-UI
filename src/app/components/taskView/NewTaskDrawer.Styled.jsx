@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
 import styled from 'styled-components';
+import palette, { opacify } from '../../palette';
 
 export const OuterDrawerContainer = styled.div`
   height: ${props => props.height}px;
@@ -40,21 +41,21 @@ export const ParentInfoContainer = styled.div`
 `;
 
 export const ParentRead = styled.div`
-  color: #d9036b;
+  color: ${palette.vividPink};
   font-size: 0.625rem;
 `;
 
 export const ParentDescription = styled.div`
-  color: #303538;
+  color: ${palette.unknownGrey1};
   font-size: 1.25rem;
   font-weight: bold;
 `;
 
 export const SubtaskInfoContainer = styled(ParentInfoContainer)`
   align-items: center;
-  background-color: #d4f3ff;
+  background-color: ${palette.paleBlue};
   border-top: 0.125rem solid transparent;
-  ${props => props.topBorderActive && 'border-top-color: #d9036b;'}
+  ${props => props.topBorderActive && `border-top-color: ${palette.vividPink};`}
   display: flex;
   justify-content: space-between;
   position: relative;
@@ -62,20 +63,20 @@ export const SubtaskInfoContainer = styled(ParentInfoContainer)`
 `;
 
 export const SubtaskLabel = styled.div`
-  color: #303538;
+  color: ${palette.unknownGrey1};
   font-size: 1.25rem;
   line-height: 1;
   height: 1.25rem;
 `;
 
 export const SubtaskCloseContainer = styled.div`
-  color: rgba(48, 53, 56, 0.54);
+  color: ${opacify(palette.unknownGrey1, 0.54)};
   cursor: pointer;
   font-size: 2rem;
 `;
 
 export const TopLabel = styled.div`
-  color: #000;
+  color: ${palette.black};
   font-size: 24px;
   line-height: 44px;
   margin-bottom: 0.75rem;
@@ -93,7 +94,8 @@ export const FormSectionNoBorder = styled(Grid)`
 `;
 
 export const FormSectionDivider = styled.div`
-  background-color: ${props => (props.active ? '#d9036b' : '#ddf2f7')};
+  background-color: ${props =>
+    props.active ? palette.vividPink : palette.unknownGrey2};
   height: ${props => (props.shown ? '0.0625rem' : 0)};
   position: relative;
   transition: background-color 0.25s ease-out;
@@ -121,12 +123,12 @@ const FormSectionElement = ({
 
 const formSectionStyles = {
   root: {
-    backgroundColor: '#fff',
-    border: '2px solid #ddf2f7',
+    backgroundColor: palette.white,
+    border: `2px solid ${palette.unknownGrey2}`,
     transition: 'border 0.25s ease-out',
   },
   topBorderActive: {
-    borderTopColor: '#d9036b',
+    borderTopColor: palette.vividPink,
   },
   borderless: {
     borderWidth: 0,
@@ -153,9 +155,11 @@ export const StatusSelect = styled.div`
 
 export const StyledButton = styled(Button)`
   && {
-    ${props => props.variant === 'contained' && 'background-color: #007cab;'}
+    ${props =>
+      props.variant === 'contained' && `background-color: ${palette.cyanBlue};`}
     box-shadow: none;
-    color: ${props => (props.variant === 'contained' ? '#fff' : '#009fcd')};
+    color: ${props =>
+      props.variant === 'contained' ? palette.white : palette.lightCyanBlue};
     font-size: ${props => (props.variant === 'contained' ? 1 : 0.875)}rem;
     ${props => props.variant === 'contained' && 'font-weight: bold;'}
     height: 2rem;
@@ -167,7 +171,7 @@ export const StyledButton = styled(Button)`
     ${props =>
       props.variant === 'contained' &&
       `&:hover {
-      background-color: #009fcd;
+      background-color: ${palette.lightCyanBlue};
       filter: brightness(1.1);
     }`}
   }
@@ -197,9 +201,9 @@ export const AutoSaveContainer = styled.div`
 
 export const AutoSaveLabel = styled.div`
   align-items: center;
-  background-color: #d9036b;
+  background-color: ${palette.vividPink};
   border-radius: 0 0 0.5rem 0.5rem;
-  color: #fff;
+  color: ${palette.white};
   display: flex;
   height: 1.5rem;
   left: 50%;
@@ -212,7 +216,7 @@ export const AutoSaveLabel = styled.div`
 `;
 
 export const StyledVerticalDivider = styled.div`
-  background-color: #acb6c4;
+  background-color: ${palette.coolGrey2};
   height: 2rem;
   width: 0.0625rem;
 `;

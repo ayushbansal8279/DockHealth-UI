@@ -2,21 +2,22 @@ import { Switch } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import palette from '../../palette';
 
 const StyledSwitch = withStyles({
   icon: {
-    color: '#f1f1f1',
+    color: palette.coolGrey4,
   },
   iconChecked: {
-    color: '#2a4a70',
+    color: palette.veryDarkBlue,
   },
   bar: {
-    backgroundColor: '#221f1f',
+    backgroundColor: palette.veryDarkBlue,
     opacity: 0.26,
   },
   checked: {
     '&& + $bar': {
-      backgroundColor: '#2a4a70',
+      backgroundColor: palette.veryDarkBlue,
       opacity: 0.5,
     },
   },

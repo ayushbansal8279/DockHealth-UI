@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import palette, { opacify } from '../../palette';
 
 const INITIAL_AVATAR_SIZE = 110;
 const getScaledSize = ({ normalSize, propSize }) =>
@@ -8,10 +9,12 @@ const getScaledSize = ({ normalSize, propSize }) =>
 
 export const AvatarContainer = styled.div`
   align-items: center;
-  background-color: #fff;
-  border: 2px solid ${props => props.color ?? '#007cab'};
+  background-color: ${palette.white};
+  border: 2px solid ${props => props.color ?? palette.cyanBlue};
   border-radius: 50%;
-  ${props => props.withShadow && 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)'};
+  ${props =>
+    props.withShadow &&
+    `box-shadow: 0px 4px 4px ${opacify(palette.black, 0.25)}`};
   cursor: ${props => (props.withCursor ? 'pointer' : 'default')};
   display: inline-flex;
   min-height: ${props => props.size ?? 110}px;
@@ -26,7 +29,7 @@ export const AvatarContainer = styled.div`
 
 export const InnerAvatarContainer = styled.div`
   align-items: center;
-  background-color: ${props => props.color ?? '#007cab'};
+  background-color: ${props => props.color ?? palette.cyanBlue};
   border: ${props =>
     props.padded
       ? `${getScaledSize({
@@ -35,7 +38,7 @@ export const InnerAvatarContainer = styled.div`
         })}px solid #ffffff`
       : 0};
   border-radius: 50%;
-  color: #fff;
+  color: ${palette.white};
   display: flex;
   font-family: 'Montserrat', sans-serif;
   font-size: ${({ size }) =>
@@ -60,8 +63,8 @@ export const AvatarImageContainer = styled.img`
 
 export const CameraContainer = styled.div`
   align-items: center;
-  background-color: #fff;
-  border: 2px solid #007cab;
+  background-color: ${palette.white};
+  border: 2px solid ${palette.cyanBlue};
   border-radius: 50%;
   display: flex;
   height: ${({ size }) => getScaledSize({ normalSize: 40, propSize: size })}px;

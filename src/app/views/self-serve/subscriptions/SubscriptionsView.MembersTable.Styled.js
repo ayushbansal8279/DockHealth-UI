@@ -1,5 +1,6 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
+import palette from '../../../palette';
 import { H3 } from './SubscriptionsView.Styled';
 
 export const MembersTableContainer = styled.div`
@@ -19,7 +20,7 @@ export const MemberTable = styled.table`
     }
 
     & thead {
-      background: #efeff0;
+      background: ${palette.coolGrey3};
 
       & tr {
         background: transparent;
@@ -29,8 +30,8 @@ export const MemberTable = styled.table`
 
       & th {
         background: transparent;
-        border-bottom: 0.0625rem #d7d7dc solid;
-        color: #4a4a4a;
+        border-bottom: 0.0625rem ${palette.coolGrey3} solid;
+        color: ${palette.mediumGrey};
         font-size: 0.875rem;
         font-weight: 600;
         vertical-align: middle;
@@ -44,11 +45,11 @@ export const MemberTable = styled.table`
       }
 
       & tr:nth-child(even) {
-        background: #fff;
+        background: ${palette.white};
       }
 
       & tr:nth-child(odd) {
-        background: #fafafb;
+        background: ${palette.coolGrey4};
       }
 
       ${props =>
@@ -58,7 +59,7 @@ export const MemberTable = styled.table`
       }`}
 
       & td {
-        color: #303538;
+        color: ${palette.unknownGrey1};
         font-size: 0.875rem;
       }
     }
@@ -82,7 +83,7 @@ export const SubscriptionStatusSwitchLabel = styled(H3)`
 
 export const SwitcherContainer = styled.div`
   align-items: center;
-  background-color: #f8f8f9;
+  background-color: ${palette.coolGrey4};
   border-radius: 0.25rem;
   cursor: pointer;
   display: flex;
@@ -96,7 +97,7 @@ export const SwitcherContainer = styled.div`
 
 export const SwitcherChevronContainer = styled.div`
   align-items: center;
-  background-color: #dedee2;
+  background-color: ${palette.unknownGrey6};
   border-radius: 0.25rem;
   display: flex;
   height: 100%;

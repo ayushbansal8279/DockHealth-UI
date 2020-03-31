@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import CalendarIcon from '../../img/calendar.svg';
+import palette, { opacify } from '../../palette';
 import TimeSelect from './TimeSelect';
 
 const StyledPopover = styled(Popover).attrs({ classes: { paper: 'paper' } })`
@@ -16,7 +17,8 @@ const StyledPopover = styled(Popover).attrs({ classes: { paper: 'paper' } })`
 
 const Header = styled.div`
   align-items: center;
-  background: ${({ isOverdue }) => (isOverdue ? '#d9036b' : '#2a4a70')};
+  background: ${({ isOverdue }) =>
+    isOverdue ? palette.vividPink : palette.veryDarkBlue};
   display: flex;
   flex-shrink: 0;
   flex-grow: 0;
@@ -29,7 +31,7 @@ const Header = styled.div`
 
 const HeaderClose = styled.div`
   align-items: center;
-  color: #fff;
+  color: ${palette.white};
   display: flex;
   font-size: 1.5rem;
   font-weight: bold;
@@ -40,7 +42,7 @@ const HeaderClose = styled.div`
 
 const HeaderTitle = styled.strong`
   margin-left: 15px;
-  color: #fff;
+  color: ${palette.white};
   font-size: 18px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -113,7 +115,7 @@ const ButtonContainer = styled.div`
 
 const DayButton = styled.div`
   align-items: center;
-  color: rgba(0, 0, 0, 0.87);
+  color: ${opacify(palette.black, 0.87)};
   cursor: pointer;
   display: flex;
   font-size: 0.75rem;
@@ -123,14 +125,16 @@ const DayButton = styled.div`
   position: relative;
   width: 2.25rem;
 
-  ${props => props.pastDay && 'color: rgba(48, 53, 56, 0.5);'}
-  ${props => props.notShown && 'color: rgba(48, 53, 56, 0.1);'}
+  ${props => props.pastDay && `color: ${opacify(palette.unknownGrey1, 0.5)};`}
+  ${props => props.notShown && `color: ${opacify(palette.unknownGrey1, 0.1)};`}
   ${props =>
     props.current &&
-    'background-color: rgba(42, 74, 112, 0.3); color: #2e3a43; font-weight: bold;'}
+    `background-color: ${opacify(palette.veryDarkBlue, 0.3)}; color: ${
+      palette.greyBlue
+    }; font-weight: bold;`}
   ${props =>
     props.selected &&
-    'background-color: #007CAB; border-radius: 50%; color: #fff; font-weight: bold;'}
+    `background-color: ${palette.cyanBlue}; border-radius: 50%; color: ${palette.white}; font-weight: bold;`}
 `;
 
 const DayButtonLabel = styled.div`

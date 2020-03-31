@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import palette from '../../../../palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -21,7 +22,7 @@ export const H4 = styled.h4`
 `;
 
 export const SubscriptionsPlansViewContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   min-height: 100%;
   left: 0;
   padding: 2.625rem 4.625rem;
@@ -31,7 +32,7 @@ export const SubscriptionsPlansViewContainer = styled.div`
 `;
 
 export const Title = styled(H1)`
-  color: #fff;
+  color: ${palette.white};
   padding-left: 2rem;
 `;
 

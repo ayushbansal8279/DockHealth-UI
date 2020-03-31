@@ -1,8 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
-import Member from './Member';
 import ProfileIcon from '../../img/profile.svg';
+import palette from '../../palette';
+import Member from './Member';
 
 const AssignedMember = styled(Member)`
   && {
@@ -21,7 +22,7 @@ const MemberSlot = ({ member, onClick, small }) =>
       onClick={onClick}
       alt="Unassigned"
       small={small}
-      color="#DEDEE2"
+      color={palette.unknownGrey6}
     >
       <img
         src={ProfileIcon}

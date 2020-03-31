@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
 import styled from 'styled-components';
+import palette from '../../../palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -34,7 +35,7 @@ export const H5 = styled.h5`
 `;
 
 export const Title = styled(H1)`
-  color: #fff;
+  color: ${palette.white};
   padding-left: 2rem;
 `;
 
@@ -51,7 +52,7 @@ export const Spacing2 = styled(Spacing)`
 `;
 
 export const SubscriptionPaymentViewOuterContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   display: flex;
   justify-content: center;
   left: 0;
@@ -62,7 +63,7 @@ export const SubscriptionPaymentViewOuterContainer = styled.div`
 `;
 
 export const SubscriptionPaymentViewContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   max-width: 1200px;
   padding: 3rem;
   width: 1200px;
@@ -76,11 +77,11 @@ export const BillingButton = withStyles({
     marginLeft: '1rem',
   },
   contained: {
-    backgroundColor: '#074a86',
-    color: '#fff',
+    backgroundColor: palette.darkBlue,
+    color: palette.white,
   },
   outlined: {
-    color: '#074a86',
+    color: palette.darkBlue,
   },
   fullWidth: {
     width: '100%',
@@ -96,8 +97,8 @@ export const BillingButton = withStyles({
 });
 
 export const PricingGridContainer = styled.div`
-  background-color: #f8f8f9;
-  border: 0.0625rem solid #ededf0;
+  background-color: ${palette.coolGrey4};
+  border: 0.0625rem solid ${palette.unknownGrey4};
   border-radius: 0.25rem;
   display: grid;
   grid-column-gap: 1rem;
@@ -106,7 +107,7 @@ export const PricingGridContainer = styled.div`
 `;
 
 export const PricingItemDivider = styled.div`
-  background-color: #dedee2;
+  background-color: ${palette.unknownGrey6};
   grid-column-start: 1;
   grid-column-end: 4;
   height: 0.0625rem;
@@ -119,12 +120,12 @@ export const PricingItemVerticallyExpanded = styled.div`
 `;
 
 export const Anchor = styled.a`
-  color: #007cab;
+  color: ${palette.cyanBlue};
   filter: brightness(1);
   transition: all 0.25s ease-out;
 
   &:hover {
-    color: #007cab;
+    color: ${palette.cyanBlue};
     filter: brightness(1.35);
   }
 `;

@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import SafariFixGrid from '../../../../components/common/SafariFixGrid';
 import SubscriptionPlanExtendedIcon from '../../../../img/subscription-plan-extended.svg';
 import SubscriptionPlanStandardIcon from '../../../../img/subscription-plan-standard.svg';
+import palette from '../../../../palette';
 import {
   BigPriceLabel,
   H2,
@@ -54,7 +55,7 @@ const CardFeatureRow = styled.div`
   width: 100%;
 
   &:nth-child(even) {
-    background-color: #ededf0;
+    background-color: ${palette.unknownGrey4};
   }
 `;
 
@@ -65,14 +66,14 @@ const CardFeaturesSmallContainer = styled.div`
 
 const IncludedFeatureRow = styled.div`
   align-items: center;
-  color: #000;
+  color: ${palette.black};
   display: flex;
   font-size: 0.875rem;
   padding: 0.25rem;
 `;
 
 const NotIncludedFeatureRow = styled(IncludedFeatureRow)`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
 `;
 
 const IncludedFeatureHeader = styled(IncludedFeatureRow)`
@@ -84,7 +85,7 @@ const ChatNowLabel = styled.div`
   transition: all 0.25s ease;
 
   &:hover {
-    color: #0ca1c7;
+    color: ${palette.lighterCyanBlue};
   }
 `;
 

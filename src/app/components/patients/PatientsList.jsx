@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { highlightPatient } from '../../actions/patient-actions';
 import PatientsDetailsIcon from '../../img/details.svg';
 import PatientsEmptyIcon from '../../img/patients-empty.svg';
+import palette from '../../palette';
 
 const EmptyListContainer = styled.div`
   padding: 2rem;
@@ -36,7 +37,7 @@ const EmptyList = () => (
         <a
           href="mailto:support@dock.health?Subject=Dock%20Support"
           target="_top"
-          style={{ color: '#007cab' }}
+          style={{ color: palette.cyanBlue }}
         >
           support@dock.health
         </a>
@@ -57,7 +58,7 @@ const EmptyFilteredList = () => (
 );
 
 const NonEmptyListTable = styled.div`
-  color: #303538;
+  color: ${palette.unknownGrey1};
   display: grid;
   grid-auto-rows: min-content;
   grid-row-gap: 0.25rem;
@@ -67,7 +68,8 @@ const NonEmptyListTable = styled.div`
 `;
 
 const ListRow = styled.div`
-  background: ${props => (props.isHighlighted ? '#a6dcea' : '#fff')};
+  background: ${props =>
+    props.isHighlighted ? palette.softCyan : palette.white};
   cursor: pointer;
   grid-template-columns: ${props =>
     props.isCompact ? '0.75fr 0.25fr' : '0.5fr 0.15fr 0.15fr 0.1fr 0.1fr 4rem'};
@@ -103,7 +105,7 @@ const ListHeader = styled(ListRow)`
 `;
 
 const StyledLink = styled(Link)`
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   filter: brightness(1);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -111,14 +113,14 @@ const StyledLink = styled(Link)`
   white-space: nowrap;
 
   &:hover {
-    color: #0ca1c7;
+    color: ${palette.lighterCyanBlue};
     filter: brightness(1.35);
   }
 `;
 
 const QuickViewCell = styled.div`
   align-items: center;
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   display: flex;
   font-size: 1rem;
   font-weight: 600;

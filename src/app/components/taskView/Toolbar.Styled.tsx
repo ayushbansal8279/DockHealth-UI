@@ -7,10 +7,11 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
+import palette from '../../palette';
 
 const StyledSwitchContainer = withStyles({
   root: {
-    border: '0.125rem solid #fdad00',
+    border: `0.125rem solid ${palette.orange}`,
     height: '2rem',
     padding: '0.25rem',
     width: '2rem',
@@ -18,7 +19,7 @@ const StyledSwitchContainer = withStyles({
 })(IconButton);
 
 const SwitchDash = styled.div`
-  background-color: #00a2e5;
+  background-color: ${palette.brightBlue};
   border-radius: 0.125rem;
   height: 0.125rem;
   margin: 0.0625rem 0;
@@ -41,14 +42,14 @@ export const SlimViewToggle = ({ slimView, ...props }: SlimViewToggleProps) => (
 
 export const ToolbarLabel = withStyles({
   root: {
-    color: '#00A2E5',
+    color: palette.brightBlue,
     display: 'inline-block',
   },
 })(Typography);
 
 export const ToolbarAvatarContainer = styled.div`
   align-items: center;
-  border: 0.125rem solid #fff;
+  border: 0.125rem solid ${palette.white};
   border-radius: 100%;
   display: flex;
   height: 100%;
@@ -59,9 +60,9 @@ export const ToolbarAvatarContainer = styled.div`
 
 export const MoreMembersButtonContainer = styled.div`
   align-items: center;
-  border: 0.125rem solid #00a2e5;
+  border: 0.125rem solid ${palette.brightBlue};
   border-radius: 2.5rem;
-  color: #00a2e5;
+  color: ${palette.brightBlue};
   display: flex;
   font-size: 0.875rem;
   font-weight: 300;

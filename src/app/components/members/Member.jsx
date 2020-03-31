@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
+import palette from '../../palette';
 import { MontserratTypography } from '../../theme-montserrat';
 import UniversalTooltip from '../common/UniversalTooltip';
 
@@ -12,10 +13,10 @@ export const StyledAvatar = styled(Avatar).attrs({ classes: { img: 'img' } })`
     height: 55px;
     font-size: 16px;
     font-weight: bold;
-    background: ${({ color }) => color || 'white'};
+    background: ${({ color }) => color || palette.white};
     box-sizing: border-box;
 
-    border: 2px solid ${({ color }) => color || '#00a73c'};
+    border: 2px solid ${({ color }) => color || palette.memberGreen};
     padding: 3px;
     color: white;
   }
@@ -55,7 +56,7 @@ const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
 const Member = ({ onClick, member, children, className, style, color }) => {
   const alt = member && `${member.firstName} ${member.lastName}`;
   const source = member?.profileThumbnailPictureHash && getThumbnailUrl(member);
-  const memberColor = member?.bubbleColor || '#00a73c';
+  const memberColor = member?.bubbleColor || palette.memberGreen;
 
   const avatarContainerReference = useRef(null);
   const [

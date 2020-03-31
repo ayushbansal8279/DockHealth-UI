@@ -7,6 +7,8 @@ import { toggleListNotifications } from '../../actions/tasklist-actions';
 import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 import { showAlert } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
+import Lightbulb from '../../img/lightbulb-grey.svg';
+import palette from '../../palette';
 import { RobotoTypography } from '../../theme';
 import AdornedButton from '../common/AdornedButton';
 import Avatar from '../common/Avatar';
@@ -14,7 +16,6 @@ import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
 import UniversalTooltip from '../common/UniversalTooltip';
-import Lightbulb from '../../img/lightbulb-grey.svg';
 import InviteMemberPopover from '../members/InviteMemberPopover';
 import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
@@ -46,7 +47,7 @@ const MemberAvatar = ({ member, taskListMembers }) => {
       ({ userIdentifier }) => member?.userIdentifier === userIdentifier,
     ) || {};
 
-  const bubbleColor = taskListMember?.bubbleColor || '#00a73c';
+  const bubbleColor = taskListMember?.bubbleColor || palette.memberGreen;
 
   const memberName = `${taskListMember?.firstName ??
     ''} ${taskListMember?.lastName ?? ''}`.trim();
@@ -232,7 +233,7 @@ export default ({
               <ToolbarLabel
                 variant="body1"
                 component="span"
-                style={{ color: '#8492a4' }}
+                style={{ color: palette.coolGrey1 }}
               >
                 {currentFilterDescription}
               </ToolbarLabel>

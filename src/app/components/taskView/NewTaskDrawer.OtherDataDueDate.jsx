@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import palette from '../../palette';
 import DateTimeSelect from '../common/DateTimeSelect';
 
 const DueDateClearButton = styled.div`
   align-items: center;
-  color: #e40909;
+  color: ${palette.error};
   cursor: pointer;
   display: inline-flex;
   font-size: 1rem;
@@ -53,7 +53,7 @@ export default ({
     {({ open }) => (
       <SectionButtonContainer>
         <SectionButton
-          color={isOverdue ? '#e40909' : undefined}
+          color={isOverdue ? palette.error : undefined}
           clickable
           onClick={open}
         >

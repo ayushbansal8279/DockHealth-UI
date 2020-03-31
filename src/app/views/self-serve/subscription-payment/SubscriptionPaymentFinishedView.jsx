@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -11,7 +11,6 @@ import {
 } from '../../../actions/organization-actions';
 import GenericHeader from '../../../components/common/GenericHeader';
 import {
-  BillingButton,
   H2,
   Spacing2,
   SubscriptionPaymentViewContainer,
@@ -26,9 +25,9 @@ const SaveBillingElement = () => (
   <>
     <Spacing2 />
     <Grid item sm={12} container justify="flex-end">
-      <BillingButton onClick={goToMainPage} variant="contained">
+      <Button onClick={goToMainPage} variant="contained">
         Let&apos;s do this
-      </BillingButton>
+      </Button>
     </Grid>
   </>
 );

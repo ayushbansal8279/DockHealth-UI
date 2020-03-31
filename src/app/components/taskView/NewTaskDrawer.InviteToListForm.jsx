@@ -4,12 +4,13 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { invitePersonToOrganization } from '../../actions/people-actions';
+import palette from '../../palette';
 import StyledInput from '../userProfileView/StyledInput';
 import { inviteValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
 const BottomFormLabel = styled.button`
   align-items: center;
-  color: #009fcd;
+  color: ${palette.lightCyanBlue};
   cursor: pointer;
   display: flex;
   height: 3.5rem;
@@ -47,7 +48,7 @@ const renderFormFieldDefinition = ({ key, label, size, ...props }) => {
   return (
     <Grid key={key} item xs={size ?? 12}>
       <StyledInput
-        backgroundColor="#fff"
+        backgroundColor={palette.white}
         containerHeight={3.5}
         containerMarginTop={0}
         fontSize={16}

@@ -1,19 +1,20 @@
 import { Typography } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import React from 'react';
+import palette from './palette';
 import themeCommonOverrides from './theme-components';
 
 const themeFactory = ({ fontWeight }) =>
   createMuiTheme({
     palette: {
       primary: {
-        main: '#0ca1c7',
+        main: palette.lighterCyanBlue,
       },
       secondary: {
-        main: '#8492a4',
+        main: palette.coolGrey1,
       },
       text: {
-        secondary: '#8492a4',
+        secondary: palette.coolGrey1,
       },
     },
     typography: {

@@ -9,6 +9,7 @@ import { v4 as uuid } from 'uuid';
 import { editPatientNote } from '../../actions/patient-actions';
 import { capitalize } from '../../helpers/capitalize';
 import { onPatientNoteEdited } from '../../helpers/ga-event-helper';
+import palette, { opacify } from '../../palette';
 import { themeMontserratNormal } from '../../theme-montserrat';
 import EditableDescription from '../common/EditableDescription';
 import Spacing from '../common/Spacing';
@@ -40,7 +41,7 @@ const NoteTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     textarea {
       height: inherit;
       box-shadow: none;
-      color: #2e3a43;
+      color: ${palette.greyBlue};
       :focus {
         border: none;
         background: none;
@@ -59,42 +60,42 @@ const NoteTextField = styled(({ InputProps, InputLabelProps, ...rest }) => (
     }
 
     .root {
-      background-color: rgba(243, 245, 246, 0.5);
+      background-color: ${opacify(palette.lightGrey, 0.5)};
       padding: 12px;
     }
 
     .disabled {
-      color: #2e3a43;
+      color: ${palette.greyBlue};
     }
 
     .asterisk {
-      color: #da0d71;
+      color: ${palette.error};
     }
 
     .shrink {
-      color: #ababb2;
+      color: ${palette.unknownGrey5};
     }
 
     .error {
-      color: #da0d71;
+      color: ${palette.error};
       background: none;
     }
 
     label {
-      color: #2e3a43;
+      color: ${palette.greyBlue};
     }
   }
 `;
 
 const EditableNoteDescription = styled(EditableDescription)`
   && {
-    color: #303538;
+    color: ${palette.unknownGrey1};
   }
 `;
 
 const NoteInfo = styled.div`
   font-size: 14px;
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
 `;
 
 const AddNote = props => (

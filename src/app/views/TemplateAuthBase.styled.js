@@ -1,9 +1,15 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
+import palette, { opacify } from '../palette';
 
 export const BackgroundContainer = styled.div`
   align-items: center;
-  background: linear-gradient(180deg, #0a0909 -21.76%, #125375 100%), #125375;
+  background: linear-gradient(
+      180deg,
+      ${palette.black} -21.76%,
+      ${palette.darkGreyBlue} 100%
+    ),
+    ${palette.darkGreyBlue};
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -20,7 +26,7 @@ export const BackgroundModalContainer = styled(Grid)`
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 6px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 2px 4px ${opacify(palette.black, 0.5)};
   height: 848px;
   max-height: 848px;
   max-width: 984px;
@@ -30,7 +36,7 @@ export const BackgroundModalContainer = styled(Grid)`
 `;
 
 export const BackgroundRectangleContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   display: flex;
   height: 100%;
   left: 0;
@@ -42,8 +48,8 @@ export const BackgroundRectangleContainer = styled.div`
 `;
 
 export const SlantedBackgroundRectangleContainer = styled.div`
-  background-color: #fff;
-  box-shadow: 0px 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
+  background-color: ${palette.white};
+  box-shadow: 0px 0.125rem 0.25rem ${opacify(palette.black, 0.2)};
   height: 100%;
   left: 0;
   position: absolute;

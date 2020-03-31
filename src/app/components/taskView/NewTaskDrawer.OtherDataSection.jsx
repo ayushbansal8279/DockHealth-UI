@@ -2,11 +2,11 @@ import { List, ListItem, Popover } from '@material-ui/core';
 import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
-
+import palette from '../../palette';
 import CubesLoader from '../common/CubesLoader';
+import NewTaskDrawerAttachmentsList from './NewTaskDrawer.AttachmentsList';
 import NewTaskDrawerOtherDataDueDate from './NewTaskDrawer.OtherDataDueDate';
 import initializeNewTaskDrawerOtherDataSectionHooks from './NewTaskDrawer.OtherDataSectionHooks';
-import NewTaskDrawerAttachmentsList from './NewTaskDrawer.AttachmentsList';
 
 const OtherDataSectionContainer = styled.div`
   padding: 1rem 1.5rem;
@@ -27,13 +27,13 @@ const SectionButtonContainer = styled.div`
 `;
 
 const SectionButton = styled.span`
-  color: ${props => props.color ?? '#2e3a43'};
+  color: ${props => props.color ?? palette.greyBlue};
   cursor: ${props => (props.clickable ? 'pointer' : 'defualt')};
   font-size: 0.875rem;
 `;
 
 const SectionLabel = styled.div`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   flex: 2;
   font-size: 0.875rem;
   padding-right: 0.25rem;
@@ -44,7 +44,7 @@ const HistoryLabel = styled(SectionButton)`
 `;
 
 const HistorySublabel = styled(HistoryLabel)`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   font-size: 0.75rem;
 `;
 
@@ -249,7 +249,7 @@ export default ({
           {task?.taskIdentifier ? (
             <SectionButton
               clickable
-              color="#0ca1c7"
+              color={palette.lighterCyanBlue}
               onClick={
                 isHistoryLoading ? undefined : onToggleHistoryButtonClicked
               }

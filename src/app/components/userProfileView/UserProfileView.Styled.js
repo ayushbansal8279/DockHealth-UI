@@ -2,11 +2,12 @@ import { Button, Grid, ListItem, Popover } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router';
 import styled from 'styled-components';
+import palette, { opacify } from '../../palette';
 
 export const FormContainer = styled.form``;
 
 export const ViewContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   padding: 40px 0;
   position: relative;
 `;
@@ -26,7 +27,7 @@ export const PaddedButtonLabel = styled.span`
 export const SmallButton = styled(Button)`
   && {
     align-items: center;
-    background-color: #125375;
+    background-color: ${palette.darkGreyBlue};
     border-radius: 0;
     color: white;
     cursor: pointer;
@@ -42,7 +43,7 @@ export const SmallButton = styled(Button)`
     width: 200px;
 
     &:hover {
-      background-color: #125375;
+      background-color: ${palette.darkGreyBlue};
       filter: brightness(1.25);
     }
 
@@ -94,7 +95,7 @@ export const OuterAvatarContainer = styled.div`
 `;
 
 export const UserAvatarSupplement = styled.div`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   cursor: pointer;
   margin-left: 0.6rem;
   padding: 1rem;
@@ -102,14 +103,14 @@ export const UserAvatarSupplement = styled.div`
 `;
 
 export const PlainLink = styled.a`
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   font-size: 20px;
   ${props => props.topPadded && 'margin-top: 4rem;'}
   text-decoration: none;
   transition: filter 0.2s ease;
 
   &:hover {
-    color: #0ca1c7;
+    color: ${palette.lighterCyanBlue};
     filter: brightness(1.25);
   }
 `;
@@ -122,7 +123,7 @@ export const StyledLinkLabel = styled.div`
 `;
 
 export const StyledRouterLink = styled(Link)`
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   display: inline-flex;
   font-size: 20px;
   margin-top: 4rem;
@@ -130,15 +131,15 @@ export const StyledRouterLink = styled(Link)`
   transition: filter 0.2s ease;
 
   &:hover {
-    color: #0ca1c7;
+    color: ${palette.lighterCyanBlue};
     filter: brightness(1.25);
   }
 `;
 
 export const LogoutHeaderButton = styled(Link)`
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background-color: ${opacify(palette.white, 0.2)};
+  color: ${palette.white};
   display: flex;
   font-size: 14px;
   justify-content: flex-start;
@@ -146,8 +147,8 @@ export const LogoutHeaderButton = styled(Link)`
   width: 190px;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    color: #fff;
+    background-color: ${opacify(palette.white, 0.3)};
+    color: ${palette.white};
   }
 
   & > span:last-of-type {
@@ -158,7 +159,7 @@ export const LogoutHeaderButton = styled(Link)`
 export const UploadImagePopover = withStyles({
   paper: {
     alignItems: 'center',
-    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+    boxShadow: `0px 4px 4px ${opacify(palette.black, 0.25)}`,
     display: 'flex',
     minHeight: 380,
     overflow: 'hidden',
@@ -178,12 +179,12 @@ export const UploadImagePopoverGrid = styled(Grid)`
 `;
 
 export const UploadImagePopoverLabel = styled.div`
-  color: #303538;
+  color: ${palette.unknownGrey1};
   font-size: 20px;
 `;
 
 export const UploadImagePopoverClose = styled.div`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   cursor: pointer;
   font-size: 24px;
   line-height: 24px;

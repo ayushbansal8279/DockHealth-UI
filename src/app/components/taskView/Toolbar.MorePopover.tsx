@@ -1,11 +1,12 @@
 import { Button, Fade, Grid } from '@material-ui/core';
 import React from 'react';
 import NotificationsCheck from '../../img/toolbar-notifications-check';
+import palette from '../../palette';
 import ListPopover from '../common/ListPopover';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
-import { ToolbarLabel } from './Toolbar.Styled';
 import { printTaskPdf } from '../task-pdf/TaskPdfDocument';
+import { ToolbarLabel } from './Toolbar.Styled';
 
 interface OnPrintClickProps {
   tasks: Array<object>;
@@ -73,7 +74,7 @@ const MorePopover = ({
     label: '',
     button: false,
     style: {
-      borderBottom: '0.0625rem solid #e5e9f2',
+      borderBottom: `0.0625rem solid ${palette.coolGrey3}`,
       margin: '0.25rem 0',
       padding: 0,
     },

@@ -1,6 +1,7 @@
 import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
+import palette, { opacify } from '../palette';
 
 export const SearchContainer = styled.div`
   margin: 2rem 0;
@@ -13,10 +14,10 @@ export const SearchContainer = styled.div`
 
 export const InvitePeopleButton = styled.button`
   align-items: center;
-  background-color: #d9036b;
+  background-color: ${palette.vividPink};
   border-radius: 50%;
-  box-shadow: 0 0.25rem 0.5rem rgba(46, 58, 67, 0.2);
-  color: #fff;
+  box-shadow: 0 0.25rem 0.5rem ${opacify(palette.greyBlue, 0.2)};
+  color: ${palette.white};
   display: flex;
   height: 3.375rem;
   justify-content: center;
@@ -24,7 +25,7 @@ export const InvitePeopleButton = styled.button`
 `;
 
 export const InvitePeoplePopoverContainer = styled.div`
-  background-color: #f3f5f6;
+  background-color: ${palette.lightGrey};
 `;
 
 export const InvitePeoplePopoverSection = styled.div`
@@ -34,20 +35,20 @@ export const InvitePeoplePopoverSection = styled.div`
 `;
 
 export const InvitePopoverCloseButton = styled.button`
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   cursor: pointer;
   font-size: 2rem;
 `;
 
 export const InvitePopoverDivider = styled.div`
-  background-color: #dedee2;
+  background-color: ${palette.unknownGrey6};
   height: 0.0625rem;
   width: 100%;
 `;
 
 export const StyledTextField = withStyles({
   root: {
-    backgroundColor: '#fff',
+    backgroundColor: palette.white,
     border: '0',
   },
 })(TextField);
@@ -62,7 +63,7 @@ export const PopoverSectionButtonContainer = styled.div`
 
 export const PopoverSectionButton = styled.button`
   align-items: center;
-  color: #009fcd;
+  color: ${palette.lightCyanBlue};
   cursor: pointer;
   display: flex;
   font-size: 0.875rem;

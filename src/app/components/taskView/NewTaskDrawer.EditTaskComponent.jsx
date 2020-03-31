@@ -1,16 +1,16 @@
 import linkifyElement from 'linkifyjs/element';
 import escape from 'lodash.escape';
+import { prop } from 'ramda';
 import React, { Component, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
-import { prop } from 'ramda';
 import { markComplete } from '../../actions/task-actions';
 import {
   formatLinkifyHref,
   mentionifyDescription,
 } from '../../helpers/utility-functions';
+import palette from '../../palette';
 import TaskCheckbox from '../task/TaskCheckbox';
 
 const EditTaskContainer = styled.div`
@@ -22,7 +22,7 @@ const EditTaskContainer = styled.div`
 
 const EditTaskDescriptionElement = styled.div`
   box-sizing: border-box;
-  color: #303538;
+  color: ${palette.unknownGrey1};
   cursor: text;
   flex: 1;
   font-size: 1rem;
@@ -36,8 +36,8 @@ const EditTaskDescriptionElement = styled.div`
   ${props =>
     props.contentEditable &&
     `
-  background-color: #f3f5f6;
-  border: 1px solid #dedee2;
+  background-color: ${palette.lightGrey};
+  border: 1px solid ${palette.unknownGrey6};
   `}
 
   ${props =>
@@ -45,7 +45,7 @@ const EditTaskDescriptionElement = styled.div`
     `
   &::after {
     content: '(edited)';
-    color: #aaa9b0;
+    color: ${palette.coolGrey2};
     font-size: 0.875rem;
     font-weight: normal;
     padding-bottom: 0.25rem;

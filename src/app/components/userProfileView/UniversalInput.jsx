@@ -11,9 +11,10 @@ import { useFormContext } from 'react-hook-form';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
+import palette, { opacify } from '../../palette';
 
 export const ErrorLabel = styled.h4`
-  color: #e40909;
+  color: ${palette.error};
   font-size: 0.75rem;
   margin: 0;
   margin-bottom: 0.125rem;
@@ -22,15 +23,15 @@ export const ErrorLabel = styled.h4`
 
 export const UniversalFormControl = withStyles({
   root: {
-    backgroundColor: '#f9fafc',
+    backgroundColor: palette.coolGrey4,
     height: '4rem',
     transition: 'all 0.2s ease-out',
   },
   whiteBackground: {
-    backgroundColor: '#fff',
+    backgroundColor: palette.white,
   },
   error: {
-    backgroundColor: '#f3f5f6',
+    backgroundColor: palette.lightGrey,
   },
 })(({ classes, whiteBackground, error, ...props }) => {
   const className = clsx(
@@ -43,7 +44,7 @@ export const UniversalFormControl = withStyles({
 
 export const UniversalInputLabel = withStyles({
   root: {
-    color: '#2e3a43',
+    color: palette.greyBlue,
     pointerEvents: 'none',
     top: '50%',
     transform: 'translate(1rem, -50%) scale(1)',
@@ -52,35 +53,35 @@ export const UniversalInputLabel = withStyles({
   },
   required: {
     '& > span': {
-      color: '#f00',
+      color: palette.error,
     },
   },
   shrink: {
-    color: '#ababb2',
+    color: palette.unknownGrey5,
     top: '5%',
     transform: 'translate(1rem, 0.375rem) scale(1)',
     transformOrigin: 'center left',
     transition: 'all 200ms ease',
   },
   focused: {
-    color: '#ababb2 !important',
+    color: `${palette.unknownGrey5} !important`,
   },
 })(InputLabel);
 
 export const UniversalInputBase = withStyles({
   root: {
-    border: '0.0625rem solid #dedee200',
+    border: `0.0625rem solid ${opacify(palette.unknownGrey6, 0)}`,
     height: '100%',
     transition: 'all 0.2s ease-out',
     zIndex: 1,
   },
   error: {
-    border: '0.0625rem solid #e40909',
+    border: `0.0625rem solid ${palette.error}`,
   },
   focused: {
-    border: '0.0625rem solid #dedee2',
+    border: `0.0625rem solid ${palette.unknownGrey6}`,
     '&$error': {
-      border: '0.0625rem solid #e40909',
+      border: `0.0625rem solid ${palette.error}`,
     },
   },
   input: {
@@ -90,12 +91,12 @@ export const UniversalInputBase = withStyles({
     paddingBottom: 0,
     padding: '1.25rem 1rem',
     '&:focus': {
-      backgroundColor: '#f3f5f600',
+      backgroundColor: opacify(palette.lightGrey, 0),
       border: 0,
       boxShadow: 'none',
     },
     '&[readonly], &[disabled]': {
-      backgroundColor: '#f3f5f600',
+      backgroundColor: opacify(palette.lightGrey, 0),
       cursor: 'pointer',
     },
   },

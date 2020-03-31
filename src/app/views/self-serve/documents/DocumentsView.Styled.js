@@ -1,5 +1,6 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
+import palette from '../../../palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -27,13 +28,13 @@ export const H5 = styled.h5`
 `;
 
 export const Title = styled(H1)`
-  color: #fff;
+  color: ${palette.white};
   padding-left: 2rem;
 `;
 
 export const DocumentsViewContainer = styled(Grid)`
   && {
-    background-color: #fff;
+    background-color: ${palette.white};
     left: 0;
     min-height: 100%;
     padding: 2.625rem 4.625rem;
@@ -50,16 +51,16 @@ export const DocumentContainer = styled(Grid)`
 `;
 
 export const DocumentDescription = styled(H3)`
-  color: #e40909;
+  color: ${palette.error};
 `;
 
 export const DocumentLink = styled.a`
-  color: #00a2e5;
+  color: ${palette.brightBlue};
   filter: brightness(1);
   transition: all 0.25s ease-out;
 
   &:hover {
-    color: #007cab;
+    color: ${palette.cyanBlue};
     filter: brightness(1.35);
   }
 `;

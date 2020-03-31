@@ -1,4 +1,5 @@
 import styled from '@react-pdf/styled-components';
+import palette from '../../palette';
 
 export const TaskContainer = styled.View`
   align-items: center;
@@ -6,7 +7,7 @@ export const TaskContainer = styled.View`
   flex-flow: row wrap;
   height: 36pt;
   position: relative;
-  border-color: #dedee2;
+  border-color: ${palette.unknownGrey6};
   border-style: solid;
   border-width: 0;
 
@@ -17,7 +18,7 @@ export const TaskContainer = styled.View`
 `;
 
 export const SubtasksContainer = styled.View`
-  border: 1pt solid #ffffff;
+  border: 1pt solid ${palette.white};
   padding-left: 12pt;
   padding-right: 5pt;
 `;
@@ -52,13 +53,13 @@ export const TaskDescription = styled.Text`
 `;
 
 export const TaskSubLabel = styled.Text`
-  color: #5e6366;
+  color: ${palette.unknownGrey7};
   font-family: 'Open Sans';
   font-size: 7pt;
 `;
 
 export const EditedLabel = styled.Text`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   font-family: 'Open Sans';
   font-size: 7pt;
   margin-left: 2pt;
@@ -70,7 +71,7 @@ export const CheckboxContainer = styled.Image`
 `;
 
 export const PriorityStrip = styled.View`
-  background-color: #fb7c06;
+  background-color: ${palette.orangeJulius};
   height: 100%;
   left: 0;
   position: absolute;
@@ -81,7 +82,7 @@ export const PriorityStrip = styled.View`
 export const AvatarContainer = styled.View`
   align-items: center;
   display: flex;
-  border: 1pt solid ${props => props.color ?? '#dedee2'};
+  border: 1pt solid ${props => props.color ?? palette.unknownGrey6};
   border-radius: 28pt;
   height: 28pt;
   justify-content: center;
@@ -93,7 +94,7 @@ export const AvatarContainer = styled.View`
 export const Avatar = styled.View`
   align-items: center;
   display: flex;
-  background-color: ${props => props.color ?? '#dedee2'};
+  background-color: ${props => props.color ?? palette.unknownGrey6};
   border-radius: 23pt;
   height: 23pt;
   justify-content: center;
@@ -101,7 +102,7 @@ export const Avatar = styled.View`
 `;
 
 export const AvatarInitials = styled.Text`
-  color: #ffffff;
+  color: ${palette.white};
   font-family: 'Open Sans';
   font-size: 8pt;
   font-weight: bold;
@@ -143,7 +144,7 @@ export const SideContainer = styled(PatientContainer)`
 `;
 
 export const PatientLabel = styled.Text`
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   font-family: 'Open Sans';
   font-size: 7pt;
   max-height: 14pt;
@@ -151,7 +152,7 @@ export const PatientLabel = styled.Text`
 `;
 
 export const DueDateLabel = styled.Text`
-  color: ${props => (props.isOverdue ? '#f40707' : '#303538')};
+  color: ${props => (props.isOverdue ? palette.error : palette.unknownGrey1)};
   font-family: 'Open Sans';
   font-size: 7pt;
   max-height: 14pt;

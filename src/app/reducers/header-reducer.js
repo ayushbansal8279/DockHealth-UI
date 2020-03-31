@@ -1,9 +1,10 @@
 import { omit } from 'ramda';
 import { HIDE_HEADER, SET_HEADER, UNSET_HEADER } from '../actions/action-types';
+import palette from '../palette';
 
 const initialState = {
   show: false,
-  backgroundColor: '#fff',
+  backgroundColor: palette.white,
   layout: [],
 };
 

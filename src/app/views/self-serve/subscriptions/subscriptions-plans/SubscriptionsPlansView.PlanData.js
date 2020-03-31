@@ -1,3 +1,4 @@
+import palette from '../../../../palette';
 import { CARD_TYPES } from './SubscriptionsPlansView.PlanCard';
 
 export const SUBSCRIPTION_PLAN_KEYS = {
@@ -10,7 +11,7 @@ export const subscriptionPlanData = [
   {
     key: SUBSCRIPTION_PLAN_KEYS.STANDARD,
     planLabel: 'Dock',
-    inactiveBackgroundColor: '#DEDEE2',
+    inactiveBackgroundColor: palette.unknownGrey6,
     annualMonthlyPrice: 15,
     monthlyPrice: 20,
     cardType: CARD_TYPES.STANDARD,
@@ -20,7 +21,7 @@ export const subscriptionPlanData = [
   {
     key: SUBSCRIPTION_PLAN_KEYS.ENTERPRISE,
     planLabel: 'Custom/Enterprise',
-    inactiveBackgroundColor: '#DEDEE2',
+    inactiveBackgroundColor: palette.unknownGrey6,
     cardType: CARD_TYPES.ENTERPRISE,
     subscriptionPlan: 'PLAN_ENTERPRISE',
     selectable: false,

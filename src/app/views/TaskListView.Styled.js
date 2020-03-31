@@ -1,5 +1,6 @@
 import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
+import palette from '../palette';
 
 export const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -11,8 +12,8 @@ export const CubesLoaderContainer = styled.div`
 export const BlockItemContainer = styled.div`
   align-items: center;
   display: flex;
-  background-color: #fff;
-  border: 0.0625rem solid #e8ebef;
+  background-color: ${palette.white};
+  border: 0.0625rem solid ${palette.coolGrey3};
   flex-direction: column;
   justify-content: space-between;
   min-height: 6rem;

@@ -1,6 +1,7 @@
-import styled, { keyframes, css } from 'styled-components';
-import { motion } from 'framer-motion';
 import { Popover } from '@material-ui/core';
+import { motion } from 'framer-motion';
+import styled, { keyframes } from 'styled-components';
+import palette from '../../palette';
 
 export const TaskBodyMainContainer = styled.div`
   align-items: center;
@@ -10,7 +11,7 @@ export const TaskBodyMainContainer = styled.div`
 `;
 
 export const PatientsTasklistNew = styled(motion.div)`
-  color: #d9036b;
+  color: ${palette.vividPink};
   font-size: 0.625rem;
   font-variant: small-caps;
   line-height: 1;
@@ -19,7 +20,7 @@ export const PatientsTasklistNew = styled(motion.div)`
 export const PatientsTasklistDescription = styled.div`
   align-items: center;
   box-sizing: border-box;
-  color: #303538;
+  color: ${palette.unknownGrey1};
   display: inline-flex;
   font-size: 1rem;
   font-weight: bold;
@@ -46,12 +47,13 @@ export const PatientsTasklistDescription = styled.div`
 `;
 
 export const PatientsTaskListInnerDescription = styled.span`
-  ${props => !props.hasDescription && 'color: #ababb2;'}
+  ${props => !props.hasDescription && `color: ${palette.unknownGrey5};`}
   position: relative;
 `;
 
 export const PatientsTasklistStrikeThrough = styled.div`
-  background-color: ${props => (props.hasDescription ? '#303538' : '#ababb2')};
+  background-color: ${props =>
+    props.hasDescription ? palette.unknownGrey1 : palette.unknownGrey5};
   left: 0;
   height: 1px;
   position: absolute;
@@ -60,40 +62,12 @@ export const PatientsTasklistStrikeThrough = styled.div`
   width: ${props => (props.active ? 100 : 0)}%;
 `;
 
-const moveAnimation = ({ stopPercentage, referenceScrollWidth }) => keyframes`
-  0%, ${stopPercentage}% {
-    transform: translateX(0);
-  }
-  
-  ${100 - stopPercentage}%, 100% {
-    transform: translateX(calc(100% - ${referenceScrollWidth}px));
-  }
-`;
-
 export const PatientsTasklistInfo = styled.div`
-  animation-duration: 0s;
-  animation-name: ${props =>
-    css`
-      ${moveAnimation(props)}
-    `};
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  color: #5e6366;
+  color: ${palette.unknownGrey7};
   font-size: 0.875rem;
   line-height: 1.15;
   padding-bottom: 0.1875rem;
   white-space: nowrap;
-
-  ${({ animated, animationDuration }) => {
-    return (
-      animated &&
-      `
-    animation-direction: alternate;
-    animation-duration: ${animationDuration}s;
-    animation-delay: 1s;
-  `
-    );
-  }}
 }
 `;
 
@@ -121,7 +95,7 @@ const patientsTaskListDateAnimation = keyframes`
 
 export const PatientsTasklistDate = styled.div`
   align-items: flex-end;
-  color: ${props => (props.overdue ? '#f40707' : '#303538')};
+  color: ${props => (props.overdue ? palette.error : palette.unknownGrey1)};
   display: flex;
   font-size: 0.875rem;
   height: 2.5rem;
@@ -129,7 +103,7 @@ export const PatientsTasklistDate = styled.div`
 `;
 
 export const GreenPatientsTasklistDate = styled(PatientsTasklistDate)`
-  color: #20b255;
+  color: ${palette.memberGreen};
 `;
 
 export const AnimatedPatientsTasklistDate = styled(GreenPatientsTasklistDate)`
@@ -170,7 +144,7 @@ export const CompletedBy = styled.div`
   width: 100%;
 
   > span {
-    color: #20b255;
+    color: ${palette.memberGreen};
     font-size: 0.875rem;
     line-height: 1;
     transition: transform 0.4s ease-out;
@@ -189,9 +163,9 @@ export const MemberPickerContainer = styled.div`
 
 export const ArchiveButton = styled.div`
   align-items: center;
-  border: 1px solid #2aadce;
+  border: 1px solid ${palette.lightCyanBlue};
   border-radius: 0.25rem;
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   cursor: pointer;
   display: flex;
   font-size: 0.75rem;
@@ -200,9 +174,9 @@ export const ArchiveButton = styled.div`
 `;
 
 export const RolloverNestedListItemText = styled.div`
-  background-color: #05adec;
+  background-color: ${palette.midnightBlue};
   border-radius: 0;
-  color: #fff;
+  color: ${palette.white};
   cursor: pointer;
   font-size: 0.875rem;
   max-width: 50vw;
@@ -267,7 +241,7 @@ export const TaskDescriptionOuterContainer = styled.div`
 `;
 
 export const EditedTaskDescriptionLabel = styled.span`
-  color: #aaa9b0;
+  color: ${palette.coolGrey2};
   font-size: 0.9rem;
   font-weight: normal;
   margin-left: 0.5ch;

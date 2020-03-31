@@ -50,6 +50,7 @@ import {
 import pusherInstance from '../helpers/pusher-instance';
 import { isTaskArchivable } from '../helpers/utility-functions';
 import ChevronSmallIcon from '../img/chevron-small.svg';
+import palette from '../palette';
 import { themeMontserrat600 } from '../theme-montserrat';
 import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
 import { StyledCollapse } from './TaskListView.Styled';
@@ -89,8 +90,8 @@ const groupBy = (list, keyGetter) => {
 
 const useTaskListClasses = makeStyles({
   paneled: {
-    backgroundColor: '#fff',
-    border: '0.125rem solid #ddf2f7',
+    backgroundColor: palette.white,
+    border: `0.125rem solid ${palette.unknownGrey2}`,
     padding: '0.125rem',
     width: '100%',
   },

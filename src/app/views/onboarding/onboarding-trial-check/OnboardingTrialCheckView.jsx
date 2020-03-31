@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import palette from '../../../palette';
 import {
   OnboardingButton,
   OnboardingH2Bold,
@@ -44,7 +45,7 @@ const OnboardingTrialCheckView = () => {
         <a
           href="mailto:support@dock.health?Subject=Dock%20Support"
           target="_top"
-          style={{ color: '#007cab' }}
+          style={{ color: palette.cyanBlue }}
         >
           support@dock.health
         </a>

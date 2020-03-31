@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import CubesLoader from '../components/common/CubesLoader';
 import Spacing from '../components/common/Spacing';
 import useBoolean from '../hooks/useBoolean';
+import palette from '../palette';
 
 const SupportVideosContainer = styled.div`
   display: grid;
@@ -14,7 +15,7 @@ const SupportVideosContainer = styled.div`
 `;
 
 const SupportViewLink = styled.a`
-  color: #007cab;
+  color: ${palette.cyanBlue};
 `;
 
 const SupportVideoContainerElement = styled.div`
@@ -63,7 +64,7 @@ const SupportVideoContainer = ({ title, url }) => {
       <AnimatePresence>
         {!isLoaded && (
           <SupportVideoOverlay {...animationProperties}>
-            <CubesLoader size={40} color="#007cab" />
+            <CubesLoader size={40} color={palette.cyanBlue} />
           </SupportVideoOverlay>
         )}
       </AnimatePresence>
@@ -72,7 +73,7 @@ const SupportVideoContainer = ({ title, url }) => {
 };
 
 const SupportVideo = styled.iframe`
-  background-color: #c4c4c4;
+  background-color: ${palette.coolGrey2};
   min-height: 15rem;
   width: 100%;
 `;

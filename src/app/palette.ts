@@ -1,0 +1,79 @@
+import { clamp } from 'ramda';
+
+const palette = {
+  // primary
+  oPlusRed: '#ec4f3e',
+  midnightBlue: '#213a56',
+  brightBlue: '#00a2e5',
+  darkBlue: '#074a86',
+
+  // old primary
+  accentYellow: '#feb52b',
+  orange: '#ef8a23',
+
+  // secondary
+  purplePassion: '#553bbe',
+  blueOcean: '#2bacfb',
+  tomatoInYoFace: '#ea4739',
+  orangeJulius: '#fd8914',
+  keyLimePie: '#bad441',
+  bananaHammock: '#fecd21',
+  dirtyBanana: '#feb52b',
+  creamPuff: '#f8f5ee',
+
+  // grey
+  darkGrey: '#1e2e40',
+  mediumGrey: '#3d4858',
+  coolGrey1: '#8492a4',
+  coolGrey2: '#c1ccda',
+  coolGrey3: '#e5e9f2',
+  coolGrey4: '#f9fafc',
+
+  // COLORS NOT EXISTING IN GLOBAL PALETTE
+  error: '#e40909',
+  lightGrey: '#f3f5f6',
+  black: '#000000',
+  white: '#ffffff',
+  lightCyanBlue: '#009fcd',
+  lighterCyanBlue: '#0ca1c7',
+  cyanBlue: '#007cab',
+  darkGreyBlue: '#125375',
+  greyBlue: '#2e3a43',
+  softCyan: '#a6dcea',
+  unknownGrey1: '#303538',
+  unknownGrey2: '#ddf2f7',
+  unknownGrey3: '#aab8c3',
+  unknownGrey4: '#ededf0',
+  unknownGrey5: '#ababb2',
+  unknownGrey6: '#dedee2',
+  unknownGrey7: '#5e6366',
+  paleBlue: '#d4f3ff',
+  vividPink: '#d9036b',
+  veryDarkBlue: '#2a4a70',
+  memberGreen: '#00a73c',
+  taskCheckboxGreen: '#20b255',
+  featureBlue1: '#011845',
+  featureBlue2: '#1a2d56',
+};
+
+export const getPriorityColor = (
+  priority?: 'PLANNED' | 'ON_HOLD' | 'IN_PROGRESS' | '' | null,
+) => {
+  switch (priority) {
+    default:
+      return '#808080';
+    case 'PLANNED':
+      return '#f6b039';
+    case 'ON_HOLD':
+      return '#dc143c';
+    case 'IN_PROGRESS':
+      return '#00a73c';
+  }
+};
+
+export const opacify = (color = '#000000', opacity = 1) =>
+  `${color}${Math.floor(clamp(0, 1, opacity) * 255)
+    .toString(16)
+    .padStart(2, '0')}`;
+
+export default palette;

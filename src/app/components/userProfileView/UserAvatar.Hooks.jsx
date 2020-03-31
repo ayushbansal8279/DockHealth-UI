@@ -1,10 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-
 import * as userApi from '../../api/user-api';
 import { noop } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
 import ArrowUpIcon from '../../img/arrow-up.svg';
+import palette from '../../palette';
 import { AvatarImageContainer } from '../common/Avatar.styled';
 import CubesLoader from '../common/CubesLoader';
 import { PaddedButtonLabel } from './UserProfileView.Styled';
@@ -15,7 +15,7 @@ const getSmallButtonContent = ({
   fileLoading,
 }) => () => {
   if (fileLoading) {
-    return <CubesLoader size={20} color="#fff" />;
+    return <CubesLoader size={20} color={palette.white} />;
   }
 
   if (fileLoaded) {

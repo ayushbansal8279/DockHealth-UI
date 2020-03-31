@@ -11,10 +11,11 @@ import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
 import SearchIconImage from '../img/search-dark.svg';
+import palette, { opacify } from '../palette';
 
 export const FormContainer = styled.form`
   align-items: flex-start;
-  background-color: #fff;
+  background-color: ${palette.white};
   flex-basis: auto;
   flex-flow: column wrap;
   display: flex;
@@ -33,7 +34,7 @@ export const FormLabel = styled.h1`
 
 export const FormDivider = styled.hr`
   && {
-    border-bottom: 0.125rem solid #dedee2;
+    border-bottom: 0.125rem solid ${palette.unknownGrey6};
     margin: 1rem 0;
     width: 100%;
   }
@@ -41,7 +42,7 @@ export const FormDivider = styled.hr`
 
 export const StyledFormControl = withStyles({
   root: {
-    backgroundColor: '#f3f5f6',
+    backgroundColor: palette.lightGrey,
     height: '4.5rem',
     margin: '1rem 0 0',
   },
@@ -49,7 +50,7 @@ export const StyledFormControl = withStyles({
 
 export const StyledInputLabel = withStyles({
   root: {
-    color: '#2e3a43',
+    color: palette.greyBlue,
     top: '50%',
     transform: 'translate(1rem, -50%) scale(1)',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
@@ -57,18 +58,18 @@ export const StyledInputLabel = withStyles({
   },
   required: {
     '& > span': {
-      color: '#f00',
+      color: palette.error,
     },
   },
   shrink: {
-    color: '#2e3a43',
+    color: palette.greyBlue,
     top: '0%',
     transform: 'translate(1rem, 0.5rem) scale(0.75)',
     transformOrigin: 'center left',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
   focused: {
-    color: '#2e3a43 !important',
+    color: `${palette.greyBlue} !important`,
   },
 })(InputLabel);
 
@@ -116,10 +117,10 @@ export const MembersContainer = styled.div`
 
 export const EmptyMember = styled(ButtonBase)`
   && {
-    background-color: #fff;
-    border: 0.0625rem dashed #0ca1c7;
+    background-color: ${palette.white};
+    border: 0.0625rem dashed ${palette.lighterCyanBlue};
     border-radius: 50%;
-    color: #0ca1c7;
+    color: ${palette.lighterCyanBlue};
     font-size: 2rem;
     height: 100%;
     width: 55px;
@@ -146,7 +147,7 @@ export const StyledCollapse = styled(Collapse)`
 
 export const StyledListItem = styled(ListItem)`
   && {
-    background-color: #f3f5f6;
+    background-color: ${palette.lightGrey};
     height: 4rem;
     width: 100%;
   }
@@ -162,15 +163,15 @@ export const StyledList = styled(List)`
 
     &::-webkit-scrollbar {
       -webkit-appearance: none;
-      background-color: #cecece;
+      background-color: ${palette.coolGrey2};
       padding: 1px;
       width: 8px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: ${opacify(palette.black, 0.5)};
       border-radius: 4px;
-      -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0 0 1px ${opacify(palette.black, 0.5)};
       z-index: 100;
     }
   }
@@ -184,12 +185,12 @@ export const StyledButton = withStyles({
     marginLeft: '1rem',
   },
   outlined: {
-    color: '#009fcd',
+    color: palette.lightCyanBlue,
     minWidth: '5rem',
   },
   contained: {
-    backgroundColor: '#007cab',
-    color: '#fff',
+    backgroundColor: palette.cyanBlue,
+    color: palette.white,
     fontWeight: 'bold',
     minWidth: '10rem',
   },
@@ -217,9 +218,9 @@ export const SearchFieldContainer = styled.div`
 `;
 
 export const SearchField = styled.input`
-  background-color: #fff;
+  background-color: ${palette.white};
   border: 0;
-  color: #000;
+  color: ${palette.black};
   height: 100%;
   padding: 0.5rem;
   padding-left: 2rem;

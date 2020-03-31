@@ -1,9 +1,10 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
+import palette from '../palette';
 
 export const InfoPanelContainer = styled.div`
-  background-color: #fff;
-  border: 0.125rem solid #ddf2f7;
+  background-color: ${palette.white};
+  border: 0.125rem solid ${palette.unknownGrey2};
   margin: 0 0 1.5rem;
   max-width: 1050px;
   padding: 1rem;
@@ -22,7 +23,7 @@ export const PersonNameContainer = styled(Grid).attrs({
 `;
 
 export const PersonInitialsContainer = styled.span`
-  color: #fff;
+  color: ${palette.white};
   font-size: 1.875rem;
   font-weight: bold;
 `;
@@ -43,7 +44,7 @@ export const Label = styled.span`
 `;
 
 export const GreyLabel = styled(Label)`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
 `;
 
 export const BoldLabel = styled(Label)`
@@ -58,7 +59,7 @@ export const PersonAvatarContainer = styled.div`
 `;
 
 export const ArchivePersonButton = styled.button`
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   cursor: pointer;
   transition: all 0.25s ease;
 

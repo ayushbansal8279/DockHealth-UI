@@ -1,13 +1,11 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Link } from 'react-router';
 import AuthField from '../common/AuthField';
 import {
+  BottomGridContainer,
   NextButton,
   TitleTypography,
-  BottomGridContainer,
-  StyledLabel,
 } from './AuthComponents.styled';
 
 const validate = values => {

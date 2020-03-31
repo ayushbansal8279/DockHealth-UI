@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import palette from '../../../palette';
 
 export const InvoicesListContainer = styled.div`
   margin-top: 4rem;
@@ -15,7 +16,7 @@ export const InvoicesTable = styled.table`
     }
 
     & thead {
-      background: #efeff0;
+      background: ${palette.coolGrey3};
 
       & tr {
         background: transparent;
@@ -25,8 +26,8 @@ export const InvoicesTable = styled.table`
 
       & th {
         background: transparent;
-        border-bottom: 0.0625rem #d7d7dc solid;
-        color: #4a4a4a;
+        border-bottom: 0.0625rem ${palette.coolGrey3} solid;
+        color: ${palette.mediumGrey};
         font-size: 0.875rem;
         font-weight: 600;
         vertical-align: middle;
@@ -40,15 +41,15 @@ export const InvoicesTable = styled.table`
       }
 
       & tr:nth-child(even) {
-        background: #fff;
+        background: ${palette.white};
       }
 
       & tr:nth-child(odd) {
-        background: #fafafb;
+        background: ${palette.coolGrey4};
       }
 
       & td {
-        color: #303538;
+        color: ${palette.unknownGrey1};
         font-size: 0.875rem;
       }
     }
@@ -85,13 +86,13 @@ export const SortingIconImage = styled.img`
 `;
 
 export const ChargeDetailsLink = styled.a`
-  color: #007cab;
+  color: ${palette.cyanBlue};
   cursor: pointer;
   filter: brightness(1);
   transition: all 0.25s ease-out;
 
   &:hover {
-    color: #007cab;
+    color: ${palette.cyanBlue};
     filter: brightness(1.35);
   }
 `;

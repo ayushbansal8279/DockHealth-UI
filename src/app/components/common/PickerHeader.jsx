@@ -5,17 +5,18 @@ import React from 'react';
 import styled from 'styled-components';
 import ItemAssignment from '../../img/folder.svg';
 import Search from '../../img/search.svg';
+import palette from '../../palette';
 
 const StyledBackIcon = styled(BackIcon)`
   && {
     width: 22px;
-    color: #fff;
+    color: ${palette.white};
   }
 `;
 
 const Header = styled.div`
   align-items: center;
-  background: #213a56;
+  background-color: ${palette.midnightBlue};
   display: flex;
   flex-shrink: 0;
   flex-grow: 0;
@@ -29,13 +30,13 @@ const HeaderClose = styled.div`
   height: 22px;
   padding: 4px;
   font-size: 14px;
-  color: #fff;
+  color: ${palette.white};
   font-weight: bold;
 `;
 
 const HeaderTitle = styled.strong`
   margin-left: 15px;
-  color: #fff;
+  color: ${palette.white};
   font-size: 18px;
   white-space: nowrap;
   text-overflow: ellipsis;

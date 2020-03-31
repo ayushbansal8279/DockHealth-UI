@@ -6,11 +6,12 @@ import styled from 'styled-components';
 import { addPatient } from '../../actions/patient-actions';
 import useBoolean from '../../hooks/useBoolean';
 import DropdownIcon from '../../img/dropdown-icon.svg';
+import palette from '../../palette';
 import StyledInput from '../userProfileView/StyledInput';
 import { addPatientValidationSchema } from './NewTaskDrawer.ValidationSchema';
 
 const FormLabel = styled.div`
-  color: #0ca1c7;
+  color: ${palette.lighterCyanBlue};
   font-size: 1rem;
   font-weight: 600;
   height: 2.5rem;
@@ -18,7 +19,7 @@ const FormLabel = styled.div`
 
 const BottomFormLabel = styled.button`
   align-items: center;
-  color: #009fcd;
+  color: ${palette.lightCyanBlue};
   cursor: pointer;
   display: flex;
   height: 3.5rem;
@@ -134,7 +135,7 @@ const renderFormFieldDefinition = ({ setValue }) => ({
     <Grid key={key} container item xs={size ?? 12} alignItems="flex-end">
       <Grid item xs>
         <StyledInput
-          backgroundColor="#fff"
+          backgroundColor={palette.white}
           containerHeight={isTextarea ? 6.6875 : 3.5}
           containerMarginTop={isTextarea ? 1.1875 : 0}
           containerMarginTopOnError={0.75}

@@ -1,6 +1,7 @@
 import { ButtonBase, Grid } from '@material-ui/core';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
+import palette, { opacify } from '../palette';
 
 export const FadeContainer = styled.div`
   display: flex;
@@ -19,24 +20,24 @@ export const StyledButton = styled(ButtonBase)`
   && {
     display: flex;
     margin: 2rem auto;
-    background: #0ca1c7;
+    background: ${palette.lighterCyanBlue};
     border-radius: 1rem;
     height: 2rem;
     padding: 0.5rem 2.25rem;
     font-size: 0.875rem;
-    color: #fff;
+    color: ${palette.white};
   }
 `;
 export const StyledButtonLabel = styled.div`
   && {
     display: flex;
     margin: 2rem auto;
-    background: #0ca1c7;
+    background: ${palette.lighterCyanBlue};
     border-radius: 1rem;
     height: 2rem;
     padding: 0.25rem 2.25rem;
     font-size: 0.875rem;
-    color: #fff;
+    color: ${palette.white};
   }
 `;
 
@@ -77,22 +78,12 @@ export const FilterByTextContainer = styled(motion.div)`
 `;
 
 export const FilterByLabel = styled.div`
-  color: #5e6366;
+  color: ${palette.unknownGrey7};
   font-size: 0.875rem;
 `;
 
 export const FilterByBoldLabel = styled(FilterByLabel)`
   font-weight: bold;
-`;
-
-export const FilterByLinkLabel = styled(FilterByLabel)`
-  color: #487ba8;
-  cursor: pointer;
-  transition: filter 0.25s ease-out;
-
-  &:hover {
-    filter: brightness(1.25);
-  }
 `;
 
 export const SideClickListener = styled.div`
@@ -117,9 +108,10 @@ export const TaskListHeader = styled.div`
   display: flex;
   position: relative;
   height: 67px;
-  background: #2a4a70;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
-  color: #fff;
+  background: ${palette.veryDarkBlue};
+  box-shadow: 0 4px 4px 0 ${opacify(palette.black, 0.24)},
+    0 0 4px 0 ${opacify(palette.black, 0.12)};
+  color: ${palette.white};
   font-size: 1.5rem;
   font-weight: bold;
   padding: 15px 13.5px 19px 27px;
@@ -130,13 +122,13 @@ export const TaskListSectionContainer = styled.div`
 `;
 
 export const TaskListSectionHeader = styled(Grid)`
-  background-color: #fff;
+  background-color: ${palette.white};
   margin-bottom: 0.25rem;
   padding: 0.25rem 0.75rem;
 `;
 
 export const TasklistCount = styled.div`
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   font-size: 16px;
   font-weight: normal;
   margin-bottom: 0.5rem;

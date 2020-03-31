@@ -1,12 +1,11 @@
+import { omit } from 'ramda';
 import React, { useRef } from 'react';
 import { Link } from 'react-router';
-
+import useBoolean from '../../hooks/useBoolean';
 import ChevronRightIcon from '../../img/chevron-right.svg';
-import {
-  priorityColor,
-  PriorityContainer,
-  PriorityDot,
-} from '../common/Priority';
+import palette, { getPriorityColor } from '../../palette';
+import { PriorityContainer, PriorityDot } from '../common/Priority';
+import UniversalTooltip from '../common/UniversalTooltip';
 import {
   AnimatedPatientsTasklistDate,
   ArchiveButton,
@@ -17,8 +16,6 @@ import {
   TaskDateContainer,
   TaskStatusContainer,
 } from './TaskBody.styled';
-import useBoolean from '../../hooks/useBoolean';
-import UniversalTooltip from '../common/UniversalTooltip';
 
 const DueDateComponent = ({
   dueDate,
@@ -26,8 +23,10 @@ const DueDateComponent = ({
   hasNewComment,
   completedDateTime,
   isTaskTimingOut,
-  ...props
+  ...otherProps
 }) => {
+  const props = omit(['isSubtask'], otherProps);
+
   if (isTaskTimingOut) {
     return (
       <AnimatedPatientsTasklistDate {...props}>
@@ -97,7 +96,7 @@ export default ({
           {patient && !isSubtask && (
             <Link
               to={`/patient/${patient.patientIdentifier}`}
-              style={{ color: '#0ca1c7', fontSize: '0.875rem' }}
+              style={{ color: palette.lighterCyanBlue, fontSize: '0.875rem' }}
             >
               <div>
                 {`${patient?.lastName}, ${patient?.firstName} ${patient?.mrn ??
@@ -131,7 +130,7 @@ export default ({
                       ref={statusReference}
                       onMouseEnter={showStatusTooltip}
                       onMouseLeave={hideStatusTooltip}
-                      color={priorityColor(workflowStatus)}
+                      color={getPriorityColor(workflowStatus)}
                     />
                     <UniversalTooltip
                       open={isStatusTooltipOpen}

@@ -5,11 +5,14 @@ import styled from 'styled-components';
 import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
 import BubbleFinishIcon from '../../img/bubble-finish';
 import RemoveCommentIcon from '../../img/remove-comment-icon.svg';
+import palette from '../../palette';
 
 const CommentBubble = styled.div`
   ${props => {
-    const strokeColor = props.isCurrentUser ? '#d4f3ff' : '#ededf0';
-    const fillColor = props.isEditing ? '#fff' : strokeColor;
+    const strokeColor = props.isCurrentUser
+      ? palette.paleBlue
+      : palette.unknownGrey4;
+    const fillColor = props.isEditing ? palette.white : strokeColor;
 
     return `
       background-color: ${fillColor};
@@ -35,14 +38,17 @@ const CommentBubble = styled.div`
   }
 
   &:hover {
-    background-color: #fff;
+    background-color: ${palette.white};
     box-shadow: 0 0 0 0.125rem
-      ${props => (props.isCurrentUser ? '#d4f3ff' : '#ededf0')} inset;
+      ${props =>
+        props.isCurrentUser ? palette.paleBlue : palette.unknownGrey4}
+      inset;
   }
 
   &:hover svg {
-    fill: #fff;
-    stroke: ${props => (props.isCurrentUser ? '#d4f3ff' : '#ededf0')};
+    fill: ${palette.white};
+    stroke: ${props =>
+      props.isCurrentUser ? palette.paleBlue : palette.unknownGrey4};
   }
 `;
 
@@ -64,8 +70,10 @@ const BubbleFinish = styled.div`
   & svg {
     transition: all 0.25s ease-out;
     ${props => {
-      const strokeColor = props.isCurrentUser ? '#d4f3ff' : '#ededf0';
-      const fillColor = props.isEditing ? '#fff' : strokeColor;
+      const strokeColor = props.isCurrentUser
+        ? palette.paleBlue
+        : palette.unknownGrey4;
+      const fillColor = props.isEditing ? palette.white : strokeColor;
 
       return `fill: ${fillColor}; stroke: ${strokeColor};`;
     }}
@@ -121,10 +129,10 @@ const InitialsRelativeContainer = styled.div`
 `;
 
 const InitialsContainer = styled.span`
-  background-color: #aab8c3;
+  background-color: ${palette.unknownGrey3};
   border-radius: 0.125rem;
   top: -0.375rem;
-  color: #fff;
+  color: ${palette.white};
   display: flex;
   font-size: 0.5625rem;
   left: 0.25rem;
@@ -135,7 +143,7 @@ const InitialsContainer = styled.span`
 `;
 
 const SmallLabel = styled.label`
-  color: #aab8c3;
+  color: ${palette.unknownGrey3};
   font-size: 0.625rem;
 `;
 
@@ -255,7 +263,7 @@ class SingleComment extends Component {
           )}
         </CommentBubbleText>
         {dateCreated !== dateUpdated && (
-          <div style={{ color: '#aaa9b0' }}>
+          <div style={{ color: palette.coolGrey2 }}>
             <small>(edited)</small>
           </div>
         )}

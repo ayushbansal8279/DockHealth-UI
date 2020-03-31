@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
+import palette from '../../palette';
 
 const LoaderContainer = styled.div`
   height: ${props => props.size || 48}px;
@@ -41,7 +42,7 @@ const CubeContainer = styled.div`
 `;
 
 const CubeElement = styled.div`
-  background-color: ${props => props.color ?? '#007cab'};
+  background-color: ${props => props.color ?? palette.cyanBlue};
   border-radius: 10%;
   height: 100%;
   width: 100%;

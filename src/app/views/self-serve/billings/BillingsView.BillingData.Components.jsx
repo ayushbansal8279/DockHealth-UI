@@ -8,17 +8,18 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
+import palette, { opacify } from '../../../palette';
 
 export const StyledFormControl = withStyles({
   root: {
-    backgroundColor: '#f3f5f6',
+    backgroundColor: palette.lightGrey,
     height: '4rem',
   },
 })(FormControl);
 
 export const StyledInputLabel = withStyles({
   root: {
-    color: '#2e3a43',
+    color: palette.greyBlue,
     pointerEvents: 'none',
     top: '50%',
     transform: 'translate(1rem, -50%) scale(1)',
@@ -27,30 +28,30 @@ export const StyledInputLabel = withStyles({
   },
   required: {
     '& > span': {
-      color: '#f00',
+      color: palette.error,
     },
   },
   shrink: {
-    color: '#ababb2',
+    color: palette.unknownGrey5,
     top: '5%',
     transform: 'translate(1rem, 0) scale(0.75)',
     transformOrigin: 'center left',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
   focused: {
-    color: '#ababb2 !important',
+    color: `${palette.unknownGrey5} !important`,
   },
 })(InputLabel);
 
 export const StyledInputBase = withStyles({
   root: {
-    border: '0.0625rem solid #e4090900',
+    border: `0.0625rem solid ${opacify(palette.error, 0)}`,
     height: '100%',
     transition: 'all 0.2s ease-out',
     zIndex: 1,
   },
   error: {
-    border: '0.0625rem solid #e40909',
+    border: `0.0625rem solid ${palette.error}`,
   },
   input: {
     borderRadius: '0.25rem',
@@ -59,10 +60,10 @@ export const StyledInputBase = withStyles({
     paddingBottom: 0,
     padding: '0.5rem 1rem',
     '&[disabled]': {
-      backgroundColor: '#f3f5f6',
+      backgroundColor: palette.lightGrey,
     },
     '&:focus': {
-      backgroundColor: '#f3f5f6',
+      backgroundColor: palette.lightGrey,
       border: 0,
       boxShadow: 'none',
     },
@@ -71,7 +72,8 @@ export const StyledInputBase = withStyles({
 
 export const BillingElementContainer = styled.div`
   align-items: center;
-  border-color: ${props => (props.error ? '#e40909' : '#e4090900')};
+  border-color: ${props =>
+    props.error ? palette.error : opacify(palette.error, 0)};
   border-style: solid;
   border-width: 0.0625rem;
   display: flex;
@@ -96,15 +98,15 @@ export const BillingButton = withStyles({
     padding: '0.25rem 0.5rem',
   },
   contained: {
-    backgroundColor: '#074a86',
-    color: '#fff',
+    backgroundColor: palette.darkBlue,
+    color: palette.white,
   },
   outlined: {
-    color: '#074a86',
+    color: palette.darkBlue,
     height: '2rem',
   },
   outlinedHigh: {
-    color: '#074a86',
+    color: palette.darkBlue,
   },
   fullWidth: {
     width: '100%',
@@ -119,7 +121,7 @@ export const BillingButton = withStyles({
 
 export const StyledFormHelperText = withStyles({
   root: {
-    color: '#e40909',
+    color: palette.error,
     fontSize: '0.75rem',
   },
 })(FormHelperText);

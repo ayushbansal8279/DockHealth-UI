@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { omit } from 'ramda';
 import React from 'react';
+import palette from '../../palette';
 
 type PopoverListItem = {
   active?: boolean;
@@ -29,7 +30,7 @@ const usePopoverClasses = makeStyles({
 
 const useListItemClasses = makeStyles({
   root: {
-    color: '#8492a4',
+    color: palette.coolGrey1,
     filter: 'brightness(1)',
     fontFamily: '"Roboto", sans-serif',
     fontSize: '1rem',
@@ -39,19 +40,19 @@ const useListItemClasses = makeStyles({
     padding: '0.25rem 1.5625rem',
     transition: 'all 0.25s ease-out',
     '& path': {
-      stroke: '#8492a4',
+      stroke: palette.coolGrey1,
       transition: 'all 0.25s ease-out',
     },
     '&:hover': {
-      color: '#00a2e5',
+      color: palette.brightBlue,
       filter: 'brightness(1.25)',
       '& path': {
-        stroke: '#00a2e5',
+        stroke: palette.brightBlue,
       },
     },
   },
   active: {
-    color: '#00a2e5',
+    color: palette.brightBlue,
   },
   labelContainer: {
     overflow: 'hidden',

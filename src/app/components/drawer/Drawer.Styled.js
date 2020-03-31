@@ -2,11 +2,12 @@ import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router';
 import styled from 'styled-components';
+import palette from '../../palette';
 
 export const useDrawerClasses = makeStyles({
   appBar: {
-    backgroundColor: '#213a56',
-    color: '#fff',
+    backgroundColor: palette.midnightBlue,
+    color: palette.white,
     fontSize: '2.25rem',
     height: '5rem',
     marginLeft: 85,
@@ -22,7 +23,7 @@ export const useDrawerClasses = makeStyles({
     width: 'calc(100% - 260px)',
   },
   appBarBorder: {
-    backgroundColor: '#c1ccda',
+    backgroundColor: palette.coolGrey2,
     height: '0.25rem',
     left: 0,
     position: 'absolute',
@@ -35,7 +36,7 @@ export const useDrawerClasses = makeStyles({
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
-    background: '#213a56',
+    backgroundColor: palette.midnightBlue,
     border: 0,
     overflow: 'initial',
     width: ({ isOpen }) => (isOpen ? 260 : 85),
@@ -55,8 +56,8 @@ export const ContentContainer = styled.div`
 `;
 
 export const TrialBanner = styled(Grid)`
-  background-color: #213a56;
-  color: #feb52b;
+  background-color: ${palette.midnightBlue};
+  color: ${palette.accentYellow};
   font-size: 1rem;
   left: 0;
   height: ${props => (props.trialBannerVisible ? '2.875rem' : 0)};
@@ -70,12 +71,12 @@ export const TrialBanner = styled(Grid)`
 `;
 
 export const TrialBannerLink = styled(Link)`
-  color: #feb52b;
+  color: ${palette.accentYellow};
   margin-left: 0.25rem;
   text-decoration: underline;
   transition: all 0.25s ease-out;
 
   &:hover {
-    color: #eee;
+    color: ${palette.coolGrey3};
   }
 `;

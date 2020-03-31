@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import palette from '../../palette';
 
 const PriorityFlagContainer = styled.div`
   align-self: flex-start;
@@ -17,7 +18,7 @@ export default ({ active, ...props }) => (
       width="24"
       height="37"
       viewBox="0 0 24 37"
-      fill={active ? '#FB7C06' : '#C8C8CE'}
+      fill={active ? palette.orangeJulius : palette.unknownGrey6}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

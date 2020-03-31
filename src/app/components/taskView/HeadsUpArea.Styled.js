@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import { Grid } from '@material-ui/core';
+import styled from 'styled-components';
+import palette, { opacify } from '../../palette';
 
 export const HeadsUpSectionGrid = styled(Grid)`
   padding: 0.625rem 0 0.625rem 0.625rem;
@@ -19,7 +20,7 @@ export const HeadsUpSectionContainer = styled.div`
 
 export const HeadsUpSectionHeader = styled.div`
   align-items: center;
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   display: flex;
   font-size: 20px;
   font-weight: 800;
@@ -28,13 +29,13 @@ export const HeadsUpSectionHeader = styled.div`
 `;
 
 export const HeadsUpSectionDivider = styled.div`
-  background-color: rgba(217, 217, 217, 0.5);
+  background-color: ${opacify(palette.unknownGrey6, 0.5)};
   height: 1px;
   margin: 0 0.375rem;
 `;
 
 export const HeadsUpSectionHeaderButton = styled.div`
-  color: ${props => (props.active ? '#00A2E5' : '#213a56')};
+  color: ${props => (props.active ? palette.brightBlue : palette.mediumGrey)};
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: normal;
@@ -57,8 +58,8 @@ export const HeadsUpButtonsContainer = styled.div`
 
 export const HeadsUpSectionButton = styled.div`
   align-items: center;
-  background-color: #ffffff80;
-  border: 0.0625rem solid #e5e9f280;
+  background-color: ${opacify(palette.white, 0.5)};
+  border: 0.0625rem solid ${opacify(palette.coolGrey3, 0.5)};
   border-radius: 0.25rem;
   box-sizing: border-box;
   cursor: pointer;
@@ -69,11 +70,12 @@ export const HeadsUpSectionButton = styled.div`
   transition: all 0.25s ease-out;
 
   ${props =>
-    props.active && 'background-color: #fff; border: 0.125rem solid #00a2e5;'}
+    props.active &&
+    `background-color: ${palette.white}; border: 0.125rem solid ${palette.brightBlue};`}
 `;
 
 export const HeadsUpSectionButtonCount = styled.div`
-  color: ${props => (props.active ? '#00a2e5' : '#213a56')};
+  color: ${props => (props.active ? palette.brightBlue : palette.mediumGrey)};
   font-size: 3rem;
   font-weight: 900;
   pointer-events: none;
@@ -82,7 +84,7 @@ export const HeadsUpSectionButtonCount = styled.div`
 
 export const HeadsUpSectionButtonLabel = styled.div`
   align-items: center;
-  color: ${props => (props.active ? '#00a2e5' : '#8492a4')};
+  color: ${props => (props.active ? palette.brightBlue : palette.coolGrey1)};
   display: flex;
   font-size: 0.875rem;
   height: 2rem;

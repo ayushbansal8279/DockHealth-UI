@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { bool } from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
+import palette from '../../palette';
 
 const TypographyCustomComponent = ({
   classes,
@@ -22,7 +23,7 @@ const TypographyCustomComponent = ({
 
 export const TitleTypography = withStyles({
   root: {
-    color: '#2e3a43',
+    color: palette.greyBlue,
     width: '100%',
   },
   smallScreen: {
@@ -55,6 +56,7 @@ NextButtonComponent.propTypes = {
 export const NextButton = withStyles({
   root: {
     borderRadius: 4,
+    filter: 'brightness(1)',
     fontSize: '1.1em',
     fontWeight: 'bold',
     marginTop: '1.5rem',
@@ -62,16 +64,16 @@ export const NextButton = withStyles({
     width: '100%',
   },
   active: {
-    backgroundColor: '#007cab',
-    color: '#fff',
+    backgroundColor: palette.cyanBlue,
+    color: palette.white,
     cursor: 'pointer',
     '&:hover, &:active, &:focus, &:focus-within': {
-      color: '#f3f5f6',
+      color: palette.lightGrey,
     },
   },
   inactive: {
-    backgroundColor: '#125375',
-    color: '#ffffff80',
+    backgroundColor: palette.cyanBlue,
+    filter: 'brightness(1.2)',
   },
 })(NextButtonComponent);
 
@@ -81,10 +83,10 @@ export const StyledLabel = styled.div`
   font-weight: ${props => (props.bold ? 600 : 'normal')};
 
   & > a {
-    color: #007cab;
+    color: ${palette.cyanBlue};
 
     &:hover {
-      color: #0ca1c7;
+      color: ${palette.lighterCyanBlue};
     }
   }
 `;

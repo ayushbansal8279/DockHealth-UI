@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
-
 import useBoolean from '../../hooks/useBoolean';
 import CheckIcon from '../../img/checkbox-check';
+import palette from '../../palette';
 
 const getCheckboxSizeVariables = size => ({
   lineHeight: size / 7.5,
@@ -12,10 +12,10 @@ const getCheckboxSizeVariables = size => ({
 const CheckboxContainer = styled.div`
   && {
     align-items: center;
-    background-color: #fff;
-    border: 1px solid #aab8c3;
+    background-color: ${palette.white};
+    border: 1px solid ${palette.unknownGrey3};
     border-radius: 5px;
-    box-shadow: 0px 2px 4px #ccd6dd;
+    box-shadow: 0px 2px 4px ${palette.coolGrey2};
     cursor: pointer;
     display: inline-flex;
     height: ${props => props.size}px;
@@ -28,8 +28,9 @@ const CheckboxContainer = styled.div`
     width: ${props => props.size}px;
 
     &:hover {
-      background-color: ${props => (props.disabled ? '#fff' : props.color)};
-      border: 1px solid #aab8c3;
+      background-color: ${props =>
+        props.disabled ? palette.white : props.color};
+      border: 1px solid ${palette.unknownGrey3};
       ${props => props.disabled && 'cursor: not-allowed;'}
     }
 
@@ -161,7 +162,7 @@ const TaskCheckbox = ({
   onClick = () => {},
   disabled,
   className,
-  color = '#20b255',
+  color = palette.taskCheckboxGreen,
   size = 30,
 }) => {
   const [outlinesShown, showOutlines, hideOutlines] = useBoolean(false);

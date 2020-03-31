@@ -1,6 +1,7 @@
 import { omit } from 'ramda';
 import React from 'react';
 import CameraIcon from '../../img/camera.svg';
+import palette from '../../palette';
 import {
   AvatarContainer,
   CameraContainer,
@@ -16,7 +17,7 @@ export default React.forwardRef(
       withCameraIcon,
       withCursor,
       withShadow,
-      color = '#213a56',
+      color = palette.midnightBlue,
       padded = true,
       ...props
     },

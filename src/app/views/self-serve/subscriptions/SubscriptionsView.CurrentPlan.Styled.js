@@ -1,9 +1,10 @@
 import { Link } from 'react-router';
 import styled from 'styled-components';
+import palette from '../../../palette';
 import { H2 } from './SubscriptionsView.Styled';
 
 export const PlanContainer = styled.div`
-  background-color: #f9fafc;
+  background-color: ${palette.coolGrey4};
   display: grid;
   font-size: 1rem;
   grid-gap: 1rem;
@@ -15,7 +16,7 @@ export const PlanContainer = styled.div`
 
 export const PlanNameLabel = styled(H2)`
   align-items: baseline;
-  color: #2a4a70;
+  color: ${palette.veryDarkBlue};
   display: flex;
   font-weight: bold;
   line-height: 3.0625rem;
@@ -24,27 +25,27 @@ export const PlanNameLabel = styled(H2)`
 `;
 
 export const PlanColumnLink = styled(Link)`
-  color: #007cab;
+  color: ${palette.cyanBlue};
   cursor: pointer;
   filter: brightness(1);
   text-decoration: none;
   transition: all 0.25s ease-out;
 
   &:hover {
-    color: #007cab;
+    color: ${palette.cyanBlue};
     filter: brightness(1.35);
   }
 `;
 
 export const SwitchBillingLink = styled.span`
-  color: #007cab;
+  color: ${palette.cyanBlue};
   cursor: pointer;
   filter: brightness(1);
   text-decoration: underline;
   transition: all 0.25s ease-out;
 
   &:hover {
-    color: #007cab;
+    color: ${palette.cyanBlue};
     filter: brightness(1.35);
   }
 `;

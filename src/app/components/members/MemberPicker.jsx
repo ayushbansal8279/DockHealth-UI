@@ -1,11 +1,11 @@
+import { Popover } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Popover } from '@material-ui/core';
 import { assignOrReassignTask } from '../../actions/task-actions';
-
 import { getMembersByTaskListId } from '../../actions/tasklist-actions';
+import palette from '../../palette';
 import ListItem from '../common/ListItem';
 import PickerHeader from '../common/PickerHeader';
 import SearchHeader from '../common/SearchHeader';
@@ -22,7 +22,7 @@ const StyledPopover = styled(Popover).attrs({ paper: 'paper' })`
 `;
 
 const List = styled.div`
-  background: #fff;
+  background: ${palette.white};
   max-height: 255px;
   overflow: auto;
 `;

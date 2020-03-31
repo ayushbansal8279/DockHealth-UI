@@ -1,6 +1,7 @@
 import { IconButton, Popover } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
+import palette from '../../palette';
 import Search from '../taskView/Search';
 import Member from './Member';
 
@@ -8,8 +9,8 @@ const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';
 
 export const useAddMemberButtonStyles = makeStyles({
   root: {
-    border: '0.125rem dashed #00a2e5',
-    color: '#fdad00',
+    border: `0.125rem dashed ${palette.brightBlue}`,
+    color: palette.orange,
     fontSize: ({ size }) => (size * 30) / 54,
     fontWeight: '500',
     height: ({ size }) => size,
@@ -30,8 +31,8 @@ export const AddMemberPopover = withStyles({
 
 export const PopoverHeader = styled.div`
   align-items: center;
-  background-color: #213a56;
-  color: #fff;
+  background-color: ${palette.midnightBlue};
+  color: ${palette.white};
   display: grid;
   font-weight: 700;
   grid-template-columns: 1.625rem 1fr 1.625rem;
@@ -43,7 +44,7 @@ export const PopoverHeader = styled.div`
 
 export const PopoverHeaderCloseButton = withStyles({
   root: {
-    color: '#fff',
+    color: palette.white,
     fontSize: '1.5rem',
     height: '1.5rem',
     lineHeight: 1,
@@ -85,7 +86,7 @@ export const MembersContainer = styled.div`
 
 export const MemberItem = styled.div`
   align-items: center;
-  background: #fff;
+  background: ${palette.white};
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 1rem 55px 0.7fr 0.3fr 1.5rem;
@@ -122,7 +123,7 @@ export const StyledMember = styled(Member)`
 `;
 
 export const MemberName = styled.div`
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   font-size: 1rem;
   ${props => props.transparent && NOT_SIGNED_UP_OPACITY}
   position: relative;
@@ -137,7 +138,7 @@ export const NotSignedUpLabel = styled.div`
 `;
 
 export const MemberRole = styled.div`
-  color: #ababb2;
+  color: ${palette.unknownGrey5};
   font-size: 0.625rem;
 `;
 
@@ -150,7 +151,7 @@ export const MoreIconButton = withStyles({
 })(IconButton);
 
 export const PopoverDivider = styled.div`
-  background-color: #e0e0e0;
+  background-color: ${palette.coolGrey3};
   height: 0.0625rem;
   width: 100%;
 `;
@@ -164,7 +165,7 @@ export const PopoverBottomSection = styled.div`
 `;
 
 export const InviteLink = styled.span`
-  color: #007cab;
+  color: ${palette.cyanBlue};
   cursor: pointer;
   filter: brightness(1);
   transition: all 0.25s ease-out;

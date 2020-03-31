@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
+import palette from '../../../palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -28,7 +29,7 @@ export const H3Marginless = styled(H3)`
 `;
 
 export const H3BoldWhite = styled(H3)`
-  color: #fff;
+  color: ${palette.white};
   font-weight: bold;
 `;
 
@@ -64,12 +65,12 @@ export const H5Bold = styled(H5)`
 `;
 
 export const Title = styled(H1)`
-  color: #fff;
+  color: ${palette.white};
   padding-left: 2rem;
 `;
 
 export const SubscriptionsViewOuterContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   display: flex;
   position: absolute;
   min-height: 100%;
@@ -87,7 +88,7 @@ export const SubscriptionsViewContainer = styled.div`
 
 export const BillingContainer = styled.div`
   align-items: center;
-  background-color: #efeff0;
+  background-color: ${palette.coolGrey3};
   flex-basis: auto;
   display: flex;
   height: 4.375rem;
@@ -99,12 +100,12 @@ export const BillingContainer = styled.div`
 `;
 
 export const BillingLabel = styled.span`
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   font-size: 1.125rem;
 `;
 
 export const BillingPrice = styled.span`
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   font-size: 2.25rem;
   font-weight: bold;
 `;
@@ -123,14 +124,14 @@ export const StyledButton = withStyles({
     transition: 'all 0.25s ease-out',
   },
   text: {
-    color: '#000',
+    color: palette.black,
   },
   contained: {
-    backgroundColor: '#074a86',
-    color: '#fff',
+    backgroundColor: palette.darkBlue,
+    color: palette.white,
   },
   containedDisabled: {
-    backgroundColor: '#ababb2',
+    backgroundColor: palette.unknownGrey5,
   },
   fullWidth: {
     marginLeft: 0,

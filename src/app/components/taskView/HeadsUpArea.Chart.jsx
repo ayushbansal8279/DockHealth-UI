@@ -3,6 +3,9 @@ import moment from 'moment';
 import { find, map, prop, propEq, range } from 'ramda';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import palette, { opacify } from '../../palette';
+
+const fontFamily = '"Roboto", sans-serif';
 
 const ChartOuterContainer = styled.div`
   flex: 1;
@@ -82,7 +85,7 @@ export default ({ taskListTrends, currentTab }) => {
                     ticks: {
                       precision: 0,
                       padding: 8,
-                      fontFamily: '"Roboto", sans-serif',
+                      fontFamily,
                     },
                     type: 'time',
                     time: {
@@ -99,7 +102,7 @@ export default ({ taskListTrends, currentTab }) => {
                     gridLines: false,
                     position: 'left',
                     ticks: {
-                      fontFamily: '"Open Sans", sans-serif',
+                      fontFamily,
                       maxTicksLimit: 4,
                       padding: 8,
                       precision: 0,
@@ -107,8 +110,8 @@ export default ({ taskListTrends, currentTab }) => {
                     },
                     scaleLabel: {
                       display: true,
-                      fontColor: '#ababb2',
-                      fontFamily: '"Open Sans", sans-serif',
+                      fontColor: palette.unknownGrey5,
+                      fontFamily,
                       labelString: 'New Tasks',
                     },
                     type: 'linear',
@@ -123,12 +126,12 @@ export default ({ taskListTrends, currentTab }) => {
                 {
                   label: 'Tasks',
                   data,
-                  backgroundColor: 'rgba(0, 124, 171, 0.2)',
-                  borderColor: 'rgba(0, 124, 171)',
+                  backgroundColor: opacify(palette.cyanBlue, 0.2),
+                  borderColor: palette.cyanBlue,
                   pointBorderColor: 'transparent',
                   pointBackgroundColor: 'transparent',
-                  pointHoverBorderColor: '#007cab',
-                  pointHoverBackgroundColor: '#007cab',
+                  pointHoverBorderColor: palette.cyanBlue,
+                  pointHoverBackgroundColor: palette.cyanBlue,
                 },
               ],
             },

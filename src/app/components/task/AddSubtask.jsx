@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
 import { prepareSubtask } from '../../actions/task-actions';
+import palette from '../../palette';
 
 export const AddSubtaskContainer = styled.div`
   align-items: center;
-  background-color: #fff;
+  background-color: ${palette.white};
   display: flex;
   justify-content: flex-start;
   padding: 8px;
@@ -14,7 +14,8 @@ export const AddSubtaskContainer = styled.div`
   padding-top: 6px;
 
   > span {
-    color: ${props => (props.disabled ? '#ababb2' : '#0ca1c7')};
+    color: ${props =>
+      props.disabled ? palette.unknownGrey5 : palette.lighterCyanBlue};
     cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
     transition: filter 0.25s linear;
 
@@ -41,7 +42,7 @@ const AddSubtask = ({ padded, taskIdentifier }) => {
           }
         }}
       >
-        {'+ add a subtask'}
+        + add a subtask
       </span>
     </AddSubtaskContainer>
   );

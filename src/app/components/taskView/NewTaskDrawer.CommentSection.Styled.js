@@ -1,10 +1,11 @@
-import styled from 'styled-components';
 import SimpleBar from 'simplebar-react';
+import styled from 'styled-components';
+import palette from '../../palette';
 
 export const CommentSectionLabel = styled.div`
   align-items: center;
   display: flex;
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   cursor: text;
   flex: 1;
   font-size: 0.875rem;
@@ -14,7 +15,7 @@ export const CommentSectionLabel = styled.div`
 
 export const CommentSectionInputField = styled.div`
   border: 0;
-  color: #2e3a43;
+  color: ${palette.greyBlue};
   flex: 1;
   font-size: 0.875rem;
   height: 100%;
@@ -23,13 +24,13 @@ export const CommentSectionInputField = styled.div`
   word-break: break-word;
 
   &:empty ::after {
-    color: #dedee2;
+    color: ${palette.unknownGrey6};
     content: '+ add a comment';
   }
 `;
 
 export const CommentsDivider = styled.div`
-  background-color: #ddf2f7;
+  background-color: ${palette.unknownGrey2};
   height: 2px;
   width: 100%;
 `;
@@ -61,9 +62,9 @@ export const CubesLoaderContainer = styled.div`
 
 export const AddCommentButtonContainer = styled.div`
   align-items: center;
-  background-color: #d9036b;
+  background-color: ${palette.vividPink};
   border-radius: 0.25rem;
-  color: #fff;
+  color: ${palette.white};
   cursor: pointer;
   display: flex;
   height: 2.25rem;
@@ -81,12 +82,12 @@ export const StyledSimpleBar = styled(SimpleBar)`
 
   & .simplebar-scrollbar::before,
   & .simplebar-scrollbar.simplebar-visible::before {
-    background-color: #c8c8ce;
+    background-color: ${palette.coolGrey2};
     opacity: ${props => (props.visible ? 1 : 0)};
   }
 
   & .simplebar-track.simplebar-vertical {
-    background-color: #ededf0;
+    background-color: ${palette.unknownGrey4};
     border-radius: 0.5rem;
   }
 `;

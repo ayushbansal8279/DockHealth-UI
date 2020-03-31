@@ -7,6 +7,7 @@ import { getUserAvatarBuffer } from '../../api/people-api';
 import { noop } from '../../helpers/utility-functions';
 import PdfTask from './PdfTask';
 import { AvatarImage, AvatarInitials } from './PdfTask.Styled';
+import palette from '../../palette';
 
 const getAvatarContent = memoizeWith(
   propsObject => Object.values(propsObject).join('-'),
@@ -25,7 +26,7 @@ const StyledPage = styled.Page`
 
 const HeaderView = styled.View`
   align-items: center;
-  background-color: #dedee2;
+  background-color: ${palette.unknownGrey6};
   display: flex;
   flex-flow: row nowrap;
   height: 12pt;
@@ -34,7 +35,7 @@ const HeaderView = styled.View`
 `;
 
 const HeaderText = styled.Text`
-  color: #000;
+  color: ${palette.black};
   font-family: 'Open Sans';
   font-size: 8pt;
   padding: 0 4pt;

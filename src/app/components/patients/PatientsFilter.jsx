@@ -1,12 +1,12 @@
+import { MenuItem, Select } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-
-import { MenuItem, Select } from '@material-ui/core';
+import palette from '../../palette';
 
 const StyledSelect = styled(Select)`
   && fieldset {
-    border: 0.0625rem solid #e5e9f2 !important;
+    border: 0.0625rem solid ${palette.coolGrey3} !important;
     border-radius: 0 !important;
   }
 `;

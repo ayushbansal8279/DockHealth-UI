@@ -1,11 +1,12 @@
+import { Grid } from '@material-ui/core';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { createFilter } from 'react-search-input';
 import { bindActionCreators } from 'redux';
-import { Grid } from '@material-ui/core';
 import * as PeopleActions from '../../actions/people-actions';
 import { noop } from '../../helpers/utility-functions';
+import palette from '../../palette';
 import Member from '../members/Member';
 import {
   ListContainer,
@@ -117,7 +118,7 @@ class PeopleContainer extends PureComponent {
                 person.userIdentifier,
               )}`}
             >
-              <Member color="#ababb2" member={person} />
+              <Member color={palette.unknownGrey5} member={person} />
             </Link>
           </MemberContainer>
           <Grid item container alignItems="center">

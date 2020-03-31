@@ -6,11 +6,12 @@ import styled from 'styled-components';
 import { changeUserRoleForOrg } from '../../../actions/people-actions';
 import Spacing from '../../../components/common/Spacing';
 import { showAlert } from '../../../helpers/utility-functions';
+import palette from '../../../palette';
 import { MemberAvatar } from './SubscriptionsView.OrganizationMemberRow';
 
 const GrayDialog = withStyles({
   paper: {
-    backgroundColor: '#F3F5F6',
+    backgroundColor: palette.lightGrey,
     padding: '1.5rem',
   },
 })(Dialog);
@@ -22,7 +23,7 @@ const RemoveModalDivider = withStyles({
 })(Divider);
 
 const PeopleContainer = styled.div`
-  background-color: #fff;
+  background-color: ${palette.white};
   min-height: 2rem;
   margin: 0.5rem 0;
   max-height: 20rem;
@@ -39,7 +40,7 @@ const PersonRow = styled.div`
   margin: 0.375rem 0;
   transition: all 0.25s ease-out;
 
-  ${props => props.selected && 'background-color: #d4f3ff;'}
+  ${props => props.selected && `background-color: ${palette.paleBlue};`}
 `;
 
 const MemberAvatarContainer = styled.div`

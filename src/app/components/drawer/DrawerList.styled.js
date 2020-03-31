@@ -7,6 +7,7 @@ import {
   ListItemText,
   Popover,
 } from '@material-ui/core';
+import palette from '../../palette';
 
 export const StyledList = styled(List).attrs({
   paper: 'paper',
@@ -40,7 +41,7 @@ export const StyledListItemText = styled(ListItemText).attrs({
   disableTypography: true,
 })`
   && {
-    color: #c1ccda;
+    color: ${palette.coolGrey2};
     font-size: 16px;
     line-height: 29px;
     font-weight: normal;
@@ -53,9 +54,9 @@ export const StyledListItemText = styled(ListItemText).attrs({
 `;
 
 export const RolloverNestedListItemText = styled.div`
-  background-color: #05adec;
+  background-color: ${palette.midnightBlue};
   border-radius: 0;
-  color: #fff;
+  color: ${palette.white};
   cursor: pointer;
   font-size: 0.875rem;
   line-height: 1;
@@ -66,6 +67,7 @@ export const RolloverNestedListItemText = styled.div`
 export const RolloverPopover = styled(Popover)`
   && {
     pointer-events: none;
+    text-transform: uppercase;
   }
 
   && > div {
@@ -74,7 +76,7 @@ export const RolloverPopover = styled(Popover)`
 `;
 
 export const NestedListItemText = styled.li`
-  color: #c1ccda;
+  color: ${palette.coolGrey2};
   font-size: 14px;
   font-weight: normal;
   line-height: 29px;
@@ -88,7 +90,7 @@ export const NestedListItemText = styled.li`
 
 export const NestedListItem = styled(ListItem)`
   && {
-    color: #8492a4;
+    color: ${palette.coolGrey1};
     padding-bottom: 0;
     padding-top: 0;
     position: relative;
@@ -131,7 +133,7 @@ export const ActiveIconRim = styled.div`
 
 export const StyledListItem = styled(ListItem)`
   && {
-    color: #8492a4;
+    color: ${palette.coolGrey1};
     padding: 6px 16px;
   }
 
@@ -156,7 +158,7 @@ export const StyledRouterLinkContainer = styled.div`
 
   &&.active {
     ${NestedListItem} {
-      background: #8492a4;
+      background: ${palette.coolGrey1};
     }
   }
 `;
@@ -174,7 +176,7 @@ export const NestedListContainer = styled.div`
 `;
 
 export const ListDivider = styled.div`
-  background-color: #8492a4;
+  background-color: ${palette.coolGrey1};
   box-sizing: border-box;
   height: 0.0625rem;
   margin-left: 1.5rem;

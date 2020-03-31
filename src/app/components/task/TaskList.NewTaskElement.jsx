@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import palette from '../../palette';
 import CubesLoader from '../common/CubesLoader';
 import TaskCheckbox from './TaskCheckbox';
 
 const NewTaskContainer = styled.div`
   align-items: center;
-  background-color: #fff;
+  background-color: ${palette.white};
   display: flex;
   height: ${props => (props.addingNewTask ? 85 : 0)};
   margin-top: ${props => (props.addingNewTask ? 0.5 : 0)}rem;

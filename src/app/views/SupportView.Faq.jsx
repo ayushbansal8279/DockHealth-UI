@@ -4,6 +4,7 @@ import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
 import Spacing from '../components/common/Spacing';
 import Search from '../components/taskView/Search';
+import palette from '../palette';
 
 const faqArticles = [
   {
@@ -51,7 +52,7 @@ const faqArticles = [
 ];
 
 const SupportViewLink = styled.a`
-  color: #007cab;
+  color: ${palette.cyanBlue};
 `;
 
 const SupportSearchContainer = styled.div`

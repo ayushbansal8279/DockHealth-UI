@@ -7,6 +7,7 @@ import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-a
 import { acknowledgeEula } from '../../../actions/user-actions';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import { useSmallScreen } from '../../../helpers/utility-functions';
+import palette from '../../../palette';
 import {
   OnboardingAnchor,
   OnboardingButton,
@@ -79,7 +80,7 @@ const OnboardingEulaView = () => {
           <TaskCheckbox
             checked={isEulaAccepted}
             onChange={toggleEulaAccepted}
-            color="#125375"
+            color={palette.darkGreyBlue}
           />
           <OnboardingHorizontalSpacing3 />
           <OnboardingH3>

@@ -10,6 +10,7 @@ import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
 import CubesLoader from '../../../components/common/CubesLoader';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import { noop } from '../../../helpers/utility-functions';
+import palette from '../../../palette';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
 const CubesLoaderContainer = styled.div`
@@ -164,7 +165,7 @@ const OrganizationMemberRow = ({
           openDialog();
         }
       }}
-      color="#074A86"
+      color={palette.darkBlue}
     />
   );
 

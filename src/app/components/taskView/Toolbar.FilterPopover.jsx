@@ -1,6 +1,7 @@
 import { Button, Fade } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import palette from '../../palette';
 import ListPopover from '../common/ListPopover';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
@@ -98,7 +99,7 @@ const FilterPopover = ({
             <ToolbarLabel
               variant="body1"
               component="span"
-              style={{ color: '#8492a4' }}
+              style={{ color: palette.coolGrey1 }}
             >
               {currentFilterDescription}
             </ToolbarLabel>
@@ -127,7 +128,7 @@ const FilterPopover = ({
     label: '',
     button: false,
     style: {
-      borderBottom: '0.0625rem solid #e5e9f2',
+      borderBottom: `0.0625rem solid ${palette.coolGrey3}`,
       margin: '0.25rem 0',
       padding: 0,
     },

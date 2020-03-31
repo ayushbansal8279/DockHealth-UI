@@ -10,6 +10,7 @@ import {
 } from '../../actions/task-actions';
 import { getPatientName } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
+import palette from '../../palette';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';
@@ -36,7 +37,7 @@ const PatientItemContainer = styled.div`
   transition: all 0.25s ease-out;
 
   &:hover {
-    background-color: #d4f3ff;
+    background-color: ${palette.paleBlue};
   }
 
   & > div {

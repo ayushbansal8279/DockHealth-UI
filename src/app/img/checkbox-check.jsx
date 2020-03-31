@@ -1,4 +1,5 @@
 import React from 'react';
+import palette from '../palette';
 
 export default ({ className, size }) => (
   <svg
@@ -8,7 +9,7 @@ export default ({ className, size }) => (
     strokeLinecap="round"
     strokeLinejoin="round"
     fill="none"
-    stroke="#fff"
+    stroke={palette.white}
     strokeWidth="3"
     className={className}
   >

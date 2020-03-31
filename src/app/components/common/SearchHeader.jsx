@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import SearchDark from '../../img/search-dark.svg';
+import palette from '../../palette';
 
 const SearchTextField = styled(TextField)`
   && {
     width: 100%;
     height: 48px;
     border-radius: 2px;
-    background: #fff;
+    background: ${palette.white};
   }
 
   && .input-base {
@@ -33,12 +34,12 @@ const SearchTextField = styled(TextField)`
 `;
 
 const Header = styled.div`
+  align-items: center;
+  background-color: ${palette.midnightBlue};
+  display: flex;
   flex-shrink: 0;
   flex-grow: 0;
   padding: 0 10px;
-  display: flex;
-  align-items: center;
-  background: #213a56;
   width: 494px;
   height: 73px;
 `;

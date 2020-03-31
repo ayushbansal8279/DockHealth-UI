@@ -16,6 +16,7 @@ import {
   showAlert,
 } from '../helpers/utility-functions';
 import useBoolean from '../hooks/useBoolean';
+import palette from '../palette';
 import {
   ArchivePersonButton,
   BoldLabel,
@@ -100,7 +101,7 @@ const PersonInfoPanel = ({ personData }) => {
       <Grid container alignItems="center">
         <PersonNameContainer>
           <PersonAvatarContainer>
-            <Avatar color="#ababb2" size={102}>
+            <Avatar color={palette.unknownGrey5} size={102}>
               {avatarContent}
             </Avatar>
           </PersonAvatarContainer>

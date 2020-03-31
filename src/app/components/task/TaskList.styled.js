@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import { TableCell } from '@material-ui/core';
+import styled from 'styled-components';
+import palette from '../../palette';
 
 export const TaskListOuterContainer = styled.div`
   width: 100%;
@@ -27,9 +28,9 @@ export const ShowMoreButtonContainer = styled.div`
 
 export const ShowMoreButton = styled.div`
   align-items: center;
-  background-color: #d9036b;
+  background-color: ${palette.vividPink};
   border-radius: 0 0 0.5rem 0.5rem;
-  color: #fff;
+  color: ${palette.white};
   cursor: ${props => (props.active ? 'pointer' : 'not-allowed')};
   display: flex;
   font-size: 1.125rem;

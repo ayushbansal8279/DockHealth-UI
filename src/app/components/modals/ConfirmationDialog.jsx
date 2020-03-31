@@ -1,7 +1,7 @@
+import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-
-import { Button, Grid } from '@material-ui/core';
+import palette from '../../palette';
 import NoOverflowDialog from '../common/NoOverflowDialog';
 
 const StyledDialogGrid = styled(Grid)`
@@ -14,7 +14,7 @@ const StyledDialogGrid = styled(Grid)`
 
 const StyledTitle = styled.div`
   && {
-    color: #4a4a4a;
+    color: ${palette.mediumGrey};
     font-size: 30px;
     text-align: center;
   }
@@ -22,7 +22,7 @@ const StyledTitle = styled.div`
 
 const StyledContent = styled.div`
   && {
-    color: #4a4a4a;
+    color: ${palette.mediumGrey};
     font-size: 20px;
     text-align: center;
   }
@@ -30,7 +30,7 @@ const StyledContent = styled.div`
 
 const StyledCloseButton = styled.button`
   && {
-    color: #ababb2;
+    color: ${palette.unknownGrey5};
     cursor: pointer;
     font-size: 42px;
     line-height: 42px;

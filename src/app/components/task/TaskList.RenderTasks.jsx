@@ -2,6 +2,7 @@ import { Button, Collapse, Grid } from '@material-ui/core';
 import { isEmpty, partition } from 'ramda';
 import React, { useCallback } from 'react';
 import useBoolean from '../../hooks/useBoolean';
+import palette from '../../palette';
 import CubesLoader from '../common/CubesLoader';
 import Spacing from '../common/Spacing';
 import Task from './Task';
@@ -51,7 +52,7 @@ const getCompletedTasksLabel = ({
     return (
       <>
         <Spacing horizontal={3} />
-        <CubesLoader color="#fff" size={24} />
+        <CubesLoader color={palette.white} size={24} />
       </>
     );
   }

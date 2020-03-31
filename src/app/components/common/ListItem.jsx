@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { ButtonBase } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from 'styled-components';
+import palette, { opacify } from '../../palette';
 
 const ItemContainer = styled(ButtonBase)`
   && {
@@ -9,9 +10,10 @@ const ItemContainer = styled(ButtonBase)`
     height: 56px;
     width: 100%;
     padding: 0 8px;
-    ${({ selected }) => selected && 'background: #a6dcea;'} :hover,
+    ${({ selected }) => selected && `background: ${palette.softCyan};`} :hover,
     :focus {
-      ${({ selected }) => !selected && 'background: rgba(0, 0, 0, 0.08);'}
+      ${({ selected }) =>
+        !selected && `background: ${opacify(palette.black, 0.08)};`}
     }
   }
 `;
@@ -30,7 +32,7 @@ const Item = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid ${opacify(palette.black, 0.12)};
   font-size: 12px;
 `;
 
