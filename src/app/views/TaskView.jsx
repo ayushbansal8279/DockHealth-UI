@@ -114,7 +114,7 @@ export const TaskListSection = ({
       className={clsx(paneled && taskListClasses.paneled)}
     >
       <TaskListSectionHeader>
-        <Grid item container xs={12} justify="space-between">
+        <Grid item container xs={12} justify="space-between" wrap="nowrap">
           {heading}
           {!hideCollapse && (
             <CollapseStyledButton
