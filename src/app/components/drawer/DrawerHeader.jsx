@@ -96,7 +96,7 @@ const StyledLink = React.forwardRef((props, reference) => {
   );
 });
 
-const DrawerHeader = ({ setActiveId, user }) => {
+const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
   const userProfilePic = useSelector(state => state.userState.userProfilePic);
   const { access: userProfileAccess, orgUserRole } = useSelector(
     state => state.userState.userProfile || {},
@@ -124,10 +124,15 @@ const DrawerHeader = ({ setActiveId, user }) => {
 
   const dropdownHeight = (isUserAdmin ? 4 : 2) * 2.625 + 0.5;
 
+  const onDrawerHeaderOpen = useCallback(() => {
+    openPopover();
+    onMouseEnter();
+  }, [onMouseEnter, openPopover]);
+
   return (
     <>
       <StyledListItem
-        onMouseEnter={userProfileEnabled && openPopover}
+        onMouseEnter={userProfileEnabled && onDrawerHeaderOpen}
         onMouseLeave={closePopover}
       >
         <ListItemIcon

@@ -265,7 +265,11 @@ const DrawerList = ({
   return (
     <>
       <StyledList onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-        <DrawerHeader setActiveId={setActiveId} user={user} />
+        <DrawerHeader
+          setActiveId={setActiveId}
+          user={user}
+          onMouseEnter={onMouseEnter}
+        />
         <StandardListContainer trialBannerVisible={trialBannerVisible}>
           {drawerItems.map(
             renderDrawerItem({
