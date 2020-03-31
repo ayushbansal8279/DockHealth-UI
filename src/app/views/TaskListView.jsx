@@ -45,8 +45,8 @@ import {
   NoListsAvailableContainer,
   NoListsIconContainer,
   StyledCollapse,
-  TaskListTipsContainer,
   TaskListViewWrapper,
+  TipsImage,
   TopMessageContainer,
 } from './TaskListView.Styled';
 
@@ -447,11 +447,17 @@ class TaskListView extends PureComponent {
                 arrowAnchorElement={this.tipsButtonReference.current}
                 onTakeTourClick={this.showTipsModal}
               >
-                <TaskListTipsContainer>
-                  <img alt="step 1" src={TaskListTip1} />
-                  <img alt="step 2" src={TaskListTip2} />
-                  <img alt="step 3" src={TaskListTip3} />
-                </TaskListTipsContainer>
+                <Grid container alignItems="center" spacing={2}>
+                  <Grid item xs={6} sm={6} md={6} lg={4}>
+                    <TipsImage alt="step 1" src={TaskListTip1} />
+                  </Grid>
+                  <Grid item xs={6} sm={6} md={6} lg={4}>
+                    <TipsImage alt="step 2" src={TaskListTip2} />
+                  </Grid>
+                  <Grid item xs={6} sm={6} md={6} lg={4}>
+                    <TipsImage alt="step 3" src={TaskListTip3} />
+                  </Grid>
+                </Grid>
               </TipsContentHeader>
             </StyledCollapse>
             <HelpfulTipsDialog

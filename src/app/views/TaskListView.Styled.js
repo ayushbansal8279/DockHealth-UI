@@ -71,18 +71,12 @@ export const NoListsIconContainer = styled.div`
   width: 4rem;
 `;
 
-export const TaskListTipsContainer = styled.div`
-  align-items: center;
-  display: grid;
-  grid-gap: 0.5rem;
-  grid-template-columns: repeat(3, 1fr);
-
-  > * {
-    background-color: #ffffff;
-    cursor: default;
-    justify-self: center;
-    max-height: 5rem;
-    object-fit: contain;
-    width: 100%;
-  }
+export const TipsImage = styled.img`
+  background-color: #ffffff;
+  cursor: default;
+  justify-self: center;
+  min-height: 4rem;
+  max-height: 5rem;
+  object-fit: contain;
+  width: 100%;
 `;
