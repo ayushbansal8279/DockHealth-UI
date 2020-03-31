@@ -5,14 +5,14 @@ import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import palette from '../../palette';
-import Avatar from '../common/Avatar';
-import { AvatarImageContainer } from '../common/Avatar.styled';
+import Member from '../members/Member';
 
 const StyledListItem = styled(ListItem)`
   && {
     background-color: ${palette.midnightBlue};
     height: 5rem;
     min-height: 5rem;
+    padding: 0.75rem 1rem 1rem;
     :focus {
       background-color: ${palette.midnightBlue};
     }
@@ -35,6 +35,7 @@ const DropdownListItem = styled(StyledListItem)`
     margin: 0;
     margin-bottom: 0.5rem;
     min-height: 2.125rem;
+    padding: 0 1rem;
     text-transform: uppercase;
     transition: all 0.25s ease-out;
 
@@ -98,7 +99,6 @@ const StyledLink = React.forwardRef((props, reference) => {
 });
 
 const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
-  const userProfilePic = useSelector(state => state.userState.userProfilePic);
   const { access: userProfileAccess, orgUserRole } = useSelector(
     state => state.userState.userProfile || {},
   );
@@ -106,14 +106,6 @@ const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
 
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
-
-  const avatarInitials = user?.initials ?? '';
-
-  const avatarContent = userProfilePic ? (
-    <AvatarImageContainer src={userProfilePic} alt="User profile picture" />
-  ) : (
-    avatarInitials
-  );
 
   const onLinkClicked = useCallback(() => {
     closePopover();
@@ -123,7 +115,7 @@ const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
   const userProfileEnabled = userProfileAccess?.userProfileEnabled;
   const linkComponent = userProfileEnabled ? StyledLink : undefined;
 
-  const dropdownHeight = (isUserAdmin ? 4 : 2) * 2.625 + 0.5;
+  const dropdownHeight = (isUserAdmin ? 4 : 2) * 2.625 + 0.25;
 
   const onDrawerHeaderOpen = useCallback(() => {
     openPopover();
@@ -141,9 +133,11 @@ const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
             marginLeft: '-2px',
           }}
         >
-          <Avatar withCursor size={55}>
-            {avatarContent}
-          </Avatar>
+          <Member
+            showTooltip={false}
+            member={user}
+            color={palette.midnightBlue}
+          />
         </ListItemIcon>
       </StyledListItem>
       <StyledDropdown

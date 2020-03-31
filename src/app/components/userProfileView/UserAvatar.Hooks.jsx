@@ -70,7 +70,7 @@ export default () => {
   const [fileCropped, setFileCropped] = useState(null);
 
   const avatarInitials = userProfile
-    ? `${userProfile.firstName[0]}${userProfile.lastName[0]}`
+    ? `${userProfile.firstName.charAt(0)}${userProfile.lastName.charAt(0)}`
         .trim()
         .toLowerCase()
     : '';

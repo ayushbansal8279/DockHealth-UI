@@ -26,9 +26,15 @@ const ArrowElement = styled.div`
   z-index: 1;
 `;
 
+const StyledPopper = styled(Popper)`
+  && {
+    z-index: 10000;
+  }
+`;
+
 const UniversalTooltip = ({ children, ...props }: PopperProps) => {
   return (
-    <Popper {...props} transition>
+    <StyledPopper {...props} transition>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={250}>
           <TooltipContainer>
@@ -41,7 +47,7 @@ const UniversalTooltip = ({ children, ...props }: PopperProps) => {
           </TooltipContainer>
         </Fade>
       )}
-    </Popper>
+    </StyledPopper>
   );
 };
 

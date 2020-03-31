@@ -11,12 +11,12 @@ import Lightbulb from '../../img/lightbulb-grey.svg';
 import palette from '../../palette';
 import { RobotoTypography } from '../../theme';
 import AdornedButton from '../common/AdornedButton';
-import Avatar from '../common/Avatar';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
 import UniversalTooltip from '../common/UniversalTooltip';
 import InviteMemberPopover from '../members/InviteMemberPopover';
+import Member from '../members/Member';
 import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
@@ -24,64 +24,16 @@ import MorePopover from './Toolbar.MorePopover';
 import {
   MoreMembersButtonContainer,
   SlimViewToggle,
-  ToolbarAvatarContainer,
   ToolbarLabel,
 } from './Toolbar.Styled';
 
-const getThumbnailUrl = ({ userIdentifier, profileThumbnailPictureHash }) =>
-  `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userIdentifier}/${profileThumbnailPictureHash}`;
-
-const MemberAvatar = ({ member, taskListMembers }) => {
-  const [isTooltipShown, showTooltip, hideTooltip] = useBoolean(false);
-
-  const avatarReference = useRef(null);
-
-  const avatarContent = member?.profileThumbnailPictureHash ? (
-    <img src={getThumbnailUrl(member)} alt={member?.initials} />
-  ) : (
-    member?.initials
-  );
-
+const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
     taskListMembers?.find(
       ({ userIdentifier }) => member?.userIdentifier === userIdentifier,
     ) || {};
 
-  const bubbleColor = taskListMember?.bubbleColor || palette.memberGreen;
-
-  const memberName = `${taskListMember?.firstName ??
-    ''} ${taskListMember?.lastName ?? ''}`.trim();
-
-  return (
-    <div
-      key={member?.userIdentifier ?? member?.email}
-      className="avatarWrapper"
-      style={{ width: '42px', height: '42px' }}
-    >
-      {/* <Spacing horizontal={3} /> */}
-      <UniversalTooltip
-        open={isTooltipShown}
-        anchorEl={avatarReference.current}
-        placement="bottom"
-      >
-        {memberName}
-      </UniversalTooltip>
-      <Avatar
-        padded={false}
-        size={40}
-        color={bubbleColor}
-        onMouseEnter={showTooltip}
-        onMouseLeave={hideTooltip}
-        ref={avatarReference}
-      >
-        <ToolbarAvatarContainer>{avatarContent}</ToolbarAvatarContainer>
-      </Avatar>
-    </div>
-  );
-};
-
-const renderMemberAvatar = ({ taskListMembers }) => member => {
-  return <MemberAvatar member={member} taskListMembers={taskListMembers} />;
+  return <Member member={taskListMember} size={40} />;
 };
 
 const useToggleNotifications = ({

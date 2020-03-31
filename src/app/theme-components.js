@@ -77,7 +77,9 @@ const themeCommonOverrides = () => ({
       },
     },
     MuiList: {
-      padding: 0,
+      root: {
+        padding: 0,
+      },
     },
     MuiMenu: {
       paper: {

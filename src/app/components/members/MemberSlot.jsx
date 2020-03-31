@@ -1,35 +1,21 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styled from 'styled-components';
 import ProfileIcon from '../../img/profile.svg';
 import palette from '../../palette';
 import Member from './Member';
 
-const AssignedMember = styled(Member)`
-  && {
-    margin: 0 auto;
-    width: 41px;
-    height: 41px;
-    font-size: 1rem;
-  }
-`;
-
-const MemberSlot = ({ member, onClick, small }) =>
+const MemberSlot = ({ member, onClick, size }) =>
   member ? (
-    <AssignedMember onClick={onClick} member={member} small={small} />
+    <Member size={size ?? 40} onClick={onClick} member={member} />
   ) : (
-    <AssignedMember
+    <Member
+      size={size ?? 40}
       onClick={onClick}
       alt="Unassigned"
-      small={small}
       color={palette.unknownGrey6}
     >
-      <img
-        src={ProfileIcon}
-        alt="Unassigned"
-        style={{ marginBottom: '3px', width: '19px' }}
-      />
-    </AssignedMember>
+      <img src={ProfileIcon} alt="Unassigned" style={{ width: '60%' }} />
+    </Member>
   );
 
 MemberSlot.propTypes = {
