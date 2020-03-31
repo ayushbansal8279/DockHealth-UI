@@ -153,24 +153,20 @@ class TaskListView extends PureComponent {
 
   toggleTips = () => {
     this.setState(({ tipsOpen: previousTipsOpen }) => ({
-      tipsOpen:
-        previousTipsOpen === 'true' || previousTipsOpen === true
-          ? 'false'
-          : 'true',
+      tipsOpen: previousTipsOpen === 'true' ? 'false' : 'true',
     }));
   };
 
   showTipsModal = () => {
     this.setState({
-      tipsModalOpen: true,
+      tipsModalOpen: 'true',
     });
   };
 
   hideTipsModal = () => {
     this.setState({
-      tipsModalOpen: false,
+      tipsModalOpen: 'false',
     });
-    localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
   };
 
   resetHeader = () => {
@@ -445,7 +441,7 @@ class TaskListView extends PureComponent {
                 ADD A LIST
               </AdornedButton>
             </PageContentHeader>
-            <StyledCollapse in={tipsOpen} timeout={250}>
+            <StyledCollapse in={tipsOpen === 'true'} timeout={250}>
               <TipsContentHeader
                 closeHeader={this.toggleTips}
                 arrowAnchorElement={this.tipsButtonReference.current}
