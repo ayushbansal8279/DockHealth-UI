@@ -1,6 +1,7 @@
 import { IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useUnmount } from 'react-use';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import { MontserratTypography } from '../../theme-montserrat';
@@ -59,6 +60,9 @@ interface TipsContentHeaderProps {
   showTakeTour?: boolean;
 }
 
+const createMutationObserver = (callback: () => void) =>
+  new MutationObserver(callback);
+
 const TipsContentHeader = ({
   arrowAnchorElement,
   children,
@@ -70,19 +74,51 @@ const TipsContentHeader = ({
   const [isArrowShown, showArrow, hideArrow] = useBoolean(false);
   const [arrowPosition, setArrowPosition] = useState(0);
 
-  useEffect(() => {
+  const [observer, setObserver] = useState<MutationObserver | null>(null);
+
+  const resetArrowPosition = useCallback(() => {
     if (arrowAnchorElement) {
       showArrow();
+      const offsetLeft = arrowAnchorElement?.offsetLeft;
       const { width } = arrowAnchorElement?.getBoundingClientRect() || {};
-      const x = arrowAnchorElement?.offsetLeft;
 
-      if (width && x) {
-        setArrowPosition(x + 0.5 * width);
+      if (width && offsetLeft) {
+        setArrowPosition(offsetLeft + 0.5 * width);
       }
     } else {
       hideArrow();
     }
   }, [arrowAnchorElement, hideArrow, showArrow]);
+
+  useEffect(() => {
+    const toolbarLeftContainer = document.querySelector(
+      '#toolbar-left-container',
+    );
+
+    if (toolbarLeftContainer) {
+      // eslint-disable-next-line no-unused-expressions
+      observer?.disconnect?.();
+
+      const newObserver = createMutationObserver(() => {
+        // using standard transition duration
+        setTimeout(() => resetArrowPosition(), 250);
+      });
+      newObserver.observe(toolbarLeftContainer, {
+        attributes: true,
+        subtree: true,
+      });
+
+      setObserver(newObserver);
+    }
+
+    resetArrowPosition();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arrowAnchorElement, resetArrowPosition]);
+
+  useUnmount(() => {
+    // eslint-disable-next-line no-unused-expressions
+    observer?.disconnect?.();
+  });
 
   return (
     <HeaderContainer>

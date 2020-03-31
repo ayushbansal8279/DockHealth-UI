@@ -11,7 +11,7 @@ import palette from '../../palette';
 
 const StyledSwitchContainer = withStyles({
   root: {
-    border: `0.125rem solid ${palette.orange}`,
+    border: `0.125rem solid ${palette.coolGrey1}`,
     height: '2rem',
     padding: '0.25rem',
     width: '2rem',
@@ -19,7 +19,7 @@ const StyledSwitchContainer = withStyles({
 })(IconButton);
 
 const SwitchDash = styled.div`
-  background-color: ${palette.brightBlue};
+  background-color: ${palette.oPlusRed};
   border-radius: 0.125rem;
   height: 0.125rem;
   margin: 0.0625rem 0;
@@ -42,7 +42,7 @@ export const SlimViewToggle = ({ slimView, ...props }: SlimViewToggleProps) => (
 
 export const ToolbarLabel = withStyles({
   root: {
-    color: palette.brightBlue,
+    color: palette.coolGrey1,
     display: 'inline-block',
   },
 })(Typography);

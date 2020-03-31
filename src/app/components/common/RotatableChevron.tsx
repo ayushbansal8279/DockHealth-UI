@@ -1,19 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import ListSwitchChevron from '../../img/list-switch-chevron.svg';
+import ListSwitchChevron from '../../img/list-switch-chevron';
+import palette from '../../palette';
 
 interface RotatableChevronProps {
-  rotated?: boolean;
+  color: string;
+  rotated: boolean;
 }
 
-const ListSwitchContainer = styled.div`
+const ListSwitchContainer = styled.div<Pick<RotatableChevronProps, 'rotated'>>`
   align-items: center;
   display: flex;
   justify-content: center;
   transition: all 0.25s ease-out;
-  transform: scaleY(
-    ${(props: RotatableChevronProps) => (props.rotated ? -1 : 1)}
-  );
+  transform: scaleY(${props => (props.rotated ? -1 : 1)});
+
+  & svg {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
 `;
 
 const RotatableChevronContainer = styled.div`
@@ -35,32 +41,28 @@ const HeaderChevronContainer = styled(RotatableChevronContainer)`
   & ${ListSwitchContainer} {
     height: 100%;
     width: 100%;
-
-    & img {
-      height: 100%;
-      object-fit: contain;
-    }
   }
 `;
 
-const RotatableChevron = ({ rotated }: RotatableChevronProps) => (
+const RotatableChevron = ({
+  color = palette.dirtyBanana,
+  rotated,
+}: RotatableChevronProps) => (
   <ListSwitchContainer rotated={rotated}>
-    <img src={ListSwitchChevron} alt="List switch" />
+    <ListSwitchChevron color={color} />
   </ListSwitchContainer>
 );
 
-export const RotatableChevronWithSpacing = ({
-  rotated,
-}: RotatableChevronProps) => (
+export const RotatableChevronWithSpacing = (props: RotatableChevronProps) => (
   <RotatableChevronContainer>
-    <RotatableChevron rotated={rotated} />
+    <RotatableChevron {...props} />
   </RotatableChevronContainer>
 );
 
 export const RotatableHeaderChevron = React.forwardRef(
-  ({ rotated }: RotatableChevronProps, reference) => (
+  (props: RotatableChevronProps, reference) => (
     <HeaderChevronContainer ref={reference}>
-      <RotatableChevron rotated={rotated} />
+      <RotatableChevron {...props} />
     </HeaderChevronContainer>
   ),
 );

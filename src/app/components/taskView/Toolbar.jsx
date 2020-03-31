@@ -159,7 +159,7 @@ export default ({
 
   return (
     <PageContentHeader paneled={paneled}>
-      <div>
+      <div id="toolbar-left-container">
         <Grid container alignItems="center" direction="row" wrap="nowrap">
           <SlimViewToggle
             onClick={switchSlimView}
@@ -177,7 +177,10 @@ export default ({
               FILTER
             </ToolbarLabel>
             <Spacing horizontal={3} />
-            <RotatableChevron rotated={isFilterPopoverOpen} />
+            <RotatableChevron
+              rotated={isFilterPopoverOpen}
+              color={palette.oPlusRed}
+            />
           </Button>
           {currentFilterDescription && (
             <>
@@ -200,18 +203,31 @@ export default ({
               </ToolbarLabel>
             </>
           )}
+          {preferencesInitialized && (
+            <>
+              <Spacing horizontal={4} />
+              <Search
+                initialValue={initialSearchValue}
+                value={searchValue}
+                onChange={handleSearch}
+              />
+            </>
+          )}
           {showTipsButton && (
-            <Button
-              variant="text"
-              color="inherit"
-              size="small"
-              onClick={toggleTips}
-              innerRef={tipsButtonReference}
-            >
-              <img alt="lightbulb" src={Lightbulb} />
-              <Spacing horizontal={2} />
-              <RobotoTypography weight="normal">TIPS</RobotoTypography>
-            </Button>
+            <>
+              <Spacing horizontal={3} />
+              <Button
+                variant="text"
+                color="inherit"
+                size="small"
+                onClick={toggleTips}
+                innerRef={tipsButtonReference}
+              >
+                <img alt="lightbulb" src={Lightbulb} />
+                <Spacing horizontal={2} />
+                <RobotoTypography weight="normal">TIPS</RobotoTypography>
+              </Button>
+            </>
           )}
         </Grid>
       </div>
@@ -223,13 +239,6 @@ export default ({
           wrap="nowrap"
           justify="flex-end"
         >
-          {preferencesInitialized && (
-            <Search
-              initialValue={initialSearchValue}
-              value={searchValue}
-              onChange={handleSearch}
-            />
-          )}
           {!isInbox && (
             <>
               <Spacing horizontal={3} />
@@ -243,10 +252,14 @@ export default ({
                   ACTIONS
                 </ToolbarLabel>
                 <Spacing horizontal={3} />
-                <RotatableChevron rotated={isMorePopoverOpen} />
+                <RotatableChevron
+                  rotated={isMorePopoverOpen}
+                  color={palette.oPlusRed}
+                />
               </Button>
               {!isSpecialList && showMembers && (
                 <>
+                  <Spacing horizontal={4} />
                   {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
                   {hiddenMembersCount > 0 && (
                     <>

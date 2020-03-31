@@ -27,7 +27,7 @@ const StyledTextField = styled(TextField)`
   && {
     background-color: ${palette.white};
     border-radius: 0.25rem;
-    color: ${palette.brightBlue};
+    color: ${palette.coolGrey1};
     height: 2.5rem;
     ${props => props.fullWidth && 'width: 100%;'}
 
@@ -41,7 +41,7 @@ const StyledTextField = styled(TextField)`
       height: 100%;
       padding: 0 0.25rem 0 0.5rem;
       transition: all 0.25s ease-in-out;
-      width: ${props => (props.fullWidth ? '100%' : '8.75rem')};
+      width: ${props => (props.fullWidth ? '100%' : '8rem')};
 
       &::after,
       &::before {
@@ -55,7 +55,7 @@ const StyledTextField = styled(TextField)`
     }
 
     & input {
-      caret-color: ${palette.brightBlue};
+      caret-color: ${palette.coolGrey1};
       color: ${palette.coolGrey1};
       height: 100%;
       border: none;
@@ -65,7 +65,7 @@ const StyledTextField = styled(TextField)`
       padding: 0;
 
       &::placeholder {
-        color: ${palette.brightBlue};
+        color: ${palette.coolGrey1};
         font-size: 1rem;
         opacity: 0.8;
         text-transform: uppercase;

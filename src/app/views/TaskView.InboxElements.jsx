@@ -92,7 +92,7 @@ export const InboxHelpPanel = ({ arrowAnchorElement, closeInboxHelpPanel }) => (
         </MontserratTypography>
       </HeaderContainer>
     }
-    arrowAnchorElement={arrowAnchorElement?.current}
+    arrowAnchorElement={arrowAnchorElement.current}
     closeHeader={closeInboxHelpPanel}
   >
     <Spacing vertical={1} />
