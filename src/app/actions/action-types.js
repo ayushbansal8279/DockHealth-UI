@@ -178,3 +178,6 @@ export const USER_ACKNOWLEDGED_EULA = 'USER_ACKNOWLEDGED_EULA';
 
 // Task drawer
 export const SET_TASK_DRAWER_STATE = 'SET_TASK_DRAWER_STATE';
+
+// Auth base
+export const SET_AUTH_BASE_STATE = 'SET_AUTH_BASE_STATE';

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import AuthBaseReducer from './auth-base-reducer';
 import FormReducer from './form-reducer';
 import HeaderReducer from './header-reducer';
 import InvitationReducer from './invitation-reducer';
@@ -27,4 +28,5 @@ export default combineReducers({
   onboardingProgress: OnboardingProgressReducer,
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,
+  authBase: AuthBaseReducer,
 });
