@@ -40,7 +40,7 @@ const UNASSIGNED_MEMBER_ID = -1;
 class MemberPicker extends React.Component {
   state = {
     anchorEl: null,
-    isSearching: false,
+    isSearching: true, // Starts with the search bar open.
     searchTerm: '',
   };
 
