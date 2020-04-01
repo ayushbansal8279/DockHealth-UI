@@ -172,6 +172,12 @@ class TaskListSearch extends PureComponent {
               </Typography>
             </Grid>
           </SafariFixGrid>
+          <Typography
+            variant="body1" // TODO: Still missing an extra space before the text.
+            color="textSecondary"
+          >
+            Search task descriptions, comments or emails
+          </Typography>
         </SearchFieldContainer>
         <SafariFixGrid item xs={12} container justify="center">
           <TaskListSearchContainer
