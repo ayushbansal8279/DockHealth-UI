@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { createFilter } from 'react-search-input';
 import { bindActionCreators } from 'redux';
+import { isEmpty } from 'ramda';
 import * as PeopleActions from '../../actions/people-actions';
 import { noop } from '../../helpers/utility-functions';
 import palette from '../../palette';
@@ -14,6 +15,7 @@ import {
   MemberContainer,
   PersonStatus,
 } from './PeopleContainer.Styled';
+import { RobotoTypography } from '../../theme';
 
 class PeopleContainer extends PureComponent {
   handleClick = ({ onClickAction }) => (...actionArguments) => {
@@ -127,7 +129,6 @@ class PeopleContainer extends PureComponent {
               xs={12}
               style={{ opacity: personStatus === 'Invited' ? 0.4 : 1 }}
             >
-              {/* {personStatus !== 'Invited' && ( */}
               <Link
                 to={`/assignedToPerson/${encodeURIComponent(
                   person.userIdentifier,
@@ -135,8 +136,6 @@ class PeopleContainer extends PureComponent {
               >
                 {personName}
               </Link>
-              {/* )} */}
-              {/* {personStatus === 'Invited' && <>{personName}</>} */}
             </Grid>
             {titles && (
               <Grid
@@ -164,6 +163,14 @@ class PeopleContainer extends PureComponent {
     );
   };
 
+  renderEmptyEntry = () => (
+    <ListEntryContainer>
+      <Grid container justify="center" alignItems="center">
+        <RobotoTypography variant="h4">No providers found</RobotoTypography>
+      </Grid>
+    </ListEntryContainer>
+  );
+
   render = () => {
     const { peopleList, searchTerm } = this.props;
 
@@ -179,7 +186,11 @@ class PeopleContainer extends PureComponent {
       peopleList?.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) ?? [];
 
     return (
-      <ListContainer>{filteredPeople.map(this.renderListEntry)}</ListContainer>
+      <ListContainer>
+        {isEmpty(filteredPeople)
+          ? this.renderEmptyEntry()
+          : filteredPeople.map(this.renderListEntry)}
+      </ListContainer>
     );
   };
 }
