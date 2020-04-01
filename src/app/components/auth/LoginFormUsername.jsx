@@ -1,22 +1,14 @@
 import queryString from 'query-string';
 import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import * as UserApi from '../../api/user-api';
-import { useSmallScreen } from '../../helpers/utility-functions';
-import AuthFieldHooks from '../common/AuthFieldHooks';
+import { MontserratTypography } from '../../theme-montserrat';
 import CubesLoader from '../common/CubesLoader';
-import {
-  BottomGridContainer,
-  FieldItemContainer,
-  HeightDependentGrid,
-  NextButton,
-  StyledForm,
-  StyledLabel,
-  TitleTypography,
-} from './AuthComponents.styled';
+import Spacing from '../common/Spacing';
+import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
+import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
@@ -29,6 +21,7 @@ const LoginFormUsername = ({ onSubmit }) => {
 
   const formMethods = useForm({
     validationSchema,
+    reValidateMode: 'onSubmit',
   });
 
   const { handleSubmit } = formMethods;
@@ -54,67 +47,52 @@ const LoginFormUsername = ({ onSubmit }) => {
     }
   });
 
-  const isSmallScreen = useSmallScreen();
-
   const titleContent = window.sessionStorage.getItem('confirmStatus')
     ? 'Your email is confirmed'
-    : 'Welcome to Dock Health';
+    : 'Welcome back!';
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
       <FormContext {...formMethods}>
         {!showLoginMessage && (
           <>
-            <TitleTypography
-              variant="h2"
-              isSmallScreen={isSmallScreen}
-              style={{ marginTop: isSmallScreen ? '.5em' : '1em' }}
-            >
+            <MontserratTypography variant="h2">
               {titleContent}
-            </TitleTypography>
-            <TitleTypography variant="h4">
-              Please sign in to your account
-            </TitleTypography>
-            <FieldItemContainer>
-              <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
-                <AuthFieldHooks
-                  name="username"
-                  type="text"
-                  label="Email"
-                  autoFocus
-                />
-              </HeightDependentGrid>
-            </FieldItemContainer>
-
-            <div>
-              <HeightDependentGrid size={isSmallScreen ? 12 : 6}>
-                <NextButton
-                  active
-                  id="loginButton"
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                >
-                  Next
-                </NextButton>
-              </HeightDependentGrid>
-            </div>
-            <BottomGridContainer>
-              <StyledLabel bold>Don’t have an account yet?</StyledLabel>
-              <StyledLabel>
-                <Link to="/onboarding/create-account">Create account</Link>
-              </StyledLabel>
-            </BottomGridContainer>
+            </MontserratTypography>
+            <MontserratTypography variant="h3">
+              Please sign in
+            </MontserratTypography>
+            <Spacing vertical={4} />
+            <UniversalMontserratInput
+              name="username"
+              type="text"
+              label="Email"
+              autoFocus
+            />
+            <Spacing vertical={5} />
+            <NextButton
+              active
+              id="loginButton"
+              type="submit"
+              variant="contained"
+              color="primary"
+            >
+              Continue
+            </NextButton>
+            <Spacing vertical={6} />
+            <MontserratTypography variant="h5">
+              <span>New to Dock? </span>
+              <StyledLink to="/onboarding/create-account">
+                CREATE AN ACCOUNT
+              </StyledLink>
+            </MontserratTypography>
           </>
         )}
         {showLoginMessage && (
           <div>
-            <TitleTypography
-              variant="h2"
-              style={{ marginTop: isSmallScreen ? '1em' : '3em' }}
-            >
+            <MontserratTypography variant="h2">
               Signing you in...
-            </TitleTypography>
+            </MontserratTypography>
             <CubesLoader size={40} />
           </div>
         )}

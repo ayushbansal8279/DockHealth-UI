@@ -1,28 +1,25 @@
 import { Grid } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import { useSmallScreen } from '../../helpers/utility-functions';
+import useBoolean from '../../hooks/useBoolean';
+import { MontserratTypography } from '../../theme-montserrat';
 import {
-  MobileInputComponent,
-  OnboardingAdditionalFormControlText,
   OnboardingButton,
   OnboardingDialog,
   OnboardingDivider,
-  OnboardingFieldsRequiredLabel,
-  OnboardingH1,
   OnboardingH2,
   OnboardingH2Bold,
-  OnboardingH3,
-  OnboardingH4Toggle,
-  OnboardingInput,
-  OnboardingLink,
   OnboardingSpacing2,
-  OnboardingSpacing3,
   OnboardingSpacing4,
 } from '../../views/onboarding/OnboardingTemplate.Components';
-import { TitleTypography } from './AuthComponents.styled';
-import { useSmallScreen } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
+import {
+  UniversalInput,
+  UniversalMobileInputComponent,
+} from '../userProfileView/UniversalInput';
+import { NextButton } from './AuthComponents.styled';
+import Spacing from '../common/Spacing';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -37,94 +34,53 @@ const validationSchema = object().shape({
 const onSubmit = ({ showDialog, setDialogTitle, setDialogMessage }) => async ({
   mobilePhoneNumber,
 }) => {
-  try {
-    setDialogTitle(`Phone number changed`);
-    setDialogMessage(
-      `We have sent an authentication code to your mobile phone ${mobilePhoneNumber}.`,
-    );
-    showDialog();
-  } catch (error) {}
+  setDialogTitle(`Phone number changed`);
+  setDialogMessage(
+    `We have sent an authentication code to your mobile phone ${mobilePhoneNumber}.`,
+  );
+  showDialog();
 };
 
-const ChangePhoneNumberForm = props => {
-  // const { handleSubmit, invalid, customError, setCustomError } = props;
-
+const ChangePhoneNumberForm = () => {
   const isSmallScreen = useSmallScreen();
 
   const formMethods = useForm({
     validationSchema,
-    reValidateMode: 'onChange',
+    reValidateMode: 'onSubmit',
   });
 
   const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
 
-  const { handleSubmit, setValue, watch } = formMethods;
+  const { handleSubmit } = formMethods;
 
   return (
     <form
-      className="inline-label top-buffer"
+      style={{ width: '100%' }}
       onSubmit={handleSubmit(
         onSubmit({ showDialog, setDialogTitle, setDialogMessage }),
       )}
     >
-      <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
+      <MontserratTypography variant="h2">
         Change Phone Number
-      </TitleTypography>
-      <Grid item sm={12} md={9}>
-        <TitleTypography variant="h4">
-          Please enter your correct mobile phone number.
-        </TitleTypography>
-      </Grid>
-
-      <OnboardingSpacing3 />
-
-      <Grid item sm={12} md={9}>
-        <FormContext {...formMethods}>
-          <OnboardingInput // Onboarding enter phone number box. Register component
-            label="Your Mobile Phone Number"
-            name="mobilePhoneNumber"
-            placeholder="Enter your mobile phone number here"
-            CustomComponent={MobileInputComponent}
-            InputBaseProps={{
-              autoComplete: 'none',
-            }}
-            shrink={useSmallScreen || undefined}
-          />
-        </FormContext>
-      </Grid>
-
-      {useSmallScreen ? <OnboardingSpacing3 /> : <OnboardingSpacing4 />}
-
-      <Grid
-        item
-        xs={5} // Replaced original Button with button from onboarding page
-      >
-        <OnboardingButton
-          type="submit"
-          height="2rem"
-          variant={useSmallScreen ? 'containedAutoWidth' : 'contained'}
-          fullWidth={useSmallScreen}
-        >
-          Continue
-        </OnboardingButton>
-      </Grid>
-
-      {/*
-      {useSmallScreen ? <OnboardingSpacing2 /> : <OnboardingSpacing4 />}
-      <Grid item xs={12} container justify="flex-end">
-        <OnboardingButton
-          type="submit"
-          variant={useSmallScreen ? 'containedAutoWidth' : 'contained'}
-          fullWidth={useSmallScreen}
-        >
-          <OnboardingH2Bold>Continue</OnboardingH2Bold>
-        </OnboardingButton>
-      </Grid>
-      {useSmallScreen ? <OnboardingSpacing2 /> : <OnboardingSpacing4 />}
-      */}
-
+      </MontserratTypography>
+      <MontserratTypography variant="h4">
+        Please enter your correct mobile phone number.
+      </MontserratTypography>
+      <Spacing vertical={4} />
+      <FormContext {...formMethods}>
+        <UniversalInput
+          label="Your Mobile Phone Number"
+          name="mobilePhoneNumber"
+          CustomComponent={UniversalMobileInputComponent}
+          autoComplete="none"
+        />
+      </FormContext>
+      <Spacing vertical={5} />
+      <NextButton variant="contained" type="submit">
+        Continue
+      </NextButton>
       <OnboardingDialog
         isSmallScreen={isSmallScreen}
         open={isDialogShown}
@@ -147,8 +103,8 @@ const ChangePhoneNumberForm = props => {
           justify="space-between"
           wrap="nowrap"
         >
-          <OnboardingButton variant="containedAutoWidth">
-            <OnboardingH2Bold>Ok</OnboardingH2Bold>
+          <OnboardingButton variant="containedAutoWidth" size="small">
+            <OnboardingH2Bold onClick={hideDialog}>Ok</OnboardingH2Bold>
           </OnboardingButton>
         </Grid>
       </OnboardingDialog>

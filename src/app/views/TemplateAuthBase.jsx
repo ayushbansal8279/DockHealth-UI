@@ -1,46 +1,50 @@
-import { Hidden } from '@material-ui/core';
 import { node } from 'prop-types';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
+import { AUTH_BASE_STATES } from '../reducers/auth-base-reducer';
+import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
+import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
+import TemplateAuthBaseRegainControlContent from './TemplateAuthBase.RegainControlContent';
 import {
-  BackgroundContainer,
-  BackgroundModalContainer,
-  BackgroundRectangleContainer,
-  ContentContainer,
-  DockLogo,
-  DockLogoContainer,
-  MainContentContainer,
-  SlantedBackgroundRectangleContainer,
-  TemplateAuthBaseContainer,
+  LeftSideContentContainer,
+  LeftSideMainContainer,
+  MainContainer,
+  RightSideContentContainer,
+  RightSideMainContainer,
 } from './TemplateAuthBase.styled';
 
-const TemplateAuthBase = ({ children }) => (
-  <BackgroundContainer>
-    <BackgroundModalContainer
-      container
-      style={{
-        width: '100vw',
-      }}
-    >
-      <Hidden smDown>
-        <TemplateAuthBaseContainer>
-          <SlantedBackgroundRectangleContainer />
-        </TemplateAuthBaseContainer>
-      </Hidden>
-      <Hidden mdUp>
-        <BackgroundRectangleContainer />
-      </Hidden>
-      <ContentContainer>
-        <DockLogoContainer>
-          <a href="/">
-            <DockLogo src="assets/img/dock-logo.svg" alt="Dock Health" />
-          </a>
-        </DockLogoContainer>
-        <MainContentContainer>{children}</MainContentContainer>
-      </ContentContainer>
-    </BackgroundModalContainer>
-  </BackgroundContainer>
-);
+const getLeftSideContent = ({ currentAuthBaseState }) => {
+  switch (currentAuthBaseState) {
+    case AUTH_BASE_STATES.DEFAULT:
+      return <TemplateAuthBaseDefaultContent />;
+    case AUTH_BASE_STATES.DAILY_HUB:
+      return <TemplateAuthBaseDailyHubContent />;
+    case AUTH_BASE_STATES.REGAIN_CONTROL:
+      return <TemplateAuthBaseRegainControlContent />;
+    default:
+      return null;
+  }
+};
+
+const TemplateAuthBase = ({ children }) => {
+  const currentAuthBaseState = useSelector(
+    store => store.authBase.currentAuthBaseState,
+  );
+
+  const leftSideContent = getLeftSideContent({ currentAuthBaseState });
+
+  return (
+    <MainContainer>
+      <LeftSideMainContainer>
+        <LeftSideContentContainer>{leftSideContent}</LeftSideContentContainer>
+      </LeftSideMainContainer>
+      <RightSideMainContainer>
+        <RightSideContentContainer>{children}</RightSideContentContainer>
+      </RightSideMainContainer>
+    </MainContainer>
+  );
+};
 TemplateAuthBase.propTypes = {
   children: node.isRequired,
 };

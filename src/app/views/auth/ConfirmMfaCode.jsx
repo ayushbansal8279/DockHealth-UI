@@ -1,5 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
+import { useMount } from 'react-use';
+import { setAuthBaseState } from '../../actions/auth-base-actions';
 import {
   error as errorNotification,
   success,
@@ -7,65 +10,60 @@ import {
 import { mobileAnalyticsClient } from '../../api/analytics-api';
 import * as userApi from '../../api/user-api';
 import ConfirmMFACodeForm from '../../components/auth/ConfirmMfaCodeForm';
+import { AUTH_BASE_STATES } from '../../reducers/auth-base-reducer';
 
-export default class ConfirmMFACode extends PureComponent {
-  state = { username: '', customError: '' };
+const ConfirmMFACode = props => {
+  const [username, setUsername] = useState('');
+  const [customError, setCustomError] = useState('');
 
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
+  const dispatch = useDispatch();
 
-  componentWillMount() {
-    const { location } = this.props;
-    this.state.username = location.query.uname;
-  }
+  useMount(() => {
+    const { location } = props;
+    setUsername(location.query.uname);
 
-  setCustomError = customError => {
-    this.setState({ customError });
-  };
+    setAuthBaseState({
+      authBaseState: AUTH_BASE_STATES.DEFAULT,
+    })(dispatch);
+  });
 
-  onSubmit = form => {
-    const { username } = this.state;
+  const onSubmit = useCallback(
+    form => {
+      return userApi
+        .sendMFACode({
+          username,
+          mfaCode: form.mfaCode,
+        })
+        .then(() => {
+          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            CONFIRM_MFACODE_SUCCESS: 'YES',
+          });
+          userApi.rememberDevice().then(result => {
+            console.log(`added device to be remembered: ${result}`);
+          });
+          hashHistory.push('/');
+          success('Logged in.');
+        })
+        .catch(error => {
+          setCustomError('Invalid authentication code.');
 
-    return userApi
-      .sendMFACode({
-        username,
-        mfaCode: form.mfaCode,
-      })
-      .then(() => {
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-          CONFIRM_MFACODE_SUCCESS: 'YES',
+          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
+            CONFIRM_MFACODE_SUCCESS: 'NO',
+          });
+
+          errorNotification(error.message || 'An error occurred.');
         });
-        userApi.rememberDevice().then(result => {
-          console.log(`added device to be remembered: ${result}`);
-        });
-        hashHistory.push('/');
-        success('Logged in.');
-      })
-      .catch(error => {
-        this.setState({
-          customError: 'Invalid authentication code. Please try again.',
-        });
+    },
+    [username],
+  );
 
-        mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-          CONFIRM_MFACODE_SUCCESS: 'NO',
-        });
+  return (
+    <ConfirmMFACodeForm
+      type="Confirm"
+      onSubmit={onSubmit}
+      customError={customError}
+    />
+  );
+};
 
-        errorNotification(error.message || 'An error occurred.');
-      });
-  };
-
-  render() {
-    const { customError } = this.state;
-
-    return (
-      <ConfirmMFACodeForm
-        type="Confirm"
-        onSubmit={this.onSubmit}
-        customError={customError}
-        setCustomError={this.setCustomError}
-      />
-    );
-  }
-}
+export default ConfirmMFACode;

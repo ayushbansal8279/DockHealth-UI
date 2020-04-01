@@ -1,10 +1,11 @@
-import { ButtonBase, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { bool } from 'prop-types';
 import React from 'react';
+import { Link } from 'react-router';
 import styled from 'styled-components';
 import palette from '../../palette';
+import { MontserratTypography } from '../../theme-montserrat';
 
 const TypographyCustomComponent = ({
   classes,
@@ -41,41 +42,70 @@ export const TitleTypography = withStyles({
   },
 })(TypographyCustomComponent);
 
-const NextButtonComponent = ({ active, classes, ...props }) => {
-  const className = `${active ? classes.active : classes.inactive} ${
-    classes.root
-  }`;
+export const NextButton = styled(({ children, ...props }) => (
+  <Button {...props}>
+    <MontserratTypography variant="h4" weight="600" color="inherit">
+      {children}
+    </MontserratTypography>
+  </Button>
+))`
+  && {
+    background: linear-gradient(
+      to top right,
+      ${palette.brightBlue},
+      ${palette.darkBlue}
+    );
+    border-radius: 0;
+    color: ${palette.white};
+    cursor: pointer;
+    font-size: 1.25rem;
+    filter: brightness(1);
+    min-height: 3.125rem;
+    position: relative;
+    text-transform: uppercase;
+    transition: all 0.25s ease-out;
+    width: 100%;
 
-  return <ButtonBase disabled={!active} className={className} {...props} />;
-};
+    &::before {
+      background: linear-gradient(
+        to bottom left,
+        ${palette.brightBlue},
+        ${palette.darkBlue}
+      );
+      content: '';
+      height: 100%;
+      left: 0;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      transition: all 0.25s ease-out;
+      width: 100%;
+      z-index: -100;
+    }
 
-NextButtonComponent.propTypes = {
-  active: bool.isRequired,
-};
+    &:hover, &:active, &:focus, &:focus-within: {
+      filter: brightness(1.1);
+    }
 
-export const NextButton = withStyles({
-  root: {
-    borderRadius: 4,
-    filter: 'brightness(1)',
-    fontSize: '1.1em',
-    fontWeight: 'bold',
-    marginTop: '1.5rem',
-    padding: '13px 0 14px',
-    width: '100%',
-  },
-  active: {
-    backgroundColor: palette.cyanBlue,
-    color: palette.white,
-    cursor: 'pointer',
-    '&:hover, &:active, &:focus, &:focus-within': {
-      color: palette.lightGrey,
-    },
-  },
-  inactive: {
-    backgroundColor: palette.cyanBlue,
-    filter: 'brightness(1.2)',
-  },
-})(NextButtonComponent);
+    &:hover {
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+`;
+
+export const StyledLink = styled(Link)`
+  color: ${palette.darkBlue};
+  filter: brightness(1);
+  text-decoration: underline;
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: ${palette.darkBlue};
+    filter: brightness(1.25);
+  }
+`;
 
 export const StyledLabel = styled.div`
   font-family: 'Open Sans', sans-serif;

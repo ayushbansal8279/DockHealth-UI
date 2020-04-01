@@ -8,6 +8,7 @@ import {
   IndexRoute,
   Route,
   Router,
+  Redirect,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import { storeAsCurrentTask } from './actions/task-actions';
@@ -15,7 +16,6 @@ import PatientDetailsView from './components/patient/PatientDetailsView';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
-import ChangePassword from './views/auth/ChangePassword';
 import ConfirmMFACode from './views/auth/ConfirmMfaCode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
 import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess';
@@ -291,7 +291,7 @@ export const Routes = ({ store }) => {
             <Route path="/logout" component={Logout} />
             <Route path="/resendCode" component={ResendCode} />
             <Route path="/forgotPassword" component={ForgotPassword} />
-            <Route path="/changePassword" component={ChangePassword} />
+            <Redirect from="/changePassword" to="/forgotPassword" />
             <Route path="/resetPassword" component={ResetPassword} />
             <Route path="/changePhoneNumber" component={ChangePhoneNumber} />
             <Route path="/confirmMFACode" component={ConfirmMFACode} />

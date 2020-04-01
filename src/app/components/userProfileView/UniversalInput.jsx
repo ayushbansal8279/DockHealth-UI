@@ -87,7 +87,6 @@ export const UniversalInputBase = withStyles({
   input: {
     borderRadius: 0,
     boxShadow: 'none',
-    fontFamily: '"Open Sans", sans-serif',
     paddingBottom: 0,
     padding: '1.25rem 1rem',
     '&:focus': {
@@ -196,3 +195,9 @@ export const UniversalInput = ({
     </div>
   );
 };
+
+export const UniversalMontserratInput = styled(UniversalInput)`
+  &&& * {
+    font-family: 'Montserrat', sans-serif;
+  }
+`;

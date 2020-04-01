@@ -1,108 +1,75 @@
-import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
 import palette, { opacify } from '../palette';
+import AuthTemplateTopBackground from '../img/auth-template-top-background.svg';
 
-export const BackgroundContainer = styled.div`
-  align-items: center;
-  background: linear-gradient(
-      180deg,
-      ${palette.black} -21.76%,
-      ${palette.darkGreyBlue} 100%
-    ),
-    ${palette.darkGreyBlue};
-  bottom: 0;
+const mdBreakpoint = 960;
+
+export const MainContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-`;
-
-export const BackgroundModalContainer = styled(Grid)`
-  background-image: url(/assets/img/login-background.png);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 6px;
-  box-shadow: 0px 2px 4px ${opacify(palette.black, 0.5)};
-  height: 848px;
-  max-height: 848px;
-  max-width: 984px;
-  overflow: hidden;
-  position: relative;
-  z-index: -1;
-`;
-
-export const BackgroundRectangleContainer = styled.div`
-  background-color: ${palette.white};
-  display: flex;
+  flex-direction: row;
   height: 100%;
-  left: 0;
-  max-width: 100%;
-  position: absolute;
-  top: 0;
   width: 100%;
-  z-index: -1;
+
+  @media screen and (max-width: ${mdBreakpoint}px) {
+    flex-direction: column;
+  }
 `;
 
-export const SlantedBackgroundRectangleContainer = styled.div`
-  background-color: ${palette.white};
-  box-shadow: 0px 0.125rem 0.25rem ${opacify(palette.black, 0.2)};
+export const LeftSideMainContainer = styled.div`
+  align-items: center;
+  background-color: ${palette.midnightBlue};
+  background-image: linear-gradient(
+      to bottom,
+      ${opacify(palette.midnightBlue, 0.8)},
+      ${opacify(palette.midnightBlue, 0.8)}
+    ),
+    url(${AuthTemplateTopBackground});
+  background-repeat: repeat-x;
+  display: flex;
+  max-width: 642px;
   height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%) scale(2) rotate(12.37deg);
+  justify-content: center;
+  padding: 2rem;
   width: 50%;
-  z-index: -1;
-`;
 
-export const DockLogoContainer = styled.div`
-  && {
-    height: 108px;
-    max-height: 108px;
-  }
-
-  @media only screen and (min-width: 960px) {
-    && {
-      height: 180px;
-      max-height: 180px;
-    }
+  @media screen and (max-width: ${mdBreakpoint}px) {
+    height: auto;
+    max-width: unset;
+    padding: 1.5rem;
+    width: 100%;
   }
 `;
 
-export const MainContentContainer = styled.div`
+export const LeftSideContentContainer = styled.div`
+  color: ${palette.white};
+  height: 100%;
+  width: 100%;
+
+  @media screen and (min-width: ${mdBreakpoint}px) {
+    max-height: 721px;
+    max-width: 525px;
+  }
+`;
+
+export const RightSideMainContainer = styled.div`
+  align-items: center;
+  background-color: ${palette.white};
   display: flex;
   flex: 1;
+  justify-content: center;
 `;
 
-export const DockLogo = styled.img`
-  height: 100%;
-  object-fit: contain;
-  object-position: left center;
-`;
-
-export const ContentContainer = styled.div`
-  box-sizing: border-box;
+export const RightSideContentContainer = styled.div`
+  align-items: flex-start;
   display: flex;
-  flex-basis: 100%;
-  flex-flow: column nowrap;
-  flex-grow: 0;
   height: 100%;
-  max-width: 100%;
-  padding: 1rem;
+  justify-content: center;
+  padding: 1.5rem;
+  width: 100%;
 
-  @media only screen and (min-width: 960px) {
-    flex-basis: 50%;
-    max-width: 50%;
+  @media screen and (min-width: ${mdBreakpoint}px) {
+    align-items: center;
     padding: 2rem;
-    padding-top: 3rem;
+    max-width: 495px;
   }
-`;
-
-export const TemplateAuthBaseContainer = styled.div`
-  min-height: 848px;
-  overflow-y: auto;
 `;

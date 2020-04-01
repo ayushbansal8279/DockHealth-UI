@@ -1,74 +1,49 @@
-import { Grid } from '@material-ui/core';
-import React from 'react';
-import { Field, reduxForm } from 'redux-form';
-import AuthField from '../common/AuthField';
-import {
-  BottomGridContainer,
-  NextButton,
-  TitleTypography,
-} from './AuthComponents.styled';
+import React, { useEffect } from 'react';
+import { FormContext, useForm } from 'react-hook-form';
+import { object, string } from 'yup';
+import { MontserratTypography } from '../../theme-montserrat';
+import Spacing from '../common/Spacing';
+import { UniversalInput } from '../userProfileView/UniversalInput';
+import { NextButton } from './AuthComponents.styled';
 
-const validate = values => {
-  const errors = {};
-  if (!values.mfaCode) {
-    errors.mfaCode = 'Required';
-  }
-  return errors;
-};
+const validationSchema = object().shape({
+  mfaCode: string().required('This field is required'),
+});
 
 const ConfirmMFACodeForm = props => {
-  const { handleSubmit, invalid, customError, setCustomError } = props;
+  const { onSubmit, customError } = props;
+
+  const formMethods = useForm({
+    validationSchema,
+    reValidateMode: 'onSubmit',
+  });
+
+  useEffect(() => {
+    if (customError) {
+      formMethods.setError('mfaCode', customError);
+    }
+  }, [customError, formMethods]);
 
   return (
-    <form className="inline-label top-buffer" onSubmit={handleSubmit}>
-      <TitleTypography variant="h2" style={{ marginTop: '3em' }}>
-        Authenticate Mobile Phone
-      </TitleTypography>
-      <Grid item sm={12} md={9}>
-        <TitleTypography variant="h4">
+    <form
+      style={{ width: '100%' }}
+      onSubmit={formMethods.handleSubmit(onSubmit)}
+    >
+      <FormContext {...formMethods}>
+        <MontserratTypography variant="h2">
+          Authenticate Mobile Phone
+        </MontserratTypography>
+        <MontserratTypography variant="h4">
           Enter the six digit authentication code that was sent to your mobile
           phone: ***-***-****
-        </TitleTypography>
-      </Grid>
-
-      <BottomGridContainer>
-        {/* <StyledLabel // Link to create account
-        >
-          <Link to="/changePhoneNumber">Change cell number</Link>
-        </StyledLabel> */}
-      </BottomGridContainer>
-
-      <Grid item sm={12} md={9}>
-        <Field
-          marginTop="1.5rem"
-          name="mfaCode"
-          type="text"
-          component={AuthField}
-          label="Authentication code"
-          autoFocus
-          customError={customError}
-          setCustomError={setCustomError}
-        />
-      </Grid>
-      <Grid item xs={6}>
-        <NextButton
-          active={!invalid}
-          id="loginButton"
-          type="submit"
-          variant="contained"
-          color="primary"
-          style={{
-            marginTop: '3rem',
-          }}
-        >
-          Confirm
-        </NextButton>
-      </Grid>
+        </MontserratTypography>
+        <Spacing vertical={4} />
+        <UniversalInput name="mfaCode" label="Authentication code" autoFocus />
+        <Spacing vertical={5} />
+        <NextButton type="submit">Confirm</NextButton>
+      </FormContext>
     </form>
   );
 };
 
-export default reduxForm({
-  form: 'ConfirmMFACodeForm',
-  validate,
-})(ConfirmMFACodeForm);
+export default ConfirmMFACodeForm;

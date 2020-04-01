@@ -1,19 +1,12 @@
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import { Link } from 'react-router';
-import { useMount } from 'react-use';
+import { useMount, useToggle } from 'react-use';
+import styled from 'styled-components';
 import { object, string } from 'yup';
-import { useSmallScreen } from '../../helpers/utility-functions';
-import AuthFieldHooks from '../common/AuthFieldHooks';
-import {
-  BottomGridContainer,
-  FieldItemContainer,
-  HeightDependentGrid,
-  NextButton,
-  StyledForm,
-  StyledLabel,
-  TitleTypography,
-} from './AuthComponents.styled';
+import { MontserratTypography } from '../../theme-montserrat';
+import Spacing from '../common/Spacing';
+import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
+import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
@@ -21,6 +14,11 @@ const validationSchema = object().shape({
     .email('Please enter a valid email address'),
   password: string().required('Please enter a password'),
 });
+
+const PasswordToggle = styled.div`
+  cursor: pointer;
+  padding: 0 0.5rem;
+`;
 
 const LoginFormPassword = ({
   onSubmit,
@@ -30,7 +28,10 @@ const LoginFormPassword = ({
 }) => {
   const formMethods = useForm({
     validationSchema,
+    reValidateMode: 'onSubmit',
   });
+
+  const [isPasswordShown, togglePasswordShown] = useToggle(false);
 
   const { handleSubmit, setError, setValue } = formMethods;
 
@@ -38,13 +39,9 @@ const LoginFormPassword = ({
     setValue('username', sessionStorage.getItem('username') ?? '');
   });
 
-  const isSmallScreen = useSmallScreen();
-
   const titleContent = window.sessionStorage.getItem('confirmStatus')
     ? 'Your email is confirmed'
-    : 'Welcome to Dock Health';
-
-  const buttonColSize = unconfirmedUserFlag ? 9 : 6;
+    : 'Welcome back!';
 
   return (
     <StyledForm
@@ -55,58 +52,44 @@ const LoginFormPassword = ({
       )}
     >
       <FormContext {...formMethods}>
-        <TitleTypography
-          variant="h2"
-          style={{ marginTop: isSmallScreen ? '.5em' : '1em' }}
-          isSmallScreen={isSmallScreen}
+        <MontserratTypography variant="h2">{titleContent}</MontserratTypography>
+        <MontserratTypography variant="h3">Please sign in</MontserratTypography>
+        <Spacing vertical={4} />
+        <UniversalMontserratInput
+          name="username"
+          type="text"
+          label="Email"
+          onChange={onChange}
+        />
+        <Spacing vertical={4} />
+        <UniversalMontserratInput
+          name="password"
+          type={isPasswordShown ? 'text' : 'password'}
+          label="Password"
+          autoFocus
+          onChange={onChange}
+          endAdornment={
+            <PasswordToggle onClick={togglePasswordShown}>
+              <MontserratTypography variant="h5">
+                {isPasswordShown ? 'Hide' : 'Show'}
+              </MontserratTypography>
+            </PasswordToggle>
+          }
+        />
+        <Spacing vertical={5} />
+        <NextButton
+          active
+          id="loginButton"
+          type="submit"
+          variant="contained"
+          color="primary"
         >
-          {titleContent}
-        </TitleTypography>
-        <TitleTypography variant="h4">
-          Please sign in to your account
-        </TitleTypography>
-
-        <FieldItemContainer>
-          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
-            <AuthFieldHooks
-              name="username"
-              type="text"
-              label="Email"
-              onChange={onChange}
-            />
-          </HeightDependentGrid>
-          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
-            <AuthFieldHooks
-              name="password"
-              type="password"
-              label="Password"
-              autoFocus
-              onChange={onChange}
-            />
-          </HeightDependentGrid>
-        </FieldItemContainer>
-
-        <div>
-          <HeightDependentGrid size={isSmallScreen ? 12 : buttonColSize}>
-            <NextButton
-              active
-              id="loginButton"
-              type="submit"
-              variant="contained"
-              color="primary"
-            >
-              {unconfirmedUserFlag === true
-                ? 'Resend confirmation Email'
-                : 'Next'}
-            </NextButton>
-          </HeightDependentGrid>
-        </div>
-
-        <BottomGridContainer>
-          <StyledLabel>
-            <Link to="/forgotPassword">Forgot password?</Link>
-          </StyledLabel>
-        </BottomGridContainer>
+          {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
+        </NextButton>
+        <Spacing vertical={4} />
+        <MontserratTypography variant="h5">
+          <StyledLink to="/forgotPassword">FORGOT PASSWORD?</StyledLink>
+        </MontserratTypography>
       </FormContext>
     </StyledForm>
   );

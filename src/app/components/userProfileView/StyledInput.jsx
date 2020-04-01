@@ -47,7 +47,7 @@ const StyledLabel = styled.div`
   && {
     left: 1rem;
     font-size: ${props => props.fontSize ?? 14}px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight: normal;
     pointer-events: none;
     position: absolute;

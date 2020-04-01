@@ -1,18 +1,11 @@
-import { Grid } from '@material-ui/core';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import { useSmallScreen } from '../../helpers/utility-functions';
-import AuthFieldHooks from '../common/AuthFieldHooks';
-import {
-  BottomGridContainer,
-  HeightDependentGrid,
-  NextButton,
-  StyledLabel,
-  TitleTypography,
-} from './AuthComponents.styled';
+import { MontserratTypography } from '../../theme-montserrat';
+import Spacing from '../common/Spacing';
+import { UniversalInput } from '../userProfileView/UniversalInput';
+import { NextButton, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   username: string()
@@ -36,8 +29,6 @@ const ForgotPasswordForm = ({
     setValue('username', sessionStorage.getItem('username') ?? '');
   });
 
-  const isSmallScreen = useSmallScreen();
-
   return (
     <form
       onSubmit={handleSubmit(
@@ -45,54 +36,36 @@ const ForgotPasswordForm = ({
           ? onResendCode({ setError })
           : onSubmit({ setError }),
       )}
+      style={{
+        width: '100%',
+      }}
     >
       <FormContext {...formMethods}>
-        <Grid container>
-          <TitleTypography
-            variant="h2"
-            style={{ marginTop: isSmallScreen ? '.5em' : '1em' }}
-            isSmallScreen={isSmallScreen}
-          >
-            Forgot your password?
-          </TitleTypography>
-          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
-            <TitleTypography variant="h4">
-              Don’t worry, it happens to the best of us. Enter the email
-              associated with your account.
-            </TitleTypography>
-          </HeightDependentGrid>
-          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
-            <AuthFieldHooks
-              name="username"
-              type="text"
-              label="Email"
-              autoFocus
-            />
-          </HeightDependentGrid>
-          <HeightDependentGrid size={isSmallScreen ? 12 : 9}>
-            <NextButton
-              active
-              id="loginButton"
-              type="submit"
-              variant="contained"
-              color="primary"
-              style={{
-                marginTop: isSmallScreen ? '1em' : '3em',
-              }}
-            >
-              {unconfirmedUserFlag === true
-                ? 'Resend confirmation Email'
-                : 'Send me a recovery code'}
-            </NextButton>
-          </HeightDependentGrid>
-        </Grid>
+        <MontserratTypography variant="h2">
+          Forgot your password?
+        </MontserratTypography>
+        <MontserratTypography variant="h4">
+          Don’t worry, it happens to the best of us.
+        </MontserratTypography>
+        <MontserratTypography variant="h4">
+          Enter the email associated with your account.
+        </MontserratTypography>
+        <Spacing vertical={4} />
+        <UniversalInput name="username" type="text" label="Email" autoFocus />
+        <Spacing vertical={5} />
+        <NextButton type="submit" variant="contained">
+          {unconfirmedUserFlag
+            ? 'Resend confirmation Email'
+            : 'Send me a recovery code'}
+        </NextButton>
+        <Spacing vertical={6} />
+        <MontserratTypography variant="h5">
+          <span>Want to change your email? </span>
+          <StyledLink to="/onboarding/create-account">
+            Recreate account
+          </StyledLink>
+        </MontserratTypography>
       </FormContext>
-      <BottomGridContainer style={{ marginTop: '100px' }}>
-        <StyledLabel bold>Want to change your email?</StyledLabel>
-        <StyledLabel>
-          <Link to="/onboarding/create-account">Recreate account</Link>
-        </StyledLabel>
-      </BottomGridContainer>
     </form>
   );
 };
