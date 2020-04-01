@@ -15,7 +15,7 @@ const useAdornedButtonClasses = makeStyles({
   },
   label: {
     alignItems: 'center',
-    color: palette.oPlusRed,
+    color: palette.brightBlue,
     fontSize: '1.1875rem',
     display: 'flex',
     padding: '0 0.75rem',

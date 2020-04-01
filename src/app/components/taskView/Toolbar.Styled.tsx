@@ -19,7 +19,7 @@ const StyledSwitchContainer = withStyles({
 })(IconButton);
 
 const SwitchDash = styled.div`
-  background-color: ${palette.oPlusRed};
+  background-color: ${palette.brightBlue};
   border-radius: 0.125rem;
   height: 0.125rem;
   margin: 0.0625rem 0;

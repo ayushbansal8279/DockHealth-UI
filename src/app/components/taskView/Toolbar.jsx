@@ -179,7 +179,7 @@ export default ({
             <Spacing horizontal={3} />
             <RotatableChevron
               rotated={isFilterPopoverOpen}
-              color={palette.oPlusRed}
+              color={palette.brightBlue}
             />
           </Button>
           {currentFilterDescription && (
@@ -254,7 +254,7 @@ export default ({
                 <Spacing horizontal={3} />
                 <RotatableChevron
                   rotated={isMorePopoverOpen}
-                  color={palette.oPlusRed}
+                  color={palette.brightBlue}
                 />
               </Button>
               {!isSpecialList && showMembers && (

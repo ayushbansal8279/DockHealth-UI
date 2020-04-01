@@ -10,7 +10,7 @@ const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';
 export const useAddMemberButtonStyles = makeStyles({
   root: {
     border: `0.125rem dashed ${palette.coolGrey1}`,
-    color: palette.oPlusRed,
+    color: palette.brightBlue,
     fontSize: ({ size }) => (size * 30) / 54,
     fontWeight: '500',
     height: ({ size }) => size,
