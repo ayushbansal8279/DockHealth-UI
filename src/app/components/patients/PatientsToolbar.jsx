@@ -3,17 +3,12 @@ import { Add as AddIcon } from '@material-ui/icons';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
-import styled from 'styled-components';
 import { beginPatientCreation, loading } from '../../actions/patient-actions';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
+import Spacing from '../common/Spacing';
 import Search from '../taskView/Search';
 import PatientsFilter from './PatientsFilter';
-
-const PatientSearchContainer = styled.div`
-  margin-left: 2.5rem;
-  width: 16rem;
-`;
 
 const ALL_PATIENTS = 'ALL_PATIENTS';
 const MY_PATIENTS = 'MY_PATIENTS';
@@ -82,9 +77,8 @@ const PatientsToolbar = ({
           handlePatientFilter={handlePatientFilter}
           deselectPatient={deselectPatient}
         />
-        <PatientSearchContainer>
-          <Search variant="outlined" fullWidth onChange={handleSearch} />
-        </PatientSearchContainer>
+        <Spacing horizontal={4} />
+        <Search onChange={handleSearch} />
       </Grid>
       <AdornedButton adornment={<AddIcon />} onClick={onAddPatientClick}>
         ADD A PATIENT
