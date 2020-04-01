@@ -1213,7 +1213,7 @@ class TaskView extends Component {
         <Grid container direction="row">
           <SideClickListener onClick={this.closeTaskDrawer} />
           <TaskViewContainer>
-            {displayHUD && headsUpAreaVisible && (
+            {displayHUD && headsUpAreaVisible && !isMultiList && (
               <HeadsUpArea
                 ref={this.headsUpArea}
                 taskList={taskList}
