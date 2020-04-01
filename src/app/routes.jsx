@@ -6,9 +6,9 @@ import {
   hashHistory,
   IndexRedirect,
   IndexRoute,
+  Redirect,
   Route,
   Router,
-  Redirect,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import { storeAsCurrentTask } from './actions/task-actions';
@@ -16,12 +16,13 @@ import PatientDetailsView from './components/patient/PatientDetailsView';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
+import ChangePhoneNumber from './views/auth/ChangePhoneNumber';
 import ConfirmMFACode from './views/auth/ConfirmMfaCode';
 import ConfirmRegistration from './views/auth/ConfirmRegistration';
 import ConfirmRegistrationSuccess from './views/auth/ConfirmRegistrationSuccess';
+import CreateAccount from './views/auth/CreateAccount';
 import EmailSent from './views/auth/EmailSent';
 import ForgotPassword from './views/auth/ForgotPassword';
-import ChangePhoneNumber from './views/auth/ChangePhoneNumber';
 import LoginPassword from './views/auth/LoginPassword';
 import LoginUser from './views/auth/LoginUser';
 import LoginWelcome from './views/auth/LoginWelcome';
@@ -37,7 +38,6 @@ import ListDetailsView from './views/ListDetailsView';
 import OnboardingBaaCheckView from './views/onboarding/onboarding-baa-check/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from './views/onboarding/onboarding-baa-invitation-sent/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from './views/onboarding/onboarding-baa-overview/OnboardingBaaOverviewView';
-import OnboardingCreateAccountView from './views/onboarding/onboarding-create-account/OnboardingCreateAccountView';
 import OnboardingEulaView from './views/onboarding/onboarding-eula/OnboardingEulaView';
 import OnboardingProfileView from './views/onboarding/onboarding-profile/OnboardingProfileView';
 import OnboardingTeamOrgSetupView from './views/onboarding/onboarding-team-org-setup/OnboardingTeamOrgSetupView';
@@ -258,12 +258,9 @@ export const Routes = ({ store }) => {
             />
           </Route>
         </Route>
+        <Redirect from="/onboarding/create-account" to="create-account" />
         <Route path="/onboarding" component={OnboardingTemplate}>
           <IndexRedirect to="/onboarding/create-account" />
-          <Route
-            component={OnboardingCreateAccountView}
-            path="create-account"
-          />
           <Route component={OnboardingEulaView} path="eula" />
           <Route component={OnboardingBaaOverviewView} path="baa-overview" />
           <Route component={OnboardingBaaCheckView} path="baa-check" />
@@ -285,6 +282,7 @@ export const Routes = ({ store }) => {
               path="/confirmRegistrationSuccess"
               component={ConfirmRegistrationSuccess}
             />
+            <Route path="/create-account" component={CreateAccount} />
             <Route path="/login" component={LoginUser} />
             <Route path="/loginUser" component={LoginPassword} />
             <Route path="/welcome" component={LoginWelcome} />

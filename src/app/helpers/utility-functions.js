@@ -134,7 +134,7 @@ export const showAlert = ({
   status: icon,
   text = '',
   title,
-  confirmationCallback,
+  confirmationCallback = null,
   ...otherOptions
 }) => {
   const swalPromise = Swal.fire({

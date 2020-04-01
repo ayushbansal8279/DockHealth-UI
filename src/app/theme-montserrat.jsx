@@ -72,7 +72,7 @@ const themeProxy = new Proxy(
   },
 );
 
-export const MontserratTypography = ({ weight, ...props }) => (
+export const MontserratTypography = ({ weight = 'normal', ...props }) => (
   <ThemeProvider theme={themeProxy[weight]}>
     <Typography {...props} />
   </ThemeProvider>
