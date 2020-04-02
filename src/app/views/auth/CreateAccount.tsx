@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid } from '@material-ui/core';
 import { parse } from 'query-string';
 import React, { useState } from 'react';
@@ -36,6 +37,7 @@ import {
   OnboardingSpacing2,
   OnboardingSpacing4,
 } from '../onboarding/OnboardingTemplate.Components';
+import * as referralApi from '../../api/referral-api';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -67,6 +69,7 @@ interface OnSubmitProps {
   showDialog: Function;
   setDialogTitle: (title: string) => void;
   setDialogMessage: (message: string) => void;
+  locationParameters: any; 
 }
 
 interface FormProps {
@@ -77,6 +80,7 @@ const onSubmit = ({
   showDialog,
   setDialogTitle,
   setDialogMessage,
+  locationParameters,
 }: // eslint-disable-next-line unicorn/consistent-function-scoping
 OnSubmitProps) => async ({
   email,
@@ -93,6 +97,7 @@ OnSubmitProps) => async ({
       phone_number: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
       family_name: lastName,
       given_name: firstName,
+      referral: locationParameters.referral,
     });
     setDialogTitle(`Confirm your email`);
     setDialogMessage(
@@ -135,6 +140,14 @@ const resendEmail = async (email: string) => {
   }
 };
 
+const getReferralConfig = async (referralCode: any) => {
+  if (referralCode !== undefined) {
+    const referralConfig = await referralApi.getConfigurationForReferral(
+      referralCode,
+    );
+  }
+};
+
 const StyledGrid = styled(Grid)`
   && {
     height: 100%;
@@ -166,13 +179,21 @@ const CreateAccount = () => {
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
+    if (locationParameters && locationParameters?.referral) {
+      getReferralConfig(String(locationParameters?.referral));
+    }
   });
 
   return (
     <StyledGrid container alignItems="center" justify="center">
       <StyledForm
         onSubmit={formMethods.handleSubmit(
-          onSubmit({ setDialogMessage, setDialogTitle, showDialog }),
+          onSubmit({
+            setDialogMessage,
+            setDialogTitle,
+            showDialog,
+            locationParameters,
+          }),
         )}
       >
         <FormContext {...formMethods}>
