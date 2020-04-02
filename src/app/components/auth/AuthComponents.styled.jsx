@@ -95,6 +95,20 @@ export const NextButton = styled(({ children, ...props }) => (
   }
 `;
 
+export const StyledAnchorDiv = styled.div`
+  color: ${palette.darkBlue};
+  cursor: pointer;
+  display: inline-block;
+  filter: brightness(1);
+  text-decoration: underline;
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: ${palette.darkBlue};
+    filter: brightness(1.25);
+  }
+`;
+
 export const StyledLink = styled(Link)`
   color: ${palette.darkBlue};
   filter: brightness(1);

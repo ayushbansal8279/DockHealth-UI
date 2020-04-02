@@ -1,5 +1,5 @@
 import { RotatableChevronWithSpacing } from './components/common/RotatableChevron';
-import palette from './palette';
+import palette, { opacify } from './palette';
 
 const themeCommonOverrides = () => ({
   props: {
@@ -30,6 +30,11 @@ const themeCommonOverrides = () => ({
         '&$selected:focus': {
           backgroundColor: palette.softCyan,
         },
+      },
+    },
+    MuiBackdrop: {
+      root: {
+        backgroundColor: opacify(palette.midnightBlue, 0.5),
       },
     },
     MuiCollapse: {

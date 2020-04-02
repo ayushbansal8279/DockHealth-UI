@@ -404,15 +404,17 @@ const OnboardingDialogComponent = ({
 
 export const OnboardingDialog = withStyles({
   paper: {
+    borderRadius: 0,
     padding: '1.5rem 2rem',
   },
   smallPaper: {
+    borderRadius: 0,
     padding: '1rem',
   },
 })(OnboardingDialogComponent);
 
 export const OnboardingDivider = styled.div`
-  background-color: ${palette.unknownGrey6};
+  background-color: ${palette.brightBlue};
   height: 0.0625rem;
   width: 100%;
 `;
