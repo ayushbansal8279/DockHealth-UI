@@ -1152,7 +1152,7 @@ class TaskView extends Component {
         }}
       >
         <SafariFixGrid container item xs={12} justify="center">
-          {showToolbar && !globalSearch && (
+          {showToolbar && !globalSearch && !isEmpty(tasks) && (
             <Toolbar
               clearFilter={this.clearFilter}
               downloadPDF={downloadPDF}
