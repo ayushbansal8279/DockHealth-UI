@@ -9,19 +9,15 @@ import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-a
 import { updateOrganizationName } from '../../../actions/organization-actions';
 import { findAllUsers, loading } from '../../../actions/people-actions';
 import * as userApi from '../../../api/user-api';
+import Spacing from '../../../components/common/Spacing';
+import { UniversalMontserratInput } from '../../../components/userProfileView/UniversalInput';
+import { MontserratTypography } from '../../../theme-montserrat';
 import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
 import InvitationPanel from '../../self-serve/subscriptions/SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from '../../self-serve/subscriptions/SubscriptionsView.MembersTable';
 import {
   OnboardingButton,
   OnboardingDivider,
-  OnboardingH2Bold,
-  OnboardingH3,
-  OnboardingInput,
-  OnboardingSpacing1,
-  OnboardingSpacing2,
-  OnboardingSpacing4,
-  OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 
 const goToProfile = () => {
@@ -59,7 +55,9 @@ const InvitePeopleButton = ({ getAllUsers }) => {
         onClick={() => togglePopoverOpen(true)}
       >
         <div ref={invitePeopleButtonReference}>
-          <b>+ Add more users to my organization</b>
+          <MontserratTypography variant="h4" weight="500">
+            + Add more users to my organization
+          </MontserratTypography>
         </div>
       </OnboardingButton>
       <InvitePeoplePopover
@@ -86,8 +84,6 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
               userApi.getUserProfilePic(data.userIdentifier, 'PROFILE');
             }
             userApi.getUserNotoficationPrefs();
-            // userApi.getAllSpecialties();
-            // userApi.getAllTitles();
 
             loading()(dispatch);
             findAllUsers()(dispatch);
@@ -117,23 +113,27 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
       ref={outerContainerReference}
     >
       <FormContext {...formMethods}>
-        <OnboardingH2Bold>Organization</OnboardingH2Bold>
-        <OnboardingSpacing2 />
-        <OnboardingInput
+        <Spacing vertical={6} />
+        <MontserratTypography variant="h2" weight="600">
+          Organization
+        </MontserratTypography>
+        <Spacing vertical={4} />
+        <UniversalMontserratInput
           label="What's the name of your organization?"
           name="organizationName"
-          placeholder="Enter signing organization name here"
           required
         />
-        <OnboardingSpacing1 />
-        <OnboardingH3>
+        <Spacing vertical={2} />
+        <MontserratTypography variant="h4">
           You’re welcome to provide an organizational name that is different
           from your formal legal name. This is what you would call your group or
           practice.
-        </OnboardingH3>
-        <OnboardingSpacing5 />
+        </MontserratTypography>
+        <Spacing vertical={6} />
         <Grid container justify="space-between">
-          <OnboardingH2Bold>Invite your team</OnboardingH2Bold>
+          <MontserratTypography variant="h2" weight="600">
+            Invite your team
+          </MontserratTypography>
           <InvitePeopleButton getAllUsers={getAllUsers} />
         </Grid>
         <SubscriptionsViewMembersTable
@@ -151,12 +151,12 @@ const OnboardingTeamOrgSetupViewDesktop = () => {
             <InvitationPanel getAllUsers={getAllUsers} />
           )}
         </Grid>
-        <OnboardingSpacing2 />
+        <Spacing vertical={4} />
         <OnboardingDivider />
-        <OnboardingSpacing4 />
+        <Spacing vertical={4} />
         <Grid container justify="flex-end">
-          <OnboardingButton variant="contained" type="submit">
-            <OnboardingH2Bold>Continue</OnboardingH2Bold>
+          <OnboardingButton variant="contained" type="submit" size="small">
+            Continue
           </OnboardingButton>
         </Grid>
       </FormContext>

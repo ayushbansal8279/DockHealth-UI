@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import AuthDailyHubContent from '../img/auth-daily-hub-content.svg';
+import AuthDailyHubContent from '../img/auth-daily-hub-content';
 import Spacing from '../components/common/Spacing';
 import { MontserratTypography } from '../theme-montserrat';
 
@@ -11,10 +11,7 @@ const StyledGrid = styled(Grid)`
   }
 `;
 
-const DailyHubImage = styled.img.attrs({
-  src: AuthDailyHubContent,
-  alt: '',
-})`
+const DailyHubImage = styled(AuthDailyHubContent)`
   object-fit: contain;
   object-position: center;
   height: 60%;

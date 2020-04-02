@@ -1,21 +1,19 @@
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { hashHistory } from 'react-router';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { inviteAuthorizedSigner } from '../../../api/organization-api';
-import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
+import Spacing from '../../../components/common/Spacing';
 import {
-  MobileInputComponent,
-  OnboardingButton,
-  OnboardingDivider,
-  OnboardingH2,
-  OnboardingH2Bold,
-  OnboardingHorizontalSpacing3,
-  OnboardingInput,
-  OnboardingSpacing3,
-} from '../OnboardingTemplate.Components';
+  UniversalMobileInputComponent,
+  UniversalMontserratInput,
+} from '../../../components/userProfileView/UniversalInput';
+import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
+import { MontserratTypography } from '../../../theme-montserrat';
+import { OnboardingButton } from '../OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -87,65 +85,56 @@ const InvitationForm = ({ hideInvitationForm }) => {
       autoCorrect="off"
     >
       <FormContext {...formMethods}>
-        {!isSmallScreen && <OnboardingDivider />}
         <Grid container alignItems="center" justify="space-between">
-          <OnboardingH2>
+          <MontserratTypography variant="h3">
             Invite the authorized signer of your organization
-          </OnboardingH2>
+          </MontserratTypography>
           {!isSmallScreen && (
-            <OnboardingButton variant="outlined" onClick={hideInvitationForm}>
-              <OnboardingH2>&times;</OnboardingH2>
-            </OnboardingButton>
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={hideInvitationForm}
+            >
+              <Close color="inherit" />
+            </IconButton>
           )}
         </Grid>
-        <OnboardingSpacing3 />
+        <Spacing vertical={4} />
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={6}>
-            <OnboardingInput
+            <UniversalMontserratInput
               label="First Name"
               name="firstName"
-              placeholder="Enter invited person's first name here"
               required
-              InputBaseProps={{
-                autoComplete: uuid(),
-              }}
+              autoComplete={uuid()}
             />
           </Grid>
           <Grid item xs={12} sm={12} md={6}>
-            <OnboardingInput
+            <UniversalMontserratInput
               label="Last Name"
               name="lastName"
-              placeholder="Enter invited person's last name here"
               required
-              InputBaseProps={{
-                autoComplete: uuid(),
-              }}
+              autoComplete={uuid()}
             />
           </Grid>
           <Grid item xs={12} sm={12} md={6}>
-            <OnboardingInput
+            <UniversalMontserratInput
               label="His/Her Email"
               name="email"
-              placeholder="Enter invited person's email here"
               required
-              InputBaseProps={{
-                autoComplete: uuid(),
-              }}
+              autoComplete={uuid()}
             />
           </Grid>
           <Grid item xs={12} sm={12} md={6}>
-            <OnboardingInput
+            <UniversalMontserratInput
               label="His/Her Mobile Phone Number"
               name="mobilePhoneNumber"
-              placeholder="Enter invited person's mobile phone number"
-              CustomComponent={MobileInputComponent}
+              CustomComponent={UniversalMobileInputComponent}
               required
-              InputBaseProps={{
-                autoComplete: uuid(),
-              }}
+              autoComplete={uuid()}
             />
           </Grid>
-          {!isSmallScreen && <OnboardingSpacing3 />}
+          {!isSmallScreen && <Spacing vertical={4} />}
           <Grid
             item
             xs={12}
@@ -157,21 +146,25 @@ const InvitationForm = ({ hideInvitationForm }) => {
             <OnboardingButton
               variant="outlinedSkip"
               onClick={hideInvitationForm}
-              style={{ order: isSmallScreen ? 3 : 1 }}
+              style={{
+                order: isSmallScreen ? 3 : 1,
+              }}
             >
-              <OnboardingH2>Cancel</OnboardingH2>
+              Cancel
             </OnboardingButton>
-            {isSmallScreen ? (
-              <OnboardingSpacing3 style={{ order: 2 }} />
-            ) : (
-              <OnboardingHorizontalSpacing3 style={{ order: 2 }} />
-            )}
+            <div style={{ order: 2 }}>
+              {isSmallScreen ? (
+                <Spacing vertical={4} style={{ order: 2 }} />
+              ) : (
+                <Spacing horizontal={4} style={{ order: 2 }} />
+              )}
+            </div>
             <OnboardingButton
               variant={isSmallScreen ? 'containedAutoWidth' : 'contained'}
               type="submit"
               style={{ order: isSmallScreen ? 1 : 3 }}
             >
-              <OnboardingH2Bold>Send invite</OnboardingH2Bold>
+              Send invite
             </OnboardingButton>
           </Grid>
         </Grid>

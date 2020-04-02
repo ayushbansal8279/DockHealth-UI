@@ -14,12 +14,12 @@ import {
   OnboardingSpacing2,
   OnboardingSpacing4,
 } from '../../views/onboarding/OnboardingTemplate.Components';
+import Spacing from '../common/Spacing';
 import {
-  UniversalInput,
   UniversalMobileInputComponent,
+  UniversalMontserratInput,
 } from '../userProfileView/UniversalInput';
 import { NextButton } from './AuthComponents.styled';
-import Spacing from '../common/Spacing';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -65,12 +65,13 @@ const ChangePhoneNumberForm = () => {
       <MontserratTypography variant="h2">
         Change Phone Number
       </MontserratTypography>
+      <Spacing vertical={4} />
       <MontserratTypography variant="h4">
         Please enter your correct mobile phone number.
       </MontserratTypography>
       <Spacing vertical={4} />
       <FormContext {...formMethods}>
-        <UniversalInput
+        <UniversalMontserratInput
           label="Your Mobile Phone Number"
           name="mobilePhoneNumber"
           CustomComponent={UniversalMobileInputComponent}

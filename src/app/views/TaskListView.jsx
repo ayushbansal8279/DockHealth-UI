@@ -98,7 +98,6 @@ class TaskListView extends PureComponent {
     this.resetHeader();
 
     if (localStorage.getItem(STORAGE_NEW_USER_FIRST_TIME) === 'true') {
-      this.toggleTips();
       this.showTipsModal();
     }
 
@@ -126,10 +125,10 @@ class TaskListView extends PureComponent {
 
   componentDidUpdate(
     { isFetching: previousIsFetching },
-    { tipsOpen: previousTipsOpen },
+    { tipsOpen: previousTipsOpen, tipsModalOpen: previousTipsModalOpen },
   ) {
     const { isFetching } = this.props;
-    const { tipsOpen } = this.state;
+    const { tipsOpen, tipsModalOpen } = this.state;
 
     if (isFetching !== previousIsFetching) {
       this.resetHeader();
@@ -139,6 +138,10 @@ class TaskListView extends PureComponent {
 
     if (tipsOpen !== previousTipsOpen) {
       localStorage.setItem(STORAGE_TASK_LIST_TIPS_OPEN, tipsOpen);
+    }
+
+    if (tipsModalOpen !== previousTipsModalOpen && !tipsModalOpen) {
+      localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
     }
   }
 
@@ -461,7 +464,7 @@ class TaskListView extends PureComponent {
               </TipsContentHeader>
             </StyledCollapse>
             <HelpfulTipsDialog
-              open={tipsModalOpen}
+              open={tipsModalOpen === 'true'}
               closeDialog={this.hideTipsModal}
             >
               {[

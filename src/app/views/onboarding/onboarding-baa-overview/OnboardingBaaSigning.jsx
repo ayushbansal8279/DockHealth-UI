@@ -1,18 +1,17 @@
 import { Grid } from '@material-ui/core';
 import React, { useCallback } from 'react';
-import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import {
   signOrganizationBAADocument,
   storeSignatureResult,
 } from '../../../api/organization-api';
+import Spacing from '../../../components/common/Spacing';
 import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
+import { MontserratTypography } from '../../../theme-montserrat';
 import {
+  OnboardingAnchorDiv,
   OnboardingButton,
-  OnboardingH2Bold,
-  OnboardingH3,
-  OnboardingSpacing2,
 } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
@@ -30,37 +29,43 @@ const getPanelDetails = ({
   mainDisplayOption
     ? {
         justify: isSmallScreen ? 'center' : 'flex-end',
-        topButtonProps: {
-          variant: 'contained',
-          onClick: clickReadAndSign,
-          fullWidth: isSmallScreen,
-          children: <OnboardingH2Bold>Read and sign BAA</OnboardingH2Bold>,
-        },
-        bottomButtonProps: {
-          variant: 'outlinedSkip',
-          onClick: showInvitationForm,
-          fullWidth: isSmallScreen,
-          children: (
-            <OnboardingH3>Or share BAA with authorized signer</OnboardingH3>
-          ),
-        },
+        topElement: (
+          <OnboardingButton
+            variant="contained"
+            onClick={clickReadAndSign}
+            fullWidth={isSmallScreen}
+          >
+            Continue
+          </OnboardingButton>
+        ),
+        bottomElement: (
+          <MontserratTypography variant="h4" noWrap>
+            <span>Or </span>
+            <OnboardingAnchorDiv onClick={showInvitationForm}>
+              share BAA
+            </OnboardingAnchorDiv>
+            <span> with authorized signer</span>
+          </MontserratTypography>
+        ),
       }
     : {
         justify: isSmallScreen ? 'center' : 'flex-start',
-        topButtonProps: {
-          variant: 'outlinedSkip',
-          onClick: showInvitationForm,
-          fullWidth: isSmallScreen,
-          children: (
-            <OnboardingH3>Send BAA to another authorized signer</OnboardingH3>
-          ),
-        },
-        bottomButtonProps: {
-          variant: 'outlinedSkip',
-          onClick: clickReadAndSign,
-          fullWidth: isSmallScreen,
-          children: <OnboardingH3>I can sign BAA</OnboardingH3>,
-        },
+        topElement: (
+          <MontserratTypography variant="h4" noWrap>
+            <OnboardingAnchorDiv onClick={showInvitationForm}>
+              Send BAA
+            </OnboardingAnchorDiv>
+            <span> to another authorized signer</span>
+          </MontserratTypography>
+        ),
+        bottomElement: (
+          <MontserratTypography variant="h4" noWrap>
+            <OnboardingAnchorDiv onClick={clickReadAndSign}>
+              I can sign
+            </OnboardingAnchorDiv>
+            <span> BAA</span>
+          </MontserratTypography>
+        ),
       };
 
 const OnboardingBaaSigning = ({ mainDisplayOption }) => {
@@ -89,6 +94,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
           signatureIdentifier: eventData.signature_id,
           signatureResult: eventData.event,
         }).then(() => {
+          // eslint-disable-next-line no-unused-expressions
           window?.HelloSign.close();
           if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
             // hashHistory.replace('/onboarding/team-org-setup');
@@ -136,22 +142,18 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
 
   return (
     <div>
-      {!isInvitationFormShown && (
+      {isInvitationFormShown ? (
+        <InvitationForm hideInvitationForm={hideInvitationForm} />
+      ) : (
         <>
           <Grid container justify={panelDetails.justify}>
-            <OnboardingButton type="button" {...panelDetails.topButtonProps} />
+            {panelDetails.topElement}
           </Grid>
-          <OnboardingSpacing2 />
+          <Spacing vertical={4} />
           <Grid container justify={panelDetails.justify}>
-            <OnboardingButton
-              type="button"
-              {...panelDetails.bottomButtonProps}
-            />
+            {panelDetails.bottomElement}
           </Grid>
         </>
-      )}
-      {isInvitationFormShown && (
-        <InvitationForm hideInvitationForm={hideInvitationForm} />
       )}
     </div>
   );

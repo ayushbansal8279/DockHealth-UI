@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
@@ -15,21 +15,11 @@ const LoginPassword = () => {
 
   const dispatch = useDispatch();
 
-  const setLoginAuthBaseState = useCallback(() => {
-    setAuthBaseState({
-      authBaseState: unconfirmedUserFlag
-        ? AUTH_BASE_STATES.DAILY_HUB
-        : AUTH_BASE_STATES.DEFAULT,
-    })(dispatch);
-  }, [dispatch, unconfirmedUserFlag]);
-
   useMount(() => {
-    setLoginAuthBaseState();
+    setAuthBaseState({
+      authBaseState: AUTH_BASE_STATES.DAILY_HUB,
+    })(dispatch);
   });
-
-  useEffect(() => {
-    setLoginAuthBaseState();
-  }, [setLoginAuthBaseState]);
 
   const onSubmit = useCallback(
     ({ setError }) => form => {

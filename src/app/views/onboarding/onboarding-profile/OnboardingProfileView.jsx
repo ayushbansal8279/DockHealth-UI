@@ -10,15 +10,10 @@ import {
   getOrganizationById,
 } from '../../../actions/organization-actions';
 import * as userApi from '../../../api/user-api';
+import Spacing from '../../../components/common/Spacing';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import UserProfileView from '../../UserProfileView';
-import {
-  OnboardingButton,
-  OnboardingH2,
-  OnboardingH2Bold,
-  OnboardingHorizontalSpacing3,
-  OnboardingSpacing5,
-} from '../OnboardingTemplate.Components';
+import { OnboardingButton } from '../OnboardingTemplate.Components';
 import {
   formFieldDefinitions,
   formSwitchDefinitions,
@@ -144,14 +139,14 @@ const OnboardingProfileView = () => {
         showPrivacyPolicyLink={false}
         CustomFooter={
           <>
-            <OnboardingSpacing5 />
+            <Spacing vertical={6} />
             <Grid container justify="flex-end">
               <OnboardingButton onClick={goToMainPage} variant="outlined">
-                <OnboardingH2>Skip</OnboardingH2>
+                Skip
               </OnboardingButton>
-              <OnboardingHorizontalSpacing3 />
+              <Spacing horizontal={4} />
               <OnboardingButton type="submit" variant="contained">
-                <OnboardingH2Bold>Save & Complete</OnboardingH2Bold>
+                Save & Complete
               </OnboardingButton>
             </Grid>
           </>

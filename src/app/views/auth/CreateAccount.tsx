@@ -16,6 +16,7 @@ import {
 } from '../../api/user-api';
 import {
   NextButton,
+  StyledAnchorDiv,
   StyledLink,
 } from '../../components/auth/AuthComponents.styled';
 import Spacing from '../../components/common/Spacing';
@@ -29,13 +30,8 @@ import palette from '../../palette';
 import { AUTH_BASE_STATES } from '../../reducers/auth-base-reducer';
 import { MontserratTypography } from '../../theme-montserrat';
 import {
-  OnboardingButton,
   OnboardingDialog,
   OnboardingDivider,
-  OnboardingH2,
-  OnboardingH2Bold,
-  OnboardingSpacing2,
-  OnboardingSpacing4,
 } from '../onboarding/OnboardingTemplate.Components';
 import * as referralApi from '../../api/referral-api';
 
@@ -250,23 +246,31 @@ const CreateAccount = () => {
         </FormContext>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-        <OnboardingH2>{dialogTitle}</OnboardingH2>
-        <OnboardingSpacing2 />
+        <MontserratTypography variant="h3">{dialogTitle}</MontserratTypography>
+        <Spacing vertical={3} />
         <OnboardingDivider />
-        <OnboardingSpacing2 />
-        <OnboardingH2>{dialogMessage}</OnboardingH2>
-        <OnboardingSpacing4 />
-        <Grid container direction="row" justify="space-between" wrap="nowrap">
-          <OnboardingButton
-            onClick={() => resendEmail(email)}
-            variant="containedAutoWidth"
-          >
-            <OnboardingH2Bold>Resend email</OnboardingH2Bold>
-          </OnboardingButton>
-          <OnboardingButton onClick={hideDialog} variant="contained">
-            <OnboardingH2Bold>Change email</OnboardingH2Bold>
-          </OnboardingButton>
-        </Grid>
+        <Spacing vertical={3} />
+        <MontserratTypography variant="h4">
+          {dialogMessage}
+        </MontserratTypography>
+        <Spacing vertical={5} />
+        <MontserratTypography variant="h4">
+          I didn&apos;t get the email
+        </MontserratTypography>
+        <MontserratTypography variant="h4">
+          <StyledAnchorDiv onClick={() => resendEmail(email)}>
+            Resend email
+          </StyledAnchorDiv>
+        </MontserratTypography>
+        <Spacing vertical={5} />
+        <MontserratTypography variant="h4">
+          The email address is wrong
+        </MontserratTypography>
+        <MontserratTypography variant="h4">
+          <StyledAnchorDiv onClick={hideDialog}>
+            Change email address
+          </StyledAnchorDiv>
+        </MontserratTypography>
       </OnboardingDialog>
     </StyledGrid>
   );

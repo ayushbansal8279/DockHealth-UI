@@ -69,7 +69,7 @@ export const NextButton = styled(({ children, ...props }) => (
     &::before {
       background: linear-gradient(
         to bottom left,
-        ${palette.brightBlue},
+        ${palette.darkBlue},
         ${palette.darkBlue}
       );
       content: '';
@@ -92,6 +92,20 @@ export const NextButton = styled(({ children, ...props }) => (
         opacity: 1;
       }
     }
+  }
+`;
+
+export const StyledAnchorDiv = styled.div`
+  color: ${palette.darkBlue};
+  cursor: pointer;
+  display: inline-block;
+  filter: brightness(1);
+  text-decoration: underline;
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: ${palette.darkBlue};
+    filter: brightness(1.25);
   }
 `;
 

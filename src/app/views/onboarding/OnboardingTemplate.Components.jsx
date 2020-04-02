@@ -12,7 +12,9 @@ import { useFormContext } from 'react-hook-form';
 import { Link } from 'react-router';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import palette, { opacify } from '../../palette';
+import { MontserratTypography } from '../../theme-montserrat';
 
 export const OnboardingBackground = styled.div`
   background-color: ${palette.white};
@@ -22,11 +24,10 @@ export const OnboardingBackground = styled.div`
 
 export const OnboardingNavbar = styled.nav`
   align-items: center;
-  box-shadow: 0.125rem 0.125rem 0.25rem ${opacify(palette.black, 0.1)};
-  border-top: 0.5rem solid ${palette.darkBlue};
+  background-color: ${palette.midnightBlue};
   display: flex;
   height: 5.75rem;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 1rem 2.375rem;
   width: 100%;
 
@@ -38,78 +39,6 @@ export const OnboardingNavbar = styled.nav`
 export const OnboardingLogo = styled.img`
   height: 100%;
   object-fit: contain;
-`;
-
-export const OnboardingProgressBar = styled.div`
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: space-around;
-  position: relative;
-  width: 20rem;
-`;
-
-export const OnboardingProgressTrack = styled.div`
-  background-color: ${palette.lightGrey};
-  border-radius: 0.125rem;
-  height: 0.25rem;
-  left: 0;
-  overflow: hidden;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100%;
-  z-index: 1;
-`;
-
-export const OnboardingProgressTrackActive = styled.div`
-  background-color: ${palette.orangeJulius};
-  height: 100%;
-  transition: all 0.25s ease-out;
-  width: ${props => (props.width ?? 0) * 100}%;
-`;
-
-export const OnboardingProgressDotContainer = styled.div`
-  background-color: ${palette.white};
-  border-radius: 0.625rem;
-  height: 1.25rem;
-  padding: 0.125rem;
-  position: relative;
-  width: 1.25rem;
-  z-index: 2;
-`;
-
-export const OnboardingProgressDot = styled.div`
-  background-color: ${palette.white};
-  border: 0.125rem solid ${palette.unknownGrey4};
-  border-radius: 50%;
-  height: 100%;
-  transition: all 0.25s ease-out;
-  width: 100%;
-
-  ${props =>
-    props.active &&
-    `
-    background-color: ${palette.orangeJulius};
-    border: 0.125rem solid ${palette.orangeJulius};
-  `}
-  ${props =>
-    props.current &&
-    `
-    border: 0.125rem solid ${palette.orangeJulius};
-  `}
-`;
-
-export const OnboardingProgressLabel = styled.div`
-  font-size: 0.625rem;
-  left: 50%;
-  opacity: ${props => (props.active ? 1 : 0)};
-  position: absolute;
-  top: 1.5rem;
-  transform: translateX(-50%);
-  transition: all 0.25s ease-out;
-  user-select: none;
-  white-space: nowrap;
 `;
 
 export const OnboardingMainContainer = styled.main`
@@ -290,11 +219,25 @@ export const OnboardingInputBase = withStyles({
 
 export const OnboardingButton = withStyles({
   root: {
-    borderRadius: '0.25rem',
-    height: '4rem',
-    padding: '0.5rem 1.5rem',
+    borderRadius: 0,
+    fontSize: '1rem',
+    height: '3.125rem',
+    padding: '0.25rem 1.5rem',
+    position: 'relative',
+    textTransform: 'uppercase',
     transition: 'all 0.25s ease-out',
     whiteSpace: 'nowrap',
+    '&::before': {
+      backgroundColor: palette.darkBlue,
+      content: '""',
+      height: '100%',
+      left: 0,
+      opacity: 0,
+      position: 'absolute',
+      top: 0,
+      transition: 'all 0.25s ease-out',
+      width: '100%',
+    },
   },
   small: {
     '&&': {
@@ -308,44 +251,66 @@ export const OnboardingButton = withStyles({
     },
   },
   contained: {
-    backgroundColor: palette.cyanBlue,
+    background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
     color: palette.white,
     minWidth: '20rem',
+    '&:hover::before': {
+      opacity: 1,
+    },
   },
   containedAutoWidth: {
-    backgroundColor: palette.cyanBlue,
+    background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
     color: palette.white,
-    fontWeight: 'bold',
+    '&:hover::before': {
+      opacity: 1,
+    },
   },
   containedDisabled: {
-    backgroundColor: palette.coolGrey2,
+    background: palette.white,
+    border: `0.125rem solid ${palette.coolGrey1}`,
+    color: palette.coolGrey1,
   },
   containedAutoWidthDisabled: {
-    backgroundColor: palette.coolGrey2,
+    background: palette.white,
+    border: `0.125rem solid ${palette.coolGrey1}`,
+    color: palette.coolGrey1,
   },
   outlined: {
     color: palette.unknownGrey1,
+    textTransform: 'none',
   },
   outlinedError: {
     color: palette.error,
+    textTransform: 'none',
   },
   outlinedLink: {
     color: palette.lighterCyanBlue,
+    textTransform: 'none',
   },
   outlinedSkip: {
     color: palette.lighterCyanBlue,
     padding: '0.5rem 0.25rem',
+    textTransform: 'none',
   },
   fullWidth: {
     width: '100%',
   },
-})(({ classes, variant, size, fullWidth, disabled, ...props }) => {
-  const className = `${classes.root} ${classes[variant]} ${classes[size] ??
-    ''} ${disabled ? classes[`${variant}Disabled`] ?? '' : ''} ${
-    fullWidth ? classes.fullWidth : ''
-  }`.trim();
+})(({ classes, variant, size, fullWidth, disabled, children, ...props }) => {
+  const className = clsx(
+    classes.root,
+    classes[variant],
+    classes[size],
+    disabled && classes[`${variant}Disabled`],
+    fullWidth && classes.fullWidth,
+  );
 
-  return <ButtonBase disabled={disabled} className={className} {...props} />;
+  return (
+    <ButtonBase disabled={disabled} className={className} {...props}>
+      <MontserratTypography variant="h4" weight="600" style={{ zIndex: 100 }}>
+        {children}
+      </MontserratTypography>
+    </ButtonBase>
+  );
 });
 
 export const OnboardingAdditionalFormControlText = styled.div`
@@ -439,26 +404,43 @@ const OnboardingDialogComponent = ({
 
 export const OnboardingDialog = withStyles({
   paper: {
+    borderRadius: 0,
     padding: '1.5rem 2rem',
   },
   smallPaper: {
+    borderRadius: 0,
     padding: '1rem',
   },
 })(OnboardingDialogComponent);
 
 export const OnboardingDivider = styled.div`
-  background-color: ${palette.unknownGrey6};
+  background-color: ${palette.brightBlue};
   height: 0.0625rem;
   width: 100%;
 `;
 
-export const OnboardingAnchor = styled.a`
-  color: ${palette.cyanBlue};
+export const OnboardingAnchorDiv = styled.div`
+  color: ${palette.darkBlue};
+  cursor: pointer;
+  display: inline-block;
   filter: brightness(1);
+  text-decoration: underline;
   transition: all 0.25s ease-out;
 
   &:hover {
-    color: ${palette.cyanBlue};
+    color: ${palette.darkBlue};
+    filter: brightness(1.35);
+  }
+`;
+
+export const OnboardingAnchor = styled.a`
+  color: ${palette.darkBlue};
+  filter: brightness(1);
+  text-decoration: underline;
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: ${palette.darkBlue};
     filter: brightness(1.35);
   }
 `;

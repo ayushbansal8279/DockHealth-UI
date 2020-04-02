@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { setPaymentNewPlan } from '../../../actions/organization-actions';
 import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
-import { SUBSCRIPTION_PLAN_KEYS } from './subscriptions-plans/SubscriptionsPlansView.PlanData';
 import CurrentPlan from './SubscriptionsView.CurrentPlan';
 import initializeSubscriptionsViewHooks from './SubscriptionsView.Hooks';
 import InvitationPanel from './SubscriptionsView.InvitationPanel';
@@ -84,8 +83,7 @@ export default () => {
   const plansViewVisible =
     subscriptionPlansVisible || subscriptionPlanData.planIsTrial;
 
-  const buyButtonDisabled =
-    !chosenPlan || chosenPlan?.key === SUBSCRIPTION_PLAN_KEYS.ENTERPRISE;
+  const buyButtonDisabled = !chosenPlan;
 
   const billingFrequency = annualPayment
     ? BILLING_FREQUENCY.ANNUAL
