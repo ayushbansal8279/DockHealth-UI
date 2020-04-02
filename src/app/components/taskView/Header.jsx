@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
+import palette from '../../palette';
 import GenericHeader from '../common/GenericHeader';
 import ListPopover from '../common/ListPopover';
 import { RotatableHeaderChevron } from '../common/RotatableChevron';
@@ -82,6 +83,7 @@ const Header = ({ hasTitle, title, isFetching, taskList }) => {
           <Spacing horizontal={3} />
           <RotatableHeaderChevron
             rotated={isListPopoverOpen}
+            color={palette.oPlusRed}
             ref={listPopoverReference}
           />
         </StyledTitle>
