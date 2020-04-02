@@ -69,7 +69,7 @@ export const NextButton = styled(({ children, ...props }) => (
     &::before {
       background: linear-gradient(
         to bottom left,
-        ${palette.brightBlue},
+        ${palette.darkBlue},
         ${palette.darkBlue}
       );
       content: '';

@@ -3,7 +3,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from '../../theme-montserrat';
 import Spacing from '../common/Spacing';
-import { UniversalInput } from '../userProfileView/UniversalInput';
+import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import { NextButton } from './AuthComponents.styled';
 
 const MIN_PASSWORD_LENGTH = 8;
@@ -41,8 +41,8 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
               First enter the six digit authorization code that was sent to your
               cell phone
             </MontserratTypography>
-            <Spacing vertical={3} />
-            <UniversalInput
+            <Spacing vertical={4} />
+            <UniversalMontserratInput
               name="code"
               type="text"
               label="Authorization code"
@@ -55,8 +55,8 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           In order to protect your account, please make sure your password is 8
           character minimum, includes at least one number and one capital letter
         </MontserratTypography>
-        <Spacing vertical={3} />
-        <UniversalInput
+        <Spacing vertical={4} />
+        <UniversalMontserratInput
           name="password"
           type="password"
           label="Enter a new password"

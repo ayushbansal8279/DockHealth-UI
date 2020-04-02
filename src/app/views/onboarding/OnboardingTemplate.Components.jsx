@@ -219,13 +219,25 @@ export const OnboardingInputBase = withStyles({
 
 export const OnboardingButton = withStyles({
   root: {
-    borderRadius: '0',
+    borderRadius: 0,
     fontSize: '1rem',
     height: '3.125rem',
     padding: '0.25rem 1.5rem',
+    position: 'relative',
     textTransform: 'uppercase',
     transition: 'all 0.25s ease-out',
     whiteSpace: 'nowrap',
+    '&::before': {
+      backgroundColor: palette.darkBlue,
+      content: '""',
+      height: '100%',
+      left: 0,
+      opacity: 0,
+      position: 'absolute',
+      top: 0,
+      transition: 'all 0.25s ease-out',
+      width: '100%',
+    },
   },
   small: {
     '&&': {
@@ -242,10 +254,16 @@ export const OnboardingButton = withStyles({
     background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
     color: palette.white,
     minWidth: '20rem',
+    '&:hover::before': {
+      opacity: 1,
+    },
   },
   containedAutoWidth: {
     background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
     color: palette.white,
+    '&:hover::before': {
+      opacity: 1,
+    },
   },
   containedDisabled: {
     background: palette.white,
@@ -288,7 +306,7 @@ export const OnboardingButton = withStyles({
 
   return (
     <ButtonBase disabled={disabled} className={className} {...props}>
-      <MontserratTypography variant="h4" weight="500">
+      <MontserratTypography variant="h4" weight="600" style={{ zIndex: 100 }}>
         {children}
       </MontserratTypography>
     </ButtonBase>

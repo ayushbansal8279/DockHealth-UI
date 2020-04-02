@@ -4,7 +4,7 @@ import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { MontserratTypography } from '../../theme-montserrat';
 import Spacing from '../common/Spacing';
-import { UniversalInput } from '../userProfileView/UniversalInput';
+import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import { NextButton, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
@@ -44,14 +44,18 @@ const ForgotPasswordForm = ({
         <MontserratTypography variant="h2">
           Forgot your password?
         </MontserratTypography>
-        <MontserratTypography variant="h4">
-          Don’t worry, it happens to the best of us.
-        </MontserratTypography>
-        <MontserratTypography variant="h4">
-          Enter the email associated with your account.
-        </MontserratTypography>
         <Spacing vertical={4} />
-        <UniversalInput name="username" type="text" label="Email" autoFocus />
+        <MontserratTypography variant="h4">
+          Don’t worry, it happens to the best of us. Enter the email associated
+          with your account.
+        </MontserratTypography>
+        <Spacing vertical={5} />
+        <UniversalMontserratInput
+          name="username"
+          type="text"
+          label="Email"
+          autoFocus
+        />
         <Spacing vertical={5} />
         <NextButton type="submit" variant="contained">
           {unconfirmedUserFlag
@@ -59,7 +63,7 @@ const ForgotPasswordForm = ({
             : 'Send me a recovery code'}
         </NextButton>
         <Spacing vertical={6} />
-        <MontserratTypography variant="h5">
+        <MontserratTypography variant="h4">
           <span>Want to change your email? </span>
           <StyledLink to="/onboarding/create-account">
             Recreate account

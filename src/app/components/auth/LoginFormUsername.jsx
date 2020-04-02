@@ -59,6 +59,7 @@ const LoginFormUsername = ({ onSubmit }) => {
             <MontserratTypography variant="h2">
               {titleContent}
             </MontserratTypography>
+            <Spacing vertical={4} />
             <MontserratTypography variant="h3">
               Please sign in
             </MontserratTypography>
@@ -80,12 +81,14 @@ const LoginFormUsername = ({ onSubmit }) => {
               Continue
             </NextButton>
             <Spacing vertical={6} />
-            <MontserratTypography variant="h5">
+            <MontserratTypography variant="h4">
               <span>New to Dock? </span>
               <StyledLink to="/onboarding/create-account">
                 CREATE AN ACCOUNT
               </StyledLink>
             </MontserratTypography>
+            <Spacing vertical={6} />
+            <Spacing vertical={4} />
           </>
         )}
         {showLoginMessage && (

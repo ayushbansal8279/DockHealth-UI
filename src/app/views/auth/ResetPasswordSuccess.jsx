@@ -1,11 +1,9 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import { hashHistory } from 'react-router';
-import {
-  NextButton,
-  TitleTypography,
-} from '../../components/auth/AuthComponents.styled';
-import SafariFixGrid from '../../components/common/SafariFixGrid';
+import { NextButton } from '../../components/auth/AuthComponents.styled';
+import Spacing from '../../components/common/Spacing';
+import { MontserratTypography } from '../../theme-montserrat';
 
 const redirectToLogin = () => {
   hashHistory.push('login');
@@ -13,29 +11,16 @@ const redirectToLogin = () => {
 
 export default () => (
   <Grid container direction="column">
-    <SafariFixGrid item sm={12} md={9}>
-      <TitleTypography variant="h2" style={{ marginTop: '6em' }}>
-        Your password is reset
-      </TitleTypography>
-    </SafariFixGrid>
-    <SafariFixGrid item sm={12} md={9}>
-      <TitleTypography variant="h4">
-        Nice work, you’re back in action!
-      </TitleTypography>
-    </SafariFixGrid>
-    <SafariFixGrid item sm={12} md={6}>
-      <NextButton
-        active
-        id="loginButton"
-        variant="contained"
-        color="primary"
-        style={{
-          marginTop: '5rem',
-        }}
-        onClick={redirectToLogin}
-      >
-        Sign In
-      </NextButton>
-    </SafariFixGrid>
+    <MontserratTypography variant="h2">
+      Your password is reset
+    </MontserratTypography>
+    <Spacing vertical={4} />
+    <MontserratTypography variant="h4">
+      Nice work, you’re back in action!
+    </MontserratTypography>
+    <Spacing vertical={5} />
+    <NextButton variant="contained" onClick={redirectToLogin}>
+      Sign In
+    </NextButton>
   </Grid>
 );
