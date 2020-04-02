@@ -5,7 +5,7 @@ export function getTaskListForUser() {
     url: 'list/findTaskListsByUserId',
     method: 'get',
   })
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
