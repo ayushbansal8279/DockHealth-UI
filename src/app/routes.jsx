@@ -260,7 +260,6 @@ export const Routes = ({ store }) => {
         </Route>
         <Redirect from="/onboarding/create-account" to="create-account" />
         <Route path="/onboarding" component={OnboardingTemplate}>
-          <IndexRedirect to="/onboarding/create-account" />
           <Route component={OnboardingEulaView} path="eula" />
           <Route component={OnboardingBaaOverviewView} path="baa-overview" />
           <Route component={OnboardingBaaCheckView} path="baa-check" />

@@ -38,6 +38,7 @@ export const InnerAvatarContainer = styled.div`
         })}px solid #ffffff`
       : 0};
   border-radius: 50%;
+  box-sizing: border-box;
   color: ${palette.white};
   display: flex;
   font-family: 'Montserrat', sans-serif;
