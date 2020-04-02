@@ -23,12 +23,53 @@ export const H4 = styled.h4`
 
 export const SubscriptionsPlansViewContainer = styled.div`
   background-color: ${palette.white};
-  min-height: 100%;
-  left: 0;
-  padding: 2.625rem 4.625rem;
-  position: absolute;
-  top: 0;
   width: 100%;
+`;
+
+export const SubscriptionsPlansInnerContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 2.75rem 1fr;
+`;
+
+export const SubscriptionPlanPanel = styled.div`
+  background-color: ${palette.coolGrey4};
+  color: ${palette.darkBlue};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+`;
+
+export const SubscriptionPlanDarkPanel = styled.div`
+  background-color: ${palette.darkBlue};
+  color: ${palette.white};
+  padding: 1rem 1.5rem;
+`;
+
+export const MediumGreyLabelContainer = styled.div`
+  color: ${palette.mediumGrey};
+`;
+
+export const SubscriptionEnterprisePanel = styled.div`
+  background-color: ${palette.coolGrey4};
+  color: ${palette.darkBlue};
+  display: grid;
+  grid-gap: 0.5rem;
+  grid-template-columns: auto 1fr auto;
+  padding: 1.5rem;
+  width: 100%;
+`;
+
+export const StyledAnchor = styled.a`
+  color: ${palette.darkBlue};
+  text-decoration: underline;
+`;
+
+export const StyledAnchorDiv = styled.div`
+  color: ${palette.darkBlue};
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: underline;
 `;
 
 export const Title = styled(H1)`

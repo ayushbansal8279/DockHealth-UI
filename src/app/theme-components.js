@@ -1,6 +1,8 @@
 import { RotatableChevronWithSpacing } from './components/common/RotatableChevron';
 import palette, { opacify } from './palette';
 
+const STANDARD_TRANSITION = 'all 0.25s ease-out';
+
 const themeCommonOverrides = () => ({
   props: {
     MuiPopover: {
@@ -103,7 +105,7 @@ const themeCommonOverrides = () => ({
         fontSize: '1rem',
         padding: '0.125rem 1rem',
         textTransform: 'uppercase',
-        transition: 'all 0.25s ease-out',
+        transition: STANDARD_TRANSITION,
         '&:hover': {
           backgroundColor: palette.white,
           color: palette.lighterCyanBlue,
@@ -127,6 +129,9 @@ const themeCommonOverrides = () => ({
       },
     },
     MuiButton: {
+      label: {
+        zIndex: 100,
+      },
       text: {
         color: palette.cyanBlue,
         fontSize: '1.5rem',
@@ -134,25 +139,39 @@ const themeCommonOverrides = () => ({
         textTransform: 'none',
       },
       contained: {
-        backgroundColor: palette.cyanBlue,
-        borderRadius: '0.25rem',
+        background: `linear-gradient(to top right, ${palette.brightBlue}, ${palette.darkBlue})`,
+        borderRadius: 0,
         color: palette.white,
         filter: 'brightness(1)',
+        fontFamily: '"Montserrat", sans-serif',
         fontSize: '1.5rem',
         fontWeight: 'bold',
         minHeight: '3.625rem',
         minWidth: '16.5625rem',
-        textTransform: 'none',
-        transition: 'all 0.25s ease-out',
+        position: 'relative',
+        textTransform: 'uppercase',
+        transition: STANDARD_TRANSITION,
+        '&::before': {
+          background: `linear-gradient(to top right, ${palette.darkBlue}, ${palette.darkBlue})`,
+          content: '""',
+          height: '100%',
+          left: 0,
+          opacity: 0,
+          position: 'absolute',
+          top: 0,
+          transition: STANDARD_TRANSITION,
+          width: '100%',
+        },
         '&$disabled': {
-          backgroundColor: palette.cyanBlue,
-          color: palette.white,
-          filter: 'brightness(0.8)',
+          background: `linear-gradient(to top right, ${palette.white}, ${palette.white})`,
+          border: `0.125rem solid ${palette.coolGrey1}`,
+          color: palette.coolGrey1,
         },
         '&:hover': {
-          backgroundColor: palette.cyanBlue,
           color: palette.white,
-          filter: 'brightness(1.2)',
+          '&::before': {
+            opacity: 1,
+          },
         },
       },
       containedPrimary: {
