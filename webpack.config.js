@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const dotenv = require('dotenv');
 
 const BUILD_DIR = path.resolve(__dirname, 'dist');
@@ -80,6 +81,12 @@ const config = (environment, options) => {
         new BundleAnalyzerPlugin({
           openAnalyzer: false,
         }),
+      new CompressionPlugin({
+        filename: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: /\.js$|\.css$|\.html$/,
+        minRatio: 0.8,
+      }),
     ].filter(Boolean),
     optimization: {
       splitChunks: {
