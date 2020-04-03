@@ -192,21 +192,31 @@ class TaskListView extends PureComponent {
 
   addTaskList = () => {
     const { taskListAction } = this.props;
+    const contentContainer = document.querySelector('#content-container');
+    // eslint-disable-next-line no-unused-expressions
+    contentContainer?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
     taskListAction.setTaskListAsCurrentList(null);
     this.setListFormOpen(true);
-    scrollToTop();
   };
 
   editTaskList = taskList => {
     const { taskListAction } = this.props;
+    const contentContainer = document.querySelector('#content-container');
+    // eslint-disable-next-line no-unused-expressions
+    contentContainer?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
     taskListAction.setTaskListAsCurrentList(taskList);
     this.setListFormOpen(true);
-    scrollToTop();
   };
 
   deleteList = taskListIdentifier => {
     const { taskListAction } = this.props;
-    taskListAction.deleteTaskListById(taskListIdentifier).then(() => {
+    return taskListAction.deleteTaskListById(taskListIdentifier).then(() => {
       taskListAction.getGenericListCounts();
       onTaskListDeleted();
     });
@@ -214,7 +224,7 @@ class TaskListView extends PureComponent {
 
   leaveList = taskListIdentifier => {
     const { taskListAction } = this.props;
-    taskListAction.leaveList(taskListIdentifier).then(() => {
+    return taskListAction.leaveList(taskListIdentifier).then(() => {
       onTaskListLeft();
     });
   };
