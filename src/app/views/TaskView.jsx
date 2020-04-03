@@ -1143,6 +1143,11 @@ class TaskView extends Component {
       subscription,
     });
 
+    let displayToolbar = showToolbar;
+    if (isMultiList && isEmpty(tasks)) {
+      displayToolbar = false;
+    }
+
     return (
       <div
         style={{
@@ -1152,7 +1157,7 @@ class TaskView extends Component {
         }}
       >
         <SafariFixGrid container item xs={12} justify="center">
-          {showToolbar && !globalSearch && !isEmpty(tasks) && (
+          {displayToolbar && !globalSearch && (
             <Toolbar
               clearFilter={this.clearFilter}
               downloadPDF={downloadPDF}
