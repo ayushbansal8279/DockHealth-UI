@@ -175,18 +175,24 @@ const themeCommonOverrides = () => ({
         },
       },
       containedPrimary: {
-        backgroundColor: palette.vividPink,
+        background: `linear-gradient(to top right, ${palette.darkBlue}, ${palette.darkBlue})`,
         color: palette.white,
         fontSize: '1.5rem',
+        '&::before': {
+          content: '',
+        },
         '&$disabled': {
-          backgroundColor: palette.vividPink,
-          color: palette.white,
-          filter: 'brightness(0.8)',
+          background: `linear-gradient(to top right, ${palette.white}, ${palette.white})`,
+          border: `0.125rem solid ${palette.coolGrey1}`,
+          color: palette.coolGrey1,
         },
         '&:hover': {
-          backgroundColor: palette.vividPink,
+          background: `linear-gradient(to top right, ${palette.darkBlue}, ${palette.darkBlue})`,
           color: palette.white,
           filter: 'brightness(1.2)',
+          '&::before': {
+            opacity: 0,
+          },
         },
       },
       sizeSmall: {

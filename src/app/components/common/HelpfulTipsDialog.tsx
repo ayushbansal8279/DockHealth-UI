@@ -124,7 +124,7 @@ const HelpfulTipsDialog = ({
         <Spacing horizontal={3} />
         <NextButton
           variant="contained"
-          color="inherit"
+          color="primary"
           size="small"
           onClick={setNextStep}
         >
