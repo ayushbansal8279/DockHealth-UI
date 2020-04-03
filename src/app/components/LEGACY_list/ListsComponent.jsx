@@ -230,6 +230,14 @@ const ListsComponent = props => {
         open={isListMenuOpen}
         onClose={closeListMenu}
         items={menuItems}
+        anchorOrigin={{
+          horizontal: 'right',
+          vertical: 'top',
+        }}
+        transformOrigin={{
+          horizontal: 'right',
+          vertical: 'top',
+        }}
       />
       <ListsDialog open={isDeletePopoverOpen} onClose={closeDeletePopover}>
         <Grid container justify="center">
