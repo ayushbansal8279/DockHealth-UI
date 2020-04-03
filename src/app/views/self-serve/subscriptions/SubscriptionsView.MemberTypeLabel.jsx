@@ -7,14 +7,11 @@ import {
   findAllUsers,
   resendInviteToOrganization,
 } from '../../../actions/people-actions';
+import ListPopover from '../../../components/common/ListPopover';
 import { showAlert, showToast } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
-import {
-  MemberTypeLabelButton,
-  StyledListItem,
-  StyledPopover,
-} from './SubscriptionsView.MemberTypeLabel.Components';
-import { H4 } from './SubscriptionsView.Styled';
+import { MontserratTypography } from '../../../theme-montserrat';
+import { MemberTypeLabelButton } from './SubscriptionsView.MemberTypeLabel.Components';
 
 const renderUserTypesOptions = ({
   changeUserRole,
@@ -25,36 +22,33 @@ const renderUserTypesOptions = ({
 }) => {
   return Object.entries(userTypes)
     .filter(pathEq(['1', 'selectable'], true))
-    .map(([role, { label }]) => (
-      <StyledListItem
-        key={role}
-        button
-        onClick={() => {
-          changeUserRole({ userIdentifier, role })
-            .then(() => {
-              showToast({
-                status: 'success',
-                title: `User's role changed successfully`,
-              });
-              reloadUsers();
-              closePopover();
-            })
-            .catch(error => {
-              showAlert({
-                status: 'error',
-                title: 'Error',
-                text:
-                  error.errorMessage ??
-                  `User's role could not be changed, please try again later`,
-              });
-
-              closePopover();
+    .map(([role, { label }]) => ({
+      key: role,
+      button: true,
+      label,
+      onClick: () => {
+        changeUserRole({ userIdentifier, role })
+          .then(() => {
+            showToast({
+              status: 'success',
+              title: `User's role changed successfully`,
             });
-        }}
-      >
-        <H4>{label}</H4>
-      </StyledListItem>
-    ));
+            reloadUsers();
+            closePopover();
+          })
+          .catch(error => {
+            showAlert({
+              status: 'error',
+              title: 'Error',
+              text:
+                error.errorMessage ??
+                `User's role could not be changed, please try again later`,
+            });
+
+            closePopover();
+          });
+      },
+    }));
 };
 
 const renderInvitations = ({
@@ -63,64 +57,62 @@ const renderInvitations = ({
   resendInvite,
   cancelInvite,
 }) => {
-  return (
-    <>
-      <StyledListItem
-        button
-        onClick={() => {
-          resendInvite({ email })
-            .then(() => {
-              showToast({
-                status: 'success',
-                title: 'Invitation resent successfully',
-              });
-
-              closePopover();
-            })
-            .catch(error => {
-              showAlert({
-                status: 'error',
-                title: 'Error',
-                text:
-                  error.errorMessage ??
-                  'Invitation could not be resent, please try again later',
-              });
-
-              closePopover();
+  return [
+    {
+      key: 'resend',
+      button: true,
+      label: 'Resend invitation',
+      onClick: () => {
+        resendInvite({ email })
+          .then(() => {
+            showToast({
+              status: 'success',
+              title: 'Invitation resent successfully',
             });
-        }}
-      >
-        <H4>Resend invitation</H4>
-      </StyledListItem>
-      <StyledListItem
-        button
-        onClick={() => {
-          cancelInvite({ email })
-            .then(() => {
-              showToast({
-                status: 'success',
-                title: 'Invitation cancelled successfully',
-              });
 
-              closePopover();
-            })
-            .catch(error => {
-              showAlert({
-                status: 'error',
-                title: 'Error',
-                text:
-                  error.errorMessage ??
-                  'Invitation could not be cancelled, please try again later',
-              });
-
-              closePopover();
+            closePopover();
+          })
+          .catch(error => {
+            showAlert({
+              status: 'error',
+              title: 'Error',
+              text:
+                error.errorMessage ??
+                'Invitation could not be resent, please try again later',
             });
-        }}
-      >
-        <H4>Cancel invitation</H4>
-      </StyledListItem>
-    </>
-  );
+
+            closePopover();
+          });
+      },
+    },
+    {
+      key: 'cancel',
+      button: true,
+      label: 'Cancel invitation',
+      onClick: () => {
+        cancelInvite({ email })
+          .then(() => {
+            showToast({
+              status: 'success',
+              title: 'Invitation cancelled successfully',
+            });
+
+            closePopover();
+          })
+          .catch(error => {
+            showAlert({
+              status: 'error',
+              title: 'Error',
+              text:
+                error.errorMessage ??
+                'Invitation could not be cancelled, please try again later',
+            });
+
+            closePopover();
+          });
+      },
+    },
+  ];
 };
 
 const MemberTypeLabel = ({
@@ -175,10 +167,10 @@ const MemberTypeLabel = ({
         clickable={Boolean(renderOptionsMethod)}
         onClick={renderOptionsMethod ? openPopover : undefined}
       >
-        {label}
+        <MontserratTypography variant="h4">{label}</MontserratTypography>
       </MemberTypeLabelButton>
       {renderOptionsMethod && (
-        <StyledPopover
+        <ListPopover
           anchorEl={labelReference.current}
           anchorOrigin={{
             vertical: 'center',
@@ -190,8 +182,7 @@ const MemberTypeLabel = ({
           }}
           onClose={closePopover}
           open={isPopoverOpen}
-        >
-          {renderOptionsMethod({
+          items={renderOptionsMethod({
             userIdentifier,
             userTypes,
             closePopover,
@@ -201,7 +192,7 @@ const MemberTypeLabel = ({
             cancelInvite,
             reloadUsers,
           })}
-        </StyledPopover>
+        />
       )}
     </>
   );

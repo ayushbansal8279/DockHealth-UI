@@ -12,6 +12,7 @@ import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import { noop } from '../../../helpers/utility-functions';
 import palette from '../../../palette';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
+import { MontserratTypography } from '../../../theme-montserrat';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -24,6 +25,10 @@ const SmallScreenGrid = styled(Grid)`
   && {
     padding: 1rem;
   }
+`;
+
+const StyledAnchor = styled.a`
+  color: ${palette.brightBlue};
 `;
 
 const USER_TYPES = new Proxy(
@@ -165,7 +170,7 @@ const OrganizationMemberRow = ({
           openDialog();
         }
       }}
-      color={palette.darkBlue}
+      color={palette.coolGrey2}
     />
   );
 
@@ -211,14 +216,26 @@ const OrganizationMemberRow = ({
                 direction="column"
                 alignItems="flex-start"
               >
-                <b>{`${firstName} ${lastName}`.trim()}</b>
-                {email && <a href={`mailto:${email}`}>{email}</a>}
+                <MontserratTypography variant="h4" weight="600">
+                  {`${firstName} ${lastName}`.trim()}
+                </MontserratTypography>
+                {email && (
+                  <MontserratTypography variant="h4">
+                    <StyledAnchor href={`mailto:${email}`}>
+                      {email}
+                    </StyledAnchor>
+                  </MontserratTypography>
+                )}
                 <MemberTypeLabel
                   userIdentifier={userIdentifier}
                   userType={userType}
                   userTypes={USER_TYPES}
                 />
-                {showJoined && <div>Joined {formattedRegistrationDate}</div>}
+                {showJoined && (
+                  <MontserratTypography variant="h4">
+                    Joined {formattedRegistrationDate}
+                  </MontserratTypography>
+                )}
               </Grid>
               {showSubscription && (
                 <Grid
@@ -228,7 +245,9 @@ const OrganizationMemberRow = ({
                   alignItems="flex-end"
                   justify="flex-end"
                 >
-                  <div>{trialPlanPricePerUser}</div>
+                  <MontserratTypography variant="h4">
+                    {trialPlanPricePerUser}
+                  </MontserratTypography>
                 </Grid>
               )}
             </Grid>
@@ -251,8 +270,14 @@ const OrganizationMemberRow = ({
       </td>
       <td>
         <Grid container direction="column" justify="center">
-          <b>{`${firstName} ${lastName}`.trim()}</b>
-          {email && <a href={`mailto:${email}`}>{email}</a>}
+          <MontserratTypography variant="h4" weight="600">
+            {`${firstName} ${lastName}`.trim()}
+          </MontserratTypography>
+          {email && (
+            <MontserratTypography variant="h4">
+              <StyledAnchor href={`mailto:${email}`}>{email}</StyledAnchor>
+            </MontserratTypography>
+          )}
         </Grid>
       </td>
       <td>
@@ -263,8 +288,20 @@ const OrganizationMemberRow = ({
           userTypes={USER_TYPES}
         />
       </td>
-      {showJoined && <td>{formattedRegistrationDate}</td>}
-      {showSubscription && <td>{trialPlanPricePerUser}</td>}
+      {showJoined && (
+        <td>
+          <MontserratTypography variant="h4">
+            {formattedRegistrationDate}
+          </MontserratTypography>
+        </td>
+      )}
+      {showSubscription && (
+        <td>
+          <MontserratTypography variant="h4">
+            {trialPlanPricePerUser}
+          </MontserratTypography>
+        </td>
+      )}
     </tr>
   );
 };

@@ -14,6 +14,7 @@ import React, { useEffect } from 'react';
 import CubesLoader from '../../../components/common/CubesLoader';
 import Spacing from '../../../components/common/Spacing';
 import Search from '../../../components/taskView/Search';
+import { MontserratTypography } from '../../../theme-montserrat';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';
@@ -23,7 +24,6 @@ import SortingColumn, {
 } from './SubscriptionsView.MembersTable.SortingColumn';
 import {
   MembersTableContainer,
-  MembersTableSearchContainer,
   MemberTable,
 } from './SubscriptionsView.MembersTable.Styled';
 import SubscriptionStatusSwitcher, {
@@ -197,15 +197,12 @@ const SubscriptionsViewMembersTable = ({
                 justify="flex-end"
                 wrap="nowrap"
               >
-                <MembersTableSearchContainer>
-                  <Search
-                    fullWidth
-                    onChange={event =>
-                      setCurrentSearch(event?.target?.value ?? '')
-                    }
-                    value={currentSearch}
-                  />
-                </MembersTableSearchContainer>
+                <Search
+                  onChange={event =>
+                    setCurrentSearch(event?.target?.value ?? '')
+                  }
+                  value={currentSearch}
+                />
                 <Spacing horizontal={3} />
                 <InviteButton
                   getAllUsers={getAllUsers}
@@ -227,7 +224,7 @@ const SubscriptionsViewMembersTable = ({
                       sortingProperty={SORTING_PROPERTIES.NAME}
                       setSortingProperty={setSortingProperty}
                     >
-                      Name
+                      NAME
                     </SortingColumn>
                   </th>
                   <th>
@@ -237,7 +234,7 @@ const SubscriptionsViewMembersTable = ({
                       sortingProperty={SORTING_PROPERTIES.USER_TYPE}
                       setSortingProperty={setSortingProperty}
                     >
-                      User Type
+                      USER TYPE
                     </SortingColumn>
                   </th>
                   {showJoined && (
@@ -248,11 +245,17 @@ const SubscriptionsViewMembersTable = ({
                         sortingProperty={SORTING_PROPERTIES.JOINED}
                         setSortingProperty={setSortingProperty}
                       >
-                        Joined
+                        JOINED
                       </SortingColumn>
                     </th>
                   )}
-                  {showSubscription && <th>Subscription</th>}
+                  {showSubscription && (
+                    <th>
+                      <MontserratTypography variant="h4">
+                        SUBSCRIPTION
+                      </MontserratTypography>
+                    </th>
+                  )}
                 </tr>
               </thead>
             )}

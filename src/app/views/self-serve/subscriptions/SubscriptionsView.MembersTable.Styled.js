@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import palette from '../../../palette';
+import palette, { opacify } from '../../../palette';
 import { H3 } from './SubscriptionsView.Styled';
 
 export const MembersTableContainer = styled.div`
@@ -12,6 +12,8 @@ export const MemberTable = styled.table`
   && {
     border: 0;
     border-spacing: 0;
+    font-size: 0.875rem;
+    margin-bottom: 0;
     margin-top: 0.75rem;
 
     & th,
@@ -20,7 +22,7 @@ export const MemberTable = styled.table`
     }
 
     & thead {
-      background: ${palette.coolGrey3};
+      background: ${opacify(palette.coolGrey2, 0.3)};
 
       & tr {
         background: transparent;
@@ -30,7 +32,7 @@ export const MemberTable = styled.table`
 
       & th {
         background: transparent;
-        border-bottom: 0.0625rem ${palette.coolGrey3} solid;
+        border-bottom: 0.0625rem ${palette.coolGrey2} solid;
         color: ${palette.mediumGrey};
         font-size: 0.875rem;
         font-weight: 600;
@@ -75,43 +77,27 @@ export const HeaderCaptionGrid = styled(Grid)`
   }
 `;
 
-export const SubscriptionStatusSwitchLabel = styled(H3)`
-  cursor: pointer;
-  margin-left: 2rem;
-  ${props => props.selected && 'font-weight: bold; text-decoration: underline;'}
-`;
-
 export const SwitcherContainer = styled.div`
   align-items: center;
-  background-color: ${palette.coolGrey4};
-  border-radius: 0.25rem;
-  cursor: pointer;
   display: flex;
-  height: 3.75rem;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-left: 1rem;
-  padding-right: 0;
+  cursor: pointer;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
   width: 100%;
 `;
 
 export const SwitcherChevronContainer = styled.div`
-  align-items: center;
-  background-color: ${palette.unknownGrey6};
-  border-radius: 0.25rem;
-  display: flex;
   height: 100%;
-  justify-content: center;
-  margin-left: 1rem;
-  width: 2.5rem;
 `;
 
-export const SwitcherChevronImage = styled.img`
-  height: 1rem;
-  object-fit: contain;
-  width: 1rem;
-  transform: rotate(${props => (props.rotated ? 180 : 0)}deg);
-  transition: all 0.25s ease-out;
+export const MediumGreyLabelContainer = styled.span`
+  color: ${palette.coolGrey1};
+`;
+
+export const SubscriptionStatusSwitchLabel = styled(H3)`
+  cursor: pointer;
+  margin-left: 2rem;
+  ${props => props.selected && 'font-weight: bold; text-decoration: underline;'}
 `;
 
 export const MembersTableSearchContainer = styled.div`

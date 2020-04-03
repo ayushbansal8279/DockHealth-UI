@@ -238,11 +238,13 @@ class SingleComment extends Component {
         isEditing={commentBubbleTextFocused}
         isCurrentUser={isCurrentUser}
       >
-        <RemoveCommentButton
-          alt="Remove comment"
-          src={RemoveCommentIcon}
-          onClick={this.onRemoveButtonClick}
-        />
+        {isCurrentUser && (
+          <RemoveCommentButton
+            alt="Remove comment"
+            src={RemoveCommentIcon}
+            onClick={this.onRemoveButtonClick}
+          />
+        )}
         <CommentBubbleText
           ref={this.commentBubbleTextRef}
           onClick={
@@ -250,7 +252,7 @@ class SingleComment extends Component {
               ? undefined
               : this.setCommentBubbleTextFocused
           }
-          contentEditable={commentBubbleTextFocused}
+          contentEditable={commentBubbleTextFocused && isCurrentUser}
           onBlur={this.onCommentBubbleBlur}
           onKeyPress={event => {
             if (event.key === 'Enter') {
