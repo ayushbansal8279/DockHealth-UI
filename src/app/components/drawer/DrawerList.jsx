@@ -230,7 +230,7 @@ const DrawerList = ({
   location,
   onMouseEnter,
   onMouseLeave,
-  trialBannerVisible,
+  bannerVisible,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [rolloverPopoverAnchor, setRolloverPopoverAnchor] = useState(null);
@@ -270,7 +270,7 @@ const DrawerList = ({
           user={user}
           onMouseEnter={onMouseEnter}
         />
-        <StandardListContainer trialBannerVisible={trialBannerVisible}>
+        <StandardListContainer bannerVisible={bannerVisible}>
           {drawerItems.map(
             renderDrawerItem({
               activeId,
