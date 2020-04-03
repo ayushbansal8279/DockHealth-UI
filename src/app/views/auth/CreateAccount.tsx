@@ -10,7 +10,7 @@ import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
 import { setAuthBaseState } from '../../actions/auth-base-actions';
-import * as referralApi from '../../api/referral-api';
+import * as organizationApi from '../../api/organization-api';
 import {
   register as registerAction,
   resendConfirmationCode,
@@ -140,12 +140,10 @@ const getCustomTitleFromReferralConfig = async (
   referralCode: any,
   setCustomPageTitle: any,
 ) => {
-  console.log(referralCode);
   if (referralCode !== undefined && referralCode !== 'undefined') {
-    const referralConfig = await referralApi.getConfigurationForReferral(
+    const referralConfig = await organizationApi.getConfigurationForReferral(
       referralCode,
     );
-    console.log(referralConfig);
     if (referralConfig) {
       setCustomPageTitle(referralConfig.messageCreateAccount);
     }
@@ -184,7 +182,6 @@ const CreateAccount = () => {
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
-    console.log(locationParameters?.referral);
     if (locationParameters && locationParameters?.referral) {
       getCustomTitleFromReferralConfig(
         String(locationParameters?.referral),

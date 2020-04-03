@@ -129,3 +129,11 @@ export const checkBAASignedStatus = memoizeWith(identity, () =>
     throw new Error('Unable to check BAA signature status');
   }),
 );
+
+export const getConfigurationForReferral = referralCode =>
+  axios.get(`/referral/config/${referralCode}`).then(response => {
+    if (response && response.data) {
+      return response.data;
+    }
+    throw new Error('Referral config not found');
+  });

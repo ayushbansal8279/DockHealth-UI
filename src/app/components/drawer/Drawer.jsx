@@ -6,16 +6,18 @@ import {
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
-// import moment from 'moment';
+import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import Intercom from 'react-intercom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { getOrganizationById } from '../../actions/organization-actions';
-import * as referralApi from '../../api/referral-api';
 import useBoolean from '../../hooks/useBoolean';
 import { themeMontserrat600 } from '../../theme-montserrat';
-import { getSubscriptionIsTrial, getSubscriptionPlanTrialLabel } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import {
+  getSubscriptionIsTrial,
+  getSubscriptionPlanTrialLabel,
+} from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   ContentContainer,
   TrialBanner,
@@ -33,24 +35,11 @@ const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   </Grid>
 );
 
-const getCustomTitleFromReferralConfig = async (referralCode, setBannerTitle) => {
-  console.log(referralCode);
-  if (referralCode !== undefined && referralCode !== "undefined") {
-    const referralConfig = await referralApi.getConfigurationForReferral(
-      referralCode,
-    );
-    console.log(referralConfig);
-    if(referralConfig){
-      setBannerTitle(referralConfig.messageBannerBar);
-    }
-  }
-};
-
 const Drawer = ({ children }) => {
   const [isOpen, open, close] = useBoolean(false);
   const [activeId, setActiveId] = useState('');
   const [bannerVisible, setBannerVisible] = useState(false);
-  const [bannerTitle, setBannerTitle] = useState('');
+  // const [bannerTitle, setBannerTitle] = useState('');
 
   const { user, lists, header } = useSelector(store => ({
     user: store.userState.userProfile,
@@ -65,12 +54,15 @@ const Drawer = ({ children }) => {
 
   const dispatch = useDispatch();
 
-  const currentUser = useSelector(store => store.userState.userProfile);
-
-  const { organization, organizationIdentifier } = useSelector(store => ({
+  const {
+    organization,
+    organizationIdentifier,
+    messageBannerBar,
+  } = useSelector(store => ({
     ...store.organizationState,
     organizationIdentifier:
       store.userState?.userProfile?.organizationIdentifier,
+    messageBannerBar: store.organizationState?.referralConfig?.messageBannerBar,
   }));
 
   const subscription = organization?.subscriptionDetails;
@@ -125,16 +117,14 @@ const Drawer = ({ children }) => {
     if (organizationIdentifier) {
       getOrganizationById({ organizationIdentifier })(dispatch);
     }
-    console.log(currentUser.referralCode)
-    getCustomTitleFromReferralConfig(currentUser.referralCode, setBannerTitle);
   });
 
   useEffect(() => {
     if (organization) {
-      const subscription = organization?.subscriptionDetails;
+      const subscriptionDetails = organization?.subscriptionDetails;
 
       const isSubscriptionTrial = getSubscriptionIsTrial({
-        subscription,
+        subscription: subscriptionDetails,
       });
       setBannerVisible(isSubscriptionTrial);
     }
@@ -170,7 +160,11 @@ const Drawer = ({ children }) => {
         >
           <ThemeProvider theme={themeMontserrat600}>
             <Typography variant="h4">
-              <span>{bannerTitle && bannerTitle != "" ? bannerTitle : trialEndLabel}</span>
+              <span>
+                {messageBannerBar && messageBannerBar !== ''
+                  ? messageBannerBar
+                  : trialEndLabel}
+              </span>
               {showBannerMessageLink && (
                 <TrialBannerLink to="/subscriptions">
                   {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}

@@ -8,6 +8,8 @@ import {
   GET_INVOICE_DETAILS_SUCCESS,
   GET_ORGANIZATION_FAILURE,
   GET_ORGANIZATION_SUCCESS,
+  GET_REFERRAL_CONFIG_FAILURE,
+  GET_REFERRAL_CONFIG_SUCCESS,
   REQUEST_GET_BILLING_DETAILS,
   REQUEST_GET_BILLING_ESTIMATE,
   REQUEST_GET_INVOICE_DETAILS,
@@ -171,6 +173,20 @@ const reducer = (state = initialState, { type, payload, error }) => {
       return {
         ...state,
         currentUsers: payload,
+      };
+    }
+
+    case GET_REFERRAL_CONFIG_SUCCESS: {
+      return {
+        ...state,
+        referralConfig: payload,
+      };
+    }
+
+    case GET_REFERRAL_CONFIG_FAILURE: {
+      return {
+        ...state,
+        referralConfig: null,
       };
     }
 

@@ -8,6 +8,8 @@ import {
   GET_INVOICE_DETAILS_SUCCESS,
   GET_ORGANIZATION_FAILURE,
   GET_ORGANIZATION_SUCCESS,
+  GET_REFERRAL_CONFIG_FAILURE,
+  GET_REFERRAL_CONFIG_SUCCESS,
   REQUEST_GET_BILLING_DETAILS,
   REQUEST_GET_BILLING_ESTIMATE,
   REQUEST_GET_INVOICE_DETAILS,
@@ -172,4 +174,26 @@ export const checkBAASignedStatus = () => dispatch => {
     fetchMethod: () => OrganizationApi.checkBAASignedStatus(),
     dispatch,
   });
+};
+
+export const getConfigurationForReferral = ({ referralCode }) => dispatch => {
+  if (!referralCode) {
+    return Promise.reject(new Error('No referral code'));
+  }
+
+  return OrganizationApi.getConfigurationForReferral(referralCode)
+    .then(data => {
+      dispatch({
+        type: GET_REFERRAL_CONFIG_SUCCESS,
+        payload: data,
+      });
+      return data;
+    })
+    .catch(error => {
+      dispatch({
+        type: GET_REFERRAL_CONFIG_FAILURE,
+        error,
+      });
+      throw error;
+    });
 };

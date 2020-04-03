@@ -1,5 +1,8 @@
 import { hashHistory } from 'react-router';
-import { checkBAASignedStatus } from '../actions/organization-actions';
+import {
+  checkBAASignedStatus,
+  getConfigurationForReferral,
+} from '../actions/organization-actions';
 import { mobileAnalyticsClient } from '../api/analytics-api';
 import * as userApi from '../api/user-api';
 import handleFeatureToggle from '../helpers/handle-feature-toggle';
@@ -86,6 +89,7 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
 
   if (data?.organizationIdentifier) {
     orgData = await checkBAASignedStatus()(dispatch);
+    getConfigurationForReferral({ referralCode: data?.referralCode })(dispatch);
   }
 
   // uncomment the paragraph below if you have problems with signing BAA
