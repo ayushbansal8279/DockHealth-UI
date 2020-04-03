@@ -63,12 +63,12 @@ const ForgotPasswordForm = ({
             : 'Send me a recovery code'}
         </NextButton>
         <Spacing vertical={6} />
-        <MontserratTypography variant="h4">
+        {/* <MontserratTypography variant="h4">
           <span>Want to change your email? </span>
           <StyledLink to="/onboarding/create-account">
             Recreate account
           </StyledLink>
-        </MontserratTypography>
+        </MontserratTypography> */}
       </FormContext>
     </form>
   );

@@ -143,7 +143,7 @@ export const StyledListItem = styled(ListItem)`
 `;
 
 export const StandardListContainer = styled.div`
-  padding-top: ${props => (props.trialBannerVisible ? 2.875 : 1)}rem;
+  padding-top: ${props => (props.bannerVisible ? 2.875 : 1)}rem;
   transition: all 0.2s ease-out;
 `;
 

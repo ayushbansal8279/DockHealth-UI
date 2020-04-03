@@ -93,7 +93,7 @@ OnSubmitProps) => async ({
       phone_number: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
       family_name: lastName,
       given_name: firstName,
-      referral: locationParameters.referral,
+      "custom:referral": locationParameters.referral,
     });
     setDialogTitle(`Confirm your email`);
     setDialogMessage(
@@ -136,11 +136,16 @@ const resendEmail = async (email: string) => {
   }
 };
 
-const getReferralConfig = async (referralCode: any) => {
-  if (referralCode !== undefined) {
+const getCustomTitleFromReferralConfig = async (referralCode: any, setCustomPageTitle: any) => {
+  console.log(referralCode);
+  if (referralCode !== undefined && referralCode !== "undefined") {
     const referralConfig = await referralApi.getConfigurationForReferral(
       referralCode,
     );
+    console.log(referralConfig);
+    if(referralConfig){
+      setCustomPageTitle(referralConfig.messageCreateAccount);
+    }
   }
 };
 
@@ -158,6 +163,7 @@ const CreateAccount = () => {
   const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
+  const [customPageTitle, setCustomPageTitle] = useState('');
 
   const dispatch = useDispatch();
 
@@ -175,8 +181,9 @@ const CreateAccount = () => {
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
+    console.log(locationParameters?.referral);
     if (locationParameters && locationParameters?.referral) {
-      getReferralConfig(String(locationParameters?.referral));
+      getCustomTitleFromReferralConfig(String(locationParameters?.referral), setCustomPageTitle);
     }
   });
 
@@ -193,15 +200,15 @@ const CreateAccount = () => {
         )}
       >
         <FormContext {...formMethods}>
-          {hasTrialReferral && (
+          {(hasTrialReferral || customPageTitle !== '') && (
             <>
               <MontserratTypography variant="h2">
-                Start your free 30 day trial
+                {customPageTitle !== '' ? customPageTitle : 'Start your free 30 day trial'}
               </MontserratTypography>
               <Spacing vertical={4} />
             </>
           )}
-          <MontserratTypography variant={hasTrialReferral ? 'h4' : 'h2'}>
+          <MontserratTypography variant={(hasTrialReferral || customPageTitle !== '') ? 'h4' : 'h2'}>
             Please create an account
           </MontserratTypography>
           <Spacing vertical={4} />
@@ -239,7 +246,7 @@ const CreateAccount = () => {
           <Spacing vertical={5} />
           <NextButton type="submit">Continue</NextButton>
           <Spacing vertical={5} />
-          <MontserratTypography variant="h5">
+          <MontserratTypography variant="h4">
             <span>I already have an account </span>
             <StyledLink to="/login">SIGN IN</StyledLink>
           </MontserratTypography>

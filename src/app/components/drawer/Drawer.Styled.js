@@ -11,8 +11,8 @@ export const useDrawerClasses = makeStyles({
     fontSize: '2.25rem',
     height: '5rem',
     marginLeft: 85,
-    marginBottom: ({ trialBannerVisible }) =>
-      trialBannerVisible ? '2.875rem' : 0,
+    marginBottom: ({ bannerVisible }) =>
+    bannerVisible ? '2.875rem' : 0,
     padding: '0.75rem 1.25rem 1rem',
     position: 'relative',
     transition: 'all 0.2s ease-out',
@@ -56,11 +56,11 @@ export const ContentContainer = styled.div`
 `;
 
 export const TrialBanner = styled(Grid)`
-  background-color: ${palette.midnightBlue};
-  color: ${palette.accentYellow};
+  background-color: ${palette.oPlusRed};
+  color: ${palette.white};
   font-size: 1rem;
   left: 0;
-  height: ${props => (props.trialBannerVisible ? '2.875rem' : 0)};
+  height: ${props => (props.bannerVisible ? '2.875rem' : 0)};
   overflow: hidden;
   right: 0;
   position: absolute;
@@ -71,7 +71,7 @@ export const TrialBanner = styled(Grid)`
 `;
 
 export const TrialBannerLink = styled(Link)`
-  color: ${palette.accentYellow};
+  color: ${palette.white};
   margin-left: 0.25rem;
   text-decoration: underline;
   transition: all 0.25s ease-out;
