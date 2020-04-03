@@ -15,7 +15,7 @@ export function getTaskListForUser() {
 export function findPendingTaskListsForUser() {
   return axios
     .get('list/findPendingTaskListsForUser')
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -27,7 +27,7 @@ export function addTaskList(tasklist) {
     .post('list/', tasklist)
     .then(response => {
       toggleTaskForm();
-      return response.data;
+      return response?.data;
     })
     .catch(error => {
       console.log(error);
@@ -38,7 +38,7 @@ export function addTaskList(tasklist) {
 export function getTaskListById(taskListIdentifier) {
   return axios
     .get(`list/${taskListIdentifier}`)
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -51,7 +51,7 @@ export function updateTaskList(taskList) {
     .put('list/', taskList)
     .then(response => {
       toggleTaskForm();
-      return response.data;
+      return response?.data;
     })
     .catch(error => {
       console.log(error);
@@ -64,7 +64,7 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
     .get(
       `user/listAllUsersByTaskListId/${taskListIdentifier}?status=${memberStatus}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -74,7 +74,7 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
 export function invitePersonToTaskList(taskListIdentifier, personInfo) {
   return axios
     .put(`list/invitePersonToTaskList/${taskListIdentifier}`, personInfo)
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -84,7 +84,7 @@ export function invitePersonToTaskList(taskListIdentifier, personInfo) {
 export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
   return axios
     .get(`user/findOrganizationUsersNotInTaskList/${taskListIdentifier}`)
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -96,7 +96,7 @@ export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) =>
     .put(
       `/user/inviteUserToTaskList/${taskListIdentifier}/user/${userIdentifier}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       throw new Error(error?.response?.data);
     });
@@ -114,7 +114,7 @@ export function inviteMultipleUsersToTaskList(
       `user/inviteMultipleUsersToTaskList/${taskListIdentifier}`,
       multiUserInvitation,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -124,7 +124,7 @@ export function inviteMultipleUsersToTaskList(
 export function getNonOrgUsersByTaskList(taskListIdentifier) {
   return axios
     .get(`user/findNonOrgUsersByTaskList/${taskListIdentifier}`)
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -140,7 +140,7 @@ export function changeUserRoleForList(
     .put(
       `list/changeUserRoleForList/${taskListIdentifier}?markedUserId=${markedUserIdentifier}&role=${role}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -150,7 +150,7 @@ export function changeUserRoleForList(
 export function deleteTaskListById(taskListIdentifier) {
   return axios
     .delete(`list/deleteTaskListById/${taskListIdentifier}`)
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -165,7 +165,7 @@ export function removeUserFromTaskList(
     .delete(
       `user/removeUserFromTaskList/${taskListIdentifier}?removedUserId=${removedUserIdentifier}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -179,7 +179,7 @@ export function cancelInviteToTaskList(taskListIdentifier, email) {
         email,
       )}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -191,7 +191,7 @@ export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
     .get(
       `audit/findAuditsByTaskList/${taskListIdentifier}?queryStartPosition=${queryStartPosition}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -204,7 +204,7 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
       `${'audit/findAuditsForAllTaskListsByUserId/' +
         '?queryStartPosition='}${queryStartPosition}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -217,7 +217,7 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
       `${'audit/findActivityFeedForAllTaskListsByUserId/' +
         '?queryStartPosition='}${queryStartPosition}`,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -242,7 +242,7 @@ export function toggleListNotifications(
 export function findGenericListCountsForUser() {
   return axios
     .get('list/getGenericListCountsForUser')
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       console.log(error);
       throw new Error(error?.response?.data);
@@ -256,7 +256,7 @@ export function downloadPDF(taskListIdentifier) {
     responseType: 'blob', // important
   })
     .then(response => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response?.data]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'DOCK_ActionGrid.pdf');
