@@ -10,6 +10,7 @@ import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
 import { setAuthBaseState } from '../../actions/auth-base-actions';
+import * as referralApi from '../../api/referral-api';
 import {
   register as registerAction,
   resendConfirmationCode,
@@ -33,7 +34,6 @@ import {
   OnboardingDialog,
   OnboardingDivider,
 } from '../onboarding/OnboardingTemplate.Components';
-import * as referralApi from '../../api/referral-api';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -65,7 +65,7 @@ interface OnSubmitProps {
   showDialog: Function;
   setDialogTitle: (title: string) => void;
   setDialogMessage: (message: string) => void;
-  locationParameters: any; 
+  locationParameters: any;
 }
 
 interface FormProps {
@@ -93,7 +93,7 @@ OnSubmitProps) => async ({
       phone_number: `+1${mobilePhoneNumber.replace(/\D/g, '')}`,
       family_name: lastName,
       given_name: firstName,
-      "custom:referral": locationParameters.referral,
+      'custom:referral': locationParameters.referral,
     });
     setDialogTitle(`Confirm your email`);
     setDialogMessage(
@@ -136,14 +136,17 @@ const resendEmail = async (email: string) => {
   }
 };
 
-const getCustomTitleFromReferralConfig = async (referralCode: any, setCustomPageTitle: any) => {
+const getCustomTitleFromReferralConfig = async (
+  referralCode: any,
+  setCustomPageTitle: any,
+) => {
   console.log(referralCode);
-  if (referralCode !== undefined && referralCode !== "undefined") {
+  if (referralCode !== undefined && referralCode !== 'undefined') {
     const referralConfig = await referralApi.getConfigurationForReferral(
       referralCode,
     );
     console.log(referralConfig);
-    if(referralConfig){
+    if (referralConfig) {
       setCustomPageTitle(referralConfig.messageCreateAccount);
     }
   }
@@ -183,9 +186,14 @@ const CreateAccount = () => {
     })(dispatch);
     console.log(locationParameters?.referral);
     if (locationParameters && locationParameters?.referral) {
-      getCustomTitleFromReferralConfig(String(locationParameters?.referral), setCustomPageTitle);
+      getCustomTitleFromReferralConfig(
+        String(locationParameters?.referral),
+        setCustomPageTitle,
+      );
     }
   });
+
+  const hasCustomPageTitle = customPageTitle !== '';
 
   return (
     <StyledGrid container alignItems="center" justify="center">
@@ -200,15 +208,19 @@ const CreateAccount = () => {
         )}
       >
         <FormContext {...formMethods}>
-          {(hasTrialReferral || customPageTitle !== '') && (
+          {(hasTrialReferral || hasCustomPageTitle) && (
             <>
               <MontserratTypography variant="h2">
-                {customPageTitle !== '' ? customPageTitle : 'Start your free 30 day trial'}
+                {hasCustomPageTitle
+                  ? customPageTitle
+                  : 'Start your free 30 day trial'}
               </MontserratTypography>
               <Spacing vertical={4} />
             </>
           )}
-          <MontserratTypography variant={(hasTrialReferral || customPageTitle !== '') ? 'h4' : 'h2'}>
+          <MontserratTypography
+            variant={hasTrialReferral || hasCustomPageTitle ? 'h4' : 'h2'}
+          >
             Please create an account
           </MontserratTypography>
           <Spacing vertical={4} />
@@ -239,7 +251,7 @@ const CreateAccount = () => {
             CustomComponent={UniversalMobileInputComponent}
           />
           <Spacing vertical={3} />
-          <MontserratTypography variant="h4">
+          <MontserratTypography variant="h5">
             This must be a mobile phone number as we are required to send a
             secondary authentication code for HIPPA compliance
           </MontserratTypography>

@@ -36,7 +36,7 @@ const TemplateAuthBaseDailyHubContent = () => {
         Your Daily Hub.
       </MontserratTypography>
       <Spacing vertical={3} />
-      <MontserratTypography variant="h5" weight="bold">
+      <MontserratTypography variant="h6" weight="bold">
         No more reply all emails. No more Post-It notes or spreadsheets to
         manage patient care. Just an open route to better healthcare
         collaboration.

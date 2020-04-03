@@ -103,11 +103,11 @@ const TaskListRow = ({
           </MontserratTypography>
         </div>
         <Spacing vertical={2} />
-        <MontserratTypography variant="h5" weight="500">
+        <MontserratTypography variant="h6" weight="500">
           {listDescription}
         </MontserratTypography>
         <Spacing vertical={2} />
-        <MontserratTypography variant="h5">
+        <MontserratTypography variant="h6">
           {creator.userName}
         </MontserratTypography>
       </Grid>

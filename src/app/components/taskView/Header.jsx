@@ -78,7 +78,7 @@ const Header = ({ hasTitle, title, isFetching, taskList }) => {
   return (
     <GenericHeader isFetching={isFetching || !hasTitle} useTypography={false}>
       <HeaderTitleContainer>
-        <StyledTitle onClick={openListPopover} variant="h5" component="div">
+        <StyledTitle onClick={openListPopover} variant="h6" component="div">
           <TitleContainer>{title}</TitleContainer>
           <Spacing horizontal={3} />
           <RotatableHeaderChevron

@@ -84,10 +84,10 @@ const CurrentPlan = ({
         </Grid>
         <Grid container direction="column" justify="flex-end">
           <ThemeProvider theme={themeMontserratNormal}>
-            <Typography variant="h5">
+            <Typography variant="h6">
               {planNextPaymentLabel} {planNextPaymentDate}
             </Typography>
-            <Typography variant="h5">
+            <Typography variant="h6">
               <span>{planTotalPayment} </span>
               {Boolean(planActiveUserCount) && (
                 <span>({planActiveUserCount} users) </span>

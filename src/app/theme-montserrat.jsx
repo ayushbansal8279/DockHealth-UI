@@ -33,11 +33,11 @@ const themeMontserratFactory = ({ fontWeight }) =>
         fontWeight,
       },
       h5: {
-        fontSize: '75%',
+        fontSize: '87.5%',
         fontWeight,
       },
       h6: {
-        fontSize: '50%',
+        fontSize: '75%',
         fontWeight,
       },
     },

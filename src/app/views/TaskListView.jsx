@@ -574,7 +574,7 @@ class TaskListView extends PureComponent {
                     size="small"
                     onClick={this.addTaskList}
                   >
-                    <MontserratTypography variant="h5" weight="bold">
+                    <MontserratTypography variant="h6" weight="bold">
                       ADDING A LIST
                     </MontserratTypography>
                   </Button>
