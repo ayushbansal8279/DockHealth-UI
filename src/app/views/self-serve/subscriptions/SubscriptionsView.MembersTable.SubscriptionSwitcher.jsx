@@ -1,15 +1,14 @@
-import { Grid, MenuItem, Popover } from '@material-ui/core';
 import React, { useRef } from 'react';
+import ListPopover from '../../../components/common/ListPopover';
+import { RotatableChevronWithSpacing } from '../../../components/common/RotatableChevron';
 import useBoolean from '../../../hooks/useBoolean';
-import ChevronIcon from '../../../img/collapse.svg';
+import palette from '../../../palette';
+import { MontserratTypography } from '../../../theme-montserrat';
 import {
-  HeaderCaptionGrid,
-  SubscriptionStatusSwitchLabel,
+  MediumGreyLabelContainer,
   SwitcherChevronContainer,
-  SwitcherChevronImage,
   SwitcherContainer,
 } from './SubscriptionsView.MembersTable.Styled';
-import { H2 } from './SubscriptionsView.Styled';
 
 export const USER_SUBSCRIPTION_STATUS = {
   ALL: Symbol('ALL'),
@@ -26,73 +25,50 @@ const USER_SUBSCRIPTION_LABELS = {
 const SubscriptionStatusSwitcher = ({
   userSubscriptionStatus,
   setUserSubscriptionStatus,
-  isSmallScreen,
 }) => {
   const [isDropdownOpen, openDropdown, closeDropdown] = useBoolean(false);
   const switcherContainerReference = useRef(null);
 
-  if (isSmallScreen) {
-    return (
-      <>
-        <SwitcherContainer
-          onClick={openDropdown}
-          ref={switcherContainerReference}
-        >
-          <H2>
-            Users: <b>{USER_SUBSCRIPTION_LABELS[userSubscriptionStatus]}</b>
-          </H2>
-          <SwitcherChevronContainer>
-            <SwitcherChevronImage
-              alt="arrow"
-              src={ChevronIcon}
-              rotated={isDropdownOpen}
-            />
-          </SwitcherChevronContainer>
-        </SwitcherContainer>
-        <Popover
-          anchorEl={switcherContainerReference.current}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={isDropdownOpen}
-          onClose={closeDropdown}
-        >
-          {Object.values(USER_SUBSCRIPTION_STATUS).map(status => (
-            <MenuItem
-              key={status.toString()}
-              onClick={() => {
-                setUserSubscriptionStatus(status);
-                closeDropdown();
-              }}
-            >
-              <Grid container justify="flex-end">
-                <H2>{USER_SUBSCRIPTION_LABELS[status]}</H2>
-              </Grid>
-            </MenuItem>
-          ))}
-        </Popover>
-      </>
-    );
-  }
-
   return (
-    <HeaderCaptionGrid container alignItems="center">
-      <H2>Users</H2>
-      {Object.values(USER_SUBSCRIPTION_STATUS).map(status => (
-        <SubscriptionStatusSwitchLabel
-          key={status.toString()}
-          selected={userSubscriptionStatus === status}
-          onClick={() => setUserSubscriptionStatus(status)}
-        >
-          {USER_SUBSCRIPTION_LABELS[status]}
-        </SubscriptionStatusSwitchLabel>
-      ))}
-    </HeaderCaptionGrid>
+    <>
+      <SwitcherContainer onClick={openDropdown}>
+        <MontserratTypography variant="h3">
+          <span>USERS: </span>
+          <MediumGreyLabelContainer>
+            {USER_SUBSCRIPTION_LABELS[userSubscriptionStatus]?.toUpperCase() ??
+              ''}
+          </MediumGreyLabelContainer>
+        </MontserratTypography>
+        <SwitcherChevronContainer ref={switcherContainerReference}>
+          <RotatableChevronWithSpacing
+            rotated={isDropdownOpen}
+            color={palette.brightBlue}
+          />
+        </SwitcherChevronContainer>
+      </SwitcherContainer>
+      <ListPopover
+        anchorEl={switcherContainerReference.current}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        open={isDropdownOpen}
+        onClose={closeDropdown}
+        items={Object.values(USER_SUBSCRIPTION_STATUS).map(status => ({
+          key: status.toString(),
+          button: true,
+          onClick: () => {
+            setUserSubscriptionStatus(status);
+            closeDropdown();
+          },
+          label: USER_SUBSCRIPTION_LABELS[status],
+        }))}
+      />
+    </>
   );
 };
 

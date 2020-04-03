@@ -3,20 +3,22 @@ import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from '../../../palette';
 
-export const MemberTypeLabelButton = styled.span`
-  ${props =>
-    props.clickable &&
-    `
-    color: ${palette.cyanBlue};
-    cursor: pointer;
-    filter: brightness(1);
-    transition: all 0.25s ease-out;
+export const MemberTypeLabelButton = styled.div`
+  background-color: ${palette.coolGrey2};
+  color: ${palette.white};
+  cursor: pointer;
+  filter: brightness(1);
+  padding: 0.5rem;
+  text-transform: uppercase;
+  text-align: center;
+  transition: all 0.25s ease-out;
+  width: min-content;
+  white-space: nowrap;
 
-    &:hover {
-      color: ${palette.cyanBlue};
-      filter: brightness(1.35);
-    }
-  `}
+  &:hover {
+    background-color: ${palette.coolGrey2};
+    color: ${palette.white};
+  }
 `;
 
 export const StyledPopover = withStyles({

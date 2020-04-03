@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
-import palette from '../../../palette';
+import palette, { opacify } from '../../../palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;
@@ -88,13 +88,13 @@ export const SubscriptionsViewContainer = styled.div`
 
 export const BillingContainer = styled.div`
   align-items: center;
-  background-color: ${palette.coolGrey3};
+  background-color: ${opacify(palette.coolGrey2, 0.3)};
+  border-top: 0.0625rem solid ${palette.coolGrey2};
   flex-basis: auto;
   display: flex;
   height: 4.375rem;
   max-height: 4.375rem;
   justify-content: space-between;
-  margin-top: 1rem;
   padding: 0.5rem 1.25rem;
   width: 100%;
 `;

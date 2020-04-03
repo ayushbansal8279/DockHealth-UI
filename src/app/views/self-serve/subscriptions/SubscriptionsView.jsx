@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { setPaymentNewPlan } from '../../../actions/organization-actions';
+import { MontserratTypography } from '../../../theme-montserrat';
 import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
 import CurrentPlan from './SubscriptionsView.CurrentPlan';
 import initializeSubscriptionsViewHooks from './SubscriptionsView.Hooks';
@@ -11,8 +12,6 @@ import SubscriptionsViewMembersTable from './SubscriptionsView.MembersTable';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 import {
   BillingContainer,
-  BillingLabel,
-  BillingPrice,
   BottomButtonContainer,
   SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
@@ -169,10 +168,12 @@ export default () => {
         )}
         {billingVisible && (
           <BillingContainer>
-            <BillingLabel>
+            <MontserratTypography variant="h4">
               {subscriptionPlanData.planBillingPeriod}
-            </BillingLabel>
-            <BillingPrice>{subscriptionPlanData.planTotalPayment}</BillingPrice>
+            </MontserratTypography>
+            <MontserratTypography variant="h2" weight="bold">
+              {subscriptionPlanData.planTotalPayment}
+            </MontserratTypography>
           </BillingContainer>
         )}
         <BottomButtonContainer container justify="flex-end">
