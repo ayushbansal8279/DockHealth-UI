@@ -33,7 +33,12 @@ const renderMemberAvatar = ({ taskListMembers }) => member => {
       ({ userIdentifier }) => member?.userIdentifier === userIdentifier,
     ) || {};
 
-  return <Member member={taskListMember} size={40} />;
+  return (
+    <>
+      <Spacing horizontal={2} />
+      <Member member={taskListMember} size={40} />
+    </>
+  );
 };
 
 const useToggleNotifications = ({
