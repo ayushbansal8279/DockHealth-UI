@@ -125,10 +125,10 @@ class TaskListView extends PureComponent {
 
   componentDidUpdate(
     { isFetching: previousIsFetching },
-    { tipsOpen: previousTipsOpen, tipsModalOpen: previousTipsModalOpen },
+    { tipsOpen: previousTipsOpen },
   ) {
     const { isFetching } = this.props;
-    const { tipsOpen, tipsModalOpen } = this.state;
+    const { tipsOpen } = this.state;
 
     if (isFetching !== previousIsFetching) {
       this.resetHeader();
@@ -138,10 +138,6 @@ class TaskListView extends PureComponent {
 
     if (tipsOpen !== previousTipsOpen) {
       localStorage.setItem(STORAGE_TASK_LIST_TIPS_OPEN, tipsOpen);
-    }
-
-    if (tipsModalOpen !== previousTipsModalOpen && !tipsModalOpen) {
-      localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
     }
   }
 
@@ -170,6 +166,8 @@ class TaskListView extends PureComponent {
     this.setState({
       tipsModalOpen: 'false',
     });
+
+    localStorage.setItem(STORAGE_NEW_USER_FIRST_TIME, false);
   };
 
   resetHeader = () => {
