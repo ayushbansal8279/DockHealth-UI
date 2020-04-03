@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
@@ -29,9 +29,23 @@ const onSubmit = form => {
 const LoginUser = () => {
   const dispatch = useDispatch();
 
+  const confirmStatus = sessionStorage.getItem('confirmStatus');
+
+  const setConfirmationBaseState = useCallback(() => {
+    setAuthBaseState({
+      authBaseState: confirmStatus
+        ? AUTH_BASE_STATES.DAILY_HUB
+        : AUTH_BASE_STATES.DEFAULT,
+    })(dispatch);
+  }, [confirmStatus, dispatch]);
+
   useMount(() => {
-    setAuthBaseState({ authBaseState: AUTH_BASE_STATES.DEFAULT })(dispatch);
+    setConfirmationBaseState();
   });
+
+  useEffect(() => {
+    setConfirmationBaseState();
+  }, [confirmStatus, setConfirmationBaseState]);
 
   return <LoginFormUsername onSubmit={onSubmit} />;
 };
