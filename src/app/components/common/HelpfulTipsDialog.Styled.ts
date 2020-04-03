@@ -1,6 +1,7 @@
 import { Button, Dialog } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
+import palette from '../../palette';
 
 export const DialogComponent = withStyles({
   paper: {
@@ -26,9 +27,9 @@ export const HeaderContainer = styled.div`
 `;
 
 export const TitleContainer = styled.div`
-  background-color: #00a2e5;
+  background-color: ${palette.brightBlue};
   box-shadow: 0px 0px 21px rgba(0, 0, 0, 0.07);
-  color: #ffffff;
+  color: ${palette.white};
   margin-bottom: 1rem;
   padding: 1rem 1.5rem;
   width: 100%;
@@ -55,8 +56,8 @@ export const StepperContainer = styled.div`
 `;
 
 export const StepperDot = styled.div<{ active: boolean }>`
-  background-color: ${props => (props.active ? '#ffffff' : 'transparent')};
-  border: 0.0625rem solid #ffffff;
+  background-color: ${props => (props.active ? palette.white : 'transparent')};
+  border: 0.0625rem solid ${palette.white};
   border-radius: 0.5rem;
   cursor: pointer;
   height: 0.5rem;
@@ -81,12 +82,6 @@ export const NextButton = withStyles({
     padding: '0.5rem',
   },
   contained: {
-    backgroundColor: '#00a2e5',
-    filter: 'brightness(1)',
     minWidth: '8.25rem',
-    '&:hover': {
-      filter: 'brightness(1.25)',
-      backgroundColor: '#00a2e5',
-    },
   },
 })(Button);
