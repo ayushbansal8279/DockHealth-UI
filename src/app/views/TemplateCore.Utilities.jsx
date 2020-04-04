@@ -89,7 +89,9 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
 
   if (data?.organizationIdentifier) {
     orgData = await checkBAASignedStatus()(dispatch);
-    getConfigurationForReferral({ referralCode: data?.referralCode })(dispatch);
+    getConfigurationForReferral({ referralCode: orgData?.referralCode })(
+      dispatch,
+    );
   }
 
   // uncomment the paragraph below if you have problems with signing BAA
