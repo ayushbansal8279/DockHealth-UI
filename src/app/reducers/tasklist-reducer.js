@@ -113,7 +113,7 @@ const TaskListReducer = (state = initialState, action) => {
     case INVITE_PERSON_TASKLIST_SUCCESS:
       return {
         ...state,
-        orgusersnotintasklist: [...state.orgusersnotintasklist, action.addedUser],
+        orgusersnotintasklist: [...state.orgusersnotintasklist],
       };
 
     case ADD_TASKLIST_SUCCESS:
@@ -282,7 +282,10 @@ const TaskListReducer = (state = initialState, action) => {
         tasklistmembers: state.tasklistmembers.filter(
           member => member.userIdentifier !== action.removedUser.userIdentifier,
         ),
-        orgusersnotintasklist: [...state.orgusersnotintasklist, action.removedUser],
+        orgusersnotintasklist: [
+          ...state.orgusersnotintasklist,
+          action.removedUser,
+        ],
       };
 
     case CANCEL_TASKLIST_INVITE_SUCCESS: {
@@ -302,13 +305,10 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklistmembers: remainingTaskListMembers,
-        orgusersnotintasklist: sortBy(
-          pipe(
-            prop('firstName'),
-            toLower,
-          ),
-          [...state.orgusersnotintasklist, memberWithCanceledInvitation],
-        ),
+        orgusersnotintasklist: sortBy(pipe(prop('firstName'), toLower), [
+          ...state.orgusersnotintasklist,
+          memberWithCanceledInvitation,
+        ]),
       };
     }
 

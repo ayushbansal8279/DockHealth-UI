@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import {
   cancelInviteToTaskList,
   changeUserRoleForList,
-  invitePersonToTaskList,
+  // invitePersonToTaskList,
   inviteUserToTaskList,
   removeUserFromTaskList,
 } from '../../actions/tasklist-actions';
@@ -52,15 +52,15 @@ const getFormattedMemberRole = memberRole => {
 const inviteUserMethod = ({
   closeItemPopover,
   dispatch,
-  isSignedUp,
+  // isSignedUp,
   member,
   taskListIdentifier,
 }) => () => {
-  if (isSignedUp) {
-    inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(dispatch);
-  } else {
-    invitePersonToTaskList(member, taskListIdentifier)(dispatch);
-  }
+  // if (isSignedUp) {
+  inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(dispatch);
+  // } else {
+  //   invitePersonToTaskList(member, taskListIdentifier)(dispatch);
+  // }
   closeItemPopover();
 };
 
@@ -193,9 +193,7 @@ const MemberItemElement = ({
           <NotSignedUpLabel>{memberSubLabel}</NotSignedUpLabel>
         )}
       </MemberName>
-      <MemberRole>
-        {!invitationPending && !notInTaskList && memberRole}
-      </MemberRole>
+      <MemberRole>{!notInTaskList && memberRole}</MemberRole>
       {currentUser?.userIdentifier !== member?.userIdentifier && (
         <div ref={moreIconButtonReference}>
           <MoreIconButton onClick={openItemPopover}>
