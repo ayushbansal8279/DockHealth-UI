@@ -13,9 +13,7 @@ import { useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import useBoolean from '../../hooks/useBoolean';
 import { themeMontserrat600 } from '../../theme-montserrat';
-import {
-  getSubscriptionPlanTrialLabel,
-} from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import { getSubscriptionPlanTrialLabel } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   ContentContainer,
   TrialBanner,
