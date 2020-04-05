@@ -14,28 +14,6 @@ export const SUBSCRIPTION_PLANS = {
   PLAN_ENTERPRISE: 'PLAN_ENTERPRISE',
 };
 
-export const getSubscriptionPlanName = ({ subscription }) => {
-  const { subscriptionPlan } = subscription || {};
-
-  switch (subscriptionPlan) {
-    case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
-      // return 'Free 30 day trial';
-      return 'Free to use for COVID19 response';
-    case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
-      return 'Free 60 day trial';
-    case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
-      return 'Free 90 day trial';
-    case SUBSCRIPTION_PLANS.PLAN_STANDARD:
-      return 'Dock';
-    case SUBSCRIPTION_PLANS.PLAN_PREMIUM:
-      return 'Premium';
-    case SUBSCRIPTION_PLANS.PLAN_ENTERPRISE:
-      return 'Enterprise';
-    default:
-      return '';
-  }
-};
-
 export const getSubscriptionPlanTrialLabel = ({ subscription }) => {
   const { subscriptionPlan } = subscription || {};
 
@@ -121,7 +99,7 @@ export const getSubscriptionPlanData = ({ organization, billingData }) => {
   const { monthlyPerUserCost, monthlyEstimate, annualEstimate } =
     billingData || {};
 
-  const planName = getSubscriptionPlanName({ subscription });
+  const planName = subscription?.subscriptionPlanName;
   const planSubscriptionPeriod = getSubscriptionPlanPeriodName({
     billingFrequency: billingData?.subscriptionDetails?.billingFrequency,
   });
