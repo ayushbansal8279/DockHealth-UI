@@ -15,8 +15,8 @@ const DockLogoImage = styled.img.attrs({
   src: DockHeaderLogo,
   alt: 'Dock Health logo',
 })`
-  height: 5rem;
   object-fit: contain;
+  height: 195px;
 `;
 
 const TemplateAuthBaseRegainControlContent = () => {
@@ -27,7 +27,9 @@ const TemplateAuthBaseRegainControlContent = () => {
       justify="center"
       alignItems="flex-start"
     >
-      <DockLogoImage />
+      <a href="/#/">
+        <DockLogoImage />
+      </a>
       <Spacing vertical={5} />
       <MontserratTypography variant="h3" weight="bold">
         It&apos;s time to

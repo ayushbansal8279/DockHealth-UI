@@ -10,7 +10,7 @@ const DockLogoImage = styled.img.attrs({
   alt: 'Dock Health logo',
 })`
   object-fit: contain;
-  width: 100%;
+  height: 195px;
 `;
 
 const StyledGrid = styled(Grid)`
@@ -27,7 +27,9 @@ const TemplateAuthBaseDefaultContent = () => {
       alignItems="center"
       direction="column"
     >
-      <DockLogoImage />
+      <a href="/#/">
+        <DockLogoImage />
+      </a>
       <Spacing vertical={5} />
       <MontserratTypography weight="normal" variant="h3" color="inherit">
         A simple, HIPAA compliant task management and collaboration platform
