@@ -16,6 +16,7 @@ import {
   StyledAnchor,
   StyledAnchorDiv,
 } from './SubscriptionsPlansView.Styled';
+import { subscriptionPlanData as subscriptionGlobalPlanData } from './SubscriptionsPlansView.PlanData';
 
 const standardFeaturesList = [
   'Create tasks with patient context',
@@ -111,17 +112,26 @@ const SubscriptionsPlansView = ({
 
   const setAnnualPayment = useCallback(
     newBillingFrequency => {
+      const selectedPlan =
+        currentPlan === undefined ? subscriptionGlobalPlanData[0] : currentPlan;
+      setChosenPlan(selectedPlan);
       setChosenBillingFrequency(newBillingFrequency);
 
-      changeSubscriptionPlan({ billingFrequency: newBillingFrequency }).then(
-        () => {
-          toggleAnnualPaymentRaw(
-            newBillingFrequency === BILLING_FREQUENCY.ANNUAL,
-          );
-        },
-      );
+      changeSubscriptionPlan({
+        subscriptionPlan: selectedPlan.subscriptionPlan,
+        billingFrequency: newBillingFrequency,
+      }).then(() => {
+        toggleAnnualPaymentRaw(
+          newBillingFrequency === BILLING_FREQUENCY.ANNUAL,
+        );
+      });
     },
-    [changeSubscriptionPlan, toggleAnnualPaymentRaw],
+    [
+      changeSubscriptionPlan,
+      currentPlan,
+      setChosenPlan,
+      toggleAnnualPaymentRaw,
+    ],
   );
 
   useUnmount(() => {
