@@ -130,7 +130,7 @@ textarea.comment {
 }
 
 input:checked ~ .switch-paddle:after {
-  background: x#00a73c;
+  background: #00a73c;
 }
 
 .dropdown-pane {
