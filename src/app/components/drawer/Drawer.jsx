@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import useBoolean from '../../hooks/useBoolean';
 import { themeMontserrat600 } from '../../theme-montserrat';
-import { getSubscriptionPlanTrialLabel } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import { getSubscriptionPlanLabel } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   ContentContainer,
   TrialBanner,
@@ -56,7 +56,7 @@ const Drawer = ({ children }) => {
 
   const subscription = organization?.subscriptionDetails;
 
-  const subscriptionPlanTrialLabel = getSubscriptionPlanTrialLabel({
+  const subscriptionPlanTrialLabel = getSubscriptionPlanLabel({
     subscription,
   });
 
@@ -69,11 +69,11 @@ const Drawer = ({ children }) => {
   const hasMinimalUsagePeriodPassed =
     trialEndDayDifference < TRIAL_USAGE_THRESHOLD_PERIOD;
 
-  const trialLabelMinimalPeriodNotPassed = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
+  const trialLabelMinimalPeriodNotPassed = `You are in a ${subscriptionPlanTrialLabel}. There are ${trialEndDayDifference} days left in your trial.`;
 
   const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed} You will lose access at the end of your trial.`;
 
-  const trialLabelEnded = `Your free ${subscriptionPlanTrialLabel} trial has expired!`;
+  const trialLabelEnded = `Your ${subscriptionPlanTrialLabel} has expired!`;
 
   const trialEndLabel = (() => {
     if (hasMinimalUsagePeriodPassed) {
@@ -145,7 +145,7 @@ const Drawer = ({ children }) => {
           container
           justify="center"
           alignItems="center"
-          bannerVisible={bannerVisibleFlag}
+          bannervisible={bannerVisibleFlag}
         >
           <ThemeProvider theme={themeMontserrat600}>
             <Typography variant="h4">

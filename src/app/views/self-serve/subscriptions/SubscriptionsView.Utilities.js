@@ -5,28 +5,8 @@ export const BILLING_FREQUENCY = {
   ANNUAL: 'ANNUAL',
 };
 
-export const SUBSCRIPTION_PLANS = {
-  PLAN_30_DAY_TRIAL: 'PLAN_30_DAY_TRIAL',
-  PLAN_60_DAY_TRIAL: 'PLAN_60_DAY_TRIAL',
-  PLAN_90_DAY_TRIAL: 'PLAN_90_DAY_TRIAL',
-  PLAN_STANDARD: 'PLAN_STANDARD',
-  PLAN_PREMIUM: 'PLAN_PREMIUM',
-  PLAN_ENTERPRISE: 'PLAN_ENTERPRISE',
-};
-
-export const getSubscriptionPlanTrialLabel = ({ subscription }) => {
-  const { subscriptionPlan } = subscription || {};
-
-  switch (subscriptionPlan) {
-    case SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL:
-      return '30 day';
-    case SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL:
-      return '60 day';
-    case SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL:
-      return '90 day';
-    default:
-      return '';
-  }
+export const getSubscriptionPlanLabel = ({ subscription }) => {
+  return subscription?.subscriptionPlanName;
 };
 
 export const priceFormatter = ({ price }) => {
@@ -54,13 +34,7 @@ export const getSubscriptionPlanBillingPeriod = ({
     : 'Billed annually on your subscription anniversary';
 
 export const getSubscriptionIsTrial = ({ subscription }) => {
-  const { subscriptionPlan } = subscription || {};
-
-  return [
-    SUBSCRIPTION_PLANS.PLAN_30_DAY_TRIAL,
-    SUBSCRIPTION_PLANS.PLAN_60_DAY_TRIAL,
-    SUBSCRIPTION_PLANS.PLAN_90_DAY_TRIAL,
-  ].includes(subscriptionPlan);
+  return subscription?.trialEndDate ? true : false;
 };
 
 export const getSubscriptionNextPaymentLabel = ({ subscription }) => {

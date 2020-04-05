@@ -11,8 +11,7 @@ export const useDrawerClasses = makeStyles({
     fontSize: '2.25rem',
     height: '5rem',
     marginLeft: 85,
-    marginBottom: ({ bannerVisible }) =>
-    bannerVisible ? '2.875rem' : 0,
+    marginBottom: ({ bannerVisible }) => (bannerVisible ? '2.875rem' : 0),
     padding: '0.75rem 1.25rem 1rem',
     position: 'relative',
     transition: 'all 0.2s ease-out',
@@ -60,7 +59,7 @@ export const TrialBanner = styled(Grid)`
   color: ${palette.white};
   font-size: 1rem;
   left: 0;
-  height: ${props => (props.bannerVisible ? '2.875rem' : 0)};
+  height: ${props => (props.bannervisible ? '2.875rem' : 0)};
   overflow: hidden;
   right: 0;
   position: absolute;
