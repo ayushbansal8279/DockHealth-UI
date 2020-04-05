@@ -170,7 +170,7 @@ const OrganizationMemberRow = ({
           openDialog();
         }
       }}
-      color={palette.coolGrey2}
+      color={palette.coolGrey1}
     />
   );
 
