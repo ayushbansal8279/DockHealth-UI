@@ -46,7 +46,7 @@ const useSpacingClasses = makeStyles({
   },
   horizontal: {
     width: ({ horizontal }: SpacingProps) => spacingMapValues[horizontal || 1],
-    height: '100%',
+    // height: '100%',
   },
   vertical: {
     width: '100%',

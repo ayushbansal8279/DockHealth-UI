@@ -140,14 +140,21 @@ class TaskListSearch extends PureComponent {
         <Spacing vertical={6} />
         <SearchFieldContainer>
           <SafariFixGrid item xs={12} container justify="center" spacing={2}>
-            <Grid item xs={12} sm={12} md={6} container alignItems="center">
+            <SafariFixGrid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              container
+              alignItems="center"
+            >
               <Search
                 fullWidth
                 onChange={this.handleSearch}
                 value={searchTerm}
               />
-            </Grid>
-            <Grid
+            </SafariFixGrid>
+            <SafariFixGrid
               item
               xs={12}
               sm={12}
@@ -170,7 +177,7 @@ class TaskListSearch extends PureComponent {
               <Typography variant="body1" color="textSecondary">
                 Search completed tasks
               </Typography>
-            </Grid>
+            </SafariFixGrid>
           </SafariFixGrid>
           <Typography
             variant="body1" // TODO: Still missing an extra space before the text.
