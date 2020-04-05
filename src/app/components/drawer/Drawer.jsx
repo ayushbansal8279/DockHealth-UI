@@ -9,13 +9,11 @@ import clsx from 'clsx';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import Intercom from 'react-intercom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import { getOrganizationById } from '../../actions/organization-actions';
 import useBoolean from '../../hooks/useBoolean';
 import { themeMontserrat600 } from '../../theme-montserrat';
 import {
-  getSubscriptionIsTrial,
   getSubscriptionPlanTrialLabel,
 } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
@@ -26,8 +24,7 @@ import {
 } from './Drawer.Styled';
 import DrawerList from './DrawerList';
 
-const MINIMAL_TRIAL_USAGE_PERIOD = 20;
-const TRIAL_USAGE_PERIOD = 30;
+const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
 
 const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   <Grid item container key={key} {...otherProps}>
@@ -38,8 +35,8 @@ const renderHeaderColumn = ({ key, component, ...otherProps }) => (
 const Drawer = ({ children }) => {
   const [isOpen, open, close] = useBoolean(false);
   const [activeId, setActiveId] = useState('');
-  const [bannerVisible, setBannerVisible] = useState(false);
-  // const [bannerTitle, setBannerTitle] = useState('');
+  const [bannerVisibleFlag, setBannerVisibleFlag] = useState(false);
+  const [bannerMessageLinkFlag, setBannerMessageLinkFlag] = useState(false);
 
   const { user, lists, header } = useSelector(store => ({
     user: store.userState.userProfile,
@@ -52,13 +49,7 @@ const Drawer = ({ children }) => {
     name: `${user.firstName} ${user.lastName}`,
   };
 
-  const dispatch = useDispatch();
-
-  const {
-    organization,
-    organizationIdentifier,
-    messageBannerBar,
-  } = useSelector(store => ({
+  const { organization, messageBannerBar } = useSelector(store => ({
     ...store.organizationState,
     organizationIdentifier:
       store.userState?.userProfile?.organizationIdentifier,
@@ -78,7 +69,7 @@ const Drawer = ({ children }) => {
     : 0;
 
   const hasMinimalUsagePeriodPassed =
-    trialEndDayDifference < TRIAL_USAGE_PERIOD - MINIMAL_TRIAL_USAGE_PERIOD;
+    trialEndDayDifference < TRIAL_USAGE_THRESHOLD_PERIOD;
 
   const trialLabelMinimalPeriodNotPassed = `You are in a free ${subscriptionPlanTrialLabel} trial. There are ${trialEndDayDifference} days left in your trial.`;
 
@@ -96,39 +87,39 @@ const Drawer = ({ children }) => {
     return trialLabelMinimalPeriodNotPassed;
   })();
 
-  // setBannerTitle(trialEndLabel)
-
-  const showBannerMessageLink = false;
-
   // const hasMinimalUsagePeriodPassed = false;
   // const trialEndLabel =
   //   'In Response to COVID-19, Dock Health is Offering its Platform for Free.';
 
-  // const bannerVisible = isSubscriptionTrial;
-  // const bannerVisible = true;
+  // const bannerVisibleFlag = isSubscriptionTrial;
 
   const drawerClasses = useDrawerClasses({
     header,
     isOpen,
-    bannerVisible,
+    bannerVisible: bannerVisibleFlag,
   });
 
-  useMount(() => {
-    if (organizationIdentifier) {
-      getOrganizationById({ organizationIdentifier })(dispatch);
-    }
-  });
+  useMount(() => {});
 
   useEffect(() => {
     if (organization) {
       const subscriptionDetails = organization?.subscriptionDetails;
 
-      const isSubscriptionTrial = getSubscriptionIsTrial({
-        subscription: subscriptionDetails,
-      });
-      setBannerVisible(isSubscriptionTrial);
+      const bannerVisibleFlagValue = !!(
+        (messageBannerBar && messageBannerBar !== '') ||
+        subscriptionDetails
+      );
+      setBannerVisibleFlag(bannerVisibleFlagValue);
+
+      const bannerMessageLinkFlagValue = !!(
+        !messageBannerBar &&
+        messageBannerBar === '' &&
+        trialEndLabel &&
+        trialEndLabel !== ''
+      );
+      setBannerMessageLinkFlag(bannerMessageLinkFlagValue);
     }
-  }, [organization]);
+  }, [organization, messageBannerBar, trialEndLabel]);
 
   return (
     <div
@@ -156,7 +147,7 @@ const Drawer = ({ children }) => {
           container
           justify="center"
           alignItems="center"
-          bannerVisible={bannerVisible}
+          bannerVisible={bannerVisibleFlag}
         >
           <ThemeProvider theme={themeMontserrat600}>
             <Typography variant="h4">
@@ -165,7 +156,7 @@ const Drawer = ({ children }) => {
                   ? messageBannerBar
                   : trialEndLabel}
               </span>
-              {showBannerMessageLink && (
+              {bannerMessageLinkFlag && (
                 <TrialBannerLink to="/subscriptions">
                   {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
                 </TrialBannerLink>
@@ -190,7 +181,7 @@ const Drawer = ({ children }) => {
           open={isOpen}
           user={user}
           lists={lists}
-          bannerVisible={bannerVisible}
+          bannerVisible={bannerVisibleFlag}
         />
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>
