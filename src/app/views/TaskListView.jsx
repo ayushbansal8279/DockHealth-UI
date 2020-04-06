@@ -1,5 +1,5 @@
-import { Button, Grid } from '@material-ui/core';
-import { Add, List } from '@material-ui/icons';
+import { Button, Grid, Popover, Backdrop, Dialog } from '@material-ui/core';
+import { Add, List, Close } from '@material-ui/icons';
 import clsx from 'clsx';
 import { isEmpty } from 'ramda';
 import React, { PureComponent } from 'react';
@@ -80,6 +80,8 @@ class TaskListView extends PureComponent {
   };
 
   tipsButtonReference = React.createRef(null);
+
+  addTaskButtonReference = React.createRef(null);
 
   componentDidMount() {
     const { taskListAction, invitationAction, currentUser } = this.props;
@@ -413,6 +415,7 @@ class TaskListView extends PureComponent {
       taskLists,
       genericLists,
       currentUser,
+      currentTaskList,
     } = this.props;
 
     const {
@@ -448,7 +451,16 @@ class TaskListView extends PureComponent {
                 <Spacing horizontal={2} />
                 <RobotoTypography weight="normal">TIPS</RobotoTypography>
               </Button>
-              <AdornedButton adornment={<Add />} onClick={this.addTaskList}>
+              <AdornedButton
+                adornment={
+                  taskListFormOpen && currentTaskList ? <Close /> : <Add />
+                }
+                onClick={this.addTaskList}
+                innerRef={this.addTaskButtonReference}
+                style={{
+                  zIndex: 110,
+                }}
+              >
                 ADD A LIST
               </AdornedButton>
             </PageContentHeader>
@@ -481,23 +493,38 @@ class TaskListView extends PureComponent {
                 getTourStep(TaskListTour3, false),
               ]}
             </HelpfulTipsDialog>
-            <SafariFixGrid container item xs={12} justify="center">
-              <Grid container item xs={9}>
-                <StyledCollapse
-                  in={taskListFormOpen}
-                  timeout={250}
-                  style={{
-                    paddingTop: taskListFormOpen ? '40px' : '0px',
-                    paddingBottom: taskListFormOpen ? '40px' : '0px',
-                  }}
-                >
-                  <AddListForm
-                    setListFormOpen={this.setListFormOpen}
-                    cancelButtonShown={!taskListsEmpty}
-                  />
-                </StyledCollapse>
-              </Grid>
-            </SafariFixGrid>
+            <Backdrop
+              open={taskListFormOpen && !currentTaskList}
+              style={{ zIndex: 100 }}
+            >
+              <Popover
+                open={taskListFormOpen && !currentTaskList}
+                anchorEl={this.addTaskButtonReference.current}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                onClose={() => this.setListFormOpen(false)}
+              >
+                <AddListForm setListFormOpen={this.setListFormOpen} />
+              </Popover>
+            </Backdrop>
+            <Dialog
+              open={taskListFormOpen && currentTaskList}
+              fullWidth
+              maxWidth="md"
+              onClose={() => this.setListFormOpen(false)}
+              PaperProps={{
+                elevation: 0,
+                square: true,
+              }}
+            >
+              <AddListForm setListFormOpen={this.setListFormOpen} />
+            </Dialog>
             {anyTaskListExists ? (
               <>
                 <SafariFixGrid container item xs={12} justify="center">
@@ -595,6 +622,7 @@ function mapStateToProps(state) {
     genericLists: state.taskListState.genericLists,
     isFetching: state.taskListState.isFetching,
     currentUser: state.userState.userProfile,
+    currentTaskList: state.taskListState.currentList,
   };
 }
 

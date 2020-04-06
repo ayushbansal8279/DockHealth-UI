@@ -98,7 +98,7 @@ const initializeAddListFormHooks = () => {
     notificationsValue,
   } = getFormWatchedValues({ watch });
 
-  const formLabelContent = taskListIdentifier ? 'Edit a list' : 'Add a list';
+  const formLabelContent = taskListIdentifier ? 'EDIT A LIST' : 'ADD A LIST';
 
   const filteredPeople =
     people !== undefined && Array.isArray(people)

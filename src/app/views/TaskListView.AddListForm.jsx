@@ -3,20 +3,18 @@ import { Close } from '@material-ui/icons';
 import { isEmpty } from 'ramda';
 import React from 'react';
 import { saveTaskList } from '../actions/tasklist-actions';
+import Spacing from '../components/common/Spacing';
 import Member from '../components/members/Member';
 import { StyledSwitchUnbound } from '../components/userProfileView/StyledSwitch';
-import {
-  SectionSubtypography,
-  SectionTypography,
-} from '../components/userProfileView/UserProfileView.Styled';
 import { showAlert } from '../helpers/utility-functions';
+import { MontserratTypography } from '../theme-montserrat';
 import {
   EmptyMember,
   EmptyMemberIcon,
   FormContainer,
   FormDivider,
+  FormIconContainer,
   FormLabel,
-  InputFieldSpacer,
   MemberContainer,
   MembersContainer,
   SearchField,
@@ -101,7 +99,7 @@ const NoMembersElement = () => (
   </StyledListItem>
 );
 
-const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
+const AddListForm = ({ setListFormOpen }) => {
   const {
     formLabelContent,
     handleSubmit,
@@ -141,15 +139,27 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
         onSubmit({ dispatch, setListFormOpen, taskListIdentifier }),
       )}
     >
-      <Grid container justify="space-between" alignItems="center">
-        <FormLabel>{formLabelContent}</FormLabel>
-        {cancelButtonShown && (
-          <IconButton color="primary" onClick={() => setListFormOpen(false)}>
-            <Close />
-          </IconButton>
-        )}
-      </Grid>
-      <FormDivider />
+      {taskListIdentifier && (
+        <>
+          <Grid container justify="space-between" alignItems="center">
+            <FormLabel>
+              <MontserratTypography variant="h4">
+                {formLabelContent}
+              </MontserratTypography>
+            </FormLabel>
+            <FormIconContainer>
+              <IconButton
+                edge="end"
+                color="inherit"
+                onClick={() => setListFormOpen(false)}
+              >
+                <Close />
+              </IconButton>
+            </FormIconContainer>
+          </Grid>
+          <FormDivider />
+        </>
+      )}
       <StyledFormControl fullWidth>
         <StyledInputLabel>List name</StyledInputLabel>
         <StyledInputBase
@@ -282,33 +292,42 @@ const AddListForm = ({ setListFormOpen, cancelButtonShown }) => {
           )}
         </StyledList>
       </StyledCollapse>
-      <InputFieldSpacer />
-      <b>Notifications</b>
-      <FormDivider />
-      <Grid container alignItems="center" justify="space-between">
+      <Spacing vertical={4} />
+      <Grid container alignItems="center" justify="space-between" wrap="nowrap">
         <div>
-          <SectionTypography>Emails and Push Notifications</SectionTypography>
-          <SectionSubtypography>
+          <MontserratTypography variant="h4" weight="600">
+            Emails and Push Notifications
+          </MontserratTypography>
+          <MontserratTypography variant="h4">
             Notify me via email or push notifications to mobile phone when there
             is a new activity.
-          </SectionSubtypography>
+          </MontserratTypography>
         </div>
+        <Spacing horizontal={3} />
         <StyledSwitchUnbound
           checked={notificationsValue}
           onChange={() => setValue('notifications', !notificationsValue)}
         />
       </Grid>
-      <Grid container justify="flex-end">
-        {cancelButtonShown && (
+      <Spacing vertical={4} />
+      <Grid container justify="flex-end" direction="row" wrap="nowrap">
+        <>
           <StyledButton
-            variant="outlined"
+            variant="text"
             onClick={() => setListFormOpen(false)}
+            size="small"
+            style={{
+              textDecoration: 'underline',
+            }}
           >
-            Cancel
+            <MontserratTypography variant="h4" color="inherit" weight="600">
+              CANCEL
+            </MontserratTypography>
           </StyledButton>
-        )}
-        <StyledButton variant="contained" type="submit">
-          Save
+          <Spacing horizontal={4} />
+        </>
+        <StyledButton variant="contained" type="submit" size="small">
+          SAVE LIST
         </StyledButton>
       </Grid>
     </FormContainer>

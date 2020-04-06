@@ -1,4 +1,5 @@
 import {
+  Button,
   ButtonBase,
   Collapse,
   FormControl,
@@ -8,7 +9,6 @@ import {
   ListItem,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import React from 'react';
 import styled from 'styled-components';
 import SearchIconImage from '../img/search-dark.svg';
 import palette, { opacify } from '../palette';
@@ -19,7 +19,7 @@ export const FormContainer = styled.form`
   flex-basis: auto;
   flex-flow: column wrap;
   display: flex;
-  padding: 2rem 2.5rem;
+  padding: 1.5rem;
   width: 100%;
 
   & > * {
@@ -28,6 +28,7 @@ export const FormContainer = styled.form`
 `;
 
 export const FormLabel = styled.h1`
+  color: ${palette.oPlusRed};
   font-size: 1.25rem;
   margin: 0;
 `;
@@ -35,14 +36,16 @@ export const FormLabel = styled.h1`
 export const FormDivider = styled.hr`
   && {
     border-bottom: 0.125rem solid ${palette.unknownGrey6};
+    left: -1.5rem;
     margin: 1rem 0;
-    width: 100%;
+    position: relative;
+    width: calc(100% + 3rem);
   }
 `;
 
 export const StyledFormControl = withStyles({
   root: {
-    backgroundColor: palette.lightGrey,
+    backgroundColor: palette.coolGrey4,
     height: '4.5rem',
     margin: '1rem 0 0',
   },
@@ -50,7 +53,8 @@ export const StyledFormControl = withStyles({
 
 export const StyledInputLabel = withStyles({
   root: {
-    color: palette.greyBlue,
+    color: palette.midnightBlue,
+    fontFamily: '"Montserrat", sans-serif',
     top: '50%',
     transform: 'translate(1rem, -50%) scale(1)',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
@@ -62,19 +66,20 @@ export const StyledInputLabel = withStyles({
     },
   },
   shrink: {
-    color: palette.greyBlue,
+    color: palette.coolGrey1,
     top: '0%',
     transform: 'translate(1rem, 0.5rem) scale(0.75)',
     transformOrigin: 'center left',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
   focused: {
-    color: `${palette.greyBlue} !important`,
+    color: `${palette.coolGrey1} !important`,
   },
 })(InputLabel);
 
 export const StyledInputBase = withStyles({
   root: {
+    fontFamily: '"Montserrat", sans-serif',
     height: '4rem',
     margin: 'auto 0',
   },
@@ -83,6 +88,7 @@ export const StyledInputBase = withStyles({
     border: 0,
     borderRadius: '0.25rem',
     boxShadow: 'none',
+    color: palette.midnightBlue,
     height: '4rem',
     paddingBottom: 0,
     padding: '0.5rem 1rem',
@@ -179,28 +185,12 @@ export const StyledList = styled(List)`
 
 export const StyledButton = withStyles({
   root: {
-    borderRadius: '0.25rem',
-    fontSize: '1rem',
-    height: '2.5rem',
-    marginLeft: '1rem',
-  },
-  outlined: {
-    color: palette.lightCyanBlue,
-    minWidth: '5rem',
+    minWidth: 'unset',
   },
   contained: {
-    backgroundColor: palette.cyanBlue,
-    color: palette.white,
-    fontWeight: 'bold',
-    minWidth: '10rem',
+    minWidth: '12rem',
   },
-})(({ classes, variant, disabled, ...props }) => {
-  const className = `${classes.root} ${classes[variant] ?? ''} ${classes[
-    `${variant}Disabled`
-  ] ?? ''}`.trim();
-
-  return <ButtonBase className={className} disabled={disabled} {...props} />;
-});
+})(Button);
 
 export const FormSpacing = styled.div`
   height: 2rem;
@@ -240,4 +230,8 @@ export const SearchFieldIcon = styled.img.attrs({
   top: 0;
   width: 1rem;
   z-index: 1;
+`;
+
+export const FormIconContainer = styled.div`
+  color: ${palette.coolGrey1};
 `;
