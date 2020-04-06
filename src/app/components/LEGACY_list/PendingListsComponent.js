@@ -18,7 +18,7 @@ class PendingListsComponent extends PureComponent {
     const { taskLists } = this.props;
     return (
       <span>
-        {taskLists.length > 0 && (
+        {taskLists && taskLists.length > 0 && (
           <div className="row">
             <div className="new-list-notification">
               {taskLists.length > 1
