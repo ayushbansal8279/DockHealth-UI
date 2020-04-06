@@ -113,7 +113,9 @@ const SubscriptionsPlansView = ({
   const setAnnualPayment = useCallback(
     newBillingFrequency => {
       const selectedPlan =
-        currentPlan === undefined ? subscriptionGlobalPlanData[0] : currentPlan;
+        currentPlan === undefined || currentPlan === null
+          ? subscriptionGlobalPlanData[0]
+          : currentPlan;
       setChosenPlan(selectedPlan);
       setChosenBillingFrequency(newBillingFrequency);
 
