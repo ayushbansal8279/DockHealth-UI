@@ -13,7 +13,10 @@ import { useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import useBoolean from '../../hooks/useBoolean';
 import { themeMontserrat600 } from '../../theme-montserrat';
-import { getSubscriptionPlanLabel } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import {
+  getSubscriptionPlanLabel,
+  getSubscriptionIsTrial,
+} from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   ContentContainer,
   TrialBanner,
@@ -55,6 +58,10 @@ const Drawer = ({ children }) => {
   }));
 
   const subscription = organization?.subscriptionDetails;
+
+  const isTrialSubscriptionPlan = getSubscriptionIsTrial({
+    subscription,
+  });
 
   const subscriptionPlanTrialLabel = getSubscriptionPlanLabel({
     subscription,
@@ -101,23 +108,21 @@ const Drawer = ({ children }) => {
 
   useEffect(() => {
     if (organization) {
-      const subscriptionDetails = organization?.subscriptionDetails;
 
       const bannerVisibleFlagValue = !!(
         (messageBannerBar && messageBannerBar !== '') ||
-        subscriptionDetails
+        isTrialSubscriptionPlan
       );
       setBannerVisibleFlag(bannerVisibleFlagValue);
 
       const bannerMessageLinkFlagValue = !!(
-        !messageBannerBar &&
-        messageBannerBar === '' &&
+        (!messageBannerBar || messageBannerBar === '') &&
         trialEndLabel &&
         trialEndLabel !== ''
       );
       setBannerMessageLinkFlag(bannerMessageLinkFlagValue);
     }
-  }, [organization, messageBannerBar, trialEndLabel]);
+  }, [organization, messageBannerBar, trialEndLabel, isTrialSubscriptionPlan]);
 
   return (
     <div

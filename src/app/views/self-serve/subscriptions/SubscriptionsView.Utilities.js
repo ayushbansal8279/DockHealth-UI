@@ -9,6 +9,10 @@ export const getSubscriptionPlanLabel = ({ subscription }) => {
   return subscription?.subscriptionPlanName;
 };
 
+export const isFreePlan = ({ subscription }) => {
+  return subscription?.subscriptionPlan === 'PLAN_FREE';
+};
+
 export const priceFormatter = ({ price }) => {
   const priceAmount = `${(Number(price) || 0).toFixed(2)}`;
   const formattedPrice = `${priceAmount}`.replace(
@@ -34,7 +38,7 @@ export const getSubscriptionPlanBillingPeriod = ({
     : 'Billed annually on your subscription anniversary';
 
 export const getSubscriptionIsTrial = ({ subscription }) => {
-  return subscription?.trialEndDate ? true : false;
+  return !!subscription?.trialEndDate;
 };
 
 export const getSubscriptionNextPaymentLabel = ({ subscription }) => {
