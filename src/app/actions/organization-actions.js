@@ -178,7 +178,8 @@ export const checkBAASignedStatus = () => dispatch => {
 
 export const getConfigurationForReferral = ({ referralCode }) => dispatch => {
   if (!referralCode) {
-    return Promise.reject(new Error('No referral code'));
+    // return Promise.reject(new Error('No referral code'));
+    return Promise.resolve('No referral code');
   }
 
   return OrganizationApi.getConfigurationForReferral(referralCode)

@@ -97,7 +97,7 @@ const InvitePeopleForm = ({
           >
             Cancel
           </Button>
-          <Button size="small" variant="text" bold type="submit">
+          <Button size="small" variant="text" bold={true} type="submit">
             <b>Send invite</b>
           </Button>
         </Grid>
@@ -192,7 +192,7 @@ const InvitePeoplePopover = ({
 };
 
 InvitePeoplePopover.propTypes = {
-  anchor: PropTypes.instanceOf(Element).isRequired,
+  anchor: PropTypes.instanceOf(Element),
   open: PropTypes.bool.isRequired,
   toggleInvitePopover: PropTypes.func.isRequired,
 };
