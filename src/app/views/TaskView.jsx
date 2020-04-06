@@ -734,7 +734,7 @@ class TaskView extends Component {
       } else {
         // eslint-disable-next-line no-param-reassign
         draftTask.taskList = {
-          taskListIdentifier: 0,
+          taskListIdentifier: '',
           listName: '',
         };
       }
