@@ -6002,7 +6002,7 @@ h6 {
   top: 0;
   left: 0;
   right: 0;
-  background: #ec4f3e;
+  background: #00a73c;
   text-align: left;
   /*line-height: 2.5;*/
   overflow: hidden;
@@ -6054,7 +6054,7 @@ h6 {
   background-color: #d9036b; }
 
 .success {
-  background-color: #ec4f3e; }
+  background-color: #00a73c; }
 
 .show-more {
   display: none; }
