@@ -57,10 +57,12 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
         ? [userState.userProfile]
         : taskListState.tasklistmembers;
 
-      const assignedTo = taskListMembers.find(
-        ({ userIdentifier }) =>
-          userIdentifier === selectedTask?.assignedTo?.userIdentifier,
-      );
+      const assignedTo = taskListMembers
+        ? taskListMembers.find(
+            ({ userIdentifier }) =>
+              userIdentifier === selectedTask?.assignedTo?.userIdentifier,
+          )
+        : null;
 
       const selectedTaskWithAssignee = {
         ...selectedTask,
@@ -156,7 +158,12 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
   useMount(() => {
     getAllPatients()(dispatch);
 
-    if (isMultiList && task?.taskList) {
+    if (
+      isMultiList &&
+      task?.taskList &&
+      task?.taskList?.taskListIdentifier &&
+      task?.taskList?.taskListIdentifier !== ''
+    ) {
       getMembersByTaskListId(
         task?.taskList?.taskListIdentifier,
         'ALL',

@@ -153,7 +153,7 @@ class Inbox extends PureComponent {
       showSortingStats: false,
       isInbox: true,
       isSpecificPatient: false,
-      taskListIdentifier: 0,
+      taskListIdentifier: '',
     };
 
     return <TaskView {...taskViewProps} />;

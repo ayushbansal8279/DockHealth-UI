@@ -89,7 +89,7 @@ describe('clearCurrentTaskHistory', () => {
 
 describe('moveTask', () => {
   it('should remove task from current tasklist after update', async () => {
-    const taskList = { taskListIdentifier: 0, listName: 'List #1' };
+    const taskList = { taskListIdentifier: '', listName: 'List #1' };
     const task = { taskIdentifier: 0, taskList };
 
     const expectedActions = [{ type: MOVE_TASK_SUCCESS, task }];
@@ -113,7 +113,7 @@ describe('moveTask', () => {
   });
 
   it('should remove subtask from current tasklist after update', async () => {
-    const taskList = { taskListIdentifier: 0, listName: 'List #1' };
+    const taskList = { taskListIdentifier: '', listName: 'List #1' };
     const task = { taskIdentifier: 2, parentTaskIdentifier: 0, taskList };
 
     const expectedActions = [{ type: MOVE_TASK_SUCCESS, task }];
@@ -158,11 +158,17 @@ describe('updateDueDate', () => {
     });
 
     TaskApi.updateTask.mockReturnValue(
-      Promise.resolve({ taskIdentifier: 0, dueDate: '2019-03-27T03:00:00.000Z' }),
+      Promise.resolve({
+        taskIdentifier: 0,
+        dueDate: '2019-03-27T03:00:00.000Z',
+      }),
     );
 
     await store.dispatch(
-      updateDueDate({ taskIdentifier: 0, dueDate: null }, '2019-03-27T03:00:00.000Z'),
+      updateDueDate(
+        { taskIdentifier: 0, dueDate: null },
+        '2019-03-27T03:00:00.000Z',
+      ),
     );
     expect(store.getActions()).toEqual(expectedActions);
   });
@@ -199,7 +205,11 @@ describe('updateReminder', () => {
 describe('updatePatient', () => {
   it('should update assigned patient', async () => {
     const expectedActions = [
-      { type: UPDATE_TASK_PATIENT, parentTaskIdentifier: 0, patient: { patientIdentifier: 1 } },
+      {
+        type: UPDATE_TASK_PATIENT,
+        parentTaskIdentifier: 0,
+        patient: { patientIdentifier: 1 },
+      },
     ];
 
     const store = mockStore({
@@ -213,7 +223,10 @@ describe('updatePatient', () => {
     );
 
     await store.dispatch(
-      updatePatient({ taskIdentifier: 0, patient: null }, { patientIdentifier: 1 }),
+      updatePatient(
+        { taskIdentifier: 0, patient: null },
+        { patientIdentifier: 1 },
+      ),
     );
     expect(store.getActions()).toEqual(expectedActions);
   });

@@ -62,27 +62,29 @@ const getDescriptionMentionRegex = name =>
 export const mentionifyDescription = ({ members, value }) => {
   let newValue = value;
 
-  members.forEach(({ userIdentifier, firstName, lastName, userName }) => {
-    const sanitizedFirstName = escape(firstName);
-    const sanitizedLastName = escape(lastName);
-    const sanitizedUserName = escape(userName);
+  if (members && Array.isArray(members)) {
+    members.forEach(({ userIdentifier, firstName, lastName, userName }) => {
+      const sanitizedFirstName = escape(firstName);
+      const sanitizedLastName = escape(lastName);
+      const sanitizedUserName = escape(userName);
 
-    const mentionNameReplacer = `$1<a class="decorated-link" href="#/assignedToPerson/${userIdentifier}">$2</a>`;
+      const mentionNameReplacer = `$1<a class="decorated-link" href="#/assignedToPerson/${userIdentifier}">$2</a>`;
 
-    newValue = newValue
-      .replace(
-        getDescriptionMentionRegex(sanitizedUserName),
-        mentionNameReplacer,
-      )
-      .replace(
-        getDescriptionMentionRegex(sanitizedFirstName),
-        mentionNameReplacer,
-      )
-      .replace(
-        getDescriptionMentionRegex(sanitizedLastName),
-        mentionNameReplacer,
-      );
-  });
+      newValue = newValue
+        .replace(
+          getDescriptionMentionRegex(sanitizedUserName),
+          mentionNameReplacer,
+        )
+        .replace(
+          getDescriptionMentionRegex(sanitizedFirstName),
+          mentionNameReplacer,
+        )
+        .replace(
+          getDescriptionMentionRegex(sanitizedLastName),
+          mentionNameReplacer,
+        );
+    });
+  }
 
   return newValue;
 };
