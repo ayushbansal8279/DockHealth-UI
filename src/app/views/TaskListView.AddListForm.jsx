@@ -7,6 +7,7 @@ import Spacing from '../components/common/Spacing';
 import Member from '../components/members/Member';
 import { StyledSwitchUnbound } from '../components/userProfileView/StyledSwitch';
 import { showAlert } from '../helpers/utility-functions';
+import { RobotoTypography } from '../theme';
 import { MontserratTypography } from '../theme-montserrat';
 import {
   EmptyMember,
@@ -143,9 +144,9 @@ const AddListForm = ({ setListFormOpen }) => {
         <>
           <Grid container justify="space-between" alignItems="center">
             <FormLabel>
-              <MontserratTypography variant="h4">
+              <RobotoTypography variant="h4">
                 {formLabelContent}
-              </MontserratTypography>
+              </RobotoTypography>
             </FormLabel>
             <FormIconContainer>
               <IconButton
