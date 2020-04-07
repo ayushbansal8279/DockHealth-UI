@@ -41,7 +41,7 @@ const renderUserTypesOptions = ({
               status: 'error',
               title: 'Error',
               text:
-                error.errorMessage ??
+                error?.errorMessage ??
                 `User's role could not be changed, please try again later`,
             });
 
@@ -77,7 +77,7 @@ const renderInvitations = ({
               status: 'error',
               title: 'Error',
               text:
-                error.errorMessage ??
+                error?.errorMessage ??
                 'Invitation could not be resent, please try again later',
             });
 
@@ -104,7 +104,7 @@ const renderInvitations = ({
               status: 'error',
               title: 'Error',
               text:
-                error.errorMessage ??
+                error?.errorMessage ??
                 'Invitation could not be cancelled, please try again later',
             });
 

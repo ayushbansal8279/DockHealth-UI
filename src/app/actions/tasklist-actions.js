@@ -102,11 +102,13 @@ export function invitePersonToTaskList(formProps, taskListIdentifier) {
   return dispatch =>
     TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo)
       .then(response => {
-        dispatch({ type: ActionTypes.INVITE_PERSON_TASKLIST_SUCCESS, addedUser: response });
+        dispatch({
+          type: ActionTypes.INVITE_PERSON_TASKLIST_SUCCESS,
+          addedUser: response,
+        });
         toggleAlert('Invitation sent!', 'success');
       })
       .catch(error => {
-        toggleAlert('Error in sending invitation', 'error');
         throw error;
       });
 }
@@ -120,7 +122,9 @@ export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
           users,
         });
       })
-      .catch(noop);
+      .catch(error => {
+        throw error;
+      });
 }
 
 export const inviteUserToTaskList = (

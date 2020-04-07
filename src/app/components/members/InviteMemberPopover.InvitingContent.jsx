@@ -52,7 +52,8 @@ const onSubmit = ({ dispatch, unsetInviting, taskListIdentifier }) => async ({
         status: 'error',
         title: 'Error',
         text:
-          error.errorMessage ??
+          error?.response?.data?.errorMessage ??
+          error?.message ??
           'Invitation could not be sent, please try again later',
       });
     });

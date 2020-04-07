@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import * as ActionTypes from './action-types';
 import * as PeopleApi from '../api/people-api';
 
@@ -35,7 +36,7 @@ export function invitePersonToOrganization(formProps) {
   return dispatch =>
     PeopleApi.invitePersonToOrganization(personInfo)
       .then(response => {
-        if (response.statusCode === 'FAILURE') {
+        if (response?.statusCode === 'FAILURE') {
           throw response;
         } else {
           dispatch({ type: ActionTypes.INVITEPERSON_ORG_SUCCESS, response });
