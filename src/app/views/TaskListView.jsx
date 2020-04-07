@@ -429,7 +429,10 @@ class TaskListView extends PureComponent {
     const anyTaskListExists = !isEmpty(pendingTaskLists) || !taskListsEmpty;
 
     const hasCovidList = Boolean(
-      taskLists?.find(({ listName }) => listName.includes('COVID')),
+      taskLists &&
+        taskLists.find(
+          ({ listName }) => listName && listName.includes('COVID'),
+        ),
     );
 
     return (
