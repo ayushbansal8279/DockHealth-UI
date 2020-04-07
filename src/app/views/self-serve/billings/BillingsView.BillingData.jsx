@@ -1,6 +1,6 @@
-import { Button, Collapse, Grid } from '@material-ui/core';
+import { Collapse, Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormContext, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import {
   CardCVCElement,
@@ -12,6 +12,7 @@ import { useEffectOnce, useToggle } from 'react-use';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import useBoolean from '../../../hooks/useBoolean';
+import BillingInformation from './BillingsView.BillingData.BillingInformation';
 import {
   BillingElementContainer,
   StyledFormControl,
@@ -20,11 +21,6 @@ import {
   StyledInputLabel,
 } from './BillingsView.BillingData.Components';
 import { H2 } from './BillingsView.Styled';
-
-const PAYMENT_METHODS = {
-  CREDIT: 'CREDIT',
-  ACH: 'ACH',
-};
 
 const REQUIRED_MESSAGE = 'This field is required.';
 
@@ -114,8 +110,6 @@ const BillingElement = ({
   label,
   placeholder,
   alwaysShrink,
-  isUpdatingBilling,
-  inputProps = {},
 }) => {
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const [isEmpty, setEmpty] = useToggle(true);
@@ -123,47 +117,38 @@ const BillingElement = ({
 
   const [fieldError, setFieldError] = useState(null);
 
-  if (isUpdatingBilling) {
-    return (
-      <>
-        <StyledFormControl
-          fullWidth
-          onClick={() => componentReference?.focus()}
-          error={Boolean(fieldError)}
-        >
-          <StyledInputLabel
-            shrink={isFocused || !isEmpty || alwaysShrink}
-            required
-          >
-            {label}
-          </StyledInputLabel>
-          <BillingElementContainer error={Boolean(fieldError)}>
-            <Component
-              onChange={({ empty, error }) => {
-                setFieldError(error?.message ?? null);
-                setEmpty(empty);
-              }}
-              placeholder={isFocused ? placeholder : undefined}
-              onFocus={setFocused}
-              onBlur={unsetFocused}
-              style={billingElementStyling}
-              onReady={reference => setComponentReference(reference)}
-              disabled={disabled}
-            />
-          </BillingElementContainer>
-        </StyledFormControl>
-        <Collapse in={Boolean(fieldError)}>
-          <StyledFormHelperText>{fieldError}</StyledFormHelperText>
-        </Collapse>
-      </>
-    );
-  }
-
   return (
-    <StyledFormControl fullWidth>
-      <StyledInputLabel required>{label}</StyledInputLabel>
-      <StyledInputBase {...inputProps} placeholder={placeholder} disabled />
-    </StyledFormControl>
+    <>
+      <StyledFormControl
+        fullWidth
+        onClick={() => componentReference?.focus()}
+        error={Boolean(fieldError)}
+      >
+        <StyledInputLabel
+          shrink={isFocused || !isEmpty || alwaysShrink}
+          required
+        >
+          {label}
+        </StyledInputLabel>
+        <BillingElementContainer error={Boolean(fieldError)}>
+          <Component
+            onChange={({ empty, error }) => {
+              setFieldError(error?.message ?? null);
+              setEmpty(empty);
+            }}
+            placeholder={isFocused ? placeholder : undefined}
+            onFocus={setFocused}
+            onBlur={unsetFocused}
+            style={billingElementStyling}
+            onReady={reference => setComponentReference(reference)}
+            disabled={disabled}
+          />
+        </BillingElementContainer>
+      </StyledFormControl>
+      <Collapse in={Boolean(fieldError)}>
+        <StyledFormHelperText>{fieldError}</StyledFormHelperText>
+      </Collapse>
+    </>
   );
 };
 
@@ -211,81 +196,77 @@ const CreditPaymentForm = ({
 
   return (
     <>
-      {isUpdatingBilling && (
-        <>
-          <Grid item sm={12}>
-            <H2>Billing information</H2>
-          </Grid>
-          <Grid item sm={12}>
-            <StyledFormInput
-              name="name"
-              placeholder="Name"
-              label="Name"
-              error={errors.name}
-              required
-              getInputProps={getInputProps}
-              autoComplete={uuid()}
-            />
-          </Grid>
-          <Grid item sm={12}>
-            <StyledFormInput
-              name="email"
-              placeholder="Email"
-              label="Email"
-              error={errors.email}
-              required
-              getInputProps={getInputProps}
-              autoComplete={uuid()}
-            />
-          </Grid>
-          <Grid item sm={12}>
-            <StyledFormInput
-              name="address"
-              placeholder="Address"
-              label="Address"
-              error={errors.address}
-              required
-              getInputProps={getInputProps}
-              autoComplete={uuid()}
-            />
-          </Grid>
-          <Grid item sm={12}>
-            <StyledFormInput
-              name="city"
-              placeholder="City"
-              label="City"
-              error={errors.city}
-              required
-              getInputProps={getInputProps}
-              autoComplete={uuid()}
-            />
-          </Grid>
-          <Grid item sm={12} md={6}>
-            <StyledFormInput
-              name="state"
-              placeholder="State"
-              label="State"
-              error={errors.state}
-              required
-              getInputProps={getInputProps}
-              autoComplete={uuid()}
-            />
-          </Grid>
-          <Grid item sm={12} md={6}>
-            <StyledFormInput
-              name="zip"
-              placeholder="Zip"
-              label="Zip"
-              error={errors.zip}
-              required
-              getInputProps={getInputProps}
-              autoComplete={uuid()}
-            />
-          </Grid>
-          <PaymentInformationLabel />
-        </>
-      )}
-      <Grid item sm={12} md={isUpdatingBilling ? 12 : 6}>
+      <Grid item sm={12}>
+        <H2>Billing information</H2>
+      </Grid>
+      <Grid item sm={12}>
+        <StyledFormInput
+          name="name"
+          placeholder="Name"
+          label="Name"
+          error={errors.name}
+          required
+          getInputProps={getInputProps}
+          autoComplete={uuid()}
+        />
+      </Grid>
+      <Grid item sm={12}>
+        <StyledFormInput
+          name="email"
+          placeholder="Email"
+          label="Email"
+          error={errors.email}
+          required
+          getInputProps={getInputProps}
+          autoComplete={uuid()}
+        />
+      </Grid>
+      <Grid item sm={12}>
+        <StyledFormInput
+          name="address"
+          placeholder="Address"
+          label="Address"
+          error={errors.address}
+          required
+          getInputProps={getInputProps}
+          autoComplete={uuid()}
+        />
+      </Grid>
+      <Grid item sm={12}>
+        <StyledFormInput
+          name="city"
+          placeholder="City"
+          label="City"
+          error={errors.city}
+          required
+          getInputProps={getInputProps}
+          autoComplete={uuid()}
+        />
+      </Grid>
+      <Grid item sm={12} md={6}>
+        <StyledFormInput
+          name="state"
+          placeholder="State"
+          label="State"
+          error={errors.state}
+          required
+          getInputProps={getInputProps}
+          autoComplete={uuid()}
+        />
+      </Grid>
+      <Grid item sm={12} md={6}>
+        <StyledFormInput
+          name="zip"
+          placeholder="Zip"
+          label="Zip"
+          error={errors.zip}
+          required
+          getInputProps={getInputProps}
+          autoComplete={uuid()}
+        />
+      </Grid>
+      <PaymentInformationLabel />
+      <Grid item sm={12} md={12}>
         <BillingElement
           id="card-number"
           Component={CardNumberElement}
@@ -297,14 +278,13 @@ const CreditPaymentForm = ({
           inputProps={getInputProps({ name: 'cardNumber' })}
         />
       </Grid>
-      <Grid item sm={12} md={isUpdatingBilling ? 12 : 6}>
+      <Grid item sm={12} md={12}>
         <StyledFormInput
           name="nameOnCard"
           placeholder="Name"
           label="Name on card"
           error={errors.nameOnCard}
           getInputProps={getInputProps}
-          disabled={!isUpdatingBilling}
           autoComplete={uuid()}
         />
       </Grid>
@@ -314,7 +294,6 @@ const CreditPaymentForm = ({
           Component={CardExpiryElement}
           label="Expiration date"
           placeholder="MM/YY"
-          disabled={!isUpdatingBilling}
           isUpdatingBilling={isUpdatingBilling}
           required
           alwaysShrink
@@ -350,12 +329,14 @@ const BillingData = ({
   onSubmit,
   SaveBillingElement,
 }) => {
-  const [selectedPaymentMethod] = useState(PAYMENT_METHODS.CREDIT);
-
   const { billingDetails, userProfile } = useSelector(store => ({
     billingDetails: store.organizationState.billingDetails,
     userProfile: store.userState.userProfile,
   }));
+
+  const formMethods = useForm({
+    validationSchema,
+  });
 
   const {
     handleSubmit,
@@ -365,9 +346,7 @@ const BillingData = ({
     watch,
     unregister,
     clearError,
-  } = useForm({
-    validationSchema,
-  });
+  } = formMethods;
 
   useEffectOnce(() => {
     formFields.forEach(({ key }) => {
@@ -431,30 +410,24 @@ const BillingData = ({
       autoComplete="off"
       autoCorrect="off"
     >
-      {!isUpdatingBilling && (
-        <Grid container spacing={2} justify="space-between">
-          <Grid item sm={12}>
-            <PaymentInformationLabel />
-          </Grid>
-          <Grid item sm={12} container justify="flex-end">
-            <Button size="small" onClick={setUpdatingBilling} variant="text">
-              Update billing information
-            </Button>
-          </Grid>
+      <FormContext {...formMethods}>
+        <Grid container spacing={2}>
+          {isUpdatingBilling ? (
+            <CreditPaymentForm
+              isUpdatingBilling={isUpdatingBilling}
+              unsetUpdatingBilling={unsetUpdatingBilling}
+              setValue={setValue}
+              values={values}
+              errors={errorsValues}
+              SaveBillingElement={SaveBillingElement}
+            />
+          ) : (
+            <BillingInformation setUpdatingBilling={setUpdatingBilling}>
+              Update billing
+            </BillingInformation>
+          )}
         </Grid>
-      )}
-      <Grid container spacing={2}>
-        {selectedPaymentMethod === PAYMENT_METHODS.CREDIT && (
-          <CreditPaymentForm
-            isUpdatingBilling={isUpdatingBilling}
-            unsetUpdatingBilling={unsetUpdatingBilling}
-            setValue={setValue}
-            values={values}
-            errors={errorsValues}
-            SaveBillingElement={SaveBillingElement}
-          />
-        )}
-      </Grid>
+      </FormContext>
     </form>
   );
 };
