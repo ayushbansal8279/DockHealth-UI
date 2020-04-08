@@ -60,6 +60,10 @@ export const SubscriptionPaymentViewOuterContainer = styled.div`
   position: absolute;
   top: 0;
   width: 100%;
+
+  && * {
+    font-family: 'Montserrat', sans-serif;
+  }
 `;
 
 export const SubscriptionPaymentViewContainer = styled.div`
