@@ -204,7 +204,7 @@ const getDrawerItems = ({ lists }) => [
   },
   {
     id: 'people',
-    label: 'Providers',
+    label: 'People',
     icon: PeopleIcon,
     to: 'people',
   },
