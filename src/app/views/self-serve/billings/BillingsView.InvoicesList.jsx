@@ -14,6 +14,8 @@ import {
   SortingIconContainer,
   SortingIconImage,
 } from './BillingsView.InvoicesList.Styled';
+import { MontserratTypography } from '../../../theme-montserrat';
+import Spacing from '../../../components/common/Spacing';
 
 const columnDefinitions = [
   {
@@ -89,7 +91,9 @@ const renderColumn = ({ currentSorting, setCurrentSorting }) => ({
       onClick={() => setCurrentSorting({ newSortingKey: sortingKey })}
     >
       <InvoiceColumnInnerContainer>
-        <span>{label}</span>
+        <MontserratTypography variant="h4">
+          {label?.toUpperCase()}
+        </MontserratTypography>
         {currentSorting.sortingKey === sortingKey && (
           <SortingIconContainer>
             <SortingIconImage
@@ -138,8 +142,13 @@ const InvoicesList = () => {
     ? sort(invoiceOrderMethod(prop(currentSorting.sortingKey)), invoiceDetails)
     : [];
 
+  console.info(sortedInvoicesData);
+
   return (
     <InvoicesListContainer>
+      <Spacing vertical={4} />
+      <MontserratTypography variant="h3">INVOICES</MontserratTypography>
+      <Spacing vertical={4} />
       {invoiceDetails ? (
         <InvoicesTable>
           <thead>
