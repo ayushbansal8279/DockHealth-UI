@@ -4,6 +4,7 @@ import {
   FormHelperText,
   InputBase,
   InputLabel,
+  Grid,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
@@ -80,7 +81,7 @@ export const BillingElementContainer = styled.div`
   cursor: text;
   height: 4rem;
   justify-content: flex-start;
-  padding: 0.5rem 1rem;
+  padding: 1rem;
   padding-bottom: 0;
   transition: all 0.25s ease-out;
   width: 100%;
@@ -125,3 +126,9 @@ export const StyledFormHelperText = withStyles({
     fontSize: '0.75rem',
   },
 })(FormHelperText);
+
+export const FormContainer = styled(Grid)`
+  && {
+    display: ${props => (props.visible ? 'flex' : 'none')};
+  }
+`;

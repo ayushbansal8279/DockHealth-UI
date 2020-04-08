@@ -1,4 +1,3 @@
-import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';
@@ -56,22 +55,6 @@ const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
     });
 };
 
-const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
-  isUpdatingBilling && (
-    <Grid item sm={12} container justify="flex-end">
-      <Grid item sm={6} md={3}>
-        <Button fullWidth onClick={unsetUpdatingBilling} variant="text">
-          Cancel
-        </Button>
-      </Grid>
-      <Grid item sm={6} md={4}>
-        <Button fullWidth type="submit" variant="contained">
-          Save billing information
-        </Button>
-      </Grid>
-    </Grid>
-  );
-
 const BillingsView = () => {
   const dispatch = useDispatch();
 
@@ -107,7 +90,7 @@ const BillingsView = () => {
         fonts={[
           {
             cssSrc:
-              'https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
+              'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
           },
         ]}
       >
@@ -116,7 +99,6 @@ const BillingsView = () => {
           setUpdatingBilling={setUpdatingBilling}
           unsetUpdatingBilling={unsetUpdatingBilling}
           onSubmit={onSubmit}
-          SaveBillingElement={SaveBillingElement}
         />
       </Elements>
       <InvoicesList />
