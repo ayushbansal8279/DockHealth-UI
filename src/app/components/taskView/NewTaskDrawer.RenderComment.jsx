@@ -7,6 +7,21 @@ import BubbleFinishIcon from '../../img/bubble-finish';
 import RemoveCommentIcon from '../../img/remove-comment-icon.svg';
 import palette from '../../palette';
 
+const RemoveCommentButton = styled.img`
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  float: right;
+  height: 1rem;
+  margin-left: 0.25rem;
+  margin-top: 0.0625rem;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.25s ease-out;
+  visibility: collapse;
+  width: 1rem;
+`;
+
 const CommentBubble = styled.div`
   ${props => {
     const strokeColor = props.isCurrentUser
@@ -43,6 +58,11 @@ const CommentBubble = styled.div`
       ${props =>
         props.isCurrentUser ? palette.paleBlue : palette.unknownGrey4}
       inset;
+
+    ${RemoveCommentButton} {
+      opacity: 1;
+      visibility: visible;
+    }
   }
 
   &:hover svg {
@@ -78,19 +98,6 @@ const BubbleFinish = styled.div`
       return `fill: ${fillColor}; stroke: ${strokeColor};`;
     }}
   }
-`;
-
-const RemoveCommentButton = styled.img`
-  align-items: center;
-  display: flex;
-  cursor: pointer;
-  float: right;
-  height: 1rem;
-  margin-left: 0.25rem;
-  margin-top: 0.0625rem;
-  justify-content: center;
-  transition: all 0.25s ease-out;
-  width: 1rem;
 `;
 
 const CommentsDateContainer = styled.div`
