@@ -142,8 +142,6 @@ const InvoicesList = () => {
     ? sort(invoiceOrderMethod(prop(currentSorting.sortingKey)), invoiceDetails)
     : [];
 
-  console.info(sortedInvoicesData);
-
   return (
     <InvoicesListContainer>
       <Spacing vertical={4} />
