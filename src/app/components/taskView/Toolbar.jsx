@@ -15,7 +15,7 @@ import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
 import UniversalTooltip from '../common/UniversalTooltip';
-import InviteMemberPopover from '../members/InviteMemberPopover';
+import { InviteMemberPopoverWithButton } from '../members/InviteMemberPopover';
 import Member from '../members/Member';
 import NewTaskDrawer from './NewTaskDrawer';
 import Search from './Search';
@@ -286,7 +286,7 @@ export default ({
                     </>
                   )}
                   <Spacing horizontal={2} />
-                  <InviteMemberPopover
+                  <InviteMemberPopoverWithButton
                     size={40}
                     members={members}
                     membersNotInTaskList={membersNotInTaskList}

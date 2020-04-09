@@ -127,6 +127,24 @@ export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
       });
 }
 
+export function clearMembersNotInTaskList() {
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.GET_ORGUSERSNOTINTASKLIST_SUCCESS,
+      users: [],
+    });
+  };
+}
+
+export function clearMembersInTaskList() {
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.GET_TASKLISTMEMBERS_SUCCESS,
+      users: [],
+    });
+  };
+}
+
 export const inviteUserToTaskList = (
   taskListIdentifier,
   userIdentifier,

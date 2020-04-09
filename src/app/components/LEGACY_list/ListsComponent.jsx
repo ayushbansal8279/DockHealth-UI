@@ -1,15 +1,24 @@
 import { Button, Dialog, Grid, IconButton } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Close, MoreVert } from '@material-ui/icons';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import {
+  clearMembersInTaskList,
+  clearMembersNotInTaskList,
+  getMembersByTaskListId,
+  getOrganizationUsersNotInTaskList,
+} from '../../actions/tasklist-actions';
 import useBoolean from '../../hooks/useBoolean';
 import palette from '../../palette';
 import { RobotoTypography } from '../../theme';
 import { MontserratTypography } from '../../theme-montserrat';
+import CubesLoader from '../common/CubesLoader';
 import ListPopover from '../common/ListPopover';
 import Spacing from '../common/Spacing';
 import UniversalTooltipContainer from '../common/UniversalTooltipContainer';
+import InviteMemberPopover from '../members/InviteMemberPopover';
 
 const RowContainer = styled.div`
   align-items: center;
@@ -148,7 +157,7 @@ const TaskListRow = ({
           onClick={() => {
             setIsAdminForCurrentList(isOwnerOrAdmin);
             setCurrentListIdentifier(taskListIdentifier);
-            setCurrentListMenuAnchor(popoverReference.current);
+            setCurrentListMenuAnchor(popoverReference);
             openListMenu();
           }}
           size="small"
@@ -182,10 +191,22 @@ const ListsComponent = props => {
     openDeletePopover,
     closeDeletePopover,
   ] = useBoolean(false);
+  const [
+    isInvitePopoverOpen,
+    openInvitePopover,
+    closeInvitePopover,
+  ] = useBoolean(false);
   const [isListMenuOpen, openListMenu, closeListMenu] = useBoolean(false);
   const [isAdminForCurrentList, setIsAdminForCurrentList] = useState(false);
   const [currentListIdentifier, setCurrentListIdentifier] = useState(null);
   const [currentListMenuAnchor, setCurrentListMenuAnchor] = useState(null);
+  const [
+    areMembersLoading,
+    setMembersLoading,
+    unsetMembersLoading,
+  ] = useBoolean(false);
+
+  const dispatch = useDispatch();
 
   const currentList = useMemo(
     () =>
@@ -195,6 +216,35 @@ const ListsComponent = props => {
       ),
     [currentListIdentifier, taskLists],
   );
+
+  const { members, membersNotInTaskList } = useSelector(store => ({
+    members: store.taskListState.tasklistmembers,
+    membersNotInTaskList: store.taskListState.orgusersnotintasklist,
+  }));
+
+  const onInviteMenuItemClick = useCallback(() => {
+    setMembersLoading();
+    clearMembersInTaskList()(dispatch);
+    clearMembersNotInTaskList()(dispatch);
+
+    Promise.all([
+      getMembersByTaskListId(currentListIdentifier, 'ALL')(dispatch),
+      getOrganizationUsersNotInTaskList(currentListIdentifier)(dispatch),
+    ])
+      .then(() => {
+        unsetMembersLoading();
+        openInvitePopover();
+        closeListMenu();
+      })
+      .catch(unsetMembersLoading);
+  }, [
+    closeListMenu,
+    currentListIdentifier,
+    dispatch,
+    openInvitePopover,
+    setMembersLoading,
+    unsetMembersLoading,
+  ]);
 
   const menuItems = isAdminForCurrentList
     ? [
@@ -216,8 +266,44 @@ const ListsComponent = props => {
             closeListMenu();
           },
         },
+        {
+          key: 'invite',
+          button: true,
+          label: (
+            <Grid container wrap="nowrap" alignItems="center">
+              <div>Invite to list </div>
+              {areMembersLoading && (
+                <>
+                  <Spacing horizontal={3} />
+                  <div>
+                    <CubesLoader size={16} color={palette.brightBlue} />
+                  </div>
+                </>
+              )}
+            </Grid>
+          ),
+          onClick: onInviteMenuItemClick,
+        },
       ]
     : [
+        {
+          key: 'invite',
+          button: true,
+          label: (
+            <Grid container wrap="nowrap" alignItems="center">
+              <div>Invite to list </div>
+              {areMembersLoading && (
+                <>
+                  <Spacing horizontal={3} />
+                  <div>
+                    <CubesLoader size={16} color={palette.brightBlue} />
+                  </div>
+                </>
+              )}
+            </Grid>
+          ),
+          onClick: onInviteMenuItemClick,
+        },
         {
           key: 'leave',
           button: true,
@@ -241,8 +327,16 @@ const ListsComponent = props => {
           onClick,
         }),
       )}
+      <InviteMemberPopover
+        addMemberButtonReference={currentListMenuAnchor}
+        isMemberPopoverOpen={isInvitePopoverOpen}
+        closeMemberPopover={closeInvitePopover}
+        taskList={currentList}
+        members={members ?? []}
+        membersNotInTaskList={membersNotInTaskList ?? []}
+      />
       <ListPopover
-        anchorEl={currentListMenuAnchor}
+        anchorEl={currentListMenuAnchor?.current}
         open={isListMenuOpen}
         onClose={closeListMenu}
         items={menuItems}
