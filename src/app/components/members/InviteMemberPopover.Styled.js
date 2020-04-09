@@ -24,8 +24,16 @@ export const useAddMemberButtonStyles = makeStyles({
 
 export const AddMemberPopover = withStyles({
   paper: {
+    border: 0,
     maxWidth: '31.25rem',
     width: '31.25rem',
+  },
+})(Popover);
+
+export const MemberActionsPopover = withStyles({
+  paper: {
+    border: 0,
+    borderRadius: '0.25rem',
   },
 })(Popover);
 
@@ -34,11 +42,13 @@ export const PopoverHeader = styled.div`
   background-color: ${palette.midnightBlue};
   color: ${palette.white};
   display: grid;
+  font-size: 1.125rem;
   font-weight: 700;
-  grid-template-columns: 1.625rem 1fr 1.625rem;
+  grid-template-columns: ${props =>
+    props.hasCloseButton ? '1fr 1.625rem' : '1.625rem 1fr'};
   grid-column-gap: 0.375rem;
-  min-height: 4rem;
-  padding: 1rem;
+  min-height: 2.875rem;
+  padding: 0.75rem 0.5rem;
   width: 100%;
 `;
 
@@ -54,19 +64,15 @@ export const PopoverHeaderCloseButton = withStyles({
 })(IconButton);
 
 export const HeaderSearchContainer = styled.div`
-  grid-column-start: span 3;
-`;
+  border-bottom: 0.25rem solid ${palette.midnightBlue};
+  width: 100%;
 
-export const HeaderSearch = styled(Search)`
-  && {
-    font-weight: normal;
-    width: 100%;
-
-    > div {
-      padding-right: 0.5rem;
-    }
+  && * {
+    font-family: 'Montserrat', sans-serif;
   }
 `;
+
+export const HeaderSearch = styled(Search)``;
 
 export const HeaderSearchButton = withStyles({
   root: {
@@ -88,16 +94,22 @@ export const MemberItem = styled.div`
   align-items: center;
   background: ${palette.white};
   display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: 1rem 55px 0.7fr 0.3fr 1.5rem;
+  grid-gap: 0.75rem;
+  grid-template-columns: 1fr auto;
   height: 4rem;
   min-height: 4rem;
   padding: 0 0.5rem;
 `;
 
-export const NoMembersElement = styled.div.attrs({
-  children: 'No members found.',
-})`
+export const MemberInnerItem = styled.div`
+  align-items: center;
+  cursor: ${props => (props.isCurrentUser ? 'not-allowed' : 'pointer')};
+  display: grid;
+  grid-gap: 0.75rem;
+  grid-template-columns: 1.25rem 40px 1fr;
+`;
+
+export const NoMembersElement = styled.div`
   align-items: center;
   display: flex;
   height: 4rem;
@@ -106,14 +118,14 @@ export const NoMembersElement = styled.div.attrs({
 `;
 
 export const TickIconContainer = styled.div`
+  align-items: center;
+  display: flex;
   height: 100%;
-  ${props => props.transparent && NOT_SIGNED_UP_OPACITY}
-`;
 
-export const TickIconImage = styled.img`
-  object-fit: contain;
-  height: 100%;
-  width: 100%;
+  & svg {
+    object-fit: contain;
+    width: 100%;
+  }
 `;
 
 export const StyledMember = styled(Member)`
@@ -138,8 +150,18 @@ export const NotSignedUpLabel = styled.div`
 `;
 
 export const MemberRole = styled.div`
-  color: ${palette.unknownGrey5};
-  font-size: 0.625rem;
+  align-items: center;
+  background-color: ${props =>
+    props.invitationPending ? palette.coolGrey3 : palette.coolGrey2};
+  color: ${props =>
+    props.invitationPending ? palette.coolGrey2 : palette.white};
+  cursor: ${props => (props.isCurrentUser ? 'not-allowed' : 'pointer')};
+  display: flex;
+  font-size: 0.875rem;
+  height: 2rem;
+  justify-content: center;
+  text-transform: uppercase;
+  width: 6.375rem;
 `;
 
 export const MoreIconButton = withStyles({
@@ -160,8 +182,8 @@ export const PopoverBottomSection = styled.div`
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  height: 5.5rem;
-  padding: 0 1rem;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
 `;
 
 export const InviteLink = styled.span`
