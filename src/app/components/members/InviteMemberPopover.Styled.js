@@ -90,6 +90,18 @@ export const MembersContainer = styled.div`
   margin: 0.5rem;
   max-height: 20rem;
   overflow-y: auto;
+  scrollbar-color: ${palette.scrollbarGrey} ${palette.coolGrey4};
+
+  &::-webkit-scrollbar {
+    background: ${palette.coolGrey4};
+    border-radius: 1rem;
+    padding: 0.125rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${palette.scrollbarGrey};
+    border-radius: 1rem;
+  }
 `;
 
 export const MemberItem = styled.div`
