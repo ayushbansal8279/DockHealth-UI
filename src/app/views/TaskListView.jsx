@@ -1,5 +1,5 @@
-import { Button, Grid, Popover, Backdrop, Dialog } from '@material-ui/core';
-import { Add, List, Close } from '@material-ui/icons';
+import { Backdrop, Button, Dialog, Grid, Popover } from '@material-ui/core';
+import { Add, Close, List } from '@material-ui/icons';
 import clsx from 'clsx';
 import { isEmpty } from 'ramda';
 import React, { PureComponent } from 'react';
@@ -519,11 +519,13 @@ class TaskListView extends PureComponent {
             <Dialog
               open={taskListFormOpen && currentTaskList}
               fullWidth
-              maxWidth="md"
               onClose={() => this.setListFormOpen(false)}
               PaperProps={{
                 elevation: 0,
                 square: true,
+                style: {
+                  maxWidth: '40rem',
+                },
               }}
             >
               <AddListForm setListFormOpen={this.setListFormOpen} />
