@@ -989,6 +989,7 @@ class TaskView extends Component {
       isMultiList,
       isSpecificPatient,
       onCompletedTasksRequest,
+      taskListStats,
     } = this.props;
     const {
       slimView,
@@ -1042,6 +1043,14 @@ class TaskView extends Component {
       ...listCompletedTasks.flatMap(task => task?.subtasks ?? null),
     ].filter(Boolean).length;
 
+    const allCompletedTaskCount =
+      taskListStats?.stats?.find?.(
+        ({ metricName }) => metricName === 'CompletedAll_TaskList_Count',
+      )?.metricValue ?? 0;
+
+    // const completedTaskCount = listCompletedTasks.length;
+    const completedTaskCount = allCompletedTaskCount;
+
     return (
       <>
         <CompletedButtonRowContainer>
@@ -1057,11 +1066,11 @@ class TaskView extends Component {
               }
             >
               {`${buttonToggleWord} completed tasks${
-                listCompletedTasks.length > 0
+                completedTaskCount > 0
                   ? ` (${
-                      listCompletedTasks.length >= TASK_LIST_SHOW_MORE_STEP
+                      completedTaskCount >= TASK_LIST_SHOW_MORE_STEP
                         ? `${TASK_LIST_SHOW_MORE_STEP}+`
-                        : completedTasksAndSubTasksCount
+                        : allCompletedTaskCount
                     })`
                   : ``
               }
@@ -1292,6 +1301,7 @@ const mapStateToProps = store => ({
   addingNewTask: store.taskState.addingNewTask,
   addingNewSubtask: store.taskState.addingNewSubtask,
   subscription: store.organizationState?.organization?.subscriptionDetails,
+  taskListStats: store.taskListState?.taskListStats,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);
