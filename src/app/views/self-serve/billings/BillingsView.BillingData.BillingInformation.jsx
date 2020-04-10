@@ -93,10 +93,12 @@ const BillingInformation = ({ setUpdatingBilling }) => {
           This account is billed to
         </MontserratTypography>
         <Spacing vertical={3} />
+        <Spacing vertical={1} />
         <MontserratTypography variant="h4">
           {values?.nameOnCard}
         </MontserratTypography>
         <Spacing vertical={3} />
+        <Spacing vertical={1} />
         <MontserratTypography variant="h4">
           <span>{values?.cardNumber} </span>
           <ExpirationLabel>exp {expirationLabel}</ExpirationLabel>
@@ -107,6 +109,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
           Next payment due {billingDateLabel}
         </MontserratTypography>
         <Spacing vertical={3} />
+        <Spacing vertical={1} />
         <MontserratTypography variant="h4">
           <span>{billingEstimateLabel}</span>
           <span> | </span>
