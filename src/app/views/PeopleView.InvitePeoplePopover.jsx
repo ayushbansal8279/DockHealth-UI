@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Button, Grid, Popover } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from '../actions/people-actions';
+import Spacing from '../components/common/Spacing';
 import { UniversalInput } from '../components/userProfileView/UniversalInput';
 import { showAlert } from '../helpers/utility-functions';
 import {
@@ -15,7 +15,6 @@ import {
   InvitePopoverCloseButton,
   InvitePopoverDivider,
 } from './PeopleView.Styled';
-import Spacing from '../components/common/Spacing';
 
 const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
   email,
@@ -38,7 +37,8 @@ const onSubmit = ({ closePopover, dispatch, getAllUsers }) => ({
         status: 'error',
         title: 'Error',
         text:
-          error.errorMessage ??
+          error?.response?.data?.errorMessage ??
+          error?.message ??
           'Invitation could not be sent, please try again later',
       });
     });
@@ -97,7 +97,7 @@ const InvitePeopleForm = ({
           >
             Cancel
           </Button>
-          <Button size="small" variant="text" bold={true} type="submit">
+          <Button size="small" variant="text" bold type="submit">
             <b>Send invite</b>
           </Button>
         </Grid>
@@ -189,12 +189,6 @@ const InvitePeoplePopover = ({
       </InvitePeoplePopoverContainer>
     </Popover>
   );
-};
-
-InvitePeoplePopover.propTypes = {
-  anchor: PropTypes.instanceOf(Element),
-  open: PropTypes.bool.isRequired,
-  toggleInvitePopover: PropTypes.func.isRequired,
 };
 
 export default InvitePeoplePopover;

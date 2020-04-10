@@ -67,7 +67,7 @@ class PeopleView extends PureComponent {
       layout: [
         {
           key: 'people-header',
-          component: <GenericHeader>Providers</GenericHeader>,
+          component: <GenericHeader>People</GenericHeader>,
         },
       ],
     });

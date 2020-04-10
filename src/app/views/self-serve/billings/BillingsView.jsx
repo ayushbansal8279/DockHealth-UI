@@ -1,5 +1,4 @@
-import { Button, Grid } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
@@ -10,18 +9,25 @@ import {
 } from '../../../actions/organization-actions';
 import { saveBillingDetails } from '../../../api/organization-api';
 import GenericHeader from '../../../components/common/GenericHeader';
-import { showAlert } from '../../../helpers/utility-functions';
+import Spacing from '../../../components/common/Spacing';
 import useBoolean from '../../../hooks/useBoolean';
+import { MontserratTypography } from '../../../theme-montserrat';
 import BillingData from './BillingsView.BillingData';
 import InvoicesList from './BillingsView.InvoicesList';
-import { BillingsViewContainer } from './BillingsView.Styled';
+import {
+  BillingsViewContainer,
+  ErrorContainer,
+  StyledCollapse,
+} from './BillingsView.Styled';
 
-/**
- * @param stripe - Stripe instance
- * @param unsetUpdatingBilling - method to finish updating billing
- */
-const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
-  stripe
+// eslint-disable-next-line unicorn/consistent-function-scoping
+const onSubmit = ({ setError }) => ({
+  stripe,
+  unsetUpdatingBilling,
+}) => data => {
+  setError('');
+
+  return stripe
     .createToken({ name: 'cardNumber' })
     .then(token => {
       if (token.error) {
@@ -36,44 +42,25 @@ const onSubmit = ({ stripe, unsetUpdatingBilling }) => data => {
           unsetUpdatingBilling();
           toggleAlert('Billing information updated successfully!', 'success');
         })
-        .catch(() => {
-          showAlert({
-            status: 'error',
-            title: 'Error',
-            text:
+        .catch(error => {
+          setError(
+            error?.response?.data?.errorMessage ??
               'Could not update billing information, please try again later',
-          });
+          );
         });
     })
     .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text:
-          error?.message ??
+      setError(
+        error?.message ??
           'Could not update billing information, please try again later',
-      });
+      );
     });
 };
 
-const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
-  isUpdatingBilling && (
-    <Grid item sm={12} container justify="flex-end">
-      <Grid item sm={6} md={3}>
-        <Button fullWidth onClick={unsetUpdatingBilling} variant="text">
-          Cancel
-        </Button>
-      </Grid>
-      <Grid item sm={6} md={4}>
-        <Button fullWidth type="submit" variant="contained">
-          Save billing information
-        </Button>
-      </Grid>
-    </Grid>
-  );
-
 const BillingsView = () => {
   const dispatch = useDispatch();
+
+  const [error, setError] = useState('');
 
   const { organizationIdentifier } = useSelector(
     store => store.userState.userProfile,
@@ -102,12 +89,20 @@ const BillingsView = () => {
 
   return (
     <BillingsViewContainer>
+      <StyledCollapse in={Boolean(error)} timeout={250}>
+        <ErrorContainer>
+          <MontserratTypography weight="600" variant="h4">
+            {error}
+          </MontserratTypography>
+        </ErrorContainer>
+        <Spacing vertical={4} />
+      </StyledCollapse>
       <Elements
         locale="en-US"
         fonts={[
           {
             cssSrc:
-              'https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
+              'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
           },
         ]}
       >
@@ -115,8 +110,7 @@ const BillingsView = () => {
           isUpdatingBilling={isUpdatingBilling}
           setUpdatingBilling={setUpdatingBilling}
           unsetUpdatingBilling={unsetUpdatingBilling}
-          onSubmit={onSubmit}
-          SaveBillingElement={SaveBillingElement}
+          onSubmit={onSubmit({ setError })}
         />
       </Elements>
       <InvoicesList />

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import palette from '../../../palette';
+import palette, { opacify } from '../../../palette';
 
 export const InvoicesListContainer = styled.div`
-  margin-top: 4rem;
+  width: 100%;
 `;
 
 export const InvoicesTable = styled.table`
@@ -12,11 +12,11 @@ export const InvoicesTable = styled.table`
 
     & th,
     & td {
-      padding: 0.125rem 0.5rem;
+      padding: 0.5rem 1rem;
     }
 
     & thead {
-      background: ${palette.coolGrey3};
+      background: ${opacify(palette.coolGrey2, 0.3)};
 
       & tr {
         background: transparent;
@@ -26,18 +26,17 @@ export const InvoicesTable = styled.table`
 
       & th {
         background: transparent;
-        border-bottom: 0.0625rem ${palette.coolGrey3} solid;
+        border-bottom: 0.0625rem ${palette.coolGrey2} solid;
         color: ${palette.mediumGrey};
         font-size: 0.875rem;
-        font-weight: 600;
         vertical-align: middle;
       }
     }
 
     & tbody {
       & tr {
-        height: 5rem;
-        min-height: 5rem;
+        height: 3rem;
+        min-height: 3rem;
       }
 
       & tr:nth-child(even) {
@@ -49,7 +48,7 @@ export const InvoicesTable = styled.table`
       }
 
       & td {
-        color: ${palette.unknownGrey1};
+        color: ${palette.darkGrey};
         font-size: 0.875rem;
       }
     }

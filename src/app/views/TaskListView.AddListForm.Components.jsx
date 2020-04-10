@@ -19,6 +19,7 @@ export const FormContainer = styled.form`
   flex-basis: auto;
   flex-flow: column wrap;
   display: flex;
+  max-width: 40rem;
   padding: 1.5rem;
   width: 100%;
 
@@ -105,8 +106,9 @@ export const StyledInputBase = withStyles({
 })(InputBase);
 
 export const MemberContainer = styled.div`
-  height: 55px;
-  width: 55px;
+  height: 40px;
+  width: 40px;
+  z-index: ${props => props.zIndex ?? 1};
 `;
 
 export const MembersContainer = styled.div`
@@ -117,20 +119,35 @@ export const MembersContainer = styled.div`
   justify-content: flex-start;
 
   > ${MemberContainer}:not(:first-child) {
-    width: 41px;
+    width: 34px;
   }
 `;
 
 export const EmptyMember = styled(ButtonBase)`
   && {
     background-color: ${palette.white};
-    border: 0.0625rem dashed ${palette.lighterCyanBlue};
+    border: 0.0625rem dashed ${palette.coolGrey1};
     border-radius: 50%;
-    color: ${palette.lighterCyanBlue};
-    font-size: 2rem;
-    height: 100%;
-    width: 55px;
+    color: ${palette.oPlusRed};
+    font-size: 1.5rem;
+    height: 40px;
+    width: 40px;
   }
+`;
+
+export const MoreMemberLabel = styled.div`
+  align-items: center;
+  background-color: ${palette.white};
+  border: 0.0625rem solid ${palette.coolGrey1};
+  border-radius: 50%;
+  color: ${palette.coolGrey1};
+  display: flex;
+  font-size: 1rem;
+  height: 40px;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  width: 40px;
 `;
 
 export const EmptyMemberIcon = styled.div`
@@ -153,9 +170,13 @@ export const StyledCollapse = styled(Collapse)`
 
 export const StyledListItem = styled(ListItem)`
   && {
-    background-color: ${palette.lightGrey};
+    background-color: ${palette.coolGrey4};
     height: 4rem;
     width: 100%;
+
+    &:hover {
+      background-color: ${opacify(palette.coolGrey4, 0.5)};
+    }
   }
 `;
 
@@ -234,4 +255,39 @@ export const SearchFieldIcon = styled.img.attrs({
 
 export const FormIconContainer = styled.div`
   color: ${palette.coolGrey1};
+`;
+
+export const ExtendedFormControl = styled.div`
+  align-items: center;
+  background-color: ${palette.coolGrey4};
+  display: grid;
+  grid-gap: 0.5rem;
+  grid-template-columns: 1fr auto;
+  min-height: 4.5rem;
+  margin: 1rem 0 0;
+  position: relative;
+  width: 100%;
+
+  & label {
+    position: absolute;
+  }
+`;
+
+export const MemberNamesLabelContainer = styled.div`
+  padding-left: 1rem;
+  padding-top: 1rem;
+  white-space: normal;
+`;
+
+export const TickIconContainer = styled.div`
+  align-items: center;
+  display: flex;
+  height: 100%;
+  min-width: 1rem;
+  width: 1rem;
+
+  & svg {
+    object-fit: contain;
+    width: 100%;
+  }
 `;

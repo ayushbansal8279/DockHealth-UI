@@ -10,7 +10,7 @@ import {
 } from '../../actions/tasklist-actions';
 import { showAlert } from '../../helpers/utility-functions';
 import { MontserratTypography } from '../../theme-montserrat';
-import { UniversalInput } from '../userProfileView/UniversalInput';
+import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import {
   FormSection,
   PopoverBottomSection,
@@ -52,7 +52,8 @@ const onSubmit = ({ dispatch, unsetInviting, taskListIdentifier }) => async ({
         status: 'error',
         title: 'Error',
         text:
-          error.errorMessage ??
+          error?.response?.data?.errorMessage ??
+          error?.message ??
           'Invitation could not be sent, please try again later',
       });
     });
@@ -72,7 +73,7 @@ const InvitingContent = ({ unsetInviting, taskList }) => {
         <PopoverHeaderCloseButton onClick={unsetInviting}>
           <BackIcon />
         </PopoverHeaderCloseButton>
-        <MontserratTypography variant="h4" weight="600">
+        <MontserratTypography variant="h4">
           Invite a person
         </MontserratTypography>
       </PopoverHeader>
@@ -89,13 +90,21 @@ const InvitingContent = ({ unsetInviting, taskList }) => {
       >
         <FormContext {...formMethods}>
           <FormSection>
-            <UniversalInput label="First Name" name="firstName" required />
-            <UniversalInput label="Last Name" name="lastName" required />
-            <UniversalInput label="Email" name="email" required />
+            <UniversalMontserratInput
+              label="First Name"
+              name="firstName"
+              required
+            />
+            <UniversalMontserratInput
+              label="Last Name"
+              name="lastName"
+              required
+            />
+            <UniversalMontserratInput label="Email" name="email" required />
           </FormSection>
           <PopoverDivider />
           <PopoverBottomSection>
-            <Button type="submit" variant="contained" fullWidth>
+            <Button type="submit" variant="contained" fullWidth size="small">
               Send invite
             </Button>
           </PopoverBottomSection>

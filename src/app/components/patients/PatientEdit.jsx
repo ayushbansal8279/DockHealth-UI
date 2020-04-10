@@ -29,6 +29,13 @@ const validationObjectShape = {
         return null;
       }
 
+      if (
+        newValue?.replace(/[-/_]/g, '')?.length <
+        DATE_FORMAT.replace(/\//g, '').length
+      ) {
+        return new Error();
+      }
+
       if (dobMoment.isValid()) {
         return newValue;
       }
@@ -104,9 +111,10 @@ const PatientEdit = ({ compact = false, patient }) => {
     Object.keys(validationObjectShape).forEach(key => {
       let formatFunction = identity;
 
-      if (key === 'dob')
+      if (key === 'dob') {
         formatFunction = value =>
-          value ? moment(value).format('MM/DD/YYYY') : value;
+          value ? moment(value).format('MM/DD/YYYY') : '';
+      }
 
       formMethods.setValue(key, formatFunction(patient?.[key] ?? null));
     });

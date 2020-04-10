@@ -54,6 +54,7 @@ const palette = {
   taskCheckboxGreen: '#20b255',
   featureBlue1: '#011845',
   featureBlue2: '#1a2d56',
+  scrollbarGrey: '#939aa4',
 };
 
 export const getPriorityColor = (

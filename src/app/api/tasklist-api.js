@@ -76,8 +76,7 @@ export function invitePersonToTaskList(taskListIdentifier, personInfo) {
     .put(`list/invitePersonToTaskList/${taskListIdentifier}`, personInfo)
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
-      throw new Error(error?.response?.data);
+      throw error;
     });
 }
 
@@ -86,8 +85,7 @@ export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
     .get(`user/findOrganizationUsersNotInTaskList/${taskListIdentifier}`)
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
-      throw new Error(error?.response?.data);
+      throw error;
     });
 }
 

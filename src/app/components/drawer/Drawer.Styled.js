@@ -54,12 +54,9 @@ export const ContentContainer = styled.div`
   transition: width 0.2s ease-out, margin 0.2s ease-out;
 `;
 
-export const TrialBanner = styled(Grid)`
-  background-color: ${palette.oPlusRed};
-  color: ${palette.white};
+export const TrialBannerContainer = styled(Grid)`
   font-size: 1rem;
   left: 0;
-  height: ${props => (props.bannervisible ? '2.875rem' : 0)};
   overflow: hidden;
   right: 0;
   position: absolute;
@@ -67,6 +64,20 @@ export const TrialBanner = styled(Grid)`
   top: 100%;
   transition: all 0.2s ease-out;
   z-index: 1;
+`;
+
+export const TrialBanner = styled.div`
+  align-items: center;
+  background-color: ${palette.oPlusRed};
+  color: ${palette.white};
+  display: flex;
+  height: ${props =>
+    props.bannerVisible || props.hasCreditCardExpirationMessage
+      ? '2.875rem'
+      : 0};
+  ${props => props.hasCreditCardExpirationMessage && 'text-transform: none;'}
+  justify-content: center;
+  width: 100%;
 `;
 
 export const TrialBannerLink = styled(Link)`

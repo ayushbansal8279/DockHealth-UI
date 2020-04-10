@@ -43,6 +43,7 @@ const PatientsTasklist = ({ tasks = [], completedTasks = [], submitTask }) => {
         {completedTasks.length > 0 && (
           <Button
             size="small"
+            color="primary"
             variant="contained"
             onClick={toggleShowCompleted}
           >

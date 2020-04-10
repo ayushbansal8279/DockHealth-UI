@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid, Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import palette from '../../../palette';
 
@@ -42,4 +42,17 @@ export const BillingsViewContainer = styled(Grid)`
     top: 0;
     width: 100%;
   }
+`;
+
+export const StyledCollapse = styled(Collapse)`
+  width: 100%;
+`;
+
+export const ErrorContainer = styled.div`
+  align-items: center;
+  background-color: ${palette.oPlusRed};
+  color: ${palette.white};
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 1rem;
 `;

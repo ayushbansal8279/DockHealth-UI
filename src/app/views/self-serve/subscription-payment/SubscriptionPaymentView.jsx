@@ -15,6 +15,7 @@ import GenericHeader from '../../../components/common/GenericHeader';
 import { noop, showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import palette from '../../../palette';
+import { MontserratTypography } from '../../../theme-montserrat';
 import BillingsViewBillingData from '../billings/BillingsView.BillingData';
 import { PlanNameLabel } from '../subscriptions/SubscriptionsView.CurrentPlan.Styled';
 import {
@@ -29,7 +30,6 @@ import {
 } from '../subscriptions/SubscriptionsView.Utilities';
 import {
   Anchor,
-  H2,
   H3,
   PricingGridContainer,
   PricingItemDivider,
@@ -110,7 +110,6 @@ const onSubmit = ({
 const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
   <>
     <Spacing2 />
-
     <Grid item sm={12} container wrap="nowrap" justify="flex-end">
       <H3>
         <span>By selecting Buy Now I agree to the </span>
@@ -210,7 +209,9 @@ const SubscriptionPaymentView = () => {
       <SubscriptionPaymentViewContainer>
         <Grid container spacing={4}>
           <Grid item sm={12}>
-            <H2>Please enter your payment information</H2>
+            <MontserratTypography variant="h2">
+              Please enter your payment information
+            </MontserratTypography>
           </Grid>
           <Grid item sm={12}>
             <PricingGridContainer>

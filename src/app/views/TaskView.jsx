@@ -1059,6 +1059,7 @@ class TaskView extends Component {
             <Button
               size="small"
               variant="contained"
+              color="primary"
               onClick={
                 listCompletedTasks.length > 0
                   ? this.toggleCompletedTasks

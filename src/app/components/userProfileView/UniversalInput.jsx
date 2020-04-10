@@ -8,7 +8,8 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import MaskedInput from 'react-text-mask';
+import InputMask from 'react-input-mask';
+import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import palette, { opacify } from '../../palette';
@@ -101,43 +102,39 @@ export const UniversalInputBase = withStyles({
   },
 })(InputBase);
 
-export const UniversalMobileInputComponent = ({ inputRef, ...otherProps }) => (
-  <MaskedInput
+export const UniversalMobileInputComponent = ({
+  inputRef,
+  name,
+  setValue,
+  ...otherProps
+}) => (
+  <InputMask
     {...otherProps}
-    ref={reference => {
-      inputRef(reference ? reference.inputElement : null);
+    name={name}
+    ref={inputRef}
+    mask="(999) 999-9999"
+    maskPlaceholder={null}
+    onChange={event => {
+      setValue(name, event.target.value);
     }}
-    mask={[
-      '(',
-      /[1-9]/,
-      /\d/,
-      /\d/,
-      ')',
-      ' ',
-      /\d/,
-      /\d/,
-      /\d/,
-      '-',
-      /\d/,
-      /\d/,
-      /\d/,
-      /\d/,
-    ]}
-    guide
   />
 );
 
 export const UniversalBirthdayInputComponent = ({
   inputRef,
+  name,
+  setValue,
   ...otherProps
 }) => (
-  <MaskedInput
+  <InputMask
     {...otherProps}
-    ref={reference => {
-      inputRef(reference ? reference.inputElement : null);
+    name={name}
+    ref={inputRef}
+    mask="99/99/9999"
+    maskPlaceholder={null}
+    onChange={event => {
+      setValue(name, event.target.value);
     }}
-    mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
-    guide
   />
 );
 
@@ -153,7 +150,14 @@ export const UniversalInput = ({
   customShrinkCondition = undefined,
   ...InputBaseProps
 }) => {
-  const { register, errors, clearError, watch } = useFormContext();
+  const {
+    register,
+    errors,
+    clearError,
+    watch,
+    setValue,
+    unregister,
+  } = useFormContext();
   const error = errors?.[name]?.message;
 
   const hasError = Boolean(error);
@@ -161,6 +165,20 @@ export const UniversalInput = ({
   const [focused, setFocused, unsetFocused] = useBoolean(false);
 
   const value = watch(name);
+
+  useMount(() => {
+    if (CustomComponent) {
+      register({
+        name,
+      });
+    }
+  });
+
+  useUnmount(() => {
+    if (CustomComponent) {
+      unregister(name);
+    }
+  });
 
   const shrink =
     typeof customShrinkCondition === 'undefined'
@@ -184,6 +202,12 @@ export const UniversalInput = ({
           name={name}
           placeholder={placeholder}
           inputRef={register}
+          inputProps={{
+            value,
+            setValue,
+            name,
+            register,
+          }}
           error={hasError}
           inputComponent={CustomComponent}
           onKeyUp={() => clearError(name)}

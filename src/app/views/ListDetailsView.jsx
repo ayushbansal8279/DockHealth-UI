@@ -117,7 +117,8 @@ class Home extends Component {
 
         taskListActions
           .getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier)
-          .then(noop);
+          .then(noop)
+          .catch(noop);
       });
     }
   }

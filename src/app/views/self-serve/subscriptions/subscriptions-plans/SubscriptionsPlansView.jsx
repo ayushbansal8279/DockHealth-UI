@@ -161,11 +161,11 @@ const SubscriptionsPlansView = ({
               <b>Annually</b>
             </MontserratTypography>
             <MontserratTypography variant="h1" weight="bold">
-              $180
+              $15
             </MontserratTypography>
             <Spacing vertical={1} />
             <MontserratTypography variant="h4" weight="bold">
-              Per User per Year
+              Per User per Month
             </MontserratTypography>
           </Grid>
           <Grid container direction="column">

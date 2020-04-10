@@ -50,13 +50,16 @@ export function getUserById(userIdentifier) {
 }
 
 export function invitePersonToOrganization(person) {
-  return axios
-    .put('organization/invitePersonToOrganization', person)
+  return axios({
+    url: 'organization/invitePersonToOrganization',
+    method: 'put',
+    data: person,
+  })
     .then(response => {
-      return response.data;
+      return response?.data;
     })
     .catch(error => {
-      throw new Error(error?.response?.data) ?? error;
+      throw error;
     });
 }
 

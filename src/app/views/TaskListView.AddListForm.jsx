@@ -7,16 +7,21 @@ import Spacing from '../components/common/Spacing';
 import Member from '../components/members/Member';
 import { StyledSwitchUnbound } from '../components/userProfileView/StyledSwitch';
 import { showAlert } from '../helpers/utility-functions';
+import TickIcon from '../img/tick-icon';
+import { RobotoTypography } from '../theme';
 import { MontserratTypography } from '../theme-montserrat';
 import {
   EmptyMember,
   EmptyMemberIcon,
+  ExtendedFormControl,
   FormContainer,
   FormDivider,
   FormIconContainer,
   FormLabel,
   MemberContainer,
+  MemberNamesLabelContainer,
   MembersContainer,
+  MoreMemberLabel,
   SearchField,
   SearchFieldContainer,
   SearchFieldIcon,
@@ -27,6 +32,7 @@ import {
   StyledInputLabel,
   StyledList,
   StyledListItem,
+  TickIconContainer,
 } from './TaskListView.AddListForm.Components';
 import initializeAddListFormHooks from './TaskListView.AddListForm.Hooks';
 
@@ -52,13 +58,13 @@ const onSubmit = ({
     });
 };
 
-const renderMember = ({ people, removePerson }) => memberId => {
+const renderMember = ({ people }) => memberId => {
   return (
     <MemberContainer key={memberId}>
       <Member
-        onClick={() => removePerson({ userIdentifier: memberId })}
+        size={40}
         member={
-          people !== undefined && Array.isArray(people)
+          Array.isArray(people)
             ? people.find(({ userIdentifier }) => userIdentifier === memberId)
             : undefined
         }
@@ -67,22 +73,39 @@ const renderMember = ({ people, removePerson }) => memberId => {
   );
 };
 
-const renderPickerOption = ({ closePicker, addPerson }) => member => {
+const renderPickerOption = ({
+  addPerson,
+  removePerson,
+  peopleIdentifiers,
+}) => member => {
   const { firstName, lastName, userIdentifier } = member;
 
   const userName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
+
+  const isInList = (peopleIdentifiers ?? []).includes(userIdentifier);
 
   return (
     <StyledListItem
       button
       onClick={() => {
-        addPerson({ userIdentifier });
-        closePicker();
+        if (isInList) {
+          removePerson({ userIdentifier });
+        } else {
+          addPerson({ userIdentifier });
+        }
       }}
       key={userIdentifier}
     >
-      <Grid container alignItems="center" justify="space-between">
-        <div>{userName}</div>
+      <Grid container alignItems="center" justify="space-between" wrap="nowrap">
+        <Grid container alignItems="center" wrap="nowrap">
+          <TickIconContainer>
+            {isInList && <TickIcon active />}
+          </TickIconContainer>
+          <Spacing horizontal={3} />
+          <MontserratTypography component="div" variant="h4">
+            {userName}
+          </MontserratTypography>
+        </Grid>
         <div>
           <Member member={member} />
         </div>
@@ -94,17 +117,45 @@ const renderPickerOption = ({ closePicker, addPerson }) => member => {
 const NoMembersElement = () => (
   <StyledListItem>
     <Grid container justify="center">
-      No people found
+      <MontserratTypography variant="h4">No people found</MontserratTypography>
     </Grid>
   </StyledListItem>
 );
+
+const MoreMembersContainer = ({ count }) => {
+  if (count === 0) {
+    return null;
+  }
+
+  return (
+    <MemberContainer>
+      <MoreMemberLabel>
+        <MontserratTypography
+          variant="h4"
+          weight={count >= 10 ? '600' : 'bold'}
+        >
+          +{count}
+        </MontserratTypography>
+      </MoreMemberLabel>
+    </MemberContainer>
+  );
+};
+
+const renderJoinedMembersNames = ({ membersIdentifiers, people }) =>
+  (people ?? [])
+    .filter(({ userIdentifier }) =>
+      (membersIdentifiers ?? []).includes(userIdentifier),
+    )
+    .map(({ firstName, lastName }) =>
+      `${firstName ?? ''} ${lastName ?? ''}`.trim(),
+    )
+    .join(', ');
 
 const AddListForm = ({ setListFormOpen }) => {
   const {
     formLabelContent,
     handleSubmit,
     setValue,
-    listOwner,
     adminsPickerOpen,
     openAdminsPicker,
     closeAdminsPicker,
@@ -113,8 +164,9 @@ const AddListForm = ({ setListFormOpen }) => {
     closeMembersPicker,
     listNameValue,
     listDescriptionValue,
-    adminsValue,
+    allMembersValue,
     membersValue,
+    restOfMembersValue,
     filteredPeople,
     addAdmin,
     removeAdmin,
@@ -126,12 +178,10 @@ const AddListForm = ({ setListFormOpen }) => {
     dispatch,
     searchValue,
     setSearchValue,
+    allAdminsWithOwner,
+    adminsWithOwner,
+    restOfAdminsWithOwner,
   } = initializeAddListFormHooks();
-
-  const adminsWithOwner = [
-    ...(adminsValue || []),
-    listOwner?.userIdentifier,
-  ].filter(Boolean);
 
   return (
     <FormContainer
@@ -143,9 +193,9 @@ const AddListForm = ({ setListFormOpen }) => {
         <>
           <Grid container justify="space-between" alignItems="center">
             <FormLabel>
-              <MontserratTypography variant="h4">
+              <RobotoTypography variant="h4">
                 {formLabelContent}
-              </MontserratTypography>
+              </RobotoTypography>
             </FormLabel>
             <FormIconContainer>
               <IconButton
@@ -176,8 +226,10 @@ const AddListForm = ({ setListFormOpen }) => {
           name="listDescription"
         />
       </StyledFormControl>
-      <StyledFormControl fullWidth>
-        <StyledInputLabel shrink={false}>
+      <ExtendedFormControl>
+        <StyledInputLabel
+          shrink={!adminsPickerOpen && allAdminsWithOwner?.length > 0}
+        >
           {adminsPickerOpen ? (
             <SearchFieldContainer>
               <SearchField
@@ -192,34 +244,37 @@ const AddListForm = ({ setListFormOpen }) => {
             'Admins'
           )}
         </StyledInputLabel>
-        <StyledInputBase
-          name="adminIdentifiers"
-          disabled
-          endAdornment={
-            <MembersContainer>
-              <MemberContainer>
-                <EmptyMember
-                  onClick={() => {
-                    if (adminsPickerOpen) {
-                      closeAdminsPicker();
-                    } else {
-                      openAdminsPicker();
-                    }
-                    closeMembersPicker();
-                  }}
-                >
-                  <EmptyMemberIcon rotated={adminsPickerOpen}>
-                    +
-                  </EmptyMemberIcon>
-                </EmptyMember>
-              </MemberContainer>
-              {adminsWithOwner?.map(
-                renderMember({ people, removePerson: removeAdmin }),
-              )}
-            </MembersContainer>
-          }
-        />
-      </StyledFormControl>
+        {adminsPickerOpen ? (
+          <div />
+        ) : (
+          <MemberNamesLabelContainer>
+            <MontserratTypography varant="h4">
+              {renderJoinedMembersNames({
+                membersIdentifiers: allAdminsWithOwner,
+                people,
+              })}
+            </MontserratTypography>
+          </MemberNamesLabelContainer>
+        )}
+        <MembersContainer>
+          <MemberContainer zIndex={0}>
+            <EmptyMember
+              onClick={() => {
+                if (adminsPickerOpen) {
+                  closeAdminsPicker();
+                } else {
+                  openAdminsPicker();
+                }
+                closeMembersPicker();
+              }}
+            >
+              <EmptyMemberIcon rotated={adminsPickerOpen}>+</EmptyMemberIcon>
+            </EmptyMember>
+          </MemberContainer>
+          <MoreMembersContainer count={restOfAdminsWithOwner?.length} />
+          {adminsWithOwner?.map(renderMember({ people }))}
+        </MembersContainer>
+      </ExtendedFormControl>
       <StyledCollapse timeout={150} in={adminsPickerOpen}>
         <StyledList>
           {isEmpty(filteredPeople) ? (
@@ -227,15 +282,18 @@ const AddListForm = ({ setListFormOpen }) => {
           ) : (
             filteredPeople.map(
               renderPickerOption({
-                closePicker: closeAdminsPicker,
                 addPerson: addAdmin,
+                removePerson: removeAdmin,
+                peopleIdentifiers: allAdminsWithOwner,
               }),
             )
           )}
         </StyledList>
       </StyledCollapse>
-      <StyledFormControl fullWidth>
-        <StyledInputLabel>
+      <ExtendedFormControl>
+        <StyledInputLabel
+          shrink={!membersPickerOpen && allMembersValue?.length > 0}
+        >
           {membersPickerOpen ? (
             <SearchFieldContainer>
               <SearchField
@@ -250,34 +308,37 @@ const AddListForm = ({ setListFormOpen }) => {
             'Members'
           )}
         </StyledInputLabel>
-        <StyledInputBase
-          name="memberIdentifiers"
-          disabled
-          endAdornment={
-            <MembersContainer>
-              <MemberContainer>
-                <EmptyMember
-                  onClick={() => {
-                    if (membersPickerOpen) {
-                      closeMembersPicker();
-                    } else {
-                      openMembersPicker();
-                    }
-                    closeAdminsPicker();
-                  }}
-                >
-                  <EmptyMemberIcon rotated={membersPickerOpen}>
-                    +
-                  </EmptyMemberIcon>
-                </EmptyMember>
-              </MemberContainer>
-              {membersValue?.map(
-                renderMember({ people, removePerson: removeMember }),
-              )}
-            </MembersContainer>
-          }
-        />
-      </StyledFormControl>
+        {membersPickerOpen ? (
+          <div />
+        ) : (
+          <MemberNamesLabelContainer>
+            <MontserratTypography varant="h4">
+              {renderJoinedMembersNames({
+                membersIdentifiers: allMembersValue,
+                people,
+              })}
+            </MontserratTypography>
+          </MemberNamesLabelContainer>
+        )}
+        <MembersContainer>
+          <MemberContainer zIndex={0}>
+            <EmptyMember
+              onClick={() => {
+                if (membersPickerOpen) {
+                  closeMembersPicker();
+                } else {
+                  openMembersPicker();
+                }
+                closeAdminsPicker();
+              }}
+            >
+              <EmptyMemberIcon rotated={membersPickerOpen}>+</EmptyMemberIcon>
+            </EmptyMember>
+          </MemberContainer>
+          <MoreMembersContainer count={restOfMembersValue?.length} />
+          {membersValue?.map(renderMember({ people }))}
+        </MembersContainer>
+      </ExtendedFormControl>
       <StyledCollapse timeout={150} in={membersPickerOpen}>
         <StyledList>
           {isEmpty(filteredPeople) ? (
@@ -285,8 +346,9 @@ const AddListForm = ({ setListFormOpen }) => {
           ) : (
             filteredPeople.map(
               renderPickerOption({
-                closePicker: closeMembersPicker,
                 addPerson: addMember,
+                removePerson: removeMember,
+                peopleIdentifiers: allMembersValue,
               }),
             )
           )}

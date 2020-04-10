@@ -1,11 +1,7 @@
-import { List, ListItem, Popover } from '@material-ui/core';
-import {
-  Close as CloseIcon,
-  MoreVert as MoreIcon,
-  Search as SearchIcon,
-} from '@material-ui/icons';
+import { List, ListItem } from '@material-ui/core';
+import { Close as CloseIcon } from '@material-ui/icons';
 import { isEmpty, prop } from 'ramda';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   cancelInviteToTaskList,
@@ -15,17 +11,18 @@ import {
   removeUserFromTaskList,
 } from '../../actions/tasklist-actions';
 import useBoolean from '../../hooks/useBoolean';
-import TickIcon from '../../img/tick-icon.svg';
+import TickIcon from '../../img/tick-icon';
+import { MontserratTypography } from '../../theme-montserrat';
 import {
   HeaderSearch,
-  HeaderSearchButton,
   HeaderSearchContainer,
   InviteLink,
+  MemberActionsPopover,
+  MemberInnerItem,
   MemberItem,
   MemberName,
   MemberRole,
   MembersContainer,
-  MoreIconButton,
   NoMembersElement,
   NotSignedUpLabel,
   PopoverBottomSection,
@@ -34,11 +31,13 @@ import {
   PopoverHeaderCloseButton,
   StyledMember,
   TickIconContainer,
-  TickIconImage,
 } from './InviteMemberPopover.Styled';
-import { MontserratTypography } from '../../theme-montserrat';
 
-const getFormattedMemberRole = memberRole => {
+const getFormattedMemberRole = ({ memberRole, invitationPending }) => {
+  if (invitationPending) {
+    return 'INVITED';
+  }
+
   switch (memberRole) {
     case 'ADMIN':
       return 'Admin';
@@ -52,15 +51,10 @@ const getFormattedMemberRole = memberRole => {
 const inviteUserMethod = ({
   closeItemPopover,
   dispatch,
-  // isSignedUp,
   member,
   taskListIdentifier,
 }) => () => {
-  // if (isSignedUp) {
   inviteUserToTaskList(taskListIdentifier, member?.userIdentifier)(dispatch);
-  // } else {
-  //   invitePersonToTaskList(member, taskListIdentifier)(dispatch);
-  // }
   closeItemPopover();
 };
 
@@ -142,7 +136,10 @@ const MemberItemElement = ({
     `${member?.firstName ?? ''} ${member?.lastName ?? ''}`.trim() ||
     'List member';
 
-  const memberRole = getFormattedMemberRole(member?.taskListUserRole);
+  const memberRole = getFormattedMemberRole({
+    memberRole: member?.taskListUserRole,
+    invitationPending,
+  });
 
   const isSignedUp =
     member.userStatus !== 'INVITED' && Boolean(member?.userIdentifier);
@@ -157,7 +154,7 @@ const MemberItemElement = ({
     }
 
     if (invitationPending) {
-      return 'Invitation pending';
+      return 'Invited';
     }
 
     return '';
@@ -179,32 +176,79 @@ const MemberItemElement = ({
     notInTaskList,
   });
 
+  const isCurrentUser = currentUser?.userIdentifier === member?.userIdentifier;
+
+  const toggleInvitation = useCallback(() => {
+    if (isCurrentUser) {
+      return;
+    }
+
+    if (notInTaskList) {
+      inviteUserMethod({
+        closeItemPopover,
+        dispatch,
+        isSignedUp,
+        member,
+        taskListIdentifier,
+      })();
+    } else {
+      if (invitationPending) {
+        cancelInviteToTaskList(taskListIdentifier, member?.email)(dispatch);
+      } else {
+        removeUserFromTaskList(taskListIdentifier, member)(dispatch);
+      }
+      closeItemPopover();
+    }
+  }, [
+    closeItemPopover,
+    dispatch,
+    invitationPending,
+    isCurrentUser,
+    isSignedUp,
+    member,
+    notInTaskList,
+    taskListIdentifier,
+  ]);
+
   const hasUserAcceptedInvitation = isSignedUp && !invitationPending;
 
   return (
-    <MemberItem>
-      <TickIconContainer transparent={!hasUserAcceptedInvitation}>
-        {!notInTaskList && <TickIconImage alt="tick" src={TickIcon} />}
-      </TickIconContainer>
-      <StyledMember transparent={!hasUserAcceptedInvitation} member={member} />
-      <MemberName transparent={!hasUserAcceptedInvitation}>
-        <span>{memberName}</span>
-        {memberSubLabel && (
-          <NotSignedUpLabel>{memberSubLabel}</NotSignedUpLabel>
-        )}
-      </MemberName>
-      <MemberRole>{!notInTaskList && memberRole}</MemberRole>
-      {currentUser?.userIdentifier !== member?.userIdentifier && (
-        <div ref={moreIconButtonReference}>
-          <MoreIconButton onClick={openItemPopover}>
-            <MoreIcon />
-          </MoreIconButton>
-        </div>
+    <MemberItem key={member?.userIdentifier ?? member?.email}>
+      <MemberInnerItem isCurrentUser={isCurrentUser} onClick={toggleInvitation}>
+        <TickIconContainer>
+          {!notInTaskList && <TickIcon active={hasUserAcceptedInvitation} />}
+        </TickIconContainer>
+        <StyledMember
+          transparent={!hasUserAcceptedInvitation}
+          member={member}
+          size={40}
+        />
+        <MemberName transparent={!hasUserAcceptedInvitation}>
+          <MontserratTypography variant="h4">
+            <span>{memberName}</span>
+            {memberSubLabel && (
+              <NotSignedUpLabel>{memberSubLabel}</NotSignedUpLabel>
+            )}
+          </MontserratTypography>
+        </MemberName>
+      </MemberInnerItem>
+      {memberRole && (
+        <MemberRole
+          isCurrentUser={isCurrentUser}
+          invitationPending={invitationPending}
+          onClick={openItemPopover}
+          ref={moreIconButtonReference}
+        >
+          <MontserratTypography variant="h4">{memberRole}</MontserratTypography>
+        </MemberRole>
       )}
-      <Popover
+      <MemberActionsPopover
         anchorEl={moreIconButtonReference.current}
-        open={isItemPopoverOpen}
+        open={isItemPopoverOpen && !isCurrentUser}
         onClose={closeItemPopover}
+        PaperProps={{
+          elevation: 1,
+        }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -217,16 +261,20 @@ const MemberItemElement = ({
         <List>
           {topButtonOnClick && topButtonLabel && (
             <ListItem button onClick={topButtonOnClick}>
-              {topButtonLabel}
+              <MontserratTypography variant="h4">
+                {topButtonLabel}
+              </MontserratTypography>
             </ListItem>
           )}
           {bottomButtonLabel && bottomButtonOnClick && (
             <ListItem button onClick={bottomButtonOnClick}>
-              {bottomButtonLabel}
+              <MontserratTypography variant="h4">
+                {bottomButtonLabel}
+              </MontserratTypography>
             </ListItem>
           )}
         </List>
-      </Popover>
+      </MemberActionsPopover>
     </MemberItem>
   );
 };
@@ -260,12 +308,7 @@ const NotInvitingContent = ({
   currentUser,
   taskList,
 }) => {
-  const [isSearching, setSearching, resetSearching] = useBoolean(false);
   const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    setSearchTerm('');
-  }, [isSearching]);
 
   const filteredMembers = members.filter(memberFilterIteratee({ searchTerm }));
   const filteredMembersIdentifiers = filteredMembers.map(
@@ -280,35 +323,22 @@ const NotInvitingContent = ({
 
   return (
     <>
-      <PopoverHeader>
-        {isSearching ? (
-          <HeaderSearchContainer>
-            <HeaderSearch
-              autoFocus
-              fullWidth
-              onChange={event => setSearchTerm(event.target.value)}
-              value={searchTerm}
-              endAdornment={
-                <HeaderSearchButton onClick={resetSearching}>
-                  <CloseIcon />
-                </HeaderSearchButton>
-              }
-            />
-          </HeaderSearchContainer>
-        ) : (
-          <>
-            <PopoverHeaderCloseButton onClick={closeMemberPopover}>
-              <CloseIcon />
-            </PopoverHeaderCloseButton>
-            <MontserratTypography variant="h4" weight="600">
-              Add to list
-            </MontserratTypography>
-            <PopoverHeaderCloseButton onClick={setSearching}>
-              <SearchIcon />
-            </PopoverHeaderCloseButton>
-          </>
-        )}
+      <PopoverHeader hasCloseButton>
+        <MontserratTypography variant="h4">
+          Invite to {taskList?.listName ?? 'list'}
+        </MontserratTypography>
+        <PopoverHeaderCloseButton onClick={closeMemberPopover} edge="end">
+          <CloseIcon />
+        </PopoverHeaderCloseButton>
       </PopoverHeader>
+      <HeaderSearchContainer>
+        <HeaderSearch
+          autoFocus
+          fullWidth
+          onChange={event => setSearchTerm(event.target.value)}
+          value={searchTerm}
+        />
+      </HeaderSearchContainer>
       <MembersContainer>
         {filteredMembers.map(
           renderMemberItemElement({ currentUser, taskList }),
@@ -321,12 +351,16 @@ const NotInvitingContent = ({
           }),
         )}
         {isEmpty(filteredMembers) && isEmpty(filteredMembersNotInTaskList) && (
-          <NoMembersElement />
+          <NoMembersElement>
+            <MontserratTypography variant="h4">
+              No members found.
+            </MontserratTypography>
+          </NoMembersElement>
         )}
       </MembersContainer>
       <PopoverDivider />
       <PopoverBottomSection>
-        <div>
+        <MontserratTypography variant="h4">
           <span>Don&apos;t see who you&apos;re looking for?&nbsp;</span>
           {isAdmin ? (
             <InviteLink onClick={setInviting}>
@@ -337,7 +371,7 @@ const NotInvitingContent = ({
               Ask an organizational admin to invite people to this list.
             </span>
           )}
-        </div>
+        </MontserratTypography>
       </PopoverBottomSection>
     </>
   );

@@ -38,7 +38,7 @@ class PersonDetailsView extends PureComponent {
       layout: [
         {
           key: 'generic-header',
-          component: <GenericHeader>Provider</GenericHeader>,
+          component: <GenericHeader>People</GenericHeader>,
         },
       ],
     });

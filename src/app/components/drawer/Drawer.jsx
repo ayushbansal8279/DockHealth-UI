@@ -1,31 +1,16 @@
-import {
-  AppBar,
-  Drawer as MaterialDrawer,
-  Grid,
-  Typography,
-} from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { AppBar, Drawer as MaterialDrawer, Grid } from '@material-ui/core';
 import clsx from 'clsx';
-import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Intercom from 'react-intercom';
-import { useSelector } from 'react-redux';
-import { useMount } from 'react-use';
-import useBoolean from '../../hooks/useBoolean';
-import { themeMontserrat600 } from '../../theme-montserrat';
-import {
-  getSubscriptionPlanLabel,
-  getSubscriptionIsTrial,
-} from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import { MontserratTypography } from '../../theme-montserrat';
+import initializeDrawerHooks from './Drawer.Hooks';
 import {
   ContentContainer,
   TrialBanner,
+  TrialBannerContainer,
   TrialBannerLink,
-  useDrawerClasses,
 } from './Drawer.Styled';
 import DrawerList from './DrawerList';
-
-const TRIAL_USAGE_THRESHOLD_PERIOD = 10;
 
 const renderHeaderColumn = ({ key, component, ...otherProps }) => (
   <Grid item container key={key} {...otherProps}>
@@ -34,95 +19,25 @@ const renderHeaderColumn = ({ key, component, ...otherProps }) => (
 );
 
 const Drawer = ({ children }) => {
-  const [isOpen, open, close] = useBoolean(false);
-  const [activeId, setActiveId] = useState('');
-  const [bannerVisibleFlag, setBannerVisibleFlag] = useState(false);
-  const [bannerMessageLinkFlag, setBannerMessageLinkFlag] = useState(false);
-
-  const { user, lists, header } = useSelector(store => ({
-    user: store.userState.userProfile,
-    lists: store.taskListState.tasklist,
-    header: store.header,
-  }));
-
-  const intercomUser = {
-    email: user.email,
-    name: `${user.firstName} ${user.lastName}`,
-  };
-
-  const { organization, messageBannerBar } = useSelector(store => ({
-    ...store.organizationState,
-    organizationIdentifier:
-      store.userState?.userProfile?.organizationIdentifier,
-    messageBannerBar: store.organizationState?.referralConfig?.messageBannerBar,
-  }));
-
-  const subscription = organization?.subscriptionDetails;
-
-  const isTrialSubscriptionPlan = getSubscriptionIsTrial({
-    subscription,
-  });
-
-  const subscriptionPlanTrialLabel = getSubscriptionPlanLabel({
-    subscription,
-  });
-
-  const trialEndMoment = moment(subscription?.trialEndDate ?? null);
-
-  const trialEndDayDifference = trialEndMoment.isValid()
-    ? trialEndMoment.diff(moment(), 'day')
-    : 0;
-
-  const hasMinimalUsagePeriodPassed =
-    trialEndDayDifference < TRIAL_USAGE_THRESHOLD_PERIOD;
-
-  const trialLabelMinimalPeriodNotPassed = `You are in a ${subscriptionPlanTrialLabel}. There are ${trialEndDayDifference} days left in your trial.`;
-
-  const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed} You will lose access at the end of your trial.`;
-
-  const trialLabelEnded = `Your ${subscriptionPlanTrialLabel} has expired!`;
-
-  const trialEndLabel = (() => {
-    if (hasMinimalUsagePeriodPassed) {
-      return trialEndDayDifference < 0
-        ? trialLabelEnded
-        : trialLabelMinimalPeriodPassed;
-    }
-
-    return trialLabelMinimalPeriodNotPassed;
-  })();
-
-  // const hasMinimalUsagePeriodPassed = false;
-  // const trialEndLabel =
-  //   'In Response to COVID-19, Dock Health is Offering its Platform for Free.';
-
-  // const bannerVisibleFlag = isSubscriptionTrial;
-
-  const drawerClasses = useDrawerClasses({
-    header,
+  const {
     isOpen,
-    bannerVisible: bannerVisibleFlag,
-  });
-
-  useMount(() => {});
-
-  useEffect(() => {
-    if (organization) {
-
-      const bannerVisibleFlagValue = !!(
-        (messageBannerBar && messageBannerBar !== '') ||
-        isTrialSubscriptionPlan
-      );
-      setBannerVisibleFlag(bannerVisibleFlagValue);
-
-      const bannerMessageLinkFlagValue = !!(
-        (!messageBannerBar || messageBannerBar === '') &&
-        trialEndLabel &&
-        trialEndLabel !== ''
-      );
-      setBannerMessageLinkFlag(bannerMessageLinkFlagValue);
-    }
-  }, [organization, messageBannerBar, trialEndLabel, isTrialSubscriptionPlan]);
+    open,
+    close,
+    activeId,
+    setActiveId,
+    user,
+    lists,
+    header,
+    intercomUser,
+    messageBannerBar,
+    hasMinimalUsagePeriodPassed,
+    trialEndLabel,
+    creditCardExpirationMessage,
+    hasCreditCardExpirationMessage,
+    drawerClasses,
+    bannerVisibleFlag,
+    bannerMessageLinkFlag,
+  } = initializeDrawerHooks();
 
   return (
     <div
@@ -144,29 +59,31 @@ const Drawer = ({ children }) => {
         <Grid container item xs={12}>
           {header?.layout?.map(renderHeaderColumn)}
         </Grid>
-        <TrialBanner
+        <TrialBannerContainer
           item
           xs={12}
           container
           justify="center"
           alignItems="center"
-          bannervisible={bannerVisibleFlag}
         >
-          <ThemeProvider theme={themeMontserrat600}>
-            <Typography variant="h4">
+          <TrialBanner
+            bannerVisible={bannerVisibleFlag}
+            hasCreditCardExpirationMessage={hasCreditCardExpirationMessage}
+          >
+            <MontserratTypography weight="600" variant="h4">
               <span>
-                {messageBannerBar && messageBannerBar !== ''
-                  ? messageBannerBar
-                  : trialEndLabel}
+                {creditCardExpirationMessage ||
+                  messageBannerBar ||
+                  trialEndLabel}
               </span>
-              {bannerMessageLinkFlag && (
+              {bannerMessageLinkFlag && !hasCreditCardExpirationMessage && (
                 <TrialBannerLink to="/subscriptions">
                   {hasMinimalUsagePeriodPassed ? 'Subscribe Now' : 'Learn more'}
                 </TrialBannerLink>
               )}
-            </Typography>
-          </ThemeProvider>
-        </TrialBanner>
+            </MontserratTypography>
+          </TrialBanner>
+        </TrialBannerContainer>
       </AppBar>
       <MaterialDrawer
         classes={{
