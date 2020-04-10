@@ -128,10 +128,7 @@ const BillingElement = ({
         onClick={() => componentReference?.focus()}
         error={Boolean(fieldError)}
       >
-        <UniversalInputLabel
-          shrink={isFocused || !isEmpty || alwaysShrink}
-          required
-        >
+        <UniversalInputLabel shrink={isFocused || !isEmpty || alwaysShrink}>
           <MontserratTypography variant="h4">
             <span>{label} </span>
             <span style={{ color: palette.oPlusRed }}>*</span>
