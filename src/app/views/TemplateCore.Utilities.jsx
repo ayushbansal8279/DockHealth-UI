@@ -15,6 +15,7 @@ const CREATE_ACCOUNT_PATH = '/onboarding/create-account';
 const EULA_PATH = '/onboarding/eula';
 const BAA_OVERVIEW_PATH = '/onboarding/baa-overview';
 const BAA_CHECK_PATH = '/onboarding/baa-check';
+const BAA_INVITATION_SENT_PATH = '/onboarding/baa-invitation-sent';
 const TEAM_ORG_SETUP_PATH = '/onboarding/team-org-setup';
 const HOME_PATH = '/tasks';
 
@@ -83,7 +84,9 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
   const isMobile = useMobile();
 
   const isBaaPath =
-    pathname === BAA_CHECK_PATH || pathname === BAA_OVERVIEW_PATH;
+    pathname === BAA_CHECK_PATH ||
+    pathname === BAA_OVERVIEW_PATH ||
+    pathname === BAA_INVITATION_SENT_PATH;
 
   let orgData = null;
 
@@ -113,7 +116,7 @@ const checkUserAccountState = async ({ dispatch, user, pathname }) => {
       hashHistory.replace(EULA_PATH);
     }
   } else if (!orgData?.baaSigned && !isBaaPath) {
-    hashHistory.replace(BAA_CHECK_PATH);
+    hashHistory.replace(BAA_OVERVIEW_PATH);
   } else if (isMobile) {
     handleMobileRedirection({
       data,
