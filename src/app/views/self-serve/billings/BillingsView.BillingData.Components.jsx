@@ -132,3 +132,8 @@ export const FormContainer = styled(Grid)`
     display: ${props => (props.visible ? 'flex' : 'none')};
   }
 `;
+
+export const AddressLineToggleContainer = styled.div`
+  color: ${palette.midnightBlue};
+  cursor: pointer;
+`;

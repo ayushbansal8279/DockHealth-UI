@@ -24,7 +24,9 @@ import {
   BillingElementContainer,
   FormContainer,
   StyledFormHelperText,
+  AddressLineToggleContainer,
 } from './BillingsView.BillingData.Components';
+import { StyledCollapse } from './BillingsView.Styled';
 
 const REQUIRED_MESSAGE = 'This field is required.';
 
@@ -191,6 +193,8 @@ const CreditPaymentForm = ({
 }) => {
   const getInputProps = getInputPropsMethod({ setValue, values, errors });
 
+  const [addressLine2Visible, toggleAddressLine2Visible] = useToggle(false);
+
   return (
     <FormContainer container spacing={2} visible={isUpdatingBilling}>
       <Grid item sm={12}>
@@ -264,7 +268,16 @@ const CreditPaymentForm = ({
         />
       </Grid>
       <Grid item sm={12}>
-        <UniversalMontserratInput name="address2" label="Address line 2" />
+        <MontserratTypography variant="h4">
+          <AddressLineToggleContainer onClick={toggleAddressLine2Visible}>
+            <span>{addressLine2Visible ? '×' : '+'}</span>
+            <span> Address line 2</span>
+          </AddressLineToggleContainer>
+        </MontserratTypography>
+        <StyledCollapse in={addressLine2Visible} timeout={250}>
+          <Spacing vertical={3} />
+          <UniversalMontserratInput name="address2" label="Address line 2" />
+        </StyledCollapse>
       </Grid>
       <Grid item sm={12} md={3}>
         <UniversalMontserratInput name="zip" label="ZIP" required />
