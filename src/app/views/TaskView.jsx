@@ -414,6 +414,7 @@ class TaskView extends Component {
     this.closeAuditHistory();
 
     patientActions.getAllPatients();
+    this.setState({completedTasksShown: false});
   };
 
   componentWillUnmount = () => {
@@ -577,6 +578,7 @@ class TaskView extends Component {
     const { onFilter } = this.props;
     const sortBy = '';
 
+    this.setState({completedTasksShown: false});
     this.setState(
       {
         filterBy,
@@ -640,6 +642,7 @@ class TaskView extends Component {
   };
 
   toggleHUD = () => {
+    this.setState({completedTasksShown: false});
     this.setState(
       previousState => ({
         displayHUD: !previousState.displayHUD,
@@ -1043,13 +1046,13 @@ class TaskView extends Component {
       ...listCompletedTasks.flatMap(task => task?.subtasks ?? null),
     ].filter(Boolean).length;
 
-    const allCompletedTaskCount =
-      taskListStats?.stats?.find?.(
-        ({ metricName }) => metricName === 'CompletedAll_TaskList_Count',
-      )?.metricValue ?? 0;
+    // const allCompletedTaskCount =
+    //   taskListStats?.stats?.find?.(
+    //     ({ metricName }) => metricName === 'CompletedAll_TaskList_Count',
+    //   )?.metricValue ?? 0;
 
-    // const completedTaskCount = listCompletedTasks.length;
-    const completedTaskCount = allCompletedTaskCount;
+    const completedTaskCount = listCompletedTasks.length;
+    // const completedTaskCount = allCompletedTaskCount;
 
     return (
       <>
