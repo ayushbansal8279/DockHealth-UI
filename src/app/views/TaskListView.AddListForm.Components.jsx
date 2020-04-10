@@ -278,3 +278,16 @@ export const MemberNamesLabelContainer = styled.div`
   padding-top: 1rem;
   white-space: normal;
 `;
+
+export const TickIconContainer = styled.div`
+  align-items: center;
+  display: flex;
+  height: 100%;
+  min-width: 1rem;
+  width: 1rem;
+
+  & svg {
+    object-fit: contain;
+    width: 100%;
+  }
+`;

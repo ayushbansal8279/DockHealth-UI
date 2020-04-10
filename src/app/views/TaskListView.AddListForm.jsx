@@ -7,6 +7,7 @@ import Spacing from '../components/common/Spacing';
 import Member from '../components/members/Member';
 import { StyledSwitchUnbound } from '../components/userProfileView/StyledSwitch';
 import { showAlert } from '../helpers/utility-functions';
+import TickIcon from '../img/tick-icon';
 import { RobotoTypography } from '../theme';
 import { MontserratTypography } from '../theme-montserrat';
 import {
@@ -31,6 +32,7 @@ import {
   StyledInputLabel,
   StyledList,
   StyledListItem,
+  TickIconContainer,
 } from './TaskListView.AddListForm.Components';
 import initializeAddListFormHooks from './TaskListView.AddListForm.Hooks';
 
@@ -56,11 +58,10 @@ const onSubmit = ({
     });
 };
 
-const renderMember = ({ people, removePerson }) => memberId => {
+const renderMember = ({ people }) => memberId => {
   return (
     <MemberContainer key={memberId}>
       <Member
-        onClick={() => removePerson({ userIdentifier: memberId })}
         size={40}
         member={
           Array.isArray(people)
@@ -72,24 +73,39 @@ const renderMember = ({ people, removePerson }) => memberId => {
   );
 };
 
-const renderPickerOption = ({ closePicker, addPerson }) => member => {
+const renderPickerOption = ({
+  addPerson,
+  removePerson,
+  peopleIdentifiers,
+}) => member => {
   const { firstName, lastName, userIdentifier } = member;
 
   const userName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
+
+  const isInList = (peopleIdentifiers ?? []).includes(userIdentifier);
 
   return (
     <StyledListItem
       button
       onClick={() => {
-        addPerson({ userIdentifier });
-        closePicker();
+        if (isInList) {
+          removePerson({ userIdentifier });
+        } else {
+          addPerson({ userIdentifier });
+        }
       }}
       key={userIdentifier}
     >
-      <Grid container alignItems="center" justify="space-between">
-        <MontserratTypography component="div" variant="h4">
-          {userName}
-        </MontserratTypography>
+      <Grid container alignItems="center" justify="space-between" wrap="nowrap">
+        <Grid container alignItems="center" wrap="nowrap">
+          <TickIconContainer>
+            {isInList && <TickIcon active />}
+          </TickIconContainer>
+          <Spacing horizontal={3} />
+          <MontserratTypography component="div" variant="h4">
+            {userName}
+          </MontserratTypography>
+        </Grid>
         <div>
           <Member member={member} />
         </div>
@@ -256,9 +272,7 @@ const AddListForm = ({ setListFormOpen }) => {
             </EmptyMember>
           </MemberContainer>
           <MoreMembersContainer count={restOfAdminsWithOwner?.length} />
-          {adminsWithOwner?.map(
-            renderMember({ people, removePerson: removeAdmin }),
-          )}
+          {adminsWithOwner?.map(renderMember({ people }))}
         </MembersContainer>
       </ExtendedFormControl>
       <StyledCollapse timeout={150} in={adminsPickerOpen}>
@@ -268,8 +282,9 @@ const AddListForm = ({ setListFormOpen }) => {
           ) : (
             filteredPeople.map(
               renderPickerOption({
-                closePicker: closeAdminsPicker,
                 addPerson: addAdmin,
+                removePerson: removeAdmin,
+                peopleIdentifiers: allAdminsWithOwner,
               }),
             )
           )}
@@ -321,9 +336,7 @@ const AddListForm = ({ setListFormOpen }) => {
             </EmptyMember>
           </MemberContainer>
           <MoreMembersContainer count={restOfMembersValue?.length} />
-          {membersValue?.map(
-            renderMember({ people, removePerson: removeMember }),
-          )}
+          {membersValue?.map(renderMember({ people }))}
         </MembersContainer>
       </ExtendedFormControl>
       <StyledCollapse timeout={150} in={membersPickerOpen}>
@@ -333,8 +346,9 @@ const AddListForm = ({ setListFormOpen }) => {
           ) : (
             filteredPeople.map(
               renderPickerOption({
-                closePicker: closeMembersPicker,
                 addPerson: addMember,
+                removePerson: removeMember,
+                peopleIdentifiers: allMembersValue,
               }),
             )
           )}

@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { splitAt } from 'ramda';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffectOnce } from 'react-use';
-import { splitAt } from 'ramda';
 import { findAllUsersByOrganizationId } from '../actions/people-actions';
 import useBoolean from '../hooks/useBoolean';
 
@@ -14,11 +14,13 @@ const filterPeopleBasedOnIdentifier = ({
   listOwner,
   membersValue,
   adminsValue,
+  membersPickerOpen,
+  adminsPickerOpen,
 }) => ({ userIdentifier }) =>
   userIdentifier != null &&
   userIdentifier !== listOwner.userIdentifier &&
-  !membersValue.includes(userIdentifier) &&
-  !adminsValue.includes(userIdentifier);
+  ((adminsPickerOpen && !membersValue.includes(userIdentifier)) ||
+    (membersPickerOpen && !adminsValue.includes(userIdentifier)));
 
 const getFormWatchedValues = ({ watch }) => ({
   listNameValue: watch('listName') ?? '',
@@ -119,6 +121,8 @@ const initializeAddListFormHooks = () => {
             listOwner,
             membersValue,
             adminsValue,
+            membersPickerOpen,
+            adminsPickerOpen,
           }),
         )
         .filter(({ firstName = '', middleName = '', lastName = '' }) =>
