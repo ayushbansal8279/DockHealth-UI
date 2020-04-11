@@ -151,6 +151,10 @@ const SubscriptionPaymentView = () => {
     setPaymentNewPlan({ newPlan: null })(dispatch);
   }, [dispatch]);
 
+  const onCancelPaymentClick = useCallback(() => {
+    cancelSubscriptionPayment();
+  }, []);
+
   const [
     processingPayment,
     setProcessingPayment,
@@ -257,6 +261,7 @@ const SubscriptionPaymentView = () => {
                 isUpdatingBilling
                 setUpdatingBilling={noop}
                 unsetUpdatingBilling={noop}
+                cancelUpdateBilling={onCancelPaymentClick}
                 onSubmit={onSubmit({
                   subscriptionPlan,
                   billingFrequency,

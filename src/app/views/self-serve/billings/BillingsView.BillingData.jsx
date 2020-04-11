@@ -158,10 +158,10 @@ const BillingElement = ({
   );
 };
 
-const SaveBillingElement = ({ isUpdatingBilling, unsetUpdatingBilling }) =>
+const SaveBillingElement = ({ isUpdatingBilling, cancelUpdateBilling }) =>
   isUpdatingBilling && (
     <Grid item sm={12} container justify="flex-end" wrap="nowrap">
-      <Button size="small" onClick={unsetUpdatingBilling} variant="text">
+      <Button size="small" onClick={cancelUpdateBilling} variant="text">
         <MontserratTypography
           variant="h4"
           textDecoration="underline"
@@ -186,7 +186,7 @@ const getInputPropsMethod = ({ setValue, values, errors }) => ({ name }) => ({
 
 const CreditPaymentForm = ({
   isUpdatingBilling,
-  unsetUpdatingBilling,
+  cancelUpdateBilling,
   setValue,
   values,
   errors,
@@ -290,7 +290,7 @@ const CreditPaymentForm = ({
       </Grid>
       <SaveBillingElement
         isUpdatingBilling={isUpdatingBilling}
-        unsetUpdatingBilling={unsetUpdatingBilling}
+        cancelUpdateBilling={cancelUpdateBilling}
       />
     </FormContainer>
   );
@@ -301,6 +301,7 @@ const BillingData = ({
   isUpdatingBilling,
   setUpdatingBilling,
   unsetUpdatingBilling,
+  cancelUpdateBilling,
   onSubmit,
 }) => {
   const { billingDetails, userProfile } = useSelector(store => ({
@@ -388,7 +389,7 @@ const BillingData = ({
       <FormContext {...formMethods}>
         <CreditPaymentForm
           isUpdatingBilling={isUpdatingBilling}
-          unsetUpdatingBilling={unsetUpdatingBilling}
+          cancelUpdateBilling={cancelUpdateBilling}
           setValue={setValue}
           values={values}
           errors={errorsValues}

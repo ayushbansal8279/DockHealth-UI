@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { hashHistory } from 'react-router';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { setHeader } from '../../../actions/header-actions';
@@ -72,6 +73,11 @@ const BillingsView = () => {
     unsetUpdatingBilling,
   ] = useBoolean(false);
 
+  const cancelUpdateBilling = () => {
+    unsetUpdatingBilling();
+    hashHistory.push('/subscriptions');
+  };
+
   useMount(() => {
     setHeader(dispatch)({
       layout: [
@@ -110,6 +116,7 @@ const BillingsView = () => {
           isUpdatingBilling={isUpdatingBilling}
           setUpdatingBilling={setUpdatingBilling}
           unsetUpdatingBilling={unsetUpdatingBilling}
+          cancelUpdateBilling={cancelUpdateBilling}
           onSubmit={onSubmit({ setError })}
         />
       </Elements>
