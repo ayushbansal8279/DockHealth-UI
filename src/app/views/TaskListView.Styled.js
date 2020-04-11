@@ -63,7 +63,7 @@ export const NoListsIconContainer = styled.div`
   align-items: center;
   border: 0.125rem solid #c1ccda;
   border-radius: 4rem;
-  color: #ef8a23;
+  color: ${palette.oPlusRed};
   display: flex;
   height: 4rem;
   justify-content: center;
