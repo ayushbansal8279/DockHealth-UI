@@ -992,7 +992,7 @@ class TaskView extends Component {
       isMultiList,
       isSpecificPatient,
       onCompletedTasksRequest,
-      taskListStats,
+      // taskListStats,
     } = this.props;
     const {
       slimView,
@@ -1046,13 +1046,12 @@ class TaskView extends Component {
       ...listCompletedTasks.flatMap(task => task?.subtasks ?? null),
     ].filter(Boolean).length;
 
-    // const allCompletedTaskCount =
+    // const completedTaskCount =
     //   taskListStats?.stats?.find?.(
     //     ({ metricName }) => metricName === 'CompletedAll_TaskList_Count',
     //   )?.metricValue ?? 0;
 
     const completedTaskCount = listCompletedTasks.length;
-    // const completedTaskCount = allCompletedTaskCount;
 
     return (
       <>
@@ -1074,7 +1073,7 @@ class TaskView extends Component {
                   ? ` (${
                       completedTaskCount >= TASK_LIST_SHOW_MORE_STEP
                         ? `${TASK_LIST_SHOW_MORE_STEP}+`
-                        : allCompletedTaskCount
+                        : completedTaskCount
                     })`
                   : ``
               }
