@@ -8,6 +8,10 @@ import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { getBillingEstimate } from '../../../actions/organization-actions';
 import Spacing from '../../../components/common/Spacing';
+import CardAmexIcon from '../../../img/cards/american-express.png';
+import CardDiscoverIcon from '../../../img/cards/discover.png';
+import CardMastercardIcon from '../../../img/cards/mastercard.png';
+import CardVisaIcon from '../../../img/cards/visa.png';
 import palette from '../../../palette';
 import { MontserratTypography } from '../../../theme-montserrat';
 import { BILLING_FREQUENCY } from '../subscriptions/SubscriptionsView.Utilities';
@@ -35,6 +39,15 @@ const LinkContainer = styled.span`
   text-decoration: underline;
 `;
 
+const CardBrandIconImage = styled.img`
+  background-color: ${palette.white};
+  border-radius: 0.25rem;
+  border: 0.5px solid ${palette.midnightBlue};
+  cursor: default;
+  object-fit: contain;
+  width: 2.25rem;
+`;
+
 const ExpirationLabel = styled.span`
   color: ${palette.oPlusRed};
 `;
@@ -43,15 +56,36 @@ const goToSubscriptions = () => {
   hashHistory.push('/subscriptions');
 };
 
+const getCardBrandIconSource = ({ cardBrand }) => {
+  switch (cardBrand?.toLowerCase()) {
+    case 'american express':
+      return CardAmexIcon;
+    case 'discover':
+      return CardDiscoverIcon;
+    case 'mastercard':
+      return CardMastercardIcon;
+    case 'visa':
+      return CardVisaIcon;
+    default:
+      return null;
+  }
+};
+
 const BillingInformation = ({ setUpdatingBilling }) => {
   const { getValues } = useFormContext();
 
   const dispatch = useDispatch();
 
-  const billingData = useSelector(store => store.organizationState.billingData);
+  const { billingData, billingDetails } = useSelector(
+    store => store.organizationState,
+  );
 
   useMount(() => {
     getBillingEstimate({})(dispatch);
+  });
+
+  const cardBrandIcon = getCardBrandIconSource({
+    cardBrand: billingDetails?.cardBrand,
   });
 
   const values = getValues();
@@ -100,8 +134,17 @@ const BillingInformation = ({ setUpdatingBilling }) => {
         <Spacing vertical={3} />
         <Spacing vertical={1} />
         <MontserratTypography variant="h4">
-          <span>{values?.cardNumber} </span>
-          <ExpirationLabel>exp {expirationLabel}</ExpirationLabel>
+          <Grid container alignItems="center" wrap="nowrap">
+            {cardBrandIcon && (
+              <>
+                <CardBrandIconImage src={cardBrandIcon} />
+                <Spacing horizontal={3} />
+              </>
+            )}
+            <span>{values?.cardNumber} </span>
+            <Spacing horizontal={3} />
+            <ExpirationLabel>exp {expirationLabel}</ExpirationLabel>
+          </Grid>
         </MontserratTypography>
       </InformationInnerContainer>
       <InformationInnerContainer>
