@@ -164,6 +164,7 @@ const MemberTypeLabel = ({
     <>
       <MemberTypeLabelButton
         ref={labelReference}
+        invited={invitationModifiable}
         clickable={Boolean(renderOptionsMethod)}
         onClick={renderOptionsMethod ? openPopover : undefined}
       >

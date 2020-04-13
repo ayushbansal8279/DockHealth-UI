@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import palette from '../../../palette';
 
 export const MemberTypeLabelButton = styled.div`
-  background-color: ${palette.coolGrey2};
-  color: ${palette.white};
   cursor: pointer;
   filter: brightness(1);
   padding: 0.5rem;
@@ -15,9 +13,13 @@ export const MemberTypeLabelButton = styled.div`
   width: min-content;
   white-space: nowrap;
 
+  ${props =>
+    props.invited
+      ? `background-color: ${palette.lightGrey}; color: ${palette.coolGrey2};`
+      : `background-color: ${palette.coolGrey2}; color: ${palette.white};`}
+
   &:hover {
-    background-color: ${palette.coolGrey2};
-    color: ${palette.white};
+    filter: brightness(1.05);
   }
 `;
 

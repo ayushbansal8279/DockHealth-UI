@@ -34,12 +34,12 @@ const StyledAnchor = styled.a`
 const USER_TYPES = new Proxy(
   {
     MEMBER: {
-      label: 'Team Member',
+      label: 'Member',
       selectable: true,
       changeable: true,
     },
     ADMIN: {
-      label: 'Administrator',
+      label: 'Admin',
       selectable: true,
       changeable: true,
     },
