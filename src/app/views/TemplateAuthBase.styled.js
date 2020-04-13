@@ -29,12 +29,14 @@ export const LeftSideMainContainer = styled.div`
   max-width: 642px;
   height: 100%;
   justify-content: center;
+  min-height: 100%;
   padding: 2rem;
   width: 50%;
 
   @media screen and (max-width: ${mdBreakpoint}px) {
-    height: auto;
+    height: min-content;
     max-width: unset;
+    min-height: min-content;
     padding: 1.5rem;
     width: 100%;
   }
@@ -42,7 +44,8 @@ export const LeftSideMainContainer = styled.div`
 
 export const LeftSideContentContainer = styled.div`
   color: ${palette.white};
-  height: 100%;
+  height: min-content;
+  min-height: min-content;
   width: 100%;
 
   @media screen and (min-width: ${mdBreakpoint}px) {
@@ -56,19 +59,29 @@ export const RightSideMainContainer = styled.div`
   background-color: ${palette.white};
   display: flex;
   flex: 1;
+  height: min-content;
   justify-content: center;
+  min-height: min-content;
+
+  @media screen and (min-width: ${mdBreakpoint}px) {
+    height: 100%;
+    min-height: 100%;
+  }
 `;
 
 export const RightSideContentContainer = styled.div`
   align-items: flex-start;
   display: flex;
-  height: 100%;
+  height: min-content;
   justify-content: center;
+  min-height: min-content;
   padding: 1.5rem;
   width: 100%;
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     align-items: center;
+    height: 100%;
+    min-height: 100%;
     padding: 2rem;
     max-width: 495px;
   }
