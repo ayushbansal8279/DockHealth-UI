@@ -310,7 +310,7 @@ export function createUser(user) {
   return axios.put('user', user).then(response => {
     store.dispatch({
       type: 'user/userIdentifier',
-      userIdentifier: response.data.userIdentifier,
+      userIdentifier: response?.data.userIdentifier,
     });
     return response;
   });
@@ -329,11 +329,11 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
       }user/findUserByEmail?email=${encodeURIComponent(email)}`,
     )
     .then(response => {
-      store.dispatch({ type: 'user/userProfile', userProfile: response.data });
-      sessionStorage.setItem('userIdentifier', response.data.userIdentifier);
-      sessionStorage.setItem('userProfile', JSON.stringify(response.data));
+      store.dispatch({ type: 'user/userProfile', userProfile: response?.data });
+      sessionStorage.setItem('userIdentifier', response?.data.userIdentifier);
+      sessionStorage.setItem('userProfile', JSON.stringify(response?.data));
       onLogin();
-      return { ...response.data, access: dummyAccess };
+      return { ...response?.data, access: dummyAccess };
     });
 }
 
@@ -353,8 +353,8 @@ export function getUserByEmail(email, cognitoUser) {
 
 export function getUserById() {
   return axios.get(`user/${sessionStorage.userIdentifier}`).then(response => {
-    store.dispatch({ type: 'user/userProfile', userProfile: response.data });
-    return response.data;
+    store.dispatch({ type: 'user/userProfile', userProfile: response?.data });
+    return response?.data;
   });
 }
 
@@ -369,10 +369,10 @@ export function getUserProfilePic(userIdentifier, pictureType) {
       { responseType: 'arraybuffer' },
     )
     .then(response => {
-      const binaryImage = Buffer.from(response.data, 'binary').toString(
+      const binaryImage = Buffer.from(response?.data, 'binary').toString(
         'base64',
       );
-      const image = `data:${response.headers[
+      const image = `data:${response?.headers[
         'content-type'
       ].toLowerCase()};base64,${binaryImage}`;
       store.dispatch({ type: 'user/userProfilePic', userProfilePic: image });
@@ -391,7 +391,7 @@ export function saveUserProfilePic(data) {
     .post(`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture`, data)
     .then(response => {
       getUserById();
-      return response.data;
+      return response?.data;
     })
     .catch(error => {
       throw error;
@@ -402,7 +402,7 @@ export function updateUser(formProps) {
   return axios
     .put(`${process.env.HEYDOC_SERVICES_BASE_URL}user`, formProps)
     .then(response => {
-      return response.data;
+      return response?.data;
     })
     .catch(error => {
       throw error;
@@ -413,7 +413,7 @@ export function deleteUserProfilePic() {
   return axios
     .delete(`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture`)
     .then(response => {
-      return response.data;
+      return response?.data;
     });
 }
 
@@ -421,9 +421,9 @@ export function getUserNotoficationPrefs() {
   return axios.get('user/userNotificationPreferences').then(response => {
     store.dispatch({
       type: 'user/userNotificationPrefs',
-      userNotificationPrefs: response.data,
+      userNotificationPrefs: response?.data,
     });
-    return response.data;
+    return response?.data;
   });
 }
 
@@ -441,7 +441,7 @@ export function updateUserNotoficationPrefs(
       `${process.env.HEYDOC_SERVICES_BASE_URL}user/userNotificationPreferences`,
       notificationPreferences,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       throw error;
     });
@@ -464,7 +464,7 @@ export function findOrgInviteByEmail(email) {
       `${process.env.HEYDOC_SERVICES_BASE_URL}user/findOrgInviteByEmail/`,
       email,
     )
-    .then(response => response.data)
+    .then(response => response?.data)
     .catch(error => {
       throw error;
     });
@@ -476,9 +476,9 @@ export function getAllSpecialties() {
     .then(response => {
       store.dispatch({
         type: 'reference/allSpecialties',
-        allSpecialties: response.data,
+        allSpecialties: response?.data,
       });
-      return response.data;
+      return response?.data;
     });
 }
 
@@ -486,8 +486,11 @@ export function getAllTitles() {
   return axios
     .get(`${process.env.HEYDOC_SERVICES_BASE_URL}reference/titles`)
     .then(response => {
-      store.dispatch({ type: 'reference/allTitles', allTitles: response.data });
-      return response.data;
+      store.dispatch({
+        type: 'reference/allTitles',
+        allTitles: response?.data,
+      });
+      return response?.data;
     });
 }
 
@@ -512,9 +515,9 @@ export function refreshAccessToken(email) {
         return axios
           .post(`${cognitoAuthUrl}/oauth2/token`, authData)
           .then(response => {
-            const userRefreshToken = response.data.refresh_token;
-            const userAccessToken = response.data.access_token;
-            const userIDToken = response.data.id_token;
+            const userRefreshToken = response?.data.refresh_token;
+            const userAccessToken = response?.data.access_token;
+            const userIDToken = response?.data.id_token;
             sessionStorage.setItem('EnterpriseUserFlag', true);
             sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
             sessionStorage.setItem('SSO_IDTOKEN', userIDToken);
@@ -532,8 +535,6 @@ export function refreshAccessToken(email) {
     Pool: userPool,
   };
 
-  const comp = this;
-
   return new Promise((resolve, reject) => {
     const cognitoUser = new CognitoUser(cognitoUserData);
     cognitoUser.getSession((error, session) => {
@@ -544,7 +545,8 @@ export function refreshAccessToken(email) {
         axios.defaults.headers.common.Authorization = `Bearer ${session.accessToken.jwtToken}`;
         sessionStorage.setItem('accessToken', session.accessToken.jwtToken);
         if (currentAccessToken !== session.accessToken.jwtToken) {
-          comp.getUserByEmail(email, cognitoUser);
+          // eslint-disable-next-line no-unused-expressions
+          this?.getUserByEmail(email, cognitoUser);
         }
         resolve(session.isValid());
       }
@@ -563,22 +565,22 @@ export function getAccessTokensByAuthCode(authCode) {
       return axios
         .post(`${cognitoAuthUrl}/oauth2/token`, authData)
         .then(response => {
-          const userRefreshToken = response.data.refresh_token;
-          const userAccessToken = response.data.access_token;
+          const userRefreshToken = response?.data.refresh_token;
+          const userAccessToken = response?.data.access_token;
           axios.defaults.headers.common.Authorization = `Bearer ${userAccessToken}`;
 
           return axios
             .get(`${cognitoAuthUrl}/oauth2/userInfo`)
             .then(cognitoResponse => {
               getUserByEmailAndAccessToken(
-                cognitoResponse.data.email,
+                cognitoResponse?.data.email,
                 userAccessToken,
               );
 
               sessionStorage.setItem('EnterpriseUserFlag', true);
 
               const cognitoUserData = {
-                Username: cognitoResponse.data.email,
+                Username: cognitoResponse?.data.email,
                 Pool: userPool,
               };
 
@@ -610,9 +612,9 @@ export function getEnterpriseAccessTokensByAuthCode(authCode) {
       const authData = `grant_type=authorization_code&code=${authCode}`;
 
       return axios.post(`${authUrl}/token`, authData).then(response => {
-        const userRefreshToken = response.data.refresh_token;
-        const userAccessToken = response.data.access_token;
-        const email = response.data.profile;
+        const userRefreshToken = response?.data.refresh_token;
+        const userAccessToken = response?.data.access_token;
+        const email = response?.data.profile;
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);

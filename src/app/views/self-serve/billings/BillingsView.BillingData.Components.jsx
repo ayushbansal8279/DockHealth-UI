@@ -137,3 +137,27 @@ export const AddressLineToggleContainer = styled.div`
   color: ${palette.midnightBlue};
   cursor: pointer;
 `;
+
+export const CardNumberElementContainer = styled.div`
+  position: relative;
+`;
+
+export const AcceptedCardsContainer = styled.div`
+  align-items: center;
+  display: grid;
+  grid-gap: 0.25rem;
+  grid-template-columns: repeat(4, auto);
+  height: 50%;
+  position: absolute;
+  right: 0.5rem;
+  top: 25%;
+
+  > img {
+    background-color: ${palette.white};
+    border-radius: 0.25rem;
+    border: 0.5px solid ${opacify(palette.black, 0.2)};
+    cursor: default;
+    object-fit: contain;
+    width: 2.5rem;
+  }
+`;

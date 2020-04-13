@@ -1,5 +1,5 @@
 import { Button, Collapse, Grid } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import {
@@ -10,6 +10,10 @@ import {
 } from 'react-stripe-elements';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
+import CardVisaIcon from '../../../img/cards/visa.png';
+import CardMastercardIcon from '../../../img/cards/mastercard.png';
+import CardDiscoverIcon from '../../../img/cards/discover.png';
+import CardAmexIcon from '../../../img/cards/american-express.png';
 import Spacing from '../../../components/common/Spacing';
 import {
   UniversalFormControl,
@@ -21,10 +25,12 @@ import palette from '../../../palette';
 import { MontserratTypography } from '../../../theme-montserrat';
 import BillingInformation from './BillingsView.BillingData.BillingInformation';
 import {
+  AcceptedCardsContainer,
+  AddressLineToggleContainer,
   BillingElementContainer,
+  CardNumberElementContainer,
   FormContainer,
   StyledFormHelperText,
-  AddressLineToggleContainer,
 } from './BillingsView.BillingData.Components';
 import { StyledCollapse } from './BillingsView.Styled';
 
@@ -116,12 +122,22 @@ const BillingElement = ({
   label,
   placeholder,
   alwaysShrink,
+  setInputEmpty,
 }) => {
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
-  const [isEmpty, setEmpty] = useToggle(true);
+  const [isEmpty, setEmptyRaw] = useToggle(true);
   const [componentReference, setComponentReference] = useState(null);
 
   const [fieldError, setFieldError] = useState(null);
+
+  const setEmpty = useCallback(
+    value => {
+      setEmptyRaw(value);
+      // eslint-disable-next-line no-unused-expressions
+      setInputEmpty?.(value);
+    },
+    [setEmptyRaw, setInputEmpty],
+  );
 
   return (
     <>
@@ -148,6 +164,7 @@ const BillingElement = ({
             style={billingElementStyling}
             onReady={reference => setComponentReference(reference)}
             disabled={disabled}
+            showIcon={!isEmpty}
           />
         </BillingElementContainer>
       </UniversalFormControl>
@@ -194,6 +211,7 @@ const CreditPaymentForm = ({
   const getInputProps = getInputPropsMethod({ setValue, values, errors });
 
   const [addressLine2Visible, toggleAddressLine2Visible] = useToggle(false);
+  const [isCardNumberEmpty, setCardNumberEmpty] = useToggle(true);
 
   return (
     <FormContainer container spacing={2} visible={isUpdatingBilling}>
@@ -211,16 +229,35 @@ const CreditPaymentForm = ({
         />
       </Grid>
       <Grid item sm={12} md={6}>
-        <BillingElement
-          id="card-number"
-          Component={CardNumberElement}
-          label="Card number"
-          placeholder="1234 1234 1234 1234"
-          isUpdatingBilling={isUpdatingBilling}
-          required
-          alwaysShrink
-          inputProps={getInputProps({ name: 'cardNumber' })}
-        />
+        <CardNumberElementContainer>
+          <BillingElement
+            id="card-number"
+            Component={CardNumberElement}
+            label="Card number"
+            placeholder="1234 1234 1234 1234"
+            isUpdatingBilling={isUpdatingBilling}
+            required
+            alwaysShrink
+            inputProps={getInputProps({ name: 'cardNumber' })}
+            setInputEmpty={setCardNumberEmpty}
+          />
+          {isCardNumberEmpty && (
+            <AcceptedCardsContainer>
+              <img alt="Visa" title="Visa" src={CardVisaIcon} />
+              <img
+                alt="Mastercard"
+                title="Mastercard"
+                src={CardMastercardIcon}
+              />
+              <img
+                alt="American Express"
+                title="American Express"
+                src={CardAmexIcon}
+              />
+              <img alt="Discover" title="Discover" src={CardDiscoverIcon} />
+            </AcceptedCardsContainer>
+          )}
+        </CardNumberElementContainer>
       </Grid>
       <Grid item sm={12} md={6}>
         <BillingElement
