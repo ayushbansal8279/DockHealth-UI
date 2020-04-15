@@ -189,6 +189,8 @@ const AddListForm = ({ setListFormOpen }) => {
       onSubmit={handleSubmit(
         onSubmit({ dispatch, setListFormOpen, taskListIdentifier }),
       )}
+      autoComplete="off"
+      autoCorrect="off"
     >
       {taskListIdentifier && (
         <>
