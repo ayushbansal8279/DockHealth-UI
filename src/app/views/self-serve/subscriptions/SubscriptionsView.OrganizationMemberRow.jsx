@@ -120,7 +120,7 @@ export const EmptyOrganizationMemberRow = () => (
   <tr>
     <td colSpan={6}>
       <Grid container alignItems="center" justify="center">
-        No members added
+        No members are unsubscribed
       </Grid>
     </td>
   </tr>
