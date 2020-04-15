@@ -237,6 +237,7 @@ export const OnboardingButton = withStyles({
       top: 0,
       transition: 'all 0.25s ease-out',
       width: '100%',
+      zIndex: 0,
     },
   },
   small: {
@@ -295,6 +296,9 @@ export const OnboardingButton = withStyles({
   fullWidth: {
     width: '100%',
   },
+  label: {
+    zIndex: 100,
+  },
 })(({ classes, variant, size, fullWidth, disabled, children, ...props }) => {
   const className = clsx(
     classes.root,
@@ -306,7 +310,11 @@ export const OnboardingButton = withStyles({
 
   return (
     <ButtonBase disabled={disabled} className={className} {...props}>
-      <MontserratTypography variant="h4" weight="600" style={{ zIndex: 100 }}>
+      <MontserratTypography
+        variant="h4"
+        weight="600"
+        className={clsx(classes.label)}
+      >
         {children}
       </MontserratTypography>
     </ButtonBase>

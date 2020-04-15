@@ -1,13 +1,15 @@
 import { Grid } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useMount } from 'react-use';
 import {
   signOrganizationBAADocument,
   storeSignatureResult,
 } from '../../../api/organization-api';
+import CubesLoader from '../../../components/common/CubesLoader';
 import Spacing from '../../../components/common/Spacing';
 import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
+import palette from '../../../palette';
 import { MontserratTypography } from '../../../theme-montserrat';
 import {
   OnboardingAnchorDiv,
@@ -25,6 +27,7 @@ const getPanelDetails = ({
   isSmallScreen,
   clickReadAndSign,
   showInvitationForm,
+  isProcessing,
 }) =>
   mainDisplayOption
     ? {
@@ -34,8 +37,13 @@ const getPanelDetails = ({
             variant="contained"
             onClick={clickReadAndSign}
             fullWidth={isSmallScreen}
+            disabled={isProcessing}
           >
-            Continue
+            {isProcessing ? (
+              <CubesLoader size={32} color={palette.coolGrey1} />
+            ) : (
+              <span>Continue</span>
+            )}
           </OnboardingButton>
         ),
         bottomElement: (
@@ -75,6 +83,8 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
     hideInvitationForm,
   ] = useBoolean(false);
 
+  const [isProcessing, setProcessing] = useState(false);
+
   useMount(() => {
     // eslint-disable-next-line no-unused-expressions
     window?.HelloSign.init(HELLOSIGN_CLIENT_ID);
@@ -83,6 +93,8 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   const openHelloSign = useCallback(signingUrl => {
     const skipDomainVerification =
       HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
+
+    setProcessing(true);
 
     // eslint-disable-next-line no-unused-expressions
     window?.HelloSign.open({
@@ -96,6 +108,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
         }).then(() => {
           // eslint-disable-next-line no-unused-expressions
           window?.HelloSign.close();
+          setProcessing(false);
           if (eventData.event === window?.HelloSign.EVENT_SIGNED) {
             // hashHistory.replace('/onboarding/team-org-setup');
             window.location.href = '/#/onboarding/team-org-setup';
@@ -138,6 +151,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
     isSmallScreen,
     clickReadAndSign,
     showInvitationForm,
+    isProcessing,
   });
 
   return (
