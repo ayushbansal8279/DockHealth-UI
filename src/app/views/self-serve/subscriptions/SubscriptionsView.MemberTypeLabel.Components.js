@@ -6,12 +6,13 @@ import palette from '../../../palette';
 export const MemberTypeLabelButton = styled.div`
   cursor: pointer;
   filter: brightness(1);
+  min-width: 6.375rem;
   padding: 0.5rem;
   text-transform: uppercase;
   text-align: center;
   transition: all 0.25s ease-out;
-  width: min-content;
   white-space: nowrap;
+  width: min-content;
 
   ${props =>
     props.invited
