@@ -75,7 +75,10 @@ const BillingsView = () => {
 
   const cancelUpdateBilling = () => {
     unsetUpdatingBilling();
-    hashHistory.push('/subscriptions');
+
+    if (hashHistory.getCurrentLocation().pathname === '/subscription-payment') {
+      hashHistory.push('/subscriptions');
+    }
   };
 
   useMount(() => {
