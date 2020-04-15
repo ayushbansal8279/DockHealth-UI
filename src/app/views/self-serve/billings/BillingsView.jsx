@@ -17,6 +17,7 @@ import BillingData from './BillingsView.BillingData';
 import InvoicesList from './BillingsView.InvoicesList';
 import {
   BillingsViewContainer,
+  BillingsViewInnerContainer,
   ErrorContainer,
   StyledCollapse,
 } from './BillingsView.Styled';
@@ -98,32 +99,34 @@ const BillingsView = () => {
 
   return (
     <BillingsViewContainer>
-      <StyledCollapse in={Boolean(error)} timeout={250}>
-        <ErrorContainer>
-          <MontserratTypography weight="600" variant="h4">
-            {error}
-          </MontserratTypography>
-        </ErrorContainer>
-        <Spacing vertical={4} />
-      </StyledCollapse>
-      <Elements
-        locale="en-US"
-        fonts={[
-          {
-            cssSrc:
-              'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
-          },
-        ]}
-      >
-        <BillingData
-          isUpdatingBilling={isUpdatingBilling}
-          setUpdatingBilling={setUpdatingBilling}
-          unsetUpdatingBilling={unsetUpdatingBilling}
-          cancelUpdateBilling={cancelUpdateBilling}
-          onSubmit={onSubmit({ setError })}
-        />
-      </Elements>
-      <InvoicesList />
+      <BillingsViewInnerContainer>
+        <StyledCollapse in={Boolean(error)} timeout={250}>
+          <ErrorContainer>
+            <MontserratTypography weight="600" variant="h4">
+              {error}
+            </MontserratTypography>
+          </ErrorContainer>
+          <Spacing vertical={4} />
+        </StyledCollapse>
+        <Elements
+          locale="en-US"
+          fonts={[
+            {
+              cssSrc:
+                'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
+            },
+          ]}
+        >
+          <BillingData
+            isUpdatingBilling={isUpdatingBilling}
+            setUpdatingBilling={setUpdatingBilling}
+            unsetUpdatingBilling={unsetUpdatingBilling}
+            cancelUpdateBilling={cancelUpdateBilling}
+            onSubmit={onSubmit({ setError })}
+          />
+        </Elements>
+        <InvoicesList />
+      </BillingsViewInnerContainer>
     </BillingsViewContainer>
   );
 };

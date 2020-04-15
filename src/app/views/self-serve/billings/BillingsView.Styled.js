@@ -1,4 +1,4 @@
-import { Grid, Collapse } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import palette from '../../../palette';
 
@@ -32,16 +32,18 @@ export const Title = styled(H1)`
   padding-left: 2rem;
 `;
 
-export const BillingsViewContainer = styled(Grid)`
-  && {
-    background-color: ${palette.white};
-    left: 0;
-    min-height: 100%;
-    padding: 2.625rem 4.625rem;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
+export const BillingsViewContainer = styled.div`
+  background-color: ${palette.white};
+  display: flex;
+  justify-content: center;
+  min-height: 100%;
+  padding: 2.625rem 4.625rem;
+  width: 100%;
+`;
+
+export const BillingsViewInnerContainer = styled.div`
+  max-width: 60rem;
+  width: 100%;
 `;
 
 export const StyledCollapse = styled(Collapse)`
