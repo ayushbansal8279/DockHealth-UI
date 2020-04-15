@@ -61,6 +61,7 @@ import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
+import { onLogin } from './helpers/ga-event-helper';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\//, '');
@@ -82,6 +83,9 @@ export const Routes = ({ store }) => {
     const firstPathname = transformPathname(
       hashHistory.getCurrentLocation()?.pathname,
     );
+
+    // set GA UID for every pageview
+    onLogin();
     ReactGA.pageview(firstPathname);
 
     const removeHistoryListener = hashHistory.listen(({ action, pathname }) => {
