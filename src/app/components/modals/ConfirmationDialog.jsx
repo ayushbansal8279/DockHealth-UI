@@ -70,7 +70,7 @@ export default ({
         <StyledContent>Would you like to proceed?</StyledContent>
       </Grid>
       <Grid item xs={12} container justify="center">
-        <Button onClick={confirm} variant="contained">
+        <Button onClick={confirm} variant="contained" size="small">
           {confirmButtonTitle}
         </Button>
       </Grid>
