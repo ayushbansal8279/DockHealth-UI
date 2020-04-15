@@ -20,6 +20,7 @@ import {
   BILLING_FREQUENCY,
   getSubscriptionPlanData,
 } from './SubscriptionsView.Utilities';
+import Spacing from '../../../components/common/Spacing';
 
 const goToSubscriptionPayment = () => {
   hashHistory.push('/subscription-payment');
@@ -176,22 +177,26 @@ export default () => {
             </MontserratTypography>
           </BillingContainer>
         )}
-        <BottomButtonContainer container justify="flex-end">
+        <BottomButtonContainer container justify="flex-end" wrap="nowrap">
           {plansViewVisible && chosenPlan && (
             <>
               {!subscriptionPlanData?.planIsTrial && (
-                <Button variant="text" onClick={hideSubscriptionPlans}>
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={hideSubscriptionPlans}
+                >
                   Cancel
                 </Button>
               )}
+              <Spacing horizontal={4} />
               <Button
                 disabled={buyButtonDisabled}
                 variant="contained"
+                size="small"
                 onClick={onSubscriptionPlanChosen({
                   annualPayment,
-                  billingFrequency,
                   chosenPlan,
-                  organizationIdentifier,
                   dispatch,
                 })}
               >

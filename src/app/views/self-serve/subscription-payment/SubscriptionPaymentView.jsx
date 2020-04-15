@@ -179,8 +179,13 @@ const SubscriptionPaymentView = () => {
     getBillingEstimate()(dispatch);
   });
 
-  const { annualMonthlyPrice, subscriptionPlan, annualPayment, monthlyPrice } =
-    newPaymentPlan || {};
+  const {
+    annualMonthlyPrice,
+    subscriptionPlan,
+    annualPayment,
+    monthlyPrice,
+    planLabel,
+  } = newPaymentPlan || {};
 
   const totalPerUserCost = annualPayment ? annualMonthlyPrice : monthlyPrice;
   const billingFrequency = annualPayment
@@ -205,6 +210,10 @@ const SubscriptionPaymentView = () => {
       monthlyPerUserCost: totalPerUserCost,
       monthlyEstimate: currentUsersCount * totalPerUserCost,
       annualEstimate: currentUsersCount * totalPerUserCost * 12,
+      subscriptionDetails: {
+        subscriptionPlan,
+        billingFrequency,
+      },
     },
   });
 
@@ -221,7 +230,7 @@ const SubscriptionPaymentView = () => {
             <PricingGridContainer>
               <PricingItemVerticallyExpanded>
                 <Grid container alignItems="flex-end" direction="column">
-                  <PlanNameLabel>{planName}</PlanNameLabel>
+                  <PlanNameLabel>{planName || planLabel}</PlanNameLabel>
                   <H3ThinMarginless>{planSubscriptionPeriod}</H3ThinMarginless>
                 </Grid>
               </PricingItemVerticallyExpanded>
