@@ -4,7 +4,7 @@ import ListSwitchChevron from '../../img/list-switch-chevron';
 import palette from '../../palette';
 
 interface RotatableChevronProps {
-  color: string;
+  color?: string;
   rotated: boolean;
 }
 
@@ -62,7 +62,7 @@ export const RotatableChevronWithSpacing = (props: RotatableChevronProps) => (
 );
 
 export const RotatableHeaderChevron = React.forwardRef(
-  (props: RotatableChevronProps, reference) => (
+  (props: RotatableChevronProps, reference: React.Ref<HTMLDivElement>) => (
     <HeaderChevronContainer ref={reference}>
       <RotatableChevron {...props} />
     </HeaderChevronContainer>
