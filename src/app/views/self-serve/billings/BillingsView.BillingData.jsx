@@ -10,10 +10,6 @@ import {
 } from 'react-stripe-elements';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
-import CardVisaIcon from '../../../img/cards/visa.png';
-import CardMastercardIcon from '../../../img/cards/mastercard.png';
-import CardDiscoverIcon from '../../../img/cards/discover.png';
-import CardAmexIcon from '../../../img/cards/american-express.png';
 import Spacing from '../../../components/common/Spacing';
 import {
   UniversalFormControl,
@@ -21,6 +17,10 @@ import {
   UniversalMontserratInput,
 } from '../../../components/userProfileView/UniversalInput';
 import useBoolean from '../../../hooks/useBoolean';
+import CardAmexIcon from '../../../img/cards/american-express.png';
+import CardDiscoverIcon from '../../../img/cards/discover.png';
+import CardMastercardIcon from '../../../img/cards/mastercard.png';
+import CardVisaIcon from '../../../img/cards/visa.png';
 import palette from '../../../palette';
 import { MontserratTypography } from '../../../theme-montserrat';
 import BillingInformation from './BillingsView.BillingData.BillingInformation';
@@ -120,7 +120,6 @@ const BillingElement = ({
   Component,
   disabled,
   label,
-  placeholder,
   alwaysShrink,
   setInputEmpty,
 }) => {
@@ -158,7 +157,7 @@ const BillingElement = ({
               setFieldError(error?.message ?? null);
               setEmpty(empty);
             }}
-            placeholder={isFocused ? placeholder : undefined}
+            placeholder=""
             onFocus={setFocused}
             onBlur={unsetFocused}
             style={billingElementStyling}
@@ -234,10 +233,8 @@ const CreditPaymentForm = ({
             id="card-number"
             Component={CardNumberElement}
             label="Card number"
-            placeholder="1234 1234 1234 1234"
             isUpdatingBilling={isUpdatingBilling}
             required
-            alwaysShrink
             inputProps={getInputProps({ name: 'cardNumber' })}
             setInputEmpty={setCardNumberEmpty}
           />
@@ -264,11 +261,9 @@ const CreditPaymentForm = ({
           id="card-cvc"
           Component={CardCVCElement}
           label="CVC"
-          placeholder="CVC Code"
           disabled={!isUpdatingBilling}
           isUpdatingBilling={isUpdatingBilling}
           required
-          alwaysShrink
           inputProps={getInputProps({ name: 'cardCvc' })}
         />
       </Grid>
@@ -277,10 +272,8 @@ const CreditPaymentForm = ({
           id="card-expiry"
           Component={CardExpiryElement}
           label="Expiration date"
-          placeholder="MM/YY"
           isUpdatingBilling={isUpdatingBilling}
           required
-          alwaysShrink
           inputProps={getInputProps({ name: 'cardExpiration' })}
         />
       </Grid>
