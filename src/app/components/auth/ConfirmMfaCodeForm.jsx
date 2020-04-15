@@ -36,10 +36,7 @@ const ConfirmMFACodeForm = props => {
         <MontserratTypography variant="h2">***-***-[****]</MontserratTypography>
         <Spacing vertical={4} />
         <MontserratTypography variant="h4">
-          <StyledLink to="/onboarding/create-account">
-            {' '}
-            //THIS LINK SHOULD BE DIFFERENT Change
-          </StyledLink>
+          <StyledLink to="/onboarding/create-account">Change</StyledLink>
           &nbsp;my cell phone number
         </MontserratTypography>
         <Spacing vertical={4} />
