@@ -57,7 +57,7 @@ class PersonDetailsView extends PureComponent {
           personData,
         },
         () => {
-          if (personData.userIdentifier) {
+          if (personData?.userIdentifier) {
             this.handleFilterChange(undefined, undefined);
           }
         },
@@ -66,7 +66,7 @@ class PersonDetailsView extends PureComponent {
       noop();
     }
 
-    if (personData.firstName || personData.lastName) {
+    if (personData?.firstName || personData?.lastName) {
       this.setState({
         fetching: false,
       });
@@ -83,7 +83,7 @@ class PersonDetailsView extends PureComponent {
     taskActions.hideCompletedTasks();
 
     taskActions.getTasksAssignedToSpecificUser(
-      personData.userIdentifier,
+      personData?.userIdentifier,
       undefined,
       sortBy,
       filterBy,
@@ -100,7 +100,7 @@ class PersonDetailsView extends PureComponent {
     const { personData } = this.state;
 
     return taskActions.getTasksAssignedToSpecificUser(
-      personData.userIdentifier,
+      personData?.userIdentifier,
       selectedTaskListIdentifier,
       sortBy,
       filterBy,
