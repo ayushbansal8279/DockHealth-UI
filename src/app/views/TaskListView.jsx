@@ -456,7 +456,7 @@ class TaskListView extends PureComponent {
               </Button>
               <AdornedButton
                 adornment={
-                  taskListFormOpen && currentTaskList ? <Close /> : <Add />
+                  taskListFormOpen && !currentTaskList ? <Close /> : <Add />
                 }
                 onClick={this.addTaskList}
                 innerRef={this.addTaskButtonReference}
