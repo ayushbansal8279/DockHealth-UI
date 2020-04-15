@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffectOnce } from 'react-use';
+import { object, string } from 'yup';
 import { findAllUsersByOrganizationId } from '../actions/people-actions';
 import useBoolean from '../hooks/useBoolean';
 
@@ -30,9 +31,18 @@ const getFormWatchedValues = ({ watch }) => ({
   notificationsValue: watch('notifications') ?? true,
 });
 
+const validationSchema = object().shape({
+  listName: string().required('This field is required'),
+});
+
 const initializeAddListFormHooks = () => {
   const dispatch = useDispatch();
-  const { register, unregister, handleSubmit, setValue, watch } = useForm({});
+  const formContext = useForm({
+    validationSchema,
+    reValidateMode: 'onSubmit',
+  });
+
+  const { register, unregister, handleSubmit, setValue, watch } = formContext;
 
   const { listOwner, currentList, people } = useSelector(store => ({
     listOwner:
@@ -65,7 +75,6 @@ const initializeAddListFormHooks = () => {
   useEffectOnce(() => {
     findAllUsersByOrganizationId()(dispatch);
 
-    register({ name: 'listName' });
     register({ name: 'listDescription' });
     register({ name: 'owner' });
     register({ name: 'adminIdentifiers' });
@@ -75,7 +84,6 @@ const initializeAddListFormHooks = () => {
     setDefaultFormValues();
 
     return () => {
-      unregister('listName');
       unregister('listDescription');
       unregister('owner');
       unregister('adminIdentifiers');
@@ -213,6 +221,7 @@ const initializeAddListFormHooks = () => {
     allAdminsWithOwner,
     adminsWithOwner,
     restOfAdminsWithOwner,
+    formContext,
   };
 };
 

@@ -2,11 +2,13 @@ import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { isEmpty } from 'ramda';
 import React from 'react';
+import { FormContext } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import { saveTaskList } from '../actions/tasklist-actions';
 import Spacing from '../components/common/Spacing';
 import Member from '../components/members/Member';
 import { StyledSwitchUnbound } from '../components/userProfileView/StyledSwitch';
+import { UniversalMontserratInput } from '../components/userProfileView/UniversalInput';
 import { showAlert } from '../helpers/utility-functions';
 import TickIcon from '../img/tick-icon';
 import { RobotoTypography } from '../theme';
@@ -19,6 +21,7 @@ import {
   FormDivider,
   FormIconContainer,
   FormLabel,
+  FullWidthInputContainer,
   MemberContainer,
   MemberNamesLabelContainer,
   MembersContainer,
@@ -163,7 +166,6 @@ const AddListForm = ({ setListFormOpen }) => {
     membersPickerOpen,
     openMembersPicker,
     closeMembersPicker,
-    listNameValue,
     listDescriptionValue,
     allMembersValue,
     membersValue,
@@ -182,6 +184,7 @@ const AddListForm = ({ setListFormOpen }) => {
     allAdminsWithOwner,
     adminsWithOwner,
     restOfAdminsWithOwner,
+    formContext,
   } = initializeAddListFormHooks();
 
   return (
@@ -213,16 +216,17 @@ const AddListForm = ({ setListFormOpen }) => {
           <FormDivider />
         </>
       )}
-      <StyledFormControl fullWidth>
-        <StyledInputLabel>List name</StyledInputLabel>
-        <StyledInputBase
-          onChange={event => setValue('listName', event.target.value)}
-          value={listNameValue}
-          name="listName"
-          autoComplete={uuid()}
-          autoCorrect="off"
-        />
-      </StyledFormControl>
+      <FormContext {...formContext}>
+        <FullWidthInputContainer>
+          <UniversalMontserratInput
+            label="List name"
+            name="listName"
+            required
+            autoComplete={uuid()}
+            autoCorrect="off"
+          />
+        </FullWidthInputContainer>
+      </FormContext>
       <StyledFormControl fullWidth>
         <StyledInputLabel>Description</StyledInputLabel>
         <StyledInputBase

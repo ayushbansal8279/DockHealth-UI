@@ -69,7 +69,7 @@ export const StyledInputLabel = withStyles({
   shrink: {
     color: palette.coolGrey1,
     top: '0%',
-    transform: 'translate(1rem, 0.5rem) scale(0.75)',
+    transform: 'translate(1rem, 0.5rem)',
     transformOrigin: 'center left',
     transition: 'all 200ms cubic-bezier(0.0, 0, 0.2, 1)',
   },
@@ -290,4 +290,8 @@ export const TickIconContainer = styled.div`
     object-fit: contain;
     width: 100%;
   }
+`;
+
+export const FullWidthInputContainer = styled.div`
+  width: 100%;
 `;
