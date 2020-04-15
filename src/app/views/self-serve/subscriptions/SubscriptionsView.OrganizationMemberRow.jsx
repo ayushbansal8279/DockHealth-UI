@@ -13,6 +13,7 @@ import { noop } from '../../../helpers/utility-functions';
 import palette from '../../../palette';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 import { MontserratTypography } from '../../../theme-montserrat';
+import Spacing from '../../../components/common/Spacing';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -220,19 +221,26 @@ const OrganizationMemberRow = ({
                   {`${firstName} ${lastName}`.trim()}
                 </MontserratTypography>
                 {email && (
-                  <MontserratTypography variant="h4">
-                    <StyledAnchorDiv>{email}</StyledAnchorDiv>
-                  </MontserratTypography>
+                  <>
+                    <Spacing vertical={3} />
+                    <MontserratTypography variant="h4">
+                      <StyledAnchorDiv>{email}</StyledAnchorDiv>
+                    </MontserratTypography>
+                  </>
                 )}
+                <Spacing vertical={3} />
                 <MemberTypeLabel
                   userIdentifier={userIdentifier}
                   userType={userType}
                   userTypes={USER_TYPES}
                 />
                 {showJoined && (
-                  <MontserratTypography variant="h4">
-                    Joined {formattedRegistrationDate}
-                  </MontserratTypography>
+                  <>
+                    <Spacing vertical={3} />
+                    <MontserratTypography variant="h4">
+                      Joined {formattedRegistrationDate}
+                    </MontserratTypography>
+                  </>
                 )}
               </Grid>
               {showSubscription && (
