@@ -56,8 +56,9 @@ const useListItemClasses = makeStyles({
   },
   labelContainer: {
     overflow: 'hidden',
-    whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    width: '100%',
   },
 });
 

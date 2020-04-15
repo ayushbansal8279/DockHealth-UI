@@ -111,8 +111,12 @@ const MorePopover = ({
                 alignItems="center"
                 justify="flex-end"
               >
-                <NotificationsCheck />
-                <Spacing horizontal={2} />
+                {notificationsEnabled && (
+                  <>
+                    <NotificationsCheck />
+                    <Spacing horizontal={2} />
+                  </>
+                )}
                 <span>{notificationsEnabled ? 'On' : 'Off'}</span>
               </Grid>
             </Grid>
