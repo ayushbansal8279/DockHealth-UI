@@ -1,34 +1,38 @@
 import { Switch } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import styled from 'styled-components';
 import palette from '../../palette';
 
-const StyledSwitch = withStyles({
-  icon: {
-    color: palette.coolGrey4,
-  },
-  iconChecked: {
-    color: palette.veryDarkBlue,
-  },
-  bar: {
-    backgroundColor: palette.veryDarkBlue,
-    opacity: 0.26,
-  },
-  checked: {
-    '&& + $bar': {
-      backgroundColor: palette.veryDarkBlue,
-      opacity: 0.5,
-    },
-  },
-})(Switch);
+const StyledSwitch = styled(Switch)`
+  && {
+    .MuiSwitch-thumb {
+      background-color: ${props =>
+        props.checked || props.defaultChecked
+          ? palette.midnightBlue
+          : palette.white};
+    }
+
+    .MuiSwitch-track {
+      background-color: ${props =>
+        props.checked || props.defaultChecked
+          ? palette.midnightBlue
+          : palette.coolGrey2};
+    }
+  }
+`;
 
 export default ({ name }) => {
   const { register, watch } = useFormContext();
   const checked = watch(name);
 
   return (
-    <StyledSwitch defaultChecked={checked} name={name} inputRef={register} />
+    <StyledSwitch
+      color="default"
+      defaultChecked={checked}
+      name={name}
+      inputRef={register}
+    />
   );
 };
 
