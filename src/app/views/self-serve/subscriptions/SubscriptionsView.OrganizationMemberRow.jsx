@@ -8,12 +8,12 @@ import { getUserAvatar } from '../../../api/people-api';
 import Avatar from '../../../components/common/Avatar';
 import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
 import CubesLoader from '../../../components/common/CubesLoader';
+import Spacing from '../../../components/common/Spacing';
 import TaskCheckbox from '../../../components/task/TaskCheckbox';
 import { noop } from '../../../helpers/utility-functions';
 import palette from '../../../palette';
-import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 import { MontserratTypography } from '../../../theme-montserrat';
-import Spacing from '../../../components/common/Spacing';
+import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
 const CubesLoaderContainer = styled.div`
   align-items: center;
@@ -60,20 +60,12 @@ const USER_TYPES = new Proxy(
 const getUserInitials = ({ firstName, lastName }) =>
   `${firstName.charAt(0)}${lastName.charAt(0)}`.trim().toUpperCase();
 
-const getTrialPlanPricePerUser = ({
-  planIsTrial,
-  billingFrequency,
-  planPricePerUser,
-  planAnnualPricePerUser,
-}) => {
+const getTrialPlanPricePerUser = ({ planIsTrial, planPricePerUser }) => {
   if (planIsTrial) {
-    // return 'Free 30 day trial';
     return '';
   }
 
-  return billingFrequency === 'MONTHLY'
-    ? `${planPricePerUser}/month`
-    : `${planAnnualPricePerUser}/year`;
+  return `${planPricePerUser}/month`;
 };
 
 const getAvatarContent = memoizeWith(
@@ -180,18 +172,11 @@ const OrganizationMemberRow = ({
     ? registrationMoment.format('LL')
     : '';
 
-  const {
-    billingFrequency,
-    planPricePerUser,
-    planAnnualPricePerUser,
-    planIsTrial,
-  } = subscriptionPlanData || {};
+  const { planPricePerUser, planIsTrial } = subscriptionPlanData || {};
 
   const trialPlanPricePerUser = getTrialPlanPricePerUser({
     planIsTrial,
-    billingFrequency,
     planPricePerUser,
-    planAnnualPricePerUser,
   });
 
   if (isSmallScreen) {
