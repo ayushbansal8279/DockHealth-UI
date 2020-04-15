@@ -38,7 +38,7 @@ const ConfirmMFACodeForm = props => {
         <MontserratTypography variant="h4">
           <StyledLink to="/onboarding/create-account">
             {' '}
-            // THIS SHOULD BE SOMETHING ELSE Change
+            //THIS LINK SHOULD BE DIFFERENT Change
           </StyledLink>
           &nbsp;my cell phone number
         </MontserratTypography>
