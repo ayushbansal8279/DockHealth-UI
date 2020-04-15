@@ -27,7 +27,7 @@ const SmallScreenGrid = styled(Grid)`
   }
 `;
 
-const StyledAnchor = styled.a`
+const StyledAnchorDiv = styled.div`
   color: ${palette.brightBlue};
 `;
 
@@ -221,9 +221,7 @@ const OrganizationMemberRow = ({
                 </MontserratTypography>
                 {email && (
                   <MontserratTypography variant="h4">
-                    <StyledAnchor href={`mailto:${email}`}>
-                      {email}
-                    </StyledAnchor>
+                    <StyledAnchorDiv>{email}</StyledAnchorDiv>
                   </MontserratTypography>
                 )}
                 <MemberTypeLabel
@@ -275,7 +273,7 @@ const OrganizationMemberRow = ({
           </MontserratTypography>
           {email && (
             <MontserratTypography variant="h4">
-              <StyledAnchor href={`mailto:${email}`}>{email}</StyledAnchor>
+              <StyledAnchorDiv>{email}</StyledAnchorDiv>
             </MontserratTypography>
           )}
         </Grid>
