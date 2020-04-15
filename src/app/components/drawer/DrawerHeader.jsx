@@ -1,11 +1,12 @@
 import { ListItem, ListItemIcon } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
 import useBoolean from '../../hooks/useBoolean';
 import palette from '../../palette';
 import Member from '../members/Member';
+import { getSubscriptionIsTrial } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 
 const StyledListItem = styled(ListItem)`
   && {
@@ -98,10 +99,53 @@ const StyledLink = React.forwardRef((props, reference) => {
   );
 });
 
+const getListElements = ({ isUserAdmin, organization }) => {
+  const isSubscriptionTrial = getSubscriptionIsTrial({
+    subscription: organization?.subscriptionDetails,
+  });
+
+  return [
+    {
+      link: '/userProfile',
+      label: 'Profile & Settings',
+    },
+    isUserAdmin && {
+      link: '/subscriptions',
+      label: 'Subscription & Users',
+    },
+    isUserAdmin &&
+      !isSubscriptionTrial && {
+        link: '/billing',
+        label: 'Billing & Invoices',
+      },
+    {
+      link: '/documents',
+      label: 'Documents & Agreements',
+    },
+  ].filter(Boolean);
+};
+
+const renderListElement = ({ onLinkClicked, linkComponent }) => ({
+  link,
+  label,
+}) => (
+  <DropdownListItem
+    key={link}
+    button
+    onClick={onLinkClicked}
+    component={linkComponent}
+    link={link}
+  >
+    {label}
+  </DropdownListItem>
+);
+
 const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
   const { access: userProfileAccess, orgUserRole } = useSelector(
     state => state.userState.userProfile || {},
   );
+
+  const { organization } = useSelector(store => store.organizationState);
 
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
 
@@ -115,12 +159,17 @@ const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
   const userProfileEnabled = userProfileAccess?.userProfileEnabled;
   const linkComponent = userProfileEnabled ? StyledLink : undefined;
 
-  const dropdownHeight = (isUserAdmin ? 4 : 2) * 2.625 + 0.25;
-
   const onDrawerHeaderOpen = useCallback(() => {
     openPopover();
     onMouseEnter();
   }, [onMouseEnter, openPopover]);
+
+  const listElements = useMemo(
+    () => getListElements({ isUserAdmin, organization }),
+    [isUserAdmin, organization],
+  );
+
+  const dropdownHeight = listElements.length * 2.625 + 0.25;
 
   return (
     <>
@@ -147,42 +196,7 @@ const DrawerHeader = ({ onMouseEnter, setActiveId, user }) => {
         timeout={250}
         dropdownHeight={dropdownHeight}
       >
-        <DropdownListItem
-          button
-          onClick={onLinkClicked}
-          component={linkComponent}
-          link="/userProfile"
-        >
-          Profile & Settings
-        </DropdownListItem>
-        {isUserAdmin && (
-          <>
-            <DropdownListItem
-              button
-              onClick={onLinkClicked}
-              component={linkComponent}
-              link="/subscriptions"
-            >
-              Subscription & Users
-            </DropdownListItem>
-            <DropdownListItem
-              button
-              onClick={onLinkClicked}
-              component={linkComponent}
-              link="/billing"
-            >
-              Billing & Invoices
-            </DropdownListItem>
-          </>
-        )}
-        <DropdownListItem
-          button
-          onClick={onLinkClicked}
-          component={linkComponent}
-          link="/documents"
-        >
-          Documents & Agreements
-        </DropdownListItem>
+        {listElements.map(renderListElement({ onLinkClicked, linkComponent }))}
       </StyledDropdown>
       <DropdownBorder />
     </>
