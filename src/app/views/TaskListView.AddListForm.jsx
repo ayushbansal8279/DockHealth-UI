@@ -2,6 +2,7 @@ import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { isEmpty } from 'ramda';
 import React from 'react';
+import { v4 as uuid } from 'uuid';
 import { saveTaskList } from '../actions/tasklist-actions';
 import Spacing from '../components/common/Spacing';
 import Member from '../components/members/Member';
@@ -216,6 +217,8 @@ const AddListForm = ({ setListFormOpen }) => {
           onChange={event => setValue('listName', event.target.value)}
           value={listNameValue}
           name="listName"
+          autoComplete={uuid()}
+          autoCorrect="off"
         />
       </StyledFormControl>
       <StyledFormControl fullWidth>
