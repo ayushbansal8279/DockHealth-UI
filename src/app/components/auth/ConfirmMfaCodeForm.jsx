@@ -4,7 +4,7 @@ import { object, string } from 'yup';
 import { MontserratTypography } from '../../theme-montserrat';
 import Spacing from '../common/Spacing';
 import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
-import { NextButton } from './AuthComponents.styled';
+import { NextButton, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({
   mfaCode: string().required('This field is required'),
@@ -31,21 +31,25 @@ const ConfirmMFACodeForm = props => {
     >
       <FormContext {...formMethods}>
         <MontserratTypography variant="h2">
-          Authenticate Mobile Phone
+          Please enter the 6-digit code that was sent to
         </MontserratTypography>
+        <MontserratTypography variant="h2">***-***-[****]</MontserratTypography>
         <Spacing vertical={4} />
         <MontserratTypography variant="h4">
-          Enter the six digit authentication code that was sent to your mobile
-          phone: ***-***-****
+          <StyledLink to="/onboarding/create-account">
+            {' '}
+            // THIS SHOULD BE SOMETHING ELSE Change
+          </StyledLink>
+          &nbsp;my cell phone number
         </MontserratTypography>
         <Spacing vertical={4} />
         <UniversalMontserratInput
           name="mfaCode"
-          label="Authentication code"
+          label="Authorization code"
           autoFocus
         />
         <Spacing vertical={5} />
-        <NextButton type="submit">Confirm</NextButton>
+        <NextButton type="submit">CONTINUE</NextButton>
       </FormContext>
     </form>
   );
