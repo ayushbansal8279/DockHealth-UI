@@ -12,6 +12,7 @@ import {
 import { saveBillingDetails } from '../../../api/organization-api';
 import CubesLoader from '../../../components/common/CubesLoader';
 import GenericHeader from '../../../components/common/GenericHeader';
+import Spacing from '../../../components/common/Spacing';
 import { noop, showAlert } from '../../../helpers/utility-functions';
 import useBoolean from '../../../hooks/useBoolean';
 import palette from '../../../palette';
@@ -118,15 +119,28 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
         </Anchor>
       </H3>
     </Grid>
-    <Grid item sm={12} container justify="flex-end">
+    <Grid item sm={12} container justify="flex-end" wrap="nowrap">
       <Button
         onClick={onCancelClick}
         variant="text"
+        size="small"
         disabled={processingPayment}
       >
-        Cancel
+        <MontserratTypography
+          variant="h4"
+          textDecoration="underline"
+          weight="600"
+        >
+          CANCEL
+        </MontserratTypography>
       </Button>
-      <Button type="submit" variant="contained" disabled={processingPayment}>
+      <Spacing horizontal={4} />
+      <Button
+        type="submit"
+        variant="contained"
+        size="small"
+        disabled={processingPayment}
+      >
         {processingPayment ? (
           <CubesLoader color={palette.white} size={32} />
         ) : (
