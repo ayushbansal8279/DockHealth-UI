@@ -1205,6 +1205,7 @@ class TaskView extends Component {
               paneled={paneled}
               showTipsButton={isInbox}
               toggleTips={this.toggleInboxHelpPanel}
+              tipsPanelOpen={isInboxHelpPanelOpen === 'true'}
               tipsButtonReference={this.tipsButtonReference}
               printData={{
                 tasks,
@@ -1216,7 +1217,7 @@ class TaskView extends Component {
         </SafariFixGrid>
         {isInbox && (
           <>
-            <StyledCollapse in={isInboxHelpPanelOpen === 'true'} timeout={250}>
+            <StyledCollapse in={isInboxHelpPanelOpen === 'true'} timeout={0}>
               <SafariFixGrid container item xs={12} justify="center">
                 <InboxHelpPanel
                   arrowAnchorElement={this.tipsButtonReference}
