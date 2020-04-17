@@ -74,8 +74,10 @@ export const NoListsIconContainer = styled.div`
 
 export const TaskListViewTipsContainer = styled.div`
   display: grid;
-  padding: 2rem 4rem;
+  padding: 2rem;
   grid-template-columns: 1fr 6rem 1fr 6rem 1fr;
+  max-width: 1294px;
+  min-width: 959px;
 `;
 
 export const TipsImage = styled.img`

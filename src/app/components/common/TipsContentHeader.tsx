@@ -14,6 +14,7 @@ const HeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
   left: 1.25rem;
+  margin-right: 1.25rem;
   padding: 0.5rem 1rem;
   position: absolute;
   width: auto;
