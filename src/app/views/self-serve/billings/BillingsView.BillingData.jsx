@@ -174,7 +174,7 @@ const BillingElement = ({
   );
 };
 
-const SaveBillingElement = ({ isUpdatingBilling, cancelUpdateBilling }) =>
+const UpdateBillingElement = ({ isUpdatingBilling, cancelUpdateBilling }) =>
   isUpdatingBilling && (
     <Grid item sm={12} container justify="flex-end" wrap="nowrap">
       <Button size="small" onClick={cancelUpdateBilling} variant="text">
@@ -206,6 +206,7 @@ const CreditPaymentForm = ({
   setValue,
   values,
   errors,
+  SaveBillingElement,
 }) => {
   const getInputProps = getInputPropsMethod({ setValue, values, errors });
 
@@ -306,7 +307,7 @@ const CreditPaymentForm = ({
         </MontserratTypography>
         <StyledCollapse in={addressLine2Visible} timeout={250}>
           <Spacing vertical={3} />
-          <UniversalMontserratInput name="address2" label="Address line 2" />
+          <UniversalMontserratInput name="address2" label="" />
         </StyledCollapse>
       </Grid>
       <Grid item sm={12} md={3}>
@@ -318,10 +319,13 @@ const CreditPaymentForm = ({
       <Grid item sm={12} md={3}>
         <UniversalMontserratInput name="state" label="State" required />
       </Grid>
-      <SaveBillingElement
-        isUpdatingBilling={isUpdatingBilling}
-        cancelUpdateBilling={cancelUpdateBilling}
-      />
+      {SaveBillingElement && <SaveBillingElement />}
+      {!SaveBillingElement && (
+        <UpdateBillingElement
+          isUpdatingBilling={isUpdatingBilling}
+          cancelUpdateBilling={cancelUpdateBilling}
+        />
+      )}
     </FormContainer>
   );
 };
@@ -333,6 +337,7 @@ const BillingData = ({
   unsetUpdatingBilling,
   cancelUpdateBilling,
   onSubmit,
+  SaveBillingElement,
 }) => {
   const { billingDetails, userProfile } = useSelector(store => ({
     billingDetails: store.organizationState.billingDetails,
@@ -370,6 +375,7 @@ const BillingData = ({
     const {
       billingAddressCity,
       billingAddressLine1,
+      billingAddressLine2,
       billingAddressPostalCode,
       billingAddressState,
       billingEmail,
@@ -392,6 +398,7 @@ const BillingData = ({
     setValue('email', billingEmail ?? userProfile.email);
     setValue('city', billingAddressCity);
     setValue('address', billingAddressLine1);
+    setValue('address2', billingAddressLine2);
     setValue('zip', billingAddressPostalCode);
     setValue('state', billingAddressState);
 
@@ -423,6 +430,7 @@ const BillingData = ({
           setValue={setValue}
           values={values}
           errors={errorsValues}
+          SaveBillingElement={SaveBillingElement}
         />
         {!isUpdatingBilling && (
           <BillingInformation setUpdatingBilling={setUpdatingBilling}>

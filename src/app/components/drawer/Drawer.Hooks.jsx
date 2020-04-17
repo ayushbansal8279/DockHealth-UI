@@ -71,7 +71,7 @@ const initializeDrawerHooks = () => {
 
   const trialLabelMinimalPeriodNotPassed = `You are in a ${subscriptionPlanTrialLabel}. There are ${trialEndDayDifference} days left in your trial.`;
 
-  const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed} You will lose access at the end of your trial.`;
+  const trialLabelMinimalPeriodPassed = `${trialLabelMinimalPeriodNotPassed}`;
 
   const trialLabelEnded = `Your ${subscriptionPlanTrialLabel} has expired!`;
 
@@ -82,12 +82,11 @@ const initializeDrawerHooks = () => {
         : trialLabelMinimalPeriodPassed;
     }
 
-    return trialLabelMinimalPeriodNotPassed;
+    return '';
   }, [
     hasMinimalUsagePeriodPassed,
     trialEndDayDifference,
     trialLabelEnded,
-    trialLabelMinimalPeriodNotPassed,
     trialLabelMinimalPeriodPassed,
   ]);
 
@@ -139,7 +138,7 @@ const initializeDrawerHooks = () => {
   useEffect(() => {
     if (organization) {
       const bannerVisibleFlagValue = Boolean(
-        messageBannerBar || isTrialSubscriptionPlan,
+        messageBannerBar || (isTrialSubscriptionPlan && trialEndLabel !== ''),
       );
       setBannerVisibleFlag(bannerVisibleFlagValue);
 
