@@ -72,12 +72,32 @@ export const NoListsIconContainer = styled.div`
   width: 4rem;
 `;
 
+export const TaskListViewTipsContainer = styled.div`
+  display: grid;
+  padding: 2rem 4rem;
+  grid-template-columns: 1fr 6rem 1fr 6rem 1fr;
+`;
+
 export const TipsImage = styled.img`
-  background-color: #ffffff;
   cursor: default;
+  height: 10rem;
   justify-self: center;
-  min-height: 4rem;
-  max-height: 5rem;
+  margin-bottom: 1rem;
+  min-height: 10rem;
   object-fit: contain;
   width: 100%;
+`;
+
+export const TaskListTipTextContainer = styled.div`
+  color: ${palette.white};
+`;
+
+export const TaskListTipSmallTextContainer = styled.div`
+  font-size: 0.625rem;
+`;
+
+export const TaskListTipsFooterContainer = styled.div`
+  cursor: pointer;
+  font-size: 1.1875rem;
+  text-align: right;
 `;

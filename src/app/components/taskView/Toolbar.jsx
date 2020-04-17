@@ -7,13 +7,12 @@ import { toggleListNotifications } from '../../actions/tasklist-actions';
 import { onNotificationsToggled } from '../../helpers/ga-event-helper';
 import { showAlert } from '../../helpers/utility-functions';
 import useBoolean from '../../hooks/useBoolean';
-import Lightbulb from '../../img/lightbulb-grey.svg';
 import palette from '../../palette';
-import { RobotoTypography } from '../../theme';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
+import TipsButton from '../common/TipsButton';
 import UniversalTooltip from '../common/UniversalTooltip';
 import { InviteMemberPopoverWithButton } from '../members/InviteMemberPopover';
 import Member from '../members/Member';
@@ -119,6 +118,7 @@ export default ({
   showNotifications = true,
   showMembers = true,
   showTipsButton = false,
+  tipsPanelOpen = false,
   tipsButtonReference = null,
   toggleTips,
   printData: { tasks = [], completedTasks = [], taskListMembers = [] },
@@ -221,17 +221,11 @@ export default ({
           {showTipsButton && (
             <>
               <Spacing horizontal={3} />
-              <Button
-                variant="text"
-                color="inherit"
-                size="small"
-                onClick={toggleTips}
-                innerRef={tipsButtonReference}
-              >
-                <img alt="lightbulb" src={Lightbulb} />
-                <Spacing horizontal={2} />
-                <RobotoTypography weight="normal">TIPS</RobotoTypography>
-              </Button>
+              <TipsButton
+                active={tipsPanelOpen}
+                tipsButtonReference={tipsButtonReference}
+                toggleTips={toggleTips}
+              />
             </>
           )}
         </Grid>

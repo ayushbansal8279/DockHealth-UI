@@ -5,6 +5,7 @@ import { isEmpty } from 'ramda';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
+import { useCss } from 'react-use';
 import { bindActionCreators } from 'redux';
 import { setHeader } from '../actions/header-actions';
 import * as InvitationActions from '../actions/invitation-actions';
@@ -18,6 +19,7 @@ import HelpfulTipsDialog from '../components/common/HelpfulTipsDialog';
 import PageContentHeader from '../components/common/PageContentHeader';
 import SafariFixGrid from '../components/common/SafariFixGrid';
 import Spacing from '../components/common/Spacing';
+import TipsButton from '../components/common/TipsButton';
 import TipsContentHeader from '../components/common/TipsContentHeader';
 import ListsComponent from '../components/LEGACY_list/ListsComponent';
 import PendingListsComponent from '../components/LEGACY_list/PendingListsComponent';
@@ -28,10 +30,11 @@ import {
   onTaskListLeft,
 } from '../helpers/ga-event-helper';
 import pusherInstance from '../helpers/pusher-instance';
-import Lightbulb from '../img/lightbulb-grey.svg';
-import TaskListTip1 from '../img/tips/task-list/task-list-1.png';
-import TaskListTip2 from '../img/tips/task-list/task-list-2.png';
-import TaskListTip3 from '../img/tips/task-list/task-list-3.png';
+import TipNextStepIcon from '../img/tip-next-step-icon.svg';
+import TipPencilIcon from '../img/tip-pencil-icon.svg';
+import TaskListTip1 from '../img/tips/task-list/task-list-1.svg';
+import TaskListTip2 from '../img/tips/task-list/task-list-2.svg';
+import TaskListTip3 from '../img/tips/task-list/task-list-3.svg';
 import TaskListTour1 from '../img/tour/task-list/task-list-1.png';
 import TaskListTour2 from '../img/tour/task-list/task-list-2.png';
 import TaskListTour3 from '../img/tour/task-list/task-list-3.png';
@@ -45,6 +48,10 @@ import {
   NoListsAvailableContainer,
   NoListsIconContainer,
   StyledCollapse,
+  TaskListTipsFooterContainer,
+  TaskListTipSmallTextContainer,
+  TaskListTipTextContainer,
+  TaskListViewTipsContainer,
   TaskListViewWrapper,
   TipsImage,
   TopMessageContainer,
@@ -69,6 +76,42 @@ const getTourStep = (contentImage, displayDescription) => ({
     ? 'The list page is your central station for getting to the lists that organize tasks. You can create new lists or get invited to lists that other people in your organization have created.'
     : '',
 });
+
+const TaskListViewTip = ({ topLabel, titleLabel, children }) => {
+  const childContentClassName = useCss({
+    '&&': {
+      lineHeight: '1.0625rem',
+    },
+  });
+
+  return (
+    <TaskListTipTextContainer>
+      <Grid container alignItems="center" wrap="nowrap">
+        <img alt="pencil" src={TipPencilIcon} />
+        <Spacing horizontal={3} />
+        <TaskListTipSmallTextContainer>
+          <RobotoTypography variant="h4" weight="bold">
+            {topLabel}
+          </RobotoTypography>
+        </TaskListTipSmallTextContainer>
+      </Grid>
+      <Spacing vertical={4} />
+      <MontserratTypography variant="h4" weight="bold">
+        {titleLabel}
+      </MontserratTypography>
+      <Spacing vertical={3} />
+      <TaskListTipSmallTextContainer>
+        <RobotoTypography
+          variant="h4"
+          weight="500"
+          className={childContentClassName}
+        >
+          {children}
+        </RobotoTypography>
+      </TaskListTipSmallTextContainer>
+    </TaskListTipTextContainer>
+  );
+};
 
 class TaskListView extends PureComponent {
   state = {
@@ -443,17 +486,11 @@ class TaskListView extends PureComponent {
         {hasStartedFetching && !isFetching && (
           <Grid container direction="column" alignItems="center" spacing={1}>
             <PageContentHeader>
-              <Button
-                variant="text"
-                color="inherit"
-                size="small"
-                onClick={this.toggleTips}
-                innerRef={this.tipsButtonReference}
-              >
-                <img alt="lightbulb" src={Lightbulb} />
-                <Spacing horizontal={2} />
-                <RobotoTypography weight="normal">TIPS</RobotoTypography>
-              </Button>
+              <TipsButton
+                active={tipsOpen === 'true'}
+                tipsButtonReference={this.tipsButtonReference}
+                toggleTips={this.toggleTips}
+              />
               <AdornedButton
                 adornment={
                   taskListFormOpen && !currentTaskList ? <Close /> : <Add />
@@ -467,23 +504,65 @@ class TaskListView extends PureComponent {
                 ADD A LIST
               </AdornedButton>
             </PageContentHeader>
-            <StyledCollapse in={tipsOpen === 'true'} timeout={250}>
+            <StyledCollapse in={tipsOpen === 'true'} timeout={0}>
               <TipsContentHeader
-                closeHeader={this.toggleTips}
                 arrowAnchorElement={this.tipsButtonReference.current}
-                onTakeTourClick={this.showTipsModal}
+                footerContent={
+                  <TaskListTipsFooterContainer>
+                    <Grid container direction="column" justify="flex-end">
+                      <MontserratTypography
+                        weight="normal"
+                        textDecoration="underline"
+                        variant="h4"
+                        onClick={this.showTipsModal}
+                      >
+                        TAKE THE TOUR
+                      </MontserratTypography>
+                      <Spacing vertical={4} />
+                    </Grid>
+                  </TaskListTipsFooterContainer>
+                }
               >
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item xs={6} sm={6} md={6} lg={4}>
-                    <TipsImage alt="step 1" src={TaskListTip1} />
+                <TaskListViewTipsContainer>
+                  <TipsImage alt="step 1" src={TaskListTip1} />
+                  <div />
+                  <TipsImage alt="step 2" src={TaskListTip2} />
+                  <div />
+                  <TipsImage alt="step 3" src={TaskListTip3} />
+                  <TaskListViewTip
+                    topLabel="Name lists by patient or provider to keep tasks organized."
+                    titleLabel="Start by creating a list."
+                  >
+                    To create a new list, simply click the button in the upper
+                    right corner of the window. Name your list by patient or
+                    clinic or however you’d like to organize your tasks. After
+                    the list is created, you can add tasks to that List.
+                  </TaskListViewTip>
+                  <Grid container justify="center" alignItems="center">
+                    <img alt="next step" src={TipNextStepIcon} />
                   </Grid>
-                  <Grid item xs={6} sm={6} md={6} lg={4}>
-                    <TipsImage alt="step 2" src={TaskListTip2} />
+                  <TaskListViewTip
+                    topLabel="Invite others to a list to collaborate and share tasks."
+                    titleLabel="Then, invite members to your list."
+                  >
+                    Once you have created your list you can invite other
+                    members. Invite members by clicking on the three dots on the
+                    right side of the List. Select “Invite Members” from the
+                    menu.
+                  </TaskListViewTip>
+                  <Grid container justify="center" alignItems="center">
+                    <img alt="next step" src={TipNextStepIcon} />
                   </Grid>
-                  <Grid item xs={6} sm={6} md={6} lg={4}>
-                    <TipsImage alt="step 3" src={TaskListTip3} />
-                  </Grid>
-                </Grid>
+                  <TaskListViewTip
+                    topLabel="Keep your lists updated to stay organized."
+                    titleLabel="To edit/delete lists, click the dots!"
+                  >
+                    If you are an admin of a list you can delete or edit a list
+                    by clicking the three dots to the right of the list . A
+                    drop-down menu will appear and give you the choice to delete
+                    the list or to edit.
+                  </TaskListViewTip>
+                </TaskListViewTipsContainer>
               </TipsContentHeader>
             </StyledCollapse>
             <HelpfulTipsDialog
