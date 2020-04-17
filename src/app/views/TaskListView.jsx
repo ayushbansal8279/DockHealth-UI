@@ -595,6 +595,7 @@ class TaskListView extends PureComponent {
             ) : (
               <StyledCollapse in={!taskListFormOpen} timeout={250}>
                 <NoListsAvailableContainer>
+                  <Spacing vertical={3} />
                   <NoListsIconContainer>
                     <List color="inherit" fontSize="large" />
                   </NoListsIconContainer>
