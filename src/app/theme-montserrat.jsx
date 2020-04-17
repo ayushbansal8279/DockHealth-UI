@@ -50,6 +50,10 @@ export const themeMontserratNormal = themeMontserratFactory({
   fontWeight: 'normal',
 });
 
+export const themeMontserrat300 = themeMontserratFactory({
+  fontWeight: '300',
+});
+
 export const themeMontserrat500 = themeMontserratFactory({
   fontWeight: '500',
 });
@@ -62,6 +66,7 @@ const themeProxy = new Proxy(
   {
     bold: themeMontserrat,
     normal: themeMontserratNormal,
+    '300': themeMontserrat300,
     '500': themeMontserrat500,
     '600': themeMontserrat600,
   },

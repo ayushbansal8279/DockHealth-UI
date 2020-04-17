@@ -2,6 +2,7 @@ import { ButtonBase } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
+import { Link } from 'react-router';
 import styled from 'styled-components';
 import palette from '../../../palette';
 
@@ -107,7 +108,7 @@ export const PricingGridContainer = styled.div`
   display: grid;
   grid-column-gap: 1rem;
   grid-template-columns: 0.75fr auto 1fr;
-  padding: 1rem;
+  padding: 2rem;
 `;
 
 export const PricingItemDivider = styled.div`
@@ -132,4 +133,19 @@ export const Anchor = styled.a`
     color: ${palette.cyanBlue};
     filter: brightness(1.35);
   }
+`;
+
+export const StyledLink = styled(Link)`
+  color: ${palette.cyanBlue};
+  filter: brightness(1);
+  transition: all 0.25s ease-out;
+
+  &:hover {
+    color: ${palette.cyanBlue};
+    filter: brightness(1.35);
+  }
+`;
+
+export const DarkBlueTextContainer = styled.div`
+  color: ${palette.darkBlue};
 `;

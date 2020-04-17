@@ -18,24 +18,19 @@ import useBoolean from '../../../hooks/useBoolean';
 import palette from '../../../palette';
 import { MontserratTypography } from '../../../theme-montserrat';
 import BillingsViewBillingData from '../billings/BillingsView.BillingData';
-import { PlanNameLabel } from '../subscriptions/SubscriptionsView.CurrentPlan.Styled';
-import {
-  BigPriceLabel,
-  H1Bold,
-  H3ThinMarginless,
-  PriceLabel,
-} from '../subscriptions/SubscriptionsView.Styled';
 import {
   BILLING_FREQUENCY,
   getSubscriptionPlanData,
 } from '../subscriptions/SubscriptionsView.Utilities';
 import {
   Anchor,
+  DarkBlueTextContainer,
   H3,
   PricingGridContainer,
   PricingItemDivider,
   PricingItemVerticallyExpanded,
   Spacing2,
+  StyledLink,
   SubscriptionPaymentViewContainer,
   SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
@@ -193,13 +188,8 @@ const SubscriptionPaymentView = () => {
     getBillingEstimate()(dispatch);
   });
 
-  const {
-    annualMonthlyPrice,
-    subscriptionPlan,
-    annualPayment,
-    monthlyPrice,
-    planLabel,
-  } = newPaymentPlan || {};
+  const { annualMonthlyPrice, subscriptionPlan, annualPayment, monthlyPrice } =
+    newPaymentPlan || {};
 
   const totalPerUserCost = annualPayment ? annualMonthlyPrice : monthlyPrice;
   const billingFrequency = annualPayment
@@ -208,12 +198,7 @@ const SubscriptionPaymentView = () => {
 
   const currentUsersCount = currentUsers?.length ?? 0;
 
-  const {
-    planName,
-    planPricePerUser,
-    planTotalPayment,
-    planSubscriptionPeriod,
-  } = getSubscriptionPlanData({
+  const { planPricePerUser, planTotalPayment } = getSubscriptionPlanData({
     organization: {
       subscriptionDetails: {
         subscriptionPlan,
@@ -243,30 +228,58 @@ const SubscriptionPaymentView = () => {
           <Grid item sm={12}>
             <PricingGridContainer>
               <PricingItemVerticallyExpanded>
-                <Grid container alignItems="flex-end" direction="column">
-                  <PlanNameLabel>{planName || planLabel}</PlanNameLabel>
-                  <H3ThinMarginless>{planSubscriptionPeriod}</H3ThinMarginless>
+                <Grid
+                  container
+                  alignItems="flex-start"
+                  justify="flex-start"
+                  direction="column"
+                >
+                  <DarkBlueTextContainer>
+                    <MontserratTypography variant="h3" color="inherit">
+                      <span>Pay </span>
+                      <b>{annualPayment ? 'Annually' : 'Monthly'}</b>
+                    </MontserratTypography>
+                  </DarkBlueTextContainer>
+                  <StyledLink to="/subscriptions">Change plans</StyledLink>
                 </Grid>
               </PricingItemVerticallyExpanded>
               <Grid container alignItems="center" justify="flex-end">
-                <BigPriceLabel>{planPricePerUser}</BigPriceLabel>
+                <MontserratTypography variant="h3">
+                  {planPricePerUser}
+                </MontserratTypography>
+                <Spacing vertical={4} />
               </Grid>
               <Grid container alignItems="center">
-                <PriceLabel>per user</PriceLabel>
+                <MontserratTypography variant="h3" weight="300">
+                  per user
+                </MontserratTypography>
+                <Spacing vertical={4} />
               </Grid>
               <Grid container alignItems="center" justify="flex-end">
-                <BigPriceLabel>{currentUsersCount}</BigPriceLabel>
+                <MontserratTypography variant="h3">
+                  {currentUsersCount}
+                </MontserratTypography>
+                <Spacing vertical={4} />
               </Grid>
               <Grid container alignItems="center">
-                <PriceLabel>users</PriceLabel>
+                <MontserratTypography variant="h3" weight="300">
+                  users
+                </MontserratTypography>
+                <Spacing vertical={4} />
               </Grid>
               <PricingItemDivider />
               <div />
               <Grid container alignItems="center" justify="flex-end">
-                <H1Bold>{planTotalPayment}</H1Bold>
+                <Spacing vertical={4} />
+                <MontserratTypography variant="h3" weight="bold">
+                  {planTotalPayment}
+                </MontserratTypography>
               </Grid>
               <Grid container alignItems="center">
-                <PriceLabel>charged today</PriceLabel>
+                <Spacing vertical={4} />
+                <MontserratTypography variant="h3" weight="300">
+                  charged today
+                </MontserratTypography>
               </Grid>
             </PricingGridContainer>
           </Grid>
@@ -276,7 +289,7 @@ const SubscriptionPaymentView = () => {
               fonts={[
                 {
                   cssSrc:
-                    'https://fonts.googleapis.com/css?family=Open+Sans&display=swap',
+                    'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
                 },
               ]}
             >
