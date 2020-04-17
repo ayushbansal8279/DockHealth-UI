@@ -103,3 +103,8 @@ export const TaskListTipsFooterContainer = styled.div`
   font-size: 1.1875rem;
   text-align: right;
 `;
+
+export const TipsContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;

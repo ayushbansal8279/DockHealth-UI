@@ -1,4 +1,11 @@
-import { Backdrop, Button, Dialog, Grid, Popover } from '@material-ui/core';
+import {
+  Backdrop,
+  Button,
+  Dialog,
+  Grid,
+  Popover,
+  ClickAwayListener,
+} from '@material-ui/core';
 import { Add, Close, List } from '@material-ui/icons';
 import clsx from 'clsx';
 import { isEmpty } from 'ramda';
@@ -55,6 +62,7 @@ import {
   TaskListViewWrapper,
   TipsImage,
   TopMessageContainer,
+  TipsContainer,
 } from './TaskListView.Styled';
 
 const STORAGE_TASK_LIST_TIPS_OPEN = 'STORAGE_TASK_LIST_TIPS_OPEN';
@@ -194,6 +202,12 @@ class TaskListView extends PureComponent {
       channel = pusherInstance.unsubscribe(channelName);
     }
   }
+
+  closeTips = () => {
+    this.setState({
+      tipsOpen: 'false',
+    });
+  };
 
   toggleTips = () => {
     this.setState(({ tipsOpen: previousTipsOpen }) => ({
@@ -500,67 +514,73 @@ class TaskListView extends PureComponent {
                 ADD A LIST
               </AdornedButton>
             </PageContentHeader>
-            <StyledCollapse in={tipsOpen === 'true'} timeout={0}>
-              <TipsContentHeader
-                arrowAnchorElement={this.tipsButtonReference.current}
-                footerContent={
-                  <TaskListTipsFooterContainer>
-                    <Grid container direction="column" justify="flex-end">
-                      <MontserratTypography
-                        weight="normal"
-                        textDecoration="underline"
-                        variant="h4"
-                        onClick={this.showTipsModal}
+            {tipsOpen === 'true' && (
+              <ClickAwayListener onClickAway={this.closeTips}>
+                <TipsContainer>
+                  <TipsContentHeader
+                    arrowAnchorElement={this.tipsButtonReference.current}
+                    closeHeader={this.closeTips}
+                    footerContent={
+                      <TaskListTipsFooterContainer>
+                        <Grid container direction="column" justify="flex-end">
+                          <MontserratTypography
+                            weight="normal"
+                            textDecoration="underline"
+                            variant="h4"
+                            onClick={this.showTipsModal}
+                          >
+                            TAKE THE TOUR
+                          </MontserratTypography>
+                          <Spacing vertical={4} />
+                        </Grid>
+                      </TaskListTipsFooterContainer>
+                    }
+                  >
+                    <TaskListViewTipsContainer>
+                      <TipsImage alt="step 1" src={TaskListTip1} />
+                      <div />
+                      <TipsImage alt="step 2" src={TaskListTip2} />
+                      <div />
+                      <TipsImage alt="step 3" src={TaskListTip3} />
+                      <TaskListViewTip
+                        topLabel="Name lists by patient or provider to keep tasks organized."
+                        titleLabel="Start by creating a list."
                       >
-                        TAKE THE TOUR
-                      </MontserratTypography>
-                      <Spacing vertical={4} />
-                    </Grid>
-                  </TaskListTipsFooterContainer>
-                }
-              >
-                <TaskListViewTipsContainer>
-                  <TipsImage alt="step 1" src={TaskListTip1} />
-                  <div />
-                  <TipsImage alt="step 2" src={TaskListTip2} />
-                  <div />
-                  <TipsImage alt="step 3" src={TaskListTip3} />
-                  <TaskListViewTip
-                    topLabel="Name lists by patient or provider to keep tasks organized."
-                    titleLabel="Start by creating a list."
-                  >
-                    To create a new list, simply click the button in the upper
-                    right corner of the window. Name your list by patient or
-                    clinic or however you’d like to organize your tasks. After
-                    the list is created, you can add tasks to that List.
-                  </TaskListViewTip>
-                  <Grid container justify="center" alignItems="center">
-                    <img alt="next step" src={TipNextStepIcon} />
-                  </Grid>
-                  <TaskListViewTip
-                    topLabel="Invite others to a list to collaborate and share tasks."
-                    titleLabel="Then, invite members to your list."
-                  >
-                    Once you have created your list you can invite other
-                    members. Invite members by clicking on the three dots on the
-                    right side of the List. Select “Invite Members” from the
-                    menu.
-                  </TaskListViewTip>
-                  <Grid container justify="center" alignItems="center">
-                    <img alt="next step" src={TipNextStepIcon} />
-                  </Grid>
-                  <TaskListViewTip
-                    topLabel="Keep your lists updated to stay organized."
-                    titleLabel="To edit/delete lists, click the dots!"
-                  >
-                    If you are an admin of a list you can delete or edit a list
-                    by clicking the three dots to the right of the list . A
-                    drop-down menu will appear and give you the choice to delete
-                    the list or to edit.
-                  </TaskListViewTip>
-                </TaskListViewTipsContainer>
-              </TipsContentHeader>
-            </StyledCollapse>
+                        To create a new list, simply click the button in the
+                        upper right corner of the window. Name your list by
+                        patient or clinic or however you’d like to organize your
+                        tasks. After the list is created, you can add tasks to
+                        that List.
+                      </TaskListViewTip>
+                      <Grid container justify="center" alignItems="center">
+                        <img alt="next step" src={TipNextStepIcon} />
+                      </Grid>
+                      <TaskListViewTip
+                        topLabel="Invite others to a list to collaborate and share tasks."
+                        titleLabel="Then, invite members to your list."
+                      >
+                        Once you have created your list you can invite other
+                        members. Invite members by clicking on the three dots on
+                        the right side of the List. Select “Invite Members” from
+                        the menu.
+                      </TaskListViewTip>
+                      <Grid container justify="center" alignItems="center">
+                        <img alt="next step" src={TipNextStepIcon} />
+                      </Grid>
+                      <TaskListViewTip
+                        topLabel="Keep your lists updated to stay organized."
+                        titleLabel="To edit/delete lists, click the dots!"
+                      >
+                        If you are an admin of a list you can delete or edit a
+                        list by clicking the three dots to the right of the list
+                        . A drop-down menu will appear and give you the choice
+                        to delete the list or to edit.
+                      </TaskListViewTip>
+                    </TaskListViewTipsContainer>
+                  </TipsContentHeader>
+                </TipsContainer>
+              </ClickAwayListener>
+            )}
             <HelpfulTipsDialog
               open={tipsModalOpen === 'true'}
               closeDialog={this.hideTipsModal}

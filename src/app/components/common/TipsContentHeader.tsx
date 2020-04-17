@@ -35,12 +35,12 @@ export const HeaderBottom = styled.div`
 const HeaderArrow = styled.div<{ left: number }>`
   background-color: transparent;
   border: 1rem solid transparent;
-  border-bottom-color: ${palette.brightBlue};
+  border-bottom-color: #038acb;
   height: 0;
   left: ${props => props.left}px;
   position: absolute;
   top: 0;
-  transform: translate(-50%, -100%) scaleY(0.8);
+  transform: translate(-100%, -100%) scaleY(0.8);
   transform-origin: bottom;
   width: 0;
 `;
@@ -58,6 +58,8 @@ interface TipsContentHeaderProps {
 const createMutationObserver = (callback: () => void) =>
   new MutationObserver(callback);
 
+const LIGHTBULB_CENTER_POSITION = 11;
+
 const TipsContentHeader = ({
   arrowAnchorElement,
   children,
@@ -72,10 +74,9 @@ const TipsContentHeader = ({
     if (arrowAnchorElement) {
       showArrow();
       const offsetLeft = arrowAnchorElement?.offsetLeft;
-      const { width } = arrowAnchorElement?.getBoundingClientRect() || {};
 
-      if (width && offsetLeft) {
-        setArrowPosition(offsetLeft + 0.5 * width);
+      if (offsetLeft) {
+        setArrowPosition(offsetLeft + LIGHTBULB_CENTER_POSITION);
       }
     } else {
       hideArrow();

@@ -133,3 +133,8 @@ export const TasklistCount = styled.div`
   font-weight: normal;
   margin-bottom: 0.5rem;
 `;
+
+export const TipsContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;

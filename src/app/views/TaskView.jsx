@@ -1,5 +1,6 @@
 import {
   Button,
+  ClickAwayListener,
   Collapse,
   Fade,
   Grid,
@@ -53,7 +54,6 @@ import ChevronSmallIcon from '../img/chevron-small.svg';
 import palette from '../palette';
 import { themeMontserrat600 } from '../theme-montserrat';
 import { getSubscriptionIsTrial } from './self-serve/subscriptions/SubscriptionsView.Utilities';
-import { StyledCollapse } from './TaskListView.Styled';
 import {
   InboxHelpPanel,
   InboxNoMessagesAvailable,
@@ -70,6 +70,7 @@ import {
   TaskListSectionHeader,
   TaskViewContainer,
   TaskViewGrid,
+  TipsContainer,
 } from './TaskView.Styled';
 
 const groupBy = (list, keyGetter) => {
@@ -1215,19 +1216,14 @@ class TaskView extends Component {
             />
           )}
         </SafariFixGrid>
-        {isInbox && (
-          <>
-            <StyledCollapse in={isInboxHelpPanelOpen === 'true'} timeout={0}>
-              <SafariFixGrid container item xs={12} justify="center">
-                <InboxHelpPanel
-                  arrowAnchorElement={this.tipsButtonReference}
-                  closeInboxHelpPanel={this.closeInboxHelpPanel}
-                />
-              </SafariFixGrid>
-            </StyledCollapse>
-            <Spacing vertical={4} />
-          </>
+        {isInbox && isInboxHelpPanelOpen === 'true' && (
+          <ClickAwayListener onClickAway={this.closeInboxHelpPanel}>
+            <TipsContainer>
+              <InboxHelpPanel arrowAnchorElement={this.tipsButtonReference} />
+            </TipsContainer>
+          </ClickAwayListener>
         )}
+        {isInbox && <Spacing vertical={4} />}
         <Grid container direction="row">
           <SideClickListener onClick={this.closeTaskDrawer} />
           <TaskViewContainer>
