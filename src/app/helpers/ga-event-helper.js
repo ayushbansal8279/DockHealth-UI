@@ -1,147 +1,166 @@
-import ReactGA from 'react-ga';
+import sendEvent from '../api/usage-api';
 
 const parseBooleanToLabel = value => (value ? 'On' : 'Off');
 
 export const onFilterChanged = filter => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task list filter changed',
-    label: filter || 'NONE',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task list filter changed',
+    eventLabel: filter || 'NONE',
   });
 };
 
 export const onSlimViewChanged = slimView => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Slim view option changed',
-    label: parseBooleanToLabel(slimView),
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Slim view option changed',
+    eventLabel: parseBooleanToLabel(slimView),
   });
 };
 
 export const onHeadsUpDisplayToggled = displayHUD => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Heads up display toggled',
-    label: parseBooleanToLabel(displayHUD),
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Heads up display toggled',
+    eventLabel: parseBooleanToLabel(displayHUD),
   });
 };
 
 export const onNotificationsToggled = notifications => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Notifications toggled',
-    label: parseBooleanToLabel(notifications),
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Notifications toggled',
+    eventLabel: parseBooleanToLabel(notifications),
   });
 };
 
 export const onButtonClicked = button => {
-  ReactGA.event({
-    category: 'Button',
-    action: 'Button clicked',
-    label: button,
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Button',
+    eventAction: 'Button clicked',
+    eventLabel: button,
   });
 };
 
 export const onTaskStatusChanged = status => {
   const label = typeof status === 'string' ? status : status.label;
 
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task status changed',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task status changed',
     label,
   });
 };
 
 export const onTaskPriorityChanged = priority => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task priority changed',
-    label: priority,
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task priority changed',
+    eventLabel: priority,
   });
 };
 
 export const onSubtaskOrderChanged = () => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Subtask order changed',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Subtask order changed',
   });
 };
 
 export const onTaskSortingChanged = (column, order) => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task priority changed',
-    label: `Column: ${column}, Order: ${order}`,
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task priority changed',
+    eventLabel: `Column: ${column}, Order: ${order}`,
   });
 };
 
 export const onTaskListAdded = () => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task list added',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task list added',
   });
 };
 
 export const onTaskListDeleted = () => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task list deleted',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task list deleted',
   });
 };
 
 export const onTaskListEdited = () => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task list edited',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task list edited',
   });
 };
 
 export const onTaskListLeft = () => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task list left',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task list left',
   });
 };
 
 export const onTaskListInvitationAccepted = () => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task list invitation accepted',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task list invitation accepted',
   });
 };
 
 export const onTaskListInvitationRejected = () => {
-  ReactGA.event({
-    category: 'Task list',
-    action: 'Task list invitation rejected',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Task list',
+    eventAction: 'Task list invitation rejected',
   });
 };
 
 export const onPatientAdded = () => {
-  ReactGA.event({
-    category: 'Patients',
-    action: 'Patient added',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Patients',
+    eventAction: 'Patient added',
   });
 };
 
 export const onPatientEdited = () => {
-  ReactGA.event({
-    category: 'Patients',
-    action: 'Patient edited',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Patients',
+    eventAction: 'Patient edited',
   });
 };
 
 export const onPatientNoteAdded = () => {
-  ReactGA.event({
-    category: 'Patients',
-    action: 'Patient note added',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Patients',
+    eventAction: 'Patient note added',
   });
 };
 
 export const onPatientNoteEdited = () => {
-  ReactGA.event({
-    category: 'Patients',
-    action: 'Patient note edited',
+  sendEvent({
+    usageEventType: 'USAGE_ACTION',
+    eventCategory: 'Patients',
+    eventAction: 'Patient note edited',
   });
 };
 

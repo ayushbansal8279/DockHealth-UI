@@ -1,6 +1,6 @@
+import { parse } from 'query-string';
 import { equals, pick } from 'ramda';
 import React from 'react';
-import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
 import {
   hashHistory,
@@ -12,6 +12,7 @@ import {
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import { storeAsCurrentTask } from './actions/task-actions';
+import sendEvent from './api/usage-api';
 import PatientDetailsView from './components/patient/PatientDetailsView';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
@@ -61,10 +62,9 @@ import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
-import { onLogin } from './helpers/ga-event-helper';
 
 const transformPathname = pathname =>
-  decodeURIComponent(pathname).replace(/^\//, '');
+  decodeURIComponent(pathname).replace(/^\/+/, '/');
 
 const withFeatureToggle = store => ({ location }) => {
   const user = store.getState().userState?.userProfile;
@@ -72,6 +72,21 @@ const withFeatureToggle = store => ({ location }) => {
   if (user?.userIdentifier) {
     handleFeatureToggle({ location, user });
   }
+};
+
+const sendPageviewEvent = ({ pathname }) => {
+  const searchParameters = parse(hashHistory.getCurrentLocation()?.search);
+
+  const mappedSearchParameters = Object.entries(
+    searchParameters,
+  ).map(([name, value]) => ({ name, value }));
+
+  sendEvent({
+    eventAction: pathname,
+    eventCategory: 'Open View',
+    usageEventType: 'PAGE_VIEW',
+    metaData: mappedSearchParameters,
+  });
 };
 
 export const Routes = ({ store }) => {
@@ -84,13 +99,11 @@ export const Routes = ({ store }) => {
       hashHistory.getCurrentLocation()?.pathname,
     );
 
-    // set GA UID for every pageview
-    onLogin();
-    ReactGA.pageview(firstPathname);
+    sendPageviewEvent({ pathname: firstPathname });
 
     const removeHistoryListener = hashHistory.listen(({ action, pathname }) => {
       if (action === 'PUSH') {
-        ReactGA.pageview(transformPathname(pathname));
+        sendPageviewEvent({ pathname: transformPathname(pathname) });
       }
     });
 
