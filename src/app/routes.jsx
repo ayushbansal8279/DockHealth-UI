@@ -1,6 +1,7 @@
 import { parse } from 'query-string';
 import { equals, pick } from 'ramda';
 import React from 'react';
+import ReactGA from 'react-ga';
 import { useDispatch } from 'react-redux';
 import {
   hashHistory,
@@ -62,6 +63,7 @@ import TemplateAuthBase from './views/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
+// import { onLogin } from './helpers/ga-event-helper';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
@@ -100,10 +102,12 @@ export const Routes = ({ store }) => {
     );
 
     sendPageviewEvent({ pathname: firstPathname });
+    ReactGA.pageview(firstPathname);
 
     const removeHistoryListener = hashHistory.listen(({ action, pathname }) => {
       if (action === 'PUSH') {
         sendPageviewEvent({ pathname: transformPathname(pathname) });
+        ReactGA.pageview(transformPathname(pathname));
       }
     });
 
