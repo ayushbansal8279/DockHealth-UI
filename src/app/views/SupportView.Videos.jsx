@@ -85,7 +85,7 @@ const videos = [
   },
   {
     title: 'Emailing a Task to Dock Health',
-    url: 'https://www.youtube.com/embed/gBOn7cIgOUc',
+    url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
   },
   {
     title: 'Adding Patients to Your Organization in Dock',
