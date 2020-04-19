@@ -73,7 +73,7 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
 
 export function invitePersonToTaskList(taskListIdentifier, personInfo) {
   return axios
-    .put(`list/invitePersonToTaskList/${taskListIdentifier}`, personInfo)
+    .put(`user/invitePersonToTaskList/${taskListIdentifier}`, personInfo)
     .then(response => response?.data)
     .catch(error => {
       throw error;
