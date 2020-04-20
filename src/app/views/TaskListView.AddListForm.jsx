@@ -3,7 +3,7 @@ import { Close } from '@material-ui/icons';
 import { isEmpty } from 'ramda';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
-import { v4 as uuid } from 'uuid';
+// import { v4 as uuid } from 'uuid';
 import { saveTaskList } from '../actions/tasklist-actions';
 import Spacing from '../components/common/Spacing';
 import Member from '../components/members/Member';
@@ -222,7 +222,7 @@ const AddListForm = ({ setListFormOpen }) => {
             label="List name"
             name="listName"
             required
-            autoComplete={uuid()}
+            autoComplete="off"
             autoCorrect="off"
           />
         </FullWidthInputContainer>
