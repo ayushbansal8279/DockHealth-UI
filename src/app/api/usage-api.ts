@@ -13,11 +13,35 @@ interface SendEventProps {
 }
 
 const sendEvent = (data: SendEventProps) => {
-  axios({
-    method: 'post',
-    url: '/usage/event',
-    data,
-  });
+  let captureEvent = true;
+  if (
+    data &&
+    data.eventAction &&
+    (data.eventAction.includes('login') ||
+      data.eventAction.includes('loginUser') ||
+      data.eventAction.includes('welcome') ||
+      data.eventAction.includes('logout') ||
+      data.eventAction.includes('resendCode') ||
+      data.eventAction.includes('forgotPassword') ||
+      data.eventAction.includes('changePassword') ||
+      data.eventAction.includes('resetPassword') ||
+      data.eventAction.includes('changePhoneNumber') ||
+      data.eventAction.includes('confirmMFACode') ||
+      data.eventAction.includes('resetPasswordEmailSent') ||
+      data.eventAction.includes('resetPasswordSuccess') ||
+      data.eventAction.includes('confirmRegistration') ||
+      data.eventAction.includes('confirmRegistrationSuccess') ||
+      data.eventAction.includes('create-account'))
+  ) {
+    captureEvent = false;
+  }
+  if (captureEvent) {
+    axios({
+      method: 'post',
+      url: '/usage/event',
+      data,
+    });
+  }
 
   ReactGA.event({
     category: data.eventCategory,
