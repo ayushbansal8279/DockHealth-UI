@@ -108,7 +108,7 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
     <Spacing2 />
     <Grid item sm={12} container wrap="nowrap" justify="flex-end">
       <H3>
-        <span>By selecting Buy Now I agree to the </span>
+        <span>By selecting Subscribe I agree to the </span>
         <Anchor href="https://www.dock.health/terms-conditions" target="_blank">
           Terms and Conditions
         </Anchor>
@@ -139,7 +139,7 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
         {processingPayment ? (
           <CubesLoader color={palette.white} size={32} />
         ) : (
-          'Buy now'
+          'Subscribe'
         )}
       </Button>
     </Grid>
