@@ -10,7 +10,7 @@ import {
 } from '../../actions/task-actions';
 import { getMembersByTaskListId } from '../../actions/tasklist-actions';
 import useBoolean from '../../hooks/useBoolean';
-import { taskValidationSchema } from './NewTaskDrawer.ValidationSchema';
+import { taskValidationSchema } from './TaskDrawer.ValidationSchema';
 
 export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
   // STATE HOOKS

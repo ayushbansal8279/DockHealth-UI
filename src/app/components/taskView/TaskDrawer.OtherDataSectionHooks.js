@@ -90,9 +90,10 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
 
   const saveDueDate = useCallback(
     ({ updatedDueDate }) => {
-      updateDueDate(task, updatedDueDate ? moment(updatedDueDate) : null)(
-        dispatch,
-      )
+      updateDueDate(
+        task,
+        updatedDueDate ? moment(updatedDueDate) : null,
+      )(dispatch)
         .then(() => {
           setAutoSaveVisible();
         })
@@ -109,7 +110,10 @@ export default ({ task, setAutoSaveVisible, closeDrawer }) => {
 
   const saveTaskList = useCallback(
     ({ newTaskList }) => {
-      moveTask(task, newTaskList)(dispatch)
+      moveTask(
+        task,
+        newTaskList,
+      )(dispatch)
         .then(() => {
           toggleAlert(
             `Task moved successfully to list ${newTaskList.listName}`,

@@ -18,7 +18,7 @@ import {
 } from '../../actions/task-actions';
 import { noop } from '../../helpers/utility-functions';
 import CubesLoader from '../common/CubesLoader';
-import initializeNewTaskDrawerCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
+import initializeTaskDrawerCommentSectionHooks from './TaskDrawer.CommentSection.Hooks';
 import {
   AddCommentButtonContainer,
   CommentsContainer,
@@ -28,9 +28,9 @@ import {
   CommentSectionLabel,
   CubesLoaderContainer,
   StyledSimpleBar,
-} from './NewTaskDrawer.CommentSection.Styled';
-import renderComment from './NewTaskDrawer.RenderComment';
-import { FormSectionDivider } from './NewTaskDrawer.Styled';
+} from './TaskDrawer.CommentSection.Styled';
+import renderComment from './TaskDrawer.RenderComment';
+import { FormSectionDivider } from './TaskDrawer.Styled';
 
 const getGroupedComments = ({ comments }) => {
   // const commentsSortedById = sortBy(prop('commentIdentifier'), comments);
@@ -171,7 +171,7 @@ export default ({ addDeferredCommentToQueue, task }) => {
     scrollToTop,
     addComment,
     simpleBarReference,
-  } = initializeNewTaskDrawerCommentSectionHooks({ task });
+  } = initializeTaskDrawerCommentSectionHooks({ task });
 
   const comments = (task?.comments ?? []).concat(addedComments);
   const commentsEmpty = comments.length === 0;

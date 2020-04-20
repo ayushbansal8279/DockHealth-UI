@@ -9,7 +9,7 @@ import {
   SubtaskCloseContainer,
   SubtaskInfoContainer,
   SubtaskLabel,
-} from './NewTaskDrawer.Styled';
+} from './TaskDrawer.Styled';
 
 export default ({
   addingTaskOrSubtask,

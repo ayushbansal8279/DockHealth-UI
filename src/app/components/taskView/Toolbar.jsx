@@ -16,7 +16,7 @@ import TipsButton from '../common/TipsButton';
 import UniversalTooltip from '../common/UniversalTooltip';
 import { InviteMemberPopoverWithButton } from '../members/InviteMemberPopover';
 import Member from '../members/Member';
-import NewTaskDrawer from './NewTaskDrawer';
+import TaskDrawer from './TaskDrawer';
 import Search from './Search';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
@@ -345,7 +345,7 @@ export default ({
             overflowY: 'auto',
           }}
         >
-          <NewTaskDrawer
+          <TaskDrawer
             taskList={taskList}
             isInbox={isInbox}
             closeDrawer={closeDrawer}

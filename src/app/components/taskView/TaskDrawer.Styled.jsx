@@ -18,7 +18,7 @@ export const OuterDrawerContainer = styled.div`
   }
 `;
 
-export const NewTaskDrawerContainer = styled.div`
+export const TaskDrawerContainer = styled.div`
   align-items: flex-start;
   box-sizing: border-box;
   display: flex;
@@ -184,7 +184,7 @@ export const StyledForm = styled.form`
   overflow-y: auto;
 `;
 
-export const NewTaskDrawerInnerContainer = styled(Grid).attrs({
+export const TaskDrawerInnerContainer = styled(Grid).attrs({
   container: true,
 })``;
 

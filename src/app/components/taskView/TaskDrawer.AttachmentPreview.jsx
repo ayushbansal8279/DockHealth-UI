@@ -29,7 +29,7 @@ import {
   StyledPdfDocument,
   StyledPdfPage,
   UnsupportedFileContainer,
-} from './NewTaskDrawer.AttachmentPreview.Styled';
+} from './TaskDrawer.AttachmentPreview.Styled';
 
 const PREVIEW_DISPLAY_TYPES = {
   AUDIO: 'AUDIO',

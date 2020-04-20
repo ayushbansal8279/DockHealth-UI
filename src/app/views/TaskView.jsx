@@ -40,7 +40,7 @@ import TaskList from '../components/task/TaskList';
 import { TASK_LIST_SHOW_MORE_STEP } from '../components/task/TaskList.Data';
 import Header from '../components/taskView/Header';
 import HeadsUpArea from '../components/taskView/HeadsUpArea';
-import NewTaskDrawer from '../components/taskView/NewTaskDrawer';
+import TaskDrawer from '../components/taskView/TaskDrawer';
 import Toolbar from '../components/taskView/Toolbar';
 import {
   onButtonClicked,
@@ -162,8 +162,7 @@ const SHOW_INBOX_TIPS = 'SHOW_INBOX_TIPS';
 
 class TaskView extends Component {
   state = {
-    filterBy:
-      this.props.isMultiList || this.props.isInbox ? '' : 'ASSIGNED_TO_ME',
+    filterBy: '',
     completedTasksShown: false,
     rawSearchTerm: '',
     searchTerms: [],
@@ -195,7 +194,7 @@ class TaskView extends Component {
   }, 300);
 
   componentDidMount = () => {
-    const { taskList, currentUser } = this.props;
+    const { taskList, currentUser, isMultiList, isInbox } = this.props;
     const taskListIdentifier = taskList?.taskListIdentifier;
 
     let localStorageKey = `${TASK_VIEW_STORAGE_PREFIX}_${currentUser.userIdentifier}`;
@@ -230,6 +229,7 @@ class TaskView extends Component {
         .join(' ')
         .trim(),
       preferencesInitialized: true,
+      filterBy: isMultiList || isInbox ? '' : 'ASSIGNED_TO_ME',
     });
 
     this.resetHeader();
@@ -1285,7 +1285,7 @@ class TaskView extends Component {
                       </TaskListContainer>
                     </div>
                     {mainTaskDrawerOpen && !isMultiList && (
-                      <NewTaskDrawer
+                      <TaskDrawer
                         headsUpAreaRef={this.headsUpArea.current}
                         closeDrawer={this.closeTaskDrawer}
                         taskList={taskList}

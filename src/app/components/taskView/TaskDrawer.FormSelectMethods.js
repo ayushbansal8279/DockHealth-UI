@@ -21,9 +21,10 @@ export default ({
 
     if (hasTask) {
       try {
-        await assignOrReassignTask(defaultValues, userIdentifier || -1)(
-          dispatch,
-        );
+        await assignOrReassignTask(
+          defaultValues,
+          userIdentifier || -1,
+        )(dispatch);
         setAutoSaveVisible();
       } catch {
         toggleAlert(

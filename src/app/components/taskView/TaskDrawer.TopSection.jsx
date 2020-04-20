@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux';
 import { updateWorkflowStatus } from '../../actions/task-actions';
 import { onTaskPriorityChanged } from '../../helpers/ga-event-helper';
 import { PriorityDot } from '../common/Priority';
-import NewTaskDrawerForm from './NewTaskDrawer.Form';
-import renderStatusSelectOption from './NewTaskDrawer.RenderStatusSelect';
+import TaskDrawerForm from './TaskDrawer.Form';
+import renderStatusSelectOption from './TaskDrawer.RenderStatusSelect';
 import {
   AutoSaveContainer,
   AutoSaveLabel,
@@ -15,7 +15,7 @@ import {
   FormSectionDivider,
   StatusSelect,
   TopLabel,
-} from './NewTaskDrawer.Styled';
+} from './TaskDrawer.Styled';
 import PriorityFlag from './PriorityFlag';
 
 export default ({
@@ -158,7 +158,7 @@ export default ({
       </Grid>
       <Grid item xs={12}>
         <FormContext {...formMethods}>
-          <NewTaskDrawerForm
+          <TaskDrawerForm
             isSubtask={isSubtask}
             defaultValues={defaultValues}
             handleSubmit={handleSubmit}

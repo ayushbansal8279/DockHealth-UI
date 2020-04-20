@@ -7,7 +7,7 @@ import {
   removeTaskAttachment,
 } from '../../actions/task-actions';
 import useBoolean from '../../hooks/useBoolean';
-import AttachmentPreview from './NewTaskDrawer.AttachmentPreview';
+import AttachmentPreview from './TaskDrawer.AttachmentPreview';
 import {
   AddAttachmentButton,
   AttachmentFileInput,
@@ -18,7 +18,7 @@ import {
   UploadingFileCurrentProgress,
   UploadingFileLabel,
   UploadingFileProgressBar,
-} from './NewTaskDrawer.AttachmentsList.Styled';
+} from './TaskDrawer.AttachmentsList.Styled';
 
 const acceptedFileFormats = [
   'application/pdf',
@@ -70,9 +70,10 @@ const renderAttachmentListEntry = ({
               existingAttachment => attachment !== existingAttachment,
             );
           } else {
-            removeTaskAttachment(taskIdentifier, attachmentIdentifier)(
-              dispatch,
-            ).then(() => {
+            removeTaskAttachment(
+              taskIdentifier,
+              attachmentIdentifier,
+            )(dispatch).then(() => {
               filterAddedAttachments(
                 ({ attachmentIdentifier: existingAttachmentId }) =>
                   attachmentIdentifier !== existingAttachmentId,

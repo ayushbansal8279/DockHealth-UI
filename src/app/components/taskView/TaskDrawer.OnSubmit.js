@@ -19,7 +19,6 @@ export default ({
   const {
     assignedToUserIdentifier,
     patientIdentifier,
-    patient: unusedPatient,
     newTaskListId,
     newTaskDueDate,
     description,

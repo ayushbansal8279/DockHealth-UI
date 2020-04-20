@@ -4,9 +4,9 @@ import React from 'react';
 import styled from 'styled-components';
 import palette from '../../palette';
 import CubesLoader from '../common/CubesLoader';
-import NewTaskDrawerAttachmentsList from './NewTaskDrawer.AttachmentsList';
-import NewTaskDrawerOtherDataDueDate from './NewTaskDrawer.OtherDataDueDate';
-import initializeNewTaskDrawerOtherDataSectionHooks from './NewTaskDrawer.OtherDataSectionHooks';
+import TaskDrawerAttachmentsList from './TaskDrawer.AttachmentsList';
+import TaskDrawerOtherDataDueDate from './TaskDrawer.OtherDataDueDate';
+import initializeTaskDrawerOtherDataSectionHooks from './TaskDrawer.OtherDataSectionHooks';
 
 const OtherDataSectionContainer = styled.div`
   padding: 1rem 1.5rem;
@@ -157,7 +157,7 @@ export default ({
     setNewDueDate,
     userProfileAccess,
     isOverdue,
-  } = initializeNewTaskDrawerOtherDataSectionHooks({
+  } = initializeTaskDrawerOtherDataSectionHooks({
     task,
     setAutoSaveVisible,
     closeDrawer,
@@ -215,7 +215,7 @@ export default ({
       <SectionRow>
         <input type="hidden" name="newTaskDueDate" ref={register} />
         <SectionLabel>Due date</SectionLabel>
-        <NewTaskDrawerOtherDataDueDate
+        <TaskDrawerOtherDataDueDate
           newDueDate={newDueDate}
           setNewDueDate={setNewDueDate}
           saveDueDate={saveDueDate}
@@ -232,7 +232,7 @@ export default ({
           <SectionLabel padded>Attachments</SectionLabel>
           <SectionButtonContainer>
             <SectionButton>
-              <NewTaskDrawerAttachmentsList
+              <TaskDrawerAttachmentsList
                 task={task}
                 handleSubmit={handleSubmit}
                 addingTaskOrSubtask={addingTaskOrSubtask}

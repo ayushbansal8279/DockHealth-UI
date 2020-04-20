@@ -14,12 +14,12 @@ import palette from '../../palette';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';
-import NewTaskDrawerAddPatientForm from './NewTaskDrawer.AddPatientForm';
-import NewTaskDrawerEditTaskComponent from './NewTaskDrawer.EditTaskComponent';
-import NewTaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
-import initializeNewTaskDrawerFormSelectMethods from './NewTaskDrawer.FormSelectMethods';
-import NewTaskDrawerInviteToListForm from './NewTaskDrawer.InviteToListForm';
-import NewTaskDrawerPersonPicker from './NewTaskDrawer.PersonPicker';
+import TaskDrawerAddPatientForm from './TaskDrawer.AddPatientForm';
+import TaskDrawerEditTaskComponent from './TaskDrawer.EditTaskComponent';
+import TaskDrawerEmailBodyContainer from './TaskDrawer.EmailBody';
+import initializeTaskDrawerFormSelectMethods from './TaskDrawer.FormSelectMethods';
+import TaskDrawerInviteToListForm from './TaskDrawer.InviteToListForm';
+import TaskDrawerPersonPicker from './TaskDrawer.PersonPicker';
 
 const FormContainer = styled(Grid)`
   padding-top: 16px;
@@ -188,7 +188,7 @@ export default ({
   const {
     handleAssignedToSelect,
     handlePatientSelect,
-  } = initializeNewTaskDrawerFormSelectMethods({
+  } = initializeTaskDrawerFormSelectMethods({
     setValue,
     setCurrentMember,
     closeAssignedToPopover,
@@ -258,7 +258,7 @@ export default ({
       <FormContainer container spacing={1}>
         <Grid item xs={12}>
           {hasTask ? (
-            <NewTaskDrawerEditTaskComponent
+            <TaskDrawerEditTaskComponent
               handleSubmit={handleSubmit}
               onMarkComplete={onMarkComplete}
               setAutoSaveVisible={setAutoSaveVisible}
@@ -287,7 +287,7 @@ export default ({
         </Grid>
         {defaultValues.sourceMessage && (
           <Grid item xs={12}>
-            <NewTaskDrawerEmailBodyContainer
+            <TaskDrawerEmailBodyContainer
               emailBody={defaultValues.sourceMessage}
               task={defaultValues}
               members={members}
@@ -297,7 +297,7 @@ export default ({
         {!isSubtask && !isSpecificPatient && (
           <Grid item xs={12}>
             {patientPopoverOpen && (
-              <NewTaskDrawerPersonPicker
+              <TaskDrawerPersonPicker
                 showAddNewPersonLabel
                 addNewPersonLabel="+ Add a new patient"
                 addingNewPersonLabel="Add a new patient"
@@ -315,7 +315,7 @@ export default ({
                 renderNoItems={renderNoPatientItem({ handlePatientSelect })}
                 handlePersonSelect={handlePatientSelect}
                 personRecordHeightInRem={2.3125}
-                AddingPersonForm={NewTaskDrawerAddPatientForm}
+                AddingPersonForm={TaskDrawerAddPatientForm}
               />
             )}
             <StyledInput
@@ -350,7 +350,7 @@ export default ({
         )}
         <Grid item xs={12}>
           {assignedToPopoverOpen && (
-            <NewTaskDrawerPersonPicker
+            <TaskDrawerPersonPicker
               closePicker={closeAssignedToPopover}
               items={members}
               itemFilterPropertyKeys={['userName']}
@@ -360,7 +360,7 @@ export default ({
               renderNoItems={renderNoAssignedToItem({ handleAssignedToSelect })}
               handlePersonSelect={handleAssignedToSelect}
               personRecordHeightInRem={4.0625}
-              AddingPersonForm={NewTaskDrawerInviteToListForm}
+              AddingPersonForm={TaskDrawerInviteToListForm}
             />
           )}
           <StyledInput

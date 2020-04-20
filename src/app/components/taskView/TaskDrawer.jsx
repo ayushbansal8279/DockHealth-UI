@@ -5,22 +5,22 @@ import { deleteTask, duplicateTask } from '../../actions/task-actions';
 import { onButtonClicked } from '../../helpers/ga-event-helper';
 import { getPatientName, noop } from '../../helpers/utility-functions';
 import { getSubscriptionIsTrial } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
-import NewTaskDrawerCommentSection from './NewTaskDrawer.CommentSection';
-import initializeNewTaskDrawerHooks from './NewTaskDrawer.Hooks';
-import onSubmit from './NewTaskDrawer.OnSubmit';
-import NewTaskDrawerOtherDataSection from './NewTaskDrawer.OtherDataSection';
-import NewTaskDrawerParentInfo from './NewTaskDrawer.ParentInfo';
+import TaskDrawerCommentSection from './TaskDrawer.CommentSection';
+import initializeTaskDrawerHooks from './TaskDrawer.Hooks';
+import onSubmit from './TaskDrawer.OnSubmit';
+import TaskDrawerOtherDataSection from './TaskDrawer.OtherDataSection';
+import TaskDrawerParentInfo from './TaskDrawer.ParentInfo';
 import {
   BottomButtonContainer,
   CondensedFormSection,
-  NewTaskDrawerContainer,
-  NewTaskDrawerInnerContainer,
+  TaskDrawerContainer,
+  TaskDrawerInnerContainer,
   OuterDrawerContainer,
   SideClickListener,
   StyledForm,
   StyledVerticalDivider,
-} from './NewTaskDrawer.Styled';
-import NewTaskDrawerTopSection from './NewTaskDrawer.TopSection';
+} from './TaskDrawer.Styled';
+import TaskDrawerTopSection from './TaskDrawer.TopSection';
 import { getPriorityColor } from '../../palette';
 
 const statusSelectData = [
@@ -118,7 +118,7 @@ export default ({
     taskContainerReference,
     togglePriorityActive,
     userProfile,
-  } = initializeNewTaskDrawerHooks({
+  } = initializeTaskDrawerHooks({
     headsUpAreaRef,
     statusSelectData,
     isMultiList,
@@ -176,7 +176,7 @@ export default ({
         contentContainerElement?.clientHeight,
       )}
     >
-      <NewTaskDrawerContainer
+      <TaskDrawerContainer
         headsUpAreaHeight={headsUpAreaHeight}
         ref={taskContainerReference}
         compact={compact}
@@ -184,7 +184,7 @@ export default ({
         isSubscriptionTrial={isSubscriptionTrial}
       >
         {parentTask && (
-          <NewTaskDrawerParentInfo
+          <TaskDrawerParentInfo
             addingTaskOrSubtask={addingTaskOrSubtask}
             autoSaveVisible={autoSaveVisible}
             closeDrawer={closeDrawer}
@@ -194,8 +194,8 @@ export default ({
           />
         )}
         <StyledForm onSubmit={handleSubmit}>
-          <NewTaskDrawerInnerContainer>
-            <NewTaskDrawerTopSection
+          <TaskDrawerInnerContainer>
+            <TaskDrawerTopSection
               addingTaskOrSubtask={addingTaskOrSubtask}
               autoSaveVisible={autoSaveVisible}
               defaultValues={defaultValues}
@@ -230,13 +230,13 @@ export default ({
               xs={12}
             >
               {userProfile?.access?.commentsEnabled && (
-                <NewTaskDrawerCommentSection
+                <TaskDrawerCommentSection
                   task={task}
                   addDeferredCommentToQueue={addDeferredCommentToQueue}
                 />
               )}
               <FormContext {...formMethods}>
-                <NewTaskDrawerOtherDataSection
+                <TaskDrawerOtherDataSection
                   task={task}
                   taskList={taskList}
                   closeDrawer={closeDrawer}
@@ -249,7 +249,7 @@ export default ({
                 />
               </FormContext>
             </CondensedFormSection>
-          </NewTaskDrawerInnerContainer>
+          </TaskDrawerInnerContainer>
         </StyledForm>
         {task && task.taskIdentifier != null && task.status !== 'COMPLETE' && (
           <BottomButtonContainer>
@@ -313,7 +313,7 @@ export default ({
           </BottomButtonContainer>
         )}
         {!compact && <SideClickListener onClick={closeDrawer} />}
-      </NewTaskDrawerContainer>
+      </TaskDrawerContainer>
     </OuterDrawerContainer>
   );
 };

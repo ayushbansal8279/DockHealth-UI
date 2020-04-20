@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { invitePersonToOrganization } from '../../actions/people-actions';
 import palette from '../../palette';
 import StyledInput from '../userProfileView/StyledInput';
-import { inviteValidationSchema } from './NewTaskDrawer.ValidationSchema';
+import { inviteValidationSchema } from './TaskDrawer.ValidationSchema';
 
 const BottomFormLabel = styled.button`
   align-items: center;

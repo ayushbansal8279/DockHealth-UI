@@ -8,7 +8,7 @@ import useBoolean from '../../hooks/useBoolean';
 import DropdownIcon from '../../img/dropdown-icon.svg';
 import palette from '../../palette';
 import StyledInput from '../userProfileView/StyledInput';
-import { addPatientValidationSchema } from './NewTaskDrawer.ValidationSchema';
+import { addPatientValidationSchema } from './TaskDrawer.ValidationSchema';
 
 const FormLabel = styled.div`
   color: ${palette.lighterCyanBlue};

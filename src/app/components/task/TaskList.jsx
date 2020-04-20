@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import CubesLoader from '../common/CubesLoader';
-import NewTaskDrawer from '../taskView/NewTaskDrawer';
+import TaskDrawer from '../taskView/TaskDrawer';
 import Heading from './TaskList.Heading';
 import initializeTaskListHooks from './TaskList.Hooks';
 import NewTaskElement from './TaskList.NewTaskElement';
@@ -121,7 +121,7 @@ const TaskList = ({
         </ShowMoreButtonContainer>
       </TaskListOuterContainer>
       {taskDrawerOpen && isMultiList && isCurrentListSelected && (
-        <NewTaskDrawer
+        <TaskDrawer
           isInbox={isInbox}
           isMultiList
           compact
