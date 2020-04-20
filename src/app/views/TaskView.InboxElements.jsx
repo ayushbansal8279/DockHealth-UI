@@ -60,7 +60,7 @@ const MainInboxContainer = styled.div`
 
 const SmallRobotoTypography = styled(RobotoTypography)`
   && {
-    font-size: 0.625rem;
+    font-size: 0.875rem;
     line-height: 1.0625rem !important;
   }
 `;

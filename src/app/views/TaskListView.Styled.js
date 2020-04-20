@@ -95,7 +95,7 @@ export const TaskListTipTextContainer = styled.div`
 `;
 
 export const TaskListTipSmallTextContainer = styled.div`
-  font-size: 0.625rem;
+  font-size: 0.875rem;
 `;
 
 export const TaskListTipsFooterContainer = styled.div`
