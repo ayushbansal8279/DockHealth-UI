@@ -58,6 +58,12 @@ class Home extends Component {
       [T, always(actions.getListTasks)],
     ])(listName);
 
+    const taskCountAction = cond([
+      [equals(ASSIGNED_BY_ME), always(actions.getCountOfTasksAssignedByMe)],
+      [equals(ASSIGNED_TO_ME), always(actions.getCountOfTasksAssignedToMe)],
+      [T, always(actions.getListTasksCount)],
+    ])(listName);
+
     const getAllTasks = async () => {
       await Promise.all([
         taskAction(
@@ -65,6 +71,11 @@ class Home extends Component {
           sortBy,
           filterBy,
           'INCOMPLETE',
+        ),
+        taskCountAction(
+          routeParams.taskListIdentifier,
+          'ASSIGNED_TO_ME', // default view
+          'COMPLETE',
         ),
       ]);
 
@@ -144,6 +155,11 @@ class Home extends Component {
           undefined,
           'INCOMPLETE',
         );
+        actions.getListTasksCount(
+          nextProps.routeParams.taskListIdentifier,
+          undefined,
+          'COMPLETE',
+        );
         if (nextProps.routeParams.taskListIdentifier) {
           taskListActions.getMembersByTaskListId(
             nextProps.routeParams.taskListIdentifier,
@@ -174,6 +190,11 @@ class Home extends Component {
       undefined,
       undefined,
       'INCOMPLETE',
+    );
+    actions.getListTasksCount(
+      routeParams.taskListIdentifier,
+      undefined,
+      'COMPLETE',
     );
 
     if (routeParams.taskListIdentifier) {
@@ -221,6 +242,11 @@ class Home extends Component {
             );
           });
         });
+      actions.getCountOfTasksAssignedByMe(
+        taskListIdentifier,
+        filterBy,
+        'COMPLETE',
+      );
     } else if (listName === ASSIGNED_TO_ME) {
       actions
         .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
@@ -235,6 +261,11 @@ class Home extends Component {
             );
           });
         });
+      actions.getCountOfTasksAssignedToMe(
+        taskListIdentifier,
+        filterBy,
+        'COMPLETE',
+      );
     } else {
       actions
         .getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE')
@@ -249,6 +280,7 @@ class Home extends Component {
             );
           });
         });
+      actions.getListTasksCount(taskListIdentifier, filterBy, 'COMPLETE');
     }
   };
 

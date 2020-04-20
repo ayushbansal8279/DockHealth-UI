@@ -60,6 +60,24 @@ export function getListTasks(
       });
 }
 
+export function getListTasksCount(
+  taskListIdentifier,
+  filterBy,
+  status,
+) {
+  const action = ActionTypes.GET_TASKS_COUNT_SUCCESS;
+
+  return dispatch =>
+    TaskApi.getListTasksCountByUser(taskListIdentifier, status, filterBy)
+      .then(stats => {
+        dispatch({ type: action, stats });
+        return stats;
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
 export function getTasksAssignedToMe(
   taskListIdentifier,
   sortBy,
@@ -74,6 +92,24 @@ export function getTasksAssignedToMe(
       .then(tasks => {
         dispatch({ type: action, tasks });
         return tasks;
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
+export function getCountOfTasksAssignedToMe(
+  taskListIdentifier,
+  filterBy,
+  status,
+) {
+  const action = ActionTypes.GET_TASKS_COUNT_SUCCESS;
+
+  return dispatch =>
+    TaskApi.getCountOfTasksAssignedToMe(taskListIdentifier, status, filterBy)
+      .then(stats => {
+        dispatch({ type: action, stats });
+        return stats;
       })
       .catch(error => {
         throw error;
@@ -107,6 +143,30 @@ export function getTasksAssignedToSpecificUser(
       });
 }
 
+export function getCountOfTasksAssignedToSpecificUser(
+  userIdentifier,
+  taskListIdentifier,
+  filterBy,
+  status,
+) {
+  const action = ActionTypes.GET_TASKS_COUNT_SUCCESS;
+
+  return dispatch =>
+    TaskApi.getCountOfTasksAssignedToSpecificUser(
+      userIdentifier,
+      taskListIdentifier,
+      status,
+      filterBy,
+    )
+      .then(stats => {
+        dispatch({ type: action, stats });
+        return stats;
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
 export function getTasksAssignedByMe(
   taskListIdentifier,
   sortBy,
@@ -121,6 +181,24 @@ export function getTasksAssignedByMe(
       .then(tasks => {
         dispatch({ type: action, tasks });
         return tasks;
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
+export function getCountOfTasksAssignedByMe(
+  taskListIdentifier,
+  filterBy,
+  status,
+) {
+  const action = ActionTypes.GET_TASKS_COUNT_SUCCESS;
+
+  return dispatch =>
+    TaskApi.getCountOfTasksAssignedByMe(taskListIdentifier, status, filterBy)
+      .then(stats => {
+        dispatch({ type: action, stats });
+        return stats;
       })
       .catch(error => {
         throw error;

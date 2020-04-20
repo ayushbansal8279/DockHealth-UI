@@ -162,7 +162,8 @@ const SHOW_INBOX_TIPS = 'SHOW_INBOX_TIPS';
 
 class TaskView extends Component {
   state = {
-    filterBy: '',
+    filterBy:
+      this.props.isMultiList || this.props.isInbox ? '' : 'ASSIGNED_TO_ME',
     completedTasksShown: false,
     rawSearchTerm: '',
     searchTerms: [],
@@ -400,6 +401,11 @@ class TaskView extends Component {
             null,
             null,
             'INCOMPLETE',
+          );
+          taskActions.getListTasksCount(
+            data.task.taskList.taskListIdentifier,
+            null,
+            'COMPLETE',
           );
         }
         // eslint-disable-next-line no-unused-expressions
@@ -898,6 +904,7 @@ class TaskView extends Component {
       globalSearch,
       onCompletedTasksRequest,
       paneled,
+      taskCountStats,
     } = this.props;
     const { filterBy } = this.state;
 
@@ -923,9 +930,20 @@ class TaskView extends Component {
         groupedListName,
       );
       const completedTasksForList = groupedCompletedTasks.get(groupedListName);
+      const completedCountOfTasksForList =
+        completedTasksForList && Array.isArray(completedTasksForList)
+          ? completedTasksForList.length
+          : 0;
 
       const currentTaskList = groupedTasks.get(groupedListName)[0]?.taskList;
       const currentTaskListId = currentTaskList?.taskListIdentifier;
+
+      const completedTaskCount =
+        taskCountStats?.find?.(
+          ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
+            metricName === 'TASKS_COUNT' &&
+            metricTaskListIdentifier === currentTaskListId,
+        )?.metricValue ?? completedCountOfTasksForList;
 
       const heading = (
         <div>
@@ -963,6 +981,7 @@ class TaskView extends Component {
             filterBy={filterBy}
             onCompletedTasksRequest={onCompletedTasksRequest}
             taskListIdentifier={currentTaskListId}
+            completedListTaskCount={completedTaskCount}
             taskDrawerProps={{
               taskList: currentTaskList,
               closeDrawer: this.closeTaskDrawer,
@@ -993,7 +1012,7 @@ class TaskView extends Component {
       isMultiList,
       isSpecificPatient,
       onCompletedTasksRequest,
-      // taskListStats,
+      taskCountStats,
     } = this.props;
     const {
       slimView,
@@ -1047,18 +1066,20 @@ class TaskView extends Component {
       ...listCompletedTasks.flatMap(task => task?.subtasks ?? null),
     ].filter(Boolean).length;
 
-    // const completedTaskCount =
-    //   taskListStats?.stats?.find?.(
-    //     ({ metricName }) => metricName === 'CompletedAll_TaskList_Count',
-    //   )?.metricValue ?? 0;
+    const completedTaskCount =
+      taskCountStats?.find?.(
+        ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
+          metricName === 'TASKS_COUNT' &&
+          metricTaskListIdentifier === taskListIdentifier,
+      )?.metricValue ?? completedTasksAndSubTasksCount;
 
-    const completedTaskCount = listCompletedTasks.length;
+    // const completedTaskCount = listCompletedTasks.length;
 
     return (
       <>
         <CompletedButtonRowContainer>
           <SideClickListener heightMax onClick={this.closeTaskDrawer} />
-          {!isMultiList && (
+          {!isMultiList && completedTaskCount > 0 && (
             <Button
               size="small"
               variant="contained"
@@ -1081,12 +1102,12 @@ class TaskView extends Component {
               `}
             </Button>
           )}
-          {isMultiList && (
+          {isMultiList && completedTaskCount > 0 && (
             <StyledButtonLabel>
               {`Completed tasks (${
-                listCompletedTasks.length >= TASK_LIST_SHOW_MORE_STEP
+                completedTaskCount >= TASK_LIST_SHOW_MORE_STEP
                   ? `${TASK_LIST_SHOW_MORE_STEP}+`
-                  : completedTasksAndSubTasksCount
+                  : completedTaskCount
               })`}
             </StyledButtonLabel>
           )}
@@ -1301,7 +1322,7 @@ const mapStateToProps = store => ({
   addingNewTask: store.taskState.addingNewTask,
   addingNewSubtask: store.taskState.addingNewSubtask,
   subscription: store.organizationState?.organization?.subscriptionDetails,
-  taskListStats: store.taskListState?.taskListStats,
+  taskCountStats: store.taskState?.taskCountStats,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

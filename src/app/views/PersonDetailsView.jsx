@@ -89,6 +89,12 @@ class PersonDetailsView extends PureComponent {
       filterBy,
       'INCOMPLETE',
     );
+    taskActions.getCountOfTasksAssignedToSpecificUser(
+      personData?.userIdentifier,
+      undefined,
+      filterBy,
+      'COMPLETE',
+    );
   };
 
   handleCompletedTasksRequest = (

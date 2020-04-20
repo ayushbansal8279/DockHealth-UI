@@ -35,6 +35,7 @@ const TaskList = ({
   isInbox,
   listName,
   showListHeadings,
+  completedListTaskCount,
   isMultiList,
   taskDrawerProps = {},
   paneled = false,
@@ -95,6 +96,7 @@ const TaskList = ({
         ) : (
           renderTasks({
             taskDrawerOpen,
+            completedListTaskCount,
             isMultiList,
             sortedTasksToShow,
             otherTaskListProps,

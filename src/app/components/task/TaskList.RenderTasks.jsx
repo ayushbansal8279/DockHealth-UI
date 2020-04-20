@@ -79,6 +79,7 @@ const getCompletedTasksLabel = ({
 };
 
 export const renderTasks = ({
+  completedListTaskCount,
   isMultiList,
   sortedTasksToShow,
   taskDrawerOpen,
@@ -111,10 +112,15 @@ export const renderTasks = ({
       sortedTasksToShow,
     );
 
-    const completeTasksCount = [
+    const completeTasksCountFromTasks = [
       ...completeTasks,
       ...completeTasks.flatMap(task => task?.subtasks ?? null).filter(Boolean),
     ].length;
+
+    const completeTasksCount =
+      completeTasksCountFromTasks > 0
+        ? completeTasksCountFromTasks
+        : completedListTaskCount;
 
     const completedTasksLabel = getCompletedTasksLabel({
       isFetching,
@@ -137,23 +143,25 @@ export const renderTasks = ({
         </Grid>
         {!globalSearch && (
           <Grid item xs={12} container justify="center">
-            <Button
-              size="small"
-              type="button"
-              onClick={
-                areCompleteTasksShown
-                  ? toggleCompletedTasksShown
-                  : () => {
-                      setFetching();
-                      getCompletedTasks()
-                        .then(onFetchingCompleted)
-                        .catch(onFetchingCompleted);
-                    }
-              }
-              variant="contained"
-            >
-              {completedTasksLabel}
-            </Button>
+            {completeTasksCount > 0 && (
+              <Button
+                size="small"
+                type="button"
+                onClick={
+                  areCompleteTasksShown
+                    ? toggleCompletedTasksShown
+                    : () => {
+                        setFetching();
+                        getCompletedTasks()
+                          .then(onFetchingCompleted)
+                          .catch(onFetchingCompleted);
+                      }
+                }
+                variant="contained"
+              >
+                {completedTasksLabel}
+              </Button>
+            )}
           </Grid>
         )}
         <Collapse in={areCompleteTasksShown || globalSearch}>

@@ -41,6 +41,24 @@ export function getListTasksByUser(
     });
 }
 
+export function getListTasksCountByUser(
+  taskListIdentifier,
+  status = 'COMPLETE',
+  filterBy,
+) {
+  return axios
+    .get(`task/findCountOfListTasksByUser/${taskListIdentifier}`, {
+      params: {
+        status,
+        filterBy: filterBy || undefined,
+      },
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function getTasksAssignedToMe(
   taskListIdentifier,
   status,
@@ -83,6 +101,24 @@ export function getTasksAssignedToMe(
   }
   return axios
     .get(`task/findTasksAssignedToUser?status=${status}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getCountOfTasksAssignedToMe(
+  taskListIdentifier,
+  status = 'COMPLETE',
+  filterBy,
+) {
+  return axios
+    .get(`task/findCountOfTasksAssignedToUser`, {
+      params: {
+        status,
+        filterBy: filterBy || undefined,
+      },
+    })
     .then(response => response.data)
     .catch(error => {
       throw error;
@@ -140,6 +176,26 @@ export function getTasksAssignedToSpecificUser(
     });
 }
 
+export function getCountOfTasksAssignedToSpecificUser(
+  userIdentifier,
+  taskListIdentifier,
+  status = 'COMPLETE',
+  filterBy,
+) {
+  return axios
+    .get(`task/findCountOfTasksAssignedToSpecificUser`, {
+      params: {
+        userId: userIdentifier,
+        status,
+        filterBy: filterBy || undefined,
+      },
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function getTasksAssignedByMe(
   taskListIdentifier,
   status,
@@ -158,6 +214,24 @@ export function getTasksAssignedByMe(
       filterBy,
     },
   })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getCountOfTasksAssignedByMe(
+  taskListIdentifier,
+  status = 'COMPLETE',
+  filterBy,
+) {
+  return axios
+    .get(`task/findCountOfTasksAssignedByUser`, {
+      params: {
+        status,
+        filterBy: filterBy || undefined,
+      },
+    })
     .then(response => response.data)
     .catch(error => {
       throw error;

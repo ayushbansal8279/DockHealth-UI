@@ -29,6 +29,7 @@ import {
   GET_TASK_HISTORY_ERROR,
   GET_TASK_HISTORY_SUCCESS,
   GET_TASKS_SUCCESS,
+  GET_TASKS_COUNT_SUCCESS,
   HIDE_COMPLETED_TASKS,
   MARK_COMPLETE_TASK_STATUS_SUCCESS,
   MARK_TASK_STATUS_SUCCESS,
@@ -72,6 +73,7 @@ const initialState = {
   addingNewSubtaskParentId: null,
   subtaskShape: {},
   addingNewTask: false,
+  taskCountStats: null,
 };
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
@@ -273,6 +275,11 @@ const TaskReducer = (state = initialState, action) => {
         showingCompletedTasks: true,
         isFetching: false,
       };
+    }
+
+    case GET_TASKS_COUNT_SUCCESS: {
+      const { stats } = action;
+      return { ...state, taskCountStats: stats };
     }
 
     case REQUEST_TASKS:
