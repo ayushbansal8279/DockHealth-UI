@@ -164,8 +164,8 @@ export function login(loginUserName, password) {
 
       onFailure: reject,
 
-      mfaRequired: codeDeliveryDetails => {
-        resolve(codeDeliveryDetails);
+      mfaRequired(challengeName, challengeParameters) {
+        resolve({ challengeName, challengeParameters });
       },
     });
   });

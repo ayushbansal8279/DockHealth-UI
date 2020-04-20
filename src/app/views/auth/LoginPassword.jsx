@@ -40,7 +40,13 @@ const LoginPassword = () => {
           mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
             LOGIN_SUCCESS: 'YES',
           });
-          if (data === 'SMS_MFA') {
+          if (data.challengeName === 'SMS_MFA') {
+            if (data.challengeParameters) {
+              window.sessionStorage.setItem(
+                'SMS_PHONE',
+                data.challengeParameters.CODE_DELIVERY_DESTINATION,
+              );
+            }
             hashHistory.push(
               `confirmMFACode?uname=${encodeURIComponent(form.username)}`,
             );
