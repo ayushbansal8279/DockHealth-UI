@@ -1,7 +1,7 @@
 import { List, ListItem } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons';
-import { isEmpty, prop } from 'ramda';
-import React, { useCallback, useRef, useState } from 'react';
+import { isEmpty, prop, sortBy, uniqBy } from 'ramda';
+import React, { useCallback, useRef, useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   cancelInviteToTaskList,
@@ -282,22 +282,58 @@ const MemberItemElement = ({
 const renderMemberItemElement = ({
   currentUser,
   taskList,
-  notInTaskList = false,
-}) => member => (
-  <MemberItemElement
-    key={member?.userIdentifier ?? member?.email}
-    member={member}
-    currentUser={currentUser}
-    taskList={taskList}
-    notInTaskList={notInTaskList}
-  />
-);
+  membersNotInTaskListIdentifiers,
+}) => member => {
+  const memberIdentifier = member?.userIdentifier ?? member?.email;
+
+  return (
+    <MemberItemElement
+      key={memberIdentifier}
+      member={member}
+      currentUser={currentUser}
+      taskList={taskList}
+      notInTaskList={membersNotInTaskListIdentifiers.includes(memberIdentifier)}
+    />
+  );
+};
 
 const memberFilterIteratee = ({ searchTerm }) => ({ firstName, lastName }) =>
   searchTerm
     ? firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lastName.toLowerCase().includes(searchTerm.toLowerCase())
     : true;
+
+const memberIdentifierIteratee = member =>
+  member?.userIdentifier ?? member?.email;
+
+const getMembersData = ({ members, membersNotInTaskList, searchTerm }) => {
+  const filteredMembersIdentifiers = members.map(prop('userIdentifier'));
+
+  const membersNotInTaskListIdentifiers = membersNotInTaskList
+    .filter(
+      ({ userIdentifier }) =>
+        !filteredMembersIdentifiers.includes(userIdentifier),
+    )
+    .map(memberIdentifierIteratee);
+
+  const allMembers = uniqBy(
+    memberIdentifierIteratee,
+    [...(members ?? []), ...(membersNotInTaskList ?? [])].filter(
+      memberFilterIteratee({ searchTerm }),
+    ),
+  );
+
+  const allMembersSorted = sortBy(
+    ({ firstName, lastName }) =>
+      `${firstName ?? ''} ${lastName ?? ''}`.trim().toLowerCase(),
+    allMembers,
+  );
+
+  return {
+    allMembersSorted,
+    membersNotInTaskListIdentifiers,
+  };
+};
 
 const NotInvitingContent = ({
   closeMemberPopover,
@@ -310,16 +346,15 @@ const NotInvitingContent = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredMembers = members.filter(memberFilterIteratee({ searchTerm }));
-  const filteredMembersIdentifiers = filteredMembers.map(
-    prop('userIdentifier'),
+  const { allMembersSorted, membersNotInTaskListIdentifiers } = useMemo(
+    () =>
+      getMembersData({
+        members,
+        membersNotInTaskList,
+        searchTerm,
+      }),
+    [members, membersNotInTaskList, searchTerm],
   );
-  const filteredMembersNotInTaskList = membersNotInTaskList
-    .filter(memberFilterIteratee({ searchTerm }))
-    .filter(
-      ({ userIdentifier }) =>
-        !filteredMembersIdentifiers.includes(userIdentifier),
-    );
 
   return (
     <>
@@ -340,17 +375,14 @@ const NotInvitingContent = ({
         />
       </HeaderSearchContainer>
       <MembersContainer>
-        {filteredMembers.map(
-          renderMemberItemElement({ currentUser, taskList }),
-        )}
-        {filteredMembersNotInTaskList.map(
+        {allMembersSorted.map(
           renderMemberItemElement({
             currentUser,
             taskList,
-            notInTaskList: true,
+            membersNotInTaskListIdentifiers,
           }),
         )}
-        {isEmpty(filteredMembers) && isEmpty(filteredMembersNotInTaskList) && (
+        {isEmpty(allMembersSorted) && (
           <NoMembersElement>
             <MontserratTypography variant="h4">
               No members found.

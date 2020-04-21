@@ -74,7 +74,7 @@ const DocumentsView = () => {
       </MontserratTypography>
       <MontserratTypography weight="normal" variant="h4" gutterBottom>
         <DocumentLink
-          href="https://www.dock.health/privacypolicy"
+          href="https://www.dock.health/privacy-statement"
           target="_blank"
         >
           Privacy Statement

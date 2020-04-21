@@ -77,7 +77,7 @@ const OnboardingEulaView = () => {
             </OnboardingAnchor>
             <span> and </span>
             <OnboardingAnchor
-              href="https://www.dock.health/privacypolicy"
+              href="https://www.dock.health/privacy-statement"
               target="_blank"
             >
               Privacy Statement
