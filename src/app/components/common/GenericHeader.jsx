@@ -22,7 +22,7 @@ const DockHeaderImage = styled.img.attrs({
   alt: 'Dock Health',
   src: DockHeaderLogo,
 })`
-  height: 100%;
+  height: auto;
   object-fit: contain;
 `;
 
