@@ -65,7 +65,6 @@ class TaskListSearch extends PureComponent {
 
     await Promise.all([
       this.getListTasks({ status: 'INCOMPLETE' }),
-      this.getListTasksCount({ status: 'COMPLETE' }),
       searchCompletedTasks
         ? this.getListTasks({ status: 'COMPLETE' })
         : Promise.resolve(),
