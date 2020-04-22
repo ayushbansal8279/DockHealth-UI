@@ -10,7 +10,19 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "allowJs": true
+    "allowJs": true,
+    "baseUrl": "./",
+    "paths": {
+      "actions/*": ["src/app/actions/*"],
+      "api/*": ["src/app/api"],
+      "components/*": ["src/app/components/*"],
+      "helpers/*": ["src/app/helpers/*"],
+      "hooks/*": ["src/app/hooks/*"],
+      "img/*": ["src/app/img/*"],
+      "reducers/*": ["src/app/reducers/*"],
+      "views/*": ["src/app/views/*"],
+      "styles/*": ["src/app/styles/*"]
+    }
   },
   "include": [
     "src/app/**/*.ts",
