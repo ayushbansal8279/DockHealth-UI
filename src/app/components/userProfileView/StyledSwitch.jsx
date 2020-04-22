@@ -2,7 +2,7 @@ import { Switch } from '@material-ui/core';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const StyledSwitch = styled(Switch)`
   && {

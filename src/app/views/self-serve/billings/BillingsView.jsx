@@ -12,7 +12,7 @@ import { saveBillingDetails } from 'api/organization-api';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import BillingData from './BillingsView.BillingData';
 import InvoicesList from './BillingsView.InvoicesList';
 import {

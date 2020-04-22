@@ -7,7 +7,7 @@ import { toggleListNotifications } from 'actions/tasklist-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';

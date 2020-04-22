@@ -21,8 +21,8 @@ import CardAmexIcon from 'img/cards/american-express.png';
 import CardDiscoverIcon from 'img/cards/discover.png';
 import CardMastercardIcon from 'img/cards/mastercard.png';
 import CardVisaIcon from 'img/cards/visa.png';
-import palette from 'app/palette';
-import { MontserratTypography } from 'app/theme-montserrat';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import BillingInformation from './BillingsView.BillingData.BillingInformation';
 import {
   AcceptedCardsContainer,

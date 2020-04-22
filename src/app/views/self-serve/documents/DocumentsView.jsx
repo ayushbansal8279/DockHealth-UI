@@ -6,7 +6,7 @@ import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import PdfPage from 'img/pdf-page.png';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import BaaPreview from './DocumentsView.BaaPreview';
 import {
   DocumentImage,

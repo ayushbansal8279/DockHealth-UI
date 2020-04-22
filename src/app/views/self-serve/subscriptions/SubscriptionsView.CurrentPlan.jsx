@@ -7,7 +7,7 @@ import {
   themeMontserrat500,
   themeMontserrat600,
   themeMontserratNormal,
-} from 'app/theme-montserrat';
+} from 'styles/theme-montserrat';
 import {
   PlanColumnLink,
   PlanContainer,

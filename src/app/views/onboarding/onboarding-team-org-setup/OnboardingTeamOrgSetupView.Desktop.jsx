@@ -15,7 +15,7 @@ import { UniversalMontserratInput } from 'components/userProfileView/UniversalIn
 import InvitationPanel from 'views/self-serve/subscriptions/SubscriptionsView.InvitationPanel';
 import SubscriptionsViewMembersTable from 'views/self-serve/subscriptions/SubscriptionsView.MembersTable';
 import InvitePeoplePopover from 'views/People/PeopleView.InvitePeoplePopover';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   OnboardingButton,
   OnboardingDivider,

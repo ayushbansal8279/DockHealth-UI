@@ -45,8 +45,8 @@ import TaskListTip3 from 'img/tips/task-list/task-list-3.svg';
 import TaskListTour1 from 'img/tour/task-list/task-list-1.png';
 import TaskListTour2 from 'img/tour/task-list/task-list-2.png';
 import TaskListTour3 from 'img/tour/task-list/task-list-3.png';
-import { MontserratTypography } from 'app/theme-montserrat';
-import { RobotoTypography } from '../../theme';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import { RobotoTypography } from 'styles/theme';
 import AddListForm from './TaskListView.AddListForm';
 import { FormSpacing } from './TaskListView.AddListForm.Components';
 import {

@@ -12,7 +12,7 @@ import Avatar from 'components/common/Avatar';
 import ConfirmationDialog from 'components/modals/ConfirmationDialog';
 import { formatPhoneNumber, noop, showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import {
   ArchivePersonButton,
   BoldLabel,

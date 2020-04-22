@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 
 export const InvoicesListContainer = styled.div`
   width: 100%;

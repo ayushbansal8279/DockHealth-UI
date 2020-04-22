@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 import { addPatientNote } from 'actions/patient-actions';
 import { onPatientNoteAdded } from 'helpers/ga-event-helper';
 import useBoolean from 'hooks/useBoolean';
-import themeMontserrat from 'app/theme-montserrat';
+import themeMontserrat from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
 import {
   UniversalBirthdayInputComponent,

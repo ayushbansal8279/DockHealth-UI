@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 
 const StyledGrid = styled(Grid)`
   && {

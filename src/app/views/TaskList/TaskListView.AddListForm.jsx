@@ -1,7 +1,7 @@
 import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { saveTaskList } from 'actions/tasklist-actions';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import Member from 'components/members/Member';
 import { StyledSwitchUnbound } from 'components/userProfileView/StyledSwitch';
@@ -11,7 +11,7 @@ import TickIcon from 'img/tick-icon';
 import { isEmpty } from 'ramda';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
-import { RobotoTypography } from '../../theme';
+import { RobotoTypography } from 'styles/theme';
 import {
   EmptyMember,
   EmptyMemberIcon,

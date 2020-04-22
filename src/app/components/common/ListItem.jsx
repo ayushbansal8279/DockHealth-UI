@@ -2,7 +2,7 @@ import { ButtonBase } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 
 const ItemContainer = styled(ButtonBase)`
   && {

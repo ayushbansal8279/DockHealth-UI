@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const Flag = styled.div`
   align-self: stretch;

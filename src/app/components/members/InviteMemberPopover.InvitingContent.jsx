@@ -9,7 +9,7 @@ import {
   invitePersonToTaskList,
 } from 'actions/tasklist-actions';
 import { showAlert } from 'helpers/utility-functions';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import {
   FormSection,

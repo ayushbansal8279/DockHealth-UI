@@ -4,7 +4,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { invitePersonToOrganization } from 'actions/people-actions';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import StyledInput from '../userProfileView/StyledInput';
 import { inviteValidationSchema } from './TaskDrawer.ValidationSchema';
 

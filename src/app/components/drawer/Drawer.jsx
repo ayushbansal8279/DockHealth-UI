@@ -2,7 +2,7 @@ import { AppBar, Drawer as MaterialDrawer, Grid } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 import Intercom from 'react-intercom';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import initializeDrawerHooks from './Drawer.Hooks';
 import {
   ContentContainer,

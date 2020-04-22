@@ -6,9 +6,9 @@ import TipsContentHeader from 'components/common/TipsContentHeader';
 import InboxNoMessagesIcon from 'img/envelope-new.svg';
 import TipsPencilIcon from 'img/tip-pencil-icon.svg';
 import InboxTip from 'img/tips/inbox/inbox-1.svg';
-import palette from 'app/palette';
-import { MontserratTypography } from 'app/theme-montserrat';
-import { RobotoTypography } from '../../theme';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import { RobotoTypography } from 'styles/theme';
 
 const InboxNoMessagesOuterContainer = styled.div`
   align-items: center;

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { highlightPatient } from 'actions/patient-actions';
 import PatientsDetailsIcon from 'img/details.svg';
 import PatientsEmptyIcon from 'img/patients-empty.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const EmptyListContainer = styled.div`
   padding: 2rem;

@@ -1,7 +1,7 @@
 import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 
 export const SearchContainer = styled.div`
   margin: 2rem 0;

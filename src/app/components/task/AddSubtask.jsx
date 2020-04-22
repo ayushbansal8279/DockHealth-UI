@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { prepareSubtask } from 'actions/task-actions';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 export const AddSubtaskContainer = styled.div`
   align-items: center;

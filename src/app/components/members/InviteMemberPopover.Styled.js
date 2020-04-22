@@ -3,7 +3,7 @@ import { IconButton, Popover } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import Search from '../taskView/Search';
 import Member from './Member';
 

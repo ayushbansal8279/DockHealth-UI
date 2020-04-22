@@ -10,7 +10,7 @@ import {
   formatLinkifyHref,
   mentionifyDescription,
 } from 'helpers/utility-functions';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import TaskCheckbox from '../task/TaskCheckbox';
 
 const EditTaskContainer = styled.div`

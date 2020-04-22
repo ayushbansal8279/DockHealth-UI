@@ -1,7 +1,7 @@
 import { Popover } from '@material-ui/core';
 import { motion } from 'framer-motion';
 import styled, { keyframes } from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 export const TaskBodyMainContainer = styled.div`
   align-items: center;

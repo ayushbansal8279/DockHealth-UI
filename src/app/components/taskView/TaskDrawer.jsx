@@ -5,7 +5,7 @@ import { deleteTask, duplicateTask } from 'actions/task-actions';
 import { onButtonClicked } from 'helpers/ga-event-helper';
 import { getPatientName, noop } from 'helpers/utility-functions';
 import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
-import { getPriorityColor } from 'app/palette';
+import { getPriorityColor } from 'styles/palette';
 import TaskDrawerCommentSection from './TaskDrawer.CommentSection';
 import initializeTaskDrawerHooks from './TaskDrawer.Hooks';
 import onSubmit from './TaskDrawer.OnSubmit';

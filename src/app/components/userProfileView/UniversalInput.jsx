@@ -12,7 +12,7 @@ import InputMask from 'react-input-mask';
 import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 
 export const ErrorLabel = styled.h4`
   color: ${palette.error};

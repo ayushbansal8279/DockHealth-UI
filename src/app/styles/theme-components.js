@@ -1,4 +1,4 @@
-import { RotatableChevronWithSpacing } from './components/common/RotatableChevron';
+import { RotatableChevronWithSpacing } from 'components/common/RotatableChevron';
 import palette, { opacify } from './palette';
 
 const STANDARD_TRANSITION = 'all 0.25s ease-out';

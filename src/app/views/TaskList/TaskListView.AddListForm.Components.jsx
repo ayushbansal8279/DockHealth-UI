@@ -11,7 +11,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import SearchIconImage from 'img/search-dark.svg';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 
 export const FormContainer = styled.form`
   align-items: flex-start;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 import AuthTemplateTopBackground from 'img/auth-template-top-background.svg';
 
 const mdBreakpoint = 960;

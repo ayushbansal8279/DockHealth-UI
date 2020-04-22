@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { capitalize } from 'helpers/capitalize';
 import EditIcon from 'img/edit.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const StyledTextField = styled(TextField).attrs({
   variant: 'outlined',

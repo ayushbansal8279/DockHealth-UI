@@ -7,7 +7,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const StyledSwitchContainer = withStyles({
   root: {

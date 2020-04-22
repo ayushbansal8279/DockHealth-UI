@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { omit } from 'ramda';
 import React from 'react';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 type PopoverListItem = {
   active?: boolean;

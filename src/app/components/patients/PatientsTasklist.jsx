@@ -1,7 +1,7 @@
 import { Button, Grid } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import AddTask from '../task/AddTask';
 import Task from '../task/Task';
 

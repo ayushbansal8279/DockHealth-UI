@@ -12,7 +12,7 @@ import GenericHeader from 'components/common/GenericHeader';
 import TaskListSearchContainer from 'components/LEGACY_list/TaskListSearchContainer';
 import { noop } from 'helpers/utility-functions';
 import BackIcon from 'img/back.svg';
-import { themeMontserratNormal } from 'app/theme-montserrat';
+import { themeMontserratNormal } from 'styles/theme-montserrat';
 import { SideClickListener } from 'components/patients/PatientsView.Styled';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';

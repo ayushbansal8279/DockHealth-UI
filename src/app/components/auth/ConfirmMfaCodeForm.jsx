@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
 import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import { NextButton, StyledLink } from './AuthComponents.styled';

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 export const StyledLabel = styled.div`
   color: ${palette.unknownGrey5};

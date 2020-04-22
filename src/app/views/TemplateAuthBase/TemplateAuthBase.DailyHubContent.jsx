@@ -3,7 +3,7 @@ import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
 import AuthDailyHubContent from 'img/auth-daily-hub-content';
 import Spacing from 'components/common/Spacing';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 
 const StyledGrid = styled(Grid)`
   && {

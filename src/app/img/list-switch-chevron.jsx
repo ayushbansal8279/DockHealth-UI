@@ -1,5 +1,5 @@
 import React from 'react';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const ListSwitchChevron = ({ color = palette.dirtyBanana }) => (
   <svg

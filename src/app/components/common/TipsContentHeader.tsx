@@ -3,7 +3,7 @@ import { useUnmount } from 'react-use';
 import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import TipsDotsBackground from 'img/tips-dots-background.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const HeaderContainer = styled.div`
   align-items: center;

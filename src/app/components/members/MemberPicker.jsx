@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { assignOrReassignTask } from 'actions/task-actions';
 import { getMembersByTaskListId } from 'actions/tasklist-actions';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import ListItem from '../common/ListItem';
 import PickerHeader from '../common/PickerHeader';
 import SearchHeader from '../common/SearchHeader';

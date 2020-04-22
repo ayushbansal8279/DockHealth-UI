@@ -3,8 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import LightbulbBlue from 'img/lightbulb-blue.svg';
 import Lightbulb from 'img/lightbulb-grey.svg';
-import palette from 'app/palette';
-import { RobotoTypography } from '../../theme';
+import palette from 'styles/palette';
+import { RobotoTypography } from 'styles/theme';
 import Spacing from './Spacing';
 
 const TipsButtonContainer = styled.div`

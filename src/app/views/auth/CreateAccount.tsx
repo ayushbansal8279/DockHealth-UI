@@ -28,8 +28,8 @@ import {
 import { showAlert, showToast } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
-import palette from 'app/palette';
-import { MontserratTypography } from 'app/theme-montserrat';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   OnboardingDialog,
   OnboardingDivider,

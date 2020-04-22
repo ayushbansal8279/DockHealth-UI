@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react';
 import { useUnmount } from 'react-use';
 import { IntercomAPI } from 'react-intercom';
 import Spacing from 'components/common/Spacing';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 import {
   SubscriptionPlanDarkPanel,

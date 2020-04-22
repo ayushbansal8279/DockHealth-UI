@@ -1,6 +1,6 @@
 import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 export const CubesLoaderContainer = styled.div`
   align-items: center;

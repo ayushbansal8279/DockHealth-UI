@@ -1,6 +1,6 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import OnboardingBaaSigning from '../onboarding-baa-overview/OnboardingBaaSigning';
 
 const OnboardingBaaCheckView = () => (

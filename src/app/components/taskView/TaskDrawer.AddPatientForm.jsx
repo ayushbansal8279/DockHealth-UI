@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { addPatient } from 'actions/patient-actions';
 import useBoolean from 'hooks/useBoolean';
 import DropdownIcon from 'img/dropdown-icon.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import StyledInput from '../userProfileView/StyledInput';
 import { addPatientValidationSchema } from './TaskDrawer.ValidationSchema';
 

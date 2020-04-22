@@ -2,7 +2,7 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 import { NextButton } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 
 const redirectToLogout = () => {
   hashHistory.replace('/logout');

@@ -57,22 +57,20 @@ const palette = {
   scrollbarGrey: '#939aa4',
 };
 
-export const getPriorityColor = (
-  priority?: 'PLANNED' | 'ON_HOLD' | 'IN_PROGRESS' | '' | null,
-) => {
+export const getPriorityColor = priority => {
   switch (priority) {
-    default:
-      return '#808080';
     case 'PLANNED':
       return '#f6b039';
     case 'ON_HOLD':
       return '#dc143c';
     case 'IN_PROGRESS':
       return '#00a73c';
+    default:
+      return '#808080';
   }
 };
 
-export const opacify = (color = '#000000', opacity = 1) =>
+export const opacify = (color = palette.black, opacity = 1) =>
   `${color}${Math.floor(clamp(0, 1, opacity) * 255)
     .toString(16)
     .padStart(2, '0')}`;

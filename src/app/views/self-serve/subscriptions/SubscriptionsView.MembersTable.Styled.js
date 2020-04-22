@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 import { H3 } from './SubscriptionsView.Styled';
 
 export const MembersTableContainer = styled.div`

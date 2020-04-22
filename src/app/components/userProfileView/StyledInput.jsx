@@ -4,7 +4,7 @@ import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 import { mergeRefs as mergeReferences } from 'helpers/utility-functions';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 import { matchEmptyNumber } from 'views/UserProfile/UserProfileView.ValidationSchema';
 import StyledInputAutoCorrectedDate from './StyledInput.AutoCorrectedDate';
 import initializeStyledInputHooks from './StyledInput.Hooks';

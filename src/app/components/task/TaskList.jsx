@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import CubesLoader from '../common/CubesLoader';
 import TaskDrawer from '../taskView/TaskDrawer';
 import Heading from './TaskList.Heading';

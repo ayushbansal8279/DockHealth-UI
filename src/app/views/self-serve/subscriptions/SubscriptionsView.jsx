@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { setPaymentNewPlan } from 'actions/organization-actions';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
 import CurrentPlan from './SubscriptionsView.CurrentPlan';

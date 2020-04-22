@@ -15,9 +15,9 @@ import CubesLoader from 'components/common/CubesLoader';
 import ListPopover from 'components/common/ListPopover';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
-import palette from 'app/palette';
-import { MontserratTypography } from 'app/theme-montserrat';
-import { RobotoTypography } from '../../theme';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import { RobotoTypography } from 'styles/theme';
 import InviteMemberPopover from '../members/InviteMemberPopover';
 
 const RowContainer = styled.div`

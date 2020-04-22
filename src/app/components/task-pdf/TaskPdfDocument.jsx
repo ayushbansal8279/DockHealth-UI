@@ -5,7 +5,7 @@ import React from 'react';
 import { useAsync } from 'react-use';
 import { getUserAvatarBuffer } from 'api/people-api';
 import { noop } from 'helpers/utility-functions';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import PdfTask from './PdfTask';
 import { AvatarImage, AvatarInitials } from './PdfTask.Styled';
 

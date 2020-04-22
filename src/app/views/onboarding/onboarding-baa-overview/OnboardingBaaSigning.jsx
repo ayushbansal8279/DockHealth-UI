@@ -9,8 +9,8 @@ import CubesLoader from 'components/common/CubesLoader';
 import Spacing from 'components/common/Spacing';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
-import { MontserratTypography } from 'app/theme-montserrat';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   OnboardingAnchorDiv,
   OnboardingButton,

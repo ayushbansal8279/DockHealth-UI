@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import ListPopover from 'components/common/ListPopover';
 import { RotatableChevronWithSpacing } from 'components/common/RotatableChevron';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
-import { MontserratTypography } from 'app/theme-montserrat';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   MediumGreyLabelContainer,
   SwitcherChevronContainer,

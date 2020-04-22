@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import GenericHeader from '../common/GenericHeader';
 import ListPopover from '../common/ListPopover';
 import { RotatableHeaderChevron } from '../common/RotatableChevron';

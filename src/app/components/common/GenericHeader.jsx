@@ -5,8 +5,8 @@ import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
-import palette from 'app/palette';
-import { themeMontserratNormal } from 'app/theme-montserrat';
+import palette from 'styles/palette';
+import { themeMontserratNormal } from 'styles/theme-montserrat';
 import CubesLoader from './CubesLoader';
 
 const GenericHeaderContainer = styled.div`

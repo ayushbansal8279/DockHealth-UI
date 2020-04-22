@@ -1,7 +1,7 @@
 import { ButtonBase, Grid } from '@material-ui/core';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 
 export const FadeContainer = styled.div`
   display: flex;

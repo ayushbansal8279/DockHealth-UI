@@ -1,7 +1,7 @@
 import { Fade, Popper, PopperProps } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 
 const TooltipContainer = styled.div`
   padding-top: 0.5rem;

@@ -10,7 +10,7 @@ import {
 import ListPopover from 'components/common/ListPopover';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import { MemberTypeLabelButton } from './SubscriptionsView.MemberTypeLabel.Components';
 
 const renderUserTypesOptions = ({

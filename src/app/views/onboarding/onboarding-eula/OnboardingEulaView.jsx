@@ -7,8 +7,8 @@ import { acknowledgeEula } from 'actions/user-actions';
 import Spacing from 'components/common/Spacing';
 import TaskCheckbox from 'components/task/TaskCheckbox';
 import { useSmallScreen } from 'helpers/utility-functions';
-import palette from 'app/palette';
-import { MontserratTypography } from 'app/theme-montserrat';
+import palette from 'styles/palette';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   OnboardingAnchor,
   OnboardingButton,

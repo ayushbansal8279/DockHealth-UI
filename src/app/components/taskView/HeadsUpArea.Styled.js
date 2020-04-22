@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import palette, { opacify } from 'app/palette';
+import palette, { opacify } from 'styles/palette';
 
 export const HeadsUpSectionGrid = styled(Grid)`
   padding: 0.625rem 0 0.625rem 0.625rem;

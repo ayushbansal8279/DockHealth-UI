@@ -5,7 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ItemAssignment from 'img/folder.svg';
 import Search from 'img/search.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const StyledBackIcon = styled(BackIcon)`
   && {

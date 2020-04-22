@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import { getPriorityColor } from 'app/palette';
+import { getPriorityColor } from 'styles/palette';
 
 export const PriorityDot = styled.div`
   width: 10px;

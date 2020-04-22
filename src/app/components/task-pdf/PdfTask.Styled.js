@@ -1,5 +1,5 @@
 import styled from '@react-pdf/styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 export const TaskContainer = styled.View`
   align-items: center;

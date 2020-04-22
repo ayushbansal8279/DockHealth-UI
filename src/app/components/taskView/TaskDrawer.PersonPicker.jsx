@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
 import PersonPickerCrossIcon from 'img/person-picker-cross.svg';
 import SearchHeadsupIcon from 'img/search-headsup.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const PersonPickerContainer = styled.div`
   background-color: ${palette.lightGrey};

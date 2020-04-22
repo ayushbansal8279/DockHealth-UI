@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { object, string } from 'yup';
 import EyeClosed from 'img/eye-closed.svg';
 import EyeOpen from 'img/eye-open.svg';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from '../common/Spacing';
 import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';

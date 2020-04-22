@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import Member from '../members/Member';
 

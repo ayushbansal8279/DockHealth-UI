@@ -6,7 +6,7 @@ import useBoolean from 'hooks/useBoolean';
 import ArrowUpIcon from 'img/arrow-up.svg';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
 import CubesLoader from 'components/common/CubesLoader';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import { PaddedButtonLabel } from './UserProfileView.Styled';
 
 const getSmallButtonContent = ({

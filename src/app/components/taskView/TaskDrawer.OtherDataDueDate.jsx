@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import DateTimeSelect from '../common/DateTimeSelect';
 
 const DueDateClearButton = styled.div`

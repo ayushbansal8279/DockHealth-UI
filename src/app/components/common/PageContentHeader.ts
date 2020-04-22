@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const PageContentHeader = styled.div<{ paneled?: boolean }>`
   align-items: center;

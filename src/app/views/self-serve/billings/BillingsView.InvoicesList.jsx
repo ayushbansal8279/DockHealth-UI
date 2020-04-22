@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import CubesLoader from 'components/common/CubesLoader';
 import SortingIcon from 'img/sorting-icon.svg';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import {
   ChargeDetailsLink,

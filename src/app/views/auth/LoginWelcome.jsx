@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import { NextButton, StyledLink } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 
 const LoginWelcome = () => (
   <Grid container direction="column">

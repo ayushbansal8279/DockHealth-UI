@@ -12,11 +12,11 @@ import { Provider } from 'react-redux';
 import { StripeProvider } from 'react-stripe-elements';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
-import flags, { FlagsProvider } from './flags';
+import flags, { FlagsProvider } from './helpers/flags';
 import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
 import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
 import { Routes } from './routes';
-import theme from './theme';
+import theme from './styles/theme';
 
 if (process.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');

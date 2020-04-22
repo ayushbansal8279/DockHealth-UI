@@ -1,6 +1,6 @@
 import { omit } from 'ramda';
 import { HIDE_HEADER, SET_HEADER, UNSET_HEADER } from 'actions/action-types';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const initialState = {
   show: false,

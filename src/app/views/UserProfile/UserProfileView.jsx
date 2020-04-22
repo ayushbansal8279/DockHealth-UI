@@ -19,7 +19,7 @@ import {
   UserAvatarGrid,
   UserProfileViewGrid,
 } from 'components/userProfileView/UserProfileView.Styled';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const StyledInput = styled(UniversalInput)`
   && {

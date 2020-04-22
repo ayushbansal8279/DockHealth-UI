@@ -51,8 +51,8 @@ import {
 import pusherInstance from 'helpers/pusher-instance';
 import { isTaskArchivable } from 'helpers/utility-functions';
 import ChevronSmallIcon from 'img/chevron-small.svg';
-import palette from 'app/palette';
-import { themeMontserrat600 } from 'app/theme-montserrat';
+import palette from 'styles/palette';
+import { themeMontserrat600 } from 'styles/theme-montserrat';
 import { getSubscriptionIsTrial } from '../self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   InboxHelpPanel,

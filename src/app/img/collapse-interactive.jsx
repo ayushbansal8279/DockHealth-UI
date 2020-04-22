@@ -1,5 +1,5 @@
 import React from 'react';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const CollapseInteractive = ({ color = palette.greyBlue, ...props }) => (
   <svg

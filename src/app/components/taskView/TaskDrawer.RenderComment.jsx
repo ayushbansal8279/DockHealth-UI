@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import BubbleFinishIcon from 'img/bubble-finish';
 import RemoveCommentIcon from 'img/remove-comment-icon.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const RemoveCommentButton = styled.img`
   align-items: center;

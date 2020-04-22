@@ -12,7 +12,7 @@ import {
   UniversalMontserratInput,
 } from 'components/userProfileView/UniversalInput';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import { OnboardingButton } from '../OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';

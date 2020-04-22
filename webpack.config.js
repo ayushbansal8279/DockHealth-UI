@@ -127,11 +127,7 @@ const config = (environment, options) => {
         img: path.resolve(__dirname, 'src/app/img'),
         reducers: path.resolve(__dirname, 'src/app/reducers'),
         views: path.resolve(__dirname, 'src/app/views'),
-        'app/palette': path.resolve(__dirname, 'src/app/palette'),
-        'app/theme-montserrat': path.resolve(
-          __dirname,
-          'src/app/theme-montserrat',
-        ),
+        styles: path.resolve(__dirname, 'src/app/styles'),
       },
     },
     devServer: {

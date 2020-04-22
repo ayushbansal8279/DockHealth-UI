@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import CubesLoader from 'components/common/CubesLoader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const SupportVideosContainer = styled.div`
   display: grid;

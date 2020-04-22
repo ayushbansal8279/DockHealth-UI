@@ -2,7 +2,7 @@ import { ButtonBase } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import styled from 'styled-components';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 export const TaskAnimationContainer = styled.div`
   ${props => props.isSubtask && `background-color: ${palette.white};`}

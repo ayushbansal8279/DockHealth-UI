@@ -4,7 +4,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   OnboardingButton,
   OnboardingDialog,

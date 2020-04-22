@@ -3,7 +3,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CollapseIcon from 'img/collapse.svg';
-import themeMontserrat from 'app/theme-montserrat';
+import themeMontserrat from 'styles/theme-montserrat';
 import {
   PatientsSidebarSectionContainer,
   PatientsSidebarSectionHeader,

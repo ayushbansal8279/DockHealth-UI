@@ -9,8 +9,8 @@ import { v4 as uuid } from 'uuid';
 import { editPatientNote } from 'actions/patient-actions';
 import { capitalize } from 'helpers/capitalize';
 import { onPatientNoteEdited } from 'helpers/ga-event-helper';
-import palette, { opacify } from 'app/palette';
-import { themeMontserratNormal } from 'app/theme-montserrat';
+import palette, { opacify } from 'styles/palette';
+import { themeMontserratNormal } from 'styles/theme-montserrat';
 import EditableDescription from '../common/EditableDescription';
 import Spacing from '../common/Spacing';
 

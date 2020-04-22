@@ -3,7 +3,7 @@ import ReactHtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 import EnvelopeIcon from 'img/envelope.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 
 const EmailBodyContainer = styled.div`
   background-color: ${palette.lightGrey};

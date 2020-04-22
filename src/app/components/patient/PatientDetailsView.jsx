@@ -19,7 +19,7 @@ import { closeDrawer } from 'actions/task-drawer-actions';
 import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
 import usePatient from 'hooks/use-patient';
 import BackIcon from 'img/back.svg';
-import themeMontserrat from 'app/theme-montserrat';
+import themeMontserrat from 'styles/theme-montserrat';
 import TaskView from 'views/Task/TaskView';
 import CubesLoader from 'components/common/CubesLoader';
 import GenericHeader from 'components/common/GenericHeader';

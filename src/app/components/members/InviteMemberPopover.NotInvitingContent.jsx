@@ -12,7 +12,7 @@ import {
 } from 'actions/tasklist-actions';
 import useBoolean from 'hooks/useBoolean';
 import TickIcon from 'img/tick-icon';
-import { MontserratTypography } from 'app/theme-montserrat';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   HeaderSearch,
   HeaderSearchContainer,

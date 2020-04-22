@@ -1,7 +1,7 @@
 import { omit } from 'ramda';
 import React from 'react';
 import CameraIcon from 'img/camera.svg';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import {
   AvatarContainer,
   CameraContainer,

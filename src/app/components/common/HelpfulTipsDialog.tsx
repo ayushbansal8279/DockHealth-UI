@@ -3,8 +3,8 @@ import { Close } from '@material-ui/icons';
 import { range } from 'ramda';
 import React, { useCallback, useEffect, useState } from 'react';
 // import Lightbulb from 'img/lightbulb.svg';
-import { MontserratTypography } from 'app/theme-montserrat';
-import { RobotoTypography } from '../../theme';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import { RobotoTypography } from 'styles/theme';
 import {
   ChildrenContainer,
   DialogComponent,

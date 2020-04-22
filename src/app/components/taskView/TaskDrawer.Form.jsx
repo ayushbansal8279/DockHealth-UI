@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { assignOrReassignTask, updatePatient } from 'actions/task-actions';
 import { getPatientName } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';

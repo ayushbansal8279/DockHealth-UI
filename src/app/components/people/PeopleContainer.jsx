@@ -7,7 +7,8 @@ import { bindActionCreators } from 'redux';
 import { isEmpty } from 'ramda';
 import * as PeopleActions from 'actions/people-actions';
 import { noop } from 'helpers/utility-functions';
-import palette from 'app/palette';
+import palette from 'styles/palette';
+import { RobotoTypography } from 'styles/theme';
 import Member from '../members/Member';
 import {
   ListContainer,
@@ -15,7 +16,6 @@ import {
   MemberContainer,
   PersonStatus,
 } from './PeopleContainer.Styled';
-import { RobotoTypography } from '../../theme';
 
 class PeopleContainer extends PureComponent {
   handleClick = ({ onClickAction }) => (...actionArguments) => {

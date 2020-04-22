@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { changeUserRoleForOrg } from 'actions/people-actions';
 import Spacing from 'components/common/Spacing';
 import { showAlert } from 'helpers/utility-functions';
-import palette from 'app/palette';
+import palette from 'styles/palette';
 import { MemberAvatar } from './SubscriptionsView.OrganizationMemberRow';
 
 const GrayDialog = withStyles({

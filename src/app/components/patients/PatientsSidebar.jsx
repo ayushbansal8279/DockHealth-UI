@@ -7,7 +7,7 @@ import {
 } from 'actions/patient-actions';
 import { findUserTasksByPatient } from 'api/patient-api';
 import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
-import { Flag } from '../../flags';
+import { Flag } from 'helpers/flags';
 import PatientEdit from './PatientEdit';
 import PatientsSidebarSection from './PatientsSidebar.Section';
 import {
