@@ -6,11 +6,11 @@ import {
   changeUserRoleForOrg,
   findAllUsers,
   resendInviteToOrganization,
-} from '../../../actions/people-actions';
-import ListPopover from '../../../components/common/ListPopover';
-import { showAlert, showToast } from '../../../helpers/utility-functions';
-import useBoolean from '../../../hooks/useBoolean';
-import { MontserratTypography } from '../../../theme-montserrat';
+} from 'actions/people-actions';
+import ListPopover from 'components/common/ListPopover';
+import { showAlert, showToast } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { MemberTypeLabelButton } from './SubscriptionsView.MemberTypeLabel.Components';
 
 const renderUserTypesOptions = ({

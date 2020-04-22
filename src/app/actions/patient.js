@@ -1,4 +1,4 @@
-import { findUserTasksByPatient, getPatientById } from '../api/patient-api';
+import { findUserTasksByPatient, getPatientById } from 'api/patient-api';
 import {
   FETCH_PATIENT,
   FETCH_PATIENT_ERROR,
@@ -12,7 +12,10 @@ export const fetchPatient = patientIdentifier => async dispatch => {
   try {
     const fetchDetails = getPatientById(patientIdentifier);
     const fetchTasks = findUserTasksByPatient(patientIdentifier, 'INCOMPLETE');
-    const fetchCompletedTasks = findUserTasksByPatient(patientIdentifier, 'COMPLETE');
+    const fetchCompletedTasks = findUserTasksByPatient(
+      patientIdentifier,
+      'COMPLETE',
+    );
 
     const [details, tasks, completedTasks] = await Promise.all([
       fetchDetails,

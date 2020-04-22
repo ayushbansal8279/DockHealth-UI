@@ -54,7 +54,7 @@ import {
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
   UPDATED_SUBTASK_ORDER,
-} from '../actions/action-types';
+} from 'actions/action-types';
 
 const initialState = {
   completedTasks: [],

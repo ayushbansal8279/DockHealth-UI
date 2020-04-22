@@ -1,9 +1,9 @@
-import reducer from '../patient';
 import {
   FETCH_PATIENT,
   FETCH_PATIENT_ERROR,
   FETCH_PATIENT_SUCCESS,
-} from '../../actions/action-types';
+} from 'actions/action-types';
+import reducer from '../patient';
 
 describe('patient reducer', () => {
   it('should return initial state', () => {

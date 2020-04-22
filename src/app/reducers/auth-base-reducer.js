@@ -1,4 +1,4 @@
-import { SET_AUTH_BASE_STATE } from '../actions/action-types';
+import { SET_AUTH_BASE_STATE } from 'actions/action-types';
 
 export const AUTH_BASE_STATES = {
   DEFAULT: Symbol('DEFAULT'),

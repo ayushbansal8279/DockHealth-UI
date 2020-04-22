@@ -20,7 +20,7 @@ import {
   SET_NEW_PAYMENT_PLAN,
   UPDATE_ORGANIZATION,
   SELECT_USERS_FOR_PLAN,
-} from '../actions/action-types';
+} from 'actions/action-types';
 
 const initialState = {
   organization: null,

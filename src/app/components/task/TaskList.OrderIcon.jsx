@@ -1,7 +1,7 @@
 import { find, propEq } from 'ramda';
 import React from 'react';
 import styled from 'styled-components';
-import SortingIcon from '../../img/sorting-icon.svg';
+import SortingIcon from 'img/sorting-icon.svg';
 
 const OrderIconContainer = styled.span`
   margin-left: 0.25rem;

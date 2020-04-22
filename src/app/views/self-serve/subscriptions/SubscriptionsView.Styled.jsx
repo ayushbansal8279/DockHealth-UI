@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
-import palette, { opacify } from '../../../palette';
+import palette, { opacify } from 'app/palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;

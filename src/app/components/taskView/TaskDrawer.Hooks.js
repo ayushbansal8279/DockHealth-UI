@@ -3,13 +3,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import { getAllPatients } from '../../actions/patient-actions';
+import { getAllPatients } from 'actions/patient-actions';
 import {
   storeAsCurrentTask as storeAsCurrentTaskAction,
   toggleTaskPriority,
-} from '../../actions/task-actions';
-import { getMembersByTaskListId } from '../../actions/tasklist-actions';
-import useBoolean from '../../hooks/useBoolean';
+} from 'actions/task-actions';
+import { getMembersByTaskListId } from 'actions/tasklist-actions';
+import useBoolean from 'hooks/useBoolean';
 import { taskValidationSchema } from './TaskDrawer.ValidationSchema';
 
 export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {

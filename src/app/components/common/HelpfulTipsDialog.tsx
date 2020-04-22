@@ -2,9 +2,9 @@ import { DialogProps, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { range } from 'ramda';
 import React, { useCallback, useEffect, useState } from 'react';
-// import Lightbulb from '../../img/lightbulb.svg';
+// import Lightbulb from 'img/lightbulb.svg';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { RobotoTypography } from '../../theme';
-import { MontserratTypography } from '../../theme-montserrat';
 import {
   ChildrenContainer,
   DialogComponent,

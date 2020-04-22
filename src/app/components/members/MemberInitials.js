@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as PeopleActions from '../../actions/people-actions';
+import * as PeopleActions from 'actions/people-actions';
 
 class MemberInitials extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -39,9 +39,7 @@ class MemberInitials extends React.Component {
             title={member?.userName ?? 'unassigned'}
             src={
               member?.userIdentifier ??
-              `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${
-                member?.userIdentifier
-              }/${member.profileThumbnailPictureHash}`
+              `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${member?.userIdentifier}/${member.profileThumbnailPictureHash}`
             }
             alt={`${member.firstName} ${member.lastName}`}
           />
@@ -66,7 +64,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps,
-)(MemberInitials);
+export default connect(undefined, mapDispatchToProps)(MemberInitials);

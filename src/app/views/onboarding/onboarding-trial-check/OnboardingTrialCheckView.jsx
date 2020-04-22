@@ -3,8 +3,8 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
-import palette from '../../../palette';
+import { setOnboardingCurrentStep } from 'actions/onboarding-progress-actions';
+import palette from 'app/palette';
 import {
   OnboardingButton,
   OnboardingH2Bold,

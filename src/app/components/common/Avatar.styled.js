@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from '../../palette';
+import palette, { opacify } from 'app/palette';
 
 const INITIAL_AVATAR_SIZE = 110;
 const getScaledSize = ({ normalSize, propSize }) =>

@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
-import { highlightPatient } from '../../actions/patient-actions';
-import PatientsDetailsIcon from '../../img/details.svg';
-import PatientsEmptyIcon from '../../img/patients-empty.svg';
-import palette from '../../palette';
+import { highlightPatient } from 'actions/patient-actions';
+import PatientsDetailsIcon from 'img/details.svg';
+import PatientsEmptyIcon from 'img/patients-empty.svg';
+import palette from 'app/palette';
 
 const EmptyListContainer = styled.div`
   padding: 2rem;

@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
+import palette from 'app/palette';
 import CubesLoader from '../common/CubesLoader';
 import TaskDrawer from '../taskView/TaskDrawer';
 import Heading from './TaskList.Heading';
@@ -15,7 +16,6 @@ import {
   StyledTableCell,
   TaskListOuterContainer,
 } from './TaskList.styled';
-import palette from '../../palette';
 
 const useTaskListClasses = makeStyles({
   paneled: {

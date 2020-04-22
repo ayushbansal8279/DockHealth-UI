@@ -1,9 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { archiveTask as archiveTaskAction } from '../../actions/task-actions';
-import { isTaskArchivable as isTaskArchivableMethod } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
+import { archiveTask as archiveTaskAction } from 'actions/task-actions';
+import { isTaskArchivable as isTaskArchivableMethod } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
 import CubesLoader from '../common/CubesLoader';
 import MemberPicker from '../members/MemberPicker';
 import { SubtaskLoadingContainer, SubtaskOrderContainer } from './Task.Styled';

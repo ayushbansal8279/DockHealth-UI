@@ -2,7 +2,7 @@ import { List, ListItem, Popover } from '@material-ui/core';
 import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
-import palette from '../../palette';
+import palette from 'app/palette';
 import CubesLoader from '../common/CubesLoader';
 import TaskDrawerAttachmentsList from './TaskDrawer.AttachmentsList';
 import TaskDrawerOtherDataDueDate from './TaskDrawer.OtherDataDueDate';

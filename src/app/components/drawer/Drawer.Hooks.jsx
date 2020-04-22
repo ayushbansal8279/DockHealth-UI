@@ -4,12 +4,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { getBillingDetails } from '../../actions/organization-actions';
-import useBoolean from '../../hooks/useBoolean';
+import { getBillingDetails } from 'actions/organization-actions';
+import useBoolean from 'hooks/useBoolean';
 import {
   getSubscriptionIsTrial,
   getSubscriptionPlanLabel,
-} from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+} from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import { TrialBannerLink, useDrawerClasses } from './Drawer.Styled';
 
 const TRIAL_USAGE_THRESHOLD_PERIOD = 10;

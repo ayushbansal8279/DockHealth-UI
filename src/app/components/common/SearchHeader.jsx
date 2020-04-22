@@ -3,8 +3,8 @@ import { ArrowBack as BackIcon } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import SearchDark from '../../img/search-dark.svg';
-import palette from '../../palette';
+import SearchDark from 'img/search-dark.svg';
+import palette from 'app/palette';
 
 const SearchTextField = styled(TextField)`
   && {

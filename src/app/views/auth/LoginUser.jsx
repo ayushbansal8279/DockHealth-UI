@@ -2,9 +2,9 @@ import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { setAuthBaseState } from '../../actions/auth-base-actions';
-import LoginFormUsername from '../../components/auth/LoginFormUsername';
-import { AUTH_BASE_STATES } from '../../reducers/auth-base-reducer';
+import { setAuthBaseState } from 'actions/auth-base-actions';
+import LoginFormUsername from 'components/auth/LoginFormUsername';
+import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
 const onSubmit = form => {
   const { username } = form;

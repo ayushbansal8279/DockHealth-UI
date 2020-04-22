@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { getPatientName } from '../../helpers/utility-functions';
+import { getPatientName } from 'helpers/utility-functions';
 
 export const SORTING_KEYS = {
   ASSIGNED_TO: 'ASSIGNED_TO',

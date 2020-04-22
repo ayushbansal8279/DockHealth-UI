@@ -2,9 +2,9 @@ import { Grid } from '@material-ui/core';
 import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import { useSmallScreen } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
-import { MontserratTypography } from '../../theme-montserrat';
+import { useSmallScreen } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
+import { MontserratTypography } from 'app/theme-montserrat';
 import {
   OnboardingButton,
   OnboardingDialog,
@@ -13,7 +13,7 @@ import {
   OnboardingH2Bold,
   OnboardingSpacing2,
   OnboardingSpacing4,
-} from '../../views/onboarding/OnboardingTemplate.Components';
+} from 'views/onboarding/OnboardingTemplate.Components';
 import Spacing from '../common/Spacing';
 import {
   UniversalMobileInputComponent,

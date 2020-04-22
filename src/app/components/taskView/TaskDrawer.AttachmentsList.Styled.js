@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from '../../palette';
+import palette, { opacify } from 'app/palette';
 
 export const AddAttachmentButton = styled.button.attrs({ type: 'button' })`
   background-color: transparent;

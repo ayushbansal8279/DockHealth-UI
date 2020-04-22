@@ -3,16 +3,16 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
+import { setOnboardingCurrentStep } from 'actions/onboarding-progress-actions';
 import {
   getBillingDetails,
   getBillingEstimate,
   getOrganizationById,
-} from '../../../actions/organization-actions';
-import * as userApi from '../../../api/user-api';
-import Spacing from '../../../components/common/Spacing';
-import { showAlert, showToast } from '../../../helpers/utility-functions';
-import UserProfileView from '../../UserProfileView';
+} from 'actions/organization-actions';
+import * as userApi from 'api/user-api';
+import Spacing from 'components/common/Spacing';
+import { showAlert, showToast } from 'helpers/utility-functions';
+import UserProfileView from 'views/UserProfile/UserProfileView';
 import { OnboardingButton } from '../OnboardingTemplate.Components';
 import {
   formFieldDefinitions,

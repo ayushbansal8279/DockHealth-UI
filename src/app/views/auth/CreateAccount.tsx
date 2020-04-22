@@ -9,27 +9,27 @@ import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
-import { setAuthBaseState } from '../../actions/auth-base-actions';
-import * as organizationApi from '../../api/organization-api';
+import { setAuthBaseState } from 'actions/auth-base-actions';
+import * as organizationApi from 'api/organization-api';
 import {
   register as registerAction,
   resendConfirmationCode,
-} from '../../api/user-api';
+} from 'api/user-api';
 import {
   NextButton,
   StyledAnchorDiv,
   StyledLink,
-} from '../../components/auth/AuthComponents.styled';
-import Spacing from '../../components/common/Spacing';
+} from 'components/auth/AuthComponents.styled';
+import Spacing from 'components/common/Spacing';
 import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
-} from '../../components/userProfileView/UniversalInput';
-import { showAlert, showToast } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
-import palette from '../../palette';
-import { AUTH_BASE_STATES } from '../../reducers/auth-base-reducer';
-import { MontserratTypography } from '../../theme-montserrat';
+} from 'components/userProfileView/UniversalInput';
+import { showAlert, showToast } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
+import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import {
   OnboardingDialog,
   OnboardingDivider,

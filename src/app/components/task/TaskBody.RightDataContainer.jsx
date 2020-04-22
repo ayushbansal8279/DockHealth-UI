@@ -1,9 +1,9 @@
 import { omit } from 'ramda';
 import React, { useRef } from 'react';
 import { Link } from 'react-router';
-import useBoolean from '../../hooks/useBoolean';
-import ChevronRightIcon from '../../img/chevron-right.svg';
-import palette, { getPriorityColor } from '../../palette';
+import useBoolean from 'hooks/useBoolean';
+import ChevronRightIcon from 'img/chevron-right.svg';
+import palette, { getPriorityColor } from 'app/palette';
 import { PriorityContainer, PriorityDot } from '../common/Priority';
 import UniversalTooltip from '../common/UniversalTooltip';
 import {

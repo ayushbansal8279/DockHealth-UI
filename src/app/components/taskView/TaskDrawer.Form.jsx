@@ -4,13 +4,10 @@ import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDeepCompareEffect } from 'react-use';
 import styled from 'styled-components';
-import {
-  assignOrReassignTask,
-  updatePatient,
-} from '../../actions/task-actions';
-import { getPatientName } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
-import palette from '../../palette';
+import { assignOrReassignTask, updatePatient } from 'actions/task-actions';
+import { getPatientName } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'app/palette';
 import { MemberName } from '../members/MemberPicker';
 import MemberSlot from '../members/MemberSlot';
 import StyledInput from '../userProfileView/StyledInput';

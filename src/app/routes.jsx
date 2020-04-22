@@ -12,9 +12,9 @@ import {
   Router,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
+import PatientDetailsView from 'components/patient/PatientDetailsView';
 import { storeAsCurrentTask } from './actions/task-actions';
 import sendEvent from './api/usage-api';
-import PatientDetailsView from './components/patient/PatientDetailsView';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
 import App from './views/App';
@@ -47,22 +47,22 @@ import OnboardingTrialCheckView from './views/onboarding/onboarding-trial-check/
 import OnboardingTemplate from './views/onboarding/OnboardingTemplate';
 import PageNotFound from './views/PageNotFound';
 import PatientEditView from './views/PatientEditView';
-import PeopleView from './views/PeopleView';
-import PersonDetailsView from './views/PersonDetailsView';
+import PeopleView from './views/People/PeopleView';
+import PersonDetailsView from './views/PersonDetails/PersonDetailsView';
 import BillingsView from './views/self-serve/billings/BillingsView';
 import DocumentsView from './views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from './views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
 import SubscriptionPaymentView from './views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from './views/self-serve/subscriptions/SubscriptionsView';
-import SupportView from './views/SupportView';
-import TaskListActivityFeedView from './views/TaskListActivityFeedView';
-import TaskListSearch from './views/TaskListSearch';
-import TaskListView from './views/TaskListView';
+import SupportView from './views/Support/SupportView';
+import TaskListActivityFeedView from './views/TaskList/TaskListActivityFeedView';
+import TaskListSearch from './views/TaskList/TaskListSearch';
+import TaskListView from './views/TaskList/TaskListView';
 import TemplateAuth from './views/TemplateAuth';
-import TemplateAuthBase from './views/TemplateAuthBase';
-import TemplateCore from './views/TemplateCore';
-import TemplateCoreSubscriptionPlan from './views/TemplateCoreSubscriptionPlan';
-import UserProfileViewWrapper from './views/UserProfileView.Wrapper';
+import TemplateAuthBase from './views/TemplateAuthBase/TemplateAuthBase';
+import TemplateCore from './views/TemplateCore/TemplateCore';
+import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubscriptionPlan';
+import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
 // import { onLogin } from './helpers/ga-event-helper';
 
 const transformPathname = pathname =>

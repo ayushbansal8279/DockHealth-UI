@@ -26,7 +26,7 @@ import {
   SELECT_EMR_PATIENT_SUCCESS,
   UPDATE_PATIENT_NOTE,
   UPDATE_PATIENT_SUCCESS,
-} from '../actions/action-types';
+} from 'actions/action-types';
 
 const initialState = {
   allPatients: [],

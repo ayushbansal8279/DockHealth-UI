@@ -1,6 +1,6 @@
-import * as TaskListApi from '../api/tasklist-api';
-import * as UserApi from '../api/user-api';
-import { noop } from '../helpers/utility-functions';
+import * as TaskListApi from 'api/tasklist-api';
+import * as UserApi from 'api/user-api';
+import { noop } from 'helpers/utility-functions';
 import * as ActionTypes from './action-types';
 
 export function getTaskListForUser() {

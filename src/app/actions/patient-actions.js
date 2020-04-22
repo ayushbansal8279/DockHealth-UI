@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/consistent-function-scoping */
+import * as PatientApi from 'api/patient-api';
 import {
   REQUEST_PATIENTS,
   GET_LIST_PATIENTS_SUCCESS,
@@ -22,7 +23,6 @@ import {
   UPDATE_PATIENT_NOTE,
   DELETE_PATIENT_NOTE,
 } from './action-types';
-import * as PatientApi from '../api/patient-api';
 
 export const loading = () => ({ type: REQUEST_PATIENTS });
 

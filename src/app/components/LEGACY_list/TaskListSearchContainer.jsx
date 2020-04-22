@@ -4,9 +4,9 @@ import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useUnmount } from 'react-use';
 import { bindActionCreators } from 'redux';
-import * as TaskActions from '../../actions/task-actions';
-import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
-import TaskView from '../../views/TaskView';
+import * as TaskActions from 'actions/task-actions';
+import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
+import TaskView from 'views/Task/TaskView';
 
 const TaskListLayout = ({
   searchedTasks,

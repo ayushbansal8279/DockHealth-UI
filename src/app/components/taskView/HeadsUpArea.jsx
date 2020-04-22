@@ -1,10 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getTaskListStats,
-  resetTasklistStats,
-} from '../../actions/tasklist-actions';
+import { getTaskListStats, resetTasklistStats } from 'actions/tasklist-actions';
 import HeadsUpAreaChart from './HeadsUpArea.Chart';
 import {
   taskListStatsElements,

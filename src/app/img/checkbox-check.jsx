@@ -1,5 +1,5 @@
 import React from 'react';
-import palette from '../palette';
+import palette from 'app/palette';
 
 export default ({ className, size }) => (
   <svg

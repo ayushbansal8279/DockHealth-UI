@@ -11,10 +11,10 @@ import {
   sortWith,
 } from 'ramda';
 import React, { useEffect } from 'react';
-import CubesLoader from '../../../components/common/CubesLoader';
-import Spacing from '../../../components/common/Spacing';
-import Search from '../../../components/taskView/Search';
-import { MontserratTypography } from '../../../theme-montserrat';
+import CubesLoader from 'components/common/CubesLoader';
+import Spacing from 'components/common/Spacing';
+import Search from 'components/taskView/Search';
+import { MontserratTypography } from 'app/theme-montserrat';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';
 import RemoveModal from './SubscriptionsView.MembersTable.RemoveModal';

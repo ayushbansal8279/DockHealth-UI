@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { saveTask } from '../../actions/task-actions';
-import palette from '../../palette';
+import { saveTask } from 'actions/task-actions';
+import palette from 'app/palette';
 import AdornedButton from '../common/AdornedButton';
 
 const StyledToolbar = styled(Toolbar).attrs({

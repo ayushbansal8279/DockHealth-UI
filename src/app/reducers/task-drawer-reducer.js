@@ -1,4 +1,4 @@
-import { SET_TASK_DRAWER_STATE } from '../actions/action-types';
+import { SET_TASK_DRAWER_STATE } from 'actions/action-types';
 
 const initialState = {
   open: false,

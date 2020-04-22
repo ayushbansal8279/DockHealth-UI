@@ -3,10 +3,10 @@ import { AnimatePresence } from 'framer-motion';
 import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 
-import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
-import EnvelopeIcon from '../../img/envelope.svg';
-import AttachmentIcon from '../../img/clip.svg';
-import UpdateIndicatorIcon from '../../img/update-indicator.svg';
+import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
+import EnvelopeIcon from 'img/envelope.svg';
+import AttachmentIcon from 'img/clip.svg';
+import UpdateIndicatorIcon from 'img/update-indicator.svg';
 import {
   CompletedBy,
   EditedTaskDescriptionLabel,

@@ -1,7 +1,7 @@
 import { pick } from 'ramda';
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useConfirmation from '../../hooks/useConfirmation';
+import useConfirmation from 'hooks/useConfirmation';
 
 export default ({ props }) => {
   const {

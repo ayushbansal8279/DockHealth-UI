@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-import { setHeader } from '../../../actions/header-actions';
+import { setHeader } from 'actions/header-actions';
 import {
   getBillingDetails,
   getInvoiceDetails,
-} from '../../../actions/organization-actions';
-import { saveBillingDetails } from '../../../api/organization-api';
-import GenericHeader from '../../../components/common/GenericHeader';
-import Spacing from '../../../components/common/Spacing';
-import useBoolean from '../../../hooks/useBoolean';
-import { MontserratTypography } from '../../../theme-montserrat';
+} from 'actions/organization-actions';
+import { saveBillingDetails } from 'api/organization-api';
+import GenericHeader from 'components/common/GenericHeader';
+import Spacing from 'components/common/Spacing';
+import useBoolean from 'hooks/useBoolean';
+import { MontserratTypography } from 'app/theme-montserrat';
 import BillingData from './BillingsView.BillingData';
 import InvoicesList from './BillingsView.InvoicesList';
 import {

@@ -5,9 +5,9 @@ import { Link } from 'react-router';
 import { createFilter } from 'react-search-input';
 import { bindActionCreators } from 'redux';
 import { isEmpty } from 'ramda';
-import * as PeopleActions from '../../actions/people-actions';
-import { noop } from '../../helpers/utility-functions';
-import palette from '../../palette';
+import * as PeopleActions from 'actions/people-actions';
+import { noop } from 'helpers/utility-functions';
+import palette from 'app/palette';
 import Member from '../members/Member';
 import {
   ListContainer,

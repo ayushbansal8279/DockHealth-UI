@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
+import * as PeopleApi from 'api/people-api';
 import * as ActionTypes from './action-types';
-import * as PeopleApi from '../api/people-api';
 
 export function findAllUsersByOrganizationId() {
   return dispatch =>

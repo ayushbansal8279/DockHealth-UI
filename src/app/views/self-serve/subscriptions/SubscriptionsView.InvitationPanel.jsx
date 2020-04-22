@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
-import { invitePersonToOrganization } from '../../../actions/people-actions';
-import { noop, showAlert } from '../../../helpers/utility-functions';
-import useBoolean from '../../../hooks/useBoolean';
+import { invitePersonToOrganization } from 'actions/people-actions';
+import { noop, showAlert } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
 import {
   AddMoreUsersLabel,
   CloseButtonContainer,

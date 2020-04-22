@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSmallScreen } from '../../helpers/utility-functions';
-import DockHeaderLogo from '../../img/dock-header-logo.svg';
-import { checkUserAuthentication } from '../TemplateCore.Utilities';
+import { useSmallScreen } from 'helpers/utility-functions';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import { checkUserAuthentication } from 'views/TemplateCore/TemplateCore.Utilities';
 import {
   OnboardingBackground,
   OnboardingLogo,

@@ -5,14 +5,14 @@ import { FormContext, useForm } from 'react-hook-form';
 import { hashHistory } from 'react-router';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
-import { inviteAuthorizedSigner } from '../../../api/organization-api';
-import Spacing from '../../../components/common/Spacing';
+import { inviteAuthorizedSigner } from 'api/organization-api';
+import Spacing from 'components/common/Spacing';
 import {
   UniversalMobileInputComponent,
   UniversalMontserratInput,
-} from '../../../components/userProfileView/UniversalInput';
-import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
-import { MontserratTypography } from '../../../theme-montserrat';
+} from 'components/userProfileView/UniversalInput';
+import { showAlert, useSmallScreen } from 'helpers/utility-functions';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { OnboardingButton } from '../OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';

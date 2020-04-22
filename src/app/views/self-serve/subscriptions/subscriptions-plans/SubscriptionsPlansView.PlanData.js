@@ -1,4 +1,4 @@
-import palette from '../../../../palette';
+import palette from 'app/palette';
 
 export const SUBSCRIPTION_PLAN_KEYS = {
   STANDARD: 'standard',

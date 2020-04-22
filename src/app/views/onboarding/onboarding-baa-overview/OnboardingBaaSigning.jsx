@@ -4,13 +4,13 @@ import { useMount } from 'react-use';
 import {
   signOrganizationBAADocument,
   storeSignatureResult,
-} from '../../../api/organization-api';
-import CubesLoader from '../../../components/common/CubesLoader';
-import Spacing from '../../../components/common/Spacing';
-import { showAlert, useSmallScreen } from '../../../helpers/utility-functions';
-import useBoolean from '../../../hooks/useBoolean';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+} from 'api/organization-api';
+import CubesLoader from 'components/common/CubesLoader';
+import Spacing from 'components/common/Spacing';
+import { showAlert, useSmallScreen } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import {
   OnboardingAnchorDiv,
   OnboardingButton,

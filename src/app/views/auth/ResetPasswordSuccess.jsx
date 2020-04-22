@@ -1,9 +1,9 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import { hashHistory } from 'react-router';
-import { NextButton } from '../../components/auth/AuthComponents.styled';
-import Spacing from '../../components/common/Spacing';
-import { MontserratTypography } from '../../theme-montserrat';
+import { NextButton } from 'components/auth/AuthComponents.styled';
+import Spacing from 'components/common/Spacing';
+import { MontserratTypography } from 'app/theme-montserrat';
 
 const redirectToLogin = () => {
   hashHistory.push('login');

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
-import useBoolean from '../../hooks/useBoolean';
-import palette from '../../palette';
-import { MontserratTypography } from '../../theme-montserrat';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import Avatar from '../common/Avatar';
 import UniversalTooltip from '../common/UniversalTooltip';
 

@@ -9,15 +9,15 @@ import {
   clearMembersNotInTaskList,
   getMembersByTaskListId,
   getOrganizationUsersNotInTaskList,
-} from '../../actions/tasklist-actions';
-import useBoolean from '../../hooks/useBoolean';
-import palette from '../../palette';
+} from 'actions/tasklist-actions';
+import useBoolean from 'hooks/useBoolean';
+import CubesLoader from 'components/common/CubesLoader';
+import ListPopover from 'components/common/ListPopover';
+import Spacing from 'components/common/Spacing';
+import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { RobotoTypography } from '../../theme';
-import { MontserratTypography } from '../../theme-montserrat';
-import CubesLoader from '../common/CubesLoader';
-import ListPopover from '../common/ListPopover';
-import Spacing from '../common/Spacing';
-import UniversalTooltipContainer from '../common/UniversalTooltipContainer';
 import InviteMemberPopover from '../members/InviteMemberPopover';
 
 const RowContainer = styled.div`

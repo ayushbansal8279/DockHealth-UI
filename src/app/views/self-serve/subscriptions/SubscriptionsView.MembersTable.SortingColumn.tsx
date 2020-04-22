@@ -1,9 +1,9 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { RotatableChevronWithSpacing } from '../../../components/common/RotatableChevron';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+import { RotatableChevronWithSpacing } from 'components/common/RotatableChevron';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 
 export enum SORTING_PROPERTIES {
   NAME,

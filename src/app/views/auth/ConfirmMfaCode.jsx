@@ -2,15 +2,15 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { setAuthBaseState } from '../../actions/auth-base-actions';
+import { setAuthBaseState } from 'actions/auth-base-actions';
 import {
   error as errorNotification,
   success,
-} from '../../actions/notification-actions';
-import { mobileAnalyticsClient } from '../../api/analytics-api';
-import * as userApi from '../../api/user-api';
-import ConfirmMFACodeForm from '../../components/auth/ConfirmMfaCodeForm';
-import { AUTH_BASE_STATES } from '../../reducers/auth-base-reducer';
+} from 'actions/notification-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import * as userApi from 'api/user-api';
+import ConfirmMFACodeForm from 'components/auth/ConfirmMfaCodeForm';
+import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
 const ConfirmMFACode = props => {
   const [username, setUsername] = useState('');

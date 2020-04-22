@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { arrayPush, change, Field, reduxForm, reset } from 'redux-form';
 
-import * as PeopleActions from '../../actions/people-actions';
-import { mobileAnalyticsClient } from '../../api/analytics-api';
-import BasicField from '../common/BasicField';
+import * as PeopleActions from 'actions/people-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import BasicField from 'components/common/BasicField';
 
 class InvitePeople extends PureComponent {
   constructor(props) {
@@ -21,7 +21,7 @@ class InvitePeople extends PureComponent {
     });
   }
 
-  cancelEdit = (event) => {
+  cancelEdit = event => {
     toggleTaskForm();
     scrollToTop();
     event.preventDefault();
@@ -49,10 +49,13 @@ class InvitePeople extends PureComponent {
   }
 
   render() {
-    const handleSubmit = this.props.handleSubmit; // injected by reduxform
+    const { handleSubmit } = this.props; // injected by reduxform
 
     return (
-      <div className="add-form-wrapper" style={{marginTop: "-50px", marginBottom: "20px", width:"80%"}}>
+      <div
+        className="add-form-wrapper"
+        style={{ marginTop: '-50px', marginBottom: '20px', width: '80%' }}
+      >
         <div className="task-item add-form row expanded">
           <form
             className="inline-label"

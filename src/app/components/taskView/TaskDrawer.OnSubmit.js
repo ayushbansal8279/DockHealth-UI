@@ -1,9 +1,5 @@
 import moment from 'moment';
-import {
-  addTaskAttachment,
-  moveTask,
-  saveTask,
-} from '../../actions/task-actions';
+import { addTaskAttachment, moveTask, saveTask } from 'actions/task-actions';
 
 export default ({
   dispatch,

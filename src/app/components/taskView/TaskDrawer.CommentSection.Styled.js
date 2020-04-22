@@ -1,6 +1,6 @@
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
-import palette from '../../palette';
+import palette from 'app/palette';
 
 export const CommentSectionLabel = styled.div`
   align-items: center;

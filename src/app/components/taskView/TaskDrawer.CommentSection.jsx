@@ -15,8 +15,8 @@ import {
   addTaskComment,
   deleteComment as deleteCommentAction,
   updateComment as updateCommentAction,
-} from '../../actions/task-actions';
-import { noop } from '../../helpers/utility-functions';
+} from 'actions/task-actions';
+import { noop } from 'helpers/utility-functions';
 import CubesLoader from '../common/CubesLoader';
 import initializeTaskDrawerCommentSectionHooks from './TaskDrawer.CommentSection.Hooks';
 import {

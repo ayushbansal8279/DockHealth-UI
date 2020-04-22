@@ -2,8 +2,8 @@ import { IconButton } from '@material-ui/core';
 import { omit } from 'ramda';
 import React from 'react';
 import styled from 'styled-components';
-import palette, { opacify } from '../../palette';
-import { MontserratTypography } from '../../theme-montserrat';
+import palette, { opacify } from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 
 export const PatientsSidebarContainer = styled.div`
   padding: 4px;

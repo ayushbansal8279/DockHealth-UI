@@ -11,8 +11,8 @@ import { useFormContext } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
-import useBoolean from '../../hooks/useBoolean';
-import palette, { opacify } from '../../palette';
+import useBoolean from 'hooks/useBoolean';
+import palette, { opacify } from 'app/palette';
 
 export const ErrorLabel = styled.h4`
   color: ${palette.error};

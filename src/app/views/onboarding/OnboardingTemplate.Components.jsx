@@ -13,8 +13,8 @@ import { Link } from 'react-router';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 import clsx from 'clsx';
-import palette, { opacify } from '../../palette';
-import { MontserratTypography } from '../../theme-montserrat';
+import palette, { opacify } from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 
 export const OnboardingBackground = styled.div`
   background-color: ${palette.white};

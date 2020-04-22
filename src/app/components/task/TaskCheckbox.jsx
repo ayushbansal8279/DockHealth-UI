@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
-import useBoolean from '../../hooks/useBoolean';
-import CheckIcon from '../../img/checkbox-check';
-import palette from '../../palette';
+import useBoolean from 'hooks/useBoolean';
+import CheckIcon from 'img/checkbox-check';
+import palette from 'app/palette';
 
 const getCheckboxSizeVariables = size => ({
   lineHeight: size / 7.5,

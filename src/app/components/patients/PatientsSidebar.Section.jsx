@@ -2,8 +2,8 @@ import { Collapse, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CollapseIcon from '../../img/collapse.svg';
-import themeMontserrat from '../../theme-montserrat';
+import CollapseIcon from 'img/collapse.svg';
+import themeMontserrat from 'app/theme-montserrat';
 import {
   PatientsSidebarSectionContainer,
   PatientsSidebarSectionHeader,

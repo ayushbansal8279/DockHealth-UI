@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToggle } from 'react-use';
-import useBoolean from '../../hooks/useBoolean';
+import useBoolean from 'hooks/useBoolean';
 
 export default ({ task }) => {
   const taskIdentifier = task?.taskIdentifier;

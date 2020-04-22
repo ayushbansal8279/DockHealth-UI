@@ -4,19 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-import { setHeader } from '../../../actions/header-actions';
+import { setHeader } from 'actions/header-actions';
 import {
   getBillingEstimate,
   setPaymentNewPlan,
-} from '../../../actions/organization-actions';
-import { saveBillingDetails } from '../../../api/organization-api';
-import CubesLoader from '../../../components/common/CubesLoader';
-import GenericHeader from '../../../components/common/GenericHeader';
-import Spacing from '../../../components/common/Spacing';
-import { noop, showAlert } from '../../../helpers/utility-functions';
-import useBoolean from '../../../hooks/useBoolean';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+} from 'actions/organization-actions';
+import { saveBillingDetails } from 'api/organization-api';
+import CubesLoader from 'components/common/CubesLoader';
+import GenericHeader from 'components/common/GenericHeader';
+import Spacing from 'components/common/Spacing';
+import { noop, showAlert } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import BillingsViewBillingData from '../billings/BillingsView.BillingData';
 import {
   BILLING_FREQUENCY,

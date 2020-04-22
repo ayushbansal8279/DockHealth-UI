@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { hashHistory } from 'react-router';
 
-import { error, success } from '../../actions/notification-actions';
-import { mobileAnalyticsClient } from '../../api/analytics-api';
-import * as userApi from '../../api/user-api';
-import ConfirmUserAccountForm from '../../components/auth/ConfirmUserAccountForm';
-import { showAlert } from '../../helpers/utility-functions';
+import { error, success } from 'actions/notification-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import * as userApi from 'api/user-api';
+import ConfirmUserAccountForm from 'components/auth/ConfirmUserAccountForm';
+import { showAlert } from 'helpers/utility-functions';
 
 export default class ConfirmRegistration extends PureComponent {
   constructor(props) {

@@ -12,8 +12,8 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useToggle } from 'react-use';
-import { getTaskPage, getInboxTasks } from '../../actions/task-actions';
-import { onTaskSortingChanged } from '../../helpers/ga-event-helper';
+import { getTaskPage, getInboxTasks } from 'actions/task-actions';
+import { onTaskSortingChanged } from 'helpers/ga-event-helper';
 import {
   DEFAULT_SORTING,
   NO_SORTING,

@@ -3,8 +3,10 @@ import moment from 'moment';
 import { ascend, descend, head, isEmpty, prop, sort } from 'ramda';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import CubesLoader from '../../../components/common/CubesLoader';
-import SortingIcon from '../../../img/sorting-icon.svg';
+import CubesLoader from 'components/common/CubesLoader';
+import SortingIcon from 'img/sorting-icon.svg';
+import { MontserratTypography } from 'app/theme-montserrat';
+import Spacing from 'components/common/Spacing';
 import {
   ChargeDetailsLink,
   InvoiceColumn,
@@ -14,8 +16,6 @@ import {
   SortingIconContainer,
   SortingIconImage,
 } from './BillingsView.InvoicesList.Styled';
-import { MontserratTypography } from '../../../theme-montserrat';
-import Spacing from '../../../components/common/Spacing';
 
 const columnDefinitions = [
   {

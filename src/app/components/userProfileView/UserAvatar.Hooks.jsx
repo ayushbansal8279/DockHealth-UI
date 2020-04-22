@@ -1,12 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import * as userApi from '../../api/user-api';
-import { noop } from '../../helpers/utility-functions';
-import useBoolean from '../../hooks/useBoolean';
-import ArrowUpIcon from '../../img/arrow-up.svg';
-import palette from '../../palette';
-import { AvatarImageContainer } from '../common/Avatar.styled';
-import CubesLoader from '../common/CubesLoader';
+import * as userApi from 'api/user-api';
+import { noop } from 'helpers/utility-functions';
+import useBoolean from 'hooks/useBoolean';
+import ArrowUpIcon from 'img/arrow-up.svg';
+import { AvatarImageContainer } from 'components/common/Avatar.styled';
+import CubesLoader from 'components/common/CubesLoader';
+import palette from 'app/palette';
 import { PaddedButtonLabel } from './UserProfileView.Styled';
 
 const getSmallButtonContent = ({

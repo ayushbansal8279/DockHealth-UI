@@ -1,13 +1,13 @@
 import { Grid, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
-import CubesLoader from '../../../components/common/CubesLoader';
-import Spacing from '../../../components/common/Spacing';
+import CubesLoader from 'components/common/CubesLoader';
+import Spacing from 'components/common/Spacing';
 import {
   themeMontserrat500,
   themeMontserrat600,
   themeMontserratNormal,
-} from '../../../theme-montserrat';
+} from 'app/theme-montserrat';
 import {
   PlanColumnLink,
   PlanContainer,

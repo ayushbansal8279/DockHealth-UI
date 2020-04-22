@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as NotificationActions from '../../actions/notification-actions';
+import * as NotificationActions from 'actions/notification-actions';
 
 class Notification extends React.Component {
   onClose() {

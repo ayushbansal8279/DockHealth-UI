@@ -9,10 +9,10 @@ import {
   // invitePersonToTaskList,
   inviteUserToTaskList,
   removeUserFromTaskList,
-} from '../../actions/tasklist-actions';
-import useBoolean from '../../hooks/useBoolean';
-import TickIcon from '../../img/tick-icon';
-import { MontserratTypography } from '../../theme-montserrat';
+} from 'actions/tasklist-actions';
+import useBoolean from 'hooks/useBoolean';
+import TickIcon from 'img/tick-icon';
+import { MontserratTypography } from 'app/theme-montserrat';
 import {
   HeaderSearch,
   HeaderSearchContainer,

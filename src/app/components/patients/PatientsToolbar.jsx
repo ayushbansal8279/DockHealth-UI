@@ -3,7 +3,7 @@ import { Add as AddIcon } from '@material-ui/icons';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
-import { beginPatientCreation, loading } from '../../actions/patient-actions';
+import { beginPatientCreation, loading } from 'actions/patient-actions';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import Spacing from '../common/Spacing';

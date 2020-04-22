@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import palette from '../../../palette';
+import palette from 'app/palette';
 import { H2 } from './SubscriptionsView.Styled';
 
 export const PlanContainer = styled.div`

@@ -1,8 +1,8 @@
 import React from 'react';
-import ClipIcon from '../../img/clip.png';
-import PdfCheckboxOff from '../../img/pdf/pdf-checkbox-off.png';
-import PdfCheckboxOn from '../../img/pdf/pdf-checkbox-on.png';
-import ProfileIcon from '../../img/profile.png';
+import ClipIcon from 'img/clip.png';
+import PdfCheckboxOff from 'img/pdf/pdf-checkbox-off.png';
+import PdfCheckboxOn from 'img/pdf/pdf-checkbox-on.png';
+import ProfileIcon from 'img/profile.png';
 import getPdfTaskData from './PdfTask.Data';
 import {
   Avatar,

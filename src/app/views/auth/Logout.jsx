@@ -1,9 +1,9 @@
 import { isNil } from 'ramda';
 import { PureComponent } from 'react';
 import { hashHistory } from 'react-router';
-import { error } from '../../actions/notification-actions';
-import { mobileAnalyticsClient } from '../../api/analytics-api';
-import * as userApi from '../../api/user-api';
+import { error } from 'actions/notification-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import * as userApi from 'api/user-api';
 
 export default class Logout extends PureComponent {
   componentDidMount = () => {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { identity } from 'ramda';
-// import { showToast } from '../helpers/utility-functions';
+// import { showToast } from 'helpers/utility-functions';
 
 const NETWORK_ERROR = 'NETWORK_ERROR';
 
@@ -38,7 +38,6 @@ axiosInstance.interceptors.response.use(identity, error => {
   // }).then(({ value }) => {
   //   if (value) window.location.reload();
   // });
-  
 });
 
 export default axiosInstance;

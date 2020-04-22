@@ -3,12 +3,12 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useToggle } from 'react-use';
-import { acknowledgeEula } from '../../../actions/user-actions';
-import Spacing from '../../../components/common/Spacing';
-import TaskCheckbox from '../../../components/task/TaskCheckbox';
-import { useSmallScreen } from '../../../helpers/utility-functions';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+import { acknowledgeEula } from 'actions/user-actions';
+import Spacing from 'components/common/Spacing';
+import TaskCheckbox from 'components/task/TaskCheckbox';
+import { useSmallScreen } from 'helpers/utility-functions';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import {
   OnboardingAnchor,
   OnboardingButton,

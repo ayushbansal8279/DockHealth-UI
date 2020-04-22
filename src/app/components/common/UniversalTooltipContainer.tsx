@@ -1,6 +1,6 @@
 import { PopperProps } from '@material-ui/core';
 import React, { useRef } from 'react';
-import useBoolean from '../../hooks/useBoolean';
+import useBoolean from 'hooks/useBoolean';
 import UniversalTooltip from './UniversalTooltip';
 
 interface UniversalTooltipContainerProps extends PopperProps {

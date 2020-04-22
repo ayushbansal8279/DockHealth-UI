@@ -7,7 +7,7 @@ import {
   ListItemText,
   Popover,
 } from '@material-ui/core';
-import palette from '../../palette';
+import palette from 'app/palette';
 
 export const StyledList = styled(List).attrs({
   paper: 'paper',

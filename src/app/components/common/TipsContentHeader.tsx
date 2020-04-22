@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useUnmount } from 'react-use';
 import styled from 'styled-components';
-import useBoolean from '../../hooks/useBoolean';
-import TipsDotsBackground from '../../img/tips-dots-background.svg';
-import palette from '../../palette';
+import useBoolean from 'hooks/useBoolean';
+import TipsDotsBackground from 'img/tips-dots-background.svg';
+import palette from 'app/palette';
 
 const HeaderContainer = styled.div`
   align-items: center;
