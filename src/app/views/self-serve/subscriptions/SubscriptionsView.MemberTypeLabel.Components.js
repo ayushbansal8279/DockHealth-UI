@@ -16,7 +16,7 @@ export const MemberTypeLabelButton = styled.div`
 
   ${props =>
     props.invited
-      ? `background-color: ${palette.lightGrey}; color: ${palette.coolGrey2};`
+      ? `background-color: ${palette.scrollbarGrey}; color: ${palette.white};`
       : `background-color: ${palette.coolGrey2}; color: ${palette.white};`}
 
   &:hover {
