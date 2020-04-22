@@ -35,7 +35,7 @@ export const HeaderBottom = styled.div`
 const HeaderArrow = styled.div<{ left: number }>`
   background-color: transparent;
   border: 1rem solid transparent;
-  border-bottom-color: #038acb;
+  border-bottom-color: #00a2e5;
   height: 0;
   left: ${props => props.left}px;
   position: absolute;
