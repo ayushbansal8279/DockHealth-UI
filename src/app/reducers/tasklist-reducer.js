@@ -41,7 +41,7 @@ import {
   TOGGLE_LIST_NOTIFICATIONS_SUCCESS,
   UPDATE_TASKLIST_SUCCESS,
   CANCEL_TASKLIST_INVITE_SUCCESS,
-} from '../actions/action-types';
+} from 'actions/action-types';
 
 const initialState = {
   tasklist: [],

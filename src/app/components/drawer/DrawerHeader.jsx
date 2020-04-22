@@ -3,10 +3,10 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 import styled from 'styled-components';
-import useBoolean from '../../hooks/useBoolean';
-import palette from '../../palette';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'app/palette';
+import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import Member from '../members/Member';
-import { getSubscriptionIsTrial } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
 
 const StyledListItem = styled(ListItem)`
   && {

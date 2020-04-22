@@ -3,11 +3,11 @@ import styled from '@react-pdf/styled-components';
 import { memoizeWith, isEmpty, head } from 'ramda';
 import React from 'react';
 import { useAsync } from 'react-use';
-import { getUserAvatarBuffer } from '../../api/people-api';
-import { noop } from '../../helpers/utility-functions';
+import { getUserAvatarBuffer } from 'api/people-api';
+import { noop } from 'helpers/utility-functions';
+import palette from 'app/palette';
 import PdfTask from './PdfTask';
 import { AvatarImage, AvatarInitials } from './PdfTask.Styled';
-import palette from '../../palette';
 
 const getAvatarContent = memoizeWith(
   propsObject => Object.values(propsObject).join('-'),

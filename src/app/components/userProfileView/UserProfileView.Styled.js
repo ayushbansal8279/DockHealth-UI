@@ -2,7 +2,7 @@ import { Button, Grid, ListItem, Popover } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import palette, { opacify } from '../../palette';
+import palette, { opacify } from 'app/palette';
 
 export const FormContainer = styled.form``;
 

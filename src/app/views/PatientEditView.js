@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as PatientActions from '../actions/patient-actions';
-import { mobileAnalyticsClient } from '../api/analytics-api';
-import FormPatient from '../components/patient/FormPatient';
+import * as PatientActions from 'actions/patient-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import FormPatient from 'components/patient/FormPatient';
 
 class PatientEditView extends PureComponent {
   componentDidMount() {
@@ -41,7 +41,9 @@ class PatientEditView extends PureComponent {
             <div>
               <div className="task-item row expanded">
                 <div className="large-12 columns">
-                  <FormPatient patientIdentifier={this.props.params.patientIdentifier} />
+                  <FormPatient
+                    patientIdentifier={this.props.params.patientIdentifier}
+                  />
                 </div>
               </div>
             </div>
@@ -61,7 +63,4 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(PatientActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PatientEditView);
+export default connect(mapStateToProps, mapDispatchToProps)(PatientEditView);

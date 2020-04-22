@@ -2,7 +2,7 @@ import { IconButton } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import useBoolean from '../../hooks/useBoolean';
+import useBoolean from 'hooks/useBoolean';
 import InvitingContent from './InviteMemberPopover.InvitingContent';
 import NotInvitingContent from './InviteMemberPopover.NotInvitingContent';
 import {

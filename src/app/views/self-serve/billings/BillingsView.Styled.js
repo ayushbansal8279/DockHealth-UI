@@ -1,6 +1,6 @@
 import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
-import palette from '../../../palette';
+import palette from 'app/palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;

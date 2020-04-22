@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import palette from '../../palette';
-import { MontserratTypography } from '../../theme-montserrat';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 
 const TypographyCustomComponent = ({
   classes,

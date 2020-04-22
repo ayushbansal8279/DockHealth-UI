@@ -1,5 +1,6 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { getTaskHistory as getTaskHistoryApi, updateTask } from 'api/task-api';
 import {
   getTaskHistory,
   clearCurrentTaskHistory,
@@ -18,15 +19,16 @@ import {
   UPDATE_TASK_PATIENT,
   MOVE_TASK_SUCCESS,
 } from '../action-types';
-import TaskApi from '../../api/task-api';
 
-jest.mock('../../api/task-api', () => ({
+jest.mock('api/task-api', () => ({
   getTaskHistory: jest.fn(),
   updateTask: jest.fn(),
 }));
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
+
+const MOCKED_DATA = '2019-03-27T03:00:00.000Z';
 
 describe('getTaskHistory', () => {
   it('should fetch audit history', async () => {
@@ -43,7 +45,7 @@ describe('getTaskHistory', () => {
       },
     });
 
-    TaskApi.getTaskHistory.mockReturnValue(Promise.resolve([]));
+    getTaskHistoryApi.mockReturnValue(Promise.resolve([]));
 
     const task = { taskIdentifier: 0 };
 
@@ -65,7 +67,7 @@ describe('getTaskHistory', () => {
       },
     });
 
-    TaskApi.getTaskHistory.mockReturnValue(Promise.reject(new Error({})));
+    getTaskHistoryApi.mockReturnValue(Promise.reject(new Error({})));
 
     const task = { taskIdentifier: 0 };
 
@@ -104,7 +106,7 @@ describe('moveTask', () => {
       taskIdentifier: 0,
       taskList: { taskListIdentifier: 1, listName: 'List #2' },
     };
-    TaskApi.updateTask.mockReturnValue(Promise.resolve(updatedTask));
+    updateTask.mockReturnValue(Promise.resolve(updatedTask));
 
     await store.dispatch(
       moveTask(task, { taskListIdentifier: 1, listName: 'List #2' }),
@@ -132,7 +134,7 @@ describe('moveTask', () => {
       parentTaskIdentifier: null,
       taskList: { taskListIdentifier: 1, listName: 'List #2' },
     };
-    TaskApi.updateTask.mockReturnValue(Promise.resolve(updatedTask));
+    updateTask.mockReturnValue(Promise.resolve(updatedTask));
 
     await store.dispatch(
       moveTask(task, { taskListIdentifier: 1, listName: 'List #2' }),
@@ -147,7 +149,7 @@ describe('updateDueDate', () => {
       {
         type: UPDATE_TASK_DUE_DATE,
         taskIdentifier: 0,
-        dueDate: '2019-03-27T03:00:00.000Z',
+        dueDate: MOCKED_DATA,
       },
     ];
 
@@ -157,18 +159,15 @@ describe('updateDueDate', () => {
       },
     });
 
-    TaskApi.updateTask.mockReturnValue(
+    updateTask.mockReturnValue(
       Promise.resolve({
         taskIdentifier: 0,
-        dueDate: '2019-03-27T03:00:00.000Z',
+        dueDate: MOCKED_DATA,
       }),
     );
 
     await store.dispatch(
-      updateDueDate(
-        { taskIdentifier: 0, dueDate: null },
-        '2019-03-27T03:00:00.000Z',
-      ),
+      updateDueDate({ taskIdentifier: 0, dueDate: null }, MOCKED_DATA),
     );
     expect(store.getActions()).toEqual(expectedActions);
   });
@@ -180,7 +179,7 @@ describe('updateReminder', () => {
       {
         type: UPDATE_TASK_REMINDER,
         taskIdentifier: 0,
-        reminderDt: '2019-03-27T03:00:00.000Z',
+        reminderDt: MOCKED_DATA,
       },
     ];
 
@@ -190,13 +189,10 @@ describe('updateReminder', () => {
       },
     });
 
-    TaskApi.updateTask.mockReturnValue(Promise.resolve({}));
+    updateTask.mockReturnValue(Promise.resolve({}));
 
     await store.dispatch(
-      updateReminder(
-        { taskIdentifier: 0, reminderDt: null },
-        '2019-03-27T03:00:00.000Z',
-      ),
+      updateReminder({ taskIdentifier: 0, reminderDt: null }, MOCKED_DATA),
     );
     expect(store.getActions()).toEqual(expectedActions);
   });
@@ -218,7 +214,7 @@ describe('updatePatient', () => {
       },
     });
 
-    TaskApi.updateTask.mockReturnValue(
+    updateTask.mockReturnValue(
       Promise.resolve({ taskIdentifier: 0, patient: { patientIdentifier: 1 } }),
     );
 

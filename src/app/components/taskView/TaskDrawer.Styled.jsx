@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
 import styled from 'styled-components';
-import palette, { opacify } from '../../palette';
+import palette, { opacify } from 'app/palette';
 
 export const OuterDrawerContainer = styled.div`
   height: ${props => props.height}px;

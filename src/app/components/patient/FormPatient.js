@@ -14,9 +14,9 @@ import {
   touch,
 } from 'redux-form';
 
-import * as PatientActions from '../../actions/patient-actions';
-import { mobileAnalyticsClient } from '../../api/analytics-api';
-import BasicField from '../common/BasicField';
+import * as PatientActions from 'actions/patient-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import BasicField from 'components/common/BasicField';
 
 class FormPatient extends PureComponent {
   constructor(props) {

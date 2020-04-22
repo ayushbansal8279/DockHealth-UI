@@ -3,7 +3,7 @@ import {
   GET_PENDING_TASKLIST_SUCCESS,
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,
   REJECT_INVITE_TOTASKLIST_SUCCESS,
-} from '../actions/action-types';
+} from 'actions/action-types';
 
 const initialState = {
   invitationlist: [],
@@ -27,13 +27,17 @@ const InvitationReducer = (state = initialState, action) => {
     case ACCEPT_INVITE_TOTASKLIST_SUCCESS:
       return {
         ...state,
-        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist),
+        pendingTasklists: state.pendingTasklists.filter(
+          tasklist => tasklist !== action.tasklist,
+        ),
       };
 
     case REJECT_INVITE_TOTASKLIST_SUCCESS:
       return {
         ...state,
-        pendingTasklists: state.pendingTasklists.filter(tasklist => tasklist !== action.tasklist),
+        pendingTasklists: state.pendingTasklists.filter(
+          tasklist => tasklist !== action.tasklist,
+        ),
       };
 
     default:

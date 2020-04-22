@@ -1,7 +1,7 @@
 import { Button, Fade } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import palette from '../../palette';
+import palette from 'app/palette';
 import ListPopover from '../common/ListPopover';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';

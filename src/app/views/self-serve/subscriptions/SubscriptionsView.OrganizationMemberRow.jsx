@@ -4,15 +4,15 @@ import { memoizeWith } from 'ramda';
 import React from 'react';
 import { useAsync } from 'react-use';
 import styled from 'styled-components';
-import { getUserAvatar } from '../../../api/people-api';
-import Avatar from '../../../components/common/Avatar';
-import { AvatarImageContainer } from '../../../components/common/Avatar.styled';
-import CubesLoader from '../../../components/common/CubesLoader';
-import Spacing from '../../../components/common/Spacing';
-import TaskCheckbox from '../../../components/task/TaskCheckbox';
-import { noop } from '../../../helpers/utility-functions';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+import { getUserAvatar } from 'api/people-api';
+import Avatar from 'components/common/Avatar';
+import { AvatarImageContainer } from 'components/common/Avatar.styled';
+import CubesLoader from 'components/common/CubesLoader';
+import Spacing from 'components/common/Spacing';
+import TaskCheckbox from 'components/task/TaskCheckbox';
+import { noop } from 'helpers/utility-functions';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
 const CubesLoaderContainer = styled.div`

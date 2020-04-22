@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import DockHeaderLogo from '../../img/dock-header-logo.svg';
-import palette from '../../palette';
-import { themeMontserratNormal } from '../../theme-montserrat';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import palette from 'app/palette';
+import { themeMontserratNormal } from 'app/theme-montserrat';
 import CubesLoader from './CubesLoader';
 
 const GenericHeaderContainer = styled.div`

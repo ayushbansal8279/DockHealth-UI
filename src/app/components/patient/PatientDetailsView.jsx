@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
-import { setHeader } from '../../actions/header-actions';
-import { fetchPatient } from '../../actions/patient';
+import { setHeader } from 'actions/header-actions';
+import { fetchPatient } from 'actions/patient';
 import {
   addTaskComment,
   getListTasksByPatientAndStatus,
@@ -14,16 +14,16 @@ import {
   markComplete,
   storeAsCurrentTask,
   toggleTaskPriority,
-} from '../../actions/task-actions';
-import { closeDrawer } from '../../actions/task-drawer-actions';
-import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
-import usePatient from '../../hooks/use-patient';
-import BackIcon from '../../img/back.svg';
-import themeMontserrat from '../../theme-montserrat';
-import TaskView from '../../views/TaskView';
-import CubesLoader from '../common/CubesLoader';
-import GenericHeader from '../common/GenericHeader';
-import SafariFixGrid from '../common/SafariFixGrid';
+} from 'actions/task-actions';
+import { closeDrawer } from 'actions/task-drawer-actions';
+import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
+import usePatient from 'hooks/use-patient';
+import BackIcon from 'img/back.svg';
+import themeMontserrat from 'app/theme-montserrat';
+import TaskView from 'views/Task/TaskView';
+import CubesLoader from 'components/common/CubesLoader';
+import GenericHeader from 'components/common/GenericHeader';
+import SafariFixGrid from 'components/common/SafariFixGrid';
 import PatientEdit from '../patients/PatientEdit';
 import { SideClickListener } from '../patients/PatientsView.Styled';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import palette from '../../palette';
+import palette from 'app/palette';
 
 const PriorityFlagContainer = styled.div`
   align-self: flex-start;

@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { hashHistory } from 'react-router';
 
-import { error, success } from '../../actions/notification-actions';
-import { mobileAnalyticsClient } from '../../api/analytics-api';
-import * as userApi from '../../api/user-api';
-import ResendCodeForm from '../../components/auth/ResendCodeForm';
+import { error, success } from 'actions/notification-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import * as userApi from 'api/user-api';
+import ResendCodeForm from 'components/auth/ResendCodeForm';
 
 export default class ResendCode extends PureComponent {
   constructor(props) {
@@ -24,14 +24,14 @@ export default class ResendCode extends PureComponent {
         success('Resent verification code. Please check your email.');
         hashHistory.push('confirmRegistration');
       })
-      .catch(e => {
+      .catch(error_ => {
         mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
           RESEND_CODE_SUCCESS: 'NO',
         });
-        const msg = e.message || 'An error occurred.';
+        const message = error_.message || 'An error occurred.';
         const field = false;
         if (!field) {
-          error(msg);
+          error(message);
         }
       });
   }

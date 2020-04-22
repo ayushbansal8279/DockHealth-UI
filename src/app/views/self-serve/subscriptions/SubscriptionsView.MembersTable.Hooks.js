@@ -7,7 +7,7 @@ import {
   addUserToOrganization,
   cancelInviteToOrganization,
   removeUserFromOrganization,
-} from '../../../actions/people-actions';
+} from 'actions/people-actions';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 

@@ -5,16 +5,17 @@ import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount, useToggle } from 'react-use';
 import { object, string } from 'yup';
-import { setOnboardingCurrentStep } from '../../../actions/onboarding-progress-actions';
-import { updateOrganizationName } from '../../../actions/organization-actions';
-import { findAllUsers, loading } from '../../../actions/people-actions';
-import * as userApi from '../../../api/user-api';
-import Spacing from '../../../components/common/Spacing';
-import { UniversalMontserratInput } from '../../../components/userProfileView/UniversalInput';
-import { MontserratTypography } from '../../../theme-montserrat';
-import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
-import InvitationPanel from '../../self-serve/subscriptions/SubscriptionsView.InvitationPanel';
-import SubscriptionsViewMembersTable from '../../self-serve/subscriptions/SubscriptionsView.MembersTable';
+
+import { setOnboardingCurrentStep } from 'actions/onboarding-progress-actions';
+import { updateOrganizationName } from 'actions/organization-actions';
+import { findAllUsers, loading } from 'actions/people-actions';
+import * as userApi from 'api/user-api';
+import Spacing from 'components/common/Spacing';
+import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
+import InvitationPanel from 'views/self-serve/subscriptions/SubscriptionsView.InvitationPanel';
+import SubscriptionsViewMembersTable from 'views/self-serve/subscriptions/SubscriptionsView.MembersTable';
+import InvitePeoplePopover from 'views/People/PeopleView.InvitePeoplePopover';
+import { MontserratTypography } from 'app/theme-montserrat';
 import {
   OnboardingButton,
   OnboardingDivider,

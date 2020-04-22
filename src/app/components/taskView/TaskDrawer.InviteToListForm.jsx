@@ -3,8 +3,8 @@ import React, { useRef } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { invitePersonToOrganization } from '../../actions/people-actions';
-import palette from '../../palette';
+import { invitePersonToOrganization } from 'actions/people-actions';
+import palette from 'app/palette';
 import StyledInput from '../userProfileView/StyledInput';
 import { inviteValidationSchema } from './TaskDrawer.ValidationSchema';
 

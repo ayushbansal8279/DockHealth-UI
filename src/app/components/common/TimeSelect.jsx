@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import palette from '../../palette';
+import palette from 'app/palette';
 
 const StyledSelect = styled(Select).attrs({
   classes: {

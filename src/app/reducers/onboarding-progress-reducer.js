@@ -3,8 +3,8 @@ import {
   SET_ONBOARDING_PROGRESS,
   SET_ONBOARDING_STEP,
   SET_ONBOARDING_TOTAL_STEPS,
-} from '../actions/action-types';
-import ONBOARDING_STEPS from '../views/onboarding/OnboardingTemplate.OnboardingSteps';
+} from 'actions/action-types';
+import ONBOARDING_STEPS from 'views/onboarding/OnboardingTemplate.OnboardingSteps';
 
 const initialState = {
   currentStep: 1,

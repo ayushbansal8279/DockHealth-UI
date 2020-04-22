@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import styled from 'styled-components';
-import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
-import EnvelopeIcon from '../../img/envelope.svg';
-import palette from '../../palette';
+import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
+import EnvelopeIcon from 'img/envelope.svg';
+import palette from 'app/palette';
 
 const EmailBodyContainer = styled.div`
   background-color: ${palette.lightGrey};

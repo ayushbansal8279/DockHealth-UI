@@ -1,13 +1,13 @@
 import { Fade, Grid } from '@material-ui/core';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setHeader } from '../../actions/header-actions';
+import { setHeader } from 'actions/header-actions';
 import {
   getAllPatients,
   getMyPatientsActive,
   getMyPatientsAll,
   highlightPatient,
-} from '../../actions/patient-actions';
+} from 'actions/patient-actions';
 import CubesLoader from '../common/CubesLoader';
 import GenericHeader from '../common/GenericHeader';
 import PatientsList from './PatientsList';

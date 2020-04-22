@@ -1,6 +1,6 @@
+import * as InvitationApi from 'api/invitation-api';
+import * as TaskListApi from 'api/tasklist-api';
 import * as ActionTypes from './action-types';
-import * as InvitationApi from '../api/invitation-api';
-import * as TaskListApi from '../api/tasklist-api';
 
 export function findInvitationsByUserId() {
   return dispatch => {

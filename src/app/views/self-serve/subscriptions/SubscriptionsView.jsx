@@ -2,8 +2,9 @@ import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
-import { setPaymentNewPlan } from '../../../actions/organization-actions';
-import { MontserratTypography } from '../../../theme-montserrat';
+import { setPaymentNewPlan } from 'actions/organization-actions';
+import { MontserratTypography } from 'app/theme-montserrat';
+import Spacing from 'components/common/Spacing';
 import SubscriptionsPlansView from './subscriptions-plans/SubscriptionsPlansView';
 import CurrentPlan from './SubscriptionsView.CurrentPlan';
 import initializeSubscriptionsViewHooks from './SubscriptionsView.Hooks';
@@ -20,7 +21,6 @@ import {
   BILLING_FREQUENCY,
   getSubscriptionPlanData,
 } from './SubscriptionsView.Utilities';
-import Spacing from '../../../components/common/Spacing';
 
 const goToSubscriptionPayment = () => {
   hashHistory.push('/subscription-payment');

@@ -5,9 +5,9 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useDeepCompareEffect, useEffectOnce } from 'react-use';
 import { mixed, object, string } from 'yup';
-import { addPatient, updatePatient } from '../../actions/patient-actions';
-import { onPatientEdited } from '../../helpers/ga-event-helper';
-import { showAlert } from '../../helpers/utility-functions';
+import { addPatient, updatePatient } from 'actions/patient-actions';
+import { onPatientEdited } from 'helpers/ga-event-helper';
+import { showAlert } from 'helpers/utility-functions';
 import PatientsForm from './PatientsForm';
 
 const DATE_FORMAT = 'MM/DD/YYYY';

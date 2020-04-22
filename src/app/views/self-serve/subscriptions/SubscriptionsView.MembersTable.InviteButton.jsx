@@ -1,8 +1,8 @@
 import { Add } from '@material-ui/icons';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
-import AdornedButton from '../../../components/common/AdornedButton';
-import InvitePeoplePopover from '../../PeopleView.InvitePeoplePopover';
+import AdornedButton from 'components/common/AdornedButton';
+import InvitePeoplePopover from 'views/People/PeopleView.InvitePeoplePopover';
 
 const InviteButton = ({ fullWidth, getAllUsers }) => {
   const invitePeopleButtonReference = useRef(null);

@@ -1,10 +1,9 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { addPatientToTask } from '../patient-actions';
+import { addPatientToTask } from 'api/patient-api';
 import { ADD_PATIENT_TO_TASK_SUCCESS } from '../action-types';
-import PatientApi from '../../api/patient-api';
 
-jest.mock('../../api/patient-api', () => ({
+jest.mock('api/patient-api', () => ({
   addPatientToTask: jest.fn(),
 }));
 
@@ -27,9 +26,7 @@ describe('addPatientToTask', () => {
       },
     });
 
-    PatientApi.addPatientToTask.mockReturnValue(
-      Promise.resolve({ patientIdentifier: 3 }),
-    );
+    addPatientToTask.mockReturnValue(Promise.resolve({ patientIdentifier: 3 }));
 
     await store.dispatch(addPatientToTask(3, 0));
     expect(store.getActions()).toEqual(expectedActions);

@@ -2,11 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useList } from 'react-use';
 
-import {
-  addTaskAttachment,
-  removeTaskAttachment,
-} from '../../actions/task-actions';
-import useBoolean from '../../hooks/useBoolean';
+import { addTaskAttachment, removeTaskAttachment } from 'actions/task-actions';
+import useBoolean from 'hooks/useBoolean';
 import AttachmentPreview from './TaskDrawer.AttachmentPreview';
 import {
   AddAttachmentButton,

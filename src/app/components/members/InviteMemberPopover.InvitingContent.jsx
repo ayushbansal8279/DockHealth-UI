@@ -7,9 +7,9 @@ import { object, string } from 'yup';
 import {
   getMembersByTaskListId,
   invitePersonToTaskList,
-} from '../../actions/tasklist-actions';
-import { showAlert } from '../../helpers/utility-functions';
-import { MontserratTypography } from '../../theme-montserrat';
+} from 'actions/tasklist-actions';
+import { showAlert } from 'helpers/utility-functions';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import {
   FormSection,

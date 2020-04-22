@@ -4,8 +4,8 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import CalendarIcon from '../../img/calendar.svg';
-import palette, { opacify } from '../../palette';
+import CalendarIcon from 'img/calendar.svg';
+import palette, { opacify } from 'app/palette';
 import TimeSelect from './TimeSelect';
 
 const StyledPopover = styled(Popover).attrs({ classes: { paper: 'paper' } })`

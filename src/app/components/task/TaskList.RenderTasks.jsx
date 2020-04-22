@@ -1,8 +1,8 @@
 import { Button, Collapse, Grid } from '@material-ui/core';
 import { isEmpty, partition } from 'ramda';
 import React, { useCallback } from 'react';
-import useBoolean from '../../hooks/useBoolean';
-import palette from '../../palette';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'app/palette';
 import CubesLoader from '../common/CubesLoader';
 import Spacing from '../common/Spacing';
 import Task from './Task';

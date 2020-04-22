@@ -3,8 +3,8 @@ import { Done, Add } from '@material-ui/icons';
 import React, { useCallback, useState } from 'react';
 import { useUnmount } from 'react-use';
 import { IntercomAPI } from 'react-intercom';
-import Spacing from '../../../../components/common/Spacing';
-import { MontserratTypography } from '../../../../theme-montserrat';
+import Spacing from 'components/common/Spacing';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { BILLING_FREQUENCY } from '../SubscriptionsView.Utilities';
 import {
   SubscriptionPlanDarkPanel,

@@ -2,10 +2,10 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import styled from 'styled-components';
-import { mentionifyAndLinkifyTaskText } from '../../helpers/utility-functions';
-import BubbleFinishIcon from '../../img/bubble-finish';
-import RemoveCommentIcon from '../../img/remove-comment-icon.svg';
-import palette from '../../palette';
+import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
+import BubbleFinishIcon from 'img/bubble-finish';
+import RemoveCommentIcon from 'img/remove-comment-icon.svg';
+import palette from 'app/palette';
 
 const RemoveCommentButton = styled.img`
   align-items: center;

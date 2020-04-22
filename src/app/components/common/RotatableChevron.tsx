@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import ListSwitchChevron from '../../img/list-switch-chevron';
-import palette from '../../palette';
+import ListSwitchChevron from 'img/list-switch-chevron';
+import palette from 'app/palette';
 
 interface RotatableChevronProps {
   color?: string;

@@ -11,8 +11,8 @@ import {
 } from 'ramda';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
-import { getTaskAttachment } from '../../api/task-api';
-import DownloadIcon from '../../img/download.svg';
+import { getTaskAttachment } from 'api/task-api';
+import DownloadIcon from 'img/download.svg';
 import {
   AttachmentPreviewAudio,
   AttachmentPreviewContent,

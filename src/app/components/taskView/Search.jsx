@@ -4,9 +4,9 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import SearchClearIcon from '../../img/search-clear.svg';
-import SearchHeadsupIcon from '../../img/search-headsup.svg';
-import palette, { opacify } from '../../palette';
+import SearchClearIcon from 'img/search-clear.svg';
+import SearchHeadsupIcon from 'img/search-headsup.svg';
+import palette, { opacify } from 'app/palette';
 
 const ClearButton = styled.div`
   align-items: center;

@@ -7,9 +7,9 @@ import IdleTimer from 'react-idle-timer';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
 
-import { mobileAnalyticsClient } from '../api/analytics-api';
-import * as userApi from '../api/user-api';
-import Notification from '../components/common/Notification';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import * as userApi from 'api/user-api';
+import Notification from 'components/common/Notification';
 
 const AppContainer = styled.div`
   font-family: 'Roboto', sans-serif;

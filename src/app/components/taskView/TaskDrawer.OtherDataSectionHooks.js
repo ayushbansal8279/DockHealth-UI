@@ -8,8 +8,8 @@ import {
   moveTask,
   storeAsCurrentTask,
   updateDueDate,
-} from '../../actions/task-actions';
-import useBoolean from '../../hooks/useBoolean';
+} from 'actions/task-actions';
+import useBoolean from 'hooks/useBoolean';
 
 export default ({ task, setAutoSaveVisible, closeDrawer }) => {
   const taskLists = useSelector(store => store.taskListState.tasklist) || [];

@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router';
-import useBoolean from '../../hooks/useBoolean';
-import InboxIcon from '../../img/drawer/InboxIcon';
-import ListsIcon from '../../img/drawer/ListsIcon';
-import LogoutIcon from '../../img/drawer/LogoutIcon';
-import PatientsIcon from '../../img/drawer/PatientsIcon';
-import PeopleIcon from '../../img/drawer/PeopleIcon';
-import SearchIcon from '../../img/drawer/SearchIcon';
-import SupportIcon from '../../img/drawer/SupportIcon';
+import useBoolean from 'hooks/useBoolean';
+import InboxIcon from 'img/drawer/InboxIcon';
+import ListsIcon from 'img/drawer/ListsIcon';
+import LogoutIcon from 'img/drawer/LogoutIcon';
+import PatientsIcon from 'img/drawer/PatientsIcon';
+import PeopleIcon from 'img/drawer/PeopleIcon';
+import SearchIcon from 'img/drawer/SearchIcon';
+import SupportIcon from 'img/drawer/SupportIcon';
 import DrawerHeader from './DrawerHeader';
 import {
   ActiveIconRim,

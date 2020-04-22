@@ -1,10 +1,11 @@
 import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import { FormContext } from 'react-hook-form';
-import { deleteTask, duplicateTask } from '../../actions/task-actions';
-import { onButtonClicked } from '../../helpers/ga-event-helper';
-import { getPatientName, noop } from '../../helpers/utility-functions';
-import { getSubscriptionIsTrial } from '../../views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import { deleteTask, duplicateTask } from 'actions/task-actions';
+import { onButtonClicked } from 'helpers/ga-event-helper';
+import { getPatientName, noop } from 'helpers/utility-functions';
+import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import { getPriorityColor } from 'app/palette';
 import TaskDrawerCommentSection from './TaskDrawer.CommentSection';
 import initializeTaskDrawerHooks from './TaskDrawer.Hooks';
 import onSubmit from './TaskDrawer.OnSubmit';
@@ -21,7 +22,6 @@ import {
   StyledVerticalDivider,
 } from './TaskDrawer.Styled';
 import TaskDrawerTopSection from './TaskDrawer.TopSection';
-import { getPriorityColor } from '../../palette';
 
 const statusSelectData = [
   {

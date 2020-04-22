@@ -1,5 +1,5 @@
+import { fixList } from 'helpers/inbox-fix';
 import axios from './axios-heydoc';
-import { fixList } from '../helpers/inbox-fix';
 
 export function getAllPatients() {
   return axios

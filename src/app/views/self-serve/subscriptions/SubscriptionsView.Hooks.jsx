@@ -2,16 +2,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount, useToggle } from 'react-use';
-import { setHeader } from '../../../actions/header-actions';
+import { setHeader } from 'actions/header-actions';
 import {
   getBillingDetails,
   getBillingEstimate,
   selectUsersForPlan,
-} from '../../../actions/organization-actions';
-import { findAllUsers, loading } from '../../../actions/people-actions';
-import * as userApi from '../../../api/user-api';
-import GenericHeader from '../../../components/common/GenericHeader';
-import useBoolean from '../../../hooks/useBoolean';
+} from 'actions/organization-actions';
+import { findAllUsers, loading } from 'actions/people-actions';
+import * as userApi from 'api/user-api';
+import GenericHeader from 'components/common/GenericHeader';
+import useBoolean from 'hooks/useBoolean';
 import { subscriptionPlanData as subscriptionGlobalPlanData } from './subscriptions-plans/SubscriptionsPlansView.PlanData';
 import { USER_SUBSCRIPTION_STATUS } from './SubscriptionsView.MembersTable.SubscriptionSwitcher';
 import { BILLING_FREQUENCY } from './SubscriptionsView.Utilities';

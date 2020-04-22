@@ -3,9 +3,9 @@ import { ArrowBack as BackIcon } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import ItemAssignment from '../../img/folder.svg';
-import Search from '../../img/search.svg';
-import palette from '../../palette';
+import ItemAssignment from 'img/folder.svg';
+import Search from 'img/search.svg';
+import palette from 'app/palette';
 
 const StyledBackIcon = styled(BackIcon)`
   && {

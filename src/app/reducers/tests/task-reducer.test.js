@@ -1,4 +1,3 @@
-import reducer from '../task-reducer';
 import {
   REQUEST_HISTORY,
   GET_TASK_HISTORY_SUCCESS,
@@ -7,7 +6,8 @@ import {
   UPDATE_TASK_DUE_DATE,
   UPDATE_TASK_REMINDER,
   UPDATE_TASK_PATIENT,
-} from '../../actions/action-types';
+} from 'actions/action-types';
+import reducer from '../task-reducer';
 
 describe('task-reducer', () => {
   it('should return the initial state', () => {
@@ -37,7 +37,10 @@ describe('task-reducer', () => {
   });
 
   it('should handle GET_TASK_HISTORY_ERROR', () => {
-    const action = { type: GET_TASK_HISTORY_ERROR, error: { response: { status: 500 } } };
+    const action = {
+      type: GET_TASK_HISTORY_ERROR,
+      error: { response: { status: 500 } },
+    };
     const state = reducer(undefined, action);
 
     expect(state.isHistoryFetching).toBe(false);
@@ -55,7 +58,11 @@ describe('task-reducer', () => {
   });
 
   it('should handle UPDATE_TASK_DUE_DATE', () => {
-    const action = { type: UPDATE_TASK_DUE_DATE, taskIdentifier: 0, dueDate: '2019-03-27T03:00:00.000Z' };
+    const action = {
+      type: UPDATE_TASK_DUE_DATE,
+      taskIdentifier: 0,
+      dueDate: '2019-03-27T03:00:00.000Z',
+    };
     const initialState = {
       tasks: [{ taskIdentifier: 0, dueDate: '' }],
     };
@@ -66,7 +73,11 @@ describe('task-reducer', () => {
   });
 
   it('should handle UPDATE_TASK_REMINDER', () => {
-    const action = { type: UPDATE_TASK_REMINDER, taskIdentifier: 0, reminderDt: '2019-03-27T03:00:00.000Z' };
+    const action = {
+      type: UPDATE_TASK_REMINDER,
+      taskIdentifier: 0,
+      reminderDt: '2019-03-27T03:00:00.000Z',
+    };
     const initialState = {
       tasks: [{ taskIdentifier: 0, reminderDt: '' }],
     };
@@ -76,7 +87,11 @@ describe('task-reducer', () => {
   });
 
   it('should handle UPDATE_TASK_PATIENT', () => {
-    const action = { type: UPDATE_TASK_PATIENT, parentTaskIdentifier: 0, patient: { patientIdentifier: 1 } };
+    const action = {
+      type: UPDATE_TASK_PATIENT,
+      parentTaskIdentifier: 0,
+      patient: { patientIdentifier: 1 },
+    };
     const initialState = {
       tasks: [{ taskIdentifier: 0, patient: null, subtasks: [] }],
     };

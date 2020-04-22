@@ -6,14 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
-import { getBillingEstimate } from '../../../actions/organization-actions';
-import Spacing from '../../../components/common/Spacing';
-import CardAmexIcon from '../../../img/cards/american-express.png';
-import CardDiscoverIcon from '../../../img/cards/discover.png';
-import CardMastercardIcon from '../../../img/cards/mastercard.png';
-import CardVisaIcon from '../../../img/cards/visa.png';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+import { getBillingEstimate } from 'actions/organization-actions';
+import Spacing from 'components/common/Spacing';
+import CardAmexIcon from 'img/cards/american-express.png';
+import CardDiscoverIcon from 'img/cards/discover.png';
+import CardMastercardIcon from 'img/cards/mastercard.png';
+import CardVisaIcon from 'img/cards/visa.png';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { BILLING_FREQUENCY } from '../subscriptions/SubscriptionsView.Utilities';
 
 const InformationContainer = styled.div`

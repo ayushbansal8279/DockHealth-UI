@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import {
   highlightPatient,
   abortPatientCreation,
-} from '../../actions/patient-actions';
-import { findUserTasksByPatient } from '../../api/patient-api';
+} from 'actions/patient-actions';
+import { findUserTasksByPatient } from 'api/patient-api';
+import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
 import { Flag } from '../../flags';
-import { groupTasksAndCompletedTasksByList } from '../../helpers/group-tasks-by-list';
 import PatientEdit from './PatientEdit';
 import PatientsSidebarSection from './PatientsSidebar.Section';
 import {

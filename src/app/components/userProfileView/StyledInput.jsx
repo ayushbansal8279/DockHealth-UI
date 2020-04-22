@@ -3,9 +3,9 @@ import React from 'react';
 import MaskedInput from 'react-text-mask';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
-import { mergeRefs as mergeReferences } from '../../helpers/utility-functions';
-import palette, { opacify } from '../../palette';
-import { matchEmptyNumber } from '../../views/UserProfileView.ValidationSchema';
+import { mergeRefs as mergeReferences } from 'helpers/utility-functions';
+import palette, { opacify } from 'app/palette';
+import { matchEmptyNumber } from 'views/UserProfile/UserProfileView.ValidationSchema';
 import StyledInputAutoCorrectedDate from './StyledInput.AutoCorrectedDate';
 import initializeStyledInputHooks from './StyledInput.Hooks';
 

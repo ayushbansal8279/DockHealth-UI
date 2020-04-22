@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ProfileIcon from 'img/profile.svg';
+import palette from 'app/palette';
 import Member from './Member';
-import ProfileIcon from '../../img/profile.svg';
-import palette from '../../palette';
 
 const MemberAssignment = ({ member, onClick, disabled, large }) =>
   member ? (

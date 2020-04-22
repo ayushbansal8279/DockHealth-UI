@@ -3,7 +3,7 @@ import Moment from 'react-moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as TaskListActions from '../../actions/tasklist-actions';
+import * as TaskListActions from 'actions/tasklist-actions';
 import MemberInitials from '../members/MemberInitials';
 
 class TaskListActivityFeedContainer extends PureComponent {
@@ -16,7 +16,7 @@ class TaskListActivityFeedContainer extends PureComponent {
     this.props.findActivityFeedForAllTaskListsByUserId(0);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(previousProps, previousState) {
     enableFoundationAccordionComponent('.wrapper');
   }
 

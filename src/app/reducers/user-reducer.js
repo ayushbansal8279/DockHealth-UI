@@ -1,4 +1,4 @@
-import { USER_ACKNOWLEDGED_EULA } from '../actions/action-types';
+import { USER_ACKNOWLEDGED_EULA } from 'actions/action-types';
 
 const initialState = {
   user: false,

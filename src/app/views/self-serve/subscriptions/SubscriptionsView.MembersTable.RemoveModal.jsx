@@ -3,10 +3,10 @@ import { withStyles } from '@material-ui/core/styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { changeUserRoleForOrg } from '../../../actions/people-actions';
-import Spacing from '../../../components/common/Spacing';
-import { showAlert } from '../../../helpers/utility-functions';
-import palette from '../../../palette';
+import { changeUserRoleForOrg } from 'actions/people-actions';
+import Spacing from 'components/common/Spacing';
+import { showAlert } from 'helpers/utility-functions';
+import palette from 'app/palette';
 import { MemberAvatar } from './SubscriptionsView.OrganizationMemberRow';
 
 const GrayDialog = withStyles({

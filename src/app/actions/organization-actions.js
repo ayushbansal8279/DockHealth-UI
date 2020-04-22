@@ -1,4 +1,4 @@
-import * as OrganizationApi from '../api/organization-api';
+import * as OrganizationApi from 'api/organization-api';
 import {
   GET_BILLING_DETAILS_FAILURE,
   GET_BILLING_DETAILS_SUCCESS,

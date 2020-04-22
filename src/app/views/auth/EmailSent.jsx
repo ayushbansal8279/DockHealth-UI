@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import Spacing from '../../components/common/Spacing';
-import { MontserratTypography } from '../../theme-montserrat';
+import Spacing from 'components/common/Spacing';
+import { MontserratTypography } from 'app/theme-montserrat';
 
 export default () => (
   <Grid container>

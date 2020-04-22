@@ -1,6 +1,6 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import PatientApi from '../../api/patient-api';
+import { getPatientById } from 'api/patient-api';
 import { fetchPatient } from '../patient';
 import {
   FETCH_PATIENT,
@@ -8,7 +8,7 @@ import {
   FETCH_PATIENT_SUCCESS,
 } from '../action-types';
 
-jest.mock('../../api/patient-api', () => ({
+jest.mock('api/patient-api', () => ({
   getPatientById: jest.fn(),
 }));
 
@@ -17,7 +17,7 @@ const mockStore = configureStore([thunk]);
 describe('fetchPatient', () => {
   it('should fetch patient', async () => {
     const details = { patientIdentifier: 0 };
-    PatientApi.getPatientById.mockReturnValue(Promise.resolve(details));
+    getPatientById.mockReturnValue(Promise.resolve(details));
 
     const store = mockStore({
       patient: {
@@ -36,7 +36,7 @@ describe('fetchPatient', () => {
   });
   it('should handle fetch error', async () => {
     const error = 'Something wrong.';
-    PatientApi.getPatientById.mockReturnValue(Promise.reject(error));
+    getPatientById.mockReturnValue(Promise.reject(error));
 
     const store = mockStore({
       patient: {

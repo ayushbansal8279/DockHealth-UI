@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { curry } from 'ramda';
-import * as TaskApi from '../api/task-api';
+import * as TaskApi from 'api/task-api';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
 
@@ -60,11 +60,7 @@ export function getListTasks(
       });
 }
 
-export function getListTasksCount(
-  taskListIdentifier,
-  filterBy,
-  status,
-) {
+export function getListTasksCount(taskListIdentifier, filterBy, status) {
   const action = ActionTypes.GET_TASKS_COUNT_SUCCESS;
 
   return dispatch =>

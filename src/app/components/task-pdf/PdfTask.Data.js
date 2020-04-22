@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { isEmpty } from 'ramda';
-import { getPatientName } from '../../helpers/utility-functions';
-import { getPriorityColor } from '../../palette';
+import { getPatientName } from 'helpers/utility-functions';
+import { getPriorityColor } from 'app/palette';
 
 const getDueDateData = ({ dueDate }) => {
   const dueDateMoment = moment(dueDate ?? null);

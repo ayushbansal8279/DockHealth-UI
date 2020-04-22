@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  useMobile,
-  useSmallScreen,
-  useIOS,
-} from '../../../helpers/utility-functions';
+import { useMobile, useSmallScreen, useIOS } from 'helpers/utility-functions';
 import {
   OnboardingH1Bold,
   OnboardingH3,

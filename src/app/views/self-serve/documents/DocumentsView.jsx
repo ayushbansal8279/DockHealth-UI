@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import { setHeader } from '../../../actions/header-actions';
-import GenericHeader from '../../../components/common/GenericHeader';
-import Spacing from '../../../components/common/Spacing';
-import useBoolean from '../../../hooks/useBoolean';
-import PdfPage from '../../../img/pdf-page.png';
-import { MontserratTypography } from '../../../theme-montserrat';
+import { setHeader } from 'actions/header-actions';
+import GenericHeader from 'components/common/GenericHeader';
+import Spacing from 'components/common/Spacing';
+import useBoolean from 'hooks/useBoolean';
+import PdfPage from 'img/pdf-page.png';
+import { MontserratTypography } from 'app/theme-montserrat';
 import BaaPreview from './DocumentsView.BaaPreview';
 import {
   DocumentImage,

@@ -2,7 +2,7 @@ import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import { MontserratTypography } from '../../theme-montserrat';
+import { MontserratTypography } from 'app/theme-montserrat';
 import Spacing from '../common/Spacing';
 import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
 import { NextButton, StyledLink } from './AuthComponents.styled';

@@ -10,10 +10,10 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { addPatientNote } from '../../actions/patient-actions';
-import { onPatientNoteAdded } from '../../helpers/ga-event-helper';
-import useBoolean from '../../hooks/useBoolean';
-import themeMontserrat from '../../theme-montserrat';
+import { addPatientNote } from 'actions/patient-actions';
+import { onPatientNoteAdded } from 'helpers/ga-event-helper';
+import useBoolean from 'hooks/useBoolean';
+import themeMontserrat from 'app/theme-montserrat';
 import Spacing from '../common/Spacing';
 import {
   UniversalBirthdayInputComponent,

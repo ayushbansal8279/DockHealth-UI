@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
-import ListPopover from '../../../components/common/ListPopover';
-import { RotatableChevronWithSpacing } from '../../../components/common/RotatableChevron';
-import useBoolean from '../../../hooks/useBoolean';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+import ListPopover from 'components/common/ListPopover';
+import { RotatableChevronWithSpacing } from 'components/common/RotatableChevron';
+import useBoolean from 'hooks/useBoolean';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import {
   MediumGreyLabelContainer,
   SwitcherChevronContainer,

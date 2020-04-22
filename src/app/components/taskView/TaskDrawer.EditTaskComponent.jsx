@@ -5,12 +5,12 @@ import React, { Component, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { markComplete } from '../../actions/task-actions';
+import { markComplete } from 'actions/task-actions';
 import {
   formatLinkifyHref,
   mentionifyDescription,
-} from '../../helpers/utility-functions';
-import palette from '../../palette';
+} from 'helpers/utility-functions';
+import palette from 'app/palette';
 import TaskCheckbox from '../task/TaskCheckbox';
 
 const EditTaskContainer = styled.div`

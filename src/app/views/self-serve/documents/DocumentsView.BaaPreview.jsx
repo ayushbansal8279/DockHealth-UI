@@ -2,8 +2,8 @@ import { Grid } from '@material-ui/core';
 import { identity, memoizeWith, range } from 'ramda';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
-import { downloadSignedDocument } from '../../../api/organization-api';
-import CubesLoader from '../../../components/common/CubesLoader';
+import { downloadSignedDocument } from 'api/organization-api';
+import CubesLoader from 'components/common/CubesLoader';
 import {
   AttachmentPreviewContent,
   AttachmentPreviewDialog,
@@ -15,8 +15,8 @@ import {
   AttachmentPreviewHeaderSection,
   StyledPdfDocument,
   StyledPdfPage,
-} from '../../../components/taskView/TaskDrawer.AttachmentPreview.Styled';
-import DownloadIcon from '../../../img/download.svg';
+} from 'components/taskView/TaskDrawer.AttachmentPreview.Styled';
+import DownloadIcon from 'img/download.svg';
 
 const memoizedDownloadSignedDocument = memoizeWith(identity, () =>
   downloadSignedDocument(),

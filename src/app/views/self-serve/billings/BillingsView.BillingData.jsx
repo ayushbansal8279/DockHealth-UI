@@ -10,19 +10,19 @@ import {
 } from 'react-stripe-elements';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
-import Spacing from '../../../components/common/Spacing';
+import Spacing from 'components/common/Spacing';
 import {
   UniversalFormControl,
   UniversalInputLabel,
   UniversalMontserratInput,
-} from '../../../components/userProfileView/UniversalInput';
-import useBoolean from '../../../hooks/useBoolean';
-import CardAmexIcon from '../../../img/cards/american-express.png';
-import CardDiscoverIcon from '../../../img/cards/discover.png';
-import CardMastercardIcon from '../../../img/cards/mastercard.png';
-import CardVisaIcon from '../../../img/cards/visa.png';
-import palette from '../../../palette';
-import { MontserratTypography } from '../../../theme-montserrat';
+} from 'components/userProfileView/UniversalInput';
+import useBoolean from 'hooks/useBoolean';
+import CardAmexIcon from 'img/cards/american-express.png';
+import CardDiscoverIcon from 'img/cards/discover.png';
+import CardMastercardIcon from 'img/cards/mastercard.png';
+import CardVisaIcon from 'img/cards/visa.png';
+import palette from 'app/palette';
+import { MontserratTypography } from 'app/theme-montserrat';
 import BillingInformation from './BillingsView.BillingData.BillingInformation';
 import {
   AcceptedCardsContainer,

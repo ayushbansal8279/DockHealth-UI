@@ -1,4 +1,4 @@
-import sendEvent from '../api/usage-api';
+import sendEvent from 'api/usage-api';
 
 const parseBooleanToLabel = value => (value ? 'On' : 'Off');
 

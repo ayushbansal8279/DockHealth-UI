@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useMount, useToggle } from 'react-use';
 import SimpleBar from 'simplebar-react';
 import styled from 'styled-components';
-import useBoolean from '../../hooks/useBoolean';
-import PersonPickerCrossIcon from '../../img/person-picker-cross.svg';
-import SearchHeadsupIcon from '../../img/search-headsup.svg';
-import palette from '../../palette';
+import useBoolean from 'hooks/useBoolean';
+import PersonPickerCrossIcon from 'img/person-picker-cross.svg';
+import SearchHeadsupIcon from 'img/search-headsup.svg';
+import palette from 'app/palette';
 
 const PersonPickerContainer = styled.div`
   background-color: ${palette.lightGrey};

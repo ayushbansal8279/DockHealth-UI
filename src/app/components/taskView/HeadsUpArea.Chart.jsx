@@ -3,7 +3,7 @@ import moment from 'moment';
 import { find, map, prop, propEq, range } from 'ramda';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import palette, { opacify } from '../../palette';
+import palette, { opacify } from 'app/palette';
 
 const fontFamily = '"Roboto", sans-serif';
 

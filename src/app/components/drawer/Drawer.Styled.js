@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import palette from '../../palette';
+import palette from 'app/palette';
 
 export const useDrawerClasses = makeStyles({
   appBar: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import palette from '../../palette';
+import palette from 'app/palette';
 import CubesLoader from '../common/CubesLoader';
 import TaskCheckbox from './TaskCheckbox';
 

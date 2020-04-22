@@ -3,13 +3,13 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { setHeader } from '../../../actions/header-actions';
+import { setHeader } from 'actions/header-actions';
 import {
   getBillingDetails,
   getBillingEstimate,
   getOrganizationById,
-} from '../../../actions/organization-actions';
-import GenericHeader from '../../../components/common/GenericHeader';
+} from 'actions/organization-actions';
+import GenericHeader from 'components/common/GenericHeader';
 import {
   H2,
   Spacing2,

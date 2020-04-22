@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
-import palette from '../../../palette';
+import palette from 'app/palette';
 
 export const H1 = styled.h1`
   font-size: 2.25rem;

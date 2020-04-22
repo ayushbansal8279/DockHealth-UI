@@ -4,7 +4,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
-const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
 // const CompressionPlugin = require('compression-webpack-plugin');
 const dotenv = require('dotenv');
 
@@ -76,7 +75,7 @@ const config = (environment, options) => {
         hash: true,
       }),
       new MomentLocalesPlugin(),
-      isDevelopment && new UnusedFilesWebpackPlugin(),
+      // isDevelopment && new UnusedFilesWebpackPlugin(),
       isDevelopment &&
         new BundleAnalyzerPlugin({
           openAnalyzer: false,
@@ -119,6 +118,19 @@ const config = (environment, options) => {
           'chart.js',
           'dist',
           'Chart.min.js',
+        ),
+        actions: path.resolve(__dirname, 'src/app/actions'),
+        api: path.resolve(__dirname, 'src/app/api'),
+        components: path.resolve(__dirname, 'src/app/components'),
+        helpers: path.resolve(__dirname, 'src/app/helpers'),
+        hooks: path.resolve(__dirname, 'src/app/hooks'),
+        img: path.resolve(__dirname, 'src/app/img'),
+        reducers: path.resolve(__dirname, 'src/app/reducers'),
+        views: path.resolve(__dirname, 'src/app/views'),
+        'app/palette': path.resolve(__dirname, 'src/app/palette'),
+        'app/theme-montserrat': path.resolve(
+          __dirname,
+          'src/app/theme-montserrat',
         ),
       },
     },

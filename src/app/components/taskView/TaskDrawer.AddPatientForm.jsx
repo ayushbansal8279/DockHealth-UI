@@ -3,10 +3,10 @@ import React, { useRef } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { addPatient } from '../../actions/patient-actions';
-import useBoolean from '../../hooks/useBoolean';
-import DropdownIcon from '../../img/dropdown-icon.svg';
-import palette from '../../palette';
+import { addPatient } from 'actions/patient-actions';
+import useBoolean from 'hooks/useBoolean';
+import DropdownIcon from 'img/dropdown-icon.svg';
+import palette from 'app/palette';
 import StyledInput from '../userProfileView/StyledInput';
 import { addPatientValidationSchema } from './TaskDrawer.ValidationSchema';
 

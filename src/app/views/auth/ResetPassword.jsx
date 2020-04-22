@@ -2,13 +2,13 @@ import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { useMount } from 'react-use';
-import { setAuthBaseState } from '../../actions/auth-base-actions';
-import { success } from '../../actions/notification-actions';
-import { mobileAnalyticsClient } from '../../api/analytics-api';
-import * as userApi from '../../api/user-api';
-import ResetPasswordForm from '../../components/auth/ResetPasswordForm';
-import { showAlert } from '../../helpers/utility-functions';
-import { AUTH_BASE_STATES } from '../../reducers/auth-base-reducer';
+import { setAuthBaseState } from 'actions/auth-base-actions';
+import { success } from 'actions/notification-actions';
+import { mobileAnalyticsClient } from 'api/analytics-api';
+import * as userApi from 'api/user-api';
+import ResetPasswordForm from 'components/auth/ResetPasswordForm';
+import { showAlert } from 'helpers/utility-functions';
+import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
 const ResetPassword = props => {
   const dispatch = useDispatch();

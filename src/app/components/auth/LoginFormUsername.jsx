@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import * as UserApi from '../../api/user-api';
-import { MontserratTypography } from '../../theme-montserrat';
-import CubesLoader from '../common/CubesLoader';
-import Spacing from '../common/Spacing';
-import { UniversalMontserratInput } from '../userProfileView/UniversalInput';
+import * as UserApi from 'api/user-api';
+import CubesLoader from 'components/common/CubesLoader';
+import Spacing from 'components/common/Spacing';
+import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
+import { MontserratTypography } from 'app/theme-montserrat';
 import { NextButton, StyledForm, StyledLink } from './AuthComponents.styled';
 
 const validationSchema = object().shape({

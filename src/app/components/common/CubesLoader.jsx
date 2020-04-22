@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import palette from '../../palette';
+import palette from 'app/palette';
 
 const LoaderContainer = styled.div`
   height: ${props => props.size || 48}px;
