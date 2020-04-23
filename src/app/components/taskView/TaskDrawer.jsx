@@ -1,11 +1,11 @@
 import { Button } from '@material-ui/core';
-import React, { useState } from 'react';
-import { FormContext } from 'react-hook-form';
 import { deleteTask, duplicateTask } from 'actions/task-actions';
 import { onButtonClicked } from 'helpers/ga-event-helper';
 import { getPatientName, noop } from 'helpers/utility-functions';
-import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
+import React, { useState } from 'react';
+import { FormContext } from 'react-hook-form';
 import { getPriorityColor } from 'styles/palette';
+import { getSubscriptionIsTrial } from 'views/self-serve/subscriptions/SubscriptionsView.Utilities';
 import TaskDrawerCommentSection from './TaskDrawer.CommentSection';
 import initializeTaskDrawerHooks from './TaskDrawer.Hooks';
 import onSubmit from './TaskDrawer.OnSubmit';
@@ -14,12 +14,12 @@ import TaskDrawerParentInfo from './TaskDrawer.ParentInfo';
 import {
   BottomButtonContainer,
   CondensedFormSection,
-  TaskDrawerContainer,
-  TaskDrawerInnerContainer,
   OuterDrawerContainer,
   SideClickListener,
   StyledForm,
   StyledVerticalDivider,
+  TaskDrawerContainer,
+  TaskDrawerInnerContainer,
 } from './TaskDrawer.Styled';
 import TaskDrawerTopSection from './TaskDrawer.TopSection';
 

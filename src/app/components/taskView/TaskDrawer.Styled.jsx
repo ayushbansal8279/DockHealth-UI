@@ -236,3 +236,13 @@ export const BottomButtonContainer = styled.div`
 export const SideClickListener = styled.div`
   flex: 1;
 `;
+
+export const AdornmentContainer = styled.div`
+  align-items: center;
+  color: ${palette.orange};
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding-top: 1.25rem;
+  width: 2ch;
+`;

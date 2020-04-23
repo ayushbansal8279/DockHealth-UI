@@ -34,6 +34,10 @@
         "@material-ui/styles": {
           "transform": "@material-ui/styles/esm/${member}",
           "preventFullImport": true
+        },
+        "@material-ui/lab": {
+          "transform": "@material-ui/lab/esm/${member}",
+          "preventFullImport": true
         }
       }
     ],
