@@ -74,19 +74,24 @@ const onSubmit = ({
         billingData,
         token,
       })
-        .then(() => {
-          finishSubscriptionPayment();
-
+        .then(response => {
+          if (response.statusCode === 'SUCCESS') {
+            finishSubscriptionPayment();
+          } else {
+            showAlert({
+              status: 'error',
+              title: 'Error',
+              text: response.errorMessage,
+            });
+          }
           unsetProcessingPayment();
         })
         .catch(() => {
           showAlert({
             status: 'error',
             title: 'Error',
-            text:
-              'Could not update subscription details, please try again later',
+            text: 'Could not save subscription details, please try again later',
           });
-
           unsetProcessingPayment();
         });
     })
@@ -137,7 +142,7 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
         disabled={processingPayment}
       >
         {processingPayment ? (
-          <CubesLoader color={palette.white} size={32} />
+          <CubesLoader color={palette.veryDarkBlue} size={32} />
         ) : (
           'Subscribe'
         )}
@@ -263,7 +268,7 @@ const SubscriptionPaymentView = () => {
               </Grid>
               <Grid container alignItems="center">
                 <MontserratTypography variant="h3" weight="300">
-                  users
+                  {currentUsersCount > 1 ? 'users' : 'user'}
                 </MontserratTypography>
                 <Spacing vertical={4} />
               </Grid>

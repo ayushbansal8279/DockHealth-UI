@@ -26,7 +26,7 @@ const SaveBillingElement = () => (
     <Spacing2 />
     <Grid item sm={12} container justify="flex-end">
       <Button onClick={goToMainPage} variant="contained">
-        Let&apos;s do this
+        Continue
       </Button>
     </Grid>
   </>
