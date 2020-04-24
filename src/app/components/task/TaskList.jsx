@@ -113,7 +113,7 @@ const TaskList = ({
             active={showMoreButtonVisible}
           >
             {isShowMoreLocked ? (
-              <CubesLoader size={24} color={palette.white} />
+              <CubesLoader size={24} color={palette.veryDarkBlue} />
             ) : (
               'Show more'
             )}

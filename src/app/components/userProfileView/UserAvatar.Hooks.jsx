@@ -15,7 +15,7 @@ const getSmallButtonContent = ({
   fileLoading,
 }) => () => {
   if (fileLoading) {
-    return <CubesLoader size={20} color={palette.white} />;
+    return <CubesLoader size={20} color={palette.veryDarkBlue} />;
   }
 
   if (fileLoaded) {

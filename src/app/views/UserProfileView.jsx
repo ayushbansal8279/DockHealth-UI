@@ -135,7 +135,7 @@ const UserProfileView = ({
                     {...otherSaveButtonProps}
                   >
                     {isSubmitting ? (
-                      <CubesLoader size={24} color={palette.white} />
+                      <CubesLoader size={24} color={palette.veryDarkBlue} />
                     ) : (
                       saveButtonLabel
                     )}
