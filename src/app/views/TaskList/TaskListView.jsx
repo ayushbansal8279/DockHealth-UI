@@ -42,9 +42,9 @@ import TipPencilIcon from 'img/tip-pencil-icon.svg';
 import TaskListTip1 from 'img/tips/task-list/task-list-1.svg';
 import TaskListTip2 from 'img/tips/task-list/task-list-2.svg';
 import TaskListTip3 from 'img/tips/task-list/task-list-3.svg';
-import TaskListTour1 from 'img/tour/task-list/task-list-1.png';
-import TaskListTour2 from 'img/tour/task-list/task-list-2.png';
-import TaskListTour3 from 'img/tour/task-list/task-list-3.png';
+import TaskListTour1 from 'img/tour/task-list/task-list-1.svg';
+import TaskListTour2 from 'img/tour/task-list/task-list-2.svg';
+import TaskListTour3 from 'img/tour/task-list/task-list-3.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import AddListForm from './TaskListView.AddListForm';
@@ -216,6 +216,7 @@ class TaskListView extends PureComponent {
   };
 
   showTipsModal = () => {
+    this.closeTips();
     this.setState({
       tipsModalOpen: 'true',
     });
