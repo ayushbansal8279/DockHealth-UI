@@ -22,6 +22,7 @@ export const saveBillingDetails = ({ billingData, token }) =>
       billingAddressCity: billingData.city,
       billingAddressState: billingData.state,
       billingAddressPostalCode: billingData.zip,
+      discountCode: billingData.discountCode,
       subscriptionDetails: {
         subscriptionPlan: billingData.subscriptionDetails?.subscriptionPlan,
         billingFrequency: billingData.subscriptionDetails?.billingFrequency,

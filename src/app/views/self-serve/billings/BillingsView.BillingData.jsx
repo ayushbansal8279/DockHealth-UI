@@ -52,13 +52,6 @@ const formFields = [
       .typeError(REQUIRED_MESSAGE),
   },
   {
-    key: 'name',
-    defaultValue: '',
-    validation: string()
-      .required(REQUIRED_MESSAGE)
-      .typeError(REQUIRED_MESSAGE),
-  },
-  {
     key: 'cardExpiration',
     defaultValue: '',
   },
@@ -69,14 +62,6 @@ const formFields = [
   {
     key: 'cardCvc',
     defaultValue: '',
-  },
-  {
-    key: 'email',
-    defaultValue: '',
-    validation: string()
-      .required(REQUIRED_MESSAGE)
-      .typeError(REQUIRED_MESSAGE)
-      .email('This field requires valid email address'),
   },
   {
     key: 'city',
@@ -207,6 +192,7 @@ const CreditPaymentForm = ({
   values,
   errors,
   SaveBillingElement,
+  hasDiscountCode,
 }) => {
   const getInputProps = getInputPropsMethod({ setValue, values, errors });
 
@@ -259,6 +245,16 @@ const CreditPaymentForm = ({
       </Grid>
       <Grid item sm={12} md={6}>
         <BillingElement
+          id="card-expiry"
+          Component={CardExpiryElement}
+          label="Expiration date"
+          isUpdatingBilling={isUpdatingBilling}
+          required
+          inputProps={getInputProps({ name: 'cardExpiration' })}
+        />
+      </Grid>
+      <Grid item sm={12} md={6}>
+        <BillingElement
           id="card-cvc"
           Component={CardCVCElement}
           label="CVC"
@@ -268,16 +264,6 @@ const CreditPaymentForm = ({
           inputProps={getInputProps({ name: 'cardCvc' })}
         />
       </Grid>
-      <Grid item sm={12} md={6}>
-        <BillingElement
-          id="card-expiry"
-          Component={CardExpiryElement}
-          label="Expiration date"
-          isUpdatingBilling={isUpdatingBilling}
-          required
-          inputProps={getInputProps({ name: 'cardExpiration' })}
-        />
-      </Grid>
       <Spacing vertical={4} />
       <Grid item sm={12}>
         <MontserratTypography variant="h4">
@@ -285,12 +271,12 @@ const CreditPaymentForm = ({
         </MontserratTypography>
       </Grid>
       <Spacing vertical={3} />
-      <Grid item sm={12}>
+      {/* <Grid item sm={12}>
         <UniversalMontserratInput name="name" label="Name" required />
-      </Grid>
-      <Grid item sm={12}>
+      </Grid> */}
+      {/* <Grid item sm={12}>
         <UniversalMontserratInput name="email" label="Email" required />
-      </Grid>
+      </Grid> */}
       <Grid item sm={12}>
         <UniversalMontserratInput
           name="address"
@@ -319,6 +305,12 @@ const CreditPaymentForm = ({
       <Grid item sm={12} md={3}>
         <UniversalMontserratInput name="state" label="State" required />
       </Grid>
+      {hasDiscountCode && <Grid item sm={12} md={9} />}
+      {hasDiscountCode && (
+        <Grid item sm={12} md={3} wrap="nowrap" justify="flex-end">
+          <UniversalMontserratInput name="discountCode" label="Discount code" />
+        </Grid>
+      )}
       {SaveBillingElement && <SaveBillingElement />}
       {!SaveBillingElement && (
         <UpdateBillingElement
@@ -339,10 +331,13 @@ const BillingData = ({
   onSubmit,
   SaveBillingElement,
 }) => {
-  const { billingDetails, userProfile } = useSelector(store => ({
-    billingDetails: store.organizationState.billingDetails,
-    userProfile: store.userState.userProfile,
-  }));
+  const { billingDetails, userProfile, hasDiscountCode } = useSelector(
+    store => ({
+      billingDetails: store.organizationState.billingDetails,
+      userProfile: store.userState.userProfile,
+      hasDiscountCode: store.organizationState?.referralConfig?.hasDiscountCode,
+    }),
+  );
 
   const formMethods = useForm({
     validationSchema,
@@ -378,7 +373,6 @@ const BillingData = ({
       billingAddressLine2,
       billingAddressPostalCode,
       billingAddressState,
-      billingEmail,
       billingName,
       cardExpiration,
       cardLastFour,
@@ -386,8 +380,7 @@ const BillingData = ({
 
     const currentUserName = `${userProfile.firstName} ${userProfile.lastName}`.trim();
 
-    setValue('name', billingName ?? currentUserName);
-    setValue('nameOnCard', billingName);
+    setValue('nameOnCard', billingName ?? currentUserName);
     setValue('cardExpiration', cardExpiration ?? '**/**');
     setValue(
       'cardNumber',
@@ -395,7 +388,6 @@ const BillingData = ({
         '*'.repeat(4)}`,
     );
     setValue('cardCvc', '***');
-    setValue('email', billingEmail ?? userProfile.email);
     setValue('city', billingAddressCity);
     setValue('address', billingAddressLine1);
     setValue('address2', billingAddressLine2);
@@ -431,6 +423,7 @@ const BillingData = ({
           values={values}
           errors={errorsValues}
           SaveBillingElement={SaveBillingElement}
+          hasDiscountCode={hasDiscountCode}
         />
         {!isUpdatingBilling && (
           <BillingInformation setUpdatingBilling={setUpdatingBilling}>

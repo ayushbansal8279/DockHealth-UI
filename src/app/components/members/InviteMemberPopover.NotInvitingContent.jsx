@@ -359,9 +359,7 @@ const NotInvitingContent = ({
   return (
     <>
       <PopoverHeader hasCloseButton>
-        <MontserratTypography variant="h4">
-          Invite to {taskList?.listName ?? 'list'}
-        </MontserratTypography>
+        <MontserratTypography variant="h4">Invite to list</MontserratTypography>
         <PopoverHeaderCloseButton onClick={closeMemberPopover} edge="end">
           <CloseIcon />
         </PopoverHeaderCloseButton>
