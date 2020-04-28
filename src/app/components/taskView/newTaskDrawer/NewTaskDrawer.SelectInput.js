@@ -17,7 +17,7 @@ import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import TextInput from './TaskDrawer.TextInput';
+import TextInput from './NewTaskDrawer.TextInput';
 
 const AdornmentContainer = styled.div`
   color: ${palette.orange};
@@ -29,13 +29,16 @@ const SelectInput = ({
   name,
   placeholder,
   renderItem,
+  renderOptionLabel,
   startAdornment,
   endAdornment,
+  noOptionsText,
+  getOptionDisabled,
   InputProps,
   inputProps,
   InputLabelProps,
 }) => {
-  const { register, unregister, setValue } = useFormContext();
+  const { register, unregister, setValue, watch } = useFormContext();
 
   useMount(() => {
     register({
@@ -47,14 +50,21 @@ const SelectInput = ({
     unregister(name);
   });
 
+  const currentValue = watch(name);
+  const currentOption =
+    children.find(({ value }) => value === currentValue) ?? null;
+
   return (
     <Autocomplete
       id={`autocomplete-${name}`}
       options={children}
-      getOptionLabel={propOr('', 'displayLabel')}
+      getOptionLabel={option => renderOptionLabel(option)}
       renderOption={option => renderItem(option)}
       disableClearable
+      openOnFocus
       fullWidth
+      noOptionsText={noOptionsText}
+      getOptionDisabled={getOptionDisabled}
       renderInput={({
         InputProps: InputParameters = {},
         inputProps: inputParameters = {},
@@ -73,13 +83,17 @@ const SelectInput = ({
           // for TextField component → InputProps spread to InputBase component, while
           // inputProps go directly to the native input component
           InputProps={{ ...InputParameters, ...InputProps }}
-          inputProps={{ ...inputParameters, ...inputProps }}
+          inputProps={{
+            ...inputParameters,
+            ...inputProps,
+          }}
           label={label}
           name={name}
           placeholder={placeholder}
           startAdornment={startAdornment}
         />
       )}
+      value={currentOption}
       variant="outlined"
       onChange={(_event, option) => setValue(name, option?.value)}
       forcePopupIcon={Boolean(endAdornment)}
@@ -102,25 +116,32 @@ SelectInput.propTypes = {
       displayLabel: string.isRequired,
       value: string.isRequired,
     }),
-  ).isRequired,
+  ),
   label: string.isRequired,
   name: string.isRequired,
   placeholder: string,
   renderItem: func,
+  renderOptionLabel: func,
   startAdornment: node,
   endAdornment: node,
   forcePopupIcon: bool,
+  noOptionsText: node,
+  getOptionDisabled: func,
   inputProps: objectOf(any),
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
 };
 
 SelectInput.defaultProps = {
+  children: [],
   placeholder: '',
-  renderItem: prop('displayLabel'),
+  renderItem: prop('label'),
+  renderOptionLabel: propOr('', 'displayLabel'),
   startAdornment: undefined,
   endAdornment: false,
   forcePopupIcon: undefined,
+  noOptionsText: undefined,
+  getOptionDisabled: prop('disabled'),
   inputProps: {},
   InputProps: {},
   InputLabelProps: {},

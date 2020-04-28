@@ -40,7 +40,6 @@ import TaskList from 'components/task/TaskList';
 import { TASK_LIST_SHOW_MORE_STEP } from 'components/task/TaskList.Data';
 import Header from 'components/taskView/Header';
 import HeadsUpArea from 'components/taskView/HeadsUpArea';
-import TaskDrawer from 'components/taskView/TaskDrawer';
 import Toolbar from 'components/taskView/Toolbar';
 import {
   onButtonClicked,
@@ -53,6 +52,7 @@ import { isTaskArchivable } from 'helpers/utility-functions';
 import ChevronSmallIcon from 'img/chevron-small.svg';
 import palette from 'styles/palette';
 import { themeMontserrat600 } from 'styles/theme-montserrat';
+import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { getSubscriptionIsTrial } from '../self-serve/subscriptions/SubscriptionsView.Utilities';
 import {
   InboxHelpPanel,
@@ -1170,9 +1170,6 @@ class TaskView extends Component {
 
     const toolbarContainerVisible = this.getToolbarContainerVisible();
 
-    const mainTaskDrawerOpen =
-      taskDrawerOpen && (selectedTask?.taskIdentifier || addingNewSubtask);
-
     const isSubscriptionTrial = getSubscriptionIsTrial({
       subscription,
     });
@@ -1257,7 +1254,7 @@ class TaskView extends Component {
               />
             )}
             <TaskViewGrid container wrap="nowrap">
-              <TableWrapper taskDrawerOpen={mainTaskDrawerOpen}>
+              <TableWrapper taskDrawerOpen={taskDrawerOpen}>
                 {isFetching || isSearching ? (
                   <FadeContainer>
                     <Fade
@@ -1284,16 +1281,11 @@ class TaskView extends Component {
                         <SideClickListener onClick={this.closeTaskDrawer} />
                       </TaskListContainer>
                     </div>
-                    {mainTaskDrawerOpen && !isMultiList && (
-                      <TaskDrawer
-                        headsUpAreaRef={this.headsUpArea.current}
-                        closeDrawer={this.closeTaskDrawer}
+                    {!isMultiList && (
+                      <NewTaskDrawer
                         taskList={taskList}
-                        markComplete={markComplete}
-                        onMarkComplete={this.onMarkComplete}
-                        isInbox={isInbox}
-                        isSpecificPatient={isSpecificPatient}
-                        isMultiList={false}
+                        members={members}
+                        membersNotInTaskList={membersNotInTaskList}
                       />
                     )}
                   </div>

@@ -5,8 +5,9 @@ import { any, bool, func, objectOf, string } from 'prop-types';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
+
+import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import Spacing from '../common/Spacing';
 
 const DrawerFormControl = withStyles({
   root: {

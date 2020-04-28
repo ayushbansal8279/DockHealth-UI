@@ -1,4 +1,4 @@
-import { Button, Grid, Popover } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { Add, Close } from '@material-ui/icons';
 import { splitAt } from 'ramda';
 import React, { useCallback, useRef } from 'react';
@@ -16,7 +16,6 @@ import TipsButton from '../common/TipsButton';
 import UniversalTooltip from '../common/UniversalTooltip';
 import { InviteMemberPopoverWithButton } from '../members/InviteMemberPopover';
 import Member from '../members/Member';
-import TaskDrawer from './TaskDrawer';
 import Search from './Search';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
@@ -106,10 +105,6 @@ export default ({
   clearFilter,
   isInbox,
   filterBy,
-  closeDrawer,
-  markComplete,
-  onMarkComplete,
-  isSpecificPatient,
   isSpecialList,
   isMultiList,
   onFilterChange,
@@ -324,40 +319,6 @@ export default ({
         filterButtonReference={filterButtonReference}
         showFilterStats={showFilterStats}
       />
-      <Popover
-        open={isMainTaskDrawerOpen}
-        onClose={closeDrawer}
-        anchorEl={addTaskButtonReference.current}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '40vw',
-            maxHeight: '75vh',
-            overflowX: 'hidden',
-            overflowY: 'auto',
-          }}
-        >
-          <TaskDrawer
-            taskList={taskList}
-            isInbox={isInbox}
-            closeDrawer={closeDrawer}
-            markComplete={markComplete}
-            onMarkComplete={onMarkComplete}
-            isSpecificPatient={isSpecificPatient}
-            isMultiList={false}
-            compact
-            borderless
-          />
-        </div>
-      </Popover>
     </PageContentHeader>
   );
 };

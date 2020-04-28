@@ -1,0 +1,23 @@
+import React from 'react';
+import { string } from 'prop-types';
+
+const PriorityFlag = ({ color }) => (
+  <svg
+    width="25"
+    height="21"
+    viewBox="0 0 25 21"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M0.960938 0H24.6936V10.5V21H0.960938L8.14115 10.5L0.960938 0Z"
+      fill={color}
+    />
+  </svg>
+);
+
+PriorityFlag.propTypes = {
+  color: string.isRequired,
+};
+
+export default PriorityFlag;
