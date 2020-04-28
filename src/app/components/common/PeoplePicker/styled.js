@@ -41,6 +41,10 @@ export const PeopleLabel = styled.div`
   position: ${props => (props.hasSelectedPeople ? 'absolute' : 'initial')};
   transition: font-size 0.2s, position 0.2s;
   top: ${props => (props.hasSelectedPeople ? spacing.small : 0)};
+
+  *:nth-child(1) {
+    margin-left: ${spacing.tiny};
+  }
 `;
 
 export const PeopleListBox = styled(Collapse)`

@@ -6,6 +6,7 @@ import { isEmpty } from 'ramda';
 import CrossIcon from 'img/cross';
 import Member from 'components/members/Member';
 import Input from 'components/common/Input/Input';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
 import { TickIconContainer } from '../../ListForm/styled';
@@ -115,6 +116,7 @@ const PeoplePicker = ({
   peopleLabel,
   setOpenedPicker,
   removePerson,
+  tooltipDescritpion,
 }) => {
   const [searchValue, setSearchValue] = useState('');
 
@@ -143,6 +145,9 @@ const PeoplePicker = ({
           <SelectedPeopleNames>
             <PeopleLabel hasSelectedPeople={joinedPeopleNames}>
               {peopleLabel}
+              {tooltipDescritpion && (
+                <Tooltip description={tooltipDescritpion} />
+              )}
             </PeopleLabel>
             <PeopleNames>{joinedPeopleNames}</PeopleNames>
           </SelectedPeopleNames>
