@@ -22,12 +22,16 @@ const palette = {
   creamPuff: '#f8f5ee',
 
   // grey
+  lightGray: '#939aa4',
   darkGrey: '#1e2e40',
   mediumGrey: '#3d4858',
   coolGrey1: '#8492a4',
   coolGrey2: '#c1ccda',
   coolGrey3: '#e5e9f2',
   coolGrey4: '#f9fafc',
+
+  // blue
+  veryLightBlue: '#F9FAFC',
 
   // COLORS NOT EXISTING IN GLOBAL PALETTE
   error: '#e40909',
