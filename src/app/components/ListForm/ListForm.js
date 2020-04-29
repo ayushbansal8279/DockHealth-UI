@@ -135,6 +135,7 @@ const ListForm = ({ setListFormOpen }) => {
         peopleList={people}
         setOpenedPicker={() => setPickerOpened(ADMIN_PICKER)}
         removePerson={removeAdmin}
+        tooltipDescritpion={messages.form.admins.tooltip}
       />
       <PeoplePicker
         addPerson={addMember}
@@ -146,6 +147,7 @@ const ListForm = ({ setListFormOpen }) => {
         peopleList={people}
         setOpenedPicker={() => setPickerOpened(MEMBER_PICKER)}
         removePerson={removeMember}
+        tooltipDescritpion={messages.form.members.tooltip}
       />
       <Grid container justify="flex-end" direction="row" wrap="nowrap">
         <CancelButton
