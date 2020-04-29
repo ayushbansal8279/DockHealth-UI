@@ -8,14 +8,10 @@ import Member from 'components/members/Member';
 import Input from 'components/common/Input/Input';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { MontserratTypography } from 'styles/theme-montserrat';
-
 import { TickIconContainer } from '../../ListForm/styled';
-
 import {
-  SelectedPeople,
-  SelectedPeopleIcons,
-  SelectedPeopleNames,
   EmptyPeople,
+  MorePeopleLabel,
   PeoplePickerBox,
   PeopleListBox,
   PeopleList,
@@ -24,7 +20,9 @@ import {
   PeopleNames,
   PeopleCrossIcon,
   PeopleLabel,
-  MorePeopleLabel,
+  SelectedPeople,
+  SelectedPeopleIcons,
+  SelectedPeopleNames,
 } from './styled';
 
 const VISIBLE_PEOPLE_ICONS = 3;
@@ -144,7 +142,7 @@ const PeoplePicker = ({
         <SelectedPeople>
           <SelectedPeopleNames>
             <PeopleLabel hasSelectedPeople={joinedPeopleNames}>
-              {peopleLabel}
+              <span>{peopleLabel}</span>
               {tooltipDescritpion && (
                 <Tooltip description={tooltipDescritpion} />
               )}

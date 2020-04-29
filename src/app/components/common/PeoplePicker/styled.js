@@ -34,6 +34,8 @@ export const SelectedPeopleNames = styled.div`
 `;
 
 export const PeopleLabel = styled.div`
+  display: flex;
+  align-items: baseline;
   color: ${props => props.hasSelectedPeople && palette.lightGray};
   font-size: ${props =>
     props.hasSelectedPeople ? fontSizes.smallPlus : fontSizes.regular};
@@ -42,8 +44,8 @@ export const PeopleLabel = styled.div`
   transition: font-size 0.2s, position 0.2s;
   top: ${props => (props.hasSelectedPeople ? spacing.small : 0)};
 
-  *:nth-child(1) {
-    margin-left: ${spacing.tiny};
+  & > span {
+    margin-right: ${spacing.tiny};
   }
 `;
 
