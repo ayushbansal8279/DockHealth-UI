@@ -6,6 +6,7 @@ import Input from 'components/common/Input/Input';
 import { useFormContext, FormContext } from 'react-hook-form';
 import { showAlert } from 'helpers/utility-functions';
 import { RobotoTypography } from 'styles/theme';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
 import {
   CancelButton,
@@ -22,10 +23,18 @@ const ADMIN_PICKER = 'ADMIN_PICKER';
 const MEMBER_PICKER = 'MEMBER_PICKER';
 
 const InputWithContext = props => {
-  const { register, errors } = useFormContext();
+  const { register, errors, getValues } = useFormContext();
   const { name } = props;
+  const values = getValues();
 
-  return <Input {...props} ref={register} error={errors?.[name]?.message} />;
+  return (
+    <Input
+      {...props}
+      ref={register}
+      error={errors?.[name]?.message}
+      value={values[name]}
+    />
+  );
 };
 
 const onSubmit = ({
@@ -60,17 +69,15 @@ const ListForm = ({ setListFormOpen }) => {
     formContext,
     formLabelContent,
     handleSubmit,
-    listDescriptionValue,
     people,
     peopleListForAdminPicker,
     peopleListForMemberPicker,
     removeAdmin,
     removeMember,
-    setValue,
     taskListIdentifier,
   } = initializeListFormHooks();
 
-  const [openedPicker, setOpenedPicker] = useState('');
+  const [pickerOpened, setPickerOpened] = useState(null);
 
   return (
     <FormContainer
@@ -110,35 +117,34 @@ const ListForm = ({ setListFormOpen }) => {
           showError
         />
       </FormContext>
-
-      <Input
-        fullWidth
-        label={messages.form.description.label}
-        name="listDescription"
-        onChange={event => setValue('listDescription', event.target.value)}
-        placeholder={messages.form.description.placeholder}
-        value={listDescriptionValue}
-      />
+      <FormContext {...formContext}>
+        <InputWithContext
+          fullWidth
+          label={messages.form.description.label}
+          name="listDescription"
+          placeholder={messages.form.description.placeholder}
+        />
+      </FormContext>
       <PeoplePicker
         addPerson={addAdmin}
         availablePeopleList={peopleListForAdminPicker}
-        closePicker={() => setOpenedPicker('')}
-        isOpened={openedPicker === ADMIN_PICKER}
+        closePicker={() => setPickerOpened(null)}
+        isOpen={pickerOpened === ADMIN_PICKER}
         peopleIdentifiers={allAdminsWithOwner}
         peopleLabel={messages.form.admins.label}
         peopleList={people}
-        setOpenedPicker={() => setOpenedPicker(ADMIN_PICKER)}
+        setOpenedPicker={() => setPickerOpened(ADMIN_PICKER)}
         removePerson={removeAdmin}
       />
       <PeoplePicker
         addPerson={addMember}
         availablePeopleList={peopleListForMemberPicker}
-        closePicker={() => setOpenedPicker('')}
-        isOpened={openedPicker === MEMBER_PICKER}
+        closePicker={() => setPickerOpened(null)}
+        isOpen={pickerOpened === MEMBER_PICKER}
         peopleIdentifiers={allMembersValue}
         peopleLabel={messages.form.members.label}
         peopleList={people}
-        setOpenedPicker={() => setOpenedPicker(MEMBER_PICKER)}
+        setOpenedPicker={() => setPickerOpened(MEMBER_PICKER)}
         removePerson={removeMember}
       />
       <Grid container justify="flex-end" direction="row" wrap="nowrap">
@@ -147,7 +153,7 @@ const ListForm = ({ setListFormOpen }) => {
           variant="text"
           type="button"
         >
-          {messages.form.cancel}
+          <MontserratTypography>{messages.form.cancel}</MontserratTypography>
         </CancelButton>
         <StyledButton variant="contained" type="submit" size="small">
           {messages.form.saveList}

@@ -26,6 +26,8 @@ import {
   MorePeopleLabel,
 } from './styled';
 
+const VISIBLE_PEOPLE_ICONS = 3;
+
 const renderPickerOption = ({
   addPerson,
   removePerson,
@@ -107,7 +109,7 @@ const PeoplePicker = ({
   addPerson,
   availablePeopleList,
   closePicker,
-  isOpened,
+  isOpen,
   peopleIdentifiers,
   peopleList,
   peopleLabel,
@@ -146,22 +148,26 @@ const PeoplePicker = ({
           </SelectedPeopleNames>
           <SelectedPeopleIcons>
             {peopleIdentifiers
-              ?.slice(0, 3)
+              ?.slice(0, VISIBLE_PEOPLE_ICONS)
               .map(id => renderSelectedPeople(id, peopleList))}
-            <MorePeopleContainer count={peopleIdentifiers.length - 3} />
-            <EmptyPeople onClick={isOpened ? closePicker : setOpenedPicker}>
-              <PeopleCrossIcon rotated={isOpened} src={CrossIcon} />
+            <MorePeopleContainer
+              count={peopleIdentifiers?.length - VISIBLE_PEOPLE_ICONS}
+            />
+            <EmptyPeople onClick={isOpen ? closePicker : setOpenedPicker}>
+              <PeopleCrossIcon rotated={isOpen} src={CrossIcon} />
             </EmptyPeople>
           </SelectedPeopleIcons>
         </SelectedPeople>
       </PeoplePickerBox>
-      <PeopleListBox timeout={150} in={isOpened}>
+      <PeopleListBox timeout={150} in={isOpen}>
         <Input
           label="Search"
           onChange={event => setSearchValue(event.target.value)}
         />
         <PeopleList>
-          {!isEmpty(filteredPeople) ? (
+          {isEmpty(filteredPeople) ? (
+            <EmptyFilteredPeople />
+          ) : (
             filteredPeople.map(
               renderPickerOption({
                 peopleIdentifiers,
@@ -169,8 +175,6 @@ const PeoplePicker = ({
                 removePerson,
               }),
             )
-          ) : (
-            <EmptyFilteredPeople />
           )}
         </PeopleList>
       </PeopleListBox>

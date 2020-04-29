@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { splitAt } from 'ramda';
+import { take } from 'ramda';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -72,13 +72,12 @@ const initializeAddListFormHooks = () => {
   }, [taskListIdentifier]);
 
   const {
-    listDescriptionValue,
     adminsValue: allAdminsValue,
     membersValue: allMembersValue,
   } = getFormWatchedValues({ watch });
 
-  const [adminsValue] = splitAt(MAX_VISIBLE_MEMBERS_COUNT, allAdminsValue);
-  const [membersValue] = splitAt(MAX_VISIBLE_MEMBERS_COUNT, allMembersValue);
+  const adminsValue = take(MAX_VISIBLE_MEMBERS_COUNT, allAdminsValue);
+  const membersValue = take(MAX_VISIBLE_MEMBERS_COUNT, allMembersValue);
 
   const formLabelContent = taskListIdentifier ? 'EDIT A LIST' : 'ADD A LIST';
 
@@ -140,13 +139,11 @@ const initializeAddListFormHooks = () => {
     formContext,
     formLabelContent,
     handleSubmit,
-    listDescriptionValue,
     people,
     peopleListForAdminPicker,
     peopleListForMemberPicker,
     removeAdmin,
     removeMember,
-    setValue,
     taskListIdentifier,
   };
 };

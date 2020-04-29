@@ -4,22 +4,22 @@ import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
 export const InputBox = styled.div`
-  background-color: ${palette.veryLightBlue};
+  background-color: ${palette.coolGrey4};
   display: flex;
   flex-direction: column;
   padding: ${spacing.small} ${spacing.regular};
-  width: ${props => (props.fullWidth ? '100%' : '')};
+  ${props => props.fullWidth && 'width: 100%;'}
 `;
 
 export const InputField = styled.input`
-  background-color: ${palette.veryLightBlue};
+  background-color: ${palette.coolGrey4};
   border: none;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
   font-weight: ${props =>
     props.placeholder && !props.value ? fontWeights.light : fontWeights.bold};
   outline: none;
-  padding: ${spacing.small} 0;
+  padding: ${spacing.tiny} 0 ${spacing.small};
 `;
 
 export const InputLabel = styled.label`

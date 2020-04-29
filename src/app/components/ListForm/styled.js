@@ -11,7 +11,7 @@ export const FormContainer = styled.form`
   display: flex;
   flex-basis: auto;
   flex-flow: column wrap;
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;
   min-width: 592px; // per design
   padding: 1.5rem;
   width: 100%;
@@ -54,7 +54,6 @@ export const CancelButton = styled.button`
   margin-right: ${spacing.large};
   text-decoration: underline;
   text-transform: uppercase;
-  width: fit-content;
 
   &:hover {
     color: ${palette.mediumGrey};

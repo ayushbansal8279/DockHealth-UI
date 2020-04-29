@@ -1,12 +1,12 @@
 export const fontSizes = {
-  small: '8px',
-  smallPlus: '12px',
-  regular: '16px',
-  regularPlus: '20px',
-  large: '24px',
-  largePlus: '28px',
-  huge: '32px',
-  hugePlus: '36px',
+  small: '0.5rem',
+  smallPlus: '0.75rem',
+  regular: '1rem',
+  regularPlus: '1.25rem',
+  large: '1.5rem',
+  largePlus: '1.75rem',
+  huge: '2rem',
+  hugePlus: '2.25rem',
 };
 
 export const fontWeights = {

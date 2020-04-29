@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const PeoplePickerBox = styled.div`
-  background-color: ${palette.veryLightBlue};
+  background-color: ${palette.coolGrey4};
   display: flex;
   flex-direction: column;
   padding: ${spacing.regular} ${spacing.small};
@@ -93,6 +93,7 @@ export const PeopleName = styled.span`
 `;
 
 export const PeopleNames = styled.div`
+  margin-top: ${spacing.smallPlus};
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.bold};
 `;
