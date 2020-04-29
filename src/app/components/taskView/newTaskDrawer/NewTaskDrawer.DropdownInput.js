@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Popover } from '@material-ui/core';
 import {
   any,
   arrayOf,
@@ -14,11 +13,11 @@ import {
 import { prop } from 'ramda';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useCss, useMount, useUnmount } from 'react-use';
+import { useMount, useUnmount } from 'react-use';
 import styled from 'styled-components';
 
 import useBoolean from 'hooks/useBoolean';
-
+import InputPopover from './NewTaskDrawer.InputPopover';
 import TextInput from './NewTaskDrawer.TextInput';
 
 const DropdownInputContainer = styled.div`
@@ -44,16 +43,6 @@ const DropdownInput = ({
 
   const [isPopoverOpen, openPopover, closePopover] =
     popoverStateArray ?? useBoolean(false);
-
-  const { width } = reference.current?.getBoundingClientRect() || {};
-
-  const popoverClassName = useCss({
-    '&&': {
-      border: 0,
-      marginTop: '0.5rem',
-      width,
-    },
-  });
 
   const { register, unregister, setValue, watch } = useFormContext();
 
@@ -108,28 +97,15 @@ const DropdownInput = ({
         onBlur={onBlur}
         select
       />
-      <Popover
-        anchorEl={reference.current}
-        anchorOrigin={{
-          horizontal: 'left',
-          vertical: 'bottom',
-        }}
-        transformOrigin={{
-          horizontal: 'left',
-          vertical: 'top',
-        }}
-        open={isPopoverOpen}
-        onClose={closePopover}
-        transitionDuration={0}
-        PaperProps={{
-          className: popoverClassName,
-          elevation: 1,
-        }}
+      <InputPopover
+        anchorElement={reference}
+        isPopoverOpen={isPopoverOpen}
+        closePopover={closePopover}
       >
         {children?.map(
           renderItem({ setValue: setValueForCurrentField, closePopover }),
         )}
-      </Popover>
+      </InputPopover>
     </DropdownInputContainer>
   );
 };

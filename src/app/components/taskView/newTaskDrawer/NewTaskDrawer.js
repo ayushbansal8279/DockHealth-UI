@@ -5,17 +5,20 @@ import { FormContext } from 'react-hook-form';
 
 import CubesLoader from 'components/common/CubesLoader';
 import Spacing from 'components/common/Spacing';
+import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
 import DueDateSection from './NewTaskDrawer.DueDateSection';
 import initializeTaskDrawerHooks from './NewTaskDrawer.Hooks';
+import InviteMemberPopover from './NewTaskDrawer.InviteMemberPopover';
 import PrioritySection from './NewTaskDrawer.PrioritySection';
 import SelectInput from './NewTaskDrawer.SelectInput';
 import StatusSection from './NewTaskDrawer.StatusSection';
 import {
   AdornmentContainer,
+  EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
 } from './NewTaskDrawer.Styled';
@@ -24,8 +27,9 @@ import {
   getFormattedMembers,
   getFormattedPatients,
 } from './NewTaskDrawer.Utilities';
+import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 
-const NewTaskDrawer = ({ members }) => {
+const NewTaskDrawer = ({ members, taskList }) => {
   const {
     taskDrawerOpen,
     top,
@@ -38,12 +42,21 @@ const NewTaskDrawer = ({ members }) => {
     isSaving,
   } = initializeTaskDrawerHooks({ members });
 
-  const { handleSubmit, watch } = formMethods;
+  const { handleSubmit, setValue, watch } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
   const formattedMembers = getFormattedMembers({ members });
 
   const dueDateValue = watch('dueDate');
+
+  const {
+    assignedToInputReference,
+    isInvitePopoverOpen,
+    openInvitePopover,
+    closeInvitePopover,
+    assignedToInputValue,
+    onAssignedToInputChange,
+  } = initializeTaskDrawerPopoverHooks();
 
   return (
     <TaskDrawerContainer open={taskDrawerOpen} top={top}>
@@ -86,10 +99,29 @@ const NewTaskDrawer = ({ members }) => {
                 name="assignedToIdentifier"
                 label="Assigned To"
                 placeholder="Who would you like to assign this task to?"
+                onInputChange={onAssignedToInputChange}
+                ref={assignedToInputReference}
                 noOptionsText={
-                  <RobotoTypography condensed variant="h4" color="inherit">
-                    No record found
-                  </RobotoTypography>
+                  <Grid container direction="column">
+                    <RobotoTypography condensed variant="h4" color="inherit">
+                      No record found
+                    </RobotoTypography>
+                    <Spacing vertical={3} />
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      size="small"
+                      onMouseDown={openInvitePopover}
+                    >
+                      <EnvelopeIconContainer>
+                        <InboxIcon />
+                      </EnvelopeIconContainer>
+                      <Spacing horizontal={3} />
+                      <RobotoTypography condensed variant="h4">
+                        Invite to the list
+                      </RobotoTypography>
+                    </Button>
+                  </Grid>
                 }
                 InputProps={{
                   startAdornment: <AdornmentContainer>+</AdornmentContainer>,
@@ -98,6 +130,14 @@ const NewTaskDrawer = ({ members }) => {
               >
                 {formattedMembers}
               </SelectInput>
+              <InviteMemberPopover
+                anchorElement={assignedToInputReference}
+                isPopoverOpen={isInvitePopoverOpen}
+                closePopover={closeInvitePopover}
+                initialValue={assignedToInputValue}
+                setParentFormValue={setValue}
+                taskList={taskList}
+              />
             </Grid>
             <Grid item xs={6}>
               <DueDateSection />

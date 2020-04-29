@@ -23,90 +23,98 @@ const AdornmentContainer = styled.div`
   color: ${palette.orange};
 `;
 
-const SelectInput = ({
-  children,
-  label,
-  name,
-  placeholder,
-  renderItem,
-  renderOptionLabel,
-  startAdornment,
-  endAdornment,
-  noOptionsText,
-  getOptionDisabled,
-  InputProps,
-  inputProps,
-  InputLabelProps,
-}) => {
-  const { register, unregister, setValue, watch } = useFormContext();
-
-  useMount(() => {
-    register({
+const SelectInput = React.forwardRef(
+  (
+    {
+      children,
+      label,
       name,
+      placeholder,
+      renderItem,
+      renderOptionLabel,
+      startAdornment,
+      endAdornment,
+      noOptionsText,
+      getOptionDisabled,
+      onInputChange,
+      InputProps,
+      inputProps,
+      InputLabelProps,
+    },
+    reference,
+  ) => {
+    const { register, unregister, setValue, watch } = useFormContext();
+
+    useMount(() => {
+      register({
+        name,
+      });
     });
-  });
 
-  useUnmount(() => {
-    unregister(name);
-  });
+    useUnmount(() => {
+      unregister(name);
+    });
 
-  const currentValue = watch(name);
-  const currentOption =
-    children.find(({ value }) => value === currentValue) ?? null;
+    const currentValue = watch(name);
+    const currentOption =
+      children.find(({ value }) => value === currentValue) ?? null;
 
-  return (
-    <Autocomplete
-      id={`autocomplete-${name}`}
-      options={children}
-      getOptionLabel={option => renderOptionLabel(option)}
-      renderOption={option => renderItem(option)}
-      disableClearable
-      openOnFocus
-      fullWidth
-      noOptionsText={noOptionsText}
-      getOptionDisabled={getOptionDisabled}
-      renderInput={({
-        InputProps: InputParameters = {},
-        inputProps: inputParameters = {},
-        InputLabelProps: InputLabelParameters = {},
-        ...otherParameters
-      }) => (
-        <TextInput
-          {...otherParameters}
-          select
-          InputLabelProps={{
-            ...InputLabelParameters,
-            shrink: true,
-            ...InputLabelProps,
-          }}
-          // Both inputProps & InputProps are defined in here to follow the Material UI convention
-          // for TextField component → InputProps spread to InputBase component, while
-          // inputProps go directly to the native input component
-          InputProps={{ ...InputParameters, ...InputProps }}
-          inputProps={{
-            ...inputParameters,
-            ...inputProps,
-          }}
-          label={label}
-          name={name}
-          placeholder={placeholder}
-          startAdornment={startAdornment}
-        />
-      )}
-      value={currentOption}
-      variant="outlined"
-      onChange={(_event, option) => setValue(name, option?.value)}
-      forcePopupIcon={Boolean(endAdornment)}
-      popupIcon={
-        <AdornmentContainer>
-          {endAdornment ?? (
-            <KeyboardArrowDown fontSize="small" color="inherit" />
-          )}
-        </AdornmentContainer>
-      }
-    />
-  );
-};
+    return (
+      <Autocomplete
+        id={`autocomplete-${name}`}
+        options={children}
+        getOptionLabel={option => renderOptionLabel(option)}
+        renderOption={option => renderItem(option)}
+        disableClearable
+        openOnFocus
+        fullWidth
+        noOptionsText={noOptionsText}
+        getOptionDisabled={getOptionDisabled}
+        onInputChange={onInputChange}
+        renderInput={({
+          InputProps: InputParameters = {},
+          inputProps: inputParameters = {},
+          InputLabelProps: InputLabelParameters = {},
+          ...otherParameters
+        }) => (
+          <TextInput
+            {...otherParameters}
+            select
+            InputLabelProps={{
+              ...InputLabelParameters,
+              shrink: true,
+              ...InputLabelProps,
+            }}
+            // Both inputProps & InputProps are defined in here to follow the Material UI convention
+            // for TextField component → InputProps spread to InputBase component, while
+            // inputProps go directly to the native input component
+            InputProps={{ ...InputParameters, ...InputProps }}
+            inputProps={{
+              ...inputParameters,
+              ...inputProps,
+            }}
+            label={label}
+            name={name}
+            placeholder={placeholder}
+            startAdornment={startAdornment}
+            ref={reference}
+          />
+        )}
+        value={currentOption}
+        variant="outlined"
+        onChange={(_event, option) => setValue(name, option?.value)}
+        forcePopupIcon={Boolean(endAdornment)}
+        popupIcon={
+          <AdornmentContainer>
+            {endAdornment ?? (
+              <KeyboardArrowDown fontSize="small" color="inherit" />
+            )}
+          </AdornmentContainer>
+        }
+      />
+    );
+  },
+);
 
 SelectInput.propTypes = {
   children: arrayOf(
@@ -127,6 +135,7 @@ SelectInput.propTypes = {
   forcePopupIcon: bool,
   noOptionsText: node,
   getOptionDisabled: func,
+  onInputChange: func,
   inputProps: objectOf(any),
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
@@ -142,6 +151,7 @@ SelectInput.defaultProps = {
   forcePopupIcon: undefined,
   noOptionsText: undefined,
   getOptionDisabled: prop('disabled'),
+  onInputChange: undefined,
   inputProps: {},
   InputProps: {},
   InputLabelProps: {},

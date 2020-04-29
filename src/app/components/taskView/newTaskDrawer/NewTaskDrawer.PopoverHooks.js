@@ -1,0 +1,32 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback, useRef, useState } from 'react';
+
+import useBoolean from 'hooks/useBoolean';
+
+const initializeTaskDrawerPopoverHooks = () => {
+  const assignedToInputReference = useRef(null);
+  const [
+    isInvitePopoverOpen,
+    openInvitePopover,
+    closeInvitePopover,
+  ] = useBoolean(false);
+
+  const [assignedToInputValue, setAssignedToInputValue] = useState('');
+
+  const onAssignedToInputChange = useCallback((_event, value, reason) => {
+    if (reason === 'input') {
+      setAssignedToInputValue(value);
+    }
+  }, []);
+
+  return {
+    assignedToInputReference,
+    isInvitePopoverOpen,
+    openInvitePopover,
+    closeInvitePopover,
+    assignedToInputValue,
+    onAssignedToInputChange,
+  };
+};
+
+export default initializeTaskDrawerPopoverHooks;

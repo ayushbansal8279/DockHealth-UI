@@ -66,6 +66,10 @@ export const HiddenFieldContainer = styled.div`
   visibility: ${props => (props.visible ? 'visible' : 'hidden')};
 `;
 
+export const EnvelopeIconContainer = styled.div`
+  fill: ${palette.white};
+`;
+
 export const CondensedH4 = ({ ...props }) => (
   <RobotoTypography condensed variant="h4" {...props} />
 );

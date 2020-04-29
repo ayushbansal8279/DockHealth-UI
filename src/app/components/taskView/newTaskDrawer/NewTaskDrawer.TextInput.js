@@ -113,7 +113,6 @@ const TextInput = React.forwardRef(
       className,
       onFocus,
       onBlur,
-      overrideDisplayLabel,
       InputLabelProps,
       inputProps,
       InputProps,
@@ -122,7 +121,12 @@ const TextInput = React.forwardRef(
     },
     reference,
   ) => {
-    const { register } = useFormContext();
+    const { register, watch } = useFormContext();
+
+    const value = watch(name);
+    const isStartAdornmentShown = !value;
+
+    const { startAdornment = null, ...otherInputProps } = InputProps;
 
     return (
       <DrawerInputContainer ref={reference} className={className} {...props}>
@@ -137,13 +141,13 @@ const TextInput = React.forwardRef(
             )}
           </DrawerInputLabel>
           <DrawerInputBase
-            {...InputProps}
+            {...otherInputProps}
+            startAdornment={isStartAdornmentShown && startAdornment}
             name={name}
             placeholder={placeholder}
             inputRef={select ? null : register}
             onFocus={onFocus}
             onBlur={onBlur}
-            value={overrideDisplayLabel}
             inputProps={inputProps}
           />
         </DrawerFormControl>
@@ -161,7 +165,6 @@ TextInput.propTypes = {
   onFocus: func,
   onBlur: func,
   select: bool,
-  overrideDisplayLabel: string,
   inputProps: objectOf(any),
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
@@ -174,7 +177,6 @@ TextInput.defaultProps = {
   select: false,
   onFocus: () => {},
   onBlur: () => {},
-  overrideDisplayLabel: undefined,
   inputProps: {},
   InputProps: {},
   InputLabelProps: {},
