@@ -75,6 +75,7 @@ export const abortPatientCreation = () => ({
 export const getAllPatients = () => async dispatch => {
   const patients = await PatientApi.getAllPatients();
   dispatch(getAllPatientsSuccess(patients));
+  return patients;
 };
 
 export const getMyPatientsAll = () => async dispatch => {

@@ -28,6 +28,7 @@ import {
   getFormattedPatients,
 } from './NewTaskDrawer.Utilities';
 import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
+import AddPatientPopover from './NewTaskDrawer.AddPatientPopover';
 
 const NewTaskDrawer = ({ members, taskList }) => {
   const {
@@ -50,6 +51,12 @@ const NewTaskDrawer = ({ members, taskList }) => {
   const dueDateValue = watch('dueDate');
 
   const {
+    patientInputReference,
+    isPatientPopoverOpen,
+    openPatientPopover,
+    closePatientPopover,
+    patientInputValue,
+    onPatientInputChange,
     assignedToInputReference,
     isInvitePopoverOpen,
     openInvitePopover,
@@ -82,10 +89,25 @@ const NewTaskDrawer = ({ members, taskList }) => {
                 name="patientIdentifier"
                 label="Patient"
                 placeholder="Who is the patient?"
+                onInputChange={onPatientInputChange}
+                ref={patientInputReference}
                 noOptionsText={
-                  <RobotoTypography condensed variant="h4" color="default">
-                    No record found
-                  </RobotoTypography>
+                  <Grid container direction="column">
+                    <RobotoTypography condensed variant="h4" color="inherit">
+                      No record found
+                    </RobotoTypography>
+                    <Spacing vertical={3} />
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      size="small"
+                      onMouseDown={openPatientPopover}
+                    >
+                      <RobotoTypography condensed variant="h4">
+                        Add patient
+                      </RobotoTypography>
+                    </Button>
+                  </Grid>
                 }
                 InputProps={{
                   startAdornment: <AdornmentContainer>+</AdornmentContainer>,
@@ -93,6 +115,13 @@ const NewTaskDrawer = ({ members, taskList }) => {
               >
                 {formattedPatients}
               </SelectInput>
+              <AddPatientPopover
+                anchorElement={patientInputReference}
+                isPopoverOpen={isPatientPopoverOpen}
+                closePopover={closePatientPopover}
+                initialValue={patientInputValue}
+                setParentFormValue={setValue}
+              />
             </Grid>
             <Grid item xs={6}>
               <SelectInput
