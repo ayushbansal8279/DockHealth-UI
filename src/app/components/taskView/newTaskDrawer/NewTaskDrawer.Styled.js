@@ -62,6 +62,10 @@ export const MemberAdornmentContainer = styled.div`
   margin-right: 1rem;
 `;
 
+export const HiddenFieldContainer = styled.div`
+  visibility: ${props => (props.visible ? 'visible' : 'hidden')};
+`;
+
 export const CondensedH4 = ({ ...props }) => (
   <RobotoTypography condensed variant="h4" {...props} />
 );

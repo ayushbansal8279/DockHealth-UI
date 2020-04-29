@@ -7,6 +7,7 @@ import {
   func,
   node,
   objectOf,
+  oneOfType,
   shape,
   string,
 } from 'prop-types';
@@ -34,13 +35,15 @@ const DropdownInput = ({
   required,
   onFocus,
   onBlur,
+  popoverStateArray,
   InputLabelProps,
   InputProps,
   inputProps,
 }) => {
   const reference = useRef(null);
 
-  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
+  const [isPopoverOpen, openPopover, closePopover] =
+    popoverStateArray ?? useBoolean(false);
 
   const { width } = reference.current?.getBoundingClientRect() || {};
 
@@ -94,9 +97,9 @@ const DropdownInput = ({
           ...InputProps,
         }}
         inputProps={{
-          ...inputProps,
           readOnly: true,
           value: displayLabel,
+          ...inputProps,
         }}
         ref={reference}
         className={className}
@@ -140,6 +143,7 @@ DropdownInput.propTypes = {
       value: string.isRequired,
     }),
   ).isRequired,
+  popoverStateArray: arrayOf(oneOfType([bool, func])),
   renderItem: func,
   label: string.isRequired,
   placeholder: string,
@@ -154,6 +158,7 @@ DropdownInput.propTypes = {
 };
 
 DropdownInput.defaultProps = {
+  popoverStateArray: null,
   renderItem: () => prop('label'),
   placeholder: '',
   className: '',

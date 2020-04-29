@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import moment from 'moment';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,9 +14,17 @@ import Member from 'components/members/Member';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 
 const REQUIRED_MESSAGE = 'This field is required';
+const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
+const DATE_ISO_FORMAT = 'YYYY-MM-DD';
+const TIME_12H_FORMAT = 'h:mm A';
+const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
 const validationSchema = object().shape({
   description: string().required(REQUIRED_MESSAGE),
+  dueTime: string().matches(TIME_12H_FORMAT_REGULAR_EXPRESSION, {
+    excludeEmptyString: true,
+    message: 'Time should be provided in HH:MM PM/AM format',
+  }),
 });
 
 const initializeTaskDrawerHooks = ({ members }) => {
@@ -67,7 +76,16 @@ const initializeTaskDrawerHooks = ({ members }) => {
       'assignedToIdentifier',
       selectedTask?.assignedTo?.userIdentifier ?? null,
     );
-    setValue('dueDate', selectedTask?.dueDate ?? null);
+    const dueDateMoment = moment(selectedTask?.dueDate ?? null);
+
+    if (dueDateMoment.isValid()) {
+      setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
+      setValue('dueTime', dueDateMoment.format(TIME_12H_FORMAT));
+    } else {
+      setValue('dueDate', null);
+      setValue('dueTime', null);
+    }
+
     setValue('priority', selectedTask?.priority ?? null);
     setValue('workflowStatus', selectedTask?.workflowStatus ?? null);
     // Exhaustive deps are disabled due to selectedTask referential inequality triggerting useEffect
@@ -95,6 +113,19 @@ const initializeTaskDrawerHooks = ({ members }) => {
         ...data,
       };
 
+      const dueDate = moment(requestData.dueDate);
+      const dueTime = moment(requestData.dueTime, TIME_12H_FORMAT);
+
+      if (dueTime.isValid()) {
+        dueDate.set({
+          hour: dueTime.hour(),
+          minute: dueTime.minute(),
+        });
+      }
+
+      requestData.dueDate = dueDate.format(DATETIME_FULL_FORMAT);
+      delete requestData.dueTime;
+
       setSaving(true);
 
       saveTask(requestData)(dispatch)
@@ -113,6 +144,7 @@ const initializeTaskDrawerHooks = ({ members }) => {
     const currentMember = members?.find(
       ({ userIdentifier }) => currentAssignedToValue === userIdentifier,
     );
+
     return currentMember ? (
       <MemberAdornmentContainer>
         <Member showTooltip={false} member={currentMember} size={30} />

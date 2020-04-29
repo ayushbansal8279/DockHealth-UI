@@ -16,6 +16,7 @@ import SelectInput from './NewTaskDrawer.SelectInput';
 import StatusSection from './NewTaskDrawer.StatusSection';
 import {
   AdornmentContainer,
+  HiddenFieldContainer,
   TaskDrawerContainer,
 } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
@@ -37,10 +38,12 @@ const NewTaskDrawer = ({ members }) => {
     isSaving,
   } = initializeTaskDrawerHooks({ members });
 
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, watch } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
   const formattedMembers = getFormattedMembers({ members });
+
+  const dueDateValue = watch('dueDate');
 
   return (
     <TaskDrawerContainer open={taskDrawerOpen} top={top}>
@@ -99,7 +102,18 @@ const NewTaskDrawer = ({ members }) => {
             <Grid item xs={6}>
               <DueDateSection />
             </Grid>
-            <Grid item xs={6} />
+            <Grid item xs={6}>
+              <HiddenFieldContainer visible={dueDateValue}>
+                <TextInput
+                  name="dueTime"
+                  label="Due Time"
+                  placeholder="12:00 PM"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </HiddenFieldContainer>
+            </Grid>
             <Grid item xs={6}>
               <PrioritySection />
             </Grid>
@@ -154,11 +168,12 @@ const NewTaskDrawer = ({ members }) => {
                 variant="contained"
                 size="small"
                 type="submit"
+                disableRipple={isSaving}
                 disabled={isSaving}
               >
                 <MontserratTypography variant="h4" weight="600">
                   {isSaving ? (
-                    <CubesLoader size={32} color={palette.white} />
+                    <CubesLoader size={32} color={palette.coolGrey1} />
                   ) : (
                     'SAVE'
                   )}
