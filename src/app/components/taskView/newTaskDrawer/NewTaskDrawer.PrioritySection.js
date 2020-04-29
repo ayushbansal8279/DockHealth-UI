@@ -1,38 +1,21 @@
 import React from 'react';
 
 import PriorityFlag from 'img/priority-flag';
-import palette from 'styles/palette';
 
 import DropdownInput from './NewTaskDrawer.DropdownInput';
-import { PriorityLabelContainer } from './NewTaskDrawer.PrioritySection.Styled';
+import initializePrioritySectionHooks, {
+  PRIORITIES,
+} from './NewTaskDrawer.PrioritySection.Hooks';
+import {
+  PriorityLabelContainer,
+  PriorityFieldContainer,
+  PriorityFlagContainer,
+} from './NewTaskDrawer.PrioritySection.Styled';
 import {
   AdornmentContainer,
   BlockButton,
   CondensedH4,
 } from './NewTaskDrawer.Styled';
-
-const PRIORITIES = [
-  {
-    value: null,
-    label: 'No priority',
-    color: 'transparent',
-  },
-  {
-    value: 'LOW',
-    label: 'Low',
-    color: palette.bananaHammock,
-  },
-  {
-    value: 'MEDIUM',
-    label: 'Medium',
-    color: palette.orange,
-  },
-  {
-    value: 'HIGH',
-    label: 'High',
-    color: palette.tomatoInYoFace,
-  },
-];
 
 const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   key: value,
@@ -61,18 +44,27 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
   </BlockButton>
 );
 
-const PrioritySection = () => (
-  <DropdownInput
-    name="priority"
-    label="Priority"
-    placeholder="Is there a priority?"
-    InputProps={{
-      startAdornment: <AdornmentContainer>+</AdornmentContainer>,
-    }}
-    renderItem={renderDropdownItem}
-  >
-    {priorityOptions}
-  </DropdownInput>
-);
+const PrioritySection = () => {
+  const { currentPriorityFlagColor } = initializePrioritySectionHooks();
+
+  return (
+    <PriorityFieldContainer>
+      <PriorityFlagContainer>
+        <PriorityFlag color={currentPriorityFlagColor} />
+      </PriorityFlagContainer>
+      <DropdownInput
+        name="priority"
+        label="Priority"
+        placeholder="Is there a priority?"
+        InputProps={{
+          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
+        }}
+        renderItem={renderDropdownItem}
+      >
+        {priorityOptions}
+      </DropdownInput>
+    </PriorityFieldContainer>
+  );
+};
 
 export default PrioritySection;

@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -17,4 +16,15 @@ export const PriorityLabelContainer = styled.div`
       font-weight: bold;
     }
   }
+`;
+
+export const PriorityFieldContainer = styled.div`
+  position: relative;
+`;
+
+export const PriorityFlagContainer = styled.div`
+  left: -0.25rem;
+  position: absolute;
+  top: calc(50% + 0.5rem);
+  transform: translate(-100%, -50%);
 `;
