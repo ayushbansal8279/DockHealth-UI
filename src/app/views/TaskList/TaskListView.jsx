@@ -47,8 +47,7 @@ import TaskListTour2 from 'img/tour/task-list/task-list-2.svg';
 import TaskListTour3 from 'img/tour/task-list/task-list-3.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
-import AddListForm from './TaskListView.AddListForm';
-import { FormSpacing } from './TaskListView.AddListForm.Components';
+import ListForm from 'components/ListForm/ListForm';
 import {
   BlockItemContainer,
   CubesLoaderContainer,
@@ -609,7 +608,7 @@ class TaskListView extends PureComponent {
                 }}
                 onClose={() => this.setListFormOpen(false)}
               >
-                <AddListForm setListFormOpen={this.setListFormOpen} />
+                <ListForm setListFormOpen={this.setListFormOpen} />
               </Popover>
             </Backdrop>
             <Dialog
@@ -624,7 +623,7 @@ class TaskListView extends PureComponent {
                 },
               }}
             >
-              <AddListForm setListFormOpen={this.setListFormOpen} />
+              <ListForm setListFormOpen={this.setListFormOpen} />
             </Dialog>
             {anyTaskListExists ? (
               <>
@@ -640,7 +639,6 @@ class TaskListView extends PureComponent {
                     {genericLists?.map(this.renderGenericList)}
                   </Grid>
                 </SafariFixGrid>
-                <FormSpacing />
                 <SafariFixGrid container item xs={12} justify="center">
                   <Grid container item xs={9} justify="center" direction="row">
                     {hasCovidList && (
@@ -686,7 +684,6 @@ class TaskListView extends PureComponent {
                     )}
                   </Grid>
                 </SafariFixGrid>
-                <FormSpacing />
               </>
             ) : (
               <StyledCollapse in={!taskListFormOpen} timeout={250}>

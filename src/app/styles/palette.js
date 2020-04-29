@@ -22,6 +22,7 @@ const palette = {
   creamPuff: '#f8f5ee',
 
   // grey
+  lightGray: '#939aa4',
   darkGrey: '#1e2e40',
   mediumGrey: '#3d4858',
   coolGrey1: '#8492a4',

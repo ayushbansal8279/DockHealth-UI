@@ -1,34 +1,20 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { splitAt } from 'ramda';
-import { useCallback, useEffect, useState } from 'react';
+import { take } from 'ramda';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffectOnce } from 'react-use';
 import { object, string } from 'yup';
 import { findAllUsersByOrganizationId } from 'actions/people-actions';
-import useBoolean from 'hooks/useBoolean';
 
 const MAX_VISIBLE_MEMBERS_COUNT = 5;
-
-const filterPeopleBasedOnIdentifier = ({
-  listOwner,
-  membersValue,
-  adminsValue,
-  membersPickerOpen,
-  adminsPickerOpen,
-}) => ({ userIdentifier }) =>
-  userIdentifier != null &&
-  userIdentifier !== listOwner.userIdentifier &&
-  ((adminsPickerOpen && !membersValue.includes(userIdentifier)) ||
-    (membersPickerOpen && !adminsValue.includes(userIdentifier)));
 
 const getFormWatchedValues = ({ watch }) => ({
   listNameValue: watch('listName') ?? '',
   listDescriptionValue: watch('listDescription') ?? '',
   adminsValue: watch('adminIdentifiers') ?? [],
   membersValue: watch('memberIdentifiers') ?? [],
-  notificationsValue: watch('notifications') ?? true,
 });
 
 const validationSchema = object().shape({
@@ -52,16 +38,7 @@ const initializeAddListFormHooks = () => {
     people: store.peopleState.peoplelist,
   }));
 
-  const [adminsPickerOpen, openAdminsPicker, closeAdminsPicker] = useBoolean(
-    false,
-  );
-  const [membersPickerOpen, openMembersPicker, closeMembersPicker] = useBoolean(
-    false,
-  );
-
   const taskListIdentifier = currentList?.taskListIdentifier;
-
-  const [searchValue, setSearchValue] = useState('');
 
   const setDefaultFormValues = useCallback(() => {
     setValue('listName', currentList?.listName ?? '');
@@ -69,7 +46,6 @@ const initializeAddListFormHooks = () => {
     setValue('owner', listOwner);
     setValue('adminIdentifiers', currentList?.adminIdentifiers ?? []);
     setValue('memberIdentifiers', currentList?.memberIdentifiers ?? []);
-    setValue('notifications', currentList?.notifications ?? true);
   }, [currentList, listOwner, setValue]);
 
   useEffectOnce(() => {
@@ -79,7 +55,6 @@ const initializeAddListFormHooks = () => {
     register({ name: 'owner' });
     register({ name: 'adminIdentifiers' });
     register({ name: 'memberIdentifiers' });
-    register({ name: 'notifications' });
 
     setDefaultFormValues();
 
@@ -88,7 +63,6 @@ const initializeAddListFormHooks = () => {
       unregister('owner');
       unregister('adminIdentifiers');
       unregister('memberIdentifiers');
-      unregister('notifications');
     };
   });
 
@@ -97,52 +71,15 @@ const initializeAddListFormHooks = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskListIdentifier]);
 
-  useEffect(() => {
-    if (adminsPickerOpen || membersPickerOpen) {
-      setSearchValue('');
-    }
-  }, [adminsPickerOpen, membersPickerOpen]);
-
   const {
-    listNameValue,
-    listDescriptionValue,
     adminsValue: allAdminsValue,
     membersValue: allMembersValue,
-    notificationsValue,
   } = getFormWatchedValues({ watch });
 
-  const [adminsValue, restOfAdminsValue] = splitAt(
-    MAX_VISIBLE_MEMBERS_COUNT,
-    allAdminsValue,
-  );
-  const [membersValue, restOfMembersValue] = splitAt(
-    MAX_VISIBLE_MEMBERS_COUNT,
-    allMembersValue,
-  );
+  const adminsValue = take(MAX_VISIBLE_MEMBERS_COUNT, allAdminsValue);
+  const membersValue = take(MAX_VISIBLE_MEMBERS_COUNT, allMembersValue);
 
   const formLabelContent = taskListIdentifier ? 'EDIT A LIST' : 'ADD A LIST';
-
-  const filteredPeople = Array.isArray(people)
-    ? people
-        .filter(
-          filterPeopleBasedOnIdentifier({
-            listOwner,
-            membersValue,
-            adminsValue,
-            membersPickerOpen,
-            adminsPickerOpen,
-          }),
-        )
-        .filter(({ firstName = '', middleName = '', lastName = '' }) =>
-          [
-            firstName.toLowerCase(),
-            middleName.toLowerCase(),
-            lastName.toLowerCase(),
-          ]
-            .map(value => value.includes(searchValue.toLowerCase()))
-            .some(Boolean),
-        )
-    : [];
 
   const addAdmin = useCallback(
     ({ userIdentifier }) => {
@@ -183,45 +120,31 @@ const initializeAddListFormHooks = () => {
     listOwner?.userIdentifier,
   ].filter(Boolean);
 
-  const [adminsWithOwner, restOfAdminsWithOwner] = splitAt(
-    MAX_VISIBLE_MEMBERS_COUNT,
-    allAdminsWithOwner,
+  const peopleListForAdminPicker = people.filter(
+    ({ userIdentifier }) =>
+      !allMembersValue.includes(userIdentifier) &&
+      userIdentifier !== listOwner?.userIdentifier,
+  );
+
+  const peopleListForMemberPicker = people.filter(
+    ({ userIdentifier }) => !allAdminsWithOwner.includes(userIdentifier),
   );
 
   return {
+    addAdmin,
+    addMember,
+    allAdminsWithOwner,
+    allMembersValue,
+    dispatch,
+    formContext,
     formLabelContent,
     handleSubmit,
-    setValue,
-    listOwner,
-    adminsPickerOpen,
-    openAdminsPicker,
-    closeAdminsPicker,
-    membersPickerOpen,
-    openMembersPicker,
-    closeMembersPicker,
-    listNameValue,
-    listDescriptionValue,
-    allAdminsValue,
-    adminsValue,
-    restOfAdminsValue,
-    allMembersValue,
-    membersValue,
-    restOfMembersValue,
-    filteredPeople,
-    addAdmin,
-    removeAdmin,
-    addMember,
-    removeMember,
-    notificationsValue,
     people,
+    peopleListForAdminPicker,
+    peopleListForMemberPicker,
+    removeAdmin,
+    removeMember,
     taskListIdentifier,
-    dispatch,
-    searchValue,
-    setSearchValue,
-    allAdminsWithOwner,
-    adminsWithOwner,
-    restOfAdminsWithOwner,
-    formContext,
   };
 };
 
