@@ -10,8 +10,12 @@ import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
+import AddPatientPopover from './NewTaskDrawer.AddPatientPopover';
+import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
+import CommentSection from './NewTaskDrawer.CommentSection';
 import DueDateSection from './NewTaskDrawer.DueDateSection';
 import initializeTaskDrawerHooks from './NewTaskDrawer.Hooks';
+import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 import InviteMemberPopover from './NewTaskDrawer.InviteMemberPopover';
 import PrioritySection from './NewTaskDrawer.PrioritySection';
 import SelectInput from './NewTaskDrawer.SelectInput';
@@ -27,9 +31,6 @@ import {
   getFormattedMembers,
   getFormattedPatients,
 } from './NewTaskDrawer.Utilities';
-import AddPatientPopover from './NewTaskDrawer.AddPatientPopover';
-import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
-import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 
 const NewTaskDrawer = ({ members, taskList }) => {
   const {
@@ -208,6 +209,9 @@ const NewTaskDrawer = ({ members, taskList }) => {
             </Grid>
             <Grid item xs={12}>
               <AtttachmentsSection />
+            </Grid>
+            <Grid item xs={12}>
+              <CommentSection />
             </Grid>
             <Grid
               item

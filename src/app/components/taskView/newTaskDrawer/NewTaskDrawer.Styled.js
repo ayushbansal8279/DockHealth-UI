@@ -9,6 +9,7 @@ export const TaskDrawerContainer = styled.div`
   box-shadow: 0 0 ${({ open }) => (open ? 0.5 : 0)}rem
     ${opacify(palette.black, 0.2)};
   bottom: 0;
+  overflow-y: auto;
   padding: 2rem;
   position: fixed;
   right: 0;
