@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { RobotoTypography } from 'styles/theme';
 
+import EditableLabel from './NewTaskDrawer.EditableLabel';
 import SelectInput from './NewTaskDrawer.SelectInput';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import initializeLabelsSectionHooks from './NewTaskDrawer.LabelsSection.Hooks';
@@ -16,6 +17,8 @@ const LabelsSection = ({ isInbox, selectedTaskIdentifier }) => {
     selectedTaskIdentifier,
   });
 
+  const [currentlyEditedOption, setCurrentlyEditedOption] = useState(null);
+
   return (
     <SelectInput
       name="labels"
@@ -28,6 +31,14 @@ const LabelsSection = ({ isInbox, selectedTaskIdentifier }) => {
           No labels found
         </RobotoTypography>
       }
+      renderItem={option => (
+        <EditableLabel
+          option={option}
+          isInbox={isInbox}
+          currentlyEditedOption={currentlyEditedOption}
+          setCurrentlyEditedOption={setCurrentlyEditedOption}
+        />
+      )}
     >
       {formattedLabels}
     </SelectInput>

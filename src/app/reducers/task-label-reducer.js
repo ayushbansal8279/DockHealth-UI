@@ -60,6 +60,20 @@ const getSuccessResolver = ({ state, path, payload }) =>
     draftState[STATE_DATA_KEYS.DATA][path] = payload;
   });
 
+const getRemoveResolver = ({ state, parameters }) => {
+  const { labelIdentifier: removedLabelIdentifier, isInbox } = parameters;
+
+  const statePath = isInbox ? STATE_KEYS.INBOX_LABELS : STATE_KEYS.LIST_LABELS;
+
+  return produce(state, draftState => {
+    draftState[STATE_DATA_KEYS.DATA][statePath] = draftState[
+      STATE_DATA_KEYS.DATA
+    ][statePath].filter(
+      ({ labelIdentifier }) => labelIdentifier !== removedLabelIdentifier,
+    );
+  });
+};
+
 // array with [path, resolver] tuples
 const actionTypeResolverBindings = {
   [FAILURE_ADDING_LABEL]: [STATE_KEYS.ADDING_LABEL, getErrorResolver],
@@ -98,7 +112,7 @@ const actionTypeResolverBindings = {
   [SUCCESS_FETCHING_LIST_LABELS]: [STATE_KEYS.LIST_LABELS, getSuccessResolver],
   [SUCCESS_REMOVING_LABEL_FROM_DATABASE]: [
     STATE_KEYS.REMOVING_LABEL_FROM_DATABASE,
-    getSuccessResolver,
+    getRemoveResolver,
   ],
   [SUCCESS_REMOVING_TASK_LABEL]: [
     STATE_KEYS.REMOVING_TASK_LABEL,
@@ -106,11 +120,14 @@ const actionTypeResolverBindings = {
   ],
 };
 
-const TaskLabelReducer = (state = initialState, { type, payload, error }) => {
+const TaskLabelReducer = (
+  state = initialState,
+  { type, payload, error, parameters },
+) => {
   const [path, resolver] = actionTypeResolverBindings[type] || [];
 
   if (resolver && path) {
-    return resolver({ state, path, payload, error });
+    return resolver({ state, path, payload, error, parameters });
   }
 
   return state;

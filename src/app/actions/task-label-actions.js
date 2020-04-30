@@ -36,6 +36,7 @@ const getActionResolver = ({
       dispatch({
         type: successActionType,
         payload: data,
+        parameters: apiMethodParameters,
       });
       dispatch({ type: fetchingActionType, payload: false });
 
@@ -45,6 +46,7 @@ const getActionResolver = ({
       dispatch({
         type: failureActionType,
         error,
+        parameters: apiMethodParameters,
       });
       dispatch({ type: fetchingActionType, payload: false });
 
@@ -99,12 +101,15 @@ export const getTaskListLabels = ({ taskListIdentifier }) => dispatch =>
     apiMethodParameters: { taskListIdentifier },
   });
 
-export const removeLabelFromDatabase = ({ labelIdentifier }) => dispatch =>
+export const removeLabelFromDatabase = ({
+  labelIdentifier,
+  isInbox,
+}) => dispatch =>
   getActionResolver({
     fetchingActionType: REQUEST_REMOVING_LABEL_FROM_DATABASE,
     successActionType: SUCCESS_REMOVING_LABEL_FROM_DATABASE,
     failureActionType: FAILURE_REMOVING_LABEL_FROM_DATABASE,
     dispatch,
     apiMethod: TaskLabelApi.removeLabelFromDatabase,
-    apiMethodParameters: { labelIdentifier },
+    apiMethodParameters: { labelIdentifier, isInbox },
   });
