@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Button, Divider, Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
 
@@ -27,8 +27,9 @@ import {
   getFormattedMembers,
   getFormattedPatients,
 } from './NewTaskDrawer.Utilities';
-import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 import AddPatientPopover from './NewTaskDrawer.AddPatientPopover';
+import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
+import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 
 const NewTaskDrawer = ({ members, taskList }) => {
   const {
@@ -206,7 +207,7 @@ const NewTaskDrawer = ({ members, taskList }) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Divider />
+              <AtttachmentsSection />
             </Grid>
             <Grid
               item
