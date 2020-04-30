@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskLabelActions from 'actions/task-label-actions';
 import * as userApi from 'api/user-api';
 import { downloadPDF } from 'api/tasklist-api';
 import { onButtonClicked } from 'helpers/ga-event-helper';
@@ -13,7 +14,11 @@ import TaskView from './Task/TaskView';
 
 class Inbox extends PureComponent {
   componentDidMount() {
-    const { user, actions } = this.props;
+    const {
+      user,
+      actions,
+      taskLabelActions: { getInboxLabels },
+    } = this.props;
 
     this.refreshAccessToken(user);
     actions.loading();
@@ -23,6 +28,8 @@ class Inbox extends PureComponent {
         actions.getInboxTasks('COMPLETE', undefined, undefined);
       })
       .catch(noop);
+
+    getInboxLabels();
   }
 
   componentWillUpdate(nextProps) {
@@ -176,6 +183,7 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
+  taskLabelActions: bindActionCreators(TaskLabelActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
 });
 

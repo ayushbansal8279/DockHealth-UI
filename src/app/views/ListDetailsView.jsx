@@ -6,6 +6,7 @@ import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
+import * as TaskLabelActions from 'actions/task-label-actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import TaskView from './Task/TaskView';
@@ -25,6 +26,7 @@ class Home extends Component {
       actions,
       taskListActions,
       invitationActions,
+      taskLabelActions: { getTaskListLabels },
     } = this.props;
 
     await invitationActions.findPendingTaskListsForUser();
@@ -115,6 +117,8 @@ class Home extends Component {
     };
 
     getAllTasks();
+
+    getTaskListLabels({ taskListIdentifier: routeParams.taskListIdentifier });
 
     if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
       await getAllTasks().then(async () => {
@@ -491,6 +495,7 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
+  taskLabelActions: bindActionCreators(TaskLabelActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
 });

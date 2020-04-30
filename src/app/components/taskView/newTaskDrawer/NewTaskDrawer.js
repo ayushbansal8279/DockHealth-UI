@@ -17,6 +17,7 @@ import DueDateSection from './NewTaskDrawer.DueDateSection';
 import initializeTaskDrawerHooks from './NewTaskDrawer.Hooks';
 import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 import InviteMemberPopover from './NewTaskDrawer.InviteMemberPopover';
+import LabelsSection from './NewTaskDrawer.LabelsSection';
 import PrioritySection from './NewTaskDrawer.PrioritySection';
 import SelectInput from './NewTaskDrawer.SelectInput';
 import StatusSection from './NewTaskDrawer.StatusSection';
@@ -32,7 +33,7 @@ import {
   getFormattedPatients,
 } from './NewTaskDrawer.Utilities';
 
-const NewTaskDrawer = ({ members, taskList }) => {
+const NewTaskDrawer = ({ members, taskList, isInbox }) => {
   const {
     taskDrawerOpen,
     top,
@@ -43,7 +44,10 @@ const NewTaskDrawer = ({ members, taskList }) => {
     currentAssignedToAdornment,
     closeTaskDrawer,
     isSaving,
-  } = initializeTaskDrawerHooks({ members });
+    selectedTask,
+  } = initializeTaskDrawerHooks({ members, isInbox });
+
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
   const { handleSubmit, setValue, watch } = formMethods;
 
@@ -192,19 +196,9 @@ const NewTaskDrawer = ({ members, taskList }) => {
               <StatusSection />
             </Grid>
             <Grid item xs={12}>
-              {/* Layout-element only for now - waiting for backend implementation */}
-              <SelectInput
-                name="labels"
-                label="Labels"
-                placeholder="Are there labels you'd like to add?"
-                noOptionsText={
-                  <RobotoTypography condensed variant="h4" color="inherit">
-                    No labels found
-                  </RobotoTypography>
-                }
-                InputProps={{
-                  startAdornment: <AdornmentContainer>+</AdornmentContainer>,
-                }}
+              <LabelsSection
+                selectedTaskIdentifier={selectedTaskIdentifier}
+                isInbox={isInbox}
               />
             </Grid>
             <Grid item xs={12}>

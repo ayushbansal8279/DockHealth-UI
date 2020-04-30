@@ -1283,6 +1283,7 @@ class TaskView extends Component {
                     </div>
                     {!isMultiList && (
                       <NewTaskDrawer
+                        isInbox={isInbox}
                         taskList={taskList}
                         members={members}
                         membersNotInTaskList={membersNotInTaskList}

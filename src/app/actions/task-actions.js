@@ -937,3 +937,7 @@ export const sortSubtasks = curry(({ task, subtasks }, dispatch) => {
       });
     });
 });
+
+export const updateTaskManually = task => dispatch => {
+  dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
+};

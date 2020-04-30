@@ -7,11 +7,18 @@ import { useMount } from 'react-use';
 import { object, string } from 'yup';
 
 import { getAllPatients } from 'actions/patient-actions';
-import { saveTask, storeAsCurrentTask } from 'actions/task-actions';
+import {
+  saveTask,
+  storeAsCurrentTask,
+  updateTaskManually,
+} from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
+import { addLabel, removeLabelForTask } from 'actions/task-label-actions';
 import Member from 'components/members/Member';
 
+import { prop } from 'ramda';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
+import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 
 const REQUIRED_MESSAGE = 'This field is required';
 const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
@@ -27,19 +34,133 @@ const validationSchema = object().shape({
   }),
 });
 
-const initializeTaskDrawerHooks = ({ members }) => {
+const mapLabelsPromises = ({
+  dispatch,
+  taskIdentifier,
+  currentLabelsIdentifiers,
+  formattedLabelsIdentifiers,
+}) => ({ labelIdentifier, labelName }) => {
+  if (labelIdentifier === null) {
+    return addLabel({ labelName, taskIdentifier })(dispatch);
+  }
+
+  if (
+    !currentLabelsIdentifiers.includes(labelIdentifier) &&
+    formattedLabelsIdentifiers.includes(labelIdentifier)
+  ) {
+    return addLabel({
+      labelName,
+      labelIdentifier,
+      taskIdentifier,
+    })(dispatch);
+  }
+
+  if (
+    currentLabelsIdentifiers.includes(labelIdentifier) &&
+    !formattedLabelsIdentifiers.includes(labelIdentifier)
+  ) {
+    return removeLabelForTask({
+      labelName,
+      labelIdentifier,
+      taskIdentifier,
+    })(dispatch);
+  }
+
+  return Promise.resolve();
+};
+
+const onSubmit = ({ selectedTask, dispatch, setSaving }) => data => {
+  const currentLabels = selectedTask?.labels ?? [];
+  const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
+
+  const formattedLabels = (data.labels ?? []).map(
+    ({ value, displayLabel }) => ({
+      labelIdentifier: value,
+      labelName: displayLabel,
+    }),
+  );
+
+  const allLabels = [...currentLabels, ...formattedLabels];
+
+  const formattedLabelsIdentifiers = formattedLabels.map(
+    prop('labelIdentifier'),
+  );
+
+  const requestData = {
+    ...(selectedTask ?? {}),
+    ...data,
+    labels: [],
+  };
+
+  const dueDate = moment(requestData.dueDate);
+  const dueTime = moment(requestData.dueTime, TIME_12H_FORMAT);
+
+  if (dueTime.isValid()) {
+    dueDate.set({
+      hour: dueTime.hour(),
+      minute: dueTime.minute(),
+    });
+  }
+
+  requestData.dueDate = dueDate.isValid()
+    ? dueDate.format(DATETIME_FULL_FORMAT)
+    : null;
+  delete requestData.dueTime;
+
+  setSaving(true);
+
+  saveTask(requestData)(dispatch)
+    .then(async response => {
+      const taskIdentifier = response?.taskIdentifier;
+
+      if (!taskIdentifier) return;
+
+      await Promise.all(
+        allLabels.map(
+          mapLabelsPromises({
+            dispatch,
+            taskIdentifier,
+            currentLabelsIdentifiers,
+            formattedLabelsIdentifiers,
+          }),
+        ),
+      );
+
+      updateTaskManually({
+        ...(selectedTask ?? {}),
+        ...data,
+        labels: formattedLabels,
+      })(dispatch);
+
+      setSaving(false);
+    })
+    .catch(() => {
+      setSaving(false);
+    });
+};
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const initializeTaskDrawerHooks = ({ members, isInbox }) => {
   const {
     patients,
     taskDrawerOpen,
     selectedTask,
     addingNewSubtask,
     tasks,
+    labels,
+    areLabelsRequested,
   } = useSelector(store => ({
     taskDrawerOpen: store.taskDrawerState.open,
     patients: store.patientState.allPatients,
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
     tasks: store.taskState.tasks,
+    labels: isInbox
+      ? store.taskLabelState.data.inboxLabels
+      : store.taskLabelState.data.listLabels,
+    areLabelsRequested: isInbox
+      ? store.taskLabelState.requesting.inboxLabels
+      : store.taskLabelState.requesting.listLabels,
   }));
 
   const [isSaving, setSaving] = useState(false);
@@ -88,6 +209,10 @@ const initializeTaskDrawerHooks = ({ members }) => {
 
     setValue('priority', selectedTask?.priority ?? null);
     setValue('workflowStatus', selectedTask?.workflowStatus ?? null);
+    setValue(
+      'labels',
+      getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
+    );
     // Exhaustive deps are disabled due to selectedTask referential inequality triggerting useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
@@ -106,39 +231,6 @@ const initializeTaskDrawerHooks = ({ members }) => {
     storeAsCurrentTask(null)(dispatch);
   }, [dispatch]);
 
-  const onSubmit = useCallback(
-    data => {
-      const requestData = {
-        ...(selectedTask ?? {}),
-        ...data,
-      };
-
-      const dueDate = moment(requestData.dueDate);
-      const dueTime = moment(requestData.dueTime, TIME_12H_FORMAT);
-
-      if (dueTime.isValid()) {
-        dueDate.set({
-          hour: dueTime.hour(),
-          minute: dueTime.minute(),
-        });
-      }
-
-      requestData.dueDate = dueDate.format(DATETIME_FULL_FORMAT);
-      delete requestData.dueTime;
-
-      setSaving(true);
-
-      saveTask(requestData)(dispatch)
-        .then(() => {
-          setSaving(false);
-        })
-        .catch(() => {
-          setSaving(false);
-        });
-    },
-    [dispatch, selectedTask],
-  );
-
   const currentAssignedToValue = watch('assignedToIdentifier');
   const currentAssignedToAdornment = useMemo(() => {
     const currentMember = members?.find(
@@ -153,9 +245,12 @@ const initializeTaskDrawerHooks = ({ members }) => {
   }, [currentAssignedToValue, members]);
 
   return {
+    selectedTask,
+    labels,
+    areLabelsRequested,
     taskDrawerOpen,
     top,
-    onSubmit,
+    onSubmit: onSubmit({ selectedTask, dispatch, setSaving }),
     formMethods,
     isAddingOrEditingSubtask,
     patients,

@@ -12,6 +12,7 @@ import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
 import TaskReducer from './task-reducer';
 import TaskListReducer from './tasklist-reducer';
+import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
 
 export default combineReducers({
@@ -29,4 +30,5 @@ export default combineReducers({
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,
   authBase: AuthBaseReducer,
+  taskLabelState: TaskLabelReducer,
 });

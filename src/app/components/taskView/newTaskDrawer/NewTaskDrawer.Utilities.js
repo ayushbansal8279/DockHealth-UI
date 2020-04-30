@@ -62,3 +62,15 @@ export const getFormattedMembers = ({ members }) =>
       displayLabel: userName,
     };
   });
+
+export const getFormattedLabels = ({ labels }) =>
+  (labels ?? []).map(label => {
+    const { labelIdentifier, labelName } = label;
+
+    return {
+      key: labelIdentifier,
+      value: labelIdentifier,
+      label: <CondensedH4>{labelName}</CondensedH4>,
+      displayLabel: labelName,
+    };
+  });
