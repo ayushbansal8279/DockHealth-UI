@@ -44,7 +44,7 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
   </BlockButton>
 );
 
-const PrioritySection = () => {
+const PrioritySection = ({ selectedTask }) => {
   const { currentPriorityFlagColor } = initializePrioritySectionHooks();
 
   return (
@@ -57,7 +57,12 @@ const PrioritySection = () => {
         label="Priority"
         placeholder="Is there a priority?"
         InputProps={{
-          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
+          startAdornment:
+            selectedTask && selectedTask.priority != null ? (
+              ''
+            ) : (
+              <AdornmentContainer>+</AdornmentContainer>
+            ),
         }}
         renderItem={renderDropdownItem}
       >

@@ -87,7 +87,7 @@ const renderDropdownItem = ({ openCalendar, closeCalendar }) => ({
   </div>
 );
 
-const DueDateSection = () => {
+const DueDateSection = ({ selectedTask }) => {
   const dateFieldName = 'dueDate';
 
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
@@ -137,7 +137,12 @@ const DueDateSection = () => {
       label="Due date"
       placeholder="Set a due date?"
       InputProps={{
-        startAdornment: <AdornmentContainer>+</AdornmentContainer>,
+        startAdornment:
+          selectedTask && selectedTask.dueDate != null ? (
+            ''
+          ) : (
+            <AdornmentContainer>+</AdornmentContainer>
+          ),
       }}
       inputProps={{
         value: currentDueDate

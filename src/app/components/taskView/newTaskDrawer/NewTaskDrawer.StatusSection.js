@@ -43,7 +43,7 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
   </BlockButton>
 );
 
-const StatusSection = () => {
+const StatusSection = ({ selectedTask }) => {
   const { currentStatusFlagColor } = initializeStatusSectionHooks();
 
   return (
@@ -56,7 +56,12 @@ const StatusSection = () => {
         label="Status"
         placeholder="Is there a status?"
         InputProps={{
-          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
+          startAdornment:
+            selectedTask && selectedTask.workflowStatus != null ? (
+              ''
+            ) : (
+              <AdornmentContainer>+</AdornmentContainer>
+            ),
         }}
         renderItem={renderDropdownItem}
       >

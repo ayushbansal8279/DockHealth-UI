@@ -137,7 +137,7 @@ export const DrawerInputBaseMultiple = withStyles({
     fontFamily: FONT_FAMILY,
     fontWeight: 'bold',
     paddingBottom: 0,
-    padding: '1.25rem 0',
+    padding: '1.50rem 0',
     '&::placeholder': {
       color: palette.coolGrey1,
       fontWeight: 'normal',
