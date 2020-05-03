@@ -11,6 +11,7 @@ import {
   saveTask,
   storeAsCurrentTask,
   updateTaskManually,
+  moveTask,
 } from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import { addLabel, removeLabelForTask } from 'actions/task-label-actions';
@@ -69,7 +70,7 @@ const mapLabelsPromises = ({
   return Promise.resolve();
 };
 
-const onSubmit = ({ selectedTask, dispatch, setSaving }) => data => {
+const onSubmit = ({ selectedTask, taskList, dispatch, setSaving }) => data => {
   const currentLabels = selectedTask?.labels ?? [];
   const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
 
@@ -90,6 +91,7 @@ const onSubmit = ({ selectedTask, dispatch, setSaving }) => data => {
     ...(selectedTask ?? {}),
     ...data,
     labels: [],
+    taskListIdentifier: taskList?.taskListIdentifier,
   };
 
   const dueDate = moment(requestData.dueDate);
@@ -140,13 +142,14 @@ const onSubmit = ({ selectedTask, dispatch, setSaving }) => data => {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const initializeTaskDrawerHooks = ({ members, isInbox }) => {
+const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
   const {
     patients,
     taskDrawerOpen,
     selectedTask,
     addingNewSubtask,
     tasks,
+    taskLists,
     labels,
     areLabelsRequested,
   } = useSelector(store => ({
@@ -155,6 +158,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox }) => {
     selectedTask: store.taskState.selectedTask,
     addingNewSubtask: store.taskState.addingNewSubtask,
     tasks: store.taskState.tasks,
+    taskLists: store.taskListState.tasklist,
     labels: isInbox
       ? store.taskLabelState.data.inboxLabels
       : store.taskLabelState.data.listLabels,
@@ -224,6 +228,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox }) => {
 
   useMount(() => {
     getAllPatients()(dispatch);
+    setValue('newTaskListId', null);
   });
 
   const closeTaskDrawer = useCallback(() => {
@@ -244,19 +249,46 @@ const initializeTaskDrawerHooks = ({ members, isInbox }) => {
     ) : null;
   }, [currentAssignedToValue, members]);
 
+  const reFileTask = useCallback(
+    ({ newTaskList }) => {
+      moveTask(
+        selectedTask,
+        newTaskList,
+      )(dispatch)
+        .then(() => {
+          toggleAlert(
+            `Task moved successfully to list ${newTaskList.listName}`,
+            'success',
+          );
+          storeAsCurrentTask(null)(dispatch);
+          closeDrawer();
+        })
+        .catch(() => {
+          toggleAlert(
+            `Error moving task to list ${newTaskList.listName}, please try again later`,
+            'error',
+          );
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedTask],
+  );
+
   return {
     selectedTask,
     labels,
     areLabelsRequested,
     taskDrawerOpen,
     top,
-    onSubmit: onSubmit({ selectedTask, dispatch, setSaving }),
+    onSubmit: onSubmit({ selectedTask, taskList, dispatch, setSaving }),
     formMethods,
     isAddingOrEditingSubtask,
     patients,
+    taskLists,
     currentAssignedToAdornment,
     closeTaskDrawer,
     isSaving,
+    reFileTask,
   };
 };
 

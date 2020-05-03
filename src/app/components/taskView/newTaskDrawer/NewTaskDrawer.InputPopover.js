@@ -8,8 +8,10 @@ const InputPopover = ({
   isPopoverOpen,
   closePopover,
   children,
+  popupStyle,
 }) => {
-  const { width } = anchorElement.current?.getBoundingClientRect() || {};
+  const { width } =
+    popupStyle || anchorElement.current?.getBoundingClientRect() || {};
 
   const popoverClassName = useCss({
     '&&': {
@@ -37,6 +39,7 @@ const InputPopover = ({
         className: popoverClassName,
         elevation: 1,
       }}
+      style={popupStyle}
     >
       {children}
     </Popover>

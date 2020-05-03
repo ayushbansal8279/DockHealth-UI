@@ -3,6 +3,9 @@ import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
+import { List } from '@material-ui/core';
+
+const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
 export const TaskDrawerContainer = styled.div`
   background-color: ${palette.white};
@@ -75,8 +78,38 @@ export const CondensedH4 = ({ ...props }) => (
   <RobotoTypography condensed variant="h4" {...props} />
 );
 
+export const CondensedH5 = ({ ...props }) => (
+  <RobotoTypography condensed variant="h5" {...props} />
+);
+
 export const BlockButton = styled.button`
   display: block;
   text-align: left;
   width: 100%;
+`;
+
+export const HorizontalLabel = styled.span`
+  color: ${palette.coolGrey2};
+  fontfamily: ${FONT_FAMILY};
+  & > * {
+    font-size: 1rem;
+    margin-right: 5px;
+  }
+`;
+
+export const FiledInSelect = styled.div`
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  width: 300px;
+  & > * {
+    font-size: 1rem;
+    margin-left: 6px;
+  }
+`;
+
+export const StyledList = styled(List)`
+  max-height: 12.5rem;
+  overflow-y: auto;
 `;
