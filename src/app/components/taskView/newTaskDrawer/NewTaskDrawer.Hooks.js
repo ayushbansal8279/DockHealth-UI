@@ -12,6 +12,8 @@ import {
   storeAsCurrentTask,
   updateTaskManually,
   moveTask,
+  deleteTask,
+  duplicateTask,
 } from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import { addLabel, removeLabelForTask } from 'actions/task-label-actions';
@@ -20,6 +22,8 @@ import Member from 'components/members/Member';
 import { prop } from 'ramda';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
+import { onButtonClicked } from '../../../helpers/ga-event-helper';
+import { noop } from '../../../helpers/utility-functions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
@@ -274,6 +278,37 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     [selectedTask],
   );
 
+  const onDelete = ({ afterDelete }) => async event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (selectedTask) {
+      try {
+        await deleteTask(selectedTask)(dispatch);
+        toggleAlert('Task deleted successfully', 'success');
+        afterDelete();
+        onButtonClicked('Delete task');
+      } catch {
+        noop();
+      }
+    }
+  };
+
+  const onDuplicate = ({ afterDuplicate }) => async event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        const newTask = await duplicateTask(selectedTask)(dispatch);
+        afterDuplicate({ newTask });
+        onButtonClicked('Duplicate task');
+      } catch {
+        noop();
+      }
+    }
+  };
+
   return {
     selectedTask,
     labels,
@@ -289,6 +324,8 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     closeTaskDrawer,
     isSaving,
     reFileTask,
+    onDelete,
+    onDuplicate,
   };
 };
 

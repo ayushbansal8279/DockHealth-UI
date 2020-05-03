@@ -79,6 +79,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     isSaving,
     selectedTask,
     reFileTask,
+    onDelete,
+    onDuplicate,
   } = initializeTaskDrawerHooks({ members, isInbox, taskList });
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -134,45 +136,45 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 alignItems="flex-start"
                 justify="flex-start"
               >
-                {(!selectedTask 
-                  || selectedTask === undefined
-                  || !selectedTask.parentTaskIdentifier) && (
-                <>
-                  <input type="hidden" name="newTaskListId" ref={register} />
-                  <HorizontalLabel>FILED:</HorizontalLabel>
-                  <FiledInSelect
-                    ref={filedInInputReference}
-                    onClick={openFiledInPopover}
-                  >
-                    {selectedTask ? (
-                      <span>
-                        {isInbox
-                          ? 'Inbox'
-                          : filedInInputValue || taskList?.listName}
-                      </span>
-                    ) : (
-                      <span>{isInbox ? 'Inbox' : taskList?.listName}</span>
-                    )}
-                  </FiledInSelect>
-                  <InputPopover
-                    anchorElement={filedInInputReference}
-                    isPopoverOpen={isFiledInPopoverOpen}
-                    closePopover={closeFiledInPopover}
-                  >
-                    <StyledList>
-                      {(taskLists ?? []).map(
-                        renderTaskList({
-                          closePopover: closeFiledInPopover,
-                          onFiledInInputChange,
-                          setValue,
-                          reFileTask,
-                          closeTaskDrawer,
-                          selectedTaskIdentifier,
-                        }),
+                {(!selectedTask ||
+                  selectedTask === undefined ||
+                  !selectedTask.parentTaskIdentifier) && (
+                  <>
+                    <input type="hidden" name="newTaskListId" ref={register} />
+                    <HorizontalLabel>FILED:</HorizontalLabel>
+                    <FiledInSelect
+                      ref={filedInInputReference}
+                      onClick={openFiledInPopover}
+                    >
+                      {selectedTask ? (
+                        <span>
+                          {isInbox
+                            ? 'Inbox'
+                            : filedInInputValue || taskList?.listName}
+                        </span>
+                      ) : (
+                        <span>{isInbox ? 'Inbox' : taskList?.listName}</span>
                       )}
-                    </StyledList>
-                  </InputPopover>
-                </>
+                    </FiledInSelect>
+                    <InputPopover
+                      anchorElement={filedInInputReference}
+                      isPopoverOpen={isFiledInPopoverOpen}
+                      closePopover={closeFiledInPopover}
+                    >
+                      <StyledList>
+                        {(taskLists ?? []).map(
+                          renderTaskList({
+                            closePopover: closeFiledInPopover,
+                            onFiledInInputChange,
+                            setValue,
+                            reFileTask,
+                            closeTaskDrawer,
+                            selectedTaskIdentifier,
+                          }),
+                        )}
+                      </StyledList>
+                    </InputPopover>
+                  </>
                 )}
               </Grid>
               <Grid
@@ -195,8 +197,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 <Spacing horizontal={4} />
                 <IconButton
                   onClick={() => {
-                    closeTaskDrawer();
                     // storeAsCurrentTask(null);
+                    closeTaskDrawer();
                   }}
                   size="small"
                   color="secondary"
@@ -216,24 +218,33 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                   <StyledList>
                     <ListItem
                       key="action_duplicate"
-                      onClick={() => {
-                        // closePopover();
-                      }}
+                      onClick={onDuplicate({
+                        afterDuplicate: () => {
+                          // storeAsCurrentTask(newTask);
+                          closeTaskDrawer();
+                        },
+                        selectedTask,
+                      })}
                       button
                     >
                       Duplicate
                     </ListItem>
-                    {selectedTask && selectedTask.taskIdentifier != null && selectedTask.status !== 'COMPLETE' && (
-                    <ListItem
-                      key="action_delete"
-                      onClick={() => {
-                        // closePopover();
-                      }}
-                      button
-                    >
-                      Delete
-                    </ListItem>
-                    )}
+                    {selectedTask &&
+                      selectedTask.taskIdentifier != null &&
+                      selectedTask.status !== 'COMPLETE' && (
+                        <ListItem
+                          key="action_delete"
+                          onClick={onDelete({
+                            afterDelete: () => {
+                              closeTaskDrawer();
+                            },
+                            selectedTask,
+                          })}
+                          button
+                        >
+                          Delete
+                        </ListItem>
+                      )}
                   </StyledList>
                 </InputPopover>
               </Grid>
@@ -247,15 +258,20 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
                 required
                 placeholder="What is the task?"
-                multiple={true}
+                multiple
                 InputLabelProps={{
                   shrink: true,
                 }}
                 InputProps={{
-                  startAdornment: (selectedTask && selectedTask.description != "" ? "" : <AdornmentContainer>+</AdornmentContainer>),
+                  startAdornment:
+                    selectedTask && selectedTask.description !== '' ? (
+                      ''
+                    ) : (
+                      <AdornmentContainer>+</AdornmentContainer>
+                    ),
                   multiline: true,
-                  rowsMin:1,
-                  rowsMax:3,
+                  rowsMin: 1,
+                  rowsMax: 3,
                   margin: 'dense',
                 }}
                 style={{
@@ -348,8 +364,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               />
             </Grid>
             <Grid item xs={6}>
-              <DueDateSection 
-                selectedTask={selectedTask}/>
+              <DueDateSection selectedTask={selectedTask} />
             </Grid>
             <Grid item xs={6}>
               <HiddenFieldContainer visible={dueDateValue}>
@@ -364,12 +379,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               </HiddenFieldContainer>
             </Grid>
             <Grid item xs={6}>
-              <PrioritySection 
-                selectedTask={selectedTask}/>
+              <PrioritySection selectedTask={selectedTask} />
             </Grid>
             <Grid item xs={6}>
-              <StatusSection 
-                selectedTask={selectedTask}/>
+              <StatusSection selectedTask={selectedTask} />
             </Grid>
             <Grid item xs={12}>
               <LabelsSection
