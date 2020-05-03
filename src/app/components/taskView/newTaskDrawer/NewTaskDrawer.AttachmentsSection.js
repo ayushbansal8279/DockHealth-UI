@@ -19,19 +19,24 @@ import {
   UploadBar,
   UploadBarOuterContainer,
 } from './NewTaskDrawer.AttachmentsSection.Styled';
+import AttachmentPreview from './NewTaskDrawer.AttachmentPreview';
 import { getIconFromContentType } from './NewTaskDrawer.AttachmentsSection.Utilities';
 
-const renderAttachmentButton = ({ removeTaskAttachment }) => ({
-  attachmentIdentifier,
-  fileName,
-  fileSource,
-  contentType,
-}) => {
+const renderAttachmentButton = ({
+  openAttachmentPreview,
+  removeTaskAttachment,
+}) => attachment => {
+  const { attachmentIdentifier, fileName, contentType } = attachment;
   const IconComponent = getIconFromContentType({ contentType });
 
   return (
     <UniversalTooltipContainer label={fileName}>
-      <AttachmentButton href={fileSource} download={fileName}>
+      <AttachmentButton
+        download={fileName}
+        onClick={() => {
+          openAttachmentPreview(attachment);
+        }}
+      >
         <IconComponent color="inherit" fontSize="small" />
         <Spacing horizontal={2} />
         <RobotoTypography condensed variant="h4" weight="bold" noWrap>
@@ -55,9 +60,10 @@ const renderAttachmentButton = ({ removeTaskAttachment }) => ({
   );
 };
 
-const AtttachmentsSection = () => {
+const AtttachmentsSection = ({ selectedTask }) => {
   const {
     attachmentsSources,
+    currentTaskAttachments,
     attachmentsLoading,
     removeTaskAttachment,
     onAddAttachmentButtonClicked,
@@ -65,10 +71,22 @@ const AtttachmentsSection = () => {
     attachmentFileInputReference,
     uploadProgress,
     currentlyUploadedAttachment,
+    openAttachmentPreview,
+    isAttachmentPreviewOpen,
+    hideAttachmentPreview,
+    previewedAttachment,
   } = initializeAttachmentsSectionHooks();
 
   return (
     <AttachmentsContainer>
+      <AttachmentPreview
+        attachment={previewedAttachment}
+        attachmentsSources={attachmentsSources}
+        hideAttachmentPreview={hideAttachmentPreview}
+        isAttachmentPreviewOpen={isAttachmentPreviewOpen}
+        attachmentsLoading={attachmentsLoading}
+        selectedTask={selectedTask}
+      />
       <AttachmentFileInput
         ref={attachmentFileInputReference}
         onChange={onAttachmentFileInputChange}
@@ -89,8 +107,11 @@ const AtttachmentsSection = () => {
               <Spacing horizontal={3} />
             </>
           ) : (
-            attachmentsSources.map(
-              renderAttachmentButton({ removeTaskAttachment }),
+            currentTaskAttachments.map(
+              renderAttachmentButton({
+                openAttachmentPreview,
+                removeTaskAttachment,
+              }),
             )
           )}
           {currentlyUploadedAttachment ? (

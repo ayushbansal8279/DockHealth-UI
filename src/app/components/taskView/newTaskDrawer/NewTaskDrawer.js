@@ -391,7 +391,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <AtttachmentsSection />
+              <AtttachmentsSection selectedTask={selectedTask} />
             </Grid>
             <Grid item xs={12}>
               <CommentSection />

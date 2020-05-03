@@ -31,9 +31,60 @@ const initializeAttachmentsSectionHooks = () => {
   ] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  const [
+    isAttachmentPreviewOpen,
+    showAttachmentPreview,
+    hideAttachmentPreview,
+  ] = useBoolean(false);
+  const [previewedAttachment, setPreviewedAttachment] = useState(null);
+
   const dispatch = useDispatch();
 
-  const reloadAttachments = useCallback(
+  // const reloadAttachments = useCallback(
+  //   ({ attachmentsToReload }) => {
+  //     setAttachmentsLoading();
+
+  //     Promise.all(
+  //       attachmentsToReload.map(
+  //         async ({ attachmentIdentifier, fileName, contentType }) => {
+  //           const { data } = await getMemoTaskAttachment(attachmentIdentifier);
+
+  //           const fileSource = await new Promise((resolve, reject) => {
+  //             const reader = new FileReader();
+
+  //             reader.onloadend = () => {
+  //               // replace base64 type with content type from server
+  //               resolve(
+  //                 reader.result.replace(
+  //                   /data:[^;]+;base64/,
+  //                   `data:${contentType};base64`,
+  //                 ),
+  //               );
+  //             };
+
+  //             reader.addEventListener('error', reject);
+
+  //             reader.readAsDataURL(data);
+  //           });
+
+  //           return {
+  //             attachmentIdentifier,
+  //             fileName,
+  //             fileSource,
+  //             contentType,
+  //           };
+  //         },
+  //       ),
+  //     ).then(downloadedAttachments => {
+  //       unsetAttachmentsLoading();
+  //       setAttachmentSources(downloadedAttachments);
+  //       setCurrentTaskAttachments(attachmentsToReload);
+  //     });
+  //   },
+  //   [setAttachmentsLoading, unsetAttachmentsLoading],
+  // );
+
+  const loadAttachmentsContent = useCallback(
     ({ attachmentsToReload }) => {
       setAttachmentsLoading();
 
@@ -71,7 +122,6 @@ const initializeAttachmentsSectionHooks = () => {
       ).then(downloadedAttachments => {
         unsetAttachmentsLoading();
         setAttachmentSources(downloadedAttachments);
-        setCurrentTaskAttachments(attachmentsToReload);
       });
     },
     [setAttachmentsLoading, unsetAttachmentsLoading],
@@ -80,7 +130,7 @@ const initializeAttachmentsSectionHooks = () => {
   useEffect(() => {
     setCurrentTaskAttachments(attachments);
     requestAnimationFrame(() => {
-      reloadAttachments({ attachmentsToReload: attachments });
+      // reloadAttachments({ attachmentsToReload: attachments });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier]);
@@ -91,20 +141,15 @@ const initializeAttachmentsSectionHooks = () => {
         selectedTaskIdentifier,
         attachmentIdentifier,
       )(dispatch).then(() => {
-        reloadAttachments({
-          attachmentsToReload: currentTaskAttachments.filter(
-            ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
-              attachmentIdentifier !== currentAttachmentIdentifier,
-          ),
-        });
+        // reloadAttachments({
+        //   attachmentsToReload: currentTaskAttachments.filter(
+        //     ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
+        //       attachmentIdentifier !== currentAttachmentIdentifier,
+        //   ),
+        // });
       });
     },
-    [
-      currentTaskAttachments,
-      dispatch,
-      reloadAttachments,
-      selectedTaskIdentifier,
-    ],
+    [dispatch, selectedTaskIdentifier],
   );
 
   const onAddAttachmentButtonClicked = useCallback(event => {
@@ -117,6 +162,17 @@ const initializeAttachmentsSectionHooks = () => {
       fileInputElement.dispatchEvent(new MouseEvent('click'));
     }
   }, []);
+
+  const openAttachmentPreview = useCallback(
+    attachment => {
+      setPreviewedAttachment(attachment);
+      loadAttachmentsContent({
+        attachmentsToReload: [attachment],
+      });
+      showAttachmentPreview();
+    },
+    [loadAttachmentsContent, showAttachmentPreview],
+  );
 
   const onAttachmentFileInputChange = useCallback(() => {
     const fileInputElement = attachmentFileInputReference.current;
@@ -131,25 +187,22 @@ const initializeAttachmentsSectionHooks = () => {
           setUploadProgress(Math.round((loaded * 100) / total));
         },
       })(dispatch)
-        .then(addedAttachment => {
+        // .then(addedAttachment => {
+        .then(() => {
           setCurrentlyUploadedAttachment(null);
-          reloadAttachments({
-            attachmentsToReload: [...currentTaskAttachments, addedAttachment],
-          });
+          // reloadAttachments({
+          //   attachmentsToReload: [...currentTaskAttachments, addedAttachment],
+          // });
         })
         .catch(() => {
           setCurrentlyUploadedAttachment(null);
         });
     }
-  }, [
-    currentTaskAttachments,
-    dispatch,
-    reloadAttachments,
-    selectedTaskIdentifier,
-  ]);
+  }, [dispatch, selectedTaskIdentifier]);
 
   return {
     attachmentsSources,
+    currentTaskAttachments,
     attachmentsLoading,
     selectedTaskIdentifier,
     removeTaskAttachment: boundRemoveTaskAttachment,
@@ -158,6 +211,10 @@ const initializeAttachmentsSectionHooks = () => {
     attachmentFileInputReference,
     uploadProgress,
     currentlyUploadedAttachment,
+    openAttachmentPreview,
+    isAttachmentPreviewOpen,
+    hideAttachmentPreview,
+    previewedAttachment,
   };
 };
 
