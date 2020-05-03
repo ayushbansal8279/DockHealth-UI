@@ -15,6 +15,8 @@ import {
   BlockButton,
   CondensedH4,
 } from './NewTaskDrawer.Styled';
+import SmallSwitchChevron from '../../../img/list-switch-chevron';
+import palette from '../../../styles/palette';
 
 const statusOptions = STATUSES.map(({ value, label, color }) => ({
   key: value,
@@ -43,7 +45,7 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
   </BlockButton>
 );
 
-const StatusSection = ({ selectedTask }) => {
+const StatusSection = () => {
   const { currentStatusFlagColor } = initializeStatusSectionHooks();
 
   return (
@@ -56,12 +58,11 @@ const StatusSection = ({ selectedTask }) => {
         label="Status"
         placeholder="Is there a status?"
         InputProps={{
-          startAdornment:
-            selectedTask && selectedTask.workflowStatus != null ? (
-              ''
-            ) : (
-              <AdornmentContainer>+</AdornmentContainer>
-            ),
+          endAdornment: (
+            <AdornmentContainer>
+              <SmallSwitchChevron color={palette.orangeJulius} />
+            </AdornmentContainer>
+          ),
         }}
         renderItem={renderDropdownItem}
       >

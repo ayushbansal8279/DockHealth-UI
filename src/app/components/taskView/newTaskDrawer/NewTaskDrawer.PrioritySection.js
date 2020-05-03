@@ -16,6 +16,8 @@ import {
   BlockButton,
   CondensedH4,
 } from './NewTaskDrawer.Styled';
+import SmallSwitchChevron from '../../../img/list-switch-chevron';
+import palette from '../../../styles/palette';
 
 const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   key: value,
@@ -44,7 +46,7 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
   </BlockButton>
 );
 
-const PrioritySection = ({ selectedTask }) => {
+const PrioritySection = () => {
   const { currentPriorityFlagColor } = initializePrioritySectionHooks();
 
   return (
@@ -57,12 +59,11 @@ const PrioritySection = ({ selectedTask }) => {
         label="Priority"
         placeholder="Is there a priority?"
         InputProps={{
-          startAdornment:
-            selectedTask && selectedTask.priority != null ? (
-              ''
-            ) : (
-              <AdornmentContainer>+</AdornmentContainer>
-            ),
+          endAdornment: (
+            <AdornmentContainer>
+              <SmallSwitchChevron color={palette.orangeJulius} />
+            </AdornmentContainer>
+          ),
         }}
         renderItem={renderDropdownItem}
       >

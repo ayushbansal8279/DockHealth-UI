@@ -3,9 +3,9 @@ import { string } from 'prop-types';
 
 const PriorityFlag = ({ color }) => (
   <svg
-    width="25"
+    width="17"
     height="21"
-    viewBox="0 0 25 21"
+    viewBox="0 0 25 17"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
