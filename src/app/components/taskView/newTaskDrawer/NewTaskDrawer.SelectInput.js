@@ -191,6 +191,7 @@ const SelectInput = React.forwardRef(
             )}
           </AdornmentContainer>
         }
+        getOptionSelected={(option, value) => value.id === option.id}
       />
     );
   },
