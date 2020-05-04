@@ -262,7 +262,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
                 required
                 placeholder="What is the task?"
-                multiple
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -273,7 +272,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     ) : (
                       <AdornmentContainer>+</AdornmentContainer>
                     ),
-                  multiline: true,
+                  multiline: false,
                   rowsMin: 1,
                   rowsMax: 3,
                   margin: 'dense',
