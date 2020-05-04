@@ -35,6 +35,7 @@ import {
   getFormattedMembers,
   getFormattedPatients,
 } from './NewTaskDrawer.Utilities';
+import SmallSwitchChevron from '../../../img/list-switch-chevron';
 
 const renderTaskList = ({
   closePopover,
@@ -142,20 +143,23 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                   <>
                     <input type="hidden" name="newTaskListId" ref={register} />
                     <HorizontalLabel>FILED:</HorizontalLabel>
-                    <FiledInSelect
+                    <div
                       ref={filedInInputReference}
                       onClick={openFiledInPopover}
                     >
-                      {selectedTask ? (
-                        <span>
-                          {isInbox
-                            ? 'Inbox'
-                            : filedInInputValue || taskList?.listName}
-                        </span>
-                      ) : (
-                        <span>{isInbox ? 'Inbox' : taskList?.listName}</span>
-                      )}
-                    </FiledInSelect>
+                      <FiledInSelect>
+                        {selectedTask ? (
+                          <span>
+                            {isInbox
+                              ? 'Inbox'
+                              : filedInInputValue || taskList?.listName}
+                          </span>
+                        ) : (
+                          <span>{isInbox ? 'Inbox' : taskList?.listName}</span>
+                        )}
+                      </FiledInSelect>
+                      <SmallSwitchChevron color={palette.orangeJulius} />
+                    </div>
                     <InputPopover
                       anchorElement={filedInInputReference}
                       isPopoverOpen={isFiledInPopoverOpen}

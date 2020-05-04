@@ -102,7 +102,7 @@ export const FiledInSelect = styled.div`
   cursor: pointer;
   display: inline-flex;
   flex-flow: row nowrap;
-  width: 300px;
+  width: 250px;
   & > * {
     font-size: 1rem;
     margin-left: 6px;
