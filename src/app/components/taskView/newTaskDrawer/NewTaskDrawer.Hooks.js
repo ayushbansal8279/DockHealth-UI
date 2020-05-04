@@ -16,7 +16,11 @@ import {
   duplicateTask,
 } from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
-import { addLabel, removeLabelForTask } from 'actions/task-label-actions';
+import {
+  addLabel,
+  removeLabelForTask,
+  getTaskListLabels,
+} from 'actions/task-label-actions';
 import Member from 'components/members/Member';
 
 import { prop } from 'ramda';
@@ -193,7 +197,18 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
   const isAddingOrEditingSubtask =
     Boolean(selectedTaskParent) || addingNewSubtask;
 
+  const { top } =
+    document.querySelector('#content-container')?.getBoundingClientRect() || {};
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
+    if (taskDrawerOpen) {
+      getTaskListLabels({ taskListIdentifier: taskList?.taskListIdentifier })(
+        dispatch,
+      );
+    }
+
     setValue('description', selectedTask?.description ?? null);
     setValue(
       'patientIdentifier',
@@ -224,11 +239,6 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     // Exhaustive deps are disabled due to selectedTask referential inequality triggerting useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
-
-  const { top } =
-    document.querySelector('#content-container')?.getBoundingClientRect() || {};
-
-  const dispatch = useDispatch();
 
   useMount(() => {
     getAllPatients()(dispatch);
