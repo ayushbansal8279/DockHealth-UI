@@ -3,6 +3,8 @@ import {
   FormControl,
   InputBase,
   InputLabel,
+  container,
+  TextField,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -101,6 +103,24 @@ export const UniversalInputBase = withStyles({
     },
   },
 })(InputBase);
+
+export const UniversalTimePicker = ({ inputRef, name, setValue }) => (
+  <form className={container} noValidate>
+    <TextField
+      id={inputRef}
+      label={name}
+      type="time"
+      defaultValue={setValue}
+      className={TextField}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      inputProps={{
+        step: 300, // 5 min
+      }}
+    />
+  </form>
+);
 
 export const UniversalMobileInputComponent = ({
   inputRef,
