@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const CommentSectionContainer = styled.div`
-  background-color: ${palette.coolGrey3};
+  background-color: ${palette.coolGrey4};
   padding: 1.5rem 2.5rem;
   margin: 0 -2rem;
 `;

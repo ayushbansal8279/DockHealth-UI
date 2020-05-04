@@ -30,7 +30,7 @@ const initializeAddCommentHooks = ({ addComment }) => {
     addComment(commentContent)
       .then(() => {
         unsetAddingComment();
-        setCommentContent();
+        setCommentContent('');
       })
       .catch(() => {
         unsetAddingComment();
