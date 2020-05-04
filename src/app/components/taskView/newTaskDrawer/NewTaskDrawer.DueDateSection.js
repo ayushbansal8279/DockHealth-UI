@@ -147,7 +147,7 @@ const DueDateSection = ({ selectedTask }) => {
       inputProps={{
         value: currentDueDate
           ? moment(currentDueDate).format(DATE_US_FORMAT)
-          : undefined,
+          : '',
       }}
       renderItem={renderDropdownItem({
         openCalendar,
