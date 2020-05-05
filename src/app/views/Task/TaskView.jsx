@@ -1135,21 +1135,21 @@ class TaskView extends Component {
       downloadPDF,
       taskList,
       showToolbar,
-      selectedTask,
+      // selectedTask,
       markComplete,
       isSearching = false,
       isInbox = false,
       isSpecificPatient = false,
       isMultiList,
       taskDrawerOpen,
-      showAddTaskButton = true,
+      // showAddTaskButton = true,
       globalSearch,
       tasks,
       completedTasks,
       taskListMembers,
       members,
       membersNotInTaskList,
-      addingNewSubtask,
+      // addingNewSubtask,
       subscription,
       isSpecialList,
       paneled = false,
@@ -1194,29 +1194,23 @@ class TaskView extends Component {
               downloadPDF={downloadPDF}
               filterBy={filterBy}
               handleSearch={this.handleSearch}
-              onAddTaskButtonClick={this.onAddTaskButtonClick}
               openFilterPopover={this.openFilterPopover}
               preferencesInitialized={preferencesInitialized}
               searchValue={rawSearchTerm}
               initialSearchValue={initialSearchValue}
-              selectedTask={selectedTask}
               slimView={slimView}
               switchSlimView={this.switchSlimView}
-              taskDrawerOpen={taskDrawerOpen}
               toolbarContainerVisible={toolbarContainerVisible}
-              showAddTaskButton={showAddTaskButton}
               taskListContainerReference={this.taskListContainerReference}
               taskList={taskList}
               members={members}
               membersNotInTaskList={membersNotInTaskList}
               isInbox={isInbox}
-              addingNewSubtask={addingNewSubtask}
               closeDrawer={this.closeTaskDrawer}
               markComplete={markComplete}
               onMarkComplete={this.onMarkComplete}
               isSpecificPatient={isSpecificPatient}
               isSpecialList={isSpecialList}
-              isMultiList={isMultiList}
               onFilterChange={this.onFilterChange}
               showFilterStats={showFilterStats}
               showNotifications={showNotifications}
