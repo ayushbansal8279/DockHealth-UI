@@ -36,28 +36,6 @@ const initializeTaskDrawerPopoverHooks = () => {
     }
   }, []);
 
-  const filedInInputReference = useRef(null);
-  const [
-    isFiledInPopoverOpen,
-    openFiledInPopover,
-    closeFiledInPopover,
-  ] = useBoolean(false);
-
-  const [filedInInputValue, setFiledInInputValue] = useState('');
-
-  const onFiledInInputChange = useCallback((_event, value, reason) => {
-    if (reason === 'input') {
-      setFiledInInputValue(value);
-    }
-  }, []);
-
-  const taskMenuReference = useRef(null);
-  const [
-    isTaskMenuPopoverOpen,
-    openTaskMenuPopover,
-    closeTaskMenuPopover,
-  ] = useBoolean(false);
-
   return {
     patientInputReference,
     isPatientPopoverOpen,
@@ -72,18 +50,6 @@ const initializeTaskDrawerPopoverHooks = () => {
     closeInvitePopover,
     assignedToInputValue,
     onAssignedToInputChange,
-
-    filedInInputReference,
-    isFiledInPopoverOpen,
-    openFiledInPopover,
-    closeFiledInPopover,
-    filedInInputValue,
-    onFiledInInputChange,
-
-    taskMenuReference,
-    isTaskMenuPopoverOpen,
-    openTaskMenuPopover,
-    closeTaskMenuPopover,
   };
 };
 

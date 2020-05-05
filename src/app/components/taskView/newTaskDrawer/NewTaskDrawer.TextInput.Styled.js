@@ -92,7 +92,7 @@ export const DrawerInputBase = withStyles({
     paddingBottom: 0,
     padding: '1.25rem 0',
     '&::placeholder': {
-      color: palette.coolGrey1,
+      color: palette.mediumGrey,
       fontWeight: 'normal',
     },
     '&:focus': {
@@ -139,7 +139,7 @@ export const DrawerInputBaseMultiple = withStyles({
     paddingBottom: 0,
     padding: '1.50rem 0',
     '&::placeholder': {
-      color: palette.coolGrey1,
+      color: palette.mediumGrey,
       fontWeight: 'normal',
     },
     '&:focus': {

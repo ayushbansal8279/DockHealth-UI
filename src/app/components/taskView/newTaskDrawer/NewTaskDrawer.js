@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Button, Grid, IconButton, ListItem, Divider } from '@material-ui/core';
-import { Close, MoreHoriz } from '@material-ui/icons';
+import { Button, Grid } from '@material-ui/core';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
 import CubesLoader from 'components/common/CubesLoader';
@@ -19,53 +18,20 @@ import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
 import InviteMemberPopover from './NewTaskDrawer.InviteMemberPopover';
 import LabelsSection from './NewTaskDrawer.LabelsSection';
 import PrioritySection from './NewTaskDrawer.PrioritySection';
+import TopSection from './NewTaskDrawer.TopSection';
 import SelectInput from './NewTaskDrawer.SelectInput';
 import StatusSection from './NewTaskDrawer.StatusSection';
-import InputPopover from './NewTaskDrawer.InputPopover';
 import {
   AdornmentContainer,
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
-  FiledInSelect,
-  StyledList,
-  HorizontalLabel,
 } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 import {
   getFormattedMembers,
   getFormattedPatients,
 } from './NewTaskDrawer.Utilities';
-import SmallSwitchChevron from '../../../img/list-switch-chevron';
-
-const renderTaskList = ({
-  closePopover,
-  onFiledInInputChange,
-  setValue,
-  reFileTask,
-  closeTaskDrawer,
-  selectedTaskIdentifier,
-}) => taskList => {
-  const { taskListIdentifier, listName } = taskList;
-
-  return (
-    <ListItem
-      key={taskListIdentifier}
-      onClick={() => {
-        setValue('newTaskListId', taskListIdentifier);
-        onFiledInInputChange(listName);
-        closePopover();
-        if (selectedTaskIdentifier) {
-          reFileTask({ newTaskList: taskList });
-          closeTaskDrawer();
-        }
-      }}
-      button
-    >
-      {listName}
-    </ListItem>
-  );
-};
 
 const NewTaskDrawer = ({ members, taskList, isInbox }) => {
   const {
@@ -87,7 +53,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
-  const { handleSubmit, setValue, watch, register } = formMethods;
+  const { handleSubmit, setValue, watch } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
   const formattedMembers = getFormattedMembers({ members });
@@ -107,16 +73,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     closeInvitePopover,
     assignedToInputValue,
     onAssignedToInputChange,
-    filedInInputReference,
-    isFiledInPopoverOpen,
-    openFiledInPopover,
-    closeFiledInPopover,
-    filedInInputValue,
-    onFiledInInputChange,
-    taskMenuReference,
-    isTaskMenuPopoverOpen,
-    openTaskMenuPopover,
-    closeTaskMenuPopover,
   } = initializeTaskDrawerPopoverHooks();
 
   return (
@@ -124,138 +80,16 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormContext {...formMethods}>
           <Grid container spacing={2}>
-            <Grid
-              container
-              item
-              xs={12}
-              alignItems="center"
-              justify="space-between"
-            >
-              <Grid
-                container
-                item
-                xs={6}
-                alignItems="flex-start"
-                justify="flex-start"
-              >
-                {(!selectedTask ||
-                  selectedTask === undefined ||
-                  !selectedTask.parentTaskIdentifier) && (
-                  <>
-                    <input type="hidden" name="newTaskListId" ref={register} />
-                    <HorizontalLabel>FILED:</HorizontalLabel>
-                    <div
-                      ref={filedInInputReference}
-                      onClick={openFiledInPopover}
-                    >
-                      <FiledInSelect>
-                        {selectedTask ? (
-                          <span>
-                            {isInbox
-                              ? 'Inbox'
-                              : filedInInputValue || taskList?.listName}
-                          </span>
-                        ) : (
-                          <span>{isInbox ? 'Inbox' : taskList?.listName}</span>
-                        )}
-                      </FiledInSelect>
-                      <SmallSwitchChevron color={palette.orangeJulius} />
-                    </div>
-                    <InputPopover
-                      anchorElement={filedInInputReference}
-                      isPopoverOpen={isFiledInPopoverOpen}
-                      closePopover={closeFiledInPopover}
-                    >
-                      <StyledList>
-                        {(taskLists ?? []).map(
-                          renderTaskList({
-                            closePopover: closeFiledInPopover,
-                            onFiledInInputChange,
-                            setValue,
-                            reFileTask,
-                            closeTaskDrawer,
-                            selectedTaskIdentifier,
-                          }),
-                        )}
-                      </StyledList>
-                    </InputPopover>
-                  </>
-                )}
-              </Grid>
-              <Grid
-                container
-                item
-                xs={6}
-                alignItems="flex-end"
-                justify="flex-end"
-              >
-                <IconButton
-                  ref={taskMenuReference}
-                  onClick={() => {
-                    openTaskMenuPopover();
-                  }}
-                  size="small"
-                  color="secondary"
-                >
-                  <MoreHoriz />
-                </IconButton>
-                <Spacing horizontal={4} />
-                <IconButton
-                  onClick={() => {
-                    // storeAsCurrentTask(null);
-                    closeTaskDrawer();
-                  }}
-                  size="small"
-                  color="secondary"
-                >
-                  <Close />
-                </IconButton>
-                <InputPopover
-                  anchorElement={taskMenuReference}
-                  isPopoverOpen={isTaskMenuPopoverOpen}
-                  closePopover={closeTaskMenuPopover}
-                  popupStyle={{
-                    width: '200px',
-                    marginLeft: '-60px',
-                    marginTop: '-20px',
-                  }}
-                >
-                  <StyledList>
-                    <ListItem
-                      key="action_duplicate"
-                      onClick={onDuplicate({
-                        afterDuplicate: () => {
-                          // storeAsCurrentTask(newTask);
-                          closeTaskDrawer();
-                        },
-                        selectedTask,
-                      })}
-                      button
-                    >
-                      Duplicate
-                    </ListItem>
-                    {selectedTask &&
-                      selectedTask.taskIdentifier != null &&
-                      selectedTask.status !== 'COMPLETE' && (
-                        <ListItem
-                          key="action_delete"
-                          onClick={onDelete({
-                            afterDelete: () => {
-                              closeTaskDrawer();
-                            },
-                            selectedTask,
-                          })}
-                          button
-                        >
-                          Delete
-                        </ListItem>
-                      )}
-                  </StyledList>
-                </InputPopover>
-              </Grid>
-            </Grid>
-            <Divider
-              style={{ width: '100%', backgroundColor: palette.blueOcean }}
+            <TopSection
+              formMethods={formMethods}
+              taskLists={taskLists}
+              selectedTask={selectedTask}
+              taskList={taskList}
+              reFileTask={reFileTask}
+              onDelete={onDelete}
+              onDuplicate={onDuplicate}
+              isInbox={isInbox}
+              closeTaskDrawer={closeTaskDrawer}
             />
             <Grid item xs={12}>
               <TextInput
