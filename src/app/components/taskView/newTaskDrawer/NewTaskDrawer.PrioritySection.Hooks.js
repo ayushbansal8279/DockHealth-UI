@@ -5,9 +5,9 @@ import palette from 'styles/palette';
 
 export const PRIORITIES = [
   {
-    value: 'LOW',
+    value: 'NONE',
     label: 'No priority',
-    color: palette.coolGrey2,
+    color: 'transparent',
   },
   {
     value: 'HIGH',

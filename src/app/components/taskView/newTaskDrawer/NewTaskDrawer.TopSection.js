@@ -82,7 +82,7 @@ const TopSection = ({
           {selectedTask && !selectedTask.parentTaskIdentifier && (
             <>
               <input type="hidden" name="newTaskListId" ref={register} />
-              <HorizontalLabel>FILED:</HorizontalLabel>
+              <HorizontalLabel>FILED IN:</HorizontalLabel>
               <div ref={filedInInputReference} onClick={openFiledInPopover}>
                 <FiledInSelect>
                   {selectedTask ? (

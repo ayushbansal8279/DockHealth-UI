@@ -5,6 +5,11 @@ import palette from 'styles/palette';
 
 export const STATUSES = [
   {
+    value: 'NONE',
+    label: 'No status',
+    color: 'transparent',
+  },
+  {
     value: 'PLANNED',
     label: 'Planned',
     color: palette.brightBlue,

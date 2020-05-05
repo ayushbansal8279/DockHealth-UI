@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const CommentSectionContainer = styled.div`
-  background-color: ${palette.coolGrey4};
+  background-color: ${palette.blueGrey};
   padding: 1.5rem 2.5rem;
   margin: 0 -2rem;
 `;
@@ -16,8 +16,11 @@ export const CommentGroupContainer = styled.div`
 export const CommentActionLabel = styled.button`
   cursor: pointer;
   opacity: 0;
-  text-decoration: underline;
+  text-decoration: none;
   transition: all 0.25s ease-out;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export const CommentContainer = styled.div`

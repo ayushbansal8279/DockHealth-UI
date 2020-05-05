@@ -106,7 +106,7 @@ const Comment = ({
               </RobotoTypography>
             </AuthorLabelContainer>
           </CommentContentContainer>
-          {isCommentAuthor && (
+          {isCommentAuthor && !isEditing && (
             <>
               <Spacing horizontal={3} />
               <RobotoTypography condensed variant="h5" color="inherit">
