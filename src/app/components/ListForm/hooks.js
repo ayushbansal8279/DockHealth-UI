@@ -30,13 +30,15 @@ const initializeAddListFormHooks = () => {
 
   const { register, unregister, handleSubmit, setValue, watch } = formContext;
 
-  const { listOwner, currentList, people } = useSelector(store => ({
-    listOwner:
-      store.taskListState.currentList?.creator ?? store.userState.userProfile,
-    currentUser: store.userState.userProfile,
-    currentList: store.taskListState.currentList,
-    people: store.peopleState.peoplelist,
-  }));
+  const { listOwner, currentUser, currentList, people } = useSelector(
+    store => ({
+      listOwner:
+        store.taskListState.currentList?.creator ?? store.userState.userProfile,
+      currentUser: store.userState.userProfile,
+      currentList: store.taskListState.currentList,
+      people: store.peopleState.peoplelist,
+    }),
+  );
 
   const taskListIdentifier = currentList?.taskListIdentifier;
 
@@ -135,6 +137,7 @@ const initializeAddListFormHooks = () => {
     addMember,
     allAdminsWithOwner,
     allMembersValue,
+    currentUser,
     dispatch,
     formContext,
     formLabelContent,

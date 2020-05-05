@@ -10,11 +10,16 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import PeoplePicker from 'components/common/PeoplePicker/PeoplePicker';
 import {
   CancelButton,
+  CloseButton,
+  ModalContent,
+  ModalText,
+  Footer,
   FormContainer,
   FormLabel,
   FormIconContainer,
   FormDivider,
   StyledButton,
+  StyledModal,
 } from './styled';
 import initializeListFormHooks from './hooks';
 import messages from './messages';
@@ -22,19 +27,22 @@ import messages from './messages';
 const ADMIN_PICKER = 'ADMIN_PICKER';
 const MEMBER_PICKER = 'MEMBER_PICKER';
 
-const InputWithContext = props => {
-  const { register, errors, getValues } = useFormContext();
-  const { name } = props;
-  const values = getValues();
+const InvitedModal = ({ userName, closeModal }) => (
+  <StyledModal>
+    <ModalContent>
+      <CloseButton onClick={closeModal}>
+        <Close />
+      </CloseButton>
+      <ModalText>We’ve sent an invitation email to {userName}.</ModalText>
+    </ModalContent>
+  </StyledModal>
+);
 
-  return (
-    <Input
-      {...props}
-      ref={register}
-      error={errors?.[name]?.message}
-      value={values[name]}
-    />
-  );
+const InputWithContext = props => {
+  const { register, errors } = useFormContext();
+  const { name } = props;
+
+  return <Input {...props} ref={register} error={errors?.[name]?.message} />;
 };
 
 const onSubmit = ({
@@ -65,6 +73,7 @@ const ListForm = ({ setListFormOpen }) => {
     addMember,
     allAdminsWithOwner,
     allMembersValue,
+    currentUser,
     dispatch,
     formContext,
     formLabelContent,
@@ -77,7 +86,9 @@ const ListForm = ({ setListFormOpen }) => {
     taskListIdentifier,
   } = initializeListFormHooks();
 
+  const { orgUserRole } = currentUser;
   const [pickerOpened, setPickerOpened] = useState(null);
+  const [modalContent, setModalContent] = useState(null);
 
   return (
     <FormContainer
@@ -87,6 +98,12 @@ const ListForm = ({ setListFormOpen }) => {
       autoComplete="off"
       autoCorrect="off"
     >
+      {modalContent && (
+        <InvitedModal
+          closeModal={() => setModalContent(null)}
+          userName={modalContent}
+        />
+      )}
       {taskListIdentifier && (
         <>
           <Grid container justify="space-between" alignItems="center">
@@ -129,38 +146,46 @@ const ListForm = ({ setListFormOpen }) => {
         addPerson={addAdmin}
         availablePeopleList={peopleListForAdminPicker}
         closePicker={() => setPickerOpened(null)}
+        currentUserRole={orgUserRole}
         isOpen={pickerOpened === ADMIN_PICKER}
+        openModal={userName => setModalContent(userName)}
         peopleIdentifiers={allAdminsWithOwner}
         peopleLabel={messages.form.admins.label}
         peopleList={people}
         setOpenedPicker={() => setPickerOpened(ADMIN_PICKER)}
         removePerson={removeAdmin}
+        taskListIdentifier={taskListIdentifier}
         tooltipDescritpion={messages.form.admins.tooltip}
       />
       <PeoplePicker
         addPerson={addMember}
         availablePeopleList={peopleListForMemberPicker}
         closePicker={() => setPickerOpened(null)}
+        currentUserRole={orgUserRole}
         isOpen={pickerOpened === MEMBER_PICKER}
+        openModal={userName => setModalContent(userName)}
         peopleIdentifiers={allMembersValue}
         peopleLabel={messages.form.members.label}
         peopleList={people}
         setOpenedPicker={() => setPickerOpened(MEMBER_PICKER)}
         removePerson={removeMember}
+        taskListIdentifier={taskListIdentifier}
         tooltipDescritpion={messages.form.members.tooltip}
       />
-      <Grid container justify="flex-end" direction="row" wrap="nowrap">
+      <Footer container justify="flex-end" direction="row" wrap="nowrap">
         <CancelButton
           onClick={() => setListFormOpen(false)}
           variant="text"
           type="button"
         >
-          <MontserratTypography>{messages.form.cancel}</MontserratTypography>
+          <MontserratTypography>
+            <span style={{ fontWeight: '600' }}>{messages.form.cancel}</span>
+          </MontserratTypography>
         </CancelButton>
         <StyledButton variant="contained" type="submit" size="small">
           {messages.form.saveList}
         </StyledButton>
-      </Grid>
+      </Footer>
     </FormContainer>
   );
 };

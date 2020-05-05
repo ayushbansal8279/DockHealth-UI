@@ -1,9 +1,9 @@
-import { Button } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { fontSizes, fontWeights } from 'styles/font';
+import { fontSizes } from 'styles/font';
 
 export const FormContainer = styled.form`
   align-items: flex-start;
@@ -12,9 +12,8 @@ export const FormContainer = styled.form`
   flex-basis: auto;
   flex-flow: column wrap;
   font-family: 'Roboto Condensed', sans-serif;
-  min-width: 592px; // per design
+  min-width: 593px; // per design
   padding: 1.5rem;
-  width: 100%;
 
   & > * {
     margin: 0.25rem 0;
@@ -50,7 +49,6 @@ export const CancelButton = styled.button`
   color: ${palette.lightGray};
   cursor: pointer;
   font-size: ${fontSizes.regularPlus};
-  font-weight: ${fontWeights.bold};
   margin-right: ${spacing.large};
   text-decoration: underline;
   text-transform: uppercase;
@@ -75,4 +73,39 @@ export const TickIconContainer = styled.div`
     object-fit: contain;
     width: 100%;
   }
+`;
+
+export const Footer = styled(Grid)`
+  margin-top: ${spacing.large};
+`;
+
+export const StyledModal = styled.div`
+  position: absolute;
+  background-color: white;
+  box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17); // per design
+  width: 320px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+`;
+
+export const ModalContent = styled.div`
+  height: 100%;
+  position: relative;
+  width: 100%;
+  padding: ${spacing.regular};
+`;
+
+export const ModalText = styled.div`
+  height: 100%;
+  width: 70%;
+`;
+
+export const CloseButton = styled.button`
+  outline: none;
+  pointer: cursor;
+  position: absolute;
+  right: ${spacing.regular};
+  top: ${spacing.regular};
 `;
