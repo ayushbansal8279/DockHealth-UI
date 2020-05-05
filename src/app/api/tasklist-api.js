@@ -7,7 +7,6 @@ export function getTaskListForUser() {
   })
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -17,7 +16,6 @@ export function findPendingTaskListsForUser() {
     .get('list/findPendingTaskListsForUser')
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -30,7 +28,6 @@ export function addTaskList(tasklist) {
       return response?.data;
     })
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -40,7 +37,6 @@ export function getTaskListById(taskListIdentifier) {
     .get(`list/${taskListIdentifier}`)
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -54,7 +50,6 @@ export function updateTaskList(taskList) {
       return response?.data;
     })
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -66,7 +61,6 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -114,7 +108,6 @@ export function inviteMultipleUsersToTaskList(
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -124,7 +117,6 @@ export function getNonOrgUsersByTaskList(taskListIdentifier) {
     .get(`user/findNonOrgUsersByTaskList/${taskListIdentifier}`)
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -140,7 +132,6 @@ export function changeUserRoleForList(
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -150,7 +141,6 @@ export function deleteTaskListById(taskListIdentifier) {
     .delete(`list/deleteTaskListById/${taskListIdentifier}`)
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -165,7 +155,6 @@ export function removeUserFromTaskList(
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -179,7 +168,6 @@ export function cancelInviteToTaskList(taskListIdentifier, email) {
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -191,7 +179,6 @@ export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -204,7 +191,6 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -217,7 +203,6 @@ export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
     )
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -232,7 +217,6 @@ export function toggleListNotifications(
     )
     .then(response => response)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -242,7 +226,6 @@ export function findGenericListCountsForUser() {
     .get('list/getGenericListCountsForUser')
     .then(response => response?.data)
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -263,7 +246,6 @@ export function downloadPDF(taskListIdentifier) {
       return 'success';
     })
     .catch(error => {
-      console.log(error);
       throw new Error(error?.response?.data);
     });
 }
@@ -272,7 +254,6 @@ export const getTaskListStats = async ({ taskListIdentifier }) => {
   try {
     return await axios.get(`list/getTaskListStats/${taskListIdentifier}`);
   } catch (error) {
-    console.log(error);
     throw new Error(error?.response?.data);
   }
 };
