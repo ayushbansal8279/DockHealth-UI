@@ -6,6 +6,7 @@ import { invitePersonToOrganization } from 'actions/people-actions';
 import { showAlert } from 'helpers/utility-functions';
 import initializeInviteFormHooks from './hooks';
 import { Container, Row, StyledButton } from './styled';
+import messages from '../messages';
 
 const InputWithContext = props => {
   const { register, errors } = useFormContext();
@@ -59,7 +60,7 @@ const onSubmit = ({
         text:
           error?.response?.data?.errorMessage ??
           error?.message ??
-          'Invitation could not be sent, please try again later',
+          messages.inviteForm.submit.error,
       });
     });
 };
@@ -82,7 +83,7 @@ const InviteForm = ({
         <FormContext {...formContext}>
           <InputWithContext
             name="firstName"
-            label="First name"
+            label={messages.inviteForm.firstName.label}
             styling="secondary"
           />
         </FormContext>
@@ -90,7 +91,7 @@ const InviteForm = ({
         <FormContext {...formContext}>
           <InputWithContext
             name="lastName"
-            label="Last name"
+            label={messages.inviteForm.lastName.label}
             styling="secondary"
           />
         </FormContext>
@@ -99,9 +100,9 @@ const InviteForm = ({
         <FormContext {...formContext}>
           <InputWithContext
             name="email"
-            label="Email address"
+            label={messages.inviteForm.email.label}
             styling="secondary"
-            placeholder="Type the email address to invite"
+            placeholder={messages.inviteForm.email.placeholder}
             fullWidth
           />
         </FormContext>
@@ -122,7 +123,7 @@ const InviteForm = ({
             }),
           )}
         >
-          Invite
+          {messages.inviteForm.invite}
         </StyledButton>
       </Row>
     </Container>

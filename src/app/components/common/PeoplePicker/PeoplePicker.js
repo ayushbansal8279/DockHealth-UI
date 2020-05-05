@@ -11,7 +11,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { TickIconContainer } from '../../ListForm/styled';
 import InviteForm from './InviteForm/InviteForm';
-
+import messages from './messages';
 import {
   Container,
   EmptyPeople,
@@ -90,7 +90,7 @@ const EmptyFilteredPeople = ({ openInviteForm, hasAdminRole }) => (
         onClick={openInviteForm}
         startIcon={<img src={MailIcon} alt="mail" />}
       >
-        Invite a to list
+        {messages.peoplePicker.invite}
       </InviteButton>
     )}
   </NotFoundPeopleBox>
@@ -228,7 +228,7 @@ const PeoplePicker = ({
       </PeoplePickerBox>
       <PeopleListBox timeout={150} in={isOpen || showInviteForm}>
         <Input
-          label="Search"
+          label={messages.peoplePicker.search}
           onChange={event => setSearchValue(event.target.value)}
           value={searchValue}
           disabled={showInviteForm}

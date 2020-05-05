@@ -54,15 +54,14 @@ const onSubmit = ({
 
   saveTaskList(taskList)(dispatch)
     .then(() => {
-      toggleAlert('Task list saved successfully!', 'success');
+      toggleAlert(messages.submit.success, 'success');
       setListFormOpen(false);
     })
     .catch(error => {
       showAlert({
         status: 'error',
         title: 'Error',
-        text:
-          error?.message ?? 'Failed to save task list, please try again later',
+        text: error?.message ?? messages.submit.error,
       });
     });
 };
