@@ -1,8 +1,23 @@
 import styled from 'styled-components';
-import { Collapse, List, ListItem, ButtonBase } from '@material-ui/core';
+import {
+  Collapse,
+  List,
+  ListItem,
+  ButtonBase,
+  Button,
+} from '@material-ui/core';
+
 import palette, { opacify } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
+
+export const Container = styled.div`
+  background-color: ${palette.coolGrey4};
+  display: flex;
+  flex-direction: column;
+  padding: ${spacing.small};
+  width: 100%;
+`;
 
 export const PeoplePickerBox = styled.div`
   background-color: ${palette.coolGrey4};
@@ -26,6 +41,10 @@ export const SelectedPeopleIcons = styled.div`
   display: flex;
   justify-self: flex-end;
   margin: 0 0.5rem;
+
+  & > * {
+    margin-left: ${spacing.tiny};
+  }
 `;
 
 export const SelectedPeopleNames = styled.div`
@@ -50,6 +69,7 @@ export const PeopleLabel = styled.div`
 `;
 
 export const PeopleListBox = styled(Collapse)`
+  background-color: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17); // per design
   padding: ${props => (props.in ? spacing.small : 0)};
 
@@ -115,6 +135,7 @@ export const EmptyPeople = styled(ButtonBase)`
     border-radius: 50%;
     color: ${palette.blueOcean};
     width: 38px;
+    margin-left: ${spacing.tiny};
   }
 `;
 
@@ -131,4 +152,27 @@ export const MorePeopleLabel = styled.div`
   margin: 0;
   padding: 0;
   width: 38px;
+  margin-left: ${spacing.tiny};
+`;
+
+export const NotFoundPeopleBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: ${spacing.regular};
+
+  & > h4 {
+    padding-bottom: ${spacing.regularPlus};
+  }
+`;
+
+export const InviteButton = styled(Button)`
+  && {
+    font-weight: ${fontWeights.light};
+  }
+`;
+
+export const InvitedPeopleNames = styled.span`
+  color: ${palette.coolGrey2};
+  font-weight: ${fontWeights.light};
+  font-style: italic;
 `;
