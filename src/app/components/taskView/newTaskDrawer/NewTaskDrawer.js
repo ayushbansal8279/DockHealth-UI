@@ -20,6 +20,7 @@ import PrioritySection from './NewTaskDrawer.PrioritySection';
 import TopSection from './NewTaskDrawer.TopSection';
 import SelectInput from './NewTaskDrawer.SelectInput';
 import StatusSection from './NewTaskDrawer.StatusSection';
+import TaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
 import {
   AdornmentContainer,
   EnvelopeIconContainer,
@@ -116,6 +117,15 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 }}
               />
             </Grid>
+            {selectedTask?.sourceMessage && (
+              <Grid item xs={12}>
+                <TaskDrawerEmailBodyContainer
+                  emailBody={selectedTask.sourceMessage}
+                  task={selectedTask}
+                  members={members}
+                />
+              </Grid>
+            )}
             <Grid item xs={6}>
               <SelectInput
                 name="patientIdentifier"
