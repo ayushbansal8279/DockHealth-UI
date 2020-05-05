@@ -8,7 +8,6 @@ import InboxIcon from 'img/drawer/InboxIcon';
 import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { UniversalTimePicker } from 'components/userProfileView/UniversalInput';
 import AddPatientPopover from './NewTaskDrawer.AddPatientPopover';
 import AtttachmentsSection from './NewTaskDrawer.AttachmentsSection';
 import CommentSection from './NewTaskDrawer.CommentSection';
@@ -206,12 +205,18 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
             </Grid>
             <Grid item xs={6}>
               <HiddenFieldContainer visible={dueDateValue}>
-                <UniversalTimePicker
+                <TextInput
                   name="dueTime"
                   label="Due Time"
                   placeholder="12:00 PM"
                   InputLabelProps={{
                     shrink: true,
+                  }}
+                  InputProps={{
+                    type: 'time',
+                  }}
+                  inputProps={{
+                    step: 300, // 5 min
                   }}
                 />
               </HiddenFieldContainer>
