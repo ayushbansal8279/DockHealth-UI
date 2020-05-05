@@ -16,6 +16,10 @@ const messages = {
     saveList: 'Save list',
     cancel: 'Cancel',
   },
+  submit: {
+    success: 'Task list saved successfully!',
+    error: 'Failed to save task list, please try again later',
+  },
 };
 
 export default messages;

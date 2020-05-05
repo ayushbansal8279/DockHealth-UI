@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { isEmpty } from 'ramda';
 import { Grid } from '@material-ui/core';
 import TickIcon from 'img/tick-icon';
-import { isEmpty } from 'ramda';
-
+import MailIcon from 'img/mail';
 import CrossIcon from 'img/cross';
+import useBoolean from 'hooks/useBoolean';
 import Member from 'components/members/Member';
 import Input from 'components/common/Input/Input';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { TickIconContainer } from '../../ListForm/styled';
+import InviteForm from './InviteForm/InviteForm';
+import messages from './messages';
 import {
+  Container,
   EmptyPeople,
+  InviteButton,
+  InvitedPeopleNames,
   MorePeopleLabel,
+  NotFoundPeopleBox,
   PeoplePickerBox,
   PeopleListBox,
   PeopleList,
@@ -33,9 +40,7 @@ const renderPickerOption = ({
   peopleIdentifiers,
 }) => member => {
   const { firstName, lastName, userIdentifier } = member;
-
   const userName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
-
   const isInList = (peopleIdentifiers ?? []).includes(userIdentifier);
 
   return (
@@ -57,9 +62,7 @@ const renderPickerOption = ({
           </TickIconContainer>
           <PeopleName>{userName}</PeopleName>
         </Grid>
-        <div>
-          <Member member={member} size="38" />
-        </div>
+        <Member member={member} size="38" />
       </Grid>
     </PeopleListItem>
   );
@@ -68,7 +71,7 @@ const renderPickerOption = ({
 const renderSelectedPeople = (id, peopleList) => (
   <Member
     key={id}
-    size={40}
+    size={38}
     member={
       Array.isArray(peopleList) &&
       peopleList.find(({ userIdentifier }) => userIdentifier === id)
@@ -76,12 +79,21 @@ const renderSelectedPeople = (id, peopleList) => (
   />
 );
 
-const EmptyFilteredPeople = () => (
-  <PeopleListItem>
-    <Grid container justify="center">
-      <MontserratTypography variant="h4">No people found</MontserratTypography>
-    </Grid>
-  </PeopleListItem>
+const EmptyFilteredPeople = ({ openInviteForm, hasAdminRole }) => (
+  <NotFoundPeopleBox>
+    <MontserratTypography variant="h4">No people found</MontserratTypography>
+    {hasAdminRole && (
+      <InviteButton
+        variant="contained"
+        type="button"
+        size="small"
+        onClick={openInviteForm}
+        startIcon={<img src={MailIcon} alt="mail" />}
+      >
+        {messages.peoplePicker.invite}
+      </InviteButton>
+    )}
+  </NotFoundPeopleBox>
 );
 
 const MorePeopleContainer = ({ count }) => {
@@ -104,19 +116,46 @@ const joinSelecetedPeopleNames = (peopleIdentifiers = [], peopleList = []) =>
     )
     .join(', ');
 
+const getCrossIconAction = (pickerState, inviteFormState) => {
+  const { isOpenPicker, closePicker, openPicker } = pickerState;
+  const { isOpenForm, closeForm } = inviteFormState;
+
+  if (isOpenPicker && !isOpenForm) return closePicker;
+  if (!isOpenPicker && isOpenForm) return closeForm;
+
+  return openPicker;
+};
+
 const PeoplePicker = ({
   addPerson,
   availablePeopleList,
   closePicker,
+  currentUserRole,
   isOpen,
+  openModal,
   peopleIdentifiers,
   peopleList,
   peopleLabel,
   setOpenedPicker,
   removePerson,
+  taskListIdentifier,
   tooltipDescritpion,
 }) => {
   const [searchValue, setSearchValue] = useState('');
+  const [showInviteForm, openInviteForm, closeInviteForm] = useBoolean(false);
+  const [invitedPeople, addInvitedPeople] = useState([]);
+
+  useEffect(() => {
+    if (showInviteForm) {
+      closePicker();
+    }
+  }, [closePicker, showInviteForm]);
+
+  useEffect(() => {
+    if (!isOpen && !showInviteForm) {
+      setSearchValue('');
+    }
+  }, [isOpen, showInviteForm]);
 
   const filteredPeople = Array.isArray(availablePeopleList)
     ? availablePeopleList.filter(
@@ -136,8 +175,14 @@ const PeoplePicker = ({
     peopleList,
   );
 
+  const joinedInvitedPeople = invitedPeople?.join(', ');
+
+  const [firstName, lastName] = searchValue?.split(' ');
+
+  const hasAdminRole = currentUserRole === 'ADMIN';
+
   return (
-    <>
+    <Container>
       <PeoplePickerBox>
         <SelectedPeople>
           <SelectedPeopleNames>
@@ -147,7 +192,11 @@ const PeoplePicker = ({
                 <Tooltip description={tooltipDescritpion} />
               )}
             </PeopleLabel>
-            <PeopleNames>{joinedPeopleNames}</PeopleNames>
+            <PeopleNames>
+              {joinedPeopleNames}
+              {joinedPeopleNames && joinedInvitedPeople && ', '}
+              <InvitedPeopleNames>{joinedInvitedPeople}</InvitedPeopleNames>
+            </PeopleNames>
           </SelectedPeopleNames>
           <SelectedPeopleIcons>
             {peopleIdentifiers
@@ -156,32 +205,67 @@ const PeoplePicker = ({
             <MorePeopleContainer
               count={peopleIdentifiers?.length - VISIBLE_PEOPLE_ICONS}
             />
-            <EmptyPeople onClick={isOpen ? closePicker : setOpenedPicker}>
-              <PeopleCrossIcon rotated={isOpen} src={CrossIcon} />
+            <EmptyPeople
+              onClick={getCrossIconAction(
+                {
+                  isOpenPicker: isOpen,
+                  closePicker,
+                  openPicker: setOpenedPicker,
+                },
+                {
+                  isOpenForm: showInviteForm,
+                  closeForm: closeInviteForm,
+                },
+              )}
+            >
+              <PeopleCrossIcon
+                rotated={isOpen || showInviteForm}
+                src={CrossIcon}
+              />
             </EmptyPeople>
           </SelectedPeopleIcons>
         </SelectedPeople>
       </PeoplePickerBox>
-      <PeopleListBox timeout={150} in={isOpen}>
+      <PeopleListBox timeout={150} in={isOpen || showInviteForm}>
         <Input
-          label="Search"
+          label={messages.peoplePicker.search}
           onChange={event => setSearchValue(event.target.value)}
+          value={searchValue}
+          disabled={showInviteForm}
         />
-        <PeopleList>
-          {isEmpty(filteredPeople) ? (
-            <EmptyFilteredPeople />
-          ) : (
-            filteredPeople.map(
-              renderPickerOption({
-                peopleIdentifiers,
-                addPerson,
-                removePerson,
-              }),
-            )
-          )}
-        </PeopleList>
+        {showInviteForm && (
+          <InviteForm
+            addPerson={addPerson}
+            addInvitedPeople={name =>
+              addInvitedPeople([...invitedPeople, name])
+            }
+            closeInviteForm={closeInviteForm}
+            hasAdminRole={hasAdminRole}
+            initialValues={{ firstName, lastName }}
+            openModal={openModal}
+            taskListIdentifier={taskListIdentifier}
+          />
+        )}
+        {!showInviteForm && (
+          <PeopleList>
+            {isEmpty(filteredPeople) ? (
+              <EmptyFilteredPeople
+                openInviteForm={openInviteForm}
+                hasAdminRole={hasAdminRole}
+              />
+            ) : (
+              filteredPeople.map(
+                renderPickerOption({
+                  peopleIdentifiers,
+                  addPerson,
+                  removePerson,
+                }),
+              )
+            )}
+          </PeopleList>
+        )}
       </PeopleListBox>
-    </>
+    </Container>
   );
 };
 

@@ -92,7 +92,11 @@ export function getActiveMembersByTaskListId(taskListIdentifier) {
       .catch(noop);
 }
 
-export function invitePersonToTaskList(formProps, taskListIdentifier) {
+export function invitePersonToTaskList(
+  formProps,
+  taskListIdentifier,
+  showBanner = true,
+) {
   const personInfo = {
     email: formProps.email,
     firstName: formProps.firstName,
@@ -106,7 +110,9 @@ export function invitePersonToTaskList(formProps, taskListIdentifier) {
           type: ActionTypes.INVITE_PERSON_TASKLIST_SUCCESS,
           addedUser: response,
         });
-        toggleAlert('Invitation sent!', 'success');
+        if (showBanner) toggleAlert('Invitation sent!', 'success');
+
+        return response;
       })
       .catch(error => {
         throw error;

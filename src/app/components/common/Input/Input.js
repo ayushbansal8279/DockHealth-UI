@@ -1,5 +1,30 @@
 import React from 'react';
-import { InputBox, InputField, InputLabel, InputError, RedDot } from './styled';
+import {
+  PrimaryInputBox,
+  PrimaryInputLabel,
+  PrimaryInputField,
+  PrimaryInputError,
+  SecondaryInputBox,
+  SecondaryInputLabel,
+  SecondaryInputField,
+  SecondaryInputError,
+  RedDot,
+} from './styled';
+
+const components = {
+  primary: {
+    boxComponent: PrimaryInputBox,
+    labelComponent: PrimaryInputLabel,
+    fieldComponent: PrimaryInputField,
+    errorComponent: PrimaryInputError,
+  },
+  secondary: {
+    boxComponent: SecondaryInputBox,
+    labelComponent: SecondaryInputLabel,
+    fieldComponent: SecondaryInputField,
+    errorComponent: SecondaryInputError,
+  },
+};
 
 const Input = React.forwardRef(
   (
@@ -13,30 +38,37 @@ const Input = React.forwardRef(
       placeholder,
       required,
       showError,
+      styling = 'primary',
       type,
       value,
     },
     reference,
   ) => {
+    const {
+      boxComponent: Box,
+      labelComponent: Label,
+      fieldComponent: Field,
+      errorComponent: Error,
+    } = components[styling];
     const hasError = showError && error;
+    const simpleInput = reference ? {} : { onChange, value };
     return (
-      <InputBox fullWidth={fullWidth}>
-        <InputLabel htmlFor={name}>
+      <Box fullWidth={fullWidth}>
+        <Label htmlFor={name}>
           {label}
           {required && <RedDot>*</RedDot>}
-        </InputLabel>
-        <InputField
+        </Label>
+        <Field
           id={name}
           name={name}
           type={type}
-          onChange={onChange}
           disabled={disabled}
           placeholder={placeholder}
-          value={value}
           ref={reference}
+          {...simpleInput}
         />
-        {hasError && <InputError>{error}</InputError>}
-      </InputBox>
+        {hasError && <Error>{error}</Error>}
+      </Box>
     );
   },
 );
