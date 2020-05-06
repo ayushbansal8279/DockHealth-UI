@@ -55,7 +55,7 @@ export const SelectedPeopleNames = styled.div`
 export const PeopleLabel = styled.div`
   display: flex;
   align-items: baseline;
-  color: ${props => props.hasSelectedPeople && palette.lightGray};
+  color: ${props => props.hasSelectedPeople && palette.lightGrey};
   font-size: ${props =>
     props.hasSelectedPeople ? fontSizes.smallPlus : fontSizes.regular};
   left: ${props => (props.hasSelectedPeople ? spacing.regular : 0)};

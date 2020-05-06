@@ -28,7 +28,7 @@ export const PrimaryInputField = styled.input`
 `;
 
 export const PrimaryInputLabel = styled.label`
-  color: ${palette.lightGray};
+  color: ${palette.lightGrey};
   font-size: ${fontSizes.smallPlus};
   padding: ${spacing.tiny} 0;
 `;
@@ -64,7 +64,7 @@ export const SecondaryInputField = styled.input`
 `;
 
 export const SecondaryInputLabel = styled.label`
-  color: ${palette.lightGray};
+  color: ${palette.lightGrey};
   font-size: ${fontSizes.smallPlus};
   padding: ${spacing.tiny} 0;
   text-transform: uppercase;
