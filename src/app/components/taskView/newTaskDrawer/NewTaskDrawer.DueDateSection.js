@@ -66,16 +66,23 @@ const dueDateOptions = [
   },
 ];
 
-const renderDropdownItem = ({ openCalendar, closeCalendar }) => ({
-  setValue,
+const renderDropdownItem = ({
+  openCalendar,
+  closeCalendar,
+  openPopover,
   closePopover,
-}) => ({ label, value, disabled }) => (
+}) => ({ setValue }) => ({ label, value, disabled }) => (
   <div
     onClick={() => {
       if (disabled) return;
 
       if (value === SET_DATE_VALUE) {
         openCalendar();
+        closePopover();
+        setTimeout(() => {
+          // a simple hack to reopen the Popover since it doesn't support scroll and needs to have everything displayed so as to re-position
+          openPopover();
+        }, 50);
       } else {
         setValue(value);
         closePopover();
@@ -92,6 +99,7 @@ const DueDateSection = ({ selectedTask }) => {
 
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
   const popoverStateArray = useBoolean(false);
+  const openPopover = popoverStateArray[1];
   const closePopover = popoverStateArray[2];
 
   const { setValue, watch } = useFormContext();
@@ -152,6 +160,8 @@ const DueDateSection = ({ selectedTask }) => {
       renderItem={renderDropdownItem({
         openCalendar,
         closeCalendar,
+        openPopover,
+        closePopover,
       })}
       popoverStateArray={popoverStateArray}
     >
