@@ -46,7 +46,7 @@ export const StyledButton = withStyles({
 })(Button);
 
 export const CancelButton = styled.button`
-  color: ${palette.lightGray};
+  color: ${palette.lightGrey};
   cursor: pointer;
   font-size: ${fontSizes.regularPlus};
   margin-right: ${spacing.large};
