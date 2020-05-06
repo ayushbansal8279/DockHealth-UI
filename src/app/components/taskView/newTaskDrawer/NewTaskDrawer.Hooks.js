@@ -251,6 +251,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
   }, [dispatch]);
 
   const currentAssignedToValue = watch('assignedToIdentifier');
+
   const currentAssignedToAdornment = useMemo(() => {
     const currentMember = members?.find(
       ({ userIdentifier }) => currentAssignedToValue === userIdentifier,
@@ -262,6 +263,15 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       </MemberAdornmentContainer>
     ) : null;
   }, [currentAssignedToValue, members]);
+
+  const getMemberAdornment = (memberIdentifier, listMembers) => {
+    const currentMember = listMembers?.find(
+      ({ userIdentifier }) => memberIdentifier === userIdentifier,
+    );
+    return currentMember ? (
+      <Member showTooltip={false} member={currentMember} size={30} />
+    ) : null;
+  };
 
   const reFileTask = useCallback(
     ({ newTaskList }) => {
@@ -331,6 +341,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     patients,
     taskLists,
     currentAssignedToAdornment,
+    getMemberAdornment,
     closeTaskDrawer,
     isSaving,
     reFileTask,

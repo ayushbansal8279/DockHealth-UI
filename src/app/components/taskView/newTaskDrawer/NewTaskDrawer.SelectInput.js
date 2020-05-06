@@ -16,12 +16,10 @@ import { prop, propOr } from 'ramda';
 import React, { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
-
-import {
-  AdornmentContainer,
-  DrawerChip,
-} from './NewTaskDrawer.SelectInput.Styled';
-import { CondensedH4 } from './NewTaskDrawer.Styled';
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
+import { DrawerChip } from './NewTaskDrawer.SelectInput.Styled';
+import { CondensedH4, AdornmentContainer } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 
 const onChange = ({ multiple, name, setValue }) => (_event, option) => {
@@ -44,6 +42,27 @@ const onChange = ({ multiple, name, setValue }) => (_event, option) => {
     setValue(name, option?.value);
   }
 };
+
+const renderItemWithHighlighting = (option, inputValue) => {
+  const matches = match(option.displayLabel, inputValue);
+  const parts = parse(option.displayLabel, matches);
+  return (
+    <div>
+      {parts.map((part) => (
+        <span
+          key={`${option.displayLabel}_${part}`}
+          style={{ fontWeight: part.highlight ? 700 : 400 }}
+        >
+          {part.text}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+// const startAdornmentProp = {
+//   startAdornment: <AdornmentContainer>+</AdornmentContainer>
+// }
 
 const SelectInput = React.forwardRef(
   (
@@ -128,7 +147,9 @@ const SelectInput = React.forwardRef(
         id={`autocomplete-${name}`}
         options={availableOptions}
         getOptionLabel={option => renderOptionLabel(option)}
-        renderOption={option => renderItem(option)}
+        renderOption={(option, { inputValue }) =>
+          renderItem(option, inputValue)
+        }
         disableClearable={disableClearable}
         openOnFocus
         fullWidth
@@ -167,7 +188,23 @@ const SelectInput = React.forwardRef(
             // Both inputProps & InputProps are defined in here to follow the Material UI convention
             // for TextField component → InputProps spread to InputBase component, while
             // inputProps go directly to the native input component
-            InputProps={{ ...InputProps, ...InputParameters }}
+            InputProps={
+              startAdornment && (!currentOption || currentOption === '')
+                ? {
+                    ...InputProps,
+                    ...InputParameters,
+                    ...{ startAdornment: InputProps.startAdornment },
+                    ...{ endAdornment: InputProps.endAdornment },
+                  }
+                : {
+                    ...InputProps,
+                    ...InputParameters,
+                    ...{ endAdornment: InputProps.endAdornment },
+                  }
+            }
+            // InputProps={{
+            //   startAdornment: <AdornmentContainer>+</AdornmentContainer>,
+            // }}
             inputProps={{
               ...inputProps,
               ...inputParameters,
@@ -175,7 +212,6 @@ const SelectInput = React.forwardRef(
             label={label}
             name={name}
             placeholder={placeholder}
-            startAdornment={startAdornment}
             multiple={multiple}
             ref={reference}
           />
@@ -186,7 +222,7 @@ const SelectInput = React.forwardRef(
         forcePopupIcon={Boolean(endAdornment)}
         popupIcon={
           <AdornmentContainer>
-            {endAdornment ?? (
+            {endAdornment && (
               <KeyboardArrowDown fontSize="small" color="inherit" />
             )}
           </AdornmentContainer>
@@ -211,8 +247,8 @@ SelectInput.propTypes = {
   placeholder: string,
   renderItem: func,
   renderOptionLabel: func,
-  startAdornment: node,
-  endAdornment: node,
+  startAdornment: bool,
+  endAdornment: bool,
   forcePopupIcon: bool,
   noOptionsText: node,
   getOptionDisabled: func,
@@ -228,9 +264,10 @@ SelectInput.propTypes = {
 SelectInput.defaultProps = {
   children: [],
   placeholder: '',
-  renderItem: prop('label'),
+  renderItem: renderItemWithHighlighting,
+  // renderItem: prop('label'),
   renderOptionLabel: propOr('', 'displayLabel'),
-  startAdornment: undefined,
+  startAdornment: false,
   endAdornment: false,
   forcePopupIcon: undefined,
   noOptionsText: undefined,

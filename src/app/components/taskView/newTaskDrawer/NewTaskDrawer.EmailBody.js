@@ -6,7 +6,7 @@ import EnvelopeIcon from 'img/envelope.svg';
 import palette from 'styles/palette';
 
 const EmailBodyContainer = styled.div`
-  background-color: ${palette.lightGrey};
+  background-color: ${palette.coolGrey4};
   margin-top: 0.5rem;
   padding: 1rem;
   width: 100%;

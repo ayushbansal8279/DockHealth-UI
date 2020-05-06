@@ -29,6 +29,7 @@ export const LabelContainer = styled.div`
   overflow: hidden;
   text-overflow: ellispis;
   white-space: nowrap;
+  color: ${palette.darkGrey};
 `;
 
 export const LabelInputContainer = styled.div`

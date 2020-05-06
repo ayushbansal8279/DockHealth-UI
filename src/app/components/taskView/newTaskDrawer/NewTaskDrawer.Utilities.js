@@ -3,6 +3,8 @@ import React from 'react';
 
 import Member from 'components/members/Member';
 
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
 import {
   MemberLabelContainer,
   PatientLabelContainer,
@@ -74,3 +76,20 @@ export const getFormattedLabels = ({ labels }) =>
       displayLabel: labelName,
     };
   });
+
+export const renderPartsWithHighlighting = (optionValue, inputValue) => {
+  const matches = match(optionValue, inputValue);
+  const parts = parse(optionValue, matches);
+  return (
+    <>
+      {parts.map((part) => (
+        <span
+          key={`${optionValue}_${part}`}
+          style={{ fontWeight: part.highlight ? 700 : 400 }}
+        >
+          {part.text}
+        </span>
+      ))}
+    </>
+  );
+};

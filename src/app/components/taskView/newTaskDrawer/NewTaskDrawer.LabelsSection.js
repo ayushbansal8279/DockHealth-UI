@@ -39,6 +39,7 @@ const LabelsSection = ({ isInbox, selectedTaskIdentifier }) => {
           setCurrentlyEditedOption={setCurrentlyEditedOption}
         />
       )}
+      endAdornment
     >
       {formattedLabels}
     </SelectInput>
