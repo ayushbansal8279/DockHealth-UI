@@ -6,7 +6,7 @@ import { useUnmount } from 'react-use';
 import { bindActionCreators } from 'redux';
 import * as TaskActions from 'actions/task-actions';
 import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
-import TaskView from 'views/Task/TaskView';
+import TaskView from 'views/Task/TaskViewLegacy';
 
 const TaskListLayout = ({
   searchedTasks,
