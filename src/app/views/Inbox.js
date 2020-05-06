@@ -10,7 +10,7 @@ import * as userApi from 'api/user-api';
 import { downloadPDF } from 'api/tasklist-api';
 import { onButtonClicked } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
-import TaskView from './Task/TaskView';
+import TaskView from './Task/TaskViewLegacy';
 
 class Inbox extends PureComponent {
   componentDidMount() {

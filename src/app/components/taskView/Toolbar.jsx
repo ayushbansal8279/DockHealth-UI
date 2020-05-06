@@ -1,4 +1,5 @@
 import { Button, Grid } from '@material-ui/core';
+import { Add, Close } from '@material-ui/icons';
 import { splitAt } from 'ramda';
 import React, { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
@@ -7,18 +8,22 @@ import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
+import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
 import Spacing from '../common/Spacing';
-// import TipsButton from '../common/TipsButton';
+import TipsButton from '../common/TipsButton';
 import UniversalTooltip from '../common/UniversalTooltip';
 import { InviteMemberPopoverWithButton } from '../members/InviteMemberPopover';
 import Member from '../members/Member';
-// import Search from './Search';
-// import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
-import FilterPopover from './Toolbar.FilterPopover';
+import Search from './Search';
+import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
-import { MoreMembersButtonContainer, ToolbarLabel } from './Toolbar.Styled';
+import {
+  MoreMembersButtonContainer,
+  SlimViewToggle,
+  ToolbarLabel,
+} from './Toolbar.Styled';
 
 const renderMemberAvatar = ({ taskListMembers }) => member => {
   const taskListMember =
@@ -83,10 +88,17 @@ const getMembersNames = ({ members }) =>
   });
 
 export default ({
-  // handleSearch,
-  // initialSearchValue,
-  // searchValue,
-  // preferencesInitialized,
+  addingNewSubtask,
+  handleSearch,
+  onAddTaskButtonClick,
+  initialSearchValue,
+  searchValue,
+  preferencesInitialized,
+  selectedTask,
+  showAddTaskButton = true,
+  slimView,
+  switchSlimView,
+  taskDrawerOpen,
   taskList,
   members,
   membersNotInTaskList,
@@ -94,15 +106,16 @@ export default ({
   isInbox,
   filterBy,
   isSpecialList,
+  isMultiList,
   onFilterChange,
   paneled = false,
   showFilterStats = true,
   showNotifications = true,
   showMembers = true,
-  // showTipsButton = false,
-  // tipsPanelOpen = false,
-  // tipsButtonReference = null,
-  // toggleTips,
+  showTipsButton = false,
+  tipsPanelOpen = false,
+  tipsButtonReference = null,
+  toggleTips,
   printData: { tasks = [], completedTasks = [], taskListMembers = [] },
 }) => {
   const [isMorePopoverOpen, openMorePopover, closeMorePopover] = useBoolean(
@@ -110,12 +123,12 @@ export default ({
   );
   const [
     isFilterPopoverOpen,
-    // openFilterPopover,
+    openFilterPopover,
     closeFilterPopover,
   ] = useBoolean(false);
 
-  // const currentFilterDescription =
-  //   filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
+  const currentFilterDescription =
+    filterOptions.find(({ value }) => value === filterBy)?.description ?? '';
 
   const notificationsEnabled = taskList?.notifications;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -128,6 +141,7 @@ export default ({
     dispatch,
   });
   const moreButtonReference = useRef(null);
+  const addTaskButtonReference = useRef(null);
   const filterButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
 
@@ -140,10 +154,19 @@ export default ({
   const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
 
+  const isMainTaskDrawerOpen =
+    taskDrawerOpen && !selectedTask?.taskIdentifier && !addingNewSubtask;
+
   return (
     <PageContentHeader paneled={paneled}>
-      {/* <div id="toolbar-left-container">
+      <div id="toolbar-left-container">
         <Grid container alignItems="center" direction="row" wrap="nowrap">
+          <SlimViewToggle
+            onClick={switchSlimView}
+            slimView={slimView}
+            variant="outlined"
+          />
+          <Spacing horizontal={3} />
           <Button
             variant="text"
             onClick={openFilterPopover}
@@ -159,6 +182,27 @@ export default ({
               color={palette.brightBlue}
             />
           </Button>
+          {currentFilterDescription && (
+            <>
+              <Spacing horizontal={3} />
+              <ToolbarLabel
+                variant="body1"
+                component="span"
+                style={{ color: palette.coolGrey1 }}
+              >
+                {currentFilterDescription}
+              </ToolbarLabel>
+              <Spacing horizontal={3} />
+              <ToolbarLabel
+                variant="body1"
+                component="span"
+                onClick={clearFilter}
+                style={{ cursor: 'pointer' }}
+              >
+                Clear
+              </ToolbarLabel>
+            </>
+          )}
           {preferencesInitialized && (
             <>
               <Spacing horizontal={4} />
@@ -180,67 +224,80 @@ export default ({
             </>
           )}
         </Grid>
-      </div> */}
-      <Grid
-        container
-        alignItems="center"
-        direction="row"
-        wrap="nowrap"
-        justify="flex-end"
-      >
-        {!isInbox && (
-          <>
-            <Spacing horizontal={3} />
-            <Button
-              variant="text"
-              ref={moreButtonReference}
-              onClick={openMorePopover}
-              size="small"
-            >
-              <ToolbarLabel variant="body1" component="span">
-                ACTIONS
-              </ToolbarLabel>
+      </div>
+      <div>
+        <Grid
+          container
+          alignItems="center"
+          direction="row"
+          wrap="nowrap"
+          justify="flex-end"
+        >
+          {!isInbox && (
+            <>
               <Spacing horizontal={3} />
-              <RotatableChevron
-                rotated={isMorePopoverOpen}
-                color={palette.brightBlue}
-              />
-            </Button>
-            {!isSpecialList && showMembers && (
-              <>
-                <Spacing horizontal={4} />
-                {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
-                {hiddenMembersCount > 0 && (
-                  <>
-                    <Spacing horizontal={1} />
-                    <UniversalTooltip
-                      placement="bottom"
-                      open={isShowMoreMembersTooltipOpen}
-                      anchorEl={moreMembersButtonReference.current}
-                    >
-                      {getMembersNames({ members: hiddenMembers })}
-                    </UniversalTooltip>
-                    <MoreMembersButtonContainer
-                      onMouseEnter={showMoreMembersTooltip}
-                      onMouseLeave={hideMoreMembersTooltip}
-                      ref={moreMembersButtonReference}
-                    >
-                      +{hiddenMembersCount}
-                    </MoreMembersButtonContainer>
-                  </>
-                )}
-                <Spacing horizontal={2} />
-                <InviteMemberPopoverWithButton
-                  size={40}
-                  members={members}
-                  membersNotInTaskList={membersNotInTaskList}
-                  taskList={taskList}
+              <Button
+                variant="text"
+                ref={moreButtonReference}
+                onClick={openMorePopover}
+                size="small"
+              >
+                <ToolbarLabel variant="body1" component="span">
+                  ACTIONS
+                </ToolbarLabel>
+                <Spacing horizontal={3} />
+                <RotatableChevron
+                  rotated={isMorePopoverOpen}
+                  color={palette.brightBlue}
                 />
-              </>
+              </Button>
+              {!isSpecialList && showMembers && (
+                <>
+                  <Spacing horizontal={4} />
+                  {shownMembers?.map(renderMemberAvatar({ taskListMembers }))}
+                  {hiddenMembersCount > 0 && (
+                    <>
+                      <Spacing horizontal={1} />
+                      <UniversalTooltip
+                        placement="bottom"
+                        open={isShowMoreMembersTooltipOpen}
+                        anchorEl={moreMembersButtonReference.current}
+                      >
+                        {getMembersNames({ members: hiddenMembers })}
+                      </UniversalTooltip>
+                      <MoreMembersButtonContainer
+                        onMouseEnter={showMoreMembersTooltip}
+                        onMouseLeave={hideMoreMembersTooltip}
+                        ref={moreMembersButtonReference}
+                      >
+                        +{hiddenMembersCount}
+                      </MoreMembersButtonContainer>
+                    </>
+                  )}
+                  <Spacing horizontal={2} />
+                  <InviteMemberPopoverWithButton
+                    size={40}
+                    members={members}
+                    membersNotInTaskList={membersNotInTaskList}
+                    taskList={taskList}
+                  />
+                </>
+              )}
+            </>
+          )}
+          {showAddTaskButton && <Spacing horizontal={5} />}
+          <div ref={addTaskButtonReference}>
+            {!isMultiList && showAddTaskButton && (
+              <AdornedButton
+                adornment={isMainTaskDrawerOpen ? <Close /> : <Add />}
+                onClick={onAddTaskButtonClick}
+              >
+                ADD A TASK
+              </AdornedButton>
             )}
-          </>
-        )}
-      </Grid>
+          </div>
+        </Grid>
+      </div>
       <MorePopover
         moreButtonReference={moreButtonReference}
         closeMorePopover={closeMorePopover}

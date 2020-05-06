@@ -20,7 +20,7 @@ import { groupTasksAndCompletedTasksByList } from 'helpers/group-tasks-by-list';
 import usePatient from 'hooks/use-patient';
 import BackIcon from 'img/back.svg';
 import themeMontserrat from 'styles/theme-montserrat';
-import TaskView from 'views/Task/TaskView';
+import TaskView from 'views/Task/TaskViewLegacy';
 import CubesLoader from 'components/common/CubesLoader';
 import GenericHeader from 'components/common/GenericHeader';
 import SafariFixGrid from 'components/common/SafariFixGrid';
