@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Divider } from '@material-ui/core';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
 import CubesLoader from 'components/common/CubesLoader';
@@ -18,6 +18,7 @@ import InviteMemberPopover from './NewTaskDrawer.InviteMemberPopover';
 import LabelsSection from './NewTaskDrawer.LabelsSection';
 import PrioritySection from './NewTaskDrawer.PrioritySection';
 import TopSection from './NewTaskDrawer.TopSection';
+import HistorySection from './NewTaskDrawer.HistorySection';
 import SelectInput from './NewTaskDrawer.SelectInput';
 import StatusSection from './NewTaskDrawer.StatusSection';
 import {
@@ -283,6 +284,24 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
           </Grid>
         </FormContext>
       </form>
+      <Grid container item xs={12}>
+        <Spacing vertical={4} />
+        <Divider
+          style={{
+            width: '100%',
+            backgroundColor: palette.blueOcean,
+            opacity: '0.3',
+          }}
+        />
+        <HistorySection
+          formMethods={formMethods}
+          taskLists={taskLists}
+          selectedTask={selectedTask}
+          taskList={taskList}
+          isInbox={isInbox}
+          closeTaskDrawer={closeTaskDrawer}
+        />
+      </Grid>
     </TaskDrawerContainer>
   );
 };

@@ -8,7 +8,7 @@ import {
   StyledList,
   HorizontalLabel,
 } from './NewTaskDrawer.Styled';
-import SmallSwitchChevron from '../../../img/list-switch-chevron';
+import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
 import initializeTaskDrawerTopSectionHooks from './NewTaskDrawer.TopSection.Hooks';
 import palette from '../../../styles/palette';
@@ -95,7 +95,7 @@ const TopSection = ({
                     <span>{isInbox ? 'Inbox' : taskList?.listName}</span>
                   )}
                 </FiledInSelect>
-                <SmallSwitchChevron color={palette.orangeJulius} />
+                <SmallSwitchChevronDown color={palette.orangeJulius} />
               </div>
               <InputPopover
                 anchorElement={filedInInputReference}

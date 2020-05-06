@@ -3,16 +3,16 @@ import palette from 'styles/palette';
 
 const SmallSwitchChevron = ({ color = palette.dirtyBanana }) => (
   <svg
-    width="10"
+    width="11"
     height="7"
-    viewBox="0 0 10 7"
+    viewBox="0 0 11 7"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
       fillRule="evenodd"
       clipRule="evenodd"
-      d="M6.36389 4.94983L9.89951 1.41421L8.48529 0L4.94968 3.53561L1.41422 0.000150919L0 1.41436L4.94975 6.36411L6.36396 4.9499L6.36389 4.94983Z"
+      d="M10.1055 5.25693L6.15775 1.10419L5.2602 1.98343L6.15948 1.10132L5.11342 -0.000518362L-0.000366325 5.01563L1.04569 6.11747L5.07236 2.16769L9.01996 6.32031L10.1055 5.25693Z"
       fill={color}
     />
   </svg>
