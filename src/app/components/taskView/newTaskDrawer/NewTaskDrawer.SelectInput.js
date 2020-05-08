@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-no-duplicate-props */
+import { Chip } from '@material-ui/core';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import { withStyles } from '@material-ui/core/styles';
 import { Autocomplete } from '@material-ui/lab';
 import {
   any,
@@ -18,9 +20,15 @@ import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
+import palette from 'styles/palette';
 import { DrawerChip } from './NewTaskDrawer.SelectInput.Styled';
 import { CondensedH4, AdornmentContainer } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
+
+const StyledAutocomplete = withStyles({
+  option: {},
+  listbox: {},
+})(Autocomplete);
 
 const onChange = ({ multiple, name, setValue }) => (_event, option) => {
   if (multiple) {
@@ -48,7 +56,7 @@ const renderItemWithHighlighting = (option, inputValue) => {
   const parts = parse(option.displayLabel, matches);
   return (
     <div>
-      {parts.map((part) => (
+      {parts.map(part => (
         <span
           key={`${option.displayLabel}_${part}`}
           style={{ fontWeight: part.highlight ? 700 : 400 }}
@@ -105,16 +113,21 @@ const SelectInput = React.forwardRef(
       ? currentValue?.map(prop('value')) ?? []
       : [];
 
+    const placeholderValue =
+      currentValue && currentValue !== '' ? '' : placeholder;
+
     const currentOption = multiple
       ? currentValue
       : children.find(({ value }) => value === currentValue) ?? null;
 
-    const availableOptions = multiple
-      ? children.filter(
-          ({ value }) =>
-            !currentValueIdentifiers.includes(value) || value === null,
-        )
-      : children;
+    // const availableOptions = multiple
+    //   ? children.filter(
+    //       ({ value }) =>
+    //         !currentValueIdentifiers.includes(value) || value === null,
+    //     )
+    //   : children;
+
+    const availableOptions = children;
 
     const onKeyDown = useCallback(
       event => {
@@ -143,7 +156,7 @@ const SelectInput = React.forwardRef(
     );
 
     return (
-      <Autocomplete
+      <StyledAutocomplete
         id={`autocomplete-${name}`}
         options={availableOptions}
         getOptionLabel={option => renderOptionLabel(option)}
@@ -153,24 +166,50 @@ const SelectInput = React.forwardRef(
         disableClearable={disableClearable}
         openOnFocus
         fullWidth
+        filterSelectedOptions={!!multiple}
         multiple={multiple}
         freeSolo={freeSolo}
         noOptionsText={noOptionsText}
         getOptionDisabled={getOptionDisabled}
         onInputChange={onInputChange}
         onKeyDown={onKeyDown}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <DrawerChip
-              label={
-                <CondensedH4>
-                  {typeof option === 'string' ? option : option?.displayLabel}
-                </CondensedH4>
-              }
-              {...getTagProps({ index })}
-            />
-          ))
-        }
+        renderTags={(value, getTagProps) => (
+          <>
+            {value.map((option, index) => (
+              <>
+                <DrawerChip
+                  label={
+                    <CondensedH4>
+                      {typeof option === 'string'
+                        ? option
+                        : option?.displayLabel}
+                    </CondensedH4>
+                  }
+                  {...getTagProps({ index })}
+                />
+                {index === currentValueIdentifiers.length - 1 && (
+                  <Chip
+                    label={
+                      <CondensedH4 style={{ color: palette.orange }}>
+                        +
+                      </CondensedH4>
+                    }
+                    style={{
+                      marginBottom: '8px',
+                      height: '24px',
+                      fontWeight: 'bold',
+                      backgroundColor: palette.coolGrey3,
+                      marginRight: '10px',
+                    }}
+                    onClick={() => {
+                      // console.log('chip clicked');
+                    }}
+                  />
+                )}
+              </>
+            ))}
+          </>
+        )}
         renderInput={({
           InputProps: InputParameters = {},
           inputProps: inputParameters = {},
@@ -211,9 +250,13 @@ const SelectInput = React.forwardRef(
             }}
             label={label}
             name={name}
-            placeholder={placeholder}
+            placeholder={placeholderValue}
             multiple={multiple}
             ref={reference}
+            // onClick={event => {
+              // console.log('on click');
+              // document.getElementById(`autocomplete-${name}`).focus();
+            // }}
           />
         )}
         value={currentOption}
@@ -227,7 +270,9 @@ const SelectInput = React.forwardRef(
             )}
           </AdornmentContainer>
         }
-        getOptionSelected={(option, value) => value.id === option.id}
+        getOptionSelected={(option, selected) =>
+          selected.value === option.value
+        }
       />
     );
   },

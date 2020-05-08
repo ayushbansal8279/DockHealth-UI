@@ -27,14 +27,12 @@ import {
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
-  MemberLabelContainer,
-  CondensedH4,
 } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 import {
   getFormattedMembers,
   getFormattedPatients,
-  renderPartsWithHighlighting,
+  // renderPartsWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
 const NewTaskDrawer = ({ members, taskList, isInbox }) => {
@@ -47,10 +45,11 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     patients,
     taskLists,
     currentAssignedToAdornment,
-    getMemberAdornment,
+    // getMemberAdornment,
     closeTaskDrawer,
     isSaving,
     selectedTask,
+    currentUser,
     reFileTask,
     onDelete,
     onDuplicate,
@@ -61,9 +60,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
   const { handleSubmit, setValue, watch } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
-  const formattedMembers = getFormattedMembers({ members });
+  const formattedMembers = getFormattedMembers({ members, currentUser });
 
   const dueDateValue = watch('dueDate');
+  const dueTimeValue = watch('dueTime');
 
   const {
     patientInputReference,
@@ -201,17 +201,19 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     </Button>
                   </Grid>
                 }
-                renderItem={(option, { inputValue }) => (
-                  <MemberLabelContainer>
-                    <CondensedH4>
-                      {renderPartsWithHighlighting(
-                        option?.displayLabel,
-                        inputValue,
-                      )}
-                    </CondensedH4>
-                    {getMemberAdornment(option.value, members)}
-                  </MemberLabelContainer>
-                )}
+                renderItem={option =>
+                  // renderItem={(option, { inputValue }) =>
+                  // <MemberLabelContainer>
+                  //   <CondensedH4>
+                  //     {renderPartsWithHighlighting(
+                  //       option?.displayLabel,
+                  //       inputValue,
+                  //     )}
+                  //   </CondensedH4>
+                  //   {getMemberAdornment(option.value, members)}
+                  // </MemberLabelContainer>
+                  option?.label
+                }
                 InputProps={{
                   startAdornment: <AdornmentContainer>+</AdornmentContainer>,
                   endAdornment: currentAssignedToAdornment,
@@ -247,6 +249,9 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                   }}
                   inputProps={{
                     step: 300, // 5 min
+                    style: {
+                      color: dueTimeValue ? palette.black : palette.coolGrey3,
+                    },
                   }}
                 />
               </HiddenFieldContainer>

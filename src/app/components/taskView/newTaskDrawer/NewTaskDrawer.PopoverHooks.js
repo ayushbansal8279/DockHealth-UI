@@ -15,9 +15,10 @@ const initializeTaskDrawerPopoverHooks = () => {
   const [patientInputValue, setPatientInputValue] = useState('');
 
   const onPatientInputChange = useCallback((_event, value, reason) => {
-    if (reason === 'input') {
-      setPatientInputValue(value);
-    }
+    // console.log(`${reason} - ${value}`);
+    // if (reason === 'input') {
+    //   setPatientInputValue(value);
+    // }
   }, []);
 
   // assigned to input

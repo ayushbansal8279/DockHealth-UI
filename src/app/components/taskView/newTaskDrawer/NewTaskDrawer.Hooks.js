@@ -161,6 +161,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     taskLists,
     labels,
     areLabelsRequested,
+    currentUser,
   } = useSelector(store => ({
     taskDrawerOpen: store.taskDrawerState.open,
     patients: store.patientState.allPatients,
@@ -174,6 +175,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     areLabelsRequested: isInbox
       ? store.taskLabelState.requesting.inboxLabels
       : store.taskLabelState.requesting.listLabels,
+    currentUser: store.userState.userProfile,
   }));
 
   const [isSaving, setSaving] = useState(false);
@@ -331,6 +333,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
   };
 
   return {
+    currentUser,
     selectedTask,
     labels,
     areLabelsRequested,
