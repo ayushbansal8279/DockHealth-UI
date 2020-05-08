@@ -30,18 +30,18 @@ import { onButtonClicked } from '../../../helpers/ga-event-helper';
 import { noop } from '../../../helpers/utility-functions';
 
 const REQUIRED_MESSAGE = 'This field is required';
-// const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
+const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-// const TIME_12H_FORMAT = 'h:mm A';
-const TIME_24H_FORMAT = 'HH:mm';
+const TIME_12H_FORMAT = 'h:mm A';
+// const TIME_24H_FORMAT = 'HH:mm';
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
 const validationSchema = object().shape({
   description: string().required(REQUIRED_MESSAGE),
-  // dueTime: string().matches(TIME_12H_FORMAT_REGULAR_EXPRESSION, {
-  //  excludeEmptyString: true,
-  //  message: 'Time should be provided in HH:MM PM/AM format',
-  // }),
+  dueTime: string().matches(TIME_12H_FORMAT_REGULAR_EXPRESSION, {
+    excludeEmptyString: true,
+    message: 'Time should be provided in HH:MM PM/AM format',
+  }),
 });
 
 const mapLabelsPromises = ({
@@ -104,7 +104,7 @@ const onSubmit = ({ selectedTask, taskList, dispatch, setSaving }) => data => {
   };
 
   const dueDate = moment(requestData.dueDate);
-  const dueTime = moment(requestData.dueTime, TIME_24H_FORMAT);
+  const dueTime = moment(requestData.dueTime, TIME_12H_FORMAT);
 
   if (dueTime.isValid()) {
     dueDate.set({
@@ -227,7 +227,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
 
     if (dueDateMoment.isValid()) {
       setValue('dueDate', dueDateMoment.format(DATE_ISO_FORMAT));
-      setValue('dueTime', dueDateMoment.format(TIME_24H_FORMAT));
+      setValue('dueTime', dueDateMoment.format(TIME_12H_FORMAT));
     } else {
       setValue('dueDate', null);
       setValue('dueTime', null);
