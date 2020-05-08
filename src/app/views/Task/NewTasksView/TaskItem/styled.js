@@ -18,6 +18,11 @@ export const Description = styled.div`
   cursor: pointer;
 `;
 
+export const DescriptionBox = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const DueDate = styled.span`
   bottom: 0;
   color: ${palette.white};
@@ -35,6 +40,12 @@ export const GridImg = styled(Grid)`
   align-items: center;
   display: flex;
   justify-content: center;
+`;
+
+export const SubtasksGroupLabel = styled.span`
+  color: ${palette.lightGray};
+  font-size: ${fontSizes.smallPlus};
+  cursor: pointer;
 `;
 
 export const TaskItemCell = styled.div`

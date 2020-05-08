@@ -26,5 +26,5 @@ export const TasksGroupLabel = styled.label`
 
 export const Tasks = styled(Collapse)`
   height: 300px;
-  background-color: blue;
+  padding-left: ${props => props.isSubtasks && spacing.giga};
 `;
