@@ -11,7 +11,7 @@ export const AdornmentContainer = styled.div`
 export const DrawerChip = withStyles({
   root: {
     alignSelf: 'flex-end',
-    backgroundColor: palette.coolGrey4,
+    backgroundColor: palette.blueGrey,
     height: '1.5rem',
     marginTop: 0,
     marginBottom: '0.5rem',
