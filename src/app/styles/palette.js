@@ -54,6 +54,7 @@ const palette = {
   veryDarkBlue: '#2a4a70',
   memberGreen: '#00a73c',
   taskCheckboxGreen: '#20b255',
+  inProgressGreen: '#BAD440',
   featureBlue1: '#011845',
   featureBlue2: '#1a2d56',
   scrollbarGrey: '#939aa4',

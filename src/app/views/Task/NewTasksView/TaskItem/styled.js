@@ -1,0 +1,81 @@
+import styled from 'styled-components';
+import { Grid } from '@material-ui/core';
+import spacing from 'styles/spacing';
+import { fontWeights, fontSizes } from 'styles/font';
+import palette from 'styles/palette';
+
+export const AddCrossIcon = styled.img`
+  border: 0.0625rem dashed ${palette.coolGrey1};
+  border-radius: 50%;
+  color: ${palette.blueOcean};
+`;
+
+export const CircleIcon = styled.img`
+  margin-right: ${spacing.smallPlus};
+`;
+
+export const Description = styled.div`
+  cursor: pointer;
+`;
+
+export const DueDate = styled.span`
+  bottom: 0;
+  color: ${palette.white};
+  font-size: ${fontSizes.smallPlus};
+  position: absolute;
+  text-align: center;
+  width: 100%;
+`;
+
+export const DueDateContainer = styled.div`
+  position: relative;
+`;
+
+export const GridImg = styled(Grid)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+`;
+
+export const TaskItemCell = styled.div`
+  align-items: center;
+  border-right: 1px solid ${palette.coolGrey3};
+  color: ${palette.mediumGrey};
+  display: flex;
+  font-size: 14px; //per design
+  font-weight: ${props =>
+    props.bolded ? fontWeights.bold : fontWeights.light};
+  min-width: ${props => props.width};
+  padding: ${spacing.regular} 0;
+  padding-left: ${props =>
+    props.padding ? spacing[props.padding] : spacing.regularPlus};
+  padding-right: ${spacing.regularPlus};
+  position: relative;
+  width: ${props => (!props.width ? '100%' : '')};
+
+  &:last-of-type {
+    border-right: 0;
+  }
+`;
+
+export const TaskItemContainer = styled.div`
+  background-color: white;
+  border: 1px solid ${palette.coolGrey3};
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
+export const StatusBar = styled.div`
+  background-color: ${props => props.color};
+  height: 100%;
+  left: 0;
+  position: absolute;
+  width: 6px;
+`;
+
+export const TaskIconsBox = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+`;
