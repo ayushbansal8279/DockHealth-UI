@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { Grid } from '@material-ui/core';
+import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
 import CrossIcon from 'img/cross';
 import CalendarDimIcon from 'img/calendar-dim';
@@ -21,12 +22,16 @@ import {
   AddCrossIcon,
   CircleIcon,
   Description,
+  DescriptionBox,
   DueDate,
   DueDateContainer,
   GridImg,
+  SubtasksGroupLabel,
   TaskItemCell,
   TaskItemContainer,
 } from './styled';
+
+import { Tasks as Subtasks, Arrow } from '../TasksGroup/styled';
 
 const COMMENTS = 'COMMENTS';
 const DUE_DATE = 'DUE_DATE';
@@ -71,6 +76,8 @@ const getItemIcon = (type, value) =>
 
 const TaskItem = ({
   currentUser,
+  isOpen,
+  switchOpen,
   markComplete,
   openDrawer,
   storeAsCurrentTask,
@@ -85,6 +92,7 @@ const TaskItem = ({
     labels,
     patient,
     status,
+    subtasks,
     workflowStatus,
   } = task;
 
@@ -95,14 +103,22 @@ const TaskItem = ({
           src={Circle}
           onClick={() => markComplete(task, status, status, currentUser)}
         />
-        <Description
-          onClick={() => {
-            openDrawer();
-            storeAsCurrentTask(task);
-          }}
-        >
-          {description}
-        </Description>
+        <DescriptionBox>
+          <Description
+            onClick={() => {
+              openDrawer();
+              storeAsCurrentTask(task);
+            }}
+          >
+            {description}
+          </Description>
+          {!isEmpty(subtasks) && (
+            <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
+              <span>{subtasks?.length} subtasks</span>
+              <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
+            </SubtasksGroupLabel>
+          )}
+        </DescriptionBox>
       </TaskItemCell>
       <TaskItemCell width="164px">
         {patient ? `${patient.firstName} ${patient.lastName}` : ''}
@@ -143,4 +159,26 @@ const TaskItem = ({
   );
 };
 
-export default TaskItem;
+const Task = ({ task, ...restProps }) => {
+  const [isOpen, switchOpen] = useState(false);
+  const { subtasks } = task;
+
+  return (
+    <>
+      <TaskItem
+        task={task}
+        isOpen={isOpen}
+        switchOpen={switchOpen}
+        {...restProps}
+      />
+      <Subtasks isSubtasks in={isOpen}>
+        {!isEmpty(subtasks) &&
+          subtasks?.map(subtask => (
+            <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
+          ))}
+      </Subtasks>
+    </>
+  );
+};
+
+export default Task;

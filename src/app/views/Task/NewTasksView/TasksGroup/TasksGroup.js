@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ArrowIcon from 'img/arrow';
 import { Arrow, TasksGroupContainer, TasksGroupLabel, Tasks } from './styled';
-import TaskItem from '../TaskItem/TaskItem';
+import Task from '../TaskItem/TaskItem';
 
 const TasksGroup = ({
   currentUser,
@@ -17,7 +17,7 @@ const TasksGroup = ({
     <TasksGroupContainer>
       <TasksGroupLabel>
         <Arrow
-          alt="mail"
+          alt="arrow"
           isOpen={isOpen}
           onClick={() => switchOpen(!isOpen)}
           src={ArrowIcon}
@@ -27,7 +27,7 @@ const TasksGroup = ({
 
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
-          <TaskItem
+          <Task
             currentUser={currentUser}
             key={task.taskId}
             markComplete={markComplete}
