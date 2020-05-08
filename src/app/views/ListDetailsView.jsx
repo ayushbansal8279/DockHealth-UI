@@ -9,7 +9,7 @@ import * as TaskListActions from 'actions/tasklist-actions';
 import * as TaskLabelActions from 'actions/task-label-actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
-import TaskView from './Task/NewTaskView/TaskView';
+import TasksView from './Task/NewTasksView/TasksView';
 
 const ASSIGNED_BY_ME = 'assigned_by_me';
 const ASSIGNED_TO_ME = 'assigned_to_me';
@@ -471,7 +471,7 @@ class Home extends Component {
       membersNotInTaskList,
     };
 
-    return <TaskView {...taskViewProps} />;
+    return <TasksView {...taskViewProps} />;
   }
 }
 
