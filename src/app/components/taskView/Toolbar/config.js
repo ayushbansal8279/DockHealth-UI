@@ -20,6 +20,6 @@ export const TABS_CONFIG = ({
     key: COMPLETED_TASKS,
     label: `Completed (${completedTasksAmount})`,
     onSelectTab: () => onSelectTab(COMPLETED_TASKS),
-    shouldRender: () => true,
+    shouldRender: () => false,
   },
 ];
