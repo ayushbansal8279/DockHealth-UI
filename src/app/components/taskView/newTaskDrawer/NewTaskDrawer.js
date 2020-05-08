@@ -63,6 +63,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
   const formattedMembers = getFormattedMembers({ members, currentUser });
 
   const dueDateValue = watch('dueDate');
+  const dueTimeValue = watch('dueTime');
 
   const {
     patientInputReference,
@@ -248,6 +249,9 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                   }}
                   inputProps={{
                     step: 300, // 5 min
+                    style: {
+                      color: dueTimeValue ? palette.black : palette.coolGrey3,
+                    },
                   }}
                 />
               </HiddenFieldContainer>

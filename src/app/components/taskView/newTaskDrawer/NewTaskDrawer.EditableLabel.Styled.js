@@ -12,6 +12,7 @@ export const EditableLabelContainer = styled.div`
   grid-template-columns: 1fr auto auto;
   justify-content: space-between;
   width: 100%;
+  height: 30px;
 `;
 
 export const LabelActionButton = styled.div`
