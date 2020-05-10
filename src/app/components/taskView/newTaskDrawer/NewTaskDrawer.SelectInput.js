@@ -72,6 +72,40 @@ const renderItemWithHighlighting = (option, inputValue) => {
 //   startAdornment: <AdornmentContainer>+</AdornmentContainer>
 // }
 
+const renderTags = ({ currentValueIdentifiers }) => (value, getTagProps) => (
+  <>
+    {value.map((option, index) => (
+      <>
+        <DrawerChip
+          label={
+            <CondensedH4>
+              {typeof option === 'string' ? option : option?.displayLabel}
+            </CondensedH4>
+          }
+          {...getTagProps({ index })}
+        />
+        {index === currentValueIdentifiers.length - 1 && (
+          <Chip
+            label={
+              <CondensedH4 style={{ color: palette.orange }}>+</CondensedH4>
+            }
+            style={{
+              marginBottom: '8px',
+              height: '24px',
+              fontWeight: 'bold',
+              backgroundColor: palette.coolGrey3,
+              marginRight: '10px',
+            }}
+            onClick={() => {
+              // console.log('chip clicked');
+            }}
+          />
+        )}
+      </>
+    ))}
+  </>
+);
+
 const SelectInput = React.forwardRef(
   (
     {
@@ -157,6 +191,7 @@ const SelectInput = React.forwardRef(
 
     return (
       <StyledAutocomplete
+        debug
         id={`autocomplete-${name}`}
         options={availableOptions}
         getOptionLabel={option => renderOptionLabel(option)}
@@ -173,43 +208,8 @@ const SelectInput = React.forwardRef(
         getOptionDisabled={getOptionDisabled}
         onInputChange={onInputChange}
         onKeyDown={onKeyDown}
-        renderTags={(value, getTagProps) => (
-          <>
-            {value.map((option, index) => (
-              <>
-                <DrawerChip
-                  label={
-                    <CondensedH4>
-                      {typeof option === 'string'
-                        ? option
-                        : option?.displayLabel}
-                    </CondensedH4>
-                  }
-                  {...getTagProps({ index })}
-                />
-                {index === currentValueIdentifiers.length - 1 && (
-                  <Chip
-                    label={
-                      <CondensedH4 style={{ color: palette.orange }}>
-                        +
-                      </CondensedH4>
-                    }
-                    style={{
-                      marginBottom: '8px',
-                      height: '24px',
-                      fontWeight: 'bold',
-                      backgroundColor: palette.coolGrey3,
-                      marginRight: '10px',
-                    }}
-                    onClick={() => {
-                      // console.log('chip clicked');
-                    }}
-                  />
-                )}
-              </>
-            ))}
-          </>
-        )}
+        renderTags={renderTags({ currentValueIdentifiers })}
+        // renderInput={(params) => <TextField {...params} label="debug" margin="normal" />}
         renderInput={({
           InputProps: InputParameters = {},
           inputProps: inputParameters = {},
@@ -218,7 +218,7 @@ const SelectInput = React.forwardRef(
         }) => (
           <TextInput
             {...otherParameters}
-            select
+            parentType="select"
             InputLabelProps={{
               ...InputLabelProps,
               ...InputLabelParameters,
@@ -254,8 +254,8 @@ const SelectInput = React.forwardRef(
             multiple={multiple}
             ref={reference}
             // onClick={event => {
-              // console.log('on click');
-              // document.getElementById(`autocomplete-${name}`).focus();
+            // console.log('on click');
+            // document.getElementById(`autocomplete-${name}`).focus();
             // }}
           />
         )}

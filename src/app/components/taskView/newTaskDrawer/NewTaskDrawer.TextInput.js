@@ -1,16 +1,12 @@
+/* eslint-disable react/jsx-no-duplicate-props */
 import { any, bool, func, objectOf, string } from 'prop-types';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-
+import { TextField } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 
-import {
-  DrawerFormControl,
-  DrawerInputLabel,
-  DrawerInputBase,
-  DrawerInputContainer,
-  DrawerInputBaseMultiple,
-} from './NewTaskDrawer.TextInput.Styled';
+import styles from './NewTaskDrawer.TextInput.Styled';
 
 const TextInput = React.forwardRef(
   (
@@ -25,27 +21,26 @@ const TextInput = React.forwardRef(
       InputLabelProps,
       inputProps,
       InputProps,
-      select,
+      parentType,
       multiple,
       ...props
     },
     reference,
   ) => {
     const { register } = useFormContext();
-
-    const InputBaseComponent = multiple
-      ? DrawerInputBaseMultiple
-      : DrawerInputBase;
+    const { classes } = props;
 
     return (
-      <DrawerInputContainer
+      <TextField
         ref={reference}
-        className={className}
-        multiple={multiple}
-        {...props}
-      >
-        <DrawerFormControl fullWidth multiple={multiple}>
-          <DrawerInputLabel {...InputLabelProps}>
+        name={name}
+        placeholder={placeholder}
+        className={[
+          parentType === 'select' ? classes.rootSelect : classes.root,
+          className,
+        ].join(' ')}
+        label={
+          <>
             <span>{label?.toUpperCase()}</span>
             {required && (
               <>
@@ -53,36 +48,43 @@ const TextInput = React.forwardRef(
                 <span>(required)</span>
               </>
             )}
-          </DrawerInputLabel>
-          <InputBaseComponent
-            {...InputProps}
-            name={name}
-            placeholder={placeholder}
-            inputRef={select ? null : register}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            inputProps={inputProps}
-            multiple={multiple}
-          />
-        </DrawerFormControl>
-      </DrawerInputContainer>
+          </>
+        }
+        multiline={!!multiple}
+        InputProps={{
+          margin: 'dense',
+          disableUnderline: true,
+          classes: {
+            input: multiple ? classes.inputMultiple : classes.input,
+          },
+          ...InputProps,
+        }}
+        fullWidth
+        // InputLabelProps={{
+        //   shrink: true,
+        // }}
+        InputLabelProps={InputLabelProps}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        inputProps={inputProps}
+        inputRef={parentType !== 'text' ? null : register}
+      />
     );
   },
 );
 
 TextInput.propTypes = {
   label: string.isRequired,
-  placeholder: string,
   name: string.isRequired,
+  placeholder: string,
   className: string,
   required: bool,
+  multiple: bool,
+  parentType: string,
   onFocus: func,
   onBlur: func,
-  select: bool,
-  multiple: bool,
   inputProps: objectOf(any),
   InputProps: objectOf(any),
-  InputLabelProps: objectOf(any),
 };
 
 TextInput.defaultProps = {
@@ -90,12 +92,11 @@ TextInput.defaultProps = {
   className: '',
   required: false,
   multiple: false,
-  select: false,
+  parentType: 'text',
   onFocus: () => {},
   onBlur: () => {},
   inputProps: {},
   InputProps: {},
-  InputLabelProps: {},
 };
 
-export default TextInput;
+export default withStyles(styles)(TextInput);

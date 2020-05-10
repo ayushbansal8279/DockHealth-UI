@@ -29,7 +29,7 @@ export const AdornmentContainer = styled.div`
   color: ${palette.orange};
   display: flex;
   justify-content: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.3rem;
   width: 2ch;
 `;
 

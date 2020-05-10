@@ -95,7 +95,7 @@ const DropdownInput = ({
         required={required}
         onFocus={onFocus}
         onBlur={onBlur}
-        select
+        parentType="dropdown"
       />
       <InputPopover
         anchorElement={reference}

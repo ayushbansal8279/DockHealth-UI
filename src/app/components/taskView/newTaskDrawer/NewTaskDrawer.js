@@ -101,6 +101,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 name="description"
                 label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
                 required
+                multiple
                 placeholder="What is the task?"
                 InputLabelProps={{
                   shrink: true,
@@ -112,13 +113,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     ) : (
                       <AdornmentContainer>+</AdornmentContainer>
                     ),
-                  multiline: false,
-                  rowsMin: 1,
-                  rowsMax: 3,
-                  margin: 'dense',
-                }}
-                style={{
-                  overflow: 'auto',
                 }}
               />
             </Grid>

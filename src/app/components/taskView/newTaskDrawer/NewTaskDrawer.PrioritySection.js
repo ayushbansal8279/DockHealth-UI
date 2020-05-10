@@ -68,6 +68,7 @@ const PrioritySection = () => {
               <SmallSwitchChevron color={palette.orangeJulius} />
             </AdornmentContainer>
           ),
+          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
         renderItem={renderDropdownItem}
       >
