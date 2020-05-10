@@ -121,7 +121,10 @@ const AtttachmentsSection = ({ selectedTask }) => {
               </UploadBarContainer>
             </UploadBarOuterContainer>
           ) : (
-            <AddAttachmentButton onClick={onAddAttachmentButtonClicked}>
+            <AddAttachmentButton
+              onClick={onAddAttachmentButtonClicked}
+              type="button"
+            >
               <RobotoTypography condensed variant="h4" color="inherit">
                 +
               </RobotoTypography>
