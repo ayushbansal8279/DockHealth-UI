@@ -104,7 +104,7 @@ export const UploadBar = styled.div`
     content: '${props => props.progress ?? 0}%';
     color: ${palette.darkGrey};
     font-family: 'Roboto Condensed', sans-serif;
-    font-size: ${fontSizes.smallPlus};
+    font-size: ${fontSizes.small};
     position: absolute;
     right: 0;
     transform: translateX(50%);
