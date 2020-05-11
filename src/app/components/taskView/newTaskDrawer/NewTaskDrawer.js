@@ -63,7 +63,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
   const formattedMembers = getFormattedMembers({ members, currentUser });
 
   const dueDateValue = watch('dueDate');
+  // const givenTime = String(moment(selectedTask?.dueDate).format('h:mm a'));
   const dueTimeValue = watch('dueTime');
+
+  // console.log("Info arriving to NewTaskDrawer: " + givenTime);
 
   const {
     patientInputReference,
@@ -240,7 +243,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 <TextInput
                   name="dueTime"
                   label="Due Time"
-                  placeholder="12:00 PM"
+                  // placeholder="12:35 PM"
+                  // placeholder={givenTime}
                   InputLabelProps={{
                     shrink: true,
                   }}
