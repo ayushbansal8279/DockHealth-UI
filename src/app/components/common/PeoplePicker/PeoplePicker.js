@@ -90,7 +90,7 @@ const EmptyFilteredPeople = ({ openInviteForm, hasAdminRole }) => (
         onClick={openInviteForm}
         startIcon={<img src={MailIcon} alt="mail" />}
       >
-        {messages.peoplePicker.invite}
+        {messages.peoplePicker.invite.label}
       </InviteButton>
     )}
   </NotFoundPeopleBox>
@@ -228,7 +228,7 @@ const PeoplePicker = ({
       </PeoplePickerBox>
       <PeopleListBox timeout={150} in={isOpen || showInviteForm}>
         <Input
-          label={messages.peoplePicker.search}
+          label={messages.peoplePicker.search.label}
           onChange={event => setSearchValue(event.target.value)}
           value={searchValue}
           disabled={showInviteForm}
