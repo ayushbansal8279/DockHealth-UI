@@ -11,11 +11,22 @@ export const Arrow = styled.img`
   transition: all 0.5s ease-in-out;
 `;
 
+export const ViewIcon = styled.img`
+  margin-left: ${spacing.regularPlus};
+`;
+
 export const TasksGroupContainer = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   justify-content: center;
+`;
+
+export const TasksGroupHeader = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: ${spacing.regular};
 `;
 
 export const TasksGroupLabel = styled.label`
