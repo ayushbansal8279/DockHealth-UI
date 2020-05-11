@@ -28,8 +28,8 @@ const TasksGroup = ({
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
           <Task
-            currentUser={currentUser}
             key={task.taskId}
+            currentUser={currentUser}
             markComplete={markComplete}
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}

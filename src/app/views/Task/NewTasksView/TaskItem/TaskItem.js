@@ -18,6 +18,7 @@ import MessageIcon from 'img/message';
 import MessageNewIcon from 'img/message-new';
 import Member from 'components/members/Member';
 import TaskItemStatus from './TaskItemStatus';
+import TaskComments from '../TaskComments/TaskComments';
 import {
   AddCrossIcon,
   CircleIcon,
@@ -161,7 +162,7 @@ const TaskItem = ({
 
 const Task = ({ task, ...restProps }) => {
   const [isOpen, switchOpen] = useState(false);
-  const { subtasks } = task;
+  const { comments, subtasks } = task;
 
   return (
     <>
@@ -171,10 +172,16 @@ const Task = ({ task, ...restProps }) => {
         switchOpen={switchOpen}
         {...restProps}
       />
+      {!isEmpty(comments) && <TaskComments comments={comments} />}
       <Subtasks isSubtasks in={isOpen}>
         {!isEmpty(subtasks) &&
           subtasks?.map(subtask => (
-            <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
+            <>
+              <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
+              {!isEmpty(subtask.comments) && (
+                <TaskComments comments={subtask.comments} />
+              )}
+            </>
           ))}
       </Subtasks>
     </>
