@@ -17,7 +17,7 @@ export const EditableLabelContainer = styled.div`
 
 export const LabelActionButton = styled.div`
   color: ${palette.coolGrey1};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
 
   &:hover {
     color: ${palette.darkGrey};

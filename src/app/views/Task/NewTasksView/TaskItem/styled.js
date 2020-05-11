@@ -26,7 +26,7 @@ export const DescriptionBox = styled.div`
 export const DueDate = styled.span`
   bottom: 0;
   color: ${palette.white};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
   position: absolute;
   text-align: center;
   width: 100%;
@@ -44,7 +44,7 @@ export const GridImg = styled(Grid)`
 
 export const SubtasksGroupLabel = styled.span`
   color: ${palette.lightGray};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
   cursor: pointer;
 `;
 
