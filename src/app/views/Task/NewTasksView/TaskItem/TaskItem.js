@@ -160,7 +160,7 @@ const TaskItem = ({
   );
 };
 
-const Task = ({ task, ...restProps }) => {
+const Task = ({ task, isFullView, ...restProps }) => {
   const [isOpen, switchOpen] = useState(false);
   const { comments, subtasks } = task;
 
@@ -172,15 +172,15 @@ const Task = ({ task, ...restProps }) => {
         switchOpen={switchOpen}
         {...restProps}
       />
-      {!isEmpty(comments) && <TaskComments comments={comments} />}
+      {!isEmpty(comments) && (
+        <TaskComments isOpen={isFullView} comments={comments} />
+      )}
       <Subtasks isSubtasks in={isOpen}>
         {!isEmpty(subtasks) &&
           subtasks?.map(subtask => (
             <>
               <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
-              {!isEmpty(subtask.comments) && (
-                <TaskComments comments={subtask.comments} />
-              )}
+              <TaskComments isOpen={isFullView} comments={subtask.comments} />
             </>
           ))}
       </Subtasks>

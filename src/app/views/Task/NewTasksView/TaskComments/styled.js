@@ -1,15 +1,18 @@
 import styled from 'styled-components';
+import { Collapse } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
-export const TaskCommentsContainer = styled.div`
+export const TaskCommentsContainer = styled(Collapse)`
   display: flex;
   background-color: white;
   border: 1px solid ${palette.coolGrey3};
   border-top: none;
+  border-bottom: none;
   flex-direction: column;
-  padding: ${spacing.largePlus} ${spacing.regular};
+  padding: ${props =>
+    props.in ? `${spacing.largePlus} ${spacing.regular}` : 0};
 `;
 
 export const TaskCommentsGroupedDay = styled.div`
