@@ -31,7 +31,7 @@ const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
   displayLabel: label,
 }));
 
-const renderDropdownItem = ({ setValue, closePopover }) => ({
+const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
   label,
   value,
 }) => (
@@ -43,6 +43,7 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
       } else {
         setValue(value);
       }
+      onItemSelection(value);
       closePopover();
     }}
   >
@@ -50,8 +51,15 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
   </BlockButton>
 );
 
+const onItemSelection = ({ saveTaskPriority }) => value => {
+  saveTaskPriority({ newTaskStatus: value });
+};
+
 const PrioritySection = () => {
-  const { currentPriorityFlagColor } = initializePrioritySectionHooks();
+  const {
+    currentPriorityFlagColor,
+    saveTaskPriority,
+  } = initializePrioritySectionHooks();
 
   return (
     <PriorityFieldContainer>
@@ -71,6 +79,7 @@ const PrioritySection = () => {
           startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
         renderItem={renderDropdownItem}
+        onItemSelection={onItemSelection({ saveTaskPriority })}
       >
         {priorityOptions}
       </DropdownInput>

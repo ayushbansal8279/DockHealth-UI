@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
-
 import palette from 'styles/palette';
+import { toggleTaskPriority } from 'actions/task-actions';
 
 export const PRIORITIES = [
   {
@@ -19,11 +21,41 @@ export const PRIORITIES = [
 const initializePrioritySectionHooks = () => {
   const { watch } = useFormContext();
   const currentValue = watch('priority');
+  const dispatch = useDispatch();
+
+  const { selectedTask } = useSelector(store => ({
+    selectedTask: store.taskState.selectedTask,
+  }));
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
+
+  const saveTaskPriority = useCallback(
+    ({ newTaskPriority }) => {
+      if (selectedTask && selectedTask.taskIdentifier != null) {
+        toggleTaskPriority(
+          selectedTask,
+          newTaskPriority,
+        )(dispatch)
+          .then(() => {
+            toggleAlert('Updated');
+            // setAutoSaveVisible();
+          })
+          .catch(() => {
+            toggleAlert(
+              'Error updating priority, please try again later',
+              'error',
+            );
+          });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedTaskIdentifier],
+  );
 
   return {
     currentPriorityFlagColor: PRIORITIES.find(
       ({ value }) => value === currentValue,
     )?.color,
+    saveTaskPriority,
   };
 };
 

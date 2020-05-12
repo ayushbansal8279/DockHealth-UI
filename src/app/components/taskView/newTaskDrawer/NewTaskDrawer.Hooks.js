@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-
 import { getAllPatients } from 'actions/patient-actions';
 import {
   saveTask,
@@ -14,6 +13,8 @@ import {
   moveTask,
   deleteTask,
   duplicateTask,
+  assignOrReassignTask,
+  updatePatient,
 } from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import {
@@ -331,6 +332,52 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       }
     }
   };
+  const handleAssignedToSelect = async selectedOption => {
+    const member = {
+      userIdentifier: selectedOption.value,
+      userName: selectedOption.displayLabel,
+    };
+    setValue('assignedToUserIdentifier', member?.userIdentifier);
+    setValue('assignedToUserName', member?.userName);
+    // closeAssignedToPopover();
+
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        await assignOrReassignTask(
+          selectedTask,
+          member?.userIdentifier,
+        )(dispatch);
+        toggleAlert('Updated');
+        // setAutoSaveVisible();
+      } catch {
+        toggleAlert(
+          'Error updating assignment, please try again later',
+          'error',
+        );
+      }
+    }
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handlePatientSelect = async selectedOption => {
+    const patient = {
+      patientIdentifier: selectedOption.value,
+      patientName: selectedOption.displayLabel,
+    };
+    setValue('patientIdentifier', patient?.patientIdentifier);
+    setValue('patientName', patient?.patientName);
+    // closePatientPopover();
+
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        await updatePatient(selectedTask, patient)(dispatch);
+        toggleAlert('Updated');
+        // setAutoSaveVisible();
+      } catch {
+        toggleAlert('Error updating patient, please try again later', 'error');
+      }
+    }
+  };
 
   return {
     currentUser,
@@ -351,6 +398,8 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     reFileTask,
     onDelete,
     onDuplicate,
+    handleAssignedToSelect,
+    handlePatientSelect,
   };
 };
 

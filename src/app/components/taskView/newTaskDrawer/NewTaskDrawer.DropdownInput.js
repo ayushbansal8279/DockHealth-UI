@@ -27,6 +27,7 @@ const DropdownInputContainer = styled.div`
 const DropdownInput = ({
   children,
   renderItem,
+  onItemSelection,
   name,
   label,
   placeholder,
@@ -103,7 +104,11 @@ const DropdownInput = ({
         closePopover={closePopover}
       >
         {children?.map(
-          renderItem({ setValue: setValueForCurrentField, closePopover }),
+          renderItem({
+            setValue: setValueForCurrentField,
+            closePopover,
+            onItemSelection,
+          }),
         )}
       </InputPopover>
     </DropdownInputContainer>
@@ -121,6 +126,7 @@ DropdownInput.propTypes = {
   ).isRequired,
   popoverStateArray: arrayOf(oneOfType([bool, func])),
   renderItem: func,
+  onItemSelection: func,
   label: string.isRequired,
   placeholder: string,
   name: string.isRequired,
@@ -136,6 +142,7 @@ DropdownInput.propTypes = {
 DropdownInput.defaultProps = {
   popoverStateArray: null,
   renderItem: () => prop('label'),
+  onItemSelection: () => {},
   placeholder: '',
   className: '',
   required: false,

@@ -30,7 +30,7 @@ const statusOptions = STATUSES.map(({ value, label, color }) => ({
   displayLabel: label,
 }));
 
-const renderDropdownItem = ({ setValue, closePopover }) => ({
+const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
   label,
   value,
 }) => (
@@ -42,6 +42,7 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
       } else {
         setValue(value);
       }
+      onItemSelection(value);
       closePopover();
     }}
   >
@@ -49,8 +50,15 @@ const renderDropdownItem = ({ setValue, closePopover }) => ({
   </BlockButton>
 );
 
+const onItemSelection = ({ saveTaskStatus }) => value => {
+  saveTaskStatus({ newTaskStatus: value });
+};
+
 const StatusSection = () => {
-  const { currentStatusFlagColor } = initializeStatusSectionHooks();
+  const {
+    currentStatusFlagColor,
+    saveTaskStatus,
+  } = initializeStatusSectionHooks();
 
   return (
     <StatusFieldContainer>
@@ -70,6 +78,7 @@ const StatusSection = () => {
           startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
         renderItem={renderDropdownItem}
+        onItemSelection={onItemSelection({ saveTaskStatus })}
       >
         {statusOptions}
       </DropdownInput>

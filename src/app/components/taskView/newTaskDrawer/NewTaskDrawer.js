@@ -53,6 +53,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     reFileTask,
     onDelete,
     onDuplicate,
+    handleAssignedToSelect,
+    handlePatientSelect,
   } = initializeTaskDrawerHooks({ members, isInbox, taskList });
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -131,6 +133,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label="Patient"
                 placeholder="Who is the patient?"
                 onInputChange={onPatientInputChange}
+                onItemSelected={handlePatientSelect}
                 ref={patientInputReference}
                 noOptionsText={
                   <Grid container direction="column">
@@ -172,6 +175,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label="Assigned To"
                 placeholder="Who would you like to assign this task to?"
                 onInputChange={onAssignedToInputChange}
+                onItemSelected={handleAssignedToSelect}
                 ref={assignedToInputReference}
                 noOptionsText={
                   <Grid container direction="column">

@@ -30,7 +30,10 @@ const StyledAutocomplete = withStyles({
   listbox: {},
 })(Autocomplete);
 
-const onChange = ({ multiple, name, setValue }) => (_event, option) => {
+const onChange = ({ multiple, name, setValue, onItemSelected }) => (
+  _event,
+  option,
+) => {
   if (multiple) {
     const newOptions = option?.map(value => {
       if (typeof value === 'string') {
@@ -46,8 +49,10 @@ const onChange = ({ multiple, name, setValue }) => (_event, option) => {
     });
 
     setValue(name, newOptions);
+    onItemSelected(option);
   } else {
     setValue(name, option?.value);
+    onItemSelected(option);
   }
 };
 
@@ -120,6 +125,7 @@ const SelectInput = React.forwardRef(
       noOptionsText,
       getOptionDisabled,
       onInputChange,
+      onItemSelected,
       multiple,
       freeSolo,
       disableClearable,
@@ -254,14 +260,14 @@ const SelectInput = React.forwardRef(
             multiple={multiple}
             ref={reference}
             // onClick={event => {
-            // console.log('on click');
-            // document.getElementById(`autocomplete-${name}`).focus();
+            //   console.log('on click');
+            //   document.getElementById(`autocomplete-${name}`).focus();
             // }}
           />
         )}
         value={currentOption}
         variant="outlined"
-        onChange={onChange({ multiple, setValue, name })}
+        onChange={onChange({ multiple, setValue, name, onItemSelected })}
         forcePopupIcon={Boolean(endAdornment)}
         popupIcon={
           <AdornmentContainer>
@@ -298,6 +304,7 @@ SelectInput.propTypes = {
   noOptionsText: node,
   getOptionDisabled: func,
   onInputChange: func,
+  onItemSelected: func,
   multiple: bool,
   freeSolo: bool,
   disableClearable: bool,
@@ -318,6 +325,7 @@ SelectInput.defaultProps = {
   noOptionsText: undefined,
   getOptionDisabled: prop('disabled'),
   onInputChange: undefined,
+  onItemSelected: undefined,
   multiple: false,
   freeSolo: false,
   disableClearable: true,

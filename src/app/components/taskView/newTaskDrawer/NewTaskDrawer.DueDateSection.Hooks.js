@@ -1,0 +1,43 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateDueDate } from 'actions/task-actions';
+import moment from 'moment';
+
+const initializeDueDateSectionHooks = () => {
+  const dispatch = useDispatch();
+
+  const { selectedTask } = useSelector(store => ({
+    selectedTask: store.taskState.selectedTask,
+  }));
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
+
+  const saveDueDate = useCallback(
+    ({ updatedDueDate }) => {
+      if (selectedTask && selectedTask.taskIdentifier != null) {
+        updateDueDate(
+          selectedTask,
+          updatedDueDate ? moment(updatedDueDate) : null,
+        )(dispatch)
+          .then(() => {
+            toggleAlert('Updated');
+            // setAutoSaveVisible();
+          })
+          .catch(() => {
+            toggleAlert(
+              'Error updating due date, please try again later',
+              'error',
+            );
+          });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedTaskIdentifier],
+  );
+
+  return {
+    saveDueDate,
+  };
+};
+
+export default initializeDueDateSectionHooks;

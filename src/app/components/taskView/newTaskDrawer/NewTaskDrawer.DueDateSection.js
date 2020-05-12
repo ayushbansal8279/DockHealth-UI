@@ -12,6 +12,7 @@ import Calendar from './NewTaskDrawer.Calendar';
 import DropdownInput from './NewTaskDrawer.DropdownInput';
 import { DueDateLabelContainer } from './NewTaskDrawer.DueDateSection.Styled';
 import { AdornmentContainer } from './NewTaskDrawer.Styled';
+import initializeDueDateSectionHooks from './NewTaskDrawer.DueDateSection.Hooks';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YY';
@@ -71,6 +72,7 @@ const renderDropdownItem = ({
   closeCalendar,
   openPopover,
   closePopover,
+  onItemSelection,
 }) => ({ setValue }) => ({ label, value, disabled }) => (
   <div
     onClick={() => {
@@ -85,6 +87,7 @@ const renderDropdownItem = ({
         }, 50);
       } else {
         setValue(value);
+        onItemSelection(value);
         closePopover();
         closeCalendar();
       }
@@ -93,6 +96,10 @@ const renderDropdownItem = ({
     {label}
   </div>
 );
+
+const onItemSelection = ({ saveDueDate }) => value => {
+  saveDueDate({ updatedDueDate: value });
+};
 
 const DueDateSection = ({ selectedTask }) => {
   const dateFieldName = 'dueDate';
@@ -109,6 +116,8 @@ const DueDateSection = ({ selectedTask }) => {
   const selectedTaskIdentifier = useSelector(
     store => store.taskState.selectedTask?.taskIdentifier ?? null,
   );
+
+  const { saveDueDate } = initializeDueDateSectionHooks();
 
   useEffect(() => {
     closeCalendar();
@@ -162,6 +171,7 @@ const DueDateSection = ({ selectedTask }) => {
         closeCalendar,
         openPopover,
         closePopover,
+        onItemSelection: onItemSelection({ saveDueDate }),
       })}
       popoverStateArray={popoverStateArray}
     >

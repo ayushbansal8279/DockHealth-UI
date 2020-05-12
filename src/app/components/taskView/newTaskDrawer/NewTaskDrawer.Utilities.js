@@ -28,24 +28,23 @@ const getFormattedAge = ({ dob }) => {
 };
 
 export const getFormattedPatients = ({ patients }) =>
-  (patients ?? []).map(
-    ({ patientIdentifier, firstName, lastName, mrn, dob }) => {
-      const patientName = `${firstName} ${lastName}`.trim();
+  (patients ?? []).map(patient => {
+    const { patientIdentifier, firstName, lastName, mrn, dob } = patient;
+    const patientName = `${firstName} ${lastName}`.trim();
 
-      return {
-        key: patientIdentifier,
-        value: patientIdentifier,
-        label: (
-          <PatientLabelContainer>
-            <CondensedH4>{patientName}</CondensedH4>
-            <CondensedH4 align="right">{getFormattedAge({ dob })}</CondensedH4>
-            <CondensedH4 align="right">{mrn}</CondensedH4>
-          </PatientLabelContainer>
-        ),
-        displayLabel: patientName,
-      };
-    },
-  );
+    return {
+      key: patientIdentifier,
+      value: patientIdentifier,
+      label: (
+        <PatientLabelContainer key={patient?.patientIdentifier}>
+          <CondensedH4>{patientName}</CondensedH4>
+          <CondensedH4 align="right">{getFormattedAge({ dob })}</CondensedH4>
+          <CondensedH4 align="right">{mrn}</CondensedH4>
+        </PatientLabelContainer>
+      ),
+      displayLabel: patientName,
+    };
+  });
 
 export const getFormattedMembers = ({ members, currentUser }) => {
   const filteredMembers = (members ?? []).filter(member => {
@@ -59,7 +58,7 @@ export const getFormattedMembers = ({ members, currentUser }) => {
       key: userIdentifier,
       value: userIdentifier,
       label: (
-        <MemberLabelContainer>
+        <MemberLabelContainer key={member?.userIdentifier}>
           <CondensedH4>{userName}</CondensedH4>
           <Member member={member} size={30} />
         </MemberLabelContainer>

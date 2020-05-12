@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 
 import palette from 'styles/palette';
+import { updateWorkflowStatus } from 'actions/task-actions';
 
 export const STATUSES = [
   {
@@ -34,10 +37,40 @@ export const STATUSES = [
 const initializeStatusSectionHooks = () => {
   const { watch } = useFormContext();
   const currentValue = watch('workflowStatus');
+  const dispatch = useDispatch();
+
+  const { selectedTask } = useSelector(store => ({
+    selectedTask: store.taskState.selectedTask,
+  }));
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
+
+  const saveTaskStatus = useCallback(
+    ({ newTaskStatus }) => {
+      if (selectedTask && selectedTask.taskIdentifier != null) {
+        updateWorkflowStatus(
+          selectedTask,
+          newTaskStatus,
+        )(dispatch)
+          .then(() => {
+            toggleAlert('Updated');
+            // setAutoSaveVisible();
+          })
+          .catch(() => {
+            toggleAlert(
+              'Error updating status, please try again later',
+              'error',
+            );
+          });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedTaskIdentifier],
+  );
 
   return {
     currentStatusFlagColor: STATUSES.find(({ value }) => value === currentValue)
       ?.color,
+    saveTaskStatus,
   };
 };
 
