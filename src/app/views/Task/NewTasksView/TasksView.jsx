@@ -91,14 +91,14 @@ const TaskView = ({
             deleteGroup={deleteGroup}
             tasks={tasks}
           />
-        <EditGroupSection
-          onEnterClick={groupName =>
-            createTaskGroupList(groupName, taskListIdentifier)
-          }
-          placeholder={messages.placeholder}
-        >
-          <AddGroupNameButton />
-        </EditGroupSection>
+          <EditGroupSection
+            onEnterClick={groupName =>
+              createTaskGroupList(groupName, taskListIdentifier)
+            }
+            placeholder={messages.placeholder}
+          >
+            <AddGroupNameButton />
+          </EditGroupSection>
         </TaskGroupsContainer>
       ) : (
         <EmptyListWrapper>
