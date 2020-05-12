@@ -9,12 +9,11 @@ export const AddTaskInputWrapper = styled.div`
   font-size: ${fontSizes.smallPlus};
 
   & > input {
-    height: 50px;
-    margin-bottom: 0.563rem;
-    padding: 10px 30px;
+    height: auto;
+    margin-bottom: ${spacing.small};
+    padding: ${spacing.regular} ${spacing.huge};
     border-color: ${palette.coolGrey3};
     font-size: 1em;
-    line-height: 16px;
 
     &:focus {
       box-shadow: none;
