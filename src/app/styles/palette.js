@@ -58,6 +58,7 @@ const palette = {
   featureBlue1: '#011845',
   featureBlue2: '#1a2d56',
   scrollbarGrey: '#939aa4',
+  red: '#e94739',
 };
 
 export const getPriorityColor = priority => {

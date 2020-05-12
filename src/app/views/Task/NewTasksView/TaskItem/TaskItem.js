@@ -17,6 +17,8 @@ import MessageDimIcon from 'img/message-dim';
 import MessageIcon from 'img/message';
 import MessageNewIcon from 'img/message-new';
 import Member from 'components/members/Member';
+import HighPriorityLabel from 'img/priority-high-label-icon.svg';
+import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
 import {
@@ -30,6 +32,7 @@ import {
   SubtasksGroupLabel,
   TaskItemCell,
   TaskItemContainer,
+  PrioritySwitch,
 } from './styled';
 
 import { Tasks as Subtasks, Arrow } from '../TasksGroup/styled';
@@ -82,6 +85,7 @@ const TaskItem = ({
   markComplete,
   openDrawer,
   storeAsCurrentTask,
+  toggleTaskPriority,
   task,
 }) => {
   const {
@@ -99,6 +103,13 @@ const TaskItem = ({
 
   return (
     <TaskItemContainer>
+      <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
+        {task.priority === 'HIGH' ? (
+          <img src={HighPriorityLabel} alt="Priority icon" />
+        ) : (
+          <img className="low" src={LowPriorityHoverLabel} alt="No priority" />
+        )}
+      </PrioritySwitch>
       <TaskItemCell bolded>
         <CircleIcon
           src={Circle}

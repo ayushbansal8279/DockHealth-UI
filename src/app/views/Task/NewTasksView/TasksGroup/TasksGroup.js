@@ -24,6 +24,7 @@ const TasksGroup = ({
   markComplete,
   openDrawer,
   storeAsCurrentTask,
+  toggleTaskPriority,
   tasks,
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -64,6 +65,7 @@ const TasksGroup = ({
             markComplete={markComplete}
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
+            toggleTaskPriority={toggleTaskPriority}
             task={task}
           />
         ))}
