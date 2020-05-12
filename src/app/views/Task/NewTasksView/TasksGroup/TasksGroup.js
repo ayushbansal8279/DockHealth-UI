@@ -13,6 +13,7 @@ import {
   TasksGroupLabel,
   Tasks,
   ViewIcon,
+  AddTaskInputWrapper,
 } from './styled';
 
 const FULL_VIEW = 'FULL_VIEW';
@@ -25,6 +26,7 @@ const TasksGroup = ({
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
+  quickAddTask,
   tasks,
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -57,6 +59,16 @@ const TasksGroup = ({
         </div>
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
+        <AddTaskInputWrapper>
+          <input
+            name="newTask"
+            type="text"
+            placeholder="Add task"
+            onKeyDown={event =>
+              event.keyCode === 13 && quickAddTask(event.target.value)
+            }
+          />
+        </AddTaskInputWrapper>
         {tasks?.map(task => (
           <Task
             key={task.taskId}
