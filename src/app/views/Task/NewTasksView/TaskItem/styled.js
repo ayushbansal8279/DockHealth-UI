@@ -23,7 +23,7 @@ export const PrioritySwitch = styled.button`
   }
 `;
 
-export const AddCrossIcon = styled.img`
+export const AddCrossIcon = styled.div`
   border: 0.0625rem dashed ${palette.coolGrey1};
   border-radius: 50%;
   color: ${palette.blueOcean};
