@@ -14,6 +14,7 @@ import {
   EmptyListWrapper,
 } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
+import AddGroupSection from './AddGroupSection/AddGroupSection';
 
 const TaskView = ({
   completedTasks,
@@ -83,6 +84,7 @@ const TaskView = ({
             deleteGroup={deleteGroup}
             tasks={tasks}
           />
+          <AddGroupSection />
         </TaskGroupsContainer>
       ) : (
         <EmptyListWrapper>
