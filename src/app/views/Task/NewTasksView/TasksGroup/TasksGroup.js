@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -13,8 +13,8 @@ import {
   TasksGroupLabel,
   Tasks,
   ViewIcon,
-  AddTaskInputWrapper,
 } from './styled';
+import { AddTaskInputWrapper } from '../styled';
 
 const FULL_VIEW = 'FULL_VIEW';
 const SLIM_VIEW = 'SLIM_VIEW';
@@ -32,6 +32,15 @@ const TasksGroup = ({
   const [isOpen, switchOpen] = useState(false);
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
+
+  const addTaskInput = useRef();
+
+  const handleInputEnterDown = taskName => {
+    if (taskName) {
+      quickAddTask(taskName);
+      addTaskInput.current.value = '';
+    }
+  };
 
   return (
     <TasksGroupContainer>
@@ -63,9 +72,10 @@ const TasksGroup = ({
           <input
             name="newTask"
             type="text"
+            ref={addTaskInput}
             placeholder="Add task"
             onKeyDown={event =>
-              event.keyCode === 13 && quickAddTask(event.target.value)
+              event.keyCode === 13 && handleInputEnterDown(event.target.value)
             }
           />
         </AddTaskInputWrapper>

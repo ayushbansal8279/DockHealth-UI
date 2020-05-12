@@ -5,13 +5,15 @@ import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { TaskViewContainer, TaskGroupsContainer } from './styled';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import Spacing from 'components/common/Spacing';
+import {
+  TaskViewContainer,
+  TaskGroupsContainer,
+  AddTaskInputWrapper,
+  EmptyListWrapper,
+} from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
-
-const quickAddTask = taskName => {
-  // TODO: connect to backend endpoint
-  console.log('task name:', taskName);
-};
 
 const TaskView = ({
   completedTasks,
@@ -33,6 +35,15 @@ const TaskView = ({
   const { toggleTaskPriority } = taskActions;
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
 
+  const quickAddTask = taskName => {
+    if (taskName) {
+      taskActions.saveTask({
+        description: taskName,
+        taskListIdentifier: taskList.taskListIdentifier,
+      });
+    }
+  };
+
   const toggleSingleTaskPriority = task => {
     toggleTaskPriority(task, currentUser.userIdentifier, task.priority);
   };
@@ -53,18 +64,36 @@ const TaskView = ({
         showMembers={showMembers}
         taskList={taskList}
       />
-      <TaskGroupsContainer>
-        <TasksGroup
-          currentUser={currentUser}
-          groupName={listName}
-          markComplete={markComplete}
-          openDrawer={openDrawer}
-          storeAsCurrentTask={storeAsCurrentTask}
-          toggleTaskPriority={toggleSingleTaskPriority}
-          quickAddTask={quickAddTask}
-          tasks={tasks}
-        />
-      </TaskGroupsContainer>
+      {tasks.length > 0 ? (
+        <TaskGroupsContainer>
+          <TasksGroup
+            currentUser={currentUser}
+            groupName={listName}
+            markComplete={markComplete}
+            openDrawer={openDrawer}
+            storeAsCurrentTask={storeAsCurrentTask}
+            toggleTaskPriority={toggleSingleTaskPriority}
+            quickAddTask={quickAddTask}
+            tasks={tasks}
+          />
+        </TaskGroupsContainer>
+      ) : (
+        <EmptyListWrapper>
+          <MontserratTypography variant="h3" weight="400" color="inherit">
+            Create your first task
+          </MontserratTypography>
+          <Spacing vertical={3} />
+          <AddTaskInputWrapper>
+            <input
+              type="text"
+              placeholder="Add task"
+              onKeyDown={event =>
+                event.keyCode === 13 && quickAddTask(event.target.value)
+              }
+            />
+          </AddTaskInputWrapper>
+        </EmptyListWrapper>
+      )}
       <NewTaskDrawer
         members={members}
         membersNotInTaskList={membersNotInTaskList}
