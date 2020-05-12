@@ -55,6 +55,7 @@ export const TasksGroupContainer = styled.div`
   flex: 1;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: ${spacing.giga};
 `;
 
 export const TasksGroupHeader = styled.div`
