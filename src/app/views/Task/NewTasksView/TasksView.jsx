@@ -8,6 +8,11 @@ import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskViewContainer, TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
 
+const quickAddTask = taskName => {
+  // TODO: connect to backend endpoint
+  console.log('task name:', taskName);
+};
+
 const TaskView = ({
   completedTasks,
   currentUser,
@@ -56,6 +61,7 @@ const TaskView = ({
           openDrawer={openDrawer}
           storeAsCurrentTask={storeAsCurrentTask}
           toggleTaskPriority={toggleSingleTaskPriority}
+          quickAddTask={quickAddTask}
           tasks={tasks}
         />
       </TaskGroupsContainer>
