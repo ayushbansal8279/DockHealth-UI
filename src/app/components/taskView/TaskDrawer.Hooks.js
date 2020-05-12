@@ -107,7 +107,6 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
   const taskIdentifier = task?.taskIdentifier;
   const taskWorkflowStatus = task?.workflowStatus;
   const taskPriority = task?.priority;
-  const userIdentifier = userProfile?.userIdentifier;
 
   const storeAsCurrentTask = useCallback(
     newTask => storeAsCurrentTaskAction(newTask)(dispatch),
@@ -118,7 +117,6 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
     ({ newTaskPriority }) => {
       toggleTaskPriority(
         task,
-        parseInt(userIdentifier, 10) || -1,
         newTaskPriority,
       )(dispatch)
         .then(() => {
@@ -132,7 +130,7 @@ export default ({ headsUpAreaRef, statusSelectData, isMultiList, isInbox }) => {
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskIdentifier, userIdentifier],
+    [taskIdentifier],
   );
 
   const addDeferredCommentToQueue = useCallback(

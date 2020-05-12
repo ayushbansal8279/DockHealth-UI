@@ -397,11 +397,9 @@ export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
     )
     .catch(error => error?.response?.data);
 
-export function markHighPriority(taskIdentifier, userIdentifier) {
+export function markHighPriority(taskIdentifier) {
   return axios
-    .put(
-      `task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=HIGH`,
-    )
+    .put(`task/changePriority/${taskIdentifier}?priorityLevel=HIGH`)
     .then(response => {
       return response;
     })
@@ -410,11 +408,9 @@ export function markHighPriority(taskIdentifier, userIdentifier) {
     });
 }
 
-export function markLowPriority(taskIdentifier, userIdentifier) {
+export function markLowPriority(taskIdentifier) {
   return axios
-    .put(
-      `task/changePriority/${taskIdentifier}?userId=${userIdentifier}&priorityLevel=LOW`,
-    )
+    .put(`task/changePriority/${taskIdentifier}?priorityLevel=LOW`)
     .then(response => {
       return response;
     })

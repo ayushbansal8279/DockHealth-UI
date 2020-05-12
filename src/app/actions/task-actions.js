@@ -561,14 +561,14 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
     });
 };
 
-export function toggleTaskPriority(task, userIdentifier, priority) {
+export function toggleTaskPriority(task, priority) {
   return dispatch => {
     const { newPriority, apiEndpoint } =
       priority === 'LOW'
         ? { newPriority: 'HIGH', apiEndpoint: 'markHighPriority' }
         : { newPriority: 'LOW', apiEndpoint: 'markLowPriority' };
 
-    return TaskApi[apiEndpoint](task.taskIdentifier, userIdentifier, priority)
+    return TaskApi[apiEndpoint](task.taskIdentifier, priority)
       .then(() => {
         dispatch({
           type: ActionTypes.TOGGLE_TASK_PRIORITY_SUCCESS,
