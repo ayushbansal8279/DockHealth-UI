@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
+import * as TaskActions from 'actions/task-actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskViewContainer, TaskGroupsContainer } from './styled';
@@ -17,13 +18,20 @@ const TaskView = ({
   showMembers = true,
   storeAsCurrentTask,
   taskDrawerActions,
+  taskActions,
   taskList = {},
   taskListMembers,
   tasks,
 }) => {
   const { listName } = taskList;
   const { openDrawer } = taskDrawerActions;
+  const { toggleTaskPriority } = taskActions;
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
+
+  const toggleSingleTaskPriority = task => {
+    toggleTaskPriority(task, currentUser.userIdentifier, task.priority);
+  };
+
   return (
     <TaskViewContainer>
       <Toolbar
@@ -47,6 +55,7 @@ const TaskView = ({
           markComplete={markComplete}
           openDrawer={openDrawer}
           storeAsCurrentTask={storeAsCurrentTask}
+          toggleTaskPriority={toggleSingleTaskPriority}
           tasks={tasks}
         />
       </TaskGroupsContainer>
@@ -61,6 +70,7 @@ const TaskView = ({
 
 const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
+  taskActions: bindActionCreators(TaskActions, dispatch),
 });
 
 const mapStateToProps = store => ({

@@ -4,7 +4,26 @@ import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
-export const AddCrossIcon = styled.img`
+export const PrioritySwitch = styled.button`
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+
+  & > img {
+    &.low {
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+`;
+
+export const AddCrossIcon = styled.div`
   border: 0.0625rem dashed ${palette.coolGrey1};
   border-radius: 50%;
   color: ${palette.blueOcean};
@@ -49,6 +68,7 @@ export const SubtasksGroupLabel = styled.span`
 `;
 
 export const TaskItemCell = styled.div`
+  position: relative;
   align-items: center;
   border-right: 1px solid ${palette.coolGrey3};
   color: ${palette.mediumGrey};
@@ -61,7 +81,6 @@ export const TaskItemCell = styled.div`
   padding-left: ${props =>
     props.padding ? spacing[props.padding] : spacing.regularPlus};
   padding-right: ${spacing.regularPlus};
-  position: relative;
   width: ${props => (!props.width ? '100%' : '')};
 
   &:last-of-type {
@@ -70,6 +89,7 @@ export const TaskItemCell = styled.div`
 `;
 
 export const TaskItemContainer = styled.div`
+  position: relative;
   background-color: white;
   border: 1px solid ${palette.coolGrey3};
   display: flex;
