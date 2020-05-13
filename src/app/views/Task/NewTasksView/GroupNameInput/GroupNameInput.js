@@ -40,8 +40,9 @@ const GroupNameInput = ({
   );
 
   useEffect(() => {
-    if (wrapperReference && wrapperReference.current)
+    if (wrapperReference?.current) {
       wrapperReference.current.focus();
+    }
   }, []);
 
   useEffect(() => {
