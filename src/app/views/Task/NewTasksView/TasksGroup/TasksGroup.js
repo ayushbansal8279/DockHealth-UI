@@ -57,17 +57,17 @@ const TasksGroup = ({
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
+        <Arrow
+          alt="arrow"
+          isOpen={isOpen}
+          onClick={switchGroupHeaderEdit}
+          src={ArrowIcon}
+        />
         <EditGroupSection
           initialValue={groupName}
           onEnterClick={newGroupName => editGroupName(newGroupName, groupName)}
         >
           <TasksGroupLabel>
-            <Arrow
-              alt="arrow"
-              isOpen={isOpen}
-              onClick={switchGroupHeaderEdit}
-              src={ArrowIcon}
-            />
             {groupName} ({tasks?.length || 0})
           </TasksGroupLabel>
         </EditGroupSection>
