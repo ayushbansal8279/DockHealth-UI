@@ -14,6 +14,7 @@ import {
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'components/patient/PatientDetailsView';
 import { storeAsCurrentTask } from './actions/task-actions';
+import { getTaskGroupList } from './actions/task-group-list-actions';
 import sendEvent from './api/usage-api';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
@@ -164,6 +165,14 @@ export const Routes = ({ store }) => {
     dispatch(storeAsCurrentTask(taskIdentifier));
   };
 
+  const getTaskGroupsOnEnter = nextState => {
+    const { params } = nextState;
+
+    if (params?.taskListIdentifier) {
+      dispatch(getTaskGroupList(params?.taskListIdentifier));
+    }
+  };
+
   return (
     <Router history={hashHistory} onUpdate={() => {}}>
       <Route path="/" component={App}>
@@ -268,6 +277,7 @@ export const Routes = ({ store }) => {
               component={ListDetailsView}
               onChange={preselectTask}
               onEnter={nextState => {
+                getTaskGroupsOnEnter(nextState);
                 checkFeatureToggles(nextState);
                 preselectTask(null, nextState);
               }}
