@@ -15,6 +15,7 @@ import {
   duplicateTask,
   assignOrReassignTask,
   updatePatient,
+  updateTaskDescription,
 } from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import {
@@ -379,6 +380,26 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     }
   };
 
+  const handleTaskDescriptionUpdate = async () => {
+    const updatedTaskDescription = watch('description');
+
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        await updateTaskDescription(
+          selectedTask,
+          updatedTaskDescription,
+        )(dispatch);
+        toggleAlert('Updated');
+        // setAutoSaveVisible();
+      } catch {
+        toggleAlert(
+          'Error updating task description, please try again later',
+          'error',
+        );
+      }
+    }
+  };
+
   return {
     currentUser,
     selectedTask,
@@ -400,6 +421,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     onDuplicate,
     handleAssignedToSelect,
     handlePatientSelect,
+    handleTaskDescriptionUpdate,
   };
 };
 

@@ -55,6 +55,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     onDuplicate,
     handleAssignedToSelect,
     handlePatientSelect,
+    handleTaskDescriptionUpdate,
   } = initializeTaskDrawerHooks({ members, isInbox, taskList });
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -115,6 +116,12 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     ) : (
                       <AdornmentContainer>+</AdornmentContainer>
                     ),
+                }}
+                onBlur={event => {
+                  if (selectedTask && selectedTask.taskIdentifier != null) {
+                    event.preventDefault();
+                    handleTaskDescriptionUpdate();
+                  }
                 }}
               />
             </Grid>

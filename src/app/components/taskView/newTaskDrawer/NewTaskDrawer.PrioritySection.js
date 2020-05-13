@@ -52,7 +52,7 @@ const renderDropdownItem = ({ setValue, closePopover, onItemSelection }) => ({
 );
 
 const onItemSelection = ({ saveTaskPriority }) => value => {
-  saveTaskPriority({ newTaskStatus: value });
+  saveTaskPriority({ newTaskPriority: value });
 };
 
 const PrioritySection = () => {
