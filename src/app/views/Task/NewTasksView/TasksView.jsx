@@ -15,7 +15,9 @@ import {
   EmptyListWrapper,
 } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
-import AddGroupSection from './AddGroupSection/AddGroupSection';
+import EditGroupSection from './EditGroupSection/EditGroupSection';
+import messages from './AddGroupNameButton/messages';
+import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
 
 const TaskView = ({
   completedTasks,
@@ -84,14 +86,19 @@ const TaskView = ({
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskPriority={toggleSingleTaskPriority}
+            editGroupName={() => {}}
             quickAddTask={quickAddTask}
             deleteGroup={deleteGroup}
             tasks={tasks}
           />
-          <AddGroupSection
-            createTaskGroupList={createTaskGroupList}
-            taskListIdentifier={taskListIdentifier}
-          />
+        <EditGroupSection
+          onEnterClick={groupName =>
+            createTaskGroupList(groupName, taskListIdentifier)
+          }
+          placeholder={messages.placeholder}
+        >
+          <AddGroupNameButton />
+        </EditGroupSection>
         </TaskGroupsContainer>
       ) : (
         <EmptyListWrapper>

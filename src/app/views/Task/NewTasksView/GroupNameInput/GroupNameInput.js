@@ -40,6 +40,11 @@ const GroupNameInput = ({
   );
 
   useEffect(() => {
+    if (wrapperReference && wrapperReference.current)
+      wrapperReference.current.focus();
+  }, []);
+
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
