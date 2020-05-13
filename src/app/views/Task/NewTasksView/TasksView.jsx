@@ -31,16 +31,17 @@ const TaskView = ({
   taskDrawerActions,
   taskActions,
   taskGroupActions,
+  taskGroupList,
   taskList = {},
   taskListMembers,
-  tasks,
+  tasks, // to do- remove tasks prop
 }) => {
-  const { listName } = taskList;
   const { openDrawer } = taskDrawerActions;
   const { toggleTaskPriority } = taskActions;
   const { createTaskGroupList } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
+  const { groupList } = taskGroupList;
 
   const quickAddTask = taskName => {
     if (taskName) {
@@ -79,18 +80,21 @@ const TaskView = ({
       />
       {tasks.length > 0 ? (
         <TaskGroupsContainer>
-          <TasksGroup
-            currentUser={currentUser}
-            groupName={listName}
-            markComplete={markComplete}
-            openDrawer={openDrawer}
-            storeAsCurrentTask={storeAsCurrentTask}
-            toggleTaskPriority={toggleSingleTaskPriority}
-            editGroupName={() => {}}
-            quickAddTask={quickAddTask}
-            deleteGroup={deleteGroup}
-            tasks={tasks}
-          />
+          {groupList?.map(({ groupName, taskGroupIdentifier }) => (
+            <TasksGroup
+              key={taskGroupIdentifier}
+              currentUser={currentUser}
+              groupName={groupName}
+              markComplete={markComplete}
+              openDrawer={openDrawer}
+              storeAsCurrentTask={storeAsCurrentTask}
+              toggleTaskPriority={toggleSingleTaskPriority}
+              editGroupName={() => {}}
+              quickAddTask={quickAddTask}
+              deleteGroup={deleteGroup}
+              tasks={[]} // to do - replace by real data
+            />
+          ))}
           <EditGroupSection
             onEnterClick={groupName =>
               createTaskGroupList(groupName, taskListIdentifier)
@@ -134,6 +138,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
+  taskGroupList: store.taskGroupList,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);
