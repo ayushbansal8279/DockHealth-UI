@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
+import * as TaskGroupActions from 'actions/task-group-list-actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -27,6 +28,7 @@ const TaskView = ({
   storeAsCurrentTask,
   taskDrawerActions,
   taskActions,
+  taskGroupActions,
   taskList = {},
   taskListMembers,
   tasks,
@@ -34,6 +36,8 @@ const TaskView = ({
   const { listName } = taskList;
   const { openDrawer } = taskDrawerActions;
   const { toggleTaskPriority } = taskActions;
+  const { createTaskGroupList } = taskGroupActions;
+  const { taskListIdentifier } = taskList;
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
 
   const quickAddTask = taskName => {
@@ -84,7 +88,10 @@ const TaskView = ({
             deleteGroup={deleteGroup}
             tasks={tasks}
           />
-          <AddGroupSection />
+          <AddGroupSection
+            createTaskGroupList={createTaskGroupList}
+            taskListIdentifier={taskListIdentifier}
+          />
         </TaskGroupsContainer>
       ) : (
         <EmptyListWrapper>
@@ -115,6 +122,7 @@ const TaskView = ({
 const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
+  taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
 });
 
 const mapStateToProps = store => ({

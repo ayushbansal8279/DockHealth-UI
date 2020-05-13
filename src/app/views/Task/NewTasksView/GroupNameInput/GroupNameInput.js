@@ -51,7 +51,7 @@ const GroupNameInput = ({
       <Input
         onBlur={onBlur}
         onChange={({ target }) => onChange(target?.value)}
-        onKeyDown={event => event.keyCode === 13 && onEnter(event.target.value)}
+        onKeyDown={event => event.keyCode === 13 && onEnter()}
         placeholder={placeholder}
         width={width}
         value={value}
