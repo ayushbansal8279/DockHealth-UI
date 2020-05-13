@@ -6,6 +6,7 @@ import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 import Task from '../TaskItem/TaskItem';
+import EditGroupSection from '../EditGroupSection/EditGroupSection';
 
 import {
   Arrow,
@@ -29,6 +30,7 @@ const TasksGroup = ({
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
+  editGroupName,
   quickAddTask,
   deleteGroup,
   tasks,
@@ -36,6 +38,12 @@ const TasksGroup = ({
   const [isOpen, switchOpen] = useState(false);
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
+
+  const switchGroupHeaderEdit = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    switchOpen(!isOpen);
+  };
 
   const addTaskInput = useRef();
 
@@ -49,15 +57,20 @@ const TasksGroup = ({
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
-        <TasksGroupLabel>
-          <Arrow
-            alt="arrow"
-            isOpen={isOpen}
-            onClick={() => switchOpen(!isOpen)}
-            src={ArrowIcon}
-          />
-          {groupName} ({tasks?.length || 0})
-        </TasksGroupLabel>
+        <EditGroupSection
+          initialValue={groupName}
+          onEnterClick={newGroupName => editGroupName(newGroupName, groupName)}
+        >
+          <TasksGroupLabel>
+            <Arrow
+              alt="arrow"
+              isOpen={isOpen}
+              onClick={switchGroupHeaderEdit}
+              src={ArrowIcon}
+            />
+            {groupName} ({tasks?.length || 0})
+          </TasksGroupLabel>
+        </EditGroupSection>
         <TasksGroupActionButtonsContainer>
           <TasksGroupActionButton onClick={() => deleteGroup(groupName)}>
             <img src={XInCircle} alt="Delete" />

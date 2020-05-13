@@ -66,6 +66,7 @@ export const TasksGroupHeader = styled.div`
 `;
 
 export const TasksGroupLabel = styled.label`
+  display: flex;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
