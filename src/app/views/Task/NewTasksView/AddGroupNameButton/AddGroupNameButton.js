@@ -1,6 +1,6 @@
 import React from 'react';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { Cross, Description, Header } from '../EditGroupSection/styled';
+import { Cross, Description, Header } from '../GroupNameSection/styled';
 import messages from './messages';
 
 const AddGroupNameButton = () => (

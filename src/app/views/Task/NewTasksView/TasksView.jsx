@@ -15,7 +15,7 @@ import {
   EmptyListWrapper,
 } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
-import EditGroupSection from './EditGroupSection/EditGroupSection';
+import GroupNameSection from './GroupNameSection/GroupNameSection';
 import messages from './AddGroupNameButton/messages';
 import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
 
@@ -95,14 +95,15 @@ const TaskView = ({
               tasks={[]} // to do - replace by real data
             />
           ))}
-          <EditGroupSection
+          <GroupNameSection
             onEnterClick={groupName =>
-              createTaskGroupList(groupName, taskListIdentifier)
+              createTaskGroupList({ groupName, taskListIdentifier })
             }
             placeholder={messages.placeholder}
+            closeOnEnter
           >
             <AddGroupNameButton />
-          </EditGroupSection>
+          </GroupNameSection>
         </TaskGroupsContainer>
       ) : (
         <EmptyListWrapper>
