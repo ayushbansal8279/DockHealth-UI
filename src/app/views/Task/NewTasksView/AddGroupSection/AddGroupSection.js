@@ -5,7 +5,7 @@ import { Cross, Description, Header } from './styled';
 import GroupNameInput from '../GroupNameInput/GroupNameInput';
 import messages from './messages';
 
-const AddGroupSection = () => {
+const AddGroupSection = ({ createTaskGroupList, taskListIdentifier }) => {
   const [shouldShowInput, showInput, hideInput] = useBoolean(false);
   const [groupName, setGroupName] = useState('');
 
@@ -18,6 +18,7 @@ const AddGroupSection = () => {
       <GroupNameInput
         onBlur={hideInput}
         onChange={setGroupName}
+        onEnter={() => createTaskGroupList({ taskListIdentifier, groupName })}
         placeholder={messages.placeholder}
         value={groupName}
       />
