@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
+import XInCircle from 'img/x-in-circle';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
@@ -13,6 +14,8 @@ import {
   TasksGroupLabel,
   Tasks,
   ViewIcon,
+  TasksGroupActionButtonsContainer,
+  TasksGroupActionButton,
 } from './styled';
 import { AddTaskInputWrapper } from '../styled';
 
@@ -27,6 +30,7 @@ const TasksGroup = ({
   storeAsCurrentTask,
   toggleTaskPriority,
   quickAddTask,
+  deleteGroup,
   tasks,
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -54,6 +58,12 @@ const TasksGroup = ({
           />
           {groupName} ({tasks?.length || 0})
         </TasksGroupLabel>
+        <TasksGroupActionButtonsContainer>
+          <TasksGroupActionButton onClick={() => deleteGroup(groupName)}>
+            <img src={XInCircle} alt="Delete" />
+            <p>Delete</p>
+          </TasksGroupActionButton>
+        </TasksGroupActionButtonsContainer>
         <div>
           <ViewIcon
             alt="slim-view"

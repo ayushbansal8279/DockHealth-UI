@@ -48,6 +48,12 @@ const TaskView = ({
     toggleTaskPriority(task, currentUser.userIdentifier, task.priority);
   };
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const deleteGroup = groupName => {
+    // TODO: delete group;
+    console.log('Delte group:', groupName);
+  };
+
   return (
     <TaskViewContainer>
       <Toolbar
@@ -74,6 +80,7 @@ const TaskView = ({
             storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskPriority={toggleSingleTaskPriority}
             quickAddTask={quickAddTask}
+            deleteGroup={deleteGroup}
             tasks={tasks}
           />
         </TaskGroupsContainer>
