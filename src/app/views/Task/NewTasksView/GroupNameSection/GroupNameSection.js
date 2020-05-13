@@ -3,11 +3,12 @@ import useBoolean from 'hooks/useBoolean';
 import GroupNameInput from '../GroupNameInput/GroupNameInput';
 import { ButtonWrapper } from './styled';
 
-const EditGroupSection = ({
+const GroupNameSection = ({
   onEnterClick,
   placeholder,
   initialValue,
   children,
+  closeOnEnter,
 }) => {
   const [shouldShowInput, showInput, hideInput] = useBoolean(false);
   const [groupName, setGroupName] = useState('');
@@ -21,7 +22,10 @@ const EditGroupSection = ({
       <GroupNameInput
         onBlur={hideInput}
         onChange={setGroupName}
-        onEnter={() => onEnterClick(groupName)}
+        onEnter={() => {
+          if (closeOnEnter) hideInput();
+          return onEnterClick(groupName);
+        }}
         placeholder={placeholder}
         value={groupName}
       />
@@ -34,4 +38,4 @@ const EditGroupSection = ({
   );
 };
 
-export default EditGroupSection;
+export default GroupNameSection;

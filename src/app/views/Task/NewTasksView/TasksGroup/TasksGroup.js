@@ -6,7 +6,7 @@ import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 import Task from '../TaskItem/TaskItem';
-import EditGroupSection from '../EditGroupSection/EditGroupSection';
+import GroupNameSection from '../GroupNameSection/GroupNameSection';
 
 import {
   Arrow,
@@ -63,14 +63,14 @@ const TasksGroup = ({
           onClick={switchGroupHeaderEdit}
           src={ArrowIcon}
         />
-        <EditGroupSection
+        <GroupNameSection
           initialValue={groupName}
           onEnterClick={newGroupName => editGroupName(newGroupName, groupName)}
         >
           <TasksGroupLabel>
             {groupName} ({tasks?.length || 0})
           </TasksGroupLabel>
-        </EditGroupSection>
+        </GroupNameSection>
         <TasksGroupActionButtonsContainer>
           <TasksGroupActionButton onClick={() => deleteGroup(groupName)}>
             <img src={XInCircle} alt="Delete" />
