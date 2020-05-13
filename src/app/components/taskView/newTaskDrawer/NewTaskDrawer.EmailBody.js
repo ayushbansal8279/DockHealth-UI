@@ -9,7 +9,7 @@ import palette from 'styles/palette';
 const EmailBodyContainer = styled.div`
   background-color: ${palette.blueGrey};
   margin-top: 0.5rem;
-  padding: 1rem;
+  padding: 0.5rem;
   width: 100%;
   word-break: break-word;
 `;

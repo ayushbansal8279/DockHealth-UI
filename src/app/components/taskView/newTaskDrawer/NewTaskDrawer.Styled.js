@@ -13,7 +13,7 @@ export const TaskDrawerContainer = styled.div`
     ${opacify(palette.black, 0.2)};
   bottom: 0;
   overflow-y: auto;
-  padding: 2rem;
+  padding: 0rem;
   position: fixed;
   right: 0;
   top: ${({ top }) => top}px;
@@ -113,3 +113,28 @@ export const StyledList = styled(List)`
   max-height: 12.5rem;
   overflow-y: auto;
 `;
+
+export const styleTaskDrawerContainer = {
+  padding: '2rem 0rem',
+};
+
+export const styleFullRow = {
+  padding: '.5rem 2rem 0.5rem 2rem',
+};
+
+export const styleFullRowThin = {
+  padding: '0rem 2rem',
+};
+
+export const styleEmailRow = {
+  padding: '0 2rem',
+  backgroundColor: palette.blueGrey,
+};
+
+export const styleLeftColumn = {
+  padding: '0.5rem 1rem 0.5rem 2rem',
+};
+
+export const styleRightColumn = {
+  padding: '0.5rem 2rem 0.5rem 1rem',
+};

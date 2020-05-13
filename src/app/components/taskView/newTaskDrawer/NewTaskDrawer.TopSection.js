@@ -7,6 +7,7 @@ import {
   FiledInSelect,
   StyledList,
   HorizontalLabel,
+  styleFullRowThin,
 } from './NewTaskDrawer.Styled';
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
@@ -71,7 +72,14 @@ const TopSection = ({
 
   return (
     <>
-      <Grid container item xs={12} alignItems="center" justify="space-between">
+      <Grid
+        container
+        item
+        xs={12}
+        alignItems="center"
+        justify="space-between"
+        style={styleFullRowThin}
+      >
         <Grid
           container
           item

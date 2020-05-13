@@ -27,6 +27,12 @@ import {
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
+  styleTaskDrawerContainer,
+  styleFullRow,
+  styleFullRowThin,
+  styleEmailRow,
+  styleLeftColumn,
+  styleRightColumn,
 } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 import {
@@ -87,7 +93,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     <TaskDrawerContainer open={taskDrawerOpen} top={top}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormContext {...formMethods}>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} style={styleTaskDrawerContainer}>
             <TopSection
               formMethods={formMethods}
               taskLists={taskLists}
@@ -99,7 +105,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               isInbox={isInbox}
               closeTaskDrawer={closeTaskDrawer}
             />
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styleFullRow}>
               <TextInput
                 name="description"
                 label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
@@ -126,7 +132,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               />
             </Grid>
             {selectedTask?.sourceMessage && (
-              <Grid item xs={12}>
+              <Grid item xs={12} style={styleEmailRow}>
                 <TaskDrawerEmailBodyContainer
                   emailBody={selectedTask.sourceMessage}
                   task={selectedTask}
@@ -134,7 +140,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 />
               </Grid>
             )}
-            <Grid item xs={6}>
+            <Grid item xs={6} style={styleLeftColumn}>
               <SelectInput
                 name="patientIdentifier"
                 label="Patient"
@@ -176,7 +182,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 setParentFormValue={setValue}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={styleRightColumn}>
               <SelectInput
                 name="assignedToIdentifier"
                 label="Assigned To"
@@ -237,10 +243,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 taskList={taskList}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={styleLeftColumn}>
               <DueDateSection selectedTask={selectedTask} />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={styleRightColumn}>
               <HiddenFieldContainer visible={dueDateValue}>
                 <TextInput
                   name="dueTime"
@@ -260,22 +266,22 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 />
               </HiddenFieldContainer>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={styleLeftColumn}>
               <PrioritySection selectedTask={selectedTask} />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} style={styleRightColumn}>
               <StatusSection selectedTask={selectedTask} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styleFullRow}>
               <LabelsSection
                 selectedTaskIdentifier={selectedTaskIdentifier}
                 isInbox={isInbox}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styleFullRow}>
               <AtttachmentsSection selectedTask={selectedTask} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={styleFullRow}>
               <CommentSection />
             </Grid>
             <Grid
@@ -285,6 +291,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               justify="flex-end"
               alignItems="center"
               wrap="nowrap"
+              style={styleFullRowThin}
             >
               <Button
                 onClick={closeTaskDrawer}
@@ -322,7 +329,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
           </Grid>
         </FormContext>
       </form>
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={styleFullRowThin}>
         <Spacing vertical={4} />
         <Divider
           style={{
