@@ -27,7 +27,7 @@ export function createTaskGroupList(payload) {
 
     return TaskGroupListApi.createGroupAssignedToList(payload)
       .then(() => {
-        getTaskGroupList(taskListIdentifier);
+        dispatch(getTaskGroupList(taskListIdentifier));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
