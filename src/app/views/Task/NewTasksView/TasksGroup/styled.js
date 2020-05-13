@@ -6,19 +6,7 @@ import palette from 'styles/palette';
 
 export const TasksGroupActionButtonsContainer = styled.div`
   display: flex;
-  flex: 1;
   justify-content: flex-end;
-
-  & > button {
-    visibility: hidden;
-    transition: visibility 0.2s ease-in-out;
-  }
-
-  &:hover {
-    & > button {
-      visibility: visible;
-    }
-  }
 `;
 
 export const TasksGroupActionButton = styled.button`
@@ -41,8 +29,8 @@ export const TasksGroupActionButton = styled.button`
 export const Arrow = styled.img`
   transform: ${props => props.isOpen && 'rotateX(180deg)'};
   -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  margin-left: ${spacing.tiny};
-  margin-right: ${spacing.smallPlus};
+  padding-left: ${spacing.tiny};
+  padding-right: ${spacing.smallPlus};
   transition: all 0.5s ease-in-out;
 `;
 
@@ -63,16 +51,48 @@ export const TasksGroupHeader = styled.div`
   display: flex;
   justify-content: space-between;
   padding-bottom: ${spacing.regular};
+
+  .action-buttons {
+    visibility: hidden;
+  }
+
+  &:hover {
+    .action-buttons {
+      visibility: visible;
+    }
+  }
 `;
 
-export const TasksGroupLabel = styled.label`
-  display: flex;
+export const TasksGroupLabel = styled.p`
+  margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .name {
+    max-width: calc(100% - 21px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: ${spacing.tiny};
+  }
+
+  .counter {
+    width: 21px;
+  }
 `;
 
 export const Tasks = styled(Collapse)`
   height: 300px;
   padding-left: ${props => props.isSubtasks && spacing.giga};
+`;
+
+export const GroupNameSectionWrapper = styled.div`
+  flex: 1;
+  overflow: hidden;
 `;

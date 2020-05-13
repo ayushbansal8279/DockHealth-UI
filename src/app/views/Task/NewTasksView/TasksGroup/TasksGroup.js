@@ -17,6 +17,7 @@ import {
   ViewIcon,
   TasksGroupActionButtonsContainer,
   TasksGroupActionButton,
+  GroupNameSectionWrapper,
 } from './styled';
 import { AddTaskInputWrapper } from '../styled';
 
@@ -63,15 +64,20 @@ const TasksGroup = ({
           onClick={switchGroupHeaderEdit}
           src={ArrowIcon}
         />
-        <GroupNameSection
-          initialValue={groupName}
-          onEnterClick={newGroupName => editGroupName(newGroupName, groupName)}
-        >
-          <TasksGroupLabel>
-            {groupName} ({tasks?.length || 0})
-          </TasksGroupLabel>
-        </GroupNameSection>
-        <TasksGroupActionButtonsContainer>
+        <GroupNameSectionWrapper>
+          <GroupNameSection
+            initialValue={groupName}
+            onEnterClick={newGroupName =>
+              editGroupName(newGroupName, groupName)
+            }
+          >
+            <TasksGroupLabel>
+              <span className="name">{groupName}</span>
+              <span className="counter">({tasks?.length || 0})</span>
+            </TasksGroupLabel>
+          </GroupNameSection>
+        </GroupNameSectionWrapper>
+        <TasksGroupActionButtonsContainer className="action-buttons">
           <TasksGroupActionButton onClick={() => deleteGroup(groupName)}>
             <img src={XInCircle} alt="Delete" />
             <p>Delete</p>
