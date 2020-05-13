@@ -2,6 +2,41 @@ import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
+import palette from 'styles/palette';
+
+export const TasksGroupActionButtonsContainer = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+
+  & > button {
+    visibility: hidden;
+    transition: visibility 0.2s ease-in-out;
+  }
+
+  &:hover {
+    & > button {
+      visibility: visible;
+    }
+  }
+`;
+
+export const TasksGroupActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 ${spacing.smallPlus};
+  color: ${palette.lightGrey};
+
+  &:last-of-type {
+    padding-right: 0px;
+  }
+
+  & > p {
+    margin-bottom: 0px;
+    margin-left: ${spacing.tiny};
+  }
+`;
 
 export const Arrow = styled.img`
   transform: ${props => props.isOpen && 'rotateX(180deg)'};
