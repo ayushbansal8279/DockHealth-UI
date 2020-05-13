@@ -20,3 +20,7 @@ export const Header = styled.span`
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
 `;
+
+export const ButtonWrapper = styled.button`
+  text-align: left;
+`;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useBoolean from 'hooks/useBoolean';
 import GroupNameInput from '../GroupNameInput/GroupNameInput';
+import { ButtonWrapper } from './styled';
 
 const EditGroupSection = ({
   onEnterClick,
@@ -27,9 +28,9 @@ const EditGroupSection = ({
     );
 
   return (
-    <button type="button" style={{ textAlign: 'left' }} onClick={showInput}>
+    <ButtonWrapper type="button" onClick={showInput}>
       {children}
-    </button>
+    </ButtonWrapper>
   );
 };
 
