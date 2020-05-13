@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import * as TaskListActions from 'actions/tasklist-actions';
 import CubesLoaderOverlay from 'components/common/CubesLoaderOverlay';
 import Drawer from 'components/drawer/Drawer';
-import { checkUserAuthentication } from './TemplateCore.Utilities';
 
 class TemplateCoreSubscriptionPlan extends PureComponent {
   state = {
@@ -29,10 +28,9 @@ class TemplateCoreSubscriptionPlan extends PureComponent {
   }
 
   async componentDidMount() {
-    const { taskListActions, dispatch } = this.props;
+    const { taskListActions } = this.props;
 
     // await userApi.isAuthenticated({ isLoggedIn: this.isLoggedIn });
-    await checkUserAuthentication({ dispatch });
     this.unlockLoading();
     taskListActions.getTaskListForUser();
   }
