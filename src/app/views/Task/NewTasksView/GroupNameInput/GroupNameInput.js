@@ -4,12 +4,13 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontWeights } from 'styles/font';
+import { fontWeights, fontSizes } from 'styles/font';
 
 export const Input = styled.input`
   background-color: white;
   border: 1px solid ${palette.coolGrey3};
   border-radius: 4px;
+  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   outline: none;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
