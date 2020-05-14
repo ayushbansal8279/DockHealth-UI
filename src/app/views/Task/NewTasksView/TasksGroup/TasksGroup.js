@@ -18,6 +18,8 @@ import {
   TasksGroupActionButtonsContainer,
   TasksGroupActionButton,
   GroupNameSectionWrapper,
+  TasksGroupLabelName,
+  TasksGroupLabelCounter,
 } from './styled';
 import { AddTaskInputWrapper } from '../styled';
 
@@ -72,8 +74,10 @@ const TasksGroup = ({
             closeOnEnter
           >
             <TasksGroupLabel>
-              <span className="name">{groupName}</span>
-              <span className="counter">({tasks?.length || 0})</span>
+              <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
+              <TasksGroupLabelCounter>
+                ({tasks?.length || 0})
+              </TasksGroupLabelCounter>
             </TasksGroupLabel>
           </GroupNameSection>
         </GroupNameSectionWrapper>
