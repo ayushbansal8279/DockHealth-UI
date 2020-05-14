@@ -3,6 +3,7 @@ import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
+import * as TaskGroupListActions from './task-group-list-actions';
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -280,7 +281,7 @@ export const reloadTaskListStats = (dispatch, task) => {
   }
 };
 
-export function saveTask(newTask) {
+export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>
       TaskApi.updateTask(newTask)
@@ -322,6 +323,11 @@ export function saveTask(newTask) {
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
+          if (shouldReloadGroups) {
+            dispatch(
+              TaskGroupListActions.getTaskGroupList(newTask.taskListIdentifier),
+            );
+          }
           reloadTaskListStats(dispatch, task);
         }
 

@@ -4,10 +4,10 @@ import * as ActionTypes from './action-types';
 
 export function getTaskGroupList(
   taskListIdentifier,
-  reloadAfterUpdate = false,
+  isRequestStateSet = false,
 ) {
   return dispatch => {
-    if (!reloadAfterUpdate) {
+    if (!isRequestStateSet) {
       dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
     }
 

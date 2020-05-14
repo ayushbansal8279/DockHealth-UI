@@ -38,7 +38,7 @@ const TaskView = ({
   tasks, // to do- remove tasks prop
 }) => {
   const { openDrawer } = taskDrawerActions;
-  const { toggleTaskPriority } = taskActions;
+  const { toggleTaskPriority, saveTask } = taskActions;
   const {
     createTaskGroupList,
     editTasksGroupName,
@@ -48,12 +48,15 @@ const TaskView = ({
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
   const { groupList } = taskGroupList;
 
-  const quickAddTask = taskName => {
+  const quickAddTask = (taskName, reloadGroups = false) => {
     if (taskName) {
-      taskActions.saveTask({
-        description: taskName,
-        taskListIdentifier,
-      });
+      saveTask(
+        {
+          description: taskName,
+          taskListIdentifier,
+        },
+        reloadGroups,
+      );
     }
   };
 
@@ -132,7 +135,9 @@ const TaskView = ({
             </GroupNameSection>
           </TaskGroupsContainer>
         ) : (
-          <EmptyTasksView quickAddTask={quickAddTask} />
+          <EmptyTasksView
+            quickAddTask={groupName => quickAddTask(groupName, true)}
+          />
         )}
       </TasksViewLoader>
       <NewTaskDrawer
