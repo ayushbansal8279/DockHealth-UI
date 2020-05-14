@@ -1,6 +1,8 @@
 import axios from './axios-heydoc';
 import URLS from '../urls';
 
+export const TASKGROUP_DEFAULT_TYPE = 'TASKLIST_DEFAULT';
+
 export const getGroupsByListId = listIdentifier =>
   axios
     .get(URLS.taskGroupList.get(listIdentifier))

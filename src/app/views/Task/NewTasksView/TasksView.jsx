@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -6,7 +7,8 @@ import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { DEFAULT_TASK_GROUP_NAME } from 'helpers/group-tasks-by-group-id';
+import { groupTasksSelector } from 'selectors/task-group-list-selectors';
+import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 
 import { TaskViewContainer, TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
@@ -50,7 +52,7 @@ const TaskView = ({
     if (taskName) {
       taskActions.saveTask({
         description: taskName,
-        taskListIdentifier: taskList.taskListIdentifier,
+        taskListIdentifier,
       });
     }
   };
@@ -61,12 +63,12 @@ const TaskView = ({
 
   const deleteGroup = groupId => {
     // TODO: add confirmation modal
-    deleteTasksGroup(groupId, taskList.taskListIdentifier);
+    deleteTasksGroup(groupId, taskListIdentifier);
   };
 
   const editGroupName = (newGroupName, groupId) => {
     if (newGroupName) {
-      editTasksGroupName(taskList.taskListIdentifier, groupId, newGroupName);
+      editTasksGroupName(taskListIdentifier, groupId, newGroupName);
     }
   };
 
@@ -94,25 +96,15 @@ const TaskView = ({
       >
         {tasks.length > 0 ? (
           <TaskGroupsContainer>
-            <TasksGroup
-              key={DEFAULT_TASK_GROUP_NAME}
-              currentUser={currentUser}
-              groupName="New Tasks"
-              markComplete={markComplete}
-              openDrawer={openDrawer}
-              storeAsCurrentTask={storeAsCurrentTask}
-              toggleTaskPriority={toggleSingleTaskPriority}
-              editGroupName={editGroupName}
-              quickAddTask={quickAddTask}
-              deleteGroup={deleteGroup}
-              tasks={groupedTasks[DEFAULT_TASK_GROUP_NAME] || []}
-            />
-            {groupList?.map(({ groupName, taskGroupIdentifier }) => (
+            {groupList?.map(({ groupName, taskGroupIdentifier, groupType }) => (
               <TasksGroup
                 key={taskGroupIdentifier}
+                isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
                 groupId={taskGroupIdentifier}
                 currentUser={currentUser}
-                groupName={groupName}
+                groupName={
+                  groupType !== TASKGROUP_DEFAULT_TYPE ? groupName : 'NEW TASKS'
+                }
                 markComplete={markComplete}
                 openDrawer={openDrawer}
                 storeAsCurrentTask={storeAsCurrentTask}
@@ -120,7 +112,13 @@ const TaskView = ({
                 editGroupName={editGroupName}
                 quickAddTask={quickAddTask}
                 deleteGroup={deleteGroup}
-                tasks={groupedTasks[taskListIdentifier] || []}
+                tasks={
+                  groupedTasks[
+                    groupType !== TASKGROUP_DEFAULT_TYPE
+                      ? taskListIdentifier
+                      : TASKGROUP_DEFAULT_TYPE
+                  ] || []
+                }
               />
             ))}
             <GroupNameSection
@@ -156,7 +154,7 @@ const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
   isFetchingTasks: store.taskState.isFetching,
-  groupedTasks: store.taskState.groupedTasks,
+  groupedTasks: groupTasksSelector(store.taskState.tasks),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

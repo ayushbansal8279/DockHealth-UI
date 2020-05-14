@@ -1,4 +1,4 @@
-export const DEFAULT_TASK_GROUP_NAME = 'default';
+import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 
 const checkIfGroupExists = (groupedTasks, groupName) => {
   if (groupedTasks[groupName]) {
@@ -9,19 +9,22 @@ const checkIfGroupExists = (groupedTasks, groupName) => {
 };
 
 const addTaskToDefaultGroup = (groupedTasks, task) => {
-  checkIfGroupExists(groupedTasks, DEFAULT_TASK_GROUP_NAME);
-  groupedTasks.default.push(task);
+  checkIfGroupExists(groupedTasks, TASKGROUP_DEFAULT_TYPE);
+  groupedTasks[TASKGROUP_DEFAULT_TYPE].push(task);
 };
 
-const groupTasksByGroupId = tasks => {
+export const groupTasksSelector = tasks => {
+  if (!tasks) {
+    return null;
+  }
   const groupedTasks = {};
 
   tasks.forEach(task => {
-    if (task.taskGroups.length === 0) {
+    if (!task.taskGroup || task.taskGroups.length === 0) {
       addTaskToDefaultGroup(groupedTasks, task);
     } else {
       task.tasksGroups.forEach(taskGroup => {
-        if (taskGroup.taskGroupIdentifier) {
+        if (taskGroup.groupType !== TASKGROUP_DEFAULT_TYPE) {
           checkIfGroupExists(taskGroup.taskGroupIdentifier);
           groupedTasks.taskGroupIdentifier.push(task);
         } else {
@@ -34,4 +37,4 @@ const groupTasksByGroupId = tasks => {
   return groupedTasks;
 };
 
-export default groupTasksByGroupId;
+export default groupTasksSelector;

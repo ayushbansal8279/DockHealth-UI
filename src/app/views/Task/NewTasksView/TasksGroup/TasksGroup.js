@@ -27,6 +27,7 @@ const FULL_VIEW = 'FULL_VIEW';
 const SLIM_VIEW = 'SLIM_VIEW';
 
 const TasksGroup = ({
+  isDefaultGroup,
   groupId,
   currentUser,
   groupName,
@@ -43,12 +44,6 @@ const TasksGroup = ({
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
 
-  const switchGroupHeaderEdit = event => {
-    event.stopPropagation();
-    event.preventDefault();
-    switchOpen(!isOpen);
-  };
-
   const addTaskInput = useRef();
 
   const handleInputEnterDown = taskName => {
@@ -64,7 +59,7 @@ const TasksGroup = ({
         <Arrow
           alt="arrow"
           isOpen={isOpen}
-          onClick={switchGroupHeaderEdit}
+          onClick={() => switchOpen(!isOpen)}
           src={ArrowIcon}
         />
         <GroupNameSectionWrapper>
@@ -72,6 +67,7 @@ const TasksGroup = ({
             initialValue={groupName}
             onEnterClick={newGroupName => editGroupName(newGroupName, groupId)}
             closeOnEnter
+            disabled={isDefaultGroup}
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
@@ -82,7 +78,10 @@ const TasksGroup = ({
           </GroupNameSection>
         </GroupNameSectionWrapper>
         <TasksGroupActionButtonsContainer className="action-buttons">
-          <TasksGroupActionButton onClick={() => deleteGroup(groupId)}>
+          <TasksGroupActionButton
+            isHidden={isDefaultGroup}
+            onClick={() => deleteGroup(groupId)}
+          >
             <img src={XInCircle} alt="Delete" />
             <p>Delete</p>
           </TasksGroupActionButton>

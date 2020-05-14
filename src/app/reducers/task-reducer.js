@@ -56,8 +56,6 @@ import {
   UPDATED_SUBTASK_ORDER,
 } from 'actions/action-types';
 
-import groupTasksByGroupId from 'helpers/group-tasks-by-group-id';
-
 const initialState = {
   completedTasks: [],
   tasks: [],
@@ -248,11 +246,10 @@ const TaskReducer = (state = initialState, action) => {
 
     case GET_TASKS_SUCCESS: {
       let { tasks } = action;
-      const groupedTasks = groupTasksByGroupId(tasks);
 
       tasks = tasks.map(mapTasksSuccess);
 
-      return { ...state, tasks, isFetching: false, groupedTasks };
+      return { ...state, tasks, isFetching: false };
     }
 
     case GET_COMPLETED_TASKS_SUCCESS: {
