@@ -16,3 +16,27 @@ export const createGroupAssignedToList = payload =>
     .catch(error => {
       throw new Error(error?.response?.data);
     });
+
+export const editGroupName = (
+  taskListIdentifier,
+  taskGroupIdentifier,
+  groupName,
+) =>
+  axios
+    .put(URLS.taskGroupList.edit, {
+      taskListIdentifier,
+      taskGroupIdentifier,
+      groupName,
+    })
+    .then(response => response?.data)
+    .catch(error => {
+      throw new Error(error?.response?.error);
+    });
+
+export const deleteGroup = groupId =>
+  axios
+    .delete(URLS.taskGroupList.delete(groupId))
+    .then(response => response?.data)
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
