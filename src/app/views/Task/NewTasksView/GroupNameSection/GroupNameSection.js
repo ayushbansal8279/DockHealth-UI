@@ -4,6 +4,7 @@ import GroupNameInput from '../GroupNameInput/GroupNameInput';
 import { ButtonWrapper } from './styled';
 
 const GroupNameSection = ({
+  disabled,
   onEnterClick,
   placeholder,
   initialValue,
@@ -32,7 +33,7 @@ const GroupNameSection = ({
     );
 
   return (
-    <ButtonWrapper type="button" onClick={showInput}>
+    <ButtonWrapper type="button" onClick={() => !disabled && showInput()}>
       {children}
     </ButtonWrapper>
   );
