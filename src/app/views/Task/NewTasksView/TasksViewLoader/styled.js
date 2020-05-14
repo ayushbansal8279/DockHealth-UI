@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Fade } from '@material-ui/core';
 
@@ -8,9 +7,7 @@ export const FadeContainer = styled.div`
   padding-top: 100px;
 `;
 
-export const StyledFade = styled(({ children, ...props }) => (
-  <Fade {...props}>{children}</Fade>
-))`
+export const StyledFade = styled(Fade)`
   transition-delay: 800ms;
 `;
 
