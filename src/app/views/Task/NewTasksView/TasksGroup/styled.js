@@ -68,23 +68,22 @@ export const TasksGroupLabel = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
+`;
 
-  span {
-    display: inline-block;
-    vertical-align: middle;
-  }
+export const TasksGroupLabelName = styled.span`
+  display: inline-block;
+  max-width: calc(100% - 21px);
+  padding-right: ${spacing.tiny};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+`;
 
-  .name {
-    max-width: calc(100% - 21px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: ${spacing.tiny};
-  }
-
-  .counter {
-    width: 21px;
-  }
+export const TasksGroupLabelCounter = styled.span`
+  display: inline-block;
+  width: 21px;
+  vertical-align: middle;
 `;
 
 export const Tasks = styled(Collapse)`
