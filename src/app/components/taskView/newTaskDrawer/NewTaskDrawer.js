@@ -62,6 +62,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,
+    autoSaveVisible,
+    setAutoSaveVisible,
   } = initializeTaskDrawerHooks({ members, isInbox, taskList });
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -104,6 +106,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               onDuplicate={onDuplicate}
               isInbox={isInbox}
               closeTaskDrawer={closeTaskDrawer}
+              autoSaveVisible={autoSaveVisible}
+              setAutoSaveVisible={setAutoSaveVisible}
             />
             <Grid item xs={12} style={styleFullRow}>
               <TextInput
@@ -244,7 +248,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               />
             </Grid>
             <Grid item xs={6} style={styleLeftColumn}>
-              <DueDateSection selectedTask={selectedTask} />
+              <DueDateSection
+                selectedTask={selectedTask}
+                setAutoSaveVisible={setAutoSaveVisible}
+              />
             </Grid>
             <Grid item xs={6} style={styleRightColumn}>
               <HiddenFieldContainer visible={dueDateValue}>
@@ -267,10 +274,16 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               </HiddenFieldContainer>
             </Grid>
             <Grid item xs={6} style={styleLeftColumn}>
-              <PrioritySection selectedTask={selectedTask} />
+              <PrioritySection
+                selectedTask={selectedTask}
+                setAutoSaveVisible={setAutoSaveVisible}
+              />
             </Grid>
             <Grid item xs={6} style={styleRightColumn}>
-              <StatusSection selectedTask={selectedTask} />
+              <StatusSection
+                selectedTask={selectedTask}
+                setAutoSaveVisible={setAutoSaveVisible}
+              />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
               <LabelsSection

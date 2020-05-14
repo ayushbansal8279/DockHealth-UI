@@ -101,7 +101,7 @@ const onItemSelection = ({ saveDueDate }) => value => {
   saveDueDate({ updatedDueDate: value });
 };
 
-const DueDateSection = ({ selectedTask }) => {
+const DueDateSection = ({ selectedTask, setAutoSaveVisible }) => {
   const dateFieldName = 'dueDate';
 
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
@@ -117,7 +117,7 @@ const DueDateSection = ({ selectedTask }) => {
     store => store.taskState.selectedTask?.taskIdentifier ?? null,
   );
 
-  const { saveDueDate } = initializeDueDateSectionHooks();
+  const { saveDueDate } = initializeDueDateSectionHooks({ setAutoSaveVisible });
 
   useEffect(() => {
     closeCalendar();

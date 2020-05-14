@@ -26,6 +26,7 @@ import {
 import Member from 'components/members/Member';
 
 import { prop } from 'ramda';
+import useBoolean from 'hooks/useBoolean';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import { onButtonClicked } from '../../../helpers/ga-event-helper';
@@ -81,7 +82,13 @@ const mapLabelsPromises = ({
   return Promise.resolve();
 };
 
-const onSubmit = ({ selectedTask, taskList, dispatch, setSaving }) => data => {
+const onSubmit = ({
+  selectedTask,
+  taskList,
+  dispatch,
+  setSaving,
+  setAutoSaveVisible,
+}) => data => {
   const currentLabels = selectedTask?.labels ?? [];
   const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
 
@@ -146,6 +153,7 @@ const onSubmit = ({ selectedTask, taskList, dispatch, setSaving }) => data => {
       })(dispatch);
 
       setSaving(false);
+      setAutoSaveVisible();
     })
     .catch(() => {
       setSaving(false);
@@ -189,6 +197,13 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
 
   const { setValue, watch } = formMethods;
 
+  const [
+    autoSaveVisible,
+    setAutoSaveVisible,
+    unsetAutoSaveVisible,
+  ] = useBoolean(false);
+  const [autoSaveTimeoutId, setAutoSaveTimeoutId] = useState(null);
+
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskParent = useMemo(
     () =>
@@ -204,6 +219,12 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
 
   const { top } =
     document.querySelector('#content-container')?.getBoundingClientRect() || {};
+
+  const clearAutoSaveTimeout = useCallback(() => {
+    clearTimeout(autoSaveTimeoutId);
+    setAutoSaveTimeoutId(null);
+    unsetAutoSaveVisible();
+  }, [autoSaveTimeoutId, unsetAutoSaveVisible]);
 
   const dispatch = useDispatch();
 
@@ -241,9 +262,23 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       'labels',
       getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
     );
+
+    clearAutoSaveTimeout();
     // Exhaustive deps are disabled due to selectedTask referential inequality triggerting useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
+
+  useEffect(() => {
+    if (autoSaveVisible) {
+      clearTimeout(autoSaveTimeoutId);
+      setAutoSaveTimeoutId(
+        setTimeout(() => {
+          clearAutoSaveTimeout();
+        }, 1000),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSaveVisible]);
 
   useMount(() => {
     getAllPatients()(dispatch);
@@ -333,6 +368,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       }
     }
   };
+
   const handleAssignedToSelect = async selectedOption => {
     const member = {
       userIdentifier: selectedOption.value,
@@ -348,8 +384,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
           selectedTask,
           member?.userIdentifier,
         )(dispatch);
-        toggleAlert('Updated');
-        // setAutoSaveVisible();
+        setAutoSaveVisible();
       } catch {
         toggleAlert(
           'Error updating assignment, please try again later',
@@ -372,8 +407,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
         await updatePatient(selectedTask, patient)(dispatch);
-        toggleAlert('Updated');
-        // setAutoSaveVisible();
+        setAutoSaveVisible();
       } catch {
         toggleAlert('Error updating patient, please try again later', 'error');
       }
@@ -389,8 +423,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
           selectedTask,
           updatedTaskDescription,
         )(dispatch);
-        toggleAlert('Updated');
-        // setAutoSaveVisible();
+        setAutoSaveVisible();
       } catch {
         toggleAlert(
           'Error updating task description, please try again later',
@@ -407,7 +440,13 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     areLabelsRequested,
     taskDrawerOpen,
     top,
-    onSubmit: onSubmit({ selectedTask, taskList, dispatch, setSaving }),
+    onSubmit: onSubmit({
+      selectedTask,
+      taskList,
+      dispatch,
+      setSaving,
+      setAutoSaveVisible,
+    }),
     formMethods,
     isAddingOrEditingSubtask,
     patients,
@@ -422,6 +461,11 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,
+    autoSaveTimeoutId,
+    autoSaveVisible,
+    setAutoSaveTimeoutId,
+    setAutoSaveVisible,
+    unsetAutoSaveVisible,
   };
 };
 

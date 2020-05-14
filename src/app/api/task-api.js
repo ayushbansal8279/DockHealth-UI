@@ -280,7 +280,7 @@ export function updateTask(task) {
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
-      toggleAlert('Task updated successfully!', 'success');
+      // toggleAlert('Task updated successfully!', 'success');
       return response.data;
     })
     .catch(error => {
@@ -362,7 +362,7 @@ export function updateTaskDescription(task, description) {
       description,
     })
     .then(response => {
-      toggleAlert('Task description updated successfully!', 'success');
+      // toggleAlert('Task description updated successfully!', 'success');
       return response.data;
     })
     .catch(error => {

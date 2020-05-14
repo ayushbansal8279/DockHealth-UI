@@ -54,11 +54,11 @@ const onItemSelection = ({ saveTaskStatus }) => value => {
   saveTaskStatus({ newTaskStatus: value });
 };
 
-const StatusSection = () => {
+const StatusSection = ({ setAutoSaveVisible }) => {
   const {
     currentStatusFlagColor,
     saveTaskStatus,
-  } = initializeStatusSectionHooks();
+  } = initializeStatusSectionHooks({ setAutoSaveVisible });
 
   return (
     <StatusFieldContainer>

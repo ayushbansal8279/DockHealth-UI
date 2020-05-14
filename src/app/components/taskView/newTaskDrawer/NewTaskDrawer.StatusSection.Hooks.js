@@ -34,7 +34,7 @@ export const STATUSES = [
   },
 ];
 
-const initializeStatusSectionHooks = () => {
+const initializeStatusSectionHooks = ({ setAutoSaveVisible }) => {
   const { watch } = useFormContext();
   const currentValue = watch('workflowStatus');
   const dispatch = useDispatch();
@@ -52,8 +52,7 @@ const initializeStatusSectionHooks = () => {
           newTaskStatus,
         )(dispatch)
           .then(() => {
-            toggleAlert('Updated');
-            // setAutoSaveVisible();
+            setAutoSaveVisible();
           })
           .catch(() => {
             toggleAlert(

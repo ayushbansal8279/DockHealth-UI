@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
-import { List } from '@material-ui/core';
+import { List, Chip } from '@material-ui/core';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
@@ -102,11 +102,66 @@ export const FiledInSelect = styled.div`
   cursor: pointer;
   display: inline-flex;
   flex-flow: row nowrap;
-  width: 250px;
+  width: 200px;
   & > * {
     font-size: 1rem;
     margin-left: 6px;
   }
+`;
+
+export const FormSectionDivider = styled.div`
+  background-color: ${props =>
+    props.active ? palette.vividPink : palette.unknownGrey2};
+  height: ${props => (props.shown ? '0.0625rem' : 0)};
+  position: relative;
+  transition: background-color 0.25s ease-out;
+  width: 100%;
+
+  ${props => props.condensed && 'margin: 0 0.5rem;'}
+`;
+
+export const AutoSaveContainer = styled.div`
+  height: ${props => (props.visible ? 2 : 0)}rem;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transition: height 0.25s ease-out;
+  width: 100%;
+  text-align: center;
+  margin-top: -10px;
+`;
+
+export const AutoSaveChip = styled(Chip)`
+  && {
+    background-color: ${palette.accentYellow};
+    color: ${palette.white};
+    border: 0;
+    font-weight: bold; 
+    font-size: 16px;
+    left:
+    top: 0;
+    padding: 0 0.25rem;
+    transition: top 0.25s ease-out;
+    transform: translateX(0%);
+  }
+`;
+
+export const AutoSaveLabel = styled.div`
+  align-items: center;
+  background-color: ${palette.vividPink};
+  border-radius: 0 0 0.5rem 0.5rem;
+  color: ${palette.white};
+  display: flex;
+  height: 1.5rem;
+  left: 50%;
+  padding: 0 0.75rem;
+  pointer-events: none;
+  position: absolute;
+  top: ${props => (props.visible ? 0 : -1.5)}rem;
+  transition: top 0.25s ease-out;
+  transform: translateX(-50%);
 `;
 
 export const StyledList = styled(List)`

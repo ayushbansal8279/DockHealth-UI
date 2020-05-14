@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateDueDate } from 'actions/task-actions';
 import moment from 'moment';
 
-const initializeDueDateSectionHooks = () => {
+const initializeDueDateSectionHooks = ({ setAutoSaveVisible }) => {
   const dispatch = useDispatch();
 
   const { selectedTask } = useSelector(store => ({
@@ -20,8 +20,7 @@ const initializeDueDateSectionHooks = () => {
           updatedDueDate ? moment(updatedDueDate) : null,
         )(dispatch)
           .then(() => {
-            toggleAlert('Updated');
-            // setAutoSaveVisible();
+            setAutoSaveVisible();
           })
           .catch(() => {
             toggleAlert(

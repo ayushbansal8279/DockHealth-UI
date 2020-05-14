@@ -55,11 +55,11 @@ const onItemSelection = ({ saveTaskPriority }) => value => {
   saveTaskPriority({ newTaskPriority: value });
 };
 
-const PrioritySection = () => {
+const PrioritySection = ({ setAutoSaveVisible }) => {
   const {
     currentPriorityFlagColor,
     saveTaskPriority,
-  } = initializePrioritySectionHooks();
+  } = initializePrioritySectionHooks({ setAutoSaveVisible });
 
   return (
     <PriorityFieldContainer>

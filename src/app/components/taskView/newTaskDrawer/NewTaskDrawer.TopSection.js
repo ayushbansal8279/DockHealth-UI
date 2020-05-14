@@ -1,12 +1,15 @@
 import React from 'react';
 import { Grid, IconButton, ListItem, Divider } from '@material-ui/core';
-import { Close, MoreHoriz } from '@material-ui/icons';
+import { Close, MoreHoriz, CheckCircleOutline } from '@material-ui/icons';
 import Spacing from 'components/common/Spacing';
 import InputPopover from './NewTaskDrawer.InputPopover';
 import {
   FiledInSelect,
   StyledList,
   HorizontalLabel,
+  FormSectionDivider,
+  AutoSaveContainer,
+  AutoSaveChip,
   styleFullRowThin,
 } from './NewTaskDrawer.Styled';
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
@@ -53,6 +56,7 @@ const TopSection = ({
   onDuplicate,
   isInbox,
   closeTaskDrawer,
+  autoSaveVisible,
 }) => {
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -72,6 +76,17 @@ const TopSection = ({
 
   return (
     <>
+      <FormSectionDivider shown={!selectedTask} active={autoSaveVisible}>
+        <AutoSaveContainer visible={autoSaveVisible}>
+          {/* <AutoSaveContainer visible={true}> */}
+          {/* <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel> */}
+          <AutoSaveChip
+            variant="outlined"
+            icon={<CheckCircleOutline style={{ color: palette.white }} />}
+            label="SAVED"
+          />
+        </AutoSaveContainer>
+      </FormSectionDivider>
       <Grid
         container
         item
