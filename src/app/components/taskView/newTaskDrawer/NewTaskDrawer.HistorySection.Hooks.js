@@ -8,7 +8,7 @@ import moment from 'moment';
 
 const HISTORY_DATE_FORMAT = 'MM/DD/YYYY @ h:mma';
 
-export const getFormattedEventDate = ({ dateValue }) =>
+export const getFormattedEventDate = dateValue =>
   moment(dateValue).format(HISTORY_DATE_FORMAT);
 
 const initializeTaskDrawerTopSectionHooks = ({ selectedTask }) => {

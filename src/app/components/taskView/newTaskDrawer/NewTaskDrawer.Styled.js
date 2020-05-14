@@ -181,6 +181,10 @@ export const styleFullRowThin = {
   padding: '0rem 2rem',
 };
 
+export const styleLastRow = {
+  padding: '0rem 2rem 2rem 2rem',
+};
+
 export const styleEmailRow = {
   padding: '0 2rem',
   backgroundColor: palette.blueGrey,

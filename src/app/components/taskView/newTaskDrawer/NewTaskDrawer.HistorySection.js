@@ -102,13 +102,12 @@ const HistorySection = ({ selectedTask }) => {
     getFormattedEventDate,
   } = initializeTaskDrawerHistorySectionHooks({ selectedTask });
 
-  const todaysMoment = getFormattedEventDate(new Date());
+  const todaysDateString = getFormattedEventDate(new Date());
 
-  // var createdByUser = selectedTask ? selectedTask?.createdBy : currentUser;
-  const createdByUser = currentUser;
+  const createdByUser = selectedTask ? selectedTask?.creator : currentUser;
   const createdDateTime = selectedTask
-    ? getFormattedEventDate(selectedTask.createdDateTime)
-    : todaysMoment;
+    ? getFormattedEventDate(new Date(selectedTask.createdDateTime))
+    : todaysDateString;
 
   return (
     <>
@@ -150,7 +149,7 @@ const HistorySection = ({ selectedTask }) => {
             <Grid container item xs={12}>
               <PersonNameLabelContainer>
                 <RobotoTypography condensed variant="h4" color="inherit">
-                  {createdByUser.firstName} {createdByUser.lastName}
+                  {createdByUser?.firstName} {createdByUser?.lastName}
                 </RobotoTypography>
               </PersonNameLabelContainer>
               <Spacing horizontal={2} />

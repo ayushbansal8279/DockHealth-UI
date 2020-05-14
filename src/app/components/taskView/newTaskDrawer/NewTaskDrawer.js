@@ -33,6 +33,7 @@ import {
   styleEmailRow,
   styleLeftColumn,
   styleRightColumn,
+  styleLastRow,
 } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 import {
@@ -342,7 +343,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
           </Grid>
         </FormContext>
       </form>
-      <Grid container item xs={12} style={styleFullRowThin}>
+      <Grid container item xs={12} style={styleLastRow}>
         <Spacing vertical={4} />
         <Divider
           style={{
