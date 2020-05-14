@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import ModalReducer from 'modal/reducers';
 import AuthBaseReducer from './auth-base-reducer';
 import FormReducer from './form-reducer';
 import HeaderReducer from './header-reducer';
@@ -31,4 +32,5 @@ export default combineReducers({
   taskDrawerState: TaskDrawerReducer,
   authBase: AuthBaseReducer,
   taskLabelState: TaskLabelReducer,
+  modal: ModalReducer,
 });

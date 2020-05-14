@@ -128,6 +128,7 @@ const config = (environment, options) => {
         reducers: path.resolve(__dirname, 'src/app/reducers'),
         views: path.resolve(__dirname, 'src/app/views'),
         styles: path.resolve(__dirname, 'src/app/styles'),
+        modal: path.resolve(__dirname, 'src/app/modal'),
       },
     },
     devServer: {
