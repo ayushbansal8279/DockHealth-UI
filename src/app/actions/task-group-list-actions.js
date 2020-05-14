@@ -2,9 +2,14 @@
 import * as TaskGroupListApi from 'api/task-group-list-api';
 import * as ActionTypes from './action-types';
 
-export function getTaskGroupList(taskListIdentifier) {
+export function getTaskGroupList(
+  taskListIdentifier,
+  reloadAfterUpdate = false,
+) {
   return dispatch => {
-    dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+    if (!reloadAfterUpdate) {
+      dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+    }
 
     return TaskGroupListApi.getGroupsByListId(taskListIdentifier)
       .then(data => {
@@ -22,42 +27,43 @@ export function getTaskGroupList(taskListIdentifier) {
 export function createTaskGroupList(payload) {
   const { taskListIdentifier } = payload;
 
-  return dispatch =>
+  return dispatch => {
+    dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+
     TaskGroupListApi.createGroupAssignedToList(payload)
       .then(() => {
-        dispatch(getTaskGroupList(taskListIdentifier));
+        dispatch(getTaskGroupList(taskListIdentifier, true));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
       });
+  };
 }
 
-export function editTasksGroupName(
-  listIdentifier,
-  groupIdentifier,
-  newGroupName,
-) {
-  return dispatch =>
-    TaskGroupListApi.editGroupName(
-      listIdentifier,
-      groupIdentifier,
-      newGroupName,
-    )
+export function editTasksGroupName(listId, groupId, newGroupName) {
+  return dispatch => {
+    dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+
+    TaskGroupListApi.editGroupName(listId, groupId, newGroupName)
       .then(() => {
-        dispatch(getTaskGroupList(listIdentifier));
+        dispatch(getTaskGroupList(listId, true));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
       });
+  };
 }
 
 export function deleteTasksGroup(groupId, listId) {
-  return dispatch =>
+  return dispatch => {
+    dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+
     TaskGroupListApi.deleteGroup(groupId)
       .then(() => {
-        dispatch(getTaskGroupList(listId));
+        dispatch(getTaskGroupList(listId, true));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
       });
+  };
 }
