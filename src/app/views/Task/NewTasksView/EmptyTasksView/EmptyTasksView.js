@@ -2,7 +2,7 @@ import React from 'react';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import EmptyListWrapper from './styled';
-import AddTaskInputWrapper from '../styled';
+import { AddTaskInputWrapper } from '../styled';
 
 const EmptyTasksView = ({ quickAddTask }) => {
   return (
