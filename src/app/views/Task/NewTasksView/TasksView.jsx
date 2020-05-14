@@ -6,6 +6,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
+import { DEFAULT_TASK_GROUP_NAME } from 'helpers/group-tasks-by-group-id';
 
 import { TaskViewContainer, TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
@@ -30,7 +31,8 @@ const TaskView = ({
   taskGroupList,
   taskList = {},
   taskListMembers,
-  taskState,
+  isFetchingTasks,
+  groupedTasks,
   tasks, // to do- remove tasks prop
 }) => {
   const { openDrawer } = taskDrawerActions;
@@ -87,11 +89,24 @@ const TaskView = ({
       <TasksViewLoader
         isFetchingData={
           (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
-          taskState.isFetching
+          isFetchingTasks
         }
       >
         {tasks.length > 0 ? (
           <TaskGroupsContainer>
+            <TasksGroup
+              key={DEFAULT_TASK_GROUP_NAME}
+              currentUser={currentUser}
+              groupName="New Tasks"
+              markComplete={markComplete}
+              openDrawer={openDrawer}
+              storeAsCurrentTask={storeAsCurrentTask}
+              toggleTaskPriority={toggleSingleTaskPriority}
+              editGroupName={editGroupName}
+              quickAddTask={quickAddTask}
+              deleteGroup={deleteGroup}
+              tasks={groupedTasks[DEFAULT_TASK_GROUP_NAME] || []}
+            />
             {groupList?.map(({ groupName, taskGroupIdentifier }) => (
               <TasksGroup
                 key={taskGroupIdentifier}
@@ -105,7 +120,7 @@ const TaskView = ({
                 editGroupName={editGroupName}
                 quickAddTask={quickAddTask}
                 deleteGroup={deleteGroup}
-                tasks={[]} // to do - replace by real data
+                tasks={groupedTasks[taskListIdentifier] || []}
               />
             ))}
             <GroupNameSection
@@ -140,7 +155,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
-  taskState: store.taskState,
+  isFetchingTasks: store.taskState.isFetching,
+  groupedTasks: store.taskState.groupedTasks,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

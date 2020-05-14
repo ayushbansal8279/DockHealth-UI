@@ -56,9 +56,12 @@ import {
   UPDATED_SUBTASK_ORDER,
 } from 'actions/action-types';
 
+import groupTasksByGroupId from 'helpers/group-tasks-by-group-id';
+
 const initialState = {
   completedTasks: [],
   tasks: [],
+  groupedTasks: {},
   newlyAddedTaskIds: [],
   task: {},
   isFetching: false,
@@ -200,7 +203,9 @@ const mapTasksSuccess = task => ({
   })),
 });
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskReducer = (state = initialState, action) => {
+  // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
     case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
@@ -243,10 +248,11 @@ const TaskReducer = (state = initialState, action) => {
 
     case GET_TASKS_SUCCESS: {
       let { tasks } = action;
+      const groupedTasks = groupTasksByGroupId(tasks);
 
       tasks = tasks.map(mapTasksSuccess);
 
-      return { ...state, tasks, isFetching: false };
+      return { ...state, tasks, isFetching: false, groupedTasks };
     }
 
     case GET_COMPLETED_TASKS_SUCCESS: {
