@@ -85,7 +85,10 @@ const TaskView = ({
         taskList={taskList}
       />
       <TasksViewLoader
-        isFetchingData={taskGroupList.isFetching || taskState.isFetching}
+        isFetchingData={
+          (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
+          taskState.isFetching
+        }
       >
         {tasks.length > 0 ? (
           <TaskGroupsContainer>

@@ -4,6 +4,7 @@ const initialState = {
   groupList: [],
   isFetching: false,
   error: '',
+  groupsInitialized: false,
 };
 
 const TaskGroupListReducer = (state = initialState, { type, groupList }) => {
@@ -18,6 +19,7 @@ const TaskGroupListReducer = (state = initialState, { type, groupList }) => {
       return {
         groupList,
         isFetching: false,
+        listInitialized: true,
       };
 
     case types.TASK_GROUP_LIST_FAILURE:
