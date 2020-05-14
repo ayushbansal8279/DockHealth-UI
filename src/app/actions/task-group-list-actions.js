@@ -22,17 +22,14 @@ export function getTaskGroupList(taskListIdentifier) {
 export function createTaskGroupList(payload) {
   const { taskListIdentifier } = payload;
 
-  return dispatch => {
-    // dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
-
-    return TaskGroupListApi.createGroupAssignedToList(payload)
+  return dispatch =>
+    TaskGroupListApi.createGroupAssignedToList(payload)
       .then(() => {
         dispatch(getTaskGroupList(taskListIdentifier));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
       });
-  };
 }
 
 export function editTasksGroupName(
