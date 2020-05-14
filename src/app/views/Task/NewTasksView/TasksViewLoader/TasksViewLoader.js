@@ -1,21 +1,14 @@
 import React from 'react';
-import { Fade } from '@material-ui/core';
 import CubesLoader from 'components/common/CubesLoader';
-import { FadeContainer } from './styled';
+import { FadeContainer, StyledFade } from './styled';
 
 const TasksViewLoader = ({ children, isFetchingData }) => (
   <>
     {isFetchingData ? (
       <FadeContainer>
-        <Fade
-          in
-          unmountOnExit
-          style={{
-            transitionDelay: '800ms',
-          }}
-        >
+        <StyledFade in unmountOnExit>
           <CubesLoader size={40} />
-        </Fade>
+        </StyledFade>
       </FadeContainer>
     ) : (
       children
