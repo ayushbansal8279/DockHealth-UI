@@ -3,11 +3,6 @@ import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
-export const EmptyListWrapper = styled.div`
-  margin: 90px ${spacing.huge};
-  color: ${palette.lightGrey};
-`;
-
 export const AddTaskInputWrapper = styled.div`
   position: relative;
   margin-bottom: ${spacing.small};

@@ -6,18 +6,14 @@ import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import Spacing from 'components/common/Spacing';
-import {
-  TaskViewContainer,
-  TaskGroupsContainer,
-  AddTaskInputWrapper,
-  EmptyListWrapper,
-} from './styled';
+
+import { TaskViewContainer, TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
 import GroupNameSection from './GroupNameSection/GroupNameSection';
 import messages from './AddGroupNameButton/messages';
 import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
+import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
+import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
 
 const TaskView = ({
   completedTasks,
@@ -34,11 +30,16 @@ const TaskView = ({
   taskGroupList,
   taskList = {},
   taskListMembers,
+  taskState,
   tasks, // to do- remove tasks prop
 }) => {
   const { openDrawer } = taskDrawerActions;
   const { toggleTaskPriority } = taskActions;
-  const { createTaskGroupList } = taskGroupActions;
+  const {
+    createTaskGroupList,
+    editTasksGroupName,
+    deleteTasksGroup,
+  } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
   const { groupList } = taskGroupList;
@@ -56,10 +57,15 @@ const TaskView = ({
     toggleTaskPriority(task, currentUser.userIdentifier, task.priority);
   };
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const deleteGroup = groupName => {
-    // TODO: delete group;
-    console.log('Delte group:', groupName);
+  const deleteGroup = groupId => {
+    // TODO: add confirmation modal
+    deleteTasksGroup(groupId, taskList.taskListIdentifier);
+  };
+
+  const editGroupName = (newGroupName, groupId) => {
+    if (newGroupName) {
+      editTasksGroupName(taskList.taskListIdentifier, groupId, newGroupName);
+    }
   };
 
   return (
@@ -78,50 +84,41 @@ const TaskView = ({
         showMembers={showMembers}
         taskList={taskList}
       />
-      {tasks.length > 0 ? (
-        <TaskGroupsContainer>
-          {groupList?.map(({ groupName, taskGroupIdentifier }) => (
-            <TasksGroup
-              key={taskGroupIdentifier}
-              currentUser={currentUser}
-              groupName={groupName}
-              markComplete={markComplete}
-              openDrawer={openDrawer}
-              storeAsCurrentTask={storeAsCurrentTask}
-              toggleTaskPriority={toggleSingleTaskPriority}
-              editGroupName={() => {}}
-              quickAddTask={quickAddTask}
-              deleteGroup={deleteGroup}
-              tasks={[]} // to do - replace by real data
-            />
-          ))}
-          <GroupNameSection
-            onEnterClick={groupName =>
-              createTaskGroupList({ groupName, taskListIdentifier })
-            }
-            placeholder={messages.placeholder}
-            closeOnEnter
-          >
-            <AddGroupNameButton />
-          </GroupNameSection>
-        </TaskGroupsContainer>
-      ) : (
-        <EmptyListWrapper>
-          <MontserratTypography variant="h3" weight="400" color="inherit">
-            Create your first task
-          </MontserratTypography>
-          <Spacing vertical={3} />
-          <AddTaskInputWrapper>
-            <input
-              type="text"
-              placeholder="Add task"
-              onKeyDown={event =>
-                event.keyCode === 13 && quickAddTask(event.target.value)
+      <TasksViewLoader
+        isFetchingData={taskGroupList.isFetching || taskState.isFetching}
+      >
+        {tasks.length > 0 ? (
+          <TaskGroupsContainer>
+            {groupList?.map(({ groupName, taskGroupIdentifier }) => (
+              <TasksGroup
+                key={taskGroupIdentifier}
+                groupId={taskGroupIdentifier}
+                currentUser={currentUser}
+                groupName={groupName}
+                markComplete={markComplete}
+                openDrawer={openDrawer}
+                storeAsCurrentTask={storeAsCurrentTask}
+                toggleTaskPriority={toggleSingleTaskPriority}
+                editGroupName={editGroupName}
+                quickAddTask={quickAddTask}
+                deleteGroup={deleteGroup}
+                tasks={[]} // to do - replace by real data
+              />
+            ))}
+            <GroupNameSection
+              onEnterClick={groupName =>
+                createTaskGroupList({ groupName, taskListIdentifier })
               }
-            />
-          </AddTaskInputWrapper>
-        </EmptyListWrapper>
-      )}
+              placeholder={messages.placeholder}
+              closeOnEnter
+            >
+              <AddGroupNameButton />
+            </GroupNameSection>
+          </TaskGroupsContainer>
+        ) : (
+          <EmptyTasksView quickAddTask={quickAddTask} />
+        )}
+      </TasksViewLoader>
       <NewTaskDrawer
         members={members}
         membersNotInTaskList={membersNotInTaskList}
@@ -140,6 +137,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
+  taskState: store.taskState,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

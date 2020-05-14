@@ -23,7 +23,7 @@ export function createTaskGroupList(payload) {
   const { taskListIdentifier } = payload;
 
   return dispatch => {
-    dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+    // dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
 
     return TaskGroupListApi.createGroupAssignedToList(payload)
       .then(() => {
@@ -33,4 +33,34 @@ export function createTaskGroupList(payload) {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
       });
   };
+}
+
+export function editTasksGroupName(
+  listIdentifier,
+  groupIdentifier,
+  newGroupName,
+) {
+  return dispatch =>
+    TaskGroupListApi.editGroupName(
+      listIdentifier,
+      groupIdentifier,
+      newGroupName,
+    )
+      .then(() => {
+        dispatch(getTaskGroupList(listIdentifier));
+      })
+      .catch(() => {
+        dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+      });
+}
+
+export function deleteTasksGroup(groupId, listId) {
+  return dispatch =>
+    TaskGroupListApi.deleteGroup(groupId)
+      .then(() => {
+        dispatch(getTaskGroupList(listId));
+      })
+      .catch(() => {
+        dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+      });
 }

@@ -25,6 +25,7 @@ const FULL_VIEW = 'FULL_VIEW';
 const SLIM_VIEW = 'SLIM_VIEW';
 
 const TasksGroup = ({
+  groupId,
   currentUser,
   groupName,
   markComplete,
@@ -67,9 +68,8 @@ const TasksGroup = ({
         <GroupNameSectionWrapper>
           <GroupNameSection
             initialValue={groupName}
-            onEnterClick={newGroupName =>
-              editGroupName(newGroupName, groupName)
-            }
+            onEnterClick={newGroupName => editGroupName(newGroupName, groupId)}
+            closeOnEnter
           >
             <TasksGroupLabel>
               <span className="name">{groupName}</span>
@@ -78,7 +78,7 @@ const TasksGroup = ({
           </GroupNameSection>
         </GroupNameSectionWrapper>
         <TasksGroupActionButtonsContainer className="action-buttons">
-          <TasksGroupActionButton onClick={() => deleteGroup(groupName)}>
+          <TasksGroupActionButton onClick={() => deleteGroup(groupId)}>
             <img src={XInCircle} alt="Delete" />
             <p>Delete</p>
           </TasksGroupActionButton>
