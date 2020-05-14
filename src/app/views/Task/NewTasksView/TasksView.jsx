@@ -56,7 +56,7 @@ const TaskView = ({
   };
 
   const toggleSingleTaskPriority = task => {
-    toggleTaskPriority(task, currentUser.userIdentifier, task.priority);
+    toggleTaskPriority(task, task.priority === 'HIGH' ? 'LOW' : 'HIGH');
   };
 
   const deleteGroup = groupId => {
