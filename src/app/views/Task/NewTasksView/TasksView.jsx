@@ -18,6 +18,11 @@ import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
 import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
 import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
 
+const Priority = {
+  High: 'HIGH',
+  Low: 'LOW',
+};
+
 const TaskView = ({
   completedTasks,
   currentUser,
@@ -61,7 +66,10 @@ const TaskView = ({
   };
 
   const toggleSingleTaskPriority = task => {
-    toggleTaskPriority(task, task.priority === 'HIGH' ? 'LOW' : 'HIGH');
+    toggleTaskPriority(
+      task,
+      task.priority === Priority.High ? Priority.Low : Priority.High,
+    );
   };
 
   const deleteGroup = groupId => {
