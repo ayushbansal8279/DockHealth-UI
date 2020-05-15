@@ -107,31 +107,37 @@ const TaskView = ({
       >
         {tasks.length > 0 ? (
           <TaskGroupsContainer>
-            {groupList?.map(({ groupName, taskGroupIdentifier, groupType }) => (
-              <TasksGroup
-                key={taskGroupIdentifier}
-                isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
-                groupId={taskGroupIdentifier}
-                currentUser={currentUser}
-                groupName={
-                  groupType !== TASKGROUP_DEFAULT_TYPE ? groupName : 'NEW TASKS'
-                }
-                markComplete={markComplete}
-                openDrawer={openDrawer}
-                storeAsCurrentTask={storeAsCurrentTask}
-                toggleTaskPriority={toggleSingleTaskPriority}
-                editGroupName={editGroupName}
-                quickAddTask={quickAddTask}
-                deleteGroup={deleteGroup}
-                tasks={
-                  groupedTasks[
+            {groupList?.map(
+              ({ groupName, taskGroupIdentifier, groupType }, i) => (
+                <TasksGroup
+                  key={taskGroupIdentifier}
+                  isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
+                  groupId={taskGroupIdentifier}
+                  currentUser={currentUser}
+                  groupName={
                     groupType !== TASKGROUP_DEFAULT_TYPE
-                      ? taskListIdentifier
-                      : TASKGROUP_DEFAULT_TYPE
-                  ] || []
-                }
-              />
-            ))}
+                      ? groupName
+                      : 'NEW TASKS'
+                  }
+                  markComplete={markComplete}
+                  openDrawer={openDrawer}
+                  storeAsCurrentTask={storeAsCurrentTask}
+                  toggleTaskPriority={toggleSingleTaskPriority}
+                  editGroupName={editGroupName}
+                  quickAddTask={quickAddTask}
+                  deleteGroup={deleteGroup}
+                  isFirstGroup={i === 0}
+                  isLastGroup={i === groupList?.length - 1}
+                  tasks={
+                    groupedTasks[
+                      groupType !== TASKGROUP_DEFAULT_TYPE
+                        ? taskListIdentifier
+                        : TASKGROUP_DEFAULT_TYPE
+                    ] || []
+                  }
+                />
+              ),
+            )}
             <GroupNameSection
               onEnterClick={groupName =>
                 createTaskGroupList({ groupName, taskListIdentifier })

@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
-import XInCircle from 'img/x-in-circle';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
 import Task from '../TaskItem/TaskItem';
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
+import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 
 import {
   Arrow,
@@ -15,8 +15,6 @@ import {
   TasksGroupLabel,
   Tasks,
   ViewIcon,
-  TasksGroupActionButtonsContainer,
-  TasksGroupActionButton,
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
@@ -28,6 +26,8 @@ const SLIM_VIEW = 'SLIM_VIEW';
 
 const TasksGroup = ({
   isDefaultGroup,
+  isFirstGroup,
+  isLastGroup,
   groupId,
   currentUser,
   groupName,
@@ -77,15 +77,14 @@ const TasksGroup = ({
             </TasksGroupLabel>
           </GroupNameSection>
         </GroupNameSectionWrapper>
-        <TasksGroupActionButtonsContainer className="action-buttons">
-          <TasksGroupActionButton
-            isHidden={isDefaultGroup}
-            onClick={() => deleteGroup(groupId)}
-          >
-            <img src={XInCircle} alt="Delete" />
-            <p>Delete</p>
-          </TasksGroupActionButton>
-        </TasksGroupActionButtonsContainer>
+        <TasksGroupHeaderActionButtons
+          isDefaultGroup={isDefaultGroup}
+          isFirstGroup={isFirstGroup}
+          isLastGroup={isLastGroup}
+          moveGroupUp={() => {}}
+          deleteGroup={() => deleteGroup(groupId)}
+          moveGroupDown={() => {}}
+        />
         <div>
           <ViewIcon
             alt="slim-view"

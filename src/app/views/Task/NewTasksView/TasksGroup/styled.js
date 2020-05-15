@@ -72,7 +72,7 @@ export const TasksGroupLabel = styled.p`
 
 export const TasksGroupLabelName = styled.span`
   display: inline-block;
-  max-width: calc(100% - 21px);
+  max-width: calc(100% - 40px);
   padding-right: ${spacing.tiny};
   overflow: hidden;
   white-space: nowrap;
@@ -82,7 +82,7 @@ export const TasksGroupLabelName = styled.span`
 
 export const TasksGroupLabelCounter = styled.span`
   display: inline-block;
-  width: 21px;
+  width: 40px;
   vertical-align: middle;
 `;
 
@@ -94,4 +94,8 @@ export const Tasks = styled(Collapse)`
 export const GroupNameSectionWrapper = styled.div`
   flex: 1;
   overflow: hidden;
+`;
+
+export const MoveUpIcon = styled.img`
+  transform: rotate(-180deg);
 `;
