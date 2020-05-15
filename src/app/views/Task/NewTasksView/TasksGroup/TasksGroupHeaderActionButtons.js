@@ -18,15 +18,21 @@ const TasksGroupActionButtons = ({
 }) => {
   return (
     <TasksGroupActionButtonsContainer className="action-buttons">
-      <TasksGroupActionButton isHidden={isDefaultGroup} onClick={deleteGroup}>
+      <TasksGroupActionButton
+        isDisplayed={!isDefaultGroup}
+        onClick={deleteGroup}
+      >
         <img src={XInCircle} alt="Delete" />
         <p>Delete</p>
       </TasksGroupActionButton>
-      <TasksGroupActionButton isHidden={isFirstGroup} onClick={moveGroupUp}>
+      <TasksGroupActionButton isDisplayed={!isFirstGroup} onClick={moveGroupUp}>
         <MoveUpIcon src={MoveDownIcon} alt="Move up" />
         <p>Move up</p>
       </TasksGroupActionButton>
-      <TasksGroupActionButton isHidden={isLastGroup} onClick={moveGroupDown}>
+      <TasksGroupActionButton
+        isDisplayed={!isLastGroup}
+        onClick={moveGroupDown}
+      >
         <img src={MoveDownIcon} alt="Move down" />
         <p>Move down</p>
       </TasksGroupActionButton>

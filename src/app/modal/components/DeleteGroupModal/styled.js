@@ -26,5 +26,5 @@ export const ButtonsContainer = styled.div`
 `;
 
 export const DeleteButton = styled(Button)`
-  width: 126px;
+  flex: 1;
 `;
