@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
-import Task from '../TaskItem/TaskItem';
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
+import DragAndDropGroupList from '../DragAndDropGroupList/DragAndDropGroupList';
 
 import {
   Arrow,
@@ -40,6 +41,8 @@ const TasksGroup = ({
   deleteGroup,
   moveGroupUp,
   moveGroupDown,
+  reorderTasksInGroup,
+  taskListIdentifier,
   tasks,
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -47,6 +50,8 @@ const TasksGroup = ({
   const isFullView = viewType === FULL_VIEW;
 
   const addTaskInput = useRef();
+
+  const tasksOrder = tasks.map(({ taskIdentifier }) => taskIdentifier);
 
   const handleInputEnterDown = taskName => {
     if (taskName) {
@@ -114,18 +119,32 @@ const TasksGroup = ({
             }
           />
         </AddTaskInputWrapper>
-        {tasks?.map((task, i) => (
-          <Task
-            key={i}
+        <DragDropContext
+          onDragEnd={eventBundle => {
+            const { destination, source } = eventBundle;
+            if (destination && destination?.index !== source?.index) {
+              const newTasksOrder = [...tasksOrder];
+
+              newTasksOrder.splice(
+                destination.index,
+                0,
+                newTasksOrder.splice(source.index, 1)[0],
+              );
+              reorderTasksInGroup(newTasksOrder, groupId, taskListIdentifier);
+            }
+          }}
+        >
+          <DragAndDropGroupList
+            groupId={groupId}
+            tasks={tasks}
             currentUser={currentUser}
             isFullView={isFullView}
             markComplete={markComplete}
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskPriority={toggleTaskPriority}
-            task={task}
           />
-        ))}
+        </DragDropContext>
       </Tasks>
     </TasksGroupContainer>
   );

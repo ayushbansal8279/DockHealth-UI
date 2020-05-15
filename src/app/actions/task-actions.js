@@ -340,7 +340,6 @@ export function saveTask(newTask, shouldReloadGroups = false) {
       });
   };
 }
-
 export const moveTask = (task, taskList) => dispatch => {
   const updatedTask = {
     refiled: true,
@@ -961,4 +960,22 @@ export const sortSubtasks = curry(({ task, subtasks }, dispatch) => {
 
 export const updateTaskManually = task => dispatch => {
   dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
+};
+
+export const reorderTasksInGroup = (
+  tasksOrder,
+  taskGroupIdentifier,
+  taskListIdentifier,
+) => {
+  return dispatch => {
+    TaskApi.reorderTasksInGroup(tasksOrder, taskGroupIdentifier)
+      .then(() => {
+        dispatch(
+          getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
 };

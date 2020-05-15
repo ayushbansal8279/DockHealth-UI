@@ -15,7 +15,7 @@ const TaskComment = ({ creator, dateUpdated, comment }) => {
   return (
     <TaskCommentContainer>
       <TaskCommentAvatarContainer>
-        <Member member={creator} size={40} />
+        <Member member={creator} size={38} />
       </TaskCommentAvatarContainer>
       <div>
         <TaskCommentText>{comment}</TaskCommentText>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
@@ -12,13 +13,13 @@ import { groupTasksSelector } from 'selectors/task-group-list-selectors';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import { arrayMove } from 'helpers/sorting-helper';
 
-import { TaskViewContainer, TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
 import GroupNameSection from './GroupNameSection/GroupNameSection';
 import messages from './AddGroupNameButton/messages';
 import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
 import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
 import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
+import { TaskViewContainer, TaskGroupsContainer } from './styled';
 
 const Priority = {
   High: 'HIGH',
@@ -46,7 +47,7 @@ const TaskView = ({
   tasks, // to do- remove tasks prop
 }) => {
   const { openDrawer } = taskDrawerActions;
-  const { toggleTaskPriority, saveTask } = taskActions;
+  const { toggleTaskPriority, saveTask, reorderTasksInGroup } = taskActions;
   const {
     createTaskGroupList,
     editTasksGroupName,
@@ -133,7 +134,7 @@ const TaskView = ({
             {groupList?.map(
               ({ groupName, taskGroupIdentifier, groupType }, i) => (
                 <TasksGroup
-                  key={i}
+                  key={taskGroupIdentifier}
                   isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
                   groupId={taskGroupIdentifier}
                   currentUser={currentUser}
@@ -142,6 +143,8 @@ const TaskView = ({
                       ? groupName
                       : 'NEW TASKS'
                   }
+                  reorderTasksInGroup={reorderTasksInGroup}
+                  taskListIdentifier={taskListIdentifier}
                   markComplete={markComplete}
                   openDrawer={openDrawer}
                   storeAsCurrentTask={storeAsCurrentTask}

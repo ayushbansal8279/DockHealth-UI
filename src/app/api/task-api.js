@@ -638,3 +638,15 @@ export function flagArchivedForUser(taskIdentifier, flagArchived) {
       throw error;
     });
 }
+
+export function reorderTasksInGroup(tasksOrder, taskGroupIdentifier) {
+  return axios
+    .put('task/sortTasksInTaskGroup', {
+      taskGroupIdentifier,
+      taskIdentifiers: tasksOrder,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}

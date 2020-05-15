@@ -16,6 +16,7 @@ import LabelIcon from 'img/label';
 import MessageDimIcon from 'img/message-dim';
 import MessageIcon from 'img/message';
 import MessageNewIcon from 'img/message-new';
+import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
@@ -32,6 +33,8 @@ import {
   SubtasksGroupLabel,
   TaskItemCell,
   TaskItemContainer,
+  TaskItemPanel,
+  ThreeDots,
   PrioritySwitch,
 } from './styled';
 
@@ -160,41 +163,56 @@ const TaskItem = ({
           </GridImg>
         </Grid>
       </TaskItemCell>
-      <TaskItemCell width="80px">
+      <TaskItemCell width="80px" justify="center">
         {assignedTo ? (
-          <Member member={assignedTo} size={40} />
+          <Member member={assignedTo} size={34} />
         ) : (
-          <AddCrossIcon src={CrossIcon} />
+          <AddCrossIcon src={CrossIcon} size="34px" />
         )}
       </TaskItemCell>
     </TaskItemContainer>
   );
 };
 
-const Task = ({ task, isFullView, ...restProps }) => {
+const Task = ({
+  task,
+  isFullView,
+  isDragging,
+  dragandDropProps,
+  ...restProps
+}) => {
   const [isOpen, switchOpen] = useState(false);
   const { comments, subtasks } = task;
+  const { ref, draggableProps, dragHandleProps } = dragandDropProps;
 
   return (
     <>
-      <TaskItem
-        task={task}
-        isOpen={isOpen}
-        switchOpen={switchOpen}
-        {...restProps}
-      />
-      {!isEmpty(comments) && (
+      <TaskItemPanel isDragging={isDragging} div ref={ref} {...draggableProps}>
+        <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+        <TaskItem
+          task={task}
+          isOpen={isOpen}
+          switchOpen={switchOpen}
+          {...restProps}
+        />
+      </TaskItemPanel>
+      {!isEmpty(comments) && !isDragging && (
         <TaskComments isOpen={isFullView} comments={comments} />
       )}
-      <Subtasks isSubtasks in={isOpen}>
-        {!isEmpty(subtasks) &&
-          subtasks?.map(subtask => (
-            <>
-              <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
-              <TaskComments isOpen={isFullView} comments={subtask.comments} />
-            </>
-          ))}
-      </Subtasks>
+      {!isDragging && (
+        <Subtasks isSubtasks in={isOpen}>
+          {!isEmpty(subtasks) &&
+            subtasks?.map(subtask => (
+              <>
+                <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
+                <TaskComments
+                  isOpen={isFullView && !isDragging}
+                  comments={subtask.comments}
+                />
+              </>
+            ))}
+        </Subtasks>
+      )}
     </>
   );
 };
