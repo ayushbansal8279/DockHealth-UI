@@ -112,9 +112,9 @@ const TasksGroup = ({
             }
           />
         </AddTaskInputWrapper>
-        {tasks?.map(task => (
+        {tasks?.map((task, i) => (
           <Task
-            key={task.taskId}
+            key={i}
             currentUser={currentUser}
             isFullView={isFullView}
             markComplete={markComplete}
