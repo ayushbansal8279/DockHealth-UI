@@ -50,6 +50,7 @@ export const LabelInput = styled.div`
   border: 0;
   color: ${palette.darkGrey};
   font-family: 'Roboto Condensed', sans-serif;
+  cursor: text;
   outline: none;
   padding: 0;
 

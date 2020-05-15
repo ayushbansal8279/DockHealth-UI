@@ -26,7 +26,41 @@ import { CondensedH4, AdornmentContainer } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 
 const StyledAutocomplete = withStyles({
-  option: {},
+  root: {
+    // '& .MuiAutocomplete-option:active': {
+    //   backgroundColor: palette.accentYellow,
+    // },
+  },
+  option: {
+    active: {
+      // backgroundColor: palette.blueOcean,
+    },
+    '& > div > div:nth-child(2)': {
+      visibility: 'hidden',
+    },
+    '& > div > div:nth-child(3)': {
+      visibility: 'hidden',
+    },
+    '&[data-focus="true"]': {
+      backgroundColor: palette.coolGrey3,
+    },
+    '&[data-focus="true"] > div > div:nth-child(2)': {
+      visibility: 'visible',
+    },
+    '&[data-focus="true"] > div > div:nth-child(3)': {
+      visibility: 'visible',
+    },
+    '&[data-focus="true"][aria-selected="true"]': {
+      backgroundColor: palette.coolGrey3,
+    },
+    '&[aria-selected="true"]': {
+      backgroundColor: palette.white,
+    },
+    '&[aria-selected="true"] > div > div:first-child': {
+      color: palette.blueOcean,
+      fontWeight: 'bold',
+    },
+  },
   listbox: {},
 })(Autocomplete);
 
@@ -49,10 +83,14 @@ const onChange = ({ multiple, name, setValue, onItemSelected }) => (
     });
 
     setValue(name, newOptions);
-    onItemSelected(option);
+    if (onItemSelected) {
+      onItemSelected(option);
+    }
   } else {
     setValue(name, option?.value);
-    onItemSelected(option);
+    if (onItemSelected) {
+      onItemSelected(option);
+    }
   }
 };
 
@@ -88,6 +126,7 @@ const renderTags = ({ currentValueIdentifiers }) => (value, getTagProps) => (
             </CondensedH4>
           }
           {...getTagProps({ index })}
+          // onDelete={undefined}
         />
         {index === currentValueIdentifiers.length - 1 && (
           <Chip
@@ -154,7 +193,11 @@ const SelectInput = React.forwardRef(
       : [];
 
     const placeholderValue =
-      currentValue && currentValue !== '' ? '' : placeholder;
+      Array.isArray(currentValue) && currentValue.length === 0
+        ? placeholder
+        : (!currentValue || currentValue === ''
+        ? placeholder
+        : '');
 
     const currentOption = multiple
       ? currentValue
@@ -198,6 +241,7 @@ const SelectInput = React.forwardRef(
     return (
       <StyledAutocomplete
         debug
+        disablePortal
         id={`autocomplete-${name}`}
         options={availableOptions}
         getOptionLabel={option => renderOptionLabel(option)}
@@ -206,8 +250,9 @@ const SelectInput = React.forwardRef(
         }
         disableClearable={disableClearable}
         openOnFocus
+        // open={multiple}
         fullWidth
-        filterSelectedOptions={!!multiple}
+        // filterSelectedOptions={!!multiple}
         multiple={multiple}
         freeSolo={freeSolo}
         noOptionsText={noOptionsText}
@@ -261,7 +306,9 @@ const SelectInput = React.forwardRef(
             ref={reference}
             // onClick={event => {
             //   console.log('on click');
-            //   document.getElementById(`autocomplete-${name}`).focus();
+            // }}
+            // onFocus={event => {
+            //   console.log('on focus');
             // }}
           />
         )}
@@ -279,6 +326,9 @@ const SelectInput = React.forwardRef(
         getOptionSelected={(option, selected) =>
           selected.value === option.value
         }
+        // onClose={(event, reason) => {
+        //   console.log('on close reason: '+reason);
+        // }}
       />
     );
   },

@@ -8,6 +8,7 @@ const initializeEditableLabelHooks = ({
   option,
   isInbox,
   setCurrentlyEditedOption,
+  setEditing,
 }) => {
   const dispatch = useDispatch();
 
@@ -16,8 +17,9 @@ const initializeEditableLabelHooks = ({
       event.preventDefault();
       event.stopPropagation();
       setCurrentlyEditedOption(option);
+      setEditing();
     },
-    [option, setCurrentlyEditedOption],
+    [option, setCurrentlyEditedOption, setEditing],
   );
 
   const onDeleteClick = useCallback(

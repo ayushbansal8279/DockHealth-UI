@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { RobotoTypography } from 'styles/theme';
 
+import useBoolean from 'hooks/useBoolean';
 import EditableLabel from './NewTaskDrawer.EditableLabel';
 import SelectInput from './NewTaskDrawer.SelectInput';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
@@ -18,6 +19,8 @@ const LabelsSection = ({ isInbox, selectedTaskIdentifier }) => {
   });
 
   const [currentlyEditedOption, setCurrentlyEditedOption] = useState(null);
+
+  const [forceOpen, enableForceOpen, disableForceOpen] = useBoolean(true);
 
   return (
     <SelectInput
@@ -37,8 +40,21 @@ const LabelsSection = ({ isInbox, selectedTaskIdentifier }) => {
           isInbox={isInbox}
           currentlyEditedOption={currentlyEditedOption}
           setCurrentlyEditedOption={setCurrentlyEditedOption}
+          enableForceOpen={enableForceOpen}
+          disableForceOpen={disableForceOpen}
         />
       )}
+      // getOptionDisabled={option => {
+      //   return false;
+      // }}
+      InputProps={{
+        onBlur: event => {
+          if (forceOpen) {
+            // TODO need to override inputPropsProp.onBlur for InputBase
+            throw 'cancelled';
+          }
+        },
+      }}
       endAdornment
     >
       {formattedLabels}
