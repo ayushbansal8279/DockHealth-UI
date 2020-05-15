@@ -10,7 +10,7 @@ export const TasksGroupActionButtonsContainer = styled.div`
 `;
 
 export const TasksGroupActionButton = styled.button`
-  display: ${props => (props.isHidden ? 'none' : 'flex')};
+  display: ${props => (props.isDisplayed ? 'flex' : 'none')};
   align-items: center;
   cursor: pointer;
   padding: 0 ${spacing.smallPlus};
