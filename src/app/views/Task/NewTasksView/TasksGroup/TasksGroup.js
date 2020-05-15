@@ -38,6 +38,8 @@ const TasksGroup = ({
   editGroupName,
   quickAddTask,
   deleteGroup,
+  moveGroupUp,
+  moveGroupDown,
   tasks,
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -48,7 +50,7 @@ const TasksGroup = ({
 
   const handleInputEnterDown = taskName => {
     if (taskName) {
-      quickAddTask(taskName);
+      quickAddTask(taskName, groupId);
       addTaskInput.current.value = '';
     }
   };
@@ -81,9 +83,9 @@ const TasksGroup = ({
           isDefaultGroup={isDefaultGroup}
           isFirstGroup={isFirstGroup}
           isLastGroup={isLastGroup}
-          moveGroupUp={() => {}}
+          moveGroupUp={moveGroupUp}
           deleteGroup={() => deleteGroup(groupId)}
-          moveGroupDown={() => {}}
+          moveGroupDown={moveGroupDown}
         />
         <div>
           <ViewIcon

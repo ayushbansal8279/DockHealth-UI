@@ -10,6 +10,7 @@ import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { groupTasksSelector } from 'selectors/task-group-list-selectors';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
+import { arrayMove } from 'helpers/sorting-helper';
 
 import { TaskViewContainer, TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
@@ -55,15 +56,23 @@ const TaskView = ({
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
   const { groupList } = taskGroupList;
 
-  const quickAddTask = (taskName, reloadGroups = false) => {
+  const quickAddTask = (taskName, groupId, reloadGroups = false) => {
     if (taskName) {
-      saveTask(
-        {
-          description: taskName,
-          taskListIdentifier,
-        },
-        reloadGroups,
-      );
+      const payload = {
+        description: taskName,
+        taskListIdentifier,
+      };
+
+      // TODO: connect with backend what is payload
+      if (groupId) {
+        payload.taskGroups = [
+          {
+            taskGroupIdentifier: groupId,
+          },
+        ];
+      }
+
+      saveTask(payload, reloadGroups);
     }
   };
 
@@ -90,6 +99,15 @@ const TaskView = ({
     if (newGroupName) {
       editTasksGroupName(taskListIdentifier, groupId, newGroupName);
     }
+  };
+
+  const changeTaskOrder = (oldTaskIndex, newTaskIndex) => {
+    if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
+      return;
+    }
+    const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
+    const newGroupList = arrayMove(groupIdsList, oldTaskIndex, newTaskIndex);
+    taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
   };
 
   return (
@@ -135,6 +153,8 @@ const TaskView = ({
                   editGroupName={editGroupName}
                   quickAddTask={quickAddTask}
                   deleteGroup={openDeleteConfirmationModal}
+                  moveGroupUp={() => changeTaskOrder(i, i - 1)}
+                  moveGroupDown={() => changeTaskOrder(i, i + 1)}
                   isFirstGroup={i === 0}
                   isLastGroup={i === groupList?.length - 1}
                   tasks={
@@ -159,7 +179,7 @@ const TaskView = ({
           </TaskGroupsContainer>
         ) : (
           <EmptyTasksView
-            quickAddTask={groupName => quickAddTask(groupName, true)}
+            quickAddTask={groupName => quickAddTask(groupName, null, true)}
           />
         )}
       </TasksViewLoader>

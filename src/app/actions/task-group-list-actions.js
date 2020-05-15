@@ -67,3 +67,22 @@ export function deleteTasksGroup(groupId, listId) {
       });
   };
 }
+
+export function sortTaskGroups(taskGroupIdentifiers, listId) {
+  return dispatch => {
+    dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+
+    const payload = {
+      taskGroupIdentifiers,
+      taskListIdentifier: listId,
+    };
+
+    TaskGroupListApi.sortGroups(payload)
+      .then(() => {
+        dispatch(getTaskGroupList(listId, false));
+      })
+      .catch(() => {
+        dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+      });
+  };
+}

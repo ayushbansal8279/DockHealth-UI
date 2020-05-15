@@ -4,6 +4,7 @@ const URLS = {
     add: 'task/group',
     edit: 'task/group',
     delete: groupId => `task/group/${groupId}`,
+    sort: 'task/group/sortTaskGroups',
   },
 };
 
