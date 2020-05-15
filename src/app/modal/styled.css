@@ -6,9 +6,7 @@
   bottom: 0;
   z-index: 1000;
 
-  background-color: #1e2e40; /*Dark grey*/
-  opacity: 0.5;
-
+  background-color: rgba(29, 46, 64, 0.5); /*Dark grey*/
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,4 +14,5 @@
 
 .modal-content {
   display: block;
+  outline: none;
 }

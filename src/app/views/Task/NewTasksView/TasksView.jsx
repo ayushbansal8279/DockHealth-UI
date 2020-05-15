@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
+import * as ModalActions from 'modal/actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { groupTasksSelector } from 'selectors/task-group-list-selectors';
@@ -35,6 +36,7 @@ const TaskView = ({
   taskDrawerActions,
   taskActions,
   taskGroupActions,
+  modalActions,
   taskGroupList,
   taskList = {},
   taskListMembers,
@@ -73,8 +75,15 @@ const TaskView = ({
   };
 
   const deleteGroup = groupId => {
-    // TODO: add confirmation modal
+    modalActions.closeModal();
     deleteTasksGroup(groupId, taskListIdentifier);
+  };
+
+  const openDeleteConfirmationModal = groupId => {
+    const modalProps = {
+      confirm: () => deleteGroup(groupId),
+    };
+    modalActions.openModal('DeleteGroup', modalProps);
   };
 
   const editGroupName = (newGroupName, groupId) => {
@@ -125,7 +134,7 @@ const TaskView = ({
                   toggleTaskPriority={toggleSingleTaskPriority}
                   editGroupName={editGroupName}
                   quickAddTask={quickAddTask}
-                  deleteGroup={deleteGroup}
+                  deleteGroup={openDeleteConfirmationModal}
                   isFirstGroup={i === 0}
                   isLastGroup={i === groupList?.length - 1}
                   tasks={
@@ -167,6 +176,7 @@ const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
   taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
+  modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
 const mapStateToProps = store => ({
