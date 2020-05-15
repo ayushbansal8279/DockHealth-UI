@@ -4,10 +4,10 @@ import * as ActionTypes from './action-types';
 
 export function getTaskGroupList(
   taskListIdentifier,
-  isRequestStateSet = false,
+  shouldSetRequestState = true,
 ) {
   return dispatch => {
-    if (!isRequestStateSet) {
+    if (shouldSetRequestState) {
       dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
     }
 
@@ -32,7 +32,7 @@ export function createTaskGroupList(payload) {
 
     TaskGroupListApi.createGroupAssignedToList(payload)
       .then(() => {
-        dispatch(getTaskGroupList(taskListIdentifier, true));
+        dispatch(getTaskGroupList(taskListIdentifier, false));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
@@ -46,7 +46,7 @@ export function editTasksGroupName(listId, groupId, newGroupName) {
 
     TaskGroupListApi.editGroupName(listId, groupId, newGroupName)
       .then(() => {
-        dispatch(getTaskGroupList(listId, true));
+        dispatch(getTaskGroupList(listId, false));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
@@ -60,7 +60,7 @@ export function deleteTasksGroup(groupId, listId) {
 
     TaskGroupListApi.deleteGroup(groupId)
       .then(() => {
-        dispatch(getTaskGroupList(listId, true));
+        dispatch(getTaskGroupList(listId, false));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
