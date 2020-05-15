@@ -133,7 +133,7 @@ const TaskView = ({
             {groupList?.map(
               ({ groupName, taskGroupIdentifier, groupType }, i) => (
                 <TasksGroup
-                  key={taskGroupIdentifier}
+                  key={i}
                   isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
                   groupId={taskGroupIdentifier}
                   currentUser={currentUser}
@@ -156,7 +156,7 @@ const TaskView = ({
                   tasks={
                     groupedTasks[
                       groupType !== TASKGROUP_DEFAULT_TYPE
-                        ? taskListIdentifier
+                        ? taskGroupIdentifier
                         : TASKGROUP_DEFAULT_TYPE
                     ] || []
                   }

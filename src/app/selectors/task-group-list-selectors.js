@@ -20,13 +20,13 @@ export const groupTasksSelector = tasks => {
   const groupedTasks = {};
 
   tasks.forEach(task => {
-    if (!task.taskGroup || task.taskGroups.length === 0) {
+    if (!task.taskGroups || task.taskGroups.length === 0) {
       addTaskToDefaultGroup(groupedTasks, task);
     } else {
-      task.tasksGroups.forEach(taskGroup => {
+      task.taskGroups.forEach(taskGroup => {
         if (taskGroup.groupType !== TASKGROUP_DEFAULT_TYPE) {
           addGroupIfNotExists(groupedTasks, taskGroup.taskGroupIdentifier);
-          groupedTasks.taskGroupIdentifier.push(task);
+          groupedTasks[taskGroup.taskGroupIdentifier].push(task);
         } else {
           addTaskToDefaultGroup(groupedTasks, task);
         }
