@@ -1,0 +1,54 @@
+import React from 'react';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
+
+import Task from '../TaskItem/TaskItem';
+
+const DragAndDropGroupList = ({
+  groupId,
+  currentUser,
+  isFullView,
+  markComplete,
+  openDrawer,
+  storeAsCurrentTask,
+  toggleTaskPriority,
+  tasks,
+}) => (
+  <Droppable droppableId={groupId}>
+    {providedDroppable => (
+      <div
+        ref={providedDroppable.innerRef}
+        {...providedDroppable.droppableProps}
+      >
+        {tasks?.map((task, index) => (
+          <Draggable
+            key={task.taskId}
+            draggableId={String(task.taskId)}
+            index={index}
+          >
+            {(providedDraggalbe, { isDragging }) => (
+              <Task
+                key={task.taskId}
+                currentUser={currentUser}
+                isFullView={isFullView}
+                isDragging={isDragging}
+                markComplete={markComplete}
+                openDrawer={openDrawer}
+                storeAsCurrentTask={storeAsCurrentTask}
+                toggleTaskPriority={toggleTaskPriority}
+                task={task}
+                dragandDropProps={{
+                  ref: providedDraggalbe.innerRef,
+                  draggableProps: providedDraggalbe.draggableProps,
+                  dragHandleProps: providedDraggalbe.dragHandleProps,
+                }}
+              />
+            )}
+          </Draggable>
+        ))}
+        {providedDroppable.placeholder}
+      </div>
+    )}
+  </Droppable>
+);
+
+export default DragAndDropGroupList;

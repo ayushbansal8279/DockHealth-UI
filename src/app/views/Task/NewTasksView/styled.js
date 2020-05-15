@@ -43,5 +43,7 @@ export const TaskViewContainer = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  height: 100%;
+  background-color: ${palette.coolGrey4};
 `;
