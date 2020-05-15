@@ -14,7 +14,6 @@ export const DeleteGroupModalWrapper = styled.div`
 `;
 
 export const FileIcon = styled.img`
-  height: 34px;
   cursor: default;
   margin-bottom: ${spacing.large};
 `;
