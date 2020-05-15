@@ -42,3 +42,11 @@ export const deleteGroup = groupId =>
     .catch(error => {
       throw new Error(error?.response?.data);
     });
+
+export const sortGroups = payload =>
+  axios
+    .put(URLS.taskGroupList.sort, payload)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw new Error(error?.response?.data);
+    });
