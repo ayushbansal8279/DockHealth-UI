@@ -11,6 +11,7 @@ export const fontSizes = {
 };
 
 export const fontWeights = {
+  extraLight: 300,
   light: 400,
   regular: 500,
   regularPlus: 600,
