@@ -56,21 +56,17 @@ const TaskView = ({
   const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
   const { groupList } = taskGroupList;
 
-  const quickAddTask = (taskName, groupId, reloadGroups = false) => {
+  const quickAddTask = (
+    taskName,
+    taskGroupIdentifier,
+    reloadGroups = false,
+  ) => {
     if (taskName) {
       const payload = {
         description: taskName,
         taskListIdentifier,
+        taskGroupIdentifier,
       };
-
-      // TODO: connect with backend what is payload
-      if (groupId) {
-        payload.taskGroups = [
-          {
-            taskGroupIdentifier: groupId,
-          },
-        ];
-      }
 
       saveTask(payload, reloadGroups);
     }
