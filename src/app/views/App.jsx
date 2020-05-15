@@ -6,10 +6,12 @@ import React, { PureComponent } from 'react';
 import IdleTimer from 'react-idle-timer';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
+import ReactModal from 'react-modal';
 
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
 import Notification from 'components/common/Notification';
+import Modal from '../modal/Modal';
 
 const AppContainer = styled.div`
   font-family: 'Roboto', sans-serif;
@@ -37,6 +39,8 @@ const MainContainer = styled.main`
     transition: opacity 200ms, transform 200ms;
   }
 `;
+
+ReactModal.setAppElement('#app');
 
 class App extends PureComponent {
   idleTimer = null;
@@ -81,6 +85,7 @@ class App extends PureComponent {
 
     return (
       <AppContainer id="appHome">
+        <Modal />
         <div className="new-task" />
         <IdleTimer
           ref={reference => {
