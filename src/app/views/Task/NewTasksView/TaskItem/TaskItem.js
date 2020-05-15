@@ -186,8 +186,8 @@ const Task = ({
   const { ref, draggableProps, dragHandleProps } = dragandDropProps;
 
   return (
-    <>
-      <TaskItemPanel isDragging={isDragging} div ref={ref} {...draggableProps}>
+    <div {...draggableProps}>
+      <TaskItemPanel ref={ref} isDragging={isDragging}>
         <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         <TaskItem
           task={task}
@@ -213,7 +213,7 @@ const Task = ({
             ))}
         </Subtasks>
       )}
-    </>
+    </div>
   );
 };
 
