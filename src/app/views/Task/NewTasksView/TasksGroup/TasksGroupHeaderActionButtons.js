@@ -10,11 +10,11 @@ import {
 
 const TasksGroupActionButtons = ({
   deleteGroup,
-  moveGroupUp,
-  moveGroupDown,
   isDefaultGroup,
   isFirstGroup,
   isLastGroup,
+  moveGroupUp,
+  moveGroupDown,
 }) => {
   return (
     <TasksGroupActionButtonsContainer className="action-buttons">

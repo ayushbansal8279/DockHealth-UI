@@ -96,8 +96,8 @@ const TasksGroup = ({
           isFirstGroup={isFirstGroup}
           isLastGroup={isLastGroup}
           moveGroupUp={moveGroupUp}
-          deleteGroup={() => deleteGroup(groupId)}
           moveGroupDown={moveGroupDown}
+          deleteGroup={() => deleteGroup(groupId)}
         />
         <div>
           <ViewIcon
