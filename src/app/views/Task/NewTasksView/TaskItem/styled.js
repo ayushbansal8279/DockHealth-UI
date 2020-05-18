@@ -36,6 +36,12 @@ export const CircleIcon = styled.img`
 
 export const Description = styled.div`
   cursor: pointer;
+  ${props => props.isCrossedOut && 'text-decoration: line-through;'}
+`;
+
+export const CompletedDescription = styled.div`
+  color: ${palette.brightBlue};
+  font-weight: ${fontWeights.regular};
 `;
 
 export const DescriptionBox = styled.div`

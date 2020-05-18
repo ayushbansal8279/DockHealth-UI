@@ -45,6 +45,7 @@ const TasksGroup = ({
   reorderSubtasksForTask,
   taskListIdentifier,
   tasks,
+  isCompletedGroup,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -81,7 +82,7 @@ const TasksGroup = ({
             initialValue={groupName}
             onEnterClick={newGroupName => editGroupName(newGroupName, groupId)}
             closeOnEnter
-            disabled={isDefaultGroup}
+            disabled={isDefaultGroup || isCompletedGroup}
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
@@ -91,14 +92,16 @@ const TasksGroup = ({
             </TasksGroupLabel>
           </GroupNameSection>
         </GroupNameSectionWrapper>
-        <TasksGroupHeaderActionButtons
-          isDefaultGroup={isDefaultGroup}
-          isFirstGroup={isFirstGroup}
-          isLastGroup={isLastGroup}
-          moveGroupUp={moveGroupUp}
-          moveGroupDown={moveGroupDown}
-          deleteGroup={() => deleteGroup(groupId)}
-        />
+        {!isCompletedGroup && (
+          <TasksGroupHeaderActionButtons
+            isDefaultGroup={isDefaultGroup}
+            isFirstGroup={isFirstGroup}
+            isLastGroup={isLastGroup}
+            moveGroupUp={moveGroupUp}
+            moveGroupDown={moveGroupDown}
+            deleteGroup={() => deleteGroup(groupId)}
+          />
+        )}
         <div>
           <ViewIcon
             alt="slim-view"
@@ -115,17 +118,19 @@ const TasksGroup = ({
         </div>
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
-        <AddTaskInputWrapper>
-          <input
-            name="newTask"
-            type="text"
-            ref={addTaskInput}
-            placeholder="Add task"
-            onKeyDown={event =>
-              event.keyCode === 13 && handleInputEnterDown(event.target.value)
-            }
-          />
-        </AddTaskInputWrapper>
+        {!isCompletedGroup && (
+          <AddTaskInputWrapper>
+            <input
+              name="newTask"
+              type="text"
+              ref={addTaskInput}
+              placeholder="Add task"
+              onKeyDown={event =>
+                event.keyCode === 13 && handleInputEnterDown(event.target.value)
+              }
+            />
+          </AddTaskInputWrapper>
+        )}
         <DragDropContext
           onBeforeCapture={() => {
             setDnd(true);
@@ -166,6 +171,7 @@ const TasksGroup = ({
             isStartedDnD={isStartedDnD}
             taskListIdentifier={taskListIdentifier}
             reorderSubtasksForTask={reorderSubtasksForTask}
+            isCompletedGroup={isCompletedGroup}
           />
         </DragDropContext>
       </Tasks>

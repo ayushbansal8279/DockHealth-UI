@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Grid } from '@material-ui/core';
 import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
+import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import CalendarDimIcon from 'img/calendar-dim';
 import CalendarIcon from 'img/calendar-icon';
@@ -39,6 +40,7 @@ import {
   TaskItemPanel,
   ThreeDots,
   PrioritySwitch,
+  CompletedDescription,
 } from './styled';
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
@@ -95,6 +97,7 @@ const TaskItem = ({
   task,
   draggableProvied,
   isDragging,
+  isCompleted,
 }) => {
   const {
     edited,
@@ -114,9 +117,8 @@ const TaskItem = ({
 
   return (
     <TaskItemPanel ref={innerRef} {...draggableProps} isDragging={isDragging}>
-      <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
       <TaskItemContainer>
-        <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+        {!isCompleted && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
         <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
           {task.priority === 'HIGH' ? (
             <img src={HighPriorityLabel} alt="Priority icon" />
@@ -129,12 +131,17 @@ const TaskItem = ({
           )}
         </PrioritySwitch>
         <TaskItemCell bolded padding="huge">
-          <CircleIcon
-            src={Circle}
-            onClick={() => markComplete(task, status, status, currentUser)}
-          />
+          {isCompleted ? (
+            <CircleIcon src={CircleCompleted} onClick={() => {}} />
+          ) : (
+            <CircleIcon
+              src={Circle}
+              onClick={() => markComplete(task, status, status, currentUser)}
+            />
+          )}
           <DescriptionBox>
             <Description
+              isCrossedOut={isCompleted}
               onClick={() => {
                 openDrawer();
                 storeAsCurrentTask(task);
@@ -143,6 +150,11 @@ const TaskItem = ({
               {description}
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>
+            {isCompleted && (
+              <CompletedDescription>
+                Completed by k. roemhildt on 01/31/2020
+              </CompletedDescription>
+            )}
             {!isEmpty(subtasks) && (
               <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
                 <span>{subtasks?.length} subtasks</span>

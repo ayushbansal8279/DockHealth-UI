@@ -91,6 +91,7 @@ export default ({
   showNotifications = true,
   taskList,
   openTasksAmount,
+  completedTasksAmount,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -120,7 +121,12 @@ export default ({
   return (
     <PageContentHeader>
       <Tabs
-        config={TABS_CONFIG({ selectedTab, onSelectTab, openTasksAmount })}
+        config={TABS_CONFIG({
+          selectedTab,
+          onSelectTab,
+          openTasksAmount,
+          completedTasksAmount,
+        })}
       />
       <Grid
         container
