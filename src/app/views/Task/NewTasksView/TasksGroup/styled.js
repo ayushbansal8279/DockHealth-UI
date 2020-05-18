@@ -36,6 +36,8 @@ export const Arrow = styled.img`
 
 export const ViewIcon = styled.img`
   margin-left: ${spacing.regularPlus};
+  visibility: ${props => (props.isHidden ? 'hidden' : 'visible')};
+  cursor: ${props => (props.isHidden ? 'initial' : 'pointer')};
 `;
 
 export const TasksGroupContainer = styled.div`
