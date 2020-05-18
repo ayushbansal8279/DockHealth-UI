@@ -113,12 +113,6 @@ export const TaskIconsBox = styled.div`
   flex: 1;
 `;
 
-export const TaskItemPanel = styled.div`
-  position: relative;
-  ${props =>
-    props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'}
-`;
-
 export const ThreeDots = styled.img`
   position: absolute;
   left: ${spacing.small};
@@ -127,8 +121,16 @@ export const ThreeDots = styled.img`
   transform: translateY(-50%);
   opacity: 0;
 
-  &:hover,
   &:active {
+    opacity: 1;
+  }
+`;
+
+export const TaskItemPanel = styled.div`
+  position: relative;
+  ${props =>
+    props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'}
+  &:hover ${ThreeDots} {
     opacity: 1;
   }
 `;
