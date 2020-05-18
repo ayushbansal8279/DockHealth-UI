@@ -963,12 +963,12 @@ export const updateTaskManually = task => dispatch => {
 };
 
 export const reorderTasksInGroup = (
-  tasksOrder,
+  orderedTaskIds,
   taskGroupIdentifier,
   taskListIdentifier,
 ) => {
   return dispatch => {
-    TaskApi.reorderTasksInGroup(tasksOrder, taskGroupIdentifier)
+    TaskApi.reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier)
       .then(() => {
         dispatch(
           getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
