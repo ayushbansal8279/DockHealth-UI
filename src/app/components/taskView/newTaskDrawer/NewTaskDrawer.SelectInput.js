@@ -100,6 +100,7 @@ const renderTags = ({
             {...getTagProps({ index })}
             style={{
               marginBottom: '2px',
+              marginRight: '5px',
             }}
           />
         )}
@@ -115,6 +116,7 @@ const renderTags = ({
             onDelete={undefined}
             style={{
               marginBottom: '2px',
+              marginRight: '5px',
             }}
           />
         )}
@@ -124,11 +126,11 @@ const renderTags = ({
               <CondensedH4 style={{ color: palette.orange }}>+</CondensedH4>
             }
             style={{
-              marginBottom: '-15px',
+              marginBottom: '-10px',
               height: '24px',
               fontWeight: 'bold',
               backgroundColor: palette.coolGrey3,
-              marginLeft: '10px',
+              marginLeft: '5px',
               marginRight: '10px',
             }}
             onClick={() => {
@@ -252,12 +254,12 @@ const SelectInput = React.forwardRef(
 
     const onKeyDown = useCallback(
       event => {
-        // console.log(event);
+        // console.log('onKeyDown');
         if (multiple && event.key === 'Enter') {
           event.preventDefault();
           event.stopPropagation();
 
-          const { targetValue } = event.target;
+          const { value: targetValue } = event.target;
 
           const newOptions = [
             ...currentValue,
@@ -270,11 +272,11 @@ const SelectInput = React.forwardRef(
           ];
 
           setValue(name, newOptions);
-
+          onItemSelected(newOptions);
           event.target.value = '';
         }
       },
-      [currentValue, multiple, name, setValue],
+      [currentValue, multiple, name, setValue, onItemSelected],
     );
 
     let startAdornment = <AdornmentContainer>+</AdornmentContainer>;
@@ -307,7 +309,7 @@ const SelectInput = React.forwardRef(
     return (
       <NoSsr>
         <div>
-          <StyledAutoComplete {...getRootProps()} ref={reference}>
+          <StyledAutoComplete ref={reference} {...getRootProps()}>
             <TextInput
               ref={inputReference}
               {...getInputProps()}
@@ -324,6 +326,7 @@ const SelectInput = React.forwardRef(
                 ...InputProps,
                 ...{ startAdornment },
                 ...{ endAdornment: InputProps.endAdornment },
+                ...{ onKeyDown },
               }}
               inputProps={{
                 ...getInputProps(),

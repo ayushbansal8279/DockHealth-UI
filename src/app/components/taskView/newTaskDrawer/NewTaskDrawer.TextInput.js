@@ -30,6 +30,8 @@ const TextInput = React.forwardRef(
     const { register } = useFormContext();
     const { classes } = props;
 
+    const inputClass = parentType === 'select' ? classes.inputSelect : classes.input;
+
     return (
       <TextField
         ref={reference}
@@ -55,7 +57,9 @@ const TextInput = React.forwardRef(
           margin: 'dense',
           disableUnderline: true,
           classes: {
-            input: multiple ? classes.inputMultiple : classes.input,
+            input: multiple
+              ? classes.inputMultiple
+              : inputClass
           },
           ...InputProps,
         }}

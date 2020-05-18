@@ -100,13 +100,35 @@ const styles = {
       cursor: 'pointer',
     },
   },
+  inputSelect: {
+    borderRadius: 0,
+    boxShadow: 'none',
+    color: palette.mediumGrey,
+    fontFamily: FONT_FAMILY,
+    fontWeight: 'bold',
+    padding: '0.75rem 0',
+    paddingBottom: '5px',
+    '&::placeholder': {
+      color: palette.mediumGrey,
+      fontWeight: 'normal',
+    },
+    '&:focus': {
+      backgroundColor: 'transparent',
+      border: 0,
+      boxShadow: 'none',
+    },
+    '&[readonly], &[disabled]': {
+      backgroundColor: 'transparent',
+      cursor: 'pointer',
+    },
+  },
   inputMultiple: {
     borderRadius: 0,
     boxShadow: 'none',
     color: palette.mediumGrey,
     fontFamily: FONT_FAMILY,
     fontWeight: 'bold',
-    padding: '1.25rem 0',
+    padding: '0.75rem 0',
     paddingBottom: '0px',
     '&::placeholder': {
       color: palette.mediumGrey,
