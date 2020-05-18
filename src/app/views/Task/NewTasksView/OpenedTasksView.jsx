@@ -9,7 +9,6 @@ import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
 import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
 
 const OpenedTasksView = ({
-  tasks,
   openDrawer,
   createTaskGroupList,
   currentUser,
@@ -25,6 +24,7 @@ const OpenedTasksView = ({
   reorderTasksInGroup,
   reorderSubtasksForTask,
   taskListIdentifier,
+  tasks,
 }) => {
   return (
     <>

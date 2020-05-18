@@ -116,8 +116,6 @@ class Home extends Component {
       }
     };
 
-    getAllTasks();
-
     getTaskListLabels({ taskListIdentifier: routeParams.taskListIdentifier });
 
     if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
@@ -135,6 +133,8 @@ class Home extends Component {
           .then(noop)
           .catch(noop);
       });
+    } else {
+      await getAllTasks();
     }
   }
 

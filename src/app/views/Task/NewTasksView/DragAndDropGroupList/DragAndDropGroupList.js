@@ -15,6 +15,7 @@ const DragAndDropGroupList = ({
   taskListIdentifier,
   tasks,
   reorderSubtasksForTask,
+  isCompletedGroup,
 }) => (
   <Droppable droppableId={groupId}>
     {providedDroppable => (
@@ -45,6 +46,7 @@ const DragAndDropGroupList = ({
                   dragandDropProps={providedDraggalbe}
                   taskListIdentifier={taskListIdentifier}
                   reorderSubtasksForTask={reorderSubtasksForTask}
+                  isCompleted={isCompletedGroup}
                 />
                 {providedDraggalbe.placeholder}
               </>
