@@ -20,6 +20,7 @@ import {
 import { closeDrawer } from 'actions/task-drawer-actions';
 import {
   addLabel,
+  editLabel,
   removeLabelForTask,
   getTaskListLabels,
 } from 'actions/task-label-actions';
@@ -47,7 +48,7 @@ const validationSchema = object().shape({
   // }),
 });
 
-const mapLabelsPromises = ({
+const labelAddOrRemovePromise = ({
   dispatch,
   taskIdentifier,
   currentLabelsIdentifiers,
@@ -137,7 +138,7 @@ const onSubmit = ({
 
       await Promise.all(
         allLabels.map(
-          mapLabelsPromises({
+          labelAddOrRemovePromise({
             dispatch,
             taskIdentifier,
             currentLabelsIdentifiers,
@@ -158,6 +159,58 @@ const onSubmit = ({
     .catch(() => {
       setSaving(false);
     });
+};
+
+const saveAddOrRemoveLabel = ({
+  selectedTask,
+  dispatch,
+  setAutoSaveVisible,
+}) => async selectedLabels => {
+  const currentLabels = selectedTask?.labels ?? [];
+  const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
+
+  const formattedLabels = (selectedLabels ?? []).map(
+    ({ value, displayLabel }) => ({
+      labelIdentifier: value,
+      labelName: displayLabel,
+    }),
+  );
+
+  const allLabels = [...currentLabels, ...formattedLabels];
+  const formattedLabelsIdentifiers = formattedLabels.map(
+    prop('labelIdentifier'),
+  );
+  const taskIdentifier = selectedTask?.taskIdentifier;
+
+  await Promise.all(
+    allLabels.map(
+      labelAddOrRemovePromise({
+        dispatch,
+        taskIdentifier,
+        currentLabelsIdentifiers,
+        formattedLabelsIdentifiers,
+      }),
+    ),
+  );
+
+  setAutoSaveVisible();
+};
+const saveEditLabel = ({
+  selectedTask,
+  dispatch,
+  setAutoSaveVisible,
+}) => async (selectedLabel, newValue) => {
+  const labelIdentifier = selectedLabel.value;
+  const labelName = newValue;
+  const taskIdentifier = selectedTask?.taskIdentifier;
+
+  await editLabel({
+    labelName,
+    labelIdentifier,
+    taskIdentifier,
+  })(dispatch);
+
+  setAutoSaveVisible();
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -445,6 +498,16 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       taskList,
       dispatch,
       setSaving,
+      setAutoSaveVisible,
+    }),
+    saveAddOrRemoveLabel: saveAddOrRemoveLabel({
+      selectedTask,
+      dispatch,
+      setAutoSaveVisible,
+    }),
+    saveEditLabel: saveEditLabel({
+      selectedTask,
+      dispatch,
       setAutoSaveVisible,
     }),
     formMethods,

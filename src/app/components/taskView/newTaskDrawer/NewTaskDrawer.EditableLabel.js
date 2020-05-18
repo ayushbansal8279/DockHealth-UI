@@ -19,6 +19,7 @@ const EditableLabel = ({
   setCurrentlyEditedOption,
   enableForceOpen,
   disableForceOpen,
+  saveEditLabel,
 }) => {
   const [editingFlag, setEditing, unsetEditing] = useBoolean(false);
 
@@ -27,6 +28,7 @@ const EditableLabel = ({
     isInbox,
     setCurrentlyEditedOption,
     setEditing,
+    enableForceOpen,
   });
 
   const labelContentFieldReference = useRef(null);
@@ -43,34 +45,38 @@ const EditableLabel = ({
 
   const onLabelEdited = useCallback(
     event => {
-      // console.log(`editing: ${option}`);
       event.preventDefault();
       event.stopPropagation();
       disableForceOpen();
       unsetEditing();
+      const newValue = event.target.textContent;
+      saveEditLabel(option, newValue);
     },
-    [disableForceOpen, option, unsetEditing],
+    [disableForceOpen, saveEditLabel, option, unsetEditing],
   );
 
   const onLabelEditCancelled = useCallback(
     event => {
-      // console.log(`cancelling: ${option}`);
       setCurrentlyEditedOption(null);
       event.preventDefault();
       event.stopPropagation();
+      disableForceOpen();
+      disableForceOpen();
+      unsetEditing();
     },
-    [option, setCurrentlyEditedOption],
+    [disableForceOpen, setCurrentlyEditedOption, unsetEditing],
   );
 
   const labelName = option?.displayLabel;
 
   return (
-    <EditableLabelContainer key={option?.displayLabel}>
+    <EditableLabelContainer key={`label_container_${option?.key}`}>
       {isEditing ? (
-        <LabelInputContainer>
+        <LabelInputContainer key={`label_input_container_${option?.key}`}>
           <LabelInput
             ref={labelContentFieldReference}
             contentEditable
+            suppressContentEditableWarning
             onClick={event => {
               // console.log('editable label clicked');
               event.preventDefault();
@@ -86,11 +92,9 @@ const EditableLabel = ({
           >
             {labelName}
           </LabelInput>
-          <img
-            src={ClearLabelIcon}
-            alt="clear label"
-            onClick={onLabelEditCancelled}
-          />
+          <span onClick={onLabelEditCancelled}>
+            <img src={ClearLabelIcon} alt="clear label" />
+          </span>
         </LabelInputContainer>
       ) : (
         <>

@@ -11,6 +11,17 @@ export const addLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
     },
   });
 
+export const editLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
+  axios({
+    method: 'put',
+    url: '/task/label',
+    data: {
+      labelIdentifier,
+      labelName,
+      taskIdentifier,
+    },
+  });
+
 export const removeLabelForTask = ({
   labelIdentifier,
   labelName,

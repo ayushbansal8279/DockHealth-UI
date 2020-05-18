@@ -56,6 +56,5 @@ export const LabelInput = styled.div`
 
   &::after {
     color: ${palette.darkGrey};
-    content: '|';
   }
 `;

@@ -47,6 +47,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     taskDrawerOpen,
     top,
     onSubmit,
+    saveAddOrRemoveLabel,
+    saveEditLabel,
     formMethods,
     isAddingOrEditingSubtask,
     patients,
@@ -66,8 +68,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     autoSaveVisible,
     setAutoSaveVisible,
   } = initializeTaskDrawerHooks({ members, isInbox, taskList });
-
-  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
 
   const { handleSubmit, setValue, watch } = formMethods;
 
@@ -171,11 +171,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     </Button>
                   </Grid>
                 }
-                InputProps={{
-                  startAdornment: <AdornmentContainer>+</AdornmentContainer>,
-                }}
-                endAdornment={false}
-                startAdornment
+                InputProps={{}}
+                endAdornmentEnabled={false}
               >
                 {formattedPatients}
               </SelectInput>
@@ -231,11 +228,9 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                   option?.label
                 }
                 InputProps={{
-                  startAdornment: <AdornmentContainer>+</AdornmentContainer>,
                   endAdornment: currentAssignedToAdornment,
                 }}
-                endAdornment={false}
-                startAdornment
+                endAdornmentEnabled={false}
               >
                 {formattedMembers}
               </SelectInput>
@@ -288,8 +283,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
               <LabelsSection
-                selectedTaskIdentifier={selectedTaskIdentifier}
+                selectedTask={selectedTask}
                 isInbox={isInbox}
+                saveAddOrRemoveLabel={saveAddOrRemoveLabel}
+                saveEditLabel={saveEditLabel}
               />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>

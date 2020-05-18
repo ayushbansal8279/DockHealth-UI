@@ -1,16 +1,19 @@
 /* eslint-disable no-param-reassign */
 import {
   FAILURE_ADDING_LABEL,
+  FAILURE_EDITING_LABEL,
   FAILURE_FETCHING_INBOX_LABELS,
   FAILURE_FETCHING_LIST_LABELS,
   FAILURE_REMOVING_LABEL_FROM_DATABASE,
   FAILURE_REMOVING_TASK_LABEL,
   REQUEST_ADDING_LABEL,
+  REQUEST_EDITING_LABEL,
   REQUEST_FETCHING_INBOX_LABELS,
   REQUEST_FETCHING_LIST_LABELS,
   REQUEST_REMOVING_LABEL_FROM_DATABASE,
   REQUEST_REMOVING_TASK_LABEL,
   SUCCESS_ADDING_LABEL,
+  SUCCESS_EDITING_LABEL,
   SUCCESS_FETCHING_INBOX_LABELS,
   SUCCESS_FETCHING_LIST_LABELS,
   SUCCESS_REMOVING_LABEL_FROM_DATABASE,
@@ -20,6 +23,7 @@ import produce from 'immer';
 
 const STATE_KEYS = {
   ADDING_LABEL: 'addingLabel',
+  EDITING_LABEL: 'editingLabel',
   INBOX_LABELS: 'inboxLabels',
   LIST_LABELS: 'listLabels',
   REMOVING_LABEL_FROM_DATABASE: 'removingLabelFromDatabase',
@@ -77,6 +81,7 @@ const getRemoveResolver = ({ state, parameters }) => {
 // array with [path, resolver] tuples
 const actionTypeResolverBindings = {
   [FAILURE_ADDING_LABEL]: [STATE_KEYS.ADDING_LABEL, getErrorResolver],
+  [FAILURE_EDITING_LABEL]: [STATE_KEYS.EDITING_LABEL, getErrorResolver],
   [FAILURE_FETCHING_INBOX_LABELS]: [STATE_KEYS.INBOX_LABELS, getErrorResolver],
   [FAILURE_FETCHING_LIST_LABELS]: [STATE_KEYS.LIST_LABELS, getErrorResolver],
   [FAILURE_REMOVING_LABEL_FROM_DATABASE]: [
@@ -88,6 +93,7 @@ const actionTypeResolverBindings = {
     getErrorResolver,
   ],
   [REQUEST_ADDING_LABEL]: [STATE_KEYS.ADDING_LABEL, getRequestingResolver],
+  [REQUEST_EDITING_LABEL]: [STATE_KEYS.EDITING_LABEL, getRequestingResolver],
   [REQUEST_FETCHING_INBOX_LABELS]: [
     STATE_KEYS.INBOX_LABELS,
     getRequestingResolver,
@@ -105,6 +111,7 @@ const actionTypeResolverBindings = {
     getRequestingResolver,
   ],
   [SUCCESS_ADDING_LABEL]: [STATE_KEYS.ADDING_LABEL, getSuccessResolver],
+  [SUCCESS_EDITING_LABEL]: [STATE_KEYS.EDITING_LABEL, getSuccessResolver],
   [SUCCESS_FETCHING_INBOX_LABELS]: [
     STATE_KEYS.INBOX_LABELS,
     getSuccessResolver,
