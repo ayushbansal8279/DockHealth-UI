@@ -10,16 +10,11 @@ import * as ModalActions from 'modal/actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { groupTasksSelector } from 'selectors/task-group-list-selectors';
-import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import { arrayMove } from 'helpers/sorting-helper';
 
-import TasksGroup from './TasksGroup/TasksGroup';
-import GroupNameSection from './GroupNameSection/GroupNameSection';
-import messages from './AddGroupNameButton/messages';
-import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
-import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
+import { TaskViewContainer } from './styled';
 import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
-import { TaskViewContainer, TaskGroupsContainer } from './styled';
+import OpenedTasksView from './OpenedTasksView';
 
 const Priority = {
   High: 'HIGH',
@@ -103,7 +98,7 @@ const TaskView = ({
     }
   };
 
-  const changeTaskOrder = (oldTaskIndex, newTaskIndex) => {
+  const changeGroupsOrder = (oldTaskIndex, newTaskIndex) => {
     if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
       return;
     }
@@ -134,59 +129,26 @@ const TaskView = ({
           isFetchingTasks
         }
       >
-        {tasks.length > 0 ? (
-          <TaskGroupsContainer>
-            {groupList?.map(
-              ({ groupName, taskGroupIdentifier, groupType }, i) => (
-                <TasksGroup
-                  key={taskGroupIdentifier}
-                  isDefaultGroup={groupType === TASKGROUP_DEFAULT_TYPE}
-                  groupId={taskGroupIdentifier}
-                  currentUser={currentUser}
-                  groupName={
-                    groupType !== TASKGROUP_DEFAULT_TYPE
-                      ? groupName
-                      : 'NEW TASKS'
-                  }
-                  reorderTasksInGroup={reorderTasksInGroup}
-                  reorderSubtasksForTask={reorderSubtasksForTask}
-                  taskListIdentifier={taskListIdentifier}
-                  markComplete={markComplete}
-                  openDrawer={openDrawer}
-                  storeAsCurrentTask={storeAsCurrentTask}
-                  toggleTaskPriority={toggleSingleTaskPriority}
-                  editGroupName={editGroupName}
-                  quickAddTask={quickAddTask}
-                  deleteGroup={openDeleteConfirmationModal}
-                  moveGroupUp={() => changeTaskOrder(i, i - 1)}
-                  moveGroupDown={() => changeTaskOrder(i, i + 1)}
-                  isFirstGroup={i === 0}
-                  isLastGroup={i === groupList?.length - 1}
-                  tasks={
-                    groupedTasks[
-                      groupType !== TASKGROUP_DEFAULT_TYPE
-                        ? taskGroupIdentifier
-                        : TASKGROUP_DEFAULT_TYPE
-                    ] || []
-                  }
-                />
-              ),
-            )}
-            <GroupNameSection
-              onEnterClick={groupName =>
-                createTaskGroupList({ groupName, taskListIdentifier })
-              }
-              placeholder={messages.placeholder}
-              closeOnEnter
-            >
-              <AddGroupNameButton />
-            </GroupNameSection>
-          </TaskGroupsContainer>
-        ) : (
-          <EmptyTasksView
-            quickAddTask={groupName => quickAddTask(groupName, null, true)}
-          />
-        )}
+        <OpenedTasksView
+          openDrawer={openDrawer}
+          createTaskGroupList={groupName =>
+            createTaskGroupList({ groupName, taskListIdentifier })
+          }
+          currentUser={currentUser}
+          markComplete={markComplete}
+          storeAsCurrentTask={storeAsCurrentTask}
+          groupedTasks={groupedTasks}
+          toggleSingleTaskPriority={toggleSingleTaskPriority}
+          editGroupName={editGroupName}
+          quickAddTask={quickAddTask}
+          openDeleteConfirmationModal={openDeleteConfirmationModal}
+          changeGroupsOrder={changeGroupsOrder}
+          tasks={tasks}
+          groupList={groupList}
+          reorderTasksInGroup={reorderTasksInGroup}
+          reorderSubtasksForTask={reorderSubtasksForTask}
+          taskListIdentifier={taskListIdentifier}
+        />
       </TasksViewLoader>
       <NewTaskDrawer
         members={members}

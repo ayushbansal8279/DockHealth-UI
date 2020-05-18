@@ -10,16 +10,17 @@ export const TABS_CONFIG = ({
   {
     isSelected: selectedTab === OPEN_TASKS,
     key: OPEN_TASKS,
-    label: 'Open Tasks'.concat(openTasksAmount ? `(${openTasksAmount})` : ''),
+    label: 'Open Tasks'.concat(openTasksAmount ? ` (${openTasksAmount})` : ''),
     onSelectTab: () => onSelectTab(OPEN_TASKS),
     shouldRender: () => true,
   },
-
   {
     isSelected: selectedTab === COMPLETED_TASKS,
     key: COMPLETED_TASKS,
-    label: `Completed (${completedTasksAmount})`,
+    label: 'Completed'.concat(
+      completedTasksAmount ? ` (${completedTasksAmount})` : '',
+    ),
     onSelectTab: () => onSelectTab(COMPLETED_TASKS),
-    shouldRender: () => false,
+    shouldRender: () => true,
   },
 ];
