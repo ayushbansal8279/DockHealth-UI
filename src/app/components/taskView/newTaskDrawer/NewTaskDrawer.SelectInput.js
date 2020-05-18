@@ -1,9 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Chip } from '@material-ui/core';
-import { KeyboardArrowDown } from '@material-ui/icons';
-import { withStyles } from '@material-ui/core/styles';
-import { Autocomplete } from '@material-ui/lab';
+import { Chip, NoSsr } from '@material-ui/core';
+import useAutocomplete from '@material-ui/lab/useAutocomplete';
 import {
   any,
   arrayOf,
@@ -21,53 +19,23 @@ import { useMount, useUnmount } from 'react-use';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import palette from 'styles/palette';
-import { DrawerChip } from './NewTaskDrawer.SelectInput.Styled';
+import useBoolean from 'hooks/useBoolean';
+import {
+  DrawerChip,
+  StyledAutoComplete,
+  Listbox,
+} from './NewTaskDrawer.SelectInput.Styled';
 import { CondensedH4, AdornmentContainer } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
 
-const StyledAutocomplete = withStyles({
-  root: {
-    // '& .MuiAutocomplete-option:active': {
-    //   backgroundColor: palette.accentYellow,
-    // },
-  },
-  option: {
-    active: {
-      // backgroundColor: palette.blueOcean,
-    },
-    '& > div > div:nth-child(2)': {
-      visibility: 'hidden',
-    },
-    '& > div > div:nth-child(3)': {
-      visibility: 'hidden',
-    },
-    '&[data-focus="true"]': {
-      backgroundColor: palette.coolGrey3,
-    },
-    '&[data-focus="true"] > div > div:nth-child(2)': {
-      visibility: 'visible',
-    },
-    '&[data-focus="true"] > div > div:nth-child(3)': {
-      visibility: 'visible',
-    },
-    '&[data-focus="true"][aria-selected="true"]': {
-      backgroundColor: palette.coolGrey3,
-    },
-    '&[aria-selected="true"]': {
-      backgroundColor: palette.white,
-    },
-    '&[aria-selected="true"] > div > div:first-child': {
-      color: palette.blueOcean,
-      fontWeight: 'bold',
-    },
-  },
-  listbox: {},
-})(Autocomplete);
-
-const onChange = ({ multiple, name, setValue, onItemSelected }) => (
-  _event,
-  option,
-) => {
+const onChange = ({
+  multiple,
+  name,
+  setValue,
+  onItemSelected,
+  closeAutocomplete,
+}) => (_event, option) => {
+  // console.log('on change');
   if (multiple) {
     const newOptions = option?.map(value => {
       if (typeof value === 'string') {
@@ -83,11 +51,13 @@ const onChange = ({ multiple, name, setValue, onItemSelected }) => (
     });
 
     setValue(name, newOptions);
+    closeAutocomplete();
     if (onItemSelected) {
       onItemSelected(option);
     }
   } else {
     setValue(name, option?.value);
+    closeAutocomplete();
     if (onItemSelected) {
       onItemSelected(option);
     }
@@ -111,37 +81,58 @@ const renderItemWithHighlighting = (option, inputValue) => {
   );
 };
 
-// const startAdornmentProp = {
-//   startAdornment: <AdornmentContainer>+</AdornmentContainer>
-// }
-
-const renderTags = ({ currentValueIdentifiers }) => (value, getTagProps) => (
+const renderTags = ({
+  currentValueIdentifiers,
+  focusState,
+  openAutocomplete,
+}) => (value, getTagProps) => (
   <>
     {value.map((option, index) => (
       <>
-        <DrawerChip
-          label={
-            <CondensedH4>
-              {typeof option === 'string' ? option : option?.displayLabel}
-            </CondensedH4>
-          }
-          {...getTagProps({ index })}
-          // onDelete={undefined}
-        />
+        {focusState && (
+          <DrawerChip
+            key={`label_${option?.key}`}
+            label={
+              <CondensedH4>
+                {typeof option === 'string' ? option : option?.displayLabel}
+              </CondensedH4>
+            }
+            {...getTagProps({ index })}
+            style={{
+              marginBottom: '2px',
+            }}
+          />
+        )}
+        {!focusState && (
+          <DrawerChip
+            key={`label_${option?.key}`}
+            label={
+              <CondensedH4>
+                {typeof option === 'string' ? option : option?.displayLabel}
+              </CondensedH4>
+            }
+            {...getTagProps({ index })}
+            onDelete={undefined}
+            style={{
+              marginBottom: '2px',
+            }}
+          />
+        )}
         {index === currentValueIdentifiers.length - 1 && (
           <Chip
             label={
               <CondensedH4 style={{ color: palette.orange }}>+</CondensedH4>
             }
             style={{
-              marginBottom: '8px',
+              marginBottom: '-15px',
               height: '24px',
               fontWeight: 'bold',
               backgroundColor: palette.coolGrey3,
+              marginLeft: '10px',
               marginRight: '10px',
             }}
             onClick={() => {
-              // console.log('chip clicked');
+              openAutocomplete();
             }}
           />
         )}
@@ -159,8 +150,6 @@ const SelectInput = React.forwardRef(
       placeholder,
       renderItem,
       renderOptionLabel,
-      startAdornment,
-      endAdornment,
       noOptionsText,
       getOptionDisabled,
       onInputChange,
@@ -171,10 +160,14 @@ const SelectInput = React.forwardRef(
       InputProps,
       inputProps,
       InputLabelProps,
+      forceOpen,
     },
     reference,
   ) => {
     const { register, unregister, setValue, watch } = useFormContext();
+
+    const [openState, openAutocomplete, closeAutocomplete] = useBoolean(false);
+    const [focusState, enableFocus, disableFocus] = useBoolean(false);
 
     useMount(() => {
       register({
@@ -192,12 +185,12 @@ const SelectInput = React.forwardRef(
       ? currentValue?.map(prop('value')) ?? []
       : [];
 
+    const placeholderValueSingle =
+      !currentValue || currentValue === '' ? placeholder : '';
     const placeholderValue =
       Array.isArray(currentValue) && currentValue.length === 0
         ? placeholder
-        : (!currentValue || currentValue === ''
-        ? placeholder
-        : '');
+        : placeholderValueSingle;
 
     const currentOption = multiple
       ? currentValue
@@ -212,21 +205,67 @@ const SelectInput = React.forwardRef(
 
     const availableOptions = children;
 
+    const {
+      getRootProps,
+      getInputLabelProps,
+      getInputProps,
+      getTagProps,
+      getListboxProps,
+      getOptionProps,
+      groupedOptions,
+      inputValue,
+      value,
+      setAnchorEl,
+      popupOpen,
+    } = useAutocomplete({
+      id: `autocomplete-${name}`,
+      open: openState,
+      options: availableOptions,
+      getOptionLabel: option => renderOptionLabel(option),
+      debug: true,
+      disablePortal: true,
+      disableClearable,
+      openOnFocus: true,
+      multiple,
+      freeSolo,
+      clearOnBlur: true,
+      getOptionDisabled,
+      onInputChange: (event, newValue) => {
+        // console.log('onInputChange: '+newValue);
+        if (focusState && !popupOpen) {
+          openAutocomplete();
+        }
+        if (onInputChange) {
+          onInputChange(event, newValue);
+        }
+      },
+      value: currentOption,
+      onChange: onChange({
+        multiple,
+        setValue,
+        name,
+        onItemSelected,
+        closeAutocomplete,
+      }),
+      getOptionSelected: (option, selected) => selected.value === option.value,
+    });
+
     const onKeyDown = useCallback(
       event => {
+        // console.log(event);
         if (multiple && event.key === 'Enter') {
           event.preventDefault();
           event.stopPropagation();
 
-          const { value } = event.target;
+          const { targetValue } = event.target;
 
           const newOptions = [
             ...currentValue,
             {
-              key: value,
+              key: targetValue,
               value: null,
-              label: <CondensedH4>{value}</CondensedH4>,
-              displayLabel: value,
+              label: <CondensedH4>{targetValue}</CondensedH4>,
+              displayLabel: targetValue,
             },
           ];
 
@@ -238,98 +277,117 @@ const SelectInput = React.forwardRef(
       [currentValue, multiple, name, setValue],
     );
 
-    return (
-      <StyledAutocomplete
-        debug
-        disablePortal
-        id={`autocomplete-${name}`}
-        options={availableOptions}
-        getOptionLabel={option => renderOptionLabel(option)}
-        renderOption={(option, { inputValue }) =>
-          renderItem(option, inputValue)
-        }
-        disableClearable={disableClearable}
-        openOnFocus
-        // open={multiple}
-        fullWidth
-        // filterSelectedOptions={!!multiple}
-        multiple={multiple}
-        freeSolo={freeSolo}
-        noOptionsText={noOptionsText}
-        getOptionDisabled={getOptionDisabled}
-        onInputChange={onInputChange}
-        onKeyDown={onKeyDown}
-        renderTags={renderTags({ currentValueIdentifiers })}
-        // renderInput={(params) => <TextField {...params} label="debug" margin="normal" />}
-        renderInput={({
-          InputProps: InputParameters = {},
-          inputProps: inputParameters = {},
-          InputLabelProps: InputLabelParameters = {},
-          ...otherParameters
-        }) => (
-          <TextInput
-            {...otherParameters}
-            parentType="select"
-            InputLabelProps={{
-              ...InputLabelProps,
-              ...InputLabelParameters,
-              shrink: true,
-            }}
-            // Both inputProps & InputProps are defined in here to follow the Material UI convention
-            // for TextField component → InputProps spread to InputBase component, while
-            // inputProps go directly to the native input component
-            InputProps={
-              startAdornment && (!currentOption || currentOption === '')
-                ? {
-                    ...InputProps,
-                    ...InputParameters,
-                    ...{ startAdornment: InputProps.startAdornment },
-                    ...{ endAdornment: InputProps.endAdornment },
-                  }
-                : {
-                    ...InputProps,
-                    ...InputParameters,
-                    ...{ endAdornment: InputProps.endAdornment },
-                  }
-            }
-            // InputProps={{
-            //   startAdornment: <AdornmentContainer>+</AdornmentContainer>,
-            // }}
-            inputProps={{
-              ...inputProps,
-              ...inputParameters,
-            }}
-            label={label}
-            name={name}
-            placeholder={placeholderValue}
-            multiple={multiple}
-            ref={reference}
-            // onClick={event => {
-            //   console.log('on click');
-            // }}
-            // onFocus={event => {
-            //   console.log('on focus');
-            // }}
+    let startAdornment = <AdornmentContainer>+</AdornmentContainer>;
+    if (multiple && currentOption && currentOption.length > 0) {
+      const getCustomizedTagProps = parameters => ({
+        ...getTagProps(parameters),
+      });
+
+      if (renderTags) {
+        startAdornment = renderTags({
+          currentValueIdentifiers,
+          focusState,
+          openAutocomplete,
+        })(value, getCustomizedTagProps);
+      } else {
+        startAdornment = value.map((option, index) => (
+          <Chip
+            key={`label_${option?.key}`}
+            label={renderOptionLabel(option)}
+            {...getCustomizedTagProps({ index })}
           />
-        )}
-        value={currentOption}
-        variant="outlined"
-        onChange={onChange({ multiple, setValue, name, onItemSelected })}
-        forcePopupIcon={Boolean(endAdornment)}
-        popupIcon={
-          <AdornmentContainer>
-            {endAdornment && (
-              <KeyboardArrowDown fontSize="small" color="inherit" />
-            )}
-          </AdornmentContainer>
-        }
-        getOptionSelected={(option, selected) =>
-          selected.value === option.value
-        }
-        // onClose={(event, reason) => {
-        //   console.log('on close reason: '+reason);
-        // }}
-      />
+        ));
+      }
+    } else if (currentValue && currentValue.length > 0) {
+      startAdornment = '';
+    }
+
+    const inputReference = setAnchorEl;
+
+    return (
+      <NoSsr>
+        <div>
+          <StyledAutoComplete {...getRootProps()} ref={reference}>
+            <TextInput
+              ref={inputReference}
+              {...getInputProps()}
+              parentType="select"
+              InputLabelProps={{
+                ...getInputLabelProps(),
+                ...InputLabelProps,
+                shrink: true,
+              }}
+              // Both inputProps & InputProps are defined in here to follow the Material UI convention
+              // for TextField component → InputProps spread to InputBase component, while
+              // inputProps go directly to the native input component
+              InputProps={{
+                ...InputProps,
+                ...{ startAdornment },
+                ...{ endAdornment: InputProps.endAdornment },
+              }}
+              inputProps={{
+                ...getInputProps(),
+                ...inputProps,
+              }}
+              label={label}
+              name={name}
+              placeholder={placeholderValue}
+              multiple={multiple}
+              onFocus={() => {
+                openAutocomplete();
+                enableFocus();
+              }}
+              onBlur={() => {
+                if (!forceOpen) {
+                  closeAutocomplete();
+                }
+                disableFocus();
+              }}
+              onKeyDown={onKeyDown}
+            />
+          </StyledAutoComplete>
+          {groupedOptions.length === 0 &&
+          inputValue &&
+          inputValue.length > 0 &&
+          (!currentValue || currentValue === '') ? (
+            <Listbox
+              {...getListboxProps()}
+              style={{
+                width:
+                  reference && reference.current
+                    ? reference.current.clientWidth
+                    : '300px',
+              }}
+            >
+              <div>{noOptionsText}</div>
+            </Listbox>
+          ) : null}
+          {groupedOptions.length > 0 ? (
+            <Listbox
+              {...getListboxProps()}
+              style={{
+                width:
+                  reference && reference.current
+                    ? reference.current.clientWidth
+                    : '300px',
+              }}
+            >
+              {groupedOptions.map((option, index) => (
+                <li
+                  {...getOptionProps({ option, index })}
+                  data-multiple={multiple ? 'true' : 'false'}
+                  key={`label_options_${option?.key}`}
+                >
+                  {renderItem &&
+                    // renderItem(option, inputValue)
+                    renderItem(option, null)}
+                  {!renderItem && <span>{option.displayLabel}</span>}
+                </li>
+              ))}
+            </Listbox>
+          ) : null}
+        </div>
+      </NoSsr>
     );
   },
 );
@@ -348,8 +406,8 @@ SelectInput.propTypes = {
   placeholder: string,
   renderItem: func,
   renderOptionLabel: func,
-  startAdornment: bool,
-  endAdornment: bool,
+  startAdornmentEnabled: bool,
+  endAdornmentEnabled: bool,
   forcePopupIcon: bool,
   noOptionsText: node,
   getOptionDisabled: func,
@@ -361,6 +419,7 @@ SelectInput.propTypes = {
   inputProps: objectOf(any),
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
+  forceOpen: bool,
 };
 
 SelectInput.defaultProps = {
@@ -369,8 +428,8 @@ SelectInput.defaultProps = {
   renderItem: renderItemWithHighlighting,
   // renderItem: prop('label'),
   renderOptionLabel: propOr('', 'displayLabel'),
-  startAdornment: false,
-  endAdornment: false,
+  startAdornmentEnabled: false,
+  endAdornmentEnabled: false,
   forcePopupIcon: undefined,
   noOptionsText: undefined,
   getOptionDisabled: prop('disabled'),
@@ -382,6 +441,7 @@ SelectInput.defaultProps = {
   inputProps: {},
   InputProps: {},
   InputLabelProps: {},
+  forceOpen: false,
 };
 
 export default SelectInput;

@@ -72,7 +72,7 @@ const PrioritySection = ({ setAutoSaveVisible }) => {
         placeholder="Is there a priority?"
         InputProps={{
           endAdornment: (
-            <AdornmentContainer>
+            <AdornmentContainer style={{ paddingBotton: '10px' }}>
               <SmallSwitchChevron color={palette.orangeJulius} />
             </AdornmentContainer>
           ),

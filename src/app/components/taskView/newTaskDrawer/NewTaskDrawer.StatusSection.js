@@ -71,7 +71,7 @@ const StatusSection = ({ setAutoSaveVisible }) => {
         placeholder="Is there a status?"
         InputProps={{
           endAdornment: (
-            <AdornmentContainer>
+            <AdornmentContainer style={{ paddingBotton: '10px' }}>
               <SmallSwitchChevron color={palette.orangeJulius} />
             </AdornmentContainer>
           ),

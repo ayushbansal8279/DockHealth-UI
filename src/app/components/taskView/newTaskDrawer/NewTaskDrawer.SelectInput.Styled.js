@@ -23,3 +23,70 @@ export const DrawerChip = withStyles({
     fontWeight: BoldLabel,
   },
 })(Chip);
+
+export const StyledAutoComplete = styled('div')` 
+  & .MuiInputBase-root: {
+      background-color: ${palette.accentYellow};
+  },
+`;
+
+export const Listbox = styled('ul')`
+  width: 300px;
+  margin: 2px 0 0;
+  padding: 0;
+  position: absolute;
+  list-style: none;
+  background-color: ${palette.coolGrey4};
+  overflow: auto;
+  max-height: 250px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+
+  & li {
+    padding: 5px 12px;
+    display: flex;
+
+    & span {
+      flex-grow: 1;
+    }
+
+    & svg {
+      color: transparent;
+    }
+  }
+
+  & li[data-multiple='true'] > div > div:nth-child(2) {
+    visibility: hidden;
+  }
+
+  & li[data-multiple='true'] > div > div:nth-child(3) {
+    visibility: hidden;
+  }
+
+  & li[data-focus='true'] {
+    background-color: ${palette.coolGrey3};
+    cursor: pointer;
+  }
+
+  & li[data-focus='true'] > div > div:nth-child(2) {
+    visibility: visible;
+  }
+
+  & li[data-focus='true'] > div > div:nth-child(3) {
+    visibility: visible;
+  }
+
+  & li[data-focus='true'][aria-selected='true'] {
+    background-color: ${palette.coolGrey3};
+  }
+
+  & li[aria-selected='true'] {
+    background-color: ${palette.white};
+  }
+
+  & li[aria-selected='true'] > div > div:first-child {
+    color: ${palette.blueOcean};
+    font-weight: bold;
+  }
+`;
