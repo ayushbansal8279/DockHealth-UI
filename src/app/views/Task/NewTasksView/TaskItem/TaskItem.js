@@ -113,7 +113,7 @@ const TaskItem = ({
           <img className="low" src={LowPriorityHoverLabel} alt="No priority" />
         )}
       </PrioritySwitch>
-      <TaskItemCell bolded>
+      <TaskItemCell bolded padding="huge">
         <CircleIcon
           src={Circle}
           onClick={() => markComplete(task, status, status, currentUser)}
