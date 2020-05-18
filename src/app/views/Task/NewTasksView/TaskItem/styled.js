@@ -115,7 +115,7 @@ export const TaskIconsBox = styled.div`
 
 export const ThreeDots = styled.img`
   position: absolute;
-  left: ${spacing.small};
+  left: ${spacing.smallPlus};
   z-index: 1;
   top: 50%;
   transform: translateY(-50%);
