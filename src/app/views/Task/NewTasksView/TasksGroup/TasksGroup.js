@@ -92,11 +92,13 @@ const TasksGroup = ({
             alt="slim-view"
             src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
             onClick={() => setViewType(SLIM_VIEW)}
+            isHidden={!isOpen || tasks?.length === 0}
           />
           <ViewIcon
             alt="full-view"
             src={isFullView ? FullViewActiveIcon : FullViewIcon}
             onClick={() => setViewType(FULL_VIEW)}
+            isHidden={!isOpen || tasks?.length === 0}
           />
         </div>
       </TasksGroupHeader>
