@@ -122,6 +122,7 @@ const TaskView = ({
         selectedTab={selectedTab}
         showMembers={showMembers}
         taskList={taskList}
+        openTasksAmount={tasks?.length}
       />
       <TasksViewLoader
         isFetchingData={
