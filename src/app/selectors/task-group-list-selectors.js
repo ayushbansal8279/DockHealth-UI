@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import R from 'ramda';
+import { sort } from 'ramda';
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 
 const addGroupIfNotExists = (groupedTasks, groupName) => {
@@ -59,7 +59,7 @@ export const groupTasksSelector = tasks => {
   });
 
   return Object.keys(groupedTasks).reduce((groupsObject, key) => {
-    groupsObject[key] = R.sort(sortByOrderProperty, groupedTasks[key]);
+    groupsObject[key] = sort(sortByOrderProperty, groupedTasks[key]);
     return groupsObject;
   }, {});
 };
