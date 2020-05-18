@@ -90,7 +90,7 @@ export const TasksGroupLabelCounter = styled.span`
 
 export const Tasks = styled(Collapse)`
   height: 300px;
-  padding-left: ${props => props.isSubtasks && spacing.giga};
+  padding-left: ${props => props.issubtasks && spacing.giga};
 `;
 
 export const GroupNameSectionWrapper = styled.div`

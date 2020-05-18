@@ -45,9 +45,10 @@ const TasksGroup = ({
   taskListIdentifier,
   tasks,
 }) => {
-  const [isOpen, switchOpen] = useState(false);
+  const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
+  const [orderedGroupTasks, reorderTasksInState] = useState(tasks);
 
   const addTaskInput = useRef();
 
@@ -130,13 +131,22 @@ const TasksGroup = ({
                 0,
                 newTasksOrder.splice(source.index, 1)[0],
               );
+
               reorderTasksInGroup(newTasksOrder, groupId, taskListIdentifier);
+
+              const reorderedTasks = newTasksOrder.map(taskId =>
+                orderedGroupTasks.find(
+                  ({ taskIdentifier }) => taskIdentifier === taskId,
+                ),
+              );
+
+              reorderTasksInState(reorderedTasks);
             }
           }}
         >
           <DragAndDropGroupList
             groupId={groupId}
-            tasks={tasks}
+            tasks={orderedGroupTasks}
             currentUser={currentUser}
             isFullView={isFullView}
             markComplete={markComplete}

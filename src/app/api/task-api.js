@@ -642,8 +642,8 @@ export function flagArchivedForUser(taskIdentifier, flagArchived) {
 export function reorderTasksInGroup(tasksOrder, taskGroupIdentifier) {
   return axios
     .put('task/sortTasksInTaskGroup', {
-      taskGroupIdentifier,
       taskIdentifiers: tasksOrder,
+      taskGroupIdentifier,
     })
     .then(response => response.data)
     .catch(error => {
