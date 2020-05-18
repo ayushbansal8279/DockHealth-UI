@@ -200,7 +200,7 @@ const Task = ({
         <TaskComments isOpen={isFullView} comments={comments} />
       )}
       {!isDragging && (
-        <Subtasks isSubtasks in={isOpen}>
+        <Subtasks issubtasks="true" in={isOpen}>
           {!isEmpty(subtasks) &&
             subtasks?.map(subtask => (
               <>
