@@ -639,10 +639,10 @@ export function flagArchivedForUser(taskIdentifier, flagArchived) {
     });
 }
 
-export function reorderTasksInGroup(tasksOrder, taskGroupIdentifier) {
+export function reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier) {
   return axios
     .put('task/sortTasksInTaskGroup', {
-      taskIdentifiers: tasksOrder,
+      taskIdentifiers: orderedTaskIds,
       taskGroupIdentifier,
     })
     .then(response => response.data)
