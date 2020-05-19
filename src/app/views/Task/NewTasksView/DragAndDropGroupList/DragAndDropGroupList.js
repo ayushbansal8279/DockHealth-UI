@@ -12,7 +12,9 @@ const DragAndDropGroupList = ({
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
+  taskListIdentifier,
   tasks,
+  reorderSubtasksForTask,
 }) => (
   <Droppable droppableId={groupId}>
     {providedDroppable => (
@@ -39,11 +41,10 @@ const DragAndDropGroupList = ({
                   storeAsCurrentTask={storeAsCurrentTask}
                   toggleTaskPriority={toggleTaskPriority}
                   task={task}
-                  dragandDropProps={{
-                    ref: providedDraggalbe.innerRef,
-                    draggableProps: providedDraggalbe.draggableProps,
-                    dragHandleProps: providedDraggalbe.dragHandleProps,
-                  }}
+                  groupId={groupId}
+                  dragandDropProps={providedDraggalbe}
+                  taskListIdentifier={taskListIdentifier}
+                  reorderSubtasksForTask={reorderSubtasksForTask}
                 />
                 {providedDraggalbe.placeholder}
               </>
