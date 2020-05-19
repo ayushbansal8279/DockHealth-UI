@@ -180,6 +180,7 @@ const TaskItem = ({
 const Task = ({
   task,
   isFullView,
+  isStartedDnD,
   isDragging,
   dragandDropProps,
   ...restProps
@@ -189,8 +190,8 @@ const Task = ({
   const { ref, draggableProps, dragHandleProps } = dragandDropProps;
 
   return (
-    <div {...draggableProps}>
-      <TaskItemPanel ref={ref} isDragging={isDragging}>
+    <div>
+      <TaskItemPanel ref={ref} {...draggableProps} isDragging={isDragging}>
         <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         <TaskItem
           task={task}
@@ -199,19 +200,16 @@ const Task = ({
           {...restProps}
         />
       </TaskItemPanel>
-      {!isEmpty(comments) && !isDragging && (
+      {!isEmpty(comments) && !isStartedDnD && (
         <TaskComments isOpen={isFullView} comments={comments} />
       )}
-      {!isDragging && (
+      {!isStartedDnD && (
         <Subtasks issubtasks="true" in={isOpen}>
           {!isEmpty(subtasks) &&
             subtasks?.map(subtask => (
               <>
                 <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
-                <TaskComments
-                  isOpen={isFullView && !isDragging}
-                  comments={subtask.comments}
-                />
+                <TaskComments isOpen={isFullView} comments={subtask.comments} />
               </>
             ))}
         </Subtasks>

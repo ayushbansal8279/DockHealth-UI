@@ -7,6 +7,7 @@ const DragAndDropGroupList = ({
   groupId,
   currentUser,
   isFullView,
+  isStartedDnD,
   markComplete,
   openDrawer,
   storeAsCurrentTask,
@@ -26,22 +27,26 @@ const DragAndDropGroupList = ({
             index={index}
           >
             {(providedDraggalbe, { isDragging }) => (
-              <Task
-                key={task.taskId}
-                currentUser={currentUser}
-                isFullView={isFullView}
-                isDragging={isDragging}
-                markComplete={markComplete}
-                openDrawer={openDrawer}
-                storeAsCurrentTask={storeAsCurrentTask}
-                toggleTaskPriority={toggleTaskPriority}
-                task={task}
-                dragandDropProps={{
-                  ref: providedDraggalbe.innerRef,
-                  draggableProps: providedDraggalbe.draggableProps,
-                  dragHandleProps: providedDraggalbe.dragHandleProps,
-                }}
-              />
+              <>
+                <Task
+                  key={task.taskId}
+                  currentUser={currentUser}
+                  isFullView={isFullView}
+                  isDragging={isDragging}
+                  isStartedDnD={isStartedDnD}
+                  markComplete={markComplete}
+                  openDrawer={openDrawer}
+                  storeAsCurrentTask={storeAsCurrentTask}
+                  toggleTaskPriority={toggleTaskPriority}
+                  task={task}
+                  dragandDropProps={{
+                    ref: providedDraggalbe.innerRef,
+                    draggableProps: providedDraggalbe.draggableProps,
+                    dragHandleProps: providedDraggalbe.dragHandleProps,
+                  }}
+                />
+                {providedDraggalbe.placeholder}
+              </>
             )}
           </Draggable>
         ))}
