@@ -76,17 +76,13 @@ const TopSection = ({
 
   return (
     <>
-      <FormSectionDivider shown={!selectedTask} active={autoSaveVisible}>
-        <AutoSaveContainer visible={autoSaveVisible}>
-          {/* <AutoSaveContainer visible={true}> */}
-          {/* <AutoSaveLabel visible={autoSaveVisible}>Saved</AutoSaveLabel> */}
-          <AutoSaveChip
-            variant="outlined"
-            icon={<CheckCircleOutline style={{ color: palette.white }} />}
-            label="SAVED"
-          />
-        </AutoSaveContainer>
-      </FormSectionDivider>
+      <AutoSaveContainer visible={autoSaveVisible}>
+        <AutoSaveChip
+          variant="outlined"
+          icon={<CheckCircleOutline style={{ color: palette.white }} />}
+          label="SAVED"
+        />
+      </AutoSaveContainer>
       <Grid
         container
         item

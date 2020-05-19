@@ -32,9 +32,9 @@ const initializeTaskDrawerPopoverHooks = () => {
   const [assignedToInputValue, setAssignedToInputValue] = useState('');
 
   const onAssignedToInputChange = useCallback((_event, value, reason) => {
-    if (reason === 'input') {
-      setAssignedToInputValue(value);
-    }
+    // if (reason === 'input') {
+    //   setAssignedToInputValue(value);
+    // }
   }, []);
 
   return {

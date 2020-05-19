@@ -84,6 +84,7 @@ const renderItemWithHighlighting = (option, inputValue) => {
 const renderTags = ({
   currentValueIdentifiers,
   focusState,
+  popupOpen,
   openAutocomplete,
 }) => (value, getTagProps) => (
   <>
@@ -120,17 +121,16 @@ const renderTags = ({
             }}
           />
         )}
-        {index === currentValueIdentifiers.length - 1 && (
+        {index === currentValueIdentifiers.length - 1 && !popupOpen && (
           <Chip
             label={
               <CondensedH4 style={{ color: palette.orange }}>+</CondensedH4>
             }
             style={{
-              marginBottom: '-10px',
               height: '24px',
               fontWeight: 'bold',
               backgroundColor: palette.coolGrey3,
-              marginLeft: '5px',
+              marginBottom: '-8px',
               marginRight: '10px',
             }}
             onClick={() => {
@@ -289,6 +289,7 @@ const SelectInput = React.forwardRef(
         startAdornment = renderTags({
           currentValueIdentifiers,
           focusState,
+          popupOpen,
           openAutocomplete,
         })(value, getCustomizedTagProps);
       } else {

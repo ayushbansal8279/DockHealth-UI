@@ -130,7 +130,7 @@ export const AutoSaveContainer = styled.div`
   transition: height 0.25s ease-out;
   width: 100%;
   text-align: center;
-  margin-top: -10px;
+  margin-top: 10px;
 `;
 
 export const AutoSaveChip = styled(Chip)`
