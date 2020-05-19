@@ -6,9 +6,10 @@ import {
   TaskCommentContainer,
   TaskCommentDetails,
   TaskCommentText,
+  SmallText,
 } from './styled';
 
-const TaskComment = ({ creator, dateUpdated, comment }) => {
+const TaskComment = ({ creator, dateUpdated, comment, dateCreated }) => {
   const commentDetails = `${creator.firstName} ${creator.lastName} ${moment(
     dateUpdated,
   ).format('h:mma')}`;
@@ -21,6 +22,7 @@ const TaskComment = ({ creator, dateUpdated, comment }) => {
         <TaskCommentText>{comment}</TaskCommentText>
         <TaskCommentDetails>
           <span>{commentDetails}</span>
+          {dateCreated !== dateUpdated && <SmallText> (Edited)</SmallText>}
         </TaskCommentDetails>
       </div>
     </TaskCommentContainer>

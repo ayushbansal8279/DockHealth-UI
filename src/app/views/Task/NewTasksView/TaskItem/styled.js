@@ -62,6 +62,11 @@ export const GridImg = styled(Grid)`
   justify-content: center;
 `;
 
+export const SmallText = styled.span`
+  color: ${palette.coolGrey2};
+  font-size: ${fontSizes.small};
+`;
+
 export const SubtasksGroupLabel = styled.span`
   color: ${palette.lightGray};
   font-size: ${fontSizes.small};
