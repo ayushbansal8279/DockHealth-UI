@@ -412,6 +412,7 @@ class Home extends Component {
       taskListMembers,
       pendingTasklists,
       membersNotInTaskList,
+      routeParams,
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
@@ -469,6 +470,7 @@ class Home extends Component {
       preSelectedTask,
       taskListMembers,
       membersNotInTaskList,
+      routeParams,
     };
 
     return <TasksView {...taskViewProps} />;

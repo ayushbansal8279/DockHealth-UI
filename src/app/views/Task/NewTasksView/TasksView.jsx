@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { hashHistory } from 'react-router';
 
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -9,6 +10,7 @@ import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as ModalActions from 'modal/actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
+import { TasksStatus } from 'components/taskView/Toolbar/config';
 import { groupTasksSelector } from 'selectors/task-group-list-selectors';
 import { arrayMove } from 'helpers/sorting-helper';
 
@@ -20,6 +22,26 @@ import CompletedTasksView from './CompletedTasksView';
 const Priority = {
   High: 'HIGH',
   Low: 'LOW',
+};
+
+const navigateToTab = ({ tabName, taskListIdentifier }) => {
+  hashHistory.push(
+    `/tasks/${taskListIdentifier}${
+      tabName === TasksStatus.OPEN ? '' : `/${TasksStatus.COMPLETE}`
+    }`,
+  );
+};
+
+const handleTabsNavigation = routeParameters => {
+  switch (routeParameters.tabName) {
+    case TasksStatus.COMPLETE:
+      break;
+    case undefined:
+    case TasksStatus.OPEN:
+      break;
+    default:
+      navigateToTab({ ...routeParameters, tabName: TasksStatus.OPEN });
+  }
 };
 
 const TaskView = ({
@@ -42,8 +64,11 @@ const TaskView = ({
   groupedTasks,
   tasks, // to do- remove tasks prop
   taskState,
+  routeParams,
 }) => {
-  console.log('tasksState', taskState);
+  handleTabsNavigation(routeParams);
+  const selectedTab = routeParams.tabName || TasksStatus.OPEN;
+
   const { openDrawer } = taskDrawerActions;
   const {
     toggleTaskPriority,
@@ -57,7 +82,6 @@ const TaskView = ({
     deleteTasksGroup,
   } = taskGroupActions;
   const { taskListIdentifier } = taskList;
-  const [selectedTab, onSelectTab] = useState('OPEN_TASKS');
   const { groupList } = taskGroupList;
 
   const quickAddTask = (
@@ -116,7 +140,7 @@ const TaskView = ({
         isSpecialList={isSpecialList}
         members={members}
         membersNotInTaskList={membersNotInTaskList}
-        onSelectTab={onSelectTab}
+        onSelectTab={tabName => navigateToTab({ ...routeParams, tabName })}
         printData={{
           tasks,
           completedTasks,
@@ -134,7 +158,15 @@ const TaskView = ({
           isFetchingTasks
         }
       >
-        {selectedTab === 'OPEN_TASKS' ? (
+        {selectedTab === TasksStatus.COMPLETE ? (
+          <CompletedTasksView
+            openDrawer={openDrawer}
+            storeAsCurrentTask={storeAsCurrentTask}
+            currentUser={currentUser}
+            tasks={tasks}
+            toggleSingleTaskPriority={toggleSingleTaskPriority}
+          />
+        ) : (
           <OpenedTasksView
             openDrawer={openDrawer}
             createTaskGroupList={groupName =>
@@ -154,14 +186,6 @@ const TaskView = ({
             reorderTasksInGroup={reorderTasksInGroup}
             reorderSubtasksForTask={reorderSubtasksForTask}
             taskListIdentifier={taskListIdentifier}
-          />
-        ) : (
-          <CompletedTasksView
-            openDrawer={openDrawer}
-            storeAsCurrentTask={storeAsCurrentTask}
-            currentUser={currentUser}
-            tasks={tasks}
-            toggleSingleTaskPriority={toggleSingleTaskPriority}
           />
         )}
       </TasksViewLoader>

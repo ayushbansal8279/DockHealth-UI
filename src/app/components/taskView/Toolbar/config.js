@@ -1,5 +1,8 @@
-const OPEN_TASKS = 'OPEN_TASKS';
-const COMPLETED_TASKS = 'COMPLETED_TASKS';
+export const TasksStatus = {
+  OPEN: 'incomplete',
+  COMPLETE: 'complete',
+};
+
 // eslint-disable-next-line import/prefer-default-export
 export const TABS_CONFIG = ({
   completedTasksAmount,
@@ -8,19 +11,19 @@ export const TABS_CONFIG = ({
   selectedTab,
 }) => [
   {
-    isSelected: selectedTab === OPEN_TASKS,
-    key: OPEN_TASKS,
+    isSelected: selectedTab === TasksStatus.OPEN,
+    key: TasksStatus.OPEN,
     label: 'Open Tasks'.concat(openTasksAmount ? ` (${openTasksAmount})` : ''),
-    onSelectTab: () => onSelectTab(OPEN_TASKS),
+    onSelectTab: () => onSelectTab(TasksStatus.OPEN),
     shouldRender: () => true,
   },
   {
-    isSelected: selectedTab === COMPLETED_TASKS,
-    key: COMPLETED_TASKS,
+    isSelected: selectedTab === TasksStatus.COMPLETE,
+    key: TasksStatus.COMPLETE,
     label: 'Completed'.concat(
       completedTasksAmount ? ` (${completedTasksAmount})` : '',
     ),
-    onSelectTab: () => onSelectTab(COMPLETED_TASKS),
+    onSelectTab: () => onSelectTab(TasksStatus.COMPLETE),
     shouldRender: () => true,
   },
 ];

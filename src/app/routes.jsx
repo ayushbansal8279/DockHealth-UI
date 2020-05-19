@@ -288,7 +288,7 @@ export const Routes = ({ store }) => {
               onEnter={checkFeatureToggles}
             />
             <Route
-              path=":taskListIdentifier(/:taskIdentifier)"
+              path=":taskListIdentifier(/:tabName)(/:taskIdentifier)"
               component={ListDetailsView}
               onChange={preselectTask}
               onEnter={nextState => {
