@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { isEmpty } from 'ramda';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 import { Grid } from '@material-ui/core';
 import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
@@ -39,7 +41,7 @@ import {
   PrioritySwitch,
 } from './styled';
 
-import { Tasks as Subtasks, Arrow } from '../TasksGroup/styled';
+import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
 
 const COMMENTS = 'COMMENTS';
 const DUE_DATE = 'DUE_DATE';
@@ -91,6 +93,8 @@ const TaskItem = ({
   storeAsCurrentTask,
   toggleTaskPriority,
   task,
+  draggableProvied,
+  isDragging,
 }) => {
   const {
     edited,
@@ -106,74 +110,171 @@ const TaskItem = ({
     workflowStatus,
   } = task;
 
+  const { innerRef, draggableProps, dragHandleProps } = draggableProvied;
+
   return (
-    <TaskItemContainer>
-      <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
-        {task.priority === 'HIGH' ? (
-          <img src={HighPriorityLabel} alt="Priority icon" />
-        ) : (
-          <img className="low" src={LowPriorityHoverLabel} alt="No priority" />
-        )}
-      </PrioritySwitch>
-      <TaskItemCell bolded padding="huge">
-        <CircleIcon
-          src={Circle}
-          onClick={() => markComplete(task, status, status, currentUser)}
-        />
-        <DescriptionBox>
-          <Description
-            onClick={() => {
-              openDrawer();
-              storeAsCurrentTask(task);
-            }}
-          >
-            {description}
-            {edited && <SmallText> (Edited)</SmallText>}
-          </Description>
-          {!isEmpty(subtasks) && (
-            <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
-              <span>{subtasks?.length} subtasks</span>
-              <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
-            </SubtasksGroupLabel>
-          )}
-        </DescriptionBox>
-      </TaskItemCell>
-      <TaskItemCell width="164px">
-        {patient ? `${patient.firstName} ${patient.lastName}` : ''}
-      </TaskItemCell>
-      <TaskItemCell width="110px" padding="regular">
-        {workflowStatus && <TaskItemStatus workflowStatus={workflowStatus} />}
-      </TaskItemCell>
-      <TaskItemCell width="200px">
-        <Grid container>
-          <GridImg item xs={3}>
-            <img alt="comments" src={getItemIcon(COMMENTS, comments)} />
-          </GridImg>
-          <GridImg item xs={3}>
-            <DueDateContainer>
-              <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-              <img alt="due-date" src={getItemIcon(DUE_DATE, dueDate)} />
-            </DueDateContainer>
-          </GridImg>
-          <GridImg item xs={3}>
-            <img alt="labels" src={getItemIcon(LABELS, labels)} />
-          </GridImg>
-          <GridImg item xs={3}>
+    <TaskItemPanel ref={innerRef} {...draggableProps} isDragging={isDragging}>
+      <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+      <TaskItemContainer>
+        <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+        <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
+          {task.priority === 'HIGH' ? (
+            <img src={HighPriorityLabel} alt="Priority icon" />
+          ) : (
             <img
-              alt="attachments"
-              src={getItemIcon(ATTACHMENTS, attachments)}
+              className="low"
+              src={LowPriorityHoverLabel}
+              alt="No priority"
             />
-          </GridImg>
-        </Grid>
-      </TaskItemCell>
-      <TaskItemCell width="80px" justify="center">
-        {assignedTo ? (
-          <Member member={assignedTo} size={34} />
-        ) : (
-          <AddCrossIcon src={CrossIcon} size="34px" />
+          )}
+        </PrioritySwitch>
+        <TaskItemCell bolded padding="huge">
+          <CircleIcon
+            src={Circle}
+            onClick={() => markComplete(task, status, status, currentUser)}
+          />
+          <DescriptionBox>
+            <Description
+              onClick={() => {
+                openDrawer();
+                storeAsCurrentTask(task);
+              }}
+            >
+              {description}
+              {edited && <SmallText> (Edited)</SmallText>}
+            </Description>
+            {!isEmpty(subtasks) && (
+              <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
+                <span>{subtasks?.length} subtasks</span>
+                <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
+              </SubtasksGroupLabel>
+            )}
+          </DescriptionBox>
+        </TaskItemCell>
+        <TaskItemCell width="164px">
+          {patient ? `${patient.firstName} ${patient.lastName}` : ''}
+        </TaskItemCell>
+        <TaskItemCell width="110px" padding="regular">
+          {workflowStatus && <TaskItemStatus workflowStatus={workflowStatus} />}
+        </TaskItemCell>
+        <TaskItemCell width="200px">
+          <Grid container>
+            <GridImg item xs={3}>
+              <img alt="comments" src={getItemIcon(COMMENTS, comments)} />
+            </GridImg>
+            <GridImg item xs={3}>
+              <DueDateContainer>
+                <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
+                <img alt="due-date" src={getItemIcon(DUE_DATE, dueDate)} />
+              </DueDateContainer>
+            </GridImg>
+            <GridImg item xs={3}>
+              <img alt="labels" src={getItemIcon(LABELS, labels)} />
+            </GridImg>
+            <GridImg item xs={3}>
+              <img
+                alt="attachments"
+                src={getItemIcon(ATTACHMENTS, attachments)}
+              />
+            </GridImg>
+          </Grid>
+        </TaskItemCell>
+        <TaskItemCell width="80px" justify="center">
+          {assignedTo ? (
+            <Member member={assignedTo} size={34} />
+          ) : (
+            <AddCrossIcon src={CrossIcon} size="34px" />
+          )}
+        </TaskItemCell>
+      </TaskItemContainer>
+    </TaskItemPanel>
+  );
+};
+
+const Subtasks = ({
+  subtasks,
+  isOpen,
+  isFullView,
+  groupId,
+  taskListIdentifier,
+  parentTaskId,
+  reorderSubtasksForTask,
+  ...restProps
+}) => {
+  const [isStartedSubtaskDnd, setSubtaskDnd] = useState(false);
+  const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
+  const subtasksOrder = subtasks.map(({ taskIdentifier }) => taskIdentifier);
+
+  return (
+    <DragDropContext
+      onBeforeCapture={() => {
+        setSubtaskDnd(true);
+      }}
+      onDragEnd={eventBundle => {
+        const { destination, source } = eventBundle;
+        if (destination && destination?.index !== source?.index) {
+          const newSubtasksOrder = [...subtasksOrder];
+          newSubtasksOrder.splice(
+            destination.index,
+            0,
+            newSubtasksOrder.splice(source.index, 1)[0],
+          );
+
+          reorderSubtasksForTask(
+            newSubtasksOrder,
+            groupId,
+            taskListIdentifier,
+            parentTaskId,
+          );
+
+          const reorderedTasks = newSubtasksOrder.map(taskId =>
+            orderedSubtasks.find(
+              ({ taskIdentifier }) => taskIdentifier === taskId,
+            ),
+          );
+
+          reorderSubtasksInState(reorderedTasks);
+          setSubtaskDnd(false);
+        }
+      }}
+    >
+      <Droppable droppableId="droppable">
+        {provided => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            <SubtasksContainer issubtasks="true" in={isOpen}>
+              {!isEmpty(orderedSubtasks) &&
+                orderedSubtasks?.map((subtask, index) => (
+                  <Draggable
+                    key={subtask.taskId}
+                    draggableId={String(subtask.taskId)}
+                    index={index}
+                  >
+                    {(draggableProvied, { isDragging: isDraggingSubtask }) => (
+                      <>
+                        <TaskItem
+                          draggableProvied={draggableProvied}
+                          key={subtask.taskId}
+                          task={subtask}
+                          isDragging={isDraggingSubtask}
+                          {...restProps}
+                        />
+                        {!isStartedSubtaskDnd && !isEmpty(subtask.comments) && (
+                          <TaskComments
+                            isOpen={isFullView}
+                            comments={subtask.comments}
+                          />
+                        )}
+                        {draggableProvied.placeholder}
+                      </>
+                    )}
+                  </Draggable>
+                ))}
+              {provided.placeholder}
+            </SubtasksContainer>
+          </div>
         )}
-      </TaskItemCell>
-    </TaskItemContainer>
+      </Droppable>
+    </DragDropContext>
   );
 };
 
@@ -183,36 +284,36 @@ const Task = ({
   isStartedDnD,
   isDragging,
   dragandDropProps,
+  groupId,
+  taskListIdentifier,
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
   const { comments, subtasks } = task;
-  const { ref, draggableProps, dragHandleProps } = dragandDropProps;
 
   return (
     <div>
-      <TaskItemPanel ref={ref} {...draggableProps} isDragging={isDragging}>
-        <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
-        <TaskItem
-          task={task}
-          isOpen={isOpen}
-          switchOpen={switchOpen}
-          {...restProps}
-        />
-      </TaskItemPanel>
+      <TaskItem
+        task={task}
+        isOpen={isOpen}
+        switchOpen={switchOpen}
+        draggableProvied={dragandDropProps}
+        isDragging={isDragging}
+        {...restProps}
+      />
       {!isEmpty(comments) && !isStartedDnD && (
         <TaskComments isOpen={isFullView} comments={comments} />
       )}
       {!isStartedDnD && (
-        <Subtasks issubtasks="true" in={isOpen}>
-          {!isEmpty(subtasks) &&
-            subtasks?.map(subtask => (
-              <>
-                <TaskItem key={subtask.taskId} task={subtask} {...restProps} />
-                <TaskComments isOpen={isFullView} comments={subtask.comments} />
-              </>
-            ))}
-        </Subtasks>
+        <Subtasks
+          subtasks={subtasks}
+          isOpen={isOpen}
+          isFullView={isFullView}
+          groupId={groupId}
+          taskListIdentifier={taskListIdentifier}
+          parentTaskId={task.taskId}
+          {...restProps}
+        />
       )}
     </div>
   );

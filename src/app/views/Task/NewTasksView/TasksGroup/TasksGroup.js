@@ -42,6 +42,7 @@ const TasksGroup = ({
   moveGroupUp,
   moveGroupDown,
   reorderTasksInGroup,
+  reorderSubtasksForTask,
   taskListIdentifier,
   tasks,
 }) => {
@@ -163,6 +164,8 @@ const TasksGroup = ({
             storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskPriority={toggleTaskPriority}
             isStartedDnD={isStartedDnD}
+            taskListIdentifier={taskListIdentifier}
+            reorderSubtasksForTask={reorderSubtasksForTask}
           />
         </DragDropContext>
       </Tasks>

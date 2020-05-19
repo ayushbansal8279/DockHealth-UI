@@ -966,9 +966,38 @@ export const reorderTasksInGroup = (
   orderedTaskIds,
   taskGroupIdentifier,
   taskListIdentifier,
+  parentTaskIdentifier,
 ) => {
   return dispatch => {
-    TaskApi.reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier)
+    TaskApi.reorderTasksInGroup(
+      orderedTaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    )
+      .then(() => {
+        dispatch(
+          getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+};
+
+export const reorderSubtasksForTask = (
+  orderedSubtaskIds,
+  taskGroupIdentifier,
+  taskListIdentifier,
+  parentTaskIdentifier,
+) => {
+  return dispatch => {
+    TaskApi.reorderSubtasksForTask(
+      orderedSubtaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    )
+      // eslint-disable-next-line sonarjs/no-identical-functions
       .then(() => {
         dispatch(
           getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),

@@ -650,3 +650,20 @@ export function reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier) {
       throw error;
     });
 }
+
+export function reorderSubtasksForTask(
+  orderedTaskIds,
+  taskGroupIdentifier,
+  parentTaskIdentifier,
+) {
+  return axios
+    .put('task/sortSubTasksForTask', {
+      taskIdentifiers: orderedTaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}

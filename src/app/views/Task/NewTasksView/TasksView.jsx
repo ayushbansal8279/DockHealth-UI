@@ -47,7 +47,12 @@ const TaskView = ({
   tasks, // to do- remove tasks prop
 }) => {
   const { openDrawer } = taskDrawerActions;
-  const { toggleTaskPriority, saveTask, reorderTasksInGroup } = taskActions;
+  const {
+    toggleTaskPriority,
+    saveTask,
+    reorderTasksInGroup,
+    reorderSubtasksForTask,
+  } = taskActions;
   const {
     createTaskGroupList,
     editTasksGroupName,
@@ -144,6 +149,7 @@ const TaskView = ({
                       : 'NEW TASKS'
                   }
                   reorderTasksInGroup={reorderTasksInGroup}
+                  reorderSubtasksForTask={reorderSubtasksForTask}
                   taskListIdentifier={taskListIdentifier}
                   markComplete={markComplete}
                   openDrawer={openDrawer}
