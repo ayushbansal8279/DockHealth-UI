@@ -111,6 +111,8 @@ const TaskItem = ({
     status,
     subtasks,
     workflowStatus,
+    completedDt,
+    completedBy,
   } = task;
 
   const { innerRef, draggableProps, dragHandleProps } = draggableProvied;
@@ -152,7 +154,9 @@ const TaskItem = ({
             </Description>
             {isCompleted && (
               <CompletedDescription>
-                Completed by k. roemhildt on 01/31/2020
+                {`Completed by ${completedBy?.firstName?.[0].toLowerCase()}. ${completedBy?.lastName?.toLowerCase()} ${completedDt &&
+                  ` on ${moment(completedDt).format('MM/DD/YYYY')}`}
+                `}
               </CompletedDescription>
             )}
             {!isEmpty(subtasks) && (

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
+import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
 
 const CompletedTasksView = ({
   tasks,
@@ -10,10 +11,11 @@ const CompletedTasksView = ({
   markComplete,
   storeAsCurrentTask,
   toggleSingleTaskPriority,
+  isFetchingData,
 }) => {
   return (
-    <>
-      {tasks.length > 0 ? (
+    <TasksViewLoader isFetchingData={isFetchingData}>
+      {tasks?.length > 0 ? (
         <TaskGroupsContainer>
           <TasksGroup
             groupName="Completed"
@@ -29,7 +31,7 @@ const CompletedTasksView = ({
       ) : (
         <div>List is empty</div>
       )}
-    </>
+    </TasksViewLoader>
   );
 };
 

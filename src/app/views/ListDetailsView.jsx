@@ -76,7 +76,7 @@ class Home extends Component {
         ),
         taskCountAction(
           routeParams.taskListIdentifier,
-          'ASSIGNED_TO_ME', // default view
+          null, // default view
           'COMPLETE',
         ),
       ]);
@@ -394,7 +394,6 @@ class Home extends Component {
     const {
       userIdentifier,
       members,
-      tasks,
       completedTasks,
       isFetching,
       isCompletedTasksFetching,
@@ -442,7 +441,6 @@ class Home extends Component {
     const taskViewProps = {
       userIdentifier,
       members,
-      tasks,
       completedTasks,
       isFetching,
       isCompletedTasksFetching,

@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
@@ -15,7 +15,6 @@ import { groupTasksSelector } from 'selectors/task-group-list-selectors';
 import { arrayMove } from 'helpers/sorting-helper';
 
 import { TaskViewContainer } from './styled';
-import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
 import OpenedTasksView from './OpenedTasksView';
 import CompletedTasksView from './CompletedTasksView';
 
@@ -45,7 +44,6 @@ const handleTabsNavigation = routeParameters => {
 };
 
 const TaskView = ({
-  completedTasks,
   currentUser,
   isSpecialList,
   markComplete,
@@ -61,9 +59,10 @@ const TaskView = ({
   taskList = {},
   taskListMembers,
   isFetchingTasks,
+  openedTasks,
+  completedTasks,
   groupedTasks,
-  tasks, // to do- remove tasks prop
-  taskState,
+  taskCountStats,
   routeParams,
 }) => {
   handleTabsNavigation(routeParams);
@@ -75,6 +74,7 @@ const TaskView = ({
     saveTask,
     reorderTasksInGroup,
     reorderSubtasksForTask,
+    getListTasks,
   } = taskActions;
   const {
     createTaskGroupList,
@@ -83,6 +83,10 @@ const TaskView = ({
   } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
+
+  useEffect(() => {
+    getListTasks(taskListIdentifier, null, null, selectedTab?.toUpperCase());
+  }, [selectedTab, taskListIdentifier, getListTasks]);
 
   const quickAddTask = (
     taskName,
@@ -134,6 +138,15 @@ const TaskView = ({
     taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
   };
 
+  const completedTaskCount =
+    completedTasks?.length > 0
+      ? completedTasks.length
+      : taskCountStats?.find?.(
+          ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
+            metricName === 'TASKS_COUNT' &&
+            metricTaskListIdentifier === taskListIdentifier,
+        )?.metricValue;
+
   return (
     <TaskViewContainer>
       <Toolbar
@@ -142,53 +155,51 @@ const TaskView = ({
         membersNotInTaskList={membersNotInTaskList}
         onSelectTab={tabName => navigateToTab({ ...routeParams, tabName })}
         printData={{
-          tasks,
+          openedTasks,
           completedTasks,
           taskListMembers,
         }}
         selectedTab={selectedTab}
         showMembers={showMembers}
         taskList={taskList}
-        openTasksAmount={tasks?.length}
-        completedTasksAmount={taskState.taskCountStats?.length}
+        openTasksAmount={openedTasks?.length}
+        completedTasksAmount={completedTaskCount}
       />
-      <TasksViewLoader
-        isFetchingData={
-          (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
-          isFetchingTasks
-        }
-      >
-        {selectedTab === TasksStatus.COMPLETE ? (
-          <CompletedTasksView
-            openDrawer={openDrawer}
-            storeAsCurrentTask={storeAsCurrentTask}
-            currentUser={currentUser}
-            tasks={tasks}
-            toggleSingleTaskPriority={toggleSingleTaskPriority}
-          />
-        ) : (
-          <OpenedTasksView
-            openDrawer={openDrawer}
-            createTaskGroupList={groupName =>
-              createTaskGroupList({ groupName, taskListIdentifier })
-            }
-            currentUser={currentUser}
-            markComplete={markComplete}
-            storeAsCurrentTask={storeAsCurrentTask}
-            groupedTasks={groupedTasks}
-            toggleSingleTaskPriority={toggleSingleTaskPriority}
-            editGroupName={editGroupName}
-            quickAddTask={quickAddTask}
-            openDeleteConfirmationModal={openDeleteConfirmationModal}
-            changeGroupsOrder={changeGroupsOrder}
-            tasks={tasks}
-            groupList={groupList}
-            reorderTasksInGroup={reorderTasksInGroup}
-            reorderSubtasksForTask={reorderSubtasksForTask}
-            taskListIdentifier={taskListIdentifier}
-          />
-        )}
-      </TasksViewLoader>
+      {selectedTab === TasksStatus.COMPLETE ? (
+        <CompletedTasksView
+          openDrawer={openDrawer}
+          storeAsCurrentTask={storeAsCurrentTask}
+          currentUser={currentUser}
+          toggleSingleTaskPriority={toggleSingleTaskPriority}
+          tasks={completedTasks}
+          isFetchingData={isFetchingTasks}
+        />
+      ) : (
+        <OpenedTasksView
+          openDrawer={openDrawer}
+          createTaskGroupList={groupName =>
+            createTaskGroupList({ groupName, taskListIdentifier })
+          }
+          currentUser={currentUser}
+          markComplete={markComplete}
+          storeAsCurrentTask={storeAsCurrentTask}
+          groupedTasks={groupedTasks}
+          toggleSingleTaskPriority={toggleSingleTaskPriority}
+          editGroupName={editGroupName}
+          quickAddTask={quickAddTask}
+          openDeleteConfirmationModal={openDeleteConfirmationModal}
+          changeGroupsOrder={changeGroupsOrder}
+          groupList={groupList}
+          reorderTasksInGroup={reorderTasksInGroup}
+          reorderSubtasksForTask={reorderSubtasksForTask}
+          taskListIdentifier={taskListIdentifier}
+          tasksCount={openedTasks?.length}
+          isFetchingData={
+            (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
+            isFetchingTasks
+          }
+        />
+      )}
       <NewTaskDrawer
         members={members}
         membersNotInTaskList={membersNotInTaskList}
@@ -209,7 +220,9 @@ const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
   isFetchingTasks: store.taskState.isFetching,
-  taskState: store.taskState,
+  taskCountStats: store.taskState.taskCountStats,
+  openedTasks: store.taskState.tasks,
+  completedTasks: store.taskState.completedTasks,
   groupedTasks: groupTasksSelector(store.taskState.tasks),
 });
 
