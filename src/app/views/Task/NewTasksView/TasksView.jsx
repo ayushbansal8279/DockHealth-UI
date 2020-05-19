@@ -76,6 +76,7 @@ const TaskView = ({
     reorderTasksInGroup,
     reorderSubtasksForTask,
     getListTasks,
+    requestTasks,
   } = taskActions;
   const {
     createTaskGroupList,
@@ -86,8 +87,10 @@ const TaskView = ({
   const { groupList } = taskGroupList;
 
   useEffect(() => {
-    getListTasks(taskListIdentifier, null, null, selectedTab?.toUpperCase());
-  }, [selectedTab, taskListIdentifier, getListTasks]);
+    const status = selectedTab?.toUpperCase();
+    requestTasks(status);
+    getListTasks(taskListIdentifier, null, null, status);
+  }, [selectedTab, taskListIdentifier, getListTasks, requestTasks]);
 
   const quickAddTask = (
     taskName,
@@ -197,7 +200,7 @@ const TaskView = ({
           tasksCount={openedTasks?.length}
           isFetchingData={
             (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
-            isFetchingTasks
+            (isFetchingTasks && openedTasks?.length === 0)
           }
         />
       )}
