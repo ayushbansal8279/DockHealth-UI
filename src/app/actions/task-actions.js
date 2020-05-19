@@ -50,8 +50,15 @@ export function getListTasks(
 ) {
   const action = getListAction({ status, cumulativeFlag });
 
-  return dispatch =>
-    TaskApi.getListTasksByUser(taskListIdentifier, status, sortBy, filterBy)
+  return dispatch => {
+    dispatch({ type: ActionTypes.REQUEST_TASKS });
+
+    return TaskApi.getListTasksByUser(
+      taskListIdentifier,
+      status,
+      sortBy,
+      filterBy,
+    )
       .then(tasks => {
         dispatch({ type: action, tasks });
         return tasks;
@@ -59,6 +66,7 @@ export function getListTasks(
       .catch(error => {
         throw error;
       });
+  };
 }
 
 export function getListTasksCount(taskListIdentifier, filterBy, status) {

@@ -7,6 +7,7 @@ import GroupNameSection from './GroupNameSection/GroupNameSection';
 import messages from './AddGroupNameButton/messages';
 import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
 import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
+import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
 
 const OpenedTasksView = ({
   openDrawer,
@@ -24,11 +25,12 @@ const OpenedTasksView = ({
   reorderTasksInGroup,
   reorderSubtasksForTask,
   taskListIdentifier,
-  tasks,
+  tasksCount,
+  isFetchingData,
 }) => {
   return (
-    <>
-      {tasks.length > 0 ? (
+    <TasksViewLoader isFetchingData={isFetchingData}>
+      {tasksCount > 0 ? (
         <TaskGroupsContainer>
           {groupList?.map(
             ({ groupName, taskGroupIdentifier, groupType }, i) => (
@@ -77,7 +79,7 @@ const OpenedTasksView = ({
           quickAddTask={groupName => quickAddTask(groupName, null, true)}
         />
       )}
-    </>
+    </TasksViewLoader>
   );
 };
 
