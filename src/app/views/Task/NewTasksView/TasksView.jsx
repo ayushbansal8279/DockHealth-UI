@@ -59,6 +59,7 @@ const TaskView = ({
   taskList = {},
   taskListMembers,
   isFetchingTasks,
+  isCompletedTasksFetching,
   openedTasks,
   completedTasks,
   groupedTasks,
@@ -172,7 +173,7 @@ const TaskView = ({
           currentUser={currentUser}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
           tasks={completedTasks}
-          isFetchingData={isFetchingTasks}
+          isFetchingData={isCompletedTasksFetching}
         />
       ) : (
         <OpenedTasksView
@@ -220,6 +221,7 @@ const mapStateToProps = store => ({
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
   isFetchingTasks: store.taskState.isFetching,
+  isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   taskCountStats: store.taskState.taskCountStats,
   openedTasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
