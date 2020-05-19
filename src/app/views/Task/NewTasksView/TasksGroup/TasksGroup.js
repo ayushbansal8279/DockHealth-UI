@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
@@ -54,6 +54,10 @@ const TasksGroup = ({
   const addTaskInput = useRef();
 
   const tasksOrder = tasks.map(({ taskIdentifier }) => taskIdentifier);
+
+  useEffect(() => {
+    reorderTasksInState(tasks);
+  }, [tasks]);
 
   const handleInputEnterDown = taskName => {
     if (taskName) {
