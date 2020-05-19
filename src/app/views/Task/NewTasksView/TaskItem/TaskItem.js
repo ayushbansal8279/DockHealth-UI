@@ -31,6 +31,7 @@ import {
   DueDateContainer,
   GridImg,
   SubtasksGroupLabel,
+  SmallText,
   TaskItemCell,
   TaskItemContainer,
   TaskItemPanel,
@@ -92,6 +93,7 @@ const TaskItem = ({
   task,
 }) => {
   const {
+    edited,
     assignedTo,
     attachments,
     comments,
@@ -126,6 +128,7 @@ const TaskItem = ({
             }}
           >
             {description}
+            {edited && <SmallText> (Edited)</SmallText>}
           </Description>
           {!isEmpty(subtasks) && (
             <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>

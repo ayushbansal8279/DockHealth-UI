@@ -38,6 +38,11 @@ export const TaskCommentContainer = styled.div`
   }
 `;
 
+export const SmallText = styled.span`
+  color: ${palette.coolGrey2};
+  font-size: ${fontSizes.smalls};
+`;
+
 export const TaskCommentText = styled.div`
   color: ${palette.darkGrey};
   max-width: 656px; //per design
