@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -204,6 +204,10 @@ const Subtasks = ({
   const [isStartedSubtaskDnd, setSubtaskDnd] = useState(false);
   const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
   const subtasksOrder = subtasks.map(({ taskIdentifier }) => taskIdentifier);
+
+  useEffect(() => {
+    reorderSubtasksInState(subtasks);
+  }, [subtasks]);
 
   return (
     <DragDropContext
