@@ -49,6 +49,7 @@ const TasksGroup = ({
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
   const [orderedGroupTasks, reorderTasksInState] = useState(tasks);
+  const [isStartedDnD, setDnd] = useState(false);
 
   const addTaskInput = useRef();
 
@@ -121,6 +122,9 @@ const TasksGroup = ({
           />
         </AddTaskInputWrapper>
         <DragDropContext
+          onBeforeCapture={() => {
+            setDnd(true);
+          }}
           onDragEnd={eventBundle => {
             const { destination, source } = eventBundle;
             if (destination && destination?.index !== source?.index) {
@@ -141,6 +145,7 @@ const TasksGroup = ({
               );
 
               reorderTasksInState(reorderedTasks);
+              setDnd(false);
             }
           }}
         >
@@ -153,6 +158,7 @@ const TasksGroup = ({
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskPriority={toggleTaskPriority}
+            isStartedDnD={isStartedDnD}
           />
         </DragDropContext>
       </Tasks>
