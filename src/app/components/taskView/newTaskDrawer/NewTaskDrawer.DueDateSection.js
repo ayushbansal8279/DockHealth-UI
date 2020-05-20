@@ -11,7 +11,6 @@ import { RobotoTypography } from 'styles/theme';
 import Calendar from './NewTaskDrawer.Calendar';
 import DropdownInput from './NewTaskDrawer.DropdownInput';
 import { DueDateLabelContainer } from './NewTaskDrawer.DueDateSection.Styled';
-import { AdornmentContainer } from './NewTaskDrawer.Styled';
 import initializeDueDateSectionHooks from './NewTaskDrawer.DueDateSection.Hooks';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
@@ -101,7 +100,7 @@ const onItemSelection = ({ saveDueDate }) => value => {
   saveDueDate({ updatedDueDate: value });
 };
 
-const DueDateSection = ({ selectedTask, setAutoSaveVisible }) => {
+const DueDateSection = ({ setAutoSaveVisible }) => {
   const dateFieldName = 'dueDate';
 
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
@@ -153,14 +152,16 @@ const DueDateSection = ({ selectedTask, setAutoSaveVisible }) => {
       name={dateFieldName}
       label="Due date"
       placeholder="Set a due date?"
-      InputProps={{
-        startAdornment:
-          selectedTask && selectedTask.dueDate != null ? (
-            ''
-          ) : (
-            <AdornmentContainer>+</AdornmentContainer>
-          ),
-      }}
+      InputProps={
+        {
+          // startAdornment:
+          //   selectedTask && selectedTask.dueDate != null ? (
+          //     ''
+          //   ) : (
+          //     <AdornmentContainer>+</AdornmentContainer>
+          //   ),
+        }
+      }
       inputProps={{
         value: currentDueDate
           ? moment(currentDueDate).format(DATE_US_FORMAT)

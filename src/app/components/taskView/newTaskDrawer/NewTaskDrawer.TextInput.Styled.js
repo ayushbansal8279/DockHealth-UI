@@ -35,6 +35,10 @@ const styles = {
       height: '24px',
       minHeight: '24px',
     },
+    '& .MuiInputBase-multiline': {
+      paddingTop: '12px',
+      paddingBottom: '0px',
+    },
   },
   rootSelect: {
     border: BORDER,
@@ -64,6 +68,10 @@ const styles = {
     '& .MuiInputBase-inputMultiline': {
       height: '24px',
       minHeight: '24px',
+    },
+    '& .MuiInputBase-multiline': {
+      paddingTop: '0px',
+      paddingBottom: '0px',
     },
   },
   error: {

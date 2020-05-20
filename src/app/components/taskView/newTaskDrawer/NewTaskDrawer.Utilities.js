@@ -1,5 +1,6 @@
 import moment from 'moment';
 import React from 'react';
+import { RemoveCircleOutlineRounded } from '@material-ui/icons';
 import Member from 'components/members/Member';
 
 import parse from 'autosuggest-highlight/parse';
@@ -68,6 +69,23 @@ export const getFormattedMembers = ({ members, currentUser }) => {
   });
 
   formattedMembers.unshift({
+    key: 'UNASSIGNED',
+    value: 'UNASSIGNED',
+    label: (
+      <MemberLabelContainer
+        style={{
+          paddingBottom: '5px',
+          // borderBottom: `1px solid ${palette.coolGrey3}`,
+        }}
+      >
+        <CondensedH4>Unassigned</CondensedH4>
+        <RemoveCircleOutlineRounded color="action" />
+      </MemberLabelContainer>
+    ),
+    displayLabel: '',
+  });
+
+  formattedMembers.unshift({
     key: currentUser.userIdentifier,
     value: currentUser.userIdentifier,
     label: (
@@ -77,11 +95,11 @@ export const getFormattedMembers = ({ members, currentUser }) => {
           borderBottom: `1px solid ${palette.coolGrey3}`,
         }}
       >
-        <CondensedH4>Assign To Me</CondensedH4>
+        <CondensedH4>Assign to me</CondensedH4>
         <Member member={currentUser} size={30} />
       </MemberLabelContainer>
     ),
-    displayLabel: 'Assign To Me',
+    displayLabel: 'Assign to me',
   });
   return formattedMembers;
 };

@@ -75,7 +75,7 @@ const StatusSection = ({ setAutoSaveVisible }) => {
               <SmallSwitchChevron color={palette.orangeJulius} />
             </AdornmentContainer>
           ),
-          startAdornment: <AdornmentContainer>+</AdornmentContainer>,
+          // startAdornment: <AdornmentContainer>+</AdornmentContainer>,
         }}
         renderItem={renderDropdownItem}
         onItemSelection={onItemSelection({ saveTaskStatus })}

@@ -7,9 +7,9 @@ import {
   FiledInSelect,
   StyledList,
   HorizontalLabel,
-  FormSectionDivider,
   AutoSaveContainer,
   AutoSaveChip,
+  CondensedH4,
   styleFullRowThin,
 } from './NewTaskDrawer.Styled';
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
@@ -24,6 +24,7 @@ const renderTaskList = ({
   reFileTask,
   closeTaskDrawer,
   selectedTaskIdentifier,
+  selectedTaskListName,
 }) => taskList => {
   const { taskListIdentifier, listName } = taskList;
 
@@ -41,7 +42,13 @@ const renderTaskList = ({
       }}
       button
     >
-      {listName}
+      <CondensedH4
+        style={{
+          color: selectedTaskListName === listName ? palette.blueOcean : '',
+        }}
+      >
+        {listName}
+      </CondensedH4>
     </ListItem>
   );
 };
@@ -130,6 +137,7 @@ const TopSection = ({
                       reFileTask,
                       closeTaskDrawer,
                       selectedTaskIdentifier,
+                      selectedTaskListName: taskList?.listName,
                     }),
                   )}
                 </StyledList>
@@ -173,6 +181,18 @@ const TopSection = ({
           >
             <StyledList>
               <ListItem
+                key="action_add_subtask"
+                onClick={() => {
+                  closeTaskDrawer();
+                }}
+                button
+                style={{
+                  borderBottom: `1px solid ${palette.coolGrey3}`,
+                }}
+              >
+                <CondensedH4>Add Subtask</CondensedH4>
+              </ListItem>
+              <ListItem
                 key="action_duplicate"
                 onClick={onDuplicate({
                   afterDuplicate: () => {
@@ -182,8 +202,11 @@ const TopSection = ({
                   selectedTask,
                 })}
                 button
+                style={{
+                  borderBottom: `1px solid ${palette.coolGrey3}`,
+                }}
               >
-                Duplicate
+                <CondensedH4>Duplicate</CondensedH4>
               </ListItem>
               {selectedTask &&
                 selectedTask.taskIdentifier != null &&
@@ -197,8 +220,11 @@ const TopSection = ({
                       selectedTask,
                     })}
                     button
+                    style={{
+                      borderBottom: `1px solid ${palette.coolGrey3}`,
+                    }}
                   >
-                    Delete
+                    <CondensedH4>Delete</CondensedH4>
                   </ListItem>
                 )}
             </StyledList>

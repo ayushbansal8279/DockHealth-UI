@@ -155,7 +155,7 @@ const HistorySection = ({ selectedTask }) => {
               <Spacing horizontal={2} />
               <AuditDetailsLabelContainer>
                 <RobotoTypography condensed variant="h4" color="inherit">
-                  created a task
+                  created the task
                 </RobotoTypography>
               </AuditDetailsLabelContainer>
             </Grid>
@@ -168,7 +168,7 @@ const HistorySection = ({ selectedTask }) => {
           <Grid container item xs={3} alignItems="flex-end" justify="flex-end">
             <AuditTypeLabelContainer>
               <RobotoTypography condensed variant="h4" color="inherit">
-                CREATED
+                TASK CREATED
               </RobotoTypography>
             </AuditTypeLabelContainer>
           </Grid>
