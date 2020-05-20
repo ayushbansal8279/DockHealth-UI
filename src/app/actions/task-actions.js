@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
 import * as TaskGroupListActions from './task-group-list-actions';
@@ -460,10 +461,32 @@ export function sortSubTask(task, direction) {
       });
 }
 
-export function toggleCompleteTask(task, tabName) {
+export function toggleCompleteTask(task, tabName, currentUser = null) {
   return dispatch => {
-    const apiEndpoint =
-      task.status === 'INCOMPLETE' ? 'markComplete' : 'markIncomplete';
+    const action =
+      tabName === TaskListTabName.COMPLETE
+        ? ActionTypes.MARK_COMPLETE_TASK_STATUS_SUCCESS
+        : ActionTypes.MARK_TASK_STATUS_SUCCESS;
+
+    const { apiEndpoint, newStatus } =
+      task.status === 'INCOMPLETE'
+        ? { apiEndpoint: 'markComplete', newStatus: 'COMPLETE' }
+        : { apiEndpoint: 'markIncomplete', newStatus: 'INCOMPLETE' };
+
+    const newTaskData = {
+      status: newStatus,
+      completedBy: newStatus === 'COMPLETE' ? currentUser : null,
+      completedDt:
+        newStatus === 'COMPLETE'
+          ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+          : null,
+    };
+
+    dispatch({
+      type: action,
+      task,
+      ...newTaskData,
+    });
 
     return TaskApi[apiEndpoint](task)
       .then(() => {

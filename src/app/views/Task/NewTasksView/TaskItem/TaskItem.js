@@ -96,7 +96,7 @@ const TaskItem = ({
   task,
   draggableProvied,
   isDragging,
-  isCompleted,
+  isCompletedGroup,
 }) => {
   const {
     edited,
@@ -113,12 +113,16 @@ const TaskItem = ({
     completedBy,
   } = task;
 
+  const isCompleted = task.status === 'COMPLETE';
+
   const { innerRef, draggableProps, dragHandleProps } = draggableProvied;
 
   return (
     <TaskItemPanel ref={innerRef} {...draggableProps} isDragging={isDragging}>
       <TaskItemContainer>
-        {!isCompleted && <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />}
+        {!isCompletedGroup && (
+          <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
+        )}
         <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
           {task.priority === 'HIGH' ? (
             <img src={HighPriorityLabel} alt="Priority icon" />
@@ -209,7 +213,6 @@ const Subtasks = ({
   taskListIdentifier,
   parentTaskId,
   reorderSubtasksForTask,
-  isCompleted,
   ...restProps
 }) => {
   const [isStartedSubtaskDnd, setSubtaskDnd] = useState(false);
@@ -271,10 +274,6 @@ const Subtasks = ({
                           key={subtask.taskId}
                           task={subtask}
                           isDragging={isDraggingSubtask}
-                          isCompleted={
-                            isCompleted ||
-                            (subtask.completedBy && subtask.completedDt)
-                          }
                           {...restProps}
                         />
                         {!isStartedSubtaskDnd && !isEmpty(subtask.comments) && (
