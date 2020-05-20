@@ -473,9 +473,8 @@ const TaskReducer = (state = initialState, action) => {
       const { task } = action;
       const mainTaskId = task.parentTaskIdentifier || task.taskIdentifier;
 
-      return {
-        ...state,
-        tasks: state.tasks.map(t => {
+      const updateTaskFromAction = tasks =>
+        tasks.map(t => {
           if (t.taskIdentifier !== mainTaskId) {
             return t;
           }
@@ -492,7 +491,12 @@ const TaskReducer = (state = initialState, action) => {
                 : subtask,
             ),
           };
-        }),
+        });
+
+      return {
+        ...state,
+        tasks: updateTaskFromAction(state.tasks),
+        completedTasks: updateTaskFromAction(state.completedTasks),
       };
     }
 
