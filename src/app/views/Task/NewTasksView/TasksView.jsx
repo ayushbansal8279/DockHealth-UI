@@ -144,6 +144,23 @@ const TaskView = ({
     taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
   };
 
+  const toggleTaskCompletedStatus = task => {
+    const hasIncompletedSubtasks = task.subtasks.find(
+      subtask => subtask.status === 'INCOMPLETE',
+    );
+    if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+      const modalProps = {
+        confirm: () => {
+          modalActions.closeModal();
+          toggleCompleteTask(task, selectedTab);
+        },
+      };
+      modalActions.openModal('CompleteAllTasks', modalProps);
+    } else {
+      toggleCompleteTask(task, selectedTab);
+    }
+  };
+
   const completedTaskCount =
     completedTasks?.length > 0
       ? completedTasks.length
@@ -177,7 +194,7 @@ const TaskView = ({
           storeAsCurrentTask={storeAsCurrentTask}
           currentUser={currentUser}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
-          toggleCompleteTask={task => toggleCompleteTask(task, selectedTab)}
+          toggleCompleteTask={toggleTaskCompletedStatus}
           tasks={completedTasks}
           isFetchingData={isCompletedTasksFetching}
         />
@@ -188,7 +205,7 @@ const TaskView = ({
             createTaskGroupList({ groupName, taskListIdentifier })
           }
           currentUser={currentUser}
-          toggleCompleteTask={task => toggleCompleteTask(task, selectedTab)}
+          toggleCompleteTask={toggleTaskCompletedStatus}
           storeAsCurrentTask={storeAsCurrentTask}
           groupedTasks={groupedTasks}
           toggleSingleTaskPriority={toggleSingleTaskPriority}

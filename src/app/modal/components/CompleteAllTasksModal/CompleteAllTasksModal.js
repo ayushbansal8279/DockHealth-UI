@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Typography } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
-import File from 'img/modals/file';
+import CircleCompletedGrey from 'img/circle-completed-grey';
 import { redTheme } from '../../themes/red-theme';
 
 import {
@@ -12,27 +12,28 @@ import {
   ConfirmButton,
 } from '../styled';
 
-const DeleteGroupModal = ({ closeModal, confirm }) => {
+const CompleteAllTasksModal = ({ closeModal, confirm }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
-        <ModalMainIcon src={File} alt="file" />
-        <Typography color="textPrimary" variant="h2">
-          Delete group
+        <ModalMainIcon src={CircleCompletedGrey} alt="completed" />
+        <Typography color="textSecondary" variant="h2">
+          A SUBTASK IS INCOMPLETE
         </Typography>
         <Spacing vertical={5} />
         <Typography variant="body1">
-          Are you sure you want to delete this group? If you delete this group
-          and there are tasks within the group, the tasks will not be deleted.
+          You’re about to complete a primary task which has a subtask that is
+          incomplete. Marking the primary task as complete will also complete
+          all subtasks
         </Typography>
         <Spacing vertical={4} />
         <ButtonsContainer>
           <Button variant="outlined" type="button" onClick={closeModal}>
-            No, do not delete
+            No, don&apos;t complete
           </Button>
           <Spacing horizontal={3} />
           <ConfirmButton variant="contained" type="button" onClick={confirm}>
-            Yes
+            Yes, complete all
           </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
@@ -40,4 +41,4 @@ const DeleteGroupModal = ({ closeModal, confirm }) => {
   );
 };
 
-export default DeleteGroupModal;
+export default CompleteAllTasksModal;

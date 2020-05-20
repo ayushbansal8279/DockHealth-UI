@@ -4,9 +4,14 @@ import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
 export const redTheme = createMuiTheme({
+  palette: {
+    text: {
+      primary: palette.oPlusRed,
+      secondary: palette.mediumGrey,
+    },
+  },
   typography: {
     h2: {
-      color: palette.oPlusRed,
       fontSize: fontSizes.regularPlus,
       lineHeight: 1.5,
       textTransform: 'uppercase',
@@ -22,12 +27,13 @@ export const redTheme = createMuiTheme({
   overrides: {
     MuiButton: {
       root: {
-        padding: `${spacing.small} ${spacing.regularPlus}`,
+        padding: `${spacing.small} ${spacing.small}`,
         borderRadius: 0,
         fontSize: fontSizes.smallPlus,
         fontWeight: fontWeights.regularPlus,
       },
       contained: {
+        padding: `${spacing.small} ${spacing.small}`,
         background: `linear-gradient(26.82deg, ${palette.oPlusRed}  9.75%, ${palette.orange} 87.04%);`,
         border: 0,
         color: palette.white,
@@ -35,6 +41,7 @@ export const redTheme = createMuiTheme({
         boxShadow: 'none',
       },
       outlined: {
+        padding: `${spacing.small} ${spacing.small}`,
         border: `2px solid ${palette.oPlusRed}`,
         color: palette.oPlusRed,
       },
