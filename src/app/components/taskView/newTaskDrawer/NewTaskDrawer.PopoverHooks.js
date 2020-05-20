@@ -15,10 +15,9 @@ const initializeTaskDrawerPopoverHooks = () => {
   const [patientInputValue, setPatientInputValue] = useState('');
 
   const onPatientInputChange = useCallback((_event, value, reason) => {
-    // console.log(`${reason} - ${value}`);
-    // if (reason === 'input') {
-    //   setPatientInputValue(value);
-    // }
+    if (reason === 'input' && value !== '') {
+      setPatientInputValue(value);
+    }
   }, []);
 
   // assigned to input
@@ -32,9 +31,9 @@ const initializeTaskDrawerPopoverHooks = () => {
   const [assignedToInputValue, setAssignedToInputValue] = useState('');
 
   const onAssignedToInputChange = useCallback((_event, value, reason) => {
-    // if (reason === 'input') {
-    //   setAssignedToInputValue(value);
-    // }
+    if (reason === 'input' && value !== '') {
+      setAssignedToInputValue(value);
+    }
   }, []);
 
   return {

@@ -38,7 +38,6 @@ const onChange = ({
   onItemSelected,
   closeAutocomplete,
 }) => (_event, option) => {
-  // console.log('on change');
   if (multiple) {
     const newOptions = option?.map(value => {
       if (typeof value === 'string') {
@@ -244,8 +243,11 @@ const SelectInput = React.forwardRef(
         if (focusState && !popupOpen) {
           openAutocomplete();
         }
+        if (newValue !== currentOption?.displayLabel) {
+          setValue(name, null);
+        }
         if (onInputChange) {
-          onInputChange(event, newValue);
+          onInputChange(event, newValue, 'input');
         }
       },
       value: currentOption,
