@@ -24,9 +24,12 @@ import {
   DrawerChip,
   StyledAutoComplete,
   Listbox,
+  TagCreateActionButton,
 } from './NewTaskDrawer.SelectInput.Styled';
 import { CondensedH4, AdornmentContainer } from './NewTaskDrawer.Styled';
 import TextInput from './NewTaskDrawer.TextInput';
+
+// const filter = createFilterOptions();
 
 const onChange = ({
   multiple,
@@ -128,6 +131,7 @@ const renderTags = ({
             }
             style={{
               height: '24px',
+              width: '46px',
               fontWeight: 'bold',
               backgroundColor: palette.coolGrey3,
               marginBottom: '-8px',
@@ -163,6 +167,7 @@ const SelectInput = React.forwardRef(
       inputProps,
       InputLabelProps,
       forceOpen,
+      createTagActionLabel,
     },
     reference,
   ) => {
@@ -187,12 +192,15 @@ const SelectInput = React.forwardRef(
       ? currentValue?.map(prop('value')) ?? []
       : [];
 
-    const placeholderValueSingle =
-      !currentValue || currentValue === '' ? placeholder : '';
-    const placeholderValue =
-      Array.isArray(currentValue) && currentValue.length === 0
-        ? placeholder
-        : placeholderValueSingle;
+    const hasCurrentValue =
+      (!Array.isArray(currentValue) &&
+        currentValue !== null &&
+        currentValue !== '') ||
+      (Array.isArray(currentValue) && currentValue.length > 0);
+
+    // console.log('hasCurrentValue: '+hasCurrentValue);
+
+    const placeholderValue = !hasCurrentValue ? placeholder : '';
 
     const currentOption = multiple
       ? currentValue
@@ -224,13 +232,12 @@ const SelectInput = React.forwardRef(
       open: openState,
       options: availableOptions,
       getOptionLabel: option => renderOptionLabel(option),
-      debug: true,
+      debug: false, // prevents clearOnBlur
       disablePortal: true,
       disableClearable,
       openOnFocus: true,
       multiple,
       freeSolo,
-      clearOnBlur: true,
       getOptionDisabled,
       onInputChange: (event, newValue) => {
         // console.log('onInputChange: '+newValue);
@@ -251,6 +258,12 @@ const SelectInput = React.forwardRef(
       }),
       getOptionSelected: (option, selected) => selected.value === option.value,
     });
+
+    // console.log('dirty: '+dirty);
+    // console.log('inputValue: '+inputValue);
+    // console.log('selectedValue: '+currentOption?.displayLabel);
+    // console.log(currentOption);
+    // console.log('groupedOptions length: '+groupedOptions.length);
 
     const onKeyDown = useCallback(
       event => {
@@ -279,6 +292,27 @@ const SelectInput = React.forwardRef(
       [currentValue, multiple, name, setValue, onItemSelected],
     );
 
+    const onTagCreate = useCallback(
+      event => {
+        const { value: targetValue } = event.target.parentElement.children[1];
+
+        const newOptions = [
+          ...currentValue,
+          {
+            key: targetValue,
+            value: null,
+            label: <CondensedH4>{targetValue}</CondensedH4>,
+            displayLabel: targetValue,
+          },
+        ];
+
+        setValue(name, newOptions);
+        onItemSelected(newOptions);
+        event.target.value = '';
+      },
+      [currentValue, name, setValue, onItemSelected],
+    );
+
     let startAdornment = <AdornmentContainer>+</AdornmentContainer>;
     if (multiple && currentOption && currentOption.length > 0) {
       const getCustomizedTagProps = parameters => ({
@@ -305,6 +339,17 @@ const SelectInput = React.forwardRef(
       startAdornment = '';
     }
 
+    let endAdornment = '';
+    if (!multiple) {
+      endAdornment = InputProps.endAdornment;
+    } else if (multiple && groupedOptions.length === 0 && inputValue !== '') {
+      endAdornment = (
+        <TagCreateActionButton onClick={onTagCreate}>
+          {createTagActionLabel}
+        </TagCreateActionButton>
+      );
+    }
+
     const inputReference = setAnchorEl;
 
     return (
@@ -326,7 +371,7 @@ const SelectInput = React.forwardRef(
               InputProps={{
                 ...InputProps,
                 ...{ startAdornment },
-                ...{ endAdornment: InputProps.endAdornment },
+                ...{ endAdornment },
                 ...{ onKeyDown },
               }}
               inputProps={{
@@ -351,9 +396,8 @@ const SelectInput = React.forwardRef(
             />
           </StyledAutoComplete>
           {groupedOptions.length === 0 &&
-          inputValue &&
-          inputValue.length > 0 &&
-          (!currentValue || currentValue === '') ? (
+          inputValue !== '' &&
+          inputValue !== currentOption?.displayLabel ? (
             <Listbox
               {...getListboxProps()}
               style={{
@@ -410,8 +454,6 @@ SelectInput.propTypes = {
   placeholder: string,
   renderItem: func,
   renderOptionLabel: func,
-  startAdornmentEnabled: bool,
-  endAdornmentEnabled: bool,
   forcePopupIcon: bool,
   noOptionsText: node,
   getOptionDisabled: func,
@@ -424,6 +466,7 @@ SelectInput.propTypes = {
   InputProps: objectOf(any),
   InputLabelProps: objectOf(any),
   forceOpen: bool,
+  createTagActionLabel: string,
 };
 
 SelectInput.defaultProps = {
@@ -432,8 +475,6 @@ SelectInput.defaultProps = {
   renderItem: renderItemWithHighlighting,
   // renderItem: prop('label'),
   renderOptionLabel: propOr('', 'displayLabel'),
-  startAdornmentEnabled: false,
-  endAdornmentEnabled: false,
   forcePopupIcon: undefined,
   noOptionsText: undefined,
   getOptionDisabled: prop('disabled'),
@@ -446,6 +487,7 @@ SelectInput.defaultProps = {
   InputProps: {},
   InputLabelProps: {},
   forceOpen: false,
+  createTagActionLabel: undefined,
 };
 
 export default SelectInput;

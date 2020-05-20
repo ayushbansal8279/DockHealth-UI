@@ -49,6 +49,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     onSubmit,
     saveAddOrRemoveLabel,
     saveEditLabel,
+    saveAddLabel,
     formMethods,
     isAddingOrEditingSubtask,
     patients,
@@ -154,7 +155,11 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 onItemSelected={handlePatientSelect}
                 ref={patientInputReference}
                 noOptionsText={
-                  <Grid container direction="column">
+                  <Grid
+                    container
+                    direction="column"
+                    style={{ padding: '10px 10px' }}
+                  >
                     <RobotoTypography condensed variant="h4" color="inherit">
                       No record found
                     </RobotoTypography>
@@ -193,7 +198,11 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 onItemSelected={handleAssignedToSelect}
                 ref={assignedToInputReference}
                 noOptionsText={
-                  <Grid container direction="column">
+                  <Grid
+                    container
+                    direction="column"
+                    style={{ padding: '10px 10px' }}
+                  >
                     <RobotoTypography condensed variant="h4" color="inherit">
                       No record found
                     </RobotoTypography>
@@ -287,6 +296,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 isInbox={isInbox}
                 saveAddOrRemoveLabel={saveAddOrRemoveLabel}
                 saveEditLabel={saveEditLabel}
+                saveAddLabel={saveAddLabel}
               />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>

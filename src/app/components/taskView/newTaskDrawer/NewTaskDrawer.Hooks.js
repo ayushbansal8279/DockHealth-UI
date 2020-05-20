@@ -195,6 +195,7 @@ const saveAddOrRemoveLabel = ({
 
   setAutoSaveVisible();
 };
+
 const saveEditLabel = ({
   selectedTask,
   dispatch,
@@ -205,6 +206,24 @@ const saveEditLabel = ({
   const taskIdentifier = selectedTask?.taskIdentifier;
 
   await editLabel({
+    labelName,
+    labelIdentifier,
+    taskIdentifier,
+  })(dispatch);
+
+  setAutoSaveVisible();
+};
+
+const saveAddLabel = ({
+  selectedTask,
+  dispatch,
+  setAutoSaveVisible,
+}) => async newValue => {
+  const labelIdentifier = undefined;
+  const labelName = newValue;
+  const taskIdentifier = selectedTask?.taskIdentifier;
+
+  await addLabel({
     labelName,
     labelIdentifier,
     taskIdentifier,
@@ -506,6 +525,11 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       setAutoSaveVisible,
     }),
     saveEditLabel: saveEditLabel({
+      selectedTask,
+      dispatch,
+      setAutoSaveVisible,
+    }),
+    saveAddLabel: saveAddLabel({
       selectedTask,
       dispatch,
       setAutoSaveVisible,

@@ -1,7 +1,7 @@
 import { Chip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
-
+import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import { BoldLabel } from 'views/PersonDetails/PersonDetailsView.PersonInfoPanel.Styled';
 
@@ -36,7 +36,7 @@ export const Listbox = styled('ul')`
   padding: 0;
   position: absolute;
   list-style: none;
-  background-color: ${palette.coolGrey4};
+  background-color: ${palette.white};
   overflow: auto;
   max-height: 250px;
   border-radius: 4px;
@@ -50,10 +50,6 @@ export const Listbox = styled('ul')`
     & span {
       flex-grow: 1;
     }
-
-    & svg {
-      color: transparent;
-    }
   }
 
   & li[data-multiple='true'] > div > div:nth-child(2) {
@@ -65,7 +61,7 @@ export const Listbox = styled('ul')`
   }
 
   & li[data-focus='true'] {
-    background-color: ${palette.coolGrey3};
+    background-color: ${palette.blueGrey};
     cursor: pointer;
   }
 
@@ -78,7 +74,7 @@ export const Listbox = styled('ul')`
   }
 
   & li[data-focus='true'][aria-selected='true'] {
-    background-color: ${palette.coolGrey3};
+    background-color: ${palette.blueGrey};
   }
 
   & li[aria-selected='true'] {
@@ -88,5 +84,15 @@ export const Listbox = styled('ul')`
   & li[aria-selected='true'] > div > div:first-child {
     color: ${palette.blueOcean};
     font-weight: bold;
+  }
+`;
+
+export const TagCreateActionButton = styled.div`
+  color: ${palette.blueOcean};
+  font-size: ${fontSizes.smallPlus};
+  width: 100px;
+
+  &:hover {
+    text-decoration: underline;
   }
 `;

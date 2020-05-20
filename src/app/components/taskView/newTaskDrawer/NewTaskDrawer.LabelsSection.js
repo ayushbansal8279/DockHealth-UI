@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { RobotoTypography } from 'styles/theme';
+import { Grid } from '@material-ui/core';
 
 import useBoolean from 'hooks/useBoolean';
 import EditableLabel from './NewTaskDrawer.EditableLabel';
@@ -39,9 +40,11 @@ const LabelsSection = ({
       multiple
       key={selectedTaskIdentifier ?? 'null'}
       noOptionsText={
-        <RobotoTypography condensed variant="h4" color="inherit">
-          No labels found
-        </RobotoTypography>
+        <Grid container direction="column" style={{ padding: '10px 10px' }}>
+          <RobotoTypography condensed variant="h4" color="inherit">
+            No labels found
+          </RobotoTypography>
+        </Grid>
       }
       renderItem={option => (
         <EditableLabel
@@ -65,7 +68,7 @@ const LabelsSection = ({
         }
       }}
       InputProps={{}}
-      endAdornmentEnabled={false}
+      createTagActionLabel="Create Label"
       forceOpen={forceOpen}
     >
       {formattedLabels}
