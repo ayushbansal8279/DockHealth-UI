@@ -60,7 +60,7 @@ const renderAttachmentButton = ({
   );
 };
 
-const AtttachmentsSection = ({ selectedTask }) => {
+const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -75,7 +75,7 @@ const AtttachmentsSection = ({ selectedTask }) => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
-  } = initializeAttachmentsSectionHooks();
+  } = initializeAttachmentsSectionHooks({ parentFormSubmit });
 
   return (
     <AttachmentsContainer>

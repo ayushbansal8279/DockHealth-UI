@@ -7,7 +7,7 @@ import { CommentSectionContainer } from './NewTaskDrawer.CommentSection.Styled';
 import initializeCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
 import { renderCommentGroup } from './NewTaskDrawer.CommentSection.Utilities';
 
-const CommentSection = () => {
+const CommentSection = ({ parentFormSubmit }) => {
   const {
     groupedComments,
     currentTaskListMemberData,
@@ -18,7 +18,7 @@ const CommentSection = () => {
 
   return (
     <CommentSectionContainer>
-      <AddComment addComment={addComment} />
+      <AddComment addComment={addComment} parentFormSubmit={parentFormSubmit} />
       <Spacing vertical={4} />
       {Object.entries(groupedComments).map(
         renderCommentGroup({

@@ -243,7 +243,7 @@ const SelectInput = React.forwardRef(
         if (focusState && !popupOpen) {
           openAutocomplete();
         }
-        if (newValue !== currentOption?.displayLabel) {
+        if (!multiple && newValue !== currentOption?.displayLabel) {
           setValue(name, null);
         }
         if (onInputChange) {

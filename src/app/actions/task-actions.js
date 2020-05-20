@@ -828,6 +828,18 @@ export const refreshTask = selectedTask => dispatch =>
       throw error;
     });
 
+export const refreshAndStoreAsCurrentTask = taskIdentifier => dispatch =>
+  TaskApi.getTaskDetails(taskIdentifier)
+    .then(task => {
+      dispatch({
+        type: ActionTypes.SET_AS_CURRENT_TASK,
+        task,
+      });
+    })
+    .catch(error => {
+      throw error;
+    });
+
 export const archiveTask = (task, currentUserProfile) => dispatch =>
   TaskApi.flagArchivedForUser(task.taskIdentifier, true)
     .then(responseTask => {

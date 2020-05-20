@@ -11,14 +11,15 @@ import {
   AddCommentLoaderContainer,
 } from './NewTaskDrawer.AddComment.Styled';
 
-const AddComment = ({ addComment }) => {
+const AddComment = ({ addComment, parentFormSubmit }) => {
   const {
     currentUser,
     commentContent,
     onCommentChange,
     onEnterPress,
+    onCommentFocus,
     isAddingComment,
-  } = initializeAddCommentHooks({ addComment });
+  } = initializeAddCommentHooks({ addComment, parentFormSubmit });
 
   return (
     <AddCommentContainer>
@@ -26,6 +27,7 @@ const AddComment = ({ addComment }) => {
       <AddCommentInput
         onChange={onCommentChange}
         onKeyDown={onEnterPress}
+        onFocus={onCommentFocus}
         value={commentContent}
         placeholder="Leave a comment"
       />

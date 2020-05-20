@@ -9,7 +9,6 @@ import { getAllPatients } from 'actions/patient-actions';
 import {
   saveTask,
   storeAsCurrentTask,
-  updateTaskManually,
   moveTask,
   deleteTask,
   duplicateTask,
@@ -18,15 +17,9 @@ import {
   updateTaskDescription,
 } from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
-import {
-  addLabel,
-  editLabel,
-  removeLabelForTask,
-  getTaskListLabels,
-} from 'actions/task-label-actions';
+import { getTaskListLabels } from 'actions/task-label-actions';
 import Member from 'components/members/Member';
 
-import { prop } from 'ramda';
 import useBoolean from 'hooks/useBoolean';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
@@ -48,45 +41,6 @@ const validationSchema = object().shape({
   // }),
 });
 
-const labelAddOrRemovePromise = ({
-  dispatch,
-  taskIdentifier,
-  currentLabelsIdentifiers,
-  formattedLabelsIdentifiers,
-}) => ({ labelIdentifier, labelName }) => {
-  if (labelName === null || labelName === '') {
-    return Promise.resolve();
-  }
-
-  if (labelIdentifier === null) {
-    return addLabel({ labelName, taskIdentifier })(dispatch);
-  }
-
-  if (
-    !currentLabelsIdentifiers.includes(labelIdentifier) &&
-    formattedLabelsIdentifiers.includes(labelIdentifier)
-  ) {
-    return addLabel({
-      labelName,
-      labelIdentifier,
-      taskIdentifier,
-    })(dispatch);
-  }
-
-  if (
-    currentLabelsIdentifiers.includes(labelIdentifier) &&
-    !formattedLabelsIdentifiers.includes(labelIdentifier)
-  ) {
-    return removeLabelForTask({
-      labelName,
-      labelIdentifier,
-      taskIdentifier,
-    })(dispatch);
-  }
-
-  return Promise.resolve();
-};
-
 const onSubmit = ({
   selectedTask,
   taskList,
@@ -94,26 +48,26 @@ const onSubmit = ({
   setSaving,
   setAutoSaveVisible,
 }) => data => {
-  const currentLabels = selectedTask?.labels ?? [];
-  const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
+  // const currentLabels = selectedTask?.labels ?? [];
+  // const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
 
-  const formattedLabels = (data.labels ?? []).map(
-    ({ value, displayLabel }) => ({
-      labelIdentifier: value,
-      labelName: displayLabel,
-    }),
-  );
+  // const formattedLabels = (data.labels ?? []).map(
+  //   ({ value, displayLabel }) => ({
+  //     labelIdentifier: value,
+  //     labelName: displayLabel,
+  //   }),
+  // );
 
-  const allLabels = [...currentLabels, ...formattedLabels];
+  // const allLabels = [...currentLabels, ...formattedLabels];
 
-  const formattedLabelsIdentifiers = formattedLabels.map(
-    prop('labelIdentifier'),
-  );
+  // const formattedLabelsIdentifiers = formattedLabels.map(
+  //   prop('labelIdentifier'),
+  // );
 
   const requestData = {
     ...(selectedTask ?? {}),
     ...data,
-    labels: [],
+    // labels: [],
     taskListIdentifier: taskList?.taskListIdentifier,
   };
 
@@ -139,23 +93,24 @@ const onSubmit = ({
       const taskIdentifier = response?.taskIdentifier;
 
       if (!taskIdentifier) return;
+      storeAsCurrentTask(response)(dispatch);
 
-      await Promise.all(
-        allLabels.map(
-          labelAddOrRemovePromise({
-            dispatch,
-            taskIdentifier,
-            currentLabelsIdentifiers,
-            formattedLabelsIdentifiers,
-          }),
-        ),
-      );
+      // await Promise.all(
+      //   allLabels.map(
+      //     labelAddOrRemovePromise({
+      //       dispatch,
+      //       taskIdentifier,
+      //       currentLabelsIdentifiers,
+      //       formattedLabelsIdentifiers,
+      //     }),
+      //   ),
+      // );
 
-      updateTaskManually({
-        ...(selectedTask ?? {}),
-        ...data,
-        labels: formattedLabels,
-      })(dispatch);
+      // updateTaskManually({
+      //   ...(selectedTask ?? {}),
+      //   ...data,
+      //   labels: formattedLabels,
+      // })(dispatch);
 
       setSaving(false);
       setAutoSaveVisible();
@@ -163,85 +118,6 @@ const onSubmit = ({
     .catch(() => {
       setSaving(false);
     });
-};
-
-const saveAddOrRemoveLabel = ({
-  selectedTask,
-  dispatch,
-  setAutoSaveVisible,
-}) => async selectedLabels => {
-  const currentLabels = selectedTask?.labels ?? [];
-  const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
-
-  const formattedLabels = (selectedLabels ?? []).map(
-    ({ value, displayLabel }) => ({
-      labelIdentifier: value,
-      labelName: displayLabel,
-    }),
-  );
-
-  const allLabels = [...currentLabels, ...formattedLabels];
-  const formattedLabelsIdentifiers = formattedLabels.map(
-    prop('labelIdentifier'),
-  );
-  const taskIdentifier = selectedTask?.taskIdentifier;
-
-  await Promise.all(
-    allLabels.map(
-      labelAddOrRemovePromise({
-        dispatch,
-        taskIdentifier,
-        currentLabelsIdentifiers,
-        formattedLabelsIdentifiers,
-      }),
-    ),
-  );
-
-  setAutoSaveVisible();
-};
-
-const saveEditLabel = ({
-  selectedTask,
-  dispatch,
-  setAutoSaveVisible,
-}) => async (selectedLabel, newValue) => {
-  const labelIdentifier = selectedLabel.value;
-  const labelName = newValue;
-  const taskIdentifier = selectedTask?.taskIdentifier;
-
-  if (labelName === null || labelName === '') {
-    return;
-  }
-
-  await editLabel({
-    labelName,
-    labelIdentifier,
-    taskIdentifier,
-  })(dispatch);
-
-  setAutoSaveVisible();
-};
-
-const saveAddLabel = ({
-  selectedTask,
-  dispatch,
-  setAutoSaveVisible,
-}) => async newValue => {
-  const labelIdentifier = undefined;
-  const labelName = newValue;
-  const taskIdentifier = selectedTask?.taskIdentifier;
-
-  if (labelName === null || labelName === '') {
-    return;
-  }
-
-  await addLabel({
-    labelName,
-    labelIdentifier,
-    taskIdentifier,
-  })(dispatch);
-
-  setAutoSaveVisible();
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -529,21 +405,6 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       taskList,
       dispatch,
       setSaving,
-      setAutoSaveVisible,
-    }),
-    saveAddOrRemoveLabel: saveAddOrRemoveLabel({
-      selectedTask,
-      dispatch,
-      setAutoSaveVisible,
-    }),
-    saveEditLabel: saveEditLabel({
-      selectedTask,
-      dispatch,
-      setAutoSaveVisible,
-    }),
-    saveAddLabel: saveAddLabel({
-      selectedTask,
-      dispatch,
       setAutoSaveVisible,
     }),
     formMethods,

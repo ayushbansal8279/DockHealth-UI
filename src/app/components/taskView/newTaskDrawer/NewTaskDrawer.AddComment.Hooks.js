@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 
 import useBoolean from 'hooks/useBoolean';
 
-const initializeAddCommentHooks = ({ addComment }) => {
+const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
   const { currentUser, selectedTask } = useSelector(store => ({
     currentUser: store.userState.userProfile,
     selectedTask: store.taskState.selectedTask,
@@ -49,6 +49,14 @@ const initializeAddCommentHooks = ({ addComment }) => {
     [isAddingComment, onSubmit],
   );
 
+  const onCommentFocus = useCallback(() => {
+    // console.log('on comment focus');
+    if (!selectedTask || !selectedTask.taskIdentifier) {
+      // console.log('saving task');
+      parentFormSubmit();
+    }
+  }, [selectedTask, parentFormSubmit]);
+
   return {
     currentUser,
     selectedTask,
@@ -56,6 +64,7 @@ const initializeAddCommentHooks = ({ addComment }) => {
     setCommentContent,
     onCommentChange,
     onEnterPress,
+    onCommentFocus,
     isAddingComment,
   };
 };

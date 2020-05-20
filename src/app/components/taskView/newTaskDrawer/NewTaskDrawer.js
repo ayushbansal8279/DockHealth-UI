@@ -47,9 +47,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     taskDrawerOpen,
     top,
     onSubmit,
-    saveAddOrRemoveLabel,
-    saveEditLabel,
-    saveAddLabel,
     formMethods,
     isAddingOrEditingSubtask,
     patients,
@@ -294,16 +291,18 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               <LabelsSection
                 selectedTask={selectedTask}
                 isInbox={isInbox}
-                saveAddOrRemoveLabel={saveAddOrRemoveLabel}
-                saveEditLabel={saveEditLabel}
-                saveAddLabel={saveAddLabel}
+                parentFormSubmit={handleSubmit(onSubmit)}
+                setAutoSaveVisible={setAutoSaveVisible}
               />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
-              <AtttachmentsSection selectedTask={selectedTask} />
+              <AtttachmentsSection
+                selectedTask={selectedTask}
+                parentFormSubmit={handleSubmit(onSubmit)}
+              />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
-              <CommentSection />
+              <CommentSection parentFormSubmit={handleSubmit(onSubmit)} />
             </Grid>
             <Grid
               item

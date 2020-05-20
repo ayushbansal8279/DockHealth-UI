@@ -9,13 +9,19 @@ import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import initializeLabelsSectionHooks from './NewTaskDrawer.LabelsSection.Hooks';
 
 const LabelsSection = ({
-  isInbox,
   selectedTask,
-  saveAddOrRemoveLabel,
-  saveEditLabel,
+  isInbox,
+  parentFormSubmit,
+  setAutoSaveVisible,
 }) => {
-  const { labels } = initializeLabelsSectionHooks({
+  const {
+    labels,
+    saveAddOrRemoveLabel,
+    saveEditLabel,
+  } = initializeLabelsSectionHooks({
     isInbox,
+    parentFormSubmit,
+    setAutoSaveVisible,
   });
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;

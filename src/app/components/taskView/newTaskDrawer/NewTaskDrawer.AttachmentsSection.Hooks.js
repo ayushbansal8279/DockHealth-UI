@@ -2,12 +2,16 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState, useCallback, useRef } from 'react';
 
-import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
+import {
+  removeTaskAttachment,
+  addTaskAttachment,
+  refreshAndStoreAsCurrentTask,
+} from 'actions/task-actions';
 import useBoolean from 'hooks/useBoolean';
 
 import { getMemoTaskAttachment } from './NewTaskDrawer.AttachmentsSection.Utilities';
 
-const initializeAttachmentsSectionHooks = () => {
+const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
   const attachmentFileInputReference = useRef(null);
 
   const { selectedTask } = useSelector(store => ({
@@ -141,6 +145,7 @@ const initializeAttachmentsSectionHooks = () => {
         selectedTaskIdentifier,
         attachmentIdentifier,
       )(dispatch).then(() => {
+        refreshAndStoreAsCurrentTask(selectedTaskIdentifier);
         // reloadAttachments({
         //   attachmentsToReload: currentTaskAttachments.filter(
         //     ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
@@ -152,16 +157,25 @@ const initializeAttachmentsSectionHooks = () => {
     [dispatch, selectedTaskIdentifier],
   );
 
-  const onAddAttachmentButtonClicked = useCallback(event => {
-    event.preventDefault();
-    event.stopPropagation();
+  const onAddAttachmentButtonClicked = useCallback(
+    event => {
+      // console.log('on add attachment');
+      if (!selectedTask || !selectedTask.taskIdentifier) {
+        // console.log('saving task');
+        parentFormSubmit();
+      }
 
-    const fileInputElement = attachmentFileInputReference.current;
+      event.preventDefault();
+      event.stopPropagation();
 
-    if (fileInputElement) {
-      fileInputElement.dispatchEvent(new MouseEvent('click'));
-    }
-  }, []);
+      const fileInputElement = attachmentFileInputReference.current;
+
+      if (fileInputElement) {
+        fileInputElement.dispatchEvent(new MouseEvent('click'));
+      }
+    },
+    [selectedTask, parentFormSubmit],
+  );
 
   const openAttachmentPreview = useCallback(
     attachment => {
@@ -190,6 +204,7 @@ const initializeAttachmentsSectionHooks = () => {
         // .then(addedAttachment => {
         .then(() => {
           setCurrentlyUploadedAttachment(null);
+          refreshAndStoreAsCurrentTask(selectedTaskIdentifier);
           // reloadAttachments({
           //   attachmentsToReload: [...currentTaskAttachments, addedAttachment],
           // });
