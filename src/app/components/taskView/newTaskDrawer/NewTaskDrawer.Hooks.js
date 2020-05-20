@@ -33,7 +33,7 @@ import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import { onButtonClicked } from '../../../helpers/ga-event-helper';
 import { noop } from '../../../helpers/utility-functions';
 
-const REQUIRED_MESSAGE = 'This field is required';
+// const REQUIRED_MESSAGE = 'This field is required';
 // const TIME_12H_FORMAT_REGULAR_EXPRESSION = /^(1[0-2]|0{0,1}[1-9]):([0-5]\d) [APap][Mm]$/;
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 // const TIME_12H_FORMAT = 'h:mm A';
@@ -41,7 +41,7 @@ const TIME_24H_FORMAT = 'HH:mm';
 const DATETIME_FULL_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 
 const validationSchema = object().shape({
-  description: string().required(REQUIRED_MESSAGE),
+  description: string().required('Task description is required'),
   // dueTime: string().matches(TIME_12H_FORMAT_REGULAR_EXPRESSION, {
   // excludeEmptyString: true,
   // message: 'Time should be provided in HH:MM PM/AM format',
@@ -54,6 +54,10 @@ const labelAddOrRemovePromise = ({
   currentLabelsIdentifiers,
   formattedLabelsIdentifiers,
 }) => ({ labelIdentifier, labelName }) => {
+  if (labelName === null || labelName === '') {
+    return Promise.resolve();
+  }
+
   if (labelIdentifier === null) {
     return addLabel({ labelName, taskIdentifier })(dispatch);
   }
@@ -205,6 +209,10 @@ const saveEditLabel = ({
   const labelName = newValue;
   const taskIdentifier = selectedTask?.taskIdentifier;
 
+  if (labelName === null || labelName === '') {
+    return;
+  }
+
   await editLabel({
     labelName,
     labelIdentifier,
@@ -222,6 +230,10 @@ const saveAddLabel = ({
   const labelIdentifier = undefined;
   const labelName = newValue;
   const taskIdentifier = selectedTask?.taskIdentifier;
+
+  if (labelName === null || labelName === '') {
+    return;
+  }
 
   await addLabel({
     labelName,

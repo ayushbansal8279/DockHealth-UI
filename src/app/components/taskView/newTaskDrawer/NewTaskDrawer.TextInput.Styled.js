@@ -78,6 +78,11 @@ const styles = {
     border: BORDER,
     borderBottomColor: palette.error,
   },
+  errorMessage: {
+    color: palette.error,
+    fontFamily: FONT_FAMILY,
+    fontSize: '14px',
+  },
   focused: {
     border: BORDER,
     borderBottomColor: palette.coolGrey2,

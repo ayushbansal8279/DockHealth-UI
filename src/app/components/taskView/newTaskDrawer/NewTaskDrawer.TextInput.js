@@ -27,52 +27,58 @@ const TextInput = React.forwardRef(
     },
     reference,
   ) => {
-    const { register } = useFormContext();
+    const { errors, register } = useFormContext();
     const { classes } = props;
 
-    const inputClass = parentType === 'select' ? classes.inputSelect : classes.input;
+    const inputClass =
+      parentType === 'select' ? classes.inputSelect : classes.input;
+    const error = (errors[name] || {}).message;
+    const hasError = Boolean(error);
 
     return (
-      <TextField
-        ref={reference}
-        name={name}
-        placeholder={placeholder}
-        className={[
-          parentType === 'select' ? classes.rootSelect : classes.root,
-          className,
-        ].join(' ')}
-        label={
-          <>
-            <span>{label?.toUpperCase()}</span>
-            {required && (
-              <>
-                <Spacing horizontal={3} />
-                <span>(required)</span>
-              </>
-            )}
-          </>
-        }
-        multiline={!!multiple}
-        InputProps={{
-          margin: 'dense',
-          disableUnderline: true,
-          classes: {
-            input: multiple
-              ? classes.inputMultiple
-              : inputClass
-          },
-          ...InputProps,
-        }}
-        fullWidth
-        // InputLabelProps={{
-        //   shrink: true,
-        // }}
-        InputLabelProps={InputLabelProps}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        inputProps={inputProps}
-        inputRef={parentType !== 'text' ? null : register}
-      />
+      <>
+        <TextField
+          ref={reference}
+          name={name}
+          placeholder={placeholder}
+          className={[
+            parentType === 'select' ? classes.rootSelect : classes.root,
+            className,
+            hasError ? classes.error : '',
+          ].join(' ')}
+          // style={{borderBottomColor: hasError?'#ff0000':'#c1ccda'}}
+          label={
+            <>
+              <span>{label?.toUpperCase()}</span>
+              {required && (
+                <>
+                  <Spacing horizontal={3} />
+                  <span>(required)</span>
+                </>
+              )}
+            </>
+          }
+          multiline={!!multiple}
+          InputProps={{
+            margin: 'dense',
+            disableUnderline: true,
+            classes: {
+              input: multiple ? classes.inputMultiple : inputClass,
+            },
+            ...InputProps,
+          }}
+          fullWidth
+          // InputLabelProps={{
+          //   shrink: true,
+          // }}
+          InputLabelProps={InputLabelProps}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          inputProps={inputProps}
+          inputRef={parentType !== 'text' ? null : register}
+        />
+        <span className={classes.errorMessage}>{error}</span>
+      </>
     );
   },
 );

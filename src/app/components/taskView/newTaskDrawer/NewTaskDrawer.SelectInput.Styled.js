@@ -90,7 +90,7 @@ export const Listbox = styled('ul')`
 export const TagCreateActionButton = styled.div`
   color: ${palette.blueOcean};
   font-size: ${fontSizes.smallPlus};
-  width: 100px;
+  min-width: 80px;
 
   &:hover {
     text-decoration: underline;

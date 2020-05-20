@@ -179,7 +179,12 @@ const TopSection = ({
               marginTop: '-20px',
             }}
           >
-            <StyledList>
+            <StyledList
+              style={{
+                paddingTop: '0',
+                paddingBottom: '0',
+              }}
+            >
               <ListItem
                 key="action_add_subtask"
                 onClick={() => {
@@ -221,7 +226,7 @@ const TopSection = ({
                     })}
                     button
                     style={{
-                      borderBottom: `1px solid ${palette.coolGrey3}`,
+                      borderBottom: `none`,
                     }}
                   >
                     <CondensedH4>Delete</CondensedH4>
