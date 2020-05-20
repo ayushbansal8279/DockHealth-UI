@@ -298,6 +298,8 @@ class Home extends Component {
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
+    actions.loadingCompletedTasks();
+
     if (listName === ASSIGNED_BY_ME) {
       return actions
         .getTasksAssignedByMe(
