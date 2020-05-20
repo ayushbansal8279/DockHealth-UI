@@ -46,7 +46,7 @@ const handleTabsNavigation = routeParameters => {
 const TaskView = ({
   currentUser,
   isSpecialList,
-  markComplete,
+  toggleCompleteTask,
   members,
   membersNotInTaskList,
   showMembers = true,
@@ -177,6 +177,7 @@ const TaskView = ({
           storeAsCurrentTask={storeAsCurrentTask}
           currentUser={currentUser}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
+          toggleCompleteTask={task => toggleCompleteTask(task, selectedTab)}
           tasks={completedTasks}
           isFetchingData={isCompletedTasksFetching}
         />
@@ -187,7 +188,7 @@ const TaskView = ({
             createTaskGroupList({ groupName, taskListIdentifier })
           }
           currentUser={currentUser}
-          markComplete={markComplete}
+          toggleCompleteTask={task => toggleCompleteTask(task, selectedTab)}
           storeAsCurrentTask={storeAsCurrentTask}
           groupedTasks={groupedTasks}
           toggleSingleTaskPriority={toggleSingleTaskPriority}

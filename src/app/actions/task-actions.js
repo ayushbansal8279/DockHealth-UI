@@ -460,6 +460,29 @@ export function sortSubTask(task, direction) {
       });
 }
 
+export function toggleCompleteTask(task, tabName) {
+  return dispatch => {
+    const apiEndpoint =
+      task.status === 'INCOMPLETE' ? 'markComplete' : 'markIncomplete';
+
+    return TaskApi[apiEndpoint](task)
+      .then(() => {
+        dispatch(
+          getListTasks(
+            task.taskList.taskListIdentifier,
+            null,
+            null,
+            tabName.toUpperCase(),
+          ),
+        );
+        reloadTaskListStats(dispatch, task);
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
 export function markComplete(task, status, listName, currentUser = null) {
   const action =
     listName === 'INCOMPLETE'

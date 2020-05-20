@@ -11,6 +11,7 @@ const CompletedTasksView = ({
   markComplete,
   storeAsCurrentTask,
   toggleSingleTaskPriority,
+  toggleCompleteTask,
   isFetchingData,
 }) => {
   return (
@@ -24,6 +25,7 @@ const CompletedTasksView = ({
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskPriority={toggleSingleTaskPriority}
+            toggleCompleteTask={toggleCompleteTask}
             tasks={tasks}
             isCompletedGroup
           />

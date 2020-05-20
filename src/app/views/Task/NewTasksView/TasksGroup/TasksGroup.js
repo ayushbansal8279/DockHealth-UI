@@ -32,10 +32,10 @@ const TasksGroup = ({
   groupId,
   currentUser,
   groupName,
-  markComplete,
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
+  toggleCompleteTask,
   editGroupName,
   quickAddTask,
   deleteGroup,
@@ -164,7 +164,7 @@ const TasksGroup = ({
             tasks={orderedGroupTasks}
             currentUser={currentUser}
             isFullView={isFullView}
-            markComplete={markComplete}
+            toggleCompleteTask={toggleCompleteTask}
             openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             toggleTaskPriority={toggleTaskPriority}
