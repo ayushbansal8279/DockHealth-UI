@@ -10,7 +10,7 @@ import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as ModalActions from 'modal/actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
-import { TasksStatus } from 'components/taskView/Toolbar/config';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { groupTasksSelector } from 'selectors/task-group-list-selectors';
 import { arrayMove } from 'helpers/sorting-helper';
 
@@ -26,20 +26,20 @@ const Priority = {
 const navigateToTab = ({ tabName, taskListIdentifier }) => {
   hashHistory.push(
     `/tasks/${taskListIdentifier}${
-      tabName === TasksStatus.OPEN ? '' : `/${TasksStatus.COMPLETE}`
+      tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
     }`,
   );
 };
 
 const handleTabsNavigation = routeParameters => {
   switch (routeParameters.tabName) {
-    case TasksStatus.COMPLETE:
+    case TaskListTabName.COMPLETE:
       break;
     case undefined:
-    case TasksStatus.OPEN:
+    case TaskListTabName.OPEN:
       break;
     default:
-      navigateToTab({ ...routeParameters, tabName: TasksStatus.OPEN });
+      navigateToTab({ ...routeParameters, tabName: TaskListTabName.OPEN });
   }
 };
 
@@ -69,7 +69,7 @@ const TaskView = ({
   onCompletedTasksRequest,
 }) => {
   handleTabsNavigation(routeParams);
-  const selectedTab = routeParams.tabName || TasksStatus.OPEN;
+  const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
 
   const { openDrawer } = taskDrawerActions;
   const {
@@ -87,7 +87,7 @@ const TaskView = ({
   const { groupList } = taskGroupList;
 
   useEffect(() => {
-    if (selectedTab === TasksStatus.COMPLETE) {
+    if (selectedTab === TaskListTabName.COMPLETE) {
       onCompletedTasksRequest();
     } else {
       refresh();
@@ -171,7 +171,7 @@ const TaskView = ({
         openTasksAmount={openedTasks?.length}
         completedTasksAmount={completedTaskCount}
       />
-      {selectedTab === TasksStatus.COMPLETE ? (
+      {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
           openDrawer={openDrawer}
           storeAsCurrentTask={storeAsCurrentTask}
