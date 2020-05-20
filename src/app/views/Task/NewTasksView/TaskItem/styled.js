@@ -4,6 +4,26 @@ import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
+export const CompletedBy = styled.div`
+  width: 100%;
+  align-items: flex-end;
+  display: flex;
+  height: ${props => (props.isCompleted ? 1 : 0)}rem;
+  overflow: hidden;
+  padding-bottom: ${props => (props.isCompleted ? '0.1875rem' : 0)};
+  transition: all 0.1s ease-out;
+  transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
+
+  > span {
+    color: ${palette.brightBlue};
+    font-weight: ${fontWeights.regular};
+    line-height: 1;
+    transition: transform 0.4s ease-out;
+    transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
+    transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
+  }
+`;
+
 export const PrioritySwitch = styled.button`
   position: absolute;
   top: 50%;
@@ -37,11 +57,6 @@ export const CircleIcon = styled.img`
 export const Description = styled.div`
   cursor: pointer;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
-`;
-
-export const CompletedDescription = styled.div`
-  color: ${palette.brightBlue};
-  font-weight: ${fontWeights.regular};
 `;
 
 export const DescriptionBox = styled.div`

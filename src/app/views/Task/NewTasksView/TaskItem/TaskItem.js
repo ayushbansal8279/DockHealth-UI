@@ -40,7 +40,7 @@ import {
   TaskItemPanel,
   ThreeDots,
   PrioritySwitch,
-  CompletedDescription,
+  CompletedBy,
 } from './styled';
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
@@ -141,7 +141,7 @@ const TaskItem = ({
           />
           <DescriptionBox>
             <Description
-              isCrossedOut={isCompleted}
+              isCrossedOut={!isCompletedGroup && isCompleted}
               onClick={() => {
                 openDrawer();
                 storeAsCurrentTask(task);
@@ -150,13 +150,11 @@ const TaskItem = ({
               {description}
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>
-            {isCompleted && (
-              <CompletedDescription>
-                {`Completed by ${completedBy?.firstName?.[0].toLowerCase()}. ${completedBy?.lastName?.toLowerCase()} ${completedDt &&
-                  ` on ${moment(completedDt).format('MM/DD/YYYY')}`}
-                `}
-              </CompletedDescription>
-            )}
+            <CompletedBy isCompleted={isCompleted}>
+              <span>{`Completed by ${completedBy?.firstName?.[0].toLowerCase()}. ${completedBy?.lastName?.toLowerCase()} ${completedDt &&
+                ` on ${moment(completedDt).format('MM/DD/YYYY')}`}
+                `}</span>
+            </CompletedBy>
             {!isEmpty(subtasks) && (
               <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
                 <span>{subtasks?.length} subtasks</span>
