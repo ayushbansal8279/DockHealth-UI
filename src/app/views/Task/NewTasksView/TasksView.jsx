@@ -152,12 +152,12 @@ const TaskView = ({
       const modalProps = {
         confirm: () => {
           modalActions.closeModal();
-          toggleCompleteTask(task, selectedTab);
+          toggleCompleteTask(task, selectedTab, currentUser);
         },
       };
       modalActions.openModal('CompleteAllTasks', modalProps);
     } else {
-      toggleCompleteTask(task, selectedTab);
+      toggleCompleteTask(task, selectedTab, currentUser);
     }
   };
 
