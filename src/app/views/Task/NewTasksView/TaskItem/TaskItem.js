@@ -215,6 +215,7 @@ const Subtasks = ({
   taskListIdentifier,
   parentTaskId,
   reorderSubtasksForTask,
+  isCompleted,
   ...restProps
 }) => {
   const [isStartedSubtaskDnd, setSubtaskDnd] = useState(false);
@@ -276,6 +277,10 @@ const Subtasks = ({
                           key={subtask.taskId}
                           task={subtask}
                           isDragging={isDraggingSubtask}
+                          isCompleted={
+                            isCompleted ||
+                            (subtask.completedBy && subtask.completedDt)
+                          }
                           {...restProps}
                         />
                         {!isStartedSubtaskDnd && !isEmpty(subtask.comments) && (
