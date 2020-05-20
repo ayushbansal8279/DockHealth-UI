@@ -25,14 +25,6 @@ const getListAction = ({ status, cumulativeFlag }) => {
     : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
 };
 
-export const requestTasks = status => dispatch =>
-  dispatch({
-    type:
-      status === 'INCOMPLETE'
-        ? ActionTypes.REQUEST_TASKS
-        : ActionTypes.REQUEST_COMPLETED_TASKS,
-  });
-
 function getTasksForCreatorSuccess(tasks) {
   return { type: ActionTypes.GET_TASKS_SUCCESS, tasks };
 }

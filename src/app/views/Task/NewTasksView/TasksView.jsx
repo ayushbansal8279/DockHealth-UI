@@ -65,6 +65,8 @@ const TaskView = ({
   groupedTasks,
   taskCountStats,
   routeParams,
+  refresh,
+  onCompletedTasksRequest,
 }) => {
   handleTabsNavigation(routeParams);
   const selectedTab = routeParams.tabName || TasksStatus.OPEN;
@@ -75,8 +77,6 @@ const TaskView = ({
     saveTask,
     reorderTasksInGroup,
     reorderSubtasksForTask,
-    getListTasks,
-    requestTasks,
   } = taskActions;
   const {
     createTaskGroupList,
@@ -87,10 +87,12 @@ const TaskView = ({
   const { groupList } = taskGroupList;
 
   useEffect(() => {
-    const status = selectedTab?.toUpperCase();
-    requestTasks(status);
-    getListTasks(taskListIdentifier, null, null, status);
-  }, [selectedTab, taskListIdentifier, getListTasks, requestTasks]);
+    if (selectedTab === TasksStatus.COMPLETE) {
+      onCompletedTasksRequest();
+    } else {
+      refresh();
+    }
+  }, [selectedTab, onCompletedTasksRequest, refresh]);
 
   const quickAddTask = (
     taskName,
