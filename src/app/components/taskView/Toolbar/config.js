@@ -1,4 +1,4 @@
-export const TasksStatus = {
+export const TaskListTabName = {
   OPEN: 'incomplete',
   COMPLETE: 'complete',
 };
@@ -11,19 +11,19 @@ export const TABS_CONFIG = ({
   selectedTab,
 }) => [
   {
-    isSelected: selectedTab === TasksStatus.OPEN,
-    key: TasksStatus.OPEN,
+    isSelected: selectedTab === TaskListTabName.OPEN,
+    key: TaskListTabName.OPEN,
     label: 'Open Tasks'.concat(openTasksAmount ? ` (${openTasksAmount})` : ''),
-    onSelectTab: () => onSelectTab(TasksStatus.OPEN),
+    onSelectTab: () => onSelectTab(TaskListTabName.OPEN),
     shouldRender: () => true,
   },
   {
-    isSelected: selectedTab === TasksStatus.COMPLETE,
-    key: TasksStatus.COMPLETE,
+    isSelected: selectedTab === TaskListTabName.COMPLETE,
+    key: TaskListTabName.COMPLETE,
     label: 'Completed'.concat(
       completedTasksAmount ? ` (${completedTasksAmount})` : '',
     ),
-    onSelectTab: () => onSelectTab(TasksStatus.COMPLETE),
+    onSelectTab: () => onSelectTab(TaskListTabName.COMPLETE),
     shouldRender: () => true,
   },
 ];
