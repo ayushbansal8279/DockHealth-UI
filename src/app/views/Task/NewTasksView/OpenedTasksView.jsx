@@ -13,7 +13,7 @@ const OpenedTasksView = ({
   openDrawer,
   createTaskGroupList,
   currentUser,
-  markComplete,
+  toggleCompleteTask,
   storeAsCurrentTask,
   groupedTasks,
   groupList,
@@ -42,7 +42,7 @@ const OpenedTasksView = ({
                 groupName={
                   groupType !== TASKGROUP_DEFAULT_TYPE ? groupName : 'NEW TASKS'
                 }
-                markComplete={markComplete}
+                toggleCompleteTask={toggleCompleteTask}
                 openDrawer={openDrawer}
                 storeAsCurrentTask={storeAsCurrentTask}
                 toggleTaskPriority={toggleSingleTaskPriority}

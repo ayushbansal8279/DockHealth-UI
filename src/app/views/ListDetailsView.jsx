@@ -402,7 +402,7 @@ class Home extends Component {
       showingCompletedTasks,
       selectedTaskId,
       actions: {
-        markComplete,
+        toggleCompleteTask,
         storeAsCurrentTask,
         markAsUnread,
         refreshTask,
@@ -447,7 +447,7 @@ class Home extends Component {
       isFetching,
       isCompletedTasksFetching,
       showingCompletedTasks,
-      markComplete,
+      toggleCompleteTask,
       selectedTaskId,
       storeAsCurrentTask,
       markAsUnread,

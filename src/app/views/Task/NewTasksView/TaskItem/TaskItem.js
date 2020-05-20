@@ -87,10 +87,9 @@ const getItemIcon = (type, value) =>
   ITEM_ICONS[type][getItemIconVersion(value)];
 
 const TaskItem = ({
-  currentUser,
   isOpen,
   switchOpen,
-  markComplete,
+  toggleCompleteTask,
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
@@ -108,7 +107,6 @@ const TaskItem = ({
     dueDate,
     labels,
     patient,
-    status,
     subtasks,
     workflowStatus,
     completedDt,
@@ -133,14 +131,10 @@ const TaskItem = ({
           )}
         </PrioritySwitch>
         <TaskItemCell bolded padding="huge">
-          {isCompleted ? (
-            <CircleIcon src={CircleCompleted} onClick={() => {}} />
-          ) : (
-            <CircleIcon
-              src={Circle}
-              onClick={() => markComplete(task, status, status, currentUser)}
-            />
-          )}
+          <CircleIcon
+            src={isCompleted ? CircleCompleted : Circle}
+            onClick={() => toggleCompleteTask(task)}
+          />
           <DescriptionBox>
             <Description
               isCrossedOut={isCompleted}

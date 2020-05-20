@@ -8,7 +8,7 @@ const DragAndDropGroupList = ({
   currentUser,
   isFullView,
   isStartedDnD,
-  markComplete,
+  toggleCompleteTask,
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
@@ -38,7 +38,7 @@ const DragAndDropGroupList = ({
                   isFullView={isFullView}
                   isDragging={isDragging}
                   isStartedDnD={isStartedDnD}
-                  markComplete={markComplete}
+                  toggleCompleteTask={toggleCompleteTask}
                   openDrawer={openDrawer}
                   storeAsCurrentTask={storeAsCurrentTask}
                   toggleTaskPriority={toggleTaskPriority}
