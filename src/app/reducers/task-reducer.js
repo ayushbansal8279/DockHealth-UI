@@ -499,9 +499,8 @@ const TaskReducer = (state = initialState, action) => {
     case TOGGLE_TASK_PRIORITY_SUCCESS: {
       const mainTask = getMainTaskId(action.task);
 
-      return {
-        ...state,
-        tasks: state.tasks.map(task => {
+      const handleTaskPriorityChangeFromAction = tasks =>
+        tasks.map(task => {
           if (task.taskIdentifier === mainTask) {
             return action.task.parentTaskIdentifier
               ? {
@@ -516,7 +515,14 @@ const TaskReducer = (state = initialState, action) => {
           }
 
           return task;
-        }),
+        });
+
+      return {
+        ...state,
+        tasks: handleTaskPriorityChangeFromAction(state.tasks),
+        completedTasks: handleTaskPriorityChangeFromAction(
+          state.completedTasks,
+        ),
       };
     }
 
