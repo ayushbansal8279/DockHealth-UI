@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
@@ -87,7 +88,19 @@ const TasksGroup = ({
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
               <TasksGroupLabelCounter>
-                ({tasks?.length || 0})
+                (
+                {tasks?.reduce(
+                  (counter, task) =>
+                    counter +
+                    task.subtasks?.filter(x =>
+                      isCompletedGroup
+                        ? x.status === 'COMPLETE'
+                        : x.status === 'INCOMPLETE',
+                    ).length +
+                    1,
+                  0,
+                ) || 0}
+                )
               </TasksGroupLabelCounter>
             </TasksGroupLabel>
           </GroupNameSection>
