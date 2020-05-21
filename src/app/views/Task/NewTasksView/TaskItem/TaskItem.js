@@ -117,6 +117,11 @@ const TaskItem = ({
 
   const { innerRef, draggableProps, dragHandleProps } = draggableProvied;
 
+  const completedByName =
+    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+      .trim()
+      .replace(/^\.$/, '') || 'Unknown';
+
   return (
     <TaskItemPanel ref={innerRef} {...draggableProps} isDragging={isDragging}>
       <TaskItemContainer>
@@ -151,8 +156,12 @@ const TaskItem = ({
               {edited && <SmallText> (Edited)</SmallText>}
             </Description>
             <CompletedBy isCompleted={isCompleted}>
-              <span>{`Completed by ${completedBy?.firstName?.[0].toLowerCase()}. ${completedBy?.lastName?.toLowerCase()} ${completedDt &&
-                ` on ${moment(completedDt).format('MM/DD/YYYY')}`}
+              <span>{`Completed by ${completedByName} ${completedDt &&
+                ` on ${
+                  completedDt
+                    ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
+                    : ''
+                }`}
                 `}</span>
             </CompletedBy>
             {!isEmpty(subtasks) && (
