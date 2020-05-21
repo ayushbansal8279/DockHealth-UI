@@ -45,6 +45,7 @@ import {
 } from './styled';
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
+import UniversalTooltipContainer from '../../../../components/common/UniversalTooltipContainer';
 
 const COMMENTS = 'COMMENTS';
 const DUE_DATE = 'DUE_DATE';
@@ -86,6 +87,20 @@ const getItemIconVersion = value => {
 
 const getItemIcon = (type, value) =>
   ITEM_ICONS[type][getItemIconVersion(value)];
+
+const getToolTipMultiLabelDetails = labels => {
+  let toolTipMultiLabelDetails = '';
+  if (labels.length === 1) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}`;
+  } else if (labels.length === 2) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}, ${labels[1].labelName}`;
+  } else if (labels.length > 2) {
+    toolTipMultiLabelDetails = `${labels[0].labelName}, ${
+      labels[1].labelName
+    } + ${labels.length - 2}`;
+  }
+  return toolTipMultiLabelDetails;
+};
 
 const TaskItem = ({
   isOpen,
@@ -186,22 +201,54 @@ const TaskItem = ({
         <TaskItemCell width="200px">
           <Grid container>
             <GridImg item xs={3}>
-              <img alt="comments" src={getItemIcon(COMMENTS, comments)} />
+              <UniversalTooltipContainer
+                placement="top"
+                label={
+                  getItemIconVersion(comments) === REGULAR
+                    ? `${comments?.length} comments`
+                    : 'Add a new comment'
+                }
+              >
+                <img alt="comments" src={getItemIcon(COMMENTS, comments)} />
+              </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
-              <DueDateContainer>
-                <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-                <img alt="due-date" src={getItemIcon(DUE_DATE, dueDate)} />
-              </DueDateContainer>
+              <UniversalTooltipContainer placement="top" label="Edit Due Date">
+                <DueDateContainer>
+                  <DueDate>
+                    {dueDate && moment(dueDate).format('MM/DD')}
+                  </DueDate>
+                  <img alt="due-date" src={getItemIcon(DUE_DATE, dueDate)} />
+                </DueDateContainer>
+              </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
-              <img alt="labels" src={getItemIcon(LABELS, labels)} />
+              <UniversalTooltipContainer
+                placement="top"
+                label={
+                  getItemIconVersion(labels) === REGULAR
+                    ? getToolTipMultiLabelDetails(labels)
+                    : 'Add label'
+                }
+              >
+                {' '}
+                <img alt="labels" src={getItemIcon(LABELS, labels)} />
+              </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
-              <img
-                alt="attachments"
-                src={getItemIcon(ATTACHMENTS, attachments)}
-              />
+              <UniversalTooltipContainer
+                placement="top"
+                label={
+                  getItemIconVersion(attachments) === REGULAR
+                    ? `${attachments?.length} new files added`
+                    : 'Add file'
+                }
+              >
+                <img
+                  alt="attachments"
+                  src={getItemIcon(ATTACHMENTS, attachments)}
+                />
+              </UniversalTooltipContainer>
             </GridImg>
           </Grid>
         </TaskItemCell>
