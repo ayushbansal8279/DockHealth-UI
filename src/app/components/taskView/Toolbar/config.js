@@ -13,7 +13,11 @@ export const TABS_CONFIG = ({
   {
     isSelected: selectedTab === TaskListTabName.OPEN,
     key: TaskListTabName.OPEN,
-    label: 'Open Tasks'.concat(openTasksAmount ? ` (${openTasksAmount})` : ''),
+    label: 'Open Tasks'.concat(
+      openTasksAmount !== null && openTasksAmount !== undefined
+        ? ` (${openTasksAmount})`
+        : '',
+    ),
     onSelectTab: () => onSelectTab(TaskListTabName.OPEN),
     shouldRender: () => true,
   },
@@ -21,7 +25,9 @@ export const TABS_CONFIG = ({
     isSelected: selectedTab === TaskListTabName.COMPLETE,
     key: TaskListTabName.COMPLETE,
     label: 'Completed'.concat(
-      completedTasksAmount ? ` (${completedTasksAmount})` : '',
+      completedTasksAmount !== null && completedTasksAmount !== undefined
+        ? ` (${completedTasksAmount})`
+        : '',
     ),
     onSelectTab: () => onSelectTab(TaskListTabName.COMPLETE),
     shouldRender: () => true,

@@ -13,6 +13,9 @@ const CompletedTasksView = ({
   storeAsCurrentTask,
   toggleSingleTaskPriority,
   toggleCompleteTask,
+  summaryTasksCount,
+  showMoreTasks,
+  isFetchingMoreTasks,
   isFetchingData,
 }) => {
   return (
@@ -30,6 +33,10 @@ const CompletedTasksView = ({
               toggleCompleteTask={toggleCompleteTask}
               tasks={tasks}
               isCompletedGroup
+              groupPagination
+              showMoreTasks={showMoreTasks}
+              hasMoreTasks={tasks.length < summaryTasksCount}
+              isFetchingMoreTasks={isFetchingMoreTasks}
             />
           </DragDropContext>
         </TaskGroupsContainer>

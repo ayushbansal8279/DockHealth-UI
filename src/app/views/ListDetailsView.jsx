@@ -196,7 +196,7 @@ class Home extends Component {
     }
   }
 
-  refreshTab = (withLoader = false) => {
+  refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
       routeParams: { taskListIdentifier, tabName },
     } = this.props;
@@ -206,7 +206,7 @@ class Home extends Component {
         taskListIdentifier,
         null,
         null,
-        false,
+        cumulativeFlag,
         withLoader,
       );
     } else {
@@ -327,14 +327,21 @@ class Home extends Component {
     selectedTaskListIdentifier,
     filterBy,
     sortBy,
-    cumulativeFlag = true,
+    cumulativeFlag = false,
     withLoader = true,
   ) => {
     const {
       actions,
       taskListActions,
+      completedTasks,
       routeParams: { listName, taskListIdentifier },
     } = this.props;
+
+    let queryStartPosition = 0;
+
+    if (cumulativeFlag) {
+      queryStartPosition = completedTasks.length;
+    }
 
     if (withLoader) {
       actions.loadingCompletedTasks();
@@ -347,7 +354,7 @@ class Home extends Component {
           sortBy,
           filterBy,
           'COMPLETE',
-          true,
+          cumulativeFlag,
         )
         .then(noop)
         .catch(error => {
@@ -357,7 +364,7 @@ class Home extends Component {
               sortBy,
               filterBy,
               'COMPLETE',
-              true,
+              cumulativeFlag,
             );
           });
         });
@@ -380,7 +387,7 @@ class Home extends Component {
               sortBy,
               filterBy,
               'COMPLETE',
-              true,
+              cumulativeFlag,
             );
           });
         });
@@ -394,6 +401,7 @@ class Home extends Component {
         filterBy,
         'COMPLETE',
         cumulativeFlag,
+        queryStartPosition,
       )
       .then(noop)
       .catch(error => {
@@ -404,6 +412,7 @@ class Home extends Component {
             filterBy,
             'COMPLETE',
             cumulativeFlag,
+            queryStartPosition,
           );
         });
       });

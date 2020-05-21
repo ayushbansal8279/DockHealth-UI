@@ -1,9 +1,14 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
+import CubesLoader from 'components/common/CubesLoader';
+import Spacing from 'components/common/Spacing';
+import palette from 'styles/palette';
+
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import DragAndDropGroupList from '../DragAndDropGroupList/DragAndDropGroupList';
@@ -18,6 +23,7 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
+  PaginationButton,
 } from './styled';
 import { AddTaskInputWrapper } from '../styled';
 
@@ -45,6 +51,10 @@ const TasksGroup = ({
   tasks,
   isCompletedGroup,
   draggedId,
+  groupPagination,
+  showMoreTasks,
+  isFetchingMoreTasks,
+  hasMoreTasks,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -148,6 +158,21 @@ const TasksGroup = ({
           reorderSubtasksForTask={reorderSubtasksForTask}
           isCompletedGroup={isCompletedGroup}
         />
+        {groupPagination && hasMoreTasks && (
+          <PaginationButton
+            disabled={isFetchingMoreTasks}
+            type="button"
+            onClick={showMoreTasks}
+          >
+            Show more
+            {isFetchingMoreTasks && (
+              <>
+                <Spacing horizontal={4} />
+                <CubesLoader size={16} color={palette.brightBlue} />
+              </>
+            )}
+          </PaginationButton>
+        )}
       </Tasks>
     </TasksGroupContainer>
   );

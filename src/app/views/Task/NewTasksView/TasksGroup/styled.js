@@ -101,3 +101,12 @@ export const GroupNameSectionWrapper = styled.div`
 export const MoveUpIcon = styled.img`
   transform: rotate(-180deg);
 `;
+
+export const PaginationButton = styled.button`
+  display: flex;
+  margin-top: ${spacing.regular};
+  margin-left: ${spacing.huge};
+  color: ${props => (props.disabled ? palette.coolGrey2 : palette.brightBlue)};
+  font-size: ${fontSizes.regular};
+  cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
+`;

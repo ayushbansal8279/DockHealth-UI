@@ -65,6 +65,7 @@ const TaskView = ({
   routeParams,
   refreshTab,
   listStats,
+  isFetchingMoreTasks,
 }) => {
   handleTabsNavigation(routeParams);
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
@@ -198,6 +199,9 @@ const TaskView = ({
           toggleCompleteTask={toggleTaskCompletedStatus}
           tasks={completedTasks}
           isFetchingData={isCompletedTasksFetching}
+          summaryTasksCount={completedTaskCount}
+          showMoreTasks={() => refreshTab(false, true)}
+          isFetchingMoreTasks={isFetchingMoreTasks}
         />
       ) : (
         <OpenedTasksView
@@ -251,6 +255,7 @@ const mapStateToProps = store => ({
   openedTasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
   groupedTasks: groupTasksSelector(store.taskState.tasks),
+  isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

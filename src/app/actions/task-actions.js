@@ -49,15 +49,20 @@ export function getListTasks(
   filterBy,
   status,
   cumulativeFlag,
+  queryStartPosition = 0,
 ) {
   const action = getListAction({ status, cumulativeFlag });
 
   return dispatch => {
+    if (cumulativeFlag) {
+      dispatch({ type: ActionTypes.GET_MORE_TASKS_REQUEST });
+    }
     return TaskApi.getListTasksByUser(
       taskListIdentifier,
       status,
       sortBy,
       filterBy,
+      queryStartPosition,
     )
       .then(tasks => {
         dispatch({ type: action, tasks });
