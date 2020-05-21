@@ -198,11 +198,9 @@ class Home extends Component {
       undefined,
       'INCOMPLETE',
     );
-    actions.getListTasksCount(
-      routeParams.taskListIdentifier,
-      undefined,
-      'COMPLETE',
-    );
+    taskListActions.getTaskListStats({
+      taskListIdentifier: routeParams.taskListIdentifier,
+    });
 
     if (routeParams.taskListIdentifier) {
       taskListActions.getMembersByTaskListId(
@@ -300,6 +298,7 @@ class Home extends Component {
   ) => {
     const {
       actions,
+      taskListActions,
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
@@ -353,6 +352,7 @@ class Home extends Component {
         });
     }
 
+    taskListActions.getTaskListStats({ taskListIdentifier });
     return actions
       .getListTasks(
         taskListIdentifier,

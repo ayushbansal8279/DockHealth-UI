@@ -62,10 +62,10 @@ const TaskView = ({
   openedTasks,
   completedTasks,
   groupedTasks,
-  taskCountStats,
   routeParams,
   refresh,
   onCompletedTasksRequest,
+  listStats,
 }) => {
   handleTabsNavigation(routeParams);
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
@@ -180,14 +180,17 @@ const TaskView = ({
     }
   };
 
-  const completedTaskCount =
-    completedTasks?.length > 0
-      ? completedTasks.length
-      : taskCountStats?.find?.(
-          ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
-            metricName === 'TASKS_COUNT' &&
-            metricTaskListIdentifier === taskListIdentifier,
-        )?.metricValue;
+  const completedTaskCount = listStats?.find?.(
+    ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
+      metricName === 'Completed_TaskList_Count' &&
+      metricTaskListIdentifier === taskListIdentifier,
+  )?.metricValue;
+
+  const openTaskCount = listStats?.find?.(
+    ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
+      metricName === 'Incomplete_TaskList_Count' &&
+      metricTaskListIdentifier === taskListIdentifier,
+  )?.metricValue;
 
   return (
     <TaskViewContainer>
@@ -204,7 +207,7 @@ const TaskView = ({
         selectedTab={selectedTab}
         showMembers={showMembers}
         taskList={taskList}
-        openTasksAmount={openedTasks?.length}
+        openTasksAmount={openTaskCount}
         completedTasksAmount={completedTaskCount}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
@@ -260,12 +263,11 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = store => ({
-  listStats: store.taskListState.taskListStats,
+  listStats: store.taskListState?.taskListStats?.stats,
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
   isFetchingTasks: store.taskState.isFetching,
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
-  taskCountStats: store.taskState.taskCountStats,
   openedTasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
   groupedTasks: groupTasksSelector(store.taskState.tasks),
