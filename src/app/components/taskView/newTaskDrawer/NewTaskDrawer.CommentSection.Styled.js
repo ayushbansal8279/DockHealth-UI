@@ -68,5 +68,6 @@ export const CommentContentField = styled.div`
     outline: none;
     padding: 0;
     resize: none;
+    overflow-wrap: anywhere;
   }
 `;
