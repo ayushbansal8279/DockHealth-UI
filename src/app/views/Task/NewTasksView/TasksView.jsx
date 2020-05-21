@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
@@ -102,10 +102,6 @@ const TaskView = ({
     },
     [selectedTab, taskListIdentifier, onCompletedTasksRequest, refresh],
   );
-
-  useEffect(() => {
-    refreshTab();
-  }, [selectedTab, refreshTab]);
 
   const quickAddTask = (
     taskName,
