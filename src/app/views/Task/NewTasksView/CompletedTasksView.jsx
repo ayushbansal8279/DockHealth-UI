@@ -16,7 +16,7 @@ const CompletedTasksView = ({
 }) => {
   return (
     <TasksViewLoader isFetchingData={isFetchingData}>
-      {tasks?.length > 0 ? (
+      {tasks?.length > 0 && (
         <TaskGroupsContainer>
           <TasksGroup
             groupName="Completed"
@@ -30,8 +30,6 @@ const CompletedTasksView = ({
             isCompletedGroup
           />
         </TaskGroupsContainer>
-      ) : (
-        <div>List is empty</div>
       )}
     </TasksViewLoader>
   );

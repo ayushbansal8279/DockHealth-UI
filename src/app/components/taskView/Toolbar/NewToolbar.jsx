@@ -121,6 +121,7 @@ export default ({
   return (
     <PageContentHeader>
       <Tabs
+        completedTasksAmount={completedTasksAmount}
         config={TABS_CONFIG({
           selectedTab,
           onSelectTab,

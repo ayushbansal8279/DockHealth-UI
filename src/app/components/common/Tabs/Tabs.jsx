@@ -1,4 +1,5 @@
 import React from 'react';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { TabsContainer, TabButton } from './styled';
 
 const Tab = ({ label, isSelected, onSelectTab }) => (
@@ -7,12 +8,17 @@ const Tab = ({ label, isSelected, onSelectTab }) => (
   </TabButton>
 );
 
-const Tabs = ({ config }) => {
+const Tabs = ({ config, completedTasksAmount }) => {
   return (
     <TabsContainer>
-      {config?.map(
-        ({ shouldRender, ...tab }) => shouldRender() && <Tab {...tab} />,
-      )}
+      {config?.map(({ shouldRender, key, ...tab }) => {
+        return (
+          shouldRender() &&
+          (key !== TaskListTabName.COMPLETE || completedTasksAmount > 0) && (
+            <Tab {...tab} />
+          )
+        );
+      })}
     </TabsContainer>
   );
 };

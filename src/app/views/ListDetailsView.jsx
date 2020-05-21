@@ -62,6 +62,10 @@ class Home extends Component {
       sortBy = 'CREATED_DT';
     }
 
+    taskListActions.getTaskListStats({
+      taskListIdentifier: routeParams.taskListIdentifier,
+    });
+
     const taskAction = cond([
       [equals(ASSIGNED_BY_ME), always(actions.getTasksAssignedByMe)],
       [equals(ASSIGNED_TO_ME), always(actions.getTasksAssignedToMe)],
@@ -162,6 +166,9 @@ class Home extends Component {
         taskListActions.getTaskListById(
           nextProps.routeParams.taskListIdentifier,
         );
+        taskListActions.getTaskListStats({
+          taskListIdentifier: nextProps.routeParams.taskListIdentifier,
+        });
         actions.getListTasks(
           nextProps.routeParams.taskListIdentifier,
           undefined,
@@ -188,6 +195,24 @@ class Home extends Component {
       }
     }
   }
+
+  refreshTab = (withLoader = false) => {
+    const {
+      routeParams: { taskListIdentifier, tabName },
+    } = this.props;
+
+    if (tabName === TaskListTabName.COMPLETE) {
+      this.handleCompletedTasksRequest(
+        taskListIdentifier,
+        null,
+        null,
+        false,
+        withLoader,
+      );
+    } else {
+      this.refresh(withLoader);
+    }
+  };
 
   refresh = (withLoader = true) => {
     const {
@@ -476,8 +501,7 @@ class Home extends Component {
       toggleTaskPriority: (task, priority) =>
         toggleTaskPriority(task, userIdentifier, priority),
       onFilter: this.handleFilterChange,
-      onCompletedTasksRequest: this.handleCompletedTasksRequest,
-      refresh: this.refresh,
+      refreshTab: this.refreshTab,
       downloadPDF: this.downloadPDF,
       hasTitle,
       title,
