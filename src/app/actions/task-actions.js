@@ -490,14 +490,6 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
 
     return TaskApi[apiEndpoint](task)
       .then(() => {
-        dispatch(
-          getListTasks(
-            task.taskList.taskListIdentifier,
-            null,
-            null,
-            tabName.toUpperCase(),
-          ),
-        );
         reloadTaskListStats(dispatch, task);
       })
       .catch(error => {
