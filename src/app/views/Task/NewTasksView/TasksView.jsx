@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
@@ -46,7 +46,6 @@ const handleTabsNavigation = routeParameters => {
 const TaskView = ({
   currentUser,
   isSpecialList,
-  toggleCompleteTask,
   members,
   membersNotInTaskList,
   showMembers = true,
@@ -67,7 +66,6 @@ const TaskView = ({
   routeParams,
   refresh,
   onCompletedTasksRequest,
-  listStats,
 }) => {
   handleTabsNavigation(routeParams);
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
@@ -78,6 +76,7 @@ const TaskView = ({
     saveTask,
     reorderTasksInGroup,
     reorderSubtasksForTask,
+    toggleCompleteTask,
   } = taskActions;
   const {
     createTaskGroupList,
@@ -87,13 +86,26 @@ const TaskView = ({
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
 
+  const refreshTab = useCallback(
+    (withLoader = true) => {
+      if (selectedTab === TaskListTabName.COMPLETE) {
+        onCompletedTasksRequest(
+          taskListIdentifier,
+          null,
+          null,
+          false,
+          withLoader,
+        );
+      } else {
+        refresh(withLoader);
+      }
+    },
+    [selectedTab, taskListIdentifier, onCompletedTasksRequest, refresh],
+  );
+
   useEffect(() => {
-    if (selectedTab === TaskListTabName.COMPLETE) {
-      onCompletedTasksRequest();
-    } else {
-      refresh();
-    }
-  }, [selectedTab, onCompletedTasksRequest, refresh]);
+    refreshTab();
+  }, [selectedTab, refreshTab]);
 
   const quickAddTask = (
     taskName,
@@ -145,6 +157,12 @@ const TaskView = ({
     taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
   };
 
+  const invokeToggleCompleteAction = task => {
+    toggleCompleteTask(task, selectedTab, currentUser)
+      .then(() => refreshTab(false))
+      .catch(() => refreshTab(false));
+  };
+
   const toggleTaskCompletedStatus = task => {
     const hasIncompletedSubtasks = task.subtasks.find(
       subtask => subtask.status === 'INCOMPLETE',
@@ -153,16 +171,14 @@ const TaskView = ({
       const modalProps = {
         confirm: () => {
           modalActions.closeModal();
-          toggleCompleteTask(task, selectedTab, currentUser);
+          invokeToggleCompleteAction(task);
         },
       };
       modalActions.openModal('CompleteAllTasks', modalProps);
     } else {
-      toggleCompleteTask(task, selectedTab, currentUser);
+      invokeToggleCompleteAction(task);
     }
   };
-
-  console.log('listStats', listStats);
 
   const completedTaskCount =
     completedTasks?.length > 0
@@ -173,8 +189,6 @@ const TaskView = ({
             metricTaskListIdentifier === taskListIdentifier,
         )?.metricValue;
 
-  console.log('completed', completedTasks);
-  console.log('open', openedTasks);
   return (
     <TaskViewContainer>
       <Toolbar

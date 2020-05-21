@@ -180,7 +180,7 @@ class Home extends Component {
     }
   }
 
-  refresh = () => {
+  refresh = (withLoader = true) => {
     const {
       actions,
       routeParams,
@@ -188,7 +188,10 @@ class Home extends Component {
       patientActions,
     } = this.props;
 
-    actions.loading();
+    if (withLoader) {
+      actions.loading();
+    }
+
     actions.getListTasks(
       routeParams.taskListIdentifier,
       undefined,
@@ -292,13 +295,17 @@ class Home extends Component {
     selectedTaskListIdentifier,
     filterBy,
     sortBy,
+    cumulativeFlag = true,
+    withLoader = true,
   ) => {
     const {
       actions,
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
-    actions.loadingCompletedTasks();
+    if (withLoader) {
+      actions.loadingCompletedTasks();
+    }
 
     if (listName === ASSIGNED_BY_ME) {
       return actions
@@ -347,7 +354,13 @@ class Home extends Component {
     }
 
     return actions
-      .getListTasks(taskListIdentifier, sortBy, filterBy, 'COMPLETE', true)
+      .getListTasks(
+        taskListIdentifier,
+        sortBy,
+        filterBy,
+        'COMPLETE',
+        cumulativeFlag,
+      )
       .then(noop)
       .catch(error => {
         this.handleRetry(error, () => {
@@ -356,7 +369,7 @@ class Home extends Component {
             sortBy,
             filterBy,
             'COMPLETE',
-            true,
+            cumulativeFlag,
           );
         });
       });
@@ -402,7 +415,6 @@ class Home extends Component {
       showingCompletedTasks,
       selectedTaskId,
       actions: {
-        toggleCompleteTask,
         storeAsCurrentTask,
         markAsUnread,
         refreshTask,
@@ -447,7 +459,6 @@ class Home extends Component {
       isFetching,
       isCompletedTasksFetching,
       showingCompletedTasks,
-      toggleCompleteTask,
       selectedTaskId,
       storeAsCurrentTask,
       markAsUnread,
