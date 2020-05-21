@@ -95,7 +95,7 @@ const TaskItem = ({
   storeAsCurrentTask,
   toggleTaskPriority,
   task,
-  draggableProvied,
+  dragHandleProps,
   isDragging,
   isCompletedGroup,
 }) => {
@@ -116,15 +116,13 @@ const TaskItem = ({
 
   const isCompleted = task.status === 'COMPLETE';
 
-  const { innerRef, draggableProps, dragHandleProps } = draggableProvied;
-
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
       .trim()
       .replace(/^\.$/, '') || 'Unknown';
 
   return (
-    <TaskItemPanel ref={innerRef} {...draggableProps} isDragging={isDragging}>
+    <TaskItemPanel isDragging={isDragging}>
       <TaskItemContainer>
         {!isCompletedGroup && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
@@ -227,7 +225,7 @@ const Subtasks = ({
   reorderSubtasksForTask,
   ...restProps
 }) => {
-  const [isStartedSubtaskDnd, setSubtaskDnd] = useState(false);
+  const [draggedId, setDraggableId] = useState(false);
   const [orderedSubtasks, reorderSubtasksInState] = useState(subtasks);
   const subtasksOrder = subtasks.map(({ taskIdentifier }) => taskIdentifier);
 
@@ -236,42 +234,42 @@ const Subtasks = ({
   }, [subtasks]);
 
   return (
-    <DragDropContext
-      onBeforeCapture={() => {
-        setSubtaskDnd(true);
-      }}
-      onDragEnd={eventBundle => {
-        const { destination, source } = eventBundle;
-        if (destination && destination?.index !== source?.index) {
-          const newSubtasksOrder = [...subtasksOrder];
-          newSubtasksOrder.splice(
-            destination.index,
-            0,
-            newSubtasksOrder.splice(source.index, 1)[0],
-          );
+    <SubtasksContainer issubtasks="true" in={isOpen}>
+      <DragDropContext
+        onBeforeCapture={({ draggableId }) => {
+          setDraggableId(draggableId);
+        }}
+        onDragEnd={eventBundle => {
+          const { destination, source } = eventBundle;
+          if (destination && destination?.index !== source?.index) {
+            const newSubtasksOrder = [...subtasksOrder];
+            newSubtasksOrder.splice(
+              destination.index,
+              0,
+              newSubtasksOrder.splice(source.index, 1)[0],
+            );
 
-          reorderSubtasksForTask(
-            newSubtasksOrder,
-            groupId,
-            taskListIdentifier,
-            parentTaskId,
-          );
+            reorderSubtasksForTask(
+              newSubtasksOrder,
+              groupId,
+              taskListIdentifier,
+              parentTaskId,
+            );
 
-          const reorderedTasks = newSubtasksOrder.map(taskId =>
-            orderedSubtasks.find(
-              ({ taskIdentifier }) => taskIdentifier === taskId,
-            ),
-          );
+            const reorderedTasks = newSubtasksOrder.map(taskId =>
+              orderedSubtasks.find(
+                ({ taskIdentifier }) => taskIdentifier === taskId,
+              ),
+            );
 
-          reorderSubtasksInState(reorderedTasks);
-          setSubtaskDnd(false);
-        }
-      }}
-    >
-      <Droppable droppableId="droppable">
-        {provided => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            <SubtasksContainer issubtasks="true" in={isOpen}>
+            reorderSubtasksInState(reorderedTasks);
+            setDraggableId(null);
+          }
+        }}
+      >
+        <Droppable droppableId="droppable">
+          {provided => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
               {!isEmpty(orderedSubtasks) &&
                 orderedSubtasks?.map((subtask, index) => (
                   <Draggable
@@ -279,32 +277,35 @@ const Subtasks = ({
                     draggableId={String(subtask.taskId)}
                     index={index}
                   >
-                    {(draggableProvied, { isDragging: isDraggingSubtask }) => (
-                      <>
+                    {(
+                      { innerRef, draggableProps, dragHandleProps },
+                      { isDragging: isDraggingSubtask },
+                    ) => (
+                      <div ref={innerRef} {...draggableProps}>
                         <TaskItem
-                          draggableProvied={draggableProvied}
+                          dragHandleProps={dragHandleProps}
                           key={subtask.taskId}
                           task={subtask}
                           isDragging={isDraggingSubtask}
                           {...restProps}
                         />
-                        {!isStartedSubtaskDnd && !isEmpty(subtask.comments) && (
-                          <TaskComments
-                            isOpen={isFullView}
-                            comments={subtask.comments}
-                          />
-                        )}
-                        {draggableProvied.placeholder}
-                      </>
+                        {draggedId !== subtask.taskId &&
+                          !isEmpty(subtask.comments) && (
+                            <TaskComments
+                              isOpen={isFullView}
+                              comments={subtask.comments}
+                            />
+                          )}
+                      </div>
                     )}
                   </Draggable>
                 ))}
               {provided.placeholder}
-            </SubtasksContainer>
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </SubtasksContainer>
   );
 };
 
@@ -313,35 +314,36 @@ const Task = ({
   isFullView,
   isStartedDnD,
   isDragging,
-  dragandDropProps,
+  draggableProvided,
   groupId,
   taskListIdentifier,
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
   const { comments, subtasks } = task;
+  const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
 
   return (
-    <div>
+    <div ref={innerRef} {...draggableProps}>
       <TaskItem
         task={task}
         isOpen={isOpen}
         switchOpen={switchOpen}
-        draggableProvied={dragandDropProps}
+        dragHandleProps={dragHandleProps}
         isDragging={isDragging}
         {...restProps}
       />
       {!isEmpty(comments) && !isStartedDnD && (
         <TaskComments isOpen={isFullView} comments={comments} />
       )}
-      {!isStartedDnD && (
+      {!isEmpty(subtasks) && !isStartedDnD && (
         <Subtasks
           subtasks={subtasks}
           isOpen={isOpen}
           isFullView={isFullView}
           groupId={groupId}
           taskListIdentifier={taskListIdentifier}
-          parentTaskId={task.taskId}
+          parentTaskId={task.taskIdentifier}
           {...restProps}
         />
       )}

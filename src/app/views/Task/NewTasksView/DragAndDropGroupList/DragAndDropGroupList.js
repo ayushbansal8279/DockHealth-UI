@@ -7,8 +7,8 @@ const DragAndDropGroupList = ({
   groupId,
   currentUser,
   isFullView,
-  isStartedDnD,
   toggleCompleteTask,
+  draggedId,
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
@@ -25,8 +25,8 @@ const DragAndDropGroupList = ({
       >
         {tasks?.map((task, index) => (
           <Draggable
-            key={task.taskId}
-            draggableId={String(task.taskId)}
+            key={task.taskIdentifier}
+            draggableId={String(task.taskIdentifier)}
             index={index}
             isDragDisabled={isCompletedGroup}
           >
@@ -37,7 +37,7 @@ const DragAndDropGroupList = ({
                   currentUser={currentUser}
                   isFullView={isFullView}
                   isDragging={isDragging}
-                  isStartedDnD={isStartedDnD}
+                  isStartedDnD={draggedId === task.taskIdentifier}
                   toggleCompleteTask={toggleCompleteTask}
                   openDrawer={openDrawer}
                   storeAsCurrentTask={storeAsCurrentTask}
