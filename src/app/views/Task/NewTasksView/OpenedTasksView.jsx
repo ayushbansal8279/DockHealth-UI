@@ -117,7 +117,7 @@ const OpenedTasksView = ({
                       ? destinationGroup.groupType
                       : destinationGroup.taskGroupIdentifier;
 
-                  const destinationTasks = tasks[destinationGroupKey];
+                  const destinationTasks = tasks[destinationGroupKey] || [];
 
                   const destinationTasksOrder = destinationTasks?.map(
                     ({ taskIdentifier }) => taskIdentifier,
