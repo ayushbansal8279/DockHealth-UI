@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useDispatch, useSelector } from 'react-redux';
 import { prop } from 'ramda';
-import { updateTaskManually } from 'actions/task-actions';
 import {
   addLabel,
   editLabel,
@@ -99,11 +98,12 @@ const initializeLabelsSectionHooks = ({
       ),
     );
 
-    updateTaskManually({
-      ...(selectedTask ?? {}),
-      labels: formattedLabels,
-    })(dispatch);
-    getTaskListLabels({
+    // updateTaskManually({
+    //   ...(selectedTask ?? {}),
+    //   labels: formattedLabels,
+    // })(dispatch);
+
+    await getTaskListLabels({
       taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
     })(dispatch);
 
@@ -125,7 +125,7 @@ const initializeLabelsSectionHooks = ({
       taskIdentifier,
     })(dispatch);
 
-    getTaskListLabels({
+    await getTaskListLabels({
       taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
     })(dispatch);
 
@@ -147,7 +147,7 @@ const initializeLabelsSectionHooks = ({
       taskIdentifier,
     })(dispatch);
 
-    getTaskListLabels({
+    await getTaskListLabels({
       taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
     })(dispatch);
 
