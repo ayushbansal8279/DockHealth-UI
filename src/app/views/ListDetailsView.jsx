@@ -1,7 +1,9 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { always, cond, equals, T } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -38,9 +40,15 @@ class Home extends Component {
         invitationActions.acceptInviteToTaskList(tasklist),
       ),
     );
+    let tabStatus = 'INCOMPLETE';
 
     this.refreshAccessToken(user);
-    actions.loading();
+    if (routeParams.tabName === TaskListTabName.COMPLETE) {
+      actions.loadingCompletedTasks();
+      tabStatus = 'COMPLETE';
+    } else {
+      actions.loading();
+    }
 
     const { filterBy, listName } = routeParams;
     let { taskStatus } = routeParams;
@@ -60,25 +68,9 @@ class Home extends Component {
       [T, always(actions.getListTasks)],
     ])(listName);
 
-    const taskCountAction = cond([
-      [equals(ASSIGNED_BY_ME), always(actions.getCountOfTasksAssignedByMe)],
-      [equals(ASSIGNED_TO_ME), always(actions.getCountOfTasksAssignedToMe)],
-      [T, always(actions.getListTasksCount)],
-    ])(listName);
-
     const getAllTasks = async () => {
       await Promise.all([
-        taskAction(
-          routeParams.taskListIdentifier,
-          sortBy,
-          filterBy,
-          'INCOMPLETE',
-        ),
-        taskCountAction(
-          routeParams.taskListIdentifier,
-          null, // default view
-          'COMPLETE',
-        ),
+        taskAction(routeParams.taskListIdentifier, sortBy, filterBy, tabStatus),
       ]);
 
       const {
@@ -140,6 +132,23 @@ class Home extends Component {
 
   componentWillUpdate(nextProps) {
     const { routeParams } = this.props;
+
+    if (
+      nextProps.routeParams.taskListIdentifier ===
+        routeParams.taskListIdentifier &&
+      nextProps.routeParams.tabName !== routeParams.tabName
+    ) {
+      if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
+        this.handleCompletedTasksRequest(
+          routeParams.taskListIdentifier,
+          null,
+          null,
+          false,
+        );
+      } else {
+        this.refresh();
+      }
+    }
 
     if (
       nextProps.routeParams.taskListIdentifier !==
