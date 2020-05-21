@@ -67,6 +67,7 @@ const TaskView = ({
   routeParams,
   refresh,
   onCompletedTasksRequest,
+  listStats,
 }) => {
   handleTabsNavigation(routeParams);
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
@@ -161,6 +162,8 @@ const TaskView = ({
     }
   };
 
+  console.log('listStats', listStats);
+
   const completedTaskCount =
     completedTasks?.length > 0
       ? completedTasks.length
@@ -170,6 +173,8 @@ const TaskView = ({
             metricTaskListIdentifier === taskListIdentifier,
         )?.metricValue;
 
+  console.log('completed', completedTasks);
+  console.log('open', openedTasks);
   return (
     <TaskViewContainer>
       <Toolbar
@@ -241,6 +246,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = store => ({
+  listStats: store.taskListState.taskListStats,
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
   isFetchingTasks: store.taskState.isFetching,
