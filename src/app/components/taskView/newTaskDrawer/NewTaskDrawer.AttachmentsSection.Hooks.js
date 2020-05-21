@@ -5,7 +5,6 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   removeTaskAttachment,
   addTaskAttachment,
-  refreshAndStoreAsCurrentTask,
 } from 'actions/task-actions';
 import useBoolean from 'hooks/useBoolean';
 
@@ -145,7 +144,12 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
         selectedTaskIdentifier,
         attachmentIdentifier,
       )(dispatch).then(() => {
-        refreshAndStoreAsCurrentTask(selectedTaskIdentifier);
+        setCurrentTaskAttachments(
+          currentTaskAttachments.filter(
+            ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
+              attachmentIdentifier !== currentAttachmentIdentifier,
+          ),
+        );
         // reloadAttachments({
         //   attachmentsToReload: currentTaskAttachments.filter(
         //     ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
@@ -154,7 +158,7 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
         // });
       });
     },
-    [dispatch, selectedTaskIdentifier],
+    [dispatch, selectedTaskIdentifier, currentTaskAttachments],
   );
 
   const onAddAttachmentButtonClicked = useCallback(
@@ -201,10 +205,12 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
           setUploadProgress(Math.round((loaded * 100) / total));
         },
       })(dispatch)
-        // .then(addedAttachment => {
-        .then(() => {
+        .then(addedAttachment => {
           setCurrentlyUploadedAttachment(null);
-          refreshAndStoreAsCurrentTask(selectedTaskIdentifier);
+          setCurrentTaskAttachments([
+            ...currentTaskAttachments,
+            addedAttachment,
+          ]);
           // reloadAttachments({
           //   attachmentsToReload: [...currentTaskAttachments, addedAttachment],
           // });
@@ -213,7 +219,7 @@ const initializeAttachmentsSectionHooks = ({ parentFormSubmit }) => {
           setCurrentlyUploadedAttachment(null);
         });
     }
-  }, [dispatch, selectedTaskIdentifier]);
+  }, [dispatch, selectedTaskIdentifier, currentTaskAttachments]);
 
   return {
     attachmentsSources,

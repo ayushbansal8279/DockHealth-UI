@@ -91,6 +91,7 @@ export const TagCreateActionButton = styled.div`
   color: ${palette.blueOcean};
   font-size: ${fontSizes.smallPlus};
   min-width: 80px;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;

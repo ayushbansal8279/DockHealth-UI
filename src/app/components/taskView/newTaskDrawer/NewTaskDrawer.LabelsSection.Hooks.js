@@ -15,7 +15,7 @@ const labelAddOrRemovePromise = ({
   currentLabelsIdentifiers,
   formattedLabelsIdentifiers,
 }) => ({ labelIdentifier, labelName }) => {
-  if (labelName === null || labelName === '') {
+  if (!labelName || labelName === null || labelName === '') {
     return Promise.resolve();
   }
 
@@ -115,7 +115,7 @@ const initializeLabelsSectionHooks = ({
     const labelName = newValue;
     const taskIdentifier = selectedTask?.taskIdentifier;
 
-    if (labelName === null || labelName === '') {
+    if (!labelName || labelName === null || labelName === '') {
       return;
     }
 
@@ -137,7 +137,7 @@ const initializeLabelsSectionHooks = ({
     const labelName = newValue;
     const taskIdentifier = selectedTask?.taskIdentifier;
 
-    if (labelName === null || labelName === '') {
+    if (!labelName || labelName === null || labelName === '') {
       return;
     }
 

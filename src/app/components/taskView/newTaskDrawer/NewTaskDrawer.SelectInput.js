@@ -296,7 +296,10 @@ const SelectInput = React.forwardRef(
 
     const onTagCreate = useCallback(
       event => {
-        const { value: targetValue } = event.target.parentElement.children[1];
+        // TODO find a better way
+        const { value: targetValue } = event.target.parentElement.children[
+          event.target.parentElement.childElementCount - 3
+        ].value;
 
         const newOptions = [
           ...currentValue,
