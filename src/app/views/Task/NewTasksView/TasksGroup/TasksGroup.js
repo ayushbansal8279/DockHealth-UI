@@ -1,6 +1,4 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useRef, useEffect } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
+import React, { useState, useRef } from 'react';
 import ArrowIcon from 'img/arrow';
 import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
@@ -42,25 +40,17 @@ const TasksGroup = ({
   deleteGroup,
   moveGroupUp,
   moveGroupDown,
-  reorderTasksInGroup,
   reorderSubtasksForTask,
   taskListIdentifier,
   tasks,
   isCompletedGroup,
+  draggedId,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
   const isFullView = viewType === FULL_VIEW;
-  const [orderedGroupTasks, reorderTasksInState] = useState(tasks);
-  const [draggedId, setDraggableId] = useState(null);
 
   const addTaskInput = useRef();
-
-  const tasksOrder = tasks.map(({ taskIdentifier }) => taskIdentifier);
-
-  useEffect(() => {
-    reorderTasksInState(tasks);
-  }, [tasks]);
 
   const handleInputEnterDown = taskName => {
     if (taskName) {
@@ -144,49 +134,20 @@ const TasksGroup = ({
             />
           </AddTaskInputWrapper>
         )}
-        <DragDropContext
-          onBeforeCapture={({ draggableId }) => {
-            setDraggableId(draggableId);
-          }}
-          onDragEnd={eventBundle => {
-            const { destination, source } = eventBundle;
-            if (destination && destination?.index !== source?.index) {
-              const newTasksOrder = [...tasksOrder];
-
-              newTasksOrder.splice(
-                destination.index,
-                0,
-                newTasksOrder.splice(source.index, 1)[0],
-              );
-
-              reorderTasksInGroup(newTasksOrder, groupId, taskListIdentifier);
-
-              const reorderedTasks = newTasksOrder.map(taskId =>
-                orderedGroupTasks.find(
-                  ({ taskIdentifier }) => taskIdentifier === taskId,
-                ),
-              );
-
-              reorderTasksInState(reorderedTasks);
-              setDraggableId(null);
-            }
-          }}
-        >
-          <DragAndDropGroupList
-            groupId={groupId}
-            tasks={orderedGroupTasks}
-            currentUser={currentUser}
-            isFullView={isFullView}
-            toggleCompleteTask={toggleCompleteTask}
-            openDrawer={openDrawer}
-            storeAsCurrentTask={storeAsCurrentTask}
-            toggleTaskPriority={toggleTaskPriority}
-            draggedId={draggedId}
-            taskListIdentifier={taskListIdentifier}
-            reorderSubtasksForTask={reorderSubtasksForTask}
-            isCompletedGroup={isCompletedGroup}
-          />
-        </DragDropContext>
+        <DragAndDropGroupList
+          groupId={groupId}
+          tasks={tasks}
+          currentUser={currentUser}
+          isFullView={isFullView}
+          toggleCompleteTask={toggleCompleteTask}
+          openDrawer={openDrawer}
+          storeAsCurrentTask={storeAsCurrentTask}
+          toggleTaskPriority={toggleTaskPriority}
+          draggedId={draggedId}
+          taskListIdentifier={taskListIdentifier}
+          reorderSubtasksForTask={reorderSubtasksForTask}
+          isCompletedGroup={isCompletedGroup}
+        />
       </Tasks>
     </TasksGroupContainer>
   );

@@ -81,6 +81,7 @@ const TaskView = ({
     createTaskGroupList,
     editTasksGroupName,
     deleteTasksGroup,
+    reassignTasksToAnotherGroup,
   } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
@@ -216,6 +217,7 @@ const TaskView = ({
           groupList={groupList}
           reorderTasksInGroup={reorderTasksInGroup}
           reorderSubtasksForTask={reorderSubtasksForTask}
+          reassignTasksToAnotherGroup={reassignTasksToAnotherGroup}
           taskListIdentifier={taskListIdentifier}
           tasksCount={openedTasks?.length}
           isFetchingData={
