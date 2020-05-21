@@ -160,3 +160,7 @@ export const TaskItemPanel = styled.div`
     opacity: 1;
   }
 `;
+
+export const InfoText = styled.p`
+  margin-bottom: 0;
+`;

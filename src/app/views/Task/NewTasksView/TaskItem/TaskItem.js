@@ -41,6 +41,7 @@ import {
   ThreeDots,
   PrioritySwitch,
   CompletedBy,
+  InfoText,
 } from './styled';
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
@@ -176,7 +177,11 @@ const TaskItem = ({
           {patient ? `${patient.firstName} ${patient.lastName}` : ''}
         </TaskItemCell>
         <TaskItemCell width="110px" padding="regular">
-          {workflowStatus && <TaskItemStatus workflowStatus={workflowStatus} />}
+          {task.status === 'COMPLETE' ? (
+            <InfoText>Completed</InfoText>
+          ) : (
+            workflowStatus && <TaskItemStatus workflowStatus={workflowStatus} />
+          )}
         </TaskItemCell>
         <TaskItemCell width="200px">
           <Grid container>
