@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
@@ -63,8 +63,7 @@ const TaskView = ({
   completedTasks,
   groupedTasks,
   routeParams,
-  refresh,
-  onCompletedTasksRequest,
+  refreshTab,
   listStats,
 }) => {
   handleTabsNavigation(routeParams);
@@ -85,23 +84,6 @@ const TaskView = ({
   } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
-
-  const refreshTab = useCallback(
-    (withLoader = true) => {
-      if (selectedTab === TaskListTabName.COMPLETE) {
-        onCompletedTasksRequest(
-          taskListIdentifier,
-          null,
-          null,
-          false,
-          withLoader,
-        );
-      } else {
-        refresh(withLoader);
-      }
-    },
-    [selectedTab, taskListIdentifier, onCompletedTasksRequest, refresh],
-  );
 
   const quickAddTask = (
     taskName,
@@ -155,8 +137,8 @@ const TaskView = ({
 
   const invokeToggleCompleteAction = task => {
     toggleCompleteTask(task, selectedTab, currentUser)
-      .then(() => refreshTab(false))
-      .catch(() => refreshTab(false));
+      .then(() => refreshTab())
+      .catch(() => refreshTab());
   };
 
   const toggleTaskCompletedStatus = task => {
