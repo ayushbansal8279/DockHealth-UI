@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
+import { noop } from 'helpers/utility-functions';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
@@ -489,9 +490,7 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
     });
 
     return TaskApi[apiEndpoint](task)
-      .then(() => {
-        reloadTaskListStats(dispatch, task);
-      })
+      .then(noop)
       .catch(error => {
         throw error;
       });
