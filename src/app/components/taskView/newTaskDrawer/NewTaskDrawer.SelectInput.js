@@ -418,10 +418,8 @@ const SelectInput = React.forwardRef(
                   data-multiple={multiple ? 'true' : 'false'}
                   key={`label_options_${option?.key}`}
                 >
-                  {renderItem &&
-                    renderItem(option, inputValue)
-                  }
-                    {/* renderItem(option, null)} */}
+                  {renderItem && renderItem(option, inputValue)}
+                  {/* renderItem(option, null)} */}
                   {!renderItem && <span>{option.displayLabel}</span>}
                 </li>
               ))}

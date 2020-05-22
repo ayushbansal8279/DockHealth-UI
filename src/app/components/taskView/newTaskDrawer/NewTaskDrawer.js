@@ -222,7 +222,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     </Button>
                   </Grid>
                 }
-                renderItem={(option, { inputValue }) =>
+                renderItem={(option, { inputValue }) => (
                   <MemberLabelContainer>
                     <CondensedH4>
                       {renderPartsWithHighlighting(
@@ -232,7 +232,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     </CondensedH4>
                     {getMemberAdornment(option.value, members)}
                   </MemberLabelContainer>
-                }
+                )}
                 InputProps={{
                   endAdornment: currentAssignedToAdornment,
                 }}
