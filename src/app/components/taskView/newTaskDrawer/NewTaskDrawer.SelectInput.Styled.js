@@ -15,11 +15,29 @@ export const DrawerChip = withStyles({
     backgroundColor: palette.coolGrey3,
     height: '1.5rem',
     marginTop: 0,
-    marginBottom: '0.5rem',
-    padding: 0,
+    marginBottom: '0.2rem',
+    marginRight: '5px',
+    padding: '5px 0px',
   },
   label: {
     color: palette.darkGrey,
+    fontWeight: BoldLabel,
+  },
+})(Chip);
+
+export const DrawerAddChip = withStyles({
+  root: {
+    alignSelf: 'flex-end',
+    backgroundColor: palette.coolGrey3,
+    height: '1.5rem',
+    width: '46px',
+    marginTop: 0,
+    marginBottom: '0.2rem',
+    marginRight: '10px',
+    padding: '5px 0px',
+  },
+  label: {
+    color: palette.orange,
     fontWeight: BoldLabel,
   },
 })(Chip);

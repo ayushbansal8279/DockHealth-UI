@@ -18,10 +18,10 @@ import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
-import palette from 'styles/palette';
 import useBoolean from 'hooks/useBoolean';
 import {
   DrawerChip,
+  DrawerAddChip,
   StyledAutoComplete,
   Listbox,
   TagCreateActionButton,
@@ -38,7 +38,7 @@ const onChange = ({
   onItemSelected,
   closeAutocomplete,
 }) => (_event, option) => {
-  if (multiple) {
+  if (multiple && Array.isArray(option)) {
     const newOptions = option?.map(value => {
       if (typeof value === 'string') {
         return {
@@ -101,10 +101,6 @@ const renderTags = ({
               </CondensedH4>
             }
             {...getTagProps({ index })}
-            style={{
-              marginBottom: '2px',
-              marginRight: '5px',
-            }}
           />
         )}
         {!focusState && (
@@ -117,25 +113,11 @@ const renderTags = ({
             }
             {...getTagProps({ index })}
             onDelete={undefined}
-            style={{
-              marginBottom: '2px',
-              marginRight: '5px',
-            }}
           />
         )}
         {index === currentValueIdentifiers.length - 1 && !popupOpen && (
-          <Chip
-            label={
-              <CondensedH4 style={{ color: palette.orange }}>+</CondensedH4>
-            }
-            style={{
-              height: '24px',
-              width: '46px',
-              fontWeight: 'bold',
-              backgroundColor: palette.coolGrey3,
-              marginBottom: '-8px',
-              marginRight: '10px',
-            }}
+          <DrawerAddChip
+            label={<CondensedH4>+</CondensedH4>}
             onClick={() => {
               openAutocomplete();
             }}
@@ -364,7 +346,12 @@ const SelectInput = React.forwardRef(
             <TextInput
               ref={inputReference}
               {...getInputProps()}
-              parentType="select"
+              parentType={
+                multiple && currentOption && currentOption.length > 3
+                  ? 'selectTag'
+                  : 'select'
+              }
+              newColor="#ff0000"
               InputLabelProps={{
                 ...getInputLabelProps(),
                 ...InputLabelProps,
@@ -386,7 +373,7 @@ const SelectInput = React.forwardRef(
               label={label}
               name={name}
               placeholder={placeholderValue}
-              multiple={multiple}
+              multiple={false}
               onFocus={() => {
                 openAutocomplete();
                 enableFocus();

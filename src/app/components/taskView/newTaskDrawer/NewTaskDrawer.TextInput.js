@@ -30,8 +30,6 @@ const TextInput = React.forwardRef(
     const { errors, register } = useFormContext();
     const { classes } = props;
 
-    const inputClass =
-      parentType === 'select' ? classes.inputSelect : classes.input;
     const error = (errors[name] || {}).message;
     const hasError = Boolean(error);
 
@@ -42,7 +40,7 @@ const TextInput = React.forwardRef(
           name={name}
           placeholder={placeholder}
           className={[
-            parentType === 'select' ? classes.rootSelect : classes.root,
+            classes.root,
             className,
             hasError ? classes.error : '',
           ].join(' ')}
@@ -63,7 +61,7 @@ const TextInput = React.forwardRef(
             margin: 'dense',
             disableUnderline: true,
             classes: {
-              input: multiple ? classes.inputMultiple : inputClass,
+              input: classes.input,
             },
             ...InputProps,
           }}
