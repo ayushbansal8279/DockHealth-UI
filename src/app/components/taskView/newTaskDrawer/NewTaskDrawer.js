@@ -27,6 +27,8 @@ import {
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
+  MemberLabelContainer,
+  CondensedH4,
   styleTaskDrawerContainer,
   styleFullRow,
   styleFullRowThin,
@@ -39,7 +41,7 @@ import TextInput from './NewTaskDrawer.TextInput';
 import {
   getFormattedMembers,
   getFormattedPatients,
-  // renderPartsWithHighlighting,
+  renderPartsWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
 const NewTaskDrawer = ({ members, taskList, isInbox }) => {
@@ -52,7 +54,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     patients,
     taskLists,
     currentAssignedToAdornment,
-    // getMemberAdornment,
+    getMemberAdornment,
     closeTaskDrawer,
     isSaving,
     selectedTask,
@@ -220,18 +222,16 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     </Button>
                   </Grid>
                 }
-                renderItem={option =>
-                  // renderItem={(option, { inputValue }) =>
-                  // <MemberLabelContainer>
-                  //   <CondensedH4>
-                  //     {renderPartsWithHighlighting(
-                  //       option?.displayLabel,
-                  //       inputValue,
-                  //     )}
-                  //   </CondensedH4>
-                  //   {getMemberAdornment(option.value, members)}
-                  // </MemberLabelContainer>
-                  option?.label
+                renderItem={(option, { inputValue }) =>
+                  <MemberLabelContainer>
+                    <CondensedH4>
+                      {renderPartsWithHighlighting(
+                        option?.displayLabel,
+                        inputValue,
+                      )}
+                    </CondensedH4>
+                    {getMemberAdornment(option.value, members)}
+                  </MemberLabelContainer>
                 }
                 InputProps={{
                   endAdornment: currentAssignedToAdornment,
