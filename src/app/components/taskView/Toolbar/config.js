@@ -25,7 +25,7 @@ export const TABS_CONFIG = ({
     isSelected: selectedTab === TaskListTabName.COMPLETE,
     key: TaskListTabName.COMPLETE,
     label: 'Completed'.concat(
-      isNil(completedTasksAmount) ? ` (${completedTasksAmount})` : '',
+      !isNil(completedTasksAmount) ? ` (${completedTasksAmount})` : '',
     ),
     onSelectTab: () => onSelectTab(TaskListTabName.COMPLETE),
     shouldRender: () => true,
