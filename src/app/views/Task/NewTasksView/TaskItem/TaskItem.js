@@ -25,6 +25,7 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
+import { onDragEndSubtask } from '../DragDrop.helpers';
 import {
   AddCrossIcon,
   CircleIcon,
@@ -239,33 +240,19 @@ const Subtasks = ({
         onBeforeCapture={({ draggableId }) => {
           setDraggableId(draggableId);
         }}
-        onDragEnd={eventBundle => {
-          const { destination, source } = eventBundle;
-          if (destination && destination?.index !== source?.index) {
-            const newSubtasksOrder = [...subtasksOrder];
-            newSubtasksOrder.splice(
-              destination.index,
-              0,
-              newSubtasksOrder.splice(source.index, 1)[0],
-            );
-
-            reorderSubtasksForTask(
-              newSubtasksOrder,
-              groupId,
-              taskListIdentifier,
-              parentTaskId,
-            );
-
-            const reorderedTasks = newSubtasksOrder.map(taskId =>
-              orderedSubtasks.find(
-                ({ taskIdentifier }) => taskIdentifier === taskId,
-              ),
-            );
-
-            reorderSubtasksInState(reorderedTasks);
-            setDraggableId(null);
-          }
-        }}
+        onDragEnd={eventBundle =>
+          onDragEndSubtask({
+            eventBundle,
+            subtasksOrder,
+            reorderSubtasksForTask,
+            groupId,
+            taskListIdentifier,
+            parentTaskId,
+            orderedSubtasks,
+            reorderSubtasksInState,
+            setDraggableId,
+          })
+        }
       >
         <Droppable droppableId="droppable">
           {provided => (
@@ -289,7 +276,7 @@ const Subtasks = ({
                           isDragging={isDraggingSubtask}
                           {...restProps}
                         />
-                        {draggedId !== subtask.taskId &&
+                        {draggedId !== String(subtask.taskId) &&
                           !isEmpty(subtask.comments) && (
                             <TaskComments
                               isOpen={isFullView}

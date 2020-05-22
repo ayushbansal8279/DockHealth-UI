@@ -52,6 +52,7 @@ const DragAndDropGroupList = ({
                     taskListIdentifier={taskListIdentifier}
                     reorderSubtasksForTask={reorderSubtasksForTask}
                     isCompleted={isCompletedGroup}
+                    isCompletedGroup={isCompletedGroup}
                     toggleCompleteTask={toggleCompleteTask}
                   />
                 )}

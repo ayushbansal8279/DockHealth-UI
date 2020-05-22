@@ -11,6 +11,7 @@ import messages from './AddGroupNameButton/messages';
 import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
 import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
 import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
+import { onDragEndTask } from './DragDrop.helpers';
 
 const OpenedTasksView = ({
   openDrawer,
@@ -47,126 +48,18 @@ const OpenedTasksView = ({
             onBeforeCapture={({ draggableId }) => {
               setDraggableId(draggableId);
             }}
-            onDragEnd={eventBundle => {
-              setDraggableId(null);
-
-              const { destination, source } = eventBundle;
-
-              const sourceGroup = groupList?.find(
-                ({ taskGroupIdentifier, groupType }) =>
-                  source.droppableId === taskGroupIdentifier ||
-                  source.droppableId === groupType,
-              );
-
-              const sourceGroupKey =
-                sourceGroup.groupType === TASKGROUP_DEFAULT_TYPE
-                  ? sourceGroup.groupType
-                  : sourceGroup.taskGroupIdentifier;
-
-              const sourceTasks = tasks[sourceGroupKey];
-
-              const sourceTasksOrder = sourceTasks?.map(
-                ({ taskIdentifier }) => taskIdentifier,
-              );
-
-              const newSourceTasksOrder = [...sourceTasksOrder];
-
-              if (destination) {
-                if (
-                  destination?.droppableId === source?.droppableId &&
-                  destination?.index !== source?.index
-                ) {
-                  newSourceTasksOrder.splice(
-                    destination.index,
-                    0,
-                    newSourceTasksOrder.splice(source.index, 1)[0],
-                  );
-
-                  const { taskGroupIdentifier } = sourceGroup;
-
-                  reorderTasksInGroup(
-                    newSourceTasksOrder,
-                    taskGroupIdentifier,
-                    taskListIdentifier,
-                  );
-
-                  const reorderedTasks = newSourceTasksOrder?.map(identifier =>
-                    sourceTasks?.find(
-                      ({ taskIdentifier }) => taskIdentifier === identifier,
-                    ),
-                  );
-
-                  updateTaskGroups({
-                    ...tasks,
-                    [sourceGroupKey]: reorderedTasks,
-                  });
-                }
-
-                if (
-                  destination?.droppableId !== source?.droppableId &&
-                  destination?.index !== source?.index
-                ) {
-                  const destinationGroup = groupList?.find(
-                    ({ taskGroupIdentifier, groupType }) =>
-                      destination.droppableId === taskGroupIdentifier ||
-                      destination.droppableId === groupType,
-                  );
-
-                  const destinationGroupKey =
-                    destinationGroup.groupType === TASKGROUP_DEFAULT_TYPE
-                      ? destinationGroup.groupType
-                      : destinationGroup.taskGroupIdentifier;
-
-                  const destinationTasks = tasks[destinationGroupKey] || [];
-
-                  const destinationTasksOrder = destinationTasks?.map(
-                    ({ taskIdentifier }) => taskIdentifier,
-                  );
-
-                  const newDestinationTasksOrder = [...destinationTasksOrder];
-
-                  newDestinationTasksOrder.splice(
-                    destination.index,
-                    0,
-                    sourceTasksOrder[source.index],
-                  );
-
-                  newSourceTasksOrder.splice(source.index, 1);
-
-                  const { taskGroupIdentifier } = destinationGroup;
-                  const sourceTask = sourceTasks[source.index];
-                  const { taskIdentifier: sourceTaskIdentifier } = sourceTask;
-
-                  reassignTasksToAnotherGroup(
-                    [sourceTaskIdentifier],
-                    taskGroupIdentifier,
-                    taskListIdentifier,
-                  );
-
-                  const reorderedSourceTasks = newSourceTasksOrder?.map(
-                    identifier =>
-                      sourceTasks?.find(
-                        ({ taskIdentifier }) => taskIdentifier === identifier,
-                      ),
-                  );
-
-                  const newDestinationTasks = [...destinationTasks, sourceTask];
-
-                  const reorderedDestinationTasks = newDestinationTasksOrder?.map(
-                    identifier =>
-                      newDestinationTasks?.find(
-                        ({ taskIdentifier }) => taskIdentifier === identifier,
-                      ),
-                  );
-
-                  updateTaskGroups({
-                    ...tasks,
-                    [sourceGroupKey]: reorderedSourceTasks,
-                    [destinationGroupKey]: reorderedDestinationTasks,
-                  });
-                }
-              }
-            }}
+            onDragEnd={eventBundle =>
+              onDragEndTask({
+                eventBundle,
+                groupList,
+                tasks,
+                reorderTasksInGroup,
+                taskListIdentifier,
+                reassignTasksToAnotherGroup,
+                updateTaskGroups,
+                setDraggableId,
+              })
+            }
           >
             {groupList?.map(
               ({ groupName, taskGroupIdentifier, groupType }, i) => (
