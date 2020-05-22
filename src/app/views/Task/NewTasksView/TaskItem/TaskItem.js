@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { isEmpty } from 'ramda';
@@ -174,17 +175,17 @@ const TaskItem = ({
           </DescriptionBox>
         </TaskItemCell>
         <TaskItemCell width="164px">
-          {patient ? (
-            `${patient.firstName} ${patient.lastName}`
-          ) : (
+          {task.status !== 'COMPLETE' && !patient && (
             <AddPlaceholder>+ Add Patient</AddPlaceholder>
           )}
+          {patient && `${patient.firstName} ${patient.lastName}`}
         </TaskItemCell>
         <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
           {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
-          {task.status !== 'COMPLETE' && workflowStatus ? (
+          {task.status !== 'COMPLETE' && workflowStatus && (
             <TaskItemStatus workflowStatus={workflowStatus} />
-          ) : (
+          )}
+          {task.status !== 'COMPLETE' && !workflowStatus && (
             <AddPlaceholder>+ Add Status</AddPlaceholder>
           )}
         </TaskItemCell>
