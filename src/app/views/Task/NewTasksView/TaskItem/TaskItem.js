@@ -102,6 +102,18 @@ const getToolTipMultiLabelDetails = labels => {
   return toolTipMultiLabelDetails;
 };
 
+const getToolTipAttachmentsLabelDetails = attachments => {
+  let attachmentLabelDetails = '';
+  if (attachments.length === 1) {
+    attachmentLabelDetails = `${attachments[0].fileName}`;
+  } else if (attachments.length > 1) {
+    attachmentLabelDetails = `${
+      attachments[0].fileName
+    } + ${attachments.length - 1}`;
+  }
+  return attachmentLabelDetails;
+};
+
 const TaskItem = ({
   isOpen,
   switchOpen,
@@ -213,7 +225,14 @@ const TaskItem = ({
               </UniversalTooltipContainer>
             </GridImg>
             <GridImg item xs={3}>
-              <UniversalTooltipContainer placement="top" label="Edit Due Date">
+              <UniversalTooltipContainer
+                placement="top"
+                label={
+                  getItemIconVersion(dueDate) === REGULAR
+                    ? 'Edit Due Date'
+                    : 'Add Due Date'
+                }
+              >
                 <DueDateContainer>
                   <DueDate>
                     {dueDate && moment(dueDate).format('MM/DD')}
@@ -240,10 +259,11 @@ const TaskItem = ({
                 placement="top"
                 label={
                   getItemIconVersion(attachments) === REGULAR
-                    ? `${attachments?.length} new files added`
+                    ? getToolTipAttachmentsLabelDetails(attachments)
                     : 'Add file'
                 }
               >
+                {' '}
                 <img
                   alt="attachments"
                   src={getItemIcon(ATTACHMENTS, attachments)}
