@@ -8,6 +8,7 @@ import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
+import Search from 'components/taskView/Search/Search';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import RotatableChevron from '../common/RotatableChevron';
@@ -16,7 +17,6 @@ import TipsButton from '../common/TipsButton';
 import UniversalTooltip from '../common/UniversalTooltip';
 import { InviteMemberPopoverWithButton } from '../members/InviteMemberPopover';
 import Member from '../members/Member';
-import Search from './Search';
 import FilterPopover, { filterOptions } from './Toolbar.FilterPopover';
 import MorePopover from './Toolbar.MorePopover';
 import {

@@ -13,7 +13,7 @@ import {
 import React, { useEffect } from 'react';
 import CubesLoader from 'components/common/CubesLoader';
 import Spacing from 'components/common/Spacing';
-import Search from 'components/taskView/Search';
+import Search from 'components/taskView/Search/Search';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import initializeMembersTableHooks from './SubscriptionsView.MembersTable.Hooks';
 import InviteButton from './SubscriptionsView.MembersTable.InviteButton';

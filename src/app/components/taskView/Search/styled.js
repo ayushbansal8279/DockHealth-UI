@@ -1,14 +1,11 @@
+import React from 'react';
 import { InputAdornment, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import SearchClearIcon from 'img/search-clear.svg';
-import SearchHeadsupIcon from 'img/search-headsup.svg';
 import palette, { opacify } from 'styles/palette';
 
-const ClearButton = styled.div`
+export const ClearButton = styled.div`
   align-items: center;
   display: inline-flex;
   cursor: pointer;
@@ -23,9 +20,9 @@ const ClearButton = styled.div`
   }
 `;
 
-const StyledTextField = styled(TextField)`
+export const StyledTextField = styled(TextField)`
   && {
-    background-color: ${palette.white};
+    ${props => !props.noBackground && `background-color: ${palette.white};`}
     border-radius: 0.25rem;
     color: ${palette.coolGrey1};
     height: 2.5rem;
@@ -79,7 +76,7 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const StyledAdornment = withStyles({
+export const StyledAdornment = withStyles({
   root: {
     height: '1.125rem',
     minHeight: '1.125rem',
@@ -106,63 +103,3 @@ const StyledAdornment = withStyles({
     <InputAdornment className={className} position={position} {...props} />
   );
 });
-
-const Search = ({
-  className,
-  onChange,
-  initialValue,
-  variant,
-  autoFocus,
-  fullWidth,
-  value,
-  ...otherInputProps
-}) => {
-  const onClearClick = useCallback(
-    event => {
-      event.preventDefault();
-      event.stopPropagation();
-      onChange({ target: { value: '' } });
-    },
-    [onChange],
-  );
-
-  return (
-    <StyledTextField
-      onChange={onChange}
-      placeholder="Search"
-      className={className}
-      fullWidth={fullWidth}
-      variant={variant}
-      InputProps={{
-        startAdornment: (
-          <StyledAdornment position="start" disablePointerEvents>
-            <img src={SearchHeadsupIcon} alt="Search icon" />
-          </StyledAdornment>
-        ),
-        endAdornment: (
-          <StyledAdornment
-            position="end"
-            disablePointerEvents={false}
-            visible={Boolean(value)}
-          >
-            <ClearButton onClick={onClearClick}>
-              <img alt="clear" src={SearchClearIcon} />
-            </ClearButton>
-          </StyledAdornment>
-        ),
-        'aria-label': 'Search',
-        type: 'search',
-        defaultValue: initialValue,
-        autoFocus,
-        value,
-        ...otherInputProps,
-      }}
-    />
-  );
-};
-
-Search.propTypes = {
-  onChange: PropTypes.func.isRequired,
-};
-
-export default Search;

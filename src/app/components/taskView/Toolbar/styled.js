@@ -1,7 +1,8 @@
-import { Typography } from '@material-ui/core';
+import { Typography, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 // LEGACY STYLES - REFACTOR REQUIREDg
 export const ToolbarLabel = withStyles({
@@ -37,4 +38,15 @@ export const MoreMembersButtonContainer = styled.div`
   min-width: 2.5rem;
   padding: 0;
   width: 2.5rem;
+`;
+
+export const HeaderActionButtonsGrid = styled(Grid)`
+  padding-right: ${spacing.huge};
+`;
+
+export const ToolbarBottomGrid = styled(Grid)`
+  padding-left: ${spacing.giga};
+  padding-top: ${spacing.regular};
+  padding-bottom: ${spacing.regular};
+  background-color: ${palette.coolGrey4};
 `;

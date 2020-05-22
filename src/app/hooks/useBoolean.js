@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case */
 import { useState, useCallback } from 'react';
 
 /**
@@ -5,7 +6,7 @@ import { useState, useCallback } from 'react';
  * @param initialValue
  * @returns {[Boolean, Function, Function, Function]}
  */
-const useBoolean = (initialValue) => {
+const useBoolean = initialValue => {
   const [flag, setFlag] = useState(initialValue);
   const enable = useCallback(() => {
     setFlag(true);
