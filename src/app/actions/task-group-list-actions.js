@@ -86,24 +86,3 @@ export function sortTaskGroups(taskGroupIdentifiers, listId) {
       });
   };
 }
-
-export function reassignTasksToAnotherGroup(
-  taskIdentifiers,
-  taskGroupIdentifier,
-  listIdentifier,
-) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
-
-    TaskGroupListApi.reassignTasksToAnotherGroup(
-      taskGroupIdentifier,
-      taskIdentifiers,
-    )
-      .then(() => {
-        dispatch(getTaskGroupList(listIdentifier, false));
-      })
-      .catch(() => {
-        dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
-      });
-  };
-}

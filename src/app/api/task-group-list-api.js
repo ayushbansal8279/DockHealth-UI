@@ -50,17 +50,3 @@ export const sortGroups = payload =>
     .catch(error => {
       throw new Error(error?.response?.data);
     });
-
-export function reassignTasksToAnotherGroup(
-  taskGroupIdentifier,
-  taskIdentifiers,
-) {
-  return axios
-    .put(URLS.taskGroupList.reassignTasks(taskGroupIdentifier), {
-      taskIdentifiers,
-    })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}

@@ -77,12 +77,12 @@ const TaskView = ({
     reorderTasksInGroup,
     reorderSubtasksForTask,
     toggleCompleteTask,
+    reassignTasksToAnotherGroup,
   } = taskActions;
   const {
     createTaskGroupList,
     editTasksGroupName,
     deleteTasksGroup,
-    reassignTasksToAnotherGroup,
   } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;

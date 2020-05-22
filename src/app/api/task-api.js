@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 import { noop } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
+import URLS from '../urls';
 
 const ERROR_RETRIEVING_TASKS_MESSAGE =
   'Error in retrieving tasks. Please try again.';
@@ -667,3 +668,16 @@ export function reorderSubtasksForTask(
       throw error;
     });
 }
+
+export const reassignTasksToAnotherGroup = (
+  taskGroupIdentifier,
+  taskIdentifiers,
+) =>
+  axios
+    .put(URLS.tasks.reassignTasks(taskGroupIdentifier), {
+      taskIdentifiers,
+    })
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });

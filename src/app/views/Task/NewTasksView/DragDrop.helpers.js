@@ -99,12 +99,6 @@ export const onDragEndTask = ({
       const sourceTask = sourceTasks[source.index];
       const { taskIdentifier: sourceTaskIdentifier } = sourceTask;
 
-      reassignTasksToAnotherGroup(
-        [sourceTaskIdentifier],
-        taskGroupIdentifier,
-        taskListIdentifier,
-      );
-
       // eslint-disable-next-line sonarjs/no-identical-functions
       const reorderedSourceTasks = newSourceTasksOrder?.map(identifier =>
         sourceTasks?.find(
@@ -126,6 +120,12 @@ export const onDragEndTask = ({
         [sourceGroupKey]: reorderedSourceTasks,
         [destinationGroupKey]: reorderedDestinationTasks,
       });
+
+      reassignTasksToAnotherGroup(
+        [sourceTaskIdentifier],
+        taskGroupIdentifier,
+        taskListIdentifier,
+      );
     }
   }
 };

@@ -1056,3 +1056,21 @@ export const reorderSubtasksForTask = (
       });
   };
 };
+
+export function reassignTasksToAnotherGroup(
+  taskIdentifiers,
+  taskGroupIdentifier,
+  listIdentifier,
+) {
+  return dispatch => {
+    TaskApi.reassignTasksToAnotherGroup(taskGroupIdentifier, taskIdentifiers)
+      .then(() => {
+        dispatch(
+          getListTasks(listIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
