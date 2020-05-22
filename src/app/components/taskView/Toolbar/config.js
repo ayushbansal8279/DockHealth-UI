@@ -1,3 +1,5 @@
+import { isNil } from 'ramda';
+
 export const TaskListTabName = {
   OPEN: 'incomplete',
   COMPLETE: 'complete',
@@ -14,9 +16,7 @@ export const TABS_CONFIG = ({
     isSelected: selectedTab === TaskListTabName.OPEN,
     key: TaskListTabName.OPEN,
     label: 'Open Tasks'.concat(
-      openTasksAmount !== null && openTasksAmount !== undefined
-        ? ` (${openTasksAmount})`
-        : '',
+      !isNil(openTasksAmount) ? ` (${openTasksAmount})` : '',
     ),
     onSelectTab: () => onSelectTab(TaskListTabName.OPEN),
     shouldRender: () => true,
@@ -25,9 +25,7 @@ export const TABS_CONFIG = ({
     isSelected: selectedTab === TaskListTabName.COMPLETE,
     key: TaskListTabName.COMPLETE,
     label: 'Completed'.concat(
-      completedTasksAmount !== null && completedTasksAmount !== undefined
-        ? ` (${completedTasksAmount})`
-        : '',
+      isNil(completedTasksAmount) ? ` (${completedTasksAmount})` : '',
     ),
     onSelectTab: () => onSelectTab(TaskListTabName.COMPLETE),
     shouldRender: () => true,
