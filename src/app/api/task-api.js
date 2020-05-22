@@ -265,7 +265,6 @@ export function addTask(task) {
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
-      toggleAlert('Task created successfully!', 'success');
       return response.data;
     })
     .catch(error => {
@@ -281,7 +280,6 @@ export function updateTask(task) {
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
-      // toggleAlert('Task updated successfully!', 'success');
       return response.data;
     })
     .catch(error => {

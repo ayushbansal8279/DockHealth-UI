@@ -3,9 +3,11 @@ import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import { noop } from 'helpers/utility-functions';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import * as AlertActions from 'alert/actions';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
 import * as TaskGroupListActions from './task-group-list-actions';
+import AlertMessages from '../alert/AlertMessages';
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -344,6 +346,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
           reloadTaskListStats(dispatch, task);
         }
 
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
         clearPreparedSubtask(dispatch);
 
         return task;

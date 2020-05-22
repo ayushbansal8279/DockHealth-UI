@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import ModalReducer from 'modal/reducers';
+import AlertChipReducer from 'alert/reducer';
 import AuthBaseReducer from './auth-base-reducer';
 import FormReducer from './form-reducer';
 import HeaderReducer from './header-reducer';
@@ -35,4 +36,5 @@ export default combineReducers({
   taskLabelState: TaskLabelReducer,
   modal: ModalReducer,
   taskGroupList: TaskGroupListReducer,
+  alertChip: AlertChipReducer,
 });
