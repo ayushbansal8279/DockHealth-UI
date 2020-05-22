@@ -39,8 +39,8 @@ export const TaskCommentContainer = styled.div`
 `;
 
 export const SmallText = styled.span`
-  color: ${palette.coolGrey2};
-  font-size: ${fontSizes.smalls};
+  color: #939aa4;
+  font-size: ${fontSizes.small};
 `;
 
 export const TaskCommentText = styled.div`

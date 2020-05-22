@@ -19,10 +19,12 @@ const TaskComment = ({ creator, dateUpdated, comment, dateCreated }) => {
         <Member member={creator} size={38} />
       </TaskCommentAvatarContainer>
       <div>
-        <TaskCommentText>{comment}</TaskCommentText>
+        <TaskCommentText>
+          {comment}{' '}
+          {dateCreated !== dateUpdated && <SmallText> (Edited)</SmallText>}
+        </TaskCommentText>
         <TaskCommentDetails>
           <span>{commentDetails}</span>
-          {dateCreated !== dateUpdated && <SmallText> (Edited)</SmallText>}
         </TaskCommentDetails>
       </div>
     </TaskCommentContainer>

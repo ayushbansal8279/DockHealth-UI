@@ -84,8 +84,8 @@ export const GridImg = styled(Grid)`
 `;
 
 export const SmallText = styled.span`
-  color: ${palette.coolGrey2};
-  font-size: ${fontSizes.small};
+  color: #939aa4;
+  font-size: ${fontSizes.tinyPlus};
 `;
 
 export const SubtasksGroupLabel = styled.span`
