@@ -28,6 +28,7 @@ import TaskComments from '../TaskComments/TaskComments';
 import { onDragEndSubtask } from '../DragDrop.helpers';
 import {
   AddCrossIcon,
+  AddPlaceholder,
   CircleIcon,
   Description,
   DescriptionBox,
@@ -139,7 +140,7 @@ const TaskItem = ({
             />
           )}
         </PrioritySwitch>
-        <TaskItemCell bolded padding="huge">
+        <TaskItemCell bolded paddingLeft="huge">
           <CircleIcon
             src={isCompleted ? CircleCompleted : Circle}
             onClick={() => toggleCompleteTask(task)}
@@ -173,13 +174,18 @@ const TaskItem = ({
           </DescriptionBox>
         </TaskItemCell>
         <TaskItemCell width="164px">
-          {patient ? `${patient.firstName} ${patient.lastName}` : ''}
-        </TaskItemCell>
-        <TaskItemCell width="110px" padding="regular">
-          {task.status === 'COMPLETE' ? (
-            <InfoText>Completed</InfoText>
+          {patient ? (
+            `${patient.firstName} ${patient.lastName}`
           ) : (
-            workflowStatus && <TaskItemStatus workflowStatus={workflowStatus} />
+            <AddPlaceholder>+ Add Patient</AddPlaceholder>
+          )}
+        </TaskItemCell>
+        <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
+          {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
+          {task.status !== 'COMPLETE' && workflowStatus ? (
+            <TaskItemStatus workflowStatus={workflowStatus} />
+          ) : (
+            <AddPlaceholder>+ Add Status</AddPlaceholder>
           )}
         </TaskItemCell>
         <TaskItemCell width="200px">

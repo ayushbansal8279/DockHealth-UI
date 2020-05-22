@@ -43,6 +43,15 @@ export const PrioritySwitch = styled.button`
   }
 `;
 
+export const AddPlaceholder = styled.div`
+  color: ${spacing.coolGrey2};
+  opacity: 0;
+  &::first-letter {
+    color: ${palette.orange};
+    font-size: ${fontSizes.regular};
+  }
+`;
+
 export const AddCrossIcon = styled.img`
   border: 0.0625rem dashed ${palette.coolGrey1};
   border-radius: 50%;
@@ -106,8 +115,9 @@ export const TaskItemCell = styled.div`
   min-width: ${props => props.width};
   padding: ${spacing.smallPlus} 0;
   padding-left: ${props =>
-    props.padding ? spacing[props.padding] : spacing.regularPlus};
-  padding-right: ${spacing.regularPlus};
+    props.paddingLeft ? spacing[props.paddingLeft] : spacing.regularPlus};
+  padding-right: ${props =>
+    props.paddingLeft ? spacing[props.paddingRight] : spacing.regularPlus};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
 
@@ -159,6 +169,11 @@ export const TaskItemPanel = styled.div`
   &:hover ${ThreeDots} {
     opacity: 1;
   }
+
+  &:hover ${AddPlaceholder} {
+    opacity: 1;
+  }
+
 `;
 
 export const InfoText = styled.p`
