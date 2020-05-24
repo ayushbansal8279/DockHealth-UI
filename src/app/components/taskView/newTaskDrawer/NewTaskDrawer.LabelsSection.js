@@ -18,6 +18,7 @@ const LabelsSection = ({
     labels,
     saveAddOrRemoveLabel,
     saveEditLabel,
+    saveTaskOnFocus,
   } = initializeLabelsSectionHooks({
     isInbox,
     parentFormSubmit,
@@ -76,6 +77,9 @@ const LabelsSection = ({
       InputProps={{}}
       createTagActionLabel="Create Label"
       forceOpen={forceOpen}
+      onFocusCallback={() => {
+        saveTaskOnFocus();
+      }}
     >
       {formattedLabels}
     </SelectInput>

@@ -128,6 +128,7 @@ const renderTags = ({
   </>
 );
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const SelectInput = React.forwardRef(
   (
     {
@@ -149,6 +150,7 @@ const SelectInput = React.forwardRef(
       InputLabelProps,
       forceOpen,
       createTagActionLabel,
+      onFocusCallback,
     },
     reference,
   ) => {
@@ -377,6 +379,7 @@ const SelectInput = React.forwardRef(
               onFocus={() => {
                 openAutocomplete();
                 enableFocus();
+                onFocusCallback();
               }}
               onBlur={() => {
                 if (!forceOpen) {
@@ -458,6 +461,7 @@ SelectInput.propTypes = {
   InputLabelProps: objectOf(any),
   forceOpen: bool,
   createTagActionLabel: string,
+  onFocusCallback: func,
 };
 
 SelectInput.defaultProps = {
@@ -479,6 +483,7 @@ SelectInput.defaultProps = {
   InputLabelProps: {},
   forceOpen: false,
   createTagActionLabel: undefined,
+  onFocusCallback: undefined,
 };
 
 export default SelectInput;
