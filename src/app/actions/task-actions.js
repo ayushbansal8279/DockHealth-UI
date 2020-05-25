@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
-import { noop } from 'helpers/utility-functions';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
 import * as ActionTypes from './action-types';
@@ -438,6 +437,7 @@ export function deleteTask(task) {
       .then(() => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
         reloadTaskListStats(dispatch, task);
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
         return task;
       })
       .catch(error => {
@@ -477,10 +477,18 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
         ? ActionTypes.MARK_COMPLETE_TASK_STATUS_SUCCESS
         : ActionTypes.MARK_TASK_STATUS_SUCCESS;
 
-    const { apiEndpoint, newStatus } =
+    const { apiEndpoint, newStatus, successMessage } =
       task.status === 'INCOMPLETE'
-        ? { apiEndpoint: 'markComplete', newStatus: 'COMPLETE' }
-        : { apiEndpoint: 'markIncomplete', newStatus: 'INCOMPLETE' };
+        ? {
+            apiEndpoint: 'markComplete',
+            newStatus: 'COMPLETE',
+            successMessage: AlertMessages.TASK_COMPLETED,
+          }
+        : {
+            apiEndpoint: 'markIncomplete',
+            newStatus: 'INCOMPLETE',
+            successMessage: AlertMessages.TASK_REACTIVATED,
+          };
 
     const newTaskData = {
       status: newStatus,
@@ -498,7 +506,9 @@ export function toggleCompleteTask(task, tabName, currentUser = null) {
     });
 
     return TaskApi[apiEndpoint](task)
-      .then(noop)
+      .then(() => {
+        dispatch(AlertActions.showGlobalAlert(successMessage));
+      })
       .catch(error => {
         throw error;
       });

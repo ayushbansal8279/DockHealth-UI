@@ -1,6 +1,7 @@
 export default {
   SAVED: 'Saved',
   UPDATED: 'Updated',
+  DELETED: 'Deleted',
   INVITED: 'Invited',
   TASK_CREATED: 'Task created',
   TASK_COMPLETED: 'Task complete. great job!',

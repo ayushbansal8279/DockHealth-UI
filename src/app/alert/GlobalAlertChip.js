@@ -13,7 +13,6 @@ import {
   ChipBackground,
   CheckCircleIcon,
 } from './styled';
-import AlertTypes from './AlertMessages';
 
 class GlobalAlertChip extends Component {
   timeoutHandle;
@@ -24,7 +23,6 @@ class GlobalAlertChip extends Component {
     } = this.props;
 
     if (!isGlobalOpen && nextProps.alertState.isGlobalOpen) {
-      this.warnIfIsNotDefault(nextProps.alertState.text);
       this.setCloseTimeout();
     }
 
@@ -35,19 +33,11 @@ class GlobalAlertChip extends Component {
     }
   }
 
-  warnIfIsNotDefault = text => {
-    if (!Object.values(AlertTypes).includes(text)) {
-      console.warn(
-        'Notification message is not included in default messages list',
-      );
-    }
-  };
-
-  setCloseTimeout = (delay = 4000) => {
+  setCloseTimeout = () => {
     const { closeAlert } = this.props;
     this.timeoutHandle = setTimeout(() => {
       closeAlert();
-    }, delay);
+    }, 4000);
   };
 
   handleCloseAlert = () => {

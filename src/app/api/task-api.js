@@ -291,7 +291,6 @@ export function deleteTask(taskIdentifier) {
   return axios
     .delete(`task/deleteTaskById/${taskIdentifier}`)
     .then(response => {
-      toggleAlert('Task deleted', 'success');
       return response;
     })
     .catch(error => {
@@ -332,7 +331,7 @@ export function markComplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=COMPLETE`)
     .then(response => {
-      toggleAlert('Task completed. Great job!', 'success');
+      // toggleAlert('Task completed. Great job!', 'success');
       return response;
     })
     .catch(error => {
@@ -344,7 +343,7 @@ export function markIncomplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=INCOMPLETE`)
     .then(response => {
-      toggleAlert('You have re-activated a task.', 'success');
+      // toggleAlert('You have re-activated a task.', 'success');
       return response;
     })
     .catch(error => {
