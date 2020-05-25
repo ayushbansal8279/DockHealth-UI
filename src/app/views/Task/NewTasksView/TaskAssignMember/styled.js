@@ -19,7 +19,7 @@ export const InputBox = styled.div`
   display: flex;
   padding: ${spacing.regular} ${spacing.huge};
   border-bottom: 1px solid rgba(193, 204, 218, 0.25);
-  font-size: 14px;
+  font-size: ${fontSizes.smallPlus};
 `;
 
 export const Box = styled.div`
