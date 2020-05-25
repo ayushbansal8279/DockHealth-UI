@@ -58,6 +58,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     reFileTask,
     onDelete,
     onDuplicate,
+    onAddSubTask,
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,
@@ -90,6 +91,8 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
 
   const parentFormSubmit = handleSubmit(onSubmit);
 
+  const newTaskFlag = !(selectedTask && selectedTask.taskIdentifier != null);
+
   return (
     <TaskDrawerContainer open={taskDrawerOpen} top={top}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -103,6 +106,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               reFileTask={reFileTask}
               onDelete={onDelete}
               onDuplicate={onDuplicate}
+              onAddSubTask={onAddSubTask}
               isInbox={isInbox}
               closeTaskDrawer={closeTaskDrawer}
               autoSaveVisible={autoSaveVisible}
@@ -304,48 +308,50 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
             <Grid item xs={12} style={styleFullRow}>
               <CommentSection parentFormSubmit={parentFormSubmit} />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              container
-              justify="flex-end"
-              alignItems="center"
-              wrap="nowrap"
-              style={styleFullRow}
-            >
-              <Button
-                onClick={closeTaskDrawer}
-                color="secondary"
-                variant="text"
-                size="small"
-                disabled={isSaving}
+            {newTaskFlag && (
+              <Grid
+                item
+                xs={12}
+                container
+                justify="flex-end"
+                alignItems="center"
+                wrap="nowrap"
+                style={styleFullRow}
               >
-                <MontserratTypography
-                  weight="600"
-                  textDecoration="underline"
-                  color="inherit"
-                  variant="h4"
+                <Button
+                  onClick={closeTaskDrawer}
+                  color="secondary"
+                  variant="text"
+                  size="small"
+                  disabled={isSaving}
                 >
-                  CANCEL
-                </MontserratTypography>
-              </Button>
-              <Spacing horizontal={3} />
-              <Button
-                variant="contained"
-                size="small"
-                type="submit"
-                disableRipple={isSaving}
-                disabled={isSaving}
-              >
-                <MontserratTypography variant="h4" weight="600">
-                  {isSaving ? (
-                    <CubesLoader size={32} color={palette.coolGrey1} />
-                  ) : (
-                    'SAVE'
-                  )}
-                </MontserratTypography>
-              </Button>
-            </Grid>
+                  <MontserratTypography
+                    weight="600"
+                    textDecoration="underline"
+                    color="inherit"
+                    variant="h4"
+                  >
+                    CANCEL
+                  </MontserratTypography>
+                </Button>
+                <Spacing horizontal={3} />
+                <Button
+                  variant="contained"
+                  size="small"
+                  type="submit"
+                  disableRipple={isSaving}
+                  disabled={isSaving}
+                >
+                  <MontserratTypography variant="h4" weight="600">
+                    {isSaving ? (
+                      <CubesLoader size={32} color={palette.coolGrey1} />
+                    ) : (
+                      'SAVE'
+                    )}
+                  </MontserratTypography>
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </FormContext>
       </form>

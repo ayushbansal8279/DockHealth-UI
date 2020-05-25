@@ -24,7 +24,7 @@ const TaskAssignMember = ({
   const [isOpen, openPopover] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const { taskIdentifier, taskList } = task;
-  const { taskListIdentifier } = taskList;
+  const taskListIdentifier = taskList?.taskListIdentifier;
 
   const membersWithoutCurrentUser = members?.filter(
     ({ userId }) => userId !== currentUser.userId,

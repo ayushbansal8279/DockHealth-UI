@@ -14,7 +14,7 @@ const TaskComments = ({ isOpen, comments }) => {
   const limitedComments = showMore ? comments : comments?.slice(0, 3);
   const groupedComments = groupBy(
     ({ dateCreated }) => moment(dateCreated).format('M/DD/YYYY'),
-    limitedComments,
+    limitedComments ?? [],
   );
 
   return (
