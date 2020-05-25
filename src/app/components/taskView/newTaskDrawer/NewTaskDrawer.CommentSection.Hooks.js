@@ -79,7 +79,7 @@ const initializeCommentSectionHooks = () => {
         creator: currentUser,
       })(dispatch).then(newComment => {
         const newGroupedComments = getGroupedComments({
-          comments: [...comments, newComment.data],
+          comments: [newComment.data, ...comments],
         });
 
         setGroupedComments(newGroupedComments);

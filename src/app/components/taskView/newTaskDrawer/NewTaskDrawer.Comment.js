@@ -140,7 +140,7 @@ const Comment = ({
           )}
         </CommentInnerContainer>
       </CommentContainer>
-      <Spacing vertical={3} />
+      <Spacing vertical={1} />
     </React.Fragment>
   );
 };
