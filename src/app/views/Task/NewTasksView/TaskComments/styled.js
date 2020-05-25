@@ -27,11 +27,13 @@ export const TaskCommentsGroupedDay = styled.div`
 export const TaskCommentsDate = styled.div`
   color: ${palette.lightGrey};
   padding-top: 6px; //per design
+  font-size: 14px; //per design
 `;
 
 export const TaskCommentContainer = styled.div`
   display: flex;
   margin-bottom: ${spacing.large};
+  font-size: 14px; //per design
 
   &:last-of-type {
     margin-bottom: 0;
@@ -40,7 +42,7 @@ export const TaskCommentContainer = styled.div`
 
 export const SmallText = styled.span`
   color: ${palette.coolGrey2};
-  font-size: ${fontSizes.smalls};
+  font-size: ${fontSizes.small};
 `;
 
 export const TaskCommentText = styled.div`
