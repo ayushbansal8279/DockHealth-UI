@@ -1,5 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import * as TaskGroupListApi from 'api/task-group-list-api';
+import * as AlertActions from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import * as ActionTypes from './action-types';
 
 export function getTaskGroupList(
@@ -33,6 +35,7 @@ export function createTaskGroupList(payload) {
     TaskGroupListApi.createGroupAssignedToList(payload)
       .then(() => {
         dispatch(getTaskGroupList(taskListIdentifier, false));
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.CREATED));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
@@ -47,6 +50,7 @@ export function editTasksGroupName(listId, groupId, newGroupName) {
     TaskGroupListApi.editGroupName(listId, groupId, newGroupName)
       .then(() => {
         dispatch(getTaskGroupList(listId, false));
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
@@ -61,6 +65,7 @@ export function deleteTasksGroup(groupId, listId) {
     TaskGroupListApi.deleteGroup(groupId)
       .then(() => {
         dispatch(getTaskGroupList(listId, false));
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });

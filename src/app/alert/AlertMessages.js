@@ -1,5 +1,6 @@
 export default {
   SAVED: 'Saved',
+  CREATED: 'Created',
   UPDATED: 'Updated',
   DELETED: 'Deleted',
   INVITED: 'Invited',
