@@ -26,6 +26,7 @@ import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
 import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
+import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
 import { onDragEndSubtask } from '../DragDrop.helpers';
 import {
   AddCrossIcon,
@@ -101,6 +102,9 @@ const TaskItem = ({
   dragHandleProps,
   isDragging,
   isCompletedGroup,
+  members,
+  currentUser,
+  reassignTask,
 }) => {
   const {
     edited,
@@ -212,11 +216,19 @@ const TaskItem = ({
           </Grid>
         </TaskItemCell>
         <TaskItemCell width="80px" justify="center">
-          {assignedTo ? (
-            <Member member={assignedTo} size={34} />
-          ) : (
-            <AddCrossIcon src={CrossIcon} size="34px" />
-          )}
+          <TaskAssignMember
+            members={members}
+            currentUser={currentUser}
+            reassignTask={reassignTask}
+            task={task}
+            isCompletedGroup={isCompletedGroup}
+          >
+            {assignedTo ? (
+              <Member member={assignedTo} size={34} />
+            ) : (
+              <AddCrossIcon src={CrossIcon} size="34px" />
+            )}
+          </TaskAssignMember>
         </TaskItemCell>
       </TaskItemContainer>
     </TaskItemPanel>
@@ -231,6 +243,9 @@ const Subtasks = ({
   taskListIdentifier,
   parentTaskId,
   reorderSubtasksForTask,
+  reassignTask,
+  currentUser,
+  members,
   ...restProps
 }) => {
   const [draggedId, setDraggableId] = useState(false);
@@ -281,6 +296,9 @@ const Subtasks = ({
                           key={subtask.taskId}
                           task={subtask}
                           isDragging={isDraggingSubtask}
+                          currentUser={currentUser}
+                          members={members}
+                          reassignTask={reassignTask}
                           {...restProps}
                         />
                         {draggedId !== String(subtask.taskId) &&
@@ -311,6 +329,9 @@ const Task = ({
   draggableProvided,
   groupId,
   taskListIdentifier,
+  members,
+  currentUser,
+  reassignTask,
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
@@ -325,6 +346,9 @@ const Task = ({
         switchOpen={switchOpen}
         dragHandleProps={dragHandleProps}
         isDragging={isDragging}
+        members={members}
+        currentUser={currentUser}
+        reassignTask={reassignTask}
         {...restProps}
       />
       {!isEmpty(comments) && !isStartedDnD && (
@@ -338,6 +362,9 @@ const Task = ({
           groupId={groupId}
           taskListIdentifier={taskListIdentifier}
           parentTaskId={task.taskIdentifier}
+          currentUser={currentUser}
+          members={members}
+          reassignTask={reassignTask}
           {...restProps}
         />
       )}

@@ -118,12 +118,6 @@ class Home extends Component {
       await getAllTasks().then(async () => {
         taskListActions.getTaskListById(routeParams.taskListIdentifier);
 
-        if (routeParams.taskListIdentifier) {
-          taskListActions
-            .getMembersByTaskListId(routeParams.taskListIdentifier, 'ALL')
-            .then(noop);
-        }
-
         taskListActions
           .getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier)
           .then(noop)

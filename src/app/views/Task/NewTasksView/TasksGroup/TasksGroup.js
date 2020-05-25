@@ -47,6 +47,7 @@ const TasksGroup = ({
   moveGroupUp,
   moveGroupDown,
   reorderSubtasksForTask,
+  reassignTask,
   taskListIdentifier,
   tasks,
   isCompletedGroup,
@@ -55,6 +56,7 @@ const TasksGroup = ({
   showMoreTasks,
   isFetchingMoreTasks,
   hasMoreTasks,
+  members,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -157,6 +159,8 @@ const TasksGroup = ({
           taskListIdentifier={taskListIdentifier}
           reorderSubtasksForTask={reorderSubtasksForTask}
           isCompletedGroup={isCompletedGroup}
+          members={members}
+          reassignTask={reassignTask}
         />
         {groupPagination && hasMoreTasks && (
           <PaginationButton

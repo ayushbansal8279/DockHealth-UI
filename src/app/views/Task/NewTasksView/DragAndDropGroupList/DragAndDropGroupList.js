@@ -15,7 +15,9 @@ const DragAndDropGroupList = ({
   taskListIdentifier,
   tasks,
   reorderSubtasksForTask,
+  reassignTask,
   isCompletedGroup,
+  members,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
 
@@ -54,6 +56,8 @@ const DragAndDropGroupList = ({
                     isCompleted={isCompletedGroup}
                     isCompletedGroup={isCompletedGroup}
                     toggleCompleteTask={toggleCompleteTask}
+                    members={members}
+                    reassignTask={reassignTask}
                   />
                 )}
               </Draggable>

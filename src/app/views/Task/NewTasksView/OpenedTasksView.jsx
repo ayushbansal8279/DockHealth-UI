@@ -29,9 +29,11 @@ const OpenedTasksView = ({
   reorderTasksInGroup,
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup,
+  reassignTask,
   taskListIdentifier,
   tasksCount,
   isFetchingData,
+  members,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -91,9 +93,11 @@ const OpenedTasksView = ({
                     ] || []
                   }
                   reorderSubtasksForTask={reorderSubtasksForTask}
+                  reassignTask={reassignTask}
                   taskListIdentifier={taskListIdentifier}
                   draggedId={draggedId}
                   toggleCompleteTask={toggleCompleteTask}
+                  members={members}
                 />
               ),
             )}

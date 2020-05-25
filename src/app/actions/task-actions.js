@@ -1087,3 +1087,17 @@ export function reassignTasksToAnotherGroup(
       });
   };
 }
+
+export function reassignTask(taskIdentifier, userId, listIdentifier) {
+  return dispatch =>
+    TaskApi.assignOrReassignTask({ taskIdentifier }, userId)
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .then(() => {
+        dispatch(
+          getListTasks(listIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+}

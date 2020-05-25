@@ -5,6 +5,8 @@ const URLS = {
     edit: 'task/group',
     delete: groupId => `task/group/${groupId}`,
     sort: 'task/group/sortTaskGroups',
+  },
+  tasks: {
     reassignTasks: groupIdentifier =>
       `task/group/assignTasksToTaskGroup/${groupIdentifier}`,
   },
