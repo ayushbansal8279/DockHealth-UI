@@ -46,6 +46,7 @@ import {
   PrioritySwitch,
   CompletedBy,
   InfoText,
+  PriorityHoverIcon,
 } from './styled';
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
@@ -138,7 +139,7 @@ const TaskItem = ({
           {task.priority === 'HIGH' ? (
             <img src={HighPriorityLabel} alt="Priority icon" />
           ) : (
-            <img
+            <PriorityHoverIcon
               className="low"
               src={LowPriorityHoverLabel}
               alt="No priority"
