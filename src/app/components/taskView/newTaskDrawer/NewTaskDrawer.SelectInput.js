@@ -379,7 +379,9 @@ const SelectInput = React.forwardRef(
               onFocus={() => {
                 openAutocomplete();
                 enableFocus();
-                onFocusCallback();
+                if (onFocusCallback) {
+                  onFocusCallback();
+                }
               }}
               onBlur={() => {
                 if (!forceOpen) {

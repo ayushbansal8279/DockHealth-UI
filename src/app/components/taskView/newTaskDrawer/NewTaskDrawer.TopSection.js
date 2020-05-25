@@ -10,7 +10,7 @@ import {
   AutoSaveContainer,
   AutoSaveChip,
   CondensedH4,
-  styleFullRowThin,
+  styleFirstRow,
 } from './NewTaskDrawer.Styled';
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
@@ -96,7 +96,7 @@ const TopSection = ({
         xs={12}
         alignItems="center"
         justify="space-between"
-        style={styleFullRowThin}
+        style={styleFirstRow}
       >
         <Grid
           container

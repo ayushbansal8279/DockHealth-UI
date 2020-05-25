@@ -65,25 +65,27 @@ export const getFormattedMembers = ({ members, currentUser }) => {
         </MemberLabelContainer>
       ),
       displayLabel: userName,
+      highlightSupport: true,
     };
   });
 
   formattedMembers.unshift({
-    key: 'UNASSIGNED',
-    value: 'UNASSIGNED',
+    key: null,
+    value: null,
     label: (
-      <MemberLabelContainer
-        style={{
-          paddingBottom: '5px',
-          // borderBottom: `1px solid ${palette.coolGrey3}`,
-        }}
-      >
+      <MemberLabelContainer>
         <CondensedH4>Unassigned</CondensedH4>
-        <RemoveCircleOutlineRounded color="action" />
+        <RemoveCircleOutlineRounded
+          color="action"
+          style={{ height: '30px', width: '30px' }}
+        />
       </MemberLabelContainer>
     ),
-    displayLabel: '',
+    displayLabel: null,
+    highlightSupport: false,
   });
+
+  const currentUserName = `${currentUser.firstName} ${currentUser.lastName}`.trim();
 
   formattedMembers.unshift({
     key: currentUser.userIdentifier,
@@ -99,7 +101,8 @@ export const getFormattedMembers = ({ members, currentUser }) => {
         <Member member={currentUser} size={30} />
       </MemberLabelContainer>
     ),
-    displayLabel: 'Assign to me',
+    displayLabel: currentUserName,
+    highlightSupport: false,
   });
   return formattedMembers;
 };
@@ -130,5 +133,34 @@ export const renderPartsWithHighlighting = (optionValue, inputValue) => {
         </span>
       ))}
     </>
+  );
+};
+
+export const renderMemberoptionWithHighlighting = (option, inputValue) => {
+  if (option?.highlightSupport === false) {
+    return option?.label;
+  }
+
+  const highlightedLabelvalue = renderPartsWithHighlighting(
+    option?.displayLabel,
+    inputValue,
+  );
+
+  const func = children => {
+    return React.Children.map(children, childNode => {
+      if (typeof childNode === 'string') return highlightedLabelvalue;
+      if (typeof childNode.props.children === 'string')
+        return React.cloneElement(childNode, [], highlightedLabelvalue);
+      return React.cloneElement(childNode, [], func(childNode.props.children));
+    });
+  };
+
+  return (
+    <MemberLabelContainer
+      style={option?.label.props.style}
+      key={option?.label.key}
+    >
+      {func(option?.label.props.children)}
+    </MemberLabelContainer>
   );
 };

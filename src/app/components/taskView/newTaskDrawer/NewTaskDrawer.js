@@ -27,11 +27,8 @@ import {
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
-  MemberLabelContainer,
-  CondensedH4,
   styleTaskDrawerContainer,
   styleFullRow,
-  styleFullRowThin,
   styleEmailRow,
   styleLeftColumn,
   styleRightColumn,
@@ -41,7 +38,7 @@ import TextInput from './NewTaskDrawer.TextInput';
 import {
   getFormattedMembers,
   getFormattedPatients,
-  renderPartsWithHighlighting,
+  renderMemberoptionWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
 const NewTaskDrawer = ({ members, taskList, isInbox }) => {
@@ -54,7 +51,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     patients,
     taskLists,
     currentAssignedToAdornment,
-    getMemberAdornment,
     closeTaskDrawer,
     isSaving,
     selectedTask,
@@ -92,11 +88,13 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     onAssignedToInputChange,
   } = initializeTaskDrawerPopoverHooks();
 
+  const parentFormSubmit = handleSubmit(onSubmit);
+
   return (
     <TaskDrawerContainer open={taskDrawerOpen} top={top}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormContext {...formMethods}>
-          <Grid container spacing={2} style={styleTaskDrawerContainer}>
+          <Grid container spacing={1} style={styleTaskDrawerContainer}>
             <TopSection
               formMethods={formMethods}
               taskLists={taskLists}
@@ -110,6 +108,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               autoSaveVisible={autoSaveVisible}
               setAutoSaveVisible={setAutoSaveVisible}
             />
+            <Spacing vertical={2} />
             <Grid item xs={12} style={styleFullRow}>
               <TextInput
                 name="description"
@@ -121,12 +120,21 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                   shrink: true,
                 }}
                 InputProps={{
+                  type: 'text',
                   startAdornment:
                     selectedTask && selectedTask.description !== '' ? (
                       ''
                     ) : (
                       <AdornmentContainer>+</AdornmentContainer>
                     ),
+                  onKeyDown: event => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      parentFormSubmit();
+                      return false;
+                    }
+                    return true;
+                  },
                 }}
                 onBlur={event => {
                   if (selectedTask && selectedTask.taskIdentifier != null) {
@@ -222,17 +230,9 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     </Button>
                   </Grid>
                 }
-                renderItem={(option, { inputValue }) => (
-                  <MemberLabelContainer>
-                    <CondensedH4>
-                      {renderPartsWithHighlighting(
-                        option?.displayLabel,
-                        inputValue,
-                      )}
-                    </CondensedH4>
-                    {getMemberAdornment(option.value, members)}
-                  </MemberLabelContainer>
-                )}
+                renderItem={(option, inputValue) =>
+                  renderMemberoptionWithHighlighting(option, inputValue)
+                }
                 InputProps={{
                   endAdornment: currentAssignedToAdornment,
                 }}
@@ -291,18 +291,18 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               <LabelsSection
                 selectedTask={selectedTask}
                 isInbox={isInbox}
-                parentFormSubmit={handleSubmit(onSubmit)}
+                parentFormSubmit={parentFormSubmit}
                 setAutoSaveVisible={setAutoSaveVisible}
               />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
               <AtttachmentsSection
                 selectedTask={selectedTask}
-                parentFormSubmit={handleSubmit(onSubmit)}
+                parentFormSubmit={parentFormSubmit}
               />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
-              <CommentSection parentFormSubmit={handleSubmit(onSubmit)} />
+              <CommentSection parentFormSubmit={parentFormSubmit} />
             </Grid>
             <Grid
               item
@@ -311,7 +311,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               justify="flex-end"
               alignItems="center"
               wrap="nowrap"
-              style={styleFullRowThin}
+              style={styleFullRow}
             >
               <Button
                 onClick={closeTaskDrawer}
@@ -349,15 +349,15 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
           </Grid>
         </FormContext>
       </form>
+      <Divider
+        style={{
+          width: '100%',
+          backgroundColor: palette.blueOcean,
+          opacity: '0.3',
+        }}
+      />
       <Grid container item xs={12} style={styleLastRow}>
-        <Spacing vertical={4} />
-        <Divider
-          style={{
-            width: '100%',
-            backgroundColor: palette.blueOcean,
-            opacity: '0.3',
-          }}
-        />
+        <Spacing vertical={2} />
         <HistorySection
           formMethods={formMethods}
           taskLists={taskLists}
