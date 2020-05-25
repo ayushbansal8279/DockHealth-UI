@@ -30,17 +30,10 @@ export const PrioritySwitch = styled.button`
   left: -12px;
   transform: translateY(-50%);
   cursor: pointer;
+`;
 
-  & > img {
-    &.low {
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
+export const PriorityHoverIcon = styled.img`
+  opacity: 0;
 `;
 
 export const AddPlaceholder = styled.div`
@@ -166,14 +159,12 @@ export const TaskItemPanel = styled.div`
   position: relative;
   ${props =>
     props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'}
-  &:hover ${ThreeDots} {
+  &:hover {
+    & ${ThreeDots},
+    & ${AddPlaceholder},
+    & ${PriorityHoverIcon} {
     opacity: 1;
   }
-
-  &:hover ${AddPlaceholder} {
-    opacity: 1;
-  }
-
 `;
 
 export const InfoText = styled.p`
