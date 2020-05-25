@@ -9,10 +9,11 @@ import {
 import {
   GlobalChipWrapper,
   ChipContainer,
-  StyledChip,
+  ChipLabel,
+  ChipBackground,
   CheckCircleIcon,
 } from './styled';
-import AlertTypes from './AlertTypes';
+import AlertTypes from './AlertMessages';
 
 class GlobalAlertChip extends Component {
   timeoutHandle;
@@ -36,9 +37,7 @@ class GlobalAlertChip extends Component {
     }
 
     if (isGlobalOpen && nextProps.alertState.isGlobalOpen) {
-      if (this.timeoutHandle) {
-        clearTimeout(this.timeoutHandle);
-      }
+      this.clearAllTimeouts();
 
       this.setCloseTimeout();
     }
@@ -66,11 +65,9 @@ class GlobalAlertChip extends Component {
     return (
       <GlobalChipWrapper>
         <ChipContainer isOpen={isGlobalOpen} onClick={this.handleCloseAlert}>
-          <StyledChip
-            variant="outlined"
-            icon={<CheckCircleIcon />}
-            label={text}
-          />
+          <CheckCircleIcon isOpen={isGlobalOpen} />
+          <ChipLabel>{text}</ChipLabel>
+          <ChipBackground />
         </ChipContainer>
       </GlobalChipWrapper>
     );
