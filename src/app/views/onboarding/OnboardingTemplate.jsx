@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import { useSmallScreen } from 'helpers/utility-functions';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
-import { checkUserAuthentication } from 'views/TemplateCore/TemplateCore.Utilities';
 import {
   OnboardingBackground,
   OnboardingLogo,
@@ -12,12 +10,6 @@ import {
 
 const OnboardingTemplate = ({ children }) => {
   const isSmallScreen = useSmallScreen();
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    checkUserAuthentication({ dispatch });
-  }, [children, dispatch]);
 
   return (
     <OnboardingBackground>

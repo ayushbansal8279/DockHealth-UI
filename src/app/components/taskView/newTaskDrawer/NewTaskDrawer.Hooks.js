@@ -305,7 +305,6 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     if (selectedTask) {
       try {
         await deleteTask(selectedTask)(dispatch);
-        toggleAlert('Task deleted successfully', 'success');
         afterDelete();
         onButtonClicked('Delete task');
       } catch {

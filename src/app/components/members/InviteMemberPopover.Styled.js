@@ -4,7 +4,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import Search from '../taskView/Search';
+import Search from 'components/taskView/Search/Search';
 import Member from './Member';
 
 const NOT_SIGNED_UP_OPACITY = 'opacity: 0.4;';

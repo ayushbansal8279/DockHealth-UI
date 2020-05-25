@@ -54,11 +54,13 @@ import {
   UPDATE_TASK_SUCCESS,
   UPDATE_TASK_WORKFLOW_STATUS,
   UPDATED_SUBTASK_ORDER,
+  GET_MORE_TASKS_REQUEST,
 } from 'actions/action-types';
 
 const initialState = {
   completedTasks: [],
   tasks: [],
+  groupedTasks: {},
   newlyAddedTaskIds: [],
   task: {},
   isFetching: false,
@@ -74,6 +76,7 @@ const initialState = {
   subtaskShape: {},
   addingNewTask: false,
   taskCountStats: null,
+  isFetchingMoreTasks: false,
 };
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
@@ -200,7 +203,9 @@ const mapTasksSuccess = task => ({
   })),
 });
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskReducer = (state = initialState, action) => {
+  // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
     case ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
@@ -274,6 +279,7 @@ const TaskReducer = (state = initialState, action) => {
         isCompletedTasksFetching: false,
         showingCompletedTasks: true,
         isFetching: false,
+        isFetchingMoreTasks: false,
       };
     }
 
@@ -470,9 +476,8 @@ const TaskReducer = (state = initialState, action) => {
       const { task } = action;
       const mainTaskId = task.parentTaskIdentifier || task.taskIdentifier;
 
-      return {
-        ...state,
-        tasks: state.tasks.map(t => {
+      const updateTaskFromAction = tasks =>
+        tasks.map(t => {
           if (t.taskIdentifier !== mainTaskId) {
             return t;
           }
@@ -489,16 +494,20 @@ const TaskReducer = (state = initialState, action) => {
                 : subtask,
             ),
           };
-        }),
+        });
+
+      return {
+        ...state,
+        tasks: updateTaskFromAction(state.tasks),
+        completedTasks: updateTaskFromAction(state.completedTasks),
       };
     }
 
     case TOGGLE_TASK_PRIORITY_SUCCESS: {
       const mainTask = getMainTaskId(action.task);
 
-      return {
-        ...state,
-        tasks: state.tasks.map(task => {
+      const handleTaskPriorityChangeFromAction = tasks =>
+        tasks.map(task => {
           if (task.taskIdentifier === mainTask) {
             return action.task.parentTaskIdentifier
               ? {
@@ -513,7 +522,14 @@ const TaskReducer = (state = initialState, action) => {
           }
 
           return task;
-        }),
+        });
+
+      return {
+        ...state,
+        tasks: handleTaskPriorityChangeFromAction(state.tasks),
+        completedTasks: handleTaskPriorityChangeFromAction(
+          state.completedTasks,
+        ),
       };
     }
 
@@ -940,6 +956,10 @@ const TaskReducer = (state = initialState, action) => {
           return task;
         }),
       };
+    }
+
+    case GET_MORE_TASKS_REQUEST: {
+      return { ...state, isFetchingMoreTasks: true };
     }
 
     default:

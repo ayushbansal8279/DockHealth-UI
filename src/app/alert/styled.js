@@ -1,0 +1,69 @@
+import styled from 'styled-components';
+import { CheckCircleOutline } from '@material-ui/icons';
+import palette from 'styles/palette';
+import { fontWeights } from 'styles/font';
+
+export const GlobalChipWrapper = styled.div`
+  position: fixed;
+  top: 6.5rem;
+  left: 50%;
+  z-index: 1000;
+  width: auto;
+  height: auto;
+  transform: translateY(-50%);
+`;
+
+export const CheckCircleIcon = styled(CheckCircleOutline)`
+  && {
+    position: absolute;
+    top: 6px;
+    left: 7px;
+    height: 20px;
+    width: 20px;
+    color: ${palette.white};
+    opacity: ${props => (props.isOpen ? '1' : '0')};
+    transition: opacity 0.3s ease-out;
+    transition-delay: 0.3s;
+  }
+`;
+
+export const ChipBackground = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  background-color: ${palette.accentYellow};
+  border-radius: 1rem;
+  z-index: -1;
+  transition: width 0.3s ease-out;
+`;
+
+export const ChipLabel = styled.p`
+  margin-bottom: 0;
+  padding-left: 30px;
+  padding-right: 10px;
+  font-size: 1rem;
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.white};
+  text-transform: uppercase;
+  transition: opacity 0.3s ease-out;
+`;
+
+export const ChipContainer = styled.button`
+  position: relative;
+  width: auto;
+  height: ${props => (props.isOpen ? '2rem' : '0')};
+  overflow: hidden;
+  transition-delay: 1s;
+  transition-property: height;
+
+  ${props => props.isOpen && 'transition-property: none;'}
+
+  & ${ChipBackground} {
+    width: ${props => (props.isOpen ? '100%' : '0')};
+  }
+
+  & ${ChipLabel} {
+    opacity: ${props => (props.isOpen ? '1' : '0')};
+  }
+`;

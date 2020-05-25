@@ -13,7 +13,7 @@ import PageContentHeader from 'components/common/PageContentHeader';
 import SafariFixGrid from 'components/common/SafariFixGrid';
 import Spacing from 'components/common/Spacing';
 import PeopleContainer from 'components/people/PeopleContainer';
-import Search from 'components/taskView/Search';
+import Search from 'components/taskView/Search/Search';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
 
 const CubesLoaderContainer = styled.div`

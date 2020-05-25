@@ -14,6 +14,8 @@ import {
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'components/patient/PatientDetailsView';
 import { storeAsCurrentTask } from './actions/task-actions';
+import { getTaskGroupList } from './actions/task-group-list-actions';
+import { getMembersByTaskListId } from './actions/tasklist-actions';
 import sendEvent from './api/usage-api';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
@@ -63,6 +65,7 @@ import TemplateAuthBase from './views/TemplateAuthBase/TemplateAuthBase';
 import TemplateCore from './views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
+import { checkUserAuthentication } from './views/TemplateCore/TemplateCore.Utilities';
 // import { onLogin } from './helpers/ga-event-helper';
 
 const transformPathname = pathname =>
@@ -156,6 +159,10 @@ export const Routes = ({ store }) => {
 
   const dispatch = useDispatch();
 
+  const checkUserIsAuthenticated = () => {
+    checkUserAuthentication({ dispatch });
+  };
+
   const preselectTask = (_, nextState) => {
     const taskIdentifier = nextState.location?.state?.taskIdentifier;
     if (!taskIdentifier) {
@@ -164,10 +171,24 @@ export const Routes = ({ store }) => {
     dispatch(storeAsCurrentTask(taskIdentifier));
   };
 
+  const onEnterTaskGroups = nextState => {
+    const { params } = nextState;
+
+    if (params?.taskListIdentifier) {
+      dispatch(getTaskGroupList(params?.taskListIdentifier));
+      dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));
+    }
+  };
+
   return (
     <Router history={hashHistory} onUpdate={() => {}}>
       <Route path="/" component={App}>
-        <Route component={TemplateCore}>
+        <Route
+          component={TemplateCore}
+          onEnter={() => {
+            checkUserIsAuthenticated();
+          }}
+        >
           <IndexRoute
             component={ListDetailsView}
             onEnter={checkFeatureToggles}
@@ -209,7 +230,12 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureTogglesAdmin}
           />
         </Route>
-        <Route component={TemplateCoreSubscriptionPlan}>
+        <Route
+          component={TemplateCoreSubscriptionPlan}
+          onEnter={() => {
+            checkUserIsAuthenticated();
+          }}
+        >
           <Route
             path="/patients"
             component={PatientsView}
@@ -264,12 +290,13 @@ export const Routes = ({ store }) => {
               onEnter={checkFeatureToggles}
             />
             <Route
-              path=":taskListIdentifier(/:taskIdentifier)"
+              path=":taskListIdentifier(/:tabName)(/:taskIdentifier)"
               component={ListDetailsView}
               onChange={preselectTask}
               onEnter={nextState => {
                 checkFeatureToggles(nextState);
                 preselectTask(null, nextState);
+                onEnterTaskGroups(nextState);
               }}
             />
             <Route
@@ -280,7 +307,13 @@ export const Routes = ({ store }) => {
           </Route>
         </Route>
         <Redirect from="/onboarding/create-account" to="create-account" />
-        <Route path="/onboarding" component={OnboardingTemplate}>
+        <Route
+          path="/onboarding"
+          component={OnboardingTemplate}
+          onEnter={() => {
+            checkUserIsAuthenticated();
+          }}
+        >
           <Route component={OnboardingEulaView} path="eula" />
           <Route component={OnboardingBaaOverviewView} path="baa-overview" />
           <Route component={OnboardingBaaCheckView} path="baa-check" />

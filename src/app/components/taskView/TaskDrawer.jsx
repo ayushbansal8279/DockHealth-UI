@@ -57,7 +57,6 @@ const onDelete = ({ afterDelete, dispatch, task }) => async event => {
   if (task) {
     try {
       await deleteTask(task)(dispatch);
-      toggleAlert('Task deleted successfully', 'success');
       afterDelete();
       onButtonClicked('Delete task');
     } catch {

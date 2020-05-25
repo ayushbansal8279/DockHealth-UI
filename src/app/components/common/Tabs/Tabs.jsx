@@ -1,0 +1,26 @@
+import React from 'react';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { TabsContainer, TabButton } from './styled';
+
+const Tab = ({ label, isSelected, onSelectTab }) => (
+  <TabButton onClick={onSelectTab} isSelected={isSelected}>
+    {label}
+  </TabButton>
+);
+
+const Tabs = ({ config, completedTasksAmount }) => {
+  return (
+    <TabsContainer>
+      {config?.map(({ shouldRender, key, ...tab }) => {
+        return (
+          shouldRender() &&
+          (key !== TaskListTabName.COMPLETE || completedTasksAmount > 0) && (
+            <Tab {...tab} />
+          )
+        );
+      })}
+    </TabsContainer>
+  );
+};
+
+export default Tabs;

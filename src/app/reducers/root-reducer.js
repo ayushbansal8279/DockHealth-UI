@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import ModalReducer from 'modal/reducers';
+import AlertChipReducer from 'alert/reducer';
 import AuthBaseReducer from './auth-base-reducer';
 import FormReducer from './form-reducer';
 import HeaderReducer from './header-reducer';
@@ -11,6 +12,7 @@ import patient from './patient';
 import PatientReducer from './patient-reducer';
 import PeopleReducer from './people-reducer';
 import TaskDrawerReducer from './task-drawer-reducer';
+import TaskGroupListReducer from './task-group-list-reducer';
 import TaskReducer from './task-reducer';
 import TaskListReducer from './tasklist-reducer';
 import TaskLabelReducer from './task-label-reducer';
@@ -33,4 +35,6 @@ export default combineReducers({
   authBase: AuthBaseReducer,
   taskLabelState: TaskLabelReducer,
   modal: ModalReducer,
+  taskGroupList: TaskGroupListReducer,
+  alertChip: AlertChipReducer,
 });

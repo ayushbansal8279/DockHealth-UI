@@ -1,5 +1,9 @@
+import DeleteGroupModal from './components/DeleteGroupModal/DeleteGroupModal';
+import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
+
 const MODAL_MAP = {
-  // ExampleModal: () => <div>Example modal</div>, // TO DO: Replace by first real modal
+  DeleteGroup: DeleteGroupModal,
+  CompleteAllTasks: CompleteAllTasksModal,
 };
 
 export default MODAL_MAP;

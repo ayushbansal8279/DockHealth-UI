@@ -1,8 +1,12 @@
 import moment from 'moment';
 import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import * as AlertActions from 'alert/actions';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
+import * as TaskGroupListActions from './task-group-list-actions';
+import AlertMessages from '../alert/AlertMessages';
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -46,11 +50,21 @@ export function getListTasks(
   filterBy,
   status,
   cumulativeFlag,
+  queryStartPosition = 0,
 ) {
   const action = getListAction({ status, cumulativeFlag });
 
-  return dispatch =>
-    TaskApi.getListTasksByUser(taskListIdentifier, status, sortBy, filterBy)
+  return dispatch => {
+    if (cumulativeFlag) {
+      dispatch({ type: ActionTypes.GET_MORE_TASKS_REQUEST });
+    }
+    return TaskApi.getListTasksByUser(
+      taskListIdentifier,
+      status,
+      sortBy,
+      filterBy,
+      queryStartPosition,
+    )
       .then(tasks => {
         dispatch({ type: action, tasks });
         return tasks;
@@ -58,6 +72,7 @@ export function getListTasks(
       .catch(error => {
         throw error;
       });
+  };
 }
 
 export function getListTasksCount(taskListIdentifier, filterBy, status) {
@@ -280,7 +295,7 @@ export const reloadTaskListStats = (dispatch, task) => {
   }
 };
 
-export function saveTask(newTask) {
+export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>
       TaskApi.updateTask(newTask)
@@ -322,9 +337,15 @@ export function saveTask(newTask) {
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
+          if (shouldReloadGroups) {
+            dispatch(
+              TaskGroupListActions.getTaskGroupList(newTask.taskListIdentifier),
+            );
+          }
           reloadTaskListStats(dispatch, task);
         }
 
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
         clearPreparedSubtask(dispatch);
 
         return task;
@@ -334,7 +355,6 @@ export function saveTask(newTask) {
       });
   };
 }
-
 export const moveTask = (task, taskList) => dispatch => {
   const updatedTask = {
     refiled: true,
@@ -417,6 +437,7 @@ export function deleteTask(task) {
       .then(() => {
         dispatch({ type: ActionTypes.DELETE_TASK_SUCCESS, task });
         reloadTaskListStats(dispatch, task);
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
         return task;
       })
       .catch(error => {
@@ -447,6 +468,51 @@ export function sortSubTask(task, direction) {
       .catch(error => {
         throw error;
       });
+}
+
+export function toggleCompleteTask(task, tabName, currentUser = null) {
+  return dispatch => {
+    const action =
+      tabName === TaskListTabName.COMPLETE
+        ? ActionTypes.MARK_COMPLETE_TASK_STATUS_SUCCESS
+        : ActionTypes.MARK_TASK_STATUS_SUCCESS;
+
+    const { apiEndpoint, newStatus, successMessage } =
+      task.status === 'INCOMPLETE'
+        ? {
+            apiEndpoint: 'markComplete',
+            newStatus: 'COMPLETE',
+            successMessage: AlertMessages.TASK_COMPLETED,
+          }
+        : {
+            apiEndpoint: 'markIncomplete',
+            newStatus: 'INCOMPLETE',
+            successMessage: AlertMessages.TASK_REACTIVATED,
+          };
+
+    const newTaskData = {
+      status: newStatus,
+      completedBy: newStatus === 'COMPLETE' ? currentUser : null,
+      completedDt:
+        newStatus === 'COMPLETE'
+          ? moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+          : null,
+    };
+
+    dispatch({
+      type: action,
+      task,
+      ...newTaskData,
+    });
+
+    return TaskApi[apiEndpoint](task)
+      .then(() => {
+        dispatch(AlertActions.showGlobalAlert(successMessage));
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
 }
 
 export function markComplete(task, status, listName, currentUser = null) {
@@ -956,3 +1022,82 @@ export const sortSubtasks = curry(({ task, subtasks }, dispatch) => {
 export const updateTaskManually = task => dispatch => {
   dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
 };
+
+export const reorderTasksInGroup = (
+  orderedTaskIds,
+  taskGroupIdentifier,
+  taskListIdentifier,
+  parentTaskIdentifier,
+) => {
+  return dispatch => {
+    TaskApi.reorderTasksInGroup(
+      orderedTaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    )
+      .then(() => {
+        dispatch(
+          getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+};
+
+export const reorderSubtasksForTask = (
+  orderedSubtaskIds,
+  taskGroupIdentifier,
+  taskListIdentifier,
+  parentTaskIdentifier,
+) => {
+  return dispatch => {
+    TaskApi.reorderSubtasksForTask(
+      orderedSubtaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    )
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .then(() => {
+        dispatch(
+          getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+};
+
+export function reassignTasksToAnotherGroup(
+  taskIdentifiers,
+  taskGroupIdentifier,
+  listIdentifier,
+) {
+  return dispatch => {
+    TaskApi.reassignTasksToAnotherGroup(taskGroupIdentifier, taskIdentifiers)
+      .then(() => {
+        dispatch(
+          getListTasks(listIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
+export function reassignTask(taskIdentifier, userId, listIdentifier) {
+  return dispatch =>
+    TaskApi.assignOrReassignTask({ taskIdentifier }, userId)
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .then(() => {
+        dispatch(
+          getListTasks(listIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
+        );
+      })
+      .catch(error => {
+        throw error;
+      });
+}

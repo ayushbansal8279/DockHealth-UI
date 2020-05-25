@@ -57,7 +57,7 @@ export const PeopleLabel = styled.div`
   align-items: baseline;
   color: ${props => props.hasSelectedPeople && palette.lightGrey};
   font-size: ${props =>
-    props.hasSelectedPeople ? fontSizes.smallPlus : fontSizes.regular};
+    props.hasSelectedPeople ? fontSizes.small : fontSizes.regular};
   left: ${props => (props.hasSelectedPeople ? spacing.regular : 0)};
   position: ${props => (props.hasSelectedPeople ? 'absolute' : 'initial')};
   transition: font-size 0.2s, position 0.2s;

@@ -4,10 +4,10 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMount } from 'react-use';
 import { beginPatientCreation, loading } from 'actions/patient-actions';
+import Search from 'components/taskView/Search/Search';
 import AdornedButton from '../common/AdornedButton';
 import PageContentHeader from '../common/PageContentHeader';
 import Spacing from '../common/Spacing';
-import Search from '../taskView/Search';
 import PatientsFilter from './PatientsFilter';
 
 const ALL_PATIENTS = 'ALL_PATIENTS';

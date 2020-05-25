@@ -129,6 +129,8 @@ const config = (environment, options) => {
         views: path.resolve(__dirname, 'src/app/views'),
         styles: path.resolve(__dirname, 'src/app/styles'),
         modal: path.resolve(__dirname, 'src/app/modal'),
+        selectors: path.resolve(__dirname, 'src/app/selectors'),
+        alert: path.resolve(__dirname, 'src/app/alert'),
       },
     },
     devServer: {

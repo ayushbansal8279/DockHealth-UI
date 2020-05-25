@@ -29,13 +29,13 @@ export const PrimaryInputField = styled.input`
 
 export const PrimaryInputLabel = styled.label`
   color: ${palette.lightGrey};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
   padding: ${spacing.tiny} 0;
 `;
 
 export const PrimaryInputError = styled.span`
   color: ${palette.oPlusRed};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
 `;
 
 // Secondary
@@ -65,14 +65,14 @@ export const SecondaryInputField = styled.input`
 
 export const SecondaryInputLabel = styled.label`
   color: ${palette.lightGrey};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
   padding: ${spacing.tiny} 0;
   text-transform: uppercase;
 `;
 
 export const SecondaryInputError = styled.span`
   color: ${palette.oPlusRed};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.small};
 `;
 
 // Rest

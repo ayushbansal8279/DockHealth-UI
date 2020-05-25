@@ -11,7 +11,7 @@ import SafariFixGrid from 'components/common/SafariFixGrid';
 import Spacing from 'components/common/Spacing';
 import TaskListSearchContainer from 'components/LEGACY_list/TaskListSearchContainer';
 import TaskCheckbox from 'components/task/TaskCheckbox';
-import Search from 'components/taskView/Search';
+import Search from 'components/taskView/Search/Search';
 import { SearchFieldContainer } from './TaskListSearch.Styled';
 
 class TaskListSearch extends PureComponent {

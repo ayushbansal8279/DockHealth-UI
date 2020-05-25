@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 import { noop } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
+import URLS from '../urls';
 
 const ERROR_RETRIEVING_TASKS_MESSAGE =
   'Error in retrieving tasks. Please try again.';
@@ -264,7 +265,6 @@ export function addTask(task) {
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
-      toggleAlert('Task created successfully!', 'success');
       return response.data;
     })
     .catch(error => {
@@ -280,7 +280,6 @@ export function updateTask(task) {
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then(response => {
-      // toggleAlert('Task updated successfully!', 'success');
       return response.data;
     })
     .catch(error => {
@@ -292,7 +291,6 @@ export function deleteTask(taskIdentifier) {
   return axios
     .delete(`task/deleteTaskById/${taskIdentifier}`)
     .then(response => {
-      toggleAlert('Task deleted', 'success');
       return response;
     })
     .catch(error => {
@@ -333,7 +331,7 @@ export function markComplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=COMPLETE`)
     .then(response => {
-      toggleAlert('Task completed. Great job!', 'success');
+      // toggleAlert('Task completed. Great job!', 'success');
       return response;
     })
     .catch(error => {
@@ -345,7 +343,7 @@ export function markIncomplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=INCOMPLETE`)
     .then(response => {
-      toggleAlert('You have re-activated a task.', 'success');
+      // toggleAlert('You have re-activated a task.', 'success');
       return response;
     })
     .catch(error => {
@@ -638,3 +636,45 @@ export function flagArchivedForUser(taskIdentifier, flagArchived) {
       throw error;
     });
 }
+
+export function reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier) {
+  return axios
+    .put('task/sortTasksInTaskGroup', {
+      taskIdentifiers: orderedTaskIds,
+      taskGroupIdentifier,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function reorderSubtasksForTask(
+  orderedTaskIds,
+  taskGroupIdentifier,
+  parentTaskIdentifier,
+) {
+  return axios
+    .put('task/sortSubTasksForTask', {
+      taskIdentifiers: orderedTaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export const reassignTasksToAnotherGroup = (
+  taskGroupIdentifier,
+  taskIdentifiers,
+) =>
+  axios
+    .put(URLS.tasks.reassignTasks(taskGroupIdentifier), {
+      taskIdentifiers,
+    })
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
