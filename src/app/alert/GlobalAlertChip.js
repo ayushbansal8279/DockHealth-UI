@@ -20,28 +20,28 @@ class GlobalAlertChip extends Component {
 
   componentWillUpdate(nextProps) {
     const {
-      alertState: { isGlobalOpen, text },
+      alertState: { isGlobalOpen },
     } = this.props;
 
-    if (
-      !Object.values(AlertTypes).includes(text) &&
-      nextProps.alertState.isGlobalOpen
-    ) {
-      console.warn(
-        'Notification message is not included in default messages list',
-      );
-    }
-
     if (!isGlobalOpen && nextProps.alertState.isGlobalOpen) {
+      this.warnIfIsNotDefault(nextProps.alertState.text);
       this.setCloseTimeout();
     }
 
     if (isGlobalOpen && nextProps.alertState.isGlobalOpen) {
-      this.clearAllTimeouts();
+      if (this.timeoutHandle) clearTimeout(this.timeoutHandle);
 
       this.setCloseTimeout();
     }
   }
+
+  warnIfIsNotDefault = text => {
+    if (!Object.values(AlertTypes).includes(text)) {
+      console.warn(
+        'Notification message is not included in default messages list',
+      );
+    }
+  };
 
   setCloseTimeout = (delay = 4000) => {
     const { closeAlert } = this.props;
