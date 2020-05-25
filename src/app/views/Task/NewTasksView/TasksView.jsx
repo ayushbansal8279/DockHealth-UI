@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
@@ -69,6 +69,7 @@ const TaskView = ({
 }) => {
   handleTabsNavigation(routeParams);
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
+  const [searchValue, setSearchValue] = useState('');
 
   const { openDrawer } = taskDrawerActions;
   const {
@@ -173,6 +174,23 @@ const TaskView = ({
       metricTaskListIdentifier === taskListIdentifier,
   )?.metricValue;
 
+  const filteredGroups = !searchValue
+    ? groupedTasks
+    : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
+        const filteredTasks = groupedTasks[
+          currentKey
+        ].filter(({ description }) =>
+          description.toLowerCase().includes(searchValue.toLowerCase()),
+        );
+        return { ...groupObject, [currentKey]: filteredTasks };
+      }, {});
+
+  const filteredCompletedTasks = !searchValue
+    ? completedTasks
+    : completedTasks.filter(({ description }) =>
+        description.toLowerCase().includes(searchValue.toLowerCase()),
+      );
+
   return (
     <TaskViewContainer>
       <Toolbar
@@ -190,6 +208,8 @@ const TaskView = ({
         taskList={taskList}
         openTasksAmount={openTaskCount}
         completedTasksAmount={completedTaskCount}
+        onSearchChange={setSearchValue}
+        searchValue={searchValue}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
@@ -198,7 +218,7 @@ const TaskView = ({
           currentUser={currentUser}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
           toggleCompleteTask={toggleTaskCompletedStatus}
-          tasks={completedTasks}
+          tasks={filteredCompletedTasks}
           isFetchingData={isCompletedTasksFetching}
           summaryTasksCount={completedTaskCount}
           showMoreTasks={() => refreshTab(false, true)}
@@ -213,7 +233,7 @@ const TaskView = ({
           currentUser={currentUser}
           toggleCompleteTask={toggleTaskCompletedStatus}
           storeAsCurrentTask={storeAsCurrentTask}
-          groupedTasks={groupedTasks}
+          groupedTasks={filteredGroups}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
           editGroupName={editGroupName}
           quickAddTask={quickAddTask}
