@@ -98,6 +98,8 @@ export default ({
   taskList,
   openTasksAmount,
   completedTasksAmount,
+  onSearchChange,
+  searchValue,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -233,7 +235,12 @@ export default ({
           />
         </Button>
         <Spacing horizontal={5} />
-        <Search noBackground initialValue="" value={null} onChange={() => {}} />
+        <Search
+          noBackground
+          initialValue=""
+          value={searchValue}
+          onChange={event => onSearchChange(event?.target?.value)}
+        />
       </ToolbarBottomGrid>
     </PageContentHeader>
   );
