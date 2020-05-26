@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import CheckmarkYellow from 'img/checkmark-yellow';
+
 import {
   showGlobalAlert as showAlertAction,
   closeGlobalAlert as closeAlertAction,
@@ -55,7 +57,7 @@ class GlobalAlertChip extends Component {
     return (
       <GlobalChipWrapper>
         <ChipContainer isOpen={isGlobalOpen} onClick={this.handleCloseAlert}>
-          <CheckCircleIcon isOpen={isGlobalOpen} />
+          <CheckCircleIcon src={CheckmarkYellow} isOpen={isGlobalOpen} />
           <ChipLabel>{text}</ChipLabel>
           <ChipBackground />
         </ChipContainer>
