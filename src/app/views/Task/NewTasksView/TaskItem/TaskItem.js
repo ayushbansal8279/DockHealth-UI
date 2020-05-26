@@ -5,6 +5,7 @@ import { isEmpty } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { Grid } from '@material-ui/core';
+import PopoverDatepicker from 'components/common/PopoverDatepicker/PopoverDatepicker';
 import ArrowIcon from 'img/arrow';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
@@ -32,7 +33,6 @@ import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
 import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
 import { onDragEndSubtask } from '../DragDrop.helpers';
-import PopoverDatepicker from './PopoverDatepicker/PopoverDatepicker';
 import {
   AddCrossIcon,
   AddPlaceholder,
@@ -55,6 +55,17 @@ import {
 } from './styled';
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
+
+const dueDateQuickSelectOptions = [
+  {
+    label: 'Today',
+    date: moment(),
+  },
+  {
+    label: 'Tomorrow',
+    date: moment().add(1, 'days'),
+  },
+];
 
 const COMMENTS = 'COMMENTS';
 const DUE_DATE = 'DUE_DATE';
@@ -221,7 +232,13 @@ const TaskItem = ({
               />
             </GridImg>
             <GridImg item xs={3}>
-              <PopoverDatepicker selectedDate={dueDate}>
+              <PopoverDatepicker
+                selectedDate={dueDate}
+                onDateChange={date => {
+                  console.log('date change', date);
+                }}
+                quickSelectOptions={dueDateQuickSelectOptions}
+              >
                 <DueDateContainer>
                   <DueDate>
                     {dueDate && moment(dueDate).format('MM/DD')}

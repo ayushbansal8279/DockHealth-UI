@@ -52,6 +52,7 @@ export const renderDayLabels = ({
         color={isDaySelected ? 'primary' : 'default'}
         size="small"
         onClick={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
+        disabled={isDaySelected}
       >
         <CalendarDayLabel
           isCurrentMonth={isCurrentMonth}
