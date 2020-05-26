@@ -55,13 +55,13 @@ const onChange = ({
     setValue(name, newOptions);
     closeAutocomplete();
     if (onItemSelected) {
-      onItemSelected(option);
+      onItemSelected(option, _event);
     }
   } else {
     setValue(name, option?.value);
     closeAutocomplete();
     if (onItemSelected) {
-      onItemSelected(option);
+      onItemSelected(option, _event);
     }
   }
 };
@@ -245,6 +245,8 @@ const SelectInput = React.forwardRef(
       getOptionSelected: (option, selected) => selected.value === option.value,
     });
 
+    const inputReference = setAnchorEl;
+
     // console.log('dirty: '+dirty);
     // console.log('inputValue: '+inputValue);
     // console.log('selectedValue: '+currentOption?.displayLabel);
@@ -271,7 +273,7 @@ const SelectInput = React.forwardRef(
           ];
 
           setValue(name, newOptions);
-          onItemSelected(newOptions);
+          onItemSelected(newOptions, event);
           event.target.value = '';
         }
       },
@@ -338,8 +340,6 @@ const SelectInput = React.forwardRef(
         </TagCreateActionButton>
       );
     }
-
-    const inputReference = setAnchorEl;
 
     return (
       <NoSsr>

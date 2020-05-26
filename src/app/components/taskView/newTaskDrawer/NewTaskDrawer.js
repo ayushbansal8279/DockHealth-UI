@@ -163,7 +163,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label="Patient"
                 placeholder="Who is the patient?"
                 onInputChange={onPatientInputChange}
-                onItemSelected={handlePatientSelect}
+                onItemSelected={option => {
+                  handlePatientSelect(option);
+                  patientInputReference.current.querySelector('input').blur();
+                }}
                 ref={patientInputReference}
                 noOptionsText={
                   <Grid
@@ -206,7 +209,12 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label="Assigned To"
                 placeholder="Who would you like to assign this task to?"
                 onInputChange={onAssignedToInputChange}
-                onItemSelected={handleAssignedToSelect}
+                onItemSelected={option => {
+                  handleAssignedToSelect(option);
+                  assignedToInputReference.current
+                    .querySelector('input')
+                    .blur();
+                }}
                 ref={assignedToInputReference}
                 noOptionsText={
                   <Grid
