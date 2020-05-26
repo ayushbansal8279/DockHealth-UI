@@ -22,8 +22,8 @@ export const CheckCircleIcon = styled(CheckCircleOutline)`
     width: 20px;
     color: ${palette.white};
     opacity: ${props => (props.isOpen ? '1' : '0')};
-    transition: opacity 0.3s ease-out;
-    transition-delay: 0.3s;
+    transition: opacity 0.2s ease-out;
+    transition-delay: ${props => (props.isOpen ? '0.3s' : '0.1s')};
   }
 `;
 
@@ -35,7 +35,7 @@ export const ChipBackground = styled.div`
   background-color: ${palette.accentYellow};
   border-radius: 1rem;
   z-index: -1;
-  transition: width 0.3s ease-out;
+  transition: width 0.2s ease-out;
 `;
 
 export const ChipLabel = styled.p`
@@ -46,7 +46,7 @@ export const ChipLabel = styled.p`
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.white};
   text-transform: uppercase;
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.2s ease-out;
 `;
 
 export const ChipContainer = styled.button`
