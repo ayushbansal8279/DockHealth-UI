@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { CheckCircleOutline } from '@material-ui/icons';
 import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const GlobalChipWrapper = styled.div`
   position: fixed;
@@ -13,18 +13,17 @@ export const GlobalChipWrapper = styled.div`
   transform: translateY(-50%);
 `;
 
-export const CheckCircleIcon = styled(CheckCircleOutline)`
-  && {
-    position: absolute;
-    top: 6px;
-    left: 7px;
-    height: 20px;
-    width: 20px;
-    color: ${palette.white};
-    opacity: ${props => (props.isOpen ? '1' : '0')};
-    transition: opacity 0.2s ease-out;
-    transition-delay: ${props => (props.isOpen ? '0.3s' : '0.1s')};
-  }
+export const CheckCircleIcon = styled.img`
+  display: block;
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  height: 20px;
+  width: 20px;
+  color: ${palette.white};
+  opacity: ${props => (props.isOpen ? '1' : '0')};
+  transition: opacity 0.2s ease-out;
+  transition-delay: ${props => (props.isOpen ? '0.3s' : '0.1s')};
 `;
 
 export const ChipBackground = styled.div`
@@ -40,8 +39,8 @@ export const ChipBackground = styled.div`
 
 export const ChipLabel = styled.p`
   margin-bottom: 0;
-  padding-left: 30px;
-  padding-right: 10px;
+  padding-left: ${spacing.huge};
+  padding-right: ${spacing.smallPlus};
   font-size: 1rem;
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.white};
