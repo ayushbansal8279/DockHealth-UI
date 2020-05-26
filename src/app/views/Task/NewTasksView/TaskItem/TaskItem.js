@@ -32,6 +32,7 @@ import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
 import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
 import { onDragEndSubtask } from '../DragDrop.helpers';
+import PopoverDatepicker from './PopoverDatepicker/PopoverDatepicker';
 import {
   AddCrossIcon,
   AddPlaceholder,
@@ -220,13 +221,17 @@ const TaskItem = ({
               />
             </GridImg>
             <GridImg item xs={3}>
-              <DueDateContainer>
-                <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-                <img
-                  alt="due-date"
-                  src={getItemIcon(DUE_DATE, dueDate, isHovered)}
-                />
-              </DueDateContainer>
+              <PopoverDatepicker>
+                <DueDateContainer>
+                  <DueDate>
+                    {dueDate && moment(dueDate).format('MM/DD')}
+                  </DueDate>
+                  <img
+                    alt="due-date"
+                    src={getItemIcon(DUE_DATE, dueDate, isHovered)}
+                  />
+                </DueDateContainer>
+              </PopoverDatepicker>
             </GridImg>
             <GridImg item xs={3}>
               <img alt="labels" src={getItemIcon(LABELS, labels, isHovered)} />
