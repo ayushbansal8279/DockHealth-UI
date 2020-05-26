@@ -132,8 +132,8 @@ const TaskItem = ({
   members,
   currentUser,
   reassignTask,
-  subtasks,
   updateDueDate,
+  subtasks,
 }) => {
   const {
     edited,
