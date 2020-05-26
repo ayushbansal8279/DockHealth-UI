@@ -80,6 +80,7 @@ const TaskView = ({
     toggleCompleteTask,
     reassignTasksToAnotherGroup,
     reassignTask,
+    updateDueDate,
   } = taskActions;
   const {
     createTaskGroupList,
@@ -223,6 +224,7 @@ const TaskView = ({
           summaryTasksCount={completedTaskCount}
           showMoreTasks={() => refreshTab(false, true)}
           isFetchingMoreTasks={isFetchingMoreTasks}
+          updateDueDate={updateDueDate}
         />
       ) : (
         <OpenedTasksView
@@ -251,6 +253,7 @@ const TaskView = ({
             (isFetchingTasks && openedTasks?.length === 0)
           }
           members={members}
+          updateDueDate={updateDueDate}
         />
       )}
       <NewTaskDrawer

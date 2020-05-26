@@ -581,6 +581,7 @@ export const updateDueDate = (task, dueDate) => dispatch =>
         dueDate,
       });
       reloadTaskListStats(dispatch, task);
+      dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     })
     .catch(() => {});
 
