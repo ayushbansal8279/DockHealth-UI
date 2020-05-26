@@ -52,5 +52,8 @@ export const CalendarIconButton = withStyles({
     '&:hover': {
       backgroundColor: opacify(palette.brightBlue, 0.8),
     },
+    '&:disabled': {
+      backgroundColor: palette.brightBlue,
+    },
   },
 })(IconButton);
