@@ -12,14 +12,18 @@ import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import CalendarDimIcon from 'img/calendar-dim';
 import CalendarIcon from 'img/calendar-icon';
+import CalendarIconHover from 'img/calendar-icon-hover';
 import CalendarNewIcon from 'img/calendar-new';
 import ClipDimIcon from 'img/clip-dim';
+import ClipIconHover from 'img/clip-hover';
 import ClipIcon from 'img/clip-v2';
 import ClipNewIcon from 'img/clip-new';
 import LabelDimIcon from 'img/label-dim';
 import LabelIcon from 'img/label';
+import LabelIconHover from 'img/label-hover';
 import MessageDimIcon from 'img/message-dim';
 import MessageIcon from 'img/message';
+import MessageIconHover from 'img/message-hover';
 import MessageNewIcon from 'img/message-new';
 import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member';
@@ -59,6 +63,7 @@ const ATTACHMENTS = 'ATTACHMENTS';
 
 const LIGHT = 'LIGHT';
 const REGULAR = 'REGULAR';
+const HOVER = 'HOVER';
 // const NEW = 'NEW';
 
 const ITEM_ICONS = {
@@ -66,32 +71,38 @@ const ITEM_ICONS = {
     LIGHT: MessageDimIcon,
     REGULAR: MessageIcon,
     NEW: MessageNewIcon,
+    HOVER: MessageIconHover,
   },
   DUE_DATE: {
     LIGHT: CalendarDimIcon,
     REGULAR: CalendarIcon,
     NEW: CalendarNewIcon,
+    HOVER: CalendarIconHover,
   },
   LABELS: {
     LIGHT: LabelDimIcon,
     REGULAR: LabelIcon,
     NEW: LabelIcon,
+    HOVER: LabelIconHover,
   },
   ATTACHMENTS: {
     LIGHT: ClipDimIcon,
     REGULAR: ClipIcon,
     NEW: ClipNewIcon,
+    HOVER: ClipIconHover,
   },
 };
 
-const getItemIconVersion = value => {
+const getItemIconVersion = (value, isHovered) => {
   if (!isEmpty(value) && value) return REGULAR;
+
+  if (isHovered) return HOVER;
 
   return LIGHT;
 };
 
-const getItemIcon = (type, value) =>
-  ITEM_ICONS[type][getItemIconVersion(value)];
+const getItemIcon = (type, value, isHovered) =>
+  ITEM_ICONS[type][getItemIconVersion(value, isHovered)];
 
 const TaskItem = ({
   isOpen,
@@ -123,6 +134,8 @@ const TaskItem = ({
     completedBy,
   } = task;
 
+  const [isHovered, setIsHoverd] = useState(false);
+
   const isCompleted = task.status === 'COMPLETE';
 
   const completedByName =
@@ -131,7 +144,11 @@ const TaskItem = ({
       .replace(/^\.$/, '') || 'Unknown';
 
   return (
-    <TaskItemPanel isDragging={isDragging}>
+    <TaskItemPanel
+      isDragging={isDragging}
+      onMouseEnter={() => setIsHoverd(true)}
+      onMouseLeave={() => setIsHoverd(false)}
+    >
       <TaskItemContainer>
         {!isCompletedGroup && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
@@ -198,21 +215,27 @@ const TaskItem = ({
         <TaskItemCell width="200px">
           <Grid container>
             <GridImg item xs={3}>
-              <img alt="comments" src={getItemIcon(COMMENTS, comments)} />
+              <img
+                alt="comments"
+                src={getItemIcon(COMMENTS, comments, isHovered)}
+              />
             </GridImg>
             <GridImg item xs={3}>
               <DueDateContainer>
                 <DueDate>{dueDate && moment(dueDate).format('MM/DD')}</DueDate>
-                <img alt="due-date" src={getItemIcon(DUE_DATE, dueDate)} />
+                <img
+                  alt="due-date"
+                  src={getItemIcon(DUE_DATE, dueDate, isHovered)}
+                />
               </DueDateContainer>
             </GridImg>
             <GridImg item xs={3}>
-              <img alt="labels" src={getItemIcon(LABELS, labels)} />
+              <img alt="labels" src={getItemIcon(LABELS, labels, isHovered)} />
             </GridImg>
             <GridImg item xs={3}>
               <img
                 alt="attachments"
-                src={getItemIcon(ATTACHMENTS, attachments)}
+                src={getItemIcon(ATTACHMENTS, attachments, isHovered)}
               />
             </GridImg>
           </Grid>
