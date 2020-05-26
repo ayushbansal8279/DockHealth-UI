@@ -20,8 +20,8 @@ export const renderDayOfWeekHeaderLabel = dayOfWeek => (
 
 export const renderDayLabels = ({
   currentMonthMoment,
-  currentDueDate,
-  setDate,
+  momentSelectedDate,
+  onDateChange,
 }) => {
   const currentMonthStartPoint = moment(currentMonthMoment)
     .startOf('month')
@@ -44,14 +44,14 @@ export const renderDayLabels = ({
 
     const isDaySelected =
       dayMoment.format(DATE_ISO_FORMAT) ===
-      currentDueDate?.format(DATE_ISO_FORMAT);
+      momentSelectedDate?.format(DATE_ISO_FORMAT);
 
     return (
       <CalendarIconButton
         key={dayMoment.format(DATE_ISO_FORMAT)}
         color={isDaySelected ? 'primary' : 'default'}
         size="small"
-        onClick={() => setDate(dayMoment.format(DATE_ISO_FORMAT))}
+        onClick={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
       >
         <CalendarDayLabel
           isCurrentMonth={isCurrentMonth}

@@ -222,7 +222,7 @@ const TaskItem = ({
               />
             </GridImg>
             <GridImg item xs={3}>
-              <PopoverDatepicker>
+              <PopoverDatepicker selectedDate={dueDate}>
                 <DueDateContainer>
                   <DueDate>
                     {dueDate && moment(dueDate).format('MM/DD')}
