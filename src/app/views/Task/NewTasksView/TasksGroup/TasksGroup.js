@@ -57,6 +57,7 @@ const TasksGroup = ({
   isFetchingMoreTasks,
   hasMoreTasks,
   members,
+  updateDueDate,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -161,6 +162,7 @@ const TasksGroup = ({
           isCompletedGroup={isCompletedGroup}
           members={members}
           reassignTask={reassignTask}
+          updateDueDate={updateDueDate}
         />
         {groupPagination && hasMoreTasks && (
           <PaginationButton

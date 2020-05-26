@@ -17,6 +17,7 @@ const CompletedTasksView = ({
   showMoreTasks,
   isFetchingMoreTasks,
   isFetchingData,
+  updateDueDate,
 }) => {
   return (
     <TasksViewLoader isFetchingData={isFetchingData}>
@@ -37,6 +38,7 @@ const CompletedTasksView = ({
               showMoreTasks={showMoreTasks}
               hasMoreTasks={tasks.length < summaryTasksCount}
               isFetchingMoreTasks={isFetchingMoreTasks}
+              updateDueDate={updateDueDate}
             />
           </DragDropContext>
         </TaskGroupsContainer>
