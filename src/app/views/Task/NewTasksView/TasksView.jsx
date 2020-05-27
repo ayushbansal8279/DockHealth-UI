@@ -81,6 +81,7 @@ const TaskView = ({
     reassignTasksToAnotherGroup,
     reassignTask,
     updateDueDate,
+    updateWorkflowStatus,
   } = taskActions;
   const {
     createTaskGroupList,
@@ -254,6 +255,7 @@ const TaskView = ({
           }
           members={members}
           updateDueDate={updateDueDate}
+          updateWorkflowStatus={updateWorkflowStatus}
         />
       )}
       <NewTaskDrawer

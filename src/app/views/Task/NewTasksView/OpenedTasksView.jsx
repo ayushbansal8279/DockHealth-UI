@@ -35,6 +35,7 @@ const OpenedTasksView = ({
   isFetchingData,
   members,
   updateDueDate,
+  updateWorkflowStatus,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -100,6 +101,7 @@ const OpenedTasksView = ({
                   toggleCompleteTask={toggleCompleteTask}
                   members={members}
                   updateDueDate={updateDueDate}
+                  updateWorkflowStatus={updateWorkflowStatus}
                 />
               ),
             )}

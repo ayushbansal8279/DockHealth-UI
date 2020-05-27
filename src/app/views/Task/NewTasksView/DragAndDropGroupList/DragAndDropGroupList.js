@@ -19,6 +19,7 @@ const DragAndDropGroupList = ({
   isCompletedGroup,
   members,
   updateDueDate,
+  updateWorkflowStatus,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
 
@@ -60,6 +61,7 @@ const DragAndDropGroupList = ({
                     members={members}
                     reassignTask={reassignTask}
                     updateDueDate={updateDueDate}
+                    updateWorkflowStatus={updateWorkflowStatus}
                   />
                 )}
               </Draggable>
