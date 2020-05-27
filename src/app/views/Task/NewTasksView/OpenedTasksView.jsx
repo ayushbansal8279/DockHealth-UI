@@ -124,9 +124,11 @@ const OpenedTasksView = ({
           )}
         </TaskGroupsContainer>
       ) : (
-        <EmptyTasksView
-          quickAddTask={groupName => quickAddTask(groupName, null, true)}
-        />
+        quickAddTaskVisible && (
+          <EmptyTasksView
+            quickAddTask={groupName => quickAddTask(groupName, null, true)}
+          />
+        )
       )}
     </TasksViewLoader>
   );
