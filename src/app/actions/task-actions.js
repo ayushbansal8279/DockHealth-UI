@@ -572,7 +572,7 @@ export const updateTaskDescription = (task, description) => dispatch =>
       throw error;
     });
 
-export const updateDueDate = (task, dueDate) => dispatch =>
+export const updateDueDate = (task, dueDate, showConfirmation) => dispatch =>
   TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
     .then(() => {
       dispatch({
@@ -581,7 +581,9 @@ export const updateDueDate = (task, dueDate) => dispatch =>
         dueDate,
       });
       reloadTaskListStats(dispatch, task);
-      dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+      if (showConfirmation) {
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+      }
     })
     .catch(() => {});
 

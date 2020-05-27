@@ -259,7 +259,7 @@ const TaskItem = ({
               <PopoverDatepicker
                 selectedDate={dueDate}
                 onDateChange={date =>
-                  updateDueDate(task, moment(date, DATE_ISO_FORMAT))
+                  updateDueDate(task, moment(date, DATE_ISO_FORMAT), true)
                 }
                 quickSelectOptions={dueDateQuickSelectOptions}
               >
