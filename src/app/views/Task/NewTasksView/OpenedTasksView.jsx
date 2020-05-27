@@ -38,6 +38,7 @@ const OpenedTasksView = ({
   defaultGroupName,
   canEditGroups,
   quickAddTaskVisible,
+  dragAndDropDisabled,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -52,9 +53,10 @@ const OpenedTasksView = ({
         <TaskGroupsContainer>
           <DragDropContext
             onBeforeCapture={({ draggableId }) => {
-              setDraggableId(draggableId);
+              if (!dragAndDropDisabled) setDraggableId(draggableId);
             }}
             onDragEnd={eventBundle =>
+              !dragAndDropDisabled &&
               onDragEndTask({
                 eventBundle,
                 groupList,
@@ -104,6 +106,7 @@ const OpenedTasksView = ({
                   members={members}
                   updateDueDate={updateDueDate}
                   quickAddTaskVisible={quickAddTaskVisible}
+                  dragAndDropDisabled={dragAndDropDisabled}
                 />
               ),
             )}

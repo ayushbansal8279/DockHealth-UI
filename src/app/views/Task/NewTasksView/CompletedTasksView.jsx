@@ -18,6 +18,7 @@ const CompletedTasksView = ({
   isFetchingMoreTasks,
   isFetchingData,
   updateDueDate,
+  dragAndDropDisabled,
 }) => {
   return (
     <TasksViewLoader isFetchingData={isFetchingData}>
@@ -40,6 +41,7 @@ const CompletedTasksView = ({
               isFetchingMoreTasks={isFetchingMoreTasks}
               updateDueDate={updateDueDate}
               quickAddTaskVisible={false}
+              dragAndDropDisabled={dragAndDropDisabled}
             />
           </DragDropContext>
         </TaskGroupsContainer>

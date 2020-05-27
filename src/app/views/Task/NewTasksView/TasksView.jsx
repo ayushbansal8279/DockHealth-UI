@@ -48,6 +48,7 @@ const TaskView = ({
   defaultGroupName,
   canEditGroups = true,
   quickAddTaskVisible = true,
+  dragAndDropDisabled = false,
   navigateToTab,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
@@ -253,6 +254,7 @@ const TaskView = ({
           defaultGroupName={defaultGroupName}
           canEditGroups={canEditGroups}
           quickAddTaskVisible={quickAddTaskVisible}
+          dragAndDropDisabled={dragAndDropDisabled}
         />
       )}
       <NewTaskDrawer

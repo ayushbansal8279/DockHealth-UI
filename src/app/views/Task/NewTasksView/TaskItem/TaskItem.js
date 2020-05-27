@@ -134,6 +134,7 @@ const TaskItem = ({
   reassignTask,
   updateDueDate,
   subtasks,
+  dragAndDropDisabled,
 }) => {
   const {
     edited,
@@ -165,7 +166,7 @@ const TaskItem = ({
       onMouseLeave={() => setIsHoverd(false)}
     >
       <TaskItemContainer>
-        {!isCompletedGroup && (
+        {!dragAndDropDisabled && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
         <PrioritySwitch onClick={() => toggleTaskPriority(task)}>

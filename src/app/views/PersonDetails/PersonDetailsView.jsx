@@ -156,6 +156,7 @@ class PersonDetailsView extends PureComponent {
       routeParams,
       navigateToTab: this.navigateToTab,
       refreshTab: this.refreshTab,
+      dragAndDropDisabled: true,
     };
 
     return (
