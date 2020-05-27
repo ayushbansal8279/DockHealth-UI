@@ -1,64 +1,67 @@
-import { Grid } from '@material-ui/core';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
 
-export const InfoPanelContainer = styled.div`
-  background-color: ${palette.white};
-  border: 0.125rem solid ${palette.unknownGrey2};
-  margin: 0 0 1.5rem;
-  max-width: 1050px;
-  padding: 1rem;
+export const PersonImage = styled.img`
+  object-fit: cover;
+  height: 100%;
   width: 100%;
 `;
 
-export const PersonNameContainer = styled(Grid).attrs({
-  container: true,
-  direction: 'row',
-  item: true,
-  md: 5,
-  sm: 12,
-  wrap: 'nowrap',
-})`
-  padding: 1.375rem;
-`;
-
-export const PersonInitialsContainer = styled.span`
-  color: ${palette.white};
-  font-size: 1.875rem;
-  font-weight: bold;
-`;
-
-export const PersonTitlesContainer = styled(Grid).attrs({
-  container: true,
-  direction: 'column',
-  justify: 'center',
-})`
-  padding-left: 1.375rem;
-`;
-
-export const Label = styled.span`
-  font-size: 1rem;
-  display: block;
+export const InfoPanelContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: ${spacing.large} ${spacing.largePlus};
+  font-size: ${fontSizes.regular};
   line-height: 1.2;
-  margin: 0.125rem 0;
+  font-weight: ${fontWeights.light};
+  background: ${palette.white};
 `;
 
-export const GreyLabel = styled(Label)`
-  color: ${palette.unknownGrey5};
+export const PersonTitle = styled.p`
+  display: block;
+  margin-bottom: 0;
+  padding-left: ${spacing.regular};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.black};
+  text-transform: uppercase;
 `;
 
-export const BoldLabel = styled(Label)`
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.4;
+export const ContactInfoContainer = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 ${spacing.huge};
+  color: ${palette.mediumGrey};
 `;
 
-export const PersonAvatarContainer = styled.div`
-  min-width: 102px;
-  width: 102px;
+export const ContactInfoItem = styled.p`
+  margin-bottom: 0;
+
+  &:not(:first-child) {
+    padding-left: ${spacing.huge};
+  }
+
+  &:not(:last-child) {
+    position: relative;
+    padding-right: ${spacing.huge};
+    &:after {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      display: block;
+      content: '|';
+    }
+  }
 `;
 
 export const ArchivePersonButton = styled.button`
+  flex-shrink: 0;
   color: ${palette.lighterCyanBlue};
   cursor: pointer;
   transition: all 0.25s ease;
@@ -66,10 +69,4 @@ export const ArchivePersonButton = styled.button`
   &:hover {
     filter: brightness(1.25);
   }
-`;
-
-export const PersonImage = styled.img`
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
 `;

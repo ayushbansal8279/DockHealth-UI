@@ -36,8 +36,6 @@ const PopoverDatepicker = ({
         <DatepickerOptionLabelContainer
           key={date}
           onClick={() => handleDatePick(date.format(DATE_ISO_FORMAT))}
-          isSelected={selectedDate && date.isSame(selectedDate, 'day')}
-          disabled={selectedDate && date.isSame(selectedDate, 'day')}
         >
           <RobotoTypography condensed variant="h4">
             {label}

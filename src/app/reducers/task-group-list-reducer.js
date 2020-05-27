@@ -29,6 +29,13 @@ const TaskGroupListReducer = (state = initialState, { type, groupList }) => {
         isFetching: false,
       };
 
+    case types.TASK_GROUP_INITIALIZE:
+      return {
+        ...initialState,
+        groupList,
+        listInitialized: true,
+      };
+
     default:
       return state;
   }

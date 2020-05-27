@@ -58,6 +58,9 @@ const TasksGroup = ({
   hasMoreTasks,
   members,
   updateDueDate,
+  quickAddTaskVisible = true,
+  dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -134,7 +137,7 @@ const TasksGroup = ({
         </div>
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
-        {!isCompletedGroup && (
+        {quickAddTaskVisible && (
           <AddTaskInputWrapper>
             <input
               name="newTask"
@@ -163,6 +166,8 @@ const TasksGroup = ({
           members={members}
           reassignTask={reassignTask}
           updateDueDate={updateDueDate}
+          dragAndDropDisabled={dragAndDropDisabled}
+          listNameVisible={listNameVisible}
         />
         {groupPagination && hasMoreTasks && (
           <PaginationButton
