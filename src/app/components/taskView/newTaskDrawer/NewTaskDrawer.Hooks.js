@@ -285,10 +285,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     [selectedTask],
   );
 
-  const onDelete = ({ afterDelete }) => async event => {
-    event.preventDefault();
-    event.stopPropagation();
-
+  const onDelete = async ({ afterDelete }) => {
     if (selectedTask) {
       try {
         await deleteTask(selectedTask)(dispatch);

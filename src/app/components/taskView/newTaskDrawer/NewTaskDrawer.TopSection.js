@@ -65,6 +65,7 @@ const TopSection = ({
   isInbox,
   closeTaskDrawer,
   autoSaveVisible,
+  modalActions,
 }) => {
   const { setValue, register } = formMethods;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -80,7 +81,13 @@ const TopSection = ({
     isTaskMenuPopoverOpen,
     openTaskMenuPopover,
     closeTaskMenuPopover,
-  } = initializeTaskDrawerTopSectionHooks();
+    openDeleteConfirmationModal,
+  } = initializeTaskDrawerTopSectionHooks({
+    modalActions,
+    onDelete,
+    closeTaskDrawer,
+    selectedTask,
+  });
 
   return (
     <>
@@ -222,13 +229,7 @@ const TopSection = ({
                 selectedTask.status !== 'COMPLETE' && (
                   <ListItem
                     key="action_delete"
-                    onClick={onDelete({
-                      afterDelete: () => {
-                        closeTaskMenuPopover();
-                        closeTaskDrawer();
-                      },
-                      selectedTask,
-                    })}
+                    onClick={openDeleteConfirmationModal}
                     button
                     style={{
                       borderBottom: `none`,

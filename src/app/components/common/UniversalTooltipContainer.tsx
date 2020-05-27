@@ -17,13 +17,15 @@ const UniversalTooltipContainer = ({
 
   return (
     <>
-      <UniversalTooltip
-        anchorEl={popoverReference.current}
-        open={isTooltipShown}
-        {...props}
-      >
-        {label}
-      </UniversalTooltip>
+      {label !== '' && (
+        <UniversalTooltip
+          anchorEl={popoverReference.current}
+          open={isTooltipShown}
+          {...props}
+        >
+          {label}
+        </UniversalTooltip>
+      )}
       <div
         ref={popoverReference}
         onMouseEnter={showTooltip}

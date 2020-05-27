@@ -41,7 +41,7 @@ import {
   renderMemberoptionWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
-const NewTaskDrawer = ({ members, taskList, isInbox }) => {
+const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
   const {
     taskDrawerOpen,
     top,
@@ -111,6 +111,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               closeTaskDrawer={closeTaskDrawer}
               autoSaveVisible={autoSaveVisible}
               setAutoSaveVisible={setAutoSaveVisible}
+              modalActions={modalActions}
             />
             <Spacing vertical={2} />
             <Grid item xs={12} style={styleFullRow}>

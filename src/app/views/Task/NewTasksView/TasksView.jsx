@@ -266,6 +266,7 @@ const TaskView = ({
         members={members}
         membersNotInTaskList={membersNotInTaskList}
         taskList={taskList}
+        modalActions={modalActions}
       />
     </TaskViewContainer>
   );

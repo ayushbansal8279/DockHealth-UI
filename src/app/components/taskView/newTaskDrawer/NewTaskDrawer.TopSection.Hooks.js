@@ -1,9 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useRef, useState } from 'react';
-
 import useBoolean from 'hooks/useBoolean';
 
-const initializeTaskDrawerTopSectionHooks = () => {
+const initializeTaskDrawerTopSectionHooks = ({
+  modalActions,
+  onDelete,
+  closeTaskDrawer,
+  selectedTask,
+}) => {
   const filedInInputReference = useRef(null);
   const [
     isFiledInPopoverOpen,
@@ -26,6 +30,23 @@ const initializeTaskDrawerTopSectionHooks = () => {
     closeTaskMenuPopover,
   ] = useBoolean(false);
 
+  const deleteTask = async () => {
+    await onDelete({
+      afterDelete: () => {
+        modalActions.closeModal();
+        closeTaskDrawer();
+      },
+      selectedTask,
+    });
+  };
+
+  const openDeleteConfirmationModal = () => {
+    const modalProps = {
+      confirm: () => deleteTask(),
+    };
+    modalActions.openModal('DeleteTask', modalProps);
+  };
+
   return {
     filedInInputReference,
     isFiledInPopoverOpen,
@@ -38,6 +59,8 @@ const initializeTaskDrawerTopSectionHooks = () => {
     isTaskMenuPopoverOpen,
     openTaskMenuPopover,
     closeTaskMenuPopover,
+
+    openDeleteConfirmationModal,
   };
 };
 
