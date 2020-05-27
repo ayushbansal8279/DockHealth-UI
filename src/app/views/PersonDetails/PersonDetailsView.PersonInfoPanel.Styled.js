@@ -18,6 +18,7 @@ export const InfoPanelContainer = styled.div`
   font-size: ${fontSizes.regular};
   line-height: 1.2;
   font-weight: ${fontWeights.light};
+  background: ${palette.white};
 `;
 
 export const PersonTitle = styled.p`

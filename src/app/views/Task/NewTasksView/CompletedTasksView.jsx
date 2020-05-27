@@ -39,6 +39,7 @@ const CompletedTasksView = ({
               hasMoreTasks={tasks.length < summaryTasksCount}
               isFetchingMoreTasks={isFetchingMoreTasks}
               updateDueDate={updateDueDate}
+              quickAddTaskVisible={false}
             />
           </DragDropContext>
         </TaskGroupsContainer>

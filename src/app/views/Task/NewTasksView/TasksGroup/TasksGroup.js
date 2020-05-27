@@ -58,6 +58,7 @@ const TasksGroup = ({
   hasMoreTasks,
   members,
   updateDueDate,
+  quickAddTaskVisible = true,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -134,7 +135,7 @@ const TasksGroup = ({
         </div>
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
-        {!isCompletedGroup && (
+        {quickAddTaskVisible && (
           <AddTaskInputWrapper>
             <input
               name="newTask"

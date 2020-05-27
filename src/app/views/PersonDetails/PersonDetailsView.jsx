@@ -1,4 +1,3 @@
-import { Grid } from '@material-ui/core';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
@@ -6,26 +5,33 @@ import { bindActionCreators } from 'redux';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as PeopleActions from 'actions/people-actions';
 import * as TaskActions from 'actions/task-actions';
+import * as TaskGroupActions from 'actions/task-group-list-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/common/GenericHeader';
-import TaskListSearchContainer from 'components/LEGACY_list/TaskListSearchContainer';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
-import { SideClickListener } from 'components/patients/PatientsView.Styled';
 import { closeDrawer } from 'actions/task-drawer-actions';
+import TasksView from 'views/Task/NewTasksView/TasksView';
 import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
 
 class PersonDetailsView extends PureComponent {
   state = {
     fetching: true,
-    personData: {},
   };
 
   async componentDidMount() {
     const {
       peopleActions,
+      taskGroupActions,
       routeParams: { userIdentifier },
       setHeader,
     } = this.props;
+
+    taskGroupActions.initializeGroups([
+      {
+        groupType: 'TASKLIST_DEFAULT',
+      },
+    ]);
 
     setHeader({
       layout: [
@@ -45,16 +51,9 @@ class PersonDetailsView extends PureComponent {
     try {
       personData = await peopleActions.getUserById(userIdentifier);
 
-      this.setState(
-        {
-          personData,
-        },
-        () => {
-          if (personData?.userIdentifier) {
-            this.handleFilterChange(undefined, undefined);
-          }
-        },
-      );
+      if (personData?.userIdentifier) {
+        this.refreshTab(true);
+      }
     } catch {
       noop();
     }
@@ -68,43 +67,65 @@ class PersonDetailsView extends PureComponent {
     }
   }
 
-  handleFilterChange = (filterBy, sortBy) => {
-    const { taskActions } = this.props;
-    const { personData } = this.state;
+  componentWillUpdate(nextProps) {
+    const { routeParams } = this.props;
 
-    taskActions.loading();
-    taskActions.hideCompletedTasks();
+    if (
+      nextProps.routeParams.userIdentifier === routeParams.userIdentifier &&
+      nextProps.routeParams.tabName !== routeParams.tabName
+    ) {
+      if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
+        this.refreshCompleteTasks(false);
+      } else {
+        this.refreshIncompleteTasks();
+      }
+    }
+  }
+
+  refreshTab = (withLoader = false, cumulativeFlag = false) => {
+    const {
+      routeParams: { tabName },
+    } = this.props;
+
+    if (tabName === TaskListTabName.COMPLETE) {
+      this.refreshCompleteTasks(cumulativeFlag, withLoader);
+    } else {
+      this.refreshIncompleteTasks(withLoader);
+    }
+  };
+
+  refreshIncompleteTasks = (withLoader = true) => {
+    const {
+      taskActions,
+      routeParams: { userIdentifier },
+    } = this.props;
+
+    if (withLoader) taskActions.loading();
 
     taskActions.getTasksAssignedToSpecificUser(
-      personData?.userIdentifier,
+      userIdentifier,
       undefined,
-      sortBy,
-      filterBy,
+      undefined, // TODO: filters
+      undefined, // TODO: filters
       'INCOMPLETE',
-    );
-    taskActions.getCountOfTasksAssignedToSpecificUser(
-      personData?.userIdentifier,
-      undefined,
-      filterBy,
-      'COMPLETE',
     );
   };
 
-  handleCompletedTasksRequest = (
-    selectedTaskListIdentifier,
-    filterBy,
-    sortBy,
-  ) => {
-    const { taskActions } = this.props;
-    const { personData } = this.state;
+  refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
+    const {
+      taskActions,
+      routeParams: { userIdentifier },
+    } = this.props;
+
+    if (withLoader) taskActions.loadingCompletedTasks();
 
     return taskActions.getTasksAssignedToSpecificUser(
-      personData?.userIdentifier,
-      selectedTaskListIdentifier,
-      sortBy,
-      filterBy,
+      userIdentifier,
+      undefined,
+      undefined, // TODO: filters
+      undefined, // TODO: filters
       'COMPLETE',
-      true,
+      cumulativeFlag,
     );
   };
 
@@ -115,15 +136,40 @@ class PersonDetailsView extends PureComponent {
     clearTask();
   };
 
+  navigateToTab = tabName => {
+    const {
+      routeParams: { userIdentifier },
+    } = this.props;
+
+    hashHistory.push(
+      `/assignedToPerson/${userIdentifier}${
+        tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
+      }`,
+    );
+  };
+
   render() {
-    const { personData } = this.props;
+    const { personData, routeParams } = this.props;
     const { fetching } = this.state;
+
+    const viewProps = {
+      routeParams,
+      navigateToTab: this.navigateToTab,
+      refreshTab: this.refreshTab,
+    };
 
     return (
       !fetching && (
         <>
           {personData && <PersonInfoPanel personData={personData} />}
-          <Grid direction="row" container>
+          <TasksView
+            {...viewProps}
+            defaultGroupName="All tasks"
+            showMembers={false}
+            canEditGroups={false}
+            quickAddTaskVisible={false}
+          />
+          {/* <Grid direction="row" container>
             <SideClickListener onClick={this.onSideClick} />
             <Grid direction="column" alignItems="center" container>
               <TaskListSearchContainer
@@ -138,7 +184,7 @@ class PersonDetailsView extends PureComponent {
               />
             </Grid>
             <SideClickListener onClick={this.onSideClick} />
-          </Grid>
+          </Grid> */}
         </>
       )
     );
@@ -156,6 +202,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     taskActions: bindActionCreators(TaskActions, dispatch),
+    taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
     peopleActions: bindActionCreators(PeopleActions, dispatch),
     setHeader: setHeaderRaw(dispatch),
     closeTaskDrawer: () => closeDrawer()(dispatch),
