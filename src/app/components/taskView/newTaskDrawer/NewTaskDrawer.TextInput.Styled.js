@@ -14,7 +14,6 @@ const styles = {
     height: '100%',
     transition: ANIMATION,
     zIndex: 1,
-    marginBottom: props => (props.parentType === 'text' ? '7px' : '0px'),
     boxShadow: 'none',
     '& label': {
       color: palette.coolGrey2,

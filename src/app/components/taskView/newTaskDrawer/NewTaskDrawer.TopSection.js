@@ -135,6 +135,9 @@ const TopSection = ({
                 anchorElement={filedInInputReference}
                 isPopoverOpen={isFiledInPopoverOpen}
                 closePopover={closeFiledInPopover}
+                popupStyle={{
+                  width: '600px',
+                }}
               >
                 <StyledList>
                   {(taskLists ?? []).map(

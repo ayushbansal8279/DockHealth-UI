@@ -10,14 +10,16 @@ const InputPopover = ({
   children,
   popupStyle,
 }) => {
-  const { width } =
-    popupStyle || anchorElement.current?.getBoundingClientRect() || {};
+  const widthValue =
+    popupStyle?.width ||
+    `${anchorElement.current?.getBoundingClientRect().width}px` ||
+    {};
 
   const popoverClassName = useCss({
     '&&': {
       border: 0,
       marginTop: '0.5rem',
-      width,
+      width: widthValue,
     },
   });
 
