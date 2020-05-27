@@ -88,7 +88,12 @@ const PatientsForm = ({ onSubmit, patient, resetPatient, compact = false }) => {
         <Grid container spacing={spacing}>
           <Grid item xs={gridSize}>
             <SingleFormPanelContainer>
-              <NameInput name="firstName" required label="First Name" />
+              <NameInput
+                name="firstName"
+                autoFocus
+                required
+                label="First Name"
+              />
               <NameInput name="middleName" label="Middle Name" />
               <NameInput name="lastName" required label="Last Name" />
               <PatientInput name="mrn" label="MRN" />
