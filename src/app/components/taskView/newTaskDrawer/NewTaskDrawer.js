@@ -164,9 +164,14 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
                 label="Patient"
                 placeholder="Who is the patient?"
                 onInputChange={onPatientInputChange}
-                onItemSelected={option => {
+                onItemSelected={(option, event) => {
                   handlePatientSelect(option);
                   patientInputReference.current.querySelector('input').blur();
+                  if (event.key === 'Enter') {
+                    assignedToInputReference.current
+                      .querySelector('input')
+                      .focus();
+                  }
                 }}
                 ref={patientInputReference}
                 noOptionsText={
