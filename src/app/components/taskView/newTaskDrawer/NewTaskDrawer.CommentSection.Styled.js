@@ -11,6 +11,7 @@ export const CommentSectionContainer = styled.div`
 
 export const CommentGroupContainer = styled.div`
   color: ${palette.coolGrey1};
+  padding-top: ${spacing.small};
 `;
 
 export const CommentActionLabel = styled.button`

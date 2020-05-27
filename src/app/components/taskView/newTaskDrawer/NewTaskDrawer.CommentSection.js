@@ -1,7 +1,5 @@
 import React from 'react';
 
-import Spacing from 'components/common/Spacing';
-
 import AddComment from './NewTaskDrawer.AddComment';
 import { CommentSectionContainer } from './NewTaskDrawer.CommentSection.Styled';
 import initializeCommentSectionHooks from './NewTaskDrawer.CommentSection.Hooks';
@@ -19,7 +17,6 @@ const CommentSection = ({ parentFormSubmit }) => {
   return (
     <CommentSectionContainer>
       <AddComment addComment={addComment} parentFormSubmit={parentFormSubmit} />
-      <Spacing vertical={4} />
       {Object.entries(groupedComments).map(
         renderCommentGroup({
           currentUser: currentTaskListMemberData,

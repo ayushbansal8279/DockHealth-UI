@@ -20,6 +20,8 @@ const DragAndDropGroupList = ({
   members,
   updateDueDate,
   updateWorkflowStatus,
+  dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
 
@@ -38,7 +40,7 @@ const DragAndDropGroupList = ({
                 key={task.taskIdentifier}
                 draggableId={String(task.taskIdentifier)}
                 index={index}
-                isDragDisabled={isCompletedGroup}
+                isDragDisabled={isCompletedGroup || dragAndDropDisabled}
               >
                 {(draggableProvided, { isDragging }) => (
                   <Task
@@ -62,6 +64,10 @@ const DragAndDropGroupList = ({
                     reassignTask={reassignTask}
                     updateDueDate={updateDueDate}
                     updateWorkflowStatus={updateWorkflowStatus}
+                    dragAndDropDisabled={
+                      isCompletedGroup || dragAndDropDisabled
+                    }
+                    listNameVisible={listNameVisible}
                   />
                 )}
               </Draggable>

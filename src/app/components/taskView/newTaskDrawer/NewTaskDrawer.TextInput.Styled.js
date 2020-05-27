@@ -20,7 +20,7 @@ const styles = {
       color: palette.coolGrey2,
     },
     '& label.Mui-focused': {
-      color: palette.coolGrey1,
+      color: palette.coolGrey2,
     },
     '& .MuiInput-underline:after': {
       borderBottomColor: palette.coolGrey2,

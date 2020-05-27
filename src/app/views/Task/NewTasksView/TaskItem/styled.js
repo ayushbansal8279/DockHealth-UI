@@ -100,7 +100,7 @@ export const TaskItemCell = styled.div`
   position: relative;
   align-items: center;
   border-right: 1px solid ${palette.coolGrey3};
-  color: ${palette.mediumGrey};
+  color: ${props => props.color || palette.mediumGrey};
   display: flex;
   font-size: 14px; //per design
   font-weight: ${props =>

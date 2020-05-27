@@ -26,6 +26,15 @@ export function getTaskGroupList(
   };
 }
 
+export function initializeGroups(groupList) {
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.TASK_GROUP_INITIALIZE,
+      groupList,
+    });
+  };
+}
+
 export function createTaskGroupList(payload) {
   const { taskListIdentifier } = payload;
 

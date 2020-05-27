@@ -55,13 +55,13 @@ const onChange = ({
     setValue(name, newOptions);
     closeAutocomplete();
     if (onItemSelected) {
-      onItemSelected(option);
+      onItemSelected(option, _event);
     }
   } else {
     setValue(name, option?.value);
     closeAutocomplete();
     if (onItemSelected) {
-      onItemSelected(option);
+      onItemSelected(option, _event);
     }
   }
 };
@@ -128,6 +128,7 @@ const renderTags = ({
   </>
 );
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const SelectInput = React.forwardRef(
   (
     {
@@ -149,6 +150,7 @@ const SelectInput = React.forwardRef(
       InputLabelProps,
       forceOpen,
       createTagActionLabel,
+      onFocusCallback,
     },
     reference,
   ) => {
@@ -243,6 +245,8 @@ const SelectInput = React.forwardRef(
       getOptionSelected: (option, selected) => selected.value === option.value,
     });
 
+    const inputReference = setAnchorEl;
+
     // console.log('dirty: '+dirty);
     // console.log('inputValue: '+inputValue);
     // console.log('selectedValue: '+currentOption?.displayLabel);
@@ -269,7 +273,7 @@ const SelectInput = React.forwardRef(
           ];
 
           setValue(name, newOptions);
-          onItemSelected(newOptions);
+          onItemSelected(newOptions, event);
           event.target.value = '';
         }
       },
@@ -279,9 +283,10 @@ const SelectInput = React.forwardRef(
     const onTagCreate = useCallback(
       event => {
         // TODO find a better way
-        const { value: targetValue } = event.target.parentElement.children[
-          event.target.parentElement.childElementCount - 3
-        ].value;
+        const targetValue =
+          event.target.parentElement.children[
+            event.target.parentElement.childElementCount - 2
+          ].value;
 
         const newOptions = [
           ...currentValue,
@@ -337,8 +342,6 @@ const SelectInput = React.forwardRef(
       );
     }
 
-    const inputReference = setAnchorEl;
-
     return (
       <NoSsr>
         <div>
@@ -377,6 +380,9 @@ const SelectInput = React.forwardRef(
               onFocus={() => {
                 openAutocomplete();
                 enableFocus();
+                if (onFocusCallback) {
+                  onFocusCallback();
+                }
               }}
               onBlur={() => {
                 if (!forceOpen) {
@@ -458,6 +464,7 @@ SelectInput.propTypes = {
   InputLabelProps: objectOf(any),
   forceOpen: bool,
   createTagActionLabel: string,
+  onFocusCallback: func,
 };
 
 SelectInput.defaultProps = {
@@ -479,6 +486,7 @@ SelectInput.defaultProps = {
   InputLabelProps: {},
   forceOpen: false,
   createTagActionLabel: undefined,
+  onFocusCallback: undefined,
 };
 
 export default SelectInput;

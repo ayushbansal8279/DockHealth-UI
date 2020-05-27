@@ -262,7 +262,7 @@ export const Routes = ({ store }) => {
             onEnter={checkFeatureToggles}
           />
           <Route
-            path="/assignedToPerson/:userIdentifier"
+            path="/assignedToPerson/:userIdentifier(/:tabName)"
             component={PersonDetailsView}
             onEnter={checkFeatureToggles}
           />

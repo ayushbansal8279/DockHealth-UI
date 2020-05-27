@@ -15,6 +15,7 @@ import {
   assignOrReassignTask,
   updatePatient,
   updateTaskDescription,
+  prepareSubtask,
 } from 'actions/task-actions';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
@@ -47,6 +48,7 @@ const onSubmit = ({
   dispatch,
   setSaving,
   setAutoSaveVisible,
+  closeTaskDrawer,
 }) => data => {
   // const currentLabels = selectedTask?.labels ?? [];
   // const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
@@ -95,25 +97,10 @@ const onSubmit = ({
       if (!taskIdentifier) return;
       storeAsCurrentTask(response)(dispatch);
 
-      // await Promise.all(
-      //   allLabels.map(
-      //     labelAddOrRemovePromise({
-      //       dispatch,
-      //       taskIdentifier,
-      //       currentLabelsIdentifiers,
-      //       formattedLabelsIdentifiers,
-      //     }),
-      //   ),
-      // );
-
-      // updateTaskManually({
-      //   ...(selectedTask ?? {}),
-      //   ...data,
-      //   labels: formattedLabels,
-      // })(dispatch);
-
       setSaving(false);
       setAutoSaveVisible();
+
+      closeTaskDrawer();
     })
     .catch(() => {
       setSaving(false);
@@ -305,6 +292,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     if (selectedTask) {
       try {
         await deleteTask(selectedTask)(dispatch);
+        storeAsCurrentTask(null)(dispatch);
         afterDelete();
         onButtonClicked('Delete task');
       } catch {
@@ -320,8 +308,24 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
         const newTask = await duplicateTask(selectedTask)(dispatch);
+        storeAsCurrentTask(newTask)(dispatch);
         afterDuplicate({ newTask });
         onButtonClicked('Duplicate task');
+      } catch {
+        noop();
+      }
+    }
+  };
+
+  const onAddSubTask = ({ afterAddSubTask }) => async event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        prepareSubtask(selectedTask.taskIdentifier)(dispatch);
+        afterAddSubTask();
+        onButtonClicked('Add subtask');
       } catch {
         noop();
       }
@@ -405,6 +409,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       dispatch,
       setSaving,
       setAutoSaveVisible,
+      closeTaskDrawer,
     }),
     formMethods,
     isAddingOrEditingSubtask,
@@ -417,6 +422,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     reFileTask,
     onDelete,
     onDuplicate,
+    onAddSubTask,
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,

@@ -1,9 +1,8 @@
 import { Chip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { BoldLabel } from 'views/PersonDetails/PersonDetailsView.PersonInfoPanel.Styled';
 
 export const AdornmentContainer = styled.div`
   color: ${palette.orange};
@@ -21,7 +20,7 @@ export const DrawerChip = withStyles({
   },
   label: {
     color: palette.darkGrey,
-    fontWeight: BoldLabel,
+    fontWeight: fontWeights.regularPlus,
   },
 })(Chip);
 
@@ -38,7 +37,7 @@ export const DrawerAddChip = withStyles({
   },
   label: {
     color: palette.orange,
-    fontWeight: BoldLabel,
+    fontWeight: fontWeights.regularPlus,
   },
 })(Chip);
 

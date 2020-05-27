@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { isEmpty } from 'ramda';
+import { isEmpty, pick } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { Grid } from '@material-ui/core';
@@ -29,6 +30,7 @@ import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
+import palette from 'styles/palette';
 import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
 import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
@@ -134,6 +136,9 @@ const TaskItem = ({
   reassignTask,
   updateDueDate,
   updateWorkflowStatus,
+  subtasks,
+  dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const {
     edited,
@@ -144,12 +149,13 @@ const TaskItem = ({
     dueDate,
     labels,
     patient,
-    subtasks,
     workflowStatus,
     completedDt,
     completedBy,
+    taskList,
   } = task;
 
+  const listName = taskList?.listName;
   const [isHovered, setIsHoverd] = useState(false);
 
   const isCompleted = task.status === 'COMPLETE';
@@ -166,7 +172,7 @@ const TaskItem = ({
       onMouseLeave={() => setIsHoverd(false)}
     >
       <TaskItemContainer>
-        {!isCompletedGroup && (
+        {!dragAndDropDisabled && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
         <PrioritySwitch onClick={() => toggleTaskPriority(task)}>
@@ -205,7 +211,7 @@ const TaskItem = ({
                 }`}
                 `}</span>
             </CompletedBy>
-            {!isEmpty(subtasks) && (
+            {!isEmpty(subtasks) && subtasks?.length > 0 && (
               <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
                 <span>{subtasks?.length} subtasks</span>
                 <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
@@ -294,6 +300,14 @@ const TaskItem = ({
             )}
           </TaskAssignMember>
         </TaskItemCell>
+        {listNameVisible && (
+          <TaskItemCell
+            color={listName ? palette.brightBlue : palette.coolGrey2}
+            width="168px"
+          >
+            {listName || 'Unfiled'}
+          </TaskItemCell>
+        )}
       </TaskItemContainer>
     </TaskItemPanel>
   );
@@ -402,6 +416,21 @@ const Task = ({
   const { comments, subtasks } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
 
+  const {
+    addingNewSubtask,
+    addingNewSubtaskParentId,
+    subtaskShape,
+  } = useSelector(state =>
+    pick(['addingNewSubtask', 'addingNewSubtaskParentId', 'subtaskShape'])(
+      state.taskState,
+    ),
+  );
+
+  const renderedSubtasks =
+    addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
+      ? [...subtasks, subtaskShape]
+      : subtasks;
+
   return (
     <div ref={innerRef} {...draggableProps}>
       <TaskItem
@@ -413,6 +442,7 @@ const Task = ({
         members={members}
         currentUser={currentUser}
         reassignTask={reassignTask}
+        subtasks={renderedSubtasks}
         {...restProps}
       />
       {!isEmpty(comments) && !isStartedDnD && (
@@ -420,7 +450,7 @@ const Task = ({
       )}
       {!isEmpty(subtasks) && !isStartedDnD && (
         <Subtasks
-          subtasks={subtasks}
+          subtasks={renderedSubtasks}
           isOpen={isOpen}
           isFullView={isFullView}
           groupId={groupId}

@@ -170,19 +170,23 @@ export const StyledList = styled(List)`
 `;
 
 export const styleTaskDrawerContainer = {
-  padding: '2rem 0rem',
+  padding: '1rem 0rem 0.5rem  0rem',
 };
 
 export const styleFullRow = {
-  padding: '.5rem 2rem 0.5rem 2rem',
+  padding: '1rem 2rem',
 };
 
 export const styleFullRowThin = {
   padding: '0rem 2rem',
 };
 
+export const styleFirstRow = {
+  padding: '0rem 2rem 0.5rem 2rem',
+};
+
 export const styleLastRow = {
-  padding: '0rem 2rem 2rem 2rem',
+  padding: '0rem 2rem 1rem 2rem',
 };
 
 export const styleEmailRow = {
@@ -191,9 +195,9 @@ export const styleEmailRow = {
 };
 
 export const styleLeftColumn = {
-  padding: '0.5rem 1rem 0.5rem 2rem',
+  padding: '1rem 1rem 1rem 2rem',
 };
 
 export const styleRightColumn = {
-  padding: '0.5rem 2rem 0.5rem 1rem',
+  padding: '1rem 2rem 1rem 1rem',
 };

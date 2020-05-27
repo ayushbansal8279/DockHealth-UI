@@ -32,6 +32,7 @@ export const renderComment = ({
 }) => comment => {
   return (
     <Comment
+      key={comment.commentIdentifier}
       comment={comment}
       currentUser={currentUser}
       removeComment={removeComment}

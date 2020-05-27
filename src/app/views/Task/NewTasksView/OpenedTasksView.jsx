@@ -36,6 +36,11 @@ const OpenedTasksView = ({
   members,
   updateDueDate,
   updateWorkflowStatus,
+  defaultGroupName,
+  canEditGroups,
+  quickAddTaskVisible,
+  dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -50,9 +55,10 @@ const OpenedTasksView = ({
         <TaskGroupsContainer>
           <DragDropContext
             onBeforeCapture={({ draggableId }) => {
-              setDraggableId(draggableId);
+              if (!dragAndDropDisabled) setDraggableId(draggableId);
             }}
             onDragEnd={eventBundle =>
+              !dragAndDropDisabled &&
               onDragEndTask({
                 eventBundle,
                 groupList,
@@ -75,7 +81,7 @@ const OpenedTasksView = ({
                   groupName={
                     groupType !== TASKGROUP_DEFAULT_TYPE
                       ? groupName
-                      : 'NEW TASKS'
+                      : defaultGroupName
                   }
                   openDrawer={openDrawer}
                   storeAsCurrentTask={storeAsCurrentTask}
@@ -102,22 +108,29 @@ const OpenedTasksView = ({
                   members={members}
                   updateDueDate={updateDueDate}
                   updateWorkflowStatus={updateWorkflowStatus}
+                  quickAddTaskVisible={quickAddTaskVisible}
+                  dragAndDropDisabled={dragAndDropDisabled}
+                  listNameVisible={listNameVisible}
                 />
               ),
             )}
           </DragDropContext>
-          <GroupNameSection
-            onEnterClick={groupName => createTaskGroupList(groupName)}
-            placeholder={messages.placeholder}
-            closeOnEnter
-          >
-            <AddGroupNameButton />
-          </GroupNameSection>
+          {canEditGroups && (
+            <GroupNameSection
+              onEnterClick={groupName => createTaskGroupList(groupName)}
+              placeholder={messages.placeholder}
+              closeOnEnter
+            >
+              <AddGroupNameButton />
+            </GroupNameSection>
+          )}
         </TaskGroupsContainer>
       ) : (
-        <EmptyTasksView
-          quickAddTask={groupName => quickAddTask(groupName, null, true)}
-        />
+        quickAddTaskVisible && (
+          <EmptyTasksView
+            quickAddTask={groupName => quickAddTask(groupName, null, true)}
+          />
+        )
       )}
     </TasksViewLoader>
   );

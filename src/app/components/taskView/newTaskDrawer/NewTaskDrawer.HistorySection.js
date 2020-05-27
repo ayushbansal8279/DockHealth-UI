@@ -102,10 +102,12 @@ const HistorySection = ({ selectedTask }) => {
     getFormattedEventDate,
   } = initializeTaskDrawerHistorySectionHooks({ selectedTask });
 
+  const isNewTask = !(selectedTask && selectedTask.taskIdentifier !== null);
+
   const todaysDateString = getFormattedEventDate(new Date());
 
-  const createdByUser = selectedTask ? selectedTask?.creator : currentUser;
-  const createdDateTime = selectedTask
+  const createdByUser = !isNewTask ? selectedTask?.creator : currentUser;
+  const createdDateTime = !isNewTask
     ? getFormattedEventDate(new Date(selectedTask.createdDateTime))
     : todaysDateString;
 
@@ -126,18 +128,22 @@ const HistorySection = ({ selectedTask }) => {
             }
           >
             <HorizontalLabel>HISTORY</HorizontalLabel>
-            <Spacing horizontal={4} />
-            {isHistoryShown ? (
-              <SmallSwitchChevronUp color={palette.orangeJulius} />
-            ) : (
-              <SmallSwitchChevronDown color={palette.orangeJulius} />
+            {!isNewTask && (
+              <>
+                <Spacing horizontal={4} />
+                {isHistoryShown ? (
+                  <SmallSwitchChevronUp color={palette.orangeJulius} />
+                ) : (
+                  <SmallSwitchChevronDown color={palette.orangeJulius} />
+                )}
+              </>
             )}
           </div>
         </Grid>
         <Grid container item xs={6} alignItems="flex-end" justify="flex-end" />
       </Grid>
       <Spacing vertical={2} />
-      {!isHistoryShown && (
+      {isNewTask && (
         <Grid
           container
           item

@@ -11,6 +11,7 @@ import * as TaskListActions from 'actions/tasklist-actions';
 import * as TaskLabelActions from 'actions/task-label-actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
+import { hashHistory } from 'react-router';
 import TasksView from './Task/NewTasksView/TasksView';
 
 const ASSIGNED_BY_ME = 'assigned_by_me';
@@ -137,14 +138,9 @@ class Home extends Component {
       nextProps.routeParams.tabName !== routeParams.tabName
     ) {
       if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
-        this.handleCompletedTasksRequest(
-          routeParams.taskListIdentifier,
-          null,
-          null,
-          false,
-        );
+        this.refreshCompleteTasks();
       } else {
-        this.refresh();
+        this.refreshIncompleteTasks();
       }
     }
 
@@ -192,23 +188,17 @@ class Home extends Component {
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
-      routeParams: { taskListIdentifier, tabName },
+      routeParams: { tabName },
     } = this.props;
 
     if (tabName === TaskListTabName.COMPLETE) {
-      this.handleCompletedTasksRequest(
-        taskListIdentifier,
-        null,
-        null,
-        cumulativeFlag,
-        withLoader,
-      );
+      this.refreshCompleteTasks(cumulativeFlag, withLoader);
     } else {
-      this.refresh(withLoader);
+      this.refreshIncompleteTasks(withLoader);
     }
   };
 
-  refresh = (withLoader = true) => {
+  refreshIncompleteTasks = (withLoader = true) => {
     const {
       actions,
       routeParams,
@@ -317,13 +307,7 @@ class Home extends Component {
     }
   };
 
-  handleCompletedTasksRequest = (
-    selectedTaskListIdentifier,
-    filterBy,
-    sortBy,
-    cumulativeFlag = false,
-    withLoader = true,
-  ) => {
+  refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
     const {
       actions,
       taskListActions,
@@ -331,10 +315,16 @@ class Home extends Component {
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
+    let filterBy; // TODO: filters
+    let sortBy; // TODO: filters
+
     let queryStartPosition = 0;
 
     if (cumulativeFlag) {
-      queryStartPosition = completedTasks.length;
+      queryStartPosition = completedTasks.reduce(
+        (counter, task) => counter + task.subtasks.length + 1,
+        0,
+      );
     }
 
     if (withLoader) {
@@ -344,7 +334,7 @@ class Home extends Component {
     if (listName === ASSIGNED_BY_ME) {
       return actions
         .getTasksAssignedByMe(
-          selectedTaskListIdentifier,
+          taskListIdentifier,
           sortBy,
           filterBy,
           'COMPLETE',
@@ -354,7 +344,7 @@ class Home extends Component {
         .catch(error => {
           this.handleRetry(error, () => {
             actions.getTasksAssignedByMe(
-              selectedTaskListIdentifier,
+              taskListIdentifier,
               sortBy,
               filterBy,
               'COMPLETE',
@@ -367,7 +357,7 @@ class Home extends Component {
     if (listName === ASSIGNED_TO_ME) {
       return actions
         .getTasksAssignedToMe(
-          selectedTaskListIdentifier,
+          taskListIdentifier,
           sortBy,
           filterBy,
           'COMPLETE',
@@ -377,7 +367,7 @@ class Home extends Component {
         .catch(error => {
           this.handleRetry(error, () => {
             actions.getTasksAssignedToMe(
-              selectedTaskListIdentifier,
+              taskListIdentifier,
               sortBy,
               filterBy,
               'COMPLETE',
@@ -442,6 +432,18 @@ class Home extends Component {
     );
   };
 
+  navigateToTab = tabName => {
+    const {
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    hashHistory.push(
+      `/tasks/${taskListIdentifier}${
+        tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
+      }`,
+    );
+  };
+
   render() {
     const {
       userIdentifier,
@@ -452,7 +454,6 @@ class Home extends Component {
       showingCompletedTasks,
       selectedTaskId,
       actions: {
-        storeAsCurrentTask,
         markAsUnread,
         refreshTask,
         toggleTaskPriority,
@@ -497,7 +498,6 @@ class Home extends Component {
       isCompletedTasksFetching,
       showingCompletedTasks,
       selectedTaskId,
-      storeAsCurrentTask,
       markAsUnread,
       refreshTask,
       addTaskComment,
@@ -506,6 +506,7 @@ class Home extends Component {
       onFilter: this.handleFilterChange,
       refreshTab: this.refreshTab,
       downloadPDF: this.downloadPDF,
+      navigateToTab: this.navigateToTab,
       hasTitle,
       title,
       isSpecialList,
@@ -520,7 +521,7 @@ class Home extends Component {
       routeParams,
     };
 
-    return <TasksView {...taskViewProps} />;
+    return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;
   }
 }
 

@@ -7,6 +7,7 @@ import { RobotoTypography } from 'styles/theme';
 
 import { useMount } from 'react-use';
 import useBoolean from 'hooks/useBoolean';
+import palette from 'styles/palette';
 import {
   AuthorLabelContainer,
   CommentActionLabel,
@@ -32,6 +33,7 @@ const Comment = ({
   const {
     comment: commentContent,
     creator,
+    dateCreated,
     dateUpdated,
     commentIdentifier,
   } = comment;
@@ -98,6 +100,17 @@ const Comment = ({
                 }}
               >
                 {commentValue}
+                {!isEditing && dateCreated !== dateUpdated && (
+                  <span
+                    style={{
+                      color: palette.coolGrey2,
+                      paddingLeft: '10px',
+                      fontSize: '.75rem',
+                    }}
+                  >
+                    (Edited)
+                  </span>
+                )}
               </CommentContentField>
             </RobotoTypography>
             <AuthorLabelContainer>
@@ -140,7 +153,7 @@ const Comment = ({
           )}
         </CommentInnerContainer>
       </CommentContainer>
-      <Spacing vertical={3} />
+      <Spacing vertical={1} />
     </React.Fragment>
   );
 };

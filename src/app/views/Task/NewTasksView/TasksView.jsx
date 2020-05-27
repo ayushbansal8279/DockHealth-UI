@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
 
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -23,33 +22,12 @@ const Priority = {
   Low: 'LOW',
 };
 
-const navigateToTab = ({ tabName, taskListIdentifier }) => {
-  hashHistory.push(
-    `/tasks/${taskListIdentifier}${
-      tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
-    }`,
-  );
-};
-
-const handleTabsNavigation = routeParameters => {
-  switch (routeParameters.tabName) {
-    case TaskListTabName.COMPLETE:
-      break;
-    case undefined:
-    case TaskListTabName.OPEN:
-      break;
-    default:
-      navigateToTab({ ...routeParameters, tabName: TaskListTabName.OPEN });
-  }
-};
-
 const TaskView = ({
   currentUser,
   isSpecialList,
   members,
   membersNotInTaskList,
   showMembers = true,
-  storeAsCurrentTask,
   taskDrawerActions,
   taskActions,
   taskGroupActions,
@@ -66,8 +44,13 @@ const TaskView = ({
   refreshTab,
   listStats,
   isFetchingMoreTasks,
+  defaultGroupName,
+  canEditGroups = true,
+  quickAddTaskVisible = true,
+  dragAndDropDisabled = false,
+  listNameVisible = false,
+  navigateToTab,
 }) => {
-  handleTabsNavigation(routeParams);
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
 
@@ -82,6 +65,7 @@ const TaskView = ({
     reassignTask,
     updateDueDate,
     updateWorkflowStatus,
+    storeAsCurrentTask,
   } = taskActions;
   const {
     createTaskGroupList,
@@ -90,6 +74,20 @@ const TaskView = ({
   } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
+
+  const handleTabsNavigation = routeParameters => {
+    switch (routeParameters.tabName) {
+      case TaskListTabName.COMPLETE:
+        break;
+      case undefined:
+      case TaskListTabName.OPEN:
+        break;
+      default:
+        navigateToTab(TaskListTabName.OPEN);
+    }
+  };
+
+  handleTabsNavigation(routeParams);
 
   const quickAddTask = (
     taskName,
@@ -199,7 +197,7 @@ const TaskView = ({
         isSpecialList={isSpecialList}
         members={members}
         membersNotInTaskList={membersNotInTaskList}
-        onSelectTab={tabName => navigateToTab({ ...routeParams, tabName })}
+        onSelectTab={tabName => navigateToTab(tabName)}
         printData={{
           openedTasks,
           completedTasks,
@@ -226,6 +224,7 @@ const TaskView = ({
           showMoreTasks={() => refreshTab(false, true)}
           isFetchingMoreTasks={isFetchingMoreTasks}
           updateDueDate={updateDueDate}
+          listNameVisible={listNameVisible}
         />
       ) : (
         <OpenedTasksView
@@ -256,6 +255,11 @@ const TaskView = ({
           members={members}
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}
+          defaultGroupName={defaultGroupName}
+          canEditGroups={canEditGroups}
+          quickAddTaskVisible={quickAddTaskVisible}
+          dragAndDropDisabled={dragAndDropDisabled}
+          listNameVisible={listNameVisible}
         />
       )}
       <NewTaskDrawer
