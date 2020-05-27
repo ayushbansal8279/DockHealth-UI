@@ -58,6 +58,7 @@ const TasksGroup = ({
   hasMoreTasks,
   members,
   updateDueDate,
+  updateWorkflowStatus,
   quickAddTaskVisible = true,
   dragAndDropDisabled,
   listNameVisible,
@@ -166,6 +167,7 @@ const TasksGroup = ({
           members={members}
           reassignTask={reassignTask}
           updateDueDate={updateDueDate}
+          updateWorkflowStatus={updateWorkflowStatus}
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
         />

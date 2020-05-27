@@ -35,6 +35,7 @@ const OpenedTasksView = ({
   isFetchingData,
   members,
   updateDueDate,
+  updateWorkflowStatus,
   defaultGroupName,
   canEditGroups,
   quickAddTaskVisible,
@@ -106,6 +107,7 @@ const OpenedTasksView = ({
                   toggleCompleteTask={toggleCompleteTask}
                   members={members}
                   updateDueDate={updateDueDate}
+                  updateWorkflowStatus={updateWorkflowStatus}
                   quickAddTaskVisible={quickAddTaskVisible}
                   dragAndDropDisabled={dragAndDropDisabled}
                   listNameVisible={listNameVisible}

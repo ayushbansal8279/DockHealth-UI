@@ -64,6 +64,7 @@ const TaskView = ({
     reassignTasksToAnotherGroup,
     reassignTask,
     updateDueDate,
+    updateWorkflowStatus,
     storeAsCurrentTask,
   } = taskActions;
   const {
@@ -253,6 +254,7 @@ const TaskView = ({
           }
           members={members}
           updateDueDate={updateDueDate}
+          updateWorkflowStatus={updateWorkflowStatus}
           defaultGroupName={defaultGroupName}
           canEditGroups={canEditGroups}
           quickAddTaskVisible={quickAddTaskVisible}

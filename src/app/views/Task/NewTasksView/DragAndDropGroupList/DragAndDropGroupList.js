@@ -19,6 +19,7 @@ const DragAndDropGroupList = ({
   isCompletedGroup,
   members,
   updateDueDate,
+  updateWorkflowStatus,
   dragAndDropDisabled,
   listNameVisible,
 }) => {
@@ -62,6 +63,7 @@ const DragAndDropGroupList = ({
                     members={members}
                     reassignTask={reassignTask}
                     updateDueDate={updateDueDate}
+                    updateWorkflowStatus={updateWorkflowStatus}
                     dragAndDropDisabled={
                       isCompletedGroup || dragAndDropDisabled
                     }

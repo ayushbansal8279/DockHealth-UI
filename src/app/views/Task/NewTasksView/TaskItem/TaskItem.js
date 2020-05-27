@@ -34,6 +34,7 @@ import palette from 'styles/palette';
 import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
 import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
+import TaskWorkflowStatus from '../TaskWorkflowStatus/TaskWorkflowStatus';
 import { onDragEndSubtask } from '../DragDrop.helpers';
 import {
   AddCrossIcon,
@@ -134,6 +135,7 @@ const TaskItem = ({
   currentUser,
   reassignTask,
   updateDueDate,
+  updateWorkflowStatus,
   subtasks,
   dragAndDropDisabled,
   listNameVisible,
@@ -223,14 +225,27 @@ const TaskItem = ({
           )}
           {patient && `${patient.firstName} ${patient.lastName}`}
         </TaskItemCell>
-        <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
-          {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
-          {task.status !== 'COMPLETE' && workflowStatus && (
-            <TaskItemStatus workflowStatus={workflowStatus} />
-          )}
-          {task.status !== 'COMPLETE' && !workflowStatus && (
-            <AddPlaceholder>+ Add Status</AddPlaceholder>
-          )}
+        <TaskItemCell
+          width="110px"
+          paddingLeft="smallPlus"
+          paddingRight="tiny"
+          style={{ paddingTop: '0px' }}
+        >
+          <TaskWorkflowStatus
+            task={task}
+            isCompletedGroup={isCompletedGroup}
+            updateWorkflowStatus={updateWorkflowStatus}
+          >
+            {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
+            {task.status !== 'COMPLETE' && workflowStatus && (
+              <TaskItemStatus workflowStatus={workflowStatus} />
+            )}
+            {task.status !== 'COMPLETE' && !workflowStatus && (
+              <AddPlaceholder style={{ marginTop: '20px' }}>
+                + Add Status
+              </AddPlaceholder>
+            )}
+          </TaskWorkflowStatus>
         </TaskItemCell>
         <TaskItemCell width="200px">
           <Grid container>

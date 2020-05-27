@@ -22,7 +22,7 @@ const TaskItemStatus = ({ workflowStatus }) => {
   return (
     <>
       <StatusBar color={color} />
-      {label}
+      <div style={{ marginTop: '20px' }}>{label}</div>
     </>
   );
 };
