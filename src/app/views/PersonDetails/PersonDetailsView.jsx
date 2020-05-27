@@ -1,8 +1,7 @@
-import { Grid, Typography } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as PeopleActions from 'actions/people-actions';
@@ -11,15 +10,9 @@ import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/common/GenericHeader';
 import TaskListSearchContainer from 'components/LEGACY_list/TaskListSearchContainer';
 import { noop } from 'helpers/utility-functions';
-import BackIcon from 'img/back.svg';
-import { themeMontserratNormal } from 'styles/theme-montserrat';
 import { SideClickListener } from 'components/patients/PatientsView.Styled';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
-import {
-  BackButton,
-  PersonDetailsViewHeader,
-} from './PersonDetailsView.Styled';
 
 class PersonDetailsView extends PureComponent {
   state = {
@@ -126,28 +119,13 @@ class PersonDetailsView extends PureComponent {
     const { personData } = this.props;
     const { fetching } = this.state;
 
-    const memberName = `${personData?.firstName ?? ''} ${personData?.lastName ??
-      ''}`.trim();
-
     return (
       !fetching && (
         <>
-          <PersonDetailsViewHeader>
-            <ThemeProvider theme={themeMontserratNormal}>
-              <Typography variant="h2">
-                <Link to="people">
-                  <BackButton>
-                    <img src={BackIcon} alt="Go back to people list" />
-                  </BackButton>
-                </Link>
-                {memberName}
-              </Typography>
-            </ThemeProvider>
-          </PersonDetailsViewHeader>
+          {personData && <PersonInfoPanel personData={personData} />}
           <Grid direction="row" container>
             <SideClickListener onClick={this.onSideClick} />
             <Grid direction="column" alignItems="center" container>
-              {personData && <PersonInfoPanel personData={personData} />}
               <TaskListSearchContainer
                 searchPerformed
                 onFilter={this.handleFilterChange}

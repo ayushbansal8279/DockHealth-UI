@@ -1,4 +1,3 @@
-import { Grid } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,15 +14,11 @@ import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import {
   ArchivePersonButton,
-  BoldLabel,
-  GreyLabel,
   InfoPanelContainer,
-  Label,
-  PersonAvatarContainer,
   PersonImage,
-  PersonInitialsContainer,
-  PersonNameContainer,
-  PersonTitlesContainer,
+  PersonTitle,
+  ContactInfoContainer,
+  ContactInfoItem,
 } from './PersonDetailsView.PersonInfoPanel.Styled';
 
 const NOT_AVAILABLE = 'N/A';
@@ -34,18 +29,15 @@ const PersonInfoPanel = ({ personData }) => {
     email,
     firstName,
     lastName,
-    specialtyList,
     userIdentifier,
     workPhoneNumber,
   } = personData || {};
 
   const [avatarContent, setAvatarContent] = useState(
-    <PersonInitialsContainer>
-      {`${firstName.charAt(0)}${lastName.charAt(0)}`
-        .trim()
-        .toUpperCase()
-        .replace(/^$/, NOT_AVAILABLE)}
-    </PersonInitialsContainer>,
+    `${firstName.charAt(0)}${lastName.charAt(0)}`
+      .trim()
+      .toUpperCase()
+      .replace(/^$/, NOT_AVAILABLE),
   );
 
   const orgUserRole = useSelector(
@@ -62,6 +54,18 @@ const PersonInfoPanel = ({ personData }) => {
   }, [open]);
 
   const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+
+  useMount(() => {
+    if (userIdentifier && personData.profileThumbnailPictureHash) {
+      getUserAvatar(personData)(dispatch)
+        .then(image => {
+          if (image?.byteLength !== 0) {
+            setAvatarContent(<PersonImage alt="avatar" src={image} />);
+          }
+        })
+        .catch(noop);
+    }
+  });
 
   const onConfirmArchivePersonButtonClick = useCallback(() => {
     removeUserFromOrganization(userIdentifier)(dispatch)
@@ -80,68 +84,42 @@ const PersonInfoPanel = ({ personData }) => {
     close();
   }, [close, dispatch, userIdentifier]);
 
-  useMount(() => {
-    if (userIdentifier && personData.profileThumbnailPictureHash) {
-      getUserAvatar(personData)(dispatch)
-        .then(image => {
-          if (image?.byteLength !== 0) {
-            setAvatarContent(<PersonImage alt="avatar" src={image} />);
-          }
-        })
-        .catch(noop);
-    }
-  });
-
   return (
     <InfoPanelContainer>
-      <Grid container alignItems="center">
-        <PersonNameContainer>
-          <PersonAvatarContainer>
-            <Avatar color={palette.unknownGrey5} size={102}>
-              {avatarContent}
-            </Avatar>
-          </PersonAvatarContainer>
-          <PersonTitlesContainer>
-            <BoldLabel>{`${firstName} ${lastName}`}</BoldLabel>
-            <GreyLabel>{specialtyList}</GreyLabel>
-          </PersonTitlesContainer>
-        </PersonNameContainer>
-        <Grid container item sm={12} md={7} alignItems="center" spacing={2}>
-          <Grid container item sm={12} md={5} direction="column">
-            <GreyLabel>Mobile</GreyLabel>
-            <Label>
-              {formatPhoneNumber(accountPhoneNumber) || NOT_AVAILABLE}
-            </Label>
-          </Grid>
-          <Grid container item sm={12} md={7} direction="column">
-            <GreyLabel>Additional phone number</GreyLabel>
-            <Label>{formatPhoneNumber(workPhoneNumber) || NOT_AVAILABLE}</Label>
-          </Grid>
-          <Grid container item xs={12} direction="column">
-            <GreyLabel>Email</GreyLabel>
-            <Label>{email}</Label>
-          </Grid>
-        </Grid>
-      </Grid>
+      <Avatar color={palette.unknownGrey5} size={50}>
+        {avatarContent}
+      </Avatar>
+      <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
+      <ContactInfoContainer>
+        {email && <ContactInfoItem>{email}</ContactInfoItem>}
+        {accountPhoneNumber && (
+          <ContactInfoItem>
+            M {formatPhoneNumber(accountPhoneNumber)}
+          </ContactInfoItem>
+        )}
+        {workPhoneNumber && (
+          <ContactInfoItem>
+            H {formatPhoneNumber(workPhoneNumber)}
+          </ContactInfoItem>
+        )}
+      </ContactInfoContainer>
       {isAdminOrOwner && userIdentifier && (
         <>
           <hr />
-          <Grid container item xs={12} justify="center">
-            <ArchivePersonButton
-              ref={archivePersonButtonReference}
-              onClick={onArchivePersonButtonClick}
-            >
-              Archive this person
-            </ArchivePersonButton>
-            <ConfirmationDialog
-              isOpen={isOpen}
-              close={close}
-              confirm={onConfirmArchivePersonButtonClick}
-              title="Archive person"
-              message="This person will no longer have access to Dock Health. If this user is currently assigned any tasks, those tasks will become unassigned."
-              confirmButtonTitle="Yes, archive person"
-            />
-          </Grid>
+          <ArchivePersonButton
+            ref={archivePersonButtonReference}
+            onClick={onArchivePersonButtonClick}
+          >
+            Archive this person
+          </ArchivePersonButton>
+          <ConfirmationDialog
+            isOpen={isOpen}
+            close={close}
+            confirm={onConfirmArchivePersonButtonClick}
+            title="Archive person"
+            message="This person will no longer have access to Dock Health. If this user is currently assigned any tasks, those tasks will become unassigned."
+            confirmButtonTitle="Yes, archive person"
+          />
         </>
       )}
     </InfoPanelContainer>
