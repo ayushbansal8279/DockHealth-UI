@@ -28,7 +28,6 @@ const TaskView = ({
   members,
   membersNotInTaskList,
   showMembers = true,
-  storeAsCurrentTask,
   taskDrawerActions,
   taskActions,
   taskGroupActions,
@@ -64,6 +63,7 @@ const TaskView = ({
     reassignTasksToAnotherGroup,
     reassignTask,
     updateDueDate,
+    storeAsCurrentTask,
   } = taskActions;
   const {
     createTaskGroupList,
