@@ -142,7 +142,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     reValidateMode: 'onSubmit',
   });
 
-  const { setValue, watch } = formMethods;
+  const { setValue, watch, clearError } = formMethods;
 
   const [
     autoSaveVisible,
@@ -182,6 +182,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       );
     }
 
+    clearError(); // clear any previous validation errors
     setValue('description', selectedTask?.description ?? null);
     setValue(
       'patientIdentifier',
@@ -376,6 +377,13 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
 
   const handleTaskDescriptionUpdate = async () => {
     const updatedTaskDescription = watch('description');
+
+    if (
+      updatedTaskDescription === '' ||
+      selectedTask.description === updatedTaskDescription
+    ) {
+      return;
+    }
 
     if (selectedTask && selectedTask.taskIdentifier != null) {
       try {
