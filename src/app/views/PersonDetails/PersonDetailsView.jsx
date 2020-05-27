@@ -157,6 +157,7 @@ class PersonDetailsView extends PureComponent {
       navigateToTab: this.navigateToTab,
       refreshTab: this.refreshTab,
       dragAndDropDisabled: true,
+      listNameVisible: true,
     };
 
     return (
@@ -170,22 +171,6 @@ class PersonDetailsView extends PureComponent {
             canEditGroups={false}
             quickAddTaskVisible={false}
           />
-          {/* <Grid direction="row" container>
-            <SideClickListener onClick={this.onSideClick} />
-            <Grid direction="column" alignItems="center" container>
-              <TaskListSearchContainer
-                searchPerformed
-                onFilter={this.handleFilterChange}
-                onCompletedTasksRequest={this.handleCompletedTasksRequest}
-                showToolbar
-                showFilterStats={false}
-                showNotifications={false}
-                showMembers={false}
-                paneled
-              />
-            </Grid>
-            <SideClickListener onClick={this.onSideClick} />
-          </Grid> */}
         </>
       )
     );

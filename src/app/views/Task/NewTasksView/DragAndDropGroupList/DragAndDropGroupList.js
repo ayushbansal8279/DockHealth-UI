@@ -20,6 +20,7 @@ const DragAndDropGroupList = ({
   members,
   updateDueDate,
   dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
 
@@ -64,6 +65,7 @@ const DragAndDropGroupList = ({
                     dragAndDropDisabled={
                       isCompletedGroup || dragAndDropDisabled
                     }
+                    listNameVisible={listNameVisible}
                   />
                 )}
               </Draggable>

@@ -39,6 +39,7 @@ const OpenedTasksView = ({
   canEditGroups,
   quickAddTaskVisible,
   dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -107,6 +108,7 @@ const OpenedTasksView = ({
                   updateDueDate={updateDueDate}
                   quickAddTaskVisible={quickAddTaskVisible}
                   dragAndDropDisabled={dragAndDropDisabled}
+                  listNameVisible={listNameVisible}
                 />
               ),
             )}

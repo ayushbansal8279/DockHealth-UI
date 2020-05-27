@@ -30,6 +30,7 @@ import ThreeDotsIcon from 'img/three-dots';
 import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import LowPriorityHoverLabel from 'img/priority-label-hover-icon.svg';
+import palette from 'styles/palette';
 import TaskItemStatus from './TaskItemStatus';
 import TaskComments from '../TaskComments/TaskComments';
 import TaskAssignMember from '../TaskAssignMember/TaskAssignMember';
@@ -135,6 +136,7 @@ const TaskItem = ({
   updateDueDate,
   subtasks,
   dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const {
     edited,
@@ -148,6 +150,7 @@ const TaskItem = ({
     workflowStatus,
     completedDt,
     completedBy,
+    taskList: { listName },
   } = task;
 
   const [isHovered, setIsHoverd] = useState(false);
@@ -281,6 +284,14 @@ const TaskItem = ({
             )}
           </TaskAssignMember>
         </TaskItemCell>
+        {listNameVisible && (
+          <TaskItemCell
+            color={listName ? palette.brightBlue : palette.coolGrey2}
+            width="168px"
+          >
+            {listName || 'Unfiled'}
+          </TaskItemCell>
+        )}
       </TaskItemContainer>
     </TaskItemPanel>
   );

@@ -48,6 +48,7 @@ const TaskView = ({
   canEditGroups = true,
   quickAddTaskVisible = true,
   dragAndDropDisabled = false,
+  listNameVisible = false,
   navigateToTab,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
@@ -222,6 +223,7 @@ const TaskView = ({
           showMoreTasks={() => refreshTab(false, true)}
           isFetchingMoreTasks={isFetchingMoreTasks}
           updateDueDate={updateDueDate}
+          listNameVisible={listNameVisible}
         />
       ) : (
         <OpenedTasksView
@@ -255,6 +257,7 @@ const TaskView = ({
           canEditGroups={canEditGroups}
           quickAddTaskVisible={quickAddTaskVisible}
           dragAndDropDisabled={dragAndDropDisabled}
+          listNameVisible={listNameVisible}
         />
       )}
       <NewTaskDrawer

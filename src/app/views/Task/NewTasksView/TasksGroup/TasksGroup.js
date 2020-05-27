@@ -60,6 +60,7 @@ const TasksGroup = ({
   updateDueDate,
   quickAddTaskVisible = true,
   dragAndDropDisabled,
+  listNameVisible,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -166,6 +167,7 @@ const TasksGroup = ({
           reassignTask={reassignTask}
           updateDueDate={updateDueDate}
           dragAndDropDisabled={dragAndDropDisabled}
+          listNameVisible={listNameVisible}
         />
         {groupPagination && hasMoreTasks && (
           <PaginationButton
