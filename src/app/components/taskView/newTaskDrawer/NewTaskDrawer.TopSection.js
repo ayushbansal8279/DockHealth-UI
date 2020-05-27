@@ -10,7 +10,7 @@ import {
   AutoSaveContainer,
   AutoSaveChip,
   CondensedH4,
-  styleFullRowThin,
+  styleFirstRow,
 } from './NewTaskDrawer.Styled';
 import SmallSwitchChevronDown from '../../../img/small-switch-chevron-down';
 
@@ -61,6 +61,7 @@ const TopSection = ({
   reFileTask,
   onDelete,
   onDuplicate,
+  onAddSubTask,
   isInbox,
   closeTaskDrawer,
   autoSaveVisible,
@@ -96,7 +97,7 @@ const TopSection = ({
         xs={12}
         alignItems="center"
         justify="space-between"
-        style={styleFullRowThin}
+        style={styleFirstRow}
       >
         <Grid
           container
@@ -187,9 +188,12 @@ const TopSection = ({
             >
               <ListItem
                 key="action_add_subtask"
-                onClick={() => {
-                  closeTaskDrawer();
-                }}
+                onClick={onAddSubTask({
+                  afterAddSubTask: () => {
+                    closeTaskMenuPopover();
+                  },
+                  selectedTask,
+                })}
                 button
                 style={{
                   borderBottom: `1px solid ${palette.coolGrey3}`,
@@ -201,7 +205,7 @@ const TopSection = ({
                 key="action_duplicate"
                 onClick={onDuplicate({
                   afterDuplicate: () => {
-                    // storeAsCurrentTask(newTask);
+                    closeTaskMenuPopover();
                     closeTaskDrawer();
                   },
                   selectedTask,
@@ -220,6 +224,7 @@ const TopSection = ({
                     key="action_delete"
                     onClick={onDelete({
                       afterDelete: () => {
+                        closeTaskMenuPopover();
                         closeTaskDrawer();
                       },
                       selectedTask,

@@ -65,12 +65,6 @@ const initializeLabelsSectionHooks = ({
   const dispatch = useDispatch();
 
   const saveAddOrRemoveLabel = async selectedLabels => {
-    // console.log('on add / remove labels');
-    if (!selectedTask || !selectedTask.taskIdentifier) {
-      // console.log('saving task');
-      parentFormSubmit();
-    }
-
     const currentLabels = selectedTask?.labels ?? [];
     const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
 
@@ -97,11 +91,6 @@ const initializeLabelsSectionHooks = ({
         }),
       ),
     );
-
-    // updateTaskManually({
-    //   ...(selectedTask ?? {}),
-    //   labels: formattedLabels,
-    // })(dispatch);
 
     await getTaskListLabels({
       taskListIdentifier: selectedTask?.taskList?.taskListIdentifier,
@@ -154,12 +143,19 @@ const initializeLabelsSectionHooks = ({
     setAutoSaveVisible();
   };
 
+  const saveTaskOnFocus = async () => {
+    if (!selectedTask || !selectedTask.taskIdentifier) {
+      parentFormSubmit();
+    }
+  };
+
   return {
     labels,
     areLabelsRequested,
     saveAddOrRemoveLabel,
     saveEditLabel,
     saveAddLabel,
+    saveTaskOnFocus,
   };
 };
 

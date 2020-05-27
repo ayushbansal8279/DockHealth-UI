@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { isEmpty } from 'ramda';
+import { isEmpty, pick } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { Grid } from '@material-ui/core';
@@ -131,6 +132,7 @@ const TaskItem = ({
   members,
   currentUser,
   reassignTask,
+  subtasks,
   updateDueDate,
 }) => {
   const {
@@ -142,7 +144,6 @@ const TaskItem = ({
     dueDate,
     labels,
     patient,
-    subtasks,
     workflowStatus,
     completedDt,
     completedBy,
@@ -203,7 +204,7 @@ const TaskItem = ({
                 }`}
                 `}</span>
             </CompletedBy>
-            {!isEmpty(subtasks) && (
+            {!isEmpty(subtasks) && subtasks?.length > 0 && (
               <SubtasksGroupLabel onClick={() => switchOpen(!isOpen)}>
                 <span>{subtasks?.length} subtasks</span>
                 <Arrow alt="arrow" isOpen={isOpen} src={ArrowIcon} />
@@ -387,6 +388,21 @@ const Task = ({
   const { comments, subtasks } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
 
+  const {
+    addingNewSubtask,
+    addingNewSubtaskParentId,
+    subtaskShape,
+  } = useSelector(state =>
+    pick(['addingNewSubtask', 'addingNewSubtaskParentId', 'subtaskShape'])(
+      state.taskState,
+    ),
+  );
+
+  const renderedSubtasks =
+    addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
+      ? [...subtasks, subtaskShape]
+      : subtasks;
+
   return (
     <div ref={innerRef} {...draggableProps}>
       <TaskItem
@@ -398,6 +414,7 @@ const Task = ({
         members={members}
         currentUser={currentUser}
         reassignTask={reassignTask}
+        subtasks={renderedSubtasks}
         {...restProps}
       />
       {!isEmpty(comments) && !isStartedDnD && (
@@ -405,7 +422,7 @@ const Task = ({
       )}
       {!isEmpty(subtasks) && !isStartedDnD && (
         <Subtasks
-          subtasks={subtasks}
+          subtasks={renderedSubtasks}
           isOpen={isOpen}
           isFullView={isFullView}
           groupId={groupId}

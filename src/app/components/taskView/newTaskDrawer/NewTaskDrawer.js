@@ -27,11 +27,8 @@ import {
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
-  MemberLabelContainer,
-  CondensedH4,
   styleTaskDrawerContainer,
   styleFullRow,
-  styleFullRowThin,
   styleEmailRow,
   styleLeftColumn,
   styleRightColumn,
@@ -41,7 +38,7 @@ import TextInput from './NewTaskDrawer.TextInput';
 import {
   getFormattedMembers,
   getFormattedPatients,
-  renderPartsWithHighlighting,
+  renderMemberoptionWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
 const NewTaskDrawer = ({ members, taskList, isInbox }) => {
@@ -54,7 +51,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     patients,
     taskLists,
     currentAssignedToAdornment,
-    getMemberAdornment,
     closeTaskDrawer,
     isSaving,
     selectedTask,
@@ -62,6 +58,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     reFileTask,
     onDelete,
     onDuplicate,
+    onAddSubTask,
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,
@@ -92,11 +89,15 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
     onAssignedToInputChange,
   } = initializeTaskDrawerPopoverHooks();
 
+  const parentFormSubmit = handleSubmit(onSubmit);
+
+  const newTaskFlag = !(selectedTask && selectedTask.taskIdentifier != null);
+
   return (
     <TaskDrawerContainer open={taskDrawerOpen} top={top}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormContext {...formMethods}>
-          <Grid container spacing={2} style={styleTaskDrawerContainer}>
+          <Grid container spacing={1} style={styleTaskDrawerContainer}>
             <TopSection
               formMethods={formMethods}
               taskLists={taskLists}
@@ -105,11 +106,13 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               reFileTask={reFileTask}
               onDelete={onDelete}
               onDuplicate={onDuplicate}
+              onAddSubTask={onAddSubTask}
               isInbox={isInbox}
               closeTaskDrawer={closeTaskDrawer}
               autoSaveVisible={autoSaveVisible}
               setAutoSaveVisible={setAutoSaveVisible}
             />
+            <Spacing vertical={2} />
             <Grid item xs={12} style={styleFullRow}>
               <TextInput
                 name="description"
@@ -121,12 +124,21 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                   shrink: true,
                 }}
                 InputProps={{
+                  type: 'text',
                   startAdornment:
                     selectedTask && selectedTask.description !== '' ? (
                       ''
                     ) : (
                       <AdornmentContainer>+</AdornmentContainer>
                     ),
+                  onKeyDown: event => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      parentFormSubmit();
+                      return false;
+                    }
+                    return true;
+                  },
                 }}
                 onBlur={event => {
                   if (selectedTask && selectedTask.taskIdentifier != null) {
@@ -151,7 +163,10 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label="Patient"
                 placeholder="Who is the patient?"
                 onInputChange={onPatientInputChange}
-                onItemSelected={handlePatientSelect}
+                onItemSelected={option => {
+                  handlePatientSelect(option);
+                  patientInputReference.current.querySelector('input').blur();
+                }}
                 ref={patientInputReference}
                 noOptionsText={
                   <Grid
@@ -194,7 +209,12 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                 label="Assigned To"
                 placeholder="Who would you like to assign this task to?"
                 onInputChange={onAssignedToInputChange}
-                onItemSelected={handleAssignedToSelect}
+                onItemSelected={option => {
+                  handleAssignedToSelect(option);
+                  assignedToInputReference.current
+                    .querySelector('input')
+                    .blur();
+                }}
                 ref={assignedToInputReference}
                 noOptionsText={
                   <Grid
@@ -222,17 +242,9 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
                     </Button>
                   </Grid>
                 }
-                renderItem={(option, { inputValue }) => (
-                  <MemberLabelContainer>
-                    <CondensedH4>
-                      {renderPartsWithHighlighting(
-                        option?.displayLabel,
-                        inputValue,
-                      )}
-                    </CondensedH4>
-                    {getMemberAdornment(option.value, members)}
-                  </MemberLabelContainer>
-                )}
+                renderItem={(option, inputValue) =>
+                  renderMemberoptionWithHighlighting(option, inputValue)
+                }
                 InputProps={{
                   endAdornment: currentAssignedToAdornment,
                 }}
@@ -291,73 +303,75 @@ const NewTaskDrawer = ({ members, taskList, isInbox }) => {
               <LabelsSection
                 selectedTask={selectedTask}
                 isInbox={isInbox}
-                parentFormSubmit={handleSubmit(onSubmit)}
+                parentFormSubmit={parentFormSubmit}
                 setAutoSaveVisible={setAutoSaveVisible}
               />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
               <AtttachmentsSection
                 selectedTask={selectedTask}
-                parentFormSubmit={handleSubmit(onSubmit)}
+                parentFormSubmit={parentFormSubmit}
               />
             </Grid>
             <Grid item xs={12} style={styleFullRow}>
-              <CommentSection parentFormSubmit={handleSubmit(onSubmit)} />
+              <CommentSection parentFormSubmit={parentFormSubmit} />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              container
-              justify="flex-end"
-              alignItems="center"
-              wrap="nowrap"
-              style={styleFullRowThin}
-            >
-              <Button
-                onClick={closeTaskDrawer}
-                color="secondary"
-                variant="text"
-                size="small"
-                disabled={isSaving}
+            {newTaskFlag && (
+              <Grid
+                item
+                xs={12}
+                container
+                justify="flex-end"
+                alignItems="center"
+                wrap="nowrap"
+                style={styleFullRow}
               >
-                <MontserratTypography
-                  weight="600"
-                  textDecoration="underline"
-                  color="inherit"
-                  variant="h4"
+                <Button
+                  onClick={closeTaskDrawer}
+                  color="secondary"
+                  variant="text"
+                  size="small"
+                  disabled={isSaving}
                 >
-                  CANCEL
-                </MontserratTypography>
-              </Button>
-              <Spacing horizontal={3} />
-              <Button
-                variant="contained"
-                size="small"
-                type="submit"
-                disableRipple={isSaving}
-                disabled={isSaving}
-              >
-                <MontserratTypography variant="h4" weight="600">
-                  {isSaving ? (
-                    <CubesLoader size={32} color={palette.coolGrey1} />
-                  ) : (
-                    'SAVE'
-                  )}
-                </MontserratTypography>
-              </Button>
-            </Grid>
+                  <MontserratTypography
+                    weight="600"
+                    textDecoration="underline"
+                    color="inherit"
+                    variant="h4"
+                  >
+                    CANCEL
+                  </MontserratTypography>
+                </Button>
+                <Spacing horizontal={3} />
+                <Button
+                  variant="contained"
+                  size="small"
+                  type="submit"
+                  disableRipple={isSaving}
+                  disabled={isSaving}
+                >
+                  <MontserratTypography variant="h4" weight="600">
+                    {isSaving ? (
+                      <CubesLoader size={32} color={palette.coolGrey1} />
+                    ) : (
+                      'SAVE'
+                    )}
+                  </MontserratTypography>
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </FormContext>
       </form>
+      <Divider
+        style={{
+          width: '100%',
+          backgroundColor: palette.blueOcean,
+          opacity: '0.3',
+        }}
+      />
       <Grid container item xs={12} style={styleLastRow}>
-        <Spacing vertical={4} />
-        <Divider
-          style={{
-            width: '100%',
-            backgroundColor: palette.blueOcean,
-            opacity: '0.3',
-          }}
-        />
+        <Spacing vertical={2} />
         <HistorySection
           formMethods={formMethods}
           taskLists={taskLists}

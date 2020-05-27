@@ -11,7 +11,7 @@ export const AddCommentContainer = styled.div`
   position: relative;
 `;
 
-export const AddCommentInput = styled.input`
+export const AddCommentInput = styled.textarea`
   background-color: ${palette.white};
   border: 0;
   box-shadow: none;
