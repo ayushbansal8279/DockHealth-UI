@@ -43,6 +43,7 @@ class Home extends Component {
       ],
     });
 
+    actions.getTaskStatsForList(routeParams.taskListIdentifier);
     let tabStatus = 'INCOMPLETE';
 
     if (routeParams.tabName === TaskListTabName.COMPLETE) {
@@ -143,13 +144,14 @@ class Home extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    const { routeParams } = this.props;
+    const { actions, routeParams } = this.props;
 
     if (
       nextProps.routeParams.taskListIdentifier ===
         routeParams.taskListIdentifier &&
       nextProps.routeParams.tabName !== routeParams.tabName
     ) {
+      actions.getTaskStatsForList(routeParams.taskListIdentifier);
       if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
         this.refreshCompleteTasks();
       } else {
@@ -161,9 +163,10 @@ class Home extends Component {
       nextProps.routeParams.taskListIdentifier !==
       routeParams.taskListIdentifier
     ) {
-      const { actions, taskListActions } = this.props;
+      const { taskListActions } = this.props;
 
       actions.loading();
+      actions.resetTaskActions();
 
       if (nextProps.routeParams.taskListIdentifier != null) {
         taskListActions.getTaskListById(
@@ -199,10 +202,19 @@ class Home extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { actions } = this.props;
+
+    actions.resetTaskActions();
+  }
+
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
-      routeParams: { tabName },
+      actions,
+      routeParams: { tabName, taskListIdentifier },
     } = this.props;
+
+    actions.getTaskStatsForList(taskListIdentifier);
 
     if (tabName === TaskListTabName.COMPLETE) {
       this.refreshCompleteTasks(cumulativeFlag, withLoader);

@@ -42,7 +42,6 @@ const TaskView = ({
   groupedTasks,
   routeParams,
   refreshTab,
-  listStats,
   isFetchingMoreTasks,
   defaultGroupName,
   canEditGroups = true,
@@ -50,6 +49,7 @@ const TaskView = ({
   dragAndDropDisabled = false,
   listNameVisible = false,
   navigateToTab,
+  taskCounters,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -162,18 +162,6 @@ const TaskView = ({
     }
   };
 
-  const completedTaskCount = listStats?.find?.(
-    ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
-      metricName === 'Completed_TaskList_Count' &&
-      metricTaskListIdentifier === taskListIdentifier,
-  )?.metricValue;
-
-  const openTaskCount = listStats?.find?.(
-    ({ metricName, taskListIdentifier: metricTaskListIdentifier }) =>
-      metricName === 'Incomplete_TaskList_Count' &&
-      metricTaskListIdentifier === taskListIdentifier,
-  )?.metricValue;
-
   const filteredGroupsWithTasks = !searchValue
     ? groupedTasks
     : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
@@ -217,8 +205,8 @@ const TaskView = ({
         selectedTab={selectedTab}
         showMembers={showMembers}
         taskList={taskList}
-        openTasksAmount={openTaskCount}
-        completedTasksAmount={completedTaskCount}
+        openTasksAmount={taskCounters.incomplete}
+        completedTasksAmount={taskCounters.complete}
         onSearchChange={setSearchValue}
         searchValue={searchValue}
       />
@@ -231,7 +219,7 @@ const TaskView = ({
           toggleCompleteTask={toggleTaskCompletedStatus}
           tasks={filteredCompletedTasks}
           isFetchingData={isCompletedTasksFetching}
-          summaryTasksCount={completedTaskCount}
+          summaryTasksCount={taskCounters.complete}
           showMoreTasks={() => refreshTab(false, true)}
           isFetchingMoreTasks={isFetchingMoreTasks}
           updateDueDate={updateDueDate}
@@ -292,7 +280,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = store => ({
-  listStats: store.taskListState?.taskListStats?.stats,
   currentUser: store.userState.userProfile,
   taskGroupList: store.taskGroupList,
   isFetchingTasks: store.taskState.isFetching,
@@ -301,6 +288,7 @@ const mapStateToProps = store => ({
   completedTasks: store.taskState.completedTasks,
   groupedTasks: groupTasksSelector(store.taskState.tasks),
   isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
+  taskCounters: store.taskState.taskCounters,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

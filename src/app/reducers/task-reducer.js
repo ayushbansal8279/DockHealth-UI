@@ -55,6 +55,8 @@ import {
   UPDATE_TASK_WORKFLOW_STATUS,
   UPDATED_SUBTASK_ORDER,
   GET_MORE_TASKS_REQUEST,
+  TASK_COUNTERS_SUCCESS,
+  RESET_TASK_COUNTERS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -77,6 +79,7 @@ const initialState = {
   addingNewTask: false,
   taskCountStats: null,
   isFetchingMoreTasks: false,
+  taskCounters: {},
 };
 
 const getMainTaskId = ({ parentTaskIdentifier, taskIdentifier }) =>
@@ -302,6 +305,19 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         completedTasks: [],
         isCompletedTasksFetching: true,
+      };
+
+    case RESET_TASK_COUNTERS:
+      return {
+        ...state,
+        taskCounters: {},
+      };
+
+    case TASK_COUNTERS_SUCCESS:
+      return {
+        ...state,
+        taskCounters: action.payload,
+        completedTasksCounter: action.payload.completedTasksCounter,
       };
 
     case CLEAR_TASKS_SEARCH:

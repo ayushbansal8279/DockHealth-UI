@@ -1102,3 +1102,31 @@ export function reassignTask(taskIdentifier, userId, listIdentifier) {
         throw error;
       });
 }
+
+const processTaskCountersSuccess = (data, dispatch) => {
+  const payload = {
+    incomplete: data.find(
+      ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
+    )?.metricValue,
+    complete: data.find(
+      ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
+    )?.metricValue,
+  };
+  dispatch({ type: ActionTypes.TASK_COUNTERS_SUCCESS, payload });
+};
+
+export const getTaskStatsForList = taskListIdentifier => dispatch => {
+  return TaskApi.getTaskStatsForList(taskListIdentifier).then(data => {
+    processTaskCountersSuccess(data, dispatch);
+  });
+};
+
+export const getTaskStatsForUser = userIdentifier => dispatch => {
+  return TaskApi.getTaskStatsForUser(userIdentifier).then(data => {
+    processTaskCountersSuccess(data, dispatch);
+  });
+};
+
+export const resetTaskActions = () => ({
+  type: ActionTypes.RESET_TASK_COUNTERS,
+});
