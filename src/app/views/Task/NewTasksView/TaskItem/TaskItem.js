@@ -225,12 +225,7 @@ const TaskItem = ({
           )}
           {patient && `${patient.firstName} ${patient.lastName}`}
         </TaskItemCell>
-        <TaskItemCell
-          width="110px"
-          paddingLeft="smallPlus"
-          paddingRight="tiny"
-          style={{ paddingTop: '0px' }}
-        >
+        <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
           <TaskWorkflowStatus
             task={task}
             isCompletedGroup={isCompletedGroup}
@@ -241,9 +236,7 @@ const TaskItem = ({
               <TaskItemStatus workflowStatus={workflowStatus} />
             )}
             {task.status !== 'COMPLETE' && !workflowStatus && (
-              <AddPlaceholder style={{ marginTop: '20px' }}>
-                + Add Status
-              </AddPlaceholder>
+              <AddPlaceholder>+ Add Status</AddPlaceholder>
             )}
           </TaskWorkflowStatus>
         </TaskItemCell>

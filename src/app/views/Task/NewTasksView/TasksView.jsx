@@ -259,7 +259,6 @@ const TaskView = ({
           reassignTasksToAnotherGroup={reassignTasksToAnotherGroup}
           reassignTask={reassignTask}
           taskListIdentifier={taskListIdentifier}
-          tasksCount={openedTasks?.length}
           isFetchingData={
             (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
             (isFetchingTasks && openedTasks?.length === 0)

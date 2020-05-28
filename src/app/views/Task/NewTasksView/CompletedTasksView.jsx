@@ -23,11 +23,14 @@ const CompletedTasksView = ({
   listNameVisible,
   isSearchApplied,
 }) => {
-  const renderContent = () => {
-    if (isSearchApplied && tasks.length === 0) return <EmptySearchResult />;
+  const renderEmptyState = () => {
+    if (isSearchApplied) return <EmptySearchResult />;
 
-    if (tasks?.length > 0)
-      return (
+    return <>Empty list</>;
+  };
+  return (
+    <TasksViewLoader isFetchingData={isFetchingData}>
+      {tasks?.length > 0 ? (
         <TaskGroupsContainer>
           <DragDropContext onDragEnd={() => {}}>
             <TasksGroup
@@ -51,14 +54,9 @@ const CompletedTasksView = ({
             />
           </DragDropContext>
         </TaskGroupsContainer>
-      );
-
-    return <>Empty list</>;
-  };
-
-  return (
-    <TasksViewLoader isFetchingData={isFetchingData}>
-      {renderContent()}
+      ) : (
+        renderEmptyState()
+      )}
     </TasksViewLoader>
   );
 };
