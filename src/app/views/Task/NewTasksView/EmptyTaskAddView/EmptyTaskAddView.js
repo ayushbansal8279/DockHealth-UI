@@ -4,7 +4,7 @@ import Spacing from 'components/common/Spacing';
 import EmptyListWrapper from './styled';
 import { AddTaskInputWrapper } from '../styled';
 
-const EmptyTasksView = ({ quickAddTask }) => {
+const EmptyTaskAddView = ({ quickAddTask }) => {
   return (
     <EmptyListWrapper>
       <MontserratTypography variant="h3" weight="400" color="inherit">
@@ -24,4 +24,4 @@ const EmptyTasksView = ({ quickAddTask }) => {
   );
 };
 
-export default EmptyTasksView;
+export default EmptyTaskAddView;

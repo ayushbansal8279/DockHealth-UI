@@ -174,7 +174,7 @@ const TaskView = ({
       metricTaskListIdentifier === taskListIdentifier,
   )?.metricValue;
 
-  const filteredGroups = !searchValue
+  const filteredGroupsWithTasks = !searchValue
     ? groupedTasks
     : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
         const filteredTasks = groupedTasks[
@@ -182,8 +182,19 @@ const TaskView = ({
         ].filter(({ description }) =>
           description.toLowerCase().includes(searchValue.toLowerCase()),
         );
+
+        if (filteredTasks.length === 0) return groupObject;
+
         return { ...groupObject, [currentKey]: filteredTasks };
       }, {});
+
+  const filteredGroupsList = !searchValue
+    ? groupList
+    : groupList.filter(
+        ({ taskGroupIdentifier, groupType }) =>
+          Object.keys(filteredGroupsWithTasks).includes(taskGroupIdentifier) ||
+          Object.keys(filteredGroupsWithTasks).includes(groupType),
+      );
 
   const filteredCompletedTasks = !searchValue
     ? completedTasks
@@ -225,6 +236,7 @@ const TaskView = ({
           isFetchingMoreTasks={isFetchingMoreTasks}
           updateDueDate={updateDueDate}
           listNameVisible={listNameVisible}
+          isSearchApplied={!!searchValue}
         />
       ) : (
         <OpenedTasksView
@@ -235,13 +247,13 @@ const TaskView = ({
           currentUser={currentUser}
           toggleCompleteTask={toggleTaskCompletedStatus}
           storeAsCurrentTask={storeAsCurrentTask}
-          groupedTasks={filteredGroups}
+          groupedTasks={filteredGroupsWithTasks}
           toggleSingleTaskPriority={toggleSingleTaskPriority}
           editGroupName={editGroupName}
           quickAddTask={quickAddTask}
           openDeleteConfirmationModal={openDeleteConfirmationModal}
           changeGroupsOrder={changeGroupsOrder}
-          groupList={groupList}
+          groupList={filteredGroupsList}
           reorderTasksInGroup={reorderTasksInGroup}
           reorderSubtasksForTask={reorderSubtasksForTask}
           reassignTasksToAnotherGroup={reassignTasksToAnotherGroup}
@@ -260,6 +272,7 @@ const TaskView = ({
           quickAddTaskVisible={quickAddTaskVisible}
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
+          isSearchApplied={!!searchValue}
         />
       )}
       <NewTaskDrawer

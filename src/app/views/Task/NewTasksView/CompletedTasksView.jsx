@@ -4,6 +4,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
 import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
+import EmptySearchResult from './EmptySearchResult/EmptySearchResult';
 
 const CompletedTasksView = ({
   tasks,
@@ -20,10 +21,13 @@ const CompletedTasksView = ({
   updateDueDate,
   dragAndDropDisabled,
   listNameVisible,
+  isSearchApplied,
 }) => {
-  return (
-    <TasksViewLoader isFetchingData={isFetchingData}>
-      {tasks?.length > 0 && (
+  const renderContent = () => {
+    if (isSearchApplied && tasks.length === 0) return <EmptySearchResult />;
+
+    if (tasks?.length > 0)
+      return (
         <TaskGroupsContainer>
           <DragDropContext onDragEnd={() => {}}>
             <TasksGroup
@@ -47,7 +51,14 @@ const CompletedTasksView = ({
             />
           </DragDropContext>
         </TaskGroupsContainer>
-      )}
+      );
+
+    return <>Empty list</>;
+  };
+
+  return (
+    <TasksViewLoader isFetchingData={isFetchingData}>
+      {renderContent()}
     </TasksViewLoader>
   );
 };
