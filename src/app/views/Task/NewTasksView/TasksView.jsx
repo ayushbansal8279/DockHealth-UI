@@ -208,7 +208,7 @@ const TaskView = ({
         isSpecialList={isSpecialList}
         members={members}
         membersNotInTaskList={membersNotInTaskList}
-        onSelectTab={tabName => navigateToTab(tabName)}
+        onSelectTab={navigateToTab}
         printData={{
           openedTasks,
           completedTasks,

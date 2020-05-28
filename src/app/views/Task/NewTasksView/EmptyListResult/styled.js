@@ -9,5 +9,6 @@ export const EmptySearchResultContainer = styled.div`
 
 export const EmptySearchResultImage = styled.img`
   display: block;
-  padding: ${spacing.huge} 0;
+  padding-top: ${spacing.giga};
+  padding-bottom: ${spacing.huge};
 `;

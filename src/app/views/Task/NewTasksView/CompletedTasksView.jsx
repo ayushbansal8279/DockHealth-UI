@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import EmptyListImage from 'img/empty-list';
 
 import { TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
 import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
-import EmptySearchResult from './EmptySearchResult/EmptySearchResult';
+import EmptyListResult from './EmptyListResult/EmptyListResult';
+import { getRandomEmptySearchResultImage } from './EmptyListResult/helpers';
 
 const CompletedTasksView = ({
   tasks,
@@ -23,10 +25,23 @@ const CompletedTasksView = ({
   listNameVisible,
   isSearchApplied,
 }) => {
-  const renderEmptyState = () => {
-    if (isSearchApplied) return <EmptySearchResult />;
+  const [emptySearchResultImage] = useState(getRandomEmptySearchResultImage());
 
-    return <>Empty list</>;
+  const renderEmptyState = () => {
+    if (isSearchApplied)
+      return (
+        <EmptyListResult
+          imageSrc={emptySearchResultImage}
+          text="No results were found for your search"
+        />
+      );
+
+    return (
+      <EmptyListResult
+        imageSrc={EmptyListImage}
+        text="This list has no tasks"
+      />
+    );
   };
   return (
     <TasksViewLoader isFetchingData={isFetchingData}>
