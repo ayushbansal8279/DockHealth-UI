@@ -7,6 +7,8 @@ import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as ModalActions from 'modal/actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
+
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
@@ -50,6 +52,8 @@ const TaskView = ({
   dragAndDropDisabled = false,
   listNameVisible = false,
   navigateToTab,
+  megaFilter,
+  megaFilterActions,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -74,6 +78,8 @@ const TaskView = ({
   } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
+  const { filters, selectedFilters } = megaFilter;
+  const { selectFiltersForMegaFilter } = megaFilterActions;
 
   const handleTabsNavigation = routeParameters => {
     switch (routeParameters.tabName) {
@@ -221,6 +227,9 @@ const TaskView = ({
         completedTasksAmount={completedTaskCount}
         onSearchChange={setSearchValue}
         searchValue={searchValue}
+        filters={filters}
+        selectFiltersForMegaFilter={selectFiltersForMegaFilter}
+        selectedFilters={selectedFilters}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
@@ -289,6 +298,7 @@ const mapDispatchToProps = dispatch => ({
   taskActions: bindActionCreators(TaskActions, dispatch),
   taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
+  megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
 });
 
 const mapStateToProps = store => ({
@@ -301,6 +311,7 @@ const mapStateToProps = store => ({
   completedTasks: store.taskState.completedTasks,
   groupedTasks: groupTasksSelector(store.taskState.tasks),
   isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
+  megaFilter: store.megaFilter,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

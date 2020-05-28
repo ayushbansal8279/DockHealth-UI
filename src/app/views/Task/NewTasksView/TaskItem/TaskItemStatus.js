@@ -12,6 +12,8 @@ const getWorkflowStatusConfig = workflowStatus => {
       return { label: 'Waiting', color: palette.coolGrey2 };
     case 'ON_HOLD':
       return { label: 'On hold', color: palette.mediumGrey };
+    case 'NO_STATUS':
+      return { label: 'No status' };
     default:
       return {};
   }
@@ -22,7 +24,7 @@ const TaskItemStatus = ({ workflowStatus }) => {
   return (
     <>
       <StatusBar color={color} />
-      <div>{label}</div>
+      <span>{label}</span>
     </>
   );
 };

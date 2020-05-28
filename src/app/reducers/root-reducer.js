@@ -5,6 +5,7 @@ import AuthBaseReducer from './auth-base-reducer';
 import FormReducer from './form-reducer';
 import HeaderReducer from './header-reducer';
 import InvitationReducer from './invitation-reducer';
+import MegaFilterReducer from './mega-filter-reducer';
 import notification from './notification-reducer';
 import OnboardingProgressReducer from './onboarding-progress-reducer';
 import OrganizationReducer from './organization-reducer';
@@ -37,4 +38,5 @@ export default combineReducers({
   modal: ModalReducer,
   taskGroupList: TaskGroupListReducer,
   alertChip: AlertChipReducer,
+  megaFilter: MegaFilterReducer,
 });

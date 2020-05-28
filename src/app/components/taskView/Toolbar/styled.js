@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-// LEGACY STYLES - REFACTOR REQUIREDg
+// LEGACY STYLES - REFACTOR REQUIRED
 export const ToolbarLabel = withStyles({
   root: {
     color: palette.coolGrey1,
