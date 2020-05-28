@@ -52,8 +52,7 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
     }
   });
 
-  // return optionsOrder?.map(option => assignedFilters[option]);
-  return assignedFilters;
+  return optionsOrder?.map(option => assignedFilters[option]);
 };
 
 const INITIAL_STATE = {

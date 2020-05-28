@@ -90,6 +90,7 @@ const FilterColumn = ({
                 <FilterRow
                   {...row}
                   isSelected
+                  itemKey={filterValue}
                   onClick={() => onClick(filterValue)}
                 />
               );
@@ -102,9 +103,16 @@ const FilterColumn = ({
             onClick={() => onClick(UNASSIGNED)}
           />
         )}
-        {filteredList?.map(item => (
-          <FilterRow {...item} onClick={() => onClick(item.key)} />
-        ))}
+        {filteredList?.map(item => {
+          const itemKey = item.key;
+          return (
+            <FilterRow
+              {...item}
+              itemKey={itemKey}
+              onClick={() => onClick(itemKey)}
+            />
+          );
+        })}
       </FilterList>
     </StyledFilter>
   );

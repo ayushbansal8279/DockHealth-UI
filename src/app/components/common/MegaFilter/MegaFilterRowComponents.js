@@ -33,14 +33,16 @@ const PeopleFilterRowComponent = ({
   </StyledFilterRow>
 );
 
-const StatusFilterRowComponent = ({ displayValue, isSelected, onClick }) => (
-  <StyledFilterRow isSelected={isSelected} onClick={onClick}>
-    <TaskItemStatus workflowStatus={displayValue} />
-  </StyledFilterRow>
-);
+const StatusFilterRowComponent = ({ itemKey, isSelected, onClick }) => {
+  return (
+    <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+      <TaskItemStatus workflowStatus={itemKey} />
+    </StyledFilterRow>
+  );
+};
 
 const PriorityFilterRowComponent = ({
-  displayValue: priority,
+  itemKey: priority,
   isSelected,
   onClick,
 }) => {

@@ -11,7 +11,7 @@ const URLS = {
       `task/group/assignTasksToTaskGroup/${groupIdentifier}`,
   },
   megaFilter: {
-    getFilters: listId => `task/filterOptionsForTaskList/${listId}`,
+    getFilters: listId => `task/filter/filterOptionsForTaskList/${listId}`,
   },
 };
 
