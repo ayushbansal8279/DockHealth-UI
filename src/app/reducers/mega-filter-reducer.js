@@ -6,7 +6,6 @@ const PRIORITY_FILTERS = ['priorityOptions'];
 const STATUS_FILTERS = ['workflowStatusOptions'];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const STANDARD_FILTERS = ['labels', 'dueDateOptions', 'patients'];
-const IS_AVAILABLE_UNASSIGNED = ['assignedTo', 'patients'];
 
 const getLabel = label =>
   label
@@ -42,12 +41,6 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
         label: getLabel(key),
         list: assignedFilters[key],
         type: 'STANDARD',
-      };
-    }
-    if (IS_AVAILABLE_UNASSIGNED.includes(key)) {
-      assignedFilters[key] = {
-        ...assignedFilters[key],
-        isAvailableUnassgined: true,
       };
     }
   });
