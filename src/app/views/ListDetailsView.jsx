@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -30,7 +31,26 @@ class Home extends Component {
       taskListActions,
       invitationActions,
       taskLabelActions: { getTaskListLabels },
+      setHeader,
     } = this.props;
+
+    setHeader({
+      layout: [
+        {
+          key: 'generic-header',
+          component: null,
+        },
+      ],
+    });
+
+    let tabStatus = 'INCOMPLETE';
+
+    if (routeParams.tabName === TaskListTabName.COMPLETE) {
+      actions.loadingCompletedTasks();
+      tabStatus = 'COMPLETE';
+    } else {
+      actions.loading();
+    }
 
     await invitationActions.findPendingTaskListsForUser();
 
@@ -41,15 +61,8 @@ class Home extends Component {
         invitationActions.acceptInviteToTaskList(tasklist),
       ),
     );
-    let tabStatus = 'INCOMPLETE';
 
     this.refreshAccessToken(user);
-    if (routeParams.tabName === TaskListTabName.COMPLETE) {
-      actions.loadingCompletedTasks();
-      tabStatus = 'COMPLETE';
-    } else {
-      actions.loading();
-    }
 
     const { filterBy, listName } = routeParams;
     let { taskStatus } = routeParams;
@@ -548,6 +561,7 @@ const mapDispatchToProps = dispatch => ({
   taskLabelActions: bindActionCreators(TaskLabelActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
+  setHeader: setHeaderRaw(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -21,6 +21,7 @@ import {
   ToolbarLabel,
   ToolbarBottomGrid,
   HeaderActionButtonsGrid,
+  SearchWrapper,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -235,12 +236,15 @@ export default ({
           />
         </Button>
         <Spacing horizontal={5} />
-        <Search
-          noBackground
-          initialValue=""
-          value={searchValue}
-          onChange={event => onSearchChange(event?.target?.value)}
-        />
+        <SearchWrapper>
+          <Search
+            fullWidth
+            noBackground
+            initialValue=""
+            value={searchValue}
+            onChange={event => onSearchChange(event?.target?.value)}
+          />
+        </SearchWrapper>
       </ToolbarBottomGrid>
     </PageContentHeader>
   );

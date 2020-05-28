@@ -50,3 +50,7 @@ export const ToolbarBottomGrid = styled(Grid)`
   padding-bottom: ${spacing.regular};
   background-color: ${palette.coolGrey4};
 `;
+
+export const SearchWrapper = styled.div`
+  width: 374px;
+`;

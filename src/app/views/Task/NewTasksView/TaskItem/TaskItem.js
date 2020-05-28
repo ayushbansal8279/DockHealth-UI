@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router';
 import moment from 'moment';
 import { isEmpty, pick } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -152,10 +153,9 @@ const TaskItem = ({
     workflowStatus,
     completedDt,
     completedBy,
-    taskList,
+    taskList: { listName, taskListIdentifier },
   } = task;
 
-  const listName = taskList?.listName;
   const [isHovered, setIsHoverd] = useState(false);
 
   const isCompleted = task.status === 'COMPLETE';
@@ -305,7 +305,11 @@ const TaskItem = ({
             color={listName ? palette.brightBlue : palette.coolGrey2}
             width="168px"
           >
-            {listName || 'Unfiled'}
+            {listName && taskListIdentifier ? (
+              <Link to={`/tasks/${taskListIdentifier}`}>{listName}</Link>
+            ) : (
+              'Unfiled'
+            )}
           </TaskItemCell>
         )}
       </TaskItemContainer>
