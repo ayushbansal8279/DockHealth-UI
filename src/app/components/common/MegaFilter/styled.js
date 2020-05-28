@@ -58,42 +58,41 @@ export const FilterList = styled.div`
 `;
 
 export const FilterSelected = styled.div`
-  padding: 0 0 6px; // per design
   border-bottom: 1px solid ${palette.blueGrey};
-  margin-bottom: ${spacing.smallExtraPlus};
+  margin-bottom: ${spacing.tiny};
 `;
 
 export const FilterLabel = styled.label`
   color: ${palette.lightGrey};
   font-weight: ${fontSizes.bold};
   font-size: ${fontSizes.small};
+  text-transform: uppercase;
 `;
 
 export const StyledFilterRow = styled.div`
-  background-color: ${props =>
-    props.isSelected ? palette.darkBlue : palette.blueGrey};
-  width: 208px; // per design
-  height: 30px; // per design
-  font-size: ${fontSizes.small};
-  margin-bottom: ${spacing.small};
-  border-radius: 4px;
-  cursor: pointer;
-  color: ${props => (props.isSelected ? 'white' : 'black')};
+  position: relative;
   display: flex;
   align-items: center;
+  width: 208px; // per design
+  height: 30px; // per design
+  background-color: ${props =>
+    props.isSelected ? palette.darkBlue : palette.blueGrey};
+  color: ${props => (props.isSelected ? 'white' : 'black')};
+  border-radius: 4px;
+  font-size: ${fontSizes.small};
+  cursor: pointer;
+  margin-bottom: ${spacing.tiny};
   padding: 0 ${spacing.small};
-  position: relative;
 
   & > span {
-    margin-left: 8px;
+    margin-left: ${spacing.small};
   }
 
-  &:hover {
-    ${props =>
-      !props.isSelected &&
-      `background-color: ${palette.lightGrey};
-       color: white;`};
-  }
+  ${props =>
+    !props.isSelected &&
+    `&:hover {
+      background-color: ${palette.lightGrey};
+      color: white;}`};
 `;
 
 export const StyledUnassignedIcon = styled.img`
