@@ -6,7 +6,7 @@ import spacing from 'styles/spacing';
 export const GlobalChipWrapper = styled.div`
   position: fixed;
   top: 6.5rem;
-  left: 50%;
+  left: ${props => (props.isSideBarAlert ? '75%' : '50%')};
   z-index: 1000;
   width: auto;
   height: auto;

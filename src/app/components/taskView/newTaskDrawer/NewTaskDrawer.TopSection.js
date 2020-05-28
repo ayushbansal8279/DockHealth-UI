@@ -1,14 +1,12 @@
 import React from 'react';
 import { Grid, IconButton, ListItem, Divider } from '@material-ui/core';
-import { Close, MoreHoriz, CheckCircleOutline } from '@material-ui/icons';
+import { Close, MoreHoriz } from '@material-ui/icons';
 import Spacing from 'components/common/Spacing';
 import InputPopover from './NewTaskDrawer.InputPopover';
 import {
   FiledInSelect,
   StyledList,
   HorizontalLabel,
-  AutoSaveContainer,
-  AutoSaveChip,
   CondensedH4,
   styleFirstRow,
 } from './NewTaskDrawer.Styled';
@@ -64,7 +62,6 @@ const TopSection = ({
   onAddSubTask,
   isInbox,
   closeTaskDrawer,
-  autoSaveVisible,
   modalActions,
 }) => {
   const { setValue, register } = formMethods;
@@ -91,13 +88,6 @@ const TopSection = ({
 
   return (
     <>
-      <AutoSaveContainer visible={autoSaveVisible}>
-        <AutoSaveChip
-          variant="outlined"
-          icon={<CheckCircleOutline style={{ color: palette.white }} />}
-          label="SAVED"
-        />
-      </AutoSaveContainer>
       <Grid
         container
         item

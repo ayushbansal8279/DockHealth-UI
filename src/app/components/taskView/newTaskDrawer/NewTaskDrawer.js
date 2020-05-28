@@ -62,7 +62,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,
-    autoSaveVisible,
     setAutoSaveVisible,
   } = initializeTaskDrawerHooks({ members, isInbox, taskList });
 
@@ -109,7 +108,6 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
               onAddSubTask={onAddSubTask}
               isInbox={isInbox}
               closeTaskDrawer={closeTaskDrawer}
-              autoSaveVisible={autoSaveVisible}
               setAutoSaveVisible={setAutoSaveVisible}
               modalActions={modalActions}
             />

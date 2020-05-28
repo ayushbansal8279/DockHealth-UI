@@ -21,7 +21,8 @@ import { closeDrawer } from 'actions/task-drawer-actions';
 import { getTaskListLabels } from 'actions/task-label-actions';
 import Member from 'components/members/Member';
 
-import useBoolean from 'hooks/useBoolean';
+import * as AlertActions from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import { MemberAdornmentContainer } from './NewTaskDrawer.Styled';
 import { getFormattedLabels } from './NewTaskDrawer.Utilities';
 import { onButtonClicked } from '../../../helpers/ga-event-helper';
@@ -144,12 +145,10 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
 
   const { setValue, watch, clearError } = formMethods;
 
-  const [
-    autoSaveVisible,
-    setAutoSaveVisible,
-    unsetAutoSaveVisible,
-  ] = useBoolean(false);
-  const [autoSaveTimeoutId, setAutoSaveTimeoutId] = useState(null);
+  const dispatch = useDispatch();
+  const setAutoSaveVisible = () => {
+    dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
+  };
 
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const selectedTaskParent = useMemo(
@@ -166,14 +165,6 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
 
   const { top } =
     document.querySelector('#content-container')?.getBoundingClientRect() || {};
-
-  const clearAutoSaveTimeout = useCallback(() => {
-    clearTimeout(autoSaveTimeoutId);
-    setAutoSaveTimeoutId(null);
-    unsetAutoSaveVisible();
-  }, [autoSaveTimeoutId, unsetAutoSaveVisible]);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (taskDrawerOpen) {
@@ -211,22 +202,9 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
     );
 
-    clearAutoSaveTimeout();
     // Exhaustive deps are disabled due to selectedTask referential inequality triggerting useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, setValue, taskDrawerOpen]);
-
-  useEffect(() => {
-    if (autoSaveVisible) {
-      clearTimeout(autoSaveTimeoutId);
-      setAutoSaveTimeoutId(
-        setTimeout(() => {
-          clearAutoSaveTimeout();
-        }, 1000),
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoSaveVisible]);
 
   useMount(() => {
     getAllPatients()(dispatch);
@@ -431,11 +409,7 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     handleAssignedToSelect,
     handlePatientSelect,
     handleTaskDescriptionUpdate,
-    autoSaveTimeoutId,
-    autoSaveVisible,
-    setAutoSaveTimeoutId,
     setAutoSaveVisible,
-    unsetAutoSaveVisible,
   };
 };
 
