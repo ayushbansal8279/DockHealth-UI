@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cloneElement } from 'react';
 import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
@@ -70,6 +70,16 @@ export const FilterRowUnassigned = ({ hasAvatars, isSelected, onClick }) => (
     <span>Unassigned</span>
   </StyledFilterRow>
 );
+
+export const AssignedOrUnassignedRow = ({
+  children,
+  isUnassigned,
+  ...rest
+}) => {
+  if (isUnassigned) return <FilterRowUnassigned {...rest} />;
+
+  return cloneElement(children, { ...rest });
+};
 
 export const getFilterRowComponent = type => {
   switch (type) {

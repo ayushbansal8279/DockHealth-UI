@@ -5,7 +5,7 @@ import RotatableChevron from 'components/common/RotatableChevron';
 import palette from 'styles/palette';
 import {
   getFilterRowComponent,
-  FilterRowUnassigned,
+  AssignedOrUnassignedRow,
 } from './MegaFilterRowComponents';
 
 import {
@@ -34,13 +34,12 @@ const FilterButton = ({ isOpen, openPopover }) => (
 );
 
 const FilterColumn = ({
-  filter: { label, list, type, isAvailableUnassgined, hasAvatars, key },
+  filter: { label, list, type, hasAvatars, key },
   selectedFilters,
   onSelectFilters,
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
-  const isSelectedUnassigned = columnSelectedFilters?.includes(UNASSIGNED);
   const filteredList = list?.filter(
     ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
   );
@@ -76,41 +75,33 @@ const FilterColumn = ({
                 ({ key: fieldKey }) => fieldKey === filterValue,
               );
 
-              if (filterValue === UNASSIGNED) {
-                return (
-                  <FilterRowUnassigned
-                    hasAvatars={hasAvatars}
-                    isSelected
-                    onClick={() => onClick(UNASSIGNED)}
-                  />
-                );
-              }
-
               return (
-                <FilterRow
-                  {...row}
+                <AssignedOrUnassignedRow
                   isSelected
-                  itemKey={filterValue}
                   onClick={() => onClick(filterValue)}
-                />
+                  isUnassigned={filterValue === UNASSIGNED}
+                  hasAvatars={hasAvatars}
+                  itemKey={filterValue}
+                  {...row}
+                >
+                  <FilterRow />
+                </AssignedOrUnassignedRow>
               );
             })}
           </FilterSelected>
         )}
-        {isAvailableUnassgined && !isSelectedUnassigned && (
-          <FilterRowUnassigned
-            hasAvatars={hasAvatars}
-            onClick={() => onClick(UNASSIGNED)}
-          />
-        )}
         {filteredList?.map(item => {
           const itemKey = item.key;
           return (
-            <FilterRow
-              {...item}
+            <AssignedOrUnassignedRow
               itemKey={itemKey}
+              isUnassigned={itemKey === UNASSIGNED}
+              hasAvatars={hasAvatars}
               onClick={() => onClick(itemKey)}
-            />
+              {...item}
+            >
+              <FilterRow />
+            </AssignedOrUnassignedRow>
           );
         })}
       </FilterList>
