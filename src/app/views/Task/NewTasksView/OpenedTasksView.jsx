@@ -34,13 +34,11 @@ const OpenedTasksView = ({
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup,
   reassignTask,
-  taskListIdentifier,
   isFetchingData,
   members,
   updateDueDate,
   updateWorkflowStatus,
   defaultGroupName,
-  canEditGroups,
   quickAddTaskVisible,
   dragAndDropDisabled,
   listNameVisible,
@@ -93,7 +91,6 @@ const OpenedTasksView = ({
                 groupList,
                 tasks,
                 reorderTasksInGroup,
-                taskListIdentifier,
                 reassignTasksToAnotherGroup,
                 updateTaskGroups,
                 setDraggableId,
@@ -131,7 +128,6 @@ const OpenedTasksView = ({
                   }
                   reorderSubtasksForTask={reorderSubtasksForTask}
                   reassignTask={reassignTask}
-                  taskListIdentifier={taskListIdentifier}
                   draggedId={draggedId}
                   toggleCompleteTask={toggleCompleteTask}
                   members={members}
@@ -144,7 +140,7 @@ const OpenedTasksView = ({
               ),
             )}
           </DragDropContext>
-          {canEditGroups && !isSearchApplied && (
+          {!!createTaskGroupList && !isSearchApplied && (
             <GroupNameSection
               onEnterClick={groupName => createTaskGroupList(groupName)}
               placeholder={messages.placeholder}

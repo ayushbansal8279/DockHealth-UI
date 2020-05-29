@@ -48,7 +48,6 @@ const TasksGroup = ({
   moveGroupDown,
   reorderSubtasksForTask,
   reassignTask,
-  taskListIdentifier,
   tasks,
   isCompletedGroup,
   draggedId,
@@ -161,7 +160,6 @@ const TasksGroup = ({
           storeAsCurrentTask={storeAsCurrentTask}
           toggleTaskPriority={toggleTaskPriority}
           draggedId={draggedId}
-          taskListIdentifier={taskListIdentifier}
           reorderSubtasksForTask={reorderSubtasksForTask}
           isCompletedGroup={isCompletedGroup}
           members={members}

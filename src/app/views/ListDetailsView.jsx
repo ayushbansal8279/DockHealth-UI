@@ -10,6 +10,7 @@ import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as TaskLabelActions from 'actions/task-label-actions';
+import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import { hashHistory } from 'react-router';
@@ -19,10 +20,6 @@ const ASSIGNED_BY_ME = 'assigned_by_me';
 const ASSIGNED_TO_ME = 'assigned_to_me';
 
 class Home extends Component {
-  state = {
-    preSelectedTask: null,
-  };
-
   async componentDidMount() {
     const {
       user,
@@ -91,40 +88,6 @@ class Home extends Component {
       await Promise.all([
         taskAction(routeParams.taskListIdentifier, sortBy, filterBy, tabStatus),
       ]);
-
-      const {
-        tasks,
-        completedTasks,
-        routeParams: { taskIdentifier: preSelectedTaskIdentifier },
-      } = this.props;
-
-      const incompleteTasksWithSubtasks = [
-        ...tasks,
-        ...tasks.flatMap(({ subtasks }) => subtasks ?? []),
-      ];
-
-      const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
-        ({ taskIdentifier }) => preSelectedTaskIdentifier === taskIdentifier,
-      );
-
-      if (incompletePreselectedTask) {
-        this.setState({
-          preSelectedTask: incompletePreselectedTask,
-        });
-      } else {
-        const completeTasksWithSubtasks = [
-          ...completedTasks,
-          ...completedTasks.flatMap(({ subtasks }) => subtasks ?? []),
-        ];
-
-        const completePreselectedTask = completeTasksWithSubtasks.find(
-          ({ taskIdentifier }) => preSelectedTaskIdentifier === taskIdentifier,
-        );
-
-        this.setState({
-          preSelectedTask: completePreselectedTask ?? null,
-        });
-      }
     };
 
     getTaskListLabels({ taskListIdentifier: routeParams.taskListIdentifier });
@@ -471,19 +434,8 @@ class Home extends Component {
 
   render() {
     const {
-      userIdentifier,
+      taskGroupActions,
       members,
-      completedTasks,
-      isFetching,
-      isCompletedTasksFetching,
-      showingCompletedTasks,
-      selectedTaskId,
-      actions: {
-        markAsUnread,
-        refreshTask,
-        toggleTaskPriority,
-        addTaskComment,
-      },
       tasklists,
       taskListMembers,
       pendingTasklists,
@@ -492,55 +444,23 @@ class Home extends Component {
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
-    const { preSelectedTask } = this.state;
-
     const allTaskLists = [...(pendingTasklists ?? []), ...(tasklists ?? [])];
 
     const loadedTasklist = allTaskLists.find(
       t => t.taskListIdentifier === taskListIdentifier,
     );
 
-    let isMultiList = false;
-    let title = loadedTasklist?.listName ?? 'Loading...';
-
-    const hasTitle = Boolean(loadedTasklist?.listName);
-
-    if (listName === ASSIGNED_BY_ME) {
-      title = 'Assigned by me';
-      isMultiList = true;
-    } else if (listName === ASSIGNED_TO_ME) {
-      title = 'Assigned to me';
-      isMultiList = true;
-    }
-
     const isSpecialList = [ASSIGNED_BY_ME, ASSIGNED_TO_ME].includes(listName);
 
     const taskViewProps = {
-      userIdentifier,
       members,
-      completedTasks,
-      isFetching,
-      isCompletedTasksFetching,
-      showingCompletedTasks,
-      selectedTaskId,
-      markAsUnread,
-      refreshTask,
-      addTaskComment,
-      toggleTaskPriority: (task, priority) =>
-        toggleTaskPriority(task, userIdentifier, priority),
-      onFilter: this.handleFilterChange,
       refreshTab: this.refreshTab,
       downloadPDF: this.downloadPDF,
       navigateToTab: this.navigateToTab,
-      hasTitle,
-      title,
+      createListGroup: groupName =>
+        taskGroupActions.createTaskGroupList({ groupName, taskListIdentifier }),
       isSpecialList,
-      showToolbar: true,
       taskList: loadedTasklist || undefined,
-      isMultiList,
-      taskListIdentifier,
-      listName,
-      preSelectedTask,
       taskListMembers,
       membersNotInTaskList,
       routeParams,
@@ -571,6 +491,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   taskLabelActions: bindActionCreators(TaskLabelActions, dispatch),
+  taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   setHeader: setHeaderRaw(dispatch),

@@ -44,12 +44,12 @@ const TaskView = ({
   refreshTab,
   isFetchingMoreTasks,
   defaultGroupName,
-  canEditGroups = true,
   quickAddTaskVisible = true,
   dragAndDropDisabled = false,
   listNameVisible = false,
   navigateToTab,
   taskCounters,
+  createListGroup,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -67,11 +67,7 @@ const TaskView = ({
     updateWorkflowStatus,
     storeAsCurrentTask,
   } = taskActions;
-  const {
-    createTaskGroupList,
-    editTasksGroupName,
-    deleteTasksGroup,
-  } = taskGroupActions;
+  const { editTasksGroupName, deleteTasksGroup } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
 
@@ -267,9 +263,7 @@ const TaskView = ({
       ) : (
         <OpenedTasksView
           openDrawer={openDrawer}
-          createTaskGroupList={groupName =>
-            createTaskGroupList({ groupName, taskListIdentifier })
-          }
+          createTaskGroupList={createListGroup}
           currentUser={currentUser}
           toggleCompleteTask={toggleTaskCompletedStatus}
           storeAsCurrentTask={storeAsCurrentTask}
@@ -284,7 +278,6 @@ const TaskView = ({
           reorderSubtasksForTask={handleReorderSubtasksForTask}
           reassignTasksToAnotherGroup={handleReassignTasksToAnotherGroup}
           reassignTask={handleReassignTask}
-          taskListIdentifier={taskListIdentifier}
           isFetchingData={
             (taskGroupList.isFetching && !taskGroupList.listInitialized) ||
             (isFetchingTasks && openedTasks?.length === 0)
@@ -293,7 +286,6 @@ const TaskView = ({
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}
           defaultGroupName={defaultGroupName}
-          canEditGroups={canEditGroups}
           quickAddTaskVisible={quickAddTaskVisible}
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}

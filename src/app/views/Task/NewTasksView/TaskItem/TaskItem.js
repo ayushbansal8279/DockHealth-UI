@@ -401,7 +401,6 @@ const Task = ({
   isDragging,
   draggableProvided,
   groupId,
-  taskListIdentifier,
   members,
   currentUser,
   reassignTask,
@@ -449,7 +448,6 @@ const Task = ({
           isOpen={isOpen}
           isFullView={isFullView}
           groupId={groupId}
-          taskListIdentifier={taskListIdentifier}
           parentTaskId={task.taskIdentifier}
           currentUser={currentUser}
           members={members}
