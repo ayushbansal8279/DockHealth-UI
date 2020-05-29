@@ -225,6 +225,8 @@ export default ({
           filters={filters}
           selectedFilters={selectedFilters}
           onSelectFilters={selectFiltersForMegaFilter}
+          taskList={taskList}
+          taskStatus={selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'}
           activeItemsAmount={
             selectedTab === 'incomplete'
               ? openTasksAmount

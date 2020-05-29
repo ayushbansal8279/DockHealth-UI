@@ -678,3 +678,19 @@ export const reassignTasksToAnotherGroup = (
     .catch(error => {
       throw error;
     });
+
+export function getFilteredTasksForList(
+  taskListIdentifier,
+  status = 'INCOMPLETE',
+  selectedFilters,
+) {
+  return axios
+    .post(
+      `task/filter/filterTasksByCriteria/${taskListIdentifier}?status=${status}`,
+      selectedFilters,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}

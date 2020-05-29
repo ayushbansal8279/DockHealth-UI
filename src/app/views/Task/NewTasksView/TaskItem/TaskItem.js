@@ -153,8 +153,11 @@ const TaskItem = ({
     workflowStatus,
     completedDt,
     completedBy,
-    taskList: { listName, taskListIdentifier },
+    taskList,
   } = task;
+
+  const listName = taskList?.listName;
+  const taskListIdentifier = taskList?.taskListIdentifier;
 
   const [isHovered, setIsHoverd] = useState(false);
 

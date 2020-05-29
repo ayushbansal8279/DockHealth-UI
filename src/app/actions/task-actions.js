@@ -1102,3 +1102,24 @@ export function reassignTask(taskIdentifier, userId, listIdentifier) {
         throw error;
       });
 }
+
+export function getFilteredTasksForList(
+  taskListIdentifier,
+  status,
+  selectedFilters,
+) {
+  const action =
+    status === 'INCOMPLETE'
+      ? ActionTypes.GET_TASKS_SUCCESS
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+
+  return dispatch =>
+    TaskApi.getFilteredTasksForList(taskListIdentifier, status, selectedFilters)
+      .then(tasks => {
+        dispatch({ type: action, tasks });
+        return tasks;
+      })
+      .catch(error => {
+        throw error;
+      });
+}

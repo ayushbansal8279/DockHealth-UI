@@ -98,3 +98,11 @@ export const StyledFilterRow = styled.div`
 export const StyledUnassignedIcon = styled.img`
   width: 25px; // per design
 `;
+
+export const ClearButton = styled.button`
+  display: flex;
+  margin-left: ${spacing.huge};
+  color: ${palette.brightBlue};
+  font-size: ${fontSizes.small};
+  cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
+`;

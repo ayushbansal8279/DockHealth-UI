@@ -1,8 +1,11 @@
 import React, { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { isEmpty, isNil } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
+import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
+import { getFilteredTasksForList } from 'actions/task-actions';
 import {
   getFilterRowComponent,
   AssignedOrUnassignedRow,
@@ -20,6 +23,7 @@ import {
   FilterList,
   FilterLabel,
   FilterSelected,
+  ClearButton,
 } from './styled';
 
 const UNASSIGNED = 'UNASSIGNED';
@@ -37,6 +41,9 @@ const FilterColumn = ({
   filter: { label, list, type, hasAvatars, key },
   selectedFilters,
   onSelectFilters,
+  taskList,
+  taskStatus,
+  filters,
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
@@ -44,24 +51,40 @@ const FilterColumn = ({
     ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
   );
 
+  const dispatch = useDispatch();
+
   const onClick = value => {
+    let updatedFilters = selectedFilters;
     if (columnSelectedFilters) {
       if (columnSelectedFilters?.includes(value)) {
-        onSelectFilters({
+        updatedFilters = {
           ...selectedFilters,
           [key]: columnSelectedFilters.filter(
             filterValue => filterValue !== value,
           ),
-        });
+        };
       } else {
-        onSelectFilters({
+        updatedFilters = {
           ...selectedFilters,
           [key]: [...columnSelectedFilters, value],
-        });
+        };
       }
     } else {
-      onSelectFilters({ ...selectedFilters, [key]: [value] });
+      updatedFilters = { ...selectedFilters, [key]: [value] };
     }
+
+    const taskFilters = {};
+    Object.keys(updatedFilters).forEach(keyIndex => {
+      const { filterKey } = filters[keyIndex];
+      taskFilters[filterKey] = updatedFilters[keyIndex];
+    });
+
+    onSelectFilters(updatedFilters);
+    getFilteredTasksForList(
+      taskList?.taskListIdentifier,
+      taskStatus,
+      taskFilters,
+    )(dispatch);
   };
 
   return (
@@ -115,9 +138,22 @@ const MegaFilter = ({
   activeItemsAmount,
   selectedFilters,
   onSelectFilters,
+  taskList,
+  taskStatus,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterReference = useRef(null);
+
+  const dispatch = useDispatch();
+
+  const clearFilters = () => {
+    onSelectFilters([]);
+    getFilteredTasksForList(
+      taskList?.taskListIdentifier,
+      taskStatus,
+      {},
+    )(dispatch);
+  };
 
   return (
     <>
@@ -145,6 +181,10 @@ const MegaFilter = ({
               </MegaFilterBoldedLabel>
               {activeItemsAmount} ITEMS
             </MegaFilterLabel>
+            <Spacing horizontal={4} />
+            <ClearButton type="button" onClick={clearFilters}>
+              CLEAR
+            </ClearButton>
           </MegaFilterHeader>
           <Filters>
             {Object.keys(filters)?.map(key => (
@@ -153,6 +193,9 @@ const MegaFilter = ({
                 filter={{ ...filters[key], key }}
                 selectedFilters={selectedFilters}
                 onSelectFilters={onSelectFilters}
+                taskList={taskList}
+                taskStatus={taskStatus}
+                filters={filters}
               />
             ))}
           </Filters>

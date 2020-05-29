@@ -22,6 +22,7 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
         label: getLabel(key),
         list: assignedFilters[key],
         type: 'PEOPLE',
+        filterKey: key,
         hasAvatars: true,
       };
     } else if (PRIORITY_FILTERS.includes(key)) {
@@ -29,18 +30,21 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
         label: getLabel(key),
         list: assignedFilters[key],
         type: 'PRIORITY',
+        filterKey: key,
       };
     } else if (STATUS_FILTERS.includes(key)) {
       assignedFilters[key] = {
         label: getLabel(key),
         list: assignedFilters[key],
         type: 'STATUS',
+        filterKey: key,
       };
     } else {
       assignedFilters[key] = {
         label: getLabel(key),
         list: assignedFilters[key],
         type: 'STANDARD',
+        filterKey: key,
       };
     }
   });
