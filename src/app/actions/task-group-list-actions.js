@@ -94,6 +94,7 @@ export function sortTaskGroups(taskGroupIdentifiers, listId) {
     TaskGroupListApi.sortGroups(payload)
       .then(() => {
         dispatch(getTaskGroupList(listId, false));
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(() => {
         dispatch({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });

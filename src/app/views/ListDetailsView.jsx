@@ -14,6 +14,7 @@ import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
+import { arrayMove } from 'helpers/sorting-helper';
 import { hashHistory } from 'react-router';
 import TasksView from './Task/NewTasksView/TasksView';
 
@@ -481,6 +482,19 @@ class Home extends Component {
     }
   };
 
+  changeGroupsOrder = (oldTaskIndex, newTaskIndex, groupList) => {
+    const {
+      taskGroupActions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+    if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
+      return;
+    }
+    const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
+    const newGroupList = arrayMove(groupIdsList, oldTaskIndex, newTaskIndex);
+    taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
+  };
+
   render() {
     const {
       taskGroupActions,
@@ -511,6 +525,7 @@ class Home extends Component {
       quickAddTask: this.quickAddTask,
       deleteGroup: this.deleteGroup,
       editGroupName: this.editGroupName,
+      changeGroupsOrder: this.changeGroupsOrder,
       isSpecialList,
       taskList: loadedTasklist || undefined,
       taskListMembers,

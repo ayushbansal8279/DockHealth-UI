@@ -116,6 +116,7 @@ const OpenedTasksView = ({
                   deleteGroup={deleteGroup}
                   moveGroupUp={() => changeGroupsOrder(i, i - 1)}
                   moveGroupDown={() => changeGroupsOrder(i, i + 1)}
+                  changingGroupOrderDisabled={!changeGroupsOrder}
                   isFirstGroup={i === 0}
                   isLastGroup={i === groupList?.length - 1}
                   tasks={

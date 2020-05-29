@@ -60,6 +60,7 @@ const TasksGroup = ({
   updateWorkflowStatus,
   dragAndDropDisabled,
   listNameVisible,
+  changingGroupOrderDisabled,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -120,20 +121,22 @@ const TasksGroup = ({
             deleteGroup={() => deleteGroup(groupId)}
           />
         )}
-        <div>
-          <ViewIcon
-            alt="slim-view"
-            src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
-            onClick={() => setViewType(SLIM_VIEW)}
-            isHidden={!isOpen || tasks?.length === 0}
-          />
-          <ViewIcon
-            alt="full-view"
-            src={isFullView ? FullViewActiveIcon : FullViewIcon}
-            onClick={() => setViewType(FULL_VIEW)}
-            isHidden={!isOpen || tasks?.length === 0}
-          />
-        </div>
+        {!changingGroupOrderDisabled && (
+          <div>
+            <ViewIcon
+              alt="slim-view"
+              src={isFullView ? SlimViewIcon : SlimViewActiveIcon}
+              onClick={() => setViewType(SLIM_VIEW)}
+              isHidden={!isOpen || tasks?.length === 0}
+            />
+            <ViewIcon
+              alt="full-view"
+              src={isFullView ? FullViewActiveIcon : FullViewIcon}
+              onClick={() => setViewType(FULL_VIEW)}
+              isHidden={!isOpen || tasks?.length === 0}
+            />
+          </div>
+        )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && (

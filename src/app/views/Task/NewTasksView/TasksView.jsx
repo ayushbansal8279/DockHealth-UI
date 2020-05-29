@@ -5,13 +5,11 @@ import { bindActionCreators } from 'redux';
 
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
-import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as ModalActions from 'modal/actions';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { groupTasksSelector } from 'selectors/task-group-list-selectors';
-import { arrayMove } from 'helpers/sorting-helper';
 
 import { TaskViewContainer } from './styled';
 import OpenedTasksView from './OpenedTasksView';
@@ -30,7 +28,6 @@ const TaskView = ({
   showMembers = true,
   taskDrawerActions,
   taskActions,
-  taskGroupActions,
   modalActions,
   taskGroupList,
   taskList = {},
@@ -52,6 +49,7 @@ const TaskView = ({
   quickAddTask,
   deleteGroup,
   editGroupName,
+  changeGroupsOrder,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -68,7 +66,6 @@ const TaskView = ({
     updateWorkflowStatus,
     storeAsCurrentTask,
   } = taskActions;
-  const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
 
   const handleTabsNavigation = routeParameters => {
@@ -90,15 +87,6 @@ const TaskView = ({
       task,
       task.priority === Priority.High ? Priority.Low : Priority.High,
     );
-  };
-
-  const changeGroupsOrder = (oldTaskIndex, newTaskIndex) => {
-    if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
-      return;
-    }
-    const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
-    const newGroupList = arrayMove(groupIdsList, oldTaskIndex, newTaskIndex);
-    taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
   };
 
   const invokeToggleCompleteAction = task => {
@@ -238,7 +226,9 @@ const TaskView = ({
           editGroupName={editGroupName}
           quickAddTask={quickAddTask}
           deleteGroup={deleteGroup}
-          changeGroupsOrder={changeGroupsOrder}
+          changeGroupsOrder={(oldTaskIndex, newTaskIndex) =>
+            changeGroupsOrder(oldTaskIndex, newTaskIndex, groupList)
+          }
           groupList={filteredGroupsList}
           reorderTasksInGroup={handleReorderTasksInGroup}
           reorderSubtasksForTask={handleReorderSubtasksForTask}
@@ -265,7 +255,6 @@ const TaskView = ({
 const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
-  taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
