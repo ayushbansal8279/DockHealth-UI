@@ -145,6 +145,44 @@ const TaskView = ({
       .catch(() => refreshTab());
   };
 
+  const handleReassignTask = (taskIdentifier, userId) => {
+    reassignTask(taskIdentifier, userId)
+      .then(() => refreshTab())
+      .catch(() => refreshTab());
+  };
+
+  const handleReassignTasksToAnotherGroup = (
+    taskIdentifiers,
+    taskGroupIdentifier,
+  ) => {
+    reassignTasksToAnotherGroup(taskIdentifiers, taskGroupIdentifier)
+      .then(() => refreshTab())
+      .catch(() => refreshTab());
+  };
+
+  const handleReorderSubtasksForTask = (
+    orderedSubtaskIds,
+    taskGroupIdentifier,
+    parentTaskIdentifier,
+  ) => {
+    reorderSubtasksForTask(
+      orderedSubtaskIds,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    )
+      .then(() => refreshTab())
+      .catch(() => refreshTab());
+  };
+
+  const handleReorderTasksInGroup = (
+    newSourceTasksOrder,
+    taskGroupIdentifier,
+  ) => {
+    reorderTasksInGroup(newSourceTasksOrder, taskGroupIdentifier)
+      .then(() => refreshTab())
+      .catch(() => refreshTab());
+  };
+
   const toggleTaskCompletedStatus = task => {
     const hasIncompletedSubtasks = task.subtasks.find(
       subtask => subtask.status === 'INCOMPLETE',
@@ -242,10 +280,10 @@ const TaskView = ({
           openDeleteConfirmationModal={openDeleteConfirmationModal}
           changeGroupsOrder={changeGroupsOrder}
           groupList={filteredGroupsList}
-          reorderTasksInGroup={reorderTasksInGroup}
-          reorderSubtasksForTask={reorderSubtasksForTask}
-          reassignTasksToAnotherGroup={reassignTasksToAnotherGroup}
-          reassignTask={reassignTask}
+          reorderTasksInGroup={handleReorderTasksInGroup}
+          reorderSubtasksForTask={handleReorderSubtasksForTask}
+          reassignTasksToAnotherGroup={handleReassignTasksToAnotherGroup}
+          reassignTask={handleReassignTask}
           taskListIdentifier={taskListIdentifier}
           isFetchingData={
             (taskGroupList.isFetching && !taskGroupList.listInitialized) ||

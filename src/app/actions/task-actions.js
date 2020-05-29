@@ -1024,22 +1024,11 @@ export const updateTaskManually = task => dispatch => {
   dispatch({ type: ActionTypes.UPDATE_TASK_SUCCESS, task });
 };
 
-export const reorderTasksInGroup = (
-  orderedTaskIds,
-  taskGroupIdentifier,
-  taskListIdentifier,
-  parentTaskIdentifier,
-) => {
+export const reorderTasksInGroup = (orderedTaskIds, taskGroupIdentifier) => {
   return dispatch => {
-    TaskApi.reorderTasksInGroup(
-      orderedTaskIds,
-      taskGroupIdentifier,
-      parentTaskIdentifier,
-    )
+    return TaskApi.reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier)
       .then(() => {
-        dispatch(
-          getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
-        );
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(error => {
         throw error;
@@ -1050,20 +1039,16 @@ export const reorderTasksInGroup = (
 export const reorderSubtasksForTask = (
   orderedSubtaskIds,
   taskGroupIdentifier,
-  taskListIdentifier,
   parentTaskIdentifier,
 ) => {
   return dispatch => {
-    TaskApi.reorderSubtasksForTask(
+    return TaskApi.reorderSubtasksForTask(
       orderedSubtaskIds,
       taskGroupIdentifier,
       parentTaskIdentifier,
     )
-      // eslint-disable-next-line sonarjs/no-identical-functions
       .then(() => {
-        dispatch(
-          getListTasks(taskListIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
-        );
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(error => {
         throw error;
@@ -1074,14 +1059,14 @@ export const reorderSubtasksForTask = (
 export function reassignTasksToAnotherGroup(
   taskIdentifiers,
   taskGroupIdentifier,
-  listIdentifier,
 ) {
   return dispatch => {
-    TaskApi.reassignTasksToAnotherGroup(taskGroupIdentifier, taskIdentifiers)
+    return TaskApi.reassignTasksToAnotherGroup(
+      taskGroupIdentifier,
+      taskIdentifiers,
+    )
       .then(() => {
-        dispatch(
-          getListTasks(listIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
-        );
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(error => {
         throw error;
@@ -1089,14 +1074,11 @@ export function reassignTasksToAnotherGroup(
   };
 }
 
-export function reassignTask(taskIdentifier, userId, listIdentifier) {
+export function reassignTask(taskIdentifier, userId) {
   return dispatch =>
     TaskApi.assignOrReassignTask({ taskIdentifier }, userId)
-      // eslint-disable-next-line sonarjs/no-identical-functions
       .then(() => {
-        dispatch(
-          getListTasks(listIdentifier, 'CREATED_DT', null, 'INCOMPLETE'),
-        );
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch(error => {
         throw error;

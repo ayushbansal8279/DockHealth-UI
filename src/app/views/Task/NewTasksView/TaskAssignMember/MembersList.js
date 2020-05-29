@@ -21,8 +21,7 @@ const MembersList = ({
   currentUser,
   isFetchingMembers = false,
 }) => {
-  const { taskIdentifier, taskList } = task;
-  const taskListIdentifier = taskList?.taskListIdentifier;
+  const { taskIdentifier } = task;
 
   const membersWithoutCurrentUser = members?.filter(
     ({ userId }) => userId !== currentUser.userId,
@@ -42,11 +41,7 @@ const MembersList = ({
         <AssignToMeBox>
           <MemberRow
             onClick={() => {
-              reassignTask(
-                taskIdentifier,
-                currentUser.userId,
-                taskListIdentifier,
-              );
+              reassignTask(taskIdentifier, currentUser.userId);
             }}
           >
             <Member member={currentUser} size={30} />
@@ -60,11 +55,7 @@ const MembersList = ({
                 <MemberRow
                   key={member.userId}
                   onClick={() => {
-                    reassignTask(
-                      taskIdentifier,
-                      member.userId,
-                      taskListIdentifier,
-                    );
+                    reassignTask(taskIdentifier, member.userId);
                   }}
                 >
                   <Member member={member} size={30} />

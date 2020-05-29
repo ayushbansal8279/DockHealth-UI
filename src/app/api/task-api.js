@@ -442,7 +442,6 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
       `task/addOrUpdateTaskAssignment/${taskIdentifier}?assignedToUserId=${assignedToUserIdentifier}`,
     )
     .then(response => {
-      toggleAlert('Task assigned successfully', 'success');
       return response.data;
     })
     .catch(error => {
