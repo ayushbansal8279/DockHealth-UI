@@ -432,6 +432,23 @@ class Home extends Component {
     );
   };
 
+  quickAddTask = (taskName, taskGroupIdentifier, reloadGroups = false) => {
+    const {
+      actions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    if (taskName) {
+      const payload = {
+        description: taskName,
+        taskListIdentifier,
+        taskGroupIdentifier,
+      };
+
+      actions.saveTask(payload, reloadGroups);
+    }
+  };
+
   render() {
     const {
       taskGroupActions,
@@ -459,6 +476,7 @@ class Home extends Component {
       navigateToTab: this.navigateToTab,
       createListGroup: groupName =>
         taskGroupActions.createTaskGroupList({ groupName, taskListIdentifier }),
+      quickAddTask: this.quickAddTask,
       isSpecialList,
       taskList: loadedTasklist || undefined,
       taskListMembers,

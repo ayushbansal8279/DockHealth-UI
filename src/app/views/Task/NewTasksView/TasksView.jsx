@@ -44,12 +44,12 @@ const TaskView = ({
   refreshTab,
   isFetchingMoreTasks,
   defaultGroupName,
-  quickAddTaskVisible = true,
   dragAndDropDisabled = false,
   listNameVisible = false,
   navigateToTab,
   taskCounters,
   createListGroup,
+  quickAddTask,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -57,7 +57,6 @@ const TaskView = ({
   const { openDrawer } = taskDrawerActions;
   const {
     toggleTaskPriority,
-    saveTask,
     reorderTasksInGroup,
     reorderSubtasksForTask,
     toggleCompleteTask,
@@ -84,22 +83,6 @@ const TaskView = ({
   };
 
   handleTabsNavigation(routeParams);
-
-  const quickAddTask = (
-    taskName,
-    taskGroupIdentifier,
-    reloadGroups = false,
-  ) => {
-    if (taskName) {
-      const payload = {
-        description: taskName,
-        taskListIdentifier,
-        taskGroupIdentifier,
-      };
-
-      saveTask(payload, reloadGroups);
-    }
-  };
 
   const toggleSingleTaskPriority = task => {
     toggleTaskPriority(
@@ -286,7 +269,6 @@ const TaskView = ({
           updateDueDate={updateDueDate}
           updateWorkflowStatus={updateWorkflowStatus}
           defaultGroupName={defaultGroupName}
-          quickAddTaskVisible={quickAddTaskVisible}
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
           isSearchApplied={!!searchValue}

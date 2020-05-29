@@ -181,7 +181,6 @@ class PersonDetailsView extends PureComponent {
             {...viewProps}
             defaultGroupName="All tasks"
             showMembers={false}
-            quickAddTaskVisible={false}
           />
         </>
       )

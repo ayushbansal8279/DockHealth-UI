@@ -58,7 +58,6 @@ const TasksGroup = ({
   members,
   updateDueDate,
   updateWorkflowStatus,
-  quickAddTaskVisible = true,
   dragAndDropDisabled,
   listNameVisible,
 }) => {
@@ -137,7 +136,7 @@ const TasksGroup = ({
         </div>
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
-        {quickAddTaskVisible && (
+        {!!quickAddTask && (
           <AddTaskInputWrapper>
             <input
               name="newTask"

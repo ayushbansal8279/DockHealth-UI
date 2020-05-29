@@ -39,7 +39,6 @@ const OpenedTasksView = ({
   updateDueDate,
   updateWorkflowStatus,
   defaultGroupName,
-  quickAddTaskVisible,
   dragAndDropDisabled,
   listNameVisible,
   isSearchApplied,
@@ -61,7 +60,7 @@ const OpenedTasksView = ({
         />
       );
 
-    if (quickAddTaskVisible)
+    if (quickAddTask)
       return (
         <EmptyTaskAddView
           quickAddTask={groupName => quickAddTask(groupName, null, true)}
@@ -133,7 +132,6 @@ const OpenedTasksView = ({
                   members={members}
                   updateDueDate={updateDueDate}
                   updateWorkflowStatus={updateWorkflowStatus}
-                  quickAddTaskVisible={quickAddTaskVisible}
                   dragAndDropDisabled={dragAndDropDisabled}
                   listNameVisible={listNameVisible}
                 />
