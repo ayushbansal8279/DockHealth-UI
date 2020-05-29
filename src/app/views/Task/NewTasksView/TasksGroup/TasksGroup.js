@@ -88,7 +88,7 @@ const TasksGroup = ({
             initialValue={groupName}
             onEnterClick={newGroupName => editGroupName(newGroupName, groupId)}
             closeOnEnter
-            disabled={isDefaultGroup || isCompletedGroup}
+            disabled={isDefaultGroup || isCompletedGroup || !editGroupName}
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>

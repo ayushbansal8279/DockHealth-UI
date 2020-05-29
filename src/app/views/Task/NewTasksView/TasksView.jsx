@@ -51,6 +51,7 @@ const TaskView = ({
   createListGroup,
   quickAddTask,
   deleteGroup,
+  editGroupName,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -67,7 +68,6 @@ const TaskView = ({
     updateWorkflowStatus,
     storeAsCurrentTask,
   } = taskActions;
-  const { editTasksGroupName } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
 
@@ -90,12 +90,6 @@ const TaskView = ({
       task,
       task.priority === Priority.High ? Priority.Low : Priority.High,
     );
-  };
-
-  const editGroupName = (newGroupName, groupId) => {
-    if (newGroupName) {
-      editTasksGroupName(taskListIdentifier, groupId, newGroupName);
-    }
   };
 
   const changeGroupsOrder = (oldTaskIndex, newTaskIndex) => {

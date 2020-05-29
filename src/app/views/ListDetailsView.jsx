@@ -466,6 +466,21 @@ class Home extends Component {
     modalActions.openModal('DeleteGroup', modalProps);
   };
 
+  editGroupName = (newGroupName, groupId) => {
+    const {
+      taskGroupActions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    if (newGroupName) {
+      taskGroupActions.editTasksGroupName(
+        taskListIdentifier,
+        groupId,
+        newGroupName,
+      );
+    }
+  };
+
   render() {
     const {
       taskGroupActions,
@@ -495,6 +510,7 @@ class Home extends Component {
         taskGroupActions.createTaskGroupList({ groupName, taskListIdentifier }),
       quickAddTask: this.quickAddTask,
       deleteGroup: this.deleteGroup,
+      editGroupName: this.editGroupName,
       isSpecialList,
       taskList: loadedTasklist || undefined,
       taskListMembers,
