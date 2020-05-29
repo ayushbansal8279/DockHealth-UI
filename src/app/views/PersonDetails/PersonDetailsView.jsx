@@ -71,7 +71,8 @@ class PersonDetailsView extends PureComponent {
     const { taskActions, routeParams } = this.props;
 
     if (nextProps.routeParams.userIdentifier !== routeParams.userIdentifier) {
-      taskActions.resetTaskActions();
+      taskActions.resetTaskCounters();
+      taskActions.getTaskStatsForUser(nextProps.routeParams.userIdentifier);
     }
 
     if (
@@ -90,7 +91,7 @@ class PersonDetailsView extends PureComponent {
   componentWillUnmount() {
     const { taskActions } = this.props;
 
-    taskActions.resetTaskActions();
+    taskActions.resetTaskCounters();
   }
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {

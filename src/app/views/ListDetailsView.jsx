@@ -131,7 +131,8 @@ class Home extends Component {
       const { taskListActions } = this.props;
 
       actions.loading();
-      actions.resetTaskActions();
+      actions.resetTaskCounters();
+      actions.getTaskStatsForList(nextProps.routeParams.taskListIdentifier);
 
       if (nextProps.routeParams.taskListIdentifier != null) {
         taskListActions.getTaskListById(
@@ -170,7 +171,7 @@ class Home extends Component {
   componentWillUnmount() {
     const { actions } = this.props;
 
-    actions.resetTaskActions();
+    actions.resetTaskCounters();
   }
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {

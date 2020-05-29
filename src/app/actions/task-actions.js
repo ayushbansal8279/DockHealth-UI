@@ -1109,6 +1109,6 @@ export const getTaskStatsForUser = userIdentifier => dispatch => {
   });
 };
 
-export const resetTaskActions = () => ({
+export const resetTaskCounters = () => ({
   type: ActionTypes.RESET_TASK_COUNTERS,
 });
