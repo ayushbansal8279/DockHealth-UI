@@ -41,7 +41,7 @@ import {
   renderMemberoptionWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
-const NewTaskDrawer = ({ taskList, isInbox, modalActions }) => {
+const NewTaskDrawer = ({ isInbox, modalActions }) => {
   const {
     taskDrawerOpen,
     top,
@@ -65,7 +65,7 @@ const NewTaskDrawer = ({ taskList, isInbox, modalActions }) => {
     autoSaveVisible,
     setAutoSaveVisible,
     members,
-  } = initializeTaskDrawerHooks({ isInbox, taskList });
+  } = initializeTaskDrawerHooks({ isInbox });
 
   const { handleSubmit, setValue, watch } = formMethods;
 
@@ -107,7 +107,7 @@ const NewTaskDrawer = ({ taskList, isInbox, modalActions }) => {
               formMethods={formMethods}
               taskLists={taskLists}
               selectedTask={selectedTask}
-              taskList={taskList}
+              taskList={selectedTask?.taskList}
               reFileTask={reFileTask}
               onDelete={onDelete}
               onDuplicate={onDuplicate}
@@ -264,7 +264,7 @@ const NewTaskDrawer = ({ taskList, isInbox, modalActions }) => {
                 closePopover={closeInvitePopover}
                 initialValue={assignedToInputValue}
                 setParentFormValue={setValue}
-                taskList={taskList}
+                taskList={selectedTask?.taskList}
               />
             </Grid>
             <Grid item xs={6} style={styleLeftColumn}>
@@ -382,7 +382,7 @@ const NewTaskDrawer = ({ taskList, isInbox, modalActions }) => {
           formMethods={formMethods}
           taskLists={taskLists}
           selectedTask={selectedTask}
-          taskList={taskList}
+          taskList={selectedTask?.taskList}
           isInbox={isInbox}
           closeTaskDrawer={closeTaskDrawer}
         />

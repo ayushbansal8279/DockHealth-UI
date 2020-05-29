@@ -109,7 +109,7 @@ const onSubmit = ({
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const initializeTaskDrawerHooks = ({ isInbox, taskList }) => {
+const initializeTaskDrawerHooks = ({ isInbox }) => {
   const {
     patients,
     taskDrawerOpen,
@@ -139,7 +139,7 @@ const initializeTaskDrawerHooks = ({ isInbox, taskList }) => {
   const [members, setMembers] = useState(null);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
 
-  const listIdentifierForTask = selectedTask?.taskList?.taskListIdentifier;
+  const taskList = selectedTask?.taskList;
 
   const [isSaving, setSaving] = useState(false);
 
@@ -182,9 +182,9 @@ const initializeTaskDrawerHooks = ({ isInbox, taskList }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (listIdentifierForTask) {
+    if (taskList?.taskListIdentifier) {
       setIsFetchingMembers(true);
-      TaskListApi.getMembersByTaskListId(listIdentifierForTask, 'ALL')
+      TaskListApi.getMembersByTaskListId(taskList.taskListIdentifier, 'ALL')
         .then(data => {
           setMembers(data);
           setIsFetchingMembers(false);
@@ -194,7 +194,7 @@ const initializeTaskDrawerHooks = ({ isInbox, taskList }) => {
           throw error;
         });
     }
-  }, [listIdentifierForTask]);
+  }, [taskList]);
 
   useEffect(() => {
     if (taskDrawerOpen) {
