@@ -11,6 +11,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as TaskLabelActions from 'actions/task-label-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
+import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
 import { hashHistory } from 'react-router';
@@ -449,6 +450,22 @@ class Home extends Component {
     }
   };
 
+  deleteGroup = groupId => {
+    const {
+      modalActions,
+      taskGroupActions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    const modalProps = {
+      confirm: () => {
+        modalActions.closeModal();
+        taskGroupActions.deleteTasksGroup(groupId, taskListIdentifier);
+      },
+    };
+    modalActions.openModal('DeleteGroup', modalProps);
+  };
+
   render() {
     const {
       taskGroupActions,
@@ -477,6 +494,7 @@ class Home extends Component {
       createListGroup: groupName =>
         taskGroupActions.createTaskGroupList({ groupName, taskListIdentifier }),
       quickAddTask: this.quickAddTask,
+      deleteGroup: this.deleteGroup,
       isSpecialList,
       taskList: loadedTasklist || undefined,
       taskListMembers,
@@ -513,6 +531,7 @@ const mapDispatchToProps = dispatch => ({
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   setHeader: setHeaderRaw(dispatch),
+  modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

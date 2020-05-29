@@ -28,7 +28,7 @@ const OpenedTasksView = ({
   toggleSingleTaskPriority,
   editGroupName,
   quickAddTask,
-  openDeleteConfirmationModal,
+  deleteGroup,
   changeGroupsOrder,
   reorderTasksInGroup,
   reorderSubtasksForTask,
@@ -113,7 +113,7 @@ const OpenedTasksView = ({
                   toggleTaskPriority={toggleSingleTaskPriority}
                   editGroupName={editGroupName}
                   quickAddTask={quickAddTask}
-                  deleteGroup={openDeleteConfirmationModal}
+                  deleteGroup={deleteGroup}
                   moveGroupUp={() => changeGroupsOrder(i, i - 1)}
                   moveGroupDown={() => changeGroupsOrder(i, i + 1)}
                   isFirstGroup={i === 0}

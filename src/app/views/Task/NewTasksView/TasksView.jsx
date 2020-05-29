@@ -50,6 +50,7 @@ const TaskView = ({
   taskCounters,
   createListGroup,
   quickAddTask,
+  deleteGroup,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -66,7 +67,7 @@ const TaskView = ({
     updateWorkflowStatus,
     storeAsCurrentTask,
   } = taskActions;
-  const { editTasksGroupName, deleteTasksGroup } = taskGroupActions;
+  const { editTasksGroupName } = taskGroupActions;
   const { taskListIdentifier } = taskList;
   const { groupList } = taskGroupList;
 
@@ -89,18 +90,6 @@ const TaskView = ({
       task,
       task.priority === Priority.High ? Priority.Low : Priority.High,
     );
-  };
-
-  const deleteGroup = groupId => {
-    modalActions.closeModal();
-    deleteTasksGroup(groupId, taskListIdentifier);
-  };
-
-  const openDeleteConfirmationModal = groupId => {
-    const modalProps = {
-      confirm: () => deleteGroup(groupId),
-    };
-    modalActions.openModal('DeleteGroup', modalProps);
   };
 
   const editGroupName = (newGroupName, groupId) => {
@@ -254,7 +243,7 @@ const TaskView = ({
           toggleSingleTaskPriority={toggleSingleTaskPriority}
           editGroupName={editGroupName}
           quickAddTask={quickAddTask}
-          openDeleteConfirmationModal={openDeleteConfirmationModal}
+          deleteGroup={deleteGroup}
           changeGroupsOrder={changeGroupsOrder}
           groupList={filteredGroupsList}
           reorderTasksInGroup={handleReorderTasksInGroup}
