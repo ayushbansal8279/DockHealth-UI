@@ -50,6 +50,7 @@ const TaskView = ({
   deleteGroup,
   editGroupName,
   changeGroupsOrder,
+  showNotificationAction = true,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -196,6 +197,7 @@ const TaskView = ({
         openTasksAmount={taskCounters.incomplete}
         completedTasksAmount={taskCounters.complete}
         onSearchChange={setSearchValue}
+        showNotifications={showNotificationAction}
         searchValue={searchValue}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
