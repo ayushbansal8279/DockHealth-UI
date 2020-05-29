@@ -19,12 +19,12 @@ const getWorkflowStatusConfig = workflowStatus => {
   }
 };
 
-const TaskItemStatus = ({ workflowStatus }) => {
+const TaskItemStatus = ({ workflowStatus, labelWidth }) => {
   const { label, color } = getWorkflowStatusConfig(workflowStatus);
   return (
     <>
       <StatusBar color={color} />
-      <span>{label}</span>
+      <span style={{ width: labelWidth }}>{label}</span>
     </>
   );
 };

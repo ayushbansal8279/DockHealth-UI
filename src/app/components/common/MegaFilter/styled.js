@@ -106,3 +106,16 @@ export const ClearButton = styled.button`
   font-size: ${fontSizes.small};
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
 `;
+
+export const MemberOptionLabel = styled.span`
+  width: 150px;
+`;
+
+export const OptionLabel = styled.span`
+  width: 180px;
+`;
+
+export const OptionCount = styled.div`
+  margin-left: ${spacing.small};
+  color: ${palette.coolGrey2};
+`;

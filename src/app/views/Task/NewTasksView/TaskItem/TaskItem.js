@@ -236,7 +236,10 @@ const TaskItem = ({
           >
             {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
             {task.status !== 'COMPLETE' && workflowStatus && (
-              <TaskItemStatus workflowStatus={workflowStatus} />
+              <TaskItemStatus
+                workflowStatus={workflowStatus}
+                labelWidth="100px"
+              />
             )}
             {task.status !== 'COMPLETE' && !workflowStatus && (
               <AddPlaceholder>+ Add Status</AddPlaceholder>

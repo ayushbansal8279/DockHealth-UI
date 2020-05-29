@@ -3,7 +3,13 @@ import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
 import TaskItemStatus from 'views/Task/NewTasksView/TaskItem/TaskItemStatus';
-import { StyledFilterRow, StyledUnassignedIcon } from './styled';
+import {
+  StyledFilterRow,
+  StyledUnassignedIcon,
+  MemberOptionLabel,
+  OptionLabel,
+  OptionCount,
+} from './styled';
 
 const getPriorityConfig = priority => {
   switch (priority) {
@@ -23,26 +29,35 @@ const getPriorityConfig = priority => {
 
 const PeopleFilterRowComponent = ({
   displayValue,
+  taskCount,
   reference,
   isSelected,
   onClick,
 }) => (
   <StyledFilterRow isSelected={isSelected} onClick={onClick}>
     <Member member={reference} size={25} />
-    <span>{displayValue}</span>
+    <MemberOptionLabel>{displayValue}</MemberOptionLabel>
+    <OptionCount>{taskCount || '0'}</OptionCount>
   </StyledFilterRow>
 );
 
-const StatusFilterRowComponent = ({ itemKey, isSelected, onClick }) => {
+const StatusFilterRowComponent = ({
+  itemKey,
+  taskCount,
+  isSelected,
+  onClick,
+}) => {
   return (
     <StyledFilterRow isSelected={isSelected} onClick={onClick}>
-      <TaskItemStatus workflowStatus={itemKey} />
+      <TaskItemStatus workflowStatus={itemKey} labelWidth="180px" />
+      <OptionCount>{taskCount || '0'}</OptionCount>
     </StyledFilterRow>
   );
 };
 
 const PriorityFilterRowComponent = ({
   itemKey: priority,
+  taskCount,
   isSelected,
   onClick,
 }) => {
@@ -51,14 +66,21 @@ const PriorityFilterRowComponent = ({
   return (
     <StyledFilterRow isSelected={isSelected} onClick={onClick}>
       {IconComponent && <IconComponent />}
-      <span>{label}</span>
+      <OptionLabel>{label}</OptionLabel>
+      <OptionCount>{taskCount || '0'}</OptionCount>
     </StyledFilterRow>
   );
 };
 
-const StandardFilterRowComponent = ({ displayValue, isSelected, onClick }) => (
+const StandardFilterRowComponent = ({
+  displayValue,
+  taskCount,
+  isSelected,
+  onClick,
+}) => (
   <StyledFilterRow isSelected={isSelected} onClick={onClick}>
-    <span>{displayValue}</span>
+    <OptionLabel>{displayValue}</OptionLabel>
+    <OptionCount>{taskCount || '0'}</OptionCount>
   </StyledFilterRow>
 );
 
