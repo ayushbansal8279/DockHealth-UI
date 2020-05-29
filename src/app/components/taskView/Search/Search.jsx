@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import SearchClearIcon from 'img/search-clear.svg';
 import SearchHeadsupIcon from 'img/search-headsup.svg';
 
@@ -16,6 +16,8 @@ const Search = ({
   value,
   ...otherInputProps
 }) => {
+  const searchReference = useRef(null);
+
   const onClearClick = useCallback(
     event => {
       event.preventDefault();
@@ -27,12 +29,16 @@ const Search = ({
 
   return (
     <StyledTextField
+      ref={searchReference}
       onChange={onChange}
+      onFocus={() => {
+        searchReference.current.style.backgroundColor = 'white';
+      }}
       placeholder="Search"
       className={className}
       fullWidth={fullWidth}
       variant={variant}
-      noBackground={noBackground}
+      noBackground={!value && noBackground}
       InputProps={{
         startAdornment: (
           <StyledAdornment position="start" disablePointerEvents>
