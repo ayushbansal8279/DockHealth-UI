@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { RemoveCircleOutlineRounded } from '@material-ui/icons';
 import Member from 'components/members/Member';
 import MagnifierIcon from 'img/magnifier';
 import CubesLoader from 'components/common/CubesLoader';
@@ -51,6 +52,18 @@ const MembersList = ({
         {!isFetchingMembers ? (
           <MembersBox>
             <StyledMembersList>
+              <MemberRow
+                key="unassigned"
+                onClick={() => {
+                  reassignTask(taskIdentifier, null);
+                }}
+              >
+                <RemoveCircleOutlineRounded
+                  color="action"
+                  style={{ height: '30px', width: '30px' }}
+                />
+                <span>Unassigned</span>
+              </MemberRow>
               {filteredMembers?.map(member => (
                 <MemberRow
                   key={member.userId}
