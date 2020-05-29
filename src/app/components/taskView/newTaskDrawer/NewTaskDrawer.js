@@ -41,7 +41,7 @@ import {
   renderMemberoptionWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
-const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
+const NewTaskDrawer = ({ taskList, isInbox, modalActions }) => {
   const {
     taskDrawerOpen,
     top,
@@ -64,12 +64,17 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
     handleTaskDescriptionUpdate,
     autoSaveVisible,
     setAutoSaveVisible,
-  } = initializeTaskDrawerHooks({ members, isInbox, taskList });
+    members,
+  } = initializeTaskDrawerHooks({ isInbox, taskList });
 
   const { handleSubmit, setValue, watch } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
-  const formattedMembers = getFormattedMembers({ members, currentUser });
+  const formattedMembers = getFormattedMembers({
+    members,
+    isFetchingMembers: true,
+    currentUser,
+  });
 
   const dueDateValue = watch('dueDate');
   const dueTimeValue = watch('dueTime');

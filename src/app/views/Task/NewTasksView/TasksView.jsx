@@ -300,12 +300,7 @@ const TaskView = ({
           isSearchApplied={!!searchValue}
         />
       )}
-      <NewTaskDrawer
-        members={members}
-        membersNotInTaskList={membersNotInTaskList}
-        taskList={taskList}
-        modalActions={modalActions}
-      />
+      <NewTaskDrawer taskList={taskList} modalActions={modalActions} />
     </TaskViewContainer>
   );
 };

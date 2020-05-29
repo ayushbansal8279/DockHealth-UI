@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { getAllPatients } from 'actions/patient-actions';
+import * as TaskListApi from 'api/tasklist-api';
 import {
   saveTask,
   storeAsCurrentTask,
@@ -108,7 +109,7 @@ const onSubmit = ({
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
+const initializeTaskDrawerHooks = ({ isInbox, taskList }) => {
   const {
     patients,
     taskDrawerOpen,
@@ -134,6 +135,11 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
       : store.taskLabelState.requesting.listLabels,
     currentUser: store.userState.userProfile,
   }));
+
+  const [members, setMembers] = useState(null);
+  const [isFetchingMembers, setIsFetchingMembers] = useState(false);
+
+  const listIdentifierForTask = selectedTask?.taskList?.taskListIdentifier;
 
   const [isSaving, setSaving] = useState(false);
 
@@ -174,6 +180,21 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
   }, [autoSaveTimeoutId, unsetAutoSaveVisible]);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (listIdentifierForTask) {
+      setIsFetchingMembers(true);
+      TaskListApi.getMembersByTaskListId(listIdentifierForTask, 'ALL')
+        .then(data => {
+          setMembers(data);
+          setIsFetchingMembers(false);
+        })
+        .catch(error => {
+          setIsFetchingMembers(false);
+          throw error;
+        });
+    }
+  }, [listIdentifierForTask]);
 
   useEffect(() => {
     if (taskDrawerOpen) {
@@ -428,6 +449,8 @@ const initializeTaskDrawerHooks = ({ members, isInbox, taskList }) => {
     setAutoSaveTimeoutId,
     setAutoSaveVisible,
     unsetAutoSaveVisible,
+    members,
+    isFetchingMembers,
   };
 };
 
