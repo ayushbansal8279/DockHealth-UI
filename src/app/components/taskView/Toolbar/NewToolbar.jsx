@@ -15,6 +15,7 @@ import Search from 'components/taskView/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
 import { InviteMemberPopoverWithButton } from 'components/members/InviteMemberPopover';
 import Member from 'components/members/Member';
+import { showGlobalAlert } from 'alert/actions';
 import MorePopover from '../Toolbar.MorePopover';
 import {
   MoreMembersButtonContainer,
@@ -56,11 +57,12 @@ const useToggleNotifications = ({
         newNotificationStatus,
       )(dispatch);
       onNotificationsToggled(newNotificationStatus);
-      toggleAlert(
-        `Notifications are now ${
-          newNotificationStatus ? 'enabled' : 'disabled'
-        }`,
-        'success',
+      dispatch(
+        showGlobalAlert(
+          `Notifications are now ${
+            newNotificationStatus ? 'enabled' : 'disabled'
+          }`,
+        ),
       );
     } catch {
       showAlert({
