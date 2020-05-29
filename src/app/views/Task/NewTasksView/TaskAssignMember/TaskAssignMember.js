@@ -1,20 +1,10 @@
 import React, { useRef, useState } from 'react';
-import Member from 'components/members/Member';
-import MagnifierIcon from 'img/magnifier';
-import {
-  AssignToMeBox,
-  StyledPopover,
-  Input,
-  InputBox,
-  Box,
-  MembersBox,
-  MembersList,
-  MemberRow,
-} from './styled';
+import { StyledPopover } from './styled';
+import MembersList from './MembersList';
+import MembersForList from './MembersForList';
 
 const TaskAssignMember = ({
   children,
-  members,
   currentUser,
   task,
   reassignTask,
@@ -22,16 +12,11 @@ const TaskAssignMember = ({
 }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const { taskIdentifier, taskList } = task;
-  const taskListIdentifier = taskList?.taskListIdentifier;
 
-  const membersWithoutCurrentUser = members?.filter(
-    ({ userId }) => userId !== currentUser.userId,
-  );
-  const filteredMembers = membersWithoutCurrentUser?.filter(({ userName }) =>
-    userName.toLowerCase().includes(searchValue.toLowerCase()),
-  );
+  const handleReasigningTask = (taskIdentifier, userId, taskListIdentifier) => {
+    reassignTask(taskIdentifier, userId, taskListIdentifier);
+    openPopover(false);
+  };
 
   return (
     <>
@@ -56,46 +41,16 @@ const TaskAssignMember = ({
         open={isOpen}
         onClose={() => openPopover(false)}
       >
-        <InputBox>
-          <img src={MagnifierIcon} alt="magnifier" />
-          <Input onChange={event => setSearchValue(event.target.value)} />
-        </InputBox>
-        <Box>
-          <AssignToMeBox>
-            <MemberRow
-              onClick={() => {
-                reassignTask(
-                  taskIdentifier,
-                  currentUser.userId,
-                  taskListIdentifier,
-                );
-                openPopover(false);
-              }}
-            >
-              <Member member={currentUser} size={30} />
-              <span>Assign To Me</span>
-            </MemberRow>
-          </AssignToMeBox>
-          <MembersBox>
-            <MembersList>
-              {filteredMembers?.map(member => (
-                <MemberRow
-                  onClick={() => {
-                    reassignTask(
-                      taskIdentifier,
-                      member.userId,
-                      taskListIdentifier,
-                    );
-                    openPopover(false);
-                  }}
-                >
-                  <Member member={member} size={30} />
-                  <span>{member.userName}</span>
-                </MemberRow>
-              ))}
-            </MembersList>
-          </MembersBox>
-        </Box>
+        <>
+          {isOpen && (
+            <MembersForList
+              component={MembersList}
+              task={task}
+              reassignTask={handleReasigningTask}
+              currentUser={currentUser}
+            />
+          )}
+        </>
       </StyledPopover>
     </>
   );
