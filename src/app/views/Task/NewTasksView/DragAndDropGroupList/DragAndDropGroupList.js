@@ -12,7 +12,6 @@ const DragAndDropGroupList = ({
   openDrawer,
   storeAsCurrentTask,
   toggleTaskPriority,
-  taskListIdentifier,
   tasks,
   reorderSubtasksForTask,
   reassignTask,
@@ -55,7 +54,6 @@ const DragAndDropGroupList = ({
                     task={task}
                     groupId={groupId}
                     draggableProvided={draggableProvided}
-                    taskListIdentifier={taskListIdentifier}
                     reorderSubtasksForTask={reorderSubtasksForTask}
                     isCompleted={isCompletedGroup}
                     isCompletedGroup={isCompletedGroup}

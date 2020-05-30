@@ -321,7 +321,6 @@ const Subtasks = ({
   isOpen,
   isFullView,
   groupId,
-  taskListIdentifier,
   parentTaskId,
   reorderSubtasksForTask,
   reassignTask,
@@ -349,7 +348,6 @@ const Subtasks = ({
             subtasksOrder,
             reorderSubtasksForTask,
             groupId,
-            taskListIdentifier,
             parentTaskId,
             orderedSubtasks,
             reorderSubtasksInState,
@@ -409,7 +407,6 @@ const Task = ({
   isDragging,
   draggableProvided,
   groupId,
-  taskListIdentifier,
   members,
   currentUser,
   reassignTask,
@@ -457,7 +454,6 @@ const Task = ({
           isOpen={isOpen}
           isFullView={isFullView}
           groupId={groupId}
-          taskListIdentifier={taskListIdentifier}
           parentTaskId={task.taskIdentifier}
           currentUser={currentUser}
           members={members}

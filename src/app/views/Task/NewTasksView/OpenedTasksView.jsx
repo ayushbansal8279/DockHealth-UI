@@ -28,20 +28,17 @@ const OpenedTasksView = ({
   toggleSingleTaskPriority,
   editGroupName,
   quickAddTask,
-  openDeleteConfirmationModal,
+  deleteGroup,
   changeGroupsOrder,
   reorderTasksInGroup,
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup,
   reassignTask,
-  taskListIdentifier,
   isFetchingData,
   members,
   updateDueDate,
   updateWorkflowStatus,
   defaultGroupName,
-  canEditGroups,
-  quickAddTaskVisible,
   dragAndDropDisabled,
   listNameVisible,
   isSearchApplied,
@@ -63,7 +60,7 @@ const OpenedTasksView = ({
         />
       );
 
-    if (quickAddTaskVisible)
+    if (quickAddTask)
       return (
         <EmptyTaskAddView
           quickAddTask={groupName => quickAddTask(groupName, null, true)}
@@ -93,7 +90,6 @@ const OpenedTasksView = ({
                 groupList,
                 tasks,
                 reorderTasksInGroup,
-                taskListIdentifier,
                 reassignTasksToAnotherGroup,
                 updateTaskGroups,
                 setDraggableId,
@@ -117,9 +113,10 @@ const OpenedTasksView = ({
                   toggleTaskPriority={toggleSingleTaskPriority}
                   editGroupName={editGroupName}
                   quickAddTask={quickAddTask}
-                  deleteGroup={openDeleteConfirmationModal}
+                  deleteGroup={deleteGroup}
                   moveGroupUp={() => changeGroupsOrder(i, i - 1)}
                   moveGroupDown={() => changeGroupsOrder(i, i + 1)}
+                  changingGroupOrderDisabled={!changeGroupsOrder}
                   isFirstGroup={i === 0}
                   isLastGroup={i === groupList?.length - 1}
                   tasks={
@@ -131,20 +128,18 @@ const OpenedTasksView = ({
                   }
                   reorderSubtasksForTask={reorderSubtasksForTask}
                   reassignTask={reassignTask}
-                  taskListIdentifier={taskListIdentifier}
                   draggedId={draggedId}
                   toggleCompleteTask={toggleCompleteTask}
                   members={members}
                   updateDueDate={updateDueDate}
                   updateWorkflowStatus={updateWorkflowStatus}
-                  quickAddTaskVisible={quickAddTaskVisible}
                   dragAndDropDisabled={dragAndDropDisabled}
                   listNameVisible={listNameVisible}
                 />
               ),
             )}
           </DragDropContext>
-          {canEditGroups && !isSearchApplied && (
+          {!!createTaskGroupList && !isSearchApplied && (
             <GroupNameSection
               onEnterClick={groupName => createTaskGroupList(groupName)}
               placeholder={messages.placeholder}

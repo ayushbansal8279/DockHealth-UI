@@ -5,7 +5,6 @@ export const onDragEndTask = ({
   groupList,
   tasks,
   reorderTasksInGroup,
-  taskListIdentifier,
   reassignTasksToAnotherGroup,
   updateTaskGroups,
   setDraggableId,
@@ -46,11 +45,7 @@ export const onDragEndTask = ({
 
       const { taskGroupIdentifier } = sourceGroup;
 
-      reorderTasksInGroup(
-        newSourceTasksOrder,
-        taskGroupIdentifier,
-        taskListIdentifier,
-      );
+      reorderTasksInGroup(newSourceTasksOrder, taskGroupIdentifier);
 
       const reorderedTasks = newSourceTasksOrder?.map(identifier =>
         sourceTasks?.find(
@@ -121,11 +116,7 @@ export const onDragEndTask = ({
         [destinationGroupKey]: reorderedDestinationTasks,
       });
 
-      reassignTasksToAnotherGroup(
-        [sourceTaskIdentifier],
-        taskGroupIdentifier,
-        taskListIdentifier,
-      );
+      reassignTasksToAnotherGroup([sourceTaskIdentifier], taskGroupIdentifier);
     }
   }
 };
@@ -135,7 +126,6 @@ export const onDragEndSubtask = ({
   subtasksOrder,
   reorderSubtasksForTask,
   groupId,
-  taskListIdentifier,
   parentTaskId,
   orderedSubtasks,
   reorderSubtasksInState,
@@ -152,12 +142,7 @@ export const onDragEndSubtask = ({
       newSubtasksOrder.splice(source.index, 1)[0],
     );
 
-    reorderSubtasksForTask(
-      newSubtasksOrder,
-      groupId,
-      taskListIdentifier,
-      parentTaskId,
-    );
+    reorderSubtasksForTask(newSubtasksOrder, groupId, parentTaskId);
 
     const reorderedTasks = newSubtasksOrder.map(taskId =>
       orderedSubtasks.find(({ taskIdentifier }) => taskIdentifier === taskId),

@@ -68,12 +68,18 @@ class PersonDetailsView extends PureComponent {
   }
 
   componentWillUpdate(nextProps) {
-    const { routeParams } = this.props;
+    const { taskActions, routeParams } = this.props;
+
+    if (nextProps.routeParams.userIdentifier !== routeParams.userIdentifier) {
+      taskActions.resetTaskCounters();
+      taskActions.getTaskStatsForUser(nextProps.routeParams.userIdentifier);
+    }
 
     if (
       nextProps.routeParams.userIdentifier === routeParams.userIdentifier &&
       nextProps.routeParams.tabName !== routeParams.tabName
     ) {
+      taskActions.getTaskStatsForUser(routeParams.userIdentifier);
       if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
         this.refreshCompleteTasks(false);
       } else {
@@ -82,10 +88,18 @@ class PersonDetailsView extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    const { taskActions } = this.props;
+
+    taskActions.resetTaskCounters();
+  }
+
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
-      routeParams: { tabName },
+      taskActions,
+      routeParams: { tabName, userIdentifier },
     } = this.props;
+    taskActions.getTaskStatsForUser(userIdentifier);
 
     if (tabName === TaskListTabName.COMPLETE) {
       this.refreshCompleteTasks(cumulativeFlag, withLoader);
@@ -168,8 +182,7 @@ class PersonDetailsView extends PureComponent {
             {...viewProps}
             defaultGroupName="All tasks"
             showMembers={false}
-            canEditGroups={false}
-            quickAddTaskVisible={false}
+            showNotificationAction={false}
           />
         </>
       )

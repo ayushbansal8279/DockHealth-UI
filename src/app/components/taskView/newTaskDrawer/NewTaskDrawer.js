@@ -41,7 +41,7 @@ import {
   renderMemberoptionWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
-const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
+const NewTaskDrawer = ({ isInbox, modalActions }) => {
   const {
     taskDrawerOpen,
     top,
@@ -64,12 +64,17 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
     handleTaskDescriptionUpdate,
     autoSaveVisible,
     setAutoSaveVisible,
-  } = initializeTaskDrawerHooks({ members, isInbox, taskList });
+    members,
+  } = initializeTaskDrawerHooks({ isInbox });
 
   const { handleSubmit, setValue, watch } = formMethods;
 
   const formattedPatients = getFormattedPatients({ patients });
-  const formattedMembers = getFormattedMembers({ members, currentUser });
+  const formattedMembers = getFormattedMembers({
+    members,
+    isFetchingMembers: true,
+    currentUser,
+  });
 
   const dueDateValue = watch('dueDate');
   const dueTimeValue = watch('dueTime');
@@ -102,7 +107,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
               formMethods={formMethods}
               taskLists={taskLists}
               selectedTask={selectedTask}
-              taskList={taskList}
+              taskList={selectedTask?.taskList}
               reFileTask={reFileTask}
               onDelete={onDelete}
               onDuplicate={onDuplicate}
@@ -259,7 +264,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
                 closePopover={closeInvitePopover}
                 initialValue={assignedToInputValue}
                 setParentFormValue={setValue}
-                taskList={taskList}
+                taskList={selectedTask?.taskList}
               />
             </Grid>
             <Grid item xs={6} style={styleLeftColumn}>
@@ -377,7 +382,7 @@ const NewTaskDrawer = ({ members, taskList, isInbox, modalActions }) => {
           formMethods={formMethods}
           taskLists={taskLists}
           selectedTask={selectedTask}
-          taskList={taskList}
+          taskList={selectedTask?.taskList}
           isInbox={isInbox}
           closeTaskDrawer={closeTaskDrawer}
         />
