@@ -1,4 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { STATUSES } from 'components/taskView/newTaskDrawer/NewTaskDrawer.StatusSection.Hooks';
+import { CondensedH4 } from 'components/taskView/newTaskDrawer/NewTaskDrawer.Styled';
 import {
   StyledPopover,
   Box,
@@ -6,11 +8,8 @@ import {
   StatusList,
   StatusLabelContainer,
   StatusFlag,
+  Button,
 } from './styled';
-
-import { STATUSES } from '../../../../components/taskView/newTaskDrawer/NewTaskDrawer.StatusSection.Hooks';
-
-import { CondensedH4 } from '../../../../components/taskView/newTaskDrawer/NewTaskDrawer.Styled';
 
 const TaskWorkflowStatus = ({
   children,
@@ -23,15 +22,15 @@ const TaskWorkflowStatus = ({
 
   return (
     <>
-      <div
+      <Button
+        type="button"
         onClick={() => {
           if (!isCompletedGroup) openPopover(true);
         }}
-        style={{ cursor: 'pointer', height: '100%' }}
         ref={assignWorkflowStatusReference}
       >
         {children}
-      </div>
+      </Button>
       <StyledPopover
         anchorEl={assignWorkflowStatusReference?.current}
         anchorOrigin={{

@@ -10,7 +10,7 @@ export const GlobalChipWrapper = styled.div`
   z-index: 1000;
   width: auto;
   height: auto;
-  transform: translateY(-50%);
+  transform: translateX(-50%);
 `;
 
 export const CheckCircleIcon = styled.img`

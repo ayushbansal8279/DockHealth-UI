@@ -131,6 +131,7 @@ export const TaskItemContainer = styled.div`
 export const StatusBar = styled.div`
   background-color: ${props => props.color};
   height: 100%;
+  top: 0;
   left: 0;
   position: absolute;
   width: 6px;

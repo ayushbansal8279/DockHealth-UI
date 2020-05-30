@@ -16,6 +16,10 @@ import PatientDetailsView from 'components/patient/PatientDetailsView';
 import { storeAsCurrentTask } from './actions/task-actions';
 import { getTaskGroupList } from './actions/task-group-list-actions';
 import { getMembersByTaskListId } from './actions/tasklist-actions';
+import {
+  getFiltersForMegaFilter,
+  clearFiltersForMegaFilter,
+} from './actions/mega-filter-actions';
 import sendEvent from './api/usage-api';
 import PatientsView from './components/patients/PatientsView';
 import handleFeatureToggle from './helpers/handle-feature-toggle';
@@ -177,6 +181,7 @@ export const Routes = ({ store }) => {
     if (params?.taskListIdentifier) {
       dispatch(getTaskGroupList(params?.taskListIdentifier));
       dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));
+      dispatch(getFiltersForMegaFilter(params?.taskListIdentifier));
     }
   };
 
@@ -298,6 +303,7 @@ export const Routes = ({ store }) => {
                 preselectTask(null, nextState);
                 onEnterTaskGroups(nextState);
               }}
+              onLeave={dispatch(clearFiltersForMegaFilter())}
             />
             <Route
               path="filtered/:listName/:taskStatus/:filterBy"

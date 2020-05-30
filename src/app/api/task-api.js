@@ -18,6 +18,24 @@ export function getTasksForCreator() {
     });
 }
 
+export function getTaskStatsForList(taskListIdentifier) {
+  return axios
+    .get(`/task/stats/getTaskStatsForList/${taskListIdentifier}`)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function getTaskStatsForUser(userIdentifier) {
+  return axios
+    .get(`/task/stats/getTaskStatsForUser/${userIdentifier}`)
+    .then(({ data }) => data)
+    .catch(error => {
+      throw error;
+    });
+}
+
 export function getListTasksByUser(
   taskListIdentifier,
   status = 'COMPLETE',
@@ -424,7 +442,6 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
       `task/addOrUpdateTaskAssignment/${taskIdentifier}?assignedToUserId=${assignedToUserIdentifier}`,
     )
     .then(response => {
-      toggleAlert('Task assigned successfully', 'success');
       return response.data;
     })
     .catch(error => {
@@ -678,3 +695,19 @@ export const reassignTasksToAnotherGroup = (
     .catch(error => {
       throw error;
     });
+
+export function getFilteredTasksForList(
+  taskListIdentifier,
+  status = 'INCOMPLETE',
+  selectedFilters,
+) {
+  return axios
+    .post(
+      `task/filter/filterTasksByCriteria/${taskListIdentifier}?status=${status}`,
+      selectedFilters,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}

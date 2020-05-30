@@ -40,7 +40,7 @@ export const AssignToMeBox = styled(MembersBox)`
   color: ${palette.darkGrey};
 `;
 
-export const MembersList = styled.div`
+export const StyledMembersList = styled.div`
   display: flex;
   flex-direction: column;
 `;
@@ -59,4 +59,11 @@ export const MemberRow = styled.div`
   &:hover {
     background-color: rgba(193, 204, 218, 0.25);
   }
+`;
+
+export const LoaderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${spacing.regularPlus} 0;
 `;

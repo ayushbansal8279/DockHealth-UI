@@ -22,7 +22,6 @@ export const ListEntryContainer = styled.div`
 
 export const PersonStatus = styled.div`
   color: ${palette.cyanBlue};
-  margin-bottom: 1.5rem;
 `;
 
 export const MemberContainer = styled(Grid).attrs({ item: true })`

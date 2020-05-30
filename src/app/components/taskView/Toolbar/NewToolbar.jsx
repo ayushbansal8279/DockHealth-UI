@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Button, Grid } from '@material-ui/core';
 import { splitAt } from 'ramda';
 import { useDispatch } from 'react-redux';
@@ -13,14 +13,17 @@ import Spacing from 'components/common/Spacing';
 import UniversalTooltip from 'components/common/UniversalTooltip';
 import Search from 'components/taskView/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
+import MegaFilter from 'components/common/MegaFilter/MegaFilter';
 import { InviteMemberPopoverWithButton } from 'components/members/InviteMemberPopover';
 import Member from 'components/members/Member';
+import { showGlobalAlert } from 'alert/actions';
 import MorePopover from '../Toolbar.MorePopover';
 import {
   MoreMembersButtonContainer,
   ToolbarLabel,
   ToolbarBottomGrid,
   HeaderActionButtonsGrid,
+  SearchWrapper,
 } from './styled';
 import { TABS_CONFIG } from './config';
 
@@ -55,11 +58,12 @@ const useToggleNotifications = ({
         newNotificationStatus,
       )(dispatch);
       onNotificationsToggled(newNotificationStatus);
-      toggleAlert(
-        `Notifications are now ${
-          newNotificationStatus ? 'enabled' : 'disabled'
-        }`,
-        'success',
+      dispatch(
+        showGlobalAlert(
+          `Notifications are now ${
+            newNotificationStatus ? 'enabled' : 'disabled'
+          }`,
+        ),
       );
     } catch {
       showAlert({
@@ -100,6 +104,9 @@ export default ({
   completedTasksAmount,
   onSearchChange,
   searchValue,
+  filters,
+  selectedFilters,
+  selectFiltersForMegaFilter,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -111,9 +118,6 @@ export default ({
     showMoreMembersTooltip,
     hideMoreMembersTooltip,
   ] = useBoolean(false);
-  const [isFilterPopoverOpen, toggleFilterPopover] = useState(false);
-
-  const filterButtonReference = useRef(null);
 
   const notificationsEnabled = taskList?.notifications;
   const taskListIdentifier = taskList?.taskListIdentifier;
@@ -219,28 +223,28 @@ export default ({
         />
       </Grid>
       <ToolbarBottomGrid container direction="row" justify="flex-start">
-        <Button
-          variant="text"
-          onClick={() => toggleFilterPopover(!isFilterPopoverOpen)}
-          ref={filterButtonReference}
-          size="small"
-        >
-          <ToolbarLabel variant="body1" component="span">
-            FILTER
-          </ToolbarLabel>
-          <Spacing horizontal={3} />
-          <RotatableChevron
-            rotated={isFilterPopoverOpen}
-            color={palette.brightBlue}
-          />
-        </Button>
-        <Spacing horizontal={5} />
-        <Search
-          noBackground
-          initialValue=""
-          value={searchValue}
-          onChange={event => onSearchChange(event?.target?.value)}
+        <MegaFilter
+          filters={filters}
+          selectedFilters={selectedFilters}
+          onSelectFilters={selectFiltersForMegaFilter}
+          taskList={taskList}
+          taskStatus={selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'}
+          activeItemsAmount={
+            selectedTab === 'incomplete'
+              ? openTasksAmount
+              : completedTasksAmount
+          }
         />
+        <Spacing horizontal={5} />
+        <SearchWrapper>
+          <Search
+            fullWidth
+            noBackground
+            initialValue=""
+            value={searchValue}
+            onChange={event => onSearchChange(event?.target?.value)}
+          />
+        </SearchWrapper>
       </ToolbarBottomGrid>
     </PageContentHeader>
   );

@@ -2,16 +2,20 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import { isEmpty } from 'ramda';
 
 import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
+import EmptyListImage from 'img/empty-list';
 import { TaskGroupsContainer } from './styled';
 import TasksGroup from './TasksGroup/TasksGroup';
 import GroupNameSection from './GroupNameSection/GroupNameSection';
 import messages from './AddGroupNameButton/messages';
 import AddGroupNameButton from './AddGroupNameButton/AddGroupNameButton';
-import EmptyTasksView from './EmptyTasksView/EmptyTasksView';
+import EmptyTaskAddView from './EmptyTaskAddView/EmptyTaskAddView';
 import TasksViewLoader from './TasksViewLoader/TasksViewLoader';
 import { onDragEndTask } from './DragDrop.helpers';
+import EmptyListResult from './EmptyListResult/EmptyListResult';
+import { getRandomEmptySearchResultImage } from './EmptyListResult/helpers';
 
 const OpenedTasksView = ({
   openDrawer,
@@ -24,34 +28,56 @@ const OpenedTasksView = ({
   toggleSingleTaskPriority,
   editGroupName,
   quickAddTask,
-  openDeleteConfirmationModal,
+  deleteGroup,
   changeGroupsOrder,
   reorderTasksInGroup,
   reorderSubtasksForTask,
   reassignTasksToAnotherGroup,
   reassignTask,
-  taskListIdentifier,
-  tasksCount,
   isFetchingData,
   members,
   updateDueDate,
   updateWorkflowStatus,
   defaultGroupName,
-  canEditGroups,
-  quickAddTaskVisible,
   dragAndDropDisabled,
   listNameVisible,
+  isSearchApplied,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
+  const [emptySearchResultImage] = useState(getRandomEmptySearchResultImage());
 
   useEffect(() => {
     updateTaskGroups(groupedTasks);
   }, [groupedTasks]);
 
+  const renderEmptyState = () => {
+    if (isSearchApplied)
+      return (
+        <EmptyListResult
+          imageSrc={emptySearchResultImage}
+          text="No results were found for your search"
+        />
+      );
+
+    if (quickAddTask)
+      return (
+        <EmptyTaskAddView
+          quickAddTask={groupName => quickAddTask(groupName, null, true)}
+        />
+      );
+
+    return (
+      <EmptyListResult
+        imageSrc={EmptyListImage}
+        text="This list has no tasks"
+      />
+    );
+  };
+
   return (
     <TasksViewLoader isFetchingData={isFetchingData}>
-      {tasksCount > 0 ? (
+      {!isEmpty(groupedTasks) ? (
         <TaskGroupsContainer>
           <DragDropContext
             onBeforeCapture={({ draggableId }) => {
@@ -64,7 +90,6 @@ const OpenedTasksView = ({
                 groupList,
                 tasks,
                 reorderTasksInGroup,
-                taskListIdentifier,
                 reassignTasksToAnotherGroup,
                 updateTaskGroups,
                 setDraggableId,
@@ -88,9 +113,10 @@ const OpenedTasksView = ({
                   toggleTaskPriority={toggleSingleTaskPriority}
                   editGroupName={editGroupName}
                   quickAddTask={quickAddTask}
-                  deleteGroup={openDeleteConfirmationModal}
+                  deleteGroup={deleteGroup}
                   moveGroupUp={() => changeGroupsOrder(i, i - 1)}
                   moveGroupDown={() => changeGroupsOrder(i, i + 1)}
+                  changingGroupOrderDisabled={!changeGroupsOrder}
                   isFirstGroup={i === 0}
                   isLastGroup={i === groupList?.length - 1}
                   tasks={
@@ -102,20 +128,18 @@ const OpenedTasksView = ({
                   }
                   reorderSubtasksForTask={reorderSubtasksForTask}
                   reassignTask={reassignTask}
-                  taskListIdentifier={taskListIdentifier}
                   draggedId={draggedId}
                   toggleCompleteTask={toggleCompleteTask}
                   members={members}
                   updateDueDate={updateDueDate}
                   updateWorkflowStatus={updateWorkflowStatus}
-                  quickAddTaskVisible={quickAddTaskVisible}
                   dragAndDropDisabled={dragAndDropDisabled}
                   listNameVisible={listNameVisible}
                 />
               ),
             )}
           </DragDropContext>
-          {canEditGroups && (
+          {!!createTaskGroupList && !isSearchApplied && (
             <GroupNameSection
               onEnterClick={groupName => createTaskGroupList(groupName)}
               placeholder={messages.placeholder}
@@ -126,11 +150,7 @@ const OpenedTasksView = ({
           )}
         </TaskGroupsContainer>
       ) : (
-        quickAddTaskVisible && (
-          <EmptyTasksView
-            quickAddTask={groupName => quickAddTask(groupName, null, true)}
-          />
-        )
+        renderEmptyState()
       )}
     </TasksViewLoader>
   );

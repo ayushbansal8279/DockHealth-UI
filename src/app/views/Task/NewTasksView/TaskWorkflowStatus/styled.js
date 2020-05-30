@@ -5,6 +5,11 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import { prop } from 'ramda';
 
+export const Button = styled.button`
+  cursor: pointer;
+  outline: none;
+`;
+
 export const StyledPopover = styled(Popover)`
   min-width: 230px;
 `;

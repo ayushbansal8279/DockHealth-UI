@@ -4,13 +4,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as TaskLabelActions from 'actions/task-label-actions';
+import * as TaskGroupActions from 'actions/task-group-list-actions';
+import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
+import { arrayMove } from 'helpers/sorting-helper';
 import { hashHistory } from 'react-router';
 import TasksView from './Task/NewTasksView/TasksView';
 
@@ -18,10 +22,6 @@ const ASSIGNED_BY_ME = 'assigned_by_me';
 const ASSIGNED_TO_ME = 'assigned_to_me';
 
 class Home extends Component {
-  state = {
-    preSelectedTask: null,
-  };
-
   async componentDidMount() {
     const {
       user,
@@ -30,7 +30,27 @@ class Home extends Component {
       taskListActions,
       invitationActions,
       taskLabelActions: { getTaskListLabels },
+      setHeader,
     } = this.props;
+
+    setHeader({
+      layout: [
+        {
+          key: 'generic-header',
+          component: null,
+        },
+      ],
+    });
+
+    actions.getTaskStatsForList(routeParams.taskListIdentifier);
+    let tabStatus = 'INCOMPLETE';
+
+    if (routeParams.tabName === TaskListTabName.COMPLETE) {
+      actions.loadingCompletedTasks();
+      tabStatus = 'COMPLETE';
+    } else {
+      actions.loading();
+    }
 
     await invitationActions.findPendingTaskListsForUser();
 
@@ -41,15 +61,8 @@ class Home extends Component {
         invitationActions.acceptInviteToTaskList(tasklist),
       ),
     );
-    let tabStatus = 'INCOMPLETE';
 
     this.refreshAccessToken(user);
-    if (routeParams.tabName === TaskListTabName.COMPLETE) {
-      actions.loadingCompletedTasks();
-      tabStatus = 'COMPLETE';
-    } else {
-      actions.loading();
-    }
 
     const { filterBy, listName } = routeParams;
     let { taskStatus } = routeParams;
@@ -77,40 +90,6 @@ class Home extends Component {
       await Promise.all([
         taskAction(routeParams.taskListIdentifier, sortBy, filterBy, tabStatus),
       ]);
-
-      const {
-        tasks,
-        completedTasks,
-        routeParams: { taskIdentifier: preSelectedTaskIdentifier },
-      } = this.props;
-
-      const incompleteTasksWithSubtasks = [
-        ...tasks,
-        ...tasks.flatMap(({ subtasks }) => subtasks ?? []),
-      ];
-
-      const incompletePreselectedTask = incompleteTasksWithSubtasks.find(
-        ({ taskIdentifier }) => preSelectedTaskIdentifier === taskIdentifier,
-      );
-
-      if (incompletePreselectedTask) {
-        this.setState({
-          preSelectedTask: incompletePreselectedTask,
-        });
-      } else {
-        const completeTasksWithSubtasks = [
-          ...completedTasks,
-          ...completedTasks.flatMap(({ subtasks }) => subtasks ?? []),
-        ];
-
-        const completePreselectedTask = completeTasksWithSubtasks.find(
-          ({ taskIdentifier }) => preSelectedTaskIdentifier === taskIdentifier,
-        );
-
-        this.setState({
-          preSelectedTask: completePreselectedTask ?? null,
-        });
-      }
     };
 
     getTaskListLabels({ taskListIdentifier: routeParams.taskListIdentifier });
@@ -130,13 +109,14 @@ class Home extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    const { routeParams } = this.props;
+    const { actions, routeParams } = this.props;
 
     if (
       nextProps.routeParams.taskListIdentifier ===
         routeParams.taskListIdentifier &&
       nextProps.routeParams.tabName !== routeParams.tabName
     ) {
+      actions.getTaskStatsForList(routeParams.taskListIdentifier);
       if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
         this.refreshCompleteTasks();
       } else {
@@ -148,9 +128,11 @@ class Home extends Component {
       nextProps.routeParams.taskListIdentifier !==
       routeParams.taskListIdentifier
     ) {
-      const { actions, taskListActions } = this.props;
+      const { taskListActions } = this.props;
 
       actions.loading();
+      actions.resetTaskCounters();
+      actions.getTaskStatsForList(nextProps.routeParams.taskListIdentifier);
 
       if (nextProps.routeParams.taskListIdentifier != null) {
         taskListActions.getTaskListById(
@@ -186,10 +168,19 @@ class Home extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { actions } = this.props;
+
+    actions.resetTaskCounters();
+  }
+
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
-      routeParams: { tabName },
+      actions,
+      routeParams: { tabName, taskListIdentifier },
     } = this.props;
+
+    actions.getTaskStatsForList(taskListIdentifier);
 
     if (tabName === TaskListTabName.COMPLETE) {
       this.refreshCompleteTasks(cumulativeFlag, withLoader);
@@ -444,21 +435,71 @@ class Home extends Component {
     );
   };
 
+  quickAddTask = (taskName, taskGroupIdentifier, reloadGroups = false) => {
+    const {
+      actions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    if (taskName) {
+      const payload = {
+        description: taskName,
+        taskListIdentifier,
+        taskGroupIdentifier,
+      };
+
+      actions.saveTask(payload, reloadGroups);
+    }
+  };
+
+  deleteGroup = groupId => {
+    const {
+      modalActions,
+      taskGroupActions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    const modalProps = {
+      confirm: () => {
+        modalActions.closeModal();
+        taskGroupActions.deleteTasksGroup(groupId, taskListIdentifier);
+      },
+    };
+    modalActions.openModal('DeleteGroup', modalProps);
+  };
+
+  editGroupName = (newGroupName, groupId) => {
+    const {
+      taskGroupActions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    if (newGroupName) {
+      taskGroupActions.editTasksGroupName(
+        taskListIdentifier,
+        groupId,
+        newGroupName,
+      );
+    }
+  };
+
+  changeGroupsOrder = (oldTaskIndex, newTaskIndex, groupList) => {
+    const {
+      taskGroupActions,
+      routeParams: { taskListIdentifier },
+    } = this.props;
+    if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
+      return;
+    }
+    const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
+    const newGroupList = arrayMove(groupIdsList, oldTaskIndex, newTaskIndex);
+    taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
+  };
+
   render() {
     const {
-      userIdentifier,
+      taskGroupActions,
       members,
-      completedTasks,
-      isFetching,
-      isCompletedTasksFetching,
-      showingCompletedTasks,
-      selectedTaskId,
-      actions: {
-        markAsUnread,
-        refreshTask,
-        toggleTaskPriority,
-        addTaskComment,
-      },
       tasklists,
       taskListMembers,
       pendingTasklists,
@@ -467,55 +508,27 @@ class Home extends Component {
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
-    const { preSelectedTask } = this.state;
-
     const allTaskLists = [...(pendingTasklists ?? []), ...(tasklists ?? [])];
 
     const loadedTasklist = allTaskLists.find(
       t => t.taskListIdentifier === taskListIdentifier,
     );
 
-    let isMultiList = false;
-    let title = loadedTasklist?.listName ?? 'Loading...';
-
-    const hasTitle = Boolean(loadedTasklist?.listName);
-
-    if (listName === ASSIGNED_BY_ME) {
-      title = 'Assigned by me';
-      isMultiList = true;
-    } else if (listName === ASSIGNED_TO_ME) {
-      title = 'Assigned to me';
-      isMultiList = true;
-    }
-
     const isSpecialList = [ASSIGNED_BY_ME, ASSIGNED_TO_ME].includes(listName);
 
     const taskViewProps = {
-      userIdentifier,
       members,
-      completedTasks,
-      isFetching,
-      isCompletedTasksFetching,
-      showingCompletedTasks,
-      selectedTaskId,
-      markAsUnread,
-      refreshTask,
-      addTaskComment,
-      toggleTaskPriority: (task, priority) =>
-        toggleTaskPriority(task, userIdentifier, priority),
-      onFilter: this.handleFilterChange,
       refreshTab: this.refreshTab,
       downloadPDF: this.downloadPDF,
       navigateToTab: this.navigateToTab,
-      hasTitle,
-      title,
+      createListGroup: groupName =>
+        taskGroupActions.createTaskGroupList({ groupName, taskListIdentifier }),
+      quickAddTask: this.quickAddTask,
+      deleteGroup: this.deleteGroup,
+      editGroupName: this.editGroupName,
+      changeGroupsOrder: this.changeGroupsOrder,
       isSpecialList,
-      showToolbar: true,
       taskList: loadedTasklist || undefined,
-      isMultiList,
-      taskListIdentifier,
-      listName,
-      preSelectedTask,
       taskListMembers,
       membersNotInTaskList,
       routeParams,
@@ -546,8 +559,11 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   taskLabelActions: bindActionCreators(TaskLabelActions, dispatch),
+  taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
+  setHeader: setHeaderRaw(dispatch),
+  modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

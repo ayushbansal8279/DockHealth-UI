@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router';
 import moment from 'moment';
 import { isEmpty, pick } from 'ramda';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -156,6 +157,8 @@ const TaskItem = ({
   } = task;
 
   const listName = taskList?.listName;
+  const taskListIdentifier = taskList?.taskListIdentifier;
+
   const [isHovered, setIsHoverd] = useState(false);
 
   const isCompleted = task.status === 'COMPLETE';
@@ -225,12 +228,7 @@ const TaskItem = ({
           )}
           {patient && `${patient.firstName} ${patient.lastName}`}
         </TaskItemCell>
-        <TaskItemCell
-          width="110px"
-          paddingLeft="smallPlus"
-          paddingRight="tiny"
-          style={{ paddingTop: '0px' }}
-        >
+        <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
           <TaskWorkflowStatus
             task={task}
             isCompletedGroup={isCompletedGroup}
@@ -238,12 +236,13 @@ const TaskItem = ({
           >
             {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
             {task.status !== 'COMPLETE' && workflowStatus && (
-              <TaskItemStatus workflowStatus={workflowStatus} />
+              <TaskItemStatus
+                workflowStatus={workflowStatus}
+                labelWidth="100px"
+              />
             )}
             {task.status !== 'COMPLETE' && !workflowStatus && (
-              <AddPlaceholder style={{ marginTop: '20px' }}>
-                + Add Status
-              </AddPlaceholder>
+              <AddPlaceholder>+ Add Status</AddPlaceholder>
             )}
           </TaskWorkflowStatus>
         </TaskItemCell>
@@ -305,7 +304,11 @@ const TaskItem = ({
             color={listName ? palette.brightBlue : palette.coolGrey2}
             width="168px"
           >
-            {listName || 'Unfiled'}
+            {listName && taskListIdentifier ? (
+              <Link to={`/tasks/${taskListIdentifier}`}>{listName}</Link>
+            ) : (
+              'Unfiled'
+            )}
           </TaskItemCell>
         )}
       </TaskItemContainer>
@@ -318,7 +321,6 @@ const Subtasks = ({
   isOpen,
   isFullView,
   groupId,
-  taskListIdentifier,
   parentTaskId,
   reorderSubtasksForTask,
   reassignTask,
@@ -346,7 +348,6 @@ const Subtasks = ({
             subtasksOrder,
             reorderSubtasksForTask,
             groupId,
-            taskListIdentifier,
             parentTaskId,
             orderedSubtasks,
             reorderSubtasksInState,
@@ -406,7 +407,6 @@ const Task = ({
   isDragging,
   draggableProvided,
   groupId,
-  taskListIdentifier,
   members,
   currentUser,
   reassignTask,
@@ -454,7 +454,6 @@ const Task = ({
           isOpen={isOpen}
           isFullView={isFullView}
           groupId={groupId}
-          taskListIdentifier={taskListIdentifier}
           parentTaskId={task.taskIdentifier}
           currentUser={currentUser}
           members={members}
