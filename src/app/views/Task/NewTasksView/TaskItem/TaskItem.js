@@ -153,8 +153,11 @@ const TaskItem = ({
     workflowStatus,
     completedDt,
     completedBy,
-    taskList: { listName, taskListIdentifier },
+    taskList,
   } = task;
+
+  const listName = taskList?.listName;
+  const taskListIdentifier = taskList?.taskListIdentifier;
 
   const [isHovered, setIsHoverd] = useState(false);
 
@@ -233,7 +236,10 @@ const TaskItem = ({
           >
             {task.status === 'COMPLETE' && <InfoText>Completed</InfoText>}
             {task.status !== 'COMPLETE' && workflowStatus && (
-              <TaskItemStatus workflowStatus={workflowStatus} />
+              <TaskItemStatus
+                workflowStatus={workflowStatus}
+                labelWidth="100px"
+              />
             )}
             {task.status !== 'COMPLETE' && !workflowStatus && (
               <AddPlaceholder>+ Add Status</AddPlaceholder>

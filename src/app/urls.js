@@ -10,6 +10,9 @@ const URLS = {
     reassignTasks: groupIdentifier =>
       `task/group/assignTasksToTaskGroup/${groupIdentifier}`,
   },
+  megaFilter: {
+    getFilters: listId => `task/filter/filterOptionsForTaskList/${listId}`,
+  },
 };
 
 export default URLS;

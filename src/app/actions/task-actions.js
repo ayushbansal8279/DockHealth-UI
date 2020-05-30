@@ -1085,6 +1085,28 @@ export function reassignTask(taskIdentifier, userId) {
       });
 }
 
+
+export function getFilteredTasksForList(
+  taskListIdentifier,
+  status,
+  selectedFilters,
+) {
+  const action =
+    status === 'INCOMPLETE'
+      ? ActionTypes.GET_TASKS_SUCCESS
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+
+  return dispatch =>
+    TaskApi.getFilteredTasksForList(taskListIdentifier, status, selectedFilters)
+      .then(tasks => {
+        dispatch({ type: action, tasks });
+        return tasks;
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
 const processTaskCountersSuccess = (data, dispatch) => {
   const payload = {
     incomplete: data.find(
@@ -1112,3 +1134,4 @@ export const getTaskStatsForUser = userIdentifier => dispatch => {
 export const resetTaskCounters = () => ({
   type: ActionTypes.RESET_TASK_COUNTERS,
 });
+
