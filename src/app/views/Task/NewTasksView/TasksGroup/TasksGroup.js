@@ -62,6 +62,7 @@ const TasksGroup = ({
   listNameVisible,
   changingGroupOrderDisabled,
   hasFiltersApplied,
+  isSearchApplied,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -140,7 +141,7 @@ const TasksGroup = ({
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
-        {!!quickAddTask && (
+        {!!quickAddTask && !isSearchApplied && (
           <AddTaskInputWrapper>
             <input
               name="newTask"

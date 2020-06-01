@@ -70,6 +70,7 @@ const CompletedTasksView = ({
               listNameVisible={listNameVisible}
               reassignTask={reassignTask}
               hasFiltersApplied={hasFiltersApplied}
+              isSearchApplied={isSearchApplied}
             />
           </DragDropContext>
         </TaskGroupsContainer>

@@ -37,7 +37,7 @@ export const PriorityHoverIcon = styled.img`
 `;
 
 export const AddPlaceholder = styled.div`
-  color: ${spacing.coolGrey2};
+  color: ${palette.mediumGrey};
   opacity: 0;
   &::first-letter {
     color: ${palette.orange};
@@ -164,7 +164,7 @@ export const TaskItemPanel = styled.div`
     & ${ThreeDots},
     & ${AddPlaceholder},
     & ${PriorityHoverIcon} {
-    opacity: 1;
+      opacity: 1;
   }
 `;
 

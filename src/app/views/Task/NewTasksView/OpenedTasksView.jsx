@@ -135,6 +135,7 @@ const OpenedTasksView = ({
                   updateWorkflowStatus={updateWorkflowStatus}
                   dragAndDropDisabled={dragAndDropDisabled}
                   listNameVisible={listNameVisible}
+                  isSearchApplied={isSearchApplied}
                 />
               ),
             )}
