@@ -37,6 +37,7 @@ class Home extends Component {
       ),
     );
 
+    console.log('refreshAccessToken on component load');
     this.refreshAccessToken(user);
     actions.loading();
 
@@ -358,6 +359,7 @@ class Home extends Component {
 
   handleRetry = (error, callback) => {
     if (error.message === 'Network Error') {
+      console.log('refresh token on Network Error');
       userApi
         .refreshAccessToken(sessionStorage.getItem('username'))
         .then(callback)
@@ -376,6 +378,7 @@ class Home extends Component {
     }
 
     const refreshAccessTokenTimeoutId = setTimeout(() => {
+      console.log('refresh token on timeout');
       userApi.refreshAccessToken(user.username);
       this.refreshAccessToken(user);
     }, systemTimeout);

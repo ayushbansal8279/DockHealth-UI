@@ -507,28 +507,29 @@ export function performHealthCheck() {
 
 export function refreshAccessToken(email) {
   if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
-    const cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
-    return new Promise((resolve, reject) => {
-      try {
-        const refreshToken = sessionStorage.getItem('SSO_REFRESHTOKEN');
-        const authData = `grant_type=refresh_token&refresh_token=${refreshToken}`;
-        return axios
-          .post(`${cognitoAuthUrl}/oauth2/token`, authData)
-          .then(response => {
-            const userRefreshToken = response?.data.refresh_token;
-            const userAccessToken = response?.data.access_token;
-            const userIDToken = response?.data.id_token;
-            sessionStorage.setItem('EnterpriseUserFlag', true);
-            sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-            sessionStorage.setItem('SSO_IDTOKEN', userIDToken);
-            sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
-            resolve('success');
-          });
-      } catch (error) {
-        reject(error);
-        return Promise.reject(error);
-      }
-    });
+    return Promise.resolve(null);
+    // const cognitoAuthUrl = process.env.COGNITO_OAUTH_URL;
+    // return new Promise((resolve, reject) => {
+    //   try {
+    //     const refreshToken = sessionStorage.getItem('SSO_REFRESHTOKEN');
+    //     const authData = `grant_type=refresh_token&refresh_token=${refreshToken}`;
+    //     return axios
+    //       .post(`${cognitoAuthUrl}/oauth2/token`, authData)
+    //       .then(response => {
+    //         const userRefreshToken = response?.data.refresh_token;
+    //         const userAccessToken = response?.data.access_token;
+    //         const userIDToken = response?.data.id_token;
+    //         sessionStorage.setItem('EnterpriseUserFlag', true);
+    //         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
+    //         sessionStorage.setItem('SSO_IDTOKEN', userIDToken);
+    //         sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
+    //         resolve('success');
+    //       });
+    //   } catch (error) {
+    //     reject(error);
+    //     return Promise.reject(error);
+    //   }
+    // });
   }
   const cognitoUserData = {
     Username: email,
