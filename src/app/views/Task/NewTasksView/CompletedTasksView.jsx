@@ -25,6 +25,7 @@ const CompletedTasksView = ({
   listNameVisible,
   isSearchApplied,
   reassignTask,
+  hasFiltersApplied,
 }) => {
   const [emptySearchResultImage] = useState(getRandomEmptySearchResultImage());
 
@@ -68,6 +69,7 @@ const CompletedTasksView = ({
               dragAndDropDisabled={dragAndDropDisabled}
               listNameVisible={listNameVisible}
               reassignTask={reassignTask}
+              hasFiltersApplied={hasFiltersApplied}
             />
           </DragDropContext>
         </TaskGroupsContainer>

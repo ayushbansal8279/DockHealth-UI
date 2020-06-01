@@ -56,6 +56,7 @@ const TaskView = ({
   changeGroupsOrder,
   showNotificationAction = true,
   handleFilterChange,
+  hasFiltersApplied,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -231,6 +232,7 @@ const TaskView = ({
           updateDueDate={updateDueDate}
           listNameVisible={listNameVisible}
           isSearchApplied={!!searchValue}
+          hasFiltersApplied={hasFiltersApplied}
         />
       ) : (
         <OpenedTasksView

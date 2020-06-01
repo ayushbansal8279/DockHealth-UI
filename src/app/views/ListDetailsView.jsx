@@ -243,7 +243,10 @@ class Home extends Component {
   };
 
   handleFilterChange = updatedFilters => {
-    const { tabName } = this.props;
+    const {
+      routeParams: { tabName },
+    } = this.props;
+
     const taskStatus =
       tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
@@ -437,6 +440,7 @@ class Home extends Component {
       pendingTasklists,
       membersNotInTaskList,
       routeParams,
+      megaFilter: { selectedFilters },
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
@@ -465,6 +469,7 @@ class Home extends Component {
       taskListMembers,
       membersNotInTaskList,
       routeParams,
+      hasFiltersApplied: !isEmpty(selectedFilters),
     };
 
     return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;
