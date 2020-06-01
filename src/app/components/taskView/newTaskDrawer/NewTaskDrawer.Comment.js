@@ -52,6 +52,12 @@ const Comment = ({
 
   useEffect(() => {
     if (isEditing) {
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(commentContentFieldReference.current);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
       // eslint-disable-next-line no-unused-expressions
       commentContentFieldReference.current?.focus();
     }
@@ -63,10 +69,15 @@ const Comment = ({
 
   const onCommentEdited = useCallback(
     event => {
-      unsetEditing();
       const sanitizedCommentValue = sanitizeCommentValue({
         comment: event.target.textContent,
       });
+
+      if (sanitizedCommentValue === '') {
+        return false;
+      }
+
+      unsetEditing();
 
       if (commentValue !== sanitizedCommentValue) {
         updateComment({
@@ -75,6 +86,7 @@ const Comment = ({
         });
         setCommentValue(sanitizedCommentValue);
       }
+      return true;
     },
     [commentIdentifier, commentValue, unsetEditing, updateComment],
   );
@@ -95,6 +107,7 @@ const Comment = ({
                 onBlur={onCommentEdited}
                 onKeyDown={event => {
                   if (isEditing && event.key === 'Enter') {
+                    event.preventDefault();
                     onCommentEdited(event);
                   }
                 }}

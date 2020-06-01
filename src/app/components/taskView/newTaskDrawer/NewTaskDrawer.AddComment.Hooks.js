@@ -27,6 +27,11 @@ const initializeAddCommentHooks = ({ addComment, parentFormSubmit }) => {
   const onSubmit = useCallback(() => {
     setAddingComment();
 
+    if (commentContent !== undefined && commentContent === '') {
+      unsetAddingComment();
+      return;
+    }
+
     addComment(commentContent)
       .then(() => {
         unsetAddingComment();
