@@ -3,12 +3,12 @@ import { useMount } from 'react-use';
 import { isEmpty, isNil } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
-import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import {
   getFilterRowComponent,
   AssignedOrUnassignedRow,
 } from './MegaFilterRowComponents';
+import MegaFilterSearch from './MegaFilterSearch';
 
 import {
   MegaFilterPopover,
@@ -23,6 +23,7 @@ import {
   FilterLabel,
   FilterSelected,
   ClearButton,
+  MegaFilterOptions,
 } from './styled';
 
 const UNASSIGNED = 'UNASSIGNED';
@@ -40,12 +41,17 @@ const FilterColumn = ({
   filter: { label, list, type, hasAvatars, key },
   selectedFilters,
   onSelectFilters,
+  searchedFilterQuery,
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
   const filteredList = list?.filter(
-    ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
+    ({ key: fieldKey, displayValue }) =>
+      !columnSelectedFilters?.includes(fieldKey) &&
+      displayValue.toLowerCase().includes(searchedFilterQuery.toLowerCase()),
   );
+
+  if (filteredList.length === 0) return null;
 
   const onClick = value => {
     let updatedFilters = selectedFilters;
@@ -125,6 +131,7 @@ const MegaFilter = ({
   taskStatus,
 }) => {
   const [isOpen, openPopover] = useState(false);
+  const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterReference = useRef(null);
 
   const clearFilters = () => {
@@ -163,10 +170,15 @@ const MegaFilter = ({
               </MegaFilterBoldedLabel>
               {activeItemsAmount} ITEMS
             </MegaFilterLabel>
-            <Spacing horizontal={4} />
-            <ClearButton type="button" onClick={clearFilters}>
-              CLEAR
-            </ClearButton>
+            <MegaFilterOptions>
+              <MegaFilterSearch
+                onSearch={setSearchedFilterQuery}
+                value={searchedFilterQuery}
+              />
+              <ClearButton type="button" onClick={clearFilters}>
+                CLEAR ALL
+              </ClearButton>
+            </MegaFilterOptions>
           </MegaFilterHeader>
           <Filters>
             {Object.keys(filters)?.map(key => (
@@ -178,6 +190,7 @@ const MegaFilter = ({
                 taskList={taskList}
                 taskStatus={taskStatus}
                 filters={filters}
+                searchedFilterQuery={searchedFilterQuery}
               />
             ))}
           </Filters>
