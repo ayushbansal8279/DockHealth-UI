@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useMount } from 'react-use';
 import { isEmpty, isNil } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
@@ -129,6 +130,12 @@ const MegaFilter = ({
   const clearFilters = () => {
     onSelectFilters([]);
   };
+
+  useMount(() => {
+    if (!isEmpty(selectedFilters)) {
+      onSelectFilters(selectedFilters);
+    }
+  });
 
   return (
     <>

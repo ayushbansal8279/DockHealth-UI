@@ -1,6 +1,12 @@
 /* eslint-disable import/prefer-default-export */
+import { isEmpty } from 'ramda';
 import * as MegaFilterApi from 'api/mega-filter-api';
 import * as ActionTypes from './action-types';
+
+const getFiltersFromLocalStorage = identifier =>
+  sessionStorage[`filter-${identifier}`]
+    ? JSON.parse(sessionStorage[`filter-${identifier}`])
+    : null;
 
 export function getFiltersForMegaFilter(listId) {
   return dispatch => {
@@ -8,9 +14,21 @@ export function getFiltersForMegaFilter(listId) {
 
     MegaFilterApi.getFiltersForMegaFilter(listId)
       .then(data => {
+        const initialFilters = getFiltersFromLocalStorage(listId);
+
+        if (initialFilters)
+          dispatch({
+            type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
+            selectedFilters: initialFilters,
+          });
+
         dispatch({
           type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
           filters: data,
+        });
+
+        dispatch({
+          type: ActionTypes.INITIALIZE_MEGA_FILTER,
         });
       })
       .catch(error => {
@@ -19,8 +37,14 @@ export function getFiltersForMegaFilter(listId) {
   };
 }
 
-export function selectFiltersForMegaFilter(selectedFilters) {
+export function selectFiltersForMegaFilter(selectedFilters, listId) {
   return dispatch => {
+    if (isEmpty(selectedFilters)) {
+      sessionStorage.removeItem(`filter-${listId}`);
+    } else {
+      sessionStorage[`filter-${listId}`] = JSON.stringify(selectedFilters);
+    }
+
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
       selectedFilters,

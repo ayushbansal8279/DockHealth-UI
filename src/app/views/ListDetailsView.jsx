@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -52,11 +53,7 @@ class Home extends Component {
       );
     }
 
-    if (routeParams.tabName === TaskListTabName.COMPLETE) {
-      await this.refreshCompleteTasks(false, true);
-    } else {
-      await this.refreshIncompleteTasks(true);
-    }
+    await this.refreshTab(true);
 
     taskListActions.getOrganizationUsersNotInTaskList(
       routeParams.taskListIdentifier,
@@ -102,9 +99,10 @@ class Home extends Component {
       nextProps.routeParams.taskListIdentifier !==
       routeParams.taskListIdentifier
     ) {
-      const { taskListActions } = this.props;
+      const { taskListActions, megaFilterActions } = this.props;
 
       actions.loading();
+      megaFilterActions.clearFiltersForMegaFilter();
       actions.resetTaskCounters();
       actions.getTaskStatsForList(nextProps.routeParams.taskListIdentifier);
 
@@ -115,10 +113,8 @@ class Home extends Component {
         taskListActions.getTaskListStats({
           taskListIdentifier: nextProps.routeParams.taskListIdentifier,
         });
-        actions.getListTasks(
+        this.getTasksList(
           nextProps.routeParams.taskListIdentifier,
-          undefined,
-          undefined,
           nextProps.routeParams.tabName === TaskListTabName.COMPLETE
             ? 'COMPLETE'
             : 'INCOMPLETE',
@@ -155,10 +151,10 @@ class Home extends Component {
     actions.getTaskStatsForList(taskListIdentifier);
 
     if (tabName === TaskListTabName.COMPLETE) {
-      this.refreshCompleteTasks(cumulativeFlag, withLoader);
-    } else {
-      this.refreshIncompleteTasks(withLoader);
+      return this.refreshCompleteTasks(cumulativeFlag, withLoader);
     }
+
+    return this.refreshIncompleteTasks(withLoader);
   };
 
   refreshIncompleteTasks = (withLoader = true) => {
@@ -183,12 +179,7 @@ class Home extends Component {
       return this.getFilteredTasks(selectedFilters, status);
     }
 
-    return actions.getListTasks(
-      routeParams.taskListIdentifier,
-      undefined,
-      undefined,
-      status,
-    );
+    return this.getTasksList(routeParams.taskListIdentifier, status);
   };
 
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
@@ -218,52 +209,33 @@ class Home extends Component {
     const status = 'COMPLETE';
 
     if (isEmpty(selectedFilters)) {
-      actions
-        .getListTasks(
-          taskListIdentifier,
-          undefined,
-          undefined,
-          status,
-          cumulativeFlag,
-          queryStartPosition,
-        )
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(
-              taskListIdentifier,
-              undefined,
-              undefined,
-              status,
-              cumulativeFlag,
-              queryStartPosition,
-            );
-          });
-        });
+      this.getTasksList(
+        taskListIdentifier,
+        status,
+        cumulativeFlag,
+        queryStartPosition,
+      );
     } else {
       this.getFilteredTasks(selectedFilters, status);
     }
   };
 
-  downloadPDF = () => {
-    const {
-      routeParams: { taskListIdentifier },
-    } = this.props;
+  getTasksList = (
+    taskListIdentifier,
+    status,
+    cumulativeFlag = false,
+    queryStartPosition = 0,
+  ) => {
+    const { actions } = this.props;
 
-    if (taskListIdentifier) {
-      window.print();
-    }
-  };
-
-  handleFilterChange = updatedFilters => {
-    const {
-      routeParams: { tabName },
-    } = this.props;
-
-    const taskStatus =
-      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
-    this.getFilteredTasks(updatedFilters, taskStatus);
+    return actions.getListTasks(
+      taskListIdentifier,
+      undefined,
+      undefined,
+      status,
+      cumulativeFlag,
+      queryStartPosition,
+    );
   };
 
   getFilteredTasks = (updatedFilters, taskStatus) => {
@@ -282,11 +254,38 @@ class Home extends Component {
       });
     }
 
-    actions.getFilteredTasksForList(
+    return actions.getFilteredTasksForList(
       taskListIdentifier,
       taskStatus,
       taskFilters,
     );
+  };
+
+  handleFilterChange = updatedFilters => {
+    const {
+      routeParams: { tabName, taskListIdentifier },
+      megaFilterActions,
+    } = this.props;
+
+    const taskStatus =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+    megaFilterActions.selectFiltersForMegaFilter(
+      updatedFilters,
+      taskListIdentifier,
+    );
+
+    return this.getFilteredTasks(updatedFilters, taskStatus);
+  };
+
+  downloadPDF = () => {
+    const {
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    if (taskListIdentifier) {
+      window.print();
+    }
   };
 
   handleRetry = (error, callback) => {
@@ -455,6 +454,7 @@ const mapDispatchToProps = dispatch => ({
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   setHeader: setHeaderRaw(dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
+  megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
