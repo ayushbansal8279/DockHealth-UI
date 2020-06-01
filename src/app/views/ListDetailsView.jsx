@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { always, cond, equals, T, isEmpty } from 'ramda';
+import { isEmpty } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -28,6 +28,7 @@ class Home extends Component {
       routeParams,
       actions,
       taskListActions,
+      patientActions,
       invitationActions,
       taskLabelActions: { getTaskListLabels },
       setHeader,
@@ -43,14 +44,24 @@ class Home extends Component {
     });
 
     actions.getTaskStatsForList(routeParams.taskListIdentifier);
-    let tabStatus = 'INCOMPLETE';
+
+    if (routeParams.taskListIdentifier) {
+      taskListActions.getMembersByTaskListId(
+        routeParams.taskListIdentifier,
+        'ALL',
+      );
+    }
 
     if (routeParams.tabName === TaskListTabName.COMPLETE) {
-      actions.loadingCompletedTasks();
-      tabStatus = 'COMPLETE';
+      await this.refreshCompleteTasks(false, true);
     } else {
-      actions.loading();
+      await this.refreshIncompleteTasks(true);
     }
+
+    taskListActions.getOrganizationUsersNotInTaskList(
+      routeParams.taskListIdentifier,
+    );
+    patientActions.getAllPatients();
 
     await invitationActions.findPendingTaskListsForUser();
 
@@ -64,48 +75,11 @@ class Home extends Component {
 
     this.refreshAccessToken(user);
 
-    const { filterBy, listName } = routeParams;
-    let { taskStatus } = routeParams;
-    let sortBy;
-
-    if (!taskStatus) {
-      taskStatus = 'INCOMPLETE';
-    }
-
-    if (filterBy) {
-      sortBy = 'CREATED_DT';
-    }
-
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
 
-    const taskAction = cond([
-      [equals(ASSIGNED_BY_ME), always(actions.getTasksAssignedByMe)],
-      [equals(ASSIGNED_TO_ME), always(actions.getTasksAssignedToMe)],
-      [T, always(actions.getListTasks)],
-    ])(listName);
-
-    const getAllTasks = async () => {
-      await Promise.all([
-        taskAction(routeParams.taskListIdentifier, sortBy, filterBy, tabStatus),
-      ]);
-    };
-
     getTaskListLabels({ taskListIdentifier: routeParams.taskListIdentifier });
-
-    if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
-      await getAllTasks().then(async () => {
-        taskListActions.getTaskListById(routeParams.taskListIdentifier);
-
-        taskListActions
-          .getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier)
-          .then(noop)
-          .catch(noop);
-      });
-    } else {
-      await getAllTasks();
-    }
   }
 
   componentWillUpdate(nextProps) {
@@ -145,13 +119,11 @@ class Home extends Component {
           nextProps.routeParams.taskListIdentifier,
           undefined,
           undefined,
-          'INCOMPLETE',
+          nextProps.routeParams.tabName === TaskListTabName.COMPLETE
+            ? 'COMPLETE'
+            : 'INCOMPLETE',
         );
-        actions.getListTasksCount(
-          nextProps.routeParams.taskListIdentifier,
-          undefined,
-          'COMPLETE',
-        );
+
         if (nextProps.routeParams.taskListIdentifier) {
           taskListActions.getMembersByTaskListId(
             nextProps.routeParams.taskListIdentifier,
@@ -194,7 +166,6 @@ class Home extends Component {
       actions,
       routeParams,
       taskListActions,
-      patientActions,
       megaFilter: { selectedFilters },
     } = this.props;
 
@@ -204,53 +175,20 @@ class Home extends Component {
       actions.loading();
     }
 
-    if (isEmpty(selectedFilters)) {
-      actions.getListTasks(
-        routeParams.taskListIdentifier,
-        undefined,
-        undefined,
-        status,
-      );
-    } else {
-      this.getFilteredTasks(selectedFilters, status);
-    }
-
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
 
-    if (routeParams.taskListIdentifier) {
-      taskListActions.getMembersByTaskListId(
-        routeParams.taskListIdentifier,
-        'ALL',
-      );
+    if (!isEmpty(selectedFilters)) {
+      return this.getFilteredTasks(selectedFilters, status);
     }
 
-    taskListActions.getOrganizationUsersNotInTaskList(
+    return actions.getListTasks(
       routeParams.taskListIdentifier,
+      undefined,
+      undefined,
+      status,
     );
-    patientActions.getAllPatients();
-  };
-
-  downloadPDF = () => {
-    const {
-      routeParams: { taskListIdentifier },
-    } = this.props;
-
-    if (taskListIdentifier) {
-      window.print();
-    }
-  };
-
-  handleFilterChange = updatedFilters => {
-    const {
-      routeParams: { tabName },
-    } = this.props;
-
-    const taskStatus =
-      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
-    this.getFilteredTasks(updatedFilters, taskStatus);
   };
 
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
@@ -305,6 +243,27 @@ class Home extends Component {
     } else {
       this.getFilteredTasks(selectedFilters, status);
     }
+  };
+
+  downloadPDF = () => {
+    const {
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    if (taskListIdentifier) {
+      window.print();
+    }
+  };
+
+  handleFilterChange = updatedFilters => {
+    const {
+      routeParams: { tabName },
+    } = this.props;
+
+    const taskStatus =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+    this.getFilteredTasks(updatedFilters, taskStatus);
   };
 
   getFilteredTasks = (updatedFilters, taskStatus) => {
