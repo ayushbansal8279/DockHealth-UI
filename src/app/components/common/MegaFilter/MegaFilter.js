@@ -22,6 +22,7 @@ import {
   FilterList,
   FilterLabel,
   FilterSelected,
+  FilterSearched,
   ClearButton,
   MegaFilterOptions,
 } from './styled';
@@ -46,12 +47,20 @@ const FilterColumn = ({
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
   const filteredList = list?.filter(
-    ({ key: fieldKey, displayValue }) =>
-      !columnSelectedFilters?.includes(fieldKey) &&
-      displayValue.toLowerCase().includes(searchedFilterQuery.toLowerCase()),
+    ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
   );
 
-  if (filteredList.length === 0) return null;
+  const searchedFiletrs = filteredList?.filter(({ displayValue }) =>
+    searchedFilterQuery
+      ? displayValue.toLowerCase().includes(searchedFilterQuery.toLowerCase())
+      : false,
+  );
+
+  const unsearchedFiletrs = filteredList?.filter(({ displayValue }) =>
+    searchedFilterQuery
+      ? !displayValue.toLowerCase().includes(searchedFilterQuery.toLowerCase())
+      : true,
+  );
 
   const onClick = value => {
     let updatedFilters = selectedFilters;
@@ -80,6 +89,24 @@ const FilterColumn = ({
     <StyledFilter>
       <FilterLabel>{label}</FilterLabel>
       <FilterList>
+        {!isEmpty(searchedFiletrs) && (
+          <FilterSearched>
+            {searchedFiletrs?.map(item => {
+              const itemKey = item.key;
+              return (
+                <AssignedOrUnassignedRow
+                  itemKey={itemKey}
+                  isUnassigned={itemKey === UNASSIGNED}
+                  hasAvatars={hasAvatars}
+                  onClick={() => onClick(itemKey)}
+                  {...item}
+                >
+                  <FilterRow />
+                </AssignedOrUnassignedRow>
+              );
+            })}
+          </FilterSearched>
+        )}
         {!isEmpty(columnSelectedFilters) && !isNil(columnSelectedFilters) && (
           <FilterSelected>
             {columnSelectedFilters?.map(filterValue => {
@@ -102,7 +129,7 @@ const FilterColumn = ({
             })}
           </FilterSelected>
         )}
-        {filteredList?.map(item => {
+        {unsearchedFiletrs?.map(item => {
           const itemKey = item.key;
           return (
             <AssignedOrUnassignedRow

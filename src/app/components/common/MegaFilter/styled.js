@@ -60,7 +60,14 @@ export const FilterList = styled.div`
 
 export const FilterSelected = styled.div`
   border-bottom: 1px solid ${palette.blueGrey};
-  margin-bottom: ${spacing.tiny};
+  margin-bottom: ${spacing.small};
+  padding-bottom: ${spacing.small};
+`;
+
+export const FilterSearched = styled.div`
+  border-bottom: 1px solid ${palette.blueGrey};
+  margin-bottom: ${spacing.small};
+  padding-bottom: ${spacing.small};
 `;
 
 export const FilterLabel = styled.label`
