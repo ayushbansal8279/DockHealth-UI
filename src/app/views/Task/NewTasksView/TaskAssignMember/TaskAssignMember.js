@@ -3,13 +3,7 @@ import { StyledPopover } from './styled';
 import MembersList from './MembersList';
 import MembersForList from './MembersForList';
 
-const TaskAssignMember = ({
-  children,
-  currentUser,
-  task,
-  reassignTask,
-  isCompletedGroup,
-}) => {
+const TaskAssignMember = ({ children, currentUser, task, reassignTask }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
 
@@ -22,7 +16,7 @@ const TaskAssignMember = ({
     <>
       <div
         onClick={() => {
-          if (!isCompletedGroup) openPopover(true);
+          openPopover(true);
         }}
         ref={assignMemberButtonReference}
       >

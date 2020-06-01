@@ -290,7 +290,6 @@ const TaskItem = ({
             currentUser={currentUser}
             reassignTask={reassignTask}
             task={task}
-            isCompletedGroup={isCompletedGroup}
           >
             {assignedTo ? (
               <Member member={assignedTo} size={34} />

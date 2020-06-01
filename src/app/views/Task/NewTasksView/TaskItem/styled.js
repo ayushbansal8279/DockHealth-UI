@@ -169,5 +169,6 @@ export const TaskItemPanel = styled.div`
 `;
 
 export const InfoText = styled.p`
+  cursor: initial;
   margin-bottom: 0;
 `;

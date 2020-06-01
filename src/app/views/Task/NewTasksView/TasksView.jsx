@@ -225,6 +225,7 @@ const TaskView = ({
           tasks={filteredCompletedTasks}
           isFetchingData={isCompletedTasksFetching}
           summaryTasksCount={taskCounters.complete}
+          reassignTask={handleReassignTask}
           showMoreTasks={() => refreshTab(false, true)}
           isFetchingMoreTasks={isFetchingMoreTasks}
           updateDueDate={updateDueDate}
