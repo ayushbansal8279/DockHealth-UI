@@ -1,11 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { isEmpty, isNil } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import { getFilteredTasksForList } from 'actions/task-actions';
 import {
   getFilterRowComponent,
   AssignedOrUnassignedRow,
@@ -41,17 +39,12 @@ const FilterColumn = ({
   filter: { label, list, type, hasAvatars, key },
   selectedFilters,
   onSelectFilters,
-  taskList,
-  taskStatus,
-  filters,
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
   const filteredList = list?.filter(
     ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
   );
-
-  const dispatch = useDispatch();
 
   const onClick = value => {
     let updatedFilters = selectedFilters;
@@ -73,18 +66,7 @@ const FilterColumn = ({
       updatedFilters = { ...selectedFilters, [key]: [value] };
     }
 
-    const taskFilters = {};
-    Object.keys(updatedFilters).forEach(keyIndex => {
-      const { filterKey } = filters[keyIndex];
-      taskFilters[filterKey] = updatedFilters[keyIndex];
-    });
-
     onSelectFilters(updatedFilters);
-    getFilteredTasksForList(
-      taskList?.taskListIdentifier,
-      taskStatus,
-      taskFilters,
-    )(dispatch);
   };
 
   return (
@@ -144,15 +126,8 @@ const MegaFilter = ({
   const [isOpen, openPopover] = useState(false);
   const megaFilterReference = useRef(null);
 
-  const dispatch = useDispatch();
-
   const clearFilters = () => {
     onSelectFilters([]);
-    getFilteredTasksForList(
-      taskList?.taskListIdentifier,
-      taskStatus,
-      {},
-    )(dispatch);
   };
 
   return (

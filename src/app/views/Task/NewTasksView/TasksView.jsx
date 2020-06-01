@@ -55,6 +55,7 @@ const TaskView = ({
   editGroupName,
   changeGroupsOrder,
   showNotificationAction = true,
+  handleFilterChange,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -157,6 +158,11 @@ const TaskView = ({
     }
   };
 
+  const handleSelectFiltersForMegaFilter = newFilters => {
+    selectFiltersForMegaFilter(newFilters);
+    handleFilterChange(newFilters);
+  };
+
   const filteredGroupsWithTasks = !searchValue
     ? groupedTasks
     : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
@@ -206,7 +212,7 @@ const TaskView = ({
         showNotifications={showNotificationAction}
         searchValue={searchValue}
         filters={filters}
-        selectFiltersForMegaFilter={selectFiltersForMegaFilter}
+        selectFiltersForMegaFilter={handleSelectFiltersForMegaFilter}
         selectedFilters={selectedFilters}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (

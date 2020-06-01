@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { always, cond, equals, T } from 'ramda';
+import { always, cond, equals, T, isEmpty } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -195,18 +195,26 @@ class Home extends Component {
       routeParams,
       taskListActions,
       patientActions,
+      megaFilter: { selectedFilters },
     } = this.props;
+
+    const status = 'INCOMPLETE';
 
     if (withLoader) {
       actions.loading();
     }
 
-    actions.getListTasks(
-      routeParams.taskListIdentifier,
-      undefined,
-      undefined,
-      'INCOMPLETE',
-    );
+    if (isEmpty(selectedFilters)) {
+      actions.getListTasks(
+        routeParams.taskListIdentifier,
+        undefined,
+        undefined,
+        status,
+      );
+    } else {
+      this.getFilteredTasks(selectedFilters, status);
+    }
+
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
@@ -234,68 +242,12 @@ class Home extends Component {
     }
   };
 
-  handleFilterChange = (filterBy, sortBy) => {
-    const {
-      actions,
-      routeParams: { listName, taskListIdentifier },
-    } = this.props;
+  handleFilterChange = updatedFilters => {
+    const { tabName } = this.props;
+    const taskStatus =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
 
-    actions.loading();
-
-    if (listName === ASSIGNED_BY_ME) {
-      actions
-        .getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions.getCountOfTasksAssignedByMe(
-        taskListIdentifier,
-        filterBy,
-        'COMPLETE',
-      );
-    } else if (listName === ASSIGNED_TO_ME) {
-      actions
-        .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions.getCountOfTasksAssignedToMe(
-        taskListIdentifier,
-        filterBy,
-        'COMPLETE',
-      );
-    } else {
-      actions
-        .getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions.getListTasksCount(taskListIdentifier, filterBy, 'COMPLETE');
-    }
+    this.getFilteredTasks(updatedFilters, taskStatus);
   };
 
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
@@ -303,11 +255,9 @@ class Home extends Component {
       actions,
       taskListActions,
       completedTasks,
-      routeParams: { listName, taskListIdentifier },
+      routeParams: { taskListIdentifier },
+      megaFilter: { selectedFilters },
     } = this.props;
-
-    let filterBy; // TODO: filters
-    let sortBy; // TODO: filters
 
     let queryStartPosition = 0;
 
@@ -322,75 +272,59 @@ class Home extends Component {
       actions.loadingCompletedTasks();
     }
 
-    if (listName === ASSIGNED_BY_ME) {
-      return actions
-        .getTasksAssignedByMe(
-          taskListIdentifier,
-          sortBy,
-          filterBy,
-          'COMPLETE',
-          cumulativeFlag,
-        )
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-              cumulativeFlag,
-            );
-          });
-        });
-    }
-
-    if (listName === ASSIGNED_TO_ME) {
-      return actions
-        .getTasksAssignedToMe(
-          taskListIdentifier,
-          sortBy,
-          filterBy,
-          'COMPLETE',
-          true,
-        )
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-              cumulativeFlag,
-            );
-          });
-        });
-    }
-
     taskListActions.getTaskListStats({ taskListIdentifier });
-    return actions
-      .getListTasks(
-        taskListIdentifier,
-        sortBy,
-        filterBy,
-        'COMPLETE',
-        cumulativeFlag,
-        queryStartPosition,
-      )
-      .then(noop)
-      .catch(error => {
-        this.handleRetry(error, () => {
-          actions.getListTasks(
-            taskListIdentifier,
-            sortBy,
-            filterBy,
-            'COMPLETE',
-            cumulativeFlag,
-            queryStartPosition,
-          );
+
+    const status = 'COMPLETE';
+
+    if (isEmpty(selectedFilters)) {
+      actions
+        .getListTasks(
+          taskListIdentifier,
+          undefined,
+          undefined,
+          status,
+          cumulativeFlag,
+          queryStartPosition,
+        )
+        .then(noop)
+        .catch(error => {
+          this.handleRetry(error, () => {
+            actions.getListTasks(
+              taskListIdentifier,
+              undefined,
+              undefined,
+              status,
+              cumulativeFlag,
+              queryStartPosition,
+            );
+          });
         });
+    } else {
+      this.getFilteredTasks(selectedFilters, status);
+    }
+  };
+
+  getFilteredTasks = (updatedFilters, taskStatus) => {
+    const {
+      routeParams: { taskListIdentifier },
+      actions,
+      megaFilter: { filters },
+    } = this.props;
+
+    const taskFilters = {};
+
+    if (!isEmpty(updatedFilters)) {
+      Object.keys(updatedFilters).forEach(keyIndex => {
+        const { filterKey } = filters[keyIndex];
+        taskFilters[filterKey] = updatedFilters[keyIndex];
       });
+    }
+
+    actions.getFilteredTasksForList(
+      taskListIdentifier,
+      taskStatus,
+      taskFilters,
+    );
   };
 
   handleRetry = (error, callback) => {
@@ -401,8 +335,6 @@ class Home extends Component {
         .catch(noop);
     }
   };
-
-  handleSearch = () => {};
 
   refreshAccessToken = user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
@@ -527,6 +459,7 @@ class Home extends Component {
       deleteGroup: this.deleteGroup,
       editGroupName: this.editGroupName,
       changeGroupsOrder: this.changeGroupsOrder,
+      handleFilterChange: this.handleFilterChange,
       isSpecialList,
       taskList: loadedTasklist || undefined,
       taskListMembers,
@@ -553,6 +486,7 @@ const mapStateToProps = store => ({
   selectedTaskId: store.taskState.selectedTaskId,
   currentTaskHistory: store.taskState.currentTaskHistory,
   taskListMembers: store.taskListState.tasklistmembers,
+  megaFilter: store.megaFilter,
 });
 
 const mapDispatchToProps = dispatch => ({
