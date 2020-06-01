@@ -1,8 +1,10 @@
 import React, { useCallback, useRef } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Button, Grid } from '@material-ui/core';
 import { splitAt } from 'ramda';
-import { useDispatch } from 'react-redux';
 import { toggleListNotifications } from 'actions/tasklist-actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
@@ -90,7 +92,7 @@ const getMembersNames = ({ members }) =>
     );
   });
 
-export default ({
+const Toolbar = ({
   isSpecialList,
   members,
   membersNotInTaskList,
@@ -104,9 +106,9 @@ export default ({
   completedTasksAmount,
   onSearchChange,
   searchValue,
-  filters,
-  selectedFilters,
-  selectFiltersForMegaFilter,
+  onSelectFilters,
+  megaFilter,
+  megaFilterActions,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -123,12 +125,20 @@ export default ({
   const taskListIdentifier = taskList?.taskListIdentifier;
   const dispatch = useDispatch();
 
+  const { filters, selectedFilters } = megaFilter;
+  const { selectFiltersForMegaFilter } = megaFilterActions;
+
   const toggleNotifications = useToggleNotifications({
     notificationsEnabled,
     closeMorePopover,
     taskListIdentifier,
     dispatch,
   });
+
+  const handleSelectFilters = newFilters => {
+    selectFiltersForMegaFilter(newFilters);
+    onSelectFilters(newFilters);
+  };
 
   const [shownMembers, hiddenMembers] = splitAt(4, members ?? []);
   const hiddenMembersCount = hiddenMembers?.length;
@@ -226,7 +236,7 @@ export default ({
         <MegaFilter
           filters={filters}
           selectedFilters={selectedFilters}
-          onSelectFilters={selectFiltersForMegaFilter}
+          onSelectFilters={handleSelectFilters}
           taskList={taskList}
           taskStatus={selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'}
           activeItemsAmount={
@@ -249,3 +259,13 @@ export default ({
     </PageContentHeader>
   );
 };
+
+const mapDispatchToProps = dispatch => ({
+  megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
+});
+
+const mapStateToProps = store => ({
+  megaFilter: store.megaFilter,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbar);

@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
-import * as MegaFilterActions from 'actions/mega-filter-actions';
 
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
@@ -46,8 +45,6 @@ const TaskView = ({
   dragAndDropDisabled = false,
   listNameVisible = false,
   navigateToTab,
-  megaFilter,
-  megaFilterActions,
   taskCounters,
   createListGroup,
   quickAddTask,
@@ -74,8 +71,6 @@ const TaskView = ({
     storeAsCurrentTask,
   } = taskActions;
   const { groupList } = taskGroupList;
-  const { filters, selectedFilters } = megaFilter;
-  const { selectFiltersForMegaFilter } = megaFilterActions;
 
   const handleTabsNavigation = routeParameters => {
     switch (routeParameters.tabName) {
@@ -159,11 +154,6 @@ const TaskView = ({
     }
   };
 
-  const handleSelectFiltersForMegaFilter = newFilters => {
-    selectFiltersForMegaFilter(newFilters);
-    handleFilterChange(newFilters);
-  };
-
   const filteredGroupsWithTasks = !searchValue
     ? groupedTasks
     : Object.keys(groupedTasks).reduce((groupObject, currentKey) => {
@@ -212,9 +202,7 @@ const TaskView = ({
         onSearchChange={setSearchValue}
         showNotifications={showNotificationAction}
         searchValue={searchValue}
-        filters={filters}
-        selectFiltersForMegaFilter={handleSelectFiltersForMegaFilter}
-        selectedFilters={selectedFilters}
+        onSelectFilters={handleFilterChange}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
@@ -276,7 +264,6 @@ const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
-  megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
 });
 
 const mapStateToProps = store => ({
@@ -288,7 +275,6 @@ const mapStateToProps = store => ({
   completedTasks: store.taskState.completedTasks,
   groupedTasks: groupTasksSelector(store.taskState.tasks),
   isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
-  megaFilter: store.megaFilter,
   taskCounters: store.taskState.taskCounters,
 });
 
