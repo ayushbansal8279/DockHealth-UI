@@ -60,8 +60,6 @@ import {
 
 import { Tasks as SubtasksContainer, Arrow } from '../TasksGroup/styled';
 
-const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-
 const dueDateQuickSelectOptions = [
   {
     label: 'Today',
@@ -257,9 +255,12 @@ const TaskItem = ({
             <GridImg item xs={3}>
               <PopoverDatepicker
                 selectedDate={dueDate}
-                onDateChange={date =>
-                  updateDueDate(task, moment(date, DATE_ISO_FORMAT), true)
-                }
+                onDateChange={date => {
+                  const existingTime = dueDate
+                    ? moment(dueDate).format('HH:mm')
+                    : '';
+                  updateDueDate(task, moment(`${date} ${existingTime}`), true);
+                }}
                 quickSelectOptions={dueDateQuickSelectOptions}
               >
                 <DueDateContainer>

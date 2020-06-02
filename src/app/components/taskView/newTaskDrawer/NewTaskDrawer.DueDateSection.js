@@ -96,12 +96,16 @@ const renderDropdownItem = ({
   </div>
 );
 
-const onItemSelection = ({ saveDueDate }) => value => {
-  saveDueDate({ updatedDueDate: value });
+const onItemSelection = ({ saveDueDate, currentDueTime }) => value => {
+  saveDueDate({
+    updatedDueDate: value,
+    updatedDueTime: currentDueTime || '',
+  });
 };
 
 const DueDateSection = ({ setAutoSaveVisible }) => {
   const dateFieldName = 'dueDate';
+  const timeFieldName = 'dueTime';
 
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
   const popoverStateArray = useBoolean(false);
@@ -111,6 +115,7 @@ const DueDateSection = ({ setAutoSaveVisible }) => {
   const { setValue, watch } = useFormContext();
 
   const currentDueDate = watch(dateFieldName);
+  const currentDueTime = watch(timeFieldName);
 
   const selectedTaskIdentifier = useSelector(
     store => store.taskState.selectedTask?.taskIdentifier ?? null,
@@ -172,7 +177,7 @@ const DueDateSection = ({ setAutoSaveVisible }) => {
         closeCalendar,
         openPopover,
         closePopover,
-        onItemSelection: onItemSelection({ saveDueDate }),
+        onItemSelection: onItemSelection({ saveDueDate, currentDueTime }),
       })}
       popoverStateArray={popoverStateArray}
     >

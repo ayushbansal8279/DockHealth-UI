@@ -393,7 +393,7 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
       {},
       {
         params: {
-          dueDate: dueDate ? dueDate.format('MM/DD/YYYY 00:00:00 ZZ') : null,
+          dueDate: dueDate ? dueDate.format('MM/DD/YYYY HH:mm:ss ZZ') : null,
         },
       },
     )

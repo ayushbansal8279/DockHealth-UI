@@ -14,6 +14,7 @@ import CommentSection from './NewTaskDrawer.CommentSection';
 import DueDateSection from './NewTaskDrawer.DueDateSection';
 import initializeTaskDrawerHooks from './NewTaskDrawer.Hooks';
 import initializeTaskDrawerPopoverHooks from './NewTaskDrawer.PopoverHooks';
+import initializeDueDateSectionHooks from './NewTaskDrawer.DueDateSection.Hooks';
 import InviteMemberPopover from './NewTaskDrawer.InviteMemberPopover';
 import LabelsSection from './NewTaskDrawer.LabelsSection';
 import PrioritySection from './NewTaskDrawer.PrioritySection';
@@ -65,6 +66,8 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
     setAutoSaveVisible,
     members,
   } = initializeTaskDrawerHooks({ isInbox });
+
+  const { saveDueDate } = initializeDueDateSectionHooks({ setAutoSaveVisible });
 
   const { handleSubmit, setValue, watch } = formMethods;
 
@@ -291,6 +294,20 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                     step: 300, // 5 min
                     style: {
                       color: dueTimeValue ? palette.black : palette.coolGrey3,
+                    },
+                    onFocus: event => {
+                      // eslint-disable-next-line no-param-reassign
+                      event.target.style.color = '#000000';
+                    },
+                    onChange: event => {
+                      // eslint-disable-next-line no-param-reassign
+                      event.target.style.color = '#000000';
+                    },
+                    onBlur: event => {
+                      saveDueDate({
+                        updatedDueDate: dueDateValue,
+                        updatedDueTime: event.target.value,
+                      });
                     },
                   }}
                 />
