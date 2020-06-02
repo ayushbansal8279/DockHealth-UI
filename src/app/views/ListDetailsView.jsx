@@ -11,7 +11,7 @@ import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import * as TaskLabelActions from 'actions/task-label-actions';
-import * as TaskGroupActions from 'actions/task-group-list-actions';
+import { TasksGroupsListActions } from 'sagas/tasks-groups-list';
 import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
@@ -367,14 +367,14 @@ class Home extends Component {
   deleteGroup = groupId => {
     const {
       modalActions,
-      taskGroupActions,
+      tasksGroupsListActions: { deleteTasksGroup },
       routeParams: { taskListIdentifier },
     } = this.props;
 
     const modalProps = {
       confirm: () => {
         modalActions.closeModal();
-        taskGroupActions.deleteTasksGroup(groupId, taskListIdentifier);
+        deleteTasksGroup({ groupId, taskListIdentifier });
       },
     };
     modalActions.openModal('DeleteGroup', modalProps);
@@ -382,22 +382,18 @@ class Home extends Component {
 
   editGroupName = (newGroupName, groupId) => {
     const {
-      taskGroupActions,
+      tasksGroupsListActions: { editTasksGroupName },
       routeParams: { taskListIdentifier },
     } = this.props;
 
     if (newGroupName) {
-      taskGroupActions.editTasksGroupName(
-        taskListIdentifier,
-        groupId,
-        newGroupName,
-      );
+      editTasksGroupName({ taskListIdentifier, groupId, newGroupName });
     }
   };
 
   changeGroupsOrder = (oldTaskIndex, newTaskIndex, groupList) => {
     const {
-      taskGroupActions,
+      tasksGroupsListActions: { sortTasksGroups },
       routeParams: { taskListIdentifier },
     } = this.props;
     if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
@@ -405,12 +401,12 @@ class Home extends Component {
     }
     const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
     const newGroupList = arrayMove(groupIdsList, oldTaskIndex, newTaskIndex);
-    taskGroupActions.sortTaskGroups(newGroupList, taskListIdentifier);
+    sortTasksGroups({ taskGroupIdentifiers: newGroupList, taskListIdentifier });
   };
 
   render() {
     const {
-      taskGroupActions,
+      tasksGroupsListActions,
       members,
       tasklists,
       taskListMembers,
@@ -420,6 +416,8 @@ class Home extends Component {
       megaFilter: { selectedFilters },
       routeParams: { listName, taskListIdentifier },
     } = this.props;
+
+    const { createTaskGroupList } = tasksGroupsListActions;
 
     const allTaskLists = [...(pendingTasklists ?? []), ...(tasklists ?? [])];
 
@@ -435,7 +433,7 @@ class Home extends Component {
       downloadPDF: this.downloadPDF,
       navigateToTab: this.navigateToTab,
       createListGroup: groupName =>
-        taskGroupActions.createTaskGroupList({ groupName, taskListIdentifier }),
+        createTaskGroupList({ groupName, taskListIdentifier }),
       quickAddTask: this.quickAddTask,
       deleteGroup: this.deleteGroup,
       editGroupName: this.editGroupName,
@@ -468,7 +466,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(TaskActions, dispatch),
   taskListActions: bindActionCreators(TaskListActions, dispatch),
   taskLabelActions: bindActionCreators(TaskLabelActions, dispatch),
-  taskGroupActions: bindActionCreators(TaskGroupActions, dispatch),
+  tasksGroupsListActions: bindActionCreators(TasksGroupsListActions, dispatch),
   patientActions: bindActionCreators(PatientActions, dispatch),
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   setHeader: setHeaderRaw(dispatch),

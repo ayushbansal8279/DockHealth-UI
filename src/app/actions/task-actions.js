@@ -3,9 +3,9 @@ import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import * as AlertActions from 'alert/actions';
+import { getTasksGroupsList } from 'sagas/tasks-groups-list';
 import * as ActionTypes from './action-types';
 import * as TaskListActions from './tasklist-actions';
-import * as TaskGroupListActions from './task-group-list-actions';
 import AlertMessages from '../alert/AlertMessages';
 
 const shapeTask = task => {
@@ -339,7 +339,9 @@ export function saveTask(newTask, shouldReloadGroups = false) {
           });
           if (shouldReloadGroups) {
             dispatch(
-              TaskGroupListActions.getTaskGroupList(newTask.taskListIdentifier),
+              getTasksGroupsList({
+                taskListIdentifier: newTask.taskListIdentifier,
+              }),
             );
           }
           reloadTaskListStats(dispatch, task);

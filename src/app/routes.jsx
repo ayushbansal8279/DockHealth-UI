@@ -15,7 +15,7 @@ import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'components/patient/PatientDetailsView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { storeAsCurrentTask } from './actions/task-actions';
-import { getTaskGroupList } from './actions/task-group-list-actions';
+import { getTasksGroupsList } from './sagas/tasks-groups-list';
 import { getMembersByTaskListId } from './actions/tasklist-actions';
 import {
   getFiltersForMegaFilter,
@@ -181,7 +181,9 @@ export const Routes = ({ store }) => {
     const { params } = nextState;
 
     if (params?.taskListIdentifier) {
-      dispatch(getTaskGroupList(params?.taskListIdentifier));
+      dispatch(
+        getTasksGroupsList({ taskListIdentifier: params?.taskListIdentifier }),
+      );
       dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));
       dispatch(
         getFiltersForMegaFilter(

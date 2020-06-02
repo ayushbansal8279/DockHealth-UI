@@ -131,6 +131,7 @@ const config = (environment, options) => {
         modal: path.resolve(__dirname, 'src/app/modal'),
         selectors: path.resolve(__dirname, 'src/app/selectors'),
         alert: path.resolve(__dirname, 'src/app/alert'),
+        sagas: path.resolve(__dirname, 'src/app/sagas'),
       },
     },
     devServer: {
