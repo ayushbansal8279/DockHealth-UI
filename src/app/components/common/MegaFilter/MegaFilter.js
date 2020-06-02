@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useMount } from 'react-use';
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil, partition } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
 import palette from 'styles/palette';
@@ -50,16 +50,11 @@ const FilterColumn = ({
     ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
   );
 
-  const searchedFiletrs = filteredList?.filter(({ displayValue }) =>
-    searchedFilterQuery
-      ? displayValue.toLowerCase().includes(searchedFilterQuery.toLowerCase())
-      : false,
-  );
-
-  const unsearchedFiletrs = filteredList?.filter(({ displayValue }) =>
-    searchedFilterQuery
-      ? !displayValue.toLowerCase().includes(searchedFilterQuery.toLowerCase())
-      : true,
+  const [searchedFiletrs, unsearchedFiletrs] = partition(
+    ({ displayValue }) =>
+      searchedFilterQuery &&
+      displayValue?.toLowerCase().includes(searchedFilterQuery?.toLowerCase()),
+    filteredList || [],
   );
 
   const onClick = value => {
