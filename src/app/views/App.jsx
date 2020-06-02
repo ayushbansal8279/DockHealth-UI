@@ -7,7 +7,6 @@ import IdleTimer from 'react-idle-timer';
 import { hashHistory } from 'react-router';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
-import GlobalAlertChip from 'alert/GlobalAlertChip';
 
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as userApi from 'api/user-api';
@@ -88,7 +87,6 @@ class App extends PureComponent {
       <AppContainer id="appHome">
         <Modal />
         <div className="new-task" />
-        <GlobalAlertChip />
         <IdleTimer
           ref={reference => {
             this.idleTimer = reference;
