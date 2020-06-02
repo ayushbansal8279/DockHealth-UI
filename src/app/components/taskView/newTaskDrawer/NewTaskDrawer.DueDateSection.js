@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import useBoolean from 'hooks/useBoolean';
 import { RobotoTypography } from 'styles/theme';
 
+import palette from 'styles/palette';
 import Calendar from './NewTaskDrawer.Calendar';
 import DropdownInput from './NewTaskDrawer.DropdownInput';
 import { DueDateLabelContainer } from './NewTaskDrawer.DueDateSection.Styled';
@@ -171,6 +172,12 @@ const DueDateSection = ({ setAutoSaveVisible }) => {
         value: currentDueDate
           ? moment(currentDueDate).format(DATE_US_FORMAT)
           : '',
+        style: {
+          color:
+            currentDueDate && moment(currentDueDate).isBefore(moment())
+              ? palette.red
+              : palette.black,
+        },
       }}
       renderItem={renderDropdownItem({
         openCalendar,

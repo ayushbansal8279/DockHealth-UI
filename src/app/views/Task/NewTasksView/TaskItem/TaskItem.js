@@ -14,6 +14,7 @@ import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/cross';
 import CalendarDimIcon from 'img/calendar-dim';
 import CalendarIcon from 'img/calendar-icon';
+import CalendarOverDueIcon from 'img/calendar-overdue-icon';
 import CalendarIconHover from 'img/calendar-icon-hover';
 import CalendarNewIcon from 'img/calendar-new';
 import ClipDimIcon from 'img/clip-dim';
@@ -118,6 +119,11 @@ const getItemIconVersion = (value, isHovered) => {
 
 const getItemIcon = (type, value, isHovered) =>
   ITEM_ICONS[type][getItemIconVersion(value, isHovered)];
+
+const getCalendarIcon = (value, isHovered, isOverDue) =>
+  isOverDue
+    ? CalendarOverDueIcon
+    : ITEM_ICONS[DUE_DATE][getItemIconVersion(value, isHovered)];
 
 const TaskItem = ({
   isOpen,
@@ -269,7 +275,11 @@ const TaskItem = ({
                   </DueDate>
                   <img
                     alt="due-date"
-                    src={getItemIcon(DUE_DATE, dueDate, isHovered)}
+                    src={getCalendarIcon(
+                      dueDate,
+                      isHovered,
+                      !!(dueDate && moment(dueDate).isBefore(moment())),
+                    )}
                   />
                 </DueDateContainer>
               </PopoverDatepicker>

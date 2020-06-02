@@ -2,6 +2,7 @@
 import { Button, Grid, Divider } from '@material-ui/core';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
+import moment from 'moment';
 import CubesLoader from 'components/common/CubesLoader';
 import Spacing from 'components/common/Spacing';
 import InboxIcon from 'img/drawer/InboxIcon';
@@ -42,6 +43,7 @@ import {
   renderMemberoptionWithHighlighting,
 } from './NewTaskDrawer.Utilities';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const NewTaskDrawer = ({ isInbox, modalActions }) => {
   const {
     taskDrawerOpen,
@@ -80,6 +82,9 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
 
   const dueDateValue = watch('dueDate');
   const dueTimeValue = watch('dueTime');
+
+  const isOverDue = dueDateValue && moment(dueDateValue).isBefore(moment());
+  const overDueColor = isOverDue ? palette.red : palette.black;
 
   const {
     patientInputReference,
@@ -293,7 +298,8 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   inputProps={{
                     step: 300, // 5 min
                     style: {
-                      color: dueTimeValue ? palette.black : palette.coolGrey3,
+                      color: dueTimeValue ? overDueColor : palette.coolGrey3,
+                      paddingTop: '1.65rem',
                     },
                     onFocus: event => {
                       // eslint-disable-next-line no-param-reassign

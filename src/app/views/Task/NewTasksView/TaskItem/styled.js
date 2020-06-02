@@ -67,7 +67,7 @@ export const DescriptionBox = styled.div`
 `;
 
 export const DueDate = styled.span`
-  bottom: 0;
+  bottom: 1;
   color: ${palette.white};
   font-size: ${fontSizes.small};
   position: absolute;
