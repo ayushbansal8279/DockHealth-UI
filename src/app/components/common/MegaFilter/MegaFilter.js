@@ -1,14 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { useMount } from 'react-use';
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil, partition } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
-import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import {
   getFilterRowComponent,
   AssignedOrUnassignedRow,
 } from './MegaFilterRowComponents';
+import MegaFilterSearch from './MegaFilterSearch';
 
 import {
   MegaFilterPopover,
@@ -22,7 +22,9 @@ import {
   FilterList,
   FilterLabel,
   FilterSelected,
+  FilterSearched,
   ClearButton,
+  MegaFilterOptions,
 } from './styled';
 
 const UNASSIGNED = 'UNASSIGNED';
@@ -40,11 +42,19 @@ const FilterColumn = ({
   filter: { label, list, type, hasAvatars, key },
   selectedFilters,
   onSelectFilters,
+  searchedFilterQuery,
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
   const filteredList = list?.filter(
     ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
+  );
+
+  const [searchedFiletrs, unsearchedFiletrs] = partition(
+    ({ displayValue }) =>
+      searchedFilterQuery &&
+      displayValue?.toLowerCase().includes(searchedFilterQuery?.toLowerCase()),
+    filteredList || [],
   );
 
   const onClick = value => {
@@ -74,6 +84,24 @@ const FilterColumn = ({
     <StyledFilter>
       <FilterLabel>{label}</FilterLabel>
       <FilterList>
+        {!isEmpty(searchedFiletrs) && (
+          <FilterSearched>
+            {searchedFiletrs?.map(item => {
+              const itemKey = item.key;
+              return (
+                <AssignedOrUnassignedRow
+                  itemKey={itemKey}
+                  isUnassigned={itemKey === UNASSIGNED}
+                  hasAvatars={hasAvatars}
+                  onClick={() => onClick(itemKey)}
+                  {...item}
+                >
+                  <FilterRow />
+                </AssignedOrUnassignedRow>
+              );
+            })}
+          </FilterSearched>
+        )}
         {!isEmpty(columnSelectedFilters) && !isNil(columnSelectedFilters) && (
           <FilterSelected>
             {columnSelectedFilters?.map(filterValue => {
@@ -96,7 +124,7 @@ const FilterColumn = ({
             })}
           </FilterSelected>
         )}
-        {filteredList?.map(item => {
+        {unsearchedFiletrs?.map(item => {
           const itemKey = item.key;
           return (
             <AssignedOrUnassignedRow
@@ -125,6 +153,7 @@ const MegaFilter = ({
   taskStatus,
 }) => {
   const [isOpen, openPopover] = useState(false);
+  const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterReference = useRef(null);
 
   const clearFilters = () => {
@@ -163,10 +192,15 @@ const MegaFilter = ({
               </MegaFilterBoldedLabel>
               {activeItemsAmount} ITEMS
             </MegaFilterLabel>
-            <Spacing horizontal={4} />
-            <ClearButton type="button" onClick={clearFilters}>
-              CLEAR
-            </ClearButton>
+            <MegaFilterOptions>
+              <MegaFilterSearch
+                onSearch={setSearchedFilterQuery}
+                value={searchedFilterQuery}
+              />
+              <ClearButton type="button" onClick={clearFilters}>
+                CLEAR ALL
+              </ClearButton>
+            </MegaFilterOptions>
           </MegaFilterHeader>
           <Filters>
             {Object.keys(filters)?.map(key => (
@@ -178,6 +212,7 @@ const MegaFilter = ({
                 taskList={taskList}
                 taskStatus={taskStatus}
                 filters={filters}
+                searchedFilterQuery={searchedFilterQuery}
               />
             ))}
           </Filters>

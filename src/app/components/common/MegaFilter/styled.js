@@ -28,6 +28,7 @@ export const Container = styled.div`
 export const MegaFilterHeader = styled.div`
   display: flex;
   margin-bottom: ${spacing.largePlus};
+  justify-content: space-between;
 `;
 
 export const MegaFilterLabel = styled.label`
@@ -59,7 +60,14 @@ export const FilterList = styled.div`
 
 export const FilterSelected = styled.div`
   border-bottom: 1px solid ${palette.blueGrey};
-  margin-bottom: ${spacing.tiny};
+  margin-bottom: ${spacing.small};
+  padding-bottom: ${spacing.small};
+`;
+
+export const FilterSearched = styled.div`
+  border-bottom: 1px solid ${palette.blueGrey};
+  margin-bottom: ${spacing.small};
+  padding-bottom: ${spacing.small};
 `;
 
 export const FilterLabel = styled.label`
@@ -101,7 +109,8 @@ export const StyledUnassignedIcon = styled.img`
 
 export const ClearButton = styled.button`
   display: flex;
-  margin-left: ${spacing.huge};
+  align-items: center;
+  margin-left: ${spacing.small};
   color: ${palette.brightBlue};
   font-size: ${fontSizes.small};
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
@@ -118,4 +127,44 @@ export const OptionLabel = styled.span`
 export const OptionCount = styled.div`
   margin-left: ${spacing.small};
   color: ${palette.coolGrey2};
+`;
+
+export const MegaFilterOptions = styled.div`
+  display: flex;
+`;
+
+export const MegaFilterSearchContainer = styled.div`
+  display: flex;
+`;
+
+export const MegaFilterSearchInputContainer = styled.div`
+  position: relative;
+  display: flex;
+  margin-left: ${spacing.small};
+`;
+
+export const MegaFilterSearchInput = styled.input`
+  font-size: ${fontSizes.small};
+  width: 64px; // per design
+  color: ${palette.lightGrey};
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  transition: all 0.5s;
+  border: none;
+
+  &:focus {
+    color: ${palette.darkGrey};
+    border-bottom: 1px solid #c1ccda;
+    width: 320px; // per design
+    outline: none;
+    padding-bottom: ${spacing.small};
+    padding-right: ${spacing.regular};
+  }
+`;
+
+export const MegaFilterClearIcon = styled.img`
+  opacity: ${props => (props.isInputFocused ? '1' : '0')};
+  cursor: ${props => (props.isInputFocused ? 'pointer' : 'default')};
+  position: absolute;
+  right: 0;
 `;
