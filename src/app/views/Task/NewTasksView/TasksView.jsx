@@ -54,6 +54,7 @@ const TaskView = ({
   showNotificationAction = true,
   handleFilterChange,
   hasFiltersApplied,
+  selectedTask,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
@@ -221,6 +222,7 @@ const TaskView = ({
           listNameVisible={listNameVisible}
           isSearchApplied={!!searchValue}
           hasFiltersApplied={hasFiltersApplied}
+          selectedTask={selectedTask}
         />
       ) : (
         <OpenedTasksView
@@ -253,6 +255,7 @@ const TaskView = ({
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
           isSearchApplied={!!searchValue}
+          selectedTask={selectedTask}
         />
       )}
       <NewTaskDrawer modalActions={modalActions} />
@@ -276,6 +279,7 @@ const mapStateToProps = store => ({
   groupedTasks: groupTasksSelector(store.taskState.tasks),
   isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
   taskCounters: store.taskState.taskCounters,
+  selectedTask: store.taskState.selectedTask,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

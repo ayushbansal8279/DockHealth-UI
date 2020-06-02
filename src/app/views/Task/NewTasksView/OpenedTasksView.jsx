@@ -42,6 +42,7 @@ const OpenedTasksView = ({
   dragAndDropDisabled,
   listNameVisible,
   isSearchApplied,
+  selectedTask,
 }) => {
   const [tasks, updateTaskGroups] = useState(groupedTasks);
   const [draggedId, setDraggableId] = useState(null);
@@ -136,6 +137,7 @@ const OpenedTasksView = ({
                   dragAndDropDisabled={dragAndDropDisabled}
                   listNameVisible={listNameVisible}
                   isSearchApplied={isSearchApplied}
+                  selectedTask={selectedTask}
                 />
               ),
             )}

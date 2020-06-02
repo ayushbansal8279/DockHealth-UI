@@ -140,8 +140,10 @@ const TaskItem = ({
   subtasks,
   dragAndDropDisabled,
   listNameVisible,
+  selectedTask,
 }) => {
   const {
+    taskIdentifier,
     edited,
     assignedTo,
     attachments,
@@ -174,7 +176,9 @@ const TaskItem = ({
       onMouseEnter={() => setIsHoverd(true)}
       onMouseLeave={() => setIsHoverd(false)}
     >
-      <TaskItemContainer>
+      <TaskItemContainer
+        isSelected={selectedTask?.taskIdentifier === taskIdentifier}
+      >
         {!dragAndDropDisabled && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
@@ -424,6 +428,10 @@ const Task = ({
       state.taskState,
     ),
   );
+
+  useEffect(() => {
+    switchOpen(isFullView);
+  }, [isFullView, switchOpen]);
 
   const renderedSubtasks =
     addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier

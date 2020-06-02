@@ -21,6 +21,7 @@ const DragAndDropGroupList = ({
   updateWorkflowStatus,
   dragAndDropDisabled,
   listNameVisible,
+  selectedTask,
 }) => {
   const [isDraggingOverGroup, setIsDraggingOverGroup] = useState(false);
 
@@ -66,6 +67,7 @@ const DragAndDropGroupList = ({
                       isCompletedGroup || dragAndDropDisabled
                     }
                     listNameVisible={listNameVisible}
+                    selectedTask={selectedTask}
                   />
                 )}
               </Draggable>

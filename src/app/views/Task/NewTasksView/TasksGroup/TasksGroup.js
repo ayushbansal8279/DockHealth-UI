@@ -63,6 +63,7 @@ const TasksGroup = ({
   changingGroupOrderDisabled,
   hasFiltersApplied,
   isSearchApplied,
+  selectedTask,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -172,6 +173,7 @@ const TasksGroup = ({
           updateWorkflowStatus={updateWorkflowStatus}
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
+          selectedTask={selectedTask}
         />
         {groupPagination && hasMoreTasks && !hasFiltersApplied && (
           <PaginationButton

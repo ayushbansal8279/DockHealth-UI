@@ -121,7 +121,8 @@ export const TaskItemCell = styled.div`
 
 export const TaskItemContainer = styled.div`
   position: relative;
-  background-color: white;
+  background-color: ${props =>
+    props.isSelected ? palette.blueGrey : palette.white};
   border: 1px solid ${palette.coolGrey3};
   display: flex;
   justify-content: flex-end;
