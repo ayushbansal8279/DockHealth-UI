@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 
 export const PersonNameLabelContainer = styled.div`
-  color: ${palette.blueOcean};
+  color: ${palette.mediumGrey};
 `;
 
 export const AuditDetailsLabelContainer = styled.div`
-  color: ${palette.black};
+  color: ${palette.mediumGrey};
 `;
 
 export const AuditTypeLabelContainer = styled.div`
