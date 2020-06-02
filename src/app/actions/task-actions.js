@@ -1108,6 +1108,31 @@ export function getFilteredTasksForList(
       });
 }
 
+export function getFilteredTasksForPeopleList(
+  userIdentifier,
+  status,
+  selectedFilters,
+) {
+  const action =
+    status === 'INCOMPLETE'
+      ? ActionTypes.GET_TASKS_SUCCESS
+      : ActionTypes.GET_COMPLETED_TASKS_SUCCESS;
+
+  return dispatch =>
+    TaskApi.getFilteredTasksForPersonList(
+      userIdentifier,
+      status,
+      selectedFilters,
+    )
+      .then(tasks => {
+        dispatch({ type: action, tasks });
+        return tasks;
+      })
+      .catch(error => {
+        throw error;
+      });
+}
+
 const processTaskCountersSuccess = (data, dispatch) => {
   const payload = {
     incomplete: data.find(

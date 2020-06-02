@@ -8,28 +8,39 @@ const getFiltersFromLocalStorage = identifier =>
     ? JSON.parse(sessionStorage[`filter-${identifier}`])
     : null;
 
-export function getFiltersForMegaFilter(listId) {
+const handleFiltersLoadSuccess = (id, data, dispatch) => {
+  const initialFilters = getFiltersFromLocalStorage(id);
+
+  if (initialFilters)
+    dispatch({
+      type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
+      selectedFilters: initialFilters,
+    });
+
+  dispatch({
+    type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
+    filters: data,
+  });
+
+  dispatch({
+    type: ActionTypes.INITIALIZE_MEGA_FILTER,
+  });
+};
+
+export function getFiltersForMegaFilter(listId, status, isInitial = true) {
   return dispatch => {
     dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
 
-    MegaFilterApi.getFiltersForMegaFilter(listId)
+    MegaFilterApi.getFiltersForTaskListMegaFilter(listId, status)
       .then(data => {
-        const initialFilters = getFiltersFromLocalStorage(listId);
-
-        if (initialFilters)
+        if (isInitial) {
+          handleFiltersLoadSuccess(listId, data, dispatch);
+        } else {
           dispatch({
-            type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
-            selectedFilters: initialFilters,
+            type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
+            filters: data,
           });
-
-        dispatch({
-          type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-          filters: data,
-        });
-
-        dispatch({
-          type: ActionTypes.INITIALIZE_MEGA_FILTER,
-        });
+        }
       })
       .catch(error => {
         dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
@@ -37,12 +48,37 @@ export function getFiltersForMegaFilter(listId) {
   };
 }
 
-export function selectFiltersForMegaFilter(selectedFilters, listId) {
+export function getFiltersForPeopleListMegaFilter(
+  userId,
+  status,
+  isInitial = true,
+) {
+  return dispatch => {
+    dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
+
+    MegaFilterApi.getFiltersForPeopleListMegaFilter(userId, status)
+      .then(data => {
+        if (isInitial) {
+          handleFiltersLoadSuccess(userId, data, dispatch);
+        } else {
+          dispatch({
+            type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
+            filters: data,
+          });
+        }
+      })
+      .catch(error => {
+        dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
+      });
+  };
+}
+
+export function selectFiltersForMegaFilter(selectedFilters, id) {
   return dispatch => {
     if (isEmpty(selectedFilters)) {
-      sessionStorage.removeItem(`filter-${listId}`);
+      sessionStorage.removeItem(`filter-${id}`);
     } else {
-      sessionStorage[`filter-${listId}`] = JSON.stringify(selectedFilters);
+      sessionStorage[`filter-${id}`] = JSON.stringify(selectedFilters);
     }
 
     dispatch({

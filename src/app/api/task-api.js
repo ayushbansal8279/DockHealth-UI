@@ -711,3 +711,19 @@ export function getFilteredTasksForList(
       throw error;
     });
 }
+
+export function getFilteredTasksForPersonList(
+  userIdentifier,
+  status = 'INCOMPLETE',
+  selectedFilters,
+) {
+  return axios
+    .post(
+      `/task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}?status=${status}`,
+      selectedFilters,
+    )
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}

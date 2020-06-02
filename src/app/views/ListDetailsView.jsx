@@ -53,7 +53,7 @@ class Home extends Component {
       );
     }
 
-    await this.refreshTab(true);
+    this.initTable();
 
     taskListActions.getOrganizationUsersNotInTaskList(
       routeParams.taskListIdentifier,
@@ -141,6 +141,25 @@ class Home extends Component {
 
     actions.resetTaskCounters();
   }
+
+  initTable = () => {
+    const {
+      actions,
+      routeParams: { tabName, taskListIdentifier },
+    } = this.props;
+
+    if (tabName === TaskListTabName.COMPLETE) actions.loadingCompletedTasks();
+    else actions.loading();
+
+    // if filtera are saved megafilter will initialize table
+    if (!sessionStorage[`filter-${taskListIdentifier}`]) {
+      if (tabName === TaskListTabName.COMPLETE) {
+        this.getTasksList(taskListIdentifier, 'COMPLETE');
+      } else {
+        this.getTasksList(taskListIdentifier, 'INCOMPLETE');
+      }
+    }
+  };
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {

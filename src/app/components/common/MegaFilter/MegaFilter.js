@@ -203,18 +203,20 @@ const MegaFilter = ({
             </MegaFilterOptions>
           </MegaFilterHeader>
           <Filters>
-            {Object.keys(filters)?.map(key => (
-              <FilterColumn
-                key={key}
-                filter={{ ...filters[key], key }}
-                selectedFilters={selectedFilters}
-                onSelectFilters={onSelectFilters}
-                taskList={taskList}
-                taskStatus={taskStatus}
-                filters={filters}
-                searchedFilterQuery={searchedFilterQuery}
-              />
-            ))}
+            {Object.keys(filters)
+              ?.filter(key => !isEmpty(filters[key].list))
+              .map(key => (
+                <FilterColumn
+                  key={key}
+                  filter={{ ...filters[key], key }}
+                  selectedFilters={selectedFilters}
+                  onSelectFilters={onSelectFilters}
+                  taskList={taskList}
+                  taskStatus={taskStatus}
+                  filters={filters}
+                  searchedFilterQuery={searchedFilterQuery}
+                />
+              ))}
           </Filters>
         </Container>
       </MegaFilterPopover>
