@@ -2,6 +2,13 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import palette from 'styles/palette';
 
+const DOTS_COLORS = [
+  palette.lightBlue,
+  palette.brightBlue,
+  palette.darkBlue,
+  palette.darkGrey,
+];
+
 const itemAnimation = keyframes`
   0% { left: 6%; transform: scale(0); }
   25% { left: 6%; transform: scale(0); }
@@ -16,11 +23,11 @@ const lastItemAnimation = keyframes`
 `;
 
 const lastItemColorAnimation = keyframes`
-  0% { background: ${palette.brightBlue}; }
-  25% { background: #5ccced; }
-  50% { background: ${palette.darkGrey}; }
-  75% { background: ${palette.darkBlue}; }
-  100% { background: ${palette.brightBlue}; }
+  0% { background: ${DOTS_COLORS[1]}; }
+  25% { background: ${DOTS_COLORS[0]}; }
+  50% { background: ${DOTS_COLORS[3]}; }
+  75% { background: ${DOTS_COLORS[2]}; }
+  100% { background: ${DOTS_COLORS[1]}; }
 `;
 
 const LoaderContainer = styled.div`
@@ -44,22 +51,22 @@ const LoaderItem = styled.div`
   }
 
   &:nth-child(2) {
-    background: ${palette.brightBlue};
+    background: ${DOTS_COLORS[1]};
     animation-delay: -${props => (props.speed / 4) * 2}s;
   }
 
   &:nth-child(3) {
-    background: ${palette.darkBlue};
+    background: ${DOTS_COLORS[2]};
     animation-delay: -${props => (props.speed / 4) * 3}s;
   }
 
   &:nth-child(4) {
-    background: ${palette.darkGrey};
+    background: ${DOTS_COLORS[3]};
     animation-delay: -${props => (props.speed / 4) * 4}s;
   }
 
   &:nth-child(5) {
-    background: #5ccced;
+    background: ${DOTS_COLORS[0]};
     animation-delay: -${props => (props.speed / 4) * 5}s;
   }
 `;
