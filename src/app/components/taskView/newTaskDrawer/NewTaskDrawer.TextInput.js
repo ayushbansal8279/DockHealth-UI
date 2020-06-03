@@ -23,6 +23,7 @@ const TextInput = React.forwardRef(
       InputProps,
       parentType,
       multiple,
+      disabled,
       ...props
     },
     reference,
@@ -74,6 +75,7 @@ const TextInput = React.forwardRef(
           onBlur={onBlur}
           inputProps={inputProps}
           inputRef={parentType !== 'text' ? null : register}
+          disabled={disabled}
         />
         <span className={classes.errorMessage}>{error}</span>
       </>
@@ -93,6 +95,7 @@ TextInput.propTypes = {
   onBlur: func,
   inputProps: objectOf(any),
   InputProps: objectOf(any),
+  disabled: bool,
 };
 
 TextInput.defaultProps = {
@@ -105,6 +108,7 @@ TextInput.defaultProps = {
   onBlur: () => {},
   inputProps: {},
   InputProps: {},
+  disabled: false,
 };
 
 export default withStyles(styles)(TextInput);

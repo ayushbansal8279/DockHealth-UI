@@ -151,6 +151,7 @@ const SelectInput = React.forwardRef(
       forceOpen,
       createTagActionLabel,
       onFocusCallback,
+      disabled,
     },
     reference,
   ) => {
@@ -349,6 +350,7 @@ const SelectInput = React.forwardRef(
             <TextInput
               ref={inputReference}
               {...getInputProps()}
+              disabled={disabled}
               parentType={
                 multiple && currentOption && currentOption.length > 3
                   ? 'selectTag'
@@ -465,6 +467,7 @@ SelectInput.propTypes = {
   forceOpen: bool,
   createTagActionLabel: string,
   onFocusCallback: func,
+  disabled: bool,
 };
 
 SelectInput.defaultProps = {
@@ -475,7 +478,7 @@ SelectInput.defaultProps = {
   renderOptionLabel: propOr('', 'displayLabel'),
   forcePopupIcon: undefined,
   noOptionsText: undefined,
-  getOptionDisabled: prop('disabled'),
+  getOptionDisabled: undefined,
   onInputChange: undefined,
   onItemSelected: undefined,
   multiple: false,
@@ -487,6 +490,7 @@ SelectInput.defaultProps = {
   forceOpen: false,
   createTagActionLabel: undefined,
   onFocusCallback: undefined,
+  disabled: false,
 };
 
 export default SelectInput;

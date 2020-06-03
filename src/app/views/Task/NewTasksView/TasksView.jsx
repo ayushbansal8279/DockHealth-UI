@@ -185,6 +185,13 @@ const TaskView = ({
         description.toLowerCase().includes(searchValue.toLowerCase()),
       );
 
+  // const closeTaskDrawer = () => {
+  //   console.log('in closeTaskDrawer');
+  //   const { storeAsCurrentTask, taskDrawerActions } = this.props;
+  //   taskDrawerActions.closeDrawer();
+  //   storeAsCurrentTask(null);
+  // };
+
   return (
     <TaskViewContainer>
       <Toolbar
