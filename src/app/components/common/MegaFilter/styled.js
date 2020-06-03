@@ -9,6 +9,8 @@ export const MegaFilterPopover = withStyles({
   paper: {
     right: '40px', // per design
     left: '104px', // per design
+    border: 'none',
+    boxShadow: '0px 4px 10px rgba(204, 204, 204, 0.25)',
   },
 })(Popover);
 
@@ -23,6 +25,7 @@ export const FilterButtonLabel = withStyles({
 export const Container = styled.div`
   background-color: white;
   padding: ${spacing.large} ${spacing.large} ${spacing.small};
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const MegaFilterHeader = styled.div`
@@ -43,10 +46,27 @@ export const MegaFilterBoldedLabel = styled.span`
 export const Filters = styled.div`
   display: flex;
   padding-bottom: ${spacing.regularPlus};
-  overflow-x: auto;
+  overflow-x: scroll;
 
   & > div {
     margin-right: ${spacing.large};
+  }
+
+  // Showing scrollbar always
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+  &::-webkit-scrollbar:horizontal {
+    height: 11px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
   }
 `;
 
@@ -56,6 +76,22 @@ export const FilterList = styled.div`
   max-height: 380px; // per design
   margin-top: ${spacing.regular};
   overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white;
+    background-color: ${palette.coolGrey2};
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
+  }
 `;
 
 export const FilterSelected = styled.div`
@@ -81,7 +117,7 @@ export const StyledFilterRow = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 208px; // per design
+  width: 168px; // per design
   height: 30px; // per design
   background-color: ${props =>
     props.isSelected ? palette.darkBlue : palette.blueGrey};
