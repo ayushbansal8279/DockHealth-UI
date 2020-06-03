@@ -11,8 +11,7 @@ export const TaskCommentsContainer = styled(Collapse)`
   border-top: none;
   border-bottom: none;
   flex-direction: column;
-  padding: ${props =>
-    props.in ? `${spacing.largePlus} ${spacing.regular}` : 0};
+  padding: ${props => (props.in ? `${spacing.regular} ${spacing.regular}` : 0)};
 `;
 
 export const TaskCommentsGroupedDay = styled.div`
@@ -32,7 +31,7 @@ export const TaskCommentsDate = styled.div`
 
 export const TaskCommentContainer = styled.div`
   display: flex;
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.regular};
   font-size: ${fontSizes.smallPlus};
 
   &:last-of-type {
@@ -62,7 +61,7 @@ export const ShowMoreButton = styled.button`
   cursor: pointer;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};
-  margin-top: ${spacing.large};
+  margin-top: ${spacing.regularPlus};
   margin-left: 180px; // per design
   width: fit-content;
 `;
