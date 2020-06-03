@@ -83,7 +83,10 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
   const dueDateValue = watch('dueDate');
   const dueTimeValue = watch('dueTime');
 
-  const isOverDue = dueDateValue && moment(dueDateValue).isBefore(moment());
+  const isOverDue =
+    selectedTask &&
+    selectedTask.dueDate &&
+    moment(selectedTask.dueDate).isBefore(moment());
   const overDueColor = isOverDue ? palette.red : palette.black;
 
   const {
@@ -309,6 +312,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                   <Grid item xs={6} style={styleLeftColumn}>
                     <DueDateSection
                       selectedTask={selectedTask}
+                      isOverDue={isOverDue}
                       setAutoSaveVisible={setAutoSaveVisible}
                     />
                   </Grid>

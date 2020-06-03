@@ -3,7 +3,6 @@ import { Divider } from '@material-ui/core';
 import moment from 'moment';
 import React, { useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import useBoolean from 'hooks/useBoolean';
 import { RobotoTypography } from 'styles/theme';
@@ -104,7 +103,7 @@ const onItemSelection = ({ saveDueDate, currentDueTime }) => value => {
   });
 };
 
-const DueDateSection = ({ setAutoSaveVisible }) => {
+const DueDateSection = ({ selectedTask, isOverDue, setAutoSaveVisible }) => {
   const dateFieldName = 'dueDate';
   const timeFieldName = 'dueTime';
 
@@ -118,9 +117,7 @@ const DueDateSection = ({ setAutoSaveVisible }) => {
   const currentDueDate = watch(dateFieldName);
   const currentDueTime = watch(timeFieldName);
 
-  const selectedTaskIdentifier = useSelector(
-    store => store.taskState.selectedTask?.taskIdentifier ?? null,
-  );
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier ?? null;
 
   const { saveDueDate } = initializeDueDateSectionHooks({ setAutoSaveVisible });
 
@@ -173,10 +170,7 @@ const DueDateSection = ({ setAutoSaveVisible }) => {
           ? moment(currentDueDate).format(DATE_US_FORMAT)
           : '',
         style: {
-          color:
-            currentDueDate && moment(currentDueDate).isBefore(moment())
-              ? palette.red
-              : palette.black,
+          color: isOverDue ? palette.red : palette.black,
         },
       }}
       renderItem={renderDropdownItem({
