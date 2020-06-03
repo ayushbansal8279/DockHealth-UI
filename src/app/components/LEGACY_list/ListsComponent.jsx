@@ -11,7 +11,7 @@ import {
   getOrganizationUsersNotInTaskList,
 } from 'actions/tasklist-actions';
 import useBoolean from 'hooks/useBoolean';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import ListPopover from 'components/common/ListPopover';
 import Spacing from 'components/common/Spacing';
 import UniversalTooltipContainer from 'components/common/UniversalTooltipContainer';
@@ -276,7 +276,7 @@ const ListsComponent = props => {
                 <>
                   <Spacing horizontal={3} />
                   <div>
-                    <CubesLoader size={16} color={palette.brightBlue} />
+                    <Loader size={16} />
                   </div>
                 </>
               )}
@@ -296,7 +296,7 @@ const ListsComponent = props => {
                 <>
                   <Spacing horizontal={3} />
                   <div>
-                    <CubesLoader size={16} color={palette.brightBlue} />
+                    <Loader size={16} />
                   </div>
                 </>
               )}

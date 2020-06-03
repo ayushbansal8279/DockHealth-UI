@@ -26,13 +26,13 @@ const lastItemColorAnimation = keyframes`
 const LoaderContainer = styled.div`
   position: relative;
   width: ${props => props.size}px;
-  height: ${props => props.size / 5}px;
+  height: ${props => Math.floor(props.size / 5)}px;
 `;
 
 const LoaderItem = styled.div`
   position: absolute;
-  width: ${props => props.size / 5}px;
-  height: ${props => props.size / 5}px;
+  width: ${props => Math.floor(props.size / 5)}px;
+  height: ${props => Math.floor(props.size / 5)}px;
   border-radius: 50%;
   animation: ${itemAnimation} ${props => props.speed}s infinite
     cubic-bezier(0, 0.5, 0.5, 1);

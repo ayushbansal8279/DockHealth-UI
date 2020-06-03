@@ -5,9 +5,8 @@ import React from 'react';
 import { Link } from 'react-router';
 import styled from 'styled-components';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
-import palette from 'styles/palette';
 import { themeMontserratNormal } from 'styles/theme-montserrat';
-import CubesLoader from './CubesLoader';
+import Loader from './Loader/Loader';
 
 const GenericHeaderContainer = styled.div`
   align-items: center;
@@ -44,11 +43,7 @@ const GenericHeader = ({
       <GenericHeaderContainer>
         <Grid container alignItems="center">
           <ChildrenWrapperComponent>
-            {isFetching ? (
-              <CubesLoader size={32} color={palette.white} />
-            ) : (
-              children
-            )}
+            {isFetching ? <Loader size={32} /> : children}
           </ChildrenWrapperComponent>
         </Grid>
         <Link to="/">
