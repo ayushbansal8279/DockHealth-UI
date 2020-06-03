@@ -638,7 +638,7 @@ export function getTaskAttachment(taskAttachmentId) {
 export function getTaskDetails(taskIdentifier) {
   return axios
     .get(`task/${taskIdentifier}`)
-    .then(response => response.data)
+    .then(({ data }) => data)
     .catch(error => {
       throw error;
     });
@@ -648,7 +648,7 @@ export function flagArchivedForUser(taskIdentifier, flagArchived) {
     .put(
       `task/flagUserTaskAsArchived/${taskIdentifier}?flagArchived=${flagArchived}`,
     )
-    .then(response => response.data)
+    .then(({ data }) => data)
     .catch(error => {
       throw error;
     });
@@ -660,7 +660,7 @@ export function reorderTasksInGroup(orderedTaskIds, taskGroupIdentifier) {
       taskIdentifiers: orderedTaskIds,
       taskGroupIdentifier,
     })
-    .then(response => response.data)
+    .then(({ data }) => data)
     .catch(error => {
       throw error;
     });
@@ -677,7 +677,7 @@ export function reorderSubtasksForTask(
       taskGroupIdentifier,
       parentTaskIdentifier,
     })
-    .then(response => response.data)
+    .then(({ data }) => data)
     .catch(error => {
       throw error;
     });
@@ -706,7 +706,7 @@ export function getFilteredTasksForList(
       `task/filter/filterTasksByCriteria/${taskListIdentifier}?status=${status}`,
       selectedFilters,
     )
-    .then(response => response.data)
+    .then(({ data }) => data)
     .catch(error => {
       throw error;
     });
@@ -722,7 +722,7 @@ export function getFilteredTasksForPersonList(
       `/task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}?status=${status}`,
       selectedFilters,
     )
-    .then(response => response.data)
+    .then(({ data }) => data)
     .catch(error => {
       throw error;
     });
