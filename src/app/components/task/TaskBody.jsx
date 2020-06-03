@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { archiveTask as archiveTaskAction } from 'actions/task-actions';
 import { isTaskArchivable as isTaskArchivableMethod } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import CubesLoader from '../common/CubesLoader';
+import Loader from '../common/Loader/Loader';
 import MemberPicker from '../members/MemberPicker';
 import { SubtaskLoadingContainer, SubtaskOrderContainer } from './Task.Styled';
 import TaskBodyCheckboxContainer from './TaskBody.CheckboxContainer';
@@ -146,7 +146,7 @@ const TaskBody = ({
       )}
       {isNewSubtask ? (
         <SubtaskLoadingContainer>
-          <CubesLoader size={30} />
+          <Loader size={30} />
         </SubtaskLoadingContainer>
       ) : (
         <>

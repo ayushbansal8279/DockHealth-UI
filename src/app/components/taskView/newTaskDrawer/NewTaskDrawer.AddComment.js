@@ -1,8 +1,6 @@
 import React from 'react';
-
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Member from 'components/members/Member';
-import palette from 'styles/palette';
 
 import initializeAddCommentHooks from './NewTaskDrawer.AddComment.Hooks';
 import {
@@ -33,7 +31,7 @@ const AddComment = ({ addComment, parentFormSubmit }) => {
       />
       {isAddingComment && (
         <AddCommentLoaderContainer>
-          <CubesLoader size={24} color={palette.coolGrey1} />
+          <Loader size={24} />
         </AddCommentLoaderContainer>
       )}
     </AddCommentContainer>

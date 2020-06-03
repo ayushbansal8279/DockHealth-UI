@@ -5,11 +5,10 @@ import {
   signOrganizationBAADocument,
   storeSignatureResult,
 } from 'api/organization-api';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   OnboardingAnchorDiv,
@@ -39,11 +38,7 @@ const getPanelDetails = ({
             fullWidth={isSmallScreen}
             disabled={isProcessing}
           >
-            {isProcessing ? (
-              <CubesLoader size={32} color={palette.coolGrey1} />
-            ) : (
-              <span>Continue</span>
-            )}
+            {isProcessing ? <Loader size={32} /> : <span>Continue</span>}
           </OnboardingButton>
         ),
         bottomElement: (

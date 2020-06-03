@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { getUserAvatar } from 'api/people-api';
 import Avatar from 'components/common/Avatar';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import TaskCheckbox from 'components/task/TaskCheckbox';
 import { noop } from 'helpers/utility-functions';
@@ -15,7 +15,7 @@ import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import MemberTypeLabel from './SubscriptionsView.MemberTypeLabel';
 
-const CubesLoaderContainer = styled.div`
+const LoaderContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
@@ -108,9 +108,9 @@ export const MemberAvatar = ({
   }, [userIdentifier, profileThumbnailPictureHash]);
 
   return loading ? (
-    <CubesLoaderContainer>
-      <CubesLoader size={40} />
-    </CubesLoaderContainer>
+    <LoaderContainer>
+      <Loader size={40} />
+    </LoaderContainer>
   ) : (
     <Avatar size={55}>{avatarContent}</Avatar>
   );

@@ -3,7 +3,7 @@ import moment from 'moment';
 import { ascend, descend, head, isEmpty, prop, sort } from 'ramda';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import SortingIcon from 'img/sorting-icon.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
@@ -178,7 +178,7 @@ const InvoicesList = () => {
         </InvoicesTable>
       ) : (
         <Grid container justify="center">
-          <CubesLoader size={48} />
+          <Loader size={48} />
         </Grid>
       )}
     </InvoicesListContainer>

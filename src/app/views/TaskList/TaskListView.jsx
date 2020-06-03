@@ -20,7 +20,7 @@ import * as TaskActions from 'actions/task-actions';
 import * as TaskListActions from 'actions/tasklist-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import AdornedButton from 'components/common/AdornedButton';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import HelpfulTipsDialog from 'components/common/HelpfulTipsDialog';
 import PageContentHeader from 'components/common/PageContentHeader';
@@ -50,7 +50,7 @@ import { RobotoTypography } from 'styles/theme';
 import ListForm from 'components/ListForm/ListForm';
 import {
   BlockItemContainer,
-  CubesLoaderContainer,
+  LoaderContainer,
   NoListsAvailableContainer,
   NoListsIconContainer,
   StyledCollapse,
@@ -662,9 +662,9 @@ class TaskListView extends PureComponent {
                 >
                   <Grid item xs={9}>
                     {isFetching ? (
-                      <CubesLoaderContainer>
-                        <CubesLoader size={40} />
-                      </CubesLoaderContainer>
+                      <LoaderContainer>
+                        <Loader size={40} />
+                      </LoaderContainer>
                     ) : (
                       <div className="item-list-wrapper list-wrapper-all-lists">
                         <PendingListsComponent

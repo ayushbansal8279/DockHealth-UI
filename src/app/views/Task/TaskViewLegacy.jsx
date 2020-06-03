@@ -31,7 +31,7 @@ import styled from 'styled-components';
 import { setHeader } from 'actions/header-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import SafariFixGrid from 'components/common/SafariFixGrid';
 import Spacing from 'components/common/Spacing';
@@ -1265,7 +1265,7 @@ class TaskView extends Component {
                           isFetching || isSearching ? '800ms' : '0ms',
                       }}
                     >
-                      <CubesLoader size={40} />
+                      <Loader size={40} />
                     </Fade>
                   </FadeContainer>
                 ) : (

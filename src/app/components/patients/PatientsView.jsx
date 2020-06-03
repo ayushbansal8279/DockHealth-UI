@@ -8,7 +8,7 @@ import {
   getMyPatientsAll,
   highlightPatient,
 } from 'actions/patient-actions';
-import CubesLoader from '../common/CubesLoader';
+import Loader from '../common/Loader/Loader';
 import GenericHeader from '../common/GenericHeader';
 import PatientsList from './PatientsList';
 import PatientsSidebar from './PatientsSidebar';
@@ -28,7 +28,7 @@ const PatientsListSpinner = ({ isFetching }) => (
       unmountOnExit
       style={{ transitionDelay: isFetching ? '800ms' : '0ms' }}
     >
-      <CubesLoader size={40} />
+      <Loader size={40} />
     </Fade>
   </FadeContainer>
 );

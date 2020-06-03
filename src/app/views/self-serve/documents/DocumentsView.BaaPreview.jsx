@@ -3,7 +3,7 @@ import { identity, memoizeWith, range } from 'ramda';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 import { downloadSignedDocument } from 'api/organization-api';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import {
   AttachmentPreviewContent,
   AttachmentPreviewDialog,
@@ -100,7 +100,7 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
       <AttachmentPreviewContent>
         {data.loading && (
           <Grid container justify="center" alignItems="center">
-            <CubesLoader size={48} />
+            <Loader size={48} />
           </Grid>
         )}
         {!data.loading && !data.error && (

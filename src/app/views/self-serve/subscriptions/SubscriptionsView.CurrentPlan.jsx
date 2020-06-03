@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import {
   themeMontserrat500,
@@ -21,7 +21,7 @@ const AsyncElement = ({
   fetching,
 }) => {
   if (fetching) {
-    return <CubesLoader size={48} />;
+    return <Loader size={48} />;
   }
 
   if (error) {
