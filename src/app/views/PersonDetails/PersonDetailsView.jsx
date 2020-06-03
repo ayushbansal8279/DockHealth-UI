@@ -116,6 +116,8 @@ class PersonDetailsView extends PureComponent {
       routeParams: { tabName, userIdentifier },
     } = this.props;
 
+    taskActions.getTaskStatsForUser(userIdentifier);
+
     if (tabName === TaskListTabName.COMPLETE)
       taskActions.loadingCompletedTasks();
     else taskActions.loading();

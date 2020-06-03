@@ -27,7 +27,6 @@ class Home extends Component {
     const {
       user,
       routeParams,
-      actions,
       taskListActions,
       patientActions,
       invitationActions,
@@ -43,8 +42,6 @@ class Home extends Component {
         },
       ],
     });
-
-    actions.getTaskStatsForList(routeParams.taskListIdentifier);
 
     if (routeParams.taskListIdentifier) {
       taskListActions.getMembersByTaskListId(
@@ -147,6 +144,8 @@ class Home extends Component {
       actions,
       routeParams: { tabName, taskListIdentifier },
     } = this.props;
+
+    actions.getTaskStatsForList(taskListIdentifier);
 
     if (tabName === TaskListTabName.COMPLETE) actions.loadingCompletedTasks();
     else actions.loading();
