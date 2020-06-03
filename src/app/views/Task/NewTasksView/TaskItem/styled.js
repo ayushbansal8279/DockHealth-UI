@@ -58,12 +58,15 @@ export const CircleIcon = styled.img`
 
 export const Description = styled.div`
   cursor: pointer;
+  width: 100%;
+  margin-right: ${spacing.regularPlus};
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
 `;
 
 export const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const DueDate = styled.span`
