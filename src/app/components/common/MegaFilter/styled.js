@@ -209,3 +209,20 @@ export const DueDateRangePickerRowContainer = styled.div`
   margin-top: ${spacing.regular};
   font-size: ${fontSizes.small};
 `;
+
+export const DueDateRangePickerInputsWrapper = styled.div`
+  margin-top: ${spacing.small};
+  width: 168px; // per design
+  display: flex;
+  flex-direction: row;
+`;
+
+export const DueDateInput = styled.input`
+  display: block;
+  flex: 1;
+  padding: 0 ${spacing.small};
+  overflow: auto;
+  border: 1px solid ${palette.coolGrey2};
+  border-radius: 2px;
+  color: ${palette.coolGrey2};
+`;

@@ -3,13 +3,13 @@ import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
 import TaskItemStatus from 'views/Task/NewTasksView/TaskItem/TaskItemStatus';
+import DueDateRangePicker from './DueDateRangePicker';
 import {
   StyledFilterRow,
   StyledUnassignedIcon,
   MemberOptionLabel,
   OptionLabel,
   OptionCount,
-  DueDateRangePickerRowContainer,
 } from './styled';
 
 const getPriorityConfig = priority => {
@@ -85,14 +85,6 @@ const StandardFilterRowComponent = ({
   </StyledFilterRow>
 );
 
-const DateRangePicker = ({ label }) => {
-  return (
-    <DueDateRangePickerRowContainer>
-      <OptionLabel>{label}</OptionLabel>
-    </DueDateRangePickerRowContainer>
-  );
-};
-
 const DateFilterRowComponent = ({
   isSelected,
   displayValue,
@@ -101,7 +93,7 @@ const DateFilterRowComponent = ({
   itemKey,
 }) =>
   itemKey.includes('RANGE') ? (
-    <DateRangePicker label={displayValue} />
+    <DueDateRangePicker label={displayValue} />
   ) : (
     <StyledFilterRow isSelected={isSelected} onClick={onClick}>
       <OptionLabel>{displayValue}</OptionLabel>

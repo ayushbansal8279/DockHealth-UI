@@ -277,15 +277,23 @@ const TaskItem = ({
                 }
                 quickSelectOptions={dueDateQuickSelectOptions}
               >
-                <DueDateContainer>
-                  <DueDate>
-                    {dueDate && moment(dueDate).format('MM/DD')}
-                  </DueDate>
-                  <img
-                    alt="due-date"
-                    src={getItemIcon(DUE_DATE, dueDate, isHovered)}
-                  />
-                </DueDateContainer>
+                {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
+                  <button
+                    type="button"
+                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                    ref={elementReference}
+                  >
+                    <DueDateContainer>
+                      <DueDate>
+                        {dueDate && moment(dueDate).format('MM/DD')}
+                      </DueDate>
+                      <img
+                        alt="due-date"
+                        src={getItemIcon(DUE_DATE, dueDate, isHovered)}
+                      />
+                    </DueDateContainer>
+                  </button>
+                )}
               </PopoverDatepicker>
             </GridImg>
             <GridImg item xs={3}>

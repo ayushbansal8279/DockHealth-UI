@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { withStyles } from '@material-ui/core/styles';
-import { Popover } from '@material-ui/core';
 import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
 
@@ -27,10 +25,20 @@ export const DatepickerOptionLabelContainer = styled.button`
   }
 `;
 
-export const StyledPopover = withStyles({
-  paper: {
-    minWidth: '293px',
-    border: 'none',
-    boxShadow: '0px 3px 9px rgba(0, 0, 0, 0.17)',
-  },
-})(Popover);
+export const StyledPopover = styled.div`
+  min-width: 293px;
+  border: none;
+  box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.17);
+  background: ${palette.white};
+`;
+
+export const Backdrop = styled.button`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 2000;
+  appearance: none;
+`;
