@@ -141,6 +141,7 @@ const TaskItem = ({
   dragAndDropDisabled,
   listNameVisible,
   selectedTask,
+  parentHasPatient,
 }) => {
   const {
     taskIdentifier,
@@ -230,7 +231,9 @@ const TaskItem = ({
           {task.status !== 'COMPLETE' && !patient && (
             <AddPlaceholder>+ Add Patient</AddPlaceholder>
           )}
-          {patient && `${patient.firstName} ${patient.lastName}`}
+          {patient &&
+            !parentHasPatient &&
+            `${patient.firstName} ${patient.lastName}`}
         </TaskItemCell>
         <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
           <TaskWorkflowStatus
@@ -329,6 +332,7 @@ const Subtasks = ({
   reassignTask,
   currentUser,
   members,
+  parentHasPatient,
   ...restProps
 }) => {
   const [draggedId, setDraggableId] = useState(false);
@@ -381,6 +385,7 @@ const Subtasks = ({
                           currentUser={currentUser}
                           members={members}
                           reassignTask={reassignTask}
+                          parentHasPatient={parentHasPatient}
                           {...restProps}
                         />
                         {draggedId !== String(subtask.taskId) &&
@@ -416,7 +421,7 @@ const Task = ({
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
-  const { comments, subtasks } = task;
+  const { comments, subtasks, patient } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
 
   const {
@@ -465,6 +470,7 @@ const Task = ({
           currentUser={currentUser}
           members={members}
           reassignTask={reassignTask}
+          parentHasPatient={!!patient}
           {...restProps}
         />
       )}
