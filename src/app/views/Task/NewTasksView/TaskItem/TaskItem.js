@@ -41,6 +41,7 @@ import {
   AddCrossIcon,
   AddPlaceholder,
   CircleIcon,
+  ClickablePatient,
   Description,
   DescriptionBox,
   DueDate,
@@ -228,12 +229,19 @@ const TaskItem = ({
           </DescriptionBox>
         </TaskItemCell>
         <TaskItemCell width="164px">
-          {task.status !== 'COMPLETE' && !patient && (
-            <AddPlaceholder>+ Add Patient</AddPlaceholder>
-          )}
-          {patient &&
-            !parentHasPatient &&
-            `${patient.firstName} ${patient.lastName}`}
+          <ClickablePatient
+            onClick={() => {
+              openDrawer();
+              storeAsCurrentTask(task);
+            }}
+          >
+            {task.status !== 'COMPLETE' && !patient && (
+              <AddPlaceholder>+ Add Patient</AddPlaceholder>
+            )}
+            {patient &&
+              !parentHasPatient &&
+              `${patient.firstName} ${patient.lastName}`}
+          </ClickablePatient>
         </TaskItemCell>
         <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
           <TaskWorkflowStatus
