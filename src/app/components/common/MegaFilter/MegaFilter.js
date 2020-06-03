@@ -29,6 +29,8 @@ import {
 
 const UNASSIGNED = 'UNASSIGNED';
 
+const SEARCH_EXCLUDE_KEYS = ['DUE_DATE_RANGE'];
+
 const FilterButton = ({ isOpen, openPopover }) => (
   <Button variant="text" onClick={() => openPopover(!isOpen)} size="small">
     <FilterButtonLabel variant="body1" component="span">
@@ -51,9 +53,12 @@ const FilterColumn = ({
   );
 
   const [searchedFiletrs, unsearchedFiletrs] = partition(
-    ({ displayValue }) =>
+    ({ displayValue, key: itemKey }) =>
       searchedFilterQuery &&
-      displayValue?.toLowerCase().includes(searchedFilterQuery?.toLowerCase()),
+      displayValue
+        ?.toLowerCase()
+        .includes(searchedFilterQuery?.toLowerCase()) &&
+      !SEARCH_EXCLUDE_KEYS.includes(itemKey),
     filteredList || [],
   );
 

@@ -204,3 +204,8 @@ export const MegaFilterClearIcon = styled.img`
   position: absolute;
   right: 0;
 `;
+
+export const DueDateRangePickerRowContainer = styled.div`
+  margin-top: ${spacing.regular};
+  font-size: ${fontSizes.small};
+`;

@@ -4,6 +4,7 @@ import * as types from 'actions/action-types';
 const PEOPLE_FILTERS = ['assignedBy', 'assignedTo'];
 const PRIORITY_FILTERS = ['priorityOptions'];
 const STATUS_FILTERS = ['workflowStatusOptions'];
+const DATE_FILTERS = ['dueDateOptions'];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const STANDARD_FILTERS = ['labels', 'dueDateOptions', 'patients'];
 
@@ -37,6 +38,13 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
         label: getLabel(key),
         list: assignedFilters[key],
         type: 'STATUS',
+        filterKey: key,
+      };
+    } else if (DATE_FILTERS.includes(key)) {
+      assignedFilters[key] = {
+        label: getLabel(key),
+        list: assignedFilters[key],
+        type: 'DATE',
         filterKey: key,
       };
     } else {

@@ -9,6 +9,7 @@ import {
   MemberOptionLabel,
   OptionLabel,
   OptionCount,
+  DueDateRangePickerRowContainer,
 } from './styled';
 
 const getPriorityConfig = priority => {
@@ -84,6 +85,30 @@ const StandardFilterRowComponent = ({
   </StyledFilterRow>
 );
 
+const DateRangePicker = ({ label }) => {
+  return (
+    <DueDateRangePickerRowContainer>
+      <OptionLabel>{label}</OptionLabel>
+    </DueDateRangePickerRowContainer>
+  );
+};
+
+const DateFilterRowComponent = ({
+  isSelected,
+  displayValue,
+  taskCount,
+  onClick,
+  itemKey,
+}) =>
+  itemKey.includes('RANGE') ? (
+    <DateRangePicker label={displayValue} />
+  ) : (
+    <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+      <OptionLabel>{displayValue}</OptionLabel>
+      <OptionCount>{taskCount || '0'}</OptionCount>
+    </StyledFilterRow>
+  );
+
 export const FilterRowUnassigned = ({ hasAvatars, isSelected, onClick }) => (
   <StyledFilterRow isSelected={isSelected} onClick={onClick}>
     {hasAvatars && (
@@ -111,6 +136,8 @@ export const getFilterRowComponent = type => {
       return PriorityFilterRowComponent;
     case 'STATUS':
       return StatusFilterRowComponent;
+    case 'DATE':
+      return DateFilterRowComponent;
     default:
       return StandardFilterRowComponent;
   }
