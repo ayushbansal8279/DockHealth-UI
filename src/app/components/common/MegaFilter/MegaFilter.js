@@ -181,7 +181,7 @@ const MegaFilter = ({
   const megaFilterReference = useRef(null);
 
   const clearFilters = () => {
-    onSelectFilters([]);
+    onSelectFilters({});
   };
 
   return (

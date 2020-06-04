@@ -14,6 +14,7 @@ const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const PopoverDatepicker = ({
   selectedDate,
   onDateChange,
+  onBackdrop,
   children,
   quickSelectOptions,
   minDate,
@@ -54,7 +55,13 @@ const PopoverDatepicker = ({
   return (
     <>
       {isPopoverOpen && (
-        <Backdrop type="button" onClick={() => setIsPopoverOpen(false)} />
+        <Backdrop
+          type="button"
+          onClick={() => {
+            if (onBackdrop) onBackdrop();
+            setIsPopoverOpen(false);
+          }}
+        />
       )}
       {children({ setIsPopoverOpen, isPopoverOpen, elementReference })}
       <Popper

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Typography, Popover } from '@material-ui/core';
+import InputMask from 'react-input-mask';
 import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
@@ -217,24 +218,36 @@ export const DueDateRangePickerInputsWrapper = styled.div`
   flex-direction: row;
 `;
 
-export const DueDateInput = styled.input`
+export const DueDateInput = styled(InputMask)`
   display: block;
   width: 100%;
   padding: 0 6px;
-  border: 1px solid ${palette.coolGrey2};
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${props => (props.hasError ? palette.red : palette.coolGrey2)};
   border-radius: 2px;
   overflow: auto;
-  color: ${palette.coolGrey2};
+  color: ${props => (props.hasError ? palette.red : palette.coolGrey2)};
   font-size: ${fontSizes.small};
-
-  &::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
-  }
 `;
 
 export const DueDateInputWrapper = styled.div`
+  position: relative;
   flex: 1;
-  overflow: auto;
   padding-bottom: ${spacing.regularPlus};
+`;
+
+export const StartDueDateErrorMessage = styled.p`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 168px; // per design
+  margin-bottom: 0;
+  color: red;
+`;
+
+export const EndDueDateErrorMessage = styled(StartDueDateErrorMessage)`
+  left: auto;
+  right: 0;
+  text-align: right;
 `;
