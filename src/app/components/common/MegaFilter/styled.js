@@ -212,6 +212,7 @@ export const DueDateRangePickerRowContainer = styled.div`
 `;
 
 export const DueDateRangePickerInputsWrapper = styled.div`
+  position: relative;
   margin-top: ${spacing.small};
   width: 168px; // per design
   display: flex;
@@ -232,22 +233,16 @@ export const DueDateInput = styled(InputMask)`
 `;
 
 export const DueDateInputWrapper = styled.div`
-  position: relative;
   flex: 1;
   padding-bottom: ${spacing.regularPlus};
 `;
 
-export const StartDueDateErrorMessage = styled.p`
+export const DueDateErrorMessage = styled.p`
   position: absolute;
   bottom: 0;
-  left: 0;
+  ${({ alignLeft }) => (alignLeft ? 'left: 0;' : 'right: 0;')}
+  text-align: ${({ alignLeft }) => (alignLeft ? 'left' : 'right')};
   width: 168px; // per design
   margin-bottom: 0;
   color: red;
-`;
-
-export const EndDueDateErrorMessage = styled(StartDueDateErrorMessage)`
-  left: auto;
-  right: 0;
-  text-align: right;
 `;
