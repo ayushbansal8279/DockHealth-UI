@@ -15,6 +15,7 @@ import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { arrayMove } from 'helpers/sorting-helper';
 import { hashHistory } from 'react-router';
 import TasksView from './Task/NewTasksView/TasksView';
@@ -147,16 +148,23 @@ class Home extends Component {
 
     actions.getTaskStatsForList(taskListIdentifier);
 
-    if (tabName === TaskListTabName.COMPLETE) actions.loadingCompletedTasks();
-    else actions.loading();
+    let status = 'INCOMPLETE';
 
-    // if filtera are saved megafilter will initialize table
-    if (!sessionStorage[`filter-${taskListIdentifier}`]) {
-      if (tabName === TaskListTabName.COMPLETE) {
-        this.getTasksList(taskListIdentifier, 'COMPLETE');
-      } else {
-        this.getTasksList(taskListIdentifier, 'INCOMPLETE');
-      }
+    if (tabName === TaskListTabName.COMPLETE) {
+      actions.loadingCompletedTasks();
+      status = 'COMPLETE';
+    } else {
+      actions.loading();
+    }
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${taskListIdentifier}`,
+    );
+
+    if (!filters) {
+      this.getTasksList(taskListIdentifier, status);
+    } else {
+      this.getFilteredTasks(filters, status);
     }
   };
 
@@ -256,26 +264,16 @@ class Home extends Component {
     );
   };
 
-  getFilteredTasks = (updatedFilters, taskStatus) => {
+  getFilteredTasks = (filters, taskStatus) => {
     const {
       routeParams: { taskListIdentifier },
       actions,
-      megaFilter: { filters },
     } = this.props;
-
-    const taskFilters = {};
-
-    if (!isEmpty(updatedFilters)) {
-      Object.keys(updatedFilters).forEach(keyIndex => {
-        const { filterKey } = filters[keyIndex];
-        taskFilters[filterKey] = updatedFilters[keyIndex];
-      });
-    }
 
     return actions.getFilteredTasksForList(
       taskListIdentifier,
       taskStatus,
-      taskFilters,
+      filters,
     );
   };
 

@@ -12,6 +12,7 @@ import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/common/GenericHeader';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import TasksView from 'views/Task/NewTasksView/TasksView';
 import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
@@ -118,16 +119,20 @@ class PersonDetailsView extends PureComponent {
 
     taskActions.getTaskStatsForUser(userIdentifier);
 
-    if (tabName === TaskListTabName.COMPLETE)
+    let status = 'INCOMPLETE';
+    if (tabName === TaskListTabName.COMPLETE) {
       taskActions.loadingCompletedTasks();
-    else taskActions.loading();
+      status = 'COMPLETE';
+    } else {
+      taskActions.loading();
+    }
 
-    if (!sessionStorage[`filter-${userIdentifier}`]) {
-      if (tabName === TaskListTabName.COMPLETE) {
-        this.getTasks(userIdentifier, 'COMPLETE');
-      } else {
-        this.getTasks(userIdentifier, 'INCOMPLETE');
-      }
+    const filters = sessionStorageHelper.getItem(`filter-${userIdentifier}`);
+
+    if (!filters) {
+      this.getTasks(userIdentifier, status);
+    } else {
+      this.getFilteredTasks(filters, status);
     }
   };
 
@@ -213,26 +218,16 @@ class PersonDetailsView extends PureComponent {
     return this.getFilteredTasks(updatedFilters, taskStatus);
   };
 
-  getFilteredTasks = (updatedFilters, taskStatus) => {
+  getFilteredTasks = (filters, taskStatus) => {
     const {
       routeParams: { userIdentifier },
       taskActions,
-      megaFilter: { filters },
     } = this.props;
-
-    const taskFilters = {};
-
-    if (!isEmpty(updatedFilters)) {
-      Object.keys(updatedFilters).forEach(keyIndex => {
-        const { filterKey } = filters[keyIndex];
-        taskFilters[filterKey] = updatedFilters[keyIndex];
-      });
-    }
 
     return taskActions.getFilteredTasksForPeopleList(
       userIdentifier,
       taskStatus,
-      taskFilters,
+      filters,
     );
   };
 

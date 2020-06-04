@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useMount } from 'react-use';
 import { isEmpty, isNil, partition } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
@@ -165,12 +164,6 @@ const MegaFilter = ({
     onSelectFilters([]);
   };
 
-  useMount(() => {
-    if (!isEmpty(selectedFilters)) {
-      onSelectFilters(selectedFilters);
-    }
-  });
-
   return (
     <>
       <div ref={megaFilterReference}>
@@ -208,12 +201,12 @@ const MegaFilter = ({
             </MegaFilterOptions>
           </MegaFilterHeader>
           <Filters>
-            {Object.keys(filters)
-              ?.filter(key => !isEmpty(filters[key].list))
-              .map(key => (
+            {filters
+              ?.filter(filter => !isEmpty(filter.list))
+              .map(filter => (
                 <FilterColumn
-                  key={key}
-                  filter={{ ...filters[key], key }}
+                  key={filter.filterKey}
+                  filter={{ ...filter, key: filter.filterKey }}
                   selectedFilters={selectedFilters}
                   onSelectFilters={onSelectFilters}
                   taskList={taskList}
