@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -37,7 +37,6 @@ const TaskView = ({
   isCompletedTasksFetching,
   openedTasks,
   completedTasks,
-  groupedTasks,
   routeParams,
   refreshTab,
   isFetchingMoreTasks,
@@ -55,9 +54,12 @@ const TaskView = ({
   handleFilterChange,
   hasFiltersApplied,
   selectedTask,
+  tasks,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
+
+  const groupedTasks = useMemo(() => groupTasksSelector(tasks), [tasks]);
 
   const { openDrawer } = taskDrawerActions;
   const {
@@ -276,7 +278,7 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   openedTasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
-  groupedTasks: groupTasksSelector(store.taskState.tasks),
+  tasks: store.taskState.tasks,
   isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
   taskCounters: store.taskState.taskCounters,
   selectedTask: store.taskState.selectedTask,
