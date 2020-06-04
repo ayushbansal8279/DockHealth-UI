@@ -47,6 +47,14 @@ const FilterColumn = ({
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
+
+  const additionalProps = {};
+
+  if (key === 'dueDateOptions') {
+    additionalProps.customDueDateStart = selectedFilters.customDueDateStart;
+    additionalProps.customDueDateEnd = selectedFilters.customDueDateEnd;
+  }
+
   const filteredList = list?.filter(
     ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
   );
@@ -84,6 +92,15 @@ const FilterColumn = ({
     onSelectFilters(updatedFilters);
   };
 
+  const dueDateChange = (startDate, endDate) => {
+    const updatedFilters = {
+      ...selectedFilters,
+      customDueDateStart: startDate,
+      customDueDateEnd: endDate,
+    };
+    onSelectFilters(updatedFilters);
+  };
+
   return (
     <StyledFilter>
       <FilterLabel>{label}</FilterLabel>
@@ -98,6 +115,8 @@ const FilterColumn = ({
                   isUnassigned={itemKey === UNASSIGNED}
                   hasAvatars={hasAvatars}
                   onClick={() => onClick(itemKey)}
+                  dueDateChange={dueDateChange}
+                  {...additionalProps}
                   {...item}
                 >
                   <FilterRow />
@@ -112,7 +131,6 @@ const FilterColumn = ({
               const row = list?.find(
                 ({ key: fieldKey }) => fieldKey === filterValue,
               );
-
               return (
                 <AssignedOrUnassignedRow
                   isSelected
@@ -136,6 +154,8 @@ const FilterColumn = ({
               isUnassigned={itemKey === UNASSIGNED}
               hasAvatars={hasAvatars}
               onClick={() => onClick(itemKey)}
+              {...additionalProps}
+              dueDateChange={dueDateChange}
               {...item}
             >
               <FilterRow />

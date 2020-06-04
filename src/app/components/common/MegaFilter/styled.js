@@ -219,10 +219,22 @@ export const DueDateRangePickerInputsWrapper = styled.div`
 
 export const DueDateInput = styled.input`
   display: block;
-  flex: 1;
-  padding: 0 ${spacing.small};
-  overflow: auto;
+  width: 100%;
+  padding: 0 6px;
   border: 1px solid ${palette.coolGrey2};
   border-radius: 2px;
+  overflow: auto;
   color: ${palette.coolGrey2};
+  font-size: ${fontSizes.small};
+
+  &::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
+`;
+
+export const DueDateInputWrapper = styled.div`
+  flex: 1;
+  overflow: auto;
+  padding-bottom: ${spacing.regularPlus};
 `;

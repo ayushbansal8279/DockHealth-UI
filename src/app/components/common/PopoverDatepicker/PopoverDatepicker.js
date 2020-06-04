@@ -16,6 +16,8 @@ const PopoverDatepicker = ({
   onDateChange,
   children,
   quickSelectOptions,
+  minDate,
+  maxDate,
 }) => {
   const elementReference = useRef(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -88,6 +90,8 @@ const PopoverDatepicker = ({
             <Datepicker
               selectedDate={selectedDate}
               onDateChange={handleDatePick}
+              minDate={minDate}
+              maxDate={maxDate}
             />
           )}
         </StyledPopover>

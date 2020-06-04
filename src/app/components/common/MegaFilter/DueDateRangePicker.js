@@ -7,58 +7,70 @@ import {
   DueDateInput,
   DueDateRangePickerInputsWrapper,
   OptionLabel,
+  DueDateInputWrapper,
 } from './styled';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-const DATE_US_FORMAT = 'MM/DD/YY';
+const DATE_US_FORMAT = 'MM/DD/YYYY';
 
-const DueDateRangePicker = ({ label }) => {
-  const selectedStartDate = '2020-02-02';
-  const selectedEndDate = '2020-06-02';
+const DueDateRangePicker = ({
+  label,
+  dueDateChange,
+  customDueDateEnd,
+  customDueDateStart,
+}) => {
+  const formatedDateStart = customDueDateStart
+    ? moment(customDueDateStart, DATE_ISO_FORMAT).format(DATE_US_FORMAT)
+    : null;
+  const formatedDateEnd = customDueDateEnd
+    ? moment(customDueDateEnd, DATE_ISO_FORMAT).format(DATE_US_FORMAT)
+    : null;
 
-  const inputStartDate = moment(selectedStartDate, DATE_ISO_FORMAT).format(
-    DATE_US_FORMAT,
-  );
-  const inputEndDate = moment(selectedEndDate, DATE_ISO_FORMAT).format(
-    DATE_US_FORMAT,
-  );
+  // const [inputDueDateStart, setInputDueDateStart] = useState(formatedDateStart);
+  // const [inputDueDateEnd, setInputDueDateEnd] = useState(formatedDateEnd);
 
-  console.log('inp', inputStartDate);
+  // const validateDueDateStart = () => {};
+
+  // const validateDueDateEnd = () => {};
 
   return (
     <DueDateRangePickerRowContainer>
       <OptionLabel>{label}</OptionLabel>
       <DueDateRangePickerInputsWrapper>
         <PopoverDatepicker
-          selectedDate={selectedStartDate}
-          onDateChange={date => {
-            console.log('start date', date);
-          }}
+          selectedDate={customDueDateStart}
+          onDateChange={date => dueDateChange(date, customDueDateEnd)}
+          maxDate={customDueDateEnd}
         >
           {({ elementReference, setIsPopoverOpen }) => (
-            <DueDateInput
-              ref={elementReference}
-              onFocus={() => setIsPopoverOpen(true)}
-              onBlur={() => console.log('blur')}
-              value={inputStartDate}
-            />
+            <DueDateInputWrapper ref={elementReference}>
+              <DueDateInput
+                onFocus={() => setIsPopoverOpen(true)}
+                // onChange={event => setInputDueDateStart(event.target.value)}
+                // onBlur={validateDueDateStart}
+                value={formatedDateStart}
+                placeholder="00/00/0000"
+              />
+            </DueDateInputWrapper>
           )}
         </PopoverDatepicker>
         <Spacing horizontal={3} />
 
         <PopoverDatepicker
-          selectedDate={selectedEndDate}
-          onDateChange={date => {
-            console.log('end date', date);
-          }}
+          selectedDate={customDueDateEnd}
+          onDateChange={date => dueDateChange(customDueDateStart, date)}
+          minDate={customDueDateStart}
         >
           {({ elementReference, setIsPopoverOpen }) => (
-            <DueDateInput
-              ref={elementReference}
-              onFocus={() => setIsPopoverOpen(true)}
-              onBlur={() => console.log('blur')}
-              value={inputEndDate}
-            />
+            <DueDateInputWrapper ref={elementReference}>
+              <DueDateInput
+                onFocus={() => setIsPopoverOpen(true)}
+                // onChange={event => setInputDueDateEnd(event.target.value)}
+                // onBlur={validateDueDateEnd}
+                value={formatedDateEnd}
+                placeholder="00/00/0000"
+              />
+            </DueDateInputWrapper>
           )}
         </PopoverDatepicker>
       </DueDateRangePickerInputsWrapper>

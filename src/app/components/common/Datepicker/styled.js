@@ -33,8 +33,10 @@ export const CalendarGridContainer = styled.div`
 `;
 
 export const CalendarDayLabel = styled.div`
-  color: ${({ isCurrentMonth, isDaySelected }) => {
+  color: ${({ isCurrentMonth, isDaySelected, isDisabled }) => {
     if (isDaySelected) return palette.white;
+
+    if (isDisabled) return opacify(palette.darkGrey, 0.2);
 
     return isCurrentMonth
       ? opacify(palette.darkGrey, 0.5)
@@ -52,8 +54,10 @@ export const CalendarIconButton = withStyles({
     '&:hover': {
       backgroundColor: opacify(palette.brightBlue, 0.8),
     },
-    '&:disabled': {
-      backgroundColor: palette.brightBlue,
-    },
   },
 })(IconButton);
+
+export const CalendarIconWrapper = styled.div`
+  border-radius: 50%;
+  ${({ isToday }) => isToday && `border: 1px solid ${palette.coolGrey2};`}
+`;

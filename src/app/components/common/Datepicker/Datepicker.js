@@ -18,7 +18,7 @@ import {
   renderDayLabels,
 } from './helpers';
 
-const Datepicker = ({ selectedDate, onDateChange }) => {
+const Datepicker = ({ selectedDate, onDateChange, minDate, maxDate }) => {
   const [currentMonthMoment, setCurrentMonthMoment] = useState(null);
 
   const forceUpdate = useUpdate();
@@ -33,7 +33,13 @@ const Datepicker = ({ selectedDate, onDateChange }) => {
 
   const dayLabelsToRender = useMemo(
     () =>
-      renderDayLabels({ currentMonthMoment, momentSelectedDate, onDateChange }),
+      renderDayLabels({
+        currentMonthMoment,
+        momentSelectedDate,
+        onDateChange,
+        minDate,
+        maxDate,
+      }),
     // useEffect work better for primitive values (like strings in here)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [formattedCurrentMonth],

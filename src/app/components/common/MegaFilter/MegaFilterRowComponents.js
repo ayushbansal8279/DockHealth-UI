@@ -91,9 +91,17 @@ const DateFilterRowComponent = ({
   taskCount,
   onClick,
   itemKey,
+  dueDateChange,
+  customDueDateStart,
+  customDueDateEnd,
 }) =>
   itemKey.includes('RANGE') ? (
-    <DueDateRangePicker label={displayValue} />
+    <DueDateRangePicker
+      label={displayValue}
+      dueDateChange={dueDateChange}
+      customDueDateStart={customDueDateStart}
+      customDueDateEnd={customDueDateEnd}
+    />
   ) : (
     <StyledFilterRow isSelected={isSelected} onClick={onClick}>
       <OptionLabel>{displayValue}</OptionLabel>
