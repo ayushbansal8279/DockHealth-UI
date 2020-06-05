@@ -12,8 +12,13 @@ import {
   Router,
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
-import PatientDetailsView from 'components/patient/PatientDetailsView';
+import PatientDetailsView from 'views/Patient/PatientDetailsView';
+import PatientOpenTasksListView from 'views/Patient/PatientOpenTasksListView';
+import PatientCompleteTasksListView from 'views/Patient/PatientCompleteTasksListView';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import GenericHeader from 'components/common/GenericHeader';
+import { setHeader } from 'actions/header-actions';
+import * as PatientListsActions from 'actions/patient-lists-actions';
 import { storeAsCurrentTask } from './actions/task-actions';
 import { onEnterTasksGroupsList } from './sagas/tasks-groups-list';
 import { getMembersByTaskListId } from './actions/tasklist-actions';
@@ -72,7 +77,6 @@ import TemplateCore from './views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
 import { checkUserAuthentication } from './views/TemplateCore/TemplateCore.Utilities';
-// import { onLogin } from './helpers/ga-event-helper';
 
 import { setLocationAndParameters } from './location/actions';
 
@@ -219,6 +223,26 @@ export const Routes = ({ store }) => {
     }
   };
 
+  const onEnterPatientDetailsView = () => {
+    setHeader(dispatch)({
+      layout: [
+        {
+          key: 'patient-header',
+          component: <GenericHeader>Patient</GenericHeader>,
+        },
+      ],
+    });
+  };
+
+  const onEnterPatientOpenTasksListView = () => {
+    dispatch(PatientListsActions.setActiveTab(TaskListTabName.OPEN));
+    // get open tasks
+  };
+
+  const onEnterPatientCompleteTasksListView = () => {
+    dispatch(PatientListsActions.setActiveTab(TaskListTabName.COMPLETE));
+  };
+
   return (
     <Router history={hashHistory}>
       <Route
@@ -284,8 +308,21 @@ export const Routes = ({ store }) => {
           <Route
             path="/patient/:patientIdentifier"
             component={PatientDetailsView}
-            onEnter={checkFeatureToggles}
-          />
+            onEnter={nextState => {
+              checkFeatureToggles(nextState);
+              onEnterPatientDetailsView();
+            }}
+          >
+            <IndexRoute
+              component={PatientOpenTasksListView}
+              onEnter={onEnterPatientOpenTasksListView}
+            />
+            <Route
+              path="complete"
+              component={PatientCompleteTasksListView}
+              onEnter={onEnterPatientCompleteTasksListView}
+            />
+          </Route>
           <Route
             path="/editPatient/:patientIdentifier"
             component={PatientEditView}
