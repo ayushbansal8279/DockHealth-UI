@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
 import DueDateRangePickerInput from './DueDateRangePickerInput';
 import {
@@ -17,6 +17,12 @@ const DueDateRangePicker = ({
   const [startDateError, setStartDateError] = useState(false);
   const [endDateError, setEndDateError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    setStartDateError(false);
+    setEndDateError(false);
+    setErrorMessage(null);
+  }, [customDueDateEnd, customDueDateStart]);
 
   const setStartDateErrorMessage = error => {
     if (error) {
@@ -44,7 +50,7 @@ const DueDateRangePicker = ({
       <DueDateRangePickerInputsWrapper>
         <DueDateRangePickerInput
           selectedDueDate={customDueDateStart}
-          maxDate={customDueDateEnd}
+          maxDate={customDueDateEnd || null}
           setErrorMessage={setStartDateErrorMessage}
           dueDateChange={newDate => dueDateChange(newDate, customDueDateEnd)}
           hasError={startDateError}
@@ -54,7 +60,7 @@ const DueDateRangePicker = ({
 
         <DueDateRangePickerInput
           selectedDueDate={customDueDateEnd}
-          minDate={customDueDateStart}
+          minDate={customDueDateStart || null}
           setErrorMessage={setEndDateErrorMessage}
           dueDateChange={newDate => dueDateChange(customDueDateStart, newDate)}
           hasError={endDateError}
