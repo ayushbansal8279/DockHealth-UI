@@ -38,7 +38,7 @@ const DueDateRangePickerInput = ({
       return;
     }
 
-    if (maxDate) {
+    if (maxDate !== undefined) {
       if (newDate.isAfter(moment(maxDate, DATE_ISO_FORMAT))) {
         setErrorMessage('Date must be before end date');
         return;
@@ -47,7 +47,7 @@ const DueDateRangePickerInput = ({
       dueDateChange(newDate.format(DATE_ISO_FORMAT), maxDate);
     }
 
-    if (minDate) {
+    if (minDate !== undefined) {
       if (newDate.isBefore(moment(minDate, DATE_ISO_FORMAT))) {
         setErrorMessage('Date must be after start date');
         return;
