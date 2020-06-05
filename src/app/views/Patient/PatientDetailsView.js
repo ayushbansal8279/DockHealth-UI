@@ -3,15 +3,14 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
+import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 
 const PatientDetailsView = ({
   children,
   routeParams: { patientIdentifier },
-  patientLists: { activeTab },
-  ...rest
+  patientTasks: { isFetching, activeTab },
 }) => {
-  console.log('props', rest);
-
+  console.count('main view');
   const navigateToTab = tabName => {
     hashHistory.push(
       `/patient/${patientIdentifier}${
@@ -35,13 +34,13 @@ const PatientDetailsView = ({
         onSelectFilters={() => {}}
         showMembers={false}
       />
-      {children}
+      <ViewLoader isFetchingData={isFetching}>{children}</ViewLoader>
     </>
   );
 };
 
 const mapStateToProps = store => ({
-  patientLists: store.patientLists,
+  patientTasks: store.patientTasks,
 });
 
 export default connect(mapStateToProps)(PatientDetailsView);

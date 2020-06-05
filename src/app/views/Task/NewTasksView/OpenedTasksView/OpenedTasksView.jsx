@@ -11,7 +11,7 @@ import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import messages from '../AddGroupNameButton/messages';
 import AddGroupNameButton from '../AddGroupNameButton/AddGroupNameButton';
 import EmptyTaskAddView from '../EmptyTaskAddView/EmptyTaskAddView';
-import TasksViewLoader from '../TasksViewLoader/TasksViewLoader';
+import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import { onDragEndTask } from '../DragDrop.helpers';
 import EmptyListResult from '../EmptyListResult/EmptyListResult';
 import { getRandomEmptySearchResultImage } from '../EmptyListResult/helpers';
@@ -77,7 +77,7 @@ const OpenedTasksView = ({
   };
 
   return (
-    <TasksViewLoader isFetchingData={isFetchingData}>
+    <ViewLoader isFetchingData={isFetchingData}>
       {!isEmpty(groupedTasks) ? (
         <TaskGroupsContainer>
           <DragDropContext
@@ -155,7 +155,7 @@ const OpenedTasksView = ({
       ) : (
         renderEmptyState()
       )}
-    </TasksViewLoader>
+    </ViewLoader>
   );
 };
 

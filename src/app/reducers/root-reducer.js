@@ -20,6 +20,7 @@ import TaskLabelReducer from './task-label-reducer';
 import UserReducer from './user-reducer';
 import LocationReducer from '../location/reducers';
 import PatientListsReducer from './patient-lists-reducer';
+import PatientTasksReducer from './patient-tasks-reducer';
 
 export default combineReducers({
   taskState: TaskReducer,
@@ -43,4 +44,5 @@ export default combineReducers({
   megaFilter: MegaFilterReducer,
   location: LocationReducer,
   patientLists: PatientListsReducer,
+  patientTasks: PatientTasksReducer,
 });

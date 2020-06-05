@@ -1,7 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-const PatientOpenTasksListView = () => {
+const PatientOpenTasksListView = ({ patientTasks: { lists } }) => {
+  console.log('lists', lists);
   return <div>Open</div>;
 };
 
-export default PatientOpenTasksListView;
+const mapStateToProps = store => ({
+  patientTasks: store.patientTasks,
+});
+
+export default connect(mapStateToProps)(PatientOpenTasksListView);

@@ -18,7 +18,7 @@ import PatientCompleteTasksListView from 'views/Patient/PatientCompleteTasksList
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import GenericHeader from 'components/common/GenericHeader';
 import { setHeader } from 'actions/header-actions';
-import * as PatientListsActions from 'actions/patient-lists-actions';
+import * as PatientTasksActions from 'actions/patient-tasks-actions';
 import { storeAsCurrentTask } from './actions/task-actions';
 import { onEnterTasksGroupsList } from './sagas/tasks-groups-list';
 import { getMembersByTaskListId } from './actions/tasklist-actions';
@@ -234,13 +234,25 @@ export const Routes = ({ store }) => {
     });
   };
 
-  const onEnterPatientOpenTasksListView = () => {
-    dispatch(PatientListsActions.setActiveTab(TaskListTabName.OPEN));
-    // get open tasks
+  const onEnterPatientOpenTasksListView = nextState => {
+    const {
+      params: { patientIdentifier },
+    } = nextState;
+
+    dispatch(PatientTasksActions.setActiveTab(TaskListTabName.OPEN));
+    dispatch(
+      PatientTasksActions.fetchPatientTasks(patientIdentifier, 'INCOMPLETE'),
+    );
   };
 
-  const onEnterPatientCompleteTasksListView = () => {
-    dispatch(PatientListsActions.setActiveTab(TaskListTabName.COMPLETE));
+  const onEnterPatientCompleteTasksListView = nextState => {
+    const {
+      params: { patientIdentifier },
+    } = nextState;
+    dispatch(PatientTasksActions.setActiveTab(TaskListTabName.COMPLETE));
+    dispatch(
+      PatientTasksActions.fetchPatientTasks(patientIdentifier, 'COMPLETE'),
+    );
   };
 
   return (

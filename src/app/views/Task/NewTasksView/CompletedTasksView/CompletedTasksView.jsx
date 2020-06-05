@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import EmptyListImage from 'img/empty-list';
 
+import ViewLoader from 'components/common/ViewLoader/ViewLoader';
 import TasksGroup from '../TasksGroup/TasksGroup';
-import TasksViewLoader from '../TasksViewLoader/TasksViewLoader';
 import EmptyListResult from '../EmptyListResult/EmptyListResult';
 import { getRandomEmptySearchResultImage } from '../EmptyListResult/helpers';
 import { TaskGroupsContainer } from '../styled';
@@ -47,7 +47,7 @@ const CompletedTasksView = ({
     );
   };
   return (
-    <TasksViewLoader isFetchingData={isFetchingData}>
+    <ViewLoader isFetchingData={isFetchingData}>
       {tasks?.length > 0 ? (
         <TaskGroupsContainer>
           <DragDropContext onDragEnd={() => {}}>
@@ -79,7 +79,7 @@ const CompletedTasksView = ({
       ) : (
         renderEmptyState()
       )}
-    </TasksViewLoader>
+    </ViewLoader>
   );
 };
 
