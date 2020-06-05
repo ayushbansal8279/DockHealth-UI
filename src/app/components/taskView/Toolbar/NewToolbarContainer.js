@@ -14,6 +14,7 @@ const mapStateToProps = (state, ownProps) => {
   const haveTasks =
     (openedTasks && openedTasks.length > 0) ||
     (completedTasks && completedTasks.length > 0);
+
   return {
     printData: {
       openedTasks,
