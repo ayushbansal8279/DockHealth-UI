@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import { Button, Grid, Divider, ClickAwayListener } from '@material-ui/core';
+import { Button, Grid, Divider } from '@material-ui/core';
 import React, { useRef } from 'react';
 import { FormContext } from 'react-hook-form';
 import moment from 'moment';
@@ -112,344 +112,329 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
 
   return (
     <>
-      {taskDrawerOpen && (
+      {/* {taskDrawerOpen && (
         <ClickAwayListener
           onClickAway={() => {
             closeTaskDrawer();
           }}
-        >
-          <TaskDrawerContainer
-            open={taskDrawerOpen}
-            top={top}
-            onClose={() => closeTaskDrawer()}
-            ref={taskDrawerReference}
-          >
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <FormContext {...formMethods}>
-                <Grid container spacing={1} style={styleTaskDrawerContainer}>
-                  <TopSection
-                    formMethods={formMethods}
-                    taskLists={taskLists}
-                    selectedTask={selectedTask}
-                    taskList={selectedTask?.taskList}
-                    reFileTask={reFileTask}
-                    onDelete={onDelete}
-                    onDuplicate={onDuplicate}
-                    onAddSubTask={onAddSubTask}
-                    isInbox={isInbox}
-                    closeTaskDrawer={closeTaskDrawer}
-                    setAutoSaveVisible={setAutoSaveVisible}
-                    modalActions={modalActions}
-                  />
-                  <Spacing vertical={2} />
-                  <Grid item xs={12} style={styleFullRow}>
-                    <TextInput
-                      name="description"
-                      label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
-                      required
-                      multiple
-                      placeholder="What is the task?"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        type: 'text',
-                        startAdornment:
-                          selectedTask && selectedTask.description !== '' ? (
-                            ''
-                          ) : (
-                            <AdornmentContainer>+</AdornmentContainer>
-                          ),
-                        onKeyDown: event => {
-                          if (event.key === 'Enter') {
-                            event.preventDefault();
-                            parentFormSubmit();
-                            return false;
-                          }
-                          return true;
-                        },
-                      }}
-                      onBlur={event => {
-                        if (
-                          selectedTask &&
-                          selectedTask.taskIdentifier != null
-                        ) {
-                          event.preventDefault();
-                          handleTaskDescriptionUpdate();
-                        }
-                      }}
-                    />
-                  </Grid>
-                  {selectedTask?.sourceMessage && (
-                    <Grid item xs={12} style={styleEmailRow}>
-                      <TaskDrawerEmailBodyContainer
-                        emailBody={selectedTask.sourceMessage}
-                        task={selectedTask}
-                        members={members}
-                      />
-                    </Grid>
-                  )}
-                  <Grid item xs={6} style={styleLeftColumn}>
-                    <SelectInput
-                      name="patientIdentifier"
-                      label="Patient"
-                      placeholder="Who is the patient?"
-                      disabled={isAddingOrEditingSubtask}
-                      onInputChange={onPatientInputChange}
-                      onItemSelected={(option, event) => {
-                        handlePatientSelect(option);
-                        patientInputReference.current
-                          .querySelector('input')
-                          .blur();
-                        if (event.key === 'Enter') {
-                          assignedToInputReference.current
-                            .querySelector('input')
-                            .focus();
-                        }
-                      }}
-                      ref={patientInputReference}
-                      noOptionsText={
-                        <Grid
-                          container
-                          direction="column"
-                          style={{ padding: '10px 10px' }}
-                        >
-                          <RobotoTypography
-                            condensed
-                            variant="h4"
-                            color="inherit"
-                          >
-                            No record found
-                          </RobotoTypography>
-                          <Spacing vertical={3} />
-                          <Button
-                            variant="contained"
-                            fullWidth
-                            size="small"
-                            onMouseDown={openPatientPopover}
-                          >
-                            <RobotoTypography condensed variant="h4">
-                              Add patient
-                            </RobotoTypography>
-                          </Button>
-                        </Grid>
-                      }
-                      InputProps={{}}
-                      endAdornmentEnabled={false}
-                    >
-                      {formattedPatients}
-                    </SelectInput>
-                    <AddPatientPopover
-                      anchorElement={patientInputReference}
-                      isPopoverOpen={isPatientPopoverOpen}
-                      closePopover={closePatientPopover}
-                      initialValue={patientInputValue}
-                      setParentFormValue={setValue}
-                    />
-                  </Grid>
-                  <Grid item xs={6} style={styleRightColumn}>
-                    <SelectInput
-                      name="assignedToIdentifier"
-                      label="Assigned To"
-                      placeholder="Who would you like to assign this task to?"
-                      onInputChange={onAssignedToInputChange}
-                      onItemSelected={option => {
-                        handleAssignedToSelect(option);
-                        assignedToInputReference.current
-                          .querySelector('input')
-                          .blur();
-                      }}
-                      ref={assignedToInputReference}
-                      noOptionsText={
-                        <Grid
-                          container
-                          direction="column"
-                          style={{ padding: '10px 10px' }}
-                        >
-                          <RobotoTypography
-                            condensed
-                            variant="h4"
-                            color="inherit"
-                          >
-                            No record found
-                          </RobotoTypography>
-                          <Spacing vertical={3} />
-                          <Button
-                            variant="contained"
-                            fullWidth
-                            size="small"
-                            onMouseDown={openInvitePopover}
-                          >
-                            <EnvelopeIconContainer>
-                              <InboxIcon />
-                            </EnvelopeIconContainer>
-                            <Spacing horizontal={3} />
-                            <RobotoTypography condensed variant="h4">
-                              Invite to the list
-                            </RobotoTypography>
-                          </Button>
-                        </Grid>
-                      }
-                      renderItem={(option, inputValue) =>
-                        renderMemberoptionWithHighlighting(option, inputValue)
-                      }
-                      InputProps={{
-                        endAdornment: currentAssignedToAdornment,
-                      }}
-                      endAdornmentEnabled={false}
-                    >
-                      {formattedMembers}
-                    </SelectInput>
-                    <InviteMemberPopover
-                      anchorElement={assignedToInputReference}
-                      isPopoverOpen={isInvitePopoverOpen}
-                      closePopover={closeInvitePopover}
-                      initialValue={assignedToInputValue}
-                      setParentFormValue={setValue}
-                      taskList={selectedTask?.taskList}
-                    />
-                  </Grid>
-                  <Grid item xs={6} style={styleLeftColumn}>
-                    <DueDateSection
-                      selectedTask={selectedTask}
-                      isOverDue={isOverDue}
-                      setAutoSaveVisible={setAutoSaveVisible}
-                    />
-                  </Grid>
-                  <Grid item xs={6} style={styleRightColumn}>
-                    <HiddenFieldContainer visible={dueDateValue}>
-                      <TextInput
-                        name="dueTime"
-                        label="Due Time"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        InputProps={{
-                          type: 'time',
-                        }}
-                        inputProps={{
-                          step: 300, // 5 min
-                          style: {
-                            color: dueTimeValue
-                              ? overDueColor
-                              : palette.coolGrey3,
-                            paddingTop: '1.65rem',
-                          },
-                          onFocus: event => {
-                            // eslint-disable-next-line no-param-reassign
-                            event.target.style.color = '#000000';
-                          },
-                          onChange: event => {
-                            // eslint-disable-next-line no-param-reassign
-                            event.target.style.color = '#000000';
-                          },
-                          onBlur: event => {
-                            saveDueDate({
-                              updatedDueDate: dueDateValue,
-                              updatedDueTime: event.target.value,
-                            });
-                          },
-                        }}
-                      />
-                    </HiddenFieldContainer>
-                  </Grid>
-                  <Grid item xs={6} style={styleLeftColumn}>
-                    <PrioritySection
-                      selectedTask={selectedTask}
-                      setAutoSaveVisible={setAutoSaveVisible}
-                    />
-                  </Grid>
-                  <Grid item xs={6} style={styleRightColumn}>
-                    <StatusSection
-                      selectedTask={selectedTask}
-                      setAutoSaveVisible={setAutoSaveVisible}
-                    />
-                  </Grid>
-                  <Grid item xs={12} style={styleFullRow}>
-                    <LabelsSection
-                      selectedTask={selectedTask}
-                      isInbox={isInbox}
-                      parentFormSubmit={parentFormSubmit}
-                      setAutoSaveVisible={setAutoSaveVisible}
-                    />
-                  </Grid>
-                  <Grid item xs={12} style={styleFullRow}>
-                    <AtttachmentsSection
-                      selectedTask={selectedTask}
-                      parentFormSubmit={parentFormSubmit}
-                    />
-                  </Grid>
-                  <Grid item xs={12} style={styleFullRow}>
-                    <CommentSection parentFormSubmit={parentFormSubmit} />
-                  </Grid>
-                  {newTaskFlag && (
-                    <Grid
-                      item
-                      xs={12}
-                      container
-                      justify="flex-end"
-                      alignItems="center"
-                      wrap="nowrap"
-                      style={styleFullRow}
-                    >
-                      <Button
-                        onClick={closeTaskDrawer}
-                        color="secondary"
-                        variant="text"
-                        size="small"
-                        disabled={isSaving}
-                      >
-                        <MontserratTypography
-                          weight="600"
-                          textDecoration="underline"
-                          color="inherit"
-                          variant="h4"
-                        >
-                          CANCEL
-                        </MontserratTypography>
-                      </Button>
-                      <Spacing horizontal={3} />
-                      <Button
-                        variant="contained"
-                        size="small"
-                        type="submit"
-                        disableRipple={isSaving}
-                        disabled={isSaving}
-                      >
-                        <MontserratTypography variant="h4" weight="600">
-                          {isSaving ? (
-                            <CubesLoader size={32} color={palette.coolGrey1} />
-                          ) : (
-                            'SAVE'
-                          )}
-                        </MontserratTypography>
-                      </Button>
-                    </Grid>
-                  )}
-                </Grid>
-              </FormContext>
-            </form>
-            <Divider
-              style={{
-                width: '100%',
-                backgroundColor: palette.blueOcean,
-                opacity: '0.3',
-              }}
-            />
-            <Grid container item xs={12} style={styleLastRow}>
-              <Spacing vertical={2} />
-              <HistorySection
+        > */}
+      <TaskDrawerContainer
+        open={taskDrawerOpen}
+        top={top}
+        onClose={() => closeTaskDrawer()}
+        ref={taskDrawerReference}
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormContext {...formMethods}>
+            <Grid container spacing={1} style={styleTaskDrawerContainer}>
+              <TopSection
                 formMethods={formMethods}
                 taskLists={taskLists}
                 selectedTask={selectedTask}
                 taskList={selectedTask?.taskList}
+                reFileTask={reFileTask}
+                onDelete={onDelete}
+                onDuplicate={onDuplicate}
+                onAddSubTask={onAddSubTask}
                 isInbox={isInbox}
                 closeTaskDrawer={closeTaskDrawer}
+                setAutoSaveVisible={setAutoSaveVisible}
+                modalActions={modalActions}
               />
+              <Spacing vertical={2} />
+              <Grid item xs={12} style={styleFullRow}>
+                <TextInput
+                  name="description"
+                  label={isAddingOrEditingSubtask ? 'Subtask' : 'Task'}
+                  required
+                  multiple
+                  placeholder="What is the task?"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    type: 'text',
+                    startAdornment:
+                      selectedTask && selectedTask.description !== '' ? (
+                        ''
+                      ) : (
+                        <AdornmentContainer>+</AdornmentContainer>
+                      ),
+                    onKeyDown: event => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        parentFormSubmit();
+                        return false;
+                      }
+                      return true;
+                    },
+                  }}
+                  onBlur={event => {
+                    if (selectedTask && selectedTask.taskIdentifier != null) {
+                      event.preventDefault();
+                      handleTaskDescriptionUpdate();
+                    }
+                  }}
+                />
+              </Grid>
+              {selectedTask?.sourceMessage && (
+                <Grid item xs={12} style={styleEmailRow}>
+                  <TaskDrawerEmailBodyContainer
+                    emailBody={selectedTask.sourceMessage}
+                    task={selectedTask}
+                    members={members}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={6} style={styleLeftColumn}>
+                <SelectInput
+                  name="patientIdentifier"
+                  label="Patient"
+                  placeholder="Who is the patient?"
+                  disabled={isAddingOrEditingSubtask}
+                  onInputChange={onPatientInputChange}
+                  onItemSelected={(option, event) => {
+                    handlePatientSelect(option);
+                    patientInputReference.current.querySelector('input').blur();
+                    if (event.key === 'Enter') {
+                      assignedToInputReference.current
+                        .querySelector('input')
+                        .focus();
+                    }
+                  }}
+                  ref={patientInputReference}
+                  noOptionsText={
+                    <Grid
+                      container
+                      direction="column"
+                      style={{ padding: '10px 10px' }}
+                    >
+                      <RobotoTypography condensed variant="h4" color="inherit">
+                        No record found
+                      </RobotoTypography>
+                      <Spacing vertical={3} />
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        size="small"
+                        onMouseDown={openPatientPopover}
+                      >
+                        <RobotoTypography condensed variant="h4">
+                          Add patient
+                        </RobotoTypography>
+                      </Button>
+                    </Grid>
+                  }
+                  InputProps={{}}
+                  endAdornmentEnabled={false}
+                >
+                  {formattedPatients}
+                </SelectInput>
+                <AddPatientPopover
+                  anchorElement={patientInputReference}
+                  isPopoverOpen={isPatientPopoverOpen}
+                  closePopover={closePatientPopover}
+                  initialValue={patientInputValue}
+                  setParentFormValue={setValue}
+                />
+              </Grid>
+              <Grid item xs={6} style={styleRightColumn}>
+                <SelectInput
+                  name="assignedToIdentifier"
+                  label="Assigned To"
+                  placeholder="Who would you like to assign this task to?"
+                  onInputChange={onAssignedToInputChange}
+                  onItemSelected={option => {
+                    handleAssignedToSelect(option);
+                    assignedToInputReference.current
+                      .querySelector('input')
+                      .blur();
+                  }}
+                  ref={assignedToInputReference}
+                  noOptionsText={
+                    <Grid
+                      container
+                      direction="column"
+                      style={{ padding: '10px 10px' }}
+                    >
+                      <RobotoTypography condensed variant="h4" color="inherit">
+                        No record found
+                      </RobotoTypography>
+                      <Spacing vertical={3} />
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        size="small"
+                        onMouseDown={openInvitePopover}
+                      >
+                        <EnvelopeIconContainer>
+                          <InboxIcon />
+                        </EnvelopeIconContainer>
+                        <Spacing horizontal={3} />
+                        <RobotoTypography condensed variant="h4">
+                          Invite to the list
+                        </RobotoTypography>
+                      </Button>
+                    </Grid>
+                  }
+                  renderItem={(option, inputValue) =>
+                    renderMemberoptionWithHighlighting(option, inputValue)
+                  }
+                  InputProps={{
+                    endAdornment: currentAssignedToAdornment,
+                  }}
+                  endAdornmentEnabled={false}
+                >
+                  {formattedMembers}
+                </SelectInput>
+                <InviteMemberPopover
+                  anchorElement={assignedToInputReference}
+                  isPopoverOpen={isInvitePopoverOpen}
+                  closePopover={closeInvitePopover}
+                  initialValue={assignedToInputValue}
+                  setParentFormValue={setValue}
+                  taskList={selectedTask?.taskList}
+                />
+              </Grid>
+              <Grid item xs={6} style={styleLeftColumn}>
+                <DueDateSection
+                  selectedTask={selectedTask}
+                  isOverDue={isOverDue}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                />
+              </Grid>
+              <Grid item xs={6} style={styleRightColumn}>
+                <HiddenFieldContainer visible={dueDateValue}>
+                  <TextInput
+                    name="dueTime"
+                    label="Due Time"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    InputProps={{
+                      type: 'time',
+                    }}
+                    inputProps={{
+                      step: 300, // 5 min
+                      style: {
+                        color: dueTimeValue ? overDueColor : palette.coolGrey3,
+                        paddingTop: '1.65rem',
+                      },
+                      onFocus: event => {
+                        // eslint-disable-next-line no-param-reassign
+                        event.target.style.color = '#000000';
+                      },
+                      onChange: event => {
+                        // eslint-disable-next-line no-param-reassign
+                        event.target.style.color = '#000000';
+                      },
+                      onBlur: event => {
+                        saveDueDate({
+                          updatedDueDate: dueDateValue,
+                          updatedDueTime: event.target.value,
+                        });
+                      },
+                    }}
+                  />
+                </HiddenFieldContainer>
+              </Grid>
+              <Grid item xs={6} style={styleLeftColumn}>
+                <PrioritySection
+                  selectedTask={selectedTask}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                />
+              </Grid>
+              <Grid item xs={6} style={styleRightColumn}>
+                <StatusSection
+                  selectedTask={selectedTask}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                />
+              </Grid>
+              <Grid item xs={12} style={styleFullRow}>
+                <LabelsSection
+                  selectedTask={selectedTask}
+                  isInbox={isInbox}
+                  parentFormSubmit={parentFormSubmit}
+                  setAutoSaveVisible={setAutoSaveVisible}
+                />
+              </Grid>
+              <Grid item xs={12} style={styleFullRow}>
+                <AtttachmentsSection
+                  selectedTask={selectedTask}
+                  parentFormSubmit={parentFormSubmit}
+                />
+              </Grid>
+              <Grid item xs={12} style={styleFullRow}>
+                <CommentSection parentFormSubmit={parentFormSubmit} />
+              </Grid>
+              {newTaskFlag && (
+                <Grid
+                  item
+                  xs={12}
+                  container
+                  justify="flex-end"
+                  alignItems="center"
+                  wrap="nowrap"
+                  style={styleFullRow}
+                >
+                  <Button
+                    onClick={closeTaskDrawer}
+                    color="secondary"
+                    variant="text"
+                    size="small"
+                    disabled={isSaving}
+                  >
+                    <MontserratTypography
+                      weight="600"
+                      textDecoration="underline"
+                      color="inherit"
+                      variant="h4"
+                    >
+                      CANCEL
+                    </MontserratTypography>
+                  </Button>
+                  <Spacing horizontal={3} />
+                  <Button
+                    variant="contained"
+                    size="small"
+                    type="submit"
+                    disableRipple={isSaving}
+                    disabled={isSaving}
+                  >
+                    <MontserratTypography variant="h4" weight="600">
+                      {isSaving ? (
+                        <CubesLoader size={32} color={palette.coolGrey1} />
+                      ) : (
+                        'SAVE'
+                      )}
+                    </MontserratTypography>
+                  </Button>
+                </Grid>
+              )}
             </Grid>
-          </TaskDrawerContainer>
-        </ClickAwayListener>
-      )}
+          </FormContext>
+        </form>
+        <Divider
+          style={{
+            width: '100%',
+            backgroundColor: palette.blueOcean,
+            opacity: '0.3',
+          }}
+        />
+        <Grid container item xs={12} style={styleLastRow}>
+          <Spacing vertical={2} />
+          <HistorySection
+            formMethods={formMethods}
+            taskLists={taskLists}
+            selectedTask={selectedTask}
+            taskList={selectedTask?.taskList}
+            isInbox={isInbox}
+            closeTaskDrawer={closeTaskDrawer}
+          />
+        </Grid>
+      </TaskDrawerContainer>
+      {/* </ClickAwayListener>
+      )} */}
     </>
   );
 };
