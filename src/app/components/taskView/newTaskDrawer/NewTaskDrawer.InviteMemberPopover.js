@@ -3,10 +3,9 @@ import { shape, string, func } from 'prop-types';
 import React from 'react';
 import { FormContext } from 'react-hook-form';
 
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { noop } from 'helpers/utility-functions';
-import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 
 import InputPopover from './NewTaskDrawer.InputPopover';
@@ -101,7 +100,7 @@ const InviteMemberPopover = ({
                     {isInviting && (
                       <>
                         <Spacing horizontal={3} />
-                        <CubesLoader size={16} color={palette.coolGrey1} />
+                        <Loader size={16} />
                       </>
                     )}
                   </Grid>

@@ -5,8 +5,7 @@ import { noop } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
 import ArrowUpIcon from 'img/arrow-up.svg';
 import { AvatarImageContainer } from 'components/common/Avatar.styled';
-import CubesLoader from 'components/common/CubesLoader';
-import palette from 'styles/palette';
+import Loader from 'components/common/Loader/Loader';
 import { PaddedButtonLabel } from './UserProfileView.Styled';
 
 const getSmallButtonContent = ({
@@ -15,7 +14,7 @@ const getSmallButtonContent = ({
   fileLoading,
 }) => () => {
   if (fileLoading) {
-    return <CubesLoader size={20} color={palette.veryDarkBlue} />;
+    return <Loader size={20} />;
   }
 
   if (fileLoaded) {

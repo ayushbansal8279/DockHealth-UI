@@ -42,6 +42,7 @@ import {
   AddCrossIcon,
   AddPlaceholder,
   CircleIcon,
+  ClickablePatient,
   Description,
   DescriptionBox,
   DueDate,
@@ -144,8 +145,11 @@ const TaskItem = ({
   subtasks,
   dragAndDropDisabled,
   listNameVisible,
+  selectedTask,
+  parentHasPatient,
 }) => {
   const {
+    taskIdentifier,
     edited,
     assignedTo,
     attachments,
@@ -178,7 +182,9 @@ const TaskItem = ({
       onMouseEnter={() => setIsHoverd(true)}
       onMouseLeave={() => setIsHoverd(false)}
     >
-      <TaskItemContainer>
+      <TaskItemContainer
+        isSelected={selectedTask?.taskIdentifier === taskIdentifier}
+      >
         {!dragAndDropDisabled && (
           <ThreeDots src={ThreeDotsIcon} {...dragHandleProps} />
         )}
@@ -227,10 +233,19 @@ const TaskItem = ({
           </DescriptionBox>
         </TaskItemCell>
         <TaskItemCell width="164px">
-          {task.status !== 'COMPLETE' && !patient && (
-            <AddPlaceholder>+ Add Patient</AddPlaceholder>
-          )}
-          {patient && `${patient.firstName} ${patient.lastName}`}
+          <ClickablePatient
+            onClick={() => {
+              openDrawer();
+              storeAsCurrentTask(task);
+            }}
+          >
+            {task.status !== 'COMPLETE' && !patient && (
+              <AddPlaceholder>+ Add Patient</AddPlaceholder>
+            )}
+            {patient &&
+              !parentHasPatient &&
+              `${patient.firstName} ${patient.lastName}`}
+          </ClickablePatient>
         </TaskItemCell>
         <TaskItemCell width="110px" paddingLeft="smallPlus" paddingRight="tiny">
           <TaskWorkflowStatus
@@ -269,19 +284,27 @@ const TaskItem = ({
                 }}
                 quickSelectOptions={dueDateQuickSelectOptions}
               >
-                <DueDateContainer>
-                  <DueDate>
-                    {dueDate && moment(dueDate).format('MM/DD')}
-                  </DueDate>
-                  <img
-                    alt="due-date"
-                    src={getCalendarIcon(
-                      dueDate,
-                      isHovered,
-                      !!(dueDate && moment(dueDate).isBefore(moment())),
-                    )}
-                  />
-                </DueDateContainer>
+                {({ elementReference, setIsPopoverOpen, isPopoverOpen }) => (
+                  <button
+                    type="button"
+                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                    ref={elementReference}
+                  >
+                    <DueDateContainer>
+                      <DueDate>
+                        {dueDate && moment(dueDate).format('MM/DD')}
+                      </DueDate>
+                      <img
+                        alt="due-date"
+                        src={getCalendarIcon(
+                          dueDate,
+                          isHovered,
+                          !!(dueDate && moment(dueDate).isBefore(moment())),
+                        )}
+                      />
+                    </DueDateContainer>
+                  </button>
+                )}
               </PopoverDatepicker>
             </GridImg>
             <GridImg item xs={3}>
@@ -301,7 +324,6 @@ const TaskItem = ({
             currentUser={currentUser}
             reassignTask={reassignTask}
             task={task}
-            isCompletedGroup={isCompletedGroup}
           >
             {assignedTo ? (
               <Member member={assignedTo} size={34} />
@@ -337,6 +359,7 @@ const Subtasks = ({
   reassignTask,
   currentUser,
   members,
+  parentHasPatient,
   ...restProps
 }) => {
   const [draggedId, setDraggableId] = useState(false);
@@ -389,6 +412,7 @@ const Subtasks = ({
                           currentUser={currentUser}
                           members={members}
                           reassignTask={reassignTask}
+                          parentHasPatient={parentHasPatient}
                           {...restProps}
                         />
                         {draggedId !== String(subtask.taskId) &&
@@ -424,7 +448,7 @@ const Task = ({
   ...restProps
 }) => {
   const [isOpen, switchOpen] = useState(false);
-  const { comments, subtasks } = task;
+  const { comments, subtasks, patient } = task;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
 
   const {
@@ -436,6 +460,10 @@ const Task = ({
       state.taskState,
     ),
   );
+
+  useEffect(() => {
+    switchOpen(isFullView);
+  }, [isFullView, switchOpen]);
 
   const renderedSubtasks =
     addingNewSubtask && addingNewSubtaskParentId === task?.taskIdentifier
@@ -469,6 +497,7 @@ const Task = ({
           currentUser={currentUser}
           members={members}
           reassignTask={reassignTask}
+          parentHasPatient={!!patient}
           {...restProps}
         />
       )}

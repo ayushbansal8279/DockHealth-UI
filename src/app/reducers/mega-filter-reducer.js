@@ -4,6 +4,7 @@ import * as types from 'actions/action-types';
 const PEOPLE_FILTERS = ['assignedBy', 'assignedTo'];
 const PRIORITY_FILTERS = ['priorityOptions'];
 const STATUS_FILTERS = ['workflowStatusOptions'];
+const DATE_FILTERS = ['dueDateOptions'];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const STANDARD_FILTERS = ['labels', 'dueDateOptions', 'patients'];
 
@@ -39,6 +40,13 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
         type: 'STATUS',
         filterKey: key,
       };
+    } else if (DATE_FILTERS.includes(key)) {
+      assignedFilters[key] = {
+        label: getLabel(key),
+        list: assignedFilters[key],
+        type: 'DATE',
+        filterKey: key,
+      };
     } else {
       assignedFilters[key] = {
         label: getLabel(key),
@@ -54,6 +62,7 @@ const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
 
 const INITIAL_STATE = {
   isLoading: false,
+  isInitialized: false,
   filters: {},
   selectedFilters: {},
   error: null,
@@ -76,6 +85,8 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     case types.FETCH_MEGA_FILTERS_FAILURE:
       return { ...state, error, isLoading: false };
+    case types.INITIALIZE_MEGA_FILTER:
+      return { ...state, isInitialized: true };
     case types.SELECT_FILTERS_FROM_MEGA_FILTER:
       return { ...state, selectedFilters };
     case types.CLEAR_MEGA_FILTERS:

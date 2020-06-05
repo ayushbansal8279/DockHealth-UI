@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import CubesLoader from '../common/CubesLoader';
+import Loader from '../common/Loader/Loader';
 import TaskCheckbox from './TaskCheckbox';
 
 const NewTaskContainer = styled.div`
@@ -36,7 +36,7 @@ export default props => {
         <TaskCheckbox />
       </NewTaskCheckboxContainer>
       <NewTaskLoaderContainer>
-        <CubesLoader size={32} />
+        <Loader size={32} />
       </NewTaskLoaderContainer>
     </NewTaskContainer>
   );

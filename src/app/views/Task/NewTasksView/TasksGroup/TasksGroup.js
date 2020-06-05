@@ -5,9 +5,8 @@ import FullViewIcon from 'img/full-view';
 import FullViewActiveIcon from 'img/full-view-active';
 import SlimViewIcon from 'img/slim-view';
 import SlimViewActiveIcon from 'img/slim-view-active';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import palette from 'styles/palette';
 
 import GroupNameSection from '../GroupNameSection/GroupNameSection';
 import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
@@ -61,6 +60,9 @@ const TasksGroup = ({
   dragAndDropDisabled,
   listNameVisible,
   changingGroupOrderDisabled,
+  hasFiltersApplied,
+  isSearchApplied,
+  selectedTask,
 }) => {
   const [isOpen, switchOpen] = useState(true);
   const [viewType, setViewType] = useState(FULL_VIEW);
@@ -139,7 +141,7 @@ const TasksGroup = ({
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
-        {!!quickAddTask && (
+        {!!quickAddTask && !isSearchApplied && (
           <AddTaskInputWrapper>
             <input
               name="newTask"
@@ -170,8 +172,9 @@ const TasksGroup = ({
           updateWorkflowStatus={updateWorkflowStatus}
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
+          selectedTask={selectedTask}
         />
-        {groupPagination && hasMoreTasks && (
+        {groupPagination && hasMoreTasks && !hasFiltersApplied && (
           <PaginationButton
             disabled={isFetchingMoreTasks}
             type="button"
@@ -181,7 +184,7 @@ const TasksGroup = ({
             {isFetchingMoreTasks && (
               <>
                 <Spacing horizontal={4} />
-                <CubesLoader size={16} color={palette.brightBlue} />
+                <Loader size={16} />
               </>
             )}
           </PaginationButton>

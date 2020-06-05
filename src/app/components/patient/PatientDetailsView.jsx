@@ -21,7 +21,7 @@ import usePatient from 'hooks/use-patient';
 import BackIcon from 'img/back.svg';
 import themeMontserrat from 'styles/theme-montserrat';
 import TaskView from 'views/Task/TaskViewLegacy';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import SafariFixGrid from 'components/common/SafariFixGrid';
 import PatientEdit from '../patients/PatientEdit';
@@ -163,7 +163,7 @@ const PatientDetailsView = ({ routeParams }) => {
       <PatientProfileHeader patient={details} />
       {isLoading ? (
         <Grid container justify="center">
-          <CubesLoader size={64} />
+          <Loader size={64} />
         </Grid>
       ) : (
         <>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { RemoveCircleOutlineRounded } from '@material-ui/icons';
 import Member from 'components/members/Member';
 import MagnifierIcon from 'img/magnifier';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 
 import {
   AssignToMeBox,
@@ -79,7 +79,7 @@ const MembersList = ({
           </MembersBox>
         ) : (
           <LoaderContainer>
-            <CubesLoader size={16} />
+            <Loader size={16} />
           </LoaderContainer>
         )}
       </Box>

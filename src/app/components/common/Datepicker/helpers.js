@@ -2,7 +2,11 @@ import moment from 'moment';
 import React from 'react';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { range } from 'ramda';
-import { CalendarDayLabel, CalendarIconButton } from './styled';
+import {
+  CalendarDayLabel,
+  CalendarIconButton,
+  CalendarIconWrapper,
+} from './styled';
 
 export const DAYS_OF_WEEK = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 export const DATE_ISO_FORMAT = 'YYYY-MM-DD';
@@ -22,6 +26,8 @@ export const renderDayLabels = ({
   currentMonthMoment,
   momentSelectedDate,
   onDateChange,
+  maxDate,
+  minDate,
 }) => {
   const currentMonthStartPoint = moment(currentMonthMoment)
     .startOf('month')
@@ -46,23 +52,36 @@ export const renderDayLabels = ({
       dayMoment.format(DATE_ISO_FORMAT) ===
       momentSelectedDate?.format(DATE_ISO_FORMAT);
 
+    let isOutOfRange = false;
+
+    if (maxDate && moment(maxDate, DATE_ISO_FORMAT).isBefore(dayMoment)) {
+      isOutOfRange = true;
+    }
+
+    if (minDate && moment(minDate, DATE_ISO_FORMAT).isAfter(dayMoment)) {
+      isOutOfRange = true;
+    }
+
     return (
-      <CalendarIconButton
-        key={dayMoment.format(DATE_ISO_FORMAT)}
-        color={isDaySelected ? 'primary' : 'default'}
-        size="small"
-        onClick={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
-        disabled={isDaySelected}
-      >
-        <CalendarDayLabel
-          isCurrentMonth={isCurrentMonth}
-          isDaySelected={isDaySelected}
+      <CalendarIconWrapper isToday={dayMoment.isSame(moment(), 'days')}>
+        <CalendarIconButton
+          key={dayMoment.format(DATE_ISO_FORMAT)}
+          color={isDaySelected ? 'primary' : 'default'}
+          size="small"
+          onClick={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
+          disabled={isOutOfRange}
         >
-          <MontserratTypography variant="h6" color="inherit" align="center">
-            {dayMoment.format('D')}
-          </MontserratTypography>
-        </CalendarDayLabel>
-      </CalendarIconButton>
+          <CalendarDayLabel
+            isDisabled={isOutOfRange}
+            isCurrentMonth={isCurrentMonth}
+            isDaySelected={isDaySelected}
+          >
+            <MontserratTypography variant="h6" color="inherit" align="center">
+              {dayMoment.format('D')}
+            </MontserratTypography>
+          </CalendarDayLabel>
+        </CalendarIconButton>
+      </CalendarIconWrapper>
     );
   });
 };

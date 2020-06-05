@@ -2,7 +2,7 @@ import { Collapse } from '@material-ui/core';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
-export const CubesLoaderContainer = styled.div`
+export const LoaderContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;

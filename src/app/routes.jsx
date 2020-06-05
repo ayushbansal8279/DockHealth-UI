@@ -13,11 +13,13 @@ import {
 } from 'react-router';
 import { useEffectOnce } from 'react-use';
 import PatientDetailsView from 'components/patient/PatientDetailsView';
+import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { storeAsCurrentTask } from './actions/task-actions';
 import { getTaskGroupList } from './actions/task-group-list-actions';
 import { getMembersByTaskListId } from './actions/tasklist-actions';
 import {
   getFiltersForMegaFilter,
+  getFiltersForPeopleListMegaFilter,
   clearFiltersForMegaFilter,
 } from './actions/mega-filter-actions';
 import sendEvent from './api/usage-api';
@@ -181,7 +183,29 @@ export const Routes = ({ store }) => {
     if (params?.taskListIdentifier) {
       dispatch(getTaskGroupList(params?.taskListIdentifier));
       dispatch(getMembersByTaskListId(params?.taskListIdentifier, 'ALL'));
-      dispatch(getFiltersForMegaFilter(params?.taskListIdentifier));
+      dispatch(
+        getFiltersForMegaFilter(
+          params?.taskListIdentifier,
+          params?.tabName === TaskListTabName.COMPLETE
+            ? 'COMPLETE'
+            : 'INCOMPLETE',
+        ),
+      );
+    }
+  };
+
+  const onEnterPeopleView = nextState => {
+    const { params } = nextState;
+
+    if (params?.userIdentifier) {
+      dispatch(
+        getFiltersForPeopleListMegaFilter(
+          params?.userIdentifier,
+          params?.tabName === TaskListTabName.COMPLETE
+            ? 'COMPLETE'
+            : 'INCOMPLETE',
+        ),
+      );
     }
   };
 
@@ -269,7 +293,11 @@ export const Routes = ({ store }) => {
           <Route
             path="/assignedToPerson/:userIdentifier(/:tabName)"
             component={PersonDetailsView}
-            onEnter={checkFeatureToggles}
+            onEnter={nextState => {
+              checkFeatureToggles(nextState);
+              onEnterPeopleView(nextState);
+            }}
+            onLeave={dispatch(clearFiltersForMegaFilter())}
           />
           <Route
             path="/people"

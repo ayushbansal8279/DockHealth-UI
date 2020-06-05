@@ -1,12 +1,12 @@
 import React from 'react';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import { FadeContainer, StyledFade } from './styled';
 
 const TasksViewLoader = ({ children, isFetchingData }) =>
   isFetchingData ? (
     <FadeContainer>
       <StyledFade in unmountOnExit>
-        <CubesLoader size={40} />
+        <Loader size={40} />
       </StyledFade>
     </FadeContainer>
   ) : (

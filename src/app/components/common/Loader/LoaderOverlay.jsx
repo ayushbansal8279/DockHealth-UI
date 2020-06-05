@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import CubesLoader from './CubesLoader';
-import ScreenCenterContainer from './ScreenCenterContainer';
+import Loader from './Loader';
+import ScreenCenterContainer from '../ScreenCenterContainer';
 
 const AbsoluteScreenCenterContainer = styled(ScreenCenterContainer)`
   bottom: 0;
@@ -14,6 +14,6 @@ const AbsoluteScreenCenterContainer = styled(ScreenCenterContainer)`
 
 export default props => (
   <AbsoluteScreenCenterContainer {...props}>
-    <CubesLoader />
+    <Loader />
   </AbsoluteScreenCenterContainer>
 );

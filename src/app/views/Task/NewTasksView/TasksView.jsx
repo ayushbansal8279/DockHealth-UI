@@ -1,12 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
-import * as MegaFilterActions from 'actions/mega-filter-actions';
 
 import Toolbar from 'components/taskView/Toolbar/NewToolbar';
 import NewTaskDrawer from 'components/taskView/newTaskDrawer/NewTaskDrawer';
@@ -38,7 +37,6 @@ const TaskView = ({
   isCompletedTasksFetching,
   openedTasks,
   completedTasks,
-  groupedTasks,
   routeParams,
   refreshTab,
   isFetchingMoreTasks,
@@ -46,8 +44,6 @@ const TaskView = ({
   dragAndDropDisabled = false,
   listNameVisible = false,
   navigateToTab,
-  megaFilter,
-  megaFilterActions,
   taskCounters,
   createListGroup,
   quickAddTask,
@@ -55,9 +51,15 @@ const TaskView = ({
   editGroupName,
   changeGroupsOrder,
   showNotificationAction = true,
+  handleFilterChange,
+  hasFiltersApplied,
+  selectedTask,
+  tasks,
 }) => {
   const selectedTab = routeParams.tabName || TaskListTabName.OPEN;
   const [searchValue, setSearchValue] = useState('');
+
+  const groupedTasks = useMemo(() => groupTasksSelector(tasks), [tasks]);
 
   const { openDrawer } = taskDrawerActions;
   const {
@@ -72,8 +74,6 @@ const TaskView = ({
     storeAsCurrentTask,
   } = taskActions;
   const { groupList } = taskGroupList;
-  const { filters, selectedFilters } = megaFilter;
-  const { selectFiltersForMegaFilter } = megaFilterActions;
 
   const handleTabsNavigation = routeParameters => {
     switch (routeParameters.tabName) {
@@ -216,10 +216,8 @@ const TaskView = ({
         onSearchChange={setSearchValue}
         showNotifications={showNotificationAction}
         searchValue={searchValue}
-        filters={filters}
-        selectFiltersForMegaFilter={selectFiltersForMegaFilter}
-        selectedFilters={selectedFilters}
         haveTasks={haveTasks}
+        onSelectFilters={handleFilterChange}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView
@@ -231,11 +229,14 @@ const TaskView = ({
           tasks={filteredCompletedTasks}
           isFetchingData={isCompletedTasksFetching}
           summaryTasksCount={taskCounters.complete}
+          reassignTask={handleReassignTask}
           showMoreTasks={() => refreshTab(false, true)}
           isFetchingMoreTasks={isFetchingMoreTasks}
           updateDueDate={updateDueDate}
           listNameVisible={listNameVisible}
           isSearchApplied={!!searchValue}
+          hasFiltersApplied={hasFiltersApplied}
+          selectedTask={selectedTask}
         />
       ) : (
         <OpenedTasksView
@@ -268,6 +269,7 @@ const TaskView = ({
           dragAndDropDisabled={dragAndDropDisabled}
           listNameVisible={listNameVisible}
           isSearchApplied={!!searchValue}
+          selectedTask={selectedTask}
         />
       )}
       <NewTaskDrawer modalActions={modalActions} />
@@ -279,7 +281,6 @@ const mapDispatchToProps = dispatch => ({
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
-  megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
 });
 
 const mapStateToProps = store => ({
@@ -289,10 +290,10 @@ const mapStateToProps = store => ({
   isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
   openedTasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
-  groupedTasks: groupTasksSelector(store.taskState.tasks),
+  tasks: store.taskState.tasks,
   isFetchingMoreTasks: store.taskState.isFetchingMoreTasks,
-  megaFilter: store.megaFilter,
   taskCounters: store.taskState.taskCounters,
+  selectedTask: store.taskState.selectedTask,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

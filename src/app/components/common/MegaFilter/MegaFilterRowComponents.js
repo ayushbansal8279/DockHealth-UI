@@ -3,6 +3,7 @@ import Member from 'components/members/Member';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 import UnassignedIcon from 'img/unassigned.svg';
 import TaskItemStatus from 'views/Task/NewTasksView/TaskItem/TaskItemStatus';
+import DueDateRangePicker from './DueDateRangePicker';
 import {
   StyledFilterRow,
   StyledUnassignedIcon,
@@ -84,6 +85,30 @@ const StandardFilterRowComponent = ({
   </StyledFilterRow>
 );
 
+const DateFilterRowComponent = ({
+  isSelected,
+  displayValue,
+  taskCount,
+  onClick,
+  itemKey,
+  dueDateChange,
+  customDueDateStart,
+  customDueDateEnd,
+}) =>
+  itemKey.includes('RANGE') ? (
+    <DueDateRangePicker
+      label={displayValue}
+      dueDateChange={dueDateChange}
+      customDueDateStart={customDueDateStart}
+      customDueDateEnd={customDueDateEnd}
+    />
+  ) : (
+    <StyledFilterRow isSelected={isSelected} onClick={onClick}>
+      <OptionLabel>{displayValue}</OptionLabel>
+      <OptionCount>{taskCount || '0'}</OptionCount>
+    </StyledFilterRow>
+  );
+
 export const FilterRowUnassigned = ({ hasAvatars, isSelected, onClick }) => (
   <StyledFilterRow isSelected={isSelected} onClick={onClick}>
     {hasAvatars && (
@@ -111,6 +136,8 @@ export const getFilterRowComponent = type => {
       return PriorityFilterRowComponent;
     case 'STATUS':
       return StatusFilterRowComponent;
+    case 'DATE':
+      return DateFilterRowComponent;
     default:
       return StandardFilterRowComponent;
   }

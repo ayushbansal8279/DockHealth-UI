@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as PeopleActions from 'actions/people-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import PageContentHeader from 'components/common/PageContentHeader';
 import SafariFixGrid from 'components/common/SafariFixGrid';
@@ -16,7 +16,7 @@ import PeopleContainer from 'components/people/PeopleContainer';
 import Search from 'components/taskView/Search/Search';
 import InvitePeoplePopover from './PeopleView.InvitePeoplePopover';
 
-const CubesLoaderContainer = styled.div`
+const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
@@ -92,9 +92,9 @@ class PeopleView extends PureComponent {
         <SafariFixGrid container xs={12} item justify="center">
           <Grid item xs={9}>
             {isFetching ? (
-              <CubesLoaderContainer>
-                <CubesLoader size={40} />
-              </CubesLoaderContainer>
+              <LoaderContainer>
+                <Loader size={40} />
+              </LoaderContainer>
             ) : (
               <PeopleContainer
                 peopleList={peopleList}

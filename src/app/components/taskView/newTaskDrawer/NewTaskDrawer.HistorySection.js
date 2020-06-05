@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import { RobotoTypography } from 'styles/theme';
 import moment from 'moment';
 import { HorizontalLabel } from './NewTaskDrawer.Styled';
@@ -184,11 +184,7 @@ const HistorySection = ({ selectedTask }) => {
         <SectionRow>
           {/* <SectionLabel /> */}
           {/* <SectionButtonContainer> */}
-          {isHistoryLoading ? (
-            <CubesLoader size={16} />
-          ) : (
-            renderHistory(history)
-          )}
+          {isHistoryLoading ? <Loader size={16} /> : renderHistory(history)}
           {/* </SectionButtonContainer> */}
         </SectionRow>
       )}

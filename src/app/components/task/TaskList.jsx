@@ -3,8 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
-import palette from 'styles/palette';
-import CubesLoader from '../common/CubesLoader';
+import Loader from '../common/Loader/Loader';
 import TaskDrawer from '../taskView/TaskDrawer';
 import Heading from './TaskList.Heading';
 import initializeTaskListHooks from './TaskList.Hooks';
@@ -112,11 +111,7 @@ const TaskList = ({
             onClick={incrementTaskListShowMoreIndex}
             active={showMoreButtonVisible}
           >
-            {isShowMoreLocked ? (
-              <CubesLoader size={24} color={palette.veryDarkBlue} />
-            ) : (
-              'Show more'
-            )}
+            {isShowMoreLocked ? <Loader size={24} /> : 'Show more'}
           </ShowMoreButton>
         </ShowMoreButtonContainer>
       </TaskListOuterContainer>

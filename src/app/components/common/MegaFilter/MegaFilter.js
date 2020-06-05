@@ -1,15 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil, partition } from 'ramda';
 import { Button } from '@material-ui/core';
 import RotatableChevron from 'components/common/RotatableChevron';
-import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import { getFilteredTasksForList } from 'actions/task-actions';
 import {
   getFilterRowComponent,
   AssignedOrUnassignedRow,
 } from './MegaFilterRowComponents';
+import MegaFilterSearch from './MegaFilterSearch';
 
 import {
   MegaFilterPopover,
@@ -23,10 +21,14 @@ import {
   FilterList,
   FilterLabel,
   FilterSelected,
+  FilterSearched,
   ClearButton,
+  MegaFilterOptions,
 } from './styled';
 
 const UNASSIGNED = 'UNASSIGNED';
+
+const SEARCH_EXCLUDE_KEYS = ['DUE_DATE_RANGE'];
 
 const FilterButton = ({ isOpen, openPopover }) => (
   <Button variant="text" onClick={() => openPopover(!isOpen)} size="small">
@@ -41,17 +43,31 @@ const FilterColumn = ({
   filter: { label, list, type, hasAvatars, key },
   selectedFilters,
   onSelectFilters,
-  taskList,
-  taskStatus,
-  filters,
+  searchedFilterQuery,
 }) => {
   const FilterRow = getFilterRowComponent(type);
   const columnSelectedFilters = selectedFilters[key];
+
+  const additionalProps = {};
+
+  if (key === 'dueDateOptions') {
+    additionalProps.customDueDateStart = selectedFilters.customDueDateStart;
+    additionalProps.customDueDateEnd = selectedFilters.customDueDateEnd;
+  }
+
   const filteredList = list?.filter(
     ({ key: fieldKey }) => !columnSelectedFilters?.includes(fieldKey),
   );
 
-  const dispatch = useDispatch();
+  const [searchedFiletrs, unsearchedFiletrs] = partition(
+    ({ displayValue, key: itemKey }) =>
+      searchedFilterQuery &&
+      displayValue
+        ?.toLowerCase()
+        .includes(searchedFilterQuery?.toLowerCase()) &&
+      !SEARCH_EXCLUDE_KEYS.includes(itemKey),
+    filteredList || [],
+  );
 
   const onClick = value => {
     let updatedFilters = selectedFilters;
@@ -73,31 +89,48 @@ const FilterColumn = ({
       updatedFilters = { ...selectedFilters, [key]: [value] };
     }
 
-    const taskFilters = {};
-    Object.keys(updatedFilters).forEach(keyIndex => {
-      const { filterKey } = filters[keyIndex];
-      taskFilters[filterKey] = updatedFilters[keyIndex];
-    });
-
     onSelectFilters(updatedFilters);
-    getFilteredTasksForList(
-      taskList?.taskListIdentifier,
-      taskStatus,
-      taskFilters,
-    )(dispatch);
+  };
+
+  const dueDateChange = (startDate, endDate) => {
+    const updatedFilters = {
+      ...selectedFilters,
+      customDueDateStart: startDate,
+      customDueDateEnd: endDate,
+    };
+    onSelectFilters(updatedFilters);
   };
 
   return (
     <StyledFilter>
       <FilterLabel>{label}</FilterLabel>
       <FilterList>
+        {!isEmpty(searchedFiletrs) && (
+          <FilterSearched>
+            {searchedFiletrs?.map(item => {
+              const itemKey = item.key;
+              return (
+                <AssignedOrUnassignedRow
+                  itemKey={itemKey}
+                  isUnassigned={itemKey === UNASSIGNED}
+                  hasAvatars={hasAvatars}
+                  onClick={() => onClick(itemKey)}
+                  dueDateChange={dueDateChange}
+                  {...additionalProps}
+                  {...item}
+                >
+                  <FilterRow />
+                </AssignedOrUnassignedRow>
+              );
+            })}
+          </FilterSearched>
+        )}
         {!isEmpty(columnSelectedFilters) && !isNil(columnSelectedFilters) && (
           <FilterSelected>
             {columnSelectedFilters?.map(filterValue => {
               const row = list?.find(
                 ({ key: fieldKey }) => fieldKey === filterValue,
               );
-
               return (
                 <AssignedOrUnassignedRow
                   isSelected
@@ -113,7 +146,7 @@ const FilterColumn = ({
             })}
           </FilterSelected>
         )}
-        {filteredList?.map(item => {
+        {unsearchedFiletrs?.map(item => {
           const itemKey = item.key;
           return (
             <AssignedOrUnassignedRow
@@ -121,6 +154,8 @@ const FilterColumn = ({
               isUnassigned={itemKey === UNASSIGNED}
               hasAvatars={hasAvatars}
               onClick={() => onClick(itemKey)}
+              {...additionalProps}
+              dueDateChange={dueDateChange}
               {...item}
             >
               <FilterRow />
@@ -142,17 +177,11 @@ const MegaFilter = ({
   taskStatus,
 }) => {
   const [isOpen, openPopover] = useState(false);
+  const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterReference = useRef(null);
 
-  const dispatch = useDispatch();
-
   const clearFilters = () => {
-    onSelectFilters([]);
-    getFilteredTasksForList(
-      taskList?.taskListIdentifier,
-      taskStatus,
-      {},
-    )(dispatch);
+    onSelectFilters({});
   };
 
   return (
@@ -181,23 +210,31 @@ const MegaFilter = ({
               </MegaFilterBoldedLabel>
               {activeItemsAmount} ITEMS
             </MegaFilterLabel>
-            <Spacing horizontal={4} />
-            <ClearButton type="button" onClick={clearFilters}>
-              CLEAR
-            </ClearButton>
+            <MegaFilterOptions>
+              <MegaFilterSearch
+                onSearch={setSearchedFilterQuery}
+                value={searchedFilterQuery}
+              />
+              <ClearButton type="button" onClick={clearFilters}>
+                CLEAR ALL
+              </ClearButton>
+            </MegaFilterOptions>
           </MegaFilterHeader>
           <Filters>
-            {Object.keys(filters)?.map(key => (
-              <FilterColumn
-                key={key}
-                filter={{ ...filters[key], key }}
-                selectedFilters={selectedFilters}
-                onSelectFilters={onSelectFilters}
-                taskList={taskList}
-                taskStatus={taskStatus}
-                filters={filters}
-              />
-            ))}
+            {filters
+              ?.filter(filter => !isEmpty(filter.list))
+              .map(filter => (
+                <FilterColumn
+                  key={filter.filterKey}
+                  filter={{ ...filter, key: filter.filterKey }}
+                  selectedFilters={selectedFilters}
+                  onSelectFilters={onSelectFilters}
+                  taskList={taskList}
+                  taskStatus={taskStatus}
+                  filters={filters}
+                  searchedFilterQuery={searchedFilterQuery}
+                />
+              ))}
           </Filters>
         </Container>
       </MegaFilterPopover>

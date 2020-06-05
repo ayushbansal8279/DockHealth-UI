@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { isEmpty } from 'ramda';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
@@ -6,10 +7,12 @@ import { setHeader as setHeaderRaw } from 'actions/header-actions';
 import * as PeopleActions from 'actions/people-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskGroupActions from 'actions/task-group-list-actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { mobileAnalyticsClient } from 'api/analytics-api';
 import GenericHeader from 'components/common/GenericHeader';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { noop } from 'helpers/utility-functions';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { closeDrawer } from 'actions/task-drawer-actions';
 import TasksView from 'views/Task/NewTasksView/TasksView';
 import PersonInfoPanel from './PersonDetailsView.PersonInfoPanel';
@@ -52,7 +55,7 @@ class PersonDetailsView extends PureComponent {
       personData = await peopleActions.getUserById(userIdentifier);
 
       if (personData?.userIdentifier) {
-        this.refreshTab(true);
+        this.initTable();
       }
     } catch {
       noop();
@@ -80,6 +83,7 @@ class PersonDetailsView extends PureComponent {
       nextProps.routeParams.tabName !== routeParams.tabName
     ) {
       taskActions.getTaskStatsForUser(routeParams.userIdentifier);
+
       if (nextProps.routeParams.tabName === TaskListTabName.COMPLETE) {
         this.refreshCompleteTasks(false);
       } else {
@@ -93,6 +97,46 @@ class PersonDetailsView extends PureComponent {
 
     taskActions.resetTaskCounters();
   }
+
+  getTasks(userIdentifier, status, cumulativeFlag = false) {
+    const { taskActions } = this.props;
+
+    return taskActions.getTasksAssignedToSpecificUser(
+      userIdentifier,
+      undefined,
+      undefined,
+      undefined,
+      status,
+      cumulativeFlag,
+    );
+  }
+
+  initTable = () => {
+    const {
+      taskActions,
+      routeParams: { tabName, userIdentifier },
+    } = this.props;
+
+    taskActions.getTaskStatsForUser(userIdentifier);
+
+    let status = 'INCOMPLETE';
+    if (tabName === TaskListTabName.COMPLETE) {
+      taskActions.loadingCompletedTasks();
+      status = 'COMPLETE';
+    } else {
+      taskActions.loading();
+    }
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${userIdentifier}-${status}`,
+    );
+
+    if (!filters) {
+      this.getTasks(userIdentifier, status);
+    } else {
+      this.getFilteredTasks(filters, status);
+    }
+  };
 
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
@@ -114,15 +158,19 @@ class PersonDetailsView extends PureComponent {
       routeParams: { userIdentifier },
     } = this.props;
 
+    const status = 'INCOMPLETE';
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${userIdentifier}-${status}`,
+    );
+
     if (withLoader) taskActions.loading();
 
-    taskActions.getTasksAssignedToSpecificUser(
-      userIdentifier,
-      undefined,
-      undefined, // TODO: filters
-      undefined, // TODO: filters
-      'INCOMPLETE',
-    );
+    if (filters && !isEmpty(filters)) {
+      return this.getFilteredTasks(filters, status);
+    }
+
+    return this.getTasks(userIdentifier, status);
   };
 
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
@@ -131,16 +179,19 @@ class PersonDetailsView extends PureComponent {
       routeParams: { userIdentifier },
     } = this.props;
 
+    const status = 'COMPLETE';
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${userIdentifier}-${status}`,
+    );
+
     if (withLoader) taskActions.loadingCompletedTasks();
 
-    return taskActions.getTasksAssignedToSpecificUser(
-      userIdentifier,
-      undefined,
-      undefined, // TODO: filters
-      undefined, // TODO: filters
-      'COMPLETE',
-      cumulativeFlag,
-    );
+    if (filters && !isEmpty(filters)) {
+      return this.getFilteredTasks(filters, status);
+    }
+
+    return this.getTasks(userIdentifier, status, cumulativeFlag);
   };
 
   onSideClick = () => {
@@ -162,6 +213,37 @@ class PersonDetailsView extends PureComponent {
     );
   };
 
+  handleFilterChange = updatedFilters => {
+    const {
+      routeParams: { tabName, userIdentifier },
+      megaFilterActions,
+    } = this.props;
+
+    const taskStatus =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+    megaFilterActions.selectFiltersForMegaFilter(
+      updatedFilters,
+      userIdentifier,
+      taskStatus,
+    );
+
+    return this.getFilteredTasks(updatedFilters, taskStatus);
+  };
+
+  getFilteredTasks = (filters, taskStatus) => {
+    const {
+      routeParams: { userIdentifier },
+      taskActions,
+    } = this.props;
+
+    return taskActions.getFilteredTasksForPeopleList(
+      userIdentifier,
+      taskStatus,
+      filters,
+    );
+  };
+
   render() {
     const { personData, routeParams } = this.props;
     const { fetching } = this.state;
@@ -170,7 +252,7 @@ class PersonDetailsView extends PureComponent {
       routeParams,
       navigateToTab: this.navigateToTab,
       refreshTab: this.refreshTab,
-      dragAndDropDisabled: true,
+      handleFilterChange: this.handleFilterChange,
       listNameVisible: true,
     };
 
@@ -195,6 +277,7 @@ function mapStateToProps(state) {
     tasks: state.taskState.tasks,
     isFetching: state.taskState.isFetching,
     personData: state.peopleState.personData,
+    megaFilter: state.megaFilter,
   };
 }
 
@@ -206,6 +289,7 @@ function mapDispatchToProps(dispatch) {
     setHeader: setHeaderRaw(dispatch),
     closeTaskDrawer: () => closeDrawer()(dispatch),
     clearTask: () => TaskActions.storeAsCurrentTask(null)(dispatch),
+    megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
   };
 }
 

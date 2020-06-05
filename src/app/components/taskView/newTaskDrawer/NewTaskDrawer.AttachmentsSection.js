@@ -1,8 +1,7 @@
 import React from 'react';
 
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import palette from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 
 import { Grid, IconButton } from '@material-ui/core';
@@ -103,7 +102,7 @@ const AtttachmentsSection = ({ selectedTask, parentFormSubmit }) => {
         <Grid item xs={12} container alignContent="center">
           {attachmentsLoading ? (
             <>
-              <CubesLoader color={palette.coolGrey2} size={40} />
+              <Loader size={40} />
               <Spacing horizontal={3} />
             </>
           ) : (

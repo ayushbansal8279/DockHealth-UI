@@ -2,7 +2,7 @@ import { Button, Grid, List, ListItem } from '@material-ui/core';
 import React from 'react';
 import { FormContext, useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import StyledSwitch from 'components/userProfileView/StyledSwitch';
 import {
   UniversalInput,
@@ -19,7 +19,6 @@ import {
   UserAvatarGrid,
   UserProfileViewGrid,
 } from 'components/userProfileView/UserProfileView.Styled';
-import palette from 'styles/palette';
 
 const StyledInput = styled(UniversalInput)`
   && {
@@ -134,11 +133,7 @@ const UserProfileView = ({
                     disabled={isSubmitting}
                     {...otherSaveButtonProps}
                   >
-                    {isSubmitting ? (
-                      <CubesLoader size={24} color={palette.veryDarkBlue} />
-                    ) : (
-                      saveButtonLabel
-                    )}
+                    {isSubmitting ? <Loader size={24} /> : saveButtonLabel}
                   </Button>
                 </Grid>
               </Grid>

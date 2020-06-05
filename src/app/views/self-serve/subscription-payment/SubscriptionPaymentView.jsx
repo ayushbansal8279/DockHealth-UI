@@ -10,12 +10,11 @@ import {
   setPaymentNewPlan,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import GenericHeader from 'components/common/GenericHeader';
 import Spacing from 'components/common/Spacing';
 import { noop, showAlert } from 'helpers/utility-functions';
 import useBoolean from 'hooks/useBoolean';
-import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import BillingsViewBillingData from '../billings/BillingsView.BillingData';
 import {
@@ -141,11 +140,7 @@ const getSaveBillingElement = ({ onCancelClick, processingPayment }) => () => (
         size="small"
         disabled={processingPayment}
       >
-        {processingPayment ? (
-          <CubesLoader color={palette.veryDarkBlue} size={32} />
-        ) : (
-          'Subscribe'
-        )}
+        {processingPayment ? <Loader size={32} /> : 'Subscribe'}
       </Button>
     </Grid>
   </>

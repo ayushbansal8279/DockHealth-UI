@@ -1,10 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { always, cond, equals, T } from 'ramda';
+import { isEmpty } from 'ramda';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { TaskListTabName } from 'components/taskView/Toolbar/config';
 import { setHeader as setHeaderRaw } from 'actions/header-actions';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as InvitationActions from 'actions/invitation-actions';
 import * as PatientActions from 'actions/patient-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -14,6 +15,7 @@ import * as TaskGroupActions from 'actions/task-group-list-actions';
 import * as ModalActions from 'modal/actions';
 import * as userApi from 'api/user-api';
 import { noop } from 'helpers/utility-functions';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { arrayMove } from 'helpers/sorting-helper';
 import { hashHistory } from 'react-router';
 import TasksView from './Task/NewTasksView/TasksView';
@@ -26,8 +28,8 @@ class Home extends Component {
     const {
       user,
       routeParams,
-      actions,
       taskListActions,
+      patientActions,
       invitationActions,
       taskLabelActions: { getTaskListLabels },
       setHeader,
@@ -42,15 +44,19 @@ class Home extends Component {
       ],
     });
 
-    actions.getTaskStatsForList(routeParams.taskListIdentifier);
-    let tabStatus = 'INCOMPLETE';
-
-    if (routeParams.tabName === TaskListTabName.COMPLETE) {
-      actions.loadingCompletedTasks();
-      tabStatus = 'COMPLETE';
-    } else {
-      actions.loading();
+    if (routeParams.taskListIdentifier) {
+      taskListActions.getMembersByTaskListId(
+        routeParams.taskListIdentifier,
+        'ALL',
+      );
     }
+
+    this.initTable();
+
+    taskListActions.getOrganizationUsersNotInTaskList(
+      routeParams.taskListIdentifier,
+    );
+    patientActions.getAllPatients();
 
     await invitationActions.findPendingTaskListsForUser();
 
@@ -64,48 +70,11 @@ class Home extends Component {
 
     this.refreshAccessToken(user);
 
-    const { filterBy, listName } = routeParams;
-    let { taskStatus } = routeParams;
-    let sortBy;
-
-    if (!taskStatus) {
-      taskStatus = 'INCOMPLETE';
-    }
-
-    if (filterBy) {
-      sortBy = 'CREATED_DT';
-    }
-
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
 
-    const taskAction = cond([
-      [equals(ASSIGNED_BY_ME), always(actions.getTasksAssignedByMe)],
-      [equals(ASSIGNED_TO_ME), always(actions.getTasksAssignedToMe)],
-      [T, always(actions.getListTasks)],
-    ])(listName);
-
-    const getAllTasks = async () => {
-      await Promise.all([
-        taskAction(routeParams.taskListIdentifier, sortBy, filterBy, tabStatus),
-      ]);
-    };
-
     getTaskListLabels({ taskListIdentifier: routeParams.taskListIdentifier });
-
-    if (listName !== ASSIGNED_BY_ME && listName !== ASSIGNED_TO_ME) {
-      await getAllTasks().then(async () => {
-        taskListActions.getTaskListById(routeParams.taskListIdentifier);
-
-        taskListActions
-          .getOrganizationUsersNotInTaskList(routeParams.taskListIdentifier)
-          .then(noop)
-          .catch(noop);
-      });
-    } else {
-      await getAllTasks();
-    }
   }
 
   componentWillUpdate(nextProps) {
@@ -128,9 +97,10 @@ class Home extends Component {
       nextProps.routeParams.taskListIdentifier !==
       routeParams.taskListIdentifier
     ) {
-      const { taskListActions } = this.props;
+      const { taskListActions, megaFilterActions } = this.props;
 
       actions.loading();
+      megaFilterActions.clearFiltersForMegaFilter();
       actions.resetTaskCounters();
       actions.getTaskStatsForList(nextProps.routeParams.taskListIdentifier);
 
@@ -141,17 +111,13 @@ class Home extends Component {
         taskListActions.getTaskListStats({
           taskListIdentifier: nextProps.routeParams.taskListIdentifier,
         });
-        actions.getListTasks(
+        this.getTasksList(
           nextProps.routeParams.taskListIdentifier,
-          undefined,
-          undefined,
-          'INCOMPLETE',
+          nextProps.routeParams.tabName === TaskListTabName.COMPLETE
+            ? 'COMPLETE'
+            : 'INCOMPLETE',
         );
-        actions.getListTasksCount(
-          nextProps.routeParams.taskListIdentifier,
-          undefined,
-          'COMPLETE',
-        );
+
         if (nextProps.routeParams.taskListIdentifier) {
           taskListActions.getMembersByTaskListId(
             nextProps.routeParams.taskListIdentifier,
@@ -174,6 +140,34 @@ class Home extends Component {
     actions.resetTaskCounters();
   }
 
+  initTable = () => {
+    const {
+      actions,
+      routeParams: { tabName, taskListIdentifier },
+    } = this.props;
+
+    actions.getTaskStatsForList(taskListIdentifier);
+
+    let status = 'INCOMPLETE';
+
+    if (tabName === TaskListTabName.COMPLETE) {
+      actions.loadingCompletedTasks();
+      status = 'COMPLETE';
+    } else {
+      actions.loading();
+    }
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${taskListIdentifier}-${status}`,
+    );
+
+    if (!filters) {
+      this.getTasksList(taskListIdentifier, status);
+    } else {
+      this.getFilteredTasks(filters, status);
+    }
+  };
+
   refreshTab = (withLoader = false, cumulativeFlag = false) => {
     const {
       actions,
@@ -183,119 +177,34 @@ class Home extends Component {
     actions.getTaskStatsForList(taskListIdentifier);
 
     if (tabName === TaskListTabName.COMPLETE) {
-      this.refreshCompleteTasks(cumulativeFlag, withLoader);
-    } else {
-      this.refreshIncompleteTasks(withLoader);
+      return this.refreshCompleteTasks(cumulativeFlag, withLoader);
     }
+
+    return this.refreshIncompleteTasks(withLoader);
   };
 
   refreshIncompleteTasks = (withLoader = true) => {
-    const {
-      actions,
-      routeParams,
-      taskListActions,
-      patientActions,
-    } = this.props;
+    const { actions, routeParams, taskListActions } = this.props;
+
+    const status = 'INCOMPLETE';
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${routeParams.taskListIdentifier}-${status}`,
+    );
 
     if (withLoader) {
       actions.loading();
     }
 
-    actions.getListTasks(
-      routeParams.taskListIdentifier,
-      undefined,
-      undefined,
-      'INCOMPLETE',
-    );
     taskListActions.getTaskListStats({
       taskListIdentifier: routeParams.taskListIdentifier,
     });
 
-    if (routeParams.taskListIdentifier) {
-      taskListActions.getMembersByTaskListId(
-        routeParams.taskListIdentifier,
-        'ALL',
-      );
+    if (filters && !isEmpty(filters)) {
+      return this.getFilteredTasks(filters, status);
     }
 
-    taskListActions.getOrganizationUsersNotInTaskList(
-      routeParams.taskListIdentifier,
-    );
-    patientActions.getAllPatients();
-  };
-
-  downloadPDF = () => {
-    const {
-      routeParams: { taskListIdentifier },
-    } = this.props;
-
-    if (taskListIdentifier) {
-      window.print();
-    }
-  };
-
-  handleFilterChange = (filterBy, sortBy) => {
-    const {
-      actions,
-      routeParams: { listName, taskListIdentifier },
-    } = this.props;
-
-    actions.loading();
-
-    if (listName === ASSIGNED_BY_ME) {
-      actions
-        .getTasksAssignedByMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions.getCountOfTasksAssignedByMe(
-        taskListIdentifier,
-        filterBy,
-        'COMPLETE',
-      );
-    } else if (listName === ASSIGNED_TO_ME) {
-      actions
-        .getTasksAssignedToMe(undefined, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              undefined,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions.getCountOfTasksAssignedToMe(
-        taskListIdentifier,
-        filterBy,
-        'COMPLETE',
-      );
-    } else {
-      actions
-        .getListTasks(taskListIdentifier, sortBy, filterBy, 'INCOMPLETE')
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getListTasks(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'INCOMPLETE',
-            );
-          });
-        });
-      actions.getListTasksCount(taskListIdentifier, filterBy, 'COMPLETE');
-    }
+    return this.getTasksList(routeParams.taskListIdentifier, status);
   };
 
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
@@ -303,11 +212,8 @@ class Home extends Component {
       actions,
       taskListActions,
       completedTasks,
-      routeParams: { listName, taskListIdentifier },
+      routeParams: { taskListIdentifier },
     } = this.props;
-
-    let filterBy; // TODO: filters
-    let sortBy; // TODO: filters
 
     let queryStartPosition = 0;
 
@@ -322,75 +228,83 @@ class Home extends Component {
       actions.loadingCompletedTasks();
     }
 
-    if (listName === ASSIGNED_BY_ME) {
-      return actions
-        .getTasksAssignedByMe(
-          taskListIdentifier,
-          sortBy,
-          filterBy,
-          'COMPLETE',
-          cumulativeFlag,
-        )
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedByMe(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-              cumulativeFlag,
-            );
-          });
-        });
-    }
-
-    if (listName === ASSIGNED_TO_ME) {
-      return actions
-        .getTasksAssignedToMe(
-          taskListIdentifier,
-          sortBy,
-          filterBy,
-          'COMPLETE',
-          true,
-        )
-        .then(noop)
-        .catch(error => {
-          this.handleRetry(error, () => {
-            actions.getTasksAssignedToMe(
-              taskListIdentifier,
-              sortBy,
-              filterBy,
-              'COMPLETE',
-              cumulativeFlag,
-            );
-          });
-        });
-    }
-
     taskListActions.getTaskListStats({ taskListIdentifier });
-    return actions
-      .getListTasks(
+
+    const status = 'COMPLETE';
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${taskListIdentifier}-${status}`,
+    );
+
+    if (filters && !isEmpty(filters)) {
+      this.getFilteredTasks(filters, status);
+    } else {
+      this.getTasksList(
         taskListIdentifier,
-        sortBy,
-        filterBy,
-        'COMPLETE',
+        status,
         cumulativeFlag,
         queryStartPosition,
-      )
-      .then(noop)
-      .catch(error => {
-        this.handleRetry(error, () => {
-          actions.getListTasks(
-            taskListIdentifier,
-            sortBy,
-            filterBy,
-            'COMPLETE',
-            cumulativeFlag,
-            queryStartPosition,
-          );
-        });
-      });
+      );
+    }
+  };
+
+  getTasksList = (
+    taskListIdentifier,
+    status,
+    cumulativeFlag = false,
+    queryStartPosition = 0,
+  ) => {
+    const { actions } = this.props;
+
+    return actions.getListTasks(
+      taskListIdentifier,
+      undefined,
+      undefined,
+      status,
+      cumulativeFlag,
+      queryStartPosition,
+    );
+  };
+
+  getFilteredTasks = (filters, taskStatus) => {
+    const {
+      routeParams: { taskListIdentifier },
+      actions,
+    } = this.props;
+
+    return actions.getFilteredTasksForList(
+      taskListIdentifier,
+      taskStatus,
+      filters,
+    );
+  };
+
+  handleFilterChange = updatedFilters => {
+    const {
+      routeParams: { tabName, taskListIdentifier },
+      megaFilterActions,
+    } = this.props;
+
+    const taskStatus =
+      tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+
+    megaFilterActions.selectFiltersForMegaFilter(
+      updatedFilters,
+      taskListIdentifier,
+      taskStatus,
+    );
+
+    return this.getFilteredTasks(updatedFilters, taskStatus);
+  };
+
+  downloadPDF = () => {
+    const {
+      routeParams: { taskListIdentifier },
+    } = this.props;
+
+    if (taskListIdentifier) {
+      window.print();
+    }
   };
 
   handleRetry = (error, callback) => {
@@ -401,8 +315,6 @@ class Home extends Component {
         .catch(noop);
     }
   };
-
-  handleSearch = () => {};
 
   refreshAccessToken = user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
@@ -505,6 +417,7 @@ class Home extends Component {
       pendingTasklists,
       membersNotInTaskList,
       routeParams,
+      megaFilter: { selectedFilters },
       routeParams: { listName, taskListIdentifier },
     } = this.props;
 
@@ -527,11 +440,13 @@ class Home extends Component {
       deleteGroup: this.deleteGroup,
       editGroupName: this.editGroupName,
       changeGroupsOrder: this.changeGroupsOrder,
+      handleFilterChange: this.handleFilterChange,
       isSpecialList,
       taskList: loadedTasklist || undefined,
       taskListMembers,
       membersNotInTaskList,
       routeParams,
+      hasFiltersApplied: !isEmpty(selectedFilters),
     };
 
     return <TasksView {...taskViewProps} defaultGroupName="New tasks" />;
@@ -543,16 +458,10 @@ const mapStateToProps = store => ({
   pendingTasklists: store.invitationState.pendingTasklists,
   members: store.taskListState.tasklistmembers,
   membersNotInTaskList: store.taskListState.orgusersnotintasklist,
-  tasks: store.taskState.tasks,
   completedTasks: store.taskState.completedTasks,
-  isFetching: store.taskState.isFetching,
-  isCompletedTasksFetching: store.taskState.isCompletedTasksFetching,
-  showingCompletedTasks: store.taskState.showingCompletedTasks,
   user: store.userState.user,
-  userIdentifier: store.userState.userProfile.userIdentifier,
-  selectedTaskId: store.taskState.selectedTaskId,
-  currentTaskHistory: store.taskState.currentTaskHistory,
   taskListMembers: store.taskListState.tasklistmembers,
+  megaFilter: store.megaFilter,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -564,6 +473,7 @@ const mapDispatchToProps = dispatch => ({
   invitationActions: bindActionCreators(InvitationActions, dispatch),
   setHeader: setHeaderRaw(dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
+  megaFilterActions: bindActionCreators(MegaFilterActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

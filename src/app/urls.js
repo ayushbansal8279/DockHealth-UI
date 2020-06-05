@@ -11,7 +11,10 @@ const URLS = {
       `task/group/assignTasksToTaskGroup/${groupIdentifier}`,
   },
   megaFilter: {
-    getFilters: listId => `task/filter/filterOptionsForTaskList/${listId}`,
+    getFiltersForTaskList: (listId, status) =>
+      `task/filter/filterOptionsForTaskList/${listId}?status=${status}`,
+    getFiltersForPeopleList: (userId, status) =>
+      `/task/filter/filterOptionsForAssignedToUser/${userId}?status=${status}`,
   },
 };
 

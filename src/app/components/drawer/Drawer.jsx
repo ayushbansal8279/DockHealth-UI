@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import React from 'react';
 import Intercom from 'react-intercom';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import GlobalAlertChip from 'alert/GlobalAlertChip';
 import initializeDrawerHooks from './Drawer.Hooks';
 import {
   ContentContainer,
@@ -106,6 +107,7 @@ const Drawer = ({ children }) => {
         <Intercom appID="q7dotpic" {...intercomUser} />
       </MaterialDrawer>
       <ContentContainer id="content-container" open={isOpen}>
+        <GlobalAlertChip />
         {children}
       </ContentContainer>
     </div>

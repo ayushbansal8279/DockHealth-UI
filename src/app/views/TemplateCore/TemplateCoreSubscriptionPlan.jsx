@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as TaskListActions from 'actions/tasklist-actions';
-import CubesLoaderOverlay from 'components/common/CubesLoaderOverlay';
+import LoaderOverlay from 'components/common/Loader/LoaderOverlay';
 import Drawer from 'components/drawer/Drawer';
 
 class TemplateCoreSubscriptionPlan extends PureComponent {
@@ -46,7 +46,7 @@ class TemplateCoreSubscriptionPlan extends PureComponent {
     const { loading, locationPathname } = this.state;
 
     if (loading) {
-      return <CubesLoaderOverlay withBackground />;
+      return <LoaderOverlay withBackground />;
     }
 
     return <Drawer locationPathname={locationPathname}>{children}</Drawer>;

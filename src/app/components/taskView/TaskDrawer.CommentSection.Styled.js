@@ -51,7 +51,7 @@ export const CommentSectionInputFieldContainer = styled.div`
   width: 100%;
 `;
 
-export const CubesLoaderContainer = styled.div`
+export const LoaderContainer = styled.div`
   height: 1rem;
   position: absolute;
   right: 0.75rem;

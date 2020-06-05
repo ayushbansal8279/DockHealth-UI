@@ -17,7 +17,7 @@ import {
   updateComment as updateCommentAction,
 } from 'actions/task-actions';
 import { noop } from 'helpers/utility-functions';
-import CubesLoader from '../common/CubesLoader';
+import Loader from '../common/Loader/Loader';
 import initializeTaskDrawerCommentSectionHooks from './TaskDrawer.CommentSection.Hooks';
 import {
   AddCommentButtonContainer,
@@ -26,7 +26,7 @@ import {
   CommentSectionInputField,
   CommentSectionInputFieldContainer,
   CommentSectionLabel,
-  CubesLoaderContainer,
+  LoaderContainer,
   StyledSimpleBar,
 } from './TaskDrawer.CommentSection.Styled';
 import renderComment from './TaskDrawer.RenderComment';
@@ -250,9 +250,9 @@ export default ({ addDeferredCommentToQueue, task }) => {
               +
             </AddCommentButtonContainer>
             {isPublishingComment && (
-              <CubesLoaderContainer>
-                <CubesLoader size={16} />
-              </CubesLoaderContainer>
+              <LoaderContainer>
+                <Loader size={16} />
+              </LoaderContainer>
             )}
           </CommentSectionInputFieldContainer>
         </ClickAwayListener>

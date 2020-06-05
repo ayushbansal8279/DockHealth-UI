@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import { Button, Grid } from '@material-ui/core';
 import { splitAt } from 'ramda';
-import { useDispatch } from 'react-redux';
 import { toggleListNotifications } from 'actions/tasklist-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
@@ -90,7 +90,7 @@ const getMembersNames = ({ members }) =>
     );
   });
 
-export default ({
+const Toolbar = ({
   isSpecialList,
   members,
   membersNotInTaskList,
@@ -104,10 +104,9 @@ export default ({
   completedTasksAmount,
   onSearchChange,
   searchValue,
-  filters,
-  selectedFilters,
-  selectFiltersForMegaFilter,
   haveTasks,
+  onSelectFilters,
+  megaFilter,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -123,6 +122,8 @@ export default ({
   const notificationsEnabled = taskList?.notifications;
   const taskListIdentifier = taskList?.taskListIdentifier;
   const dispatch = useDispatch();
+
+  const { filters, selectedFilters } = megaFilter;
 
   const toggleNotifications = useToggleNotifications({
     notificationsEnabled,
@@ -225,20 +226,22 @@ export default ({
       </Grid>
       {haveTasks && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
-          <MegaFilter
-            filters={filters}
-            selectedFilters={selectedFilters}
-            onSelectFilters={selectFiltersForMegaFilter}
-            taskList={taskList}
-            taskStatus={
-              selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'
-            }
-            activeItemsAmount={
-              selectedTab === 'incomplete'
-                ? openTasksAmount
-                : completedTasksAmount
-            }
-          />
+          {megaFilter.isInitialized && (
+            <MegaFilter
+              filters={filters}
+              selectedFilters={selectedFilters}
+              onSelectFilters={onSelectFilters}
+              taskList={taskList}
+              taskStatus={
+                selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'
+              }
+              activeItemsAmount={
+                selectedTab === 'incomplete'
+                  ? openTasksAmount
+                  : completedTasksAmount
+              }
+            />
+          )}
           <Spacing horizontal={5} />
           <SearchWrapper>
             <Search
@@ -248,9 +251,16 @@ export default ({
               value={searchValue}
               onChange={event => onSearchChange(event?.target?.value)}
             />
+            <Spacing horizontal={5} />
           </SearchWrapper>
         </ToolbarBottomGrid>
       )}
     </PageContentHeader>
   );
 };
+
+const mapStateToProps = store => ({
+  megaFilter: store.megaFilter,
+});
+
+export default connect(mapStateToProps)(Toolbar);

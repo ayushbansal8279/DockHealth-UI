@@ -4,7 +4,7 @@ import { FormContext, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import * as UserApi from 'api/user-api';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { UniversalMontserratInput } from 'components/userProfileView/UniversalInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -96,7 +96,8 @@ const LoginFormUsername = ({ onSubmit }) => {
             <MontserratTypography variant="h2">
               Signing you in...
             </MontserratTypography>
-            <CubesLoader size={40} />
+            <Spacing vertical={4} />
+            <Loader size={40} />
           </div>
         )}
       </FormContext>

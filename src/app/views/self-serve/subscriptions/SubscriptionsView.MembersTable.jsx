@@ -11,7 +11,7 @@ import {
   sortWith,
 } from 'ramda';
 import React, { useEffect } from 'react';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Search from 'components/taskView/Search/Search';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -176,7 +176,7 @@ const SubscriptionsViewMembersTable = ({
   return (
     <MembersTableContainer>
       {isFetching ? (
-        <CubesLoader size={40} />
+        <Loader size={40} />
       ) : (
         <>
           {showTableHeader && (

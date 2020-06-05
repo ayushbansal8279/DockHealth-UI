@@ -2,7 +2,7 @@ import { Grid, Typography } from '@material-ui/core';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
-import CubesLoader from 'components/common/CubesLoader';
+import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import useBoolean from 'hooks/useBoolean';
 import palette from 'styles/palette';
@@ -64,7 +64,7 @@ const SupportVideoContainer = ({ title, url }) => {
       <AnimatePresence>
         {!isLoaded && (
           <SupportVideoOverlay {...animationProperties}>
-            <CubesLoader size={40} color={palette.cyanBlue} />
+            <Loader size={40} />
           </SupportVideoOverlay>
         )}
       </AnimatePresence>
