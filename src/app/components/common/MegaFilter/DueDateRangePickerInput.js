@@ -66,6 +66,7 @@ const DueDateRangePickerInput = ({
         dueDateChange(date);
       }}
       maxDate={maxDate}
+      minDate={minDate}
     >
       {({ elementReference, setIsPopoverOpen }) => (
         <DueDateInputWrapper ref={elementReference}>
