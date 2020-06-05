@@ -26,8 +26,8 @@ const PatientDetailsView = ({
         onSelectTab={navigateToTab}
         selectedTab={activeTab}
         printData={{}}
-        openTasksAmount={2}
-        completedTasksAmount={3}
+        openTasksAmount={0}
+        completedTasksAmount={0}
         onSearchChange={() => {}}
         showNotifications={() => {}}
         searchValue={null}
