@@ -185,6 +185,10 @@ const TaskView = ({
         description.toLowerCase().includes(searchValue.toLowerCase()),
       );
 
+  const haveTasks =
+    (openedTasks && openedTasks.length > 0) ||
+    (completedTasks && completedTasks.length > 0);
+
   // const closeTaskDrawer = () => {
   //   console.log('in closeTaskDrawer');
   //   const { storeAsCurrentTask, taskDrawerActions } = this.props;
@@ -215,6 +219,7 @@ const TaskView = ({
         filters={filters}
         selectFiltersForMegaFilter={selectFiltersForMegaFilter}
         selectedFilters={selectedFilters}
+        haveTasks={haveTasks}
       />
       {selectedTab === TaskListTabName.COMPLETE ? (
         <CompletedTasksView

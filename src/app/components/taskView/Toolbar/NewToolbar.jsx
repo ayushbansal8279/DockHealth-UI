@@ -107,6 +107,7 @@ export default ({
   filters,
   selectedFilters,
   selectFiltersForMegaFilter,
+  haveTasks,
 }) => {
   const moreButtonReference = useRef(null);
   const moreMembersButtonReference = useRef(null);
@@ -222,30 +223,34 @@ export default ({
           showNotifications={showNotifications}
         />
       </Grid>
-      <ToolbarBottomGrid container direction="row" justify="flex-start">
-        <MegaFilter
-          filters={filters}
-          selectedFilters={selectedFilters}
-          onSelectFilters={selectFiltersForMegaFilter}
-          taskList={taskList}
-          taskStatus={selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'}
-          activeItemsAmount={
-            selectedTab === 'incomplete'
-              ? openTasksAmount
-              : completedTasksAmount
-          }
-        />
-        <Spacing horizontal={5} />
-        <SearchWrapper>
-          <Search
-            fullWidth
-            noBackground
-            initialValue=""
-            value={searchValue}
-            onChange={event => onSearchChange(event?.target?.value)}
+      {haveTasks && (
+        <ToolbarBottomGrid container direction="row" justify="flex-start">
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={selectFiltersForMegaFilter}
+            taskList={taskList}
+            taskStatus={
+              selectedTab === 'incomplete' ? 'INCOMPLETE' : 'COMPLETE'
+            }
+            activeItemsAmount={
+              selectedTab === 'incomplete'
+                ? openTasksAmount
+                : completedTasksAmount
+            }
           />
-        </SearchWrapper>
-      </ToolbarBottomGrid>
+          <Spacing horizontal={5} />
+          <SearchWrapper>
+            <Search
+              fullWidth
+              noBackground
+              initialValue=""
+              value={searchValue}
+              onChange={event => onSearchChange(event?.target?.value)}
+            />
+          </SearchWrapper>
+        </ToolbarBottomGrid>
+      )}
     </PageContentHeader>
   );
 };
