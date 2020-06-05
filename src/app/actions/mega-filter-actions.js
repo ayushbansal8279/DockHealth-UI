@@ -3,19 +3,28 @@ import { isEmpty } from 'ramda';
 import * as MegaFilterApi from 'api/mega-filter-api';
 import * as ActionTypes from './action-types';
 
-const getFiltersFromLocalStorage = identifier =>
-  sessionStorage[`filter-${identifier}`]
-    ? JSON.parse(sessionStorage[`filter-${identifier}`])
+export function clearFiltersForMegaFilter() {
+  return dispatch => {
+    dispatch({ type: ActionTypes.CLEAR_MEGA_FILTERS });
+  };
+}
+
+const getFiltersFromLocalStorage = (identifier, status) =>
+  sessionStorage[`filter-${identifier}-${status}`]
+    ? JSON.parse(sessionStorage[`filter-${identifier}-${status}`])
     : null;
 
-const handleFiltersLoadSuccess = (id, data, dispatch) => {
-  const initialFilters = getFiltersFromLocalStorage(id);
+const handleFiltersLoadSuccess = (id, status, data, dispatch) => {
+  const initialFilters = getFiltersFromLocalStorage(id, status);
 
   if (initialFilters)
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
       selectedFilters: initialFilters,
     });
+  else {
+    dispatch(clearFiltersForMegaFilter());
+  }
 
   dispatch({
     type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
@@ -27,20 +36,13 @@ const handleFiltersLoadSuccess = (id, data, dispatch) => {
   });
 };
 
-export function getFiltersForMegaFilter(listId, status, isInitial = true) {
+export function getFiltersForMegaFilter(listId, status) {
   return dispatch => {
     dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
 
     MegaFilterApi.getFiltersForTaskListMegaFilter(listId, status)
       .then(data => {
-        if (isInitial) {
-          handleFiltersLoadSuccess(listId, data, dispatch);
-        } else {
-          dispatch({
-            type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-            filters: data,
-          });
-        }
+        handleFiltersLoadSuccess(listId, status, data, dispatch);
       })
       .catch(error => {
         dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
@@ -48,24 +50,13 @@ export function getFiltersForMegaFilter(listId, status, isInitial = true) {
   };
 }
 
-export function getFiltersForPeopleListMegaFilter(
-  userId,
-  status,
-  isInitial = true,
-) {
+export function getFiltersForPeopleListMegaFilter(userId, status) {
   return dispatch => {
     dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
 
     MegaFilterApi.getFiltersForPeopleListMegaFilter(userId, status)
       .then(data => {
-        if (isInitial) {
-          handleFiltersLoadSuccess(userId, data, dispatch);
-        } else {
-          dispatch({
-            type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-            filters: data,
-          });
-        }
+        handleFiltersLoadSuccess(userId, status, data, dispatch);
       })
       .catch(error => {
         dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
@@ -73,23 +64,19 @@ export function getFiltersForPeopleListMegaFilter(
   };
 }
 
-export function selectFiltersForMegaFilter(selectedFilters, id) {
+export function selectFiltersForMegaFilter(selectedFilters, id, status) {
   return dispatch => {
     if (isEmpty(selectedFilters)) {
-      sessionStorage.removeItem(`filter-${id}`);
+      sessionStorage.removeItem(`filter-${id}-${status}`);
     } else {
-      sessionStorage[`filter-${id}`] = JSON.stringify(selectedFilters);
+      sessionStorage[`filter-${id}-${status}`] = JSON.stringify(
+        selectedFilters,
+      );
     }
 
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
       selectedFilters,
     });
-  };
-}
-
-export function clearFiltersForMegaFilter() {
-  return dispatch => {
-    dispatch({ type: ActionTypes.CLEAR_MEGA_FILTERS });
   };
 }

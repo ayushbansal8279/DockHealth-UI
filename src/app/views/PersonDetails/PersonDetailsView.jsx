@@ -127,7 +127,9 @@ class PersonDetailsView extends PureComponent {
       taskActions.loading();
     }
 
-    const filters = sessionStorageHelper.getItem(`filter-${userIdentifier}`);
+    const filters = sessionStorageHelper.getItem(
+      `filter-${userIdentifier}-${status}`,
+    );
 
     if (!filters) {
       this.getTasks(userIdentifier, status);
@@ -154,32 +156,42 @@ class PersonDetailsView extends PureComponent {
     const {
       taskActions,
       routeParams: { userIdentifier },
-      megaFilter: { selectedFilters },
     } = this.props;
+
+    const status = 'INCOMPLETE';
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${userIdentifier}-${status}`,
+    );
 
     if (withLoader) taskActions.loading();
 
-    if (!isEmpty(selectedFilters)) {
-      return this.getFilteredTasks(selectedFilters, 'INCOMPLETE');
+    if (filters && !isEmpty(filters)) {
+      return this.getFilteredTasks(filters, status);
     }
 
-    return this.getTasks(userIdentifier, 'INCOMPLETE');
+    return this.getTasks(userIdentifier, status);
   };
 
   refreshCompleteTasks = (cumulativeFlag = false, withLoader = true) => {
     const {
       taskActions,
       routeParams: { userIdentifier },
-      megaFilter: { selectedFilters },
     } = this.props;
+
+    const status = 'COMPLETE';
+
+    const filters = sessionStorageHelper.getItem(
+      `filter-${userIdentifier}-${status}`,
+    );
 
     if (withLoader) taskActions.loadingCompletedTasks();
 
-    if (!isEmpty(selectedFilters)) {
-      return this.getFilteredTasks(selectedFilters, 'COMPLETE');
+    if (filters && !isEmpty(filters)) {
+      return this.getFilteredTasks(filters, status);
     }
 
-    return this.getTasks(userIdentifier, 'COMPLETE', cumulativeFlag);
+    return this.getTasks(userIdentifier, status, cumulativeFlag);
   };
 
   onSideClick = () => {
@@ -213,6 +225,7 @@ class PersonDetailsView extends PureComponent {
     megaFilterActions.selectFiltersForMegaFilter(
       updatedFilters,
       userIdentifier,
+      taskStatus,
     );
 
     return this.getFilteredTasks(updatedFilters, taskStatus);
