@@ -82,7 +82,6 @@ import TemplateCore from './views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from './views/TemplateCore/TemplateCoreSubscriptionPlan';
 import UserProfileViewWrapper from './views/UserProfile/UserProfileView.Wrapper';
 import { checkUserAuthentication } from './views/TemplateCore/TemplateCore.Utilities';
-
 import { setLocationAndParameters } from './location/actions';
 
 const transformPathname = pathname =>
