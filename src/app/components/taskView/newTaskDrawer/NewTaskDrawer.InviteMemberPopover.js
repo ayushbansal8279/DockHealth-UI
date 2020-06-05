@@ -20,8 +20,9 @@ const InviteMemberPopover = ({
   closePopover,
   initialValue,
   setParentFormValue,
-  taskList: { taskListIdentifier },
+  taskList,
 }) => {
+  const taskListIdentifier = taskList?.taskListIdentifier;
   const {
     formMethods,
     onSubmit,
