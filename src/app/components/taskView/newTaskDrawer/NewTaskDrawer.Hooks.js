@@ -188,7 +188,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
   }, [taskList]);
 
   useEffect(() => {
-    if (taskDrawerOpen) {
+    if (taskDrawerOpen && taskList !== undefined) {
       getTaskListLabels({ taskListIdentifier: taskList?.taskListIdentifier })(
         dispatch,
       );
