@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 import { RobotoTypography } from 'styles/theme';
 import { List, Chip } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 
 const FONT_FAMILY = '"Roboto Condensed", sans-serif';
 
@@ -201,3 +202,12 @@ export const styleLeftColumn = {
 export const styleRightColumn = {
   padding: '1rem 2rem 1rem 1rem',
 };
+
+export const AdornmentClear = styled(Close)`
+  && {
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+    color: ${palette.coolGrey2};
+  }
+`;

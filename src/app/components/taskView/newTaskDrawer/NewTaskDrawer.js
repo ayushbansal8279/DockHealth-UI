@@ -26,6 +26,7 @@ import StatusSection from './NewTaskDrawer.StatusSection';
 import TaskDrawerEmailBodyContainer from './NewTaskDrawer.EmailBody';
 import {
   AdornmentContainer,
+  AdornmentClear,
   EnvelopeIconContainer,
   HiddenFieldContainer,
   TaskDrawerContainer,
@@ -67,6 +68,7 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
     handleTaskDescriptionUpdate,
     setAutoSaveVisible,
     members,
+    clearSelectedPatient,
   } = initializeTaskDrawerHooks({ isInbox });
 
   const { saveDueDate } = initializeDueDateSectionHooks({ setAutoSaveVisible });
@@ -225,7 +227,14 @@ const NewTaskDrawer = ({ isInbox, modalActions }) => {
                       </Button>
                     </Grid>
                   }
-                  InputProps={{}}
+                  InputProps={{
+                    endAdornment:
+                      selectedTask && selectedTask.patient ? (
+                        <AdornmentClear onClick={clearSelectedPatient} />
+                      ) : (
+                        ''
+                      ),
+                  }}
                   endAdornmentEnabled={false}
                 >
                   {formattedPatients}

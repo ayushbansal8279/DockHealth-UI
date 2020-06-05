@@ -374,6 +374,21 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     }
   };
 
+  const clearSelectedPatient = async () => {
+    console.log('clearSelectedPatient');
+
+    setValue('patientIdentifier', null);
+    setValue('patientName', null);
+    if (selectedTask && selectedTask.taskIdentifier != null) {
+      try {
+        await updatePatient(selectedTask, null)(dispatch);
+        setAutoSaveVisible();
+      } catch {
+        toggleAlert('Error updating patient, please try again later', 'error');
+      }
+    }
+  };
+
   const handleTaskDescriptionUpdate = async () => {
     const updatedTaskDescription = watch('description');
 
@@ -433,6 +448,7 @@ const initializeTaskDrawerHooks = ({ isInbox }) => {
     setAutoSaveVisible,
     members,
     isFetchingMembers,
+    clearSelectedPatient,
   };
 };
 
